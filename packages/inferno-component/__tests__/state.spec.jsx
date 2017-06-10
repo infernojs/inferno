@@ -48,13 +48,13 @@ describe('state', () => {
 			constructor(p, c) {
 				super(p, c);
 
-				expect(this.state).to.be.a('null');
+				expect(this.state).toBeNull();
 			}
 		}
 
 		const f = new Foo({}, {});
 
-		expect(f).not.to.be.a('null');
+		expect(f).toBeNull();
 	});
 
 	describe('setting state', () => {
@@ -88,8 +88,8 @@ describe('state', () => {
 				}
 
 				componentDidUpdate(prevProps, prevState) {
-					expect(prevState.testScrollTop).to.equal(0);
-					expect(this.state.testScrollTop).to.equal(200);
+					expect(prevState.testScrollTop).toBe(0);
+					expect(this.state.testScrollTop).toBe(200);
 				}
 
 				render(){

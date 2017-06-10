@@ -50,13 +50,13 @@ describe('connect', () => {
 	});
 
 	it('should return function', () => {
-		expect(connect()).to.be.a('function');
+		expect(typeof connect()).toBe('function');
 	});
 
 	it('should have correct WrappedComponent', () => {
 		const connectFunc = connect();
 		const ConnectedComponent = connectFunc(BasicComponent);
-		expect(ConnectedComponent.WrappedComponent).to.equal(BasicComponent);
+		expect(ConnectedComponent.WrappedComponent).toBe(BasicComponent);
 	});
 
 	it('should have correct mapStateToProps', () => {
@@ -66,7 +66,7 @@ describe('connect', () => {
 		const mapStateToProps = (state) => state;
 		const ConnectedComponent = connect(mapStateToProps)(BasicComponent);
 		render(<ConnectedComponent store={store}/>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div>1</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>1</div>'));
 	});
 
 	it('should have correct mapDispatchToProps', (done) => {
@@ -89,10 +89,10 @@ describe('connect', () => {
 			render(<ConnectedComponent store={store}/>, container);
 		});
 		store.dispatch({ type: '' });
-		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
+		expect(container.innerHTML).toBe(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+			expect(container.innerHTML).toBe(innerHTML('<a>2</a>'));
 			done();
 		}, 10);
 	});
@@ -117,10 +117,10 @@ describe('connect', () => {
 			render(<ConnectedComponent store={store}/>, container);
 		});
 		store.dispatch({ type: '' });
-		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
+		expect(container.innerHTML).toBe(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+			expect(container.innerHTML).toBe(innerHTML('<a>2</a>'));
 			done();
 		});
 	});
@@ -143,10 +143,10 @@ describe('connect', () => {
 			render(<ConnectedComponent store={store}/>, container);
 		});
 		store.dispatch({ type: '' });
-		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
+		expect(container.innerHTML).toBe(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+			expect(container.innerHTML).toBe(innerHTML('<a>2</a>'));
 			done();
 		}, 10);
 	});
@@ -162,6 +162,6 @@ describe('connect', () => {
 		});
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent2);
 		render(<ConnectedComponent store={store} a="parent" b="parent" c="parent"/>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div>dispatch state parent</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>dispatch state parent</div>'));
 	});
 });

@@ -5,24 +5,24 @@ const testdata = {
 	testKey: 'testdata'
 };
 const testListener = function (data) {
-	expect(data).to.equal(testdata);
+	expect(data).toBe(testdata);
 };
 
 describe('mobx - EventEmitter', () => {
 	it('should have an empty listner array on construction', () => {
 		const unit = new EventEmitter();
-		expect(unit.getTotalListeners()).to.equal(0);
+		expect(unit.getTotalListeners()).toBe(0);
 	});
 
 	it('should add a listener and allow to remove it', () => {
 		const unit = new EventEmitter();
 		const removeListener = unit.on(testListener);
 
-		expect(unit.getTotalListeners()).to.equal(1);
+		expect(unit.getTotalListeners()).toBe(1);
 
 		removeListener();
 
-		expect(unit.getTotalListeners()).to.equal(0);
+		expect(unit.getTotalListeners()).toBe(0);
 	});
 
 	it('should all data to be emmitted by the listners', () => {
@@ -39,6 +39,6 @@ describe('mobx - EventEmitter', () => {
 		unit.on(testListener);
 		unit.clearListeners();
 
-		expect(unit.getTotalListeners()).to.equal(0);
+		expect(unit.getTotalListeners()).toBe(0);
 	});
 });

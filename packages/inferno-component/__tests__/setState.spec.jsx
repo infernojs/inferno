@@ -23,7 +23,7 @@ describe('setState', () => {
 			}
 		}
 
-		expect(render.bind(render, <TestComponent />, container)).to.throw(Error);
+		expect(render.bind(render, <TestComponent />, container)).toThrowError(Error);
 	});
 
 	it('callback should be fired after state has changed', (done) => {
@@ -39,7 +39,7 @@ describe('setState', () => {
 
 			checkSetState() {
 				const value = this.state.value;
-				expect(value).to.equal('__NEWVALUE__');
+				expect(value).toBe('__NEWVALUE__');
 				setTimeout(function () {
 					done();
 				}, 100);
@@ -91,7 +91,7 @@ describe('setState', () => {
 
 			checkSetState() {
 				const value = this.state.value;
-				expect(value).to.equal('__NEWVALUE__');
+				expect(value).toBe('__NEWVALUE__');
 				setTimeout(function () {
 					done();
 				}, 100);
@@ -397,7 +397,7 @@ describe('setState', () => {
 			}
 
 			callback() {
-				expect(container.firstChild.firstChild.innerHTML).to.equal('bar2');
+				expect(container.firstChild.firstChild.innerHTML).toBe('bar2');
 				done();
 			}
 
@@ -418,7 +418,7 @@ describe('setState', () => {
 
 		render(<Parent />, container);
 
-		expect(container.firstChild.firstChild.innerHTML).to.equal('bar');
+		expect(container.firstChild.firstChild.innerHTML).toBe('bar');
 
 		changeFoo();
 	});
@@ -486,9 +486,9 @@ describe('setState', () => {
 
 		render(<Parent />, container);
 
-		expect(container.firstChild.firstChild.innerHTML).to.equal('4');
-		expect(spy.callCount).to.equal(5);
-		expect(renderCount).to.equal(1);
+		expect(container.firstChild.firstChild.innerHTML).toBe('4');
+		expect(spy.callCount).toBe(5);
+		expect(renderCount).toBe(1);
 	});
 
 	// Should work as Per react: https://jsfiddle.net/f12u8xzb/
@@ -666,15 +666,15 @@ describe('setState', () => {
 
 		render(<Parent />, container);
 		// Set state must go sync when nothing pending
-		expect(container.firstChild.innerHTML).to.equal('b');
+		expect(container.firstChild.innerHTML).toBe('b');
 		doSomething('1');
-		expect(container.firstChild.innerHTML).to.equal('1');
+		expect(container.firstChild.innerHTML).toBe('1');
 		doSomething('2');
-		expect(container.firstChild.innerHTML).to.equal('2');
+		expect(container.firstChild.innerHTML).toBe('2');
 		doSomething('3');
-		expect(container.firstChild.innerHTML).to.equal('3');
+		expect(container.firstChild.innerHTML).toBe('3');
 		doSomething('4');
-		expect(container.firstChild.innerHTML).to.equal('4');
+		expect(container.firstChild.innerHTML).toBe('4');
 	});
 
 	it('Set state callback should have context of caller component (forced) - as per React', () => {
@@ -682,7 +682,7 @@ describe('setState', () => {
 
 		class Com extends Component {
 			doTest() {
-				expect(this.state.a).to.equal(cnt);
+				expect(this.state.a).toBe(cnt);
 			}
 
 			componentWillMount() {

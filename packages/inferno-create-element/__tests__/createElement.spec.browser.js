@@ -34,13 +34,15 @@ describe('CreateElement (non-JSX)', () => {
 
 		// eslint-disable-next-line
 		render(App(), container);
-		expect(container.innerHTML).to.equal(innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>'));
-		expect(triggered).to.equal(false);
+		expect(container.innerHTML).toBe(
+            innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>')
+        );
+		expect(triggered).toBe(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 		buttons.forEach((button) => button.click());
 
-		expect(triggered).to.equal(true);
+		expect(triggered).toBe(true);
 	});
 
 	it('Should handle events correctly when having single child', () => {
@@ -58,13 +60,13 @@ describe('CreateElement (non-JSX)', () => {
 		};
 
 		render(app(), container);
-		expect(container.innerHTML).to.equal(innerHTML('<div><button type="button">Do a thing</button></div>'));
-		expect(triggered).to.equal(false);
+		expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
+		expect(triggered).toBe(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 		buttons.forEach((button) => button.click());
 
-		expect(triggered).to.equal(true);
+		expect(triggered).toBe(true);
 	});
 
 	it('Should allow passing childs through "children" property (native component)', () => {
@@ -78,7 +80,7 @@ describe('CreateElement (non-JSX)', () => {
 		};
 
 		render(app(), container);
-		expect(container.innerHTML).to.equal(innerHTML('<div><button type="button">Do a thing</button></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
 	});
 
 	it('Should allow passing childs through "children" property (custom component)', () => {
@@ -93,7 +95,7 @@ describe('CreateElement (non-JSX)', () => {
 		};
 
 		render(app(), container);
-		expect(container.innerHTML).to.equal(innerHTML('<div><button type="button">Do a thing</button></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
 	});
 
 	it('Should handle node with hooks and key', (done) => {
@@ -102,14 +104,14 @@ describe('CreateElement (non-JSX)', () => {
 		const app = createElement(node, {
 			key: 'key1',
 			onComponentDidMount(domNode) {
-				expect(app.key).to.equal('key1');
-				expect(domNode.tagName).to.equal('DIV');
+				expect(app.key).toBe('key1');
+				expect(domNode.tagName).toBe('DIV');
 				done();
 			}
 		});
 
 		render(app, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hooks</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
 	});
 
 	it('Should handle node with children but no props', () => {
@@ -118,11 +120,11 @@ describe('CreateElement (non-JSX)', () => {
 		const app = createElement(node, null, 'Hooks');
 
 		render(app, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hooks</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
 	});
 
 	it('Should throw with invalid name', () => {
-		expect(() => createElement({}, null)).to.throw(Error);
+		expect(() => createElement({}, null)).toThrowError(Error);
 	});
 
 	it('Should handle node with refs', (done) => {
@@ -134,7 +136,7 @@ describe('CreateElement (non-JSX)', () => {
 			});
 			return createElement(node, {
 				onComponentDidMount() {
-					expect(myRef.tagName).to.equal('A');
+					expect(myRef.tagName).toBe('A');
 					done();
 				}
 			});

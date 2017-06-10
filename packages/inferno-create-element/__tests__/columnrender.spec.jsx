@@ -132,20 +132,20 @@ describe('Columns like tests - (JSX)', () => {
 			const root = _container.firstChild;
 			const rootChildNodes = filterPlaceholders(root.childNodes);
 
-			expect(rootChildNodes.length).to.equal(columns.length);
+			expect(rootChildNodes.length).toBe(columns.length);
 			// Verify columns
 			for (let i = 0; i < rootChildNodes.length; i++) {
 				const columnRoot = rootChildNodes[ i ];
 				const columnChildNodes = filterPlaceholders(columnRoot.childNodes);
 
-				expect(columnChildNodes.length).to.equal(columns[ i ].items.length + 1, `Column data: ${JSON.stringify(columns[ i ].items)} Rendered: ${columnRoot.innerHTML}`);
-				expect(columnRoot.firstChild.innerHTML).to.equal('column', 'Column first child check');
+				expect(columnChildNodes.length).toBe(columns[ i ].items.length + 1);
+				expect(columnRoot.firstChild.innerHTML).toBe('column');
 
 				// Verify items
 				// Skip first - its hardcoded
 				for (let j = 1; j < columnChildNodes.length; j++) {
 					const itemRoot = columnChildNodes[ j ];
-					expect(itemRoot.innerHTML).to.equal(columns[ i ].items[ j - 1 ].text.toString(), 'item content check');
+					expect(itemRoot.innerHTML).toBe(columns[ i ].items[ j - 1 ].text.toString());
 				}
 			}
 		}
@@ -296,13 +296,13 @@ describe('Columns like tests - (JSX)', () => {
 					// Do initial render
 					render(<ViewKeyed columns={testCase.initial}/>, container);
 					verifyRenderResult(testCase.initial, container);
-					expect(mountedColumnSpy.callCount).to.equal(testCase.initial.length, 'Column Initial MOUNT'); // Initial all mounted
-					expect(unmountColumnSpy.callCount).to.equal(0, 'Column Initial unMount'); // Initial render none unmounted
-					expect(updateColumnSpy.callCount).to.equal(0, 'Column Initial update'); // Initial render none to update
+					expect(mountedColumnSpy.callCount).toBe(testCase.initial.length); // Initial all mounted
+					expect(unmountColumnSpy.callCount).toBe(0); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).toBe(0); // Initial render none to update
 
-					expect(mountedItemSpy.callCount).to.equal(initialItemsCount, 'Item Initial Mount'); // Initial render - mount all items once
-					expect(updateItemSpy.callCount).to.equal(0, 'Item initial update'); // Initial render none to update
-					expect(unmountItemSpy.callCount).to.equal(0, 'Item initial unmount'); // Initial render none unmounted
+					expect(mountedItemSpy.callCount).toBe(initialItemsCount); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).toBe(0); // Initial render none to update
+					expect(unmountItemSpy.callCount).toBe(0); // Initial render none unmounted
 
 					// reset call counts
 					mountedColumnSpy.reset();
@@ -316,12 +316,12 @@ describe('Columns like tests - (JSX)', () => {
 					render(<ViewKeyed columns={testCase.update}/>, container);
 					verifyRenderResult(testCase.update, container);
 
-					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length, 'mount'); // mount count should equal to added count
-					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length, 'unmount'); // Initial render none unmounted
-					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length, 'update'); // Initial render none unmounted
-					expect(mountedItemSpy.callCount).to.equal(itemsToBeAdded.length, `itemsToBeAdded ${JSON.stringify(itemsToBeAdded)} componentWillMount called: ${mountedItemSpy.callCount} times.`); // Initial render - mount all items once
-					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
-					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
+					expect(mountedColumnSpy.callCount).toBe(columnsToBeAdded.length); // mount count should equal to added count
+					expect(unmountColumnSpy.callCount).toBe(columnsToRemove.length); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).toBe(columnsToUpdate.length); // Initial render none unmounted
+					expect(mountedItemSpy.callCount).toBe(itemsToBeAdded.length); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).toBe(itemsToUpdate.length); // Initial render none to update
+					expect(unmountItemSpy.callCount).toBe(itemsToRemove.length); // Initial render none unmounted
 				});
 			});
 		});
@@ -456,13 +456,13 @@ describe('Columns like tests - (JSX)', () => {
 					// Do initial render
 					render(<View columns={testCase.initial}/>, container);
 					verifyRenderResult(testCase.initial, container);
-					expect(mountedColumnSpy.callCount).to.equal(testCase.initial.length, 'Column Initial MOUNT'); // Initial all mounted
-					expect(unmountColumnSpy.callCount).to.equal(0, 'Column Initial unMount'); // Initial render none unmounted
-					expect(updateColumnSpy.callCount).to.equal(0, 'Column Initial update'); // Initial render none to update
+					expect(mountedColumnSpy.callCount).toBe(testCase.initial.length); // Initial all mounted
+					expect(unmountColumnSpy.callCount).toBe(0); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).toBe(0); // Initial render none to update
 
-					expect(mountedItemSpy.callCount).to.equal(initialItemsCount, 'Item Initial Mount'); // Initial render - mount all items once
-					expect(updateItemSpy.callCount).to.equal(0, 'Item initial update'); // Initial render none to update
-					expect(unmountItemSpy.callCount).to.equal(0, 'Item initial unmount'); // Initial render none unmounted
+					expect(mountedItemSpy.callCount).toBe(initialItemsCount); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).toBe(0); // Initial render none to update
+					expect(unmountItemSpy.callCount).toBe(0); // Initial render none unmounted
 
 					// reset call counts
 					mountedColumnSpy.reset();
@@ -476,12 +476,12 @@ describe('Columns like tests - (JSX)', () => {
 					render(<View columns={testCase.update}/>, container);
 					verifyRenderResult(testCase.update, container);
 
-					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length, 'mount'); // mount count should equal to added count
-					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length, 'unmount'); // Initial render none unmounted
-					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length, 'update'); // Initial render none unmounted
-					expect(mountedItemSpy.callCount).to.equal(itemsToBeAdded.length, `itemsToBeAdded ${JSON.stringify(itemsToBeAdded)} componentWillMount called: ${mountedItemSpy.callCount} times.`); // Initial render - mount all items once
-					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
-					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
+					expect(mountedColumnSpy.callCount).toBe(columnsToBeAdded.length); // mount count should equal to added count
+					expect(unmountColumnSpy.callCount).toBe(columnsToRemove.length); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).toBe(columnsToUpdate.length); // Initial render none unmounted
+					expect(mountedItemSpy.callCount).toBe(itemsToBeAdded.length); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).toBe(itemsToUpdate.length); // Initial render none to update
+					expect(unmountItemSpy.callCount).toBe(itemsToRemove.length); // Initial render none unmounted
 				});
 			});
 		});

@@ -39,7 +39,7 @@ describe('Basic event tests', () => {
 
 		let divs = Array.prototype.slice.call(container.querySelectorAll('div'));
 		divs.forEach((div) => div.click());
-		expect(calledFirstTest).to.equal(true);
+		expect(calledFirstTest).toBe(true);
 
 		// reset
 		calledFirstTest = false;
@@ -48,8 +48,8 @@ describe('Basic event tests', () => {
 		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
 		divs.forEach((div) => div.click());
 
-		expect(calledFirstTest).to.equal(false);
-		expect(calledSecondTest).to.equal(true);
+		expect(calledFirstTest).toBe(false);
+		expect(calledSecondTest).toBe(true);
 
 		// reset
 		calledFirstTest = false;
@@ -59,8 +59,8 @@ describe('Basic event tests', () => {
 		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
 		divs.forEach((div) => div.click());
 
-		expect(calledFirstTest).to.equal(false);
-		expect(calledSecondTest).to.equal(false);
+		expect(calledFirstTest).toBe(false);
+		expect(calledSecondTest).toBe(false);
 		done();
 	});
 
@@ -91,14 +91,14 @@ describe('Basic event tests', () => {
 		renderIt();
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
-		expect(container.firstChild.innerHTML).to.equal('Count 0');
-		expect(data.count).to.equal(0);
+		expect(container.firstChild.innerHTML).toBe('Count 0');
+		expect(data.count).toBe(0);
 		buttons.forEach((button) => button.click());
-		expect(container.firstChild.innerHTML).to.equal('Count 1');
-		expect(data.count).to.equal(1);
+		expect(container.firstChild.innerHTML).toBe('Count 1');
+		expect(data.count).toBe(1);
 		buttons.forEach((button) => button.click());
-		expect(container.firstChild.innerHTML).to.equal('Count 2');
-		expect(data.count).to.equal(2);
+		expect(container.firstChild.innerHTML).toBe('Count 2');
+		expect(data.count).toBe(2);
 	});
 
 	it('should not trigger click at all if target is disabled', () => {
@@ -129,10 +129,10 @@ describe('Basic event tests', () => {
 		renderIt();
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('span'));
 
-		expect(container.firstChild.innerHTML).to.equal('<span>Count 0</span>');
-		expect(data.count).to.equal(0);
+		expect(container.firstChild.innerHTML).toBe('<span>Count 0</span>');
+		expect(data.count).toBe(0);
 		buttons.forEach((button) => button.click());
-		expect(container.firstChild.innerHTML).to.equal('<span>Count 0</span>');
+		expect(container.firstChild.innerHTML).toBe('<span>Count 0</span>');
 	});
 
 	it('should not leak memory', () => {
@@ -151,15 +151,15 @@ describe('Basic event tests', () => {
 
 		// eslint-disable-next-line
 		render(App(), container);
-		expect(container.firstChild.innerHTML).to.equal('1');
+		expect(container.firstChild.innerHTML).toBe('1');
 
 		// eslint-disable-next-line
 		render(App(), container);
-		expect(container.firstChild.innerHTML).to.equal('1');
+		expect(container.firstChild.innerHTML).toBe('1');
 
 		// eslint-disable-next-line
 		render(AppTwo(), container);
-		expect(container.firstChild.innerHTML).to.equal('2');
+		expect(container.firstChild.innerHTML).toBe('2');
 	});
 
 	it('should not leak memory #2', () => {
@@ -174,11 +174,11 @@ describe('Basic event tests', () => {
 
 		// eslint-disable-next-line
 		render(App({ toggle: true }), container);
-		expect(container.firstChild.innerHTML).to.equal('1');
+		expect(container.firstChild.innerHTML).toBe('1');
 
 		// eslint-disable-next-line
 		render(App({ toggle: false }), container);
-		expect(container.firstChild.innerHTML).to.equal('1');
+		expect(container.firstChild.innerHTML).toBe('1');
 	});
 
 	it('should not leak memory when child changes', () => {
@@ -205,16 +205,16 @@ describe('Basic event tests', () => {
 
 		// eslint-disable-next-line
 		render(App(childrenArray), container);
-		expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div><div>2</div></p>');
+		expect(container.innerHTML).toBe('<p><div>2</div><div>2</div><div>2</div></p>');
 
 		childrenArray.pop();
 		// eslint-disable-next-line
 		render(App(childrenArray), container);
-		expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div></p>');
+		expect(container.innerHTML).toBe('<p><div>2</div><div>2</div></p>');
 
 		// eslint-disable-next-line
 		render(AppTwo(), container);
-		expect(container.innerHTML).to.equal('<p>2</p>');
+		expect(container.innerHTML).toBe('<p>2</p>');
 	});
 
 	describe('Event Propagation', () => {
@@ -239,8 +239,8 @@ describe('Basic event tests', () => {
 
 			container.querySelector('#tester').click();
 			setTimeout(function () {
-				expect(eventHandlerSpy.callCount).to.equal(1);
-				expect(bodySpy.callCount).to.equal(0);
+				expect(eventHandlerSpy.callCount).toBe(1);
+				expect(bodySpy.callCount).toBe(0);
 				document.removeEventListener('click', bodySpy);
 				done();
 			}, 20);
@@ -273,8 +273,8 @@ describe('Basic event tests', () => {
 
 			container.querySelector('#tester').click();
 			setTimeout(function () {
-				expect(eventHandlerSpy.callCount).to.equal(1);
-				expect(eventHandlerSpy2.callCount).to.equal(0);
+				expect(eventHandlerSpy.callCount).toBe(1);
+				expect(eventHandlerSpy2.callCount).toBe(0);
 				done();
 			}, 20);
 		});
@@ -307,8 +307,8 @@ describe('Basic event tests', () => {
 
 			container.querySelector('#tester').click();
 			setTimeout(function () {
-				expect(eventHandlerSpy.callCount).to.equal(1);
-				expect(eventHandlerSpy2.callCount).to.equal(1);
+				expect(eventHandlerSpy.callCount).toBe(1);
+				expect(eventHandlerSpy2.callCount).toBe(1);
 				done();
 			}, 20);
 		});
@@ -330,18 +330,18 @@ describe('Basic event tests', () => {
 
 			render(<FooBarCom test="1"/>, container);
 			container.querySelector('span').click();
-			expect(spy2.callCount).to.equal(1);
-			expect(spy1.callCount).to.equal(1);
+			expect(spy2.callCount).toBe(1);
+			expect(spy1.callCount).toBe(1);
 
 			render(<FooBarCom test="2"/>, container);
 			container.querySelector('span').click();
-			expect(spy2.callCount).to.equal(2);
-			expect(spy1.callCount).to.equal(1);
+			expect(spy2.callCount).toBe(2);
+			expect(spy1.callCount).toBe(1);
 
 			render(<FooBarCom test="3"/>, container);
 			container.querySelector('span').click();
-			expect(spy2.callCount).to.equal(3);
-			expect(spy1.callCount).to.equal(1);
+			expect(spy2.callCount).toBe(3);
+			expect(spy1.callCount).toBe(1);
 		});
 
 		it('Should stop propagating normal event to document', (done) => {
@@ -365,8 +365,8 @@ describe('Basic event tests', () => {
 
 			container.querySelector('#tester').click();
 			setTimeout(function () {
-				expect(eventHandlerSpy.callCount).to.equal(1);
-				expect(bodySpy.callCount).to.equal(0);
+				expect(eventHandlerSpy.callCount).toBe(1);
+				expect(bodySpy.callCount).toBe(0);
 				document.removeEventListener('click', bodySpy);
 				done();
 			}, 20);
@@ -399,8 +399,8 @@ describe('Basic event tests', () => {
 
 			container.querySelector('#tester').click();
 			setTimeout(function () {
-				expect(eventHandlerSpy.callCount).to.equal(1);
-				expect(eventHandlerSpy2.callCount).to.equal(0);
+				expect(eventHandlerSpy.callCount).toBe(1);
+				expect(eventHandlerSpy2.callCount).toBe(0);
 				done();
 			}, 20);
 		});
@@ -432,8 +432,8 @@ describe('Basic event tests', () => {
 
 			container.querySelector('#tester').click();
 			setTimeout(function () {
-				expect(eventHandlerSpy.callCount).to.equal(1);
-				expect(eventHandlerSpy2.callCount).to.equal(0);
+				expect(eventHandlerSpy.callCount).toBe(1);
+				expect(eventHandlerSpy2.callCount).toBe(0);
 				done();
 			}, 20);
 		});
@@ -483,7 +483,7 @@ describe('Basic event tests', () => {
 		root3.firstChild.click();
 		root4.firstChild.click();
 
-		expect(spy.callCount).to.equal(1);
+		expect(spy.callCount).toBe(1);
 
 
 		render(null, root1);
@@ -500,7 +500,7 @@ describe('Basic event tests', () => {
 	describe('currentTarget', () => {
 		it('Should have currentTarget', (done) => {
 			function verifyCurrentTarget(event) {
-				expect(event.currentTarget).to.equal(container.firstChild);
+				expect(event.currentTarget).toBe(container.firstChild);
 				done();
 			}
 
@@ -511,7 +511,7 @@ describe('Basic event tests', () => {
 
 		it('Current target should not be the clicked element, but the one with listener', (done) => {
 			function verifyCurrentTarget(event) {
-				expect(event.currentTarget).to.equal(container.firstChild);
+				expect(event.currentTarget).toBe(container.firstChild);
 				done();
 			}
 
@@ -526,7 +526,7 @@ describe('Basic event tests', () => {
 
 		it('Should work with deeply nested tree', (done) => {
 			function verifyCurrentTarget(event) {
-				expect(event.currentTarget).to.equal(container.querySelector('#test'));
+				expect(event.currentTarget).toBe(container.querySelector('#test'));
 				done();
 			}
 
@@ -552,7 +552,7 @@ describe('Basic event tests', () => {
 
 		it('currentTarget should propagate work with multiple levels of children', (done) => {
 			function verifyCurrentTarget(event) {
-				expect(event.currentTarget).to.equal(container.querySelector('#test'));
+				expect(event.currentTarget).toBe(container.querySelector('#test'));
 				done();
 			}
 
@@ -597,9 +597,9 @@ describe('Basic event tests', () => {
 				</div>
 			), container);
 
-			expect(spy.callCount).to.equal(0);
+			expect(spy.callCount).toBe(0);
 			container.querySelector('#test').click();
-			expect(spy.callCount).to.equal(1);
+			expect(spy.callCount).toBe(1);
 
 			render((
 				<div>
@@ -610,7 +610,7 @@ describe('Basic event tests', () => {
 			), container);
 
 			container.querySelector('#test').click();
-			expect(spy.callCount).to.equal(1);
+			expect(spy.callCount).toBe(1);
 		});
 
 		it('Should NOT remove events when listener remains there', () => {
@@ -623,9 +623,9 @@ describe('Basic event tests', () => {
 				</div>
 			), container);
 
-			expect(spy.callCount).to.equal(0);
+			expect(spy.callCount).toBe(0);
 			container.querySelector('#test').click();
-			expect(spy.callCount).to.equal(1);
+			expect(spy.callCount).toBe(1);
 
 			render((
 				<div>
@@ -636,7 +636,7 @@ describe('Basic event tests', () => {
 			), container);
 
 			container.querySelector('#test').click();
-			expect(spy.callCount).to.equal(2);
+			expect(spy.callCount).toBe(2);
 		});
 
 		it('Should remove events when listener is nulled', () => {
@@ -649,9 +649,9 @@ describe('Basic event tests', () => {
 				</div>
 			), container);
 
-			expect(spy.callCount).to.equal(0);
+			expect(spy.callCount).toBe(0);
 			container.querySelector('#test').click();
-			expect(spy.callCount).to.equal(1);
+			expect(spy.callCount).toBe(1);
 
 			render((
 				<div>
@@ -662,7 +662,7 @@ describe('Basic event tests', () => {
 			), container);
 
 			container.querySelector('#test').click();
-			expect(spy.callCount).to.equal(1);
+			expect(spy.callCount).toBe(1);
 		});
 	});
 });

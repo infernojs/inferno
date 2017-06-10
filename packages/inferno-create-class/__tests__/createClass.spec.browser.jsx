@@ -42,8 +42,8 @@ describe('Components createClass (JSX)', () => {
 					a = i;
 				}}/>, container);
 
-				expect(a.someState).to.eql(1);
-				expect(a.anotherState).to.eql(2);
+				expect(a.someState).toEqual(1);
+				expect(a.anotherState).toEqual(2);
 			});
 
 			it('returns result through instance', () => {
@@ -61,7 +61,7 @@ describe('Components createClass (JSX)', () => {
 				});
 
 				render(<Foo bar="test"/>, container);
-				expect(container.innerHTML).to.eql(innerHTML('<div><div>test</div></div>'));
+				expect(container.innerHTML).toEqual(innerHTML('<div><div>test</div></div>'));
 			});
 
 			it('works as a lifecycle method even when a matching method is already defined', () => {
@@ -85,7 +85,7 @@ describe('Components createClass (JSX)', () => {
 					a = i;
 				}}/>, container);
 
-				expect(a.someState).to.eql(1);
+				expect(a.someState).toEqual(1);
 			});
 		});
 
@@ -100,7 +100,7 @@ describe('Components createClass (JSX)', () => {
 					}
 				});
 
-				expect(Foo.defaultProps).to.eql({
+				expect(Foo.defaultProps).toEqual({
 					a: true
 				});
 			});
@@ -119,7 +119,7 @@ describe('Components createClass (JSX)', () => {
 					}
 				});
 
-				expect(Foo.defaultProps).to.eql({
+				expect(Foo.defaultProps).toEqual({
 					a: true,
 					b: true,
 					c: true
@@ -137,7 +137,7 @@ describe('Components createClass (JSX)', () => {
 					render() {
 						return <div />;
 					}
-				})).to.throw(Error);
+				})).toThrowError(Error);
 			});
 		});
 
@@ -161,7 +161,7 @@ describe('Components createClass (JSX)', () => {
 					a = i;
 				}}/>, container);
 
-				expect(a.state).to.eql({
+				expect(a.state).toEqual({
 					a: true,
 					b: true,
 					c: true
@@ -183,7 +183,7 @@ describe('Components createClass (JSX)', () => {
 
 				expect(() => {
 					render(<Foo />, container);
-				}).to.throw();
+				}).toThrowError();
 			});
 		});
 	});
@@ -249,7 +249,7 @@ describe('Components createClass (JSX)', () => {
 					</App>
 				), container);
 
-			expect(container.innerHTML).to.eql(innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>'));
+			expect(container.innerHTML).toEqual(innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>'));
 		});
 	});
 });

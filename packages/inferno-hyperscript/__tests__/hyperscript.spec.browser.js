@@ -22,7 +22,7 @@ describe('HyperScript (non-JSX)', () => {
 			h('div'),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div></div>'));
 	});
 
 	it('Should handle a basic example #2', () => {
@@ -30,7 +30,7 @@ describe('HyperScript (non-JSX)', () => {
 			h('div', 'Hello world!'),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle a basic example #3', () => {
@@ -38,7 +38,7 @@ describe('HyperScript (non-JSX)', () => {
 			h('div', { className: 'foo' }, 'Hello world!'),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div class="foo">Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div class="foo">Hello world!</div>'));
 	});
 
 	const StatelessComponent = () => h('div', 'Hello world!');
@@ -48,7 +48,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(StatelessComponent),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle a hooks example #1', () => {
@@ -67,7 +67,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle children as third argument', () => {
@@ -80,7 +80,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle different props (key, class, id, ref, children)', () => {
@@ -101,11 +101,9 @@ describe('HyperScript (non-JSX)', () => {
 			innerHTML(
 				container.innerHTML
 			)
-		).to.equal(
-			innerHTML(
-				'<div class="test myClass" id="myId">Hello world!</div>'
-			)
-		);
+		).toBe(innerHTML(
+            '<div class="test myClass" id="myId">Hello world!</div>'
+        ));
 	});
 
 	it('Should handle tag with no name', () => {
@@ -114,7 +112,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should be possible to create textarea with hyperscript', () => {
@@ -123,7 +121,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<textarea id="test"></textarea>'));
+		expect(innerHTML(container.innerHTML)).toBe(innerHTML('<textarea id="test"></textarea>'));
 	});
 
 	it('Should be possible to create select element with hyperscript', () => {
@@ -135,7 +133,9 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>'));
+		expect(innerHTML(container.innerHTML)).toBe(
+            innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>')
+        );
 	});
 
 	it('Should handle tag with no tag name but id is present', () => {
@@ -144,7 +144,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
 	});
 
 	it('Should support lifecycle methods on functional components willMount', () => {
@@ -154,8 +154,8 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks, { onComponentWillMount: callbackSpy }),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
-		expect(callbackSpy.calledOnce).to.equal(true);
+		expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
+		expect(callbackSpy.calledOnce).toBe(true);
 	});
 
 	it('Should support lifecycle methods on functional components didMount', () => {
@@ -165,8 +165,8 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks, { onComponentDidMount: callbackSpy }),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
-		expect(callbackSpy.calledOnce).to.equal(true);
+		expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
+		expect(callbackSpy.calledOnce).toBe(true);
 	});
 
 	it('Should pass classNames through', () => {
@@ -198,10 +198,10 @@ describe('HyperScript (non-JSX)', () => {
 
 		const children = container.firstChild.childNodes;
 
-		expect(children[0].className).to.equal('test1 test1prop');
-		expect(children[1].className).to.equal('test2prop');
-		expect(children[2].className).to.equal('test3');
-		expect(children[3].className).to.equal('test4prop');
+		expect(children[0].className).toBe('test1 test1prop');
+		expect(children[1].className).toBe('test2prop');
+		expect(children[2].className).toBe('test3');
+		expect(children[3].className).toBe('test4prop');
 	});
 
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
@@ -215,9 +215,9 @@ describe('HyperScript (non-JSX)', () => {
 				container
 			);
 
-			expect(container.firstChild.firstChild.firstChild.tagName).to.eql('feGaussianBlur'); // tag name is case sensitive
-			expect(container.firstChild.firstChild.tagName).to.eql('filter');
-			expect(container.firstChild.tagName).to.eql('svg');
+			expect(container.firstChild.firstChild.firstChild.tagName).toEqual('feGaussianBlur'); // tag name is case sensitive
+			expect(container.firstChild.firstChild.tagName).toEqual('filter');
+			expect(container.firstChild.tagName).toEqual('svg');
 		});
 	}
 });

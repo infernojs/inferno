@@ -121,12 +121,12 @@ describe('SSR Hydration - (JSX)', () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect1));
+			expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect1));
 			render(node, container);
-			expect(validateNodeTree(node)).to.equal(true);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
+			expect(validateNodeTree(node)).toBe(true);
+			expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect2));
 			render(node, container);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
+			expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect2));
 		});
 	});
 
@@ -220,15 +220,15 @@ describe('SSR Hydration - (JSX)', () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
-			expect(container.innerHTML).to.equal(expect1);
+			expect(container.innerHTML).toBe(expect1);
 			render(node, container);
-			expect(validateNodeTree(node)).to.equal(true);
+			expect(validateNodeTree(node)).toBe(true);
 			render(node2, container);
-			expect(validateNodeTree(node2)).to.equal(true);
-			expect(container.innerHTML).to.equal(expect2);
+			expect(validateNodeTree(node2)).toBe(true);
+			expect(container.innerHTML).toBe(expect2);
 			render(node3, container);
-			expect(validateNodeTree(node3)).to.equal(true);
-			expect(container.innerHTML).to.equal(expect3);
+			expect(validateNodeTree(node3)).toBe(true);
+			expect(container.innerHTML).toBe(expect3);
 		});
 	});
 
@@ -238,7 +238,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 		container.innerHTML = '<h1><div>Existing DOM content</div></h1>';
 		render(vNode, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div class="example">Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div class="example">Hello world!</div>'));
 	});
 
 	it('should rebuild and patch from existing DOM content (whitespace) ', () => {
@@ -249,7 +249,7 @@ describe('SSR Hydration - (JSX)', () => {
 		container.appendChild(document.createElement('h1'));
 		container.appendChild(document.createTextNode(''));
 		render(vNode, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div class="example">Hello world!</div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div class="example">Hello world!</div>'));
 	});
 
 	it('should rebuild and patch from existing DOM content #2', () => {
@@ -261,7 +261,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 		container.innerHTML = '<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
 		render(vNode, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
 	});
 
 	it('should rebuild and patch from existing DOM content #3', () => {
@@ -273,7 +273,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 		container.innerHTML = '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';
 		render(vNode, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
 	});
 
 	it('Should work with setState', () => {
@@ -316,15 +316,15 @@ describe('SSR Hydration - (JSX)', () => {
 		document.body.appendChild(container);
 		container.innerHTML = '<div>1<span>1</span></div>';
 		render(<Comp3 />, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div>1<span>1</span></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>1<span>1</span></div>'));
 
 		container.querySelector('span').click();
 
-		expect(container.innerHTML).to.equal(innerHTML('<div>2<span>1</span></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>2<span>1</span></div>'));
 
 		container.querySelector('span').click();
 
-		expect(container.innerHTML).to.equal(innerHTML('<div>3<span>1</span></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div>3<span>1</span></div>'));
 
 		document.body.removeChild(container);
 	});
@@ -451,12 +451,12 @@ describe('SSR Hydration - (JSX)', () => {
 				const ssrString = renderToString(SSR);
 				const SsrContainer = createContainerWithHTML(ssrString);
 
-				expect(innerHTML(SsrContainer.innerHTML)).to.equal(innerHTML(SSR_expected));
+				expect(innerHTML(SsrContainer.innerHTML)).toBe(innerHTML(SSR_expected));
 				render(CSR, SsrContainer); // Mount
 
-				expect(innerHTML(SsrContainer.innerHTML)).to.equal(innerHTML(CSR_expected));
+				expect(innerHTML(SsrContainer.innerHTML)).toBe(innerHTML(CSR_expected));
 				render(CSR, SsrContainer); // patch
-				expect(innerHTML(SsrContainer.innerHTML)).to.equal(innerHTML(CSR_expected));
+				expect(innerHTML(SsrContainer.innerHTML)).toBe(innerHTML(CSR_expected));
 			});
 		});
 	});

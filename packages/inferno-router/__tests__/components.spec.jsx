@@ -49,9 +49,9 @@ describe('Router (jsx)', () => {
 
 			expect(
 				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="color: red; font-weight: bold;" title="TestTitle" data-test="DataTest">Link</a>')
-			);
+			).toBe(
+                innerHTML('<a class="linkClass linkActiveClass" href="/" style="color: red; font-weight: bold;" title="TestTitle" data-test="DataTest">Link</a>')
+            );
 		});
 
 		it('should render without active class and style when not the active location', () => {
@@ -62,9 +62,9 @@ describe('Router (jsx)', () => {
 
 			expect(
 				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
-			);
+			).toBe(
+                innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
+            );
 		});
 
 		it('should render base class and style when active class and style are not defined', () => {
@@ -74,9 +74,9 @@ describe('Router (jsx)', () => {
 
 			expect(
 				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
-			);
+			).toBe(
+                innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
+            );
 		});
 
 		it('should render active class and style even when base class is not defined', () => {
@@ -86,21 +86,21 @@ describe('Router (jsx)', () => {
 
 			expect(
 				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
-			);
+			).toBe(
+                innerHTML('<a class="linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
+            );
 		});
 
 		it('should route on click', (done) => {
 			render(createRoutes(<TestComponent/>), container);
 
-			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
 
 			const link = container.querySelector('a[href="/test"]');
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div>Good</div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div>Good</div>'));
 				done();
 			});
 		});
@@ -170,9 +170,9 @@ describe('Router (jsx)', () => {
 
 			expect(
 				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>')
-			);
+			).toBe(
+                innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>')
+            );
 		});
 
 		it('should route on click', (done) => {
@@ -181,13 +181,13 @@ describe('Router (jsx)', () => {
 				<Route path={'/test'} component={ () => <TestComponent/> }/>
 			</Router>, container);
 
-			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
 
 			const link = container.querySelector('a[href="/"]');
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div>Good</div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div>Good</div>'));
 				done();
 			});
 		});
@@ -208,7 +208,7 @@ describe('Router (jsx)', () => {
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				expect(callbackSpy.calledOnce).to.equal(true);
+				expect(callbackSpy.calledOnce).toBe(true);
 				done();
 			});
 		});
@@ -227,13 +227,13 @@ describe('Router (jsx)', () => {
 
 			requestAnimationFrame(() => {
 				// onEnter should have been called the first time we enter the component
-				expect(callbackSpy.callCount).to.equal(1);
+				expect(callbackSpy.callCount).toBe(1);
 				const link = container.querySelector('a[href="/test"]');
 				clickOnLink(link);
 				requestAnimationFrame(() => {
 					// But shouldn't be called again when clicking on a link that points to the same location
 					// as we are in
-					expect(callbackSpy.callCount).to.equal(1);
+					expect(callbackSpy.callCount).toBe(1);
 					done();
 				});
 			});
@@ -257,8 +257,8 @@ describe('Router (jsx)', () => {
 
 			requestAnimationFrame(() => {
 				const context = callback.getCall(0).args[ 0 ];
-				expect(context.props.className).to.equal('test-class');
-				expect(context.router.url).to.equal('/');
+				expect(context.props.className).toBe('test-class');
+				expect(context.router.url).toBe('/');
 				done();
 			});
 		});
@@ -283,9 +283,9 @@ describe('Router (jsx)', () => {
 				const link = container.querySelector('a[href="/"]');
 				clickOnLink(link);
 				requestAnimationFrame(() => {
-					expect(spy.callCount).to.equal(1);
-					expect(spy.getCall(0).args[ 0 ].props.path).to.equal('/');
-					expect(spy.getCall(0).args[ 0 ].router.url).to.equal('/');
+					expect(spy.callCount).toBe(1);
+					expect(spy.getCall(0).args[ 0 ].props.path).toBe('/');
+					expect(spy.getCall(0).args[ 0 ].router.url).toBe('/');
 					done();
 				});
 			});
@@ -306,13 +306,13 @@ describe('Router (jsx)', () => {
 			);
 
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
-				expect(spy.getCall(0).args[ 0 ].props.path).to.equal('/test');
+				expect(container.innerHTML).toBe('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
+				expect(spy.getCall(0).args[ 0 ].props.path).toBe('/test');
 				const link = container.querySelector('a[href="/test"]');
 				clickOnLink(link);
 				requestAnimationFrame(() => {
 					// Should be one because getComponent is called on first render
-					expect(spy.callCount).to.equal(1);
+					expect(spy.callCount).toBe(1);
 					done();
 				});
 			});
@@ -340,7 +340,7 @@ describe('Router (jsx)', () => {
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div><div>async component</div></div>');
+				expect(container.innerHTML).toBe('<div><div>async component</div></div>');
 				done();
 			});
 		});
@@ -355,7 +355,7 @@ describe('Router (jsx)', () => {
 				</Router>, container
 			);
 
-			expect(innerHTML(container.innerHTML)).to.equal('<div>Good</div>');
+			expect(innerHTML(container.innerHTML)).toBe('<div>Good</div>');
 		});
 
 		it('should render /test Route when root Route without component prop used', () => {
@@ -368,7 +368,7 @@ describe('Router (jsx)', () => {
 				</Router>, container
 			);
 
-			expect(container.innerHTML).to.equal('<div>Good</div>');
+			expect(container.innerHTML).toBe('<div>Good</div>');
 		});
 	});
 });

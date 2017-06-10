@@ -19,38 +19,38 @@ describe('HTML Form Elements', () => {
 	describe('Textarea - defaultValue', () => {
 		it('Should have value as defaultValue when actual value is null', () => {
 			render(<textarea defaultValue="Hey Inferno" value={null}/>, container);
-			expect(container.firstChild.value).to.equal('Hey Inferno');
-			expect(container.firstChild.defaultValue).to.equal('Hey Inferno');
+			expect(container.firstChild.value).toBe('Hey Inferno');
+			expect(container.firstChild.defaultValue).toBe('Hey Inferno');
 		});
 
 		it('Should have value as defaultValue when actual value is undefined', () => {
 			render(<textarea defaultValue="Hey Inferno"/>, container);
-			expect(container.firstChild.value).to.equal('Hey Inferno');
-			expect(container.firstChild.defaultValue).to.equal('Hey Inferno');
+			expect(container.firstChild.value).toBe('Hey Inferno');
+			expect(container.firstChild.defaultValue).toBe('Hey Inferno');
 		});
 
 		it('Should not use defaultValue when actual value is empty string', () => {
 			render(<textarea defaultValue="Hey Inferno" value=""/>, container);
-			expect(container.firstChild.value).to.equal('');
-			expect(container.firstChild.defaultValue).to.equal('');
+			expect(container.firstChild.value).toBe('');
+			expect(container.firstChild.defaultValue).toBe('');
 		});
 
 		it('Should not use defaultValue when actual value is number', () => {
 			render(<textarea defaultValue="Hey Inferno" value={1}/>, container);
-			expect(container.firstChild.value).to.equal('1');
-			expect(container.firstChild.defaultValue).to.equal('1'); // As Per React, its 1 and not Hey Inferno
+			expect(container.firstChild.value).toBe('1');
+			expect(container.firstChild.defaultValue).toBe('1'); // As Per React, its 1 and not Hey Inferno
 		});
 
 		it('Should not use defaultValue when actual value is object', () => {
 			render(<textarea defaultValue="Hey Inferno" value={{ a: 1 }}/>, container);
-			expect(container.firstChild.value).to.equal('[object Object]');
-			expect(container.firstChild.defaultValue).to.equal('[object Object]');
+			expect(container.firstChild.value).toBe('[object Object]');
+			expect(container.firstChild.defaultValue).toBe('[object Object]');
 		});
 
 		it('Should have false as string when given as defaultValue', () => {
 			render(<textarea defaultValue={false}/>, container);
-			expect(container.firstChild.value).to.equal('false');
-			expect(container.firstChild.defaultValue).to.equal('false');
+			expect(container.firstChild.value).toBe('false');
+			expect(container.firstChild.defaultValue).toBe('false');
 		});
 	});
 
@@ -58,37 +58,37 @@ describe('HTML Form Elements', () => {
 		it('Should have value as defaultValue when actual value is null', () => {
 			render(<input defaultValue="Hey Inferno" value={null}/>, container);
 
-			expect(container.firstChild.value).to.equal('Hey Inferno');
-			expect(container.firstChild.defaultValue).to.equal('Hey Inferno');
+			expect(container.firstChild.value).toBe('Hey Inferno');
+			expect(container.firstChild.defaultValue).toBe('Hey Inferno');
 		});
 
 		it('Should have value as defaultValue when actual value is undefined', () => {
 			render(<input defaultValue="Hey Inferno"/>, container);
 
-			expect(container.firstChild.value).to.equal('Hey Inferno');
-			expect(container.firstChild.defaultValue).to.equal('Hey Inferno');
+			expect(container.firstChild.value).toBe('Hey Inferno');
+			expect(container.firstChild.defaultValue).toBe('Hey Inferno');
 		});
 
 		it('Should not use defaultValue when actual value is empty string', () => {
 			render(<input defaultValue="Hey Inferno" value=""/>, container);
-			expect(container.firstChild.value).to.equal('');
+			expect(container.firstChild.value).toBe('');
 		});
 
 		it('Should not use defaultValue when actual value is number', () => {
 			render(<input defaultValue="Hey Inferno" value={1}/>, container);
-			expect(container.firstChild.value).to.equal('1');
-			expect(container.firstChild.defaultValue).to.equal('1');
+			expect(container.firstChild.value).toBe('1');
+			expect(container.firstChild.defaultValue).toBe('1');
 		});
 
 		it('Should not use defaultValue when actual value is object', () => {
 			render(<input defaultValue="Hey Inferno" value={{ a: 1 }}/>, container);
-			expect(container.firstChild.value).to.equal('[object Object]');
-			expect(container.firstChild.defaultValue).to.equal('[object Object]');
+			expect(container.firstChild.value).toBe('[object Object]');
+			expect(container.firstChild.defaultValue).toBe('[object Object]');
 		});
 
 		it('Should be possible to create input with type color', () => {
 			render(<input type="color"/>, container);
-			expect(container.firstChild.getAttribute('type')).to.equal('color');
+			expect(container.firstChild.getAttribute('type')).toBe('color');
 		});
 
 		it('Should be possible to create input with type range', () => {
@@ -103,8 +103,8 @@ describe('HTML Form Elements', () => {
 					onChange={change}
 					type="range"
 				/>, container);
-			expect(container.firstChild.getAttribute('type')).to.equal('range');
-			expect(container.firstChild.value).to.equal('75');
+			expect(container.firstChild.getAttribute('type')).toBe('range');
+			expect(container.firstChild.value).toBe('75');
 
 			render(
 				<input
@@ -116,16 +116,16 @@ describe('HTML Form Elements', () => {
 				/>, container);
 
 			container.firstChild.oninput({}); // causes exception
-			expect(container.firstChild.getAttribute('type')).to.equal('range');
-			expect(container.firstChild.value).to.equal('11');
+			expect(container.firstChild.getAttribute('type')).toBe('range');
+			expect(container.firstChild.value).toBe('11');
 		});
 	});
 
 	describe('After external change', () => {
 		it('Should update input check property', () => {
 			render(<input type="checkbox" checked={true}/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<input type="checkbox">'));
-			expect(container.firstChild.checked).to.equal(true);
+			expect(container.innerHTML).toBe(innerHTML('<input type="checkbox">'));
+			expect(container.firstChild.checked).toBe(true);
 
 			//
 			// Exernal change verification
@@ -133,22 +133,22 @@ describe('HTML Form Elements', () => {
 
 			const input = container.querySelector('input');
 			input.checked = false;
-			expect(container.innerHTML).to.equal(innerHTML('<input type="checkbox">'));
-			expect(container.firstChild.checked).to.equal(false);
+			expect(container.innerHTML).toBe(innerHTML('<input type="checkbox">'));
+			expect(container.firstChild.checked).toBe(false);
 
 			//
 			// New Render
 			//
 
 			render(<input type="checkbox" checked={true}/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<input type="checkbox">'));
-			expect(container.firstChild.checked).to.equal(true);
+			expect(container.innerHTML).toBe(innerHTML('<input type="checkbox">'));
+			expect(container.firstChild.checked).toBe(true);
 		});
 
 		it('Should update textarea value', () => {
 			render(<textarea value="Hey People"/>, container);
-			expect(container.firstChild.value).to.equal('Hey People');
-			expect(container.firstChild.defaultValue).to.equal('Hey People');
+			expect(container.firstChild.value).toBe('Hey People');
+			expect(container.firstChild.defaultValue).toBe('Hey People');
 
 			//
 			// Exernal change verification
@@ -156,29 +156,29 @@ describe('HTML Form Elements', () => {
 
 			const input = container.querySelector('textarea');
 			input.value = 'Inferno is cool';
-			expect(container.innerHTML).to.equal(input.outerHTML);
-			expect(container.firstChild.value).to.equal('Inferno is cool');
+			expect(container.innerHTML).toBe(input.outerHTML);
+			expect(container.firstChild.value).toBe('Inferno is cool');
 
 			//
 			// New Render
 			//
 
 			render(<textarea value="Hey People"/>, container);
-			expect(container.firstChild.value).to.equal('Hey People');
-			expect(container.firstChild.defaultValue).to.equal('Hey People');
+			expect(container.firstChild.value).toBe('Hey People');
+			expect(container.firstChild.defaultValue).toBe('Hey People');
 
 			//
 			// New Render, new value
 			//
 
 			render(<textarea value="Hey People again"/>, container);
-			expect(container.firstChild.value).to.equal('Hey People again');
-			expect(container.firstChild.defaultValue).to.equal('Hey People again');
+			expect(container.firstChild.value).toBe('Hey People again');
+			expect(container.firstChild.defaultValue).toBe('Hey People again');
 		});
 
 		it('Should update text input value', () => {
 			render(<input type="text" value="Hey People"/>, container);
-			expect(container.firstChild.value).to.equal('Hey People');
+			expect(container.firstChild.value).toBe('Hey People');
 
 			//
 			// Exernal change verification
@@ -186,21 +186,21 @@ describe('HTML Form Elements', () => {
 
 			const input = container.querySelector('input');
 			input.value = 'Inferno is cool';
-			expect(container.firstChild.value).to.equal('Inferno is cool');
+			expect(container.firstChild.value).toBe('Inferno is cool');
 
 			//
 			// New Render
 			//
 
 			render(<input type="text" value="Hey People"/>, container);
-			expect(container.firstChild.value).to.equal('Hey People');
+			expect(container.firstChild.value).toBe('Hey People');
 
 			//
 			// New Render, new value
 			//
 
 			render(<input type="text" value="Hey People again"/>, container);
-			expect(container.firstChild.value).to.equal('Hey People again');
+			expect(container.firstChild.value).toBe('Hey People again');
 		});
 
 		it('Should update radio button', () => {
@@ -211,8 +211,8 @@ describe('HTML Form Elements', () => {
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
 
-			expect(container.firstChild.firstChild.value).to.equal('male');
-			expect(container.firstChild.firstChild.checked).to.equal(true);
+			expect(container.firstChild.firstChild.value).toBe('male');
+			expect(container.firstChild.firstChild.checked).toBe(true);
 
 			//
 			// Exernal change verification
@@ -220,7 +220,7 @@ describe('HTML Form Elements', () => {
 
 			const radiobutton = container.querySelector('input');
 			radiobutton.checked = false;
-			expect(container.firstChild.firstChild.checked).to.equal(false);
+			expect(container.firstChild.firstChild.checked).toBe(false);
 
 			//
 			// New Render
@@ -233,8 +233,8 @@ describe('HTML Form Elements', () => {
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
 
-			expect(container.firstChild.firstChild.value).to.equal('male');
-			expect(container.firstChild.firstChild.checked).to.equal(true, 'this fails');
+			expect(container.firstChild.firstChild.value).toBe('male');
+			expect(container.firstChild.firstChild.checked).toBe(true);
 
 			//
 			// New Render, new value
@@ -247,10 +247,10 @@ describe('HTML Form Elements', () => {
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
 
-			expect(container.firstChild.firstChild.value).to.equal('male');
-			expect(container.firstChild.firstChild.checked).to.equal(false);
-			expect(container.firstChild.children[ 1 ].value).to.equal('female');
-			expect(container.firstChild.children[ 1 ].checked).to.equal(true);
+			expect(container.firstChild.firstChild.value).toBe('male');
+			expect(container.firstChild.firstChild.checked).toBe(false);
+			expect(container.firstChild.children[ 1 ].value).toBe('female');
+			expect(container.firstChild.children[ 1 ].checked).toBe(true);
 		});
 
 		it('Should not trigger onClick twice when using synthetic onClick on radio', () => {
@@ -271,11 +271,11 @@ describe('HTML Form Elements', () => {
 
 			let radiobutton = container.querySelector('#test');
 			radiobutton.click();
-			expect(radiobutton.checked).to.equal(true);
+			expect(radiobutton.checked).toBe(true);
 
-			expect(spy1.callCount).to.equal(0);
-			expect(spy2.callCount).to.equal(0);
-			expect(spy3.callCount).to.equal(1);
+			expect(spy1.callCount).toBe(0);
+			expect(spy2.callCount).toBe(0);
+			expect(spy3.callCount).toBe(1);
 
 			//
 			// New Render
@@ -288,9 +288,9 @@ describe('HTML Form Elements', () => {
 					<input onClick={spy3} type="radio" name="gender" value="other"/>
 				</div>, container);
 
-			expect(spy1.callCount).to.equal(0);
-			expect(spy2.callCount).to.equal(0);
-			expect(spy3.callCount).to.equal(1);
+			expect(spy1.callCount).toBe(0);
+			expect(spy2.callCount).toBe(0);
+			expect(spy3.callCount).toBe(1);
 
 			//
 			// New Render, new value
@@ -303,9 +303,9 @@ describe('HTML Form Elements', () => {
 					<input onClick={spy3} type="radio" name="gender" value="other"/>
 				</div>, container);
 
-			expect(spy1.callCount).to.equal(0);
-			expect(spy2.callCount).to.equal(0);
-			expect(spy3.callCount).to.equal(1);
+			expect(spy1.callCount).toBe(0);
+			expect(spy2.callCount).toBe(0);
+			expect(spy3.callCount).toBe(1);
 
 
 			render(
@@ -315,17 +315,17 @@ describe('HTML Form Elements', () => {
 					<input onClick={spy3} type="radio" name="gender" value="other"/>
 				</div>, container);
 
-			expect(spy1.callCount).to.equal(0);
-			expect(spy2.callCount).to.equal(0);
-			expect(spy3.callCount).to.equal(1);
+			expect(spy1.callCount).toBe(0);
+			expect(spy2.callCount).toBe(0);
+			expect(spy3.callCount).toBe(1);
 
 			radiobutton = container.querySelector('#test');
 
 			radiobutton.click();
 
-			expect(spy1.callCount).to.equal(1);
-			expect(spy2.callCount).to.equal(0);
-			expect(spy3.callCount).to.equal(1);
+			expect(spy1.callCount).toBe(1);
+			expect(spy2.callCount).toBe(0);
+			expect(spy3.callCount).toBe(1);
 
 			render(
 				<div>
@@ -336,9 +336,9 @@ describe('HTML Form Elements', () => {
 
 			const node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(true);
-			expect(node.childNodes[ 1 ].checked).to.equal(false);
-			expect(node.childNodes[ 2 ].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).toBe(true);
+			expect(node.childNodes[ 1 ].checked).toBe(false);
+			expect(node.childNodes[ 2 ].checked).toBe(false);
 		});
 
 
@@ -352,9 +352,9 @@ describe('HTML Form Elements', () => {
 
 			let node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(false);
-			expect(node.childNodes[ 1 ].checked).to.equal(true);
-			expect(node.childNodes[ 2 ].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).toBe(false);
+			expect(node.childNodes[ 1 ].checked).toBe(true);
+			expect(node.childNodes[ 2 ].checked).toBe(false);
 
 			render(
 				<div>
@@ -365,9 +365,9 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(true);
-			expect(node.childNodes[ 1 ].checked).to.equal(false);
-			expect(node.childNodes[ 2 ].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).toBe(true);
+			expect(node.childNodes[ 1 ].checked).toBe(false);
+			expect(node.childNodes[ 2 ].checked).toBe(false);
 
 			render(
 				<div>
@@ -377,8 +377,8 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(false);
-			expect(node.childNodes[ 1 ].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).toBe(false);
+			expect(node.childNodes[ 1 ].checked).toBe(false);
 
 			render(
 				<div>
@@ -388,8 +388,8 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(false);
-			expect(node.childNodes[ 1 ].checked).to.equal(true);
+			expect(node.childNodes[ 0 ].checked).toBe(false);
+			expect(node.childNodes[ 1 ].checked).toBe(true);
 
 			render(
 				<div>
@@ -401,10 +401,10 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(false);
-			expect(node.childNodes[ 1 ].checked).to.equal(true);
-			expect(node.childNodes[ 2 ].checked).to.equal(false);
-			expect(node.childNodes[ 3 ].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).toBe(false);
+			expect(node.childNodes[ 1 ].checked).toBe(true);
+			expect(node.childNodes[ 2 ].checked).toBe(false);
+			expect(node.childNodes[ 3 ].checked).toBe(false);
 
 
 			render(
@@ -414,7 +414,7 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).toBe(false);
 
 			render(
 				<div>
@@ -423,7 +423,7 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[ 0 ].checked).to.equal(true);
+			expect(node.childNodes[ 0 ].checked).toBe(true);
 		});
 	});
 });

@@ -30,12 +30,12 @@ describe('Router (jsx) #transitions', () => {
 	});
 
 	it('should fail when `history` is not provided', () => {
-		expect(() => render(<Router/>, container)).to.throw(TypeError);
+		expect(() => render(<Router/>, container)).toThrowError(TypeError);
 	});
 
 	// Unfinished test
 	it('should have routeTo() method', () => {
-		expect(Router.prototype.routeTo).to.not.be.undefined;
+		expect(Router.prototype.routeTo).toBeDefined();
 	});
 
 	it('should use onEnter hook', (done) => {
@@ -45,10 +45,10 @@ describe('Router (jsx) #transitions', () => {
 		// noinspection JSUnusedLocalSymbols
 		function onEnter({ props, router }) {
 			router.push('/enter');
-			expect(typeof props).to.equal('object');
-			expect(typeof router).to.equal('object');
+			expect(typeof props).toBe('object');
+			expect(typeof router).toBe('object');
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div>onLeave</div>'));
 				done();
 			});
 		}
@@ -72,10 +72,10 @@ describe('Router (jsx) #transitions', () => {
 		}
 
 		const onLeave = ({ props, router }) => {
-			expect(typeof props).to.equal('object');
-			expect(typeof router).to.equal('object');
+			expect(typeof props).toBe('object');
+			expect(typeof router).toBe('object');
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div>onLeave</div>'));
 				done();
 			});
 		};
@@ -99,10 +99,10 @@ describe('Router (jsx) #transitions', () => {
 		}
 
 		const onLeave = ({ props, router }) => {
-			expect(typeof props).to.equal('object');
-			expect(typeof router).to.equal('object');
+			expect(typeof props).toBe('object');
+			expect(typeof router).toBe('object');
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div>onLeave</div>'));
 				done();
 			});
 		};
@@ -131,7 +131,7 @@ describe('Router (jsx) #transitions', () => {
 		</Router>, container);
 
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div>Done</div>'));
 			done();
 		}, 10);
 	});
@@ -143,7 +143,7 @@ describe('Router (jsx) #transitions', () => {
 		</Router>, container);
 
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div>Done</div>'));
 			done();
 		}, 10);
 	});
@@ -164,13 +164,13 @@ describe('Router (jsx) #transitions', () => {
 			</Router>,
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Bad Component</div></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div><a href="/foo/two">Go</a><div>Bad Component</div></div>'));
 
 		const link = container.querySelector('a');
 		clickOnLink(link);
 
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Good Component</div></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><a href="/foo/two">Go</a><div>Good Component</div></div>'));
 			done();
 		}, 10);
 	});
@@ -196,7 +196,7 @@ describe('Router (jsx) #transitions', () => {
 		</Router>, container);
 
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div>Good Component</div>'));
 			done();
 		}, 10);
 	});
@@ -214,7 +214,7 @@ describe('Router (jsx) #transitions', () => {
 		browserHistory.push('/?foo=Bar');
 
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(innerHTML('<div>Query Params Bar</div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div>Query Params Bar</div>'));
 			done();
 		}, 10);
 	});

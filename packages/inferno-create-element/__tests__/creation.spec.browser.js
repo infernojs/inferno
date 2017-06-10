@@ -119,15 +119,15 @@ describe('Creation - (non-JSX)', () => {
 		it(test.description, () => {
 
 			render(test.template(), container);
-			expect(container.firstChild.nodeType).to.equal(1);
-			expect(container.firstChild.tagName.toLowerCase()).to.equal(test.tagName);
-			expect(container.firstChild.childNodes.length).to.equal(test.children);
-			expect(container.firstChild.textContent).to.equal(test.textContent);
+			expect(container.firstChild.nodeType).toBe(1);
+			expect(container.firstChild.tagName.toLowerCase()).toBe(test.tagName);
+			expect(container.firstChild.childNodes.length).toBe(test.children);
+			expect(container.firstChild.textContent).toBe(test.textContent);
 
 			render(test.template(), container);
-			expect(container.firstChild.nodeType).to.equal(1);
-			expect(container.firstChild.tagName.toLowerCase()).to.equal(test.tagName);
-			expect(container.firstChild.childNodes.length).to.equal(test.children);
+			expect(container.firstChild.nodeType).toBe(1);
+			expect(container.firstChild.tagName.toLowerCase()).toBe(test.tagName);
+			expect(container.firstChild.childNodes.length).toBe(test.children);
 		});
 	});
 });

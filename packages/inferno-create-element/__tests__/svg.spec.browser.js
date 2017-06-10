@@ -20,14 +20,14 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(null), container);
 		render(template(200), container);
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('height')).to.eql('200');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('height')).toEqual('200');
 		render(template(null), container);
 		render(template(200), container);
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('height')).to.eql('200');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('height')).toEqual('200');
 
 	});
 
@@ -44,12 +44,12 @@ describe('SVG (non-jsx)', () => {
 			}, null);
 
 		render(template(200), container);
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('xmlns')).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('version')).to.eql('1.1');
-		expect(container.firstChild.getAttribute('baseProfile')).to.eql('full');
-		expect(container.firstChild.getAttribute('width')).to.eql('200');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('xmlns')).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('version')).toEqual('1.1');
+		expect(container.firstChild.getAttribute('baseProfile')).toEqual('full');
+		expect(container.firstChild.getAttribute('width')).toEqual('200');
 
 		render(template(null), container);
 
@@ -57,15 +57,15 @@ describe('SVG (non-jsx)', () => {
 			createElement('svg', { width: 200 }, null);
 		render(template(), container);
 
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('width')).to.eql('200');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('width')).toEqual('200');
 
 		render(template(), container);
 
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('width')).to.eql('200');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('width')).toEqual('200');
 	});
 
 	it('should set SVG as default namespace for <svg>', () => {
@@ -74,13 +74,13 @@ describe('SVG (non-jsx)', () => {
 		template = () => createElement('svg', null);
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 		render(template(), container);
 
 		template = () => createElement('svg', null, createElement('path', null));
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 	});
 
 	it('should unset a namespaced attributes #1', () => {
@@ -88,10 +88,10 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(null), container);
 		render(template('test.jpg'), container);
-		expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');
+		expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe('test.jpg');
 
 		render(template(null), container);
-		expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
+		expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(false);
 	});
 
 	it('should unset a namespaced attributes #2', () => {
@@ -100,10 +100,10 @@ describe('SVG (non-jsx)', () => {
 		});
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(false);
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(false);
 	});
 
 	it('should unset a namespaced attributes #3', () => {
@@ -115,10 +115,10 @@ describe('SVG (non-jsx)', () => {
 		);
 
 		render(template(null), container);
-		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
+		expect(container.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(false);
 
 		render(template('test.jpg'), container);
-		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal('test.jpg');
+		expect(container.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe('test.jpg');
 	});
 
 	it('should use the parent namespace by default (static)', () => {
@@ -127,32 +127,32 @@ describe('SVG (non-jsx)', () => {
 		template = () => createElement('svg', null, createElement('circle', null));
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 		template = () => createElement('svg', null, createElement('path', null));
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 		template = () => createElement('svg', null);
 
 		render(template(), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 	});
 
 	it('should handle SVG edge case (static)', () => {
 		const template = child => createElement('div', null, createElement('svg', null));
 
 		render(template(), container);
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 		render(template(), container);
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 	});
 
@@ -165,7 +165,7 @@ describe('SVG (non-jsx)', () => {
 		child = () => createElement('circle', null);
 
 		render(template(child()), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 		render(template(null), container);
 
@@ -176,8 +176,8 @@ describe('SVG (non-jsx)', () => {
 		}));
 
 		render(template(child()), container);
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 		render(template(null), container);
 
@@ -186,21 +186,21 @@ describe('SVG (non-jsx)', () => {
 		})));
 
 		render(template(child()), container);
-		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 		child = () => createElement('circle', null, createElement('circle', null, createElement('g', null, createElement('g', null))));
 		render(template(child()), container);
-		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 		child = () => createElement('circle', null, createElement('circle', null, createElement('g', null, createElement('g', null, createElement('circle', null)))));
 
 		render(template(null), container);
 		render(template(child()), container);
-		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 		render(template(null), container);
 		render(template(child()), container);
-		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 	});
 
 	it('should set class attribute', () => {
@@ -209,17 +209,17 @@ describe('SVG (non-jsx)', () => {
 		});
 
 		render(template('foo'), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('foo');
+		expect(container.firstChild.getAttribute('class')).toBe('foo');
 		render(template(null), container);
 
 		render(template('bar'), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('bar');
+		expect(container.firstChild.getAttribute('class')).toBe('bar');
 
 		render(template(['bar']), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('bar');
+		expect(container.firstChild.getAttribute('class')).toBe('bar');
 
 		render(template([ 'bar', 'zoo' ]), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('bar,zoo');
+		expect(container.firstChild.getAttribute('class')).toBe('bar,zoo');
 
 		// TODO! Fix this
 		// render(template([ 'bar', null, 'zoo' ]), container);
@@ -238,23 +238,23 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(200, 200), container);
 
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('xmlns')).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('version')).to.eql('1.1');
-		expect(container.firstChild.getAttribute('baseProfile')).to.eql('full');
-		expect(container.firstChild.getAttribute('width')).to.eql('200');
-		expect(container.firstChild.getAttribute('height')).to.eql('200');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('xmlns')).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('version')).toEqual('1.1');
+		expect(container.firstChild.getAttribute('baseProfile')).toEqual('full');
+		expect(container.firstChild.getAttribute('width')).toEqual('200');
+		expect(container.firstChild.getAttribute('height')).toEqual('200');
 
 		render(template(300, 300), container);
 
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('xmlns')).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('version')).to.eql('1.1');
-		expect(container.firstChild.getAttribute('baseProfile')).to.eql('full');
-		expect(container.firstChild.getAttribute('width')).to.eql('300');
-		expect(container.firstChild.getAttribute('height')).to.eql('300');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('xmlns')).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('version')).toEqual('1.1');
+		expect(container.firstChild.getAttribute('baseProfile')).toEqual('full');
+		expect(container.firstChild.getAttribute('width')).toEqual('300');
+		expect(container.firstChild.getAttribute('height')).toEqual('300');
 	});
 
 	it('should set "viewBox" attribute', () => {
@@ -265,17 +265,17 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(), container);
 
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('xmlns')).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('viewBox')).to.eql('0 0 50 20');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('xmlns')).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('viewBox')).toEqual('0 0 50 20');
 
 		render(template(), container);
 
-		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
-		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('xmlns')).to.eql('http://www.w3.org/2000/svg');
-		expect(container.firstChild.getAttribute('viewBox')).to.eql('0 0 50 20');
+		expect(container.firstChild.tagName.toLowerCase()).toEqual('svg');
+		expect(container.firstChild.namespaceURI).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('xmlns')).toEqual('http://www.w3.org/2000/svg');
+		expect(container.firstChild.getAttribute('viewBox')).toEqual('0 0 50 20');
 	});
 
 	it('should solve SVG edge when wrapped inside a non-namespace element (static)', () => {
@@ -283,7 +283,7 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(), container);
 		// expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 	});
 
@@ -294,7 +294,7 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(), container);
 		// expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 	});
 
@@ -304,9 +304,9 @@ describe('SVG (non-jsx)', () => {
 		}));
 
 		render(template(), container);
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 		render(template(), container);
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 	});
 
 	it('should be possible to add className to SVG', () => {
@@ -316,7 +316,7 @@ describe('SVG (non-jsx)', () => {
 		});
 
 		render(template(), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
+		expect(container.firstChild.getAttribute('class')).toBe('class1 class2');
 	});
 
 	it('should be possible to remove className from SVG', () => {
@@ -326,11 +326,11 @@ describe('SVG (non-jsx)', () => {
 		});
 
 		render(template('class1 class2'), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
+		expect(container.firstChild.getAttribute('class')).toBe('class1 class2');
 		render(template('class1'), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('class1');
+		expect(container.firstChild.getAttribute('class')).toBe('class1');
 		render(template(), container);
-		expect(container.firstChild.getAttribute('class')).to.equal(null);
+		expect(container.firstChild.getAttribute('class')).toBe(null);
 	});
 
 	it('should follow last wins when both class and className are defined', () => {
@@ -341,20 +341,20 @@ describe('SVG (non-jsx)', () => {
 		});
 
 		render(template(), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
+		expect(container.firstChild.getAttribute('class')).toBe('class1 class2');
 	});
 
 	it('should respect XHTML namespace inside foreignObject of SVG', () => {
 		const template = (extraElement) => createElement('svg', null, createElement('foreignObject', null, createElement('div', null, extraElement ? createElement('p') : null)));
 
 		render(template(false), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
 		render(template(true), container);
-		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
-		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
 	});
 });

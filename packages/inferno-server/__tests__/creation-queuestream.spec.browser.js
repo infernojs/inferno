@@ -180,13 +180,13 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 			const vDom = test.template('foo');
 			return streamPromise(vDom).then(function (output) {
 				if (typeof test.result === 'object') {
-					expect(output[ 0 ]).to.deep.equal(test.result[ 0 ]);
-					expect(output[ 1 ]).to.equal(test.result[ 1 ]);
+					expect(output[ 0 ]).toEqual(test.result[ 0 ]);
+					expect(output[ 1 ]).toBe(test.result[ 1 ]);
 				} else {
 					const container = document.createElement('div');
 					document.body.appendChild(container);
 					container.innerHTML = output;
-					expect(output[ 1 ]).to.equal(test.result);
+					expect(output[ 1 ]).toBe(test.result);
 					document.body.removeChild(container);
 				}
 			});
@@ -249,7 +249,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 				const container = document.createElement('div');
 				document.body.appendChild(container);
 				container.innerHTML = output;
-				expect(output[ 1 ]).to.equal('<div>bar2<div>bar2</div></div>');
+				expect(output[ 1 ]).toBe('<div>bar2<div>bar2</div></div>');
 				document.body.removeChild(container);
 			});
 		});

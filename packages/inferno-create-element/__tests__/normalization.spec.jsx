@@ -30,7 +30,7 @@ describe('Normalization process', () => {
 					return keyValues.indexOf(item) !== idx;
 				});
 
-				expect(isDuplicate).to.eql(false, 'All siblings should have unique key');
+				expect(isDuplicate).toEqual(false);
 
 				for (let i = 0; i < vNodes.length; i++) {
 					verifyKeys(vNodes[ i ].children);
@@ -92,7 +92,9 @@ describe('Normalization process', () => {
 				container
 			);
 
-			expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>');
+			expect(container.innerHTML).toEqual(
+                '<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>'
+            );
 
 			render(
 				<div>
@@ -107,7 +109,9 @@ describe('Normalization process', () => {
 				, container
 			);
 
-			expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>');
+			expect(container.innerHTML).toEqual(
+                '<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>'
+            );
 		});
 
 		describe('Static variations', () => {

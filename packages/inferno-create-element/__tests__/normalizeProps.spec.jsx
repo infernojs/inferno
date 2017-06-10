@@ -19,7 +19,7 @@ describe('normalizeProps', () => {
 
 		normalize(vNode);
 
-		expect(vNode.props).to.not.have.property('ref');
+		expect(vNode.props).not.toHaveProperty('ref');
 	});
 
 	it('should delete key from props', () => {
@@ -36,6 +36,6 @@ describe('normalizeProps', () => {
 
 		normalize(vNode);
 
-		expect(vNode.props).to.not.have.property('key');
+		expect(vNode.props).not.toHaveProperty('key');
 	});
 });

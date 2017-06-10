@@ -94,7 +94,7 @@ describe('SSR Creation (non-JSX)', () => {
 
 			document.body.appendChild(container);
 			container.innerHTML = output;
-			expect(output).to.equal(test.result);
+			expect(output).toBe(test.result);
 			document.body.removeChild(container);
 		});
 	});

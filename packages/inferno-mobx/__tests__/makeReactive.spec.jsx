@@ -42,18 +42,18 @@ describe('MobX Observer', () => {
 	});
 
 	it('should render a component', () => {
-		expect(() => render(<TodoList/>, container)).to.not.throw(Error);
+		expect(() => render(<TodoList/>, container)).not.toThrowError(Error);
 	});
 
 	it('should render a todo list', () => {
 		render(<TodoList/>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div><li>one</li><li>two</li></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div><li>one</li><li>two</li></div>'));
 	});
 
 	it('should render a todo list with added todo item', () => {
 		store.todos.push('three');
 		render(<TodoList/>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div><li>one</li><li>two</li><li>three</li></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div><li>one</li><li>two</li><li>three</li></div>'));
 	});
 
 	it('should render a todo list with non observable item', () => {
@@ -70,7 +70,7 @@ describe('MobX Observer', () => {
 			test: 'new entry'
 		});
 		render(<FlatList extra={ store.extra }/>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>'));
+		expect(container.innerHTML).toBe(innerHTML('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>'));
 	});
 
 	it('should have a shouldComponentUpdate that returns false when appropriate', () => {
@@ -78,18 +78,18 @@ describe('MobX Observer', () => {
 
 		let todoItem = <TodoItem str="test" />;
 		let str = 'different';
-		expect(scu.call(todoItem, { str })).to.be.true;
+		expect(scu.call(todoItem, { str })).toBe(true);
 		str = 'test';
-		expect(scu.call(todoItem, { str })).to.be.false;
-		expect(scu.call(todoItem, { str, prop: 'foo' })).to.be.true;
+		expect(scu.call(todoItem, { str })).toBe(false);
+		expect(scu.call(todoItem, { str, prop: 'foo' })).toBe(true);
 
 		const obj = {};
 		todoItem = <TodoItem obj={obj} />;
-		expect(scu.call(todoItem, { obj })).to.be.true;
+		expect(scu.call(todoItem, { obj })).toBe(true);
 
 		const observableObj = observable({});
 		todoItem = <TodoItem observableObj={observableObj} />;
-		expect(scu.call(todoItem, { observableObj })).to.be.false;
+		expect(scu.call(todoItem, { observableObj })).toBe(false);
 	});
 
 	it('Should use given sCU over predefined sCU when possible', () => {
@@ -104,9 +104,9 @@ describe('MobX Observer', () => {
 		});
 
 		render(<Foobar number={1} />, container);
-		expect(container.firstChild.innerHTML).to.equal('1');
+		expect(container.firstChild.innerHTML).toBe('1');
 
 		render(<Foobar number={2} />, container);
-		expect(container.firstChild.innerHTML).to.equal('1');
+		expect(container.firstChild.innerHTML).toBe('1');
 	});
 });

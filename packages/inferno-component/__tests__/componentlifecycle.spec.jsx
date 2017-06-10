@@ -22,8 +22,8 @@ describe('Component lifecycle', () => {
 		class Com extends Component {
 			componentWillUpdate(nextProps, nextState) {
 				callCount++;
-				expect(this.props.value).to.equal(1);
-				expect(nextProps.value).to.equal(2);
+				expect(this.props.value).toBe(1);
+				expect(nextProps.value).toBe(2);
 			}
 
 			render() {
@@ -35,12 +35,12 @@ describe('Component lifecycle', () => {
 
 		render(<Com value={1}/>, container);
 
-		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>1</div>'));
+		expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>1</div>'));
 
 		render(<Com value={2}/>, container);
 
-		expect(callCount).to.equal(1);
-		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>2</div>'));
+		expect(callCount).toBe(1);
+		expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>2</div>'));
 	});
 
 	it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', (done) => {
@@ -62,8 +62,8 @@ describe('Component lifecycle', () => {
 			}
 
 			componentWillUpdate(nextProps, nextState) {
-				expect(this.state.active).to.equal(false);
-				expect(nextState.active).to.equal(true);
+				expect(this.state.active).toBe(false);
+				expect(nextState.active).toBe(true);
 			}
 
 			render() {
@@ -110,8 +110,8 @@ describe('Component lifecycle', () => {
 		class Com extends Component {
 			shouldComponentUpdate(nextProps, nextState) {
 				callCount++;
-				expect(this.props.value).to.equal(1);
-				expect(nextProps.value).to.equal(2);
+				expect(this.props.value).toBe(1);
+				expect(nextProps.value).toBe(2);
 
 				return true;
 			}
@@ -125,12 +125,12 @@ describe('Component lifecycle', () => {
 
 		render(<Com value={1}/>, container);
 
-		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>1</div>'));
+		expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>1</div>'));
 
 		render(<Com value={2}/>, container);
 
-		expect(callCount).to.equal(1);
-		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>2</div>'));
+		expect(callCount).toBe(1);
+		expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>2</div>'));
 	});
 
 	it('Should call componentWillUnmount before node is removed from DOM tree', () => {
@@ -156,7 +156,7 @@ describe('Component lifecycle', () => {
 		class Child extends Component {
 			componentWillUnmount() {
 				// verify its not removed from DOM tree yet.
-				expect(this.element.parentElement.parentElement).to.equal(container);
+				expect(this.element.parentElement.parentElement).toBe(container);
 			}
 
 			render() {
@@ -166,10 +166,10 @@ describe('Component lifecycle', () => {
 		}
 
 		render(<Parent foo={true} />, container);
-		expect(container.querySelectorAll('.foobar').length).to.equal(1);
+		expect(container.querySelectorAll('.foobar').length).toBe(1);
 		render(<Parent foo={false} />, container);
 		// Verify the specific div is removed now
-		expect(container.querySelectorAll('.foobar').length).to.equal(0);
+		expect(container.querySelectorAll('.foobar').length).toBe(0);
 	});
 
 	it('Should not fail if componentDidUpdate is undefined #922', () => {
@@ -179,8 +179,8 @@ describe('Component lifecycle', () => {
 		class Com extends Component {
 			componentDidUpdate(nextProps, nextState) {
 				callCount++;
-				expect(this.props.value).to.equal(1);
-				expect(nextProps.value).to.equal(2);
+				expect(this.props.value).toBe(1);
+				expect(nextProps.value).toBe(2);
 
 				return true;
 			}
