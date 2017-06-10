@@ -1,0 +1,40 @@
+const fs = require('fs');
+const { join } = require('path');
+
+const infernoBuildVersion = require('../../package.json').version;
+console.log(`Inferno Build @ ${infernoBuildVersion}`);
+
+const PACKAGE_ROOT = join(__dirname, '../../packages');
+fs.readdir(PACKAGE_ROOT, (err, packages) => {
+	if (err) {
+		throw Error(err);
+	}
+
+	for (let i = 0, n = packages.length; i < n; i += 1) {
+<<<<<<< HEAD
+		const pkg = packages[i];
+		if (fs.statSync(join(PACKAGE_ROOT, pkg)).isDirectory()) {
+			const pkgJSON = require(join(PACKAGE_ROOT, pkg, 'package.json'));
+=======
+		const packageName = packages[i];
+		if (fs.statSync(join(PACKAGE_ROOT, packageName)).isDirectory()) {
+			const pkgJSON = require(join(PACKAGE_ROOT, packageName, 'package.json'));
+>>>>>>> 543aa402e2145821f18af08f4455a6531d97c87d
+
+			if (infernoBuildVersion !== pkgJSON.version) {
+				console.error(`${pkgJSON.name} mismatch version @ ${pkgJSON.version}`);
+				pkgJSON.version = infernoBuildVersion;
+				try {
+					const newPkgJSON = JSON.stringify(pkgJSON, null, 2);
+<<<<<<< HEAD
+					fs.writeFileSync(join(PACKAGE_ROOT, pkg, 'package.json'), newPkgJSON);
+=======
+					fs.writeFileSync(join(PACKAGE_ROOT, packageName, 'package.json'), newPkgJSON);
+>>>>>>> 543aa402e2145821f18af08f4455a6531d97c87d
+				} catch (e) {
+					console.warn(`Skipping writing ${pkgJSON.name}: ${e}`);
+				}
+			}
+		}
+	}
+});
