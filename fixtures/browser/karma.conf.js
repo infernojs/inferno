@@ -40,7 +40,8 @@ module.exports = function(config) {
 		reporters: ['progress'],
 
 		browserConsoleLogOptions: {
-			terminal: true,
+			level:  'warn',
+			terminal: false
 		},
 		colors: true,
 		singleRun: true,
