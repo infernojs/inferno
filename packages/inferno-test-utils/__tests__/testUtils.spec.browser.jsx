@@ -76,6 +76,11 @@ class AnotherExtendClassComponent extends Component {
 }
 
 describe('Test Utils', () => {
+	const DivProto = Object.getPrototypeOf(document.createElement('div')).constructor;
+	const AnchorProto = Object.getPrototypeOf(document.createElement('a')).constructor;
+	const SpanProto = Object.getPrototypeOf(document.createElement('span')).constructor;
+	const H1Proto = Object.getPrototypeOf(document.createElement('h1')).constructor;
+	const ParagraphProto = Object.getPrototypeOf(document.createElement('p')).constructor;
 
 	describe('isVNode', () => {
 
@@ -481,14 +486,14 @@ describe('Test Utils', () => {
 			expect(result1).to.be.instanceof(Array);
 			expect(result1).to.have.lengthOf(3);
 			result1.forEach((result) => {
-				expect(result).to.be.instanceof(window.HTMLDivElement);
+				expect(result instanceof DivProto).to.be.true;
 			});
 
 			const result2 = scryRenderedDOMElementsWithClass(tree, 'two');
 			expect(result2).to.be.instanceof(Array);
 			expect(result2).to.have.lengthOf(2);
-			expect(result2[ 0 ]).to.be.instanceof(window.HTMLDivElement);
-			expect(result2[ 1 ]).to.be.instanceof(window.HTMLSpanElement);
+			expect(result2[ 0 ] instanceof DivProto).to.be.true;
+			expect(result2[ 1 ] instanceof SpanProto).to.be.true;
 
 			const result3 = scryRenderedDOMElementsWithClass(tree, 'three');
 			expect(result3).to.be.instanceof(Array);
@@ -534,13 +539,13 @@ describe('Test Utils', () => {
 				expect(result).to.be.instanceof(Array);
 				expect(result).to.have.lengthOf(length);
 				result.forEach((item) => {
-					expect(item).to.be.instanceof(instance);
+					expect(item instanceof instance).to.be.true;
 				});
 			};
-			testValue('div', 1, window.HTMLDivElement);
-			testValue('h1', 2, window.HTMLHeadingElement);
-			testValue('p', 3, window.HTMLParagraphElement);
-			testValue('span', 0, window.HTMLSpanElement);
+			testValue('div', 1, DivProto);
+			testValue('h1', 2, H1Proto);
+			testValue('p', 3, ParagraphProto);
+			testValue('span', 0, SpanProto);
 		});
 	});
 
@@ -637,11 +642,11 @@ describe('Test Utils', () => {
 		it('should return a matched DOM element', () => {
 			const testValue = (classNames, instance) => {
 				const result = findRenderedDOMElementWithClass(tree, classNames);
-				expect(result).to.be.instanceof(instance);
+				expect(result instanceof instance).to.be.true;
 			};
-			testValue('level-1', window.HTMLDivElement);
-			testValue('level-2 one', window.HTMLDivElement);
-			testValue('level-3 two', window.HTMLSpanElement);
+			testValue('level-1', DivProto);
+			testValue('level-2 one', DivProto);
+			testValue('level-3 two', SpanProto);
 		});
 
 		it('should be able to handle null elements', () => {
@@ -685,11 +690,11 @@ describe('Test Utils', () => {
 		it('should return a matched DOM element', () => {
 			const testValue = (tagName, instance) => {
 				const result = findRenderedDOMElementWithTag(tree, tagName);
-				expect(result).to.be.instanceof(instance);
+				expect(result instanceof instance).to.be.true;
 			};
-			testValue('div', window.HTMLDivElement);
-			testValue('span', window.HTMLSpanElement);
-			testValue('a', window.HTMLAnchorElement);
+			testValue('div', DivProto);
+			testValue('span', SpanProto);
+			testValue('a', AnchorProto);
 		});
 	});
 
