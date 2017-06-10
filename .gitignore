@@ -2,7 +2,6 @@
 .vscode
 
 .DS_Store
-.npm-debug.log*
 .rpt2_cache*
 .changelog
 
@@ -13,5 +12,7 @@ coverage
 docs
 node_modules
 
-package-lock.json
+packages/*/dist-es
 packages/*/dist
+package-lock.json
+

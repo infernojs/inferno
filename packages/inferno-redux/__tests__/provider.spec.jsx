@@ -1,14 +1,11 @@
-import * as Inferno from 'inferno';
-
 import createBrowserHistory from 'history/createBrowserHistory';
 import createMemoryHistory from 'history/createMemoryHistory';
-
-
+import * as Inferno from 'inferno';
 import Component from 'inferno-component';
-import { createStore } from 'redux';
-import { IndexRoute, Route, Router } from 'inferno-router';
 import { connect, Provider } from 'inferno-redux';
+import { IndexRoute, Route, Router } from 'inferno-router';
 import { innerHTML } from 'inferno-utils';
+import { createStore } from 'redux';
 
 const render = Inferno.render;
 const browserHistory = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();

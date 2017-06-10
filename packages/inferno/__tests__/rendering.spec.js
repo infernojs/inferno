@@ -49,4 +49,8 @@ describe('rendering routine', () => {
 	it('Should have same version number string as package.json', () => {
 		expect(pkgJSON.version).toBe(version);
 	});
+
+	it('Should have same version number string as package.json', () => {
+		expect(pkgJSON.version).to.equal(version);
+	});
 });

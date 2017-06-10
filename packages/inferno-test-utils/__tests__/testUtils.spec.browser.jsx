@@ -1,6 +1,4 @@
-
 import { render } from 'inferno';
-import sinon from 'sinon';
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
@@ -29,6 +27,7 @@ import {
 	scryRenderedVNodesWithType,
 	scryVNodesWithType
 } from 'inferno-test-utils';
+import sinon from 'sinon';
 
 const VNodeKeys = [
 	'children',

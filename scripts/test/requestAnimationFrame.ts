@@ -7,9 +7,6 @@
 
 declare var global: any;
 
-global.usingJSDOM = true;
-global.usingJest = true;
-
 (function() {
 	let lastTime = 0;
 	const vendors = ['ms', 'moz', 'webkit', 'o'];
