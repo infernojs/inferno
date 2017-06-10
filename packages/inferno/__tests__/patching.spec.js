@@ -1,3 +1,4 @@
+
 import { createVNode, render } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
 import { createTextVNode } from 'inferno/core/VNodes';
@@ -5,12 +6,12 @@ import { createTextVNode } from 'inferno/core/VNodes';
 describe('patching routine', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -19,31 +20,40 @@ describe('patching routine', () => {
 	it('Should do nothing if lastVNode strictly equals nextVnode', () => {
 		const yar = createVNode(2, 'div', null, '123', null, null, null, true);
 		const bar = createVNode(2, 'div', null, '123', null, null, null, true);
-		let foo = createVNode(2, 'div', null, [bar, yar], null, null, null, true);
+		let foo = createVNode(2, 'div', null, [ bar, yar ], null, null, null, true);
 
 		render(foo, container);
-		expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
+		expect(container.innerHTML).to.eql('<div><div>123</div><div>123</div></div>');
 
-		foo = createVNode(2, 'div', null, [bar, yar], null, null, null, true);
+		foo = createVNode(2, 'div', null, [ bar, yar ], null, null, null, true);
 
 		render(foo, container);
-		expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
+		expect(container.innerHTML).to.eql('<div><div>123</div><div>123</div></div>');
 	});
 
 	it('Should mount nextNode if lastNode crashed', () => {
-		const validNode = createVNode(VNodeFlags.HtmlElement, 'span', null, createTextVNode('a'), null, null, null, false);
+		const validNode = createVNode(
+			VNodeFlags.HtmlElement,
+			'span',
+			null,
+			createTextVNode('a'),
+			null,
+			null,
+			null,
+			false
+		);
 		const invalidNode = createVNode(0, 'span');
 
 		render(validNode, container);
 		try {
 			render(invalidNode, container);
 		} catch (e) {
-			expect(e.message.indexOf('Inferno Error: mount() received an object')).not.toEqual(-1);
+			expect(e.message.indexOf('Inferno Error: mount() received an object')).to.not.eql(-1);
 		}
-		expect(container.innerHTML).toEqual('<span>a</span>');
+		expect(container.innerHTML).to.eql('<span>a</span>');
 
 		render(validNode, container);
-		expect(container.innerHTML).toEqual('<span>a</span>');
+		expect(container.innerHTML).to.eql('<span>a</span>');
 	});
 
 	it('Patch operation when nextChildren is NOT Invalid/Array/StringOrNumber/VNode', () => {
@@ -51,11 +61,20 @@ describe('patching routine', () => {
 			VNodeFlags.HtmlElement,
 			'span',
 			null,
-			createVNode(VNodeFlags.HtmlElement, 'span', null, createTextVNode('a'), null, null, null, false),
+			createVNode(
+				VNodeFlags.HtmlElement,
+				'span',
+				null,
+				createTextVNode('a'),
+				null,
+				null,
+				null,
+				false
+			),
 			null,
 			null,
 			null,
-			false,
+			false
 		);
 
 		const invalidChildNode = createVNode(
@@ -66,7 +85,7 @@ describe('patching routine', () => {
 			null,
 			null,
 			null,
-			false,
+			false
 		);
 
 		render(validNode, container);
@@ -75,8 +94,8 @@ describe('patching routine', () => {
 
 	it('Should not access real DOM property when text does not change', () => {
 		render(createTextVNode('a'), container);
-		expect(container.innerHTML).toEqual('a');
+		expect(container.innerHTML).to.eql('a');
 		render(createTextVNode('a'), container);
-		expect(container.innerHTML).toEqual('a');
+		expect(container.innerHTML).to.eql('a');
 	});
 });

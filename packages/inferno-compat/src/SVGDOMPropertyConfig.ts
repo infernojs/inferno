@@ -1,8 +1,4 @@
 /**
- * @module Inferno-Compat
- */ /** TypeDoc Comment */
-
-/**
  * borrowed React SVGDOMPropertyConfig
  * @link https://github.com/facebook/react/blob/c78464f8ea9a5b00ec80252d20a71a1482210e57/src/renderers/dom/shared/SVGDOMPropertyConfig.js
  */
@@ -245,5 +241,5 @@ export default {
 	y2: 0,
 	yChannelSelector: 'yChannelSelector',
 	z: 0,
-	zoomAndPan: 'zoomAndPan',
+	zoomAndPan: 'zoomAndPan'
 };

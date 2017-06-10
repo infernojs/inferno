@@ -1,15 +1,15 @@
+
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import sinon from 'sinon';
 
 describe('setState', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		container.innerHTML = '';
 	});
 
@@ -18,28 +18,29 @@ describe('setState', () => {
 			constructor(props, ctx) {
 				super(props, ctx);
 				this.setState({
-					state: 'Something',
+					state: 'Something'
 				});
 			}
 		}
 
-		expect(render.bind(render, <TestComponent />, container)).toThrowError(Error);
+		expect(render.bind(render, <TestComponent />, container)).to.throw(Error);
 	});
 
-	it('callback should be fired after state has changed', done => {
+	it('callback should be fired after state has changed', (done) => {
+
 		class TestComponent extends Component {
 			constructor(props) {
 				super(props);
 				this.state = {
-					value: props.value,
+					value: props.value
 				};
 				this.checkSetState = this.checkSetState.bind(this);
 			}
 
 			checkSetState() {
 				const value = this.state.value;
-				expect(value).toBe('__NEWVALUE__');
-				setTimeout(function() {
+				expect(value).to.equal('__NEWVALUE__');
+				setTimeout(function () {
 					done();
 				}, 100);
 			}
@@ -47,9 +48,9 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				this.setState(
 					{
-						value: nextProps.value,
+						value: nextProps.value
 					},
-					this.checkSetState,
+					this.checkSetState
 				);
 			}
 
@@ -60,37 +61,38 @@ describe('setState', () => {
 
 		class BaseComp extends Component {
 			state = {
-				value: '__OLDVALUE__',
+				value: '__OLDVALUE__'
 			};
 
 			componentDidMount() {
 				this.setState({
-					value: '__NEWVALUE__',
+					value: '__NEWVALUE__'
 				});
 			}
 
 			render() {
 				const value = this.state.value;
-				return <TestComponent value={value} />;
+				return <TestComponent value={value}/>;
 			}
 		}
 
 		render(<BaseComp />, container);
 	});
 
-	it('Should not fail if componentDidUpdate is not defined', done => {
+	it('Should not fail if componentDidUpdate is not defined', (done) => {
+
 		class TestComponent extends Component {
 			constructor(props) {
 				super(props);
 				this.state = {
-					value: props.value,
+					value: props.value
 				};
 			}
 
 			checkSetState() {
 				const value = this.state.value;
-				expect(value).toBe('__NEWVALUE__');
-				setTimeout(function() {
+				expect(value).to.equal('__NEWVALUE__');
+				setTimeout(function () {
 					done();
 				}, 100);
 			}
@@ -98,9 +100,9 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				this.setState(
 					{
-						value: nextProps.value,
+						value: nextProps.value
 					},
-					this.checkSetState,
+					this.checkSetState
 				);
 			}
 
@@ -111,27 +113,28 @@ describe('setState', () => {
 
 		class BaseComp extends Component {
 			state = {
-				value: '__OLDVALUE__',
+				value: '__OLDVALUE__'
 			};
 
 			componentDidMount() {
 				this.setState({
-					value: '__NEWVALUE__',
+					value: '__NEWVALUE__'
 				});
 			}
 
 			render() {
 				const value = this.state.value;
-				return <TestComponent value={value} />;
+				return <TestComponent value={value}/>;
 			}
 		}
 
 		render(<BaseComp />, container);
 	});
 
+
 	// Should work as Per react: https://jsfiddle.net/f12u8xzb/
 	// React does not get stuck
-	it('Should not get stuck in infinite loop #1', done => {
+	it('Should not get stuck in infinite loop #1', (done) => {
 		let doSomething;
 
 		class Parent extends Component {
@@ -140,7 +143,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -149,13 +152,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setState({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setState({
-					active: true,
+					active: true
 				});
 			}
 
@@ -163,9 +166,11 @@ describe('setState', () => {
 				return (
 					<div>
 						<div>{this.state.foo}</div>
-						{this.state.active
-							? <Child foo={this.state.foo} callback={this._setBar} />
-							: <Child foo={this.state.foo} callback={this._setActive} />}
+						{
+							this.state.active ? (
+								<Child foo={this.state.foo} callback={this._setBar}/>
+							) : <Child foo={this.state.foo} callback={this._setActive}/>
+						}
 					</div>
 				);
 			}
@@ -194,14 +199,14 @@ describe('setState', () => {
 		render(<Parent />, container);
 		doSomething();
 
-		setTimeout(function() {
+		setTimeout(function () {
 			done();
 		}, 45);
 	});
 
 	// Render should work as per React
 	// https://jsfiddle.net/qb4ootgm/
-	it('Should not fail during rendering', done => {
+	it('Should not fail during rendering', (done) => {
 		let doSomething;
 
 		class Parent extends Component {
@@ -210,7 +215,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -219,13 +224,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setState({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setState({
-					active: true,
+					active: true
 				});
 			}
 
@@ -233,9 +238,9 @@ describe('setState', () => {
 				return (
 					<div>
 						<div>{this.state.foo}</div>
-						<Child foo={this.state.foo} callback={this._setBar} />
-						<Child foo={this.state.foo} callback={this._setBar} />
-						<Child foo={this.state.foo} callback={this._setBar} />
+						<Child foo={this.state.foo} callback={this._setBar}/>
+						<Child foo={this.state.foo} callback={this._setBar}/>
+						<Child foo={this.state.foo} callback={this._setBar}/>
 					</div>
 				);
 			}
@@ -249,7 +254,7 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== 'bar') {
 					this.setState({
-						foo: 'bbaarr',
+						foo: 'bbaarr'
 					});
 
 					this.props.callback();
@@ -268,13 +273,13 @@ describe('setState', () => {
 		render(<Parent />, container);
 		doSomething();
 
-		setTimeout(function() {
+		setTimeout(function () {
 			done();
 		}, 45);
 	});
 
 	// https://jsfiddle.net/c6q9bvez/
-	it('Should not fail during rendering #2', done => {
+	it('Should not fail during rendering #2', (done) => {
 		let doSomething;
 
 		class Parent extends Component {
@@ -283,7 +288,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -292,22 +297,22 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setState({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setState({
-					active: true,
+					active: true
 				});
 			}
 
 			render() {
 				return (
 					<div>
-						<Child foo={this.state.foo} callback={this._setActive} />
-						<ChildBar foo={this.state.foo} onComponentWillMount={this._setBar} />
-						<ChildBar foo={this.state.foo} />
+						<Child foo={this.state.foo} callback={this._setActive}/>
+						<ChildBar foo={this.state.foo} onComponentWillMount={this._setBar}/>
+						<ChildBar foo={this.state.foo}/>
 					</div>
 				);
 			}
@@ -329,7 +334,7 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== 'bar') {
 					this.setState({
-						foo: 'bbaarr',
+						foo: 'bbaarr'
 					});
 
 					this.props.callback();
@@ -348,12 +353,12 @@ describe('setState', () => {
 		render(<Parent />, container);
 		doSomething();
 
-		setTimeout(function() {
+		setTimeout(function () {
 			done();
 		}, 45);
 	});
 
-	it('Should have new state in render when changing state during componentWillReceiveProps', done => {
+	it('Should have new state in render when changing state during componentWillReceiveProps', (done) => {
 		let changeFoo;
 
 		class Parent extends Component {
@@ -361,7 +366,7 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: 'bar',
+					foo: 'bar'
 				};
 
 				changeFoo = this.changeFoo.bind(this);
@@ -369,14 +374,14 @@ describe('setState', () => {
 
 			changeFoo() {
 				this.setState({
-					foo: 'bar2',
+					foo: 'bar2'
 				});
 			}
 
 			render() {
 				return (
 					<div>
-						<Child foo={this.state.foo} />
+						<Child foo={this.state.foo}/>
 					</div>
 				);
 			}
@@ -387,34 +392,33 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: props.foo,
+					foo: props.foo
 				};
 			}
 
 			callback() {
-				expect(container.firstChild.firstChild.innerHTML).toBe('bar2');
+				expect(container.firstChild.firstChild.innerHTML).to.equal('bar2');
 				done();
 			}
 
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== this.state.foo) {
-					this.setState(
-						{
-							foo: nextProps.foo,
-						},
-						this.callback,
-					);
+					this.setState({
+						foo: nextProps.foo
+					}, this.callback);
 				}
 			}
 
 			render() {
-				return <div>{this.state.foo}</div>;
+				return (
+					<div>{this.state.foo}</div>
+				);
 			}
 		}
 
 		render(<Parent />, container);
 
-		expect(container.firstChild.firstChild.innerHTML).toBe('bar');
+		expect(container.firstChild.firstChild.innerHTML).to.equal('bar');
 
 		changeFoo();
 	});
@@ -428,14 +432,14 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: 'bar',
+					foo: 'bar'
 				};
 			}
 
 			render() {
 				return (
 					<div>
-						<Child foo={this.state.foo} />
+						<Child foo={this.state.foo}/>
 					</div>
 				);
 			}
@@ -447,62 +451,49 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: props.foo,
+					foo: props.foo
 				};
 			}
 
 			componentWillMount() {
-				this.setState(
-					{
-						foo: '1',
-					},
-					spy,
-				);
-				this.setState(
-					{
-						foo: '2',
-					},
-					spy,
-				);
+				this.setState({
+					foo: '1'
+				}, spy);
+				this.setState({
+					foo: '2'
+				}, spy);
 
-				this.setState(
-					{
-						foo: '3',
-					},
-					spy,
-				);
+				this.setState({
+					foo: '3'
+				}, spy);
 
-				this.setState(
-					{
-						foo: '3',
-					},
-					spy,
-				);
+				this.setState({
+					foo: '3'
+				}, spy);
 
-				this.setState(
-					{
-						foo: '4',
-					},
-					spy,
-				);
+				this.setState({
+					foo: '4'
+				}, spy);
 			}
 
 			render() {
 				renderCount++;
-				return <div>{this.state.foo}</div>;
+				return (
+					<div>{this.state.foo}</div>
+				);
 			}
 		}
 
 		render(<Parent />, container);
 
-		expect(container.firstChild.firstChild.innerHTML).toBe('4');
-		expect(spy.callCount).toBe(5);
-		expect(renderCount).toBe(1);
+		expect(container.firstChild.firstChild.innerHTML).to.equal('4');
+		expect(spy.callCount).to.equal(5);
+		expect(renderCount).to.equal(1);
 	});
 
 	// Should work as Per react: https://jsfiddle.net/f12u8xzb/
 	// React does not get stuck
-	it('Should not get stuck in infinite loop #1 sync', done => {
+	it('Should not get stuck in infinite loop #1 sync', (done) => {
 		let doSomething;
 
 		class Parent extends Component {
@@ -511,7 +502,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -520,13 +511,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setStateSync({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setStateSync({
-					active: true,
+					active: true
 				});
 			}
 
@@ -534,9 +525,11 @@ describe('setState', () => {
 				return (
 					<div>
 						<div>{this.state.foo}</div>
-						{this.state.active
-							? <Child foo={this.state.foo} callback={this._setBar} />
-							: <Child foo={this.state.foo} callback={this._setActive} />}
+						{
+							this.state.active ? (
+								<Child foo={this.state.foo} callback={this._setBar}/>
+							) : <Child foo={this.state.foo} callback={this._setActive}/>
+						}
 					</div>
 				);
 			}
@@ -565,14 +558,14 @@ describe('setState', () => {
 		render(<Parent />, container);
 		doSomething();
 
-		setTimeout(function() {
+		setTimeout(function () {
 			done();
 		}, 45);
 	});
 
 	// Render should work as per React
 	// https://jsfiddle.net/qb4ootgm/
-	it('Should not fail during rendering sync', done => {
+	it('Should not fail during rendering sync', (done) => {
 		let doSomething;
 
 		class Parent extends Component {
@@ -581,7 +574,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -590,13 +583,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setStateSync({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setStateSync({
-					active: true,
+					active: true
 				});
 			}
 
@@ -604,9 +597,9 @@ describe('setState', () => {
 				return (
 					<div>
 						<div>{this.state.foo}</div>
-						<Child foo={this.state.foo} callback={this._setBar} />
-						<Child foo={this.state.foo} callback={this._setBar} />
-						<Child foo={this.state.foo} callback={this._setBar} />
+						<Child foo={this.state.foo} callback={this._setBar}/>
+						<Child foo={this.state.foo} callback={this._setBar}/>
+						<Child foo={this.state.foo} callback={this._setBar}/>
 					</div>
 				);
 			}
@@ -620,7 +613,7 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== 'bar') {
 					this.setStateSync({
-						foo: 'bbaarr',
+						foo: 'bbaarr'
 					});
 
 					this.props.callback();
@@ -639,7 +632,7 @@ describe('setState', () => {
 		render(<Parent />, container);
 		doSomething();
 
-		setTimeout(function() {
+		setTimeout(function () {
 			done();
 		}, 45);
 	});
@@ -652,7 +645,7 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: 'b',
+					foo: 'b'
 				};
 
 				doSomething = this._setBar = this._setBar.bind(this);
@@ -660,26 +653,28 @@ describe('setState', () => {
 
 			_setBar(p) {
 				this.setState({
-					foo: p,
+					foo: p
 				});
 			}
 
 			render() {
-				return <div>{this.state.foo}</div>;
+				return (
+					<div>{this.state.foo}</div>
+				);
 			}
 		}
 
 		render(<Parent />, container);
 		// Set state must go sync when nothing pending
-		expect(container.firstChild.innerHTML).toBe('b');
+		expect(container.firstChild.innerHTML).to.equal('b');
 		doSomething('1');
-		expect(container.firstChild.innerHTML).toBe('1');
+		expect(container.firstChild.innerHTML).to.equal('1');
 		doSomething('2');
-		expect(container.firstChild.innerHTML).toBe('2');
+		expect(container.firstChild.innerHTML).to.equal('2');
 		doSomething('3');
-		expect(container.firstChild.innerHTML).toBe('3');
+		expect(container.firstChild.innerHTML).to.equal('3');
 		doSomething('4');
-		expect(container.firstChild.innerHTML).toBe('4');
+		expect(container.firstChild.innerHTML).to.equal('4');
 	});
 
 	it('Set state callback should have context of caller component (forced) - as per React', () => {
@@ -687,31 +682,28 @@ describe('setState', () => {
 
 		class Com extends Component {
 			doTest() {
-				expect(this.state.a).toBe(cnt);
+				expect(this.state.a).to.equal(cnt);
 			}
 
 			componentWillMount() {
-				this.setState(
-					{
-						a: ++cnt,
-					},
-					this.doTest,
-				);
+				this.setState({
+					a: ++cnt
+				}, this.doTest);
 			}
 
 			componentDidMount() {
-				this.setState(
-					{
-						a: ++cnt,
-					},
-					this.doTest,
-				);
+				this.setState({
+					a: ++cnt
+				}, this.doTest);
 			}
 
 			render() {
-				return <div>1</div>;
+				return (
+					<div>1</div>
+				);
 			}
 		}
+
 
 		render(<Com />, container);
 	});

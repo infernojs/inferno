@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Vnode-Flags
- */ /** TypeDoc Comment */
-
 const enum VNodeFlags {
 	Text = 1,
 	HtmlElement = 1 << 1,
@@ -22,7 +18,7 @@ const enum VNodeFlags {
 
 	FormElement = InputElement | TextareaElement | SelectElement,
 	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
-	Component = ComponentFunction | ComponentClass | ComponentUnknown,
+	Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 
 export default VNodeFlags;

@@ -1,5 +1,5 @@
-import { createTextVNode, createVNode } from 'inferno/core/VNodes';
-import { render } from 'inferno/index';
+import { createTextVNode, createVNode } from '../dist-es/core/VNodes';
+import { render } from '../dist-es/index';
 
 suite('Rendering', () => {
 	let container = document.createElement('div');

@@ -1,6 +1,6 @@
 {
   "name": "inferno-shared",
-  "version": "4.0.0",
+  "version": "3.4.2",
   "license": "MIT",
   "description": "Helpers functions for Inferno",
   "author": {
@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "inferno:main": "dist/index.es.js",
-  "typings": "dist/inferno-shared.d.ts",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "inferno",
     "helpers"

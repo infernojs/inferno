@@ -1,11 +1,7 @@
-/**
- * @module Inferno-Mobx
- */ /** TypeDoc Comment */
-
 import connect from './connect';
 import EventEmitter from './EventEmitter';
 import inject from './inject';
-import makeReactive, { componentByNodeRegistery, renderReporter, trackComponents } from './makeReactive';
+import { componentByNodeRegistery, renderReporter, trackComponents } from './makeReactive';
 import Provider from './Provider';
 
 export default {
@@ -14,10 +10,9 @@ export default {
 	componentByNodeRegistery,
 	connect,
 	inject,
-	makeReactive,
 	observer: connect,
 	renderReporter,
-	trackComponents,
+	trackComponents
 };
 
 export {
@@ -27,7 +22,6 @@ export {
 	connect as observer,
 	connect,
 	inject,
-	makeReactive,
 	renderReporter,
-	trackComponents,
+	trackComponents
 };

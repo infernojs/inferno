@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Mobx
- */ /** TypeDoc Comment */
-
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import { throwError } from 'inferno-shared';
@@ -20,7 +16,7 @@ function connect(arg1: any, arg2?: any): any {
 		// component needs stores
 		if (!arg2) {
 			// invoked as decorator
-			return componentClass => connect(arg1, componentClass);
+			return (componentClass) => connect(arg1, componentClass);
 		} else {
 			// TODO: deprecate this invocation style
 			return inject.apply(null, arg1)(connect(arg2));
@@ -31,11 +27,10 @@ function connect(arg1: any, arg2?: any): any {
 	// Stateless function component:
 	// If it is function but doesn't seem to be a Inferno class constructor,
 	// wrap it to a Inferno class automatically
-	if (
-		typeof componentClass === 'function' &&
-		(!componentClass.prototype || !componentClass.prototype.render) &&
-		!componentClass.isReactClass &&
-		!Component.isPrototypeOf(componentClass)
+	if (typeof componentClass === 'function'
+		&& (!componentClass.prototype || !componentClass.prototype.render)
+		&& !componentClass.isReactClass
+		&& !Component.isPrototypeOf(componentClass)
 	) {
 		const newClass = createClass({
 			contextTypes: componentClass.contextTypes,
@@ -44,7 +39,7 @@ function connect(arg1: any, arg2?: any): any {
 			propTypes: componentClass.propTypes,
 			render() {
 				return componentClass.call(this, this.props, this.context);
-			},
+			}
 		});
 
 		return connect(newClass);

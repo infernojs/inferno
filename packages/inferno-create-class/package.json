@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-class",
-  "version": "4.0.0",
+  "version": "3.4.3",
   "license": "MIT",
   "description": "Provides a helper to create Inferno Components without needing ES2015",
   "author": {
@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "inferno:main": "dist/index.es.js",
-  "typings": "dist/inferno-create-class.d.ts",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -23,12 +23,12 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno-component": "^4.0.0",
-    "inferno-shared": "^4.0.0"
+    "inferno-component": "3.4.3",
+    "inferno-shared": "3.4.2"
   },
   "devDependencies": {
-    "inferno": "^4.0.0",
-    "inferno-create-element": "^4.0.0"
+    "inferno": "3.4.3",
+    "inferno-create-element": "3.4.3"
   },
   "rollup": {
     "bundledDependencies": [

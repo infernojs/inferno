@@ -1,15 +1,11 @@
-/**
- * @module Inferno-Server
- */ /** TypeDoc Comment */
-
 const ecapeCharacters = {
 	'"': '&quot;',
 	'&': '&amp;',
-	"'": '&#039;',
+	'\'': '&#039;',
 	'<': '&lt;',
-	'>': '&gt;',
+	'>': '&gt;'
 };
-const escapeChar = char => ecapeCharacters[char] || char;
+const escapeChar = (char) => ecapeCharacters[ char ] || char;
 
 export function escapeText(text) {
 	return String(text).replace(/[<>"'&]/g, escapeChar);
@@ -38,9 +34,9 @@ const voidElements = {
 	param: true,
 	source: true,
 	track: true,
-	wbr: true,
+	wbr: true
 };
 
 export function isVoidElement(str) {
-	return !!voidElements[str];
+	return !!voidElements[ str ];
 }

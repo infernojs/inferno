@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
-
 import { VNode } from 'inferno';
 import createRoutes, { IPlainRouteConfig } from './createRoutes';
 import IndexLink from './IndexLink';
@@ -25,7 +21,7 @@ export {
 	RouterContext,
 	VNode,
 	createRoutes,
-	match,
+	match
 };
 
 export default {
@@ -38,5 +34,5 @@ export default {
 	Router,
 	RouterContext,
 	createRoutes,
-	match,
+	match
 };

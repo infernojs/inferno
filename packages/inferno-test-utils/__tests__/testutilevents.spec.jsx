@@ -1,3 +1,4 @@
+
 import Component from 'inferno-component';
 import { spy } from 'sinon';
 import { findRenderedVNodeWithType, renderIntoDocument } from 'inferno-test-utils';
@@ -5,7 +6,8 @@ import { findRenderedVNodeWithType, renderIntoDocument } from 'inferno-test-util
 describe('TestUtils events', () => {
 	it('Should work with Synthetic events', () => {
 		const testObj = {
-			clicker: () => {},
+			clicker: () => {
+			}
 		};
 
 		const sinonSpy = spy(testObj, 'clicker');
@@ -24,12 +26,13 @@ describe('TestUtils events', () => {
 		const vnode = findRenderedVNodeWithType(tree, 'div');
 		vnode.dom.click();
 
-		expect(sinonSpy.callCount).toEqual(1);
+		expect(sinonSpy.callCount).to.eql(1);
 	});
 
 	it('Should work with native events', () => {
 		const testObj = {
-			clicker: () => {},
+			clicker: () => {
+			}
 		};
 
 		const sinonSpy = spy(testObj, 'clicker');
@@ -48,6 +51,6 @@ describe('TestUtils events', () => {
 		const vnode = findRenderedVNodeWithType(tree, 'div');
 		vnode.dom.click();
 
-		expect(sinonSpy.callCount).toEqual(1);
+		expect(sinonSpy.callCount).to.eql(1);
 	});
 });

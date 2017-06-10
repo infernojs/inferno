@@ -1,6 +1,6 @@
 {
   "name": "inferno-router",
-  "version": "4.0.0",
+  "version": "3.4.3",
   "license": "MIT",
   "description": "Provides routing functionality for Inferno",
   "author": {
@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "inferno:main": "dist-es/index.es.js",
-  "typings": "dist/inferno-router.d.ts",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -26,11 +26,12 @@
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "history": "^4.6.1",
-    "inferno": "^4.0.0",
-    "inferno-component": "^4.0.0",
-    "inferno-create-element": "^4.0.0",
-    "inferno-shared": "^4.0.0",
-    "inferno-vnode-flags": "^4.0.0",
+    "inferno": "3.4.3",
+    "inferno-component": "3.4.3",
+    "inferno-create-element": "3.4.3",
+    "inferno-shared": "3.4.2",
+    "inferno-vnode-flags": "3.4.2",
+    "path-to-regexp": "^1.7.0",
     "path-to-regexp-es6": "0.0.2"
   },
   "rollup": {
@@ -43,7 +44,7 @@
       "inferno": "Inferno",
       "inferno-component": "Inferno.Component",
       "inferno-create-element": "Inferno.createElement",
-      "path-to-regexp": "Inferno.pathToRegexp"
+      "path-to-regexp-es6": "Inferno.pathToRegexp"
     }
   }
 }

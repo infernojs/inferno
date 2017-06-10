@@ -3,27 +3,27 @@ import { render } from 'inferno';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
 
-import concatStream from 'concat-stream';
+import concatStream from 'concat-stream-es6';
 import Component from 'inferno-component';
 
 describe('SSR Root Creation Streams - (non-JSX)', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		render(null, container);
 		document.body.removeChild(container);
 	});
 
 	it('should throw with invalid children', () => {
-		const test = value => createElement('a', null, true);
+		const test = (value) => createElement('a', null, true);
 
-		return streamPromise(test('foo')).catch(err => {
-			expect(err.toString()).toBe('Error: invalid component');
+		return streamPromise(test('foo')).catch((err) => {
+			expect(err.toString()).to.equal('Error: invalid component');
 		});
 	});
 
@@ -34,10 +34,10 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 			},
 			render() {
 				return createElement('a', null, this.context.hello);
-			},
+			}
 		});
-		return streamPromise(createElement(TestComponent, null)).then(function(output) {
-			expect(output).toBe('<a data-infernoroot>world</a>');
+		return streamPromise(createElement(TestComponent, null)).then(function (output) {
+			expect(output).to.equal('<a data-infernoroot>world</a>');
 		});
 	});
 
@@ -48,18 +48,20 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 					super(props, context);
 
 					this.state = {
-						foo: 'bar',
+						foo: 'bar'
 					};
 				}
 
 				componentWillMount() {
 					this.setState({
-						foo: 'bar2',
+						foo: 'bar2'
 					});
 				}
 
 				render() {
-					return createElement('div', null, this.state.foo);
+					return (
+						createElement('div', null, this.state.foo)
+					);
 				}
 			}
 
@@ -68,27 +70,32 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 					super(props, context);
 
 					this.state = {
-						foo: 'bar',
+						foo: 'bar'
 					};
 				}
 
 				componentWillMount() {
 					this.setState({
-						foo: 'bar2',
+						foo: 'bar2'
 					});
 				}
 
 				render() {
-					return createElement('div', null, [this.state.foo, createElement(Another)]);
+					return (
+						createElement('div', null, [
+							this.state.foo,
+							createElement(Another)
+						])
+					);
 				}
 			}
 
 			const vDom = createElement(Tester);
-			return streamPromise(vDom).then(function(output) {
+			return streamPromise(vDom).then(function (output) {
 				const container = document.createElement('div');
 				document.body.appendChild(container);
 				container.innerHTML = output;
-				expect(output).toBe('<div data-infernoroot>bar2<div>bar2</div></div>');
+				expect(output).to.equal('<div data-infernoroot>bar2<div>bar2</div></div>');
 				document.body.removeChild(container);
 			});
 		});
@@ -96,11 +103,11 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 });
 
 function streamPromise(dom) {
-	return new Promise(function(res, rej) {
-		streamAsStaticMarkup(dom).on('error', rej).pipe(
-			concatStream(function(buffer) {
+	return new Promise(function (res, rej) {
+		streamAsStaticMarkup(dom)
+			.on('error', rej)
+			.pipe(concatStream(function (buffer) {
 				res(buffer.toString('utf-8'));
-			}),
-		);
+			}));
 	});
 }

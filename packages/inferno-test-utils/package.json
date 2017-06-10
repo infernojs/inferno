@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "4.0.0",
+  "version": "3.4.3",
   "license": "MIT",
   "description": "Suite of utilities for testing Inferno applications",
   "author": {
@@ -21,15 +21,15 @@
     "utils"
   ],
   "dependencies": {
-    "inferno": "^4.0.0",
-    "inferno-create-class": "^4.0.0",
-    "inferno-create-element": "^4.0.0",
-    "inferno-shared": "^4.0.0",
-    "inferno-vnode-flags": "^4.0.0"
+    "inferno": "3.4.3",
+    "inferno-create-class": "3.4.3",
+    "inferno-create-element": "3.4.3",
+    "inferno-shared": "3.4.2",
+    "inferno-vnode-flags": "3.4.2"
   },
   "devDependencies": {
-    "inferno-component": "^4.0.0",
-    "inferno-server": "^4.0.0"
+    "inferno-component": "3.4.0",
+    "inferno-server": "3.4.0"
   },
   "rollup": {
     "bundledDependencies": [
@@ -43,7 +43,7 @@
     }
   },
   "main": "index.js",
-  "inferno:main": "dist/index.es.js",
-  "typings": "dist/inferno-test-utils.d.ts",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }

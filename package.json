@@ -17,27 +17,22 @@
   },
   "lint-staged": {
     "*.js": [
-      "./scripts/tasks/prettier.sh",
-      "git add"
+      "tslint"
     ],
     "*.ts": [
-      "./scripts/tasks/prettier.sh",
-      "git add"
+      "tslint"
     ],
     "*.jsx": [
-      "./scripts/tasks/prettier.sh",
-      "git add"
+      "tslint"
     ],
     "*.tsx": [
-      "./scripts/tasks/prettier.sh",
-      "git add"
+      "tslint"
     ]
   },
   "pre-commit": {
     "silent": true,
     "run": [
       "lint-staged",
-      "lint",
       "test"
     ]
   },

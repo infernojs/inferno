@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-element",
-  "version": "4.0.0",
+  "version": "3.4.3",
   "license": "MIT",
   "description": "Provides methods to create Inferno VNodes",
   "author": {
@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "inferno:main": "dist/index.es.js",
-  "typings": "dist/inferno-create-element.d.ts",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -23,15 +23,10 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^4.0.0",
-    "inferno-component": "^4.0.0",
-    "inferno-shared": "^4.0.0",
-    "inferno-vnode-flags": "^4.0.0"
-  },
-  "devDependencies": {
-    "most": "^1.4.0",
-    "most-subject": "^5.3.0",
-    "union-type": "^0.4.0"
+    "inferno": "3.4.3",
+    "inferno-component": "3.4.3",
+    "inferno-shared": "3.4.2",
+    "inferno-vnode-flags": "3.4.2"
   },
   "rollup": {
     "bundledDependencies": [

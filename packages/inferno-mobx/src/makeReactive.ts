@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Mobx
- */ /** TypeDoc Comment */
-
 import Component from 'inferno-component';
 import { throwError } from 'inferno-shared';
 import { extras, isObservable, Reaction } from 'mobx';
@@ -26,7 +22,7 @@ function reportRendering(component) {
 		event: 'render',
 		node,
 		renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
-		totalTime: Date.now() - component.__$mobRenderStart,
+		totalTime: Date.now() - component.__$mobRenderStart
 	});
 }
 
@@ -57,9 +53,9 @@ function scuMobx(nextProps, nextState) {
 	}
 
 	for (let i = keys.length - 1; i >= 0; i--) {
-		const key = keys[i];
-		const newValue = nextProps[key];
-		if (newValue !== this.props[key]) {
+		const key = keys[ i ];
+		const newValue = nextProps[ key ];
+		if (newValue !== this.props[ key ]) {
 			return true;
 		} else if (newValue && typeof newValue === 'object' && !isObservable(newValue)) {
 			// If the newValue is still the same object, but that object is not observable,
@@ -71,12 +67,14 @@ function scuMobx(nextProps, nextState) {
 }
 
 export default function makeReactive(componentClass) {
+
 	const target = componentClass.prototype || componentClass;
 	const baseDidMount = target.componentDidMount;
 	const baseWillMount = target.componentWillMount;
 	const baseUnmount = target.componentWillUnmount;
 
 	target.componentWillMount = function() {
+
 		// Call original
 		if (baseWillMount) {
 			baseWillMount.call(this);
@@ -85,11 +83,7 @@ export default function makeReactive(componentClass) {
 		let reaction: Reaction;
 		let isRenderingPending = false;
 
-		const initialName =
-			this.displayName ||
-			this.name ||
-			(this.constructor && (this.constructor.displayName || this.constructor.name)) ||
-			'<component>';
+		const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
 		const baseRender = this.render.bind(this);
 
 		const initialRender = (nextProps, nextContext) => {
@@ -163,7 +157,7 @@ export default function makeReactive(componentClass) {
 			renderReporter.emit({
 				component: this,
 				event: 'destroy',
-				node,
+				node
 			});
 		}
 	};

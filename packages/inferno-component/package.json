@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "4.0.0",
+  "version": "3.4.3",
   "license": "MIT",
   "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
   "author": {
@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "inferno:main": "dist/index.es.js",
-  "typings": "dist/inferno-component.d.ts",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -29,9 +29,9 @@
     "rollup"
   ],
   "dependencies": {
-    "inferno": "^4.0.0",
-    "inferno-shared": "^4.0.0",
-    "inferno-vnode-flags": "^4.0.0"
+    "inferno": "3.4.3",
+    "inferno-shared": "3.4.2",
+    "inferno-vnode-flags": "3.4.2"
   },
   "rollup": {
     "bundledDependencies": [
