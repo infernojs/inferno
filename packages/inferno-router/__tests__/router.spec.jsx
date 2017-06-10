@@ -317,7 +317,6 @@ describe('Router (jsx)', () => {
 					<Route path="search/:searchData" component={ GoodComponent }/>
 				</Route>
 			</Router>;
-			console.log('history.location', history.location);
 			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps}/>, container);
@@ -340,7 +339,6 @@ describe('Router (jsx)', () => {
 					<Route path="search/:searchData" component={ GoodComponent }/>
 				</Route>
 			</Router>;
-			console.log('history.location', history.location);
 			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps}/>, container);
@@ -363,7 +361,6 @@ describe('Router (jsx)', () => {
 					<Route path="search/:searchData" component={ GoodComponent }/>
 				</Route>
 			</Router>;
-			console.log('history.location', history.location);
 			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps}/>, container);

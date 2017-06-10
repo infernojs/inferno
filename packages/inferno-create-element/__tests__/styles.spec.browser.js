@@ -1,4 +1,3 @@
-
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { innerHTML, style } from 'inferno-utils';
@@ -151,11 +150,11 @@ describe('CSS style properties', () => {
 			it(test.description, () => {
 
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 		});
 	});
@@ -169,19 +168,19 @@ describe('CSS style properties', () => {
 		}].forEach((test) => {
 			it(test.description, () => {
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 			it(test.description, () => {
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 		});
 	});
@@ -195,47 +194,47 @@ describe('CSS style properties', () => {
 		}].forEach((test) => {
 			it(test.description, () => {
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 			it(test.description, () => {
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 
 				render(test.template(), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 			it(test.description, () => {
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 		});
@@ -250,42 +249,42 @@ describe('CSS style properties', () => {
 		}].forEach((test) => {
 			it(test.description, () => {
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 			it(test.description, () => {
 				render(test.template({}), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 				render(test.template({}), container);
-				expect(container.firstChild.nodeType).toBe(1);
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 		});
@@ -304,44 +303,44 @@ describe('CSS style properties', () => {
 			it(test.description, () => {
 				render(test.template({}), container);
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 
 			it(test.description, () => {
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 				render(test.template(arg.value), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
+				expect(container.firstChild.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 			});
 			it(test.description, () => {
 				render(test.template({}), container);
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 				render(test.template(null), container);
-				expect(container.firstChild.nodeType).toBe(1);
-				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
+				expect(container.firstChild.nodeType).toBeCloseTo(1);
+				expect(container.firstChild.getAttribute('style')).toMatch(new RegExp(style(arg.expect).join('|'), 'gi'));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 			});
 		});
@@ -375,7 +374,7 @@ describe('CSS style properties', () => {
 
 	 shorthands.forEach(cssProperty => {
 	 it(`should set ${ cssProperty } to ${ style[ stylePropName ] }px`, () => {
-	 expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+	 expect(container.firstChild.style[ cssProperty ]).toEqual(comparator);
 	 });
 	 });
 	 });
@@ -412,7 +411,7 @@ describe('CSS style properties', () => {
 	 let comparator = values[ index % values.length ];
 
 	 it(`should set ${ cssProperty } to ${ comparator }`, () => {
-	 expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+	 expect(container.firstChild.style[ cssProperty ]).toEqual(comparator);
 	 });
 	 });
 	 });
@@ -430,9 +429,7 @@ describe('CSS style properties', () => {
 			}
 		});
 		render(template(), container);
-		expect(container.innerHTML).toBe(
-            innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>')
-        );
+		expect(container.innerHTML).toEqual(innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>'));
 	});
 
 	it('Should support changing values and properties', () => {
@@ -447,10 +444,10 @@ describe('CSS style properties', () => {
 		// Check each property by hand
 		let style = container.firstChild.style;
 
-		expect(style.width).toEqual('200px');
-		expect(style.backgroundColor).toEqual('blue');
-		expect(style.color).toEqual('');
-		expect(style.float).toEqual('left');
+		expect(style.width).to.eql('200px');
+		expect(style.backgroundColor).to.eql('blue');
+		expect(style.color).to.eql('');
+		expect(style.float).to.eql('left');
 
 		render(createElement('div', {
 			style: {
@@ -462,18 +459,18 @@ describe('CSS style properties', () => {
 
 		style = container.firstChild.style;
 
-		expect(style.width).toEqual('');
-		expect(style.backgroundColor).toEqual('red');
-		expect(style.color).toEqual('green');
-		expect(style.float).toEqual('right');
+		expect(style.width).to.eql('');
+		expect(style.backgroundColor).to.eql('red');
+		expect(style.color).to.eql('green');
+		expect(style.float).to.eql('right');
 
 		render(createElement('div', {
 			style: 'float: left;'
 		}), container);
 
-		expect(container.innerHTML).toBe(innerHTML('<div style="float: left;"></div>'));
+		expect(container.innerHTML).toEqual(innerHTML('<div style="float: left;"></div>'));
 
 		render(createElement('div', null), container);
-		expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+		expect(container.innerHTML).toEqual(innerHTML('<div></div>'));
 	});
 });

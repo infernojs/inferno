@@ -1,7 +1,7 @@
 
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { assert, spy } from 'sinon';
+import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 
 describe('Component lifecycle (JSX)', () => {
@@ -99,11 +99,11 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Aspy = spy(A.prototype, 'componentWillUnmount');
-			const Bspy = spy(B.prototype, 'componentWillUnmount');
-			const CSpy = spy(C.prototype, 'componentWillUnmount');
-			const DSpy = spy(D.prototype, 'componentWillUnmount');
-			const notCalled = assert.notCalled;
+			const Aspy = sinon.spy(A.prototype, 'componentWillUnmount');
+			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
+			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
 
 			render(<A />, container);
 			expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
@@ -124,7 +124,7 @@ describe('Component lifecycle (JSX)', () => {
 			updater();
 			expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
 			notCalled(Aspy);
-			const calledOnce = assert.calledOnce;
+			const calledOnce = sinon.assert.calledOnce;
 			calledOnce(Bspy);
 			calledOnce(CSpy);
 			calledOnce(DSpy);
@@ -200,11 +200,11 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Aspy = spy(A.prototype, 'componentWillUnmount');
-			const Bspy = spy(B.prototype, 'componentWillUnmount');
-			const CSpy = spy(C.prototype, 'componentWillUnmount');
-			const DSpy = spy(D.prototype, 'componentWillUnmount');
-			const notCalled = assert.notCalled;
+			const Aspy = sinon.spy(A.prototype, 'componentWillUnmount');
+			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
+			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
 
 			render(<A />, container);
 			expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
@@ -223,7 +223,7 @@ describe('Component lifecycle (JSX)', () => {
 			updater();
 			expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
 			notCalled(Aspy);
-			const calledOnce = assert.calledOnce;
+			const calledOnce = sinon.assert.calledOnce;
 			calledOnce(Bspy);
 			calledOnce(CSpy);
 			calledOnce(DSpy);
@@ -257,11 +257,11 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Bspy = spy(B.prototype, 'componentWillUnmount');
-			const CSpy = spy(C.prototype, 'componentWillUnmount');
-			const DSpy = spy(D.prototype, 'componentWillUnmount');
-			const notCalled = assert.notCalled;
-			const calledOnce = assert.calledOnce;
+			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
+			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
+			const calledOnce = sinon.assert.calledOnce;
 
 			render(<B />, container);
 			expect(container.innerHTML).toBe(innerHTML('<div>B</div>'));
@@ -366,12 +366,12 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Bspy = spy(B.prototype, 'componentWillUnmount');
-			const B1spy = spy(B1.prototype, 'componentWillUnmount');
-			const B2spy = spy(B2.prototype, 'componentWillUnmount');
-			const CSpy = spy(C.prototype, 'componentWillUnmount');
-			const notCalled = assert.notCalled;
-			const calledOnce = assert.calledOnce;
+			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const B1spy = sinon.spy(B1.prototype, 'componentWillUnmount');
+			const B2spy = sinon.spy(B2.prototype, 'componentWillUnmount');
+			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
+			const calledOnce = sinon.assert.calledOnce;
 
 			render(<B />, container);
 			expect(container.innerHTML).toBe(innerHTML('<div><p>B1</p><p>B2</p></div>'));
@@ -418,7 +418,7 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const sinonSpy = spy(spyObj, 'fn');
+			const sinonSpy = sinon.spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillMount={spyObj.fn}/>, _container);
 
 			expect(sinonSpy.callCount).toBe(1);
@@ -429,7 +429,7 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const sinonSpy = spy(spyObj, 'fn');
+			const sinonSpy = sinon.spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidMount={spyObj.fn}/>, _container);
 
 			expect(sinonSpy.callCount).toBe(1);
@@ -441,7 +441,7 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const sinonSpy = spy(spyObj, 'fn');
+			const sinonSpy = sinon.spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUnmount={spyObj.fn}/>, _container);
 			expect(sinonSpy.callCount).toBe(0);
 			// do unmount
@@ -455,7 +455,7 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const sinonSpy = spy(spyObj, 'fn');
+			const sinonSpy = sinon.spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUpdate={spyObj.fn}/>, _container);
 			expect(sinonSpy.callCount).toBe(0);
 		});
@@ -465,7 +465,7 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const sinonSpy = spy(spyObj, 'fn');
+			const sinonSpy = sinon.spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidUpdate={spyObj.fn}/>, _container);
 			expect(sinonSpy.callCount).toBe(0); // Update 1
 			render(<StatelessComponent onComponentDidUpdate={spyObj.fn}/>, _container);
@@ -529,8 +529,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 		};
 
-		const calledOnce = assert.calledOnce;
-		const notCalled = assert.notCalled;
+		const calledOnce = sinon.assert.calledOnce;
+		const notCalled = sinon.assert.notCalled;
 
 		const RefTester = ({ inner, innersecond }) => {
 			let content = null;
@@ -553,9 +553,9 @@ describe('Component lifecycle (JSX)', () => {
 				</div>
 			);
 		};
-		const spyOuter = spy(fakeObj, 'outerCallback');
-		const spyInner = spy(fakeObj, 'innerCallback');
-		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
+		const spyOuter = sinon.spy(fakeObj, 'outerCallback');
+		const spyInner = sinon.spy(fakeObj, 'innerCallback');
+		const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
 		beforeEach(function () {
 			spyOuter.reset();
@@ -710,8 +710,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 		};
 
-		const calledOnce = assert.calledOnce;
-		const notCalled = assert.notCalled;
+		const calledOnce = sinon.assert.calledOnce;
+		const notCalled = sinon.assert.notCalled;
 
 		const RefTester = ({ inner, innersecond }) => {
 			let content = null;
@@ -734,9 +734,9 @@ describe('Component lifecycle (JSX)', () => {
 				</div>
 			);
 		};
-		const spyOuter = spy(fakeObj, 'outerCallback');
-		const spyInner = spy(fakeObj, 'innerCallback');
-		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
+		const spyOuter = sinon.spy(fakeObj, 'outerCallback');
+		const spyInner = sinon.spy(fakeObj, 'innerCallback');
+		const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
 		const PlainDiv = () => <div>plaindiv</div>;
 
@@ -827,8 +827,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 		};
 
-		const calledOnce = assert.calledOnce;
-		const notCalled = assert.notCalled;
+		const calledOnce = sinon.assert.calledOnce;
+		const notCalled = sinon.assert.notCalled;
 
 		class RefTester extends Component {
 			render() {
@@ -858,9 +858,9 @@ describe('Component lifecycle (JSX)', () => {
 			}
 		}
 
-		const spyOuter = spy(fakeObj, 'outerCallback');
-		const spyInner = spy(fakeObj, 'innerCallback');
-		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
+		const spyOuter = sinon.spy(fakeObj, 'outerCallback');
+		const spyInner = sinon.spy(fakeObj, 'innerCallback');
+		const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
 		beforeEach(function () {
 			spyOuter.reset();
@@ -978,8 +978,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 		};
 
-		const calledOnce = assert.calledOnce;
-		const notCalled = assert.notCalled;
+		const calledOnce = sinon.assert.calledOnce;
+		const notCalled = sinon.assert.notCalled;
 
 		class RefTester extends Component {
 			render() {
@@ -1009,9 +1009,9 @@ describe('Component lifecycle (JSX)', () => {
 			}
 		}
 
-		const spyOuter = spy(fakeObj, 'outerCallback');
-		const spyInner = spy(fakeObj, 'innerCallback');
-		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
+		const spyOuter = sinon.spy(fakeObj, 'outerCallback');
+		const spyInner = sinon.spy(fakeObj, 'innerCallback');
+		const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
 		class PlainDiv extends Component {
 			render() {

@@ -1,5 +1,5 @@
 
-import { assert, spy } from 'sinon';
+import sinon from 'sinon';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
@@ -110,7 +110,7 @@ describe('Router (jsx)', () => {
 				fn() {
 				}
 			};
-			const sinonSpy = spy(obj, 'fn');
+			const sinonSpy = sinon.spy(obj, 'fn');
 
 			render(createRoutes(
 				<Link to="/" onClick={obj.fn}>Link</Link>
@@ -124,7 +124,7 @@ describe('Router (jsx)', () => {
 				target: {}
 			});
 
-			const calledOnce = assert.calledOnce;
+			const calledOnce = sinon.assert.calledOnce;
 			calledOnce(sinonSpy);
 		});
 
@@ -133,7 +133,7 @@ describe('Router (jsx)', () => {
 				fn() {
 				}
 			};
-			const sinonSpy = spy(obj, 'fn');
+			const sinonSpy = sinon.spy(obj, 'fn');
 
 			render(createRoutes(
 				<Link to="/" onClick={obj.fn}>Link</Link>
@@ -147,16 +147,16 @@ describe('Router (jsx)', () => {
 				target: {}
 			});
 
-			const notCalled = assert.notCalled;
+			const notCalled = sinon.assert.notCalled;
 			notCalled(sinonSpy);
 		});
 
 		it('should show warning when used without <Router />', () => {
-			const sinonSpy = spy(console, 'warn');
+			const sinonSpy = sinon.spy(console, 'warn');
 
 			render(<Link to="/">Link</Link>, container);
 
-			assert.called(sinonSpy);
+			sinon.assert.called(sinonSpy);
 
 			sinonSpy.restore();
 		});

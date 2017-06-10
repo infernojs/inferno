@@ -43,8 +43,6 @@ describe('Select / select multiple (JSX)', () => {
 			<option value={ 2 }>2</option>
 		</select>, container);
 
-		console.log(container.firstChild.children[ 0 ].selected);
-		console.log(container.firstChild.children[ 1 ].selected);
 		expect(container.firstChild.children[ 0 ].selected).toEqual(true);
 		expect(container.firstChild.children[ 1 ].selected).toEqual(false);
 		expect(
@@ -346,6 +344,6 @@ describe('Select / select multiple (JSX)', () => {
 			</select>
 		), container);
 		expect(container.firstChild.value, 'Second selected index').toBe('');
-		expect(container.firstChild.selectedIndex, 'Second value').to.oneOf([ 0, -1 ]);
+		expect([ 0, -1 ], 'Second value').toContain(container.firstChild.selectedIndex);
 	});
 });

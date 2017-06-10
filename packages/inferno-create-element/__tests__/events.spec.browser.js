@@ -1,4 +1,4 @@
-
+import sinon from 'sinon';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 

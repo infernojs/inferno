@@ -100,7 +100,7 @@ describe('Components createClass (non-JSX)', () => {
 			}
 		});
 		render(createElement(Component, {}), container);
-		expect(Component.mixins).toHaveProperty('func1');
+		expect(Component.mixins.func1).toBeDefined();
 	});
 	it('should have nested mixins on created class', () => {
 		const mixins = [{
@@ -117,6 +117,6 @@ describe('Components createClass (non-JSX)', () => {
 			}
 		});
 		render(createElement(Component, {}), container);
-		expect(Component.mixins).toHaveProperty('nestedMixin');
+		expect(Component.mixins.nestedMixin).toBeDefined();
 	});
 });

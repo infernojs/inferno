@@ -1,12 +1,11 @@
-
-import { stub } from 'sinon';
+import sinon from 'sinon';
 import { shallowEqual, warning } from '../src/utils';
 
 describe('Redux Utils', () => {
 	describe('warning', () => {
 		it('should log message using console.error', () => {
 			// stub instead of spy to prevent console.error actually firing during test
-			const stubFn = stub(console, 'error').callsFake((message) => null);
+			const stubFn = sinon.stub(console, 'error').callsFake((message) => null);
 			warning('warning!');
 			expect(stubFn.calledOnce).toBe(true);
 			expect(stubFn.calledWith('warning!')).toBe(true);

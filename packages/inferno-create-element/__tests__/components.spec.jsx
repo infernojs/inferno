@@ -2,7 +2,7 @@
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { assert, spy } from 'sinon';
+import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 
 describe('Components (JSX)', () => {
@@ -381,7 +381,7 @@ describe('Components (JSX)', () => {
 			<BasicComponent3 title="styles are removed!" styles={null}/>
 		), container);
 
-		expect(container.firstChild.getAttribute('style')).to.be.oneOf([ null, '' ]);
+		expect([ null, '']).toContain(container.firstChild.getAttribute('style'));
 		expect(container.firstChild.tagName).toEqual('DIV');
 		expect(container.firstChild.firstChild.innerHTML).toEqual('The title is styles are removed!');
 	});
@@ -1027,7 +1027,7 @@ describe('Components (JSX)', () => {
 
 			toggle() {
 				this.setState({
-					empty: !this.state.empty.toHaveLength(0)
+					empty: !this.state.empty
 				});
 			}
 
@@ -1037,7 +1037,7 @@ describe('Components (JSX)', () => {
 						<button onClick={this.toggle}>Empty</button>
 						<ul>
 							{(() => {
-								if (this.state.empty.toHaveLength(0) === true) {
+								if (this.state.empty === true) {
 									return <li>No cars!</li>;
 								} else {
 									return [ 'BMW', 'Volvo', 'Saab' ].map(function (car) {
@@ -1750,9 +1750,9 @@ describe('Components (JSX)', () => {
 			}
 		};
 
-		const calledOnce = assert.calledOnce;
-		const notCalled = assert.notCalled;
-		const sinonSpy = spy(obj, 'fn');
+		const calledOnce = sinon.assert.calledOnce;
+		const notCalled = sinon.assert.notCalled;
+		const sinonSpy = sinon.spy(obj, 'fn');
 
 		class Bar extends Component {
 			constructor(props) {
@@ -1990,9 +1990,7 @@ describe('Components (JSX)', () => {
 					this.handleBlur = this.handleBlur.bind(this);
 				}
 
-				handleBlur(event) {
-					// console.log(event, "blur");
-				}
+				handleBlur(event) {}
 
 				render() {
 					const props = {

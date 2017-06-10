@@ -1,6 +1,6 @@
 
 import Component from 'inferno-component';
-import { spy } from 'sinon';
+import sinon from 'sinon';
 import { findRenderedVNodeWithType, renderIntoDocument } from 'inferno-test-utils';
 
 describe('TestUtils events', () => {
@@ -10,7 +10,7 @@ describe('TestUtils events', () => {
 			}
 		};
 
-		const sinonSpy = spy(testObj, 'clicker');
+		const sinonSpy = sinon.spy(testObj, 'clicker');
 
 		class FooBar extends Component {
 			render() {
@@ -35,7 +35,7 @@ describe('TestUtils events', () => {
 			}
 		};
 
-		const sinonSpy = spy(testObj, 'clicker');
+		const sinonSpy = sinon.spy(testObj, 'clicker');
 
 		class FooBar extends Component {
 			render() {

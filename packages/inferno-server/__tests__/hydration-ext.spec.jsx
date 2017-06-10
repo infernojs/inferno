@@ -48,7 +48,6 @@ describe('SSR Hydration Extended - (JSX)', () => {
 		it(`do test #${ i + 1 }`, () => {
 			let container = createContainerWithHTML(html);
 			render(component, container);
-			console.log(container.innerHTML);
 			expect(innerHTML(container.innerHTML)).toBe(innerHTML(compHtml));
 		});
 	});

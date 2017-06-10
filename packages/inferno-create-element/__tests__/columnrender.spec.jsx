@@ -2,7 +2,7 @@
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { isNullOrUndef } from 'inferno-shared';
-import { spy } from 'sinon';
+import sinon from 'sinon';
 
 describe('Columns like tests - (JSX)', () => {
 	let container;
@@ -242,12 +242,12 @@ describe('Columns like tests - (JSX)', () => {
 			let updateItemSpy = null;
 
 			beforeEach(function () {
-				mountedColumnSpy = spy(ColumnKeyed.prototype, 'componentWillMount');
-				unmountColumnSpy = spy(ColumnKeyed.prototype, 'componentWillUnmount');
-				updateColumnSpy = spy(ColumnKeyed.prototype, 'componentWillUpdate');
-				mountedItemSpy = spy(ItemKeyed.prototype, 'componentWillMount');
-				unmountItemSpy = spy(ItemKeyed.prototype, 'componentWillUnmount');
-				updateItemSpy = spy(ItemKeyed.prototype, 'componentWillUpdate');
+				mountedColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillMount');
+				unmountColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUnmount');
+				updateColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUpdate');
+				mountedItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillMount');
+				unmountItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUnmount');
+				updateItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUpdate');
 			});
 
 			afterEach(function () {
@@ -402,12 +402,12 @@ describe('Columns like tests - (JSX)', () => {
 			let updateItemSpy = null;
 
 			beforeEach(function () {
-				mountedColumnSpy = spy(Column.prototype, 'componentWillMount');
-				unmountColumnSpy = spy(Column.prototype, 'componentWillUnmount');
-				updateColumnSpy = spy(Column.prototype, 'componentWillUpdate');
-				mountedItemSpy = spy(Item.prototype, 'componentWillMount');
-				unmountItemSpy = spy(Item.prototype, 'componentWillUnmount');
-				updateItemSpy = spy(Item.prototype, 'componentWillUpdate');
+				mountedColumnSpy = sinon.spy(Column.prototype, 'componentWillMount');
+				unmountColumnSpy = sinon.spy(Column.prototype, 'componentWillUnmount');
+				updateColumnSpy = sinon.spy(Column.prototype, 'componentWillUpdate');
+				mountedItemSpy = sinon.spy(Item.prototype, 'componentWillMount');
+				unmountItemSpy = sinon.spy(Item.prototype, 'componentWillUnmount');
+				updateItemSpy = sinon.spy(Item.prototype, 'componentWillUpdate');
 			});
 
 			afterEach(function () {

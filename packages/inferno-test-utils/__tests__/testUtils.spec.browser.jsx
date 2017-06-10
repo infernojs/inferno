@@ -1,6 +1,6 @@
 
 import { render } from 'inferno';
-import { assert, spy } from 'sinon';
+import sinon from 'sinon';
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
@@ -386,16 +386,16 @@ describe('Test Utils', () => {
 		});
 
 		it('should call predicate for each VNode instance in a rendered tree', () => {
-			const predicate = spy();
-			assert.notCalled(predicate);
+			const predicate = sinon.spy();
+			sinon.assert.notCalled(predicate);
 			findAllInRenderedTree(tree, predicate);
 			// 0: section
 			// 1: FunctionalComponent
 			// 2: div
-			assert.callCount(predicate, 3);
-			assert.calledWithMatch(predicate, { type: 'section' });
-			assert.calledWithMatch(predicate, { type: FunctionalComponent });
-			assert.calledWithMatch(predicate, { type: 'div' });
+			sinon.assert.callCount(predicate, 3);
+			sinon.assert.calledWithMatch(predicate, { type: 'section' });
+			sinon.assert.calledWithMatch(predicate, { type: FunctionalComponent });
+			sinon.assert.calledWithMatch(predicate, { type: 'div' });
 		});
 
 		it('should call predicate in the correct order', () => {
@@ -408,14 +408,14 @@ describe('Test Utils', () => {
 			const predicate = sinon.spy();
 			const Hello = ({ who }) => (<div>Hello, {who}!</div>);
 			const treeWithText = renderIntoDocument(<Hello who="world"/>);
-			assert.notCalled(predicate);
+			sinon.assert.notCalled(predicate);
 			findAllInRenderedTree(treeWithText, predicate);
-			assert.callCount(predicate, 5);
-			assert.calledWithMatch(predicate, { type: Hello });
-			assert.calledWithMatch(predicate, { type: 'div' });
-			assert.calledWithMatch(predicate, { children: 'Hello, ' });
-			assert.calledWithMatch(predicate, { children: 'world' });
-			assert.calledWithMatch(predicate, { children: '!' });
+			sinon.assert.callCount(predicate, 5);
+			sinon.assert.calledWithMatch(predicate, { type: Hello });
+			sinon.assert.calledWithMatch(predicate, { type: 'div' });
+			sinon.assert.calledWithMatch(predicate, { children: 'Hello, ' });
+			sinon.assert.calledWithMatch(predicate, { children: 'world' });
+			sinon.assert.calledWithMatch(predicate, { children: '!' });
 		});
 	});
 
@@ -451,14 +451,14 @@ describe('Test Utils', () => {
 		});
 
 		it('should call predicate for each VNode instance in an non-rendered tree', () => {
-			const predicate = spy();
-			assert.notCalled(predicate);
+			const predicate = sinon.spy();
+			sinon.assert.notCalled(predicate);
 			findAllInVNodeTree(tree, predicate);
 			// 0: section
 			// 1: FunctionalComponent
-			assert.callCount(predicate, 2);
-			assert.calledWithMatch(predicate, { type: 'section' });
-			assert.calledWithMatch(predicate, { type: FunctionalComponent });
+			sinon.assert.callCount(predicate, 2);
+			sinon.assert.calledWithMatch(predicate, { type: 'section' });
+			sinon.assert.calledWithMatch(predicate, { type: FunctionalComponent });
 		});
 
 		it('should call predicate in the correct order', () => {

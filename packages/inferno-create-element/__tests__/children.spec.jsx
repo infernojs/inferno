@@ -1,7 +1,7 @@
 
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { assert, spy } from 'sinon';
+import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 
 describe('Children - (JSX)', () => {
@@ -1101,7 +1101,7 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-			const unmountSpy = spy(B.prototype, 'componentWillUnmount');
+			const unmountSpy = sinon.spy(B.prototype, 'componentWillUnmount');
 			render(<A test={<B />}/>, container);
 			expect(container.innerHTML).toBe(innerHTML('<div><p>B</p></div>'));
 			render(<A test={null}/>, container);
@@ -1401,8 +1401,8 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-			const spyUnmount = spy(UnMountTest.prototype, 'componentWillUnmount');
-			const notCalled = assert.notCalled;
+			const spyUnmount = sinon.spy(UnMountTest.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
 
 			render(<Parent firstClassCitizenIsBack={false}/>, container); // initial render
 			expect(container.innerHTML).toEqual('<div><div>a</div><span>1</span><div>C</div></div>');
@@ -1469,11 +1469,11 @@ describe('Children - (JSX)', () => {
 
 			render(<Wrapper/>, container);
 
-			const unMountSpy = spy(FooBar.prototype, 'componentWillUnmount');
-			const mountSpy = spy(FooBar.prototype, 'componentWillMount');
+			const unMountSpy = sinon.spy(FooBar.prototype, 'componentWillUnmount');
+			const mountSpy = sinon.spy(FooBar.prototype, 'componentWillMount');
 
-			const calledOnce = assert.calledOnce;
-			const notCalled = assert.notCalled;
+			const calledOnce = sinon.assert.calledOnce;
+			const notCalled = sinon.assert.notCalled;
 
 			expect(container.innerHTML).toEqual('<div><span>foobar</span><span>initial</span></div>');
 
@@ -1542,11 +1542,11 @@ describe('Children - (JSX)', () => {
 
 			render(<Wrapper/>, container);
 
-			const unMountSpy = spy(Test.prototype, 'componentWillUnmount');
-			const mountSpy = spy(Test.prototype, 'componentWillMount');
+			const unMountSpy = sinon.spy(Test.prototype, 'componentWillUnmount');
+			const mountSpy = sinon.spy(Test.prototype, 'componentWillMount');
 
-			const calledOnce = assert.calledOnce;
-			const notCalled = assert.notCalled;
+			const calledOnce = sinon.assert.calledOnce;
+			const notCalled = sinon.assert.notCalled;
 
 			expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em>f</em></span></div>');
 
@@ -1622,10 +1622,10 @@ describe('Children - (JSX)', () => {
 
 			render(<Wrapper/>, container);
 
-			const unMountSpy = spy(Test.prototype, 'componentWillUnmount');
-			const unMountSpy2 = spy(Foo.prototype, 'componentWillUnmount');
+			const unMountSpy = sinon.spy(Test.prototype, 'componentWillUnmount');
+			const unMountSpy2 = sinon.spy(Foo.prototype, 'componentWillUnmount');
 
-			const calledOnce = assert.calledOnce;
+			const calledOnce = sinon.assert.calledOnce;
 
 			expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em>f</em><em>f</em></span></div>');
 
@@ -1720,9 +1720,9 @@ describe('Children - (JSX)', () => {
 
 			render(<Wrapper/>, container);
 
-			const unMountSpy = spy(Test5.prototype, 'componentWillUnmount');
+			const unMountSpy = sinon.spy(Test5.prototype, 'componentWillUnmount');
 
-			const calledOnce = assert.calledOnce;
+			const calledOnce = sinon.assert.calledOnce;
 
 			expect(container.innerHTML).toEqual(
                 '<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>'
@@ -1778,10 +1778,10 @@ describe('Children - (JSX)', () => {
 
 			render(<Wrapper/>, container);
 
-			const unMountSpy = spy(Wrapper.prototype, 'componentWillUnmount');
-			const unMountSpy2 = spy(FooBar.prototype, 'componentWillUnmount');
+			const unMountSpy = sinon.spy(Wrapper.prototype, 'componentWillUnmount');
+			const unMountSpy2 = sinon.spy(FooBar.prototype, 'componentWillUnmount');
 
-			const calledOnce = assert.calledOnce;
+			const calledOnce = sinon.assert.calledOnce;
 
 			expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em>f</em></span></div>');
 
@@ -1871,10 +1871,10 @@ describe('Children - (JSX)', () => {
 
 			render(<Wrapper kill={false}/>, container);
 
-			const unMountSpy = spy(Wrapper.prototype, 'componentWillUnmount');
-			const unMountSpy2 = spy(FooBar.prototype, 'componentWillUnmount');
+			const unMountSpy = sinon.spy(Wrapper.prototype, 'componentWillUnmount');
+			const unMountSpy2 = sinon.spy(FooBar.prototype, 'componentWillUnmount');
 
-			const notCalled = assert.notCalled;
+			const notCalled = sinon.assert.notCalled;
 
 			expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em><pre>aa</pre></em></span></div>');
 
@@ -1940,11 +1940,11 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-			const unMountSpy = spy(Parent.prototype, 'componentWillUnmount');
-			const unMountSpy2 = spy(HasLife.prototype, 'componentWillUnmount');
+			const unMountSpy = sinon.spy(Parent.prototype, 'componentWillUnmount');
+			const unMountSpy2 = sinon.spy(HasLife.prototype, 'componentWillUnmount');
 
-			const notCalled = assert.notCalled;
-			const calledOnce = assert.calledOnce;
+			const notCalled = sinon.assert.notCalled;
+			const calledOnce = sinon.assert.calledOnce;
 
 			render(<Parent/>, container);
 

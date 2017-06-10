@@ -1,7 +1,7 @@
 
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
-import { assert, spy } from 'sinon';
+import sinon from 'sinon';
 import { createTextVNode } from 'inferno/core/VNodes';
 import { innerHTML } from 'inferno-utils';
 
@@ -771,8 +771,8 @@ describe('Elements (JSX)', () => {
 		const bool = false;
 		const newValue = 't';
 		const spread = { id: 'test' };
-		const sinonSpy = spy(obj, 'fn');
-		const spyClick = spy(obj, 'click');
+		const sinonSpy = sinon.spy(obj, 'fn');
+		const spyClick = sinon.spy(obj, 'click');
 
 		// TODO: Fails to creation of node fix needed
 		render(<input type="text" ref={obj.fn} spellcheck="false"
@@ -782,10 +782,10 @@ describe('Elements (JSX)', () => {
 									onBlur={test} {...spread} />, container);
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		const input = container.querySelector('#test');
-		assert.calledOnce(sinonSpy); // Verify hook works
+		sinon.assert.calledOnce(sinonSpy); // Verify hook works
 		input.click(); // Focus fails with async tests - changed to tests
 		requestAnimationFrame(() => {
-			assert.calledOnce(spyClick); // Verify hook works
+			sinon.assert.calledOnce(spyClick); // Verify hook works
 			done();
 		});
 	});
@@ -924,7 +924,7 @@ describe('Elements (JSX)', () => {
 			it('Should be possible to render Progress element without value', () => {
 				render(<progress max={100}/>, container);
 				expect(container.firstChild.tagName).toEqual('PROGRESS');
-				expect(container.firstChild.getAttribute('value')).to.be.oneOf([ null, '', 0, '0' ]);
+				expect([ null, '', 0, '0' ]).toContain(container.firstChild.getAttribute('value'));
 
 				// Add as string
 				render(<progress max={100} value="3"/>, container);

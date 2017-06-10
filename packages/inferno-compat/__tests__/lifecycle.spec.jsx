@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { spy } from 'sinon';
+import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 import { Component, createElement } from 'inferno-compat';
 
@@ -21,7 +21,7 @@ describe('Inferno-compat LifeCycle', () => {
 		it('Should go as per React (minus doubles)', () => {
 			// We spy console log to verify order of callbacks
 			// React implementation: https://jsfiddle.net/zg7ay23g/
-			const consoleSpy = spy(console, 'log');
+			const consoleSpy = sinon.spy(console, 'log');
 
 			class Hello2 extends Component {
 				componentWillMount() {

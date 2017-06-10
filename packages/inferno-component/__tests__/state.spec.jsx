@@ -54,7 +54,7 @@ describe('state', () => {
 
 		const f = new Foo({}, {});
 
-		expect(f).toBeNull();
+		expect(f).not.toBeNull();
 	});
 
 	describe('setting state', () => {
@@ -81,7 +81,6 @@ describe('state', () => {
 				}
 
 				componentWillReceiveProps(nextProps) {
-					console.log('CWRP', nextProps.scrollTop);
 					if (nextProps.scrollTop !== 0){
 						this.setState({ testScrollTop: nextProps.scrollTop });
 					}

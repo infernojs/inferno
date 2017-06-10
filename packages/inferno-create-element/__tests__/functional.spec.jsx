@@ -50,9 +50,6 @@ describe('Functional methods (JSX)', () => {
 		const model$ = scan(update, 0, actions$);
 		const vNodes$ = map(view(actions$), model$);
 
-		// Logging
-		// observe(state => console.log('model', state), model$) // eslint-disable-line fp/no-unused-expression
-
 		const renderer = createRenderer();
 
 		const runApp = () => reduce(renderer, container, vNodes$);

@@ -215,10 +215,6 @@ describe('Update (non-jsx)', () => {
 			container.innerHTML
 		).toBe(innerHTML('<div>Hello world! and Zoo</div>'));
 
-		expect(
-			() => render(template('Hello', [], ' and ', 'Zoo'), container)
-		).to.throw;
-
 		render(template('Hello', null, ' and ', 'Zoo'), container);
 		expect(
 			container.innerHTML
@@ -226,7 +222,7 @@ describe('Update (non-jsx)', () => {
 
 		expect(
 			() => render(template('Hello', {}, ' and ', 'Zoo'), container)
-		).to.throw;
+		).toThrow();
 
 		render(template('Hello', ' poz', ' and ', 'Zoo'), container);
 		expect(
@@ -477,10 +473,6 @@ describe('Update (non-jsx)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
 		expect(container.firstChild.firstChild.textContent).toBe('');
 		expect(container.firstChild.firstChild.firstChild.textContent).toBe('');
-
-		expect(
-			() => render(template([], [], [], [], '', []), container)
-		).to.throw;
 	});
 
 	it('should render a basic example #7', () => {
@@ -753,7 +745,7 @@ describe('Update (non-jsx)', () => {
 
 		render(template(null), container);
 
-		expect(container.firstChild.getAttribute('style')).to.be.oneOf([ null, '' ]);
+		expect([ null, '' ]).toContain(container.firstChild.getAttribute('style'));
 	});
 
 	// TODO: There seems to be bug in JSDOM because styles dont get removed by assigning null or empty to dom.style[something]
@@ -799,7 +791,7 @@ describe('Update (non-jsx)', () => {
 			it('Second render (update)', () => {
 				render(template(null), container); // change style to null
 
-				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf([ null, '' ]);
+				expect([ null, '' ]).toContain(container.firstChild.firstChild.getAttribute('style'));
 			});
 
 			it('Third render (update)', () => {

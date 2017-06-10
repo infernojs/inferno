@@ -1,4 +1,4 @@
-
+import sinon from 'sinon';
 import { render } from 'inferno';
 import h from 'inferno-hyperscript';
 import { innerHTML } from 'inferno-utils';
