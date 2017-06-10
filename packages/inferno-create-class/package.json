@@ -23,12 +23,12 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno-component": "3.4.0",
-    "inferno-shared": "3.1.1"
+    "inferno-component": "3.4.1",
+    "inferno-shared": "3.4.1"
   },
   "devDependencies": {
-    "inferno": "3.4.0",
-    "inferno-create-element": "3.4.0"
+    "inferno": "3.4.1",
+    "inferno-create-element": "3.4.1"
   },
   "rollup": {
     "bundledDependencies": [

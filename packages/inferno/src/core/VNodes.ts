@@ -39,7 +39,7 @@ export interface VNode {
 	children: InfernoChildren;
 	dom: Element | null;
 	className: string;
-	flags: VNodeFlags;
+	flags: number;
 	key: any;
 	props: Props | null;
 	ref: Ref;
@@ -70,7 +70,7 @@ function VNode(children, className, flags, key, props, ref, type) {
  * @param {boolean=} noNormalise
  * @returns {VNode} returns new virtual node
  */
-export function createVNode(flags: VNodeFlags, type: Type, className?: string | null, children?: InfernoChildren, props?: Props | null, key?: any, ref?: Ref, noNormalise?: boolean) {
+export function createVNode(flags: number, type: Type, className?: string | null, children?: InfernoChildren, props?: Props | null, key?: any, ref?: Ref, noNormalise?: boolean) {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
