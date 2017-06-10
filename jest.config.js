@@ -14,6 +14,10 @@ module.exports = {
 			lines: 85
 		}
 	},
+	globals: {
+		usingJSDOM: true,
+		usingJest: true
+	},
 	moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 	moduleNameMapper: {
 		'^inferno$': '<rootDir>/packages/inferno/src',
