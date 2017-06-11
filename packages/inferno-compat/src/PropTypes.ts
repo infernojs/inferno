@@ -1,9 +1,10 @@
 /**
  * @module Inferno-Compat
- */ /** TypeDoc Comment */
+ */
+/**
+ * Inlined PropTypes, there is propType checking ATM.
+ */
 
-
-// Inlined PropTypes, there is propType checking ATM.
 // tslint:disable-next-line:no-empty
 function proptype() {}
 (proptype as any).isRequired = proptype;

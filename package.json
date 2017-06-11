@@ -18,6 +18,7 @@
   "pre-commit": {
     "silent": true,
     "run": [
+      "lint",
       "test"
     ]
   },
@@ -37,7 +38,7 @@
     "predocs": "rimraf docs",
     "docs": "typedoc",
     "examples": "npm run --prefix examples start",
-    "lint": "tslint -p tsconfig.json --fix --type-check",
+    "lint": "tslint -p tsconfig.json --type-check",
     "prepublishOnly": "npm run build",
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
