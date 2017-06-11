@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Mobx
+ */ /** TypeDoc Comment */
+
 import hoistStatics from 'hoist-non-inferno-statics';
 import { createVNode } from 'inferno';
 import createClass from 'inferno-create-class';

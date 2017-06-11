@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 // From https://github.com/lodash/lodash/blob/es
 function overArg(func, transform) {
 	return function(arg) {

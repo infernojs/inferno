@@ -98,6 +98,7 @@
     "tslint": "^5.2.0",
     "typedoc": "^0.7.1",
     "typedoc-plugin-external-module-name": "^1.0.9",
+    "typedoc-plugin-internal-external": "^1.0.9",
     "typescript": "^2.3.4",
     "union-type-es": "^0.1.0",
     "webpack": "^2.6.1"

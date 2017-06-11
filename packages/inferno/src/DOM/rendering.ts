@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 import {
 	isBrowser,
 	isInvalid,

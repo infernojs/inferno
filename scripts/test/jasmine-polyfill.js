@@ -1,3 +1,2 @@
-window.it.skip = function(testname, testcase) {
-	console.info('SKIPPING: ', testname);
-};
+window.it.skip = xit;
+window.describe.skip = xdescribe;

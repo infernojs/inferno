@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Mobx
+ */ /** TypeDoc Comment */
+
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import { throwError } from 'inferno-shared';

@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 import { bindActionCreators } from 'redux';
 
 /**

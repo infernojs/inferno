@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import Inferno from 'inferno';
 import { combineFrom, isArray, toArray } from 'inferno-shared';
 import pathToRegExp from 'path-to-regexp-es6';

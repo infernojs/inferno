@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import { createVNode, VNode } from 'inferno';
 import Component from 'inferno-component';
 import VNodeFlags from 'inferno-vnode-flags';

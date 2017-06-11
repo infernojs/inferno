@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 import Component from 'inferno-component';
 import { isNullOrUndef, toArray } from 'inferno-shared';
 import { warning } from './utils';

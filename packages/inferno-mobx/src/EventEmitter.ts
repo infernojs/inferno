@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Mobx
+ */ /** TypeDoc Comment */
+
 export default class EventEmitter {
 
 	private listeners: Function[] = [];

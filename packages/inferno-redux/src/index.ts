@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 import connect from './connect';
 import Provider from './Provider';
 

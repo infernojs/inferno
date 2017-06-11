@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Test-Utils
+ */ /** TypeDoc Comment */
+
 import { VNode } from 'inferno';
 import { isArray, isNull, isObject, isString } from 'inferno-shared';
 import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from './index';

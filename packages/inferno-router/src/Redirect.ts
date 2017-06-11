@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import Route from './Route';
 
 export default class Redirect extends Route {

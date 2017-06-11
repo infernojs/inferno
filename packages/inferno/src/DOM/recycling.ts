@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 import { isNull, isUndefined, LifecycleClass } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Refs, VNode } from '../core/VNodes';

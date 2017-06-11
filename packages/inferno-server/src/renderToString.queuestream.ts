@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Server
+ */ /** TypeDoc Comment */
+
 import { EMPTY_OBJ, internal_isUnitlessNumber } from 'inferno';
 import {
 	combineFrom,
