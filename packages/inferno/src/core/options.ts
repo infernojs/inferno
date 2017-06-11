@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 import { LifecycleClass } from 'inferno-shared';
 import { InfernoInput } from './VNodes';
 

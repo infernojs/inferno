@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Mobx
+ */ /** TypeDoc Comment */
+
 import Component from 'inferno-component';
 import { throwError } from 'inferno-shared';
 import { extras, isObservable, Reaction } from 'mobx';

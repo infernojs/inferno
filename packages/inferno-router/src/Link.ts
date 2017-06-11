@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import { createVNode, VNode } from 'inferno';
 import { combineFrom, isBrowser, warning } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';

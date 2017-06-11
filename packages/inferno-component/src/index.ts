@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Component
+ */ /** TypeDoc Comment */
+
 // Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
 import { createVNode, EMPTY_OBJ, internal_DOMNodeMap, internal_patch, options, Props, VNode } from 'inferno';
 import {

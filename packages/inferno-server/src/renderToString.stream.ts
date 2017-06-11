@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Server
+ */ /** TypeDoc Comment */
+
 import { combineFrom, isArray, isInvalid, isNullOrUndef, isStringOrNumber, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';

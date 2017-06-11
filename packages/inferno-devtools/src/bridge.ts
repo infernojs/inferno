@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Devtools
+ */ /** TypeDoc Comment */
+
 import { options } from 'inferno';
 import { isArray, isInvalid, isObject, isStringOrNumber } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';

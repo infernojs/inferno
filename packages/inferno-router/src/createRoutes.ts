@@ -1,4 +1,8 @@
 /**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
+/**
  * Helper function for parsing plain route configurations
  * based on react-router createRoutes handler.
  *

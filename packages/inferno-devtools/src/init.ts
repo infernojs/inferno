@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Devtools
+ */ /** TypeDoc Comment */
+
 import { options } from 'inferno';
 import Component from 'inferno-component';
 import { isStatefulComponent } from 'inferno-shared';

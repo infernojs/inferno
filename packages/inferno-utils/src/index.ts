@@ -3,6 +3,10 @@
  */ /** TypeDoc Comment */
 
 /**
+ * @module Inferno-Utils
+ */ /** TypeDoc Comment */
+
+/**
  * @module inferno-utils
  */ /** TypeDoc Comment */
 
