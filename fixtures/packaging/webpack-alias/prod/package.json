@@ -1,5 +1,5 @@
 {
-  "name": "webpack-prod-test",
+  "name": "webpack-alias-prod-test",
   "private": true,
   "dependencies": {
     "webpack": "^1.14.0"

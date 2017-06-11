@@ -50,9 +50,6 @@ describe('Functional methods (JSX)', () => {
 		const model$ = scan(update, 0, actions$);
 		const vNodes$ = map(view(actions$), model$);
 
-		// Logging
-		// observe(state => console.log('model', state), model$) // eslint-disable-line fp/no-unused-expression
-
 		const renderer = createRenderer();
 
 		const runApp = () => reduce(renderer, container, vNodes$);
@@ -68,27 +65,27 @@ describe('Functional methods (JSX)', () => {
 			 */
 			const outerDiv = container.firstChild;
 
-			expect(outerDiv.style.fontSize).to.eql('48px');
-			expect(outerDiv.style.fontFamily).to.eql('monospace');
-			expect(outerDiv.style.width).to.eql('100%');
-			expect(outerDiv.style.textAlign).to.eql('center');
-			expect(outerDiv.tagName).to.eql('DIV');
+			expect(outerDiv.style.fontSize).toEqual('48px');
+			expect(outerDiv.style.fontFamily).toEqual('monospace');
+			expect(outerDiv.style.width).toEqual('100%');
+			expect(outerDiv.style.textAlign).toEqual('center');
+			expect(outerDiv.tagName).toEqual('DIV');
 
 			const firstButton = outerDiv.childNodes[ 0 ];
-			expect(firstButton.getAttribute('id')).to.eql('decrement');
-			expect(firstButton.innerHTML).to.eql('-');
+			expect(firstButton.getAttribute('id')).toEqual('decrement');
+			expect(firstButton.innerHTML).toEqual('-');
 
 			const midDiv = outerDiv.childNodes[ 1 ];
-			expect(midDiv.style.fontSize).to.eql('48px');
-			expect(midDiv.style.fontFamily).to.eql('monospace');
-			expect(midDiv.style.width).to.eql('100%');
-			expect(midDiv.style.textAlign).to.eql('center');
-			expect(midDiv.tagName).to.eql('DIV');
-			expect(midDiv.innerHTML).to.eql('0');
+			expect(midDiv.style.fontSize).toEqual('48px');
+			expect(midDiv.style.fontFamily).toEqual('monospace');
+			expect(midDiv.style.width).toEqual('100%');
+			expect(midDiv.style.textAlign).toEqual('center');
+			expect(midDiv.tagName).toEqual('DIV');
+			expect(midDiv.innerHTML).toEqual('0');
 
 			const secondButton = outerDiv.childNodes[ 2 ];
-			expect(secondButton.getAttribute('id')).to.eql('increment');
-			expect(secondButton.innerHTML).to.eql('+');
+			expect(secondButton.getAttribute('id')).toEqual('increment');
+			expect(secondButton.innerHTML).toEqual('+');
 			done();
 		}, 10);
 	});

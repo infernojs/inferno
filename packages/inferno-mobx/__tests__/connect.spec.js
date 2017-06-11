@@ -1,25 +1,25 @@
 
-import Component from 'inferno-component';
 import { render } from 'inferno';
+import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { innerHTML } from 'inferno/test/utils';
-import { connect, inject, Provider } from '../dist-es';
+import { connect, inject, Provider } from 'inferno-mobx';
+import { innerHTML } from 'inferno-utils';
 
 describe('MobX connect()', () => {
 
 	it('should throw if store is invalid', () => {
 		const tryConnect = () => connect('invalidStore', () => 'Test');
-		expect(tryConnect).to.throw(Error, /should be provided as array/);
+		expect(tryConnect).toThrowError(Error);
 	});
 
 	it('should throw if component is invalid', () => {
 		const tryConnect = () => connect(null);
-		expect(tryConnect).to.throw(Error, /Please pass a valid component/);
+		expect(tryConnect).toThrowError(Error);
 	});
 
 	it('should connect without second argument', () => {
 		const tryConnect = () => connect(['invalidStore'])(() => 'Test');
-		expect(tryConnect).to.not.throw(Error);
+		expect(tryConnect).not.toThrowError(Error);
 	});
 
 });
@@ -27,13 +27,13 @@ describe('MobX connect()', () => {
 describe('MobX inject()', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});
@@ -54,7 +54,6 @@ describe('MobX inject()', () => {
 	 }
 	 };
 	 const tryInject = () => inject()(TestComponent);
-	 console.log(createElement(tryInject));
 	 //expect(tryInject).to.not.throw(Error);
 	 });*/
 
@@ -65,7 +64,7 @@ describe('MobX inject()', () => {
 		}
 
 		// eslint-disable-next-line
-		expect(() => render(App(), container)).to.throw(Error, /is not available!/);
+		expect(() => render(App(), container)).toThrowError(Error);
 	});
 
 	it('should inject stores', () => {
@@ -78,7 +77,7 @@ describe('MobX inject()', () => {
 
 		// eslint-disable-next-line
 		render(App(), container);
-		expect(container.innerHTML).to.equal(innerHTML('<span>works!</span>'));
+		expect(container.innerHTML).toBe(innerHTML('<span>works!</span>'));
 	});
 
 	it('should prefer props over stores', () => {
@@ -91,7 +90,7 @@ describe('MobX inject()', () => {
 
 		// eslint-disable-next-line
 		render(App(), container);
-		expect(container.innerHTML).to.equal(innerHTML('<span>works!</span>'));
+		expect(container.innerHTML).toBe(innerHTML('<span>works!</span>'));
 	});
 
 	it('should create class with injected stores', () => {
@@ -114,7 +113,7 @@ describe('MobX inject()', () => {
 
 		// eslint-disable-next-line
 		render(App(), container);
-		expect(container.innerHTML).to.equal(innerHTML('<span>hello world</span>'));
+		expect(container.innerHTML).toBe(innerHTML('<span>hello world</span>'));
 	});
 
 });

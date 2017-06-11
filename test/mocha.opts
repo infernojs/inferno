@@ -1,9 +1,0 @@
---compilers js:babel-register
---require ./test/mocha/DOM.js
---full-trace
---reporter spec
---ui bdd
---recursive
---timeout 15000
-
-packages/*/__tests__/**/*.js*

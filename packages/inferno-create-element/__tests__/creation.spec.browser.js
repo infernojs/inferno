@@ -1,16 +1,16 @@
 
-import createElement from '../dist-es';
 import { render } from 'inferno';
+import createElement from 'inferno-create-element';
 
 describe('Creation - (non-JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -119,15 +119,15 @@ describe('Creation - (non-JSX)', () => {
 		it(test.description, () => {
 
 			render(test.template(), container);
-			expect(container.firstChild.nodeType).to.equal(1);
-			expect(container.firstChild.tagName.toLowerCase()).to.equal(test.tagName);
-			expect(container.firstChild.childNodes.length).to.equal(test.children);
-			expect(container.firstChild.textContent).to.equal(test.textContent);
+			expect(container.firstChild.nodeType).toBe(1);
+			expect(container.firstChild.tagName.toLowerCase()).toBe(test.tagName);
+			expect(container.firstChild.childNodes.length).toBe(test.children);
+			expect(container.firstChild.textContent).toBe(test.textContent);
 
 			render(test.template(), container);
-			expect(container.firstChild.nodeType).to.equal(1);
-			expect(container.firstChild.tagName.toLowerCase()).to.equal(test.tagName);
-			expect(container.firstChild.childNodes.length).to.equal(test.children);
+			expect(container.firstChild.nodeType).toBe(1);
+			expect(container.firstChild.tagName.toLowerCase()).toBe(test.tagName);
+			expect(container.firstChild.childNodes.length).toBe(test.children);
 		});
 	});
 });

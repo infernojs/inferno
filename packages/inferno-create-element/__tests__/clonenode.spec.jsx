@@ -20,6 +20,6 @@ describe('CloneVNode use cases', () => {
 
 		render(<div>{[ a, a, a, a ]}</div>, container);
 
-		expect(container.innerHTML).to.eql('<div>foobarfoobarfoobarfoobar</div>');
+		expect(container.innerHTML).toEqual('<div>foobarfoobarfoobarfoobar</div>');
 	});
 });

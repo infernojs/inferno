@@ -1,8 +1,8 @@
 
 import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
-import { renderToString } from '../dist-es';
-import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno/test/utils';
+import { renderToString } from 'inferno-server';
+import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
 
 class Comp extends Component {
 	render() {
@@ -48,8 +48,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
 		it(`do test #${ i + 1 }`, () => {
 			let container = createContainerWithHTML(html);
 			render(component, container);
-			console.log(container.innerHTML);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(compHtml));
+			expect(innerHTML(container.innerHTML)).toBe(innerHTML(compHtml));
 		});
 	});
 });

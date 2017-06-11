@@ -1,17 +1,17 @@
-import { createVNode, render, version } from '../dist-es';
-import pkgJSON from './../package.json';
+import { createVNode, render, version } from 'inferno';
 import { NO_OP } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
+import pkgJSON from '../package.json';
 
 describe('rendering routine', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -22,13 +22,15 @@ describe('rendering routine', () => {
 		try {
 			render(div, document.body);
 		} catch (e) {
-			expect(e.message).to.eql('Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.');
+			expect(e.message).toEqual(
+                'Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.'
+            );
 		}
 	});
 
 	it('Should do nothing if input is NO-OP', () => {
 		render(NO_OP, container);
-		expect(container.innerHTML).to.eql('');
+		expect(container.innerHTML).toEqual('');
 	});
 
 	it('Should create new object when dom exists', () => {
@@ -36,15 +38,19 @@ describe('rendering routine', () => {
 		const foo = createVNode(2, 'div', null, bar, null, null, null, true);
 
 		render(foo, container);
-		expect(container.innerHTML).to.eql('<div><div>123</div></div>');
+		expect(container.innerHTML).toEqual('<div><div>123</div></div>');
 
 		render(null, container);
 
 		render(foo, container);
-		expect(container.innerHTML).to.eql('<div><div>123</div></div>');
+		expect(container.innerHTML).toEqual('<div><div>123</div></div>');
 	});
 
 	it('Should have same version number string as package.json', () => {
-		expect(pkgJSON.version).to.equal(version);
+		expect(pkgJSON.version).toBe(version);
+	});
+
+	it('Should have same version number string as package.json', () => {
+		expect(pkgJSON.version).toEqual(version);
 	});
 });

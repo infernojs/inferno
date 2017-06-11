@@ -1,17 +1,17 @@
 
-import { createVNode, render } from '../dist-es';
+import { createVNode, render } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
-import { createTextVNode } from '../dist-es/core/VNodes';
+import { createTextVNode } from 'inferno/core/VNodes';
 
 describe('patching routine', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -23,12 +23,12 @@ describe('patching routine', () => {
 		let foo = createVNode(2, 'div', null, [ bar, yar ], null, null, null, true);
 
 		render(foo, container);
-		expect(container.innerHTML).to.eql('<div><div>123</div><div>123</div></div>');
+		expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
 
 		foo = createVNode(2, 'div', null, [ bar, yar ], null, null, null, true);
 
 		render(foo, container);
-		expect(container.innerHTML).to.eql('<div><div>123</div><div>123</div></div>');
+		expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
 	});
 
 	it('Should mount nextNode if lastNode crashed', () => {
@@ -48,12 +48,12 @@ describe('patching routine', () => {
 		try {
 			render(invalidNode, container);
 		} catch (e) {
-			expect(e.message.indexOf('Inferno Error: mount() received an object')).to.not.eql(-1);
+			expect(e.message.indexOf('Inferno Error: mount() received an object')).not.toEqual(-1);
 		}
-		expect(container.innerHTML).to.eql('<span>a</span>');
+		expect(container.innerHTML).toEqual('<span>a</span>');
 
 		render(validNode, container);
-		expect(container.innerHTML).to.eql('<span>a</span>');
+		expect(container.innerHTML).toEqual('<span>a</span>');
 	});
 
 	it('Patch operation when nextChildren is NOT Invalid/Array/StringOrNumber/VNode', () => {
@@ -94,8 +94,8 @@ describe('patching routine', () => {
 
 	it('Should not access real DOM property when text does not change', () => {
 		render(createTextVNode('a'), container);
-		expect(container.innerHTML).to.eql('a');
+		expect(container.innerHTML).toEqual('a');
 		render(createTextVNode('a'), container);
-		expect(container.innerHTML).to.eql('a');
+		expect(container.innerHTML).toEqual('a');
 	});
 });

@@ -1,5 +1,5 @@
 import { createVNode, render } from 'inferno';
-import Component from '../dist-es';
+import Component from 'inferno-component';
 import VNodeFlags from 'inferno-vnode-flags';
 
 class TestCWRP extends Component {
@@ -48,13 +48,13 @@ describe('state', () => {
 			constructor(p, c) {
 				super(p, c);
 
-				expect(this.state).to.be.a('null');
+				expect(this.state).toBeNull();
 			}
 		}
 
 		const f = new Foo({}, {});
 
-		expect(f).not.to.be.a('null');
+		expect(f).not.toBeNull();
 	});
 
 	describe('setting state', () => {
@@ -81,15 +81,14 @@ describe('state', () => {
 				}
 
 				componentWillReceiveProps(nextProps) {
-					console.log('CWRP', nextProps.scrollTop);
 					if (nextProps.scrollTop !== 0){
 						this.setState({ testScrollTop: nextProps.scrollTop });
 					}
 				}
 
 				componentDidUpdate(prevProps, prevState) {
-					expect(prevState.testScrollTop).to.equal(0);
-					expect(this.state.testScrollTop).to.equal(200);
+					expect(prevState.testScrollTop).toBe(0);
+					expect(this.state.testScrollTop).toBe(200);
 				}
 
 				render(){

@@ -1,6 +1,5 @@
-
 import { render } from 'inferno';
-import { createElement } from '../dist-es';
+import { createElement } from 'inferno-compat';
 
 describe('svg', () => {
 	let container;
@@ -26,12 +25,12 @@ describe('svg', () => {
 			})
 		]), container);
 
-		expect(container.firstChild.getAttribute('viewBox')).to.equal('0 0 1024 1024');
-		expect(container.firstChild.getAttribute('height')).to.equal('16');
-		expect(container.firstChild.getAttribute('width')).to.equal('16');
-		expect(container.firstChild.firstChild.tagName).to.equal('stop');
-		expect(container.firstChild.firstChild.getAttribute('stop-color')).to.equal('white');
-		expect(container.firstChild.firstChild.getAttribute('stop-opacity')).to.equal('0.5');
+		expect(container.firstChild.getAttribute('viewBox')).toBe('0 0 1024 1024');
+		expect(container.firstChild.getAttribute('height')).toBe('16');
+		expect(container.firstChild.getAttribute('width')).toBe('16');
+		expect(container.firstChild.firstChild.tagName).toBe('stop');
+		expect(container.firstChild.firstChild.getAttribute('stop-color')).toBe('white');
+		expect(container.firstChild.firstChild.getAttribute('stop-opacity')).toBe('0.5');
 	});
 
 	it('Should work with namespace svg attributes', () => {
@@ -41,7 +40,7 @@ describe('svg', () => {
 			})
 		]), container);
 
-		expect(container.firstChild.firstChild.tagName).to.equal('image');
-		expect(container.firstChild.firstChild.getAttribute('xlink:href')).to.equal('http://i.imgur.com/w7GCRPb.png');
+		expect(container.firstChild.firstChild.tagName).toBe('image');
+		expect(container.firstChild.firstChild.getAttribute('xlink:href')).toBe('http://i.imgur.com/w7GCRPb.png');
 	});
 });

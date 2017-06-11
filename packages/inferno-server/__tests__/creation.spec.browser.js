@@ -1,6 +1,6 @@
 
 import createElement from 'inferno-create-element';
-import { renderToStaticMarkup } from '../dist-es';
+import { renderToStaticMarkup } from 'inferno-server';
 
 /*
  class StatefulComponent extends Component {
@@ -94,7 +94,7 @@ describe('SSR Creation (non-JSX)', () => {
 
 			document.body.appendChild(container);
 			container.innerHTML = output;
-			expect(output).to.equal(test.result);
+			expect(output).toBe(test.result);
 			document.body.removeChild(container);
 		});
 	});

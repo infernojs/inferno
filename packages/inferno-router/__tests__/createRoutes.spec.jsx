@@ -1,7 +1,4 @@
-
-import Route from '../dist-es/Route';
-import IndexRoute from '../dist-es/IndexRoute';
-import createRoutes from '../dist-es/createRoutes';
+import { createRoutes, IndexRoute, Route } from 'inferno-router';
 
 const App = () => (<div/>);
 const Home = () => (<div/>);
@@ -45,6 +42,6 @@ const expectedResult = (
 
 describe('Router #createRoutes', () => {
 	it('it should parse route configuration', () => {
-		expect(JSON.stringify(createRoutes(routeConfig)[ 0 ])).to.equal(JSON.stringify(expectedResult));
+		expect(JSON.stringify(createRoutes(routeConfig)[ 0 ])).toBe(JSON.stringify(expectedResult));
 	});
 });

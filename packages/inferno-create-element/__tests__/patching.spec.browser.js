@@ -1,10 +1,10 @@
 
 import { render } from 'inferno';
-import createElement from '../dist-es';
+import createElement from 'inferno-create-element';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {
-		let dataModels = [];
+		const dataModels = [];
 
 		dataModels.push(addGroupSingleChild(500));
 		dataModels.push(addGroupSingleChild(400));
@@ -17,7 +17,7 @@ describe('patching keyed lists (non-jsx)', () => {
 	}
 
 	function addGroupSingleChild(count) {
-		let dataModel = [];
+		const dataModel = [];
 		for (let i = 0; i < count; i++) {
 			dataModel.push({
 				key: i,
@@ -28,7 +28,7 @@ describe('patching keyed lists (non-jsx)', () => {
 	}
 
 	function shuffle(dataModel) {
-		for (let e, t, n = dataModel.length; n !== 0;) {
+		for (let e, t, n = dataModel.length; n !== 0; ) {
 			e = Math.floor(Math.random() * n--);
 			t = dataModel[ n ];
 			dataModel[ n ] = dataModel[ e ];
@@ -62,9 +62,9 @@ describe('patching keyed lists (non-jsx)', () => {
 	}
 
 	function createExpected(nodes) {
-		let c = document.createElement('div');
-		let e = document.createElement('div');
-		let children = createExpectedChildren(nodes);
+		const c = document.createElement('div');
+		const e = document.createElement('div');
+		const children = createExpectedChildren(nodes);
 		for (let i = 0; i < children.length; i++) {
 			e.appendChild(children[ i ]);
 		}
@@ -72,19 +72,19 @@ describe('patching keyed lists (non-jsx)', () => {
 		return c.innerHTML;
 	}
 
-	let container = document.createElement('div');
+	const container = document.createElement('div');
 	let dataModels = null;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		dataModels = createDataModels();
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		dataModels = null;
 	});
 
 	function renderTree(nodes) {
-		let children = new Array(nodes.length);
+		const children = new Array(nodes.length);
 		let i;
 		let n;
 
@@ -108,26 +108,20 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		dataModel = dataModels[ 0 ];
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		dataModel = dataModels[ 3 ];
 		dataModel.reverse();
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -140,9 +134,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -151,9 +143,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -161,9 +151,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -171,9 +159,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -181,9 +167,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -192,9 +176,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -203,9 +185,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 
@@ -214,9 +194,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		expect(container.innerHTML).to.equal(
-			createExpected(dataModel)
-		);
+		expect(container.innerHTML).toBe(createExpected(dataModel));
 
 		render(null, container);
 	});

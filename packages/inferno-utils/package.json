@@ -1,0 +1,13 @@
+{
+  "name": "inferno-utils",
+  "version": "4.0.0",
+  "description": "Meta test utilities which are not for userland",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true
+}

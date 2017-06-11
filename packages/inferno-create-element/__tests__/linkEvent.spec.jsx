@@ -36,13 +36,13 @@ describe('linkEvent', () => {
 		it('should work correctly for functional components', () => {
 			render(<FunctionalComponent test="123"/>, container);
 			container.querySelector('button').click();
-			expect(test).to.equal('123');
+			expect(test).toBe('123');
 		});
 
 		it('should work correctly for stateful components', () => {
 			render(<StatefulComponent test="456"/>, container);
 			container.querySelector('button').click();
-			expect(test).to.equal('456');
+			expect(test).toBe('456');
 		});
 
 		it('Should not fail when given event is invalid', () => {
@@ -79,13 +79,13 @@ describe('linkEvent', () => {
 		it('should work correctly for functional components', () => {
 			render(<FunctionalComponent test="123"/>, container);
 			container.querySelector('button').click();
-			expect(test).to.equal('123');
+			expect(test).toBe('123');
 		});
 
 		it('should work correctly for stateful components', () => {
 			render(<StatefulComponent test="456"/>, container);
 			container.querySelector('button').click();
-			expect(test).to.equal('456');
+			expect(test).toBe('456');
 		});
 	});
 
@@ -124,15 +124,15 @@ describe('linkEvent', () => {
 		it('should work correctly for functional components', () => {
 			render(<FunctionalComponent test="123"/>, container);
 			simulateInput(container.querySelector('input'), '123');
-			expect(test).to.equal('123');
-			expect(event.target.nodeName).to.equal('INPUT');
+			expect(test).toBe('123');
+			expect(event.target.nodeName).toBe('INPUT');
 		});
 
 		it('should work correctly for stateful components', () => {
 			render(<StatefulComponent test="456"/>, container);
 			simulateInput(container.querySelector('input'), '123');
-			expect(test).to.equal('456');
-			expect(event.target.nodeName).to.equal('INPUT');
+			expect(test).toBe('456');
+			expect(event.target.nodeName).toBe('INPUT');
 		});
 	});
 
@@ -197,8 +197,8 @@ describe('linkEvent', () => {
 			requestAnimationFrame(() => {
 				simulateBlur(input);
 				requestAnimationFrame(() => {
-					expect(isFocus).to.equal('1234');
-					expect(isBlur).to.equal('4321');
+					expect(isFocus).toBe('1234');
+					expect(isBlur).toBe('4321');
 					done();
 				});
 			});
@@ -211,8 +211,8 @@ describe('linkEvent', () => {
 			requestAnimationFrame(() => {
 				simulateBlur(input);
 				requestAnimationFrame(() => {
-					expect(isFocus).to.equal('1234');
-					expect(isBlur).to.equal('4321');
+					expect(isFocus).toBe('1234');
+					expect(isBlur).toBe('4321');
 					done();
 				});
 			});

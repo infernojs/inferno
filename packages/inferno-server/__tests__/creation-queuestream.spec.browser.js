@@ -1,5 +1,5 @@
-import { streamQueueAsString } from '../dist-es';
 import Component from 'inferno-component';
+import { streamQueueAsString } from 'inferno-server';
 
 import concatStream from 'concat-stream-es6';
 import createElement from 'inferno-create-element';
@@ -178,15 +178,15 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 	testEntries.forEach((test) => {
 		it(test.description, () => {
 			const vDom = test.template('foo');
-			return streamPromise(vDom).then(function (output) {
+			return streamPromise(vDom).then(function(output) {
 				if (typeof test.result === 'object') {
-					expect(output[ 0 ]).to.deep.equal(test.result[ 0 ]);
-					expect(output[ 1 ]).to.equal(test.result[ 1 ]);
+					expect(output[ 0 ]).toEqual(test.result[ 0 ]);
+					expect(output[ 1 ]).toBe(test.result[ 1 ]);
 				} else {
 					const container = document.createElement('div');
 					document.body.appendChild(container);
 					container.innerHTML = output;
-					expect(output[ 1 ]).to.equal(test.result);
+					expect(output[ 1 ]).toBe(test.result);
 					document.body.removeChild(container);
 				}
 			});
@@ -245,11 +245,11 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 			}
 
 			const vDom = <Tester />;
-			return streamPromise(vDom).then(function (output) {
+			return streamPromise(vDom).then(function(output) {
 				const container = document.createElement('div');
 				document.body.appendChild(container);
 				container.innerHTML = output;
-				expect(output[ 1 ]).to.equal('<div>bar2<div>bar2</div></div>');
+				expect(output[ 1 ]).toBe('<div>bar2<div>bar2</div></div>');
 				document.body.removeChild(container);
 			});
 		});
@@ -257,14 +257,14 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 });
 
 function streamPromise(dom) {
-	return new Promise(function (res, rej) {
-		let chunks = [];
+	return new Promise(function(res, rej) {
+		const chunks = [];
 		streamQueueAsString(dom)
 			.on('error', rej)
 			.on('data', (chunk) => {
 				chunks.push(chunk.toString());
 			})
-			.pipe(concatStream(function (buffer) {
+			.pipe(concatStream(function(buffer) {
 				res([ chunks, buffer.toString('utf-8') ]);
 			}));
 	});
