@@ -37,7 +37,9 @@ module.exports = function(config) {
 			'./packages/*/__tests__/*': ['webpack', 'sourcemap'],
 		},
 
-		reporters: ['progress'],
+		reporters: [
+			process.env.CI ? 'failed' : 'progress'
+		],
 
 		browserConsoleLogOptions: {
 			level:  'warn',

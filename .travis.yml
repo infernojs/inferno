@@ -6,6 +6,8 @@ node_js:
 cache:
   directories:
     - node_modules
+    - fixtures/browser/node_modules
+    - fixtures/packaging/node_modules
 
 notifications:
   email:
@@ -17,8 +19,8 @@ sudo: required
 dist: trusty
 
 addons:
-  chrome: stable
-  firefox: "latest"  
+  chrome: dev
+  firefox: latest
 
 before_script:
   - "export DISPLAY=:99.0"
