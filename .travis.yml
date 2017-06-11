@@ -19,7 +19,7 @@ sudo: required
 dist: trusty
 
 addons:
-  chrome: dev
+  chrome: stable
   firefox: latest
 
 before_script:
@@ -37,11 +37,3 @@ jobs:
       script:
         - npm run build
         - npm run test:package
-    - stage: Deploy
-      script: npm run docs
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        local_dir: docs
-        on:
-          branch: mega-refactor
