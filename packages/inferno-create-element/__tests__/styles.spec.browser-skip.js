@@ -1,4 +1,3 @@
-
 // import { render } from 'inferno';
 // import createElement from 'inferno-create-element';
 // import { innerHTML, style } from 'inferno/test/utils';
