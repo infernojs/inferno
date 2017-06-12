@@ -35,7 +35,6 @@ jobs:
     - npm run test:coverage
     - npm run coveralls
   - script: npm run test:browser
-  - script: npm run prettier
   - stage: Build
     script:
     - npm run build
