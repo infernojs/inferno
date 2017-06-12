@@ -30,10 +30,10 @@
     "inferno-component": "3.4.3",
     "inferno-create-element": "3.4.3",
     "inferno-shared": "3.4.2",
-    "redux": "*"
+    "redux": "^2.0.0 || ^3.0.0"
   },
   "devDependencies": {
-    "inferno-router": "3.4.0"
+    "inferno-test-utils": "3.4.3"
   },
   "rollup": {
     "bundledDependencies": [

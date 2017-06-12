@@ -9,7 +9,7 @@ import {
   Wrapper
 } from "inferno-test-utils";
 import { createStore } from "redux";
-import * as sinon from "sinon";
+import sinon from "sinon";
 import { Children, nextFrame, spyOn } from "../test-utils";
 
 const unmountDOM = elm => renderDOM(null, elm);
@@ -560,9 +560,9 @@ describe("Inferno", () => {
       assert.equal(stub.props.foo, "bar");
       expect(() => {
         findRenderedVNodeWithType(tree, Container).children;
-      }).to.not.throw();
+      }).not.toThrowError();
       const decorated = findRenderedVNodeWithType(tree, Container).children;
-      expect(decorated.isSubscribed()).to.be.true;
+      expect(decorated.isSubscribed()).toBe(true);
     });
 
     it("should not invoke mapState when props change if it only has one argument", () => {
@@ -724,7 +724,7 @@ describe("Inferno", () => {
       await tree.repaint();
 
       assert.equal(invocationCount, 3);
-      expect(propsPassedIn).to.eql({
+      expect(propsPassedIn).toEqual({
         foo: "BAZ"
       });
     });
@@ -888,7 +888,7 @@ describe("Inferno", () => {
       await tree.repaint();
 
       assert.equal(invocationCount, 3);
-      expect(propsPassedIn).to.eql({
+      expect(propsPassedIn).toEqual({
         foo: "BAZ"
       });
     });
@@ -915,14 +915,14 @@ describe("Inferno", () => {
 
         const stub = findRenderedVNodeWithType(tree, Passthrough).children;
         assert.equal(stub.props.dispatch, store.dispatch);
-        expect(stub.props.foo).to.be.undefined;
+        expect(stub.props.foo).toBeUndefined();
         assert.equal(stub.props.pass, "through");
         expect(() => {
           findRenderedVNodeWithType(tree, Container).children;
-        }).to.not.throw();
+        }).not.toThrowError();
 
         const decorated = findRenderedVNodeWithType(tree, Container).children;
-        expect(decorated.isSubscribed()).to.be.false;
+        expect(decorated.isSubscribed()).toBe(false);
       };
 
       runCheck();
@@ -1331,7 +1331,7 @@ describe("Inferno", () => {
     });
 
     it("should throw an error if a component is not passed to the function returned by connect", () => {
-      expect(connect()).to.throw(/You must pass a component to the function/);
+      expect(connect()).toThrowError(/You must pass a component to the function/);
     });
 
     it("should throw an error if mapState, mapDispatch, or mergeProps returns anything but a plain object", () => {
@@ -1359,9 +1359,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
-          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
-        );
+        expect(spy.getCall(0).args[0]).toMatch(/mapStateToProps\(\) in Connect\(Container\) must return a plain object/);
       });
 
       spyOn(console, "error", spy => {
@@ -1372,9 +1370,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
-          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
-        );
+        expect(spy.getCall(0).args[0]).toMatch(/mapStateToProps\(\) in Connect\(Container\) must return a plain object/);
       });
 
       spyOn(console, "error", spy => {
@@ -1385,9 +1381,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
-          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
-        );
+        expect(spy.getCall(0).args[0]).toMatch(/mapStateToProps\(\) in Connect\(Container\) must return a plain object/);
       });
 
       // mapDispatchToProps
@@ -1399,7 +1393,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
+        expect(spy.getCall(0).args[0]).toMatch(
           /mapDispatchToProps\(\) in Connect\(Container\) must return a plain object/
         );
       });
@@ -1412,7 +1406,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
+        expect(spy.getCall(0).args[0]).toMatch(
           /mapDispatchToProps\(\) in Connect\(Container\) must return a plain object/
         );
       });
@@ -1425,7 +1419,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
+        expect(spy.getCall(0).args[0]).toMatch(
           /mapDispatchToProps\(\) in Connect\(Container\) must return a plain object/
         );
       });
@@ -1439,9 +1433,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
-          /mergeProps\(\) in Connect\(Container\) must return a plain object/
-        );
+        expect(spy.getCall(0).args[0]).toMatch(/mergeProps\(\) in Connect\(Container\) must return a plain object/);
       });
 
       spyOn(console, "error", spy => {
@@ -1452,9 +1444,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
-          /mergeProps\(\) in Connect\(Container\) must return a plain object/
-        );
+        expect(spy.getCall(0).args[0]).toMatch(/mergeProps\(\) in Connect\(Container\) must return a plain object/);
       });
 
       spyOn(console, "error", spy => {
@@ -1465,9 +1455,7 @@ describe("Inferno", () => {
         );
 
         assert.equal(spy.callCount, 1);
-        expect(spy.getCall(0).args[0]).to.match(
-          /mergeProps\(\) in Connect\(Container\) must return a plain object/
-        );
+        expect(spy.getCall(0).args[0]).toMatch(/mergeProps\(\) in Connect\(Container\) must return a plain object/);
       });
     });
 
@@ -1513,7 +1501,7 @@ describe("Inferno", () => {
       const container = findRenderedVNodeWithType(tree, ContainerBefore)
         .children;
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.foo).to.be.undefined;
+      expect(stub.props.foo).toBeUndefined();
       assert.equal(stub.props.scooby, "doo");
 
       const imitateHotReloading = (TargetClass, SourceClass) => {
@@ -1547,7 +1535,7 @@ describe("Inferno", () => {
             }
           }
         ).displayName
-      ).to.eql("Connect(Foo)");
+      ).toEqual("Connect(Foo)");
 
       expect(
         connect(state => state)(
@@ -1558,7 +1546,7 @@ describe("Inferno", () => {
             }
           })
         ).displayName
-      ).to.eql("Connect(Bar)");
+      ).toEqual("Connect(Bar)");
 
       expect(
         connect(state => state)(
@@ -1568,7 +1556,7 @@ describe("Inferno", () => {
             }
           })
         ).displayName
-      ).to.eql("Connect(Component)");
+      ).toEqual("Connect(Component)");
     });
 
     it("should expose the wrapped component as WrappedComponent", () => {
@@ -1597,7 +1585,7 @@ describe("Inferno", () => {
       const decorator = connect(state => state);
       const decorated = decorator(Container);
 
-      expect(decorated.howIsRedux).to.be.a("function");
+      expect(typeof decorated.howIsRedux).toBe("function");
       assert.equal(decorated.howIsRedux(), "Awesome!");
       assert.equal(decorated.foo, "bar");
     });
@@ -1638,9 +1626,7 @@ describe("Inferno", () => {
       const decorator = connect(() => {});
       const Decorated = decorator(Container);
 
-      expect(() => renderIntoDocument(<Decorated />)).to.throw(
-        /Could not find "store"/
-      );
+      expect(() => renderIntoDocument(<Decorated />)).toThrowError(/Could not find "store"/);
     });
 
     it("should throw when trying to access the wrapped instance if withRef is not specified", () => {
@@ -1662,7 +1648,7 @@ describe("Inferno", () => {
       );
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
-      expect(() => decorated.getWrappedInstance()).to.throw(
+      expect(() => decorated.getWrappedInstance()).toThrowError(
         /To access the wrapped instance, you need to specify \{ withRef: true \} in the options argument of the connect\(\) call\./
       );
     });
@@ -1694,7 +1680,7 @@ describe("Inferno", () => {
       );
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
-      expect(() => decorated.someInstanceMethod()).to.throw();
+      expect(() => decorated.someInstanceMethod()).toThrowError();
       assert.equal(
         decorated.getWrappedInstance().someInstanceMethod(),
         someData
@@ -1996,9 +1982,7 @@ describe("Inferno", () => {
 
       assert.equal(renderCalls, 1, "renderCalls");
       assert.equal(mapStateCalls, 1, "mapStateCalls");
-      expect(() => store.dispatch({ type: "APPEND", payload: "a" })).to.throw(
-        "Oops"
-      );
+      expect(() => store.dispatch({ type: "APPEND", payload: "a" })).toThrowError("Oops");
     });
 
     it("should allow providing a factory function to mapStateToProps", async () => {
@@ -2082,9 +2066,9 @@ describe("Inferno", () => {
 
       store.dispatch({ type: "test" });
       await tree.repaint();
-      expect(initialOwnProps).to.be.undefined;
-      expect(initialState).to.not.be.undefined;
-      expect(secondaryOwnProps).to.not.be.undefined;
+      expect(initialOwnProps).toBeUndefined();
+      expect(initialState).toBeDefined();
+      expect(secondaryOwnProps).toBeDefined();
       assert.equal(secondaryOwnProps.name, "a");
     });
 
@@ -2328,9 +2312,9 @@ describe("Inferno", () => {
       );
 
       const error = renderWithBadConnect(InvalidMapState);
-      expect(error).to.include("string");
-      expect(error).to.include("mapStateToProps");
-      expect(error).to.include("InvalidMapState");
+      expect(error).toContain("string");
+      expect(error).toContain("mapStateToProps");
+      expect(error).toContain("InvalidMapState");
     });
 
     it("should throw a helpful error for invalid mapDispatchToProps arguments", async () => {
@@ -2343,9 +2327,9 @@ describe("Inferno", () => {
       );
 
       const error = renderWithBadConnect(InvalidMapDispatch);
-      expect(error).to.include("string");
-      expect(error).to.include("mapDispatchToProps");
-      expect(error).to.include("InvalidMapDispatch");
+      expect(error).toContain("string");
+      expect(error).toContain("mapDispatchToProps");
+      expect(error).toContain("InvalidMapDispatch");
     });
 
     it("should throw a helpful error for invalid mergeProps arguments", async () => {
@@ -2358,9 +2342,9 @@ describe("Inferno", () => {
       );
 
       const error = renderWithBadConnect(InvalidMerge);
-      expect(error).to.include("string");
-      expect(error).to.include("mergeProps");
-      expect(error).to.include("InvalidMerge");
+      expect(error).toContain("string");
+      expect(error).toContain("mergeProps");
+      expect(error).toContain("InvalidMerge");
     });
 
     it("should notify nested components through a blocking component", async () => {

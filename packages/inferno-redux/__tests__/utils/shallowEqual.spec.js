@@ -1,5 +1,4 @@
-import { expect } from "chai";
-import { shallowEqual } from "../../dist-es/utils/shallowEqual";
+import { shallowEqual } from "../../src/utils/shallowEqual";
 
 describe("redux", () => {
   describe("utils", () => {
@@ -10,20 +9,17 @@ describe("redux", () => {
             { a: 1, b: 2, c: undefined },
             { a: 1, b: 2, c: undefined }
           )
-        ).to.be.true;
+        ).toBe(true);
 
-        expect(shallowEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).to.be
-          .true;
+        expect(shallowEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 })).toBe(true);
 
         const o = {};
-        expect(shallowEqual({ a: 1, b: 2, c: o }, { a: 1, b: 2, c: o })).to.be
-          .true;
+        expect(shallowEqual({ a: 1, b: 2, c: o }, { a: 1, b: 2, c: o })).toBe(true);
 
         const d = function() {
           return 1;
         };
-        expect(shallowEqual({ a: 1, b: 2, c: o, d }, { a: 1, b: 2, c: o, d }))
-          .to.be.true;
+        expect(shallowEqual({ a: 1, b: 2, c: o, d }, { a: 1, b: 2, c: o, d })).toBe(true);
       });
 
       it("should return false if arguments fields are different function identities", () => {
@@ -46,15 +42,15 @@ describe("redux", () => {
               }
             }
           )
-        ).to.be.false;
+        ).toBe(false);
       });
 
       it("should return false if first argument has too many keys", () => {
-        expect(shallowEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 })).to.be.false;
+        expect(shallowEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 })).toBe(false);
       });
 
       it("should return false if second argument has too many keys", () => {
-        expect(shallowEqual({ a: 1, b: 2 }, { a: 1, b: 2, c: 3 })).to.be.false;
+        expect(shallowEqual({ a: 1, b: 2 }, { a: 1, b: 2, c: 3 })).toBe(false);
       });
 
       it("should return false if arguments have different keys", () => {
@@ -63,7 +59,7 @@ describe("redux", () => {
             { a: 1, b: 2, c: undefined },
             { a: 1, bb: 2, c: undefined }
           )
-        ).to.be.false;
+        ).toBe(false);
       });
     });
   });

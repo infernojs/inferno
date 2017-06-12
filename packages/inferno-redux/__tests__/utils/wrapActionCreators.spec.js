@@ -1,5 +1,4 @@
-import { expect } from "chai";
-import { wrapActionCreators } from "../../dist-es/utils/wrapActionCreators";
+import { wrapActionCreators } from "../../src/utils/wrapActionCreators";
 
 describe("Utils", () => {
   describe("wrapActionCreators", () => {
@@ -11,13 +10,13 @@ describe("Utils", () => {
       };
 
       const wrapped = wrapActionCreators(actionCreators);
-      expect(wrapped).to.be.a("function");
-      expect(() => wrapped(dispatch)).to.not.throw();
-      expect(() => wrapped().action()).to.throw();
+      expect(typeof wrapped).toBe("function");
+      expect(() => wrapped(dispatch)).not.toThrowError();
+      expect(() => wrapped().action()).toThrowError();
 
       const bound = wrapped(dispatch);
-      expect(bound.action).to.not.throw();
-      expect(bound.action().dispatched).to.be.equal(actionResult);
+      expect(bound.action).not.toThrowError();
+      expect(bound.action().dispatched).toBe(actionResult);
     });
   });
 });

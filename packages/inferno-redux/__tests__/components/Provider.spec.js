@@ -27,7 +27,7 @@ describe("redux", () => {
 
       expect(() =>
         renderIntoDocument(createElement(Provider, { store }))
-      ).to.throw(/Only one child/);
+      ).toThrowError(/Only one child/);
 
       expect(() =>
         renderIntoDocument(
@@ -38,7 +38,7 @@ describe("redux", () => {
             createElement("div", {})
           )
         )
-      ).to.throw(/Only one child/);
+      ).toThrowError(/Only one child/);
     });
 
     it("should add the store to the child context", () => {
@@ -49,13 +49,10 @@ describe("redux", () => {
         const tree = renderIntoDocument(
           createElement(Provider, { store: store1 }, createElement(Child, {}))
         );
-        expect(spy.callCount).to.eql(
-          0,
-          "console.error should not have been called"
-        );
+        expect(spy.callCount).toEqual(0);
 
         const child = findRenderedVNodeWithType(tree, Child).children;
-        expect(child.context.store).to.be.equal(store1);
+        expect(child.context.store).toBe(store1);
       });
 
       spyOn(console, "error", spy => {
@@ -67,13 +64,10 @@ describe("redux", () => {
           )
         );
 
-        expect(spy.callCount).to.eql(
-          0,
-          "console.error should not have been called"
-        );
+        expect(spy.callCount).toEqual(0);
 
         const child = findRenderedVNodeWithType(tree, Child).children;
-        expect(child.context.store).to.be.equal(store2);
+        expect(child.context.store).toBe(store2);
       });
     });
 
@@ -101,31 +95,23 @@ describe("redux", () => {
       const container = findRenderedVNodeWithType(tree, ProviderContainer)
         .children;
       const child = findRenderedVNodeWithType(tree, Child).children;
-      expect(child.context.store.getState()).to.eql(11);
+      expect(child.context.store.getState()).toEqual(11);
 
       await spyOn(console, "error", async spy => {
         container.setState({ store: store2 });
         await tree.repaint();
 
-        expect(child.context.store.getState()).to.eql(11);
-        expect(spy.callCount).to.eql(
-          1,
-          "console.error should have been called once"
-        );
-        expect(spy.getCall(0).args[0]).to.eql(
-          "<Provider> does not support changing `store` on the fly."
-        );
+        expect(child.context.store.getState()).toEqual(11);
+        expect(spy.callCount).toEqual(1);
+        expect(spy.getCall(0).args[0]).toEqual("<Provider> does not support changing `store` on the fly.");
       });
 
       await spyOn(console, "error", async spy => {
         container.setState({ store: store3 });
         await tree.repaint();
 
-        expect(child.context.store.getState()).to.eql(11);
-        expect(spy.callCount).to.eql(
-          0,
-          "console.error should not have been called"
-        );
+        expect(child.context.store.getState()).toEqual(11);
+        expect(spy.callCount).toEqual(0);
       });
     });
 
@@ -158,10 +144,10 @@ describe("redux", () => {
       );
 
       renderIntoDocument(<Provider store={outerStore}><Outer /></Provider>);
-      expect(innerMapStateToProps.callCount).to.eql(1);
+      expect(innerMapStateToProps.callCount).toEqual(1);
 
       innerStore.dispatch({ type: "INC" });
-      expect(innerMapStateToProps.callCount).to.eql(2);
+      expect(innerMapStateToProps.callCount).toEqual(2);
     });
 
     it("should pass state consistently to mapState", async () => {
@@ -176,7 +162,7 @@ describe("redux", () => {
       const ChildContainer = connect((state, parentProps) => {
         childMapStateInvokes++;
         // The state from parent props should always be consistent with the current state
-        expect(state).to.equal(parentProps.parentState);
+        expect(state).toBe(parentProps.parentState);
         return {};
       })(
         class ChildContainer extends Component {
@@ -219,24 +205,24 @@ describe("redux", () => {
         </Provider>
       );
 
-      expect(childMapStateInvokes).to.eql(1);
+      expect(childMapStateInvokes).toEqual(1);
 
       // The store state stays consistent when setState calls are batched
       store.dispatch({ type: "APPEND", payload: "c" });
       await tree.repaint();
-      expect(childMapStateInvokes).to.eql(2);
+      expect(childMapStateInvokes).toEqual(2);
 
       // setState calls DOM handlers are batched
       const container = findRenderedVNodeWithType(tree, Container).children;
       const node = container.getWrappedInstance().button;
       node.click();
       await tree.repaint();
-      expect(childMapStateInvokes).to.eql(3);
+      expect(childMapStateInvokes).toEqual(3);
 
       // Provider uses unstable_batchedUpdates() under the hood
       store.dispatch({ type: "APPEND", payload: "d" });
       await tree.repaint();
-      expect(childMapStateInvokes).to.eql(4);
+      expect(childMapStateInvokes).toEqual(4);
     });
   });
 });
