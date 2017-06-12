@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { render as renderDOM } from "inferno";
 import Component from "inferno-component";
 import createClass from "inferno-create-class";
@@ -173,14 +174,14 @@ describe("Inferno", () => {
       });
 
       const tree = spyOn(console, "error", spy => {
-        const tree = renderIntoDocument(
+        const renderTree = renderIntoDocument(
           <ProviderMock store={store}>
             <Container />
           </ProviderMock>
         );
 
         assert.equal(spy.callCount, 0);
-        return tree;
+        return renderTree;
       });
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
@@ -205,14 +206,14 @@ describe("Inferno", () => {
       });
 
       const tree = spyOn(console, "error", spy => {
-        const tree = renderIntoDocument(
+        const renderTree = renderIntoDocument(
           <ProviderMock store={store}>
             <Container />
           </ProviderMock>
         );
 
         assert.equal(spy.callCount, 0);
-        return tree;
+        return renderTree;
       });
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
@@ -558,9 +559,7 @@ describe("Inferno", () => {
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       assert.equal(stub.props.dispatch, store.dispatch);
       assert.equal(stub.props.foo, "bar");
-      expect(() => {
-        findRenderedVNodeWithType(tree, Container).children;
-      }).not.toThrowError();
+      expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
       const decorated = findRenderedVNodeWithType(tree, Container).children;
       expect(decorated.isSubscribed()).toBe(true);
     });
@@ -917,9 +916,7 @@ describe("Inferno", () => {
         assert.equal(stub.props.dispatch, store.dispatch);
         expect(stub.props.foo).toBeUndefined();
         assert.equal(stub.props.pass, "through");
-        expect(() => {
-          findRenderedVNodeWithType(tree, Container).children;
-        }).not.toThrowError();
+        expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
 
         const decorated = findRenderedVNodeWithType(tree, Container).children;
         expect(decorated.isSubscribed()).toBe(false);
@@ -1046,7 +1043,8 @@ describe("Inferno", () => {
       const store = createStore(() => ({}));
       let mapStateToPropsCalls = 0;
 
-      let linkA, linkB;
+      let linkA;
+      let linkB;
 
       let App = ({ children, setLocation }) => {
         const onClick = to => event => {
@@ -1991,7 +1989,9 @@ describe("Inferno", () => {
       const store = createStore(() => ({ value: 1 }));
 
       const mapStateFactory = () => {
-        let lastProp, lastVal, lastResult;
+        let lastProp;
+        let lastVal;
+        let lastResult;
         return (state, props) => {
           if (props.name === lastProp && lastVal === state.value) {
             memoizedReturnCount++;
@@ -2073,12 +2073,13 @@ describe("Inferno", () => {
     });
 
     it("should allow providing a factory function to mapDispatchToProps", async () => {
-      let updatedCount = 0;
+      const updatedCount = 0;
       let memoizedReturnCount = 0;
       const store = createStore(() => ({ value: 1 }));
 
       const mapDispatchFactory = () => {
-        let lastProp, lastResult;
+        let lastProp;
+        let lastResult;
         return (dispatch, props) => {
           if (props.name === lastProp) {
             memoizedReturnCount++;
