@@ -23,7 +23,7 @@ describe("redux", () => {
         renderIntoDocument(
           createElement(Provider, { store }, createElement("div", {}))
         )
-      ).to.not.throw;
+      ).not.toThrow();
 
       expect(() =>
         renderIntoDocument(createElement(Provider, { store }))
@@ -103,7 +103,9 @@ describe("redux", () => {
 
         expect(child.context.store.getState()).toEqual(11);
         expect(spy.callCount).toEqual(1);
-        expect(spy.getCall(0).args[0]).toEqual("<Provider> does not support changing `store` on the fly.");
+        expect(spy.getCall(0).args[0]).toEqual(
+          "<Provider> does not support changing `store` on the fly."
+        );
       });
 
       await spyOn(console, "error", async spy => {
