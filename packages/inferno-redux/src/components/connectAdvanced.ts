@@ -130,15 +130,15 @@ export const connectAdvanced = (
 
     const selectorFactoryOptions = {
       ...connectOptions,
+      WrappedComponent,
+      displayName,
       getDisplayName,
       methodName,
       renderCountProp,
       shouldHandleStateChanges,
       storeKey,
       withRef,
-      displayName,
-      wrappedComponentName,
-      WrappedComponent
+      wrappedComponentName
     };
 
     class Connect extends Component<any, any> {
