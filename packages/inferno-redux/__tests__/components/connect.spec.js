@@ -1678,10 +1678,7 @@ describe("Inferno", () => {
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
       expect(() => decorated.someInstanceMethod()).toThrowError();
-      assert.equal(
-        decorated.getWrappedInstance().someInstanceMethod(),
-        someData
-      );
+      expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(someData);
       expect(decorated.wrappedInstance.someInstanceMethod()).toBe(someData);
     });
 
@@ -1887,15 +1884,15 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      expect(renderCalls, 1).toBe("renderCalls");
-      expect(mapStateCalls, 1).toBe("mapStateCalls");
+      expect(renderCalls).toBe(1);
+      expect(mapStateCalls).toBe(1);
       store.dispatch({ type: "APPEND", payload: "a" });
       await tree.repaint();
 
       // After store a change mapState has been called
-      expect(mapStateCalls, 2).toBe("mapStateCalls");
+      expect(mapStateCalls).toBe(2);
       // But render is not because it did not make any actual changes
-      expect(renderCalls, 1).toBe("renderCalls");
+      expect(renderCalls).toBe(1);
     });
 
     it("should bail out early if mapState does not depend on props", async () => {
@@ -2225,7 +2222,7 @@ describe("Inferno", () => {
       };
 
       const Child = connect(state => ({
-        profile: state.data.profile
+        profile: state.data && state.data.profile
       }))(
         class Child extends Component {
           render() {
@@ -2260,7 +2257,7 @@ describe("Inferno", () => {
       );
 
       unmountDOM(div);
-      expect(store.getState()).toBe({ data: null });
+      expect(store.getState().data).toEqual(null);
     });
 
     it("should allow custom displayName", () => {
