@@ -1,25 +1,33 @@
 language: node_js
+
 node_js:
 - '6'
+
 cache:
   directories:
   - node_modules
   - fixtures/browser/node_modules
   - fixtures/packaging/node_modules
+
 notifications:
   email:
     on_success: change
     on_failure: always
+
 sudo: required
 dist: trusty
+
 addons:
   chrome: stable
   firefox: latest
+
 before_install:
 - npm install -g npm@5
+
 before_script:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
+
 jobs:
   include:
   - script: npm run lint
@@ -31,23 +39,3 @@ jobs:
     script:
     - npm run build
     - npm run test:package
-
-before_deploy:
-  - npm run build
-  - npm run docs
-
-deploy:
-  - provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    local_dir: docs
-    on:
-      tags: true
-  - provider: releases
-    api_key:
-      secure: PgxZ5acYOUTtxyQB7F0TndjoBfiMVCw3FFtQjsE1b+a/0Hqnt3zk7/wjhh435QSzwENNNXfUGIOD7o7nuhrH2CiiePcgw0AUCmv6NAwloT/x4OFqo5uPLHj+odduM7bLi9UgWeNvmVMWHKtSrxuDOuhjLd+bIYZMb9g6zpUXLn7O/iKi1LOicxx4EVWa+DHEXDTq2lGZsOxJ9GVP5fK7U0YcWyGsTCKYhNjKLx9+CN5fpEFok9HtbGTV6Mu876a/wCJCECu9wgujlAKHFlfz6NZ6XNygfdnEaky5sGz1Z4S+t6l14hb9ZN+XJk84B0Jz0FMPUKj6IOWzOptyyx17NXko1kUJWZtYz1Ig6lcp6iwTG9Ho0s2pmu3OqNob45U5nfoxnYM51sTuYmab3/NRBK521K6Bc84/SwuOSk5ajR8TYkgsxihGlwDhVo9Twkc/eU5FaRqRg6JvdPZR2BHoPhlvbxsD/ERJbRdEKAO5FwizjrMSwy7dniVTyoNnSst5TcHVnK6bO5tXykR7TIM673vBsAxq5ioZ6ImZZvqEpaxZ4Auk0pdWSh9dZXX0+dqcFc2QA0NfOFsBwFBFzWi6uryqFRhqjTHorAdDqdFQatnC0M1dchTXe1Owp0HsEloK6IzBcUjDea0K5Gf4EKLKXGB6KDzZdR9fKWzMsdXv7I8=
-    file_glob: true
-    file: packages/*/dist/inferno*
-    skip_cleanup: true
-    on:
-      tags: true

@@ -1,9 +1,11 @@
 {
-	"extends": "tslint:recommended",
+	"extends": [
+		"tslint:recommended",
+		"tslint-config-prettier"
+	],
 	"jsRules": {
 		"arrow-parens": false,
 		"forin": false,
-		"indent": [ true, "tabs" ],
 		"max-line-length": [false],
 		"no-bitwise": false,
 		"no-console": [false],
@@ -25,7 +27,6 @@
 		"arrow-parens": false,
 		"ban-types": false,
 		"forin": false,
-		"indent": [ true, "tabs" ],
 		"interface-name": [false],
 		"max-classes-per-file": [true],
 		"max-line-length": [false],
