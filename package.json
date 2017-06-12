@@ -17,19 +17,19 @@
   },
   "lint-staged": {
     "*.js": [
-      "./scripts/tasks/prettier.sh --write",
+      "prettier --write",
       "git add"
     ],
     "*.ts": [
-      "./scripts/tasks/prettier.sh --write",
+      "prettier --write",
       "git add"
     ],
     "*.jsx": [
-      "./scripts/tasks/prettier.sh --write",
+      "prettier --parser=typescript --write",
       "git add"
     ],
     "*.tsx": [
-      "./scripts/tasks/prettier.sh --write",
+      "prettier --parser=typescript --write",
       "git add"
     ]
   },
@@ -61,8 +61,8 @@
     "lint-staged": "lint-staged",
     "prepublishOnly": "npm run build",
     "prettier": "npm-run-all --parallel prettier:**",
-    "prettier:packages:js": "./scripts/prettier.sh packages/*/{src,__tests__}/**/*.{js,jsx} packages/*/{src,__tests__}/*.{js,jsx}",
-    "prettier:packages:ts": "./scripts/prettier.sh --parser=typescript packages/*/{src,__tests__}/**/*.{ts,tsx} packages/*/{src,__tests__}/*.{ts,tsx}",
+    "prettier:js": "prettier --list-different packages/*/{src,__tests__}/**/*.{js,jsx} packages/*/{src,__tests__}/*.{js,jsx}",
+    "prettier:ts": "prettier --list-different --parser=typescript packages/*/{src,__tests__}/**/*.{ts,tsx}",
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "jest",
