@@ -16,19 +16,11 @@
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
   "lint-staged": {
-    "*.js": [
+    "*.{js,jsx}": [
       "prettier --write",
       "git add"
     ],
-    "*.ts": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.jsx": [
-      "prettier --parser=typescript --write",
-      "git add"
-    ],
-    "*.tsx": [
+    "*.{ts,tsx}": [
       "prettier --parser=typescript --write",
       "git add"
     ]
