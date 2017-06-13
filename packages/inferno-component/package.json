@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "license": "MIT",
   "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
   "author": {
@@ -29,7 +29,7 @@
     "rollup"
   ],
   "dependencies": {
-    "inferno": "3.4.3",
+    "inferno": "3.4.4",
     "inferno-shared": "3.4.2",
     "inferno-vnode-flags": "3.4.2"
   },

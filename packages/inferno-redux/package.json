@@ -1,6 +1,6 @@
 {
   "name": "inferno-redux",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "license": "MIT",
   "description": "Official Inferno bindings for Redux",
   "author": {
@@ -26,9 +26,9 @@
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "3.4.3",
-    "inferno-component": "3.4.3",
-    "inferno-create-element": "3.4.3",
+    "inferno": "3.4.4",
+    "inferno-component": "3.4.4",
+    "inferno-create-element": "3.4.4",
     "inferno-shared": "3.4.2",
     "redux": "*"
   },

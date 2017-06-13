@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "license": "MIT",
   "description": "Suite of utilities for testing Inferno applications",
   "author": {
@@ -21,9 +21,9 @@
     "utils"
   ],
   "dependencies": {
-    "inferno": "3.4.3",
-    "inferno-create-class": "3.4.3",
-    "inferno-create-element": "3.4.3",
+    "inferno": "3.4.4",
+    "inferno-create-class": "3.4.4",
+    "inferno-create-element": "3.4.4",
     "inferno-shared": "3.4.2",
     "inferno-vnode-flags": "3.4.2"
   },
