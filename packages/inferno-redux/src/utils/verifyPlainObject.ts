@@ -1,4 +1,4 @@
-import * as isPlainObject from "lodash.isplainobject";
+import isPlainObject from "lodash.isplainobject";
 import { warning } from "./warning";
 
 export const verifyPlainObject = (

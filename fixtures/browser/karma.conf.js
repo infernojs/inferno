@@ -65,7 +65,7 @@ module.exports = function(config) {
 					},
 					{
 						test: /\.tsx?$/,
-						loaders: ['babel-loader', 'ts-loader'],
+						loaders: ['ts-loader'],
 					},
 				],
 			},

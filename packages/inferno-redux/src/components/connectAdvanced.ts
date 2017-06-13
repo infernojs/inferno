@@ -87,7 +87,7 @@ export interface IConnectOptions {
 }
 
 // TODO: This should be typed better. Spesifically, the output and input props should be generic.
-type SelectorFactory = (
+export type SelectorFactory = (
   dispatch: Dispatch<any>,
   options: IConnectOptions
 ) => (state: any, props: any) => any;
@@ -99,18 +99,15 @@ const invariant = (test: boolean, error: string) => {
   }
 };
 
-export const connectAdvanced = (
-  selectorFactory: SelectorFactory,
-  {
-    getDisplayName = name => `ConnectAdvanced(${name})`,
+export function connectAdvanced(selectorFactory: SelectorFactory, {
+    getDisplayName = (name => `ConnectAdvanced(${name})`),
     methodName = "connectAdvanced",
     renderCountProp = null,
     shouldHandleStateChanges = true,
     storeKey = "store",
     withRef = false,
     ...connectOptions
-  }: Partial<IConnectOptions> = {}
-) => {
+  }: Partial<IConnectOptions>) {
   const subscriptionKey = storeKey + "Subscription";
   const version = hotReloadingVersion++;
 
