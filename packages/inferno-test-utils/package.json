@@ -21,15 +21,15 @@
     "utils"
   ],
   "dependencies": {
-    "inferno": "3.5.0",
-    "inferno-create-class": "3.5.0",
-    "inferno-create-element": "3.5.0",
-    "inferno-shared": "3.5.0",
-    "inferno-vnode-flags": "3.5.0"
+    "inferno": "^3.5.0",
+    "inferno-create-class": "^3.5.0",
+    "inferno-create-element": "^3.5.0",
+    "inferno-shared": "^3.5.0",
+    "inferno-vnode-flags": "^3.5.0"
   },
   "devDependencies": {
-    "inferno-component": "3.5.0",
-    "inferno-server": "3.5.0"
+    "inferno-component": "^3.5.0",
+    "inferno-server": "^3.5.0"
   },
   "rollup": {
     "bundledDependencies": [
