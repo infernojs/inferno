@@ -6,17 +6,20 @@ const { join } = require('path');
 const PACKAGES_DIR = join(__dirname, '../packages');
 const INFERNO_VERSION = require(join(__dirname, '../package.json')).version;
 
-let allVersionsMatch = true;
-function checkDeps(deps, pkgJSON) {
+const lernaJSON = require(join(__dirname, '../lerna.json'));
+lernaJSON.version = INFERNO_VERSION;
+fs.writeFileSync(join(__dirname, '../lerna.json'), JSON.stringify(lernaJSON, null, 2));
+
+function updateDeps(deps, pkgJSON) {
   for (const dep in deps) {
     if (dep === 'inferno' || dep.indexOf('inferno-') === 0) {
       if (deps[dep] !== INFERNO_VERSION) {
-        allVersionsMatch = false;
+        deps[dep] = INFERNO_VERSION;
         console.log(
-          '%s version does not match package.json. Expected %s, saw %s.',
+          '%s version does not match package.json. Updating %s, to %s.',
           pkgJSON.name,
-          INFERNO_VERSION,
           pkgJSON.version,
+          INFERNO_VERSION,
         );
       }
     }
@@ -35,21 +38,19 @@ fs.readdir(PACKAGES_DIR, (err, paths) => {
       const pkgJSON = require(join(PACKAGES_DIR, paths[i], 'package.json'));
 
       if (pkgJSON.version !== INFERNO_VERSION) {
-        allVersionsMatch = false;
         console.log(
-          '%s version does not match package.json. Expected %s, saw %s.',
+          '%s version does not match package.json. Updating %s, to %s.',
           pkgJSON.name,
-          INFERNO_VERSION,
           pkgJSON.version,
+          INFERNO_VERSION,
         );
+
+        pkgJSON.version = INFERNO_VERSION;
+        updateDeps(pkgJSON.dependencies, pkgJSON);
+        updateDeps(pkgJSON.devDependencies, pkgJSON);
+
+        fs.writeFileSync(join(PACKAGES_DIR, paths[i], 'package.json'), JSON.stringify(pkgJSON, null, 2));
       }
-
-      checkDeps(pkgJSON.dependencies, pkgJSON);
-      checkDeps(pkgJSON.devDependencies, pkgJSON);
     }
-  }
-
-  if (!allVersionsMatch) {
-    process.exit(1);
   }
 });
