@@ -22,7 +22,8 @@ function updateDeps(deps, pkgJSON) {
         res = true;
         deps[dep] = INFERNO_VERSION;
         console.log(
-          "%s version does not match package.json. Updating %s, to %s.",
+          "%s version in %s does not match package.json. Updating %s, to %s.",
+          dep,
           pkgJSON.name,
           pkgJSON.version,
           INFERNO_VERSION
@@ -41,6 +42,7 @@ for (let i = 0; i < PACKAGES.length; i += 1) {
     const pkgJSON = require(join(PACKAGES_DIR, PACKAGES[i], "package.json"));
 
     if (pkgJSON.version !== INFERNO_VERSION) {
+      failed = true;
       pkgJSON.version = INFERNO_VERSION;
       console.log(
         "%s version does not match package.json. Updating %s, to %s.",
