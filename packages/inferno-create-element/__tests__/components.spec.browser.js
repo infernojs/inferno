@@ -3,8 +3,6 @@ import Component from "inferno-component";
 import createElement from "inferno-create-element";
 import { innerHTML, waits } from "inferno-utils";
 
-let global;
-
 describe("Components (non-JSX)", () => {
   let container;
 
