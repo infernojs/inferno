@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const { join } = require('path');
+const fs = require("fs");
+const { join } = require("path");
 
-const PACKAGES_DIR = join(__dirname, '../packages');
-const INFERNO_VERSION = require(join(__dirname, '../package.json')).version;
+const PACKAGES_DIR = join(__dirname, "../packages");
+const INFERNO_VERSION = require(join(__dirname, "../package.json")).version;
 const PACKAGES = fs.readdirSync(PACKAGES_DIR);
 
-const lernaJSON = require(join(__dirname, '../lerna.json'));
+const lernaJSON = require(join(__dirname, "../lerna.json"));
 lernaJSON.version = INFERNO_VERSION;
-fs.writeFileSync(join(__dirname, '../lerna.json'), JSON.stringify(lernaJSON, null, 2));
+fs.writeFileSync(
+  join(__dirname, "../lerna.json"),
+  JSON.stringify(lernaJSON, null, 2)
+);
 
 function updateDeps(deps, pkgJSON) {
   let res = false;
@@ -19,10 +22,10 @@ function updateDeps(deps, pkgJSON) {
         res = true;
         deps[dep] = INFERNO_VERSION;
         console.log(
-          '%s version does not match package.json. Updating %s, to %s.',
+          "%s version does not match package.json. Updating %s, to %s.",
           pkgJSON.name,
           pkgJSON.version,
-          INFERNO_VERSION,
+          INFERNO_VERSION
         );
       }
     }
@@ -35,15 +38,15 @@ for (let i = 0; i < PACKAGES.length; i += 1) {
 
   if (pathStat.isDirectory()) {
     let failed = false;
-    const pkgJSON = require(join(PACKAGES_DIR, PACKAGES[i], 'package.json'));
+    const pkgJSON = require(join(PACKAGES_DIR, PACKAGES[i], "package.json"));
 
     if (pkgJSON.version !== INFERNO_VERSION) {
       pkgJSON.version = INFERNO_VERSION;
       console.log(
-        '%s version does not match package.json. Updating %s, to %s.',
+        "%s version does not match package.json. Updating %s, to %s.",
         pkgJSON.name,
         pkgJSON.version,
-        INFERNO_VERSION,
+        INFERNO_VERSION
       );
     }
 
@@ -52,7 +55,10 @@ for (let i = 0; i < PACKAGES.length; i += 1) {
 
     failed = failed || resdeps || resdevdeps;
     if (failed) {
-      fs.writeFileSync(join(PACKAGES_DIR, paths[i], 'package.json'), JSON.stringify(pkgJSON, null, 2));
+      fs.writeFileSync(
+        join(PACKAGES_DIR, PACKAGES[i], "package.json"),
+        JSON.stringify(pkgJSON, null, 2)
+      );
     }
   }
 }
