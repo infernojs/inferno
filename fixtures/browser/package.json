@@ -28,6 +28,7 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.3",
-    "ts-loader": "^2.1.0"
+    "ts-loader": "^2.1.0",
+    "webpack": "^2.6.1"
   }
 }
