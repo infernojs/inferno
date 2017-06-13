@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 import { wrapMapToPropsConstant, wrapMapToPropsFunc } from "./wrapMapToProps";
 
 export const whenMapStateToPropsIsFunction = mapStateToProps =>

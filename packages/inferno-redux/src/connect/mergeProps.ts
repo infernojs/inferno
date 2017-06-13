@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 import { verifyPlainObject } from "../utils/verifyPlainObject";
 
 export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({

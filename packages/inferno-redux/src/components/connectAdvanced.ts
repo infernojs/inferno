@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 import { Dispatch, Store } from "redux";
 
 import hoistStatics from "hoist-non-inferno-statics";

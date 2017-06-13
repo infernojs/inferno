@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 const hasOwn = Object.prototype.hasOwnProperty;
 
 export const shallowEqual = (a: any, b: any) => {
