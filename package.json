@@ -2,7 +2,7 @@
   "name": "inferno-build",
   "private": true,
   "license": "MIT",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -16,19 +16,11 @@
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
   "lint-staged": {
-    "*.js": [
+    "*.{js,jsx}": [
       "prettier --write",
       "git add"
     ],
-    "*.ts": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.jsx": [
-      "prettier --parser=typescript --write",
-      "git add"
-    ],
-    "*.tsx": [
+    "*.{ts,tsx}": [
       "prettier --parser=typescript --write",
       "git add"
     ]
@@ -60,11 +52,11 @@
     "lint": "tslint -p tsconfig.json --type-check",
     "lint-staged": "lint-staged",
     "prepublishOnly": "npm run build",
-    "prettier": "npm-run-all --parallel prettier:src:*",
-    "prettier:src:js": "prettier --list-different packages/*/__tests__/**/*.{js,jsx}",
-    "prettier:src:ts": "prettier --list-different --parser=typescript packages/*/src/**/*.{ts,tsx}",
-    "prettier:src:fixtures": "prettier --list-different fixtures/**/*.{js,jsx}",
-    "prettier:src:scripts": "prettier--list-different scripts/**/*.{js,jsx}",
+    "prettier": "npm-run-all prettier:src:*",
+    "prettier:src:js": "prettier --write --list-different packages/*/__tests__/**/*.{js,jsx}",
+    "prettier:src:ts": "prettier --write --list-different --parser=typescript packages/*/src/**/*.{ts,tsx}",
+    "prettier:src:fixtures": "prettier --write --list-different fixtures/**/*.{js,jsx}",
+    "prettier:src:scripts": "prettier --write --list-different scripts/**/*.{js,jsx}",
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "jest",
