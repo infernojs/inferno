@@ -148,11 +148,11 @@ describe('Components (JSX)', () => {
 	it('should render a basic component and remove property if null', () => {
 
 		render((
-				<div>
-					<BasicComponent1 title="abc" name="basic-render"/>
-				</div>
-			),
-			container
+			<div>
+				<BasicComponent1 title="abc" name="basic-render"/>
+			</div>
+		),
+		container
 		);
 
 		expect(
@@ -162,16 +162,16 @@ describe('Components (JSX)', () => {
 		);
 
 		render((
-				<div></div>
-			),
-			container
+			<div></div>
+		),
+		container
 		);
 		render((
-				<div>
-					<BasicComponent1 title="Hello, World!" name="basic-render"/>
-				</div>
-			),
-			container
+			<div>
+				<BasicComponent1 title="Hello, World!" name="basic-render"/>
+			</div>
+		),
+		container
 		);
 
 		expect(
@@ -181,11 +181,11 @@ describe('Components (JSX)', () => {
 		);
 
 		render((
-				<div>
-					<BasicComponent1 title="123" name={null}/>
-				</div>
-			),
-			container
+			<div>
+				<BasicComponent1 title="123" name={null}/>
+			</div>
+		),
+		container
 		);
 		expect(
 			container.innerHTML
@@ -193,11 +193,11 @@ describe('Components (JSX)', () => {
 			innerHTML('<div><div class="basic"><span>The title is 123</span></div></div>')
 		);
 		render((
-				<div>
-					<BasicComponent1 title={[]} name={null}/>
-				</div>
-			),
-			container
+			<div>
+				<BasicComponent1 title={[]} name={null}/>
+			</div>
+		),
+		container
 		);
 		expect(
 			container.innerHTML

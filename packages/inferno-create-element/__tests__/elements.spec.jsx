@@ -786,10 +786,10 @@ describe('Elements (JSX)', () => {
 
 		// TODO: Fails to creation of node fix needed
 		render(<input type="text" ref={obj.fn} spellcheck="false"
-									readOnly={bool ? 'readonly' : false} disabled={bool}
-									ondragenter={test} ondragover={test} value={newValue} oninput={test}
-									onclick={obj.click} className="edit-field" onkeydown={test} onkeyup={test}
-									onBlur={test} {...spread} />, container);
+			readOnly={bool ? 'readonly' : false} disabled={bool}
+			ondragenter={test} ondragover={test} value={newValue} oninput={test}
+			onclick={obj.click} className="edit-field" onkeydown={test} onkeyup={test}
+			onBlur={test} {...spread} />, container);
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		const input = container.querySelector('#test');
 		assert.calledOnce(sinonSpy); // Verify hook works
@@ -894,9 +894,9 @@ describe('Elements (JSX)', () => {
 				return <input {...props} />;
 			};
 			const MyTextField = ({ name, className, changeName }) => <TextField className={className} value={name}
-																																					onClick={function () {
-																																						done();
-																																					}}/>;
+				onClick={function () {
+					done();
+				}}/>;
 
 			render(<MyTextField className="foobar" name="test"/>, container);
 

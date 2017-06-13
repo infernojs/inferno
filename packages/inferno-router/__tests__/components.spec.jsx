@@ -44,7 +44,7 @@ describe('Router (jsx)', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes(
 				<Link to="/" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }}
-							activeStyle={{ fontWeight: 'bold' }} title="TestTitle" data-test="DataTest">Link</Link>
+					activeStyle={{ fontWeight: 'bold' }} title="TestTitle" data-test="DataTest">Link</Link>
 			), container);
 
 			expect(
@@ -57,7 +57,7 @@ describe('Router (jsx)', () => {
 		it('should render without active class and style when not the active location', () => {
 			render(createRoutes(
 				<Link to="/notactive" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }}
-							activeStyle={{ fontWeight: 'bold' }}>Link</Link>
+					activeStyle={{ fontWeight: 'bold' }}>Link</Link>
 			), container);
 
 			expect(
@@ -245,8 +245,8 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/test' } history={ browserHistory }>
 					<IndexRoute component={ () => <div>Good</div> }
-											onEnter={ callback }
-											className="test-class"
+						onEnter={ callback }
+						className="test-class"
 					/>
 					<Route path={'/test'} component={ () => <TestComponent/> }/>
 				</Router>, container

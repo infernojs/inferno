@@ -653,10 +653,10 @@ describe('Stateful Component updates', () => {
 	it('Should not fail removing child of component node Github #1111', () => {
 		const InfoLi = function InfoLi(props) {
 			return (
-			<li>
-				{createElement('input', { checked: props.check, type: props.type, label: props.label, onClick: props.onClick })} {props.label}: check, then uncheck
-				<div>{props.children}</div>
-			</li>
+				<li>
+					{createElement('input', { checked: props.check, type: props.type, label: props.label, onClick: props.onClick })} {props.label}: check, then uncheck
+					<div>{props.children}</div>
+				</li>
 			);
 		};
 
@@ -680,22 +680,22 @@ describe('Stateful Component updates', () => {
 			render(props) {
 				return (
 					<ol>
-					{
-						props.orderedConfigs.map((conf, index) => {
-							const child = this.state.checks[index] && createElement('div', null, 'hi there');
-							return (
-								<InfoLi
-									label={conf}
-									type='checkbox'
-									checked={this.state.checks[index]}
-									onClick={(event) => {
-										this.handleCheck(index, event.target.checked);}
-									}>
-								{child}
-							</InfoLi>
-							);
-						})
-					}
+						{
+							props.orderedConfigs.map((conf, index) => {
+								const child = this.state.checks[index] && createElement('div', null, 'hi there');
+								return (
+									<InfoLi
+										label={conf}
+										type='checkbox'
+										checked={this.state.checks[index]}
+										onClick={(event) => {
+											this.handleCheck(index, event.target.checked);}
+										}>
+										{child}
+									</InfoLi>
+								);
+							})
+						}
 					</ol>
 				);
 			}

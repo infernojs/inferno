@@ -46,7 +46,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -99,7 +99,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -141,11 +141,11 @@ describe('Children - (JSX)', () => {
 				return (
 					<div className="tab-group">
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
-						<Tab
-							key={ 'Item ' + i }
-							title={ tab.title }
-							onSelect={ () => undefined }/>
-					))}
+							<Tab
+								key={ 'Item ' + i }
+								title={ tab.title }
+								onSelect={ () => undefined }/>
+						))}
 					</div>
 				);
 			}
@@ -191,12 +191,12 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
-							<Tab
-								key={ 'Item ' + i }
-								title={ tab.title }
-								onSelect={ () => undefined }/>
-						))}
+					<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
+						<Tab
+							key={ 'Item ' + i }
+							title={ tab.title }
+							onSelect={ () => undefined }/>
+					))}
 					</div>
 				);
 			}
@@ -245,7 +245,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -291,7 +291,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -407,7 +407,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -458,7 +458,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -499,10 +499,10 @@ describe('Children - (JSX)', () => {
 				return (
 					<div className="tab-group">
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
-						<Tab
-							title={ tab.title }
-							onSelect={ () => undefined }/>
-					))}
+							<Tab
+								title={ tab.title }
+								onSelect={ () => undefined }/>
+						))}
 					</div>
 				);
 			}
@@ -546,11 +546,11 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
-							<Tab
-								title={ tab.title }
-								onSelect={ () => undefined }/>
-						))}
+					<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
+						<Tab
+							title={ tab.title }
+							onSelect={ () => undefined }/>
+					))}
 					</div>
 				);
 			}
@@ -597,7 +597,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -641,7 +641,7 @@ describe('Children - (JSX)', () => {
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
-						<Tab onSelect={create} id="add" title="Add"/>
+					<Tab onSelect={create} id="add" title="Add"/>
 					</div>
 				);
 			}
@@ -878,7 +878,7 @@ describe('Children - (JSX)', () => {
 						{visibleStatic ? <Loop i={-1} text="static"/> : null}
 						{collectionOne.map((text, i) => (
 							<Loop key={i}
-										text={ text }/>
+								text={ text }/>
 						))}
 					</div>
 				);
@@ -1894,7 +1894,7 @@ describe('Children - (JSX)', () => {
 					<div>
 						<span>foobar</span>
 						{bool ? <FooBar onComponentWillMount={foobarLifecycle.componentWillMount}
-														onComponentWillUnmount={foobarLifecycle.componentWillUnmount}/> : null}
+							onComponentWillUnmount={foobarLifecycle.componentWillUnmount}/> : null}
 					</div>
 				);
 			}
@@ -1947,7 +1947,7 @@ describe('Children - (JSX)', () => {
 				return (
 					<span>
 						<Test onComponentWillMount={testLifeCycle.componentWillMount}
-									onComponentWillUnmount={testLifeCycle.componentWillUnmount}/>
+							onComponentWillUnmount={testLifeCycle.componentWillUnmount}/>
 					</span>
 				);
 			}

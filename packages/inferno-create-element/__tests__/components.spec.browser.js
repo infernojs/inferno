@@ -119,7 +119,7 @@ describe('Components (non-JSX)', () => {
 			return template(this.props.isChecked, this.props.title);
 		}
 	}
-//
+	//
 	it('should render a basic component with inputs', () => {
 		let template = (Component, title, isChecked) =>
 			createElement('div', null,
@@ -885,9 +885,9 @@ describe('Components (non-JSX)', () => {
 	});
 
 	function BasicStatelessComponent1({
-																			name,
-																			title
-																		}) {
+		name,
+		title
+	}) {
 
 		const template = (_name, _title) =>
 			createElement('div',

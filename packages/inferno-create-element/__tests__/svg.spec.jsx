@@ -86,7 +86,7 @@ describe('createTree - SVG (JSX)', () => {
 			</g>
 			<g>
 				<circle xmlns="http://www.w3.org/2000/svg" cx="50" cy="50" r="40" stroke="green" fill="yellow"
-								foo={ undefined }/>
+					foo={ undefined }/>
 			</g>
 		</svg>, container);
 		expect(container.childNodes[ 0 ].namespaceURI).to.equal('http://www.w3.org/2000/svg');

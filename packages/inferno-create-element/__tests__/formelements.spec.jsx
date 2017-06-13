@@ -615,7 +615,7 @@ describe('FormElements', () => {
 
 					render(props) {
 						return <CompB orderedConfigs={this.state.orderedConfigs}
-													onClick={(...args) => this.handleClick(this, ...args)}/>;
+							onClick={(...args) => this.handleClick(this, ...args)}/>;
 					}
 				}
 
@@ -803,10 +803,10 @@ describe('FormElements', () => {
 					}
 					render() {
 						return (
-						<div>
-							<button onClick={() => this.handleClick()} />
-							<input type="checkbox" checked={this.state.checked} />
-						</div>
+							<div>
+								<button onClick={() => this.handleClick()} />
+								<input type="checkbox" checked={this.state.checked} />
+							</div>
 						);
 					}
 				}
@@ -840,9 +840,9 @@ describe('FormElements', () => {
 					}
 					render() {
 						return (
-						<div>
-							<input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
-						</div>
+							<div>
+								<input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
+							</div>
 						);
 					}
 				}
@@ -882,9 +882,9 @@ describe('FormElements', () => {
 					}
 					render() {
 						return (
-						<div>
-							<input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
-						</div>
+							<div>
+								<input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
+							</div>
 						);
 					}
 				}

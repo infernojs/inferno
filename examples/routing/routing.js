@@ -38,11 +38,11 @@
 	}
 
 	Inferno.render((
-			t(Router, { history: browserHistory },
-				t(Route, { component: App },
-					t(Route, { path: '/foo', component: Foo }),
-					t(Route, { path: '/bar', component: Bar })
-				)
+		t(Router, { history: browserHistory },
+			t(Route, { component: App },
+				t(Route, { path: '/foo', component: Foo }),
+				t(Route, { path: '/bar', component: Bar })
 			)
-    ), document.getElementById('app'));
+		)
+	), document.getElementById('app'));
 })();

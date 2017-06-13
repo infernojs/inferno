@@ -150,9 +150,9 @@ describe('Router (jsx) #transitions', () => {
 
 	it('should use the correct child when transitioning', (done) => {
 		const Layout = ({ children }) => (<div>
-				<Link to={ '/foo/two' }>Go</Link>
-				{children}
-			</div>
+			<Link to={ '/foo/two' }>Go</Link>
+			{children}
+		</div>
 		);
 
 		render(

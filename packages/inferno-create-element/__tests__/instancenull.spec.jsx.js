@@ -111,13 +111,13 @@ describe('BUG: instance - null', () => {
 			}
 		}
 
-//
-// PRIVATE STATIC
-//
+		//
+		// PRIVATE STATIC
+		//
 
-//
-// OVERRIDEN FROM COMPONENT
-//
+		//
+		// OVERRIDEN FROM COMPONENT
+		//
 		render() {
 			const props = this.props;
 			let popover = null,
@@ -187,9 +187,9 @@ describe('BUG: instance - null', () => {
 			this._makeEditable = this._makeEditable.bind(this);
 		}
 
-//
-// PRIVATE
-//
+		//
+		// PRIVATE
+		//
 
 		// In some cases, we don't want to stop event propagation, f.e. listView editMode and movements with shift + TAB
 		_closePopover(event, propagate) {
@@ -288,9 +288,9 @@ describe('BUG: instance - null', () => {
 			});
 		}
 
-//
-// OVERRIDDEN FROM COMPONENT
-//
+		//
+		// OVERRIDDEN FROM COMPONENT
+		//
 
 		render() {
 			// TODO: setting arrow true breaks in runtime to "Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'"

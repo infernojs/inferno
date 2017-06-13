@@ -14,10 +14,14 @@
     "suite": true,
     "benchmark": true
 	},
-	"ecmaFeatures": {
-		"jsx": true,
-		"modules": true,
-		"es6": true
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true,
+			"modules": true,
+			"es6": true
+		}
 	},
 	"env": {
 		"browser": true,
