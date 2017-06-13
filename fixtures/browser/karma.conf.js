@@ -66,11 +66,17 @@ module.exports = function(config) {
             exclude: /node_modules/
           },
           {
+            test: /\.jsx?$/,
+            loader: "babel-loader",
+            include: /lodash/
+          },
+          {
             test: /\.tsx?$/,
             loader: "ts-loader",
             options: {
               compilerOptions: {
-                target: "es5"
+                target: "es5",
+                module: "commonjs",
               }
             }
           }

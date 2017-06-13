@@ -39,6 +39,8 @@ mkdir(join(cwd, "dist"), err => {
       console.log(`${pkgJSON.name} in ${options.format} is DONE`);
     })
     .catch(error => {
-      console.error(`${pkgJSON.name} in ${options.format} is FAILED ${error}`);
+      console.error(`${pkgJSON.name} in ${options.format} is FAILED`);
+      console.error(`${error.loc.file}: line ${error.loc.line} col ${error.loc.column}`);
+      console.error(error.frame);
     });
 });

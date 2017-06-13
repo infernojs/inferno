@@ -30,10 +30,11 @@
     "inferno-component": "3.4.4",
     "inferno-create-element": "3.4.4",
     "inferno-shared": "3.4.4",
-    "redux": "*"
+    "lodash.isplainobject": "^4.0.6",
+    "redux": "^2.0.0 || ^3.0.0"
   },
   "devDependencies": {
-    "inferno-router": "3.4.4"
+    "inferno-create-class": "3.4.4"
   },
   "rollup": {
     "bundledDependencies": [

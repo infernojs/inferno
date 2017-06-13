@@ -22,7 +22,7 @@
 		"allowSyntheticDefaultImports": true,
 		"declaration": true,
 		"target": "es6",
-		"module": "commonjs",
+		"module": "es6",
 		"allowJs": false,
 		"moduleResolution": "node",
 		"preserveConstEnums": true,
