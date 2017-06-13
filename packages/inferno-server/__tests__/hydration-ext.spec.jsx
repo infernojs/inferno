@@ -1,7 +1,5 @@
-
-import { createVNode, render } from 'inferno';
+import { render } from 'inferno';
 import Component from 'inferno-component';
-import { renderToString } from '../dist-es';
 import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno/test/utils';
 
 class Comp extends Component {
@@ -16,7 +14,30 @@ class Comp extends Component {
 	}
 }
 
+class InnerNested extends Component {
+	render({ children }) {
+		return children;
+	}
+}
+
+function Nested({ children }) {
+	return children;
+}
+
+class Comp2 extends Component {
+	render() {
+		return (
+			<div>
+				<div id="b1">C 1</div>
+				<div id="b2">C 2</div>
+				<div id="b3">C 3</div>
+			</div>
+		);
+	}
+}
+
 const compHtml = '<div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div>';
+const compHtml2 = '<div><div id="b1">C 1</div><div id="b2">C 2</div><div id="b3">C 3</div></div>';
 
 describe('SSR Hydration Extended - (JSX)', () => {
 	[
@@ -43,13 +64,49 @@ describe('SSR Hydration Extended - (JSX)', () => {
 		{
 			html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div><span>Hola</span></div>',
 			component: <Comp/>
+		},
+		{
+			html: '<div><div></div></div>',
+			component: <InnerNested><Nested><Comp/></Nested></InnerNested>
 		}
 	].forEach(({ html, component }, i) => {
 		it(`do test #${ i + 1 }`, () => {
 			let container = createContainerWithHTML(html);
 			render(component, container);
-			console.log(container.innerHTML);
+
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(compHtml));
 		});
+	});
+
+	it('Should hydrate correctly when CSR children is missing', () => {
+		let container = createContainerWithHTML('<div><!----> </div></div>');
+
+		render(<InnerNested><Nested><Comp2/></Nested></InnerNested>, container);
+
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML(compHtml2));
+	});
+
+	it('Should hydrate correctly when CSR component returns null', () => {
+		let container = createContainerWithHTML('<div></div>');
+
+		render(<div><Nested><InnerNested></InnerNested></Nested></div>, container);
+
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div></div>'));
+	});
+
+	it('Should hydrate correctly when there are comment nodes', () => {
+		let container = createContainerWithHTML('<div><!----></div>');
+
+		render(<div><Nested><InnerNested></InnerNested></Nested></div>, container);
+
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div></div>'));
+	});
+
+	it('Should hydrate correctly when there are comment nodes #2', () => {
+		let container = createContainerWithHTML('<div><!----><!----><!----></div>');
+
+		render(<div><Nested><InnerNested><p>Hello World!</p></InnerNested></Nested></div>, container);
+
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div><p>Hello World!</p></div>'));
 	});
 });
