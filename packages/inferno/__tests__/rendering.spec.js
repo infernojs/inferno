@@ -1,4 +1,4 @@
-import { createVNode, render, version } from "inferno";
+import { createVNode, render } from "inferno";
 import { NO_OP } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 import pkgJSON from "../package.json";
@@ -53,13 +53,5 @@ describe("rendering routine", () => {
 
     render(foo, container);
     expect(container.innerHTML).toEqual("<div><div>123</div></div>");
-  });
-
-  it("Should have same version number string as package.json", () => {
-    expect(pkgJSON.version).toBe(version);
-  });
-
-  it("Should have same version number string as package.json", () => {
-    expect(pkgJSON.version).toEqual(version);
   });
 });
