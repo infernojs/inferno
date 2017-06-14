@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renderToSnapshot should return a snapshot from a valid vNode 1`] = `
+<div
+  foo="bar"
+/>
+`;
