@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 import {isFunction} from 'inferno-shared';
 /**
  * Links given data to event as first parameter

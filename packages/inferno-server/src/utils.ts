@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Server
+ */ /** TypeDoc Comment */
+
 const ecapeCharacters = {
 	'"': '&quot;',
 	'&': '&amp;',

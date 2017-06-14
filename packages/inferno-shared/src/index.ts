@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Shared
+ */ /** TypeDoc Comment */
+
 export const NO_OP = '$NO_OP';
 export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 

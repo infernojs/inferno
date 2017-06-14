@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Create-Class
+ */ /** TypeDoc Comment */
+
 import Component, { ComponentLifecycle } from 'inferno-component';
 import { isFunction, isNullOrUndef, isObject, isUndefined, throwError } from 'inferno-shared';
 

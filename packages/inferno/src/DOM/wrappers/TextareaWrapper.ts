@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 import { isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils';
 

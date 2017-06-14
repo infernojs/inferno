@@ -8,7 +8,7 @@ quote_type = single
 
 # Tab indentation
 [*.{js,ts,jsx,tsx,json}]
-indent_style = tab
+indent_style = space
 indent_size = 2
 
 # Space indentation

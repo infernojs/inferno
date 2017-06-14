@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import Component from 'inferno-component';
 import { IRouterProps } from './Router';
 

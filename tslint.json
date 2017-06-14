@@ -1,31 +1,34 @@
 {
-	"extends": "tslint:recommended",
+	"extends": [
+		"tslint:recommended",
+		"tslint-config-prettier"
+	],
 	"jsRules": {
+		"arrow-parens": false,
 		"forin": false,
-		"indent": [ true, "tabs" ],
-		"max-classes-per-file": [true],
 		"max-line-length": [false],
 		"no-bitwise": false,
-		"no-conditional-assignment": false,
 		"no-console": [false],
+		"no-conditional-assignment": false,
 		"no-debugger": false,
-		"no-empty": true,
+		"no-empty": false,
 		"no-unused-expression": true,
-		"object-literal-sort-keys": true,
+		"object-literal-sort-keys": false,
 		"one-variable-per-declaration": [true, "ignore-for-loop"],
 		"only-arrow-functions": [false],
 		"ordered-imports": [true],
 		"prefer-const": true,
 		"prefer-for-of": false,
-		"quotemark": [ true, "single", "jsx-double" ],
-		"trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+		"quotemark": [false],
+		"trailing-comma": [true],
 		"variable-name": false
 	},
 	"rules": {
+		"arrow-parens": false,
+		"ban-types": false,
 		"forin": false,
-		"indent": [ true, "tabs" ],
 		"interface-name": [false],
-		"ban-types": true,
+    "jsdoc-format": false,
 		"max-classes-per-file": [true],
 		"max-line-length": [false],
 		"member-access": true,
@@ -42,8 +45,8 @@
 		"ordered-imports": [true],
 		"prefer-const": true,
 		"prefer-for-of": false,
-		"quotemark": [ true, "single", "jsx-double" ],
-		"trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+		"quotemark": [false],
+		"trailing-comma": [true],
 		"variable-name": false
 	}
 }

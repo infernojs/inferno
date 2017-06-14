@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Mobx
+ */ /** TypeDoc Comment */
+
 import connect from './connect';
 import EventEmitter from './EventEmitter';
 import inject from './inject';

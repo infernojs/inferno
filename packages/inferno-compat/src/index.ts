@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Compat
+ */ /** TypeDoc Comment */
+
 import {
 	cloneVNode,
 	createVNode,

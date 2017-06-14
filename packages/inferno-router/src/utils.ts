@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import { isArray, isString } from 'inferno-shared';
 
 export const emptyObject = {};

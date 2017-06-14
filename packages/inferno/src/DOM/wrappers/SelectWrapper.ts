@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 import { isArray, isInvalid, isNullOrUndef } from 'inferno-shared';
 import { isVNode } from '../../core/VNodes';
 import { EMPTY_OBJ } from '../utils';

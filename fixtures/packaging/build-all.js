@@ -1,48 +1,73 @@
-const fs = require('fs');
-const path = require('path');
-const child_process = require('child_process');
+const chalk = require("chalk");
+const Table = require("cli-table");
+const { existsSync, openSync, readdirSync, statSync } = require("fs");
+const path = require("path");
+const { spawnSync } = require("child_process");
 
-const fixtureDirs = fs.readdirSync(__dirname).filter((file) => {
-	return fs.statSync(path.join(__dirname, file)).isDirectory();
+const fixtureDirs = readdirSync(__dirname).filter(file =>
+  statSync(path.join(__dirname, file)).isDirectory()
+);
+
+const table = new Table({
+  head: [
+    chalk.gray.yellow("Fixture"),
+    chalk.gray.yellow("Environment"),
+    chalk.gray.yellow("Passed"),
+    chalk.gray.yellow("Message")
+  ]
 });
 
-const cmdArgs = [
-	{cmd: 'npm', args: ['install']},
-	{cmd: 'npm', args: ['run', 'build']},
-];
+function addResult(tool, environment, result) {
+  table.push([
+    chalk.white.bold(tool),
+    chalk.white.bold(environment),
+    result.passed ? chalk.green.bold("Passed") : chalk.red.bold("Failed"),
+    result.message === void 0 ? "" : chalk.white(result.message)
+  ]);
+}
 
-function buildFixture(cmdArg, cwdPath) {
-	const opts = {
-		cwd: cwdPath,
-		stdio: 'inherit',
-	};
-	const result = child_process.spawnSync(cmdArg.cmd, cmdArg.args, opts);
-	if (result.status !== 0 || result.error) {
-		throw new Error(`Failed to build fixtures!`);
-	}
+function buildFixture(tool, environment) {
+  // Let console know what's going on
+  console.log(`Running ${tool}:${environment}`);
+
+  // setup options
+  const opts = {
+    cwd: path.join(__dirname, tool, environment),
+    stdio: ["pipe", "pipe", "inherit"]
+  };
+
+  // Run an NPM install
+  const install_result = spawnSync("npm", ["install"], opts);
+  if (install_result.status !== 0 || install_result.error) {
+    return {
+      passed: false,
+      message: install_result.error
+    };
+  }
+
+  // Run the test
+  const test_result = spawnSync("npm", ["run", "build"], opts);
+  if (test_result.status !== 0 || test_result.error) {
+    return {
+      passed: false,
+      message: test_result.error
+    };
+  }
+
+  return {
+    passed: true
+  };
 }
 
 fixtureDirs.forEach(dir => {
-	cmdArgs.forEach(cmdArg => {
-		// we only care about directories that have DEV and PROD directories in
-		// otherwise they don't need to be built
-		const devPath = path.join(__dirname, dir, 'dev');
-
-		if (fs.existsSync(devPath)) {
-			buildFixture(cmdArg, devPath);
-		}
-		const prodPath = path.join(__dirname, dir, 'prod');
-
-		if (fs.existsSync(prodPath)) {
-			buildFixture(cmdArg, prodPath);
-		}
-	});
+  const devPath = path.join(__dirname, dir, "dev");
+  if (existsSync(devPath)) {
+    addResult(dir, "dev", buildFixture(dir, "dev"));
+  }
+  const prodPath = path.join(__dirname, dir, "prod");
+  if (existsSync(prodPath)) {
+    addResult(dir, "prod", buildFixture(dir, "prod"));
+  }
 });
 
-console.log(`-------------------------
-All fixtures were built!');
-Now ensure all frames display a welcome message:');
-  npm install -g serve');
-  serve ../..');
-  open http://localhost:5000/fixtures/packaging/');
--------------------------`);
+console.log(table.toString());

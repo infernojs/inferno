@@ -1,9 +1,9 @@
-import { ParentBaseCommon } from './parentbase';
+import { ParentBaseCommon } from "./parentbase";
 
 export class ParentFirstCommon extends ParentBaseCommon {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		this.foo = 'First';
-	}
+    this.foo = "First";
+  }
 }

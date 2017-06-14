@@ -1,13 +1,32 @@
 {
-	"version": "2.2.1",
+	"version": "2.3.4",
 	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"inferno": [ "packages/inferno/src" ],
+			"inferno-compat": [ "packages/inferno-compat/src" ],
+			"inferno-component": [ "packages/inferno-component/src" ],
+			"inferno-create-class": [ "packages/inferno-create-class/src" ],
+			"inferno-create-element": [ "packages/inferno-create-element/src" ],
+			"inferno-devtools": [ "packages/inferno-devtools/src" ],
+			"inferno-hyperscript": [ "packages/inferno-hyperscript/src" ],
+			"inferno-mobx": [ "packages/inferno-mobx/src" ],
+			"inferno-redux": [ "packages/inferno-redux/src" ],
+			"inferno-router": [ "packages/inferno-router/src" ],
+			"inferno-server": [ "packages/inferno-server/src" ],
+			"inferno-shared": [ "packages/inferno-shared/src" ],
+			"inferno-test-utils": [ "packages/inferno-test-utils/src" ],
+			"inferno-utils": [ "packages/inferno-utils/src" ],
+			"inferno-vnode-flags": [ "packages/inferno-vnode-flags/src" ]
+		},
+		"allowSyntheticDefaultImports": true,
+		"declaration": true,
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
 		"moduleResolution": "node",
 		"preserveConstEnums": true,
-		"declaration": true,
-		"outDir": "dist-es",
+		"outDir": "build",
 		"sourceMap": false,
 		"lib": [
 			"es6",
@@ -17,9 +36,11 @@
 		"jsx": "preserve",
 		"noUnusedLocals": true,
 		"strictNullChecks": true,
-		"removeComments": false
+		"removeComments": false,
+		"rootDir": "."
 	},
 	"include": [
-		"src/**/*"
+		"packages/*/src",
+		"packages/*/__tests__"
 	]
 }
