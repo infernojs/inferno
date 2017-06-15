@@ -1,6 +1,6 @@
 {
   "name": "inferno-utils",
-  "version": "3.5.0",
+  "version": "3.5.2",
   "description": "Meta test utilities which are not for userland",
   "main": "index.js",
   "scripts": {
