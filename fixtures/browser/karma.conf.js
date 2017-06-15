@@ -32,6 +32,7 @@ module.exports = function(config) {
       require.resolve("es6-shim"),
       require.resolve("babel-polyfill/dist/polyfill"),
       "./scripts/test/jasmine-polyfill.js",
+      "./scripts/test/globals.js",
       "./packages/*/__tests__/*",
       "./packages/*/__tests__/**/*"
     ],
@@ -76,7 +77,7 @@ module.exports = function(config) {
             options: {
               compilerOptions: {
                 target: "es5",
-                module: "commonjs",
+                module: "commonjs"
               }
             }
           }
