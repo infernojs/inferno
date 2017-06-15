@@ -10,11 +10,17 @@ const FunctionalComponent = function(props) {
 
 describe("renderToSnapshot", () => {
   it("should return a snapshot from a valid vNode", () => {
+
     const snapshot = TestUtils.renderToSnapshot(
       <FunctionalComponent foo="bar" />
     );
-    expect(snapshot.props).toHaveProperty("foo");
-    expect(snapshot.props.foo).toBe("bar");
-    expect(snapshot).toMatchSnapshot();
+
+    if(usingJest){
+      expect(snapshot).toMatchSnapshot();
+    } else {
+      expect(snapshot.props.foo).toBeDefined();
+      expect(snapshot.props.foo).toBe("bar");
+    }
+
   });
 });
