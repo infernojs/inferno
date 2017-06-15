@@ -7,7 +7,6 @@ import {
   isArray,
   isInvalid,
   isNull,
-  isNullOrUndef,
   isStatefulComponent,
   isStringOrNumber,
   isUndefined
@@ -250,11 +249,21 @@ export function cloneVNode(
     newVNode = tmpArray;
   } else {
     const flags = vNodeToClone.flags;
-    const className = vNodeToClone.className || (props && props.className);
-    const key = !isNullOrUndef(vNodeToClone.key)
-      ? vNodeToClone.key
-      : props ? props.key : null;
-    const ref = vNodeToClone.ref || (props ? props.ref : null);
+    let className = vNodeToClone.className;
+    let key = vNodeToClone.key;
+    let ref = vNodeToClone.ref;
+    if (props) {
+      if (props.hasOwnProperty("className")) {
+        className = props.className as string;
+      }
+      if (props.hasOwnProperty("ref")) {
+        ref = props.ref as Ref;
+      }
+
+      if (props.hasOwnProperty("key")) {
+        key = props.key;
+      }
+    }
 
     if (flags & VNodeFlags.Component) {
       newVNode = createVNode(

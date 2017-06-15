@@ -239,4 +239,131 @@ describe("cloneVNode (JSX)", () => {
 
     expect(container.innerHTML).toBe("<div></div>");
   });
+
+  describe("Cloning className", () => {
+    it("Should prefer new props over cloned object", () => {
+      const node = <textarea className="test" />;
+
+      render(node, container);
+
+      expect(container.firstChild.className).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        className: "foo"
+      });
+
+      render(newNode, container);
+
+      expect(container.firstChild.className).toBe("foo");
+    });
+
+    it("Should remove className if new one is empty", () => {
+      const node = <textarea className="test" />;
+
+      render(node, container);
+
+      expect(container.firstChild.className).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        className: null
+      });
+
+      render(newNode, container);
+
+      expect(container.firstChild.className).toBe("");
+    });
+
+    it("Should keep previous className when new props dont have that property at all", () => {
+      const node = <textarea className="test" />;
+
+      render(node, container);
+
+      expect(container.firstChild.className).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        id: "wow"
+      });
+
+      render(newNode, container);
+
+      expect(container.firstChild.className).toBe("test");
+      expect(container.firstChild.getAttribute("id")).toBe("wow");
+    });
+  });
+
+  describe("Cloning key", () => {
+    it("Should prefer new props over cloned object", () => {
+      const node = <textarea key="test" />;
+
+      expect(node.key).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        key: "foo"
+      });
+
+      expect(newNode.key).toEqual("foo");
+    });
+
+    it("Should remove key if new one is empty", () => {
+      const node = <textarea key="test" />;
+
+      expect(node.key).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        key: null
+      });
+
+      expect(newNode.key).toEqual(null);
+    });
+
+    it("Should keep previous key when new props dont have that property at all", () => {
+      const node = <textarea key="test" />;
+
+      expect(node.key).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        className: null
+      });
+
+      expect(newNode.key).toEqual("test");
+    });
+  });
+
+  describe("Cloning Ref", () => {
+    it("Should prefer new props over cloned object", () => {
+      const node = <textarea ref="test" />;
+
+      expect(node.ref).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        ref: "foo"
+      });
+
+      expect(newNode.ref).toEqual("foo");
+    });
+
+    it("Should remove ref if new one is empty", () => {
+      const node = <textarea ref="test" />;
+
+      expect(node.ref).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        ref: null
+      });
+
+      expect(newNode.ref).toEqual(null);
+    });
+
+    it("Should keep previous ref when new props dont have that property at all", () => {
+      const node = <textarea ref="test" />;
+
+      expect(node.ref).toEqual("test");
+
+      const newNode = cloneVNode(node, {
+        className: null
+      });
+
+      expect(newNode.ref).toEqual("test");
+    });
+  });
 });

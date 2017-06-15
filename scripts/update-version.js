@@ -52,8 +52,8 @@ for (let i = 0; i < PACKAGES.length; i += 1) {
       );
     }
 
-    resdeps = updateDeps(pkgJSON.dependencies, pkgJSON);
-    resdevdeps = updateDeps(pkgJSON.devDependencies, pkgJSON);
+    let resdeps = updateDeps(pkgJSON.dependencies, pkgJSON);
+    let resdevdeps = updateDeps(pkgJSON.devDependencies, pkgJSON);
 
     failed = failed || resdeps || resdevdeps;
     if (failed) {
