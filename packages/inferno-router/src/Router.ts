@@ -15,6 +15,7 @@ export interface IRouterProps {
   location: any;
   baseUrl?: any;
   component?: Component<any, any>;
+  asyncBefore?: any;
   onUpdate?: any;
 }
 
@@ -61,7 +62,14 @@ export default class Router extends Component<IRouterProps, any> {
   public componentWillMount() {
     if (this.router) {
       this.unlisten = this.router.listen(() => {
-        this.routeTo(this.router.url);
+        if (typeof this.props.asyncBefore === "function") {
+          const self = this;
+          this.props.asyncBefore(this.router.url).then(() => {
+            self.routeTo(self.router.url);
+          });
+        } else {
+          this.routeTo(this.router.url);
+        }
       });
     }
   }
