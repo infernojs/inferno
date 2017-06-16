@@ -60,6 +60,7 @@
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "jest",
+    "test:debug": "jest --inspect --debug-brk",
     "test:coverage": "jest --coverage",
     "test:browser": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test",

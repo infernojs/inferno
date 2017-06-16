@@ -242,7 +242,7 @@ describe("cloneVNode (JSX)", () => {
 
   describe("Cloning className", () => {
     it("Should prefer new props over cloned object", () => {
-      const node = <textarea className="test" />;
+      const node = <div className="test" />;
 
       render(node, container);
 
@@ -253,12 +253,16 @@ describe("cloneVNode (JSX)", () => {
       });
 
       render(newNode, container);
+      expect(newNode.props.hasOwnProperty("className")).toBe(false);
 
       expect(container.firstChild.className).toBe("foo");
+      expect(innerHTML(container.innerHTML)).toEqual(
+        innerHTML('<div class="foo"></div>')
+      );
     });
 
     it("Should remove className if new one is empty", () => {
-      const node = <textarea className="test" />;
+      const node = <div className="test" />;
 
       render(node, container);
 
@@ -269,12 +273,15 @@ describe("cloneVNode (JSX)", () => {
       });
 
       render(newNode, container);
+      console.log(newNode.props);
+      expect(newNode.props.hasOwnProperty("className")).toBe(false);
 
       expect(container.firstChild.className).toBe("");
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
     });
 
     it("Should keep previous className when new props dont have that property at all", () => {
-      const node = <textarea className="test" />;
+      const node = <div className="test" />;
 
       render(node, container);
 
@@ -286,84 +293,135 @@ describe("cloneVNode (JSX)", () => {
 
       render(newNode, container);
 
+      expect(newNode.props.hasOwnProperty("id")).toBe(true);
+      expect(newNode.props.hasOwnProperty("className")).toBe(false);
+
       expect(container.firstChild.className).toBe("test");
       expect(container.firstChild.getAttribute("id")).toBe("wow");
+      expect(innerHTML(container.innerHTML)).toEqual(
+        innerHTML('<div class="test" id="wow"></div>')
+      );
     });
   });
 
   describe("Cloning key", () => {
     it("Should prefer new props over cloned object", () => {
-      const node = <textarea key="test" />;
+      const node = <div key="test" />;
 
       expect(node.key).toEqual("test");
+
+      render(node, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
 
       const newNode = cloneVNode(node, {
         key: "foo"
       });
 
       expect(newNode.key).toEqual("foo");
+      expect(newNode.props.hasOwnProperty("key")).toBe(false);
+      render(newNode, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
     });
 
     it("Should remove key if new one is empty", () => {
-      const node = <textarea key="test" />;
+      const node = <div key="test" />;
 
       expect(node.key).toEqual("test");
+
+      render(node, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
 
       const newNode = cloneVNode(node, {
         key: null
       });
 
       expect(newNode.key).toEqual(null);
+
+      render(newNode, container);
+      expect(newNode.props.hasOwnProperty("key")).toBe(false);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
     });
 
     it("Should keep previous key when new props dont have that property at all", () => {
-      const node = <textarea key="test" />;
+      const node = <div key="test" />;
 
       expect(node.key).toEqual("test");
+
+      render(node, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
 
       const newNode = cloneVNode(node, {
         className: null
       });
 
       expect(newNode.key).toEqual("test");
+      expect(newNode.props.hasOwnProperty("key")).toBe(false);
+      expect(newNode.props.hasOwnProperty("className")).toBe(false);
+      render(newNode, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
     });
   });
 
   describe("Cloning Ref", () => {
-    it("Should prefer new props over cloned object", () => {
-      const node = <textarea ref="test" />;
+    function initialFunc() {}
 
-      expect(node.ref).toEqual("test");
+    it("Should prefer new props over cloned object", () => {
+      const node = <div ref={initialFunc} />;
+
+      expect(node.ref).toEqual(initialFunc);
+
+      render(node, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
+
+      function newFunction() {}
 
       const newNode = cloneVNode(node, {
-        ref: "foo"
+        ref: newFunction
       });
 
-      expect(newNode.ref).toEqual("foo");
+      expect(newNode.ref).toEqual(newFunction);
+      expect(newNode.props.hasOwnProperty("ref")).toBe(false);
+      render(newNode, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
     });
 
     it("Should remove ref if new one is empty", () => {
-      const node = <textarea ref="test" />;
+      const node = <div ref={initialFunc} />;
 
-      expect(node.ref).toEqual("test");
+      expect(node.ref).toEqual(initialFunc);
+
+      render(node, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
 
       const newNode = cloneVNode(node, {
         ref: null
       });
 
       expect(newNode.ref).toEqual(null);
+      expect(newNode.props.hasOwnProperty("ref")).toBe(false);
+      render(newNode, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
     });
 
     it("Should keep previous ref when new props dont have that property at all", () => {
-      const node = <textarea ref="test" />;
+      const node = <div ref={initialFunc} />;
 
-      expect(node.ref).toEqual("test");
+      expect(node.ref).toEqual(initialFunc);
+
+      debugger;
+      render(node, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
 
       const newNode = cloneVNode(node, {
         className: null
       });
 
-      expect(newNode.ref).toEqual("test");
+      console.log(newNode.props);
+      expect(newNode.ref).toEqual(initialFunc);
+      expect(newNode.props.hasOwnProperty("className")).toBe(false);
+      expect(newNode.className).toBe(null);
+      render(newNode, container);
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
     });
   });
 });

@@ -48,7 +48,7 @@ export interface Refs {
 export interface VNode {
   children: InfernoChildren;
   dom: Element | null;
-  className: string;
+  className: string | null;
   flags: number;
   key: any;
   props: Props | null;
@@ -321,7 +321,7 @@ export function cloneVNode(
           : combineFrom(vNodeToClone.props, props),
         key,
         ref,
-        !children
+        false
       );
     } else if (flags & VNodeFlags.Text) {
       newVNode = createTextVNode(vNodeToClone.children as string, key);

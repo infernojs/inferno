@@ -130,19 +130,19 @@ function normalizeChildren(children: InfernoChildren | null) {
 
 function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
   if (vNode.flags & VNodeFlags.Element) {
-    if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+    if (isNullOrUndef(children) && props.hasOwnProperty("children")) {
       vNode.children = props.children;
     }
-    if (!isNullOrUndef(props.className)) {
-      vNode.className = props.className;
+    if (props.hasOwnProperty("className")) {
+      vNode.className = props.className || null;
       delete props.className;
     }
   }
-  if (props.ref) {
-    vNode.ref = props.ref;
+  if (props.hasOwnProperty("ref")) {
+    vNode.ref = props.ref as any;
     delete props.ref;
   }
-  if (!isNullOrUndef(props.key)) {
+  if (props.hasOwnProperty("key")) {
     vNode.key = props.key;
     delete props.key;
   }
