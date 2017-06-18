@@ -1,6 +1,5 @@
-import { render } from "inferno";
+import { render, createVNode } from "inferno";
 import createElement from "inferno-create-element";
-import { createTextVNode } from "inferno/core/VNodes";
 
 function generateKeyNodes(array) {
   let i, id, key;
@@ -1197,7 +1196,9 @@ describe("keyed-nodes", () => {
 
       function gen(item, keys) {
         if (typeof item === "number") {
-          return keys ? createTextVNode(item, item) : createTextVNode(item);
+          return keys
+            ? createVNode(2, "div", null, item, null, item)
+            : createVNode(2, "div", null, item);
         } else if (Array.isArray(item)) {
           const result = [];
           for (let i = 0; i < item.length; i++) {
