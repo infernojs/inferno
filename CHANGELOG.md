@@ -1,3 +1,58 @@
+<a name="3.5.2"></a>
+## 3.5.2 (2017-06-15)
+
+* v3.5.2 ([b7fc3d9](https://github.com/infernojs/inferno/commit/b7fc3d9))
+
+
+
+<a name="3.5.1"></a>
+## 3.5.1 (2017-06-15)
+
+* Change cloneVNode to prefer props Fixes Github #1141 ([cad34c8](https://github.com/infernojs/inferno/commit/cad34c8)), closes [#1141](https://github.com/infernojs/inferno/issues/1141)
+* Dev (#1140) ([30ccad6](https://github.com/infernojs/inferno/commit/30ccad6))
+* Fix snapshot creation error and verify with test (#1139) ([1cb9592](https://github.com/infernojs/inferno/commit/1cb9592)), closes [#1139](https://github.com/infernojs/inferno/issues/1139) [#1139](https://github.com/infernojs/inferno/issues/1139)
+* Merge 3.5.0 (#1134) ([0c1f1eb](https://github.com/infernojs/inferno/commit/0c1f1eb))
+* Prepare 3.5.1 ([c3859eb](https://github.com/infernojs/inferno/commit/c3859eb))
+* Remove null pointer source maps ([b2e0f9d](https://github.com/infernojs/inferno/commit/b2e0f9d))
+* v3.5.1 ([fd1da79](https://github.com/infernojs/inferno/commit/fd1da79))
+
+
+
+<a name="3.5.0"></a>
+# 3.5.0 (2017-06-13)
+
+* Fix odd versions ([4f0c8c1](https://github.com/infernojs/inferno/commit/4f0c8c1))
+* Fix scripts ([a1ab45a](https://github.com/infernojs/inferno/commit/a1ab45a))
+* Fix update version ([36c9d20](https://github.com/infernojs/inferno/commit/36c9d20))
+* Inferno Redux @5  (#1131) ([e1fc19a](https://github.com/infernojs/inferno/commit/e1fc19a))
+* Merge hydration fix ([e8db6da](https://github.com/infernojs/inferno/commit/e8db6da))
+* Merge master (#1133) ([cae9d91](https://github.com/infernojs/inferno/commit/cae9d91))
+* Serialize prettier ([d2d1a32](https://github.com/infernojs/inferno/commit/d2d1a32))
+* Update and check scripts ([a456f95](https://github.com/infernojs/inferno/commit/a456f95))
+* Update eslint config and fix errors ([c6523a8](https://github.com/infernojs/inferno/commit/c6523a8))
+* Update to 3.4.4 ([9873113](https://github.com/infernojs/inferno/commit/9873113))
+* v3.5.0 ([ce44bdb](https://github.com/infernojs/inferno/commit/ce44bdb))
+* Webpack fix ([eb5979d](https://github.com/infernojs/inferno/commit/eb5979d))
+
+
+
+<a name="3.4.4"></a>
+## 3.4.4 (2017-06-13)
+
+* Activate prettier (#1130) ([d144e19](https://github.com/infernojs/inferno/commit/d144e19))
+* Add deploy targets on master branch ([71a18c6](https://github.com/infernojs/inferno/commit/71a18c6))
+* Add npmignore into packages ([43b7e68](https://github.com/infernojs/inferno/commit/43b7e68))
+* CHANGELOG.md ([9cecd4d](https://github.com/infernojs/inferno/commit/9cecd4d))
+* Even Dev and Master Branches (#1124) ([a065be7](https://github.com/infernojs/inferno/commit/a065be7))
+* Fixes bug in hydration when SSR and CSR dont match #1132 ([2957382](https://github.com/infernojs/inferno/commit/2957382)), closes [#1132](https://github.com/infernojs/inferno/issues/1132)
+* Inferno Mega Refactor (#1125) ([38b09f0](https://github.com/infernojs/inferno/commit/38b09f0))
+* Prepare 3.4.4 ([4ee5985](https://github.com/infernojs/inferno/commit/4ee5985))
+* Run prettier on all scripts ([69a6022](https://github.com/infernojs/inferno/commit/69a6022))
+* Typedoc (#1126) ([dba7382](https://github.com/infernojs/inferno/commit/dba7382))
+* v3.4.4 ([f1b3ad3](https://github.com/infernojs/inferno/commit/f1b3ad3))
+
+
+
 <a name="3.4.3"></a>
 ## 3.4.3 (2017-06-10)
 

@@ -45,7 +45,7 @@
     "build:node": "npm run rollup -- --format=cjs --replace=false --name=index --uglify=false",
     "build:umd:dev": "npm run rollup --",
     "build:umd:prod": "npm run rollup -- --env=production",
-    "changelog": "lerna-changelog",
+    "changelog": "conventional-changelog -o CHANGELOG.md -r 0",
     "predocs": "rimraf docs",
     "docs": "typedoc",
     "examples": "npm run --prefix examples start",
