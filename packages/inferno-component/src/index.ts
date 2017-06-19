@@ -300,7 +300,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			}
 
 			/* Update if scu is not defined, or it returns truthy value or force */
-			if (isNullOrUndef(this.shouldComponentUpdate) || (this.shouldComponentUpdate && this.shouldComponentUpdate(nextProps, nextState, context)) || force) {
+			if (force || isNullOrUndef(this.shouldComponentUpdate) || (this.shouldComponentUpdate && this.shouldComponentUpdate(nextProps, nextState, context))) {
 				if (!isNullOrUndef(this.componentWillUpdate)) {
 					this._blockSetState = true;
 					this.componentWillUpdate(nextProps, nextState, context);
