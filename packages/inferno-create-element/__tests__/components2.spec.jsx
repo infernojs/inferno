@@ -333,4 +333,45 @@ describe("Components (JSX) #2", () => {
       expect(container.innerHTML).toBe(innerHTML("bar"));
     });
   });
+
+  describe("Force update", () => {
+    it("Should not call shouldComponentUpdate", () => {
+      let test = false;
+      let called = false;
+      let doForce;
+
+      class FooBar extends Component {
+        constructor(props) {
+          super(props);
+
+          doForce = this.doForceUpdate.bind(this);
+        }
+
+        shouldComponentUpdate() {
+          test = true;
+        }
+
+        doForceUpdate() {
+          called = true;
+          this.forceUpdate();
+        }
+
+        render() {
+          return <div>1</div>;
+        }
+      }
+
+      render(<FooBar />, container);
+
+      expect(container.innerHTML).toEqual("<div>1</div>");
+      expect(test).toEqual(false);
+      expect(called).toEqual(false);
+
+      doForce();
+
+      expect(test).toEqual(false);
+      expect(called).toEqual(true);
+      expect(container.innerHTML).toEqual("<div>1</div>");
+    });
+  });
 });
