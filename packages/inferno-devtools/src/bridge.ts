@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { options } from "inferno";
-import { isArray, isInvalid, isObject, isStringOrNumber } from "inferno-shared";
+import { isArray, isInvalid, isObject, isStringOrNumber, isUndefined } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 
 function findVNodeFromDom(vNode, dom) {
@@ -254,14 +254,14 @@ function updateReactComponent(vNode, parentDom) {
     return null;
   }
   const flags = vNode.flags;
+  const oldInstance = getInstanceFromVNode(vNode);
   let newInstance;
 
   if (flags & VNodeFlags.Component) {
-    newInstance = createReactCompositeComponent(vNode);
+    newInstance = createReactCompositeComponent(vNode, isUndefined(oldInstance));
   } else {
     newInstance = createReactDOMComponent(vNode, parentDom);
   }
-  const oldInstance = getInstanceFromVNode(vNode);
 
   if (oldInstance) {
     for (const key in newInstance) {
@@ -343,7 +343,7 @@ function normalizeKey(key) {
  *
  * See https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/getData.js
  */
-function createReactCompositeComponent(vNode) {
+function createReactCompositeComponent(vNode, isFirstCreation) {
   const type = vNode.type;
   const instance = vNode.children;
   const lastInput = instance._lastInput || instance;
@@ -358,7 +358,6 @@ function createReactCompositeComponent(vNode) {
     },
     _instance: instance,
     _renderedComponent: updateReactComponent(lastInput, dom),
-    forceUpdate: instance.forceUpdate.bind(instance),
     getName() {
       return typeName(type);
     },
@@ -369,21 +368,19 @@ function createReactCompositeComponent(vNode) {
     vNode
   };
 
-  const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
-  instance.forceUpdate = () => {
-    const newProps = Object.assign(
-      {},
-      // These are the regular Inferno props.
-      instance.props,
-      // This is what gets updated by the React devtools when props are edited.
-      compositeComponent._currentElement.props
-    );
+  if (isFirstCreation) {
+    const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
+    instance.forceUpdate = () => {
+      instance.props = vNode.props = Object.assign(
+        // These are the regular Inferno props.
+        instance.props,
+        // This is what gets updated by the React devtools when props are edited.
+        compositeComponent._currentElement.props
+      );
 
-    instance.props = newProps;
-    vNode.props = newProps;
-
-    forceInstanceUpdate();
-  };
+      forceInstanceUpdate();
+    };
+  }
 
   return compositeComponent;
 }
