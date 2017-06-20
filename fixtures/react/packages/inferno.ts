@@ -2,10 +2,13 @@ import { cloneElement, createElement } from 'react';
 export { findDOMNode, render } from 'react-dom';
 
 export function createVNode(flags, type, className?, children?, props?, key?, ref?, noNormalise?) {
+  console.log('YEAH WHAT?!');
 	return createElement(
 		type,
 		{
 			className,
+      key,
+      ref,
 			...props
 		},
 		children
