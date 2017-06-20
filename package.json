@@ -63,7 +63,7 @@
     "test:debug": "jest --inspect --debug-brk",
     "test:coverage": "jest --coverage",
     "test:browser": "npm run --prefix fixtures/browser test",
-    "test:react": "npm run --prefix fixtures/react test",
+    "test:react": "npm run --prefix fixtures/react test -- --forceExit",
     "test:package": "node fixtures/packaging/build-all.js",
     "uninstall": "lerna clean && rm -rf node_modules"
   },

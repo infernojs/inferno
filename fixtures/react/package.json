@@ -4,7 +4,7 @@
   "version": "4.0.0",
   "scripts": {
     "pretest": "npm install",
-    "test": "jest"
+    "test": "jest --forceExit"
   },
   "devDependencies": {
     "@types/react": "^15.0.25",
