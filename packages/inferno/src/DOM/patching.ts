@@ -20,8 +20,6 @@ import {
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 import { options } from "../core/options";
-
-import { Styles } from "../core/structures";
 import {
   createTextVNode,
   createVoidVNode,
@@ -1086,34 +1084,38 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
-export function patchStyle(
-  lastAttrValue: string | Styles,
-  nextAttrValue: string | Styles,
-  dom
-) {
+function patchStyle(lastAttrValue, nextAttrValue, dom) {
   const domStyle = dom.style;
+  let style;
+  let value;
 
   if (isString(nextAttrValue)) {
     domStyle.cssText = nextAttrValue;
     return;
   }
 
-  for (const style in nextAttrValue as Styles) {
-    // do not add a hasOwnProperty check here, it affects performance
-    const value = nextAttrValue[style];
-
-    if (!isNumber(value) || isUnitlessNumber.has(style)) {
-      domStyle[style] = value;
-    } else {
-      domStyle[style] = value + "px";
+  if (!isNullOrUndef(lastAttrValue) && !isString(lastAttrValue)) {
+    for (style in nextAttrValue) {
+      // do not add a hasOwnProperty check here, it affects performance
+      value = nextAttrValue[style];
+      if (value !== lastAttrValue[style]) {
+        domStyle[style] = !isNumber(value) || isUnitlessNumber.has(style)
+          ? value
+          : value + "px";
+      }
     }
-  }
 
-  if (!isNullOrUndef(lastAttrValue)) {
-    for (const style in lastAttrValue as Styles) {
+    for (style in lastAttrValue) {
       if (isNullOrUndef(nextAttrValue[style])) {
         domStyle[style] = "";
       }
+    }
+  } else {
+    for (style in nextAttrValue) {
+      value = nextAttrValue[style];
+      domStyle[style] = !isNumber(value) || isUnitlessNumber.has(style)
+        ? value
+        : value + "px";
     }
   }
 }
