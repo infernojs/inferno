@@ -1,6 +1,6 @@
 {
   "name": "inferno-redux",
-  "version": "3.5.4",
+  "version": "3.6.0",
   "license": "MIT",
   "description": "Official Inferno bindings for Redux",
   "author": {
@@ -26,15 +26,15 @@
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "3.5.4",
-    "inferno-component": "3.5.4",
-    "inferno-create-element": "3.5.4",
-    "inferno-shared": "3.5.4",
+    "inferno": "3.6.0",
+    "inferno-component": "3.6.0",
+    "inferno-create-element": "3.6.0",
+    "inferno-shared": "3.6.0",
     "lodash.isplainobject": "^4.0.6",
     "redux": "^2.0.0 || ^3.0.0"
   },
   "devDependencies": {
-    "inferno-create-class": "3.5.4"
+    "inferno-create-class": "3.6.0"
   },
   "rollup": {
     "bundledDependencies": [
