@@ -2,7 +2,7 @@
   "name": "inferno-build",
   "private": true,
   "license": "MIT",
-  "version": "3.5.4",
+  "version": "3.6.0",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -51,6 +51,7 @@
     "examples": "npm run --prefix examples start",
     "lint": "tslint -p tsconfig.json --type-check",
     "lint-staged": "lint-staged",
+    "publish": "lerna publish --exact --force-publish=* --skip-git --skip-npm && npm run build && npm run test && lerna publish --exact",
     "prepublishOnly": "npm run build",
     "prettier": "npm-run-all prettier:src:*",
     "prettier:src:js": "prettier --write --list-different packages/*/__tests__/**/*.{js,jsx}",
