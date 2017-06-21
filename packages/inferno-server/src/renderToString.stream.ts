@@ -2,182 +2,212 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
-import { combineFrom, isArray, isInvalid, isNullOrUndef, isStringOrNumber, isUndefined } from 'inferno-shared';
-import VNodeFlags from 'inferno-vnode-flags';
-import { Readable } from 'stream';
-import { renderAttributes, renderStyleToString } from './prop-renderers';
-import { escapeText, isVoidElement } from './utils';
+import {
+  combineFrom,
+  isArray,
+  isFunction,
+  isInvalid,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  isStringOrNumber
+} from "inferno-shared";
+import VNodeFlags from "inferno-vnode-flags";
+import { Readable } from "stream";
+import { renderAttributes, renderStylesToString } from "./prop-renderers";
+import { escapeText, voidElements } from "./utils";
 
 const resolvedPromise = Promise.resolve();
 
 export class RenderStream extends Readable {
-	public initNode: any;
-	public staticMarkup: any;
-	public started: boolean = false;
+  public initNode: any;
+  public staticMarkup: any;
+  public started: boolean = false;
 
-	constructor(initNode, staticMarkup) {
-		super();
-		this.initNode = initNode;
-		this.staticMarkup = staticMarkup;
-	}
+  constructor(initNode, staticMarkup) {
+    super();
+    this.initNode = initNode;
+    this.staticMarkup = staticMarkup;
+  }
 
-	public _read() {
-		if (this.started) {
-			return;
-		}
-		this.started = true;
+  public _read() {
+    if (this.started) {
+      return;
+    }
+    this.started = true;
 
-		resolvedPromise.then(() => {
-			return this.renderNode(this.initNode, null, this.staticMarkup);
-		}).then(() => {
-			this.push(null);
-		}).catch((err) => {
-			this.emit('error', err);
-		});
-	}
+    resolvedPromise
+      .then(() => {
+        return this.renderNode(this.initNode, null, this.staticMarkup);
+      })
+      .then(() => {
+        this.push(null);
+      })
+      .catch(err => {
+        this.emit("error", err);
+      });
+  }
 
-	public renderNode(vNode, context, isRoot) {
-		if (isInvalid(vNode)) {
-			return;
-		} else {
-			const flags = vNode.flags;
+  public renderNode(vNode, context, isRoot) {
+    if (isInvalid(vNode)) {
+      return;
+    } else {
+      const flags = vNode.flags;
 
-			if (flags & VNodeFlags.Component) {
-				return this.renderComponent(vNode, isRoot, context, flags & VNodeFlags.ComponentClass);
-			} else if (flags & VNodeFlags.Element) {
-				return this.renderElement(vNode, isRoot, context);
-			} else {
-				return this.renderText(vNode, isRoot, context);
-			}
-		}
-	}
+      if ((flags & VNodeFlags.Component) > 0) {
+        return this.renderComponent(
+          vNode,
+          isRoot,
+          context,
+          flags & VNodeFlags.ComponentClass
+        );
+      }
+      if ((flags & VNodeFlags.Element) > 0) {
+        return this.renderElement(vNode, isRoot, context);
+      }
 
-	public renderComponent(vComponent, isRoot, context, isClass) {
-		const type = vComponent.type;
-		const props = vComponent.props;
+      return this.renderText(vNode);
+    }
+  }
 
-		if (!isClass) {
-			return this.renderNode(type(props), context, isRoot);
-		}
+  public renderComponent(vComponent, isRoot, context, isClass) {
+    const type = vComponent.type;
+    const props = vComponent.props;
 
-		const instance = new type(props);
-		instance._blockSetState = false;
-		let childContext;
-		if (!isUndefined(instance.getChildContext)) {
-			childContext = instance.getChildContext();
-		}
+    if (!isClass) {
+      return this.renderNode(type(props), context, isRoot);
+    }
 
-		if (!isNullOrUndef(childContext)) {
-			context = combineFrom(context, childContext);
-		}
-		instance.context = context;
+    const instance = new type(props);
+    instance._blockSetState = false;
+    let childContext;
+    if (isFunction(instance.getChildContext)) {
+      childContext = instance.getChildContext();
+    }
 
-		// Block setting state - we should render only once, using latest state
-		instance._pendingSetState = true;
-		return Promise.resolve(instance.componentWillMount && instance.componentWillMount()).then(() => {
-			const node = instance.render();
-			instance._pendingSetState = false;
-			return this.renderNode(node, context, isRoot);
-		});
-	}
+    if (!isNullOrUndef(childContext)) {
+      context = combineFrom(context, childContext);
+    }
+    instance.context = context;
 
-	public renderChildren(children: any, context?: any) {
-		if (isStringOrNumber(children)) {
-			return this.push(escapeText(children));
-		}
-		if (!children) {
-			return;
-		}
+    // Block setting state - we should render only once, using latest state
+    instance._pendingSetState = true;
+    return Promise.resolve(
+      instance.componentWillMount && instance.componentWillMount()
+    ).then(() => {
+      const node = instance.render();
+      instance._pendingSetState = false;
+      return this.renderNode(node, context, isRoot);
+    });
+  }
 
-		const childrenIsArray = isArray(children);
-		if (!childrenIsArray && !isInvalid(children)) {
-			return this.renderNode(children, context, false);
-		}
-		if (!childrenIsArray) {
-			throw new Error('invalid component');
-		}
-		return children.reduce((p, child) => {
-			return p.then((insertComment) => {
-				const isText = isStringOrNumber(child);
+  public renderChildren(children: any, context?: any) {
+    if (isString(children)) {
+      return this.push(escapeText(children));
+    }
+    if (isNumber(children)) {
+      return this.push(escapeText(children + ""));
+    }
+    if (!children) {
+      return;
+    }
 
-				if (isText) {
-					if (insertComment === true) {
-						this.push('<!---->');
-					}
-					if (isText) {
-						this.push(escapeText(child));
-					}
-					return true;
-				} else if (isArray(child)) {
-					this.push('<!---->');
-					return Promise.resolve(this.renderChildren(child)).then(() => {
-						this.push('<!--!-->');
-						return true;
-					});
-				} else if (!isInvalid(child)) {
-					if (child.flags & VNodeFlags.Text) {
-						if (insertComment) {
-							this.push('<!---->');
-						}
-						insertComment = true;
-					}
-					return Promise.resolve(this.renderNode(child, context, false)).then(() => !!(child.flags & VNodeFlags.Text));
-				}
-			});
-		}, Promise.resolve(false));
-	}
+    const childrenIsArray = isArray(children);
+    if (!childrenIsArray && !isInvalid(children)) {
+      return this.renderNode(children, context, false);
+    }
+    if (!childrenIsArray) {
+      throw new Error("invalid component");
+    }
+    return children.reduce((p, child) => {
+      return p.then(insertComment => {
+        const isTextOrNumber = isStringOrNumber(child);
 
-	public renderText(vNode, isRoot, context) {
-		return resolvedPromise.then((insertComment) => {
-			this.push(vNode.children);
-			return insertComment;
-		});
-	}
+        if (isTextOrNumber) {
+          if (insertComment === true) {
+            this.push("<!---->");
+          }
+          if (isString(child)) {
+            this.push(escapeText(child));
+          } else {
+            this.push(child + "");
+          }
+          return true;
+        } else if (isArray(child)) {
+          this.push("<!---->");
+          return Promise.resolve(this.renderChildren(child)).then(() => {
+            this.push("<!--!-->");
+            return true;
+          });
+        } else if (!isInvalid(child)) {
+          if ((child.flags & VNodeFlags.Text) > 0) {
+            if (insertComment) {
+              this.push("<!---->");
+            }
+          }
+          return Promise.resolve(this.renderNode(child, context, false)).then(
+            () => !!(child.flags & VNodeFlags.Text)
+          );
+        }
+      });
+    }, Promise.resolve(false));
+  }
 
-	public renderElement(vElement, isRoot, context) {
-		const tag = vElement.type;
-		const props = vElement.props;
+  public renderText(vNode) {
+    return resolvedPromise.then(insertComment => {
+      this.push(vNode.children);
+      return insertComment;
+    });
+  }
 
-		const outputAttrs = renderAttributes(props);
+  public renderElement(vElement, isRoot, context) {
+    const tag = vElement.type;
+    const props = vElement.props;
 
-		let html = '';
-		const className = vElement.className;
-		if (!isNullOrUndef(className)) {
-			outputAttrs.push('class="' + escapeText(className) + '"');
-		}
-		if (props) {
-			const style = props.style;
-			if (style) {
-				outputAttrs.push('style="' + renderStyleToString(style) + '"');
-			}
+    const outputAttrs = renderAttributes(props);
 
-			if (props.dangerouslySetInnerHTML) {
-				html = props.dangerouslySetInnerHTML.__html;
-			}
-		}
+    let html = "";
+    const className = vElement.className;
+    if (!isNullOrUndef(className)) {
+      outputAttrs.push('class="' + escapeText(className) + '"');
+    }
+    if (props) {
+      const style = props.style;
+      if (style) {
+        outputAttrs.push('style="' + renderStylesToString(style) + '"');
+      }
 
-		if (isRoot) {
-			outputAttrs.push('data-infernoroot');
-		}
-		this.push(`<${tag}${outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : ''}>`);
-		if (isVoidElement(tag)) {
-			return;
-		}
-		if (html) {
-			this.push(html);
-			this.push(`</${tag}>`);
-			return;
-		}
-		return Promise.resolve(this.renderChildren(vElement.children, context)).then(() => {
-			this.push(`</${tag}>`);
-		});
-	}
+      if (props.dangerouslySetInnerHTML) {
+        html = props.dangerouslySetInnerHTML.__html;
+      }
+    }
+
+    if (isRoot) {
+      outputAttrs.push("data-infernoroot");
+    }
+    this.push(
+      `<${tag}${outputAttrs.length > 0 ? " " + outputAttrs.join(" ") : ""}>`
+    );
+    if (voidElements.has(tag)) {
+      return;
+    }
+    if (html) {
+      this.push(html);
+      this.push(`</${tag}>`);
+      return;
+    }
+    return Promise.resolve(
+      this.renderChildren(vElement.children, context)
+    ).then(() => {
+      this.push(`</${tag}>`);
+    });
+  }
 }
 
 export default function streamAsString(node) {
-	return new RenderStream(node, false);
+  return new RenderStream(node, false);
 }
 
 export function streamAsStaticMarkup(node) {
-	return new RenderStream(node, true);
+  return new RenderStream(node, true);
 }
