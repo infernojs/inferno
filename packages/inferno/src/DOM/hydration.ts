@@ -69,9 +69,6 @@ function hydrateComponent(
 ): Element {
   const type = vNode.type;
   const ref = vNode.ref;
-
-  vNode.dom = dom;
-
   const props = vNode.props || EMPTY_OBJ;
 
   if (isClass) {
@@ -88,6 +85,7 @@ function hydrateComponent(
 
     instance._vNode = vNode;
     hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+    vNode.dom = input.dom;
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
     instance._updating = false; // Mount finished allow going sync
     if (options.findDOMNodeEnabled) {
