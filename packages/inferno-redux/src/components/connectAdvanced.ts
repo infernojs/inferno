@@ -88,6 +88,15 @@ export interface IConnectOptions {
 	 * @memberOf IConnectOptions
 	 */
   withRef: boolean;
+
+  initMapStateToProps?: any;
+  initMapDispatchToProps?: any;
+  initMergeProps?: any;
+  pure?: any;
+  areStatesEqual?: any;
+  areOwnPropsEqual?: any;
+  areStatePropsEqual?: any;
+  areMergedPropsEqual?: any;
 }
 
 // TODO: This should be typed better. Spesifically, the output and input props should be generic.
@@ -103,15 +112,18 @@ const invariant = (test: boolean, error: string) => {
   }
 };
 
-export function connectAdvanced(selectorFactory: SelectorFactory, {
-    getDisplayName = (name => `ConnectAdvanced(${name})`),
+export function connectAdvanced(
+  selectorFactory: SelectorFactory,
+  {
+    getDisplayName = name => `ConnectAdvanced(${name})`,
     methodName = "connectAdvanced",
     renderCountProp = null,
     shouldHandleStateChanges = true,
     storeKey = "store",
     withRef = false,
     ...connectOptions
-  }: Partial<IConnectOptions>) {
+  }: Partial<IConnectOptions>
+) {
   const subscriptionKey = storeKey + "Subscription";
   const version = hotReloadingVersion++;
 
@@ -368,4 +380,4 @@ export function connectAdvanced(selectorFactory: SelectorFactory, {
   };
 
   return wrapWithConnect;
-};
+}
