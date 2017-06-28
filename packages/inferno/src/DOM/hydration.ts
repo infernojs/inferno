@@ -4,6 +4,7 @@
 
 import {
   isArray,
+  isInvalid,
   isNull,
   isNullOrUndef,
   isObject,
@@ -128,7 +129,7 @@ function hydrateElement(
     return newDom as Element;
   }
   vNode.dom = dom;
-  if (children) {
+  if (!isInvalid(children)) {
     hydrateChildren(children, dom, lifecycle, context, isSVG);
   } else if (dom.firstChild !== null) {
     dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
@@ -179,7 +180,9 @@ function hydrateChildren(
       if (dom.nodeValue !== children) {
         dom.nodeValue = children as string;
       }
-    } else if (children) {
+    } else if (children === "") {
+      parentDom.appendChild(document.createTextNode(""));
+    } else {
       parentDom.textContent = children as string;
     }
     if (!isNull(dom)) {

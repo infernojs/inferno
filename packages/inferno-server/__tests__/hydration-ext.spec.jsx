@@ -127,4 +127,38 @@ describe("SSR Hydration Extended - (JSX)", () => {
       innerHTML("<div><p>Hello World!</p></div>")
     );
   });
+
+  it("Should handle empty textNodes correctly Github #1137", () => {
+    const container = createContainerWithHTML('<span class="error"></span>');
+
+    const vNode = <span className="error">{""}</span>;
+
+    expect(vNode.children).toEqual("");
+
+    render(vNode, container); // This should create empty text node
+
+    expect(container.firstChild.firstChild).not.toBeNull();
+
+    render(<span className="error">{"Okay!"}</span>, container);
+
+    expect(container.textContent).toBe("Okay!");
+  });
+
+  it("Should handle empty textNodes correctly Github #1137 variation#2", () => {
+    const container = createContainerWithHTML(
+      '<div><span class="error"></span></div>'
+    );
+
+    const vNode = <div><span className="error">{""}</span></div>;
+
+    expect(vNode.children.children).toEqual("");
+
+    render(vNode, container); // This should create empty text node
+
+    expect(container.firstChild.firstChild.firstChild).not.toBeNull();
+
+    render(<div><span className="error">{"Okay!"}</span></div>, container);
+
+    expect(container.textContent).toBe("Okay!");
+  });
 });
