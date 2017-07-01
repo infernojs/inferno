@@ -90,12 +90,19 @@ export interface IConnectOptions {
   withRef: boolean;
 
   initMapStateToProps?: any;
+
   initMapDispatchToProps?: any;
+
   initMergeProps?: any;
+
   pure?: any;
+
   areStatesEqual?: any;
+
   areOwnPropsEqual?: any;
+
   areStatePropsEqual?: any;
+
   areMergedPropsEqual?: any;
 }
 
@@ -112,10 +119,14 @@ const invariant = (test: boolean, error: string) => {
   }
 };
 
+function getDefaultName(name) {
+  return `ConnectAdvanced(${name})`;
+}
+
 export function connectAdvanced(
   selectorFactory: SelectorFactory,
   {
-    getDisplayName = name => `ConnectAdvanced(${name})`,
+    getDisplayName = getDefaultName,
     methodName = "connectAdvanced",
     renderCountProp = null,
     shouldHandleStateChanges = true,

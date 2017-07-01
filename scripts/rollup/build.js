@@ -13,6 +13,8 @@ mkdir(join(cwd, "dist"), err => {
     throw Error(e);
   }
 
+  var exit = process.exit;
+
   const options = require("minimist")(process.argv.slice(2), {
     boolean: ["replace", "optimize", "uglify"],
     default: {
@@ -39,6 +41,10 @@ mkdir(join(cwd, "dist"), err => {
       console.log(`${pkgJSON.name} in ${options.format} is DONE`);
     })
     .catch(error => {
-      console.error(`${pkgJSON.name} in ${options.format} is FAILED ${error.message}`);
+      console.warn(error); // Print whole error object
+      console.error(
+        `${pkgJSON.name} in ${options.format} is FAILED ${error.message}`
+      );
+      exit(-1); // Do not continue build in case of error to avoid publishing garbage, Github #1157
     });
 });
