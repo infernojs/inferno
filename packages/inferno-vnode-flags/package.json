@@ -1,6 +1,6 @@
 {
   "name": "inferno-vnode-flags",
-  "version": "3.6.3",
+  "version": "3.6.4",
   "license": "MIT",
   "description": "Provides an enum of all possible VNode Flags used when calling Inferno.createVNode",
   "author": {
