@@ -66,6 +66,7 @@ describe("lifecycle hooks", () => {
       render(node, container);
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(1);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1, children: null });
     });
 
@@ -86,6 +87,7 @@ describe("lifecycle hooks", () => {
       render(node, container);
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toBe(container.firstChild);
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 1, children: null });
     });
@@ -110,6 +112,7 @@ describe("lifecycle hooks", () => {
       render(null, container);
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0].outerHTML).toBe(
         innerHTML("<div>Hello world!</div>")
       );
@@ -138,6 +141,7 @@ describe("lifecycle hooks", () => {
       const node2 = t({ a: 2 });
       render(node2, container);
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1, children: null });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2, children: null });
     });
@@ -164,6 +168,7 @@ describe("lifecycle hooks", () => {
       const node2 = t({ a: 2 });
       render(node2, container);
       expect(sinonSpy.callCount).toBe(1); // Update 2
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1, children: null });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2, children: null });
     });
@@ -201,6 +206,7 @@ describe("lifecycle hooks", () => {
       render(node2, container);
       expect(onComponentShouldUpdateCount).toBe(1); // Update 2
       expect(renderCount).toBe(2); // Rendered 2 time
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1, children: null });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2, children: null });
     });
@@ -238,6 +244,7 @@ describe("lifecycle hooks", () => {
       render(node2, container);
       expect(onComponentShouldUpdateCount).toBe(1); // Update 2
       expect(renderCount).toBe(1); // Rendered 1 time
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1, children: null });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2, children: null });
     });

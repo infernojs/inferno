@@ -409,6 +409,7 @@ describe("Component lifecycle (JSX)", () => {
       );
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(1);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
     });
 
@@ -423,6 +424,7 @@ describe("Component lifecycle (JSX)", () => {
       );
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toBe(_container.firstChild);
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 1 });
     });
@@ -441,6 +443,7 @@ describe("Component lifecycle (JSX)", () => {
       render(null, _container);
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0].outerHTML).toBe(
         innerHTML("<div>Hello world</div>")
       );
@@ -462,6 +465,7 @@ describe("Component lifecycle (JSX)", () => {
         _container
       );
       expect(sinonSpy.callCount).toBe(1); // Update 2
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
     });
@@ -481,6 +485,7 @@ describe("Component lifecycle (JSX)", () => {
         _container
       );
       expect(sinonSpy.callCount).toBe(1); // Update 2
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
     });
@@ -513,6 +518,7 @@ describe("Component lifecycle (JSX)", () => {
       );
       expect(onComponentShouldUpdateCount).toBe(1); // Update 2
       expect(renderCount).toBe(2); // Rendered 2 time
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
     });
@@ -545,6 +551,7 @@ describe("Component lifecycle (JSX)", () => {
       );
       expect(onComponentShouldUpdateCount).toBe(1); // Update 2
       expect(renderCount).toBe(1); // Rendered 1 time
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
     });
