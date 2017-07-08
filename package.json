@@ -60,7 +60,7 @@
     "prettier:src:scripts": "prettier --write --list-different scripts/**/*.{js,jsx}",
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
-    "test": "cross-env BABEL_ENV=test jest",
+    "test": "cross-env NODE_ENV=test jest",
     "test:debug": "jest --inspect --debug-brk",
     "test:coverage": "jest --coverage",
     "test:browser": "npm run --prefix fixtures/browser test",

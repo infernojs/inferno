@@ -2,69 +2,85 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import hoistStatics from 'hoist-non-inferno-statics';
-import { createVNode } from 'inferno';
-import createClass from 'inferno-create-class';
-import VNodeFlags from 'inferno-vnode-flags';
+import hoistStatics from "hoist-non-inferno-statics";
+import { createVNode } from "inferno";
+import createClass from "inferno-create-class";
+import VNodeFlags from "inferno-vnode-flags";
 
 interface IStoreProps {
-	ref: any;
+  ref: any;
 }
 
 /**
  * Store Injection
  */
-function createStoreInjector(grabStoresFn: Function, component) {
-	const Injector: any = createClass({
-		displayName: component.name,
-		render() {
-			const newProps = {} as IStoreProps;
-			for (const key in this.props) {
-				if (this.props.hasOwnProperty(key)) {
-					newProps[ key ] = this.props[ key ];
-				}
-			}
-			const additionalProps = grabStoresFn(this.context.mobxStores || {}, newProps, this.context) || {};
-			for (const key in additionalProps) {
-				newProps[ key ] = additionalProps[ key ];
-			}
-			newProps.ref = (instance) => {
-				this.wrappedInstance = instance;
-			};
+function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
+  let displayName =
+    "inject-" +
+    (component.displayName ||
+      component.name ||
+      (component.constructor && component.constructor.name) ||
+      "Unknown");
+  if (injectNames) {
+    displayName += `-with-${injectNames}`;
+  }
+  const Injector: any = createClass({
+    displayName,
+    render() {
+      const newProps = {} as IStoreProps;
+      for (const key in this.props) {
+        if (this.props.hasOwnProperty(key)) {
+          newProps[key] = this.props[key];
+        }
+      }
+      const additionalProps =
+        grabStoresFn(this.context.mobxStores || {}, newProps, this.context) ||
+        {};
+      for (const key in additionalProps) {
+        newProps[key] = additionalProps[key];
+      }
+      newProps.ref = instance => {
+        this.wrappedComponent = instance;
+      };
 
-			return createVNode(VNodeFlags.ComponentUnknown, component, null, null, newProps);
-		}
-	});
+      return createVNode(
+        VNodeFlags.ComponentUnknown,
+        component,
+        null,
+        null,
+        newProps
+      );
+    }
+  });
 
-	Injector.contextTypes = {
-		// tslint:disable-next-line:no-empty
-		mobxStores() {}
-	};
-	hoistStatics(Injector, component);
+  Injector.contextTypes = {
+    // tslint:disable-next-line:no-empty
+    mobxStores() {}
+  };
+  hoistStatics(Injector, component);
 
-	return Injector;
+  return Injector;
 }
 
 const grabStoresByName = function(storeNames: string[]): Function {
-	return function(baseStores: Object, nextProps: Object): Object {
-		storeNames.forEach(function(storeName) {
+  return function(baseStores: Object, nextProps: Object): Object {
+    storeNames.forEach(function(storeName) {
+      // Prefer props over stores
+      if (storeName in nextProps) {
+        return;
+      }
 
-			// Prefer props over stores
-			if (storeName in nextProps) {
-				return;
-			}
+      if (!(storeName in baseStores)) {
+        throw new Error(
+          `MobX observer: Store '${storeName}' is not available! ` +
+            `Make sure it is provided by some Provider`
+        );
+      }
 
-			if (!(storeName in baseStores)) {
-				throw new Error(
-					`MobX observer: Store "${storeName}" is not available! ` +
-					`Make sure it is provided by some Provider`
-				);
-			}
-
-			nextProps[ storeName ] = baseStores[ storeName ];
-		});
-		return nextProps;
-	};
+      nextProps[storeName] = baseStores[storeName];
+    });
+    return nextProps;
+  };
 };
 
 /**
@@ -74,16 +90,15 @@ const grabStoresByName = function(storeNames: string[]): Function {
  * storesToProps(mobxStores, props, context) => newProps
  */
 export default function inject(grabStoresFn?: Function | string): any {
+  if (typeof grabStoresFn !== "function") {
+    const storesNames: any = [];
+    for (let i = 0, len = arguments.length; i < len; i++) {
+      storesNames[i] = arguments[i];
+    }
 
-	if (typeof grabStoresFn !== 'function') {
+    grabStoresFn = grabStoresByName(storesNames);
+  }
 
-		const storesNames: any = [];
-		for (let i = 0, len = arguments.length; i < len; i++) {
-			storesNames[ i ] = arguments[ i ];
-		}
-
-		grabStoresFn = grabStoresByName(storesNames);
-	}
-
-	return (componentClass) => createStoreInjector(grabStoresFn as Function, componentClass);
+  return componentClass =>
+    createStoreInjector(grabStoresFn as Function, componentClass);
 }
