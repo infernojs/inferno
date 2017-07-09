@@ -1,3 +1,71 @@
+<a name="3.6.4"></a>
+## 3.6.4 (2017-07-01)
+
+* Fix build error in Inferno-redux pkg, stop build process if any package fails #1157 ([a1ed657](https://github.com/infernojs/inferno/commit/a1ed657)), closes [#1157](https://github.com/infernojs/inferno/issues/1157)
+* v3.6.4 ([ca16bf3](https://github.com/infernojs/inferno/commit/ca16bf3))
+
+
+
+<a name="3.6.3"></a>
+## 3.6.3 (2017-06-28)
+
+* Fix IConnect type error ([aa5ee66](https://github.com/infernojs/inferno/commit/aa5ee66))
+* Fix issue in hydration ([1fd1e9d](https://github.com/infernojs/inferno/commit/1fd1e9d))
+* Fixes hydration bug with empty text nodes Github #1137 ([f9634e2](https://github.com/infernojs/inferno/commit/f9634e2)), closes [#1137](https://github.com/infernojs/inferno/issues/1137)
+* Merge 3.6.1 (#1155) ([04fc806](https://github.com/infernojs/inferno/commit/04fc806))
+* prepare 3.6.2 ([1098eaf](https://github.com/infernojs/inferno/commit/1098eaf))
+* v3.6.3 ([1356d65](https://github.com/infernojs/inferno/commit/1356d65))
+
+
+
+<a name="3.6.1"></a>
+## 3.6.1 (2017-06-23)
+
+* Bump lerna ([c9088a6](https://github.com/infernojs/inferno/commit/c9088a6))
+* Do not uglify dev UMD ([4fdb83b](https://github.com/infernojs/inferno/commit/4fdb83b))
+* v3.6.1 ([707dca6](https://github.com/infernojs/inferno/commit/707dca6))
+
+
+
+<a name="3.6.0"></a>
+# 3.6.0 (2017-06-21)
+
+* Bump devDep ([5b97a0e](https://github.com/infernojs/inferno/commit/5b97a0e))
+* Improve Server side performance, removed regexp, split text/number routines, + some micro optimizati ([bdb6ea1](https://github.com/infernojs/inferno/commit/bdb6ea1))
+* Prepare 3.6.0 added publish script ([d6c4065](https://github.com/infernojs/inferno/commit/d6c4065))
+* React tests running ([478cc36](https://github.com/infernojs/inferno/commit/478cc36))
+* Refactor react tests ([a5f9b91](https://github.com/infernojs/inferno/commit/a5f9b91))
+* v3.6.0 ([3178809](https://github.com/infernojs/inferno/commit/3178809))
+* Working tests ([004e488](https://github.com/infernojs/inferno/commit/004e488))
+
+
+
+<a name="3.5.4"></a>
+## 3.5.4 (2017-06-20)
+
+* prepare 3.5.4 ([9b3a941](https://github.com/infernojs/inferno/commit/9b3a941))
+* v3.5.4 ([454f037](https://github.com/infernojs/inferno/commit/454f037))
+
+
+
+<a name="3.5.3"></a>
+## 3.5.3 (2017-06-20)
+
+* 3.5.2 ([e146c21](https://github.com/infernojs/inferno/commit/e146c21))
+* Add simple test for forceUpdate not calling SCU ([f8db841](https://github.com/infernojs/inferno/commit/f8db841))
+* Added test case and fix for #1144 ([d74ccf4](https://github.com/infernojs/inferno/commit/d74ccf4)), closes [#1144](https://github.com/infernojs/inferno/issues/1144)
+* Fix inferno:main path in package.json ([7de879b](https://github.com/infernojs/inferno/commit/7de879b))
+* Fix regression is patchStyle performance, avoid DOM manipulation when possible. ([e0635f8](https://github.com/infernojs/inferno/commit/e0635f8))
+* Issue #1149 : prevent inferno from calling shouldComponentUpdate when forceUpdate is called. (#1150) ([04562b0](https://github.com/infernojs/inferno/commit/04562b0))
+* Output type declarations to correct file (#1147) ([f00b89a](https://github.com/infernojs/inferno/commit/f00b89a)), closes [#1145](https://github.com/infernojs/inferno/issues/1145)
+* Prepare 3.5.3 ([7371b40](https://github.com/infernojs/inferno/commit/7371b40))
+* Prettier devtools ([aac46bf](https://github.com/infernojs/inferno/commit/aac46bf))
+* Remove createTextNode from keyed tests ([4e400e8](https://github.com/infernojs/inferno/commit/4e400e8))
+* v3.5.3 ([6e21d62](https://github.com/infernojs/inferno/commit/6e21d62))
+* devtools: perf optimisations for devtools component updater (#1152) ([ae52313](https://github.com/infernojs/inferno/commit/ae52313))
+
+
+
 <a name="3.5.2"></a>
 ## 3.5.2 (2017-06-15)
 
