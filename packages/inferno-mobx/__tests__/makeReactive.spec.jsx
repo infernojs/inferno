@@ -2,7 +2,7 @@ import { render } from "inferno";
 import Component from "inferno-component";
 import { extendObservable, observable, toJS } from "mobx";
 import { innerHTML } from "inferno-utils";
-import { makeReactive } from "inferno-mobx";
+import makeReactive from "../src/makeReactive";
 
 describe("MobX Observer", () => {
   let container;

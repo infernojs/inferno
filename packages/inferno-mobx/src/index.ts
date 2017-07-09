@@ -4,7 +4,7 @@
 
 import connect from "./connect";
 import inject from "./inject";
-import makeReactive, {
+import {
   componentByNodeRegistery,
   renderReporter,
   trackComponents,
@@ -19,7 +19,6 @@ export default {
   componentByNodeRegistery,
   connect,
   inject,
-  makeReactive,
   observer: connect,
   renderReporter,
   trackComponents,
@@ -33,7 +32,6 @@ export {
   connect as observer,
   connect,
   inject,
-  makeReactive,
   renderReporter,
   trackComponents,
   useStaticRendering
