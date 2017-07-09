@@ -53,7 +53,7 @@ function renderVNodeToString(
       if (isFunction(instance.componentWillMount)) {
         instance.componentWillMount();
       }
-      const nextVNode = instance.render(props, vNode.context);
+      const nextVNode = instance.render(props, instance.state, vNode.context);
 
       instance._pendingSetState = false;
       // In case render returns invalid stuff

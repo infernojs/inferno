@@ -23,7 +23,11 @@ describe("MobX Observer", () => {
   });
 
   const TodoItem = makeReactive(function({ todo }) {
-    return <li>{todo}</li>;
+    return (
+      <li>
+        {todo}
+      </li>
+    );
   });
 
   let todoListRenderings = 0;
@@ -37,7 +41,11 @@ describe("MobX Observer", () => {
       render() {
         todoListRenderings++;
         const todos = store.todos;
-        return <div>{todos.map(todo => <TodoItem todo={todo} />)}</div>;
+        return (
+          <div>
+            {todos.map(todo => <TodoItem todo={todo} />)}
+          </div>
+        );
       }
     }
   );
@@ -66,7 +74,14 @@ describe("MobX Observer", () => {
       class extends Component {
         render({ extra }) {
           return (
-            <div>{store.todos.map(title => <li>{title}{extra.test}</li>)}</div>
+            <div>
+              {store.todos.map(title =>
+                <li>
+                  {title}
+                  {extra.test}
+                </li>
+              )}
+            </div>
           );
         }
       }
@@ -92,7 +107,12 @@ describe("MobX Observer", () => {
     expect(scu.call(todoItem, { str })).toBe(true);
     str = "test";
     expect(scu.call(todoItem, { str })).toBe(false);
-    expect(scu.call(todoItem, { str, prop: "foo" })).toBe(true);
+    expect(
+      scu.call(todoItem, {
+        str,
+        prop: "foo"
+      })
+    ).toBe(true);
 
     const obj = {};
     todoItem = <TodoItem obj={obj} />;
@@ -111,7 +131,11 @@ describe("MobX Observer", () => {
         }
 
         render() {
-          return <div>{this.props.number}</div>;
+          return (
+            <div>
+              {this.props.number}
+            </div>
+          );
         }
       }
     );

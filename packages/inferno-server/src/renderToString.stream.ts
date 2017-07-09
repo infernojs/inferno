@@ -95,7 +95,7 @@ export class RenderStream extends Readable {
     return Promise.resolve(
       instance.componentWillMount && instance.componentWillMount()
     ).then(() => {
-      const node = instance.render();
+      const node = instance.render(instance.props, instance.state, instance.context);
       instance._pendingSetState = false;
       return this.renderNode(node, context, isRoot);
     });
