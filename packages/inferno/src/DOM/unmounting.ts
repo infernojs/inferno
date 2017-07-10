@@ -19,7 +19,7 @@ import { InfernoChildren, Ref, VNode } from "../core/VNodes";
 import { isAttrAnEvent, patchEvent } from "./patching";
 import { poolComponent, poolElement } from "./recycling";
 import { componentToDOMNodeMap } from "./rendering";
-import { removeChild } from "./utils";
+import { EMPTY_OBJ, removeChild } from "./utils";
 
 export function unmount(
   vNode: VNode,
@@ -55,6 +55,7 @@ export function unmountComponent(
   const instance = vNode.children as any;
   const flags = vNode.flags;
   const isStatefulComponent = flags & VNodeFlags.ComponentClass;
+  const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref as any;
   const dom = vNode.dom as Element;
 
@@ -86,7 +87,7 @@ export function unmountComponent(
     } else {
       if (!isNullOrUndef(ref)) {
         if (!isNullOrUndef(ref.onComponentWillUnmount)) {
-          ref.onComponentWillUnmount(dom);
+          ref.onComponentWillUnmount(dom, props);
         }
       }
 

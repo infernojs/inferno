@@ -84,11 +84,7 @@ describe("Component lifecycle (JSX)", () => {
         componentWillUnmount() {}
 
         render() {
-          return (
-            <div>
-              Terve
-            </div>
-          );
+          return <div>Terve</div>;
         }
       }
 
@@ -187,11 +183,7 @@ describe("Component lifecycle (JSX)", () => {
         componentWillUnmount() {}
 
         render() {
-          return (
-            <div>
-              Terve
-            </div>
-          );
+          return <div>Terve</div>;
         }
       }
 
@@ -395,11 +387,7 @@ describe("Component lifecycle (JSX)", () => {
     let _container;
 
     function StatelessComponent() {
-      return (
-        <div>
-          Hello world
-        </div>
-      );
+      return <div>Hello world</div>;
     }
 
     afterEach(function() {
@@ -410,40 +398,44 @@ describe("Component lifecycle (JSX)", () => {
       _container = document.createElement("div");
     });
 
-    it('"onComponentWillMount" hook should fire', () => {
+    it('"onComponentWillMount" hook should fire, args props', () => {
       const spyObj = {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, "fn");
       render(
-        <StatelessComponent onComponentWillMount={spyObj.fn} />,
+        <StatelessComponent a={1} onComponentWillMount={spyObj.fn} />,
         _container
       );
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(1);
+      expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
     });
 
-    it('"onComponentDidMount" hook should fire, args DOM', () => {
+    it('"onComponentDidMount" hook should fire, args DOM props', () => {
       const spyObj = {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, "fn");
       render(
-        <StatelessComponent onComponentDidMount={spyObj.fn} />,
+        <StatelessComponent a={1} onComponentDidMount={spyObj.fn} />,
         _container
       );
 
       expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toBe(_container.firstChild);
+      expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 1 });
     });
 
-    it('"onComponentWillUnmount" hook should fire', () => {
+    it('"onComponentWillUnmount" hook should fire, args DOM props', () => {
       const spyObj = {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, "fn");
       render(
-        <StatelessComponent onComponentWillUnmount={spyObj.fn} />,
+        <StatelessComponent a={1} onComponentWillUnmount={spyObj.fn} />,
         _container
       );
       expect(sinonSpy.callCount).toBe(0);
@@ -451,101 +443,117 @@ describe("Component lifecycle (JSX)", () => {
       render(null, _container);
 
       expect(sinonSpy.callCount).toBe(1);
-    });
-
-    it('"onComponentWillUpdate" hook should fire', () => {
-      const spyObj = {
-        fn: () => {}
-      };
-      const sinonSpy = sinon.spy(spyObj, "fn");
-      render(
-        <StatelessComponent onComponentWillUpdate={spyObj.fn} />,
-        _container
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
+      expect(sinonSpy.getCall(0).args[0].outerHTML).toBe(
+        innerHTML("<div>Hello world</div>")
       );
-      expect(sinonSpy.callCount).toBe(0);
+      expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 1 });
     });
 
-    it('"onComponentDidUpdate" hook should fire', () => {
+    it('"onComponentWillUpdate" hook should fire, args props nextProps', () => {
       const spyObj = {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, "fn");
       render(
-        <StatelessComponent onComponentDidUpdate={spyObj.fn} />,
+        <StatelessComponent a={1} onComponentWillUpdate={spyObj.fn} />,
         _container
       );
       expect(sinonSpy.callCount).toBe(0); // Update 1
       render(
-        <StatelessComponent onComponentDidUpdate={spyObj.fn} />,
+        <StatelessComponent a={2} onComponentWillUpdate={spyObj.fn} />,
         _container
       );
       expect(sinonSpy.callCount).toBe(1); // Update 2
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
+      expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
+      expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
     });
 
-    it('"onComponentShouldUpdate" hook should fire, should call render when return true', () => {
+    it('"onComponentDidUpdate" hook should fire, args prevProps props', () => {
+      const spyObj = {
+        fn: () => {}
+      };
+      const sinonSpy = sinon.spy(spyObj, "fn");
+      render(
+        <StatelessComponent a={1} onComponentDidUpdate={spyObj.fn} />,
+        _container
+      );
+      expect(sinonSpy.callCount).toBe(0); // Update 1
+      render(
+        <StatelessComponent a={2} onComponentDidUpdate={spyObj.fn} />,
+        _container
+      );
+      expect(sinonSpy.callCount).toBe(1); // Update 2
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
+      expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
+      expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
+    });
+
+    it('"onComponentShouldUpdate" hook should fire, should call render when return true, args props nextProps', () => {
       let onComponentShouldUpdateCount = 0;
       let renderCount = 0;
+      const spyObj = {
+        fn: () => {
+          onComponentShouldUpdateCount++;
+          return true;
+        }
+      };
+      const sinonSpy = sinon.spy(spyObj, "fn");
       const StatelessComponent = () => {
         renderCount++;
         return null;
       };
 
       render(
-        <StatelessComponent
-          onComponentShouldUpdate={() => {
-            onComponentShouldUpdateCount++;
-            return true;
-          }}
-        />,
+        <StatelessComponent a={1} onComponentShouldUpdate={spyObj.fn} />,
         _container
       );
       expect(onComponentShouldUpdateCount).toBe(0); // Update 1
       expect(renderCount).toBe(1); // Rendered 1 time
 
       render(
-        <StatelessComponent
-          onComponentShouldUpdate={() => {
-            onComponentShouldUpdateCount++;
-            return true;
-          }}
-        />,
+        <StatelessComponent a={2} onComponentShouldUpdate={spyObj.fn} />,
         _container
       );
       expect(onComponentShouldUpdateCount).toBe(1); // Update 2
       expect(renderCount).toBe(2); // Rendered 2 time
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
+      expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
+      expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
     });
 
-    it('"onComponentShouldUpdate" hook should fire, should not call render when return false', () => {
+    it('"onComponentShouldUpdate" hook should fire, should not call render when return false, args props nextProps', () => {
       let onComponentShouldUpdateCount = 0;
       let renderCount = 0;
+      const spyObj = {
+        fn: () => {
+          onComponentShouldUpdateCount++;
+          return false;
+        }
+      };
+      const sinonSpy = sinon.spy(spyObj, "fn");
       const StatelessComponent = () => {
         renderCount++;
         return null;
       };
 
       render(
-        <StatelessComponent
-          onComponentShouldUpdate={() => {
-            onComponentShouldUpdateCount++;
-            return false;
-          }}
-        />,
+        <StatelessComponent a={1} onComponentShouldUpdate={spyObj.fn} />,
         _container
       );
       expect(onComponentShouldUpdateCount).toBe(0); // Update 1
       expect(renderCount).toBe(1); // Rendered 1 time
 
       render(
-        <StatelessComponent
-          onComponentShouldUpdate={() => {
-            onComponentShouldUpdateCount++;
-            return false;
-          }}
-        />,
+        <StatelessComponent a={2} onComponentShouldUpdate={spyObj.fn} />,
         _container
       );
       expect(onComponentShouldUpdateCount).toBe(1); // Update 2
       expect(renderCount).toBe(1); // Rendered 1 time
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
+      expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1 });
+      expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2 });
     });
   });
 
@@ -736,11 +744,7 @@ describe("Component lifecycle (JSX)", () => {
         }
 
         render() {
-          return (
-            <div ref={this.ref}>
-              Hello World
-            </div>
-          );
+          return <div ref={this.ref}>Hello World</div>;
         }
       }
 
@@ -1305,7 +1309,11 @@ describe("Component lifecycle (JSX)", () => {
         }
 
         render() {
-          return <span>{this.context.foobar}</span>;
+          return (
+            <span>
+              {this.context.foobar}
+            </span>
+          );
         }
       }
 

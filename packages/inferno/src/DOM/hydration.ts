@@ -97,7 +97,7 @@ function hydrateComponent(
     hydrate(input, dom, lifecycle, context, isSVG);
     vNode.children = input;
     vNode.dom = input.dom;
-    mountFunctionalComponentCallbacks(ref, dom, lifecycle);
+    mountFunctionalComponentCallbacks(props, ref, dom, lifecycle);
   }
   return dom;
 }
