@@ -23,7 +23,7 @@ export function vNodeToSnapshot(node: VNode) {
   let object;
   const children: any[] = [];
   if (isDOMVNode(node)) {
-    const props = { ...node.props };
+    const props = { className: node.className || undefined, ...node.props };
 
     // Remove undefined props
     Object.keys(props).forEach(propKey => {
