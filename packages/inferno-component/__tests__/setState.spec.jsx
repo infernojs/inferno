@@ -164,7 +164,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.state.foo}</div>
+            <div>
+              {this.state.foo}
+            </div>
             {this.state.active
               ? <Child foo={this.state.foo} callback={this._setBar} />
               : <Child foo={this.state.foo} callback={this._setActive} />}
@@ -187,7 +189,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.props.foo}</div>
+            <div>
+              {this.props.foo}
+            </div>
           </div>
         );
       }
@@ -234,7 +238,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.state.foo}</div>
+            <div>
+              {this.state.foo}
+            </div>
             <Child foo={this.state.foo} callback={this._setBar} />
             <Child foo={this.state.foo} callback={this._setBar} />
             <Child foo={this.state.foo} callback={this._setBar} />
@@ -261,7 +267,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.props.foo}</div>
+            <div>
+              {this.props.foo}
+            </div>
           </div>
         );
       }
@@ -344,7 +352,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.props.foo}</div>
+            <div>
+              {this.props.foo}
+            </div>
           </div>
         );
       }
@@ -413,7 +423,11 @@ describe("setState", () => {
       }
 
       render() {
-        return <div>{this.state.foo}</div>;
+        return (
+          <div>
+            {this.state.foo}
+          </div>
+        );
       }
     }
 
@@ -494,7 +508,11 @@ describe("setState", () => {
 
       render() {
         renderCount++;
-        return <div>{this.state.foo}</div>;
+        return (
+          <div>
+            {this.state.foo}
+          </div>
+        );
       }
     }
 
@@ -538,7 +556,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.state.foo}</div>
+            <div>
+              {this.state.foo}
+            </div>
             {this.state.active
               ? <Child foo={this.state.foo} callback={this._setBar} />
               : <Child foo={this.state.foo} callback={this._setActive} />}
@@ -561,7 +581,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.props.foo}</div>
+            <div>
+              {this.props.foo}
+            </div>
           </div>
         );
       }
@@ -608,7 +630,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.state.foo}</div>
+            <div>
+              {this.state.foo}
+            </div>
             <Child foo={this.state.foo} callback={this._setBar} />
             <Child foo={this.state.foo} callback={this._setBar} />
             <Child foo={this.state.foo} callback={this._setBar} />
@@ -635,7 +659,9 @@ describe("setState", () => {
       render() {
         return (
           <div>
-            <div>{this.props.foo}</div>
+            <div>
+              {this.props.foo}
+            </div>
           </div>
         );
       }
@@ -670,7 +696,11 @@ describe("setState", () => {
       }
 
       render() {
-        return <div>{this.state.foo}</div>;
+        return (
+          <div>
+            {this.state.foo}
+          </div>
+        );
       }
     }
 

@@ -44,7 +44,12 @@ describe("findDOMNodes (JSX)", () => {
     class Example3 extends Component {
       render() {
         instance3 = this;
-        return <div id="example3" ref={refFunc}><Example2 /><Example1 /></div>;
+        return (
+          <div id="example3" ref={refFunc}>
+            <Example2 />
+            <Example1 />
+          </div>
+        );
       }
     }
 

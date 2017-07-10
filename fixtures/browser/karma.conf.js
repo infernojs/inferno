@@ -10,10 +10,10 @@ module.exports = function(config) {
 
     detectBrowsers: {
       postDetection(browserList) {
-        const results = browserList.indexOf("PhantomJS") &&
-          browserList.length === 1
-          ? ["PhantomJS"]
-          : [];
+        const results =
+          browserList.indexOf("PhantomJS") && browserList.length === 1
+            ? ["PhantomJS"]
+            : [];
 
         if (browserList.indexOf("Chrome") > -1) {
           results.push("Chrome");

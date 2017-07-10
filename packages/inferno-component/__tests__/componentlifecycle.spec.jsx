@@ -26,7 +26,11 @@ describe("Component lifecycle", () => {
       }
 
       render() {
-        return <div>{this.props.value}</div>;
+        return (
+          <div>
+            {this.props.value}
+          </div>
+        );
       }
     }
 
@@ -64,7 +68,11 @@ describe("Component lifecycle", () => {
       }
 
       render() {
-        return <div>{this.state.active ? "true" : "false"}</div>;
+        return (
+          <div>
+            {this.state.active ? "true" : "false"}
+          </div>
+        );
       }
     }
 
@@ -112,7 +120,11 @@ describe("Component lifecycle", () => {
       }
 
       render() {
-        return <div>{this.props.value}</div>;
+        return (
+          <div>
+            {this.props.value}
+          </div>
+        );
       }
     }
 
@@ -154,7 +166,11 @@ describe("Component lifecycle", () => {
 
       render() {
         // eslint-disable-next-line
-        return <div className="foobar" ref={el => (this.element = el)}>1</div>;
+        return (
+          <div className="foobar" ref={el => (this.element = el)}>
+            1
+          </div>
+        );
       }
     }
 
@@ -179,7 +195,11 @@ describe("Component lifecycle", () => {
       }
 
       render() {
-        return <div>{this.props.value}</div>;
+        return (
+          <div>
+            {this.props.value}
+          </div>
+        );
       }
     }
 

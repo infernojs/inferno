@@ -15,11 +15,7 @@ describe("TestUtils events", () => {
 
     class FooBar extends Component {
       render() {
-        return (
-          <div onClick={testObj.clicker}>
-            Test
-          </div>
-        );
+        return <div onClick={testObj.clicker}>Test</div>;
       }
     }
     const tree = renderIntoDocument(<FooBar />);
@@ -39,11 +35,7 @@ describe("TestUtils events", () => {
 
     class FooBar extends Component {
       render() {
-        return (
-          <div onclick={testObj.clicker}>
-            Test
-          </div>
-        );
+        return <div onclick={testObj.clicker}>Test</div>;
       }
     }
     const tree = renderIntoDocument(<FooBar />);

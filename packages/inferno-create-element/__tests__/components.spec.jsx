@@ -44,7 +44,9 @@ describe("Components (JSX)", () => {
 
   it("should render a basic component jsx", () => {
     render(
-      <div><BasicComponent1 title="abc" name="basic-render" /></div>,
+      <div>
+        <BasicComponent1 title="abc" name="basic-render" />
+      </div>,
       container
     );
 
@@ -55,7 +57,9 @@ describe("Components (JSX)", () => {
     );
 
     render(
-      <div><BasicComponent1 title="abc" name="basic-render" /></div>,
+      <div>
+        <BasicComponent1 title="abc" name="basic-render" />
+      </div>,
       container
     );
 
@@ -68,7 +72,12 @@ describe("Components (JSX)", () => {
     const attrs = { title: "abc", name: "basic-render2", foo: "bar" };
 
     // JSX Spread Attribute
-    render(<div><BasicComponent1 {...attrs} /></div>, container);
+    render(
+      <div>
+        <BasicComponent1 {...attrs} />
+      </div>,
+      container
+    );
 
     expect(container.innerHTML).toBe(
       innerHTML(
@@ -320,7 +329,9 @@ describe("Components (JSX)", () => {
     render() {
       return (
         <div style={this.props.styles}>
-          <span style={this.props.styles}>The title is {this.props.title}</span>
+          <span style={this.props.styles}>
+            The title is {this.props.title}
+          </span>
         </div>
       );
     }
@@ -404,7 +415,11 @@ describe("Components (JSX)", () => {
       return (
         <ul class="login-organizationlist">
           {this.state.organizations.map(result => {
-            return <li>{result.name}</li>;
+            return (
+              <li>
+                {result.name}
+              </li>
+            );
           })}
         </ul>
       );
@@ -573,7 +588,9 @@ describe("Components (JSX)", () => {
       render() {
         return (
           <div class="my-component">
-            <h1>{this.props.car} {this.state.count}</h1>
+            <h1>
+              {this.props.car} {this.state.count}
+            </h1>
             <button type="button" onClick={this.incrementCount}>
               Increment
             </button>
@@ -692,7 +709,10 @@ describe("Components (JSX)", () => {
   });
 
   describe("should render a stateless component with a conditional state item", () => {
-    const StatelessComponent = props => <p>{props.name}</p>;
+    const StatelessComponent = props =>
+      <p>
+        {props.name}
+      </p>;
 
     class Testing extends Component {
       constructor(props) {
@@ -764,7 +784,11 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return <div>{this.props.value}</div>;
+        return (
+          <div>
+            {this.props.value}
+          </div>
+        );
       }
     }
 
@@ -899,7 +923,11 @@ describe("Components (JSX)", () => {
             <div>
               {this.props.isok &&
                 ["a", "b"].map(x => {
-                  return <span>{x}</span>;
+                  return (
+                    <span>
+                      {x}
+                    </span>
+                  );
                 })}
             </div>
           </div>
@@ -973,7 +1001,10 @@ describe("Components (JSX)", () => {
     });
   });
 
-  const StatelessComponent2 = props => <div>{props.name}</div>;
+  const StatelessComponent2 = props =>
+    <div>
+      {props.name}
+    </div>;
 
   it("should render stateless component", () => {
     render(<StatelessComponent2 name="A" />, container);
@@ -990,7 +1021,11 @@ describe("Components (JSX)", () => {
 
   it("should support module pattern components", function() {
     function Child({ test }) {
-      return <div>{test}</div>;
+      return (
+        <div>
+          {test}
+        </div>
+      );
     }
 
     render(<Child test="test" />, container);
@@ -1026,7 +1061,11 @@ describe("Components (JSX)", () => {
                   return <li>No cars!</li>;
                 } else {
                   return ["BMW", "Volvo", "Saab"].map(function(car) {
-                    return <li>{car}</li>;
+                    return (
+                      <li>
+                        {car}
+                      </li>
+                    );
                   });
                 }
               })()}
@@ -1085,7 +1124,11 @@ describe("Components (JSX)", () => {
           <div>
             <button onClick={this.handleClick}>1</button>
             {this.state.list.map(function(x, i) {
-              return <div>{i}</div>;
+              return (
+                <div>
+                  {i}
+                </div>
+              );
             })}
           </div>
         );
@@ -1119,7 +1162,9 @@ describe("Components (JSX)", () => {
 
   describe("should render a stateless component with context", () => {
     const StatelessComponent3 = ({ value }, { fortyTwo }) =>
-      <p>{value}-{fortyTwo || "ERROR"}</p>;
+      <p>
+        {value}-{fortyTwo || "ERROR"}
+      </p>;
 
     class First extends Component {
       constructor(props, context) {
@@ -1180,7 +1225,10 @@ describe("Components (JSX)", () => {
   });
 
   describe("should render a conditional stateless component", () => {
-    const StatelessComponent4 = ({ value }) => <p>{value}</p>;
+    const StatelessComponent4 = ({ value }) =>
+      <p>
+        {value}
+      </p>;
 
     class First extends Component {
       constructor(props) {
@@ -1248,7 +1296,10 @@ describe("Components (JSX)", () => {
       container.appendChild(secondDiv);
     });
 
-    const StatelessComponent = ({ value }) => <p>{value}</p>;
+    const StatelessComponent = ({ value }) =>
+      <p>
+        {value}
+      </p>;
 
     class First extends Component {
       constructor(props) {
@@ -1423,16 +1474,28 @@ describe("Components (JSX)", () => {
             const child = Array.isArray(data)
               ? <List data={data} {...entity} />
               : <Text data={data} {...entity} />;
-            return <li key={key}>{child}</li>;
+            return (
+              <li key={key}>
+                {child}
+              </li>
+            );
           });
 
-          return <ul>{children}</ul>;
+          return (
+            <ul>
+              {children}
+            </ul>
+          );
         }
       }
 
       class Text extends Component {
         render() {
-          return <span>{this.props.data}</span>;
+          return (
+            <span>
+              {this.props.data}
+            </span>
+          );
         }
       }
 
@@ -1461,16 +1524,28 @@ describe("Components (JSX)", () => {
             const child = Array.isArray(data)
               ? <List {...entity} data={data} />
               : <Text {...entity} data={data} />;
-            return <li key={key}>{child}</li>;
+            return (
+              <li key={key}>
+                {child}
+              </li>
+            );
           });
 
-          return <ul>{children}</ul>;
+          return (
+            <ul>
+              {children}
+            </ul>
+          );
         }
       }
 
       class Text extends Component {
         render() {
-          return <span>{this.props.data}</span>;
+          return (
+            <span>
+              {this.props.data}
+            </span>
+          );
         }
       }
 
@@ -1569,7 +1644,11 @@ describe("Components (JSX)", () => {
           padding: "0 20px",
           fontSize: "40px"
         };
-        return <span style={style}>{this.props.text}</span>;
+        return (
+          <span style={style}>
+            {this.props.text}
+          </span>
+        );
       }
     }
 
@@ -1583,7 +1662,11 @@ describe("Components (JSX)", () => {
 
       render() {
         const { text } = this.props;
-        return <button onClick={this.onClick}><Label text={text} /></button>;
+        return (
+          <button onClick={this.onClick}>
+            <Label text={text} />
+          </button>
+        );
       }
     }
 
@@ -1593,7 +1676,11 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return <div onClick={this.onClick}><Button text="Click me" /></div>;
+        return (
+          <div onClick={this.onClick}>
+            <Button text="Click me" />
+          </div>
+        );
       }
     }
 
@@ -1620,7 +1707,11 @@ describe("Components (JSX)", () => {
           padding: "0 20px",
           fontSize: "40px"
         };
-        return <span style={style}>{this.props.text}</span>;
+        return (
+          <span style={style}>
+            {this.props.text}
+          </span>
+        );
       }
     }
 
@@ -1635,7 +1726,11 @@ describe("Components (JSX)", () => {
 
       render() {
         const { text } = this.props;
-        return <button onClick={this.onClick}><Label text={text} /></button>;
+        return (
+          <button onClick={this.onClick}>
+            <Label text={text} />
+          </button>
+        );
       }
     }
 
@@ -1645,7 +1740,11 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return <div onClick={this.onClick}><Button text="Click me" /></div>;
+        return (
+          <div onClick={this.onClick}>
+            <Button text="Click me" />
+          </div>
+        );
       }
     }
 
@@ -1966,7 +2065,11 @@ describe("Components (JSX)", () => {
 
       render() {
         instance = this;
-        return <div>{this.props.foo}</div>;
+        return (
+          <div>
+            {this.props.foo}
+          </div>
+        );
       }
     }
 
@@ -1985,9 +2088,15 @@ describe("Components (JSX)", () => {
     it("Should correctly handle boolean values (github#255)", () => {
       const Todo = ({ todo }) =>
         <tr>
-          <td>{todo.id}</td>
-          <td>{todo.desc}</td>
-          <td>{todo.done}</td>
+          <td>
+            {todo.id}
+          </td>
+          <td>
+            {todo.desc}
+          </td>
+          <td>
+            {todo.done}
+          </td>
         </tr>;
 
       render(<Todo todo={{ done: false }} />, container);
@@ -2042,7 +2151,9 @@ describe("Components (JSX)", () => {
         render() {
           return (
             <div>
-              <span>foo1</span><span>foo2</span><span>foo3</span>
+              <span>foo1</span>
+              <span>foo2</span>
+              <span>foo3</span>
               <span>foo4</span>
             </div>
           );
@@ -2111,7 +2222,10 @@ describe("Components (JSX)", () => {
 
       const FooBar = () =>
         <div>
-          <span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span>
+          <span>foo1</span>
+          <span>foo2</span>
+          <span>foo3</span>
+          <span>foo4</span>
         </div>;
 
       class Tester extends Component {
@@ -2186,7 +2300,11 @@ describe("Components (JSX)", () => {
 
         render() {
           renderCount++;
-          return <div>{this.state.foo}</div>;
+          return (
+            <div>
+              {this.state.foo}
+            </div>
+          );
         }
       }
 
@@ -2211,11 +2329,26 @@ describe("Components (JSX)", () => {
       return <div />;
     }
 
-    render(<div><Comp /></div>, container);
+    render(
+      <div>
+        <Comp />
+      </div>,
+      container
+    );
     expect(container.innerHTML).toBe(innerHTML("<div><div></div></div>"));
-    render(<div><Comp2 /></div>, container);
+    render(
+      <div>
+        <Comp2 />
+      </div>,
+      container
+    );
     expect(container.innerHTML).toBe(innerHTML("<div><span></span></div>"));
-    render(<span><Comp /></span>, container);
+    render(
+      <span>
+        <Comp />
+      </span>,
+      container
+    );
     expect(container.innerHTML).toBe(innerHTML("<span><div></div></span>"));
     render(createElement("span", null, <Comp3 />), container);
     expect(container.innerHTML).toBe(innerHTML("<span><div></div></span>"));
@@ -2268,8 +2401,16 @@ describe("Components (JSX)", () => {
     });
 
     it("should mount child component with its defaultProps", () => {
-      const Parent = props => <div>{props.children.props.a}</div>;
-      render(<Parent><Comp1 c="C" /></Parent>, container);
+      const Parent = props =>
+        <div>
+          {props.children.props.a}
+        </div>;
+      render(
+        <Parent>
+          <Comp1 c="C" />
+        </Parent>,
+        container
+      );
       expect(innerHTML(container.innerHTML)).toBe(innerHTML("<div>A</div>"));
     });
 
@@ -2353,7 +2494,11 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return <div>{this.state.foo}</div>;
+        return (
+          <div>
+            {this.state.foo}
+          </div>
+        );
       }
     }
 
@@ -2472,7 +2617,11 @@ describe("Components (JSX)", () => {
       render() {
         if (this.state.n) {
           // eslint-disable-next-line
-          return <div ref={dom => (div = dom)} onClick={this.onClick}>DIV</div>;
+          return (
+            <div ref={dom => (div = dom)} onClick={this.onClick}>
+              DIV
+            </div>
+          );
         }
         return <span onClick={this.onClick}>SPAN</span>;
       }
@@ -2571,7 +2720,11 @@ describe("Components (JSX)", () => {
       render() {
         if (this.state.n) {
           // eslint-disable-next-line
-          return <div ref={dom => (div = dom)} onClick={this.onClick}>DIV</div>;
+          return (
+            <div ref={dom => (div = dom)} onClick={this.onClick}>
+              DIV
+            </div>
+          );
         }
         return <span onClick={this.onClick}>SPAN</span>;
       }
@@ -2674,7 +2827,11 @@ describe("Components (JSX)", () => {
       render() {
         if (this.state.n) {
           // eslint-disable-next-line
-          return <div ref={dom => (div = dom)} onClick={this.onClick}>DIV</div>;
+          return (
+            <div ref={dom => (div = dom)} onClick={this.onClick}>
+              DIV
+            </div>
+          );
         }
         return <span onClick={this.onClick}>SPAN</span>;
       }
@@ -2794,7 +2951,12 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        const children = [<B key="b"><A /></B>, <div key="a">A</div>];
+        const children = [
+          <B key="b">
+            <A />
+          </B>,
+          <div key="a">A</div>
+        ];
         if (this.state.reverse) {
           children.reverse();
         }
@@ -2937,7 +3099,11 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return <div>{i}</div>;
+        return (
+          <div>
+            {i}
+          </div>
+        );
       }
     }
 
@@ -3085,7 +3251,9 @@ describe("Components (JSX)", () => {
         render() {
           return (
             <div>
-              <span>{this.state.text}</span>
+              <span>
+                {this.state.text}
+              </span>
               {this.props.toggle
                 ? [
                     <Tester

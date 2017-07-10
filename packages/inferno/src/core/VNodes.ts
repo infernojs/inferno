@@ -308,9 +308,10 @@ export function cloneVNode(
       }
       newVNode.children = null;
     } else if (flags & VNodeFlags.Element) {
-      children = props && !isUndefined(props.children)
-        ? props.children
-        : vNodeToClone.children;
+      children =
+        props && !isUndefined(props.children)
+          ? props.children
+          : vNodeToClone.children;
       newVNode = createVNode(
         flags,
         vNodeToClone.type,

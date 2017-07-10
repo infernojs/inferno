@@ -1,9 +1,9 @@
-import { SinonStub, spy as createSpy, stub as createStub } from 'sinon';
+import { SinonStub, spy as createSpy, stub as createStub } from "sinon";
 
-import { render } from 'inferno';
+import { render } from "inferno";
 
-export const renderInDiv = (node) => {
-  const div = document.createElement('div');
+export const renderInDiv = node => {
+  const div = document.createElement("div");
   render(node, div);
 };
 
@@ -30,21 +30,22 @@ export const spyOn = (obj, name, fn) => {
   }
 };
 
-export { spy } from 'sinon';
-export const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+export { spy } from "sinon";
+export const nextFrame = () =>
+  new Promise(resolve => requestAnimationFrame(resolve));
 
 export const Children = {
-  only: (e) => {
+  only: e => {
     if (Array.isArray(e)) {
       if (e.length > 1) {
-        throw new Error('Can only accept a single element.');
+        throw new Error("Can only accept a single element.");
       }
 
       return e[0];
     }
 
     if (!e) {
-      throw new Error('Requires a child');
+      throw new Error("Requires a child");
     }
 
     return e;

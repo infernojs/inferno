@@ -1205,7 +1205,11 @@ describe("Children - (JSX)", () => {
       const Nodes = ({ items }) =>
         <div>
           <div>test</div>
-          {items.map(item => <span>{item}</span>)}
+          {items.map(item =>
+            <span>
+              {item}
+            </span>
+          )}
           <div>end</div>
         </div>;
 
@@ -1240,7 +1244,11 @@ describe("Children - (JSX)", () => {
       const Nodes = ({ items }) =>
         <div>
           <div>test</div>
-          {items.map(item => <span key={item}>{item}</span>)}
+          {items.map(item =>
+            <span key={item}>
+              {item}
+            </span>
+          )}
           <div>end</div>
         </div>;
 
@@ -1275,7 +1283,11 @@ describe("Children - (JSX)", () => {
       const Nodes = ({ items }) =>
         <div>
           <div>test</div>
-          {items.map(item => <span key={item}>{item}</span>)}
+          {items.map(item =>
+            <span key={item}>
+              {item}
+            </span>
+          )}
           <div>end</div>
         </div>;
 
@@ -1987,7 +1999,11 @@ describe("Children - (JSX)", () => {
         }
 
         render() {
-          return <pre onclick={function() {}}>{this.state.text}</pre>;
+          return (
+            <pre onclick={function() {}}>
+              {this.state.text}
+            </pre>
+          );
         }
       }
 
@@ -2112,11 +2128,7 @@ describe("Children - (JSX)", () => {
       }
 
       function FooBar() {
-        return (
-          <span>
-            initial
-          </span>
-        );
+        return <span>initial</span>;
       }
 
       render(<Wrapper bool={true} />, container);

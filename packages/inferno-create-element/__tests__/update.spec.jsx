@@ -453,9 +453,17 @@ describe("Stateful Component updates", () => {
           <div className="common-root">
             {(() => {
               if (this.props.i % 2 === 0) {
-                return <div>DIV{this.props.value}</div>;
+                return (
+                  <div>
+                    DIV{this.props.value}
+                  </div>
+                );
               } else {
-                return <span>SPAN{this.props.value}</span>;
+                return (
+                  <span>
+                    SPAN{this.props.value}
+                  </span>
+                );
               }
             })()}
           </div>
@@ -463,7 +471,10 @@ describe("Stateful Component updates", () => {
       }
     }
 
-    const DropdownItem = ({ children }) => <li>{children}</li>;
+    const DropdownItem = ({ children }) =>
+      <li>
+        {children}
+      </li>;
 
     class Looper extends Component {
       constructor(props) {
@@ -496,7 +507,9 @@ describe("Stateful Component updates", () => {
                       i={i}
                       value={item.value}
                     />
-                    <span key={1}>{item.text}</span>
+                    <span key={1}>
+                      {item.text}
+                    </span>
                   </DropdownItem>
                 );
               })}
@@ -546,8 +559,19 @@ describe("Stateful Component updates", () => {
 
   it("Should not crash when patching array to array with hooks", () => {
     let updater = null;
-    const stuff = [<div>{["Test"]}</div>, <span>1</span>];
-    const orig = [[<span ref={function() {}}>{"1"}</span>]];
+    const stuff = [
+      <div>
+        {["Test"]}
+      </div>,
+      <span>1</span>
+    ];
+    const orig = [
+      [
+        <span ref={function() {}}>
+          {"1"}
+        </span>
+      ]
+    ];
     class Stuff extends Component {
       constructor(props) {
         super(props);
@@ -642,11 +666,7 @@ describe("Stateful Component updates", () => {
       componentWillUnmount() {}
 
       render() {
-        return (
-          <div className="report-container">
-            C
-          </div>
-        );
+        return <div className="report-container">C</div>;
       }
     }
 

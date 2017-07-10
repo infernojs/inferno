@@ -558,7 +558,9 @@ describe("Inferno", () => {
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.dispatch).toBe(store.dispatch);
       expect(stub.props.foo).toBe("bar");
-      expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
+      expect(
+        () => findRenderedVNodeWithType(tree, Container).children
+      ).not.toThrowError();
       const decorated = findRenderedVNodeWithType(tree, Container).children;
       expect(decorated.isSubscribed()).toBe(true);
     });
@@ -915,7 +917,9 @@ describe("Inferno", () => {
         expect(stub.props.dispatch).toBe(store.dispatch);
         expect(stub.props.foo).toBeUndefined();
         expect(stub.props.pass).toBe("through");
-        expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
+        expect(
+          () => findRenderedVNodeWithType(tree, Container).children
+        ).not.toThrowError();
 
         const decorated = findRenderedVNodeWithType(tree, Container).children;
         expect(decorated.isSubscribed()).toBe(false);
@@ -1328,7 +1332,9 @@ describe("Inferno", () => {
     });
 
     it("should throw an error if a component is not passed to the function returned by connect", () => {
-      expect(connect()).toThrowError(/You must pass a component to the function/);
+      expect(connect()).toThrowError(
+        /You must pass a component to the function/
+      );
     });
 
     it("should throw an error if mapState, mapDispatch, or mergeProps returns anything but a plain object", () => {
@@ -1356,7 +1362,9 @@ describe("Inferno", () => {
         );
 
         expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(/mapStateToProps\(\) in Connect\(Container\) must return a plain object/);
+        expect(spy.getCall(0).args[0]).toMatch(
+          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
+        );
       });
 
       spyOn(console, "error", spy => {
@@ -1367,7 +1375,9 @@ describe("Inferno", () => {
         );
 
         expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(/mapStateToProps\(\) in Connect\(Container\) must return a plain object/);
+        expect(spy.getCall(0).args[0]).toMatch(
+          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
+        );
       });
 
       spyOn(console, "error", spy => {
@@ -1378,7 +1388,9 @@ describe("Inferno", () => {
         );
 
         expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(/mapStateToProps\(\) in Connect\(Container\) must return a plain object/);
+        expect(spy.getCall(0).args[0]).toMatch(
+          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
+        );
       });
 
       // mapDispatchToProps
@@ -1430,7 +1442,9 @@ describe("Inferno", () => {
         );
 
         expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(/mergeProps\(\) in Connect\(Container\) must return a plain object/);
+        expect(spy.getCall(0).args[0]).toMatch(
+          /mergeProps\(\) in Connect\(Container\) must return a plain object/
+        );
       });
 
       spyOn(console, "error", spy => {
@@ -1441,7 +1455,9 @@ describe("Inferno", () => {
         );
 
         expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(/mergeProps\(\) in Connect\(Container\) must return a plain object/);
+        expect(spy.getCall(0).args[0]).toMatch(
+          /mergeProps\(\) in Connect\(Container\) must return a plain object/
+        );
       });
 
       spyOn(console, "error", spy => {
@@ -1452,7 +1468,9 @@ describe("Inferno", () => {
         );
 
         expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(/mergeProps\(\) in Connect\(Container\) must return a plain object/);
+        expect(spy.getCall(0).args[0]).toMatch(
+          /mergeProps\(\) in Connect\(Container\) must return a plain object/
+        );
       });
     });
 
@@ -1623,7 +1641,9 @@ describe("Inferno", () => {
       const decorator = connect(() => {});
       const Decorated = decorator(Container);
 
-      expect(() => renderIntoDocument(<Decorated />)).toThrowError(/Could not find "store"/);
+      expect(() => renderIntoDocument(<Decorated />)).toThrowError(
+        /Could not find "store"/
+      );
     });
 
     it("should throw when trying to access the wrapped instance if withRef is not specified", () => {
@@ -1678,7 +1698,9 @@ describe("Inferno", () => {
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
       expect(() => decorated.someInstanceMethod()).toThrowError();
-      expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(someData);
+      expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(
+        someData
+      );
       expect(decorated.wrappedInstance.someInstanceMethod()).toBe(someData);
     });
 
@@ -1976,7 +1998,9 @@ describe("Inferno", () => {
 
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
-      expect(() => store.dispatch({ type: "APPEND", payload: "a" })).toThrowError("Oops");
+      expect(() =>
+        store.dispatch({ type: "APPEND", payload: "a" })
+      ).toThrowError("Oops");
     });
 
     it("should allow providing a factory function to mapStateToProps", async () => {

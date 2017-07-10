@@ -675,9 +675,7 @@ describe("Basic event tests", () => {
 
       render(
         <div>
-          <div id="test">
-            2
-          </div>
+          <div id="test">2</div>
         </div>,
         container
       );

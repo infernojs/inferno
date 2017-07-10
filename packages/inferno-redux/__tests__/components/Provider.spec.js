@@ -130,7 +130,11 @@ describe("redux", () => {
       const Inner = connect(innerMapStateToProps)(
         class Inner extends Component {
           render() {
-            return <div>{this.props.count}</div>;
+            return (
+              <div>
+                {this.props.count}
+              </div>
+            );
           }
         }
       );
@@ -140,12 +144,20 @@ describe("redux", () => {
       const Outer = connect(state => ({ count: state }))(
         class Outer extends Component {
           render() {
-            return <Provider store={innerStore}><Inner /></Provider>;
+            return (
+              <Provider store={innerStore}>
+                <Inner />
+              </Provider>
+            );
           }
         }
       );
 
-      renderIntoDocument(<Provider store={outerStore}><Outer /></Provider>);
+      renderIntoDocument(
+        <Provider store={outerStore}>
+          <Outer />
+        </Provider>
+      );
       expect(innerMapStateToProps.callCount).toEqual(1);
 
       innerStore.dispatch({ type: "INC" });

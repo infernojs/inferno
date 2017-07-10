@@ -24,7 +24,11 @@ function createRoutes(component) {
 }
 
 function showChildren({ children }) {
-  return <div>{children}</div>;
+  return (
+    <div>
+      {children}
+    </div>
+  );
 }
 
 describe("Router (jsx)", () => {
@@ -153,7 +157,11 @@ describe("Router (jsx)", () => {
       const sinonSpy = sinon.spy(obj, "fn");
 
       render(
-        createRoutes(<Link to="/" onClick={obj.fn}>Link</Link>),
+        createRoutes(
+          <Link to="/" onClick={obj.fn}>
+            Link
+          </Link>
+        ),
         container
       );
 
@@ -175,7 +183,11 @@ describe("Router (jsx)", () => {
       const sinonSpy = sinon.spy(obj, "fn");
 
       render(
-        createRoutes(<Link to="/" onClick={obj.fn}>Link</Link>),
+        createRoutes(
+          <Link to="/" onClick={obj.fn}>
+            Link
+          </Link>
+        ),
         container
       );
 

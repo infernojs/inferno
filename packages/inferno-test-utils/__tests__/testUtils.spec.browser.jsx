@@ -516,7 +516,10 @@ describe("Test Utils", () => {
 
     it("should work with interpolated text", () => {
       const predicate = sinon.spy();
-      const Hello = ({ who }) => <div>Hello, {who}!</div>;
+      const Hello = ({ who }) =>
+        <div>
+          Hello, {who}!
+        </div>;
       const treeWithText = renderIntoDocument(<Hello who="world" />);
       sinon.assert.notCalled(predicate);
       findAllInRenderedTree(treeWithText, predicate);
@@ -755,7 +758,10 @@ describe("Test Utils", () => {
 
     it("should be able to handle null elements", () => {
       const NoOp = () => null;
-      const Broken = () => <div className="dummy"><NoOp /></div>;
+      const Broken = () =>
+        <div className="dummy">
+          <NoOp />
+        </div>;
       const renderedTree = renderIntoDocument(<Broken />);
       const dummy = findRenderedDOMElementWithClass(renderedTree, "dummy");
       expect(dummy.className).toBe("dummy");

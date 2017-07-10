@@ -129,8 +129,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div>
-          {"Last downloaded"}
-          {" "}
+          {"Last downloaded"}{" "}
           <abbr
             className={"livetimestamp"}
             data-utime={1446062352}
@@ -304,12 +303,16 @@ function runBenchmark(container) {
                 {"Power Editor"}
               </span>
             </div>
-            <span className={"_5ljt _5lju"}>{"Dick Madanson"}</span>
+            <span className={"_5ljt _5lju"}>
+              {"Dick Madanson"}
+            </span>
           </div>
           <div className={"_5ljy"}>
             <div className={"_5ljz _5mun"}>
               <AdsPEAccountSelectorContainer8 />
-              <div className={"_5lj- _5lju"}>{"Account 10149999073643408"}</div>
+              <div className={"_5lj- _5lju"}>
+                {"Account 10149999073643408"}
+              </div>
             </div>
             <div className={"_5ljz"}>
               <div className={"_5lj_"}>
@@ -372,7 +375,9 @@ function runBenchmark(container) {
             aria-selected={true}
             onKeyDown={function() {}}
           >
-            <div className={"_4jq5"}>{"Manage Ads"}</div>
+            <div className={"_4jq5"}>
+              {"Manage Ads"}
+            </div>
             <span className={"_13xf"} />
           </a>
         </li>
@@ -417,7 +422,9 @@ function runBenchmark(container) {
           role={"presentation"}
         >
           <a aria-selected={false} onKeyDown={function() {}}>
-            <div className={"_4jq5"}>{"Audiences"}</div>
+            <div className={"_4jq5"}>
+              {"Audiences"}
+            </div>
             <span className={"_13xf"} />
           </a>
         </li>
@@ -462,7 +469,9 @@ function runBenchmark(container) {
           role={"presentation"}
         >
           <a aria-selected={false} onKeyDown={function() {}}>
-            <div className={"_4jq5"}>{"Image Library"}</div>
+            <div className={"_4jq5"}>
+              {"Image Library"}
+            </div>
             <span className={"_13xf"} />
           </a>
         </li>
@@ -555,7 +564,9 @@ function runBenchmark(container) {
           role={"presentation"}
         >
           <a aria-selected={false} onKeyDown={function() {}}>
-            <div className={"_4jq5"}>{"Page Posts"}</div>
+            <div className={"_4jq5"}>
+              {"Page Posts"}
+            </div>
             <span className={"_13xf"} />
           </a>
         </li>
@@ -587,7 +598,9 @@ function runBenchmark(container) {
         <a aria-selected={false}>
           <span className={"_1b0"}>
             {"Tools"}
-            <span className={"accessible_elem"}>{"additional tabs menu"}</span>
+            <span className={"accessible_elem"}>
+              {"additional tabs menu"}
+            </span>
           </span>
         </a>
       );
@@ -709,7 +722,9 @@ function runBenchmark(container) {
           className={"_585p img sp_R48dKBxiJkP sx_aed870"}
           src={null}
         >
-          <u>{"Warning"}</u>
+          <u>
+            {"Warning"}
+          </u>
         </i>
       );
     }
@@ -1137,7 +1152,9 @@ function runBenchmark(container) {
           <div aria-hidden={false}>
             <div onClick={function() {}} className={"_3yz5"}>
               <ReactImage85 />
-              <div className={"_3yz7"}>{"Ads:"}</div>
+              <div className={"_3yz7"}>
+                {"Ads:"}
+              </div>
               <div
                 className={"ellipsis _3yz8"}
                 data-hover={"tooltip"}
@@ -1414,7 +1431,9 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={"_3c5k"}>
-          <span className={"_3c5j"}>{"Stats:"}</span>
+          <span className={"_3c5j"}>
+            {"Stats:"}
+          </span>
           <span className={"_3c5l"}>
             <XUISingleSelector118 key={"range"} />
             {null}
@@ -2012,7 +2031,9 @@ function runBenchmark(container) {
           <div>
             <div className={"_tma"} />
             <div className={"_tm8"} />
-            <div className={"_tm9"}>{1}</div>
+            <div className={"_tm9"}>
+              {1}
+            </div>
           </div>
           {undefined}
         </button>
@@ -2047,7 +2068,9 @@ function runBenchmark(container) {
           <div>
             <div className={"_tma"} />
             <div className={"_tm8"} />
-            <div className={"_tm9"}>{1}</div>
+            <div className={"_tm9"}>
+              {1}
+            </div>
           </div>
           {undefined}
         </button>
@@ -2082,7 +2105,9 @@ function runBenchmark(container) {
           <div>
             <div className={"_tma"} />
             <div className={"_tm8"} />
-            <div className={"_tm9"}>{1}</div>
+            <div className={"_tm9"}>
+              {1}
+            </div>
           </div>
           {undefined}
         </button>
@@ -2144,7 +2169,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _1ksv _1vd7 _4h2r"}>
           <ReactImage179 />
-          <span className={"_1cid"}>{"Ads"}</span>
+          <span className={"_1cid"}>
+            {"Ads"}
+          </span>
         </div>
       );
     }
@@ -2226,7 +2253,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _1vd7 _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Delivery"}</span>
+          <span className={"_1cid"}>
+            {"Delivery"}
+          </span>
         </div>
       );
     }
@@ -2278,7 +2307,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _1vd7 _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Performance"}</span>
+          <span className={"_1cid"}>
+            {"Performance"}
+          </span>
         </div>
       );
     }
@@ -2330,7 +2361,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _1vd7 _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Overview"}</span>
+          <span className={"_1cid"}>
+            {"Overview"}
+          </span>
         </div>
       );
     }
@@ -2382,7 +2415,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _1vd7 _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Creative Assets"}</span>
+          <span className={"_1cid"}>
+            {"Creative Assets"}
+          </span>
         </div>
       );
     }
@@ -2434,7 +2469,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _1vd7 _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Toplines"}</span>
+          <span className={"_1cid"}>
+            {"Toplines"}
+          </span>
         </div>
       );
     }
@@ -2671,7 +2708,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Ad Name"}</span>
+          <span className={"_1cid"}>
+            {"Ad Name"}
+          </span>
         </div>
       );
     }
@@ -2899,7 +2938,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Status"}</span>
+          <span className={"_1cid"}>
+            {"Status"}
+          </span>
         </div>
       );
     }
@@ -2969,7 +3010,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Delivery"}</span>
+          <span className={"_1cid"}>
+            {"Delivery"}
+          </span>
         </div>
       );
     }
@@ -3080,7 +3123,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Reach"}</span>
+          <span className={"_1cid"}>
+            {"Reach"}
+          </span>
         </div>
       );
     }
@@ -3156,7 +3201,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Ad Impressions"}</span>
+          <span className={"_1cid"}>
+            {"Ad Impressions"}
+          </span>
         </div>
       );
     }
@@ -3232,7 +3279,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Avg. CPM"}</span>
+          <span className={"_1cid"}>
+            {"Avg. CPM"}
+          </span>
         </div>
       );
     }
@@ -3308,7 +3357,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Avg. CPC"}</span>
+          <span className={"_1cid"}>
+            {"Avg. CPC"}
+          </span>
         </div>
       );
     }
@@ -3384,7 +3435,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Results"}</span>
+          <span className={"_1cid"}>
+            {"Results"}
+          </span>
         </div>
       );
     }
@@ -3441,7 +3494,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Cost"}</span>
+          <span className={"_1cid"}>
+            {"Cost"}
+          </span>
         </div>
       );
     }
@@ -3498,7 +3553,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Clicks"}</span>
+          <span className={"_1cid"}>
+            {"Clicks"}
+          </span>
         </div>
       );
     }
@@ -3574,7 +3631,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"CTR %"}</span>
+          <span className={"_1cid"}>
+            {"CTR %"}
+          </span>
         </div>
       );
     }
@@ -3650,7 +3709,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Social %"}</span>
+          <span className={"_1cid"}>
+            {"Social %"}
+          </span>
         </div>
       );
     }
@@ -3726,7 +3787,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Ad Set Name"}</span>
+          <span className={"_1cid"}>
+            {"Ad Set Name"}
+          </span>
         </div>
       );
     }
@@ -3802,7 +3865,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Campaign Name"}</span>
+          <span className={"_1cid"}>
+            {"Campaign Name"}
+          </span>
         </div>
       );
     }
@@ -3878,7 +3943,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Ad ID"}</span>
+          <span className={"_1cid"}>
+            {"Ad ID"}
+          </span>
         </div>
       );
     }
@@ -3954,7 +4021,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Objective"}</span>
+          <span className={"_1cid"}>
+            {"Objective"}
+          </span>
         </div>
       );
     }
@@ -4030,7 +4099,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Spent"}</span>
+          <span className={"_1cid"}>
+            {"Spent"}
+          </span>
         </div>
       );
     }
@@ -4106,7 +4177,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Start"}</span>
+          <span className={"_1cid"}>
+            {"Start"}
+          </span>
         </div>
       );
     }
@@ -4182,7 +4255,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"End"}</span>
+          <span className={"_1cid"}>
+            {"End"}
+          </span>
         </div>
       );
     }
@@ -4258,7 +4333,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Date created"}</span>
+          <span className={"_1cid"}>
+            {"Date created"}
+          </span>
         </div>
       );
     }
@@ -4334,7 +4411,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Date last edited"}</span>
+          <span className={"_1cid"}>
+            {"Date last edited"}
+          </span>
         </div>
       );
     }
@@ -4410,7 +4489,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Title"}</span>
+          <span className={"_1cid"}>
+            {"Title"}
+          </span>
         </div>
       );
     }
@@ -4486,7 +4567,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Body"}</span>
+          <span className={"_1cid"}>
+            {"Body"}
+          </span>
         </div>
       );
     }
@@ -4562,7 +4645,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Destination"}</span>
+          <span className={"_1cid"}>
+            {"Destination"}
+          </span>
         </div>
       );
     }
@@ -4638,7 +4723,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Link"}</span>
+          <span className={"_1cid"}>
+            {"Link"}
+          </span>
         </div>
       );
     }
@@ -4714,7 +4801,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg"}>
           {null}
-          <span className={"_1cid"}>{"Related Page"}</span>
+          <span className={"_1cid"}>
+            {"Related Page"}
+          </span>
         </div>
       );
     }
@@ -4790,7 +4879,9 @@ function runBenchmark(container) {
       return (
         <div className={"_1cig _25fg _4h2r"}>
           {null}
-          <span className={"_1cid"}>{"Preview Link"}</span>
+          <span className={"_1cid"}>
+            {"Preview Link"}
+          </span>
         </div>
       );
     }
@@ -5060,7 +5151,9 @@ function runBenchmark(container) {
           onMouseLeave={function() {}}
         >
           <div className={"_vex _5w6k"}>
-            <div className={"_vey"}>{"Test Ad"}</div>
+            <div className={"_vey"}>
+              {"Test Ad"}
+            </div>
             <div className={"_5w6_"} />
           </div>
         </div>
@@ -5136,7 +5229,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_4h2r"}>{""}</div>
+              <div className={"_4h2r"}>
+                {""}
+              </div>
             </div>
           </div>
         </div>
@@ -5416,7 +5511,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5456,7 +5553,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5496,7 +5595,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5536,7 +5637,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5576,7 +5679,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5616,7 +5721,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5656,7 +5763,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5696,7 +5805,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5736,7 +5847,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5776,7 +5889,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_4h2r"}>{"Test Ad Set"}</div>
+              <div className={"_4h2r"}>
+                {"Test Ad Set"}
+              </div>
             </div>
           </div>
         </div>
@@ -5822,7 +5937,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_4h2r"}>{"Test Campaign"}</div>
+              <div className={"_4h2r"}>
+                {"Test Campaign"}
+              </div>
             </div>
           </div>
         </div>
@@ -5868,7 +5985,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _4h2r"}>{"98010048849345"}</div>
+              <div className={"_2d6h _4h2r"}>
+                {"98010048849345"}
+              </div>
             </div>
           </div>
         </div>
@@ -5908,7 +6027,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _4h2r"}>{"Clicks to Website"}</div>
+              <div className={"_2d6h _4h2r"}>
+                {"Clicks to Website"}
+              </div>
             </div>
           </div>
         </div>
@@ -5948,7 +6069,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _2g7x _4h2r"}>{" — "}</div>
+              <div className={"_2d6h _2g7x _4h2r"}>
+                {" — "}
+              </div>
             </div>
           </div>
         </div>
@@ -5972,7 +6095,11 @@ function runBenchmark(container) {
 
   const ReactDate416 = createClass({
     render() {
-      return <span>{"10/24/2015"}</span>;
+      return (
+        <span>
+          {"10/24/2015"}
+        </span>
+      );
     }
   });
 
@@ -6036,7 +6163,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _4h2r"}>{"Ongoing"}</div>
+              <div className={"_2d6h _4h2r"}>
+                {"Ongoing"}
+              </div>
             </div>
           </div>
         </div>
@@ -6060,7 +6189,11 @@ function runBenchmark(container) {
 
   const ReactDate421 = createClass({
     render() {
-      return <span>{"10/24/2015"}</span>;
+      return (
+        <span>
+          {"10/24/2015"}
+        </span>
+      );
     }
   });
 
@@ -6108,7 +6241,11 @@ function runBenchmark(container) {
 
   const ReactDate424 = createClass({
     render() {
-      return <span>{"10/24/2015"}</span>;
+      return (
+        <span>
+          {"10/24/2015"}
+        </span>
+      );
     }
   });
 
@@ -6172,7 +6309,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _4h2r"}>{"Example"}</div>
+              <div className={"_2d6h _4h2r"}>
+                {"Example"}
+              </div>
             </div>
           </div>
         </div>
@@ -6292,7 +6431,9 @@ function runBenchmark(container) {
         >
           <div className={"_4lgd _4h2w"}>
             <div className={"_4lge _4h2x"}>
-              <div className={"_2d6h _4h2r"}>{"http://www.example.com/"}</div>
+              <div className={"_2d6h _4h2r"}>
+                {"http://www.example.com/"}
+              </div>
             </div>
           </div>
         </div>
@@ -6966,9 +7107,7 @@ function runBenchmark(container) {
       return (
         <div className={"_5ir9 _3bvz"} label={"Ad Name"} labelSize={"small"}>
           <label className={"_4el4 _3qwj _3hy-"} htmlFor={undefined}>
-            {"Ad Name"}
-            {" "}
-            {undefined}
+            {"Ad Name"} {undefined}
           </label>
           {null}
           <div className={"_3bv-"} />
@@ -7043,9 +7182,7 @@ function runBenchmark(container) {
       return (
         <div className={"_5ir9 _3bvz"} label={"Status"} labelSize={"small"}>
           <label className={"_4el4 _3qwj _3hy-"} htmlFor={undefined}>
-            {"Status"}
-            {" "}
-            {undefined}
+            {"Status"} {undefined}
           </label>
           {null}
           <div className={"_3bv-"} />
@@ -7505,7 +7642,9 @@ function runBenchmark(container) {
           className={"_585p img sp_R48dKBxiJkP sx_aed870"}
           src={null}
         >
-          <u>{"Warning"}</u>
+          <u>
+            {"Warning"}
+          </u>
         </i>
       );
     }
@@ -7846,9 +7985,7 @@ function runBenchmark(container) {
           className={"_3bvz"}
         >
           <label className={"_4el4 _3qwj _3hy-"} htmlFor={undefined}>
-            {"Website URL"}
-            {" "}
-            {undefined}
+            {"Website URL"} {undefined}
           </label>
           <AdsHelpLink564 />
           <div className={"_3bv-"} />
@@ -7861,7 +7998,9 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={"_gon _2vl4 _1h18"}>
-          <div className={"_2vln"}>{1001}</div>
+          <div className={"_2vln"}>
+            {1001}
+          </div>
           <AdsLabeledField565 />
           <div className={"_2vl9 _1h1f"} style={{ backgroundColor: "#fff" }}>
             <div className={"_2vla _1h1g"}>
@@ -7935,9 +8074,7 @@ function runBenchmark(container) {
           className={"_3bvz"}
         >
           <label className={"_4el4 _3qwj _3hy-"} htmlFor={undefined}>
-            {"Headline"}
-            {" "}
-            {undefined}
+            {"Headline"} {undefined}
           </label>
           <AdsHelpLink572 />
           <div className={"_3bv-"} />
@@ -7950,7 +8087,9 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={"_gon _2vl4 _1h18"}>
-          <div className={"_2vln"}>{18}</div>
+          <div className={"_2vln"}>
+            {18}
+          </div>
           <AdsLabeledField573 />
           <div className={"_2vl9 _1h1f"} style={{ backgroundColor: "#fff" }}>
             <div className={"_2vla _1h1g"}>
@@ -7999,9 +8138,7 @@ function runBenchmark(container) {
           className={"_3bvz"}
         >
           <label className={"_4el4 _3qwj _3hy-"} htmlFor={undefined}>
-            {"Text"}
-            {" "}
-            {undefined}
+            {"Text"} {undefined}
           </label>
           {null}
           <div className={"_3bv-"} />
@@ -8014,7 +8151,9 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={"_gon _2vl4 _2vl6 _1h18 _1h1a"}>
-          <div className={"_2vln"}>{74}</div>
+          <div className={"_2vln"}>
+            {74}
+          </div>
           <AdsLabeledField578 />
           <div className={"_2vl9 _1h1f"} style={{ backgroundColor: "#fff" }}>
             <div className={"_2vla _1h1g"}>
@@ -8245,9 +8384,7 @@ function runBenchmark(container) {
       return (
         <div className={"_3-96 _3bvz"} label={"Image"} labelSize={"small"}>
           <label className={"_4el4 _3qwj _3hy-"} htmlFor={undefined}>
-            {"Image"}
-            {" "}
-            {undefined}
+            {"Image"} {undefined}
           </label>
           {null}
           <div className={"_3bv-"}>

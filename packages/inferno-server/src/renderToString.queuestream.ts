@@ -145,7 +145,11 @@ export class RenderQueueStream extends Readable {
                     );
                   }
                   this.renderVNodeToQueue(
-                    instance.render(instance.props, instance.state, instance.context),
+                    instance.render(
+                      instance.props,
+                      instance.state,
+                      instance.context
+                    ),
                     instance.context,
                     true,
                     promisePosition

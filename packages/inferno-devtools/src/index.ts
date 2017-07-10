@@ -2,6 +2,6 @@
  * @module Inferno-Devtools
  */ /** TypeDoc Comment */
 
-import initDevTools from './init';
+import initDevTools from "./init";
 
 initDevTools();

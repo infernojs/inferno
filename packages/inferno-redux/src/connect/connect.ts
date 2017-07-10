@@ -42,59 +42,55 @@ export const createConnect = (
     mergePropsFactories = defaultMergePropsFactories,
     selectorFactory = defaultSelectorFactory
   } = {}
+) => (
+  mapStateToProps?,
+  mapDispatchToProps?,
+  mergeProps?,
+  {
+    pure = true,
+    areStatesEqual = strictEqual,
+    areOwnPropsEqual = shallowEqual,
+    areStatePropsEqual = shallowEqual,
+    areMergedPropsEqual = shallowEqual,
+    ...extraOptions
+  } = {}
 ) => {
-  const connect = (
-    mapStateToProps?,
-    mapDispatchToProps?,
-    mergeProps?,
-    {
-      pure = true,
-      areStatesEqual = strictEqual,
-      areOwnPropsEqual = shallowEqual,
-      areStatePropsEqual = shallowEqual,
-      areMergedPropsEqual = shallowEqual,
-      ...extraOptions
-    } = {}
-  ) => {
-    const initMapStateToProps = match(
-      mapStateToProps,
-      mapStateToPropsFactories,
-      "mapStateToProps"
-    );
-    const initMapDispatchToProps = match(
-      mapDispatchToProps,
-      mapDispatchToPropsFactories,
-      "mapDispatchToProps"
-    );
-    const initMergeProps = match(mergeProps, mergePropsFactories, "mergeProps");
+  const initMapStateToProps = match(
+    mapStateToProps,
+    mapStateToPropsFactories,
+    "mapStateToProps"
+  );
+  const initMapDispatchToProps = match(
+    mapDispatchToProps,
+    mapDispatchToPropsFactories,
+    "mapDispatchToProps"
+  );
+  const initMergeProps = match(mergeProps, mergePropsFactories, "mergeProps");
 
-    return connectHOC(selectorFactory as any, {
-      // used in error messages
-      methodName: "connect",
+  return connectHOC(selectorFactory as any, {
+    // used in error messages
+    methodName: "connect",
 
-      // used to compute Connect's displayName from the wrapped component's displayName.
-      // tslint:disable-next-line:object-literal-sort-keys
-      getDisplayName: name => `Connect(${name})`,
+    // used to compute Connect's displayName from the wrapped component's displayName.
+    // tslint:disable-next-line:object-literal-sort-keys
+    getDisplayName: name => `Connect(${name})`,
 
-      // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
-      shouldHandleStateChanges: !!mapStateToProps,
+    // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
+    shouldHandleStateChanges: !!mapStateToProps,
 
-      // passed through to selectorFactory
-      initMapStateToProps,
-      initMapDispatchToProps,
-      initMergeProps,
-      pure,
-      areStatesEqual,
-      areOwnPropsEqual,
-      areStatePropsEqual,
-      areMergedPropsEqual,
+    // passed through to selectorFactory
+    initMapStateToProps,
+    initMapDispatchToProps,
+    initMergeProps,
+    pure,
+    areStatesEqual,
+    areOwnPropsEqual,
+    areStatePropsEqual,
+    areMergedPropsEqual,
 
-      // any extra options args can override defaults of connect or connectAdvanced
-      ...extraOptions
-    });
-  };
-
-  return connect;
+    // any extra options args can override defaults of connect or connectAdvanced
+    ...extraOptions
+  });
 };
 
 export const connect = createConnect();

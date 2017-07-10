@@ -26,7 +26,7 @@ export const wrapMapToPropsConstant = getConstant => {
 // therefore not reporting its length accurately..
 export const getDependsOnOwnProps = mapToProps =>
   mapToProps.dependsOnOwnProps !== null &&
-    mapToProps.dependsOnOwnProps !== undefined
+  mapToProps.dependsOnOwnProps !== undefined
     ? !!mapToProps.dependsOnOwnProps
     : mapToProps.length !== 1;
 

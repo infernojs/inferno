@@ -318,9 +318,15 @@ describe("Select / select multiple (JSX)", () => {
   it("should handle when multiple options with selected set", () => {
     render(
       <select multiple={true}>
-        <option value="a" selected={true}>a</option>
-        <option value="b" selected={true}>b</option>
-        <option value="c" selected={true}>c</option>
+        <option value="a" selected={true}>
+          a
+        </option>
+        <option value="b" selected={true}>
+          b
+        </option>
+        <option value="c" selected={true}>
+          c
+        </option>
         <option value="d">d</option>
       </select>,
       container
@@ -409,7 +415,9 @@ describe("Select / select multiple (JSX)", () => {
     render(
       <select>
         <option value="a">a</option>
-        <option selected={true} value="b">b</option>
+        <option selected={true} value="b">
+          b
+        </option>
       </select>,
       container
     );

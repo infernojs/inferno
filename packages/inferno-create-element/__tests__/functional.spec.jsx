@@ -44,9 +44,15 @@ describe("Functional methods (JSX)", () => {
     // noinspection TypeScriptUnresolvedFunction
     const view = curry((actions, model) =>
       <div style={countStyle}>
-        <button id="decrement" onClick={emitDecrement}>-</button>
-        <div style={countStyle}>{model}</div>
-        <button id="increment" onClick={emitIncrement}>+</button>
+        <button id="decrement" onClick={emitDecrement}>
+          -
+        </button>
+        <div style={countStyle}>
+          {model}
+        </div>
+        <button id="increment" onClick={emitIncrement}>
+          +
+        </button>
       </div>
     );
 

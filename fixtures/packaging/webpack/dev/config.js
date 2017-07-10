@@ -1,11 +1,11 @@
-var path = require('path');
+var path = require("path");
 
 module.exports = {
-	entry: './input',
-	output: {
-		filename: 'output.js'
-	},
-	resolve: {
-		root: path.resolve('../../../../packages/')
-	}
+  entry: "./input",
+  output: {
+    filename: "output.js"
+  },
+  resolve: {
+    root: path.resolve("../../../../packages/")
+  }
 };

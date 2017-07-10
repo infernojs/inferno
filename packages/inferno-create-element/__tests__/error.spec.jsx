@@ -37,7 +37,11 @@ describe("Error recovery", () => {
       }
 
       render() {
-        return <div>{this.state.value}</div>;
+        return (
+          <div>
+            {this.state.value}
+          </div>
+        );
       }
     }
 
@@ -68,7 +72,11 @@ describe("Error recovery", () => {
       }
 
       render() {
-        return <div>{this.state.value}</div>;
+        return (
+          <div>
+            {this.state.value}
+          </div>
+        );
       }
     }
 

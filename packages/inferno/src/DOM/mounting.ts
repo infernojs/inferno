@@ -103,8 +103,9 @@ export function mountElement(
   context: Object,
   isSVG: boolean
 ) {
+  let dom;
   if (options.recyclingEnabled) {
-    const dom = recycleElement(vNode, lifecycle, context, isSVG);
+    dom = recycleElement(vNode, lifecycle, context, isSVG);
 
     if (!isNull(dom)) {
       if (!isNull(parentDom)) {
@@ -116,7 +117,7 @@ export function mountElement(
   const flags = vNode.flags;
 
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  const dom = documentCreateElement(vNode.type, isSVG);
+  dom = documentCreateElement(vNode.type, isSVG);
   const children = vNode.children;
   const props = vNode.props;
   const className = vNode.className;
@@ -196,8 +197,9 @@ export function mountComponent(
   isSVG: boolean,
   isClass: boolean
 ) {
+  let dom;
   if (options.recyclingEnabled) {
-    const dom = recycleComponent(vNode, lifecycle, context, isSVG);
+    dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
     if (!isNull(dom)) {
       if (!isNull(parentDom)) {
@@ -209,7 +211,7 @@ export function mountComponent(
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref;
-  let dom;
+
   if (isClass) {
     const instance = createClassComponentInstance(
       vNode,

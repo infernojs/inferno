@@ -572,7 +572,9 @@ describe("FormElements", () => {
         render(
           <select>
             <option value="a">a</option>
-            <option selected={true} value="b">b</option>
+            <option selected={true} value="b">
+              b
+            </option>
           </select>,
           container
         );
@@ -586,7 +588,9 @@ describe("FormElements", () => {
           <div>
             <select>
               <option value="a">a</option>
-              <option selected={true} value="b">b</option>
+              <option selected={true} value="b">
+                b
+              </option>
             </select>
           </div>,
           container
@@ -689,13 +693,17 @@ describe("FormElements", () => {
                 className="inputContainer"
                 style={{ width: this.props.width ? this.props.width : "100%" }}
               >
-                <div className="label">{this.props.label}&nbsp;</div>
+                <div className="label">
+                  {this.props.label}&nbsp;
+                </div>
                 <input
                   type={this.props.type}
                   onChange={this.handleChange}
                   value={this.props.value}
                 />
-                <div className="hint">{this.props.hint}</div>
+                <div className="hint">
+                  {this.props.hint}
+                </div>
                 {this.state.error &&
                   <div className="error">
                     {this.state.error}
@@ -794,7 +802,12 @@ describe("FormElements", () => {
       it("Should keep unChecked if checked is false", () => {
         render(
           <label>
-            <input type="checkbox" checked={false} name="test" value="test" />{" "}
+            <input
+              type="checkbox"
+              checked={false}
+              name="test"
+              value="test"
+            />{" "}
             test
           </label>,
           container

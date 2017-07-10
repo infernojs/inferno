@@ -621,9 +621,10 @@ export function patchNonKeyedChildren(
 ) {
   const lastChildrenLength = lastChildren.length;
   const nextChildrenLength = nextChildren.length;
-  const commonLength = lastChildrenLength > nextChildrenLength
-    ? nextChildrenLength
-    : lastChildrenLength;
+  const commonLength =
+    lastChildrenLength > nextChildrenLength
+      ? nextChildrenLength
+      : lastChildrenLength;
   let i = 0;
 
   for (; i < commonLength; i++) {
@@ -1099,9 +1100,10 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
       // do not add a hasOwnProperty check here, it affects performance
       value = nextAttrValue[style];
       if (value !== lastAttrValue[style]) {
-        domStyle[style] = !isNumber(value) || isUnitlessNumber.has(style)
-          ? value
-          : value + "px";
+        domStyle[style] =
+          !isNumber(value) || isUnitlessNumber.has(style)
+            ? value
+            : value + "px";
       }
     }
 
@@ -1113,9 +1115,8 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   } else {
     for (style in nextAttrValue) {
       value = nextAttrValue[style];
-      domStyle[style] = !isNumber(value) || isUnitlessNumber.has(style)
-        ? value
-        : value + "px";
+      domStyle[style] =
+        !isNumber(value) || isUnitlessNumber.has(style) ? value : value + "px";
     }
   }
 }

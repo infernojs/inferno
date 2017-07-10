@@ -3,7 +3,13 @@
  */ /** TypeDoc Comment */
 
 import { options } from "inferno";
-import { isArray, isInvalid, isObject, isStringOrNumber, isUndefined } from "inferno-shared";
+import {
+  isArray,
+  isInvalid,
+  isObject,
+  isStringOrNumber,
+  isUndefined
+} from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 
 function findVNodeFromDom(vNode, dom) {
@@ -258,7 +264,10 @@ function updateReactComponent(vNode, parentDom) {
   let newInstance;
 
   if (flags & VNodeFlags.Component) {
-    newInstance = createReactCompositeComponent(vNode, isUndefined(oldInstance));
+    newInstance = createReactCompositeComponent(
+      vNode,
+      isUndefined(oldInstance)
+    );
   } else {
     newInstance = createReactDOMComponent(vNode, parentDom);
   }
@@ -305,9 +314,8 @@ function createReactDOMComponent(vNode, parentDom) {
     return null;
   }
   const type = vNode.type;
-  const children = vNode.children === 0
-    ? vNode.children.toString()
-    : vNode.children;
+  const children =
+    vNode.children === 0 ? vNode.children.toString() : vNode.children;
   const props = vNode.props;
   const dom = vNode.dom;
   const isText = flags & VNodeFlags.Text || isStringOrNumber(vNode);

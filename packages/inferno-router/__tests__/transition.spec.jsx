@@ -7,11 +7,19 @@ import { IndexRoute, Link, Redirect, Route, Router } from "inferno-router";
 const browserHistory = createMemoryHistory();
 
 function GoodComponent(props) {
-  return <div>Good Component{props.clone}</div>;
+  return (
+    <div>
+      Good Component{props.clone}
+    </div>
+  );
 }
 
 function BadComponent(props) {
-  return <div>Bad Component{props.clone}</div>;
+  return (
+    <div>
+      Bad Component{props.clone}
+    </div>
+  );
 }
 
 describe("Router (jsx) #transitions", () => {
@@ -229,7 +237,9 @@ describe("Router (jsx) #transitions", () => {
 
   it("should passed query parameters when URL is changed by using the history API", done => {
     const TestQueryParams = ({ params }) =>
-      <div>Query Params {params.foo}</div>;
+      <div>
+        Query Params {params.foo}
+      </div>;
 
     render(
       <Router history={browserHistory}>

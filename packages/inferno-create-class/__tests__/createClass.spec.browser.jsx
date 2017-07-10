@@ -55,12 +55,20 @@ describe("Components createClass (JSX)", () => {
           mixins: [
             {
               renderSomething() {
-                return <div>{this.props.bar}</div>;
+                return (
+                  <div>
+                    {this.props.bar}
+                  </div>
+                );
               }
             }
           ],
           render() {
-            return <div>{this.renderSomething()}</div>;
+            return (
+              <div>
+                {this.renderSomething()}
+              </div>
+            );
           }
         });
 
@@ -248,7 +256,11 @@ describe("Components createClass (JSX)", () => {
           };
         },
         render() {
-          return <div>{this.props.greeting} {this.state.foo}</div>;
+          return (
+            <div>
+              {this.props.greeting} {this.state.foo}
+            </div>
+          );
         }
       });
 

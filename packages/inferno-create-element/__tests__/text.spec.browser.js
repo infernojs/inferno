@@ -142,8 +142,8 @@ describe("Text", () => {
       {
         description:
           "should create a dynamic text node with " +
-            arg.name +
-            " - text property",
+          arg.name +
+          " - text property",
         template: text => createElement("div", null, text)
       }
     ].forEach(test => {
@@ -178,8 +178,8 @@ describe("Text", () => {
       {
         description:
           "should create a dynamic text node with " +
-            arg.name +
-            " - children node text",
+          arg.name +
+          " - children node text",
         template: text =>
           createElement("div", null, createElement("span", null, text))
       }
@@ -205,8 +205,8 @@ describe("Text", () => {
       {
         description:
           "should create a dynamic text node with " +
-            arg.name +
-            " - single child with text ",
+          arg.name +
+          " - single child with text ",
         template: text => createElement("div", null, text)
       }
     ].forEach(test => {
@@ -231,8 +231,8 @@ describe("Text", () => {
       {
         description:
           "should create a dynamic text node with " +
-            arg.name +
-            " - deep child with text property ",
+          arg.name +
+          " - deep child with text property ",
         template: text =>
           createElement("div", null, createElement("span", null, text))
       }
@@ -258,8 +258,8 @@ describe("Text", () => {
       {
         description:
           "should create a dynamic text node with " +
-            arg.name +
-            " - deeper child with text property ",
+          arg.name +
+          " - deeper child with text property ",
         template: text =>
           createElement(
             "div",

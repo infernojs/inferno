@@ -12,23 +12,23 @@ function proptype() {}
 const getProptype = () => proptype;
 
 const PropTypes = {
-	any: getProptype,
-	array: proptype,
-	arrayOf: getProptype,
-	bool: proptype,
-	checkPropTypes: () => null,
-	element: getProptype,
-	func: proptype,
-	instanceOf: getProptype,
-	node: getProptype,
-	number: proptype,
-	object: proptype,
-	objectOf: getProptype,
-	oneOf: getProptype,
-	oneOfType: getProptype,
-	shape: getProptype,
-	string: proptype,
-	symbol: proptype
+  any: getProptype,
+  array: proptype,
+  arrayOf: getProptype,
+  bool: proptype,
+  checkPropTypes: () => null,
+  element: getProptype,
+  func: proptype,
+  instanceOf: getProptype,
+  node: getProptype,
+  number: proptype,
+  object: proptype,
+  objectOf: getProptype,
+  oneOf: getProptype,
+  oneOfType: getProptype,
+  shape: getProptype,
+  string: proptype,
+  symbol: proptype
 };
 
 export default PropTypes;

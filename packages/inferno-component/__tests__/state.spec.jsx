@@ -24,7 +24,11 @@ class TestCWRP extends Component {
   }
 
   render() {
-    return <div>{JSON.stringify(this.state)}</div>;
+    return (
+      <div>
+        {JSON.stringify(this.state)}
+      </div>
+    );
   }
 }
 

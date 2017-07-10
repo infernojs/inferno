@@ -107,7 +107,11 @@ describe("Utils", () => {
     });
 
     it("should return true on a valid node tree", () => {
-      const node = <div><span>Hello world</span></div>;
+      const node = (
+        <div>
+          <span>Hello world</span>
+        </div>
+      );
       const html = renderToString(node);
       const container = createContainerWithHTML(html);
       render(node, container);
