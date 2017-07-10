@@ -5,3 +5,11 @@ exports[`renderToSnapshot should return a snapshot from a valid vNode 1`] = `
   foo="bar"
 />
 `;
+
+exports[`renderToSnapshot should return a snapshot with className prop 1`] = `
+<div
+  className="test"
+>
+  Test
+</div>
+`;
