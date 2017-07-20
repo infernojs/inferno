@@ -903,7 +903,7 @@ export function patchKeyedChildren(
             nextNode = nextPos < b.length ? b[nextPos].dom : null;
             insertOrAppend(
               dom,
-              mount(node, dom, lifecycle, context, isSVG),
+              mount(node, null, lifecycle, context, isSVG),
               nextNode
             );
           } else {
