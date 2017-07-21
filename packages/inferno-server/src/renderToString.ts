@@ -98,11 +98,6 @@ function renderVNodeToString(
           if (!props.checked) {
             renderedString += ` checked="${value}"`;
           }
-        } else if (type === "option" && prop === "value") {
-          // Parent value sets children value
-          if (value === parent.props.value) {
-            renderedString += ` selected`;
-          }
         } else {
           if (isString(value)) {
             renderedString += ` ${prop}="${escapeText(value)}"`;
@@ -112,6 +107,10 @@ function renderVNodeToString(
             renderedString += ` ${prop}`;
           }
         }
+      }
+      if (type === "option" && typeof props.value !== "undefined" && props.value === parent.props.value) {
+        // Parent value sets children value
+        renderedString += ` selected`;
       }
     }
     if (isVoidElement) {
