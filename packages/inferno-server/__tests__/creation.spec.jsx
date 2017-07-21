@@ -80,7 +80,7 @@ describe("SSR Creation (JSX)", () => {
           <option value="dog">A dog</option>
         </select>,
       result:
-        '<select value="dog"><option>A cat</option><option selected>A dog</option></select>'
+        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
     },
     {
       description: "should render a text placeholder",
