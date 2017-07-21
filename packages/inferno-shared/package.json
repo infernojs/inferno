@@ -1,6 +1,6 @@
 {
   "name": "inferno-shared",
-  "version": "3.6.4",
+  "version": "3.7.0",
   "license": "MIT",
   "description": "Helpers functions for Inferno",
   "author": {
