@@ -31,6 +31,7 @@ import {
   createClassComponentInstance,
   createFunctionalComponentInput,
   EMPTY_OBJ,
+  isSameInnerHTML,
   replaceChild
 } from "./utils";
 import {
@@ -132,7 +133,16 @@ function hydrateElement(
   if (!isInvalid(children)) {
     hydrateChildren(children, dom, lifecycle, context, isSVG);
   } else if (dom.firstChild !== null) {
-    dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
+    if (
+      !(
+        props &&
+        props.dangerouslySetInnerHTML &&
+        props.dangerouslySetInnerHTML.__html &&
+        isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html)
+      )
+    ) {
+      dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
+    }
   }
   if (props) {
     let hasControlledValue = false;
