@@ -282,10 +282,10 @@ export function isSamePropsInnerHTML(
   dom: Element,
   props: Props | null
 ): boolean {
-  return (
+  return Boolean(
     props &&
-    props.dangerouslySetInnerHTML &&
-    props.dangerouslySetInnerHTML.__html &&
-    isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html)
+      props.dangerouslySetInnerHTML &&
+      props.dangerouslySetInnerHTML.__html &&
+      isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html)
   );
 }
