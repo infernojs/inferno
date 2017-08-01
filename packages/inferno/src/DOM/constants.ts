@@ -30,6 +30,7 @@ booleanProps.add("novalidate");
 booleanProps.add("hidden");
 booleanProps.add("autoFocus");
 booleanProps.add("selected");
+booleanProps.add("indeterminate");
 
 export const namespaces = new Map<string, string>();
 namespaces.set("xlink:href", xlinkNS);
