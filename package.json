@@ -72,7 +72,7 @@
     "@types/history": "^4.6.0",
     "@types/jest": "^20.0.5",
     "@types/lodash": "^4.14.71",
-    "@types/node": "^8.0.18",
+    "@types/node": "^8.0.19",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-jest": "^20.0.3",
