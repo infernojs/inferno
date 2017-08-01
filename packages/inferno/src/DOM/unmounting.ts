@@ -95,11 +95,6 @@ export function unmountComponent(
     }
   }
   if (parentDom) {
-    let lastInput = instance._lastInput;
-
-    if (isNullOrUndef(lastInput)) {
-      lastInput = instance;
-    }
     removeChild(parentDom, dom);
   }
   if (
