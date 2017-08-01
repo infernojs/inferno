@@ -416,6 +416,49 @@ describe("FormElements", () => {
       input = container.querySelector("input");
       expect(input.checked).toBe(true);
     });
+
+    it("Should support indeterminate state", () => {
+      let input;
+
+      render(
+        <input
+          ref={dom => (input = dom)}
+          type="checkbox"
+          checked={false}
+          indeterminate={true}
+        />,
+        container
+      );
+
+      expect(input.indeterminate).toBe(true);
+      expect(input.checked).toBe(false);
+
+      render(
+        <input
+          ref={dom => (input = dom)}
+          type="checkbox"
+          checked={false}
+          indeterminate={false}
+        />,
+        container
+      );
+
+      expect(input.indeterminate).toBe(false);
+      expect(input.checked).toBe(false);
+
+      render(
+        <input
+          ref={dom => (input = dom)}
+          type="checkbox"
+          checked={true}
+          indeterminate={false}
+        />,
+        container
+      );
+
+      expect(input.indeterminate).toBe(false);
+      expect(input.checked).toBe(true);
+    });
   });
 
   // https://facebook.github.io/react/docs/forms.html
