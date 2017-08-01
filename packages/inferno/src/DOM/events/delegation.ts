@@ -50,7 +50,7 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
   }
 }
 
-function dispatchEvent(
+function dispatchEvents(
   event,
   target,
   items,
@@ -58,35 +58,31 @@ function dispatchEvent(
   isClick: boolean,
   eventData: IEventData
 ) {
-  const eventsToTrigger = items.get(target);
+  let dom = target;
+  while (count > 0) {
+    const eventsToTrigger = items.get(dom);
 
-  if (eventsToTrigger) {
-    count--;
-    // linkEvent object
-    eventData.dom = target;
-    if (eventsToTrigger.event) {
-      eventsToTrigger.event(eventsToTrigger.data, event);
-    } else {
-      eventsToTrigger(event);
+    if (eventsToTrigger) {
+      count--;
+      // linkEvent object
+      eventData.dom = dom;
+      if (eventsToTrigger.event) {
+        eventsToTrigger.event(eventsToTrigger.data, event);
+      } else {
+        eventsToTrigger(event);
+      }
+      if (event.cancelBubble) {
+        return;
+      }
     }
-    if (event.cancelBubble) {
-      return;
-    }
-  }
-  if (count > 0) {
-    const parentDom = target.parentNode;
+    dom = dom.parentNode;
 
     // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
     // because the event listener is on document.body
     // Don't process clicks on disabled elements
-    if (
-      parentDom === null ||
-      (isClick && parentDom.nodeType === 1 && parentDom.disabled)
-    ) {
+    if (dom === null || (isClick && dom.disabled)) {
       return;
     }
-
-    dispatchEvent(event, parentDom, items, count, isClick, eventData);
   }
 }
 
@@ -121,7 +117,7 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
         /* safari7 and phantomJS will crash */
       }
 
-      dispatchEvent(
+      dispatchEvents(
         event,
         event.target,
         delegatedRoots.items,
