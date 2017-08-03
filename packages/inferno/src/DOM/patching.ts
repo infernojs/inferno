@@ -443,18 +443,8 @@ export function patchComponent(
           ? combineFrom(nextState, null)
           : nextState;
         const lastProps = instance.props;
-        let childContext;
-        if (!isNullOrUndef(instance.getChildContext)) {
-          childContext = instance.getChildContext();
-        }
-
         nextVNode.children = instance;
         instance._isSVG = isSVG;
-        if (isNullOrUndef(childContext)) {
-          childContext = context;
-        } else {
-          childContext = combineFrom(context, childContext);
-        }
         const lastInput = instance._lastInput;
         let nextInput = instance._updateComponent(
           lastState,
@@ -466,6 +456,16 @@ export function patchComponent(
           false
         );
         let didUpdate = true;
+        // Update component before getting child context
+        let childContext;
+        if (!isNullOrUndef(instance.getChildContext)) {
+          childContext = instance.getChildContext();
+        }
+        if (isNullOrUndef(childContext)) {
+          childContext = context;
+        } else {
+          childContext = combineFrom(context, childContext);
+        }
 
         instance._childContext = childContext;
         if (isInvalid(nextInput)) {

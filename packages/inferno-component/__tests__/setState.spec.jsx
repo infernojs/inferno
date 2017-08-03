@@ -750,4 +750,88 @@ describe("setState", () => {
 
     render(<Com />, container);
   });
+
+  it("Should keep context in sync with state #1182", () => {
+    function Child(props, context) {
+      return (
+        <div>
+          {(context.active ? "ACTIVE" : "INACTIVE") +
+            "   :   " +
+            (context.state.active ? "ACTIVE" : "INACTIVE")}
+        </div>
+      );
+    }
+
+    class Container extends Component {
+      constructor(props, context) {
+        super(props, context);
+
+        this.state = {
+          active: false
+        };
+      }
+
+      getChildContext() {
+        return {
+          active: this.state.active,
+          state: this.state
+        };
+      }
+
+      componentWillReceiveProps(nextProps) {
+        if (this.state.active !== nextProps.active) {
+          this.setState({
+            active: nextProps.active
+          });
+        }
+      }
+
+      render() {
+        return <Child />;
+      }
+    }
+
+    let updater;
+    class App extends Component {
+      constructor(props, context) {
+        super(props, context);
+
+        this.state = {
+          active: false
+        };
+
+        updater = this.didClick.bind(this);
+      }
+
+      didClick(e) {
+        this.setState({
+          active: !this.state.active
+        });
+      }
+
+      render() {
+        return (
+          <div>
+            <Container active={this.state.active} />
+          </div>
+        );
+      }
+    }
+
+    render(<App />, container);
+
+    expect(container.textContent).toBe("INACTIVE   :   INACTIVE");
+
+    updater();
+
+    expect(container.textContent).toBe("ACTIVE   :   ACTIVE");
+
+    updater();
+
+    expect(container.textContent).toBe("INACTIVE   :   INACTIVE");
+
+    updater();
+
+    expect(container.textContent).toBe("ACTIVE   :   ACTIVE");
+  });
 });
