@@ -210,7 +210,7 @@ Inferno.render((
 ```
 
 ## Async Data Fetching
-To mimc standard browser behavior you want to fetch data before performing a transition. To
+To mimic standard browser behavior you want to fetch data before performing a transition. To
 achieve this you can use the `asyncBefore` hooks:
 
 ```js
@@ -219,7 +219,7 @@ achieve this you can use the `asyncBefore` hooks:
         </Router>
 ```
 
-You will need some form of data store such as Mobx or Redux to propagate data to your component.
+You will need a data store such as Mobx or Redux to propagate data to your component.
 
 ### Pages and Routing
 
