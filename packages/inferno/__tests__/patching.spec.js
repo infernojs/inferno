@@ -105,13 +105,13 @@ describe("patching routine", () => {
   });
 
   it("Should not patch same innerHTML", () => {
-    container.innerHTML = "<span><span>child</span</span>";
+    container.innerHTML = "<span><span><span>child</span></span</span>";
 
     const childelem = container.firstElementChild.firstElementChild;
-    const props = { dangerouslySetInnerHTML: { __html: "child " } };
+    const props = { dangerouslySetInnerHTML: { __html: "<span>child</span>" } };
 
-    let bar = createVNode(2, "span", null, null, props, null, null, true);
-    let foo = createVNode(2, "span", null, [bar], null, null, null, true);
+    const bar = createVNode(2, "span", null, null, props, null, null, true);
+    const foo = createVNode(2, "span", null, [bar], null, null, null, true);
 
     render(foo, container);
 
