@@ -52,6 +52,7 @@ import {
   EMPTY_OBJ,
   insertOrAppend,
   isKeyed,
+  isSameInnerHTML,
   removeAllChildren,
   replaceChild,
   replaceLastChildAndUnmount,
@@ -1034,7 +1035,7 @@ export function patchProp(
       const nextHtml = nextValue && nextValue.__html;
 
       if (lastHtml !== nextHtml) {
-        if (!isNullOrUndef(nextHtml)) {
+        if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
           dom.innerHTML = nextHtml;
         }
       }

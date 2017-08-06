@@ -31,6 +31,7 @@ import {
   createClassComponentInstance,
   createFunctionalComponentInput,
   EMPTY_OBJ,
+  isSamePropsInnerHTML,
   replaceChild
 } from "./utils";
 import {
@@ -131,7 +132,7 @@ function hydrateElement(
   vNode.dom = dom;
   if (!isInvalid(children)) {
     hydrateChildren(children, dom, lifecycle, context, isSVG);
-  } else if (dom.firstChild !== null) {
+  } else if (dom.firstChild !== null && !isSamePropsInnerHTML(dom, props)) {
     dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
   }
   if (props) {

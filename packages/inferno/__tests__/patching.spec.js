@@ -103,4 +103,18 @@ describe("patching routine", () => {
     render(createTextVNode("a"), container);
     expect(container.innerHTML).toEqual("a");
   });
+
+  it("Should not patch same innerHTML", () => {
+    container.innerHTML = "<span><span><span>child</span></span</span>";
+
+    const childelem = container.firstElementChild.firstElementChild;
+    const props = { dangerouslySetInnerHTML: { __html: "<span>child</span>" } };
+
+    const bar = createVNode(2, "span", null, null, props, null, null, true);
+    const foo = createVNode(2, "span", null, [bar], null, null, null, true);
+
+    render(foo, container);
+
+    expect(childelem).toBe(container.firstElementChild.firstElementChild);
+  });
 });
