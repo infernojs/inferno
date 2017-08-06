@@ -4,6 +4,7 @@
 
 import { VNode } from "inferno";
 import createRoutes, { IPlainRouteConfig } from "./createRoutes";
+import doAllAsyncBefore from "./doAllAsyncBefore";
 import IndexLink from "./IndexLink";
 import IndexRoute from "./IndexRoute";
 import Link from "./Link";
@@ -25,6 +26,7 @@ export {
   RouterContext,
   VNode,
   createRoutes,
+  doAllAsyncBefore,
   match
 };
 
@@ -38,5 +40,6 @@ export default {
   Router,
   RouterContext,
   createRoutes,
+  doAllAsyncBefore,
   match
 };

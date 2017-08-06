@@ -16,6 +16,7 @@ export interface IRouteProps {
   params?: any;
   onEnter?: IRouteHook;
   onLeave?: IRouteHook;
+  asyncBefore?: any;
   path: string;
   children: Array<Component<any, any>>;
   component?: Component<any, any>;
@@ -56,6 +57,14 @@ export default class Route extends Component<IRouteProps, any> {
       asyncComponent: component
     });
   };
+
+  public doAsyncBefore(params) {
+    if (this.props.asyncBefore) {
+      return this.props.asyncBefore(params);
+    } else {
+      return Promise.resolve();
+    }
+  }
 
   public onLeave(trigger = false) {
     const { onLeave } = this.props;

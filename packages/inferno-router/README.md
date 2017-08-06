@@ -209,6 +209,115 @@ Inferno.render((
 </Router>
 ```
 
+## Async Data Fetching
+To mimic standard browser behavior you want to fetch data before performing a transition. To
+achieve this you can use the `asyncBefore` hooks:
+
+```js
+        <Router history={browserHistory} asyncBefore={ /* user provided handler that resolves and calls route specific asyncBefore hooks */ }>
+          <Route path="/" asyncBefore={ /* route specific asyncBefore handler */ } component={ ... } />
+        </Router>
+```
+
+You will need a data store such as Mobx or Redux to propagate data to your component.
+
+### Pages and Routing
+
+```js
+  import Component from "inferno-component";
+
+  class PageOne extends Component {
+    static fetchData(params) {
+      return myDataFetcher() // Returns a promise
+    }
+
+    render() {
+      return <div>Page One <span>{dataStore.pageOne}</span></div>;
+    }
+  }
+
+  class PageTwo extends Component {
+    static fetchData(params) {
+      return myDataFetcher() // Returns a promise
+      });
+    }
+
+    render() {
+      return (
+        <div>Page Two <span>{dataStore.pageTwo}</span>{this.props.children}</div>
+      );
+    }
+  }
+
+  import { render } from "inferno";
+  import { Route, Router, match, doAllAsyncBefore } from "inferno-router";
+
+  const routes = (
+    <Router history={...} asyncBefore={
+      url => {
+        return doAllAsyncBefore(match(routes, url));
+      }
+    }>
+      <Route path="/" asyncBefore={PageOne.fetchData} component={PageOne} />
+      <Route path="/test" asyncBefore={PageTwo.fetchData} component={PageTwo} />
+    </Router>
+  );
+```
+
+### Render in Browser Without SSR
+
+```js
+  import { render } from "inferno";
+  import { match, doAllAsyncBefore } from "inferno-router";
+
+  // Need to prime the route props with data on first render
+  const renderProps = match(routes, "/");
+  doAllAsyncBefore(renderProps).then(() => {
+    // Then render
+    render(routes, document.getElementById('app'));
+  });
+```
+
+### Render in Browser WITH SSR
+```js
+  // Rehydrate state passed from server and then render...
+  if (typeof window !== 'undefined') {
+    render(routes, document.getElementById('app'));
+  }
+```
+
+### Server Side Rendering (SSR)
+This code will be executed in your server side controller and imports routes
+from app bundle. You need to pass the hydrated state to the client and rehydrate
+it before rendering.
+
+```js
+  import { RouterContext, match, doAllAsyncBefore } from "inferno-router";
+  import InfernoServer from "inferno-server";
+  import createElement from "inferno-create-element";
+
+  const renderProps = match(routes, "/");
+  doAllAsyncBefore(renderProps).then(() => {
+    const html = InfernoServer.renderToString(
+      createElement(RouterContext, renderProps)
+    );
+    
+    // Pass hydrated state (from Mobx or Redux) and rendered html to template
+  });
+```
+
+### Lifercycle of Route Transition
+
+1. onLeave
+2. asyncBefore (Router)
+3. -> asyncBefore (Route)
+4. render route
+5. onEnter
+
+### Adding a Progress Indicator
+To add a progress indicator you would initiate and terminate it in Router.props.asyncBefore hook.
+Actual progress would be updated in the route specific asyncBefore handler.
+
 ## Notes
 
 * `<IndexRoute>` is the same as `<Route path="/">"`
