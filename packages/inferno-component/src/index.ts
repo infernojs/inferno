@@ -294,7 +294,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
     applyState(this, true, callback);
   }
 
-  public setState(newState, callback?: Function) {
+  public setState(newState: S, callback?: Function) {
     if (this._unmounted) {
       return;
     }
@@ -310,7 +310,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
     }
   }
 
-  public setStateSync(newState) {
+  public setStateSync(newState: S) {
     if (process.env.NODE_ENV !== "production") {
       if (!alreadyWarned) {
         alreadyWarned = true;
