@@ -1072,9 +1072,8 @@ describe("Children - (JSX)", () => {
             second: true
           };
 
-          updaterFirst = () => this.setStateSync({ first: !this.state.first });
-          updaterSecond = () =>
-            this.setStateSync({ second: !this.state.second });
+          updaterFirst = () => this.setState({ first: !this.state.first });
+          updaterSecond = () => this.setState({ second: !this.state.second });
         }
 
         render() {
@@ -1993,7 +1992,7 @@ describe("Children - (JSX)", () => {
         }
 
         changeText() {
-          this.setStateSync({
+          this.setState({
             text: "foo"
           });
         }

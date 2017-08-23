@@ -147,7 +147,7 @@ describe("Stateful Component updates", () => {
       }
 
       updateCaller() {
-        this.setStateSync({
+        this.setState({
           values: [{ checked: false }, { checked: false }]
         });
       }
@@ -220,7 +220,7 @@ describe("Stateful Component updates", () => {
       }
 
       updateCaller() {
-        this.setStateSync({
+        this.setState({
           obj: {
             test: !this.state.obj.test
           }
@@ -263,7 +263,7 @@ describe("Stateful Component updates", () => {
       }
 
       imstuck() {
-        this.setStateSync({
+        this.setState({
           b: !this.state.b
         });
       }
@@ -344,7 +344,7 @@ describe("Stateful Component updates", () => {
       }
 
       updateCaller() {
-        this.setStateSync({
+        this.setState({
           obj: {
             test: !this.state.obj.test
           }
@@ -387,7 +387,7 @@ describe("Stateful Component updates", () => {
       }
 
       imstuck() {
-        this.setStateSync({
+        this.setState({
           b: !this.state.b
         });
       }
@@ -490,7 +490,7 @@ describe("Stateful Component updates", () => {
       }
 
       setItems(collection) {
-        this.setStateSync({
+        this.setState({
           items: collection
         });
       }
@@ -581,7 +581,7 @@ describe("Stateful Component updates", () => {
         };
 
         updater = _stuff => {
-          this.setStateSync({ stuff: _stuff });
+          this.setState({ stuff: _stuff });
         };
       }
 

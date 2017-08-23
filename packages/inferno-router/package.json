@@ -25,7 +25,7 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "history": "^4.6.3",
+    "history": "^4.7.2",
     "inferno": "3.7.1",
     "inferno-component": "3.7.1",
     "inferno-create-element": "3.7.1",

@@ -230,8 +230,6 @@ function applyState<P, S>(
   }
 }
 
-let alreadyWarned = false;
-
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
   public static defaultProps: {};
   public state: S | null = null;
@@ -308,19 +306,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
       }
       throwError();
     }
-  }
-
-  public setStateSync(newState: S) {
-    if (process.env.NODE_ENV !== "production") {
-      if (!alreadyWarned) {
-        alreadyWarned = true;
-        // tslint:disable-next-line:no-console
-        console.warn(
-          "Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead."
-        );
-      }
-    }
-    this.setState(newState);
   }
 
   public _updateComponent(

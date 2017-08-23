@@ -278,19 +278,19 @@
 
         handleChange(event) {
             hoisted.props.value = 200;
-            this.setStateSync({value: event.target.value});
+            this.setState({value: event.target.value});
         }
 
         radioChange(event) {
-            this.setStateSync({radio: event.target.value});
+            this.setState({radio: event.target.value});
         }
 
         textChange(event) {
-            this.setStateSync({text: event.target.value})
+            this.setState({text: event.target.value})
         }
 
         selectChange(event) {
-            this.setStateSync({selectValue: event.target.value});
+            this.setState({selectValue: event.target.value});
         }
 
         render() {

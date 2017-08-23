@@ -12,7 +12,6 @@ coverage
 docs
 node_modules
 
-packages/*/dist-es
 packages/*/dist
 package-lock.json
 
