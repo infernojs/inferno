@@ -47,6 +47,11 @@ describe("SSR Creation (JSX)", () => {
       result: "<div>Hello world, <!---->1<!---->2<!---->3</div>"
     },
     {
+      description: "should render text with escaped symbols",
+      template: () => <div>"Hello world"</div>,
+      result: "<div>&quot;Hello world&quot;</div>"
+    },
+    {
       description: "should render a stateless component with comments",
       template: () =>
         <div>
