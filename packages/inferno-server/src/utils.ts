@@ -3,8 +3,8 @@
  */ /** TypeDoc Comment */
 
 export function escapeText(text: string): string {
-  let result = text;
-  let escape: string = "";
+  let result = "";
+  let escape = "";
   let start = 0;
   let i;
   for (i = 0; i < text.length; i++) {
@@ -37,10 +37,7 @@ export function escapeText(text: string): string {
     result += escape;
     start = i + 1;
   }
-  if (start && i !== start) {
-    return result + text.slice(start, i);
-  }
-  return result;
+  return result + text.slice(start, i);
 }
 
 const uppercasePattern = /[A-Z]/g;
