@@ -2,7 +2,12 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
-export function escapeText(text: string): string {
+import { isString } from "inferno-shared";
+
+export function escapeText(text: any): string {
+  if (!isString(text)) {
+    text = text + "";
+  }
   let result = "";
   let escape = "";
   let start = 0;
