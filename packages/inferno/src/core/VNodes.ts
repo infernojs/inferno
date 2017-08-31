@@ -17,7 +17,7 @@ import { normalize } from "./normalization";
 import { options } from "./options";
 
 export type InfernoInput = VNode | null | string | number;
-export type Ref = (node?: Element | null) => void | null;
+export type Ref = (node?: Element | null) => void;
 export type InfernoChildren =
   | string
   | number
@@ -30,7 +30,7 @@ export type Type = string | null | Function;
 
 export interface Props {
   children?: InfernoChildren;
-  ref?: Ref;
+  ref?: Ref | null;
   key?: any;
   className?: string;
   [k: string]: any;
@@ -52,20 +52,9 @@ export interface VNode {
   flags: number;
   key: any;
   props: Props | null;
-  ref: Ref;
+  ref: Ref | null;
   type: Type;
   parentVNode?: VNode;
-}
-
-function VNode(children, className, flags, key, props, ref, type) {
-  this.children = children;
-  this.className = className;
-  this.dom = null;
-  this.flags = flags;
-  this.key = key;
-  this.props = props;
-  this.ref = ref;
-  this.type = type;
 }
 
 /**
@@ -87,24 +76,25 @@ export function createVNode(
   children?: InfernoChildren,
   props?: Props | null,
   key?: any,
-  ref?: Ref,
+  ref?: Ref | null,
   noNormalise?: boolean
-) {
+): VNode {
   if (flags & VNodeFlags.ComponentUnknown) {
     flags = isStatefulComponent(type)
       ? VNodeFlags.ComponentClass
       : VNodeFlags.ComponentFunction;
   }
 
-  const vNode = new VNode(
-    children === void 0 ? null : children,
-    className === void 0 ? null : className,
+  const vNode: VNode = {
+    children: children === void 0 ? null : children,
+    className: className === void 0 ? null : className,
+    dom: null,
     flags,
-    key === void 0 ? null : key,
-    props === void 0 ? null : props,
-    ref === void 0 ? null : ref,
+    key: key === void 0 ? null : key,
+    props: props === void 0 ? null : props,
+    ref: ref === void 0 ? null : ref,
     type
-  );
+  };
   if (noNormalise !== true) {
     normalize(vNode);
   }
