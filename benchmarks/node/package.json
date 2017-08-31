@@ -1,0 +1,15 @@
+{
+  "name": "lis-keyed",
+  "version": "1.0.0",
+  "description": "Benchmark speed of Longest Increasing Algorithm for keyed algo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sampo Kivistö <sampo.kivisto@live.fi>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "benchmark": "^2.1.4"
+  }
+}
