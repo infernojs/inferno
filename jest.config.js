@@ -62,5 +62,7 @@ module.exports = {
     "^.+\\.jsx?$": "babel-jest",
     "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
   },
-  transformIgnorePatterns: ["<rootDir>/node_modules/(?!lodash-es)"]
+  transformIgnorePatterns: ["<rootDir>/node_modules/(?!lodash-es)"],
+
+  setupTestFrameworkScriptFile: require.resolve("./JEST-DEBUG.js")
 };

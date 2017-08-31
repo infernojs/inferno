@@ -72,7 +72,7 @@ export function validateNodeTree(node: any): boolean {
   const children = node.children;
   const flags = node.flags;
 
-  if (flags & VNodeFlags.Element) {
+  if ((flags & VNodeFlags.Element) > 0) {
     if (!isNullOrUndef(children)) {
       if (isArray(children)) {
         for (const child of children) {
