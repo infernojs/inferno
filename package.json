@@ -34,8 +34,9 @@
     ]
   },
   "scripts": {
-    "clean": "lerna exec -- rimraf dist",
+    "clean": "lerna exec -- rimraf dist packages .rpt2_cache_development .rpt2_cache_production",
     "coveralls": "coveralls < coverage/lcov.info || true",
+    "debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --no-cache --no-watchman",
     "prebuild": "npm run clean",
     "postbuild": "rimraf build",
     "build": "npm-run-all -l build:**",
@@ -61,7 +62,6 @@
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "cross-env NODE_ENV=test jest",
-    "test:debug": "jest --inspect --debug-brk",
     "test:coverage": "jest --coverage",
     "test:browser": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test -- --forceExit",
@@ -97,6 +97,7 @@
     "dts-bundle": "^0.7.3",
     "history": "^4.7.2",
     "jest": "^20.0.4",
+    "jsdom": "^11.2.0",
     "lerna": "2.1.2",
     "lint-staged": "^4.0.4",
     "minimist": "^1.2.0",

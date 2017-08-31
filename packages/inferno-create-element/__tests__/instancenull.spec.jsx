@@ -1,5 +1,6 @@
 import { render } from "inferno";
 import Component from "inferno-component";
+import { triggerEvent } from "inferno-utils";
 
 describe("BUG: instance - null", () => {
   let container;
@@ -14,10 +15,11 @@ describe("BUG: instance - null", () => {
     document.body.removeChild(container);
   });
 
-  const Triangle = ({ direction }) =>
+  const Triangle = ({ direction }) => (
     <svg className={`popover-triangle ${direction}`}>
       <polygon points={"0,0"} />
-    </svg>;
+    </svg>
+  );
 
   function DropdownItem({ className, children, attached }) {
     return (
@@ -89,7 +91,7 @@ describe("BUG: instance - null", () => {
     _popoverRef(node) {
       this._elements.popover = node;
       if (node !== null) {
-        this.setStateSync({
+        this.setState({
           placement: ""
         });
       }
@@ -200,7 +202,7 @@ describe("BUG: instance - null", () => {
         event.stopPropagation();
       }
 
-      this.setStateSync({
+      this.setState({
         editableText: "",
         isEditMode: false,
         filteredItems: null,
@@ -286,7 +288,7 @@ describe("BUG: instance - null", () => {
       }
 
       // Updating editable and changing into editmode
-      this.setStateSync({
+      this.setState({
         isEditMode: true,
         activeValue: props.value
       });
@@ -355,11 +357,13 @@ describe("BUG: instance - null", () => {
       container
     );
 
+    triggerEvent("click", container.querySelector("#MAGICBUTTON"));
+
     setTimeout(function() {
-      container.querySelector("#MAGICBUTTON").click();
+      triggerEvent("click", container.querySelector("#MAGICBUTTON"));
 
       setTimeout(function() {
-        container.querySelector("#MAGICBUTTON").click();
+        triggerEvent("click", container.querySelector("#MAGICBUTTON"));
 
         setTimeout(function() {
           render(null, container);
