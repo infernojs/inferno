@@ -16,21 +16,17 @@ describe("SSR Creation (JSX)", () => {
   const testEntries = [
     {
       description: "should render a null component",
-      template: () =>
-        <div>
-          {null}
-        </div>,
+      template: () => <div>{null}</div>,
       result: "<div></div>"
     },
     {
       description: "should render a component with null children",
-      template: () =>
+      template: () => (
         <div>
           {null}
-          <span>
-            emptyValue: {null}
-          </span>
-        </div>,
+          <span>emptyValue: {null}</span>
+        </div>
+      ),
       result: "<div><span>emptyValue: </span></div>"
     },
     {
@@ -40,10 +36,11 @@ describe("SSR Creation (JSX)", () => {
     },
     {
       description: "should render a stateless component with text",
-      template: () =>
+      template: () => (
         <div>
           Hello world, {"1"}2{"3"}
-        </div>,
+        </div>
+      ),
       result: "<div>Hello world, <!---->1<!---->2<!---->3</div>"
     },
     {
@@ -53,18 +50,12 @@ describe("SSR Creation (JSX)", () => {
     },
     {
       description: "should render a stateless component with comments",
-      template: () =>
-        <div>
-          Hello world, {/* comment*/}
-        </div>,
+      template: () => <div>Hello world, {/* comment*/}</div>,
       result: "<div>Hello world, </div>"
     },
     {
       description: "should render mixed invalid/valid children",
-      template: () =>
-        <div>
-          {[null, "123", null, "456"]}
-        </div>,
+      template: () => <div>{[null, "123", null, "456"]}</div>,
       result: "<div>123<!---->456</div>"
     },
     {
@@ -97,23 +88,23 @@ describe("SSR Creation (JSX)", () => {
     },
     {
       description: "should render select element with selected property",
-      template: () =>
+      template: () => (
         <select value="dog">
           <option value="cat">A cat</option>
           <option value="dog">A dog</option>
-        </select>,
+        </select>
+      ),
       result:
         '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
     },
     {
       description: "should render a text placeholder",
-      template: () =>
+      template: () => (
         <div>
-          <div>
-            {""}
-          </div>
+          <div>{""}</div>
           <p>Test</p>
-        </div>,
+        </div>
+      ),
       result: "<div><div> </div><p>Test</p></div>"
     },
     {
@@ -125,6 +116,25 @@ describe("SSR Creation (JSX)", () => {
       description: "Should render style opacity #2",
       template: () => <div style="opacity:0.8;" />,
       result: '<div style="opacity:0.8;"></div>'
+    },
+    {
+      description: "Should render style opacity #2",
+      template: () => <div className={123} />,
+      result: '<div class="123"></div>'
+    },
+    {
+      description: "Should render style opacity #2",
+      template: () => <input defaultValue={123} />,
+      result: '<input value="123">'
+    },
+    {
+      description: "BR should be closed",
+      template: () => (
+        <div>
+          <br />
+        </div>
+      ),
+      result: "<div><br></div>"
     }
   ];
 
@@ -159,11 +169,7 @@ describe("SSR Creation (JSX)", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.state.foo}
-            </div>
-          );
+          return <div>{this.state.foo}</div>;
         }
       }
 
