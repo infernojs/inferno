@@ -150,7 +150,6 @@ export function replaceVNode(
   lifecycle: LifecycleClass,
   isRecycling
 ) {
-  debugger;
   unmount(vNode, null, lifecycle, false, isRecycling);
   replaceChild(parentDom, dom, vNode.dom);
 }

@@ -627,7 +627,6 @@ export function patchText(lastVNode: VNode, nextVNode: VNode) {
 }
 
 export function patchVoid(lastVNode: VNode, nextVNode: VNode) {
-  debugger;
   nextVNode.dom = lastVNode.dom;
 }
 

@@ -51,7 +51,6 @@ describe("Component lifecycle", () => {
       }
 
       componentWillReceiveProps(nextProps) {
-        debugger;
         if (!this.props.active && nextProps.active) {
           this.setState({
             active: true
