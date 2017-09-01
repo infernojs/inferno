@@ -81,6 +81,11 @@ describe("SSR Creation (JSX)", () => {
       result: '<input value="foo">'
     },
     {
+      description: "should render input when defaultValue is number",
+      template: () => <input defaultValue={123} />,
+      result: '<input value="123">'
+    },
+    {
       description:
         "should render input of type text with value when input is wrapped",
       template: () => <WrappedInput value="foo" />,
