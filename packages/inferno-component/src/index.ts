@@ -292,7 +292,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
     applyState(this, true, callback);
   }
 
-  public setState(newState: S, callback?: Function) {
+  public setState(newState: { [k in keyof S]?: S[k]; }, callback?: Function) {
     if (this._unmounted) {
       return;
     }
