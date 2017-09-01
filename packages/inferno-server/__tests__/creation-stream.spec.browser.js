@@ -218,6 +218,7 @@ describe("SSR Creation Streams - (non-JSX)", () => {
         }
 
         componentWillMount() {
+          debugger;
           this.setState({
             foo: "bar2"
           });

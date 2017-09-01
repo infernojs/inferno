@@ -48,14 +48,27 @@ function renderVNodeToString(
         instance.props = props;
       }
       instance.context = context;
-      instance._pendingSetState = true;
       instance._unmounted = false;
       if (isFunction(instance.componentWillMount)) {
+        instance._blockRender = true;
         instance.componentWillMount();
+        if (instance._pendingSetState) {
+          const state = instance.state;
+          const pending = instance._pendingState;
+
+          if (state === null) {
+            instance.state = pending;
+          } else {
+            for (const key in pending) {
+              state[key] = pending[key];
+            }
+          }
+          instance._pendingSetState = false;
+          instance._pendingState = null;
+        }
+        instance._blockRender = false;
       }
       const nextVNode = instance.render(props, instance.state, vNode.context);
-
-      instance._pendingSetState = false;
       // In case render returns invalid stuff
       if (isInvalid(nextVNode)) {
         return "<!--!-->";

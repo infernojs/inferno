@@ -470,6 +470,11 @@ export function patchComponent(
           false,
           false
         );
+        // If this component was destroyed by its parent do nothing, this is no-op
+        // It can happen by using external callback etc during render / update
+        if (instance._unmounted) {
+          return false;
+        }
         let didUpdate = true;
         // Update component before getting child context
         let childContext;
@@ -622,6 +627,7 @@ export function patchText(lastVNode: VNode, nextVNode: VNode) {
 }
 
 export function patchVoid(lastVNode: VNode, nextVNode: VNode) {
+  debugger;
   nextVNode.dom = lastVNode.dom;
 }
 

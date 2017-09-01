@@ -56,11 +56,26 @@ export function createClassComponentInstance(
   instance._lifecycle = lifecycle;
 
   instance._unmounted = false;
-  instance._pendingSetState = true;
   instance._isSVG = isSVG;
   if (!isNullOrUndef(instance.componentWillMount)) {
     instance._blockRender = true;
     instance.componentWillMount();
+
+    if (instance._pendingSetState) {
+      const state = instance.state;
+      const pending = instance._pendingState;
+
+      if (state === null) {
+        instance.state = pending;
+      } else {
+        for (const key in pending) {
+          state[key] = pending[key];
+        }
+      }
+      instance._pendingSetState = false;
+      instance._pendingState = null;
+    }
+
     instance._blockRender = false;
   }
 
@@ -107,7 +122,6 @@ export function createClassComponentInstance(
       input.parentVNode = vNode;
     }
   }
-  instance._pendingSetState = false;
   instance._lastInput = input;
   return instance;
 }
@@ -136,6 +150,7 @@ export function replaceVNode(
   lifecycle: LifecycleClass,
   isRecycling
 ) {
+  debugger;
   unmount(vNode, null, lifecycle, false, isRecycling);
   replaceChild(parentDom, dom, vNode.dom);
 }
@@ -222,11 +237,11 @@ export function replaceWithNewNode(
   replaceChild(parentDom, dom, lastNode.dom);
 }
 
-export function replaceChild(parentDom, nextDom, lastDom) {
+export function replaceChild(parentDom, newDom, lastDom) {
   if (!parentDom) {
     parentDom = lastDom.parentNode;
   }
-  parentDom.replaceChild(nextDom, lastDom);
+  parentDom.replaceChild(newDom, lastDom);
 }
 
 export function removeChild(parentDom: Element, dom: Element) {

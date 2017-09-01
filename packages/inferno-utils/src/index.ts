@@ -119,6 +119,12 @@ export function triggerEvent(name: string, element: any) {
     throw new Error('Unsupported `"' + name + '"`event');
   }
   const event = document.createEvent(eventType);
+  if (eventType === "MouseEvents") {
+    // Simulate left click always
+    Object.defineProperty(event, "button", {
+      value: 0
+    });
+  }
   event.initEvent(name, name !== "change", true);
   element.dispatchEvent(event, true);
 }
