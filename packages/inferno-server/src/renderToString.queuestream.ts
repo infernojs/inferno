@@ -178,9 +178,12 @@ export class RenderQueueStream extends Readable {
       let renderedString = `<${type}`;
       let html;
       const isVoidElement = voidElements.has(type);
+      const className = vNode.className;
 
-      if (!isNullOrUndef(vNode.className)) {
-        renderedString += ` class="${escapeText(vNode.className)}"`;
+      if (isString(className)) {
+        renderedString += ` class="${escapeText(className)}"`;
+      } else if (isNumber(className)) {
+        renderedString += ` class="${className}"`;
       }
 
       if (!isNull(props)) {
@@ -196,7 +199,9 @@ export class RenderQueueStream extends Readable {
           } else if (prop === "defaultValue") {
             // Use default values if normal values are not present
             if (!props.value) {
-              renderedString += ` value="${escapeText(value)}"`;
+              renderedString += ` value="${isString(value)
+                ? escapeText(value)
+                : value}"`;
             }
           } else if (prop === "defaultChecked") {
             // Use default values if normal values are not present

@@ -185,6 +185,11 @@ describe("SSR Creation Streams - (non-JSX)", () => {
       description: "should render opacity style",
       template: () => createElement("div", { style: { opacity: 0.8 } }),
       result: '<div style="opacity:0.8;"></div>'
+    },
+    {
+      description: "Should render div className as number",
+      template: () => createElement("div", { className: 123 }),
+      result: '<div class="123"></div>'
     }
   ];
 
@@ -219,11 +224,7 @@ describe("SSR Creation Streams - (non-JSX)", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.state.foo}
-            </div>
-          );
+          return <div>{this.state.foo}</div>;
         }
       }
 
@@ -266,10 +267,12 @@ describe("SSR Creation Streams - (non-JSX)", () => {
 
 function streamPromise(dom) {
   return new Promise(function(res, rej) {
-    streamAsString(dom).on("error", rej).pipe(
-      concatStream(function(buffer) {
-        res(buffer.toString("utf-8"));
-      })
-    );
+    streamAsString(dom)
+      .on("error", rej)
+      .pipe(
+        concatStream(function(buffer) {
+          res(buffer.toString("utf-8"));
+        })
+      );
   });
 }

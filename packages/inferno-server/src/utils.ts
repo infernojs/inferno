@@ -2,14 +2,8 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
-import { isString } from "inferno-shared";
-
 const rxUnescaped = /["'&<>]/;
-export function escapeText(text: any): string {
-  if (!isString(text)) {
-    text = text + "";
-  }
-
+export function escapeText(text: string): string {
   /* Much faster when there is no unescaped characters */
   if (!rxUnescaped.test(text)) {
     return text;
