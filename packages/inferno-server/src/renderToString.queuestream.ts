@@ -120,11 +120,26 @@ export class RenderQueueStream extends Readable {
           instance.props = props;
         }
         instance.context = context;
-        instance._pendingSetState = true;
         instance._unmounted = false;
         // Trigger lifecycle hook
         if (isFunction(instance.componentWillMount)) {
+          instance._blockRender = true;
           instance.componentWillMount();
+          if (instance._pendingSetState) {
+            const state = instance.state;
+            const pending = instance._pendingState;
+
+            if (state === null) {
+              instance.state = pending;
+            } else {
+              for (const key in pending) {
+                state[key] = pending[key];
+              }
+            }
+            instance._pendingSetState = false;
+            instance._pendingState = null;
+          }
+          instance._blockRender = false;
         }
         // Trigger extra promise-based lifecycle hook
         if (isFunction(instance.getInitialProps)) {

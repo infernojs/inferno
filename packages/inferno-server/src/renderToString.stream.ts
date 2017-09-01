@@ -89,12 +89,28 @@ export class RenderStream extends Readable {
       context = combineFrom(context, childContext);
     }
     instance.context = context;
+    instance._blockRender = true;
 
-    // Block setting state - we should render only once, using latest state
-    instance._pendingSetState = true;
     return Promise.resolve(
       instance.componentWillMount && instance.componentWillMount()
     ).then(() => {
+      if (instance._pendingSetState) {
+        const state = instance.state;
+        const pending = instance._pendingState;
+
+        if (state === null) {
+          instance.state = pending;
+        } else {
+          for (const key in pending) {
+            state[key] = pending[key];
+          }
+        }
+        instance._pendingSetState = false;
+        instance._pendingState = null;
+      }
+
+      instance._blockRender = false;
+
       const node = instance.render(
         instance.props,
         instance.state,
