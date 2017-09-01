@@ -295,6 +295,16 @@ describe("SSR Creation Queue Streams - (non-JSX)", () => {
       description: "should render opacity style",
       template: () => createElement("div", { style: { opacity: 0.8 } }),
       result: '<div style="opacity:0.8;"></div>'
+    },
+    {
+      description: "Should render div className as number",
+      template: () => createElement("div", { className: 123 }),
+      result: '<div class="123"></div>'
+    },
+    {
+      description: "Should render input defaultValue as number",
+      template: () => createElement("input", { defaultValue: 123 }),
+      result: '<input value="123">'
     }
   ];
 
@@ -334,11 +344,7 @@ describe("SSR Creation Queue Streams - (non-JSX)", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.state.foo}
-            </div>
-          );
+          return <div>{this.state.foo}</div>;
         }
       }
 

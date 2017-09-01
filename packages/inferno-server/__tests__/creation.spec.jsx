@@ -123,17 +123,17 @@ describe("SSR Creation (JSX)", () => {
       result: '<div style="opacity:0.8;"></div>'
     },
     {
-      description: "Should render style opacity #2",
+      description: "Should render div className as number",
       template: () => <div className={123} />,
       result: '<div class="123"></div>'
     },
     {
-      description: "Should render style opacity #2",
+      description: "Should render input defaultValue as number",
       template: () => <input defaultValue={123} />,
       result: '<input value="123">'
     },
     {
-      description: "BR should be closed",
+      description: "BR should not be closed",
       template: () => (
         <div>
           <br />

@@ -110,7 +110,7 @@ export class RenderStream extends Readable {
       return this.push(escapeText(children));
     }
     if (isNumber(children)) {
-      return this.push(escapeText(children + ""));
+      return this.push(children + "");
     }
     if (!children) {
       return;
@@ -172,9 +172,13 @@ export class RenderStream extends Readable {
 
     let html = "";
     const className = vElement.className;
-    if (!isNullOrUndef(className)) {
-      outputAttrs.push('class="' + escapeText(className) + '"');
+
+    if (isString(className)) {
+      outputAttrs.push(`class="${escapeText(className)}"`);
+    } else if (isNumber(className)) {
+      outputAttrs.push(`class="${className}"`);
     }
+
     if (props) {
       const style = props.style;
       if (style) {
