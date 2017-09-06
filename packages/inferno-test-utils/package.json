@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "3.8.2",
+  "version": "3.9.0",
   "license": "MIT",
   "description": "Suite of utilities for testing Inferno applications",
   "author": {
@@ -21,15 +21,15 @@
     "utils"
   ],
   "dependencies": {
-    "inferno": "3.8.2",
-    "inferno-create-class": "3.8.2",
-    "inferno-create-element": "3.8.2",
-    "inferno-shared": "3.8.2",
-    "inferno-vnode-flags": "3.8.2"
+    "inferno": "3.9.0",
+    "inferno-create-class": "3.9.0",
+    "inferno-create-element": "3.9.0",
+    "inferno-shared": "3.9.0",
+    "inferno-vnode-flags": "3.9.0"
   },
   "devDependencies": {
-    "inferno-component": "3.8.2",
-    "inferno-server": "3.8.2"
+    "inferno-component": "3.9.0",
+    "inferno-server": "3.9.0"
   },
   "rollup": {
     "bundledDependencies": [
