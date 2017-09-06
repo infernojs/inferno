@@ -935,34 +935,32 @@ function lis_algorithm(arr: number[]): number[] {
   for (i = 0; i < len; i++) {
     const arrI = arr[i];
 
-    if (arrI === -1) {
-      continue;
-    }
-
-    j = result[result.length - 1];
-    if (arr[j] < arrI) {
-      p[i] = j;
-      result.push(i);
-      continue;
-    }
-
-    u = 0;
-    v = result.length - 1;
-
-    while (u < v) {
-      c = ((u + v) / 2) | 0;
-      if (arr[result[c]] < arrI) {
-        u = c + 1;
-      } else {
-        v = c;
+    if (arrI !== -1) {
+      j = result[result.length - 1];
+      if (arr[j] < arrI) {
+        p[i] = j;
+        result.push(i);
+        continue;
       }
-    }
 
-    if (arrI < arr[result[u]]) {
-      if (u > 0) {
-        p[i] = result[u - 1];
+      u = 0;
+      v = result.length - 1;
+
+      while (u < v) {
+        c = ((u + v) / 2) | 0;
+        if (arr[result[c]] < arrI) {
+          u = c + 1;
+        } else {
+          v = c;
+        }
       }
-      result[u] = i;
+
+      if (arrI < arr[result[u]]) {
+        if (u > 0) {
+          p[i] = result[u - 1];
+        }
+        result[u] = i;
+      }
     }
   }
 

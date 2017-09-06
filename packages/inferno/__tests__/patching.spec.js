@@ -1,6 +1,5 @@
 import { createVNode, render } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import { createTextVNode } from "inferno/core/VNodes";
 
 describe("patching routine", () => {
   let container;
@@ -39,7 +38,7 @@ describe("patching routine", () => {
       VNodeFlags.HtmlElement,
       "span",
       null,
-      createTextVNode("a"),
+      createVNode(VNodeFlags.Text, null, null, "a"),
       null,
       null,
       null,
@@ -70,7 +69,7 @@ describe("patching routine", () => {
         VNodeFlags.HtmlElement,
         "span",
         null,
-        createTextVNode("a"),
+        createVNode(VNodeFlags.Text, null, null, "a"),
         null,
         null,
         null,
@@ -98,14 +97,14 @@ describe("patching routine", () => {
   });
 
   it("Should not access real DOM property when text does not change", () => {
-    render(createTextVNode("a"), container);
+    render(createVNode(VNodeFlags.Text, null, null, "a"), container);
     expect(container.innerHTML).toEqual("a");
-    render(createTextVNode("a"), container);
+    render(createVNode(VNodeFlags.Text, null, null, "a"), container);
     expect(container.innerHTML).toEqual("a");
   });
 
   it("Should not patch same innerHTML", () => {
-    container.innerHTML = "<span><span><span>child</span></span</span>";
+    container.innerHTML = "<span><span><span>child</span></span></span>";
 
     const childelem = container.firstElementChild.firstElementChild;
     const props = { dangerouslySetInnerHTML: { __html: "<span>child</span>" } };

@@ -1,7 +1,6 @@
 import { render } from "inferno";
 import Component from "inferno-component";
 import { isNullOrUndef } from "inferno-shared";
-import { isVNode } from "inferno/core/VNodes";
 
 describe("Normalization process", () => {
   let container;
@@ -34,7 +33,7 @@ describe("Normalization process", () => {
         for (let i = 0; i < vNodes.length; i++) {
           verifyKeys(vNodes[i].children);
         }
-      } else if (!isNullOrUndef(vNodes) && isVNode(vNodes)) {
+      } else if (!isNullOrUndef(vNodes) && !!vNodes.flags) {
         verifyKeys(vNodes.children);
       }
     }
@@ -54,9 +53,7 @@ describe("Normalization process", () => {
 
       const vNode = (
         <head>
-          <title>
-            {"test"}
-          </title>
+          <title>{"test"}</title>
           {meta([
             { property: "p", content: "c" },
             { property: "p1", content: "c1" }
@@ -238,11 +235,7 @@ describe("Normalization process", () => {
             result = v;
           }
 
-          return (
-            <div>
-              {result}
-            </div>
-          );
+          return <div>{result}</div>;
         });
       }
 
@@ -281,12 +274,8 @@ describe("Normalization process", () => {
         </div>,
         <div>
           <div>1</div>
-          <div>
-            {makeArr(["a", "b", "c"])}
-          </div>
-          <div>
-            {makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}
-          </div>
+          <div>{makeArr(["a", "b", "c"])}</div>
+          <div>{makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}</div>
         </div>,
         <div>
           <div>1</div>
@@ -294,17 +283,13 @@ describe("Normalization process", () => {
             {makeArr([
               "a",
               makeArr(["a", "b", "c"]),
-              <div>
-                {makeArr(["a", "b", "c"])}
-              </div>,
+              <div>{makeArr(["a", "b", "c"])}</div>,
               "c"
             ])}
           </div>
         </div>,
         <div>
-          <div>
-            {makeArr([<div>1</div>, "b", "c"])}
-          </div>
+          <div>{makeArr([<div>1</div>, "b", "c"])}</div>
           <div>
             {makeArr([
               "a",
@@ -317,16 +302,8 @@ describe("Normalization process", () => {
         <div>
           <div>
             {makeArr([
-              <div>
-                {makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}
-              </div>,
-              makeArr([
-                "a",
-                <div>
-                  {makeArr(["a", "b", "c"])}
-                </div>,
-                "c"
-              ]),
+              <div>{makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}</div>,
+              makeArr(["a", <div>{makeArr(["a", "b", "c"])}</div>, "c"]),
               "b",
               "c"
             ])}
@@ -352,11 +329,7 @@ describe("Normalization process", () => {
             result = v;
           }
 
-          return (
-            <div key={result}>
-              {result}
-            </div>
-          );
+          return <div key={result}>{result}</div>;
         });
       }
 
@@ -395,12 +368,8 @@ describe("Normalization process", () => {
         </div>,
         <div>
           <div key="1">1</div>
-          <div>
-            {makeArr(["a", "b", "c"])}
-          </div>
-          <div>
-            {makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}
-          </div>
+          <div>{makeArr(["a", "b", "c"])}</div>
+          <div>{makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}</div>
         </div>,
         <div>
           <div key="1">1</div>
@@ -408,17 +377,13 @@ describe("Normalization process", () => {
             {makeArr([
               "a",
               makeArr(["a", "b", "c"]),
-              <div>
-                {makeArr(["a", "b", "c"])}
-              </div>,
+              <div>{makeArr(["a", "b", "c"])}</div>,
               "c"
             ])}
           </div>
         </div>,
         <div>
-          <div>
-            {makeArr([<div key="1">1</div>, "b", "c"])}
-          </div>
+          <div>{makeArr([<div key="1">1</div>, "b", "c"])}</div>
           <div>
             {makeArr([
               "a",
@@ -435,16 +400,8 @@ describe("Normalization process", () => {
         <div>
           <div>
             {makeArr([
-              <div>
-                {makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}
-              </div>,
-              makeArr([
-                "a",
-                <div>
-                  {makeArr(["a", "b", "c"])}
-                </div>,
-                "c"
-              ]),
+              <div>{makeArr(["a", makeArr(["a", "b", "c"]), "b", "c"])}</div>,
+              makeArr(["a", <div>{makeArr(["a", "b", "c"])}</div>, "c"]),
               "b",
               "c"
             ])}

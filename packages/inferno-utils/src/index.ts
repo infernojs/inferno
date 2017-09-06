@@ -2,14 +2,6 @@
  * @module Inferno-Utils
  */ /** TypeDoc Comment */
 
-/**
- * @module Inferno-Utils
- */ /** TypeDoc Comment */
-
-/**
- * @module inferno-utils
- */ /** TypeDoc Comment */
-
 import { isArray, isNullOrUndef, isStringOrNumber } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 

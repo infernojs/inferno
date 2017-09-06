@@ -1,6 +1,3 @@
-const fs = require("fs");
-const path = require("path");
-
 module.exports = {
   collectCoverageFrom: [
     "packages/*/src/**/*.ts",
@@ -22,7 +19,7 @@ module.exports = {
     usingJSDOM: true,
     usingJest: true
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
+  moduleFileExtensions: ["ts", "js", "jsx", "json"],
   moduleNameMapper: {
     "^inferno$": "<rootDir>/packages/inferno/src",
     "^inferno-compat": "<rootDir>/packages/inferno-compat/src",
@@ -39,8 +36,7 @@ module.exports = {
     "^inferno-shared": "<rootDir>/packages/inferno-shared/src",
     "^inferno-test-utils": "<rootDir>/packages/inferno-test-utils/src",
     "^inferno-utils": "<rootDir>/packages/inferno-utils/src",
-    "^inferno-vnode-flags": "<rootDir>/packages/inferno-vnode-flags/src",
-    "^inferno/core/VNodes": "<rootDir>/packages/inferno/src/core/VNodes"
+    "^inferno-vnode-flags": "<rootDir>/packages/inferno-vnode-flags/src"
   },
   projects: [
     "<rootDir>/packages/inferno",
@@ -54,9 +50,7 @@ module.exports = {
   setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
   testMatch: [
     "<rootDir>/packages/*/__tests__/**/*spec.js?(x)",
-    "<rootDir>/packages/*/__tests__/**/*spec.ts?(x)",
-    "<rootDir>/packages/*/__tests__/**/*spec.browser.js?(x)",
-    "<rootDir>/packages/*/__tests__/**/*spec.browser.ts?(x)"
+    "<rootDir>/packages/*/__tests__/**/*spec.browser.js?(x)"
   ],
   transform: {
     "^.+\\.jsx?$": "babel-jest",
