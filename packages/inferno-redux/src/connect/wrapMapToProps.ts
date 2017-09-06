@@ -6,15 +6,13 @@ import { verifyPlainObject } from "../utils/verifyPlainObject";
 
 // TODO: Type
 export const wrapMapToPropsConstant = getConstant => {
-  const initConstantSelector = (dispatch, options) => {
+  return (dispatch, options) => {
     const constant = getConstant(dispatch, options);
 
     const constantSelector = () => constant;
     (constantSelector as any).dependsOnOwnProps = false;
     return constantSelector;
   };
-
-  return initConstantSelector;
 };
 
 // dependsOnOwnProps is used by createMapToPropsProxy to determine whether to pass props as args
@@ -43,7 +41,7 @@ export const getDependsOnOwnProps = mapToProps =>
 //    the developer that their mapToProps function is not returning a valid result.
 //
 export const wrapMapToPropsFunc = (mapToProps, methodName) => {
-  const initProxySelector = (dispatch, { displayName }) => {
+  return (dispatch, { displayName }) => {
     const proxy: any = (stateOrDispatch, ownProps) =>
       proxy.dependsOnOwnProps
         ? proxy.mapToProps(stateOrDispatch, ownProps)
@@ -70,6 +68,4 @@ export const wrapMapToPropsFunc = (mapToProps, methodName) => {
 
     return proxy;
   };
-
-  return initProxySelector;
 };
