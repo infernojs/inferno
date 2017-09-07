@@ -75,10 +75,9 @@ export default class Router extends Component<IRouterProps, any> {
   }
 
   public componentWillReceiveProps(nextProps) {
-    this.setState(
-      { url: nextProps.url },
-      this.props.onUpdate ? () => this.props.onUpdate() : void 0
-    );
+    if (nextProps.url) {
+      this.routeTo(nextProps.url);
+    }
   }
 
   public componentWillUnmount() {
