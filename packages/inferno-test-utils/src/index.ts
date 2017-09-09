@@ -2,79 +2,59 @@
  * @module Inferno-Test-Utils
  */ /** TypeDoc Comment */
 
-import { InfernoInput, render, VNode } from "inferno";
-import Component from "inferno-component";
-import createElement from "inferno-create-element";
+import { VNode } from "inferno";
 import {
   isArray,
   isFunction,
   isNullOrUndef,
-  isNumber,
   isObject,
   isString,
   throwError
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import {
+  getTagNameOfVNode as _getTagNameOfVNode,
+  isClassVNode as _isClassVNode,
+  isComponentVNode as _isComponentVNode,
+  isDOMVNode as _isDOMVNode,
+  isFunctionalVNode as _isFunctionalVNode,
+  isTextVNode as _isTextVNode,
+  isVNode as _isVNode,
+  renderIntoDocument as _renderIntoDocument,
+  Wrapper as _Wrapper
+} from "./utils";
+import {
+  vNodeToSnapshot as _vNodeToSnapshot,
+  renderToSnapshot as _renderToSnapshot
+} from "./jest";
 
 // Type Checkers
-
-export function isVNode(instance: any): instance is VNode {
-  return (
-    Boolean(instance) &&
-    isObject(instance) &&
-    isNumber((instance as any).flags) &&
-    (instance as any).flags > 0
-  );
-}
 
 export function isVNodeOfType(
   instance: VNode,
   type: string | Function
 ): boolean {
-  return isVNode(instance) && instance.type === type;
-}
-
-export function isDOMVNode(inst: VNode): boolean {
-  return !isComponentVNode(inst) && !isTextVNode(inst);
+  return _isVNode(instance) && instance.type === type;
 }
 
 export function isDOMVNodeOfType(instance: VNode, type: string): boolean {
-  return isDOMVNode(instance) && instance.type === type;
-}
-
-export function isFunctionalVNode(instance: VNode): boolean {
-  return (
-    isVNode(instance) && Boolean(instance.flags & VNodeFlags.ComponentFunction)
-  );
+  return _isDOMVNode(instance) && instance.type === type;
 }
 
 export function isFunctionalVNodeOfType(
   instance: VNode,
   type: Function
 ): boolean {
-  return isFunctionalVNode(instance) && instance.type === type;
-}
-
-export function isClassVNode(instance: VNode): boolean {
-  return (
-    isVNode(instance) && Boolean(instance.flags & VNodeFlags.ComponentClass)
-  );
+  return _isFunctionalVNode(instance) && instance.type === type;
 }
 
 export function isClassVNodeOfType(instance: VNode, type: Function): boolean {
-  return isClassVNode(instance) && instance.type === type;
-}
-
-export function isComponentVNode(inst: VNode): boolean {
-  return isFunctionalVNode(inst) || isClassVNode(inst);
+  return _isClassVNode(instance) && instance.type === type;
 }
 
 export function isComponentVNodeOfType(inst: VNode, type: Function): boolean {
-  return (isFunctionalVNode(inst) || isClassVNode(inst)) && inst.type === type;
-}
-
-export function isTextVNode(inst: VNode): boolean {
-  return inst.flags === VNodeFlags.Text;
+  return (
+    (_isFunctionalVNode(inst) || _isClassVNode(inst)) && inst.type === type
+  );
 }
 
 export function isDOMElement(instance: any): boolean {
@@ -98,7 +78,7 @@ export function isRenderedClassComponent(instance: any): boolean {
   return (
     Boolean(instance) &&
     isObject(instance) &&
-    isVNode((instance as any)._vNode) &&
+    _isVNode((instance as any)._vNode) &&
     isFunction((instance as any).render) &&
     isFunction((instance as any).setState)
   );
@@ -113,25 +93,6 @@ export function isRenderedClassComponentOfType(
     isFunction(type) &&
     instance._vNode.type === type
   );
-}
-
-// Render Utilities
-
-export class Wrapper extends Component<any, any> {
-  public render() {
-    return this.props.children;
-  }
-
-  public repaint() {
-    return new Promise<void>(resolve => this.setState({}, resolve));
-  }
-}
-
-export function renderIntoDocument(input: InfernoInput): Wrapper {
-  const wrappedInput = createElement(Wrapper, null, input);
-  const parent = document.createElement("div");
-  document.body.appendChild(parent);
-  return render(wrappedInput, parent) as any;
 }
 
 // Recursive Finder Functions
@@ -153,18 +114,20 @@ export function findAllInVNodeTree(
   vNodeTree: VNode,
   predicate: (vNode: VNode) => boolean
 ): any {
-  if (isVNode(vNodeTree)) {
+  if (_isVNode(vNodeTree)) {
     let result: VNode[] = predicate(vNodeTree) ? [vNodeTree] : [];
     const children: any = vNodeTree.children;
 
     if (isRenderedClassComponent(children)) {
-      result = result.concat(
-        findAllInVNodeTree(children._lastInput, predicate) as VNode[]
-      );
-    } else if (isVNode(children)) {
-      result = result.concat(
-        findAllInVNodeTree(children, predicate) as VNode[]
-      );
+      result = result.concat(findAllInVNodeTree(
+        children._lastInput,
+        predicate
+      ) as VNode[]);
+    } else if (_isVNode(children)) {
+      result = result.concat(findAllInVNodeTree(
+        children,
+        predicate
+      ) as VNode[]);
     } else if (isArray(children)) {
       children.forEach(child => {
         result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);
@@ -213,7 +176,7 @@ export function scryRenderedDOMElementsWithClass(
   classNames: string | string[]
 ): Element[] {
   return findAllInRenderedTree(renderedTree, instance => {
-    if (isDOMVNode(instance)) {
+    if (_isDOMVNode(instance)) {
       let domClassName = (instance.dom as Element).className;
       if (
         !isString(domClassName) &&
@@ -299,48 +262,47 @@ export function findVNodeWithType(
   return findOneOf(vNodeTree, type, "VNode", scryVNodesWithType);
 }
 
-export function getTagNameOfVNode(inst: any) {
-  return (
-    (inst && inst.dom && inst.dom.tagName.toLowerCase()) ||
-    (inst &&
-      inst._vNode &&
-      inst._vNode.dom &&
-      inst._vNode.dom.tagName.toLowerCase()) ||
-    undefined
-  );
-}
-
-import { renderToSnapshot, vNodeToSnapshot } from "./jest";
+export const vNodeToSnapshot = _vNodeToSnapshot;
+export const renderToSnapshot = _renderToSnapshot;
+export const getTagNameOfVNode = _getTagNameOfVNode;
+export const isClassVNode = _isClassVNode;
+export const isComponentVNode = _isComponentVNode;
+export const isDOMVNode = _isDOMVNode;
+export const isFunctionalVNode = _isFunctionalVNode;
+export const isTextVNode = _isTextVNode;
+export const isVNode = _isVNode;
+export const renderIntoDocument = _renderIntoDocument;
+export const Wrapper = _Wrapper;
 
 export default {
-  Wrapper,
+  Wrapper: _Wrapper,
   findAllInRenderedTree,
   findAllInVNodeTree,
   findRenderedDOMElementWithClass,
   findRenderedDOMElementWithTag,
   findRenderedVNodeWithType,
   findVNodeWithType,
-  getTagNameOfVNode,
-  isClassVNode,
+  getTagNameOfVNode: _getTagNameOfVNode,
+  isClassVNode: _isClassVNode,
   isClassVNodeOfType,
-  isComponentVNode,
+  isComponentVNode: _isComponentVNode,
   isComponentVNodeOfType,
   isDOMElement,
   isDOMElementOfType,
-  isDOMVNode,
+  isDOMVNode: _isDOMVNode,
   isDOMVNodeOfType,
-  isFunctionalVNode,
+  isFunctionalVNode: _isFunctionalVNode,
   isFunctionalVNodeOfType,
   isRenderedClassComponent,
   isRenderedClassComponentOfType,
-  isTextVNode,
-  isVNode,
+  isTextVNode: _isTextVNode,
+  isVNode: _isVNode,
   isVNodeOfType,
-  renderIntoDocument,
-  renderToSnapshot,
+  renderIntoDocument: _renderIntoDocument,
+  renderToSnapshot: _renderToSnapshot,
   scryRenderedDOMElementsWithClass,
   scryRenderedDOMElementsWithTag,
   scryRenderedVNodesWithType,
   scryVNodesWithType,
-  vNodeToSnapshot
+  vNodeToSnapshot: _vNodeToSnapshot
 };

@@ -14,22 +14,23 @@ import {
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { options } from "../core/options";
-import { directClone, isVNode, VNode } from "../core/VNodes";
-import { patchProp } from "./patching";
-import { componentToDOMNodeMap } from "./rendering";
+import { options, directClone, isVNode, VNode } from "../core/implementation";
 import {
   appendChild,
-  createClassComponentInstance,
-  createFunctionalComponentInput,
+  componentToDOMNodeMap,
   documentCreateElement,
   EMPTY_OBJ,
   setTextContent
-} from "./utils";
+} from "./utils/common";
 import {
   isControlledFormElement,
   processElement
 } from "./wrappers/processElement";
+import { patchProp } from "./props";
+import {
+  createClassComponentInstance,
+  handleComponentInput
+} from "./utils/components";
 
 export function mount(
   vNode: VNode,
@@ -186,7 +187,7 @@ export function mountComponent(
   isClass: boolean
 ) {
   let dom;
-  const type = vNode.type;
+  const type = vNode.type as Function;
   const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref;
 
@@ -217,7 +218,7 @@ export function mountComponent(
       componentToDOMNodeMap.set(instance, dom);
     }
   } else {
-    const input = createFunctionalComponentInput(vNode, type, props, context);
+    const input = handleComponentInput(type(props, context), vNode);
 
     vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
     vNode.children = input;

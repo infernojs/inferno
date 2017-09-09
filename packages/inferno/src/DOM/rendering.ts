@@ -12,20 +12,20 @@ import {
   warning
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import {options, Root} from "../core/options";
 import {
   directClone,
+  options,
   InfernoChildren,
   InfernoInput,
+  Root,
   VNode
-} from "../core/VNodes";
+} from "../core/implementation";
 import { hydrateRoot } from "./hydration";
 import { mount } from "./mounting";
 import { patch } from "./patching";
 import { unmount } from "./unmounting";
-import { EMPTY_OBJ } from "./utils";
+import { EMPTY_OBJ, componentToDOMNodeMap } from "./utils/common";
 
-export const componentToDOMNodeMap = new Map();
 const roots = options.roots;
 /**
  * When inferno.options.findDOMNOdeEnabled is true, this function will return DOM Node by component instance
@@ -57,10 +57,7 @@ function getRoot(dom): Root | null {
   return null;
 }
 
-function setRoot(
-  dom: Element | SVGAElement,
-  input: VNode
-): Root {
+function setRoot(dom: Element | SVGAElement, input: VNode): Root {
   const root: Root = {
     dom,
     input
@@ -136,10 +133,7 @@ export function render(
     }
   } else {
     if (isNullOrUndef(input)) {
-      unmount(
-        root.input as VNode,
-        parentDom as Element
-      );
+      unmount(root.input as VNode, parentDom as Element);
       removeRoot(root);
     } else {
       if ((input as VNode).dom) {

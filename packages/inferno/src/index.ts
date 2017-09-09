@@ -4,30 +4,29 @@
 
 /* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from "inferno-shared";
-import {default as _VNodeFlags} from "inferno-vnode-flags";
+import { default as _VNodeFlags } from "inferno-vnode-flags";
 import {
   getFlagsForElementVnode,
   normalize as internal_normalize
-} from "./core/normalization";
-import { options, Root as _Root } from "./core/options";
+} from "./core/implementation";
 import {
   cloneVNode,
   createVNode,
+  options,
   InfernoChildren,
   InfernoInput,
   Props,
+  Root as _Root,
   VNode
-} from "./core/VNodes";
+} from "./core/implementation";
 import { isUnitlessNumber as internal_isUnitlessNumber } from "./DOM/constants";
 import { linkEvent } from "./DOM/events/linkEvent";
 import { patch as internal_patch } from "./DOM/patching";
+import { createRenderer, findDOMNode, render } from "./DOM/rendering";
 import {
-  componentToDOMNodeMap as internal_DOMNodeMap,
-  createRenderer,
-  findDOMNode,
-  render
-} from "./DOM/rendering";
-import { EMPTY_OBJ } from "./DOM/utils";
+  EMPTY_OBJ,
+  componentToDOMNodeMap as internal_DOMNodeMap
+} from "./DOM/utils/common";
 
 if (process.env.NODE_ENV !== "production") {
   /* tslint:disable-next-line:no-empty */
@@ -53,6 +52,7 @@ export declare const Root: _Root;
 const version = process.env.INFERNO_VERSION;
 
 // we duplicate it so it plays nicely with different module loading systems
+
 export default {
   EMPTY_OBJ, // used to shared common items between Inferno libs
   NO_OP, // used to shared common items between Inferno libs

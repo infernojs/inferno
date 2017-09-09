@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import Component from "inferno-component";
-import { IRouterProps } from "./Router";
+import { IRouterProps } from "./routerprops";
 
 export default class RouterContext extends Component<IRouterProps, any> {
   constructor(props?: any, context?: any) {

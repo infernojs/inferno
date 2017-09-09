@@ -1,8 +1,11 @@
 import { isFunction } from "inferno-shared";
-import { EMPTY_OBJ } from "../utils";
+import { EMPTY_OBJ } from "../utils/common";
 
-export function createWrappedFunction(methodName: string, applyValue?: Function): Function {
-  const fnMethod = function (e) {
+export function createWrappedFunction(
+  methodName: string,
+  applyValue?: Function
+): Function {
+  const fnMethod = function(e) {
     e.stopPropagation();
     const vNode = this.vNode;
     const props = vNode.props || EMPTY_OBJ;
@@ -32,7 +35,7 @@ export function createWrappedFunction(methodName: string, applyValue?: Function)
     }
   };
 
-  Object.defineProperty(fnMethod, 'wrapped', {
+  Object.defineProperty(fnMethod, "wrapped", {
     configurable: false,
     enumerable: false,
     value: true,

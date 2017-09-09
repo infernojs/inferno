@@ -13,8 +13,7 @@ import {
   warning
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { options } from "../core/options";
-import { InfernoChildren, VNode } from "../core/VNodes";
+import { options, InfernoChildren, VNode } from "../core/implementation";
 import { svgNS } from "./constants";
 import {
   mount,
@@ -24,19 +23,17 @@ import {
   mountRef,
   mountText
 } from "./mounting";
-import { patchProp } from "./patching";
-import { componentToDOMNodeMap } from "./rendering";
-import {
-  createClassComponentInstance,
-  createFunctionalComponentInput,
-  EMPTY_OBJ,
-  isSamePropsInnerHTML,
-  replaceChild
-} from "./utils";
+import { componentToDOMNodeMap, EMPTY_OBJ, replaceChild } from "./utils/common";
 import {
   isControlledFormElement,
   processElement
 } from "./wrappers/processElement";
+import {
+  createClassComponentInstance,
+  handleComponentInput
+} from "./utils/components";
+import { isSamePropsInnerHTML } from "./utils/innerhtml";
+import { patchProp } from "./props";
 
 function normalizeChildNodes(parentDom) {
   let dom = parentDom.firstChild;
@@ -68,7 +65,7 @@ function hydrateComponent(
   isSVG: boolean,
   isClass: boolean
 ): Element {
-  const type = vNode.type;
+  const type = vNode.type as Function;
   const ref = vNode.ref;
   const props = vNode.props || EMPTY_OBJ;
 
@@ -93,7 +90,7 @@ function hydrateComponent(
       componentToDOMNodeMap.set(instance, dom);
     }
   } else {
-    const input = createFunctionalComponentInput(vNode, type, props, context);
+    const input = handleComponentInput(type(props, context), vNode);
     hydrate(input, dom, lifecycle, context, isSVG);
     vNode.children = input;
     vNode.dom = input.dom;

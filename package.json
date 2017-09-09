@@ -28,6 +28,7 @@
   "pre-commit": {
     "silent": true,
     "run": [
+      "circularDeps",
       "lint-staged",
       "lint",
       "test"
@@ -35,6 +36,7 @@
   },
   "scripts": {
     "clean": "lerna exec -- rimraf dist .rpt2_cache_development .rpt2_cache_production",
+    "circularDeps": "lerna exec -- madge --circular src/index.ts",
     "coveralls": "coveralls < coverage/lcov.info || true",
     "debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --no-cache --no-watchman",
     "prebuild": "npm run clean",

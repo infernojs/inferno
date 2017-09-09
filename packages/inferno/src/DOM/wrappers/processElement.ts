@@ -4,7 +4,7 @@
 
 import { isNullOrUndef } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { VNode } from "../../core/VNodes";
+import { VNode } from "../../core/implementation";
 import { isCheckedType, processInput } from "./InputWrapper";
 import { processSelect } from "./SelectWrapper";
 import { processTextarea } from "./TextareaWrapper";

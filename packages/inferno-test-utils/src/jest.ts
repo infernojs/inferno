@@ -4,7 +4,7 @@
 
 import { VNode } from "inferno";
 import { isArray, isNull, isObject, isString } from "inferno-shared";
-import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from "./index";
+import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from "./utils";
 
 // Jest Snapshot Utilities
 // Jest formats it's snapshots prettily because it knows how to play with the React test renderer.
@@ -81,9 +81,3 @@ export function renderToSnapshot(input: VNode) {
 
   return undefined;
 }
-
-export default {
-  createSnapshotObject,
-  renderToSnapshot,
-  vNodeToSnapshot
-};
