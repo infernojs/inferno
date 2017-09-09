@@ -329,9 +329,7 @@ describe("Components (JSX)", () => {
     render() {
       return (
         <div style={this.props.styles}>
-          <span style={this.props.styles}>
-            The title is {this.props.title}
-          </span>
+          <span style={this.props.styles}>The title is {this.props.title}</span>
         </div>
       );
     }
@@ -415,11 +413,7 @@ describe("Components (JSX)", () => {
       return (
         <ul class="login-organizationlist">
           {this.state.organizations.map(result => {
-            return (
-              <li>
-                {result.name}
-              </li>
-            );
+            return <li>{result.name}</li>;
           })}
         </ul>
       );
@@ -709,10 +703,7 @@ describe("Components (JSX)", () => {
   });
 
   describe("should render a stateless component with a conditional state item", () => {
-    const StatelessComponent = props =>
-      <p>
-        {props.name}
-      </p>;
+    const StatelessComponent = props => <p>{props.name}</p>;
 
     class Testing extends Component {
       constructor(props) {
@@ -784,11 +775,7 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return (
-          <div>
-            {this.props.value}
-          </div>
-        );
+        return <div>{this.props.value}</div>;
       }
     }
 
@@ -800,11 +787,7 @@ describe("Components (JSX)", () => {
           children.push(<Value key={i} value={this.props.value} />);
         }
 
-        return (
-          <div>
-            {children}
-          </div>
-        );
+        return <div>{children}</div>;
 
         // this works - all values are updated
         // return <div>
@@ -859,11 +842,7 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return (
-          <div>
-            {this.props.children}
-          </div>
-        );
+        return <div>{this.props.children}</div>;
       }
     }
 
@@ -923,11 +902,7 @@ describe("Components (JSX)", () => {
             <div>
               {this.props.isok &&
                 ["a", "b"].map(x => {
-                  return (
-                    <span>
-                      {x}
-                    </span>
-                  );
+                  return <span>{x}</span>;
                 })}
             </div>
           </div>
@@ -982,9 +957,7 @@ describe("Components (JSX)", () => {
 
         return (
           <div>
-            <div>
-              {z(this.props.isok)}
-            </div>
+            <div>{z(this.props.isok)}</div>
           </div>
         );
       }
@@ -1001,10 +974,7 @@ describe("Components (JSX)", () => {
     });
   });
 
-  const StatelessComponent2 = props =>
-    <div>
-      {props.name}
-    </div>;
+  const StatelessComponent2 = props => <div>{props.name}</div>;
 
   it("should render stateless component", () => {
     render(<StatelessComponent2 name="A" />, container);
@@ -1021,11 +991,7 @@ describe("Components (JSX)", () => {
 
   it("should support module pattern components", function() {
     function Child({ test }) {
-      return (
-        <div>
-          {test}
-        </div>
-      );
+      return <div>{test}</div>;
     }
 
     render(<Child test="test" />, container);
@@ -1061,11 +1027,7 @@ describe("Components (JSX)", () => {
                   return <li>No cars!</li>;
                 } else {
                   return ["BMW", "Volvo", "Saab"].map(function(car) {
-                    return (
-                      <li>
-                        {car}
-                      </li>
-                    );
+                    return <li>{car}</li>;
                   });
                 }
               })()}
@@ -1124,11 +1086,7 @@ describe("Components (JSX)", () => {
           <div>
             <button onClick={this.handleClick}>1</button>
             {this.state.list.map(function(x, i) {
-              return (
-                <div>
-                  {i}
-                </div>
-              );
+              return <div>{i}</div>;
             })}
           </div>
         );
@@ -1161,10 +1119,11 @@ describe("Components (JSX)", () => {
   });
 
   describe("should render a stateless component with context", () => {
-    const StatelessComponent3 = ({ value }, { fortyTwo }) =>
+    const StatelessComponent3 = ({ value }, { fortyTwo }) => (
       <p>
         {value}-{fortyTwo || "ERROR"}
-      </p>;
+      </p>
+    );
 
     class First extends Component {
       constructor(props, context) {
@@ -1225,10 +1184,7 @@ describe("Components (JSX)", () => {
   });
 
   describe("should render a conditional stateless component", () => {
-    const StatelessComponent4 = ({ value }) =>
-      <p>
-        {value}
-      </p>;
+    const StatelessComponent4 = ({ value }) => <p>{value}</p>;
 
     class First extends Component {
       constructor(props) {
@@ -1254,9 +1210,9 @@ describe("Components (JSX)", () => {
             <button onClick={this._onClick}>
               Increase! {this.state.counter}
             </button>
-            {this.condition
-              ? <StatelessComponent4 value={this.state.counter} />
-              : null}
+            {this.condition ? (
+              <StatelessComponent4 value={this.state.counter} />
+            ) : null}
           </div>
         );
       }
@@ -1296,10 +1252,7 @@ describe("Components (JSX)", () => {
       container.appendChild(secondDiv);
     });
 
-    const StatelessComponent = ({ value }) =>
-      <p>
-        {value}
-      </p>;
+    const StatelessComponent = ({ value }) => <p>{value}</p>;
 
     class First extends Component {
       constructor(props) {
@@ -1325,9 +1278,9 @@ describe("Components (JSX)", () => {
             <button onClick={this._onClick}>
               {this.props.name} {this.state.counter}
             </button>
-            {this.condition
-              ? <StatelessComponent value={this.state.counter} />
-              : null}
+            {this.condition ? (
+              <StatelessComponent value={this.state.counter} />
+            ) : null}
           </div>
         );
       }
@@ -1471,31 +1424,21 @@ describe("Components (JSX)", () => {
         render() {
           const children = this.props.data.map(entity => {
             const { key, data } = entity;
-            const child = Array.isArray(data)
-              ? <List data={data} {...entity} />
-              : <Text data={data} {...entity} />;
-            return (
-              <li key={key}>
-                {child}
-              </li>
+            const child = Array.isArray(data) ? (
+              <List data={data} {...entity} />
+            ) : (
+              <Text data={data} {...entity} />
             );
+            return <li key={key}>{child}</li>;
           });
 
-          return (
-            <ul>
-              {children}
-            </ul>
-          );
+          return <ul>{children}</ul>;
         }
       }
 
       class Text extends Component {
         render() {
-          return (
-            <span>
-              {this.props.data}
-            </span>
-          );
+          return <span>{this.props.data}</span>;
         }
       }
 
@@ -1521,31 +1464,21 @@ describe("Components (JSX)", () => {
         render() {
           const children = this.props.data.map(entity => {
             const { key, data } = entity;
-            const child = Array.isArray(data)
-              ? <List {...entity} data={data} />
-              : <Text {...entity} data={data} />;
-            return (
-              <li key={key}>
-                {child}
-              </li>
+            const child = Array.isArray(data) ? (
+              <List {...entity} data={data} />
+            ) : (
+              <Text {...entity} data={data} />
             );
+            return <li key={key}>{child}</li>;
           });
 
-          return (
-            <ul>
-              {children}
-            </ul>
-          );
+          return <ul>{children}</ul>;
         }
       }
 
       class Text extends Component {
         render() {
-          return (
-            <span>
-              {this.props.data}
-            </span>
-          );
+          return <span>{this.props.data}</span>;
         }
       }
 
@@ -1581,11 +1514,7 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return (
-          <div>
-            {!this.state.x ? <MakeA /> : <MakeY />}
-          </div>
-        );
+        return <div>{!this.state.x ? <MakeA /> : <MakeY />}</div>;
       }
     }
 
@@ -1644,11 +1573,7 @@ describe("Components (JSX)", () => {
           padding: "0 20px",
           fontSize: "40px"
         };
-        return (
-          <span style={style}>
-            {this.props.text}
-          </span>
-        );
+        return <span style={style}>{this.props.text}</span>;
       }
     }
 
@@ -1707,11 +1632,7 @@ describe("Components (JSX)", () => {
           padding: "0 20px",
           fontSize: "40px"
         };
-        return (
-          <span style={style}>
-            {this.props.text}
-          </span>
-        );
+        return <span style={style}>{this.props.text}</span>;
       }
     }
 
@@ -2065,11 +1986,7 @@ describe("Components (JSX)", () => {
 
       render() {
         instance = this;
-        return (
-          <div>
-            {this.props.foo}
-          </div>
-        );
+        return <div>{this.props.foo}</div>;
       }
     }
 
@@ -2086,18 +2003,13 @@ describe("Components (JSX)", () => {
   });
   describe("handling of different primatives", () => {
     it("Should correctly handle boolean values (github#255)", () => {
-      const Todo = ({ todo }) =>
+      const Todo = ({ todo }) => (
         <tr>
-          <td>
-            {todo.id}
-          </td>
-          <td>
-            {todo.desc}
-          </td>
-          <td>
-            {todo.done}
-          </td>
-        </tr>;
+          <td>{todo.id}</td>
+          <td>{todo.desc}</td>
+          <td>{todo.done}</td>
+        </tr>
+      );
 
       render(<Todo todo={{ done: false }} />, container);
       expect(container.innerHTML).toBe("<tr><td></td><td></td><td></td></tr>");
@@ -2190,11 +2102,7 @@ describe("Components (JSX)", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.renderContent()}
-            </div>
-          );
+          return <div>{this.renderContent()}</div>;
         }
       }
 
@@ -2220,13 +2128,14 @@ describe("Components (JSX)", () => {
     it("Should be able to swap stateless component to DOM list when doing setState", () => {
       let change1 = null;
 
-      const FooBar = () =>
+      const FooBar = () => (
         <div>
           <span>foo1</span>
           <span>foo2</span>
           <span>foo3</span>
           <span>foo4</span>
-        </div>;
+        </div>
+      );
 
       class Tester extends Component {
         constructor(props) {
@@ -2258,11 +2167,7 @@ describe("Components (JSX)", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.renderContent()}
-            </div>
-          );
+          return <div>{this.renderContent()}</div>;
         }
       }
 
@@ -2300,11 +2205,7 @@ describe("Components (JSX)", () => {
 
         render() {
           renderCount++;
-          return (
-            <div>
-              {this.state.foo}
-            </div>
-          );
+          return <div>{this.state.foo}</div>;
         }
       }
 
@@ -2401,10 +2302,7 @@ describe("Components (JSX)", () => {
     });
 
     it("should mount child component with its defaultProps", () => {
-      const Parent = props =>
-        <div>
-          {props.children.props.a}
-        </div>;
+      const Parent = props => <div>{props.children.props.a}</div>;
       render(
         <Parent>
           <Comp1 c="C" />
@@ -2441,11 +2339,7 @@ describe("Components (JSX)", () => {
             childrenPropertABeforeMount
           );
 
-          return (
-            <div>
-              {this.props.children}
-            </div>
-          );
+          return <div>{this.props.children}</div>;
         }
       }
 
@@ -2494,11 +2388,7 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return (
-          <div>
-            {this.state.foo}
-          </div>
-        );
+        return <div>{this.state.foo}</div>;
       }
     }
 
@@ -2660,9 +2550,7 @@ describe("Components (JSX)", () => {
             >
               Swap Rows
             </button>
-            <div>
-              {children}
-            </div>
+            <div>{children}</div>
           </div>
         );
       }
@@ -2767,9 +2655,7 @@ describe("Components (JSX)", () => {
             >
               Swap Rows
             </button>
-            <div>
-              {children}
-            </div>
+            <div>{children}</div>
           </div>
         );
       }
@@ -2871,9 +2757,7 @@ describe("Components (JSX)", () => {
             >
               Swap Rows
             </button>
-            <div>
-              {children}
-            </div>
+            <div>{children}</div>
           </div>
         );
       }
@@ -2970,12 +2854,8 @@ describe("Components (JSX)", () => {
             >
               Swap Rows
             </button>
-            <div>
-              {children}
-            </div>
-            <div>
-              {children}
-            </div>
+            <div>{children}</div>
+            <div>{children}</div>
           </div>
         );
       }
@@ -3053,12 +2933,8 @@ describe("Components (JSX)", () => {
             >
               Swap Rows
             </button>
-            <div>
-              {children}
-            </div>
-            <div>
-              {children}
-            </div>
+            <div>{children}</div>
+            <div>{children}</div>
           </div>
         );
       }
@@ -3099,11 +2975,7 @@ describe("Components (JSX)", () => {
       }
 
       render() {
-        return (
-          <div>
-            {i}
-          </div>
-        );
+        return <div>{i}</div>;
       }
     }
 
@@ -3162,12 +3034,8 @@ describe("Components (JSX)", () => {
             >
               Swap Rows
             </button>
-            <div>
-              {this.state.reverse ? [a, b].reverse() : [a, b]}
-            </div>
-            <div>
-              {this.state.reverse ? [a, b].reverse() : [a, b]}
-            </div>
+            <div>{this.state.reverse ? [a, b].reverse() : [a, b]}</div>
+            <div>{this.state.reverse ? [a, b].reverse() : [a, b]}</div>
           </div>
         );
       }
@@ -3207,12 +3075,8 @@ describe("Components (JSX)", () => {
             >
               Swap Rows
             </button>
-            <div>
-              {children}
-            </div>
-            <div>
-              {children}
-            </div>
+            <div>{children}</div>
+            <div>{children}</div>
           </div>
         );
       }
@@ -3251,19 +3115,14 @@ describe("Components (JSX)", () => {
         render() {
           return (
             <div>
-              <span>
-                {this.state.text}
-              </span>
-              {this.props.toggle
-                ? [
-                    <Tester
-                      toggle={this.props.toggle}
-                      call={this.changeState}
-                    />
-                  ]
-                : <span style={this.props.toggle ? { color: "blue" } : null}>
-                    tester
-                  </span>}
+              <span>{this.state.text}</span>
+              {this.props.toggle ? (
+                [<Tester toggle={this.props.toggle} call={this.changeState} />]
+              ) : (
+                <span style={this.props.toggle ? { color: "blue" } : null}>
+                  tester
+                </span>
+              )}
             </div>
           );
         }

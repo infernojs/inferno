@@ -99,6 +99,7 @@
     "jsdom": "^11.2.0",
     "lerna": "2.1.2",
     "lint-staged": "^4.1.2",
+    "madge": "^2.2.0",
     "minimist": "^1.2.0",
     "npm-run-all": "^4.1.1",
     "optimize-js": "^1.0.3",

@@ -3,80 +3,17 @@
  */ /** TypeDoc Comment */
 
 import { isNullOrUndef } from "inferno-shared";
-import { EMPTY_OBJ } from "../utils";
+import {createWrappedFunction} from "./wrapper";
 
 export function isCheckedType(type) {
   return type === "checkbox" || type === "radio";
 }
 
-function onTextInputChange(e) {
-  const vNode = this.vNode;
-  const props = vNode.props || EMPTY_OBJ;
-  const dom = vNode.dom;
-  const previousValue = props.value;
+const onTextInputChange = createWrappedFunction('onInput', applyValue);
 
-  if (props.onInput) {
-    const event = props.onInput;
+const wrappedOnChange = createWrappedFunction('onChange');
 
-    if (event.event) {
-      event.event(event.data, e);
-    } else {
-      event(e);
-    }
-  } else if (props.oninput) {
-    props.oninput(e);
-  }
-
-  // the user may have updated the vNode from the above onInput events syncronously
-  // so we need to get it from the context of `this` again
-  const newVNode = this.vNode;
-  const newProps = newVNode.props || EMPTY_OBJ;
-
-  // If render is going async there is no value change yet, it will come back to process input soon
-  if (previousValue !== newProps.value) {
-    // When this happens we need to store current cursor position and restore it, to avoid jumping
-
-    applyValue(newProps, dom);
-  }
-}
-
-function wrappedOnChange(e) {
-  const props = this.vNode.props || EMPTY_OBJ;
-  const event = props.onChange;
-
-  if (event.event) {
-    event.event(event.data, e);
-  } else {
-    event(e);
-  }
-}
-
-function onCheckboxChange(e) {
-  e.stopPropagation(); // This click should not propagate its for internal use
-  const vNode = this.vNode;
-  const props = vNode.props || EMPTY_OBJ;
-  const dom = vNode.dom;
-
-  if (props.onClick) {
-    const event = props.onClick;
-
-    if (event.event) {
-      event.event(event.data, e);
-    } else {
-      event(e);
-    }
-  } else if (props.onclick) {
-    props.onclick(e);
-  }
-
-  // the user may have updated the vNode from the above onInput events syncronously
-  // so we need to get it from the context of `this` again
-  const newVNode = this.vNode;
-  const newProps = newVNode.props || EMPTY_OBJ;
-
-  // If render is going async there is no value change yet, it will come back to process input soon
-  applyValue(newProps, dom);
-}
+const onCheckboxChange = createWrappedFunction('onClick', applyValue);
 
 export function processInput(
   vNode,
@@ -87,19 +24,16 @@ export function processInput(
 ): void {
   applyValue(nextPropsOrEmpty, dom);
   if (isControlled) {
-    dom.vNode = vNode; // TODO: Remove this when implementing Fiber's
+    dom.vNode = vNode;
 
     if (mounting) {
       if (isCheckedType(nextPropsOrEmpty.type)) {
         dom.onclick = onCheckboxChange;
-        dom.onclick.wrapped = true;
       } else {
         dom.oninput = onTextInputChange;
-        dom.oninput.wrapped = true;
       }
       if (nextPropsOrEmpty.onChange) {
         dom.onchange = wrappedOnChange;
-        dom.onchange.wrapped = true;
       }
     }
   }

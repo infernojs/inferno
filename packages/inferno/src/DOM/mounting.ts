@@ -11,14 +11,12 @@ import {
   isObject,
   isStringOrNumber,
   isUndefined,
-  LifecycleClass,
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 import { options } from "../core/options";
 import { directClone, isVNode, VNode } from "../core/VNodes";
 import { patchProp } from "./patching";
-import { recycleComponent, recycleElement } from "./recycling";
 import { componentToDOMNodeMap } from "./rendering";
 import {
   appendChild,
@@ -36,7 +34,7 @@ import {
 export function mount(
   vNode: VNode,
   parentDom: Element | null,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
@@ -99,21 +97,11 @@ export function mountVoid(vNode: VNode, parentDom: Element | null) {
 export function mountElement(
   vNode: VNode,
   parentDom: Element | null,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
   let dom;
-  if (options.recyclingEnabled) {
-    dom = recycleElement(vNode, lifecycle, context, isSVG);
-
-    if (!isNull(dom)) {
-      if (!isNull(parentDom)) {
-        appendChild(parentDom, dom);
-      }
-      return dom;
-    }
-  }
   const flags = vNode.flags;
 
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
@@ -172,7 +160,7 @@ export function mountElement(
 export function mountArrayChildren(
   children,
   dom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
@@ -192,22 +180,12 @@ export function mountArrayChildren(
 export function mountComponent(
   vNode: VNode,
   parentDom: Element | null,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean,
   isClass: boolean
 ) {
   let dom;
-  if (options.recyclingEnabled) {
-    dom = recycleComponent(vNode, lifecycle, context, isSVG);
-
-    if (!isNull(dom)) {
-      if (!isNull(parentDom)) {
-        appendChild(parentDom, dom);
-      }
-      return dom;
-    }
-  }
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref;
@@ -255,7 +233,7 @@ export function mountClassComponentCallbacks(
   vNode: VNode,
   ref,
   instance,
-  lifecycle: LifecycleClass
+  lifecycle: Function[]
 ) {
   if (ref) {
     if (isFunction(ref)) {
@@ -285,7 +263,7 @@ export function mountClassComponentCallbacks(
   const afterMount = options.afterMount;
 
   if (hasDidMount || !isNull(afterMount)) {
-    lifecycle.addListener(() => {
+    lifecycle.push(() => {
       instance._updating = true;
       if (afterMount) {
         afterMount(vNode);
@@ -302,21 +280,21 @@ export function mountFunctionalComponentCallbacks(
   props,
   ref,
   dom,
-  lifecycle: LifecycleClass
+  lifecycle: Function[]
 ) {
   if (ref) {
     if (!isNullOrUndef(ref.onComponentWillMount)) {
       ref.onComponentWillMount(props);
     }
     if (!isNullOrUndef(ref.onComponentDidMount)) {
-      lifecycle.addListener(() => ref.onComponentDidMount(dom, props));
+      lifecycle.push(() => ref.onComponentDidMount(dom, props));
     }
   }
 }
 
-export function mountRef(dom: Element, value, lifecycle: LifecycleClass) {
+export function mountRef(dom: Element, value, lifecycle: Function[]) {
   if (isFunction(value)) {
-    lifecycle.addListener(() => value(dom));
+    lifecycle.push(() => value(dom));
   } else {
     if (isInvalid(value)) {
       return;

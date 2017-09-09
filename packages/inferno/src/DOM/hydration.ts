@@ -9,7 +9,6 @@ import {
   isNullOrUndef,
   isObject,
   isStringOrNumber,
-  LifecycleClass,
   throwError,
   warning
 } from "inferno-shared";
@@ -64,7 +63,7 @@ function normalizeChildNodes(parentDom) {
 function hydrateComponent(
   vNode: VNode,
   dom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context,
   isSVG: boolean,
   isClass: boolean
@@ -106,7 +105,7 @@ function hydrateComponent(
 function hydrateElement(
   vNode: VNode,
   dom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ): Element {
@@ -169,7 +168,7 @@ function hydrateElement(
 function hydrateChildren(
   children: InfernoChildren,
   parentDom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ): void {
@@ -250,7 +249,7 @@ function hydrateVoid(vNode: VNode, dom: Element): Element {
 function hydrate(
   vNode: VNode,
   dom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
@@ -284,7 +283,7 @@ function hydrate(
 export function hydrateRoot(
   input,
   parentDom: Element | null,
-  lifecycle: LifecycleClass
+  lifecycle: Function[]
 ) {
   if (!isNull(parentDom)) {
     let dom = parentDom.firstChild as Element;

@@ -27,11 +27,7 @@ class Comp3 extends Component {
 }
 
 function Comp4({ children }) {
-  return (
-    <section>
-      {children}
-    </section>
-  );
+  return <section>{children}</section>;
 }
 
 class Comp5 extends Component {
@@ -77,20 +73,14 @@ describe("SSR Hydration - (JSX)", () => {
       expect2: "<div><p>Hello world<sup><a>Foo</a></sup></p></div>"
     },
     {
-      node: (
-        <div>
-          {<span>Hello world</span>}
-        </div>
-      ),
+      node: <div>{<span>Hello world</span>}</div>,
       expect1: "<div><span>Hello world</span></div>",
       expect2: "<div><span>Hello world</span></div>"
     },
     {
       node: (
         <div>
-          <span>
-            {<span>Hello world</span>}
-          </span>
+          <span>{<span>Hello world</span>}</span>
         </div>
       ),
       expect1: "<div><span><span>Hello world</span></span></div>",
@@ -129,29 +119,17 @@ describe("SSR Hydration - (JSX)", () => {
         "<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>"
     },
     {
-      node: (
-        <div>
-          Hello world, {"Foo!"}
-        </div>
-      ),
+      node: <div>Hello world, {"Foo!"}</div>,
       expect1: "<div>Hello world, <!---->Foo!</div>",
       expect2: "<div>Hello world, Foo!</div>"
     },
     {
-      node: (
-        <div>
-          Hello world, {["Foo!", "Bar!"]}
-        </div>
-      ),
+      node: <div>Hello world, {["Foo!", "Bar!"]}</div>,
       expect1: "<div>Hello world, <!---->Foo!<!---->Bar!</div>",
       expect2: "<div>Hello world, Foo!Bar!</div>"
     },
     {
-      node: (
-        <div>
-          Hello world!{null}
-        </div>
-      ),
+      node: <div>Hello world!{null}</div>,
       expect1: "<div>Hello world!</div>",
       expect2: "<div>Hello world!</div>"
     },
@@ -239,11 +217,7 @@ describe("SSR Hydration - (JSX)", () => {
       expect3: "<div>Hello world</div>"
     },
     {
-      node: (
-        <div>
-          Hello world, {"Foo!"}
-        </div>
-      ),
+      node: <div>Hello world, {"Foo!"}</div>,
       expect1: "<div>Hello world, <!---->Foo!</div>",
       node2: (
         <div>
@@ -251,11 +225,7 @@ describe("SSR Hydration - (JSX)", () => {
         </div>
       ),
       expect2: "<div>Start Hello world, Foo!</div>",
-      node3: (
-        <div>
-          Hello world, {"Foo!"}
-        </div>
-      ),
+      node3: <div>Hello world, {"Foo!"}</div>,
       expect3: "<div>Hello world, Foo!</div>"
     },
     {
@@ -575,33 +545,19 @@ describe("SSR Hydration - (JSX)", () => {
         CSR_expected: "<div><p>Hello bar<span><em>Foo</em></span></p></div>"
       },
       {
-        SSR: (
-          <div>
-            {<span>Hello world</span>}
-          </div>
-        ),
+        SSR: <div>{<span>Hello world</span>}</div>,
         SSR_expected: "<div><span>Hello world</span></div>",
-        CSR: (
-          <em>
-            {<span>Hello 11</span>}
-          </em>
-        ),
+        CSR: <em>{<span>Hello 11</span>}</em>,
         CSR_expected: "<em><span>Hello 11</span></em>"
       },
       {
         SSR: (
           <div>
-            <span>
-              {<span>Hello world</span>}
-            </span>
+            <span>{<span>Hello world</span>}</span>
           </div>
         ),
         SSR_expected: "<div><span><span>Hello world</span></span></div>",
-        CSR: (
-          <em>
-            {<span>Hello 11</span>}
-          </em>
-        ),
+        CSR: <em>{<span>Hello 11</span>}</em>,
         CSR_expected: "<em><span>Hello 11</span></em>"
       },
       {
@@ -651,13 +607,9 @@ describe("SSR Hydration - (JSX)", () => {
           <Comp4>
             <h1>Hello world again!</h1>
             <p>
-              <em>
-                {[1, 2, 3]}
-              </em>
+              <em>{[1, 2, 3]}</em>
             </p>
-            <p>
-              {null}
-            </p>
+            <p>{null}</p>
             <p>
               <em>Foo</em>
             </p>
@@ -667,23 +619,15 @@ describe("SSR Hydration - (JSX)", () => {
           "<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>"
       },
       {
-        SSR: (
-          <div>
-            Hello world, {"Foo!"}
-          </div>
-        ),
+        SSR: <div>Hello world, {"Foo!"}</div>,
         SSR_expected: "<div>Hello world, <!---->Foo!</div>",
         CSR: (
           <Comp4>
             <h1>Hello world again!</h1>
             <p>
-              <em>
-                {[1, 2, 3]}
-              </em>
+              <em>{[1, 2, 3]}</em>
             </p>
-            <p>
-              {null}
-            </p>
+            <p>{null}</p>
             <p>
               <em>Foo</em>
             </p>
@@ -693,45 +637,21 @@ describe("SSR Hydration - (JSX)", () => {
           "<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>"
       },
       {
-        SSR: (
-          <div>
-            Hello world, {"Foo!"}
-          </div>
-        ),
+        SSR: <div>Hello world, {"Foo!"}</div>,
         SSR_expected: "<div>Hello world, <!---->Foo!</div>",
-        CSR: (
-          <div>
-            Hello world, {"BarBar!"}
-          </div>
-        ),
+        CSR: <div>Hello world, {"BarBar!"}</div>,
         CSR_expected: "<div>Hello world, BarBar!</div>"
       },
       {
-        SSR: (
-          <div>
-            Hello world, {["Foo!", "Bar!"]}
-          </div>
-        ),
+        SSR: <div>Hello world, {["Foo!", "Bar!"]}</div>,
         SSR_expected: "<div>Hello world, <!---->Foo!<!---->Bar!</div>",
-        CSR: (
-          <div>
-            Hello world, {["Foo!", "Bar!"]}
-          </div>
-        ),
+        CSR: <div>Hello world, {["Foo!", "Bar!"]}</div>,
         CSR_expected: "<div>Hello world, Foo!Bar!</div>"
       },
       {
-        SSR: (
-          <div>
-            Hello world!{null}
-          </div>
-        ),
+        SSR: <div>Hello world!{null}</div>,
         SSR_expected: "<div>Hello world!</div>",
-        CSR: (
-          <div>
-            Hello world!{false}
-          </div>
-        ),
+        CSR: <div>Hello world!{false}</div>,
         CSR_expected: "<div>Hello world!</div>"
       },
       {
@@ -871,17 +791,9 @@ describe("SSR Hydration - (JSX)", () => {
         CSR2_expected: "<span>B</span>"
       },
       {
-        SSR: (
-          <div>
-            {<span>Hello world</span>}
-          </div>
-        ),
+        SSR: <div>{<span>Hello world</span>}</div>,
         SSR_expected: "<div><span>Hello world</span></div>",
-        CSR: (
-          <em>
-            {<span>Hello 11</span>}
-          </em>
-        ),
+        CSR: <em>{<span>Hello 11</span>}</em>,
         CSR_expected: "<em><span>Hello 11</span></em>",
         CSR2: <B />,
         CSR2_expected: "<span>B</span>"
@@ -889,17 +801,11 @@ describe("SSR Hydration - (JSX)", () => {
       {
         SSR: (
           <div>
-            <span>
-              {<span>Hello world</span>}
-            </span>
+            <span>{<span>Hello world</span>}</span>
           </div>
         ),
         SSR_expected: "<div><span><span>Hello world</span></span></div>",
-        CSR: (
-          <em>
-            {<span>Hello 11</span>}
-          </em>
-        ),
+        CSR: <em>{<span>Hello 11</span>}</em>,
         CSR_expected: "<em><span>Hello 11</span></em>",
         CSR2: <B />,
         CSR2_expected: "<span>B</span>"
@@ -955,13 +861,9 @@ describe("SSR Hydration - (JSX)", () => {
           <Comp4>
             <h1>Hello world again!</h1>
             <p>
-              <em>
-                {[1, 2, 3]}
-              </em>
+              <em>{[1, 2, 3]}</em>
             </p>
-            <p>
-              {null}
-            </p>
+            <p>{null}</p>
             <p>
               <em>Foo</em>
             </p>
@@ -973,23 +875,15 @@ describe("SSR Hydration - (JSX)", () => {
         CSR2_expected: "<span>B</span>"
       },
       {
-        SSR: (
-          <div>
-            Hello world, {"Foo!"}
-          </div>
-        ),
+        SSR: <div>Hello world, {"Foo!"}</div>,
         SSR_expected: "<div>Hello world, <!---->Foo!</div>",
         CSR: (
           <Comp4>
             <h1>Hello world again!</h1>
             <p>
-              <em>
-                {[1, 2, 3]}
-              </em>
+              <em>{[1, 2, 3]}</em>
             </p>
-            <p>
-              {null}
-            </p>
+            <p>{null}</p>
             <p>
               <em>Foo</em>
             </p>
@@ -1001,49 +895,25 @@ describe("SSR Hydration - (JSX)", () => {
         CSR2_expected: "<span>B</span>"
       },
       {
-        SSR: (
-          <div>
-            Hello world, {"Foo!"}
-          </div>
-        ),
+        SSR: <div>Hello world, {"Foo!"}</div>,
         SSR_expected: "<div>Hello world, <!---->Foo!</div>",
-        CSR: (
-          <div>
-            Hello world, {"BarBar!"}
-          </div>
-        ),
+        CSR: <div>Hello world, {"BarBar!"}</div>,
         CSR_expected: "<div>Hello world, BarBar!</div>",
         CSR2: <B />,
         CSR2_expected: "<span>B</span>"
       },
       {
-        SSR: (
-          <div>
-            Hello world, {["Foo!", "Bar!"]}
-          </div>
-        ),
+        SSR: <div>Hello world, {["Foo!", "Bar!"]}</div>,
         SSR_expected: "<div>Hello world, <!---->Foo!<!---->Bar!</div>",
-        CSR: (
-          <div>
-            Hello world, {["Foo!", "Bar!"]}
-          </div>
-        ),
+        CSR: <div>Hello world, {["Foo!", "Bar!"]}</div>,
         CSR_expected: "<div>Hello world, Foo!Bar!</div>",
         CSR2: <B />,
         CSR2_expected: "<span>B</span>"
       },
       {
-        SSR: (
-          <div>
-            Hello world!{null}
-          </div>
-        ),
+        SSR: <div>Hello world!{null}</div>,
         SSR_expected: "<div>Hello world!</div>",
-        CSR: (
-          <div>
-            Hello world!{false}
-          </div>
-        ),
+        CSR: <div>Hello world!{false}</div>,
         CSR_expected: "<div>Hello world!</div>",
         CSR2: <B />,
         CSR2_expected: "<span>B</span>"

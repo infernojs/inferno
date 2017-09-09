@@ -133,7 +133,7 @@ describe("Select / select multiple (JSX)", () => {
   });
 
   it("should populate the value attribute on select multiple using groups", () => {
-    const template = val =>
+    const template = val => (
       <select multiple={true} value={val}>
         <optgroup label="foo-group">
           <option value="foo" />
@@ -141,7 +141,8 @@ describe("Select / select multiple (JSX)", () => {
         <optgroup label="bar-group" disabled>
           <option value="bar" />
         </optgroup>
-      </select>;
+      </select>
+    );
 
     // render(template(undefined), container);
     render(template(["foo", "bar"]), container);

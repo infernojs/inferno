@@ -5,6 +5,7 @@
 import { isArray, isInvalid, isNullOrUndef } from "inferno-shared";
 import { isVNode } from "../../core/VNodes";
 import { EMPTY_OBJ } from "../utils";
+import {createWrappedFunction} from "./wrapper";
 
 function updateChildOptionGroup(vNode, value) {
   const type = vNode.type;
@@ -40,35 +41,7 @@ function updateChildOption(vNode, value) {
   }
 }
 
-function onSelectChange(e) {
-  const vNode = this.vNode;
-  const props = vNode.props || EMPTY_OBJ;
-  const dom = vNode.dom;
-  const previousValue = props.value;
-
-  if (props.onChange) {
-    const event = props.onChange;
-
-    if (event.event) {
-      event.event(event.data, e);
-    } else {
-      event(e);
-    }
-  } else if (props.onchange) {
-    props.onchange(e);
-  }
-  // the user may have updated the vNode from the above onInput events syncronously
-  // so we need to get it from the context of `this` again
-  const newVNode = this.vNode;
-  const newProps = newVNode.props || EMPTY_OBJ;
-
-  // If render is going async there is no value change yet, it will come back to process input soon
-  if (previousValue !== newProps.value) {
-    // When this happens we need to store current cursor position and restore it, to avoid jumping
-
-    applyValue(newVNode, dom, newProps, false);
-  }
-}
+const onSelectChange = createWrappedFunction('onChange', applyValue);
 
 export function processSelect(
   vNode,
@@ -80,11 +53,10 @@ export function processSelect(
   applyValue(vNode, dom, nextPropsOrEmpty, mounting);
 
   if (isControlled) {
-    dom.vNode = vNode; // TODO: Remove this when implementing Fiber's
+    dom.vNode = vNode;
 
     if (mounting) {
       dom.onchange = onSelectChange;
-      dom.onchange.wrapped = true;
     }
   }
 }

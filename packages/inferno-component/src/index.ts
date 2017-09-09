@@ -18,7 +18,6 @@ import {
   isArray,
   isFunction,
   isInvalid,
-  isNull,
   isNullOrUndef,
   isStringOrNumber,
   NO_OP,
@@ -48,7 +47,7 @@ export interface ComponentLifecycle<P, S> {
 // when a components root VNode is also a component, we can run into issues
 // this will recursively look for vNode.parentNode if the VNode is a component
 function updateParentComponentVNodes(vNode: VNode, dom: Element) {
-  if (vNode.flags & VNodeFlags.Component) {
+  if ((vNode.flags & VNodeFlags.Component) > 0) {
     const parentVNode = vNode.parentVNode;
 
     if (parentVNode) {
@@ -116,7 +115,7 @@ function queueStateChanges<P, S>(
   } else {
     component._pendingSetState = true;
     if (!isNullOrUndef(callback) && component._blockRender) {
-      (component._lifecycle as any).addListener(callback.bind(component));
+      (component._lifecycle as any).push(callback.bind(component));
     }
   }
 }
@@ -203,8 +202,7 @@ function applyState<P, S>(
         parentDom as Element,
         lifeCycle,
         childContext,
-        component._isSVG,
-        false
+        component._isSVG
       );
 
       // If this component was unmounted by its parent, do nothing. This is no-op
@@ -212,12 +210,15 @@ function applyState<P, S>(
         return;
       }
 
-      lifeCycle.trigger();
+      let listener;
+      while ((listener = lifeCycle.shift()) !== undefined) {
+        listener();
+      }
 
-      if (!isNullOrUndef(component.componentDidUpdate)) {
+      if (isFunction(component.componentDidUpdate)) {
         component.componentDidUpdate(props, prevState as S, context);
       }
-      if (!isNull(options.afterUpdate)) {
+      if (isFunction(options.afterUpdate)) {
         options.afterUpdate(vNode);
       }
     }

@@ -7,14 +7,12 @@ import {
   isInvalid,
   isNull,
   isNullOrUndef,
-  Lifecycle,
-  LifecycleClass,
   NO_OP,
   throwError,
   warning
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { options, Root } from "../core/options";
+import {options, Root} from "../core/options";
 import {
   directClone,
   InfernoChildren,
@@ -27,9 +25,6 @@ import { patch } from "./patching";
 import { unmount } from "./unmounting";
 import { EMPTY_OBJ } from "./utils";
 
-// rather than use a Map, like we did before, we can use an array here
-// given there shouldn't be THAT many roots on the page, the difference
-// in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 export const componentToDOMNodeMap = new Map();
 const roots = options.roots;
 /**
@@ -64,13 +59,11 @@ function getRoot(dom): Root | null {
 
 function setRoot(
   dom: Element | SVGAElement,
-  input: InfernoInput,
-  lifecycle: LifecycleClass
+  input: VNode
 ): Root {
   const root: Root = {
     dom,
-    input,
-    lifecycle
+    input
   };
 
   roots.push(root);
@@ -119,14 +112,13 @@ export function render(
     }
     throwError();
   }
-  if ((input as any) === NO_OP) {
+  if ((input as string) === NO_OP) {
     return;
   }
+  const lifecycle = [];
   let root = getRoot(parentDom);
 
   if (isNull(root)) {
-    const lifecycle = new Lifecycle();
-
     if (!isInvalid(input)) {
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
@@ -140,20 +132,13 @@ export function render(
           false
         );
       }
-      root = setRoot(parentDom as any, input, lifecycle);
-      lifecycle.trigger();
+      root = setRoot(parentDom as any, input as VNode);
     }
   } else {
-    const lifecycle = root.lifecycle;
-
-    lifecycle.listeners = [];
     if (isNullOrUndef(input)) {
       unmount(
         root.input as VNode,
-        parentDom as Element,
-        lifecycle,
-        false,
-        false
+        parentDom as Element
       );
       removeRoot(root);
     } else {
@@ -166,13 +151,17 @@ export function render(
         parentDom as Element,
         lifecycle,
         EMPTY_OBJ,
-        false,
         false
       );
+      root.input = input as VNode;
     }
-    root.input = input;
-    lifecycle.trigger();
   }
+
+  let listener;
+  while ((listener = lifecycle.shift()) !== undefined) {
+    listener();
+  }
+
   if (root) {
     const rootInput: VNode = root.input as VNode;
 

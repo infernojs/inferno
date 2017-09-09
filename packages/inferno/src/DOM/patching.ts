@@ -14,7 +14,6 @@ import {
   isString,
   isStringOrNumber,
   isUndefined,
-  LifecycleClass,
   NO_OP,
   throwError
 } from "inferno-shared";
@@ -55,7 +54,6 @@ import {
   isSameInnerHTML,
   removeAllChildren,
   replaceChild,
-  replaceLastChildAndUnmount,
   replaceVNode,
   replaceWithNewNode,
   setTextContent,
@@ -70,10 +68,9 @@ export function patch(
   lastVNode: VNode,
   nextVNode: VNode,
   parentDom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
-  isSVG: boolean,
-  isRecycling: boolean
+  isSVG: boolean
 ) {
   if (lastVNode !== nextVNode) {
     const lastFlags = lastVNode.flags;
@@ -90,16 +87,13 @@ export function patch(
           lifecycle,
           context,
           isSVG,
-          isClass,
-          isRecycling
+          isClass
         );
       } else {
         replaceVNode(
           parentDom,
           mountComponent(nextVNode, null, lifecycle, context, isSVG, isClass),
-          lastVNode,
-          lifecycle,
-          isRecycling
+          lastVNode
         );
       }
     } else if (nextFlags & VNodeFlags.Element) {
@@ -110,16 +104,13 @@ export function patch(
           parentDom,
           lifecycle,
           context,
-          isSVG,
-          isRecycling
+          isSVG
         );
       } else {
         replaceVNode(
           parentDom,
           mountElement(nextVNode, null, lifecycle, context, isSVG),
-          lastVNode,
-          lifecycle,
-          isRecycling
+          lastVNode
         );
       }
     } else if (nextFlags & VNodeFlags.Text) {
@@ -129,9 +120,7 @@ export function patch(
         replaceVNode(
           parentDom,
           mountText(nextVNode, null),
-          lastVNode,
-          lifecycle,
-          isRecycling
+          lastVNode
         );
       }
     } else if (nextFlags & VNodeFlags.Void) {
@@ -141,21 +130,15 @@ export function patch(
         replaceVNode(
           parentDom,
           mountVoid(nextVNode, null),
-          lastVNode,
-          lifecycle,
-          isRecycling
+          lastVNode
         );
       }
     } else {
       // Error case: mount new one replacing old one
-      replaceLastChildAndUnmount(
-        lastVNode,
-        nextVNode,
+      replaceVNode(
         parentDom,
-        lifecycle,
-        context,
-        isSVG,
-        isRecycling
+        mount(nextVNode, null, lifecycle, context, isSVG),
+        lastVNode
       );
     }
   }
@@ -163,14 +146,12 @@ export function patch(
 
 function unmountChildren(
   children,
-  dom: Element,
-  lifecycle: LifecycleClass,
-  isRecycling: boolean
+  dom: Element
 ) {
   if (isVNode(children)) {
-    unmount(children, dom, lifecycle, true, isRecycling);
+    unmount(children, dom);
   } else if (isArray(children)) {
-    removeAllChildren(dom, children, lifecycle, isRecycling);
+    removeAllChildren(dom, children);
   } else {
     dom.textContent = "";
   }
@@ -180,10 +161,9 @@ export function patchElement(
   lastVNode: VNode,
   nextVNode: VNode,
   parentDom: Element | null,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
-  isSVG: boolean,
-  isRecycling: boolean
+  isSVG: boolean
 ) {
   const nextTag = nextVNode.type;
   const lastTag = lastVNode.type;
@@ -195,8 +175,7 @@ export function patchElement(
       parentDom,
       lifecycle,
       context,
-      isSVG,
-      isRecycling
+      isSVG
     );
   } else {
     const dom = lastVNode.dom as Element;
@@ -223,8 +202,7 @@ export function patchElement(
         dom,
         lifecycle,
         context,
-        childrenIsSVG,
-        isRecycling
+        childrenIsSVG
       );
     }
 
@@ -249,13 +227,12 @@ export function patchElement(
         }
 
         if (isFormElement) {
-          // When inferno is recycling form element, we need to process it like it would be mounting
           processElement(
             nextFlags,
             nextVNode,
             dom,
             nextPropsOrEmpty,
-            isRecycling,
+            false,
             hasControlledValue
           );
         }
@@ -285,7 +262,7 @@ export function patchElement(
       }
     }
     if (nextRef) {
-      if (lastVNode.ref !== nextRef || isRecycling) {
+      if (lastVNode.ref !== nextRef) {
         mountRef(dom as Element, nextRef, lifecycle);
       }
     }
@@ -298,10 +275,9 @@ function patchChildren(
   lastChildren,
   nextChildren,
   dom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
-  isSVG: boolean,
-  isRecycling: boolean
+  isSVG: boolean
 ) {
   let patchArray = false;
   let patchKeyed = false;
@@ -315,7 +291,7 @@ function patchChildren(
     patchKeyed = true;
     patchArray = true;
   } else if (isInvalid(nextChildren)) {
-    unmountChildren(lastChildren, dom, lifecycle, isRecycling);
+    unmountChildren(lastChildren, dom);
   } else if (isInvalid(lastChildren)) {
     if (isStringOrNumber(nextChildren)) {
       setTextContent(dom, nextChildren);
@@ -330,7 +306,7 @@ function patchChildren(
     if (isStringOrNumber(lastChildren)) {
       updateTextContent(dom, nextChildren);
     } else {
-      unmountChildren(lastChildren, dom, lifecycle, isRecycling);
+      unmountChildren(lastChildren, dom);
       setTextContent(dom, nextChildren);
     }
   } else if (isArray(nextChildren)) {
@@ -340,11 +316,11 @@ function patchChildren(
         patchKeyed = true;
       }
     } else {
-      unmountChildren(lastChildren, dom, lifecycle, isRecycling);
+      unmountChildren(lastChildren, dom);
       mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
     }
   } else if (isArray(lastChildren)) {
-    removeAllChildren(dom, lastChildren, lifecycle, isRecycling);
+    removeAllChildren(dom, lastChildren);
     mount(nextChildren, dom, lifecycle, context, isSVG);
   } else if (isVNode(nextChildren)) {
     if (isVNode(lastChildren)) {
@@ -354,11 +330,10 @@ function patchChildren(
         dom,
         lifecycle,
         context,
-        isSVG,
-        isRecycling
+        isSVG
       );
     } else {
-      unmountChildren(lastChildren, dom, lifecycle, isRecycling);
+      unmountChildren(lastChildren, dom);
       mount(nextChildren, dom, lifecycle, context, isSVG);
     }
   }
@@ -372,7 +347,7 @@ function patchChildren(
         mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
       }
     } else if (nextLength === 0) {
-      removeAllChildren(dom, lastChildren, lifecycle, isRecycling);
+      removeAllChildren(dom, lastChildren);
     } else if (patchKeyed) {
       patchKeyedChildren(
         lastChildren,
@@ -381,7 +356,6 @@ function patchChildren(
         lifecycle,
         context,
         isSVG,
-        isRecycling,
         lastLength,
         nextLength
       );
@@ -393,7 +367,6 @@ function patchChildren(
         lifecycle,
         context,
         isSVG,
-        isRecycling,
         lastLength,
         nextLength
       );
@@ -405,12 +378,11 @@ export function patchComponent(
   lastVNode,
   nextVNode,
   parentDom,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context,
   isSVG: boolean,
-  isClass: boolean,
-  isRecycling: boolean
-) {
+  isClass: boolean
+): void {
   const lastType = lastVNode.type;
   const nextType = nextVNode.type;
   const lastKey = lastVNode.key;
@@ -423,10 +395,8 @@ export function patchComponent(
       parentDom,
       lifecycle,
       context,
-      isSVG,
-      isRecycling
+      isSVG
     );
-    return false;
   } else {
     const nextProps = nextVNode.props || EMPTY_OBJ;
 
@@ -436,7 +406,7 @@ export function patchComponent(
 
       if (instance._unmounted) {
         if (isNull(parentDom)) {
-          return true;
+          return;
         }
         replaceChild(
           parentDom,
@@ -473,7 +443,7 @@ export function patchComponent(
         // If this component was destroyed by its parent do nothing, this is no-op
         // It can happen by using external callback etc during render / update
         if (instance._unmounted) {
-          return false;
+          return;
         }
         let didUpdate = true;
         // Update component before getting child context
@@ -521,8 +491,7 @@ export function patchComponent(
             parentDom,
             lifecycle,
             childContext,
-            isSVG,
-            isRecycling
+            isSVG
           );
           if (hasComponentDidUpdate && instance.componentDidUpdate) {
             instance.componentDidUpdate(lastProps, lastState);
@@ -592,8 +561,7 @@ export function patchComponent(
             parentDom,
             lifecycle,
             context,
-            isSVG,
-            isRecycling
+            isSVG
           );
           nextVNode.children = nextInput;
           if (
@@ -612,7 +580,6 @@ export function patchComponent(
       }
     }
   }
-  return false;
 }
 
 export function patchText(lastVNode: VNode, nextVNode: VNode) {
@@ -634,10 +601,9 @@ export function patchNonKeyedChildren(
   lastChildren,
   nextChildren,
   dom,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean,
-  isRecycling: boolean,
   lastChildrenLength: number,
   nextChildrenLength: number
 ) {
@@ -659,8 +625,7 @@ export function patchNonKeyedChildren(
       dom,
       lifecycle,
       context,
-      isSVG,
-      isRecycling
+      isSVG
     );
   }
   if (lastChildrenLength < nextChildrenLength) {
@@ -674,7 +639,7 @@ export function patchNonKeyedChildren(
     }
   } else if (lastChildrenLength > nextChildrenLength) {
     for (i = commonLength; i < lastChildrenLength; i++) {
-      unmount(lastChildren[i], dom, lifecycle, false, isRecycling);
+      unmount(lastChildren[i], dom);
     }
   }
 }
@@ -683,10 +648,9 @@ export function patchKeyedChildren(
   a: VNode[],
   b: VNode[],
   dom,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context,
   isSVG: boolean,
-  isRecycling: boolean,
   aLength: number,
   bLength: number
 ) {
@@ -723,8 +687,7 @@ export function patchKeyedChildren(
         dom,
         lifecycle,
         context,
-        isSVG,
-        isRecycling
+        isSVG
       );
       aStart++;
       bStart++;
@@ -740,7 +703,7 @@ export function patchKeyedChildren(
 
     // Sync nodes with the same key at the end.
     while (aEndNode.key === bEndNode.key) {
-      patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG, isRecycling);
+      patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG);
       aEnd--;
       bEnd--;
       if (aStart > aEnd || bStart > bEnd) {
@@ -773,7 +736,7 @@ export function patchKeyedChildren(
     }
   } else if (bStart > bEnd) {
     while (aStart <= aEnd) {
-      unmount(a[aStart++], dom, lifecycle, false, isRecycling);
+      unmount(a[aStart++], dom);
     }
   } else {
     const aLeft = aEnd - aStart + 1;
@@ -806,7 +769,7 @@ export function patchKeyedChildren(
               if (bNode.dom) {
                 b[j] = bNode = directClone(bNode);
               }
-              patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
+              patch(aNode, bNode, dom, lifecycle, context, isSVG);
               patched++;
               a[i] = null as any;
               break;
@@ -840,7 +803,7 @@ export function patchKeyedChildren(
             if (bNode.dom) {
               b[j] = bNode = directClone(bNode);
             }
-            patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
+            patch(aNode, bNode, dom, lifecycle, context, isSVG);
             patched++;
             a[i] = null as any;
           }
@@ -849,7 +812,7 @@ export function patchKeyedChildren(
     }
     // fast-path: if nothing patched remove all old and add all new
     if (aLeft === aLength && patched === 0) {
-      removeAllChildren(dom, a, lifecycle, isRecycling);
+      removeAllChildren(dom, a);
       while (bStart < bLeft) {
         node = b[bStart];
         if (node.dom) {
@@ -863,7 +826,7 @@ export function patchKeyedChildren(
       while (i > 0) {
         aNode = a[aStart++];
         if (!isNull(aNode)) {
-          unmount(aNode, dom, lifecycle, true, isRecycling);
+          unmount(aNode, dom);
           i--;
         }
       }

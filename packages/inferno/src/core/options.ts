@@ -2,13 +2,11 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { LifecycleClass } from "inferno-shared";
-import { InfernoInput } from "./VNodes";
+import {VNode} from "./VNodes";
 
 export interface Root {
   dom: Element | SVGAElement;
-  input: InfernoInput;
-  lifecycle: LifecycleClass;
+  input: VNode;
 }
 
 export const options: {
@@ -19,7 +17,6 @@ export const options: {
   beforeUnmount: null | Function;
   createVNode: null | Function;
   findDOMNodeEnabled: boolean;
-  recyclingEnabled: boolean;
   roots: Root[];
 } = {
   afterMount: null,
@@ -29,6 +26,5 @@ export const options: {
   beforeUnmount: null,
   createVNode: null,
   findDOMNodeEnabled: false,
-  recyclingEnabled: false,
   roots: []
 };

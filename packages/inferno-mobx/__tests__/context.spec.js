@@ -25,19 +25,16 @@ describe("observer based context", () => {
       ["foo"],
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
     const B = () => <C />;
-    const A = () =>
+    const A = () => (
       <Provider foo="bar">
         <B />
-      </Provider>;
+      </Provider>
+    );
     const wrapper = render(<A />, container);
 
     expect(wrapper.find("div").text()).toBe("context:bar");
@@ -48,19 +45,16 @@ describe("observer based context", () => {
       ["foo"],
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
     const B = () => <C foo={42} />;
-    const A = () =>
+    const A = () => (
       <Provider foo="bar">
         <B />
-      </Provider>;
+      </Provider>
+    );
     const wrapper = render(<A />);
 
     expect(wrapper.find("div").text()).toBe("context:42");
@@ -81,7 +75,7 @@ describe("observer based context", () => {
       })
     );
     const B = () => <C />;
-    const A = () =>
+    const A = () => (
       <Provider foo="bar" bar={1337}>
         <div>
           <span>
@@ -93,7 +87,8 @@ describe("observer based context", () => {
             </Provider>
           </section>
         </div>
-      </Provider>;
+      </Provider>
+    );
     const wrapper = render(<A />);
 
     expect(wrapper.find("span").text()).toBe("context:bar1337");
@@ -105,19 +100,16 @@ describe("observer based context", () => {
       ["foo"],
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
     const B = () => <C />;
-    const A = () =>
+    const A = () => (
       <Provider baz={42}>
         <B />
-      </Provider>;
+      </Provider>
+    );
 
     expect(() => render(<A />)).toThrowError(
       /Store 'foo' is not available! Make sure it is provided by some Provider/
@@ -129,11 +121,7 @@ describe("observer based context", () => {
       ["foo"],
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
@@ -152,11 +140,7 @@ describe("observer based context", () => {
       ["foo"],
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
@@ -167,13 +151,14 @@ describe("observer based context", () => {
     );
     const A = observer(
       createClass({
-        render: () =>
+        render: () => (
           <section>
             <span>{a.get()}</span>,
             <Provider foo={a.get()}>
               <B />
             </Provider>
           </section>
+        )
       })
     );
     const wrapper = render(<A />);
@@ -197,11 +182,7 @@ describe("observer based context", () => {
       ["foo"],
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
@@ -212,13 +193,14 @@ describe("observer based context", () => {
     );
     const A = observer(
       createClass({
-        render: () =>
+        render: () => (
           <section>
             <span>{a.get()}</span>,
             <Provider foo={a.get()} suppressChangedStoreWarning>
               <B />
             </Provider>
           </section>
+        )
       })
     );
     const wrapper = render(<A />);

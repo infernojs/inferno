@@ -69,9 +69,7 @@ describe("Components (JSX) #2", () => {
       render() {
         return (
           <div>
-            <span>
-              {this.state.text}
-            </span>
+            <span>{this.state.text}</span>
           </div>
         );
       }

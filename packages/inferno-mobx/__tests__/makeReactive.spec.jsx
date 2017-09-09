@@ -23,11 +23,7 @@ describe("MobX Observer", () => {
   });
 
   const TodoItem = makeReactive(function({ todo }) {
-    return (
-      <li>
-        {todo}
-      </li>
-    );
+    return <li>{todo}</li>;
   });
 
   let todoListRenderings = 0;
@@ -41,11 +37,7 @@ describe("MobX Observer", () => {
       render() {
         todoListRenderings++;
         const todos = store.todos;
-        return (
-          <div>
-            {todos.map(todo => <TodoItem todo={todo} />)}
-          </div>
-        );
+        return <div>{todos.map(todo => <TodoItem todo={todo} />)}</div>;
       }
     }
   );
@@ -75,12 +67,12 @@ describe("MobX Observer", () => {
         render({ extra }) {
           return (
             <div>
-              {store.todos.map(title =>
+              {store.todos.map(title => (
                 <li>
                   {title}
                   {extra.test}
                 </li>
-              )}
+              ))}
             </div>
           );
         }
@@ -131,11 +123,7 @@ describe("MobX Observer", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.props.number}
-            </div>
-          );
+          return <div>{this.props.number}</div>;
         }
       }
     );

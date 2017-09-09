@@ -20,11 +20,7 @@ function TestComponent() {
 }
 
 function TestComponentParams({ params }) {
-  return (
-    <div>
-      Test! {params.test}
-    </div>
-  );
+  return <div>Test! {params.test}</div>;
 }
 
 function createRouterWithSingleRoute(url, path, component) {
@@ -36,19 +32,11 @@ function createRouterWithSingleRoute(url, path, component) {
 }
 
 function GoodComponent(props) {
-  return (
-    <div>
-      Good Component{props.clone}
-    </div>
-  );
+  return <div>Good Component{props.clone}</div>;
 }
 
 function BadComponent(props) {
-  return (
-    <div>
-      Bad Component{props.clone}
-    </div>
-  );
+  return <div>Bad Component{props.clone}</div>;
 }
 
 describe("Router (jsx)", () => {
@@ -70,18 +58,20 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/bar"} history={browserHistoryWithBaseName}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
+              component={({ params }) => (
                 <div>
                   Child is {params.test} Link is <Link to="/foo/test" />
-                </div>}
+                </div>
+              )}
             />
           </Route>
         </Router>,
@@ -100,18 +90,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -126,18 +114,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/bar"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -152,18 +138,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/bar"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -178,18 +162,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/100%"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -204,18 +186,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/bar?yar=50%25"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.yar}
-                </div>}
+              component={({ params }) => <div>Child is {params.yar}</div>}
             />
           </Route>
         </Router>,
@@ -333,12 +313,7 @@ describe("Router (jsx)", () => {
 
       render(
         <Router url={"/foo"} history={browserHistory}>
-          <Route
-            component={({ children }) =>
-              <div>
-                {children}
-              </div>}
-          >
+          <Route component={({ children }) => <div>{children}</div>}>
             <Route path={"/foo"} component={GoodComponent}>
               <Route path={"/yar"} component={BadComponent} />
             </Route>
@@ -353,18 +328,10 @@ describe("Router (jsx)", () => {
     it("should render the both components with same params prop passed down", () => {
       render(
         <Router url={"/foo/bar"} history={browserHistory}>
-          <Route
-            component={({ children }) =>
-              <div>
-                {children}
-              </div>}
-          >
+          <Route component={({ children }) => <div>{children}</div>}>
             <Route
               path={"/foo/:test"}
-              component={({ params }) =>
-                <div>
-                  Param is {params.test}
-                </div>}
+              component={({ params }) => <div>Param is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -377,20 +344,12 @@ describe("Router (jsx)", () => {
     it("should render the both components with same params prop passed down (route in an array)", () => {
       render(
         <Router url={"/foo/bar"} history={browserHistory}>
-          <Route
-            component={({ children }) =>
-              <div>
-                {children}
-              </div>}
-          >
+          <Route component={({ children }) => <div>{children}</div>}>
             <Route path={"/yar"} component={BadComponent} />
             {[
               <Route
                 path={"/foo/:test"}
-                component={({ params }) =>
-                  <div>
-                    Param is {params.test}
-                  </div>}
+                component={({ params }) => <div>Param is {params.test}</div>}
               />
             ]}
           </Route>

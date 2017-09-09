@@ -684,7 +684,7 @@ describe("FormElements", () => {
         const CompB = function renderCompB(props) {
           return (
             <div>
-              {props.orderedConfigs.map((conf, index) =>
+              {props.orderedConfigs.map((conf, index) => (
                 <input
                   type="checkbox"
                   checked={conf.value}
@@ -692,7 +692,7 @@ describe("FormElements", () => {
                     props.onClick({ targetConf: conf, targetIndex: index });
                   }}
                 />
-              )}
+              ))}
             </div>
           );
         };
@@ -736,21 +736,16 @@ describe("FormElements", () => {
                 className="inputContainer"
                 style={{ width: this.props.width ? this.props.width : "100%" }}
               >
-                <div className="label">
-                  {this.props.label}&nbsp;
-                </div>
+                <div className="label">{this.props.label}&nbsp;</div>
                 <input
                   type={this.props.type}
                   onChange={this.handleChange}
                   value={this.props.value}
                 />
-                <div className="hint">
-                  {this.props.hint}
-                </div>
-                {this.state.error &&
-                  <div className="error">
-                    {this.state.error}
-                  </div>}
+                <div className="hint">{this.props.hint}</div>
+                {this.state.error && (
+                  <div className="error">{this.state.error}</div>
+                )}
               </div>
             );
           }

@@ -10,7 +10,6 @@ import {
   isNullOrUndef,
   isStringOrNumber,
   isUndefined,
-  LifecycleClass,
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
@@ -40,7 +39,7 @@ export function createClassComponentInstance(
   props: Props,
   context: Object,
   isSVG: boolean,
-  lifecycle: LifecycleClass
+  lifecycle: Function[]
 ) {
   if (isUndefined(context)) {
     context = EMPTY_OBJ; // Context should not be mutable
@@ -125,32 +124,13 @@ export function createClassComponentInstance(
   instance._lastInput = input;
   return instance;
 }
-export function replaceLastChildAndUnmount(
-  lastInput,
-  nextInput,
-  parentDom,
-  lifecycle: LifecycleClass,
-  context: Object,
-  isSVG: boolean,
-  isRecycling: boolean
-) {
-  replaceVNode(
-    parentDom,
-    mount(nextInput, null, lifecycle, context, isSVG),
-    lastInput,
-    lifecycle,
-    isRecycling
-  );
-}
 
 export function replaceVNode(
   parentDom,
   dom,
-  vNode,
-  lifecycle: LifecycleClass,
-  isRecycling
+  vNode
 ) {
-  unmount(vNode, null, lifecycle, false, isRecycling);
+  unmount(vNode, null);
   replaceChild(parentDom, dom, vNode.dom);
 }
 
@@ -224,22 +204,15 @@ export function replaceWithNewNode(
   lastNode,
   nextNode,
   parentDom,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
-  isSVG: boolean,
-  isRecycling: boolean
+  isSVG: boolean
 ) {
-  unmount(lastNode, null, lifecycle, false, isRecycling);
-  const dom = mount(nextNode, null, lifecycle, context, isSVG);
-
-  nextNode.dom = dom;
-  replaceChild(parentDom, dom, lastNode.dom);
+  unmount(lastNode, null);
+  replaceChild(parentDom, mount(nextNode, null, lifecycle, context, isSVG), lastNode.dom);
 }
 
 export function replaceChild(parentDom, newDom, lastDom) {
-  if (!parentDom) {
-    parentDom = lastDom.parentNode;
-  }
   parentDom.replaceChild(newDom, lastDom);
 }
 
@@ -249,29 +222,16 @@ export function removeChild(parentDom: Element, dom: Element) {
 
 export function removeAllChildren(
   dom: Element,
-  children,
-  lifecycle: LifecycleClass,
-  isRecycling: boolean
-) {
-  if (!options.recyclingEnabled || (options.recyclingEnabled && !isRecycling)) {
-    removeChildren(null, children, lifecycle, isRecycling);
-  }
-  dom.textContent = "";
-}
-
-export function removeChildren(
-  dom: Element | null,
-  children,
-  lifecycle: LifecycleClass,
-  isRecycling: boolean
+  children
 ) {
   for (let i = 0, len = children.length; i < len; i++) {
     const child = children[i];
 
     if (!isInvalid(child)) {
-      unmount(child, dom, lifecycle, true, isRecycling);
+      unmount(child, null);
     }
   }
+  dom.textContent = "";
 }
 
 export function isKeyed(lastChildren: VNode[], nextChildren: VNode[]): boolean {

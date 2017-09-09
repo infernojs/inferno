@@ -29,20 +29,17 @@ describe("observer based context", () => {
       observer(
         createClass({
           render() {
-            return (
-              <div>
-                context:{this.props.foo}
-              </div>
-            );
+            return <div>context:{this.props.foo}</div>;
           }
         })
       )
     );
     const B = () => <C />;
-    const A = () =>
+    const A = () => (
       <Provider foo="bar">
         <B />
-      </Provider>;
+      </Provider>
+    );
     const wrapper = render(<A />);
     expect(wrapper.find("div").text()).toBe("context:bar");
   });
@@ -51,20 +48,17 @@ describe("observer based context", () => {
     const C = inject("foo")(
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
     const B = () => <C foo={42} />;
     const A = createClass({
-      render: () =>
+      render: () => (
         <Provider foo="bar">
           <B />
         </Provider>
+      )
     });
     const wrapper = render(<A />);
     expect(wrapper.find("div").text()).toBe("context:42");
@@ -87,7 +81,7 @@ describe("observer based context", () => {
     );
     const B = () => <C />;
     const A = createClass({
-      render: () =>
+      render: () => (
         <Provider foo="bar" bar={1337}>
           <div>
             <span>
@@ -100,6 +94,7 @@ describe("observer based context", () => {
             </section>
           </div>
         </Provider>
+      )
     });
     const wrapper = render(<A />);
     expect(wrapper.find("span").text()).toBe("context:bar1337");
@@ -111,21 +106,18 @@ describe("observer based context", () => {
       observer(
         createClass({
           render() {
-            return (
-              <div>
-                context:{this.props.foo}
-              </div>
-            );
+            return <div>context:{this.props.foo}</div>;
           }
         })
       )
     );
     const B = () => <C />;
     const A = createClass({
-      render: () =>
+      render: () => (
         <Provider baz={42}>
           <B />
         </Provider>
+      )
     });
     expect(() => render(<A />)).toThrowError(/Store 'foo' is not available/i);
   });
@@ -135,11 +127,7 @@ describe("observer based context", () => {
       observer(
         createClass({
           render() {
-            return (
-              <div>
-                context:{this.props.foo}
-              </div>
-            );
+            return <div>context:{this.props.foo}</div>;
           }
         })
       )
@@ -177,11 +165,7 @@ describe("observer based context", () => {
       ["foo"],
       createClass({
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
@@ -192,15 +176,14 @@ describe("observer based context", () => {
     );
     const A = observer(
       createClass({
-        render: () =>
+        render: () => (
           <section>
-            <span>
-              {a.get()}
-            </span>
+            <span>{a.get()}</span>
             <Provider foo={a.get()}>
               <B />
             </Provider>
           </section>
+        )
       })
     );
     const wrapper = render(<A />);
@@ -246,10 +229,11 @@ describe("observer based context", () => {
     const B = createClass({
       render: () => <C baz={42} />
     });
-    const A = () =>
+    const A = () => (
       <Provider foo="bar">
         <B />
-      </Provider>;
+      </Provider>
+    );
     const wrapper = render(<A />);
     expect(wrapper.find("div").text()).toBe("context:bar84");
   });
@@ -282,11 +266,7 @@ describe("observer based context", () => {
       createClass({
         displayName: "C",
         render() {
-          return (
-            <div>
-              context:{this.props.foo}
-            </div>
-          );
+          return <div>context:{this.props.foo}</div>;
         }
       })
     );
@@ -294,10 +274,11 @@ describe("observer based context", () => {
     C.contextTypes = {};
 
     const B = () => <C />;
-    const A = () =>
+    const A = () => (
       <Provider foo="bar">
         <B />
-      </Provider>;
+      </Provider>
+    );
     render(<A />);
     expect(msg.length, 1);
     expect(
@@ -326,10 +307,11 @@ describe("observer based context", () => {
       y: 3
     };
     const B = () => <C z="test" />;
-    const A = () =>
+    const A = () => (
       <Provider foo="bar">
         <B />
-      </Provider>;
+      </Provider>
+    );
     render(<A />);
     expect(msg.length, 2);
     console.error = baseError;
@@ -343,10 +325,7 @@ describe("observer based context", () => {
     const C = inject(["foo"])(
       createClass({
         displayName: "C",
-        render: () =>
-          <div>
-            context:{this.props.foo}
-          </div>
+        render: () => <div>context:{this.props.foo}</div>
       })
     );
     C.propTypes = {};
@@ -358,15 +337,13 @@ describe("observer based context", () => {
   it.skip("using a custom injector is reactive", done => {
     const user = observable({ name: "Noa" });
     const mapper = stores => ({ name: stores.user.name });
-    const DisplayName = props =>
-      <h1>
-        {props.name}
-      </h1>;
+    const DisplayName = props => <h1>{props.name}</h1>;
     const User = inject(mapper)(DisplayName);
-    const App = () =>
+    const App = () => (
       <Provider user={user}>
         <User />
-      </Provider>;
+      </Provider>
+    );
 
     infernoRender(<App />, container);
 

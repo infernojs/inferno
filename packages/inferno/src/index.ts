@@ -4,8 +4,7 @@
 
 /* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from "inferno-shared";
-import { LifecycleClass as _LifecycleClass } from "inferno-shared";
-import _VNodeFlags from "inferno-vnode-flags";
+import {default as _VNodeFlags} from "inferno-vnode-flags";
 import {
   getFlagsForElementVnode,
   normalize as internal_normalize
@@ -50,7 +49,6 @@ if (process.env.NODE_ENV !== "production") {
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
-export declare const LifecycleClass: _LifecycleClass;
 
 const version = process.env.INFERNO_VERSION;
 
