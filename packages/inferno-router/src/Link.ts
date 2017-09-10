@@ -2,8 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import Component from "inferno-component";
-import { createVNode, VNode } from "inferno";
+import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 //import invariant = require('invariant');
 import { invariant } from "./utils";

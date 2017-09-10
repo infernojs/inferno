@@ -2,8 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode } from "inferno";
-import Component from "inferno-component";
+import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 import { addLeadingSlash, createPath, parsePath } from "history/PathUtils";
 import Router from "./Router";

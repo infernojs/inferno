@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import createElement from "inferno-create-element";
 import { invariant, warning } from "./utils";
 import { Children } from "./utils";

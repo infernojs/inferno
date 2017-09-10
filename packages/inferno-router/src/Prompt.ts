@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { invariant } from "./utils";
 
 export interface IPromptProps {

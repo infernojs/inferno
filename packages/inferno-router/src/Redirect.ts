@@ -2,7 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { createLocation, locationsAreEqual } from "history";
 import { invariant } from "./utils";
 

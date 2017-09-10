@@ -2,8 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { cloneVNode, VNode } from "inferno";
-import Component from "inferno-component";
+import { cloneVNode, VNode, Component } from "inferno";
 import { Children, warning, invariant } from "./utils";
 
 export interface IRouterProps {

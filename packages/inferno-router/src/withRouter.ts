@@ -1,8 +1,7 @@
 /**
  * @module Inferno-Router
  */ /** TypeDoc Comment */
-import { createVNode } from "inferno";
-import Component from "inferno-component";
+import { createVNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 import hoistStatics from "hoist-non-inferno-statics";
 import Route from "./Route";
