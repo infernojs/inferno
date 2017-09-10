@@ -102,7 +102,7 @@ function hydrateElement(
   lifecycle: Function[],
   context: Object,
   isSVG: boolean
-): Element {
+) {
   const children = vNode.children;
   const props = vNode.props;
   const className = vNode.className;
@@ -156,7 +156,6 @@ function hydrateElement(
   if (ref) {
     mountRef(dom, ref, lifecycle);
   }
-  return dom;
 }
 
 function hydrateChildren(
@@ -218,7 +217,7 @@ function hydrateChildren(
   }
 }
 
-function hydrateText(vNode: VNode, dom: Element): Element {
+function hydrateText(vNode: VNode, dom: Element) {
   if (dom.nodeType !== 3) {
     const newDom = mountText(vNode, null);
 
@@ -232,12 +231,6 @@ function hydrateText(vNode: VNode, dom: Element): Element {
     dom.nodeValue = text as string;
   }
   vNode.dom = dom;
-  return dom;
-}
-
-function hydrateVoid(vNode: VNode, dom: Element): Element {
-  vNode.dom = dom;
-  return dom;
 }
 
 function hydrate(
@@ -263,7 +256,7 @@ function hydrate(
   } else if (flags & VNodeFlags.Text) {
     hydrateText(vNode, dom);
   } else if (flags & VNodeFlags.Void) {
-    hydrateVoid(vNode, dom);
+    vNode.dom = dom;
   } else {
     if (process.env.NODE_ENV !== "production") {
       throwError(
@@ -274,23 +267,17 @@ function hydrate(
   }
 }
 
-export function hydrateRoot(
-  input,
-  parentDom: Element | null,
-  lifecycle: Function[]
-) {
-  if (!isNull(parentDom)) {
-    let dom = parentDom.firstChild as Element;
+export function hydrateRoot(input, parentDom: Element, lifecycle: Function[]) {
+  let dom = parentDom.firstChild as Element;
 
-    if (!isNull(dom)) {
-      hydrate(input, dom, lifecycle, EMPTY_OBJ, false);
-      dom = parentDom.firstChild as Element;
-      // clear any other DOM nodes, there should be only a single entry for the root
-      while ((dom = dom.nextSibling as Element)) {
-        parentDom.removeChild(dom);
-      }
-      return true;
+  if (!isNull(dom)) {
+    hydrate(input, dom, lifecycle, EMPTY_OBJ, false);
+    dom = parentDom.firstChild as Element;
+    // clear any other DOM nodes, there should be only a single entry for the root
+    while ((dom = dom.nextSibling as Element)) {
+      parentDom.removeChild(dom);
     }
+    return true;
   }
 
   return false;

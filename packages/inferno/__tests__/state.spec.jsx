@@ -123,7 +123,7 @@ describe("state", () => {
         }
       }
 
-      render(<Example name="World" />, document.getElementById("container"));
+      render(<Example name="World" />, container);
     });
   });
 });

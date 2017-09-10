@@ -461,9 +461,7 @@ export function updateClassComponent(
     } else {
       childContext = combineFrom(context, childContext);
     }
-
-    // instance.$CX = childContext;
-    // instance.$V = nextVNode;
+    instance.$CX = childContext;
 
     if (didUpdate) {
       const nextInput = (instance.$LI = handleComponentInput(
@@ -533,9 +531,6 @@ export function patchComponent(
         false
       );
       instance.$V = nextVNode;
-      // if ((lastVNode.flags & VNodeFlags.Component) > 0) {
-      //   lastVNode.parentVNode = nextVNode;
-      // }
       instance.$UPD = false;
     } else {
       let shouldUpdate = true;
