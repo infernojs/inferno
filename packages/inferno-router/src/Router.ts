@@ -2,101 +2,99 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode } from "inferno";
-import { Component } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
-import match, { matchPath } from "./match";
-import RouterContext from "./RouterContext";
-import { IRouterProps } from "./routerprops";
+import { cloneVNode, VNode } from "inferno";
+import Component from "inferno-component";
+import { Children, warning, invariant } from "./utils";
 
-function createrRouter(history) {
-  if (!history) {
-    throw new TypeError(
-      'Inferno: Error "inferno-router" requires a history prop passed'
-    );
-  }
-  return {
-    createHref: history.createHref,
-    listen: history.listen,
-    push: history.push,
-    replace: history.replace,
-    isActive(url) {
-      return matchPath(true, url, this.url);
-    },
-    get location() {
-      return history.location.pathname !== "blank"
-        ? history.location
-        : {
-            pathname: "/",
-            search: ""
-          };
-    },
-    get url() {
-      return this.location.pathname + this.location.search;
-    }
+export interface IRouterProps {
+  history: {
+    listen: (callback: any) => {};
+    location: {
+      pathname: string;
+    };
   };
+  children: Array<Component<any, any>>;
 }
 
-export default class Router extends Component<IRouterProps, any> {
-  public router: any;
-  public unlisten: any;
+/**
+ * The public API for putting history on context.
+ */
+class Router extends Component<IRouterProps, any> {
+  public unlisten;
+  /*static contextTypes = {
+    router: () => {}
+  };
 
-  constructor(props?: any, context?: any) {
+  static childContextTypes = {
+    router: () => {}
+  };*/
+
+  constructor(props: IRouterProps, context?: any) {
     super(props, context);
-    this.router = createrRouter(props.history);
     this.state = {
-      url: props.url || this.router.url
+      match: this.computeMatch(props.history.location.pathname)
     };
   }
 
-  public componentWillMount() {
-    if (this.router) {
-      this.unlisten = this.router.listen(() => {
-        if (typeof this.props.asyncBefore === "function") {
-          const self = this;
-          this.props.asyncBefore(this.router.url).then(() => {
-            self.routeTo(self.router.url);
-          });
-        } else {
-          this.routeTo(this.router.url);
+  getChildContext() {
+    return {
+      router: {
+        ...this.context.router,
+        history: this.props.history,
+        route: {
+          location: this.props.history.location,
+          match: this.state.match
         }
+      }
+    };
+  }
+
+  computeMatch(pathname) {
+    return {
+      path: "/",
+      url: "/",
+      params: {},
+      isExact: pathname === "/"
+    };
+  }
+
+  componentWillMount() {
+    const { children, history } = this.props;
+
+    invariant(
+      children == null || Children.count(children) === 1,
+      "A <Router> may have only one child element"
+    );
+
+    // Do this here so we can setState when a <Redirect> changes the
+    // location in componentWillMount. This happens e.g. when doing
+    // server rendering using a <StaticRouter>.
+    this.unlisten = history.listen(() => {
+      this.setState({
+        match: this.computeMatch(history.location.pathname)
       });
-    }
+    });
   }
 
-  public componentWillReceiveProps(nextProps) {
-    if (nextProps.url) {
-      this.routeTo(nextProps.url);
-    }
-  }
-
-  public componentWillUnmount() {
-    if (this.unlisten) {
-      this.unlisten();
-    }
-  }
-
-  public routeTo(url) {
-    this.setState(
-      { url },
-      this.props.onUpdate ? () => this.props.onUpdate() : void 0
+  componentWillReceiveProps(nextProps) {
+    warning(
+      this.props.history === nextProps.history,
+      "You cannot change <Router history>"
     );
   }
 
-  public render(props): VNode | null {
-    const hit = match(props.children, this.state.url);
+  componentWillUnmount() {
+    this.unlisten();
+  }
 
-    if (hit.redirect) {
-      setTimeout(() => {
-        this.router.replace(hit.redirect);
-      }, 0);
-      return null;
-    }
+  render(): VNode {
+    const { children } = this.props;
+    // Below fixes SwitchMount tests but breaks Switch. This is how RR4 does it
+    //return children ? Children.only(children) : null;
 
-    return createVNode(VNodeFlags.ComponentClass, RouterContext, null, null, {
-      location: this.state.url,
-      matched: hit.matched,
-      router: this.router
-    });
+    // Below fixes most tests but breaks SwitchMount
+    return cloneVNode(children ? Children.only(children) : null);
   }
 }
+
+export default Router;

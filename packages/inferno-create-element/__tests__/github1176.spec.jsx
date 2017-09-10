@@ -1,6 +1,6 @@
 import { render } from "inferno";
-import { Component } from "inferno";
-import { Router, Route, Link } from "inferno-router";
+import Component from "inferno-component";
+import { Router, Route, Link, Switch } from "inferno-router";
 import createMemoryHistory from "history/createMemoryHistory";
 import { triggerEvent } from "inferno-utils";
 
@@ -74,8 +74,10 @@ describe("Github1176", () => {
 
     const routes = (
       <Router history={browserHistory}>
-        <Route component={Component1} path="/" />
-        <Route component={Component2} path="/component2" />
+        <Switch>
+          <Route component={Component1} path="/" exact/>
+          <Route component={Component2} path="/component2" exact/>
+        </Switch>
       </Router>
     );
 

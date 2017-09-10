@@ -224,7 +224,7 @@ You will need a data store such as Mobx or Redux to propagate data to your compo
 ### Pages and Routing
 
 ```js
-  import {Component} from 'inferno';
+  import Component from "inferno-component";
 
   class PageOne extends Component {
     static fetchData(params) {

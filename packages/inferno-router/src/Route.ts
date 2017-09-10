@@ -1,124 +1,146 @@
 /**
  * @module Inferno-Router
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
-import { VNode } from "inferno";
-import { Component } from "inferno";
+import Component from "inferno-component";
 import createElement from "inferno-create-element";
-import { isArray } from "inferno-shared";
-import { rest } from "./utils";
+import { invariant, warning } from "./utils";
+import { Children } from "./utils";
+import matchPath from "./matchPath";
 
-const resolvedPromise = Promise.resolve();
-
-export type IRouteHook = (props?: any, router?: any) => void;
+const isEmptyChildren = children => Children.count(children) === 0;
 
 export interface IRouteProps {
-  params?: any;
-  onEnter?: IRouteHook;
-  onLeave?: IRouteHook;
-  asyncBefore?: any;
-  path: string;
+  computedMatch: any; // private, from <Switch>
+  path: any;
+  exact: any;
+  strict: any;
+  sensitive: any;
+  component: any;
+  render: any;
+  location: any;
   children: Array<Component<any, any>>;
-  component?: Component<any, any>;
-  getComponent(
-    nextState: any,
-    callback: (error: any, comp: Component<any, any>) => void
-  ): void;
 }
 
-export default class Route extends Component<IRouteProps, any> {
-  constructor(props?: IRouteProps, context?: any) {
-    super(props, context);
-    this.state = {
-      asyncComponent: null
+/**
+ * The public API for matching a single path and rendering.
+ */
+class Route extends Component<IRouteProps, any> {
+  /*
+  static contextTypes = {
+    router: {
+      history: {},
+      route: {},
+      staticContext: {}
+    }
+  };
+
+  static childContextTypes = {
+    router: {}
+  };*/
+
+  getChildContext() {
+    return {
+      router: {
+        ...this.context.router,
+        route: {
+          location: this.props.location || this.context.router.route.location,
+          match: this.state.match
+        }
+      }
     };
   }
 
-  public componentWillMount() {
-    const { onEnter } = this.props;
-    const { router } = this.context;
-
-    if (onEnter) {
-      resolvedPromise.then(() => {
-        onEnter({ props: this.props, router });
-      });
-    }
-
-    const { getComponent } = this.props;
-    if (getComponent) {
-      resolvedPromise.then(() => {
-        getComponent({ props: this.props, router }, this._onComponentResolved);
-      });
-    }
+  constructor(props?: any, context?: any) {
+    super(props, context);
+    this.state = {
+      match: this.computeMatch(props, context.router)
+    };
   }
 
-  private _onComponentResolved = (error, component) => {
+  computeMatch({ computedMatch, location, path, strict, exact, sensitive }, router) {
+    if (computedMatch) return computedMatch; // <Switch> already computed the match for us
+
+    invariant(
+      router,
+      "You should not use <Route> or withRouter() outside a <Router>"
+    );
+
+    const { route } = router;
+    const pathname = (location || route.location).pathname;
+
+    return path
+      ? matchPath(pathname, { path, strict, exact, sensitive })
+      : route.match;
+  }
+
+  componentWillMount() {
+    warning(
+      !(this.props.component && this.props.render),
+      "You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored"
+    );
+
+    warning(
+      !(
+        this.props.component &&
+        this.props.children &&
+        !isEmptyChildren(this.props.children)
+      ),
+      "You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored"
+    );
+
+    warning(
+      !(
+        this.props.render &&
+        this.props.children &&
+        !isEmptyChildren(this.props.children)
+      ),
+      "You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored"
+    );
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    warning(
+      !(nextProps.location && !this.props.location),
+      '<Route> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
+    );
+
+    warning(
+      !(!nextProps.location && this.props.location),
+      '<Route> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
+    );
+
     this.setState({
-      asyncComponent: component
+      match: this.computeMatch(nextProps, nextContext.router)
     });
-  };
-
-  public doAsyncBefore(params) {
-    if (this.props.asyncBefore) {
-      return this.props.asyncBefore(params);
-    } else {
-      return Promise.resolve();
-    }
   }
 
-  public onLeave(trigger = false) {
-    const { onLeave } = this.props;
-    const { router } = this.context;
+  render() {
+    const { match } = this.state;
+    const { children, component, render } = this.props;
+    const { history, route, staticContext } = this.context.router;
+    const location = this.props.location || route.location;
+    const props = { match, location, history, staticContext };
 
-    if (onLeave && trigger) {
-      onLeave({ props: this.props, router });
-    }
-  }
-
-  public onEnter(nextProps) {
-    const { onEnter } = nextProps;
-    const { router } = this.context;
-
-    if (this.props.path !== nextProps.path && onEnter) {
-      onEnter({ props: nextProps, router });
-    }
-  }
-
-  public getComponent(nextProps) {
-    const { getComponent } = nextProps;
-    const { router } = this.context;
-
-    if (this.props.path !== nextProps.path && getComponent) {
-      getComponent({ props: nextProps, router }, this._onComponentResolved);
-    }
-  }
-
-  public componentWillUnmount() {
-    this.onLeave(true);
-  }
-
-  public componentWillReceiveProps(nextProps: IRouteProps) {
-    this.getComponent(nextProps);
-    this.onEnter(nextProps);
-    this.onLeave(this.props.path !== nextProps.path);
-  }
-
-  public render(_args: IRouteProps): VNode | null {
-    const { component, children } = _args;
-    const props = rest(_args, [
-      "component",
-      "children",
-      "path",
-      "getComponent"
-    ]);
-
-    const { asyncComponent } = this.state;
-
-    const resolvedComponent = component || asyncComponent;
-    if (!resolvedComponent) {
-      return !isArray(children) ? children : null;
+    if (component) {
+      return match ? createElement(component, props) : null;
     }
 
-    return createElement(resolvedComponent, props, children);
+    if (render) {
+      return match ? render(props) : null;
+    }
+
+    if (typeof children === "function") {
+      return children(props);
+    }
+
+    if (children && !isEmptyChildren(children)) {
+      return Children.only(children);
+    }
+
+    return null;
   }
 }
+
+export default Route;
