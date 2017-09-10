@@ -52,6 +52,38 @@ describe("Router (jsx)", () => {
     document.body.removeChild(container);
   });
 
+  describe("Nested routes", () => {
+
+    const createRoutes = (url) => (
+      <Router url={url} history={browserHistory}>
+        <Route path="/" component={() => (<h1>Home</h1>)}/>
+        <Route path="/about" component={({ children }) => (<h1>user/{children}</h1>)}>
+          <Route path="/feature1" component={() => <h2>Features1</h2>}/>
+          <Route path="/user/:username" component={({ params }) => params.username}/>
+        </Route>
+        <Route path="/album/:artist" component={({ params, children }) => (<h1>{params.artist}/{children}</h1>)}>
+          <Route path="/:id" component={({ params }) => params.id}/>
+        </Route>
+        <Route path='/*' component={() => <h1>No Match</h1>}/>
+      </Router>
+    )
+
+    it("should match username", () => {
+      render(createRoutes("/about/user/ryan"), container);
+      expect(container.innerHTML).toBe(innerHTML('<h1>user/ryan</h1>'));
+    });
+
+    it("should match album/:artist/:id", () => {
+      render(createRoutes("/album/aphex-twin/155"), container);
+      expect(container.innerHTML).toBe(innerHTML('<h1>aphex-twin/155</h1>'));
+    });
+
+    it("should match wildcard", () => {
+      render(createRoutes("/hello"), container);
+      expect(container.innerHTML).toBe(innerHTML('<h1>No Match</h1>'));
+    });
+  });
+
   describe("#historyWithBaseName", () => {
     it("should render the child and inherit parent (partial URL) with basename `/basename-prefix`", () => {
       render(
@@ -84,6 +116,7 @@ describe("Router (jsx)", () => {
       );
     });
   });
+
   describe("#history", () => {
     it("should render the parent component only", () => {
       render(
@@ -397,6 +430,7 @@ describe("Router (jsx)", () => {
       ).toThrowError(TypeError);
     });
   });
+
   describe("#RouterContext", () => {
     it("should fail when `location` is not provided", () => {
       expect(() =>
@@ -429,6 +463,7 @@ describe("Router (jsx)", () => {
       expect(actual.props.matched).toBe(matched);
     });
   });
+
   describe("#match", () => {
     it("should find route when url has normal value", () => {
       const url = "/search/foo?arg1=50%25";
