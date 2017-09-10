@@ -1,5 +1,5 @@
 import { render } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { isNullOrUndef } from "inferno-shared";
 
 describe("Normalization process", () => {

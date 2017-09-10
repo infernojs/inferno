@@ -1,4 +1,4 @@
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { innerHTML } from "inferno-utils";
 import { render } from "inferno";
 
@@ -381,6 +381,7 @@ describe("Components (JSX) #2", () => {
         }
       }
 
+      debugger;
       render(<FooBar />, container);
 
       expect(container.innerHTML).toEqual("<div>1</div>");

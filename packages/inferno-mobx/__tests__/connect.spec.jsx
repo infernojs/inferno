@@ -1,5 +1,5 @@
 import { render } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import createElement from "inferno-create-element";
 import createClass from "inferno-create-class";
 import { connect, inject, Provider } from "inferno-mobx";

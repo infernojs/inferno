@@ -9,7 +9,7 @@ import {
   Props,
   VNode
 } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import {
   isInvalid,
   isNullOrUndef,

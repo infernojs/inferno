@@ -2,7 +2,7 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { throwError, warning } from "inferno-shared";
 import { extras, isObservable, Reaction } from "mobx";
 import EventEmitter from "./utils/EventEmitter";

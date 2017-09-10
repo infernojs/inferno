@@ -1,5 +1,5 @@
 import { createVNode, render } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 
 class TestCWRP extends Component {

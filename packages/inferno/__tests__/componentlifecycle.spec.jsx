@@ -1,6 +1,6 @@
 import { render } from "inferno";
 import { innerHTML } from "inferno-utils";
-import Component from "inferno-component";
+import { Component } from "inferno";
 
 describe("Component lifecycle", () => {
   let container;

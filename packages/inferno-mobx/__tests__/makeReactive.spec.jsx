@@ -1,5 +1,5 @@
 import { render } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { extendObservable, observable, toJS } from "mobx";
 import { innerHTML } from "inferno-utils";
 import makeReactive from "../src/makeReactive";

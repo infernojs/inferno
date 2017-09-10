@@ -10,15 +10,13 @@ export const impureFinalPropsSelectorFactory = (
   mergeProps,
   dispatch
 ) => {
-  const impureFinalPropsSelector = (state, ownProps) => {
+  return (state, ownProps) => {
     return mergeProps(
       mapStateToProps(state, ownProps),
       mapDispatchToProps(dispatch, ownProps),
       ownProps
     );
   };
-
-  return impureFinalPropsSelector;
 };
 
 export const pureFinalPropsSelectorFactory = (

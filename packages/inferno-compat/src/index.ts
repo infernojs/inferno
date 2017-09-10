@@ -13,7 +13,7 @@ import {
   render,
   VNode
 } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import createClass, {
   ClassicComponentClass,
   ComponentSpec
@@ -31,7 +31,7 @@ import {
 import _VNodeFlags from "inferno-vnode-flags";
 import isValidElement from "./isValidElement";
 import PropTypes from "./PropTypes";
-import {SVGDOMPropertyConfig} from "./SVGDOMPropertyConfig";
+import { SVGDOMPropertyConfig } from "./SVGDOMPropertyConfig";
 
 declare global {
   interface Event {

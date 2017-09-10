@@ -8,21 +8,13 @@ import {
   isInvalid,
   isNull,
   isNullOrUndef,
-  isObject,
   isStringOrNumber,
   isUndefined,
   NO_OP,
-  throwError
+  isFunction
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import {
-  createTextVNode,
-  createVoidVNode,
-  directClone,
-  isVNode,
-  options,
-  VNode
-} from "../core/implementation";
+import { directClone, isVNode, options, VNode } from "../core/implementation";
 import {
   mount,
   mountArrayChildren,
@@ -39,6 +31,7 @@ import {
   EMPTY_OBJ,
   insertOrAppend,
   isKeyed,
+  removeChild,
   replaceChild,
   setTextContent,
   updateTextContent
@@ -48,10 +41,16 @@ import {
   processElement
 } from "./wrappers/processElement";
 import { patchProp, removeProp } from "./props";
+import { handleComponentInput } from "./utils/components";
 
 function replaceVNode(parentDom, dom, vNode) {
   unmount(vNode, null);
-  replaceChild(parentDom, dom, vNode.dom);
+
+  if (!isNull(dom)) {
+    replaceChild(parentDom, dom, vNode.dom);
+  } else {
+    removeChild(parentDom, vNode.dom);
+  }
 }
 
 function removeAllChildren(dom: Element, children) {
@@ -373,6 +372,73 @@ function patchChildren(
   }
 }
 
+export function updateClassComponent(
+  instance,
+  nextState,
+  nextVNode: VNode,
+  nextProps,
+  parentDom,
+  lifecycle: Function[],
+  context,
+  isSVG: boolean,
+  force: boolean,
+  fromSetState: boolean
+) {
+  const hasComponentDidUpdate = isFunction(instance.componentDidUpdate);
+  // When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
+  const lastState = instance.state;
+  const lastProps = instance.props;
+  nextVNode.children = instance;
+  instance._isSVG = isSVG;
+  const lastInput = instance._lastInput;
+  const renderOutput = instance._updateComponent(
+    lastState,
+    nextState,
+    lastProps,
+    nextProps,
+    context,
+    force,
+    fromSetState
+  );
+  // If this component was destroyed by its parent do nothing, this is no-op
+  // It can happen by using external callback etc during render / update
+  if (instance._unmounted) {
+    return;
+  }
+  const didUpdate = renderOutput !== NO_OP;
+  // Update component before getting child context
+  let childContext;
+  if (isFunction(instance.getChildContext)) {
+    childContext = instance.getChildContext();
+  }
+  if (isNullOrUndef(childContext)) {
+    childContext = context;
+  } else {
+    childContext = combineFrom(context, childContext);
+  }
+
+  instance._childContext = childContext;
+  instance._vNode = nextVNode;
+
+  if (didUpdate) {
+    const nextInput = (instance._lastInput = handleComponentInput(
+      renderOutput,
+      nextVNode
+    ));
+    patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG);
+    if (hasComponentDidUpdate && instance.componentDidUpdate) {
+      instance.componentDidUpdate(lastProps, lastState);
+    }
+    if (isFunction(options.afterUpdate)) {
+      options.afterUpdate(nextVNode);
+    }
+    if (options.findDOMNodeEnabled) {
+      componentToDOMNodeMap.set(instance, nextInput.dom);
+    }
+  }
+  nextVNode.dom = instance._lastInput.dom;
+}
+
 export function patchComponent(
   lastVNode,
   nextVNode,
@@ -420,89 +486,18 @@ export function patchComponent(
           lastVNode.dom
         );
       } else {
-        const hasComponentDidUpdate = !isUndefined(instance.componentDidUpdate);
-        const nextState = instance.state;
-        // When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
-        const lastState = hasComponentDidUpdate
-          ? combineFrom(nextState, null)
-          : nextState;
-        const lastProps = instance.props;
-        nextVNode.children = instance;
-        instance._isSVG = isSVG;
-        const lastInput = instance._lastInput;
-        let nextInput = instance._updateComponent(
-          lastState,
-          nextState,
-          lastProps,
+        updateClassComponent(
+          instance,
+          instance.state,
+          nextVNode,
           nextProps,
+          parentDom,
+          lifecycle,
           context,
+          isSVG,
           false,
           false
         );
-        // If this component was destroyed by its parent do nothing, this is no-op
-        // It can happen by using external callback etc during render / update
-        if (instance._unmounted) {
-          return;
-        }
-        let didUpdate = true;
-        // Update component before getting child context
-        let childContext;
-        if (!isNullOrUndef(instance.getChildContext)) {
-          childContext = instance.getChildContext();
-        }
-        if (isNullOrUndef(childContext)) {
-          childContext = context;
-        } else {
-          childContext = combineFrom(context, childContext);
-        }
-
-        instance._childContext = childContext;
-        if (isInvalid(nextInput)) {
-          nextInput = createVoidVNode();
-        } else if (nextInput === NO_OP) {
-          nextInput = lastInput;
-          didUpdate = false;
-        } else if (isStringOrNumber(nextInput)) {
-          nextInput = createTextVNode(nextInput, null);
-        } else if (isArray(nextInput)) {
-          if (process.env.NODE_ENV !== "production") {
-            throwError(
-              "a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object."
-            );
-          }
-          throwError();
-        } else if (isObject(nextInput)) {
-          if (!isNull((nextInput as VNode).dom)) {
-            nextInput = directClone(nextInput as VNode);
-          }
-        }
-        if (nextInput.flags & VNodeFlags.Component) {
-          nextInput.parentVNode = nextVNode;
-        } else if (lastInput.flags & VNodeFlags.Component) {
-          lastInput.parentVNode = nextVNode;
-        }
-        instance._lastInput = nextInput;
-        instance._vNode = nextVNode;
-        if (didUpdate) {
-          patch(
-            lastInput,
-            nextInput,
-            parentDom,
-            lifecycle,
-            childContext,
-            isSVG
-          );
-          if (hasComponentDidUpdate && instance.componentDidUpdate) {
-            instance.componentDidUpdate(lastProps, lastState);
-          }
-          if (!isNull(options.afterUpdate)) {
-            options.afterUpdate(nextVNode);
-          }
-          if (options.findDOMNodeEnabled) {
-            componentToDOMNodeMap.set(instance, nextInput.dom);
-          }
-        }
-        nextVNode.dom = nextInput.dom;
       }
       instance._updating = false;
     } else {
@@ -518,10 +513,7 @@ export function patchComponent(
       if (lastKey !== nextKey) {
         shouldUpdate = true;
       } else {
-        if (
-          nextHooksDefined &&
-          !isNullOrUndef(nextHooks.onComponentShouldUpdate)
-        ) {
+        if (nextHooksDefined && isFunction(nextHooks.onComponentShouldUpdate)) {
           shouldUpdate = nextHooks.onComponentShouldUpdate(
             lastProps,
             nextProps
@@ -529,46 +521,20 @@ export function patchComponent(
         }
       }
       if (shouldUpdate !== false) {
-        if (
-          nextHooksDefined &&
-          !isNullOrUndef(nextHooks.onComponentWillUpdate)
-        ) {
+        if (nextHooksDefined && isFunction(nextHooks.onComponentWillUpdate)) {
           nextHooks.onComponentWillUpdate(lastProps, nextProps);
         }
         nextInput = nextType(nextProps, context);
 
-        if (isInvalid(nextInput)) {
-          nextInput = createVoidVNode();
-        } else if (isStringOrNumber(nextInput) && nextInput !== NO_OP) {
-          nextInput = createTextVNode(nextInput, null);
-        } else if (isArray(nextInput)) {
-          if (process.env.NODE_ENV !== "production") {
-            throwError(
-              "a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object."
-            );
-          }
-          throwError();
-        } else if (isObject(nextInput)) {
-          if (!isNull((nextInput as VNode).dom)) {
-            nextInput = directClone(nextInput as VNode);
-          }
-        }
         if (nextInput !== NO_OP) {
+          nextInput = handleComponentInput(nextInput, nextVNode);
           patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
           nextVNode.children = nextInput;
-          if (
-            nextHooksDefined &&
-            !isNullOrUndef(nextHooks.onComponentDidUpdate)
-          ) {
+          if (nextHooksDefined && isFunction(nextHooks.onComponentDidUpdate)) {
             nextHooks.onComponentDidUpdate(lastProps, nextProps);
           }
           nextVNode.dom = nextInput.dom;
         }
-      }
-      if (nextInput.flags & VNodeFlags.Component) {
-        nextInput.parentVNode = nextVNode;
-      } else if (lastInput.flags & VNodeFlags.Component) {
-        lastInput.parentVNode = nextVNode;
       }
     }
   }

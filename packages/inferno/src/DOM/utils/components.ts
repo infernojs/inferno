@@ -114,7 +114,7 @@ export function handleComponentInput(input: any, componentVNode: VNode): VNode {
     if (input.dom) {
       input = directClone(input);
     }
-    if (input.flags & VNodeFlags.Component) {
+    if ((input.flags & VNodeFlags.Component) > 0) {
       // if we have an input that is also a component, we run into a tricky situation
       // where the root vNode needs to always have the correct DOM entry
       // so we break monomorphism on our input and supply it our vNode as parentVNode

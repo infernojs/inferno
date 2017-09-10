@@ -2,7 +2,7 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { warning } from "inferno-shared";
 
 const specialKeys = {

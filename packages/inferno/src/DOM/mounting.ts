@@ -41,9 +41,11 @@ export function mount(
 ) {
   const flags = vNode.flags;
 
-  if (flags & VNodeFlags.Element) {
+  if ((flags & VNodeFlags.Element) > 0) {
     return mountElement(vNode, parentDom, lifecycle, context, isSVG);
-  } else if (flags & VNodeFlags.Component) {
+  }
+
+  if ((flags & VNodeFlags.Component) > 0) {
     return mountComponent(
       vNode,
       parentDom,
@@ -52,25 +54,29 @@ export function mount(
       isSVG,
       (flags & VNodeFlags.ComponentClass) > 0
     );
-  } else if (flags & VNodeFlags.Void) {
+  }
+
+  if ((flags & VNodeFlags.Void) > 0) {
     return mountVoid(vNode, parentDom);
-  } else if (flags & VNodeFlags.Text) {
+  }
+
+  if ((flags & VNodeFlags.Text) > 0) {
     return mountText(vNode, parentDom);
-  } else {
-    if (process.env.NODE_ENV !== "production") {
-      if (typeof vNode === "object") {
-        throwError(
-          `mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
-            vNode
-          )}".`
-        );
-      } else {
-        throwError(
-          `mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
-        );
-      }
+  }
+
+  // Development validation, in production we don't need to throw because it crashes anyway
+  if (process.env.NODE_ENV !== "production") {
+    if (typeof vNode === "object") {
+      throwError(
+        `mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
+          vNode
+        )}".`
+      );
+    } else {
+      throwError(
+        `mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
+      );
     }
-    throwError();
   }
 }
 

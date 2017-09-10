@@ -23,7 +23,6 @@ module.exports = {
   moduleNameMapper: {
     "^inferno$": "<rootDir>/packages/inferno/src",
     "^inferno-compat": "<rootDir>/packages/inferno-compat/src",
-    "^inferno-component": "<rootDir>/packages/inferno-component/src",
     "^inferno-create-class": "<rootDir>/packages/inferno-create-class/src",
     "^inferno-create-element": "<rootDir>/packages/inferno-create-element/src",
     "^inferno-devtools": "<rootDir>/packages/inferno-devtools/src",
@@ -40,7 +39,6 @@ module.exports = {
   },
   projects: [
     "<rootDir>/packages/inferno",
-    "<rootDir>/packages/inferno-component",
     "<rootDir>/packages/inferno-create-class",
     "<rootDir>/packages/inferno-create-element",
     "<rootDir>/packages/inferno-shared",

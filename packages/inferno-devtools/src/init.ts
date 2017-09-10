@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { options } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { isStatefulComponent } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 import { createDevToolsBridge } from "./bridge";

@@ -1,100 +1,115 @@
-import { createVNode, render } from 'inferno';
-import Component from 'inferno-component';
-import InfernoVNodeFlags from 'inferno-vnode-flags';
+import { createVNode, render, Component } from "inferno";
+import InfernoVNodeFlags from "inferno-vnode-flags";
 
-suite('class components', function() {
-	benchmark('single component', function() {
-		class Com extends Component {
-			render() {
-				return createVNode(InfernoVNodeFlags.Element, 'div', null, '1');
-			}
-		}
+suite("class components", function() {
+  benchmark(
+    "single component",
+    function() {
+      class Com extends Component {
+        render() {
+          return createVNode(InfernoVNodeFlags.Element, "div", null, "1");
+        }
+      }
 
-		render(createVNode(InfernoVNodeFlags.ComponentClass, Com), this.testDiv);
-	}, {
-		setup: function() {
-			this.testDiv = document.createElement('div');
-		},
+      render(createVNode(InfernoVNodeFlags.ComponentClass, Com), this.testDiv);
+    },
+    {
+      setup: function() {
+        this.testDiv = document.createElement("div");
+      },
 
-		teardown: function() {
-			this.testDiv.innerHTML = '';
-		}
-	});
+      teardown: function() {
+        this.testDiv.innerHTML = "";
+      }
+    }
+  );
 
+  benchmark(
+    "single component + state change in CWM",
+    function() {
+      class Com extends Component {
+        componentWillMount() {
+          this.setState({
+            foo: "bar",
+            daa: "jaa",
+            c: "g"
+          });
+        }
 
-	benchmark('single component + state change in CWM', function() {
-		class Com extends Component {
+        render() {
+          return createVNode(InfernoVNodeFlags.Element, "div", null, "1");
+        }
+      }
 
-			componentWillMount() {
-				this.setState({
-					foo: 'bar',
-					daa: 'jaa',
-					c: 'g'
-				});
-			}
+      render(createVNode(InfernoVNodeFlags.ComponentClass, Com), this.testDiv);
+    },
+    {
+      setup: function() {
+        this.testDiv = document.createElement("div");
+      },
 
-			render() {
-				return createVNode(InfernoVNodeFlags.Element, 'div', null, '1');
-			}
-		}
+      teardown: function() {
+        this.testDiv.innerHTML = "";
+      }
+    }
+  );
 
-		render(createVNode(InfernoVNodeFlags.ComponentClass, Com), this.testDiv);
-	}, {
-		setup: function() {
-			this.testDiv = document.createElement('div');
-		},
+  benchmark(
+    "20 children components with state change in CWM",
+    function() {
+      class Com extends Component {
+        componentWillMount() {
+          this.setState({
+            foo: "bar",
+            daa: "jaa",
+            c: "g"
+          });
+        }
 
-		teardown: function() {
-			this.testDiv.innerHTML = '';
-		}
-	});
+        render() {
+          return createVNode(
+            InfernoVNodeFlags.Element,
+            "div",
+            this.props.children,
+            "1"
+          );
+        }
+      }
 
-	benchmark('20 children components with state change in CWM', function() {
+      render(
+        createVNode(InfernoVNodeFlags.ComponentClass, Com, null, [
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com),
+          createVNode(InfernoVNodeFlags.ComponentClass, Com)
+        ]),
+        this.testDiv
+      );
+    },
+    {
+      setup: function() {
+        this.testDiv = document.createElement("div");
+      },
 
-		class Com extends Component {
-
-			componentWillMount() {
-				this.setState({
-					foo: 'bar',
-					daa: 'jaa',
-					c: 'g'
-				});
-			}
-
-			render() {
-				return createVNode(InfernoVNodeFlags.Element, 'div', this.props.children, '1');
-			}
-		}
-
-		render(createVNode(InfernoVNodeFlags.ComponentClass, Com, null, [
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com),
-			createVNode(InfernoVNodeFlags.ComponentClass, Com)
-		]), this.testDiv);
-	}, {
-		setup: function() {
-			this.testDiv = document.createElement('div');
-		},
-
-		teardown: function() {
-			this.testDiv.innerHTML = '';
-		}
-	});
+      teardown: function() {
+        this.testDiv.innerHTML = "";
+      }
+    }
+  );
 });

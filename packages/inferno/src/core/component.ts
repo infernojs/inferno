@@ -1,29 +1,19 @@
 /**
- * @module Inferno-Component
+ * @module Inferno
  */ /** TypeDoc Comment */
 
-// Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
-import {
-  createVNode,
-  EMPTY_OBJ,
-  internal_DOMNodeMap,
-  internal_patch,
-  options,
-  Props,
-  VNode
-} from "inferno";
+import VNodeFlags from "inferno-vnode-flags";
+import { options, Props, VNode } from "./implementation";
 import {
   combineFrom,
   ERROR_MSG,
-  isArray,
   isFunction,
-  isInvalid,
   isNullOrUndef,
-  isStringOrNumber,
   NO_OP,
   throwError
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { updateClassComponent } from "../DOM/patching";
+import { EMPTY_OBJ } from "../DOM/utils/common";
 
 let noOp = ERROR_MSG;
 
@@ -80,7 +70,7 @@ function addToQueue(
       component._updating = false;
     });
   }
-  if (!isNullOrUndef(callback)) {
+  if (isFunction(callback)) {
     queue.push(callback);
   }
 }
@@ -114,7 +104,7 @@ function queueStateChanges<P, S>(
     }
   } else {
     component._pendingSetState = true;
-    if (!isNullOrUndef(callback) && component._blockRender) {
+    if (component._blockRender && isFunction(callback)) {
       (component._lifecycle as any).push(callback.bind(component));
     }
   }
@@ -137,107 +127,45 @@ function applyState<P, S>(
     const context = component.context;
 
     component._pendingState = null;
-    let nextInput: VNode;
-    const renderOutput = component._updateComponent(
-      prevState as S,
+    // TODO: This is unreliable and bad code, refactor it away
+    const lastInput = component._lastInput as VNode;
+    const parentDom = lastInput.dom && lastInput.dom.parentNode;
+
+    updateClassComponent(
+      component,
       nextState,
+      component._vNode as VNode,
       props,
-      props,
+      parentDom,
+      component._lifecycle as any,
       context,
+      component._isSVG,
       force,
       true
     );
-    let didUpdate = true;
-
-    if (isInvalid(renderOutput)) {
-      nextInput = createVNode(VNodeFlags.Void, null);
-    } else if (renderOutput === NO_OP) {
-      nextInput = component._lastInput;
-      didUpdate = false;
-    } else if (isStringOrNumber(renderOutput)) {
-      nextInput = createVNode(
-        VNodeFlags.Text,
-        null,
-        null,
-        renderOutput
-      ) as VNode;
-    } else if (isArray(renderOutput)) {
-      if (process.env.NODE_ENV !== "production") {
-        throwError(
-          "a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object."
-        );
-      }
-      return throwError();
-    } else {
-      nextInput = renderOutput;
+    if (component._unmounted) {
+      return;
     }
+    updateParentComponentVNodes(
+      component._vNode as VNode,
+      component._lastInput.dom
+    );
+    let listener;
+    const lifeCycle = component._lifecycle as any;
 
-    const lastInput = component._lastInput as VNode;
-    const vNode = component._vNode as VNode;
-    const parentDom =
-      (lastInput.dom && lastInput.dom.parentNode) ||
-      (lastInput.dom = vNode.dom);
-
-    if (nextInput.flags & VNodeFlags.Component) {
-      nextInput.parentVNode = vNode;
+    while ((listener = lifeCycle.shift()) !== undefined) {
+      listener();
     }
-    component._lastInput = nextInput as VNode;
-    if (didUpdate) {
-      let childContext;
-
-      if (!isNullOrUndef(component.getChildContext)) {
-        childContext = component.getChildContext();
-      }
-
-      if (isNullOrUndef(childContext)) {
-        childContext = component._childContext;
-      } else {
-        childContext = combineFrom(context, childContext as any);
-      }
-
-      const lifeCycle = component._lifecycle as any;
-      internal_patch(
-        lastInput,
-        nextInput as VNode,
-        parentDom as Element,
-        lifeCycle,
-        childContext,
-        component._isSVG
-      );
-
-      // If this component was unmounted by its parent, do nothing. This is no-op
-      if (component._unmounted) {
-        return;
-      }
-
-      let listener;
-      while ((listener = lifeCycle.shift()) !== undefined) {
-        listener();
-      }
-
-      if (isFunction(component.componentDidUpdate)) {
-        component.componentDidUpdate(props, prevState as S, context);
-      }
-      if (isFunction(options.afterUpdate)) {
-        options.afterUpdate(vNode);
-      }
-    }
-    const dom = (vNode.dom = (nextInput as VNode).dom as Element);
-    if (options.findDOMNodeEnabled) {
-      internal_DOMNodeMap.set(component, (nextInput as VNode).dom);
-    }
-
-    updateParentComponentVNodes(vNode, dom);
   } else {
     component.state = component._pendingState as any;
     component._pendingState = null;
   }
-  if (!isNullOrUndef(callback)) {
+  if (isFunction(callback)) {
     callback.call(component);
   }
 }
 
-export default class Component<P, S> implements ComponentLifecycle<P, S> {
+export class Component<P, S> implements ComponentLifecycle<P, S> {
   public static defaultProps: {};
   public state: S | null = null;
   public props: P & Props;
@@ -306,12 +234,13 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
     if (!this._blockSetState) {
       queueStateChanges(this, newState, callback);
     } else {
+      // Development warning
       if (process.env.NODE_ENV !== "production") {
         throwError(
           "cannot update state via setState() in componentWillUpdate() or constructor."
         );
       }
-      throwError();
+      return;
     }
   }
 
@@ -328,7 +257,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
       if (process.env.NODE_ENV !== "production") {
         throwError(noOp);
       }
-      throwError();
+      return NO_OP;
     }
     if (
       prevProps !== nextProps ||
@@ -337,7 +266,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
       force
     ) {
       if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
-        if (!isNullOrUndef(this.componentWillReceiveProps) && !fromSetState) {
+        if (!fromSetState && isFunction(this.componentWillReceiveProps)) {
           this._blockRender = true;
           this.componentWillReceiveProps(nextProps, context);
           // If this component was removed during its own update do nothing...
@@ -354,13 +283,19 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
       }
 
       /* Update if scu is not defined, or it returns truthy value or force */
+      const hasSCU = isFunction(this.shouldComponentUpdate);
+
       if (
         force ||
-        isNullOrUndef(this.shouldComponentUpdate) ||
-        (this.shouldComponentUpdate &&
-          this.shouldComponentUpdate(nextProps, nextState, context))
+        !hasSCU ||
+        (hasSCU &&
+          (this.shouldComponentUpdate as Function)(
+            nextProps,
+            nextState,
+            context
+          ))
       ) {
-        if (!isNullOrUndef(this.componentWillUpdate)) {
+        if (isFunction(this.componentWillUpdate)) {
           this._blockSetState = true;
           this.componentWillUpdate(nextProps, nextState, context);
           this._blockSetState = false;
@@ -370,12 +305,12 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
         this.state = nextState;
         this.context = context;
 
-        if (options.beforeRender) {
+        if (isFunction(options.beforeRender)) {
           options.beforeRender(this);
         }
         const render = this.render(nextProps, nextState, context);
 
-        if (options.afterRender) {
+        if (isFunction(options.afterRender)) {
           options.afterRender(this);
         }
 

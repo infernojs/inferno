@@ -3,9 +3,8 @@
  */ /** TypeDoc Comment */
 
 import { Dispatch, Store } from "redux";
-
 import hoistStatics from "hoist-non-inferno-statics";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import createElement from "inferno-create-element";
 import { Subscription } from "../utils/Subscription";
 

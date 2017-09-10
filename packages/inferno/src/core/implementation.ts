@@ -81,7 +81,7 @@ export function createVNode(
   ref?: Ref | null,
   noNormalise?: boolean
 ): VNode {
-  if (flags & VNodeFlags.ComponentUnknown) {
+  if ((flags & VNodeFlags.ComponentUnknown) > 0) {
     flags = isStatefulComponent(type)
       ? VNodeFlags.ComponentClass
       : VNodeFlags.ComponentFunction;
@@ -324,11 +324,11 @@ export function cloneVNode(
 }
 
 export function createVoidVNode(): VNode {
-  return createVNode(VNodeFlags.Void, null);
+  return createVNode(VNodeFlags.Void, null, null, null, null, null, null, true);
 }
 
 export function createTextVNode(text: string | number, key): VNode {
-  return createVNode(VNodeFlags.Text, null, null, text, null, key);
+  return createVNode(VNodeFlags.Text, null, null, text, null, key, null, true);
 }
 
 export function isVNode(o: VNode): boolean {

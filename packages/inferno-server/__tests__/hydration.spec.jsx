@@ -1,5 +1,5 @@
 import { createVNode, render } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { renderToString } from "inferno-server";
 import {
   createContainerWithHTML,

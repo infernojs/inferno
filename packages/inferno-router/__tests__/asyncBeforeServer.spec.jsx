@@ -1,6 +1,6 @@
 import { createMemoryHistory } from "history";
 import { render } from "inferno";
-import Component from "inferno-component";
+import { Component } from "inferno";
 import InfernoServer from "inferno-server";
 import createElement from "inferno-create-element";
 import { innerHTML } from "inferno-utils";

@@ -27,6 +27,7 @@ import {
   EMPTY_OBJ,
   componentToDOMNodeMap as internal_DOMNodeMap
 } from "./DOM/utils/common";
+import { Component, ComponentLifecycle } from "./core/component";
 
 if (process.env.NODE_ENV !== "production") {
   /* tslint:disable-next-line:no-empty */
@@ -56,6 +57,7 @@ const version = process.env.INFERNO_VERSION;
 export default {
   EMPTY_OBJ, // used to shared common items between Inferno libs
   NO_OP, // used to shared common items between Inferno libs
+  Component,
   cloneVNode, // cloning
   createRenderer,
   createVNode, // core shapes
@@ -72,6 +74,8 @@ export default {
 };
 
 export {
+  Component,
+  ComponentLifecycle,
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,

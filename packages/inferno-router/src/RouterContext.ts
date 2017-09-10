@@ -2,7 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { IRouterProps } from "./routerprops";
 
 export default class RouterContext extends Component<IRouterProps, any> {

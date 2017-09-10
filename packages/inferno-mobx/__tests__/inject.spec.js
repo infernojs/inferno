@@ -1,5 +1,4 @@
-import { render as infernoRender } from "inferno";
-import Component from "inferno-component";
+import { render as infernoRender, Component } from "inferno";
 import createClass from "inferno-create-class";
 import { observer, inject, Provider } from "inferno-mobx";
 import { innerHTML } from "inferno-utils";

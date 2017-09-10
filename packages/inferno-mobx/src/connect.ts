@@ -2,7 +2,7 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import createClass from "inferno-create-class";
 import { throwError } from "inferno-shared";
 import inject from "./inject";

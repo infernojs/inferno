@@ -1,5 +1,4 @@
-import { render as renderDOM } from "inferno";
-import Component from "inferno-component";
+import { render as renderDOM, Component } from "inferno";
 import createClass from "inferno-create-class";
 import createElement from "inferno-create-element";
 import { connect } from "inferno-redux";
@@ -1765,7 +1764,7 @@ describe("Inferno", () => {
       expect(target.props.statefulValue).toBe(1);
     });
 
-    it("calls mapState and mapDispatch for impure components", async () => {
+    it("calls mapState and mapDispatch for impure components", () => {
       const store = createStore(() => ({
         foo: "foo",
         bar: "bar"
@@ -1824,7 +1823,6 @@ describe("Inferno", () => {
       const storeGetter = wrapper.state.storeGetter;
       storeGetter.storeKey = "bar";
       wrapper.setState({ storeGetter });
-      await tree.repaint();
 
       expect(mapStateToPropsCalls).toBe(3);
       expect(mapDispatchToPropsCalls).toBe(3);
@@ -1993,6 +1991,7 @@ describe("Inferno", () => {
 
       const Container = connect(state => {
         mapStateCalls++;
+        debugger;
         if (state === "a") {
           throw new Error("Oops");
         } else {
@@ -2315,7 +2314,7 @@ describe("Inferno", () => {
       expect(MyComponent.displayName).toBe("Custom(MyComponent)");
     });
 
-    it("should update impure components whenever the state of the store changes", async () => {
+    it("should update impure components whenever the state of the store changes", () => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
@@ -2336,7 +2335,6 @@ describe("Inferno", () => {
 
       const rendersBeforeStateChange = renderCount;
       store.dispatch({ type: "ACTION" });
-      await tree.repaint();
       expect(renderCount).toBe(rendersBeforeStateChange + 1);
     });
 

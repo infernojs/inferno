@@ -24,7 +24,6 @@
   ],
   "dependencies": {
     "inferno": "3.9.0",
-    "inferno-component": "3.9.0",
     "inferno-shared": "3.9.0",
     "inferno-vnode-flags": "3.9.0"
   },
@@ -35,8 +34,7 @@
     ],
     "moduleName": "Inferno.createElement",
     "moduleGlobals": {
-      "inferno": "Inferno",
-      "inferno-component": "Inferno.Component"
+      "inferno": "Inferno"
     }
   }
 }

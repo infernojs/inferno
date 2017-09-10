@@ -23,7 +23,6 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno-component": "3.9.0",
     "inferno-shared": "3.9.0"
   },
   "devDependencies": {
@@ -34,9 +33,6 @@
     "bundledDependencies": [
       "inferno-shared"
     ],
-    "moduleName": "Inferno.createClass",
-    "moduleGlobals": {
-      "inferno-component": "Inferno.Component"
-    }
+    "moduleName": "Inferno.createClass"
   }
 }

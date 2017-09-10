@@ -47,7 +47,7 @@ const createListenerCollection = (): IListenerCollection => {
       }
       next!.push(listener);
 
-      const unsubscribe = () => {
+      return () => {
         if (!isSubscribed || current === null) {
           return;
         }
@@ -58,8 +58,6 @@ const createListenerCollection = (): IListenerCollection => {
         }
         next!.splice(next!.indexOf(listener), 1);
       };
-
-      return unsubscribe;
     }
   };
 };

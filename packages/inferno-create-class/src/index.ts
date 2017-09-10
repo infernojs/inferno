@@ -2,7 +2,7 @@
  * @module Inferno-Create-Class
  */ /** TypeDoc Comment */
 
-import Component, { ComponentLifecycle } from "inferno-component";
+import { Component, ComponentLifecycle } from "inferno";
 import {
   isFunction,
   isNullOrUndef,
