@@ -208,7 +208,7 @@ export default function createClass<P, S>(
     }
 
     public isMounted(): boolean {
-      return !this._unmounted;
+      return !this.$UN;
     }
   }
 

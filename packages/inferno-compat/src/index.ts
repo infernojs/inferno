@@ -368,28 +368,6 @@ export {
   version
 };
 
-export default {
-  Children,
-  Component,
-  DOM,
-  EMPTY_OBJ,
-  NO_OP,
-  PropTypes,
-  PureComponent,
-  cloneElement,
-  cloneVNode,
-  createClass,
-  createElement,
-  createFactory,
-  createVNode,
-  findDOMNode,
-  isValidElement,
-  render,
-  unmountComponentAtNode,
-  unstable_renderSubtreeIntoContainer,
-  version
-};
-
 // To please the TS God
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;

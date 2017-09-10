@@ -2787,13 +2787,18 @@ describe("Components (JSX)", () => {
       );
       // click on "DIV"
       div.click();
+
       // "DIV" should now be "SPAN"
       expect(container.innerHTML).toEqual(
         "<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>"
       );
       // click "SWAP ROWS"
       container.querySelector("button").click();
-      // expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
+      expect(container.innerHTML).toEqual(
+        "<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>"
+      );
+
+      render(null, container);
     });
   });
 

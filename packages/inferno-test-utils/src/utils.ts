@@ -39,10 +39,7 @@ export function isComponentVNode(inst: VNode): boolean {
 export function getTagNameOfVNode(inst: any) {
   return (
     (inst && inst.dom && inst.dom.tagName.toLowerCase()) ||
-    (inst &&
-      inst._vNode &&
-      inst._vNode.dom &&
-      inst._vNode.dom.tagName.toLowerCase()) ||
+    (inst && inst.$V && inst.$V.dom && inst.$V.dom.tagName.toLowerCase()) ||
     undefined
   );
 }

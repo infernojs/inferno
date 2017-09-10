@@ -65,3 +65,10 @@ export function isKeyed(lastChildren: any[], nextChildren: any[]): boolean {
 }
 
 export const componentToDOMNodeMap = new Map();
+
+export function callAll(arrayFn: Function[]) {
+  let listener;
+  while ((listener = arrayFn.shift()) !== undefined) {
+    listener();
+  }
+}

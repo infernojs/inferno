@@ -1945,12 +1945,12 @@ describe("Children - (JSX)", () => {
         notCalled(unMountSpy2);
 
         // This component is actually unmounted but fastUnmount skips unmount loop so unmounted remains false
-        expect(dirtyReference._unmounted).toEqual(true);
+        expect(dirtyReference.$UN).toEqual(true);
         // Try to do setState and verify it doesn't fail
         updateFastUnmountedComponent();
 
         setTimeout(() => {
-          expect(dirtyReference._unmounted).toEqual(true);
+          expect(dirtyReference.$UN).toEqual(true);
           expect(container.innerHTML).toEqual(
             "<div><span>foobar</span><span></span></div>"
           );

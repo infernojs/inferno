@@ -14,7 +14,6 @@ import {
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 import { options, InfernoChildren, VNode } from "../core/implementation";
-import { svgNS } from "./constants";
 import {
   mount,
   mountClassComponentCallbacks,
@@ -70,22 +69,20 @@ function hydrateComponent(
   const props = vNode.props || EMPTY_OBJ;
 
   if (isClass) {
-    const _isSVG = dom.namespaceURI === svgNS;
     const instance = createClassComponentInstance(
       vNode,
       type,
       props,
       context,
-      _isSVG,
       lifecycle
     );
-    const input = instance._lastInput;
+    const input = instance.$LI;
 
-    instance._vNode = vNode;
-    hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+    instance.$V = vNode;
+    hydrate(input, dom, lifecycle, instance.$CX, isSVG);
     vNode.dom = input.dom;
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
-    instance._updating = false; // Mount finished allow going sync
+    instance.$UPD = false; // Mount finished allow going sync
     if (options.findDOMNodeEnabled) {
       componentToDOMNodeMap.set(instance, dom);
     }

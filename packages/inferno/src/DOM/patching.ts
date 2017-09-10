@@ -11,7 +11,8 @@ import {
   isStringOrNumber,
   isUndefined,
   NO_OP,
-  isFunction
+  isFunction,
+  throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 import { directClone, isVNode, options, VNode } from "../core/implementation";
@@ -389,54 +390,104 @@ export function updateClassComponent(
   const lastState = instance.state;
   const lastProps = instance.props;
   nextVNode.children = instance;
-  instance._isSVG = isSVG;
-  const lastInput = instance._lastInput;
-  const renderOutput = instance._updateComponent(
-    lastState,
-    nextState,
-    lastProps,
-    nextProps,
-    context,
-    force,
-    fromSetState
-  );
-  // If this component was destroyed by its parent do nothing, this is no-op
-  // It can happen by using external callback etc during render / update
-  if (instance._unmounted) {
+  const lastInput = instance.$LI;
+  let renderOutput;
+
+  if (instance.$UN) {
+    if (process.env.NODE_ENV !== "production") {
+      throwError(
+        "Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op."
+      );
+    }
     return;
   }
-  const didUpdate = renderOutput !== NO_OP;
-  // Update component before getting child context
-  let childContext;
-  if (isFunction(instance.getChildContext)) {
-    childContext = instance.getChildContext();
+  if (lastProps !== nextProps || nextProps === EMPTY_OBJ) {
+    if (!fromSetState && isFunction(instance.componentWillReceiveProps)) {
+      instance.$BR = true;
+      instance.componentWillReceiveProps(nextProps, context);
+      // If instance component was removed during its own update do nothing...
+      if (instance.$UN) {
+        return;
+      }
+      instance.$BR = false;
+    }
+    if (instance.$PSS) {
+      nextState = combineFrom(nextState, instance.$PS) as any;
+      instance.$PSS = false;
+      instance.$PS = null;
+    }
   }
-  if (isNullOrUndef(childContext)) {
-    childContext = context;
+
+  /* Update if scu is not defined, or it returns truthy value or force */
+  const hasSCU = isFunction(instance.shouldComponentUpdate);
+
+  if (
+    force ||
+    !hasSCU ||
+    (hasSCU &&
+      (instance.shouldComponentUpdate as Function)(
+        nextProps,
+        nextState,
+        context
+      ))
+  ) {
+    if (isFunction(instance.componentWillUpdate)) {
+      instance.$BS = true;
+      instance.componentWillUpdate(nextProps, nextState, context);
+      instance.$BS = false;
+    }
+
+    instance.props = nextProps;
+    instance.state = nextState;
+    instance.context = context;
+
+    if (isFunction(options.beforeRender)) {
+      options.beforeRender(instance);
+    }
+    renderOutput = instance.render(nextProps, nextState, context);
+
+    if (isFunction(options.afterRender)) {
+      options.afterRender(instance);
+    }
+
+    const didUpdate = renderOutput !== NO_OP;
+    // Update component before getting child context
+    let childContext;
+    if (isFunction(instance.getChildContext)) {
+      childContext = instance.getChildContext();
+    }
+    if (isNullOrUndef(childContext)) {
+      childContext = context;
+    } else {
+      childContext = combineFrom(context, childContext);
+    }
+
+    // instance.$CX = childContext;
+    // instance.$V = nextVNode;
+
+    if (didUpdate) {
+      const nextInput = (instance.$LI = handleComponentInput(
+        renderOutput,
+        nextVNode
+      ));
+      patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG);
+      if (hasComponentDidUpdate) {
+        instance.componentDidUpdate(lastProps, lastState);
+      }
+      if (isFunction(options.afterUpdate)) {
+        options.afterUpdate(nextVNode);
+      }
+      if (options.findDOMNodeEnabled) {
+        componentToDOMNodeMap.set(instance, nextInput.dom);
+      }
+    }
   } else {
-    childContext = combineFrom(context, childContext);
+    instance.props = nextProps;
+    instance.state = nextState;
+    instance.context = context;
   }
 
-  instance._childContext = childContext;
-  instance._vNode = nextVNode;
-
-  if (didUpdate) {
-    const nextInput = (instance._lastInput = handleComponentInput(
-      renderOutput,
-      nextVNode
-    ));
-    patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG);
-    if (hasComponentDidUpdate && instance.componentDidUpdate) {
-      instance.componentDidUpdate(lastProps, lastState);
-    }
-    if (isFunction(options.afterUpdate)) {
-      options.afterUpdate(nextVNode);
-    }
-    if (options.findDOMNodeEnabled) {
-      componentToDOMNodeMap.set(instance, nextInput.dom);
-    }
-  }
-  nextVNode.dom = instance._lastInput.dom;
+  nextVNode.dom = instance.$LI.dom;
 }
 
 export function patchComponent(
@@ -467,39 +518,25 @@ export function patchComponent(
 
     if (isClass) {
       const instance = lastVNode.children;
-      instance._updating = true;
+      instance.$UPD = true;
 
-      if (instance._unmounted) {
-        if (isNull(parentDom)) {
-          return;
-        }
-        replaceChild(
-          parentDom,
-          mountComponent(
-            nextVNode,
-            null,
-            lifecycle,
-            context,
-            isSVG,
-            (nextVNode.flags & VNodeFlags.ComponentClass) > 0
-          ),
-          lastVNode.dom
-        );
-      } else {
-        updateClassComponent(
-          instance,
-          instance.state,
-          nextVNode,
-          nextProps,
-          parentDom,
-          lifecycle,
-          context,
-          isSVG,
-          false,
-          false
-        );
-      }
-      instance._updating = false;
+      updateClassComponent(
+        instance,
+        instance.state,
+        nextVNode,
+        nextProps,
+        parentDom,
+        lifecycle,
+        context,
+        isSVG,
+        false,
+        false
+      );
+      instance.$V = nextVNode;
+      // if ((lastVNode.flags & VNodeFlags.Component) > 0) {
+      //   lastVNode.parentVNode = nextVNode;
+      // }
+      instance.$UPD = false;
     } else {
       let shouldUpdate = true;
       const lastProps = lastVNode.props;
@@ -530,11 +567,13 @@ export function patchComponent(
           nextInput = handleComponentInput(nextInput, nextVNode);
           patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
           nextVNode.children = nextInput;
+          nextVNode.dom = nextInput.dom;
           if (nextHooksDefined && isFunction(nextHooks.onComponentDidUpdate)) {
             nextHooks.onComponentDidUpdate(lastProps, nextProps);
           }
-          nextVNode.dom = nextInput.dom;
         }
+      } else if ((lastInput.flags & VNodeFlags.Component) > 0) {
+        lastInput.parentVNode = nextVNode;
       }
     }
   }

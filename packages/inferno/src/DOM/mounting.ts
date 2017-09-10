@@ -203,29 +203,21 @@ export function mountComponent(
       type,
       props,
       context,
-      isSVG,
       lifecycle
     );
-    const input = instance._lastInput;
-    instance._vNode = vNode;
-    vNode.dom = dom = mount(
-      input,
-      null,
-      lifecycle,
-      instance._childContext,
-      isSVG
-    );
+    const input = instance.$LI;
+    instance.$V = vNode;
+    vNode.dom = dom = mount(input, null, lifecycle, instance.$CX, isSVG);
     if (!isNull(parentDom)) {
       appendChild(parentDom, dom);
     }
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
-    instance._updating = false;
+    instance.$UPD = false;
     if (options.findDOMNodeEnabled) {
       componentToDOMNodeMap.set(instance, dom);
     }
   } else {
     const input = handleComponentInput(type(props, context), vNode);
-
     vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
     vNode.children = input;
     mountFunctionalComponentCallbacks(props, ref, dom, lifecycle);
@@ -271,14 +263,14 @@ export function mountClassComponentCallbacks(
 
   if (hasDidMount || !isNull(afterMount)) {
     lifecycle.push(() => {
-      instance._updating = true;
+      instance.$UPD = true;
       if (afterMount) {
         afterMount(vNode);
       }
       if (hasDidMount) {
         instance.componentDidMount();
       }
-      instance._updating = false;
+      instance.$UPD = false;
     });
   }
 }

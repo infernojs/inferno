@@ -17,7 +17,8 @@ import {
   InfernoInput,
   Props,
   Root as _Root,
-  VNode
+  VNode,
+  Refs as _Refs
 } from "./core/implementation";
 import { isUnitlessNumber as internal_isUnitlessNumber } from "./DOM/constants";
 import { linkEvent } from "./DOM/events/linkEvent";
@@ -49,6 +50,7 @@ if (process.env.NODE_ENV !== "production") {
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
+export declare const Refs: _Refs;
 
 const version = process.env.INFERNO_VERSION;
 

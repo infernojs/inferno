@@ -398,9 +398,6 @@ describe("observer based context", () => {
 
     connect(({ state }, { item }) => {
       injectRender++;
-      if (injectRender > 6) {
-        // debugger;
-      }
       return {
         // Using
         // highlighted: expr(() => state.isHighlighted(item)) // seems to fix the problem

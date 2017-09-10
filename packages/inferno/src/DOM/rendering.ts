@@ -24,7 +24,7 @@ import { hydrateRoot } from "./hydration";
 import { mount } from "./mounting";
 import { patch } from "./patching";
 import { unmount } from "./unmounting";
-import { EMPTY_OBJ, componentToDOMNodeMap } from "./utils/common";
+import { EMPTY_OBJ, componentToDOMNodeMap, callAll } from "./utils/common";
 
 const roots = options.roots;
 /**
@@ -151,10 +151,7 @@ export function render(
     }
   }
 
-  let listener;
-  while ((listener = lifecycle.shift()) !== undefined) {
-    listener();
-  }
+  callAll(lifecycle);
 
   if (root) {
     const rootInput: VNode = root.input as VNode;

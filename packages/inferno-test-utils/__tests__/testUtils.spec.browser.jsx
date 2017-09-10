@@ -36,6 +36,7 @@ const VNodeKeys = [
   "flags",
   "key",
   "ref",
+  "parentVNode",
   "props",
   "type"
 ].sort();

@@ -381,7 +381,6 @@ describe("Components (JSX) #2", () => {
         }
       }
 
-      debugger;
       render(<FooBar />, container);
 
       expect(container.innerHTML).toEqual("<div>1</div>");

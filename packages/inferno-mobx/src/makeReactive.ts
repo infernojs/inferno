@@ -18,7 +18,7 @@ export const componentByNodeRegistery: WeakMap<any, any> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
 function reportRendering(component) {
-  const node = component._vNode.dom;
+  const node = component.$V.dom;
   if (node && componentByNodeRegistery) {
     componentByNodeRegistery.set(node, component);
   }
@@ -186,7 +186,7 @@ export default function makeReactive(componentClass) {
     this.__$mobxIsUnmounted = true;
 
     if (isDevtoolsEnabled) {
-      const node = this._vNode.dom;
+      const node = this.$V.dom;
       if (node && componentByNodeRegistery) {
         componentByNodeRegistery.delete(node);
       }

@@ -78,7 +78,7 @@ export function isRenderedClassComponent(instance: any): boolean {
   return (
     Boolean(instance) &&
     isObject(instance) &&
-    _isVNode((instance as any)._vNode) &&
+    _isVNode((instance as any).$V) &&
     isFunction((instance as any).render) &&
     isFunction((instance as any).setState)
   );
@@ -91,7 +91,7 @@ export function isRenderedClassComponentOfType(
   return (
     isRenderedClassComponent(instance) &&
     isFunction(type) &&
-    instance._vNode.type === type
+    instance.$V.type === type
   );
 }
 
@@ -102,7 +102,7 @@ export function findAllInRenderedTree(
   predicate: (vNode: VNode) => boolean
 ): VNode[] | any {
   if (isRenderedClassComponent(renderedTree)) {
-    return findAllInVNodeTree(renderedTree._lastInput, predicate);
+    return findAllInVNodeTree(renderedTree.$LI, predicate);
   } else {
     throwError(
       "findAllInRenderedTree(renderedTree, predicate) renderedTree must be a rendered class component"
@@ -120,7 +120,7 @@ export function findAllInVNodeTree(
 
     if (isRenderedClassComponent(children)) {
       result = result.concat(findAllInVNodeTree(
-        children._lastInput,
+        children.$LI,
         predicate
       ) as VNode[]);
     } else if (_isVNode(children)) {

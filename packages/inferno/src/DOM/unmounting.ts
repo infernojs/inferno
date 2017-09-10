@@ -28,7 +28,7 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
     const ref = vNode.ref as any;
 
     if (isStatefulComponent) {
-      if (!instance._unmounted) {
+      if (!instance.$UN) {
         if (isFunction(options.beforeUnmount)) {
           options.beforeUnmount(vNode);
         }
@@ -38,12 +38,12 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
         if (isFunction(ref)) {
           ref(null);
         }
-        instance._unmounted = true;
+        instance.$UN = true;
         if (options.findDOMNodeEnabled) {
           componentToDOMNodeMap.delete(instance);
         }
 
-        unmount(instance._lastInput, null);
+        unmount(instance.$LI, null);
       }
     } else {
       if (!isNullOrUndef(ref)) {

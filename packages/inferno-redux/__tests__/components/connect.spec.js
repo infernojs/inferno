@@ -1991,7 +1991,6 @@ describe("Inferno", () => {
 
       const Container = connect(state => {
         mapStateCalls++;
-        debugger;
         if (state === "a") {
           throw new Error("Oops");
         } else {

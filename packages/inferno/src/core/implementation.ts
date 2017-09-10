@@ -53,10 +53,10 @@ export interface VNode {
   className: string | null;
   flags: number;
   key: any;
+  parentVNode: VNode | null;
   props: Props | null;
-  ref: Ref | null;
+  ref: Ref | Refs | null;
   type: Type;
-  parentVNode?: VNode;
 }
 
 /**
@@ -78,7 +78,7 @@ export function createVNode(
   children?: InfernoChildren,
   props?: Props | null,
   key?: any,
-  ref?: Ref | null,
+  ref?: Ref | Refs | null,
   noNormalise?: boolean
 ): VNode {
   if ((flags & VNodeFlags.ComponentUnknown) > 0) {
@@ -93,6 +93,7 @@ export function createVNode(
     dom: null,
     flags,
     key: key === void 0 ? null : key,
+    parentVNode: null,
     props: props === void 0 ? null : props,
     ref: ref === void 0 ? null : ref,
     type

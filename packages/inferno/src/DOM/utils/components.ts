@@ -28,7 +28,6 @@ export function createClassComponentInstance(
   Component,
   props: Props,
   context: Object,
-  isSVG: boolean,
   lifecycle: Function[]
 ) {
   if (isUndefined(context)) {
@@ -36,7 +35,7 @@ export function createClassComponentInstance(
   }
   const instance = new Component(props, context);
   vNode.children = instance;
-  instance._blockSetState = false;
+  instance.$BS = false;
   instance.context = context;
   if (instance.props === EMPTY_OBJ) {
     instance.props = props;
@@ -44,15 +43,14 @@ export function createClassComponentInstance(
   // setState callbacks must fire after render is done when called from componentWillReceiveProps or componentWillMount
   instance._lifecycle = lifecycle;
 
-  instance._unmounted = false;
-  instance._isSVG = isSVG;
+  instance.$UN = false;
   if (isFunction(instance.componentWillMount)) {
-    instance._blockRender = true;
+    instance.$BR = true;
     instance.componentWillMount();
 
-    if (instance._pendingSetState) {
+    if (instance.$PSS) {
       const state = instance.state;
-      const pending = instance._pendingState;
+      const pending = instance.$PS;
 
       if (state === null) {
         instance.state = pending;
@@ -61,11 +59,11 @@ export function createClassComponentInstance(
           state[key] = pending[key];
         }
       }
-      instance._pendingSetState = false;
-      instance._pendingState = null;
+      instance.$PSS = false;
+      instance.$PS = null;
     }
 
-    instance._blockRender = false;
+    instance.$BR = false;
   }
 
   let childContext;
@@ -74,9 +72,9 @@ export function createClassComponentInstance(
   }
 
   if (isNullOrUndef(childContext)) {
-    instance._childContext = context;
+    instance.$CX = context;
   } else {
-    instance._childContext = combineFrom(context, childContext);
+    instance.$CX = combineFrom(context, childContext);
   }
 
   if (isFunction(options.beforeRender)) {
@@ -92,7 +90,7 @@ export function createClassComponentInstance(
     options.afterRender(instance);
   }
 
-  instance._lastInput = input;
+  instance.$LI = input;
   return instance;
 }
 
@@ -105,7 +103,6 @@ export function handleComponentInput(input: any, componentVNode: VNode): VNode {
       );
     }
   }
-
   if (isInvalid(input)) {
     input = createVoidVNode();
   } else if (isStringOrNumber(input)) {
@@ -117,7 +114,6 @@ export function handleComponentInput(input: any, componentVNode: VNode): VNode {
     if ((input.flags & VNodeFlags.Component) > 0) {
       // if we have an input that is also a component, we run into a tricky situation
       // where the root vNode needs to always have the correct DOM entry
-      // so we break monomorphism on our input and supply it our vNode as parentVNode
       // we can optimise this in the future, but this gets us out of a lot of issues
       input.parentVNode = componentVNode;
     }

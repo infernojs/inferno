@@ -35,7 +35,7 @@ function renderVNodeToString(
 
     if (isClass) {
       const instance = new type(props, context);
-      instance._blockSetState = false;
+      instance.$BS = false;
       let childContext;
       if (!isNullOrUndef(instance.getChildContext)) {
         childContext = instance.getChildContext();
@@ -48,13 +48,13 @@ function renderVNodeToString(
         instance.props = props;
       }
       instance.context = context;
-      instance._unmounted = false;
+      instance.$UN = false;
       if (isFunction(instance.componentWillMount)) {
-        instance._blockRender = true;
+        instance.$BR = true;
         instance.componentWillMount();
-        if (instance._pendingSetState) {
+        if (instance.$PSS) {
           const state = instance.state;
-          const pending = instance._pendingState;
+          const pending = instance.$PS;
 
           if (state === null) {
             instance.state = pending;
@@ -63,10 +63,10 @@ function renderVNodeToString(
               state[key] = pending[key];
             }
           }
-          instance._pendingSetState = false;
-          instance._pendingState = null;
+          instance.$PSS = false;
+          instance.$PS = null;
         }
-        instance._blockRender = false;
+        instance.$BR = false;
       }
       const nextVNode = instance.render(props, instance.state, vNode.context);
       // In case render returns invalid stuff
