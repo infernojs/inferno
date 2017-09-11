@@ -36,6 +36,7 @@
 		"noUnusedLocals": true,
 		"strictNullChecks": true,
 		"removeComments": false,
+    "experimentalDecorators": true,
 		"rootDir": "."
 	},
 	"include": [

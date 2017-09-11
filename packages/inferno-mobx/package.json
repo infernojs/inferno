@@ -25,13 +25,19 @@
     "mobx"
   ],
   "repository": "https://github.com/infernojs/inferno",
+  "peerDependencies": {
+    "mobx": "^2.6.3 || ^3.0.0"
+  },
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
     "inferno": "3.9.0",
-    "inferno-create-class": "3.9.0",
-    "inferno-create-element": "3.9.0",
     "inferno-shared": "3.9.0",
     "mobx": "*"
+  },
+  "devDependencies": {
+    "inferno-create-class": "*",
+    "inferno-create-element": "*",
+    "inferno-server": "*"
   },
   "rollup": {
     "bundledDependencies": [
