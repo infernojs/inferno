@@ -10,7 +10,7 @@ import Link from './Link'
 /**
  * A <Link> wrapper that knows if it's "active" or not.
  */
-export default (props) => {
+export default function(props): any {
 
   const {
     to, exact, strict, location, activeClassName = 'active', className,
@@ -46,7 +46,7 @@ export default (props) => {
       exact,
       strict,
       location,
-      children: linkComponent,
+      children: linkComponent as any,
     }
   );
 };

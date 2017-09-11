@@ -25,7 +25,6 @@ export type InfernoChildren =
   | number
   | boolean
   | undefined
-  | Function
   | VNode
   | Array<string | number | VNode>
   | null;

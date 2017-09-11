@@ -22,18 +22,13 @@ const compilePath = (pattern, options) => {
   return compiledPattern;
 };
 
-export interface IMatchOptions {
-  path: any;
-  exact?: any;
-  strict?: any;
-  sensitive?: any;
-}
-
 /**
  * Public API for matching a URL pathname to a path pattern.
  */
-export default function matchPath(pathname, options = {} as IMatchOptions) {
-  if (typeof options === "string") options = { path: options };
+export default function matchPath(pathname, options: any) {
+  if (typeof options === "string") {
+    options = { path: options };
+  }
 
   const {
     path = "/",

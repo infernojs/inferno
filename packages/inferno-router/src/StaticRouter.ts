@@ -59,7 +59,7 @@ export default class StaticRouter extends Component<IStaticRouterProps, any> {
     );
   }
 
-  render() {
+  render(): VNode {
     const { basename, context, location, ...props } = this.props;
 
     const history = {

@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import { Component } from "inferno";
+import { Component, VNode } from "inferno";
 import createElement from "inferno-create-element";
 import { invariant, warning } from "./utils";
 import { Children } from "./utils";
@@ -116,7 +116,7 @@ class Route extends Component<IRouteProps, any> {
     });
   }
 
-  render() {
+  render(): VNode | null {
     const { match } = this.state;
     const { children, component, render } = this.props;
     const { history, route, staticContext } = this.context.router;
