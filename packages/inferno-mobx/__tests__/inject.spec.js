@@ -196,7 +196,8 @@ describe("observer based context", () => {
     expect(wrapper.find("div").text()).toBe("context:3");
 
     expect(
-      msg,
+      msg
+    ).toBe(
       "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children"
     );
     console.warn = baseWarn;
@@ -248,13 +249,13 @@ describe("observer based context", () => {
     B.bla2 = {};
     const C = inject("booh")(B);
 
-    expect(C.wrappedComponent, B);
-    expect(B.bla, 17);
-    expect(C.bla, 17);
+    expect(C.wrappedComponent).toBe(B);
+    expect(B.bla).toBe(17);
+    expect(C.bla).toBe(17);
     expect(C.bla2).toBe(B.bla2);
 
     const wrapper = infernoRender(<C booh={42} />, container);
-    expect(wrapper.wrappedComponent.testField, 1);
+    expect(wrapper.wrappedComponent.testField).toBe(1);
   });
 
   it("warning is printed when attaching contextTypes to HOC", () => {
@@ -279,9 +280,10 @@ describe("observer based context", () => {
       </Provider>
     );
     render(<A />);
-    expect(msg.length, 1);
+    expect(msg.length).toBe(1);
     expect(
-      msg[0],
+      msg[0]
+    ).toBe(
       "Mobx Injector: you are trying to attach `contextTypes` on an component decorated with `inject` (or `observer`) HOC. Please specify the contextTypes on the wrapped component instead. It is accessible through the `wrappedComponent`"
     );
     console.warn = baseWarn;
@@ -296,8 +298,8 @@ describe("observer based context", () => {
       createClass({
         displayName: "C",
         render() {
-          expect(this.props.y, 3);
-          expect(this.props.x, undefined);
+          expect(this.props.y).toBe(3);
+          expect(this.props.x).toBe(undefined);
           return null;
         }
       })
@@ -312,7 +314,7 @@ describe("observer based context", () => {
       </Provider>
     );
     render(<A />);
-    expect(msg.length, 2);
+    expect(msg.length).toBe(2);
     console.error = baseError;
   });
 
@@ -329,7 +331,7 @@ describe("observer based context", () => {
     );
     C.propTypes = {};
 
-    expect(msg.length, 0);
+    expect(msg.length).toBe(0);
     console.warn = baseWarn;
   });
 

@@ -31,7 +31,6 @@
     };
 </script>
 <script src="../../packages/inferno/dist/inferno.js"></script>
-<script src="../../packages/inferno-component/dist/inferno-component.js"></script>
 <script src="../../packages/inferno-create-element/dist/inferno-create-element.js"></script>
 <script src="../../packages/inferno-compat/dist/inferno-compat.js"></script>
 <script>
@@ -53,7 +52,7 @@
     }
 
     Inferno.render(
-        h(MyFoo, {}), 
+        h(MyFoo, {}),
         document.getElementById('app')
     );
 
@@ -109,7 +108,7 @@
     }
 
     Inferno.render(
-        h(MessageList, {messages: [{text: 'first'}, {text: 'second'}]}), 
+        h(MessageList, {messages: [{text: 'first'}, {text: 'second'}]}),
         document.getElementById('app1')
     )
 
@@ -232,7 +231,7 @@
                         })
                     ]),
                     h('select', {
-                        onChange: this.selectChange, 
+                        onChange: this.selectChange,
                         'value': this.state.selectValue
                     }, [
                         h('option', {
@@ -264,9 +263,9 @@
         constructor(props) {
             super(props);
             this.state = {
-                value: 'SYNC', 
-                radio: 'first', 
-                text: 'f', 
+                value: 'SYNC',
+                radio: 'first',
+                text: 'f',
                 selectValue: 'second'
             };
 
@@ -337,7 +336,7 @@
                         })
                     ]),
                     h('select', {
-                        onChange: this.selectChange, 
+                        onChange: this.selectChange,
                         'value': this.state.selectValue
                     }, [
                         h('option', {
@@ -359,11 +358,11 @@
 
     // render an instance of Clock into <body>:
     Inferno.render(
-        h(NameForm, {}), 
+        h(NameForm, {}),
         document.getElementById('app3')
     );
     Inferno.render(
-        h(NameForm2, {}), 
+        h(NameForm2, {}),
         document.getElementById('app4')
     );
 </script>
