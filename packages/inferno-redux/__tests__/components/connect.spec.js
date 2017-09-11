@@ -1003,10 +1003,24 @@ describe("Inferno", () => {
     });
 
     it("should not attempt to notify unmounted child of state change", () => {
+      class ProviderMockTest extends Component {
+        getChildContext() {
+          return { store: this.props.store };
+        }
+
+        render() {
+          return Children.only(this.props.children);
+        }
+      }
+
       const store = createStore(stringBuilder);
 
       const App = connect(state => ({ hide: state === "AB" }))(
         class App extends Component {
+          getDisplayName() {
+            return "App";
+          }
+
           render() {
             return this.props.hide ? null : <Container />;
           }
@@ -1015,6 +1029,9 @@ describe("Inferno", () => {
 
       const Container = connect(state => ({ state }))(
         class Container extends Component {
+          getDisplayName() {
+            return "Container";
+          }
           componentWillReceiveProps(nextProps) {
             if (nextProps.state === "A") {
               store.dispatch({ type: "APPEND", payload: "B" });
@@ -1029,9 +1046,9 @@ describe("Inferno", () => {
 
       const div = document.createElement("div");
       renderDOM(
-        <ProviderMock store={store}>
+        <ProviderMockTest store={store}>
           <App />
-        </ProviderMock>,
+        </ProviderMockTest>,
         div
       );
 
@@ -2382,11 +2399,7 @@ describe("Inferno", () => {
       const Child = connect(mapStateToProps)(
         class Child extends Component {
           render() {
-            return (
-              <div>
-                {this.props.count}
-              </div>
-            );
+            return <div>{this.props.count}</div>;
           }
         }
       );
@@ -2436,11 +2449,7 @@ describe("Inferno", () => {
       })(
         class C extends Component {
           render() {
-            return (
-              <div>
-                {this.props.count}
-              </div>
-            );
+            return <div>{this.props.count}</div>;
           }
         }
       );
@@ -2509,11 +2518,7 @@ describe("Inferno", () => {
       const D = connect(mapStateToPropsD)(
         class D extends Component {
           render() {
-            return (
-              <div>
-                {this.props.count}
-              </div>
-            );
+            return <div>{this.props.count}</div>;
           }
         }
       );

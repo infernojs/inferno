@@ -120,11 +120,26 @@ export class RenderQueueStream extends Readable {
           instance.props = props;
         }
         instance.context = context;
-        instance._pendingSetState = true;
         instance._unmounted = false;
         // Trigger lifecycle hook
         if (isFunction(instance.componentWillMount)) {
+          instance._blockRender = true;
           instance.componentWillMount();
+          if (instance._pendingSetState) {
+            const state = instance.state;
+            const pending = instance._pendingState;
+
+            if (state === null) {
+              instance.state = pending;
+            } else {
+              for (const key in pending) {
+                state[key] = pending[key];
+              }
+            }
+            instance._pendingSetState = false;
+            instance._pendingState = null;
+          }
+          instance._blockRender = false;
         }
         // Trigger extra promise-based lifecycle hook
         if (isFunction(instance.getInitialProps)) {
@@ -178,9 +193,12 @@ export class RenderQueueStream extends Readable {
       let renderedString = `<${type}`;
       let html;
       const isVoidElement = voidElements.has(type);
+      const className = vNode.className;
 
-      if (!isNullOrUndef(vNode.className)) {
-        renderedString += ` class="${escapeText(vNode.className)}"`;
+      if (isString(className)) {
+        renderedString += ` class="${escapeText(className)}"`;
+      } else if (isNumber(className)) {
+        renderedString += ` class="${className}"`;
       }
 
       if (!isNull(props)) {
@@ -196,7 +214,9 @@ export class RenderQueueStream extends Readable {
           } else if (prop === "defaultValue") {
             // Use default values if normal values are not present
             if (!props.value) {
-              renderedString += ` value="${escapeText(value)}"`;
+              renderedString += ` value="${isString(value)
+                ? escapeText(value)
+                : value}"`;
             }
           } else if (prop === "defaultChecked") {
             // Use default values if normal values are not present

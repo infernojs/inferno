@@ -1,7 +1,6 @@
 import { createVNode, render } from "inferno";
 import { NO_OP } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import pkgJSON from "../package.json";
 
 describe("rendering routine", () => {
   let container;

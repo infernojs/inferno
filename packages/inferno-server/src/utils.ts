@@ -2,9 +2,15 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
+const rxUnescaped = /["'&<>]/;
 export function escapeText(text: string): string {
-  let result = text;
-  let escape: string = "";
+  /* Much faster when there is no unescaped characters */
+  if (!rxUnescaped.test(text)) {
+    return text;
+  }
+
+  let result = "";
+  let escape = "";
   let start = 0;
   let i;
   for (i = 0; i < text.length; i++) {
@@ -12,7 +18,7 @@ export function escapeText(text: string): string {
       case 34: // "
         escape = "&quot;";
         break;
-      case 39: // \
+      case 39: // '
         escape = "&#039;";
         break;
       case 38: // &
@@ -28,19 +34,12 @@ export function escapeText(text: string): string {
         continue;
     }
     if (i > start) {
-      if (start) {
-        result += text.slice(start, i);
-      } else {
-        result = text.slice(start, i);
-      }
+      result += text.slice(start, i);
     }
     result += escape;
     start = i + 1;
   }
-  if (start && i !== start) {
-    return result + text.slice(start, i);
-  }
-  return result;
+  return result + text.slice(start, i);
 }
 
 const uppercasePattern = /[A-Z]/g;

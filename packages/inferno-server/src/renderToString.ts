@@ -48,14 +48,27 @@ function renderVNodeToString(
         instance.props = props;
       }
       instance.context = context;
-      instance._pendingSetState = true;
       instance._unmounted = false;
       if (isFunction(instance.componentWillMount)) {
+        instance._blockRender = true;
         instance.componentWillMount();
+        if (instance._pendingSetState) {
+          const state = instance.state;
+          const pending = instance._pendingState;
+
+          if (state === null) {
+            instance.state = pending;
+          } else {
+            for (const key in pending) {
+              state[key] = pending[key];
+            }
+          }
+          instance._pendingSetState = false;
+          instance._pendingState = null;
+        }
+        instance._blockRender = false;
       }
       const nextVNode = instance.render(props, instance.state, vNode.context);
-
-      instance._pendingSetState = false;
       // In case render returns invalid stuff
       if (isInvalid(nextVNode)) {
         return "<!--!-->";
@@ -73,9 +86,12 @@ function renderVNodeToString(
     let renderedString = `<${type}`;
     let html;
     const isVoidElement = voidElements.has(type);
+    const className = vNode.className;
 
-    if (!isNullOrUndef(vNode.className)) {
-      renderedString += ` class="${escapeText(vNode.className)}"`;
+    if (isString(className)) {
+      renderedString += ` class="${escapeText(className)}"`;
+    } else if (isNumber(className)) {
+      renderedString += ` class="${className}"`;
     }
 
     if (!isNull(props)) {
@@ -91,7 +107,9 @@ function renderVNodeToString(
         } else if (prop === "defaultValue") {
           // Use default values if normal values are not present
           if (!props.value) {
-            renderedString += ` value="${escapeText(value)}"`;
+            renderedString += ` value="${isString(value)
+              ? escapeText(value)
+              : value}"`;
           }
         } else if (prop === "defaultChecked") {
           // Use default values if normal values are not present
@@ -108,7 +126,11 @@ function renderVNodeToString(
           }
         }
       }
-      if (type === "option" && typeof props.value !== "undefined" && props.value === parent.props.value) {
+      if (
+        type === "option" &&
+        typeof props.value !== "undefined" &&
+        props.value === parent.props.value
+      ) {
         // Parent value sets children value
         renderedString += ` selected`;
       }

@@ -187,11 +187,7 @@ describe("cloneVNode (JSX)", () => {
 
   it("Should prefer children in order", () => {
     function Bar({ children }) {
-      return (
-        <div>
-          {children}
-        </div>
-      );
+      return <div>{children}</div>;
     }
 
     const nodeToClone = <Bar>First</Bar>;
@@ -218,11 +214,7 @@ describe("cloneVNode (JSX)", () => {
 
   it("Should prefer children in order #2", () => {
     function Bar({ children }) {
-      return (
-        <div>
-          {children}
-        </div>
-      );
+      return <div>{children}</div>;
     }
 
     const nodeToClone = <Bar>First</Bar>;
@@ -408,7 +400,6 @@ describe("cloneVNode (JSX)", () => {
 
       expect(node.ref).toEqual(initialFunc);
 
-      debugger;
       render(node, container);
       expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
 

@@ -11,14 +11,11 @@ export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({
 });
 
 export const wrapMergePropsFunc = mergeProps => {
-  const initMergePropsProxy = (
-    dispatch,
-    { displayName, pure, areMergedPropsEqual }
-  ) => {
+  return (dispatch, { displayName, pure, areMergedPropsEqual }) => {
     let hasRunOnce = false;
     let mergedProps;
 
-    const mergePropsProxy = (stateProps, dispatchProps, ownProps) => {
+    return function(stateProps, dispatchProps, ownProps) {
       const nextMergedProps = mergeProps(stateProps, dispatchProps, ownProps);
 
       if (hasRunOnce) {
@@ -36,11 +33,7 @@ export const wrapMergePropsFunc = mergeProps => {
 
       return mergedProps;
     };
-
-    return mergePropsProxy;
   };
-
-  return initMergePropsProxy;
 };
 
 export const whenMergePropsIsFunction = mergeProps =>

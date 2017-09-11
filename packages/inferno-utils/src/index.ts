@@ -2,14 +2,6 @@
  * @module Inferno-Utils
  */ /** TypeDoc Comment */
 
-/**
- * @module Inferno-Utils
- */ /** TypeDoc Comment */
-
-/**
- * @module inferno-utils
- */ /** TypeDoc Comment */
-
 import { isArray, isNullOrUndef, isStringOrNumber } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 
@@ -72,7 +64,7 @@ export function validateNodeTree(node: any): boolean {
   const children = node.children;
   const flags = node.flags;
 
-  if (flags & VNodeFlags.Element) {
+  if ((flags & VNodeFlags.Element) > 0) {
     if (!isNullOrUndef(children)) {
       if (isArray(children)) {
         for (const child of children) {
@@ -119,6 +111,12 @@ export function triggerEvent(name: string, element: any) {
     throw new Error('Unsupported `"' + name + '"`event');
   }
   const event = document.createEvent(eventType);
+  if (eventType === "MouseEvents") {
+    // Simulate left click always
+    Object.defineProperty(event, "button", {
+      value: 0
+    });
+  }
   event.initEvent(name, name !== "change", true);
   element.dispatchEvent(event, true);
 }

@@ -89,12 +89,28 @@ export class RenderStream extends Readable {
       context = combineFrom(context, childContext);
     }
     instance.context = context;
+    instance._blockRender = true;
 
-    // Block setting state - we should render only once, using latest state
-    instance._pendingSetState = true;
     return Promise.resolve(
       instance.componentWillMount && instance.componentWillMount()
     ).then(() => {
+      if (instance._pendingSetState) {
+        const state = instance.state;
+        const pending = instance._pendingState;
+
+        if (state === null) {
+          instance.state = pending;
+        } else {
+          for (const key in pending) {
+            state[key] = pending[key];
+          }
+        }
+        instance._pendingSetState = false;
+        instance._pendingState = null;
+      }
+
+      instance._blockRender = false;
+
       const node = instance.render(
         instance.props,
         instance.state,
@@ -110,7 +126,7 @@ export class RenderStream extends Readable {
       return this.push(escapeText(children));
     }
     if (isNumber(children)) {
-      return this.push(escapeText(children + ""));
+      return this.push(children + "");
     }
     if (!children) {
       return;
@@ -172,9 +188,13 @@ export class RenderStream extends Readable {
 
     let html = "";
     const className = vElement.className;
-    if (!isNullOrUndef(className)) {
-      outputAttrs.push('class="' + escapeText(className) + '"');
+
+    if (isString(className)) {
+      outputAttrs.push(`class="${escapeText(className)}"`);
+    } else if (isNumber(className)) {
+      outputAttrs.push(`class="${className}"`);
     }
+
     if (props) {
       const style = props.style;
       if (style) {

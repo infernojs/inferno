@@ -1,8 +1,8 @@
 import { render } from "inferno";
 import createElement from "inferno-create-element";
 import sinon from "sinon";
-import { createTextVNode } from "inferno/core/VNodes";
 import { innerHTML } from "inferno-utils";
+import VNodeFlags from "inferno-vnode-flags";
 
 describe("Elements (JSX)", () => {
   let container;
@@ -159,33 +159,13 @@ describe("Elements (JSX)", () => {
   it("should render a simple div with dynamic span child", () => {
     const child = <span />;
 
-    render(
-      <div>
-        {undefined}
-      </div>,
-      container
-    );
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{undefined}</div>, container);
+    render(<div>{child}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.childNodes.length).toBe(1);
     expect(container.firstChild.firstChild.nodeName).toBe("SPAN");
-    render(
-      <div>
-        {null}
-      </div>,
-      container
-    );
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{null}</div>, container);
+    render(<div>{child}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.childNodes.length).toBe(1);
     expect(container.firstChild.firstChild.nodeName).toBe("SPAN");
@@ -248,18 +228,12 @@ describe("Elements (JSX)", () => {
     attrs = 13 - 44 * 4 / 4;
 
     let b = <b className={123}>Hello, World!</b>;
-    let n = (
-      <n>
-        {b}
-      </n>
-    );
+    let n = <n>{b}</n>;
 
     render(
       <div className="Hello, World!">
         <span>
-          <div id={attrs}>
-            {n}
-          </div>
+          <div id={attrs}>{n}</div>
         </span>
       </div>,
       container
@@ -290,18 +264,12 @@ describe("Elements (JSX)", () => {
     attrs = 13 - 44 * 4 / 4;
 
     b = <b className={1243}>Hello, World!</b>;
-    n = (
-      <n>
-        {b}
-      </n>
-    );
+    n = <n>{b}</n>;
 
     render(
       <div className="Hello, World!">
         <span>
-          <div id={attrs}>
-            {n}
-          </div>
+          <div id={attrs}>{n}</div>
         </span>
       </div>,
       container
@@ -373,12 +341,7 @@ describe("Elements (JSX)", () => {
   it("should render a simple div with dynamic span child and update to div child", () => {
     let child = <span />;
 
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{child}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.childNodes.length).toBe(1);
     expect(container.firstChild.firstChild.nodeName).toBe("SPAN");
@@ -387,12 +350,7 @@ describe("Elements (JSX)", () => {
 
     child = <div />;
 
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{child}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.childNodes.length).toBe(1);
     expect(container.firstChild.firstChild.nodeName).toBe("DIV");
@@ -411,35 +369,20 @@ describe("Elements (JSX)", () => {
       </div>
     );
 
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{child}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.firstChild.childNodes.length).toBe(9);
     expect(container.firstChild.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.firstChild.firstChild.nodeName).toBe("DIV");
     child = <div>Hello, World!</div>;
 
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{child}</div>, container);
     expect(container.firstChild.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.firstChild.childNodes.length).toBe(1);
     expect(container.firstChild.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.firstChild.innerHTML).toBe("Hello, World!");
 
-    render(
-      <div>
-        {null}
-      </div>,
-      container
-    );
+    render(<div>{null}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
 
     render(<div />, container);
@@ -456,41 +399,24 @@ describe("Elements (JSX)", () => {
       </span>
     );
 
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{child}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.firstChild.childNodes.length).toBe(2);
     expect(container.firstChild.firstChild.nodeName).toBe("SPAN");
     expect(container.firstChild.firstChild.firstChild.nodeName).toBe("SPAN");
 
-    render(
-      <div>
-        {null}
-      </div>,
-      container
-    );
+    render(<div>{null}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
 
     const divs = <div />;
 
     child = (
       <span>
-        <span>
-          {divs}
-        </span>
+        <span>{divs}</span>
       </span>
     );
 
-    render(
-      <div>
-        {child}
-      </div>,
-      container
-    );
+    render(<div>{child}</div>, container);
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.childNodes.length).toBe(1);
     expect(container.firstChild.firstChild.nodeName).toBe("SPAN");
@@ -501,44 +427,24 @@ describe("Elements (JSX)", () => {
   });
 
   it("should render a simple div children set to undefined", () => {
-    render(
-      <div>
-        {undefined}
-      </div>,
-      container
-    );
+    render(<div>{undefined}</div>, container);
 
     expect(container.nodeName).toBe("DIV");
     expect(container.firstChild.textContent).toBe("");
 
-    render(
-      <div>
-        {undefined}
-      </div>,
-      container
-    );
+    render(<div>{undefined}</div>, container);
 
     expect(container.nodeName).toBe("DIV");
     expect(container.firstChild.textContent).toBe("");
   });
 
   it("should render a simple div children set to null", () => {
-    render(
-      <div>
-        {null}
-      </div>,
-      container
-    );
+    render(<div>{null}</div>, container);
 
     expect(container.nodeName).toBe("DIV");
     expect(container.firstChild.textContent).toBe("");
 
-    render(
-      <div>
-        {null}
-      </div>,
-      container
-    );
+    render(<div>{null}</div>, container);
 
     expect(container.nodeName).toBe("DIV");
     expect(container.firstChild.textContent).toBe("");
@@ -552,9 +458,7 @@ describe("Elements (JSX)", () => {
   it("should render a simple div children set to null", () => {
     render(
       <div>
-        <div>
-          {null}
-        </div>
+        <div>{null}</div>
       </div>,
       container
     );
@@ -564,9 +468,7 @@ describe("Elements (JSX)", () => {
 
     render(
       <div>
-        <div>
-          {null}
-        </div>
+        <div>{null}</div>
       </div>,
       container
     );
@@ -576,30 +478,15 @@ describe("Elements (JSX)", () => {
   });
 
   it("should render a double div and a text node", () => {
-    render(
-      <div>
-        {<div>Hello, World!</div>}
-      </div>,
-      container
-    );
+    render(<div>{<div>Hello, World!</div>}</div>, container);
 
     expect(container.nodeName).toBe("DIV");
     expect(container.firstChild.nodeName).toBe("DIV");
     expect(container.firstChild.textContent).toBe("Hello, World!");
 
-    render(
-      <div>
-        {null}
-      </div>,
-      container
-    );
+    render(<div>{null}</div>, container);
 
-    render(
-      <div>
-        {<div>Hello, Inferno!</div>}
-      </div>,
-      container
-    );
+    render(<div>{<div>Hello, Inferno!</div>}</div>, container);
 
     expect(container.nodeName).toBe("DIV");
     expect(container.firstChild.nodeName).toBe("DIV");
@@ -741,12 +628,8 @@ describe("Elements (JSX)", () => {
 
     render(
       <div className="foo">
-        <span className="bar">
-          {val1}
-        </span>
-        <span className="yar">
-          {val2}
-        </span>
+        <span className="bar">{val1}</span>
+        <span className="yar">{val2}</span>
       </div>,
       container
     );
@@ -766,12 +649,8 @@ describe("Elements (JSX)", () => {
 
     render(
       <div className="fooo">
-        <span className="bar">
-          {val1}
-        </span>
-        <span className="yar">
-          {val2}
-        </span>
+        <span className="bar">{val1}</span>
+        <span className="yar">{val2}</span>
       </div>,
       container
     );
@@ -990,26 +869,11 @@ describe("Elements (JSX)", () => {
   });
 
   it("mixing JSX with non-JSX", () => {
-    render(
-      <div>
-        {createElement("div", null)}
-      </div>,
-      container
-    );
+    render(<div>{createElement("div", null)}</div>, container);
     expect(container.innerHTML).toBe(innerHTML("<div><div></div></div>"));
-    render(
-      <div>
-        {createElement("span", null)}
-      </div>,
-      container
-    );
+    render(<div>{createElement("span", null)}</div>, container);
     expect(container.innerHTML).toBe(innerHTML("<div><span></span></div>"));
-    render(
-      <span>
-        {createElement("div", null)}
-      </span>,
-      container
-    );
+    render(<span>{createElement("div", null)}</span>, container);
     expect(container.innerHTML).toBe(innerHTML("<span><div></div></span>"));
   });
 
@@ -1060,12 +924,13 @@ describe("Elements (JSX)", () => {
   describe("should correctly handle VNodes as quasi-immutable objects, like ReactElement does", () => {
     const a = <div>Hello world</div>;
     const b = <span>This works!</span>;
-    const C = ({ children }) =>
+    const C = ({ children }) => (
       <div>
         {children}
         {children}
         {children}
-      </div>;
+      </div>
+    );
 
     it("basic example ", () => {
       render(a, container);
@@ -1075,12 +940,7 @@ describe("Elements (JSX)", () => {
     });
 
     it("basic example #2 ", () => {
-      render(
-        <div>
-          {[a, a, a]}
-        </div>,
-        container
-      );
+      render(<div>{[a, a, a]}</div>, container);
       expect(container.innerHTML).toBe(
         innerHTML(
           "<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>"
@@ -1114,12 +974,7 @@ describe("Elements (JSX)", () => {
     });
 
     it("basic nested component example ", () => {
-      render(
-        <C>
-          {a}
-        </C>,
-        container
-      );
+      render(<C>{a}</C>, container);
       expect(container.innerHTML).toBe(
         innerHTML(
           "<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>"
@@ -1141,14 +996,15 @@ describe("Elements (JSX)", () => {
   });
 
   describe("should correctly handle TEXT VNodes as quasi-immutable objects, like ReactElement does", () => {
-    const a = createTextVNode("Hello world");
-    const b = createTextVNode("This works!");
-    const C = ({ children }) =>
+    const a = createVNode(VNodeFlags.Text, null, null, "Hello world");
+    const b = createVNode(VNodeFlags.Text, null, null, "This works!");
+    const C = ({ children }) => (
       <div>
         {children}
         {children}
         {children}
-      </div>;
+      </div>
+    );
 
     it("basic example ", () => {
       render(a, container);
@@ -1158,12 +1014,7 @@ describe("Elements (JSX)", () => {
     });
 
     it("basic example #2 ", () => {
-      render(
-        <div>
-          {[a, a, a]}
-        </div>,
-        container
-      );
+      render(<div>{[a, a, a]}</div>, container);
       expect(container.innerHTML).toBe(
         innerHTML("<div>Hello worldHello worldHello world</div>")
       );
@@ -1195,12 +1046,7 @@ describe("Elements (JSX)", () => {
     });
 
     it("basic nested component example #2 ", () => {
-      render(
-        <C>
-          {a}
-        </C>,
-        container
-      );
+      render(<C>{a}</C>, container);
       expect(container.innerHTML).toBe(
         innerHTML("<div>Hello worldHello worldHello world</div>")
       );
@@ -1249,14 +1095,15 @@ describe("Elements (JSX)", () => {
       const TextField = function(props) {
         return <input {...props} />;
       };
-      const MyTextField = ({ name, className, changeName }) =>
+      const MyTextField = ({ name, className, changeName }) => (
         <TextField
           className={className}
           value={name}
           onClick={function() {
             done();
           }}
-        />;
+        />
+      );
 
       render(<MyTextField className="foobar" name="test" />, container);
 
@@ -1299,11 +1146,7 @@ describe("Elements (JSX)", () => {
   describe("Value for components", () => {
     it("Should be possible to pass down value prop", () => {
       function Foo({ value }) {
-        return (
-          <div>
-            {value}
-          </div>
-        );
+        return <div>{value}</div>;
       }
 
       render(<Foo value="100" />, container);
