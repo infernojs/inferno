@@ -30,7 +30,6 @@ Lerna v2.0.0-beta.36
 inferno-shared
 inferno-vnode-flags
 inferno
-inferno-component
 inferno-hyperscript
 inferno-create-element
 inferno-devtools
