@@ -34,8 +34,7 @@ You can inject props using the following syntax
 
 ```javascript
 // MyComponent.js
-import Inferno from 'inferno'
-import Component from 'inferno-component'
+import Inferno, { Component } from 'inferno'
 import { connect } from 'inferno-mobx'
 
 @connect(['englishStore', 'frenchStore'])

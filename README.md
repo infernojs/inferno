@@ -71,8 +71,7 @@ Inferno.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```jsx
-import Inferno from 'inferno';
-import Component from 'inferno-component';
+import Inferno, { Component } from 'inferno';
 
 class MyComponent extends Component {
   constructor(props) {
@@ -116,8 +115,6 @@ npm install --save inferno
 Addons:
 
 ```sh
-# ES2015 class components
-npm install --save inferno-component
 # server-side rendering
 npm install --save inferno-server
 # routing
@@ -256,7 +253,7 @@ See [inferno-most-fp-demo](https://github.com/joshburgess/inferno-most-fp-demo) 
 Creates an Inferno VNode using a similar API to that found with React's `createElement()`
 
 ```javascript
-import Component from 'inferno-component';
+import { Component } from 'inferno';
 import createElement from 'inferno-create-element';
 
 class BasicComponent extends Component {
@@ -277,12 +274,12 @@ Inferno.render(
 );
 ```
 
-### `Component` (package: `inferno-component`)
+### `Component` (package: `inferno`)
 
 **Class component:**
 
 ```javascript
-import Component from 'inferno-component';
+import { Component } from 'inferno';
 
 class MyComponent extends Component {
   render() {
@@ -401,8 +398,7 @@ This is an example of using it with ES2015 classes:
 
 
 ```jsx
-import Inferno, { linkEvent } from 'inferno';
-import Component from 'inferno-component';
+import Inferno, { linkEvent, Component } from 'inferno';
 
 function handleClick(instance, event) {
   instance.setState({ data: event.target.value });
@@ -470,7 +466,7 @@ Inferno.render(
 );
 ```
 
-Please note: class components (ES2015 classes) from `inferno-component` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
+Please note: class components (ES2015 classes) from `inferno` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
 
 ## Development vs Production modes
 

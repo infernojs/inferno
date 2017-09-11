@@ -6,7 +6,6 @@
 	<body>
 		<div id="app"></div>
 		<script src="../../packages/inferno/dist/inferno.js"></script>
-		<script src="../../packages/inferno-component/dist/inferno-component.js"></script>
 		<script src="../../packages/inferno-create-element/dist/inferno-create-element.js"></script>
 		<script src="../../packages/inferno-devtools/dist/inferno-devtools.js"></script>
 		<script>
@@ -32,10 +31,10 @@
 			class MyFoo extends Inferno.Component {
 				render() {
 					return createElement('div', { className: 'test' },
-						createElement('span', { className: 'foo' }, 
+						createElement('span', { className: 'foo' },
 							'Hello world!'
 						),
-						createElement('span', { className: 'foo' }, 
+						createElement('span', { className: 'foo' },
 							'Hello world!'
 						),
 						createElement('br', null),
@@ -43,7 +42,7 @@
 						createElement(FunctionalComponent, null)
 					)
 				}
-			} 
+			}
 
 			Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
 		</script>

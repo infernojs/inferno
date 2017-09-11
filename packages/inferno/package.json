@@ -39,5 +39,8 @@
   "dependencies": {
     "inferno-shared": "3.9.0",
     "inferno-vnode-flags": "3.9.0"
+  },
+  "devDependencies": {
+    "inferno-utils": "3.9.0"
   }
 }

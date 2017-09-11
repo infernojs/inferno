@@ -433,10 +433,8 @@ describe("Select / select multiple (JSX)", () => {
       </select>,
       container
     );
-    expect(container.firstChild.selectedIndex, "Initial selected index").toBe(
-      0
-    );
-    expect(container.firstChild.value, "Intial value").toBe("");
+    expect(container.firstChild.selectedIndex).toBe(0);
+    expect(container.firstChild.value).toBe("");
 
     render(
       <select id="sel">
@@ -444,8 +442,8 @@ describe("Select / select multiple (JSX)", () => {
       </select>,
       container
     );
-    expect(container.firstChild.value, "Second selected index").toBe("");
-    expect([0, -1], "Second value").toContain(
+    expect(container.firstChild.value).toBe("");
+    expect([0, -1]).toContain(
       container.firstChild.selectedIndex
     );
   });
