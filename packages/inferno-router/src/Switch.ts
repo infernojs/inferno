@@ -2,9 +2,11 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { cloneVNode, VNode, Component } from "inferno";
+import { VNode, Component } from "inferno";
 import matchPath from "./matchPath";
 import { Children, isValidElement, warning, invariant } from "./utils";
+import { createVNode } from "../../inferno/src/core/implementation";
+import { combineFrom } from "../../inferno-shared/src/index";
 
 export interface ISwitchProps {
   router: any;
@@ -15,14 +17,14 @@ export interface ISwitchProps {
  * The public API for rendering the first <Route> that matches.
  */
 export default class Switch extends Component<ISwitchProps, any> {
-  componentWillMount() {
+  public componentWillMount() {
     invariant(
       this.context.router,
       "You should not use <Switch> outside a <Router>"
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  public componentWillReceiveProps(nextProps) {
     warning(
       !(nextProps.location && !this.props.location),
       '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
@@ -34,14 +36,19 @@ export default class Switch extends Component<ISwitchProps, any> {
     );
   }
 
-  render(): VNode | null {
+  public render(): VNode | null {
     const { route } = this.context.router;
     const { children } = this.props;
     const location = this.props.location || route.location;
 
-    let match, child;
+    let match;
+    let child;
+
+    // optimization: Better to use for loop here so we can return when match found, instead looping through everything
     Children.forEach(children, element => {
-      if (!isValidElement(element)) return;
+      if (!isValidElement(element)) {
+        return;
+      }
 
       const { path: pathProp, exact, strict, sensitive, from } = element.props;
       const path = pathProp || from;
@@ -54,6 +61,17 @@ export default class Switch extends Component<ISwitchProps, any> {
       }
     });
 
-    return match ? cloneVNode(child, { location, computedMatch: match }) : null;
+    return match
+      ? createVNode(
+          child.flags,
+          child.type,
+          null,
+          null,
+          combineFrom(child.props, { location, computedMatch: match }),
+          null,
+          child.ref,
+          true
+        )
+      : null;
   }
 }

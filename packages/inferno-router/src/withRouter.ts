@@ -19,15 +19,15 @@ interface IWithRouterProps {
 /**
  * A public higher-order component to access the imperative API
  */
-function withRouter(Component) {
+function withRouter(Com) {
   const C = <IRoutedComponent>function(props: IWithRouterProps) {
     const { wrappedComponentRef, ...remainingProps } = props;
 
     return createVNode(VNodeFlags.ComponentClass, Route, null, null, {
-      render: function(routeComponentProps) {
+      render(routeComponentProps) {
         return createVNode(
           VNodeFlags.ComponentUnknown,
-          Component,
+          Com,
           null,
           null,
           {
@@ -41,9 +41,9 @@ function withRouter(Component) {
     });
   };
 
-  C.displayName = `withRouter(${Component.displayName || Component.name})`;
-  C.WrappedComponent = Component;
-  return hoistStatics(C, Component);
+  C.displayName = `withRouter(${Com.displayName || Com.name})`;
+  C.WrappedComponent = Com;
+  return hoistStatics(C, Com);
 }
 
 export default withRouter;

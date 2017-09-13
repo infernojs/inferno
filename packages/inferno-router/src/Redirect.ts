@@ -7,24 +7,28 @@ import { createLocation, locationsAreEqual } from "history";
 import { invariant } from "./utils";
 
 export default class Redirect extends Component<any, any> {
-  isStatic() {
+  public isStatic() {
     return this.context.router && this.context.router.staticContext;
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     invariant(
       this.context.router,
       "You should not use <Redirect> outside a <Router>"
     );
 
-    if (this.isStatic()) this.perform();
+    if (this.isStatic()) {
+      this.perform();
+    }
   }
 
-  componentDidMount() {
-    if (!this.isStatic()) this.perform();
+  public componentDidMount() {
+    if (!this.isStatic()) {
+      this.perform();
+    }
   }
 
-  componentDidUpdate(prevProps) {
+  public componentDidUpdate(prevProps) {
     const prevTo = createLocation(prevProps.to);
     const nextTo = createLocation(this.props.to);
 
@@ -38,7 +42,7 @@ export default class Redirect extends Component<any, any> {
     this.perform();
   }
 
-  perform() {
+  public perform() {
     const { history } = this.context.router;
     const { push = false, to } = this.props;
 
@@ -49,7 +53,7 @@ export default class Redirect extends Component<any, any> {
     }
   }
 
-  render() {
+  public render() {
     return null;
   }
 }

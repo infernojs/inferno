@@ -2,7 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { cloneVNode, VNode, Component } from "inferno";
+import { cloneVNode, Component } from "inferno";
 import { Children, warning, invariant } from "./utils";
 
 export interface IRouterProps {
@@ -35,7 +35,7 @@ class Router extends Component<IRouterProps, any> {
     };
   }
 
-  getChildContext() {
+  public getChildContext() {
     return {
       router: {
         ...this.context.router,
@@ -48,16 +48,16 @@ class Router extends Component<IRouterProps, any> {
     };
   }
 
-  computeMatch(pathname) {
+  public computeMatch(pathname) {
     return {
-      path: "/",
-      url: "/",
+      isExact: pathname === "/",
       params: {},
-      isExact: pathname === "/"
+      path: "/",
+      url: "/"
     };
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     const { children, history } = this.props;
 
     invariant(
@@ -75,24 +75,23 @@ class Router extends Component<IRouterProps, any> {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  public componentWillReceiveProps(nextProps) {
     warning(
       this.props.history === nextProps.history,
       "You cannot change <Router history>"
     );
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     this.unlisten();
   }
 
-  render(): VNode {
-    const { children } = this.props;
+  public render(props): any {
     // Below fixes SwitchMount tests but breaks Switch. This is how RR4 does it
-    //return children ? Children.only(children) : null;
+    return props.children; // ? Children.only(props.children) : null;
 
     // Below fixes most tests but breaks SwitchMount
-    return cloneVNode(children ? Children.only(children) : null);
+    // return cloneVNode(props.children ? Children.only(props.children) : null);
   }
 }
 

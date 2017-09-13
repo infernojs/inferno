@@ -16,8 +16,6 @@ export interface IBrowserRouterProps {
   children: Array<Component<any, any>>;
 }
 
-const EMPTY_OBJ = {} as VNode;
-
 export default class BrowserRouter extends Component<IBrowserRouterProps, any> {
   public history;
 
@@ -26,17 +24,17 @@ export default class BrowserRouter extends Component<IBrowserRouterProps, any> {
     this.history = createHistory(props);
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     warning(
       !this.props.history,
       "<BrowserRouter> ignores the history prop. To use a custom history, " +
-      "use `import { Router }` instead of `import { BrowserRouter as Router }`."
+        "use `import { Router }` instead of `import { BrowserRouter as Router }`."
     );
   }
 
-  render(): VNode {
+  public render(): VNode {
     return createVNode(VNodeFlags.ComponentClass, Router, null, null, {
-      children: this.props.children || EMPTY_OBJ,
+      children: this.props.children,
       history: this.history
     });
   }

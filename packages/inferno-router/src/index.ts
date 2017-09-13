@@ -31,8 +31,8 @@ export {
 };
 
 export default {
-  StaticRouter,
   BrowserRouter,
+  StaticRouter,
   MemoryRouter,
   Router,
   Route,

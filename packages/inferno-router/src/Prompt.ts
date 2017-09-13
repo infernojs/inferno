@@ -15,27 +15,25 @@ export interface IPromptProps {
  * The public API for matching a single path and rendering.
  */
 class Prompt extends Component<IPromptProps, any> {
-
   public unblock;
 
-  enable(message) {
-    if (this.unblock)
-      this.unblock();
+  public enable(message) {
+    if (this.unblock) this.unblock();
 
     this.unblock = this.context.router.history.block(message);
   }
 
-  disable() {
+  public disable() {
     if (this.unblock) {
       this.unblock();
       this.unblock = null;
     }
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     invariant(
       this.context.router,
-      'You should not use <Prompt> outside a <Router>'
+      "You should not use <Prompt> outside a <Router>"
     );
 
     if (this.props.when) {
@@ -43,7 +41,7 @@ class Prompt extends Component<IPromptProps, any> {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  public componentWillReceiveProps(nextProps) {
     if (nextProps.when) {
       if (!this.props.when || this.props.message !== nextProps.message) {
         this.enable(nextProps.message);
@@ -53,11 +51,11 @@ class Prompt extends Component<IPromptProps, any> {
     }
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     this.disable();
   }
 
-  render() {
+  public render() {
     return null;
   }
 }

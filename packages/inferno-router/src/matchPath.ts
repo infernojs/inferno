@@ -8,7 +8,9 @@ const compilePath = (pattern, options) => {
   const cacheKey = `${options.end}${options.strict}${options.sensitive}`;
   const cache = patternCache[cacheKey] || (patternCache[cacheKey] = {});
 
-  if (cache[pattern]) return cache[pattern];
+  if (cache[pattern]) {
+    return cache[pattern];
+  }
 
   const keys = [];
   const re = pathToRegexp(pattern, keys, options);
@@ -44,15 +46,17 @@ export default function matchPath(pathname, options: any) {
   const [url, ...values] = match;
   const isExact = pathname === url;
 
-  if (exact && !isExact) return null;
+  if (exact && !isExact) {
+    return null;
+  }
 
   return {
-    path, // the path pattern used to match
-    url: path === "/" && url === "" ? "/" : url, // the matched portion of the URL
     isExact, // whether or not we matched exactly
     params: keys.reduce((memo, key, index) => {
       memo[key.name] = values[index];
       return memo;
-    }, {})
+    }, {}),
+    path, // the path pattern used to match
+    url: path === "/" && url === "" ? "/" : url // the matched portion of the URL
   };
 }

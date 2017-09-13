@@ -9,7 +9,7 @@ import Router from "./Router";
 import { warning } from "./utils";
 
 export interface IMemoryRouterProps {
-  initialEntries: Array<string>;
+  initialEntries: string[];
   initialIndex: number;
   getUserConfirmation: () => {};
   keyLength: number;
@@ -26,7 +26,7 @@ export default class MemoryRouter extends Component<IMemoryRouterProps, any> {
     this.history = createHistory(props);
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     warning(
       !this.props.history,
       "<MemoryRouter> ignores the history prop. To use a custom history, " +
@@ -34,7 +34,7 @@ export default class MemoryRouter extends Component<IMemoryRouterProps, any> {
     );
   }
 
-  render(): VNode {
+  public render(): VNode {
     return createVNode(VNodeFlags.ComponentClass, Router, null, null, {
       children: this.props.children || EMPTY_OBJ,
       history: this.history

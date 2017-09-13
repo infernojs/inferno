@@ -4,49 +4,45 @@
 
 import { createVNode } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import Route from './Route'
-import Link from './Link'
+import Route from "./Route";
+import Link from "./Link";
 
 /**
  * A <Link> wrapper that knows if it's "active" or not.
  */
 export default function(props): any {
-
   const {
-    to, exact, strict, location, activeClassName = 'active', className,
-    activeStyle, style, isActive: getIsActive, ariaCurrent = 'true', children
+    to,
+    exact,
+    strict,
+    location,
+    activeClassName = "active",
+    className,
+    activeStyle,
+    style,
+    isActive: getIsActive,
+    ariaCurrent = "true",
+    children
   } = props;
 
   const linkComponent = ({ location, match }) => {
     const isActive = !!(getIsActive ? getIsActive(match, location) : match);
-    return createVNode(
-      VNodeFlags.ComponentClass,
-      Link,
-      null,
-      children,
-      {
-        to,
-        exact,
-        className: isActive
-          ? [className, activeClassName].filter(i => i).join(' ')
-          : className,
-        style: isActive ? { ...style, ...activeStyle } : style,
-        'aria-current': isActive && ariaCurrent,
-      }
-    );
+    return createVNode(VNodeFlags.ComponentClass, Link, null, children, {
+      "aria-current": isActive && ariaCurrent,
+      className: isActive
+        ? [className, activeClassName].filter(i => i).join(" ")
+        : className,
+      exact,
+      style: isActive ? { ...style, ...activeStyle } : style,
+      to
+    });
   };
 
-  return createVNode(
-    VNodeFlags.ComponentClass,
-    Route,
-    null,
-    null,
-    {
-      path: typeof to === 'object' ? to.pathname : to,
-      exact,
-      strict,
-      location,
-      children: linkComponent as any,
-    }
-  );
-};
+  return createVNode(VNodeFlags.ComponentClass, Route, null, null, {
+    children: linkComponent as any,
+    exact,
+    location,
+    path: typeof to === "object" ? to.pathname : to,
+    strict
+  });
+}
