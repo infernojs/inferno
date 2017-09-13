@@ -1,4 +1,4 @@
-import { render as renderDOM, Component } from "inferno";
+import { Component, render as renderDOM } from "inferno";
 import createClass from "inferno-create-class";
 import createElement from "inferno-create-element";
 import { connect } from "inferno-redux";
@@ -9,7 +9,7 @@ import {
 } from "inferno-test-utils";
 import { createStore } from "redux";
 import sinon from "sinon";
-import { Children, nextFrame, spyOn } from "../test-utils";
+import { Children, spyOn } from "../test-utils";
 
 const unmountDOM = elm => renderDOM(null, elm);
 

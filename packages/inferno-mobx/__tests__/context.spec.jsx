@@ -1,26 +1,39 @@
+import { render } from "inferno";
 import createClass from "inferno-create-class";
+import mobx from "mobx";
 import { observer, Provider } from "inferno-mobx";
-import { innerHTML } from "inferno-utils";
-import { observable } from "mobx";
-import { renderComponent } from "./helpers";
 
 describe("observer based context", () => {
-  let container = null;
-  let render = null;
+  let container;
 
   beforeEach(function() {
     container = document.createElement("div");
-    container.style.display = "none";
     document.body.appendChild(container);
-    render = renderComponent.bind(this, container);
   });
 
   afterEach(function() {
-    render(null);
+    render(null, container);
+    container.innerHTML = "";
     document.body.removeChild(container);
   });
 
-  it("basic context", () => {
+  it("using observer to inject throws warning", done => {
+    const w = console.warn;
+    const warns = [];
+    console.warn = msg => warns.push(msg);
+
+    observer(["test"], () => null);
+
+    expect(warns.length).toBe(1);
+    expect(warns[0]).toEqual(
+      'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`'
+    );
+
+    console.warn = w;
+    done();
+  });
+
+  it("basic context", done => {
     const C = observer(
       ["foo"],
       createClass({
@@ -35,12 +48,13 @@ describe("observer based context", () => {
         <B />
       </Provider>
     );
-    const wrapper = render(<A />, container);
+    render(<A />, container);
+    expect(container.querySelector("div").textContent).toBe("context:bar");
 
-    expect(wrapper.find("div").text()).toBe("context:bar");
+    done();
   });
 
-  it("props override context", () => {
+  it("props override context", done => {
     const C = observer(
       ["foo"],
       createClass({
@@ -55,12 +69,12 @@ describe("observer based context", () => {
         <B />
       </Provider>
     );
-    const wrapper = render(<A />);
-
-    expect(wrapper.find("div").text()).toBe("context:42");
+    render(<A />, container);
+    expect(container.querySelector("div").textContent).toBe("context:42");
+    done();
   });
 
-  it("overriding stores is supported", () => {
+  it("overriding stores is supported", done => {
     const C = observer(
       ["foo", "bar"],
       createClass({
@@ -89,13 +103,16 @@ describe("observer based context", () => {
         </div>
       </Provider>
     );
-    const wrapper = render(<A />);
+    render(<A />, container);
 
-    expect(wrapper.find("span").text()).toBe("context:bar1337");
-    expect(wrapper.find("section").text()).toBe("context:421337");
+    expect(container.querySelector("span").textContent).toBe("context:bar1337");
+    expect(container.querySelector("section").textContent).toBe(
+      "context:421337"
+    );
+    done();
   });
 
-  it("store should be available", () => {
+  it("store should be available", done => {
     const C = observer(
       ["foo"],
       createClass({
@@ -110,13 +127,17 @@ describe("observer based context", () => {
         <B />
       </Provider>
     );
-
-    expect(() => render(<A />)).toThrowError(
-      /Store 'foo' is not available! Make sure it is provided by some Provider/
-    );
+    try {
+      render(<A />, container);
+    } catch (e) {
+      expect(e.message).toBe(
+        "MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider"
+      );
+      done();
+    }
   });
 
-  it("store is not required if prop is available", () => {
+  it("store is not required if prop is available", done => {
     const C = observer(
       ["foo"],
       createClass({
@@ -126,16 +147,16 @@ describe("observer based context", () => {
       })
     );
     const B = () => <C foo="bar" />;
-    const wrapper = render(<B />);
-    expect(wrapper.find("div").text()).toBe("context:bar");
+    render(<B />, container);
+    expect(container.querySelector("div").textContent).toBe("context:bar");
+    done();
   });
 
-  it("warning is printed when changing stores (half-tested)", () => {
-    // Since we are using `warning` function, we need a different way to test warnings
-    // let msg = null;
-    // const baseWarn = console.warn;
-    // console.warn = m => msg = m;
-    const a = observable(3);
+  it("warning is printed when changing stores", done => {
+    let msg = null;
+    const baseWarn = console.warn;
+    console.warn = m => (msg = m);
+    const a = mobx.observable(3);
     const C = observer(
       ["foo"],
       createClass({
@@ -161,23 +182,24 @@ describe("observer based context", () => {
         )
       })
     );
-    const wrapper = render(<A />);
-
-    expect(wrapper.find("span").text()).toBe("3");
-    expect(wrapper.find("div").text()).toBe("context:3");
+    render(<A />, container);
+    expect(container.querySelector("span").textContent).toBe("3");
+    expect(container.querySelector("div").textContent).toBe("context:3");
     a.set(42);
-    expect(wrapper.find("span").text()).toBe("42");
-    expect(wrapper.find("div").text()).toBe("context:3");
-    // expect(msg).toBe('MobX Provider: Provided store \'foo\' has changed. Please avoid replacing stores as the change might not propagate to all children');
-    // console.warn = baseWarn;
+    expect(container.querySelector("span").textContent).toBe("42");
+    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(msg).toEqual(
+      "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children"
+    );
+    console.warn = baseWarn;
+    done();
   });
 
-  it("warning is not printed when changing stores, but suppressed explicitly (half-tested)", () => {
-    // Since we are using `warning` function, we need a different way to test warnings
-    // let msg = null;
-    // const baseWarn = console.warn;
-    // console.warn = m => msg = m;
-    const a = observable(3);
+  it("warning is not printed when changing stores, but suppressed explicitly", done => {
+    let msg = null;
+    const baseWarn = console.warn;
+    console.warn = m => (msg = m);
+    const a = mobx.observable(3);
     const C = observer(
       ["foo"],
       createClass({
@@ -203,15 +225,14 @@ describe("observer based context", () => {
         )
       })
     );
-    const wrapper = render(<A />);
-
-    expect(wrapper.find("span").text()).toBe("3");
-    expect(wrapper.find("div").text()).toBe("context:3");
+    render(<A />, container);
+    expect(container.querySelector("span").textContent).toBe("3");
+    expect(container.querySelector("div").textContent).toBe("context:3");
     a.set(42);
-    expect(wrapper.find("span").text()).toBe("42");
-    expect(wrapper.find("div").text()).toBe("context:3");
-
-    // expect(msg).toBe(null);
-    // console.warn = baseWarn;
+    expect(container.querySelector("span").textContent).toBe("42");
+    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(msg).toBe(null);
+    console.warn = baseWarn;
+    done();
   });
 });

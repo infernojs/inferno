@@ -4,6 +4,7 @@
 
 import {
   cloneVNode,
+  Component,
   createVNode,
   EMPTY_OBJ,
   findDOMNode,
@@ -13,7 +14,6 @@ import {
   render,
   VNode
 } from "inferno";
-import { Component } from "inferno";
 import createClass, {
   ClassicComponentClass,
   ComponentSpec

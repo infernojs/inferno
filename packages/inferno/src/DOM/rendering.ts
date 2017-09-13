@@ -4,6 +4,7 @@
 
 import {
   isBrowser,
+  isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
@@ -13,10 +14,11 @@ import {
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
 import {
+  createVNode,
   directClone,
-  options,
   InfernoChildren,
   InfernoInput,
+  options,
   Root,
   VNode
 } from "../core/implementation";
@@ -24,14 +26,10 @@ import { hydrateRoot } from "./hydration";
 import { mount } from "./mounting";
 import { patch } from "./patching";
 import { unmount } from "./unmounting";
-import { EMPTY_OBJ, componentToDOMNodeMap, callAll } from "./utils/common";
+import { callAll, componentToDOMNodeMap, EMPTY_OBJ } from "./utils/common";
 
 const roots = options.roots;
-/**
- * When inferno.options.findDOMNOdeEnabled is true, this function will return DOM Node by component instance
- * @param ref Component instance
- * @returns {*|null} returns dom node
- */
+
 export function findDOMNode(ref) {
   if (!options.findDOMNodeEnabled) {
     if (process.env.NODE_ENV !== "production") {
@@ -85,12 +83,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const documentBody = isBrowser ? document.body : null;
-/**
- * Renders virtual node tree into parent node.
- * @param {VNode | null | string | number} input vNode to be rendered
- * @param parentDom DOM node which content will be replaced by virtual node
- * @returns {InfernoChildren} rendered virtual node
- */
+
 export function render(
   input: InfernoInput,
   parentDom:
@@ -99,7 +92,8 @@ export function render(
     | DocumentFragment
     | null
     | HTMLElement
-    | Node
+    | Node,
+  callback?: Function
 ): InfernoChildren {
   if (documentBody === parentDom) {
     if (process.env.NODE_ENV !== "production") {
@@ -153,6 +147,10 @@ export function render(
 
   callAll(lifecycle);
 
+  if (isFunction(callback)) {
+    callback();
+  }
+
   if (root) {
     const rootInput: VNode = root.input as VNode;
 
@@ -169,4 +167,17 @@ export function createRenderer(parentDom?) {
     }
     render(nextInput, parentDom);
   };
+}
+
+export function createPortal(children, container) {
+  return createVNode(
+    VNodeFlags.Portal,
+    container,
+    null,
+    children,
+    null,
+    isInvalid(children) ? null : children.key,
+    null,
+    true
+  );
 }

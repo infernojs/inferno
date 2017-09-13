@@ -28,7 +28,7 @@ export function isAttrAnEvent(attr: string): boolean {
 export function patchEvent(name: string, lastValue, nextValue, dom) {
   if (lastValue !== nextValue) {
     if (delegatedEvents.has(name)) {
-      handleEvent(name, lastValue, nextValue, dom);
+      handleEvent(name, nextValue, dom);
     } else {
       const nameLowerCase = name.toLowerCase();
       const domEvent = dom[nameLowerCase];
@@ -104,7 +104,7 @@ export function removeProp(prop: string, lastValue, dom, nextFlags: number) {
   } else if (prop === "style") {
     dom.removeAttribute("style");
   } else if (isAttrAnEvent(prop)) {
-    handleEvent(prop, lastValue, null, dom);
+    handleEvent(prop, null, dom);
   } else {
     dom.removeAttribute(prop);
   }

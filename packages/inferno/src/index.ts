@@ -1,34 +1,37 @@
 /**
  * @module Inferno
- */ /** TypeDoc Comment */
-
+ */
+/** TypeDoc Comment */
 /* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from "inferno-shared";
 import { default as _VNodeFlags } from "inferno-vnode-flags";
 import {
-  getFlagsForElementVnode,
-  normalize as internal_normalize
-} from "./core/implementation";
-import {
   cloneVNode,
   createVNode,
-  options,
+  getFlagsForElementVnode,
   InfernoChildren,
   InfernoInput,
+  normalize as internal_normalize,
+  options,
   Props,
+  Refs as _Refs,
   Root as _Root,
-  VNode,
-  Refs as _Refs
+  VNode
 } from "./core/implementation";
 import { isUnitlessNumber as internal_isUnitlessNumber } from "./DOM/constants";
 import { linkEvent } from "./DOM/events/linkEvent";
 import { patch as internal_patch } from "./DOM/patching";
-import { createRenderer, findDOMNode, render } from "./DOM/rendering";
 import {
-  EMPTY_OBJ,
-  componentToDOMNodeMap as internal_DOMNodeMap
+  createPortal,
+  createRenderer,
+  findDOMNode,
+  render
+} from "./DOM/rendering";
+import {
+  componentToDOMNodeMap as internal_DOMNodeMap,
+  EMPTY_OBJ
 } from "./DOM/utils/common";
-import { Component, ComponentLifecycle } from "./core/component";
+import { Component } from "./core/component";
 
 if (process.env.NODE_ENV !== "production") {
   /* tslint:disable-next-line:no-empty */
@@ -61,6 +64,7 @@ export default {
   NO_OP, // used to shared common items between Inferno libs
   Component,
   cloneVNode, // cloning
+  createPortal,
   createRenderer,
   createVNode, // core shapes
   findDOMNode,
@@ -77,7 +81,6 @@ export default {
 
 export {
   Component,
-  ComponentLifecycle,
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,
@@ -85,6 +88,7 @@ export {
   Props,
   VNode,
   cloneVNode,
+  createPortal,
   createRenderer,
   createVNode,
   findDOMNode,

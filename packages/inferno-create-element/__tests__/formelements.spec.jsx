@@ -1,5 +1,4 @@
-import { render, linkEvent } from "inferno";
-import { Component } from "inferno";
+import { Component, linkEvent, render } from "inferno";
 import sinon from "sinon";
 import { triggerEvent } from "inferno-utils";
 

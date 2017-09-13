@@ -443,8 +443,6 @@ describe("Select / select multiple (JSX)", () => {
       container
     );
     expect(container.firstChild.value).toBe("");
-    expect([0, -1]).toContain(
-      container.firstChild.selectedIndex
-    );
+    expect([0, -1]).toContain(container.firstChild.selectedIndex);
   });
 });

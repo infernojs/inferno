@@ -2,22 +2,33 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
+import VNodeFlags from "inferno-vnode-flags";
 import {
   combineFrom,
   isArray,
   isInvalid,
   isNull,
   isNullOrUndef,
+  isNumber,
   isStatefulComponent,
+  isString,
   isStringOrNumber,
   isUndefined,
-  warning,
-  isString,
-  isNumber
+  warning
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
 import { EMPTY_OBJ } from "../DOM/utils/common";
 
+export interface VNode {
+  children: InfernoChildren;
+  dom: Element | null;
+  className: string | null;
+  flags: number;
+  key: any;
+  parentVNode: VNode | null;
+  props: Props | null;
+  ref: Ref | Refs | null;
+  type: any;
+}
 export type InfernoInput = VNode | null | string | number;
 export type Ref = (node?: Element | null) => void;
 export type InfernoChildren =
@@ -28,7 +39,6 @@ export type InfernoChildren =
   | VNode
   | Array<string | number | VNode>
   | null;
-export type Type = string | null | Function;
 
 export interface Props {
   children?: InfernoChildren;
@@ -47,33 +57,9 @@ export interface Refs {
   onComponentWillUnmount?(domNode: Element): void;
 }
 
-export interface VNode {
-  children: InfernoChildren;
-  dom: Element | null;
-  className: string | null;
-  flags: number;
-  key: any;
-  parentVNode: VNode | null;
-  props: Props | null;
-  ref: Ref | Refs | null;
-  type: Type;
-}
-
-/**
- * Creates virtual node
- * @param {number} flags
- * @param {string|Function|null} type
- * @param {string|null=} className
- * @param {object=} children
- * @param {object=} props
- * @param {*=} key
- * @param {object|Function=} ref
- * @param {boolean=} noNormalise
- * @returns {VNode} returns new virtual node
- */
 export function createVNode(
   flags: number,
-  type: Type,
+  type,
   className?: string | null,
   children?: InfernoChildren,
   props?: Props | null,
@@ -190,6 +176,8 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.children as string,
       vNodeToClone.key
     );
+  } else if (flags & VNodeFlags.Portal) {
+    newVNode = vNodeToClone;
   }
 
   return newVNode;
@@ -325,7 +313,7 @@ export function cloneVNode(
 }
 
 export function createVoidVNode(): VNode {
-  return createVNode(VNodeFlags.Void, null, null, null, null, null, null, true);
+  return createVNode(VNodeFlags.Void, null, null, "", null, null, null, true);
 }
 
 export function createTextVNode(text: string | number, key): VNode {
