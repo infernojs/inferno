@@ -4,8 +4,7 @@ import { innerHTML } from "inferno-utils";
 import { Router, Switch, Route, Redirect } from "inferno-router";
 import createHistory from "history/createMemoryHistory";
 
-// @TODO: Broken
-describe.skip("A <Switch>", () => {
+describe("A <Switch>", () => {
   it("does not remount a <Route>", () => {
     const node = document.createElement("div");
 
@@ -36,6 +35,7 @@ describe.skip("A <Switch>", () => {
     );
 
     expect(mountCount).toBe(1);
+
     history.push("/two");
 
     expect(mountCount).toBe(1);

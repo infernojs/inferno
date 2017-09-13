@@ -4,29 +4,28 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-//import invariant = require('invariant');
 import { invariant } from "./utils";
 
-const isModifiedEvent = (event) =>
+const isModifiedEvent = (event): boolean =>
   !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
 export interface ILinkProps {
-  onClick?: any,
-  target: string,
-  className?: string,
-  replace: boolean,
-  to: string | {},
-  innerRef: any
+  onClick?: any;
+  target: string;
+  className?: string;
+  replace: boolean;
+  to: string | {};
+  innerRef: any;
 }
 
 /**
  * The public API for rendering a history-aware <a>.
  */
 export default class Link extends Component<ILinkProps, any> {
-
-  handleClick = (event) => {
-    if (this.props.onClick)
+  public handleClick = event => {
+    if (this.props.onClick) {
       this.props.onClick(event);
+    }
 
     if (
       !event.defaultPrevented && // onClick prevented default
@@ -40,23 +39,23 @@ export default class Link extends Component<ILinkProps, any> {
       const { replace = false, to } = this.props;
 
       if (replace) {
-        history.replace(to)
+        history.replace(to);
       } else {
-        history.push(to)
+        history.push(to);
       }
     }
   };
 
-  render(): VNode {
+  public render(): VNode {
     const { replace, className, to, innerRef, ...props } = this.props;
 
     invariant(
       this.context.router,
-      'You should not use <Link> outside a <Router>'
+      "You should not use <Link> outside a <Router>"
     );
 
     const href = this.context.router.history.createHref(
-      typeof to === 'string' ? { pathname: to } : to
+      typeof to === "string" ? { pathname: to } : to
     );
 
     return createVNode(
@@ -66,11 +65,11 @@ export default class Link extends Component<ILinkProps, any> {
       null,
       {
         ...props,
-        onClick: this.handleClick,
-        href
+        href,
+        onClick: this.handleClick
       },
       null,
-      (x) => x && innerRef && innerRef(x)
+      x => x && innerRef && innerRef(x)
     );
   }
 }

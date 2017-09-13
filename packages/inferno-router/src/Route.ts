@@ -27,20 +27,7 @@ export interface IRouteProps {
  * The public API for matching a single path and rendering.
  */
 class Route extends Component<IRouteProps, any> {
-  /*
-  static contextTypes = {
-    router: {
-      history: {},
-      route: {},
-      staticContext: {}
-    }
-  };
-
-  static childContextTypes = {
-    router: {}
-  };*/
-
-  getChildContext() {
+  public getChildContext() {
     return {
       router: {
         ...this.context.router,
@@ -59,8 +46,14 @@ class Route extends Component<IRouteProps, any> {
     };
   }
 
-  computeMatch({ computedMatch, location, path, strict, exact, sensitive }, router) {
-    if (computedMatch) return computedMatch; // <Switch> already computed the match for us
+  public computeMatch(
+    { computedMatch, location, path, strict, exact, sensitive },
+    router
+  ) {
+    if (computedMatch) {
+      // <Switch> already computed the match for us
+      return computedMatch;
+    }
 
     invariant(
       router,
@@ -75,7 +68,7 @@ class Route extends Component<IRouteProps, any> {
       : route.match;
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     warning(
       !(this.props.component && this.props.render),
       "You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored"
@@ -100,7 +93,7 @@ class Route extends Component<IRouteProps, any> {
     );
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  public componentWillReceiveProps(nextProps, nextContext) {
     warning(
       !(nextProps.location && !this.props.location),
       '<Route> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
@@ -116,7 +109,7 @@ class Route extends Component<IRouteProps, any> {
     });
   }
 
-  render(): VNode | null {
+  public render(): VNode | null {
     const { match } = this.state;
     const { children, component, render } = this.props;
     const { history, route, staticContext } = this.context.router;
