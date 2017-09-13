@@ -1,8 +1,9 @@
 /**
  * @module Inferno-Server
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
-import { EMPTY_OBJ } from "inferno";
+import {EMPTY_OBJ} from "inferno";
 import {
   combineFrom,
   isArray,
@@ -16,15 +17,13 @@ import {
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { renderStylesToString } from "./prop-renderers";
-import { escapeText, voidElements } from "./utils";
+import {renderStylesToString} from "./prop-renderers";
+import {escapeText, voidElements} from "./utils";
 
-function renderVNodeToString(
-  vNode,
-  parent,
-  context,
-  firstChild
-): string | undefined {
+function renderVNodeToString(vNode,
+                             parent,
+                             context,
+                             firstChild): string | undefined {
   const flags = vNode.flags;
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
@@ -52,21 +51,21 @@ function renderVNodeToString(
       if (isFunction(instance.componentWillMount)) {
         instance.$BR = true;
         instance.componentWillMount();
-        if (instance.$PSS) {
-          const state = instance.state;
-          const pending = instance.$PS;
-
-          if (state === null) {
-            instance.state = pending;
-          } else {
-            for (const key in pending) {
-              state[key] = pending[key];
-            }
-          }
-          instance.$PSS = false;
-          instance.$PS = null;
-        }
         instance.$BR = false;
+      }
+      if (instance.$PSS) {
+        const state = instance.state;
+        const pending = instance.$PS;
+
+        if (state === null) {
+          instance.state = pending;
+        } else {
+          for (const key in pending) {
+            state[key] = pending[key];
+          }
+        }
+        instance.$PSS = false;
+        instance.$PS = null;
       }
       const nextVNode = instance.render(props, instance.state, vNode.context);
       // In case render returns invalid stuff
@@ -74,7 +73,8 @@ function renderVNodeToString(
         return "<!--!-->";
       }
       return renderVNodeToString(nextVNode, vNode, context, true);
-    } else {
+    }
+    else {
       const nextVNode = type(props, context);
 
       if (isInvalid(nextVNode)) {

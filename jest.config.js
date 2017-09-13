@@ -22,15 +22,8 @@ module.exports = {
   moduleFileExtensions: ["ts", "js", "jsx", "json"],
   moduleNameMapper: {
     "^inferno-router/utils": "<rootDir>/packages/inferno-router/src/utils",
-    "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src",
+    "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src"
   },
-  // projects: [
-    // "<rootDir>/packages/*",
-    // "<rootDir>/packages/inferno-create-class",
-    // "<rootDir>/packages/inferno-create-element",
-    // "<rootDir>/packages/inferno-shared",
-    // "<rootDir>/packages/inferno-vnode-flags"
-  // ],
   rootDir: __dirname,
   setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
   testMatch: [

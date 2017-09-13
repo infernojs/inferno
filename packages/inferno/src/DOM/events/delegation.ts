@@ -13,7 +13,7 @@ interface IEventData {
   dom: Element;
 }
 
-export function handleEvent(name, lastEvent, nextEvent, dom) {
+export function handleEvent(name: string, nextEvent: Function | null, dom) {
   let delegatedRoots = delegatedEvents.get(name);
 
   if (nextEvent) {

@@ -20,7 +20,8 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "vdom"
   ],
   "dependencies": {
     "inferno": "3.9.0",

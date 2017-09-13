@@ -3,6 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { Store, Unsubscribe } from "redux";
+
 export type Listener = () => void;
 
 interface IListenerCollection {

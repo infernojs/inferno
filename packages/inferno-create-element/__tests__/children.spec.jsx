@@ -1,5 +1,4 @@
-import { render } from "inferno";
-import { Component } from "inferno";
+import { Component, render } from "inferno";
 import sinon from "sinon";
 import { innerHTML } from "inferno-utils";
 

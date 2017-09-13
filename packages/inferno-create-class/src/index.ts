@@ -2,7 +2,7 @@
  * @module Inferno-Create-Class
  */ /** TypeDoc Comment */
 
-import { Component, ComponentLifecycle } from "inferno";
+import { Component } from "inferno";
 import {
   isFunction,
   isNullOrUndef,
@@ -11,7 +11,7 @@ import {
   throwError
 } from "inferno-shared";
 
-export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
+export interface Mixin<P, S> extends Component<P, S> {
   statics?: {
     [key: string]: any;
   };
@@ -226,5 +226,5 @@ export default function createClass<P, S>(
     ? undefined
     : Cl.getDefaultProps();
 
-  return Cl;
+  return Cl as any;
 }

@@ -11,10 +11,10 @@ import {
   isObject
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { VNode, options } from "../core/implementation";
+import { options, VNode } from "../core/implementation";
 import { delegatedEvents } from "./constants";
 import { handleEvent } from "./events/delegation";
-import { EMPTY_OBJ, removeChild, componentToDOMNodeMap } from "./utils/common";
+import { componentToDOMNodeMap, EMPTY_OBJ, removeChild } from "./utils/common";
 
 export function unmount(vNode: VNode, parentDom: Element | null) {
   const flags = vNode.flags;
@@ -86,9 +86,15 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
       for (const name in props) {
         // Remove all delegated events, regular events die with dom node
         if (delegatedEvents.has(name)) {
-          handleEvent(name, props[name], null, dom);
+          handleEvent(name, null, dom);
         }
       }
+    }
+  } else if ((flags & VNodeFlags.Portal) > 0) {
+    const children = vNode.children;
+
+    if (!isInvalid(children) && isObject(children)) {
+      unmount(children as VNode, vNode.type);
     }
   }
 

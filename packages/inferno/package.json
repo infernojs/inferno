@@ -23,7 +23,8 @@
     "server",
     "dom",
     "browser",
-    "rollup"
+    "rollup",
+    "vdom"
   ],
   "rollup": {
     "bundledDependencies": [

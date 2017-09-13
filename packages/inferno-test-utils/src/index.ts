@@ -23,8 +23,8 @@ import {
   Wrapper as _Wrapper
 } from "./utils";
 import {
-  vNodeToSnapshot as _vNodeToSnapshot,
-  renderToSnapshot as _renderToSnapshot
+  renderToSnapshot as _renderToSnapshot,
+  vNodeToSnapshot as _vNodeToSnapshot
 } from "./jest";
 
 // Type Checkers

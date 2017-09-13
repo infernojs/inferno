@@ -1,4 +1,4 @@
-import { render, Component } from "inferno";
+import { Component, render } from "inferno";
 import { Router, Route, Link, Switch } from "inferno-router";
 import createMemoryHistory from "history/createMemoryHistory";
 import { triggerEvent } from "inferno-utils";

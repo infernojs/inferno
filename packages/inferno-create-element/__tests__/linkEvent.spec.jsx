@@ -1,5 +1,4 @@
-import { linkEvent, render } from "inferno";
-import { Component } from "inferno";
+import { Component, linkEvent, render } from "inferno";
 
 describe("linkEvent", () => {
   let container;

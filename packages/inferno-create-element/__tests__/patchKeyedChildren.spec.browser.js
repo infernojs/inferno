@@ -1,4 +1,4 @@
-import { render, createVNode } from "inferno";
+import { createVNode, render } from "inferno";
 import createElement from "inferno-create-element";
 
 function generateKeyNodes(array) {

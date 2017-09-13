@@ -1,17 +1,18 @@
 /**
  * @module Inferno
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
 import {
   combineFrom,
   isArray,
+  isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
   isStringOrNumber,
   isUndefined,
   NO_OP,
-  isFunction,
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
@@ -93,7 +94,17 @@ export function patch(
     const lastFlags = lastVNode.flags;
     const nextFlags = nextVNode.flags;
 
-    if (nextFlags & VNodeFlags.Component) {
+    if (lastFlags & VNodeFlags.Portal) {
+      if (nextFlags & VNodeFlags.Portal) {
+        patchPortal(lastVNode, nextVNode, lifecycle, context);
+      } else {
+        replaceVNode(
+          parentDom,
+          mount(nextVNode, null, lifecycle, context, isSVG),
+          lastVNode
+        );
+      }
+    } else if (nextFlags & VNodeFlags.Component) {
       const isClass = (nextFlags & VNodeFlags.ComponentClass) > 0;
 
       if (lastFlags & VNodeFlags.Component) {
@@ -142,6 +153,12 @@ export function patch(
       } else {
         replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode);
       }
+    } else if (nextFlags & VNodeFlags.Portal) {
+      replaceVNode(
+        parentDom,
+        mount(nextVNode, null, lifecycle, context, isSVG),
+        lastVNode
+      );
     } else {
       // Error case: mount new one replacing old one
       replaceVNode(
@@ -150,6 +167,32 @@ export function patch(
         lastVNode
       );
     }
+  }
+}
+
+function patchPortal(lastVNode: VNode, nextVNode: VNode, lifecycle, context) {
+  const lastContainer = lastVNode.type as Element;
+  const nextContainer = nextVNode.type as Element;
+  const nextChildren = nextVNode.children as VNode;
+
+  patchChildren(
+    0,
+    0,
+    lastVNode.children as VNode,
+    nextChildren,
+    lastContainer as Element,
+    lifecycle,
+    context,
+    false
+  );
+
+  nextVNode.dom = lastVNode.dom;
+
+  if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
+    const node = nextChildren.dom as Element;
+
+    lastContainer.removeChild(node);
+    nextContainer.appendChild(node);
   }
 }
 
@@ -484,7 +527,6 @@ export function updateClassComponent(
     instance.state = nextState;
     instance.context = context;
   }
-
   nextVNode.dom = instance.$LI.dom;
 }
 

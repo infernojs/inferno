@@ -3,13 +3,13 @@
  */ /** TypeDoc Comment */
 
 import {
+  Component,
   createVNode,
   getFlagsForElementVnode,
   InfernoChildren,
   Props,
   VNode
 } from "inferno";
-import { Component } from "inferno";
 import {
   isInvalid,
   isNullOrUndef,

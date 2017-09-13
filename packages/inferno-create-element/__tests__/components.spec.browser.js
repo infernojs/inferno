@@ -1,4 +1,4 @@
-import { render, Component } from "inferno";
+import { Component, render } from "inferno";
 import createElement from "inferno-create-element";
 import { innerHTML, waits } from "inferno-utils";
 

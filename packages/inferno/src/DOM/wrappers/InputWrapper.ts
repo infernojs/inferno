@@ -3,24 +3,24 @@
  */ /** TypeDoc Comment */
 
 import { isNullOrUndef } from "inferno-shared";
-import {createWrappedFunction} from "./wrapper";
+import { createWrappedFunction } from "./wrapper";
 
 export function isCheckedType(type) {
   return type === "checkbox" || type === "radio";
 }
 
-const onTextInputChange = createWrappedFunction('onInput', applyValue);
+const onTextInputChange = createWrappedFunction("onInput", applyValue);
 
-const wrappedOnChange = createWrappedFunction('onChange');
+const wrappedOnChange = createWrappedFunction("onChange");
 
-const onCheckboxChange = createWrappedFunction('onClick', applyValue);
+const onCheckboxChange = createWrappedFunction("onClick", applyValue);
 
 export function processInput(
   vNode,
   dom,
   nextPropsOrEmpty,
   mounting: boolean,
-  isControlled
+  isControlled: boolean
 ): void {
   applyValue(nextPropsOrEmpty, dom);
   if (isControlled) {
