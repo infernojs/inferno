@@ -2,8 +2,8 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import { Atom, Reaction, extras } from "mobx";
-import { Component, options, findDOMNode } from "inferno";
+import { Atom, extras, Reaction } from "mobx";
+import { Component, findDOMNode, options } from "inferno";
 import { EventEmitter } from "./utils/EventEmitter";
 import { warning } from "inferno-shared";
 import { isStateless } from "./utils/utils";

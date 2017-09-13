@@ -5,11 +5,11 @@
 import {
   componentByNodeRegistery,
   errorsReporter,
-  observer,
+  inject,
   Observer,
+  observer,
   renderReporter,
   trackComponents,
-  inject,
   useStaticRendering
 } from "./observer";
 import { Provider } from "./Provider";

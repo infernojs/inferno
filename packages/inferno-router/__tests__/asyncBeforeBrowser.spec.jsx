@@ -1,15 +1,7 @@
 import { createMemoryHistory } from "history";
-import { render } from "inferno";
-import { Component } from "inferno";
+import { Component, render } from "inferno";
 import { innerHTML } from "inferno-utils";
-import {
-  IndexRoute,
-  Link,
-  Route,
-  Router,
-  match,
-  doAllAsyncBefore
-} from "inferno-router";
+import { doAllAsyncBefore, match, Route, Router } from "inferno-router";
 
 const browserHistory = createMemoryHistory();
 

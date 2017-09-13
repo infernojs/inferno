@@ -2,22 +2,33 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
+import VNodeFlags from "inferno-vnode-flags";
 import {
   combineFrom,
   isArray,
   isInvalid,
   isNull,
   isNullOrUndef,
+  isNumber,
   isStatefulComponent,
+  isString,
   isStringOrNumber,
   isUndefined,
-  warning,
-  isString,
-  isNumber
+  warning
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
 import { EMPTY_OBJ } from "../DOM/utils/common";
 
+export interface VNode {
+  children: InfernoChildren;
+  dom: Element | null;
+  className: string | null;
+  flags: number;
+  key: any;
+  parentVNode: VNode | null;
+  props: Props | null;
+  ref: Ref | Refs | null;
+  type: Type;
+}
 export type InfernoInput = VNode | null | string | number;
 export type Ref = (node?: Element | null) => void;
 export type InfernoChildren =
@@ -45,18 +56,6 @@ export interface Refs {
   onComponentWillUpdate?(lastProps, nextProps): void;
   onComponentDidUpdate?(lastProps, nextProps): void;
   onComponentWillUnmount?(domNode: Element): void;
-}
-
-export interface VNode {
-  children: InfernoChildren;
-  dom: Element | null;
-  className: string | null;
-  flags: number;
-  key: any;
-  parentVNode: VNode | null;
-  props: Props | null;
-  ref: Ref | Refs | null;
-  type: Type;
 }
 
 /**

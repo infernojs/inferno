@@ -5,13 +5,13 @@
 import {
   combineFrom,
   isArray,
+  isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
   isStringOrNumber,
   isUndefined,
   NO_OP,
-  isFunction,
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";

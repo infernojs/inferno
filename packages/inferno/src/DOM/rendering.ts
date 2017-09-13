@@ -14,9 +14,9 @@ import {
 import VNodeFlags from "inferno-vnode-flags";
 import {
   directClone,
-  options,
   InfernoChildren,
   InfernoInput,
+  options,
   Root,
   VNode
 } from "../core/implementation";
@@ -24,7 +24,7 @@ import { hydrateRoot } from "./hydration";
 import { mount } from "./mounting";
 import { patch } from "./patching";
 import { unmount } from "./unmounting";
-import { EMPTY_OBJ, componentToDOMNodeMap, callAll } from "./utils/common";
+import { callAll, componentToDOMNodeMap, EMPTY_OBJ } from "./utils/common";
 
 const roots = options.roots;
 /**

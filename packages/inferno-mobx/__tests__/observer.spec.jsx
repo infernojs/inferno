@@ -1,12 +1,12 @@
-import { render, Component } from "inferno";
+import { Component, render } from "inferno";
 import {
-  observable,
-  extendObservable,
   action,
   computed,
+  extendObservable,
+  observable,
   transaction
 } from "mobx";
-import mobxInferno, { observer, inject, onError, offError } from "inferno-mobx";
+import mobxInferno, { inject, observer, offError } from "inferno-mobx";
 import createClass from "inferno-create-class";
 import { renderToStaticMarkup } from "inferno-server";
 

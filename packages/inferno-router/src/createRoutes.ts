@@ -41,8 +41,7 @@
  * <Router history={browserHistory} children={routes} />
  */
 
-import { VNode } from "inferno";
-import { Component } from "inferno";
+import { Component, VNode } from "inferno";
 import createElement from "inferno-create-element";
 import { isArray } from "inferno-shared";
 import Route, { IRouteHook } from "./Route";

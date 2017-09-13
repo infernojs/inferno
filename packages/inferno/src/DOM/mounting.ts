@@ -14,7 +14,7 @@ import {
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { options, directClone, isVNode, VNode } from "../core/implementation";
+import { directClone, isVNode, options, VNode } from "../core/implementation";
 import {
   appendChild,
   componentToDOMNodeMap,

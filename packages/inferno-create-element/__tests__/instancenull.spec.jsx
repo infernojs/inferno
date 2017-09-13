@@ -1,5 +1,4 @@
-import { render } from "inferno";
-import { Component } from "inferno";
+import { Component, render } from "inferno";
 import { triggerEvent } from "inferno-utils";
 
 describe("BUG: instance - null", () => {

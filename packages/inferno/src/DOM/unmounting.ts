@@ -11,10 +11,10 @@ import {
   isObject
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { VNode, options } from "../core/implementation";
+import { options, VNode } from "../core/implementation";
 import { delegatedEvents } from "./constants";
 import { handleEvent } from "./events/delegation";
-import { EMPTY_OBJ, removeChild, componentToDOMNodeMap } from "./utils/common";
+import { componentToDOMNodeMap, EMPTY_OBJ, removeChild } from "./utils/common";
 
 export function unmount(vNode: VNode, parentDom: Element | null) {
   const flags = vNode.flags;

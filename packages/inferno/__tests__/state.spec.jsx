@@ -1,5 +1,4 @@
-import { createVNode, render } from "inferno";
-import { Component } from "inferno";
+import { Component, createVNode, render } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 
 let renderCount = 0;

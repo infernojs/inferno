@@ -4,10 +4,10 @@ import { innerHTML } from "inferno-utils";
 import {
   IndexRoute,
   Link,
+  match,
   Route,
   Router,
-  RouterContext,
-  match
+  RouterContext
 } from "inferno-router";
 
 const browserHistory = createBrowserHistory();
@@ -53,34 +53,46 @@ describe("Router (jsx)", () => {
   });
 
   describe("Nested routes", () => {
-
-    const createRoutes = (url) => (
+    const createRoutes = url => (
       <Router url={url} history={browserHistory}>
-        <Route path="/" component={() => (<h1>Home</h1>)}/>
-        <Route path="/about" component={({ children }) => (<h1>user/{children}</h1>)}>
-          <Route path="/feature1" component={() => <h2>Features1</h2>}/>
-          <Route path="/user/:username" component={({ params }) => params.username}/>
+        <Route path="/" component={() => <h1>Home</h1>} />
+        <Route
+          path="/about"
+          component={({ children }) => <h1>user/{children}</h1>}
+        >
+          <Route path="/feature1" component={() => <h2>Features1</h2>} />
+          <Route
+            path="/user/:username"
+            component={({ params }) => params.username}
+          />
         </Route>
-        <Route path="/album/:artist" component={({ params, children }) => (<h1>{params.artist}/{children}</h1>)}>
-          <Route path="/:id" component={({ params }) => params.id}/>
+        <Route
+          path="/album/:artist"
+          component={({ params, children }) => (
+            <h1>
+              {params.artist}/{children}
+            </h1>
+          )}
+        >
+          <Route path="/:id" component={({ params }) => params.id} />
         </Route>
-        <Route path='/*' component={() => <h1>No Match</h1>}/>
+        <Route path="/*" component={() => <h1>No Match</h1>} />
       </Router>
-    )
+    );
 
     it("should match username", () => {
       render(createRoutes("/about/user/ryan"), container);
-      expect(container.innerHTML).toBe(innerHTML('<h1>user/ryan</h1>'));
+      expect(container.innerHTML).toBe(innerHTML("<h1>user/ryan</h1>"));
     });
 
     it("should match album/:artist/:id", () => {
       render(createRoutes("/album/aphex-twin/155"), container);
-      expect(container.innerHTML).toBe(innerHTML('<h1>aphex-twin/155</h1>'));
+      expect(container.innerHTML).toBe(innerHTML("<h1>aphex-twin/155</h1>"));
     });
 
     it("should match wildcard", () => {
       render(createRoutes("/hello"), container);
-      expect(container.innerHTML).toBe(innerHTML('<h1>No Match</h1>'));
+      expect(container.innerHTML).toBe(innerHTML("<h1>No Match</h1>"));
     });
   });
 

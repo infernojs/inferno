@@ -1,4 +1,4 @@
-import { createVNode, render, Component } from "inferno";
+import { Component, createVNode, render } from "inferno";
 import InfernoVNodeFlags from "inferno-vnode-flags";
 
 suite("class components", function() {

@@ -13,7 +13,7 @@ import {
   warning
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { options, InfernoChildren, VNode } from "../core/implementation";
+import { InfernoChildren, options, VNode } from "../core/implementation";
 import {
   mount,
   mountClassComponentCallbacks,

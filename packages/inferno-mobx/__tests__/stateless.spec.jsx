@@ -1,5 +1,4 @@
-import { render, Component } from "inferno";
-import mobx from "mobx";
+import { render } from "inferno";
 import { observer } from "inferno-mobx";
 import createClass from "inferno-create-class";
 import createElement from "inferno-create-element";

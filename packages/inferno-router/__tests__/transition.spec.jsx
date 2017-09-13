@@ -1,6 +1,5 @@
 import createMemoryHistory from "history/createMemoryHistory";
-import { render } from "inferno";
-import { Component } from "inferno";
+import { Component, render } from "inferno";
 import { innerHTML } from "inferno-utils";
 import { IndexRoute, Link, Redirect, Route, Router } from "inferno-router";
 

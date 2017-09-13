@@ -1,7 +1,7 @@
-import { render, Component } from "inferno";
+import { render } from "inferno";
 import createClass from "inferno-create-class";
-import mobx, { action, observable, computed } from "mobx";
-import { observer, inject, Provider } from "inferno-mobx";
+import mobx, { action, computed, observable } from "mobx";
+import { inject, observer, Provider } from "inferno-mobx";
 
 describe("inject based context", () => {
   let container;

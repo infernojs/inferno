@@ -12,7 +12,7 @@ import {
   throwError
 } from "inferno-shared";
 import { updateClassComponent } from "../DOM/patching";
-import { EMPTY_OBJ, callAll } from "../DOM/utils/common";
+import { callAll, EMPTY_OBJ } from "../DOM/utils/common";
 
 export interface ComponentLifecycle<P, S> {
   componentDidMount?(): void;
