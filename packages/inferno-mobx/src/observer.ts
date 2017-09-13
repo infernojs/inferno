@@ -3,11 +3,10 @@
  */ /** TypeDoc Comment */
 
 import { Atom, extras, Reaction } from "mobx";
-import { Component, findDOMNode, options } from "inferno";
+import { Component, findDOMNode, options, createVNode } from "inferno";
 import { EventEmitter } from "./utils/EventEmitter";
 import { warning } from "inferno-shared";
 import { isStateless } from "./utils/utils";
-import { createVNode } from "../../inferno/src/core/implementation";
 import VNodeFlags from "inferno-vnode-flags";
 import hoistStatics from "hoist-non-inferno-statics";
 

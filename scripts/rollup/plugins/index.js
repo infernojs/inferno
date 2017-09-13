@@ -19,12 +19,12 @@ module.exports = function(version, options) {
       include: "node_modules/**"
     }),
     tsPlugin({
-      abortOnError: false,
+      abortOnError: true,
       cacheRoot: `.rpt2_cache_${options.env}`,
       check: false,
       clean: true,
       exclude: ["*.spec*", "**/*.spec*"],
-      tsconfig: __dirname + "./../../../tsconfig.json" // Have absolute path to fix windows build
+      tsconfig: __dirname + "/../../../tsconfig.json" // Have absolute path to fix windows build
     }),
     bublePlugin()
   ];

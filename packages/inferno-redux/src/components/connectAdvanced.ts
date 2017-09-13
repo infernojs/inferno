@@ -4,9 +4,9 @@
 
 import { Dispatch, Store } from "redux";
 import hoistStatics from "hoist-non-inferno-statics";
-import { Component } from "inferno";
-import createElement from "inferno-create-element";
+import { Component, createVNode } from "inferno";
 import { Subscription } from "../utils/Subscription";
+import VNodeFlags from "inferno-vnode-flags";
 
 let hotReloadingVersion = 0;
 const dummyState = {};
@@ -360,8 +360,11 @@ export function connectAdvanced(
         if (selector.error) {
           throw selector.error;
         } else {
-          return createElement(
+          return createVNode(
+            VNodeFlags.ComponentUnknown,
             WrappedComponent,
+            null,
+            null,
             this.addExtraProps(selector.props)
           );
         }
