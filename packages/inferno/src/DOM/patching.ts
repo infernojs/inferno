@@ -1,6 +1,7 @@
 /**
  * @module Inferno
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
 import {
   combineFrom,
@@ -15,7 +16,7 @@ import {
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { directClone, isVNode, options, VNode } from "../core/implementation";
+import {directClone, isVNode, options, VNode} from "../core/implementation";
 import {
   mount,
   mountArrayChildren,
@@ -25,7 +26,7 @@ import {
   mountText,
   mountVoid
 } from "./mounting";
-import { unmount } from "./unmounting";
+import {unmount} from "./unmounting";
 import {
   appendChild,
   componentToDOMNodeMap,
@@ -41,8 +42,8 @@ import {
   isControlledFormElement,
   processElement
 } from "./wrappers/processElement";
-import { patchProp, removeProp } from "./props";
-import { handleComponentInput } from "./utils/components";
+import {patchProp, removeProp} from "./props";
+import {handleComponentInput} from "./utils/components";
 
 function replaceVNode(parentDom, dom, vNode) {
   unmount(vNode, null);
@@ -65,14 +66,12 @@ function removeAllChildren(dom: Element, children) {
   dom.textContent = "";
 }
 
-function replaceWithNewNode(
-  lastNode,
-  nextNode,
-  parentDom,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+function replaceWithNewNode(lastNode,
+                            nextNode,
+                            parentDom,
+                            lifecycle: Function[],
+                            context: Object,
+                            isSVG: boolean) {
   unmount(lastNode, null);
   replaceChild(
     parentDom,
@@ -81,14 +80,12 @@ function replaceWithNewNode(
   );
 }
 
-export function patch(
-  lastVNode: VNode,
-  nextVNode: VNode,
-  parentDom: Element,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+export function patch(lastVNode: VNode,
+                      nextVNode: VNode,
+                      parentDom: Element,
+                      lifecycle: Function[],
+                      context: Object,
+                      isSVG: boolean) {
   if (lastVNode !== nextVNode) {
     const lastFlags = lastVNode.flags;
     const nextFlags = nextVNode.flags;
@@ -163,14 +160,12 @@ function unmountChildren(children, dom: Element) {
   }
 }
 
-export function patchElement(
-  lastVNode: VNode,
-  nextVNode: VNode,
-  parentDom: Element | null,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+export function patchElement(lastVNode: VNode,
+                             nextVNode: VNode,
+                             parentDom: Element | null,
+                             lifecycle: Function[],
+                             context: Object,
+                             isSVG: boolean) {
   const nextTag = nextVNode.type;
   const lastTag = lastVNode.type;
 
@@ -275,16 +270,14 @@ export function patchElement(
   }
 }
 
-function patchChildren(
-  lastFlags: VNodeFlags,
-  nextFlags: VNodeFlags,
-  lastChildren,
-  nextChildren,
-  dom: Element,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+function patchChildren(lastFlags: VNodeFlags,
+                       nextFlags: VNodeFlags,
+                       lastChildren,
+                       nextChildren,
+                       dom: Element,
+                       lifecycle: Function[],
+                       context: Object,
+                       isSVG: boolean) {
   let patchArray = false;
   let patchKeyed = false;
 
@@ -373,18 +366,16 @@ function patchChildren(
   }
 }
 
-export function updateClassComponent(
-  instance,
-  nextState,
-  nextVNode: VNode,
-  nextProps,
-  parentDom,
-  lifecycle: Function[],
-  context,
-  isSVG: boolean,
-  force: boolean,
-  fromSetState: boolean
-) {
+export function updateClassComponent(instance,
+                                     nextState,
+                                     nextVNode: VNode,
+                                     nextProps,
+                                     parentDom,
+                                     lifecycle: Function[],
+                                     context,
+                                     isSVG: boolean,
+                                     force: boolean,
+                                     fromSetState: boolean) {
   const hasComponentDidUpdate = isFunction(instance.componentDidUpdate);
   // When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
   const lastState = instance.state;
@@ -488,15 +479,13 @@ export function updateClassComponent(
   nextVNode.dom = instance.$LI.dom;
 }
 
-export function patchComponent(
-  lastVNode,
-  nextVNode,
-  parentDom,
-  lifecycle: Function[],
-  context,
-  isSVG: boolean,
-  isClass: boolean
-): void {
+export function patchComponent(lastVNode,
+                               nextVNode,
+                               parentDom,
+                               lifecycle: Function[],
+                               context,
+                               isSVG: boolean,
+                               isClass: boolean): void {
   const lastType = lastVNode.type;
   const nextType = nextVNode.type;
   const lastKey = lastVNode.key;
@@ -589,16 +578,14 @@ export function patchVoid(lastVNode: VNode, nextVNode: VNode) {
   nextVNode.dom = lastVNode.dom;
 }
 
-export function patchNonKeyedChildren(
-  lastChildren,
-  nextChildren,
-  dom,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean,
-  lastChildrenLength: number,
-  nextChildrenLength: number
-) {
+export function patchNonKeyedChildren(lastChildren,
+                                      nextChildren,
+                                      dom,
+                                      lifecycle: Function[],
+                                      context: Object,
+                                      isSVG: boolean,
+                                      lastChildrenLength: number,
+                                      nextChildrenLength: number) {
   const commonLength =
     lastChildrenLength > nextChildrenLength
       ? nextChildrenLength
@@ -629,16 +616,14 @@ export function patchNonKeyedChildren(
   }
 }
 
-export function patchKeyedChildren(
-  a: VNode[],
-  b: VNode[],
-  dom,
-  lifecycle: Function[],
-  context,
-  isSVG: boolean,
-  aLength: number,
-  bLength: number
-) {
+export function patchKeyedChildren(a: VNode[],
+                                   b: VNode[],
+                                   dom,
+                                   lifecycle: Function[],
+                                   context,
+                                   isSVG: boolean,
+                                   aLength: number,
+                                   bLength: number) {
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;
   let aStart = 0;
