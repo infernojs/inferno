@@ -1,6 +1,7 @@
 /**
  * @module Inferno
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
 import VNodeFlags from "inferno-vnode-flags";
 import { Props, VNode } from "./implementation";
@@ -13,28 +14,6 @@ import {
 } from "inferno-shared";
 import { updateClassComponent } from "../DOM/patching";
 import { callAll, EMPTY_OBJ } from "../DOM/utils/common";
-
-export interface ComponentLifecycle<P, S> {
-  componentDidMount?(): void;
-  componentWillMount?(): void;
-  componentWillReceiveProps?(nextProps: P, nextContext: any): void;
-  shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
-  componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
-  componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
-  componentWillUnmount?(): void;
-}
-
-// TODO: Inline and remove recursion. This can be manually inlined using "tail-call recursion optimization"
-export function updateParentComponentVNodes(vNode: VNode, dom: Element) {
-  if ((vNode.flags & VNodeFlags.Component) > 0) {
-    const parentVNode = vNode.parentVNode;
-
-    if (parentVNode) {
-      parentVNode.dom = dom;
-      updateParentComponentVNodes(parentVNode, dom);
-    }
-  }
-}
 
 const resolvedPromise = Promise.resolve();
 
@@ -111,7 +90,7 @@ function applyState<P, S>(
     // TODO: This is unreliable and bad code, refactor it away
     const lastInput = component.$LI as VNode;
     const parentDom = lastInput.dom && lastInput.dom.parentNode;
-    const vNode = component.$V as VNode;
+    let vNode = component.$V as VNode;
 
     updateClassComponent(
       component,
@@ -128,8 +107,14 @@ function applyState<P, S>(
     if (component.$UN) {
       return;
     }
+    const dom = component.$LI.dom;
 
-    updateParentComponentVNodes(component.$V as VNode, component.$LI.dom);
+    while (!isNull((vNode = vNode.parentVNode as any))) {
+      if ((vNode.flags & VNodeFlags.Component) > 0) {
+        vNode.dom = dom;
+      }
+    }
+
     callAll(component._lifecycle as any);
   } else {
     component.state = component.$PS as any;
@@ -140,7 +125,7 @@ function applyState<P, S>(
   }
 }
 
-export class Component<P, S> implements ComponentLifecycle<P, S> {
+export class Component<P, S> {
   // Public
   public static defaultProps: {} | null = null;
   public state: S | null = null;
