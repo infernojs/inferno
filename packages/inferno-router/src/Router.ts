@@ -12,7 +12,7 @@ export interface IRouterProps {
       pathname: string;
     };
   };
-  children: Array<Component<any, any>>;
+  children: Component<any, any>[];
 }
 
 /**

@@ -520,7 +520,7 @@ export function normalize(vNode: VNode): void {
         if (hasDuplicate) {
           warning(
             "Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:" +
-              item
+            item
           );
         }
 

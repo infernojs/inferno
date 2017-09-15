@@ -45,13 +45,11 @@ mkdir(join(cwd, "dist"), err => {
 
       if (error.snippet) {
         console.error('\u001b[31;1m');
-        console.error('\n-------- Id -------');
+        console.error('\n-------- Details -------');
         console.error(error.id);
-        console.error('\n-------- Location -------');
         console.error(error.loc);
         console.error('\n-------- Snippet --------');
         console.error(error.snippet);
-        console.error('\n-------------------------');
         console.error('\u001b[0m')
       }
 
