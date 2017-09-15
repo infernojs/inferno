@@ -13,7 +13,7 @@ export interface IMemoryRouterProps {
   initialIndex: number;
   getUserConfirmation: () => {};
   keyLength: number;
-  children: Array<Component<any, any>>;
+  children: Component<any, any>[];
 }
 
 const EMPTY_OBJ = {} as VNode;

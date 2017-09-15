@@ -29,7 +29,7 @@
     "inferno": "3.9.0",
     "inferno-create-element": "3.9.0",
     "inferno-shared": "3.9.0",
-    "path-to-regexp-es6": "0.0.2"
+    "path-to-regexp": "1.7.0"
   },
   "devDependencies": {
     "inferno-vnode-flags": "*"
@@ -37,7 +37,7 @@
   "rollup": {
     "bundledDependencies": [
       "inferno-shared",
-      "path-to-regexp-es6"
+      "path-to-regexp"
     ],
     "moduleName": "Inferno.Router",
     "moduleGlobals": {

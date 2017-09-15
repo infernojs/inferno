@@ -2,11 +2,10 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { VNode, Component } from "inferno";
+import { VNode, Component, createVNode } from "inferno";
 import matchPath from "./matchPath";
 import { Children, isValidElement, warning, invariant } from "./utils";
-import { createVNode } from "../../inferno/src/core/implementation";
-import { combineFrom } from "../../inferno-shared/src/index";
+import { combineFrom } from "inferno-shared";
 
 export interface ISwitchProps {
   router: any;
