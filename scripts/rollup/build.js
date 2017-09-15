@@ -41,7 +41,20 @@ mkdir(join(cwd, "dist"), err => {
       console.log(`${pkgJSON.name} in ${options.format} is DONE`);
     })
     .catch(error => {
-      console.warn(error); // Print whole error object
+      console.error(error); // Print whole error object
+
+      if (error.snippet) {
+        console.error('\u001b[31;1m');
+        console.error('\n-------- Id -------');
+        console.error(error.id);
+        console.error('\n-------- Location -------');
+        console.error(error.loc);
+        console.error('\n-------- Snippet --------');
+        console.error(error.snippet);
+        console.error('\n-------------------------');
+        console.error('\u001b[0m')
+      }
+
       console.error(
         `${pkgJSON.name} in ${options.format} is FAILED ${error.message}`
       );
