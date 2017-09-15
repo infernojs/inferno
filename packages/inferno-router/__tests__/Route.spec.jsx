@@ -93,7 +93,7 @@ describe('A <Route>', () => {
       render((
         <Route path="/" render={() => null} />
       ), node)
-    }).toThrow(/You should not use <Route> or withRouter\(\) outside a <Router>/)
+    }).toThrowError(/You should not use <Route> or withRouter\(\) outside a <Router>/)
   })
 })
 

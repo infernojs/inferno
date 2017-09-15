@@ -90,7 +90,7 @@ describe("Switch (jsx)", () => {
     expect(node.innerHTML).toContain("bub");
   });
 
-  it("handles subsequent redirects", () => {
+  it("handles subsequent redirects", (done) => {
     const node = document.createElement("div");
 
     render(
@@ -110,7 +110,7 @@ describe("Switch (jsx)", () => {
 
     setTimeout(() => {
       expect(node.innerHTML).toContain("three");
-      d();
+      done();
     }, 10);
   });
 

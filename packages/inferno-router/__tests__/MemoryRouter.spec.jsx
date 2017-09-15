@@ -36,8 +36,6 @@ describe('A <MemoryRouter>', () => {
     ), node)
 
     expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenCalledWith(
-      expect.stringContaining('<MemoryRouter> ignores the history prop')
-    )
+    expect(console.warn.calls.mostRecent().args[0]).toContain('<MemoryRouter> ignores the history prop')
   })
 })
