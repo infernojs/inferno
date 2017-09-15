@@ -2,7 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { cloneVNode, Component } from "inferno";
+import { Component } from "inferno";
 import { Children, warning, invariant } from "./utils";
 
 export interface IRouterProps {
@@ -20,13 +20,6 @@ export interface IRouterProps {
  */
 class Router extends Component<IRouterProps, any> {
   public unlisten;
-  /*static contextTypes = {
-    router: () => {}
-  };
-
-  static childContextTypes = {
-    router: () => {}
-  };*/
 
   constructor(props: IRouterProps, context?: any) {
     super(props, context);
@@ -87,11 +80,7 @@ class Router extends Component<IRouterProps, any> {
   }
 
   public render(props): any {
-    // Below fixes SwitchMount tests but breaks Switch. This is how RR4 does it
-    return props.children; // ? Children.only(props.children) : null;
-
-    // Below fixes most tests but breaks SwitchMount
-    // return cloneVNode(props.children ? Children.only(props.children) : null);
+    return props.children;
   }
 }
 
