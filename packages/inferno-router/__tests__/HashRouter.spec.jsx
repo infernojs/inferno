@@ -32,8 +32,6 @@ describe('A <HashRouter>', () => {
     ), node)
 
     expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenCalledWith(
-      expect.stringContaining('<HashRouter> ignores the history prop')
-    )
+    expect(console.warn.calls.mostRecent().args[0]).toContain('<HashRouter> ignores the history prop')
   })
 })

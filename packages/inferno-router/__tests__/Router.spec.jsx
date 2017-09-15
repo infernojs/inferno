@@ -5,21 +5,6 @@ import createHistory from 'history/createMemoryHistory'
 
 describe('A <Router>', () => {
 
-  describe('when it has more than one child', () => {
-    it('throws an error explaining a Router may have only one child', () => {
-      expect(() => {
-        const node = document.createElement('div')
-        render(
-          <Router history={createHistory()}>
-            <p>Foo</p>
-            <p>Bar</p>
-          </Router>,
-          node
-        )
-      }).toThrow(/A <Router> may have only one child element/)
-    })
-  })
-
   describe('with exactly one child', () => {
     it('does not throw an error', () => {
       const node = document.createElement('div')
