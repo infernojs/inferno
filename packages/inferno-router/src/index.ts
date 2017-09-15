@@ -4,6 +4,7 @@
 
 import StaticRouter from "./StaticRouter";
 import BrowserRouter from "./BrowserRouter";
+import HashRouter from "./HashRouter";
 import MemoryRouter from "./MemoryRouter";
 import Router from "./Router";
 import Route from "./Route";
@@ -18,6 +19,7 @@ import withRouter from "./withRouter";
 export {
   StaticRouter,
   BrowserRouter,
+  HashRouter,
   MemoryRouter,
   Router,
   Route,
@@ -31,8 +33,9 @@ export {
 };
 
 export default {
-  BrowserRouter,
   StaticRouter,
+  BrowserRouter,
+  HashRouter,
   MemoryRouter,
   Router,
   Route,

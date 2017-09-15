@@ -50,6 +50,7 @@ mkdir(join(cwd, "dist"), err => {
         console.error(error.loc);
         console.error('\n-------- Snippet --------');
         console.error(error.snippet);
+        console.error('\n-------------------------');
         console.error('\u001b[0m')
       }
 

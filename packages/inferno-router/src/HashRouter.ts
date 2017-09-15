@@ -4,19 +4,18 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import createHistory from "history/createMemoryHistory";
+import createHistory from "history/createHashHistory";
 import Router from "./Router";
 import { warning } from "./utils";
 
-export interface IMemoryRouterProps {
-  initialEntries: string[];
-  initialIndex: number;
+export interface IHashRouterProps {
+  basename: string;
   getUserConfirmation: () => {};
-  keyLength: number;
+  hashType: string;
   children: Component<any, any>[];
 }
 
-export default class MemoryRouter extends Component<IMemoryRouterProps, any> {
+export default class HashRouter extends Component<IHashRouterProps, any> {
   public history;
 
   constructor(props?: any, context?: any) {
@@ -27,8 +26,8 @@ export default class MemoryRouter extends Component<IMemoryRouterProps, any> {
   public componentWillMount() {
     warning(
       !this.props.history,
-      "<MemoryRouter> ignores the history prop. To use a custom history, " +
-        "use `import { Router }` instead of `import { MemoryRouter as Router }`."
+      '<HashRouter> ignores the history prop. To use a custom history, ' +
+      'use `import { Router }` instead of `import { HashRouter as Router }`.'
     );
   }
 
