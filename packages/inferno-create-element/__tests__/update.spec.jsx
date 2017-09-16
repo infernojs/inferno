@@ -1,5 +1,4 @@
-import { render } from "inferno";
-import Component from "inferno-component";
+import { Component, render } from "inferno";
 import sinon from "sinon";
 import { innerHTML } from "inferno-utils";
 import createElement from "inferno-create-element";
@@ -117,11 +116,11 @@ describe("Stateful Component updates", () => {
       render() {
         return (
           <div>
-            {this.props.show
-              ? <span className="hr red">
-                  <span className="hr-text">Late</span>
-                </span>
-              : null}
+            {this.props.show ? (
+              <span className="hr red">
+                <span className="hr-text">Late</span>
+              </span>
+            ) : null}
             <p>More content</p>
           </div>
         );
@@ -453,17 +452,9 @@ describe("Stateful Component updates", () => {
           <div className="common-root">
             {(() => {
               if (this.props.i % 2 === 0) {
-                return (
-                  <div>
-                    DIV{this.props.value}
-                  </div>
-                );
+                return <div>DIV{this.props.value}</div>;
               } else {
-                return (
-                  <span>
-                    SPAN{this.props.value}
-                  </span>
-                );
+                return <span>SPAN{this.props.value}</span>;
               }
             })()}
           </div>
@@ -471,10 +462,7 @@ describe("Stateful Component updates", () => {
       }
     }
 
-    const DropdownItem = ({ children }) =>
-      <li>
-        {children}
-      </li>;
+    const DropdownItem = ({ children }) => <li>{children}</li>;
 
     class Looper extends Component {
       constructor(props) {
@@ -507,9 +495,7 @@ describe("Stateful Component updates", () => {
                       i={i}
                       value={item.value}
                     />
-                    <span key={1}>
-                      {item.text}
-                    </span>
+                    <span key={1}>{item.text}</span>
                   </DropdownItem>
                 );
               })}
@@ -559,19 +545,8 @@ describe("Stateful Component updates", () => {
 
   it("Should not crash when patching array to array with hooks", () => {
     let updater = null;
-    const stuff = [
-      <div>
-        {["Test"]}
-      </div>,
-      <span>1</span>
-    ];
-    const orig = [
-      [
-        <span ref={function() {}}>
-          {"1"}
-        </span>
-      ]
-    ];
+    const stuff = [<div>{["Test"]}</div>, <span>1</span>];
+    const orig = [[<span ref={function() {}}>{"1"}</span>]];
     class Stuff extends Component {
       constructor(props) {
         super(props);
@@ -588,9 +563,7 @@ describe("Stateful Component updates", () => {
       render() {
         return (
           <div>
-            <div>
-              {this.state.stuff}
-            </div>
+            <div>{this.state.stuff}</div>
           </div>
         );
       }

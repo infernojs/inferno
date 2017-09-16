@@ -11,40 +11,41 @@ import {
   isObject,
   isStringOrNumber,
   isUndefined,
-  LifecycleClass,
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { options } from "../core/options";
-import { directClone, isVNode, VNode } from "../core/VNodes";
-import { patchProp } from "./patching";
-import { recycleComponent, recycleElement } from "./recycling";
-import { componentToDOMNodeMap } from "./rendering";
+import { directClone, isVNode, options, VNode } from "../core/implementation";
 import {
   appendChild,
-  createClassComponentInstance,
-  createFunctionalComponentInput,
+  componentToDOMNodeMap,
   documentCreateElement,
   EMPTY_OBJ,
   setTextContent
-} from "./utils";
+} from "./utils/common";
 import {
   isControlledFormElement,
   processElement
 } from "./wrappers/processElement";
+import { patchProp } from "./props";
+import {
+  createClassComponentInstance,
+  handleComponentInput
+} from "./utils/components";
 
 export function mount(
   vNode: VNode,
   parentDom: Element | null,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
   const flags = vNode.flags;
 
-  if (flags & VNodeFlags.Element) {
+  if ((flags & VNodeFlags.Element) > 0) {
     return mountElement(vNode, parentDom, lifecycle, context, isSVG);
-  } else if (flags & VNodeFlags.Component) {
+  }
+
+  if ((flags & VNodeFlags.Component) > 0) {
     return mountComponent(
       vNode,
       parentDom,
@@ -53,25 +54,29 @@ export function mount(
       isSVG,
       (flags & VNodeFlags.ComponentClass) > 0
     );
-  } else if (flags & VNodeFlags.Void) {
+  }
+
+  if ((flags & VNodeFlags.Void) > 0) {
     return mountVoid(vNode, parentDom);
-  } else if (flags & VNodeFlags.Text) {
+  }
+
+  if ((flags & VNodeFlags.Text) > 0) {
     return mountText(vNode, parentDom);
-  } else {
-    if (process.env.NODE_ENV !== "production") {
-      if (typeof vNode === "object") {
-        throwError(
-          `mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
-            vNode
-          )}".`
-        );
-      } else {
-        throwError(
-          `mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
-        );
-      }
+  }
+
+  // Development validation, in production we don't need to throw because it crashes anyway
+  if (process.env.NODE_ENV !== "production") {
+    if (typeof vNode === "object") {
+      throwError(
+        `mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
+          vNode
+        )}".`
+      );
+    } else {
+      throwError(
+        `mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
+      );
     }
-    throwError();
   }
 }
 
@@ -99,21 +104,11 @@ export function mountVoid(vNode: VNode, parentDom: Element | null) {
 export function mountElement(
   vNode: VNode,
   parentDom: Element | null,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
   let dom;
-  if (options.recyclingEnabled) {
-    dom = recycleElement(vNode, lifecycle, context, isSVG);
-
-    if (!isNull(dom)) {
-      if (!isNull(parentDom)) {
-        appendChild(parentDom, dom);
-      }
-      return dom;
-    }
-  }
   const flags = vNode.flags;
 
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
@@ -172,7 +167,7 @@ export function mountElement(
 export function mountArrayChildren(
   children,
   dom: Element,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
@@ -192,23 +187,13 @@ export function mountArrayChildren(
 export function mountComponent(
   vNode: VNode,
   parentDom: Element | null,
-  lifecycle: LifecycleClass,
+  lifecycle: Function[],
   context: Object,
   isSVG: boolean,
   isClass: boolean
 ) {
   let dom;
-  if (options.recyclingEnabled) {
-    dom = recycleComponent(vNode, lifecycle, context, isSVG);
-
-    if (!isNull(dom)) {
-      if (!isNull(parentDom)) {
-        appendChild(parentDom, dom);
-      }
-      return dom;
-    }
-  }
-  const type = vNode.type;
+  const type = vNode.type as Function;
   const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref;
 
@@ -218,29 +203,21 @@ export function mountComponent(
       type,
       props,
       context,
-      isSVG,
       lifecycle
     );
-    const input = instance._lastInput;
-    instance._vNode = vNode;
-    vNode.dom = dom = mount(
-      input,
-      null,
-      lifecycle,
-      instance._childContext,
-      isSVG
-    );
+    const input = instance.$LI;
+    instance.$V = vNode;
+    vNode.dom = dom = mount(input, null, lifecycle, instance.$CX, isSVG);
     if (!isNull(parentDom)) {
       appendChild(parentDom, dom);
     }
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
-    instance._updating = false;
+    instance.$UPD = false;
     if (options.findDOMNodeEnabled) {
       componentToDOMNodeMap.set(instance, dom);
     }
   } else {
-    const input = createFunctionalComponentInput(vNode, type, props, context);
-
+    const input = handleComponentInput(type(props, context), vNode);
     vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
     vNode.children = input;
     mountFunctionalComponentCallbacks(props, ref, dom, lifecycle);
@@ -255,7 +232,7 @@ export function mountClassComponentCallbacks(
   vNode: VNode,
   ref,
   instance,
-  lifecycle: LifecycleClass
+  lifecycle: Function[]
 ) {
   if (ref) {
     if (isFunction(ref)) {
@@ -285,15 +262,15 @@ export function mountClassComponentCallbacks(
   const afterMount = options.afterMount;
 
   if (hasDidMount || !isNull(afterMount)) {
-    lifecycle.addListener(() => {
-      instance._updating = true;
+    lifecycle.push(() => {
+      instance.$UPD = true;
       if (afterMount) {
         afterMount(vNode);
       }
       if (hasDidMount) {
         instance.componentDidMount();
       }
-      instance._updating = false;
+      instance.$UPD = false;
     });
   }
 }
@@ -302,21 +279,21 @@ export function mountFunctionalComponentCallbacks(
   props,
   ref,
   dom,
-  lifecycle: LifecycleClass
+  lifecycle: Function[]
 ) {
   if (ref) {
     if (!isNullOrUndef(ref.onComponentWillMount)) {
       ref.onComponentWillMount(props);
     }
     if (!isNullOrUndef(ref.onComponentDidMount)) {
-      lifecycle.addListener(() => ref.onComponentDidMount(dom, props));
+      lifecycle.push(() => ref.onComponentDidMount(dom, props));
     }
   }
 }
 
-export function mountRef(dom: Element, value, lifecycle: LifecycleClass) {
+export function mountRef(dom: Element, value, lifecycle: Function[]) {
   if (isFunction(value)) {
-    lifecycle.addListener(() => value(dom));
+    lifecycle.push(() => value(dom));
   } else {
     if (isInvalid(value)) {
       return;

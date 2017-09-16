@@ -4,7 +4,7 @@
 
 import { isNullOrUndef, toArray } from "inferno-shared";
 
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { Store } from "redux";
 import { warning } from "../utils/warning";
 

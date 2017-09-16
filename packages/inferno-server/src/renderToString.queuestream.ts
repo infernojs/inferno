@@ -108,7 +108,7 @@ export class RenderQueueStream extends Readable {
       // Render the
       if (isClass) {
         const instance = new type(props, context);
-        instance._blockSetState = false;
+        instance.$BS = false;
         let childContext;
         if (!isUndefined(instance.getChildContext)) {
           childContext = instance.getChildContext();
@@ -120,14 +120,14 @@ export class RenderQueueStream extends Readable {
           instance.props = props;
         }
         instance.context = context;
-        instance._unmounted = false;
+        instance.$UN = false;
         // Trigger lifecycle hook
         if (isFunction(instance.componentWillMount)) {
-          instance._blockRender = true;
+          instance.$BR = true;
           instance.componentWillMount();
-          if (instance._pendingSetState) {
+          if (instance.$PSS) {
             const state = instance.state;
-            const pending = instance._pendingState;
+            const pending = instance.$PS;
 
             if (state === null) {
               instance.state = pending;
@@ -136,10 +136,10 @@ export class RenderQueueStream extends Readable {
                 state[key] = pending[key];
               }
             }
-            instance._pendingSetState = false;
-            instance._pendingState = null;
+            instance.$PSS = false;
+            instance.$PS = null;
           }
-          instance._blockRender = false;
+          instance.$BR = false;
         }
         // Trigger extra promise-based lifecycle hook
         if (isFunction(instance.getInitialProps)) {
@@ -152,7 +152,7 @@ export class RenderQueueStream extends Readable {
               const promisePosition = this.promises.push([]) - 1;
               this.addToQueue(
                 initialProps.then(dataForContext => {
-                  instance._pendingSetState = false;
+                  instance.$PSS = false;
                   if (typeof dataForContext === "object") {
                     instance.props = combineFrom(
                       instance.props,
@@ -181,7 +181,7 @@ export class RenderQueueStream extends Readable {
           }
         }
         const nextVNode = instance.render(props, instance.state, vNode.context);
-        instance._pendingSetState = false;
+        instance.$PSS = false;
 
         this.renderVNodeToQueue(nextVNode, context, true, position);
       } else {

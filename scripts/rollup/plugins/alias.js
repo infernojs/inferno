@@ -6,10 +6,6 @@ const ROOT = join(__dirname, "../../../");
 module.exports = alias({
   inferno: resolve(ROOT, "packages/inferno/dist/index.es.js"),
   "inferno-compat": resolve(ROOT, "packages/inferno-compat/dist/index.es.js"),
-  "inferno-component": resolve(
-    ROOT,
-    "packages/inferno-component/dist/index.es.js"
-  ),
   "inferno-create-class": resolve(
     ROOT,
     "packages/inferno-create-class/dist/index.es.js"

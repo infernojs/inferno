@@ -44,7 +44,10 @@ export function mapSearchParams(search): any {
 
   for (let i = 0, len = fragments.length; i < len; i++) {
     const fragment = fragments[i];
-    const [k, v] = fragment.split("=").map(mapFragment).map(decodeURIComponent);
+    const [k, v] = fragment
+      .split("=")
+      .map(mapFragment)
+      .map(decodeURIComponent);
 
     if (map[k]) {
       map[k] = isArray(map[k]) ? map[k] : [map[k]];

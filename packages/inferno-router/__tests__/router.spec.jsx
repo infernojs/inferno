@@ -4,10 +4,10 @@ import { innerHTML } from "inferno-utils";
 import {
   IndexRoute,
   Link,
+  match,
   Route,
   Router,
-  RouterContext,
-  match
+  RouterContext
 } from "inferno-router";
 
 const browserHistory = createBrowserHistory();
@@ -20,11 +20,7 @@ function TestComponent() {
 }
 
 function TestComponentParams({ params }) {
-  return (
-    <div>
-      Test! {params.test}
-    </div>
-  );
+  return <div>Test! {params.test}</div>;
 }
 
 function createRouterWithSingleRoute(url, path, component) {
@@ -36,19 +32,11 @@ function createRouterWithSingleRoute(url, path, component) {
 }
 
 function GoodComponent(props) {
-  return (
-    <div>
-      Good Component{props.clone}
-    </div>
-  );
+  return <div>Good Component{props.clone}</div>;
 }
 
 function BadComponent(props) {
-  return (
-    <div>
-      Bad Component{props.clone}
-    </div>
-  );
+  return <div>Bad Component{props.clone}</div>;
 }
 
 describe("Router (jsx)", () => {
@@ -64,24 +52,70 @@ describe("Router (jsx)", () => {
     document.body.removeChild(container);
   });
 
+  describe("Nested routes", () => {
+    const createRoutes = url => (
+      <Router url={url} history={browserHistory}>
+        <Route path="/" component={() => <h1>Home</h1>} />
+        <Route
+          path="/about"
+          component={({ children }) => <h1>user/{children}</h1>}
+        >
+          <Route path="/feature1" component={() => <h2>Features1</h2>} />
+          <Route
+            path="/user/:username"
+            component={({ params }) => params.username}
+          />
+        </Route>
+        <Route
+          path="/album/:artist"
+          component={({ params, children }) => (
+            <h1>
+              {params.artist}/{children}
+            </h1>
+          )}
+        >
+          <Route path="/:id" component={({ params }) => params.id} />
+        </Route>
+        <Route path="/*" component={() => <h1>No Match</h1>} />
+      </Router>
+    );
+
+    it("should match username", () => {
+      render(createRoutes("/about/user/ryan"), container);
+      expect(container.innerHTML).toBe(innerHTML("<h1>user/ryan</h1>"));
+    });
+
+    it("should match album/:artist/:id", () => {
+      render(createRoutes("/album/aphex-twin/155"), container);
+      expect(container.innerHTML).toBe(innerHTML("<h1>aphex-twin/155</h1>"));
+    });
+
+    it("should match wildcard", () => {
+      render(createRoutes("/hello"), container);
+      expect(container.innerHTML).toBe(innerHTML("<h1>No Match</h1>"));
+    });
+  });
+
   describe("#historyWithBaseName", () => {
     it("should render the child and inherit parent (partial URL) with basename `/basename-prefix`", () => {
       render(
         <Router url={"/foo/bar"} history={browserHistoryWithBaseName}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
+              component={({ params }) => (
                 <div>
                   Child is {params.test} Link is <Link to="/foo/test" />
-                </div>}
+                </div>
+              )}
             />
           </Route>
         </Router>,
@@ -94,24 +128,23 @@ describe("Router (jsx)", () => {
       );
     });
   });
+
   describe("#history", () => {
     it("should render the parent component only", () => {
       render(
         <Router url={"/foo"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -126,18 +159,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/bar"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -152,18 +183,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/bar"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -178,18 +207,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/100%"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.test}
-                </div>}
+              component={({ params }) => <div>Child is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -204,18 +231,16 @@ describe("Router (jsx)", () => {
         <Router url={"/foo/bar?yar=50%25"} history={browserHistory}>
           <Route
             path={"/foo"}
-            component={({ children }) =>
+            component={({ children }) => (
               <div>
                 <p>Parent Component</p>
                 {children}
-              </div>}
+              </div>
+            )}
           >
             <Route
               path={"/:test"}
-              component={({ params }) =>
-                <div>
-                  Child is {params.yar}
-                </div>}
+              component={({ params }) => <div>Child is {params.yar}</div>}
             />
           </Route>
         </Router>,
@@ -333,12 +358,7 @@ describe("Router (jsx)", () => {
 
       render(
         <Router url={"/foo"} history={browserHistory}>
-          <Route
-            component={({ children }) =>
-              <div>
-                {children}
-              </div>}
-          >
+          <Route component={({ children }) => <div>{children}</div>}>
             <Route path={"/foo"} component={GoodComponent}>
               <Route path={"/yar"} component={BadComponent} />
             </Route>
@@ -353,18 +373,10 @@ describe("Router (jsx)", () => {
     it("should render the both components with same params prop passed down", () => {
       render(
         <Router url={"/foo/bar"} history={browserHistory}>
-          <Route
-            component={({ children }) =>
-              <div>
-                {children}
-              </div>}
-          >
+          <Route component={({ children }) => <div>{children}</div>}>
             <Route
               path={"/foo/:test"}
-              component={({ params }) =>
-                <div>
-                  Param is {params.test}
-                </div>}
+              component={({ params }) => <div>Param is {params.test}</div>}
             />
           </Route>
         </Router>,
@@ -377,20 +389,12 @@ describe("Router (jsx)", () => {
     it("should render the both components with same params prop passed down (route in an array)", () => {
       render(
         <Router url={"/foo/bar"} history={browserHistory}>
-          <Route
-            component={({ children }) =>
-              <div>
-                {children}
-              </div>}
-          >
+          <Route component={({ children }) => <div>{children}</div>}>
             <Route path={"/yar"} component={BadComponent} />
             {[
               <Route
                 path={"/foo/:test"}
-                component={({ params }) =>
-                  <div>
-                    Param is {params.test}
-                  </div>}
+                component={({ params }) => <div>Param is {params.test}</div>}
               />
             ]}
           </Route>
@@ -438,6 +442,7 @@ describe("Router (jsx)", () => {
       ).toThrowError(TypeError);
     });
   });
+
   describe("#RouterContext", () => {
     it("should fail when `location` is not provided", () => {
       expect(() =>
@@ -470,6 +475,7 @@ describe("Router (jsx)", () => {
       expect(actual.props.matched).toBe(matched);
     });
   });
+
   describe("#match", () => {
     it("should find route when url has normal value", () => {
       const url = "/search/foo?arg1=50%25";

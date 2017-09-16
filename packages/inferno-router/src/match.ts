@@ -79,10 +79,12 @@ function matchRoutes(
               redirect: matchChild.redirect
             };
           }
-          children = matchChild.matched;
-          const childProps = children.props.params;
-          for (const key in childProps) {
-            params[key] = childProps[key];
+          if (matchChild.matched) {
+            children = matchChild.matched;
+            const childProps = children.props.params;
+            for (const key in childProps) {
+              params[key] = childProps[key];
+            }
           }
         } else {
           children = null;

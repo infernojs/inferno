@@ -35,7 +35,6 @@
     "inferno-vnode-flags": "3.9.0"
   },
   "devDependencies": {
-    "inferno-component": "3.9.0",
     "inferno-create-class": "3.9.0",
     "inferno-create-element": "3.9.0"
   },

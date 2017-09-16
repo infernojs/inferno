@@ -1,5 +1,4 @@
-import { render } from "inferno";
-import Component from "inferno-component";
+import { Component, render } from "inferno";
 import { isNullOrUndef } from "inferno-shared";
 import sinon from "sinon";
 
@@ -184,11 +183,7 @@ describe("Columns like tests - (JSX)", () => {
         componentWillUnmount() {}
 
         render() {
-          return (
-            <div>
-              {this.props.text}
-            </div>
-          );
+          return <div>{this.props.text}</div>;
         }
       }
 
@@ -215,12 +210,13 @@ describe("Columns like tests - (JSX)", () => {
         }
       }
 
-      const ViewKeyed = ({ columns }) =>
+      const ViewKeyed = ({ columns }) => (
         <div>
-          {columns.map(column =>
+          {columns.map(column => (
             <ColumnKeyed key={column.id} items={column.items} />
-          )}
-        </div>;
+          ))}
+        </div>
+      );
 
       let mountedColumnSpy = null;
       let unmountColumnSpy = null;
@@ -371,11 +367,7 @@ describe("Columns like tests - (JSX)", () => {
         componentWillUnmount() {}
 
         render() {
-          return (
-            <div>
-              {this.props.text}
-            </div>
-          );
+          return <div>{this.props.text}</div>;
         }
       }
 
@@ -402,10 +394,9 @@ describe("Columns like tests - (JSX)", () => {
         }
       }
 
-      const View = ({ columns }) =>
-        <div>
-          {columns.map(column => <Column items={column.items} />)}
-        </div>;
+      const View = ({ columns }) => (
+        <div>{columns.map(column => <Column items={column.items} />)}</div>
+      );
 
       let mountedColumnSpy = null;
       let unmountColumnSpy = null;

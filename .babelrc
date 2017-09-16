@@ -7,6 +7,8 @@
 	"transform-class-properties",
 	"transform-object-rest-spread",
 	"babel-plugin-syntax-jsx",
+    "transform-decorators-legacy",
+	"transform-class-properties",
 	["babel-plugin-inferno", {"imports": true}]
   ],
   "env": {
@@ -28,6 +30,8 @@
 		"transform-class-properties",
 		"transform-object-rest-spread",
 		"babel-plugin-syntax-jsx",
+        "transform-decorators-legacy",
+		"transform-class-properties",
 		["babel-plugin-inferno", {"imports": true}]
 	  ]
 	}

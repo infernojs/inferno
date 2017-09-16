@@ -1,6 +1,17 @@
 <p align="center"><img src="https://www.infernojs.org/assets/infernojs-logo.png"></p>
 <p>&nbsp;</p>
 
+[![Build Status](https://img.shields.io/travis/infernojs/inferno/master.svg?style=flat-square)](https://travis-ci.org/infernojs/inferno/branches)
+[![Coverage Status](https://img.shields.io/coveralls/infernojs/inferno/master.svg?style=flat-square)](https://coveralls.io/github/infernojs/inferno?branch=master)
+[![Dependencies](https://img.shields.io/david/infernojs/inferno.svg?style=flat-square)](https://david-dm.org/infernojs/inferno)
+[![devDependency Status](https://david-dm.org/infernojs/inferno/dev-status.svg?style=flat-square)](https://david-dm.org/infernojs/inferno#info=devDependencies)
+[![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/infernojs/inferno/blob/master/LICENSE.md)
+[![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
+[![npm downloads](https://img.shields.io/npm/dm/inferno.svg?style=flat-square)](https://www.npmjs.org/package/inferno)
+[![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/LukeSheard.svg)](https://saucelabs.com/u/LukeSheard)
+
 Inferno is an insanely fast, `9kb` React-like library for building high-performance user interfaces on both the client and server.
 
 To quote a member of the React core team at Facebook:
@@ -60,8 +71,7 @@ Inferno.render(
 Furthermore, Inferno also uses ES6 components like React:
 
 ```jsx
-import Inferno from 'inferno';
-import Component from 'inferno-component';
+import Inferno, { Component } from 'inferno';
 
 class MyComponent extends Component {
   constructor(props) {
@@ -88,7 +98,7 @@ Inferno.render(
 
 ### More Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wt5vL603//)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wt5vL603/)
 
 ## Getting Started
 
@@ -105,8 +115,6 @@ npm install --save inferno
 Addons:
 
 ```sh
-# ES2015 class components
-npm install --save inferno-component
 # server-side rendering
 npm install --save inferno-server
 # routing
@@ -225,39 +233,39 @@ Warning: If the container element is not empty before rendering, the content of 
 
 ### `createRenderer` (package: `inferno`)
 
-`createRenderer` allows for functional composition when rendering content to the DOM. Example:
+`createRenderer` creates an alternative render function with a signature matching that of the first argument passed to a reduce/scan function. This allows for easier integration with reactive programming libraries, like [RxJS](https://github.com/ReactiveX/rxjs) and [Most](https://github.com/cujojs/most).
 
 ```javascript
 import Inferno from 'inferno';
 import { scan, map } from 'most';
 
-...
-const model$ = scan(update, 0, actions$);
-const vNodes$ = map(view(actions$), model$);
 const renderer = Inferno.createRenderer();
-const runApp = () => scan(renderer, container, vNodes$).drain();
 
-runApp();
+...
+// NOTE: vNodes$ represents a stream of virtual DOM node updates
+scan(renderer, document.getElementById("app"), vNodes$);
 ```
+
+See [inferno-most-fp-demo](https://github.com/joshburgess/inferno-most-fp-demo) for an example of how to build an app architecture around this.
 
 ### `createElement` (package: `inferno-create-element`)
 
 Creates an Inferno VNode using a similar API to that found with React's `createElement()`
 
 ```javascript
-import Component from 'inferno-component';
+import { Component } from 'inferno';
 import createElement from 'inferno-create-element';
 
 class BasicComponent extends Component {
-    render() {
-        return createElement('div', {
-               className: 'basic'
-           },
-           createElement('span', {
-               className: this.props.name
-           }, 'The title is ', this.props.title)
-       )
-    }
+  render() {
+    return createElement('div', {
+        className: 'basic'
+      },
+      createElement('span', {
+        className: this.props.name
+      }, 'The title is ', this.props.title)
+    )
+  }
 }
 
 Inferno.render(
@@ -266,12 +274,12 @@ Inferno.render(
 );
 ```
 
-### `Component` (package: `inferno-component`)
+### `Component` (package: `inferno`)
 
 **Class component:**
 
 ```javascript
-import Component from 'inferno-component';
+import { Component } from 'inferno';
 
 class MyComponent extends Component {
   render() {
@@ -299,12 +307,12 @@ Functional components are first-class functions where their first argument is th
 Inferno.createVNode(
   flags,
   type,
-  [props],
+  [className],
   [...children],
-  [events],
+  [props],
   [key],
   [ref],
-  [isNormalized]
+  [noNormalise]
 )
 ```
 
@@ -316,7 +324,7 @@ of `createVNode` usage:
 ```javascript
 import Inferno from 'inferno';
 
-const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+const vNode = Inferno.createVNode(2, 'div', 'example', 'Hello world!');
 
 Inferno.render(vNode, container);
 ```
@@ -324,7 +332,7 @@ Inferno.render(vNode, container);
 The first argument for `createVNode()` is a value from [`VNodeFlags`](https://github.com/infernojs/inferno/tree/master/packages/inferno-vnode-flags), this is a numerical value that tells Inferno what the VNode describes on the page.
 
 ### `cloneVNode` (package: `inferno`)
-```js
+```javascript
 Inferno.cloneVNode(
   vNode,
   [props],
@@ -344,7 +352,7 @@ An example of using `cloneVNode`:
 ```javascript
 import Inferno from 'inferno';
 
-const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+const vNode = Inferno.createVNode(2, 'div', 'example', 'Hello world!');
 const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an id prop to the VNode
 
 Inferno.render(newVNode, container);
@@ -378,11 +386,11 @@ In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode
 import Inferno, { linkEvent } from 'inferno';
 
 function handleClick(props, event) {
-	props.validateValue(event.target.value);
+  props.validateValue(event.target.value);
 }
 
 function MyComponent(props) {
-	return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
+  return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
 }
 ```
 
@@ -390,17 +398,16 @@ This is an example of using it with ES2015 classes:
 
 
 ```jsx
-import Inferno, { linkEvent } from 'inferno';
-import Component from 'inferno-component';
+import Inferno, { linkEvent, Component } from 'inferno';
 
 function handleClick(instance, event) {
-	instance.setState({ data: event.target.value });
+  instance.setState({ data: event.target.value });
 }
 
 class MyComponent extends Component {
-	render () {
-		return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-	}
+  render () {
+    return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
+  }
 }
 ```
 
@@ -425,7 +432,7 @@ You can set default options for Inferno using `Inferno.options`. Below are the f
 
 This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
 
-#### - `recyclingEnabled` (default: `true`)
+#### - `recyclingEnabled` (default: v1.3+ `false`)
 
 This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
 
@@ -433,12 +440,12 @@ This enables DOM node recycling within Inferno, so that DOM nodes are re-used up
 
 | Name                      | Triggered when                                                  | Arguments to callback           |
 | -----------               | --------------                                                  | -----------------------         |
-| `onComponentWillMount`    | a functional component is about to mount                        | `props`                         |
-| `onComponentDidMount`     | a functional component has mounted successfully                 | `domNode, props`                |
-| `onComponentShouldUpdate` | a functional component has been triggered to updated            | `props, nextProps`              |
-| `onComponentWillUpdate`   | a functional component is about to perform an update            | `props, nextProps`              |
-| `onComponentDidUpdate`    | a functional component has performed an updated                 | `previousProps, props`          |
-| `onComponentWillUnmount`  | a functional component is about to be unmounted                 | `domNode, props`                |
+| `onComponentWillMount`    | a functional component is about to mount                        |                                 |
+| `onComponentDidMount`     | a functional component has mounted successfully                 | `domNode`                       |
+| `onComponentShouldUpdate` | a functional component has been triggered to updated            | `lastProps, nextProps`          |
+| `onComponentWillUpdate`   | a functional component is about to perform an update            | `lastProps, nextProps`          |
+| `onComponentDidUpdate`    | a functional component has performed an updated                 | `lastProps, nextProps`          |
+| `onComponentWillUnmount`  | a functional component is about to be unmounted                 | `domNode`                       |
 
 ### Using functional lifecycle events
 
@@ -446,11 +453,11 @@ Functional lifecycle events must be explicitly assigned via props onto a functio
 
 ```javascript
 function mounted(domNode) {
-    // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
+  // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
 function FunctionalComponent({ props }) {
-	return <div>Hello world</div>;
+  return <div>Hello world</div>;
 }
 
 Inferno.render(
@@ -459,7 +466,7 @@ Inferno.render(
 );
 ```
 
-Please note: class components (ES2015 classes) from `inferno-component` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
+Please note: class components (ES2015 classes) from `inferno` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
 
 ## Development vs Production modes
 
@@ -480,7 +487,7 @@ Use the following configuration in your Webpack build:
 
 ```js
   ...
-	plugins: [
+  plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -499,10 +506,10 @@ const replace = require('rollup-plugin-replace');
 
 ```js
   ...
-	plugins: [
-		replace({
-			'process.env.NODE_ENV': JSON.stringify('production'),
-		})
+  plugins: [
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    })
   ]
 ```
 
@@ -514,6 +521,7 @@ Inferno supports Edge, Chrome, Firefox and Safari 8+. In order to support IE8-11
 - [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 - [WeakMap object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
 - [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
+- [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
 
 Potential solutions include using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
 
@@ -529,3 +537,9 @@ Inferno wants to always deliver great performance. In order to do so, it has to 
 ## Community
 
 There is an [Inferno Slack](https://infernojs.slack.com). You can join via [inferno-slack.herokuapp.com](https://inferno-slack.herokuapp.com).
+
+### Inferno is supported by BrowserStack
+
+<img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
+<img src="https://saucelabs.com/content/images/logo@3x.png" height="50px" alt="Supported by Sauce Labs" />
+<img src="https://www.digitalocean.com/assets/media/logos-badges/png/DO_Powered_by_Badge_black-a35c64eb.png" height="50px" alt="Supported by Digital Ocean" />

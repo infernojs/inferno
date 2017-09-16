@@ -30,7 +30,6 @@ Lerna v2.0.0-beta.36
 inferno-shared
 inferno-vnode-flags
 inferno
-inferno-component
 inferno-hyperscript
 inferno-create-element
 inferno-devtools
@@ -57,7 +56,8 @@ npm i -g lerna
 
 - Clone the repository, and clean it. `lerna clean`
 - Install development dependencies `npm i`
-- build typescript files and run tests `npm run tdd` after its done open http://localhost:8080 and you will see mocha test suite
+- build typescript files `npm run build`
+- run tests `npm run test`
 
 
 Pull requests

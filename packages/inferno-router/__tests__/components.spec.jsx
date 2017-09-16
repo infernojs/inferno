@@ -3,6 +3,7 @@ import createMemoryHistory from "history/createMemoryHistory";
 import { render } from "inferno";
 import { innerHTML } from "inferno-utils";
 import { IndexLink, IndexRoute, Link, Route, Router } from "inferno-router";
+
 const browserHistory = createMemoryHistory();
 
 function TestComponent() {
@@ -24,11 +25,7 @@ function createRoutes(component) {
 }
 
 function showChildren({ children }) {
-  return (
-    <div>
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
 
 describe("Router (jsx)", () => {

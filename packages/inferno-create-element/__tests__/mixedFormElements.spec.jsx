@@ -1,6 +1,6 @@
 import sinon from "sinon";
 import { render } from "inferno";
-import { innerHTML } from "inferno-utils";
+import { innerHTML, triggerEvent } from "inferno-utils";
 
 describe("HTML Form Elements", () => {
   let container;
@@ -109,7 +109,11 @@ describe("HTML Form Elements", () => {
         container
       );
 
-      container.firstChild.oninput({}); // causes exception
+      const event = document.createEvent("Event");
+      event.initEvent("input", true, true);
+
+      container.firstChild.dispatchEvent(event);
+
       expect(container.firstChild.getAttribute("type")).toBe("range");
       expect(container.firstChild.value).toBe("11");
     });

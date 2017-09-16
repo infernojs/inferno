@@ -1,34 +1,32 @@
 /**
  * @module Inferno
- */ /** TypeDoc Comment */
-
+ */
+/** TypeDoc Comment */
 /* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from "inferno-shared";
-import { LifecycleClass as _LifecycleClass } from "inferno-shared";
-import _VNodeFlags from "inferno-vnode-flags";
-import {
-  getFlagsForElementVnode,
-  normalize as internal_normalize
-} from "./core/normalization";
-import { options, Root as _Root } from "./core/options";
+import { default as _VNodeFlags } from "inferno-vnode-flags";
 import {
   cloneVNode,
   createVNode,
+  getFlagsForElementVnode,
   InfernoChildren,
   InfernoInput,
+  normalize as internal_normalize,
+  options,
   Props,
+  Refs as _Refs,
+  Root as _Root,
   VNode
-} from "./core/VNodes";
+} from "./core/implementation";
 import { isUnitlessNumber as internal_isUnitlessNumber } from "./DOM/constants";
 import { linkEvent } from "./DOM/events/linkEvent";
 import { patch as internal_patch } from "./DOM/patching";
+import { createRenderer, findDOMNode, render } from "./DOM/rendering";
 import {
   componentToDOMNodeMap as internal_DOMNodeMap,
-  createRenderer,
-  findDOMNode,
-  render
-} from "./DOM/rendering";
-import { EMPTY_OBJ } from "./DOM/utils";
+  EMPTY_OBJ
+} from "./DOM/utils/common";
+import { Component } from "./core/component";
 
 if (process.env.NODE_ENV !== "production") {
   /* tslint:disable-next-line:no-empty */
@@ -50,14 +48,16 @@ if (process.env.NODE_ENV !== "production") {
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
-export declare const LifecycleClass: _LifecycleClass;
+export declare const Refs: _Refs;
 
 const version = process.env.INFERNO_VERSION;
 
 // we duplicate it so it plays nicely with different module loading systems
+
 export default {
   EMPTY_OBJ, // used to shared common items between Inferno libs
   NO_OP, // used to shared common items between Inferno libs
+  Component,
   cloneVNode, // cloning
   createRenderer,
   createVNode, // core shapes
@@ -74,6 +74,7 @@ export default {
 };
 
 export {
+  Component,
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,

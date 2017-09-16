@@ -89,29 +89,3 @@ export function combineFrom(first?: {} | null, second?: {} | null): object {
   }
   return out;
 }
-
-/*
- * This is purely a tiny event-emitter/pubsub
- */
-export interface LifecycleClass {
-  listeners: Array<() => void>;
-  addListener(callback: Function): void;
-  trigger(): void;
-}
-
-export function Lifecycle() {
-  this.listeners = [];
-}
-
-Lifecycle.prototype.addListener = function addListener(callback) {
-  this.listeners.push(callback);
-};
-Lifecycle.prototype.trigger = function trigger() {
-  const listeners = this.listeners;
-
-  let listener;
-  // We need to remove current listener from array when calling it, because more listeners might be added
-  while ((listener = listeners.shift())) {
-    listener();
-  }
-};

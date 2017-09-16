@@ -1,11 +1,10 @@
 {
-	"version": "2.3.4",
+	"version": "2.5.2",
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
 			"inferno": [ "packages/inferno/src" ],
 			"inferno-compat": [ "packages/inferno-compat/src" ],
-			"inferno-component": [ "packages/inferno-component/src" ],
 			"inferno-create-class": [ "packages/inferno-create-class/src" ],
 			"inferno-create-element": [ "packages/inferno-create-element/src" ],
 			"inferno-devtools": [ "packages/inferno-devtools/src" ],
@@ -37,6 +36,7 @@
 		"noUnusedLocals": true,
 		"strictNullChecks": true,
 		"removeComments": false,
+    "experimentalDecorators": true,
 		"rootDir": "."
 	},
 	"include": [

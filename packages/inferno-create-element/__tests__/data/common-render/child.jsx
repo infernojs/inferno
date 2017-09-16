@@ -1,4 +1,4 @@
-import Component from "inferno-component";
+import { Component } from "inferno";
 
 export class ChildCommon extends Component {
   constructor(props) {

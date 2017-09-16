@@ -1,4 +1,4 @@
-import Component from "inferno-component";
+import { Component } from "inferno";
 import sinon from "sinon";
 import {
   findRenderedVNodeWithType,
