@@ -96,7 +96,6 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
     if (!isInvalid(children) && isObject(children)) {
       unmount(children as VNode, vNode.type);
     }
-    // parentDom = null;
   }
 
   if (!isNull(parentDom)) {
