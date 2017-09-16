@@ -96,9 +96,9 @@ export function patch(
 
     if (lastFlags & VNodeFlags.Portal) {
       if (nextFlags & VNodeFlags.Portal) {
-        patchPortal(lastVNode, nextVNode, lifecycle, context, isSVG);
+        patchPortal(lastVNode, nextVNode, lifecycle, context);
       } else {
-        unmount(lastVNode.children as VNode, lastVNode.dom);
+        unmount(lastVNode.children as VNode, lastVNode.type);
         mount(nextVNode, parentDom, lifecycle, context, isSVG);
       }
     } else if (nextFlags & VNodeFlags.Component) {
@@ -167,29 +167,26 @@ export function patch(
   }
 }
 
-function patchPortal(
-  lastVNode: VNode,
-  nextVNode: VNode,
-  lifecycle,
-  context,
-  isSVG
-) {
-  const lastContainer = lastVNode.dom as Element;
-  const nextContainer = nextVNode.dom as Element;
+function patchPortal(lastVNode: VNode, nextVNode: VNode, lifecycle, context) {
+  const lastContainer = lastVNode.type as Element;
+  const nextContainer = nextVNode.type as Element;
+  const nextChildren = nextVNode.children as VNode;
 
   patchChildren(
     0,
     0,
     lastVNode.children as VNode,
-    nextVNode.children as VNode,
+    nextChildren,
     lastContainer as Element,
     lifecycle,
     context,
     false
   );
 
-  if (lastContainer !== nextContainer && !isInvalid(nextVNode.children)) {
-    const node = (nextVNode.children as VNode).dom as Element;
+  nextVNode.dom = lastVNode.dom;
+
+  if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
+    const node = nextChildren.dom as Element;
 
     lastContainer.removeChild(node);
     nextContainer.appendChild(node);
@@ -528,13 +525,7 @@ export function updateClassComponent(
     instance.state = nextState;
     instance.context = context;
   }
-
-  // Portal's dom is in different context, keep old reference
-  if ((instance.$LI.flags & VNodeFlags.Portal) === 0) {
-    nextVNode.dom = instance.$LI.dom;
-  } else {
-    nextVNode.dom = lastVNode.dom;
-  }
+  nextVNode.dom = instance.$LI.dom;
 }
 
 export function patchComponent(
@@ -612,9 +603,7 @@ export function patchComponent(
           nextInput = handleComponentInput(nextInput, nextVNode);
           patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
           nextVNode.children = nextInput;
-          if ((nextInput.flags & VNodeFlags.Portal) === 0) {
-            nextVNode.dom = nextInput.dom;
-          }
+          nextVNode.dom = nextInput.dom;
           if (nextHooksDefined && isFunction(nextHooks.onComponentDidUpdate)) {
             nextHooks.onComponentDidUpdate(lastProps, nextProps);
           }

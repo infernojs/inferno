@@ -27,7 +27,7 @@ export interface VNode {
   parentVNode: VNode | null;
   props: Props | null;
   ref: Ref | Refs | null;
-  type: Type;
+  type: any;
 }
 export type InfernoInput = VNode | null | string | number;
 export type Ref = (node?: Element | null) => void;
@@ -39,7 +39,6 @@ export type InfernoChildren =
   | VNode
   | Array<string | number | VNode>
   | null;
-export type Type = string | null | Function;
 
 export interface Props {
   children?: InfernoChildren;
@@ -58,21 +57,9 @@ export interface Refs {
   onComponentWillUnmount?(domNode: Element): void;
 }
 
-/**
- * Creates virtual node
- * @param {number} flags
- * @param {string|Function|null} type
- * @param {string|null=} className
- * @param {object=} children
- * @param {object=} props
- * @param {*=} key
- * @param {object|Function=} ref
- * @param {boolean=} noNormalise
- * @returns {VNode} returns new virtual node
- */
 export function createVNode(
   flags: number,
-  type: Type,
+  type,
   className?: string | null,
   children?: InfernoChildren,
   props?: Props | null,
@@ -326,7 +313,7 @@ export function cloneVNode(
 }
 
 export function createVoidVNode(): VNode {
-  return createVNode(VNodeFlags.Void, null, null, null, null, null, null, true);
+  return createVNode(VNodeFlags.Void, null, null, "", null, null, null, true);
 }
 
 export function createTextVNode(text: string | number, key): VNode {

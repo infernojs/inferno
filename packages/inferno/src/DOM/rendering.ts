@@ -170,9 +170,9 @@ export function createRenderer(parentDom?) {
 }
 
 export function createPortal(children, container) {
-  const vNode = createVNode(
+  return createVNode(
     VNodeFlags.Portal,
-    null,
+    container,
     null,
     children,
     null,
@@ -180,8 +180,4 @@ export function createPortal(children, container) {
     null,
     true
   );
-
-  vNode.dom = container;
-
-  return vNode;
 }

@@ -1038,6 +1038,148 @@ describe("Portal spec", () => {
         expect(mountCount).toBe(4);
         expect(unMountCount).toBe(4);
       });
+
+      it("Should be possible to move nodes around portals #1", () => {
+        let portalContainer = document.createElement("div");
+
+        let mountCount = 0;
+        let unMountCount = 0;
+
+        class Comp extends Component {
+          componentWillMount() {
+            mountCount++;
+          }
+
+          componentWillUnmount() {
+            unMountCount++;
+          }
+
+          render({ children }) {
+            return <div>{children}</div>;
+          }
+        }
+
+        function Parent({ port, nothing }) {
+          let innerContent;
+
+          if (port) {
+            innerContent = [
+              <span key="a">a</span>,
+              createPortal(<Comp key={1} children={1} />, portalContainer),
+              <span key="b">b</span>,
+              createPortal(<Comp key={2} children={2} />, portalContainer),
+              <span key="c">c</span>,
+              createPortal(<Comp key={3} children={3} />, portalContainer)
+            ];
+          } else {
+            innerContent = [
+              createPortal(<Comp key={1} children={1} />, portalContainer),
+              <span key="c">c</span>,
+              createPortal(<Comp key={3} children={3} />, portalContainer),
+              createPortal(<Comp key={5} children={5} />, portalContainer),
+              <span key="a">a</span>,
+              <span key="b">b</span>
+            ];
+          }
+
+          return <div>{innerContent}</div>;
+        }
+
+        render(<Parent port={true} bar="changed" />, container);
+        expect(container.innerHTML).toBe(
+          "<div><span>a</span><span>b</span><span>c</span></div>"
+        );
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>2</div><div>3</div>"
+        );
+        expect(mountCount).toBe(3);
+        expect(unMountCount).toBe(0);
+
+        render(<Parent port={false} bar="initial" />, container);
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>3</div><div>5</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>c</span><span>a</span><span>b</span></div>"
+        );
+        expect(mountCount).toBe(4);
+        expect(unMountCount).toBe(1);
+
+        render(null, container);
+        expect(portalContainer.innerHTML).toBe("");
+        expect(container.innerHTML).toBe("");
+        expect(mountCount).toBe(4);
+        expect(unMountCount).toBe(4);
+      });
+
+      it("Should be possible to move nodes around portals #2", () => {
+        let portalContainer = document.createElement("div");
+
+        let mountCount = 0;
+        let unMountCount = 0;
+
+        class Comp extends Component {
+          componentWillMount() {
+            mountCount++;
+          }
+
+          componentWillUnmount() {
+            unMountCount++;
+          }
+
+          render({ children }) {
+            return <div>{children}</div>;
+          }
+        }
+
+        function Parent({ port, nothing }) {
+          let innerContent;
+
+          if (port) {
+            innerContent = [
+              <span key="a">a</span>,
+              createPortal(<Comp key={1} children={1} />, portalContainer),
+              <span key="b">b</span>,
+              createPortal(<Comp key={2} children={2} />, portalContainer),
+              <span key="c">c</span>,
+              createPortal(<Comp key={3} children={3} />, portalContainer)
+            ];
+          } else {
+            innerContent = [
+              createPortal(<Comp key={1} children={1} />, portalContainer),
+              <span key="c">c</span>,
+              createPortal(<Comp key={3} children={3} />, portalContainer),
+              createPortal(<Comp key={5} children={5} />, portalContainer),
+              <span key="a">a</span>,
+              <span key="b">b</span>
+            ];
+          }
+
+          return <div>{innerContent}</div>;
+        }
+
+        render(<Parent port={false} />, container);
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>3</div><div>5</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>c</span><span>a</span><span>b</span></div>"
+        );
+
+        render(<Parent port={true} />, container);
+        expect(container.innerHTML).toBe(
+          "<div><span>a</span><span>b</span><span>c</span></div>"
+        );
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>3</div><div>2</div>"
+        ); // <= Portal order is based on creation
+
+        render(null, container);
+        expect(portalContainer.innerHTML).toBe("");
+        expect(container.innerHTML).toBe("");
+        expect(mountCount).toBe(4);
+        expect(unMountCount).toBe(4);
+      });
     });
   });
 });

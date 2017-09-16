@@ -94,9 +94,9 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
     const children = vNode.children;
 
     if (!isInvalid(children) && isObject(children)) {
-      unmount(children as VNode, vNode.dom);
+      unmount(children as VNode, vNode.type);
     }
-    parentDom = null;
+    // parentDom = null;
   }
 
   if (!isNull(parentDom)) {

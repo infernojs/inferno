@@ -102,19 +102,13 @@ export function mountText(vNode: VNode, parentDom: Element | null): any {
 }
 
 export function mountPortal(vNode: VNode, parentDom, lifecycle, context) {
-  mount(vNode.children as VNode, vNode.dom, lifecycle, context, false);
+  mount(vNode.children as VNode, vNode.type, lifecycle, context, false);
 
-  return mountVoid(createVoidVNode(), parentDom);
+  return (vNode.dom = mountVoid(createVoidVNode(), parentDom) as any);
 }
 
 export function mountVoid(vNode: VNode, parentDom: Element | null) {
-  const dom = document.createTextNode("");
-
-  vNode.dom = dom as any;
-  if (!isNull(parentDom)) {
-    appendChild(parentDom, dom);
-  }
-  return dom;
+  return mountText(vNode, parentDom);
 }
 
 export function mountElement(
