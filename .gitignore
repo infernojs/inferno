@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .idea
 .vscode
 
@@ -15,3 +16,19 @@ node_modules
 packages/*/dist
 package-lock.json
 
+||||||| merged common ancestors
+=======
+.idea/
+.vscode/
+node_modules/
+build
+.DS_Store
+*.tgz
+my-app*
+template/src/__tests__/__snapshots__/
+lerna-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.changelog
+>>>>>>> 206f9e84e62434e78d8ad7cf6f2c84476f611d12
