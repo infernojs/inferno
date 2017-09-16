@@ -189,6 +189,8 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.children as string,
       vNodeToClone.key
     );
+  } else if (flags & VNodeFlags.Portal) {
+    newVNode = vNodeToClone;
   }
 
   return newVNode;

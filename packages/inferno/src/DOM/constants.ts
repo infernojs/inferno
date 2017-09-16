@@ -32,6 +32,7 @@ booleanProps.add("autoFocus");
 booleanProps.add("selected");
 booleanProps.add("indeterminate");
 
+// TODO: MathML namespace
 export const namespaces = new Map<string, string>();
 namespaces.set("xlink:href", xlinkNS);
 namespaces.set("xlink:arcrole", xlinkNS);

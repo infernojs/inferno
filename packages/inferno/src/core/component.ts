@@ -87,14 +87,16 @@ function applyState<P, S>(
     const context = component.context;
 
     component.$PS = null;
+    let vNode = component.$V as VNode;
+    // const parentDom = vNode.dom;
     // TODO: This is unreliable and bad code, refactor it away
     const lastInput = component.$LI as VNode;
     const parentDom = lastInput.dom && lastInput.dom.parentNode;
-    let vNode = component.$V as VNode;
 
     updateClassComponent(
       component,
       nextState,
+      vNode,
       vNode,
       props,
       parentDom,
@@ -107,11 +109,13 @@ function applyState<P, S>(
     if (component.$UN) {
       return;
     }
-    const dom = component.$LI.dom;
 
-    while (!isNull((vNode = vNode.parentVNode as any))) {
-      if ((vNode.flags & VNodeFlags.Component) > 0) {
-        vNode.dom = dom;
+    if ((component.$LI.flags & VNodeFlags.Portal) === 0) {
+      const dom = component.$LI.dom;
+      while (!isNull((vNode = vNode.parentVNode as any))) {
+        if ((vNode.flags & VNodeFlags.Component) > 0) {
+          vNode.dom = dom;
+        }
       }
     }
 

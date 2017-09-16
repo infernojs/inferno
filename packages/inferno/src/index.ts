@@ -21,7 +21,12 @@ import {
 import { isUnitlessNumber as internal_isUnitlessNumber } from "./DOM/constants";
 import { linkEvent } from "./DOM/events/linkEvent";
 import { patch as internal_patch } from "./DOM/patching";
-import { createRenderer, findDOMNode, render } from "./DOM/rendering";
+import {
+  createPortal,
+  createRenderer,
+  findDOMNode,
+  render
+} from "./DOM/rendering";
 import {
   componentToDOMNodeMap as internal_DOMNodeMap,
   EMPTY_OBJ
@@ -59,6 +64,7 @@ export default {
   NO_OP, // used to shared common items between Inferno libs
   Component,
   cloneVNode, // cloning
+  createPortal,
   createRenderer,
   createVNode, // core shapes
   findDOMNode,
@@ -82,6 +88,7 @@ export {
   Props,
   VNode,
   cloneVNode,
+  createPortal,
   createRenderer,
   createVNode,
   findDOMNode,

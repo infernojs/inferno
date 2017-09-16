@@ -14,7 +14,13 @@ import {
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { directClone, isVNode, options, VNode } from "../core/implementation";
+import {
+  createVoidVNode,
+  directClone,
+  isVNode,
+  options,
+  VNode
+} from "../core/implementation";
 import {
   appendChild,
   componentToDOMNodeMap,
@@ -64,6 +70,10 @@ export function mount(
     return mountText(vNode, parentDom);
   }
 
+  if ((flags & VNodeFlags.Portal) > 0) {
+    return mountPortal(vNode, parentDom, lifecycle, context);
+  }
+
   // Development validation, in production we don't need to throw because it crashes anyway
   if (process.env.NODE_ENV !== "production") {
     if (typeof vNode === "object") {
@@ -89,6 +99,12 @@ export function mountText(vNode: VNode, parentDom: Element | null): any {
   }
 
   return dom;
+}
+
+export function mountPortal(vNode: VNode, parentDom, lifecycle, context) {
+  mount(vNode.children as VNode, vNode.dom, lifecycle, context, false);
+
+  return mountVoid(createVoidVNode(), parentDom);
 }
 
 export function mountVoid(vNode: VNode, parentDom: Element | null) {

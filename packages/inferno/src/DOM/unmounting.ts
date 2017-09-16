@@ -86,10 +86,17 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
       for (const name in props) {
         // Remove all delegated events, regular events die with dom node
         if (delegatedEvents.has(name)) {
-          handleEvent(name, props[name], null, dom);
+          handleEvent(name, null, dom);
         }
       }
     }
+  } else if ((flags & VNodeFlags.Portal) > 0) {
+    const children = vNode.children;
+
+    if (!isInvalid(children) && isObject(children)) {
+      unmount(children as VNode, vNode.dom);
+    }
+    parentDom = null;
   }
 
   if (!isNull(parentDom)) {
