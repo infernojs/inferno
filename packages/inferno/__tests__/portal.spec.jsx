@@ -1180,6 +1180,281 @@ describe("Portal spec", () => {
         expect(mountCount).toBe(4);
         expect(unMountCount).toBe(4);
       });
+
+      it("Should be possible to move nodes around portals when portal is root node of component #1", () => {
+        let portalContainer = document.createElement("div");
+
+        let mountCount = 0;
+        let unMountCount = 0;
+
+        class WrapPortal extends Component {
+          render({ children }) {
+            return createPortal(<Comp>{children}</Comp>, portalContainer);
+          }
+        }
+
+        class Comp extends Component {
+          componentWillMount() {
+            mountCount++;
+          }
+
+          componentWillUnmount() {
+            unMountCount++;
+          }
+
+          render({ children }) {
+            return <div>{children}</div>;
+          }
+        }
+
+        function Parent({ port }) {
+          let innerContent;
+
+          if (port) {
+            innerContent = [
+              <span key="a">a</span>,
+              <WrapPortal key={1}>1</WrapPortal>,
+              <span key="b">b</span>,
+              createPortal(<Comp key={2} children={2} />, portalContainer),
+              <span key="c">c</span>,
+              <WrapPortal key={3}>3</WrapPortal>
+            ];
+          } else {
+            innerContent = [
+              createPortal(<Comp key={1} children={1} />, portalContainer),
+              <span key="c">c</span>,
+              createPortal(<Comp key={3} children={3} />, portalContainer),
+              createPortal(<Comp key={5} children={5} />, portalContainer),
+              <span key="a">a</span>,
+              <span key="b">b</span>
+            ];
+          }
+
+          return <div>{innerContent}</div>;
+        }
+
+        render(<Parent port={false} />, container);
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>3</div><div>5</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>c</span><span>a</span><span>b</span></div>"
+        );
+
+        render(<Parent port={true} />, container);
+        expect(container.innerHTML).toBe(
+          "<div><span>a</span><span>b</span><span>c</span></div>"
+        );
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>3</div><div>2</div>"
+        ); // <= Portal order is based on creation
+
+        render(<Parent port={false} />, container);
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>3</div><div>5</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>c</span><span>a</span><span>b</span></div>"
+        );
+
+        render(null, container);
+        expect(portalContainer.innerHTML).toBe("");
+        expect(container.innerHTML).toBe("");
+        expect(mountCount).toBe(9);
+        expect(unMountCount).toBe(9);
+      });
+
+      it("Should be possible to move nodes around portals when portal is root node of component #2", () => {
+        let portalContainer = document.createElement("div");
+
+        let mountCount = 0;
+        let unMountCount = 0;
+
+        class WrapPortal extends Component {
+          render({ children }) {
+            return createPortal(<Comp>{children}</Comp>, portalContainer);
+          }
+        }
+
+        class Comp extends Component {
+          componentWillMount() {
+            mountCount++;
+          }
+
+          componentWillUnmount() {
+            unMountCount++;
+          }
+
+          render({ children }) {
+            return <div>{children}</div>;
+          }
+        }
+
+        function Parent({ port }) {
+          let innerContent;
+
+          if (port) {
+            innerContent = [
+              <span key="A">A</span>,
+              <WrapPortal key={1}>1</WrapPortal>,
+              <WrapPortal key={2}>2</WrapPortal>,
+              createPortal(<Comp key={3} children={3} />, portalContainer),
+              <WrapPortal key={4}>
+                <WrapPortal>
+                  <WrapPortal>inner</WrapPortal>
+                </WrapPortal>
+              </WrapPortal>,
+              <span key="B">B</span>,
+              <WrapPortal key={5}>5</WrapPortal>
+            ];
+          } else {
+            innerContent = [
+              createPortal(<Comp key={1} children={1} />, portalContainer),
+              <span key="C">C</span>,
+              <WrapPortal key={4}>
+                <span>XX</span>
+              </WrapPortal>, // <== Change nested portal into component span and move it
+              createPortal(<Comp key={3} children={3} />, portalContainer),
+              <WrapPortal key={5}>5</WrapPortal>,
+              <span key="A">A</span>,
+              <span key="B">B</span>
+            ];
+          }
+
+          return <div>{innerContent}</div>;
+        }
+
+        render(<Parent port={true} />, container);
+        // 3 5 1 inner 2
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>2</div><div>3</div><div>inner</div><div></div><div></div><div>5</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>A</span><span>B</span></div>"
+        );
+        expect(mountCount).toBe(7);
+        expect(unMountCount).toBe(0);
+
+        render(<Parent port={false} />, container);
+        expect(portalContainer.innerHTML).toBe(
+          "<div>3</div><div><span>XX</span></div><div>5</div><div>1</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>C</span><span>A</span><span>B</span></div>"
+        );
+
+        render(<Parent port={true} />, container);
+        // 3 5 1 inner 2
+        expect(portalContainer.innerHTML).toBe(
+          "<div>3</div><div></div><div>5</div><div>1</div><div>inner</div><div></div><div>2</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>A</span><span>B</span></div>"
+        );
+
+        render(<Parent port={false} />, container);
+        expect(portalContainer.innerHTML).toBe(
+          "<div>3</div><div><span>XX</span></div><div>5</div><div>1</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>C</span><span>A</span><span>B</span></div>"
+        );
+
+        render(null, container);
+        expect(portalContainer.innerHTML).toBe("");
+        expect(container.innerHTML).toBe("");
+      });
+
+      it("Should be possible to patch portal non keyed", () => {
+        let portalContainer = document.createElement("div");
+
+        let mountCount = 0;
+        let unMountCount = 0;
+
+        class WrapPortal extends Component {
+          render({ children }) {
+            return createPortal(<Comp>{children}</Comp>, portalContainer);
+          }
+        }
+
+        class Comp extends Component {
+          componentWillMount() {
+            mountCount++;
+          }
+
+          componentWillUnmount() {
+            unMountCount++;
+          }
+
+          render({ children }) {
+            return <div>{children}</div>;
+          }
+        }
+
+        function Parent({ port }) {
+          let innerContent;
+
+          if (port) {
+            innerContent = [
+              <span>A</span>,
+              <WrapPortal>1</WrapPortal>,
+              <WrapPortal>2</WrapPortal>,
+              createPortal(<Comp children={3} />, portalContainer),
+              <WrapPortal>
+                <WrapPortal>
+                  <WrapPortal>inner</WrapPortal>
+                </WrapPortal>
+              </WrapPortal>,
+              <span>B</span>,
+              <WrapPortal>5</WrapPortal>
+            ];
+          } else {
+            innerContent = [
+              createPortal(<Comp children={1} />, portalContainer),
+              <span>C</span>,
+              <WrapPortal>
+                <span>XX</span>
+              </WrapPortal>, // <== Change nested portal into component span and move it
+              createPortal(<Comp children={3} />, portalContainer),
+              <WrapPortal>5</WrapPortal>,
+              <span>A</span>,
+              <span>B</span>
+            ];
+          }
+
+          return <div>{innerContent}</div>;
+        }
+
+        render(<Parent port={true} />, container);
+        // 3 5 1 inner 2
+        expect(portalContainer.innerHTML).toBe(
+          "<div>1</div><div>2</div><div>3</div><div>inner</div><div></div><div></div><div>5</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>A</span><span>B</span></div>"
+        );
+
+        render(<Parent port={false} />, container);
+        expect(portalContainer.innerHTML).toBe(
+          "<div><span>XX</span></div><div>3</div><div>5</div><div>1</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>C</span><span>A</span><span>B</span></div>"
+        );
+
+        render(<Parent port={true} />, container);
+        // 3 5 1 inner 2
+        expect(portalContainer.innerHTML).toBe(
+          "<div>2</div><div>3</div><div></div><div>1</div><div>inner</div><div></div><div>5</div>"
+        );
+        expect(container.innerHTML).toBe(
+          "<div><span>A</span><span>B</span></div>"
+        );
+
+        render(null, container);
+        expect(portalContainer.innerHTML).toBe("");
+        expect(container.innerHTML).toBe("");
+      });
     });
   });
 });

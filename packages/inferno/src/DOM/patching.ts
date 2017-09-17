@@ -98,8 +98,11 @@ export function patch(
       if (nextFlags & VNodeFlags.Portal) {
         patchPortal(lastVNode, nextVNode, lifecycle, context);
       } else {
-        unmount(lastVNode.children as VNode, lastVNode.type);
-        mount(nextVNode, parentDom, lifecycle, context, isSVG);
+        replaceVNode(
+          parentDom,
+          mount(nextVNode, null, lifecycle, context, isSVG),
+          lastVNode
+        );
       }
     } else if (nextFlags & VNodeFlags.Component) {
       const isClass = (nextFlags & VNodeFlags.ComponentClass) > 0;
