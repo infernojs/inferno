@@ -13,7 +13,7 @@ export interface IMemoryRouterProps {
   initialIndex: number;
   getUserConfirmation: () => {};
   keyLength: number;
-  children: Component<any, any>[];
+  children: Array<Component<any, any>>;
 }
 
 export default class MemoryRouter extends Component<IMemoryRouterProps, any> {

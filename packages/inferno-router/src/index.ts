@@ -17,7 +17,6 @@ import matchPath from "./matchPath";
 import withRouter from "./withRouter";
 
 export {
-  StaticRouter,
   BrowserRouter,
   HashRouter,
   MemoryRouter,
@@ -28,12 +27,12 @@ export {
   NavLink,
   Prompt,
   Redirect,
+  StaticRouter,
   matchPath,
   withRouter
 };
 
 export default {
-  StaticRouter,
   BrowserRouter,
   HashRouter,
   MemoryRouter,
@@ -44,6 +43,7 @@ export default {
   NavLink,
   Prompt,
   Redirect,
+  StaticRouter,
   matchPath,
   withRouter
 };

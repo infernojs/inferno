@@ -18,7 +18,9 @@ class Prompt extends Component<IPromptProps, any> {
   public unblock;
 
   public enable(message) {
-    if (this.unblock) this.unblock();
+    if (this.unblock) {
+      this.unblock();
+    }
 
     this.unblock = this.context.router.history.block(message);
   }

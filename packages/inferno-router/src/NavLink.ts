@@ -15,7 +15,7 @@ export default function(props): any {
     to,
     exact,
     strict,
-    location,
+    location: linkLocation,
     activeClassName = "active",
     className,
     activeStyle,
@@ -41,7 +41,7 @@ export default function(props): any {
   return createVNode(VNodeFlags.ComponentClass, Route, null, null, {
     children: linkComponent as any,
     exact,
-    location,
+    location: linkLocation,
     path: typeof to === "object" ? to.pathname : to,
     strict
   });

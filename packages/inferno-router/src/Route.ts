@@ -20,7 +20,7 @@ export interface IRouteProps {
   component: any;
   render: any;
   location: any;
-  children: Component<any, any>[];
+  children: Array<Component<any, any>>;
 }
 
 /**
