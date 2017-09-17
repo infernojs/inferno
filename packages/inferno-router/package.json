@@ -26,6 +26,7 @@
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "history": "^4.7.2",
+    "hoist-non-inferno-statics": "^1.1.3",
     "inferno": "3.9.0",
     "inferno-create-element": "3.9.0",
     "inferno-shared": "3.9.0",
@@ -35,7 +36,6 @@
   "rollup": {
     "bundledDependencies": [
       "inferno-create-element",
-      "inferno-vnode-flags",
       "inferno-shared",
       "path-to-regexp-es6"
     ],
