@@ -100,3 +100,5 @@ delegatedEvents.add("onDblClick");
 delegatedEvents.add("onKeyDown");
 delegatedEvents.add("onKeyUp");
 delegatedEvents.add("onKeyPress");
+delegatedEvents.add("onFocusIn");
+delegatedEvents.add("onFocusOut");
