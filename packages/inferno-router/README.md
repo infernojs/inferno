@@ -13,7 +13,7 @@ npm install inferno-router
 
 ## Features
 
-Same as react-router v4, except react-native support which is not ready at this point.
+Same as react-router v4, except react-native support which we have tested at this point.
 
 See official react-router [documentation](https://reacttraining.com/react-router/native/guides/philosophy)
 
@@ -173,5 +173,5 @@ app.use(async(ctx, next) => {
 
 ## Differences with React-Router v4
 
-* No react-native support.
+* No "official" react-native support.
 * There's no `inferno-router-dom`, all functionality is inside `inferno-router`
