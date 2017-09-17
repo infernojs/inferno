@@ -419,7 +419,6 @@ function patchChildren(
 export function updateClassComponent(
   instance,
   nextState,
-  lastVNode: VNode,
   nextVNode: VNode,
   nextProps,
   parentDom,
@@ -564,7 +563,6 @@ export function patchComponent(
       updateClassComponent(
         instance,
         instance.state,
-        lastVNode,
         nextVNode,
         nextProps,
         parentDom,
