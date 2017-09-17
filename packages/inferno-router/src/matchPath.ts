@@ -41,7 +41,9 @@ export default function matchPath(pathname, options: any) {
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 
-  if (!match) return null;
+  if (!match) {
+    return null;
+  }
 
   const [url, ...values] = match;
   const isExact = pathname === url;

@@ -12,7 +12,7 @@ export interface IHashRouterProps {
   basename: string;
   getUserConfirmation: () => {};
   hashType: string;
-  children: Component<any, any>[];
+  children: Array<Component<any, any>>;
 }
 
 export default class HashRouter extends Component<IHashRouterProps, any> {

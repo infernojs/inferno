@@ -8,6 +8,7 @@ import { addLeadingSlash, createPath, parsePath } from "history/PathUtils";
 import Router from "./Router";
 import { warning, invariant } from "./utils";
 
+// tslint:disable-next-line:no-empty
 const noop = () => {};
 
 export interface IStaticRouterProps {
@@ -47,8 +48,10 @@ export default class StaticRouter extends Component<IStaticRouterProps, any> {
     context.url = createURL(context.location);
   };
 
+  // tslint:disable-next-line:no-empty
   public handleListen = () => noop;
 
+  // tslint:disable-next-line:no-empty
   public handleBlock = () => noop;
 
   public componentWillMount() {

@@ -4,6 +4,7 @@ import { isArray, isObject, isNull, isNullOrUndef } from "inferno-shared";
 
 export function warning(condition, message) {
   if (!condition) {
+    // tslint:disable-next-line:no-console
     console.warn(message);
   }
 }
@@ -51,7 +52,7 @@ export function isValidElement(obj: VNode): boolean {
 const ARR = [];
 
 export const Children = {
-  forEach(children: Array<any>, fn: Function, ctx?: any): void {
+  forEach(children: any[], fn: Function, ctx?: any): void {
     if (isNullOrUndef(children)) {
       return;
     }
@@ -64,12 +65,12 @@ export const Children = {
     }
   },
 
-  count(children: Array<any>): number {
+  count(children: any[]): number {
     children = Children.toArray(children);
     return children.length;
   },
 
-  only(children: Array<any>): any {
+  only(children: any[]): any {
     children = Children.toArray(children);
     if (children.length !== 1) {
       throw new Error("Children.only() expects only one child.");
@@ -77,7 +78,7 @@ export const Children = {
     return children[0];
   },
 
-  toArray(children: Array<any>): Array<any> {
+  toArray(children: any[]): any[] {
     if (isNullOrUndef(children)) {
       return [];
     }
