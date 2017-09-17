@@ -1,5 +1,4 @@
-import { render } from "inferno";
-import Component from "inferno-component";
+import { render, Component } from "inferno";
 import { innerHTML } from "inferno-utils";
 import { Router, Switch, Route } from "inferno-router";
 import createHistory from "history/createMemoryHistory";
