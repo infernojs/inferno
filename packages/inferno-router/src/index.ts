@@ -19,15 +19,15 @@ import withRouter from "./withRouter";
 export {
   BrowserRouter,
   HashRouter,
-  MemoryRouter,
-  Router,
-  Route,
-  Switch,
   Link,
+  MemoryRouter,
   NavLink,
   Prompt,
   Redirect,
+  Route,
+  Router,
   StaticRouter,
+  Switch,
   matchPath,
   withRouter
 };
@@ -35,15 +35,15 @@ export {
 export default {
   BrowserRouter,
   HashRouter,
-  MemoryRouter,
-  Router,
-  Route,
-  Switch,
   Link,
+  MemoryRouter,
   NavLink,
   Prompt,
   Redirect,
+  Route,
+  Router,
   StaticRouter,
+  Switch,
   matchPath,
   withRouter
 };
