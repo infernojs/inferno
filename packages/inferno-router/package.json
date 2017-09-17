@@ -30,11 +30,12 @@
     "inferno-create-element": "3.9.0",
     "inferno-shared": "3.9.0",
     "inferno-vnode-flags": "3.9.0",
-    "path-to-regexp": "^1.7.0",
-    "path-to-regexp-es6": "0.0.2"
+    "path-to-regexp-es6": "1.7.0"
   },
   "rollup": {
     "bundledDependencies": [
+      "inferno-create-element",
+      "inferno-vnode-flags",
       "inferno-shared",
       "path-to-regexp-es6"
     ],
