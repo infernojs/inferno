@@ -4,7 +4,8 @@
 
 import { VNode, Component, createVNode } from "inferno";
 import matchPath from "./matchPath";
-import { Children, isValidElement, warning, invariant } from "./utils";
+import { Children, isValidElement, warning } from "./utils";
+import invariant from "invariant";
 import { combineFrom } from "inferno-shared";
 
 export interface ISwitchProps {
@@ -37,16 +38,15 @@ export default class Switch extends Component<ISwitchProps, any> {
 
   public render(): VNode | null {
     const { route } = this.context.router;
-    const { children } = this.props;
+    const children = Children.toArray(this.props.children);
     const location = this.props.location || route.location;
 
     let match;
     let child;
-
-    // optimization: Better to use for loop here so we can return when match found, instead looping through everything
-    Children.forEach(children, element => {
+    for (let i = 0, len = children.length; i < len; i++) {
+      const element = children[i];
       if (!isValidElement(element)) {
-        return;
+        continue;
       }
 
       const { path: pathProp, exact, strict, sensitive, from } = element.props;
@@ -58,7 +58,7 @@ export default class Switch extends Component<ISwitchProps, any> {
           ? matchPath(location.pathname, { path, exact, strict, sensitive })
           : route.match;
       }
-    });
+    }
 
     return match
       ? createVNode(

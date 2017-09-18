@@ -3,8 +3,8 @@
  */ /** TypeDoc Comment */
 
 import { Component } from "inferno";
-import { createLocation, locationsAreEqual } from "history";
-import { invariant } from "./utils";
+import { createLocation, locationsAreEqual } from "history/LocationUtils";
+import invariant from "invariant";
 
 export default class Redirect extends Component<any, any> {
   public isStatic() {
