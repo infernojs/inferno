@@ -4,7 +4,7 @@
 
 import { Component } from "inferno";
 import { createLocation, locationsAreEqual } from "history/LocationUtils";
-import invariant from "invariant";
+import { invariant } from "./utils";
 
 export default class Redirect extends Component<any, any> {
   public isStatic() {

@@ -4,7 +4,7 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import invariant from "invariant";
+import { invariant } from "./utils";
 
 const isModifiedEvent = (event): boolean =>
   !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);

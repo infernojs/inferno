@@ -6,8 +6,7 @@ import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 import { addLeadingSlash, createPath, parsePath } from "history/PathUtils";
 import Router from "./Router";
-import invariant from "invariant";
-import { warning } from "./utils";
+import { invariant, warning } from "./utils";
 
 // tslint:disable-next-line:no-empty
 const noop = () => {};

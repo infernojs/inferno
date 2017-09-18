@@ -4,8 +4,7 @@
 
 import { VNode, Component, createVNode } from "inferno";
 import matchPath from "./matchPath";
-import { Children, isValidElement, warning } from "./utils";
-import invariant from "invariant";
+import { Children, invariant, isValidElement, warning } from "./utils";
 import { combineFrom } from "inferno-shared";
 
 export interface ISwitchProps {
