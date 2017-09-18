@@ -5,9 +5,7 @@
 
 import { Component, createVNode, VNode } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import invariant from "invariant";
-import { warning } from "./utils";
-import { Children } from "./utils";
+import { Children, invariant, warning } from "./utils";
 import matchPath from "./matchPath";
 
 const isEmptyChildren = children => Children.count(children) === 0;

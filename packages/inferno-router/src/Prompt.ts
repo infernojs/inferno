@@ -4,7 +4,7 @@
 /** TypeDoc Comment */
 
 import { Component } from "inferno";
-import invariant from "invariant";
+import { invariant } from "./utils";
 
 export interface IPromptProps {
   when: any;
