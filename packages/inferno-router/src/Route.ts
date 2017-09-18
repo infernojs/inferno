@@ -69,33 +69,6 @@ class Route extends Component<IRouteProps, any> {
       : route.match;
   }
 
-  public componentWillMount() {
-    if (process.env.NODE_ENV !== "production") {
-      warning(
-        !(this.props.component && this.props.render),
-        "You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored"
-      );
-
-      warning(
-        !(
-          this.props.component &&
-          this.props.children &&
-          !isEmptyChildren(this.props.children)
-        ),
-        "You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored"
-      );
-
-      warning(
-        !(
-          this.props.render &&
-          this.props.children &&
-          !isEmptyChildren(this.props.children)
-        ),
-        "You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored"
-      );
-    }
-  }
-
   public componentWillReceiveProps(nextProps, nextContext) {
     if (process.env.NODE_ENV !== "production") {
       warning(
@@ -141,6 +114,33 @@ class Route extends Component<IRouteProps, any> {
 
     return null;
   }
+}
+
+if (process.env.NODE_ENV !== "production") {
+  Route.prototype.componentWillMount = function() {
+    warning(
+      !(this.props.component && this.props.render),
+      "You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored"
+    );
+
+    warning(
+      !(
+        this.props.component &&
+        this.props.children &&
+        !isEmptyChildren(this.props.children)
+      ),
+      "You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored"
+    );
+
+    warning(
+      !(
+        this.props.render &&
+        this.props.children &&
+        !isEmptyChildren(this.props.children)
+      ),
+      "You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored"
+    );
+  };
 }
 
 export default Route;

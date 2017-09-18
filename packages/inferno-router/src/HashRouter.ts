@@ -23,20 +23,20 @@ export default class HashRouter extends Component<IHashRouterProps, any> {
     this.history = createHistory(props);
   }
 
-  public componentWillMount() {
-    if (process.env.NODE_ENV !== "production") {
-      warning(
-        !this.props.history,
-        "<HashRouter> ignores the history prop. To use a custom history, " +
-          "use `import { Router }` instead of `import { HashRouter as Router }`."
-      );
-    }
-  }
-
   public render(): VNode {
     return createVNode(VNodeFlags.ComponentClass, Router, null, null, {
       children: this.props.children,
       history: this.history
     });
   }
+}
+
+if (process.env.NODE_ENV !== "production") {
+  HashRouter.prototype.componentWillMount = function() {
+    warning(
+      !this.props.history,
+      "<HashRouter> ignores the history prop. To use a custom history, " +
+        "use `import { Router }` instead of `import { HashRouter as Router }`."
+    );
+  };
 }
