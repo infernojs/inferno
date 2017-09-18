@@ -4,7 +4,7 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import { invariant } from "./utils";
+import invariant from "invariant";
 
 const isModifiedEvent = (event): boolean =>
   !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
@@ -69,7 +69,7 @@ export default class Link extends Component<ILinkProps, any> {
         onClick: this.handleClick
       },
       null,
-      x => x && innerRef && innerRef(x)
+      innerRef ? x => innerRef(x) : null
     );
   }
 }

@@ -3,9 +3,10 @@
  */
 /** TypeDoc Comment */
 
-import { Component, VNode } from "inferno";
-import createElement from "inferno-create-element";
-import { invariant, warning } from "./utils";
+import { Component, createVNode, VNode } from "inferno";
+import VNodeFlags from "inferno-vnode-flags";
+import invariant from "invariant";
+import { warning } from "./utils";
 import { Children } from "./utils";
 import matchPath from "./matchPath";
 
@@ -69,40 +70,44 @@ class Route extends Component<IRouteProps, any> {
   }
 
   public componentWillMount() {
-    warning(
-      !(this.props.component && this.props.render),
-      "You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored"
-    );
+    if (process.env.NODE_ENV !== "production") {
+      warning(
+        !(this.props.component && this.props.render),
+        "You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored"
+      );
 
-    warning(
-      !(
-        this.props.component &&
-        this.props.children &&
-        !isEmptyChildren(this.props.children)
-      ),
-      "You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored"
-    );
+      warning(
+        !(
+          this.props.component &&
+          this.props.children &&
+          !isEmptyChildren(this.props.children)
+        ),
+        "You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored"
+      );
 
-    warning(
-      !(
-        this.props.render &&
-        this.props.children &&
-        !isEmptyChildren(this.props.children)
-      ),
-      "You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored"
-    );
+      warning(
+        !(
+          this.props.render &&
+          this.props.children &&
+          !isEmptyChildren(this.props.children)
+        ),
+        "You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored"
+      );
+    }
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
-    warning(
-      !(nextProps.location && !this.props.location),
-      '<Route> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
-    );
+    if (process.env.NODE_ENV !== "production") {
+      warning(
+        !(nextProps.location && !this.props.location),
+        '<Route> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
+      );
 
-    warning(
-      !(!nextProps.location && this.props.location),
-      '<Route> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
-    );
+      warning(
+        !(!nextProps.location && this.props.location),
+        '<Route> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
+      );
+    }
 
     this.setState({
       match: this.computeMatch(nextProps, nextContext.router)
@@ -117,7 +122,9 @@ class Route extends Component<IRouteProps, any> {
     const props = { match, location, history, staticContext };
 
     if (component) {
-      return match ? createElement(component, props) : null;
+      return match
+        ? createVNode(VNodeFlags.ComponentUnknown, component, null, null, props)
+        : null;
     }
 
     if (render) {

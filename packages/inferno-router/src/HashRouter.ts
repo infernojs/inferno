@@ -24,11 +24,13 @@ export default class HashRouter extends Component<IHashRouterProps, any> {
   }
 
   public componentWillMount() {
-    warning(
-      !this.props.history,
-      '<HashRouter> ignores the history prop. To use a custom history, ' +
-      'use `import { Router }` instead of `import { HashRouter as Router }`.'
-    );
+    if (process.env.NODE_ENV !== "production") {
+      warning(
+        !this.props.history,
+        "<HashRouter> ignores the history prop. To use a custom history, " +
+          "use `import { Router }` instead of `import { HashRouter as Router }`."
+      );
+    }
   }
 
   public render(): VNode {

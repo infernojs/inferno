@@ -3,7 +3,8 @@
  */ /** TypeDoc Comment */
 
 import { Component } from "inferno";
-import { Children, warning, invariant } from "./utils";
+import invariant from "invariant";
+import { Children, warning } from "./utils";
 
 export interface IRouterProps {
   history: {

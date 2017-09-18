@@ -25,11 +25,13 @@ export default class MemoryRouter extends Component<IMemoryRouterProps, any> {
   }
 
   public componentWillMount() {
-    warning(
-      !this.props.history,
-      "<MemoryRouter> ignores the history prop. To use a custom history, " +
-        "use `import { Router }` instead of `import { MemoryRouter as Router }`."
-    );
+    if (process.env.NODE_ENV !== "production") {
+      warning(
+        !this.props.history,
+        "<MemoryRouter> ignores the history prop. To use a custom history, " +
+          "use `import { Router }` instead of `import { MemoryRouter as Router }`."
+      );
+    }
   }
 
   public render(): VNode {

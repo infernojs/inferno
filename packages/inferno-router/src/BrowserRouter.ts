@@ -25,11 +25,13 @@ export default class BrowserRouter extends Component<IBrowserRouterProps, any> {
   }
 
   public componentWillMount() {
-    warning(
-      !this.props.history,
-      "<BrowserRouter> ignores the history prop. To use a custom history, " +
-        "use `import { Router }` instead of `import { BrowserRouter as Router }`."
-    );
+    if (process.env.NODE_ENV !== "production") {
+      warning(
+        !this.props.history,
+        "<BrowserRouter> ignores the history prop. To use a custom history, " +
+          "use `import { Router }` instead of `import { BrowserRouter as Router }`."
+      );
+    }
   }
 
   public render(): VNode {
