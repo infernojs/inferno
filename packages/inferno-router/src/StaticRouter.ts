@@ -55,14 +55,6 @@ export default class StaticRouter extends Component<IStaticRouterProps, any> {
   // tslint:disable-next-line:no-empty
   public handleBlock = () => noop;
 
-  public componentWillMount() {
-    warning(
-      !this.props.history,
-      "<StaticRouter> ignores the history prop. To use a custom history, " +
-        "use `import { Router }` instead of `import { StaticRouter as Router }`."
-    );
-  }
-
   public render(): VNode {
     const { basename, context, location, ...props } = this.props;
 
@@ -84,6 +76,16 @@ export default class StaticRouter extends Component<IStaticRouterProps, any> {
       history
     });
   }
+}
+
+if (process.env.NODE_ENV !== "production") {
+  StaticRouter.prototype.componentWillMount = function() {
+    warning(
+      !this.props.history,
+      "<StaticRouter> ignores the history prop. To use a custom history, " +
+        "use `import { Router }` instead of `import { StaticRouter as Router }`."
+    );
+  };
 }
 
 function normalizeLocation({ pathname = "/", search, hash }) {

@@ -24,20 +24,20 @@ export default class BrowserRouter extends Component<IBrowserRouterProps, any> {
     this.history = createHistory(props);
   }
 
-  public componentWillMount() {
-    if (process.env.NODE_ENV !== "production") {
-      warning(
-        !this.props.history,
-        "<BrowserRouter> ignores the history prop. To use a custom history, " +
-          "use `import { Router }` instead of `import { BrowserRouter as Router }`."
-      );
-    }
-  }
-
   public render(): VNode {
     return createVNode(VNodeFlags.ComponentClass, Router, null, null, {
       children: this.props.children,
       history: this.history
     });
   }
+}
+
+if (process.env.NODE_ENV !== "production") {
+  BrowserRouter.prototype.componentWillMount = function() {
+    warning(
+      !this.props.history,
+      "<BrowserRouter> ignores the history prop. To use a custom history, " +
+        "use `import { Router }` instead of `import { BrowserRouter as Router }`."
+    );
+  };
 }
