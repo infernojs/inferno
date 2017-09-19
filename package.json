@@ -64,7 +64,7 @@
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "cross-env NODE_ENV=test jest --no-cache",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "cross-env NODE_ENV=test jest --coverage",
     "test:browser": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test -- --forceExit",
     "test:package": "node fixtures/packaging/build-all.js",
