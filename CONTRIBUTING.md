@@ -23,8 +23,6 @@ Repository Layout
 The repository structures as a monorepo utilizing [lerna](https://github.com/lerna/lerna) as a management tool of choice. Lerna setup and linking are part of the `postinstall` task so it should be automatically
 run after `npm install`. `lerna` executes command based on a topological-sorted order of packages based on their dependencies.
 
-_If for some reason `node_modules` in the root directory is not created, run `npm i --only=dev && npm i --only=prod`._
-
 For example, if you want to see the order of packages being processed, you can do:
 ```
 $ lerna exec -- node -e "console.log(require('./package.json').name)"
