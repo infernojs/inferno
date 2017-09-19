@@ -2,36 +2,47 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import connect from "./connect";
-import inject from "./inject";
 import {
   componentByNodeRegistery,
+  errorsReporter,
+  inject,
+  Observer,
+  observer,
   renderReporter,
   trackComponents,
   useStaticRendering
-} from "./makeReactive";
-import Provider from "./Provider";
-import EventEmitter from "./utils/EventEmitter";
+} from "./observer";
+import { Provider } from "./Provider";
+import { EventEmitter } from "./utils/EventEmitter";
+
+// THIS IS PORT OF AWESOME MOBX-REACT to INFERNO
+// LAST POINT OF PORT (4.2.2)
+// https://github.com/mobxjs/mobx-react/commit/acdc338db55b05f256c0ef357c9b71433fbd53d2
+
+const onError = fn => errorsReporter.on(fn);
 
 export default {
-  EventEmitter,
+  Observer,
   Provider,
   componentByNodeRegistery,
-  connect,
+  errorsReporter,
   inject,
-  observer: connect,
+  observer,
+  onError,
   renderReporter,
   trackComponents,
   useStaticRendering
 };
 
 export {
-  EventEmitter,
-  Provider,
   componentByNodeRegistery,
-  connect as observer,
-  connect,
+  errorsReporter,
   inject,
+  observer,
+  onError,
+  EventEmitter,
+  Observer,
+  Provider,
   renderReporter,
   trackComponents,
   useStaticRendering

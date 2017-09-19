@@ -79,7 +79,7 @@ export class RenderStream extends Readable {
     }
 
     const instance = new type(props);
-    instance._blockSetState = false;
+    instance.$BS = false;
     let childContext;
     if (isFunction(instance.getChildContext)) {
       childContext = instance.getChildContext();
@@ -89,14 +89,14 @@ export class RenderStream extends Readable {
       context = combineFrom(context, childContext);
     }
     instance.context = context;
-    instance._blockRender = true;
+    instance.$BR = true;
 
     return Promise.resolve(
       instance.componentWillMount && instance.componentWillMount()
     ).then(() => {
-      if (instance._pendingSetState) {
+      if (instance.$PSS) {
         const state = instance.state;
-        const pending = instance._pendingState;
+        const pending = instance.$PS;
 
         if (state === null) {
           instance.state = pending;
@@ -105,18 +105,18 @@ export class RenderStream extends Readable {
             state[key] = pending[key];
           }
         }
-        instance._pendingSetState = false;
-        instance._pendingState = null;
+        instance.$PSS = false;
+        instance.$PS = null;
       }
 
-      instance._blockRender = false;
+      instance.$BR = false;
 
       const node = instance.render(
         instance.props,
         instance.state,
         instance.context
       );
-      instance._pendingSetState = false;
+      instance.$PSS = false;
       return this.renderNode(node, context, isRoot);
     });
   }

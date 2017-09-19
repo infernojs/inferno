@@ -1,15 +1,7 @@
 import { createMemoryHistory } from "history";
-import { render } from "inferno";
-import Component from "inferno-component";
+import { Component, render } from "inferno";
 import { innerHTML } from "inferno-utils";
-import {
-  IndexRoute,
-  Link,
-  Route,
-  Router,
-  match,
-  doAllAsyncBefore
-} from "inferno-router";
+import { doAllAsyncBefore, match, Route, Router } from "inferno-router";
 
 const browserHistory = createMemoryHistory();
 
@@ -26,7 +18,11 @@ class PageOne extends Component {
   }
 
   render() {
-    return <div>Page One <span>{dataStore.pageOne}</span></div>;
+    return (
+      <div>
+        Page One <span>{dataStore.pageOne}</span>
+      </div>
+    );
   }
 }
 
@@ -43,7 +39,10 @@ class PageTwo extends Component {
 
   render() {
     return (
-      <div>Page Two <span>{dataStore.pageTwo}</span>{this.props.children}</div>
+      <div>
+        Page Two <span>{dataStore.pageTwo}</span>
+        {this.props.children}
+      </div>
     );
   }
 }
@@ -79,7 +78,11 @@ class Section extends Component {
   }
 
   render() {
-    return <div>Section <span>{dataStore.section}</span></div>;
+    return (
+      <div>
+        Section <span>{dataStore.section}</span>
+      </div>
+    );
   }
 }
 
@@ -205,7 +208,11 @@ describe("Router (jsx) asyncBefore", () => {
         }
 
         render() {
-          return <div>Page One <span>{dataStore.pageOne}</span></div>;
+          return (
+            <div>
+              Page One <span>{dataStore.pageOne}</span>
+            </div>
+          );
         }
       }
 

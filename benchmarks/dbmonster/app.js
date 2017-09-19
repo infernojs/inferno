@@ -1,7 +1,6 @@
 (function() {
 	"use strict";
 	var elem = document.getElementById('app');
-	Inferno.options.recyclingEnabled = true; // Advanced optimisation
 
 	perfMonitor.startFPSMonitor();
 	perfMonitor.startMemMonitor();

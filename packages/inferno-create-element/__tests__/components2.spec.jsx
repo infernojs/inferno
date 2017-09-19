@@ -1,7 +1,5 @@
-import Component from "inferno-component";
+import { Component, render } from "inferno";
 import { innerHTML } from "inferno-utils";
-import { render } from "inferno";
-
 /* These must be in their own files for test to reproduce */
 import { ParentFirstCommon } from "./data/common-render/parentfirstcommon";
 import { ParentSecondCommon } from "./data/common-render/parentsecondcommon";
@@ -69,9 +67,7 @@ describe("Components (JSX) #2", () => {
       render() {
         return (
           <div>
-            <span>
-              {this.state.text}
-            </span>
+            <span>{this.state.text}</span>
           </div>
         );
       }

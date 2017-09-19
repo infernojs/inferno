@@ -28,7 +28,6 @@
     "inferno-vnode-flags": "3.9.0"
   },
   "devDependencies": {
-    "inferno-component": "3.9.0",
     "inferno-server": "3.9.0"
   },
   "rollup": {

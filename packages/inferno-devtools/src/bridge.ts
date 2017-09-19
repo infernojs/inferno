@@ -32,7 +32,7 @@ function findVNodeFromDom(vNode, dom) {
     let children = vNode.children;
 
     if (flags & VNodeFlags.Component) {
-      children = children._lastInput || children;
+      children = children.$LI || children;
     }
     if (children) {
       if (isArray(children)) {
@@ -354,7 +354,7 @@ function normalizeKey(key) {
 function createReactCompositeComponent(vNode, isFirstCreation) {
   const type = vNode.type;
   const instance = vNode.children;
-  const lastInput = instance._lastInput || instance;
+  const lastInput = instance.$LI || instance;
   const dom = vNode.dom;
 
   const compositeComponent = {

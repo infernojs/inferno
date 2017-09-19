@@ -1,10 +1,8 @@
-import { render } from "inferno";
+import { Component, render } from "inferno";
 import createClass from "inferno-create-class";
 import createElement from "inferno-create-element";
 import { streamAsStaticMarkup } from "inferno-server";
-
 import concatStream from "concat-stream-es6";
-import Component from "inferno-component";
 
 describe("SSR Root Creation Streams - (non-JSX)", () => {
   let container;
@@ -102,10 +100,12 @@ describe("SSR Root Creation Streams - (non-JSX)", () => {
 
 function streamPromise(dom) {
   return new Promise(function(res, rej) {
-    streamAsStaticMarkup(dom).on("error", rej).pipe(
-      concatStream(function(buffer) {
-        res(buffer.toString("utf-8"));
-      })
-    );
+    streamAsStaticMarkup(dom)
+      .on("error", rej)
+      .pipe(
+        concatStream(function(buffer) {
+          res(buffer.toString("utf-8"));
+        })
+      );
   });
 }

@@ -1,4 +1,4 @@
-import Component from "inferno-component";
+import { Component } from "inferno";
 import createElement from "inferno-create-element";
 import { connect, Provider } from "inferno-redux";
 import {
@@ -130,11 +130,7 @@ describe("redux", () => {
       const Inner = connect(innerMapStateToProps)(
         class Inner extends Component {
           render() {
-            return (
-              <div>
-                {this.props.count}
-              </div>
-            );
+            return <div>{this.props.count}</div>;
           }
         }
       );

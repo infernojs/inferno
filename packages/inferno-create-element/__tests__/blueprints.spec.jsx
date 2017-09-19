@@ -1,5 +1,4 @@
-import { render } from "inferno";
-import Component from "inferno-component";
+import { Component, render } from "inferno";
 import { innerHTML } from "inferno-utils";
 
 describe("Blueprints (JSX)", () => {
@@ -131,11 +130,7 @@ describe("Blueprints (JSX)", () => {
             return null;
           }
 
-          return (
-            <div ref={this.onWilAttach}>
-              {this.state.text}
-            </div>
-          );
+          return <div ref={this.onWilAttach}>{this.state.text}</div>;
         }
       }
 

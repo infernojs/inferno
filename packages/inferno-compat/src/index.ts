@@ -4,6 +4,7 @@
 
 import {
   cloneVNode,
+  Component,
   createVNode,
   EMPTY_OBJ,
   findDOMNode,
@@ -13,7 +14,6 @@ import {
   render,
   VNode
 } from "inferno";
-import Component from "inferno-component";
 import createClass, {
   ClassicComponentClass,
   ComponentSpec
@@ -31,7 +31,7 @@ import {
 import _VNodeFlags from "inferno-vnode-flags";
 import isValidElement from "./isValidElement";
 import PropTypes from "./PropTypes";
-import SVGDOMPropertyConfig from "./SVGDOMPropertyConfig";
+import { SVGDOMPropertyConfig } from "./SVGDOMPropertyConfig";
 
 declare global {
   interface Event {
@@ -349,28 +349,6 @@ export {
   ClassicComponentClass,
   Component,
   ComponentSpec,
-  DOM,
-  EMPTY_OBJ,
-  NO_OP,
-  PropTypes,
-  PureComponent,
-  cloneElement,
-  cloneVNode,
-  createClass,
-  createElement,
-  createFactory,
-  createVNode,
-  findDOMNode,
-  isValidElement,
-  render,
-  unmountComponentAtNode,
-  unstable_renderSubtreeIntoContainer,
-  version
-};
-
-export default {
-  Children,
-  Component,
   DOM,
   EMPTY_OBJ,
   NO_OP,

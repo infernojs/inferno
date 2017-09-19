@@ -1,5 +1,4 @@
-import { render } from "inferno";
-import Component from "inferno-component";
+import { Component, render } from "inferno";
 import createClass from "inferno-create-class";
 import createElement from "inferno-create-element";
 import {
@@ -36,6 +35,7 @@ const VNodeKeys = [
   "flags",
   "key",
   "ref",
+  "parentVNode",
   "props",
   "type"
 ].sort();
@@ -516,10 +516,7 @@ describe("Test Utils", () => {
 
     it("should work with interpolated text", () => {
       const predicate = sinon.spy();
-      const Hello = ({ who }) =>
-        <div>
-          Hello, {who}!
-        </div>;
+      const Hello = ({ who }) => <div>Hello, {who}!</div>;
       const treeWithText = renderIntoDocument(<Hello who="world" />);
       sinon.assert.notCalled(predicate);
       findAllInRenderedTree(treeWithText, predicate);
@@ -758,10 +755,11 @@ describe("Test Utils", () => {
 
     it("should be able to handle null elements", () => {
       const NoOp = () => null;
-      const Broken = () =>
+      const Broken = () => (
         <div className="dummy">
           <NoOp />
-        </div>;
+        </div>
+      );
       const renderedTree = renderIntoDocument(<Broken />);
       const dummy = findRenderedDOMElementWithClass(renderedTree, "dummy");
       expect(dummy.className).toBe("dummy");

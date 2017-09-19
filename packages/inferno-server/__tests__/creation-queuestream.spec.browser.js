@@ -1,4 +1,4 @@
-import Component from "inferno-component";
+import { Component } from "inferno";
 import { streamQueueAsString } from "inferno-server";
 
 import concatStream from "concat-stream-es6";

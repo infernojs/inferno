@@ -20,13 +20,16 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "vdom"
   ],
   "dependencies": {
     "inferno": "3.9.0",
-    "inferno-component": "3.9.0",
     "inferno-shared": "3.9.0",
     "inferno-vnode-flags": "3.9.0"
+  },
+  "devDependencies": {
+    "inferno-utils": "3.9.0"
   },
   "rollup": {
     "bundledDependencies": [
@@ -35,8 +38,7 @@
     ],
     "moduleName": "Inferno.createElement",
     "moduleGlobals": {
-      "inferno": "Inferno",
-      "inferno-component": "Inferno.Component"
+      "inferno": "Inferno"
     }
   }
 }

@@ -2,8 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { VNode } from "inferno";
-import Component from "inferno-component";
+import { Component, VNode } from "inferno";
 import createElement from "inferno-create-element";
 import { isArray } from "inferno-shared";
 import { rest } from "./utils";

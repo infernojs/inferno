@@ -2,22 +2,11 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode } from "inferno";
-import Component from "inferno-component";
+import { Component, createVNode, VNode } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 import match, { matchPath } from "./match";
 import RouterContext from "./RouterContext";
-
-export interface IRouterProps {
-  history?: any;
-  children?: any;
-  router: any;
-  location: any;
-  baseUrl?: any;
-  component?: Component<any, any>;
-  asyncBefore?: any;
-  onUpdate?: any;
-}
+import { IRouterProps } from "./routerprops";
 
 function createrRouter(history) {
   if (!history) {
@@ -75,10 +64,9 @@ export default class Router extends Component<IRouterProps, any> {
   }
 
   public componentWillReceiveProps(nextProps) {
-    this.setState(
-      { url: nextProps.url },
-      this.props.onUpdate ? () => this.props.onUpdate() : void 0
-    );
+    if (nextProps.url) {
+      this.routeTo(nextProps.url);
+    }
   }
 
   public componentWillUnmount() {

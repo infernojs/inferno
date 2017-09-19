@@ -3,40 +3,36 @@
  */ /** TypeDoc Comment */
 
 import {
+  combineFrom,
   isBrowser,
+  isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
-  Lifecycle,
-  LifecycleClass,
   NO_OP,
   throwError,
   warning
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { options, Root } from "../core/options";
 import {
+  createVNode,
   directClone,
   InfernoChildren,
   InfernoInput,
+  options,
+  Props,
+  Root,
   VNode
-} from "../core/VNodes";
+} from "../core/implementation";
 import { hydrateRoot } from "./hydration";
 import { mount } from "./mounting";
-import { patch } from "./patching";
+import { patch, updateClassComponent } from "./patching";
 import { unmount } from "./unmounting";
-import { EMPTY_OBJ } from "./utils";
+import { callAll, componentToDOMNodeMap, EMPTY_OBJ } from "./utils/common";
 
-// rather than use a Map, like we did before, we can use an array here
-// given there shouldn't be THAT many roots on the page, the difference
-// in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
-export const componentToDOMNodeMap = new Map();
 const roots = options.roots;
-/**
- * When inferno.options.findDOMNOdeEnabled is true, this function will return DOM Node by component instance
- * @param ref Component instance
- * @returns {*|null} returns dom node
- */
+let renderInProgress: boolean = false;
+
 export function findDOMNode(ref) {
   if (!options.findDOMNodeEnabled) {
     if (process.env.NODE_ENV !== "production") {
@@ -62,15 +58,10 @@ function getRoot(dom): Root | null {
   return null;
 }
 
-function setRoot(
-  dom: Element | SVGAElement,
-  input: InfernoInput,
-  lifecycle: LifecycleClass
-): Root {
+function setRoot(dom: Element | SVGAElement, input: VNode): Root {
   const root: Root = {
     dom,
-    input,
-    lifecycle
+    input
   };
 
   roots.push(root);
@@ -95,12 +86,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const documentBody = isBrowser ? document.body : null;
-/**
- * Renders virtual node tree into parent node.
- * @param {VNode | null | string | number} input vNode to be rendered
- * @param parentDom DOM node which content will be replaced by virtual node
- * @returns {InfernoChildren} rendered virtual node
- */
+
 export function render(
   input: InfernoInput,
   parentDom:
@@ -109,24 +95,25 @@ export function render(
     | DocumentFragment
     | null
     | HTMLElement
-    | Node
+    | Node,
+  callback?: Function
 ): InfernoChildren {
-  if (documentBody === parentDom) {
-    if (process.env.NODE_ENV !== "production") {
+  // Development warning
+  if (process.env.NODE_ENV !== "production") {
+    if (documentBody === parentDom) {
       throwError(
         'you cannot render() to the "document.body". Use an empty element as a container instead.'
       );
     }
-    throwError();
   }
-  if ((input as any) === NO_OP) {
+  if ((input as string) === NO_OP) {
     return;
   }
+  renderInProgress = true;
+  const lifecycle = [];
   let root = getRoot(parentDom);
 
   if (isNull(root)) {
-    const lifecycle = new Lifecycle();
-
     if (!isInvalid(input)) {
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
@@ -140,21 +127,11 @@ export function render(
           false
         );
       }
-      root = setRoot(parentDom as any, input, lifecycle);
-      lifecycle.trigger();
+      root = setRoot(parentDom as any, input as VNode);
     }
   } else {
-    const lifecycle = root.lifecycle;
-
-    lifecycle.listeners = [];
     if (isNullOrUndef(input)) {
-      unmount(
-        root.input as VNode,
-        parentDom as Element,
-        lifecycle,
-        false,
-        false
-      );
+      unmount(root.input as VNode, parentDom as Element);
       removeRoot(root);
     } else {
       if ((input as VNode).dom) {
@@ -166,13 +143,19 @@ export function render(
         parentDom as Element,
         lifecycle,
         EMPTY_OBJ,
-        false,
         false
       );
+      root.input = input as VNode;
     }
-    root.input = input;
-    lifecycle.trigger();
   }
+
+  callAll(lifecycle);
+
+  if (isFunction(callback)) {
+    callback();
+  }
+  flushSetStates();
+  renderInProgress = false;
   if (root) {
     const rootInput: VNode = root.input as VNode;
 
@@ -189,4 +172,246 @@ export function createRenderer(parentDom?) {
     }
     render(nextInput, parentDom);
   };
+}
+
+export function createPortal(children, container) {
+  return createVNode(
+    VNodeFlags.Portal,
+    container,
+    null,
+    children,
+    null,
+    isInvalid(children) ? null : children.key,
+    null,
+    true
+  );
+}
+
+// Component needs to be in this file, because rendering shared common boolean value
+let componentFlushQueue: Array<Component<any, any>> = [];
+
+export function flushSetStates() {
+  const length = componentFlushQueue.length;
+
+  if (length > 0) {
+    for (let i = 0; i < length; i++) {
+      const component = componentFlushQueue[i];
+
+      applyState(component, false);
+
+      const callbacks = component.$Q;
+
+      if (!isNull(callbacks)) {
+        for (let j = 0, len = callbacks.length; j < len; j++) {
+          callbacks[i].call(component);
+        }
+        component.$Q = null;
+      }
+      component.$FP = false; // Flush no longer pending for this component
+    }
+    componentFlushQueue = [];
+  }
+}
+
+function queueStateChanges<P, S>(
+  component: Component<P, S>,
+  newState: S | Function,
+  callback?: Function
+): void {
+  if (isFunction(newState)) {
+    newState = (newState as any)(
+      component.state,
+      component.props,
+      component.$CX
+    ) as S;
+  }
+  let pending = component.$PS;
+  let key;
+
+  if (isNullOrUndef(pending)) {
+    component.$PS = pending = newState;
+  } else {
+    for (key in newState as S) {
+      pending[key] = newState[key];
+    }
+  }
+
+  if (!component.$PSS && !component.$BR) {
+    if (renderInProgress) {
+      if (!component.$FP) {
+        component.$FP = true;
+        componentFlushQueue.push(component);
+      }
+
+      if (isFunction(callback)) {
+        const callbacks = component.$Q;
+
+        if (isNull(callbacks)) {
+          component.$Q = [callback];
+        } else {
+          callbacks.push(callback);
+        }
+      }
+    } else {
+      renderInProgress = true;
+
+      applyState(component, false, callback);
+      flushSetStates();
+
+      renderInProgress = false;
+    }
+  } else {
+    component.$PSS = true;
+    if (component.$BR && isFunction(callback)) {
+      (component._lifecycle as any).push(callback.bind(component));
+    }
+  }
+}
+
+function applyState<P, S>(
+  component: Component<P, S>,
+  force: boolean,
+  callback?: Function
+): void {
+  if (component.$UN) {
+    return;
+  }
+  if (force || !component.$BR) {
+    component.$PSS = false;
+    const pendingState = component.$PS;
+    const prevState = component.state;
+    const nextState = combineFrom(prevState, pendingState) as any;
+    const props = component.props as P;
+    const context = component.context;
+
+    component.$PS = null;
+    let vNode = component.$V as VNode;
+    // const parentDom = vNode.dom;
+    // TODO: This is unreliable and bad code, refactor it away
+    const lastInput = component.$LI as VNode;
+    const parentDom = lastInput.dom && lastInput.dom.parentNode;
+
+    updateClassComponent(
+      component,
+      nextState,
+      vNode,
+      props,
+      parentDom,
+      component._lifecycle as any,
+      context,
+      (vNode.flags & VNodeFlags.SvgElement) > 0,
+      force,
+      true
+    );
+    if (component.$UN) {
+      return;
+    }
+
+    if ((component.$LI.flags & VNodeFlags.Portal) === 0) {
+      const dom = component.$LI.dom;
+      while (!isNull((vNode = vNode.parentVNode as any))) {
+        if ((vNode.flags & VNodeFlags.Component) > 0) {
+          vNode.dom = dom;
+        }
+      }
+    }
+
+    callAll(component._lifecycle as any);
+  } else {
+    component.state = component.$PS as any;
+    component.$PS = null;
+  }
+  if (isFunction(callback)) {
+    callback.call(component);
+  }
+}
+
+export class Component<P, S> {
+  // Public
+  public static defaultProps: {} | null = null;
+  public state: S | null = null;
+  public props: P & Props;
+  public context: any;
+
+  // Internal properties
+  public $BR: boolean = false; // BLOCK RENDER
+  public $BS: boolean = true; // BLOCK STATE
+  public $PSS: boolean = false; // PENDING SET STATE
+  public $PS: S | null = null; // PENDING STATE (PARTIAL or FULL)
+  public $LI: any = null; // LAST INPUT
+  public $V: VNode | null = null; // VNODE
+  public $UN = false; // UNMOUNTED
+  public _lifecycle = null; // TODO: Remove this from here, lifecycle should be pure.
+  public $CX = null; // CHILDCONTEXT
+  public $UPD: boolean = true; // UPDATING
+  public $Q: Function[] | null = null; // QUEUE
+  public $FP: boolean = false; // FLUSH PENDING
+
+  constructor(props?: P, context?: any) {
+    /** @type {object} */
+    this.props = props || (EMPTY_OBJ as P);
+
+    /** @type {object} */
+    this.context = context || EMPTY_OBJ; // context should not be mutable
+  }
+
+  // LifeCycle methods
+  public componentDidMount?(): void;
+
+  public componentWillMount?(): void;
+
+  public componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+
+  public shouldComponentUpdate?(
+    nextProps: P,
+    nextState: S,
+    nextContext: any
+  ): boolean;
+
+  public componentWillUpdate?(
+    nextProps: P,
+    nextState: S,
+    nextContext: any
+  ): void;
+
+  public componentDidUpdate?(
+    prevProps: P,
+    prevState: S,
+    prevContext: any
+  ): void;
+
+  public componentWillUnmount?(): void;
+
+  public getChildContext?(): void;
+
+  public forceUpdate(callback?: Function) {
+    if (this.$UN) {
+      return;
+    }
+
+    applyState(this, true, callback);
+  }
+
+  public setState(
+    newState: { [k in keyof S]?: S[k] } | Function,
+    callback?: Function
+  ) {
+    if (this.$UN) {
+      return;
+    }
+    if (!this.$BS) {
+      queueStateChanges(this, newState, callback);
+    } else {
+      // Development warning
+      if (process.env.NODE_ENV !== "production") {
+        throwError(
+          "cannot update state via setState() in componentWillUpdate() or constructor."
+        );
+      }
+      return;
+    }
+  }
+
+  // tslint:disable-next-line:no-empty
+  public render(nextProps?: P, nextState?, nextContext?): any {}
 }
