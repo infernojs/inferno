@@ -45,6 +45,19 @@ export function invariant(condition, format, a?, b?, c?, d?, e?, f?) {
 const ARR = [];
 
 export const Children = {
+  forEach(children: any[], fn: Function, ctx?: any): void {
+    if (isNullOrUndef(children)) {
+      return;
+    }
+    children = Children.toArray(children);
+    if (ctx && ctx !== children) {
+      fn = fn.bind(ctx);
+    }
+    for (let i = 0, len = children.length; i < len; i++) {
+      fn(children[i], i, children);
+    }
+  },
+
   count(children: any[]): number {
     return Children.toArray(children).length;
   },
