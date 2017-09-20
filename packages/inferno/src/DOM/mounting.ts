@@ -163,6 +163,7 @@ export function mountElement(
   if (!isNull(ref)) {
     mountRef(dom, ref, lifecycle);
   }
+  mountElementCallbacks(vNode, lifecycle);
   if (!isNull(parentDom)) {
     appendChild(parentDom, dom);
   }
@@ -327,5 +328,14 @@ export function mountRef(dom: Element, value, lifecycle: LifecycleClass) {
       );
     }
     throwError();
+  }
+}
+
+export function mountElementCallbacks(vNode: VNode, lifecycle: LifecycleClass) {
+  const afterMount = options.afterMount;
+  if (!isNull(afterMount)) {
+    lifecycle.addListener(() => {
+      afterMount(vNode);
+    });
   }
 }

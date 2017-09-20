@@ -49,6 +49,7 @@ function unmountComponentAtNode(
 }
 
 const ARR = [];
+const FOCUS_ELEMENTS = ["input", "textarea", "button", "select", "option"];
 
 export type IterateChildrenFn = (
   value: InfernoChildren | any,
@@ -117,6 +118,13 @@ options.beforeRender = function(component): void {
 };
 options.afterRender = function(): void {
   currentComponent = null;
+};
+options.afterMount = function(vNode): void {
+  if (vNode.flags & _VNodeFlags.Element) {
+    if (vNode.props.autoFocus && FOCUS_ELEMENTS.indexOf(vNode.type) !== -1) {
+      vNode.dom.focus();
+    }
+  }
 };
 
 const version = "15.4.2";
