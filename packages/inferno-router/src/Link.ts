@@ -2,72 +2,74 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode } from "inferno";
-import { combineFrom, isBrowser, warning } from "inferno-shared";
+import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
+import { invariant } from "./utils";
 
-function renderLink(classNm, children, otherProps) {
-  return createVNode(
-    VNodeFlags.HtmlElement,
-    "a",
-    classNm,
-    children,
-    otherProps
-  );
+const isModifiedEvent = (event): boolean =>
+  !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+
+export interface ILinkProps {
+  onClick?: any;
+  target: string;
+  className?: string;
+  replace: boolean;
+  to: string | {};
+  innerRef: any;
 }
 
-export default function Link(props, { router }): VNode {
-  const {
-    activeClassName,
-    activeStyle,
-    className,
-    onClick,
-    children,
-    to,
-    ...otherProps
-  } = props;
-
-  let classNm;
-  if (className) {
-    classNm = className as string;
-  }
-
-  if (!router) {
-    if (process.env.NODE_ENV !== "production") {
-      warning(
-        "<Link/> component used outside of <Router/>. Fallback to <a> tag."
-      );
+/**
+ * The public API for rendering a history-aware <a>.
+ */
+export default class Link extends Component<ILinkProps, any> {
+  public handleClick = event => {
+    if (this.props.onClick) {
+      this.props.onClick(event);
     }
 
-    otherProps.href = to;
-    otherProps.onClick = onClick;
+    if (
+      !event.defaultPrevented && // onClick prevented default
+      event.button === 0 && // ignore everything but left clicks
+      !this.props.target && // let browser handle "target=_blank" etc.
+      !isModifiedEvent(event) // ignore clicks with modifier keys
+    ) {
+      event.preventDefault();
 
-    return renderLink(classNm, children, otherProps);
-  }
+      const { history } = this.context.router;
+      const { replace = false, to } = this.props;
 
-  otherProps.href = isBrowser
-    ? router.createHref({ pathname: to })
-    : router.location.baseUrl ? router.location.baseUrl + to : to;
-
-  if (router.location.pathname === to) {
-    if (activeClassName) {
-      classNm = (className ? className + " " : "") + activeClassName;
+      if (replace) {
+        history.replace(to);
+      } else {
+        history.push(to);
+      }
     }
-    if (activeStyle) {
-      otherProps.style = combineFrom(props.style, activeStyle);
-    }
-  }
-
-  otherProps.onclick = function navigate(e) {
-    if (e.button !== 0 || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
-      return;
-    }
-    e.preventDefault();
-    if (typeof onClick === "function") {
-      onClick(e);
-    }
-    router.push(to, e.target.textContent);
   };
 
-  return renderLink(classNm, children, otherProps);
+  public render(): VNode {
+    const { replace, className, to, innerRef, ...props } = this.props;
+
+    invariant(
+      this.context.router,
+      "You should not use <Link> outside a <Router>"
+    );
+
+    const href = this.context.router.history.createHref(
+      typeof to === "string" ? { pathname: to } : to
+    );
+
+    return createVNode(
+      VNodeFlags.HtmlElement,
+      "a",
+      className,
+      null,
+      {
+        ...props,
+        href,
+        onClick: this.handleClick
+      },
+      null,
+      innerRef ? x => innerRef(x) : null
+    );
+  }
 }

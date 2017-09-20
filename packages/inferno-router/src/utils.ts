@@ -1,133 +1,75 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
+import VNodeFlags from "inferno-vnode-flags";
+import { isArray, isObject, isNull, isNullOrUndef } from "inferno-shared";
 
-import { isArray, isString } from "inferno-shared";
-
-export const emptyObject = {};
-
-export function decode(val: any): any {
-  return typeof val !== "string" ? val : decodeURIComponent(val);
-}
-
-export function isEmpty(children): boolean {
-  return (
-    !children || !(isArray(children) ? children : Object.keys(children)).length
-  );
-}
-
-export function flatten(oldArray) {
-  const newArray = [];
-
-  flattenArray(oldArray, newArray);
-  return newArray;
-}
-
-export function getURLString(location): string {
-  return isString(location) ? location : location.pathname + location.search;
-}
-
-/**
- * Maps a querystring to an object
- * Supports arrays and utf-8 characters
- * @param search
- * @returns {any}
- */
-export function mapSearchParams(search): any {
-  if (search === "") {
-    return {};
+export function warning(condition, message) {
+  if (!condition) {
+    // tslint:disable-next-line:no-console
+    console.warn(message);
   }
+}
 
-  // Create an object with no prototype
-  const map = Object.create(null);
-  const fragments = search.split("&");
+export function isValidElement(obj: any): boolean {
+  const isNotANullObject = isObject(obj) && isNull(obj) === false;
+  if (isNotANullObject === false) {
+    return false;
+  }
+  const flags = obj.flags;
 
-  for (let i = 0, len = fragments.length; i < len; i++) {
-    const fragment = fragments[i];
-    const [k, v] = fragment
-      .split("=")
-      .map(mapFragment)
-      .map(decodeURIComponent);
+  return (flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
+}
 
-    if (map[k]) {
-      map[k] = isArray(map[k]) ? map[k] : [map[k]];
-      map[k].push(v);
+export function invariant(condition, format, a?, b?, c?, d?, e?, f?) {
+  if (!condition) {
+    let error;
+    if (format === undefined) {
+      error = new Error(
+        "Minified exception occurred; use the non-minified dev environment " +
+          "for the full error message and additional helpful warnings."
+      );
     } else {
-      map[k] = v;
+      const args = [a, b, c, d, e, f];
+      let argIndex = 0;
+      error = new Error(
+        format.replace(/%s/g, function() {
+          return args[argIndex++];
+        })
+      );
+      error.name = "Invariant Violation";
     }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
   }
-  return map;
 }
 
-/**
- * Gets the relevant part of the URL for matching
- * @param fullURL
- * @param partURL
- * @returns {string}
- */
-export function toPartialURL(fullURL: string, partURL: string) {
-  if (fullURL.indexOf(partURL) === 0) {
-    return fullURL.substr(partURL.length);
-  }
-  return fullURL;
-}
+const ARR = [];
 
-/**
- * Simulates ... operator by returning first argument
- * with the keys in the second argument excluded
- * @param _args
- * @param excluded
- * @returns {{}}
- */
-export function rest(_args, excluded) {
-  const t = {};
-  for (const p in _args) {
-    if (excluded.indexOf(p) < 0) {
-      t[p] = _args[p];
+export const Children = {
+  forEach(children: any[], fn: Function): void {
+    if (isNullOrUndef(children)) {
+      return;
     }
-  }
-  return t;
-}
-
-/**
- * Sorts an array according to its `path` prop length
- * @param a
- * @param b
- * @returns {number}
- */
-export function pathRankSort(a: any, b: any) {
-  const aAttr = a.props || emptyObject;
-  const bAttr = b.props || emptyObject;
-  const diff = rank(bAttr.path) - rank(aAttr.path);
-  return (
-    diff ||
-    (bAttr.path && aAttr.path ? bAttr.path.length - aAttr.path.length : 0)
-  );
-}
-
-/**
- * Helper function for parsing querystring arrays
- */
-function mapFragment(p: string, isVal: number): string {
-  return decodeURIComponent(isVal | 0 ? p : p.replace("[]", ""));
-}
-
-function strip(url: string): string {
-  return url.replace(/(^\/+|\/+$)/g, "");
-}
-
-function rank(url: string = ""): number {
-  return (strip(url).match(/\/+/g) || "").length;
-}
-
-function flattenArray(oldArray, newArray) {
-  for (let i = 0, len = oldArray.length; i < len; i++) {
-    const item = oldArray[i];
-
-    if (isArray(item)) {
-      flattenArray(item, newArray);
-    } else {
-      newArray.push(item);
+    children = Children.toArray(children);
+    for (let i = 0, len = children.length; i < len; i++) {
+      fn(children[i], i, children);
     }
+  },
+
+  count(children: any[]): number {
+    return Children.toArray(children).length;
+  },
+
+  only(children: any[]): any {
+    children = Children.toArray(children);
+    if (children.length !== 1) {
+      throw new Error("Children.only() expects only one child.");
+    }
+    return children[0];
+  },
+
+  toArray(children: any[]): any[] {
+    return isNullOrUndef(children)
+      ? []
+      : isArray(children) ? children : ARR.concat(children);
   }
-}
+};

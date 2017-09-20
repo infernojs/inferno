@@ -2,44 +2,48 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { VNode } from "inferno";
-import createRoutes, { IPlainRouteConfig } from "./createRoutes";
-import doAllAsyncBefore from "./doAllAsyncBefore";
-import IndexLink from "./IndexLink";
-import IndexRoute from "./IndexRoute";
-import Link from "./Link";
-import match from "./match";
-import Redirect from "./Redirect";
-import Route from "./Route";
+import StaticRouter from "./StaticRouter";
+import BrowserRouter from "./BrowserRouter";
+import HashRouter from "./HashRouter";
+import MemoryRouter from "./MemoryRouter";
 import Router from "./Router";
-import RouterContext from "./RouterContext";
+import Route from "./Route";
+import Switch from "./Switch";
+import Link from "./Link";
+import NavLink from "./NavLink";
+import Prompt from "./Prompt";
+import Redirect from "./Redirect";
+import matchPath from "./matchPath";
+import withRouter from "./withRouter";
 
 export {
-  IndexLink,
-  Redirect as IndexRedirect,
-  IndexRoute,
-  IPlainRouteConfig,
+  BrowserRouter,
+  HashRouter,
   Link,
+  MemoryRouter,
+  NavLink,
+  Prompt,
   Redirect,
   Route,
   Router,
-  RouterContext,
-  VNode,
-  createRoutes,
-  doAllAsyncBefore,
-  match
+  StaticRouter,
+  Switch,
+  matchPath,
+  withRouter
 };
 
 export default {
-  IndexLink,
-  IndexRedirect: Redirect,
-  IndexRoute,
+  BrowserRouter,
+  HashRouter,
   Link,
+  MemoryRouter,
+  NavLink,
+  Prompt,
   Redirect,
   Route,
   Router,
-  RouterContext,
-  createRoutes,
-  doAllAsyncBefore,
-  match
+  StaticRouter,
+  Switch,
+  matchPath,
+  withRouter
 };

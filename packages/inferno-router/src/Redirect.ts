@@ -2,13 +2,59 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import Route from "./Route";
+import { Component } from "inferno";
+import { createLocation, locationsAreEqual } from "history/LocationUtils";
+import { invariant } from "./utils";
 
-export default class Redirect extends Route {
-  constructor(props?: any, context?: any) {
-    super(props, context);
-    if (!props.to) {
-      props.to = "/";
+export default class Redirect extends Component<any, any> {
+  public isStatic() {
+    return this.context.router && this.context.router.staticContext;
+  }
+
+  public componentWillMount() {
+    invariant(
+      this.context.router,
+      "You should not use <Redirect> outside a <Router>"
+    );
+
+    if (this.isStatic()) {
+      this.perform();
     }
+  }
+
+  public componentDidMount() {
+    if (!this.isStatic()) {
+      this.perform();
+    }
+  }
+
+  public componentDidUpdate(prevProps) {
+    const prevTo = createLocation(prevProps.to);
+    const nextTo = createLocation(this.props.to);
+
+    if (locationsAreEqual(prevTo, nextTo)) {
+      // tslint:disable-next-line:no-console
+      console.warn(
+        `You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`
+      );
+      return;
+    }
+
+    this.perform();
+  }
+
+  public perform() {
+    const { history } = this.context.router;
+    const { push = false, to } = this.props;
+
+    if (push) {
+      history.push(to);
+    } else {
+      history.replace(to);
+    }
+  }
+
+  public render() {
+    return null;
   }
 }

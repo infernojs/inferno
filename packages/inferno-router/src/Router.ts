@@ -2,100 +2,86 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { Component, createVNode, VNode } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
-import match, { matchPath } from "./match";
-import RouterContext from "./RouterContext";
-import { IRouterProps } from "./routerprops";
+import { Component } from "inferno";
+import { Children, invariant, warning } from "./utils";
 
-function createrRouter(history) {
-  if (!history) {
-    throw new TypeError(
-      'Inferno: Error "inferno-router" requires a history prop passed'
-    );
-  }
-  return {
-    createHref: history.createHref,
-    listen: history.listen,
-    push: history.push,
-    replace: history.replace,
-    isActive(url) {
-      return matchPath(true, url, this.url);
-    },
-    get location() {
-      return history.location.pathname !== "blank"
-        ? history.location
-        : {
-            pathname: "/",
-            search: ""
-          };
-    },
-    get url() {
-      return this.location.pathname + this.location.search;
-    }
+export interface IRouterProps {
+  history: {
+    listen: (callback: any) => {};
+    location: {
+      pathname: string;
+    };
   };
+  children: Array<Component<any, any>>;
 }
 
-export default class Router extends Component<IRouterProps, any> {
-  public router: any;
-  public unlisten: any;
+/**
+ * The public API for putting history on context.
+ */
+class Router extends Component<IRouterProps, any> {
+  public unlisten;
 
-  constructor(props?: any, context?: any) {
+  constructor(props: IRouterProps, context?: any) {
     super(props, context);
-    this.router = createrRouter(props.history);
     this.state = {
-      url: props.url || this.router.url
+      match: this.computeMatch(props.history.location.pathname)
+    };
+  }
+
+  public getChildContext() {
+    return {
+      router: {
+        ...this.context.router,
+        history: this.props.history,
+        route: {
+          location: this.props.history.location,
+          match: this.state.match
+        }
+      }
+    };
+  }
+
+  public computeMatch(pathname) {
+    return {
+      isExact: pathname === "/",
+      params: {},
+      path: "/",
+      url: "/"
     };
   }
 
   public componentWillMount() {
-    if (this.router) {
-      this.unlisten = this.router.listen(() => {
-        if (typeof this.props.asyncBefore === "function") {
-          const self = this;
-          this.props.asyncBefore(this.router.url).then(() => {
-            self.routeTo(self.router.url);
-          });
-        } else {
-          this.routeTo(this.router.url);
-        }
+    const { children, history } = this.props;
+
+    invariant(
+      children == null || Children.count(children) === 1,
+      "A <Router> may have only one child element"
+    );
+
+    // Do this here so we can setState when a <Redirect> changes the
+    // location in componentWillMount. This happens e.g. when doing
+    // server rendering using a <StaticRouter>.
+    this.unlisten = history.listen(() => {
+      this.setState({
+        match: this.computeMatch(history.location.pathname)
       });
-    }
+    });
   }
 
   public componentWillReceiveProps(nextProps) {
-    if (nextProps.url) {
-      this.routeTo(nextProps.url);
-    }
-  }
-
-  public componentWillUnmount() {
-    if (this.unlisten) {
-      this.unlisten();
-    }
-  }
-
-  public routeTo(url) {
-    this.setState(
-      { url },
-      this.props.onUpdate ? () => this.props.onUpdate() : void 0
+    warning(
+      this.props.history === nextProps.history,
+      "You cannot change <Router history>"
     );
   }
 
-  public render(props): VNode | null {
-    const hit = match(props.children, this.state.url);
+  public componentWillUnmount() {
+    this.unlisten();
+  }
 
-    if (hit.redirect) {
-      setTimeout(() => {
-        this.router.replace(hit.redirect);
-      }, 0);
-      return null;
-    }
-
-    return createVNode(VNodeFlags.ComponentClass, RouterContext, null, null, {
-      location: this.state.url,
-      matched: hit.matched,
-      router: this.router
-    });
+  public render(props): any {
+    return props.children;
   }
 }
+
+export default Router;
