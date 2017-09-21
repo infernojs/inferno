@@ -67,7 +67,7 @@ function renderVNodeToString(vNode,
         instance.$PSS = false;
         instance.$PS = null;
       }
-      const nextVNode = instance.render(props, instance.state, vNode.context);
+      const nextVNode = instance.render(props, instance.state, instance.context);
       // In case render returns invalid stuff
       if (isInvalid(nextVNode)) {
         return "<!--!-->";
