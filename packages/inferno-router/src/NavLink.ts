@@ -27,8 +27,9 @@ export default function(props): any {
 
   const linkComponent = ({ location, match }) => {
     const isActive = !!(getIsActive ? getIsActive(match, location) : match);
-    return createVNode(VNodeFlags.ComponentClass, Link, null, children, {
+    return createVNode(VNodeFlags.ComponentClass, Link, null, null, {
       "aria-current": isActive && ariaCurrent,
+      children,
       className: isActive
         ? [className, activeClassName].filter(i => i).join(" ")
         : className,
