@@ -1,16 +1,10 @@
 import { Component, render } from "inferno";
-import {
-  action,
-  computed,
-  extendObservable,
-  observable,
-  transaction
-} from "mobx";
+import * as mobx from "mobx";
 import mobxInferno, { inject, observer, offError } from "inferno-mobx";
 import createClass from "inferno-create-class";
 import { renderToStaticMarkup } from "inferno-server";
 
-const store = observable({
+const store = mobx.observable({
   todos: [
     {
       title: "a",
@@ -119,7 +113,7 @@ describe("Mobx Observer", () => {
 
   it("keep views alive", done => {
     let yCalcCount = 0;
-    const data = observable({
+    const data = mobx.observable({
       x: 3,
       get y() {
         yCalcCount++;
@@ -179,7 +173,7 @@ describe("Mobx Observer", () => {
     mobxInferno.useStaticRendering(true);
 
     let renderCount = 0;
-    const data = observable({
+    const data = mobx.observable({
       z: "hi"
     });
 
@@ -215,7 +209,7 @@ describe("Mobx Observer", () => {
     mobxInferno.useStaticRendering(true);
 
     let renderCount = 0;
-    const data = observable({
+    const data = mobx.observable({
       z: "hi"
     });
 
@@ -240,7 +234,7 @@ describe("Mobx Observer", () => {
   });
 
   it("issue 12", function(done) {
-    const data = observable({
+    const data = mobx.observable({
       selected: "coffee",
       items: [
         {
@@ -279,7 +273,7 @@ describe("Mobx Observer", () => {
 
     expect(container.querySelector("div").textContent).toBe("coffee!tea");
 
-    transaction(() => {
+    mobx.runInAction(() => {
       data.items[1].name = "boe";
       data.items.splice(0, 2, { name: "soup" });
       data.selected = "tea";
@@ -342,7 +336,7 @@ describe("Mobx Observer", () => {
     const Comp = observer(
       createClass({
         componentWillMount() {
-          extendObservable(this, {
+          mobx.extendObservable(this, {
             get computedProp() {
               return this.props.x;
             }
@@ -381,7 +375,7 @@ describe("Mobx Observer", () => {
   it.skip("should stop updating if error was thrown in render (#134)", function(
     done
   ) {
-    const data = observable(0);
+    const data = mobx.observable(0);
     let renderingsCount = 0;
 
     const Comp = observer(function() {
@@ -525,7 +519,7 @@ describe("Mobx Observer", () => {
   // })
 
   it("Observer regions should react", done => {
-    const data = observable("hi");
+    const data = mobx.observable("hi");
     const Observer = mobxInferno.Observer;
     const Comp = () => (
       <div>
@@ -548,7 +542,7 @@ describe("Mobx Observer", () => {
     let childRendering = 0;
     let parentRendering = 0;
     const data = { x: 1 };
-    const odata = observable({ y: 1 });
+    const odata = mobx.observable({ y: 1 });
 
     const Child = observer(({ data }) => {
       childRendering++;

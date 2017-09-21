@@ -1,5 +1,5 @@
 import { Component, render } from "inferno";
-import mobx from "mobx";
+import * as mobx from "mobx";
 import mobxInferno from "inferno-mobx";
 import createClass from "inferno-create-class";
 
@@ -27,7 +27,7 @@ describe("Mobx Transacations", () => {
       })
     };
     function flipStuff() {
-      mobx.transaction(() => {
+      mobx.runInAction(() => {
         foo.a.set(!foo.a.get());
         foo.b.set(!foo.b.get());
       });
@@ -70,7 +70,7 @@ describe("Mobx Transacations", () => {
     });
 
     render(<Component />, container);
-    mobx.transaction(() => {
+    mobx.runInAction(() => {
       a.set(3);
       a.set(4);
       loaded.set(true);
@@ -93,7 +93,7 @@ describe("Mobx Transacations", () => {
       else return <div>loading</div>;
     });
 
-    mobx.transaction(() => {
+    mobx.runInAction(() => {
       a.set(3);
       render(<Component />, container);
       a.set(4);

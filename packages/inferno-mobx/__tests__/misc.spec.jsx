@@ -1,5 +1,5 @@
 import { render } from "inferno";
-import mobx from "mobx";
+import * as mobx from "mobx";
 import { observer } from "inferno-mobx";
 import createClass from "inferno-create-class";
 
