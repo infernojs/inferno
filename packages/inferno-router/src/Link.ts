@@ -66,7 +66,7 @@ export default class Link extends Component<ILinkProps, any> {
       {
         ...props,
         href,
-        onClick: this.handleClick
+        onclick: this.handleClick
       },
       null,
       innerRef ? x => innerRef(x) : null

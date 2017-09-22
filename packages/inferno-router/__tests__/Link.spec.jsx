@@ -1,6 +1,7 @@
 import { render } from "inferno";
-import { innerHTML } from "inferno-utils";
+import { innerHTML, triggerEvent } from "inferno-utils";
 import { HashRouter, Link, MemoryRouter } from "inferno-router";
+import sinon from "sinon";
 
 describe("Link (jsx)", () => {
   let node;
@@ -53,6 +54,51 @@ describe("Link (jsx)", () => {
       </MemoryRouter>,
       node
     );
+  });
+
+  it("should trigger when clicked", (done) => {
+    const node = document.createElement("div");
+
+    let history
+    const ContextChecker = (props, context) => {
+      history = context.router.history
+      return props.children
+    }
+
+    render(
+      <MemoryRouter>
+        <ContextChecker>
+          <Link to="/clicked">
+            link
+          </Link>
+        </ContextChecker>
+      </MemoryRouter>,
+      node
+    );
+
+    const element = node.querySelector('a')
+    triggerEvent("click", element);
+    expect(history.location.pathname).toBe('/clicked')
+    done();
+  });
+
+  it("should trigger custom onClick", (done) => {
+    const node = document.createElement("div");
+    const spy = sinon.spy(() => {});
+
+    render(
+      <MemoryRouter>
+        <Link to="/" onClick={spy}>
+          link
+        </Link>
+      </MemoryRouter>,
+      node
+    );
+    expect(spy.callCount).toBe(0);
+    const element = node.querySelector('a')
+    element.click()
+    expect(spy.callCount).toBe(1);
+    done()
   });
 });
 
