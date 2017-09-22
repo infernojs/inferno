@@ -11,10 +11,10 @@ const isModifiedEvent = (event): boolean =>
 
 export interface ILinkProps {
   onClick?: any;
-  target: string;
+  target?: string;
   className?: string;
   replace: boolean;
-  to: string | {};
+  to?: string | {};
   innerRef: any;
 }
 
@@ -46,9 +46,7 @@ export default class Link extends Component<ILinkProps, any> {
     }
   };
 
-  public render(): VNode {
-    const { replace, className, to, innerRef, ...props } = this.props;
-
+  public render({ replace, className, to = "", innerRef, ...rest }): VNode {
     invariant(
       this.context.router,
       "You should not use <Link> outside a <Router>"
@@ -64,9 +62,9 @@ export default class Link extends Component<ILinkProps, any> {
       className,
       null,
       {
-        ...props,
+        ...rest,
         href,
-        onclick: this.handleClick
+        onClick: this.handleClick
       },
       null,
       innerRef ? x => innerRef(x) : null
