@@ -9,10 +9,10 @@ import Router from "./Router";
 import { warning } from "./utils";
 
 export interface IMemoryRouterProps {
-  initialEntries: string[];
-  initialIndex: number;
-  getUserConfirmation: () => {};
-  keyLength: number;
+  initialEntries?: string[];
+  initialIndex?: number;
+  getUserConfirmation?: () => {};
+  keyLength?: number;
   children: Array<Component<any, any>>;
 }
 

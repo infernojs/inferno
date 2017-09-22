@@ -9,10 +9,10 @@ import Router from "./Router";
 import { warning } from "./utils";
 
 export interface IBrowserRouterProps {
-  basename: string;
-  forceRefresh: boolean;
-  getUserConfirmation: () => {};
-  keyLength: number;
+  basename?: string;
+  forceRefresh?: boolean;
+  getUserConfirmation?: () => {};
+  keyLength?: number;
   children: Array<Component<any, any>>;
 }
 

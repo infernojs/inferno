@@ -9,9 +9,9 @@ import Router from "./Router";
 import { warning } from "./utils";
 
 export interface IHashRouterProps {
-  basename: string;
-  getUserConfirmation: () => {};
-  hashType: string;
+  basename?: string;
+  getUserConfirmation?: () => {};
+  hashType?: string;
   children: Array<Component<any, any>>;
 }
 
