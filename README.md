@@ -123,6 +123,12 @@ npm install --save inferno-router
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
+Or on jsDelivr:
+
+```
+https://cdn.jsdelivr.net/npm/inferno@latest/dist/inferno.min.js
+```
+
 Or on unpkg.com:
 
 ```
