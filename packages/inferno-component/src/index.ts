@@ -45,19 +45,6 @@ export interface ComponentLifecycle<P, S> {
   componentWillUnmount?(): void;
 }
 
-// when a components root VNode is also a component, we can run into issues
-// this will recursively look for vNode.parentNode if the VNode is a component
-function updateParentComponentVNodes(vNode: VNode, dom: Element) {
-  if (vNode.flags & VNodeFlags.Component) {
-    const parentVNode = vNode.parentVNode;
-
-    if (parentVNode) {
-      parentVNode.dom = dom;
-      updateParentComponentVNodes(parentVNode, dom);
-    }
-  }
-}
-
 const resolvedPromise = Promise.resolve();
 
 function addToQueue(
@@ -174,7 +161,7 @@ function applyState<P, S>(
     }
 
     const lastInput = component._lastInput as VNode;
-    const vNode = component._vNode as VNode;
+    let vNode = component._vNode as VNode;
     const parentDom =
       (lastInput.dom && lastInput.dom.parentNode) ||
       (lastInput.dom = vNode.dom);
@@ -226,7 +213,11 @@ function applyState<P, S>(
       internal_DOMNodeMap.set(component, (nextInput as VNode).dom);
     }
 
-    updateParentComponentVNodes(vNode, dom);
+    while (!isNullOrUndef((vNode = vNode.parentVNode as any))) {
+      if ((vNode.flags & VNodeFlags.Component) > 0) {
+        vNode.dom = dom;
+      }
+    }
   } else {
     component.state = component._pendingState as any;
     component._pendingState = null;
