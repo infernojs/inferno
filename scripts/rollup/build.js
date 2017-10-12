@@ -19,6 +19,7 @@ mkdir(join(cwd, "dist"), err => {
     boolean: ["replace", "optimize", "uglify"],
     default: {
       env: "development",
+      ext: ".js",
       format: "umd",
       name: pkgJSON.name,
       optimize: true,
@@ -35,13 +36,27 @@ mkdir(join(cwd, "dist"), err => {
   const bundle = createBundle(options);
 
   rollup
-    .catch()
+    .catch((e) => {
+      console.log(e);
+    })
     .then(bundle)
     .then(() => {
       console.log(`${pkgJSON.name} in ${options.format} is DONE`);
     })
     .catch(error => {
-      console.warn(error); // Print whole error object
+      console.error(error); // Print whole error object
+
+      if (error.snippet) {
+        console.error('\u001b[31;1m');
+        console.error('\n-------- Details -------');
+        console.error(error.id);
+        console.error(error.loc);
+        console.error('\n-------- Snippet --------');
+        console.error(error.snippet);
+        console.error('\n-------------------------');
+        console.error('\u001b[0m')
+      }
+
       console.error(
         `${pkgJSON.name} in ${options.format} is FAILED ${error.message}`
       );
