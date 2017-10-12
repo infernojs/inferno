@@ -24,11 +24,7 @@ function createRoutes(component) {
 }
 
 function showChildren({ children }) {
-  return (
-    <div>
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
 
 describe("Router (jsx)", () => {

@@ -2,6 +2,8 @@ import { createVNode, render } from "inferno";
 import Component from "inferno-component";
 import VNodeFlags from "inferno-vnode-flags";
 
+let renderCount = 0;
+
 class TestCWRP extends Component {
   constructor(props) {
     super(props);
@@ -15,20 +17,19 @@ class TestCWRP extends Component {
   componentWillReceiveProps() {
     this.setState({ a: 1 });
 
-    if (this.state.a !== 1) {
-      this.props.done("state is not correct");
-      return;
-    }
-
-    this.props.done();
+    expect(this.state.a).toBe(0); // It should be 0 because state is not synchronously updated
   }
 
   render() {
-    return (
-      <div>
-        {JSON.stringify(this.state)}
-      </div>
-    );
+    if (renderCount === 0) {
+      expect(this.state.a).toBe(0);
+    } else if (renderCount === 1) {
+      expect(this.state.a).toBe(1); // Changed in CWRP
+    }
+
+    renderCount++;
+
+    return <div>{JSON.stringify(this.state)}</div>;
   }
 }
 
@@ -63,17 +64,27 @@ describe("state", () => {
 
   describe("setting state", () => {
     it("setState should apply state during componentWillReceiveProps", done => {
-      const node = createVNode(
-        VNodeFlags.ComponentClass,
-        TestCWRP,
-        null,
-        null,
-        { done },
-        null
+      render(
+        createVNode(VNodeFlags.ComponentClass, TestCWRP, null, null, {}, null),
+        container
       );
-      render(node, container);
-      node.props.foo = 1;
-      render(node, container);
+      expect(renderCount).toBe(1);
+
+      render(
+        createVNode(
+          VNodeFlags.ComponentClass,
+          TestCWRP,
+          null,
+          null,
+          {
+            foo: 1
+          },
+          null
+        ),
+        container
+      );
+      expect(renderCount).toBe(2);
+      done();
     });
   });
 

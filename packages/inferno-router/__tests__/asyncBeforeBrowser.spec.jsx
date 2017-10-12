@@ -26,7 +26,11 @@ class PageOne extends Component {
   }
 
   render() {
-    return <div>Page One <span>{dataStore.pageOne}</span></div>;
+    return (
+      <div>
+        Page One <span>{dataStore.pageOne}</span>
+      </div>
+    );
   }
 }
 
@@ -43,7 +47,10 @@ class PageTwo extends Component {
 
   render() {
     return (
-      <div>Page Two <span>{dataStore.pageTwo}</span>{this.props.children}</div>
+      <div>
+        Page Two <span>{dataStore.pageTwo}</span>
+        {this.props.children}
+      </div>
     );
   }
 }
@@ -79,7 +86,11 @@ class Section extends Component {
   }
 
   render() {
-    return <div>Section <span>{dataStore.section}</span></div>;
+    return (
+      <div>
+        Section <span>{dataStore.section}</span>
+      </div>
+    );
   }
 }
 
@@ -205,7 +216,11 @@ describe("Router (jsx) asyncBefore", () => {
         }
 
         render() {
-          return <div>Page One <span>{dataStore.pageOne}</span></div>;
+          return (
+            <div>
+              Page One <span>{dataStore.pageOne}</span>
+            </div>
+          );
         }
       }
 

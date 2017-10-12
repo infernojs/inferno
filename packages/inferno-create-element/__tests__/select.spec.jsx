@@ -133,7 +133,7 @@ describe("Select / select multiple (JSX)", () => {
   });
 
   it("should populate the value attribute on select multiple using groups", () => {
-    const template = val =>
+    const template = val => (
       <select multiple={true} value={val}>
         <optgroup label="foo-group">
           <option value="foo" />
@@ -141,7 +141,8 @@ describe("Select / select multiple (JSX)", () => {
         <optgroup label="bar-group" disabled>
           <option value="bar" />
         </optgroup>
-      </select>;
+      </select>
+    );
 
     // render(template(undefined), container);
     render(template(["foo", "bar"]), container);
@@ -425,17 +426,15 @@ describe("Select / select multiple (JSX)", () => {
     expect(container.firstChild.children[1].selected).toEqual(true); // Currently failing due to issue #1031
   });
 
-  it("Shoult have selectedIndex -1 and value as null when value is removed - Github #1105", () => {
+  it("Should have selectedIndex -1 and value as null when value is removed - Github #1105", () => {
     render(
       <select id="sel" value="">
         <option value="">a</option>
       </select>,
       container
     );
-    expect(container.firstChild.selectedIndex, "Initial selected index").toBe(
-      0
-    );
-    expect(container.firstChild.value, "Intial value").toBe("");
+    expect(container.firstChild.selectedIndex).toBe(0);
+    expect(container.firstChild.value).toBe("");
 
     render(
       <select id="sel">
@@ -443,9 +442,7 @@ describe("Select / select multiple (JSX)", () => {
       </select>,
       container
     );
-    expect(container.firstChild.value, "Second selected index").toBe("");
-    expect([0, -1], "Second value").toContain(
-      container.firstChild.selectedIndex
-    );
+    expect(container.firstChild.value).toBe("");
+    expect([0, -1]).toContain(container.firstChild.selectedIndex);
   });
 });

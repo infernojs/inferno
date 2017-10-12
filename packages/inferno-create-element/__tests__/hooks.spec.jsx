@@ -574,11 +574,7 @@ describe("Component lifecycle (JSX)", () => {
         if (innersecond) {
           contentTwo = <span ref={fakeObj.innerSecondCallback}>dfg</span>;
         }
-        content = (
-          <div ref={fakeObj.innerCallback}>
-            {contentTwo}
-          </div>
-        );
+        content = <div ref={fakeObj.innerCallback}>{contentTwo}</div>;
       }
 
       return (
@@ -769,11 +765,7 @@ describe("Component lifecycle (JSX)", () => {
         if (innersecond) {
           contentTwo = <span ref={fakeObj.innerSecondCallback}>dfg</span>;
         }
-        content = (
-          <div ref={fakeObj.innerCallback}>
-            {contentTwo}
-          </div>
-        );
+        content = <div ref={fakeObj.innerCallback}>{contentTwo}</div>;
       }
 
       return (
@@ -792,9 +784,11 @@ describe("Component lifecycle (JSX)", () => {
     const RefParent = ({ bool, inner, innersecond }) => {
       return (
         <div>
-          {bool
-            ? <RefTester inner={inner} innersecond={innersecond} />
-            : <PlainDiv />}
+          {bool ? (
+            <RefTester inner={inner} innersecond={innersecond} />
+          ) : (
+            <PlainDiv />
+          )}
         </div>
       );
     };
@@ -910,11 +904,7 @@ describe("Component lifecycle (JSX)", () => {
           if (innersecond) {
             contentTwo = <span ref={fakeObj.innerSecondCallback}>dfg</span>;
           }
-          content = (
-            <div ref={fakeObj.innerCallback}>
-              {contentTwo}
-            </div>
-          );
+          content = <div ref={fakeObj.innerCallback}>{contentTwo}</div>;
         }
 
         return (
@@ -1073,11 +1063,7 @@ describe("Component lifecycle (JSX)", () => {
           if (innersecond) {
             contentTwo = <span ref={fakeObj.innerSecondCallback}>dfg</span>;
           }
-          content = (
-            <div ref={fakeObj.innerCallback}>
-              {contentTwo}
-            </div>
-          );
+          content = <div ref={fakeObj.innerCallback}>{contentTwo}</div>;
         }
 
         return (
@@ -1105,9 +1091,11 @@ describe("Component lifecycle (JSX)", () => {
 
         return (
           <div>
-            {bool
-              ? <RefTester inner={inner} innersecond={innersecond} />
-              : <PlainDiv />}
+            {bool ? (
+              <RefTester inner={inner} innersecond={innersecond} />
+            ) : (
+              <PlainDiv />
+            )}
           </div>
         );
       }
@@ -1309,11 +1297,7 @@ describe("Component lifecycle (JSX)", () => {
         }
 
         render() {
-          return (
-            <span>
-              {this.context.foobar}
-            </span>
-          );
+          return <span>{this.context.foobar}</span>;
         }
       }
 

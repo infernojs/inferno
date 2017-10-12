@@ -131,11 +131,7 @@ describe("Blueprints (JSX)", () => {
             return null;
           }
 
-          return (
-            <div ref={this.onWilAttach}>
-              {this.state.text}
-            </div>
-          );
+          return <div ref={this.onWilAttach}>{this.state.text}</div>;
         }
       }
 

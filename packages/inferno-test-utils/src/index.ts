@@ -2,9 +2,8 @@
  * @module Inferno-Test-Utils
  */ /** TypeDoc Comment */
 
-import { InfernoInput, render, VNode } from "inferno";
+import { createVNode, render, VNode } from "inferno";
 import Component from "inferno-component";
-import createElement from "inferno-create-element";
 import {
   isArray,
   isFunction,
@@ -127,8 +126,14 @@ export class Wrapper extends Component<any, any> {
   }
 }
 
-export function renderIntoDocument(input: InfernoInput): Wrapper {
-  const wrappedInput = createElement(Wrapper, null, input);
+export function renderIntoDocument(input): Wrapper {
+  const wrappedInput = createVNode(
+    VNodeFlags.ComponentClass,
+    Wrapper,
+    null,
+    null,
+    { children: input }
+  );
   const parent = document.createElement("div");
   document.body.appendChild(parent);
   return render(wrappedInput, parent) as any;
@@ -158,13 +163,15 @@ export function findAllInVNodeTree(
     const children: any = vNodeTree.children;
 
     if (isRenderedClassComponent(children)) {
-      result = result.concat(
-        findAllInVNodeTree(children._lastInput, predicate) as VNode[]
-      );
+      result = result.concat(findAllInVNodeTree(
+        children._lastInput,
+        predicate
+      ) as VNode[]);
     } else if (isVNode(children)) {
-      result = result.concat(
-        findAllInVNodeTree(children, predicate) as VNode[]
-      );
+      result = result.concat(findAllInVNodeTree(
+        children,
+        predicate
+      ) as VNode[]);
     } else if (isArray(children)) {
       children.forEach(child => {
         result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);

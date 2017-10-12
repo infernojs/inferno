@@ -37,13 +37,13 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab
                 key={"Item " + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -109,13 +109,13 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab
                 key={"Item " + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -165,13 +165,13 @@ describe("Children - (JSX)", () => {
         return (
           <div className="tab-group">
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab
                 key={"Item " + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
-            )}
+            ))}
           </div>
         );
       }
@@ -219,21 +219,21 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab
                 key={"Item " + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab
                 key={"Item " + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
-            )}
+            ))}
           </div>
         );
       }
@@ -284,13 +284,13 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab
                 key={"Item " + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -337,13 +337,13 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab
                 key={"Item " + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -373,19 +373,15 @@ describe("Children - (JSX)", () => {
       const _tabs = [];
 
       function Tab({ title, key }) {
-        return (
-          <div key={key}>
-            {title}
-          </div>
-        );
+        return <div key={key}>{title}</div>;
       }
 
       function TabGroup({ tabs }) {
         return (
           <div className="tab-group">
-            inlineText{tabs.map((tab, i) =>
+            inlineText{tabs.map((tab, i) => (
               <Tab key={"Item " + i} title={tab.title} />
-            )}
+            ))}
           </div>
         );
       }
@@ -412,19 +408,15 @@ describe("Children - (JSX)", () => {
       const _tabs = [];
 
       function Tab({ title, key }) {
-        return (
-          <div key={key}>
-            {title}
-          </div>
-        );
+        return <div key={key}>{title}</div>;
       }
 
       function TabGroup({ tabs }) {
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab key={"Item " + i} title={tab.title} />
-            )}inlineText
+            ))}inlineText
           </div>
         );
       }
@@ -468,9 +460,9 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab title={tab.title} onSelect={() => undefined} />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -536,9 +528,9 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab title={tab.title} onSelect={() => undefined} />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -588,9 +580,9 @@ describe("Children - (JSX)", () => {
         return (
           <div className="tab-group">
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab title={tab.title} onSelect={() => undefined} />
-            )}
+            ))}
           </div>
         );
       }
@@ -638,13 +630,13 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab title={tab.title} onSelect={() => undefined} />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab title={tab.title} onSelect={() => undefined} />
-            )}
+            ))}
           </div>
         );
       }
@@ -695,9 +687,9 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab title={tab.title} onSelect={() => undefined} />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -744,9 +736,9 @@ describe("Children - (JSX)", () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) =>
+            {tabs.map((tab, i) => (
               <Tab title={tab.title} onSelect={() => undefined} />
-            )}
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -776,11 +768,7 @@ describe("Children - (JSX)", () => {
       const _tabs = [];
 
       function Tab({ title }) {
-        return (
-          <div>
-            {title}
-          </div>
-        );
+        return <div>{title}</div>;
       }
 
       function TabGroup({ tabs }) {
@@ -813,11 +801,7 @@ describe("Children - (JSX)", () => {
       const _tabs = [];
 
       function Tab({ title }) {
-        return (
-          <div>
-            {title}
-          </div>
-        );
+        return <div>{title}</div>;
       }
 
       function TabGroup({ tabs }) {
@@ -856,11 +840,7 @@ describe("Children - (JSX)", () => {
       let activeOne;
 
       function Loop({ text }) {
-        return (
-          <p>
-            {text}
-          </p>
-        );
+        return <p>{text}</p>;
       }
 
       function Looper({ collectionOne, visibleStatic }) {
@@ -919,11 +899,7 @@ describe("Children - (JSX)", () => {
       let visibleTwo = false;
 
       function Loop({ text }) {
-        return (
-          <p>
-            {text}
-          </p>
-        );
+        return <p>{text}</p>;
       }
 
       function Looper({
@@ -1004,11 +980,7 @@ describe("Children - (JSX)", () => {
       let activeOne;
 
       function Loop({ text }) {
-        return (
-          <p>
-            {text}
-          </p>
-        );
+        return <p>{text}</p>;
       }
 
       function Looper({ collectionOne, visibleStatic }) {
@@ -1134,11 +1106,7 @@ describe("Children - (JSX)", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.props.children}
-            </div>
-          );
+          return <div>{this.props.children}</div>;
         }
       }
 
@@ -1170,11 +1138,7 @@ describe("Children - (JSX)", () => {
         }
 
         render() {
-          return (
-            <div>
-              {this.props.test}
-            </div>
-          );
+          return <div>{this.props.test}</div>;
         }
       }
 
@@ -1201,16 +1165,13 @@ describe("Children - (JSX)", () => {
 
   describe("VFragment within other nodes", () => {
     it("Should not clear nodes when non keyed", () => {
-      const Nodes = ({ items }) =>
+      const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item =>
-            <span>
-              {item}
-            </span>
-          )}
+          {items.map(item => <span>{item}</span>)}
           <div>end</div>
-        </div>;
+        </div>
+      );
 
       render(<Nodes items={[1, 2, 3]} />, container);
       expect(container.innerHTML).toBe(
@@ -1240,16 +1201,13 @@ describe("Children - (JSX)", () => {
     });
 
     it("Should not clear nodes when keyed inside vFragment", () => {
-      const Nodes = ({ items }) =>
+      const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item =>
-            <span key={item}>
-              {item}
-            </span>
-          )}
+          {items.map(item => <span key={item}>{item}</span>)}
           <div>end</div>
-        </div>;
+        </div>
+      );
 
       render(<Nodes items={[1, 2, 3]} />, container);
       expect(container.innerHTML).toBe(
@@ -1279,16 +1237,13 @@ describe("Children - (JSX)", () => {
     });
 
     it("Should not clear nodes when keyed inside vFragment #2", () => {
-      const Nodes = ({ items }) =>
+      const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item =>
-            <span key={item}>
-              {item}
-            </span>
-          )}
+          {items.map(item => <span key={item}>{item}</span>)}
           <div>end</div>
-        </div>;
+        </div>
+      );
 
       render(<Nodes items={[1]} />, container);
       expect(container.innerHTML).toBe(
@@ -1314,10 +1269,9 @@ describe("Children - (JSX)", () => {
 
   describe("Forced keyed children", () => {
     it("Should always go keyed algorithm when parent has hasKeyedChildren", () => {
-      const Collection = ({ children }) =>
-        <div hasKeyedChildren>
-          {children}
-        </div>;
+      const Collection = ({ children }) => (
+        <div hasKeyedChildren>{children}</div>
+      );
 
       render(
         <Collection>
@@ -1360,15 +1314,13 @@ describe("Children - (JSX)", () => {
     });
 
     it("Should be able to swap from keyed to nonkeyed when nextNode no longer is keyed", () => {
-      const CollectionKeyed = ({ children }) =>
-        <div hasKeyedChildren>
-          {children}
-        </div>;
+      const CollectionKeyed = ({ children }) => (
+        <div hasKeyedChildren>{children}</div>
+      );
 
-      const CollectionNonKeyed = ({ children }) =>
-        <div hasNonKeyedChildren>
-          {children}
-        </div>;
+      const CollectionNonKeyed = ({ children }) => (
+        <div hasNonKeyedChildren>{children}</div>
+      );
 
       render(
         <CollectionKeyed>
@@ -1410,18 +1362,12 @@ describe("Children - (JSX)", () => {
     });
 
     it("Should handle previous being empty array", () => {
-      const CollectionKeyed = ({ children }) =>
-        <div hasKeyedChildren>
-          {children}
-        </div>;
+      const CollectionKeyed = ({ children }) => (
+        <div hasKeyedChildren>{children}</div>
+      );
 
       const child = [];
-      render(
-        <CollectionKeyed>
-          {child}
-        </CollectionKeyed>,
-        container
-      );
+      render(<CollectionKeyed>{child}</CollectionKeyed>, container);
 
       expect(container.innerHTML).toEqual("<div></div>");
 
@@ -1440,10 +1386,9 @@ describe("Children - (JSX)", () => {
     });
 
     it("Should handle next being empty array", () => {
-      const CollectionKeyed = ({ children }) =>
-        <div hasKeyedChildren>
-          {children}
-        </div>;
+      const CollectionKeyed = ({ children }) => (
+        <div hasKeyedChildren>{children}</div>
+      );
 
       render(
         <CollectionKeyed>
@@ -1459,40 +1404,24 @@ describe("Children - (JSX)", () => {
       );
 
       const child = [];
-      render(
-        <CollectionKeyed>
-          {child}
-        </CollectionKeyed>,
-        container
-      );
+      render(<CollectionKeyed>{child}</CollectionKeyed>, container);
 
       expect(container.innerHTML).toEqual("<div></div>");
     });
 
     it("Should handle last/next being empty", () => {
-      const CollectionKeyed = ({ children }) =>
-        <div hasKeyedChildren>
-          {children}
-        </div>;
+      const CollectionKeyed = ({ children }) => (
+        <div hasKeyedChildren>{children}</div>
+      );
 
       const child = [];
-      render(
-        <CollectionKeyed>
-          {child}
-        </CollectionKeyed>,
-        container
-      );
+      render(<CollectionKeyed>{child}</CollectionKeyed>, container);
 
       expect(container.innerHTML).toEqual("<div></div>");
 
       const childB = [];
 
-      render(
-        <CollectionKeyed>
-          {childB}
-        </CollectionKeyed>,
-        container
-      );
+      render(<CollectionKeyed>{childB}</CollectionKeyed>, container);
 
       expect(container.innerHTML).toEqual("<div></div>");
     });
@@ -1594,11 +1523,7 @@ describe("Children - (JSX)", () => {
         componentWillMount() {}
 
         render() {
-          return (
-            <span>
-              {this.state.text}
-            </span>
-          );
+          return <span>{this.state.text}</span>;
         }
       }
 
@@ -1956,11 +1881,7 @@ describe("Children - (JSX)", () => {
         componentWillUnmount() {}
 
         render() {
-          return (
-            <span>
-              {!this.props.kill ? <Test /> : null}
-            </span>
-          );
+          return <span>{!this.props.kill ? <Test /> : null}</span>;
         }
       }
 
@@ -1998,11 +1919,7 @@ describe("Children - (JSX)", () => {
         }
 
         render() {
-          return (
-            <pre onclick={function() {}}>
-              {this.state.text}
-            </pre>
-          );
+          return <pre onclick={function() {}}>{this.state.text}</pre>;
         }
       }
 
@@ -2116,12 +2033,12 @@ describe("Children - (JSX)", () => {
         return (
           <div>
             <span>foobar</span>
-            {bool
-              ? <FooBar
-                  onComponentWillMount={foobarLifecycle.componentWillMount}
-                  onComponentWillUnmount={foobarLifecycle.componentWillUnmount}
-                />
-              : null}
+            {bool ? (
+              <FooBar
+                onComponentWillMount={foobarLifecycle.componentWillMount}
+                onComponentWillUnmount={foobarLifecycle.componentWillUnmount}
+              />
+            ) : null}
           </div>
         );
       }
