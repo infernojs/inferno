@@ -197,7 +197,14 @@ export function setTextContent(dom, text: string | number) {
 }
 
 export function updateTextContent(dom, text: string | number) {
-  dom.firstChild.nodeValue = text;
+  const textNode = dom.firstChild;
+
+  // Guard against external change on DOM node.
+  if (isNull(textNode)) {
+    setTextContent(dom, text);
+  } else {
+    textNode.nodeValue = text;
+  }
 }
 
 export function appendChild(parentDom, dom) {

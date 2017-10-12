@@ -1979,9 +1979,11 @@ describe("Components (JSX)", () => {
 
   describe("handling of sCU", () => {
     let instance;
+    let shouldUpdate = false;
+
     class Test extends Component {
       shouldComponentUpdate() {
-        return false;
+        return shouldUpdate;
       }
 
       render() {
@@ -1991,12 +1993,30 @@ describe("Components (JSX)", () => {
     }
 
     it("should correctly render once but never again", () => {
+      shouldUpdate = false;
       render(<Test foo="bar" />, container);
       expect(container.innerHTML).toBe(innerHTML("<div>bar</div>"));
       render(<Test foo="yar" />, container);
       expect(container.innerHTML).toBe(innerHTML("<div>bar</div>"));
       instance.setState({ foo: "woo" });
       expect(container.innerHTML).toBe(innerHTML("<div>bar</div>"));
+      render(null, container);
+      expect(container.innerHTML).toBe("");
+    });
+
+    it("Should not fail if text node has external change Github#1207", () => {
+      shouldUpdate = false;
+      render(<Test foo="bar" />, container);
+      expect(container.innerHTML).toBe(innerHTML("<div>bar</div>"));
+      render(<Test foo="yar" />, container);
+      expect(container.innerHTML).toBe(innerHTML("<div>bar</div>"));
+
+      container.firstChild.removeChild(container.firstChild.firstChild); // When div is contentEditable user can remove whole text content
+      expect(container.innerHTML).toBe(innerHTML("<div></div>"));
+
+      shouldUpdate = true;
+      render(<Test foo="foo" />, container);
+      expect(container.innerHTML).toBe(innerHTML("<div>foo</div>"));
       render(null, container);
       expect(container.innerHTML).toBe("");
     });
