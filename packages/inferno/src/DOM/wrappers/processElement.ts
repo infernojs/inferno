@@ -23,13 +23,11 @@ export function processElement(
   mounting: boolean,
   isControlled: boolean
 ): void {
-  if (flags & VNodeFlags.InputElement) {
+  if ((flags & VNodeFlags.InputElement) > 0) {
     processInput(vNode, dom, nextPropsOrEmpty, mounting, isControlled);
-  }
-  if (flags & VNodeFlags.SelectElement) {
+  } else if ((flags & VNodeFlags.SelectElement) > 0) {
     processSelect(vNode, dom, nextPropsOrEmpty, mounting, isControlled);
-  }
-  if (flags & VNodeFlags.TextareaElement) {
+  } else if ((flags & VNodeFlags.TextareaElement) > 0) {
     processTextarea(vNode, dom, nextPropsOrEmpty, mounting, isControlled);
   }
 }
