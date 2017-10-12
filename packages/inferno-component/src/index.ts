@@ -102,7 +102,7 @@ function queueStateChanges<P, S>(
     }
   } else {
     component._pendingSetState = true;
-    if (!isNullOrUndef(callback) && component._blockRender) {
+    if (isFunction(callback) && component._blockRender) {
       (component._lifecycle as any).addListener(callback.bind(component));
     }
   }
@@ -222,7 +222,7 @@ function applyState<P, S>(
     component.state = component._pendingState as any;
     component._pendingState = null;
   }
-  if (!isNullOrUndef(callback)) {
+  if (isFunction(callback)) {
     callback.call(component);
   }
 }

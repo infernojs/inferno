@@ -80,6 +80,49 @@ describe("setState", () => {
     render(<BaseComp />, container);
   });
 
+  it("Should not fail if callback is object and not function ( invalid used scenario )", () => {
+    class TestComponent extends Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          value: props.value
+        };
+      }
+
+      componentWillReceiveProps(nextProps) {
+        this.setState(
+          {
+            value: nextProps.value
+          },
+          {foo: 'bar'} // This should not break inferno
+        );
+      }
+
+      render() {
+        return null;
+      }
+    }
+
+    class BaseComp extends Component {
+      state = {
+        value: "__OLDVALUE__"
+      };
+
+      componentDidMount() {
+        this.setState({
+          value: "__NEWVALUE__"
+        });
+      }
+
+      render() {
+        const value = this.state.value;
+        return <TestComponent value={value} />;
+      }
+    }
+
+    render(<BaseComp />, container);
+  });
+
   it("Should not fail if componentDidUpdate is not defined", done => {
     class TestComponent extends Component {
       constructor(props) {
