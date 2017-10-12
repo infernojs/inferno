@@ -37,12 +37,14 @@ function renderVNodeToString(
       const instance = new type(props, context);
       instance._blockSetState = false;
       let childContext;
-      if (!isNullOrUndef(instance.getChildContext)) {
+      if (isFunction(instance.getChildContext)) {
         childContext = instance.getChildContext();
       }
 
-      if (!isNullOrUndef(childContext)) {
-        context = combineFrom(context, childContext);
+      if (isNullOrUndef(childContext)) {
+        childContext = context;
+      } else {
+        childContext = combineFrom(context, childContext);
       }
       if (instance.props === EMPTY_OBJ) {
         instance.props = props;
@@ -68,12 +70,12 @@ function renderVNodeToString(
         }
         instance._blockRender = false;
       }
-      const nextVNode = instance.render(props, instance.state, vNode.context);
+      const nextVNode = instance.render(props, instance.state, instance.context);
       // In case render returns invalid stuff
       if (isInvalid(nextVNode)) {
         return "<!--!-->";
       }
-      return renderVNodeToString(nextVNode, vNode, context, true);
+      return renderVNodeToString(nextVNode, vNode, childContext, true);
     } else {
       const nextVNode = type(props, context);
 
