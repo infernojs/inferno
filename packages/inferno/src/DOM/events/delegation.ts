@@ -60,6 +60,9 @@ function dispatchEvents(
 ) {
   let dom = target;
   while (count > 0) {
+    if (isClick && dom.disabled) {
+      return;
+    }
     const eventsToTrigger = items.get(dom);
 
     if (eventsToTrigger) {
@@ -80,7 +83,7 @@ function dispatchEvents(
     // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
     // because the event listener is on document.body
     // Don't process clicks on disabled elements
-    if (dom === null || (isClick && dom.disabled)) {
+    if (dom === null) {
       return;
     }
   }
