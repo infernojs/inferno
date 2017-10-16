@@ -130,6 +130,40 @@ describe("setState", () => {
     render(<BaseComp />, container);
   });
 
+  it("Should let state be an array after update", () => {
+    class TestComponent extends Component {
+      constructor(props) {
+        super(props);
+        this.state = [ 'a', 'b' ];
+      }
+
+      componentWillReceiveProps(nextProps) {
+        this.state = [ 'a', 'b' ];
+      }
+
+      render() {
+        return null;
+      }
+    }
+
+    class BaseComp extends Component {
+      state = ["__OLDVALUE__"];
+
+      componentDidMount() {
+        this.state = ["__NEWVALUE__"];
+      }
+
+      render() {
+        expect(this.state instanceof Array).toBeTruthy();
+        expect(this.state.length).toBe(1);
+        const value = this.state[0];
+        return <TestComponent value={value} />;
+      }
+    }
+
+    render(<BaseComp />, container);
+  });
+
   // Should work as Per react: https://jsfiddle.net/f12u8xzb/
   // React does not get stuck
   it("Should not get stuck in infinite loop #1", done => {

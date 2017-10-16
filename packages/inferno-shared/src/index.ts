@@ -76,6 +76,9 @@ export function warning(message: string) {
 }
 
 export function combineFrom(first?: {} | null, second?: {} | null): object {
+  if (first === null || second === null) {
+    return first || second || {};
+  }
   const out = {};
   if (first) {
     for (const key in first) {
