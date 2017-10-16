@@ -1,4 +1,4 @@
-import { Component, render } from "inferno";
+import { Component, render, options } from "inferno";
 import { innerHTML } from "inferno-utils";
 
 describe("Component lifecycle", () => {
@@ -193,5 +193,37 @@ describe("Component lifecycle", () => {
 
     // eslint-disable-next-line no-return-assign
     render(<Com ref={inst => (c = inst)} value={2} />, container);
+  });
+
+  it("Should pass defaultContext to constructor", () => {
+    options.defaultContext = { value: 1 };
+
+    class Com extends Component {
+      constructor(props, context) {
+        super(props, context);
+        expect(context.value).toBe(1);
+      }
+
+      render() {
+        return <div>{this.context.value}</div>;
+      }
+    }
+
+    render(<Com />, container);
+  });
+
+  it("Should pass render context param to constructor", () => {
+    class Com extends Component {
+      constructor(props, context) {
+        super(props, context);
+        expect(context.value).toBe(1);
+      }
+
+      render() {
+        return <div>{this.context.value}</div>;
+      }
+    }
+
+    render(<Com />, container, null, { value: 1 });
   });
 });

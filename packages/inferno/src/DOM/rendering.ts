@@ -96,7 +96,8 @@ export function render(
     | null
     | HTMLElement
     | Node,
-  callback?: Function
+  callback?: Function,
+  context = getDefaultContext()
 ): InfernoChildren {
   // Development warning
   if (process.env.NODE_ENV !== "production") {
@@ -118,13 +119,13 @@ export function render(
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
       }
-      if (!hydrateRoot(input, parentDom as any, lifecycle)) {
+      if (!hydrateRoot(input, parentDom as any, lifecycle, context)) {
         mount(
           input as VNode,
           parentDom as Element,
           lifecycle,
-          EMPTY_OBJ,
-          false
+          context,
+          false,
         );
       }
       root = setRoot(parentDom as any, input as VNode);
@@ -142,7 +143,7 @@ export function render(
         input as VNode,
         parentDom as Element,
         lifecycle,
-        EMPTY_OBJ,
+        context,
         false
       );
       root.input = input as VNode;
@@ -163,6 +164,10 @@ export function render(
       return rootInput.children;
     }
   }
+}
+
+function getDefaultContext() {
+  return typeof options.defaultContext === 'function' ? options.defaultContext() : (options.defaultContext || EMPTY_OBJ);
 }
 
 export function createRenderer(parentDom?) {

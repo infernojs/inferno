@@ -546,6 +546,7 @@ export const options: {
   beforeRender: null | Function;
   beforeUnmount: null | Function;
   createVNode: null | Function;
+  defaultContext: null | Object | Function;
   findDOMNodeEnabled: boolean;
   roots: Root[];
 } = {
@@ -555,6 +556,7 @@ export const options: {
   beforeRender: null,
   beforeUnmount: null,
   createVNode: null,
+  defaultContext: null,
   findDOMNodeEnabled: false,
   roots: []
 };

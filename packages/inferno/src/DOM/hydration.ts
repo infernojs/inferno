@@ -267,11 +267,11 @@ function hydrate(
   }
 }
 
-export function hydrateRoot(input, parentDom: Element, lifecycle: Function[]) {
+export function hydrateRoot(input, parentDom: Element, lifecycle: Function[], context: Object = EMPTY_OBJ) {
   let dom = parentDom.firstChild as Element;
 
   if (!isNull(dom)) {
-    hydrate(input, dom, lifecycle, EMPTY_OBJ, false);
+    hydrate(input, dom, lifecycle, context, false);
     dom = parentDom.firstChild as Element;
     // clear any other DOM nodes, there should be only a single entry for the root
     while ((dom = dom.nextSibling as Element)) {
