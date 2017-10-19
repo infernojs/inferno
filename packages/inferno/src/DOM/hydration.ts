@@ -267,7 +267,7 @@ function hydrate(
   }
 }
 
-export function hydrateRoot(input, parentDom: Element, lifecycle: Function[], context: Object = EMPTY_OBJ) {
+export function hydrateRoot(input, parentDom: Element, lifecycle: Function[], context: Object) {
   let dom = parentDom.firstChild as Element;
 
   if (!isNull(dom)) {
