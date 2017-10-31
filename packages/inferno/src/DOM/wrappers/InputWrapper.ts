@@ -11,9 +11,9 @@ export function isCheckedType(type) {
 
 const onTextInputChange = createWrappedFunction("onInput", applyValue);
 
-const wrappedOnChange = createWrappedFunction("onChange");
+const wrappedOnChange = createWrappedFunction("onChange", applyValue);
 
-const onCheckboxChange = createWrappedFunction("onClick", applyValue);
+const onCheckboxChange = createWrappedFunction("onClick");
 
 export function processInput(
   vNode,
@@ -28,12 +28,12 @@ export function processInput(
 
     if (mounting) {
       if (isCheckedType(nextPropsOrEmpty.type)) {
-        dom.onclick = onCheckboxChange;
+        dom.onchange = wrappedOnChange;
       } else {
         dom.oninput = onTextInputChange;
       }
-      if (nextPropsOrEmpty.onChange) {
-        dom.onchange = wrappedOnChange;
+      if (nextPropsOrEmpty.onClick) {
+        dom.onclick = onCheckboxChange;
       }
     }
   }
