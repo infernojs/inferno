@@ -24,12 +24,12 @@ module.exports = function(options) {
     : ""}.js`;
 
   const bundleOptions = {
-    dest: `dist/${filename}`,
+    file: `dist/${filename}`,
     format: options.format,
     globals: Object.assign(moduleGlobals, rollupConfig.moduleGlobals),
     indent: true,
-    moduleName: rollupConfig.moduleName,
-    sourceMap: false
+    name: rollupConfig.moduleName,
+    sourcemap: false
   };
 
   if (options.format === "cjs") {

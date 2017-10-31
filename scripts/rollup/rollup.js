@@ -15,13 +15,8 @@ module.exports = function(options) {
   const plugins = createPlugins(version, options);
 
   return rollup({
-    entry: join(cwd, "src/index.ts"),
+    input: join(cwd, "src/index.ts"),
     external,
-    onwarn(warning) {
-      if (warning.code === "MISSING_EXPORTS") {
-        return;
-      }
-    },
     plugins
   });
 };
