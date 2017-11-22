@@ -426,7 +426,7 @@ describe("Select / select multiple (JSX)", () => {
     expect(container.firstChild.children[1].selected).toEqual(true); // Currently failing due to issue #1031
   });
 
-  it("Shoult have selectedIndex -1 and value as null when value is removed - Github #1105", () => {
+  it("Should have selectedIndex -1 and value as null when value is removed - Github #1105", () => {
     render(
       <select id="sel" value="">
         <option value="">a</option>

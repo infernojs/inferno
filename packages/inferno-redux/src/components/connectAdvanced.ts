@@ -2,11 +2,11 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
+import VNodeFlags from "inferno-vnode-flags";
 import { Dispatch, Store } from "redux";
 import hoistStatics from "hoist-non-inferno-statics";
 import { Component, createVNode } from "inferno";
 import { Subscription } from "../utils/Subscription";
-import VNodeFlags from "inferno-vnode-flags";
 
 let hotReloadingVersion = 0;
 const dummyState = {};

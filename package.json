@@ -29,7 +29,6 @@
     "silent": true,
     "run": [
       "circularDeps",
-      "lint-staged",
       "lint",
       "test"
     ]
@@ -41,13 +40,13 @@
     "debug": "node --inspect-brk ./node_modules/.bin/jest components --runInBand --no-cache --no-watchman",
     "prebuild": "npm run clean",
     "postbuild": "rimraf build",
-    "build": "npm-run-all -l build:**",
+    "build": "run-s build:**",
     "prebuild:typings": "rimraf build",
     "build:typings": "tsc && lerna exec -- node ../../scripts/typings/build.js",
-    "build:es": "npm run rollup -- --format=es --optimize=false --name=index.es --uglify=false",
+    "build:es": "npm run rollup -- --name=index.es --env=production --format=es --optimize=false --uglify=false",
     "build:node": "npm run rollup -- --format=cjs --replace=false --name=index --uglify=false",
     "build:umd:dev": "npm run rollup -- --uglify=false",
-    "build:umd:prod": "npm run rollup -- --env=production",
+    "build:umd:prod": "npm run rollup -- --env=production --ext=.min.js",
     "changelog": "conventional-changelog -o CHANGELOG.md -r 0",
     "predocs": "rimraf docs",
     "docs": "typedoc",

@@ -19,6 +19,7 @@ mkdir(join(cwd, "dist"), err => {
     boolean: ["replace", "optimize", "uglify"],
     default: {
       env: "development",
+      ext: ".js",
       format: "umd",
       name: pkgJSON.name,
       optimize: true,

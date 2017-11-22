@@ -36,12 +36,14 @@ function renderVNodeToString(vNode,
       const instance = new type(props, context);
       instance.$BS = false;
       let childContext;
-      if (!isNullOrUndef(instance.getChildContext)) {
+      if (isFunction(instance.getChildContext)) {
         childContext = instance.getChildContext();
       }
 
-      if (!isNullOrUndef(childContext)) {
-        context = combineFrom(context, childContext);
+      if (isNullOrUndef(childContext)) {
+        childContext = context;
+      } else {
+        childContext = combineFrom(context, childContext);
       }
       if (instance.props === EMPTY_OBJ) {
         instance.props = props;
@@ -72,7 +74,7 @@ function renderVNodeToString(vNode,
       if (isInvalid(nextVNode)) {
         return "<!--!-->";
       }
-      return renderVNodeToString(nextVNode, vNode, context, true);
+      return renderVNodeToString(nextVNode, vNode, childContext, true);
     }
     else {
       const nextVNode = type(props, context);

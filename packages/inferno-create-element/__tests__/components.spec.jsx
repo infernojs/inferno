@@ -1979,6 +1979,7 @@ describe("Components (JSX)", () => {
   describe("handling of sCU", () => {
     let instance;
     let shouldUpdate = false;
+
     class Test extends Component {
       shouldComponentUpdate() {
         return shouldUpdate;
