@@ -10,8 +10,6 @@
 [![npm downloads](https://img.shields.io/npm/dm/inferno.svg?style=flat-square)](https://www.npmjs.org/package/inferno)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/LukeSheard.svg)](https://saucelabs.com/u/LukeSheard)
-
 Inferno is an insanely fast, `9kb` React-like library for building high-performance user interfaces on both the client and server.
 
 To quote a member of the React core team at Facebook:
@@ -545,5 +543,4 @@ There is an [Inferno Slack](https://infernojs.slack.com). You can join via [infe
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
-<img src="https://saucelabs.com/content/images/logo@3x.png" height="50px" alt="Supported by Sauce Labs" />
 <img src="https://www.digitalocean.com/assets/media/logos-badges/png/DO_Powered_by_Badge_black-a35c64eb.png" height="50px" alt="Supported by Digital Ocean" />
