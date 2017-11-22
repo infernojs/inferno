@@ -36,7 +36,7 @@ import { patchProp } from "./props";
 import {
   createClassComponentInstance,
   handleComponentInput
-} from "./utils/components";
+} from "./utils/componentutil";
 
 export function mount(
   vNode: VNode,

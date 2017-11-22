@@ -137,7 +137,6 @@ const reactiveMixin = {
      * forceUpdate will re-assign this.props. We don't want that to cause a loop,
      * so detect these changes
      */
-    let isForcingUpdate = false;
 
     function makePropertyObservableReference(propName) {
       let valueHolder = this[propName];
@@ -150,7 +149,7 @@ const reactiveMixin = {
           return valueHolder;
         },
         set(v) {
-          if (!isForcingUpdate && isObjectShallowModified(valueHolder, v)) {
+          if (isObjectShallowModified(valueHolder, v)) {
             valueHolder = v;
             skipRender = true;
             atom.reportChanged();
@@ -185,24 +184,10 @@ const reactiveMixin = {
             this.componentWillReact(); // TODO: wrap in action?
           }
           if (this.__$mobxIsUnmounted !== true) {
-            // If we are unmounted at this point, componentWillReact() had a side effect causing the component to unmounted
-            // TODO: remove this check? Then react will properly warn about the fact that this should not happen? See #73
-            // However, people also claim this migth happen during unit tests..
-            let hasError = true;
-            try {
-              isForcingUpdate = true;
-              if (!skipRender) {
-                this.$UPD = true;
-                this.forceUpdate();
-                this.$UPD = false;
-                // Component.prototype.forceUpdate.call(this)
-              }
-              hasError = false;
-            } finally {
-              isForcingUpdate = false;
-              // if (hasError) {
-              //   (reaction as Reaction).dispose();
-              // }
+            if (!skipRender) {
+              this.$UPD = true;
+              this.forceUpdate();
+              this.$UPD = false;
             }
           }
         }

@@ -30,7 +30,7 @@ import {
 import {
   createClassComponentInstance,
   handleComponentInput
-} from "./utils/components";
+} from "./utils/componentutil";
 import { isSamePropsInnerHTML } from "./utils/innerhtml";
 import { patchProp } from "./props";
 

@@ -43,7 +43,7 @@ import {
   processElement
 } from "./wrappers/processElement";
 import { patchProp, removeProp } from "./props";
-import { handleComponentInput } from "./utils/components";
+import { handleComponentInput } from "./utils/componentutil";
 
 function replaceVNode(parentDom, dom, vNode) {
   unmount(vNode, null);

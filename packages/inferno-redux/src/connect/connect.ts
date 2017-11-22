@@ -78,14 +78,14 @@ export const createConnect = (
     shouldHandleStateChanges: !!mapStateToProps,
 
     // passed through to selectorFactory
-    initMapStateToProps,
-    initMapDispatchToProps,
-    initMergeProps,
-    pure,
-    areStatesEqual,
+    areMergedPropsEqual,
     areOwnPropsEqual,
     areStatePropsEqual,
-    areMergedPropsEqual,
+    areStatesEqual,
+    initMapDispatchToProps,
+    initMapStateToProps,
+    initMergeProps,
+    pure,
 
     // any extra options args can override defaults of connect or connectAdvanced
     ...extraOptions
