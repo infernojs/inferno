@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import {EMPTY_OBJ} from "inferno";
+import { EMPTY_OBJ } from "inferno";
 import {
   combineFrom,
   isArray,
@@ -17,13 +17,15 @@ import {
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import {renderStylesToString} from "./prop-renderers";
-import {escapeText, voidElements} from "./utils";
+import { renderStylesToString } from "./prop-renderers";
+import { escapeText, voidElements } from "./utils";
 
-function renderVNodeToString(vNode,
-                             parent,
-                             context,
-                             firstChild): string | undefined {
+function renderVNodeToString(
+  vNode,
+  parent,
+  context,
+  firstChild
+): string | undefined {
   const flags = vNode.flags;
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
@@ -69,14 +71,17 @@ function renderVNodeToString(vNode,
         instance.$PSS = false;
         instance.$PS = null;
       }
-      const nextVNode = instance.render(props, instance.state, instance.context);
+      const nextVNode = instance.render(
+        props,
+        instance.state,
+        instance.context
+      );
       // In case render returns invalid stuff
       if (isInvalid(nextVNode)) {
         return "<!--!-->";
       }
       return renderVNodeToString(nextVNode, vNode, childContext, true);
-    }
-    else {
+    } else {
       const nextVNode = type(props, context);
 
       if (isInvalid(nextVNode)) {
@@ -109,9 +114,9 @@ function renderVNodeToString(vNode,
         } else if (prop === "defaultValue") {
           // Use default values if normal values are not present
           if (!props.value) {
-            renderedString += ` value="${isString(value)
-              ? escapeText(value)
-              : value}"`;
+            renderedString += ` value="${
+              isString(value) ? escapeText(value) : value
+            }"`;
           }
         } else if (prop === "defaultChecked") {
           // Use default values if normal values are not present

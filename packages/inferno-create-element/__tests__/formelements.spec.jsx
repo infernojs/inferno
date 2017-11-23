@@ -839,12 +839,7 @@ describe("FormElements", () => {
       it("Should keep unChecked if checked is false", () => {
         render(
           <label>
-            <input
-              type="checkbox"
-              checked={false}
-              name="test"
-              value="test"
-            />{" "}
+            <input type="checkbox" checked={false} name="test" value="test" />{" "}
             test
           </label>,
           container

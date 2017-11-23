@@ -413,9 +413,7 @@ describe("Children - (JSX)", () => {
       function TabGroup({ tabs }) {
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => (
-              <Tab key={"Item " + i} title={tab.title} />
-            ))}inlineText
+            {tabs.map((tab, i) => <Tab key={"Item " + i} title={tab.title} />)}inlineText
           </div>
         );
       }

@@ -214,9 +214,9 @@ export class RenderQueueStream extends Readable {
           } else if (prop === "defaultValue") {
             // Use default values if normal values are not present
             if (!props.value) {
-              renderedString += ` value="${isString(value)
-                ? escapeText(value)
-                : value}"`;
+              renderedString += ` value="${
+                isString(value) ? escapeText(value) : value
+              }"`;
             }
           } else if (prop === "defaultChecked") {
             // Use default values if normal values are not present

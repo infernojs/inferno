@@ -12,7 +12,9 @@ export const verifyPlainObject = (
 ) => {
   if (!isPlainObject(value)) {
     warning(
-      `${methodName}() in ${displayName} must return a plain object. Instead received ${value}.`
+      `${methodName}() in ${
+        displayName
+      } must return a plain object. Instead received ${value}.`
     );
   }
 };

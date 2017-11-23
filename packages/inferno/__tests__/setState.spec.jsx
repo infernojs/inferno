@@ -93,7 +93,7 @@ describe("setState", () => {
           {
             value: nextProps.value
           },
-          {foo: 'bar'} // This should not break inferno
+          { foo: "bar" } // This should not break inferno
         );
       }
 

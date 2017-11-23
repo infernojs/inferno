@@ -23,8 +23,11 @@ const match = (arg, factories, name) => {
 
   return (dispatch: Dispatch<any>, options: IConnectOptions) => {
     throw new Error(
-      `Invalid value of type ${typeof arg} for ${name} argument when connecting component ${(options as any)
-        .wrappedComponentName}.`
+      `Invalid value of type ${typeof arg} for ${
+        name
+      } argument when connecting component ${
+        (options as any).wrappedComponentName
+      }.`
     );
   };
 };

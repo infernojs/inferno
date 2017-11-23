@@ -3,11 +3,11 @@
  */ /** TypeDoc Comment */
 
 import { isNullOrUndef } from "inferno-shared";
-import {createWrappedFunction} from "./wrapper";
+import { createWrappedFunction } from "./wrapper";
 
-const onTextareaInputChange = createWrappedFunction('onInput', applyValue);
+const onTextareaInputChange = createWrappedFunction("onInput", applyValue);
 
-const wrappedOnChange = createWrappedFunction('onChange');
+const wrappedOnChange = createWrappedFunction("onChange");
 
 export function processTextarea(
   vNode,

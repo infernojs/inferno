@@ -174,24 +174,27 @@ const reactiveMixin = {
     let isRenderingPending = false;
 
     const initialRender = () => {
-      reaction = new mobx.Reaction(`${initialName}#${rootNodeID}.render()`, () => {
-        if (!isRenderingPending) {
-          // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
-          // This unidiomatic React usage but React will correctly warn about this so we continue as usual
-          // See #85 / Pull #44
-          isRenderingPending = true;
-          if (typeof this.componentWillReact === "function") {
-            this.componentWillReact(); // TODO: wrap in action?
-          }
-          if (this.__$mobxIsUnmounted !== true) {
-            if (!skipRender) {
-              this.$UPD = true;
-              this.forceUpdate();
-              this.$UPD = false;
+      reaction = new mobx.Reaction(
+        `${initialName}#${rootNodeID}.render()`,
+        () => {
+          if (!isRenderingPending) {
+            // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
+            // This unidiomatic React usage but React will correctly warn about this so we continue as usual
+            // See #85 / Pull #44
+            isRenderingPending = true;
+            if (typeof this.componentWillReact === "function") {
+              this.componentWillReact(); // TODO: wrap in action?
+            }
+            if (this.__$mobxIsUnmounted !== true) {
+              if (!skipRender) {
+                this.$UPD = true;
+                this.forceUpdate();
+                this.$UPD = false;
+              }
             }
           }
         }
-      });
+      );
       (reaction as any).reactComponent = this;
       (reactiveRender as any).$mobx = reaction;
       this.render = reactiveRender;
@@ -339,13 +342,11 @@ export function observer(arg1, arg2?) {
 
 function mixinLifecycleEvents(target) {
   patch(target, "componentWillMount", true);
-  [
-    "componentDidMount",
-    "componentWillUnmount",
-    "componentDidUpdate"
-  ].forEach(function(funcName) {
-    patch(target, funcName);
-  });
+  ["componentDidMount", "componentWillUnmount", "componentDidUpdate"].forEach(
+    function(funcName) {
+      patch(target, funcName);
+    }
+  );
   if (!target.shouldComponentUpdate) {
     target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
   }

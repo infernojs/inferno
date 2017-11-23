@@ -32,6 +32,10 @@
     "inferno-vnode-flags": "3.10.1",
     "path-to-regexp-es6": "1.7.0"
   },
+  "devDependencies": {
+    "inferno-mobx": "3.10.1",
+    "mobx": ">=3.0.0"
+  },
   "rollup": {
     "bundledDependencies": [
       "path-to-regexp-es6"

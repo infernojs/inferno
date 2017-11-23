@@ -37,7 +37,7 @@
     "clean": "lerna exec -- rimraf dist .rpt2_cache_development .rpt2_cache_production",
     "circularDeps": "lerna exec -- madge --circular src/index.ts",
     "coveralls": "coveralls < coverage/lcov.info || true",
-    "debug": "node --inspect-brk ./node_modules/.bin/jest components --runInBand --no-cache --no-watchman",
+    "debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --no-cache --no-watchman",
     "prebuild": "npm run clean",
     "postbuild": "rimraf build",
     "build": "run-s build:**",
@@ -71,7 +71,7 @@
   },
   "devDependencies": {
     "@types/history": "^4.6.2",
-    "@types/jest": "^21.1.7",
+    "@types/jest": "^21.1.8",
     "@types/node": "^8.0.53",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

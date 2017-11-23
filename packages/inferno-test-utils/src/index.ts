@@ -162,7 +162,9 @@ function findOneOf(
   const all = finder(tree, filter);
   if (all.length > 1) {
     throwError(
-      `Did not find exactly one match (found ${all.length}) for ${name}: ${filter}`
+      `Did not find exactly one match (found ${all.length}) for ${name}: ${
+        filter
+      }`
     );
   } else {
     return all[0];

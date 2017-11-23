@@ -25,13 +25,13 @@ import {
   createPortal,
   createRenderer,
   findDOMNode,
-  render,
+  render
 } from "./DOM/rendering";
 import {
   componentToDOMNodeMap as internal_DOMNodeMap,
   EMPTY_OBJ
 } from "./DOM/utils/common";
-import {Component} from "./core/component";
+import { Component } from "./core/component";
 
 if (process.env.NODE_ENV !== "production") {
   /* tslint:disable-next-line:no-empty */

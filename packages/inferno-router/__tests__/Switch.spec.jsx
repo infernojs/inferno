@@ -90,7 +90,7 @@ describe("Switch (jsx)", () => {
     expect(node.innerHTML).toContain("bub");
   });
 
-  it("handles subsequent redirects", (done) => {
+  it("handles subsequent redirects", done => {
     const node = document.createElement("div");
 
     render(

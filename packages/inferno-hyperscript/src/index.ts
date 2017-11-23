@@ -118,14 +118,11 @@ export default function hyperscript(
     _props = {};
   }
   const isElement = isString(_tag);
-  const {
-    tag,
-    props,
-    key,
-    ref,
-    children,
-    className
-  } = extractProps(_props, isElement, _tag as VNode);
+  const { tag, props, key, ref, children, className } = extractProps(
+    _props,
+    isElement,
+    _tag as VNode
+  );
 
   if (isElement) {
     return createVNode(

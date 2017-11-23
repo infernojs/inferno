@@ -74,8 +74,8 @@ describe("Github1176", () => {
     const routes = (
       <Router history={browserHistory}>
         <Switch>
-          <Route component={Component1} path="/" exact/>
-          <Route component={Component2} path="/component2" exact/>
+          <Route component={Component1} path="/" exact />
+          <Route component={Component2} path="/component2" exact />
         </Switch>
       </Router>
     );

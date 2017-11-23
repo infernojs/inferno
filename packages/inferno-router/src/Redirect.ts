@@ -35,7 +35,9 @@ export default class Redirect extends Component<any, any> {
     if (locationsAreEqual(prevTo, nextTo)) {
       // tslint:disable-next-line:no-console
       console.warn(
-        `You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`
+        `You tried to redirect to the same route you're currently on: "${
+          nextTo.pathname
+        }${nextTo.search}"`
       );
       return;
     }

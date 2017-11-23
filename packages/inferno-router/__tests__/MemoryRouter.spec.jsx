@@ -2,40 +2,41 @@ import { render } from "inferno";
 import { innerHTML } from "inferno-utils";
 import { MemoryRouter } from "inferno-router";
 
-describe('A <MemoryRouter>', () => {
-  it('puts history on context.router', () => {
-    let history
+describe("A <MemoryRouter>", () => {
+  it("puts history on context.router", () => {
+    let history;
     const ContextChecker = (props, context) => {
-      history = context.router.history
-      return null
-    }
+      history = context.router.history;
+      return null;
+    };
 
     ContextChecker.contextTypes = {
       router: () => {}
-    }
+    };
 
-    const node = document.createElement('div')
+    const node = document.createElement("div");
 
-    render((
+    render(
       <MemoryRouter>
-        <ContextChecker/>
-      </MemoryRouter>
-    ), node)
+        <ContextChecker />
+      </MemoryRouter>,
+      node
+    );
 
-    expect(typeof history).toBe('object')
-  })
+    expect(typeof history).toBe("object");
+  });
 
-  it('warns when passed a history prop', () => {
-    const history = {}
-    const node = document.createElement('div')
+  it("warns when passed a history prop", () => {
+    const history = {};
+    const node = document.createElement("div");
 
-    spyOn(console, 'warn')
+    spyOn(console, "warn");
 
-    render((
-      <MemoryRouter history={history} />
-    ), node)
+    render(<MemoryRouter history={history} />, node);
 
-    expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn.calls.mostRecent().args[0]).toContain('<MemoryRouter> ignores the history prop')
-  })
-})
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.warn.calls.mostRecent().args[0]).toContain(
+      "<MemoryRouter> ignores the history prop"
+    );
+  });
+});

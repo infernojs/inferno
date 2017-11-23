@@ -1,7 +1,6 @@
 import { render } from "inferno";
 import { innerHTML, triggerEvent } from "inferno-utils";
 import { HashRouter, Link, MemoryRouter } from "inferno-router";
-import sinon from "sinon";
 
 describe("Link (jsx)", () => {
   let node;

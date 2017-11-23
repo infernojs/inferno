@@ -2,36 +2,37 @@ import { render } from "inferno";
 import { innerHTML } from "inferno-utils";
 import { HashRouter } from "inferno-router";
 
-describe('A <HashRouter>', () => {
-  it('puts history on context.router', () => {
-    let history
+describe("A <HashRouter>", () => {
+  it("puts history on context.router", () => {
+    let history;
     const ContextChecker = (props, context) => {
-      history = context.router.history
-      return null
-    }
+      history = context.router.history;
+      return null;
+    };
 
-    const node = document.createElement('div')
+    const node = document.createElement("div");
 
-    render((
+    render(
       <HashRouter>
-        <ContextChecker/>
-      </HashRouter>
-    ), node)
+        <ContextChecker />
+      </HashRouter>,
+      node
+    );
 
-    expect(typeof history).toBe('object')
-  })
+    expect(typeof history).toBe("object");
+  });
 
-  it('warns when passed a history prop', () => {
-    const history = {}
-    const node = document.createElement('div')
+  it("warns when passed a history prop", () => {
+    const history = {};
+    const node = document.createElement("div");
 
-    spyOn(console, 'warn')
+    spyOn(console, "warn");
 
-    render((
-      <HashRouter history={history} />
-    ), node)
+    render(<HashRouter history={history} />, node);
 
-    expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn.calls.mostRecent().args[0]).toContain('<HashRouter> ignores the history prop')
-  })
-})
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.warn.calls.mostRecent().args[0]).toContain(
+      "<HashRouter> ignores the history prop"
+    );
+  });
+});
