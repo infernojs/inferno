@@ -2,6 +2,10 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
+import {
+  isNull,
+} from "inferno-shared";
+
 const delegatedEvents: Map<string, IDelegate> = new Map();
 
 interface IDelegate {
@@ -48,7 +52,10 @@ function dispatchEvents(
   eventData: IEventData
 ) {
   let dom = target;
-  while (count > 0) {
+  while (count > 0 && !isNull(dom)) {
+    // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
+    // because the event listener is on document.body
+    // Don't process clicks on disabled elements
     if (isClick && dom.disabled) {
       return;
     }
@@ -68,13 +75,6 @@ function dispatchEvents(
       }
     }
     dom = dom.parentNode;
-
-    // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
-    // because the event listener is on document.body
-    // Don't process clicks on disabled elements
-    if (dom === null) {
-      return;
-    }
   }
 }
 
