@@ -95,6 +95,11 @@ delegatedEvents.add("onClick");
 delegatedEvents.add("onMouseDown");
 delegatedEvents.add("onMouseUp");
 delegatedEvents.add("onMouseMove");
+
+delegatedEvents.add("onTouchStart");
+delegatedEvents.add("onTouchEnd");
+delegatedEvents.add("onTouchMove");
+
 delegatedEvents.add("onSubmit");
 delegatedEvents.add("onDblClick");
 delegatedEvents.add("onKeyDown");
