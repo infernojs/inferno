@@ -2,16 +2,13 @@ export default function doAllAsyncBefore(renderProps) {
   const promises: Object[] = [];
 
   const getAsyncBefore = function(root) {
-    if (root) {
-      if (root.props && root.props.children) {
-        getAsyncBefore(root.props.children);
+    if (root && root.props) {
+      if (root.props.children) {
+          getAsyncBefore(root.props.children);
       }
-
-      if (root.type.name === "Route" && root.props.asyncBefore) {
-        // Resolve asyncBefore
-        promises.push(
-          root.type.prototype.doAsyncBefore.call(root, root.props.params)
-        );
+      if (typeof root.props.asyncBefore === 'function' && root.type.prototype.doAsyncBefore) {
+          // Resolve asyncBefore
+          promises.push(root.type.prototype.doAsyncBefore.call(root, root.props.params));
       }
     }
   };
