@@ -20,7 +20,7 @@ export default class Provider extends Component<any, any> {
     // tslint:disable-next-line:no-empty
     mobxStores() {}
   };
-  private store: any;
+  public store: any;
 
   constructor(props?: any, context?: any) {
     super(props, context);

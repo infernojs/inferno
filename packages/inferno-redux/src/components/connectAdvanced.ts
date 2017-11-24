@@ -170,7 +170,7 @@ export function connectAdvanced(
       public static displayName = displayName;
       public static WrappedComponent = WrappedComponent;
 
-      private version: number;
+      public version: number;
       private renderCount: number;
       private propsMode: boolean;
       private store: Store<any> | null;
