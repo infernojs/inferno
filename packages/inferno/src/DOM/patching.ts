@@ -215,9 +215,8 @@ export function patchElement(
   isSVG: boolean
 ) {
   const nextTag = nextVNode.type;
-  const lastTag = lastVNode.type;
 
-  if (lastTag !== nextTag) {
+  if (lastVNode.type !== nextTag) {
     replaceWithNewNode(
       lastVNode,
       nextVNode,
@@ -249,7 +248,7 @@ export function patchElement(
         dom,
         lifecycle,
         context,
-        isSVG && nextVNode.type !== "foreignObject"
+        isSVG && nextTag !== "foreignObject"
       );
     }
 
@@ -525,12 +524,11 @@ export function patchComponent(
   isSVG: boolean,
   isClass: boolean
 ): void {
-  const lastType = lastVNode.type;
   const nextType = nextVNode.type;
   const lastKey = lastVNode.key;
   const nextKey = nextVNode.key;
 
-  if (lastType !== nextType || lastKey !== nextKey) {
+  if (lastVNode.type !== nextType || lastKey !== nextKey) {
     replaceWithNewNode(
       lastVNode,
       nextVNode,
@@ -566,7 +564,6 @@ export function patchComponent(
       const nextHooks = nextVNode.ref;
       const nextHooksDefined = !isNullOrUndef(nextHooks);
       const lastInput = lastVNode.children;
-      let nextInput = lastInput;
 
       nextVNode.dom = lastVNode.dom;
       nextVNode.children = lastInput;
@@ -584,7 +581,7 @@ export function patchComponent(
         if (nextHooksDefined && isFunction(nextHooks.onComponentWillUpdate)) {
           nextHooks.onComponentWillUpdate(lastProps, nextProps);
         }
-        nextInput = nextType(nextProps, context);
+        let nextInput = nextType(nextProps, context);
 
         if (nextInput !== NO_OP) {
           nextInput = handleComponentInput(nextInput, nextVNode);
