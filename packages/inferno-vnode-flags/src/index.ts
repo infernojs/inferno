@@ -21,6 +21,8 @@ const enum VNodeFlags {
   Void = 1 << 12,
   Portal = 1 << 13,
 
+  MultipleChildren = HasNonKeyedChildren | HasKeyedChildren,
+
   FormElement = InputElement | TextareaElement | SelectElement,
   Element = HtmlElement |
     SvgElement |

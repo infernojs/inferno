@@ -22,7 +22,6 @@ describe("Mobx Transacations", () => {
       a: mobx.observable(true),
       b: mobx.observable(false),
       c: mobx.computed(function() {
-        console.log("evaluate c");
         return foo.b.get();
       })
     };

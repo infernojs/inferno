@@ -62,10 +62,8 @@ export function removeChild(parentDom: Element, dom: Element) {
 
 export function isKeyed(lastChildren: any[], nextChildren: any[]): boolean {
   return (
-    nextChildren.length > 0 &&
     !isNullOrUndef(nextChildren[0]) &&
     !isNullOrUndef(nextChildren[0].key) &&
-    lastChildren.length > 0 &&
     !isNullOrUndef(lastChildren[0]) &&
     !isNullOrUndef(lastChildren[0].key)
   );

@@ -241,8 +241,6 @@ export function patchElement(
     nextVNode.dom = dom;
     isSVG = isSVG || (nextFlags & VNodeFlags.SvgElement) > 0;
     if (lastChildren !== nextChildren) {
-      const childrenIsSVG =
-        isSVG === true && nextVNode.type !== "foreignObject";
       patchChildren(
         lastFlags,
         nextFlags,
@@ -251,7 +249,7 @@ export function patchElement(
         dom,
         lifecycle,
         context,
-        childrenIsSVG
+        isSVG && nextVNode.type !== "foreignObject"
       );
     }
 
@@ -268,11 +266,7 @@ export function patchElement(
         }
 
         for (const prop in nextPropsOrEmpty) {
-          // do not add a hasOwnProperty check here, it affects performance
-          const nextValue = nextPropsOrEmpty[prop];
-          const lastValue = lastPropsOrEmpty[prop];
-
-          patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue);
+          patchProp(prop, lastPropsOrEmpty[prop], nextPropsOrEmpty[prop], dom, isSVG, hasControlledValue);
         }
 
         if (isFormElement) {
@@ -310,10 +304,8 @@ export function patchElement(
         }
       }
     }
-    if (nextRef) {
-      if (lastVNode.ref !== nextRef) {
-        mountRef(dom as Element, nextRef, lifecycle);
-      }
+    if (nextRef && (lastVNode.ref !== nextRef)) {
+      mountRef(dom as Element, nextRef, lifecycle);
     }
   }
 }
@@ -329,15 +321,8 @@ function patchChildren(
   isSVG: boolean
 ) {
   let patchArray = false;
-  let patchKeyed = false;
 
-  if (nextFlags & VNodeFlags.HasNonKeyedChildren) {
-    patchArray = true;
-  } else if (
-    (lastFlags & VNodeFlags.HasKeyedChildren) > 0 &&
-    (nextFlags & VNodeFlags.HasKeyedChildren) > 0
-  ) {
-    patchKeyed = true;
+  if ((nextFlags & VNodeFlags.MultipleChildren) || (lastFlags & VNodeFlags.MultipleChildren)) {
     patchArray = true;
   } else if (isInvalid(nextChildren)) {
     unmountChildren(lastChildren, dom);
@@ -361,9 +346,6 @@ function patchChildren(
   } else if (isArray(nextChildren)) {
     if (isArray(lastChildren)) {
       patchArray = true;
-      if (isKeyed(lastChildren, nextChildren)) {
-        patchKeyed = true;
-      }
     } else {
       unmountChildren(lastChildren, dom);
       mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
@@ -390,28 +372,30 @@ function patchChildren(
       }
     } else if (nextLength === 0) {
       removeAllChildren(dom, lastChildren);
-    } else if (patchKeyed) {
-      patchKeyedChildren(
-        lastChildren,
-        nextChildren,
-        dom,
-        lifecycle,
-        context,
-        isSVG,
-        lastLength,
-        nextLength
-      );
     } else {
-      patchNonKeyedChildren(
-        lastChildren,
-        nextChildren,
-        dom,
-        lifecycle,
-        context,
-        isSVG,
-        lastLength,
-        nextLength
-      );
+      if ((nextFlags & VNodeFlags.HasKeyedChildren) || isKeyed(lastChildren, nextChildren)) {
+        patchKeyedChildren(
+          lastChildren,
+          nextChildren,
+          dom,
+          lifecycle,
+          context,
+          isSVG,
+          lastLength,
+          nextLength
+        );
+      } else {
+        patchNonKeyedChildren(
+          lastChildren,
+          nextChildren,
+          dom,
+          lifecycle,
+          context,
+          isSVG,
+          lastLength,
+          nextLength
+        );
+      }
     }
   }
 }
