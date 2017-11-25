@@ -322,7 +322,7 @@ function patchChildren(
 ) {
   let patchArray = false;
 
-  if ((nextFlags & VNodeFlags.MultipleChildren) || (lastFlags & VNodeFlags.MultipleChildren)) {
+  if ((nextFlags & VNodeFlags.MultipleChildren) && (lastFlags & VNodeFlags.MultipleChildren)) {
     patchArray = true;
   } else if (isInvalid(nextChildren)) {
     unmountChildren(lastChildren, dom);
@@ -373,7 +373,9 @@ function patchChildren(
     } else if (nextLength === 0) {
       removeAllChildren(dom, lastChildren);
     } else {
-      if ((nextFlags & VNodeFlags.HasKeyedChildren) || isKeyed(lastChildren, nextChildren)) {
+      if (((nextFlags & VNodeFlags.HasKeyedChildren) &&
+        (lastFlags & VNodeFlags.HasKeyedChildren))
+        || isKeyed(lastChildren, nextChildren)) {
         patchKeyedChildren(
           lastChildren,
           nextChildren,
