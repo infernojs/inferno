@@ -21,12 +21,12 @@
     "utils"
   ],
   "dependencies": {
-    "inferno": "4.0.0-0",
-    "inferno-shared": "4.0.0-0",
-    "inferno-vnode-flags": "4.0.0-0"
+    "inferno": "^4.0.0-0",
+    "inferno-shared": "^4.0.0-0",
+    "inferno-vnode-flags": "^4.0.0-0"
   },
   "devDependencies": {
-    "inferno-server": "4.0.0-0"
+    "inferno-server": "^4.0.0-0"
   },
   "rollup": {
     "bundledDependencies": [

@@ -25,11 +25,11 @@
     "vdom"
   ],
   "dependencies": {
-    "inferno-shared": "4.0.0-0"
+    "inferno-shared": "^4.0.0-0"
   },
   "devDependencies": {
-    "inferno": "4.0.0-0",
-    "inferno-create-element": "4.0.0-0"
+    "inferno": "^4.0.0-0",
+    "inferno-create-element": "^4.0.0-0"
   },
   "rollup": {
     "bundledDependencies": [

@@ -38,10 +38,10 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno-shared": "4.0.0-0",
-    "inferno-vnode-flags": "4.0.0-0"
+    "inferno-shared": "^4.0.0-0",
+    "inferno-vnode-flags": "^4.0.0-0"
   },
   "devDependencies": {
-    "inferno-utils": "4.0.0-0"
+    "inferno-utils": "^4.0.0-0"
   }
 }
