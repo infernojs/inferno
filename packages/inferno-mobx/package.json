@@ -35,7 +35,8 @@
   "devDependencies": {
     "inferno-create-class": "*",
     "inferno-create-element": "*",
-    "inferno-server": "*"
+    "inferno-server": "*",
+    "mobx": "*"
   },
   "rollup": {
     "bundledDependencies": [

@@ -18,7 +18,7 @@ export function toArray(children): any[] {
 export const isArray = Array.isArray;
 
 export function isStatefulComponent(o: any): boolean {
-  return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
+  return !isUndefined(o.prototype) && isFunction(o.prototype.render);
 }
 
 export function isStringOrNumber(o: any): o is string | number {

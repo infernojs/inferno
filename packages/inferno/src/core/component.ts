@@ -19,11 +19,11 @@ const resolvedPromise = Promise.resolve();
 
 function queueStateChanges<P, S>(
   component: Component<P, S>,
-  newState: S,
+  newState: S | Function,
   callback?: Function
 ): void {
   if (isFunction(newState)) {
-    newState = newState(component.state, component.props, component.context);
+    newState = newState(component.state, component.props, component.context) as S;
   }
   const pending = component.$PS;
 
