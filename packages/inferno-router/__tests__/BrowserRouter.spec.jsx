@@ -25,19 +25,19 @@ describe("BrowserRouter (jsx)", () => {
     const node = document.createElement("div");
     const history = {};
 
-    spyOn(console, "warn");
+    spyOn(console, "error");
 
     render(<BrowserRouter history={history} />, node);
 
-    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledTimes(1);
 
     // browser only?
-    expect(console.warn.calls.mostRecent().args[0]).toContain(
+    expect(console.error.calls.mostRecent().args[0]).toContain(
       "<BrowserRouter> ignores the history prop"
     );
 
     // node only?
-    //expect(console.warn).toHaveBeenCalledWith(
+    //expect(console.error).toHaveBeenCalledWith(
     //  expect.stringContaining('<BrowserRouter> ignores the history prop')
     //)
   });

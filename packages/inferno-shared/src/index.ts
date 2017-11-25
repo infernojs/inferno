@@ -72,7 +72,7 @@ export function throwError(message?: string) {
 
 export function warning(message: string) {
   // tslint:disable-next-line:no-console
-  console.warn(message);
+  console.error(message);
 }
 
 export function combineFrom(first?: {} | null, second?: {} | null): object {

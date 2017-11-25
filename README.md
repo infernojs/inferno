@@ -436,9 +436,9 @@ You can set default options for Inferno using `Inferno.options`. Below are the f
 
 This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
 
-#### - `recyclingEnabled` (default: v1.3+ `false`)
+#### - Inferno < 4.0 `recyclingEnabled` (default: v1.3+ `false`)
 
-This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
+This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements. This setting was removed in Inferno 4.0.
 
 ## Functional component lifecycle events
 

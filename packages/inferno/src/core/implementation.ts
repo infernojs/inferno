@@ -129,7 +129,7 @@ export function directClone(vNodeToClone: VNode): VNode {
       if (isArray(newChildren)) {
         const len = newChildren.length;
         if (len > 0) {
-          const tmpArray: InfernoChildren = [];
+          const tmpArray: any[] = [];
 
           for (let i = 0; i < len; i++) {
             const child = newChildren[i];
@@ -452,13 +452,17 @@ function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
 export function getFlagsForElementVnode(type: string): number {
   if (type === "svg") {
     return VNodeFlags.SvgElement;
-  } else if (type === "input") {
+  }
+  if (type === "input") {
     return VNodeFlags.InputElement;
-  } else if (type === "select") {
+  }
+  if (type === "select") {
     return VNodeFlags.SelectElement;
-  } else if (type === "textarea") {
+  }
+  if (type === "textarea") {
     return VNodeFlags.TextareaElement;
-  } else if (type === "media") {
+  }
+  if (type === "media") {
     return VNodeFlags.MediaElement;
   }
   return VNodeFlags.HtmlElement;

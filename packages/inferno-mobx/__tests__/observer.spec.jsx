@@ -287,8 +287,8 @@ describe("Mobx Observer", () => {
 
   it("component should not be inject", function(done) {
     const msg = [];
-    const baseWarn = console.warn;
-    console.warn = m => msg.push(m);
+    const baseWarn = console.error;
+    console.error = m => msg.push(m);
 
     observer(
       inject("foo")(
@@ -301,14 +301,14 @@ describe("Mobx Observer", () => {
     );
 
     expect(msg.length).toBe(1);
-    console.warn = baseWarn;
+    console.error = baseWarn;
     done();
   });
 
   it("observer component can be injected", done => {
     const msg = [];
-    const baseWarn = console.warn;
-    console.warn = m => msg.push(m);
+    const baseWarn = console.error;
+    console.error = m => msg.push(m);
 
     inject("foo")(
       observer(
@@ -328,7 +328,7 @@ describe("Mobx Observer", () => {
     );
 
     expect(msg.length).toBe(0);
-    console.warn = baseWarn;
+    console.error = baseWarn;
     done();
   });
 

@@ -10,8 +10,6 @@
 [![npm downloads](https://img.shields.io/npm/dm/inferno.svg?style=flat-square)](https://www.npmjs.org/package/inferno)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/LukeSheard.svg)](https://saucelabs.com/u/LukeSheard)
-
 Inferno is an insanely fast, `9kb` React-like library for building high-performance user interfaces on both the client and server.
 
 To quote a member of the React core team at Facebook:
@@ -50,7 +48,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
 - [UI Bench](https://localvoid.github.io/uibench/)
 - [dbmonster](https://rawgit.com/infernojs/dbmonster-inferno/master/index.html)
-- [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
+- [JS Web Frameworks Benchmark - Round 6](http://stefankrause.net/js-frameworks-benchmark6/webdriver-ts/table.html)
 
 ## Code Example
 
@@ -122,6 +120,12 @@ npm install --save inferno-router
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
+
+Or on jsDelivr:
+
+```
+https://cdn.jsdelivr.net/npm/inferno@latest/dist/inferno.min.js
+```
 
 Or on unpkg.com:
 
@@ -432,9 +436,9 @@ You can set default options for Inferno using `Inferno.options`. Below are the f
 
 This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
 
-#### - `recyclingEnabled` (default: v1.3+ `false`)
+#### - Inferno < 4.0 `recyclingEnabled` (default: v1.3+ `false`)
 
-This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
+This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements. This setting was removed in Inferno 4.0.
 
 ## Functional component lifecycle events
 
@@ -541,5 +545,4 @@ There is an [Inferno Slack](https://infernojs.slack.com). You can join via [infe
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
-<img src="https://saucelabs.com/content/images/logo@3x.png" height="50px" alt="Supported by Sauce Labs" />
 <img src="https://www.digitalocean.com/assets/media/logos-badges/png/DO_Powered_by_Badge_black-a35c64eb.png" height="50px" alt="Supported by Digital Ocean" />

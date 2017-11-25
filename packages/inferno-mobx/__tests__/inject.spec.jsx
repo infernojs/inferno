@@ -162,8 +162,8 @@ describe("inject based context", () => {
 
   it("warning is printed when changing stores", done => {
     let msg;
-    const baseWarn = console.warn;
-    console.warn = m => (msg = m);
+    const baseWarn = console.error;
+    console.error = m => (msg = m);
     const a = mobx.observable(3);
     const C = observer(
       ["foo"],
@@ -203,7 +203,7 @@ describe("inject based context", () => {
     expect(msg).toBe(
       "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children"
     );
-    console.warn = baseWarn;
+    console.error = baseWarn;
     done();
   });
 
@@ -268,8 +268,8 @@ describe("inject based context", () => {
   // There are no contextTypes in Inferno
   // it('warning is printed when attaching contextTypes to HOC', done => {
   //   const msg = [];
-  //   const baseWarn = console.warn;
-  //   console.warn = m => msg.push(m);
+  //   const baseWarn = console.error;
+  //   console.error = m => msg.push(m);
   //   const C = inject(['foo'])(createClass({
   //     displayName: 'C',
   //     render() {
@@ -288,7 +288,7 @@ describe("inject based context", () => {
   //   render(<A />, container);
   //   expect(msg.length).toBe(1);
   //   expect(msg[0]).toBe("Mobx Injector: you are trying to attach `contextTypes` on an component decorated with `inject` (or `observer`) HOC. Please specify the contextTypes on the wrapped component instead. It is accessible through the `wrappedComponent`");
-  //   console.warn = baseWarn;
+  //   console.error = baseWarn;
   //   done();
   // });
 
@@ -325,8 +325,8 @@ describe("inject based context", () => {
   // There are no propTypes in Inferno
   // it('warning is not printed when attaching propTypes to injected component', done => {
   //   let msg = [];
-  //   const baseWarn = console.warn;
-  //   console.warn = m => msg = m;
+  //   const baseWarn = console.error;
+  //   console.error = m => msg = m;
   //
   //   const C = inject(["foo"])(createClass({
   //     displayName: 'C',
@@ -335,14 +335,14 @@ describe("inject based context", () => {
   //   C.propTypes = {};
   //
   //   expect(msg.length, 0);
-  //   console.warn = baseWarn;
+  //   console.error = baseWarn;
   //   done();
   // })
   //
   // it('warning is not printed when attaching propTypes to wrappedComponent', done => {
   //   let msg = [];
-  //   const baseWarn = console.warn;
-  //   console.warn = m => msg = m;
+  //   const baseWarn = console.error;
+  //   console.error = m => msg = m;
   //   const C = inject(["foo"])(createClass({
   //     displayName: 'C',
   //     render: () => <div>context:{ this.props.foo }</div>
@@ -350,7 +350,7 @@ describe("inject based context", () => {
   //   C.wrappedComponent.propTypes = {};
   //
   //   expect(msg.length, 0);
-  //   console.warn = baseWarn;
+  //   console.error = baseWarn;
   //   done();
   // });
 

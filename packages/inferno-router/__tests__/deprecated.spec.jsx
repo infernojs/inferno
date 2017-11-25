@@ -5,7 +5,7 @@ import { IndexLink, IndexRoute, MemoryRouter } from "inferno-router";
 describe("Deprecated components (JSX)", () => {
   it("IndexLink", () => {
     const node = document.createElement("div");
-    spyOn(console, "warn");
+    spyOn(console, "error");
     render(
       <MemoryRouter>
         <IndexLink to="/">link</IndexLink>
@@ -13,13 +13,13 @@ describe("Deprecated components (JSX)", () => {
       node
     );
 
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.calls.mostRecent().args[0]).toContain("is deprecated");
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.error.calls.mostRecent().args[0]).toContain("is deprecated");
   });
 
   it("IndexRoute", () => {
     const node = document.createElement("div");
-    spyOn(console, "warn");
+    spyOn(console, "error");
     render(
       <MemoryRouter>
         <IndexRoute path="/" component={() => null} />
@@ -27,7 +27,7 @@ describe("Deprecated components (JSX)", () => {
       node
     );
 
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.calls.mostRecent().args[0]).toContain("is deprecated");
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.error.calls.mostRecent().args[0]).toContain("is deprecated");
   });
 });

@@ -68,12 +68,12 @@ describe("A <StaticRouter>", () => {
     const history = {};
     const node = document.createElement("div");
 
-    spyOn(console, "warn");
+    spyOn(console, "error");
 
     render(<StaticRouter context={context} history={history} />, node);
 
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.calls.mostRecent().args[0]).toContain(
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.error.calls.mostRecent().args[0]).toContain(
       "<StaticRouter> ignores the history prop"
     );
     // expect(console.error).toHaveBeenCalledWith(

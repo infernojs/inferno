@@ -18,9 +18,9 @@ describe("observer based context", () => {
   });
 
   it("using observer to inject throws warning", done => {
-    const w = console.warn;
+    const w = console.error;
     const warns = [];
-    console.warn = msg => warns.push(msg);
+    console.error = msg => warns.push(msg);
 
     observer(["test"], () => null);
 
@@ -29,7 +29,7 @@ describe("observer based context", () => {
       'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`'
     );
 
-    console.warn = w;
+    console.error = w;
     done();
   });
 
@@ -154,8 +154,8 @@ describe("observer based context", () => {
 
   it("warning is printed when changing stores", done => {
     let msg = null;
-    const baseWarn = console.warn;
-    console.warn = m => (msg = m);
+    const baseWarn = console.error;
+    console.error = m => (msg = m);
     const a = mobx.observable(3);
     const C = observer(
       ["foo"],
@@ -191,14 +191,14 @@ describe("observer based context", () => {
     expect(msg).toEqual(
       "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children"
     );
-    console.warn = baseWarn;
+    console.error = baseWarn;
     done();
   });
 
   it("warning is not printed when changing stores, but suppressed explicitly", done => {
     let msg = null;
-    const baseWarn = console.warn;
-    console.warn = m => (msg = m);
+    const baseWarn = console.error;
+    console.error = m => (msg = m);
     const a = mobx.observable(3);
     const C = observer(
       ["foo"],
@@ -232,7 +232,7 @@ describe("observer based context", () => {
     expect(container.querySelector("span").textContent).toBe("42");
     expect(container.querySelector("div").textContent).toBe("context:3");
     expect(msg).toBe(null);
-    console.warn = baseWarn;
+    console.error = baseWarn;
     done();
   });
 });

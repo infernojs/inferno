@@ -12,7 +12,7 @@ import NavLink from "./NavLink";
 export default function(props): any {
   if (process.env.NODE_ENV !== "production") {
     // tslint:disable-next-line:no-console
-    console.warn(
+    console.error(
       "Using IndexLink is deprecated. Please use Link or NavLink instead."
     );
   }

@@ -119,7 +119,7 @@ describe("Switch (jsx)", () => {
     let redirected = false;
     let done = false;
 
-    spyOn(console, "warn");
+    spyOn(console, "error");
 
     render(
       <MemoryRouter initialEntries={["/one"]}>
@@ -143,8 +143,8 @@ describe("Switch (jsx)", () => {
     );
 
     expect(node.innerHTML).not.toContain("done");
-    expect(console.warn.calls.count()).toBe(1);
-    expect(console.warn.calls.mostRecent().args[0]).toContain("/one");
+    expect(console.error.calls.count()).toBe(1);
+    expect(console.error.calls.mostRecent().args[0]).toContain("/one");
   });
 
   it("warns when redirecting to same route, mixed types", () => {
@@ -152,7 +152,7 @@ describe("Switch (jsx)", () => {
     let redirected = false;
     let done = false;
 
-    spyOn(console, "warn");
+    spyOn(console, "error");
 
     render(
       <MemoryRouter initialEntries={["/one"]}>
@@ -177,9 +177,9 @@ describe("Switch (jsx)", () => {
     );
 
     expect(node.innerHTML).not.toContain("done");
-    expect(console.warn.calls.count()).toBe(1);
-    expect(console.warn.calls.mostRecent().args[0]).toContain("/one");
-    //expect(console.warn.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one"/)
+    expect(console.error.calls.count()).toBe(1);
+    expect(console.error.calls.mostRecent().args[0]).toContain("/one");
+    //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one"/)
   });
 
   it("warns when redirecting to same route, mixed types, string with query", () => {
@@ -187,7 +187,7 @@ describe("Switch (jsx)", () => {
     let redirected = false;
     let done = false;
 
-    spyOn(console, "warn");
+    spyOn(console, "error");
 
     render(
       <MemoryRouter initialEntries={["/one"]}>
@@ -212,8 +212,8 @@ describe("Switch (jsx)", () => {
     );
 
     expect(node.innerHTML).not.toContain("done");
-    expect(console.warn.calls.count()).toBe(1);
-    expect(console.warn.calls.mostRecent().args[0]).toContain("/one?utm=1");
+    expect(console.error.calls.count()).toBe(1);
+    expect(console.error.calls.mostRecent().args[0]).toContain("/one?utm=1");
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one\?utm=1"/)
   });
 
@@ -222,7 +222,7 @@ describe("Switch (jsx)", () => {
     let redirected = false;
     let done = false;
 
-    spyOn(console, "warn");
+    spyOn(console, "error");
 
     render(
       <MemoryRouter initialEntries={["/one"]}>
@@ -248,11 +248,11 @@ describe("Switch (jsx)", () => {
 
     // Inferno does last iteration async, thats why setTimeout here
     expect(node.innerHTML).toBe("");
-    expect(console.warn.calls.count()).toBe(0);
+    expect(console.error.calls.count()).toBe(0);
 
     setTimeout(() => {
       expect(node.innerHTML).toContain("done");
-      expect(console.warn.calls.count()).toBe(0);
+      expect(console.error.calls.count()).toBe(0);
       d();
     }, 10);
   });
