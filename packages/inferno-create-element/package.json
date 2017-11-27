@@ -24,12 +24,12 @@
     "vdom"
   ],
   "dependencies": {
-    "inferno": "4.0.0-1",
-    "inferno-shared": "4.0.0-1",
-    "inferno-vnode-flags": "4.0.0-1"
+    "inferno": "^4.0.0-1",
+    "inferno-shared": "^4.0.0-1",
+    "inferno-vnode-flags": "^4.0.0-1"
   },
   "devDependencies": {
-    "inferno-utils": "4.0.0-1"
+    "inferno-utils": "^4.0.0-1"
   },
   "rollup": {
     "bundledDependencies": [

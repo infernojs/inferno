@@ -17,9 +17,9 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "4.0.0-1",
-    "inferno-shared": "4.0.0-1",
-    "inferno-vnode-flags": "4.0.0-1"
+    "inferno": "^4.0.0-1",
+    "inferno-shared": "^4.0.0-1",
+    "inferno-vnode-flags": "^4.0.0-1"
   },
   "rollup": {
     "bundledDependencies": [
