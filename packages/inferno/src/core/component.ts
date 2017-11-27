@@ -47,16 +47,7 @@ function queueStateChanges<P, S>(
 
       if (isNull(queue)) {
         queue = component.$QU = [] as Function[];
-        resolvedPromise.then(() => {
-          component.$QU = null;
-          component.$UPD = true;
-          applyState(component, false, () => {
-            for (let i = 0, len = (queue as Function[]).length; i < len; i++) {
-              (queue as Function[])[i].call(component);
-            }
-          });
-          component.$UPD = false;
-        });
+        resolvedPromise.then(promiseCallback(component, queue));
       }
       if (isFunction(callback)) {
         queue.push(callback);
@@ -69,6 +60,20 @@ function queueStateChanges<P, S>(
     }
   }
 }
+
+function promiseCallback(component, queue) {
+  return () => {
+    component.$QU = null;
+    component.$UPD = true;
+    applyState(component, false,() => {
+      for (let i = 0, len = (queue as Function[]).length; i < len; i++) {
+        (queue as Function[])[i].call(component);
+      }
+    });
+    component.$UPD = false;
+  }
+}
+
 
 function applyState<P, S>(
   component: Component<P, S>,
@@ -88,8 +93,6 @@ function applyState<P, S>(
 
     component.$PS = null;
     let vNode = component.$V as VNode;
-    // const parentDom = vNode.dom;
-    // TODO: This is unreliable and bad code, refactor it away
     const lastInput = component.$LI as VNode;
     const parentDom = lastInput.dom && lastInput.dom.parentNode;
 

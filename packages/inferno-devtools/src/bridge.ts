@@ -65,9 +65,9 @@ function getKeyForVNode(vNode) {
 
   if (flags & VNodeFlags.ComponentClass) {
     return vNode.children;
-  } else {
-    return vNode.dom;
   }
+
+  return vNode.dom;
 }
 
 function getInstanceFromVNode(vNode) {

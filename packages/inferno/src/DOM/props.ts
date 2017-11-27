@@ -25,35 +25,37 @@ export function isAttrAnEvent(attr: string): boolean {
   return attr[0] === "o" && attr[1] === "n";
 }
 
+function createLinkEvent(linkEvent, nextValue) {
+  return function(e) {
+    linkEvent(nextValue.data, e);
+  }
+}
+
 export function patchEvent(name: string, lastValue, nextValue, dom) {
-  if (lastValue !== nextValue) {
-    if (delegatedEvents.has(name)) {
-      handleEvent(name, nextValue, dom);
+  if (delegatedEvents.has(name)) {
+    handleEvent(name, nextValue, dom);
+  } else {
+    const nameLowerCase = name.toLowerCase();
+
+    if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+      const linkEvent = nextValue.event;
+
+      if (linkEvent && isFunction(linkEvent)) {
+        dom[nameLowerCase] = createLinkEvent(linkEvent, nextValue);
+      } else {
+        // Development warning
+        if (process.env.NODE_ENV !== "production") {
+          throwError(
+            `an event on a VNode "${
+              name
+            }". was not a function or a valid linkEvent.`
+          );
+        }
+      }
     } else {
-      const nameLowerCase = name.toLowerCase();
       const domEvent = dom[nameLowerCase];
       // if the function is wrapped, that means it's been controlled by a wrapper
-      if (domEvent && domEvent.wrapped) {
-        return;
-      }
-      if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-        const linkEvent = nextValue.event;
-
-        if (linkEvent && isFunction(linkEvent)) {
-          dom[nameLowerCase] = function(e) {
-            linkEvent(nextValue.data, e);
-          };
-        } else {
-          if (process.env.NODE_ENV !== "production") {
-            throwError(
-              `an event on a VNode "${
-                name
-              }". was not a function or a valid linkEvent.`
-            );
-          }
-          throwError();
-        }
-      } else {
+      if (!domEvent || !domEvent.wrapped) {
         dom[nameLowerCase] = nextValue;
       }
     }

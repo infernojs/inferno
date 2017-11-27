@@ -235,6 +235,19 @@ export function mountComponent(
   return dom;
 }
 
+function createClassMountCallback(instance, hasAfterMount, afterMount, vNode, hasDidMount) {
+  return () => {
+    instance.$UPD = true;
+    if (hasAfterMount) {
+      (afterMount as Function)(vNode);
+    }
+    if (hasDidMount) {
+      instance.componentDidMount();
+    }
+    instance.$UPD = false;
+  };
+}
+
 export function mountClassComponentCallbacks(
   vNode: VNode,
   ref,
@@ -261,17 +274,13 @@ export function mountClassComponentCallbacks(
   const hasAfterMount = isFunction(afterMount);
 
   if (hasDidMount || hasAfterMount) {
-    lifecycle.push(() => {
-      instance.$UPD = true;
-      if (hasAfterMount) {
-        (afterMount as Function)(vNode);
-      }
-      if (hasDidMount) {
-        instance.componentDidMount();
-      }
-      instance.$UPD = false;
-    });
+    lifecycle.push(createClassMountCallback(instance, hasAfterMount, afterMount, vNode, hasDidMount));
   }
+}
+
+// Create did mount callback lazily to avoid creating function context if not needed
+function createOnMountCallback(ref, dom, props) {
+  return () => ref.onComponentDidMount(dom, props);
 }
 
 export function mountFunctionalComponentCallbacks(
@@ -285,7 +294,7 @@ export function mountFunctionalComponentCallbacks(
       ref.onComponentWillMount(props);
     }
     if (isFunction(ref.onComponentDidMount)) {
-      lifecycle.push(() => ref.onComponentDidMount(dom, props));
+      lifecycle.push(createOnMountCallback(ref, dom, props));
     }
   }
 }

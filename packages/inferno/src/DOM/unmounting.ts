@@ -22,12 +22,10 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
 
   if ((flags & VNodeFlags.Component) > 0) {
     const instance = vNode.children as any;
-    const isStatefulComponent: boolean =
-      (flags & VNodeFlags.ComponentClass) > 0;
     const props = vNode.props || EMPTY_OBJ;
     const ref = vNode.ref as any;
 
-    if (isStatefulComponent) {
+    if ((flags & VNodeFlags.ComponentClass) > 0) {
       if (!instance.$UN) {
         if (isFunction(options.beforeUnmount)) {
           options.beforeUnmount(vNode);
@@ -73,7 +71,7 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
         ) {
           const child = children[i];
 
-          if (!isInvalid(child) && isObject(child)) {
+          if (!isNull(child) && isObject(child)) {
             unmount(child as VNode, null);
           }
         }

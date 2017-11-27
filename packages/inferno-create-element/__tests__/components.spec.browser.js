@@ -1,6 +1,6 @@
 import { Component, render } from "inferno";
 import createElement from "inferno-create-element";
-import { innerHTML, waits } from "inferno-utils";
+import { innerHTML } from "inferno-utils";
 
 describe("Components (non-JSX)", () => {
   let container;
@@ -817,7 +817,6 @@ describe("Components (non-JSX)", () => {
         componentWillMountCount = 0;
         template = Component => createElement(Component, null);
         render(template(ComponentLifecycleCheck), container);
-        waits(30, done);
       });
 
       it("componentWillMountCount to have fired once", () => {
@@ -879,7 +878,6 @@ describe("Components (non-JSX)", () => {
         componentWillUpdateCount = 0;
         template = Component => createElement(Component, null);
         render(template(ComponentLifecycleCheck), container);
-        waits(30, done);
       });
 
       it("componentWillMountCount to have fired once", () => {

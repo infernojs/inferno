@@ -86,10 +86,6 @@ export function validateNodeTree(node: any): boolean {
   return true;
 }
 
-export function waits(timer: number, done: () => void) {
-  setTimeout(done, timer);
-}
-
 export function triggerEvent(name: string, element: any) {
   let eventType;
 
