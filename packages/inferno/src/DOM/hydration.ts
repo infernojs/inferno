@@ -5,9 +5,11 @@
 import {
   isArray,
   isInvalid,
+  isFunction,
   isNull,
   isNullOrUndef,
   isObject,
+  isString,
   isStringOrNumber,
   throwError,
   warning
@@ -34,28 +36,6 @@ import {
 import { isSamePropsInnerHTML } from "./utils/innerhtml";
 import { patchProp } from "./props";
 
-function normalizeChildNodes(parentDom) {
-  let dom = parentDom.firstChild;
-
-  while (dom) {
-    if (dom.nodeType === 8) {
-      if (dom.data === "!") {
-        const placeholder = document.createTextNode("");
-
-        parentDom.replaceChild(placeholder, dom);
-        dom = dom.nextSibling;
-      } else {
-        const lastDom = dom.previousSibling;
-
-        parentDom.removeChild(dom);
-        dom = lastDom || parentDom.firstChild;
-      }
-    } else {
-      dom = dom.nextSibling;
-    }
-  }
-}
-
 function hydrateComponent(
   vNode: VNode,
   dom: Element,
@@ -63,7 +43,7 @@ function hydrateComponent(
   context,
   isSVG: boolean,
   isClass: boolean
-): Element {
+) {
   const type = vNode.type as Function;
   const ref = vNode.ref;
   const props = vNode.props || EMPTY_OBJ;
@@ -93,7 +73,6 @@ function hydrateComponent(
     vNode.dom = input.dom;
     mountFunctionalComponentCallbacks(props, ref, dom, lifecycle);
   }
-  return dom;
 }
 
 function hydrateElement(
@@ -120,41 +99,49 @@ function hydrateElement(
 
     vNode.dom = newDom;
     replaceChild(dom.parentNode, newDom, dom);
-    return newDom as Element;
-  }
-  vNode.dom = dom;
-  if (!isInvalid(children)) {
-    hydrateChildren(children, dom, lifecycle, context, isSVG);
-  } else if (dom.firstChild !== null && !isSamePropsInnerHTML(dom, props)) {
-    dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
-  }
-  if (props) {
-    let hasControlledValue = false;
-    const isFormElement = (flags & VNodeFlags.FormElement) > 0;
-    if (isFormElement) {
-      hasControlledValue = isControlledFormElement(props);
-    }
-    for (const prop in props) {
-      // do not add a hasOwnProperty check here, it affects performance
-      patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
-    }
-    if (isFormElement) {
-      processElement(flags, vNode, dom, props, true, hasControlledValue);
-    }
-  }
-  if (!isNullOrUndef(className)) {
-    if (isSVG) {
-      dom.setAttribute("class", className);
-    } else {
-      dom.className = className;
-    }
   } else {
-    if (dom.className !== "") {
-      dom.removeAttribute("class");
+    vNode.dom = dom;
+    if (!isInvalid(children)) {
+      hydrateChildren(children, dom, lifecycle, context, isSVG);
+    } else if (dom.firstChild !== null && !isSamePropsInnerHTML(dom, props)) {
+      dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
     }
-  }
-  if (ref) {
-    mountRef(dom, ref, lifecycle);
+    if (props) {
+      let hasControlledValue = false;
+      const isFormElement = (flags & VNodeFlags.FormElement) > 0;
+      if (isFormElement) {
+        hasControlledValue = isControlledFormElement(props);
+      }
+      for (const prop in props) {
+        // do not add a hasOwnProperty check here, it affects performance
+        patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
+      }
+      if (isFormElement) {
+        processElement(flags, vNode, dom, props, true, hasControlledValue);
+      }
+    }
+    if (!isNullOrUndef(className)) {
+      if (isSVG) {
+        dom.setAttribute("class", className);
+      } else {
+        dom.className = className;
+      }
+    } else {
+      if (dom.className !== "") {
+        dom.removeAttribute("class");
+      }
+    }
+    if (isFunction(ref)) {
+      mountRef(dom, ref, lifecycle);
+    } else {
+      if (process.env.NODE_ENV !== "production") {
+        if (isString(ref)) {
+          throwError(
+            'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+          );
+        }
+      }
+    }
   }
 }
 
@@ -165,8 +152,26 @@ function hydrateChildren(
   context: Object,
   isSVG: boolean
 ): void {
-  normalizeChildNodes(parentDom);
   let dom = parentDom.firstChild;
+
+  while (dom) {
+    if (dom.nodeType === 8) {
+      if ((dom as any).data === "!") {
+        const placeholder = document.createTextNode("");
+
+        parentDom.replaceChild(placeholder, dom);
+        dom = dom.nextSibling;
+      } else {
+        const lastDom = dom.previousSibling;
+
+        parentDom.removeChild(dom);
+        dom = lastDom || parentDom.firstChild;
+      }
+    } else {
+      dom = dom.nextSibling;
+    }
+  }
+  dom = parentDom.firstChild;
 
   if (isStringOrNumber(children)) {
     if (!isNull(dom) && dom.nodeType === 3) {
@@ -223,14 +228,14 @@ function hydrateText(vNode: VNode, dom: Element) {
 
     vNode.dom = newDom;
     replaceChild(dom.parentNode, newDom, dom);
-    return newDom;
-  }
-  const text = vNode.children;
+  } else {
+    const text = vNode.children;
 
-  if (dom.nodeValue !== text) {
-    dom.nodeValue = text as string;
+    if (dom.nodeValue !== text) {
+      dom.nodeValue = text as string;
+    }
+    vNode.dom = dom;
   }
-  vNode.dom = dom;
 }
 
 function hydrate(

@@ -17,7 +17,6 @@ import {
   isInvalid,
   isNullOrUndef,
   isStringOrNumber,
-  isUndefined,
   throwError
 } from "inferno-shared";
 import { EMPTY_OBJ } from "./common";
@@ -30,9 +29,6 @@ export function createClassComponentInstance(
   context: Object,
   lifecycle: Function[]
 ) {
-  if (isUndefined(context)) {
-    context = EMPTY_OBJ; // Context should not be mutable
-  }
   const instance = new Component(props, context);
   vNode.children = instance;
   instance.$BS = false;

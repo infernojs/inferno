@@ -10,7 +10,7 @@ import {
   isNullOrUndef,
   isObject,
   isStringOrNumber,
-  isUndefined,
+  isString,
   throwError
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
@@ -63,7 +63,7 @@ export function mount(
   }
 
   if ((flags & VNodeFlags.Void) > 0) {
-    return mountVoid(vNode, parentDom);
+    return mountText(vNode, parentDom);
   }
 
   if ((flags & VNodeFlags.Text) > 0) {
@@ -71,7 +71,9 @@ export function mount(
   }
 
   if ((flags & VNodeFlags.Portal) > 0) {
-    return mountPortal(vNode, parentDom, lifecycle, context);
+    mount(vNode.children as VNode, vNode.type, lifecycle, context, false);
+
+    return (vNode.dom = mountText(createVoidVNode(), parentDom) as any);
   }
 
   // Development validation, in production we don't need to throw because it crashes anyway
@@ -99,16 +101,6 @@ export function mountText(vNode: VNode, parentDom: Element | null): any {
   }
 
   return dom;
-}
-
-export function mountPortal(vNode: VNode, parentDom, lifecycle, context) {
-  mount(vNode.children as VNode, vNode.type, lifecycle, context, false);
-
-  return (vNode.dom = mountVoid(createVoidVNode(), parentDom) as any);
-}
-
-export function mountVoid(vNode: VNode, parentDom: Element | null) {
-  return mountText(vNode, parentDom);
 }
 
 export function mountElement(
@@ -165,8 +157,16 @@ export function mountElement(
     }
   }
 
-  if (!isNull(ref)) {
+  if (isFunction(ref)) {
     mountRef(dom, ref, lifecycle);
+  } else {
+    if (process.env.NODE_ENV !== "production") {
+      if (isString(ref)) {
+        throwError(
+          'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+        );
+      }
+    }
   }
   if (!isNull(parentDom)) {
     appendChild(parentDom, dom);
@@ -184,13 +184,10 @@ export function mountArrayChildren(
   for (let i = 0, len = children.length; i < len; i++) {
     let child = children[i];
 
-    // Verify can string/number be here. might cause de-opt. - Normalization takes care of it.
-    if (!isInvalid(child)) {
-      if (child.dom) {
-        children[i] = child = directClone(child);
-      }
-      mount(children[i], dom, lifecycle, context, isSVG);
+    if (child.dom) {
+      children[i] = child = directClone(child);
     }
+    mount(children[i], dom, lifecycle, context, isSVG);
   }
 }
 
@@ -244,38 +241,30 @@ export function mountClassComponentCallbacks(
   instance,
   lifecycle: Function[]
 ) {
-  if (ref) {
-    if (isFunction(ref)) {
-      ref(instance);
-    } else {
-      if (process.env.NODE_ENV !== "production") {
-        if (isStringOrNumber(ref)) {
-          throwError(
-            'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
-          );
-        } else if (isObject(ref) && vNode.flags & VNodeFlags.ComponentClass) {
-          throwError(
-            "functional component lifecycle events are not supported on ES2015 class components."
-          );
-        } else {
-          throwError(
-            `a bad value for "ref" was used on component: "${JSON.stringify(
-              ref
-            )}"`
-          );
-        }
+  if (isFunction(ref)) {
+    ref(instance);
+  } else {
+    if (process.env.NODE_ENV !== "production") {
+      if (isStringOrNumber(ref)) {
+        throwError(
+          'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+        );
+      } else if (!isNullOrUndef(ref) && isObject(ref) && vNode.flags & VNodeFlags.ComponentClass) {
+        throwError(
+          "functional component lifecycle events are not supported on ES2015 class components."
+        );
       }
-      throwError();
     }
   }
-  const hasDidMount = !isUndefined(instance.componentDidMount);
+  const hasDidMount = isFunction(instance.componentDidMount);
   const afterMount = options.afterMount;
+  const hasAfterMount = isFunction(afterMount);
 
-  if (hasDidMount || !isNull(afterMount)) {
+  if (hasDidMount || hasAfterMount) {
     lifecycle.push(() => {
       instance.$UPD = true;
-      if (afterMount) {
-        afterMount(vNode);
+      if (hasAfterMount) {
+        (afterMount as Function)(vNode);
       }
       if (hasDidMount) {
         instance.componentDidMount();
@@ -291,28 +280,16 @@ export function mountFunctionalComponentCallbacks(
   dom,
   lifecycle: Function[]
 ) {
-  if (ref) {
-    if (!isNullOrUndef(ref.onComponentWillMount)) {
+  if (!isNullOrUndef(ref)) {
+    if (isFunction(ref.onComponentWillMount)) {
       ref.onComponentWillMount(props);
     }
-    if (!isNullOrUndef(ref.onComponentDidMount)) {
+    if (isFunction(ref.onComponentDidMount)) {
       lifecycle.push(() => ref.onComponentDidMount(dom, props));
     }
   }
 }
 
 export function mountRef(dom: Element, value, lifecycle: Function[]) {
-  if (isFunction(value)) {
-    lifecycle.push(() => value(dom));
-  } else {
-    if (isInvalid(value)) {
-      return;
-    }
-    if (process.env.NODE_ENV !== "production") {
-      throwError(
-        'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
-      );
-    }
-    throwError();
-  }
+  lifecycle.push(() => value(dom));
 }

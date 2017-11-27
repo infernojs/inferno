@@ -6,6 +6,7 @@ import VNodeFlags from "inferno-vnode-flags";
 import {
   combineFrom,
   isArray,
+  isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
@@ -87,7 +88,7 @@ export function createVNode(
   if (noNormalise !== true) {
     normalize(vNode);
   }
-  if (options.createVNode !== null) {
+  if (isFunction(options.createVNode)) {
     options.createVNode(vNode);
   }
 

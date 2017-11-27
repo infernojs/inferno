@@ -10,6 +10,7 @@ import {
   isInvalid,
   isNull,
   isNullOrUndef,
+  isString,
   isStringOrNumber,
   isUndefined,
   NO_OP,
@@ -20,11 +21,7 @@ import { directClone, isVNode, options, VNode } from "../core/implementation";
 import {
   mount,
   mountArrayChildren,
-  mountComponent,
-  mountElement,
   mountRef,
-  mountText,
-  mountVoid
 } from "./mounting";
 import { unmount } from "./unmounting";
 import {
@@ -44,16 +41,6 @@ import {
 } from "./wrappers/processElement";
 import { patchProp, removeProp } from "./props";
 import { handleComponentInput } from "./utils/componentutil";
-
-function replaceVNode(parentDom, dom, vNode) {
-  unmount(vNode, null);
-
-  if (!isNull(dom)) {
-    replaceChild(parentDom, dom, vNode.dom);
-  } else {
-    removeChild(parentDom, vNode.dom);
-  }
-}
 
 function removeAllChildren(dom: Element, children) {
   for (let i = 0, len = children.length; i < len; i++) {
@@ -91,81 +78,28 @@ export function patch(
   isSVG: boolean
 ) {
   if (lastVNode !== nextVNode) {
-    const lastFlags = lastVNode.flags;
     const nextFlags = nextVNode.flags;
 
-    if (lastFlags & VNodeFlags.Portal) {
-      if (nextFlags & VNodeFlags.Portal) {
-        patchPortal(lastVNode, nextVNode, lifecycle, context);
-      } else {
-        replaceVNode(
-          parentDom,
-          mount(nextVNode, null, lifecycle, context, isSVG),
-          lastVNode
-        );
-      }
-    } else if (nextFlags & VNodeFlags.Component) {
-      const isClass = (nextFlags & VNodeFlags.ComponentClass) > 0;
+    if (lastVNode.flags !== nextFlags) {
+      unmount(lastVNode, null);
 
-      if (lastFlags & VNodeFlags.Component) {
-        patchComponent(
-          lastVNode,
-          nextVNode,
-          parentDom,
-          lifecycle,
-          context,
-          isSVG,
-          isClass
-        );
+      const dom = mount(nextVNode, null, lifecycle, context, isSVG);
+
+      if (isNull(dom)) {
+        removeChild(parentDom, lastVNode.dom as Element);
       } else {
-        replaceVNode(
-          parentDom,
-          mountComponent(nextVNode, null, lifecycle, context, isSVG, isClass),
-          lastVNode
-        );
+        replaceChild(parentDom, dom, lastVNode.dom);
       }
     } else if (nextFlags & VNodeFlags.Element) {
-      if (lastFlags & VNodeFlags.Element) {
-        patchElement(
-          lastVNode,
-          nextVNode,
-          parentDom,
-          lifecycle,
-          context,
-          isSVG
-        );
-      } else {
-        replaceVNode(
-          parentDom,
-          mountElement(nextVNode, null, lifecycle, context, isSVG),
-          lastVNode
-        );
-      }
+      patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+    } else if (nextFlags & VNodeFlags.Component) {
+      patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG,(nextFlags & VNodeFlags.ComponentClass) > 0);
     } else if (nextFlags & VNodeFlags.Text) {
-      if (lastFlags & VNodeFlags.Text) {
-        patchText(lastVNode, nextVNode);
-      } else {
-        replaceVNode(parentDom, mountText(nextVNode, null), lastVNode);
-      }
+      patchText(lastVNode, nextVNode);
     } else if (nextFlags & VNodeFlags.Void) {
-      if (lastFlags & VNodeFlags.Void) {
-        patchVoid(lastVNode, nextVNode);
-      } else {
-        replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode);
-      }
+      patchVoid(lastVNode, nextVNode);
     } else if (nextFlags & VNodeFlags.Portal) {
-      replaceVNode(
-        parentDom,
-        mount(nextVNode, null, lifecycle, context, isSVG),
-        lastVNode
-      );
-    } else {
-      // Error case: mount new one replacing old one
-      replaceVNode(
-        parentDom,
-        mount(nextVNode, null, lifecycle, context, isSVG),
-        lastVNode
-      );
+      patchPortal(lastVNode, nextVNode, lifecycle, context);
     }
   }
 }
@@ -303,8 +237,16 @@ export function patchElement(
         }
       }
     }
-    if (nextRef && (lastVNode.ref !== nextRef)) {
+    if (isFunction(nextRef) && (lastVNode.ref !== nextRef)) {
       mountRef(dom as Element, nextRef, lifecycle);
+    } else {
+      if (process.env.NODE_ENV !== "production") {
+        if (isString(nextRef)) {
+          throwError(
+            'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+          );
+        }
+      }
     }
   }
 }
@@ -515,7 +457,7 @@ export function updateClassComponent(
   nextVNode.dom = instance.$LI.dom;
 }
 
-export function patchComponent(
+function patchComponent(
   lastVNode,
   nextVNode,
   parentDom,
