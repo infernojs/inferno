@@ -813,7 +813,7 @@ describe("Components (non-JSX)", () => {
         }
       }
 
-      beforeEach(done => {
+      beforeEach(() => {
         componentWillMountCount = 0;
         template = Component => createElement(Component, null);
         render(template(ComponentLifecycleCheck), container);
@@ -833,12 +833,19 @@ describe("Components (non-JSX)", () => {
       let componentDidUpdateCount;
       let componentWillUpdateCount;
       let template;
+      let update;
 
       class ComponentLifecycleCheck extends Component {
         constructor() {
           super(null);
           this.state = {
             counter: 0
+          };
+
+          update = () => {
+            this.setState({
+              counter: this.state.counter + 1
+            });
           };
         }
 
@@ -850,11 +857,6 @@ describe("Components (non-JSX)", () => {
 
         componentWillMount() {
           componentWillMountCount++;
-          setTimeout(() => {
-            this.setState({
-              counter: this.state.counter + 1
-            });
-          }, 1);
         }
 
         shouldComponentUpdate() {
@@ -871,13 +873,14 @@ describe("Components (non-JSX)", () => {
         }
       }
 
-      beforeEach(done => {
+      beforeEach(() => {
         componentWillMountCount = 0;
         shouldComponentUpdateCount = 0;
         componentDidUpdateCount = 0;
         componentWillUpdateCount = 0;
         template = Component => createElement(Component, null);
         render(template(ComponentLifecycleCheck), container);
+        update();
       });
 
       it("componentWillMountCount to have fired once", () => {
