@@ -321,15 +321,6 @@ describe("Components (JSX) #2", () => {
     });
   });
 
-  // Ref: https://github.com/infernojs/inferno/issues/513
-  describe("String components (React compat)", () => {
-    it("Should render a string div", () => {
-      const Div = "div";
-      render(<Div>Hello World</Div>, container);
-      expect(container.innerHTML).toBe(innerHTML("<div>Hello World</div>"));
-    });
-  });
-
   describe("should handle defaultProps and keys being pass into components", () => {
     class Comp extends Component {
       render() {

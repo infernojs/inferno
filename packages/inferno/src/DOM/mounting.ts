@@ -47,11 +47,11 @@ export function mount(
 ) {
   const flags = vNode.flags;
 
-  if ((flags & VNodeFlags.Element) > 0) {
+  if (flags & VNodeFlags.Element) {
     return mountElement(vNode, parentDom, lifecycle, context, isSVG);
   }
 
-  if ((flags & VNodeFlags.Component) > 0) {
+  if (flags & VNodeFlags.Component) {
     return mountComponent(
       vNode,
       parentDom,
@@ -62,15 +62,15 @@ export function mount(
     );
   }
 
-  if ((flags & VNodeFlags.Void) > 0) {
+  if (flags & VNodeFlags.Void) {
     return mountText(vNode, parentDom);
   }
 
-  if ((flags & VNodeFlags.Text) > 0) {
+  if (flags & VNodeFlags.Text) {
     return mountText(vNode, parentDom);
   }
 
-  if ((flags & VNodeFlags.Portal) > 0) {
+  if (flags & VNodeFlags.Portal) {
     mount(vNode.children as VNode, vNode.type, lifecycle, context, false);
 
     return (vNode.dom = mountText(createVoidVNode(), parentDom) as any);
@@ -110,11 +110,10 @@ export function mountElement(
   context: Object,
   isSVG: boolean
 ) {
-  let dom;
   const flags = vNode.flags;
 
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  dom = documentCreateElement(vNode.type, isSVG);
+  const dom = documentCreateElement(vNode.type, isSVG);
   const children = vNode.children;
   const props = vNode.props;
   const className = vNode.className;
@@ -149,7 +148,7 @@ export function mountElement(
     }
   }
 
-  if (className !== null) {
+  if (!isNull(className)) {
     if (isSVG) {
       dom.setAttribute("class", className);
     } else {

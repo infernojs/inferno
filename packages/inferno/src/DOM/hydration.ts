@@ -103,7 +103,7 @@ function hydrateElement(
     vNode.dom = dom;
     if (!isInvalid(children)) {
       hydrateChildren(children, dom, lifecycle, context, isSVG);
-    } else if (dom.firstChild !== null && !isSamePropsInnerHTML(dom, props)) {
+    } else if (!isNull(dom.firstChild) && !isSamePropsInnerHTML(dom, props)) {
       dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
     }
     if (props) {

@@ -97,7 +97,7 @@ export function patch(
     } else if (nextFlags & VNodeFlags.Text) {
       patchText(lastVNode, nextVNode);
     } else if (nextFlags & VNodeFlags.Void) {
-      patchVoid(lastVNode, nextVNode);
+      nextVNode.dom = lastVNode.dom
     } else if (nextFlags & VNodeFlags.Portal) {
       patchPortal(lastVNode, nextVNode, lifecycle, context);
     }
@@ -355,8 +355,6 @@ export function updateClassComponent(
   force: boolean,
   fromSetState: boolean
 ) {
-  const hasComponentDidUpdate = isFunction(instance.componentDidUpdate);
-  // When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
   const lastState = instance.state;
   const lastProps = instance.props;
   nextVNode.children = instance;
@@ -421,7 +419,7 @@ export function updateClassComponent(
     }
 
     const didUpdate = renderOutput !== NO_OP;
-    // Update component before getting child context
+
     let childContext;
     if (isFunction(instance.getChildContext)) {
       childContext = instance.getChildContext();
@@ -439,7 +437,7 @@ export function updateClassComponent(
         nextVNode
       ));
       patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG);
-      if (hasComponentDidUpdate) {
+      if (isFunction(instance.componentDidUpdate)) {
         instance.componentDidUpdate(lastProps, lastState);
       }
       if (isFunction(options.afterUpdate)) {
@@ -534,14 +532,14 @@ function patchComponent(
             nextHooks.onComponentDidUpdate(lastProps, nextProps);
           }
         }
-      } else if ((lastInput.flags & VNodeFlags.Component) > 0) {
+      } else if (lastInput.flags & VNodeFlags.Component) {
         lastInput.parentVNode = nextVNode;
       }
     }
   }
 }
 
-export function patchText(lastVNode: VNode, nextVNode: VNode) {
+function patchText(lastVNode: VNode, nextVNode: VNode) {
   const nextText = nextVNode.children as string;
   const dom = lastVNode.dom as Element;
 
@@ -552,11 +550,7 @@ export function patchText(lastVNode: VNode, nextVNode: VNode) {
   }
 }
 
-export function patchVoid(lastVNode: VNode, nextVNode: VNode) {
-  nextVNode.dom = lastVNode.dom;
-}
-
-export function patchNonKeyedChildren(
+function patchNonKeyedChildren(
   lastChildren,
   nextChildren,
   dom,
@@ -596,7 +590,7 @@ export function patchNonKeyedChildren(
   }
 }
 
-export function patchKeyedChildren(
+function patchKeyedChildren(
   a: VNode[],
   b: VNode[],
   dom,

@@ -6,6 +6,7 @@ import {
   cloneVNode,
   Component,
   createVNode,
+  getFlagsForElementVnode,
   EMPTY_OBJ,
   findDOMNode,
   InfernoChildren,
@@ -240,6 +241,15 @@ options.createVNode = (vNode: VNode): void => {
   }
   if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
     props.children = children;
+  }
+  if (vNode.flags & _VNodeFlags.Component) {
+    if (isString(vNode.type)) {
+      vNode.flags = getFlagsForElementVnode(vNode.type as string);
+      if (props && props.children) {
+        vNode.children = props.children;
+        delete props.children;
+      }
+    }
   }
   if (oldCreateVNode) {
     oldCreateVNode(vNode);

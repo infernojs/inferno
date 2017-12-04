@@ -20,12 +20,12 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
   const flags = vNode.flags;
   const dom = vNode.dom as Element;
 
-  if ((flags & VNodeFlags.Component) > 0) {
+  if (flags & VNodeFlags.Component) {
     const instance = vNode.children as any;
     const props = vNode.props || EMPTY_OBJ;
     const ref = vNode.ref as any;
 
-    if ((flags & VNodeFlags.ComponentClass) > 0) {
+    if (flags & VNodeFlags.ComponentClass) {
       if (!instance.$UN) {
         if (isFunction(options.beforeUnmount)) {
           options.beforeUnmount(vNode);
@@ -52,7 +52,7 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
 
       unmount(instance, null);
     }
-  } else if ((flags & VNodeFlags.Element) > 0) {
+  } else if (flags & VNodeFlags.Element) {
     const ref = vNode.ref as any;
     const props = vNode.props;
 
@@ -88,7 +88,7 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
         }
       }
     }
-  } else if ((flags & VNodeFlags.Portal) > 0) {
+  } else if (flags & VNodeFlags.Portal) {
     const children = vNode.children;
 
     if (!isInvalid(children) && isObject(children)) {

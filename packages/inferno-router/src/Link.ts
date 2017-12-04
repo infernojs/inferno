@@ -6,8 +6,7 @@ import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
 import { invariant } from "./utils";
 
-const isModifiedEvent = (event): boolean =>
-  !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+const isModifiedEvent = (event): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
 export interface ILinkProps {
   onClick?: any;

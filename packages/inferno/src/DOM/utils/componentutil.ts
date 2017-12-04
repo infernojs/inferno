@@ -15,6 +15,7 @@ import {
   isArray,
   isFunction,
   isInvalid,
+  isNull,
   isNullOrUndef,
   isStringOrNumber,
   throwError
@@ -48,7 +49,7 @@ export function createClassComponentInstance(
       const state = instance.state;
       const pending = instance.$PS;
 
-      if (state === null) {
+      if (isNull(state)) {
         instance.state = pending;
       } else {
         for (const key in pending) {
@@ -62,6 +63,15 @@ export function createClassComponentInstance(
     instance.$BR = false;
   }
 
+  if (isFunction(options.beforeRender)) {
+    options.beforeRender(instance);
+  }
+
+  const input = handleComponentInput(
+    instance.render(props, instance.state, context),
+    vNode
+  );
+
   let childContext;
   if (isFunction(instance.getChildContext)) {
     childContext = instance.getChildContext();
@@ -72,15 +82,6 @@ export function createClassComponentInstance(
   } else {
     instance.$CX = combineFrom(context, childContext);
   }
-
-  if (isFunction(options.beforeRender)) {
-    options.beforeRender(instance);
-  }
-
-  const input = handleComponentInput(
-    instance.render(props, instance.state, context),
-    vNode
-  );
 
   if (isFunction(options.afterRender)) {
     options.afterRender(instance);
@@ -107,7 +108,7 @@ export function handleComponentInput(input: any, componentVNode: VNode): VNode {
     if (input.dom) {
       input = directClone(input);
     }
-    if ((input.flags & VNodeFlags.Component) > 0) {
+    if (input.flags & VNodeFlags.Component) {
       // if we have an input that is also a component, we run into a tricky situation
       // where the root vNode needs to always have the correct DOM entry
       // we can optimise this in the future, but this gets us out of a lot of issues

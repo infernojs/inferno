@@ -12,7 +12,6 @@ import {
   isNullOrUndef,
   isNumber,
   isStatefulComponent,
-  isString,
   isStringOrNumber,
   isUndefined,
   warning
@@ -151,23 +150,13 @@ export function directClone(vNodeToClone: VNode): VNode {
     newVNode.children = null;
   } else if (flags & VNodeFlags.Element) {
     const children = vNodeToClone.children;
-    let props;
-    const propsToClone = vNodeToClone.props;
 
-    if (propsToClone === null) {
-      props = EMPTY_OBJ;
-    } else {
-      props = {};
-      for (const key in propsToClone) {
-        props[key] = propsToClone[key];
-      }
-    }
     newVNode = createVNode(
       flags,
       vNodeToClone.type,
       vNodeToClone.className,
       children,
-      props,
+      vNodeToClone.props,
       vNodeToClone.key,
       vNodeToClone.ref,
       !children
@@ -235,14 +224,14 @@ export function cloneVNode(
     let key = vNodeToClone.key;
     let ref = vNodeToClone.ref;
     if (props) {
-      if (props.hasOwnProperty("className")) {
+      if (!isUndefined(props.className)) {
         className = props.className as string;
       }
-      if (props.hasOwnProperty("ref")) {
+      if (!isUndefined(props.ref)) {
         ref = props.ref as Ref;
       }
 
-      if (props.hasOwnProperty("key")) {
+      if (!isUndefined(props.key)) {
         key = props.key;
       }
     }
@@ -332,11 +321,8 @@ function applyKey(key: string, vNode: VNode) {
 }
 
 function applyKeyIfMissing(key: string | number, vNode: VNode): VNode {
-  if (isNumber(key)) {
-    key = `.${key}`;
-  }
   if (isNull(vNode.key) || vNode.key[0] === ".") {
-    return applyKey(key as string, vNode);
+    return applyKey(isNumber(key) ? `.${key}` : key as string, vNode);
   }
   return vNode;
 }
@@ -355,9 +341,10 @@ function _normalizeVNodes(
 ) {
   for (const len = nodes.length; index < len; index++) {
     let n = nodes[index];
-    const key = `${currentKey}.${index}`;
 
     if (!isInvalid(n)) {
+      const key = `${currentKey}.${index}`;
+
       if (isArray(n)) {
         _normalizeVNodes(n, result, 0, key);
       } else {
@@ -387,8 +374,6 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
   // tslint:disable
   if (nodes["$"] === true) {
     nodes = nodes.slice();
-  } else {
-    nodes["$"] = true;
   }
   // tslint:enable
   for (let i = 0, len = nodes.length; i < len; i++) {
@@ -404,26 +389,27 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
         newNodes = nodes.slice(0, i) as VNode[];
       }
       newNodes.push(applyKeyIfMissing(i, createTextVNode(n, null)));
-    } else if (
-      (isVNode(n) && n.dom !== null) ||
-      (isNull(n.key) && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0)
-    ) {
+    } else if (isVNode(n) && (!isNull(n.dom) || isNull(n.key) && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0)) {
       if (!newNodes) {
         newNodes = nodes.slice(0, i) as VNode[];
       }
-      newNodes.push(applyKeyIfMissing(i, directClone(n)));
+      newNodes.push(applyKeyIfMissing(i, isNull(n.dom) ? n : directClone(n)));
     } else if (newNodes) {
-      newNodes.push(applyKeyIfMissing(i, directClone(n)));
+      newNodes.push(applyKeyIfMissing(i, n));
     }
   }
 
-  return newNodes || (nodes as VNode[]);
+  const foo = newNodes || (nodes as VNode[]);
+
+  foo.$ = true;
+
+  return foo;
 }
 
 function normalizeChildren(children: InfernoChildren | null) {
   if (isArray(children)) {
     return normalizeVNodes(children as any[]);
-  } else if (isVNode(children as VNode) && (children as VNode).dom !== null) {
+  } else if (isVNode(children as VNode) && !isNull((children as VNode).dom)) {
     return directClone(children as VNode);
   }
 
@@ -432,19 +418,19 @@ function normalizeChildren(children: InfernoChildren | null) {
 
 function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
   if (vNode.flags & VNodeFlags.Element) {
-    if (isNullOrUndef(children) && props.hasOwnProperty("children")) {
+    if (isNullOrUndef(children) && !isUndefined(props.children)) {
       vNode.children = props.children;
     }
-    if (props.hasOwnProperty("className")) {
+    if (!isUndefined(props.className)) {
       vNode.className = props.className || null;
       delete props.className;
     }
   }
-  if (props.hasOwnProperty("ref")) {
+  if (!isUndefined(props.ref)) {
     vNode.ref = props.ref as any;
     delete props.ref;
   }
-  if (props.hasOwnProperty("key")) {
+  if (!isUndefined(props.key)) {
     vNode.key = props.key;
     delete props.key;
   }
@@ -471,7 +457,7 @@ export function getFlagsForElementVnode(type: string): number {
 
 export function normalize(vNode: VNode): void {
   let props = vNode.props;
-  let children = vNode.children;
+  const children = vNode.children;
 
   // convert a wrongly created type back to element
   // Primitive node doesn't have defaultProps, only Component
@@ -489,14 +475,6 @@ export function normalize(vNode: VNode): void {
             props[prop] = defaultProps[prop];
           }
         }
-      }
-    }
-
-    if (isString(type)) {
-      vNode.flags = getFlagsForElementVnode(type as string);
-      if (props && props.children) {
-        vNode.children = props.children;
-        children = props.children;
       }
     }
   }
@@ -525,7 +503,7 @@ export function normalize(vNode: VNode): void {
         if (hasDuplicate) {
           warning(
             "Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:" +
-              item
+            item
           );
         }
 

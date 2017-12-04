@@ -2,7 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isNull, isNullOrUndef } from "inferno-shared";
+import { isNull, isUndefined, isNullOrUndef } from "inferno-shared";
 import { svgNS } from "../constants";
 
 // We need EMPTY_OBJ defined in one place.
@@ -73,7 +73,7 @@ export const componentToDOMNodeMap = new Map();
 
 export function callAll(arrayFn: Function[]) {
   let listener;
-  while ((listener = arrayFn.shift()) !== undefined) {
+  while (!isUndefined(listener = arrayFn.shift())) {
     listener();
   }
 }

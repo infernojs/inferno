@@ -752,13 +752,10 @@ describe("Basic event tests", () => {
         const outerFocusInSpy = sinon.spy();
         const outerFocusOutSpy = sinon.spy();
 
-        let input = null;
-
         render(
           <div onFocusOut={outerFocusOutSpy} onFocusIn={outerFocusInSpy}>
             <div>
               <input
-                ref={elem => (input = elem)}
                 onFocusOut={focusOutSpy}
                 onFocusIn={focusInSpy}
                 type="text"
@@ -768,6 +765,7 @@ describe("Basic event tests", () => {
           container
         );
 
+        const input = container.querySelector('input');
         input.focus();
 
         expect(focusInSpy.callCount).toBe(1);

@@ -1,6 +1,6 @@
 import { render } from "inferno";
 import createClass from "inferno-create-class";
-import mobx from "mobx";
+import * as mobx from "mobx";
 import { observer, Provider } from "inferno-mobx";
 
 describe("observer based context", () => {
