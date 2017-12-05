@@ -8,7 +8,6 @@ import {
   createVNode,
   getFlagsForElementVnode,
   EMPTY_OBJ,
-  findDOMNode,
   InfernoChildren,
   options,
   Props,
@@ -27,7 +26,8 @@ import {
   isNull,
   isNullOrUndef,
   isString,
-  NO_OP
+  NO_OP,
+  throwError
 } from "inferno-shared";
 import _VNodeFlags from "inferno-vnode-flags";
 import isValidElement from "./isValidElement";
@@ -40,6 +40,7 @@ declare global {
   }
 }
 
+const componentToDOMNodeMap = new Map();
 options.findDOMNodeEnabled = true;
 
 function unmountComponentAtNode(
@@ -118,6 +119,37 @@ options.beforeRender = function(component): void {
 };
 options.afterRender = function(): void {
   currentComponent = null;
+};
+const nextAfterMount = options.afterMount;
+
+options.afterMount = vNode => {
+  if (options.findDOMNodeEnabled) {
+    componentToDOMNodeMap.set(vNode.children, vNode.dom);
+  }
+  if (nextAfterMount) {
+    nextAfterMount(vNode);
+  }
+};
+const nextAfterUpdate = options.afterUpdate;
+
+options.afterUpdate = vNode => {
+  if (options.findDOMNodeEnabled) {
+    componentToDOMNodeMap.set(vNode.children, vNode.dom);
+  }
+  if (nextAfterUpdate) {
+    nextAfterUpdate(vNode);
+  }
+};
+
+const nextBeforeUnmount = options.beforeUnmount;
+
+options.beforeUnmount = vNode => {
+  if (options.findDOMNodeEnabled) {
+    componentToDOMNodeMap.delete(vNode.children);
+  }
+  if (nextBeforeUnmount) {
+    nextBeforeUnmount(vNode);
+  }
 };
 
 const version = "15.4.2";
@@ -322,6 +354,20 @@ function createFactory(type) {
 const DOM = {};
 for (let i = ELEMENTS.length; i--; ) {
   DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
+}
+
+function findDOMNode(ref) {
+  if (!options.findDOMNodeEnabled) {
+    if (process.env.NODE_ENV !== "production") {
+      throwError(
+        "findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!"
+      );
+    }
+    throwError();
+  }
+  const dom = ref && ref.nodeType ? ref : null;
+
+  return componentToDOMNodeMap.get(ref) || dom;
 }
 
 // Mask React global in browser enviornments when React is not used.

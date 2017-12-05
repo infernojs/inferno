@@ -24,11 +24,9 @@ import { patch as internal_patch } from "./DOM/patching";
 import {
   createPortal,
   createRenderer,
-  findDOMNode,
   render
 } from "./DOM/rendering";
 import {
-  componentToDOMNodeMap as internal_DOMNodeMap,
   EMPTY_OBJ
 } from "./DOM/utils/common";
 import { Component } from "./core/component";
@@ -67,9 +65,7 @@ export default {
   createPortal,
   createRenderer,
   createVNode, // core shapes
-  findDOMNode,
   getFlagsForElementVnode,
-  internal_DOMNodeMap,
   internal_isUnitlessNumber,
   internal_normalize,
   internal_patch,
@@ -91,9 +87,7 @@ export {
   createPortal,
   createRenderer,
   createVNode,
-  findDOMNode,
   getFlagsForElementVnode,
-  internal_DOMNodeMap,
   internal_isUnitlessNumber,
   internal_normalize,
   internal_patch,

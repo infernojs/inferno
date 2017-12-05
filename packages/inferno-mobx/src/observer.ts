@@ -3,7 +3,8 @@
  */ /** TypeDoc Comment */
 
 import * as mobx from "mobx";
-import { Component, findDOMNode, options, createVNode } from "inferno";
+import { Component, options, createVNode } from "inferno";
+import { findDOMNode } from "inferno-compat";
 import { EventEmitter } from "./utils/EventEmitter";
 import { warning } from "inferno-shared";
 import { isStateless } from "./utils/utils";
@@ -48,7 +49,7 @@ export function trackComponents() {
   if (!isDevtoolsEnabled) {
     isDevtoolsEnabled = true;
     options.findDOMNodeEnabled = true;
-    warning("Do not turn trackComponents on in production, its expensive");
+    warning("Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.");
   }
 }
 

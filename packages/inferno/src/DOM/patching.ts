@@ -26,7 +26,6 @@ import {
 import { unmount } from "./unmounting";
 import {
   appendChild,
-  componentToDOMNodeMap,
   EMPTY_OBJ,
   insertOrAppend,
   isKeyed,
@@ -442,9 +441,6 @@ export function updateClassComponent(
       }
       if (isFunction(options.afterUpdate)) {
         options.afterUpdate(nextVNode);
-      }
-      if (options.findDOMNodeEnabled) {
-        componentToDOMNodeMap.set(instance, nextInput.dom);
       }
     }
   } else {

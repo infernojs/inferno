@@ -15,7 +15,7 @@ import {
   warning
 } from "inferno-shared";
 import VNodeFlags from "inferno-vnode-flags";
-import { InfernoChildren, options, VNode } from "../core/implementation";
+import { InfernoChildren, VNode } from "../core/implementation";
 import {
   mount,
   mountClassComponentCallbacks,
@@ -24,7 +24,7 @@ import {
   mountRef,
   mountText
 } from "./mounting";
-import { componentToDOMNodeMap, EMPTY_OBJ, replaceChild } from "./utils/common";
+import { EMPTY_OBJ, replaceChild } from "./utils/common";
 import {
   isControlledFormElement,
   processElement
@@ -63,9 +63,6 @@ function hydrateComponent(
     vNode.dom = input.dom;
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
     instance.$UPD = false; // Mount finished allow going sync
-    if (options.findDOMNodeEnabled) {
-      componentToDOMNodeMap.set(instance, dom);
-    }
   } else {
     const input = handleComponentInput(type(props, context), vNode);
     hydrate(input, dom, lifecycle, context, isSVG);

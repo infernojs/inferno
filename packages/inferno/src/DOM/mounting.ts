@@ -23,7 +23,6 @@ import {
 } from "../core/implementation";
 import {
   appendChild,
-  componentToDOMNodeMap,
   documentCreateElement,
   EMPTY_OBJ,
   setTextContent
@@ -219,9 +218,6 @@ export function mountComponent(
     }
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
     instance.$UPD = false;
-    if (options.findDOMNodeEnabled) {
-      componentToDOMNodeMap.set(instance, dom);
-    }
   } else {
     const input = handleComponentInput(type(props, context), vNode);
     vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);

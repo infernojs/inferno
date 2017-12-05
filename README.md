@@ -373,8 +373,8 @@ const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an i
 Inferno.render(newVNode, container);
 ```
 
-### `findDOMNode` (package: `inferno`)
-
+### `findDOMNode` (package: `inferno-compat`)
+This feature has been moved from inferno to inferno-compat in v4 forward.
 Once enabled via `Inferno.options.findDOMNodeEnabled = true;` at the start of an application, `findDOMNode()` is enabled.
 
 Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant performance impact.

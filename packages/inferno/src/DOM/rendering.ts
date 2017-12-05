@@ -26,23 +26,9 @@ import { hydrateRoot } from "./hydration";
 import { mount } from "./mounting";
 import { patch } from "./patching";
 import { unmount } from "./unmounting";
-import { callAll, componentToDOMNodeMap, EMPTY_OBJ } from "./utils/common";
+import { callAll, EMPTY_OBJ } from "./utils/common";
 
 const roots = options.roots;
-
-export function findDOMNode(ref) {
-  if (!options.findDOMNodeEnabled) {
-    if (process.env.NODE_ENV !== "production") {
-      throwError(
-        "findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!"
-      );
-    }
-    throwError();
-  }
-  const dom = ref && ref.nodeType ? ref : null;
-
-  return componentToDOMNodeMap.get(ref) || dom;
-}
 
 function getRoot(dom): Root | null {
   for (let i = 0, len = roots.length; i < len; i++) {

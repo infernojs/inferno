@@ -14,7 +14,7 @@ import VNodeFlags from "inferno-vnode-flags";
 import { options, VNode } from "../core/implementation";
 import { delegatedEvents } from "./constants";
 import { handleEvent } from "./events/delegation";
-import { componentToDOMNodeMap, EMPTY_OBJ, removeChild } from "./utils/common";
+import { EMPTY_OBJ, removeChild } from "./utils/common";
 
 export function unmount(vNode: VNode, parentDom: Element | null) {
   const flags = vNode.flags;
@@ -37,9 +37,6 @@ export function unmount(vNode: VNode, parentDom: Element | null) {
           ref(null);
         }
         instance.$UN = true;
-        if (options.findDOMNodeEnabled) {
-          componentToDOMNodeMap.delete(instance);
-        }
 
         unmount(instance.$LI, null);
       }

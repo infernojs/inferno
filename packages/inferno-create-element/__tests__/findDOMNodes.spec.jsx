@@ -1,4 +1,5 @@
-import { Component, findDOMNode, options, render } from "inferno";
+import { Component, options, render } from "inferno";
+import { findDOMNode } from "inferno-compat";
 
 describe("findDOMNodes (JSX)", () => {
   let container;
@@ -54,11 +55,9 @@ describe("findDOMNodes (JSX)", () => {
 
     it("simple findDOMNodes", () => {
       render(<Example1 />, container);
-      expect(
-        findDOMNode(instance1) === document.getElementById("example1")
-      ).toBe(true);
+      expect(findDOMNode(instance1)).toBe(document.getElementById("example1"));
       render(null, container);
-      expect(findDOMNode(instance1) === null).toBe(true);
+      expect(findDOMNode(instance1)).toBe(null);
       render(<Example2 />, container);
       expect(
         findDOMNode(instance2) === document.getElementById("example2")
@@ -78,9 +77,9 @@ describe("findDOMNodes (JSX)", () => {
         findDOMNode(instance1) === document.getElementById("example1")
       ).toBe(true);
       render(null, container);
-      expect(findDOMNode(instance1) === null).toBe(true);
-      expect(findDOMNode(instance2) === null).toBe(true);
-      expect(findDOMNode(instance3) === null).toBe(true);
+      expect(findDOMNode(instance1)).toBe(null);
+      expect(findDOMNode(instance2)).toBe(null);
+      expect(findDOMNode(instance3)).toBe(null);
       expect(findDOMNode(ref) === ref).toBe(true);
     });
   });
