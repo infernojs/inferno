@@ -763,6 +763,38 @@ describe("setState", () => {
     render(<Com />, container);
   });
 
+  it('Should not re-create state if no setState is called', () => {
+    const FooBarState = [
+      1
+    ];
+
+    class FooBar extends Component {
+      constructor(props, context) {
+        super(props, context);
+
+        this.state = FooBarState;
+      }
+
+      render(props, state) {
+        expect(state).toBe(FooBarState);
+        expect(this.state).toBe(FooBarState);
+        expect(state === FooBarState).toBe(true);
+
+        return (
+          <div>{state[0]}</div>
+        )
+      }
+    }
+
+    render(<FooBar/>, container);
+
+    expect(container.innerHTML).toEqual('<div>1</div>');
+
+    render(<FooBar/>, container);
+
+    expect(container.innerHTML).toEqual('<div>1</div>');
+  });
+
   it("Should keep context in sync with state #1182", () => {
     function Child(props, context) {
       return (

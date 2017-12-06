@@ -1,5 +1,5 @@
-import { render } from "inferno";
 import cloneVNode from "inferno-clone-vnode";
+import { render } from "inferno";
 import { innerHTML } from "inferno-utils";
 
 // React Fiddle for Cloning https://jsfiddle.net/es4u02jv/
@@ -11,6 +11,7 @@ describe("cloneVNode (JSX)", () => {
   });
 
   it("should clone a tag", () => {
+    debugger;
     const node = cloneVNode(<a />, null);
     render(node, container);
     expect(container.innerHTML).toBe(innerHTML("<a></a>"));

@@ -101,7 +101,8 @@ module.exports = function(config) {
           "inferno-shared": resolve("inferno-shared"),
           "inferno-test-utils": resolve("inferno-test-utils"),
           "inferno-utils": resolve("inferno-utils"),
-          "inferno-vnode-flags": resolve("inferno-vnode-flags")
+          "inferno-vnode-flags": resolve("inferno-vnode-flags"),
+          "inferno-clone-vnode": resolve("inferno-clone-vnode")
         },
         extensions: [".js", ".jsx", ".ts", ".tsx"],
         mainFields: ["inferno:main", "module", "main"]
