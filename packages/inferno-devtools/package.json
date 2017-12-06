@@ -23,7 +23,10 @@
     "user interfaces"
   ],
   "repository": "https://github.com/infernojs/inferno",
-  "dependencies": {
+  "peerDependencies": {
+    "inferno": "^4.0.0-1"
+  },
+  "devDependencies": {
     "inferno": "^4.0.0-1",
     "inferno-shared": "^4.0.0-1",
     "inferno-vnode-flags": "^4.0.0-1"

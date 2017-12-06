@@ -6,7 +6,7 @@ import {
   isBrowser,
   isFunction,
   isInvalid,
-  isNull,
+  isUndefined,
   isNullOrUndef,
   NO_OP,
   throwError,
@@ -19,7 +19,6 @@ import {
   InfernoChildren,
   InfernoInput,
   options,
-  Root,
   VNode
 } from "../core/implementation";
 import { hydrateRoot } from "./hydration";
@@ -29,36 +28,6 @@ import { unmount } from "./unmounting";
 import { callAll, EMPTY_OBJ } from "./utils/common";
 
 const roots = options.roots;
-
-function getRoot(dom): Root | null {
-  for (let i = 0, len = roots.length; i < len; i++) {
-    const root = roots[i];
-
-    if (root.dom === dom) {
-      return root;
-    }
-  }
-  return null;
-}
-
-function setRoot(dom: Element | SVGAElement, input: VNode): Root {
-  const root: Root = {
-    dom,
-    input
-  };
-
-  roots.push(root);
-  return root;
-}
-
-function removeRoot(root: Root): void {
-  for (let i = 0, len = roots.length; i < len; i++) {
-    if (roots[i] === root) {
-      roots.splice(i, 1);
-      return;
-    }
-  }
-}
 
 if (process.env.NODE_ENV !== "production") {
   if (isBrowser && document.body === null) {
@@ -93,9 +62,9 @@ export function render(
     return;
   }
   const lifecycle = [];
-  let root = getRoot(parentDom);
+  let rootInput = roots.get(parentDom);
 
-  if (isNull(root)) {
+  if (isUndefined(rootInput)) {
     if (!isInvalid(input)) {
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
@@ -109,25 +78,27 @@ export function render(
           false
         );
       }
-      root = setRoot(parentDom as any, input as VNode);
+      roots.set(parentDom, input);
+      rootInput = input;
     }
   } else {
     if (isNullOrUndef(input)) {
-      unmount(root.input as VNode, parentDom as Element);
-      removeRoot(root);
+      unmount(rootInput as VNode, parentDom as Element);
+      roots.delete(parentDom);
     } else {
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
       }
       patch(
-        root.input as VNode,
+        rootInput as VNode,
         input as VNode,
         parentDom as Element,
         lifecycle,
         EMPTY_OBJ,
         false
       );
-      root.input = input as VNode;
+      roots.set(parentDom, input);
+      rootInput = input;
     }
   }
 
@@ -136,12 +107,8 @@ export function render(
   if (isFunction(callback)) {
     callback();
   }
-  if (root) {
-    const rootInput: VNode = root.input as VNode;
-
-    if (rootInput && rootInput.flags & VNodeFlags.Component) {
-      return rootInput.children;
-    }
+  if (rootInput && rootInput.flags & VNodeFlags.Component) {
+    return rootInput.children;
   }
 }
 

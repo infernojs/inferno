@@ -24,12 +24,13 @@
     "class",
     "vdom"
   ],
-  "dependencies": {
-    "inferno-shared": "^4.0.0-1"
+  "peerDependencies": {
+    "inferno": "^4.0.0-1"
   },
   "devDependencies": {
     "inferno": "^4.0.0-1",
-    "inferno-create-element": "^4.0.0-1"
+    "inferno-create-element": "^4.0.0-1",
+    "inferno-shared": "^4.0.0-1"
   },
   "rollup": {
     "bundledDependencies": [

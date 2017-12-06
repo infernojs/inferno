@@ -3,7 +3,6 @@
  */ /** TypeDoc Comment */
 
 import {
-  cloneVNode,
   Component,
   createVNode,
   getFlagsForElementVnode,
@@ -14,6 +13,7 @@ import {
   render,
   VNode
 } from "inferno";
+import cloneVNode from "inferno-clone-vnode";
 import createClass, {
   ClassicComponentClass,
   ComponentSpec

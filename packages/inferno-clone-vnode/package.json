@@ -1,11 +1,11 @@
 {
-  "name": "inferno-create-element",
+  "name": "inferno-clone-vnode",
   "version": "4.0.0-1",
   "license": "MIT",
-  "description": "Provides methods to create Inferno VNodes",
+  "description": "provides helper function to clone Inferno's vNodes",
   "author": {
-    "name": "Dominic Gannaway",
-    "email": "dg@domgan.com"
+    "name": "Sampo Kivistö",
+    "email": "sampo.kivisto@live.fi"
   },
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
@@ -21,6 +21,7 @@
     "framework",
     "interfaces",
     "user interfaces",
+    "class",
     "vdom"
   ],
   "peerDependencies": {
@@ -28,18 +29,12 @@
   },
   "devDependencies": {
     "inferno": "^4.0.0-1",
-    "inferno-utils": "^4.0.0-1",
-    "inferno-shared": "^4.0.0-1",
-    "inferno-vnode-flags": "^4.0.0-1"
+    "inferno-shared": "^4.0.0-1"
   },
   "rollup": {
     "bundledDependencies": [
-      "inferno-shared",
-      "inferno-vnode-flags"
+      "inferno-shared"
     ],
-    "moduleName": "Inferno.createElement",
-    "moduleGlobals": {
-      "inferno": "Inferno"
-    }
+    "moduleName": "Inferno.cloneVNode"
   }
 }

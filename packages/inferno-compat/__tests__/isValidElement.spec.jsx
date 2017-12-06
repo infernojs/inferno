@@ -1,6 +1,7 @@
 import createElement from "inferno-create-element";
 import { isValidElement } from "inferno-compat";
-import { cloneVNode, Component } from "inferno";
+import { Component } from "inferno";
+import cloneVNode from "inferno-clone-vnode";
 import h from "inferno-hyperscript";
 
 describe("isValidElement", () => {

@@ -4,7 +4,6 @@
 
 import VNodeFlags from "inferno-vnode-flags";
 import {
-  combineFrom,
   isArray,
   isFunction,
   isInvalid,
@@ -170,135 +169,6 @@ export function directClone(vNodeToClone: VNode): VNode {
     newVNode = vNodeToClone;
   }
 
-  return newVNode;
-}
-
-/*
- directClone is preferred over cloneVNode and used internally also.
- This function makes Inferno backwards compatible.
- And can be tree-shaked by modern bundlers
-
- Would be nice to combine this with directClone but could not do it without breaking change
- */
-
-/**
- * Clones given virtual node by creating new instance of it
- * @param {VNode} vNodeToClone virtual node to be cloned
- * @param {Props=} props additional props for new virtual node
- * @param {...*} _children new children for new virtual node
- * @returns {VNode} new virtual node
- */
-export function cloneVNode(
-  vNodeToClone: VNode,
-  props?: Props,
-  ..._children: InfernoChildren[]
-): VNode {
-  let children: any = _children;
-  const childrenLen = _children.length;
-
-  if (childrenLen > 0 && !isUndefined(_children[0])) {
-    if (!props) {
-      props = {};
-    }
-    if (childrenLen === 1) {
-      children = _children[0];
-    }
-
-    if (!isUndefined(children)) {
-      props.children = children as VNode;
-    }
-  }
-
-  let newVNode;
-
-  if (isArray(vNodeToClone)) {
-    const tmpArray: InfernoChildren = [];
-    for (let i = 0, len = (vNodeToClone as any).length; i < len; i++) {
-      tmpArray.push(directClone(vNodeToClone[i]));
-    }
-
-    newVNode = tmpArray;
-  } else {
-    const flags = vNodeToClone.flags;
-    let className = vNodeToClone.className;
-    let key = vNodeToClone.key;
-    let ref = vNodeToClone.ref;
-    if (props) {
-      if (!isUndefined(props.className)) {
-        className = props.className as string;
-      }
-      if (!isUndefined(props.ref)) {
-        ref = props.ref as Ref;
-      }
-
-      if (!isUndefined(props.key)) {
-        key = props.key;
-      }
-    }
-
-    if (flags & VNodeFlags.Component) {
-      newVNode = createVNode(
-        flags,
-        vNodeToClone.type,
-        className,
-        null,
-        !vNodeToClone.props && !props
-          ? EMPTY_OBJ
-          : combineFrom(vNodeToClone.props, props),
-        key,
-        ref,
-        true
-      );
-      const newProps = newVNode.props;
-
-      if (newProps) {
-        const newChildren = newProps.children;
-        // we need to also clone component children that are in props
-        // as the children may also have been hoisted
-        if (newChildren) {
-          if (isArray(newChildren)) {
-            const len = newChildren.length;
-            if (len > 0) {
-              const tmpArray: InfernoChildren = [];
-
-              for (let i = 0; i < len; i++) {
-                const child = newChildren[i];
-
-                if (isStringOrNumber(child)) {
-                  tmpArray.push(child);
-                } else if (!isInvalid(child) && isVNode(child)) {
-                  tmpArray.push(directClone(child));
-                }
-              }
-              newProps.children = tmpArray;
-            }
-          } else if (isVNode(newChildren)) {
-            newProps.children = directClone(newChildren);
-          }
-        }
-      }
-      newVNode.children = null;
-    } else if (flags & VNodeFlags.Element) {
-      children =
-        props && !isUndefined(props.children)
-          ? props.children
-          : vNodeToClone.children;
-      newVNode = createVNode(
-        flags,
-        vNodeToClone.type,
-        className,
-        children,
-        !vNodeToClone.props && !props
-          ? EMPTY_OBJ
-          : combineFrom(vNodeToClone.props, props),
-        key,
-        ref,
-        false
-      );
-    } else if (flags & VNodeFlags.Text) {
-      newVNode = createTextVNode(vNodeToClone.children as string, key);
-    }
-  }
   return newVNode;
 }
 
@@ -517,11 +387,6 @@ export function normalize(vNode: VNode): void {
   }
 }
 
-export interface Root {
-  dom: Element | SVGAElement;
-  input: VNode;
-}
-
 export const options: {
   afterMount: null | Function;
   afterRender: null | Function;
@@ -530,7 +395,7 @@ export const options: {
   beforeUnmount: null | Function;
   createVNode: null | Function;
   findDOMNodeEnabled: boolean;
-  roots: Root[];
+  roots: Map<any, any>;
 } = {
   afterMount: null,
   afterRender: null,
@@ -539,5 +404,5 @@ export const options: {
   beforeUnmount: null,
   createVNode: null,
   findDOMNodeEnabled: false,
-  roots: []
+  roots: new Map<any, any>()
 };

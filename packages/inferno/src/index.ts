@@ -6,8 +6,8 @@
 import { NO_OP, warning } from "inferno-shared";
 import { default as _VNodeFlags } from "inferno-vnode-flags";
 import {
-  cloneVNode,
   createVNode,
+  directClone,
   getFlagsForElementVnode,
   InfernoChildren,
   InfernoInput,
@@ -15,7 +15,6 @@ import {
   options,
   Props,
   Refs as _Refs,
-  Root as _Root,
   VNode
 } from "./core/implementation";
 import { isUnitlessNumber as internal_isUnitlessNumber } from "./DOM/constants";
@@ -50,7 +49,6 @@ if (process.env.NODE_ENV !== "production") {
 // To please the TS God
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
-export declare const Root: _Root;
 export declare const Refs: _Refs;
 
 const version = process.env.INFERNO_VERSION;
@@ -61,10 +59,10 @@ export default {
   EMPTY_OBJ, // used to shared common items between Inferno libs
   NO_OP, // used to shared common items between Inferno libs
   Component,
-  cloneVNode, // cloning
   createPortal,
   createRenderer,
   createVNode, // core shapes
+  directClone,
   getFlagsForElementVnode,
   internal_isUnitlessNumber,
   internal_normalize,
@@ -83,10 +81,10 @@ export {
   NO_OP,
   Props,
   VNode,
-  cloneVNode,
   createPortal,
   createRenderer,
   createVNode,
+  directClone,
   getFlagsForElementVnode,
   internal_isUnitlessNumber,
   internal_normalize,

@@ -25,16 +25,14 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "peerDependencies": {
+    "inferno": "^4.0.0-1",
     "mobx": ">=3.0.0"
   },
-  "dependencies": {
-    "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "^4.0.0-1",
-    "inferno-shared": "^4.0.0-1"
-  },
   "devDependencies": {
+    "hoist-non-inferno-statics": "^1.1.3",
     "inferno-create-class": "^4.0.0-1",
     "inferno-create-element": "^4.0.0-1",
+    "inferno-shared": "^4.0.0-1",
     "inferno-server": "^4.0.0-1",
     "mobx": "*"
   },
