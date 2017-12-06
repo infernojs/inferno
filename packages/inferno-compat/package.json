@@ -23,11 +23,14 @@
     "user interfaces",
     "vdom"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "inferno": "^4.0.0-1",
     "inferno-clone-vnode": "^4.0.0-1",
     "inferno-create-class": "^4.0.0-1",
-    "inferno-create-element": "^4.0.0-1",
+    "inferno-create-element": "^4.0.0-1"
+  },
+  "dependencies": {
+    "inferno": "^4.0.0-1",
     "inferno-transition-group": "next",
     "rc-css-transition-group-modern": "^2.1.6"
   },
@@ -39,9 +42,7 @@
   "rollup": {
     "bundledDependencies": [
       "inferno-shared",
-      "inferno-vnode-flags",
-      "inferno-create-class",
-      "inferno-create-element"
+      "inferno-vnode-flags"
     ],
     "moduleName": "Inferno",
     "moduleGlobals": {

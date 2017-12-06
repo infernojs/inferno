@@ -22,7 +22,6 @@ mkdir(join(cwd, "dist"), err => {
       ext: ".js",
       format: "umd",
       name: pkgJSON.name,
-      optimize: true,
       replace: true,
       uglify: true,
       version: pkgJSON.version

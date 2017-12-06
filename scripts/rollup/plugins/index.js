@@ -4,9 +4,7 @@ const nodeResolve = require("rollup-plugin-node-resolve");
 const replacePlugin = require("rollup-plugin-replace");
 const tsPlugin = require("rollup-plugin-typescript2");
 const uglify = require("rollup-plugin-uglify");
-
 const aliasPlugin = require("./alias");
-const optJSPlugin = require("./optimize");
 
 module.exports = function(version, options) {
   const plugins = [
@@ -60,10 +58,6 @@ module.exports = function(version, options) {
         warnings: false
       })
     );
-  }
-
-  if (options.optimize) {
-    plugins.push(optJSPlugin);
   }
 
   return plugins;
