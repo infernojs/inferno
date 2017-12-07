@@ -1,6 +1,6 @@
 {
   "name": "inferno-mobx",
-  "version": "4.0.0-1",
+  "version": "4.0.0-2",
   "license": "MIT",
   "description": "Official Inferno bindings for Mobx",
   "author": {
@@ -26,20 +26,20 @@
   "repository": "https://github.com/infernojs/inferno",
   "peerDependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "^4.0.0-1",
-    "inferno-create-class": "^4.0.0-1",
-    "inferno-create-element": "^4.0.0-1",
-    "inferno-shared": "^4.0.0-1",
-    "inferno-server": "^4.0.0-1",
+    "inferno": "4.0.0-2",
+    "inferno-create-class": "4.0.0-2",
+    "inferno-create-element": "4.0.0-2",
+    "inferno-server": "4.0.0-2",
+    "inferno-shared": "4.0.0-2",
     "mobx": ">=3.0.0"
   },
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "^4.0.0-1",
-    "inferno-create-class": "^4.0.0-1",
-    "inferno-create-element": "^4.0.0-1",
-    "inferno-shared": "^4.0.0-1",
-    "inferno-server": "^4.0.0-1",
+    "inferno": "4.0.0-2",
+    "inferno-create-class": "4.0.0-2",
+    "inferno-create-element": "4.0.0-2",
+    "inferno-server": "4.0.0-2",
+    "inferno-shared": "4.0.0-2",
     "mobx": ">=3.0.0"
   },
   "rollup": {
