@@ -4,7 +4,7 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import createHistory from "history/createHashHistory";
+import { createHashHistory } from "history";
 import Router from "./Router";
 import { warning } from "./utils";
 
@@ -20,7 +20,7 @@ export default class HashRouter extends Component<IHashRouterProps, any> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
-    this.history = createHistory(props);
+    this.history = createHashHistory(props);
   }
 
   public render(): VNode {

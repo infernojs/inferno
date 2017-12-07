@@ -4,7 +4,7 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import createHistory from "history/createMemoryHistory";
+import { createMemoryHistory } from "history";
 import Router from "./Router";
 import { warning } from "./utils";
 
@@ -21,7 +21,7 @@ export default class MemoryRouter extends Component<IMemoryRouterProps, any> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
-    this.history = createHistory(props);
+    this.history = createMemoryHistory(props);
   }
 
   public render(): VNode {

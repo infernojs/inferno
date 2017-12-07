@@ -4,7 +4,8 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import { addLeadingSlash, createPath, parsePath } from "history/PathUtils";
+import { createPath, parsePath } from "history";
+import { addLeadingSlash } from "history/es/PathUtils";
 import Router from "./Router";
 import { invariant, warning } from "./utils";
 

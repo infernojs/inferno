@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { Component } from "inferno";
-import { createLocation, locationsAreEqual } from "history/LocationUtils";
+import { createLocation, locationsAreEqual } from "history";
 import { invariant } from "./utils";
 
 export default class Redirect extends Component<any, any> {

@@ -4,7 +4,7 @@
 
 import { createVNode, VNode, Component } from "inferno";
 import VNodeFlags from "inferno-vnode-flags";
-import createHistory from "history/createBrowserHistory";
+import { createBrowserHistory } from "history";
 import Router from "./Router";
 import { warning } from "./utils";
 
@@ -21,7 +21,7 @@ export default class BrowserRouter extends Component<IBrowserRouterProps, any> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
-    this.history = createHistory(props);
+    this.history = createBrowserHistory(props);
   }
 
   public render(): VNode {
