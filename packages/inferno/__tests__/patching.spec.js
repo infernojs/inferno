@@ -60,42 +60,6 @@ describe("patching routine", () => {
     expect(container.innerHTML).toEqual("<span>a</span>");
   });
 
-  it("Patch operation when nextChildren is NOT Invalid/Array/StringOrNumber/VNode", () => {
-    const validNode = createVNode(
-      VNodeFlags.HtmlElement,
-      "span",
-      null,
-      createVNode(
-        VNodeFlags.HtmlElement,
-        "span",
-        null,
-        createVNode(VNodeFlags.Text, null, null, "a"),
-        null,
-        null,
-        null,
-        false
-      ),
-      null,
-      null,
-      null,
-      false
-    );
-
-    const invalidChildNode = createVNode(
-      VNodeFlags.HtmlElement,
-      "span",
-      null,
-      createVNode(0, "span"),
-      null,
-      null,
-      null,
-      false
-    );
-
-    render(validNode, container);
-    render(invalidChildNode, container);
-  });
-
   it("Should not access real DOM property when text does not change", () => {
     render(createVNode(VNodeFlags.Text, null, null, "a"), container);
     expect(container.innerHTML).toEqual("a");

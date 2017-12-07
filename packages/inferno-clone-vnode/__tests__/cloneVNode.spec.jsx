@@ -11,7 +11,6 @@ describe("cloneVNode (JSX)", () => {
   });
 
   it("should clone a tag", () => {
-    debugger;
     const node = cloneVNode(<a />, null);
     render(node, container);
     expect(container.innerHTML).toBe(innerHTML("<a></a>"));

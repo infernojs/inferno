@@ -181,7 +181,7 @@ export function createTextVNode(text: string | number, key): VNode {
 }
 
 export function isVNode(o: VNode): boolean {
-  return !!o.flags;
+  return isNumber(o.flags);
 }
 
 function applyKey(key: string, vNode: VNode) {
@@ -220,7 +220,7 @@ function _normalizeVNodes(
       } else {
         if (isStringOrNumber(n)) {
           n = createTextVNode(n, null);
-        } else if ((isVNode(n) && n.dom) || (n.key && n.key[0] === ".")) {
+        } else if (!isNull(n.dom) || (n.key && n.key[0] === ".")) {
           n = directClone(n);
         }
         if (isNull(n.key) || n.key[0] === ".") {
@@ -259,7 +259,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
         newNodes = nodes.slice(0, i) as VNode[];
       }
       newNodes.push(applyKeyIfMissing(i, createTextVNode(n, null)));
-    } else if (isVNode(n) && (!isNull(n.dom) || isNull(n.key) && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0)) {
+    } else if (!isNull(n.dom) || isNull(n.key) && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0) {
       if (!newNodes) {
         newNodes = nodes.slice(0, i) as VNode[];
       }
