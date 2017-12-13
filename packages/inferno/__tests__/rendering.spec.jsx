@@ -126,4 +126,37 @@ describe("rendering routine", () => {
 
     expect(console.error.calls.count()).toBe(0);
   });
+
+  it('Should be possible to render Immutable datastructures', () => {
+    function Clock(props) {
+        let time = props.time + 1;
+        const array = Object.freeze([
+          <span>{ 'Inferno version:' }</span>,
+          <br/>,
+          <span>{ time }</span>
+        ]);
+        return (
+          <div>
+            {array}
+          </div>
+        );
+      }
+
+    spyOn(console, "error");
+
+    render(<Clock time={1}/>, container);
+    expect(container.innerHTML).toBe("<div><span>Inferno version:</span><br><span>2</span></div>");
+
+    render(<Clock time={2}/>, container);
+    expect(container.innerHTML).toBe("<div><span>Inferno version:</span><br><span>3</span></div>");
+
+    render(<Clock time={3}/>, container);
+    expect(container.innerHTML).toBe("<div><span>Inferno version:</span><br><span>4</span></div>");
+    expect(console.error.calls.count()).toBe(0);
+
+    render(null, container);
+    expect(container.innerHTML).toBe("");
+
+    expect(console.error.calls.count()).toBe(0);
+  });
 });

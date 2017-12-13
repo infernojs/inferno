@@ -72,6 +72,23 @@ export function createVNode(
       : VNodeFlags.ComponentFunction;
   }
 
+  // Primitive node doesn't have defaultProps, only Component
+  if (flags & VNodeFlags.Component) {
+    // set default props
+    const defaultProps = (type as any).defaultProps;
+
+    if (!isNullOrUndef(defaultProps)) {
+      if (!props) {
+        props = {}; // Create new object if only defaultProps given
+      }
+      for (const prop in defaultProps) {
+        if (isUndefined(props[prop])) {
+          props[prop] = defaultProps[prop];
+        }
+      }
+    }
+  }
+
   const vNode: VNode = {
     children: children === void 0 ? null : children,
     className: className === void 0 ? null : className,
@@ -326,28 +343,8 @@ export function getFlagsForElementVnode(type: string): number {
 }
 
 export function normalize(vNode: VNode): void {
-  let props = vNode.props;
+  const props = vNode.props;
   const children = vNode.children;
-
-  // convert a wrongly created type back to element
-  // Primitive node doesn't have defaultProps, only Component
-  if (vNode.flags & VNodeFlags.Component) {
-    // set default props
-    const type = vNode.type;
-    const defaultProps = (type as any).defaultProps;
-
-    if (!isNullOrUndef(defaultProps)) {
-      if (!props) {
-        props = vNode.props = defaultProps; // Create new object if only defaultProps given
-      } else {
-        for (const prop in defaultProps) {
-          if (isUndefined(props[prop])) {
-            props[prop] = defaultProps[prop];
-          }
-        }
-      }
-    }
-  }
 
   if (props) {
     normalizeProps(vNode, props, children);
