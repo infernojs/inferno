@@ -32,6 +32,7 @@ export function createClassComponentInstance(
 ) {
   const instance = new Component(props, context);
   vNode.children = instance;
+  instance.$V = vNode;
   instance.$BS = false;
   instance.context = context;
   if (instance.props === EMPTY_OBJ) {

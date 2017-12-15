@@ -20,6 +20,8 @@ const enum VNodeFlags {
   SelectElement = 1 << 11,
   Void = 1 << 12,
   Portal = 1 << 13,
+  ReCreate = 1 << 14,
+  Ignore = 1 << 15,
 
   MultipleChildren = HasNonKeyedChildren | HasKeyedChildren,
 

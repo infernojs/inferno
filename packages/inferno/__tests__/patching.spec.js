@@ -80,4 +80,8 @@ describe("patching routine", () => {
 
     expect(childelem).toBe(container.firstElementChild.firstElementChild);
   });
+
+  it('Should not do any changes if vNode has Ignore flag set', () => {
+    const div = createVNode(VNodeFlags.E)
+  });
 });

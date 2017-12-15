@@ -58,7 +58,6 @@ function hydrateComponent(
     );
     const input = instance.$LI;
 
-    instance.$V = vNode;
     hydrate(input, dom, lifecycle, instance.$CX, isSVG);
     vNode.dom = input.dom;
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);

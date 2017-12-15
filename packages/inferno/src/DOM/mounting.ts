@@ -216,7 +216,6 @@ export function mountComponent(
       lifecycle
     );
     const input = instance.$LI;
-    instance.$V = vNode;
     vNode.dom = dom = mount(input, null, lifecycle, instance.$CX, isSVG);
     if (!isNull(parentDom)) {
       appendChild(parentDom, dom);
