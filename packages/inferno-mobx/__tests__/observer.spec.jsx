@@ -1,7 +1,7 @@
 import { Component, render } from "inferno";
 import * as mobx from "mobx";
-import mobxInferno, { inject, observer, offError } from "inferno-mobx";
-import createClass from "inferno-create-class";
+import { inject, observer, offError, Observer, useStaticRendering } from "inferno-mobx";
+import { createClass } from "inferno-create-class";
 import { renderToStaticMarkup } from "inferno-server";
 
 const store = mobx.observable({
@@ -170,7 +170,7 @@ describe("Mobx Observer", () => {
   });
 
   it("does not views alive when using static rendering", done => {
-    mobxInferno.useStaticRendering(true);
+    useStaticRendering(true);
 
     let renderCount = 0;
     const data = mobx.observable({
@@ -198,7 +198,7 @@ describe("Mobx Observer", () => {
 
       expect(getDNode(data, "z").observers.length).toBe(0);
 
-      mobxInferno.useStaticRendering(false);
+      useStaticRendering(false);
       done();
     }, 100);
   });
@@ -206,7 +206,7 @@ describe("Mobx Observer", () => {
   it("does not views alive when using static + string rendering", function(
     done
   ) {
-    mobxInferno.useStaticRendering(true);
+    useStaticRendering(true);
 
     let renderCount = 0;
     const data = mobx.observable({
@@ -228,7 +228,7 @@ describe("Mobx Observer", () => {
 
       expect(getDNode(data, "z").observers.length).toBe(0);
 
-      mobxInferno.useStaticRendering(false);
+      useStaticRendering(false);
       done();
     }, 100);
   });
@@ -520,7 +520,6 @@ describe("Mobx Observer", () => {
 
   it("Observer regions should react", done => {
     const data = mobx.observable("hi");
-    const Observer = mobxInferno.Observer;
     const Comp = () => (
       <div>
         <Observer>{() => <span>{data.get()}</span>}</Observer>

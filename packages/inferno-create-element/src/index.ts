@@ -18,7 +18,7 @@ import {
   isString,
   isUndefined
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 const componentHooks = new Set<string>();
 componentHooks.add("onComponentWillMount");
@@ -35,7 +35,7 @@ componentHooks.add("onComponentDidUpdate");
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual ndoe
  */
-export default function createElement<T>(
+export function createElement<T>(
   type: string | Function | Component<any, any>,
   props?: T & Props | null,
   ..._children: Array<InfernoChildren | any>

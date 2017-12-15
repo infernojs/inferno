@@ -16,7 +16,7 @@ import {
   isTrue,
   throwError
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { renderStylesToString } from "./prop-renderers";
 import { escapeText, voidElements } from "./utils";
 
@@ -201,7 +201,7 @@ function renderVNodeToString(
   }
 }
 
-export default function renderToString(input: any): string {
+export function renderToString(input: any): string {
   return renderVNodeToString(input, {}, {}, true) as string;
 }
 

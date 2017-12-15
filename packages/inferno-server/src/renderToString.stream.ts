@@ -12,7 +12,7 @@ import {
   isString,
   isStringOrNumber
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { Readable } from "stream";
 import { renderAttributes, renderStylesToString } from "./prop-renderers";
 import { escapeText, voidElements } from "./utils";
@@ -228,7 +228,7 @@ export class RenderStream extends Readable {
   }
 }
 
-export default function streamAsString(node) {
+export function streamAsString(node) {
   return new RenderStream(node, false);
 }
 

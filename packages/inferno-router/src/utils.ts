@@ -1,4 +1,4 @@
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { isArray, isObject, isNull, isNullOrUndef } from "inferno-shared";
 
 export function warning(condition, message) {

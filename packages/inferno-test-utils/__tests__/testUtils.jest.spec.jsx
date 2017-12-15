@@ -1,5 +1,5 @@
-import createElement from "inferno-create-element";
-import TestUtils from "inferno-test-utils";
+import { createElement } from "inferno-create-element";
+import * as TestUtils from "inferno-test-utils";
 
 const FunctionalComponent = function(props) {
   return createElement("div", props);

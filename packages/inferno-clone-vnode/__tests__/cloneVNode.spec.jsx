@@ -1,4 +1,4 @@
-import cloneVNode from "inferno-clone-vnode";
+import { cloneVNode } from "inferno-clone-vnode";
 import { render } from "inferno";
 import { innerHTML } from "inferno-utils";
 

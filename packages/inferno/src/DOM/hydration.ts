@@ -14,7 +14,7 @@ import {
   throwError,
   warning
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { InfernoChildren, VNode } from "../core/implementation";
 import {
   mount,

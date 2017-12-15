@@ -2,9 +2,9 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { Dispatch, Store } from "redux";
-import hoistStatics from "hoist-non-inferno-statics";
+import hoistNonReactStatics from "hoist-non-inferno-statics";
 import { Component, createVNode } from "inferno";
 import { Subscription } from "../utils/Subscription";
 
@@ -391,7 +391,7 @@ export function connectAdvanced(
       };
     }
 
-    return hoistStatics(Connect, WrappedComponent) as T;
+    return hoistNonReactStatics(Connect, WrappedComponent) as T;
   };
 
   return wrapWithConnect;

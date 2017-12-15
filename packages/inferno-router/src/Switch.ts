@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { VNode, Component, createVNode } from "inferno";
-import matchPath from "./matchPath";
+import { matchPath } from "./matchPath";
 import { Children, invariant, isValidElement, warning } from "./utils";
 import { combineFrom } from "inferno-shared";
 
@@ -15,7 +15,7 @@ export interface ISwitchProps {
 /**
  * The public API for rendering the first <Route> that matches.
  */
-export default class Switch extends Component<ISwitchProps, any> {
+export class Switch extends Component<ISwitchProps, any> {
   public componentWillMount() {
     invariant(
       this.context.router,

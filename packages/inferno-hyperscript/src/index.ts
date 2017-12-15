@@ -15,7 +15,7 @@ import {
   isStringOrNumber,
   isUndefined
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
@@ -109,7 +109,7 @@ function extractProps(
  * @param {boolean} noNormalize Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
  * @returns {VNode} returns new virtual node
  */
-export default function hyperscript(
+export function h(
   _tag: string | VNode | Function,
   _props?: any,
   _children?: InfernoChildren,

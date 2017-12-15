@@ -3,9 +3,9 @@
  */ /** TypeDoc Comment */
 
 import { createVNode, VNode, Component } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { createBrowserHistory } from "history";
-import Router from "./Router";
+import { Router } from "./Router";
 import { warning } from "./utils";
 
 export interface IBrowserRouterProps {
@@ -16,7 +16,7 @@ export interface IBrowserRouterProps {
   children: Array<Component<any, any>>;
 }
 
-export default class BrowserRouter extends Component<IBrowserRouterProps, any> {
+export class BrowserRouter extends Component<IBrowserRouterProps, any> {
   public history;
 
   constructor(props?: any, context?: any) {

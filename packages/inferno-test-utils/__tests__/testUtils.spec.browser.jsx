@@ -1,6 +1,6 @@
 import { Component, render } from "inferno";
-import createClass from "inferno-create-class";
-import createElement from "inferno-create-element";
+import { createClass } from "inferno-create-class";
+import { createElement } from "inferno-create-element";
 import {
   findAllInRenderedTree,
   findAllInVNodeTree,

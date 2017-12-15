@@ -13,12 +13,13 @@ import {
   render,
   VNode
 } from "inferno";
-import cloneVNode from "inferno-clone-vnode";
-import createClass, {
+import { cloneVNode } from "inferno-clone-vnode";
+import {
+  createClass,
   ClassicComponentClass,
   ComponentSpec
 } from "inferno-create-class";
-import infernoCreateElement from "inferno-create-element";
+import { createElement as infernoCreateElement } from "inferno-create-element";
 import {
   isArray,
   isBrowser,
@@ -29,8 +30,8 @@ import {
   NO_OP,
   throwError
 } from "inferno-shared";
-import _VNodeFlags from "inferno-vnode-flags";
-import isValidElement from "./isValidElement";
+import {VNodeFlags as _VNodeFlags} from "inferno-vnode-flags";
+import {isValidElement} from "./isValidElement";
 import PropTypes from "./PropTypes";
 import { SVGDOMPropertyConfig } from "./SVGDOMPropertyConfig";
 

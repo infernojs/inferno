@@ -4,7 +4,7 @@
 /** TypeDoc Comment */
 /* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from "inferno-shared";
-import { default as _VNodeFlags } from "inferno-vnode-flags";
+import { VNodeFlags as _VNodeFlags } from "inferno-vnode-flags";
 import {
   createTextVNode,
   createVNode,
@@ -55,34 +55,12 @@ export declare const Refs: _Refs;
 
 const version = process.env.INFERNO_VERSION;
 
-// we duplicate it so it plays nicely with different module loading systems
-
-export default {
-  EMPTY_OBJ, // used to shared common items between Inferno libs
-  NO_OP, // used to shared common items between Inferno libs
-  Component,
-  createPortal,
-  createRenderer,
-  createTextVNode,
-  createVNode,
-  directClone,
-  getFlagsForElementVnode,
-  internal_isUnitlessNumber,
-  internal_patch,
-  linkEvent,
-  normalize,
-  normalizeProps,
-  options,
-  render,
-  version
-};
-
 export {
   Component,
-  EMPTY_OBJ,
+  EMPTY_OBJ, // used to shared common items between Inferno libs
   InfernoChildren,
   InfernoInput,
-  NO_OP,
+  NO_OP, // used to shared common items between Inferno libs
   Props,
   VNode,
   createPortal,

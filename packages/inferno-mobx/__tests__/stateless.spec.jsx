@@ -1,7 +1,7 @@
 import { render } from "inferno";
 import { observer } from "inferno-mobx";
-import createClass from "inferno-create-class";
-import createElement from "inferno-create-element";
+import { createClass } from "inferno-create-class";
+import { createElement } from "inferno-create-element";
 
 const stateLessComp = ({ testProp }) => <div>result: {testProp}</div>;
 

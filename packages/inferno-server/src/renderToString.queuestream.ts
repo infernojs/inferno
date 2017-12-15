@@ -16,7 +16,7 @@ import {
   isUndefined,
   throwError
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { Readable } from "stream";
 import { renderStylesToString } from "./prop-renderers";
 import { escapeText, voidElements } from "./utils";
@@ -308,7 +308,7 @@ export class RenderQueueStream extends Readable {
   }
 }
 
-export default function streamQueueAsString(node) {
+export function streamQueueAsString(node) {
   return new RenderQueueStream(node, false);
 }
 

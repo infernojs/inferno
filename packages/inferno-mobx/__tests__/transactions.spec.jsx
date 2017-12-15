@@ -1,7 +1,7 @@
 import { Component, render } from "inferno";
 import * as mobx from "mobx";
-import mobxInferno from "inferno-mobx";
-import createClass from "inferno-create-class";
+import { observer } from "inferno-mobx";
+import { createClass } from "inferno-create-class";
 
 describe("Mobx Transacations", () => {
   let container;
@@ -36,7 +36,7 @@ describe("Mobx Transacations", () => {
     mobx.autorun(
       () => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(":"))
     );
-    const Test = mobxInferno.observer(
+    const Test = observer(
       createClass({
         componentWillReact: () => willReactCount++,
         render: () => (
@@ -62,7 +62,7 @@ describe("Mobx Transacations", () => {
     const loaded = mobx.observable(false);
     const valuesSeen = [];
 
-    const Component = mobxInferno.observer(() => {
+    const Component = observer(() => {
       valuesSeen.push(a.get());
       if (loaded.get()) return <div>{a.get()}</div>;
       else return <div>loading</div>;
@@ -86,7 +86,7 @@ describe("Mobx Transacations", () => {
     const a = mobx.observable(2);
     const loaded = mobx.observable(false);
     const valuesSeen = [];
-    const Component = mobxInferno.observer(() => {
+    const Component = observer(() => {
       valuesSeen.push(a.get());
       if (loaded.get()) return <div>{a.get()}</div>;
       else return <div>loading</div>;

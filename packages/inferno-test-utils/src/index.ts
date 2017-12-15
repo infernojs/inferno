@@ -275,36 +275,3 @@ export const isTextVNode = _isTextVNode;
 export const isVNode = _isVNode;
 export const renderIntoDocument = _renderIntoDocument;
 export const Wrapper = _Wrapper;
-
-export default {
-  Wrapper: _Wrapper,
-  findAllInRenderedTree,
-  findAllInVNodeTree,
-  findRenderedDOMElementWithClass,
-  findRenderedDOMElementWithTag,
-  findRenderedVNodeWithType,
-  findVNodeWithType,
-  getTagNameOfVNode: _getTagNameOfVNode,
-  isClassVNode: _isClassVNode,
-  isClassVNodeOfType,
-  isComponentVNode: _isComponentVNode,
-  isComponentVNodeOfType,
-  isDOMElement,
-  isDOMElementOfType,
-  isDOMVNode: _isDOMVNode,
-  isDOMVNodeOfType,
-  isFunctionalVNode: _isFunctionalVNode,
-  isFunctionalVNodeOfType,
-  isRenderedClassComponent,
-  isRenderedClassComponentOfType,
-  isTextVNode: _isTextVNode,
-  isVNode: _isVNode,
-  isVNodeOfType,
-  renderIntoDocument: _renderIntoDocument,
-  renderToSnapshot: _renderToSnapshot,
-  scryRenderedDOMElementsWithClass,
-  scryRenderedDOMElementsWithTag,
-  scryRenderedVNodesWithType,
-  scryVNodesWithType,
-  vNodeToSnapshot: _vNodeToSnapshot
-};

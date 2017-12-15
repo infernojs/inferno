@@ -1,7 +1,7 @@
 import { Component, render } from "inferno";
 import sinon from "sinon";
 import { innerHTML } from "inferno-utils";
-import createElement from "inferno-create-element";
+import { createElement } from "inferno-create-element";
 
 describe("Stateful Component updates", () => {
   let container;

@@ -1,5 +1,5 @@
 import { render } from "inferno";
-import createElement from "inferno-create-element";
+import { createElement } from "inferno-create-element";
 import { innerHTML } from "inferno-utils";
 
 describe("Update (non-jsx)", () => {

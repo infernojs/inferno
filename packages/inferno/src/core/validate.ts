@@ -1,6 +1,6 @@
-import {isArray, isInvalid, isNullOrUndef, throwError} from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
-import {isVNode} from "./implementation";
+import { isArray, isInvalid, isNullOrUndef, throwError } from "inferno-shared";
+import { VNodeFlags } from "inferno-vnode-flags";
+import { isVNode } from "./implementation";
 
 function getTagName(vNode) {
   const flags = vNode.flags;

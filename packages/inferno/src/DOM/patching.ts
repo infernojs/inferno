@@ -16,7 +16,7 @@ import {
   NO_OP,
   throwError
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { directClone, isVNode, options, VNode } from "../core/implementation";
 import {
   mount,
@@ -80,7 +80,7 @@ export function patch(
   if (lastVNode !== nextVNode) {
     const nextFlags = nextVNode.flags;
 
-    if (lastVNode.flags !== nextFlags) {
+    if (lastVNode.flags !== nextFlags || nextFlags & VNodeFlags.ReCreate) {
       unmount(lastVNode, null);
 
       const dom = mount(nextVNode, null, lifecycle, context, isSVG);

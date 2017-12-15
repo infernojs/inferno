@@ -4,9 +4,9 @@
 /** TypeDoc Comment */
 
 import { Component, createVNode, VNode } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { Children, invariant, warning } from "./utils";
-import matchPath from "./matchPath";
+import { matchPath } from "./matchPath";
 
 const isEmptyChildren = children => Children.count(children) === 0;
 
@@ -141,4 +141,4 @@ if (process.env.NODE_ENV !== "production") {
   };
 }
 
-export default Route;
+export {Route};

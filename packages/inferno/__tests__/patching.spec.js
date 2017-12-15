@@ -1,5 +1,6 @@
 import { createVNode, render } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import {VNodeFlags} from "inferno-vnode-flags";
+import sinon from "sinon";
 
 describe("patching routine", () => {
   let container;
@@ -16,16 +17,16 @@ describe("patching routine", () => {
   });
 
   it("Should do nothing if lastVNode strictly equals nextVnode", () => {
-    const yar = createVNode(2, "div", null, "123", null, null, null, true);
-    const bar = createVNode(2, "div", null, "123", null, null, null, true);
-    let foo = createVNode(2, "div", null, [bar, yar], null, null, null, true);
+    const yar = createVNode(2, "div", null, "123", null, null, null);
+    const bar = createVNode(2, "div", null, "123", null, null, null);
+    let foo = createVNode(2, "div", null, [bar, yar], null, null, null);
 
     render(foo, container);
     expect(container.innerHTML).toEqual(
       "<div><div>123</div><div>123</div></div>"
     );
 
-    foo = createVNode(2, "div", null, [bar, yar], null, null, null, true);
+    foo = createVNode(2, "div", null, [bar, yar], null, null, null);
 
     render(foo, container);
     expect(container.innerHTML).toEqual(
@@ -41,8 +42,7 @@ describe("patching routine", () => {
       createVNode(VNodeFlags.Text, null, null, "a"),
       null,
       null,
-      null,
-      false
+      null
     );
     const invalidNode = createVNode(0, "span");
 
@@ -73,8 +73,8 @@ describe("patching routine", () => {
     const childelem = container.firstElementChild.firstElementChild;
     const props = { dangerouslySetInnerHTML: { __html: "<span>child</span>" } };
 
-    const bar = createVNode(2, "span", null, null, props, null, null, true);
-    const foo = createVNode(2, "span", null, [bar], null, null, null, true);
+    const bar = createVNode(2, "span", null, null, props, null, null);
+    const foo = createVNode(2, "span", null, [bar], null, null, null);
 
     render(foo, container);
 
@@ -82,6 +82,54 @@ describe("patching routine", () => {
   });
 
   it('Should not do any changes if vNode has Ignore flag set', () => {
-    const div = createVNode(VNodeFlags.E)
+    const spyObj = {fn: () => {}};
+    const spyObj2 = {fn: () => {}};
+    const spy1 = sinon.spy(spyObj, "fn");
+    const spy2 = sinon.spy(spyObj2, "fn");
+
+    const div = createVNode(
+      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
+      "div",
+      null,
+      "1",
+      null,
+      null,
+      spy1
+    );
+
+    render(div, container);
+
+    let firstDiv = container.firstChild;
+
+    expect(container.innerHTML).toEqual("<div>1</div>");
+    expect(spy1.callCount).toBe(1);
+    expect(spy1.getCall(0).args.length).toBe(1);
+    expect(spy1.getCall(0).args[0]).toEqual(firstDiv);
+
+    const div2 = createVNode(
+      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
+      "div",
+      null,
+      "1",
+      null,
+      null,
+      spy2
+    );
+
+    render(div2, container);
+
+    expect(firstDiv).not.toBe(container.firstChild); // Div is different
+
+    // Html is the same
+    expect(container.innerHTML).toEqual("<div>1</div>");
+
+    // Verify all callbacks were called
+    expect(spy1.callCount).toBe(2);
+    expect(spy1.getCall(1).args.length).toBe(1);
+    expect(spy1.getCall(1).args[0]).toEqual(null);
+
+    expect(spy2.callCount).toBe(1);
+    expect(spy2.getCall(0).args.length).toBe(1);
+    expect(spy2.getCall(0).args[0]).toEqual(container.firstChild);
   });
 });

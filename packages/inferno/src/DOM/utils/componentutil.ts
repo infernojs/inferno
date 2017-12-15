@@ -21,7 +21,7 @@ import {
   throwError
 } from "inferno-shared";
 import { EMPTY_OBJ } from "./common";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 export function createClassComponentInstance(
   vNode: VNode,

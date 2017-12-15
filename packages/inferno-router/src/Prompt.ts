@@ -14,7 +14,7 @@ export interface IPromptProps {
 /**
  * The public API for matching a single path and rendering.
  */
-class Prompt extends Component<IPromptProps, any> {
+export class Prompt extends Component<IPromptProps, any> {
   public unblock;
 
   public enable(message) {
@@ -61,5 +61,3 @@ class Prompt extends Component<IPromptProps, any> {
     return null;
   }
 }
-
-export default Prompt;

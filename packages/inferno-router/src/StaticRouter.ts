@@ -3,10 +3,10 @@
  */ /** TypeDoc Comment */
 
 import { createVNode, VNode, Component } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { createPath, parsePath } from "history";
 import { addLeadingSlash } from "history/es/PathUtils";
-import Router from "./Router";
+import { Router } from "./Router";
 import { invariant, warning } from "./utils";
 
 // tslint:disable-next-line:no-empty
@@ -18,7 +18,7 @@ export interface IStaticRouterProps {
   location: any;
 }
 
-export default class StaticRouter extends Component<IStaticRouterProps, any> {
+export class StaticRouter extends Component<IStaticRouterProps, any> {
   public static defaultProps = {
     basename: "",
     location: "/"

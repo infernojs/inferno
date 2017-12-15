@@ -18,7 +18,7 @@ import {
   isInvalid,
   isArray
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 
 /*
@@ -36,7 +36,7 @@ import VNodeFlags from "inferno-vnode-flags";
  * @param {...*} _children new children for new virtual node
  * @returns {VNode} new virtual node
  */
-export default function cloneVNode(
+export function cloneVNode(
   vNodeToClone: VNode,
   props?,
   ..._children
