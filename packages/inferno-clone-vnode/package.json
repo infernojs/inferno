@@ -35,6 +35,6 @@
     "bundledDependencies": [
       "inferno-shared"
     ],
-    "moduleName": "Inferno.cloneVNode"
+    "moduleName": "Inferno"
   }
 }

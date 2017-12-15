@@ -20,6 +20,6 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "rollup": {
-    "moduleName": "Inferno.Shared"
+    "moduleName": "Inferno"
   }
 }

@@ -27,6 +27,7 @@ module.exports = function(options) {
     globals: Object.assign(moduleGlobals, rollupConfig.moduleGlobals),
     indent: true,
     name: rollupConfig.moduleName,
+    extend: true,
     sourcemap: false
   };
 

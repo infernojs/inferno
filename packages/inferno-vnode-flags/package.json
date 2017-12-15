@@ -29,7 +29,7 @@
     "flags"
   ],
   "rollup": {
-    "moduleName": "Inferno.VNodeFlags"
+    "moduleName": "Inferno"
   },
   "main": "index.js",
   "inferno:main": "dist/index.es.js",

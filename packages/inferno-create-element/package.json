@@ -36,7 +36,7 @@
       "inferno-shared",
       "inferno-vnode-flags"
     ],
-    "moduleName": "Inferno.createElement",
+    "moduleName": "Inferno",
     "moduleGlobals": {
       "inferno": "Inferno"
     }
