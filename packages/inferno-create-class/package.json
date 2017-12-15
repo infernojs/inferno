@@ -36,6 +36,6 @@
     "bundledDependencies": [
       "inferno-shared"
     ],
-    "moduleName": "Inferno.createClass"
+    "moduleName": "Inferno"
   }
 }

@@ -29,7 +29,7 @@
       "inferno-shared",
       "inferno-vnode-flags"
     ],
-    "moduleName": "Inferno.h",
+    "moduleName": "Inferno",
     "moduleGlobals": {
       "inferno": "Inferno"
     }
