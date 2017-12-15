@@ -5,6 +5,7 @@
 import {
   createVNode,
   getFlagsForElementVnode,
+  normalize,
   InfernoChildren,
   VNode
 } from "inferno";
@@ -129,7 +130,7 @@ export default function hyperscript(
       getFlagsForElementVnode(tag),
       tag,
       className,
-      _children || children,
+      normalize(_children || children),
       props,
       key,
       ref

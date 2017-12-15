@@ -1563,7 +1563,7 @@ function runBenchmark(container) {
     return (
       <div className={"_5n7z _51xa"}>
         <XUIButton149 key={"saveAudience"} />
-        <AdsPEExportImportMenuContainer159 />
+        <AdsPEExportImportMenuContainer159 key="159" />
         <XUIButton162 key={"createReport"} />
         <XUIButton164 key={"variations"} />
       </div>
@@ -1576,7 +1576,7 @@ function runBenchmark(container) {
         <span className={"_3c5e"}>
           <span>
             <XUIButtonGroup133 />
-            <XUIButton136 key={"edit"} />
+            <XUIButton136 />
             <XUIButtonGroup146 />
           </span>
           <XUIButtonGroup165 />
@@ -2127,7 +2127,7 @@ function runBenchmark(container) {
         <div className={"_1gd5"}>
           <FixedDataTableCellGroup184 key={"fixed_cells"} />
           <FixedDataTableCellGroup204 key={"scrollable_cells"} />
-          <div className={"_1gd6 _1gd8"} style={{ left: 521, height: 40 }} />
+          <div key="_1gd6 _1gd8" className={"_1gd6 _1gd8"} style={{ left: 521, height: 40 }} />
         </div>
       </div>
     );
@@ -4198,7 +4198,7 @@ function runBenchmark(container) {
         <div className={"_1gd5"}>
           <FixedDataTableCellGroup239 key={"fixed_cells"} />
           <FixedDataTableCellGroup358 key={"scrollable_cells"} />
-          <div className={"_1gd6 _1gd8"} style={{ left: 521, height: 25 }} />
+          <div key="_1gd6 _1gd8" className={"_1gd6 _1gd8"} style={{ left: 521, height: 25 }} />
         </div>
       </div>
     );
@@ -5615,7 +5615,7 @@ function runBenchmark(container) {
         <div className={"_1gd5"}>
           <FixedDataTableCellGroup385 key={"fixed_cells"} />
           <FixedDataTableCellGroup447 key={"scrollable_cells"} />
-          <div className={"_1gd6 _1gd8"} style={{ left: 521, height: 32 }} />
+          <div key="_1gd6 _1gd8" className={"_1gd6 _1gd8"} style={{ left: 521, height: 32 }} />
         </div>
       </div>
     );
@@ -6070,7 +6070,7 @@ function runBenchmark(container) {
             <AdsLabeledField485 />
             <span className={"_5irl"}>
               <AdsTextInput487 key={"nameEditor98010048849345"} />
-              <AdsPEAmbientNUXMegaphone490 />
+              <AdsPEAmbientNUXMegaphone490 key="490" />
             </span>
           </div>
         </div>

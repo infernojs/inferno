@@ -36,6 +36,7 @@ import {
   createClassComponentInstance,
   handleComponentInput
 } from "./utils/componentutil";
+import {validateKeys} from "../core/validate";
 
 export function mount(
   vNode: VNode,
@@ -45,6 +46,10 @@ export function mount(
   isSVG: boolean
 ) {
   const flags = vNode.flags;
+
+  if (process.env.NODE_ENV !== 'production') {
+    validateKeys(vNode, false);
+  }
 
   if (flags & VNodeFlags.Element) {
     return mountElement(vNode, parentDom, lifecycle, context, isSVG);

@@ -40,6 +40,7 @@ import {
 } from "./wrappers/processElement";
 import { patchProp, removeProp } from "./props";
 import { handleComponentInput } from "./utils/componentutil";
+import {validateKeys} from "../core/validate";
 
 function removeAllChildren(dom: Element, children) {
   for (let i = 0, len = children.length; i < len; i++) {
@@ -94,7 +95,7 @@ export function patch(
     } else if (nextFlags & VNodeFlags.Component) {
       patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG,(nextFlags & VNodeFlags.ComponentClass) > 0);
     } else if (nextFlags & VNodeFlags.Text) {
-      patchText(lastVNode, nextVNode);
+      patchText(lastVNode, nextVNode, parentDom);
     } else if (nextFlags & VNodeFlags.Void) {
       nextVNode.dom = lastVNode.dom
     } else if (nextFlags & VNodeFlags.Portal) {
@@ -535,15 +536,21 @@ function patchComponent(
   }
 }
 
-function patchText(lastVNode: VNode, nextVNode: VNode) {
+function patchText(lastVNode: VNode, nextVNode: VNode, parentDom: Element) {
   const nextText = nextVNode.children as string;
-  const dom = lastVNode.dom as Element;
-
-  nextVNode.dom = dom;
-
-  if (lastVNode.children !== nextText) {
-    dom.nodeValue = nextText;
+  const textNode = parentDom.firstChild;
+  let dom;
+  // Guard against external change on DOM node.
+  if (isNull(textNode)) {
+    setTextContent(parentDom, nextText);
+    dom = parentDom.firstChild as Element;
+  } else {
+    dom = lastVNode.dom;
+    if (nextText !== lastVNode.children) {
+      (dom as Element).nodeValue = nextText;
+    }
   }
+  nextVNode.dom = dom;
 }
 
 function patchNonKeyedChildren(
@@ -596,6 +603,10 @@ function patchKeyedChildren(
   aLength: number,
   bLength: number
 ) {
+  if (process.env.NODE_ENV !== 'production') {
+    validateKeys(b, true);
+  }
+
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;
   let aStart = 0;

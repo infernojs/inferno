@@ -84,6 +84,7 @@ isUnitlessNumber.add("strokeWidth");
 export const skipProps = new Set<string>();
 skipProps.add("children");
 skipProps.add("childrenType");
+skipProps.add("className");
 skipProps.add("defaultValue");
 skipProps.add("ref");
 skipProps.add("key");

@@ -200,7 +200,7 @@ var N = 200;
 					'left:' + Math.cos(count / 10) * 10 + 'px;' +
 					'background-color:' + 'rgb(0, 0,' + count % 255 + ');';
 
-			boxes.push(createVNode(2, 'div', 'box-view', createVNode(2, 'div', 'box', count % 100, { style: style }, null, null, true), null, null, null, true));
+			boxes.push(createVNode(2, 'div', 'box-view', createVNode(2, 'div', 'box', count % 100, { style: style }, null, null, true), null, null, null));
 
 		}
 		return boxes;
@@ -208,7 +208,7 @@ var N = 200;
 
 	var infernoAnimate = function() {
 		Inferno.render(
-			createVNode(66, 'div', null, createBoxes(counter++), null, null, null, true),
+			createVNode(66, 'div', null, createBoxes(counter++), null, null, null),
 			container
 		);
 	};

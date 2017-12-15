@@ -198,8 +198,7 @@ describe("redux", () => {
                   ref={btn => {
                     this.button = btn;
                   }}
-                  onClick={this.emitChange.bind(this)}
-                >
+                  onClick={this.emitChange.bind(this)}>
                   change
                 </button>
                 <ChildContainer parentState={this.props.state} />

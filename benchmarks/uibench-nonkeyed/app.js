@@ -8,7 +8,7 @@
 	uibench.init('Inferno', Inferno.version + ' non-keyed');
 
 	function TreeLeaf(id) {
-		return createVNode(2, 'li', 'TreeLeaf', id + '', null, null, null, true);
+		return createVNode(2, 'li', 'TreeLeaf', id + '', null, null, null);
 	}
 
 	var shouldDataUpdate = {
@@ -25,12 +25,12 @@
 			var n = data.children[i];
 
 			if (n.container) {
-				children[i] = createVNode(8, TreeNode, null, null, n, null, shouldDataUpdate, true);
+				children[i] = createVNode(8, TreeNode, null, null, n, null, shouldDataUpdate);
 			} else {
-				children[i] = createVNode(8, TreeLeaf, null, null, n.id, null, shouldDataUpdate, true);
+				children[i] = createVNode(8, TreeLeaf, null, null, n.id, null, shouldDataUpdate);
 			}
 		}
-		return createVNode(66, 'ul', 'TreeNode', children, null, null, null, true);
+		return createVNode(66, 'ul', 'TreeNode', children, null, null, null);
 	}
 
 	var lastTreeData;
@@ -40,7 +40,7 @@
 			return Inferno.NO_OP;
 		}
 		lastTreeData = data;
-		return createVNode(2, 'div', 'Tree', createVNode(8, TreeNode, null, null, data.root, null, shouldDataUpdate, true), null, null, null, true);
+		return createVNode(2, 'div', 'Tree', createVNode(8, TreeNode, null, null, data.root, null, shouldDataUpdate, true), null, null, null);
 	}
 
 	function AnimBox(data) {
@@ -48,7 +48,7 @@
 		var style = 'border-radius:' + (time) + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time) / 10)) + ')';
 
-		return createVNode(2, 'div', 'AnimBox', null, { style: style, 'data-id': data.id }, null, null, true);
+		return createVNode(2, 'div', 'AnimBox', null, { style: style, 'data-id': data.id }, null, null);
 	}
 
 	var lastAnimData;
@@ -65,9 +65,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(8, AnimBox, null, null, item, null, shouldDataUpdate, true);
+			children[i] = createVNode(8, AnimBox, null, null, item, null, shouldDataUpdate);
 		}
-		return createVNode(66, 'div', 'Anim', children, null, null, null, true);
+		return createVNode(66, 'div', 'Anim', children, null, null, null);
 	}
 
 	function onClick(text, e) {
@@ -76,7 +76,7 @@
 	}
 
 	function TableCell(text) {
-		return createVNode(2, 'td', 'TableCell', text, { onClick: linkEvent(text, onClick) }, null, null, true);
+		return createVNode(2, 'td', 'TableCell', text, { onClick: linkEvent(text, onClick) }, null, null);
 	}
 
 	function TableRow(data) {
@@ -89,12 +89,12 @@
 		var length = cells.length + 1;
 		var children = new Array(length);
 
-		children[0] = createVNode(8, TableCell, null, null, '#' + data.id, null, shouldDataUpdate, true);
+		children[0] = createVNode(8, TableCell, null, null, '#' + data.id, null, shouldDataUpdate);
 
 		for (var i = 1; i < length; i++) {
-			children[i] = createVNode(8, TableCell, null, null, cells[i - 1], null, shouldDataUpdate, true);
+			children[i] = createVNode(8, TableCell, null, null, cells[i - 1], null, shouldDataUpdate);
 		}
-		return createVNode(66, 'tr', classes, children, { 'data-id': data.id }, null, null, true);
+		return createVNode(66, 'tr', classes, children, { 'data-id': data.id }, null, null);
 	}
 
 	var lastTableData;
@@ -111,9 +111,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(8, TableRow, null, null, item, null, shouldDataUpdate, true);
+			children[i] = createVNode(8, TableRow, null, null, item, null, shouldDataUpdate);
 		}
-		return createVNode(66, 'table', 'Table', children, null, null, null, true);
+		return createVNode(66, 'table', 'Table', children, null, null, null);
 	}
 
 	var lastMainData;
@@ -133,7 +133,7 @@
 		} else if (location === 'tree') {
 			section = tree(data.tree);
 		}
-		return createVNode(2, 'div', 'Main', section, null, null, null, true);
+		return createVNode(2, 'div', 'Main', section, null, null, null);
 	}
 
 	document.addEventListener('DOMContentLoaded', function(e) {
@@ -145,7 +145,7 @@
 			},
 			function(samples) {
 				Inferno.render(
-					createVNode(2, 'pre', null, JSON.stringify(samples, null, ' '), null, null, null, true), container
+					createVNode(2, 'pre', null, JSON.stringify(samples, null, ' '), null, null, null), container
 				);
 			}
 		);

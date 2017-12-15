@@ -229,7 +229,7 @@ describe("SSR Creation Queue Streams - (non-JSX)", () => {
           createElement(FunctionalComponent, { value })
         ),
       result: [
-        ["<div>", "<span>stateless foo!</span>", "</div>"],
+        ["<div>", "<span>", "stateless foo!", "</span>", "</div>"],
         "<div><span>stateless foo!</span></div>"
       ]
     },

@@ -3,8 +3,11 @@
  */ /** TypeDoc Comment */
 
 import {
+  createTextVNode,
   createVNode,
   directClone,
+  normalize,
+  normalizeProps,
   EMPTY_OBJ,
   VNode
 } from "inferno";
@@ -92,8 +95,7 @@ export default function cloneVNode(
           ? EMPTY_OBJ
           : combineFrom(vNodeToClone.props, props),
         key,
-        ref,
-        true
+        ref
       );
       const newProps = newVNode.props;
 
@@ -133,17 +135,16 @@ export default function cloneVNode(
         flags,
         vNodeToClone.type,
         className,
-        children,
+        normalize(children),
         !vNodeToClone.props && !props
           ? EMPTY_OBJ
           : combineFrom(vNodeToClone.props, props),
         key,
-        ref,
-        false
+        ref
       );
     } else if (flags & VNodeFlags.Text) {
-      newVNode = createVNode(VNodeFlags.Text, null, null, vNodeToClone.children, null, key, null, true);
+      newVNode = createTextVNode(vNodeToClone.children);
     }
   }
-  return newVNode;
+  return normalizeProps(newVNode);
 }

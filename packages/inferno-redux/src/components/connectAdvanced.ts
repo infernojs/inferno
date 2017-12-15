@@ -334,7 +334,7 @@ export function connectAdvanced(
       }
 
       private addExtraProps(props: any) {
-        if (!withRef && !renderCountProp) {
+        if (!renderCountProp) {
           return props;
         }
 
@@ -343,9 +343,7 @@ export function connectAdvanced(
         // instance. a singleton memoized selector would then be holding a reference to the
         // instance, preventing the instance from being garbage collected, and that would be bad
         const withExtras = { ...props };
-        if (withRef) {
-          withExtras.ref = this.setWrappedInstance;
-        }
+
         if (renderCountProp) {
           withExtras[renderCountProp] = this.renderCount++;
         }
@@ -367,7 +365,9 @@ export function connectAdvanced(
             WrappedComponent,
             null,
             null,
-            this.addExtraProps(selector.props)
+            this.addExtraProps(selector.props),
+            null,
+            withRef ? this.setWrappedInstance : null
           );
         }
       }

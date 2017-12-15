@@ -91,7 +91,7 @@ There's no contributor license agreement - contributions are made on a common se
 Debugging
 ---------
 Its possible to debug inferno tests by running following command `npm run debug` and open chrome web address: chrome://inspect/#devices
-However: The issue is that ts-jest does post processing to compiled files this needs to be avoided to see sources are they are.
+However: The issue is that ts-jest does post processing to compiled files this needs to be avoided.
 Edit following files: /node_modules/ts-jest/dist/postprocess.js and remove following settings line numer 15 => retainLines: true, sourceMaps: 'inline'.
 
 Pro tip: You can filter down number of tests by editing `debug` -task:

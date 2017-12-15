@@ -129,7 +129,6 @@ export function createPortal(children, container) {
     children,
     null,
     isInvalid(children) ? null : children.key,
-    null,
-    true
+    null
   );
 }

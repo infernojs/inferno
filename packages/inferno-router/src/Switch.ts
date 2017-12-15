@@ -68,8 +68,7 @@ export default class Switch extends Component<ISwitchProps, any> {
           null,
           combineFrom(child.props, { location, computedMatch: match }),
           null,
-          child.ref,
-          true
+          child.ref
         )
       : null;
   }

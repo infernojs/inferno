@@ -924,13 +924,15 @@ describe("Elements (JSX)", () => {
   describe("should correctly handle VNodes as quasi-immutable objects, like ReactElement does", () => {
     const a = <div>Hello world</div>;
     const b = <span>This works!</span>;
-    const C = ({ children }) => (
-      <div>
-        {children}
-        {children}
-        {children}
-      </div>
-    );
+    const C = ({ children }) => {
+      return (
+        <div>
+          {children}
+          {children}
+          {children}
+        </div>
+      )
+    };
 
     it("basic example ", () => {
       render(a, container);

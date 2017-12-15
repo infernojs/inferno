@@ -190,4 +190,156 @@ describe("HyperScript (non-JSX)", () => {
       expect(container.firstChild.tagName).toEqual("svg");
     });
   }
+
+  describe("CreateElement variations (non-JSX)", () => {
+    it("Should handle events correctly when having multiple children", () => {
+      let triggered = false;
+
+      const App = () => {
+        return h(
+          "div",
+          null,
+          [h("div", { className: "title" }, "Example"),
+          h(
+            "button",
+            {
+              type: "button",
+              onClick: () => {
+                triggered = !triggered;
+              }
+            },
+            "Do a thing"
+          )]
+        );
+      };
+
+      // eslint-disable-next-line
+      render(App(), container);
+      expect(container.innerHTML).toBe(
+        innerHTML(
+          '<div><div class="title">Example</div><button type="button">Do a thing</button></div>'
+        )
+      );
+      expect(triggered).toBe(false);
+
+      const buttons = Array.prototype.slice.call(
+        container.querySelectorAll("button")
+      );
+      buttons.forEach(button => button.click());
+
+      expect(triggered).toBe(true);
+    });
+
+    it("Should handle events correctly when having single child", () => {
+      let triggered = false;
+
+      const app = () => {
+        return h(
+          "div",
+          null,
+          h(
+            "button",
+            {
+              type: "button",
+              onClick: () => {
+                triggered = !triggered;
+              }
+            },
+            "Do a thing"
+          )
+        );
+      };
+
+      render(app(), container);
+      expect(container.innerHTML).toBe(
+        innerHTML('<div><button type="button">Do a thing</button></div>')
+      );
+      expect(triggered).toBe(false);
+
+      const buttons = Array.prototype.slice.call(
+        container.querySelectorAll("button")
+      );
+      buttons.forEach(button => button.click());
+
+      expect(triggered).toBe(true);
+    });
+
+    it('Should allow passing childs through "children" property (native component)', () => {
+      const app = () => {
+        return h(
+          "div",
+          null,
+          h("button", {
+            type: "button",
+            children: ["Do a thing"]
+          })
+        );
+      };
+
+      render(app(), container);
+      expect(container.innerHTML).toBe(
+        innerHTML('<div><button type="button">Do a thing</button></div>')
+      );
+    });
+
+    it('Should allow passing childs through "children" property (custom component)', () => {
+      const Button = props => h("button", props);
+      const app = () => {
+        return h(
+          "div",
+          null,
+          h(Button, {
+            type: "button",
+            children: ["Do a thing"]
+          })
+        );
+      };
+
+      render(app(), container);
+      expect(container.innerHTML).toBe(
+        innerHTML('<div><button type="button">Do a thing</button></div>')
+      );
+    });
+
+    it("Should handle node with hooks and key", done => {
+      const node = () => h("div", { key: "key2" }, "Hooks");
+      const app = h(node, {
+        key: "key1",
+        onComponentDidMount(domNode) {
+          expect(app.key).toBe("key1");
+          expect(domNode.tagName).toBe("DIV");
+          done();
+        }
+      });
+
+      render(app, container);
+      expect(container.innerHTML).toBe(innerHTML("<div>Hooks</div>"));
+    });
+
+    it("Should handle node with children but no props", () => {
+      const node = () => h("div", null, "Hooks");
+      const app = h(node, null, "Hooks");
+
+      render(app, container);
+      expect(container.innerHTML).toBe(innerHTML("<div>Hooks</div>"));
+    });
+
+    it("Should handle node with refs", done => {
+      let myRef = "myRef";
+
+      const app = () => {
+        const node = () =>
+          h("a", {
+            ref: c => (myRef = c)
+          });
+        return h(node, {
+          onComponentDidMount() {
+            expect(myRef.tagName).toBe("A");
+            done();
+          }
+        });
+      };
+      render(h(app, null), container);
+    });
+  });
 });

@@ -4,6 +4,7 @@ import {
   innerHTML,
   validateNodeTree
 } from "inferno-utils";
+import {createTextVNode} from "../../inferno/src";
 
 class Comp extends Component {
   render() {
@@ -163,7 +164,7 @@ describe("SSR Hydration Extended - (JSX)", () => {
 
     const vNode = <span className="error">{""}</span>;
 
-    expect(vNode.children).toEqual("");
+    expect(vNode.children).toEqual(createTextVNode(''));
 
     render(vNode, container); // This should create empty text node
 
@@ -185,7 +186,7 @@ describe("SSR Hydration Extended - (JSX)", () => {
       </div>
     );
 
-    expect(vNode.children.children).toEqual("");
+    expect(vNode.children.children).toEqual(createTextVNode(''));
 
     render(vNode, container); // This should create empty text node
 

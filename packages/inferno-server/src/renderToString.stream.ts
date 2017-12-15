@@ -175,7 +175,7 @@ export class RenderStream extends Readable {
 
   public renderText(vNode) {
     return resolvedPromise.then(insertComment => {
-      this.push(vNode.children);
+      this.push(escapeText(vNode.children));
       return insertComment;
     });
   }

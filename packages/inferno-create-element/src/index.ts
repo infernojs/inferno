@@ -5,6 +5,7 @@
 import {
   Component,
   createVNode,
+  normalize,
   getFlagsForElementVnode,
   InfernoChildren,
   Props,
@@ -109,7 +110,7 @@ export default function createElement<T>(
     flags,
     type as string | Function,
     className,
-    children,
+    normalize(children),
     newProps,
     key,
     ref
