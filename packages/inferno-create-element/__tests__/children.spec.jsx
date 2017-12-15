@@ -1265,9 +1265,9 @@ describe("Children - (JSX)", () => {
   });
 
   describe("Forced keyed children", () => {
-    it("Should always go keyed algorithm when parent has hasKeyedChildren", () => {
+    it("Should always go keyed algorithm when parent has $HasKeyedChildren", () => {
       const Collection = ({ children }) => (
-        <div hasKeyedChildren>{children}</div>
+        <div $HasKeyedChildren>{children}</div>
       );
 
       render(
@@ -1312,11 +1312,11 @@ describe("Children - (JSX)", () => {
 
     it("Should be able to swap from keyed to nonkeyed when nextNode no longer is keyed", () => {
       const CollectionKeyed = ({ children }) => (
-        <div hasKeyedChildren>{children}</div>
+        <div $HasKeyedChildren>{children}</div>
       );
 
       const CollectionNonKeyed = ({ children }) => (
-        <div hasNonKeyedChildren>{children}</div>
+        <div $HasNonKeyedChildren>{children}</div>
       );
 
       render(
@@ -1360,7 +1360,7 @@ describe("Children - (JSX)", () => {
 
     it("Should handle previous being empty array", () => {
       const CollectionKeyed = ({ children }) => (
-        <div hasKeyedChildren>{children}</div>
+        <div $HasKeyedChildren>{children}</div>
       );
 
       const child = [];
@@ -1384,7 +1384,7 @@ describe("Children - (JSX)", () => {
 
     it("Should handle next being empty array", () => {
       const CollectionKeyed = ({ children }) => (
-        <div hasKeyedChildren>{children}</div>
+        <div $HasKeyedChildren>{children}</div>
       );
 
       render(
@@ -1408,7 +1408,7 @@ describe("Children - (JSX)", () => {
 
     it("Should handle last/next being empty", () => {
       const CollectionKeyed = ({ children }) => (
-        <div hasKeyedChildren>{children}</div>
+        <div $HasKeyedChildren>{children}</div>
       );
 
       const child = [];

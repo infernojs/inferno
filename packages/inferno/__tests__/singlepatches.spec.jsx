@@ -259,9 +259,9 @@ describe('All single patch variations', () => {
   });
 
   describe('children', () => {
-    describe('hasKeyedChildren', () => {
+    describe('HasKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(<div hasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
+        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
 
         expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
 
@@ -270,7 +270,7 @@ describe('All single patch variations', () => {
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(<div hasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
+        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
 
         expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
       });
@@ -278,7 +278,7 @@ describe('All single patch variations', () => {
 
     describe('hasNonKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(<div hasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
+        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
 
         expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
 
@@ -287,7 +287,7 @@ describe('All single patch variations', () => {
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(<div hasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
+        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
 
         expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
       });
