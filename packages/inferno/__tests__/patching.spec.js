@@ -81,7 +81,7 @@ describe("patching routine", () => {
     expect(childelem).toBe(container.firstElementChild.firstElementChild);
   });
 
-  it('Should not do any changes if vNode has Ignore flag set', () => {
+  it('Should always unmount/mount if ReCreate flag is set', () => {
     const spyObj = {fn: () => {}};
     const spyObj2 = {fn: () => {}};
     const spy1 = sinon.spy(spyObj, "fn");
