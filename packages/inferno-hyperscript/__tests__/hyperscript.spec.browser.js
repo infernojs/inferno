@@ -342,4 +342,27 @@ describe("HyperScript (non-JSX)", () => {
       render(h(app, null), container);
     });
   });
+
+  describe('noNormalize', () => {
+    it('Should skip normalization process when true', () => {
+      // This will throw because children has null item and noNormalize is used
+      let vNode = h("div", null, [
+        h("div", null, "1"),
+        null,
+        h("div", null, "2")
+      ], true);
+
+      expect(() => render(vNode, container)).toThrow();
+
+      // This will render correctly as there is no nulls
+      vNode = h("div", null, [
+        h("div", null, "1"),
+        h("div", null, "2")
+      ], true);
+
+      render(vNode, container);
+
+      expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
+    });
+  });
 });

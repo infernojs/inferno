@@ -106,12 +106,14 @@ function extractProps(
  * @param {string|VNode|Function} _tag Name for virtual node
  * @param {object=} _props Additional properties for virtual node
  * @param {string|number|VNode|Array<string|number|VNode>|null=} _children Optional children for virtual node
+ * @param {boolean} noNormalize Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
  * @returns {VNode} returns new virtual node
  */
 export default function hyperscript(
   _tag: string | VNode | Function,
   _props?: any,
-  _children?: InfernoChildren
+  _children?: InfernoChildren,
+  noNormalize?: boolean
 ): VNode {
   // If a child array or text node are passed as the second argument, shift them
   if (!_children && isChildren(_props)) {
@@ -130,7 +132,7 @@ export default function hyperscript(
       getFlagsForElementVnode(tag),
       tag,
       className,
-      normalize(_children || children),
+      noNormalize === true ? (_children || children) : normalize(_children || children),
       props,
       key,
       ref

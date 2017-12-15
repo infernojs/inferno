@@ -21,7 +21,7 @@ module.exports = function ExampleComponent(props) {
 
 ## Documentation
 
-### `h(componentOrTag, properties, children)`
+### `h(componentOrTag, properties, children, noNormalize)`
 
 Returns an Inferno VNode from a Hyperscript representation.
 
@@ -29,6 +29,8 @@ Returns an Inferno VNode from a Hyperscript representation.
   If a tag string, the tag name is parsed out, and the `id` and `className` propertires of the properties argument will be modified.
 * **properties** `(Object)` *(optional)* An object containing the properties you'd like to set on the element.
 * **children** `(Array|String)` *(optional)* An array of `h()` children or strings, This will create childen or text nodes respectively.
+New in v4.0.0
+* **noNormalize** Boolean *(optional)* Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
 
 [hyperscript]: https://github.com/dominictarr/hyperscript
 [inferno]: https://github.com/infernojs/inferno
