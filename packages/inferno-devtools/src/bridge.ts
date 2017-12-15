@@ -357,13 +357,13 @@ function createReactCompositeComponent(vNode, isFirstCreation) {
       return typeName(type);
     },
     node: dom,
-    props: instance.props,
-    setState: instance.setState.bind(instance),
-    state: instance.state,
+    props: instance && instance.props,
+    setState: instance && instance.setState && instance.setState.bind(instance),
+    state: instance && instance.state,
     vNode
   };
 
-  if (isFirstCreation) {
+  if (isFirstCreation && instance && instance.forceUpdate) {
     const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
     instance.forceUpdate = () => {
       instance.props = vNode.props = Object.assign(
