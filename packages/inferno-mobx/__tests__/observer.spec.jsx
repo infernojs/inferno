@@ -1,7 +1,7 @@
 import { Component, render } from "inferno";
 import * as mobx from "mobx";
-import mobxInferno, { inject, observer, offError } from "inferno-mobx";
-import createClass from "inferno-create-class";
+import { inject, observer, offError, Observer } from "inferno-mobx";
+import { createClass } from "inferno-create-class";
 import { renderToStaticMarkup } from "inferno-server";
 
 const store = mobx.observable({
@@ -520,7 +520,6 @@ describe("Mobx Observer", () => {
 
   it("Observer regions should react", done => {
     const data = mobx.observable("hi");
-    const Observer = mobxInferno.Observer;
     const Comp = () => (
       <div>
         <Observer>{() => <span>{data.get()}</span>}</Observer>

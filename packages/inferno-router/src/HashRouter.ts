@@ -3,9 +3,9 @@
  */ /** TypeDoc Comment */
 
 import { createVNode, VNode, Component } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { createHashHistory } from "history";
-import Router from "./Router";
+import { Router } from "./Router";
 import { warning } from "./utils";
 
 export interface IHashRouterProps {
@@ -15,7 +15,7 @@ export interface IHashRouterProps {
   children: Array<Component<any, any>>;
 }
 
-export default class HashRouter extends Component<IHashRouterProps, any> {
+export class HashRouter extends Component<IHashRouterProps, any> {
   public history;
 
   constructor(props?: any, context?: any) {

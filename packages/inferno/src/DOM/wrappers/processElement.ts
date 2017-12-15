@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { isNullOrUndef } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { VNode } from "../../core/implementation";
 import { isCheckedType, processInput } from "./InputWrapper";
 import { processSelect } from "./SelectWrapper";

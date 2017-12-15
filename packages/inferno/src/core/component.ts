@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { Props, VNode } from "./implementation";
 import {
   combineFrom,

@@ -18,7 +18,7 @@ export interface IRouterProps {
 /**
  * The public API for putting history on context.
  */
-class Router extends Component<IRouterProps, any> {
+export class Router extends Component<IRouterProps, any> {
   public unlisten;
 
   constructor(props: IRouterProps, context?: any) {
@@ -83,5 +83,3 @@ class Router extends Component<IRouterProps, any> {
     return props.children;
   }
 }
-
-export default Router;

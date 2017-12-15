@@ -8,8 +8,8 @@ import { findDOMNode } from "inferno-compat";
 import { EventEmitter } from "./utils/EventEmitter";
 import { warning } from "inferno-shared";
 import { isStateless } from "./utils/utils";
-import VNodeFlags from "inferno-vnode-flags";
-import hoistStatics from "hoist-non-inferno-statics";
+import { VNodeFlags } from "inferno-vnode-flags";
+import hoistNonReactStatics from "hoist-non-inferno-statics";
 
 /**
  * dev tool support
@@ -426,7 +426,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
   }
 
   // Static fields from component should be visible on the generated Injector
-  hoistStatics(Injector, component);
+  hoistNonReactStatics(Injector, component);
 
   Injector.wrappedComponent = component;
   Object.defineProperties(Injector, proxiedInjectorProps);

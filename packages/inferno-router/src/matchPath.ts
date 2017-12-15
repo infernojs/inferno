@@ -27,7 +27,7 @@ const compilePath = (pattern, options) => {
 /**
  * Public API for matching a URL pathname to a path pattern.
  */
-export default function matchPath(pathname, options: any) {
+export function matchPath(pathname, options: any) {
   if (typeof options === "string") {
     options = { path: options };
   }

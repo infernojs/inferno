@@ -3,14 +3,14 @@
  */ /** TypeDoc Comment */
 
 import { createVNode, VNode } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
-import Route from "./Route";
-import Link from "./Link";
+import { VNodeFlags } from "inferno-vnode-flags";
+import { Route } from "./Route";
+import { Link } from "./Link";
 
 /**
  * A <Link> wrapper that knows if it's "active" or not.
  */
-export default function({
+export function NavLink({
   to,
   exact,
   strict,

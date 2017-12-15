@@ -4,7 +4,7 @@ import {
   innerHTML,
   validateNodeTree
 } from "inferno-utils";
-import {createTextVNode} from "../../inferno/src";
+import { createTextVNode } from "../../inferno/src";
 
 class Comp extends Component {
   render() {

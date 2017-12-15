@@ -1,5 +1,5 @@
 import { render } from "inferno";
-import h from "inferno-hyperscript";
+import { h } from "inferno-hyperscript";
 import { innerHTML } from "inferno-utils";
 import sinon from "sinon";
 

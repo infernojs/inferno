@@ -10,7 +10,7 @@ import {
   isStringOrNumber,
   isUndefined
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 function findVNodeFromDom(vNode, dom) {
   if (!vNode) {

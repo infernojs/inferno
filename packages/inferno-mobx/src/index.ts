@@ -21,19 +21,6 @@ import { EventEmitter } from "./utils/EventEmitter";
 
 const onError = fn => errorsReporter.on(fn);
 
-export default {
-  Observer,
-  Provider,
-  componentByNodeRegistery,
-  errorsReporter,
-  inject,
-  observer,
-  onError,
-  renderReporter,
-  trackComponents,
-  useStaticRendering
-};
-
 export {
   componentByNodeRegistery,
   errorsReporter,

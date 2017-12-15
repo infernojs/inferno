@@ -1,5 +1,5 @@
 import { createVNode, render } from "inferno";
-import createElement from "inferno-create-element";
+import { createElement } from "inferno-create-element";
 
 function generateKeyNodes(array) {
   let i, id, key;

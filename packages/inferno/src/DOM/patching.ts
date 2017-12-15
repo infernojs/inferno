@@ -16,7 +16,7 @@ import {
   NO_OP,
   throwError
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { directClone, isVNode, options, VNode } from "../core/implementation";
 import {
   mount,

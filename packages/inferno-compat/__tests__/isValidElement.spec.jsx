@@ -1,8 +1,8 @@
-import createElement from "inferno-create-element";
+import { createElement } from "inferno-create-element";
 import { isValidElement } from "inferno-compat";
 import { Component } from "inferno";
-import cloneVNode from "inferno-clone-vnode";
-import h from "inferno-hyperscript";
+import { cloneVNode } from "inferno-clone-vnode";
+import { h } from "inferno-hyperscript";
 
 describe("isValidElement", () => {
   it("Should not work with non-object", () => {

@@ -10,7 +10,7 @@ import {
   isNullOrUndef,
   isObject
 } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { options, VNode } from "../core/implementation";
 import { delegatedEvents } from "./constants";
 import { handleEvent } from "./events/delegation";

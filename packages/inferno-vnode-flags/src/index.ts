@@ -2,7 +2,7 @@
  * @module Inferno-Vnode-Flags
  */ /** TypeDoc Comment */
 
-const enum VNodeFlags {
+export const enum VNodeFlags {
   Text = 1,
   HtmlElement = 1 << 1,
 
@@ -33,4 +33,3 @@ const enum VNodeFlags {
   Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 
-export default VNodeFlags;

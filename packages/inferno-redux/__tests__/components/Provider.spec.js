@@ -1,5 +1,5 @@
 import { Component } from "inferno";
-import createElement from "inferno-create-element";
+import { createElement } from "inferno-create-element";
 import { connect, Provider } from "inferno-redux";
 import {
   findRenderedVNodeWithType,

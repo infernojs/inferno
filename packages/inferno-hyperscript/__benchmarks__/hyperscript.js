@@ -1,4 +1,4 @@
-import h from '../';
+import { h } from '../';
 
 const emptyFn = function emptyFunction() {
 };

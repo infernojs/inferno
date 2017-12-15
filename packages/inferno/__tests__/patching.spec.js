@@ -1,5 +1,5 @@
 import { createVNode, render } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 describe("patching routine", () => {
   let container;

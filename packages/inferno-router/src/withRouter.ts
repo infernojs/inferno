@@ -2,9 +2,9 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 import { createVNode } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
-import hoistStatics from "hoist-non-inferno-statics";
-import Route from "./Route";
+import { VNodeFlags } from "inferno-vnode-flags";
+import hoistNonReactStatics from "hoist-non-inferno-statics";
+import { Route } from "./Route";
 
 interface IWithRouterProps {
   wrappedComponentRef: any;
@@ -13,7 +13,7 @@ interface IWithRouterProps {
 /**
  * A public higher-order component to access the imperative API
  */
-function withRouter(Com) {
+export function withRouter(Com) {
   const C: any = function(props: IWithRouterProps) {
     const { wrappedComponentRef, ...remainingProps } = props;
 
@@ -37,7 +37,6 @@ function withRouter(Com) {
 
   C.displayName = `withRouter(${Com.displayName || Com.name})`;
   C.WrappedComponent = Com;
-  return hoistStatics(C, Com);
+  return hoistNonReactStatics(C, Com);
 }
 
-export default withRouter;

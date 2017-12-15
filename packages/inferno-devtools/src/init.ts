@@ -4,7 +4,7 @@
 
 import { Component, options } from "inferno";
 import { isStatefulComponent } from "inferno-shared";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { createDevToolsBridge } from "./bridge";
 
 const functionalComponentWrappers = new Map();
@@ -37,7 +37,7 @@ function wrapFunctionalComponent(vNode) {
 // Credit: this based on on the great work done with Preact and its devtools
 // https://github.com/developit/preact/blob/master/devtools/devtools.js
 
-export default function initDevTools() {
+export function initDevTools() {
   /* tslint:disable */
   if (typeof window["__REACT_DEVTOOLS_GLOBAL_HOOK__"] === "undefined") {
     /* tslint:enable */

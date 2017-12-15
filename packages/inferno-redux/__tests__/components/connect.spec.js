@@ -1,6 +1,6 @@
 import { Component, render as renderDOM } from "inferno";
-import createClass from "inferno-create-class";
-import createElement from "inferno-create-element";
+import { createClass } from "inferno-create-class";
+import { createElement } from "inferno-create-element";
 import { connect } from "inferno-redux";
 import {
   findRenderedVNodeWithType,

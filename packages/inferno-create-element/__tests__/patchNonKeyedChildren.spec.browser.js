@@ -1,5 +1,5 @@
 import { render } from "inferno";
-import createElement from "inferno-create-element";
+import { createElement } from "inferno-create-element";
 
 function generateNodes(array) {
   let i, id;

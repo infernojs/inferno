@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { createVNode, VNode, Component } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { invariant } from "./utils";
 
 const isModifiedEvent = (event): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
@@ -20,7 +20,7 @@ export interface ILinkProps {
 /**
  * The public API for rendering a history-aware <a>.
  */
-export default class Link extends Component<ILinkProps, any> {
+export class Link extends Component<ILinkProps, any> {
   public handleClick = event => {
     if (this.props.onClick) {
       this.props.onClick(event);

@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { Component, createVNode, render, VNode } from "inferno";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { isNumber, isObject } from "inferno-shared";
 
 export function isVNode(instance: any): instance is VNode {

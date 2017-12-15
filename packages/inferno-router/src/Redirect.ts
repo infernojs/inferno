@@ -6,7 +6,7 @@ import { Component } from "inferno";
 import { createLocation, locationsAreEqual } from "history";
 import { invariant } from "./utils";
 
-export default class Redirect extends Component<any, any> {
+export class Redirect extends Component<any, any> {
   public isStatic() {
     return this.context.router && this.context.router.staticContext;
   }

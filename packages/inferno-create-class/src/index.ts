@@ -183,7 +183,7 @@ function applyMixins(Cl: any, mixins: Function[] | any[]) {
   }
 }
 
-export default function createClass<P, S>(
+export function createClass<P, S>(
   obj: ComponentSpec<P, S>
 ): ClassicComponentClass<P, S> {
   class Cl extends Component<P, S> {

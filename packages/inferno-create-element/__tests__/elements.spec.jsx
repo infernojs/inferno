@@ -1,8 +1,8 @@
 import { render } from "inferno";
-import createElement from "inferno-create-element";
+import { createElement } from "inferno-create-element";
 import sinon from "sinon";
 import { innerHTML } from "inferno-utils";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 describe("Elements (JSX)", () => {
   let container;

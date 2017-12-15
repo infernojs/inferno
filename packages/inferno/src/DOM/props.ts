@@ -18,7 +18,7 @@ import {
   throwError
 } from "inferno-shared";
 import { handleEvent } from "./events/delegation";
-import VNodeFlags from "inferno-vnode-flags";
+import { VNodeFlags } from "inferno-vnode-flags";
 import { isSameInnerHTML } from "./utils/innerhtml";
 
 export function isAttrAnEvent(attr: string): boolean {
