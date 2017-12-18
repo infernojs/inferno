@@ -1,4 +1,4 @@
-import { Component } from "inferno";
+import { Component } from 'inferno';
 
 export class ChildCommon extends Component {
   constructor(props) {
@@ -9,13 +9,13 @@ export class ChildCommon extends Component {
 
   _update() {
     this.setState({
-      data: "bar"
+      data: 'bar'
     });
   }
 
   componentWillMount() {
     this.setState({
-      data: "foo"
+      data: 'foo'
     });
   }
 

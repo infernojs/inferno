@@ -2,9 +2,9 @@
  * @module Inferno-Test-Utils
  */ /** TypeDoc Comment */
 
-import { Component, createVNode, render, VNode } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { isNumber, isObject } from "inferno-shared";
+import { Component, createVNode, render, VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { isNumber, isObject } from 'inferno-shared';
 
 export function isVNode(instance: any): instance is VNode {
   return (
@@ -65,7 +65,7 @@ export function renderIntoDocument(input): Wrapper {
     null,
     { children: input }
   );
-  const parent = document.createElement("div");
+  const parent = document.createElement('div');
   document.body.appendChild(parent);
   return render(wrappedInput, parent) as any;
 }

@@ -1,27 +1,27 @@
-import { createVNode, render, Component } from "inferno";
-import { NO_OP } from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
+import { createVNode, render, Component } from 'inferno';
+import { NO_OP } from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
-describe("rendering routine", () => {
+describe('rendering routine', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Should throw error when trying to render to document.body", () => {
+  it('Should throw error when trying to render to document.body', () => {
     const div = createVNode(
       VNodeFlags.Element,
-      "div",
+      'div',
       null,
-      "1",
+      '1',
       null,
       null,
       null,
@@ -36,25 +36,25 @@ describe("rendering routine", () => {
     }
   });
 
-  it("Should do nothing if input is NO-OP", () => {
+  it('Should do nothing if input is NO-OP', () => {
     render(NO_OP, container);
-    expect(container.innerHTML).toEqual("");
+    expect(container.innerHTML).toEqual('');
   });
 
-  it("Should create new object when dom exists", () => {
-    const bar = createVNode(2, "div", null, "123", null, null, null, true);
-    const foo = createVNode(2, "div", null, bar, null, null, null, true);
+  it('Should create new object when dom exists', () => {
+    const bar = createVNode(2, 'div', null, '123', null, null, null, true);
+    const foo = createVNode(2, 'div', null, bar, null, null, null, true);
 
     render(foo, container);
-    expect(container.innerHTML).toEqual("<div><div>123</div></div>");
+    expect(container.innerHTML).toEqual('<div><div>123</div></div>');
 
     render(null, container);
 
     render(foo, container);
-    expect(container.innerHTML).toEqual("<div><div>123</div></div>");
+    expect(container.innerHTML).toEqual('<div><div>123</div></div>');
   });
 
-  it("should be called a callback argument", () => {
+  it('should be called a callback argument', () => {
     // mounting phase
     let called = false;
     render(<div>Foo</div>, container, () => (called = true));
@@ -66,7 +66,7 @@ describe("rendering routine", () => {
     expect(called).toEqual(true);
   });
 
-  it("should call a callback argument when the same element is re-rendered", () => {
+  it('should call a callback argument when the same element is re-rendered', () => {
     class Foo extends Component {
       render() {
         return <div>Foo</div>;
@@ -87,22 +87,22 @@ describe("rendering routine", () => {
     expect(called).toEqual(true);
   });
 
-  it("should render a component returning strings directly from render", () => {
+  it('should render a component returning strings directly from render', () => {
     const Text = ({ value }) => value;
 
     render(<Text value="foo" />, container);
-    expect(container.textContent).toEqual("foo");
+    expect(container.textContent).toEqual('foo');
   });
 
-  it("should render a component returning numbers directly from render", () => {
+  it('should render a component returning numbers directly from render', () => {
     const Text = ({ value }) => value;
 
     render(<Text value={10} />, container);
 
-    expect(container.textContent).toEqual("10");
+    expect(container.textContent).toEqual('10');
   });
 
-  it("should not crash encountering low-priority tree", () => {
+  it('should not crash encountering low-priority tree', () => {
     render(
       <div hidden={true}>
         <div />
@@ -111,51 +111,53 @@ describe("rendering routine", () => {
     );
   });
 
-  it("should not warn when rendering into an empty container", () => {
-    spyOn(console, "error");
+  it('should not warn when rendering into an empty container', () => {
+    spyOn(console, 'error');
 
     render(<div>foo</div>, container);
-    expect(container.innerHTML).toBe("<div>foo</div>");
+    expect(container.innerHTML).toBe('<div>foo</div>');
 
     render(null, container);
-    expect(container.innerHTML).toBe("");
+    expect(container.innerHTML).toBe('');
     expect(console.error.calls.count()).toBe(0);
 
     render(<div>bar</div>, container);
-    expect(container.innerHTML).toBe("<div>bar</div>");
+    expect(container.innerHTML).toBe('<div>bar</div>');
 
     expect(console.error.calls.count()).toBe(0);
   });
 
   it('Should be possible to render Immutable datastructures', () => {
     function Clock(props) {
-        let time = props.time + 1;
-        const array = Object.freeze([
-          <span>{ 'Inferno version:' }</span>,
-          <br/>,
-          <span>{ time }</span>
-        ]);
-        return (
-          <div>
-            {array}
-          </div>
-        );
-      }
+      let time = props.time + 1;
+      const array = Object.freeze([
+        <span>{'Inferno version:'}</span>,
+        <br />,
+        <span>{time}</span>
+      ]);
+      return <div>{array}</div>;
+    }
 
-    spyOn(console, "error");
+    spyOn(console, 'error');
 
-    render(<Clock time={1}/>, container);
-    expect(container.innerHTML).toBe("<div><span>Inferno version:</span><br><span>2</span></div>");
+    render(<Clock time={1} />, container);
+    expect(container.innerHTML).toBe(
+      '<div><span>Inferno version:</span><br><span>2</span></div>'
+    );
 
-    render(<Clock time={2}/>, container);
-    expect(container.innerHTML).toBe("<div><span>Inferno version:</span><br><span>3</span></div>");
+    render(<Clock time={2} />, container);
+    expect(container.innerHTML).toBe(
+      '<div><span>Inferno version:</span><br><span>3</span></div>'
+    );
 
-    render(<Clock time={3}/>, container);
-    expect(container.innerHTML).toBe("<div><span>Inferno version:</span><br><span>4</span></div>");
+    render(<Clock time={3} />, container);
+    expect(container.innerHTML).toBe(
+      '<div><span>Inferno version:</span><br><span>4</span></div>'
+    );
     expect(console.error.calls.count()).toBe(0);
 
     render(null, container);
-    expect(container.innerHTML).toBe("");
+    expect(container.innerHTML).toBe('');
 
     expect(console.error.calls.count()).toBe(0);
   });

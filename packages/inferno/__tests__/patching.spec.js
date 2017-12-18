@@ -1,80 +1,80 @@
-import { createVNode, render } from "inferno";
-import {VNodeFlags} from "inferno-vnode-flags";
-import sinon from "sinon";
+import { createVNode, render } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import sinon from 'sinon';
 
-describe("patching routine", () => {
+describe('patching routine', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Should do nothing if lastVNode strictly equals nextVnode", () => {
-    const yar = createVNode(2, "div", null, "123", null, null, null);
-    const bar = createVNode(2, "div", null, "123", null, null, null);
-    let foo = createVNode(2, "div", null, [bar, yar], null, null, null);
+  it('Should do nothing if lastVNode strictly equals nextVnode', () => {
+    const yar = createVNode(2, 'div', null, '123', null, null, null);
+    const bar = createVNode(2, 'div', null, '123', null, null, null);
+    let foo = createVNode(2, 'div', null, [bar, yar], null, null, null);
 
     render(foo, container);
     expect(container.innerHTML).toEqual(
-      "<div><div>123</div><div>123</div></div>"
+      '<div><div>123</div><div>123</div></div>'
     );
 
-    foo = createVNode(2, "div", null, [bar, yar], null, null, null);
+    foo = createVNode(2, 'div', null, [bar, yar], null, null, null);
 
     render(foo, container);
     expect(container.innerHTML).toEqual(
-      "<div><div>123</div><div>123</div></div>"
+      '<div><div>123</div><div>123</div></div>'
     );
   });
 
-  it("Should mount nextNode if lastNode crashed", () => {
+  it('Should mount nextNode if lastNode crashed', () => {
     const validNode = createVNode(
       VNodeFlags.HtmlElement,
-      "span",
+      'span',
       null,
-      createVNode(VNodeFlags.Text, null, null, "a"),
+      createVNode(VNodeFlags.Text, null, null, 'a'),
       null,
       null,
       null
     );
-    const invalidNode = createVNode(0, "span");
+    const invalidNode = createVNode(0, 'span');
 
     render(validNode, container);
     try {
       render(invalidNode, container);
     } catch (e) {
       expect(
-        e.message.indexOf("Inferno Error: mount() received an object")
+        e.message.indexOf('Inferno Error: mount() received an object')
       ).not.toEqual(-1);
     }
-    expect(container.innerHTML).toEqual("<span>a</span>");
+    expect(container.innerHTML).toEqual('<span>a</span>');
 
     render(validNode, container);
-    expect(container.innerHTML).toEqual("<span>a</span>");
+    expect(container.innerHTML).toEqual('<span>a</span>');
   });
 
-  it("Should not access real DOM property when text does not change", () => {
-    render(createVNode(VNodeFlags.Text, null, null, "a"), container);
-    expect(container.innerHTML).toEqual("a");
-    render(createVNode(VNodeFlags.Text, null, null, "a"), container);
-    expect(container.innerHTML).toEqual("a");
+  it('Should not access real DOM property when text does not change', () => {
+    render(createVNode(VNodeFlags.Text, null, null, 'a'), container);
+    expect(container.innerHTML).toEqual('a');
+    render(createVNode(VNodeFlags.Text, null, null, 'a'), container);
+    expect(container.innerHTML).toEqual('a');
   });
 
-  it("Should not patch same innerHTML", () => {
-    container.innerHTML = "<span><span><span>child</span></span></span>";
+  it('Should not patch same innerHTML', () => {
+    container.innerHTML = '<span><span><span>child</span></span></span>';
 
     const childelem = container.firstElementChild.firstElementChild;
-    const props = { dangerouslySetInnerHTML: { __html: "<span>child</span>" } };
+    const props = { dangerouslySetInnerHTML: { __html: '<span>child</span>' } };
 
-    const bar = createVNode(2, "span", null, null, props, null, null);
-    const foo = createVNode(2, "span", null, [bar], null, null, null);
+    const bar = createVNode(2, 'span', null, null, props, null, null);
+    const foo = createVNode(2, 'span', null, [bar], null, null, null);
 
     render(foo, container);
 
@@ -82,16 +82,16 @@ describe("patching routine", () => {
   });
 
   it('Should always unmount/mount if ReCreate flag is set', () => {
-    const spyObj = {fn: () => {}};
-    const spyObj2 = {fn: () => {}};
-    const spy1 = sinon.spy(spyObj, "fn");
-    const spy2 = sinon.spy(spyObj2, "fn");
+    const spyObj = { fn: () => {} };
+    const spyObj2 = { fn: () => {} };
+    const spy1 = sinon.spy(spyObj, 'fn');
+    const spy2 = sinon.spy(spyObj2, 'fn');
 
     const div = createVNode(
       VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
-      "div",
+      'div',
       null,
-      "1",
+      '1',
       null,
       null,
       spy1
@@ -101,16 +101,16 @@ describe("patching routine", () => {
 
     let firstDiv = container.firstChild;
 
-    expect(container.innerHTML).toEqual("<div>1</div>");
+    expect(container.innerHTML).toEqual('<div>1</div>');
     expect(spy1.callCount).toBe(1);
     expect(spy1.getCall(0).args.length).toBe(1);
     expect(spy1.getCall(0).args[0]).toEqual(firstDiv);
 
     const div2 = createVNode(
       VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
-      "div",
+      'div',
       null,
-      "1",
+      '1',
       null,
       null,
       spy2
@@ -121,7 +121,7 @@ describe("patching routine", () => {
     expect(firstDiv).not.toBe(container.firstChild); // Div is different
 
     // Html is the same
-    expect(container.innerHTML).toEqual("<div>1</div>");
+    expect(container.innerHTML).toEqual('<div>1</div>');
 
     // Verify all callbacks were called
     expect(spy1.callCount).toBe(2);

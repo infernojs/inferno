@@ -1,7 +1,7 @@
-import { render } from "inferno";
-import { createElement } from "inferno-create-element";
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
 
-describe("patching keyed lists (non-jsx)", () => {
+describe('patching keyed lists (non-jsx)', () => {
   function createDataModels() {
     const dataModels = [];
 
@@ -42,7 +42,7 @@ describe("patching keyed lists (non-jsx)", () => {
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
       if (n.children !== null) {
-        e = document.createElement("div");
+        e = document.createElement('div');
         render(n.children, e);
         // This code is here to make typescript happy... lol
         for (let a = 0; a < e.children.length; a++) {
@@ -51,7 +51,7 @@ describe("patching keyed lists (non-jsx)", () => {
         // We could just return e.children, but that conflicts with typescript types...
         return children;
       } else {
-        e = document.createElement("span");
+        e = document.createElement('span');
         e.textContent = n.key.toString();
         children.push(e);
       }
@@ -61,8 +61,8 @@ describe("patching keyed lists (non-jsx)", () => {
   }
 
   function createExpected(nodes) {
-    const c = document.createElement("div");
-    const e = document.createElement("div");
+    const c = document.createElement('div');
+    const e = document.createElement('div');
     const children = createExpectedChildren(nodes);
     for (let i = 0; i < children.length; i++) {
       e.appendChild(children[i]);
@@ -71,7 +71,7 @@ describe("patching keyed lists (non-jsx)", () => {
     return c.innerHTML;
   }
 
-  const container = document.createElement("div");
+  const container = document.createElement('div');
   let dataModels = null;
 
   beforeEach(function() {
@@ -91,22 +91,22 @@ describe("patching keyed lists (non-jsx)", () => {
       n = nodes[i];
       if (n.children !== null) {
         children[i] = createElement(
-          "div",
+          'div',
           { key: n.key },
           renderTree(n.children)
         );
       } else {
-        children[i] = createElement("span", { key: n.key }, n.key);
+        children[i] = createElement('span', { key: n.key }, n.key);
       }
     }
     return children;
   }
 
   function renderModel(dataModel) {
-    render(createElement("div", null, renderTree(dataModel)), container);
+    render(createElement('div', null, renderTree(dataModel)), container);
   }
 
-  it("should render various combinations", () => {
+  it('should render various combinations', () => {
     let dataModel = dataModels[0];
 
     renderModel(dataModel);

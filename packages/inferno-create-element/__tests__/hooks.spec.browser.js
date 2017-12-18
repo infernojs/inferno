@@ -1,16 +1,16 @@
-import { render } from "inferno";
-import { createElement } from "inferno-create-element";
-import sinon from "sinon";
-import { innerHTML } from "inferno-utils";
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import sinon from 'sinon';
+import { innerHTML } from 'inferno-utils';
 
-describe("lifecycle hooks", () => {
-  describe("Stateless component hooks", () => {
+describe('lifecycle hooks', () => {
+  describe('Stateless component hooks', () => {
     let template;
     let container;
 
     function StatelessComponent() {
       const divTemplate = () => {
-        return createElement("div", null, "Hello world!");
+        return createElement('div', null, 'Hello world!');
       };
       return divTemplate();
     }
@@ -20,7 +20,7 @@ describe("lifecycle hooks", () => {
     });
 
     beforeEach(function() {
-      container = document.createElement("div");
+      container = document.createElement('div');
 
       template = (
         onComponentWillMount,
@@ -53,7 +53,7 @@ describe("lifecycle hooks", () => {
       const spyObj = {
         fn: () => {}
       };
-      const sinonSpy = sinon.spy(spyObj, "fn");
+      const sinonSpy = sinon.spy(spyObj, 'fn');
       const node = template(
         spyObj.fn,
         null,
@@ -74,7 +74,7 @@ describe("lifecycle hooks", () => {
       const spyObj = {
         fn: () => {}
       };
-      const sinonSpy = sinon.spy(spyObj, "fn");
+      const sinonSpy = sinon.spy(spyObj, 'fn');
       const node = template(
         null,
         spyObj.fn,
@@ -96,7 +96,7 @@ describe("lifecycle hooks", () => {
       const spyObj = {
         fn: () => {}
       };
-      const sinonSpy = sinon.spy(spyObj, "fn");
+      const sinonSpy = sinon.spy(spyObj, 'fn');
       const node = template(
         null,
         null,
@@ -114,7 +114,7 @@ describe("lifecycle hooks", () => {
       expect(sinonSpy.callCount).toBe(1);
       expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0].outerHTML).toBe(
-        innerHTML("<div>Hello world!</div>")
+        innerHTML('<div>Hello world!</div>')
       );
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 1, children: null });
     });
@@ -123,7 +123,7 @@ describe("lifecycle hooks", () => {
       const spyObj = {
         fn: () => {}
       };
-      const sinonSpy = sinon.spy(spyObj, "fn");
+      const sinonSpy = sinon.spy(spyObj, 'fn');
       const t = template(
         null,
         null,
@@ -150,7 +150,7 @@ describe("lifecycle hooks", () => {
       const spyObj = {
         fn: () => {}
       };
-      const sinonSpy = sinon.spy(spyObj, "fn");
+      const sinonSpy = sinon.spy(spyObj, 'fn');
       const t = template(
         null,
         null,
@@ -182,7 +182,7 @@ describe("lifecycle hooks", () => {
           return true;
         }
       };
-      const sinonSpy = sinon.spy(spyObj, "fn");
+      const sinonSpy = sinon.spy(spyObj, 'fn');
       const StatelessComponent = () => {
         renderCount++;
         return null;
@@ -220,7 +220,7 @@ describe("lifecycle hooks", () => {
           return false;
         }
       };
-      const sinonSpy = sinon.spy(spyObj, "fn");
+      const sinonSpy = sinon.spy(spyObj, 'fn');
       const StatelessComponent = () => {
         renderCount++;
         return null;

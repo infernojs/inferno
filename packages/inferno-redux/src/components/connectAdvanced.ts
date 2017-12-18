@@ -2,11 +2,11 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { VNodeFlags } from "inferno-vnode-flags";
-import { Dispatch, Store } from "redux";
-import hoistNonReactStatics from "hoist-non-inferno-statics";
-import { Component, createVNode } from "inferno";
-import { Subscription } from "../utils/Subscription";
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { Dispatch, Store } from 'redux';
+import hoistNonReactStatics from 'hoist-non-inferno-statics';
+import { Component, createVNode } from 'inferno';
+import { Subscription } from '../utils/Subscription';
 
 let hotReloadingVersion = 0;
 const dummyState = {};
@@ -126,20 +126,20 @@ export function connectAdvanced(
   selectorFactory: SelectorFactory,
   {
     getDisplayName = getDefaultName,
-    methodName = "connectAdvanced",
+    methodName = 'connectAdvanced',
     renderCountProp = null,
     shouldHandleStateChanges = true,
-    storeKey = "store",
+    storeKey = 'store',
     withRef = false,
     ...connectOptions
   }: Partial<IConnectOptions>
 ) {
-  const subscriptionKey = storeKey + "Subscription";
+  const subscriptionKey = storeKey + 'Subscription';
   const version = hotReloadingVersion++;
 
   const wrapWithConnect = <T extends Function>(WrappedComponent: T): T => {
     invariant(
-      typeof WrappedComponent === "function",
+      typeof WrappedComponent === 'function',
       `You must pass a component to the function returned by ` +
         `connect. Instead received ${WrappedComponent}`
     );
@@ -147,7 +147,7 @@ export function connectAdvanced(
     const wrappedComponentName: string =
       (WrappedComponent as any).displayName ||
       WrappedComponent.name ||
-      "Component";
+      'Component';
 
     const displayName = getDisplayName(wrappedComponentName);
 
@@ -260,9 +260,7 @@ export function connectAdvanced(
         invariant(
           withRef,
           `To access the wrapped instance, you need to specify ` +
-            `{ withRef: true } in the options argument of the ${
-              methodName
-            }() call.`
+            `{ withRef: true } in the options argument of the ${methodName}() call.`
         );
 
         return this.wrappedInstance;
@@ -373,7 +371,7 @@ export function connectAdvanced(
       }
     }
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       (Connect.prototype as any).componentWillUpdate = function componentWillUpdate() {
         if (this.version !== version) {
           // We are hot reloading!

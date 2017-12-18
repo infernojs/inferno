@@ -5,13 +5,13 @@
 import {
   connectAdvanced,
   IConnectOptions
-} from "../components/connectAdvanced";
-import { Dispatch } from "redux";
-import { shallowEqual } from "../utils/shallowEqual";
-import { defaultMapDispatchToPropsFactories } from "./mapDispatchToProps";
-import { defaultMapStateToPropsFactories } from "./mapStateToProps";
-import { defaultMergePropsFactories } from "./mergeProps";
-import { defaultSelectorFactory } from "./selectorFactory";
+} from '../components/connectAdvanced';
+import { Dispatch } from 'redux';
+import { shallowEqual } from '../utils/shallowEqual';
+import { defaultMapDispatchToPropsFactories } from './mapDispatchToProps';
+import { defaultMapStateToPropsFactories } from './mapStateToProps';
+import { defaultMergePropsFactories } from './mergeProps';
+import { defaultSelectorFactory } from './selectorFactory';
 
 const match = (arg, factories, name) => {
   for (let i = factories.length - 1; i >= 0; i--) {
@@ -23,9 +23,7 @@ const match = (arg, factories, name) => {
 
   return (dispatch: Dispatch<any>, options: IConnectOptions) => {
     throw new Error(
-      `Invalid value of type ${typeof arg} for ${
-        name
-      } argument when connecting component ${
+      `Invalid value of type ${typeof arg} for ${name} argument when connecting component ${
         (options as any).wrappedComponentName
       }.`
     );
@@ -36,15 +34,13 @@ const strictEqual = (a, b) => a === b;
 
 // createConnect with default args builds the 'official' connect behavior. Calling it with
 // different options opens up some testing and extensibility scenarios
-export const createConnect = (
-  {
-    connectHOC = connectAdvanced,
-    mapStateToPropsFactories = defaultMapStateToPropsFactories,
-    mapDispatchToPropsFactories = defaultMapDispatchToPropsFactories,
-    mergePropsFactories = defaultMergePropsFactories,
-    selectorFactory = defaultSelectorFactory
-  } = {}
-) => (
+export const createConnect = ({
+  connectHOC = connectAdvanced,
+  mapStateToPropsFactories = defaultMapStateToPropsFactories,
+  mapDispatchToPropsFactories = defaultMapDispatchToPropsFactories,
+  mergePropsFactories = defaultMergePropsFactories,
+  selectorFactory = defaultSelectorFactory
+} = {}) => (
   mapStateToProps?,
   mapDispatchToProps?,
   mergeProps?,
@@ -60,18 +56,18 @@ export const createConnect = (
   const initMapStateToProps = match(
     mapStateToProps,
     mapStateToPropsFactories,
-    "mapStateToProps"
+    'mapStateToProps'
   );
   const initMapDispatchToProps = match(
     mapDispatchToProps,
     mapDispatchToPropsFactories,
-    "mapDispatchToProps"
+    'mapDispatchToProps'
   );
-  const initMergeProps = match(mergeProps, mergePropsFactories, "mergeProps");
+  const initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
 
   return connectHOC(selectorFactory as any, {
     // used in error messages
-    methodName: "connect",
+    methodName: 'connect',
 
     // used to compute Connect's displayName from the wrapped component's displayName.
     // tslint:disable-next-line:object-literal-sort-keys

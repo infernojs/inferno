@@ -1,24 +1,24 @@
-import { render } from "inferno";
-import { createClass } from "inferno-create-class";
-import * as mobx from "mobx";
-import { inject, observer, Provider } from "inferno-mobx";
+import { render } from 'inferno';
+import { createClass } from 'inferno-create-class';
+import * as mobx from 'mobx';
+import { inject, observer, Provider } from 'inferno-mobx';
 
-describe("inject based context", () => {
+describe('inject based context', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("basic context", done => {
-    const C = inject("foo")(
+  it('basic context', done => {
+    const C = inject('foo')(
       observer(
         createClass({
           render() {
@@ -34,12 +34,12 @@ describe("inject based context", () => {
       </Provider>
     );
     render(<A />, container);
-    expect(container.querySelector("div").textContent).toBe("context:bar");
+    expect(container.querySelector('div').textContent).toBe('context:bar');
     done();
   });
 
-  it("props override context", done => {
-    const C = inject("foo")(
+  it('props override context', done => {
+    const C = inject('foo')(
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -55,12 +55,12 @@ describe("inject based context", () => {
       )
     });
     render(<A />, container);
-    expect(container.querySelector("div").textContent).toBe("context:42");
+    expect(container.querySelector('div').textContent).toBe('context:42');
     done();
   });
 
-  it("overriding stores is supported", done => {
-    const C = inject("foo", "bar")(
+  it('overriding stores is supported', done => {
+    const C = inject('foo', 'bar')(
       observer(
         createClass({
           render() {
@@ -92,15 +92,15 @@ describe("inject based context", () => {
       )
     });
     render(<A />, container);
-    expect(container.querySelector("span").textContent).toBe("context:bar1337");
-    expect(container.querySelector("section").textContent).toBe(
-      "context:421337"
+    expect(container.querySelector('span').textContent).toBe('context:bar1337');
+    expect(container.querySelector('section').textContent).toBe(
+      'context:421337'
     );
     done();
   });
 
-  it("store should be available", done => {
-    const C = inject("foo")(
+  it('store should be available', done => {
+    const C = inject('foo')(
       observer(
         createClass({
           render() {
@@ -128,8 +128,8 @@ describe("inject based context", () => {
     }
   });
 
-  it("store is not required if prop is available", done => {
-    const C = inject("foo")(
+  it('store is not required if prop is available', done => {
+    const C = inject('foo')(
       observer(
         createClass({
           render() {
@@ -140,11 +140,11 @@ describe("inject based context", () => {
     );
     const B = () => <C foo="bar" />;
     render(<B />, container);
-    expect(container.querySelector("div").textContent).toBe("context:bar");
+    expect(container.querySelector('div').textContent).toBe('context:bar');
     done();
   });
 
-  it("inject merges (and overrides) props", done => {
+  it('inject merges (and overrides) props', done => {
     const C = inject(() => ({ a: 1 }))(
       observer(
         createClass({
@@ -160,13 +160,13 @@ describe("inject based context", () => {
     done();
   });
 
-  it("warning is printed when changing stores", done => {
+  it('warning is printed when changing stores', done => {
     let msg;
     const baseWarn = console.error;
     console.error = m => (msg = m);
     const a = mobx.observable(3);
     const C = observer(
-      ["foo"],
+      ['foo'],
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -192,13 +192,13 @@ describe("inject based context", () => {
     );
     render(<A />, container);
 
-    expect(container.querySelector("span").textContent).toBe("3");
-    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(container.querySelector('span').textContent).toBe('3');
+    expect(container.querySelector('div').textContent).toBe('context:3');
 
     a.set(42);
 
-    expect(container.querySelector("span").textContent).toBe("42");
-    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(container.querySelector('span').textContent).toBe('42');
+    expect(container.querySelector('div').textContent).toBe('context:3');
 
     expect(msg).toBe(
       "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children"
@@ -207,10 +207,10 @@ describe("inject based context", () => {
     done();
   });
 
-  it("custom storesToProps", done => {
+  it('custom storesToProps', done => {
     const C = inject((stores, props, context) => {
-      expect(context).toEqual({ mobxStores: { foo: "bar" } });
-      expect(stores).toEqual({ foo: "bar" });
+      expect(context).toEqual({ mobxStores: { foo: 'bar' } });
+      expect(stores).toEqual({ foo: 'bar' });
       expect(props).toEqual({ baz: 42 });
 
       return {
@@ -240,11 +240,11 @@ describe("inject based context", () => {
       </Provider>
     );
     render(<A />, container);
-    expect(container.querySelector("div").textContent).toBe("context:bar84");
+    expect(container.querySelector('div').textContent).toBe('context:bar84');
     done();
   });
 
-  it("support static hoisting, wrappedComponent and wrappedInstance", done => {
+  it('support static hoisting, wrappedComponent and wrappedInstance', done => {
     const B = createClass({
       render() {
         this.testField = 1;
@@ -253,7 +253,7 @@ describe("inject based context", () => {
     });
     B.bla = 17;
     B.bla2 = {};
-    const C = inject("booh")(B);
+    const C = inject('booh')(B);
 
     expect(C.wrappedComponent).toBe(B);
     expect(B.bla).toBe(17);
@@ -293,14 +293,14 @@ describe("inject based context", () => {
   // });
 
   // DefaultProps only, there are no propTypes in inferno
-  it("propTypes and defaultProps are forwarded", done => {
+  it('propTypes and defaultProps are forwarded', done => {
     const msg = [];
     const baseError = console.error;
     console.error = m => msg.push(m);
 
-    const C = inject(["foo"])(
+    const C = inject(['foo'])(
       createClass({
-        displayName: "C",
+        displayName: 'C',
         render() {
           expect(this.props.y).toBe(3);
           return null;
@@ -354,8 +354,8 @@ describe("inject based context", () => {
   //   done();
   // });
 
-  it("using a custom injector is reactive", done => {
-    const user = mobx.observable({ name: "Noa" });
+  it('using a custom injector is reactive', done => {
+    const user = mobx.observable({ name: 'Noa' });
     const mapper = stores => ({ name: stores.user.name });
     const DisplayName = props => <h1>{props.name}</h1>;
     const User = inject(mapper)(DisplayName);
@@ -366,10 +366,10 @@ describe("inject based context", () => {
     );
     render(<App />, container);
 
-    expect(container.querySelector("h1").textContent).toBe("Noa");
+    expect(container.querySelector('h1').textContent).toBe('Noa');
 
-    user.name = "Veria";
-    expect(container.querySelector("h1").textContent).toBe("Veria");
+    user.name = 'Veria';
+    expect(container.querySelector('h1').textContent).toBe('Veria');
     done();
   });
   // TODO: fix this!

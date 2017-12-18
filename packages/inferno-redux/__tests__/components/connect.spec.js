@@ -1,20 +1,20 @@
-import { Component, render as renderDOM } from "inferno";
-import { createClass } from "inferno-create-class";
-import { createElement } from "inferno-create-element";
-import { connect } from "inferno-redux";
+import { Component, render as renderDOM } from 'inferno';
+import { createClass } from 'inferno-create-class';
+import { createElement } from 'inferno-create-element';
+import { connect } from 'inferno-redux';
 import {
   findRenderedVNodeWithType,
   renderIntoDocument,
   Wrapper
-} from "inferno-test-utils";
-import { createStore } from "redux";
-import sinon from "sinon";
-import { Children, spyOn } from "../test-utils";
+} from 'inferno-test-utils';
+import { createStore } from 'redux';
+import sinon from 'sinon';
+import { Children, spyOn } from '../test-utils';
 
 const unmountDOM = elm => renderDOM(null, elm);
 
-describe("Inferno", () => {
-  describe("redux", () => {
+describe('Inferno', () => {
+  describe('redux', () => {
     class Passthrough extends Component {
       render() {
         return <div />;
@@ -64,8 +64,8 @@ describe("Inferno", () => {
       }
     }
 
-    const stringBuilder = (prev = "", action) =>
-      action.type === "APPEND" ? prev + action.payload : prev;
+    const stringBuilder = (prev = '', action) =>
+      action.type === 'APPEND' ? prev + action.payload : prev;
 
     const renderWithBadConnect = Component => {
       const store = createStore(() => ({}));
@@ -83,7 +83,7 @@ describe("Inferno", () => {
       }
     };
 
-    it("should receive the store in the context", () => {
+    it('should receive the store in the context', () => {
       const store = createStore(() => ({}));
 
       const Container = connect()(
@@ -104,11 +104,11 @@ describe("Inferno", () => {
       expect(container.context.store).toBe(store);
     });
 
-    it("should pass state and props to the given component", () => {
+    it('should pass state and props to the given component', () => {
       const store = createStore(() => ({
-        foo: "bar",
+        foo: 'bar',
         baz: 42,
-        hello: "world"
+        hello: 'world'
       }));
 
       const Container = connect(({ foo, baz }) => ({ foo, baz }))(
@@ -126,14 +126,14 @@ describe("Inferno", () => {
       );
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.pass).toBe("through");
-      expect(stub.props.foo).toBe("bar");
+      expect(stub.props.pass).toBe('through');
+      expect(stub.props.foo).toBe('bar');
       expect(stub.props.baz).toBe(42);
       expect(stub.props.hello).toBe(undefined);
       findRenderedVNodeWithType(tree, Container);
     });
 
-    it("should subscribe class components to the store changes", async () => {
+    it('should subscribe class components to the store changes', async () => {
       const store = createStore(stringBuilder);
 
       const Container = connect(state => ({ string: state }))(
@@ -151,18 +151,18 @@ describe("Inferno", () => {
       );
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.string).toBe("");
+      expect(stub.props.string).toBe('');
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
-      expect(stub.props.string).toBe("a");
+      expect(stub.props.string).toBe('a');
 
-      store.dispatch({ type: "APPEND", payload: "b" });
+      store.dispatch({ type: 'APPEND', payload: 'b' });
       await tree.repaint();
-      expect(stub.props.string).toBe("ab");
+      expect(stub.props.string).toBe('ab');
     });
 
-    it("should subscribe pure function components to the store changes", async () => {
+    it('should subscribe pure function components to the store changes', async () => {
       const store = createStore(stringBuilder);
 
       const Container = connect(state => ({
@@ -171,7 +171,7 @@ describe("Inferno", () => {
         return <Passthrough {...props} />;
       });
 
-      const tree = spyOn(console, "error", spy => {
+      const tree = spyOn(console, 'error', spy => {
         const renderTree = renderIntoDocument(
           <ProviderMock store={store}>
             <Container />
@@ -183,15 +183,15 @@ describe("Inferno", () => {
       });
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.string).toBe("");
+      expect(stub.props.string).toBe('');
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
-      expect(stub.props.string).toBe("a");
+      expect(stub.props.string).toBe('a');
 
-      store.dispatch({ type: "APPEND", payload: "b" });
+      store.dispatch({ type: 'APPEND', payload: 'b' });
       await tree.repaint();
-      expect(stub.props.string).toBe("ab");
+      expect(stub.props.string).toBe('ab');
     });
 
     it("should retain the store's context", async () => {
@@ -203,7 +203,7 @@ describe("Inferno", () => {
         return <Passthrough {...props} />;
       });
 
-      const tree = spyOn(console, "error", spy => {
+      const tree = spyOn(console, 'error', spy => {
         const renderTree = renderIntoDocument(
           <ProviderMock store={store}>
             <Container />
@@ -215,20 +215,20 @@ describe("Inferno", () => {
       });
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.string).toBe("");
+      expect(stub.props.string).toBe('');
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
-      expect(stub.props.string).toBe("a");
+      expect(stub.props.string).toBe('a');
     });
 
-    it("should handle dispatches before componentDidMount", () => {
+    it('should handle dispatches before componentDidMount', () => {
       const store = createStore(stringBuilder);
 
       const Container = connect(state => ({ string: state }))(
         class Container extends Component {
           componentWillMount() {
-            store.dispatch({ type: "APPEND", payload: "a" });
+            store.dispatch({ type: 'APPEND', payload: 'a' });
           }
 
           render() {
@@ -244,12 +244,12 @@ describe("Inferno", () => {
       );
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.string).toBe("a");
+      expect(stub.props.string).toBe('a');
     });
 
-    it("should handle additional prop changes in addition to slice", async () => {
+    it('should handle additional prop changes in addition to slice', async () => {
       const store = createStore(() => ({
-        foo: "bar"
+        foo: 'bar'
       }));
 
       const ConnectContainer = connect(state => state)(
@@ -265,14 +265,14 @@ describe("Inferno", () => {
           super();
           this.state = {
             bar: {
-              baz: ""
+              baz: ''
             }
           };
         }
 
         componentDidMount() {
           this.setState({
-            bar: Object.assign({}, this.state.bar, { baz: "through" })
+            bar: Object.assign({}, this.state.bar, { baz: 'through' })
           });
         }
 
@@ -290,11 +290,11 @@ describe("Inferno", () => {
 
       await tree.repaint();
       await new Promise(resolve => setTimeout(resolve, 500));
-      expect(stub.props.foo).toBe("bar");
-      expect(stub.props.pass).toBe("through");
+      expect(stub.props.foo).toBe('bar');
+      expect(stub.props.pass).toBe('through');
     });
 
-    it("should handle unexpected prop changes with forceUpdate()", () => {
+    it('should handle unexpected prop changes with forceUpdate()', () => {
       const store = createStore(() => ({}));
 
       const ConnectContainer = connect(state => state)(
@@ -308,11 +308,11 @@ describe("Inferno", () => {
       class Container extends Component {
         constructor() {
           super();
-          this.baz = "baz";
+          this.baz = 'baz';
         }
 
         componentDidMount() {
-          this.bar = "foo";
+          this.bar = 'foo';
           this.forceUpdate();
           this.c.forceUpdate();
         }
@@ -333,10 +333,10 @@ describe("Inferno", () => {
 
       const tree = renderIntoDocument(<Container />);
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.bar).toBe("foo");
+      expect(stub.props.bar).toBe('foo');
     });
 
-    it("should remove undefined props", () => {
+    it('should remove undefined props', () => {
       const store = createStore(() => {});
       let props = { x: true };
       let container;
@@ -377,10 +377,10 @@ describe("Inferno", () => {
       };
 
       expect(propsBefore.x).toBe(true);
-      expect("x" in propsAfter).toBe(false);
+      expect('x' in propsAfter).toBe(false);
     });
 
-    it("should remove undefined props without mapDispatch", () => {
+    it('should remove undefined props without mapDispatch', () => {
       const store = createStore(() => ({}));
       let props = { x: true };
       let container;
@@ -421,12 +421,12 @@ describe("Inferno", () => {
       };
 
       expect(propsBefore.x).toBe(true);
-      expect("x" in propsAfter).toBe(false);
+      expect('x' in propsAfter).toBe(false);
     });
 
-    it("should ignore deep mutations in props", () => {
+    it('should ignore deep mutations in props', () => {
       const store = createStore(() => ({
-        foo: "bar"
+        foo: 'bar'
       }));
 
       const ConnectContainer = connect(state => state)(
@@ -442,7 +442,7 @@ describe("Inferno", () => {
           super();
           this.state = {
             bar: {
-              baz: ""
+              baz: ''
             }
           };
         }
@@ -450,7 +450,7 @@ describe("Inferno", () => {
         componentDidMount() {
           // Simulate deep object mutation
           const bar = this.state.bar;
-          bar.baz = "through";
+          bar.baz = 'through';
           this.setState({
             bar
           });
@@ -467,15 +467,15 @@ describe("Inferno", () => {
 
       const tree = renderIntoDocument(<Container />);
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.foo).toBe("bar");
-      expect(stub.props.pass).toBe("");
+      expect(stub.props.foo).toBe('bar');
+      expect(stub.props.pass).toBe('');
     });
 
-    it("should allow for merge to incorporate state and prop changes", async () => {
+    it('should allow for merge to incorporate state and prop changes', async () => {
       const store = createStore(stringBuilder);
 
       const doSomething = thing => ({
-        type: "APPEND",
+        type: 'APPEND',
         payload: thing
       });
 
@@ -488,7 +488,7 @@ describe("Inferno", () => {
           ...stateProps,
           ...actionProps,
           mergedDoSomething(thing) {
-            const seed = stateProps.stateThing === "" ? "HELLO " : "";
+            const seed = stateProps.stateThing === '' ? 'HELLO ' : '';
             actionProps.doSomething(seed + thing + parentProps.extra);
           }
         })
@@ -503,7 +503,7 @@ describe("Inferno", () => {
       class OuterContainer extends Component {
         constructor() {
           super();
-          this.state = { extra: "z" };
+          this.state = { extra: 'z' };
         }
 
         render() {
@@ -519,25 +519,25 @@ describe("Inferno", () => {
       const outerStub = findRenderedVNodeWithType(tree, OuterContainer)
         .children;
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.stateThing).toBe("");
-      stub.props.mergedDoSomething("a");
+      expect(stub.props.stateThing).toBe('');
+      stub.props.mergedDoSomething('a');
       await tree.repaint();
-      expect(stub.props.stateThing).toBe("HELLO az");
+      expect(stub.props.stateThing).toBe('HELLO az');
 
-      stub.props.mergedDoSomething("b");
+      stub.props.mergedDoSomething('b');
       await tree.repaint();
-      expect(stub.props.stateThing).toBe("HELLO azbz");
+      expect(stub.props.stateThing).toBe('HELLO azbz');
 
-      outerStub.setState({ extra: "Z" });
+      outerStub.setState({ extra: 'Z' });
       await tree.repaint();
-      stub.props.mergedDoSomething("c");
+      stub.props.mergedDoSomething('c');
       await tree.repaint();
-      expect(stub.props.stateThing).toBe("HELLO azbzcZ");
+      expect(stub.props.stateThing).toBe('HELLO azbzcZ');
     });
 
-    it("should merge actionProps into WrappedComponent", () => {
+    it('should merge actionProps into WrappedComponent', () => {
       const store = createStore(() => ({
-        foo: "bar"
+        foo: 'bar'
       }));
 
       const Container = connect(state => state, dispatch => ({ dispatch }))(
@@ -556,7 +556,7 @@ describe("Inferno", () => {
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.dispatch).toBe(store.dispatch);
-      expect(stub.props.foo).toBe("bar");
+      expect(stub.props.foo).toBe('bar');
       expect(
         () => findRenderedVNodeWithType(tree, Container).children
       ).not.toThrowError();
@@ -564,7 +564,7 @@ describe("Inferno", () => {
       expect(decorated.isSubscribed()).toBe(true);
     });
 
-    it("should not invoke mapState when props change if it only has one argument", () => {
+    it('should not invoke mapState when props change if it only has one argument', () => {
       const store = createStore(stringBuilder);
 
       let invocationCount = 0;
@@ -583,7 +583,7 @@ describe("Inferno", () => {
       class OuterComponent extends Component {
         constructor() {
           super();
-          this.state = { foo: "FOO" };
+          this.state = { foo: 'FOO' };
         }
 
         setFoo(foo) {
@@ -610,13 +610,13 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      outerComponent.setFoo("BAR");
-      outerComponent.setFoo("DID");
+      outerComponent.setFoo('BAR');
+      outerComponent.setFoo('DID');
 
       expect(invocationCount).toBe(1);
     });
 
-    it("should invoke mapState every time props are changed if it has zero arguments", async () => {
+    it('should invoke mapState every time props are changed if it has zero arguments', async () => {
       const store = createStore(stringBuilder);
 
       let invocationCount = 0;
@@ -635,7 +635,7 @@ describe("Inferno", () => {
       class OuterComponent extends Component {
         constructor() {
           super();
-          this.state = { foo: "FOO" };
+          this.state = { foo: 'FOO' };
         }
 
         setFoo(foo) {
@@ -662,14 +662,14 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      outerComponent.setFoo("BAR");
+      outerComponent.setFoo('BAR');
       await tree.repaint();
-      outerComponent.setFoo("DID");
+      outerComponent.setFoo('DID');
       await tree.repaint();
       expect(invocationCount).toBe(3);
     });
 
-    it("should invoke mapState every time props are changed if it has a second argument", async () => {
+    it('should invoke mapState every time props are changed if it has a second argument', async () => {
       const store = createStore(stringBuilder);
 
       let propsPassedIn;
@@ -690,7 +690,7 @@ describe("Inferno", () => {
       class OuterComponent extends Component {
         constructor() {
           super();
-          this.state = { foo: "FOO" };
+          this.state = { foo: 'FOO' };
         }
 
         setFoo(foo) {
@@ -717,18 +717,18 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      outerComponent.setFoo("BAR");
+      outerComponent.setFoo('BAR');
       await tree.repaint();
-      outerComponent.setFoo("BAZ");
+      outerComponent.setFoo('BAZ');
       await tree.repaint();
 
       expect(invocationCount).toBe(3);
       expect(propsPassedIn).toEqual({
-        foo: "BAZ"
+        foo: 'BAZ'
       });
     });
 
-    it("should not invoke mapDispatch when props change if it only has one argument", () => {
+    it('should not invoke mapDispatch when props change if it only has one argument', () => {
       const store = createStore(stringBuilder);
 
       let invocationCount = 0;
@@ -747,7 +747,7 @@ describe("Inferno", () => {
       class OuterComponent extends Component {
         constructor() {
           super();
-          this.state = { foo: "FOO" };
+          this.state = { foo: 'FOO' };
         }
 
         setFoo(foo) {
@@ -774,13 +774,13 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      outerComponent.setFoo("BAR");
-      outerComponent.setFoo("DID");
+      outerComponent.setFoo('BAR');
+      outerComponent.setFoo('DID');
 
       expect(invocationCount).toBe(1);
     });
 
-    it("should invoke mapDispatch every time props are changed if it has zero arguments", async () => {
+    it('should invoke mapDispatch every time props are changed if it has zero arguments', async () => {
       const store = createStore(stringBuilder);
 
       let invocationCount = 0;
@@ -799,7 +799,7 @@ describe("Inferno", () => {
       class OuterComponent extends Component {
         constructor() {
           super();
-          this.state = { foo: "FOO" };
+          this.state = { foo: 'FOO' };
         }
 
         setFoo(foo) {
@@ -826,14 +826,14 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      outerComponent.setFoo("BAR");
+      outerComponent.setFoo('BAR');
       await tree.repaint();
-      outerComponent.setFoo("DID");
+      outerComponent.setFoo('DID');
       await tree.repaint();
       expect(invocationCount).toBe(3);
     });
 
-    it("should invoke mapDispatch every time props are changed if it has a second argument", async () => {
+    it('should invoke mapDispatch every time props are changed if it has a second argument', async () => {
       const store = createStore(stringBuilder);
 
       let propsPassedIn;
@@ -854,7 +854,7 @@ describe("Inferno", () => {
       class OuterComponent extends Component {
         constructor() {
           super();
-          this.state = { foo: "FOO" };
+          this.state = { foo: 'FOO' };
         }
 
         setFoo(foo) {
@@ -881,20 +881,20 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      outerComponent.setFoo("BAR");
+      outerComponent.setFoo('BAR');
       await tree.repaint();
-      outerComponent.setFoo("BAZ");
+      outerComponent.setFoo('BAZ');
       await tree.repaint();
 
       expect(invocationCount).toBe(3);
       expect(propsPassedIn).toEqual({
-        foo: "BAZ"
+        foo: 'BAZ'
       });
     });
 
-    it("should pass dispatch and avoid subscription if arguments are falsy", () => {
+    it('should pass dispatch and avoid subscription if arguments are falsy', () => {
       const store = createStore(() => ({
-        foo: "bar"
+        foo: 'bar'
       }));
 
       const runCheck = (...connectArgs) => {
@@ -915,7 +915,7 @@ describe("Inferno", () => {
         const stub = findRenderedVNodeWithType(tree, Passthrough).children;
         expect(stub.props.dispatch).toBe(store.dispatch);
         expect(stub.props.foo).toBeUndefined();
-        expect(stub.props.pass).toBe("through");
+        expect(stub.props.pass).toBe('through');
         expect(
           () => findRenderedVNodeWithType(tree, Container).children
         ).not.toThrowError();
@@ -929,7 +929,7 @@ describe("Inferno", () => {
       runCheck(false, false, false);
     });
 
-    it("should unsubscribe before unmounting", () => {
+    it('should unsubscribe before unmounting', () => {
       const store = createStore(stringBuilder);
       const subscribe = store.subscribe;
 
@@ -954,7 +954,7 @@ describe("Inferno", () => {
         }
       );
 
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       renderDOM(
         <ProviderMock store={store}>
           <Container />
@@ -967,7 +967,7 @@ describe("Inferno", () => {
       expect(unsubscribeCalls).toBe(1);
     });
 
-    it("should not attempt to set state after unmounting", () => {
+    it('should not attempt to set state after unmounting', () => {
       const store = createStore(stringBuilder);
       let mapStateToPropsCalls = 0;
 
@@ -982,7 +982,7 @@ describe("Inferno", () => {
         }
       );
 
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       store.subscribe(() => {
         unmountDOM(div);
       });
@@ -994,14 +994,14 @@ describe("Inferno", () => {
       );
 
       expect(mapStateToPropsCalls).toBe(1);
-      spyOn(console, "error", spy => {
-        store.dispatch({ type: "APPEND", payload: "a" });
+      spyOn(console, 'error', spy => {
+        store.dispatch({ type: 'APPEND', payload: 'a' });
         expect(spy.callCount).toBe(0);
         expect(mapStateToPropsCalls).toBe(1);
       });
     });
 
-    it("should not attempt to notify unmounted child of state change", () => {
+    it('should not attempt to notify unmounted child of state change', () => {
       class ProviderMockTest extends Component {
         getChildContext() {
           return { store: this.props.store };
@@ -1014,10 +1014,10 @@ describe("Inferno", () => {
 
       const store = createStore(stringBuilder);
 
-      const App = connect(state => ({ hide: state === "AB" }))(
+      const App = connect(state => ({ hide: state === 'AB' }))(
         class App extends Component {
           getDisplayName() {
-            return "App";
+            return 'App';
           }
 
           render() {
@@ -1029,11 +1029,11 @@ describe("Inferno", () => {
       const Container = connect(state => ({ state }))(
         class Container extends Component {
           getDisplayName() {
-            return "Container";
+            return 'Container';
           }
           componentWillReceiveProps(nextProps) {
-            if (nextProps.state === "A") {
-              store.dispatch({ type: "APPEND", payload: "B" });
+            if (nextProps.state === 'A') {
+              store.dispatch({ type: 'APPEND', payload: 'B' });
             }
           }
 
@@ -1043,7 +1043,7 @@ describe("Inferno", () => {
         }
       );
 
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       renderDOM(
         <ProviderMockTest store={store}>
           <App />
@@ -1052,13 +1052,13 @@ describe("Inferno", () => {
       );
 
       try {
-        store.dispatch({ type: "APPEND", payload: "A" });
+        store.dispatch({ type: 'APPEND', payload: 'A' });
       } finally {
         unmountDOM(div);
       }
     });
 
-    it("should not attempt to set state after unmounting nested components", async () => {
+    it('should not attempt to set state after unmounting nested components', async () => {
       const store = createStore(() => ({}));
       let mapStateToPropsCalls = 0;
 
@@ -1075,7 +1075,7 @@ describe("Inferno", () => {
           <div>
             <a
               href="#"
-              onClick={onClick("a")}
+              onClick={onClick('a')}
               ref={c => {
                 linkA = c;
               }}
@@ -1084,7 +1084,7 @@ describe("Inferno", () => {
             </a>
             <a
               href="#"
-              onClick={onClick("b")}
+              onClick={onClick('b')}
               ref={c => {
                 linkB = c;
               }}
@@ -1105,23 +1105,23 @@ describe("Inferno", () => {
       class RouterMock extends Component {
         constructor(...args) {
           super(...args);
-          this.state = { location: { pathname: "a" } };
+          this.state = { location: { pathname: 'a' } };
           this.setLocation = this.setLocation.bind(this);
         }
 
         setLocation(pathname) {
-          store.dispatch({ type: "TEST" });
+          store.dispatch({ type: 'TEST' });
           this.setState({ location: { pathname } });
         }
 
         getChildComponent(location) {
           switch (location) {
-            case "a":
+            case 'a':
               return <A />;
-            case "b":
+            case 'b':
               return <B />;
             default:
-              throw new Error("Unknown location: " + location);
+              throw new Error('Unknown location: ' + location);
           }
         }
 
@@ -1135,7 +1135,7 @@ describe("Inferno", () => {
       }
 
       let wrapper;
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       document.body.appendChild(div);
       renderDOM(
         <Wrapper
@@ -1150,7 +1150,7 @@ describe("Inferno", () => {
         div
       );
 
-      await spyOn(console, "error", async spy => {
+      await spyOn(console, 'error', async spy => {
         expect(mapStateToPropsCalls).toBe(1);
         linkA.click();
         await wrapper.repaint();
@@ -1171,7 +1171,7 @@ describe("Inferno", () => {
       expect(mapStateToPropsCalls).toBe(3);
     });
 
-    it("should not attempt to set state when dispatching in componentWillUnmount", () => {
+    it('should not attempt to set state when dispatching in componentWillUnmount', () => {
       const store = createStore(stringBuilder);
       let mapStateToPropsCalls = 0;
 
@@ -1181,7 +1181,7 @@ describe("Inferno", () => {
       )(
         class Container extends Component {
           componentWillUnmount() {
-            this.props.dispatch({ type: "APPEND", payload: "a" });
+            this.props.dispatch({ type: 'APPEND', payload: 'a' });
           }
 
           render() {
@@ -1190,7 +1190,7 @@ describe("Inferno", () => {
         }
       );
 
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       renderDOM(
         <ProviderMock store={store}>
           <Container />
@@ -1200,7 +1200,7 @@ describe("Inferno", () => {
 
       expect(mapStateToPropsCalls).toBe(1);
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         unmountDOM(div);
 
         expect(spy.callCount).toBe(0);
@@ -1209,7 +1209,7 @@ describe("Inferno", () => {
       expect(mapStateToPropsCalls).toBe(1);
     });
 
-    it("should shallowly compare the selected state to prevent unnecessary updates", async () => {
+    it('should shallowly compare the selected state to prevent unnecessary updates', async () => {
       const store = createStore(stringBuilder);
       let renderCallCount = 0;
 
@@ -1235,19 +1235,19 @@ describe("Inferno", () => {
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(renderCallCount).toBe(1);
-      expect(stub.props.string).toBe("");
-      store.dispatch({ type: "APPEND", payload: "a" });
+      expect(stub.props.string).toBe('');
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
       expect(renderCallCount).toBe(2);
-      store.dispatch({ type: "APPEND", payload: "b" });
+      store.dispatch({ type: 'APPEND', payload: 'b' });
       await tree.repaint();
       expect(renderCallCount).toBe(3);
-      store.dispatch({ type: "APPEND", payload: "" });
+      store.dispatch({ type: 'APPEND', payload: '' });
       await tree.repaint();
       expect(renderCallCount).toBe(3);
     });
 
-    it("should shallowly compare the merged state to prevent unnecessary updates", async () => {
+    it('should shallowly compare the merged state to prevent unnecessary updates', async () => {
       const store = createStore(stringBuilder);
       let renderCallCount = 0;
 
@@ -1275,7 +1275,7 @@ describe("Inferno", () => {
       class Root extends Component {
         constructor(props) {
           super(props);
-          this.state = { pass: "" };
+          this.state = { pass: '' };
         }
 
         render() {
@@ -1292,68 +1292,68 @@ describe("Inferno", () => {
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
 
       expect(renderCallCount).toBe(1);
-      expect(stub.props.string).toBe("");
-      expect(stub.props.pass).toBe("");
+      expect(stub.props.string).toBe('');
+      expect(stub.props.pass).toBe('');
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
       expect(renderCallCount).toBe(2);
-      expect(stub.props.string).toBe("a");
-      expect(stub.props.pass).toBe("");
+      expect(stub.props.string).toBe('a');
+      expect(stub.props.pass).toBe('');
 
-      rootStub.setState({ pass: "" });
+      rootStub.setState({ pass: '' });
       await tree.repaint();
       expect(renderCallCount).toBe(2);
-      expect(stub.props.string).toBe("a");
-      expect(stub.props.pass).toBe("");
+      expect(stub.props.string).toBe('a');
+      expect(stub.props.pass).toBe('');
 
-      rootStub.setState({ pass: "through" });
+      rootStub.setState({ pass: 'through' });
       await tree.repaint();
       expect(renderCallCount).toBe(3);
-      expect(stub.props.string).toBe("a");
-      expect(stub.props.pass).toBe("through");
+      expect(stub.props.string).toBe('a');
+      expect(stub.props.pass).toBe('through');
 
-      rootStub.setState({ pass: "through" });
+      rootStub.setState({ pass: 'through' });
       await tree.repaint();
       expect(renderCallCount).toBe(3);
-      expect(stub.props.string).toBe("a");
-      expect(stub.props.pass).toBe("through");
+      expect(stub.props.string).toBe('a');
+      expect(stub.props.pass).toBe('through');
 
-      const obj = { prop: "val" };
+      const obj = { prop: 'val' };
       rootStub.setState({ pass: obj });
       await tree.repaint();
       expect(renderCallCount).toBe(4);
-      expect(stub.props.string).toBe("a");
+      expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe(obj);
 
       rootStub.setState({ pass: obj });
       await tree.repaint();
       expect(renderCallCount).toBe(4);
-      expect(stub.props.string).toBe("a");
+      expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe(obj);
 
-      const obj2 = { ...obj, val: "otherval" };
+      const obj2 = { ...obj, val: 'otherval' };
       rootStub.setState({ pass: obj2 });
       await tree.repaint();
       expect(renderCallCount).toBe(5);
-      expect(stub.props.string).toBe("a");
+      expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe(obj2);
 
-      obj2.val = "mutation";
+      obj2.val = 'mutation';
       rootStub.setState({ pass: obj2 });
       await tree.repaint();
       expect(renderCallCount).toBe(5);
-      expect(stub.props.string).toBe("a");
-      expect(stub.props.passVal).toBe("otherval");
+      expect(stub.props.string).toBe('a');
+      expect(stub.props.passVal).toBe('otherval');
     });
 
-    it("should throw an error if a component is not passed to the function returned by connect", () => {
+    it('should throw an error if a component is not passed to the function returned by connect', () => {
       expect(connect()).toThrowError(
         /You must pass a component to the function/
       );
     });
 
-    it("should throw an error if mapState, mapDispatch, or mergeProps returns anything but a plain object", () => {
+    it('should throw an error if mapState, mapDispatch, or mergeProps returns anything but a plain object', () => {
       const store = createStore(() => ({}));
 
       const makeContainer = (mapState, mapDispatch, mergeProps) =>
@@ -1370,7 +1370,7 @@ describe("Inferno", () => {
       function AwesomeMap() {}
 
       // mapStateToProps
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
             {makeContainer(() => 1, () => ({}), () => ({}))}
@@ -1383,10 +1383,10 @@ describe("Inferno", () => {
         );
       });
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
-            {makeContainer(() => "hey", () => ({}), () => ({}))}
+            {makeContainer(() => 'hey', () => ({}), () => ({}))}
           </ProviderMock>
         );
 
@@ -1396,7 +1396,7 @@ describe("Inferno", () => {
         );
       });
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
             {makeContainer(() => new AwesomeMap(), () => ({}), () => ({}))}
@@ -1410,7 +1410,7 @@ describe("Inferno", () => {
       });
 
       // mapDispatchToProps
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
             {makeContainer(() => ({}), () => 1, () => ({}))}
@@ -1423,10 +1423,10 @@ describe("Inferno", () => {
         );
       });
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => "hey", () => ({}))}
+            {makeContainer(() => ({}), () => 'hey', () => ({}))}
           </ProviderMock>
         );
 
@@ -1436,7 +1436,7 @@ describe("Inferno", () => {
         );
       });
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
             {makeContainer(() => ({}), () => new AwesomeMap(), () => ({}))}
@@ -1450,7 +1450,7 @@ describe("Inferno", () => {
       });
 
       // mergeProps
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
             {makeContainer(() => ({}), () => ({}), () => 1)}
@@ -1463,10 +1463,10 @@ describe("Inferno", () => {
         );
       });
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => ({}), () => "hey")}
+            {makeContainer(() => ({}), () => ({}), () => 'hey')}
           </ProviderMock>
         );
 
@@ -1476,7 +1476,7 @@ describe("Inferno", () => {
         );
       });
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         renderIntoDocument(
           <ProviderMock store={store}>
             {makeContainer(() => ({}), () => ({}), () => new AwesomeMap())}
@@ -1490,10 +1490,10 @@ describe("Inferno", () => {
       });
     });
 
-    it("should recalculate the state and rebind the actions on hot update", () => {
+    it('should recalculate the state and rebind the actions on hot update', () => {
       const store = createStore(() => {});
 
-      const ContainerBefore = connect(null, () => ({ scooby: "doo" }))(
+      const ContainerBefore = connect(null, () => ({ scooby: 'doo' }))(
         class ContainerBefore extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -1502,8 +1502,8 @@ describe("Inferno", () => {
       );
 
       const ContainerAfter = connect(
-        () => ({ foo: "baz" }),
-        () => ({ scooby: "foo" })
+        () => ({ foo: 'baz' }),
+        () => ({ scooby: 'foo' })
       )(
         class ContainerAfter extends Component {
           render() {
@@ -1513,8 +1513,8 @@ describe("Inferno", () => {
       );
 
       const ContainerNext = connect(
-        () => ({ foo: "bar" }),
-        () => ({ scooby: "boo" })
+        () => ({ foo: 'bar' }),
+        () => ({ scooby: 'boo' })
       )(
         class ContainerNext extends Component {
           render() {
@@ -1533,14 +1533,14 @@ describe("Inferno", () => {
         .children;
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.foo).toBeUndefined();
-      expect(stub.props.scooby).toBe("doo");
+      expect(stub.props.scooby).toBe('doo');
 
       const imitateHotReloading = (TargetClass, SourceClass) => {
         // Crude imitation of hot reloading that does the job
         Object.getOwnPropertyNames(SourceClass.prototype)
-          .filter(key => typeof SourceClass.prototype[key] === "function")
+          .filter(key => typeof SourceClass.prototype[key] === 'function')
           .forEach(key => {
-            if (key !== "render" && key !== "constructor") {
+            if (key !== 'render' && key !== 'constructor') {
               TargetClass.prototype[key] = SourceClass.prototype[key];
             }
           });
@@ -1549,15 +1549,15 @@ describe("Inferno", () => {
       };
 
       imitateHotReloading(ContainerBefore, ContainerAfter);
-      expect(stub.props.foo).toBe("baz");
-      expect(stub.props.scooby).toBe("foo");
+      expect(stub.props.foo).toBe('baz');
+      expect(stub.props.scooby).toBe('foo');
 
       imitateHotReloading(ContainerBefore, ContainerNext);
-      expect(stub.props.foo).toBe("bar");
-      expect(stub.props.scooby).toBe("boo");
+      expect(stub.props.foo).toBe('bar');
+      expect(stub.props.scooby).toBe('boo');
     });
 
-    it("should set the displayName correctly", () => {
+    it('should set the displayName correctly', () => {
       expect(
         connect(state => state)(
           class Foo extends Component {
@@ -1566,18 +1566,18 @@ describe("Inferno", () => {
             }
           }
         ).displayName
-      ).toEqual("Connect(Foo)");
+      ).toEqual('Connect(Foo)');
 
       expect(
         connect(state => state)(
           createClass({
-            displayName: "Bar",
+            displayName: 'Bar',
             render() {
               return <div />;
             }
           })
         ).displayName
-      ).toEqual("Connect(Bar)");
+      ).toEqual('Connect(Bar)');
 
       expect(
         connect(state => state)(
@@ -1587,10 +1587,10 @@ describe("Inferno", () => {
             }
           })
         ).displayName
-      ).toEqual("Connect(Component)");
+      ).toEqual('Connect(Component)');
     });
 
-    it("should expose the wrapped component as WrappedComponent", () => {
+    it('should expose the wrapped component as WrappedComponent', () => {
       class Container extends Component {
         render() {
           return <Passthrough />;
@@ -1603,25 +1603,25 @@ describe("Inferno", () => {
       expect(decorated.WrappedComponent).toBe(Container);
     });
 
-    it("should hoist non-react statics from wrapped component", () => {
+    it('should hoist non-react statics from wrapped component', () => {
       class Container extends Component {
         render() {
           return <Passthrough />;
         }
       }
 
-      Container.howIsRedux = () => "Awesome!";
-      Container.foo = "bar";
+      Container.howIsRedux = () => 'Awesome!';
+      Container.foo = 'bar';
 
       const decorator = connect(state => state);
       const decorated = decorator(Container);
 
-      expect(typeof decorated.howIsRedux).toBe("function");
-      expect(decorated.howIsRedux()).toBe("Awesome!");
-      expect(decorated.foo).toBe("bar");
+      expect(typeof decorated.howIsRedux).toBe('function');
+      expect(decorated.howIsRedux()).toBe('Awesome!');
+      expect(decorated.foo).toBe('bar');
     });
 
-    it("should use the store from the props instead of from the context if present", () => {
+    it('should use the store from the props instead of from the context if present', () => {
       class Container extends Component {
         render() {
           return <Passthrough />;
@@ -1647,7 +1647,7 @@ describe("Inferno", () => {
       expect(actualState).toBe(expectedState);
     });
 
-    it("should throw an error if the store is not in the props or context", () => {
+    it('should throw an error if the store is not in the props or context', () => {
       class Container extends Component {
         render() {
           return <Passthrough />;
@@ -1662,7 +1662,7 @@ describe("Inferno", () => {
       );
     });
 
-    it("should throw when trying to access the wrapped instance if withRef is not specified", () => {
+    it('should throw when trying to access the wrapped instance if withRef is not specified', () => {
       const store = createStore(() => ({}));
 
       class Container extends Component {
@@ -1686,11 +1686,11 @@ describe("Inferno", () => {
       );
     });
 
-    it("should return the instance of the wrapped component for use in calling child methods", () => {
+    it('should return the instance of the wrapped component for use in calling child methods', () => {
       const store = createStore(() => ({}));
 
       const someData = {
-        some: "data"
+        some: 'data'
       };
 
       class Container extends Component {
@@ -1720,7 +1720,7 @@ describe("Inferno", () => {
       expect(decorated.wrappedInstance.someInstanceMethod()).toBe(someData);
     });
 
-    it("should wrap impure components without supressing updates", async () => {
+    it('should wrap impure components without supressing updates', async () => {
       const store = createStore(() => ({}));
 
       class ImpureComponent extends Component {
@@ -1764,10 +1764,10 @@ describe("Inferno", () => {
       expect(target.props.statefulValue).toBe(1);
     });
 
-    it("calls mapState and mapDispatch for impure components", () => {
+    it('calls mapState and mapDispatch for impure components', () => {
       const store = createStore(() => ({
-        foo: "foo",
-        bar: "bar"
+        foo: 'foo',
+        bar: 'bar'
       }));
 
       let mapStateToPropsCalls = 0;
@@ -1797,7 +1797,7 @@ describe("Inferno", () => {
         constructor() {
           super();
           this.state = {
-            storeGetter: { storeKey: "foo" }
+            storeGetter: { storeKey: 'foo' }
           };
         }
 
@@ -1817,22 +1817,22 @@ describe("Inferno", () => {
 
       expect(mapStateToPropsCalls).toBe(2);
       expect(mapDispatchToPropsCalls).toBe(2);
-      expect(target.props.statefulValue).toBe("foo");
+      expect(target.props.statefulValue).toBe('foo');
 
       // Impure update
       const storeGetter = wrapper.state.storeGetter;
-      storeGetter.storeKey = "bar";
+      storeGetter.storeKey = 'bar';
       wrapper.setState({ storeGetter });
 
       expect(mapStateToPropsCalls).toBe(3);
       expect(mapDispatchToPropsCalls).toBe(3);
-      expect(target.props.statefulValue).toBe("bar");
+      expect(target.props.statefulValue).toBe('bar');
     });
 
-    it("should pass state consistently to mapState", async () => {
+    it('should pass state consistently to mapState', async () => {
       const store = createStore(stringBuilder);
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       let childMapStateInvokes = 0;
 
       const Container = connect(state => ({ state }), null, null, {
@@ -1840,7 +1840,7 @@ describe("Inferno", () => {
       })(
         class Container extends Component {
           emitChange() {
-            store.dispatch({ type: "APPEND", payload: "b" });
+            store.dispatch({ type: 'APPEND', payload: 'b' });
           }
 
           render() {
@@ -1883,7 +1883,7 @@ describe("Inferno", () => {
 
       expect(childMapStateInvokes).toBe(1);
 
-      store.dispatch({ type: "APPEND", payload: "c" });
+      store.dispatch({ type: 'APPEND', payload: 'c' });
       await tree.repaint();
       expect(childMapStateInvokes).toBe(2);
 
@@ -1893,12 +1893,12 @@ describe("Inferno", () => {
       await tree.repaint();
       expect(childMapStateInvokes).toBe(3);
 
-      store.dispatch({ type: "APPEND", payload: "d" });
+      store.dispatch({ type: 'APPEND', payload: 'd' });
       await tree.repaint();
       expect(childMapStateInvokes).toBe(4);
     });
 
-    it("should not render the wrapped component when mapState does not produce change", async () => {
+    it('should not render the wrapped component when mapState does not produce change', async () => {
       const store = createStore(stringBuilder);
       let renderCalls = 0;
       let mapStateCalls = 0;
@@ -1923,7 +1923,7 @@ describe("Inferno", () => {
 
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
 
       // After store a change mapState has been called
@@ -1932,7 +1932,7 @@ describe("Inferno", () => {
       expect(renderCalls).toBe(1);
     });
 
-    it("should bail out early if mapState does not depend on props", async () => {
+    it('should bail out early if mapState does not depend on props', async () => {
       const store = createStore(stringBuilder);
       let renderCalls = 0;
       let mapStateCalls = 0;
@@ -1940,7 +1940,7 @@ describe("Inferno", () => {
 
       const Container = connect(state => {
         mapStateCalls++;
-        return state === "aaa" ? { change: 1 } : {};
+        return state === 'aaa' ? { change: 1 } : {};
       })(
         class Container extends Component {
           render() {
@@ -1965,34 +1965,34 @@ describe("Inferno", () => {
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
       expect(mapStateCalls).toBe(2);
       expect(renderCalls).toBe(1);
       expect(setStateCalls).toBe(0);
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
       expect(mapStateCalls).toBe(3);
       expect(renderCalls).toBe(1);
       expect(setStateCalls).toBe(0);
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
       expect(mapStateCalls).toBe(4);
       expect(renderCalls).toBe(2);
       expect(setStateCalls).toBe(1);
     });
 
-    it("should not swallow errors when bailing out early", async () => {
+    it('should not swallow errors when bailing out early', async () => {
       const store = createStore(stringBuilder);
       let renderCalls = 0;
       let mapStateCalls = 0;
 
       const Container = connect(state => {
         mapStateCalls++;
-        if (state === "a") {
-          throw new Error("Oops");
+        if (state === 'a') {
+          throw new Error('Oops');
         } else {
           return {};
         }
@@ -2014,11 +2014,11 @@ describe("Inferno", () => {
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
       expect(() =>
-        store.dispatch({ type: "APPEND", payload: "a" })
-      ).toThrowError("Oops");
+        store.dispatch({ type: 'APPEND', payload: 'a' })
+      ).toThrowError('Oops');
     });
 
-    it("should allow providing a factory function to mapStateToProps", async () => {
+    it('should allow providing a factory function to mapStateToProps', async () => {
       let updateCount = 0;
       let memoizedReturnCount = 0;
       const store = createStore(() => ({ value: 1 }));
@@ -2063,12 +2063,12 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      store.dispatch({ type: "test" });
+      store.dispatch({ type: 'test' });
       expect(updateCount).toBe(0);
       expect(memoizedReturnCount).toBe(2);
     });
 
-    it("should allow a mapStateToProps factory consuming just state to return a function that gets ownProps", async () => {
+    it('should allow a mapStateToProps factory consuming just state to return a function that gets ownProps', async () => {
       const store = createStore(() => ({ value: 1 }));
 
       let initialState;
@@ -2099,15 +2099,15 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      store.dispatch({ type: "test" });
+      store.dispatch({ type: 'test' });
       await tree.repaint();
       expect(initialOwnProps).toBeUndefined();
       expect(initialState).toBeDefined();
       expect(secondaryOwnProps).toBeDefined();
-      expect(secondaryOwnProps.name).toBe("a");
+      expect(secondaryOwnProps.name).toBe('a');
     });
 
-    it("should allow providing a factory function to mapDispatchToProps", async () => {
+    it('should allow providing a factory function to mapDispatchToProps', async () => {
       const updatedCount = 0;
       let memoizedReturnCount = 0;
       const store = createStore(() => ({ value: 1 }));
@@ -2176,13 +2176,13 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      store.dispatch({ type: "test" });
+      store.dispatch({ type: 'test' });
       await tree.repaint();
       expect(updatedCount).toBe(0);
       expect(memoizedReturnCount).toBe(2);
     });
 
-    it("should not call update if mergeProps return value has not changed", async () => {
+    it('should not call update if mergeProps return value has not changed', async () => {
       let mapStateCalls = 0;
       let renderCalls = 0;
       const store = createStore(stringBuilder);
@@ -2207,14 +2207,14 @@ describe("Inferno", () => {
       expect(mapStateCalls).toBe(1);
       expect(renderCalls).toBe(1);
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       await tree.repaint();
 
       expect(mapStateCalls).toBe(2);
       expect(renderCalls).toBe(1);
     });
 
-    it("should update impure components with custom mergeProps", async () => {
+    it('should update impure components with custom mergeProps', async () => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
@@ -2248,12 +2248,12 @@ describe("Inferno", () => {
       expect(renderCount).toBe(2);
     });
 
-    it("should allow to clean up child state in parent componentWillUnmount", async () => {
+    it('should allow to clean up child state in parent componentWillUnmount', async () => {
       const reducer = (state = { data: null }, action) => {
         switch (action.type) {
-          case "fetch":
-            return { data: { profile: { name: "April" } } };
-          case "clean":
+          case 'fetch':
+            return { data: { profile: { name: 'April' } } };
+          case 'clean':
             return { data: null };
           default:
             return state;
@@ -2273,11 +2273,11 @@ describe("Inferno", () => {
       const Parent = connect(null)(
         class Parent extends Component {
           componentWillMount() {
-            this.props.dispatch({ type: "fetch" });
+            this.props.dispatch({ type: 'fetch' });
           }
 
           componentWillUnmount() {
-            this.props.dispatch({ type: "clean" });
+            this.props.dispatch({ type: 'clean' });
           }
 
           render() {
@@ -2287,7 +2287,7 @@ describe("Inferno", () => {
       );
 
       const store = createStore(reducer);
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       renderDOM(
         <ProviderMock store={store}>
           <Parent />
@@ -2299,7 +2299,7 @@ describe("Inferno", () => {
       expect(store.getState().data).toEqual(null);
     });
 
-    it("should allow custom displayName", () => {
+    it('should allow custom displayName', () => {
       const MyComponent = connect(null, null, null, {
         getDisplayName: name => `Custom(${name})`
       })(
@@ -2310,10 +2310,10 @@ describe("Inferno", () => {
         }
       );
 
-      expect(MyComponent.displayName).toBe("Custom(MyComponent)");
+      expect(MyComponent.displayName).toBe('Custom(MyComponent)');
     });
 
-    it("should update impure components whenever the state of the store changes", () => {
+    it('should update impure components whenever the state of the store changes', () => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
@@ -2333,12 +2333,12 @@ describe("Inferno", () => {
       );
 
       const rendersBeforeStateChange = renderCount;
-      store.dispatch({ type: "ACTION" });
+      store.dispatch({ type: 'ACTION' });
       expect(renderCount).toBe(rendersBeforeStateChange + 1);
     });
 
-    it("should throw a helpful error for invalid mapStateToProps arguments", async () => {
-      const InvalidMapState = connect("invalid")(
+    it('should throw a helpful error for invalid mapStateToProps arguments', async () => {
+      const InvalidMapState = connect('invalid')(
         class InvalidMapState extends Component {
           render() {
             return <div />;
@@ -2347,13 +2347,13 @@ describe("Inferno", () => {
       );
 
       const error = renderWithBadConnect(InvalidMapState);
-      expect(error).toContain("string");
-      expect(error).toContain("mapStateToProps");
-      expect(error).toContain("InvalidMapState");
+      expect(error).toContain('string');
+      expect(error).toContain('mapStateToProps');
+      expect(error).toContain('InvalidMapState');
     });
 
-    it("should throw a helpful error for invalid mapDispatchToProps arguments", async () => {
-      const InvalidMapDispatch = connect(null, "invalid")(
+    it('should throw a helpful error for invalid mapDispatchToProps arguments', async () => {
+      const InvalidMapDispatch = connect(null, 'invalid')(
         class InvalidMapDispatch extends Component {
           render() {
             return <div />;
@@ -2362,13 +2362,13 @@ describe("Inferno", () => {
       );
 
       const error = renderWithBadConnect(InvalidMapDispatch);
-      expect(error).toContain("string");
-      expect(error).toContain("mapDispatchToProps");
-      expect(error).toContain("InvalidMapDispatch");
+      expect(error).toContain('string');
+      expect(error).toContain('mapDispatchToProps');
+      expect(error).toContain('InvalidMapDispatch');
     });
 
-    it("should throw a helpful error for invalid mergeProps arguments", async () => {
-      const InvalidMerge = connect(null, null, "invalid")(
+    it('should throw a helpful error for invalid mergeProps arguments', async () => {
+      const InvalidMerge = connect(null, null, 'invalid')(
         class InvalidMerge extends Component {
           render() {
             return <div />;
@@ -2377,14 +2377,14 @@ describe("Inferno", () => {
       );
 
       const error = renderWithBadConnect(InvalidMerge);
-      expect(error).toContain("string");
-      expect(error).toContain("mergeProps");
-      expect(error).toContain("InvalidMerge");
+      expect(error).toContain('string');
+      expect(error).toContain('mergeProps');
+      expect(error).toContain('InvalidMerge');
     });
 
-    it("should notify nested components through a blocking component", async () => {
+    it('should notify nested components through a blocking component', async () => {
       const store = createStore(
-        (state = 0, action) => (action.type === "INC" ? state + 1 : state)
+        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
       );
 
       let mapStateCalls = 0;
@@ -2430,14 +2430,14 @@ describe("Inferno", () => {
       );
 
       expect(mapStateCalls).toBe(1);
-      store.dispatch({ type: "INC" });
+      store.dispatch({ type: 'INC' });
       await tree.repaint();
       expect(mapStateCalls).toBe(2);
     });
 
-    it("should subscribe properly when a middle connected component does not subscribe", async () => {
+    it('should subscribe properly when a middle connected component does not subscribe', async () => {
       const store = createStore(
-        (state = 0, action) => (action.type === "INC" ? state + 1 : state)
+        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
       );
 
       const C = connect((state, props) => {
@@ -2474,15 +2474,15 @@ describe("Inferno", () => {
         </ProviderMock>
       );
 
-      store.dispatch({ type: "INC" });
+      store.dispatch({ type: 'INC' });
     });
 
-    it("should subscribe properly when a new store is provided via props", async () => {
+    it('should subscribe properly when a new store is provided via props', async () => {
       const store1 = createStore(
-        (state = 0, action) => (action.type === "INC" ? state + 1 : state)
+        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
       );
       const store2 = createStore(
-        (state = 0, action) => (action.type === "INC" ? state + 1 : state)
+        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
       );
 
       const A = connect(state => ({ count: state }))(
@@ -2530,13 +2530,13 @@ describe("Inferno", () => {
       expect(mapStateToPropsC.callCount).toBe(1);
       expect(mapStateToPropsD.callCount).toBe(1);
 
-      store1.dispatch({ type: "INC" });
+      store1.dispatch({ type: 'INC' });
       await tree.repaint();
       expect(mapStateToPropsB.callCount).toBe(1);
       expect(mapStateToPropsC.callCount).toBe(1);
       expect(mapStateToPropsD.callCount).toBe(2);
 
-      store2.dispatch({ type: "INC" });
+      store2.dispatch({ type: 'INC' });
       await tree.repaint();
       expect(mapStateToPropsB.callCount).toBe(2);
       expect(mapStateToPropsC.callCount).toBe(2);

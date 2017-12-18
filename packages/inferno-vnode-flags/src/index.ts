@@ -2,7 +2,7 @@
  * @module Inferno-Vnode-Flags
  */ /** TypeDoc Comment */
 
- /* If editing these values check babel-plugin-also */
+/* If editing these values check babel-plugin-also */
 export const enum VNodeFlags {
   Text = 1,
   HtmlElement = 1 << 1,
@@ -35,4 +35,3 @@ export const enum VNodeFlags {
     SelectElement,
   Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
-

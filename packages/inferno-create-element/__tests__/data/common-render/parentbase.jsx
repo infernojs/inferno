@@ -1,5 +1,5 @@
-import { Component } from "inferno";
-import { ChildCommon } from "./child";
+import { Component } from 'inferno';
+import { ChildCommon } from './child';
 
 export class ParentBaseCommon extends Component {
   render() {

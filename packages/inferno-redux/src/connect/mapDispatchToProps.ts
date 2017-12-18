@@ -2,13 +2,13 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { wrapMapToPropsConstant, wrapMapToPropsFunc } from "./wrapMapToProps";
+import { wrapMapToPropsConstant, wrapMapToPropsFunc } from './wrapMapToProps';
 
-import { bindActionCreators } from "redux";
+import { bindActionCreators } from 'redux';
 
 export const whenMapDispatchToPropsIsFunction = mapDispatchToProps =>
-  typeof mapDispatchToProps === "function"
-    ? wrapMapToPropsFunc(mapDispatchToProps, "mapDispatchToProps")
+  typeof mapDispatchToProps === 'function'
+    ? wrapMapToPropsFunc(mapDispatchToProps, 'mapDispatchToProps')
     : undefined;
 
 export const whenMapDispatchToPropsIsMissing = mapDispatchToProps =>
@@ -17,7 +17,7 @@ export const whenMapDispatchToPropsIsMissing = mapDispatchToProps =>
     : undefined;
 
 export const whenMapDispatchToPropsIsObject = mapDispatchToProps =>
-  mapDispatchToProps && typeof mapDispatchToProps === "object"
+  mapDispatchToProps && typeof mapDispatchToProps === 'object'
     ? wrapMapToPropsConstant(dispatch =>
         bindActionCreators(mapDispatchToProps, dispatch)
       )

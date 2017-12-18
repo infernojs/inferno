@@ -1,14 +1,14 @@
-import { render } from "inferno";
-import { createClass } from "inferno-create-class";
-import { createElement } from "inferno-create-element";
-import { innerHTML } from "inferno-utils";
+import { render } from 'inferno';
+import { createClass } from 'inferno-create-class';
+import { createElement } from 'inferno-create-element';
+import { innerHTML } from 'inferno-utils';
 
-describe("Components createClass (non-JSX)", () => {
+describe('Components createClass (non-JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
-    container.style.display = "none";
+    container = document.createElement('div');
+    container.style.display = 'none';
     document.body.appendChild(container);
   });
 
@@ -19,22 +19,22 @@ describe("Components createClass (non-JSX)", () => {
 
   const BasicComponent = createClass({
     render() {
-      return createElement("div", null, "Hello world!");
+      return createElement('div', null, 'Hello world!');
     }
   });
 
-  it("should render a basic component", () => {
+  it('should render a basic component', () => {
     render(createElement(BasicComponent), container);
-    expect(container.innerHTML).toBe(innerHTML("<div>Hello world!</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
   });
-  it("should render a basic component with lifecycle", () => {
+  it('should render a basic component with lifecycle', () => {
     let componentWillUpdate = false;
     const LifecycleComponent1 = createClass({
       componentWillUpdate() {
         componentWillUpdate = true;
       },
       render() {
-        return createElement("div", null, "Hello world!");
+        return createElement('div', null, 'Hello world!');
       }
     });
 
@@ -43,7 +43,7 @@ describe("Components createClass (non-JSX)", () => {
     expect(componentWillUpdate).toBe(true);
   });
 
-  it("should have context available in getInitialState", done => {
+  it('should have context available in getInitialState', done => {
     let context;
     let context2;
     const BoundComponent = createClass({
@@ -54,7 +54,7 @@ describe("Components createClass (non-JSX)", () => {
         context2 = this;
       },
       render() {
-        return createElement("div", null, "Hello world!");
+        return createElement('div', null, 'Hello world!');
       }
     });
 
@@ -65,29 +65,29 @@ describe("Components createClass (non-JSX)", () => {
     }, 2);
   });
 
-  it("should have propTypes on created class", () => {
+  it('should have propTypes on created class', () => {
     const propTypes = {
       value() {}
     };
     const Component = createClass({
       propTypes,
       render() {
-        return createElement("div", null, "Hello world!");
+        return createElement('div', null, 'Hello world!');
       }
     });
 
     expect(Component.propTypes).toBe(propTypes);
   });
-  it("should not have propTypes on created class when not specified", () => {
+  it('should not have propTypes on created class when not specified', () => {
     const Component = createClass({
       render() {
-        return createElement("div", null, "Hello world!");
+        return createElement('div', null, 'Hello world!');
       }
     });
 
     expect(Component.propTypes).toBeUndefined();
   });
-  it("should have mixins on created class", () => {
+  it('should have mixins on created class', () => {
     const mixins = [
       {
         func1: () => true
@@ -96,13 +96,13 @@ describe("Components createClass (non-JSX)", () => {
     const Component = createClass({
       mixins,
       render() {
-        return createElement("div", null, "Hello world!");
+        return createElement('div', null, 'Hello world!');
       }
     });
     render(createElement(Component, {}), container);
     expect(Component.mixins.func1).toBeDefined();
   });
-  it("should have nested mixins on created class", () => {
+  it('should have nested mixins on created class', () => {
     const mixins = [
       {
         mixins: [
@@ -119,7 +119,7 @@ describe("Components createClass (non-JSX)", () => {
     const Component = createClass({
       mixins,
       render() {
-        return createElement("div", null, "Hello world!");
+        return createElement('div', null, 'Hello world!');
       }
     });
     render(createElement(Component, {}), container);

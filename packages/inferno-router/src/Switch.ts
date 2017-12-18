@@ -2,10 +2,10 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { VNode, Component, createVNode } from "inferno";
-import { matchPath } from "./matchPath";
-import { Children, invariant, isValidElement, warning } from "./utils";
-import { combineFrom } from "inferno-shared";
+import { VNode, Component, createVNode } from 'inferno';
+import { matchPath } from './matchPath';
+import { Children, invariant, isValidElement, warning } from './utils';
+import { combineFrom } from 'inferno-shared';
 
 export interface ISwitchProps {
   router: any;
@@ -19,7 +19,7 @@ export class Switch extends Component<ISwitchProps, any> {
   public componentWillMount() {
     invariant(
       this.context.router,
-      "You should not use <Switch> outside a <Router>"
+      'You should not use <Switch> outside a <Router>'
     );
   }
 

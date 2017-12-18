@@ -2,15 +2,15 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isArray, isInvalid, isNullOrUndef } from "inferno-shared";
-import { isVNode } from "../../core/implementation";
-import { EMPTY_OBJ } from "../utils/common";
-import { createWrappedFunction } from "./wrapper";
+import { isArray, isInvalid, isNullOrUndef } from 'inferno-shared';
+import { isVNode } from '../../core/implementation';
+import { EMPTY_OBJ } from '../utils/common';
+import { createWrappedFunction } from './wrapper';
 
 function updateChildOptionGroup(vNode, value) {
   const type = vNode.type;
 
-  if (type === "optgroup") {
+  if (type === 'optgroup') {
     const children = vNode.children;
 
     if (isArray(children)) {
@@ -41,7 +41,7 @@ function updateChildOption(vNode, value) {
   }
 }
 
-const onSelectChange = createWrappedFunction("onChange", applyValue);
+const onSelectChange = createWrappedFunction('onChange', applyValue);
 
 export function processSelect(
   vNode,

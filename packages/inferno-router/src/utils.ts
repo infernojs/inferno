@@ -1,5 +1,5 @@
-import { VNodeFlags } from "inferno-vnode-flags";
-import { isArray, isObject, isNull, isNullOrUndef } from "inferno-shared";
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { isArray, isObject, isNull, isNullOrUndef } from 'inferno-shared';
 
 export function warning(condition, message) {
   if (!condition) {
@@ -23,8 +23,8 @@ export function invariant(condition, format, a?, b?, c?, d?, e?, f?) {
     let error;
     if (format === undefined) {
       error = new Error(
-        "Minified exception occurred; use the non-minified dev environment " +
-          "for the full error message and additional helpful warnings."
+        'Minified exception occurred; use the non-minified dev environment ' +
+          'for the full error message and additional helpful warnings.'
       );
     } else {
       const args = [a, b, c, d, e, f];
@@ -34,7 +34,7 @@ export function invariant(condition, format, a?, b?, c?, d?, e?, f?) {
           return args[argIndex++];
         })
       );
-      error.name = "Invariant Violation";
+      error.name = 'Invariant Violation';
     }
 
     error.framesToPop = 1; // we don't care about invariant's own frame
@@ -62,7 +62,7 @@ export const Children = {
   only(children: any[]): any {
     children = Children.toArray(children);
     if (children.length !== 1) {
-      throw new Error("Children.only() expects only one child.");
+      throw new Error('Children.only() expects only one child.');
     }
     return children[0];
   },

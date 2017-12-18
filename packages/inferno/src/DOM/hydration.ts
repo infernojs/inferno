@@ -4,8 +4,8 @@
 
 import {
   isArray,
-  isInvalid,
   isFunction,
+  isInvalid,
   isNull,
   isNullOrUndef,
   isObject,
@@ -13,9 +13,9 @@ import {
   isStringOrNumber,
   throwError,
   warning
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { InfernoChildren, VNode } from "../core/implementation";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { InfernoChildren, VNode } from '../core/implementation';
 import {
   mount,
   mountClassComponentCallbacks,
@@ -23,18 +23,14 @@ import {
   mountFunctionalComponentCallbacks,
   mountRef,
   mountText
-} from "./mounting";
-import { EMPTY_OBJ, replaceChild } from "./utils/common";
-import {
-  isControlledFormElement,
-  processElement
-} from "./wrappers/processElement";
+} from './mounting';
+import { EMPTY_OBJ, replaceChild } from './utils/common';
 import {
   createClassComponentInstance,
   handleComponentInput
-} from "./utils/componentutil";
-import { isSamePropsInnerHTML } from "./utils/innerhtml";
-import { patchProp } from "./props";
+} from './utils/componentutil';
+import { isSamePropsInnerHTML } from './utils/innerhtml';
+import { mountProps } from './props';
 
 function hydrateComponent(
   vNode: VNode,
@@ -86,7 +82,7 @@ function hydrateElement(
 
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
   if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       warning(
         "Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty"
       );
@@ -100,37 +96,25 @@ function hydrateElement(
     if (!isInvalid(children)) {
       hydrateChildren(children, dom, lifecycle, context, isSVG);
     } else if (!isNull(dom.firstChild) && !isSamePropsInnerHTML(dom, props)) {
-      dom.textContent = ""; // dom has content, but VNode has no children remove everything from DOM
+      dom.textContent = ''; // dom has content, but VNode has no children remove everything from DOM
     }
-    if (props) {
-      let hasControlledValue = false;
-      const isFormElement = (flags & VNodeFlags.FormElement) > 0;
-      if (isFormElement) {
-        hasControlledValue = isControlledFormElement(props);
-      }
-      for (const prop in props) {
-        // do not add a hasOwnProperty check here, it affects performance
-        patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
-      }
-      if (isFormElement) {
-        processElement(flags, vNode, dom, props, true, hasControlledValue);
-      }
+
+    if (!isNull(props)) {
+      mountProps(vNode, flags, props, dom, isSVG);
     }
-    if (!isNullOrUndef(className)) {
-      if (isSVG) {
-        dom.setAttribute("class", className);
-      } else {
-        dom.className = className;
+    if (isNullOrUndef(className)) {
+      if (dom.className !== '') {
+        dom.removeAttribute('class');
       }
+    } else if (isSVG) {
+      dom.setAttribute('class', className);
     } else {
-      if (dom.className !== "") {
-        dom.removeAttribute("class");
-      }
+      dom.className = className;
     }
     if (isFunction(ref)) {
       mountRef(dom, ref, lifecycle);
     } else {
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV !== 'production') {
         if (isString(ref)) {
           throwError(
             'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
@@ -152,8 +136,8 @@ function hydrateChildren(
 
   while (dom) {
     if (dom.nodeType === 8) {
-      if ((dom as any).data === "!") {
-        const placeholder = document.createTextNode("");
+      if ((dom as any).data === '!') {
+        const placeholder = document.createTextNode('');
 
         parentDom.replaceChild(placeholder, dom);
         dom = dom.nextSibling;
@@ -174,8 +158,8 @@ function hydrateChildren(
       if (dom.nodeValue !== children) {
         dom.nodeValue = children as string;
       }
-    } else if (children === "") {
-      parentDom.appendChild(document.createTextNode(""));
+    } else if (children === '') {
+      parentDom.appendChild(document.createTextNode(''));
     } else {
       parentDom.textContent = children as string;
     }
@@ -259,7 +243,7 @@ function hydrate(
   } else if (flags & VNodeFlags.Void) {
     vNode.dom = dom;
   } else {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       throwError(
         `hydrate() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
       );

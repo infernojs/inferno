@@ -1,24 +1,24 @@
-import { render } from "inferno";
-import { innerHTML } from "inferno-utils";
+import { render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
 
-describe("createTree - SVG (JSX)", () => {
+describe('createTree - SVG (JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
   });
 
   afterEach(function() {
     render(null, container);
   });
 
-  it("should render svg as <svg>", () => {
+  it('should render svg as <svg>', () => {
     render(null, container);
     render(<svg />, container);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML("<svg></svg>"));
+    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<svg></svg>'));
   });
 
-  it("should use the parent namespace by default", () => {
+  it('should use the parent namespace by default', () => {
     render(null, container);
     render(
       <svg xmlns="http://www.w3.org/2000/svg">
@@ -26,16 +26,16 @@ describe("createTree - SVG (JSX)", () => {
       </svg>,
       container
     );
-    expect(innerHTML(container.firstChild.firstChild.tagName)).toBe("circle");
-    expect(innerHTML(container.firstChild.getAttribute("xmlns"))).toBe(
-      "http://www.w3.org/2000/svg"
+    expect(innerHTML(container.firstChild.firstChild.tagName)).toBe('circle');
+    expect(innerHTML(container.firstChild.getAttribute('xmlns'))).toBe(
+      'http://www.w3.org/2000/svg'
     );
 
     render(null, container);
-    expect(container.innerHTML).toBe("");
+    expect(container.innerHTML).toBe('');
   });
 
-  it("should keep parent namespace", () => {
+  it('should keep parent namespace', () => {
     render(
       <svg xmlns="http://www.w3.org/2000/svg">
         <circle />
@@ -43,7 +43,7 @@ describe("createTree - SVG (JSX)", () => {
       container
     );
     expect(container.firstChild.namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
     render(null, container);
     render(
@@ -60,33 +60,33 @@ describe("createTree - SVG (JSX)", () => {
       container
     );
     expect(container.childNodes[0].namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
-    expect(container.childNodes[0].childNodes[0].tagName).toBe("g");
+    expect(container.childNodes[0].childNodes[0].tagName).toBe('g');
     expect(container.childNodes[0].childNodes[0].namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
     expect(container.childNodes[0].childNodes[0].firstChild.tagName).toBe(
-      "circle"
+      'circle'
     );
     expect(container.childNodes[0].childNodes[0].firstChild.namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
 
-    expect(container.childNodes[0].childNodes[1].tagName).toBe("g");
+    expect(container.childNodes[0].childNodes[1].tagName).toBe('g');
     expect(container.childNodes[0].childNodes[1].namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
-    expect(container.childNodes[0].childNodes[1].firstChild.tagName).toBe("g");
+    expect(container.childNodes[0].childNodes[1].firstChild.tagName).toBe('g');
     expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
     expect(
       container.childNodes[0].childNodes[1].firstChild.firstChild.tagName
-    ).toBe("circle");
+    ).toBe('circle');
     expect(
       container.childNodes[0].childNodes[1].firstChild.firstChild.namespaceURI
-    ).toBe("http://www.w3.org/2000/svg");
+    ).toBe('http://www.w3.org/2000/svg');
 
     render(
       <svg xmlns="http://www.w3.org/2000/svg">
@@ -95,11 +95,11 @@ describe("createTree - SVG (JSX)", () => {
       container
     );
     expect(container.firstChild.namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
   });
 
-  it("should keep parent namespace with xmlns attribute", () => {
+  it('should keep parent namespace with xmlns attribute', () => {
     render(
       <svg xmlns="http://www.w3.org/2000/svg">
         <circle />
@@ -107,7 +107,7 @@ describe("createTree - SVG (JSX)", () => {
       container
     );
     expect(container.firstChild.namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
 
     render(
@@ -137,111 +137,111 @@ describe("createTree - SVG (JSX)", () => {
       container
     );
     expect(container.childNodes[0].namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
-    expect(container.childNodes[0].childNodes[0].tagName).toBe("g");
+    expect(container.childNodes[0].childNodes[0].tagName).toBe('g');
     expect(container.childNodes[0].childNodes[0].namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
     expect(container.childNodes[0].childNodes[0].firstChild.tagName).toBe(
-      "circle"
+      'circle'
     );
     expect(
-      container.childNodes[0].childNodes[0].firstChild.getAttribute("xmlns")
-    ).toBe("http://www.w3.org/2000/svg");
+      container.childNodes[0].childNodes[0].firstChild.getAttribute('xmlns')
+    ).toBe('http://www.w3.org/2000/svg');
     expect(container.childNodes[0].childNodes[0].firstChild.namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
 
-    expect(container.childNodes[0].childNodes[1].tagName).toBe("g");
+    expect(container.childNodes[0].childNodes[1].tagName).toBe('g');
     expect(container.childNodes[0].childNodes[1].namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
     expect(container.childNodes[0].childNodes[1].firstChild.tagName).toBe(
-      "circle"
+      'circle'
     );
     expect(
-      container.childNodes[0].childNodes[1].firstChild.getAttribute("xmlns")
-    ).toBe("http://www.w3.org/2000/svg");
+      container.childNodes[0].childNodes[1].firstChild.getAttribute('xmlns')
+    ).toBe('http://www.w3.org/2000/svg');
     expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).toBe(
-      "http://www.w3.org/2000/svg"
+      'http://www.w3.org/2000/svg'
     );
   });
 
-  it("should set and remove dynamic class property", () => {
-    const value = "foo";
+  it('should set and remove dynamic class property', () => {
+    const value = 'foo';
 
     render(<svg className={value} />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.getAttribute("class")).toBe("foo");
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.getAttribute('class')).toBe('foo');
 
     render(<svg />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.hasAttribute("class")).toBe(false);
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.hasAttribute('class')).toBe(false);
   });
 
-  it("should set and remove dynamic class attribute", () => {
-    const value = "foo";
+  it('should set and remove dynamic class attribute', () => {
+    const value = 'foo';
 
     render(<svg className={value} />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.getAttribute("class")).toBe("foo");
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.getAttribute('class')).toBe('foo');
 
     render(<svg />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.hasAttribute("class")).toBe(false);
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.hasAttribute('class')).toBe(false);
   });
 
-  it("should set static class attribute, update to dynamic attr, and remove", () => {
+  it('should set static class attribute, update to dynamic attr, and remove', () => {
     render(<svg className={null} />, container);
     render(<svg className={{}} />, container);
     render(<svg className="bar" />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.getAttribute("class")).toBe("bar");
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.getAttribute('class')).toBe('bar');
 
-    const value = "foo";
+    const value = 'foo';
 
     render(<svg className={value} />, container);
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.getAttribute("class")).toBe("foo");
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.getAttribute('class')).toBe('foo');
 
     render(<svg />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.hasAttribute("class")).toBe(false);
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.hasAttribute('class')).toBe(false);
   });
 
-  it("should remove known SVG camel case attributes", () => {
+  it('should remove known SVG camel case attributes', () => {
     render(<svg viewBox="0 0 100 100" />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.hasAttribute("viewBox")).toBe(true);
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.hasAttribute('viewBox')).toBe(true);
 
     render(<svg />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
-    expect(container.firstChild.hasAttribute("viewBox")).toBe(false);
+    expect(container.firstChild.tagName).toEqual('svg');
+    expect(container.firstChild.hasAttribute('viewBox')).toBe(false);
   });
 
-  it("should remove arbitrary SVG camel case attributes", () => {
+  it('should remove arbitrary SVG camel case attributes', () => {
     render(<svg theWord="theBird" />, container);
 
-    expect(container.firstChild.hasAttribute("theWord")).toBe(true);
+    expect(container.firstChild.hasAttribute('theWord')).toBe(true);
     render(<svg />, container);
-    expect(container.firstChild.hasAttribute("theWord")).toBe(false);
+    expect(container.firstChild.hasAttribute('theWord')).toBe(false);
   });
 
-  it("should remove namespaced SVG attributes", () => {
+  it('should remove namespaced SVG attributes', () => {
     render(<svg clip-path="0 0 110 110" />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
+    expect(container.firstChild.tagName).toEqual('svg');
 
-    expect(container.firstChild.hasAttribute("clip-path")).toBe(true);
+    expect(container.firstChild.hasAttribute('clip-path')).toBe(true);
 
     render(
       <svg>
@@ -252,18 +252,18 @@ describe("createTree - SVG (JSX)", () => {
 
     expect(
       container.firstChild.firstChild.hasAttributeNS(
-        "http://www.w3.org/1999/xlink",
-        "href"
+        'http://www.w3.org/1999/xlink',
+        'href'
       )
     ).toBe(false);
   });
 
-  it("should remove namespaced SVG attributes", () => {
+  it('should remove namespaced SVG attributes', () => {
     render(<svg clip-path="0 0 110 110" />, container);
 
-    expect(container.firstChild.tagName).toEqual("svg");
+    expect(container.firstChild.tagName).toEqual('svg');
 
-    expect(container.firstChild.hasAttribute("clip-path")).toBe(true);
+    expect(container.firstChild.hasAttribute('clip-path')).toBe(true);
 
     render(
       <svg>
@@ -274,14 +274,14 @@ describe("createTree - SVG (JSX)", () => {
 
     expect(
       container.firstChild.firstChild.hasAttributeNS(
-        "http://www.w3.org/1999/xlink",
-        "href"
+        'http://www.w3.org/1999/xlink',
+        'href'
       )
     ).toBe(false);
   });
 
-  it("Should make SVG and children with spread attribute", () => {
-    const spread = { id: "test" };
+  it('Should make SVG and children with spread attribute', () => {
+    const spread = { id: 'test' };
 
     render(<svg {...spread} />, container);
     expect(innerHTML(container.innerHTML)).toBe(

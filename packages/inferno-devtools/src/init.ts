@@ -2,16 +2,16 @@
  * @module Inferno-Devtools
  */ /** TypeDoc Comment */
 
-import { Component, options } from "inferno";
-import { isStatefulComponent } from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { createDevToolsBridge } from "./bridge";
+import { Component, options } from 'inferno';
+import { isStatefulComponent } from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { createDevToolsBridge } from './bridge';
 
 const functionalComponentWrappers = new Map();
 
 function wrapFunctionalComponent(vNode) {
   const originalRender = vNode.type;
-  const name = vNode.type.name || "Function (anonymous)";
+  const name = vNode.type.name || 'Function (anonymous)';
   const wrappers = functionalComponentWrappers;
 
   if (!wrappers.has(originalRender)) {
@@ -24,7 +24,7 @@ function wrapFunctionalComponent(vNode) {
     // this property if it exists or fall back to Function.name
     // otherwise.
     /* tslint:disable */
-    wrapper["displayName"] = name;
+    wrapper['displayName'] = name;
     /* tslint:enable */
     wrappers.set(originalRender, wrapper);
   }
@@ -39,7 +39,7 @@ function wrapFunctionalComponent(vNode) {
 
 export function initDevTools() {
   /* tslint:disable */
-  if (typeof window["__REACT_DEVTOOLS_GLOBAL_HOOK__"] === "undefined") {
+  if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === 'undefined') {
     /* tslint:enable */
     // React DevTools are not installed
     return;
@@ -83,7 +83,7 @@ export function initDevTools() {
   };
   // Notify devtools about this instance of "React"
   /* tslint:disable */
-  window["__REACT_DEVTOOLS_GLOBAL_HOOK__"].inject(bridge);
+  window['__REACT_DEVTOOLS_GLOBAL_HOOK__'].inject(bridge);
   /* tslint:enable */
   return () => {
     options.afterMount = nextAfterMount;

@@ -2,7 +2,7 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { verifyPlainObject } from "../utils/verifyPlainObject";
+import { verifyPlainObject } from '../utils/verifyPlainObject';
 
 // TODO: Type
 export const wrapMapToPropsConstant = getConstant => {
@@ -53,13 +53,13 @@ export const wrapMapToPropsFunc = (mapToProps, methodName) => {
       proxy.mapToProps = mapToProps;
       let props = proxy(stateOrDispatch, ownProps);
 
-      if (typeof props === "function") {
+      if (typeof props === 'function') {
         proxy.mapToProps = props;
         proxy.dependsOnOwnProps = getDependsOnOwnProps(props);
         props = proxy(stateOrDispatch, ownProps);
       }
 
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV !== 'production') {
         verifyPlainObject(props, displayName, methodName);
       }
 

@@ -1,4 +1,4 @@
-import pathToRegexp from "path-to-regexp-es6";
+import pathToRegexp from 'path-to-regexp-es6';
 
 const patternCache = {};
 const cacheLimit = 10000;
@@ -28,12 +28,12 @@ const compilePath = (pattern, options) => {
  * Public API for matching a URL pathname to a path pattern.
  */
 export function matchPath(pathname, options: any) {
-  if (typeof options === "string") {
+  if (typeof options === 'string') {
     options = { path: options };
   }
 
   const {
-    path = "/",
+    path = '/',
     exact = false,
     strict = false,
     sensitive = false
@@ -59,6 +59,6 @@ export function matchPath(pathname, options: any) {
       return memo;
     }, {}),
     path, // the path pattern used to match
-    url: path === "/" && url === "" ? "/" : url // the matched portion of the URL
+    url: path === '/' && url === '' ? '/' : url // the matched portion of the URL
   };
 }

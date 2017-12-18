@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import { EMPTY_OBJ } from "inferno";
+import { EMPTY_OBJ } from 'inferno';
 import {
   combineFrom,
   isArray,
@@ -15,10 +15,10 @@ import {
   isString,
   isTrue,
   throwError
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { renderStylesToString } from "./prop-renderers";
-import { escapeText, voidElements } from "./utils";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { renderStylesToString } from './prop-renderers';
+import { escapeText, voidElements } from './utils';
 
 function renderVNodeToString(
   vNode,
@@ -78,14 +78,14 @@ function renderVNodeToString(
       );
       // In case render returns invalid stuff
       if (isInvalid(nextVNode)) {
-        return "<!--!-->";
+        return '<!--!-->';
       }
       return renderVNodeToString(nextVNode, vNode, childContext, true);
     } else {
       const nextVNode = type(props, context);
 
       if (isInvalid(nextVNode)) {
-        return "<!--!-->";
+        return '<!--!-->';
       }
       return renderVNodeToString(nextVNode, vNode, context, true);
     }
@@ -105,20 +105,20 @@ function renderVNodeToString(
       for (const prop in props) {
         const value = props[prop];
 
-        if (prop === "dangerouslySetInnerHTML") {
+        if (prop === 'dangerouslySetInnerHTML') {
           html = value.__html;
-        } else if (prop === "style") {
+        } else if (prop === 'style') {
           renderedString += ` style="${renderStylesToString(props.style)}"`;
-        } else if (prop === "children") {
+        } else if (prop === 'children') {
           // Ignore children as prop.
-        } else if (prop === "defaultValue") {
+        } else if (prop === 'defaultValue') {
           // Use default values if normal values are not present
           if (!props.value) {
             renderedString += ` value="${
               isString(value) ? escapeText(value) : value
             }"`;
           }
-        } else if (prop === "defaultChecked") {
+        } else if (prop === 'defaultChecked') {
           // Use default values if normal values are not present
           if (!props.checked) {
             renderedString += ` checked="${value}"`;
@@ -134,8 +134,8 @@ function renderVNodeToString(
         }
       }
       if (
-        type === "option" &&
-        typeof props.value !== "undefined" &&
+        type === 'option' &&
+        typeof props.value !== 'undefined' &&
         props.value === parent.props.value
       ) {
         // Parent value sets children value
@@ -148,14 +148,14 @@ function renderVNodeToString(
       renderedString += `>`;
       if (!isInvalid(children)) {
         if (isString(children)) {
-          renderedString += children === "" ? " " : escapeText(children);
+          renderedString += children === '' ? ' ' : escapeText(children);
         } else if (isNumber(children)) {
-          renderedString += children + "";
+          renderedString += children + '';
         } else if (isArray(children)) {
           for (let i = 0, len = children.length; i < len; i++) {
             const child = children[i];
             if (isString(child)) {
-              renderedString += child === "" ? " " : escapeText(child);
+              renderedString += child === '' ? ' ' : escapeText(child);
             } else if (isNumber(child)) {
               renderedString += child;
             } else if (!isInvalid(child)) {
@@ -180,12 +180,12 @@ function renderVNodeToString(
     return renderedString;
   } else if ((flags & VNodeFlags.Text) > 0) {
     return (
-      (firstChild ? "" : "<!---->") +
-      (children === "" ? " " : escapeText(children))
+      (firstChild ? '' : '<!---->') +
+      (children === '' ? ' ' : escapeText(children))
     );
   } else {
-    if (process.env.NODE_ENV !== "production") {
-      if (typeof vNode === "object") {
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof vNode === 'object') {
         throwError(
           `renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
             vNode

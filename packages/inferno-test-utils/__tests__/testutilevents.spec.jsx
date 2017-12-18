@@ -1,17 +1,17 @@
-import { Component } from "inferno";
-import sinon from "sinon";
+import { Component } from 'inferno';
+import sinon from 'sinon';
 import {
   findRenderedVNodeWithType,
   renderIntoDocument
-} from "inferno-test-utils";
+} from 'inferno-test-utils';
 
-describe("TestUtils events", () => {
-  it("Should work with Synthetic events", () => {
+describe('TestUtils events', () => {
+  it('Should work with Synthetic events', () => {
     const testObj = {
       clicker: () => {}
     };
 
-    const sinonSpy = sinon.spy(testObj, "clicker");
+    const sinonSpy = sinon.spy(testObj, 'clicker');
 
     class FooBar extends Component {
       render() {
@@ -20,18 +20,18 @@ describe("TestUtils events", () => {
     }
     const tree = renderIntoDocument(<FooBar />);
 
-    const vnode = findRenderedVNodeWithType(tree, "div");
+    const vnode = findRenderedVNodeWithType(tree, 'div');
     vnode.dom.click();
 
     expect(sinonSpy.callCount).toEqual(1);
   });
 
-  it("Should work with native events", () => {
+  it('Should work with native events', () => {
     const testObj = {
       clicker: () => {}
     };
 
-    const sinonSpy = sinon.spy(testObj, "clicker");
+    const sinonSpy = sinon.spy(testObj, 'clicker');
 
     class FooBar extends Component {
       render() {
@@ -40,7 +40,7 @@ describe("TestUtils events", () => {
     }
     const tree = renderIntoDocument(<FooBar />);
 
-    const vnode = findRenderedVNodeWithType(tree, "div");
+    const vnode = findRenderedVNodeWithType(tree, 'div');
     vnode.dom.click();
 
     expect(sinonSpy.callCount).toEqual(1);

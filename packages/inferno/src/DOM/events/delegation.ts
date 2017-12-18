@@ -2,9 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import {
-  isNull,
-} from "inferno-shared";
+import { isNull } from 'inferno-shared';
 
 const delegatedEvents: Map<string, IDelegate> = new Map();
 
@@ -99,7 +97,7 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
       };
 
       try {
-        Object.defineProperty(event, "currentTarget", {
+        Object.defineProperty(event, 'currentTarget', {
           configurable: true,
           get: function get() {
             return eventData.dom;
@@ -114,7 +112,7 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
         event.target,
         delegatedRoots.items,
         count,
-        event.type === "click",
+        event.type === 'click',
         eventData
       );
     }

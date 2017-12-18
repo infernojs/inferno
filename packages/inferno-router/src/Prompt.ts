@@ -3,8 +3,8 @@
  */
 /** TypeDoc Comment */
 
-import { Component } from "inferno";
-import { invariant } from "./utils";
+import { Component } from 'inferno';
+import { invariant } from './utils';
 
 export interface IPromptProps {
   when: any;
@@ -35,7 +35,7 @@ export class Prompt extends Component<IPromptProps, any> {
   public componentWillMount() {
     invariant(
       this.context.router,
-      "You should not use <Prompt> outside a <Router>"
+      'You should not use <Prompt> outside a <Router>'
     );
 
     if (this.props.when) {

@@ -9,26 +9,30 @@ import {
   namespaces,
   skipProps,
   strictProps
-} from "./constants";
+} from './constants';
 import {
   isFunction,
   isNullOrUndef,
   isNumber,
   isString,
   throwError
-} from "inferno-shared";
-import { handleEvent } from "./events/delegation";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { isSameInnerHTML } from "./utils/innerhtml";
+} from 'inferno-shared';
+import { handleEvent } from './events/delegation';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { isSameInnerHTML } from './utils/innerhtml';
+import {
+  isControlledFormElement,
+  processElement
+} from './wrappers/processElement';
 
 export function isAttrAnEvent(attr: string): boolean {
-  return attr[0] === "o" && attr[1] === "n";
+  return attr[0] === 'o' && attr[1] === 'n';
 }
 
 function createLinkEvent(linkEvent, nextValue) {
   return function(e) {
     linkEvent(nextValue.data, e);
-  }
+  };
 }
 
 export function patchEvent(name: string, lastValue, nextValue, dom) {
@@ -44,11 +48,9 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
         dom[nameLowerCase] = createLinkEvent(linkEvent, nextValue);
       } else {
         // Development warning
-        if (process.env.NODE_ENV !== "production") {
+        if (process.env.NODE_ENV !== 'production') {
           throwError(
-            `an event on a VNode "${
-              name
-            }". was not a function or a valid linkEvent.`
+            `an event on a VNode "${name}". was not a function or a valid linkEvent.`
           );
         }
       }
@@ -82,31 +84,31 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
         domStyle[style] =
           !isNumber(value) || isUnitlessNumber.has(style)
             ? value
-            : value + "px";
+            : value + 'px';
       }
     }
 
     for (style in lastAttrValue) {
       if (isNullOrUndef(nextAttrValue[style])) {
-        domStyle[style] = "";
+        domStyle[style] = '';
       }
     }
   } else {
     for (style in nextAttrValue) {
       value = nextAttrValue[style];
       domStyle[style] =
-        !isNumber(value) || isUnitlessNumber.has(style) ? value : value + "px";
+        !isNumber(value) || isUnitlessNumber.has(style) ? value : value + 'px';
     }
   }
 }
 
 export function removeProp(prop: string, lastValue, dom, nextFlags: number) {
-  if (prop === "value") {
+  if (prop === 'value') {
     // When removing value of select element, it needs to be set to null instead empty string, because empty string is valid value for option which makes that option selected
     // MS IE/Edge don't follow html spec for textArea and input elements and we need to set empty string to value in those cases to avoid "null" and "undefined" texts
-    dom.value = nextFlags & VNodeFlags.SelectElement ? null : "";
-  } else if (prop === "style") {
-    dom.removeAttribute("style");
+    dom.value = nextFlags & VNodeFlags.SelectElement ? null : '';
+  } else if (prop === 'style') {
+    dom.removeAttribute('style');
   } else if (isAttrAnEvent(prop)) {
     handleEvent(prop, null, dom);
   } else {
@@ -123,13 +125,13 @@ export function patchProp(
   hasControlledValue: boolean
 ) {
   if (lastValue !== nextValue) {
-    if (skipProps.has(prop) || (hasControlledValue && prop === "value")) {
+    if (skipProps.has(prop) || (hasControlledValue && prop === 'value')) {
       return;
     } else if (booleanProps.has(prop)) {
-      prop = prop === "autoFocus" ? prop.toLowerCase() : prop;
+      prop = prop === 'autoFocus' ? prop.toLowerCase() : prop;
       dom[prop] = !!nextValue;
     } else if (strictProps.has(prop)) {
-      const value = isNullOrUndef(nextValue) ? "" : nextValue;
+      const value = isNullOrUndef(nextValue) ? '' : nextValue;
 
       if (dom[prop] !== value) {
         dom[prop] = value;
@@ -138,9 +140,9 @@ export function patchProp(
       patchEvent(prop, lastValue, nextValue, dom);
     } else if (isNullOrUndef(nextValue)) {
       dom.removeAttribute(prop);
-    } else if (prop === "style") {
+    } else if (prop === 'style') {
       patchStyle(lastValue, nextValue, dom);
-    } else if (prop === "dangerouslySetInnerHTML") {
+    } else if (prop === 'dangerouslySetInnerHTML') {
       const lastHtml = lastValue && lastValue.__html;
       const nextHtml = nextValue && nextValue.__html;
 
@@ -158,5 +160,20 @@ export function patchProp(
         dom.setAttribute(prop, nextValue);
       }
     }
+  }
+}
+
+export function mountProps(vNode, flags, props, dom, isSVG) {
+  let hasControlledValue = false;
+  const isFormElement = (flags & VNodeFlags.FormElement) > 0;
+  if (isFormElement) {
+    hasControlledValue = isControlledFormElement(props);
+  }
+  for (const prop in props) {
+    // do not add a hasOwnProperty check here, it affects performance
+    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
+  }
+  if (isFormElement) {
+    processElement(flags, vNode, dom, props, true, hasControlledValue);
   }
 }

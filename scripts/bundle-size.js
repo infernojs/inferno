@@ -1,37 +1,49 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const glob = require("glob");
-const { groupBy, sortBy } = require("lodash");
-const { promisify } = require("util");
-const { join, basename } = require("path");
-const fileSize = require("filesize");
-const gzipSize = require("gzip-size");
+const fs = require('fs');
+const glob = require('glob');
+const { groupBy, sortBy } = require('lodash');
+const { promisify } = require('util');
+const { join, basename } = require('path');
+const fileSize = require('filesize');
+const gzipSize = require('gzip-size');
 const Table = require('cli-table');
 const colors = require('colors');
 
-const PACKAGES_DIR = join(__dirname, "../packages");
-const INFERNO_VERSION = require(join(__dirname, "../package.json")).version;
-const readFileAsync = promisify(fs.readFile)
-const globAsync = promisify(glob)
+const PACKAGES_DIR = join(__dirname, '../packages');
+const INFERNO_VERSION = require(join(__dirname, '../package.json')).version;
+const readFileAsync = promisify(fs.readFile);
+const globAsync = promisify(glob);
 
 async function printFileSizes() {
-
   const dirs = await globAsync(PACKAGES_DIR + '/*');
 
   // Exclude private packages
-  const packages = dirs.filter(d => !require(join(d, 'package.json')).private).map(file => basename(file))
+  const packages = dirs
+    .filter(d => !require(join(d, 'package.json')).private)
+    .map(file => basename(file));
 
   const table = new Table({
-    head: [`INFERNO - ${INFERNO_VERSION}`.cyan, 'Browser'.cyan, 'Minified'.cyan, 'ES6'.cyan, 'Common-JS'.cyan],
+    head: [
+      `INFERNO - ${INFERNO_VERSION}`.cyan,
+      'Browser'.cyan,
+      'Minified'.cyan,
+      'ES6'.cyan,
+      'Common-JS'.cyan
+    ],
     colWidth: [100, 200, 200, 200, 200]
   });
 
-  for(const name of packages.sort()) {
-    const filesToStat = [name + ".js", name + ".min.js", "index.es.js", "index.js"];
+  for (const name of packages.sort()) {
+    const filesToStat = [
+      name + '.js',
+      name + '.min.js',
+      'index.es.js',
+      'index.js'
+    ];
     const row = [name];
 
-    for(const file of filesToStat) {
+    for (const file of filesToStat) {
       const sizes = await getFileSize(`${PACKAGES_DIR}/${name}/dist/${file}`);
       console.warn(sizes);
       row.push(`${sizes.fileSize}/${sizes.gzipSize.green}`);
@@ -52,6 +64,6 @@ async function getFileSize(file) {
   const data = await readFileAsync(file, 'utf-8');
   return {
     fileSize: fileSize(Buffer.byteLength(data)),
-    gzipSize: fileSize(await gzipSize(data)),
+    gzipSize: fileSize(await gzipSize(data))
   };
 }

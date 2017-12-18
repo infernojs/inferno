@@ -2,18 +2,18 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isNullOrUndef } from "inferno-shared";
-import { createWrappedFunction } from "./wrapper";
+import { isNullOrUndef } from 'inferno-shared';
+import { createWrappedFunction } from './wrapper';
 
 export function isCheckedType(type) {
-  return type === "checkbox" || type === "radio";
+  return type === 'checkbox' || type === 'radio';
 }
 
-const onTextInputChange = createWrappedFunction("onInput", applyValue);
+const onTextInputChange = createWrappedFunction('onInput', applyValue);
 
-const wrappedOnChange = createWrappedFunction("onChange", applyValue);
+const wrappedOnChange = createWrappedFunction('onChange', applyValue);
 
-const onCheckboxChange = createWrappedFunction("onClick");
+const onCheckboxChange = createWrappedFunction('onClick');
 
 export function processInput(
   vNode,
@@ -48,13 +48,13 @@ export function applyValue(nextPropsOrEmpty, dom) {
   const hasValue = !isNullOrUndef(value);
 
   if (type && type !== dom.type) {
-    dom.setAttribute("type", type);
+    dom.setAttribute('type', type);
   }
   if (multiple && multiple !== dom.multiple) {
     dom.multiple = multiple;
   }
   if (!isNullOrUndef(defaultValue) && !hasValue) {
-    dom.defaultValue = defaultValue + "";
+    dom.defaultValue = defaultValue + '';
   }
   if (isCheckedType(type)) {
     if (hasValue) {

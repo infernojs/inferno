@@ -1,11 +1,11 @@
-import { render, Component } from "inferno";
-import { innerHTML } from "inferno-utils";
-import { Router, Switch, Route } from "inferno-router";
-import createHistory from "history/createMemoryHistory";
+import { render, Component } from 'inferno';
+import { innerHTML } from 'inferno-utils';
+import { Router, Switch, Route } from 'inferno-router';
+import createHistory from 'history/createMemoryHistory';
 
-describe("A <Switch>", () => {
-  it("does not remount a <Route>", () => {
-    const node = document.createElement("div");
+describe('A <Switch>', () => {
+  it('does not remount a <Route>', () => {
+    const node = document.createElement('div');
 
     let mountCount = 0;
 
@@ -20,7 +20,7 @@ describe("A <Switch>", () => {
     }
 
     const history = createHistory({
-      initialEntries: ["/one"]
+      initialEntries: ['/one']
     });
 
     render(
@@ -35,10 +35,10 @@ describe("A <Switch>", () => {
 
     expect(mountCount).toBe(1);
 
-    history.push("/two");
+    history.push('/two');
 
     expect(mountCount).toBe(1);
-    history.push("/one");
+    history.push('/one');
 
     expect(mountCount).toBe(1);
   });

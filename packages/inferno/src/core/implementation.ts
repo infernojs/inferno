@@ -2,7 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { VNodeFlags } from "inferno-vnode-flags";
+import { VNodeFlags } from 'inferno-vnode-flags';
 import {
   isArray,
   isFunction,
@@ -14,8 +14,8 @@ import {
   isString,
   isStringOrNumber,
   isUndefined
-} from "inferno-shared";
-import { EMPTY_OBJ } from "../DOM/utils/common";
+} from 'inferno-shared';
+import { EMPTY_OBJ } from '../DOM/utils/common';
 
 const keyPrefix = '@';
 
@@ -69,9 +69,8 @@ function getVNode(children, className, flags, key, props, ref, type): VNode {
     props: props === void 0 ? null : props,
     ref: ref === void 0 ? null : ref,
     type
-  }
+  };
 }
-
 
 export function createVNode(
   flags: number,
@@ -208,7 +207,7 @@ export function directClone(vNodeToClone: VNode): VNode {
       normalize(children),
       vNodeToClone.props,
       vNodeToClone.key,
-      vNodeToClone.ref,
+      vNodeToClone.ref
     );
   } else if (flags & VNodeFlags.Text) {
     newVNode = createTextVNode(
@@ -223,7 +222,7 @@ export function directClone(vNodeToClone: VNode): VNode {
 }
 
 export function createVoidVNode(): VNode {
-  return createVNode(VNodeFlags.Void, null, null, "", null, null, null);
+  return createVNode(VNodeFlags.Void, null, null, '', null, null, null);
 }
 
 export function isVNode(o: VNode): boolean {
@@ -238,7 +237,7 @@ function applyKey(key: string, vNode: VNode) {
 
 function applyKeyIfMissing(key: string | number, vNode: VNode): VNode {
   if (isNull(vNode.key) || vNode.key[0] === keyPrefix) {
-    return applyKey(isNumber(key) ? `@${key}` : key as string, vNode);
+    return applyKey(isNumber(key) ? `@${key}` : (key as string), vNode);
   }
   return vNode;
 }
@@ -302,11 +301,17 @@ function normalizeVNodes(nodes: any[], len, newNodes): VNode[] {
       const isNullKey = isNull(key);
       const isPrefixed = !isNullKey && key[0] === keyPrefix;
 
-      if (!isNullDom || isNullKey && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0 || isPrefixed) {
+      if (
+        !isNullDom ||
+        (isNullKey && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0) ||
+        isPrefixed
+      ) {
         if (!newNodes) {
           newNodes = nodes.slice(0, i) as VNode[];
         }
-        newNodes.push(applyKeyIfMissing(i, isNullDom && !isPrefixed ? n : directClone(n)));
+        newNodes.push(
+          applyKeyIfMissing(i, isNullDom && !isPrefixed ? n : directClone(n))
+        );
       } else if (newNodes) {
         newNodes.push(applyKeyIfMissing(i, n));
       }
@@ -317,19 +322,19 @@ function normalizeVNodes(nodes: any[], len, newNodes): VNode[] {
 }
 
 export function getFlagsForElementVnode(type: string): number {
-  if (type === "svg") {
+  if (type === 'svg') {
     return VNodeFlags.SvgElement;
   }
-  if (type === "input") {
+  if (type === 'input') {
     return VNodeFlags.InputElement;
   }
-  if (type === "select") {
+  if (type === 'select') {
     return VNodeFlags.SelectElement;
   }
-  if (type === "textarea") {
+  if (type === 'textarea') {
     return VNodeFlags.TextareaElement;
   }
-  if (type === "media") {
+  if (type === 'media') {
     return VNodeFlags.MediaElement;
   }
   return VNodeFlags.HtmlElement;
@@ -344,14 +349,14 @@ export function normalize(children) {
     return createTextVNode(children);
   }
   if (isNumber(children)) {
-    return createTextVNode(children+'');
+    return createTextVNode(children + '');
   }
   if (isArray(children)) {
     // we assign $ which basically means we've flagged this array for future note
     // if it comes back again, we need to clone it, as people are using it
     // in an immutable way
     // tslint:disable
-    if (children["$"] === true) {
+    if (children['$'] === true) {
       children = children.slice();
     }
 

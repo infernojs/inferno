@@ -1,80 +1,80 @@
-import { render } from "inferno";
-import { h } from "inferno-hyperscript";
-import { innerHTML } from "inferno-utils";
-import sinon from "sinon";
+import { render } from 'inferno';
+import { h } from 'inferno-hyperscript';
+import { innerHTML } from 'inferno-utils';
+import sinon from 'sinon';
 
-describe("HyperScript (non-JSX)", () => {
+describe('HyperScript (non-JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Should handle a basic example", () => {
-    render(h("div"), container);
-    expect(container.innerHTML).toBe(innerHTML("<div></div>"));
+  it('Should handle a basic example', () => {
+    render(h('div'), container);
+    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
   });
 
-  it("Should handle a basic example #2", () => {
-    render(h("div", "Hello world!"), container);
-    expect(container.innerHTML).toBe(innerHTML("<div>Hello world!</div>"));
+  it('Should handle a basic example #2', () => {
+    render(h('div', 'Hello world!'), container);
+    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
   });
 
-  it("Should handle a basic example #3", () => {
-    render(h("div", { className: "foo" }, "Hello world!"), container);
+  it('Should handle a basic example #3', () => {
+    render(h('div', { className: 'foo' }, 'Hello world!'), container);
     expect(container.innerHTML).toBe(
       innerHTML('<div class="foo">Hello world!</div>')
     );
   });
 
-  const StatelessComponent = () => h("div", "Hello world!");
+  const StatelessComponent = () => h('div', 'Hello world!');
 
-  it("Should handle a basic example #4", () => {
+  it('Should handle a basic example #4', () => {
     render(h(StatelessComponent), container);
-    expect(container.innerHTML).toBe(innerHTML("<div>Hello world!</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
   });
 
-  it("Should handle a hooks example #1", () => {
+  it('Should handle a hooks example #1', () => {
     const Component = ({ children }) => {
-      return h("div", children);
+      return h('div', children);
     };
     const ComponentHooks = () =>
       h(Component, {
         hooks: {
           onComponentDidUnmount() {}
         },
-        children: "Hello world!"
+        children: 'Hello world!'
       });
 
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe(innerHTML("<div>Hello world!</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
   });
 
-  it("Should handle children as third argument", () => {
+  it('Should handle children as third argument', () => {
     const Component = ({ children }) => {
-      return h("div", children);
+      return h('div', children);
     };
-    const ComponentHooks = () => h(Component, null, "Hello world!");
+    const ComponentHooks = () => h(Component, null, 'Hello world!');
 
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe(innerHTML("<div>Hello world!</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
   });
 
-  it("Should handle different props (key, class, id, ref, children)", () => {
+  it('Should handle different props (key, class, id, ref, children)', () => {
     const ComponentHooks = () =>
-      h("div#myId.test", {
+      h('div#myId.test', {
         onComponentDidMount() {},
-        key: "myKey",
+        key: 'myKey',
         ref: c => c,
-        className: "myClass",
-        children: "Hello world!"
+        className: 'myClass',
+        children: 'Hello world!'
       });
 
     render(h(ComponentHooks), container);
@@ -83,25 +83,25 @@ describe("HyperScript (non-JSX)", () => {
     );
   });
 
-  it("Should handle tag with no name", () => {
-    const ComponentHooks = () => h("", { children: "Hello world!" });
+  it('Should handle tag with no name', () => {
+    const ComponentHooks = () => h('', { children: 'Hello world!' });
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe(innerHTML("<div>Hello world!</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
   });
 
-  it("Should be possible to create textarea with hyperscript", () => {
-    const ComponentHooks = () => h("textarea", { id: "test" });
+  it('Should be possible to create textarea with hyperscript', () => {
+    const ComponentHooks = () => h('textarea', { id: 'test' });
     render(h(ComponentHooks), container);
     expect(innerHTML(container.innerHTML)).toBe(
       innerHTML('<textarea id="test"></textarea>')
     );
   });
 
-  it("Should be possible to create select element with hyperscript", () => {
+  it('Should be possible to create select element with hyperscript', () => {
     const ComponentHooks = () =>
-      h("select", { id: "select" }, [
-        h("option", { value: 1 }, "1"),
-        h("option", { value: 2 }, "2")
+      h('select', { id: 'select' }, [
+        h('option', { value: 1 }, '1'),
+        h('option', { value: 2 }, '2')
       ]);
     render(h(ComponentHooks), container);
     expect(innerHTML(container.innerHTML)).toBe(
@@ -111,106 +111,104 @@ describe("HyperScript (non-JSX)", () => {
     );
   });
 
-  it("Should handle tag with no tag name but id is present", () => {
-    const ComponentHooks = () => h("#myId");
+  it('Should handle tag with no tag name but id is present', () => {
+    const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks), container);
     expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
   });
 
-  it("Should support lifecycle methods on functional components willMount", () => {
+  it('Should support lifecycle methods on functional components willMount', () => {
     const callbackSpy = sinon.spy();
-    const ComponentHooks = () => h("#myId");
+    const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks, { onComponentWillMount: callbackSpy }), container);
     expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
     expect(callbackSpy.calledOnce).toBe(true);
   });
 
-  it("Should support lifecycle methods on functional components didMount", () => {
+  it('Should support lifecycle methods on functional components didMount', () => {
     const callbackSpy = sinon.spy();
-    const ComponentHooks = () => h("#myId");
+    const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks, { onComponentDidMount: callbackSpy }), container);
     expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
     expect(callbackSpy.calledOnce).toBe(true);
   });
 
-  it("Should pass classNames through", () => {
+  it('Should pass classNames through', () => {
     function Test1({ children, ...props }) {
-      return h("div.test1", props, children);
+      return h('div.test1', props, children);
     }
 
     function Test2({ children, ...props }) {
-      return h("div", props, children);
+      return h('div', props, children);
     }
 
     function Test3({ children, ...props }) {
-      return h("div", { className: "test3" }, children);
+      return h('div', { className: 'test3' }, children);
     }
 
     function Test4({ children, className, ...props }) {
-      return h("div", { className, ...props }, children);
+      return h('div', { className, ...props }, children);
     }
 
     render(
-      h("div", {}, [
-        h(Test1, { className: "test1prop" }),
-        h(Test2, { className: "test2prop" }),
+      h('div', {}, [
+        h(Test1, { className: 'test1prop' }),
+        h(Test2, { className: 'test2prop' }),
         h(Test3),
-        h(Test4, { className: "test4prop" })
+        h(Test4, { className: 'test4prop' })
       ]),
       container
     );
 
     const children = container.firstChild.childNodes;
 
-    expect(children[0].className).toBe("test1 test1prop");
-    expect(children[1].className).toBe("test2prop");
-    expect(children[2].className).toBe("test3");
-    expect(children[3].className).toBe("test4prop");
+    expect(children[0].className).toBe('test1 test1prop');
+    expect(children[1].className).toBe('test2prop');
+    expect(children[2].className).toBe('test3');
+    expect(children[3].className).toBe('test4prop');
   });
 
-  if (typeof global !== "undefined" && !global.usingJSDOM) {
-    it("Should not lower case SVG tags", () => {
+  if (typeof global !== 'undefined' && !global.usingJSDOM) {
+    it('Should not lower case SVG tags', () => {
       render(
         h(
-          "svg",
+          'svg',
           null,
           h(
-            "filter",
-            { id: "blur" },
-            h("feGaussianBlur", { in: "SourceGraphic" })
+            'filter',
+            { id: 'blur' },
+            h('feGaussianBlur', { in: 'SourceGraphic' })
           )
         ),
         container
       );
 
       expect(container.firstChild.firstChild.firstChild.tagName).toEqual(
-        "feGaussianBlur"
+        'feGaussianBlur'
       ); // tag name is case sensitive
-      expect(container.firstChild.firstChild.tagName).toEqual("filter");
-      expect(container.firstChild.tagName).toEqual("svg");
+      expect(container.firstChild.firstChild.tagName).toEqual('filter');
+      expect(container.firstChild.tagName).toEqual('svg');
     });
   }
 
-  describe("CreateElement variations (non-JSX)", () => {
-    it("Should handle events correctly when having multiple children", () => {
+  describe('CreateElement variations (non-JSX)', () => {
+    it('Should handle events correctly when having multiple children', () => {
       let triggered = false;
 
       const App = () => {
-        return h(
-          "div",
-          null,
-          [h("div", { className: "title" }, "Example"),
+        return h('div', null, [
+          h('div', { className: 'title' }, 'Example'),
           h(
-            "button",
+            'button',
             {
-              type: "button",
+              type: 'button',
               onClick: () => {
                 triggered = !triggered;
               }
             },
-            "Do a thing"
-          )]
-        );
+            'Do a thing'
+          )
+        ]);
       };
 
       // eslint-disable-next-line
@@ -223,29 +221,29 @@ describe("HyperScript (non-JSX)", () => {
       expect(triggered).toBe(false);
 
       const buttons = Array.prototype.slice.call(
-        container.querySelectorAll("button")
+        container.querySelectorAll('button')
       );
       buttons.forEach(button => button.click());
 
       expect(triggered).toBe(true);
     });
 
-    it("Should handle events correctly when having single child", () => {
+    it('Should handle events correctly when having single child', () => {
       let triggered = false;
 
       const app = () => {
         return h(
-          "div",
+          'div',
           null,
           h(
-            "button",
+            'button',
             {
-              type: "button",
+              type: 'button',
               onClick: () => {
                 triggered = !triggered;
               }
             },
-            "Do a thing"
+            'Do a thing'
           )
         );
       };
@@ -257,7 +255,7 @@ describe("HyperScript (non-JSX)", () => {
       expect(triggered).toBe(false);
 
       const buttons = Array.prototype.slice.call(
-        container.querySelectorAll("button")
+        container.querySelectorAll('button')
       );
       buttons.forEach(button => button.click());
 
@@ -267,11 +265,11 @@ describe("HyperScript (non-JSX)", () => {
     it('Should allow passing childs through "children" property (native component)', () => {
       const app = () => {
         return h(
-          "div",
+          'div',
           null,
-          h("button", {
-            type: "button",
-            children: ["Do a thing"]
+          h('button', {
+            type: 'button',
+            children: ['Do a thing']
           })
         );
       };
@@ -283,14 +281,14 @@ describe("HyperScript (non-JSX)", () => {
     });
 
     it('Should allow passing childs through "children" property (custom component)', () => {
-      const Button = props => h("button", props);
+      const Button = props => h('button', props);
       const app = () => {
         return h(
-          "div",
+          'div',
           null,
           h(Button, {
-            type: "button",
-            children: ["Do a thing"]
+            type: 'button',
+            children: ['Do a thing']
           })
         );
       };
@@ -301,40 +299,40 @@ describe("HyperScript (non-JSX)", () => {
       );
     });
 
-    it("Should handle node with hooks and key", done => {
-      const node = () => h("div", { key: "key2" }, "Hooks");
+    it('Should handle node with hooks and key', done => {
+      const node = () => h('div', { key: 'key2' }, 'Hooks');
       const app = h(node, {
-        key: "key1",
+        key: 'key1',
         onComponentDidMount(domNode) {
-          expect(app.key).toBe("key1");
-          expect(domNode.tagName).toBe("DIV");
+          expect(app.key).toBe('key1');
+          expect(domNode.tagName).toBe('DIV');
           done();
         }
       });
 
       render(app, container);
-      expect(container.innerHTML).toBe(innerHTML("<div>Hooks</div>"));
+      expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
     });
 
-    it("Should handle node with children but no props", () => {
-      const node = () => h("div", null, "Hooks");
-      const app = h(node, null, "Hooks");
+    it('Should handle node with children but no props', () => {
+      const node = () => h('div', null, 'Hooks');
+      const app = h(node, null, 'Hooks');
 
       render(app, container);
-      expect(container.innerHTML).toBe(innerHTML("<div>Hooks</div>"));
+      expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
     });
 
-    it("Should handle node with refs", done => {
-      let myRef = "myRef";
+    it('Should handle node with refs', done => {
+      let myRef = 'myRef';
 
       const app = () => {
         const node = () =>
-          h("a", {
+          h('a', {
             ref: c => (myRef = c)
           });
         return h(node, {
           onComponentDidMount() {
-            expect(myRef.tagName).toBe("A");
+            expect(myRef.tagName).toBe('A');
             done();
           }
         });
@@ -346,19 +344,17 @@ describe("HyperScript (non-JSX)", () => {
   describe('noNormalize', () => {
     it('Should skip normalization process when true', () => {
       // This will throw because children has null item and noNormalize is used
-      let vNode = h("div", null, [
-        h("div", null, "1"),
+      let vNode = h(
+        'div',
         null,
-        h("div", null, "2")
-      ], true);
+        [h('div', null, '1'), null, h('div', null, '2')],
+        true
+      );
 
       expect(() => render(vNode, container)).toThrow();
 
       // This will render correctly as there is no nulls
-      vNode = h("div", null, [
-        h("div", null, "1"),
-        h("div", null, "2")
-      ], true);
+      vNode = h('div', null, [h('div', null, '1'), h('div', null, '2')], true);
 
       render(vNode, container);
 

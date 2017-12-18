@@ -6,13 +6,13 @@ import {
   isBrowser,
   isFunction,
   isInvalid,
-  isUndefined,
   isNullOrUndef,
+  isUndefined,
   NO_OP,
   throwError,
   warning
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVNode,
   directClone,
@@ -20,16 +20,16 @@ import {
   InfernoInput,
   options,
   VNode
-} from "../core/implementation";
-import { hydrateRoot } from "./hydration";
-import { mount } from "./mounting";
-import { patch } from "./patching";
-import { unmount } from "./unmounting";
-import { callAll, EMPTY_OBJ } from "./utils/common";
+} from '../core/implementation';
+import { hydrateRoot } from './hydration';
+import { mount } from './mounting';
+import { patch } from './patching';
+import { unmount } from './unmounting';
+import { callAll, EMPTY_OBJ } from './utils/common';
 
 const roots = options.roots;
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   if (isBrowser && document.body === null) {
     warning(
       'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.'
@@ -51,7 +51,7 @@ export function render(
   callback?: Function
 ): InfernoChildren {
   // Development warning
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDom) {
       throwError(
         'you cannot render() to the "document.body". Use an empty element as a container instead.'

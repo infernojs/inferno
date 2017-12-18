@@ -1,10 +1,10 @@
 exports.config = {
   paths: {
-    public: "."
+    public: '.'
   },
   files: {
     javascripts: {
-      joinTo: "output.js"
+      joinTo: 'output.js'
     }
   }
 };

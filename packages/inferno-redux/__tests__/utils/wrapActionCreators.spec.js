@@ -1,16 +1,16 @@
-import { wrapActionCreators } from "../../src/utils/wrapActionCreators";
+import { wrapActionCreators } from '../../src/utils/wrapActionCreators';
 
-describe("Utils", () => {
-  describe("wrapActionCreators", () => {
-    it("should return a function that wraps argument in a call to bindActionCreators", () => {
+describe('Utils', () => {
+  describe('wrapActionCreators', () => {
+    it('should return a function that wraps argument in a call to bindActionCreators', () => {
       const dispatch = action => ({ dispatched: action });
-      const actionResult = { an: "action" };
+      const actionResult = { an: 'action' };
       const actionCreators = {
         action: () => actionResult
       };
 
       const wrapped = wrapActionCreators(actionCreators);
-      expect(typeof wrapped).toBe("function");
+      expect(typeof wrapped).toBe('function');
       expect(() => wrapped(dispatch)).not.toThrowError();
       expect(() => wrapped().action()).toThrowError();
 

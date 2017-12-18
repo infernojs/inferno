@@ -2,9 +2,9 @@
  * @module Inferno-Test-Utils
  */ /** TypeDoc Comment */
 
-import { VNode } from "inferno";
-import { isArray, isNull, isObject, isString } from "inferno-shared";
-import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from "./utils";
+import { VNode } from 'inferno';
+import { isArray, isNull, isObject, isString } from 'inferno-shared';
+import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from './utils';
 
 // Jest Snapshot Utilities
 // Jest formats it's snapshots prettily because it knows how to play with the React test renderer.
@@ -12,8 +12,8 @@ import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from "./utils";
 // https://github.com/facebook/react/blob/v15.4.2/src/renderers/testing/ReactTestRenderer.js#L98
 
 function createSnapshotObject(object: object) {
-  Object.defineProperty(object, "$$typeof", {
-    value: Symbol.for("react.test.json")
+  Object.defineProperty(object, '$$typeof', {
+    value: Symbol.for('react.test.json')
   });
 
   return object;

@@ -1,21 +1,21 @@
-import { Component, options, render } from "inferno";
-import { findDOMNode } from "inferno-compat";
+import { Component, options, render } from 'inferno';
+import { findDOMNode } from 'inferno-compat';
 
-describe("findDOMNodes (JSX)", () => {
+describe('findDOMNodes (JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  describe("various tests to see if the DOM node is right for the component", () => {
+  describe('various tests to see if the DOM node is right for the component', () => {
     options.findDOMNodeEnabled = true;
     let instance1;
     let instance2;
@@ -53,28 +53,28 @@ describe("findDOMNodes (JSX)", () => {
       }
     }
 
-    it("simple findDOMNodes", () => {
+    it('simple findDOMNodes', () => {
       render(<Example1 />, container);
-      expect(findDOMNode(instance1)).toBe(document.getElementById("example1"));
+      expect(findDOMNode(instance1)).toBe(document.getElementById('example1'));
       render(null, container);
       expect(findDOMNode(instance1)).toBe(null);
       render(<Example2 />, container);
       expect(
-        findDOMNode(instance2) === document.getElementById("example2")
+        findDOMNode(instance2) === document.getElementById('example2')
       ).toBe(true);
       render(<Example1 />, container);
       expect(
-        findDOMNode(instance1) === document.getElementById("example1")
+        findDOMNode(instance1) === document.getElementById('example1')
       ).toBe(true);
       render(<Example3 />, container);
       expect(
-        findDOMNode(instance3) === document.getElementById("example3")
+        findDOMNode(instance3) === document.getElementById('example3')
       ).toBe(true);
       expect(
-        findDOMNode(instance2) === document.getElementById("example2")
+        findDOMNode(instance2) === document.getElementById('example2')
       ).toBe(true);
       expect(
-        findDOMNode(instance1) === document.getElementById("example1")
+        findDOMNode(instance1) === document.getElementById('example1')
       ).toBe(true);
       render(null, container);
       expect(findDOMNode(instance1)).toBe(null);

@@ -1,21 +1,21 @@
-import { Component, render } from "inferno";
-import { innerHTML } from "inferno-utils";
+import { Component, render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
 
-describe("Error recovery", () => {
+describe('Error recovery', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Should be possible to render again if user land code crashes in CWM", () => {
+  it('Should be possible to render again if user land code crashes in CWM', () => {
     class Crasher extends Component {
       constructor(props, context) {
         super(props, context);
@@ -27,7 +27,7 @@ describe("Error recovery", () => {
 
       componentWillMount() {
         if (this.props.crash) {
-          throw Error("test");
+          throw Error('test');
         }
 
         this.setState({
@@ -43,14 +43,14 @@ describe("Error recovery", () => {
     try {
       render(<Crasher crash={true} />, container);
     } catch (ex) {
-      expect(ex.message).toBe("test");
+      expect(ex.message).toBe('test');
     }
 
     render(<Crasher crash={false} />, container);
-    expect(container.firstChild.innerHTML).toBe("2");
+    expect(container.firstChild.innerHTML).toBe('2');
   });
 
-  it("Should be possible to render again if user land code crashes in ComponentWillUnmount", () => {
+  it('Should be possible to render again if user land code crashes in ComponentWillUnmount', () => {
     class Crasher extends Component {
       constructor(props, context) {
         super(props, context);
@@ -62,7 +62,7 @@ describe("Error recovery", () => {
 
       componentWillUnmount() {
         if (this.props.crash) {
-          throw Error("test");
+          throw Error('test');
         }
       }
 
@@ -73,26 +73,26 @@ describe("Error recovery", () => {
 
     render(<Crasher crash={true} />, container);
 
-    expect(container.firstChild.innerHTML).toBe("1");
+    expect(container.firstChild.innerHTML).toBe('1');
 
     try {
       render(null, container);
     } catch (ex) {
-      expect(ex.message).toBe("test");
+      expect(ex.message).toBe('test');
     }
 
     // No change as it crashed
-    expect(container.firstChild.innerHTML).toBe("1");
+    expect(container.firstChild.innerHTML).toBe('1');
 
     // Try update
     render(<Crasher crash={false} />, container);
 
-    expect(container.firstChild.innerHTML).toBe("1");
+    expect(container.firstChild.innerHTML).toBe('1');
 
     // Should not crash now
     render(null, container);
 
-    expect(container.innerHTML).toBe("");
+    expect(container.innerHTML).toBe('');
   });
 
   // it('Should be able to recover from subtree crash', () => {

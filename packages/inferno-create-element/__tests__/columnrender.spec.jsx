@@ -1,26 +1,26 @@
-import { Component, render } from "inferno";
-import { isNullOrUndef } from "inferno-shared";
-import sinon from "sinon";
+import { Component, render } from 'inferno';
+import { isNullOrUndef } from 'inferno-shared';
+import sinon from 'sinon';
 
-describe("Columns like tests - (JSX)", () => {
+describe('Columns like tests - (JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  describe("Column-like tests", () => {
+  describe('Column-like tests', () => {
     function buildTestCases(row, item, suffix) {
       return [
         {
-          name: "add one column -" + suffix,
+          name: 'add one column -' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -32,7 +32,7 @@ describe("Columns like tests - (JSX)", () => {
           ]
         },
         {
-          name: "add one item -" + suffix,
+          name: 'add one item -' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -43,7 +43,7 @@ describe("Columns like tests - (JSX)", () => {
           ]
         },
         {
-          name: "add one column and item -" + suffix,
+          name: 'add one column and item -' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -55,7 +55,7 @@ describe("Columns like tests - (JSX)", () => {
           ]
         },
         {
-          name: "swap all items -" + suffix,
+          name: 'swap all items -' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -66,7 +66,7 @@ describe("Columns like tests - (JSX)", () => {
           ]
         },
         {
-          name: "remove first item -" + suffix,
+          name: 'remove first item -' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -74,7 +74,7 @@ describe("Columns like tests - (JSX)", () => {
           update: [row(1, item(2, 2)), row(2, item(4, 4))]
         },
         {
-          name: "remove last item -" + suffix,
+          name: 'remove last item -' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -82,7 +82,7 @@ describe("Columns like tests - (JSX)", () => {
           update: [row(1, item(1, 1)), row(2, item(3, 3))]
         },
         {
-          name: "remove all items-" + suffix,
+          name: 'remove all items-' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -90,7 +90,7 @@ describe("Columns like tests - (JSX)", () => {
           update: [row(1), row(2)]
         },
         {
-          name: "remove all columns-" + suffix,
+          name: 'remove all columns-' + suffix,
           initial: [
             row(1, item(1, 1), item(2, 2)),
             row(2, item(3, 3), item(4, 4))
@@ -108,7 +108,7 @@ describe("Columns like tests - (JSX)", () => {
       while (i < len) {
         const node = nodes[i];
 
-        if (node.nodeType === 3 && node.nodeValue === "") {
+        if (node.nodeType === 3 && node.nodeValue === '') {
           nodes.splice(i, 1);
           len--;
         }
@@ -129,7 +129,7 @@ describe("Columns like tests - (JSX)", () => {
         const columnChildNodes = filterPlaceholders(columnRoot.childNodes);
 
         expect(columnChildNodes.length).toBe(columns[i].items.length + 1);
-        expect(columnRoot.firstChild.innerHTML).toBe("column");
+        expect(columnRoot.firstChild.innerHTML).toBe('column');
 
         // Verify items
         // Skip first - its hardcoded
@@ -158,7 +158,7 @@ describe("Columns like tests - (JSX)", () => {
       });
     }
 
-    describe("columns KEYED", () => {
+    describe('columns KEYED', () => {
       // Item Keyed
       function BuildItemKeyed(key, text) {
         return { _testKey: key, id: key, text };
@@ -169,7 +169,7 @@ describe("Columns like tests - (JSX)", () => {
         return { _testKey: key, id: key, items };
       }
 
-      const keyedTests = buildTestCases(BuildRowKeyed, BuildItemKeyed, "KEYED");
+      const keyedTests = buildTestCases(BuildRowKeyed, BuildItemKeyed, 'KEYED');
 
       class ItemKeyed extends Component {
         constructor(props) {
@@ -228,19 +228,19 @@ describe("Columns like tests - (JSX)", () => {
       beforeEach(function() {
         mountedColumnSpy = sinon.spy(
           ColumnKeyed.prototype,
-          "componentWillMount"
+          'componentWillMount'
         );
         unmountColumnSpy = sinon.spy(
           ColumnKeyed.prototype,
-          "componentWillUnmount"
+          'componentWillUnmount'
         );
         updateColumnSpy = sinon.spy(
           ColumnKeyed.prototype,
-          "componentWillUpdate"
+          'componentWillUpdate'
         );
-        mountedItemSpy = sinon.spy(ItemKeyed.prototype, "componentWillMount");
-        unmountItemSpy = sinon.spy(ItemKeyed.prototype, "componentWillUnmount");
-        updateItemSpy = sinon.spy(ItemKeyed.prototype, "componentWillUpdate");
+        mountedItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillMount');
+        unmountItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUnmount');
+        updateItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUpdate');
       });
 
       afterEach(function() {
@@ -253,7 +253,7 @@ describe("Columns like tests - (JSX)", () => {
       });
 
       keyedTests.forEach(testCase => {
-        it("Should " + testCase.name, () => {
+        it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(
             testCase.update,
             testCase.initial
@@ -338,7 +338,7 @@ describe("Columns like tests - (JSX)", () => {
       });
     });
 
-    describe("columns NON-KEYED", () => {
+    describe('columns NON-KEYED', () => {
       // Item Keyed
       function BuildItem(key, text) {
         return { _testKey: key, text };
@@ -352,7 +352,7 @@ describe("Columns like tests - (JSX)", () => {
       const nonKeyedTestCases = buildTestCases(
         BuildRow,
         BuildItem,
-        "NON-KEYED"
+        'NON-KEYED'
       );
 
       class Item extends Component {
@@ -406,12 +406,12 @@ describe("Columns like tests - (JSX)", () => {
       let updateItemSpy = null;
 
       beforeEach(function() {
-        mountedColumnSpy = sinon.spy(Column.prototype, "componentWillMount");
-        unmountColumnSpy = sinon.spy(Column.prototype, "componentWillUnmount");
-        updateColumnSpy = sinon.spy(Column.prototype, "componentWillUpdate");
-        mountedItemSpy = sinon.spy(Item.prototype, "componentWillMount");
-        unmountItemSpy = sinon.spy(Item.prototype, "componentWillUnmount");
-        updateItemSpy = sinon.spy(Item.prototype, "componentWillUpdate");
+        mountedColumnSpy = sinon.spy(Column.prototype, 'componentWillMount');
+        unmountColumnSpy = sinon.spy(Column.prototype, 'componentWillUnmount');
+        updateColumnSpy = sinon.spy(Column.prototype, 'componentWillUpdate');
+        mountedItemSpy = sinon.spy(Item.prototype, 'componentWillMount');
+        unmountItemSpy = sinon.spy(Item.prototype, 'componentWillUnmount');
+        updateItemSpy = sinon.spy(Item.prototype, 'componentWillUpdate');
       });
 
       afterEach(function() {
@@ -424,7 +424,7 @@ describe("Columns like tests - (JSX)", () => {
       });
 
       nonKeyedTestCases.forEach(testCase => {
-        it("Should " + testCase.name, () => {
+        it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(
             testCase.update,
             testCase.initial

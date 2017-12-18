@@ -12,14 +12,14 @@ import {
   Props,
   render,
   VNode
-} from "inferno";
-import { cloneVNode } from "inferno-clone-vnode";
+} from 'inferno';
+import { cloneVNode } from 'inferno-clone-vnode';
 import {
   createClass,
   ClassicComponentClass,
   ComponentSpec
-} from "inferno-create-class";
-import { createElement as infernoCreateElement } from "inferno-create-element";
+} from 'inferno-create-class';
+import { createElement as infernoCreateElement } from 'inferno-create-element';
 import {
   isArray,
   isBrowser,
@@ -29,11 +29,11 @@ import {
   isString,
   NO_OP,
   throwError
-} from "inferno-shared";
-import {VNodeFlags as _VNodeFlags} from "inferno-vnode-flags";
-import {isValidElement} from "./isValidElement";
-import PropTypes from "./PropTypes";
-import { SVGDOMPropertyConfig } from "./SVGDOMPropertyConfig";
+} from 'inferno-shared';
+import { VNodeFlags as _VNodeFlags } from 'inferno-vnode-flags';
+import { isValidElement } from './isValidElement';
+import PropTypes from './PropTypes';
+import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
 
 declare global {
   interface Event {
@@ -97,7 +97,7 @@ const Children = {
   only(children: Array<InfernoChildren | any>): InfernoChildren | any {
     children = Children.toArray(children);
     if (children.length !== 1) {
-      throw new Error("Children.only() expects only one child.");
+      throw new Error('Children.only() expects only one child.');
     }
     return children[0];
   },
@@ -153,23 +153,23 @@ options.beforeUnmount = vNode => {
   }
 };
 
-const version = "15.4.2";
+const version = '15.4.2';
 
 function normalizeProps(name: string, props: Props | any) {
   if (
-    (name === "input" || name === "textarea") &&
-    props.type !== "radio" &&
+    (name === 'input' || name === 'textarea') &&
+    props.type !== 'radio' &&
     props.onChange
   ) {
     const type = props.type;
     let eventName;
 
-    if (type === "checkbox") {
-      eventName = "onclick";
-    } else if (type === "file") {
-      eventName = "onchange";
+    if (type === 'checkbox') {
+      eventName = 'onclick';
+    } else if (type === 'file') {
+      eventName = 'onchange';
     } else {
-      eventName = "oninput";
+      eventName = 'oninput';
     }
 
     if (!props[eventName]) {
@@ -178,11 +178,11 @@ function normalizeProps(name: string, props: Props | any) {
     }
   }
   for (const prop in props) {
-    if (prop === "onDoubleClick") {
+    if (prop === 'onDoubleClick') {
       props.onDblClick = props[prop];
       delete props[prop];
     }
-    if (prop === "htmlFor") {
+    if (prop === 'htmlFor') {
       props.for = props[prop];
       delete props[prop];
     }
@@ -200,7 +200,7 @@ function normalizeProps(name: string, props: Props | any) {
 // every prop event that starts with "on", i.e. onClick or onKeyPress
 // but in reality devs use onSomething for many things, not only for
 // input events
-if (typeof Event !== "undefined" && !Event.prototype.persist) {
+if (typeof Event !== 'undefined' && !Event.prototype.persist) {
   // tslint:disable-next-line:no-empty
   Event.prototype.persist = function() {};
 }
@@ -218,20 +218,20 @@ function iterableToArray(iterable) {
   return tmpArr;
 }
 
-const hasSymbolSupport = typeof Symbol !== "undefined";
+const hasSymbolSupport = typeof Symbol !== 'undefined';
 
 const injectStringRefs = function(originalFunction) {
   return function(name, _props, ...children) {
     const props = _props || {};
     const ref = props.ref;
 
-    if (typeof ref === "string" && !isNull(currentComponent)) {
+    if (typeof ref === 'string' && !isNull(currentComponent)) {
       currentComponent.refs = currentComponent.refs || {};
       props.ref = function(val) {
         this.refs[ref] = val;
       }.bind(currentComponent);
     }
-    if (typeof name === "string") {
+    if (typeof name === 'string') {
       normalizeProps(name, props);
     }
 
@@ -316,7 +316,7 @@ PureComponent.prototype.shouldComponentUpdate = function(props, state) {
 class WrapperComponent<P, S> extends Component<P, S> {
   public getChildContext() {
     // tslint:disable-next-line
-    return this.props["context"];
+    return this.props['context'];
   }
 
   public render(props) {
@@ -344,8 +344,8 @@ function unstable_renderSubtreeIntoContainer(
 }
 
 // Credit: preact-compat - https://github.com/developit/preact-compat
-const ELEMENTS = "a abbr address area article aside audio b base bdi bdo big blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link main map mark menu menuitem meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr circle clipPath defs ellipse g image line linearGradient mask path pattern polygon polyline radialGradient rect stop svg text tspan".split(
-  " "
+const ELEMENTS = 'a abbr address area article aside audio b base bdi bdo big blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link main map mark menu menuitem meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr circle clipPath defs ellipse g image line linearGradient mask path pattern polygon polyline radialGradient rect stop svg text tspan'.split(
+  ' '
 );
 
 function createFactory(type) {
@@ -359,9 +359,9 @@ for (let i = ELEMENTS.length; i--; ) {
 
 function findDOMNode(ref) {
   if (!options.findDOMNodeEnabled) {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       throwError(
-        "findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!"
+        'findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!'
       );
     }
     throwError();
@@ -372,7 +372,7 @@ function findDOMNode(ref) {
 }
 
 // Mask React global in browser enviornments when React is not used.
-if (isBrowser && typeof (window as any).React === "undefined") {
+if (isBrowser && typeof (window as any).React === 'undefined') {
   const exports = {
     Children,
     Component,

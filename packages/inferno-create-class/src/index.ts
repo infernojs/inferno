@@ -2,14 +2,14 @@
  * @module Inferno-Create-Class
  */ /** TypeDoc Comment */
 
-import { Component } from "inferno";
+import { Component } from 'inferno';
 import {
   isFunction,
   isNullOrUndef,
   isObject,
   isUndefined,
   throwError
-} from "inferno-shared";
+} from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
   statics?: {
@@ -51,16 +51,16 @@ export interface ClassicComponentClass<P, S> extends ComponentClass<P, S> {
 
 // don't autobind these methods since they already have guaranteed context.
 const AUTOBIND_BLACKLIST = new Set<string>();
-AUTOBIND_BLACKLIST.add("constructor");
-AUTOBIND_BLACKLIST.add("render");
-AUTOBIND_BLACKLIST.add("shouldComponentUpdate");
-AUTOBIND_BLACKLIST.add("componentWillReceiveProps");
-AUTOBIND_BLACKLIST.add("componentWillUpdate");
-AUTOBIND_BLACKLIST.add("componentDidUpdate");
-AUTOBIND_BLACKLIST.add("componentWillMount");
-AUTOBIND_BLACKLIST.add("componentDidMount");
-AUTOBIND_BLACKLIST.add("componentWillUnmount");
-AUTOBIND_BLACKLIST.add("componentDidUnmount");
+AUTOBIND_BLACKLIST.add('constructor');
+AUTOBIND_BLACKLIST.add('render');
+AUTOBIND_BLACKLIST.add('shouldComponentUpdate');
+AUTOBIND_BLACKLIST.add('componentWillReceiveProps');
+AUTOBIND_BLACKLIST.add('componentWillUpdate');
+AUTOBIND_BLACKLIST.add('componentDidUpdate');
+AUTOBIND_BLACKLIST.add('componentWillMount');
+AUTOBIND_BLACKLIST.add('componentDidMount');
+AUTOBIND_BLACKLIST.add('componentWillUnmount');
+AUTOBIND_BLACKLIST.add('componentDidUnmount');
 
 function extend(base, props) {
   for (const key in props) {
@@ -74,7 +74,7 @@ function extend(base, props) {
 function bindAll<P, S>(ctx: Component<P, S>) {
   for (const i in ctx) {
     const v = ctx[i];
-    if (typeof v === "function" && !v.__bound && !AUTOBIND_BLACKLIST.has(i)) {
+    if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST.has(i)) {
       (ctx[i] = v.bind(ctx)).__bound = true;
     }
   }
@@ -91,7 +91,7 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
     }
 
     for (const key in mixin as Function[]) {
-      if (mixin.hasOwnProperty(key) && typeof mixin[key] === "function") {
+      if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
         (keyed[key] || (keyed[key] = [])).push(mixin[key]);
       }
     }
@@ -121,7 +121,7 @@ function multihook(hooks: Function[], mergeFn?: Function): any {
 function mergeNoDupes(previous: any, current: any) {
   if (!isUndefined(current)) {
     if (!isObject(current)) {
-      throwError("Expected Mixin to return value to be an object or null.");
+      throwError('Expected Mixin to return value to be an object or null.');
     }
 
     if (!previous) {
@@ -151,9 +151,9 @@ function applyMixin<P, S>(
   const hooks = isUndefined(inst[key]) ? mixin : mixin.concat(inst[key]);
 
   if (
-    key === "getDefaultProps" ||
-    key === "getInitialState" ||
-    key === "getChildContext"
+    key === 'getDefaultProps' ||
+    key === 'getInitialState' ||
+    key === 'getChildContext'
   ) {
     inst[key] = multihook(hooks, mergeNoDupes);
   } else {
@@ -168,7 +168,7 @@ function applyMixins(Cl: any, mixins: Function[] | any[]) {
 
       let inst;
 
-      if (key === "getDefaultProps") {
+      if (key === 'getDefaultProps') {
         inst = Cl;
       } else {
         inst = Cl.prototype;
@@ -188,7 +188,7 @@ export function createClass<P, S>(
 ): ClassicComponentClass<P, S> {
   class Cl extends Component<P, S> {
     public static defaultProps;
-    public static displayName = obj.displayName || "Component";
+    public static displayName = obj.displayName || 'Component';
     public static propTypes = obj.propTypes;
     public static mixins = obj.mixins && collateMixins(obj.mixins);
     public static getDefaultProps = obj.getDefaultProps;

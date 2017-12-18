@@ -1,23 +1,23 @@
-import { Component, render } from "inferno";
-import sinon from "sinon";
-import { innerHTML } from "inferno-utils";
-import { createElement } from "inferno-create-element";
+import { Component, render } from 'inferno';
+import sinon from 'sinon';
+import { innerHTML } from 'inferno-utils';
+import { createElement } from 'inferno-create-element';
 
-describe("Stateful Component updates", () => {
+describe('Stateful Component updates', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Should forget old updates", done => {
+  it('Should forget old updates', done => {
     let updatesAfromOutside;
 
     class A extends Component {
@@ -55,23 +55,23 @@ describe("Stateful Component updates", () => {
     }
 
     // Render A
-    const sinonSpy = sinon.spy(A.prototype, "componentWillUnmount");
+    const sinonSpy = sinon.spy(A.prototype, 'componentWillUnmount');
     render(<A />, container);
-    expect(container.innerHTML).toBe(innerHTML("<div>A Component A</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>A Component A</div>'));
     // Render B
     render(<B />, container);
-    expect(container.innerHTML).toBe(innerHTML("<div>B Component B</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>B Component B</div>'));
     sinon.assert.calledOnce(sinonSpy); // componentUnMount should have been called
     sinonSpy.restore();
 
     // delayed update triggers for A
     updatesAfromOutside();
-    expect(container.innerHTML).toBe(innerHTML("<div>B Component B</div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div>B Component B</div>'));
 
     done();
   });
 
-  it("Should give better error message when calling setState from constructor ??", () => {
+  it('Should give better error message when calling setState from constructor ??', () => {
     // Following test simulates situation that setState is called when mounting process has not finished, fe. in constructor
 
     class Parent extends Component {
@@ -130,7 +130,7 @@ describe("Stateful Component updates", () => {
     render(<Parent />, container);
   });
 
-  it("Should update boolean properties when children change same time", () => {
+  it('Should update boolean properties when children change same time', () => {
     let updateCaller = null;
 
     class A extends Component {
@@ -173,7 +173,7 @@ describe("Stateful Component updates", () => {
     expect(firstChild.childNodes[1].checked).toBe(false);
     expect(firstChild.childNodes[2].checked).toBe(false);
 
-    const checkbox = container.querySelector("input");
+    const checkbox = container.querySelector('input');
     checkbox.checked = true; // SIMULATE user selecting checkbox
     expect(firstChild.childNodes[0].checked).toBe(true);
 
@@ -185,7 +185,7 @@ describe("Stateful Component updates", () => {
     expect(firstChild.childNodes[1].checked).toBe(false);
   });
 
-  it("Should Not get stuck in UNMOUNTED state", () => {
+  it('Should Not get stuck in UNMOUNTED state', () => {
     let updateCaller = null;
 
     // This parent is used for setting up Test scenario, not much related
@@ -270,8 +270,8 @@ describe("Stateful Component updates", () => {
       render() {
         return (
           <div>
-            {this.props.data.test + ""}
-            {this.state.b + ""}
+            {this.props.data.test + ''}
+            {this.state.b + ''}
           </div>
         );
       }
@@ -280,36 +280,36 @@ describe("Stateful Component updates", () => {
     render(<Parent />, container);
 
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>truefalse</div></div></div>")
+      innerHTML('<div><div><div>truefalse</div></div></div>')
     );
 
     updateCaller();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsefalse</div></div></div>")
+      innerHTML('<div><div><div>falsefalse</div></div></div>')
     );
     updateCaller();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>truefalse</div></div></div>")
+      innerHTML('<div><div><div>truefalse</div></div></div>')
     );
     updateCaller();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsefalse</div></div></div>")
+      innerHTML('<div><div><div>falsefalse</div></div></div>')
     );
     stuckChild();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsetrue</div></div></div>")
+      innerHTML('<div><div><div>falsetrue</div></div></div>')
     );
     stuckChild();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsefalse</div></div></div>")
+      innerHTML('<div><div><div>falsefalse</div></div></div>')
     );
     stuckChild();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsetrue</div></div></div>")
+      innerHTML('<div><div><div>falsetrue</div></div></div>')
     );
   });
 
-  it("Should Not get stuck in UNMOUNTED state - variation2", () => {
+  it('Should Not get stuck in UNMOUNTED state - variation2', () => {
     let updateCaller = null;
 
     // This parent is used for setting up Test scenario, not much related
@@ -394,8 +394,8 @@ describe("Stateful Component updates", () => {
       render() {
         return (
           <div>
-            {this.props.data.test + ""}
-            {this.state.b + ""}
+            {this.props.data.test + ''}
+            {this.state.b + ''}
           </div>
         );
       }
@@ -404,42 +404,42 @@ describe("Stateful Component updates", () => {
     render(<Parent />, container);
 
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>truefalse</div></div></div>")
+      innerHTML('<div><div><div>truefalse</div></div></div>')
     );
 
     stuckChild();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>truetrue</div></div></div>")
+      innerHTML('<div><div><div>truetrue</div></div></div>')
     );
     stuckChild();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>truefalse</div></div></div>")
+      innerHTML('<div><div><div>truefalse</div></div></div>')
     );
     stuckChild();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>truetrue</div></div></div>")
+      innerHTML('<div><div><div>truetrue</div></div></div>')
     );
 
     updateCaller();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsetrue</div></div></div>")
+      innerHTML('<div><div><div>falsetrue</div></div></div>')
     );
     updateCaller();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>truetrue</div></div></div>")
+      innerHTML('<div><div><div>truetrue</div></div></div>')
     );
     updateCaller();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsetrue</div></div></div>")
+      innerHTML('<div><div><div>falsetrue</div></div></div>')
     );
 
     stuckChild();
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><div>falsefalse</div></div></div>")
+      innerHTML('<div><div><div>falsefalse</div></div></div>')
     );
   });
 
-  it("Should keep order of nodes", () => {
+  it('Should keep order of nodes', () => {
     let setItems = null;
 
     class InnerComponentToGetUnmounted extends Component {
@@ -506,12 +506,12 @@ describe("Stateful Component updates", () => {
     }
 
     render(<Looper />, container);
-    expect(container.innerHTML).toBe(innerHTML("<div><ul></ul></div>"));
+    expect(container.innerHTML).toBe(innerHTML('<div><ul></ul></div>'));
     setItems([
-      { value: "val1", text: "key1" },
-      { value: "val2", text: "key2" },
-      { value: "val3", text: "key3" },
-      { value: "val4", text: "key4" }
+      { value: 'val1', text: 'key1' },
+      { value: 'val2', text: 'key2' },
+      { value: 'val3', text: 'key3' },
+      { value: 'val4', text: 'key4' }
     ]);
 
     expect(container.innerHTML).toBe(
@@ -521,8 +521,8 @@ describe("Stateful Component updates", () => {
     );
 
     setItems([
-      { value: "val2", text: "key2" },
-      { value: "val3", text: "key3" }
+      { value: 'val2', text: 'key2' },
+      { value: 'val3', text: 'key3' }
     ]);
     expect(container.innerHTML).toBe(
       innerHTML(
@@ -531,10 +531,10 @@ describe("Stateful Component updates", () => {
     );
 
     setItems([
-      { value: "val1", text: "key1" },
-      { value: "val2", text: "key2" },
-      { value: "val3", text: "key3" },
-      { value: "val4", text: "key4" }
+      { value: 'val1', text: 'key1' },
+      { value: 'val2', text: 'key2' },
+      { value: 'val3', text: 'key3' },
+      { value: 'val4', text: 'key4' }
     ]);
     expect(container.innerHTML).toBe(
       innerHTML(
@@ -543,10 +543,10 @@ describe("Stateful Component updates", () => {
     );
   });
 
-  it("Should not crash when patching array to array with hooks", () => {
+  it('Should not crash when patching array to array with hooks', () => {
     let updater = null;
-    const stuff = [<div>{["Test"]}</div>, <span>1</span>];
-    const orig = [[<span ref={function() {}}>{"1"}</span>]];
+    const stuff = [<div>{['Test']}</div>, <span>1</span>];
+    const orig = [[<span ref={function() {}}>{'1'}</span>]];
     class Stuff extends Component {
       constructor(props) {
         super(props);
@@ -572,15 +572,15 @@ describe("Stateful Component updates", () => {
     render(<Stuff />, container);
     updater(orig);
     expect(container.innerHTML).toBe(
-      innerHTML("<div><div><span>1</span></div></div>")
+      innerHTML('<div><div><span>1</span></div></div>')
     );
   });
 
-  it("Should allow camelCase properties when using JSX plugin", () => {
+  it('Should allow camelCase properties when using JSX plugin', () => {
     const fakeObj = {
       func() {}
     };
-    const submitSpy = sinon.spy(fakeObj, "func");
+    const submitSpy = sinon.spy(fakeObj, 'func');
 
     class Tester extends Component {
       constructor(props) {
@@ -606,12 +606,12 @@ describe("Stateful Component updates", () => {
     expect(innerHTML(container.innerHTML)).toEqual(
       innerHTML('<form><input id="inputId" type="text"></form>')
     );
-    const input = container.querySelector("#inputId");
+    const input = container.querySelector('#inputId');
     expect(sinon.assert.notCalled(submitSpy));
     input.focus();
   });
 
-  it("Should not append when replacing ES6 component with functional component", () => {
+  it('Should not append when replacing ES6 component with functional component', () => {
     const A = function() {
       return (
         <div>
@@ -681,16 +681,16 @@ describe("Stateful Component updates", () => {
     expect(container.innerHTML).toEqual(expectedB);
   });
 
-  it("Should not fail removing child of component node Github #1111", () => {
+  it('Should not fail removing child of component node Github #1111', () => {
     const InfoLi = function InfoLi(props) {
       return (
         <li>
-          {createElement("input", {
+          {createElement('input', {
             checked: props.check,
             type: props.type,
             label: props.label,
             onClick: props.onClick
-          })}{" "}
+          })}{' '}
           {props.label}: check, then uncheck
           <div>{props.children}</div>
         </li>
@@ -719,7 +719,7 @@ describe("Stateful Component updates", () => {
             {props.orderedConfigs.map((conf, index) => {
               const child =
                 this.state.checks[index] &&
-                createElement("div", null, "hi there");
+                createElement('div', null, 'hi there');
               return (
                 <InfoLi
                   label={conf}
@@ -738,9 +738,9 @@ describe("Stateful Component updates", () => {
       }
     }
 
-    render(<ConfigsList orderedConfigs={["use proxy?"]} />, container);
+    render(<ConfigsList orderedConfigs={['use proxy?']} />, container);
 
-    const input = container.querySelector("input");
+    const input = container.querySelector('input');
 
     input.click();
 

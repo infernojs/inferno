@@ -11,9 +11,9 @@ import {
   renderReporter,
   trackComponents,
   useStaticRendering
-} from "./observer";
-import { Provider } from "./Provider";
-import { EventEmitter } from "./utils/EventEmitter";
+} from './observer';
+import { Provider } from './Provider';
+import { EventEmitter } from './utils/EventEmitter';
 
 // THIS IS PORT OF AWESOME MOBX-REACT to INFERNO
 // LAST POINT OF PORT (4.2.2)

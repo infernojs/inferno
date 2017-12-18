@@ -1,13 +1,13 @@
-import { render } from "inferno";
-import { innerHTML } from "inferno-utils";
-import { MemoryRouter, Switch, Route, Redirect } from "inferno-router";
+import { render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
+import { MemoryRouter, Switch, Route, Redirect } from 'inferno-router';
 
-describe("Switch (jsx)", () => {
-  it("renders the first <Route> that matches the URL", () => {
-    const node = document.createElement("div");
+describe('Switch (jsx)', () => {
+  it('renders the first <Route> that matches the URL', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Route path="/one" render={() => <h1>one</h1>} />
           <Route path="/two" render={() => <h1>two</h1>} />
@@ -19,11 +19,11 @@ describe("Switch (jsx)", () => {
     expect(node.innerHTML).toMatch(/one/);
   });
 
-  it("renders the first <Redirect from> that matches the URL", () => {
-    const node = document.createElement("div");
+  it('renders the first <Redirect from> that matches the URL', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/three"]}>
+      <MemoryRouter initialEntries={['/three']}>
         <Switch>
           <Route path="/one" render={() => <h1>one</h1>} />
           <Redirect from="/four" to="/one" />
@@ -37,11 +37,11 @@ describe("Switch (jsx)", () => {
     expect(node.innerHTML).toMatch(/two/);
   });
 
-  it("does not render a second <Route> or <Redirect> that also matches the URL", () => {
-    const node = document.createElement("div");
+  it('does not render a second <Route> or <Redirect> that also matches the URL', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Route path="/one" render={() => <h1>one</h1>} />
           <Redirect from="/one" to="/two" />
@@ -55,11 +55,11 @@ describe("Switch (jsx)", () => {
     expect(node.innerHTML).not.toMatch(/two/);
   });
 
-  it("renders pathless Routes", () => {
-    const node = document.createElement("div");
+  it('renders pathless Routes', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/cupcakes"]}>
+      <MemoryRouter initialEntries={['/cupcakes']}>
         <Switch>
           <Route path="/bubblegum" render={() => <div>one</div>} />
           <Route render={() => <div>two</div>} />
@@ -68,15 +68,15 @@ describe("Switch (jsx)", () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain("one");
-    expect(node.innerHTML).toContain("two");
+    expect(node.innerHTML).not.toContain('one');
+    expect(node.innerHTML).toContain('two');
   });
 
-  it("handles from-less Redirects", () => {
-    const node = document.createElement("div");
+  it('handles from-less Redirects', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/cupcakes"]}>
+      <MemoryRouter initialEntries={['/cupcakes']}>
         <Switch>
           <Route path="/bubblegum" render={() => <div>bub</div>} />
           <Redirect to="/bubblegum" />
@@ -86,15 +86,15 @@ describe("Switch (jsx)", () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain("cup");
-    expect(node.innerHTML).toContain("bub");
+    expect(node.innerHTML).not.toContain('cup');
+    expect(node.innerHTML).toContain('bub');
   });
 
-  it("handles subsequent redirects", done => {
-    const node = document.createElement("div");
+  it('handles subsequent redirects', done => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Redirect exact from="/one" to="/two" />
           <Redirect exact from="/two" to="/three" />
@@ -106,23 +106,23 @@ describe("Switch (jsx)", () => {
     );
 
     // Inferno does last iteration async, thats why setTimeout here
-    expect(node.innerHTML).toBe("");
+    expect(node.innerHTML).toBe('');
 
     setTimeout(() => {
-      expect(node.innerHTML).toContain("three");
+      expect(node.innerHTML).toContain('three');
       done();
     }, 10);
   });
 
-  it("warns when redirecting to same route, both strings", () => {
-    const node = document.createElement("div");
+  it('warns when redirecting to same route, both strings', () => {
+    const node = document.createElement('div');
     let redirected = false;
     let done = false;
 
-    spyOn(console, "error");
+    spyOn(console, 'error');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Route
             path="/one"
@@ -142,20 +142,20 @@ describe("Switch (jsx)", () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain("done");
+    expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain("/one");
+    expect(console.error.calls.mostRecent().args[0]).toContain('/one');
   });
 
-  it("warns when redirecting to same route, mixed types", () => {
-    const node = document.createElement("div");
+  it('warns when redirecting to same route, mixed types', () => {
+    const node = document.createElement('div');
     let redirected = false;
     let done = false;
 
-    spyOn(console, "error");
+    spyOn(console, 'error');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Route
             path="/one"
@@ -168,7 +168,7 @@ describe("Switch (jsx)", () => {
               }
               done = true;
 
-              return <Redirect to={{ pathname: "/one" }} />;
+              return <Redirect to={{ pathname: '/one' }} />;
             }}
           />
         </Switch>
@@ -176,21 +176,21 @@ describe("Switch (jsx)", () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain("done");
+    expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain("/one");
+    expect(console.error.calls.mostRecent().args[0]).toContain('/one');
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one"/)
   });
 
-  it("warns when redirecting to same route, mixed types, string with query", () => {
-    const node = document.createElement("div");
+  it('warns when redirecting to same route, mixed types, string with query', () => {
+    const node = document.createElement('div');
     let redirected = false;
     let done = false;
 
-    spyOn(console, "error");
+    spyOn(console, 'error');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Route
             path="/one"
@@ -203,7 +203,7 @@ describe("Switch (jsx)", () => {
               }
               done = true;
 
-              return <Redirect to={{ pathname: "/one", search: "?utm=1" }} />;
+              return <Redirect to={{ pathname: '/one', search: '?utm=1' }} />;
             }}
           />
         </Switch>
@@ -211,21 +211,21 @@ describe("Switch (jsx)", () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain("done");
+    expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain("/one?utm=1");
+    expect(console.error.calls.mostRecent().args[0]).toContain('/one?utm=1');
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one\?utm=1"/)
   });
 
-  it("does NOT warn when redirecting to same route with different `search`", d => {
-    const node = document.createElement("div");
+  it('does NOT warn when redirecting to same route with different `search`', d => {
+    const node = document.createElement('div');
     let redirected = false;
     let done = false;
 
-    spyOn(console, "error");
+    spyOn(console, 'error');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Route
             path="/one"
@@ -234,11 +234,11 @@ describe("Switch (jsx)", () => {
 
               if (!redirected) {
                 redirected = true;
-                return <Redirect to={{ pathname: "/one", search: "?utm=1" }} />;
+                return <Redirect to={{ pathname: '/one', search: '?utm=1' }} />;
               }
               done = true;
 
-              return <Redirect to={{ pathname: "/one", search: "?utm=2" }} />;
+              return <Redirect to={{ pathname: '/one', search: '?utm=2' }} />;
             }}
           />
         </Switch>
@@ -247,21 +247,21 @@ describe("Switch (jsx)", () => {
     );
 
     // Inferno does last iteration async, thats why setTimeout here
-    expect(node.innerHTML).toBe("");
+    expect(node.innerHTML).toBe('');
     expect(console.error.calls.count()).toBe(0);
 
     setTimeout(() => {
-      expect(node.innerHTML).toContain("done");
+      expect(node.innerHTML).toContain('done');
       expect(console.error.calls.count()).toBe(0);
       d();
     }, 10);
   });
 
-  it("handles comments", () => {
-    const node = document.createElement("div");
+  it('handles comments', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/cupcakes"]}>
+      <MemoryRouter initialEntries={['/cupcakes']}>
         <Switch>
           <Route path="/bubblegum" render={() => <div>bub</div>} />
           {/* this is a comment */}
@@ -271,15 +271,15 @@ describe("Switch (jsx)", () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain("bub");
-    expect(node.innerHTML).toContain("cup");
+    expect(node.innerHTML).not.toContain('bub');
+    expect(node.innerHTML).toContain('cup');
   });
 
-  it("renders with non-element children", () => {
-    const node = document.createElement("div");
+  it('renders with non-element children', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
+      <MemoryRouter initialEntries={['/one']}>
         <Switch>
           <Route path="/one" render={() => <h1>one</h1>} />
           {false}
@@ -292,8 +292,8 @@ describe("Switch (jsx)", () => {
     expect(node.innerHTML).toMatch(/one/);
   });
 
-  it("throws with no <Router>", () => {
-    const node = document.createElement("div");
+  it('throws with no <Router>', () => {
+    const node = document.createElement('div');
     expect(() => {
       render(
         <Switch>
@@ -306,13 +306,13 @@ describe("Switch (jsx)", () => {
   });
 });
 
-describe("A <Switch location>", () => {
-  it("can use a `location` prop instead of `router.location`", () => {
-    const node = document.createElement("div");
+describe('A <Switch location>', () => {
+  it('can use a `location` prop instead of `router.location`', () => {
+    const node = document.createElement('div');
 
     render(
-      <MemoryRouter initialEntries={["/one"]}>
-        <Switch location={{ pathname: "/two" }}>
+      <MemoryRouter initialEntries={['/one']}>
+        <Switch location={{ pathname: '/two' }}>
           <Route path="/one" render={() => <h1>one</h1>} />
           <Route path="/two" render={() => <h1>two</h1>} />
         </Switch>
@@ -323,9 +323,9 @@ describe("A <Switch location>", () => {
     expect(node.innerHTML).toMatch(/two/);
   });
 
-  describe("children", () => {
-    it("passes location prop to matched <Route>", () => {
-      const node = document.createElement("div");
+  describe('children', () => {
+    it('passes location prop to matched <Route>', () => {
+      const node = document.createElement('div');
 
       let propLocation;
       const RouteHoneytrap = props => {
@@ -333,9 +333,9 @@ describe("A <Switch location>", () => {
         return <Route {...props} />;
       };
 
-      const switchLocation = { pathname: "/two" };
+      const switchLocation = { pathname: '/two' };
       render(
-        <MemoryRouter initialEntries={["/one"]}>
+        <MemoryRouter initialEntries={['/one']}>
           <Switch location={switchLocation}>
             <Route path="/one" render={() => <h1>one</h1>} />
             <RouteHoneytrap path="/two" render={() => <h1>two</h1>} />

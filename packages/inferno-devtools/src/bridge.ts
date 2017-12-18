@@ -2,15 +2,15 @@
  * @module Inferno-Devtools
  */ /** TypeDoc Comment */
 
-import { options } from "inferno";
+import { options } from 'inferno';
 import {
   isArray,
   isInvalid,
   isObject,
   isStringOrNumber,
   isUndefined
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 function findVNodeFromDom(vNode, dom) {
   if (!vNode) {
@@ -235,7 +235,9 @@ export function createDevToolsBridge() {
 }
 
 function isRootVNode(vNode) {
-    return Boolean(vNode.dom && vNode.dom.parentNode && options.roots.has(vNode.dom.parentNode));
+  return Boolean(
+    vNode.dom && vNode.dom.parentNode && options.roots.has(vNode.dom.parentNode)
+  );
 }
 
 /**
@@ -271,7 +273,7 @@ function updateReactComponent(vNode, parentDom) {
 }
 
 function isInvalidChild(child) {
-  return isInvalid(child) || child === "";
+  return isInvalid(child) || child === '';
 }
 
 function normalizeChildren(children, dom) {
@@ -280,7 +282,7 @@ function normalizeChildren(children, dom) {
       .filter(child => !isInvalidChild(child))
       .map(child => updateReactComponent(child, dom));
   } else {
-    return !(isInvalidChild(children) || children === "")
+    return !(isInvalidChild(children) || children === '')
       ? [updateReactComponent(children, dom)]
       : [];
   }
@@ -323,7 +325,7 @@ function createReactDOMComponent(vNode, parentDom) {
 }
 
 function normalizeKey(key) {
-  if (key && key[0] === ".") {
+  if (key && key[0] === '.') {
     return null;
   }
 }
@@ -381,7 +383,7 @@ function createReactCompositeComponent(vNode, isFirstCreation) {
 }
 
 function nextRootKey(roots) {
-  return "." + Object.keys(roots).length;
+  return '.' + Object.keys(roots).length;
 }
 
 /**
@@ -410,7 +412,7 @@ function visitNonCompositeChildren(component, visitor?) {
  * Return the name of a component created by a `ReactElement`-like object.
  */
 function typeName(type) {
-  if (typeof type === "function") {
+  if (typeof type === 'function') {
     return type.displayName || type.name;
   }
   return type;

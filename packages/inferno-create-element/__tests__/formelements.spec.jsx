@@ -1,22 +1,22 @@
-import { Component, linkEvent, render } from "inferno";
-import sinon from "sinon";
-import { triggerEvent } from "inferno-utils";
+import { Component, linkEvent, render } from 'inferno';
+import sinon from 'sinon';
+import { triggerEvent } from 'inferno-utils';
 
-describe("FormElements", () => {
+describe('FormElements', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(() => {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  describe("text input", () => {
+  describe('text input', () => {
     class TextBox extends Component {
       constructor(props) {
         super(props);
@@ -31,34 +31,34 @@ describe("FormElements", () => {
       }
     }
 
-    it("Should set value as text on render", () => {
+    it('Should set value as text on render', () => {
       render(<TextBox value={1} />, container);
-      expect(container.querySelector("input").value).toBe("1");
+      expect(container.querySelector('input').value).toBe('1');
     });
 
-    it("Should override changed value on next render", () => {
+    it('Should override changed value on next render', () => {
       render(<TextBox value={1} />, container);
-      let input = container.querySelector("input");
-      expect(input.value).toBe("1");
-      input.value = "2"; // Simulate user typing '2'
-      expect(input.value).toBe("2");
+      let input = container.querySelector('input');
+      expect(input.value).toBe('1');
+      input.value = '2'; // Simulate user typing '2'
+      expect(input.value).toBe('2');
       render(<TextBox value={3} />, container);
-      input = container.querySelector("input");
-      expect(input.value).toBe("3");
+      input = container.querySelector('input');
+      expect(input.value).toBe('3');
     });
 
-    it("Should override changed value on next render even when value is same as on prev render", () => {
+    it('Should override changed value on next render even when value is same as on prev render', () => {
       render(<TextBox value={1} />, container);
-      let input = container.querySelector("input");
-      expect(input.value).toBe("1");
-      input.value = "2"; // Simulate user typing '2'
-      expect(input.value).toBe("2");
+      let input = container.querySelector('input');
+      expect(input.value).toBe('1');
+      input.value = '2'; // Simulate user typing '2'
+      expect(input.value).toBe('2');
       render(<TextBox value={1} />, container);
-      input = container.querySelector("input");
-      expect(input.value).toBe("1");
+      input = container.querySelector('input');
+      expect(input.value).toBe('1');
     });
 
-    it("Controlled - oninput - Should have updated props in onInput callbacks", () => {
+    it('Controlled - oninput - Should have updated props in onInput callbacks', () => {
       class Example extends Component {
         constructor(props, context) {
           super(props, context);
@@ -79,8 +79,8 @@ describe("FormElements", () => {
 
       render(<Example callback={spy} value={1} />, container);
 
-      let event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      let event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -89,15 +89,15 @@ describe("FormElements", () => {
       // Then update component
       render(<Example callback={spy} value={2} />, container);
 
-      event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
       expect(spy.args[1][0]).toBe(2); // Verify props have changed
     });
 
-    it("Controlled - onInput - Should have updated props in onInput callbacks", () => {
+    it('Controlled - onInput - Should have updated props in onInput callbacks', () => {
       class Example extends Component {
         constructor(props, context) {
           super(props, context);
@@ -118,8 +118,8 @@ describe("FormElements", () => {
 
       render(<Example callback={spy} value={1} />, container);
 
-      let event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      let event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -128,15 +128,15 @@ describe("FormElements", () => {
       // Then update component
       render(<Example callback={spy} value={2} />, container);
 
-      event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
       expect(spy.args[1][0]).toBe(2); // Verify props have changed
     });
 
-    it("Controlled - onInput - Should have updated props in onInput callbacks in setState callback", () => {
+    it('Controlled - onInput - Should have updated props in onInput callbacks in setState callback', () => {
       class Example extends Component {
         constructor(props, context) {
           super(props, context);
@@ -170,8 +170,8 @@ describe("FormElements", () => {
 
       render(<Example callback={spy} value={1} />, container);
 
-      let event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      let event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -180,8 +180,8 @@ describe("FormElements", () => {
       // Then update component
       render(<Example callback={spy} value={2} />, container);
 
-      event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
@@ -189,7 +189,7 @@ describe("FormElements", () => {
       expect(spy.args[1][1]).toBe(2); // Verify state have changed
     });
 
-    it("Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks", () => {
+    it('Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
       class Example extends Component {
         constructor(props, context) {
           super(props, context);
@@ -214,8 +214,8 @@ describe("FormElements", () => {
 
       render(<Example callback={spy} value={1} />, container);
 
-      let event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      let event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -224,15 +224,15 @@ describe("FormElements", () => {
       // Then update component
       render(<Example callback={spy} value={2} />, container);
 
-      event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
       expect(spy.args[1][0]).toBe(2); // Verify props have changed
     });
 
-    it("NON Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks", () => {
+    it('NON Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
       class Example extends Component {
         constructor(props, context) {
           super(props, context);
@@ -253,8 +253,8 @@ describe("FormElements", () => {
 
       render(<Example callback={spy} value={1} />, container);
 
-      let event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      let event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -263,15 +263,15 @@ describe("FormElements", () => {
       // Then update component
       render(<Example callback={spy} value={2} />, container);
 
-      event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
       expect(spy.args[1][0]).toBe(2); // Verify props have changed
     });
 
-    it("NON Controlled - onInput - Should have updated props in onInput callbacks", () => {
+    it('NON Controlled - onInput - Should have updated props in onInput callbacks', () => {
       class Example extends Component {
         constructor(props, context) {
           super(props, context);
@@ -292,8 +292,8 @@ describe("FormElements", () => {
 
       render(<Example callback={spy} value={1} />, container);
 
-      let event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      let event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -302,15 +302,15 @@ describe("FormElements", () => {
       // Then update component
       render(<Example callback={spy} value={2} />, container);
 
-      event = document.createEvent("Event");
-      event.initEvent("input", true, true);
+      event = document.createEvent('Event');
+      event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
       expect(spy.args[1][0]).toBe(2); // Verify props have changed
     });
 
-    it("Controlled - onChange (linkEvent) - Should have updated props in onInput callbacks", () => {
+    it('Controlled - onChange (linkEvent) - Should have updated props in onInput callbacks', () => {
       class Example extends Component {
         constructor(props, context) {
           super(props, context);
@@ -335,8 +335,8 @@ describe("FormElements", () => {
 
       render(<Example callback={spy} value={1} />, container);
 
-      let event = document.createEvent("Event");
-      event.initEvent("change", true, true);
+      let event = document.createEvent('Event');
+      event.initEvent('change', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -345,8 +345,8 @@ describe("FormElements", () => {
       // Then update component
       render(<Example callback={spy} value={2} />, container);
 
-      event = document.createEvent("Event");
-      event.initEvent("change", true, true);
+      event = document.createEvent('Event');
+      event.initEvent('change', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
@@ -354,7 +354,7 @@ describe("FormElements", () => {
     });
   });
 
-  describe("input type checkbox", () => {
+  describe('input type checkbox', () => {
     class CheckBox extends Component {
       constructor(props) {
         super(props);
@@ -369,54 +369,54 @@ describe("FormElements", () => {
       }
     }
 
-    it("Should set checked on render", () => {
+    it('Should set checked on render', () => {
       render(<CheckBox checked={true} />, container);
-      expect(container.querySelector("input").checked).toBe(true);
+      expect(container.querySelector('input').checked).toBe(true);
     });
 
-    it("Should set checked on render #2", () => {
+    it('Should set checked on render #2', () => {
       render(<CheckBox checked={false} />, container);
-      expect(container.querySelector("input").checked).toBe(false);
+      expect(container.querySelector('input').checked).toBe(false);
     });
 
-    it("Should set checked on render #3", () => {
+    it('Should set checked on render #3', () => {
       render(<CheckBox />, container);
-      expect(container.querySelector("input").checked).toBe(false);
+      expect(container.querySelector('input').checked).toBe(false);
     });
 
-    it("Should override changed value on next render", () => {
+    it('Should override changed value on next render', () => {
       render(<CheckBox checked={false} />, container);
-      let input = container.querySelector("input");
+      let input = container.querySelector('input');
       expect(input.checked).toBe(false);
       input.checked = false; // Simulate user clicking checkbox twice
       render(<CheckBox checked={true} />, container);
-      input = container.querySelector("input");
+      input = container.querySelector('input');
       expect(input.checked).toBe(true);
     });
 
-    it("Should override changed value on next render even when value is same as on prev render", () => {
+    it('Should override changed value on next render even when value is same as on prev render', () => {
       render(<CheckBox checked={false} />, container);
-      let input = container.querySelector("input");
+      let input = container.querySelector('input');
       expect(input.checked).toBe(false);
       input.checked = true; // Simulate user clicking checkbox
       expect(input.checked).toBe(true);
       render(<CheckBox checked={false} />, container);
-      input = container.querySelector("input");
+      input = container.querySelector('input');
       expect(input.checked).toBe(false);
     });
 
-    it("Should override changed value on next render even when value is same as on prev render #1", () => {
+    it('Should override changed value on next render even when value is same as on prev render #1', () => {
       render(<CheckBox checked={true} />, container);
-      let input = container.querySelector("input");
+      let input = container.querySelector('input');
       expect(input.checked).toBe(true);
       input.checked = false; // Simulate user clicking checkbox
       expect(input.checked).toBe(false);
       render(<CheckBox checked={true} />, container);
-      input = container.querySelector("input");
+      input = container.querySelector('input');
       expect(input.checked).toBe(true);
     });
 
-    it("Should support indeterminate state", () => {
+    it('Should support indeterminate state', () => {
       let input;
 
       render(
@@ -461,8 +461,8 @@ describe("FormElements", () => {
   });
 
   // https://facebook.github.io/react/docs/forms.html
-  describe("React form spec", () => {
-    describe("Controlled select list", () => {
+  describe('React form spec', () => {
+    describe('Controlled select list', () => {
       class SelectList extends Component {
         constructor(props) {
           super(props);
@@ -481,30 +481,30 @@ describe("FormElements", () => {
         }
       }
 
-      it("Should pre select option by value", () => {
+      it('Should pre select option by value', () => {
         render(<SelectList value="B" />, container);
-        const selectList = container.querySelector("select");
+        const selectList = container.querySelector('select');
         expect(selectList.childNodes[0].selected).toBe(false);
         expect(selectList.childNodes[1].selected).toBe(true);
         expect(selectList.childNodes[2].selected).toBe(false);
       });
 
-      it("Should change value based on value property", () => {
+      it('Should change value based on value property', () => {
         render(<SelectList value="B" />, container);
-        let selectList = container.querySelector("select");
+        let selectList = container.querySelector('select');
         expect(selectList.childNodes[0].selected).toBe(false);
         expect(selectList.childNodes[1].selected).toBe(true);
         expect(selectList.childNodes[2].selected).toBe(false);
 
         render(<SelectList value="C" />, container);
-        selectList = container.querySelector("select");
+        selectList = container.querySelector('select');
         expect(selectList.childNodes[0].selected).toBe(false);
         expect(selectList.childNodes[1].selected).toBe(false);
         expect(selectList.childNodes[2].selected).toBe(true);
       });
     });
 
-    describe("Controlled select list updates", () => {
+    describe('Controlled select list updates', () => {
       let updater;
 
       class SelectList extends Component {
@@ -512,7 +512,7 @@ describe("FormElements", () => {
           super(props);
 
           this.state = {
-            value: "A"
+            value: 'A'
           };
 
           updater = e => {
@@ -539,16 +539,16 @@ describe("FormElements", () => {
         }
       }
 
-      it("Should pre select option by value on update", done => {
+      it('Should pre select option by value on update', done => {
         render(<SelectList />, container);
-        let selectList = container.querySelector("select");
+        let selectList = container.querySelector('select');
         expect(selectList.childNodes[0].selected).toBe(true);
         expect(selectList.childNodes[1].selected).toBe(false);
         expect(selectList.childNodes[2].selected).toBe(false);
 
-        updater({ value: "B" });
+        updater({ value: 'B' });
         setTimeout(() => {
-          selectList = container.querySelector("select");
+          selectList = container.querySelector('select');
           expect(selectList.childNodes[0].selected).toBe(false);
           expect(selectList.childNodes[1].selected).toBe(true);
           expect(selectList.childNodes[2].selected).toBe(false);
@@ -557,8 +557,8 @@ describe("FormElements", () => {
       });
     });
 
-    describe("input range scu", () => {
-      it("Should have correct value on initial render", () => {
+    describe('input range scu', () => {
+      it('Should have correct value on initial render', () => {
         class TestInputRange extends Component {
           shouldComponentUpdate() {
             return false;
@@ -579,11 +579,11 @@ describe("FormElements", () => {
         }
         render(<TestInputRange />, container);
 
-        expect(container.firstChild.value).toBe("260");
-        expect(container.firstChild.defaultValue).toBe("260");
+        expect(container.firstChild.value).toBe('260');
+        expect(container.firstChild.defaultValue).toBe('260');
       });
 
-      it("Should have defaultValue even when defaultValue is omitted, if value exists", () => {
+      it('Should have defaultValue even when defaultValue is omitted, if value exists', () => {
         class TestInputRange extends Component {
           shouldComponentUpdate() {
             return false;
@@ -604,13 +604,13 @@ describe("FormElements", () => {
         }
         render(<TestInputRange />, container);
 
-        expect(container.firstChild.value).toBe("110");
-        expect(container.firstChild.defaultValue).toBe("110");
+        expect(container.firstChild.value).toBe('110');
+        expect(container.firstChild.defaultValue).toBe('110');
       });
     });
 
-    describe("Non-controlled select element", () => {
-      it("Should have 2nd option selected", () => {
+    describe('Non-controlled select element', () => {
+      it('Should have 2nd option selected', () => {
         render(
           <select>
             <option value="a">a</option>
@@ -625,7 +625,7 @@ describe("FormElements", () => {
         expect(container.firstChild.children[1].selected).toBe(true);
       });
 
-      it("should render specified default selected option", () => {
+      it('should render specified default selected option', () => {
         render(
           <div>
             <select>
@@ -638,17 +638,17 @@ describe("FormElements", () => {
           container
         );
 
-        expect(container.querySelector("select").children[0].selected).toEqual(
+        expect(container.querySelector('select').children[0].selected).toEqual(
           false
         );
-        expect(container.querySelector("select").children[1].selected).toEqual(
+        expect(container.querySelector('select').children[1].selected).toEqual(
           true
         );
       });
     });
 
-    describe("callbacks with FormElements", () => {
-      it("Should call latest calback from props", () => {
+    describe('callbacks with FormElements', () => {
+      it('Should call latest calback from props', () => {
         class CompA extends Component {
           constructor(props) {
             super(props);
@@ -701,20 +701,20 @@ describe("FormElements", () => {
         expect(container.firstChild.firstChild.checked).toBe(false);
         // expect(container.querySelectorAll('input:checked').length).toEqual(1);
 
-        let input = container.querySelector("input");
+        let input = container.querySelector('input');
         input.click();
 
         expect(container.firstChild.firstChild.checked).toBe(true);
         // expect(container.querySelectorAll('input:checked').length).toEqual(2);
 
-        input = container.querySelector("input");
+        input = container.querySelector('input');
         input.click();
 
         expect(container.firstChild.firstChild.checked).toBe(false);
         // expect(container.querySelectorAll('input:checked').length).toEqual(1);
       });
 
-      it("Github - 1023 It should call recent callback from input", done => {
+      it('Github - 1023 It should call recent callback from input', done => {
         class Foobar extends Component {
           constructor(props) {
             super(props);
@@ -724,7 +724,7 @@ describe("FormElements", () => {
 
           handleChange(event) {
             this.setState({
-              error: "test " + event.currentTarget.value
+              error: 'test ' + event.currentTarget.value
             });
             this.props.onChange(this.props.name, event.currentTarget.value);
           }
@@ -733,7 +733,7 @@ describe("FormElements", () => {
             return (
               <div
                 className="inputContainer"
-                style={{ width: this.props.width ? this.props.width : "100%" }}
+                style={{ width: this.props.width ? this.props.width : '100%' }}
               >
                 <div className="label">{this.props.label}&nbsp;</div>
                 <input
@@ -757,21 +757,21 @@ describe("FormElements", () => {
         const spy = sinon.spy(obj.func);
 
         render(<Foobar onChange={spy} />, container);
-        const input = container.querySelector("input");
+        const input = container.querySelector('input');
 
-        input.value = "foo";
+        input.value = 'foo';
 
-        triggerEvent("change", input);
+        triggerEvent('change', input);
 
         expect(spy.calledOnce).toBe(true);
-        expect(spy.args[0][1]).toBe("foo");
+        expect(spy.args[0][1]).toBe('foo');
 
-        input.value = "bar";
+        input.value = 'bar';
 
-        triggerEvent("change", input);
+        triggerEvent('change', input);
 
         expect(spy.calledTwice).toBe(true);
-        expect(spy.args[1][1]).toBe("bar");
+        expect(spy.args[1][1]).toBe('bar');
 
         done();
       });
@@ -835,18 +835,18 @@ describe("FormElements", () => {
       // 	});
     });
 
-    describe("Controlled inputs, checkbox", () => {
-      it("Should keep unChecked if checked is false", () => {
+    describe('Controlled inputs, checkbox', () => {
+      it('Should keep unChecked if checked is false', () => {
         render(
           <label>
-            <input type="checkbox" checked={false} name="test" value="test" />{" "}
+            <input type="checkbox" checked={false} name="test" value="test" />{' '}
             test
           </label>,
           container
         );
 
         // Verify its not checked
-        const input = container.querySelector("input");
+        const input = container.querySelector('input');
 
         expect(input.checked).toBe(false);
 
@@ -855,7 +855,7 @@ describe("FormElements", () => {
         expect(input.checked).toBe(false);
       });
 
-      it("Should be possible to control checkbox by props", () => {
+      it('Should be possible to control checkbox by props', () => {
         class ComponentTest extends Component {
           constructor(props) {
             super(props);
@@ -876,10 +876,10 @@ describe("FormElements", () => {
 
         render(<ComponentTest />, container);
 
-        expect(container.querySelectorAll("input").length).toBe(1);
+        expect(container.querySelectorAll('input').length).toBe(1);
 
-        const input = container.querySelector("input");
-        const button = container.querySelector("button");
+        const input = container.querySelector('input');
+        const button = container.querySelector('button');
 
         expect(input.checked).toBe(false);
 
@@ -888,7 +888,7 @@ describe("FormElements", () => {
         expect(input.checked).toBe(true);
       });
 
-      it("Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state)", () => {
+      it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state)', () => {
         let changeToValue = true;
 
         class ComponentTest extends Component {
@@ -916,9 +916,9 @@ describe("FormElements", () => {
 
         render(<ComponentTest />, container);
 
-        expect(container.querySelectorAll("input").length).toBe(1);
+        expect(container.querySelectorAll('input').length).toBe(1);
 
-        const input = container.querySelector("input");
+        const input = container.querySelector('input');
 
         expect(input.checked).toBe(true);
 
@@ -934,7 +934,7 @@ describe("FormElements", () => {
       });
 
       /* Same test as above, but in opposite order */
-      it("Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state) #2", () => {
+      it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state) #2', () => {
         let changeToValue = false;
 
         class ComponentTest extends Component {
@@ -962,9 +962,9 @@ describe("FormElements", () => {
 
         render(<ComponentTest />, container);
 
-        expect(container.querySelectorAll("input").length).toBe(1);
+        expect(container.querySelectorAll('input').length).toBe(1);
 
-        const input = container.querySelector("input");
+        const input = container.querySelector('input');
 
         expect(input.checked).toBe(false); // Initially false
 

@@ -1,12 +1,12 @@
-import { render, Component } from "inferno";
-import { innerHTML } from "inferno-utils";
-import { MemoryRouter, StaticRouter, Route, withRouter } from "inferno-router";
+import { render, Component } from 'inferno';
+import { innerHTML } from 'inferno-utils';
+import { MemoryRouter, StaticRouter, Route, withRouter } from 'inferno-router';
 
-describe("withRouter", () => {
+describe('withRouter', () => {
   let node;
 
   beforeEach(function() {
-    node = document.createElement("div");
+    node = document.createElement('div');
     document.body.appendChild(node);
   });
 
@@ -15,23 +15,23 @@ describe("withRouter", () => {
     document.body.removeChild(node);
   });
 
-  it("provides { match, location, history } props", () => {
+  it('provides { match, location, history } props', () => {
     const PropsChecker = withRouter(props => {
-      expect(typeof props.match).toBe("object");
-      expect(typeof props.location).toBe("object");
-      expect(typeof props.history).toBe("object");
+      expect(typeof props.match).toBe('object');
+      expect(typeof props.location).toBe('object');
+      expect(typeof props.history).toBe('object');
       return null;
     });
 
     render(
-      <MemoryRouter initialEntries={["/bubblegum"]}>
+      <MemoryRouter initialEntries={['/bubblegum']}>
         <Route path="/bubblegum" render={() => <PropsChecker />} />
       </MemoryRouter>,
       node
     );
   });
 
-  it("provides the parent match as a prop to the wrapped component", () => {
+  it('provides the parent match as a prop to the wrapped component', () => {
     let parentMatch;
     const PropsChecker = withRouter(props => {
       expect(props.match).toEqual(parentMatch);
@@ -39,7 +39,7 @@ describe("withRouter", () => {
     });
 
     render(
-      <MemoryRouter initialEntries={["/bubblegum"]}>
+      <MemoryRouter initialEntries={['/bubblegum']}>
         <Route
           path="/:flavor"
           render={({ match }) => {
@@ -52,10 +52,10 @@ describe("withRouter", () => {
     );
   });
 
-  describe("inside a <StaticRouter>", () => {
-    it("provides the staticContext prop", () => {
+  describe('inside a <StaticRouter>', () => {
+    it('provides the staticContext prop', () => {
       const PropsChecker = withRouter(props => {
-        expect(typeof props.staticContext).toBe("object");
+        expect(typeof props.staticContext).toBe('object');
         expect(props.staticContext).toBe(context);
         return null;
       });
@@ -71,13 +71,13 @@ describe("withRouter", () => {
     });
   });
 
-  it("exposes the wrapped component as WrappedComponent", () => {
+  it('exposes the wrapped component as WrappedComponent', () => {
     const TestComponent = () => <div />;
     const decorated = withRouter(TestComponent);
     expect(decorated.WrappedComponent).toBe(TestComponent);
   });
 
-  it("exposes the instance of the wrapped component via wrappedComponentRef", () => {
+  it('exposes the instance of the wrapped component via wrappedComponentRef', () => {
     class WrappedComponent extends Component {
       render() {
         return null;
@@ -87,7 +87,7 @@ describe("withRouter", () => {
 
     let ref;
     render(
-      <MemoryRouter initialEntries={["/bubblegum"]}>
+      <MemoryRouter initialEntries={['/bubblegum']}>
         <Route
           path="/bubblegum"
           render={() => <TestComponent wrappedComponentRef={r => (ref = r)} />}
@@ -99,22 +99,22 @@ describe("withRouter", () => {
     expect(ref instanceof Component).toBe(true);
   });
 
-  it("hoists non-react statics from the wrapped component", () => {
+  it('hoists non-react statics from the wrapped component', () => {
     class TestComponent extends Component {
       static foo() {
-        return "bar";
+        return 'bar';
       }
 
       render() {
         return null;
       }
     }
-    TestComponent.hello = "world";
+    TestComponent.hello = 'world';
 
     const decorated = withRouter(TestComponent);
 
-    expect(decorated.hello).toBe("world");
-    expect(typeof decorated.foo).toBe("function");
-    expect(decorated.foo()).toBe("bar");
+    expect(decorated.hello).toBe('world');
+    expect(typeof decorated.foo).toBe('function');
+    expect(decorated.foo()).toBe('bar');
   });
 });

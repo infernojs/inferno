@@ -2,12 +2,12 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isNullOrUndef } from "inferno-shared";
-import { createWrappedFunction } from "./wrapper";
+import { isNullOrUndef } from 'inferno-shared';
+import { createWrappedFunction } from './wrapper';
 
-const onTextareaInputChange = createWrappedFunction("onInput", applyValue);
+const onTextareaInputChange = createWrappedFunction('onInput', applyValue);
 
-const wrappedOnChange = createWrappedFunction("onChange");
+const wrappedOnChange = createWrappedFunction('onChange');
 
 export function processTextarea(
   vNode,
@@ -43,9 +43,9 @@ export function applyValue(nextPropsOrEmpty, dom, mounting: boolean) {
           dom.defaultValue = defaultValue;
           dom.value = defaultValue;
         }
-      } else if (domValue !== "") {
-        dom.defaultValue = "";
-        dom.value = "";
+      } else if (domValue !== '') {
+        dom.defaultValue = '';
+        dom.value = '';
       }
     }
   } else {

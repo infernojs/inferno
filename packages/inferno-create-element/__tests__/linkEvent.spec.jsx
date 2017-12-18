@@ -1,20 +1,20 @@
-import { Component, linkEvent, render } from "inferno";
+import { Component, linkEvent, render } from 'inferno';
 
-describe("linkEvent", () => {
+describe('linkEvent', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  describe("linkEvent on a button (onClick)", () => {
+  describe('linkEvent on a button (onClick)', () => {
     let test;
 
     function handleOnClick(props) {
@@ -31,19 +31,19 @@ describe("linkEvent", () => {
       }
     }
 
-    it("should work correctly for functional components", () => {
+    it('should work correctly for functional components', () => {
       render(<FunctionalComponent test="123" />, container);
-      container.querySelector("button").click();
-      expect(test).toBe("123");
+      container.querySelector('button').click();
+      expect(test).toBe('123');
     });
 
-    it("should work correctly for stateful components", () => {
+    it('should work correctly for stateful components', () => {
       render(<StatefulComponent test="456" />, container);
-      container.querySelector("button").click();
-      expect(test).toBe("456");
+      container.querySelector('button').click();
+      expect(test).toBe('456');
     });
 
-    it("Should not fail when given event is invalid", () => {
+    it('Should not fail when given event is invalid', () => {
       render(<div onClick={linkEvent({ number: 1 }, null)} />, container);
       container.firstChild.click();
       render(<div onClick={linkEvent({ number: 1 }, undefined)} />, container);
@@ -57,7 +57,7 @@ describe("linkEvent", () => {
     });
   });
 
-  describe("linkEvent on a button (onclick) - no delegation", () => {
+  describe('linkEvent on a button (onclick) - no delegation', () => {
     let test;
 
     function handleOnClick(props) {
@@ -74,27 +74,27 @@ describe("linkEvent", () => {
       }
     }
 
-    it("should work correctly for functional components", () => {
+    it('should work correctly for functional components', () => {
       render(<FunctionalComponent test="123" />, container);
-      container.querySelector("button").click();
-      expect(test).toBe("123");
+      container.querySelector('button').click();
+      expect(test).toBe('123');
     });
 
-    it("should work correctly for stateful components", () => {
+    it('should work correctly for stateful components', () => {
       render(<StatefulComponent test="456" />, container);
-      container.querySelector("button").click();
-      expect(test).toBe("456");
+      container.querySelector('button').click();
+      expect(test).toBe('456');
     });
   });
 
-  describe("linkEvent on a input (onInput)", () => {
+  describe('linkEvent on a input (onInput)', () => {
     let test;
     let event;
 
     function simulateInput(elm, text) {
-      if (typeof Event !== "undefined") {
-        const newEvent = document.createEvent("Event");
-        newEvent.initEvent("input", true, true);
+      if (typeof Event !== 'undefined') {
+        const newEvent = document.createEvent('Event');
+        newEvent.initEvent('input', true, true);
 
         elm.dispatchEvent(newEvent);
       } else {
@@ -127,22 +127,22 @@ describe("linkEvent", () => {
       }
     }
 
-    it("should work correctly for functional components", () => {
+    it('should work correctly for functional components', () => {
       render(<FunctionalComponent test="123" />, container);
-      simulateInput(container.querySelector("input"), "123");
-      expect(test).toBe("123");
-      expect(event.target.nodeName).toBe("INPUT");
+      simulateInput(container.querySelector('input'), '123');
+      expect(test).toBe('123');
+      expect(event.target.nodeName).toBe('INPUT');
     });
 
-    it("should work correctly for stateful components", () => {
+    it('should work correctly for stateful components', () => {
       render(<StatefulComponent test="456" />, container);
-      simulateInput(container.querySelector("input"), "123");
-      expect(test).toBe("456");
-      expect(event.target.nodeName).toBe("INPUT");
+      simulateInput(container.querySelector('input'), '123');
+      expect(test).toBe('456');
+      expect(event.target.nodeName).toBe('INPUT');
     });
   });
 
-  describe("linkEvent on a input (onfocus and onblur) - no delegation", () => {
+  describe('linkEvent on a input (onfocus and onblur) - no delegation', () => {
     let isFocus;
     let isBlur;
 
@@ -158,8 +158,8 @@ describe("linkEvent", () => {
       return (
         <div>
           <input
-            onfocus={linkEvent("1234", handleOnFocus)}
-            onblur={linkEvent("4321", handleOnBlur)}
+            onfocus={linkEvent('1234', handleOnFocus)}
+            onblur={linkEvent('4321', handleOnBlur)}
           />
         </div>
       );
@@ -170,8 +170,8 @@ describe("linkEvent", () => {
         return (
           <div>
             <input
-              onfocus={linkEvent("1234", handleOnFocus)}
-              onblur={linkEvent("4321", handleOnBlur)}
+              onfocus={linkEvent('1234', handleOnFocus)}
+              onblur={linkEvent('4321', handleOnBlur)}
             />
           </div>
         );
@@ -179,9 +179,9 @@ describe("linkEvent", () => {
     }
 
     function simulateFocus(elm) {
-      if (typeof Event !== "undefined") {
-        const newEvent = document.createEvent("UIEvent");
-        newEvent.initEvent("focus", true, true);
+      if (typeof Event !== 'undefined') {
+        const newEvent = document.createEvent('UIEvent');
+        newEvent.initEvent('focus', true, true);
 
         elm.dispatchEvent(newEvent);
       } else {
@@ -190,9 +190,9 @@ describe("linkEvent", () => {
     }
 
     function simulateBlur(elm) {
-      if (typeof Event !== "undefined") {
-        const newEvent = document.createEvent("UIEvent");
-        newEvent.initEvent("blur", true, true);
+      if (typeof Event !== 'undefined') {
+        const newEvent = document.createEvent('UIEvent');
+        newEvent.initEvent('blur', true, true);
 
         elm.dispatchEvent(newEvent);
       } else {
@@ -200,29 +200,29 @@ describe("linkEvent", () => {
       }
     }
 
-    it("should work correctly for functional components", done => {
+    it('should work correctly for functional components', done => {
       render(<FunctionalComponent />, container);
-      const input = container.querySelector("input");
+      const input = container.querySelector('input');
       simulateFocus(input);
       requestAnimationFrame(() => {
         simulateBlur(input);
         requestAnimationFrame(() => {
-          expect(isFocus).toBe("1234");
-          expect(isBlur).toBe("4321");
+          expect(isFocus).toBe('1234');
+          expect(isBlur).toBe('4321');
           done();
         });
       });
     });
 
-    it("should work correctly for stateful components", done => {
+    it('should work correctly for stateful components', done => {
       render(<StatefulComponent />, container);
-      const input = container.querySelector("input");
+      const input = container.querySelector('input');
       simulateFocus(input);
       requestAnimationFrame(() => {
         simulateBlur(input);
         requestAnimationFrame(() => {
-          expect(isFocus).toBe("1234");
-          expect(isBlur).toBe("4321");
+          expect(isFocus).toBe('1234');
+          expect(isBlur).toBe('4321');
           done();
         });
       });

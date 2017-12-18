@@ -51,7 +51,7 @@
     "print:size": "node scripts/bundle-size.js",
     "docs": "typedoc",
     "examples": "npm run --prefix examples start",
-    "lint": "tslint -p tsconfig.json --type-check",
+    "lint": "tslint -p tsconfig.json --project",
     "lint-staged": "lint-staged",
     "publish": "lerna publish --exact --force-publish=* --skip-git --skip-npm && npm run build && npm run test && lerna publish --exact",
     "prepublishOnly": "npm run build",

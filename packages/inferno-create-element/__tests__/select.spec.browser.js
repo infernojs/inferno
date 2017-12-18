@@ -1,38 +1,38 @@
-import { render } from "inferno";
-import { createElement } from "inferno-create-element";
-import { innerHTML } from "inferno-utils";
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import { innerHTML } from 'inferno-utils';
 
-describe("Select / select multiple (non-JSX)", () => {
+describe('Select / select multiple (non-JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
   it('should render "select" boolean on select options with numbers', () => {
     const template = val =>
       createElement(
-        "select",
+        'select',
         {
           multiple: true,
           value: val
         },
         createElement(
-          "option",
+          'option',
           {
             value: 1
           },
           1
         ),
         createElement(
-          "option",
+          'option',
           {
             value: 2
           },
@@ -62,7 +62,7 @@ describe("Select / select multiple (non-JSX)", () => {
       )
     );
 
-    render(template("foo"), container);
+    render(template('foo'), container);
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(false);
@@ -118,28 +118,28 @@ describe("Select / select multiple (non-JSX)", () => {
   it('should render "select" boolean on select options #2 browser', () => {
     const template = val =>
       createElement(
-        "select",
+        'select',
         {
           multiple: true,
           value: val
         },
         createElement(
-          "option",
+          'option',
           {
-            value: "foo"
+            value: 'foo'
           },
-          "foo"
+          'foo'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "bar"
+            value: 'bar'
           },
-          "bar"
+          'bar'
         )
       );
 
-    render(template("foo"), container);
+    render(template('foo'), container);
     expect(container.firstChild.children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].selected).toEqual(false);
     expect(container.innerHTML).toBe(
@@ -150,28 +150,28 @@ describe("Select / select multiple (non-JSX)", () => {
     );
   });
 
-  it("should populate the value attribute on select multiple using groups", () => {
+  it('should populate the value attribute on select multiple using groups', () => {
     const template = val =>
       createElement(
-        "select",
+        'select',
         {
           multiple: true,
           value: val
         },
         createElement(
-          "optgroup",
-          { label: "foo-group" },
-          createElement("option", { value: "foo" })
+          'optgroup',
+          { label: 'foo-group' },
+          createElement('option', { value: 'foo' })
         ),
         createElement(
-          "optgroup",
-          { label: "bar-group", disabled: true },
-          createElement("option", { value: "bar" })
+          'optgroup',
+          { label: 'bar-group', disabled: true },
+          createElement('option', { value: 'bar' })
         )
       );
 
     // render(template(undefined), container);
-    render(template(["foo", "bar"]), container);
+    render(template(['foo', 'bar']), container);
 
     expect(container.firstChild.children[0].disabled).toEqual(false);
     expect(container.firstChild.children[1].disabled).toEqual(true);
@@ -202,7 +202,7 @@ describe("Select / select multiple (non-JSX)", () => {
       false
     );
 
-    render(template("foo"), container);
+    render(template('foo'), container);
 
     expect(container.firstChild.childNodes[0].innerHTML).toEqual(
       '<option value="foo"></option>'
@@ -216,7 +216,7 @@ describe("Select / select multiple (non-JSX)", () => {
       false
     );
 
-    render(template("bar"), container);
+    render(template('bar'), container);
 
     expect(container.firstChild.childNodes[0].innerHTML).toEqual(
       '<option value="foo"></option>'
@@ -250,28 +250,28 @@ describe("Select / select multiple (non-JSX)", () => {
   it('should render "select" boolean on select options #3 browser', () => {
     const template = val =>
       createElement(
-        "select",
+        'select',
         {
           multiple: true,
           value: val
         },
         createElement(
-          "option",
+          'option',
           {
-            value: "foo"
+            value: 'foo'
           },
-          "foo"
+          'foo'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "bar"
+            value: 'bar'
           },
-          "bar"
+          'bar'
         )
       );
 
-    render(template("bar"), container);
+    render(template('bar'), container);
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(true);
@@ -281,7 +281,7 @@ describe("Select / select multiple (non-JSX)", () => {
       )
     );
 
-    render(template(""), container);
+    render(template(''), container);
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(false);
@@ -292,75 +292,75 @@ describe("Select / select multiple (non-JSX)", () => {
     );
   });
 
-  it("should assure a `textarea` with no value should show no value", () => {
-    render(createElement("textarea", null), container);
-    expect(container.firstChild.value).toEqual("");
+  it('should assure a `textarea` with no value should show no value', () => {
+    render(createElement('textarea', null), container);
+    expect(container.firstChild.value).toEqual('');
   });
 
-  it("should assure the value attribute also set the value property for `textarea`", () => {
+  it('should assure the value attribute also set the value property for `textarea`', () => {
     const template = val =>
-      createElement("textarea", {
+      createElement('textarea', {
         value: val
       });
 
-    render(template("foo"), container);
-    expect(container.firstChild.value).toEqual("foo");
-    render(template("bar"), container);
-    expect(container.firstChild.value).toEqual("bar");
-    render(template("bar"), container);
-    expect(container.firstChild.value).toEqual("bar");
-    render(template("foo"), container);
-    expect(container.firstChild.value).toEqual("foo");
+    render(template('foo'), container);
+    expect(container.firstChild.value).toEqual('foo');
+    render(template('bar'), container);
+    expect(container.firstChild.value).toEqual('bar');
+    render(template('bar'), container);
+    expect(container.firstChild.value).toEqual('bar');
+    render(template('foo'), container);
+    expect(container.firstChild.value).toEqual('foo');
     render(template(null), container);
-    expect(container.firstChild.value).toEqual("");
+    expect(container.firstChild.value).toEqual('');
     render(template(undefined), container);
-    expect(container.firstChild.value).toEqual("");
-    render(template("bar"), container);
-    expect(container.firstChild.value).toEqual("bar");
+    expect(container.firstChild.value).toEqual('');
+    render(template('bar'), container);
+    expect(container.firstChild.value).toEqual('bar');
     render(template([]), container);
-    expect(container.firstChild.value).toEqual("");
+    expect(container.firstChild.value).toEqual('');
     render(template({}), container);
-    expect(container.firstChild.value).toEqual("[object Object]");
+    expect(container.firstChild.value).toEqual('[object Object]');
   });
 
-  it("should handle when multiple values passed in as an array", () => {
+  it('should handle when multiple values passed in as an array', () => {
     const template = val =>
       createElement(
-        "select",
+        'select',
         {
           multiple: true,
           value: val
         },
         createElement(
-          "option",
+          'option',
           {
-            value: "a"
+            value: 'a'
           },
-          "a"
+          'a'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "b"
+            value: 'b'
           },
-          "b"
+          'b'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "c"
+            value: 'c'
           },
-          "c"
+          'c'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "d"
+            value: 'd'
           },
-          "d"
+          'd'
         )
       );
-    render(template(["a", "b", "c"]), container);
+    render(template(['a', 'b', 'c']), container);
     expect(container.firstChild.children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].selected).toEqual(true);
     expect(container.firstChild.children[2].selected).toEqual(true);
@@ -372,43 +372,43 @@ describe("Select / select multiple (non-JSX)", () => {
     );
   });
 
-  it("should handle when multiple options with selected set", () => {
+  it('should handle when multiple options with selected set', () => {
     const template = () =>
       createElement(
-        "select",
+        'select',
         {
           multiple: true
         },
         createElement(
-          "option",
+          'option',
           {
-            value: "a",
+            value: 'a',
             selected: true
           },
-          "a"
+          'a'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "b",
+            value: 'b',
             selected: true
           },
-          "b"
+          'b'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "c",
+            value: 'c',
             selected: true
           },
-          "c"
+          'c'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "d"
+            value: 'd'
           },
-          "d"
+          'd'
         )
       );
     render(template(), container);
@@ -424,40 +424,40 @@ describe("Select / select multiple (non-JSX)", () => {
     );
   });
 
-  it("should render defaultValue", () => {
+  it('should render defaultValue', () => {
     const template = () =>
       createElement(
-        "select",
+        'select',
         {
-          defaultValue: "b"
+          defaultValue: 'b'
         },
         createElement(
-          "option",
+          'option',
           {
-            value: "a"
+            value: 'a'
           },
-          "a"
+          'a'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "b"
+            value: 'b'
           },
-          "b"
+          'b'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "c"
+            value: 'c'
           },
-          "c"
+          'c'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "d"
+            value: 'd'
           },
-          "d"
+          'd'
         )
       );
     render(template(), container);
@@ -473,41 +473,41 @@ describe("Select / select multiple (non-JSX)", () => {
     );
   });
 
-  it("should render multiple defaultValue", () => {
+  it('should render multiple defaultValue', () => {
     const template = () =>
       createElement(
-        "select",
+        'select',
         {
           multiple: true,
-          defaultValue: ["a", "b", "c"]
+          defaultValue: ['a', 'b', 'c']
         },
         createElement(
-          "option",
+          'option',
           {
-            value: "a"
+            value: 'a'
           },
-          "a"
+          'a'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "b"
+            value: 'b'
           },
-          "b"
+          'b'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "c"
+            value: 'c'
           },
-          "c"
+          'c'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "d"
+            value: 'd'
           },
-          "d"
+          'd'
         )
       );
     render(template(), container);
@@ -523,24 +523,24 @@ describe("Select / select multiple (non-JSX)", () => {
     );
   });
 
-  it("should not touch selections, if value or selected, is null or undefined", () => {
+  it('should not touch selections, if value or selected, is null or undefined', () => {
     render(
       createElement(
-        "select",
+        'select',
         null,
         createElement(
-          "option",
+          'option',
           {
-            value: "a"
+            value: 'a'
           },
-          "a"
+          'a'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "b"
+            value: 'b'
           },
-          "b"
+          'b'
         )
       ),
       container
@@ -548,21 +548,21 @@ describe("Select / select multiple (non-JSX)", () => {
     container.firstChild.children[1].selected = true;
     render(
       createElement(
-        "select",
+        'select',
         null,
         createElement(
-          "option",
+          'option',
           {
-            value: "a"
+            value: 'a'
           },
-          "a"
+          'a'
         ),
         createElement(
-          "option",
+          'option',
           {
-            value: "b"
+            value: 'b'
           },
-          "b"
+          'b'
         )
       ),
       container

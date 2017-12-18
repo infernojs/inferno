@@ -2,11 +2,11 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode, Component } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { createHashHistory } from "history";
-import { Router } from "./Router";
-import { warning } from "./utils";
+import { createVNode, VNode, Component } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { createHashHistory } from 'history';
+import { Router } from './Router';
+import { warning } from './utils';
 
 export interface IHashRouterProps {
   basename?: string;
@@ -31,12 +31,12 @@ export class HashRouter extends Component<IHashRouterProps, any> {
   }
 }
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   HashRouter.prototype.componentWillMount = function() {
     warning(
       !this.props.history,
-      "<HashRouter> ignores the history prop. To use a custom history, " +
-        "use `import { Router }` instead of `import { HashRouter as Router }`."
+      '<HashRouter> ignores the history prop. To use a custom history, ' +
+        'use `import { Router }` instead of `import { HashRouter as Router }`.'
     );
   };
 }

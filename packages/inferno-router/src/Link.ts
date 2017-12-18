@@ -2,11 +2,12 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode, Component } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { invariant } from "./utils";
+import { createVNode, VNode, Component } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { invariant } from './utils';
 
-const isModifiedEvent = (event): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+const isModifiedEvent = (event): boolean =>
+  Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
 export interface ILinkProps {
   onClick?: any;
@@ -45,19 +46,19 @@ export class Link extends Component<ILinkProps, any> {
     }
   };
 
-  public render({ replace, className, to = "", innerRef, ...rest }): VNode {
+  public render({ replace, className, to = '', innerRef, ...rest }): VNode {
     invariant(
       this.context.router,
-      "You should not use <Link> outside a <Router>"
+      'You should not use <Link> outside a <Router>'
     );
 
     const href = this.context.router.history.createHref(
-      typeof to === "string" ? { pathname: to } : to
+      typeof to === 'string' ? { pathname: to } : to
     );
 
     return createVNode(
       VNodeFlags.HtmlElement,
-      "a",
+      'a',
       className,
       null,
       {

@@ -1,10 +1,10 @@
-import { Component, render } from "inferno";
+import { Component, render } from 'inferno';
 import {
   createContainerWithHTML,
   innerHTML,
   validateNodeTree
-} from "inferno-utils";
-import { createTextVNode } from "../../inferno/src";
+} from 'inferno-utils';
+import { createTextVNode } from '../../inferno/src';
 
 class Comp extends Component {
   render() {
@@ -45,23 +45,23 @@ const compHtml =
 const compHtml2 =
   '<div><div id="b1">C 1</div><div id="b2">C 2</div><div id="b3">C 3</div></div>';
 
-describe("SSR Hydration Extended - (JSX)", () => {
+describe('SSR Hydration Extended - (JSX)', () => {
   [
     {
-      html: "<div><div>Hello world</div></div>",
+      html: '<div><div>Hello world</div></div>',
       component: <Comp />
     },
     {
       html:
-        "<div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>",
+        '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
       component: <Comp />
     },
     {
-      html: "<div><div><div>Hello world</div></div></div>",
+      html: '<div><div><div>Hello world</div></div></div>',
       component: <Comp />
     },
     {
-      html: "<div><div><div>Hello world</div></div><span>Hola</span></div>",
+      html: '<div><div><div>Hello world</div></div><span>Hola</span></div>',
       component: <Comp />
     },
     {
@@ -75,7 +75,7 @@ describe("SSR Hydration Extended - (JSX)", () => {
       component: <Comp />
     },
     {
-      html: "<div><div></div></div>",
+      html: '<div><div></div></div>',
       component: (
         <InnerNested>
           <Nested>
@@ -93,8 +93,8 @@ describe("SSR Hydration Extended - (JSX)", () => {
     });
   });
 
-  it("Should hydrate correctly when CSR children is missing", () => {
-    const container = createContainerWithHTML("<div><!----> </div></div>");
+  it('Should hydrate correctly when CSR children is missing', () => {
+    const container = createContainerWithHTML('<div><!----> </div></div>');
 
     render(
       <InnerNested>
@@ -108,8 +108,8 @@ describe("SSR Hydration Extended - (JSX)", () => {
     expect(innerHTML(container.innerHTML)).toEqual(innerHTML(compHtml2));
   });
 
-  it("Should hydrate correctly when CSR component returns null", () => {
-    const container = createContainerWithHTML("<div></div>");
+  it('Should hydrate correctly when CSR component returns null', () => {
+    const container = createContainerWithHTML('<div></div>');
 
     render(
       <div>
@@ -120,11 +120,11 @@ describe("SSR Hydration Extended - (JSX)", () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
   });
 
-  it("Should hydrate correctly when there are comment nodes", () => {
-    const container = createContainerWithHTML("<div><!----></div>");
+  it('Should hydrate correctly when there are comment nodes', () => {
+    const container = createContainerWithHTML('<div><!----></div>');
 
     render(
       <div>
@@ -135,12 +135,12 @@ describe("SSR Hydration Extended - (JSX)", () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML("<div></div>"));
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
   });
 
-  it("Should hydrate correctly when there are comment nodes #2", () => {
+  it('Should hydrate correctly when there are comment nodes #2', () => {
     const container = createContainerWithHTML(
-      "<div><!----><!----><!----></div>"
+      '<div><!----><!----><!----></div>'
     );
 
     render(
@@ -155,14 +155,14 @@ describe("SSR Hydration Extended - (JSX)", () => {
     );
 
     expect(innerHTML(container.innerHTML)).toEqual(
-      innerHTML("<div><p>Hello World!</p></div>")
+      innerHTML('<div><p>Hello World!</p></div>')
     );
   });
 
-  it("Should handle empty textNodes correctly Github #1137", () => {
+  it('Should handle empty textNodes correctly Github #1137', () => {
     const container = createContainerWithHTML('<span class="error"></span>');
 
-    const vNode = <span className="error">{""}</span>;
+    const vNode = <span className="error">{''}</span>;
 
     expect(vNode.children).toEqual(createTextVNode(''));
 
@@ -170,19 +170,19 @@ describe("SSR Hydration Extended - (JSX)", () => {
 
     expect(container.firstChild.firstChild).not.toBeNull();
 
-    render(<span className="error">{"Okay!"}</span>, container);
+    render(<span className="error">{'Okay!'}</span>, container);
 
-    expect(container.textContent).toBe("Okay!");
+    expect(container.textContent).toBe('Okay!');
   });
 
-  it("Should handle empty textNodes correctly Github #1137 variation#2", () => {
+  it('Should handle empty textNodes correctly Github #1137 variation#2', () => {
     const container = createContainerWithHTML(
       '<div><span class="error"></span></div>'
     );
 
     const vNode = (
       <div>
-        <span className="error">{""}</span>
+        <span className="error">{''}</span>
       </div>
     );
 
@@ -194,11 +194,11 @@ describe("SSR Hydration Extended - (JSX)", () => {
 
     render(
       <div>
-        <span className="error">{"Okay!"}</span>
+        <span className="error">{'Okay!'}</span>
       </div>,
       container
     );
 
-    expect(container.textContent).toBe("Okay!");
+    expect(container.textContent).toBe('Okay!');
   });
 });

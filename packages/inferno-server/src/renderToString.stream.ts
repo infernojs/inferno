@@ -11,11 +11,11 @@ import {
   isNumber,
   isString,
   isStringOrNumber
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { Readable } from "stream";
-import { renderAttributes, renderStylesToString } from "./prop-renderers";
-import { escapeText, voidElements } from "./utils";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { Readable } from 'stream';
+import { renderAttributes, renderStylesToString } from './prop-renderers';
+import { escapeText, voidElements } from './utils';
 
 const resolvedPromise = Promise.resolve();
 
@@ -44,7 +44,7 @@ export class RenderStream extends Readable {
         this.push(null);
       })
       .catch(err => {
-        this.emit("error", err);
+        this.emit('error', err);
       });
   }
 
@@ -126,7 +126,7 @@ export class RenderStream extends Readable {
       return this.push(escapeText(children));
     }
     if (isNumber(children)) {
-      return this.push(children + "");
+      return this.push(children + '');
     }
     if (!children) {
       return;
@@ -137,7 +137,7 @@ export class RenderStream extends Readable {
       return this.renderNode(children, context, false);
     }
     if (!childrenIsArray) {
-      throw new Error("invalid component");
+      throw new Error('invalid component');
     }
     return children.reduce((p, child) => {
       return p.then(insertComment => {
@@ -145,24 +145,24 @@ export class RenderStream extends Readable {
 
         if (isTextOrNumber) {
           if (insertComment === true) {
-            this.push("<!---->");
+            this.push('<!---->');
           }
           if (isString(child)) {
             this.push(escapeText(child));
           } else {
-            this.push(child + "");
+            this.push(child + '');
           }
           return true;
         } else if (isArray(child)) {
-          this.push("<!---->");
+          this.push('<!---->');
           return Promise.resolve(this.renderChildren(child)).then(() => {
-            this.push("<!--!-->");
+            this.push('<!--!-->');
             return true;
           });
         } else if (!isInvalid(child)) {
           if ((child.flags & VNodeFlags.Text) > 0) {
             if (insertComment) {
-              this.push("<!---->");
+              this.push('<!---->');
             }
           }
           return Promise.resolve(this.renderNode(child, context, false)).then(
@@ -186,7 +186,7 @@ export class RenderStream extends Readable {
 
     const outputAttrs = renderAttributes(props);
 
-    let html = "";
+    let html = '';
     const className = vElement.className;
 
     if (isString(className)) {
@@ -207,10 +207,10 @@ export class RenderStream extends Readable {
     }
 
     if (isRoot) {
-      outputAttrs.push("data-infernoroot");
+      outputAttrs.push('data-infernoroot');
     }
     this.push(
-      `<${tag}${outputAttrs.length > 0 ? " " + outputAttrs.join(" ") : ""}>`
+      `<${tag}${outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : ''}>`
     );
     if (voidElements.has(tag)) {
       return;

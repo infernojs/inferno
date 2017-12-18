@@ -1,10 +1,10 @@
 /**
  * @module Inferno-Router
  */ /** TypeDoc Comment */
-import { createVNode } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
-import hoistNonReactStatics from "hoist-non-inferno-statics";
-import { Route } from "./Route";
+import { createVNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import hoistNonReactStatics from 'hoist-non-inferno-statics';
+import { Route } from './Route';
 
 interface IWithRouterProps {
   wrappedComponentRef: any;
@@ -39,4 +39,3 @@ export function withRouter(Com) {
   C.WrappedComponent = Com;
   return hoistNonReactStatics(C, Com);
 }
-

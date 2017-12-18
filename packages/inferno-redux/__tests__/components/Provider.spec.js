@@ -1,27 +1,27 @@
-import { Component } from "inferno";
-import { createElement } from "inferno-create-element";
-import { connect, Provider } from "inferno-redux";
+import { Component } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import { connect, Provider } from 'inferno-redux';
 import {
   findRenderedVNodeWithType,
   renderIntoDocument
-} from "inferno-test-utils";
-import { createStore } from "redux";
-import { spy, spyOn } from "../test-utils";
+} from 'inferno-test-utils';
+import { createStore } from 'redux';
+import { spy, spyOn } from '../test-utils';
 
-describe("redux", () => {
-  describe("Provider", () => {
+describe('redux', () => {
+  describe('Provider', () => {
     class Child extends Component {
       render() {
-        return createElement("div", {});
+        return createElement('div', {});
       }
     }
 
-    it("should enforce a single child", () => {
+    it('should enforce a single child', () => {
       const store = createStore(() => ({}));
 
       expect(() =>
         renderIntoDocument(
-          createElement(Provider, { store }, createElement("div", {}))
+          createElement(Provider, { store }, createElement('div', {}))
         )
       ).not.toThrow();
 
@@ -34,18 +34,18 @@ describe("redux", () => {
           createElement(
             Provider,
             { store },
-            createElement("div", {}),
-            createElement("div", {})
+            createElement('div', {}),
+            createElement('div', {})
           )
         )
       ).toThrowError(/Only one child/);
     });
 
-    it("should add the store to the child context", () => {
+    it('should add the store to the child context', () => {
       const store1 = createStore(() => ({}));
       const store2 = createStore(() => ({}));
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         const tree = renderIntoDocument(
           createElement(Provider, { store: store1 }, createElement(Child, {}))
         );
@@ -55,7 +55,7 @@ describe("redux", () => {
         expect(child.context.store).toBe(store1);
       });
 
-      spyOn(console, "error", spy => {
+      spyOn(console, 'error', spy => {
         const tree = renderIntoDocument(
           createElement(
             Provider,
@@ -71,7 +71,7 @@ describe("redux", () => {
       });
     });
 
-    it("should warn once when receiving a new store in props", async () => {
+    it('should warn once when receiving a new store in props', async () => {
       const store1 = createStore((state = 10) => state + 1);
       const store2 = createStore((state = 10) => state * 2);
       const store3 = createStore((state = 10) => state * state);
@@ -97,18 +97,18 @@ describe("redux", () => {
       const child = findRenderedVNodeWithType(tree, Child).children;
       expect(child.context.store.getState()).toEqual(11);
 
-      await spyOn(console, "error", async spy => {
+      await spyOn(console, 'error', async spy => {
         container.setState({ store: store2 });
         await tree.repaint();
 
         expect(child.context.store.getState()).toEqual(11);
         expect(spy.callCount).toEqual(1);
         expect(spy.getCall(0).args[0]).toEqual(
-          "<Provider> does not support changing `store` on the fly."
+          '<Provider> does not support changing `store` on the fly.'
         );
       });
 
-      await spyOn(console, "error", async spy => {
+      await spyOn(console, 'error', async spy => {
         container.setState({ store: store3 });
         await tree.repaint();
 
@@ -117,14 +117,14 @@ describe("redux", () => {
       });
     });
 
-    it("should handle subscriptions correctly when there is nested Providers", () => {
+    it('should handle subscriptions correctly when there is nested Providers', () => {
       const reducer1 = (state = 2, action) =>
-        action.type === "INC" ? state + 1 : state;
+        action.type === 'INC' ? state + 1 : state;
       const reducer2 = (state = 5, action) =>
-        action.type === "INC" ? state + 2 : state;
+        action.type === 'INC' ? state + 2 : state;
 
       const innerStore = createStore(reducer1);
-      innerStore.__store_name__ = "innerStore"; // for debugging
+      innerStore.__store_name__ = 'innerStore'; // for debugging
       const innerMapStateToProps = spy(state => ({ count: state }));
 
       const Inner = connect(innerMapStateToProps)(
@@ -136,7 +136,7 @@ describe("redux", () => {
       );
 
       const outerStore = createStore(reducer2);
-      outerStore.__store_name__ = "outerStore"; // for debugging
+      outerStore.__store_name__ = 'outerStore'; // for debugging
       const Outer = connect(state => ({ count: state }))(
         class Outer extends Component {
           render() {
@@ -156,17 +156,17 @@ describe("redux", () => {
       );
       expect(innerMapStateToProps.callCount).toEqual(1);
 
-      innerStore.dispatch({ type: "INC" });
+      innerStore.dispatch({ type: 'INC' });
       expect(innerMapStateToProps.callCount).toEqual(2);
     });
 
-    it("should pass state consistently to mapState", async () => {
-      const stringBuilder = (prev = "", action) =>
-        action.type === "APPEND" ? prev + action.payload : prev;
+    it('should pass state consistently to mapState', async () => {
+      const stringBuilder = (prev = '', action) =>
+        action.type === 'APPEND' ? prev + action.payload : prev;
 
       const store = createStore(stringBuilder);
 
-      store.dispatch({ type: "APPEND", payload: "a" });
+      store.dispatch({ type: 'APPEND', payload: 'a' });
       let childMapStateInvokes = 0;
 
       const ChildContainer = connect((state, parentProps) => {
@@ -187,7 +187,7 @@ describe("redux", () => {
       })(
         class Container extends Component {
           emitChange() {
-            store.dispatch({ type: "APPEND", payload: "b" });
+            store.dispatch({ type: 'APPEND', payload: 'b' });
           }
 
           render() {
@@ -198,7 +198,8 @@ describe("redux", () => {
                   ref={btn => {
                     this.button = btn;
                   }}
-                  onClick={this.emitChange.bind(this)}>
+                  onClick={this.emitChange.bind(this)}
+                >
                   change
                 </button>
                 <ChildContainer parentState={this.props.state} />
@@ -217,7 +218,7 @@ describe("redux", () => {
       expect(childMapStateInvokes).toEqual(1);
 
       // The store state stays consistent when setState calls are batched
-      store.dispatch({ type: "APPEND", payload: "c" });
+      store.dispatch({ type: 'APPEND', payload: 'c' });
       await tree.repaint();
       expect(childMapStateInvokes).toEqual(2);
 
@@ -229,7 +230,7 @@ describe("redux", () => {
       expect(childMapStateInvokes).toEqual(3);
 
       // Provider uses unstable_batchedUpdates() under the hood
-      store.dispatch({ type: "APPEND", payload: "d" });
+      store.dispatch({ type: 'APPEND', payload: 'd' });
       await tree.repaint();
       expect(childMapStateInvokes).toEqual(4);
     });

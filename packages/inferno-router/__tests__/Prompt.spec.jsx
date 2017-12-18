@@ -1,11 +1,11 @@
-import { Component, render } from "inferno";
-import { innerHTML } from "inferno-utils";
-import { StaticRouter, Prompt } from "inferno-router";
+import { Component, render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
+import { StaticRouter, Prompt } from 'inferno-router';
 
-describe("A <Prompt>", () => {
-  it("ask if sure to transition", () => {
+describe('A <Prompt>', () => {
+  it('ask if sure to transition', () => {
     const context = {};
-    const node = document.createElement("div");
+    const node = document.createElement('div');
 
     expect(() => {
       render(
@@ -17,9 +17,9 @@ describe("A <Prompt>", () => {
     }).not.toThrow();
   });
 
-  it("blocks transition", () => {
+  it('blocks transition', () => {
     const context = {};
-    const node = document.createElement("div");
+    const node = document.createElement('div');
     let promptWhen;
 
     class App extends Component {
@@ -66,8 +66,8 @@ describe("A <Prompt>", () => {
     promptWhen();
   });
 
-  it("throws when used outside Router", () => {
-    const node = document.createElement("div");
+  it('throws when used outside Router', () => {
+    const node = document.createElement('div');
 
     expect(() => {
       render(<Prompt />, node);

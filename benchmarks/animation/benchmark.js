@@ -146,7 +146,7 @@ var N = 200;
 
 // The mercury implementation
 (function () {
-	var h = mercury.h
+	var h = mercury.h;
 	var drawBox = function (key, count) {
 		return h('.box-view', [
 			h('.box', {
@@ -157,15 +157,15 @@ var N = 200;
 				}
 			}, String(count % 100))
 		])
-	}
+	};
 
 	var Render = _.memoize(function Render(count) {
 		return h('div', _.map(_.range(N), function (i) {
 			return drawBox(i, count)
 		}))
-	})
+	});
 
-	var state = mercury.value(0)
+	var state = mercury.value(0);
 
 	var mercuryInit = function() {
 		mercury.app(document.getElementById('grid'), state, Render)
@@ -302,21 +302,21 @@ var N = 200;
 		this.el.innerHTML = '<div class="box" id="box-' + number + '"></div>';
 		this.count = 0;
 		this.render()
-	}
+	};
 
 	BoxView.prototype.render = function(){
-		var count = this.count
-		var el = this.el.firstChild
+		var count = this.count;
+		var el = this.el.firstChild;
 		el.style.top = Math.sin(count / 10) * 10 + 'px';
 		el.style.left = Math.cos(count / 10) * 10 + 'px';
 		el.style.background = 'rgb(0,0,' + count % 255 + ')';
 		el.textContent = String(count % 100);
-	}
+	};
 
 	BoxView.prototype.tick = function(){
 		this.count++;
 		this.render();
-	}
+	};
 
 	var boxes;
 
@@ -363,10 +363,10 @@ var N = 200;
 		},
 		methods: {
 			tick: function () {
-				var c = ++this.count
-				this.top = Math.sin(c / 10) * 10
-				this.left = Math.cos(c / 10) * 10
-				this.bg = c % 255
+				var c = ++this.count;
+				this.top = Math.sin(c / 10) * 10;
+				this.left = Math.cos(c / 10) * 10;
+				this.bg = c % 255;
 				this.content = c % 100
 			}
 		},
@@ -379,7 +379,7 @@ var N = 200;
 				}
 			}
 		}
-	})
+	});
 
 	var boxes = [];
 
@@ -425,7 +425,7 @@ window.startClock = function () {
 	loopCount = 0;
 	totalTime = 0;
 	startDate = Date.now();
-}
+};
 
 window.benchmarkLoop = function(fn) {
 	totalTime += Date.now() - startDate;

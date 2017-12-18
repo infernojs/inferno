@@ -9,7 +9,7 @@ import {
   options,
   Props,
   VNode
-} from "../../core/implementation";
+} from '../../core/implementation';
 import {
   combineFrom,
   isArray,
@@ -19,9 +19,9 @@ import {
   isNullOrUndef,
   isStringOrNumber,
   throwError
-} from "inferno-shared";
-import { EMPTY_OBJ } from "./common";
-import { VNodeFlags } from "inferno-vnode-flags";
+} from 'inferno-shared';
+import { EMPTY_OBJ } from './common';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 export function createClassComponentInstance(
   vNode: VNode,
@@ -94,10 +94,10 @@ export function createClassComponentInstance(
 
 export function handleComponentInput(input: any, componentVNode: VNode): VNode {
   // Development validation
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== 'production') {
     if (isArray(input)) {
       throwError(
-        "a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object."
+        'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
       );
     }
   }

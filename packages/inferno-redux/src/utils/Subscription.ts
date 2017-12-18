@@ -2,7 +2,7 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { Store, Unsubscribe } from "redux";
+import { Store, Unsubscribe } from 'redux';
 
 export type Listener = () => void;
 

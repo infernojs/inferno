@@ -2,12 +2,12 @@
  * @module Inferno-Shared
  */ /** TypeDoc Comment */
 
-export const NO_OP = "$NO_OP";
+export const NO_OP = '$NO_OP';
 export const ERROR_MSG =
-  "a runtime error occured! Use Inferno in development environment to find the error.";
+  'a runtime error occured! Use Inferno in development environment to find the error.';
 
 // This should be boolean and not reference to window.document
-export const isBrowser = !!(typeof window !== "undefined" && window.document);
+export const isBrowser = !!(typeof window !== 'undefined' && window.document);
 
 export function toArray(children): any[] {
   return isArray(children) ? children : children ? [children] : children;
@@ -24,7 +24,7 @@ export function isStatefulComponent(o: any): boolean {
 export function isStringOrNumber(o: any): o is string | number {
   const type = typeof o;
 
-  return type === "string" || type === "number";
+  return type === 'string' || type === 'number';
 }
 
 export function isNullOrUndef(o: any): o is undefined | null {
@@ -36,15 +36,15 @@ export function isInvalid(o: any): o is null | false | true | undefined {
 }
 
 export function isFunction(o: any): o is Function {
-  return typeof o === "function";
+  return typeof o === 'function';
 }
 
 export function isString(o: any): o is string {
-  return typeof o === "string";
+  return typeof o === 'string';
 }
 
 export function isNumber(o: any): o is number {
-  return typeof o === "number";
+  return typeof o === 'number';
 }
 
 export function isNull(o: any): o is null {
@@ -60,7 +60,7 @@ export function isUndefined(o: any): o is undefined {
 }
 
 export function isObject(o: any): o is object {
-  return typeof o === "object";
+  return typeof o === 'object';
 }
 
 export function throwError(message?: string) {

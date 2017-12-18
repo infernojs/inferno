@@ -2,12 +2,12 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode, Component } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { createPath, parsePath } from "history";
-import { addLeadingSlash } from "history/es/PathUtils";
-import { Router } from "./Router";
-import { invariant, warning } from "./utils";
+import { createVNode, VNode, Component } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { createPath, parsePath } from 'history';
+import { addLeadingSlash } from 'history/es/PathUtils';
+import { Router } from './Router';
+import { invariant, warning } from './utils';
 
 // tslint:disable-next-line:no-empty
 const noop = () => {};
@@ -20,8 +20,8 @@ export interface IStaticRouterProps {
 
 export class StaticRouter extends Component<IStaticRouterProps, any> {
   public static defaultProps = {
-    basename: "",
-    location: "/"
+    basename: '',
+    location: '/'
   };
 
   public getChildContext() {
@@ -37,14 +37,14 @@ export class StaticRouter extends Component<IStaticRouterProps, any> {
 
   public handlePush = location => {
     const { basename, context } = this.props;
-    context.action = "PUSH";
+    context.action = 'PUSH';
     context.location = addBasename(basename, createLocation(location));
     context.url = createURL(context.location);
   };
 
   public handleReplace = location => {
     const { basename, context } = this.props;
-    context.action = "REPLACE";
+    context.action = 'REPLACE';
     context.location = addBasename(basename, createLocation(location));
     context.url = createURL(context.location);
   };
@@ -59,12 +59,12 @@ export class StaticRouter extends Component<IStaticRouterProps, any> {
     const { basename, context, location, ...props } = this.props;
 
     const history = {
-      action: "POP",
+      action: 'POP',
       block: this.handleBlock,
       createHref: this.createHref,
-      go: staticHandler("go"),
-      goBack: staticHandler("goBack"),
-      goForward: staticHandler("goForward"),
+      go: staticHandler('go'),
+      goBack: staticHandler('goBack'),
+      goForward: staticHandler('goForward'),
       listen: this.handleListen,
       location: stripBasename(basename, createLocation(location)),
       push: this.handlePush,
@@ -78,21 +78,21 @@ export class StaticRouter extends Component<IStaticRouterProps, any> {
   }
 }
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   StaticRouter.prototype.componentWillMount = function() {
     warning(
       !this.props.history,
-      "<StaticRouter> ignores the history prop. To use a custom history, " +
-        "use `import { Router }` instead of `import { StaticRouter as Router }`."
+      '<StaticRouter> ignores the history prop. To use a custom history, ' +
+        'use `import { Router }` instead of `import { StaticRouter as Router }`.'
     );
   };
 }
 
-function normalizeLocation({ pathname = "/", search, hash }) {
+function normalizeLocation({ pathname = '/', search, hash }) {
   return {
-    hash: (hash || "") === "#" ? "" : hash,
+    hash: (hash || '') === '#' ? '' : hash,
     pathname,
-    search: (search || "") === "?" ? "" : search
+    search: (search || '') === '?' ? '' : search
   };
 }
 
@@ -125,17 +125,17 @@ function stripBasename(basename, location) {
 }
 
 function createLocation(location) {
-  return typeof location === "string"
+  return typeof location === 'string'
     ? parsePath(location)
     : normalizeLocation(location);
 }
 
 function createURL(location) {
-  return typeof location === "string" ? location : createPath(location);
+  return typeof location === 'string' ? location : createPath(location);
 }
 
 function staticHandler(methodName) {
   return () => {
-    invariant(false, "You cannot %s with <StaticRouter>", methodName);
+    invariant(false, 'You cannot %s with <StaticRouter>', methodName);
   };
 }

@@ -9,12 +9,12 @@ import {
   isNull,
   isNullOrUndef,
   isObject
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { options, VNode } from "../core/implementation";
-import { delegatedEvents } from "./constants";
-import { handleEvent } from "./events/delegation";
-import { EMPTY_OBJ, removeChild } from "./utils/common";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { options, VNode } from '../core/implementation';
+import { delegatedEvents } from './constants';
+import { handleEvent } from './events/delegation';
+import { EMPTY_OBJ, removeChild } from './utils/common';
 
 export function unmount(vNode: VNode, parentDom: Element | null) {
   const flags = vNode.flags;

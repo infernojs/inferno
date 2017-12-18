@@ -2,7 +2,7 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
-import { EMPTY_OBJ } from "inferno";
+import { EMPTY_OBJ } from 'inferno';
 import {
   combineFrom,
   isArray,
@@ -15,11 +15,11 @@ import {
   isTrue,
   isUndefined,
   throwError
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { Readable } from "stream";
-import { renderStylesToString } from "./prop-renderers";
-import { escapeText, voidElements } from "./utils";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { Readable } from 'stream';
+import { renderStylesToString } from './prop-renderers';
+import { escapeText, voidElements } from './utils';
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
@@ -43,20 +43,20 @@ export class RenderQueueStream extends Readable {
       const lastSlot = this.promises[position].length - 1;
       // Combine as array or push into promise collector
       if (
-        typeof this.promises[position][lastSlot] === "string" &&
-        typeof node === "string"
+        typeof this.promises[position][lastSlot] === 'string' &&
+        typeof node === 'string'
       ) {
         this.promises[position][lastSlot] += node;
       } else {
         this.promises[position].push(node);
       }
       // Collector is empty push to stream
-    } else if (typeof node === "string" && this.collector.length - 1 === 0) {
+    } else if (typeof node === 'string' && this.collector.length - 1 === 0) {
       this.push(node);
       // Last element in collector and incoming are same then concat
     } else if (
-      typeof node === "string" &&
-      typeof this.collector[this.collector.length - 2] === "string"
+      typeof node === 'string' &&
+      typeof this.collector[this.collector.length - 2] === 'string'
     ) {
       this.collector[this.collector.length - 2] += node;
       // Push the element to collector (before Infinity)
@@ -68,13 +68,13 @@ export class RenderQueueStream extends Readable {
   public pushQueue() {
     const chunk = this.collector[0];
     // Output strings directly
-    if (typeof chunk === "string") {
+    if (typeof chunk === 'string') {
       this.push(chunk);
       this.collector.shift();
       // For fulfilled promises, merge into collector
     } else if (
       !!chunk &&
-      (typeof chunk === "object" || isFunction(chunk)) &&
+      (typeof chunk === 'object' || isFunction(chunk)) &&
       isFunction(chunk.then)
     ) {
       const self = this;
@@ -86,14 +86,14 @@ export class RenderQueueStream extends Readable {
       this.collector[0] = null;
       // End of content
     } else if (chunk === Infinity) {
-      this.emit("end");
+      this.emit('end');
     }
   }
 
   public renderVNodeToQueue(vNode, context, firstChild, position) {
     // In case render returns invalid stuff
     if (isInvalid(vNode)) {
-      this.addToQueue("<!--!-->", position);
+      this.addToQueue('<!--!-->', position);
       return;
     }
 
@@ -153,7 +153,7 @@ export class RenderQueueStream extends Readable {
               this.addToQueue(
                 initialProps.then(dataForContext => {
                   instance.$PSS = false;
-                  if (typeof dataForContext === "object") {
+                  if (typeof dataForContext === 'object') {
                     instance.props = combineFrom(
                       instance.props,
                       dataForContext
@@ -205,20 +205,20 @@ export class RenderQueueStream extends Readable {
         for (const prop in props) {
           const value = props[prop];
 
-          if (prop === "dangerouslySetInnerHTML") {
+          if (prop === 'dangerouslySetInnerHTML') {
             html = value.__html;
-          } else if (prop === "style") {
+          } else if (prop === 'style') {
             renderedString += ` style="${renderStylesToString(props.style)}"`;
-          } else if (prop === "children") {
+          } else if (prop === 'children') {
             // Ignore children as prop.
-          } else if (prop === "defaultValue") {
+          } else if (prop === 'defaultValue') {
             // Use default values if normal values are not present
             if (!props.value) {
               renderedString += ` value="${
                 isString(value) ? escapeText(value) : value
               }"`;
             }
-          } else if (prop === "defaultChecked") {
+          } else if (prop === 'defaultChecked') {
             // Use default values if normal values are not present
             if (!props.checked) {
               renderedString += ` checked="${value}"`;
@@ -244,54 +244,54 @@ export class RenderQueueStream extends Readable {
         if (!isInvalid(children)) {
           if (isArray(children)) {
             this.addToQueue(renderedString, position);
-            renderedString = "";
+            renderedString = '';
             for (let i = 0, len = children.length; i < len; i++) {
               const child = children[i];
               if (isString(child)) {
                 this.addToQueue(escapeText(child), position);
               } else if (isNumber(child)) {
-                this.addToQueue(child + "", position);
+                this.addToQueue(child + '', position);
               } else if (!isInvalid(child)) {
                 this.renderVNodeToQueue(child, context, i === 0, position);
               }
             }
           } else if (isString(children)) {
             this.addToQueue(
-              renderedString + escapeText(children) + "</" + type + ">",
+              renderedString + escapeText(children) + '</' + type + '>',
               position
             );
             return;
           } else if (isNumber(children)) {
             this.addToQueue(
-              renderedString + children + "</" + type + ">",
+              renderedString + children + '</' + type + '>',
               position
             );
             return;
           } else {
             this.addToQueue(renderedString, position);
             this.renderVNodeToQueue(children, context, true, position);
-            this.addToQueue("</" + type + ">", position);
+            this.addToQueue('</' + type + '>', position);
             return;
           }
         } else if (html) {
-          this.addToQueue(renderedString + html + "</" + type + ">", position);
+          this.addToQueue(renderedString + html + '</' + type + '>', position);
           return;
         }
         // Close element if it's not void
         if (!isVoidElement) {
-          this.addToQueue(renderedString + "</" + type + ">", position);
+          this.addToQueue(renderedString + '</' + type + '>', position);
         }
       }
       // Push text directly to queue
     } else if ((flags & VNodeFlags.Text) > 0) {
       this.addToQueue(
-        (firstChild ? "" : "<!---->") + escapeText(children),
+        (firstChild ? '' : '<!---->') + escapeText(children),
         position
       );
       // Handle errors
     } else {
-      if (process.env.NODE_ENV !== "production") {
-        if (typeof vNode === "object") {
+      if (process.env.NODE_ENV !== 'production') {
+        if (typeof vNode === 'object') {
           throwError(
             `renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
               vNode

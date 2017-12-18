@@ -1,22 +1,22 @@
-import { Component, render } from "inferno";
-import { triggerEvent } from "inferno-utils";
+import { Component, render } from 'inferno';
+import { triggerEvent } from 'inferno-utils';
 
-describe("BUG: instance - null", () => {
+describe('BUG: instance - null', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
   const Triangle = ({ direction }) => (
     <svg className={`popover-triangle ${direction}`}>
-      <polygon points={"0,0"} />
+      <polygon points={'0,0'} />
     </svg>
   );
 
@@ -48,7 +48,7 @@ describe("BUG: instance - null", () => {
 			 */
 
       return (
-        <svg focusable="false" className={"svgicon"}>
+        <svg focusable="false" className={'svgicon'}>
           <use xlink:href={props.icon} />
         </svg>
       );
@@ -60,7 +60,7 @@ describe("BUG: instance - null", () => {
       super(props);
 
       this.state = {
-        placement: "below"
+        placement: 'below'
       };
 
       // Element references
@@ -91,7 +91,7 @@ describe("BUG: instance - null", () => {
       this._elements.popover = node;
       if (node !== null) {
         this.setState({
-          placement: ""
+          placement: ''
         });
       }
     }
@@ -174,7 +174,7 @@ describe("BUG: instance - null", () => {
 
       this.state = {
         isEditMode: false,
-        editableText: "",
+        editableText: '',
         activeValue: props.value,
         filteredItems: null,
         filteredCustomItems: null
@@ -202,7 +202,7 @@ describe("BUG: instance - null", () => {
       }
 
       this.setState({
-        editableText: "",
+        editableText: '',
         isEditMode: false,
         filteredItems: null,
         filteredCustomItems: null,
@@ -270,7 +270,7 @@ describe("BUG: instance - null", () => {
           key={dropdownItem.value}
           item={dropdownItem}
           clickHandler={this._select}
-          className={"dd-item-icon"}
+          className={'dd-item-icon'}
         >
           <Icon className="dd-icon" icon={dropdownItem.icon} />
           {dropdownItem.text}
@@ -323,46 +323,46 @@ describe("BUG: instance - null", () => {
     }
   }
 
-  it("Should not fail", done => {
+  it('Should not fail', done => {
     const items = [
       {
-        text: "Implementation",
-        value: "b73ea78d-350d-f764-e429-9bebd9d8b4b3",
-        icon: "#user"
+        text: 'Implementation',
+        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
+        icon: '#user'
       },
       {
-        text: "Issue",
-        value: "4e0a069d-899a-418a-df27-8ff5ef18d459",
-        icon: "#reminder"
+        text: 'Issue',
+        value: '4e0a069d-899a-418a-df27-8ff5ef18d459',
+        icon: '#reminder'
       },
       {
-        text: "LomaTaski",
-        value: "d9a54cc9-2a16-08e3-85da-c230b5d0b121",
-        icon: "#favourite"
+        text: 'LomaTaski',
+        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
+        icon: '#favourite'
       }
     ];
-    const value = "b73ea78d-350d-f764-e429-9bebd9d8b4b3";
-    const text = "pena";
+    const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
+    const text = 'pena';
 
     render(
       <div>
         <Dropdown
           items={items}
           changeCallback={function() {}}
-          changeParams={{ guid: "foo", field: "activityType" }}
+          changeParams={{ guid: 'foo', field: 'activityType' }}
           value={value}
         />
       </div>,
       container
     );
 
-    triggerEvent("click", container.querySelector("#MAGICBUTTON"));
+    triggerEvent('click', container.querySelector('#MAGICBUTTON'));
 
     setTimeout(function() {
-      triggerEvent("click", container.querySelector("#MAGICBUTTON"));
+      triggerEvent('click', container.querySelector('#MAGICBUTTON'));
 
       setTimeout(function() {
-        triggerEvent("click", container.querySelector("#MAGICBUTTON"));
+        triggerEvent('click', container.querySelector('#MAGICBUTTON'));
 
         setTimeout(function() {
           render(null, container);
@@ -373,40 +373,40 @@ describe("BUG: instance - null", () => {
     }, 10);
   });
 
-  it("Should not fail #2", () => {
+  it('Should not fail #2', () => {
     const items = [
       {
-        text: "Implementation",
-        value: "b73ea78d-350d-f764-e429-9bebd9d8b4b3",
-        icon: "#user"
+        text: 'Implementation',
+        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
+        icon: '#user'
       },
       {
-        text: "Issue",
-        value: "4e0a069d-899a-418a-df27-8ff5ef18d459",
-        icon: "#reminder"
+        text: 'Issue',
+        value: '4e0a069d-899a-418a-df27-8ff5ef18d459',
+        icon: '#reminder'
       },
       {
-        text: "LomaTaski",
-        value: "d9a54cc9-2a16-08e3-85da-c230b5d0b121",
-        icon: "#favourite"
+        text: 'LomaTaski',
+        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
+        icon: '#favourite'
       }
     ];
-    const value = "b73ea78d-350d-f764-e429-9bebd9d8b4b3";
-    const text = "pena";
+    const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
+    const text = 'pena';
 
     render(
       <div>
         <Dropdown
           items={items}
           changeCallback={function() {}}
-          changeParams={{ guid: "foo", field: "activityType" }}
+          changeParams={{ guid: 'foo', field: 'activityType' }}
           value={value}
         />
       </div>,
       container
     );
 
-    container.querySelector("#MAGICBUTTON").click();
+    container.querySelector('#MAGICBUTTON').click();
 
     render(
       <div>
@@ -416,47 +416,47 @@ describe("BUG: instance - null", () => {
     );
   });
 
-  it("Should not fail #3", () => {
+  it('Should not fail #3', () => {
     const items = [
       {
-        text: "Implementation",
-        value: "b73ea78d-350d-f764-e429-9bebd9d8b4b3",
-        icon: "#user"
+        text: 'Implementation',
+        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
+        icon: '#user'
       },
       {
-        text: "Issue",
-        value: "4e0a069d-899a-418a-df27-8ff5ef18d459",
-        icon: "#reminder"
+        text: 'Issue',
+        value: '4e0a069d-899a-418a-df27-8ff5ef18d459',
+        icon: '#reminder'
       },
       {
-        text: "LomaTaski",
-        value: "d9a54cc9-2a16-08e3-85da-c230b5d0b121",
-        icon: "#favourite"
+        text: 'LomaTaski',
+        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
+        icon: '#favourite'
       }
     ];
-    const value = "b73ea78d-350d-f764-e429-9bebd9d8b4b3";
-    const text = "pena";
+    const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
+    const text = 'pena';
 
     render(
       <div>
         <Dropdown
           items={items}
           changeCallback={function() {}}
-          changeParams={{ guid: "foo", field: "activityType" }}
+          changeParams={{ guid: 'foo', field: 'activityType' }}
           value={value}
         />
       </div>,
       container
     );
 
-    container.querySelector("#MAGICBUTTON").click();
+    container.querySelector('#MAGICBUTTON').click();
 
     render(
       <div>
         <Dropdown
           items={items}
           changeCallback={function() {}}
-          changeParams={{ guid: "dwqwdq", field: "activityType" }}
+          changeParams={{ guid: 'dwqwdq', field: 'activityType' }}
           value={value}
         />
       </div>,

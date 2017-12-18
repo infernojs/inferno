@@ -3,17 +3,17 @@
  */
 /** TypeDoc Comment */
 
-import { VNodeFlags } from "inferno-vnode-flags";
-import { Props, VNode} from "./implementation";
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { Props, VNode } from './implementation';
 import {
   combineFrom,
   isFunction,
   isNull,
   isNullOrUndef,
   throwError
-} from "inferno-shared";
-import { updateClassComponent } from "../DOM/patching";
-import { callAll, EMPTY_OBJ } from "../DOM/utils/common";
+} from 'inferno-shared';
+import { updateClassComponent } from '../DOM/patching';
+import { callAll, EMPTY_OBJ } from '../DOM/utils/common';
 
 const resolvedPromise = Promise.resolve();
 
@@ -23,7 +23,11 @@ function queueStateChanges<P, S>(
   callback?: Function
 ): void {
   if (isFunction(newState)) {
-    newState = newState(component.state, component.props, component.context) as S;
+    newState = newState(
+      component.state,
+      component.props,
+      component.context
+    ) as S;
   }
   const pending = component.$PS;
 
@@ -65,15 +69,14 @@ function promiseCallback(component, queue) {
   return () => {
     component.$QU = null;
     component.$UPD = true;
-    applyState(component, false,() => {
+    applyState(component, false, () => {
       for (let i = 0, len = (queue as Function[]).length; i < len; i++) {
         (queue as Function[])[i].call(component);
       }
     });
     component.$UPD = false;
-  }
+  };
 }
-
 
 function applyState<P, S>(
   component: Component<P, S>,
@@ -207,9 +210,9 @@ export class Component<P, S> {
       queueStateChanges(this, newState, callback);
     } else {
       // Development warning
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV !== 'production') {
         throwError(
-          "cannot update state via setState() in componentWillUpdate() or constructor."
+          'cannot update state via setState() in componentWillUpdate() or constructor.'
         );
       }
       return;

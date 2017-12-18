@@ -2,13 +2,13 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import { Component } from "inferno";
-import { warning } from "inferno-shared";
+import { Component } from 'inferno';
+import { warning } from 'inferno-shared';
 
 const specialKeys = new Set();
-specialKeys.add("children");
-specialKeys.add("key");
-specialKeys.add("ref");
+specialKeys.add('children');
+specialKeys.add('key');
+specialKeys.add('ref');
 
 export class Provider<P, S> extends Component<P, S> {
   public render(props) {
@@ -28,7 +28,7 @@ export class Provider<P, S> extends Component<P, S> {
     }
     // add own stores
     for (const key in props) {
-      if (!specialKeys.has(key) && key !== "suppressChangedStoreWarning") {
+      if (!specialKeys.has(key) && key !== 'suppressChangedStoreWarning') {
         stores[key] = props[key];
       }
     }
@@ -40,12 +40,12 @@ export class Provider<P, S> extends Component<P, S> {
 }
 
 // Development warning
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   Provider.prototype.componentWillReceiveProps = function(nextProps) {
     // Maybe this warning is too aggressive?
     if (Object.keys(nextProps).length !== Object.keys(this.props).length) {
       warning(
-        "MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children"
+        'MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children'
       );
     }
 

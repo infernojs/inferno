@@ -2,8 +2,8 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { Component } from "inferno";
-import { Children, invariant, warning } from "./utils";
+import { Component } from 'inferno';
+import { Children, invariant, warning } from './utils';
 
 export interface IRouterProps {
   history: {
@@ -43,10 +43,10 @@ export class Router extends Component<IRouterProps, any> {
 
   public computeMatch(pathname) {
     return {
-      isExact: pathname === "/",
+      isExact: pathname === '/',
       params: {},
-      path: "/",
-      url: "/"
+      path: '/',
+      url: '/'
     };
   }
 
@@ -55,7 +55,7 @@ export class Router extends Component<IRouterProps, any> {
 
     invariant(
       children == null || Children.count(children) === 1,
-      "A <Router> may have only one child element"
+      'A <Router> may have only one child element'
     );
 
     // Do this here so we can setState when a <Redirect> changes the
@@ -71,7 +71,7 @@ export class Router extends Component<IRouterProps, any> {
   public componentWillReceiveProps(nextProps) {
     warning(
       this.props.history === nextProps.history,
-      "You cannot change <Router history>"
+      'You cannot change <Router history>'
     );
   }
 

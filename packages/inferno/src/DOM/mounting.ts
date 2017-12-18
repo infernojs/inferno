@@ -9,34 +9,30 @@ import {
   isNull,
   isNullOrUndef,
   isObject,
-  isStringOrNumber,
   isString,
+  isStringOrNumber,
   throwError
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,
   isVNode,
   options,
   VNode
-} from "../core/implementation";
+} from '../core/implementation';
 import {
   appendChild,
   documentCreateElement,
   EMPTY_OBJ,
   setTextContent
-} from "./utils/common";
-import {
-  isControlledFormElement,
-  processElement
-} from "./wrappers/processElement";
-import { patchProp } from "./props";
+} from './utils/common';
+import { mountProps } from './props';
 import {
   createClassComponentInstance,
   handleComponentInput
-} from "./utils/componentutil";
-import {validateKeys} from "../core/validate";
+} from './utils/componentutil';
+import { validateKeys } from '../core/validate';
 
 export function mount(
   vNode: VNode,
@@ -81,8 +77,8 @@ export function mount(
   }
 
   // Development validation, in production we don't need to throw because it crashes anyway
-  if (process.env.NODE_ENV !== "production") {
-    if (typeof vNode === "object") {
+  if (process.env.NODE_ENV !== 'production') {
+    if (typeof vNode === 'object') {
       throwError(
         `mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
           vNode
@@ -129,7 +125,7 @@ export function mountElement(
     if (isStringOrNumber(children)) {
       setTextContent(dom, children as string | number);
     } else {
-      const childrenIsSVG = isSVG === true && vNode.type !== "foreignObject";
+      const childrenIsSVG = isSVG === true && vNode.type !== 'foreignObject';
       if (isArray(children)) {
         mountArrayChildren(children, dom, lifecycle, context, childrenIsSVG);
       } else if (isVNode(children as any)) {
@@ -138,23 +134,12 @@ export function mountElement(
     }
   }
   if (!isNull(props)) {
-    let hasControlledValue = false;
-    const isFormElement = (flags & VNodeFlags.FormElement) > 0;
-    if (isFormElement) {
-      hasControlledValue = isControlledFormElement(props);
-    }
-    for (const prop in props) {
-      // do not add a hasOwnProperty check here, it affects performance
-      patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
-    }
-    if (isFormElement) {
-      processElement(flags, vNode, dom, props, true, hasControlledValue);
-    }
+    mountProps(vNode, flags, props, dom, isSVG);
   }
 
   if (!isNull(className)) {
     if (isSVG) {
-      dom.setAttribute("class", className);
+      dom.setAttribute('class', className);
     } else {
       dom.className = className;
     }
@@ -163,7 +148,7 @@ export function mountElement(
   if (isFunction(ref)) {
     mountRef(dom, ref, lifecycle);
   } else {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       if (isString(ref)) {
         throwError(
           'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
@@ -217,9 +202,6 @@ export function mountComponent(
     );
     const input = instance.$LI;
     vNode.dom = dom = mount(input, null, lifecycle, instance.$CX, isSVG);
-    if (!isNull(parentDom)) {
-      appendChild(parentDom, dom);
-    }
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
     instance.$UPD = false;
   } else {
@@ -227,14 +209,20 @@ export function mountComponent(
     vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
     vNode.children = input;
     mountFunctionalComponentCallbacks(props, ref, dom, lifecycle);
-    if (!isNull(parentDom)) {
-      appendChild(parentDom, dom);
-    }
+  }
+  if (!isNull(parentDom)) {
+    appendChild(parentDom, dom);
   }
   return dom;
 }
 
-function createClassMountCallback(instance, hasAfterMount, afterMount, vNode, hasDidMount) {
+function createClassMountCallback(
+  instance,
+  hasAfterMount,
+  afterMount,
+  vNode,
+  hasDidMount
+) {
   return () => {
     instance.$UPD = true;
     if (hasAfterMount) {
@@ -256,14 +244,18 @@ export function mountClassComponentCallbacks(
   if (isFunction(ref)) {
     ref(instance);
   } else {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       if (isStringOrNumber(ref)) {
         throwError(
           'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
         );
-      } else if (!isNullOrUndef(ref) && isObject(ref) && vNode.flags & VNodeFlags.ComponentClass) {
+      } else if (
+        !isNullOrUndef(ref) &&
+        isObject(ref) &&
+        vNode.flags & VNodeFlags.ComponentClass
+      ) {
         throwError(
-          "functional component lifecycle events are not supported on ES2015 class components."
+          'functional component lifecycle events are not supported on ES2015 class components.'
         );
       }
     }
@@ -273,7 +265,15 @@ export function mountClassComponentCallbacks(
   const hasAfterMount = isFunction(afterMount);
 
   if (hasDidMount || hasAfterMount) {
-    lifecycle.push(createClassMountCallback(instance, hasAfterMount, afterMount, vNode, hasDidMount));
+    lifecycle.push(
+      createClassMountCallback(
+        instance,
+        hasAfterMount,
+        afterMount,
+        vNode,
+        hasDidMount
+      )
+    );
   }
 }
 

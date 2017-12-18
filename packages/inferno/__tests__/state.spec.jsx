@@ -1,5 +1,5 @@
-import { Component, createVNode, render } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
+import { Component, createVNode, render } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 let renderCount = 0;
 
@@ -32,22 +32,22 @@ class TestCWRP extends Component {
   }
 }
 
-describe("state", () => {
+describe('state', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
   // As per React
-  it("Should not have state defined in base constructor", () => {
+  it('Should not have state defined in base constructor', () => {
     class Foo extends Component {
       constructor(p, c) {
         super(p, c);
@@ -61,8 +61,8 @@ describe("state", () => {
     expect(f).not.toBeNull();
   });
 
-  describe("setting state", () => {
-    it("setState should apply state during componentWillReceiveProps", done => {
+  describe('setting state', () => {
+    it('setState should apply state during componentWillReceiveProps', done => {
       render(
         createVNode(VNodeFlags.ComponentClass, TestCWRP, null, null, {}, null),
         container
@@ -87,8 +87,8 @@ describe("state", () => {
     });
   });
 
-  describe("didUpdate and setState", () => {
-    it("order", done => {
+  describe('didUpdate and setState', () => {
+    it('order', done => {
       class Test extends Component {
         constructor(props, context) {
           super(props, context);

@@ -2,14 +2,14 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import * as mobx from "mobx";
-import { Component, options, createVNode } from "inferno";
-import { findDOMNode } from "inferno-compat";
-import { EventEmitter } from "./utils/EventEmitter";
-import { warning } from "inferno-shared";
-import { isStateless } from "./utils/utils";
-import { VNodeFlags } from "inferno-vnode-flags";
-import hoistNonReactStatics from "hoist-non-inferno-statics";
+import * as mobx from 'mobx';
+import { Component, options, createVNode } from 'inferno';
+import { findDOMNode } from 'inferno-compat';
+import { EventEmitter } from './utils/EventEmitter';
+import { warning } from 'inferno-shared';
+import { isStateless } from './utils/utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import hoistNonReactStatics from 'hoist-non-inferno-statics';
 
 /**
  * dev tool support
@@ -38,7 +38,7 @@ function reportRendering(component) {
 
   renderReporter.emit({
     component,
-    event: "render",
+    event: 'render',
     node,
     renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
     totalTime: Date.now() - component.__$mobRenderStart
@@ -49,7 +49,9 @@ export function trackComponents() {
   if (!isDevtoolsEnabled) {
     isDevtoolsEnabled = true;
     options.findDOMNodeEnabled = true;
-    warning("Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.");
+    warning(
+      'Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.'
+    );
   }
 }
 
@@ -90,8 +92,8 @@ function isObjectShallowModified(prev, next) {
   if (
     null == prev ||
     null == next ||
-    typeof prev !== "object" ||
-    typeof next !== "object"
+    typeof prev !== 'object' ||
+    typeof next !== 'object'
   ) {
     return prev !== next;
   }
@@ -125,7 +127,7 @@ const reactiveMixin = {
       this.name ||
       (this.constructor &&
         (this.constructor.displayName || this.constructor.name)) ||
-      "<component>";
+      '<component>';
     const rootNodeID =
       this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
 
@@ -141,7 +143,7 @@ const reactiveMixin = {
 
     function makePropertyObservableReference(propName) {
       let valueHolder = this[propName];
-      const atom = new mobx.Atom("reactive " + propName);
+      const atom = new mobx.Atom('reactive ' + propName);
       Object.defineProperty(this, propName, {
         configurable: true,
         enumerable: true,
@@ -163,9 +165,9 @@ const reactiveMixin = {
     }
 
     // make this.props an observable reference, see #124
-    makePropertyObservableReference.call(this, "props");
+    makePropertyObservableReference.call(this, 'props');
     // make state an observable reference
-    makePropertyObservableReference.call(this, "state");
+    makePropertyObservableReference.call(this, 'state');
 
     // wire up reactive render
     const me = this;
@@ -183,7 +185,7 @@ const reactiveMixin = {
             // This unidiomatic React usage but React will correctly warn about this so we continue as usual
             // See #85 / Pull #44
             isRenderingPending = true;
-            if (typeof this.componentWillReact === "function") {
+            if (typeof this.componentWillReact === 'function') {
               this.componentWillReact(); // TODO: wrap in action?
             }
             if (this.__$mobxIsUnmounted !== true) {
@@ -247,7 +249,7 @@ const reactiveMixin = {
       }
       renderReporter.emit({
         component: this,
-        event: "destroy",
+        event: 'destroy',
         node
       });
     }
@@ -268,7 +270,7 @@ const reactiveMixin = {
   shouldComponentUpdate(nextProps, nextState) {
     if (isUsingStaticRendering) {
       warning(
-        "[mobx-react] It seems that a re-rendering of a React component is triggered while in static (server-side) mode. Please make sure components are rendered only once server-side."
+        '[mobx-react] It seems that a re-rendering of a React component is triggered while in static (server-side) mode. Please make sure components are rendered only once server-side.'
       );
     }
     // update on any state changes (as is the default)
@@ -287,8 +289,8 @@ const reactiveMixin = {
  * Observer function / decorator
  */
 export function observer(arg1, arg2?) {
-  if (typeof arg1 === "string") {
-    throw new Error("Store names should be provided as array");
+  if (typeof arg1 === 'string') {
+    throw new Error('Store names should be provided as array');
   }
   if (Array.isArray(arg1)) {
     // component needs stores
@@ -317,7 +319,7 @@ export function observer(arg1, arg2?) {
   // If it is function but doesn't seem to be a react class constructor,
   // wrap it to a react class automatically
   if (
-    typeof component === "function" &&
+    typeof component === 'function' &&
     (!component.prototype || !component.prototype.render)
   ) {
     return observer(
@@ -342,8 +344,8 @@ export function observer(arg1, arg2?) {
 }
 
 function mixinLifecycleEvents(target) {
-  patch(target, "componentWillMount", true);
-  ["componentDidMount", "componentWillUnmount", "componentDidUpdate"].forEach(
+  patch(target, 'componentWillMount', true);
+  ['componentDidMount', 'componentWillUnmount', 'componentDidUpdate'].forEach(
     function(funcName) {
       patch(target, funcName);
     }
@@ -370,13 +372,13 @@ const proxiedInjectorProps = {
  */
 function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
   let displayName =
-    "inject-" +
+    'inject-' +
     (component.displayName ||
       component.name ||
       (component.constructor && component.constructor.name) ||
-      "Unknown");
+      'Unknown');
   if (injectNames) {
-    displayName += "-with-" + injectNames;
+    displayName += '-with-' + injectNames;
   }
 
   class Injector<P, S> extends Component<P, S> {
@@ -441,7 +443,7 @@ function grabStoresByName(storeNames: string[]) {
 
       if (!(storeName in nextProps)) {
         // Development warning
-        if (process.env.NODE_ENV !== "production") {
+        if (process.env.NODE_ENV !== 'production') {
           if (!(storeName in baseStores)) {
             throw new Error(
               "MobX injector: Store '" +
@@ -467,7 +469,7 @@ function grabStoresByName(storeNames: string[]) {
 // TODO: Type
 export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
   let grabStoresFn;
-  if (typeof arguments[0] === "function") {
+  if (typeof arguments[0] === 'function') {
     grabStoresFn = arguments[0];
 
     return function(componentClass) {
@@ -490,7 +492,7 @@ export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
       return createStoreInjector(
         grabStoresFn,
         componentClass,
-        storeNames.join("-")
+        storeNames.join('-')
       );
     };
   }

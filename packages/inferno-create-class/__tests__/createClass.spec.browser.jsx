@@ -1,13 +1,13 @@
-import { render } from "inferno";
-import { innerHTML } from "inferno-utils";
-import { createClass } from "inferno-create-class";
+import { render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
+import { createClass } from 'inferno-create-class';
 
-describe("Components createClass (JSX)", () => {
+describe('Components createClass (JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
-    container.style.display = "none";
+    container = document.createElement('div');
+    container.style.display = 'none';
     document.body.appendChild(container);
   });
 
@@ -16,9 +16,9 @@ describe("Components createClass (JSX)", () => {
     document.body.removeChild(container);
   });
 
-  describe("mixins", () => {
-    describe("mixin methods", () => {
-      it("receives the class instance", () => {
+  describe('mixins', () => {
+    describe('mixin methods', () => {
+      it('receives the class instance', () => {
         const Foo = createClass({
           mixins: [
             {
@@ -50,7 +50,7 @@ describe("Components createClass (JSX)", () => {
         expect(a.anotherState).toEqual(2);
       });
 
-      it("returns result through instance", () => {
+      it('returns result through instance', () => {
         const Foo = createClass({
           mixins: [
             {
@@ -66,11 +66,11 @@ describe("Components createClass (JSX)", () => {
 
         render(<Foo bar="test" />, container);
         expect(container.innerHTML).toEqual(
-          innerHTML("<div><div>test</div></div>")
+          innerHTML('<div><div>test</div></div>')
         );
       });
 
-      it("works as a lifecycle method even when a matching method is already defined", () => {
+      it('works as a lifecycle method even when a matching method is already defined', () => {
         const Foo = createClass({
           mixins: [
             {
@@ -99,8 +99,8 @@ describe("Components createClass (JSX)", () => {
       });
     });
 
-    describe("getDefaultProps", () => {
-      it("should use a mixin", () => {
+    describe('getDefaultProps', () => {
+      it('should use a mixin', () => {
         const Foo = createClass({
           mixins: [{ getDefaultProps: () => ({ a: true }) }],
           render() {
@@ -113,7 +113,7 @@ describe("Components createClass (JSX)", () => {
         });
       });
 
-      it("should combine the results", () => {
+      it('should combine the results', () => {
         const Foo = createClass({
           mixins: [
             { getDefaultProps: () => ({ a: true }) },
@@ -134,7 +134,7 @@ describe("Components createClass (JSX)", () => {
         });
       });
 
-      it("should throw an error for duplicate keys", () => {
+      it('should throw an error for duplicate keys', () => {
         expect(() =>
           createClass({
             mixins: [{ getDefaultProps: () => ({ a: true }) }],
@@ -149,8 +149,8 @@ describe("Components createClass (JSX)", () => {
       });
     });
 
-    describe("getInitialState", () => {
-      it("should combine the results", () => {
+    describe('getInitialState', () => {
+      it('should combine the results', () => {
         const Foo = createClass({
           mixins: [
             { getInitialState: () => ({ a: true }) },
@@ -181,7 +181,7 @@ describe("Components createClass (JSX)", () => {
         });
       });
 
-      it("should throw an error for duplicate keys", () => {
+      it('should throw an error for duplicate keys', () => {
         const Foo = createClass({
           mixins: [{ getInitialState: () => ({ a: true }) }],
           getInitialState() {
@@ -199,8 +199,8 @@ describe("Components createClass (JSX)", () => {
     });
   });
 
-  describe("Context", () => {
-    it("It should have context defined when context moved to children", () => {
+  describe('Context', () => {
+    it('It should have context defined when context moved to children', () => {
       const App = createClass({
         getDefaultProps() {
           return {
@@ -210,7 +210,7 @@ describe("Components createClass (JSX)", () => {
 
         getChildContext() {
           return {
-            foo: "bar baz"
+            foo: 'bar baz'
           };
         },
 
@@ -261,7 +261,7 @@ describe("Components createClass (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        innerHTML("<div><div>Hello bar baz</div><div>Hai bar baz</div></div>")
+        innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>')
       );
     });
   });

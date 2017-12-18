@@ -1,23 +1,23 @@
-import { render } from "inferno";
-import * as mobx from "mobx";
-import { observer } from "inferno-mobx";
-import { createClass } from "inferno-create-class";
+import { render } from 'inferno';
+import * as mobx from 'mobx';
+import { observer } from 'inferno-mobx';
+import { createClass } from 'inferno-create-class';
 
-describe("Mobx Misc", () => {
+describe('Mobx Misc', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("custom shouldComponentUpdate is not respected for observable changes (#50)", done => {
+  it('custom shouldComponentUpdate is not respected for observable changes (#50)', done => {
     let called = 0;
     const x = mobx.observable(3);
     const C = observer(
@@ -27,15 +27,15 @@ describe("Mobx Misc", () => {
       })
     );
     render(<C />, container);
-    expect(container.querySelector("div").textContent).toBe("value:3");
+    expect(container.querySelector('div').textContent).toBe('value:3');
     expect(called).toBe(0);
     x.set(42);
-    expect(container.querySelector("div").textContent).toBe("value:42");
+    expect(container.querySelector('div').textContent).toBe('value:42');
     expect(called).toBe(0);
     done();
   });
 
-  it("custom shouldComponentUpdate is not respected for observable changes (#50) - 2", done => {
+  it('custom shouldComponentUpdate is not respected for observable changes (#50) - 2', done => {
     // TODO: shouldComponentUpdate is meaningless with observable props...., just show warning in component definition?
     let called = 0;
     const y = mobx.observable(5);
@@ -60,11 +60,11 @@ describe("Mobx Misc", () => {
       })
     );
     render(<B />, container);
-    expect(container.querySelector("div").textContent).toBe("value:5");
+    expect(container.querySelector('div').textContent).toBe('value:5');
     expect(called).toBe(0);
 
     y.set(6);
-    expect(container.querySelector("div").textContent).toBe("value:6");
+    expect(container.querySelector('div').textContent).toBe('value:6');
     expect(called).toBe(1);
 
     y.set(42);
@@ -72,18 +72,18 @@ describe("Mobx Misc", () => {
     expect(called).toBe(2);
 
     y.set(7);
-    expect(container.querySelector("div").textContent).toBe("value:7");
+    expect(container.querySelector('div').textContent).toBe('value:7');
     expect(called).toBe(3);
 
     done();
   });
 
-  it("issue mobx 405", done => {
+  it('issue mobx 405', done => {
     function ExampleState() {
       mobx.extendObservable(this, {
-        name: "test",
+        name: 'test',
         get greetings() {
-          return "Hello my name is " + this.name;
+          return 'Hello my name is ' + this.name;
         }
       });
     }
@@ -107,8 +107,8 @@ describe("Mobx Misc", () => {
 
     const exampleState = new ExampleState();
     render(<ExampleView exampleState={exampleState} />, container);
-    expect(container.querySelector("span").textContent).toBe(
-      "Hello my name is test"
+    expect(container.querySelector('span').textContent).toBe(
+      'Hello my name is test'
     );
 
     done();

@@ -2,9 +2,9 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { Component } from "inferno";
-import { createLocation, locationsAreEqual } from "history";
-import { invariant } from "./utils";
+import { Component } from 'inferno';
+import { createLocation, locationsAreEqual } from 'history';
+import { invariant } from './utils';
 
 export class Redirect extends Component<any, any> {
   public isStatic() {
@@ -14,7 +14,7 @@ export class Redirect extends Component<any, any> {
   public componentWillMount() {
     invariant(
       this.context.router,
-      "You should not use <Redirect> outside a <Router>"
+      'You should not use <Redirect> outside a <Router>'
     );
 
     if (this.isStatic()) {

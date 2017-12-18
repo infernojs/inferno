@@ -2,23 +2,23 @@
  * @module Inferno-Utils
  */ /** TypeDoc Comment */
 
-import { isArray, isNullOrUndef, isStringOrNumber } from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
+import { isArray, isNullOrUndef, isStringOrNumber } from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
-const comparer = document.createElement("div");
+const comparer = document.createElement('div');
 
 export function sortAttributes(html: string): string {
   return html.replace(
     /<([a-z0-9-]+)((?:\s[a-z0-9:_.-]+=".*?")+)((?:\s*\/)?>)/gi,
     (s, pre, attrs, after) => {
-      const attrName = (attribute: string): string => attribute.split("=")[0];
+      const attrName = (attribute: string): string => attribute.split('=')[0];
       const list: string[] = attrs
         .match(/\s[a-z0-9:_.-]+=".*?"/gi)
         .sort((a, b) => (attrName(a) > attrName(b) ? 1 : -1));
-      if (~after.indexOf("/")) {
-        after = "></" + pre + ">";
+      if (~after.indexOf('/')) {
+        after = '></' + pre + '>';
       }
-      return "<" + pre + list.join("") + after;
+      return '<' + pre + list.join('') + after;
     }
   );
 }
@@ -29,8 +29,8 @@ export function innerHTML(HTML: string): string {
 }
 
 export function createStyler(CSS: string | undefined | null): string {
-  if (typeof CSS === "undefined" || CSS === null) {
-    return "";
+  if (typeof CSS === 'undefined' || CSS === null) {
+    return '';
   }
   comparer.style.cssText = CSS;
   return comparer.style.cssText;
@@ -45,7 +45,7 @@ export function style(CSS: string[] | string): string[] | string {
 }
 
 export function createContainerWithHTML(html: string): HTMLDivElement {
-  const container = document.createElement("div");
+  const container = document.createElement('div');
 
   container.innerHTML = html;
   return container;
@@ -90,29 +90,29 @@ export function triggerEvent(name: string, element: any) {
   let eventType;
 
   if (
-    name === "click" ||
-    name === "dblclick" ||
-    name === "mousedown" ||
-    name === "mouseup"
+    name === 'click' ||
+    name === 'dblclick' ||
+    name === 'mousedown' ||
+    name === 'mouseup'
   ) {
-    eventType = "MouseEvents";
+    eventType = 'MouseEvents';
   } else if (
-    name === "focus" ||
-    name === "change" ||
-    name === "blur" ||
-    name === "select"
+    name === 'focus' ||
+    name === 'change' ||
+    name === 'blur' ||
+    name === 'select'
   ) {
-    eventType = "HTMLEvents";
+    eventType = 'HTMLEvents';
   } else {
     throw new Error('Unsupported `"' + name + '"`event');
   }
   const event = document.createEvent(eventType);
-  if (eventType === "MouseEvents") {
+  if (eventType === 'MouseEvents') {
     // Simulate left click always
-    Object.defineProperty(event, "button", {
+    Object.defineProperty(event, 'button', {
       value: 0
     });
   }
-  event.initEvent(name, name !== "change", true);
+  event.initEvent(name, name !== 'change', true);
   element.dispatchEvent(event, true);
 }

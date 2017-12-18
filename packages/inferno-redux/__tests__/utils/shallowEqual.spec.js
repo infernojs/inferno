@@ -1,9 +1,9 @@
-import { shallowEqual } from "../../src/utils/shallowEqual";
+import { shallowEqual } from '../../src/utils/shallowEqual';
 
-describe("redux", () => {
-  describe("utils", () => {
-    describe("shallowEqual", () => {
-      it("should return true if arguments fields are equal", () => {
+describe('redux', () => {
+  describe('utils', () => {
+    describe('shallowEqual', () => {
+      it('should return true if arguments fields are equal', () => {
         expect(
           shallowEqual(
             { a: 1, b: 2, c: undefined },
@@ -28,7 +28,7 @@ describe("redux", () => {
         ).toBe(true);
       });
 
-      it("should return false if arguments fields are different function identities", () => {
+      it('should return false if arguments fields are different function identities', () => {
         expect(
           shallowEqual(
             // tslint:disable-next-line:object-literal-shorthand
@@ -51,15 +51,15 @@ describe("redux", () => {
         ).toBe(false);
       });
 
-      it("should return false if first argument has too many keys", () => {
+      it('should return false if first argument has too many keys', () => {
         expect(shallowEqual({ a: 1, b: 2, c: 3 }, { a: 1, b: 2 })).toBe(false);
       });
 
-      it("should return false if second argument has too many keys", () => {
+      it('should return false if second argument has too many keys', () => {
         expect(shallowEqual({ a: 1, b: 2 }, { a: 1, b: 2, c: 3 })).toBe(false);
       });
 
-      it("should return false if arguments have different keys", () => {
+      it('should return false if arguments have different keys', () => {
         expect(
           shallowEqual(
             { a: 1, b: 2, c: undefined },

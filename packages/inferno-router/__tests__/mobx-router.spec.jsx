@@ -1,24 +1,24 @@
-import { render, Component } from "inferno";
-import { Provider, inject, observer } from "inferno-mobx";
-import { Router, Route, IndexRoute } from "inferno-router";
-import createMemoryHistory from "history/createMemoryHistory";
-import { observable, action } from "mobx";
+import { render, Component } from 'inferno';
+import { Provider, inject, observer } from 'inferno-mobx';
+import { Router, Route, IndexRoute } from 'inferno-router';
+import createMemoryHistory from 'history/createMemoryHistory';
+import { observable, action } from 'mobx';
 
-describe("Github #1236", () => {
+describe('Github #1236', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Should not patch twice", () => {
+  it('Should not patch twice', () => {
     class SearchStore {
       @observable query = undefined;
 
@@ -42,29 +42,29 @@ describe("Github #1236", () => {
         doSearch(e) {
           e.preventDefault();
           const nextLoc =
-            this.context.router.history.location.pathname + "?q=test";
+            this.context.router.history.location.pathname + '?q=test';
           this.context.router.history.push(nextLoc);
         }
 
         render({ searchStore }) {
-          let showView = searchStore["query"] ? "results" : "default";
+          let showView = searchStore['query'] ? 'results' : 'default';
 
           return (
             <div key="search-container">
               <a key="asd" id="test-btn" href="#front" onClick={this.doSearch}>
                 link
               </a>
-              {showView === "default" && (
+              {showView === 'default' && (
                 <div key="search-default">default</div>
               )}
-              {showView === "results" && <SearchResult key="search-results" />}
+              {showView === 'results' && <SearchResult key="search-results" />}
             </div>
           );
         }
       }
     );
 
-    SearchPage = inject("searchStore")(SearchPage);
+    SearchPage = inject('searchStore')(SearchPage);
 
     class SearchResult extends Component {
       render() {
@@ -93,7 +93,7 @@ describe("Github #1236", () => {
       '<div><a id="test-btn" href="#front">link</a><div>default</div></div>'
     );
 
-    const btn = container.querySelector("#test-btn");
+    const btn = container.querySelector('#test-btn');
 
     btn.click();
 

@@ -1,24 +1,24 @@
-import { Component, render } from "inferno";
-import sinon from "sinon";
-import { innerHTML } from "inferno-utils";
+import { Component, render } from 'inferno';
+import sinon from 'sinon';
+import { innerHTML } from 'inferno-utils';
 
-describe("Children - (JSX)", () => {
+describe('Children - (JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  describe("keyed - children", function() {
-    it("Should push to correct location when it keyed list has siblings", function() {
-      const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+  describe('keyed - children', function() {
+    it('Should push to correct location when it keyed list has siblings', function() {
+      const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, key, id }) {
         return (
@@ -30,7 +30,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -38,7 +38,7 @@ describe("Children - (JSX)", () => {
           <div className="tab-group">
             {tabs.map((tab, i) => (
               <Tab
-                key={"Item " + i}
+                key={'Item ' + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
@@ -59,28 +59,28 @@ describe("Children - (JSX)", () => {
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
         )
       );
-      let addTab = container.querySelector("#add");
+      let addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -89,7 +89,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should append child node to correct location when its empty at the beginning ", function() {
+    it('Should append child node to correct location when its empty at the beginning ', function() {
       const _tabs = [];
 
       function Tab({ title, onSelect, key, id }) {
@@ -102,7 +102,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -110,7 +110,7 @@ describe("Children - (JSX)", () => {
           <div className="tab-group">
             {tabs.map((tab, i) => (
               <Tab
-                key={"Item " + i}
+                key={'Item ' + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
@@ -128,14 +128,14 @@ describe("Children - (JSX)", () => {
       expect(container.innerHTML).toBe(
         innerHTML('<div class="tab-group"><div id="add">Add</div></div>')
       );
-      let addTab = container.querySelector("#add");
+      let addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -144,7 +144,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should append child node to correct location when its empty at the beginning ", function() {
+    it('Should append child node to correct location when its empty at the beginning ', function() {
       const _tabs = [];
 
       function Tab({ title, onSelect, key, id }) {
@@ -157,7 +157,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -166,7 +166,7 @@ describe("Children - (JSX)", () => {
             <Tab onSelect={create} id="add" title="Add" />
             {tabs.map((tab, i) => (
               <Tab
-                key={"Item " + i}
+                key={'Item ' + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
@@ -183,14 +183,14 @@ describe("Children - (JSX)", () => {
       expect(container.innerHTML).toBe(
         innerHTML('<div class="tab-group"><div id="add">Add</div></div>')
       );
-      let addTab = container.querySelector("#add");
+      let addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div id="add">Add</div><div>New 0</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -199,7 +199,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should append child node to correct location when its empty at the beginning ", function() {
+    it('Should append child node to correct location when its empty at the beginning ', function() {
       const _tabs = [];
 
       function Tab({ title, onSelect, key, id }) {
@@ -212,7 +212,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -220,7 +220,7 @@ describe("Children - (JSX)", () => {
           <div className="tab-group">
             {tabs.map((tab, i) => (
               <Tab
-                key={"Item " + i}
+                key={'Item ' + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
@@ -228,7 +228,7 @@ describe("Children - (JSX)", () => {
             <Tab onSelect={create} id="add" title="Add" />
             {tabs.map((tab, i) => (
               <Tab
-                key={"Item " + i}
+                key={'Item ' + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
@@ -246,14 +246,14 @@ describe("Children - (JSX)", () => {
       expect(container.innerHTML).toBe(
         innerHTML('<div class="tab-group"><div id="add">Add</div></div>')
       );
-      let addTab = container.querySelector("#add");
+      let addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -262,8 +262,8 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should appendx3 to correct location when it keyed list has siblings", function() {
-      const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+    it('Should appendx3 to correct location when it keyed list has siblings', function() {
+      const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, key, id }) {
         return (
@@ -275,9 +275,9 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
-          tabs.push({ title: "New " + tabs.length });
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -285,7 +285,7 @@ describe("Children - (JSX)", () => {
           <div className="tab-group">
             {tabs.map((tab, i) => (
               <Tab
-                key={"Item " + i}
+                key={'Item ' + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
@@ -306,7 +306,7 @@ describe("Children - (JSX)", () => {
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
         )
       );
-      const addTab = container.querySelector("#add");
+      const addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -315,8 +315,8 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should unshiftx3 to correct location when it keyed list has siblings", function() {
-      const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+    it('Should unshiftx3 to correct location when it keyed list has siblings', function() {
+      const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, key, id }) {
         return (
@@ -328,9 +328,9 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.unshift({ title: "New " + tabs.length });
-          tabs.unshift({ title: "New " + tabs.length });
-          tabs.unshift({ title: "New " + tabs.length });
+          tabs.unshift({ title: 'New ' + tabs.length });
+          tabs.unshift({ title: 'New ' + tabs.length });
+          tabs.unshift({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -338,7 +338,7 @@ describe("Children - (JSX)", () => {
           <div className="tab-group">
             {tabs.map((tab, i) => (
               <Tab
-                key={"Item " + i}
+                key={'Item ' + i}
                 title={tab.title}
                 onSelect={() => undefined}
               />
@@ -359,7 +359,7 @@ describe("Children - (JSX)", () => {
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
         )
       );
-      const addTab = container.querySelector("#add");
+      const addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -368,7 +368,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Inline text element before array list", function() {
+    it('Inline text element before array list', function() {
       const _tabs = [];
 
       function Tab({ title, key }) {
@@ -379,7 +379,7 @@ describe("Children - (JSX)", () => {
         return (
           <div className="tab-group">
             inlineText{tabs.map((tab, i) => (
-              <Tab key={"Item " + i} title={tab.title} />
+              <Tab key={'Item ' + i} title={tab.title} />
             ))}
           </div>
         );
@@ -395,7 +395,7 @@ describe("Children - (JSX)", () => {
         innerHTML('<div class="tab-group">inlineText</div>')
       );
 
-      _tabs.push({ title: "New " + _tabs.length });
+      _tabs.push({ title: 'New ' + _tabs.length });
       renderIt();
 
       expect(container.innerHTML).toBe(
@@ -403,7 +403,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Inline text element after array list", function() {
+    it('Inline text element after array list', function() {
       const _tabs = [];
 
       function Tab({ title, key }) {
@@ -413,7 +413,7 @@ describe("Children - (JSX)", () => {
       function TabGroup({ tabs }) {
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab key={"Item " + i} title={tab.title} />)}inlineText
+            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} />)}inlineText
           </div>
         );
       }
@@ -428,7 +428,7 @@ describe("Children - (JSX)", () => {
         innerHTML('<div class="tab-group">inlineText</div>')
       );
 
-      _tabs.push({ title: "New " + _tabs.length });
+      _tabs.push({ title: 'New ' + _tabs.length });
       renderIt();
 
       expect(container.innerHTML).toBe(
@@ -437,9 +437,9 @@ describe("Children - (JSX)", () => {
     });
   });
 
-  describe("nonKeyed - children", function() {
-    it("Should push to correct location when it keyed list has siblings", function() {
-      const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+  describe('nonKeyed - children', function() {
+    it('Should push to correct location when it keyed list has siblings', function() {
+      const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, id }) {
         return (
@@ -451,7 +451,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -476,28 +476,28 @@ describe("Children - (JSX)", () => {
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
         )
       );
-      let addTab = container.querySelector("#add");
+      let addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -506,7 +506,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should append child node to correct location when its empty at the beginning ", function() {
+    it('Should append child node to correct location when its empty at the beginning ', function() {
       const _tabs = [];
 
       function Tab({ title, onSelect, id }) {
@@ -519,7 +519,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -541,14 +541,14 @@ describe("Children - (JSX)", () => {
       expect(container.innerHTML).toBe(
         innerHTML('<div class="tab-group"><div id="add">Add</div></div>')
       );
-      let addTab = container.querySelector("#add");
+      let addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -557,7 +557,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should append child node to correct location when its empty at the beginning ", function() {
+    it('Should append child node to correct location when its empty at the beginning ', function() {
       const _tabs = [];
 
       function Tab({ title, onSelect, id }) {
@@ -570,7 +570,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -593,7 +593,7 @@ describe("Children - (JSX)", () => {
       expect(container.innerHTML).toBe(
         innerHTML('<div class="tab-group"><div id="add">Add</div></div>')
       );
-      const addTab = container.querySelector("#add");
+      const addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -608,7 +608,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should append child node to correct location when its empty at the beginning ", function() {
+    it('Should append child node to correct location when its empty at the beginning ', function() {
       const _tabs = [];
 
       function Tab({ title, onSelect, id }) {
@@ -621,7 +621,7 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -647,14 +647,14 @@ describe("Children - (JSX)", () => {
       expect(container.innerHTML).toBe(
         innerHTML('<div class="tab-group"><div id="add">Add</div></div>')
       );
-      let addTab = container.querySelector("#add");
+      let addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
           '<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>'
         )
       );
-      addTab = container.querySelector("#add");
+      addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -663,8 +663,8 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should appendx3 to correct location when it list has siblings", function() {
-      const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+    it('Should appendx3 to correct location when it list has siblings', function() {
+      const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, id }) {
         return (
@@ -676,9 +676,9 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.push({ title: "New " + tabs.length });
-          tabs.push({ title: "New " + tabs.length });
-          tabs.push({ title: "New " + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
+          tabs.push({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -703,7 +703,7 @@ describe("Children - (JSX)", () => {
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
         )
       );
-      const addTab = container.querySelector("#add");
+      const addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -712,8 +712,8 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Should unshiftx3 to correct location when it list has siblings", function() {
-      const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+    it('Should unshiftx3 to correct location when it list has siblings', function() {
+      const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, id }) {
         return (
@@ -725,9 +725,9 @@ describe("Children - (JSX)", () => {
 
       function TabGroup({ tabs }) {
         function create() {
-          tabs.unshift({ title: "New " + tabs.length });
-          tabs.unshift({ title: "New " + tabs.length });
-          tabs.unshift({ title: "New " + tabs.length });
+          tabs.unshift({ title: 'New ' + tabs.length });
+          tabs.unshift({ title: 'New ' + tabs.length });
+          tabs.unshift({ title: 'New ' + tabs.length });
           renderIt();
         }
 
@@ -752,7 +752,7 @@ describe("Children - (JSX)", () => {
           '<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
         )
       );
-      const addTab = container.querySelector("#add");
+      const addTab = container.querySelector('#add');
       addTab.click();
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -761,7 +761,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Inline text element before array list", function() {
+    it('Inline text element before array list', function() {
       const _tabs = [];
 
       function Tab({ title }) {
@@ -786,7 +786,7 @@ describe("Children - (JSX)", () => {
         innerHTML('<div class="tab-group">inlineText</div>')
       );
 
-      _tabs.push({ title: "New " + _tabs.length });
+      _tabs.push({ title: 'New ' + _tabs.length });
       renderIt();
 
       expect(container.innerHTML).toBe(
@@ -794,7 +794,7 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("Inline text element after array list", function() {
+    it('Inline text element after array list', function() {
       const _tabs = [];
 
       function Tab({ title }) {
@@ -819,7 +819,7 @@ describe("Children - (JSX)", () => {
         innerHTML('<div class="tab-group">inlineText</div>')
       );
 
-      _tabs.push({ title: "New " + _tabs.length });
+      _tabs.push({ title: 'New ' + _tabs.length });
       renderIt();
 
       expect(container.innerHTML).toBe(
@@ -828,11 +828,11 @@ describe("Children - (JSX)", () => {
     });
   });
 
-  describe("mixed children edge cases", function() {
-    it("NONKEYED - should remove children from correct location when there is dynamic static item", function() {
-      const items = ["a", "b", "c"];
+  describe('mixed children edge cases', function() {
+    it('NONKEYED - should remove children from correct location when there is dynamic static item', function() {
+      const items = ['a', 'b', 'c'];
       const emptyArray = [];
-      const items3 = ["v", "a"];
+      const items3 = ['v', 'a'];
       let visible = false;
       let activeOne;
 
@@ -885,10 +885,10 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists", function() {
-      const items = ["a", "b", "c"];
+    it('NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists', function() {
+      const items = ['a', 'b', 'c'];
       const emptyArray = [];
-      const items3 = ["v", "a"];
+      const items3 = ['v', 'a'];
 
       let activeOne;
       let activeTwo;
@@ -968,10 +968,10 @@ describe("Children - (JSX)", () => {
       );
     });
 
-    it("KEYED - should remove children from correct location when there is dynamic static item", function() {
-      const items = ["a", "b", "c"];
+    it('KEYED - should remove children from correct location when there is dynamic static item', function() {
+      const items = ['a', 'b', 'c'];
       const emptyArray = [];
-      const items3 = ["v", "a"];
+      const items3 = ['v', 'a'];
       let visible = false;
 
       let activeOne;
@@ -1026,8 +1026,8 @@ describe("Children - (JSX)", () => {
     });
   });
 
-  describe("Functions non keyed", () => {
-    it("Should render correctly functions and nodes mixed", () => {
+  describe('Functions non keyed', () => {
+    it('Should render correctly functions and nodes mixed', () => {
       // references for the sake of test case
       let updaterFirst = null;
       let updaterSecond = null;
@@ -1071,32 +1071,32 @@ describe("Children - (JSX)", () => {
       render(<A />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>"
+          '<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>'
         )
       );
       updaterFirst();
       expect(container.innerHTML).toBe(
-        innerHTML("<div><p>1</p><p>2</p><span>def</span><p>3</p></div>")
+        innerHTML('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>')
       );
       updaterSecond();
       expect(container.innerHTML).toBe(
-        innerHTML("<div><p>1</p><p>2</p><p>3</p></div>")
+        innerHTML('<div><p>1</p><p>2</p><p>3</p></div>')
       );
       updaterSecond();
       expect(container.innerHTML).toBe(
-        innerHTML("<div><p>1</p><p>2</p><span>def</span><p>3</p></div>")
+        innerHTML('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>')
       );
       updaterFirst();
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>"
+          '<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>'
         )
       );
     });
   });
 
-  describe("JSX plugin", () => {
-    it("Should not have undefined properties", () => {
+  describe('JSX plugin', () => {
+    it('Should not have undefined properties', () => {
       class A extends Component {
         constructor(props) {
           super(props);
@@ -1127,8 +1127,8 @@ describe("Children - (JSX)", () => {
     });
   });
 
-  describe("Rendering null on child node", () => {
-    it("Should trigger unmount", () => {
+  describe('Rendering null on child node', () => {
+    it('Should trigger unmount', () => {
       class A extends Component {
         constructor(props) {
           super(props);
@@ -1151,17 +1151,17 @@ describe("Children - (JSX)", () => {
         }
       }
 
-      const unmountSpy = sinon.spy(B.prototype, "componentWillUnmount");
+      const unmountSpy = sinon.spy(B.prototype, 'componentWillUnmount');
       render(<A test={<B />} />, container);
-      expect(container.innerHTML).toBe(innerHTML("<div><p>B</p></div>"));
+      expect(container.innerHTML).toBe(innerHTML('<div><p>B</p></div>'));
       render(<A test={null} />, container);
-      expect(container.innerHTML).toBe(innerHTML("<div></div>"));
+      expect(container.innerHTML).toBe(innerHTML('<div></div>'));
       expect(unmountSpy.callCount).toBe(1);
     });
   });
 
-  describe("VFragment within other nodes", () => {
-    it("Should not clear nodes when non keyed", () => {
+  describe('VFragment within other nodes', () => {
+    it('Should not clear nodes when non keyed', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
@@ -1173,31 +1173,31 @@ describe("Children - (JSX)", () => {
       render(<Nodes items={[1, 2, 3]} />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>"
+          '<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'
         )
       );
 
       render(<Nodes items={[3, 2, 1]} />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>"
+          '<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'
         )
       );
 
       render(<Nodes items={[9, 8, 7]} />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>"
+          '<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'
         )
       );
 
       render(<Nodes items={[]} />, container);
       expect(container.innerHTML).toBe(
-        innerHTML("<div><div>test</div><div>end</div></div>")
+        innerHTML('<div><div>test</div><div>end</div></div>')
       );
     });
 
-    it("Should not clear nodes when keyed inside vFragment", () => {
+    it('Should not clear nodes when keyed inside vFragment', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
@@ -1209,31 +1209,31 @@ describe("Children - (JSX)", () => {
       render(<Nodes items={[1, 2, 3]} />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>"
+          '<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'
         )
       );
 
       render(<Nodes items={[3, 2, 1]} />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>"
+          '<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'
         )
       );
 
       render(<Nodes items={[9, 8, 7]} />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>"
+          '<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'
         )
       );
 
       render(<Nodes items={[]} />, container);
       expect(container.innerHTML).toBe(
-        innerHTML("<div><div>test</div><div>end</div></div>")
+        innerHTML('<div><div>test</div><div>end</div></div>')
       );
     });
 
-    it("Should not clear nodes when keyed inside vFragment #2", () => {
+    it('Should not clear nodes when keyed inside vFragment #2', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
@@ -1244,28 +1244,28 @@ describe("Children - (JSX)", () => {
 
       render(<Nodes items={[1]} />, container);
       expect(container.innerHTML).toBe(
-        innerHTML("<div><div>test</div><span>1</span><div>end</div></div>")
+        innerHTML('<div><div>test</div><span>1</span><div>end</div></div>')
       );
 
       render(<Nodes items={[]} />, container);
       expect(container.innerHTML).toBe(
-        innerHTML("<div><div>test</div><div>end</div></div>")
+        innerHTML('<div><div>test</div><div>end</div></div>')
       );
 
       render(null, container);
-      expect(container.innerHTML).toBe("");
+      expect(container.innerHTML).toBe('');
 
       render(<Nodes items={[1, 2, 3]} />, container);
       expect(container.innerHTML).toBe(
         innerHTML(
-          "<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>"
+          '<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'
         )
       );
     });
   });
 
-  describe("Forced keyed children", () => {
-    it("Should always go keyed algorithm when parent has $HasKeyedChildren", () => {
+  describe('Forced keyed children', () => {
+    it('Should always go keyed algorithm when parent has $HasKeyedChildren', () => {
       const Collection = ({ children }) => (
         <div $HasKeyedChildren>{children}</div>
       );
@@ -1280,7 +1280,7 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>1</div><div>2</div><div>3</div></div>"
+        '<div><div>1</div><div>2</div><div>3</div></div>'
       );
 
       render(
@@ -1293,7 +1293,7 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>3</div><div>2</div><div>1</div></div>"
+        '<div><div>3</div><div>2</div><div>1</div></div>'
       );
 
       render(
@@ -1306,11 +1306,11 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>3</div><div>2</div><div>11</div></div>"
+        '<div><div>3</div><div>2</div><div>11</div></div>'
       );
     });
 
-    it("Should be able to swap from keyed to nonkeyed when nextNode no longer is keyed", () => {
+    it('Should be able to swap from keyed to nonkeyed when nextNode no longer is keyed', () => {
       const CollectionKeyed = ({ children }) => (
         <div $HasKeyedChildren>{children}</div>
       );
@@ -1329,7 +1329,7 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>1</div><div>2</div><div>3</div></div>"
+        '<div><div>1</div><div>2</div><div>3</div></div>'
       );
 
       render(
@@ -1341,7 +1341,7 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>3</div><div>2</div></div>"
+        '<div><div>3</div><div>2</div></div>'
       );
 
       render(
@@ -1354,11 +1354,11 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>3</div><div>2</div><div>11</div></div>"
+        '<div><div>3</div><div>2</div><div>11</div></div>'
       );
     });
 
-    it("Should handle previous being empty array", () => {
+    it('Should handle previous being empty array', () => {
       const CollectionKeyed = ({ children }) => (
         <div $HasKeyedChildren>{children}</div>
       );
@@ -1366,7 +1366,7 @@ describe("Children - (JSX)", () => {
       const child = [];
       render(<CollectionKeyed>{child}</CollectionKeyed>, container);
 
-      expect(container.innerHTML).toEqual("<div></div>");
+      expect(container.innerHTML).toEqual('<div></div>');
 
       render(
         <CollectionKeyed>
@@ -1378,11 +1378,11 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>1</div><div>2</div><div>3</div></div>"
+        '<div><div>1</div><div>2</div><div>3</div></div>'
       );
     });
 
-    it("Should handle next being empty array", () => {
+    it('Should handle next being empty array', () => {
       const CollectionKeyed = ({ children }) => (
         <div $HasKeyedChildren>{children}</div>
       );
@@ -1397,16 +1397,16 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><div>1</div><div>2</div><div>3</div></div>"
+        '<div><div>1</div><div>2</div><div>3</div></div>'
       );
 
       const child = [];
       render(<CollectionKeyed>{child}</CollectionKeyed>, container);
 
-      expect(container.innerHTML).toEqual("<div></div>");
+      expect(container.innerHTML).toEqual('<div></div>');
     });
 
-    it("Should handle last/next being empty", () => {
+    it('Should handle last/next being empty', () => {
       const CollectionKeyed = ({ children }) => (
         <div $HasKeyedChildren>{children}</div>
       );
@@ -1414,18 +1414,18 @@ describe("Children - (JSX)", () => {
       const child = [];
       render(<CollectionKeyed>{child}</CollectionKeyed>, container);
 
-      expect(container.innerHTML).toEqual("<div></div>");
+      expect(container.innerHTML).toEqual('<div></div>');
 
       const childB = [];
 
       render(<CollectionKeyed>{childB}</CollectionKeyed>, container);
 
-      expect(container.innerHTML).toEqual("<div></div>");
+      expect(container.innerHTML).toEqual('<div></div>');
     });
   });
 
-  describe("Unmount behavior in lists", () => {
-    it("Should not call unmount when changing list length", () => {
+  describe('Unmount behavior in lists', () => {
+    it('Should not call unmount when changing list length', () => {
       class UnMountTest extends Component {
         componentWillUnmount() {
           // Should not be here
@@ -1459,26 +1459,26 @@ describe("Children - (JSX)", () => {
 
       const spyUnmount = sinon.spy(
         UnMountTest.prototype,
-        "componentWillUnmount"
+        'componentWillUnmount'
       );
       const notCalled = sinon.assert.notCalled;
 
       render(<Parent firstClassCitizenIsBack={false} />, container); // initial render
       expect(container.innerHTML).toEqual(
-        "<div><div>a</div><span>1</span><div>C</div></div>"
+        '<div><div>a</div><span>1</span><div>C</div></div>'
       );
       notCalled(spyUnmount);
 
       render(<Parent firstClassCitizenIsBack={true} />, container);
       expect(container.innerHTML).toEqual(
-        "<div><div>a</div><div>b</div><span>1</span><div>C</div></div>"
+        '<div><div>a</div><div>b</div><span>1</span><div>C</div></div>'
       );
       notCalled(spyUnmount);
     });
   });
 
-  describe("Children lifecycle with fastUnmount", () => {
-    it("Should call componentWillUnmount for children", done => {
+  describe('Children lifecycle with fastUnmount', () => {
+    it('Should call componentWillUnmount for children', done => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1511,7 +1511,7 @@ describe("Children - (JSX)", () => {
           super(props);
 
           this.state = {
-            text: "initial"
+            text: 'initial'
           };
         }
 
@@ -1526,14 +1526,14 @@ describe("Children - (JSX)", () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(FooBar.prototype, "componentWillUnmount");
-      const mountSpy = sinon.spy(FooBar.prototype, "componentWillMount");
+      const unMountSpy = sinon.spy(FooBar.prototype, 'componentWillUnmount');
+      const mountSpy = sinon.spy(FooBar.prototype, 'componentWillMount');
 
       const calledOnce = sinon.assert.calledOnce;
       const notCalled = sinon.assert.notCalled;
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span>initial</span></div>"
+        '<div><span>foobar</span><span>initial</span></div>'
       );
 
       mountSpy.reset();
@@ -1541,7 +1541,7 @@ describe("Children - (JSX)", () => {
 
       toggle(); // Unmount child component
       setTimeout(() => {
-        expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+        expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
 
         calledOnce(unMountSpy);
         notCalled(mountSpy);
@@ -1549,7 +1549,7 @@ describe("Children - (JSX)", () => {
       }, 10);
     });
 
-    it("Should call componentWillUnmount for nested children", done => {
+    it('Should call componentWillUnmount for nested children', done => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1599,14 +1599,14 @@ describe("Children - (JSX)", () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Test.prototype, "componentWillUnmount");
-      const mountSpy = sinon.spy(Test.prototype, "componentWillMount");
+      const unMountSpy = sinon.spy(Test.prototype, 'componentWillUnmount');
+      const mountSpy = sinon.spy(Test.prototype, 'componentWillMount');
 
       const calledOnce = sinon.assert.calledOnce;
       const notCalled = sinon.assert.notCalled;
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><em>f</em></span></div>"
+        '<div><span>foobar</span><span><em>f</em></span></div>'
       );
 
       mountSpy.reset();
@@ -1614,7 +1614,7 @@ describe("Children - (JSX)", () => {
 
       toggle(); // Unmount child component
       setTimeout(() => {
-        expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+        expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
 
         calledOnce(unMountSpy);
         notCalled(mountSpy);
@@ -1622,7 +1622,7 @@ describe("Children - (JSX)", () => {
       }, 10);
     });
 
-    it("Should call componentWillUnmount for nested children #2", done => {
+    it('Should call componentWillUnmount for nested children #2', done => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1679,13 +1679,13 @@ describe("Children - (JSX)", () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Test.prototype, "componentWillUnmount");
-      const unMountSpy2 = sinon.spy(Foo.prototype, "componentWillUnmount");
+      const unMountSpy = sinon.spy(Test.prototype, 'componentWillUnmount');
+      const unMountSpy2 = sinon.spy(Foo.prototype, 'componentWillUnmount');
 
       const calledOnce = sinon.assert.calledOnce;
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><em>f</em><em>f</em></span></div>"
+        '<div><span>foobar</span><span><em>f</em><em>f</em></span></div>'
       );
 
       unMountSpy2.reset();
@@ -1693,14 +1693,14 @@ describe("Children - (JSX)", () => {
 
       toggle(); // Unmount child component
       setTimeout(() => {
-        expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+        expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
         calledOnce(unMountSpy2);
         calledOnce(unMountSpy);
         done();
       }, 10);
     });
 
-    it("Should call componentWillUnmount for deeply nested children", done => {
+    it('Should call componentWillUnmount for deeply nested children', done => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1778,25 +1778,25 @@ describe("Children - (JSX)", () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Test5.prototype, "componentWillUnmount");
+      const unMountSpy = sinon.spy(Test5.prototype, 'componentWillUnmount');
 
       const calledOnce = sinon.assert.calledOnce;
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>"
+        '<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>'
       );
 
       unMountSpy.reset();
 
       toggle(); // Unmount child component
       setTimeout(() => {
-        expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+        expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
         calledOnce(unMountSpy);
         done();
       });
     });
 
-    it("Should call componentWillUnmount for parent when children dont have componentWIllUnmount", done => {
+    it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', done => {
       class Wrapper extends Component {
         constructor(props) {
           super(props);
@@ -1834,13 +1834,13 @@ describe("Children - (JSX)", () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Wrapper.prototype, "componentWillUnmount");
-      const unMountSpy2 = sinon.spy(FooBar.prototype, "componentWillUnmount");
+      const unMountSpy = sinon.spy(Wrapper.prototype, 'componentWillUnmount');
+      const unMountSpy2 = sinon.spy(FooBar.prototype, 'componentWillUnmount');
 
       const calledOnce = sinon.assert.calledOnce;
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><em>f</em></span></div>"
+        '<div><span>foobar</span><span><em>f</em></span></div>'
       );
 
       unMountSpy.reset();
@@ -1848,7 +1848,7 @@ describe("Children - (JSX)", () => {
 
       render(null, container);
       setTimeout(() => {
-        expect(container.innerHTML).toEqual("");
+        expect(container.innerHTML).toEqual('');
 
         calledOnce(unMountSpy);
         calledOnce(unMountSpy2);
@@ -1856,7 +1856,7 @@ describe("Children - (JSX)", () => {
       }, 10);
     });
 
-    it("Should fastUnmount child component when only parent has unmount callback", done => {
+    it('Should fastUnmount child component when only parent has unmount callback', done => {
       class Wrapper extends Component {
         constructor(props) {
           super(props);
@@ -1900,7 +1900,7 @@ describe("Children - (JSX)", () => {
           super(props);
 
           this.state = {
-            text: "aa"
+            text: 'aa'
           };
 
           dirtyReference = this;
@@ -1911,7 +1911,7 @@ describe("Children - (JSX)", () => {
 
         changeText() {
           this.setState({
-            text: "foo"
+            text: 'foo'
           });
         }
 
@@ -1922,20 +1922,20 @@ describe("Children - (JSX)", () => {
 
       render(<Wrapper kill={false} />, container);
 
-      const unMountSpy = sinon.spy(Wrapper.prototype, "componentWillUnmount");
-      const unMountSpy2 = sinon.spy(FooBar.prototype, "componentWillUnmount");
+      const unMountSpy = sinon.spy(Wrapper.prototype, 'componentWillUnmount');
+      const unMountSpy2 = sinon.spy(FooBar.prototype, 'componentWillUnmount');
 
       const notCalled = sinon.assert.notCalled;
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><em><pre>aa</pre></em></span></div>"
+        '<div><span>foobar</span><span><em><pre>aa</pre></em></span></div>'
       );
 
       render(<Wrapper kill={true} />, container);
 
       setTimeout(() => {
         expect(container.innerHTML).toEqual(
-          "<div><span>foobar</span><span></span></div>"
+          '<div><span>foobar</span><span></span></div>'
         );
 
         notCalled(unMountSpy);
@@ -1949,7 +1949,7 @@ describe("Children - (JSX)", () => {
         setTimeout(() => {
           expect(dirtyReference.$UN).toEqual(true);
           expect(container.innerHTML).toEqual(
-            "<div><span>foobar</span><span></span></div>"
+            '<div><span>foobar</span><span></span></div>'
           );
 
           done();
@@ -1957,7 +1957,7 @@ describe("Children - (JSX)", () => {
       }, 10);
     });
 
-    it("Should render call componentWillUnmount for children when later sibling has no lifecycle", () => {
+    it('Should render call componentWillUnmount for children when later sibling has no lifecycle', () => {
       class Parent extends Component {
         constructor(props) {
           super(props);
@@ -1991,8 +1991,8 @@ describe("Children - (JSX)", () => {
         }
       }
 
-      const unMountSpy = sinon.spy(Parent.prototype, "componentWillUnmount");
-      const unMountSpy2 = sinon.spy(HasLife.prototype, "componentWillUnmount");
+      const unMountSpy = sinon.spy(Parent.prototype, 'componentWillUnmount');
+      const unMountSpy2 = sinon.spy(HasLife.prototype, 'componentWillUnmount');
 
       const notCalled = sinon.assert.notCalled;
       const calledOnce = sinon.assert.calledOnce;
@@ -2003,7 +2003,7 @@ describe("Children - (JSX)", () => {
       notCalled(unMountSpy2);
 
       expect(container.innerHTML).toEqual(
-        "<div><span>haslife</span><span>nolife</span></div>"
+        '<div><span>haslife</span><span>nolife</span></div>'
       );
 
       render(null, container);
@@ -2013,8 +2013,8 @@ describe("Children - (JSX)", () => {
     });
   });
 
-  describe("Children lifecycle with fastUnmount Functional Components", () => {
-    it("Should call componentWillUnmount for children", () => {
+  describe('Children lifecycle with fastUnmount Functional Components', () => {
+    it('Should call componentWillUnmount for children', () => {
       let mountCalls = 0;
       let unMountCalls = 0;
       const foobarLifecycle = {
@@ -2047,20 +2047,20 @@ describe("Children - (JSX)", () => {
       render(<Wrapper bool={true} />, container);
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span>initial</span></div>"
+        '<div><span>foobar</span><span>initial</span></div>'
       );
 
       expect(mountCalls).toEqual(1);
       expect(unMountCalls).toEqual(0);
 
       render(<Wrapper bool={false} />, container); // Unmount child component
-      expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+      expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
 
       expect(mountCalls).toEqual(1);
       expect(unMountCalls).toEqual(1);
     });
 
-    it("Should call componentWillUnmount for nested children", () => {
+    it('Should call componentWillUnmount for nested children', () => {
       let unMountCalls = 0,
         mountCalls = 0;
 
@@ -2100,20 +2100,20 @@ describe("Children - (JSX)", () => {
       render(<Wrapper bool={true} />, container);
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><em>f</em></span></div>"
+        '<div><span>foobar</span><span><em>f</em></span></div>'
       );
 
       expect(mountCalls).toEqual(1);
       expect(unMountCalls).toEqual(0);
 
       render(<Wrapper bool={false} />, container); // Unmount child component
-      expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+      expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
 
       expect(mountCalls).toEqual(1);
       expect(unMountCalls).toEqual(1);
     });
 
-    it("Should call componentWillUnmount for nested children #2", () => {
+    it('Should call componentWillUnmount for nested children #2', () => {
       let unMountTest = 0,
         unMountFoo = 0;
 
@@ -2158,16 +2158,16 @@ describe("Children - (JSX)", () => {
       render(<Wrapper bool={true} />, container);
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><em>f</em><em>f</em></span></div>"
+        '<div><span>foobar</span><span><em>f</em><em>f</em></span></div>'
       );
 
       render(<Wrapper bool={false} />, container);
-      expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+      expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
       expect(unMountTest).toEqual(1);
       expect(unMountFoo).toEqual(1);
     });
 
-    it("Should call componentWillUnmount for deeply nested children", () => {
+    it('Should call componentWillUnmount for deeply nested children', () => {
       let unMountTest = 0;
 
       const testLifecycle = {
@@ -2226,16 +2226,16 @@ describe("Children - (JSX)", () => {
       render(<Wrapper bool={true} />, container);
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>"
+        '<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>'
       );
 
       render(<Wrapper bool={false} />, container);
-      expect(container.innerHTML).toEqual("<div><span>foobar</span></div>");
+      expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
 
       expect(unMountTest).toEqual(1);
     });
 
-    it("Should call componentWillUnmount for parent when children dont have componentWIllUnmount", done => {
+    it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', done => {
       let unMountTest = 0,
         unMountTwoTest = 0;
 
@@ -2277,12 +2277,12 @@ describe("Children - (JSX)", () => {
       );
 
       expect(container.innerHTML).toEqual(
-        "<div><span>foobar</span><span><em>f</em></span></div>"
+        '<div><span>foobar</span><span><em>f</em></span></div>'
       );
 
       render(null, container);
       setTimeout(() => {
-        expect(container.innerHTML).toEqual("");
+        expect(container.innerHTML).toEqual('');
 
         expect(unMountTest).toEqual(1);
         expect(unMountTwoTest).toEqual(1);

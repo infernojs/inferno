@@ -2,11 +2,11 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { wrapMapToPropsConstant, wrapMapToPropsFunc } from "./wrapMapToProps";
+import { wrapMapToPropsConstant, wrapMapToPropsFunc } from './wrapMapToProps';
 
 export const whenMapStateToPropsIsFunction = mapStateToProps =>
-  typeof mapStateToProps === "function"
-    ? wrapMapToPropsFunc(mapStateToProps, "mapStateToProps")
+  typeof mapStateToProps === 'function'
+    ? wrapMapToPropsFunc(mapStateToProps, 'mapStateToProps')
     : undefined;
 
 export const whenMapStateToPropsIsMissing = mapStateToProps =>

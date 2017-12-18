@@ -1,12 +1,12 @@
-import { Component, render } from "inferno";
-import { createElement } from "inferno-create-element";
-import { innerHTML } from "inferno-utils";
+import { Component, render } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import { innerHTML } from 'inferno-utils';
 
-describe("Components (non-JSX)", () => {
+describe('Components (non-JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
@@ -15,25 +15,25 @@ describe("Components (non-JSX)", () => {
     document.body.removeChild(container);
   });
 
-  it("should pass", () => {
+  it('should pass', () => {
     expect(true).toBeTruthy();
   });
 
-  if (typeof global !== "undefined" && !global.usingJSDOM) {
+  if (typeof global !== 'undefined' && !global.usingJSDOM) {
     class BasicComponent1 extends Component {
       render() {
         const template = (name, title) =>
           createElement(
-            "div",
+            'div',
             {
-              className: "basic"
+              className: 'basic'
             },
             createElement(
-              "span",
+              'span',
               {
                 className: name
               },
-              "The title is ",
+              'The title is ',
               title
             )
           );
@@ -41,101 +41,101 @@ describe("Components (non-JSX)", () => {
       }
     }
 
-    it("should render a basic component", () => {
+    it('should render a basic component', () => {
       const template = (Component, title) =>
         createElement(
-          "div",
+          'div',
           null,
           createElement(Component, {
             title,
-            name: "basic-render"
+            name: 'basic-render'
           })
         );
 
       expect(() => {
-        render(template(null, "abc"), container);
+        render(template(null, 'abc'), container);
       }).toThrowError();
 
       expect(() => {
-        render(template({}, "abc"), container);
+        render(template({}, 'abc'), container);
       }).toThrowError();
 
-      render(template(BasicComponent1, "abc"), container);
+      render(template(BasicComponent1, 'abc'), container);
 
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("basic-render");
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('basic-render');
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(
-        "The title is abc"
+        'The title is abc'
       );
 
       expect(() => {
-        render(template({}, "abc"), container);
+        render(template({}, 'abc'), container);
       }).toThrowError();
 
       expect(() => render(template(BasicComponent1, {}), container)).toThrow();
 
       render(template(BasicComponent1, []), container);
 
-      render(template(BasicComponent1, "abcdef"), container);
+      render(template(BasicComponent1, 'abcdef'), container);
 
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("basic-render");
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('basic-render');
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(
-        "The title is abcdef"
+        'The title is abcdef'
       );
 
       render(template(BasicComponent1, null), container);
 
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("basic-render");
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('basic-render');
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(
-        "The title is "
+        'The title is '
       );
 
       render(template(BasicComponent1, undefined), container);
 
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("basic-render");
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('basic-render');
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(
-        "The title is "
+        'The title is '
       );
 
-      render(template(BasicComponent1, "1234"), container);
+      render(template(BasicComponent1, '1234'), container);
 
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("basic-render");
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('basic-render');
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(
-        "The title is 1234"
+        'The title is 1234'
       );
     });
 
@@ -143,18 +143,18 @@ describe("Components (non-JSX)", () => {
       render() {
         const template = (isChecked, title) =>
           createElement(
-            "div",
+            'div',
             {
-              className: "basic"
+              className: 'basic'
             },
             createElement(
-              "label",
+              'label',
               {},
-              createElement("input", {
-                type: "checkbox",
+              createElement('input', {
+                type: 'checkbox',
                 checked: isChecked
               }),
-              "The title is ",
+              'The title is ',
               title
             )
           );
@@ -162,10 +162,10 @@ describe("Components (non-JSX)", () => {
       }
     }
     //
-    it("should render a basic component with inputs", () => {
+    it('should render a basic component with inputs', () => {
       const template = (Component, title, isChecked) =>
         createElement(
-          "div",
+          'div',
           null,
           createElement(Component, {
             title,
@@ -175,58 +175,58 @@ describe("Components (non-JSX)", () => {
 
       render(null, container);
 
-      render(template(BasicComponent1b, "abc", true), container);
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      render(template(BasicComponent1b, 'abc', true), container);
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
         container.firstChild.firstChild.firstChild.firstChild.getAttribute(
-          "type"
+          'type'
         )
-      ).toBe("checkbox");
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("LABEL");
+      ).toBe('checkbox');
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('LABEL');
       expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(
         innerHTML('<input type="checkbox">The title is abc')
       );
-      expect(container.querySelector("input").checked).toBe(true);
+      expect(container.querySelector('input').checked).toBe(true);
 
       render(null, container);
       render(null, container);
 
-      render(template(BasicComponent1b, "abc", null), container);
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      render(template(BasicComponent1b, 'abc', null), container);
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
         container.firstChild.firstChild.firstChild.firstChild.getAttribute(
-          "type"
+          'type'
         )
-      ).toBe("checkbox");
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("LABEL");
+      ).toBe('checkbox');
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('LABEL');
       expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(
         innerHTML('<input type="checkbox">The title is abc')
       );
-      expect(container.querySelector("input").checked).toBe(false);
+      expect(container.querySelector('input').checked).toBe(false);
     });
 
     class BasicComponent1c extends Component {
       render() {
         const template = (isEnabled, title, type) =>
           createElement(
-            "div",
+            'div',
             {
-              className: "basic"
+              className: 'basic'
             },
             createElement(
-              "label",
+              'label',
               {},
-              createElement("input", {
+              createElement('input', {
                 type,
                 disabled: !isEnabled
               }),
-              "The title is ",
+              'The title is ',
               title
             )
           );
@@ -238,57 +238,57 @@ describe("Components (non-JSX)", () => {
       }
     }
 
-    it("should render a basic component with input tag and attributes", () => {
+    it('should render a basic component with input tag and attributes', () => {
       const template = (Component, title, isEnabled) =>
         createElement(
-          "div",
+          'div',
           null,
           createElement(Component, {
             title,
             isEnabled,
-            type: "password"
+            type: 'password'
           })
         );
 
-      render(template(BasicComponent1c, "abc", true), container);
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      render(template(BasicComponent1c, 'abc', true), container);
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("LABEL");
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('LABEL');
       expect(
         container.firstChild.firstChild.firstChild.firstChild.tagName
-      ).toBe("INPUT");
+      ).toBe('INPUT');
       expect(
         container.firstChild.firstChild.firstChild.firstChild.getAttribute(
-          "type"
+          'type'
         )
-      ).toBe("password");
+      ).toBe('password');
       expect(
         container.firstChild.firstChild.firstChild.firstChild.disabled
       ).toBe(false);
       expect(container.firstChild.firstChild.firstChild.textContent).toBe(
-        "The title is abc"
+        'The title is abc'
       );
-      render(template(BasicComponent1c, ["abc"], true), container);
-      expect(container.firstChild.firstChild.tagName).toBe("DIV");
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      render(template(BasicComponent1c, ['abc'], true), container);
+      expect(container.firstChild.firstChild.tagName).toBe('DIV');
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("LABEL");
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('LABEL');
       expect(
         container.firstChild.firstChild.firstChild.firstChild.tagName
-      ).toBe("INPUT");
+      ).toBe('INPUT');
       expect(
         container.firstChild.firstChild.firstChild.firstChild.getAttribute(
-          "type"
+          'type'
         )
-      ).toBe("password");
+      ).toBe('password');
       expect(
         container.firstChild.firstChild.firstChild.firstChild.disabled
       ).toBe(false);
       expect(container.firstChild.firstChild.firstChild.textContent).toBe(
-        "The title is abc"
+        'The title is abc'
       );
     });
 
@@ -296,16 +296,16 @@ describe("Components (non-JSX)", () => {
       render() {
         const template = (isDisabled, title) =>
           createElement(
-            "div",
-            { className: "basic" },
+            'div',
+            { className: 'basic' },
             createElement(
-              "label",
+              'label',
               {},
-              createElement("input", {
-                type: "password",
+              createElement('input', {
+                type: 'password',
                 disabled: isDisabled
               }),
-              "The title is ",
+              'The title is ',
               title
             )
           );
@@ -313,49 +313,49 @@ describe("Components (non-JSX)", () => {
       }
     }
 
-    it("should render a basic component with inputs #3 #3", () => {
+    it('should render a basic component with inputs #3 #3', () => {
       const template = (Component, title, isDisabled) =>
         createElement(
-          "div",
+          'div',
           null,
           createElement(Component, { title, isDisabled })
         );
-      render(template(BasicComponent1d, "abc", true), container);
+      render(template(BasicComponent1d, 'abc', true), container);
       expect(innerHTML(container.innerHTML)).toBe(
         innerHTML(
           '<div><div class="basic"><label><input disabled="" type="password">The title is abc</label></div></div>'
         )
       );
-      expect(container.querySelector("input").disabled).toBe(true);
+      expect(container.querySelector('input').disabled).toBe(true);
 
-      render(template(BasicComponent1d, "123", false), container);
+      render(template(BasicComponent1d, '123', false), container);
       expect(innerHTML(container.innerHTML)).toBe(
         '<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
       );
-      expect(container.querySelector("input").disabled).toBe(false);
+      expect(container.querySelector('input').disabled).toBe(false);
     });
 
-    it("should render a basic component and remove property if null #1", () => {
+    it('should render a basic component and remove property if null #1', () => {
       const template = (Component, title, name) =>
-        createElement("div", null, createElement(Component, { title, name }));
+        createElement('div', null, createElement(Component, { title, name }));
 
-      render(template(BasicComponent1, "abc", "basic-render"), container);
+      render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>'
       );
 
-      render(template(BasicComponent1, "123", null), container);
+      render(template(BasicComponent1, '123', null), container);
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span>The title is 123</span></div></div>'
       );
     });
 
-    it("should render a basic component and remove property if null #2", () => {
+    it('should render a basic component and remove property if null #2', () => {
       const template = (Component, title, name) =>
-        createElement("div", null, createElement(Component, { title, name }));
+        createElement('div', null, createElement(Component, { title, name }));
 
-      render(template(BasicComponent1, "abc", null), container);
+      render(template(BasicComponent1, 'abc', null), container);
 
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span>The title is abc</span></div></div>'
@@ -363,28 +363,28 @@ describe("Components (non-JSX)", () => {
 
       render(null, container);
 
-      render(template(BasicComponent1, "123", "basic-update"), container);
+      render(template(BasicComponent1, '123', 'basic-update'), container);
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
       );
     });
 
-    it("should render a basic root component", () => {
+    it('should render a basic root component', () => {
       const template = (Component, title, name) =>
         createElement(Component, { title, name });
 
-      render(template(BasicComponent1, "abc", "basic-render"), container);
+      render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
       expect(container.innerHTML).toBe(
         '<div class="basic"><span class="basic-render">The title is abc</span></div>'
       );
-      render(template(BasicComponent1, "abc", "basic-render"), container);
+      render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
       expect(container.innerHTML).toBe(
         '<div class="basic"><span class="basic-render">The title is abc</span></div>'
       );
 
-      render(template(BasicComponent1, "abc", {}), container);
+      render(template(BasicComponent1, 'abc', {}), container);
 
       expect(container.innerHTML).toBe(
         '<div class="basic"><span class="[object Object]">The title is abc</span></div>'
@@ -392,23 +392,23 @@ describe("Components (non-JSX)", () => {
 
       render(null, container);
 
-      expect(container.innerHTML).toBe("");
+      expect(container.innerHTML).toBe('');
     });
 
     class BasicComponent2 extends Component {
       render() {
         const template = (name, title, children) =>
           createElement(
-            "div",
+            'div',
             {
-              className: "basic"
+              className: 'basic'
             },
             createElement(
-              "span",
+              'span',
               {
                 className: name
               },
-              "The title is ",
+              'The title is ',
               title
             ),
             children
@@ -417,10 +417,10 @@ describe("Components (non-JSX)", () => {
       }
     }
 
-    it("should render a basic component with children", () => {
+    it('should render a basic component with children', () => {
       const template = (Component, title, name) =>
         createElement(
-          "div",
+          'div',
           null,
           createElement(
             Component,
@@ -428,26 +428,26 @@ describe("Components (non-JSX)", () => {
               title,
               name
             },
-            createElement("span", null, "I'm a child")
+            createElement('span', null, "I'm a child")
           )
         );
 
-      render(template(BasicComponent2, "abc", "basic-render"), container);
+      render(template(BasicComponent2, 'abc', 'basic-render'), container);
 
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
       );
-      render(template(BasicComponent2, "abc", "basic-render"), container);
+      render(template(BasicComponent2, 'abc', 'basic-render'), container);
 
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span class="basic-render">The title is abc</span><span>I\'m a child</span></div></div>'
       );
 
-      render(template(BasicComponent2, "123", "basic-update"), container);
+      render(template(BasicComponent2, '123', 'basic-update'), container);
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span class="basic-update">The title is 123</span><span>I\'m a child</span></div></div>'
       );
-      render(template(BasicComponent2, "1234", "basic-update"), container);
+      render(template(BasicComponent2, '1234', 'basic-update'), container);
       expect(container.innerHTML).toBe(
         '<div><div class="basic"><span class="basic-update">The title is 1234</span><span>I\'m a child</span></div></div>'
       );
@@ -457,10 +457,10 @@ describe("Components (non-JSX)", () => {
       render() {
         const template = children =>
           createElement(
-            "div",
+            'div',
             null,
-            createElement("span", null, "component!"),
-            createElement("div", null, children)
+            createElement('span', null, 'component!'),
+            createElement('div', null, children)
           );
         return template(this.props.children);
       }
@@ -470,10 +470,10 @@ describe("Components (non-JSX)", () => {
       render() {
         const template = children =>
           createElement(
-            "div",
+            'div',
             null,
-            createElement("span", null, "other component!"),
-            createElement("div", null, children)
+            createElement('span', null, 'other component!'),
+            createElement('div', null, children)
           );
         return template(this.props.children);
       }
@@ -483,16 +483,16 @@ describe("Components (non-JSX)", () => {
       render() {
         const template = (styles, title) =>
           createElement(
-            "div",
+            'div',
             {
               style: styles
             },
             createElement(
-              "span",
+              'span',
               {
                 style: styles
               },
-              "The title is ",
+              'The title is ',
               title
             )
           );
@@ -501,16 +501,16 @@ describe("Components (non-JSX)", () => {
       }
     }
 
-    if (typeof global !== "undefined" && !global.usingJSDOM) {
-      it("should render a basic component with styling", () => {
+    if (typeof global !== 'undefined' && !global.usingJSDOM) {
+      it('should render a basic component with styling', () => {
         const template = (Component, props) => createElement(Component, props);
 
         render(
           template(BasicComponent3, {
-            title: "styled!",
+            title: 'styled!',
             styles: {
-              color: "red",
-              paddingLeft: "10px"
+              color: 'red',
+              paddingLeft: '10px'
             }
           }),
           container
@@ -521,10 +521,10 @@ describe("Components (non-JSX)", () => {
         );
         render(
           template(BasicComponent3, {
-            title: "styled!",
+            title: 'styled!',
             styles: {
-              color: "red",
-              paddingLeft: "10px"
+              color: 'red',
+              paddingLeft: '10px'
             }
           }),
           container
@@ -536,10 +536,10 @@ describe("Components (non-JSX)", () => {
 
         render(
           template(BasicComponent3, {
-            title: "styled (again)!",
+            title: 'styled (again)!',
             styles: {
-              color: "blue",
-              paddingRight: "20px"
+              color: 'blue',
+              paddingRight: '20px'
             }
           }),
           container
@@ -550,7 +550,7 @@ describe("Components (non-JSX)", () => {
       });
     }
 
-    it("should render a basic component with component children", () => {
+    it('should render a basic component with component children', () => {
       const template = (Component1, Component2, Component3) =>
         createElement(
           Component1,
@@ -563,7 +563,7 @@ describe("Components (non-JSX)", () => {
       );
 
       expect(container.innerHTML).toBe(
-        "<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>"
+        '<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
       );
 
       render(null, container);
@@ -573,7 +573,7 @@ describe("Components (non-JSX)", () => {
         container
       );
       expect(container.innerHTML).toBe(
-        "<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>"
+        '<div><span>component!</span><div><div><span>component!</span><div><div><span>component!</span><div></div></div></div></div></div></div>'
       );
 
       render(
@@ -581,7 +581,7 @@ describe("Components (non-JSX)", () => {
         container
       );
       expect(container.innerHTML).toBe(
-        "<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>"
+        '<div><span>component!</span><div><div><span>component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
       );
 
       render(
@@ -589,7 +589,7 @@ describe("Components (non-JSX)", () => {
         container
       );
       expect(container.innerHTML).toBe(
-        "<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>"
+        '<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
       );
 
       render(
@@ -597,7 +597,7 @@ describe("Components (non-JSX)", () => {
         container
       );
       expect(container.innerHTML).toBe(
-        "<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>"
+        '<div><span>component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
       );
 
       render(
@@ -605,18 +605,18 @@ describe("Components (non-JSX)", () => {
         container
       );
       expect(container.innerHTML).toBe(
-        "<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>"
+        '<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
       );
       render(
         template(BasicComponent2c, BasicComponent2c, BasicComponent2c),
         container
       );
       expect(container.innerHTML).toBe(
-        "<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>"
+        '<div><span>other component!</span><div><div><span>other component!</span><div><div><span>other component!</span><div></div></div></div></div></div></div>'
       );
     });
 
-    it("should render a basic component and correctly mount", () => {
+    it('should render a basic component and correctly mount', () => {
       let template;
       let componentWillMountCount;
 
@@ -624,10 +624,10 @@ describe("Components (non-JSX)", () => {
         render() {
           const _template = children =>
             createElement(
-              "div",
+              'div',
               null,
-              createElement("span", null, "component!"),
-              createElement("div", null, children)
+              createElement('span', null, 'component!'),
+              createElement('div', null, children)
             );
           return _template(this.props.children);
         }
@@ -666,8 +666,8 @@ describe("Components (non-JSX)", () => {
       expect(componentWillMountCount).toBe(3);
     });
 
-    describe("should render multiple components", () => {
-      it("should render multiple components", () => {
+    describe('should render multiple components', () => {
+      it('should render multiple components', () => {
         const template = (
           Component,
           title1,
@@ -677,7 +677,7 @@ describe("Components (non-JSX)", () => {
           name2
         ) =>
           createElement(
-            "div",
+            'div',
             null,
             createElement(Component, {
               title: title1,
@@ -692,11 +692,11 @@ describe("Components (non-JSX)", () => {
         render(
           template(
             BasicComponent1,
-            "component 1",
-            "basic-render",
+            'component 1',
+            'basic-render',
             BasicComponent1,
-            "component 2",
-            "basic-render"
+            'component 2',
+            'basic-render'
           ),
           container
         );
@@ -709,11 +709,11 @@ describe("Components (non-JSX)", () => {
         render(
           template(
             BasicComponent1,
-            "component 1",
-            "basic-render",
+            'component 1',
+            'basic-render',
             BasicComponent1,
-            "component 2",
-            "basic-render"
+            'component 2',
+            'basic-render'
           ),
           container
         );
@@ -725,7 +725,7 @@ describe("Components (non-JSX)", () => {
       });
     });
 
-    it("should mount and unmount a basic component", () => {
+    it('should mount and unmount a basic component', () => {
       let mountCount;
       let unmountCount;
       let template;
@@ -733,7 +733,7 @@ describe("Components (non-JSX)", () => {
       class ComponentLifecycleCheck extends Component {
         render() {
           const _template = () =>
-            createElement("div", null, createElement("span", null));
+            createElement('div', null, createElement('span', null));
           return _template();
         }
 
@@ -756,13 +756,13 @@ describe("Components (non-JSX)", () => {
       expect(unmountCount).toBe(1);
     });
 
-    it("should mount and unmount a basic component #2", () => {
+    it('should mount and unmount a basic component #2', () => {
       let mountCount;
       let unmountCount;
 
       class ComponentLifecycleCheck extends Component {
         render() {
-          return createElement("div", null, createElement("span", null));
+          return createElement('div', null, createElement('span', null));
         }
 
         componentDidMount() {
@@ -787,7 +787,7 @@ describe("Components (non-JSX)", () => {
       expect(unmountCount).toBe(2);
     });
 
-    describe("state changes should trigger all lifecycle events for an update", () => {
+    describe('state changes should trigger all lifecycle events for an update', () => {
       let componentWillMountCount;
       let template;
 
@@ -801,7 +801,7 @@ describe("Components (non-JSX)", () => {
 
         render() {
           const _template = counter =>
-            createElement("div", null, createElement("span", {}, counter));
+            createElement('div', null, createElement('span', {}, counter));
           return _template(this.state.counter);
         }
 
@@ -819,15 +819,15 @@ describe("Components (non-JSX)", () => {
         render(template(ComponentLifecycleCheck), container);
       });
 
-      it("componentWillMountCount to have fired once", () => {
+      it('componentWillMountCount to have fired once', () => {
         expect(componentWillMountCount).toBe(1);
       });
-      it("the element in the component should show the new state", () => {
-        expect(container.innerHTML).toBe("<div><span>1</span></div>");
+      it('the element in the component should show the new state', () => {
+        expect(container.innerHTML).toBe('<div><span>1</span></div>');
       });
     });
 
-    describe("state changes should trigger all lifecycle events for an update #2", () => {
+    describe('state changes should trigger all lifecycle events for an update #2', () => {
       let componentWillMountCount;
       let shouldComponentUpdateCount;
       let componentDidUpdateCount;
@@ -851,7 +851,7 @@ describe("Components (non-JSX)", () => {
 
         render() {
           const _template = counter =>
-            createElement("div", null, createElement("span", {}, counter));
+            createElement('div', null, createElement('span', {}, counter));
           return _template(this.state.counter);
         }
 
@@ -883,68 +883,68 @@ describe("Components (non-JSX)", () => {
         update();
       });
 
-      it("componentWillMountCount to have fired once", () => {
+      it('componentWillMountCount to have fired once', () => {
         expect(componentWillMountCount).toBe(1);
       });
-      it("shouldComponentUpdateCount to have fired once", () => {
+      it('shouldComponentUpdateCount to have fired once', () => {
         expect(shouldComponentUpdateCount).toBe(1);
       });
-      it("componentWillUpdateCount to have fired once", () => {
+      it('componentWillUpdateCount to have fired once', () => {
         expect(componentWillUpdateCount).toBe(1);
       });
-      it("componentDidUpdateCount to have fired once", () => {
+      it('componentDidUpdateCount to have fired once', () => {
         expect(componentDidUpdateCount).toBe(1);
       });
-      it("the element in the component should show the new state", () => {
-        expect(container.innerHTML).toBe("<div><span>1</span></div>");
+      it('the element in the component should show the new state', () => {
+        expect(container.innerHTML).toBe('<div><span>1</span></div>');
       });
     });
 
-    describe("should render a basic component with conditional fragment", () => {
+    describe('should render a basic component with conditional fragment', () => {
       const tpl3625453295 = function() {
-        return createElement("h1", null, "BIG");
+        return createElement('h1', null, 'BIG');
       };
       const tpl4021787591 = function() {
-        return createElement("h2", null, "small");
+        return createElement('h2', null, 'small');
       };
 
       class ConditionalComponent extends Component {
         render() {
-          return createElement("div", null, [
+          return createElement('div', null, [
             this.props.condition ? tpl3625453295() : tpl4021787591(),
-            createElement("p", null, "test")
+            createElement('p', null, 'test')
           ]);
         }
       }
 
-      it("Initial render (creation)", () => {
+      it('Initial render (creation)', () => {
         render(
           createElement(ConditionalComponent, { condition: true }),
           container
         );
-        expect(container.innerHTML).toBe("<div><h1>BIG</h1><p>test</p></div>");
+        expect(container.innerHTML).toBe('<div><h1>BIG</h1><p>test</p></div>');
         render(
           createElement(ConditionalComponent, { condition: false }),
           container
         );
         expect(container.innerHTML).toBe(
-          "<div><h2>small</h2><p>test</p></div>"
+          '<div><h2>small</h2><p>test</p></div>'
         );
       });
     });
 
-    describe("should render a basic component with a list of values from state", () => {
+    describe('should render a basic component with a list of values from state', () => {
       const tpl2026545261 = function(v0) {
         return createElement(
-          "ul",
-          { class: "login-organizationlist" },
-          "",
+          'ul',
+          { class: 'login-organizationlist' },
+          '',
           v0,
-          ""
+          ''
         );
       };
       const tpl3192647933 = function(v0) {
-        return createElement("li", null, v0);
+        return createElement('li', null, v0);
       };
       const tpl1546018623 = function(v0) {
         return createElement(v0, null);
@@ -955,12 +955,12 @@ describe("Components (non-JSX)", () => {
           super(props);
           this.state = {
             organizations: [
-              { name: "test1", key: "1" },
-              { name: "test2", key: 2 },
-              { name: "test3", key: "3" },
-              { name: "test4", key: "4" },
-              { name: "test5", key: "5" },
-              { name: "test6", key: "6" }
+              { name: 'test1', key: '1' },
+              { name: 'test2', key: 2 },
+              { name: 'test3', key: '3' },
+              { name: 'test4', key: '4' },
+              { name: 'test5', key: '5' },
+              { name: 'test6', key: '6' }
             ]
           };
         }
@@ -974,7 +974,7 @@ describe("Components (non-JSX)", () => {
         }
       }
 
-      it("Initial render (creation)", () => {
+      it('Initial render (creation)', () => {
         render(tpl1546018623(ValueComponent), container);
         expect(container.innerHTML).toBe(
           '<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
@@ -993,99 +993,99 @@ describe("Components (non-JSX)", () => {
     function BasicStatelessComponent1({ name, title }) {
       const template = (_name, _title) =>
         createElement(
-          "div",
+          'div',
           {
-            className: "basic"
+            className: 'basic'
           },
           createElement(
-            "span",
+            'span',
             {
               className: _name
             },
-            "The title is ",
+            'The title is ',
             _title
           )
         );
       return template(name, title);
     }
 
-    it("should render a stateless component", () => {
+    it('should render a stateless component', () => {
       const template = (Component, title) =>
         createElement(
-          "div",
+          'div',
           null,
           createElement(Component, {
             title,
-            name: "Hello, World!"
+            name: 'Hello, World!'
           })
         );
 
-      render(template(BasicStatelessComponent1, "abc"), container);
+      render(template(BasicStatelessComponent1, 'abc'), container);
       expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("Hello, World!");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('Hello, World!');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.textContent).toBe(
-        "The title is abc"
+        'The title is abc'
       );
       render(template(BasicStatelessComponent1, null), container);
-      render(template(BasicStatelessComponent1, "abc"), container);
+      render(template(BasicStatelessComponent1, 'abc'), container);
       expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("Hello, World!");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('Hello, World!');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.textContent).toBe(
-        "The title is abc"
+        'The title is abc'
       );
 
       render(template(BasicStatelessComponent1), container);
       expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("Hello, World!");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('Hello, World!');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.textContent).toBe(
-        "The title is "
+        'The title is '
       );
 
       render(template(BasicStatelessComponent1), container);
       expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute("class")).toBe(
-        "basic"
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe(
+        'basic'
       );
       expect(
-        container.firstChild.firstChild.firstChild.getAttribute("class")
-      ).toBe("Hello, World!");
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe("SPAN");
+        container.firstChild.firstChild.firstChild.getAttribute('class')
+      ).toBe('Hello, World!');
+      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
       expect(container.firstChild.firstChild.firstChild.textContent).toBe(
-        "The title is "
+        'The title is '
       );
     });
 
-    describe("should render a component with a conditional state item", () => {
+    describe('should render a component with a conditional state item', () => {
       const tpl3578458729 = function(v0) {
-        return createElement("div", { className: "login-view bg-visma" }, v0);
+        return createElement('div', { className: 'login-view bg-visma' }, v0);
       };
       const tpl188998005 = function() {
-        return createElement("div", null, "VISIBLE");
+        return createElement('div', null, 'VISIBLE');
       };
 
       const tpl3754840163 = function(v0) {
         return createElement(
-          "div",
+          'div',
           null,
-          createElement("button", { onclick: v0 }, "Make visible")
+          createElement('button', { onclick: v0 }, 'Make visible')
         );
       };
 
@@ -1120,7 +1120,7 @@ describe("Components (non-JSX)", () => {
         return createElement(v0, null);
       };
 
-      it("Initial render (creation)", () => {
+      it('Initial render (creation)', () => {
         render(tpl79713834(TEST), container);
         expect(container.innerHTML).toBe(
           innerHTML(
@@ -1129,11 +1129,11 @@ describe("Components (non-JSX)", () => {
         );
       });
 
-      it("Second render (update with state change)", done => {
+      it('Second render (update with state change)', done => {
         render(tpl79713834(TEST), container);
         render(tpl79713834(TEST), container);
         const buttons = Array.prototype.slice.call(
-          container.querySelectorAll("button")
+          container.querySelectorAll('button')
         );
 
         buttons.forEach(button => button.click());
@@ -1147,19 +1147,19 @@ describe("Components (non-JSX)", () => {
       });
     });
 
-    describe("should render a component with a list of divs", () => {
+    describe('should render a component with a list of divs', () => {
       const BaseView = function(v0, v1) {
         return createElement(
-          "div",
-          { class: "login-view" },
-          createElement("button", { onclick: v0 }, "ADD"),
-          createElement("br", null),
+          'div',
+          { class: 'login-view' },
+          createElement('button', { onclick: v0 }, 'ADD'),
+          createElement('br', null),
           v1
         );
       };
 
       const Looper = function(v0) {
-        return createElement("div", null, createElement("h1", null, v0));
+        return createElement('div', null, createElement('h1', null, v0));
       };
 
       const starter = function(v0) {
@@ -1170,7 +1170,7 @@ describe("Components (non-JSX)", () => {
         constructor(props) {
           super(props);
           this.state = {
-            list: ["SS", "SS1"]
+            list: ['SS', 'SS1']
           };
         }
 
@@ -1187,7 +1187,7 @@ describe("Components (non-JSX)", () => {
         }
       }
 
-      it("Initial render (creation)", () => {
+      it('Initial render (creation)', () => {
         render(starter(SomeError), container);
 
         expect(container.innerHTML).toBe(
@@ -1206,40 +1206,40 @@ describe("Components (non-JSX)", () => {
       });
     });
 
-    describe("should render a component with a list of text nodes", () => {
+    describe('should render a component with a list of text nodes', () => {
       const root = function(children) {
-        return createElement("div", null, children);
+        return createElement('div', null, children);
       };
 
       const header = function(children) {
-        return createElement("div", null, children);
+        return createElement('div', null, children);
       };
 
       const view = function(state) {
-        return root([state ? header(["Foo"]) : header(["Bar", "Qux"])]);
+        return root([state ? header(['Foo']) : header(['Bar', 'Qux'])]);
       };
 
-      it("Initial render (creation)", () => {
+      it('Initial render (creation)', () => {
         render(view(true), container);
         expect(container.innerHTML).toBe(
-          innerHTML("<div><div>Foo</div></div>")
+          innerHTML('<div><div>Foo</div></div>')
         );
       });
-      it("Second render (update)", () => {
+      it('Second render (update)', () => {
         render(view(true), container);
         render(view(false), container);
         expect(container.innerHTML).toBe(
-          innerHTML("<div><div>BarQux</div></div>")
+          innerHTML('<div><div>BarQux</div></div>')
         );
       });
     });
 
-    describe("SetState function callback", () => {
-      it("Should have state, props, and context as parameters", done => {
+    describe('SetState function callback', () => {
+      it('Should have state, props, and context as parameters', done => {
         function checkParams(state, props, context) {
-          expect(state).toEqual({ btnstate: "btnstate" });
-          expect(props).toEqual({ buttonProp: "magic", children: "btn" });
-          expect(context).toEqual({ color: "purple" });
+          expect(state).toEqual({ btnstate: 'btnstate' });
+          expect(props).toEqual({ buttonProp: 'magic', children: 'btn' });
+          expect(context).toEqual({ color: 'purple' });
           done();
         }
 
@@ -1247,7 +1247,7 @@ describe("Components (non-JSX)", () => {
           constructor(props) {
             super(props);
             this.state = {
-              btnstate: "btnstate"
+              btnstate: 'btnstate'
             };
           }
 
@@ -1257,7 +1257,7 @@ describe("Components (non-JSX)", () => {
 
           render() {
             return createElement(
-              "button",
+              'button',
               {
                 onClick: this.click.bind(this),
                 style: {
@@ -1271,16 +1271,16 @@ describe("Components (non-JSX)", () => {
 
         class Message extends Component {
           render() {
-            return createElement("div", null, [
+            return createElement('div', null, [
               this.props.text,
-              createElement(Button, { buttonProp: "magic" }, "btn")
+              createElement(Button, { buttonProp: 'magic' }, 'btn')
             ]);
           }
         }
 
         class MessageList extends Component {
           getChildContext() {
-            return { color: "purple" };
+            return { color: 'purple' };
           }
 
           render() {
@@ -1288,18 +1288,18 @@ describe("Components (non-JSX)", () => {
               return createElement(Message, { text: message.text });
             });
 
-            return createElement("div", null, children);
+            return createElement('div', null, children);
           }
         }
 
         render(
           createElement(MessageList, {
-            messages: [{ text: "eka" }, { text: "toka" }]
+            messages: [{ text: 'eka' }, { text: 'toka' }]
           }),
           container
         );
 
-        container.querySelector("button").click();
+        container.querySelector('button').click();
       });
     });
   }

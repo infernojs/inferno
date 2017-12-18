@@ -2,22 +2,22 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isNull, isUndefined, isNullOrUndef } from "inferno-shared";
-import { svgNS } from "../constants";
+import { isNull, isNullOrUndef, isUndefined } from 'inferno-shared';
+import { svgNS } from '../constants';
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
 export const EMPTY_OBJ = {};
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
 }
 
 export function setTextContent(dom, text: string | number) {
-  if (text !== "") {
+  if (text !== '') {
     dom.textContent = text;
   } else {
-    dom.appendChild(document.createTextNode(""));
+    dom.appendChild(document.createTextNode(''));
   }
 }
 
@@ -71,7 +71,7 @@ export function isKeyed(lastChildren: any[], nextChildren: any[]): boolean {
 
 export function callAll(arrayFn: Function[]) {
   let listener;
-  while (!isUndefined(listener = arrayFn.shift())) {
+  while (!isUndefined((listener = arrayFn.shift()))) {
     listener();
   }
 }

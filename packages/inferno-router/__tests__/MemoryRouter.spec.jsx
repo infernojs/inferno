@@ -1,9 +1,9 @@
-import { render } from "inferno";
-import { innerHTML } from "inferno-utils";
-import { MemoryRouter } from "inferno-router";
+import { render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
+import { MemoryRouter } from 'inferno-router';
 
-describe("A <MemoryRouter>", () => {
-  it("puts history on context.router", () => {
+describe('A <MemoryRouter>', () => {
+  it('puts history on context.router', () => {
     let history;
     const ContextChecker = (props, context) => {
       history = context.router.history;
@@ -14,7 +14,7 @@ describe("A <MemoryRouter>", () => {
       router: () => {}
     };
 
-    const node = document.createElement("div");
+    const node = document.createElement('div');
 
     render(
       <MemoryRouter>
@@ -23,20 +23,20 @@ describe("A <MemoryRouter>", () => {
       node
     );
 
-    expect(typeof history).toBe("object");
+    expect(typeof history).toBe('object');
   });
 
-  it("warns when passed a history prop", () => {
+  it('warns when passed a history prop', () => {
     const history = {};
-    const node = document.createElement("div");
+    const node = document.createElement('div');
 
-    spyOn(console, "error");
+    spyOn(console, 'error');
 
     render(<MemoryRouter history={history} />, node);
 
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error.calls.mostRecent().args[0]).toContain(
-      "<MemoryRouter> ignores the history prop"
+      '<MemoryRouter> ignores the history prop'
     );
   });
 });

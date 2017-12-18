@@ -1,5 +1,5 @@
-import {render, Component} from 'inferno';
-import sinon, {assert} from 'sinon';
+import { render, Component } from 'inferno';
+import sinon, { assert } from 'sinon';
 
 describe('All single patch variations', () => {
   let templateRefSpy = sinon.spy();
@@ -8,18 +8,18 @@ describe('All single patch variations', () => {
   let updateSpy;
   let unmountSpy;
 
-  beforeEach(function () {
+  beforeEach(function() {
     mountSpy.reset();
     updateSpy.reset();
     unmountSpy.reset();
     templateRefSpy.reset();
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function () {
+  afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
@@ -33,41 +33,23 @@ describe('All single patch variations', () => {
   }
 
   class ComA extends Component {
-    componentDidMount() {
+    componentDidMount() {}
 
-    };
+    componentWillMount() {}
 
-    componentWillMount() {
+    componentWillReceiveProps(nextProps, nextContext) {}
 
-    };
-
-    componentWillReceiveProps(nextProps, nextContext) {
-
-    }
-
-    shouldComponentUpdate(nextProps,
-                          nextState,
-                          nextContext) {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
       return true;
     }
 
-    componentWillUpdate(nextProps,
-                        nextState,
-                        nextContext) {
+    componentWillUpdate(nextProps, nextState, nextContext) {}
 
-    }
+    componentDidUpdate(prevProps, prevState, prevContext) {}
 
-    componentDidUpdate(prevProps,
-                       prevState,
-                       prevContext) {
+    componentWillUnmount() {}
 
-    }
-
-    componentWillUnmount() {
-
-    }
-
-    render({children}) {
+    render({ children }) {
       return children;
     }
   }
@@ -76,7 +58,7 @@ describe('All single patch variations', () => {
   updateSpy = sinon.spy(ComA.prototype, 'componentWillUpdate');
   unmountSpy = sinon.spy(ComA.prototype, 'componentWillUnmount');
 
-  function ComB({children}) {
+  function ComB({ children }) {
     return children;
   }
 
@@ -139,7 +121,6 @@ describe('All single patch variations', () => {
       expect(updateSpy.callCount).toBe(0);
       expect(unmountSpy.callCount).toBe(0);
       expect(spy.callCount).toBe(1);
-
 
       rTemplate(<ComA ref={spy}>2</ComA>);
       expect(container.innerHTML).toEqual('<div>2</div>');
@@ -215,17 +196,19 @@ describe('All single patch variations', () => {
       const spy = sinon.spy();
       expect(templateRefSpy.callCount).toBe(0);
 
-      rTemplate(<div ref={spy} className="component2">
-        Component 2 <br />
-        <span id="clear">
-              clear app
-            </span>
-      </div>);
+      rTemplate(
+        <div ref={spy} className="component2">
+          Component 2 <br />
+          <span id="clear">clear app</span>
+        </div>
+      );
       expect(templateRefSpy.callCount).toBe(1); // unmount
       expect(unmountSpy.callCount).toBe(1);
       expect(spy.callCount).toBe(1);
       expect(updateSpy.callCount).toBe(0);
-      expect(container.innerHTML).toEqual('<div><div class="component2">Component 2 <br><span id="clear">clear app</span></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><div class="component2">Component 2 <br><span id="clear">clear app</span></div></div>'
+      );
       assert.callOrder(templateRefSpy, spy); // Unmount should happen before mount
 
       rTemplate(<span ref={spy}>2</span>);
@@ -237,12 +220,9 @@ describe('All single patch variations', () => {
 
     it('vNode (Com different)', () => {
       class ComC extends Component {
+        componentWillMount() {}
 
-        componentWillMount() {
-
-        }
-
-        render({children}) {
+        render({ children }) {
           return children;
         }
       }
@@ -253,7 +233,6 @@ describe('All single patch variations', () => {
 
       assert.callOrder(unmountSpy, spy); // first unmount then mount
 
-
       tearDown();
     });
   });
@@ -261,36 +240,70 @@ describe('All single patch variations', () => {
   describe('children', () => {
     describe('HasKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
+        render(
+          <div $HasKeyedChildren>
+            {[<div key="1">1</div>, <div key="2">2</div>]}
+          </div>,
+          container
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>'
+        );
 
-        render(<div><div>single</div></div>, container);
+        render(
+          <div>
+            <div>single</div>
+          </div>,
+          container
+        );
 
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
+        render(
+          <div $HasKeyedChildren>
+            {[<div key="1">1</div>, <div key="2">2</div>]}
+          </div>,
+          container
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>'
+        );
       });
     });
 
     describe('hasNonKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
+        render(
+          <div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>,
+          container
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>'
+        );
 
-        render(<div><div>single</div></div>, container);
+        render(
+          <div>
+            <div>single</div>
+          </div>,
+          container
+        );
 
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
+        render(
+          <div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>,
+          container
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>'
+        );
       });
     });
-  })
+  });
 });

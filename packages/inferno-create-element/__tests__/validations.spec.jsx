@@ -1,22 +1,22 @@
-import { Component, render } from "inferno";
-import { isNullOrUndef } from "inferno-shared";
+import { Component, render } from 'inferno';
+import { isNullOrUndef } from 'inferno-shared';
 
-describe("Development warnings", () => {
+describe('Development warnings', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  describe("Warning two duplicate keys", () => {
-    it("Should throw error if two duplicates is found", () => {
+  describe('Warning two duplicate keys', () => {
+    it('Should throw error if two duplicates is found', () => {
       const errorNode = (
         <div>
           <div key="1">2</div>
@@ -24,7 +24,9 @@ describe("Development warnings", () => {
         </div>
       );
 
-      expect(() => render(errorNode, container)).toThrowError('Inferno Error: Encountered two children with same key: {1}. Location: <div> :: <div>');
+      expect(() => render(errorNode, container)).toThrowError(
+        'Inferno Error: Encountered two children with same key: {1}. Location: <div> :: <div>'
+      );
     });
   });
 

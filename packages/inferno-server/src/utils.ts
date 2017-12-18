@@ -9,26 +9,26 @@ export function escapeText(text: string): string {
     return text;
   }
 
-  let result = "";
-  let escape = "";
+  let result = '';
+  let escape = '';
   let start = 0;
   let i;
   for (i = 0; i < text.length; i++) {
     switch (text.charCodeAt(i)) {
       case 34: // "
-        escape = "&quot;";
+        escape = '&quot;';
         break;
       case 39: // '
-        escape = "&#039;";
+        escape = '&#039;';
         break;
       case 38: // &
-        escape = "&amp;";
+        escape = '&amp;';
         break;
       case 60: // <
-        escape = "&lt;";
+        escape = '&lt;';
         break;
       case 62: // >
-        escape = "&gt;";
+        escape = '&gt;';
         break;
       default:
         continue;
@@ -51,24 +51,24 @@ export function getCssPropertyName(str): string {
     return CssPropCache[str];
   }
   return (CssPropCache[str] =
-    str.replace(uppercasePattern, "-$&").toLowerCase() + ":");
+    str.replace(uppercasePattern, '-$&').toLowerCase() + ':');
 }
 
 export const voidElements = new Set([
-  "area",
-  "base",
-  "br",
-  "col",
-  "command",
-  "embed",
-  "hr",
-  "img",
-  "input",
-  "keygen",
-  "link",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr"
+  'area',
+  'base',
+  'br',
+  'col',
+  'command',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'keygen',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr'
 ]);

@@ -1,23 +1,23 @@
-import { render } from "inferno";
-import { renderToString } from "inferno-server";
+import { render } from 'inferno';
+import { renderToString } from 'inferno-server';
 
-import { createElement } from "inferno-create-element";
+import { createElement } from 'inferno-create-element';
 import {
   createContainerWithHTML,
   innerHTML,
   validateNodeTree
-} from "inferno-utils";
+} from 'inferno-utils';
 
-describe("SSR Hydration - (non-JSX)", () => {
+describe('SSR Hydration - (non-JSX)', () => {
   [
     {
       node: createElement(
-        "div",
+        'div',
         null,
-        createElement("span", null, "Hello world")
+        createElement('span', null, 'Hello world')
       ),
-      expect1: "<div><span>Hello world</span></div>",
-      expect2: "<div><span>Hello world</span></div>"
+      expect1: '<div><span>Hello world</span></div>',
+      expect2: '<div><span>Hello world</span></div>'
     }
     // {
     // 	node: <div>{ <span>Hello world</span> }</div>,

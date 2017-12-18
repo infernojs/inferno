@@ -1,23 +1,23 @@
-import { Component, render } from "inferno";
-import * as mobx from "mobx";
-import { observer } from "inferno-mobx";
-import { createClass } from "inferno-create-class";
+import { Component, render } from 'inferno';
+import * as mobx from 'mobx';
+import { observer } from 'inferno-mobx';
+import { createClass } from 'inferno-create-class';
 
-describe("Mobx Transacations", () => {
+describe('Mobx Transacations', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("mobx issue 50", done => {
+  it('mobx issue 50', done => {
     const foo = {
       a: mobx.observable(true),
       b: mobx.observable(false),
@@ -31,16 +31,16 @@ describe("Mobx Transacations", () => {
         foo.b.set(!foo.b.get());
       });
     }
-    let asText = "";
+    let asText = '';
     let willReactCount = 0;
     mobx.autorun(
-      () => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(":"))
+      () => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(':'))
     );
     const Test = observer(
       createClass({
         componentWillReact: () => willReactCount++,
         render: () => (
-          <div id="x">{[foo.a.get(), foo.b.get(), foo.c.get()].join(",")}</div>
+          <div id="x">{[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}</div>
         )
       })
     );
@@ -48,8 +48,8 @@ describe("Mobx Transacations", () => {
     setTimeout(flipStuff, 200);
 
     setTimeout(() => {
-      expect(asText).toBe("false:true:true");
-      expect(document.getElementById("x").textContent).toBe("false,true,true");
+      expect(asText).toBe('false:true:true');
+      expect(document.getElementById('x').textContent).toBe('false,true,true');
       expect(willReactCount).toBe(1);
       done();
     }, 400);
@@ -57,7 +57,7 @@ describe("Mobx Transacations", () => {
     render(<Test />, container);
   });
 
-  it("React.render should respect transaction", done => {
+  it('React.render should respect transaction', done => {
     const a = mobx.observable(2);
     const loaded = mobx.observable(false);
     const valuesSeen = [];
@@ -76,13 +76,13 @@ describe("Mobx Transacations", () => {
     });
 
     setTimeout(() => {
-      expect(container.textContent.replace(/\s+/g, "")).toBe("4");
+      expect(container.textContent.replace(/\s+/g, '')).toBe('4');
       expect(valuesSeen).toEqual([2, 4]);
       done();
     }, 400);
   });
 
-  it("React.render in transaction should succeed", done => {
+  it('React.render in transaction should succeed', done => {
     const a = mobx.observable(2);
     const loaded = mobx.observable(false);
     const valuesSeen = [];
@@ -100,7 +100,7 @@ describe("Mobx Transacations", () => {
     });
 
     setTimeout(() => {
-      expect(container.textContent.replace(/\s+/g, "")).toBe("4");
+      expect(container.textContent.replace(/\s+/g, '')).toBe('4');
       expect(valuesSeen).toEqual([3, 4]);
       done();
     }, 400);

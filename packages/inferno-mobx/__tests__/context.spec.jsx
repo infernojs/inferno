@@ -1,28 +1,28 @@
-import { render } from "inferno";
-import { createClass } from "inferno-create-class";
-import * as mobx from "mobx";
-import { observer, Provider } from "inferno-mobx";
+import { render } from 'inferno';
+import { createClass } from 'inferno-create-class';
+import * as mobx from 'mobx';
+import { observer, Provider } from 'inferno-mobx';
 
-describe("observer based context", () => {
+describe('observer based context', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("using observer to inject throws warning", done => {
+  it('using observer to inject throws warning', done => {
     const w = console.error;
     const warns = [];
     console.error = msg => warns.push(msg);
 
-    observer(["test"], () => null);
+    observer(['test'], () => null);
 
     expect(warns.length).toBe(1);
     expect(warns[0]).toEqual(
@@ -33,9 +33,9 @@ describe("observer based context", () => {
     done();
   });
 
-  it("basic context", done => {
+  it('basic context', done => {
     const C = observer(
-      ["foo"],
+      ['foo'],
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -49,14 +49,14 @@ describe("observer based context", () => {
       </Provider>
     );
     render(<A />, container);
-    expect(container.querySelector("div").textContent).toBe("context:bar");
+    expect(container.querySelector('div').textContent).toBe('context:bar');
 
     done();
   });
 
-  it("props override context", done => {
+  it('props override context', done => {
     const C = observer(
-      ["foo"],
+      ['foo'],
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -70,13 +70,13 @@ describe("observer based context", () => {
       </Provider>
     );
     render(<A />, container);
-    expect(container.querySelector("div").textContent).toBe("context:42");
+    expect(container.querySelector('div').textContent).toBe('context:42');
     done();
   });
 
-  it("overriding stores is supported", done => {
+  it('overriding stores is supported', done => {
     const C = observer(
-      ["foo", "bar"],
+      ['foo', 'bar'],
       createClass({
         render() {
           return (
@@ -105,16 +105,16 @@ describe("observer based context", () => {
     );
     render(<A />, container);
 
-    expect(container.querySelector("span").textContent).toBe("context:bar1337");
-    expect(container.querySelector("section").textContent).toBe(
-      "context:421337"
+    expect(container.querySelector('span').textContent).toBe('context:bar1337');
+    expect(container.querySelector('section').textContent).toBe(
+      'context:421337'
     );
     done();
   });
 
-  it("store should be available", done => {
+  it('store should be available', done => {
     const C = observer(
-      ["foo"],
+      ['foo'],
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -137,9 +137,9 @@ describe("observer based context", () => {
     }
   });
 
-  it("store is not required if prop is available", done => {
+  it('store is not required if prop is available', done => {
     const C = observer(
-      ["foo"],
+      ['foo'],
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -148,17 +148,17 @@ describe("observer based context", () => {
     );
     const B = () => <C foo="bar" />;
     render(<B />, container);
-    expect(container.querySelector("div").textContent).toBe("context:bar");
+    expect(container.querySelector('div').textContent).toBe('context:bar');
     done();
   });
 
-  it("warning is printed when changing stores", done => {
+  it('warning is printed when changing stores', done => {
     let msg = null;
     const baseWarn = console.error;
     console.error = m => (msg = m);
     const a = mobx.observable(3);
     const C = observer(
-      ["foo"],
+      ['foo'],
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -183,11 +183,11 @@ describe("observer based context", () => {
       })
     );
     render(<A />, container);
-    expect(container.querySelector("span").textContent).toBe("3");
-    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(container.querySelector('span').textContent).toBe('3');
+    expect(container.querySelector('div').textContent).toBe('context:3');
     a.set(42);
-    expect(container.querySelector("span").textContent).toBe("42");
-    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(container.querySelector('span').textContent).toBe('42');
+    expect(container.querySelector('div').textContent).toBe('context:3');
     expect(msg).toEqual(
       "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children"
     );
@@ -195,13 +195,13 @@ describe("observer based context", () => {
     done();
   });
 
-  it("warning is not printed when changing stores, but suppressed explicitly", done => {
+  it('warning is not printed when changing stores, but suppressed explicitly', done => {
     let msg = null;
     const baseWarn = console.error;
     console.error = m => (msg = m);
     const a = mobx.observable(3);
     const C = observer(
-      ["foo"],
+      ['foo'],
       createClass({
         render() {
           return <div>context:{this.props.foo}</div>;
@@ -226,11 +226,11 @@ describe("observer based context", () => {
       })
     );
     render(<A />, container);
-    expect(container.querySelector("span").textContent).toBe("3");
-    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(container.querySelector('span').textContent).toBe('3');
+    expect(container.querySelector('div').textContent).toBe('context:3');
     a.set(42);
-    expect(container.querySelector("span").textContent).toBe("42");
-    expect(container.querySelector("div").textContent).toBe("context:3");
+    expect(container.querySelector('span').textContent).toBe('42');
+    expect(container.querySelector('div').textContent).toBe('context:3');
     expect(msg).toBe(null);
     console.error = baseWarn;
     done();

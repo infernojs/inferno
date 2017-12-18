@@ -2,7 +2,7 @@
  * @module Inferno-Test-Utils
  */ /** TypeDoc Comment */
 
-import { VNode } from "inferno";
+import { VNode } from 'inferno';
 import {
   isArray,
   isFunction,
@@ -10,7 +10,7 @@ import {
   isObject,
   isString,
   throwError
-} from "inferno-shared";
+} from 'inferno-shared';
 import {
   getTagNameOfVNode as _getTagNameOfVNode,
   isClassVNode as _isClassVNode,
@@ -21,11 +21,11 @@ import {
   isVNode as _isVNode,
   renderIntoDocument as _renderIntoDocument,
   Wrapper as _Wrapper
-} from "./utils";
+} from './utils';
 import {
   renderToSnapshot as _renderToSnapshot,
   vNodeToSnapshot as _vNodeToSnapshot
-} from "./jest";
+} from './jest';
 
 // Type Checkers
 
@@ -105,7 +105,7 @@ export function findAllInRenderedTree(
     return findAllInVNodeTree(renderedTree.$LI, predicate);
   } else {
     throwError(
-      "findAllInRenderedTree(renderedTree, predicate) renderedTree must be a rendered class component"
+      'findAllInRenderedTree(renderedTree, predicate) renderedTree must be a rendered class component'
     );
   }
 }
@@ -136,7 +136,7 @@ export function findAllInVNodeTree(
     return result;
   } else {
     throwError(
-      "findAllInVNodeTree(vNodeTree, predicate) vNodeTree must be a VNode instance"
+      'findAllInVNodeTree(vNodeTree, predicate) vNodeTree must be a VNode instance'
     );
   }
 }
@@ -162,9 +162,9 @@ function findOneOf(
   const all = finder(tree, filter);
   if (all.length > 1) {
     throwError(
-      `Did not find exactly one match (found ${all.length}) for ${name}: ${
-        filter
-      }`
+      `Did not find exactly one match (found ${
+        all.length
+      }) for ${name}: ${filter}`
     );
   } else {
     return all[0];
@@ -186,7 +186,7 @@ export function scryRenderedDOMElementsWithClass(
         isFunction(instance.dom.getAttribute)
       ) {
         // SVG || null, probably
-        domClassName = (instance.dom as Element).getAttribute("class") || "";
+        domClassName = (instance.dom as Element).getAttribute('class') || '';
       }
       const domClassList = parseSelector(domClassName);
       return parseSelector(classNames).every(className => {
@@ -233,7 +233,7 @@ export function findRenderedDOMElementWithClass(
   return findOneOf(
     renderedTree,
     classNames,
-    "class",
+    'class',
     scryRenderedDOMElementsWithClass
   );
 }
@@ -245,7 +245,7 @@ export function findRenderedDOMElementWithTag(
   return findOneOf(
     renderedTree,
     tagName,
-    "tag",
+    'tag',
     scryRenderedDOMElementsWithTag
   );
 }
@@ -254,14 +254,14 @@ export function findRenderedVNodeWithType(
   renderedTree: any,
   type: string | Function
 ): VNode {
-  return findOneOf(renderedTree, type, "component", scryRenderedVNodesWithType);
+  return findOneOf(renderedTree, type, 'component', scryRenderedVNodesWithType);
 }
 
 export function findVNodeWithType(
   vNodeTree: VNode,
   type: string | Function
 ): VNode {
-  return findOneOf(vNodeTree, type, "VNode", scryVNodesWithType);
+  return findOneOf(vNodeTree, type, 'VNode', scryVNodesWithType);
 }
 
 export const vNodeToSnapshot = _vNodeToSnapshot;

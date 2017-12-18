@@ -15,15 +15,11 @@ import {
   isUndefined,
   NO_OP,
   throwError
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { directClone, isVNode, options, VNode } from "../core/implementation";
-import {
-  mount,
-  mountArrayChildren,
-  mountRef,
-} from "./mounting";
-import { unmount } from "./unmounting";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { directClone, isVNode, options, VNode } from '../core/implementation';
+import { mount, mountArrayChildren, mountRef } from './mounting';
+import { unmount } from './unmounting';
 import {
   appendChild,
   EMPTY_OBJ,
@@ -33,14 +29,14 @@ import {
   replaceChild,
   setTextContent,
   updateTextContent
-} from "./utils/common";
+} from './utils/common';
 import {
   isControlledFormElement,
   processElement
-} from "./wrappers/processElement";
-import { patchProp, removeProp } from "./props";
-import { handleComponentInput } from "./utils/componentutil";
-import {validateKeys} from "../core/validate";
+} from './wrappers/processElement';
+import { patchProp, removeProp } from './props';
+import { handleComponentInput } from './utils/componentutil';
+import { validateKeys } from '../core/validate';
 
 function removeAllChildren(dom: Element, children) {
   for (let i = 0, len = children.length; i < len; i++) {
@@ -50,7 +46,7 @@ function removeAllChildren(dom: Element, children) {
       unmount(child, null);
     }
   }
-  dom.textContent = "";
+  dom.textContent = '';
 }
 
 function replaceWithNewNode(
@@ -93,11 +89,19 @@ export function patch(
     } else if (nextFlags & VNodeFlags.Element) {
       patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
     } else if (nextFlags & VNodeFlags.Component) {
-      patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG,(nextFlags & VNodeFlags.ComponentClass) > 0);
+      patchComponent(
+        lastVNode,
+        nextVNode,
+        parentDom,
+        lifecycle,
+        context,
+        isSVG,
+        (nextFlags & VNodeFlags.ComponentClass) > 0
+      );
     } else if (nextFlags & VNodeFlags.Text) {
       patchText(lastVNode, nextVNode, parentDom);
     } else if (nextFlags & VNodeFlags.Void) {
-      nextVNode.dom = lastVNode.dom
+      nextVNode.dom = lastVNode.dom;
     } else if (nextFlags & VNodeFlags.Portal) {
       patchPortal(lastVNode, nextVNode, lifecycle, context);
     }
@@ -136,7 +140,7 @@ function unmountChildren(children, dom: Element) {
   } else if (isArray(children)) {
     removeAllChildren(dom, children);
   } else {
-    dom.textContent = "";
+    dom.textContent = '';
   }
 }
 
@@ -182,7 +186,7 @@ export function patchElement(
         dom,
         lifecycle,
         context,
-        isSVG && nextTag !== "foreignObject"
+        isSVG && nextTag !== 'foreignObject'
       );
     }
 
@@ -199,7 +203,14 @@ export function patchElement(
         }
 
         for (const prop in nextPropsOrEmpty) {
-          patchProp(prop, lastPropsOrEmpty[prop], nextPropsOrEmpty[prop], dom, isSVG, hasControlledValue);
+          patchProp(
+            prop,
+            lastPropsOrEmpty[prop],
+            nextPropsOrEmpty[prop],
+            dom,
+            isSVG,
+            hasControlledValue
+          );
         }
 
         if (isFormElement) {
@@ -228,19 +239,19 @@ export function patchElement(
     // inlined patchProps  -- ends --
     if (lastClassName !== nextClassName) {
       if (isNullOrUndef(nextClassName)) {
-        dom.removeAttribute("class");
+        dom.removeAttribute('class');
       } else {
         if (isSVG) {
-          dom.setAttribute("class", nextClassName);
+          dom.setAttribute('class', nextClassName);
         } else {
           dom.className = nextClassName;
         }
       }
     }
-    if (isFunction(nextRef) && (lastVNode.ref !== nextRef)) {
+    if (isFunction(nextRef) && lastVNode.ref !== nextRef) {
       mountRef(dom as Element, nextRef, lifecycle);
     } else {
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV !== 'production') {
         if (isString(nextRef)) {
           throwError(
             'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
@@ -263,7 +274,10 @@ function patchChildren(
 ) {
   let patchArray = false;
 
-  if ((nextFlags & VNodeFlags.MultipleChildren) && (lastFlags & VNodeFlags.MultipleChildren)) {
+  if (
+    nextFlags & VNodeFlags.MultipleChildren &&
+    lastFlags & VNodeFlags.MultipleChildren
+  ) {
     patchArray = true;
   } else if (isInvalid(nextChildren)) {
     unmountChildren(lastChildren, dom);
@@ -314,9 +328,11 @@ function patchChildren(
     } else if (nextLength === 0) {
       removeAllChildren(dom, lastChildren);
     } else {
-      if (((nextFlags & VNodeFlags.HasKeyedChildren) &&
-        (lastFlags & VNodeFlags.HasKeyedChildren))
-        || isKeyed(lastChildren, nextChildren)) {
+      if (
+        (nextFlags & VNodeFlags.HasKeyedChildren &&
+          lastFlags & VNodeFlags.HasKeyedChildren) ||
+        isKeyed(lastChildren, nextChildren)
+      ) {
         patchKeyedChildren(
           lastChildren,
           nextChildren,
@@ -362,9 +378,9 @@ export function updateClassComponent(
   let renderOutput;
 
   if (instance.$UN) {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       throwError(
-        "Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op."
+        'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.'
       );
     }
     return;

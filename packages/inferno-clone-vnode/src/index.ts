@@ -10,16 +10,15 @@ import {
   normalizeProps,
   EMPTY_OBJ,
   VNode
-} from "inferno";
+} from 'inferno';
 import {
   combineFrom,
   isUndefined,
   isStringOrNumber,
   isInvalid,
   isArray
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
-
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 /*
  directClone is preferred over cloneVNode and used internally also.
@@ -36,11 +35,7 @@ import { VNodeFlags } from "inferno-vnode-flags";
  * @param {...*} _children new children for new virtual node
  * @returns {VNode} new virtual node
  */
-export function cloneVNode(
-  vNodeToClone: VNode,
-  props?,
-  ..._children
-): VNode {
+export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
   let children: any = _children;
   const childrenLen = _children.length;
 
@@ -67,7 +62,6 @@ export function cloneVNode(
 
     newVNode = tmpArray;
   } else {
-
     const flags = vNodeToClone.flags;
     let className = vNodeToClone.className;
     let key = vNodeToClone.key;
@@ -114,7 +108,7 @@ export function cloneVNode(
 
                 if (isStringOrNumber(child)) {
                   tmpArray.push(child);
-                } else if (!isInvalid(child) && (child.flags)) {
+                } else if (!isInvalid(child) && child.flags) {
                   tmpArray.push(directClone(child));
                 }
               }

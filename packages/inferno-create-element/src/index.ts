@@ -10,23 +10,23 @@ import {
   InfernoChildren,
   Props,
   VNode
-} from "inferno";
+} from 'inferno';
 import {
   isInvalid,
   isNullOrUndef,
   isObject,
   isString,
   isUndefined
-} from "inferno-shared";
-import { VNodeFlags } from "inferno-vnode-flags";
+} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 const componentHooks = new Set<string>();
-componentHooks.add("onComponentWillMount");
-componentHooks.add("onComponentDidMount");
-componentHooks.add("onComponentWillUnmount");
-componentHooks.add("onComponentShouldUpdate");
-componentHooks.add("onComponentWillUpdate");
-componentHooks.add("onComponentDidUpdate");
+componentHooks.add('onComponentWillMount');
+componentHooks.add('onComponentDidMount');
+componentHooks.add('onComponentWillUnmount');
+componentHooks.add('onComponentShouldUpdate');
+componentHooks.add('onComponentWillUpdate');
+componentHooks.add('onComponentDidUpdate');
 
 /**
  * Creates virtual node
@@ -42,7 +42,7 @@ export function createElement<T>(
 ): VNode {
   if (isInvalid(type) || isObject(type)) {
     throw new Error(
-      "Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function."
+      'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.'
     );
   }
   let children: any = _children;
@@ -66,13 +66,13 @@ export function createElement<T>(
       newProps = {} as T & Props;
 
       for (const prop in props) {
-        if (prop === "className" || prop === "class") {
+        if (prop === 'className' || prop === 'class') {
           className = props[prop];
-        } else if (prop === "key") {
+        } else if (prop === 'key') {
           key = props.key;
-        } else if (prop === "children" && isUndefined(children)) {
+        } else if (prop === 'children' && isUndefined(children)) {
           children = props.children; // always favour children args, default to props
-        } else if (prop === "ref") {
+        } else if (prop === 'ref') {
           ref = props.ref;
         } else {
           newProps[prop] = props[prop];
@@ -98,7 +98,7 @@ export function createElement<T>(
             ref = {};
           }
           ref[prop] = props[prop];
-        } else if (prop === "key") {
+        } else if (prop === 'key') {
           key = props.key;
         } else {
           newProps[prop] = props[prop];

@@ -1,5 +1,5 @@
-import { isFunction } from "inferno-shared";
-import { EMPTY_OBJ } from "../utils/common";
+import { isFunction } from 'inferno-shared';
+import { EMPTY_OBJ } from '../utils/common';
 
 export function createWrappedFunction(
   methodName: string,
@@ -39,7 +39,7 @@ export function createWrappedFunction(
     }
   };
 
-  Object.defineProperty(fnMethod, "wrapped", {
+  Object.defineProperty(fnMethod, 'wrapped', {
     configurable: false,
     enumerable: false,
     value: true,

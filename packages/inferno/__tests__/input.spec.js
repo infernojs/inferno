@@ -1,28 +1,28 @@
-import { render } from "inferno";
-import { innerHTML, triggerEvent } from "inferno-utils";
+import { render } from 'inferno';
+import { innerHTML, triggerEvent } from 'inferno-utils';
 
-describe("Input type checkbox", () => {
+describe('Input type checkbox', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Checked attribute should be false", function() {
+  it('Checked attribute should be false', function() {
     render(<input type="checkbox" checked={false} />, container);
     const input = container.firstChild;
 
     expect(input.checked).toBe(false);
   });
 
-  it("Checked attribute after Click", function() {
+  it('Checked attribute after Click', function() {
     let clickChecked = null;
     let changeChecked = null;
 
@@ -41,7 +41,7 @@ describe("Input type checkbox", () => {
     );
     const input = container.firstChild;
 
-    triggerEvent("click", input);
+    triggerEvent('click', input);
 
     expect(input.checked).toBe(false);
     expect(clickChecked).toBe(true);
@@ -49,28 +49,28 @@ describe("Input type checkbox", () => {
   });
 });
 
-describe("Input type Radio", () => {
+describe('Input type Radio', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = "";
+    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it("Controlled radio, checked=false", function() {
+  it('Controlled radio, checked=false', function() {
     render(<input type="radio" checked={false} value="magic" />, container);
     const input = container.firstChild;
 
     expect(input.checked).toBe(false);
   });
 
-  it("Checked attribute after Click", function() {
+  it('Checked attribute after Click', function() {
     let clickChecked = null;
     let changeChecked = null;
 
@@ -90,7 +90,7 @@ describe("Input type Radio", () => {
     );
     const input = container.firstChild;
 
-    triggerEvent("click", input);
+    triggerEvent('click', input);
 
     expect(clickChecked).toBe(true);
     expect(input.checked).toBe(false);

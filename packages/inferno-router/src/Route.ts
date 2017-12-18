@@ -3,10 +3,10 @@
  */
 /** TypeDoc Comment */
 
-import { Component, createVNode, VNode } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
-import { Children, invariant, warning } from "./utils";
-import { matchPath } from "./matchPath";
+import { Component, createVNode, VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { Children, invariant, warning } from './utils';
+import { matchPath } from './matchPath';
 
 const isEmptyChildren = children => Children.count(children) === 0;
 
@@ -56,7 +56,7 @@ class Route extends Component<IRouteProps, any> {
 
     invariant(
       router,
-      "You should not use <Route> or withRouter() outside a <Router>"
+      'You should not use <Route> or withRouter() outside a <Router>'
     );
 
     const { route } = router;
@@ -68,7 +68,7 @@ class Route extends Component<IRouteProps, any> {
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       warning(
         !(nextProps.location && !this.props.location),
         '<Route> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
@@ -102,7 +102,7 @@ class Route extends Component<IRouteProps, any> {
       return match ? render(props) : null;
     }
 
-    if (typeof children === "function") {
+    if (typeof children === 'function') {
       return children(props);
     }
 
@@ -114,11 +114,11 @@ class Route extends Component<IRouteProps, any> {
   }
 }
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   Route.prototype.componentWillMount = function() {
     warning(
       !(this.props.component && this.props.render),
-      "You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored"
+      'You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored'
     );
 
     warning(
@@ -127,7 +127,7 @@ if (process.env.NODE_ENV !== "production") {
         this.props.children &&
         !isEmptyChildren(this.props.children)
       ),
-      "You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored"
+      'You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored'
     );
 
     warning(
@@ -136,9 +136,9 @@ if (process.env.NODE_ENV !== "production") {
         this.props.children &&
         !isEmptyChildren(this.props.children)
       ),
-      "You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored"
+      'You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored'
     );
   };
 }
 
-export {Route};
+export { Route };

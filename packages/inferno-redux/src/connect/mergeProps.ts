@@ -2,7 +2,7 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { verifyPlainObject } from "../utils/verifyPlainObject";
+import { verifyPlainObject } from '../utils/verifyPlainObject';
 
 export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...ownProps,
@@ -26,8 +26,8 @@ export const wrapMergePropsFunc = mergeProps => {
         hasRunOnce = true;
         mergedProps = nextMergedProps;
 
-        if (process.env.NODE_ENV !== "production") {
-          verifyPlainObject(mergedProps, displayName, "mergeProps");
+        if (process.env.NODE_ENV !== 'production') {
+          verifyPlainObject(mergedProps, displayName, 'mergeProps');
         }
       }
 
@@ -37,7 +37,7 @@ export const wrapMergePropsFunc = mergeProps => {
 };
 
 export const whenMergePropsIsFunction = mergeProps =>
-  typeof mergeProps === "function" ? wrapMergePropsFunc(mergeProps) : undefined;
+  typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
 
 export const whenMergePropsIsOmitted = mergeProps =>
   !mergeProps ? () => defaultMergeProps : undefined;

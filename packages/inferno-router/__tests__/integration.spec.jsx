@@ -1,14 +1,14 @@
-import { render } from "inferno";
-import { innerHTML } from "inferno-utils";
-import { MemoryRouter, Switch, Route } from "inferno-router";
+import { render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
+import { MemoryRouter, Switch, Route } from 'inferno-router';
 
-describe("Integration Tests", () => {
-  it("renders nested matches", () => {
-    const node = document.createElement("div");
-    const TEXT1 = "Ms. Tripp";
-    const TEXT2 = "Mrs. Schiffman";
+describe('Integration Tests', () => {
+  it('renders nested matches', () => {
+    const node = document.createElement('div');
+    const TEXT1 = 'Ms. Tripp';
+    const TEXT2 = 'Mrs. Schiffman';
     render(
-      <MemoryRouter initialEntries={["/nested"]}>
+      <MemoryRouter initialEntries={['/nested']}>
         <Route
           path="/"
           render={() => (
@@ -25,12 +25,12 @@ describe("Integration Tests", () => {
     expect(node.innerHTML).toContain(TEXT2);
   });
 
-  it("renders only as deep as the matching Route", () => {
-    const node = document.createElement("div");
-    const TEXT1 = "Ms. Tripp";
-    const TEXT2 = "Mrs. Schiffman";
+  it('renders only as deep as the matching Route', () => {
+    const node = document.createElement('div');
+    const TEXT1 = 'Ms. Tripp';
+    const TEXT2 = 'Mrs. Schiffman';
     render(
-      <MemoryRouter initialEntries={["/"]}>
+      <MemoryRouter initialEntries={['/']}>
         <Route
           path="/"
           render={() => (
@@ -47,12 +47,12 @@ describe("Integration Tests", () => {
     expect(node.innerHTML).not.toContain(TEXT2);
   });
 
-  it("renders multiple matching routes", () => {
-    const node = document.createElement("div");
-    const TEXT1 = "Mrs. Schiffman";
-    const TEXT2 = "Mrs. Burton";
+  it('renders multiple matching routes', () => {
+    const node = document.createElement('div');
+    const TEXT1 = 'Mrs. Schiffman';
+    const TEXT2 = 'Mrs. Burton';
     render(
-      <MemoryRouter initialEntries={["/double"]}>
+      <MemoryRouter initialEntries={['/double']}>
         <div>
           <aside>
             <Route path="/double" render={() => <h1>{TEXT1}</h1>} />

@@ -1,5 +1,5 @@
-import { renderToStaticMarkup } from "inferno-server";
-import { Component } from "inferno";
+import { renderToStaticMarkup } from 'inferno-server';
+import { Component } from 'inferno';
 
 /*
  class StatefulComponent extends Component {
@@ -12,87 +12,87 @@ function WrappedInput(props) {
   return <input type="text" value={props.value} />;
 }
 
-describe("SSR Creation (JSX)", () => {
+describe('SSR Creation (JSX)', () => {
   const testEntries = [
     {
-      description: "should render a null component",
+      description: 'should render a null component',
       template: () => <div>{null}</div>,
-      result: "<div></div>"
+      result: '<div></div>'
     },
     {
-      description: "should render a component with null children",
+      description: 'should render a component with null children',
       template: () => (
         <div>
           {null}
           <span>emptyValue: {null}</span>
         </div>
       ),
-      result: "<div><span>emptyValue: </span></div>"
+      result: '<div><span>emptyValue: </span></div>'
     },
     {
-      description: "should render a component with valueless attribute",
+      description: 'should render a component with valueless attribute',
       template: () => <script src="foo" async />,
       result: '<script src="foo" async></script>'
     },
     {
-      description: "should render a stateless component with text",
+      description: 'should render a stateless component with text',
       template: () => (
         <div>
-          Hello world, {"1"}2{"3"}
+          Hello world, {'1'}2{'3'}
         </div>
       ),
-      result: "<div>Hello world, <!---->1<!---->2<!---->3</div>"
+      result: '<div>Hello world, <!---->1<!---->2<!---->3</div>'
     },
     {
-      description: "should render text with escaped symbols",
+      description: 'should render text with escaped symbols',
       template: () => <div>"Hello world"</div>,
-      result: "<div>&quot;Hello world&quot;</div>"
+      result: '<div>&quot;Hello world&quot;</div>'
     },
     {
-      description: "should render a stateless component with comments",
+      description: 'should render a stateless component with comments',
       template: () => <div>Hello world, {/* comment*/}</div>,
-      result: "<div>Hello world, </div>"
+      result: '<div>Hello world, </div>'
     },
     {
-      description: "should render mixed invalid/valid children",
-      template: () => <div>{[null, "123", null, "456"]}</div>,
-      result: "<div>123<!---->456</div>"
+      description: 'should render mixed invalid/valid children',
+      template: () => <div>{[null, '123', null, '456']}</div>,
+      result: '<div>123<!---->456</div>'
     },
     {
-      description: "should ignore children as props",
+      description: 'should ignore children as props',
       template: () => <p children="foo">foo</p>,
-      result: "<p>foo</p>"
+      result: '<p>foo</p>'
     },
     {
-      description: "should render input with value",
+      description: 'should render input with value',
       template: () => <input value="bar" />,
       result: '<input value="bar">'
     },
     {
       description:
-        "should render input with value when defaultValue is present",
+        'should render input with value when defaultValue is present',
       template: () => <input value="bar" defaultValue="foo" />,
       result: '<input value="bar">'
     },
     {
       description:
-        "should render input when value is not present with defaultValue",
+        'should render input when value is not present with defaultValue',
       template: () => <input defaultValue="foo" />,
       result: '<input value="foo">'
     },
     {
-      description: "should render input when defaultValue is number",
+      description: 'should render input when defaultValue is number',
       template: () => <input defaultValue={123} />,
       result: '<input value="123">'
     },
     {
       description:
-        "should render input of type text with value when input is wrapped",
+        'should render input of type text with value when input is wrapped',
       template: () => <WrappedInput value="foo" />,
       result: '<input type="text" value="foo">'
     },
     {
-      description: "should render select element with selected property",
+      description: 'should render select element with selected property',
       template: () => (
         <select value="dog">
           <option value="cat">A cat</option>
@@ -103,50 +103,50 @@ describe("SSR Creation (JSX)", () => {
         '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
     },
     {
-      description: "should render a text placeholder",
+      description: 'should render a text placeholder',
       template: () => (
         <div>
-          <div>{""}</div>
+          <div>{''}</div>
           <p>Test</p>
         </div>
       ),
-      result: "<div><div> </div><p>Test</p></div>"
+      result: '<div><div> </div><p>Test</p></div>'
     },
     {
-      description: "Should render style opacity #1",
+      description: 'Should render style opacity #1',
       template: () => <div style={{ opacity: 0.8 }} />,
       result: '<div style="opacity:0.8;"></div>'
     },
     {
-      description: "Should render style opacity #2",
+      description: 'Should render style opacity #2',
       template: () => <div style="opacity:0.8;" />,
       result: '<div style="opacity:0.8;"></div>'
     },
     {
-      description: "Should render div className as number",
+      description: 'Should render div className as number',
       template: () => <div className={123} />,
       result: '<div class="123"></div>'
     },
     {
-      description: "Should render input defaultValue as number",
+      description: 'Should render input defaultValue as number',
       template: () => <input defaultValue={123} />,
       result: '<input value="123">'
     },
     {
-      description: "BR should not be closed",
+      description: 'BR should not be closed',
       template: () => (
         <div>
           <br />
         </div>
       ),
-      result: "<div><br></div>"
+      result: '<div><br></div>'
     }
   ];
 
   testEntries.forEach(test => {
     it(test.description, () => {
-      const container = document.createElement("div");
-      const vDom = test.template("foo");
+      const container = document.createElement('div');
+      const vDom = test.template('foo');
       const output = renderToStaticMarkup(vDom);
 
       document.body.appendChild(container);
@@ -156,20 +156,20 @@ describe("SSR Creation (JSX)", () => {
     });
   });
 
-  describe("Component hook", () => {
-    it("Should allow changing state in CWM", () => {
+  describe('Component hook', () => {
+    it('Should allow changing state in CWM', () => {
       class Another extends Component {
         constructor(props, context) {
           super(props, context);
 
           this.state = {
-            foo: "bar"
+            foo: 'bar'
           };
         }
 
         componentWillMount() {
           this.setState({
-            foo: "bar2"
+            foo: 'bar2'
           });
         }
 
@@ -183,13 +183,13 @@ describe("SSR Creation (JSX)", () => {
           super(props, context);
 
           this.state = {
-            foo: "bar"
+            foo: 'bar'
           };
         }
 
         componentWillMount() {
           this.setState({
-            foo: "bar2"
+            foo: 'bar2'
           });
         }
 
@@ -203,14 +203,14 @@ describe("SSR Creation (JSX)", () => {
         }
       }
 
-      const container = document.createElement("div");
+      const container = document.createElement('div');
       const vDom = <Tester />;
 
       const output = renderToStaticMarkup(vDom);
 
       document.body.appendChild(container);
       container.innerHTML = output;
-      expect(output).toBe("<div>bar2<div>bar2</div></div>");
+      expect(output).toBe('<div>bar2<div>bar2</div></div>');
       document.body.removeChild(container);
     });
   });

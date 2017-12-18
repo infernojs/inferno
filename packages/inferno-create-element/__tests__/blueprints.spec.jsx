@@ -1,11 +1,11 @@
-import { Component, render } from "inferno";
-import { innerHTML } from "inferno-utils";
+import { Component, render } from 'inferno';
+import { innerHTML } from 'inferno-utils';
 
-describe("Blueprints (JSX)", () => {
+describe('Blueprints (JSX)', () => {
   let container;
 
   beforeEach(function() {
-    container = document.createElement("div");
+    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
@@ -14,7 +14,7 @@ describe("Blueprints (JSX)", () => {
     container = null;
   });
 
-  describe("Should have parentDOM defined #1", () => {
+  describe('Should have parentDOM defined #1', () => {
     class A extends Component {
       render() {
         return <div>A</div>;
@@ -64,7 +64,7 @@ describe("Blueprints (JSX)", () => {
       render() {
         return (
           <div>
-            {["Saab", "Volvo", "BMW"].map(function(c) {
+            {['Saab', 'Volvo', 'BMW'].map(function(c) {
               return <Counter car={c} />;
             })}
           </div>
@@ -72,7 +72,7 @@ describe("Blueprints (JSX)", () => {
       }
     }
 
-    it("Initial render (creation)", () => {
+    it('Initial render (creation)', () => {
       render(<Wrapper />, container);
 
       expect(container.innerHTML).toBe(
@@ -84,10 +84,10 @@ describe("Blueprints (JSX)", () => {
       render(null, container);
     });
 
-    it("Second render (update)", done => {
+    it('Second render (update)', done => {
       render(<Wrapper />, container);
       const buttons = Array.prototype.slice.call(
-        container.querySelectorAll("button")
+        container.querySelectorAll('button')
       );
       buttons.forEach(button => button.click());
 
@@ -105,14 +105,14 @@ describe("Blueprints (JSX)", () => {
     });
   });
 
-  describe("Infinite loop issue", () => {
-    it("Should not get stuck when doing setState from ref callback", done => {
+  describe('Infinite loop issue', () => {
+    it('Should not get stuck when doing setState from ref callback', done => {
       class A extends Component {
         constructor(props) {
           super(props);
 
           this.state = {
-            text: "foo"
+            text: 'foo'
           };
 
           this.onWilAttach = this.onWilAttach.bind(this);
@@ -121,7 +121,7 @@ describe("Blueprints (JSX)", () => {
         onWilAttach(node) {
           // Do something with node and setState
           this.setState({
-            text: "animate"
+            text: 'animate'
           });
         }
 
@@ -138,14 +138,14 @@ describe("Blueprints (JSX)", () => {
 
       render(<A open={true} />, container);
       setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML("<div>animate</div>"));
+        expect(container.innerHTML).toBe(innerHTML('<div>animate</div>'));
         done();
       }, 10);
     });
   });
 
-  describe("Refs inside components", () => {
-    it("Should have refs defined when componentDidMount is called", () => {
+  describe('Refs inside components', () => {
+    it('Should have refs defined when componentDidMount is called', () => {
       class Com extends Component {
         constructor(props) {
           super(props);
@@ -172,8 +172,8 @@ describe("Blueprints (JSX)", () => {
     });
   });
 
-  describe("Spread operator and templates", () => {
-    it("Should be able to update property", () => {
+  describe('Spread operator and templates', () => {
+    it('Should be able to update property', () => {
       class A extends Component {
         constructor(props) {
           super(props);
@@ -189,11 +189,11 @@ describe("Blueprints (JSX)", () => {
       }
 
       render(<A disabled={true} />, container);
-      let input = container.querySelector("input");
+      let input = container.querySelector('input');
       expect(input.disabled).toBe(true);
 
       render(<A disabled={false} />, container);
-      input = container.querySelector("input");
+      input = container.querySelector('input');
       expect(input.disabled).toBe(false);
     });
   });

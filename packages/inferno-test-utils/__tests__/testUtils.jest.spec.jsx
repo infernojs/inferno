@@ -1,12 +1,12 @@
-import { createElement } from "inferno-create-element";
-import * as TestUtils from "inferno-test-utils";
+import { createElement } from 'inferno-create-element';
+import * as TestUtils from 'inferno-test-utils';
 
 const FunctionalComponent = function(props) {
-  return createElement("div", props);
+  return createElement('div', props);
 };
 
-describe("renderToSnapshot", () => {
-  it("should return a snapshot from a valid vNode", () => {
+describe('renderToSnapshot', () => {
+  it('should return a snapshot from a valid vNode', () => {
     const snapshot = TestUtils.renderToSnapshot(
       <FunctionalComponent foo="bar" />
     );
@@ -15,11 +15,11 @@ describe("renderToSnapshot", () => {
       expect(snapshot).toMatchSnapshot();
     } else {
       expect(snapshot.props.foo).toBeDefined();
-      expect(snapshot.props.foo).toBe("bar");
+      expect(snapshot.props.foo).toBe('bar');
     }
   });
 
-  it("should return a snapshot with className prop", () => {
+  it('should return a snapshot with className prop', () => {
     const TestComponent = () => <div className="test">Test</div>;
 
     const snapshot = TestUtils.renderToSnapshot(<TestComponent />);
@@ -27,7 +27,7 @@ describe("renderToSnapshot", () => {
     if (usingJest) {
       expect(snapshot).toMatchSnapshot();
     } else {
-      expect(snapshot.props.className).toBe("test");
+      expect(snapshot.props.className).toBe('test');
     }
   });
 });

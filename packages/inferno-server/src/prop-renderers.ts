@@ -2,15 +2,15 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
-import { internal_isUnitlessNumber } from "inferno";
-import { isNumber, isString, isTrue } from "inferno-shared";
-import { escapeText, getCssPropertyName } from "./utils";
+import { internal_isUnitlessNumber } from 'inferno';
+import { isNumber, isString, isTrue } from 'inferno-shared';
+import { escapeText, getCssPropertyName } from './utils';
 
 export function renderStylesToString(styles: string | object): string {
   if (isString(styles)) {
     return styles;
   } else {
-    let renderedString = "";
+    let renderedString = '';
     for (const styleName in styles) {
       const value = styles[styleName];
 
@@ -18,7 +18,7 @@ export function renderStylesToString(styles: string | object): string {
         renderedString += `${getCssPropertyName(styleName)}${value};`;
       } else if (isNumber(value)) {
         renderedString += `${getCssPropertyName(styleName)}${value}${
-          internal_isUnitlessNumber.has(styleName) ? "" : "px"
+          internal_isUnitlessNumber.has(styleName) ? '' : 'px'
         };`;
       }
     }
@@ -34,9 +34,9 @@ export function renderAttributes(props): string[] {
     const prop = propsKeys[i];
 
     if (
-      prop !== "children" &&
-      prop !== "dangerouslySetInnerHTML" &&
-      prop !== "style"
+      prop !== 'children' &&
+      prop !== 'dangerouslySetInnerHTML' &&
+      prop !== 'style'
     ) {
       const value = props[prop];
 

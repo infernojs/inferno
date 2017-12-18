@@ -2,10 +2,10 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { isNullOrUndef, toArray } from "inferno-shared";
-import { Component } from "inferno";
-import { Store } from "redux";
-import { warning } from "../utils/warning";
+import { isNullOrUndef, toArray } from 'inferno-shared';
+import { Component } from 'inferno';
+import { Store } from 'redux';
+import { warning } from '../utils/warning';
 
 let didWarnAboutReceivingStore = false;
 const warnAboutReceivingStore = () => {
@@ -15,7 +15,7 @@ const warnAboutReceivingStore = () => {
 
   didWarnAboutReceivingStore = true;
 
-  warning("<Provider> does not support changing `store` on the fly.");
+  warning('<Provider> does not support changing `store` on the fly.');
 };
 
 export interface Props {
@@ -24,7 +24,7 @@ export interface Props {
 }
 
 export class Provider extends Component<Props, any> {
-  public static displayName = "Provider";
+  public static displayName = 'Provider';
   private store: Store<any>;
 
   constructor(props: Props, context: any) {
@@ -43,7 +43,7 @@ export class Provider extends Component<Props, any> {
       toArray(this.props.children).length !== 1
     ) {
       throw Error(
-        "Inferno Error: Only one child is allowed within the `Provider` component"
+        'Inferno Error: Only one child is allowed within the `Provider` component'
       );
     }
 
@@ -51,7 +51,7 @@ export class Provider extends Component<Props, any> {
   }
 }
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   Provider.prototype.componentWillReceiveProps = function componentWillReceiveProps(
     nextProps
   ) {
