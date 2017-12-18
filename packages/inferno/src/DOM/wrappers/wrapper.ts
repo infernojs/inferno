@@ -8,6 +8,10 @@ export function createWrappedFunction(
   const fnMethod = function(e) {
     e.stopPropagation();
     const vNode = this.vNode;
+    // If vNode is gone by the time event fires, no-op
+    if (!vNode) {
+      return;
+    }
     const props = vNode.props || EMPTY_OBJ;
     const dom = vNode.dom;
 
