@@ -93,13 +93,7 @@ describe("Input type Radio", () => {
     triggerEvent("click", input);
 
     expect(clickChecked).toBe(true);
-    // check is jsdom
-    if (window.name === "nodejs") {
-      expect(input.checked).toBe(true);
-      expect(changeChecked).toBe(null);
-    } else {
-      expect(input.checked).toBe(false);
-      expect(changeChecked).toBe(true);
-    }
+    expect(input.checked).toBe(false);
+    expect(changeChecked).toBe(true);
   });
 });
