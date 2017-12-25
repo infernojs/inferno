@@ -6,6 +6,7 @@ import {
   Component,
   createVNode,
   getFlagsForElementVnode,
+  normalizeChildren,
   EMPTY_OBJ,
   InfernoChildren,
   options,
@@ -30,7 +31,7 @@ import {
   NO_OP,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags as _VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
@@ -275,11 +276,11 @@ options.createVNode = (vNode: VNode): void => {
   if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
     props.children = children;
   }
-  if (vNode.flags & _VNodeFlags.Component) {
+  if (vNode.flags & VNodeFlags.Component) {
     if (isString(vNode.type)) {
       vNode.flags = getFlagsForElementVnode(vNode.type as string);
       if (props && props.children) {
-        vNode.children = props.children;
+        normalizeChildren(vNode, props.children);
         delete props.children;
       }
     }
@@ -330,10 +331,17 @@ function unstable_renderSubtreeIntoContainer(
   container,
   callback
 ) {
-  const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {
-    children: vNode,
-    context: parentComponent.context
-  });
+  const wrapperVNode: VNode = createVNode(
+    4,
+    WrapperComponent,
+    null,
+    null,
+    ChildFlags.HasInvalidChildren,
+    {
+      children: vNode,
+      context: parentComponent.context
+    }
+  );
   const component = render(wrapperVNode, container);
 
   if (callback) {
@@ -400,8 +408,6 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
 }
 
 export {
-  // Bc we're trying to generate a complete declaration file
-  // See: https://github.com/Microsoft/TypeScript/issues/6307
   Children,
   ClassicComponentClass,
   Component,
@@ -424,7 +430,3 @@ export {
   unstable_renderSubtreeIntoContainer,
   version
 };
-
-// To please the TS God
-// https://github.com/Microsoft/TypeScript/issues/6307
-export declare const VNodeFlags: _VNodeFlags;

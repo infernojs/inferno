@@ -30,6 +30,7 @@ import sinon from 'sinon';
 
 const VNodeKeys = [
   'children',
+  'childFlags',
   'className',
   'dom',
   'flags',

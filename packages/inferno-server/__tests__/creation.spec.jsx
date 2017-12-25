@@ -1,4 +1,4 @@
-import { renderToStaticMarkup } from 'inferno-server';
+import { renderToStaticMarkup, renderToString } from 'inferno-server';
 import { Component } from 'inferno';
 
 /*
@@ -212,6 +212,24 @@ describe('SSR Creation (JSX)', () => {
       container.innerHTML = output;
       expect(output).toBe('<div>bar2<div>bar2</div></div>');
       document.body.removeChild(container);
+    });
+  });
+
+  describe('Component string output', () => {
+    it('Should render single text node', () => {
+      class Foobar extends Component {
+        render() {
+          return 'foo';
+        }
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe('<div>foo</div>');
     });
   });
 });

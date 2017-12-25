@@ -3,20 +3,20 @@
  */
 /** TypeDoc Comment */
 
-import { EMPTY_OBJ } from 'inferno';
+import { EMPTY_OBJ, createTextVNode } from 'inferno';
 import {
   combineFrom,
-  isArray,
   isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
   isNumber,
   isString,
+  isStringOrNumber,
   isTrue,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { renderStylesToString } from './prop-renderers';
 import { escapeText, voidElements } from './utils';
 
@@ -71,16 +71,19 @@ function renderVNodeToString(
         instance.$PSS = false;
         instance.$PS = null;
       }
-      const nextVNode = instance.render(
+      let renderOutput = instance.render(
         props,
         instance.state,
         instance.context
       );
       // In case render returns invalid stuff
-      if (isInvalid(nextVNode)) {
+      if (isInvalid(renderOutput)) {
         return '<!--!-->';
       }
-      return renderVNodeToString(nextVNode, vNode, childContext, true);
+      if (isStringOrNumber(renderOutput)) {
+        renderOutput = createTextVNode(renderOutput, null);
+      }
+      return renderVNodeToString(renderOutput, vNode, childContext, true);
     } else {
       const nextVNode = type(props, context);
 
@@ -146,29 +149,18 @@ function renderVNodeToString(
       renderedString += `>`;
     } else {
       renderedString += `>`;
-      if (!isInvalid(children)) {
-        if (isString(children)) {
-          renderedString += children === '' ? ' ' : escapeText(children);
-        } else if (isNumber(children)) {
-          renderedString += children + '';
-        } else if (isArray(children)) {
-          for (let i = 0, len = children.length; i < len; i++) {
-            const child = children[i];
-            if (isString(child)) {
-              renderedString += child === '' ? ' ' : escapeText(child);
-            } else if (isNumber(child)) {
-              renderedString += child;
-            } else if (!isInvalid(child)) {
-              renderedString += renderVNodeToString(
-                child,
-                vNode,
-                context,
-                i === 0
-              );
-            }
-          }
-        } else {
-          renderedString += renderVNodeToString(children, vNode, context, true);
+      const childFlags = vNode.childFlags;
+
+      if (childFlags & ChildFlags.HasVNodeChildren) {
+        renderedString += renderVNodeToString(children, vNode, context, true);
+      } else if (childFlags & ChildFlags.MultipleChildren) {
+        for (let i = 0, len = children.length; i < len; i++) {
+          renderedString += renderVNodeToString(
+            children[i],
+            vNode,
+            context,
+            i === 0
+          );
         }
       } else if (html) {
         renderedString += html;

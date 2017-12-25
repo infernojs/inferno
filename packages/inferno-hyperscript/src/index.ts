@@ -5,7 +5,7 @@
 import {
   createVNode,
   getFlagsForElementVnode,
-  normalize,
+  normalizeChildren,
   InfernoChildren,
   VNode
 } from 'inferno';
@@ -15,7 +15,7 @@ import {
   isStringOrNumber,
   isUndefined
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
@@ -112,8 +112,7 @@ function extractProps(
 export function h(
   _tag: string | VNode | Function,
   _props?: any,
-  _children?: InfernoChildren,
-  noNormalize?: boolean
+  _children?: InfernoChildren
 ): VNode {
   // If a child array or text node are passed as the second argument, shift them
   if (!_children && isChildren(_props)) {
@@ -128,16 +127,18 @@ export function h(
   );
 
   if (isElement) {
-    return createVNode(
-      getFlagsForElementVnode(tag),
-      tag,
-      className,
-      noNormalize === true
-        ? _children || children
-        : normalize(_children || children),
-      props,
-      key,
-      ref
+    return normalizeChildren(
+      createVNode(
+        getFlagsForElementVnode(tag),
+        tag,
+        className,
+        null,
+        ChildFlags.HasInvalidChildren,
+        props,
+        key,
+        ref
+      ),
+      _children || children
     );
   } else {
     if (children || _children) {
@@ -148,6 +149,7 @@ export function h(
       tag,
       className,
       null,
+      ChildFlags.HasInvalidChildren,
       props,
       key,
       ref

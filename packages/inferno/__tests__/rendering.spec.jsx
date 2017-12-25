@@ -1,6 +1,6 @@
-import { createVNode, render, Component } from 'inferno';
+import { createVNode, createTextVNode, render, Component } from 'inferno';
 import { NO_OP } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 
 describe('rendering routine', () => {
   let container;
@@ -18,14 +18,11 @@ describe('rendering routine', () => {
 
   it('Should throw error when trying to render to document.body', () => {
     const div = createVNode(
-      VNodeFlags.Element,
+      VNodeFlags.HtmlElement,
       'div',
       null,
-      '1',
-      null,
-      null,
-      null,
-      true
+      createTextVNode('1'),
+      ChildFlags.HasVNodeChildren
     );
     try {
       render(div, document.body);
@@ -42,8 +39,20 @@ describe('rendering routine', () => {
   });
 
   it('Should create new object when dom exists', () => {
-    const bar = createVNode(2, 'div', null, '123', null, null, null, true);
-    const foo = createVNode(2, 'div', null, bar, null, null, null, true);
+    const bar = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      createTextVNode('123'),
+      ChildFlags.HasVNodeChildren
+    );
+    const foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      bar,
+      ChildFlags.HasVNodeChildren
+    );
 
     render(foo, container);
     expect(container.innerHTML).toEqual('<div><div>123</div></div>');

@@ -5,30 +5,26 @@
 
 import {
   combineFrom,
-  isArray,
   isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
   isString,
-  isStringOrNumber,
   isUndefined,
   NO_OP,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { directClone, isVNode, options, VNode } from '../core/implementation';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
 import { unmount } from './unmounting';
 import {
   appendChild,
   EMPTY_OBJ,
   insertOrAppend,
-  isKeyed,
   removeChild,
   replaceChild,
-  setTextContent,
-  updateTextContent
+  setTextContent
 } from './utils/common';
 import {
   isControlledFormElement,
@@ -40,11 +36,7 @@ import { validateKeys } from '../core/validate';
 
 function removeAllChildren(dom: Element, children) {
   for (let i = 0, len = children.length; i < len; i++) {
-    const child = children[i];
-
-    if (!isInvalid(child)) {
-      unmount(child, null);
-    }
+    unmount(children[i], null);
   }
   dom.textContent = '';
 }
@@ -114,8 +106,8 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, lifecycle, context) {
   const nextChildren = nextVNode.children as VNode;
 
   patchChildren(
-    0,
-    0,
+    lastVNode.childFlags,
+    nextVNode.childFlags,
     lastVNode.children as VNode,
     nextChildren,
     lastContainer as Element,
@@ -131,16 +123,6 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, lifecycle, context) {
 
     lastContainer.removeChild(node);
     nextContainer.appendChild(node);
-  }
-}
-
-function unmountChildren(children, dom: Element) {
-  if (isVNode(children)) {
-    unmount(children, dom);
-  } else if (isArray(children)) {
-    removeAllChildren(dom, children);
-  } else {
-    dom.textContent = '';
   }
 }
 
@@ -169,7 +151,6 @@ export function patchElement(
     const nextProps = nextVNode.props;
     const lastChildren = lastVNode.children;
     const nextChildren = nextVNode.children;
-    const lastFlags = lastVNode.flags;
     const nextFlags = nextVNode.flags;
     const nextRef = nextVNode.ref;
     const lastClassName = lastVNode.className;
@@ -179,8 +160,8 @@ export function patchElement(
     isSVG = isSVG || (nextFlags & VNodeFlags.SvgElement) > 0;
     if (lastChildren !== nextChildren) {
       patchChildren(
-        lastFlags,
-        nextFlags,
+        lastVNode.childFlags,
+        nextVNode.childFlags,
         lastChildren,
         nextChildren,
         dom,
@@ -263,98 +244,84 @@ export function patchElement(
 }
 
 function patchChildren(
-  lastFlags: VNodeFlags,
-  nextFlags: VNodeFlags,
+  lastChildFlags: number,
+  nextChildFlags: number,
   lastChildren,
   nextChildren,
-  dom: Element,
+  parentDOM: Element,
   lifecycle: Function[],
   context: Object,
   isSVG: boolean
 ) {
-  let patchArray = false;
+  if (lastChildFlags & ChildFlags.HasVNodeChildren) {
+    if (nextChildFlags & ChildFlags.HasVNodeChildren) {
+      patch(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG);
+    } else if (nextChildFlags & ChildFlags.HasInvalidChildren) {
+      unmount(lastChildren, parentDOM);
+    } else {
+      unmount(lastChildren, parentDOM);
+      mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
+    }
+  } else if (lastChildFlags & ChildFlags.HasInvalidChildren) {
+    if (nextChildFlags & ChildFlags.HasInvalidChildren) {
+      return;
+    }
+    if (nextChildFlags & ChildFlags.HasVNodeChildren) {
+      mount(nextChildren, parentDOM, lifecycle, context, isSVG);
+    } else {
+      mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
+    }
+  } else {
+    if (nextChildFlags & ChildFlags.MultipleChildren) {
+      const lastLength = lastChildren.length;
+      const nextLength = nextChildren.length;
 
-  if (
-    nextFlags & VNodeFlags.MultipleChildren &&
-    lastFlags & VNodeFlags.MultipleChildren
-  ) {
-    patchArray = true;
-  } else if (isInvalid(nextChildren)) {
-    unmountChildren(lastChildren, dom);
-  } else if (isInvalid(lastChildren)) {
-    if (isStringOrNumber(nextChildren)) {
-      setTextContent(dom, nextChildren);
-    } else {
-      if (isArray(nextChildren)) {
-        mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
+      // Fast path's for both algorithms
+      if (lastLength === 0) {
+        if (nextLength > 0) {
+          mountArrayChildren(
+            nextChildren,
+            parentDOM,
+            lifecycle,
+            context,
+            isSVG
+          );
+        }
+      } else if (nextLength === 0) {
+        removeAllChildren(parentDOM, lastChildren);
       } else {
-        mount(nextChildren, dom, lifecycle, context, isSVG);
+        if (
+          nextChildFlags & ChildFlags.HasKeyedChildren &&
+          lastChildFlags & ChildFlags.HasKeyedChildren
+        ) {
+          patchKeyedChildren(
+            lastChildren,
+            nextChildren,
+            parentDOM,
+            lifecycle,
+            context,
+            isSVG,
+            lastLength,
+            nextLength
+          );
+        } else {
+          patchNonKeyedChildren(
+            lastChildren,
+            nextChildren,
+            parentDOM,
+            lifecycle,
+            context,
+            isSVG,
+            lastLength,
+            nextLength
+          );
+        }
       }
-    }
-  } else if (isStringOrNumber(nextChildren)) {
-    if (isStringOrNumber(lastChildren)) {
-      updateTextContent(dom, nextChildren);
+    } else if (nextChildFlags & ChildFlags.HasInvalidChildren) {
+      removeAllChildren(parentDOM, lastChildren);
     } else {
-      unmountChildren(lastChildren, dom);
-      setTextContent(dom, nextChildren);
-    }
-  } else if (isArray(nextChildren)) {
-    if (isArray(lastChildren)) {
-      patchArray = true;
-    } else {
-      unmountChildren(lastChildren, dom);
-      mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
-    }
-  } else if (isArray(lastChildren)) {
-    removeAllChildren(dom, lastChildren);
-    mount(nextChildren, dom, lifecycle, context, isSVG);
-  } else if (isVNode(nextChildren)) {
-    if (isVNode(lastChildren)) {
-      patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-    } else {
-      unmountChildren(lastChildren, dom);
-      mount(nextChildren, dom, lifecycle, context, isSVG);
-    }
-  }
-  if (patchArray) {
-    const lastLength = lastChildren.length;
-    const nextLength = nextChildren.length;
-
-    // Fast path's for both algorithms
-    if (lastLength === 0) {
-      if (nextLength > 0) {
-        mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
-      }
-    } else if (nextLength === 0) {
-      removeAllChildren(dom, lastChildren);
-    } else {
-      if (
-        (nextFlags & VNodeFlags.HasKeyedChildren &&
-          lastFlags & VNodeFlags.HasKeyedChildren) ||
-        isKeyed(lastChildren, nextChildren)
-      ) {
-        patchKeyedChildren(
-          lastChildren,
-          nextChildren,
-          dom,
-          lifecycle,
-          context,
-          isSVG,
-          lastLength,
-          nextLength
-        );
-      } else {
-        patchNonKeyedChildren(
-          lastChildren,
-          nextChildren,
-          dom,
-          lifecycle,
-          context,
-          isSVG,
-          lastLength,
-          nextLength
-        );
-      }
+      removeAllChildren(parentDOM, lastChildren);
+      mount(nextChildren, parentDOM, lifecycle, context, isSVG);
     }
   }
 }

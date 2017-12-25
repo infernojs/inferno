@@ -2,7 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import {
   isArray,
   isFunction,
@@ -17,10 +17,11 @@ import {
 } from 'inferno-shared';
 import { EMPTY_OBJ } from '../DOM/utils/common';
 
-const keyPrefix = '@';
+const keyPrefix = '$';
 
 export interface VNode {
   children: InfernoChildren;
+  childFlags: number;
   dom: Element | null;
   className: string | null;
   flags: number;
@@ -58,8 +59,19 @@ export interface Refs {
   onComponentWillUnmount?(domNode: Element): void;
 }
 
-function getVNode(children, className, flags, key, props, ref, type): VNode {
+function getVNode(
+  childFlags,
+  children,
+  className,
+  flags,
+  key,
+  props,
+  ref,
+  type
+): VNode {
   return {
+    childFlags:
+      childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags,
     children: children === void 0 ? null : children,
     className: className === void 0 ? null : className,
     dom: null,
@@ -77,6 +89,7 @@ export function createVNode(
   type,
   className?: string | null,
   children?: InfernoChildren,
+  childFlags?: number,
   props?: Props | null,
   key?: any,
   ref?: Ref | Refs | null
@@ -104,7 +117,16 @@ export function createVNode(
     }
   }
 
-  const vNode = getVNode(children, className, flags, key, props, ref, type);
+  const vNode = getVNode(
+    childFlags,
+    children,
+    className,
+    flags,
+    key,
+    props,
+    ref,
+    type
+  );
   const optsVNode = options.createVNode;
 
   if (isFunction(optsVNode)) {
@@ -115,7 +137,16 @@ export function createVNode(
 }
 
 export function createTextVNode(text, key?) {
-  return getVNode(text, null, VNodeFlags.Text, key, null, null, 0);
+  return getVNode(
+    ChildFlags.HasInvalidChildren,
+    text,
+    null,
+    VNodeFlags.Text,
+    key,
+    null,
+    null,
+    0
+  );
 }
 
 export function normalizeProps(vNode) {
@@ -124,7 +155,7 @@ export function normalizeProps(vNode) {
   if (props) {
     if (vNode.flags & VNodeFlags.Element) {
       if (!isUndefined(props.children) && isNullOrUndef(vNode.children)) {
-        vNode.children = props.children;
+        normalizeChildren(vNode, props.children);
       }
       if (!isUndefined(props.className)) {
         vNode.className = props.className || null;
@@ -165,6 +196,7 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.type,
       null,
       null,
+      vNodeToClone.childFlags,
       props,
       vNodeToClone.key,
       vNodeToClone.ref
@@ -200,14 +232,18 @@ export function directClone(vNodeToClone: VNode): VNode {
   } else if (flags & VNodeFlags.Element) {
     const children = vNodeToClone.children;
 
-    newVNode = createVNode(
-      flags,
-      vNodeToClone.type,
-      vNodeToClone.className,
-      normalize(children),
-      vNodeToClone.props,
-      vNodeToClone.key,
-      vNodeToClone.ref
+    newVNode = normalizeChildren(
+      createVNode(
+        flags,
+        vNodeToClone.type,
+        vNodeToClone.className,
+        null,
+        0,
+        vNodeToClone.props,
+        vNodeToClone.key,
+        vNodeToClone.ref
+      ),
+      children
     );
   } else if (flags & VNodeFlags.Text) {
     newVNode = createTextVNode(
@@ -222,7 +258,7 @@ export function directClone(vNodeToClone: VNode): VNode {
 }
 
 export function createVoidVNode(): VNode {
-  return createVNode(VNodeFlags.Void, null, null, '', null, null, null);
+  return createVNode(VNodeFlags.Void, null, null, '', 0, null, null, null);
 }
 
 export function isVNode(o: VNode): boolean {
@@ -237,7 +273,7 @@ function applyKey(key: string, vNode: VNode) {
 
 function applyKeyIfMissing(key: string | number, vNode: VNode): VNode {
   if (isNull(vNode.key) || vNode.key[0] === keyPrefix) {
-    return applyKey(isNumber(key) ? `@${key}` : (key as string), vNode);
+    return applyKey(isNumber(key) ? `$${key}` : (key as string), vNode);
   }
   return vNode;
 }
@@ -258,7 +294,7 @@ function _normalizeVNodes(
     let n = nodes[index];
 
     if (!isInvalid(n)) {
-      const key = `${currentKey}@${index}`;
+      const key = `${currentKey}$${index}`;
 
       if (isArray(n)) {
         _normalizeVNodes(n, result, 0, key);
@@ -303,7 +339,7 @@ function normalizeVNodes(nodes: any[], len, newNodes): VNode[] {
 
       if (
         !isNullDom ||
-        (isNullKey && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0) ||
+        (isNullKey && (n.childFlags & ChildFlags.HasNonKeyedChildren) === 0) ||
         isPrefixed
       ) {
         if (!newNodes) {
@@ -340,18 +376,21 @@ export function getFlagsForElementVnode(type: string): number {
   return VNodeFlags.HtmlElement;
 }
 
-export function normalize(children) {
+export function normalizeChildren(vNode, children) {
+  let newChildren;
+  let newChildFlags;
+
   // Don't change children to match strict equal (===) true in patching
   if (isInvalid(children)) {
-    return children;
-  }
-  if (isString(children)) {
-    return createTextVNode(children);
-  }
-  if (isNumber(children)) {
-    return createTextVNode(children + '');
-  }
-  if (isArray(children)) {
+    newChildFlags = ChildFlags.HasInvalidChildren;
+    newChildren = children;
+  } else if (isString(children)) {
+    newChildFlags = ChildFlags.HasVNodeChildren;
+    newChildren = createTextVNode(children);
+  } else if (isNumber(children)) {
+    newChildFlags = ChildFlags.HasVNodeChildren;
+    newChildren = createTextVNode(children + '');
+  } else if (isArray(children)) {
     // we assign $ which basically means we've flagged this array for future note
     // if it comes back again, we need to clone it, as people are using it
     // in an immutable way
@@ -360,14 +399,25 @@ export function normalize(children) {
       children = children.slice();
     }
 
-    const c: any = normalizeVNodes(children as any[], children.length, null);
-    c.$ = true;
-    return c;
+    newChildFlags = ChildFlags.HasKeyedChildren;
+
+    newChildren = normalizeVNodes(children as any[], children.length, null);
+
+    newChildren.$ = true;
+  } else {
+    // TODO: Do we want to validate vNode shape here?
+    newChildren = children;
+
+    if (!isNull((children as VNode).dom)) {
+      newChildren = directClone(children as VNode);
+    }
+    newChildFlags = ChildFlags.HasVNodeChildren;
   }
-  if (isVNode(children as VNode) && !isNull((children as VNode).dom)) {
-    return directClone(children as VNode);
-  }
-  return children;
+
+  vNode.children = newChildren;
+  vNode.childFlags = newChildFlags;
+
+  return vNode;
 }
 
 export const options: {

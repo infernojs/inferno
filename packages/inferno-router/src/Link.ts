@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { createVNode, VNode, Component } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 
 const isModifiedEvent = (event): boolean =>
@@ -61,6 +61,7 @@ export class Link extends Component<ILinkProps, any> {
       'a',
       className,
       null,
+      ChildFlags.HasInvalidChildren,
       {
         ...rest,
         href,

@@ -6,7 +6,7 @@ import {
   createTextVNode,
   createVNode,
   directClone,
-  normalize,
+  normalizeChildren,
   normalizeProps,
   EMPTY_OBJ,
   VNode
@@ -18,7 +18,7 @@ import {
   isInvalid,
   isArray
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 
 /*
  directClone is preferred over cloneVNode and used internally also.
@@ -85,6 +85,7 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
         vNodeToClone.type,
         null,
         null,
+        ChildFlags.HasInvalidChildren,
         !vNodeToClone.props && !props
           ? EMPTY_OBJ
           : combineFrom(vNodeToClone.props, props),
@@ -125,16 +126,20 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
         props && !isUndefined(props.children)
           ? props.children
           : vNodeToClone.children;
-      newVNode = createVNode(
-        flags,
-        vNodeToClone.type,
-        className,
-        normalize(children),
-        !vNodeToClone.props && !props
-          ? EMPTY_OBJ
-          : combineFrom(vNodeToClone.props, props),
-        key,
-        ref
+      newVNode = normalizeChildren(
+        createVNode(
+          flags,
+          vNodeToClone.type,
+          className,
+          null,
+          ChildFlags.HasInvalidChildren,
+          !vNodeToClone.props && !props
+            ? EMPTY_OBJ
+            : combineFrom(vNodeToClone.props, props),
+          key,
+          ref
+        ),
+        children
       );
     } else if (flags & VNodeFlags.Text) {
       newVNode = createTextVNode(vNodeToClone.children);

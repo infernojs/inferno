@@ -18,6 +18,7 @@ import {
   directClone,
   InfernoChildren,
   InfernoInput,
+  normalizeChildren,
   options,
   VNode
 } from '../core/implementation';
@@ -122,13 +123,17 @@ export function createRenderer(parentDom?) {
 }
 
 export function createPortal(children, container) {
-  return createVNode(
-    VNodeFlags.Portal,
-    container,
-    null,
-    children,
-    null,
-    isInvalid(children) ? null : children.key,
-    null
+  return normalizeChildren(
+    createVNode(
+      VNodeFlags.Portal,
+      container,
+      null,
+      null,
+      0,
+      null,
+      isInvalid(children) ? null : children.key,
+      null
+    ),
+    children
   );
 }

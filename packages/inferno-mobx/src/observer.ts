@@ -8,7 +8,7 @@ import { findDOMNode } from 'inferno-compat';
 import { EventEmitter } from './utils/EventEmitter';
 import { warning } from 'inferno-shared';
 import { isStateless } from './utils/utils';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 
 /**
@@ -420,6 +420,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         component,
         null,
         null,
+        ChildFlags.HasInvalidChildren,
         newProps,
         null,
         isStateless(component) ? null : this.storeRef

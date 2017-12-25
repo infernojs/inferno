@@ -1,5 +1,4 @@
-import { Component, render } from 'inferno';
-import { isNullOrUndef } from 'inferno-shared';
+import { render } from 'inferno';
 
 describe('Development warnings', () => {
   let container;

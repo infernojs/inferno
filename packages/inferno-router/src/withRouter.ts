@@ -2,7 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 import { createVNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 import { Route } from './Route';
 
@@ -17,13 +17,14 @@ export function withRouter(Com) {
   const C: any = function(props: IWithRouterProps) {
     const { wrappedComponentRef, ...remainingProps } = props;
 
-    return createVNode(VNodeFlags.ComponentClass, Route, null, null, {
+    return createVNode(VNodeFlags.ComponentClass, Route, null, null, 1, {
       render(routeComponentProps) {
         return createVNode(
           VNodeFlags.ComponentUnknown,
           Com,
           null,
           null,
+          ChildFlags.HasInvalidChildren,
           {
             ...remainingProps,
             ...routeComponentProps

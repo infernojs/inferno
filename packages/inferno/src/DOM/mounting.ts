@@ -3,9 +3,7 @@
  */ /** TypeDoc Comment */
 
 import {
-  isArray,
   isFunction,
-  isInvalid,
   isNull,
   isNullOrUndef,
   isObject,
@@ -13,20 +11,14 @@ import {
   isStringOrNumber,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,
-  isVNode,
   options,
   VNode
 } from '../core/implementation';
-import {
-  appendChild,
-  documentCreateElement,
-  EMPTY_OBJ,
-  setTextContent
-} from './utils/common';
+import { appendChild, documentCreateElement, EMPTY_OBJ } from './utils/common';
 import { mountProps } from './props';
 import {
   createClassComponentInstance,
@@ -62,11 +54,7 @@ export function mount(
     );
   }
 
-  if (flags & VNodeFlags.Void) {
-    return mountText(vNode, parentDom);
-  }
-
-  if (flags & VNodeFlags.Text) {
+  if (flags & VNodeFlags.Void || flags & VNodeFlags.Text) {
     return mountText(vNode, parentDom);
   }
 
@@ -80,7 +68,7 @@ export function mount(
   if (process.env.NODE_ENV !== 'production') {
     if (typeof vNode === 'object') {
       throwError(
-        `mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
+        `mount() received an object that's not a valid VNode, you should stringify it first, fix createVNode flags or call normalizeChildren. Object: "${JSON.stringify(
           vNode
         )}".`
       );
@@ -112,25 +100,24 @@ export function mountElement(
 ) {
   const flags = vNode.flags;
 
-  isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
+  if (!isSVG) {
+    isSVG = (flags & VNodeFlags.SvgElement) > 0;
+  }
   const dom = documentCreateElement(vNode.type, isSVG);
   const children = vNode.children;
   const props = vNode.props;
   const className = vNode.className;
   const ref = vNode.ref;
+  const childFlags = vNode.childFlags;
 
   vNode.dom = dom;
+  if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
+    const childrenIsSVG = isSVG === true && vNode.type !== 'foreignObject';
 
-  if (!isInvalid(children)) {
-    if (isStringOrNumber(children)) {
-      setTextContent(dom, children as string | number);
-    } else {
-      const childrenIsSVG = isSVG === true && vNode.type !== 'foreignObject';
-      if (isArray(children)) {
-        mountArrayChildren(children, dom, lifecycle, context, childrenIsSVG);
-      } else if (isVNode(children as any)) {
-        mount(children as VNode, dom, lifecycle, context, childrenIsSVG);
-      }
+    if (childFlags & ChildFlags.HasVNodeChildren) {
+      mount(children as VNode, dom, lifecycle, context, childrenIsSVG);
+    } else if (childFlags & ChildFlags.MultipleChildren) {
+      mountArrayChildren(children, dom, lifecycle, context, childrenIsSVG);
     }
   }
   if (!isNull(props)) {
@@ -172,7 +159,7 @@ export function mountArrayChildren(
   for (let i = 0, len = children.length; i < len; i++) {
     let child = children[i];
 
-    if (child.dom) {
+    if (!isNull(child.dom)) {
       children[i] = child = directClone(child);
     }
     mount(children[i], dom, lifecycle, context, isSVG);

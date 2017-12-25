@@ -2,7 +2,7 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { Dispatch, Store } from 'redux';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 import { Component, createVNode } from 'inferno';
@@ -363,6 +363,7 @@ export function connectAdvanced(
             WrappedComponent,
             null,
             null,
+            ChildFlags.HasInvalidChildren,
             this.addExtraProps(selector.props),
             null,
             withRef ? this.setWrappedInstance : null

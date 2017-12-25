@@ -4,7 +4,7 @@
 /** TypeDoc Comment */
 
 import { Component, createVNode, VNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { Children, invariant, warning } from './utils';
 import { matchPath } from './matchPath';
 
@@ -94,7 +94,14 @@ class Route extends Component<IRouteProps, any> {
 
     if (component) {
       return match
-        ? createVNode(VNodeFlags.ComponentUnknown, component, null, null, props)
+        ? createVNode(
+            VNodeFlags.ComponentUnknown,
+            component,
+            null,
+            null,
+            ChildFlags.HasInvalidChildren,
+            props
+          )
         : null;
     }
 

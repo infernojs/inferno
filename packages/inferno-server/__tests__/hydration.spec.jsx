@@ -1,10 +1,11 @@
-import { Component, createVNode, render } from 'inferno';
+import { Component, createVNode, createTextVNode, render } from 'inferno';
 import { renderToString } from 'inferno-server';
 import {
   createContainerWithHTML,
   innerHTML,
   validateNodeTree
 } from 'inferno-utils';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 
 function Comp1() {
   return <span>Worked!</span>;
@@ -401,7 +402,13 @@ describe('SSR Hydration - (JSX)', () => {
 
   it('should rebuild and patch from existing DOM content', () => {
     const container = document.createElement('div');
-    const vNode = createVNode(2, 'div', 'example', 'Hello world!');
+    const vNode = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      'example',
+      createTextVNode('Hello world!'),
+      ChildFlags.HasVNodeChildren
+    );
 
     container.innerHTML = '<h1><div>Existing DOM content</div></h1>';
     render(vNode, container);
@@ -412,7 +419,13 @@ describe('SSR Hydration - (JSX)', () => {
 
   it('should rebuild and patch from existing DOM content (whitespace) ', () => {
     const container = document.createElement('div');
-    const vNode = createVNode(2, 'div', 'example', 'Hello world!');
+    const vNode = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      'example',
+      createTextVNode('Hello world!'),
+      ChildFlags.HasVNodeChildren
+    );
 
     container.appendChild(document.createTextNode(''));
     container.appendChild(document.createElement('h1'));
@@ -425,10 +438,28 @@ describe('SSR Hydration - (JSX)', () => {
 
   it('should rebuild and patch from existing DOM content #2', () => {
     const container = document.createElement('div');
-    const vNode = createVNode(2, 'div', 'example', [
-      createVNode(2, 'div', null, 'Item 1'),
-      createVNode(2, 'div', null, 'Item 2')
-    ]);
+    const vNode = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      'example',
+      [
+        createVNode(
+          VNodeFlags.HtmlElement,
+          'div',
+          null,
+          createTextVNode('Item 1'),
+          ChildFlags.HasVNodeChildren
+        ),
+        createVNode(
+          VNodeFlags.HtmlElement,
+          'div',
+          null,
+          createTextVNode('Item 2'),
+          ChildFlags.HasVNodeChildren
+        )
+      ],
+      ChildFlags.HasNonKeyedChildren
+    );
 
     container.innerHTML =
       '<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
@@ -440,10 +471,28 @@ describe('SSR Hydration - (JSX)', () => {
 
   it('should rebuild and patch from existing DOM content #3', () => {
     const container = document.createElement('div');
-    const vNode = createVNode(2, 'div', 'example', [
-      createVNode(2, 'div', null, 'Item 1'),
-      createVNode(2, 'div', null, 'Item 2')
-    ]);
+    const vNode = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      'example',
+      [
+        createVNode(
+          VNodeFlags.HtmlElement,
+          'div',
+          null,
+          createTextVNode('Item 1'),
+          ChildFlags.HasVNodeChildren
+        ),
+        createVNode(
+          VNodeFlags.HtmlElement,
+          'div',
+          null,
+          createTextVNode('Item 2'),
+          ChildFlags.HasVNodeChildren
+        )
+      ],
+      ChildFlags.HasNonKeyedChildren
+    );
 
     container.innerHTML =
       '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';

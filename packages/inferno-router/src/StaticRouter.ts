@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { createVNode, VNode, Component } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { createPath, parsePath } from 'history';
 import { addLeadingSlash } from 'history/es/PathUtils';
 import { Router } from './Router';
@@ -71,10 +71,17 @@ export class StaticRouter extends Component<IStaticRouterProps, any> {
       replace: this.handleReplace
     };
 
-    return createVNode(VNodeFlags.ComponentClass, Router, null, null, {
-      ...props,
-      history
-    });
+    return createVNode(
+      VNodeFlags.ComponentClass,
+      Router,
+      null,
+      null,
+      ChildFlags.HasInvalidChildren,
+      {
+        ...props,
+        history
+      }
+    );
   }
 }
 

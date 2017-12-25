@@ -6,6 +6,7 @@ import { VNode, Component, createVNode } from 'inferno';
 import { matchPath } from './matchPath';
 import { Children, invariant, isValidElement, warning } from './utils';
 import { combineFrom } from 'inferno-shared';
+import { ChildFlags } from 'inferno-vnode-flags';
 
 export interface ISwitchProps {
   router: any;
@@ -66,6 +67,7 @@ export class Switch extends Component<ISwitchProps, any> {
           child.type,
           null,
           null,
+          ChildFlags.HasInvalidChildren,
           combineFrom(child.props, { location, computedMatch: match }),
           null,
           child.ref

@@ -1,5 +1,5 @@
 import { isArray, isInvalid, isNullOrUndef, throwError } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { isVNode } from './implementation';
 
 function getTagName(vNode) {
@@ -57,7 +57,7 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
         val = DEV_ValidateKeys(
           [children],
           childNode,
-          forceKeyed || childNode.flags & VNodeFlags.HasKeyedChildren
+          forceKeyed || childNode.childFlags & ChildFlags.HasKeyedChildren
         );
       }
       if (val) {

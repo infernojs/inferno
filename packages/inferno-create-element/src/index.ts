@@ -5,7 +5,7 @@
 import {
   Component,
   createVNode,
-  normalize,
+  normalizeChildren,
   getFlagsForElementVnode,
   InfernoChildren,
   Props,
@@ -18,7 +18,7 @@ import {
   isString,
   isUndefined
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 
 const componentHooks = new Set<string>();
 componentHooks.add('onComponentWillMount');
@@ -106,13 +106,20 @@ export function createElement<T>(
       }
     }
   }
-  return createVNode(
+  const vNode = createVNode(
     flags,
     type as string | Function,
     className,
-    normalize(children),
+    null,
+    ChildFlags.HasInvalidChildren,
     newProps,
     key,
     ref
   );
+
+  if (flags & VNodeFlags.Element) {
+    return normalizeChildren(vNode, children);
+  }
+
+  return vNode;
 }

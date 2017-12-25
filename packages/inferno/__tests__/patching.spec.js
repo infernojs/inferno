@@ -1,5 +1,5 @@
-import { createVNode, render } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { createVNode, createTextVNode, render } from 'inferno';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
 
 describe('patching routine', () => {
@@ -17,16 +17,52 @@ describe('patching routine', () => {
   });
 
   it('Should do nothing if lastVNode strictly equals nextVnode', () => {
-    const yar = createVNode(2, 'div', null, '123', null, null, null);
-    const bar = createVNode(2, 'div', null, '123', null, null, null);
-    let foo = createVNode(2, 'div', null, [bar, yar], null, null, null);
+    const yar = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      createTextVNode('123'),
+      ChildFlags.HasVNodeChildren,
+      null,
+      null,
+      null
+    );
+    const bar = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      createTextVNode('123'),
+      ChildFlags.HasVNodeChildren,
+      null,
+      null,
+      null
+    );
+    let foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      [bar, yar],
+      ChildFlags.HasNonKeyedChildren,
+      null,
+      null,
+      null
+    );
 
     render(foo, container);
     expect(container.innerHTML).toEqual(
       '<div><div>123</div><div>123</div></div>'
     );
 
-    foo = createVNode(2, 'div', null, [bar, yar], null, null, null);
+    foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      [bar, yar],
+      ChildFlags.HasNonKeyedChildren,
+      null,
+      null,
+      null
+    );
 
     render(foo, container);
     expect(container.innerHTML).toEqual(
@@ -39,7 +75,8 @@ describe('patching routine', () => {
       VNodeFlags.HtmlElement,
       'span',
       null,
-      createVNode(VNodeFlags.Text, null, null, 'a'),
+      createTextVNode('a'),
+      ChildFlags.HasVNodeChildren,
       null,
       null,
       null
@@ -61,9 +98,9 @@ describe('patching routine', () => {
   });
 
   it('Should not access real DOM property when text does not change', () => {
-    render(createVNode(VNodeFlags.Text, null, null, 'a'), container);
+    render(createTextVNode('a'), container);
     expect(container.innerHTML).toEqual('a');
-    render(createVNode(VNodeFlags.Text, null, null, 'a'), container);
+    render(createTextVNode('a'), container);
     expect(container.innerHTML).toEqual('a');
   });
 
@@ -73,8 +110,26 @@ describe('patching routine', () => {
     const childelem = container.firstElementChild.firstElementChild;
     const props = { dangerouslySetInnerHTML: { __html: '<span>child</span>' } };
 
-    const bar = createVNode(2, 'span', null, null, props, null, null);
-    const foo = createVNode(2, 'span', null, [bar], null, null, null);
+    const bar = createVNode(
+      VNodeFlags.HtmlElement,
+      'span',
+      null,
+      null,
+      ChildFlags.HasInvalidChildren,
+      props,
+      null,
+      null
+    );
+    const foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'span',
+      null,
+      [bar],
+      ChildFlags.HasNonKeyedChildren,
+      null,
+      null,
+      null
+    );
 
     render(foo, container);
 
@@ -91,7 +146,8 @@ describe('patching routine', () => {
       VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
       'div',
       null,
-      '1',
+      createTextVNode('1'),
+      ChildFlags.HasVNodeChildren,
       null,
       null,
       spy1
@@ -110,7 +166,8 @@ describe('patching routine', () => {
       VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
       'div',
       null,
-      '1',
+      createTextVNode('1'),
+      ChildFlags.HasVNodeChildren,
       null,
       null,
       spy2

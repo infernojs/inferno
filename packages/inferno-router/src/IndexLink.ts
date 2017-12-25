@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { createVNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { NavLink } from './NavLink';
 
 /**
@@ -16,5 +16,13 @@ export function IndexLink(props): any {
       'Using IndexLink is deprecated. Please use Link or NavLink instead.'
     );
   }
-  return createVNode(VNodeFlags.ComponentFunction, NavLink, null, null, props);
+
+  return createVNode(
+    VNodeFlags.ComponentFunction,
+    NavLink,
+    null,
+    null,
+    ChildFlags.HasInvalidChildren,
+    props
+  );
 }

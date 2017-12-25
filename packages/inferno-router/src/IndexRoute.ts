@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { createVNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { Route } from './Route';
 
 /**
@@ -14,5 +14,12 @@ export function IndexRoute(props): any {
     // tslint:disable-next-line:no-console
     console.error('Using IndexRoute is deprecated. Please use Route instead.');
   }
-  return createVNode(VNodeFlags.ComponentClass, Route, null, null, props);
+  return createVNode(
+    VNodeFlags.ComponentClass,
+    Route,
+    null,
+    null,
+    ChildFlags.HasInvalidChildren,
+    props
+  );
 }
