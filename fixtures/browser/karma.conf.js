@@ -105,7 +105,7 @@ module.exports = function(config) {
           'inferno-clone-vnode': resolve('inferno-clone-vnode')
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        mainFields: ['inferno:main', 'module', 'main']
+        mainFields: ['module', 'main']
       },
       devServer: {
         noInfo: true
