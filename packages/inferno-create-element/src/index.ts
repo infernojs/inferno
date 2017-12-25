@@ -4,6 +4,7 @@
 
 import {
   Component,
+  createComponentVNode,
   createVNode,
   normalizeChildren,
   getFlagsForElementVnode,
@@ -105,6 +106,14 @@ export function createElement<T>(
         }
       }
     }
+
+    return createComponentVNode(
+      flags,
+      type as string | Function,
+      newProps,
+      key,
+      ref
+    );
   }
   const vNode = createVNode(
     flags,

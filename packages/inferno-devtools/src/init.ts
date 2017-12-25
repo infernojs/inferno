@@ -3,9 +3,9 @@
  */ /** TypeDoc Comment */
 
 import { Component, options } from 'inferno';
-import { isStatefulComponent } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createDevToolsBridge } from './bridge';
+import { isFunction, isUndefined } from 'inferno-shared';
 
 const functionalComponentWrappers = new Map();
 
@@ -48,7 +48,13 @@ export function initDevTools() {
   options.createVNode = vNode => {
     const flags = vNode.flags;
 
-    if (flags & VNodeFlags.Component && !isStatefulComponent(vNode.type)) {
+    if (
+      flags & VNodeFlags.Component &&
+      !(
+        !isUndefined(vNode.type.prototype) &&
+        isFunction(vNode.type.prototype.render)
+      )
+    ) {
       wrapFunctionalComponent(vNode);
     }
     if (nextVNode) {

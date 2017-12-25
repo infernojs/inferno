@@ -1,4 +1,4 @@
-import { Component, createVNode, render } from 'inferno';
+import { Component, render, createComponentVNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 let renderCount = 0;
@@ -64,22 +64,15 @@ describe('state', () => {
   describe('setting state', () => {
     it('setState should apply state during componentWillReceiveProps', done => {
       render(
-        createVNode(VNodeFlags.ComponentClass, TestCWRP, null, null, {}, null),
+        createComponentVNode(VNodeFlags.ComponentClass, TestCWRP, {}),
         container
       );
       expect(renderCount).toBe(1);
 
       render(
-        createVNode(
-          VNodeFlags.ComponentClass,
-          TestCWRP,
-          null,
-          null,
-          {
-            foo: 1
-          },
-          null
-        ),
+        createComponentVNode(VNodeFlags.ComponentClass, TestCWRP, {
+          foo: 1
+        }),
         container
       );
       expect(renderCount).toBe(2);

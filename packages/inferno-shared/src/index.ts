@@ -17,10 +17,6 @@ export function toArray(children): any[] {
 // in Node 7 and the later versions of V8, slower in older versions though
 export const isArray = Array.isArray;
 
-export function isStatefulComponent(o: any): boolean {
-  return !isUndefined(o.prototype) && isFunction(o.prototype.render);
-}
-
 export function isStringOrNumber(o: any): o is string | number {
   const type = typeof o;
 

@@ -2,10 +2,10 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { Dispatch, Store } from 'redux';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
-import { Component, createVNode } from 'inferno';
+import { Component, createComponentVNode } from 'inferno';
 import { Subscription } from '../utils/Subscription';
 
 let hotReloadingVersion = 0;
@@ -358,12 +358,9 @@ export function connectAdvanced(
         if (selector.error) {
           throw selector.error;
         } else {
-          return createVNode(
+          return createComponentVNode(
             VNodeFlags.ComponentUnknown,
             WrappedComponent,
-            null,
-            null,
-            ChildFlags.HasInvalidChildren,
             this.addExtraProps(selector.props),
             null,
             withRef ? this.setWrappedInstance : null

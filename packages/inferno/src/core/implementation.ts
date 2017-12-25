@@ -10,10 +10,10 @@ import {
   isNull,
   isNullOrUndef,
   isNumber,
-  isStatefulComponent,
   isString,
   isStringOrNumber,
-  isUndefined
+  isUndefined,
+  throwError
 } from 'inferno-shared';
 import { EMPTY_OBJ } from '../DOM/utils/common';
 
@@ -94,33 +94,87 @@ export function createVNode(
   key?: any,
   ref?: Ref | Refs | null
 ): VNode {
-  if ((flags & VNodeFlags.ComponentUnknown) > 0) {
-    flags = isStatefulComponent(type)
-      ? VNodeFlags.ComponentClass
-      : VNodeFlags.ComponentFunction;
+  if (process.env.NODE_ENV !== 'production') {
+    if (flags & VNodeFlags.Component) {
+      throwError(
+        'Creating Component vNodes using createVNode is not allowed. Use Inferno.createComponentVNode method.'
+      );
+    }
+  }
+  const vNode = getVNode(
+    childFlags,
+    children,
+    className,
+    flags,
+    key,
+    props,
+    ref,
+    type
+  );
+  const optsVNode = options.createVNode;
+
+  if (isFunction(optsVNode)) {
+    optsVNode(vNode);
   }
 
-  // Primitive node doesn't have defaultProps, only Component
-  if (flags & VNodeFlags.Component) {
-    // set default props
-    const defaultProps = (type as any).defaultProps;
+  return vNode;
+}
 
-    if (!isNullOrUndef(defaultProps)) {
-      if (!props) {
-        props = {}; // Create new object if only defaultProps given
+export function createComponentVNode(
+  flags: number,
+  type,
+  props?: Props | null,
+  key?: any,
+  ref?: Ref | Refs | null
+) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (flags & VNodeFlags.HtmlElement) {
+      throwError(
+        'Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.'
+      );
+    }
+  }
+
+  if ((flags & VNodeFlags.ComponentUnknown) > 0) {
+    flags =
+      !isUndefined(type.prototype) && isFunction(type.prototype.render)
+        ? VNodeFlags.ComponentClass
+        : VNodeFlags.ComponentFunction;
+  }
+
+  // set default props
+  const defaultProps = (type as any).defaultProps;
+
+  if (!isNullOrUndef(defaultProps)) {
+    if (!props) {
+      props = {};
+    }
+    for (const prop in defaultProps) {
+      if (isUndefined(props[prop])) {
+        props[prop] = defaultProps[prop];
       }
-      for (const prop in defaultProps) {
-        if (isUndefined(props[prop])) {
-          props[prop] = defaultProps[prop];
+    }
+  }
+
+  if ((flags & VNodeFlags.ComponentFunction) > 0) {
+    const defaultHooks = (type as any).defaultHooks;
+
+    if (!isNullOrUndef(defaultHooks)) {
+      if (!ref) {
+        ref = {};
+      }
+      for (const prop in defaultHooks) {
+        if (isUndefined(ref[prop])) {
+          ref[prop] = defaultHooks[prop];
         }
       }
     }
   }
 
   const vNode = getVNode(
-    childFlags,
-    children,
-    className,
+    ChildFlags.HasInvalidChildren,
+    null,
+    null,
     flags,
     key,
     props,
@@ -159,16 +213,16 @@ export function normalizeProps(vNode) {
       }
       if (!isUndefined(props.className)) {
         vNode.className = props.className || null;
-        delete props.className;
+        props.className = undefined;
       }
     }
     if (!isUndefined(props.key)) {
       vNode.key = props.key;
-      delete props.key;
+      props.key = undefined;
     }
     if (!isUndefined(props.ref)) {
       vNode.ref = props.ref as any;
-      delete props.ref;
+      props.ref = undefined;
     }
   }
 
@@ -191,12 +245,9 @@ export function directClone(vNodeToClone: VNode): VNode {
         props[key] = propsToClone[key];
       }
     }
-    newVNode = createVNode(
+    newVNode = createComponentVNode(
       flags,
       vNodeToClone.type,
-      null,
-      null,
-      vNodeToClone.childFlags,
       props,
       vNodeToClone.key,
       vNodeToClone.ref

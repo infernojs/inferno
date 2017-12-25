@@ -5,6 +5,7 @@
 /* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from 'inferno-shared';
 import {
+  createComponentVNode,
   createTextVNode,
   createVNode,
   directClone,
@@ -49,6 +50,7 @@ export {
   NO_OP,
   Props,
   VNode,
+  createComponentVNode,
   createPortal,
   createRenderer,
   createTextVNode,

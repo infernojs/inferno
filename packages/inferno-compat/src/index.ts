@@ -4,6 +4,7 @@
 
 import {
   Component,
+  createComponentVNode,
   createVNode,
   getFlagsForElementVnode,
   normalizeChildren,
@@ -31,7 +32,7 @@ import {
   NO_OP,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
@@ -331,12 +332,9 @@ function unstable_renderSubtreeIntoContainer(
   container,
   callback
 ) {
-  const wrapperVNode: VNode = createVNode(
-    4,
+  const wrapperVNode: VNode = createComponentVNode(
+    VNodeFlags.ComponentClass,
     WrapperComponent,
-    null,
-    null,
-    ChildFlags.HasInvalidChildren,
     {
       children: vNode,
       context: parentComponent.context

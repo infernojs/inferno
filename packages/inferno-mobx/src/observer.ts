@@ -3,12 +3,12 @@
  */ /** TypeDoc Comment */
 
 import * as mobx from 'mobx';
-import { Component, options, createVNode } from 'inferno';
+import { Component, options, createComponentVNode } from 'inferno';
 import { findDOMNode } from 'inferno-compat';
 import { EventEmitter } from './utils/EventEmitter';
 import { warning } from 'inferno-shared';
 import { isStateless } from './utils/utils';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 
 /**
@@ -415,12 +415,9 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         newProps[key] = additionalProps[key];
       }
 
-      return createVNode(
+      return createComponentVNode(
         VNodeFlags.ComponentUnknown,
         component,
-        null,
-        null,
-        ChildFlags.HasInvalidChildren,
         newProps,
         null,
         isStateless(component) ? null : this.storeRef

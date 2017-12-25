@@ -306,4 +306,72 @@ describe('All single patch variations', () => {
       });
     });
   });
+
+  describe('defaultHooks', () => {
+    it('Should never update if defaultProps refs SCU returns false', () => {
+      let counter = 0;
+
+      function Static() {
+        return <div>{counter}</div>;
+      }
+
+      Static.defaultHooks = {
+        onComponentShouldUpdate() {
+          return false;
+        }
+      };
+
+      function doRender() {
+        render(
+          <div>
+            {counter}
+            <Static />
+          </div>,
+          container
+        );
+      }
+
+      doRender();
+      expect(container.innerHTML).toEqual('<div>0<div>0</div></div>');
+      counter++;
+      doRender();
+      expect(container.innerHTML).toEqual('<div>1<div>0</div></div>');
+      counter++;
+      doRender();
+      expect(container.innerHTML).toEqual('<div>2<div>0</div></div>');
+    });
+
+    it('Should prefer external hook if given', () => {
+      let counter = 0;
+
+      function Static() {
+        return <div>{counter}</div>;
+      }
+
+      Static.defaultHooks = {
+        onComponentShouldUpdate() {
+          return false;
+        }
+      };
+
+      function doRender() {
+        render(
+          <div>
+            {counter}
+            <Static onComponentShouldUpdate={() => true} />
+          </div>,
+          container
+        );
+      }
+
+      doRender();
+      expect(container.innerHTML).toEqual('<div>0<div>0</div></div>');
+      counter++;
+      doRender();
+      expect(container.innerHTML).toEqual('<div>1<div>1</div></div>');
+      counter++;
+      doRender();
+      expect(container.innerHTML).toEqual('<div>2<div>2</div></div>');
+    });
+  });
 });

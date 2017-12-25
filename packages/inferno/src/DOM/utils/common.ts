@@ -60,15 +60,6 @@ export function removeChild(parentDom: Element, dom: Element) {
   parentDom.removeChild(dom);
 }
 
-export function isKeyed(lastChildren: any[], nextChildren: any[]): boolean {
-  return (
-    !isNullOrUndef(nextChildren[0]) &&
-    !isNullOrUndef(nextChildren[0].key) &&
-    !isNullOrUndef(lastChildren[0]) &&
-    !isNullOrUndef(lastChildren[0].key)
-  );
-}
-
 export function callAll(arrayFn: Function[]) {
   let listener;
   while (!isUndefined((listener = arrayFn.shift()))) {

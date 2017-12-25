@@ -2,8 +2,8 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode, Component } from 'inferno';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { createComponentVNode, VNode, Component } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { createHashHistory } from 'history';
 import { Router } from './Router';
 import { warning } from './utils';
@@ -24,17 +24,10 @@ export class HashRouter extends Component<IHashRouterProps, any> {
   }
 
   public render(): VNode {
-    return createVNode(
-      VNodeFlags.ComponentClass,
-      Router,
-      null,
-      null,
-      ChildFlags.HasInvalidChildren,
-      {
-        children: this.props.children,
-        history: this.history
-      }
-    );
+    return createComponentVNode(VNodeFlags.ComponentClass, Router, {
+      children: this.props.children,
+      history: this.history
+    });
   }
 }
 

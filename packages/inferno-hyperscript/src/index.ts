@@ -3,6 +3,7 @@
  */ /** TypeDoc Comment */
 
 import {
+  createComponentVNode,
   createVNode,
   getFlagsForElementVnode,
   normalizeChildren,
@@ -144,12 +145,9 @@ export function h(
     if (children || _children) {
       (props as any).children = children || _children;
     }
-    return createVNode(
+    return createComponentVNode(
       VNodeFlags.ComponentUnknown,
       tag,
-      className,
-      null,
-      ChildFlags.HasInvalidChildren,
       props,
       key,
       ref

@@ -3,6 +3,7 @@
  */ /** TypeDoc Comment */
 
 import {
+  createComponentVNode,
   createTextVNode,
   createVNode,
   directClone,
@@ -80,12 +81,9 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
     }
 
     if (flags & VNodeFlags.Component) {
-      newVNode = createVNode(
+      newVNode = createComponentVNode(
         flags,
         vNodeToClone.type,
-        null,
-        null,
-        ChildFlags.HasInvalidChildren,
         !vNodeToClone.props && !props
           ? EMPTY_OBJ
           : combineFrom(vNodeToClone.props, props),
