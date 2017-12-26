@@ -2,7 +2,7 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode, Component } from 'inferno';
+import { createVNode, VNode, Component, normalizeChildren } from 'inferno';
 import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 
@@ -46,7 +46,14 @@ export class Link extends Component<ILinkProps, any> {
     }
   };
 
-  public render({ replace, className, to = '', innerRef, ...rest }): VNode {
+  public render({
+    replace,
+    children,
+    className,
+    to = '',
+    innerRef,
+    ...rest
+  }): VNode {
     invariant(
       this.context.router,
       'You should not use <Link> outside a <Router>'
@@ -56,19 +63,22 @@ export class Link extends Component<ILinkProps, any> {
       typeof to === 'string' ? { pathname: to } : to
     );
 
-    return createVNode(
-      VNodeFlags.HtmlElement,
-      'a',
-      className,
-      null,
-      ChildFlags.HasInvalidChildren,
-      {
-        ...rest,
-        href,
-        onClick: this.handleClick
-      },
-      null,
-      innerRef ? x => innerRef(x) : null
+    return normalizeChildren(
+      createVNode(
+        VNodeFlags.HtmlElement,
+        'a',
+        className,
+        null,
+        ChildFlags.HasInvalidChildren,
+        {
+          ...rest,
+          href,
+          onClick: this.handleClick
+        },
+        null,
+        innerRef ? x => innerRef(x) : null
+      ),
+      children
     );
   }
 }

@@ -17,7 +17,7 @@ import {
 import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
-import { unmount } from './unmounting';
+import { remove, unmount } from './unmounting';
 import {
   appendChild,
   EMPTY_OBJ,
@@ -36,7 +36,7 @@ import { validateKeys } from '../core/validate';
 
 function removeAllChildren(dom: Element, children) {
   for (let i = 0, len = children.length; i < len; i++) {
-    unmount(children[i], null);
+    unmount(children[i]);
   }
   dom.textContent = '';
 }
@@ -49,7 +49,7 @@ function replaceWithNewNode(
   context: Object,
   isSVG: boolean
 ) {
-  unmount(lastNode, null);
+  unmount(lastNode);
   replaceChild(
     parentDom,
     mount(nextNode, null, lifecycle, context, isSVG),
@@ -69,7 +69,7 @@ export function patch(
     const nextFlags = nextVNode.flags;
 
     if (lastVNode.flags !== nextFlags || nextFlags & VNodeFlags.ReCreate) {
-      unmount(lastVNode, null);
+      unmount(lastVNode);
 
       const dom = mount(nextVNode, null, lifecycle, context, isSVG);
 
@@ -257,9 +257,9 @@ function patchChildren(
     if (nextChildFlags & ChildFlags.HasVNodeChildren) {
       patch(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG);
     } else if (nextChildFlags & ChildFlags.HasInvalidChildren) {
-      unmount(lastChildren, parentDOM);
+      remove(lastChildren, parentDOM);
     } else {
-      unmount(lastChildren, parentDOM);
+      remove(lastChildren, parentDOM);
       mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
     }
   } else if (lastChildFlags & ChildFlags.HasInvalidChildren) {
@@ -571,7 +571,7 @@ function patchNonKeyedChildren(
     }
   } else if (lastChildrenLength > nextChildrenLength) {
     for (i = commonLength; i < lastChildrenLength; i++) {
-      unmount(lastChildren[i], dom);
+      remove(lastChildren[i], dom);
     }
   }
 }
@@ -665,7 +665,7 @@ function patchKeyedChildren(
     }
   } else if (bStart > bEnd) {
     while (aStart <= aEnd) {
-      unmount(a[aStart++], dom);
+      remove(a[aStart++], dom);
     }
   } else {
     const aLeft = aEnd - aStart + 1;
@@ -755,7 +755,7 @@ function patchKeyedChildren(
       while (i > 0) {
         aNode = a[aStart++];
         if (!isNull(aNode)) {
-          unmount(aNode, dom);
+          remove(aNode, dom);
           i--;
         }
       }

@@ -336,6 +336,7 @@ describe('NavLink', () => {
       const a = node.getElementsByTagName('a')[0];
       expect(a.className).not.toContain('active');
       expect(a.className).not.toContain('selected');
+      expect(node.textContent).toEqual('Pasta!');
     });
   });
 });

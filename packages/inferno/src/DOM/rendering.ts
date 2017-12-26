@@ -25,7 +25,7 @@ import {
 import { hydrateRoot } from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
-import { unmount } from './unmounting';
+import { remove } from './unmounting';
 import { callAll, EMPTY_OBJ } from './utils/common';
 
 const roots = options.roots;
@@ -84,7 +84,7 @@ export function render(
     }
   } else {
     if (isNullOrUndef(input)) {
-      unmount(rootInput as VNode, parentDom as Element);
+      remove(rootInput as VNode, parentDom as Element);
       roots.delete(parentDom);
     } else {
       if ((input as VNode).dom) {

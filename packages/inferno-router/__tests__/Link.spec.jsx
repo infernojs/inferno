@@ -53,6 +53,8 @@ describe('Link (jsx)', () => {
       </MemoryRouter>,
       node
     );
+
+    expect(node.textContent).toEqual('link');
   });
 });
 

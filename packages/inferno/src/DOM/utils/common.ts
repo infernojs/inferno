@@ -47,9 +47,9 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 export function documentCreateElement(tag, isSVG: boolean): Element {
   if (isSVG === true) {
     return document.createElementNS(svgNS, tag);
-  } else {
-    return document.createElement(tag);
   }
+
+  return document.createElement(tag);
 }
 
 export function replaceChild(parentDom, newDom, lastDom) {
