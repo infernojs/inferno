@@ -147,7 +147,7 @@ export function createComponentVNode(
 
   if (!isNullOrUndef(defaultProps)) {
     if (!props) {
-      props = {};
+      props = {}; // Props can be referenced and modified at application level so always create new object
     }
     for (const prop in defaultProps) {
       if (isUndefined(props[prop])) {
@@ -161,11 +161,13 @@ export function createComponentVNode(
 
     if (!isNullOrUndef(defaultHooks)) {
       if (!ref) {
-        ref = {};
-      }
-      for (const prop in defaultHooks) {
-        if (isUndefined(ref[prop])) {
-          ref[prop] = defaultHooks[prop];
+        // As ref cannot be referenced from application level, we can use the same refs object
+        ref = defaultHooks;
+      } else {
+        for (const prop in defaultHooks) {
+          if (isUndefined(ref[prop])) {
+            ref[prop] = defaultHooks[prop];
+          }
         }
       }
     }
@@ -193,7 +195,7 @@ export function createComponentVNode(
 export function createTextVNode(text, key?) {
   return getVNode(
     ChildFlags.HasInvalidChildren,
-    text,
+    isNullOrUndef(text) ? '' : text,
     null,
     VNodeFlags.Text,
     key,

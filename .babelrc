@@ -3,13 +3,13 @@
 	"stage-2"
   ],
   "plugins": [
+  ["babel-plugin-inferno", {"imports": true}],
 	"transform-es2015-modules-commonjs",
 	"transform-class-properties",
 	"transform-object-rest-spread",
 	"babel-plugin-syntax-jsx",
     "transform-decorators-legacy",
-	"transform-class-properties",
-	["babel-plugin-inferno", {"imports": true}]
+	"transform-class-properties"
   ],
   "env": {
 	"production": {

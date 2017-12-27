@@ -170,4 +170,34 @@ describe('rendering routine', () => {
 
     expect(console.error.calls.count()).toBe(0);
   });
+
+  describe('createTextVNode', () => {
+    it('null/undefined textNodes should render empty text', () => {
+      render(<div>{createTextVNode(null)}</div>, container);
+
+      expect(container.innerHTML).toEqual('<div></div>');
+
+      render(<div>{createTextVNode(undefined)}</div>, container);
+
+      expect(container.innerHTML).toEqual('<div></div>');
+
+      render(<div>{createTextVNode('')}</div>, container);
+
+      expect(container.innerHTML).toEqual('<div></div>');
+    });
+
+    it('Should render 0 as "0"', () => {
+      render(<div>{createTextVNode(0)}</div>, container);
+
+      expect(container.innerHTML).toEqual('<div>0</div>');
+
+      render(<div>{createTextVNode('0')}</div>, container);
+
+      expect(container.innerHTML).toEqual('<div>0</div>');
+
+      render(<div>{createTextVNode('')}</div>, container);
+
+      expect(container.innerHTML).toEqual('<div></div>');
+    });
+  });
 });
