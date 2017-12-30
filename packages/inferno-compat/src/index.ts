@@ -1,6 +1,7 @@
 /**
  * @module Inferno-Compat
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
 import {
   Component,
@@ -12,16 +13,17 @@ import {
   InfernoChildren,
   options,
   Props,
+  Refs,
   render,
   VNode
 } from 'inferno';
-import { cloneVNode } from 'inferno-clone-vnode';
+import {cloneVNode} from 'inferno-clone-vnode';
 import {
   createClass,
   ClassicComponentClass,
   ComponentSpec
 } from 'inferno-create-class';
-import { createElement as infernoCreateElement } from 'inferno-create-element';
+import {createElement as infernoCreateElement} from 'inferno-create-element';
 import {
   isArray,
   isBrowser,
@@ -32,10 +34,10 @@ import {
   NO_OP,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { isValidElement } from './isValidElement';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {isValidElement} from './isValidElement';
 import PropTypes from './PropTypes';
-import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
+import {SVGDOMPropertyConfig} from './SVGDOMPropertyConfig';
 
 declare global {
   interface Event {
@@ -46,27 +48,35 @@ declare global {
 const componentToDOMNodeMap = new Map();
 options.findDOMNodeEnabled = true;
 
-function unmountComponentAtNode(
-  container: Element | SVGAElement | DocumentFragment
-): boolean {
+function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
   render(null, container);
   return true;
 }
 
+
+function extend(base, props) {
+  for (let i=1, obj; i<arguments.length; i++) {
+    if ((obj = arguments[i])) {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          base[key] = obj[key];
+        }
+      }
+    }
+  }
+  return base;
+}
+
 const ARR = [];
 
-export type IterateChildrenFn = (
-  value: InfernoChildren | any,
-  index: number,
-  array: Array<InfernoChildren | any>
-) => any;
+export type IterateChildrenFn = (value: InfernoChildren | any,
+                                 index: number,
+                                 array: Array<InfernoChildren | any>) => any;
 
 const Children = {
-  map(
-    children: Array<InfernoChildren | any>,
-    fn: IterateChildrenFn,
-    ctx: any
-  ): any[] {
+  map(children: Array<InfernoChildren | any>,
+      fn: IterateChildrenFn,
+      ctx: any): any[] {
     if (isNullOrUndef(children)) {
       return children;
     }
@@ -76,11 +86,9 @@ const Children = {
     }
     return children.map(fn);
   },
-  forEach(
-    children: Array<InfernoChildren | any>,
-    fn: IterateChildrenFn,
-    ctx: any
-  ): void {
+  forEach(children: Array<InfernoChildren | any>,
+          fn: IterateChildrenFn,
+          ctx: any): void {
     if (isNullOrUndef(children)) {
       return;
     }
@@ -103,9 +111,7 @@ const Children = {
     }
     return children[0];
   },
-  toArray(
-    children: Array<InfernoChildren | any>
-  ): Array<InfernoChildren | any> {
+  toArray(children: Array<InfernoChildren | any>): Array<InfernoChildren | any> {
     if (isNullOrUndef(children)) {
       return [];
     }
@@ -117,10 +123,10 @@ const Children = {
 
 let currentComponent: any = null;
 
-options.beforeRender = function(component): void {
+options.beforeRender = function (component): void {
   currentComponent = component;
 };
-options.afterRender = function(): void {
+options.afterRender = function (): void {
   currentComponent = null;
 };
 const nextAfterMount = options.afterMount;
@@ -204,7 +210,8 @@ function normalizeProps(name: string, props: Props | any) {
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
   // tslint:disable-next-line:no-empty
-  Event.prototype.persist = function() {};
+  Event.prototype.persist = function () {
+  };
 }
 
 function iterableToArray(iterable) {
@@ -222,19 +229,12 @@ function iterableToArray(iterable) {
 
 const hasSymbolSupport = typeof Symbol !== 'undefined';
 
-const injectStringRefs = function(originalFunction) {
-  return function(name, _props, ...children) {
-    const props = _props || {};
-    const ref = props.ref;
-
-    if (typeof ref === 'string' && !isNull(currentComponent)) {
-      currentComponent.refs = currentComponent.refs || {};
-      props.ref = function(val) {
-        this.refs[ref] = val;
-      }.bind(currentComponent);
-    }
-    if (typeof name === 'string') {
-      normalizeProps(name, props);
+const injectStringRefs = function (originalFunction) {
+  return function (name, _props, ...children) {
+    if (_props) {
+      if (typeof name === 'string') {
+        normalizeProps(name, _props);
+      }
     }
 
     // React supports iterable children, in addition to Array-like
@@ -251,8 +251,13 @@ const injectStringRefs = function(originalFunction) {
         }
       }
     }
-    const vnode = originalFunction(name, props, ...children);
-
+    const vnode = originalFunction(name, _props, ...children);
+    if (_props && typeof _props.ref === 'string' && !isNull(currentComponent)) {
+      currentComponent.refs = currentComponent.refs || {};
+      vnode.ref = function (val) {
+        this.refs[_props.ref] = val;
+      }.bind(currentComponent);
+    }
     if (vnode.className) {
       vnode.props = vnode.props || {};
       vnode.props.className = vnode.className;
@@ -311,7 +316,7 @@ function PureComponent(props, context) {
 }
 
 PureComponent.prototype = new Component({}, {});
-PureComponent.prototype.shouldComponentUpdate = function(props, state) {
+PureComponent.prototype.shouldComponentUpdate = function (props, state) {
   return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 };
 
@@ -326,12 +331,10 @@ class WrapperComponent<P, S> extends Component<P, S> {
   }
 }
 
-function unstable_renderSubtreeIntoContainer(
-  parentComponent,
-  vNode,
-  container,
-  callback
-) {
+function unstable_renderSubtreeIntoContainer(parentComponent,
+                                             vNode,
+                                             container,
+                                             callback) {
   const wrapperVNode: VNode = createComponentVNode(
     VNodeFlags.ComponentClass,
     WrapperComponent,
@@ -340,7 +343,8 @@ function unstable_renderSubtreeIntoContainer(
       context: parentComponent.context
     }
   );
-  const component = render(wrapperVNode, container);
+  render(wrapperVNode, container);
+  const component = vNode.children;
 
   if (callback) {
     // callback gets the component as context, no other argument.
@@ -359,7 +363,7 @@ function createFactory(type) {
 }
 
 const DOM = {};
-for (let i = ELEMENTS.length; i--; ) {
+for (let i = ELEMENTS.length; i--;) {
   DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
 }
 
@@ -406,6 +410,7 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
 }
 
 export {
+  Refs,
   Children,
   ClassicComponentClass,
   Component,
@@ -426,5 +431,29 @@ export {
   render,
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer,
-  version
+  version,
+  extend as __spread
+};
+
+export default {
+  Children,
+  Component,
+  DOM,
+  EMPTY_OBJ,
+  NO_OP,
+  PropTypes,
+  PureComponent,
+  __spread: extend,
+  cloneElement,
+  cloneVNode,
+  createClass,
+  createElement,
+  createFactory,
+  createVNode,
+  findDOMNode,
+  isValidElement,
+  render,
+  unmountComponentAtNode,
+  unstable_renderSubtreeIntoContainer,
+  version,
 };

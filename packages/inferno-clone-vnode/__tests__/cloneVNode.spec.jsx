@@ -28,6 +28,13 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toBe(innerHTML('<div><a>1</a></div>'));
   });
 
+
+  it('should clone with third argument overriding props and cloned node children', () => {
+    const node = cloneVNode(<div>f</div>, { children: 'x' }, [undefined]);
+    render(node, container);
+    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+  });
+
   it('should clone OPT_ELEMENT', () => {
     const noop = () => {};
     const node = cloneVNode(

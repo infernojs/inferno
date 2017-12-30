@@ -72,20 +72,21 @@ export const errorsReporter = new EventEmitter();
 function patch(target, funcName, runMixinFirst = false) {
   const base = target[funcName];
   const mixinFunc = reactiveMixin[funcName];
+  const f = !base
+    ? mixinFunc
+    : runMixinFirst === true
+      ? function() {
+        mixinFunc.apply(this, arguments);
+        base.apply(this, arguments)
+      }
+      : function() {
+        base.apply(this, arguments);
+        mixinFunc.apply(this, arguments)
+      };
 
   // MWE: ideally we freeze here to protect against accidental overwrites in component instances, see #195
   // ...but that breaks react-hot-loader, see #231...
-  target[funcName] = base
-    ? runMixinFirst === true
-      ? function() {
-          mixinFunc.apply(this, arguments);
-          base.apply(this, arguments);
-        }
-      : function() {
-          base.apply(this, arguments);
-          mixinFunc.apply(this, arguments);
-        }
-    : mixinFunc;
+  target[funcName] = f
 }
 
 function isObjectShallowModified(prev, next) {
@@ -357,6 +358,8 @@ function mixinLifecycleEvents(target) {
 
 // TODO: support injection somehow as well?
 export const Observer = observer(({ children }) => children());
+
+Observer.displayName = "Observer";
 
 const proxiedInjectorProps = {
   isMobxInjector: {

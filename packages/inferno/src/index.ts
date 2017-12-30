@@ -16,7 +16,8 @@ import {
   normalizeProps,
   options,
   Props,
-  VNode
+  VNode,
+  Refs
 } from './core/implementation';
 import { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
 import { linkEvent } from './DOM/events/linkEvent';
@@ -49,6 +50,7 @@ export {
   InfernoInput,
   NO_OP,
   Props,
+  Refs,
   VNode,
   createComponentVNode,
   createPortal,

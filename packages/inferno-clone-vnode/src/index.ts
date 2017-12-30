@@ -7,7 +7,6 @@ import {
   createTextVNode,
   createVNode,
   directClone,
-  normalizeChildren,
   normalizeProps,
   EMPTY_OBJ,
   VNode
@@ -37,19 +36,28 @@ import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
  * @returns {VNode} new virtual node
  */
 export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
-  let children: any = _children;
-  const childrenLen = _children.length;
+  let children: any;
 
-  if (childrenLen > 0 && !isUndefined(_children[0])) {
+  if (arguments.length === 3) {
     if (!props) {
       props = {};
     }
-    if (childrenLen === 1) {
-      children = _children[0];
-    }
+    props.children = children = _children[0] as VNode;
+  } else {
+    children = _children;
+    const childrenLen = _children.length;
 
-    if (!isUndefined(children)) {
-      props.children = children as VNode;
+    if (childrenLen > 0 && !isUndefined(_children[0])) {
+
+      if (childrenLen === 1) {
+        children = _children[0];
+      }
+      if (!props) {
+        props = {};
+      }
+      if (!isUndefined(children)) {
+        props.children = children as VNode;
+      }
     }
   }
 
@@ -120,24 +128,22 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
       }
       newVNode.children = null;
     } else if (flags & VNodeFlags.Element) {
-      children =
-        props && !isUndefined(props.children)
-          ? props.children
-          : vNodeToClone.children;
-      newVNode = normalizeChildren(
-        createVNode(
-          flags,
-          vNodeToClone.type,
-          className,
-          null,
-          ChildFlags.HasInvalidChildren,
-          !vNodeToClone.props && !props
-            ? EMPTY_OBJ
-            : combineFrom(vNodeToClone.props, props),
-          key,
-          ref
-        ),
-        children
+      if (!props) {
+        props = {
+          children: vNodeToClone.children
+        };
+      }
+      newVNode = createVNode(
+        flags,
+        vNodeToClone.type,
+        className,
+        null,
+        ChildFlags.HasInvalidChildren,
+        !vNodeToClone.props && !props
+          ? EMPTY_OBJ
+          : combineFrom(vNodeToClone.props, props),
+        key,
+        ref
       );
     } else if (flags & VNodeFlags.Text) {
       newVNode = createTextVNode(vNodeToClone.children);

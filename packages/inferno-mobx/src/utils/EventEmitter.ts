@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 export class EventEmitter {
-  private listeners: Function[] = [];
+  public listeners: Function[] = [];
 
   public on(cb: Function) {
     this.listeners.push(cb);

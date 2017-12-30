@@ -5,7 +5,6 @@
 import { Component } from 'inferno';
 import {
   isFunction,
-  isNullOrUndef,
   isObject,
   isUndefined,
   throwError
@@ -64,7 +63,7 @@ AUTOBIND_BLACKLIST.add('componentDidUnmount');
 
 function extend(base, props) {
   for (const key in props) {
-    if (!isNullOrUndef(props[key])) {
+    if (props.hasOwnProperty(key)) {
       base[key] = props[key];
     }
   }
@@ -222,9 +221,9 @@ export function createClass<P, S>(
     applyMixins(Cl, collateMixins(obj.mixins));
   }
 
-  Cl.defaultProps = isUndefined(Cl.getDefaultProps)
-    ? undefined
-    : Cl.getDefaultProps();
+  if (Cl.getDefaultProps) {
+    Cl.defaultProps = Cl.getDefaultProps();
+  }
 
   return Cl as any;
 }
