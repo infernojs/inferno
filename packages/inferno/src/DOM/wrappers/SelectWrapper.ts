@@ -50,7 +50,7 @@ export function processSelect(
   mounting: boolean,
   isControlled: boolean
 ) {
-  applyValue(vNode, dom, nextPropsOrEmpty, mounting);
+  applyValue(nextPropsOrEmpty, dom, mounting, vNode);
 
   if (isControlled) {
     dom.vNode = vNode;
@@ -61,8 +61,8 @@ export function processSelect(
   }
 }
 
-export function applyValue(vNode, dom, nextPropsOrEmpty, mounting: boolean) {
-  if (nextPropsOrEmpty.multiple !== dom.multiple) {
+export function applyValue(nextPropsOrEmpty, dom, mounting: boolean, vNode) {
+  if (!isNullOrUndef(nextPropsOrEmpty.multiple) && nextPropsOrEmpty.multiple !== dom.multiple) {
     dom.multiple = nextPropsOrEmpty.multiple;
   }
   const children = vNode.children;

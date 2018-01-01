@@ -50,7 +50,7 @@ export function applyValue(nextPropsOrEmpty, dom) {
   if (type && type !== dom.type) {
     dom.setAttribute('type', type);
   }
-  if (multiple && multiple !== dom.multiple) {
+  if (!isNullOrUndef(multiple) && multiple !== dom.multiple) {
     dom.multiple = multiple;
   }
   if (!isNullOrUndef(defaultValue) && !hasValue) {

@@ -147,38 +147,24 @@ export function patchElement(
     );
   } else {
     const dom = lastVNode.dom as Element;
+    const nextFlags = nextVNode.flags;
+
     const lastProps = lastVNode.props;
     const nextProps = nextVNode.props;
-    const lastChildren = lastVNode.children;
-    const nextChildren = nextVNode.children;
-    const nextFlags = nextVNode.flags;
-    const nextRef = nextVNode.ref;
-    const lastClassName = lastVNode.className;
-    const nextClassName = nextVNode.className;
+    let isFormElement = false;
+    let hasControlledValue = false;
+    let nextPropsOrEmpty;
 
     nextVNode.dom = dom;
     isSVG = isSVG || (nextFlags & VNodeFlags.SvgElement) > 0;
-    if (lastChildren !== nextChildren) {
-      patchChildren(
-        lastVNode.childFlags,
-        nextVNode.childFlags,
-        lastChildren,
-        nextChildren,
-        dom,
-        lifecycle,
-        context,
-        isSVG && nextTag !== 'foreignObject'
-      );
-    }
 
     // inlined patchProps  -- starts --
     if (lastProps !== nextProps) {
       const lastPropsOrEmpty = lastProps || EMPTY_OBJ;
-      const nextPropsOrEmpty = nextProps || (EMPTY_OBJ as any);
-      let hasControlledValue = false;
+      nextPropsOrEmpty = nextProps || (EMPTY_OBJ as any);
 
       if (nextPropsOrEmpty !== EMPTY_OBJ) {
-        const isFormElement = (nextFlags & VNodeFlags.FormElement) > 0;
+        isFormElement = (nextFlags & VNodeFlags.FormElement) > 0;
         if (isFormElement) {
           hasControlledValue = isControlledFormElement(nextPropsOrEmpty);
         }
@@ -190,18 +176,8 @@ export function patchElement(
             nextPropsOrEmpty[prop],
             dom,
             isSVG,
-            hasControlledValue
-          );
-        }
-
-        if (isFormElement) {
-          processElement(
-            nextFlags,
-            nextVNode,
-            dom,
-            nextPropsOrEmpty,
-            false,
-            hasControlledValue
+            hasControlledValue,
+            lastVNode
           );
         }
       }
@@ -216,6 +192,35 @@ export function patchElement(
           }
         }
       }
+    }
+    const lastChildren = lastVNode.children;
+    const nextChildren = nextVNode.children;
+    const nextRef = nextVNode.ref;
+    const lastClassName = lastVNode.className;
+    const nextClassName = nextVNode.className;
+
+    if (lastChildren !== nextChildren) {
+      patchChildren(
+        lastVNode.childFlags,
+        nextVNode.childFlags,
+        lastChildren,
+        nextChildren,
+        dom,
+        lifecycle,
+        context,
+        isSVG && nextTag !== 'foreignObject'
+      );
+    }
+
+    if (isFormElement) {
+      processElement(
+        nextFlags,
+        nextVNode,
+        dom,
+        nextPropsOrEmpty,
+        false,
+        hasControlledValue
+      );
     }
     // inlined patchProps  -- ends --
     if (lastClassName !== nextClassName) {

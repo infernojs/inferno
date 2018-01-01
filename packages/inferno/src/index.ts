@@ -19,7 +19,7 @@ import {
   VNode,
   Refs
 } from './core/implementation';
-import { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
+import { isUnitlessNumber } from './DOM/constants';
 import { linkEvent } from './DOM/events/linkEvent';
 import { createPortal, createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils/common';
@@ -59,7 +59,7 @@ export {
   createVNode,
   directClone,
   getFlagsForElementVnode,
-  internal_isUnitlessNumber,
+  isUnitlessNumber,
   linkEvent,
   normalizeChildren,
   normalizeProps,

@@ -18,12 +18,15 @@ import {
   throwError
 } from 'inferno-shared';
 import { handleEvent } from './events/delegation';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
 import {
   isControlledFormElement,
   processElement
 } from './wrappers/processElement';
+import {unmount} from "./unmounting";
+import {VNode} from "inferno";
+import {isNull} from "util";
 
 export function isAttrAnEvent(attr: string): boolean {
   return attr[0] === 'o' && attr[1] === 'n';
@@ -111,6 +114,8 @@ export function removeProp(prop: string, lastValue, dom, nextFlags: number) {
     dom.removeAttribute('style');
   } else if (isAttrAnEvent(prop)) {
     handleEvent(prop, null, dom);
+  } else if (prop === 'dangerouslySetInnerHTML') {
+    dom.textContent = '';
   } else {
     dom.removeAttribute(prop);
   }
@@ -122,7 +127,8 @@ export function patchProp(
   nextValue,
   dom: Element,
   isSVG: boolean,
-  hasControlledValue: boolean
+  hasControlledValue: boolean,
+  lastVNode: VNode | null
 ) {
   if (lastValue !== nextValue) {
     if (skipProps.has(prop) || (hasControlledValue && prop === 'value')) {
@@ -143,11 +149,16 @@ export function patchProp(
     } else if (prop === 'style') {
       patchStyle(lastValue, nextValue, dom);
     } else if (prop === 'dangerouslySetInnerHTML') {
-      const lastHtml = lastValue && lastValue.__html;
-      const nextHtml = nextValue && nextValue.__html;
+      const lastHtml = (lastValue && lastValue.__html) || '';
+      const nextHtml = (nextValue && nextValue.__html) || '';
 
       if (lastHtml !== nextHtml) {
         if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
+          if (!isNull(lastVNode)) {
+            unmount(lastVNode);
+            lastVNode.children = null;
+            lastVNode.childFlags = ChildFlags.HasInvalidChildren;
+          }
           dom.innerHTML = nextHtml;
         }
       }
@@ -171,7 +182,7 @@ export function mountProps(vNode, flags, props, dom, isSVG) {
   }
   for (const prop in props) {
     // do not add a hasOwnProperty check here, it affects performance
-    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
+    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
   }
   if (isFormElement) {
     processElement(flags, vNode, dom, props, true, hasControlledValue);

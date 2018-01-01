@@ -337,7 +337,7 @@ function applyKeyPrefix(key: string, vNode: VNode): VNode {
   return vNode;
 }
 
-function _normalizeVNodes(
+export function _normalizeVNodes(
   nodes: any[],
   result: VNode[],
   index: number,

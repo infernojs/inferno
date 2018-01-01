@@ -187,7 +187,7 @@ export function createClass<P, S>(
 ): ClassicComponentClass<P, S> {
   class Cl extends Component<P, S> {
     public static defaultProps;
-    public static displayName = obj.displayName || 'Component';
+    public static displayName = obj.name || obj.displayName || 'Component';
     public static propTypes = obj.propTypes;
     public static mixins = obj.mixins && collateMixins(obj.mixins);
     public static getDefaultProps = obj.getDefaultProps;
@@ -207,7 +207,7 @@ export function createClass<P, S>(
     }
 
     public isMounted(): boolean {
-      return !this.$UN;
+      return this.$LI !== null && !this.$UN;
     }
   }
 

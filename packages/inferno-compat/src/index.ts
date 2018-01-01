@@ -8,7 +8,7 @@ import {
   createComponentVNode,
   createVNode,
   getFlagsForElementVnode,
-  normalizeChildren,
+  normalizeProps,
   EMPTY_OBJ,
   InfernoChildren,
   options,
@@ -31,6 +31,7 @@ import {
   isNull,
   isNullOrUndef,
   isString,
+  isInvalid,
   NO_OP,
   throwError
 } from 'inferno-shared';
@@ -67,11 +68,23 @@ function extend(base, props) {
   return base;
 }
 
-const ARR = [];
-
 export type IterateChildrenFn = (value: InfernoChildren | any,
                                  index: number,
                                  array: Array<InfernoChildren | any>) => any;
+
+function flatten(arr, result) {
+  for (let i = 0, len = arr.length; i < len; i++) {
+    const value = arr[i];
+    if (isArray(value)) {
+      flatten(value, result);
+    } else {
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+const ARR = [];
 
 const Children = {
   map(children: Array<InfernoChildren | any>,
@@ -97,7 +110,9 @@ const Children = {
       fn = fn.bind(ctx);
     }
     for (let i = 0, len = children.length; i < len; i++) {
-      fn(children[i], i, children);
+      const child = isInvalid(children[i]) ? null : children[i];
+
+      fn(child, i, children);
     }
   },
   count(children: Array<InfernoChildren | any>): number {
@@ -115,7 +130,16 @@ const Children = {
     if (isNullOrUndef(children)) {
       return [];
     }
-    return isArray(children) ? children : ARR.concat(children);
+    // We need to flatten arrays here,
+    // because React does it also and application level code might depend on that behavior
+    if (isArray(children)) {
+      const result = [];
+
+      flatten(children, result);
+
+      return result;
+    }
+    return ARR.concat(children);
   }
 };
 
@@ -131,9 +155,23 @@ options.afterRender = function (): void {
 };
 const nextAfterMount = options.afterMount;
 
+// React returns null when Component rendered nothing, we need to mimic this behavior
+// In Inferno Component returns empty text as placeholder
+function getDOMIgnoreVoid(vNode) {
+  let dom = null;
+
+  if (vNode.children && vNode.children.flags & VNodeFlags.Void) {
+    dom = null;
+  } else {
+    dom = vNode.dom;
+  }
+
+  return dom;
+}
+
 options.afterMount = vNode => {
   if (options.findDOMNodeEnabled) {
-    componentToDOMNodeMap.set(vNode.children, vNode.dom);
+    componentToDOMNodeMap.set(vNode.children, getDOMIgnoreVoid(vNode));
   }
   if (nextAfterMount) {
     nextAfterMount(vNode);
@@ -143,7 +181,7 @@ const nextAfterUpdate = options.afterUpdate;
 
 options.afterUpdate = vNode => {
   if (options.findDOMNodeEnabled) {
-    componentToDOMNodeMap.set(vNode.children, vNode.dom);
+    componentToDOMNodeMap.set(vNode.children, getDOMIgnoreVoid(vNode));
   }
   if (nextAfterUpdate) {
     nextAfterUpdate(vNode);
@@ -158,12 +196,15 @@ options.beforeUnmount = vNode => {
   }
   if (nextBeforeUnmount) {
     nextBeforeUnmount(vNode);
+    if (vNode.flags & VNodeFlags.ComponentClass) {
+      vNode.children.refs = {};
+    }
   }
 };
 
 const version = '15.4.2';
 
-function normalizeProps(name: string, props: Props | any) {
+function normProps(name: string, props: Props | any) {
   if (
     (name === 'input' || name === 'textarea') &&
     props.type !== 'radio' &&
@@ -227,13 +268,15 @@ function iterableToArray(iterable) {
   return tmpArr;
 }
 
-const hasSymbolSupport = typeof Symbol !== 'undefined';
+const g: any = window || global;
+const hasSymbolSupport = typeof g.Symbol !== 'undefined';
+const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 
 const injectStringRefs = function (originalFunction) {
   return function (name, _props, ...children) {
     if (_props) {
       if (typeof name === 'string') {
-        normalizeProps(name, _props);
+        normProps(name, _props);
       }
     }
 
@@ -245,15 +288,17 @@ const injectStringRefs = function (originalFunction) {
           child &&
           !isArray(child) &&
           !isString(child) &&
-          isFunction(child[Symbol.iterator])
+          isFunction(child[symbolIterator])
         ) {
-          children[i] = iterableToArray(child[Symbol.iterator]());
+          children[i] = iterableToArray(child[symbolIterator]());
         }
       }
     }
     const vnode = originalFunction(name, _props, ...children);
     if (_props && typeof _props.ref === 'string' && !isNull(currentComponent)) {
-      currentComponent.refs = currentComponent.refs || {};
+      if (!currentComponent.refs) {
+        currentComponent.refs = {};
+      }
       vnode.ref = function (val) {
         this.refs[_props.ref] = val;
       }.bind(currentComponent);
@@ -274,6 +319,7 @@ const oldCreateVNode = options.createVNode;
 
 options.createVNode = (vNode: VNode): void => {
   const children = vNode.children;
+  const ref = vNode.ref;
   let props = vNode.props;
 
   if (isNullOrUndef(props)) {
@@ -285,11 +331,18 @@ options.createVNode = (vNode: VNode): void => {
   if (vNode.flags & VNodeFlags.Component) {
     if (isString(vNode.type)) {
       vNode.flags = getFlagsForElementVnode(vNode.type as string);
-      if (props && props.children) {
-        normalizeChildren(vNode, props.children);
-        delete props.children;
+      if (props) {
+        normalizeProps(vNode);
       }
     }
+  }
+  if (typeof ref === 'string' && !isNull(currentComponent)) {
+    if (!currentComponent.refs) {
+      currentComponent.refs = {};
+    }
+    vNode.ref = function (val) {
+      this.refs[ref] = val;
+    }.bind(currentComponent);
   }
   if (oldCreateVNode) {
     oldCreateVNode(vNode);
@@ -311,14 +364,11 @@ function shallowDiffers(a, b): boolean {
   return false;
 }
 
-function PureComponent(props, context) {
-  Component.call(this, props, context);
+class PureComponent<P, S> extends Component<P, S> {
+  public shouldComponentUpdate(props, state) {
+    return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+  }
 }
-
-PureComponent.prototype = new Component({}, {});
-PureComponent.prototype.shouldComponentUpdate = function (props, state) {
-  return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
-};
 
 class WrapperComponent<P, S> extends Component<P, S> {
   public getChildContext() {
@@ -378,7 +428,7 @@ function findDOMNode(ref) {
   }
   const dom = ref && ref.nodeType ? ref : null;
 
-  return componentToDOMNodeMap.get(ref) || dom;
+  return componentToDOMNodeMap.has(ref) ? componentToDOMNodeMap.get(ref) : dom;
 }
 
 // Mask React global in browser enviornments when React is not used.

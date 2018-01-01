@@ -4,7 +4,6 @@
 
 import * as mobx from 'mobx';
 import { Component, options, createComponentVNode } from 'inferno';
-import { findDOMNode } from 'inferno-compat';
 import { EventEmitter } from './utils/EventEmitter';
 import { warning } from 'inferno-shared';
 import { isStateless } from './utils/utils';
@@ -23,15 +22,8 @@ let warnedAboutObserverInjectDeprecation = false;
 export const componentByNodeRegistery = new WeakMap();
 export const renderReporter = new EventEmitter();
 
-function findNode(component) {
-  if (options.findDOMNodeEnabled) {
-    return findDOMNode(component);
-  }
-  return null;
-}
-
 function reportRendering(component) {
-  const node = findNode(component);
+  const node = component.$LI.dom;
   if (node) {
     componentByNodeRegistery.set(node, component);
   }
@@ -244,7 +236,7 @@ const reactiveMixin = {
 
     this.__$mobxIsUnmounted = true;
     if (isDevtoolsEnabled) {
-      const node = findDOMNode(this);
+      const node = this.$LI.dom;
       if (node) {
         componentByNodeRegistery.delete(node);
       }

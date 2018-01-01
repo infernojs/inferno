@@ -124,7 +124,9 @@ function applyState<P, S>(
       }
     }
 
-    callAll(component._lifecycle as any);
+    if ((component._lifecycle as any).length > 0) {
+      callAll(component._lifecycle as any);
+    }
   } else {
     component.state = component.$PS as any;
     component.$PS = null;

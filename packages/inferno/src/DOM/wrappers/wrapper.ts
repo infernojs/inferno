@@ -35,7 +35,7 @@ export function createWrappedFunction(
       const newVNode = this.vNode;
       const newProps = newVNode.props || EMPTY_OBJ;
 
-      applyValue(newProps, dom);
+      applyValue(newProps, dom, false, newVNode);
     }
   };
 

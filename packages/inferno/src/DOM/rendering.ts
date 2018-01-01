@@ -103,7 +103,9 @@ export function render(
     }
   }
 
-  callAll(lifecycle);
+  if (lifecycle.length > 0) {
+    callAll(lifecycle);
+  }
 
   if (isFunction(callback)) {
     callback();

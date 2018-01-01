@@ -37,7 +37,8 @@
   "devDependencies": {
     "inferno-hyperscript": "4.0.0-5",
     "inferno-shared": "4.0.0-5",
-    "inferno-vnode-flags": "4.0.0-5"
+    "inferno-vnode-flags": "4.0.0-5",
+    "inferno-test-utils": "4.0.0-5"
   },
   "rollup": {
     "bundledDependencies": [

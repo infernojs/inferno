@@ -42,11 +42,11 @@
 </head>
 <body>
 	<div id="app"></div>
-	<script src="../../packages/inferno/dist/inferno.min.js"></script>
-	<script src="../../packages/inferno-hyperscript/dist/inferno-hyperscript.min.js"></script>
+	<script src="../../packages/inferno/dist/inferno.js"></script>
+	<script src="../../packages/inferno-hyperscript/dist/inferno-hyperscript.js"></script>
 	<script>
 		var h = Inferno.h;
-		
+
 		let firstName = 'Dominic';
 		let lastName = null;
 		let age = 28;
@@ -99,20 +99,20 @@
 			Inferno.render(h('form.form', [
 				h('div.form-group', [
 					h('label', 'Please enter your first name name:'),
-					h('input', { 
-						type: 'text', 
-						placeholder: 'Joe', 
-						value: firstName, 
-						onInput: Inferno.linkEvent({data: '123'}, linkedTextHandler) 
+					h('input', {
+						type: 'text',
+						placeholder: 'Joe',
+						value: firstName,
+						onInput: Inferno.linkEvent({data: '123'}, linkedTextHandler)
 					})
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter your first last name:'),
-					h('input', { 
-						type: 'text', 
-						placeholder: 'Bloggs', 
-						defaultValue: 'Gannaway', 
-						onInput: textHandler 
+					h('input', {
+						type: 'text',
+						placeholder: 'Bloggs',
+						defaultValue: 'Gannaway',
+						onInput: textHandler
 					})
 				]),
 				h('div.form-group', [
@@ -140,10 +140,10 @@
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter a description:'),
-					h('textarea', { 
-						defaultValue: 'I don\'t know?', 
-						value: description, 
-						onInput: descHandler 
+					h('textarea', {
+						defaultValue: 'I don\'t know?',
+						value: description,
+						onInput: descHandler
 					})
 				]),
         h('div.form-group', [

@@ -1,6 +1,5 @@
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import sinon from "sinon";
 import React, { PropTypes, unstable_renderSubtreeIntoContainer, createClass, Component, Children, cloneElement, createElement, isValidElement, __spread } from 'inferno-compat';
 
 describe('MISC', () => {
@@ -42,7 +41,7 @@ describe('MISC', () => {
       const divOne = <div/>;
       const children = [divOne, 'two', 3];
 
-      expect(() => Children.only(children)).toThrow('Children.only() expects only one child.');
+      expect(() => Children.only(children)).toThrow();
     });
   });
 
@@ -69,7 +68,6 @@ describe('MISC', () => {
 
   describe('render()', () => {
     it('should be exported', () => {
-      expect(React).toHaveProperty('render');
       expect(React.render).toBe(render);
     });
 
@@ -124,7 +122,6 @@ describe('MISC', () => {
 
   describe('createClass()', () => {
     it('should be exported', () => {
-      expect(React).toHaveProperty('createClass');
       expect(React.createClass).toBe(createClass);
     });
 
@@ -148,21 +145,19 @@ describe('MISC', () => {
         }
       };
       let c = createClass(def);
-      expect(c).toHaveProperty('foo', def.statics.foo);
-      expect(c).toHaveProperty('baz', def.statics.baz);
+      expect(c.foo).toEqual(def.statics.foo);
+      expect(c.baz).toEqual(def.statics.baz);
     });
   });
 
   describe('createElement()', () => {
     it('should be exported', () => {
-      expect(React).toHaveProperty('createElement');
       expect(React.createElement).toBe(createElement);
     });
   });
 
   describe('Component', () => {
     it('should be exported', () => {
-      expect(React).toHaveProperty('Component');
       expect(React.Component).toEqual(Component);
     });
   });
