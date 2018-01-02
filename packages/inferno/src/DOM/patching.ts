@@ -17,7 +17,7 @@ import {
 import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
-import { remove, unmount } from './unmounting';
+import { remove, unmount, removeAllChildren } from './unmounting';
 import {
   appendChild,
   EMPTY_OBJ,
@@ -33,13 +33,6 @@ import {
 import { patchProp, removeProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
-
-function removeAllChildren(dom: Element, children) {
-  for (let i = 0, len = children.length; i < len; i++) {
-    unmount(children[i]);
-  }
-  dom.textContent = '';
-}
 
 function replaceWithNewNode(
   lastNode,

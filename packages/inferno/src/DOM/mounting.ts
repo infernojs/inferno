@@ -81,9 +81,8 @@ export function mount(
 }
 
 export function mountText(vNode: VNode, parentDom: Element | null): any {
-  const dom = document.createTextNode(vNode.children as string);
+  const dom = vNode.dom = document.createTextNode(vNode.children as string) as any;
 
-  vNode.dom = dom as any;
   if (!isNull(parentDom)) {
     appendChild(parentDom, dom);
   }
@@ -162,7 +161,7 @@ export function mountArrayChildren(
     if (!isNull(child.dom)) {
       children[i] = child = directClone(child);
     }
-    mount(children[i], dom, lifecycle, context, isSVG);
+    mount(child, dom, lifecycle, context, isSVG);
   }
 }
 

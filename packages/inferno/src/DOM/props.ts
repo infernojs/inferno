@@ -12,6 +12,7 @@ import {
 } from './constants';
 import {
   isFunction,
+  isNull,
   isNullOrUndef,
   isNumber,
   isString,
@@ -24,9 +25,8 @@ import {
   isControlledFormElement,
   processElement
 } from './wrappers/processElement';
-import {unmount} from "./unmounting";
+import {unmount, removeAllChildren} from "./unmounting";
 import {VNode} from "inferno";
-import {isNull} from "util";
 
 export function isAttrAnEvent(attr: string): boolean {
   return attr[0] === 'o' && attr[1] === 'n';
@@ -155,7 +155,11 @@ export function patchProp(
       if (lastHtml !== nextHtml) {
         if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
           if (!isNull(lastVNode)) {
-            unmount(lastVNode);
+            if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
+              removeAllChildren(dom, lastVNode.children)
+            } else if (lastVNode.childFlags & ChildFlags.HasVNodeChildren) {
+              unmount(lastVNode.children)
+            }
             lastVNode.children = null;
             lastVNode.childFlags = ChildFlags.HasInvalidChildren;
           }

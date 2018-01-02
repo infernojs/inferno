@@ -82,3 +82,10 @@ export function unmount(vNode) {
     }
   }
 }
+
+export function removeAllChildren(dom: Element, children) {
+  for (let i = 0, len = children.length; i < len; i++) {
+    unmount(children[i]);
+  }
+  dom.textContent = '';
+}
