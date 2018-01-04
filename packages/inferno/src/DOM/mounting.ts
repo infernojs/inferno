@@ -81,7 +81,9 @@ export function mount(
 }
 
 export function mountText(vNode: VNode, parentDom: Element | null): any {
-  const dom = vNode.dom = document.createTextNode(vNode.children as string) as any;
+  const dom = (vNode.dom = document.createTextNode(
+    vNode.children as string
+  ) as any);
 
   if (!isNull(parentDom)) {
     appendChild(parentDom, dom);

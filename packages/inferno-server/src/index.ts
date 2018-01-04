@@ -2,25 +2,21 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
-import { renderToString, renderToStaticMarkup } from './renderToString';
+import { renderToString } from './renderToString';
 import {
   streamQueueAsString,
-  RenderQueueStream,
-  streamQueueAsStaticMarkup
+  RenderQueueStream
 } from './renderToString.queuestream';
-import {
-  streamAsString,
-  RenderStream,
-  streamAsStaticMarkup
-} from './renderToString.stream';
+import { streamAsString, RenderStream } from './renderToString.stream';
 
+// Inferno does not generate "data-root" attributes so staticMarkup is literally same as renderToString
 export {
   RenderQueueStream,
   RenderStream,
-  renderToStaticMarkup,
+  renderToString as renderToStaticMarkup,
   renderToString,
-  streamAsStaticMarkup,
+  streamAsString as streamAsStaticMarkup,
   streamAsString,
-  streamQueueAsStaticMarkup,
+  streamQueueAsString as streamQueueAsStaticMarkup,
   streamQueueAsString
 };

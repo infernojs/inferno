@@ -18,7 +18,7 @@ describe('ReactPureComponent', function() {
     class Component extends React.PureComponent {
       constructor() {
         super();
-        this.state = {type: 'mushrooms'};
+        this.state = { type: 'mushrooms' };
       }
       render() {
         renders++;
@@ -46,12 +46,12 @@ describe('ReactPureComponent', function() {
     expect(renders).toBe(2);
 
     // Setting state without changing it doesn't cause a rerender.
-    component.setState({type: 'mushrooms'});
+    component.setState({ type: 'mushrooms' });
     expect(container.textContent).toBe('morel');
     expect(renders).toBe(2);
 
     // But changing state does.
-    component.setState({type: 'portobello mushrooms'});
+    component.setState({ type: 'portobello mushrooms' });
     expect(container.textContent).toBe('portobello');
     expect(renders).toBe(3);
   });
@@ -86,5 +86,4 @@ describe('ReactPureComponent', function() {
     ReactDOM.render(<Component />, document.createElement('div'));
     expect(renders).toBe(1);
   });
-
 });

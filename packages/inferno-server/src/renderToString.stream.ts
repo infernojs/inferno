@@ -4,30 +4,29 @@
 
 import {
   combineFrom,
-  isArray,
   isFunction,
   isInvalid,
+  isNull,
   isNullOrUndef,
   isNumber,
   isString,
-  isStringOrNumber
+  isTrue
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
-import { renderAttributes, renderStylesToString } from './prop-renderers';
+import { renderStylesToString } from './prop-renderers';
 import { escapeText, voidElements } from './utils';
+import { VNode } from 'inferno';
 
 const resolvedPromise = Promise.resolve();
 
 export class RenderStream extends Readable {
   public initNode: any;
-  public staticMarkup: any;
   public started: boolean = false;
 
-  constructor(initNode, staticMarkup) {
+  constructor(initNode) {
     super();
     this.initNode = initNode;
-    this.staticMarkup = staticMarkup;
   }
 
   public _read() {
@@ -38,7 +37,7 @@ export class RenderStream extends Readable {
 
     resolvedPromise
       .then(() => {
-        return this.renderNode(this.initNode, null, this.staticMarkup);
+        return this.renderNode(this.initNode, null, false);
       })
       .then(() => {
         this.push(null);
@@ -48,37 +47,44 @@ export class RenderStream extends Readable {
       });
   }
 
-  public renderNode(vNode, context, isRoot) {
-    if (isInvalid(vNode)) {
-      return;
-    } else {
-      const flags = vNode.flags;
+  public renderNode(vNode, context, insertComment: boolean) {
+    const flags = vNode.flags;
 
-      if ((flags & VNodeFlags.Component) > 0) {
-        return this.renderComponent(
-          vNode,
-          isRoot,
-          context,
-          flags & VNodeFlags.ComponentClass
-        );
-      }
-      if ((flags & VNodeFlags.Element) > 0) {
-        return this.renderElement(vNode, isRoot, context);
-      }
-
-      return this.renderText(vNode);
+    if ((flags & VNodeFlags.Component) > 0) {
+      return this.renderComponent(
+        vNode,
+        context,
+        flags & VNodeFlags.ComponentClass
+      );
     }
+    if ((flags & VNodeFlags.Element) > 0) {
+      return this.renderElement(vNode, context);
+    }
+
+    return this.renderText(vNode, insertComment);
   }
 
-  public renderComponent(vComponent, isRoot, context, isClass) {
+  public renderComponent(vComponent, context, isClass) {
     const type = vComponent.type;
     const props = vComponent.props;
 
     if (!isClass) {
-      return this.renderNode(type(props), context, isRoot);
+      const renderOutput = type(props, context);
+
+      if (isInvalid(renderOutput)) {
+        return this.push('<!--!-->');
+      }
+      if (isString(renderOutput)) {
+        return this.push(escapeText(renderOutput));
+      }
+      if (isNumber(renderOutput)) {
+        return this.push(renderOutput + '');
+      }
+
+      return this.renderNode(renderOutput, context, false);
     }
 
-    const instance = new type(props);
+    const instance = new type(props, context);
     instance.$BS = false;
     let childContext;
     if (isFunction(instance.getChildContext)) {
@@ -111,55 +117,38 @@ export class RenderStream extends Readable {
 
       instance.$BR = false;
 
-      const node = instance.render(
+      const renderOutput = instance.render(
         instance.props,
         instance.state,
         instance.context
       );
       instance.$PSS = false;
-      return this.renderNode(node, context, isRoot);
+
+      if (isInvalid(renderOutput)) {
+        return this.push('<!--!-->');
+      }
+      if (isString(renderOutput)) {
+        return this.push(escapeText(renderOutput));
+      }
+      if (isNumber(renderOutput)) {
+        return this.push(renderOutput + '');
+      }
+
+      return this.renderNode(renderOutput, context, false);
     });
   }
 
-  public renderChildren(children: any, context?: any) {
-    if (isString(children)) {
-      return this.push(escapeText(children));
-    }
-    if (isNumber(children)) {
-      return this.push(children + '');
-    }
-    if (!children) {
-      return;
-    }
-
-    const childrenIsArray = isArray(children);
-    if (!childrenIsArray && !isInvalid(children)) {
+  public renderChildren(
+    children: VNode[] | VNode,
+    context: any,
+    childFlags: number
+  ) {
+    if (childFlags & ChildFlags.HasVNodeChildren) {
       return this.renderNode(children, context, false);
     }
-    if (!childrenIsArray) {
-      throw new Error('invalid component');
-    }
-    return children.reduce((p, child) => {
-      return p.then(insertComment => {
-        const isTextOrNumber = isStringOrNumber(child);
-
-        if (isTextOrNumber) {
-          if (insertComment === true) {
-            this.push('<!---->');
-          }
-          if (isString(child)) {
-            this.push(escapeText(child));
-          } else {
-            this.push(child + '');
-          }
-          return true;
-        } else if (isArray(child)) {
-          this.push('<!---->');
-          return Promise.resolve(this.renderChildren(child)).then(() => {
-            this.push('<!--!-->');
-            return true;
-          });
-        } else if (!isInvalid(child)) {
+    if (childFlags & ChildFlags.MultipleChildren) {
+      return (children as VNode[]).reduce((p, child) => {
+        return p.then(insertComment => {
           if ((child.flags & VNodeFlags.Text) > 0) {
             if (insertComment) {
               this.push('<!---->');
@@ -168,70 +157,92 @@ export class RenderStream extends Readable {
           return Promise.resolve(this.renderNode(child, context, false)).then(
             () => !!(child.flags & VNodeFlags.Text)
           );
-        }
-      });
-    }, Promise.resolve(false));
+        });
+      }, Promise.resolve(false));
+    }
   }
 
-  public renderText(vNode) {
-    return resolvedPromise.then(insertComment => {
-      this.push(escapeText(vNode.children));
-      return insertComment;
-    });
+  public renderText(vNode, insertComment) {
+    this.push(
+      (insertComment ? '<!---->' : '') +
+        (vNode.children === '' ? ' ' : escapeText(vNode.children))
+    );
   }
 
-  public renderElement(vElement, isRoot, context) {
-    const tag = vElement.type;
-    const props = vElement.props;
-
-    const outputAttrs = renderAttributes(props);
-
-    let html = '';
-    const className = vElement.className;
+  public renderElement(vNode, context) {
+    const type = vNode.type;
+    const props = vNode.props;
+    let renderedString = `<${type}`;
+    let html;
+    const isVoidElement = voidElements.has(type);
+    const className = vNode.className;
 
     if (isString(className)) {
-      outputAttrs.push(`class="${escapeText(className)}"`);
+      renderedString += ` class="${escapeText(className)}"`;
     } else if (isNumber(className)) {
-      outputAttrs.push(`class="${className}"`);
+      renderedString += ` class="${className}"`;
     }
 
-    if (props) {
-      const style = props.style;
-      if (style) {
-        outputAttrs.push('style="' + renderStylesToString(style) + '"');
+    if (!isNull(props)) {
+      for (const prop in props) {
+        const value = props[prop];
+
+        if (prop === 'dangerouslySetInnerHTML') {
+          html = value.__html;
+        } else if (prop === 'style') {
+          renderedString += ` style="${renderStylesToString(props.style)}"`;
+        } else if (prop === 'children') {
+          // Ignore children as prop.
+        } else if (prop === 'defaultValue') {
+          // Use default values if normal values are not present
+          if (!props.value) {
+            renderedString += ` value="${
+              isString(value) ? escapeText(value) : value
+            }"`;
+          }
+        } else if (prop === 'defaultChecked') {
+          // Use default values if normal values are not present
+          if (!props.checked) {
+            renderedString += ` checked="${value}"`;
+          }
+        } else {
+          if (isString(value)) {
+            renderedString += ` ${prop}="${escapeText(value)}"`;
+          } else if (isNumber(value)) {
+            renderedString += ` ${prop}="${value}"`;
+          } else if (isTrue(value)) {
+            renderedString += ` ${prop}`;
+          }
+        }
       }
-
-      if (props.dangerouslySetInnerHTML) {
-        html = props.dangerouslySetInnerHTML.__html;
-      }
     }
-
-    if (isRoot) {
-      outputAttrs.push('data-infernoroot');
-    }
-    this.push(
-      `<${tag}${outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : ''}>`
-    );
-    if (voidElements.has(tag)) {
+    if (isVoidElement) {
+      renderedString += `>`;
+      this.push(renderedString);
       return;
+    } else {
+      renderedString += `>`;
+      this.push(renderedString);
+      if (html) {
+        this.push(html);
+        this.push(`</${type}>`);
+        return;
+      }
     }
-    if (html) {
-      this.push(html);
-      this.push(`</${tag}>`);
+    const childFlags = vNode.childFlags;
+
+    if (childFlags & ChildFlags.HasInvalidChildren) {
+      this.push(`</${type}>`);
       return;
     }
     return Promise.resolve(
-      this.renderChildren(vElement.children, context)
+      this.renderChildren(vNode.children, context, childFlags)
     ).then(() => {
-      this.push(`</${tag}>`);
+      this.push(`</${type}>`);
     });
   }
 }
 
 export function streamAsString(node) {
-  return new RenderStream(node, false);
-}
-
-export function streamAsStaticMarkup(node) {
-  return new RenderStream(node, true);
+  return new RenderStream(node);
 }

@@ -10,14 +10,14 @@
 'use strict';
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 var mocks = {
   getMockFunction: function() {
     return jasmine.createSpy();
   }
-}
+};
 
 describe('ReactMount', function() {
   var ReactMount = React;
@@ -37,7 +37,7 @@ describe('ReactMount', function() {
     var Component = React.createClass({
       render: function() {
         return <div />;
-      },
+      }
     });
     expect(function() {
       ReactTestUtils.renderIntoDocument(Component);
@@ -48,10 +48,10 @@ describe('ReactMount', function() {
     var container = document.createElement('container');
     document.body.appendChild(container);
 
-    ReactMount.render(<div></div>, container);
+    ReactMount.render(<div />, container);
     expect(container.firstChild.nodeName).toBe('DIV');
 
-    ReactMount.render(<span></span>, container);
+    ReactMount.render(<span />, container);
     expect(container.firstChild.nodeName).toBe('SPAN');
   });
 
@@ -66,7 +66,7 @@ describe('ReactMount', function() {
       componentWillUnmount: mockUnmount,
       render: function() {
         return <span>{this.props.text}</span>;
-      },
+      }
     });
 
     expect(mockMount.calls.count()).toBe(0);
@@ -154,13 +154,13 @@ describe('ReactMount', function() {
             expect(shadowRoot.firstChild.tagName).toBe('DIV');
             ReactDOM.render(<span>Hi, from within a WC!</span>, shadowRoot);
             expect(shadowRoot.firstChild.tagName).toBe('SPAN');
-          },
-        },
+          }
+        }
       });
       proto.unmount = function() {
         ReactDOM.unmountComponentAtNode(shadowRoot);
       };
-      document.registerElement('x-foo', {prototype: proto});
+      document.registerElement('x-foo', { prototype: proto });
       var element = document.createElement('x-foo');
       element.unmount();
     });
@@ -223,22 +223,37 @@ describe('ReactMount', function() {
             {this.props.showC && <div>c</div>}
           </div>
         );
-      },
+      }
     });
 
     var container = document.createElement('container');
 
-    ReactDOM.render(<div><Component showC={false} /></div>, container);
+    ReactDOM.render(
+      <div>
+        <Component showC={false} />
+      </div>,
+      container
+    );
 
     // Right now, A and B are in the cache. When we add C, it won't get added to
     // the cache (assuming markup-string mode).
-    ReactDOM.render(<div><Component showC={true} /></div>, container);
+    ReactDOM.render(
+      <div>
+        <Component showC={true} />
+      </div>,
+      container
+    );
 
     // Remove A, B, and C. Unmounting C shouldn't cause B to get recached.
-    ReactDOM.render(<div></div>, container);
+    ReactDOM.render(<div />, container);
 
     // Add them back -- this shouldn't cause a cached node collision.
-    ReactDOM.render(<div><Component showC={true} /></div>, container);
+    ReactDOM.render(
+      <div>
+        <Component showC={true} />
+      </div>,
+      container
+    );
 
     ReactDOM.unmountComponentAtNode(container);
   });
@@ -247,7 +262,7 @@ describe('ReactMount', function() {
     var A = React.createClass({
       render: function() {
         return <a key={this.props.innerKey}>{this.props.innerKey}</a>;
-      },
+      }
     });
     var Component = React.createClass({
       render: function() {
@@ -257,7 +272,7 @@ describe('ReactMount', function() {
             {this.props.step === 1 && <A innerKey={this.props.step} />}
           </b>
         );
-      },
+      }
     });
 
     var container = document.createElement('container');

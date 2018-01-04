@@ -17,7 +17,6 @@ describe('ReactElement', function() {
   var originalSymbol;
 
   beforeEach(function() {
-
     // Delete the native Symbol if we have one to ensure we test the
     // unpolyfilled environment.
     originalSymbol = global.Symbol;
@@ -25,7 +24,7 @@ describe('ReactElement', function() {
     ComponentClass = React.createClass({
       render: function() {
         return React.createElement('div');
-      },
+      }
     });
   });
 
@@ -63,7 +62,7 @@ describe('ReactElement', function() {
   // });
 
   it('does not reuse the original config object', function() {
-    var config = {foo: 1};
+    var config = { foo: 1 };
     var element = React.createFactory(ComponentClass)(config);
     expect(element.props.foo).toBe(1);
     config.foo = 2;
@@ -89,12 +88,12 @@ describe('ReactElement', function() {
   it('coerces the key to a string', function() {
     var element = React.createFactory(ComponentClass)({
       key: 12,
-      foo: '56',
+      foo: '56'
     });
     expect(element.type).toBe(ComponentClass);
     expect(element.key).toBe(12);
     expect(element.ref).toBe(null);
-    var expectation = {foo:'56'};
+    var expectation = { foo: '56' };
     Object.freeze(expectation);
     expect(element.props).toEqual(expectation);
   });
@@ -120,9 +119,12 @@ describe('ReactElement', function() {
   it('merges an additional argument onto the children prop', function() {
     spyOn(console, 'error');
     var a = 1;
-    var element = React.createFactory(ComponentClass)({
-      children: 'text',
-    }, a);
+    var element = React.createFactory(ComponentClass)(
+      {
+        children: 'text'
+      },
+      a
+    );
     expect(element.props.children).toBe(a);
     expect(console.error.calls.count()).toBe(0);
   });
@@ -130,7 +132,7 @@ describe('ReactElement', function() {
   it('does not override children if no rest args are provided', function() {
     spyOn(console, 'error');
     var element = React.createFactory(ComponentClass)({
-      children: 'text',
+      children: 'text'
     });
     expect(element.props.children).toBe('text');
     expect(console.error.calls.count()).toBe(0);
@@ -138,9 +140,12 @@ describe('ReactElement', function() {
 
   it('overrides children if null is provided as an argument', function() {
     spyOn(console, 'error');
-    var element = React.createFactory(ComponentClass)({
-      children: 'text',
-    }, null);
+    var element = React.createFactory(ComponentClass)(
+      {
+        children: 'text'
+      },
+      null
+    );
     expect(element.props.children).toBe(null);
     expect(console.error.calls.count()).toBe(0);
   });
@@ -162,14 +167,14 @@ describe('ReactElement', function() {
       statics: {
         someStaticMethod: function() {
           return 'someReturnValue';
-        },
+        }
       },
       getInitialState: function() {
-        return {valueToReturn: 'hi'};
+        return { valueToReturn: 'hi' };
       },
       render: function() {
         return React.createElement('div');
-      },
+      }
     });
 
     var element = React.createElement(StaticMethodComponentClass);
@@ -181,13 +186,11 @@ describe('ReactElement', function() {
     var Component = React.createClass({
       render: function() {
         return React.createElement('div');
-      },
+      }
     });
 
-    expect(React.isValidElement(React.createElement('div')))
-      .toEqual(true);
-    expect(React.isValidElement(React.createElement(Component)))
-      .toEqual(true);
+    expect(React.isValidElement(React.createElement('div'))).toEqual(true);
+    expect(React.isValidElement(React.createElement(Component))).toEqual(true);
 
     expect(React.isValidElement(null)).toEqual(false);
     expect(React.isValidElement(true)).toEqual(false);
@@ -208,8 +211,8 @@ describe('ReactElement', function() {
     var Component = React.createClass({
       render: () => null,
       statics: {
-        specialType: React.PropTypes.shape({monkey: React.PropTypes.any}),
-      },
+        specialType: React.PropTypes.shape({ monkey: React.PropTypes.any })
+      }
     });
 
     expect(typeof Component.specialType).toBe('function');
@@ -225,16 +228,16 @@ describe('ReactElement', function() {
   it('should use default prop value when removing a prop', function() {
     var Component = React.createClass({
       getDefaultProps: function() {
-        return {fruit: 'persimmon'};
+        return { fruit: 'persimmon' };
       },
       render: function() {
         return React.createElement('span');
-      },
+      }
     });
 
     var container = document.createElement('div');
     var instance = ReactDOM.render(
-      React.createElement(Component, {fruit: 'mango'}),
+      React.createElement(Component, { fruit: 'mango' }),
       container
     );
     expect(instance.props.fruit).toBe('mango');
@@ -246,11 +249,11 @@ describe('ReactElement', function() {
   it('should normalize props with default values', function() {
     var Component = React.createClass({
       getDefaultProps: function() {
-        return {prop: 'testKey'};
+        return { prop: 'testKey' };
       },
       render: function() {
         return React.createElement('span', null, this.props.prop);
-      },
+      }
     });
 
     var instance = ReactTestUtils.renderIntoDocument(
@@ -259,7 +262,7 @@ describe('ReactElement', function() {
     expect(instance.$LI.children.props.prop).toBe('testKey');
 
     var inst2 = ReactTestUtils.renderIntoDocument(
-      React.createElement(Component, {prop: null})
+      React.createElement(Component, { prop: null })
     );
     expect(inst2.$LI.children.props.prop).toBe(null);
   });
@@ -307,7 +310,7 @@ describe('ReactElement', function() {
     var Test = React.createClass({
       render: function() {
         return <div />;
-      },
+      }
     });
     var test = ReactTestUtils.renderIntoDocument(<Test value={+undefined} />);
     expect(test.$LI.children.props.value).toBeNaN();
@@ -333,13 +336,11 @@ describe('ReactElement', function() {
     var Component = React.createClass({
       render: function() {
         return React.createElement('div');
-      },
+      }
     });
 
-    expect(React.isValidElement(React.createElement('div')))
-      .toEqual(true);
-    expect(React.isValidElement(React.createElement(Component)))
-      .toEqual(true);
+    expect(React.isValidElement(React.createElement('div'))).toEqual(true);
+    expect(React.isValidElement(React.createElement(Component))).toEqual(true);
 
     expect(React.isValidElement(null)).toEqual(false);
     expect(React.isValidElement(true)).toEqual(false);
@@ -352,5 +353,4 @@ describe('ReactElement', function() {
     // var jsonElement = JSON.stringify(React.createElement('div'));
     // expect(React.isValidElement(JSON.parse(jsonElement))).toBe(false);
   });
-
 });

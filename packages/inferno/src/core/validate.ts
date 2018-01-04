@@ -13,7 +13,7 @@ function getTagName(vNode) {
   } else if (flags & VNodeFlags.Text) {
     tagName = `Text(${vNode.children})`;
   } else if (flags & VNodeFlags.Portal) {
-    tagName = `Portal*`
+    tagName = `Portal*`;
   } else {
     const componentName =
       vNode.type.name || vNode.type.displayName || vNode.type.constructor.name;

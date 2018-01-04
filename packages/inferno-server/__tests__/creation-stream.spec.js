@@ -37,7 +37,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
     return streamPromise(createElement(TestComponent, null)).then(function(
       output
     ) {
-      expect(output).toBe('<a data-infernoroot>world</a>');
+      expect(output).toBe('<a>world</a>');
     });
   });
 
@@ -91,7 +91,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
         const container = document.createElement('div');
         document.body.appendChild(container);
         container.innerHTML = output;
-        expect(output).toBe('<div data-infernoroot>bar2<div>bar2</div></div>');
+        expect(output).toBe('<div>bar2<div>bar2</div></div>');
         document.body.removeChild(container);
       });
     });

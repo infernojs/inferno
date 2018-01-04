@@ -19,14 +19,14 @@ import {
   throwError
 } from 'inferno-shared';
 import { handleEvent } from './events/delegation';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
 import {
   isControlledFormElement,
   processElement
 } from './wrappers/processElement';
-import {unmount, removeAllChildren} from "./unmounting";
-import {VNode} from "inferno";
+import { unmount, removeAllChildren } from './unmounting';
+import { VNode } from 'inferno';
 
 export function isAttrAnEvent(attr: string): boolean {
   return attr[0] === 'o' && attr[1] === 'n';
@@ -156,9 +156,9 @@ export function patchProp(
         if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
           if (!isNull(lastVNode)) {
             if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
-              removeAllChildren(dom, lastVNode.children)
+              removeAllChildren(dom, lastVNode.children);
             } else if (lastVNode.childFlags & ChildFlags.HasVNodeChildren) {
-              unmount(lastVNode.children)
+              unmount(lastVNode.children);
             }
             lastVNode.children = null;
             lastVNode.childFlags = ChildFlags.HasInvalidChildren;

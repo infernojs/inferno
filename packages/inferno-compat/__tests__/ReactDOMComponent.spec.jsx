@@ -14,17 +14,12 @@ var mocks = {
   getMockFunction: function() {
     return jasmine.createSpy();
   }
-}
+};
 
 describe('ReactDOMComponent', function() {
-
-
-  beforeEach(function() {
-  });
-
+  beforeEach(function() {});
 
   if (typeof global !== 'undefined' && global.usingJSDOM) {
-
     describe('updateDOM', function() {
       it('should handle className', function() {
         var container = document.createElement('div');
@@ -44,14 +39,14 @@ describe('ReactDOMComponent', function() {
         var stubStyle = container.firstChild.style;
 
         // set initial style
-        var setup = {display: 'block', left: 1, top: 2, fontFamily: 'Arial'};
+        var setup = { display: 'block', left: 1, top: 2, fontFamily: 'Arial' };
         ReactDOM.render(<div style={setup} />, container);
         expect(stubStyle.display).toEqual('block');
         expect(stubStyle.left).toEqual('1px');
         expect(stubStyle.fontFamily).toEqual('Arial');
 
         // reset the style to their default state
-        var reset = {display: '', left: null, top: null, fontFamily: null};
+        var reset = { display: '', left: null, top: null, fontFamily: null };
         ReactDOM.render(<div style={reset} />, container);
         expect(stubStyle.display).toEqual('');
         expect(stubStyle.left).toEqual('');
@@ -163,7 +158,7 @@ describe('ReactDOMComponent', function() {
 
         var stubStyle = container.firstChild.style;
 
-        styles = {display: 'block'};
+        styles = { display: 'block' };
 
         ReactDOM.render(<div style={styles} />, container);
         expect(stubStyle.display).toEqual('block');
@@ -174,7 +169,7 @@ describe('ReactDOMComponent', function() {
         var container = document.createElement('div');
         ReactDOM.render(<div style={styles} />, container);
 
-        styles = {display: 'block'};
+        styles = { display: 'block' };
         var stubStyle = container.firstChild.style;
 
         ReactDOM.render(<div style={styles} />, container);
@@ -221,13 +216,13 @@ describe('ReactDOMComponent', function() {
       });
 
       it('should clear a single style prop when changing `style`', function() {
-        var styles = {display: 'none', color: 'red'};
+        var styles = { display: 'none', color: 'red' };
         var container = document.createElement('div');
         ReactDOM.render(<div style={styles} />, container);
 
         var stubStyle = container.firstChild.style;
 
-        styles = {color: 'green'};
+        styles = { color: 'green' };
         ReactDOM.render(<div style={styles} />, container);
         expect(stubStyle.display).toEqual('');
         expect(stubStyle.color).toEqual('green');
@@ -283,7 +278,7 @@ describe('ReactDOMComponent', function() {
       });
 
       it('should clear all the styles when removing `style`', function() {
-        var styles = {display: 'none', color: 'red'};
+        var styles = { display: 'none', color: 'red' };
         var container = document.createElement('div');
         ReactDOM.render(<div style={styles} />, container);
 
@@ -296,7 +291,7 @@ describe('ReactDOMComponent', function() {
 
       it('should update styles when `style` changes from null to object', function() {
         var container = document.createElement('div');
-        var styles = {color: 'red'};
+        var styles = { color: 'red' };
         ReactDOM.render(<div style={styles} />, container);
         ReactDOM.render(<div />, container);
         ReactDOM.render(<div style={styles} />, container);
@@ -307,7 +302,10 @@ describe('ReactDOMComponent', function() {
 
       it('should empty element when removing innerHTML', function() {
         var container = document.createElement('div');
-        ReactDOM.render(<div dangerouslySetInnerHTML={{__html: ':)'}} />, container);
+        ReactDOM.render(
+          <div dangerouslySetInnerHTML={{ __html: ':)' }} />,
+          container
+        );
 
         expect(container.firstChild.innerHTML).toEqual(':)');
         ReactDOM.render(<div />, container);
@@ -320,7 +318,7 @@ describe('ReactDOMComponent', function() {
 
         expect(container.firstChild.innerHTML).toEqual('hello');
         ReactDOM.render(
-          <div dangerouslySetInnerHTML={{__html: 'goodbye'}} />,
+          <div dangerouslySetInnerHTML={{ __html: 'goodbye' }} />,
           container
         );
         expect(container.firstChild.innerHTML).toEqual('goodbye');
@@ -329,7 +327,7 @@ describe('ReactDOMComponent', function() {
       it('should transition from innerHTML to string content', function() {
         var container = document.createElement('div');
         ReactDOM.render(
-          <div dangerouslySetInnerHTML={{__html: 'bonjour'}} />,
+          <div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />,
           container
         );
 
@@ -341,22 +339,40 @@ describe('ReactDOMComponent', function() {
       it('should transition from innerHTML to children in nested el', function() {
         var container = document.createElement('div');
         ReactDOM.render(
-          <div><div dangerouslySetInnerHTML={{__html: 'bonjour'}} /></div>,
+          <div>
+            <div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />
+          </div>,
           container
         );
 
         expect(container.textContent).toEqual('bonjour');
-        ReactDOM.render(<div><div><span>adieu</span></div></div>, container);
+        ReactDOM.render(
+          <div>
+            <div>
+              <span>adieu</span>
+            </div>
+          </div>,
+          container
+        );
         expect(container.textContent).toEqual('adieu');
       });
 
       it('should transition from children to innerHTML in nested el', function() {
         var container = document.createElement('div');
-        ReactDOM.render(<div><div><span>adieu</span></div></div>, container);
+        ReactDOM.render(
+          <div>
+            <div>
+              <span>adieu</span>
+            </div>
+          </div>,
+          container
+        );
 
         expect(container.textContent).toEqual('adieu');
         ReactDOM.render(
-          <div><div dangerouslySetInnerHTML={{__html: 'bonjour'}} /></div>,
+          <div>
+            <div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />
+          </div>,
           container
         );
         expect(container.textContent).toEqual('bonjour');
@@ -461,7 +477,7 @@ describe('ReactDOMComponent', function() {
 
       it('should ignore attribute whitelist for elements with the "is: attribute', function() {
         var container = document.createElement('div');
-        ReactDOM.render(<button is="test" cowabunga="chevynova"/>, container);
+        ReactDOM.render(<button is="test" cowabunga="chevynova" />, container);
         expect(container.firstChild.hasAttribute('cowabunga')).toBe(true);
       });
     });

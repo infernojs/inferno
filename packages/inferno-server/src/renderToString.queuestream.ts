@@ -1,11 +1,11 @@
 /**
  * @module Inferno-Server
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
 import { EMPTY_OBJ } from 'inferno';
 import {
   combineFrom,
-  isArray,
   isFunction,
   isInvalid,
   isNull,
@@ -16,7 +16,7 @@ import {
   isUndefined,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
 import { escapeText, voidElements } from './utils';
@@ -25,11 +25,11 @@ export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
   public promises: any[] = [];
 
-  constructor(initNode, staticMarkup) {
+  constructor(initNode) {
     super();
     this.pushQueue = this.pushQueue.bind(this);
     if (initNode) {
-      this.renderVNodeToQueue(initNode, null, staticMarkup, null);
+      this.renderVNodeToQueue(initNode, null, false, null);
     }
   }
 
@@ -91,12 +91,6 @@ export class RenderQueueStream extends Readable {
   }
 
   public renderVNodeToQueue(vNode, context, firstChild, position) {
-    // In case render returns invalid stuff
-    if (isInvalid(vNode)) {
-      this.addToQueue('<!--!-->', position);
-      return;
-    }
-
     const flags = vNode.flags;
     const type = vNode.type;
     const props = vNode.props || EMPTY_OBJ;
@@ -159,16 +153,27 @@ export class RenderQueueStream extends Readable {
                       dataForContext
                     );
                   }
-                  this.renderVNodeToQueue(
-                    instance.render(
-                      instance.props,
-                      instance.state,
-                      instance.context
-                    ),
-                    instance.context,
-                    true,
-                    promisePosition
+
+                  const renderOut = instance.render(
+                    instance.props,
+                    instance.state,
+                    instance.context
                   );
+                  if (isInvalid(renderOut)) {
+                    this.addToQueue('<!--!-->', promisePosition);
+                  } else if (isString(renderOut)) {
+                    this.addToQueue(escapeText(renderOut), promisePosition);
+                  } else if (isNumber(renderOut)) {
+                    this.addToQueue(renderOut + '', promisePosition);
+                  } else {
+                    this.renderVNodeToQueue(
+                      renderOut,
+                      instance.context,
+                      true,
+                      promisePosition
+                    );
+                  }
+
                   setTimeout(this.pushQueue, 0);
                   return promisePosition;
                 }),
@@ -180,13 +185,34 @@ export class RenderQueueStream extends Readable {
             }
           }
         }
-        const nextVNode = instance.render(props, instance.state, vNode.context);
+        const renderOutput = instance.render(
+          instance.props,
+          instance.state,
+          instance.context
+        );
         instance.$PSS = false;
 
-        this.renderVNodeToQueue(nextVNode, context, true, position);
+        if (isInvalid(renderOutput)) {
+          this.addToQueue('<!--!-->', position);
+        } else if (isString(renderOutput)) {
+          this.addToQueue(escapeText(renderOutput), position);
+        } else if (isNumber(renderOutput)) {
+          this.addToQueue(renderOutput + '', position);
+        } else {
+          this.renderVNodeToQueue(renderOutput, context, true, position);
+        }
       } else {
-        const nextVNode = type(props, context);
-        this.renderVNodeToQueue(nextVNode, context, true, position);
+        const renderOutput = type(props, context);
+
+        if (isInvalid(renderOutput)) {
+          this.addToQueue('<!--!-->', position);
+        } else if (isString(renderOutput)) {
+          this.addToQueue(escapeText(renderOutput), position);
+        } else if (isNumber(renderOutput)) {
+          this.addToQueue(renderOutput + '', position);
+        } else {
+          this.renderVNodeToQueue(renderOutput, context, true, position);
+        }
       }
       // If an element
     } else if ((flags & VNodeFlags.Element) > 0) {
@@ -241,39 +267,21 @@ export class RenderQueueStream extends Readable {
       } else {
         renderedString += `>`;
         // Element has children, build them in
-        if (!isInvalid(children)) {
-          if (isArray(children)) {
-            this.addToQueue(renderedString, position);
-            renderedString = '';
-            for (let i = 0, len = children.length; i < len; i++) {
-              const child = children[i];
-              if (isString(child)) {
-                this.addToQueue(escapeText(child), position);
-              } else if (isNumber(child)) {
-                this.addToQueue(child + '', position);
-              } else if (!isInvalid(child)) {
-                this.renderVNodeToQueue(child, context, i === 0, position);
-              }
-            }
-          } else if (isString(children)) {
-            this.addToQueue(
-              renderedString + escapeText(children) + '</' + type + '>',
-              position
-            );
-            return;
-          } else if (isNumber(children)) {
-            this.addToQueue(
-              renderedString + children + '</' + type + '>',
-              position
-            );
-            return;
-          } else {
-            this.addToQueue(renderedString, position);
-            this.renderVNodeToQueue(children, context, true, position);
-            this.addToQueue('</' + type + '>', position);
-            return;
+        const childFlags = vNode.childFlags;
+
+        if (childFlags & ChildFlags.HasVNodeChildren) {
+          this.addToQueue(renderedString, position);
+          this.renderVNodeToQueue(children, context, true, position);
+          this.addToQueue('</' + type + '>', position);
+          return;
+        } else if (childFlags & ChildFlags.MultipleChildren) {
+          this.addToQueue(renderedString, position);
+          renderedString = '';
+          for (let i = 0, len = children.length; i < len; i++) {
+            this.renderVNodeToQueue(children[i], context, i === 0, position);
           }
-        } else if (html) {
+        }
+        if (html) {
           this.addToQueue(renderedString + html + '</' + type + '>', position);
           return;
         }
@@ -285,7 +293,8 @@ export class RenderQueueStream extends Readable {
       // Push text directly to queue
     } else if ((flags & VNodeFlags.Text) > 0) {
       this.addToQueue(
-        (firstChild ? '' : '<!---->') + escapeText(children),
+        (firstChild ? '' : '<!---->') +
+          (children === '' ? ' ' : escapeText(children)),
         position
       );
       // Handle errors
@@ -309,9 +318,5 @@ export class RenderQueueStream extends Readable {
 }
 
 export function streamQueueAsString(node) {
-  return new RenderQueueStream(node, false);
-}
-
-export function streamQueueAsStaticMarkup(node) {
-  return new RenderQueueStream(node, true);
+  return new RenderQueueStream(node);
 }

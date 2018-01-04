@@ -8,7 +8,7 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 
@@ -16,19 +16,26 @@ describe('Render Select with multiple values', function() {
   class Component extends React.Component {
     constructor(props, context) {
       super(props, context);
-      this.state = {selectedValue: [1,3,4]};
+      this.state = { selectedValue: [1, 3, 4] };
     }
 
     render() {
-      return <div>
-        <select value={this.state.selectedValue} ref="selectNode" id="selectNode" multiple>
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-          <option value={4}>4</option>
-        </select>
-        {this.state.selectedValue}
-        </div>;
+      return (
+        <div>
+          <select
+            value={this.state.selectedValue}
+            ref="selectNode"
+            id="selectNode"
+            multiple
+          >
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+          </select>
+          {this.state.selectedValue}
+        </div>
+      );
     }
   }
 
@@ -40,26 +47,31 @@ describe('Render Select with multiple values', function() {
     expect(root.childNodes[0].options[2].selected).toBe(true);
     expect(root.childNodes[0].options[3].selected).toBe(true);
   });
-
 });
 
 describe('Render Select with single value', function() {
   class Component extends React.Component {
     constructor(props, context) {
       super(props, context);
-      this.state = {selectedValue: 2};
+      this.state = { selectedValue: 2 };
     }
 
     render() {
-      return <div>
-        <select value={this.state.selectedValue} ref="selectNode" id="selectNode">
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-          <option value={4}>4</option>
-        </select>
-        {this.state.selectedValue}
-        </div>;
+      return (
+        <div>
+          <select
+            value={this.state.selectedValue}
+            ref="selectNode"
+            id="selectNode"
+          >
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+          </select>
+          {this.state.selectedValue}
+        </div>
+      );
     }
   }
 
@@ -72,5 +84,4 @@ describe('Render Select with single value', function() {
     expect(root.childNodes[0].options[2].selected).toBe(false);
     expect(root.childNodes[0].options[3].selected).toBe(false);
   });
-
 });

@@ -8,7 +8,7 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 var TestComponent;
@@ -19,14 +19,12 @@ describe('refs-destruction', function() {
       render: function() {
         return (
           <div>
-            {this.props.destroy ? null :
-              <div ref="theInnerDiv">
-                Lets try to destroy this.
-              </div>
-            }
+            {this.props.destroy ? null : (
+              <div ref="theInnerDiv">Lets try to destroy this.</div>
+            )}
           </div>
         );
-      },
+      }
     });
   });
 

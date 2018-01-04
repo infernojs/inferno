@@ -5,6 +5,7 @@ import {
   observer,
   offError,
   Observer,
+  trackComponents,
   useStaticRendering
 } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
@@ -63,6 +64,8 @@ describe('Mobx Observer', () => {
     container.innerHTML = '';
     document.body.removeChild(container);
   });
+
+  trackComponents();
 
   it('nestedRendering', done => {
     render(<App />, container);

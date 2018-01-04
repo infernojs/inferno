@@ -1,5 +1,5 @@
 import { cloneVNode } from 'inferno-clone-vnode';
-import { render } from 'inferno';
+import { render, Component, createTextVNode } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 
 // React Fiddle for Cloning https://jsfiddle.net/es4u02jv/
@@ -27,7 +27,6 @@ describe('cloneVNode (JSX)', () => {
     render(node, container);
     expect(container.innerHTML).toBe(innerHTML('<div><a>1</a></div>'));
   });
-
 
   it('should clone with third argument overriding props and cloned node children', () => {
     const node = cloneVNode(<div>f</div>, { children: 'x' }, [undefined]);
@@ -191,6 +190,83 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toBe(
       innerHTML('<div class="yo">Hello world 3!</div>')
     );
+  });
+
+  it('Should prefer falsy children (undefined) if its provided over existing children', () => {
+    const node1 = <div>1</div>;
+    const clone = cloneVNode(node1, null, [undefined]);
+
+    render(clone, container);
+
+    expect(container.innerHTML).toEqual('<div></div>');
+  });
+
+  it('Should clone Component with vNode div children', () => {
+    class Com extends Component {
+      render({ children }) {
+        return children;
+      }
+    }
+    const com1 = (
+      <Com>
+        <div>abc</div>
+      </Com>
+    );
+    const clone = cloneVNode(com1);
+
+    render(clone, container);
+
+    expect(container.innerHTML).toEqual('<div>abc</div>');
+  });
+
+  it('Should clone Component with no props at all', () => {
+    class Com extends Component {
+      render({ children }) {
+        return children;
+      }
+    }
+    const com1 = <Com />;
+    const clone = cloneVNode(com1);
+
+    render(clone, container);
+
+    expect(container.innerHTML).toEqual('');
+  });
+
+  it('Should clone vNode with no props at all', () => {
+    const span = <span />;
+    const clone = cloneVNode(span);
+
+    render(clone, container);
+
+    expect(container.innerHTML).toEqual('<span></span>');
+  });
+
+  it('Should clone Component with vNode text children', () => {
+    class Com extends Component {
+      render() {
+        return 'Text';
+      }
+    }
+    const com1 = (
+      <Com>
+        <div>1</div>
+      </Com>
+    );
+    const clone = cloneVNode(com1);
+
+    render(clone, container);
+
+    expect(container.innerHTML).toEqual('Text');
+  });
+
+  it('Should clone textVNode', () => {
+    const textNode = createTextVNode('foobar');
+    const clone = cloneVNode(textNode);
+
+    render(clone, container);
+
+    expect(container.innerHTML).toEqual('foobar');
   });
 
   it('Should prefer children in order', () => {

@@ -7,7 +7,6 @@
  * @emails react-core
  */
 
-
 import React from 'inferno-compat';
 var ReactDOM = React;
 

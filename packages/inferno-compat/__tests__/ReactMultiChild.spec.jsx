@@ -11,10 +11,10 @@ import React from 'inferno-compat';
 
 var ReactDOM = React;
 var mocks = {
-      getMockFunction: function() {
-        return jasmine.createSpy();
-      }
-    }
+  getMockFunction: function() {
+    return jasmine.createSpy();
+  }
+};
 
 describe('ReactMultiChild', function() {
   describe('reconciliation', function() {
@@ -31,20 +31,30 @@ describe('ReactMultiChild', function() {
         componentWillUnmount: mockUnmount,
         render: function() {
           return <span />;
-        },
+        }
       });
 
       expect(mockMount.calls.count()).toBe(0);
       expect(mockUpdate.calls.count()).toBe(0);
       expect(mockUnmount.calls.count()).toBe(0);
 
-      ReactDOM.render(<div><MockComponent /></div>, container);
+      ReactDOM.render(
+        <div>
+          <MockComponent />
+        </div>,
+        container
+      );
 
       expect(mockMount.calls.count()).toBe(1);
       expect(mockUpdate.calls.count()).toBe(0);
       expect(mockUnmount.calls.count()).toBe(0);
 
-      ReactDOM.render(<div><MockComponent /></div>, container);
+      ReactDOM.render(
+        <div>
+          <MockComponent />
+        </div>,
+        container
+      );
 
       expect(mockMount.calls.count()).toBe(1);
       expect(mockUpdate.calls.count()).toBe(1);
@@ -62,18 +72,28 @@ describe('ReactMultiChild', function() {
         componentWillUnmount: mockUnmount,
         render: function() {
           return <span />;
-        },
+        }
       });
 
       expect(mockMount.calls.count()).toBe(0);
       expect(mockUnmount.calls.count()).toBe(0);
 
-      ReactDOM.render(<div><MockComponent /></div>, container);
+      ReactDOM.render(
+        <div>
+          <MockComponent />
+        </div>,
+        container
+      );
 
       expect(mockMount.calls.count()).toBe(1);
       expect(mockUnmount.calls.count()).toBe(0);
 
-      ReactDOM.render(<div><span /></div>, container);
+      ReactDOM.render(
+        <div>
+          <span />
+        </div>,
+        container
+      );
 
       expect(mockMount.calls.count()).toBe(1);
       expect(mockUnmount.calls.count()).toBe(1);
@@ -90,13 +110,13 @@ describe('ReactMultiChild', function() {
         componentWillUnmount: mockUnmount,
         render: function() {
           return <span />;
-        },
+        }
       });
 
       var WrapperComponent = React.createClass({
         render: function() {
           return this.props.children || <MockComponent />;
-        },
+        }
       });
 
       expect(mockMount.calls.count()).toBe(0);
@@ -108,7 +128,9 @@ describe('ReactMultiChild', function() {
       expect(mockUnmount.calls.count()).toBe(0);
 
       ReactDOM.render(
-        <WrapperComponent><MockComponent /></WrapperComponent>,
+        <WrapperComponent>
+          <MockComponent />
+        </WrapperComponent>,
         container
       );
 
@@ -127,18 +149,28 @@ describe('ReactMultiChild', function() {
         componentWillUnmount: mockUnmount,
         render: function() {
           return <span />;
-        },
+        }
       });
 
       expect(mockMount.calls.count()).toBe(0);
       expect(mockUnmount.calls.count()).toBe(0);
 
-      ReactDOM.render(<div><MockComponent key="A" /></div>, container);
+      ReactDOM.render(
+        <div>
+          <MockComponent key="A" />
+        </div>,
+        container
+      );
 
       expect(mockMount.calls.count()).toBe(1);
       expect(mockUnmount.calls.count()).toBe(0);
 
-      ReactDOM.render(<div><MockComponent key="B" /></div>, container);
+      ReactDOM.render(
+        <div>
+          <MockComponent key="B" />
+        </div>,
+        container
+      );
 
       expect(mockMount.calls.count()).toBe(2);
       expect(mockUnmount.calls.count()).toBe(1);

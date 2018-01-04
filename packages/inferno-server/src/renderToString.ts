@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import { EMPTY_OBJ, createTextVNode } from 'inferno';
+import { EMPTY_OBJ } from 'inferno';
 import {
   combineFrom,
   isFunction,
@@ -12,7 +12,6 @@ import {
   isNullOrUndef,
   isNumber,
   isString,
-  isStringOrNumber,
   isTrue,
   throwError
 } from 'inferno-shared';
@@ -71,7 +70,7 @@ function renderVNodeToString(
         instance.$PSS = false;
         instance.$PS = null;
       }
-      let renderOutput = instance.render(
+      const renderOutput = instance.render(
         props,
         instance.state,
         instance.context
@@ -80,17 +79,26 @@ function renderVNodeToString(
       if (isInvalid(renderOutput)) {
         return '<!--!-->';
       }
-      if (isStringOrNumber(renderOutput)) {
-        renderOutput = createTextVNode(renderOutput, null);
+      if (isString(renderOutput)) {
+        return escapeText(renderOutput);
+      }
+      if (isNumber(renderOutput)) {
+        return renderOutput + '';
       }
       return renderVNodeToString(renderOutput, vNode, childContext, true);
     } else {
-      const nextVNode = type(props, context);
+      const renderOutput = type(props, context);
 
-      if (isInvalid(nextVNode)) {
+      if (isInvalid(renderOutput)) {
         return '<!--!-->';
       }
-      return renderVNodeToString(nextVNode, vNode, context, true);
+      if (isString(renderOutput)) {
+        return escapeText(renderOutput);
+      }
+      if (isNumber(renderOutput)) {
+        return renderOutput + '';
+      }
+      return renderVNodeToString(renderOutput, vNode, context, true);
     }
   } else if ((flags & VNodeFlags.Element) > 0) {
     let renderedString = `<${type}`;
@@ -194,9 +202,5 @@ function renderVNodeToString(
 }
 
 export function renderToString(input: any): string {
-  return renderVNodeToString(input, {}, {}, true) as string;
-}
-
-export function renderToStaticMarkup(input: any): string {
   return renderVNodeToString(input, {}, {}, true) as string;
 }

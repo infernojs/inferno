@@ -47,7 +47,7 @@ const uppercasePattern = /[A-Z]/g;
 const CssPropCache = {};
 
 export function getCssPropertyName(str): string {
-  if (CssPropCache.hasOwnProperty(str)) {
+  if (CssPropCache[str] !== void 0) {
     return CssPropCache[str];
   }
   return (CssPropCache[str] =

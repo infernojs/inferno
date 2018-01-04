@@ -29,6 +29,9 @@
   "module": "dist/index.es.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
+  "engines" : {
+    "node" : ">=6"
+  },
   "peerDependencies": {
     "inferno": "4.0.0-5"
   },

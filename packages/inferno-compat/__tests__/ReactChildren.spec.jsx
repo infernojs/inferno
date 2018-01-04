@@ -65,7 +65,6 @@ describe('ReactChildren', function() {
     var mappedChildren = ReactChildren.map(instance.children, callback);
     expect(callback).toHaveBeenCalledWith(simpleKid, 0, jasmine.any(Array));
     expect(mappedChildren[0]).toEqual(<span key="simple" />);
-
   });
 
   it('should pass key to returned component', function() {
@@ -99,11 +98,18 @@ describe('ReactChildren', function() {
     ReactChildren.forEach(instance.children, callback, scopeTester);
     expect(lastContext).toBe(scopeTester);
 
-    var mappedChildren =
-      ReactChildren.map(instance.children, callback, scopeTester);
+    var mappedChildren = ReactChildren.map(
+      instance.children,
+      callback,
+      scopeTester
+    );
 
     expect(ReactChildren.count(mappedChildren)).toBe(1);
     expect(mappedChildren[0]).toBe(scopeTester);
+  });
+
+  it('ForEach should not fail if null children is provided', () => {
+    expect(React.Children.forEach(null, null, null)).toBe(undefined);
   });
 
   // it('should be called for each child', function() {
@@ -377,15 +383,13 @@ describe('ReactChildren', function() {
 
     expect(ReactChildren.toArray(<div />).length).toBe(1);
     expect(ReactChildren.toArray([<div />]).length).toBe(1);
-    expect(
-      ReactChildren.toArray(<div />)[0].key
-    ).toBe(
+    expect(ReactChildren.toArray(<div />)[0].key).toBe(
       ReactChildren.toArray([<div />])[0].key
     );
 
     var flattened = ReactChildren.toArray([
       [<div key="apple" />, <div key="banana" />, <div key="camel" />],
-      [<div key="banana" />, <div key="camel" />, <div key="deli" />],
+      [<div key="banana" />, <div key="camel" />, <div key="deli" />]
     ]);
     expect(flattened.length).toBe(6);
     expect(flattened[1].key).toContain('banana');
@@ -417,8 +421,6 @@ describe('ReactChildren', function() {
     };
 
     ReactChildren.forEach([false, true, undefined], callback);
-    expect(children).toEqual(
-      [null, null, null]
-    );
+    expect(children).toEqual([null, null, null]);
   });
 });

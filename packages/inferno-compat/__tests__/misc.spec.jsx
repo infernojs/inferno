@@ -1,6 +1,16 @@
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import React, { PropTypes, unstable_renderSubtreeIntoContainer, createClass, Component, Children, cloneElement, createElement, isValidElement, __spread } from 'inferno-compat';
+import React, {
+  PropTypes,
+  unstable_renderSubtreeIntoContainer,
+  createClass,
+  Component,
+  Children,
+  cloneElement,
+  createElement,
+  isValidElement,
+  __spread
+} from 'inferno-compat';
 
 describe('MISC', () => {
   describe('PropTypes', () => {
@@ -31,14 +41,14 @@ describe('MISC', () => {
 
   describe('Children Only', () => {
     it('Should return first of array', () => {
-      const divOne = <div/>;
+      const divOne = <div />;
       const children = [divOne];
 
       expect(Children.only(children)).toBe(divOne);
     });
 
     it('Should two if children length is not one', () => {
-      const divOne = <div/>;
+      const divOne = <div />;
       const children = [divOne, 'two', 3];
 
       expect(() => Children.only(children)).toThrow();
@@ -47,13 +57,13 @@ describe('MISC', () => {
 
   describe('Children toArray', () => {
     it('Should return child in array', () => {
-      const divOne = <div/>;
+      const divOne = <div />;
 
       expect(Children.toArray(divOne)).toEqual([divOne]);
     });
 
     it('Should return array if its already array', () => {
-      const children = [<div/>];
+      const children = [<div />];
 
       expect(Children.toArray(children)).toEqual(children);
     });
@@ -65,15 +75,14 @@ describe('MISC', () => {
     });
   });
 
-
   describe('render()', () => {
     it('should be exported', () => {
       expect(React.render).toBe(render);
     });
 
     it('should replace isomorphic content', () => {
-      let ce = (type) => document.createElement(type);
-      let Text = (text) => document.createTextNode(text);
+      let ce = type => document.createElement(type);
+      let Text = text => document.createTextNode(text);
       let root = ce('div');
       let initialChild = ce('div');
       initialChild.appendChild(Text('initial content'));
@@ -84,8 +93,8 @@ describe('MISC', () => {
     });
 
     it('should remove extra elements', () => {
-      let ce = (type) => document.createElement(type);
-      let Text = (text) => document.createTextNode(text);
+      let ce = type => document.createElement(type);
+      let Text = text => document.createTextNode(text);
       let root = ce('div');
 
       let c1 = ce('div');
@@ -101,8 +110,8 @@ describe('MISC', () => {
     });
 
     it('should remove text nodes', () => {
-      let ce = (type) => document.createElement(type);
-      let Text = (text) => document.createTextNode(text);
+      let ce = type => document.createElement(type);
+      let Text = text => document.createTextNode(text);
       let root = ce('div');
 
       root.appendChild(Text('Text Content in the root'));
@@ -115,7 +124,7 @@ describe('MISC', () => {
     it('should support defaultValue', () => {
       let scratch = document.createElement('div');
       (document.body || document.documentElement).appendChild(scratch);
-      render(<input defaultValue="foo"></input>, scratch);
+      render(<input defaultValue="foo" />, scratch);
       expect(scratch.firstElementChild.value).toBe('foo');
     });
   });
@@ -164,33 +173,45 @@ describe('MISC', () => {
 
   describe('cloneElement', () => {
     it('should clone elements', () => {
-      let element = <foo a="b" c="d">a<span>b</span></foo>;
+      let element = (
+        <foo a="b" c="d">
+          a<span>b</span>
+        </foo>
+      );
       // TODO: Cloning changes parent childFlags to keyed.
-      expect(JSON.stringify(cloneElement(element).children)).toEqual(JSON.stringify(element.children));
+      expect(JSON.stringify(cloneElement(element).children)).toEqual(
+        JSON.stringify(element.children)
+      );
     });
 
     it('should support props.children', () => {
-      let element = <foo children={<span>b</span>}></foo>;
+      let element = <foo children={<span>b</span>} />;
       let clone = cloneElement(element);
       expect(JSON.stringify(clone)).toEqual(JSON.stringify(element));
-      expect(cloneElement(clone).props.children).toEqual(element.props.children);
+      expect(cloneElement(clone).props.children).toEqual(
+        element.props.children
+      );
     });
 
     it('children take precedence over props.children', () => {
-      let element = <foo children={<span>c</span>}><div>b</div></foo>;
+      let element = (
+        <foo children={<span>c</span>}>
+          <div>b</div>
+        </foo>
+      );
       let clone = cloneElement(element);
       expect(JSON.stringify(clone)).toEqual(JSON.stringify(element));
     });
 
     it('should support children in prop argument', () => {
-      let element = <foo></foo>;
+      let element = <foo />;
       let children = [<span>b</span>];
       let clone = cloneElement(element, { children });
       expect(JSON.stringify(clone.children)).toEqual(JSON.stringify(children));
     });
 
     it('children argument takes precedence over props.children', () => {
-      let element = <foo></foo>;
+      let element = <foo />;
       let childrenA = [<span>b</span>];
       let childrenB = [<div>c</div>];
       let clone = cloneElement(element, { children: childrenA }, childrenB);
@@ -198,7 +219,7 @@ describe('MISC', () => {
     });
 
     it('children argument takes precedence over props.children even if falsey', () => {
-      let element = <foo></foo>;
+      let element = <foo />;
       let childrenA = [<span>b</span>];
       let clone = cloneElement(element, { children: childrenA }, undefined);
       expect(clone.children).toEqual(null);
@@ -225,11 +246,15 @@ describe('MISC', () => {
         }
         renderInner() {
           const wrapper = document.createElement('div');
-          this.inner = unstable_renderSubtreeIntoContainer(this, <Inner/>, wrapper);
+          this.inner = unstable_renderSubtreeIntoContainer(
+            this,
+            <Inner />,
+            wrapper
+          );
         }
       }
       const root = document.createElement('div');
-      const app = render(<App/>, root);
+      const app = render(<App />, root);
       expect(typeof app.inner.getNode === 'function').toEqual(true);
     });
 
@@ -244,13 +269,18 @@ describe('MISC', () => {
         renderInner() {
           const wrapper = document.createElement('div');
           const self = this;
-          unstable_renderSubtreeIntoContainer(this, <Inner/>, wrapper, function() {
-            self.inner = this;
-          });
+          unstable_renderSubtreeIntoContainer(
+            this,
+            <Inner />,
+            wrapper,
+            function() {
+              self.inner = this;
+            }
+          );
         }
       }
       const root = document.createElement('div');
-      const app = render(<App/>, root);
+      const app = render(<App />, root);
       expect(typeof app.inner.getNode === 'function').toEqual(true);
     });
   });
@@ -258,9 +288,9 @@ describe('MISC', () => {
   describe('Unsupported hidden internal __spread API', () => {
     it('should work with multiple objects', () => {
       const start = {};
-      const result = React.__spread(start, {one: 1, two: 3}, {two: 2});
+      const result = React.__spread(start, { one: 1, two: 3 }, { two: 2 });
       expect(result).toEqual(start);
-      expect(start).toEqual({ one: 1, two: 2});
+      expect(start).toEqual({ one: 1, two: 2 });
     });
 
     it('should be exported on default and as __spread', () => {

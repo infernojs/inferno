@@ -8,12 +8,11 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 
 describe('ReactClass-spec', function() {
-
   beforeEach(function() {
     spyOn(console, 'error');
   });
@@ -206,12 +205,12 @@ describe('ReactClass-spec', function() {
         jkl: 'mno',
         pqr: function() {
           return this;
-        },
+        }
       },
 
       render: function() {
         return <span />;
-      },
+      }
     });
 
     var instance = <Component />;
@@ -233,12 +232,12 @@ describe('ReactClass-spec', function() {
     var Component = React.createClass({
       getInitialState: function() {
         return {
-          occupation: 'clown',
+          occupation: 'clown'
         };
       },
       render: function() {
         return <span />;
-      },
+      }
     });
     var instance = <Component />;
     instance = ReactTestUtils.renderIntoDocument(instance);
@@ -248,26 +247,26 @@ describe('ReactClass-spec', function() {
   it('renders based on context getInitialState', function() {
     var Foo = React.createClass({
       contextTypes: {
-        className: React.PropTypes.string,
+        className: React.PropTypes.string
       },
       getInitialState() {
-        return {className: this.context.className};
+        return { className: this.context.className };
       },
       render() {
         return <span className={this.state.className} />;
-      },
+      }
     });
 
     var Outer = React.createClass({
       childContextTypes: {
-        className: React.PropTypes.string,
+        className: React.PropTypes.string
       },
       getChildContext() {
-        return {className: 'foo'};
+        return { className: 'foo' };
       },
       render() {
         return <Foo />;
-      },
+      }
     });
 
     var container = document.createElement('div');
@@ -302,10 +301,10 @@ describe('ReactClass-spec', function() {
       },
       render: function() {
         return <span />;
-      },
+      }
     });
-    expect(
-      () => ReactTestUtils.renderIntoDocument(<Component />)
+    expect(() =>
+      ReactTestUtils.renderIntoDocument(<Component />)
     ).not.toThrow();
   });
 
@@ -342,5 +341,4 @@ describe('ReactClass-spec', function() {
   //     'ReactDOM.findDOMNode(instance) instead.'
   //   );
   // });
-
 });

@@ -14,7 +14,6 @@ var ReactDOM = React;
 var TestComponent;
 
 describe('ReactCompositeComponent-state', function() {
-
   beforeEach(function() {
     TestComponent = React.createClass({
       peekAtState: function(from, state) {
@@ -28,14 +27,14 @@ describe('ReactCompositeComponent-state', function() {
 
       setFavoriteColor: function(nextColor) {
         this.setState(
-          {color: nextColor},
+          { color: nextColor },
           this.peekAtCallback('setFavoriteColor')
         );
       },
 
       getInitialState: function() {
         this.peekAtState('getInitialState');
-        return {color: 'red'};
+        return { color: 'red' };
       },
 
       render: function() {
@@ -49,7 +48,7 @@ describe('ReactCompositeComponent-state', function() {
           this.peekAtState('before-setState-sunrise', state);
         });
         this.setState(
-          {color: 'sunrise'},
+          { color: 'sunrise' },
           this.peekAtCallback('setState-sunrise')
         );
         this.setState(function(state) {
@@ -57,7 +56,7 @@ describe('ReactCompositeComponent-state', function() {
         });
         this.peekAtState('componentWillMount-after-sunrise');
         this.setState(
-          {color: 'orange'},
+          { color: 'orange' },
           this.peekAtCallback('setState-orange')
         );
         this.setState(function(state) {
@@ -69,7 +68,7 @@ describe('ReactCompositeComponent-state', function() {
       componentDidMount: function() {
         this.peekAtState('componentDidMount-start');
         this.setState(
-          {color: 'yellow'},
+          { color: 'yellow' },
           this.peekAtCallback('setState-yellow')
         );
         this.peekAtState('componentDidMount-end');
@@ -80,16 +79,13 @@ describe('ReactCompositeComponent-state', function() {
         if (newProps.nextColor) {
           this.setState(function(state) {
             this.peekAtState('before-setState-receiveProps', state);
-            return {color: newProps.nextColor};
+            return { color: newProps.nextColor };
           });
-          this.replaceState({color: undefined});
-          this.setState(
-            function(state) {
-              this.peekAtState('before-setState-again-receiveProps', state);
-              return {color: newProps.nextColor};
-            },
-            this.peekAtCallback('setState-receiveProps')
-          );
+          this.replaceState({ color: undefined });
+          this.setState(function(state) {
+            this.peekAtState('before-setState-again-receiveProps', state);
+            return { color: newProps.nextColor };
+          }, this.peekAtCallback('setState-receiveProps'));
           this.setState(function(state) {
             this.peekAtState('after-setState-receiveProps', state);
           });
@@ -115,7 +111,7 @@ describe('ReactCompositeComponent-state', function() {
 
       componentWillUnmount: function() {
         this.peekAtState('componentWillUnmount');
-      },
+      }
     });
   });
 
@@ -218,16 +214,16 @@ describe('ReactCompositeComponent-state', function() {
       componentWillUnmount: function() {
         // This should get silently ignored (maybe with a warning), but it
         // shouldn't break React.
-        outer.setState({showInner: false});
-      },
+        outer.setState({ showInner: false });
+      }
     });
     var Outer = React.createClass({
       getInitialState: function() {
-        return {showInner: true};
+        return { showInner: true };
       },
       render: function() {
         return <div>{this.state.showInner && <Inner />}</div>;
-      },
+      }
     });
 
     var container = document.createElement('div');

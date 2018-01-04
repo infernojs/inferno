@@ -17,13 +17,13 @@ import {
   render,
   VNode
 } from 'inferno';
-import {cloneVNode} from 'inferno-clone-vnode';
+import { cloneVNode } from 'inferno-clone-vnode';
 import {
   createClass,
   ClassicComponentClass,
   ComponentSpec
 } from 'inferno-create-class';
-import {createElement as infernoCreateElement} from 'inferno-create-element';
+import { createElement as infernoCreateElement } from 'inferno-create-element';
 import {
   isArray,
   isBrowser,
@@ -35,10 +35,10 @@ import {
   NO_OP,
   throwError
 } from 'inferno-shared';
-import {VNodeFlags} from 'inferno-vnode-flags';
-import {isValidElement} from './isValidElement';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
-import {SVGDOMPropertyConfig} from './SVGDOMPropertyConfig';
+import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
 
 declare global {
   interface Event {
@@ -49,14 +49,15 @@ declare global {
 const componentToDOMNodeMap = new Map();
 options.findDOMNodeEnabled = true;
 
-function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
+function unmountComponentAtNode(
+  container: Element | SVGAElement | DocumentFragment
+): boolean {
   render(null, container);
   return true;
 }
 
-
 function extend(base, props) {
-  for (let i=1, obj; i<arguments.length; i++) {
+  for (let i = 1, obj; i < arguments.length; i++) {
     if ((obj = arguments[i])) {
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -68,9 +69,11 @@ function extend(base, props) {
   return base;
 }
 
-export type IterateChildrenFn = (value: InfernoChildren | any,
-                                 index: number,
-                                 array: Array<InfernoChildren | any>) => any;
+export type IterateChildrenFn = (
+  value: InfernoChildren | any,
+  index: number,
+  array: Array<InfernoChildren | any>
+) => any;
 
 function flatten(arr, result) {
   for (let i = 0, len = arr.length; i < len; i++) {
@@ -87,9 +90,11 @@ function flatten(arr, result) {
 const ARR = [];
 
 const Children = {
-  map(children: Array<InfernoChildren | any>,
-      fn: IterateChildrenFn,
-      ctx: any): any[] {
+  map(
+    children: Array<InfernoChildren | any>,
+    fn: IterateChildrenFn,
+    ctx: any
+  ): any[] {
     if (isNullOrUndef(children)) {
       return children;
     }
@@ -99,9 +104,11 @@ const Children = {
     }
     return children.map(fn);
   },
-  forEach(children: Array<InfernoChildren | any>,
-          fn: IterateChildrenFn,
-          ctx: any): void {
+  forEach(
+    children: Array<InfernoChildren | any>,
+    fn: IterateChildrenFn,
+    ctx?: any
+  ): void {
     if (isNullOrUndef(children)) {
       return;
     }
@@ -126,7 +133,9 @@ const Children = {
     }
     return children[0];
   },
-  toArray(children: Array<InfernoChildren | any>): Array<InfernoChildren | any> {
+  toArray(
+    children: Array<InfernoChildren | any>
+  ): Array<InfernoChildren | any> {
     if (isNullOrUndef(children)) {
       return [];
     }
@@ -147,10 +156,10 @@ const Children = {
 
 let currentComponent: any = null;
 
-options.beforeRender = function (component): void {
+options.beforeRender = function(component): void {
   currentComponent = component;
 };
-options.afterRender = function (): void {
+options.afterRender = function(): void {
   currentComponent = null;
 };
 const nextAfterMount = options.afterMount;
@@ -251,8 +260,7 @@ function normProps(name: string, props: Props | any) {
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
   // tslint:disable-next-line:no-empty
-  Event.prototype.persist = function () {
-  };
+  Event.prototype.persist = function() {};
 }
 
 function iterableToArray(iterable) {
@@ -268,12 +276,12 @@ function iterableToArray(iterable) {
   return tmpArr;
 }
 
-const g: any = window || global;
+const g: any = window || global;
 const hasSymbolSupport = typeof g.Symbol !== 'undefined';
 const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 
-const injectStringRefs = function (originalFunction) {
-  return function (name, _props, ...children) {
+const injectStringRefs = function(originalFunction) {
+  return function(name, _props, ...children) {
     if (_props) {
       if (typeof name === 'string') {
         normProps(name, _props);
@@ -299,7 +307,7 @@ const injectStringRefs = function (originalFunction) {
       if (!currentComponent.refs) {
         currentComponent.refs = {};
       }
-      vnode.ref = function (val) {
+      vnode.ref = function(val) {
         this.refs[_props.ref] = val;
       }.bind(currentComponent);
     }
@@ -340,7 +348,7 @@ options.createVNode = (vNode: VNode): void => {
     if (!currentComponent.refs) {
       currentComponent.refs = {};
     }
-    vNode.ref = function (val) {
+    vNode.ref = function(val) {
       this.refs[ref] = val;
     }.bind(currentComponent);
   }
@@ -366,7 +374,9 @@ function shallowDiffers(a, b): boolean {
 
 class PureComponent<P, S> extends Component<P, S> {
   public shouldComponentUpdate(props, state) {
-    return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+    return (
+      shallowDiffers(this.props, props) || shallowDiffers(this.state, state)
+    );
   }
 }
 
@@ -381,10 +391,12 @@ class WrapperComponent<P, S> extends Component<P, S> {
   }
 }
 
-function unstable_renderSubtreeIntoContainer(parentComponent,
-                                             vNode,
-                                             container,
-                                             callback) {
+function unstable_renderSubtreeIntoContainer(
+  parentComponent,
+  vNode,
+  container,
+  callback
+) {
   const wrapperVNode: VNode = createComponentVNode(
     VNodeFlags.ComponentClass,
     WrapperComponent,
@@ -413,7 +425,7 @@ function createFactory(type) {
 }
 
 const DOM = {};
-for (let i = ELEMENTS.length; i--;) {
+for (let i = ELEMENTS.length; i--; ) {
   DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
 }
 
@@ -505,5 +517,5 @@ export default {
   render,
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer,
-  version,
+  version
 };

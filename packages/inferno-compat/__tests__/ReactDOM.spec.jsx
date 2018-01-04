@@ -8,7 +8,7 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 var div = React.createFactory('div');
@@ -44,22 +44,20 @@ describe('ReactDOM', function() {
   */
 
   it('allows a DOM element to be used with a string', function() {
-    var element = React.createElement('div', {className: 'foo'});
+    var element = React.createElement('div', { className: 'foo' });
     var instance = ReactTestUtils.renderIntoDocument(element);
     expect(ReactDOM.findDOMNode(instance).tagName).toBe('DIV');
   });
 
   it('should allow children to be passed as an argument', function() {
-    var argDiv = ReactTestUtils.renderIntoDocument(
-      div(null, 'child')
-    );
+    var argDiv = ReactTestUtils.renderIntoDocument(div(null, 'child'));
     var argNode = ReactDOM.findDOMNode(argDiv);
     expect(argNode.innerHTML).toBe('child');
   });
 
   it('should overwrite props.children with children argument', function() {
     var conflictDiv = ReactTestUtils.renderIntoDocument(
-      div({children: 'fakechild'}, 'child')
+      div({ children: 'fakechild' }, 'child')
     );
     var conflictNode = ReactDOM.findDOMNode(conflictDiv);
     expect(conflictNode.innerHTML).toBe('child');
@@ -115,5 +113,4 @@ describe('ReactDOM', function() {
     expect(element.type).toBe('div');
     expect(console.error.calls.count()).toBe(0);
   });
-
 });

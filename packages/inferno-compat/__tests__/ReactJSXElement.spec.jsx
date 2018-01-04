@@ -8,7 +8,8 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import { triggerEvent } from 'inferno-utils';
+import sinon from 'sinon';
 
 var ReactDOM = React;
 
@@ -60,7 +61,7 @@ describe('ReactJSXElement', function() {
   // });
 
   it('does not reuse the object that is spread into props', function() {
-    var config = {foo: 1};
+    var config = { foo: 1 };
     var element = <Component {...config} />;
     expect(element.props.foo).toBe(1);
     config.foo = 2;
@@ -127,7 +128,7 @@ describe('ReactJSXElement', function() {
         return 'someReturnValue';
       }
       render() {
-        return <div></div>;
+        return <div />;
       }
     }
 
@@ -155,13 +156,10 @@ describe('ReactJSXElement', function() {
   // });
 
   it('should use default prop value when removing a prop', function() {
-    Component.defaultProps = {fruit: 'persimmon'};
+    Component.defaultProps = { fruit: 'persimmon' };
 
     var container = document.createElement('div');
-    var instance = ReactDOM.render(
-      <Component fruit="mango" />,
-      container
-    );
+    var instance = ReactDOM.render(<Component fruit="mango" />, container);
     expect(instance.props.fruit).toBe('mango');
 
     ReactDOM.render(<Component />, container);
@@ -184,4 +182,50 @@ describe('ReactJSXElement', function() {
   //   expect(inst2.props.prop).toBe(null);
   // });
 
+  it('Should map onDoubleClick to html native event', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const spy = sinon.spy(() => {});
+    ReactDOM.render(
+      React.createElement('a', { onDoubleClick: spy }, 'test'),
+      container
+    );
+
+    expect(spy.callCount).toBe(0);
+    const element = container.querySelector('a');
+    triggerEvent('dblclick', element);
+    expect(spy.callCount).toBe(1);
+
+    document.body.removeChild(container);
+  });
+
+  it('Should have input onChange event', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const spy = sinon.spy(() => {});
+    ReactDOM.render(
+      React.createElement('input', { onChange: spy }, 'test'),
+      container
+    );
+
+    expect(spy.callCount).toBe(0);
+    const element = container.querySelector('input');
+    element.value = 'test';
+    triggerEvent('input', element);
+    expect(spy.callCount).toBe(1);
+
+    document.body.removeChild(container);
+  });
+
+  it('Should map onDoubleClick to html native event', () => {
+    const container = document.createElement('div');
+
+    ReactDOM.render(
+      React.createElement('label', { htmlFor: 'foobarID' }, 'test'),
+      container
+    );
+
+    const element = container.querySelector('label');
+    expect(element.htmlFor).toBe('foobarID');
+  });
 });

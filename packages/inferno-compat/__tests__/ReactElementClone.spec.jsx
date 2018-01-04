@@ -8,20 +8,18 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 
 describe('ReactElementClone', function() {
-
-  beforeEach(function() {
-  });
+  beforeEach(function() {});
 
   it('should clone a DOM component with new props', function() {
     var Grandparent = React.createClass({
       render: function() {
         return <Parent child={<div className="child" />} />;
-      },
+      }
     });
     var Parent = React.createClass({
       render: function() {
@@ -30,7 +28,7 @@ describe('ReactElementClone', function() {
             {React.cloneElement(this.props.child, { className: 'xyz' })}
           </div>
         );
-      },
+      }
     });
     var component = ReactTestUtils.renderIntoDocument(<Grandparent />);
     expect(ReactDOM.findDOMNode(component).childNodes[0].className).toBe('xyz');
@@ -40,12 +38,12 @@ describe('ReactElementClone', function() {
     var Child = React.createClass({
       render: function() {
         return <div className={this.props.className} />;
-      },
+      }
     });
     var Grandparent = React.createClass({
       render: function() {
         return <Parent child={<Child className="child" />} />;
-      },
+      }
     });
     var Parent = React.createClass({
       render: function() {
@@ -54,7 +52,7 @@ describe('ReactElementClone', function() {
             {React.cloneElement(this.props.child, { className: 'xyz' })}
           </div>
         );
-      },
+      }
     });
     var component = ReactTestUtils.renderIntoDocument(<Grandparent />);
     expect(ReactDOM.findDOMNode(component).childNodes[0].className).toBe('xyz');
@@ -64,7 +62,7 @@ describe('ReactElementClone', function() {
     var Grandparent = React.createClass({
       render: function() {
         return <Parent child={<div ref="yolo" />} />;
-      },
+      }
     });
 
     var Parent = React.createClass({
@@ -74,7 +72,7 @@ describe('ReactElementClone', function() {
             {React.cloneElement(this.props.child, { className: 'xyz' })}
           </div>
         );
-      },
+      }
     });
 
     var component = ReactTestUtils.renderIntoDocument(<Grandparent />);
@@ -85,9 +83,9 @@ describe('ReactElementClone', function() {
     var Component = React.createClass({
       render: function() {
         return null;
-      },
+      }
     });
-    var clone = React.cloneElement(<Component />, {key: 'xyz'});
+    var clone = React.cloneElement(<Component />, { key: 'xyz' });
     expect(clone.key).toBe('xyz');
   });
 
@@ -96,11 +94,11 @@ describe('ReactElementClone', function() {
       render: function() {
         expect(this.props.children).toBe('xyz');
         return <div />;
-      },
+      }
     });
 
     ReactTestUtils.renderIntoDocument(
-      React.cloneElement(<Component />, {children: 'xyz'})
+      React.cloneElement(<Component />, { children: 'xyz' })
     );
   });
 
@@ -109,7 +107,7 @@ describe('ReactElementClone', function() {
       render: function() {
         expect(this.props.children).toBe('xyz');
         return <div />;
-      },
+      }
     });
 
     ReactTestUtils.renderIntoDocument(
@@ -121,7 +119,7 @@ describe('ReactElementClone', function() {
     var Component = React.createClass({
       render: function() {
         return null;
-      },
+      }
     });
 
     var clone = React.cloneElement(
@@ -131,10 +129,7 @@ describe('ReactElementClone', function() {
       <span />
     );
 
-    expect(clone.props.children).toEqual([
-      <div />,
-      <span />,
-    ]);
+    expect(clone.props.children).toEqual([<div />, <span />]);
   });
 
   // it('should support keys and refs', function() {
@@ -183,11 +178,11 @@ describe('ReactElementClone', function() {
       render: function() {
         expect(this.props.myprop).toBe('xyz');
         return <div />;
-      },
+      }
     });
 
     ReactTestUtils.renderIntoDocument(
-      React.cloneElement(<Component myprop="abc" />, {myprop: 'xyz'})
+      React.cloneElement(<Component myprop="abc" />, { myprop: 'xyz' })
     );
   });
 
@@ -257,5 +252,4 @@ describe('ReactElementClone', function() {
   //     'expected `string`. Check the render method of `Parent`.'
   //   );
   // });
-
 });

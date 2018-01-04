@@ -10,7 +10,7 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 
@@ -30,7 +30,7 @@ describe('ReactStatelessComponent', function() {
     var Parent = React.createClass({
       render() {
         return <StatelessComponent {...this.props} />;
-      },
+      }
     });
 
     var el = document.createElement('div');
@@ -54,12 +54,12 @@ describe('ReactStatelessComponent', function() {
   it('should pass context thru stateless component', function() {
     var Child = React.createClass({
       contextTypes: {
-        test: React.PropTypes.string.isRequired,
+        test: React.PropTypes.string.isRequired
       },
 
       render: function() {
         return <div>{this.context.test}</div>;
-      },
+      }
     });
 
     function Parent() {
@@ -68,16 +68,16 @@ describe('ReactStatelessComponent', function() {
 
     var GrandParent = React.createClass({
       childContextTypes: {
-        test: React.PropTypes.string.isRequired,
+        test: React.PropTypes.string.isRequired
       },
 
       getChildContext() {
-        return {test: this.props.test};
+        return { test: this.props.test };
       },
 
       render: function() {
         return <Parent />;
-      },
+      }
     });
 
     var el = document.createElement('div');
@@ -96,7 +96,11 @@ describe('ReactStatelessComponent', function() {
       return [<div />, <div />];
     }
     expect(function() {
-      ReactTestUtils.renderIntoDocument(<div><NotAComponent /></div>);
+      ReactTestUtils.renderIntoDocument(
+        <div>
+          <NotAComponent />
+        </div>
+      );
     }).toThrow();
     // expect(console.error.calls.count()).toBe(1);
     // expect(console.error.argsForCall[0][0]).toContain(
@@ -176,19 +180,19 @@ describe('ReactStatelessComponent', function() {
   it('should receive context', function() {
     var Parent = React.createClass({
       childContextTypes: {
-        lang: React.PropTypes.string,
+        lang: React.PropTypes.string
       },
       getChildContext: function() {
-        return {lang: 'en'};
+        return { lang: 'en' };
       },
       render: function() {
         return <Child />;
-      },
+      }
     });
     function Child(props, context) {
       return <div>{context.lang}</div>;
     }
-    Child.contextTypes = {lang: React.PropTypes.string};
+    Child.contextTypes = { lang: React.PropTypes.string };
 
     var el = document.createElement('div');
     ReactDOM.render(<Parent />, el);

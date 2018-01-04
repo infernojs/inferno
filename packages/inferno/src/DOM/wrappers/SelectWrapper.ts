@@ -62,7 +62,10 @@ export function processSelect(
 }
 
 export function applyValue(nextPropsOrEmpty, dom, mounting: boolean, vNode) {
-  if (!isNullOrUndef(nextPropsOrEmpty.multiple) && nextPropsOrEmpty.multiple !== dom.multiple) {
+  if (
+    !isNullOrUndef(nextPropsOrEmpty.multiple) &&
+    nextPropsOrEmpty.multiple !== dom.multiple
+  ) {
     dom.multiple = nextPropsOrEmpty.multiple;
   }
   const children = vNode.children;

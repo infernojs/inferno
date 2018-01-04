@@ -72,7 +72,7 @@
   "devDependencies": {
     "@types/history": "^4.6.2",
     "@types/jest": "^22.0.0",
-    "@types/node": "^8.5.2",
+    "@types/node": "^8.5.5",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-jest": "^22.0.4",

@@ -100,6 +100,7 @@ export function triggerEvent(name: string, element: any) {
     name === 'focus' ||
     name === 'change' ||
     name === 'blur' ||
+    name === 'input' ||
     name === 'select'
   ) {
     eventType = 'HTMLEvents';

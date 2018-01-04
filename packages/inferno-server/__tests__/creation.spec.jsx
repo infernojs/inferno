@@ -1,12 +1,6 @@
 import { renderToStaticMarkup, renderToString } from 'inferno-server';
 import { Component } from 'inferno';
-
-/*
- class StatefulComponent extends Component {
- render() {
- return createElement('span', null, `stateless ${ this.props.value }!`);
- }
- }*/
+import { createElement } from 'inferno-create-element';
 
 function WrappedInput(props) {
   return <input type="text" value={props.value} />;
@@ -111,6 +105,25 @@ describe('SSR Creation (JSX)', () => {
         </div>
       ),
       result: '<div><div> </div><p>Test</p></div>'
+    },
+    {
+      description: 'Should render backgroundColor',
+      template: () => (
+        <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />
+      ),
+      result:
+        '<div style="background-color:red;border-bottom-color:green;"></div>'
+    },
+    {
+      description: 'should render div with text child (XSS script attack) #2',
+      template: () =>
+        createElement(
+          'div',
+          null,
+          'Hello world <img src="x" onerror="alert(\'&XSS&\')">'
+        ),
+      result:
+        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
     },
     {
       description: 'Should render style opacity #1',
@@ -230,6 +243,143 @@ describe('SSR Creation (JSX)', () => {
       );
 
       expect(output).toBe('<div>foo</div>');
+    });
+
+    it('Should render single text node using state', () => {
+      class Foobar extends Component {
+        render() {
+          return this.state.text;
+        }
+
+        componentWillMount() {
+          this.setState({
+            text: 'foo'
+          });
+        }
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe('<div>foo</div>');
+    });
+
+    it('Should render single (number)text node using state', () => {
+      class Foobar extends Component {
+        render() {
+          return this.state.text;
+        }
+
+        componentWillMount() {
+          this.setState({
+            text: 33
+          });
+        }
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe('<div>33</div>');
+    });
+
+    it('Should render comment when component returns invalid node', () => {
+      function Foobar() {
+        return null;
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe('<div><!--!--></div>');
+    });
+
+    it('Should render single text node Class Component', () => {
+      class Foobar extends Component {
+        render() {
+          return null;
+        }
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe('<div><!--!--></div>');
+    });
+
+    it('Should render single text node Functional Component', () => {
+      function Foobar() {
+        return 'foo';
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe('<div>foo</div>');
+    });
+
+    it('Should render single (number)text node Functional Component', () => {
+      function Foobar() {
+        return 2;
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe('<div>2</div>');
+    });
+
+    it('Should render checked attribute for input when there is no checked in props', () => {
+      class Foobar extends Component {
+        render() {
+          return <input count={1} type="checkbox" defaultChecked={true} />;
+        }
+      }
+
+      const output = renderToString(
+        <div>
+          <Foobar />
+        </div>
+      );
+
+      expect(output).toBe(
+        '<div><input count="1" type="checkbox" checked="true"></div>'
+      );
+    });
+
+    it('Should throw error if invalid object is sent to renderToString', () => {
+      expect(() => renderToString({ failure: 'guaranteed' })).toThrow();
+      expect(() => renderToString(2)).toThrow();
+    });
+
+    it('Should re-use Css property names from cache when its used multiple times', () => {
+      expect(
+        renderToString(
+          <div style={{ backgroundColor: 'red' }}>
+            <div style={{ backgroundColor: 'red' }} />
+          </div>
+        )
+      ).toEqual(
+        '<div style="background-color:red;"><div style="background-color:red;"></div></div>'
+      );
     });
   });
 });

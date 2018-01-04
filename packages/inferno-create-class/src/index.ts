@@ -3,12 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { Component } from 'inferno';
-import {
-  isFunction,
-  isObject,
-  isUndefined,
-  throwError
-} from 'inferno-shared';
+import { isFunction, isObject, isUndefined, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
   statics?: {

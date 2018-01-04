@@ -8,7 +8,7 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from "inferno-test-utils";
+import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 var mocks;
@@ -19,18 +19,18 @@ describe('ReactComponent', function() {
       getMockFunction: function() {
         return jasmine.createSpy();
       }
-    }
+    };
   });
 
   it('should throw on invalid render targets', function() {
     var container = document.createElement('div');
     // jQuery objects are basically arrays; people often pass them in by mistake
     expect(function() {
-      ReactDOM.render(<div></div>, [container]);
+      ReactDOM.render(<div />, [container]);
     }).toThrow();
 
     expect(function() {
-      ReactDOM.render(<div></div>, null);
+      ReactDOM.render(<div />, null);
     }).toThrow();
   });
 
@@ -46,27 +46,29 @@ describe('ReactComponent', function() {
     var outerObj = {};
 
     var Wrapper = React.createClass({
-
       getObject: function() {
         return this.props.object;
       },
 
       render: function() {
         return <div>{this.props.children}</div>;
-      },
-
+      }
     });
 
     var Component = React.createClass({
       render: function() {
         var inner = <Wrapper object={innerObj} ref="inner" />;
-        var outer = <Wrapper object={outerObj} ref="outer">{inner}</Wrapper>;
+        var outer = (
+          <Wrapper object={outerObj} ref="outer">
+            {inner}
+          </Wrapper>
+        );
         return outer;
       },
       componentDidMount: function() {
         expect(this.refs.inner.getObject()).toEqual(innerObj);
         expect(this.refs.outer.getObject()).toEqual(outerObj);
-      },
+      }
     });
 
     var instance = <Component />;
@@ -76,16 +78,20 @@ describe('ReactComponent', function() {
   it('should not have refs on unmounted components', function() {
     var Parent = React.createClass({
       render: function() {
-        return <Child><div ref="test" /></Child>;
+        return (
+          <Child>
+            <div ref="test" />
+          </Child>
+        );
       },
       componentDidMount: function() {
         expect(this.refs && this.refs.test).toEqual(undefined);
-      },
+      }
     });
     var Child = React.createClass({
       render: function() {
         return <div />;
-      },
+      }
     });
 
     var instance = <Parent child={<span />} />;
@@ -102,15 +108,17 @@ describe('ReactComponent', function() {
       },
       render: function() {
         return <div>{this.props.children}</div>;
-      },
+      }
     });
 
     var mounted = false;
     var Component = React.createClass({
       render: function() {
-        var inner = <Wrapper object={innerObj} ref={(c) => this.innerRef = c} />;
+        var inner = (
+          <Wrapper object={innerObj} ref={c => (this.innerRef = c)} />
+        );
         var outer = (
-          <Wrapper object={outerObj} ref={(c) => this.outerRef = c}>
+          <Wrapper object={outerObj} ref={c => (this.outerRef = c)}>
             {inner}
           </Wrapper>
         );
@@ -120,7 +128,7 @@ describe('ReactComponent', function() {
         expect(this.innerRef.getObject()).toEqual(innerObj);
         expect(this.outerRef.getObject()).toEqual(outerObj);
         mounted = true;
-      },
+      }
     });
 
     var instance = <Component />;
@@ -135,7 +143,7 @@ describe('ReactComponent', function() {
       },
       render: function() {
         return this.props.getContent();
-      },
+      }
     });
 
     var mounted = false;
@@ -143,15 +151,15 @@ describe('ReactComponent', function() {
       getInner: function() {
         // (With old-style refs, it's impossible to get a ref to this div
         // because Wrapper is the current owner when this function is called.)
-        return <div title="inner" ref={(c) => this.innerRef = c} />;
+        return <div title="inner" ref={c => (this.innerRef = c)} />;
       },
       render: function() {
         return (
           <Wrapper
             title="wrapper"
-            ref={(c) => this.wrapperRef = c}
+            ref={c => (this.wrapperRef = c)}
             getContent={this.getInner}
-            />
+          />
         );
       },
       componentDidMount: function() {
@@ -159,7 +167,7 @@ describe('ReactComponent', function() {
         expect(this.wrapperRef.getTitle()).toBe('wrapper');
         expect(ReactDOM.findDOMNode(this.innerRef).title).toBe('inner');
         mounted = true;
-      },
+      }
     });
 
     var instance = <Component />;
@@ -296,41 +304,44 @@ describe('ReactComponent', function() {
   });
 
   // other
-   it('should pass context to children when not owner', function() {
+  it('should pass context to children when not owner', function() {
     var Parent = React.createClass({
       render: function() {
-        return <Child><Grandchild /></Child>;
-      },
+        return (
+          <Child>
+            <Grandchild />
+          </Child>
+        );
+      }
     });
 
     var Child = React.createClass({
       childContextTypes: {
-        foo: React.PropTypes.string,
+        foo: React.PropTypes.string
       },
 
       getChildContext: function() {
         return {
-          foo: 'bar',
+          foo: 'bar'
         };
       },
 
       render: function() {
         return React.Children.only(this.props.children);
-      },
+      }
     });
 
     var Grandchild = React.createClass({
       contextTypes: {
-        foo: React.PropTypes.string,
+        foo: React.PropTypes.string
       },
 
       render: function() {
         return <div>{this.context.foo}</div>;
-      },
+      }
     });
 
     var component = ReactTestUtils.renderIntoDocument(<Parent />);
     expect(ReactDOM.findDOMNode(component).innerHTML).toBe('bar');
   });
-
 });
