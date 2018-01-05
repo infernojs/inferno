@@ -10,6 +10,7 @@ import {
   findVNodeWithType,
   isClassVNode,
   isClassVNodeOfType,
+  isComponentVNodeOfType,
   isDOMElement,
   isDOMElementOfType,
   isDOMVNode,
@@ -110,6 +111,19 @@ describe('Test Utils', () => {
       expect(isVNode(10)).toBe(false);
       expect(isVNode(undefined)).toBe(false);
       expect(isVNode(null)).toBe(false);
+    });
+  });
+
+  describe('isComponentVNodeOfType', () => {
+    it('Should return true if Component is same', () => {
+      class Foobar extends Component {
+        render() {
+          return <div>1</div>;
+        }
+      }
+
+      expect(isComponentVNodeOfType(<Foobar />, Foobar)).toBe(true);
+      expect(isComponentVNodeOfType(<div />, Foobar)).toBe(false);
     });
   });
 

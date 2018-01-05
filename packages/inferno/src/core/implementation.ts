@@ -423,9 +423,7 @@ export function getFlagsForElementVnode(type: string): number {
   if (type === 'textarea') {
     return VNodeFlags.TextareaElement;
   }
-  if (type === 'media') {
-    return VNodeFlags.MediaElement;
-  }
+
   return VNodeFlags.HtmlElement;
 }
 

@@ -15,6 +15,24 @@ describe('A <Prompt>', () => {
         node
       );
     }).not.toThrow();
+
+    expect(() => {
+      render(
+        <StaticRouter context={context}>
+          <Prompt when={false} message="this is only a test" />
+        </StaticRouter>,
+        node
+      );
+    }).not.toThrow();
+
+    expect(() => {
+      render(
+        <StaticRouter context={context}>
+          <Prompt when={true} message="this is only a test" />
+        </StaticRouter>,
+        node
+      );
+    }).not.toThrow();
   });
 
   it('blocks transition', () => {
@@ -64,6 +82,8 @@ describe('A <Prompt>', () => {
     );
 
     promptWhen();
+
+    render(null, node);
   });
 
   it('throws when used outside Router', () => {

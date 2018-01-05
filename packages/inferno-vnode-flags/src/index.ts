@@ -13,25 +13,21 @@ export const enum VNodeFlags {
 
   /* Special flags */
   SvgElement = 1 << 5,
-  MediaElement = 1 << 6,
-  InputElement = 1 << 7,
-  TextareaElement = 1 << 8,
-  SelectElement = 1 << 9,
-  Void = 1 << 10,
-  Portal = 1 << 11,
-  ReCreate = 1 << 12,
-  Ignore = 1 << 13,
+  InputElement = 1 << 6,
+  TextareaElement = 1 << 7,
+  SelectElement = 1 << 8,
+  Void = 1 << 9,
+  Portal = 1 << 10,
+  ReCreate = 1 << 11,
 
   /* Masks */
   FormElement = InputElement | TextareaElement | SelectElement,
   Element = HtmlElement |
     SvgElement |
-    MediaElement |
     InputElement |
     TextareaElement |
     SelectElement,
-  Component = ComponentFunction | ComponentClass | ComponentUnknown,
-  VNodeShape = Text | Element | ComponentFunction | ComponentClass | Void
+  Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 
 export const enum ChildFlags {

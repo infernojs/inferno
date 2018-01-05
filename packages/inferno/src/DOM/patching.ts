@@ -485,16 +485,11 @@ function patchComponent(
 
       nextVNode.dom = lastVNode.dom;
       nextVNode.children = lastInput;
-      if (lastKey !== nextKey) {
-        shouldUpdate = true;
-      } else {
-        if (nextHooksDefined && isFunction(nextHooks.onComponentShouldUpdate)) {
-          shouldUpdate = nextHooks.onComponentShouldUpdate(
-            lastProps,
-            nextProps
-          );
-        }
+
+      if (nextHooksDefined && isFunction(nextHooks.onComponentShouldUpdate)) {
+        shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
       }
+
       if (shouldUpdate !== false) {
         if (nextHooksDefined && isFunction(nextHooks.onComponentWillUpdate)) {
           nextHooks.onComponentWillUpdate(lastProps, nextProps);

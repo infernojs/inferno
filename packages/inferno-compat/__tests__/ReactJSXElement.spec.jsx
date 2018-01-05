@@ -203,12 +203,9 @@ describe('ReactJSXElement', function() {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const spy = sinon.spy(() => {});
-    const node = <a onDoubleClick={spy}/>;
+    const node = <a onDoubleClick={spy} />;
     expect(node.props.onDblClick).toEqual(spy);
-    ReactDOM.render(
-      node,
-      container
-    );
+    ReactDOM.render(node, container);
 
     expect(spy.callCount).toBe(0);
     const element = container.querySelector('a');

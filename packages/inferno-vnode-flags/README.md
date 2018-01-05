@@ -20,7 +20,6 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.HasKeyedChildren`
 - `VNodeFlags.HasNonKeyedChildren`
 - `VNodeFlags.SvgElement`
-- `VNodeFlags.MediaElement`
 - `VNodeFlags.InputElement`
 - `VNodeFlags.TextareaElement`
 - `VNodeFlags.SelectElement`

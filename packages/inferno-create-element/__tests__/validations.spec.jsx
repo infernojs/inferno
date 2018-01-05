@@ -1,4 +1,5 @@
 import { render } from 'inferno';
+import { createTextVNode } from '../../inferno/src';
 
 describe('Development warnings', () => {
   let container;
@@ -25,6 +26,56 @@ describe('Development warnings', () => {
 
       expect(() => render(errorNode, container)).toThrowError(
         'Inferno Error: Encountered two children with same key: {1}. Location: <div> :: <div>'
+      );
+    });
+
+    it('Should throw error if two duplicate TEXTs is found with same key', () => {
+      const errorNode = (
+        <div>
+          {createTextVNode('foo', 'foo')}
+          {createTextVNode('foo2', 'foo')}
+        </div>
+      );
+
+      expect(() => render(errorNode, container)).toThrowError(
+        'Inferno Error: Encountered two children with same key: {foo}. Location: Text(foo2) :: <div>'
+      );
+    });
+
+    it('Should throw error if two duplicates is found (Component)', () => {
+      const FooBar = ({ children }) => children;
+      const Tester = ({ children }) => children;
+      const errorNode = (
+        <div>
+          <FooBar key="1">2</FooBar>
+          <Tester key="1">1</Tester>
+        </div>
+      );
+
+      expect(() => render(errorNode, container)).toThrowError(
+        'Inferno Error: Encountered two children with same key: {1}. Location: <Tester /> :: <div>'
+      );
+    });
+
+    it('Should print nice stack of invalid key location', () => {
+      const FooBar = () => (
+        <span className="parentNode">
+          <div key={'dup'} />
+          <em key={'dup'} />
+        </span>
+      );
+      const errorNode = (
+        <div>
+          <span>
+            <FooBar>
+              <span>1</span>
+            </FooBar>
+          </span>
+        </div>
+      );
+
+      expect(() => render(errorNode, container)).toThrowError(
+        'Inferno Error: Encountered two children with same key: {dup}. Location: <em> :: <span class="parentNode">'
       );
     });
   });
