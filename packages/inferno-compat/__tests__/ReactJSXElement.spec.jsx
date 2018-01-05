@@ -199,6 +199,25 @@ describe('ReactJSXElement', function() {
     document.body.removeChild(container);
   });
 
+  it('Should map onDoubleClick to html native even (jsx)t', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const spy = sinon.spy(() => {});
+    const node = <a onDoubleClick={spy}/>;
+    expect(node.props.onDblClick).toEqual(spy);
+    ReactDOM.render(
+      node,
+      container
+    );
+
+    expect(spy.callCount).toBe(0);
+    const element = container.querySelector('a');
+    triggerEvent('dblclick', element);
+    expect(spy.callCount).toBe(1);
+
+    document.body.removeChild(container);
+  });
+
   it('Should have input onChange event', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);

@@ -276,7 +276,7 @@ function iterableToArray(iterable) {
   return tmpArr;
 }
 
-const g: any = window || global;
+const g: any = typeof window === 'undefined' ? global : window;
 const hasSymbolSupport = typeof g.Symbol !== 'undefined';
 const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 
