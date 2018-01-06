@@ -8,14 +8,6 @@ module.exports = {
   ],
   coverageDirectory: "coverage",
   coverageReporters: ["html", "lcov", "text"],
-  coverageThreshold: {
-    global: {
-      statements: 80,
-      branches: 75,
-      functions: 85,
-      lines: 85
-    }
-  },
   globals: {
     usingJSDOM: true,
     usingJest: true

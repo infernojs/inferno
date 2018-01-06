@@ -3,8 +3,8 @@
  */ /** TypeDoc Comment */
 
 import { isUnitlessNumber } from 'inferno';
-import { isNumber, isString, isTrue } from 'inferno-shared';
-import { escapeText, getCssPropertyName } from './utils';
+import { isNumber, isString } from 'inferno-shared';
+import { getCssPropertyName } from './utils';
 
 export function renderStylesToString(styles: string | object): string {
   if (isString(styles)) {
