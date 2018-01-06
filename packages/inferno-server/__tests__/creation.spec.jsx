@@ -115,6 +115,22 @@ describe('SSR Creation (JSX)', () => {
         '<div style="background-color:red;border-bottom-color:green;"></div>'
     },
     {
+      description: 'Should not render null styles',
+      template: () => (
+        <div style={{ backgroundColor: null, borderBottomColor: null }} />
+      ),
+      result:
+        '<div style=""></div>'
+    },
+    {
+      description: 'Should style attribute if null',
+      template: () => (
+        <div style={null} />
+      ),
+      result:
+        '<div></div>'
+    },
+    {
       description: 'should render div with text child (XSS script attack) #2',
       template: () =>
         createElement(

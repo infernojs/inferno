@@ -233,7 +233,7 @@ export class RenderQueueStream extends Readable {
 
           if (prop === 'dangerouslySetInnerHTML') {
             html = value.__html;
-          } else if (prop === 'style') {
+          } else if (prop === 'style' && !isNullOrUndef(props.style)) {
             renderedString += ` style="${renderStylesToString(props.style)}"`;
           } else if (prop === 'children') {
             // Ignore children as prop.

@@ -25,30 +25,3 @@ export function renderStylesToString(styles: string | object): string {
     return renderedString;
   }
 }
-
-export function renderAttributes(props): string[] {
-  const outputAttrs: string[] = [];
-  const propsKeys = (props && Object.keys(props)) || [];
-
-  for (let i = 0, len = propsKeys.length; i < len; i++) {
-    const prop = propsKeys[i];
-
-    if (
-      prop !== 'children' &&
-      prop !== 'dangerouslySetInnerHTML' &&
-      prop !== 'style'
-    ) {
-      const value = props[prop];
-
-      if (isString(value)) {
-        outputAttrs.push(prop + '="' + escapeText(value) + '"');
-      } else if (isNumber(value)) {
-        outputAttrs.push(prop + '="' + value + '"');
-      } else if (isTrue(value)) {
-        outputAttrs.push(prop);
-      }
-    }
-  }
-
-  return outputAttrs;
-}
