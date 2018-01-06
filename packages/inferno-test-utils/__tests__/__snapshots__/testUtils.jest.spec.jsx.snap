@@ -13,3 +13,19 @@ exports[`renderToSnapshot should return a snapshot with className prop 1`] = `
   Test
 </div>
 `;
+
+exports[`renderToSnapshot should return a snapshot with className prop, multiple children 1`] = `
+<div
+  className="test"
+>
+  <span>
+    a
+  </span>
+  <span>
+    b
+  </span>
+  <span>
+    1
+  </span>
+</div>
+`;

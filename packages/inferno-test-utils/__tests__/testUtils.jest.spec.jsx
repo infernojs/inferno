@@ -30,4 +30,21 @@ describe('renderToSnapshot', () => {
       expect(snapshot.props.className).toBe('test');
     }
   });
+
+  it('should return a snapshot with className prop, multiple children', () => {
+    const TestComponent = (props) => <div className="test">{props.children}<span>1</span></div>;
+
+    const snapshot = TestUtils.renderToSnapshot(<TestComponent>
+      {[
+        <span>a</span>,
+        <span>b</span>
+      ]}
+    </TestComponent>);
+
+    if (usingJest) {
+      expect(snapshot).toMatchSnapshot();
+    } else {
+      expect(snapshot.props.className).toBe('test');
+    }
+  });
 });

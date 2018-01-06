@@ -57,6 +57,38 @@ describe('ReactPureComponent', function() {
     expect(renders).toBe(3);
   });
 
+  it('should render when props or state mismatch in prop count', function() {
+    var renders = 0;
+    class Component extends React.PureComponent {
+      constructor() {
+        super();
+        this.state = { type: 'mushrooms' };
+      }
+
+      shouldComponentUpdate(nextProps, state) {
+        debugger;
+        return super.shouldComponentUpdate(nextProps, state);
+      }
+      render() {
+        renders++;
+        return <div>{this.props.text[0]}</div>;
+      }
+    }
+
+    var container = document.createElement('div');
+    var text;
+    var component;
+
+    text = ['porcini'];
+    component = ReactDOM.render(<Component foo={"bar"} text={text} />, container);
+    expect(container.textContent).toBe('porcini');
+    expect(renders).toBe(1);
+
+    component = ReactDOM.render(<Component text={text} />, container);
+    expect(container.textContent).toBe('porcini');
+    expect(renders).toBe(2);
+  });
+
   it('can override shouldComponentUpdate', function() {
     var renders = 0;
     class Component extends React.PureComponent {

@@ -213,9 +213,6 @@ options.beforeUnmount = vNode => {
   }
   if (nextBeforeUnmount) {
     nextBeforeUnmount(vNode);
-    if (vNode.flags & VNodeFlags.ComponentClass) {
-      vNode.children.refs = {};
-    }
   }
 };
 
