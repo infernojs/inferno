@@ -1,6 +1,7 @@
 /**
  * @module Inferno-Router
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 import { createComponentVNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';

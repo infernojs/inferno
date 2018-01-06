@@ -11,7 +11,7 @@ import {
   isStringOrNumber,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,

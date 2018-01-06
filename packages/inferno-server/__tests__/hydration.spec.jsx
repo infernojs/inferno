@@ -1,11 +1,11 @@
-import { Component, createVNode, createTextVNode, render } from 'inferno';
+import { Component, createTextVNode, createVNode, render } from 'inferno';
 import { renderToString } from 'inferno-server';
 import {
   createContainerWithHTML,
   innerHTML,
   validateNodeTree
 } from 'inferno-utils';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 function Comp1() {
   return <span>Worked!</span>;

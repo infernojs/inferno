@@ -2017,6 +2017,23 @@ describe('Components (JSX)', () => {
       render(null, container);
       expect(container.innerHTML).toBe('');
     });
+
+    it('Should not fail if text node has external change Github#1207 (variation - 2)', () => {
+      shouldUpdate = false;
+      render(<Test foo="bar" />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div>bar</div>'));
+      render(<Test foo="yar" />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div>bar</div>'));
+
+      container.firstChild.removeChild(container.firstChild.firstChild); // When div is contentEditable user can remove whole text content
+      expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+
+      shouldUpdate = true;
+      render(<Test foo="" />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+      render(null, container);
+      expect(container.innerHTML).toBe('');
+    });
   });
   describe('handling of different primatives', () => {
     it('Should correctly handle boolean values (github#255)', () => {

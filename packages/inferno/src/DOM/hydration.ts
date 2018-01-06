@@ -10,7 +10,7 @@ import {
   throwError,
   warning
 } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/implementation';
 import {
   mount,

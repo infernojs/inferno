@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import * as mobx from 'mobx';
-import { Component, options, createComponentVNode } from 'inferno';
+import { Component, createComponentVNode, options } from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';
 import { warning } from 'inferno-shared';
 import { isStateless } from './utils/utils';

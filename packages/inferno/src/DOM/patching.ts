@@ -14,17 +14,16 @@ import {
   NO_OP,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
-import { remove, unmount, removeAllChildren } from './unmounting';
+import { remove, removeAllChildren, unmount } from './unmounting';
 import {
   appendChild,
   EMPTY_OBJ,
   insertOrAppend,
   removeChild,
-  replaceChild,
-  setTextContent
+  replaceChild
 } from './utils/common';
 import {
   isControlledFormElement,
@@ -242,8 +241,8 @@ export function patchElement(
 }
 
 function patchChildren(
-  lastChildFlags: number,
-  nextChildFlags: number,
+  lastChildFlags: ChildFlags,
+  nextChildFlags: ChildFlags,
   lastChildren,
   nextChildren,
   parentDOM: Element,
@@ -518,7 +517,7 @@ function patchText(lastVNode: VNode, nextVNode: VNode, parentDom: Element) {
   let dom;
   // Guard against external change on DOM node.
   if (isNull(textNode)) {
-    setTextContent(parentDom, nextText);
+    parentDom.textContent = nextText;
     dom = parentDom.firstChild as Element;
   } else {
     dom = lastVNode.dom;

@@ -141,7 +141,7 @@ export class RenderStream extends Readable {
   public renderChildren(
     children: VNode[] | VNode,
     context: any,
-    childFlags: number
+    childFlags: ChildFlags
   ) {
     if (childFlags & ChildFlags.HasVNodeChildren) {
       return this.renderNode(children, context, false);

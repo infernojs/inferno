@@ -1,4 +1,4 @@
-import { render, Component } from 'inferno';
+import { Component, render } from 'inferno';
 import sinon, { assert } from 'sinon';
 
 describe('All single patch variations', () => {

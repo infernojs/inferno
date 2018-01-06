@@ -1,8 +1,8 @@
-import { render, Component } from 'inferno';
-import { Provider, inject, observer } from 'inferno-mobx';
-import { Router, Route, IndexRoute } from 'inferno-router';
+import { Component, render } from 'inferno';
+import { inject, observer, Provider } from 'inferno-mobx';
+import { IndexRoute, Route, Router } from 'inferno-router';
 import createMemoryHistory from 'history/createMemoryHistory';
-import { observable, action } from 'mobx';
+import { action, observable } from 'mobx';
 
 describe('Github #1236', () => {
   let container;

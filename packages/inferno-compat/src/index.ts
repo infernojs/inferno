@@ -6,11 +6,19 @@
 import {
   Component,
   createComponentVNode,
+  createPortal,
+  createRenderer,
+  createTextVNode,
   createVNode,
-  getFlagsForElementVnode,
-  normalizeProps,
+  directClone,
   EMPTY_OBJ,
+  getFlagsForElementVnode,
   InfernoChildren,
+  InfernoInput,
+  isUnitlessNumber,
+  linkEvent,
+  normalizeChildren,
+  normalizeProps,
   options,
   Props,
   Refs,
@@ -19,23 +27,23 @@ import {
 } from 'inferno';
 import { cloneVNode } from 'inferno-clone-vnode';
 import {
-  createClass,
   ClassicComponentClass,
-  ComponentSpec
+  ComponentSpec,
+  createClass
 } from 'inferno-create-class';
 import { createElement as infernoCreateElement } from 'inferno-create-element';
 import {
   isArray,
   isBrowser,
   isFunction,
+  isInvalid,
   isNull,
   isNullOrUndef,
   isString,
-  isInvalid,
   NO_OP,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
@@ -308,7 +316,7 @@ const injectStringRefs = function(originalFunction) {
         currentComponent.refs = {};
       }
       vnode.ref = function(val) {
-        this.refs[_props.ref] = val;
+        (this as any).refs[_props.ref] = val;
       }.bind(currentComponent);
     }
     if (vnode.className) {
@@ -453,14 +461,26 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
     NO_OP,
     PropTypes,
     PureComponent,
+    __spread: extend,
     cloneElement,
     cloneVNode,
     createClass,
+    createComponentVNode,
     createElement,
     createFactory,
+    createPortal,
+    createRenderer,
+    createTextVNode,
     createVNode,
+    directClone,
     findDOMNode,
+    getFlagsForElementVnode,
+    isUnitlessNumber,
     isValidElement,
+    linkEvent,
+    normalizeChildren,
+    normalizeProps,
+    options,
     render,
     unmountComponentAtNode,
     unstable_renderSubtreeIntoContainer,
@@ -472,29 +492,46 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
 }
 
 export {
-  Refs,
+  ChildFlags,
   Children,
   ClassicComponentClass,
   Component,
   ComponentSpec,
   DOM,
   EMPTY_OBJ,
+  InfernoChildren,
+  InfernoInput,
   NO_OP,
+  Props,
   PropTypes,
   PureComponent,
+  Refs,
+  VNode,
+  VNodeFlags,
   cloneElement,
   cloneVNode,
   createClass,
+  createComponentVNode,
   createElement,
   createFactory,
+  createPortal,
+  createRenderer,
+  createTextVNode,
   createVNode,
+  directClone,
+  extend as __spread,
   findDOMNode,
+  getFlagsForElementVnode,
+  isUnitlessNumber,
   isValidElement,
+  linkEvent,
+  normalizeChildren,
+  normalizeProps,
+  options,
   render,
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer,
-  version,
-  extend as __spread
+  version
 };
 
 export default {
@@ -509,11 +546,22 @@ export default {
   cloneElement,
   cloneVNode,
   createClass,
+  createComponentVNode,
   createElement,
   createFactory,
+  createPortal,
+  createRenderer,
+  createTextVNode,
   createVNode,
+  directClone,
   findDOMNode,
+  getFlagsForElementVnode,
+  isUnitlessNumber,
   isValidElement,
+  linkEvent,
+  normalizeChildren,
+  normalizeProps,
+  options,
   render,
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer,

@@ -1,15 +1,15 @@
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 import React, {
-  PropTypes,
-  unstable_renderSubtreeIntoContainer,
-  createClass,
-  Component,
+  __spread,
   Children,
   cloneElement,
+  Component,
+  createClass,
   createElement,
   isValidElement,
-  __spread
+  PropTypes,
+  unstable_renderSubtreeIntoContainer
 } from 'inferno-compat';
 
 describe('MISC', () => {

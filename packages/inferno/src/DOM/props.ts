@@ -25,7 +25,7 @@ import {
   isControlledFormElement,
   processElement
 } from './wrappers/processElement';
-import { unmount, removeAllChildren } from './unmounting';
+import { removeAllChildren, unmount } from './unmounting';
 import { VNode } from 'inferno';
 
 export function isAttrAnEvent(attr: string): boolean {
@@ -105,7 +105,12 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   }
 }
 
-export function removeProp(prop: string, lastValue, dom, nextFlags: number) {
+export function removeProp(
+  prop: string,
+  lastValue,
+  dom,
+  nextFlags: VNodeFlags
+) {
   if (prop === 'value') {
     // When removing value of select element, it needs to be set to null instead empty string, because empty string is valid value for option which makes that option selected
     // MS IE/Edge don't follow html spec for textArea and input elements and we need to set empty string to value in those cases to avoid "null" and "undefined" texts

@@ -2,22 +2,23 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isArray, isInvalid, isNullOrUndef } from 'inferno-shared';
-import { isVNode } from '../../core/implementation';
+import { isArray, isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils/common';
 import { createWrappedFunction } from './wrapper';
+import { ChildFlags } from 'inferno-vnode-flags';
 
 function updateChildOptionGroup(vNode, value) {
   const type = vNode.type;
 
   if (type === 'optgroup') {
     const children = vNode.children;
+    const childFlags = vNode.childFlags;
 
-    if (isArray(children)) {
+    if (childFlags & ChildFlags.MultipleChildren) {
       for (let i = 0, len = children.length; i < len; i++) {
         updateChildOption(children[i], value);
       }
-    } else if (isVNode(children)) {
+    } else if (childFlags & ChildFlags.HasVNodeChildren) {
       updateChildOption(children, value);
     }
   } else {
@@ -26,7 +27,7 @@ function updateChildOptionGroup(vNode, value) {
 }
 
 function updateChildOption(vNode, value) {
-  const props = vNode.props || EMPTY_OBJ;
+  const props: any = vNode.props || EMPTY_OBJ;
   const dom = vNode.dom;
 
   // we do this as multiple may have changed
@@ -68,18 +69,19 @@ export function applyValue(nextPropsOrEmpty, dom, mounting: boolean, vNode) {
   ) {
     dom.multiple = nextPropsOrEmpty.multiple;
   }
-  const children = vNode.children;
+  const childFlags = vNode.childFlags;
 
-  if (!isInvalid(children)) {
+  if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
+    const children = vNode.children;
     let value = nextPropsOrEmpty.value;
     if (mounting && isNullOrUndef(value)) {
       value = nextPropsOrEmpty.defaultValue;
     }
-    if (isArray(children)) {
+    if (childFlags & ChildFlags.MultipleChildren) {
       for (let i = 0, len = children.length; i < len; i++) {
         updateChildOptionGroup(children[i], value);
       }
-    } else if (isVNode(children)) {
+    } else if (childFlags & ChildFlags.HasVNodeChildren) {
       updateChildOptionGroup(children, value);
     }
   }

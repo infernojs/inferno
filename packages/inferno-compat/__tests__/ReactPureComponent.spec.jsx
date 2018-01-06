@@ -10,6 +10,7 @@
  */
 
 import React from 'inferno-compat';
+
 var ReactDOM = React;
 
 describe('ReactPureComponent', function() {

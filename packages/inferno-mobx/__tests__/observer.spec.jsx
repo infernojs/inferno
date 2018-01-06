@@ -3,8 +3,8 @@ import * as mobx from 'mobx';
 import {
   inject,
   observer,
-  offError,
   Observer,
+  offError,
   trackComponents,
   useStaticRendering
 } from 'inferno-mobx';

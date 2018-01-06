@@ -1,6 +1,6 @@
-import { createVNode, createTextVNode, render, Component } from 'inferno';
+import { Component, createTextVNode, createVNode, render } from 'inferno';
 import { NO_OP } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('rendering routine', () => {
   let container;

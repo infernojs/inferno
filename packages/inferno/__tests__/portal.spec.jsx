@@ -1,4 +1,4 @@
-import { render, createPortal, Component } from 'inferno';
+import { Component, createPortal, render } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
 
 describe('Portal spec', () => {

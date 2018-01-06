@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import { StaticRouter, Prompt } from 'inferno-router';
+import { Prompt, StaticRouter } from 'inferno-router';
 
 describe('A <Prompt>', () => {
   it('ask if sure to transition', () => {

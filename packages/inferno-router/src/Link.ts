@@ -2,8 +2,8 @@
  * @module Inferno-Router
  */ /** TypeDoc Comment */
 
-import { createVNode, VNode, Component, normalizeChildren } from 'inferno';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { Component, createVNode, normalizeChildren, VNode } from 'inferno';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 
 const isModifiedEvent = (event): boolean =>

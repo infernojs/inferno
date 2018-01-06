@@ -16,7 +16,7 @@ import { processTextarea } from './TextareaWrapper';
  */
 
 export function processElement(
-  flags: number,
+  flags: VNodeFlags,
   vNode: VNode,
   dom: Element,
   nextPropsOrEmpty,

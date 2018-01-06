@@ -2,7 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isNull, isNullOrUndef, isUndefined } from 'inferno-shared';
+import { isNullOrUndef, isUndefined } from 'inferno-shared';
 import { svgNS } from '../constants';
 
 // We need EMPTY_OBJ defined in one place.
@@ -11,25 +11,6 @@ export const EMPTY_OBJ = {};
 
 if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
-}
-
-export function setTextContent(dom, text: string | number) {
-  if (text !== '') {
-    dom.textContent = text;
-  } else {
-    dom.appendChild(document.createTextNode(''));
-  }
-}
-
-export function updateTextContent(dom, text: string | number) {
-  const textNode = dom.firstChild;
-
-  // Guard against external change on DOM node.
-  if (isNull(textNode)) {
-    setTextContent(dom, text);
-  } else {
-    textNode.nodeValue = text;
-  }
 }
 
 export function appendChild(parentDom, dom) {

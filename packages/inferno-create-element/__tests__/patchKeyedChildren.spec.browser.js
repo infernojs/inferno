@@ -1,6 +1,6 @@
-import { createVNode, createTextVNode, render } from 'inferno';
+import { createTextVNode, createVNode, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 function generateKeyNodes(array) {
   let i, id, key;

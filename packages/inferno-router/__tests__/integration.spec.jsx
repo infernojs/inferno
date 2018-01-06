@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import { MemoryRouter, Switch, Route } from 'inferno-router';
+import { MemoryRouter, Route, Switch } from 'inferno-router';
 
 describe('Integration Tests', () => {
   it('renders nested matches', () => {

@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import { MemoryRouter, Router, Route } from 'inferno-router';
+import { MemoryRouter, Route, Router } from 'inferno-router';
 import createMemoryHistory from 'history/createMemoryHistory';
 
 describe('A <Route>', () => {

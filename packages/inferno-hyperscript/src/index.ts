@@ -6,8 +6,8 @@ import {
   createComponentVNode,
   createVNode,
   getFlagsForElementVnode,
-  normalizeChildren,
   InfernoChildren,
+  normalizeChildren,
   VNode
 } from 'inferno';
 import {
@@ -16,7 +16,7 @@ import {
   isStringOrNumber,
   isUndefined
 } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;

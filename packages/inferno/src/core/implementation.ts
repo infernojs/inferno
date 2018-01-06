@@ -2,7 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   isArray,
   isFunction,
@@ -21,10 +21,10 @@ const keyPrefix = '$';
 
 export interface VNode {
   children: InfernoChildren;
-  childFlags: number;
+  childFlags: ChildFlags;
   dom: Element | null;
   className: string | null;
-  flags: number;
+  flags: VNodeFlags;
   key: any;
   parentVNode: VNode | null;
   props: Props | null;
@@ -85,11 +85,11 @@ function getVNode(
 }
 
 export function createVNode(
-  flags: number,
+  flags: VNodeFlags,
   type,
   className?: string | null,
   children?: InfernoChildren,
-  childFlags?: number,
+  childFlags?: ChildFlags,
   props?: Props | null,
   key?: any,
   ref?: Ref | Refs | null
@@ -121,7 +121,7 @@ export function createVNode(
 }
 
 export function createComponentVNode(
-  flags: number,
+  flags: VNodeFlags,
   type,
   props?: Props | null,
   key?: any,
@@ -410,7 +410,7 @@ function normalizeVNodes(nodes: any[], len, newNodes): VNode[] {
   return newNodes || (nodes as VNode[]);
 }
 
-export function getFlagsForElementVnode(type: string): number {
+export function getFlagsForElementVnode(type: string): VNodeFlags {
   if (type === 'svg') {
     return VNodeFlags.SvgElement;
   }

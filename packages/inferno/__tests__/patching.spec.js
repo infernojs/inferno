@@ -1,5 +1,5 @@
-import { createVNode, createTextVNode, render } from 'inferno';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { createTextVNode, createVNode, render } from 'inferno';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
 
 describe('patching routine', () => {

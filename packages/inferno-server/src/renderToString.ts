@@ -15,7 +15,7 @@ import {
   isTrue,
   throwError
 } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { renderStylesToString } from './prop-renderers';
 import { escapeText, voidElements } from './utils';
 

@@ -1,7 +1,7 @@
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 import { renderToStaticMarkup } from 'inferno-server';
-import { StaticRouter, Prompt, Redirect, Route } from 'inferno-router';
+import { Prompt, Redirect, Route, StaticRouter } from 'inferno-router';
 
 describe('A <StaticRouter>', () => {
   it('provides context.router.staticContext in props.staticContext', () => {

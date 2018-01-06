@@ -7,18 +7,18 @@ import {
   createTextVNode,
   createVNode,
   directClone,
-  normalizeProps,
   EMPTY_OBJ,
+  normalizeProps,
   VNode
 } from 'inferno';
 import {
   combineFrom,
-  isUndefined,
-  isStringOrNumber,
+  isArray,
   isInvalid,
-  isArray
+  isStringOrNumber,
+  isUndefined
 } from 'inferno-shared';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 /*
  directClone is preferred over cloneVNode and used internally also.

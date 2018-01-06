@@ -16,8 +16,8 @@ import {
   normalizeProps,
   options,
   Props,
-  VNode,
-  Refs
+  Refs,
+  VNode
 } from './core/implementation';
 import { isUnitlessNumber } from './DOM/constants';
 import { linkEvent } from './DOM/events/linkEvent';

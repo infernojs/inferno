@@ -4,10 +4,10 @@
 
 import { renderToString } from './renderToString';
 import {
-  streamQueueAsString,
-  RenderQueueStream
+  RenderQueueStream,
+  streamQueueAsString
 } from './renderToString.queuestream';
-import { streamAsString, RenderStream } from './renderToString.stream';
+import { RenderStream, streamAsString } from './renderToString.stream';
 
 // Inferno does not generate "data-root" attributes so staticMarkup is literally same as renderToString
 export {

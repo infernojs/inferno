@@ -38,21 +38,14 @@ export function applyValue(nextPropsOrEmpty, dom, mounting: boolean) {
     if (mounting) {
       const defaultValue = nextPropsOrEmpty.defaultValue;
 
-      if (!isNullOrUndef(defaultValue)) {
-        if (defaultValue !== domValue) {
-          dom.defaultValue = defaultValue;
-          dom.value = defaultValue;
-        }
-      } else if (domValue !== '') {
-        dom.defaultValue = '';
-        dom.value = '';
+      if (!isNullOrUndef(defaultValue) && defaultValue !== domValue) {
+        dom.defaultValue = defaultValue;
+        dom.value = defaultValue;
       }
     }
-  } else {
+  } else if (domValue !== value) {
     /* There is value so keep it controlled */
-    if (domValue !== value) {
-      dom.defaultValue = value;
-      dom.value = value;
-    }
+    dom.defaultValue = value;
+    dom.value = value;
   }
 }

@@ -8,7 +8,6 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 var TestComponent;

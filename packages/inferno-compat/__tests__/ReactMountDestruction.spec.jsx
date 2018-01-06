@@ -8,6 +8,7 @@
  */
 
 import React from 'inferno-compat';
+
 var ReactDOM = React;
 
 describe('ReactMount', function() {

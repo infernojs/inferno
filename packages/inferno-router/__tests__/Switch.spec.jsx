@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import { MemoryRouter, Switch, Route, Redirect } from 'inferno-router';
+import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
 
 describe('Switch (jsx)', () => {
   it('renders the first <Route> that matches the URL', () => {
