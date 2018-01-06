@@ -2,7 +2,7 @@
   "name": "rjs-prod-test",
   "private": true,
   "dependencies": {
-    "requirejs": "^2.3.2"
+    "requirejs": "^2.3.5"
   },
   "scripts": {
     "build": "rm -f output.js && r.js -o config.js"

@@ -1,8 +1,8 @@
 {
   "name": "brunch-prod-test",
   "devDependencies": {
-    "brunch": "^2.9.1",
-    "javascript-brunch": "^2.0.0"
+    "brunch": "^2.10.12",
+    "javascript-brunch": "^2.10.0"
   },
   "scripts": {
     "build": "rm -rf public && ln -fs ../../../../../packages/inferno node_modules/inferno && ln -fs ../../../../../packages/inferno-shared node_modules/inferno-shared && ln -fs ../../../../../packages/inferno-create-element node_modules/inferno-create-element && brunch build -p"

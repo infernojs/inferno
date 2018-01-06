@@ -11,6 +11,6 @@ module.exports = {
       'inferno-create-element':
         'inferno-create-element/dist/inferno-create-element.min'
     },
-    root: path.resolve('../../../../packages')
+    modules: [path.resolve('../../../../packages'), "node_modules"]
   }
 };

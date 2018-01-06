@@ -6,6 +6,6 @@ module.exports = {
     filename: 'output.js'
   },
   resolve: {
-    root: path.resolve('../../../../packages/')
+    modules: [path.resolve('../../../../packages'), "node_modules"]
   }
 };

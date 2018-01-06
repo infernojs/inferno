@@ -2,12 +2,12 @@
   "name": "browserify-prod-test",
   "private": true,
   "dependencies": {
-    "browserify": "^13.3.0"
+    "browserify": "^15.0.0"
   },
   "scripts": {
     "build": "rm -f output.js && NODE_PATH=../../../../packages browserify ./input.js -g [envify --NODE_ENV 'production'] -o output.js"
   },
   "devDependencies": {
-    "envify": "^4.0.0"
+    "envify": "^4.1.0"
   }
 }

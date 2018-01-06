@@ -2,7 +2,7 @@
   "name": "webpack-dev-test",
   "private": true,
   "dependencies": {
-    "webpack": "^1.14.0"
+    "webpack": "^3.10.0"
   },
   "scripts": {
     "build": "rm -f output.js && webpack --config config.js"
