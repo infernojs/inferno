@@ -343,6 +343,7 @@ describe('All single patch variations', () => {
 
     it('Should prefer external hook if given', () => {
       let counter = 0;
+      let mountCounter = 0;
 
       function Static() {
         return <div>{counter}</div>;
@@ -351,6 +352,9 @@ describe('All single patch variations', () => {
       Static.defaultHooks = {
         onComponentShouldUpdate() {
           return false;
+        },
+        onComponentWillMount() {
+          mountCounter++;
         }
       };
 
@@ -367,11 +371,58 @@ describe('All single patch variations', () => {
       doRender();
       expect(container.innerHTML).toEqual('<div>0<div>0</div></div>');
       counter++;
+      expect(mountCounter).toBe(1);
       doRender();
       expect(container.innerHTML).toEqual('<div>1<div>1</div></div>');
       counter++;
+      expect(mountCounter).toBe(1);
       doRender();
       expect(container.innerHTML).toEqual('<div>2<div>2</div></div>');
+      expect(mountCounter).toBe(1);
+    });
+  });
+
+  describe('immutable children', () => {
+    it('Should be possible to render frozen objects', () => {
+      const EMPTY_ARRAY = [];
+      Object.freeze(EMPTY_ARRAY);
+
+      render(<div>{EMPTY_ARRAY}</div>, container);
+
+      expect(container.innerHTML).toBe('<div></div>');
+
+      render(<div>{EMPTY_ARRAY}</div>, container);
+
+      expect(container.innerHTML).toBe('<div></div>');
+
+      render(<div>{EMPTY_ARRAY}</div>, container);
+
+      expect(container.innerHTML).toBe('<div></div>');
+
+      render(<div>{null}</div>, container);
+      expect(container.innerHTML).toBe('<div></div>');
+    });
+
+    it('Should be possible to render frozen objects #2', () => {
+      const EMPTY_ARRAY = [];
+      const TWO_NODES = [<div>1</div>, <div>2</div>];
+      Object.freeze(EMPTY_ARRAY);
+      Object.freeze(TWO_NODES);
+
+      render(<div>{EMPTY_ARRAY}</div>, container);
+
+      expect(container.innerHTML).toBe('<div></div>');
+
+      render(<div>{TWO_NODES}</div>, container);
+
+      expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
+
+      render(<div>{EMPTY_ARRAY}</div>, container);
+
+      expect(container.innerHTML).toBe('<div></div>');
+
+      render(<div>{null}</div>, container);
+      expect(container.innerHTML).toBe('<div></div>');
     });
   });
 });

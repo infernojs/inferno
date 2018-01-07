@@ -100,16 +100,13 @@ export function mountElement(
   isSVG: boolean
 ) {
   const flags = vNode.flags;
-
-  if (!isSVG) {
-    isSVG = (flags & VNodeFlags.SvgElement) > 0;
-  }
-  const dom = documentCreateElement(vNode.type, isSVG);
   const children = vNode.children;
   const props = vNode.props;
   const className = vNode.className;
   const ref = vNode.ref;
   const childFlags = vNode.childFlags;
+  isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
+  const dom = documentCreateElement(vNode.type, isSVG);
 
   vNode.dom = dom;
   if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
@@ -133,16 +130,15 @@ export function mountElement(
     }
   }
 
+  if (process.env.NODE_ENV !== 'production') {
+    if (isString(ref)) {
+      throwError(
+        'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+      );
+    }
+  }
   if (isFunction(ref)) {
     mountRef(dom, ref, lifecycle);
-  } else {
-    if (process.env.NODE_ENV !== 'production') {
-      if (isString(ref)) {
-        throwError(
-          'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
-        );
-      }
-    }
   }
   if (!isNull(parentDom)) {
     appendChild(parentDom, dom);

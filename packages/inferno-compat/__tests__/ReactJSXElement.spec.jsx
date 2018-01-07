@@ -220,7 +220,7 @@ describe('ReactJSXElement', function() {
     document.body.appendChild(container);
     const spy = sinon.spy(() => {});
     ReactDOM.render(
-      React.createElement('input', { onChange: spy }, 'test'),
+      React.createElement('input', { onChange: spy }),
       container
     );
 

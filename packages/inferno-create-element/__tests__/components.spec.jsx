@@ -2962,6 +2962,7 @@ describe('Components (JSX)', () => {
         if (this.state.reverse) {
           children.reverse();
         }
+        Object.freeze(children);
 
         return (
           <div>

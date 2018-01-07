@@ -16,6 +16,7 @@ import {
   throwError
 } from 'inferno-shared';
 import { EMPTY_OBJ } from '../DOM/utils/common';
+import { validateVNodeElementChildren } from "./validate";
 
 const keyPrefix = '$';
 
@@ -111,6 +112,11 @@ export function createVNode(
     ref,
     type
   );
+
+  if (process.env.NODE_ENV !== 'production') {
+    validateVNodeElementChildren(vNode);
+  }
+
   const optsVNode = options.createVNode;
 
   if (isFunction(optsVNode)) {
@@ -341,16 +347,16 @@ export function _normalizeVNodes(
   nodes: any[],
   result: VNode[],
   index: number,
-  currentKey
+  currentKey: string
 ) {
   for (const len = nodes.length; index < len; index++) {
     let n = nodes[index];
 
     if (!isInvalid(n)) {
-      const key = `${currentKey}$${index}`;
+      const newKey = `${currentKey}$${index}`;
 
       if (isArray(n)) {
-        _normalizeVNodes(n, result, 0, key);
+        _normalizeVNodes(n, result, 0, newKey);
       } else {
         if (isStringOrNumber(n)) {
           n = createTextVNode(n, null);
@@ -358,7 +364,7 @@ export function _normalizeVNodes(
           n = directClone(n);
         }
         if (isNull(n.key) || n.key[0] === keyPrefix) {
-          n = applyKey(key, n as VNode);
+          n = applyKey(newKey, n as VNode);
         } else {
           n = applyKeyPrefix(currentKey, n as VNode);
         }
@@ -367,47 +373,6 @@ export function _normalizeVNodes(
       }
     }
   }
-}
-
-function normalizeVNodes(nodes: any[], len, newNodes): VNode[] {
-  // tslint:enable
-  for (let i = 0; i < len; i++) {
-    const n = nodes[i];
-
-    if (isInvalid(n) || isArray(n)) {
-      const result = (newNodes || nodes).slice(0, i) as VNode[];
-
-      _normalizeVNodes(nodes, result, i, ``);
-      return result;
-    } else if (isStringOrNumber(n)) {
-      if (!newNodes) {
-        newNodes = nodes.slice(0, i) as VNode[];
-      }
-      newNodes.push(applyKeyIfMissing(i, createTextVNode(n, null)));
-    } else {
-      const key = n.key;
-      const isNullDom = isNull(n.dom);
-      const isNullKey = isNull(key);
-      const isPrefixed = !isNullKey && key[0] === keyPrefix;
-
-      if (
-        !isNullDom ||
-        (isNullKey && (n.childFlags & ChildFlags.HasNonKeyedChildren) === 0) ||
-        isPrefixed
-      ) {
-        if (!newNodes) {
-          newNodes = nodes.slice(0, i) as VNode[];
-        }
-        newNodes.push(
-          applyKeyIfMissing(i, isNullDom && !isPrefixed ? n : directClone(n))
-        );
-      } else if (newNodes) {
-        newNodes.push(applyKeyIfMissing(i, n));
-      }
-    }
-  }
-
-  return newNodes || (nodes as VNode[]);
 }
 
 export function getFlagsForElementVnode(type: string): VNodeFlags {
@@ -428,8 +393,8 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
 }
 
 export function normalizeChildren(vNode, children) {
-  let newChildren;
-  let newChildFlags;
+  let newChildren: any;
+  let newChildFlags: number;
 
   // Don't change children to match strict equal (===) true in patching
   if (isInvalid(children)) {
@@ -442,21 +407,51 @@ export function normalizeChildren(vNode, children) {
     newChildFlags = ChildFlags.HasVNodeChildren;
     newChildren = createTextVNode(children + '');
   } else if (isArray(children)) {
-    // we assign $ which basically means we've flagged this array for future note
-    // if it comes back again, we need to clone it, as people are using it
-    // in an immutable way
-    // tslint:disable
-    if (children['$'] === true) {
-      children = children.slice();
+    const len = children.length;
+
+    if (len === 0) {
+      newChildren = null;
+      newChildFlags = ChildFlags.HasInvalidChildren;
+    } else {
+      // we assign $ which basically means we've flagged this array for future note
+      // if it comes back again, we need to clone it, as people are using it
+      // in an immutable way
+      // tslint:disable-next-line
+      if (Object.isFrozen(children) || children['$'] === true) {
+        children = children.slice();
+      }
+
+      newChildFlags = ChildFlags.HasKeyedChildren;
+
+      for (let i = 0; i < len; i++) {
+        const n = children[i];
+
+        if (isInvalid(n) || isArray(n)) {
+          newChildren = newChildren || children.slice(0, i);
+
+          _normalizeVNodes(children, newChildren, i, '');
+          break;
+        } else if (isStringOrNumber(n)) {
+          newChildren = newChildren || children.slice(0, i);
+          newChildren.push(applyKeyIfMissing(i, createTextVNode(n, null)));
+        } else {
+          const key = n.key;
+          const isNullDom = isNull(n.dom);
+          const isNullKey = isNull(key);
+          const isPrefixed = !isNullKey && key[0] === keyPrefix;
+
+          if (!isNullDom || isNullKey || isPrefixed) {
+            newChildren = newChildren || children.slice(0, i);
+            newChildren.push(applyKeyIfMissing(i, isNullDom && !isPrefixed ? n : directClone(n)));
+          } else if (newChildren) {
+            newChildren.push(applyKeyIfMissing(i, n));
+          }
+        }
+      }
+      newChildren = newChildren || children;
+      newChildren.$ = true;
     }
-
-    newChildFlags = ChildFlags.HasKeyedChildren;
-
-    newChildren = normalizeVNodes(children as any[], children.length, null);
-
-    newChildren.$ = true;
   } else {
-    // TODO: Do we want to validate vNode shape here?
     newChildren = children;
 
     if (!isNull((children as VNode).dom)) {
@@ -467,6 +462,10 @@ export function normalizeChildren(vNode, children) {
 
   vNode.children = newChildren;
   vNode.childFlags = newChildFlags;
+
+  if (process.env.NODE_ENV !== 'production') {
+    validateVNodeElementChildren(vNode);
+  }
 
   return vNode;
 }

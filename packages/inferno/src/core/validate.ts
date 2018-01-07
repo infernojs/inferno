@@ -1,6 +1,5 @@
 import { isArray, isInvalid, isNullOrUndef, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isVNode } from './implementation';
 
 function getTagName(vNode) {
   const flags = vNode.flags;
@@ -53,11 +52,12 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     }
     const key = childNode.key;
     const children = childNode.children;
+    const childFlags = childNode.childFlags;
     if (!isInvalid(children)) {
       let val;
-      if (isArray(children)) {
+      if (childFlags & ChildFlags.MultipleChildren) {
         val = DEV_ValidateKeys(children, childNode, forceKeyed);
-      } else if (isVNode(children)) {
+      } else if (childFlags & ChildFlags.HasVNodeChildren) {
         val = DEV_ValidateKeys(
           [children],
           childNode,
@@ -93,6 +93,49 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
       );
     }
     foundKeys.add(key);
+  }
+}
+
+export function validateVNodeElementChildren(vNode) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (vNode.childFlags & ChildFlags.HasInvalidChildren) {
+      return;
+    }
+    if (vNode.flags & VNodeFlags.InputElement) {
+      throwError("input elements can't have children.");
+    }
+    if (vNode.flags & VNodeFlags.TextareaElement) {
+      throwError("textarea elements can't have children.");
+    }
+    if (vNode.flags & VNodeFlags.Element) {
+      const voidTypes = [
+        'area',
+        'base',
+        'br',
+        'col',
+        'command',
+        'embed',
+        'hr',
+        'img',
+        'input',
+        'keygen',
+        'link',
+        'meta',
+        'param',
+        'source',
+        'track',
+        'wbr'
+      ];
+      const tag = vNode.type.toLowerCase();
+
+      if (tag === 'media') {
+        throwError("media elements can't have children.");
+      }
+      const idx = voidTypes.indexOf(tag);
+      if (idx !== -1) {
+        throwError(`${voidTypes[idx]} elements can't have children.`);
+      }
+    }
   }
 }
 

@@ -80,8 +80,35 @@ describe('Development warnings', () => {
     });
   });
 
-  // TODO:
-  // normalize - children arguments length === 1 and no keys defined. console log error
-  // TODO:
-  // normalize - children arguments length > 1 and no keys defined. components ( check fiddle )
+  describe('Invalid Element children', () => {
+    it('Input cannot have children', () => {
+      expect(() => render(<input>foobar</input>, container)).toThrowError(
+        'Inferno Error: input elements can\'t have children.'
+      );
+    });
+
+    it('TextArea elements cannot have children', () => {
+      expect(() => render(<textarea>foobar</textarea>, container)).toThrowError(
+        'Inferno Error: textarea elements can\'t have children.'
+      );
+    });
+
+    it('Media elements cannot have children', () => {
+      expect(() => render(<media>foobar</media>, container)).toThrowError(
+        'Inferno Error: media elements can\'t have children.'
+      );
+    });
+
+    it('< BR > elements cannot have children', () => {
+      expect(() => render(<br>foobar</br>, container)).toThrowError(
+        'Inferno Error: br elements can\'t have children.'
+      );
+    });
+
+    it('< img > elements cannot have children', () => {
+      expect(() => render(<img>foobar</img>, container)).toThrowError(
+        'Inferno Error: img elements can\'t have children.'
+      );
+    });
+  });
 });
