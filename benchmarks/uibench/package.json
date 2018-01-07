@@ -21,7 +21,7 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
-    "babel-plugin-inferno": "git+https://github.com/infernojs/babel-plugin-inferno.git#c70319d8ec2b20ad1c814344ea4b05294f9fa067",
+    "babel-plugin-inferno": "4.0.0-23",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "gulp": "github:gulpjs/gulp#4.0",
