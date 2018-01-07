@@ -5,7 +5,7 @@
 import { VNode } from 'inferno';
 import {
   isArray,
-  isFunction,
+  isFunction, isInvalid,
   isNullOrUndef,
   isObject,
   isString,
@@ -130,7 +130,9 @@ export function findAllInVNodeTree(
       ) as VNode[]);
     } else if (isArray(children)) {
       children.forEach(child => {
-        result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);
+        if (!isInvalid(child)) {
+          result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);
+        }
       });
     }
     return result;
@@ -179,7 +181,7 @@ export function scryRenderedDOMElementsWithClass(
 ): Element[] {
   return findAllInRenderedTree(renderedTree, instance => {
     if (_isDOMVNode(instance)) {
-      let domClassName = (instance.dom as Element).className;
+      let domClassName = !isNullOrUndef(instance.dom) ? (instance.dom as Element).className : '';
       if (
         !isString(domClassName) &&
         !isNullOrUndef(instance.dom) &&
