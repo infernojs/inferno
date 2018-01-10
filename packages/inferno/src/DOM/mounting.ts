@@ -109,6 +109,19 @@ export function mountElement(
   const dom = documentCreateElement(vNode.type, isSVG);
 
   vNode.dom = dom;
+
+  if (!isNullOrUndef(className) && className !== '') {
+    if (isSVG) {
+      dom.setAttribute('class', className);
+    } else {
+      dom.className = className;
+    }
+  }
+
+  if (!isNull(parentDom)) {
+    appendChild(parentDom, dom);
+  }
+
   if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
     const childrenIsSVG = isSVG === true && vNode.type !== 'foreignObject';
 
@@ -122,14 +135,6 @@ export function mountElement(
     mountProps(vNode, flags, props, dom, isSVG);
   }
 
-  if (!isNullOrUndef(className) && className !== '') {
-    if (isSVG) {
-      dom.setAttribute('class', className);
-    } else {
-      dom.className = className;
-    }
-  }
-
   if (process.env.NODE_ENV !== 'production') {
     if (isString(ref)) {
       throwError(
@@ -139,9 +144,6 @@ export function mountElement(
   }
   if (isFunction(ref)) {
     mountRef(dom, ref, lifecycle);
-  }
-  if (!isNull(parentDom)) {
-    appendChild(parentDom, dom);
   }
   return dom;
 }
