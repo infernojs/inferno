@@ -71,10 +71,9 @@ function getVNode(
   type
 ): VNode {
   return {
-    childFlags:
-      childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags,
-    children: children === void 0 ? null : children,
-    className: className === void 0 ? null : className,
+    childFlags,
+    children,
+    className,
     dom: null,
     flags,
     key: key === void 0 ? null : key,
@@ -103,7 +102,7 @@ export function createVNode(
     }
   }
   const vNode = getVNode(
-    childFlags,
+    childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags,
     children,
     className,
     flags,

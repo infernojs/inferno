@@ -122,7 +122,7 @@ export function mountElement(
     mountProps(vNode, flags, props, dom, isSVG);
   }
 
-  if (!isNull(className)) {
+  if (!isNullOrUndef(className) && className !== '') {
     if (isSVG) {
       dom.setAttribute('class', className);
     } else {

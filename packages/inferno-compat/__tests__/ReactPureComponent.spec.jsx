@@ -66,7 +66,6 @@ describe('ReactPureComponent', function() {
       }
 
       shouldComponentUpdate(nextProps, state) {
-        debugger;
         return super.shouldComponentUpdate(nextProps, state);
       }
       render() {
