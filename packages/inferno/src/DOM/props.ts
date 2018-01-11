@@ -25,7 +25,7 @@ import {
   isControlledFormElement,
   processElement
 } from './wrappers/processElement';
-import { removeAllChildren, unmount } from './unmounting';
+import { unmount, unmountAllChildren } from './unmounting';
 import { VNode } from 'inferno';
 
 export function isAttrAnEvent(attr: string): boolean {
@@ -39,30 +39,26 @@ function createLinkEvent(linkEvent, nextValue) {
 }
 
 export function patchEvent(name: string, lastValue, nextValue, dom) {
-  if (delegatedEvents.has(name)) {
-    handleEvent(name, nextValue, dom);
-  } else {
-    const nameLowerCase = name.toLowerCase();
+  const nameLowerCase = name.toLowerCase();
 
-    if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-      const linkEvent = nextValue.event;
+  if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+    const linkEvent = nextValue.event;
 
-      if (linkEvent && isFunction(linkEvent)) {
-        dom[nameLowerCase] = createLinkEvent(linkEvent, nextValue);
-      } else {
-        // Development warning
-        if (process.env.NODE_ENV !== 'production') {
-          throwError(
-            `an event on a VNode "${name}". was not a function or a valid linkEvent.`
-          );
-        }
-      }
+    if (linkEvent && isFunction(linkEvent)) {
+      dom[nameLowerCase] = createLinkEvent(linkEvent, nextValue);
     } else {
-      const domEvent = dom[nameLowerCase];
-      // if the function is wrapped, that means it's been controlled by a wrapper
-      if (!domEvent || !domEvent.wrapped) {
-        dom[nameLowerCase] = nextValue;
+      // Development warning
+      if (process.env.NODE_ENV !== 'production') {
+        throwError(
+          `an event on a VNode "${name}". was not a function or a valid linkEvent.`
+        );
       }
+    }
+  } else {
+    const domEvent = dom[nameLowerCase];
+    // if the function is wrapped, that means it's been controlled by a wrapper
+    if (!domEvent || !domEvent.wrapped) {
+      dom[nameLowerCase] = nextValue;
     }
   }
 }
@@ -117,8 +113,10 @@ export function removeProp(
     dom.value = nextFlags & VNodeFlags.SelectElement ? null : '';
   } else if (prop === 'style') {
     dom.removeAttribute('style');
-  } else if (isAttrAnEvent(prop)) {
+  } else if (delegatedEvents.has(prop)) {
     handleEvent(prop, null, dom);
+  } else if (isAttrAnEvent(prop)) {
+    patchEvent(prop, lastValue, null, dom);
   } else if (prop === 'dangerouslySetInnerHTML') {
     dom.textContent = '';
   } else {
@@ -136,7 +134,9 @@ export function patchProp(
   lastVNode: VNode | null
 ) {
   if (lastValue !== nextValue) {
-    if (skipProps.has(prop) || (hasControlledValue && prop === 'value')) {
+    if (delegatedEvents.has(prop)) {
+      handleEvent(prop, nextValue, dom);
+    } else if (skipProps.has(prop) || (hasControlledValue && prop === 'value')) {
       return;
     } else if (booleanProps.has(prop)) {
       prop = prop === 'autoFocus' ? prop.toLowerCase() : prop;
@@ -149,7 +149,7 @@ export function patchProp(
       }
     } else if (isAttrAnEvent(prop)) {
       patchEvent(prop, lastValue, nextValue, dom);
-    } else if (isNullOrUndef(nextValue)) {
+    }  else if (isNullOrUndef(nextValue)) {
       dom.removeAttribute(prop);
     } else if (prop === 'style') {
       patchStyle(lastValue, nextValue, dom);
@@ -161,7 +161,7 @@ export function patchProp(
         if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
           if (!isNull(lastVNode)) {
             if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
-              removeAllChildren(dom, lastVNode.children);
+              unmountAllChildren(lastVNode.children as VNode[]);
             } else if (lastVNode.childFlags & ChildFlags.HasVNodeChildren) {
               unmount(lastVNode.children);
             }

@@ -33,14 +33,12 @@ import { patchProp, removeProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 
-function replaceWithNewNode(
-  lastNode,
-  nextNode,
-  parentDom,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+function replaceWithNewNode(lastNode,
+                            nextNode,
+                            parentDom,
+                            lifecycle: Function[],
+                            context: Object,
+                            isSVG: boolean) {
   unmount(lastNode);
   replaceChild(
     parentDom,
@@ -49,14 +47,12 @@ function replaceWithNewNode(
   );
 }
 
-export function patch(
-  lastVNode: VNode,
-  nextVNode: VNode,
-  parentDom: Element,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+export function patch(lastVNode: VNode,
+                      nextVNode: VNode,
+                      parentDom: Element,
+                      lifecycle: Function[],
+                      context: Object,
+                      isSVG: boolean) {
   if (lastVNode !== nextVNode) {
     const nextFlags = nextVNode.flags;
 
@@ -118,14 +114,12 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, lifecycle, context) {
   }
 }
 
-export function patchElement(
-  lastVNode: VNode,
-  nextVNode: VNode,
-  parentDom: Element | null,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+export function patchElement(lastVNode: VNode,
+                             nextVNode: VNode,
+                             parentDom: Element | null,
+                             lifecycle: Function[],
+                             context: Object,
+                             isSVG: boolean) {
   const nextTag = nextVNode.type;
 
   if (lastVNode.type !== nextTag) {
@@ -240,16 +234,14 @@ export function patchElement(
   }
 }
 
-function patchChildren(
-  lastChildFlags: ChildFlags,
-  nextChildFlags: ChildFlags,
-  lastChildren,
-  nextChildren,
-  parentDOM: Element,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+function patchChildren(lastChildFlags: ChildFlags,
+                       nextChildFlags: ChildFlags,
+                       lastChildren,
+                       nextChildren,
+                       parentDOM: Element,
+                       lifecycle: Function[],
+                       context: Object,
+                       isSVG: boolean) {
   if (lastChildFlags & ChildFlags.HasVNodeChildren) {
     if (nextChildFlags & ChildFlags.HasVNodeChildren) {
       patch(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG);
@@ -323,18 +315,16 @@ function patchChildren(
   }
 }
 
-export function updateClassComponent(
-  instance,
-  nextState,
-  nextVNode: VNode,
-  nextProps,
-  parentDom,
-  lifecycle: Function[],
-  context,
-  isSVG: boolean,
-  force: boolean,
-  fromSetState: boolean
-) {
+export function updateClassComponent(instance,
+                                     nextState,
+                                     nextVNode: VNode,
+                                     nextProps,
+                                     parentDom,
+                                     lifecycle: Function[],
+                                     context,
+                                     isSVG: boolean,
+                                     force: boolean,
+                                     fromSetState: boolean) {
   const lastState = instance.state;
   const lastProps = instance.props;
   nextVNode.children = instance;
@@ -432,15 +422,13 @@ export function updateClassComponent(
   nextVNode.dom = instance.$LI.dom;
 }
 
-function patchComponent(
-  lastVNode,
-  nextVNode,
-  parentDom,
-  lifecycle: Function[],
-  context,
-  isSVG: boolean,
-  isClass: boolean
-): void {
+function patchComponent(lastVNode,
+                        nextVNode,
+                        parentDom,
+                        lifecycle: Function[],
+                        context,
+                        isSVG: boolean,
+                        isClass: boolean): void {
   const nextType = nextVNode.type;
   const lastKey = lastVNode.key;
   const nextKey = nextVNode.key;
@@ -528,16 +516,14 @@ function patchText(lastVNode: VNode, nextVNode: VNode, parentDom: Element) {
   nextVNode.dom = dom;
 }
 
-function patchNonKeyedChildren(
-  lastChildren,
-  nextChildren,
-  dom,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean,
-  lastChildrenLength: number,
-  nextChildrenLength: number
-) {
+function patchNonKeyedChildren(lastChildren,
+                               nextChildren,
+                               dom,
+                               lifecycle: Function[],
+                               context: Object,
+                               isSVG: boolean,
+                               lastChildrenLength: number,
+                               nextChildrenLength: number) {
   const commonLength =
     lastChildrenLength > nextChildrenLength
       ? nextChildrenLength
@@ -568,16 +554,14 @@ function patchNonKeyedChildren(
   }
 }
 
-function patchKeyedChildren(
-  a: VNode[],
-  b: VNode[],
-  dom,
-  lifecycle: Function[],
-  context,
-  isSVG: boolean,
-  aLength: number,
-  bLength: number
-) {
+function patchKeyedChildren(a: VNode[],
+                            b: VNode[],
+                            dom,
+                            lifecycle: Function[],
+                            context,
+                            isSVG: boolean,
+                            aLength: number,
+                            bLength: number) {
   if (process.env.NODE_ENV !== 'production') {
     validateKeys(b, true);
   }
@@ -662,12 +646,7 @@ function patchKeyedChildren(
   } else {
     const aLeft = aEnd - aStart + 1;
     const bLeft = bEnd - bStart + 1;
-    const sources = new Array(bLeft);
-
-    // Mark all nodes as inserted.
-    for (i = 0; i < bLeft; i++) {
-      sources[i] = -1;
-    }
+    const sources = new Int16Array(bLeft).fill(-1);
     let moved = false;
     let pos = 0;
     let patched = 0;
@@ -734,14 +713,12 @@ function patchKeyedChildren(
     // fast-path: if nothing patched remove all old and add all new
     if (aLeft === aLength && patched === 0) {
       removeAllChildren(dom, a);
-      while (bStart < bLeft) {
-        node = b[bStart];
-        if (node.dom) {
-          b[bStart] = node = directClone(node);
-        }
-        bStart++;
-        insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG), null);
-      }
+      mountArrayChildren(b,
+        dom,
+        lifecycle,
+        context,
+        isSVG
+      );
     } else {
       i = aLeft - patched;
       while (i > 0) {
@@ -767,19 +744,17 @@ function patchKeyedChildren(
               mount(node, null, lifecycle, context, isSVG),
               nextPos < bLength ? b[nextPos].dom : null
             );
+          } else if (j < 0 || i !== seq[j]) {
+            pos = i + bStart;
+            node = b[pos];
+            nextPos = pos + 1;
+            insertOrAppend(
+              dom,
+              node.dom,
+              nextPos < bLength ? b[nextPos].dom : null
+            );
           } else {
-            if (j < 0 || i !== seq[j]) {
-              pos = i + bStart;
-              node = b[pos];
-              nextPos = pos + 1;
-              insertOrAppend(
-                dom,
-                node.dom,
-                nextPos < bLength ? b[nextPos].dom : null
-              );
-            } else {
-              j--;
-            }
+            j--;
           }
         }
       } else if (patched !== bLeft) {
@@ -806,8 +781,8 @@ function patchKeyedChildren(
 }
 
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-function lis_algorithm(arr: number[]): number[] {
-  const p = arr.slice(0);
+function lis_algorithm(arr: Int16Array): number[] {
+  const p = new Int16Array(arr);
   const result: number[] = [0];
   let i;
   let j;

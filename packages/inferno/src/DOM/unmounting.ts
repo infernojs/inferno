@@ -14,7 +14,8 @@ export function remove(vNode: VNode, parentDom: Element | null) {
 
   if (!isNull(parentDom)) {
     removeChild(parentDom, vNode.dom as Element);
-    vNode.dom = null; // Let carbage collector free memory
+    // Let carbage collector free memory
+    vNode.dom = null;
   }
 }
 
@@ -59,9 +60,7 @@ export function unmount(vNode) {
     const childFlags = vNode.childFlags;
 
     if (childFlags & ChildFlags.MultipleChildren) {
-      for (let i = 0, len = (children as VNode[]).length; i < len; i++) {
-        unmount((children as VNode[])[i] as VNode);
-      }
+      unmountAllChildren(children);
     } else if (childFlags & ChildFlags.HasVNodeChildren) {
       unmount(children as VNode);
     }
@@ -83,9 +82,13 @@ export function unmount(vNode) {
   }
 }
 
-export function removeAllChildren(dom: Element, children) {
+export function unmountAllChildren(children: VNode[]) {
   for (let i = 0, len = children.length; i < len; i++) {
     unmount(children[i]);
   }
+}
+
+export function removeAllChildren(dom: Element, children) {
+  unmountAllChildren(children);
   dom.textContent = '';
 }

@@ -39,7 +39,9 @@
   "repository": "https://github.com/infernojs/inferno",
   "devDependencies": {
     "inferno-shared": "4.0.0-10",
-    "inferno-utils": "4.0.0-10",
+    "inferno-utils": "4.0.0-10"
+  },
+  "dependencies": {
     "inferno-vnode-flags": "4.0.0-10"
   }
 }

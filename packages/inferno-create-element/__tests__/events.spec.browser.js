@@ -396,6 +396,78 @@ describe('Basic event tests', () => {
       expect(spy1.callCount).toBe(1);
     });
 
+    it('Should remove synthetic listener if patched to null/undef', () => {
+      const spy1 = sinon.spy();
+      const spy2 = sinon.spy();
+
+      function FooBarCom({ test }) {
+        return (
+          <div>
+            {test ? (
+              <div onClick={spy1}>
+                <span onClick={spy2}>test</span>
+              </div>
+            ) : (
+              <div>
+                <span onClick={spy2}>test</span>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      render(<FooBarCom test={true} />, container);
+      container.querySelector('span').click();
+      expect(spy2.callCount).toBe(1);
+      expect(spy1.callCount).toBe(1);
+
+      render(<FooBarCom test={false} />, container);
+      container.querySelector('span').click();
+      expect(spy2.callCount).toBe(2);
+      expect(spy1.callCount).toBe(1);
+
+      render(<FooBarCom test={true} />, container);
+      container.querySelector('span').click();
+      expect(spy2.callCount).toBe(3);
+      expect(spy1.callCount).toBe(2);
+    });
+
+    it('Should remove native listener if patched to null/undef', () => {
+      const spy1 = sinon.spy();
+      const spy2 = sinon.spy();
+
+      function FooBarCom({ test }) {
+        return (
+          <div>
+            {test ? (
+              <div onclick={spy1}>
+                <span onclick={spy2}>test</span>
+              </div>
+            ) : (
+              <div>
+                <span onclick={spy2}>test</span>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      render(<FooBarCom test={true} />, container);
+      container.querySelector('span').click();
+      expect(spy2.callCount).toBe(1);
+      expect(spy1.callCount).toBe(1);
+
+      render(<FooBarCom test={false} />, container);
+      container.querySelector('span').click();
+      expect(spy2.callCount).toBe(2);
+      expect(spy1.callCount).toBe(1);
+
+      render(<FooBarCom test={true} />, container);
+      container.querySelector('span').click();
+      expect(spy2.callCount).toBe(3);
+      expect(spy1.callCount).toBe(2);
+    });
+
     it('Should stop propagating normal event to document', done => {
       const eventHandlerSpy = sinon.spy();
       const eventHandler = function(event) {
