@@ -26,9 +26,10 @@ async function printFileSizes() {
     head: [
       `INFERNO - ${INFERNO_VERSION}`.cyan,
       'Browser'.cyan + ' (gzip)'.green,
-      'Production (min)'.cyan  + ' (gzip)'.green,
-      'ES6'.cyan  + ' (gzip)'.green,
-      'Common-JS'.cyan  + ' (gzip)'.green,
+      'Browser prod (min)'.cyan  + ' (gzip)'.green,
+      'mjs'.cyan  + ' (gzip)'.green,
+      'cjs'.cyan  + ' (gzip)'.green,
+      'cjs prod'.cyan  + ' (gzip)'.green,
     ],
     colWidth: [100, 200, 200, 200, 200]
   });
@@ -37,8 +38,9 @@ async function printFileSizes() {
     const filesToStat = [
       name + '.js',
       name + '.min.js',
-      'index.es.js',
-      'index.js'
+      'index.mjs',
+      'index.cjs.js',
+      'index.cjs.min.js'
     ];
     const row = [name];
 

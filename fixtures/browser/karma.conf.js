@@ -1,6 +1,5 @@
 const path = require('path');
-const resolve = package =>
-  path.join(__dirname, '../../packages', package, 'src');
+const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src');
 
 module.exports = function(config) {
   config.set({

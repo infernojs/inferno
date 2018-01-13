@@ -10,7 +10,7 @@ module.exports = function(version, options) {
   const plugins = [
     aliasPlugin,
     nodeResolve({
-      extensions: ['.ts', '.js', '.json'],
+      extensions: ['.mjs', '.ts', '.js', '.json'],
       jsnext: true
     }),
     commonjs({
@@ -45,11 +45,16 @@ module.exports = function(version, options) {
           booleans: true,
           dead_code: true,
           drop_debugger: true,
-          unused: true
+          unused: true,
+          keep_fnames: false,
+          keep_infinity: true,
+          passes: 3
         },
         ie8: false,
+        mangle: {
+          toplevel: true
+        },
         parse: {
-          // parse options
           html5_comments: false,
           shebang: false
         },

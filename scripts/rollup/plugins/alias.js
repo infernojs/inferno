@@ -1,30 +1,18 @@
 const { resolve, join } = require('path');
 const alias = require('rollup-plugin-alias');
-
 const ROOT = join(__dirname, '../../../');
 
 module.exports = alias({
-  inferno: resolve(ROOT, 'packages/inferno/dist/index.es.js'),
-  'inferno-compat': resolve(ROOT, 'packages/inferno-compat/dist/index.es.js'),
-  'inferno-create-class': resolve(
-    ROOT,
-    'packages/inferno-create-class/dist/index.es.js'
-  ),
-  'inferno-create-element': resolve(
-    ROOT,
-    'packages/inferno-create-element/dist/index.es.js'
-  ),
-  'inferno-hyperscript': resolve(
-    ROOT,
-    'packages/inferno-hyperscript/dist/index.es.js'
-  ),
-  'inferno-mobx': resolve(ROOT, 'packages/inferno-mobx/dist/index.es.js'),
-  'inferno-redux': resolve(ROOT, 'packages/inferno-redux/dist/index.es.js'),
-  'inferno-router': resolve(ROOT, 'packages/inferno-router/dist/index.es.js'),
-  'inferno-server': resolve(ROOT, 'packages/inferno-server/dist/index.es.js'),
-  'inferno-shared': resolve(ROOT, 'packages/inferno-shared/dist/index.es.js'),
-  'inferno-clone-vnode': resolve(
-    ROOT,
-    'packages/inferno-clone-vnode/dist/index.es.js'
-  )
+  resolve: ['.mjs', '.js'],
+  inferno: resolve(ROOT, 'packages/inferno/dist/index.mjs'),
+  'inferno-compat': resolve(ROOT, 'packages/inferno-compat/dist/index.mjs'),
+  'inferno-create-class': resolve(ROOT, 'packages/inferno-create-class/dist/index.mjs'),
+  'inferno-create-element': resolve(ROOT, 'packages/inferno-create-element/dist/index.mjs'),
+  'inferno-hyperscript': resolve(ROOT, 'packages/inferno-hyperscript/dist/index.mjs'),
+  'inferno-mobx': resolve(ROOT, 'packages/inferno-mobx/dist/index.mjs'),
+  'inferno-redux': resolve(ROOT, 'packages/inferno-redux/dist/index.mjs'),
+  'inferno-router': resolve(ROOT, 'packages/inferno-router/dist/index.mjs'),
+  'inferno-server': resolve(ROOT, 'packages/inferno-server/dist/index.mjs'),
+  'inferno-shared': resolve(ROOT, 'packages/inferno-shared/dist/index.mjs'),
+  'inferno-clone-vnode': resolve(ROOT, 'packages/inferno-clone-vnode/dist/index.mjs'),
 });
