@@ -200,4 +200,42 @@ describe('rendering routine', () => {
       expect(container.innerHTML).toEqual('<div></div>');
     });
   });
+
+  describe('Swapping children', () => {
+    it('Swapping children in component should affect hoisted children', () => {
+      class Hello extends Component {
+        render(props) {
+          const child = props.children;
+
+          child.reverse();
+
+          return <div>Hello {child}</div>;
+        }
+      }
+
+      let data = [1,2];
+
+      render(
+        <div>
+          <Hello name="World" >{data}</Hello>
+          <Hello name="World" >{data}</Hello>
+          <Hello name="World" >{data}</Hello>
+        </div>,
+        container
+      );
+
+      expect(container.innerHTML).toEqual('<div><div>Hello 21</div><div>Hello 12</div><div>Hello 21</div></div>');
+
+      render(
+        <div>
+          <Hello name="World" >{data}</Hello>
+          <Hello name="World" >{data}</Hello>
+          <Hello name="World" >{data}</Hello>
+        </div>,
+        container
+      );
+
+      expect(container.innerHTML).toEqual('<div><div>Hello 12</div><div>Hello 21</div><div>Hello 12</div></div>');
+    })
+  });
 });

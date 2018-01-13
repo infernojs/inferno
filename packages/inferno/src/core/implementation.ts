@@ -15,7 +15,6 @@ import {
   isUndefined,
   throwError
 } from 'inferno-shared';
-import { EMPTY_OBJ } from '../DOM/utils/common';
 import { validateVNodeElementChildren } from "./validate";
 
 const keyPrefix = '$';
@@ -244,9 +243,7 @@ export function directClone(vNodeToClone: VNode): VNode {
     let props;
     const propsToClone = vNodeToClone.props;
 
-    if (isNull(propsToClone)) {
-      props = EMPTY_OBJ;
-    } else {
+    if (!isNull(propsToClone)) {
       props = {};
       for (const key in propsToClone) {
         props[key] = propsToClone[key];
@@ -259,34 +256,6 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.key,
       vNodeToClone.ref
     );
-    const newProps = newVNode.props;
-
-    const newChildren = newProps.children;
-    // we need to also clone component children that are in props
-    // as the children may also have been hoisted
-    if (newChildren) {
-      if (isArray(newChildren)) {
-        const len = newChildren.length;
-        if (len > 0) {
-          const tmpArray: any[] = [];
-
-          for (let i = 0; i < len; i++) {
-            const child = newChildren[i];
-
-            if (isStringOrNumber(child)) {
-              tmpArray.push(child);
-            } else if (!isInvalid(child) && isVNode(child)) {
-              tmpArray.push(directClone(child));
-            }
-          }
-          newProps.children = tmpArray;
-        }
-      } else if (isVNode(newChildren)) {
-        newProps.children = directClone(newChildren);
-      }
-    }
-
-    newVNode.children = null;
   } else if (flags & VNodeFlags.Element) {
     const children = vNodeToClone.children;
 
@@ -316,7 +285,16 @@ export function directClone(vNodeToClone: VNode): VNode {
 }
 
 export function createVoidVNode(): VNode {
-  return createVNode(VNodeFlags.Void, null, null, '', 0, null, null, null);
+  return getVNode(
+    ChildFlags.HasInvalidChildren,
+    '',
+    null,
+    VNodeFlags.Void,
+    null,
+    null,
+    null,
+    null
+  );
 }
 
 export function isVNode(o: VNode): boolean {
