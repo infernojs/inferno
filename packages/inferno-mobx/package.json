@@ -12,7 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "module": "dist/index.mjs",
+  "module": "index.mjs",
+  "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
@@ -26,11 +27,11 @@
   "repository": "https://github.com/infernojs/inferno",
   "peerDependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "4.0.0-10",
-    "inferno-create-class": "4.0.0-10",
-    "inferno-create-element": "4.0.0-10",
-    "inferno-server": "4.0.0-10",
-    "inferno-shared": "4.0.0-10",
+    "inferno": ">=4",
+    "inferno-create-class": ">=4",
+    "inferno-create-element": ">=4",
+    "inferno-server": ">=4",
+    "inferno-shared": ">=4",
     "mobx": ">=3.0.0"
   },
   "dependencies": {

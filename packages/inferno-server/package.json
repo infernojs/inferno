@@ -26,14 +26,15 @@
     "rollup"
   ],
   "main": "index.js",
-  "module": "dist/index.mjs",
+  "module": "index.mjs",
+  "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "engines": {
     "node": ">=8"
   },
   "peerDependencies": {
-    "inferno": "4.0.0-10"
+    "inferno": ">=4"
   },
   "devDependencies": {
     "inferno": "4.0.0-11",

@@ -17,7 +17,7 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "peerDependencies": {
-    "inferno": "4.0.0-10"
+    "inferno": ">=4"
   },
   "devDependencies": {
     "inferno": "4.0.0-11",

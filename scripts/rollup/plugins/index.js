@@ -23,9 +23,12 @@ module.exports = function(version, options) {
       clean: true,
       exclude: ['*.spec*', '**/*.spec*'],
       tsconfig: __dirname + '/../../../tsconfig.json' // Have absolute path to fix windows build
-    }),
-    bublePlugin()
+    })
   ];
+
+  if (!options.es6) {
+    plugins.push(bublePlugin());
+  }
 
   const replaceValues = {
     'process.env.INFERNO_VERSION': JSON.stringify(options.version)
