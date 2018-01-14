@@ -319,8 +319,7 @@ Inferno.createVNode(
 
 Create a new Inferno `VNode` using `createVNode()`. A `VNode` is a virtual DOM object that is used to
 describe a single element of the UI. Typically `createElement()` (package: `inferno-create-element`), `h()` (package: `inferno-hyperscript`) or JSX are used to create
-`VNode`s for Inferno, but under the hood they all use `createVNode()`. Below is an example of using
-of `createVNode` usage:
+`VNode`s for Inferno, but under the hood they all use `createVNode()`. Below is an example of `createVNode` usage:
 
 ```javascript
 import Inferno from 'inferno';
