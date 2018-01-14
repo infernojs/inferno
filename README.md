@@ -12,6 +12,106 @@
 
 Inferno is an insanely fast, `9kb` React-like library for building high-performance user interfaces on both the client and server.
 
+## Help testing v4!
+Inferno is shipping the next major version soon. You can help testing it by trying it out! All packages are published under "next" npm tag.
+In this release we are trying to focus on increasing performance of previous slow code paths. `inferno-server` performance has been boosted up to 10times depending on the workload.
+
+JSX users will also see performance benefit when static nodes are used. You no longer need to add `$NoNormalize` flag on those nodes.
+It's done automatically in compilation time.
+
+
+`npm i inferno@next`
+
+`npm i inferno-router@next`
+
+`npm i babel-plugin-inferno@next`
+
+Documentation rewrite is going on at the moment. If you find any issues using the new version please file a Github issue.
+
+### V4 highlights
+
+#### Features:
+
+`{Inferno.createPortal(vNode, DOM)}` can be used to render Component or vNode to external location (DOM)
+
+Router has been updated to v4 to match React Router v4 API
+
+Mobx/Redux integrations have been ported to the latest version
+
+new JSX flag: `$ReCreate` has been added
+
+defaultHooks has been added to Functional Components
+
+```
+function Static() {
+    return <div>1</div>;
+}
+
+Static.defaultHooks = {
+    onComponentShouldUpdate() {
+        return false;
+    }
+}
+
+export const Com = Static;
+```
+
+TouchEvents are now part of Synthetic event system
+
+
+#### Breaking changes:
+
+`inferno-component` is removed. Inferno.Component (ES6) Class has been moved to `inferno` package.
+
+`findDOMNode` has been moved to `inferno-compat`
+
+string components now require `inferno-compat`
+
+Default exports have been removed from all packages except `inferno-compat`
+
+Inferno packages are now using peerDependencies to external components to avoid duplicates
+
+`module` entry has been added to package.json for all packages.
+
+NOTE: This points to production build of Inferno. If you are doing development using Inferno you should use `dist/index.dev.js` or use module entry point: `dev:module`
+
+`creatVNode` cannot be used to create Component vNodes anymore. use `createComponentVNode(flags, type, props, key, ref)` instead.
+
+There is no more "noNormalize" parameter for `createVNode` if you have been using it and you need to normalize children use `Inferno.normalizeChildren` method.
+
+
+
+#### Common changes:
+
+All Inferno properties follow the same naming convention.
+
+JSX Flags
+
+`NoNormalize` => `$NoNormalize`
+
+`hasKeyedChildren` => `$HasKeyedChildren`
+
+`hasNonKeyedChildren` => `$HasNonKeyedChildren`
+
+ES6 Component properties that are considered private are now `$` - prefixed.
+
+Normalization process generated keys are now `$` - prefixed.
+
+
+
+### Bug Fixes
+
+XSS vurnelability has been fixed in `inferno-server` package
+
+`dangerouslySetInnerHTML` now correctly unmounts previous nodes
+
+hundreds of new tests have been added to `inferno-compat`
+
++many more
+
+
+# Inferno Description
+
 To quote a member of the React core team at Facebook:
 > Inferno 1.0 is really well written. It's how I would've rewritten React. I'd recommend reading its source to learn.
 

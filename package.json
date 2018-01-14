@@ -79,7 +79,7 @@
     "babel-core": "^6.26.0",
     "babel-jest": "^22.0.6",
     "babel-loader": "^7.1.2",
-    "babel-plugin-inferno": "4.0.0-26",
+    "babel-plugin-inferno": "4.0.0-28",
     "babel-plugin-module-resolver": "^3.0.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
