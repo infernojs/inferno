@@ -101,6 +101,8 @@ export function createElement<T>(
           ref[prop] = props[prop];
         } else if (prop === 'key') {
           key = props.key;
+        } else if (prop === 'ref') {
+          ref = props.ref;
         } else {
           newProps[prop] = props[prop];
         }

@@ -2,6 +2,7 @@ import { render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
+import { Component } from "../../inferno/src";
 
 describe('lifecycle hooks', () => {
   describe('Stateless component hooks', () => {
@@ -247,6 +248,37 @@ describe('lifecycle hooks', () => {
       expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1, children: null });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2, children: null });
+    });
+  });
+
+  describe('Class Component hooks', function () {
+    it('Should trigger ref callback when component is mounting and unmounting', () => {
+      const container = document.createElement('div');
+      class FooBar extends Component {
+        render() {
+          return createElement('div');
+        }
+      }
+      const spyObj = {
+        fn: () => {}
+      };
+      const sinonSpy = sinon.spy(spyObj, 'fn');
+      const node = createElement(
+        FooBar,
+        {ref: spyObj.fn},
+      );
+
+      render(node, container);
+
+      expect(sinonSpy.callCount).toBe(1);
+      expect(sinonSpy.getCall(0).args.length).toBe(1);
+      expect(sinonSpy.getCall(0).args[0]).not.toEqual(null);
+
+      render(null, container);
+
+      expect(sinonSpy.callCount).toBe(2);
+      expect(sinonSpy.getCall(1).args.length).toBe(1);
+      expect(sinonSpy.getCall(1).args[0]).toEqual(null);
     });
   });
 });
