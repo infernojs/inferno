@@ -14,11 +14,6 @@ Inferno is an insanely fast, `9kb` React-like library for building high-performa
 
 ## Help testing v4!
 Inferno is shipping the next major version soon. You can help testing it by trying it out! All packages are published under "next" npm tag.
-In this release we are trying to focus on increasing performance of previous slow code paths. `inferno-server` performance has been boosted up to 10times depending on the workload.
-
-JSX users will also see performance benefit when static nodes are used. You no longer need to add `$NoNormalize` flag on those nodes.
-It's done automatically in compilation time.
-
 
 `npm i inferno@next`
 
@@ -26,7 +21,13 @@ It's done automatically in compilation time.
 
 `npm i babel-plugin-inferno@next`
 
-Documentation rewrite is going on at the moment. If you find any issues using the new version please file a Github issue.
+In this release we are trying to focus on increasing performance of previous slow code paths. `inferno-server` performance has been boosted up to 10times depending on the workload.
+
+JSX users will also see performance benefit when static nodes are used. You no longer need to add `$NoNormalize` flag on those nodes.
+It's done automatically in compilation time.
+
+
+Documentation rewrite is going on at the moment. If you find any issues using the new version please file a Github issue. See JSFiddle link below to reproduce the issue.
 
 ### V4 highlights
 
@@ -197,6 +198,7 @@ Inferno.render(
 ### More Examples
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wt5vL603/)
+- [**Simple Clock Inferno v4** (@JSFiddle)](https://jsfiddle.net/Lbf0zgzr/)
 
 ## Getting Started
 
