@@ -22,33 +22,7 @@ export function remove(vNode: VNode, parentDom: Element | null) {
 export function unmount(vNode) {
   const flags = vNode.flags;
 
-  if (flags & VNodeFlags.Component) {
-    const instance = vNode.children as any;
-    const ref = vNode.ref as any;
-
-    if (flags & VNodeFlags.ComponentClass) {
-      if (isFunction(options.beforeUnmount)) {
-        options.beforeUnmount(vNode);
-      }
-      if (isFunction(instance.componentWillUnmount)) {
-        instance.componentWillUnmount();
-      }
-      if (isFunction(ref)) {
-        ref(null);
-      }
-      instance.$UN = true;
-
-      unmount(instance.$LI);
-    } else {
-      if (!isNullOrUndef(ref)) {
-        if (isFunction(ref.onComponentWillUnmount)) {
-          ref.onComponentWillUnmount(vNode.dom, vNode.props || EMPTY_OBJ);
-        }
-      }
-
-      unmount(instance);
-    }
-  } else if (flags & VNodeFlags.Element) {
+  if (flags & VNodeFlags.Element) {
     const ref = vNode.ref as any;
     const props = vNode.props;
 
@@ -72,6 +46,30 @@ export function unmount(vNode) {
           handleEvent(name, null, vNode.dom);
         }
       }
+    }
+  } else if (flags & VNodeFlags.Component) {
+    const instance = vNode.children as any;
+    const ref = vNode.ref as any;
+
+    if (flags & VNodeFlags.ComponentClass) {
+      if (isFunction(options.beforeUnmount)) {
+        options.beforeUnmount(vNode);
+      }
+      if (isFunction(instance.componentWillUnmount)) {
+        instance.componentWillUnmount();
+      }
+      if (isFunction(ref)) {
+        ref(null);
+      }
+      instance.$UN = true;
+
+      unmount(instance.$LI);
+    } else {
+      if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
+        ref.onComponentWillUnmount(vNode.dom, vNode.props || EMPTY_OBJ);
+      }
+
+      unmount(instance);
     }
   } else if (flags & VNodeFlags.Portal) {
     const children = vNode.children;
