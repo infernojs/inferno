@@ -367,10 +367,10 @@ describe('Component lifecycle (JSX)', () => {
       notCalled(B2spy);
       notCalled(CSpy);
 
-      Bspy.reset();
-      B1spy.reset();
-      B2spy.reset();
-      CSpy.reset();
+      Bspy.resetHistory();
+      B1spy.resetHistory();
+      B2spy.resetHistory();
+      CSpy.resetHistory();
 
       render(<C />, container);
       expect(container.innerHTML).toBe(
@@ -588,9 +588,9 @@ describe('Component lifecycle (JSX)', () => {
     const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
     beforeEach(function() {
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
     });
 
     it('Should call function when node is attached', () => {
@@ -663,9 +663,9 @@ describe('Component lifecycle (JSX)', () => {
       spyInner.calledBefore(spyOuter);
 
       // reset
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       render(<RefTester inner={false} innersecond={true} />, container);
 
@@ -680,9 +680,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(spyInnerSecond.getCall(0).args[0]).toEqual(null);
 
       // reset
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       render(<RefTester inner={true} innersecond={true} />, container);
 
@@ -703,9 +703,9 @@ describe('Component lifecycle (JSX)', () => {
       );
 
       // reset
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
     });
 
     it('Should have width defined when html node is attached', () => {
@@ -793,9 +793,9 @@ describe('Component lifecycle (JSX)', () => {
     };
 
     afterEach(function() {
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
     });
 
     it('Should not call ref unmount when node is not mounted', () => {
@@ -815,9 +815,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(container.innerHTML).toEqual(
         '<div><div><span>abc</span></div></div>'
       );
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       // RENDER INNER DIVS
       render(
@@ -841,9 +841,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(container.innerHTML).toEqual(
         '<div><div><span>abc</span><div><span>dfg</span></div></div></div>'
       );
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       // UNMOUNT INNER DIVS
       render(
@@ -863,9 +863,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(container.innerHTML).toEqual(
         '<div><div><span>abc</span></div></div>'
       );
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       // Inner and InnerSecond divs are now unmounted
       // and unmounting parent should not cause them to unmounted again
@@ -920,9 +920,9 @@ describe('Component lifecycle (JSX)', () => {
     const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
     beforeEach(function() {
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
     });
 
     it('Should call function when node is attached #2', () => {
@@ -995,9 +995,9 @@ describe('Component lifecycle (JSX)', () => {
       spyInner.calledBefore(spyOuter);
 
       // reset
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       render(<RefTester inner={false} innersecond={true} />, container);
 
@@ -1012,9 +1012,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(spyInnerSecond.getCall(0).args[0]).toEqual(null);
 
       // reset
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       render(<RefTester inner={true} innersecond={true} />, container);
 
@@ -1035,9 +1035,9 @@ describe('Component lifecycle (JSX)', () => {
       );
 
       // reset
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
     });
   });
 
@@ -1101,9 +1101,9 @@ describe('Component lifecycle (JSX)', () => {
     }
 
     afterEach(function() {
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
     });
 
     it('Should not call ref unmount when node is not mounted #2', () => {
@@ -1123,9 +1123,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(container.innerHTML).toEqual(
         '<div><div><span>abc</span></div></div>'
       );
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       // RENDER INNER DIVS
       render(
@@ -1149,9 +1149,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(container.innerHTML).toEqual(
         '<div><div><span>abc</span><div><span>dfg</span></div></div></div>'
       );
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       // UNMOUNT INNER DIVS
       render(
@@ -1171,9 +1171,9 @@ describe('Component lifecycle (JSX)', () => {
       expect(container.innerHTML).toEqual(
         '<div><div><span>abc</span></div></div>'
       );
-      spyOuter.reset();
-      spyInner.reset();
-      spyInnerSecond.reset();
+      spyOuter.resetHistory();
+      spyInner.resetHistory();
+      spyInnerSecond.resetHistory();
 
       // Inner and InnerSecond divs are now unmounted
       // and unmounting parent should not cause them to unmounted again

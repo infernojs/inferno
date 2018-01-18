@@ -317,12 +317,12 @@ describe('Columns like tests - (JSX)', () => {
           expect(unmountItemSpy.callCount).toBe(0); // Initial render none unmounted
 
           // reset call counts
-          mountedColumnSpy.reset();
-          unmountColumnSpy.reset();
-          updateColumnSpy.reset();
-          mountedItemSpy.reset();
-          updateItemSpy.reset();
-          unmountItemSpy.reset();
+          mountedColumnSpy.resetHistory();
+          unmountColumnSpy.resetHistory();
+          updateColumnSpy.resetHistory();
+          mountedItemSpy.resetHistory();
+          updateItemSpy.resetHistory();
+          unmountItemSpy.resetHistory();
 
           // Do update
           render(<ViewKeyed columns={testCase.update} />, container);
@@ -488,12 +488,12 @@ describe('Columns like tests - (JSX)', () => {
           expect(unmountItemSpy.callCount).toBe(0); // Initial render none unmounted
 
           // reset call counts
-          mountedColumnSpy.reset();
-          unmountColumnSpy.reset();
-          updateColumnSpy.reset();
-          mountedItemSpy.reset();
-          updateItemSpy.reset();
-          unmountItemSpy.reset();
+          mountedColumnSpy.resetHistory();
+          unmountColumnSpy.resetHistory();
+          updateColumnSpy.resetHistory();
+          mountedItemSpy.resetHistory();
+          updateItemSpy.resetHistory();
+          unmountItemSpy.resetHistory();
 
           // Do update
           render(<View columns={testCase.update} />, container);

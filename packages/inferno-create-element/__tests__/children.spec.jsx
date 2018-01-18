@@ -1536,8 +1536,8 @@ describe('Children - (JSX)', () => {
         '<div><span>foobar</span><span>initial</span></div>'
       );
 
-      mountSpy.reset();
-      unMountSpy.reset();
+      mountSpy.resetHistory();
+      unMountSpy.resetHistory();
 
       toggle(); // Unmount child component
       setTimeout(() => {
@@ -1609,8 +1609,8 @@ describe('Children - (JSX)', () => {
         '<div><span>foobar</span><span><em>f</em></span></div>'
       );
 
-      mountSpy.reset();
-      unMountSpy.reset();
+      mountSpy.resetHistory();
+      unMountSpy.resetHistory();
 
       toggle(); // Unmount child component
       setTimeout(() => {
@@ -1688,8 +1688,8 @@ describe('Children - (JSX)', () => {
         '<div><span>foobar</span><span><em>f</em><em>f</em></span></div>'
       );
 
-      unMountSpy2.reset();
-      unMountSpy.reset();
+      unMountSpy2.resetHistory();
+      unMountSpy.resetHistory();
 
       toggle(); // Unmount child component
       setTimeout(() => {
@@ -1786,7 +1786,7 @@ describe('Children - (JSX)', () => {
         '<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>'
       );
 
-      unMountSpy.reset();
+      unMountSpy.resetHistory();
 
       toggle(); // Unmount child component
       setTimeout(() => {
@@ -1843,8 +1843,8 @@ describe('Children - (JSX)', () => {
         '<div><span>foobar</span><span><em>f</em></span></div>'
       );
 
-      unMountSpy.reset();
-      unMountSpy2.reset();
+      unMountSpy.resetHistory();
+      unMountSpy2.resetHistory();
 
       render(null, container);
       setTimeout(() => {

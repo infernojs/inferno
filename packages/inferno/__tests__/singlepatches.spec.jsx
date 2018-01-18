@@ -9,10 +9,10 @@ describe('All single patch variations', () => {
   let unmountSpy;
 
   beforeEach(function() {
-    mountSpy.reset();
-    updateSpy.reset();
-    unmountSpy.reset();
-    templateRefSpy.reset();
+    mountSpy.resetHistory();
+    updateSpy.resetHistory();
+    unmountSpy.resetHistory();
+    templateRefSpy.resetHistory();
     container = document.createElement('div');
     document.body.appendChild(container);
   });
@@ -157,7 +157,7 @@ describe('All single patch variations', () => {
     beforeEach(() => {
       rTemplate(<ComA ref={templateRefSpy}>first</ComA>);
       expect(templateRefSpy.callCount).toBe(1);
-      templateRefSpy.reset();
+      templateRefSpy.resetHistory();
       expect(container.innerHTML).toEqual('<div>first</div>');
       expect(unmountSpy.callCount).toBe(0);
       expect(mountSpy.callCount).toBe(1);

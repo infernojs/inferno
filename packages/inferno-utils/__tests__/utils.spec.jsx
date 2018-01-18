@@ -127,7 +127,7 @@ describe('Utils', () => {
     let spyCreateMouseEvent;
 
     afterEach(function() {
-      spyDispatch.reset();
+      spyDispatch.resetHistory();
       spyCreateMouseEvent.restore();
     });
 
