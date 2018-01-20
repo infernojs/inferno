@@ -102,7 +102,7 @@ Normalization process generated keys are now `$` - prefixed.
 
 ### Bug Fixes
 
-XSS vurnelability has been fixed in `inferno-server` package
+XSS vulnerability has been fixed in `inferno-server` package
 
 `dangerouslySetInnerHTML` now correctly unmounts previous nodes
 
