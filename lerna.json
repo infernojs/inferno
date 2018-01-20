@@ -1,5 +1,5 @@
 {
-  "lerna": "2.7.1",
+  "lerna": "2.8.0",
   "command": {
     "init": {
       "exact": true
