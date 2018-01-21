@@ -9,6 +9,7 @@ export const svgNS = 'http://www.w3.org/2000/svg';
 export const strictProps = new Set<string>();
 strictProps.add('volume');
 strictProps.add('defaultChecked');
+strictProps.add('value');
 
 export const booleanProps = new Set<string>();
 booleanProps.add('muted');

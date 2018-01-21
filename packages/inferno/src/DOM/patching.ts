@@ -29,9 +29,11 @@ import {
   isControlledFormElement,
   processElement
 } from './wrappers/processElement';
-import { patchProp, removeProp } from './props';
+import { isAttrAnEvent, patchEvent, patchProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
+import { handleEvent } from "./events/delegation";
+import { delegatedEvents, strictProps } from "./constants";
 
 function replaceWithNewNode(lastNode,
                             nextNode,
@@ -57,15 +59,14 @@ export function patch(lastVNode: VNode,
     const nextFlags = nextVNode.flags;
 
     if (lastVNode.flags !== nextFlags || nextFlags & VNodeFlags.ReCreate) {
-      unmount(lastVNode);
-
-      const dom = mount(nextVNode, null, lifecycle, context, isSVG);
-
-      if (isNull(dom)) {
-        removeChild(parentDom, lastVNode.dom as Element);
-      } else {
-        replaceChild(parentDom, dom, lastVNode.dom);
-      }
+      replaceWithNewNode(
+        lastVNode,
+        nextVNode,
+        parentDom,
+        lifecycle,
+        context,
+        isSVG
+      );
     } else if (nextFlags & VNodeFlags.Element) {
       patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
     } else if (nextFlags & VNodeFlags.Component) {
@@ -82,7 +83,8 @@ export function patch(lastVNode: VNode,
       patchText(lastVNode, nextVNode, parentDom);
     } else if (nextFlags & VNodeFlags.Void) {
       nextVNode.dom = lastVNode.dom;
-    } else if (nextFlags & VNodeFlags.Portal) {
+    } else {
+      // Portal
       patchPortal(lastVNode, nextVNode, lifecycle, context);
     }
   }
@@ -171,10 +173,24 @@ export function patchElement(lastVNode: VNode,
         for (const prop in lastPropsOrEmpty) {
           // do not add a hasOwnProperty check here, it affects performance
           if (
-            isNullOrUndef(nextPropsOrEmpty[prop]) &&
+            !nextPropsOrEmpty.hasOwnProperty(prop) &&
             !isNullOrUndef(lastPropsOrEmpty[prop])
           ) {
-            removeProp(prop, lastPropsOrEmpty[prop], dom, nextFlags);
+            if (strictProps.has(prop)) {
+              // When removing value of select element, it needs to be set to null instead empty string, because empty string is valid value for option which makes that option selected
+              // MS IE/Edge don't follow html spec for textArea and input elements and we need to set empty string to value in those cases to avoid "null" and "undefined" texts
+              (dom as any)[prop] = nextFlags & VNodeFlags.SelectElement ? null : '';
+            } else if (prop === 'style') {
+              dom.removeAttribute('style');
+            } else if (delegatedEvents.has(prop)) {
+              handleEvent(prop, null, dom);
+            } else if (isAttrAnEvent(prop)) {
+              patchEvent(prop, lastPropsOrEmpty[prop], null, dom);
+            } else if (prop === 'dangerouslySetInnerHTML') {
+              dom.textContent = '';
+            } else {
+              dom.removeAttribute(prop);
+            }
           }
         }
       }

@@ -101,29 +101,6 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   }
 }
 
-export function removeProp(
-  prop: string,
-  lastValue,
-  dom,
-  nextFlags: VNodeFlags
-) {
-  if (prop === 'value') {
-    // When removing value of select element, it needs to be set to null instead empty string, because empty string is valid value for option which makes that option selected
-    // MS IE/Edge don't follow html spec for textArea and input elements and we need to set empty string to value in those cases to avoid "null" and "undefined" texts
-    dom.value = nextFlags & VNodeFlags.SelectElement ? null : '';
-  } else if (prop === 'style') {
-    dom.removeAttribute('style');
-  } else if (delegatedEvents.has(prop)) {
-    handleEvent(prop, null, dom);
-  } else if (isAttrAnEvent(prop)) {
-    patchEvent(prop, lastValue, null, dom);
-  } else if (prop === 'dangerouslySetInnerHTML') {
-    dom.textContent = '';
-  } else {
-    dom.removeAttribute(prop);
-  }
-}
-
 export function patchProp(
   prop,
   lastValue,
