@@ -22,7 +22,6 @@ import {
   appendChild,
   EMPTY_OBJ,
   insertOrAppend,
-  removeChild,
   replaceChild
 } from './utils/common';
 import {
@@ -228,12 +227,10 @@ export function patchElement(lastVNode: VNode,
     if (lastClassName !== nextClassName) {
       if (isNullOrUndef(nextClassName)) {
         dom.removeAttribute('class');
+      } else if (isSVG) {
+        dom.setAttribute('class', nextClassName);
       } else {
-        if (isSVG) {
-          dom.setAttribute('class', nextClassName);
-        } else {
-          dom.className = nextClassName;
-        }
+        dom.className = nextClassName;
       }
     }
     if (isFunction(nextRef) && lastVNode.ref !== nextRef) {

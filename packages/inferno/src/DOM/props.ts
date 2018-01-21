@@ -148,14 +148,12 @@ export function patchProp(
           dom.innerHTML = nextHtml;
         }
       }
-    } else {
+    } else if (isSVG && namespaces.has(prop)) {
       // We optimize for NS being boolean. Its 99.9% time false
-      if (isSVG && namespaces.has(prop)) {
-        // If we end up in this path we can read property again
-        dom.setAttributeNS(namespaces.get(prop) as string, prop, nextValue);
-      } else {
-        dom.setAttribute(prop, nextValue);
-      }
+      // If we end up in this path we can read property again
+      dom.setAttributeNS(namespaces.get(prop) as string, prop, nextValue);
+    } else {
+      dom.setAttribute(prop, nextValue);
     }
   }
 }

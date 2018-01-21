@@ -23,7 +23,7 @@ export interface VNode {
   children: InfernoChildren;
   childFlags: ChildFlags;
   dom: Element | null;
-  className: string | null;
+  className: string | null | undefined;
   flags: VNodeFlags;
   key: any;
   parentVNode: VNode | null;
@@ -32,7 +32,7 @@ export interface VNode {
   type: any;
 }
 export type InfernoInput = VNode | null | string | number;
-export type Ref = (node?: Element | null) => void;
+export type Ref = (node?: Element | null) => any;
 export type InfernoChildren =
   | string
   | number
@@ -60,10 +60,10 @@ export interface Refs {
 }
 
 function getVNode(
-  childFlags,
+  childFlags: ChildFlags,
   children,
-  className,
-  flags,
+  className: string | null | undefined,
+  flags: VNodeFlags,
   key,
   props,
   ref,
@@ -205,7 +205,7 @@ export function createTextVNode(text, key?) {
     key,
     null,
     null,
-    0
+    null
   );
 }
 
@@ -297,29 +297,6 @@ export function createVoidVNode(): VNode {
   );
 }
 
-export function isVNode(o: VNode): boolean {
-  return isNumber(o.flags);
-}
-
-function applyKey(key: string, vNode: VNode) {
-  vNode.key = key;
-
-  return vNode;
-}
-
-function applyKeyIfMissing(key: string | number, vNode: VNode): VNode {
-  if (isNull(vNode.key) || vNode.key[0] === keyPrefix) {
-    return applyKey(isNumber(key) ? `$${key}` : (key as string), vNode);
-  }
-  return vNode;
-}
-
-function applyKeyPrefix(key: string, vNode: VNode): VNode {
-  vNode.key = key + vNode.key;
-
-  return vNode;
-}
-
 export function _normalizeVNodes(
   nodes: any[],
   result: VNode[],
@@ -330,20 +307,25 @@ export function _normalizeVNodes(
     let n = nodes[index];
 
     if (!isInvalid(n)) {
-      const newKey = `${currentKey}$${index}`;
+      const newKey: string = currentKey + keyPrefix + index;
 
       if (isArray(n)) {
         _normalizeVNodes(n, result, 0, newKey);
       } else {
         if (isStringOrNumber(n)) {
-          n = createTextVNode(n, null);
-        } else if (!isNull(n.dom) || (n.key && n.key[0] === keyPrefix)) {
-          n = directClone(n);
-        }
-        if (isNull(n.key) || n.key[0] === keyPrefix) {
-          n = applyKey(newKey, n as VNode);
+          n = createTextVNode(n, newKey);
         } else {
-          n = applyKeyPrefix(currentKey, n as VNode);
+          const oldKey = n.key;
+          const isPrefixedKey = isString(oldKey) && oldKey[0] === keyPrefix;
+
+          if (!isNull(n.dom) || isPrefixedKey) {
+            n = directClone(n);
+          }
+          if (isNull(oldKey) || isPrefixedKey) {
+            n.key = newKey;
+          } else {
+            n.key = currentKey + oldKey;
+          }
         }
 
         result.push(n);
@@ -401,7 +383,7 @@ export function normalizeChildren(vNode, children) {
       newChildFlags = ChildFlags.HasKeyedChildren;
 
       for (let i = 0; i < len; i++) {
-        const n = children[i];
+        let n = children[i];
 
         if (isInvalid(n) || isArray(n)) {
           newChildren = newChildren || children.slice(0, i);
@@ -410,7 +392,7 @@ export function normalizeChildren(vNode, children) {
           break;
         } else if (isStringOrNumber(n)) {
           newChildren = newChildren || children.slice(0, i);
-          newChildren.push(applyKeyIfMissing(i, createTextVNode(n, null)));
+          newChildren.push(createTextVNode(n, keyPrefix + i));
         } else {
           const key = n.key;
           const isNullDom = isNull(n.dom);
@@ -419,9 +401,15 @@ export function normalizeChildren(vNode, children) {
 
           if (!isNullDom || isNullKey || isPrefixed) {
             newChildren = newChildren || children.slice(0, i);
-            newChildren.push(applyKeyIfMissing(i, isNullDom && !isPrefixed ? n : directClone(n)));
+            if (!isNullDom || isPrefixed) {
+              n = directClone(n);
+            }
+            if (isNullKey || isPrefixed) {
+              n.key = keyPrefix + i;
+            }
+            newChildren.push(n);
           } else if (newChildren) {
-            newChildren.push(applyKeyIfMissing(i, n));
+            newChildren.push(n);
           }
         }
       }
