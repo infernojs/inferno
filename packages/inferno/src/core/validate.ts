@@ -56,12 +56,12 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     if (!isInvalid(children)) {
       let val;
       if (childFlags & ChildFlags.MultipleChildren) {
-        val = DEV_ValidateKeys(children, childNode, forceKeyed);
+        val = DEV_ValidateKeys(children, childNode, childNode.childFlags & ChildFlags.HasKeyedChildren);
       } else if (childFlags & ChildFlags.HasVNodeChildren) {
         val = DEV_ValidateKeys(
           [children],
           childNode,
-          forceKeyed || childNode.childFlags & ChildFlags.HasKeyedChildren
+          childNode.childFlags & ChildFlags.HasKeyedChildren
         );
       }
       if (val) {
@@ -141,20 +141,13 @@ export function validateVNodeElementChildren(vNode) {
 
 export function validateKeys(vNode, forceKeyed) {
   if (process.env.NODE_ENV !== 'production') {
-    let error;
     // Checks if there is any key missing or duplicate keys
-    if (
-      vNode.props &&
-      vNode.props.children &&
-      vNode.flags & VNodeFlags.Component
-    ) {
-      error = DEV_ValidateKeys(vNode.props.children, vNode, forceKeyed);
-    } else if (vNode.children && vNode.flags & VNodeFlags.Element) {
-      error = DEV_ValidateKeys(vNode.children, vNode, forceKeyed);
-    }
+    if (vNode.children && vNode.flags & VNodeFlags.Element) {
+      const error = DEV_ValidateKeys(vNode.children, vNode, forceKeyed);
 
-    if (error) {
-      throwError(error + ' :: ' + getTagName(vNode));
+      if (error) {
+          throwError(error + ' :: ' + getTagName(vNode));
+      }
     }
   }
 }

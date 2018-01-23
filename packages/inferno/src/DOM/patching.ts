@@ -201,6 +201,9 @@ export function patchElement(lastVNode: VNode,
     const nextClassName = nextVNode.className;
 
     if (lastChildren !== nextChildren) {
+      if (process.env.NODE_ENV !== 'production') {
+        validateKeys(nextVNode, nextVNode.childFlags & ChildFlags.HasKeyedChildren);
+      }
       patchChildren(
         lastVNode.childFlags,
         nextVNode.childFlags,
@@ -575,10 +578,6 @@ function patchKeyedChildren(a: VNode[],
                             isSVG: boolean,
                             aLength: number,
                             bLength: number) {
-  if (process.env.NODE_ENV !== 'production') {
-    validateKeys(b, true);
-  }
-
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;
   let aStart = 0;
