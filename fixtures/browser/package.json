@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npm install",
-    "test": "karma start"
+    "test": "karma start karma.sauce.conf.js",
+    "local": "npm install && karma start karma.base.conf.js"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
     "karma-jasmine": "^1.1.1",
     "karma-jasmine-matchers": "^3.7.0",
     "karma-phantomjs-launcher": "^1.0.4",
+    "karma-sauce-launcher": "^1.2.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.9",
     "ts-loader": "^3.2.0",

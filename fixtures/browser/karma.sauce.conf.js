@@ -1,30 +1,28 @@
+const base = require('./karma.base.conf');
+const {
+  CI,
+  TRAVIS_BRANCH,
+  TRAVIS_BUILD_NUMBER,
+  TRAVIS_JOB_NUMBER,
+  TRAVIS_PULL_REQUEST
+} = process.env;
+
+const ci = String(CI).match(/^(1|true)$/gi);
+const pullRequest = !String(TRAVIS_PULL_REQUEST).match(/^(0|false|undefined)$/gi);
+const masterBranch = String(TRAVIS_BRANCH).match(/^master$/gi);
+const sauce = ci && !pullRequest && masterBranch;
+const varToBool = (sVar) => !!String(sVar).match('true');
+
 const path = require('path');
 const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src');
+
+const sauceLaunchers = require('./sauce');
 
 module.exports = function(config) {
   config.set({
     basePath: '../../',
 
-    frameworks: ['detectBrowsers', 'jasmine', 'jasmine-matchers'],
-
-    detectBrowsers: {
-      postDetection(browserList) {
-        const results =
-          browserList.indexOf('PhantomJS') && browserList.length === 1
-            ? ['PhantomJS']
-            : [];
-
-        if (browserList.indexOf('Chrome') > -1) {
-          results.push('Chrome');
-        }
-
-        if (browserList.indexOf('Firefox') > -1) {
-          results.push('Firefox');
-        }
-
-        return results;
-      }
-    },
+    frameworks: ['jasmine', 'jasmine-matchers'],
 
     files: [
       require.resolve('es5-shim'),
@@ -41,7 +39,17 @@ module.exports = function(config) {
       './packages/*/__tests__/*': ['webpack', 'sourcemap']
     },
 
-    reporters: [process.env.CI ? 'failed' : 'progress'],
+    reporters: [
+      'failed',
+      'saucelabs'
+    ],
+    sauceLabs: {
+      testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
+      build: (TRAVIS_JOB_NUMBER || 'Local'),
+      tags: [(TRAVIS_BRANCH || 'master')]
+    },
+    customLaunchers: sauceLaunchers.launchers,
+    browsers: sauceLaunchers.browsers,
 
     browserConsoleLogOptions: {
       level: 'warn',
