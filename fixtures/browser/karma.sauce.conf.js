@@ -1,16 +1,93 @@
-const base = require('./karma.base.conf');
-const ci = String(process.env.CI).match(/^(1|true)$/gi);
-const pullRequest = !String(process.env.TRAVIS_PULL_REQUEST).match(/^(0|false|undefined)$/gi);
-const masterBranch = String(process.env.TRAVIS_BRANCH).match(/^master$/gi);
-const sauce = ci && !pullRequest && masterBranch;
-const varToBool = (sVar) => !!String(sVar).match('true');
-
 const path = require('path');
 const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src');
 
-const sauceLaunchers = require('./sauce');
+const customLaunchers = {
+  slIphone5: {
+    base: 'SauceLabs',
+    browserName: 'iphone',
+    version: '8.4'
+  },
+  slIpad: {
+    base: 'SauceLabs',
+    browserName: 'ipad',
+    version: '10.3'
+  },
+  slIphone6: {
+    base: 'SauceLabs',
+    browserName: 'iphone',
+    version: '10.3'
+  },
+  slSafari7: {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'OS X 10.9'
+  },
+  slSafari8: {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'OS X 10.10'
+  },
+  slSafari9: {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'OS X 10.11'
+  },
+  slIE9: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    platform: 'Windows 7',
+    version: '9'
+  },
+  slIE10: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    platform: 'Windows 7',
+    version: '10'
+  },
+  slIE11: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    platform: 'Windows 7',
+    version: '11'
+  },
+  slEdge14: {
+    base: 'SauceLabs',
+    browserName: 'MicrosoftEdge',
+    version: '14',
+    platform: 'Windows 10'
+  },
+  slEdge15: {
+    base: 'SauceLabs',
+    browserName: 'MicrosoftEdge',
+    version: '15',
+    platform: 'Windows 10'
+  },
+  slEdge: {
+    base: 'SauceLabs',
+    browserName: 'MicrosoftEdge',
+    platform: 'Windows 10'
+  },
+  slChrome: {
+    base: 'SauceLabs',
+    browserName: 'chrome'
+  },
+  slFirefox: {
+    base: 'SauceLabs',
+    browserName: 'firefox'
+  },
+  slAndroid5: {
+    base: 'SauceLabs',
+    browserName: 'android',
+    version: '5.1'
+  },
+  slAndroid4: {
+    base: 'SauceLabs',
+    browserName: 'android',
+    version: '4.4'
+  }
+};
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '../../',
 
@@ -36,14 +113,15 @@ module.exports = function(config) {
       'saucelabs'
     ],
     sauceLabs: {
+      build: 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')',
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
-      testName: 'Inferno Browser Karma Tests: ' + process.env.TRAVIS_JOB_NUMBER,
-      build: (process.env.TRAVIS_JOB_NUMBER || 'Local'),
-      startConnect: false,
-      tags: [(process.env.TRAVIS_BRANCH || 'master')]
+      testName: `InfernoJS`,
     },
-    customLaunchers: sauceLaunchers.launchers,
-    browsers: sauceLaunchers.browsers,
+    captureTimeout: 300000,
+    browserNoActivityTimeout: 300000,
+    browserDisconnectTolerance: 2,
+    customLaunchers: customLaunchers,
+    browsers: Object.keys(customLaunchers),
 
     browserConsoleLogOptions: {
       level: 'warn',
