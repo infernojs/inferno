@@ -658,7 +658,7 @@ function patchKeyedChildren(a: VNode[],
   } else {
     const aLeft = aEnd - aStart + 1;
     const bLeft = bEnd - bStart + 1;
-    const sources = new Int16Array(bLeft).fill(-1);
+    const sources = new Array(bLeft).fill(-1);
     let moved = false;
     let pos = 0;
     let patched = 0;
@@ -793,8 +793,8 @@ function patchKeyedChildren(a: VNode[],
 }
 
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-function lis_algorithm(arr: Int16Array): number[] {
-  const p = new Int16Array(arr);
+function lis_algorithm(arr: number[]): number[] {
+  const p = arr.slice();
   const result: number[] = [0];
   let i;
   let j;
