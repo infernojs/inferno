@@ -115,11 +115,9 @@ module.exports = function (config) {
     sauceLabs: {
       build: 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')',
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      startConnect: false,
       testName: `InfernoJS`,
     },
-    captureTimeout: 300000,
-    browserNoActivityTimeout: 300000,
-    browserDisconnectTolerance: 2,
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
 
