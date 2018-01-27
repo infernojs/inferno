@@ -20,3 +20,6 @@ Inferno should...
 
 macOS / Windowx / Linux
 Safari / Chrome / Firefox / ... 
+
+<!-- Love inferno? Please consider supporting our collective:
+👉  https://opencollective.com/inferno/donate -->
