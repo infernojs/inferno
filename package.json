@@ -62,7 +62,7 @@
     "prettier:src:ts": "prettier --write --list-different --parser=typescript packages/*/src/**/*.{ts,tsx}",
     "prettier:src:fixtures": "prettier --write --list-different fixtures/**/*.{js,jsx}",
     "prettier:src:scripts": "prettier --write --list-different scripts/**/*.{js,jsx}",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap && opencollective postinstall",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "cross-env NODE_ENV=test jest --no-cache",
     "test:coverage": "cross-env NODE_ENV=test jest --no-cache --coverage",
@@ -128,5 +128,13 @@
     "typedoc": "^0.9.0",
     "typedoc-plugin-external-module-name": "^1.0.10",
     "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "opencollective": "^1.0.3"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/inferno",
+    "logo": "https://opencollective.com/inferno/logo.txt"
   }
 }
