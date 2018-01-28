@@ -132,10 +132,7 @@ describe('Inferno-compat LifeCycle', () => {
 
       console.log('UPDATE');
 
-      render(
-        createElement(Hello, { name: 'Better Lifecycle' }, null),
-        container
-      );
+      render(createElement(Hello, { name: 'Better Lifecycle' }, null), container);
 
       console.log('REMOVAL');
 

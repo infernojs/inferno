@@ -5,29 +5,22 @@
 
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Props, VNode } from './implementation';
-import {
-  combineFrom,
-  isFunction,
-  isNull,
-  isNullOrUndef,
-  throwError
-} from 'inferno-shared';
+import { combineFrom, isFunction, isNull, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ } from '../DOM/utils/common';
 
-const resolvedPromise = Promise.resolve();
+const resolvedPromise: any = typeof Promise === 'undefined' ? null : Promise.resolve();
 
-function queueStateChanges<P, S>(
-  component: Component<P, S>,
-  newState: S | Function,
-  callback?: Function
-): void {
+function nextTick(fn) {
+  if (resolvedPromise) {
+    return resolvedPromise.then(fn);
+  }
+  return requestAnimationFrame(fn);
+}
+
+function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback?: Function): void {
   if (isFunction(newState)) {
-    newState = newState(
-      component.state,
-      component.props,
-      component.context
-    ) as S;
+    newState = newState(component.state, component.props, component.context) as S;
   }
   const pending = component.$PS;
 
@@ -51,7 +44,7 @@ function queueStateChanges<P, S>(
 
       if (isNull(queue)) {
         queue = component.$QU = [] as Function[];
-        resolvedPromise.then(promiseCallback(component, queue));
+        nextTick(promiseCallback(component, queue));
       }
       if (isFunction(callback)) {
         queue.push(callback);
@@ -78,11 +71,7 @@ function promiseCallback(component, queue) {
   };
 }
 
-function applyState<P, S>(
-  component: Component<P, S>,
-  force: boolean,
-  callback?: Function
-): void {
+function applyState<P, S>(component: Component<P, S>, force: boolean, callback?: Function): void {
   if (component.$UN) {
     return;
   }
@@ -171,23 +160,11 @@ export class Component<P, S> {
 
   public componentWillReceiveProps?(nextProps: P, nextContext: any): void;
 
-  public shouldComponentUpdate?(
-    nextProps: P,
-    nextState: S,
-    nextContext: any
-  ): boolean;
+  public shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
 
-  public componentWillUpdate?(
-    nextProps: P,
-    nextState: S,
-    nextContext: any
-  ): void;
+  public componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
 
-  public componentDidUpdate?(
-    prevProps: P,
-    prevState: S,
-    prevContext: any
-  ): void;
+  public componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
 
   public componentWillUnmount?(): void;
 
@@ -201,10 +178,7 @@ export class Component<P, S> {
     applyState(this, true, callback);
   }
 
-  public setState(
-    newState: { [k in keyof S]?: S[k] } | Function,
-    callback?: Function
-  ) {
+  public setState(newState: { [k in keyof S]?: S[k] } | Function, callback?: Function) {
     if (this.$UN) {
       return;
     }
@@ -213,9 +187,7 @@ export class Component<P, S> {
     } else {
       // Development warning
       if (process.env.NODE_ENV !== 'production') {
-        throwError(
-          'cannot update state via setState() in componentWillUpdate() or constructor.'
-        );
+        throwError('cannot update state via setState() in componentWillUpdate() or constructor.');
       }
       return;
     }

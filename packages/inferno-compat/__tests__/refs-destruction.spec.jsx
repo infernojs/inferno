@@ -16,13 +16,7 @@ describe('refs-destruction', function() {
   beforeEach(function() {
     TestComponent = React.createClass({
       render: function() {
-        return (
-          <div>
-            {this.props.destroy ? null : (
-              <div ref="theInnerDiv">Lets try to destroy this.</div>
-            )}
-          </div>
-        );
+        return <div>{this.props.destroy ? null : <div ref="theInnerDiv">Lets try to destroy this.</div>}</div>;
       }
     });
   });

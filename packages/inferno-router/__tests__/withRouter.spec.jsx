@@ -88,10 +88,7 @@ describe('withRouter', () => {
     let ref;
     render(
       <MemoryRouter initialEntries={['/bubblegum']}>
-        <Route
-          path="/bubblegum"
-          render={() => <TestComponent wrappedComponentRef={r => (ref = r)} />}
-        />
+        <Route path="/bubblegum" render={() => <TestComponent wrappedComponentRef={r => (ref = r)} />} />
       </MemoryRouter>,
       node
     );

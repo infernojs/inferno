@@ -303,9 +303,7 @@ describe('ReactClass-spec', function() {
         return <span />;
       }
     });
-    expect(() =>
-      ReactTestUtils.renderIntoDocument(<Component />)
-    ).not.toThrow();
+    expect(() => ReactTestUtils.renderIntoDocument(<Component />)).not.toThrow();
   });
 
   // it('should throw when using legacy factories', function() {

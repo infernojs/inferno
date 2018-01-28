@@ -23,11 +23,7 @@ describe('ReactElementClone', function() {
     });
     var Parent = React.createClass({
       render: function() {
-        return (
-          <div className="parent">
-            {React.cloneElement(this.props.child, { className: 'xyz' })}
-          </div>
-        );
+        return <div className="parent">{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
       }
     });
     var component = ReactTestUtils.renderIntoDocument(<Grandparent />);
@@ -47,11 +43,7 @@ describe('ReactElementClone', function() {
     });
     var Parent = React.createClass({
       render: function() {
-        return (
-          <div className="parent">
-            {React.cloneElement(this.props.child, { className: 'xyz' })}
-          </div>
-        );
+        return <div className="parent">{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
       }
     });
     var component = ReactTestUtils.renderIntoDocument(<Grandparent />);
@@ -67,11 +59,7 @@ describe('ReactElementClone', function() {
 
     var Parent = React.createClass({
       render: function() {
-        return (
-          <div>
-            {React.cloneElement(this.props.child, { className: 'xyz' })}
-          </div>
-        );
+        return <div>{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
       }
     });
 
@@ -97,9 +85,7 @@ describe('ReactElementClone', function() {
       }
     });
 
-    ReactTestUtils.renderIntoDocument(
-      React.cloneElement(<Component />, { children: 'xyz' })
-    );
+    ReactTestUtils.renderIntoDocument(React.cloneElement(<Component />, { children: 'xyz' }));
   });
 
   it('should shallow clone children', function() {
@@ -110,9 +96,7 @@ describe('ReactElementClone', function() {
       }
     });
 
-    ReactTestUtils.renderIntoDocument(
-      React.cloneElement(<Component>xyz</Component>, {})
-    );
+    ReactTestUtils.renderIntoDocument(React.cloneElement(<Component>xyz</Component>, {}));
   });
 
   it('should accept children as rest arguments', function() {
@@ -122,12 +106,7 @@ describe('ReactElementClone', function() {
       }
     });
 
-    var clone = React.cloneElement(
-      <Component>xyz</Component>,
-      { children: <Component /> },
-      <div />,
-      <span />
-    );
+    var clone = React.cloneElement(<Component>xyz</Component>, { children: <Component /> }, <div />, <span />);
 
     expect(clone.props.children).toEqual([<div />, <span />]);
   });
@@ -181,9 +160,7 @@ describe('ReactElementClone', function() {
       }
     });
 
-    ReactTestUtils.renderIntoDocument(
-      React.cloneElement(<Component myprop="abc" />, { myprop: 'xyz' })
-    );
+    ReactTestUtils.renderIntoDocument(React.cloneElement(<Component myprop="abc" />, { myprop: 'xyz' }));
   });
 
   // it('warns for keys for arrays of elements in rest args', function() {

@@ -32,8 +32,7 @@ export class StaticRouter extends Component<IStaticRouterProps, any> {
     };
   }
 
-  public createHref = path =>
-    addLeadingSlash(this.props.basename + createURL(path));
+  public createHref = path => addLeadingSlash(this.props.basename + createURL(path));
 
   public handlePush = location => {
     const { basename, context } = this.props;
@@ -82,8 +81,7 @@ if (process.env.NODE_ENV !== 'production') {
   StaticRouter.prototype.componentWillMount = function() {
     warning(
       !this.props.history,
-      '<StaticRouter> ignores the history prop. To use a custom history, ' +
-        'use `import { Router }` instead of `import { StaticRouter as Router }`.'
+      '<StaticRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { StaticRouter as Router }`.'
     );
   };
 }
@@ -125,9 +123,7 @@ function stripBasename(basename, location) {
 }
 
 function createLocation(location) {
-  return typeof location === 'string'
-    ? parsePath(location)
-    : normalizeLocation(location);
+  return typeof location === 'string' ? parsePath(location) : normalizeLocation(location);
 }
 
 function createURL(location) {

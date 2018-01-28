@@ -5,32 +5,18 @@
 import { isNullOrUndef } from 'inferno-shared';
 import { createWrappedFunction } from './wrapper';
 
-const onTextareaInputChange = createWrappedFunction('onInput', applyValue);
+const onTextareaInputChange = createWrappedFunction('onInput', applyValueTextArea);
 
 const wrappedOnChange = createWrappedFunction('onChange');
 
-export function processTextarea(
-  vNode,
-  dom,
-  nextPropsOrEmpty,
-  mounting: boolean,
-  isControlled: boolean
-) {
-  applyValue(nextPropsOrEmpty, dom, mounting);
-
-  if (isControlled) {
-    dom.vNode = vNode;
-
-    if (mounting) {
-      dom.oninput = onTextareaInputChange;
-      if (nextPropsOrEmpty.onChange) {
-        dom.onchange = wrappedOnChange;
-      }
-    }
+export function textAreaEvents(dom, nextPropsOrEmpty) {
+  dom.oninput = onTextareaInputChange;
+  if (nextPropsOrEmpty.onChange) {
+    dom.onchange = wrappedOnChange;
   }
 }
 
-export function applyValue(nextPropsOrEmpty, dom, mounting: boolean) {
+export function applyValueTextArea(nextPropsOrEmpty, dom, mounting: boolean) {
   const value = nextPropsOrEmpty.value;
   const domValue = dom.value;
 

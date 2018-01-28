@@ -17,19 +17,11 @@ describe('rendering routine', () => {
   });
 
   it('Should throw error when trying to render to document.body', () => {
-    const div = createVNode(
-      VNodeFlags.HtmlElement,
-      'div',
-      null,
-      createTextVNode('1'),
-      ChildFlags.HasVNodeChildren
-    );
+    const div = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('1'), ChildFlags.HasVNodeChildren);
     try {
       render(div, document.body);
     } catch (e) {
-      expect(e.message).toEqual(
-        'Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.'
-      );
+      expect(e.message).toEqual('Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.');
     }
   });
 
@@ -39,20 +31,8 @@ describe('rendering routine', () => {
   });
 
   it('Should create new object when dom exists', () => {
-    const bar = createVNode(
-      VNodeFlags.HtmlElement,
-      'div',
-      null,
-      createTextVNode('123'),
-      ChildFlags.HasVNodeChildren
-    );
-    const foo = createVNode(
-      VNodeFlags.HtmlElement,
-      'div',
-      null,
-      bar,
-      ChildFlags.HasVNodeChildren
-    );
+    const bar = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('123'), ChildFlags.HasVNodeChildren);
+    const foo = createVNode(VNodeFlags.HtmlElement, 'div', null, bar, ChildFlags.HasVNodeChildren);
 
     render(foo, container);
     expect(container.innerHTML).toEqual('<div><div>123</div></div>');
@@ -139,30 +119,20 @@ describe('rendering routine', () => {
   it('Should be possible to render Immutable datastructures', () => {
     function Clock(props) {
       let time = props.time + 1;
-      const array = Object.freeze([
-        <span>{'Inferno version:'}</span>,
-        <br />,
-        <span>{time}</span>
-      ]);
+      const array = Object.freeze([<span>{'Inferno version:'}</span>, <br />, <span>{time}</span>]);
       return <div>{array}</div>;
     }
 
     spyOn(console, 'error');
 
     render(<Clock time={1} />, container);
-    expect(container.innerHTML).toBe(
-      '<div><span>Inferno version:</span><br><span>2</span></div>'
-    );
+    expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>2</span></div>');
 
     render(<Clock time={2} />, container);
-    expect(container.innerHTML).toBe(
-      '<div><span>Inferno version:</span><br><span>3</span></div>'
-    );
+    expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>3</span></div>');
 
     render(<Clock time={3} />, container);
-    expect(container.innerHTML).toBe(
-      '<div><span>Inferno version:</span><br><span>4</span></div>'
-    );
+    expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>4</span></div>');
     expect(console.error.calls.count()).toBe(0);
 
     render(null, container);
@@ -213,13 +183,13 @@ describe('rendering routine', () => {
         }
       }
 
-      let data = [1,2];
+      let data = [1, 2];
 
       render(
         <div>
-          <Hello name="World" >{data}</Hello>
-          <Hello name="World" >{data}</Hello>
-          <Hello name="World" >{data}</Hello>
+          <Hello name="World">{data}</Hello>
+          <Hello name="World">{data}</Hello>
+          <Hello name="World">{data}</Hello>
         </div>,
         container
       );
@@ -228,14 +198,14 @@ describe('rendering routine', () => {
 
       render(
         <div>
-          <Hello name="World" >{data}</Hello>
-          <Hello name="World" >{data}</Hello>
-          <Hello name="World" >{data}</Hello>
+          <Hello name="World">{data}</Hello>
+          <Hello name="World">{data}</Hello>
+          <Hello name="World">{data}</Hello>
         </div>,
         container
       );
 
       expect(container.innerHTML).toEqual('<div><div>Hello 12</div><div>Hello 21</div><div>Hello 12</div></div>');
-    })
+    });
   });
 });

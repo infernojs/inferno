@@ -96,9 +96,7 @@ describe('Basic event tests', () => {
     }
 
     renderIt();
-    const buttons = Array.prototype.slice.call(
-      container.querySelectorAll('button')
-    );
+    const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
     expect(container.firstChild.innerHTML).toBe('Count 0');
     expect(data.count).toBe(0);
@@ -140,9 +138,7 @@ describe('Basic event tests', () => {
     }
 
     renderIt();
-    const buttons = Array.prototype.slice.call(
-      container.querySelectorAll('span')
-    );
+    const buttons = Array.prototype.slice.call(container.querySelectorAll('span'));
 
     expect(container.firstChild.innerHTML).toBe('<span>Count 0</span>');
     expect(data.count).toBe(0);
@@ -215,11 +211,7 @@ describe('Basic event tests', () => {
       );
     }
 
-    const childrenArray = [
-      smallComponent(),
-      smallComponent(),
-      smallComponent()
-    ];
+    const childrenArray = [smallComponent(), smallComponent(), smallComponent()];
 
     function AppTwo() {
       return createElement('p', null, ['2']);
@@ -237,9 +229,7 @@ describe('Basic event tests', () => {
 
     // eslint-disable-next-line
     render(App(childrenArray), container);
-    expect(container.innerHTML).toBe(
-      '<p><div>2</div><div>2</div><div>2</div></p>'
-    );
+    expect(container.innerHTML).toBe('<p><div>2</div><div>2</div><div>2</div></p>');
 
     childrenArray.pop();
     // eslint-disable-next-line
@@ -595,10 +585,7 @@ describe('Basic event tests', () => {
       }
     };
 
-    render(
-      <SmallComponent className="testing" onClick={obj.test} />,
-      container
-    );
+    render(<SmallComponent className="testing" onClick={obj.test} />, container);
 
     container.querySelector('#testClick').click();
   });
@@ -827,11 +814,7 @@ describe('Basic event tests', () => {
         render(
           <div onFocusOut={outerFocusOutSpy} onFocusIn={outerFocusInSpy}>
             <div>
-              <input
-                onFocusOut={focusOutSpy}
-                onFocusIn={focusInSpy}
-                type="text"
-              />
+              <input onFocusOut={focusOutSpy} onFocusIn={focusInSpy} type="text" />
             </div>
           </div>,
           container

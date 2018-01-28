@@ -3,8 +3,7 @@
  */ /** TypeDoc Comment */
 
 export const NO_OP = '$NO_OP';
-export const ERROR_MSG =
-  'a runtime error occured! Use Inferno in development environment to find the error.';
+export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 // This should be boolean and not reference to window.document
 export const isBrowser = !!(typeof window !== 'undefined' && window.document);

@@ -26,11 +26,9 @@ export function NavLink({
 }): any {
   function linkComponent({ location, match }): VNode {
     const isActive = !!(getIsActive ? getIsActive(match, location) : match);
-    return createComponentVNode(VNodeFlags.ComponentClass, Link, {
+    return createComponentVNode(VNodeFlags.ComponentFunction, Link, {
       'aria-current': isActive && ariaCurrent,
-      className: isActive
-        ? [className, activeClassName].filter(i => i).join(' ')
-        : className,
+      className: isActive ? [className, activeClassName].filter(i => i).join(' ') : className,
       exact,
       onClick,
       style: isActive ? { ...style, ...activeStyle } : style,

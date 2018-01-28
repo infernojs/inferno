@@ -8,25 +8,14 @@ const cwd = process.cwd();
 const pkgJSON = require(join(cwd, 'package.json'));
 
 module.exports = function(options) {
-  const {
-    version,
-    rollup: rollupConfig = {},
-    dependencies = {},
-    devDependencies = {},
-    peerDependencies = {}
-  } = pkgJSON;
+  const { version, rollup: rollupConfig = {}, dependencies = {}, devDependencies = {}, peerDependencies = {} } = pkgJSON;
 
   function exclusionFilter(name) {
     return !(rollupConfig.bundledDependencies || []).includes(name);
   }
 
   // All dependencies are excluded unless specified in bundledDependencies
-  const deps = Object.assign(
-    {},
-    devDependencies,
-    peerDependencies,
-    dependencies
-  );
+  const deps = Object.assign({}, devDependencies, peerDependencies, dependencies);
   const external = Object.keys(deps).filter(exclusionFilter);
   const plugins = createPlugins(version, options);
 

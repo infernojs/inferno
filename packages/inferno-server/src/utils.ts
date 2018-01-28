@@ -50,8 +50,7 @@ export function getCssPropertyName(str): string {
   if (CssPropCache[str] !== void 0) {
     return CssPropCache[str];
   }
-  return (CssPropCache[str] =
-    str.replace(uppercasePattern, '-$&').toLowerCase() + ':');
+  return (CssPropCache[str] = str.replace(uppercasePattern, '-$&').toLowerCase() + ':');
 }
 
 export const voidElements = new Set([

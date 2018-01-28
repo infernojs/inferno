@@ -14,15 +14,11 @@ import sinon from 'sinon';
 var ReactDOM = React;
 
 describe('ReactJSXElement', function() {
-  var Component;
-
-  beforeEach(function() {
-    Component = class extends React.Component {
-      render() {
-        return <div />;
-      }
-    };
-  });
+  class Component extends React.Component {
+    render() {
+      return <div />;
+    }
+  }
 
   it('returns a complete element according to spec', function() {
     var element = <Component />;
@@ -186,10 +182,7 @@ describe('ReactJSXElement', function() {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const spy = sinon.spy(() => {});
-    ReactDOM.render(
-      React.createElement('a', { onDoubleClick: spy }, 'test'),
-      container
-    );
+    ReactDOM.render(React.createElement('a', { onDoubleClick: spy }, 'test'), container);
 
     expect(spy.callCount).toBe(0);
     const element = container.querySelector('a');
@@ -219,10 +212,7 @@ describe('ReactJSXElement', function() {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const spy = sinon.spy(() => {});
-    ReactDOM.render(
-      React.createElement('input', { onChange: spy }),
-      container
-    );
+    ReactDOM.render(React.createElement('input', { onChange: spy }), container);
 
     expect(spy.callCount).toBe(0);
     const element = container.querySelector('input');
@@ -236,10 +226,7 @@ describe('ReactJSXElement', function() {
   it('Should map onDoubleClick to html native event', () => {
     const container = document.createElement('div');
 
-    ReactDOM.render(
-      React.createElement('label', { htmlFor: 'foobarID' }, 'test'),
-      container
-    );
+    ReactDOM.render(React.createElement('label', { htmlFor: 'foobarID' }, 'test'), container);
 
     const element = container.querySelector('label');
     expect(element.htmlFor).toBe('foobarID');

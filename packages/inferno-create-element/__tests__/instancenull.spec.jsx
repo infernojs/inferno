@@ -142,12 +142,7 @@ describe('BUG: instance - null', () => {
       }
 
       if (props.hasMobileClose) {
-        closeButton = (
-          <div
-            className="inverse-action popover-close"
-            onClick={props.onOuterAction}
-          />
-        );
+        closeButton = <div className="inverse-action popover-close" onClick={props.onOuterAction} />;
       }
 
       return (
@@ -234,9 +229,7 @@ describe('BUG: instance - null', () => {
         const item = items[i];
         const isActive = activeValue === item.value;
 
-        itemsToRender.push(
-          this._renderItem(item, i, items, isActive, searchText)
-        );
+        itemsToRender.push(this._renderItem(item, i, items, isActive, searchText));
       }
 
       return itemsToRender;
@@ -310,12 +303,7 @@ describe('BUG: instance - null', () => {
           body={this._renderDropdown()}
           onOuterAction={this._closePopover}
         >
-          <div
-            id="MAGICBUTTON"
-            onclick={
-              this.state.isEditMode ? this._closePopover : this._makeEditable
-            }
-          >
+          <div id="MAGICBUTTON" onclick={this.state.isEditMode ? this._closePopover : this._makeEditable}>
             TEST
           </div>
         </Popover>
@@ -346,12 +334,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown
-          items={items}
-          changeCallback={function() {}}
-          changeParams={{ guid: 'foo', field: 'activityType' }}
-          value={value}
-        />
+        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
       </div>,
       container
     );
@@ -396,12 +379,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown
-          items={items}
-          changeCallback={function() {}}
-          changeParams={{ guid: 'foo', field: 'activityType' }}
-          value={value}
-        />
+        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
       </div>,
       container
     );
@@ -439,12 +417,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown
-          items={items}
-          changeCallback={function() {}}
-          changeParams={{ guid: 'foo', field: 'activityType' }}
-          value={value}
-        />
+        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
       </div>,
       container
     );
@@ -453,12 +426,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown
-          items={items}
-          changeCallback={function() {}}
-          changeParams={{ guid: 'dwqwdq', field: 'activityType' }}
-          value={value}
-        />
+        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'dwqwdq', field: 'activityType' }} value={value} />
       </div>,
       container
     );

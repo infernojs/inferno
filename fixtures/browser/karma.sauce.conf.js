@@ -87,7 +87,7 @@ const customLaunchers = {
   }
 };
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     basePath: '../../',
 
@@ -108,15 +108,12 @@ module.exports = function (config) {
       './packages/*/__tests__/*': ['webpack', 'sourcemap']
     },
 
-    reporters: [
-      'failed',
-      'saucelabs'
-    ],
+    reporters: ['failed', 'saucelabs'],
     sauceLabs: {
       build: 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')',
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
       startConnect: false,
-      testName: `InfernoJS`,
+      testName: `InfernoJS`
     },
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),

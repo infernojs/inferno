@@ -179,18 +179,14 @@ describe('MISC', () => {
         </foo>
       );
       // TODO: Cloning changes parent childFlags to keyed.
-      expect(JSON.stringify(cloneElement(element).children)).toEqual(
-        JSON.stringify(element.children)
-      );
+      expect(JSON.stringify(cloneElement(element).children)).toEqual(JSON.stringify(element.children));
     });
 
     it('should support props.children', () => {
       let element = <foo children={<span>b</span>} />;
       let clone = cloneElement(element);
       expect(JSON.stringify(clone)).toEqual(JSON.stringify(element));
-      expect(cloneElement(clone).props.children).toEqual(
-        element.props.children
-      );
+      expect(cloneElement(clone).props.children).toEqual(element.props.children);
     });
 
     it('children take precedence over props.children', () => {
@@ -246,11 +242,7 @@ describe('MISC', () => {
         }
         renderInner() {
           const wrapper = document.createElement('div');
-          this.inner = unstable_renderSubtreeIntoContainer(
-            this,
-            <Inner />,
-            wrapper
-          );
+          this.inner = unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper);
         }
       }
       const root = document.createElement('div');
@@ -269,14 +261,9 @@ describe('MISC', () => {
         renderInner() {
           const wrapper = document.createElement('div');
           const self = this;
-          unstable_renderSubtreeIntoContainer(
-            this,
-            <Inner />,
-            wrapper,
-            function() {
-              self.inner = this;
-            }
-          );
+          unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper, function() {
+            self.inner = this;
+          });
         }
       }
       const root = document.createElement('div');

@@ -36,12 +36,8 @@ describe('svg', () => {
     expect(container.firstChild.getAttribute('height')).toBe('16');
     expect(container.firstChild.getAttribute('width')).toBe('16');
     expect(container.firstChild.firstChild.tagName).toBe('stop');
-    expect(container.firstChild.firstChild.getAttribute('stop-color')).toBe(
-      'white'
-    );
-    expect(container.firstChild.firstChild.getAttribute('stop-opacity')).toBe(
-      '0.5'
-    );
+    expect(container.firstChild.firstChild.getAttribute('stop-color')).toBe('white');
+    expect(container.firstChild.firstChild.getAttribute('stop-opacity')).toBe('0.5');
   });
 
   it('Should work with namespace svg attributes', () => {
@@ -55,8 +51,6 @@ describe('svg', () => {
     );
 
     expect(container.firstChild.firstChild.tagName).toBe('image');
-    expect(container.firstChild.firstChild.getAttribute('xlink:href')).toBe(
-      'http://i.imgur.com/w7GCRPb.png'
-    );
+    expect(container.firstChild.firstChild.getAttribute('xlink:href')).toBe('http://i.imgur.com/w7GCRPb.png');
   });
 });

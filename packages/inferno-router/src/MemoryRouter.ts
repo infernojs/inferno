@@ -36,8 +36,7 @@ if (process.env.NODE_ENV !== 'production') {
   MemoryRouter.prototype.componentWillMount = function() {
     warning(
       !this.props.history,
-      '<MemoryRouter> ignores the history prop. To use a custom history, ' +
-        'use `import { Router }` instead of `import { MemoryRouter as Router }`.'
+      '<MemoryRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { MemoryRouter as Router }`.'
     );
   };
 }

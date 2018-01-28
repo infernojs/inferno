@@ -22,11 +22,7 @@ export const enum VNodeFlags {
 
   /* Masks */
   FormElement = InputElement | TextareaElement | SelectElement,
-  Element = HtmlElement |
-    SvgElement |
-    InputElement |
-    TextareaElement |
-    SelectElement,
+  Element = HtmlElement | SvgElement | InputElement | TextareaElement | SelectElement,
   Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 

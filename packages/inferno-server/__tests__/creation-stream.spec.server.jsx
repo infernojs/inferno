@@ -13,8 +13,7 @@ function WrappedInput(props) {
   return <input type="text" value={props.value} />;
 }
 
-const FunctionalComponent = ({ value }) =>
-  createElement('span', null, `stateless ${value}!`);
+const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${value}!`);
 
 describe('SSR Creation Streams - (non-JSX)', () => {
   const testEntries = [
@@ -25,12 +24,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'should render div with span child and styling',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: 'border-left: 10px;' })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: 'border-left: 10px;' })),
       result: '<div><span style="border-left: 10px;"></span></div>'
     },
     // TODO: Fix this
@@ -47,32 +41,17 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     // },
     {
       description: 'should render div with span child and styling #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: { borderLeft: 10 } })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: { borderLeft: 10 } })),
       result: '<div><span style="border-left:10px;"></span></div>'
     },
     {
       description: 'should render div with span child and styling #3',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: { fontFamily: 'Arial' } })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: { fontFamily: 'Arial' } })),
       result: '<div><span style="font-family:Arial;"></span></div>'
     },
     {
       description: 'should render div with span child (with className)',
-      template: () =>
-        createElement(
-          'div',
-          { className: 'foo' },
-          createElement('span', { className: 'bar' })
-        ),
+      template: () => createElement('div', { className: 'foo' }, createElement('span', { className: 'bar' })),
       result: '<div class="foo"><span class="bar"></span></div>'
     },
     {
@@ -82,14 +61,8 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'should render div with text child (XSS script attack)',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello world <img src="x" onerror="alert(\'XSS\')">'
-        ),
-      result:
-        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
+      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'XSS\')">'),
+      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
     },
     {
       description: 'should render div with text children',
@@ -103,26 +76,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'should render div with node children',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', null, 'Hello'),
-          createElement('span', null, ' world!')
-        ),
+      template: () => createElement('div', null, createElement('span', null, 'Hello'), createElement('span', null, ' world!')),
       result: '<div><span>Hello</span><span> world!</span></div>'
     },
     {
       description: 'should render div with node children #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { id: '123' }, 'Hello'),
-          createElement('span', { className: 'foo' }, ' world!')
-        ),
-      result:
-        '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
+      template: () => createElement('div', null, createElement('span', { id: '123' }, 'Hello'), createElement('span', { className: 'foo' }, ' world!')),
+      result: '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
     },
     {
       description: 'should render div with falsy children',
@@ -139,18 +99,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'should render a stateful component',
-      template: value =>
-        createElement('div', null, createElement(StatefulComponent, { value })),
+      template: value => createElement('div', null, createElement(StatefulComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     {
       description: 'should render a stateless component',
-      template: value =>
-        createElement(
-          'div',
-          null,
-          createElement(FunctionalComponent, { value })
-        ),
+      template: value => createElement('div', null, createElement(FunctionalComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     {
@@ -164,8 +118,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       result: '<a>a<!---->b</a>'
     },
     {
-      description:
-        'should render with array children containing an array of text children',
+      description: 'should render with array children containing an array of text children',
       template: value => createElement('a', null, [['a', 'b']]),
       result: '<a>a<!---->b</a>'
     },
@@ -249,14 +202,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       result: '<input value="bar">'
     },
     {
-      description:
-        'should render input with value when defaultValue is present',
+      description: 'should render input with value when defaultValue is present',
       template: () => <input value="bar" defaultValue="foo" />,
       result: '<input value="bar">'
     },
     {
-      description:
-        'should render input when value is not present with defaultValue',
+      description: 'should render input when value is not present with defaultValue',
       template: () => <input defaultValue="foo" />,
       result: '<input value="foo">'
     },
@@ -266,8 +217,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       result: '<input value="123">'
     },
     {
-      description:
-        'should render input of type text with value when input is wrapped',
+      description: 'should render input of type text with value when input is wrapped',
       template: () => <WrappedInput value="foo" />,
       result: '<input type="text" value="foo">'
     },
@@ -294,38 +244,23 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'Should render backgroundColor',
-      template: () => (
-        <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />
-      ),
-      result:
-        '<div style="background-color:red;border-bottom-color:green;"></div>'
+      template: () => <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />,
+      result: '<div style="background-color:red;border-bottom-color:green;"></div>'
     },
     {
       description: 'Should not render null styles',
-      template: () => (
-        <div style={{ backgroundColor: null, borderBottomColor: null }} />
-      ),
-      result:
-        '<div style=""></div>'
+      template: () => <div style={{ backgroundColor: null, borderBottomColor: null }} />,
+      result: '<div style=""></div>'
     },
     {
       description: 'Should style attribute if null',
-      template: () => (
-        <div style={null} />
-      ),
-      result:
-        '<div></div>'
+      template: () => <div style={null} />,
+      result: '<div></div>'
     },
     {
       description: 'should render div with text child (XSS script attack) #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello world <img src="x" onerror="alert(\'&XSS&\')">'
-        ),
-      result:
-        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
+      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'&XSS&\')">'),
+      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
     },
     {
       description: 'Should render style opacity #1',

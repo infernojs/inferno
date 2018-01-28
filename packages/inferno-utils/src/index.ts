@@ -8,19 +8,14 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 const comparer = document.createElement('div');
 
 export function sortAttributes(html: string): string {
-  return html.replace(
-    /<([a-z0-9-]+)((?:\s[a-z0-9:_.-]+=".*?")+)((?:\s*\/)?>)/gi,
-    (s, pre, attrs, after) => {
-      const attrName = (attribute: string): string => attribute.split('=')[0];
-      const list: string[] = attrs
-        .match(/\s[a-z0-9:_.-]+=".*?"/gi)
-        .sort((a, b) => (attrName(a) > attrName(b) ? 1 : -1));
-      if (~after.indexOf('/')) {
-        after = '></' + pre + '>';
-      }
-      return '<' + pre + list.join('') + after;
+  return html.replace(/<([a-z0-9-]+)((?:\s[a-z0-9:_.-]+=".*?")+)((?:\s*\/)?>)/gi, (s, pre, attrs, after) => {
+    const attrName = (attribute: string): string => attribute.split('=')[0];
+    const list: string[] = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort((a, b) => (attrName(a) > attrName(b) ? 1 : -1));
+    if (~after.indexOf('/')) {
+      after = '></' + pre + '>';
     }
-  );
+    return '<' + pre + list.join('') + after;
+  });
 }
 
 export function innerHTML(HTML: string): string {
@@ -89,20 +84,9 @@ export function validateNodeTree(node: any): boolean {
 export function triggerEvent(name: string, element: any) {
   let eventType;
 
-  if (
-    name === 'click' ||
-    name === 'dblclick' ||
-    name === 'mousedown' ||
-    name === 'mouseup'
-  ) {
+  if (name === 'click' || name === 'dblclick' || name === 'mousedown' || name === 'mouseup') {
     eventType = 'MouseEvents';
-  } else if (
-    name === 'focus' ||
-    name === 'change' ||
-    name === 'blur' ||
-    name === 'input' ||
-    name === 'select'
-  ) {
+  } else if (name === 'focus' || name === 'change' || name === 'blur' || name === 'input' || name === 'select') {
     eventType = 'HTMLEvents';
   } else {
     throw new Error('Unsupported `"' + name + '"`event');

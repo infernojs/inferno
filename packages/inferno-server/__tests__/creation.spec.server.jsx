@@ -63,14 +63,12 @@ describe('SSR Creation (JSX)', () => {
       result: '<input value="bar">'
     },
     {
-      description:
-        'should render input with value when defaultValue is present',
+      description: 'should render input with value when defaultValue is present',
       template: () => <input value="bar" defaultValue="foo" />,
       result: '<input value="bar">'
     },
     {
-      description:
-        'should render input when value is not present with defaultValue',
+      description: 'should render input when value is not present with defaultValue',
       template: () => <input defaultValue="foo" />,
       result: '<input value="foo">'
     },
@@ -80,8 +78,7 @@ describe('SSR Creation (JSX)', () => {
       result: '<input value="123">'
     },
     {
-      description:
-        'should render input of type text with value when input is wrapped',
+      description: 'should render input of type text with value when input is wrapped',
       template: () => <WrappedInput value="foo" />,
       result: '<input type="text" value="foo">'
     },
@@ -93,8 +90,7 @@ describe('SSR Creation (JSX)', () => {
           <option value="dog">A dog</option>
         </select>
       ),
-      result:
-        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
+      result: '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
     },
     {
       description: 'should render a text placeholder',
@@ -108,38 +104,23 @@ describe('SSR Creation (JSX)', () => {
     },
     {
       description: 'Should render backgroundColor',
-      template: () => (
-        <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />
-      ),
-      result:
-        '<div style="background-color:red;border-bottom-color:green;"></div>'
+      template: () => <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />,
+      result: '<div style="background-color:red;border-bottom-color:green;"></div>'
     },
     {
       description: 'Should not render null styles',
-      template: () => (
-        <div style={{ backgroundColor: null, borderBottomColor: null }} />
-      ),
-      result:
-        '<div style=""></div>'
+      template: () => <div style={{ backgroundColor: null, borderBottomColor: null }} />,
+      result: '<div style=""></div>'
     },
     {
       description: 'Should style attribute if null',
-      template: () => (
-        <div style={null} />
-      ),
-      result:
-        '<div></div>'
+      template: () => <div style={null} />,
+      result: '<div></div>'
     },
     {
       description: 'should render div with text child (XSS script attack) #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello world <img src="x" onerror="alert(\'&XSS&\')">'
-        ),
-      result:
-        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
+      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'&XSS&\')">'),
+      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
     },
     {
       description: 'Should render style opacity #1',
@@ -376,9 +357,7 @@ describe('SSR Creation (JSX)', () => {
         </div>
       );
 
-      expect(output).toBe(
-        '<div><input count="1" type="checkbox" checked="true"></div>'
-      );
+      expect(output).toBe('<div><input count="1" type="checkbox" checked="true"></div>');
     });
 
     it('Should throw error if invalid object is sent to renderToString', () => {
@@ -393,9 +372,7 @@ describe('SSR Creation (JSX)', () => {
             <div style={{ backgroundColor: 'red' }} />
           </div>
         )
-      ).toEqual(
-        '<div style="background-color:red;"><div style="background-color:red;"></div></div>'
-      );
+      ).toEqual('<div style="background-color:red;"><div style="background-color:red;"></div></div>');
     });
   });
 });

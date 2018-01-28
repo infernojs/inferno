@@ -110,20 +110,12 @@ describe('linkEvent', () => {
     }
 
     function FunctionalComponent(props) {
-      return (
-        <input type="text" onInput={linkEvent(props, handleOnInput)} value="" />
-      );
+      return <input type="text" onInput={linkEvent(props, handleOnInput)} value="" />;
     }
 
     class StatefulComponent extends Component {
       render() {
-        return (
-          <input
-            type="text"
-            onInput={linkEvent(this.props, handleOnInput)}
-            value=""
-          />
-        );
+        return <input type="text" onInput={linkEvent(this.props, handleOnInput)} value="" />;
       }
     }
 
@@ -157,10 +149,7 @@ describe('linkEvent', () => {
     function FunctionalComponent(props) {
       return (
         <div>
-          <input
-            onfocus={linkEvent('1234', handleOnFocus)}
-            onblur={linkEvent('4321', handleOnBlur)}
-          />
+          <input onfocus={linkEvent('1234', handleOnFocus)} onblur={linkEvent('4321', handleOnBlur)} />
         </div>
       );
     }
@@ -169,10 +158,7 @@ describe('linkEvent', () => {
       render() {
         return (
           <div>
-            <input
-              onfocus={linkEvent('1234', handleOnFocus)}
-              onblur={linkEvent('4321', handleOnBlur)}
-            />
+            <input onfocus={linkEvent('1234', handleOnFocus)} onblur={linkEvent('4321', handleOnBlur)} />
           </div>
         );
       }

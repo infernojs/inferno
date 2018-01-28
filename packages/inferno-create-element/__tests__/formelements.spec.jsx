@@ -200,13 +200,7 @@ describe('FormElements', () => {
         }
 
         render() {
-          return (
-            <input
-              type="text"
-              onInput={linkEvent(this, Example._method)}
-              value="test"
-            />
-          );
+          return <input type="text" onInput={linkEvent(this, Example._method)} value="test" />;
         }
       }
 
@@ -243,9 +237,7 @@ describe('FormElements', () => {
         }
 
         render() {
-          return (
-            <input type="text" onInput={linkEvent(this, Example._method)} />
-          );
+          return <input type="text" onInput={linkEvent(this, Example._method)} />;
         }
       }
 
@@ -321,13 +313,7 @@ describe('FormElements', () => {
         }
 
         render() {
-          return (
-            <input
-              type="text"
-              onChange={linkEvent(this, Example._method)}
-              value="test"
-            />
-          );
+          return <input type="text" onChange={linkEvent(this, Example._method)} value="test" />;
         }
       }
 
@@ -419,41 +405,17 @@ describe('FormElements', () => {
     it('Should support indeterminate state', () => {
       let input;
 
-      render(
-        <input
-          ref={dom => (input = dom)}
-          type="checkbox"
-          checked={false}
-          indeterminate={true}
-        />,
-        container
-      );
+      render(<input ref={dom => (input = dom)} type="checkbox" checked={false} indeterminate={true} />, container);
 
       expect(input.indeterminate).toBe(true);
       expect(input.checked).toBe(false);
 
-      render(
-        <input
-          ref={dom => (input = dom)}
-          type="checkbox"
-          checked={false}
-          indeterminate={false}
-        />,
-        container
-      );
+      render(<input ref={dom => (input = dom)} type="checkbox" checked={false} indeterminate={false} />, container);
 
       expect(input.indeterminate).toBe(false);
       expect(input.checked).toBe(false);
 
-      render(
-        <input
-          ref={dom => (input = dom)}
-          type="checkbox"
-          checked={true}
-          indeterminate={false}
-        />,
-        container
-      );
+      render(<input ref={dom => (input = dom)} type="checkbox" checked={true} indeterminate={false} />, container);
 
       expect(input.indeterminate).toBe(false);
       expect(input.checked).toBe(true);
@@ -521,19 +483,13 @@ describe('FormElements', () => {
         }
 
         buildOptionsDynamically() {
-          return [
-            <option value="A">A</option>,
-            <option value="B">B</option>,
-            <option value="C">C</option>
-          ];
+          return [<option value="A">A</option>, <option value="B">B</option>, <option value="C">C</option>];
         }
 
         render() {
           return (
             <div>
-              <select value={this.state.value}>
-                {this.buildOptionsDynamically()}
-              </select>
+              <select value={this.state.value}>{this.buildOptionsDynamically()}</select>
             </div>
           );
         }
@@ -565,16 +521,7 @@ describe('FormElements', () => {
           }
 
           render() {
-            return (
-              <input
-                name="test"
-                type="range"
-                min={50}
-                max={500}
-                step={5}
-                defaultValue={260}
-              />
-            );
+            return <input name="test" type="range" min={50} max={500} step={5} defaultValue={260} />;
           }
         }
         render(<TestInputRange />, container);
@@ -590,16 +537,7 @@ describe('FormElements', () => {
           }
 
           render() {
-            return (
-              <input
-                name="test"
-                type="range"
-                min={50}
-                max={500}
-                step={5}
-                value="110"
-              />
-            );
+            return <input name="test" type="range" min={50} max={500} step={5} value="110" />;
           }
         }
         render(<TestInputRange />, container);
@@ -638,12 +576,8 @@ describe('FormElements', () => {
           container
         );
 
-        expect(container.querySelector('select').children[0].selected).toEqual(
-          false
-        );
-        expect(container.querySelector('select').children[1].selected).toEqual(
-          true
-        );
+        expect(container.querySelector('select').children[0].selected).toEqual(false);
+        expect(container.querySelector('select').children[1].selected).toEqual(true);
       });
     });
 
@@ -653,30 +587,18 @@ describe('FormElements', () => {
           constructor(props) {
             super(props);
             this.state = {
-              orderedConfigs: [
-                { value: false },
-                { value: true },
-                { value: false }
-              ]
+              orderedConfigs: [{ value: false }, { value: true }, { value: false }]
             };
           }
 
           handleClick(that, { targetConf, targetIndex }) {
-            const newConfigs = that.state.orderedConfigs.map(
-              (conf, index) =>
-                index === targetIndex ? { value: !targetConf.value } : conf
-            );
+            const newConfigs = that.state.orderedConfigs.map((conf, index) => (index === targetIndex ? { value: !targetConf.value } : conf));
 
             this.setState({ orderedConfigs: newConfigs });
           }
 
           render(props) {
-            return (
-              <CompB
-                orderedConfigs={this.state.orderedConfigs}
-                onClick={(...args) => this.handleClick(this, ...args)}
-              />
-            );
+            return <CompB orderedConfigs={this.state.orderedConfigs} onClick={(...args) => this.handleClick(this, ...args)} />;
           }
         }
 
@@ -697,6 +619,8 @@ describe('FormElements', () => {
         };
 
         render(<CompA />, container);
+
+        debugger;
 
         expect(container.firstChild.firstChild.checked).toBe(false);
         // expect(container.querySelectorAll('input:checked').length).toEqual(1);
@@ -731,20 +655,11 @@ describe('FormElements', () => {
 
           render() {
             return (
-              <div
-                className="inputContainer"
-                style={{ width: this.props.width ? this.props.width : '100%' }}
-              >
+              <div className="inputContainer" style={{ width: this.props.width ? this.props.width : '100%' }}>
                 <div className="label">{this.props.label}&nbsp;</div>
-                <input
-                  type={this.props.type}
-                  onChange={this.handleChange}
-                  value={this.props.value}
-                />
+                <input type={this.props.type} onChange={this.handleChange} value={this.props.value} />
                 <div className="hint">{this.props.hint}</div>
-                {this.state.error && (
-                  <div className="error">{this.state.error}</div>
-                )}
+                {this.state.error && <div className="error">{this.state.error}</div>}
               </div>
             );
           }
@@ -839,8 +754,7 @@ describe('FormElements', () => {
       it('Should keep unChecked if checked is false', () => {
         render(
           <label>
-            <input type="checkbox" checked={false} name="test" value="test" />{' '}
-            test
+            <input type="checkbox" checked={false} name="test" value="test" /> test
           </label>,
           container
         );
@@ -904,11 +818,7 @@ describe('FormElements', () => {
           render() {
             return (
               <div>
-                <input
-                  onClick={e => this.handleClick(e)}
-                  type="checkbox"
-                  checked={this.state.checked}
-                />
+                <input onClick={e => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
               </div>
             );
           }
@@ -950,11 +860,7 @@ describe('FormElements', () => {
           render() {
             return (
               <div>
-                <input
-                  onClick={e => this.handleClick(e)}
-                  type="checkbox"
-                  checked={this.state.checked}
-                />
+                <input onClick={e => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
               </div>
             );
           }

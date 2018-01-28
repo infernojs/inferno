@@ -2,16 +2,7 @@
  * @module Inferno-Mobx
  */ /** TypeDoc Comment */
 
-import {
-  componentByNodeRegistery,
-  errorsReporter,
-  inject,
-  Observer,
-  observer,
-  renderReporter,
-  trackComponents,
-  useStaticRendering
-} from './observer';
+import { componentByNodeRegistery, errorsReporter, inject, Observer, observer, renderReporter, trackComponents, useStaticRendering } from './observer';
 import { Provider } from './Provider';
 import { EventEmitter } from './utils/EventEmitter';
 

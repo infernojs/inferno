@@ -19,6 +19,10 @@ export function handleEvent(name: string, nextEvent: Function | null, dom) {
   let delegatedRoots = delegatedEvents.get(name);
 
   if (nextEvent) {
+    // TODO: Refactor this.
+    if (dom[name.toLowerCase()] && dom[name.toLowerCase()].wrapped) {
+      return;
+    }
     if (!delegatedRoots) {
       delegatedRoots = { items: new Map(), docEvent: null };
       delegatedRoots.docEvent = attachEventToDocument(name, delegatedRoots);
@@ -31,24 +35,14 @@ export function handleEvent(name: string, nextEvent: Function | null, dom) {
     if (items.delete(dom)) {
       // If any items were deleted, check if listener need to be removed
       if (items.size === 0) {
-        document.removeEventListener(
-          normalizeEventName(name),
-          delegatedRoots.docEvent
-        );
+        document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
         delegatedEvents.delete(name);
       }
     }
   }
 }
 
-function dispatchEvents(
-  event,
-  target,
-  items,
-  count: number,
-  isClick: boolean,
-  eventData: IEventData
-) {
+function dispatchEvents(event, target, items, count: number, isClick: boolean, eventData: IEventData) {
   let dom = target;
   while (count > 0 && !isNull(dom)) {
     // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
@@ -107,14 +101,7 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
         /* safari7 and phantomJS will crash */
       }
 
-      dispatchEvents(
-        event,
-        event.target,
-        delegatedRoots.items,
-        count,
-        event.type === 'click',
-        eventData
-      );
+      dispatchEvents(event, event.target, delegatedRoots.items, count, event.type === 'click', eventData);
     }
   };
   document.addEventListener(normalizeEventName(name), docEvent);

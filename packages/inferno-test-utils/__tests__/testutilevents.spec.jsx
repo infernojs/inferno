@@ -1,9 +1,6 @@
 import { Component } from 'inferno';
 import sinon from 'sinon';
-import {
-  findRenderedVNodeWithType,
-  renderIntoDocument
-} from 'inferno-test-utils';
+import { findRenderedVNodeWithType, renderIntoDocument } from 'inferno-test-utils';
 
 describe('TestUtils events', () => {
   it('Should work with Synthetic events', () => {

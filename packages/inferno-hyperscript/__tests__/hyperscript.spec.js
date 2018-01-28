@@ -2,7 +2,7 @@ import { render } from 'inferno';
 import { h } from 'inferno-hyperscript';
 import { innerHTML } from 'inferno-utils';
 import sinon from 'sinon';
-import { Component } from "../../inferno/src";
+import { Component } from '../../inferno/src';
 
 describe('HyperScript (non-JSX)', () => {
   let container;
@@ -30,15 +30,12 @@ describe('HyperScript (non-JSX)', () => {
 
   it('Should handle a basic example #3', () => {
     render(h('div', { className: 'foo' }, 'Hello world!'), container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div class="foo">Hello world!</div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div class="foo">Hello world!</div>'));
   });
 
   const StatelessComponent = () => h('div', 'Hello world!');
 
-
-  describe('Class Component hooks', function () {
+  describe('Class Component hooks', function() {
     it('Should trigger ref callback when component is mounting and unmounting', () => {
       const container = document.createElement('div');
       class FooBar extends Component {
@@ -50,10 +47,7 @@ describe('HyperScript (non-JSX)', () => {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, 'fn');
-      const node = h(
-        FooBar,
-        {ref: spyObj.fn},
-      );
+      const node = h(FooBar, { ref: spyObj.fn });
 
       render(node, container);
 
@@ -111,9 +105,7 @@ describe('HyperScript (non-JSX)', () => {
       });
 
     render(h(ComponentHooks), container);
-    expect(innerHTML(container.innerHTML)).toBe(
-      innerHTML('<div class="test myClass" id="myId">Hello world!</div>')
-    );
+    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div class="test myClass" id="myId">Hello world!</div>'));
   });
 
   it('Should handle tag with no name', () => {
@@ -125,23 +117,13 @@ describe('HyperScript (non-JSX)', () => {
   it('Should be possible to create textarea with hyperscript', () => {
     const ComponentHooks = () => h('textarea', { id: 'test' });
     render(h(ComponentHooks), container);
-    expect(innerHTML(container.innerHTML)).toBe(
-      innerHTML('<textarea id="test"></textarea>')
-    );
+    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<textarea id="test"></textarea>'));
   });
 
   it('Should be possible to create select element with hyperscript', () => {
-    const ComponentHooks = () =>
-      h('select', { id: 'select' }, [
-        h('option', { value: 1 }, '1'),
-        h('option', { value: 2 }, '2')
-      ]);
+    const ComponentHooks = () => h('select', { id: 'select' }, [h('option', { value: 1 }, '1'), h('option', { value: 2 }, '2')]);
     render(h(ComponentHooks), container);
-    expect(innerHTML(container.innerHTML)).toBe(
-      innerHTML(
-        '<select id="select"><option value="1">1</option><option value="2">2</option></select>'
-      )
-    );
+    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>'));
   });
 
   it('Should handle tag with no tag name but id is present', () => {
@@ -184,12 +166,7 @@ describe('HyperScript (non-JSX)', () => {
     }
 
     render(
-      h('div', {}, [
-        h(Test1, { className: 'test1prop' }),
-        h(Test2, { className: 'test2prop' }),
-        h(Test3),
-        h(Test4, { className: 'test4prop' })
-      ]),
+      h('div', {}, [h(Test1, { className: 'test1prop' }), h(Test2, { className: 'test2prop' }), h(Test3), h(Test4, { className: 'test4prop' })]),
       container
     );
 
@@ -203,22 +180,9 @@ describe('HyperScript (non-JSX)', () => {
 
   if (typeof global !== 'undefined' && !global.usingJSDOM) {
     it('Should not lower case SVG tags', () => {
-      render(
-        h(
-          'svg',
-          null,
-          h(
-            'filter',
-            { id: 'blur' },
-            h('feGaussianBlur', { in: 'SourceGraphic' })
-          )
-        ),
-        container
-      );
+      render(h('svg', null, h('filter', { id: 'blur' }, h('feGaussianBlur', { in: 'SourceGraphic' }))), container);
 
-      expect(container.firstChild.firstChild.firstChild.tagName).toEqual(
-        'feGaussianBlur'
-      ); // tag name is case sensitive
+      expect(container.firstChild.firstChild.firstChild.tagName).toEqual('feGaussianBlur'); // tag name is case sensitive
       expect(container.firstChild.firstChild.tagName).toEqual('filter');
       expect(container.firstChild.tagName).toEqual('svg');
     });
@@ -246,16 +210,10 @@ describe('HyperScript (non-JSX)', () => {
 
       // eslint-disable-next-line
       render(App(), container);
-      expect(container.innerHTML).toBe(
-        innerHTML(
-          '<div><div class="title">Example</div><button type="button">Do a thing</button></div>'
-        )
-      );
+      expect(container.innerHTML).toBe(innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>'));
       expect(triggered).toBe(false);
 
-      const buttons = Array.prototype.slice.call(
-        container.querySelectorAll('button')
-      );
+      const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
       buttons.forEach(button => button.click());
 
       expect(triggered).toBe(true);
@@ -282,14 +240,10 @@ describe('HyperScript (non-JSX)', () => {
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe(
-        innerHTML('<div><button type="button">Do a thing</button></div>')
-      );
+      expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
       expect(triggered).toBe(false);
 
-      const buttons = Array.prototype.slice.call(
-        container.querySelectorAll('button')
-      );
+      const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
       buttons.forEach(button => button.click());
 
       expect(triggered).toBe(true);
@@ -308,9 +262,7 @@ describe('HyperScript (non-JSX)', () => {
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe(
-        innerHTML('<div><button type="button">Do a thing</button></div>')
-      );
+      expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
     });
 
     it('Should allow passing childs through "children" property (custom component)', () => {
@@ -327,9 +279,7 @@ describe('HyperScript (non-JSX)', () => {
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe(
-        innerHTML('<div><button type="button">Do a thing</button></div>')
-      );
+      expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
     });
 
     it('Should handle node with hooks and key', done => {

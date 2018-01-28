@@ -5,9 +5,9 @@
 import { isNullOrUndef } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../../core/implementation';
-import { isCheckedType, processInput } from './InputWrapper';
-import { processSelect } from './SelectWrapper';
-import { processTextarea } from './TextareaWrapper';
+import { applyValueInput, inputEvents, isCheckedType } from './InputWrapper';
+import { applyValueSelect, selectEvents } from './SelectWrapper';
+import { applyValueTextArea, textAreaEvents } from './TextareaWrapper';
 
 /**
  * There is currently no support for switching same input between controlled and nonControlled
@@ -15,25 +15,29 @@ import { processTextarea } from './TextareaWrapper';
  * Currently user must choose either controlled or non-controlled and stick with that
  */
 
-export function processElement(
-  flags: VNodeFlags,
-  vNode: VNode,
-  dom: Element,
-  nextPropsOrEmpty,
-  mounting: boolean,
-  isControlled: boolean
-): void {
+export function processElement(flags: VNodeFlags, vNode: VNode, dom: Element, nextPropsOrEmpty, mounting: boolean, isControlled: boolean): void {
   if (flags & VNodeFlags.InputElement) {
-    processInput(vNode, dom, nextPropsOrEmpty, mounting, isControlled);
+    applyValueInput(nextPropsOrEmpty, dom);
   } else if (flags & VNodeFlags.SelectElement) {
-    processSelect(vNode, dom, nextPropsOrEmpty, mounting, isControlled);
+    applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode);
   } else if (flags & VNodeFlags.TextareaElement) {
-    processTextarea(vNode, dom, nextPropsOrEmpty, mounting, isControlled);
+    applyValueTextArea(nextPropsOrEmpty, dom, mounting);
+  }
+  if (isControlled) {
+    (dom as any).vNode = vNode;
+  }
+}
+
+export function addFormElementEventHandlers(flags: VNodeFlags, dom: Element, nextPropsOrEmpty): void {
+  if (flags & VNodeFlags.InputElement) {
+    inputEvents(dom, nextPropsOrEmpty);
+  } else if (flags & VNodeFlags.SelectElement) {
+    selectEvents(dom);
+  } else if (flags & VNodeFlags.TextareaElement) {
+    textAreaEvents(dom, nextPropsOrEmpty);
   }
 }
 
 export function isControlledFormElement(nextPropsOrEmpty): boolean {
-  return nextPropsOrEmpty.type && isCheckedType(nextPropsOrEmpty.type)
-    ? !isNullOrUndef(nextPropsOrEmpty.checked)
-    : !isNullOrUndef(nextPropsOrEmpty.value);
+  return nextPropsOrEmpty.type && isCheckedType(nextPropsOrEmpty.type) ? !isNullOrUndef(nextPropsOrEmpty.checked) : !isNullOrUndef(nextPropsOrEmpty.value);
 }

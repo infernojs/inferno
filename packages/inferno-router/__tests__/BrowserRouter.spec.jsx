@@ -32,9 +32,7 @@ describe('BrowserRouter (jsx)', () => {
     expect(console.error).toHaveBeenCalledTimes(1);
 
     // browser only?
-    expect(console.error.calls.mostRecent().args[0]).toContain(
-      '<BrowserRouter> ignores the history prop'
-    );
+    expect(console.error.calls.mostRecent().args[0]).toContain('<BrowserRouter> ignores the history prop');
 
     // node only?
     //expect(console.error).toHaveBeenCalledWith(

@@ -53,10 +53,7 @@ export class Router extends Component<IRouterProps, any> {
   public componentWillMount() {
     const { children, history } = this.props;
 
-    invariant(
-      children == null || Children.count(children) === 1,
-      'A <Router> may have only one child element'
-    );
+    invariant(children == null || Children.count(children) === 1, 'A <Router> may have only one child element');
 
     // Do this here so we can setState when a <Redirect> changes the
     // location in componentWillMount. This happens e.g. when doing
@@ -69,10 +66,7 @@ export class Router extends Component<IRouterProps, any> {
   }
 
   public componentWillReceiveProps(nextProps) {
-    warning(
-      this.props.history === nextProps.history,
-      'You cannot change <Router history>'
-    );
+    warning(this.props.history === nextProps.history, 'You cannot change <Router history>');
   }
 
   public componentWillUnmount() {

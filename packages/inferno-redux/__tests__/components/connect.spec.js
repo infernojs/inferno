@@ -1,19 +1,31 @@
-import { Component, render as renderDOM } from 'inferno';
+import { Component, render } from 'inferno';
 import { createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { connect } from 'inferno-redux';
-import {
-  findRenderedVNodeWithType,
-  renderIntoDocument,
-  Wrapper
-} from 'inferno-test-utils';
+import { findRenderedVNodeWithType, renderIntoDocument, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
 import sinon from 'sinon';
-import { Children, spyOn } from '../test-utils';
-
-const unmountDOM = elm => renderDOM(null, elm);
 
 describe('Inferno', () => {
+  // IE does not support function names so error messages are different
+  const supportFnName = Function.prototype.name === '';
+  const unmountDOM = elm => render(null, elm);
+  let container;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    document.body.removeChild(container);
+  });
+
+  function renderToContainer(vNode) {
+    return render(vNode, container);
+  }
+
   describe('redux', () => {
     class Passthrough extends Component {
       render() {
@@ -27,7 +39,7 @@ describe('Inferno', () => {
       }
 
       render() {
-        return Children.only(this.props.children);
+        return this.props.children;
       }
     }
 
@@ -64,14 +76,13 @@ describe('Inferno', () => {
       }
     }
 
-    const stringBuilder = (prev = '', action) =>
-      action.type === 'APPEND' ? prev + action.payload : prev;
+    const stringBuilder = (prev = '', action) => (action.type === 'APPEND' ? prev + action.payload : prev);
 
     const renderWithBadConnect = Component => {
       const store = createStore(() => ({}));
 
       try {
-        renderIntoDocument(
+        renderToContainer(
           <ProviderMock store={store}>
             <Component pass="through" />
           </ProviderMock>
@@ -94,7 +105,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container pass="through" />
         </ProviderMock>
@@ -119,7 +130,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container pass="through" baz={50} />
         </ProviderMock>
@@ -133,7 +144,7 @@ describe('Inferno', () => {
       findRenderedVNodeWithType(tree, Container);
     });
 
-    it('should subscribe class components to the store changes', async () => {
+    it('should subscribe class components to the store changes', () => {
       const store = createStore(stringBuilder);
 
       const Container = connect(state => ({ string: state }))(
@@ -144,25 +155,26 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
       );
+      const tree = renderToContainer(vNode);
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.string).toBe('');
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(stub.props.string).toBe('a');
 
       store.dispatch({ type: 'APPEND', payload: 'b' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(stub.props.string).toBe('ab');
     });
 
-    it('should subscribe pure function components to the store changes', async () => {
+    it('should subscribe pure function components to the store changes', () => {
       const store = createStore(stringBuilder);
 
       const Container = connect(state => ({
@@ -171,30 +183,26 @@ describe('Inferno', () => {
         return <Passthrough {...props} />;
       });
 
-      const tree = spyOn(console, 'error', spy => {
-        const renderTree = renderIntoDocument(
-          <ProviderMock store={store}>
-            <Container />
-          </ProviderMock>
-        );
-
-        expect(spy.callCount).toBe(0);
-        return renderTree;
-      });
+      const vNode = (
+        <ProviderMock store={store}>
+          <Container />
+        </ProviderMock>
+      );
+      const tree = renderToContainer(vNode);
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.string).toBe('');
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(stub.props.string).toBe('a');
 
       store.dispatch({ type: 'APPEND', payload: 'b' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(stub.props.string).toBe('ab');
     });
 
-    it("should retain the store's context", async () => {
+    it("should retain the store's context", () => {
       const store = new ContextBoundStore(stringBuilder);
 
       const Container = connect(state => ({
@@ -203,22 +211,22 @@ describe('Inferno', () => {
         return <Passthrough {...props} />;
       });
 
-      const tree = spyOn(console, 'error', spy => {
-        const renderTree = renderIntoDocument(
-          <ProviderMock store={store}>
-            <Container />
-          </ProviderMock>
-        );
+      const spy = spyOn(console, 'error');
 
-        expect(spy.callCount).toBe(0);
-        return renderTree;
-      });
+      const vNode = (
+        <ProviderMock store={store}>
+          <Container />
+        </ProviderMock>
+      );
+      const tree = renderToContainer(vNode);
+
+      expect(spy.calls.count()).toBe(0);
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.string).toBe('');
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(stub.props.string).toBe('a');
     });
 
@@ -237,7 +245,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
@@ -247,7 +255,7 @@ describe('Inferno', () => {
       expect(stub.props.string).toBe('a');
     });
 
-    it('should handle additional prop changes in addition to slice', async () => {
+    it('should handle additional prop changes in addition to slice', done => {
       const store = createStore(() => ({
         foo: 'bar'
       }));
@@ -271,8 +279,14 @@ describe('Inferno', () => {
         }
 
         componentDidMount() {
+          const newBar = {};
+
+          for (const key in this.state.bar) {
+            newBar[key] = this.state.bar[key];
+          }
+          newBar.baz = 'through';
           this.setState({
-            bar: Object.assign({}, this.state.bar, { baz: 'through' })
+            bar: newBar
           });
         }
 
@@ -285,13 +299,17 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(<Container />);
+      const vNode = <Container />;
+      const tree = renderToContainer(vNode);
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
 
-      await tree.repaint();
-      await new Promise(resolve => setTimeout(resolve, 500));
-      expect(stub.props.foo).toBe('bar');
-      expect(stub.props.pass).toBe('through');
+      renderToContainer(vNode);
+
+      setTimeout(() => {
+        expect(stub.props.foo).toBe('bar');
+        expect(stub.props.pass).toBe('through');
+        done();
+      }, 500);
     });
 
     it('should handle unexpected prop changes with forceUpdate()', () => {
@@ -331,7 +349,7 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(<Container />);
+      const tree = renderToContainer(<Container />);
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.bar).toBe('foo');
     });
@@ -355,7 +373,7 @@ describe('Inferno', () => {
         }
       }
 
-      renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <HolderContainer
             ref={instance => {
@@ -399,7 +417,7 @@ describe('Inferno', () => {
         }
       }
 
-      renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <HolderContainer
             ref={instance => {
@@ -465,13 +483,13 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(<Container />);
+      const tree = renderToContainer(<Container />);
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.foo).toBe('bar');
       expect(stub.props.pass).toBe('');
     });
 
-    it('should allow for merge to incorporate state and prop changes', async () => {
+    it('should allow for merge to incorporate state and prop changes', done => {
       const store = createStore(stringBuilder);
 
       const doSomething = thing => ({
@@ -516,23 +534,28 @@ describe('Inferno', () => {
       }
 
       const tree = renderIntoDocument(<OuterContainer />);
-      const outerStub = findRenderedVNodeWithType(tree, OuterContainer)
-        .children;
+      const outerStub = findRenderedVNodeWithType(tree, OuterContainer).children;
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.stateThing).toBe('');
       stub.props.mergedDoSomething('a');
-      await tree.repaint();
-      expect(stub.props.stateThing).toBe('HELLO az');
+      tree.setState({}, () => {
+        expect(stub.props.stateThing).toBe('HELLO az');
 
-      stub.props.mergedDoSomething('b');
-      await tree.repaint();
-      expect(stub.props.stateThing).toBe('HELLO azbz');
+        stub.props.mergedDoSomething('b');
+        tree.setState({}, () => {
+          expect(stub.props.stateThing).toBe('HELLO azbz');
 
-      outerStub.setState({ extra: 'Z' });
-      await tree.repaint();
-      stub.props.mergedDoSomething('c');
-      await tree.repaint();
-      expect(stub.props.stateThing).toBe('HELLO azbzcZ');
+          outerStub.setState({ extra: 'Z' });
+          tree.setState({}, () => {
+            stub.props.mergedDoSomething('c');
+            tree.setState({}, () => {
+              expect(stub.props.stateThing).toBe('HELLO azbzcZ');
+
+              done();
+            });
+          });
+        });
+      });
     });
 
     it('should merge actionProps into WrappedComponent', () => {
@@ -548,7 +571,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container pass="through" />
         </ProviderMock>
@@ -557,9 +580,7 @@ describe('Inferno', () => {
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.dispatch).toBe(store.dispatch);
       expect(stub.props.foo).toBe('bar');
-      expect(
-        () => findRenderedVNodeWithType(tree, Container).children
-      ).not.toThrowError();
+      expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
       const decorated = findRenderedVNodeWithType(tree, Container).children;
       expect(decorated.isSubscribed()).toBe(true);
     });
@@ -600,7 +621,7 @@ describe('Inferno', () => {
       }
 
       let outerComponent;
-      renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <OuterComponent
             ref={c => {
@@ -616,7 +637,7 @@ describe('Inferno', () => {
       expect(invocationCount).toBe(1);
     });
 
-    it('should invoke mapState every time props are changed if it has zero arguments', async () => {
+    it('should invoke mapState every time props are changed if it has zero arguments', () => {
       const store = createStore(stringBuilder);
 
       let invocationCount = 0;
@@ -652,7 +673,7 @@ describe('Inferno', () => {
       }
 
       let outerComponent;
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <OuterComponent
             ref={c => {
@@ -661,15 +682,16 @@ describe('Inferno', () => {
           />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       outerComponent.setFoo('BAR');
-      await tree.repaint();
+      renderToContainer(vNode);
       outerComponent.setFoo('DID');
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(invocationCount).toBe(3);
     });
 
-    it('should invoke mapState every time props are changed if it has a second argument', async () => {
+    it('should invoke mapState every time props are changed if it has a second argument', () => {
       const store = createStore(stringBuilder);
 
       let propsPassedIn;
@@ -707,7 +729,7 @@ describe('Inferno', () => {
       }
 
       let outerComponent;
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <OuterComponent
             ref={c => {
@@ -716,11 +738,12 @@ describe('Inferno', () => {
           />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       outerComponent.setFoo('BAR');
-      await tree.repaint();
+      renderToContainer(vNode);
       outerComponent.setFoo('BAZ');
-      await tree.repaint();
+      renderToContainer(vNode);
 
       expect(invocationCount).toBe(3);
       expect(propsPassedIn).toEqual({
@@ -764,7 +787,7 @@ describe('Inferno', () => {
       }
 
       let outerComponent;
-      renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <OuterComponent
             ref={c => {
@@ -780,7 +803,7 @@ describe('Inferno', () => {
       expect(invocationCount).toBe(1);
     });
 
-    it('should invoke mapDispatch every time props are changed if it has zero arguments', async () => {
+    it('should invoke mapDispatch every time props are changed if it has zero arguments', () => {
       const store = createStore(stringBuilder);
 
       let invocationCount = 0;
@@ -816,7 +839,7 @@ describe('Inferno', () => {
       }
 
       let outerComponent;
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <OuterComponent
             ref={c => {
@@ -825,15 +848,16 @@ describe('Inferno', () => {
           />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       outerComponent.setFoo('BAR');
-      await tree.repaint();
+      renderToContainer(vNode);
       outerComponent.setFoo('DID');
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(invocationCount).toBe(3);
     });
 
-    it('should invoke mapDispatch every time props are changed if it has a second argument', async () => {
+    it('should invoke mapDispatch every time props are changed if it has a second argument', () => {
       const store = createStore(stringBuilder);
 
       let propsPassedIn;
@@ -871,7 +895,7 @@ describe('Inferno', () => {
       }
 
       let outerComponent;
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <OuterComponent
             ref={c => {
@@ -880,11 +904,12 @@ describe('Inferno', () => {
           />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       outerComponent.setFoo('BAR');
-      await tree.repaint();
+      renderToContainer(vNode);
       outerComponent.setFoo('BAZ');
-      await tree.repaint();
+      renderToContainer(vNode);
 
       expect(invocationCount).toBe(3);
       expect(propsPassedIn).toEqual({
@@ -906,19 +931,18 @@ describe('Inferno', () => {
           }
         );
 
-        const tree = renderIntoDocument(
+        const vNode = (
           <ProviderMock store={store}>
             <Container pass="through" />
           </ProviderMock>
         );
+        const tree = renderToContainer(vNode);
 
         const stub = findRenderedVNodeWithType(tree, Passthrough).children;
         expect(stub.props.dispatch).toBe(store.dispatch);
         expect(stub.props.foo).toBeUndefined();
         expect(stub.props.pass).toBe('through');
-        expect(
-          () => findRenderedVNodeWithType(tree, Container).children
-        ).not.toThrowError();
+        expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
 
         const decorated = findRenderedVNodeWithType(tree, Container).children;
         expect(decorated.isSubscribed()).toBe(false);
@@ -943,10 +967,7 @@ describe('Inferno', () => {
         };
       };
 
-      const Container = connect(
-        state => ({ string: state }),
-        dispatch => ({ dispatch })
-      )(
+      const Container = connect(state => ({ string: state }), dispatch => ({ dispatch }))(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -955,7 +976,7 @@ describe('Inferno', () => {
       );
 
       const div = document.createElement('div');
-      renderDOM(
+      render(
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>,
@@ -971,10 +992,7 @@ describe('Inferno', () => {
       const store = createStore(stringBuilder);
       let mapStateToPropsCalls = 0;
 
-      const Container = connect(
-        () => ({ calls: ++mapStateToPropsCalls }),
-        dispatch => ({ dispatch })
-      )(
+      const Container = connect(() => ({ calls: ++mapStateToPropsCalls }), dispatch => ({ dispatch }))(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -986,7 +1004,7 @@ describe('Inferno', () => {
       store.subscribe(() => {
         unmountDOM(div);
       });
-      renderDOM(
+      render(
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>,
@@ -994,11 +1012,11 @@ describe('Inferno', () => {
       );
 
       expect(mapStateToPropsCalls).toBe(1);
-      spyOn(console, 'error', spy => {
-        store.dispatch({ type: 'APPEND', payload: 'a' });
-        expect(spy.callCount).toBe(0);
-        expect(mapStateToPropsCalls).toBe(1);
-      });
+      const spy = spyOn(console, 'error');
+
+      store.dispatch({ type: 'APPEND', payload: 'a' });
+      expect(spy.calls.count()).toBe(0);
+      expect(mapStateToPropsCalls).toBe(1);
     });
 
     it('should not attempt to notify unmounted child of state change', () => {
@@ -1008,7 +1026,7 @@ describe('Inferno', () => {
         }
 
         render() {
-          return Children.only(this.props.children);
+          return this.props.children;
         }
       }
 
@@ -1044,7 +1062,7 @@ describe('Inferno', () => {
       );
 
       const div = document.createElement('div');
-      renderDOM(
+      render(
         <ProviderMockTest store={store}>
           <App />
         </ProviderMockTest>,
@@ -1058,7 +1076,7 @@ describe('Inferno', () => {
       }
     });
 
-    it('should not attempt to set state after unmounting nested components', async () => {
+    it('should not attempt to set state after unmounting nested components', () => {
       const store = createStore(() => ({}));
       let mapStateToPropsCalls = 0;
 
@@ -1126,18 +1144,14 @@ describe('Inferno', () => {
         }
 
         render() {
-          return (
-            <App setLocation={this.setLocation}>
-              {this.getChildComponent(this.state.location.pathname)}
-            </App>
-          );
+          return <App setLocation={this.setLocation}>{this.getChildComponent(this.state.location.pathname)}</App>;
         }
       }
 
       let wrapper;
       const div = document.createElement('div');
       document.body.appendChild(div);
-      renderDOM(
+      const vNode = (
         <Wrapper
           ref={w => {
             wrapper = w;
@@ -1146,25 +1160,23 @@ describe('Inferno', () => {
           <ProviderMock store={store}>
             <RouterMock />
           </ProviderMock>
-        </Wrapper>,
-        div
+        </Wrapper>
       );
+      render(vNode, div);
 
-      await spyOn(console, 'error', async spy => {
-        expect(mapStateToPropsCalls).toBe(1);
-        linkA.click();
-        await wrapper.repaint();
+      const spy = spyOn(console, 'error');
+      expect(mapStateToPropsCalls).toBe(1);
+      linkA.click();
+      render(vNode, div);
+      expect(mapStateToPropsCalls).toBe(2);
+      linkB.click();
+      render(vNode, div);
 
-        expect(mapStateToPropsCalls).toBe(2);
-        linkB.click();
-        await wrapper.repaint();
+      expect(mapStateToPropsCalls).toBe(3);
+      linkB.click();
+      render(vNode, div);
 
-        expect(mapStateToPropsCalls).toBe(3);
-        linkB.click();
-        await wrapper.repaint();
-
-        expect(spy.callCount).toBe(0);
-      });
+      expect(spy.calls.count()).toBe(0);
 
       unmountDOM(div);
       document.body.removeChild(div);
@@ -1175,10 +1187,7 @@ describe('Inferno', () => {
       const store = createStore(stringBuilder);
       let mapStateToPropsCalls = 0;
 
-      const Container = connect(
-        state => ({ calls: mapStateToPropsCalls++ }),
-        dispatch => ({ dispatch })
-      )(
+      const Container = connect(state => ({ calls: mapStateToPropsCalls++ }), dispatch => ({ dispatch }))(
         class Container extends Component {
           componentWillUnmount() {
             this.props.dispatch({ type: 'APPEND', payload: 'a' });
@@ -1191,7 +1200,7 @@ describe('Inferno', () => {
       );
 
       const div = document.createElement('div');
-      renderDOM(
+      render(
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>,
@@ -1200,23 +1209,20 @@ describe('Inferno', () => {
 
       expect(mapStateToPropsCalls).toBe(1);
 
-      spyOn(console, 'error', spy => {
-        unmountDOM(div);
+      const spy = spyOn(console, 'error');
 
-        expect(spy.callCount).toBe(0);
-      });
+      unmountDOM(div);
+
+      expect(spy.calls.count()).toBe(0);
 
       expect(mapStateToPropsCalls).toBe(1);
     });
 
-    it('should shallowly compare the selected state to prevent unnecessary updates', async () => {
+    it('should shallowly compare the selected state to prevent unnecessary updates', () => {
       const store = createStore(stringBuilder);
       let renderCallCount = 0;
 
-      const Container = connect(
-        state => ({ string: state }),
-        dispatch => ({ dispatch })
-      )(
+      const Container = connect(state => ({ string: state }), dispatch => ({ dispatch }))(
         class Container extends Component {
           render() {
             const { string } = this.props;
@@ -1227,27 +1233,28 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
       );
+      const tree = renderToContainer(vNode);
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(renderCallCount).toBe(1);
       expect(stub.props.string).toBe('');
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(2);
       store.dispatch({ type: 'APPEND', payload: 'b' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(3);
       store.dispatch({ type: 'APPEND', payload: '' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(3);
     });
 
-    it('should shallowly compare the merged state to prevent unnecessary updates', async () => {
+    it('should shallowly compare the merged state to prevent unnecessary updates', () => {
       const store = createStore(stringBuilder);
       let renderCallCount = 0;
 
@@ -1265,9 +1272,7 @@ describe('Inferno', () => {
             const { string, pass } = this.props;
 
             renderCallCount++;
-            return (
-              <Passthrough string={string} pass={pass} passVal={pass.val} />
-            );
+            return <Passthrough string={string} pass={pass} passVal={pass.val} />;
           }
         }
       );
@@ -1287,70 +1292,68 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(<Root />);
-      const rootStub = findRenderedVNodeWithType(tree, Root).children;
-      const stub = findRenderedVNodeWithType(tree, Passthrough).children;
+      const vNode = <Root />;
+      const rootStub = renderToContainer(vNode);
+      const stub = findRenderedVNodeWithType(rootStub, Passthrough).children;
 
       expect(renderCallCount).toBe(1);
       expect(stub.props.string).toBe('');
       expect(stub.props.pass).toBe('');
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(2);
       expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe('');
 
       rootStub.setState({ pass: '' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(2);
       expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe('');
 
       rootStub.setState({ pass: 'through' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(3);
       expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe('through');
 
       rootStub.setState({ pass: 'through' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(3);
       expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe('through');
 
       const obj = { prop: 'val' };
       rootStub.setState({ pass: obj });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(4);
       expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe(obj);
 
       rootStub.setState({ pass: obj });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(4);
       expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe(obj);
 
       const obj2 = { ...obj, val: 'otherval' };
       rootStub.setState({ pass: obj2 });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(5);
       expect(stub.props.string).toBe('a');
       expect(stub.props.pass).toBe(obj2);
 
       obj2.val = 'mutation';
       rootStub.setState({ pass: obj2 });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(renderCallCount).toBe(5);
       expect(stub.props.string).toBe('a');
       expect(stub.props.passVal).toBe('otherval');
     });
 
     it('should throw an error if a component is not passed to the function returned by connect', () => {
-      expect(connect()).toThrowError(
-        /You must pass a component to the function/
-      );
+      expect(connect()).toThrowError(/You must pass a component to the function/);
     });
 
     it('should throw an error if mapState, mapDispatch, or mergeProps returns anything but a plain object', () => {
@@ -1369,125 +1372,68 @@ describe('Inferno', () => {
 
       function AwesomeMap() {}
 
+      let spyValue = '';
       // mapStateToProps
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => 1, () => ({}), () => ({}))}
-          </ProviderMock>
-        );
+      const spy = spyOn(console, 'error').and.callFake(e => (spyValue = e));
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => 1, () => ({}), () => ({}))}</ProviderMock>);
 
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => 'hey', () => ({}), () => ({}))}
-          </ProviderMock>
-        );
+      const errorMsg = supportFnName
+        ? /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
+        : /mapStateToProps\(\) in Connect\(Component\) must return a plain object/;
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      debugger;
+      expect(spy.calls.count()).toBe(1);
+      expect(spyValue).toMatch(errorMsg);
 
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => new AwesomeMap(), () => ({}), () => ({}))}
-          </ProviderMock>
-        );
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => 'hey', () => ({}), () => ({}))}</ProviderMock>);
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      expect(spy.calls.count()).toBe(2);
+      expect(spyValue).toMatch(errorMsg);
 
-      // mapDispatchToProps
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => 1, () => ({}))}
-          </ProviderMock>
-        );
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => new AwesomeMap(), () => ({}), () => ({}))}</ProviderMock>);
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mapDispatchToProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      expect(spy.calls.count()).toBe(3);
+      expect(spyValue).toMatch(errorMsg);
 
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => 'hey', () => ({}))}
-          </ProviderMock>
-        );
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => ({}), () => 1, () => ({}))}</ProviderMock>);
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mapDispatchToProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      const errorMsg2 = supportFnName
+        ? /mapDispatchToProps\(\) in Connect\(Container\) must return a plain object/
+        : /mapDispatchToProps\(\) in Connect\(Component\) must return a plain object/;
 
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => new AwesomeMap(), () => ({}))}
-          </ProviderMock>
-        );
+      expect(spy.calls.count()).toBe(4);
+      expect(spyValue).toMatch(errorMsg2);
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mapDispatchToProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => ({}), () => 'hey', () => ({}))}</ProviderMock>);
+
+      expect(spy.calls.count()).toBe(5);
+      expect(spyValue).toMatch(errorMsg2);
+
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => ({}), () => new AwesomeMap(), () => ({}))}</ProviderMock>);
+
+      expect(spy.calls.count()).toBe(6);
+      expect(spyValue).toMatch(errorMsg2);
 
       // mergeProps
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => ({}), () => 1)}
-          </ProviderMock>
-        );
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => ({}), () => ({}), () => 1)}</ProviderMock>);
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mergeProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      const errorMsg3 = supportFnName
+        ? /mergeProps\(\) in Connect\(Container\) must return a plain object/
+        : /mergeProps\(\) in Connect\(Component\) must return a plain object/;
 
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => ({}), () => 'hey')}
-          </ProviderMock>
-        );
+      expect(spy.calls.count()).toBe(7);
+      expect(spyValue).toMatch(errorMsg3);
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mergeProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => ({}), () => ({}), () => 'hey')}</ProviderMock>);
 
-      spyOn(console, 'error', spy => {
-        renderIntoDocument(
-          <ProviderMock store={store}>
-            {makeContainer(() => ({}), () => ({}), () => new AwesomeMap())}
-          </ProviderMock>
-        );
+      expect(spy.calls.count()).toBe(8);
+      expect(spyValue).toMatch(errorMsg3);
 
-        expect(spy.callCount).toBe(1);
-        expect(spy.getCall(0).args[0]).toMatch(
-          /mergeProps\(\) in Connect\(Container\) must return a plain object/
-        );
-      });
+      renderToContainer(<ProviderMock store={store}>{makeContainer(() => ({}), () => ({}), () => new AwesomeMap())}</ProviderMock>);
+
+      expect(spy.calls.count()).toBe(9);
+      expect(spyValue).toMatch(errorMsg3);
     });
 
     it('should recalculate the state and rebind the actions on hot update', () => {
@@ -1501,10 +1447,7 @@ describe('Inferno', () => {
         }
       );
 
-      const ContainerAfter = connect(
-        () => ({ foo: 'baz' }),
-        () => ({ scooby: 'foo' })
-      )(
+      const ContainerAfter = connect(() => ({ foo: 'baz' }), () => ({ scooby: 'foo' }))(
         class ContainerAfter extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -1512,10 +1455,7 @@ describe('Inferno', () => {
         }
       );
 
-      const ContainerNext = connect(
-        () => ({ foo: 'bar' }),
-        () => ({ scooby: 'boo' })
-      )(
+      const ContainerNext = connect(() => ({ foo: 'bar' }), () => ({ scooby: 'boo' }))(
         class ContainerNext extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -1523,14 +1463,13 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <ContainerBefore />
         </ProviderMock>
       );
 
-      const container = findRenderedVNodeWithType(tree, ContainerBefore)
-        .children;
+      const container = findRenderedVNodeWithType(tree, ContainerBefore).children;
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.foo).toBeUndefined();
       expect(stub.props.scooby).toBe('doo');
@@ -1566,7 +1505,7 @@ describe('Inferno', () => {
             }
           }
         ).displayName
-      ).toEqual('Connect(Foo)');
+      ).toEqual(supportFnName ? 'Connect(Foo)' : 'Connect(Component)');
 
       expect(
         connect(state => state)(
@@ -1643,7 +1582,7 @@ describe('Inferno', () => {
         getState: () => expectedState
       };
 
-      renderIntoDocument(<Decorated store={mockStore} />);
+      renderToContainer(<Decorated store={mockStore} />);
       expect(actualState).toBe(expectedState);
     });
 
@@ -1657,9 +1596,7 @@ describe('Inferno', () => {
       const decorator = connect(() => {});
       const Decorated = decorator(Container);
 
-      expect(() => renderIntoDocument(<Decorated />)).toThrowError(
-        /Could not find "store"/
-      );
+      expect(() => renderToContainer(<Decorated />)).toThrowError(/Could not find "store"/);
     });
 
     it('should throw when trying to access the wrapped instance if withRef is not specified', () => {
@@ -1674,7 +1611,7 @@ describe('Inferno', () => {
       const decorator = connect(state => state);
       const Decorated = decorator(Container);
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <Decorated />
         </ProviderMock>
@@ -1706,7 +1643,7 @@ describe('Inferno', () => {
       const decorator = connect(state => state, null, null, { withRef: true });
       const Decorated = decorator(Container);
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <Decorated />
         </ProviderMock>
@@ -1714,13 +1651,11 @@ describe('Inferno', () => {
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
       expect(() => decorated.someInstanceMethod()).toThrowError();
-      expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(
-        someData
-      );
+      expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(someData);
       expect(decorated.wrappedInstance.someInstanceMethod()).toBe(someData);
     });
 
-    it('should wrap impure components without supressing updates', async () => {
+    it('should wrap impure components without supressing updates', () => {
       const store = createStore(() => ({}));
 
       class ImpureComponent extends Component {
@@ -1749,18 +1684,19 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <StatefulWrapper />
         </ProviderMock>
       );
+      const tree = renderToContainer(vNode);
 
       const target = findRenderedVNodeWithType(tree, Passthrough).children;
       const wrapper = findRenderedVNodeWithType(tree, StatefulWrapper).children;
       expect(target.props.statefulValue).toBe(0);
 
       wrapper.setState({ value: 1 });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(target.props.statefulValue).toBe(1);
     });
 
@@ -1806,7 +1742,7 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(
+      const tree = renderToContainer(
         <ProviderMock store={store}>
           <StatefulWrapper />
         </ProviderMock>
@@ -1829,7 +1765,7 @@ describe('Inferno', () => {
       expect(target.props.statefulValue).toBe('bar');
     });
 
-    it('should pass state consistently to mapState', async () => {
+    it('should pass state consistently to mapState', () => {
       const store = createStore(stringBuilder);
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
@@ -1875,30 +1811,31 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
       );
+      const tree = renderToContainer(vNode);
 
       expect(childMapStateInvokes).toBe(1);
 
       store.dispatch({ type: 'APPEND', payload: 'c' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(childMapStateInvokes).toBe(2);
 
       const container = findRenderedVNodeWithType(tree, Container).children;
       const button = container.getWrappedInstance().button;
       button.click();
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(childMapStateInvokes).toBe(3);
 
       store.dispatch({ type: 'APPEND', payload: 'd' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(childMapStateInvokes).toBe(4);
     });
 
-    it('should not render the wrapped component when mapState does not produce change', async () => {
+    it('should not render the wrapped component when mapState does not produce change', () => {
       const store = createStore(stringBuilder);
       let renderCalls = 0;
       let mapStateCalls = 0;
@@ -1915,16 +1852,17 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
 
       // After store a change mapState has been called
       expect(mapStateCalls).toBe(2);
@@ -1932,7 +1870,7 @@ describe('Inferno', () => {
       expect(renderCalls).toBe(1);
     });
 
-    it('should bail out early if mapState does not depend on props', async () => {
+    it('should bail out early if mapState does not depend on props', () => {
       const store = createStore(stringBuilder);
       let renderCalls = 0;
       let mapStateCalls = 0;
@@ -1956,35 +1894,36 @@ describe('Inferno', () => {
         oldSetState.apply(this, args);
       };
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(mapStateCalls).toBe(2);
       expect(renderCalls).toBe(1);
       expect(setStateCalls).toBe(0);
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(mapStateCalls).toBe(3);
       expect(renderCalls).toBe(1);
       expect(setStateCalls).toBe(0);
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(mapStateCalls).toBe(4);
       expect(renderCalls).toBe(2);
       expect(setStateCalls).toBe(1);
     });
 
-    it('should not swallow errors when bailing out early', async () => {
+    it('should not swallow errors when bailing out early', () => {
       const store = createStore(stringBuilder);
       let renderCalls = 0;
       let mapStateCalls = 0;
@@ -2005,7 +1944,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
@@ -2013,12 +1952,10 @@ describe('Inferno', () => {
 
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
-      expect(() =>
-        store.dispatch({ type: 'APPEND', payload: 'a' })
-      ).toThrowError('Oops');
+      expect(() => store.dispatch({ type: 'APPEND', payload: 'a' })).toThrowError('Oops');
     });
 
-    it('should allow providing a factory function to mapStateToProps', async () => {
+    it('should allow providing a factory function to mapStateToProps', () => {
       let updateCount = 0;
       let memoizedReturnCount = 0;
       const store = createStore(() => ({ value: 1 }));
@@ -2054,7 +1991,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <div>
             <Container name="a" />
@@ -2068,7 +2005,7 @@ describe('Inferno', () => {
       expect(memoizedReturnCount).toBe(2);
     });
 
-    it('should allow a mapStateToProps factory consuming just state to return a function that gets ownProps', async () => {
+    it('should allow a mapStateToProps factory consuming just state to return a function that gets ownProps', () => {
       const store = createStore(() => ({ value: 1 }));
 
       let initialState;
@@ -2091,24 +2028,25 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <div>
             <Container name="a" />
           </div>
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       store.dispatch({ type: 'test' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(initialOwnProps).toBeUndefined();
       expect(initialState).toBeDefined();
       expect(secondaryOwnProps).toBeDefined();
       expect(secondaryOwnProps.name).toBe('a');
     });
 
-    it('should allow providing a factory function to mapDispatchToProps', async () => {
-      const updatedCount = 0;
+    it('should allow providing a factory function to mapDispatchToProps', done => {
+      let updatedCount = 0;
       let memoizedReturnCount = 0;
       const store = createStore(() => ({ value: 1 }));
 
@@ -2133,14 +2071,10 @@ describe('Inferno', () => {
         name: parentProps.name
       });
 
-      const Passthrough = connect(
-        null,
-        mapDispatchFactory,
-        mergeParentDispatch
-      )(
+      const Passthrough = connect(null, mapDispatchFactory, mergeParentDispatch)(
         class Passthrough extends Component {
           componentWillUpdate() {
-            updateCount++;
+            updatedCount++;
           }
 
           render() {
@@ -2169,20 +2103,23 @@ describe('Inferno', () => {
           );
         }
       }
-
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
-      store.dispatch({ type: 'test' });
-      await tree.repaint();
-      expect(updatedCount).toBe(0);
-      expect(memoizedReturnCount).toBe(2);
+      setTimeout(() => {
+        store.dispatch({ type: 'test' });
+        renderToContainer(vNode);
+        expect(updatedCount).toBe(0);
+        expect(memoizedReturnCount).toBe(2);
+        done();
+      }, 20);
     });
 
-    it('should not call update if mergeProps return value has not changed', async () => {
+    it('should not call update if mergeProps return value has not changed', () => {
       let mapStateCalls = 0;
       let renderCalls = 0;
       const store = createStore(stringBuilder);
@@ -2198,23 +2135,24 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       expect(mapStateCalls).toBe(1);
       expect(renderCalls).toBe(1);
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
-      await tree.repaint();
+      renderToContainer(vNode);
 
       expect(mapStateCalls).toBe(2);
       expect(renderCalls).toBe(1);
     });
 
-    it('should update impure components with custom mergeProps', async () => {
+    it('should update impure components with custom mergeProps', () => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
@@ -2237,7 +2175,7 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <Parent>
             <Container />
@@ -2248,7 +2186,7 @@ describe('Inferno', () => {
       expect(renderCount).toBe(2);
     });
 
-    it('should allow to clean up child state in parent componentWillUnmount', async () => {
+    it('should allow to clean up child state in parent componentWillUnmount', () => {
       const reducer = (state = { data: null }, action) => {
         switch (action.type) {
           case 'fetch':
@@ -2288,7 +2226,7 @@ describe('Inferno', () => {
 
       const store = createStore(reducer);
       const div = document.createElement('div');
-      renderDOM(
+      render(
         <ProviderMock store={store}>
           <Parent />
         </ProviderMock>,
@@ -2310,7 +2248,11 @@ describe('Inferno', () => {
         }
       );
 
-      expect(MyComponent.displayName).toBe('Custom(MyComponent)');
+      if (supportFnName) {
+        expect(MyComponent.displayName).toBe('Custom(MyComponent)');
+      } else {
+        expect(MyComponent.displayName).toBe('Custom(Component)');
+      }
     });
 
     it('should update impure components whenever the state of the store changes', () => {
@@ -2326,7 +2268,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <ImpureComponent />
         </ProviderMock>
@@ -2337,7 +2279,7 @@ describe('Inferno', () => {
       expect(renderCount).toBe(rendersBeforeStateChange + 1);
     });
 
-    it('should throw a helpful error for invalid mapStateToProps arguments', async () => {
+    it('should throw a helpful error for invalid mapStateToProps arguments', () => {
       const InvalidMapState = connect('invalid')(
         class InvalidMapState extends Component {
           render() {
@@ -2349,10 +2291,12 @@ describe('Inferno', () => {
       const error = renderWithBadConnect(InvalidMapState);
       expect(error).toContain('string');
       expect(error).toContain('mapStateToProps');
-      expect(error).toContain('InvalidMapState');
+      if (supportFnName) {
+        expect(error).toContain('InvalidMapState');
+      }
     });
 
-    it('should throw a helpful error for invalid mapDispatchToProps arguments', async () => {
+    it('should throw a helpful error for invalid mapDispatchToProps arguments', () => {
       const InvalidMapDispatch = connect(null, 'invalid')(
         class InvalidMapDispatch extends Component {
           render() {
@@ -2364,10 +2308,12 @@ describe('Inferno', () => {
       const error = renderWithBadConnect(InvalidMapDispatch);
       expect(error).toContain('string');
       expect(error).toContain('mapDispatchToProps');
-      expect(error).toContain('InvalidMapDispatch');
+      if (supportFnName) {
+        expect(error).toContain('InvalidMapDispatch');
+      }
     });
 
-    it('should throw a helpful error for invalid mergeProps arguments', async () => {
+    it('should throw a helpful error for invalid mergeProps arguments', () => {
       const InvalidMerge = connect(null, null, 'invalid')(
         class InvalidMerge extends Component {
           render() {
@@ -2379,13 +2325,15 @@ describe('Inferno', () => {
       const error = renderWithBadConnect(InvalidMerge);
       expect(error).toContain('string');
       expect(error).toContain('mergeProps');
-      expect(error).toContain('InvalidMerge');
+      if (supportFnName) {
+        expect(error).toContain('InvalidMerge');
+      } else {
+        expect(error).toContain('Component');
+      }
     });
 
-    it('should notify nested components through a blocking component', async () => {
-      const store = createStore(
-        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
-      );
+    it('should notify nested components through a blocking component', () => {
+      const store = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
 
       let mapStateCalls = 0;
       const mapStateToProps = state => {
@@ -2423,22 +2371,21 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store}>
           <Parent />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       expect(mapStateCalls).toBe(1);
       store.dispatch({ type: 'INC' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(mapStateCalls).toBe(2);
     });
 
-    it('should subscribe properly when a middle connected component does not subscribe', async () => {
-      const store = createStore(
-        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
-      );
+    it('should subscribe properly when a middle connected component does not subscribe', () => {
+      const store = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
 
       const C = connect((state, props) => {
         expect(props.count).toBe(state);
@@ -2468,7 +2415,7 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      renderToContainer(
         <ProviderMock store={store}>
           <A />
         </ProviderMock>
@@ -2477,13 +2424,9 @@ describe('Inferno', () => {
       store.dispatch({ type: 'INC' });
     });
 
-    it('should subscribe properly when a new store is provided via props', async () => {
-      const store1 = createStore(
-        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
-      );
-      const store2 = createStore(
-        (state = 0, action) => (action.type === 'INC' ? state + 1 : state)
-      );
+    it('should subscribe properly when a new store is provided via props', () => {
+      const store1 = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
+      const store2 = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
 
       const A = connect(state => ({ count: state }))(
         class A extends Component {
@@ -2520,24 +2463,25 @@ describe('Inferno', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <ProviderMock store={store1}>
           <A />
         </ProviderMock>
       );
+      renderToContainer(vNode);
 
       expect(mapStateToPropsB.callCount).toBe(1);
       expect(mapStateToPropsC.callCount).toBe(1);
       expect(mapStateToPropsD.callCount).toBe(1);
 
       store1.dispatch({ type: 'INC' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(mapStateToPropsB.callCount).toBe(1);
       expect(mapStateToPropsC.callCount).toBe(1);
       expect(mapStateToPropsD.callCount).toBe(2);
 
       store2.dispatch({ type: 'INC' });
-      await tree.repaint();
+      renderToContainer(vNode);
       expect(mapStateToPropsB.callCount).toBe(2);
       expect(mapStateToPropsC.callCount).toBe(2);
       expect(mapStateToPropsD.callCount).toBe(2);

@@ -48,13 +48,7 @@ export function initDevTools() {
   options.createVNode = vNode => {
     const flags = vNode.flags;
 
-    if (
-      flags & VNodeFlags.Component &&
-      !(
-        !isUndefined(vNode.type.prototype) &&
-        isFunction(vNode.type.prototype.render)
-      )
-    ) {
+    if (flags & VNodeFlags.Component && !(!isUndefined(vNode.type.prototype) && isFunction(vNode.type.prototype.render))) {
       wrapFunctionalComponent(vNode);
     }
     if (nextVNode) {

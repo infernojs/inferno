@@ -18,30 +18,22 @@ async function printFileSizes() {
   const dirs = await globAsync(PACKAGES_DIR + '/*');
 
   // Exclude private packages
-  const packages = dirs
-    .filter(d => !require(join(d, 'package.json')).private)
-    .map(file => basename(file));
+  const packages = dirs.filter(d => !require(join(d, 'package.json')).private).map(file => basename(file));
 
   const table = new Table({
     head: [
       `INFERNO - ${INFERNO_VERSION}`.cyan,
       'Browser'.cyan + ' (gzip)'.green,
-      'Browser prod (min)'.cyan  + ' (gzip)'.green,
-      '(es2016)'.cyan  + ' (gzip)'.green,
-      'cjs'.cyan  + ' (gzip)'.green,
-      'cjs prod'.cyan  + ' (gzip)'.green,
+      'Browser prod (min)'.cyan + ' (gzip)'.green,
+      '(es2016)'.cyan + ' (gzip)'.green,
+      'cjs'.cyan + ' (gzip)'.green,
+      'cjs prod'.cyan + ' (gzip)'.green
     ],
     colWidth: [100, 200, 200, 200, 200]
   });
 
   for (const name of packages.sort()) {
-    const filesToStat = [
-      name + '.js',
-      name + '.min.js',
-      'index.mjs',
-      'index.cjs.js',
-      'index.cjs.min.js'
-    ];
+    const filesToStat = [name + '.js', name + '.min.js', 'index.mjs', 'index.cjs.js', 'index.cjs.min.js'];
     const row = [name];
 
     for (const file of filesToStat) {

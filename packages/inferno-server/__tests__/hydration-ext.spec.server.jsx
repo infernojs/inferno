@@ -1,9 +1,5 @@
 import { Component, render } from 'inferno';
-import {
-  createContainerWithHTML,
-  innerHTML,
-  validateNodeTree
-} from 'inferno-utils';
+import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
 import { createTextVNode } from '../../inferno/src';
 
 class Comp extends Component {
@@ -40,10 +36,8 @@ class Comp2 extends Component {
   }
 }
 
-const compHtml =
-  '<div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div>';
-const compHtml2 =
-  '<div><div id="b1">C 1</div><div id="b2">C 2</div><div id="b3">C 3</div></div>';
+const compHtml = '<div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div>';
+const compHtml2 = '<div><div id="b1">C 1</div><div id="b2">C 2</div><div id="b3">C 3</div></div>';
 
 describe('SSR Hydration Extended - (JSX)', () => {
   [
@@ -52,8 +46,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       component: <Comp />
     },
     {
-      html:
-        '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
+      html: '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
       component: <Comp />
     },
     {
@@ -65,8 +58,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       component: <Comp />
     },
     {
-      html:
-        '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div></div>',
+      html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div></div>',
       component: <Comp />
     },
     {
@@ -139,9 +131,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   });
 
   it('Should hydrate correctly when there are comment nodes #2', () => {
-    const container = createContainerWithHTML(
-      '<div><!----><!----><!----></div>'
-    );
+    const container = createContainerWithHTML('<div><!----><!----><!----></div>');
 
     render(
       <div>
@@ -154,9 +144,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(
-      innerHTML('<div><p>Hello World!</p></div>')
-    );
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div><p>Hello World!</p></div>'));
   });
 
   it('Should handle empty textNodes correctly Github #1137', () => {
@@ -176,9 +164,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   });
 
   it('Should handle empty textNodes correctly Github #1137 variation#2', () => {
-    const container = createContainerWithHTML(
-      '<div><span class="error"></span></div>'
-    );
+    const container = createContainerWithHTML('<div><span class="error"></span></div>');
 
     const vNode = (
       <div>

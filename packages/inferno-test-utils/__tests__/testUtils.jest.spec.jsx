@@ -5,11 +5,11 @@ const FunctionalComponent = function(props) {
   return createElement('div', props);
 };
 
+const usingJest = window.usingJest;
+
 describe('renderToSnapshot', () => {
   it('should return a snapshot from a valid vNode', () => {
-    const snapshot = TestUtils.renderToSnapshot(
-      <FunctionalComponent foo="bar" />
-    );
+    const snapshot = TestUtils.renderToSnapshot(<FunctionalComponent foo="bar" />);
 
     if (usingJest) {
       expect(snapshot).toMatchSnapshot();
@@ -32,14 +32,14 @@ describe('renderToSnapshot', () => {
   });
 
   it('should return a snapshot with className prop, multiple children', () => {
-    const TestComponent = (props) => <div className="test">{props.children}<span>1</span></div>;
+    const TestComponent = props => (
+      <div className="test">
+        {props.children}
+        <span>1</span>
+      </div>
+    );
 
-    const snapshot = TestUtils.renderToSnapshot(<TestComponent>
-      {[
-        <span>a</span>,
-        <span>b</span>
-      ]}
-    </TestComponent>);
+    const snapshot = TestUtils.renderToSnapshot(<TestComponent>{[<span>a</span>, <span>b</span>]}</TestComponent>);
 
     if (usingJest) {
       expect(snapshot).toMatchSnapshot();

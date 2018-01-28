@@ -140,10 +140,7 @@ describe('Text', () => {
   emptyDefinitions.forEach(arg => {
     [
       {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - text property',
+        description: 'should create a dynamic text node with ' + arg.name + ' - text property',
         template: text => createElement('div', null, text)
       }
     ].forEach(test => {
@@ -176,12 +173,8 @@ describe('Text', () => {
   emptyDefinitions.forEach(arg => {
     [
       {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - children node text',
-        template: text =>
-          createElement('div', null, createElement('span', null, text))
+        description: 'should create a dynamic text node with ' + arg.name + ' - children node text',
+        template: text => createElement('div', null, createElement('span', null, text))
       }
     ].forEach(test => {
       it(test.description, () => {
@@ -203,10 +196,7 @@ describe('Text', () => {
   emptyDefinitions.forEach(arg => {
     [
       {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - single child with text ',
+        description: 'should create a dynamic text node with ' + arg.name + ' - single child with text ',
         template: text => createElement('div', null, text)
       }
     ].forEach(test => {
@@ -229,12 +219,8 @@ describe('Text', () => {
   emptyDefinitions.forEach(arg => {
     [
       {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - deep child with text property ',
-        template: text =>
-          createElement('div', null, createElement('span', null, text))
+        description: 'should create a dynamic text node with ' + arg.name + ' - deep child with text property ',
+        template: text => createElement('div', null, createElement('span', null, text))
       }
     ].forEach(test => {
       it(test.description, () => {
@@ -256,16 +242,8 @@ describe('Text', () => {
   emptyDefinitions.forEach(arg => {
     [
       {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - deeper child with text property ',
-        template: text =>
-          createElement(
-            'div',
-            null,
-            createElement('span', null, createElement('b', null, text))
-          )
+        description: 'should create a dynamic text node with ' + arg.name + ' - deeper child with text property ',
+        template: text => createElement('div', null, createElement('span', null, createElement('b', null, text)))
       }
     ].forEach(test => {
       it(test.description, () => {

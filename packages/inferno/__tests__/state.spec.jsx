@@ -63,10 +63,7 @@ describe('state', () => {
 
   describe('setting state', () => {
     it('setState should apply state during componentWillReceiveProps', done => {
-      render(
-        createComponentVNode(VNodeFlags.ComponentClass, TestCWRP, {}),
-        container
-      );
+      render(createComponentVNode(VNodeFlags.ComponentClass, TestCWRP, {}), container);
       expect(renderCount).toBe(1);
 
       render(

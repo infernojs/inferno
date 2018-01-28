@@ -10,10 +10,5 @@ export function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
 }
 
 export function isSamePropsInnerHTML(dom: Element, props): boolean {
-  return Boolean(
-    props &&
-      props.dangerouslySetInnerHTML &&
-      props.dangerouslySetInnerHTML.__html &&
-      isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html)
-  );
+  return Boolean(props && props.dangerouslySetInnerHTML && props.dangerouslySetInnerHTML.__html && isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html));
 }

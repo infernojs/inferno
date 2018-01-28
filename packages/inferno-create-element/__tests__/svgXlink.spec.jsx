@@ -20,12 +20,7 @@ describe('createTree - SVG (JSX)', () => {
     );
 
     expect(container.firstChild.tagName).toEqual('svg');
-    expect(
-      container.firstChild.firstChild.hasAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe(true);
+    expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(true);
 
     render(
       <svg>
@@ -35,12 +30,7 @@ describe('createTree - SVG (JSX)', () => {
     );
 
     expect(container.firstChild.tagName).toEqual('svg');
-    expect(
-      container.firstChild.firstChild.hasAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe(false);
+    expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(false);
   });
 
   it('should update namespaced SVG attributes', () => {
@@ -52,12 +42,7 @@ describe('createTree - SVG (JSX)', () => {
     );
 
     expect(container.firstChild.tagName).toEqual('svg');
-    expect(
-      container.firstChild.firstChild.hasAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe(true);
+    expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(true);
 
     render(
       <svg>
@@ -67,12 +52,7 @@ describe('createTree - SVG (JSX)', () => {
     );
 
     expect(container.firstChild.tagName).toEqual('svg');
-    expect(
-      container.firstChild.firstChild.getAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe('http://i.imgur.com/JvqCM2p.png');
+    expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe('http://i.imgur.com/JvqCM2p.png');
   });
 
   it('should add / change / remove xlink:href attribute', () => {
@@ -83,12 +63,7 @@ describe('createTree - SVG (JSX)', () => {
       container
     );
 
-    expect(
-      container.firstChild.firstChild.getAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe('#test');
+    expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe('#test');
 
     render(
       <svg>
@@ -97,12 +72,7 @@ describe('createTree - SVG (JSX)', () => {
       container
     );
 
-    expect(
-      container.firstChild.firstChild.getAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe('#changed');
+    expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe('#changed');
 
     render(
       <svg>
@@ -111,12 +81,7 @@ describe('createTree - SVG (JSX)', () => {
       container
     );
 
-    expect(
-      container.firstChild.firstChild.hasAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe(false);
+    expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(false);
   });
 
   it('should add / change / remove xlinkHref attribute (babel plugin should transpile it)', () => {
@@ -127,12 +92,7 @@ describe('createTree - SVG (JSX)', () => {
       container
     );
 
-    expect(
-      container.firstChild.firstChild.getAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe('#test');
+    expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe('#test');
 
     render(
       <svg>
@@ -141,12 +101,7 @@ describe('createTree - SVG (JSX)', () => {
       container
     );
 
-    expect(
-      container.firstChild.firstChild.getAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe('#changed');
+    expect(container.firstChild.firstChild.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe('#changed');
 
     render(
       <svg>
@@ -155,11 +110,6 @@ describe('createTree - SVG (JSX)', () => {
       container
     );
 
-    expect(
-      container.firstChild.firstChild.hasAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href'
-      )
-    ).toBe(false);
+    expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(false);
   });
 });

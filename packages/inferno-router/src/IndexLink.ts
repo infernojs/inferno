@@ -12,9 +12,7 @@ import { NavLink } from './NavLink';
 export function IndexLink(props): any {
   if (process.env.NODE_ENV !== 'production') {
     // tslint:disable-next-line:no-console
-    console.error(
-      'Using IndexLink is deprecated. Please use Link or NavLink instead.'
-    );
+    console.error('Using IndexLink is deprecated. Please use Link or NavLink instead.');
   }
 
   return createComponentVNode(VNodeFlags.ComponentFunction, NavLink, props);

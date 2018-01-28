@@ -32,12 +32,7 @@ export function matchPath(pathname, options: any) {
     options = { path: options };
   }
 
-  const {
-    path = '/',
-    exact = false,
-    strict = false,
-    sensitive = false
-  } = options;
+  const { path = '/', exact = false, strict = false, sensitive = false } = options;
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 

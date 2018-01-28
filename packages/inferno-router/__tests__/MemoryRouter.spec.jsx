@@ -35,8 +35,6 @@ describe('A <MemoryRouter>', () => {
     render(<MemoryRouter history={history} />, node);
 
     expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain(
-      '<MemoryRouter> ignores the history prop'
-    );
+    expect(console.error.calls.mostRecent().args[0]).toContain('<MemoryRouter> ignores the history prop');
   });
 });

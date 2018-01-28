@@ -41,8 +41,7 @@ describe('Github #1236', () => {
 
         doSearch(e) {
           e.preventDefault();
-          const nextLoc =
-            this.context.router.history.location.pathname + '?q=test';
+          const nextLoc = this.context.router.history.location.pathname + '?q=test';
           this.context.router.history.push(nextLoc);
         }
 
@@ -54,9 +53,7 @@ describe('Github #1236', () => {
               <a key="asd" id="test-btn" href="#front" onClick={this.doSearch}>
                 link
               </a>
-              {showView === 'default' && (
-                <div key="search-default">default</div>
-              )}
+              {showView === 'default' && <div key="search-default">default</div>}
               {showView === 'results' && <SearchResult key="search-results" />}
             </div>
           );
@@ -89,16 +86,12 @@ describe('Github #1236', () => {
 
     render(appRoutes, container);
 
-    expect(container.innerHTML).toEqual(
-      '<div><a id="test-btn" href="#front">link</a><div>default</div></div>'
-    );
+    expect(container.innerHTML).toEqual('<div><a id="test-btn" href="#front">link</a><div>default</div></div>');
 
     const btn = container.querySelector('#test-btn');
 
     btn.click();
 
-    expect(container.innerHTML).toEqual(
-      '<div><a id="test-btn" href="#front">link</a><div>results</div></div>'
-    );
+    expect(container.innerHTML).toEqual('<div><a id="test-btn" href="#front">link</a><div>results</div></div>');
   });
 });

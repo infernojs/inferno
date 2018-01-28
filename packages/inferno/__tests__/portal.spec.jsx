@@ -113,10 +113,7 @@ describe('Portal spec', () => {
   it('should mount/unmount one portal', () => {
     let portalContainer = document.createElement('div');
 
-    render(
-      <div>{createPortal(<div>portal</div>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<div>portal</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal</div>');
     expect(container.innerHTML).toBe('<div></div>');
 
@@ -128,18 +125,12 @@ describe('Portal spec', () => {
   it('Should mount/render/patch one portal', () => {
     let portalContainer = document.createElement('div');
 
-    render(
-      <div>{createPortal(<div>portal</div>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<div>portal</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal</div>');
     expect(container.innerHTML).toBe('<div></div>');
 
     // Patch
-    render(
-      <div>{createPortal(<div>portal2</div>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<div>portal2</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal2</div>');
     expect(container.innerHTML).toBe('<div></div>');
 
@@ -149,10 +140,7 @@ describe('Portal spec', () => {
     expect(container.innerHTML).toBe('<div></div>');
 
     // Patch Add contents
-    render(
-      <div>{createPortal(<span>Fobba</span>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<span>Fobba</span>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<span>Fobba</span>');
     expect(container.innerHTML).toBe('<div></div>');
 
@@ -166,19 +154,13 @@ describe('Portal spec', () => {
     let portalContainer = document.createElement('div');
     let portalContainer2 = document.createElement('div');
 
-    render(
-      <div>{createPortal(<div>portal</div>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<div>portal</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal</div>');
     expect(portalContainer2.innerHTML).toBe('');
     expect(container.innerHTML).toBe('<div></div>');
 
     // Patch - change container
-    render(
-      <div>{createPortal(<div>portal2</div>, portalContainer2)}</div>,
-      container
-    );
+    render(<div>{createPortal(<div>portal2</div>, portalContainer2)}</div>, container);
     expect(portalContainer.innerHTML).toBe('');
     expect(portalContainer2.innerHTML).toBe('<div>portal2</div>');
     expect(container.innerHTML).toBe('<div></div>');
@@ -190,10 +172,7 @@ describe('Portal spec', () => {
     expect(container.innerHTML).toBe('<div></div>');
 
     // Patch Add contents
-    render(
-      <div>{createPortal(<span>Fobba</span>, portalContainer2)}</div>,
-      container
-    );
+    render(<div>{createPortal(<span>Fobba</span>, portalContainer2)}</div>, container);
     expect(portalContainer.innerHTML).toBe('');
     expect(portalContainer2.innerHTML).toBe('<span>Fobba</span>');
     expect(container.innerHTML).toBe('<div></div>');
@@ -244,10 +223,7 @@ describe('Portal spec', () => {
       render() {
         const { step } = this.props;
 
-        const portalOne = createPortal(
-          <Child key="b" name={`portal1[0]:${step}`} />,
-          portalContainer1
-        );
+        const portalOne = createPortal(<Child key="b" name={`portal1[0]:${step}`} />, portalContainer1);
 
         const portalTwo = createPortal(
           <div>
@@ -271,12 +247,8 @@ describe('Portal spec', () => {
     render(<Parent step="a" />, container);
 
     expect(portalContainer1.innerHTML).toBe('<div>portal1[0]:a</div>');
-    expect(portalContainer2.innerHTML).toBe(
-      '<div><div>portal2[0]:a</div><div>portal2[1]:a</div></div>'
-    );
-    expect(container.innerHTML).toBe(
-      '<div><div>normal[0]:a</div><div>normal[1]:a</div></div>'
-    );
+    expect(portalContainer2.innerHTML).toBe('<div><div>portal2[0]:a</div><div>portal2[1]:a</div></div>');
+    expect(container.innerHTML).toBe('<div><div>normal[0]:a</div><div>normal[1]:a</div></div>');
     expect(ops).toEqual([
       'normal[0]:a componentDidMount',
       'portal1[0]:a componentDidMount',
@@ -290,12 +262,8 @@ describe('Portal spec', () => {
 
     render(<Parent step="b" />, container);
     expect(portalContainer1.innerHTML).toBe('<div>portal1[0]:b</div>');
-    expect(portalContainer2.innerHTML).toBe(
-      '<div><div>portal2[0]:b</div><div>portal2[1]:b</div></div>'
-    );
-    expect(container.innerHTML).toBe(
-      '<div><div>normal[0]:b</div><div>normal[1]:b</div></div>'
-    );
+    expect(portalContainer2.innerHTML).toBe('<div><div>portal2[0]:b</div><div>portal2[1]:b</div></div>');
+    expect(container.innerHTML).toBe('<div><div>normal[0]:b</div><div>normal[1]:b</div></div>');
     expect(ops).toEqual([
       'normal[0]:b componentDidUpdate',
       'portal1[0]:b componentDidUpdate',
@@ -341,14 +309,10 @@ describe('Portal spec', () => {
       </div>,
       container
     );
-    expect(portalContainer1.innerHTML).toBe(
-      '<div><div>portal1[0]</div><div>portal1[1]</div></div>'
-    );
+    expect(portalContainer1.innerHTML).toBe('<div><div>portal1[0]</div><div>portal1[1]</div></div>');
     expect(portalContainer2.innerHTML).toBe('<div>portal2[0]</div>');
     expect(portalContainer3.innerHTML).toBe('<div>portal3[0]</div>');
-    expect(container.innerHTML).toBe(
-      '<div><div>normal[0]</div><div>normal[1]</div></div>'
-    );
+    expect(container.innerHTML).toBe('<div><div>normal[0]</div><div>normal[1]</div></div>');
 
     render(null, container);
     expect(portalContainer1.innerHTML).toBe('');
@@ -360,38 +324,23 @@ describe('Portal spec', () => {
   it('should reconcile portal children', () => {
     let portalContainer = document.createElement('div');
 
-    render(
-      <div>{createPortal(<div>portal:1</div>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<div>portal:1</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal:1</div>');
     expect(container.innerHTML).toBe('<div></div>');
 
-    render(
-      <div>{createPortal(<div>portal:2</div>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<div>portal:2</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal:2</div>');
     expect(container.innerHTML).toBe('<div></div>');
 
-    render(
-      <div>{createPortal(<p>portal:3</p>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<p>portal:3</p>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<p>portal:3</p>');
     expect(container.innerHTML).toBe('<div></div>');
 
-    render(
-      <div>{createPortal(<span>{['Hi', 'Bye']}</span>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<span>{['Hi', 'Bye']}</span>, portalContainer)}</div>, container);
     expect(portalContainer.textContent).toBe('HiBye');
     expect(container.innerHTML).toBe('<div></div>');
 
-    render(
-      <div>{createPortal(<span>{['Bye', 'Hi']}</span>, portalContainer)}</div>,
-      container
-    );
+    render(<div>{createPortal(<span>{['Bye', 'Hi']}</span>, portalContainer)}</div>, container);
     expect(portalContainer.textContent).toBe('ByeHi');
     expect(container.innerHTML).toBe('<div></div>');
 
@@ -805,9 +754,7 @@ describe('Portal spec', () => {
 
       render(<Parent port={false} bar="initial" />, container);
       expect(portalContainer.innerHTML).toBe('');
-      expect(container.innerHTML).toBe(
-        '<div><div><span>initial</span></div></div>'
-      );
+      expect(container.innerHTML).toBe('<div><div><span>initial</span></div></div>');
 
       render(<Parent port={true} bar="changed" />, container);
       expect(portalContainer.innerHTML).toBe('<div>changed</div>');
@@ -815,9 +762,7 @@ describe('Portal spec', () => {
 
       render(<Parent port={false} bar="triple" />, container);
       expect(portalContainer.innerHTML).toBe('');
-      expect(container.innerHTML).toBe(
-        '<div><div><span>triple</span></div></div>'
-      );
+      expect(container.innerHTML).toBe('<div><div><span>triple</span></div></div>');
 
       render(null, container);
       expect(portalContainer.innerHTML).toBe('');
@@ -849,9 +794,7 @@ describe('Portal spec', () => {
 
       render(<Parent port={false} bar="initial" />, container);
       expect(portalContainer.innerHTML).toBe('');
-      expect(container.innerHTML).toBe(
-        '<div><div><span>initial</span></div></div>'
-      );
+      expect(container.innerHTML).toBe('<div><div><span>initial</span></div></div>');
 
       render(<Parent port={true} bar="changed" />, container);
       expect(portalContainer.innerHTML).toBe('<div>changed</div>');
@@ -859,9 +802,7 @@ describe('Portal spec', () => {
 
       render(<Parent port={false} bar="triple" />, container);
       expect(portalContainer.innerHTML).toBe('');
-      expect(container.innerHTML).toBe(
-        '<div><div><span>triple</span></div></div>'
-      );
+      expect(container.innerHTML).toBe('<div><div><span>triple</span></div></div>');
 
       render(null, container);
       expect(portalContainer.innerHTML).toBe('');
@@ -948,9 +889,7 @@ describe('Portal spec', () => {
         expect(unMountCount).toBe(0);
 
         render(<Parent port={true} bar="changed" />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>2</div><div>3</div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div>');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(3);
         expect(unMountCount).toBe(0);
@@ -1017,17 +956,13 @@ describe('Portal spec', () => {
         expect(unMountCount).toBe(0);
 
         render(<Parent port={true} bar="changed" />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>2</div><div>3</div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div>');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(3);
         expect(unMountCount).toBe(0);
 
         render(<Parent port={false} bar="triple" />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>3</div><div>5</div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>5</div>');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(4); // 5 is new
         expect(unMountCount).toBe(1); // 2 is dead
@@ -1086,22 +1021,14 @@ describe('Portal spec', () => {
         }
 
         render(<Parent port={true} bar="changed" />, container);
-        expect(container.innerHTML).toBe(
-          '<div><span>a</span><span>b</span><span>c</span></div>'
-        );
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>2</div><div>3</div>'
-        );
+        expect(container.innerHTML).toBe('<div><span>a</span><span>b</span><span>c</span></div>');
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div>');
         expect(mountCount).toBe(3);
         expect(unMountCount).toBe(0);
 
         render(<Parent port={false} bar="initial" />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>3</div><div>5</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>c</span><span>a</span><span>b</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>5</div>');
+        expect(container.innerHTML).toBe('<div><span>c</span><span>a</span><span>b</span></div>');
         expect(mountCount).toBe(4);
         expect(unMountCount).toBe(1);
 
@@ -1159,20 +1086,12 @@ describe('Portal spec', () => {
         }
 
         render(<Parent port={false} />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>3</div><div>5</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>c</span><span>a</span><span>b</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>5</div>');
+        expect(container.innerHTML).toBe('<div><span>c</span><span>a</span><span>b</span></div>');
 
         render(<Parent port={true} />, container);
-        expect(container.innerHTML).toBe(
-          '<div><span>a</span><span>b</span><span>c</span></div>'
-        );
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>3</div><div>2</div>'
-        ); // <= Portal order is based on creation
+        expect(container.innerHTML).toBe('<div><span>a</span><span>b</span><span>c</span></div>');
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>2</div>'); // <= Portal order is based on creation
 
         render(null, container);
         expect(portalContainer.innerHTML).toBe('');
@@ -1234,28 +1153,16 @@ describe('Portal spec', () => {
         }
 
         render(<Parent port={false} />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>3</div><div>5</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>c</span><span>a</span><span>b</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>5</div>');
+        expect(container.innerHTML).toBe('<div><span>c</span><span>a</span><span>b</span></div>');
 
         render(<Parent port={true} />, container);
-        expect(container.innerHTML).toBe(
-          '<div><span>a</span><span>b</span><span>c</span></div>'
-        );
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>3</div><div>2</div>'
-        ); // <= Portal order is based on creation
+        expect(container.innerHTML).toBe('<div><span>a</span><span>b</span><span>c</span></div>');
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>2</div>'); // <= Portal order is based on creation
 
         render(<Parent port={false} />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>3</div><div>5</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>c</span><span>a</span><span>b</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>5</div>');
+        expect(container.innerHTML).toBe('<div><span>c</span><span>a</span><span>b</span></div>');
 
         render(null, container);
         expect(portalContainer.innerHTML).toBe('');
@@ -1326,39 +1233,23 @@ describe('Portal spec', () => {
 
         render(<Parent port={true} />, container);
         // 3 5 1 inner 2
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>2</div><div>3</div><div>inner</div><div></div><div></div><div>5</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>A</span><span>B</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div><div>inner</div><div></div><div></div><div>5</div>');
+        expect(container.innerHTML).toBe('<div><span>A</span><span>B</span></div>');
         expect(mountCount).toBe(7);
         expect(unMountCount).toBe(0);
 
         render(<Parent port={false} />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>3</div><div><span>XX</span></div><div>5</div><div>1</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>C</span><span>A</span><span>B</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>3</div><div><span>XX</span></div><div>5</div><div>1</div>');
+        expect(container.innerHTML).toBe('<div><span>C</span><span>A</span><span>B</span></div>');
 
         render(<Parent port={true} />, container);
         // 3 5 1 inner 2
-        expect(portalContainer.innerHTML).toBe(
-          '<div>3</div><div></div><div>5</div><div>1</div><div>inner</div><div></div><div>2</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>A</span><span>B</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>3</div><div></div><div>5</div><div>1</div><div>inner</div><div></div><div>2</div>');
+        expect(container.innerHTML).toBe('<div><span>A</span><span>B</span></div>');
 
         render(<Parent port={false} />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div>3</div><div><span>XX</span></div><div>5</div><div>1</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>C</span><span>A</span><span>B</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>3</div><div><span>XX</span></div><div>5</div><div>1</div>');
+        expect(container.innerHTML).toBe('<div><span>C</span><span>A</span><span>B</span></div>');
 
         render(null, container);
         expect(portalContainer.innerHTML).toBe('');
@@ -1427,29 +1318,17 @@ describe('Portal spec', () => {
 
         render(<Parent port={true} />, container);
         // 3 5 1 inner 2
-        expect(portalContainer.innerHTML).toBe(
-          '<div>1</div><div>2</div><div>3</div><div>inner</div><div></div><div></div><div>5</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>A</span><span>B</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div><div>inner</div><div></div><div></div><div>5</div>');
+        expect(container.innerHTML).toBe('<div><span>A</span><span>B</span></div>');
 
         render(<Parent port={false} />, container);
-        expect(portalContainer.innerHTML).toBe(
-          '<div><span>XX</span></div><div>3</div><div>5</div><div>1</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>C</span><span>A</span><span>B</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div><span>XX</span></div><div>3</div><div>5</div><div>1</div>');
+        expect(container.innerHTML).toBe('<div><span>C</span><span>A</span><span>B</span></div>');
 
         render(<Parent port={true} />, container);
         // 3 5 1 inner 2
-        expect(portalContainer.innerHTML).toBe(
-          '<div>2</div><div>3</div><div></div><div>1</div><div>inner</div><div></div><div>5</div>'
-        );
-        expect(container.innerHTML).toBe(
-          '<div><span>A</span><span>B</span></div>'
-        );
+        expect(portalContainer.innerHTML).toBe('<div>2</div><div>3</div><div></div><div>1</div><div>inner</div><div></div><div>5</div>');
+        expect(container.innerHTML).toBe('<div><span>A</span><span>B</span></div>');
 
         render(null, container);
         expect(portalContainer.innerHTML).toBe('');

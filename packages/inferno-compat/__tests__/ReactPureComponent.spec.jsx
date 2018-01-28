@@ -79,7 +79,7 @@ describe('ReactPureComponent', function() {
     var component;
 
     text = ['porcini'];
-    component = ReactDOM.render(<Component foo={"bar"} text={text} />, container);
+    component = ReactDOM.render(<Component foo={'bar'} text={text} />, container);
     expect(container.textContent).toBe('porcini');
     expect(renders).toBe(1);
 

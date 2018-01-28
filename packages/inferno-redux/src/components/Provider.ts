@@ -38,13 +38,8 @@ export class Provider extends Component<Props, any> {
 
   public render() {
     // TODO: Maybe not allocate an array here for no reason?
-    if (
-      isNullOrUndef(this.props.children) ||
-      toArray(this.props.children).length !== 1
-    ) {
-      throw Error(
-        'Inferno Error: Only one child is allowed within the `Provider` component'
-      );
+    if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
+      throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
     }
 
     return this.props.children;
@@ -52,9 +47,7 @@ export class Provider extends Component<Props, any> {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  Provider.prototype.componentWillReceiveProps = function componentWillReceiveProps(
-    nextProps
-  ) {
+  Provider.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
     const { store } = this;
     const { store: nextStore } = nextProps;
 

@@ -26,10 +26,7 @@ describe('ReactCompositeComponent-state', function() {
       },
 
       setFavoriteColor: function(nextColor) {
-        this.setState(
-          { color: nextColor },
-          this.peekAtCallback('setFavoriteColor')
-        );
+        this.setState({ color: nextColor }, this.peekAtCallback('setFavoriteColor'));
       },
 
       getInitialState: function() {
@@ -47,18 +44,12 @@ describe('ReactCompositeComponent-state', function() {
         this.setState(function(state) {
           this.peekAtState('before-setState-sunrise', state);
         });
-        this.setState(
-          { color: 'sunrise' },
-          this.peekAtCallback('setState-sunrise')
-        );
+        this.setState({ color: 'sunrise' }, this.peekAtCallback('setState-sunrise'));
         this.setState(function(state) {
           this.peekAtState('after-setState-sunrise', state);
         });
         this.peekAtState('componentWillMount-after-sunrise');
-        this.setState(
-          { color: 'orange' },
-          this.peekAtCallback('setState-orange')
-        );
+        this.setState({ color: 'orange' }, this.peekAtCallback('setState-orange'));
         this.setState(function(state) {
           this.peekAtState('after-setState-orange', state);
         });
@@ -67,10 +58,7 @@ describe('ReactCompositeComponent-state', function() {
 
       componentDidMount: function() {
         this.peekAtState('componentDidMount-start');
-        this.setState(
-          { color: 'yellow' },
-          this.peekAtCallback('setState-yellow')
-        );
+        this.setState({ color: 'yellow' }, this.peekAtCallback('setState-yellow'));
         this.peekAtState('componentDidMount-end');
       },
 

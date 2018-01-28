@@ -6,8 +6,9 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npm install",
-    "test": "karma start karma.sauce.conf.js",
-    "local": "npm install && karma start karma.base.conf.js"
+    "test": "karma start karma.sauce.conf.js --single-run",
+    "local": "karma start karma.base.conf.js --single-run",
+    "debug": "karma start karma.base.conf.js --no-single-run"
   },
   "keywords": [],
   "author": "",
@@ -19,19 +20,21 @@
     "babel-polyfill": "^6.26.0",
     "es5-shim": "^4.5.10",
     "es6-shim": "^0.35.3",
-    "jasmine-core": "^2.8.0",
+    "jasmine-core": "^2.9.1",
     "karma": "^2.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-detect-browsers": "^2.2.6",
+    "karma-edge-launcher": "^0.4.2",
     "karma-failed-reporter": "0.0.3",
     "karma-firefox-launcher": "^1.1.0",
+    "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^1.1.1",
     "karma-jasmine-matchers": "^3.7.0",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sauce-launcher": "^1.2.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.9",
-    "ts-loader": "^3.2.0",
+    "ts-loader": "^3.3.1",
     "webpack": "^3.10.0"
   }
 }

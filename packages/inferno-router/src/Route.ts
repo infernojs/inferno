@@ -45,26 +45,18 @@ class Route extends Component<IRouteProps, any> {
     };
   }
 
-  public computeMatch(
-    { computedMatch, location, path, strict, exact, sensitive },
-    router
-  ) {
+  public computeMatch({ computedMatch, location, path, strict, exact, sensitive }, router) {
     if (computedMatch) {
       // <Switch> already computed the match for us
       return computedMatch;
     }
 
-    invariant(
-      router,
-      'You should not use <Route> or withRouter() outside a <Router>'
-    );
+    invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
 
     const { route } = router;
     const pathname = (location || route.location).pathname;
 
-    return path
-      ? matchPath(pathname, { path, strict, exact, sensitive })
-      : route.match;
+    return path ? matchPath(pathname, { path, strict, exact, sensitive }) : route.match;
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
@@ -93,9 +85,7 @@ class Route extends Component<IRouteProps, any> {
     const props = { match, location, history, staticContext };
 
     if (component) {
-      return match
-        ? createComponentVNode(VNodeFlags.ComponentUnknown, component, props)
-        : null;
+      return match ? createComponentVNode(VNodeFlags.ComponentUnknown, component, props) : null;
     }
 
     if (render) {
@@ -122,20 +112,12 @@ if (process.env.NODE_ENV !== 'production') {
     );
 
     warning(
-      !(
-        this.props.component &&
-        this.props.children &&
-        !isEmptyChildren(this.props.children)
-      ),
+      !(this.props.component && this.props.children && !isEmptyChildren(this.props.children)),
       'You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored'
     );
 
     warning(
-      !(
-        this.props.render &&
-        this.props.children &&
-        !isEmptyChildren(this.props.children)
-      ),
+      !(this.props.render && this.props.children && !isEmptyChildren(this.props.children)),
       'You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored'
     );
   };

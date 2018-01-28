@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "uibench-inferno",
+  "name": "uibench-inferno-normalization",
   "version": "0.0.1",
   "description": "UI Benchmark (normalization process): Inferno",
   "author": {

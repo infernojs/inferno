@@ -69,11 +69,7 @@ export class Subscription {
   private onStateChange: () => void;
   private unsubscribe: Unsubscribe | null;
   private listeners: IListenerCollection;
-  constructor(
-    store: Store<any>,
-    parentSub: Subscription | null,
-    onStateChange: () => void
-  ) {
+  constructor(store: Store<any>, parentSub: Subscription | null, onStateChange: () => void) {
     this.store = store;
     this.parentSub = parentSub;
     this.onStateChange = onStateChange;
@@ -96,9 +92,7 @@ export class Subscription {
 
   public trySubscribe() {
     if (!this.unsubscribe) {
-      this.unsubscribe = this.parentSub
-        ? this.parentSub.addNestedSub(this.onStateChange)
-        : this.store.subscribe(this.onStateChange);
+      this.unsubscribe = this.parentSub ? this.parentSub.addNestedSub(this.onStateChange) : this.store.subscribe(this.onStateChange);
 
       this.listeners = createListenerCollection();
     }

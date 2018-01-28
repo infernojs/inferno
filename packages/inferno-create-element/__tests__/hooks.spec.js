@@ -2,7 +2,7 @@ import { render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
-import { Component } from "../../inferno/src";
+import { Component } from '../../inferno/src';
 
 describe('lifecycle hooks', () => {
   describe('Stateless component hooks', () => {
@@ -34,17 +34,15 @@ describe('lifecycle hooks', () => {
       ) => props => {
         return createElement(
           StatelessComponent,
-          Object.assign(
-            {
-              onComponentWillMount,
-              onComponentDidMount,
-              onComponentWillUnmount,
-              onComponentWillUpdate,
-              onComponentDidUpdate,
-              onComponentShouldUpdate
-            },
-            props
-          ),
+          {
+            onComponentWillMount,
+            onComponentDidMount,
+            onComponentWillUnmount,
+            onComponentWillUpdate,
+            onComponentDidUpdate,
+            onComponentShouldUpdate,
+            ...props
+          },
           null
         );
       };
@@ -55,15 +53,7 @@ describe('lifecycle hooks', () => {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, 'fn');
-      const node = template(
-        spyObj.fn,
-        null,
-        null,
-        null,
-        null,
-        null,
-        StatelessComponent
-      )({ a: 1 });
+      const node = template(spyObj.fn, null, null, null, null, null, StatelessComponent)({ a: 1 });
       render(node, container);
 
       expect(sinonSpy.callCount).toBe(1);
@@ -76,15 +66,7 @@ describe('lifecycle hooks', () => {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, 'fn');
-      const node = template(
-        null,
-        spyObj.fn,
-        null,
-        null,
-        null,
-        null,
-        StatelessComponent
-      )({ a: 1 });
+      const node = template(null, spyObj.fn, null, null, null, null, StatelessComponent)({ a: 1 });
       render(node, container);
 
       expect(sinonSpy.callCount).toBe(1);
@@ -98,15 +80,7 @@ describe('lifecycle hooks', () => {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, 'fn');
-      const node = template(
-        null,
-        null,
-        spyObj.fn,
-        null,
-        null,
-        null,
-        StatelessComponent
-      )({ a: 1 });
+      const node = template(null, null, spyObj.fn, null, null, null, StatelessComponent)({ a: 1 });
       render(node, container);
       expect(sinonSpy.callCount).toBe(0);
       // do unmount
@@ -114,9 +88,7 @@ describe('lifecycle hooks', () => {
 
       expect(sinonSpy.callCount).toBe(1);
       expect(sinonSpy.getCall(0).args.length).toBe(2);
-      expect(sinonSpy.getCall(0).args[0].outerHTML).toBe(
-        innerHTML('<div>Hello world!</div>')
-      );
+      expect(sinonSpy.getCall(0).args[0].outerHTML).toBe(innerHTML('<div>Hello world!</div>'));
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 1, children: null });
     });
 
@@ -125,15 +97,7 @@ describe('lifecycle hooks', () => {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, 'fn');
-      const t = template(
-        null,
-        null,
-        null,
-        spyObj.fn,
-        null,
-        null,
-        StatelessComponent
-      );
+      const t = template(null, null, null, spyObj.fn, null, null, StatelessComponent);
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -152,15 +116,7 @@ describe('lifecycle hooks', () => {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, 'fn');
-      const t = template(
-        null,
-        null,
-        null,
-        null,
-        spyObj.fn,
-        null,
-        StatelessComponent
-      );
+      const t = template(null, null, null, null, spyObj.fn, null, StatelessComponent);
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -188,15 +144,7 @@ describe('lifecycle hooks', () => {
         renderCount++;
         return null;
       };
-      const t = template(
-        null,
-        null,
-        null,
-        null,
-        null,
-        spyObj.fn,
-        StatelessComponent
-      );
+      const t = template(null, null, null, null, null, spyObj.fn, StatelessComponent);
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -226,15 +174,7 @@ describe('lifecycle hooks', () => {
         renderCount++;
         return null;
       };
-      const t = template(
-        null,
-        null,
-        null,
-        null,
-        null,
-        spyObj.fn,
-        StatelessComponent
-      );
+      const t = template(null, null, null, null, null, spyObj.fn, StatelessComponent);
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -251,7 +191,7 @@ describe('lifecycle hooks', () => {
     });
   });
 
-  describe('Class Component hooks', function () {
+  describe('Class Component hooks', function() {
     it('Should trigger ref callback when component is mounting and unmounting', () => {
       const container = document.createElement('div');
       class FooBar extends Component {
@@ -263,10 +203,7 @@ describe('lifecycle hooks', () => {
         fn: () => {}
       };
       const sinonSpy = sinon.spy(spyObj, 'fn');
-      const node = createElement(
-        FooBar,
-        {ref: spyObj.fn},
-      );
+      const node = createElement(FooBar, { ref: spyObj.fn });
 
       render(node, container);
 

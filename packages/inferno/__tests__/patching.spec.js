@@ -17,79 +17,28 @@ describe('patching routine', () => {
   });
 
   it('Should do nothing if lastVNode strictly equals nextVnode', () => {
-    const yar = createVNode(
-      VNodeFlags.HtmlElement,
-      'div',
-      null,
-      createTextVNode('123'),
-      ChildFlags.HasVNodeChildren,
-      null,
-      null,
-      null
-    );
-    const bar = createVNode(
-      VNodeFlags.HtmlElement,
-      'div',
-      null,
-      createTextVNode('123'),
-      ChildFlags.HasVNodeChildren,
-      null,
-      null,
-      null
-    );
-    let foo = createVNode(
-      VNodeFlags.HtmlElement,
-      'div',
-      null,
-      [bar, yar],
-      ChildFlags.HasNonKeyedChildren,
-      null,
-      null,
-      null
-    );
+    const yar = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('123'), ChildFlags.HasVNodeChildren, null, null, null);
+    const bar = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('123'), ChildFlags.HasVNodeChildren, null, null, null);
+    let foo = createVNode(VNodeFlags.HtmlElement, 'div', null, [bar, yar], ChildFlags.HasNonKeyedChildren, null, null, null);
 
     render(foo, container);
-    expect(container.innerHTML).toEqual(
-      '<div><div>123</div><div>123</div></div>'
-    );
+    expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
 
-    foo = createVNode(
-      VNodeFlags.HtmlElement,
-      'div',
-      null,
-      [bar, yar],
-      ChildFlags.HasNonKeyedChildren,
-      null,
-      null,
-      null
-    );
+    foo = createVNode(VNodeFlags.HtmlElement, 'div', null, [bar, yar], ChildFlags.HasNonKeyedChildren, null, null, null);
 
     render(foo, container);
-    expect(container.innerHTML).toEqual(
-      '<div><div>123</div><div>123</div></div>'
-    );
+    expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
   });
 
   it('Should mount nextNode if lastNode crashed', () => {
-    const validNode = createVNode(
-      VNodeFlags.HtmlElement,
-      'span',
-      null,
-      createTextVNode('a'),
-      ChildFlags.HasVNodeChildren,
-      null,
-      null,
-      null
-    );
+    const validNode = createVNode(VNodeFlags.HtmlElement, 'span', null, createTextVNode('a'), ChildFlags.HasVNodeChildren, null, null, null);
     const invalidNode = createVNode(0, 'span');
 
     render(validNode, container);
     try {
       render(invalidNode, container);
     } catch (e) {
-      expect(
-        e.message.indexOf('Inferno Error: mount() received an object')
-      ).not.toEqual(-1);
+      expect(e.message.indexOf('Inferno Error: mount() received an object')).not.toEqual(-1);
     }
     expect(container.innerHTML).toEqual('<span>a</span>');
 
@@ -110,26 +59,8 @@ describe('patching routine', () => {
     const childelem = container.firstElementChild.firstElementChild;
     const props = { dangerouslySetInnerHTML: { __html: '<span>child</span>' } };
 
-    const bar = createVNode(
-      VNodeFlags.HtmlElement,
-      'span',
-      null,
-      null,
-      ChildFlags.HasInvalidChildren,
-      props,
-      null,
-      null
-    );
-    const foo = createVNode(
-      VNodeFlags.HtmlElement,
-      'span',
-      null,
-      [bar],
-      ChildFlags.HasNonKeyedChildren,
-      null,
-      null,
-      null
-    );
+    const bar = createVNode(VNodeFlags.HtmlElement, 'span', null, null, ChildFlags.HasInvalidChildren, props, null, null);
+    const foo = createVNode(VNodeFlags.HtmlElement, 'span', null, [bar], ChildFlags.HasNonKeyedChildren, null, null, null);
 
     render(foo, container);
 
@@ -142,16 +73,7 @@ describe('patching routine', () => {
     const spy1 = sinon.spy(spyObj, 'fn');
     const spy2 = sinon.spy(spyObj2, 'fn');
 
-    const div = createVNode(
-      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
-      'div',
-      null,
-      createTextVNode('1'),
-      ChildFlags.HasVNodeChildren,
-      null,
-      null,
-      spy1
-    );
+    const div = createVNode(VNodeFlags.HtmlElement | VNodeFlags.ReCreate, 'div', null, createTextVNode('1'), ChildFlags.HasVNodeChildren, null, null, spy1);
 
     render(div, container);
 
@@ -162,16 +84,7 @@ describe('patching routine', () => {
     expect(spy1.getCall(0).args.length).toBe(1);
     expect(spy1.getCall(0).args[0]).toEqual(firstDiv);
 
-    const div2 = createVNode(
-      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
-      'div',
-      null,
-      createTextVNode('1'),
-      ChildFlags.HasVNodeChildren,
-      null,
-      null,
-      spy2
-    );
+    const div2 = createVNode(VNodeFlags.HtmlElement | VNodeFlags.ReCreate, 'div', null, createTextVNode('1'), ChildFlags.HasVNodeChildren, null, null, spy2);
 
     render(div2, container);
 

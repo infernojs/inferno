@@ -14,5 +14,5 @@ module.exports = alias({
   'inferno-router': resolve(ROOT, 'packages/inferno-router/dist/index.mjs'),
   'inferno-server': resolve(ROOT, 'packages/inferno-server/dist/index.mjs'),
   'inferno-shared': resolve(ROOT, 'packages/inferno-shared/dist/index.mjs'),
-  'inferno-clone-vnode': resolve(ROOT, 'packages/inferno-clone-vnode/dist/index.mjs'),
+  'inferno-clone-vnode': resolve(ROOT, 'packages/inferno-clone-vnode/dist/index.mjs')
 });

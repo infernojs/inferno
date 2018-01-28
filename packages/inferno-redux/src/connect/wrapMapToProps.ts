@@ -23,10 +23,7 @@ export const wrapMapToPropsConstant = getConstant => {
 // A length of zero is assumed to mean mapToProps is getting args via arguments or ...args and
 // therefore not reporting its length accurately..
 export const getDependsOnOwnProps = mapToProps =>
-  mapToProps.dependsOnOwnProps !== null &&
-  mapToProps.dependsOnOwnProps !== undefined
-    ? !!mapToProps.dependsOnOwnProps
-    : mapToProps.length !== 1;
+  mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? !!mapToProps.dependsOnOwnProps : mapToProps.length !== 1;
 
 // Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,
 // this function wraps mapToProps in a proxy function which does several things:
@@ -43,9 +40,7 @@ export const getDependsOnOwnProps = mapToProps =>
 export const wrapMapToPropsFunc = (mapToProps, methodName) => {
   return (dispatch, { displayName }) => {
     const proxy: any = (stateOrDispatch, ownProps) =>
-      proxy.dependsOnOwnProps
-        ? proxy.mapToProps(stateOrDispatch, ownProps)
-        : proxy.mapToProps(stateOrDispatch);
+      proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch);
 
     proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps);
 

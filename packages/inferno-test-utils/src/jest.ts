@@ -12,8 +12,15 @@ import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from './utils';
 // https://github.com/facebook/react/blob/v15.4.2/src/renderers/testing/ReactTestRenderer.js#L98
 
 function createSnapshotObject(object: object) {
+  let value;
+  if (typeof Symbol === 'undefined') {
+    value = 'react.test.json';
+  } else {
+    value = Symbol.for('react.test.json');
+  }
+
   Object.defineProperty(object, '$$typeof', {
-    value: Symbol.for('react.test.json')
+    value
   });
 
   return object;

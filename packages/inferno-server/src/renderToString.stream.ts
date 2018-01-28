@@ -2,16 +2,7 @@
  * @module Inferno-Server
  */ /** TypeDoc Comment */
 
-import {
-  combineFrom,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isNumber,
-  isString,
-  isTrue
-} from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
@@ -51,11 +42,7 @@ export class RenderStream extends Readable {
     const flags = vNode.flags;
 
     if ((flags & VNodeFlags.Component) > 0) {
-      return this.renderComponent(
-        vNode,
-        context,
-        flags & VNodeFlags.ComponentClass
-      );
+      return this.renderComponent(vNode, context, flags & VNodeFlags.ComponentClass);
     }
     if ((flags & VNodeFlags.Element) > 0) {
       return this.renderElement(vNode, context);
@@ -97,9 +84,7 @@ export class RenderStream extends Readable {
     instance.context = context;
     instance.$BR = true;
 
-    return Promise.resolve(
-      instance.componentWillMount && instance.componentWillMount()
-    ).then(() => {
+    return Promise.resolve(instance.componentWillMount && instance.componentWillMount()).then(() => {
       if (instance.$PSS) {
         const state = instance.state;
         const pending = instance.$PS;
@@ -117,11 +102,7 @@ export class RenderStream extends Readable {
 
       instance.$BR = false;
 
-      const renderOutput = instance.render(
-        instance.props,
-        instance.state,
-        instance.context
-      );
+      const renderOutput = instance.render(instance.props, instance.state, instance.context);
       instance.$PSS = false;
 
       if (isInvalid(renderOutput)) {
@@ -138,11 +119,7 @@ export class RenderStream extends Readable {
     });
   }
 
-  public renderChildren(
-    children: VNode[] | VNode,
-    context: any,
-    childFlags: ChildFlags
-  ) {
+  public renderChildren(children: VNode[] | VNode, context: any, childFlags: ChildFlags) {
     if (childFlags & ChildFlags.HasVNodeChildren) {
       return this.renderNode(children, context, false);
     }
@@ -154,19 +131,14 @@ export class RenderStream extends Readable {
               this.push('<!---->');
             }
           }
-          return Promise.resolve(this.renderNode(child, context, false)).then(
-            () => !!(child.flags & VNodeFlags.Text)
-          );
+          return Promise.resolve(this.renderNode(child, context, false)).then(() => !!(child.flags & VNodeFlags.Text));
         });
       }, Promise.resolve(false));
     }
   }
 
   public renderText(vNode, insertComment) {
-    this.push(
-      (insertComment ? '<!---->' : '') +
-        (vNode.children === '' ? ' ' : escapeText(vNode.children))
-    );
+    this.push((insertComment ? '<!---->' : '') + (vNode.children === '' ? ' ' : escapeText(vNode.children)));
   }
 
   public renderElement(vNode, context) {
@@ -196,9 +168,7 @@ export class RenderStream extends Readable {
         } else if (prop === 'defaultValue') {
           // Use default values if normal values are not present
           if (!props.value) {
-            renderedString += ` value="${
-              isString(value) ? escapeText(value) : value
-            }"`;
+            renderedString += ` value="${isString(value) ? escapeText(value) : value}"`;
           }
         } else if (prop === 'defaultChecked') {
           // Use default values if normal values are not present
@@ -235,9 +205,7 @@ export class RenderStream extends Readable {
       this.push(`</${type}>`);
       return;
     }
-    return Promise.resolve(
-      this.renderChildren(vNode.children, context, childFlags)
-    ).then(() => {
+    return Promise.resolve(this.renderChildren(vNode.children, context, childFlags)).then(() => {
       this.push(`</${type}>`);
     });
   }

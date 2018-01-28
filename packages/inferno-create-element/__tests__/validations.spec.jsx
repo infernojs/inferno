@@ -24,9 +24,7 @@ describe('Development warnings', () => {
         </div>
       );
 
-      expect(() => render(errorNode, container)).toThrowError(
-        'Inferno Error: Encountered two children with same key: {1}. Location: <div> :: <div>'
-      );
+      expect(() => render(errorNode, container)).toThrowError('Inferno Error: Encountered two children with same key: {1}. Location: <div> :: <div>');
     });
 
     it('Should throw error if two duplicate TEXTs is found with same key', () => {
@@ -37,9 +35,7 @@ describe('Development warnings', () => {
         </div>
       );
 
-      expect(() => render(errorNode, container)).toThrowError(
-        'Inferno Error: Encountered two children with same key: {foo}. Location: Text(foo2) :: <div>'
-      );
+      expect(() => render(errorNode, container)).toThrowError('Inferno Error: Encountered two children with same key: {foo}. Location: Text(foo2) :: <div>');
     });
 
     it('Should throw error if two duplicates is found (Component)', () => {
@@ -52,9 +48,7 @@ describe('Development warnings', () => {
         </div>
       );
 
-      expect(() => render(errorNode, container)).toThrowError(
-        'Inferno Error: Encountered two children with same key: {1}. Location: <Tester /> :: <div>'
-      );
+      expect(() => render(errorNode, container)).toThrowError('Inferno Error: Encountered two children with same key: {1}. Location: <Tester /> :: <div>');
     });
 
     it('Should print nice stack of invalid key location', () => {
@@ -82,33 +76,23 @@ describe('Development warnings', () => {
 
   describe('Invalid Element children', () => {
     it('Input cannot have children', () => {
-      expect(() => render(<input>foobar</input>, container)).toThrowError(
-        'Inferno Error: input elements can\'t have children.'
-      );
+      expect(() => render(<input>foobar</input>, container)).toThrowError("Inferno Error: input elements can't have children.");
     });
 
     it('TextArea elements cannot have children', () => {
-      expect(() => render(<textarea>foobar</textarea>, container)).toThrowError(
-        'Inferno Error: textarea elements can\'t have children.'
-      );
+      expect(() => render(<textarea>foobar</textarea>, container)).toThrowError("Inferno Error: textarea elements can't have children.");
     });
 
     it('Media elements cannot have children', () => {
-      expect(() => render(<media>foobar</media>, container)).toThrowError(
-        'Inferno Error: media elements can\'t have children.'
-      );
+      expect(() => render(<media>foobar</media>, container)).toThrowError("Inferno Error: media elements can't have children.");
     });
 
     it('< BR > elements cannot have children', () => {
-      expect(() => render(<br>foobar</br>, container)).toThrowError(
-        'Inferno Error: br elements can\'t have children.'
-      );
+      expect(() => render(<br>foobar</br>, container)).toThrowError("Inferno Error: br elements can't have children.");
     });
 
     it('< img > elements cannot have children', () => {
-      expect(() => render(<img>foobar</img>, container)).toThrowError(
-        'Inferno Error: img elements can\'t have children.'
-      );
+      expect(() => render(<img>foobar</img>, container)).toThrowError("Inferno Error: img elements can't have children.");
     });
   });
 });

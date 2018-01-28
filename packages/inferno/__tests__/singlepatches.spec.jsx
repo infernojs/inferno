@@ -206,9 +206,7 @@ describe('All single patch variations', () => {
       expect(unmountSpy.callCount).toBe(1);
       expect(spy.callCount).toBe(1);
       expect(updateSpy.callCount).toBe(0);
-      expect(container.innerHTML).toEqual(
-        '<div><div class="component2">Component 2 <br><span id="clear">clear app</span></div></div>'
-      );
+      expect(container.innerHTML).toEqual('<div><div class="component2">Component 2 <br><span id="clear">clear app</span></div></div>');
       assert.callOrder(templateRefSpy, spy); // Unmount should happen before mount
 
       rTemplate(<span ref={spy}>2</span>);
@@ -240,16 +238,9 @@ describe('All single patch variations', () => {
   describe('children', () => {
     describe('HasKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(
-          <div $HasKeyedChildren>
-            {[<div key="1">1</div>, <div key="2">2</div>]}
-          </div>,
-          container
-        );
+        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
 
-        expect(container.innerHTML).toEqual(
-          '<div><div>1</div><div>2</div></div>'
-        );
+        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
 
         render(
           <div>
@@ -261,29 +252,17 @@ describe('All single patch variations', () => {
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(
-          <div $HasKeyedChildren>
-            {[<div key="1">1</div>, <div key="2">2</div>]}
-          </div>,
-          container
-        );
+        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
 
-        expect(container.innerHTML).toEqual(
-          '<div><div>1</div><div>2</div></div>'
-        );
+        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
       });
     });
 
     describe('hasNonKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(
-          <div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>,
-          container
-        );
+        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
 
-        expect(container.innerHTML).toEqual(
-          '<div><div>1</div><div>2</div></div>'
-        );
+        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
 
         render(
           <div>
@@ -295,14 +274,9 @@ describe('All single patch variations', () => {
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(
-          <div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>,
-          container
-        );
+        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
 
-        expect(container.innerHTML).toEqual(
-          '<div><div>1</div><div>2</div></div>'
-        );
+        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
       });
     });
   });

@@ -1,15 +1,7 @@
 import { Component, render } from 'inferno';
 import * as mobx from 'mobx';
-import {
-  inject,
-  observer,
-  Observer,
-  offError,
-  trackComponents,
-  useStaticRendering
-} from 'inferno-mobx';
+import { inject, observer, Observer, offError, trackComponents, useStaticRendering } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
-import { renderToStaticMarkup } from 'inferno-server';
 
 const store = mobx.observable({
   todos: [
@@ -95,9 +87,13 @@ describe('Mobx Observer', () => {
 
       setTimeout(() => {
         expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
-        expect(
-          Array.from(container.querySelectorAll('li')).map(e => e.textContent)
-        ).toEqual(['|aa', '|b']);
+        const expectedOutput = [];
+        const nodes = container.querySelectorAll('li');
+
+        for (let i = 0; i < nodes.length; i++) {
+          expectedOutput.push(nodes[i].textContent);
+        }
+        expect(expectedOutput).toEqual(['|aa', '|b']);
 
         expect(todoListRenderings).toBe(2); //'should have rendered list twice');
         expect(todoListWillReactCount).toBe(1); //, 'should have reacted')
@@ -163,17 +159,20 @@ describe('Mobx Observer', () => {
   });
 
   it('componentWillMount from mixin is run first', done => {
-    const Comp = observer(
-      createClass({
-        componentWillMount: function() {
-          // ugly check, but proofs that observer.willmount has run
-          expect(this.render.name).toBe('initialRender');
-        },
-        render() {
-          return null;
-        }
-      })
-    );
+    let origRenderMethod;
+    const clss = createClass({
+      componentWillMount: function() {
+        // ugly check, but proofs that observer.willmount has run
+        // We cannot use function.prototype.name here like in react-redux tests because it is not supported in Edge/IE
+        expect(this.render).not.toBe(origRenderMethod);
+      },
+      render() {
+        return null;
+      }
+    });
+    origRenderMethod = clss.prototype.render;
+
+    const Comp = observer(clss);
     render(<Comp />, container);
     done();
   });
@@ -203,34 +202,6 @@ describe('Mobx Observer', () => {
       expect(renderCount).toBe(1);
 
       expect(container.querySelector('div').textContent).toBe('hi');
-      expect(renderCount).toBe(1);
-
-      expect(getDNode(data, 'z').observers.length).toBe(0);
-
-      useStaticRendering(false);
-      done();
-    }, 100);
-  });
-
-  it('does not views alive when using static + string rendering', function(done) {
-    useStaticRendering(true);
-
-    let renderCount = 0;
-    const data = mobx.observable({
-      z: 'hi'
-    });
-
-    const TestComponent = observer(function testComponent() {
-      renderCount++;
-      return <div>{data.z}</div>;
-    });
-
-    const output = renderToStaticMarkup(<TestComponent />);
-
-    data.z = 'hello';
-
-    setTimeout(() => {
-      expect(output).toBe('<div>hi</div>');
       expect(renderCount).toBe(1);
 
       expect(getDNode(data, 'z').observers.length).toBe(0);
@@ -271,9 +242,7 @@ describe('Mobx Observer', () => {
 
     /** table stateles component */
     const Table = observer(function table() {
-      return (
-        <div>{data.items.map(item => <Row key={item.name} item={item} />)}</div>
-      );
+      return <div>{data.items.map(item => <Row key={item.name} item={item} />)}</div>;
     });
 
     render(<Table />, container);
@@ -379,31 +348,31 @@ describe('Mobx Observer', () => {
   });
 
   // Test on skip: since all reactions are now run in batched updates, the original issues can no longer be reproduced
-  it.skip('should stop updating if error was thrown in render (#134)', function(done) {
-    const data = mobx.observable(0);
-    let renderingsCount = 0;
-
-    const Comp = observer(function() {
-      renderingsCount += 1;
-      if (data.get() === 2) {
-        throw new Error('Hello');
-      }
-      return <div />;
-    });
-
-    render(<Comp />, container, () => {
-      expect(data.observers.length).toBe(1);
-      data.set(1);
-      t.throws(() => data.set(2), 'Hello');
-      expect(data.observers.length).toBe(0);
-      data.set(3);
-      data.set(4);
-      data.set(5);
-
-      expect(renderingsCount).toBe(3);
-      done();
-    });
-  });
+  // it.skip('should stop updating if error was thrown in render (#134)', function(done) {
+  //   const data = mobx.observable(0);
+  //   let renderingsCount = 0;
+  //
+  //   const Comp = observer(function() {
+  //     renderingsCount += 1;
+  //     if (data.get() === 2) {
+  //       throw new Error('Hello');
+  //     }
+  //     return <div />;
+  //   });
+  //
+  //   render(<Comp />, container, () => {
+  //     expect(data.observers.length).toBe(1);
+  //     data.set(1);
+  //     t.throws(() => data.set(2), 'Hello');
+  //     expect(data.observers.length).toBe(0);
+  //     data.set(3);
+  //     data.set(4);
+  //     data.set(5);
+  //
+  //     expect(renderingsCount).toBe(3);
+  //     done();
+  //   });
+  // });
 
   it('should render component even if setState called with exactly the same props', function(done) {
     let renderCount = 0;

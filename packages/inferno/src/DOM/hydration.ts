@@ -2,52 +2,22 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import {
-  isFunction,
-  isNull,
-  isNullOrUndef,
-  isString,
-  throwError,
-  warning
-} from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/implementation';
-import {
-  mount,
-  mountClassComponentCallbacks,
-  mountElement,
-  mountFunctionalComponentCallbacks,
-  mountRef,
-  mountText
-} from './mounting';
+import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountRef, mountText } from './mounting';
 import { EMPTY_OBJ, replaceChild } from './utils/common';
-import {
-  createClassComponentInstance,
-  handleComponentInput
-} from './utils/componentutil';
+import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { isSamePropsInnerHTML } from './utils/innerhtml';
 import { mountProps } from './props';
 
-function hydrateComponent(
-  vNode: VNode,
-  dom: Element,
-  lifecycle: Function[],
-  context,
-  isSVG: boolean,
-  isClass: boolean
-) {
+function hydrateComponent(vNode: VNode, dom: Element, lifecycle: Function[], context, isSVG: boolean, isClass: boolean) {
   const type = vNode.type as Function;
   const ref = vNode.ref;
   const props = vNode.props || EMPTY_OBJ;
 
   if (isClass) {
-    const instance = createClassComponentInstance(
-      vNode,
-      type,
-      props,
-      context,
-      lifecycle
-    );
+    const instance = createClassComponentInstance(vNode, type, props, context, lifecycle);
     const input = instance.$LI;
 
     hydrate(input, dom, lifecycle, instance.$CX, isSVG);
@@ -63,13 +33,7 @@ function hydrateComponent(
   }
 }
 
-function hydrateElement(
-  vNode: VNode,
-  dom: Element,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+function hydrateElement(vNode: VNode, dom: Element, lifecycle: Function[], context: Object, isSVG: boolean) {
   const children = vNode.children;
   const props = vNode.props;
   const className = vNode.className;
@@ -79,9 +43,7 @@ function hydrateElement(
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
   if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
     if (process.env.NODE_ENV !== 'production') {
-      warning(
-        "Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty"
-      );
+      warning("Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty");
     }
     const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
@@ -119,13 +81,7 @@ function hydrateElement(
         } else {
           const nextSibling = childNode.nextSibling;
 
-          hydrate(
-            children as VNode,
-            childNode as Element,
-            lifecycle,
-            context,
-            isSVG
-          );
+          hydrate(children as VNode, childNode as Element, lifecycle, context, isSVG);
           childNode = nextSibling;
         }
       } else if (childFlags & ChildFlags.MultipleChildren) {
@@ -136,13 +92,7 @@ function hydrateElement(
             mount(child as VNode, dom, lifecycle, context, isSVG);
           } else {
             const nextSibling = childNode.nextSibling;
-            hydrate(
-              child as VNode,
-              childNode as Element,
-              lifecycle,
-              context,
-              isSVG
-            );
+            hydrate(child as VNode, childNode as Element, lifecycle, context, isSVG);
             childNode = nextSibling;
           }
         }
@@ -156,6 +106,10 @@ function hydrateElement(
       }
     } else if (!isNull(dom.firstChild) && !isSamePropsInnerHTML(dom, props)) {
       dom.textContent = ''; // dom has content, but VNode has no children remove everything from DOM
+      if (flags & VNodeFlags.FormElement) {
+        // If element is form element, we need to clear defaultValue also
+        (dom as any).defaultValue = '';
+      }
     }
 
     if (!isNull(props)) {
@@ -175,9 +129,7 @@ function hydrateElement(
     } else {
       if (process.env.NODE_ENV !== 'production') {
         if (isString(ref)) {
-          throwError(
-            'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
-          );
+          throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
       }
     }
@@ -200,24 +152,11 @@ function hydrateText(vNode: VNode, dom: Element) {
   }
 }
 
-function hydrate(
-  vNode: VNode,
-  dom: Element,
-  lifecycle: Function[],
-  context: Object,
-  isSVG: boolean
-) {
+function hydrate(vNode: VNode, dom: Element, lifecycle: Function[], context: Object, isSVG: boolean) {
   const flags = vNode.flags;
 
   if (flags & VNodeFlags.Component) {
-    hydrateComponent(
-      vNode,
-      dom,
-      lifecycle,
-      context,
-      isSVG,
-      (flags & VNodeFlags.ComponentClass) > 0
-    );
+    hydrateComponent(vNode, dom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
   } else if (flags & VNodeFlags.Element) {
     hydrateElement(vNode, dom, lifecycle, context, isSVG);
   } else if (flags & VNodeFlags.Text) {
@@ -226,9 +165,7 @@ function hydrate(
     vNode.dom = dom;
   } else {
     if (process.env.NODE_ENV !== 'production') {
-      throwError(
-        `hydrate() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
-      );
+      throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
     }
     throwError();
   }

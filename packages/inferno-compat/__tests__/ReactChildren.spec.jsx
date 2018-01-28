@@ -98,11 +98,7 @@ describe('ReactChildren', function() {
     ReactChildren.forEach(instance.children, callback, scopeTester);
     expect(lastContext).toBe(scopeTester);
 
-    var mappedChildren = ReactChildren.map(
-      instance.children,
-      callback,
-      scopeTester
-    );
+    var mappedChildren = ReactChildren.map(instance.children, callback, scopeTester);
 
     expect(ReactChildren.count(mappedChildren)).toBe(1);
     expect(mappedChildren[0]).toBe(scopeTester);
@@ -383,9 +379,7 @@ describe('ReactChildren', function() {
 
     expect(ReactChildren.toArray(<div />).length).toBe(1);
     expect(ReactChildren.toArray([<div />]).length).toBe(1);
-    expect(ReactChildren.toArray(<div />)[0].key).toBe(
-      ReactChildren.toArray([<div />])[0].key
-    );
+    expect(ReactChildren.toArray(<div />)[0].key).toBe(ReactChildren.toArray([<div />])[0].key);
 
     var flattened = ReactChildren.toArray([
       [<div key="apple" />, <div key="banana" />, <div key="camel" />],

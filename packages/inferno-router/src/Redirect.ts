@@ -12,10 +12,7 @@ export class Redirect extends Component<any, any> {
   }
 
   public componentWillMount() {
-    invariant(
-      this.context.router,
-      'You should not use <Redirect> outside a <Router>'
-    );
+    invariant(this.context.router, 'You should not use <Redirect> outside a <Router>');
 
     if (this.isStatic()) {
       this.perform();
@@ -34,11 +31,7 @@ export class Redirect extends Component<any, any> {
 
     if (locationsAreEqual(prevTo, nextTo)) {
       // tslint:disable-next-line:no-console
-      console.error(
-        `You tried to redirect to the same route you're currently on: "${
-          nextTo.pathname
-        }${nextTo.search}"`
-      );
+      console.error(`You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`);
       return;
     }
 

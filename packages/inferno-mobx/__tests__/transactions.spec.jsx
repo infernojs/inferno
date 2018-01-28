@@ -33,15 +33,11 @@ describe('Mobx Transacations', () => {
     }
     let asText = '';
     let willReactCount = 0;
-    mobx.autorun(
-      () => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(':'))
-    );
+    mobx.autorun(() => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(':')));
     const Test = observer(
       createClass({
         componentWillReact: () => willReactCount++,
-        render: () => (
-          <div id="x">{[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}</div>
-        )
+        render: () => <div id="x">{[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}</div>
       })
     );
     // In 3 seconds, flip a and b. This will change c.

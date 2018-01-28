@@ -9,37 +9,24 @@ export function isCheckedType(type) {
   return type === 'checkbox' || type === 'radio';
 }
 
-const onTextInputChange = createWrappedFunction('onInput', applyValue);
+const onTextInputChange = createWrappedFunction('onInput', applyValueInput);
 
-const wrappedOnChange = createWrappedFunction('onChange', applyValue);
+const wrappedOnChange = createWrappedFunction(['onClick', 'onChange'], applyValueInput);
 
-const onCheckboxChange = createWrappedFunction('onClick');
+/* tslint:disable-next-line:no-empty */
+function emptywrapper() {}
+(emptywrapper as any).wrapped = true;
 
-export function processInput(
-  vNode,
-  dom,
-  nextPropsOrEmpty,
-  mounting: boolean,
-  isControlled: boolean
-): void {
-  applyValue(nextPropsOrEmpty, dom);
-  if (isControlled) {
-    dom.vNode = vNode;
-
-    if (mounting) {
-      if (isCheckedType(nextPropsOrEmpty.type)) {
-        dom.onchange = wrappedOnChange;
-      } else {
-        dom.oninput = onTextInputChange;
-      }
-      if (nextPropsOrEmpty.onClick) {
-        dom.onclick = onCheckboxChange;
-      }
-    }
+export function inputEvents(dom, nextPropsOrEmpty) {
+  if (isCheckedType(nextPropsOrEmpty.type)) {
+    dom.onchange = wrappedOnChange;
+    dom.onclick = emptywrapper;
+  } else {
+    dom.oninput = onTextInputChange;
   }
 }
 
-export function applyValue(nextPropsOrEmpty, dom) {
+export function applyValueInput(nextPropsOrEmpty, dom) {
   const type = nextPropsOrEmpty.type;
   const value = nextPropsOrEmpty.value;
   const checked = nextPropsOrEmpty.checked;

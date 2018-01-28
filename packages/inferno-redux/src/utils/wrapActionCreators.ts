@@ -2,8 +2,10 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import { ActionCreatorsMapObject, bindActionCreators, Dispatch } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
-export const wrapActionCreators = <A extends ActionCreatorsMapObject>(
-  actionCreators: A
-) => (dispatch: Dispatch<any>) => bindActionCreators(actionCreators, dispatch);
+export function wrapActionCreators(actionCreators) {
+  return function(dispatch: Dispatch<any>) {
+    return bindActionCreators(actionCreators, dispatch);
+  };
+}

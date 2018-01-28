@@ -28,10 +28,7 @@ import { Component } from './core/component';
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
   const testFunc = function testFn() {};
-  if (
-    ((testFunc as Function).name || testFunc.toString()).indexOf('testFn') ===
-    -1
-  ) {
+  if (((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
     warning(
       "It looks like you're using a minified copy of the development build " +
         'of Inferno. When deploying Inferno apps to production, make sure to use ' +

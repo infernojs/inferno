@@ -17,10 +17,7 @@ export interface ISwitchProps {
  */
 export class Switch extends Component<ISwitchProps, any> {
   public componentWillMount() {
-    invariant(
-      this.context.router,
-      'You should not use <Switch> outside a <Router>'
-    );
+    invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
   }
 
   public componentWillReceiveProps(nextProps) {
@@ -54,20 +51,10 @@ export class Switch extends Component<ISwitchProps, any> {
 
       if (match == null) {
         child = element;
-        match = path
-          ? matchPath(location.pathname, { path, exact, strict, sensitive })
-          : route.match;
+        match = path ? matchPath(location.pathname, { path, exact, strict, sensitive }) : route.match;
       }
     });
 
-    return match
-      ? createComponentVNode(
-          child.flags,
-          child.type,
-          combineFrom(child.props, { location, computedMatch: match }),
-          null,
-          child.ref
-        )
-      : null;
+    return match ? createComponentVNode(child.flags, child.type, combineFrom(child.props, { location, computedMatch: match }), null, child.ref) : null;
   }
 }

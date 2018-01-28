@@ -1,14 +1,27 @@
-import { Component } from 'inferno';
+import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { connect, Provider } from 'inferno-redux';
-import {
-  findRenderedVNodeWithType,
-  renderIntoDocument
-} from 'inferno-test-utils';
+import { findRenderedVNodeWithType } from 'inferno-test-utils';
 import { createStore } from 'redux';
-import { spy, spyOn } from '../test-utils';
+import sinon from 'sinon';
 
 describe('redux', () => {
+  let container;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    document.body.removeChild(container);
+  });
+
+  function renderIntoContainer(vNode) {
+    return render(vNode, container);
+  }
+
   describe('Provider', () => {
     class Child extends Component {
       render() {
@@ -19,59 +32,34 @@ describe('redux', () => {
     it('should enforce a single child', () => {
       const store = createStore(() => ({}));
 
-      expect(() =>
-        renderIntoDocument(
-          createElement(Provider, { store }, createElement('div', {}))
-        )
-      ).not.toThrow();
+      expect(() => renderIntoContainer(createElement(Provider, { store }, createElement('div', {})))).not.toThrow();
 
-      expect(() =>
-        renderIntoDocument(createElement(Provider, { store }))
-      ).toThrowError(/Only one child/);
+      expect(() => renderIntoContainer(createElement(Provider, { store }))).toThrowError(/Only one child/);
 
-      expect(() =>
-        renderIntoDocument(
-          createElement(
-            Provider,
-            { store },
-            createElement('div', {}),
-            createElement('div', {})
-          )
-        )
-      ).toThrowError(/Only one child/);
+      expect(() => renderIntoContainer(createElement(Provider, { store }, createElement('div', {}), createElement('div', {})))).toThrowError(/Only one child/);
     });
 
     it('should add the store to the child context', () => {
       const store1 = createStore(() => ({}));
       const store2 = createStore(() => ({}));
 
-      spyOn(console, 'error', spy => {
-        const tree = renderIntoDocument(
-          createElement(Provider, { store: store1 }, createElement(Child, {}))
-        );
-        expect(spy.callCount).toEqual(0);
+      const spy = spyOn(console, 'error');
 
-        const child = findRenderedVNodeWithType(tree, Child).children;
-        expect(child.context.store).toBe(store1);
-      });
+      let tree = renderIntoContainer(createElement(Provider, { store: store1 }, createElement(Child, {})));
+      expect(spy.calls.count()).toEqual(0);
 
-      spyOn(console, 'error', spy => {
-        const tree = renderIntoDocument(
-          createElement(
-            Provider,
-            { store: store1 },
-            createElement(Provider, { store: store2 }, createElement(Child, {}))
-          )
-        );
+      let child = findRenderedVNodeWithType(tree, Child).children;
+      expect(child.context.store).toBe(store1);
 
-        expect(spy.callCount).toEqual(0);
+      tree = renderIntoContainer(createElement(Provider, { store: store1 }, createElement(Provider, { store: store2 }, createElement(Child, {}))));
 
-        const child = findRenderedVNodeWithType(tree, Child).children;
-        expect(child.context.store).toBe(store2);
-      });
+      expect(spy.calls.count()).toEqual(0);
+
+      child = findRenderedVNodeWithType(tree, Child).children;
+      expect(child.context.store).toBe(store2);
     });
 
-    it('should warn once when receiving a new store in props', async () => {
+    it('should warn once when receiving a new store in props', () => {
       const store1 = createStore((state = 10) => state + 1);
       const store2 = createStore((state = 10) => state * 2);
       const store3 = createStore((state = 10) => state * state);
@@ -91,41 +79,33 @@ describe('redux', () => {
         }
       }
 
-      const tree = renderIntoDocument(<ProviderContainer />);
-      const container = findRenderedVNodeWithType(tree, ProviderContainer)
-        .children;
-      const child = findRenderedVNodeWithType(tree, Child).children;
+      const vNode = <ProviderContainer />;
+      const container = renderIntoContainer(vNode);
+      const child = findRenderedVNodeWithType(container, Child).children;
       expect(child.context.store.getState()).toEqual(11);
 
-      await spyOn(console, 'error', async spy => {
-        container.setState({ store: store2 });
-        await tree.repaint();
+      const spy = spyOn(console, 'error');
+      container.setState({ store: store2 });
+      renderIntoContainer(vNode);
 
-        expect(child.context.store.getState()).toEqual(11);
-        expect(spy.callCount).toEqual(1);
-        expect(spy.getCall(0).args[0]).toEqual(
-          '<Provider> does not support changing `store` on the fly.'
-        );
-      });
+      expect(child.context.store.getState()).toEqual(11);
+      expect(spy.calls.count()).toEqual(1);
+      expect(spy.calls.argsFor(0)).toEqual(['<Provider> does not support changing `store` on the fly.']);
 
-      await spyOn(console, 'error', async spy => {
-        container.setState({ store: store3 });
-        await tree.repaint();
+      container.setState({ store: store3 });
+      renderIntoContainer(vNode);
 
-        expect(child.context.store.getState()).toEqual(11);
-        expect(spy.callCount).toEqual(0);
-      });
+      expect(child.context.store.getState()).toEqual(11);
+      expect(spy.calls.count()).toEqual(1);
     });
 
     it('should handle subscriptions correctly when there is nested Providers', () => {
-      const reducer1 = (state = 2, action) =>
-        action.type === 'INC' ? state + 1 : state;
-      const reducer2 = (state = 5, action) =>
-        action.type === 'INC' ? state + 2 : state;
+      const reducer1 = (state = 2, action) => (action.type === 'INC' ? state + 1 : state);
+      const reducer2 = (state = 5, action) => (action.type === 'INC' ? state + 2 : state);
 
       const innerStore = createStore(reducer1);
       innerStore.__store_name__ = 'innerStore'; // for debugging
-      const innerMapStateToProps = spy(state => ({ count: state }));
+      const innerMapStateToProps = sinon.spy(state => ({ count: state }));
 
       const Inner = connect(innerMapStateToProps)(
         class Inner extends Component {
@@ -149,7 +129,7 @@ describe('redux', () => {
         }
       );
 
-      renderIntoDocument(
+      renderIntoContainer(
         <Provider store={outerStore}>
           <Outer />
         </Provider>
@@ -160,9 +140,8 @@ describe('redux', () => {
       expect(innerMapStateToProps.callCount).toEqual(2);
     });
 
-    it('should pass state consistently to mapState', async () => {
-      const stringBuilder = (prev = '', action) =>
-        action.type === 'APPEND' ? prev + action.payload : prev;
+    it('should pass state consistently to mapState', () => {
+      const stringBuilder = (prev = '', action) => (action.type === 'APPEND' ? prev + action.payload : prev);
 
       const store = createStore(stringBuilder);
 
@@ -209,29 +188,30 @@ describe('redux', () => {
         }
       );
 
-      const tree = renderIntoDocument(
+      const vNode = (
         <Provider store={store}>
           <Container />
         </Provider>
       );
+      const tree = renderIntoContainer(vNode);
 
       expect(childMapStateInvokes).toEqual(1);
 
       // The store state stays consistent when setState calls are batched
       store.dispatch({ type: 'APPEND', payload: 'c' });
-      await tree.repaint();
+      renderIntoContainer(vNode);
       expect(childMapStateInvokes).toEqual(2);
 
       // setState calls DOM handlers are batched
       const container = findRenderedVNodeWithType(tree, Container).children;
       const node = container.getWrappedInstance().button;
       node.click();
-      await tree.repaint();
+      renderIntoContainer(vNode);
       expect(childMapStateInvokes).toEqual(3);
 
       // Provider uses unstable_batchedUpdates() under the hood
       store.dispatch({ type: 'APPEND', payload: 'd' });
-      await tree.repaint();
+      renderIntoContainer(vNode);
       expect(childMapStateInvokes).toEqual(4);
     });
   });

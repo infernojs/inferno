@@ -40,11 +40,7 @@ describe('Select / select multiple (JSX)', () => {
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(true);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="1">1</option><option value="2">2</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>'));
 
     render(
       <select multiple={true} value={1}>
@@ -56,11 +52,7 @@ describe('Select / select multiple (JSX)', () => {
 
     expect(container.firstChild.children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="1">1</option><option value="2">2</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>'));
 
     render(
       <select multiple={true} value={'foo'}>
@@ -72,11 +64,7 @@ describe('Select / select multiple (JSX)', () => {
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="1">1</option><option value="2">2</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>'));
   });
 
   it('should render "select" boolean on select options #2', () => {
@@ -96,11 +84,7 @@ describe('Select / select multiple (JSX)', () => {
     );
     expect(container.firstChild.children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'));
     render(
       <select multiple={true} value={false}>
         <option value="foo">foo</option>
@@ -110,11 +94,7 @@ describe('Select / select multiple (JSX)', () => {
     );
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'));
 
     render(
       <select multiple={true} value={'bar'}>
@@ -125,11 +105,7 @@ describe('Select / select multiple (JSX)', () => {
     );
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(true);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'));
   });
 
   it('should populate the value attribute on select multiple using groups', () => {
@@ -150,75 +126,43 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[0].disabled).toEqual(false);
     expect(container.firstChild.children[1].disabled).toEqual(true);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
 
     expect(container.firstChild.children[0].children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].children[0].selected).toEqual(true);
 
     render(template([]), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(
-      false
-    );
-    expect(container.firstChild.children[1].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
 
     render(template('foo'), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
 
     expect(container.firstChild.children[0].children[0].selected).toEqual(true);
-    expect(container.firstChild.children[1].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
 
     render(template('bar'), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].children[0].selected).toEqual(true);
 
     render(template(false), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(
-      false
-    );
-    expect(container.firstChild.children[1].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
   });
 
   it('should not fail if optgroup is empty', () => {
@@ -266,61 +210,37 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[0].disabled).toEqual(false);
     expect(container.firstChild.children[1].disabled).toEqual(true);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option><option value="foo2"></option><option value="foo3"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option><option value="bar2"></option><option value="bar3"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option><option value="foo2"></option><option value="foo3"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option><option value="bar2"></option><option value="bar3"></option>');
 
     expect(container.firstChild.children[0].children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].children[1].selected).toEqual(true);
 
     render(template([]), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option><option value="foo2"></option><option value="foo3"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option><option value="bar2"></option><option value="bar3"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option><option value="foo2"></option><option value="foo3"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option><option value="bar2"></option><option value="bar3"></option>');
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(
-      false
-    );
-    expect(container.firstChild.children[1].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
 
     render(template('foo'), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
-      '<option value="foo"></option><option value="foo2"></option><option value="foo3"></option>'
-    );
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
-      '<option value="bar"></option><option value="bar2"></option><option value="bar3"></option>'
-    );
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option><option value="foo2"></option><option value="foo3"></option>');
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option><option value="bar2"></option><option value="bar3"></option>');
 
     expect(container.firstChild.children[0].children[0].selected).toEqual(true);
-    expect(container.firstChild.children[1].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
 
     render(template('bar'), container);
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].children[0].selected).toEqual(true);
 
     render(template(false), container);
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(
-      false
-    );
-    expect(container.firstChild.children[1].children[0].selected).toEqual(
-      false
-    );
+    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
   });
 
   it('should render "select" boolean on select options #3', () => {
@@ -335,9 +255,7 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[1].selected).toEqual(false);
     expect(container.innerHTML).toBe(
       // Missing selected markup
-      innerHTML(
-        '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
-      )
+      innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
     );
   });
 
@@ -352,11 +270,7 @@ describe('Select / select multiple (JSX)', () => {
 
     expect(container.firstChild.children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'));
 
     render(
       <select multiple={true} value={false}>
@@ -368,11 +282,7 @@ describe('Select / select multiple (JSX)', () => {
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'));
   });
 
   it('should assure the value attribute also set the value property for `textarea`', () => {
@@ -412,9 +322,7 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(true);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
-      )
+      innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
     );
   });
 
@@ -440,9 +348,7 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(true);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
-      )
+      innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
     );
   });
 
@@ -466,9 +372,7 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(false);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
-      )
+      innerHTML('<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
     );
   });
 
@@ -488,9 +392,7 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(true);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      innerHTML(
-        '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
-      )
+      innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
     );
   });
 

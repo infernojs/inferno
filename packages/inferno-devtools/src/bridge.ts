@@ -3,13 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { options } from 'inferno';
-import {
-  isArray,
-  isInvalid,
-  isObject,
-  isStringOrNumber,
-  isUndefined
-} from 'inferno-shared';
+import { combineFrom, isArray, isInvalid, isObject, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 function findVNodeFromDom(vNode, dom) {
@@ -142,20 +136,9 @@ export function createDevToolsBridge() {
     }
   };
 
-  const queueMountComponent = component =>
-    queueUpdate(Reconciler.mountComponent, queuedMountComponents, component);
-  const queueReceiveComponent = component =>
-    queueUpdate(
-      Reconciler.receiveComponent,
-      queuedReceiveComponents,
-      component
-    );
-  const queueUnmountComponent = component =>
-    queueUpdate(
-      Reconciler.unmountComponent,
-      queuedUnmountComponents,
-      component
-    );
+  const queueMountComponent = component => queueUpdate(Reconciler.mountComponent, queuedMountComponents, component);
+  const queueReceiveComponent = component => queueUpdate(Reconciler.receiveComponent, queuedReceiveComponents, component);
+  const queueUnmountComponent = component => queueUpdate(Reconciler.unmountComponent, queuedUnmountComponents, component);
 
   /** Notify devtools that a new component instance has been mounted into the DOM. */
   const componentAdded = vNode => {
@@ -235,9 +218,7 @@ export function createDevToolsBridge() {
 }
 
 function isRootVNode(vNode) {
-  return Boolean(
-    vNode.dom && vNode.dom.parentNode && options.roots.has(vNode.dom.parentNode)
-  );
+  return Boolean(vNode.dom && vNode.dom.parentNode && options.roots.has(vNode.dom.parentNode));
 }
 
 /**
@@ -253,10 +234,7 @@ function updateReactComponent(vNode, parentDom) {
   let newInstance;
 
   if (flags & VNodeFlags.Component) {
-    newInstance = createReactCompositeComponent(
-      vNode,
-      isUndefined(oldInstance)
-    );
+    newInstance = createReactCompositeComponent(vNode, isUndefined(oldInstance));
   } else {
     newInstance = createReactDOMComponent(vNode, parentDom);
   }
@@ -278,13 +256,9 @@ function isInvalidChild(child) {
 
 function normalizeChildren(children, dom) {
   if (isArray(children)) {
-    return children
-      .filter(child => !isInvalidChild(child))
-      .map(child => updateReactComponent(child, dom));
+    return children.filter(child => !isInvalidChild(child)).map(child => updateReactComponent(child, dom));
   } else {
-    return !(isInvalidChild(children) || children === '')
-      ? [updateReactComponent(children, dom)]
-      : [];
+    return !(isInvalidChild(children) || children === '') ? [updateReactComponent(children, dom)] : [];
   }
 }
 
@@ -303,8 +277,7 @@ function createReactDOMComponent(vNode, parentDom) {
     return null;
   }
   const type = vNode.type;
-  const children =
-    vNode.children === 0 ? vNode.children.toString() : vNode.children;
+  const children = vNode.children === 0 ? vNode.children.toString() : vNode.children;
   const props = vNode.props;
   const dom = vNode.dom;
   const isText = flags & VNodeFlags.Text || isStringOrNumber(vNode);
@@ -368,7 +341,7 @@ function createReactCompositeComponent(vNode, isFirstCreation) {
   if (isFirstCreation && instance && instance.forceUpdate) {
     const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
     instance.forceUpdate = () => {
-      instance.props = vNode.props = Object.assign(
+      instance.props = vNode.props = combineFrom(
         // These are the regular Inferno props.
         instance.props,
         // This is what gets updated by the React devtools when props are edited.

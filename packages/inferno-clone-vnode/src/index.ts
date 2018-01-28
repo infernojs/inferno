@@ -2,22 +2,8 @@
  * @module Inferno-Clone-VNode
  */ /** TypeDoc Comment */
 
-import {
-  createComponentVNode,
-  createTextVNode,
-  createVNode,
-  directClone,
-  EMPTY_OBJ,
-  normalizeProps,
-  VNode
-} from 'inferno';
-import {
-  combineFrom,
-  isArray,
-  isInvalid,
-  isStringOrNumber,
-  isUndefined
-} from 'inferno-shared';
+import { createComponentVNode, createTextVNode, createVNode, directClone, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
+import { combineFrom, isArray, isInvalid, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 /*
@@ -71,15 +57,7 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
   }
 
   if (flags & VNodeFlags.Component) {
-    newVNode = createComponentVNode(
-      flags,
-      vNodeToClone.type,
-      !vNodeToClone.props && !props
-        ? EMPTY_OBJ
-        : combineFrom(vNodeToClone.props, props),
-      key,
-      ref
-    );
+    newVNode = createComponentVNode(flags, vNodeToClone.type, !vNodeToClone.props && !props ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props), key, ref);
     const newProps = newVNode.props;
     const newChildren = newProps.children;
     // we need to also clone component children that are in props
@@ -112,16 +90,7 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
         children: vNodeToClone.children
       };
     }
-    newVNode = createVNode(
-      flags,
-      vNodeToClone.type,
-      className,
-      null,
-      ChildFlags.HasInvalidChildren,
-      combineFrom(vNodeToClone.props, props),
-      key,
-      ref
-    );
+    newVNode = createVNode(flags, vNodeToClone.type, className, null, ChildFlags.HasInvalidChildren, combineFrom(vNodeToClone.props, props), key, ref);
   } else if (flags & VNodeFlags.Text) {
     newVNode = createTextVNode(vNodeToClone.children);
   }

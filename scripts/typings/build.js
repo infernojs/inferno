@@ -10,12 +10,7 @@ if (pkgJSON.private) {
 
 try {
   dts.bundle({
-    main: join(
-      __dirname,
-      '../../build/packages/',
-      pkgJSON.name,
-      'src/index.d.ts'
-    ),
+    main: join(__dirname, '../../build/packages/', pkgJSON.name, 'src/index.d.ts'),
     name: pkgJSON.name,
     out: join(cwd, 'dist/index.d.ts')
   });

@@ -64,13 +64,7 @@ describe('A <Prompt>', () => {
       }
 
       render() {
-        return (
-          <Prompt
-            when={this.state.when}
-            message="this is only a test"
-            ref={c => (this.ref = c)}
-          />
-        );
+        return <Prompt when={this.state.when} message="this is only a test" ref={c => (this.ref = c)} />;
       }
     }
 

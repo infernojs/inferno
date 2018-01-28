@@ -33,10 +33,7 @@ export class Prompt extends Component<IPromptProps, any> {
   }
 
   public componentWillMount() {
-    invariant(
-      this.context.router,
-      'You should not use <Prompt> outside a <Router>'
-    );
+    invariant(this.context.router, 'You should not use <Prompt> outside a <Router>');
 
     if (this.props.when) {
       this.enable(this.props.message);

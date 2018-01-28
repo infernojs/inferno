@@ -37,13 +37,7 @@ describe('cloneVNode (JSX)', () => {
   it('should clone OPT_ELEMENT', () => {
     const noop = () => {};
     const node = cloneVNode(
-      <div
-        onComponentWillMount={noop}
-        onComponentDidMount={noop}
-        onComponentWillUnmount={noop}
-        onComponentShouldUpdate={noop}
-        onComponentWillUpdate={noop}
-      />,
+      <div onComponentWillMount={noop} onComponentDidMount={noop} onComponentWillUnmount={noop} onComponentShouldUpdate={noop} onComponentWillUpdate={noop} />,
       { children: [<span />] }
     );
     render(node, container);
@@ -57,79 +51,41 @@ describe('cloneVNode (JSX)', () => {
   });
 
   it('should clone a basic element with children in props and as third argument', () => {
-    const node1 = cloneVNode(
-      <div />,
-      { children: <span>arr1a</span> },
-      <span>arr2b</span>
-    );
+    const node1 = cloneVNode(<div />, { children: <span>arr1a</span> }, <span>arr2b</span>);
     render(node1, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div><span>arr2b</span></div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div><span>arr2b</span></div>'));
 
-    const node2 = cloneVNode(
-      <div />,
-      { children: [<span>arr2a</span>] },
-      <span>arr2b</span>
-    );
+    const node2 = cloneVNode(<div />, { children: [<span>arr2a</span>] }, <span>arr2b</span>);
     render(node2, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div><span>arr2b</span></div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div><span>arr2b</span></div>'));
 
-    const node3 = cloneVNode(<div />, { children: [<span>arr3a</span>] }, [
-      <span>arr3b</span>
-    ]);
+    const node3 = cloneVNode(<div />, { children: [<span>arr3a</span>] }, [<span>arr3b</span>]);
     render(node3, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div><span>arr3b</span></div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3b</span></div>'));
   });
 
   it('Should support multiple parameters as children', () => {
-    const node = cloneVNode(
-      <div />,
-      null,
-      <span>arr3a</span>,
-      <span>arr3b</span>,
-      <span>arr3c</span>
-    );
+    const node = cloneVNode(<div />, null, <span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>);
     render(node, container);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'));
   });
 
   it('Should support multiple nodes as children inside array', () => {
-    const node = cloneVNode(<div />, null, [
-      <span>arr3a</span>,
-      <span>arr3b</span>,
-      <span>arr3c</span>
-    ]);
+    const node = cloneVNode(<div />, null, [<span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>]);
     render(node, container);
-    expect(container.innerHTML).toBe(
-      innerHTML(
-        '<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'
-      )
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'));
   });
 
   it('Should support single node as children', () => {
     const node = cloneVNode(<div />, null, <span>arr3a</span>);
     render(node, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div><span>arr3a</span></div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span></div>'));
   });
 
   it('Should support single node as children inside array', () => {
     const node = cloneVNode(<div />, null, [<span>arr3a</span>]);
     render(node, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div><span>arr3a</span></div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span></div>'));
   });
 
   it('should clone a basic element with null children', () => {
@@ -157,15 +113,11 @@ describe('cloneVNode (JSX)', () => {
 
     const node3 = cloneVNode(node2, { className: 'foo' }, 'Hello world 2!');
     render(node3, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div class="foo">Hello world 2!</div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div class="foo">Hello world 2!</div>'));
 
     const node4 = cloneVNode(node1, { className: 'foo' }, 'Hello world 3!');
     render(node4, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div class="foo">Hello world 3!</div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div class="foo">Hello world 3!</div>'));
   });
 
   function StatelessComponent(props) {
@@ -187,9 +139,7 @@ describe('cloneVNode (JSX)', () => {
     });
 
     render(node3, container);
-    expect(container.innerHTML).toBe(
-      innerHTML('<div class="yo">Hello world 3!</div>')
-    );
+    expect(container.innerHTML).toBe(innerHTML('<div class="yo">Hello world 3!</div>'));
   });
 
   it('Should prefer falsy children (undefined) if its provided over existing children', () => {
@@ -288,10 +238,7 @@ describe('cloneVNode (JSX)', () => {
 
     expect(container.innerHTML).toBe('<div>Third</div>');
 
-    render(
-      cloneVNode(nodeToClone, { children: 'Second' }, 'Third', 'Fourth'),
-      container
-    );
+    render(cloneVNode(nodeToClone, { children: 'Second' }, 'Third', 'Fourth'), container);
 
     expect(container.innerHTML).toBe('<div>ThirdFourth</div>');
   });
@@ -333,9 +280,7 @@ describe('cloneVNode (JSX)', () => {
       // expect(newNode.props.hasOwnProperty('className')).toBe(false);
 
       expect(container.firstChild.className).toBe('foo');
-      expect(innerHTML(container.innerHTML)).toEqual(
-        innerHTML('<div class="foo"></div>')
-      );
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div class="foo"></div>'));
     });
 
     it('Should remove className if new one is empty', () => {
@@ -377,9 +322,7 @@ describe('cloneVNode (JSX)', () => {
 
       expect(container.firstChild.className).toBe('test');
       expect(container.firstChild.getAttribute('id')).toBe('wow');
-      expect(innerHTML(container.innerHTML)).toEqual(
-        innerHTML('<div class="test" id="wow"></div>')
-      );
+      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div class="test" id="wow"></div>'));
     });
   });
 

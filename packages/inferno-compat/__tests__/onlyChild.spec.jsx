@@ -20,9 +20,7 @@ describe('onlyChild', function() {
     onlyChild = React.Children.only;
     WrapComponent = React.createClass({
       render: function() {
-        return (
-          <div>{onlyChild(this.props.children, this.props.mapFn, this)}</div>
-        );
+        return <div>{onlyChild(this.props.children, this.props.mapFn, this)}</div>;
       }
     });
   });

@@ -2,23 +2,8 @@
  * @module Inferno-Create-Element
  */ /** TypeDoc Comment */
 
-import {
-  Component,
-  createComponentVNode,
-  createVNode,
-  getFlagsForElementVnode,
-  InfernoChildren,
-  normalizeChildren,
-  Props,
-  VNode
-} from 'inferno';
-import {
-  isInvalid,
-  isNullOrUndef,
-  isObject,
-  isString,
-  isUndefined
-} from 'inferno-shared';
+import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, normalizeChildren, Props, VNode } from 'inferno';
+import { isInvalid, isNullOrUndef, isObject, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const componentHooks = new Set<string>();
@@ -36,15 +21,9 @@ componentHooks.add('onComponentDidUpdate');
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual ndoe
  */
-export function createElement<T>(
-  type: string | Function | Component<any, any>,
-  props?: T & Props | null,
-  ..._children: Array<InfernoChildren | any>
-): VNode {
+export function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props | null, ..._children: Array<InfernoChildren | any>): VNode {
   if (isInvalid(type) || isObject(type)) {
-    throw new Error(
-      'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.'
-    );
+    throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
   }
   let children: any = _children;
   let ref: any = null;
@@ -109,24 +88,9 @@ export function createElement<T>(
       }
     }
 
-    return createComponentVNode(
-      flags,
-      type as string | Function,
-      newProps,
-      key,
-      ref
-    );
+    return createComponentVNode(flags, type as string | Function, newProps, key, ref);
   }
-  const vNode = createVNode(
-    flags,
-    type as string | Function,
-    className,
-    null,
-    ChildFlags.HasInvalidChildren,
-    newProps,
-    key,
-    ref
-  );
+  const vNode = createVNode(flags, type as string | Function, className, null, ChildFlags.HasInvalidChildren, newProps, key, ref);
 
   if (flags & VNodeFlags.Element) {
     return normalizeChildren(vNode, children);

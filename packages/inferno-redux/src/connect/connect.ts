@@ -2,10 +2,7 @@
  * @module Inferno-Redux
  */ /** TypeDoc Comment */
 
-import {
-  connectAdvanced,
-  IConnectOptions
-} from '../components/connectAdvanced';
+import { connectAdvanced, IConnectOptions } from '../components/connectAdvanced';
 import { Dispatch } from 'redux';
 import { shallowEqual } from '../utils/shallowEqual';
 import { defaultMapDispatchToPropsFactories } from './mapDispatchToProps';
@@ -22,11 +19,7 @@ const match = (arg, factories, name) => {
   }
 
   return (dispatch: Dispatch<any>, options: IConnectOptions) => {
-    throw new Error(
-      `Invalid value of type ${typeof arg} for ${name} argument when connecting component ${
-        (options as any).wrappedComponentName
-      }.`
-    );
+    throw new Error(`Invalid value of type ${typeof arg} for ${name} argument when connecting component ${(options as any).wrappedComponentName}.`);
   };
 };
 
@@ -53,16 +46,8 @@ export const createConnect = ({
     ...extraOptions
   } = {}
 ) => {
-  const initMapStateToProps = match(
-    mapStateToProps,
-    mapStateToPropsFactories,
-    'mapStateToProps'
-  );
-  const initMapDispatchToProps = match(
-    mapDispatchToProps,
-    mapDispatchToPropsFactories,
-    'mapDispatchToProps'
-  );
+  const initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
+  const initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
   const initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
 
   return connectHOC(selectorFactory as any, {

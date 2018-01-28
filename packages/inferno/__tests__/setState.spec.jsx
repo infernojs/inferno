@@ -22,9 +22,7 @@ describe('setState', () => {
       }
     }
 
-    expect(render.bind(render, <TestComponent />, container)).toThrowError(
-      Error
-    );
+    expect(render.bind(render, <TestComponent />, container)).toThrowError(Error);
   });
 
   it('callback should be fired after state has changed', done => {
@@ -207,11 +205,7 @@ describe('setState', () => {
         return (
           <div>
             <div>{this.state.foo}</div>
-            {this.state.active ? (
-              <Child foo={this.state.foo} callback={this._setBar} />
-            ) : (
-              <Child foo={this.state.foo} callback={this._setActive} />
-            )}
+            {this.state.active ? <Child foo={this.state.foo} callback={this._setBar} /> : <Child foo={this.state.foo} callback={this._setActive} />}
           </div>
         );
       }
@@ -352,10 +346,7 @@ describe('setState', () => {
         return (
           <div>
             <Child foo={this.state.foo} callback={this._setActive} />
-            <ChildBar
-              foo={this.state.foo}
-              onComponentWillMount={this._setBar}
-            />
+            <ChildBar foo={this.state.foo} onComponentWillMount={this._setBar} />
             <ChildBar foo={this.state.foo} />
           </div>
         );
@@ -579,11 +570,7 @@ describe('setState', () => {
         return (
           <div>
             <div>{this.state.foo}</div>
-            {this.state.active ? (
-              <Child foo={this.state.foo} callback={this._setBar} />
-            ) : (
-              <Child foo={this.state.foo} callback={this._setActive} />
-            )}
+            {this.state.active ? <Child foo={this.state.foo} callback={this._setBar} /> : <Child foo={this.state.foo} callback={this._setActive} />}
           </div>
         );
       }
@@ -793,13 +780,7 @@ describe('setState', () => {
 
   it('Should keep context in sync with state #1182', () => {
     function Child(props, context) {
-      return (
-        <div>
-          {(context.active ? 'ACTIVE' : 'INACTIVE') +
-            '   :   ' +
-            (context.state.active ? 'ACTIVE' : 'INACTIVE')}
-        </div>
-      );
+      return <div>{(context.active ? 'ACTIVE' : 'INACTIVE') + '   :   ' + (context.state.active ? 'ACTIVE' : 'INACTIVE')}</div>;
     }
 
     class Container extends Component {

@@ -2,20 +2,8 @@
  * @module Inferno-Hyperscript
  */ /** TypeDoc Comment */
 
-import {
-  createComponentVNode,
-  createVNode,
-  getFlagsForElementVnode,
-  InfernoChildren,
-  normalizeChildren,
-  VNode
-} from 'inferno';
-import {
-  isArray,
-  isString,
-  isStringOrNumber,
-  isUndefined
-} from 'inferno-shared';
+import { createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, normalizeChildren, VNode } from 'inferno';
+import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
@@ -66,11 +54,7 @@ function isChildren(x: any): boolean {
   return isStringOrNumber(x) || (x && isArray(x));
 }
 
-function extractProps(
-  _props: any,
-  isElement: boolean,
-  _tag: string | VNode
-): any {
+function extractProps(_props: any, isElement: boolean, _tag: string | VNode): any {
   _props = _props || {};
   const tag = isElement ? parseTag(_tag as string, _props) : _tag;
   const newProps = {};
@@ -110,47 +94,24 @@ function extractProps(
  * @param {boolean} noNormalize Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
  * @returns {VNode} returns new virtual node
  */
-export function h(
-  _tag: string | VNode | Function,
-  _props?: any,
-  _children?: InfernoChildren
-): VNode {
+export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode {
   // If a child array or text node are passed as the second argument, shift them
   if (!_children && isChildren(_props)) {
     _children = _props;
     _props = {};
   }
   const isElement = isString(_tag);
-  const { tag, props, key, ref, children, className } = extractProps(
-    _props,
-    isElement,
-    _tag as VNode
-  );
+  const { tag, props, key, ref, children, className } = extractProps(_props, isElement, _tag as VNode);
 
   if (isElement) {
     return normalizeChildren(
-      createVNode(
-        getFlagsForElementVnode(tag),
-        tag,
-        className,
-        null,
-        ChildFlags.HasInvalidChildren,
-        props,
-        key,
-        ref
-      ),
+      createVNode(getFlagsForElementVnode(tag), tag, className, null, ChildFlags.HasInvalidChildren, props, key, ref),
       _children || children
     );
   } else {
     if (children || _children) {
       (props as any).children = children || _children;
     }
-    return createComponentVNode(
-      VNodeFlags.ComponentUnknown,
-      tag,
-      props,
-      key,
-      ref
-    );
+    return createComponentVNode(VNodeFlags.ComponentUnknown, tag, props, key, ref);
   }
 }

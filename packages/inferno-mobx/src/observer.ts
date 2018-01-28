@@ -41,9 +41,7 @@ export function trackComponents() {
   if (!isDevtoolsEnabled) {
     isDevtoolsEnabled = true;
     options.findDOMNodeEnabled = true;
-    warning(
-      'Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.'
-    );
+    warning('Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.');
   } else {
     isDevtoolsEnabled = false;
     renderReporter.listeners.length = 0;
@@ -85,12 +83,7 @@ function patch(target, funcName, runMixinFirst = false) {
 }
 
 function isObjectShallowModified(prev, next) {
-  if (
-    null == prev ||
-    null == next ||
-    typeof prev !== 'object' ||
-    typeof next !== 'object'
-  ) {
+  if (null == prev || null == next || typeof prev !== 'object' || typeof next !== 'object') {
     return prev !== next;
   }
   const keys = Object.keys(prev);
@@ -118,14 +111,8 @@ const reactiveMixin = {
     }
 
     // Generate friendly name for debugging
-    const initialName =
-      this.displayName ||
-      this.name ||
-      (this.constructor &&
-        (this.constructor.displayName || this.constructor.name)) ||
-      '<component>';
-    const rootNodeID =
-      this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
+    const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
+    const rootNodeID = this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
 
     /**
      * If props are shallowly modified, react will render anyway,
@@ -173,27 +160,24 @@ const reactiveMixin = {
     let isRenderingPending = false;
 
     const initialRender = () => {
-      reaction = new mobx.Reaction(
-        `${initialName}#${rootNodeID}.render()`,
-        () => {
-          if (!isRenderingPending) {
-            // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
-            // This unidiomatic React usage but React will correctly warn about this so we continue as usual
-            // See #85 / Pull #44
-            isRenderingPending = true;
-            if (typeof this.componentWillReact === 'function') {
-              this.componentWillReact(); // TODO: wrap in action?
-            }
-            if (this.__$mobxIsUnmounted !== true) {
-              if (!skipRender) {
-                this.$UPD = true;
-                this.forceUpdate();
-                this.$UPD = false;
-              }
+      reaction = new mobx.Reaction(`${initialName}#${rootNodeID}.render()`, () => {
+        if (!isRenderingPending) {
+          // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
+          // This unidiomatic React usage but React will correctly warn about this so we continue as usual
+          // See #85 / Pull #44
+          isRenderingPending = true;
+          if (typeof this.componentWillReact === 'function') {
+            this.componentWillReact(); // TODO: wrap in action?
+          }
+          if (this.__$mobxIsUnmounted !== true) {
+            if (!skipRender) {
+              this.$UPD = true;
+              this.forceUpdate();
+              this.$UPD = false;
             }
           }
         }
-      );
+      });
       (reaction as any).reactComponent = this;
       (reactiveRender as any).$mobx = reaction;
       this.render = reactiveRender;
@@ -306,18 +290,13 @@ export function observer(arg1, arg2?) {
   const component = arg1;
 
   if (component.isMobxInjector === true) {
-    warning(
-      "Mobx observer: You are trying to use 'observer' on a component that already has 'inject'. Please apply 'observer' before applying 'inject'"
-    );
+    warning("Mobx observer: You are trying to use 'observer' on a component that already has 'inject'. Please apply 'observer' before applying 'inject'");
   }
 
   // Stateless function component:
   // If it is function but doesn't seem to be a react class constructor,
   // wrap it to a react class automatically
-  if (
-    typeof component === 'function' &&
-    (!component.prototype || !component.prototype.render)
-  ) {
+  if (typeof component === 'function' && (!component.prototype || !component.prototype.render)) {
     return observer(
       class<P, S> extends Component<P, S> {
         public static displayName = component.displayName || component.name;
@@ -341,11 +320,9 @@ export function observer(arg1, arg2?) {
 
 function mixinLifecycleEvents(target) {
   patch(target, 'componentWillMount', true);
-  ['componentDidMount', 'componentWillUnmount', 'componentDidUpdate'].forEach(
-    function(funcName) {
-      patch(target, funcName);
-    }
-  );
+  ['componentDidMount', 'componentWillUnmount', 'componentDidUpdate'].forEach(function(funcName) {
+    patch(target, funcName);
+  });
   if (!target.shouldComponentUpdate) {
     target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
   }
@@ -369,12 +346,7 @@ const proxiedInjectorProps = {
  * Store Injection
  */
 function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
-  let displayName =
-    'inject-' +
-    (component.displayName ||
-      component.name ||
-      (component.constructor && component.constructor.name) ||
-      'Unknown');
+  let displayName = 'inject-' + (component.displayName || component.name || (component.constructor && component.constructor.name) || 'Unknown');
   if (injectNames) {
     displayName += '-with-' + injectNames;
   }
@@ -407,19 +379,12 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         newProps[key] = props[key];
       }
 
-      const additionalProps =
-        grabStoresFn(context.mobxStores || {}, newProps, context) || {};
+      const additionalProps = grabStoresFn(context.mobxStores || {}, newProps, context) || {};
       for (key in additionalProps) {
         newProps[key] = additionalProps[key];
       }
 
-      return createComponentVNode(
-        VNodeFlags.ComponentUnknown,
-        component,
-        newProps,
-        null,
-        isStateless(component) ? null : this.storeRef
-      );
+      return createComponentVNode(VNodeFlags.ComponentUnknown, component, newProps, null, isStateless(component) ? null : this.storeRef);
     }
   }
 
@@ -441,11 +406,7 @@ function grabStoresByName(storeNames: string[]) {
         // Development warning
         if (process.env.NODE_ENV !== 'production') {
           if (!(storeName in baseStores)) {
-            throw new Error(
-              "MobX injector: Store '" +
-                storeName +
-                "' is not available! Make sure it is provided by some Provider"
-            );
+            throw new Error("MobX injector: Store '" + storeName + "' is not available! Make sure it is provided by some Provider");
           }
         }
 
@@ -485,11 +446,7 @@ export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
 
     grabStoresFn = grabStoresByName(storeNames);
     return function(componentClass) {
-      return createStoreInjector(
-        grabStoresFn,
-        componentClass,
-        storeNames.join('-')
-      );
+      return createStoreInjector(grabStoresFn, componentClass, storeNames.join('-'));
     };
   }
 }

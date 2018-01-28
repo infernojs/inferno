@@ -42,10 +42,7 @@ describe('HTML Form Elements', () => {
     });
 
     it('Should not use defaultValue when actual value is object', () => {
-      render(
-        <textarea defaultValue="Hey Inferno" value={{ a: 1 }} />,
-        container
-      );
+      render(<textarea defaultValue="Hey Inferno" value={{ a: 1 }} />, container);
       expect(container.firstChild.value).toBe('[object Object]');
       expect(container.firstChild.defaultValue).toBe('[object Object]');
     });
@@ -107,17 +104,11 @@ describe('HTML Form Elements', () => {
     it('Should be possible to create input with type range', () => {
       function change() {}
 
-      render(
-        <input min={0} max={255} value={75} onChange={change} type="range" />,
-        container
-      );
+      render(<input min={0} max={255} value={75} onChange={change} type="range" />, container);
       expect(container.firstChild.getAttribute('type')).toBe('range');
       expect(container.firstChild.value).toBe('75');
 
-      render(
-        <input min={0} max={255} value={11} onChange={change} type="range" />,
-        container
-      );
+      render(<input min={0} max={255} value={11} onChange={change} type="range" />, container);
 
       const event = document.createEvent('Event');
       event.initEvent('input', true, true);
@@ -276,13 +267,7 @@ describe('HTML Form Elements', () => {
         <div>
           <input onClick={spy1} type="radio" name="gender" value="male" />
           <input onClick={spy2} type="radio" name="gender" value="female" />
-          <input
-            onClick={spy3}
-            type="radio"
-            id="test"
-            name="gender"
-            value="other"
-          />
+          <input onClick={spy3} type="radio" id="test" name="gender" value="other" />
         </div>,
         container
       );
@@ -335,13 +320,7 @@ describe('HTML Form Elements', () => {
 
       render(
         <div>
-          <input
-            onClick={spy1}
-            type="radio"
-            id="test"
-            name="gender"
-            value="male"
-          />
+          <input onClick={spy1} type="radio" id="test" name="gender" value="male" />
           <input onClick={spy2} type="radio" name="gender" value="female" />
           <input onClick={spy3} type="radio" name="gender" value="other" />
         </div>,
@@ -362,28 +341,9 @@ describe('HTML Form Elements', () => {
 
       render(
         <div>
-          <input
-            onClick={spy1}
-            type="radio"
-            id="test"
-            name="gender"
-            checked={true}
-            value="male"
-          />
-          <input
-            onClick={spy2}
-            type="radio"
-            name="gender"
-            checked={false}
-            value="female"
-          />
-          <input
-            onClick={spy3}
-            type="radio"
-            name="gender"
-            checked={false}
-            value="other"
-          />
+          <input onClick={spy1} type="radio" id="test" name="gender" checked={true} value="male" />
+          <input onClick={spy2} type="radio" name="gender" checked={false} value="female" />
+          <input onClick={spy3} type="radio" name="gender" checked={false} value="other" />
         </div>,
         container
       );
@@ -400,13 +360,7 @@ describe('HTML Form Elements', () => {
         <div>
           <input type="radio" name="gender" value="male" checked={false} />
           <input type="radio" name="gender" value="female" checked={true} />
-          <input
-            type="radio"
-            id="test"
-            name="gender"
-            value="other"
-            checked={false}
-          />
+          <input type="radio" id="test" name="gender" value="other" checked={false} />
         </div>,
         container
       );
@@ -421,13 +375,7 @@ describe('HTML Form Elements', () => {
         <div>
           <input type="radio" name="gender" value="male" checked={true} />
           <input type="radio" name="gender" value="female" checked={false} />
-          <input
-            type="radio"
-            id="test"
-            name="gender"
-            value="other"
-            checked={false}
-          />
+          <input type="radio" id="test" name="gender" value="other" checked={false} />
         </div>,
         container
       );
@@ -441,13 +389,7 @@ describe('HTML Form Elements', () => {
       render(
         <div>
           <input type="radio" name="gender" value="female" checked={false} />
-          <input
-            type="radio"
-            id="test"
-            name="gender"
-            value="other"
-            checked={false}
-          />
+          <input type="radio" id="test" name="gender" value="other" checked={false} />
         </div>,
         container
       );
@@ -460,13 +402,7 @@ describe('HTML Form Elements', () => {
       render(
         <div>
           <input type="radio" name="gender" value="female" checked={false} />
-          <input
-            type="radio"
-            id="test"
-            name="gender"
-            value="other"
-            checked={true}
-          />
+          <input type="radio" id="test" name="gender" value="other" checked={true} />
         </div>,
         container
       );
@@ -479,13 +415,7 @@ describe('HTML Form Elements', () => {
       render(
         <div>
           <input type="radio" name="gender" value="female" checked={false} />
-          <input
-            type="radio"
-            id="test"
-            name="gender"
-            value="other"
-            checked={true}
-          />
+          <input type="radio" id="test" name="gender" value="other" checked={true} />
           <input type="radio" name="gender" value="female" checked={false} />
           <input type="radio" name="gender" value="dqw" checked={false} />
         </div>,

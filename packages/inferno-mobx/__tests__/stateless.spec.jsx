@@ -25,9 +25,7 @@ describe('Stateless components MOBX', () => {
 
   it('stateless component', done => {
     const StatelessCompObserver = observer(stateLessComp);
-    expect(StatelessCompObserver.defaultProps.testProp).toBe(
-      'default value for prop testProp'
-    );
+    expect(StatelessCompObserver.defaultProps.testProp).toBe('default value for prop testProp');
     const wrapper = <StatelessCompObserver testProp={10} />;
 
     render(<StatelessCompObserver testProp="hello world" />, container);
@@ -37,17 +35,14 @@ describe('Stateless components MOBX', () => {
   });
 
   it('stateless component with context support', done => {
-    const StateLessCompWithContext = (props, context) =>
-      createElement('div', {}, 'context: ' + context.testContext);
+    const StateLessCompWithContext = (props, context) => createElement('div', {}, 'context: ' + context.testContext);
     const StateLessCompWithContextObserver = observer(StateLessCompWithContext);
     const ContextProvider = createClass({
       getChildContext: () => ({ testContext: 'hello world' }),
       render: () => <StateLessCompWithContextObserver />
     });
     render(<ContextProvider />, container);
-    expect(container.textContent.replace(/\n/, '')).toBe(
-      'context: hello world'
-    );
+    expect(container.textContent.replace(/\n/, '')).toBe('context: hello world');
     done();
   });
 });

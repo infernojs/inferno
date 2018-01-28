@@ -53,9 +53,7 @@ mkdir(join(cwd, 'dist'), err => {
         console.error('\u001b[0m');
       }
 
-      console.error(
-        `${pkgJSON.name} in ${options.format} is FAILED ${error.message}`
-      );
+      console.error(`${pkgJSON.name} in ${options.format} is FAILED ${error.message}`);
       exit(-1); // Do not continue build in case of error to avoid publishing garbage, Github #1157
     });
 });

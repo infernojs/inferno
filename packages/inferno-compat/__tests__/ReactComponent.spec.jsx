@@ -114,9 +114,7 @@ describe('ReactComponent', function() {
     var mounted = false;
     var Component = React.createClass({
       render: function() {
-        var inner = (
-          <Wrapper object={innerObj} ref={c => (this.innerRef = c)} />
-        );
+        var inner = <Wrapper object={innerObj} ref={c => (this.innerRef = c)} />;
         var outer = (
           <Wrapper object={outerObj} ref={c => (this.outerRef = c)}>
             {inner}
@@ -154,13 +152,7 @@ describe('ReactComponent', function() {
         return <div title="inner" ref={c => (this.innerRef = c)} />;
       },
       render: function() {
-        return (
-          <Wrapper
-            title="wrapper"
-            ref={c => (this.wrapperRef = c)}
-            getContent={this.getInner}
-          />
-        );
+        return <Wrapper title="wrapper" ref={c => (this.wrapperRef = c)} getContent={this.getInner} />;
       },
       componentDidMount: function() {
         // Check .props.title to make sure we got the right elements back

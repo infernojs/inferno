@@ -56,9 +56,7 @@ describe('ReactDOM', function() {
   });
 
   it('should overwrite props.children with children argument', function() {
-    var conflictDiv = ReactTestUtils.renderIntoDocument(
-      div({ children: 'fakechild' }, 'child')
-    );
+    var conflictDiv = ReactTestUtils.renderIntoDocument(div({ children: 'fakechild' }, 'child'));
     var conflictNode = ReactDOM.findDOMNode(conflictDiv);
     expect(conflictNode.innerHTML).toBe('child');
   });

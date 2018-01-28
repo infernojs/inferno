@@ -147,11 +147,7 @@ describe('NavLink', () => {
     it('does not apply active passed props when isActive returns false', () => {
       render(
         <MemoryRouter initialEntries={['/pizza']}>
-          <NavLink
-            to="/pizza"
-            activeClassName="selected"
-            isActive={() => false}
-          >
+          <NavLink to="/pizza" activeClassName="selected" isActive={() => false}>
             Pizza!
           </NavLink>
         </MemoryRouter>,
@@ -305,11 +301,7 @@ describe('NavLink', () => {
     it('overrides the current location', () => {
       render(
         <MemoryRouter initialEntries={['/pizza']}>
-          <NavLink
-            to="/pasta"
-            activeClassName="selected"
-            location={{ pathname: '/pasta' }}
-          >
+          <NavLink to="/pasta" activeClassName="selected" location={{ pathname: '/pasta' }}>
             Pasta!
           </NavLink>
         </MemoryRouter>,
@@ -323,11 +315,7 @@ describe('NavLink', () => {
     it('is not overwritten by the current location', () => {
       render(
         <MemoryRouter initialEntries={['/pasta']}>
-          <NavLink
-            to="/pasta"
-            activeClassName="selected"
-            location={{ pathname: '/pizza' }}
-          >
+          <NavLink to="/pasta" activeClassName="selected" location={{ pathname: '/pizza' }}>
             Pasta!
           </NavLink>
         </MemoryRouter>,

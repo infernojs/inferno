@@ -65,9 +65,7 @@ describe('Components createClass (JSX)', () => {
         });
 
         render(<Foo bar="test" />, container);
-        expect(container.innerHTML).toEqual(
-          innerHTML('<div><div>test</div></div>')
-        );
+        expect(container.innerHTML).toEqual(innerHTML('<div><div>test</div></div>'));
       });
 
       it('works as a lifecycle method even when a matching method is already defined', () => {
@@ -115,10 +113,7 @@ describe('Components createClass (JSX)', () => {
 
       it('should combine the results', () => {
         const Foo = createClass({
-          mixins: [
-            { getDefaultProps: () => ({ a: true }) },
-            { getDefaultProps: () => ({ b: true }) }
-          ],
+          mixins: [{ getDefaultProps: () => ({ a: true }) }, { getDefaultProps: () => ({ b: true }) }],
           getDefaultProps() {
             return { c: true };
           },
@@ -152,10 +147,7 @@ describe('Components createClass (JSX)', () => {
     describe('getInitialState', () => {
       it('should combine the results', () => {
         const Foo = createClass({
-          mixins: [
-            { getInitialState: () => ({ a: true }) },
-            { getInitialState: () => ({ b: true }) }
-          ],
+          mixins: [{ getInitialState: () => ({ a: true }) }, { getInitialState: () => ({ b: true }) }],
           getInitialState() {
             return { c: true };
           },
@@ -260,9 +252,7 @@ describe('Components createClass (JSX)', () => {
         container
       );
 
-      expect(container.innerHTML).toEqual(
-        innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>')
-      );
+      expect(container.innerHTML).toEqual(innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>'));
     });
   });
 });

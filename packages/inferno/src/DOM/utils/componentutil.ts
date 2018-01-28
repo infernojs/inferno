@@ -2,34 +2,12 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import {
-  createTextVNode,
-  createVoidVNode,
-  directClone,
-  options,
-  Props,
-  VNode
-} from '../../core/implementation';
-import {
-  combineFrom,
-  isArray,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isStringOrNumber,
-  throwError
-} from 'inferno-shared';
+import { createTextVNode, createVoidVNode, directClone, options, Props, VNode } from '../../core/implementation';
+import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { EMPTY_OBJ } from './common';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-export function createClassComponentInstance(
-  vNode: VNode,
-  Component,
-  props: Props,
-  context: Object,
-  lifecycle: Function[]
-) {
+export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, lifecycle: Function[]) {
   const instance = new Component(props, context);
   vNode.children = instance;
   instance.$V = vNode;
@@ -68,10 +46,7 @@ export function createClassComponentInstance(
     options.beforeRender(instance);
   }
 
-  const input = handleComponentInput(
-    instance.render(props, instance.state, context),
-    vNode
-  );
+  const input = handleComponentInput(instance.render(props, instance.state, context), vNode);
 
   let childContext;
   if (isFunction(instance.getChildContext)) {
@@ -96,9 +71,7 @@ export function handleComponentInput(input: any, componentVNode: VNode): VNode {
   // Development validation
   if (process.env.NODE_ENV !== 'production') {
     if (isArray(input)) {
-      throwError(
-        'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
-      );
+      throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
     }
   }
   if (isInvalid(input)) {

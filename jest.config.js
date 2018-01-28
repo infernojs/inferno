@@ -22,7 +22,7 @@ module.exports = {
   setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
   testMatch: [
     "<rootDir>/packages/*/__tests__/**/*spec.js?(x)",
-    "<rootDir>/packages/*/__tests__/**/*spec.browser.js?(x)"
+    "<rootDir>/packages/*/__tests__/**/*spec.server.js?(x)"
   ],
   transform: {
     "^.+\\.jsx?$": "babel-jest",

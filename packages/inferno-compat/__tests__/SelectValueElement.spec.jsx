@@ -22,12 +22,7 @@ describe('Render Select with multiple values', function() {
     render() {
       return (
         <div>
-          <select
-            value={this.state.selectedValue}
-            ref="selectNode"
-            id="selectNode"
-            multiple
-          >
+          <select value={this.state.selectedValue} ref="selectNode" id="selectNode" multiple>
             <option value={1}>1</option>
             <option value={2}>2</option>
             <option value={3}>3</option>
@@ -59,11 +54,7 @@ describe('Render Select with single value', function() {
     render() {
       return (
         <div>
-          <select
-            value={this.state.selectedValue}
-            ref="selectNode"
-            id="selectNode"
-          >
+          <select value={this.state.selectedValue} ref="selectNode" id="selectNode">
             <option value={1}>1</option>
             <option value={2}>2</option>
             <option value={3}>3</option>

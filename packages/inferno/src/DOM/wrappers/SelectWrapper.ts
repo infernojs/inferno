@@ -32,41 +32,21 @@ function updateChildOption(vNode, value) {
 
   // we do this as multiple may have changed
   dom.value = props.value;
-  if (
-    (isArray(value) && value.indexOf(props.value) !== -1) ||
-    props.value === value
-  ) {
+  if ((isArray(value) && value.indexOf(props.value) !== -1) || props.value === value) {
     dom.selected = true;
   } else if (!isNullOrUndef(value) || !isNullOrUndef(props.selected)) {
     dom.selected = props.selected || false;
   }
 }
 
-const onSelectChange = createWrappedFunction('onChange', applyValue);
+const onSelectChange = createWrappedFunction('onChange', applyValueSelect);
 
-export function processSelect(
-  vNode,
-  dom,
-  nextPropsOrEmpty,
-  mounting: boolean,
-  isControlled: boolean
-) {
-  applyValue(nextPropsOrEmpty, dom, mounting, vNode);
-
-  if (isControlled) {
-    dom.vNode = vNode;
-
-    if (mounting) {
-      dom.onchange = onSelectChange;
-    }
-  }
+export function selectEvents(dom) {
+  dom.onchange = onSelectChange;
 }
 
-export function applyValue(nextPropsOrEmpty, dom, mounting: boolean, vNode) {
-  if (
-    !isNullOrUndef(nextPropsOrEmpty.multiple) &&
-    nextPropsOrEmpty.multiple !== dom.multiple
-  ) {
+export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode) {
+  if (!isNullOrUndef(nextPropsOrEmpty.multiple) && nextPropsOrEmpty.multiple !== dom.multiple) {
     dom.multiple = nextPropsOrEmpty.multiple;
   }
   const childFlags = vNode.childFlags;

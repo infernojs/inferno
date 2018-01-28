@@ -34,9 +34,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
         return createElement('a', null, this.context.hello);
       }
     });
-    return streamPromise(createElement(TestComponent, null)).then(function(
-      output
-    ) {
+    return streamPromise(createElement(TestComponent, null)).then(function(output) {
       expect(output).toBe('<a>world</a>');
     });
   });
@@ -79,10 +77,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
         }
 
         render() {
-          return createElement('div', null, [
-            this.state.foo,
-            createElement(Another)
-          ]);
+          return createElement('div', null, [this.state.foo, createElement(Another)]);
         }
       }
 

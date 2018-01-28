@@ -90,11 +90,7 @@ describe('patching keyed lists (non-jsx)', () => {
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
       if (n.children !== null) {
-        children[i] = createElement(
-          'div',
-          { key: n.key },
-          renderTree(n.children)
-        );
+        children[i] = createElement('div', { key: n.key }, renderTree(n.children));
       } else {
         children[i] = createElement('span', { key: n.key }, n.key);
       }

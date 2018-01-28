@@ -302,10 +302,7 @@ describe('ReactDOMComponent', function() {
 
       it('should empty element when removing innerHTML', function() {
         var container = document.createElement('div');
-        ReactDOM.render(
-          <div dangerouslySetInnerHTML={{ __html: ':)' }} />,
-          container
-        );
+        ReactDOM.render(<div dangerouslySetInnerHTML={{ __html: ':)' }} />, container);
 
         expect(container.firstChild.innerHTML).toEqual(':)');
         ReactDOM.render(<div />, container);
@@ -317,19 +314,13 @@ describe('ReactDOMComponent', function() {
         ReactDOM.render(<div>hello</div>, container);
 
         expect(container.firstChild.innerHTML).toEqual('hello');
-        ReactDOM.render(
-          <div dangerouslySetInnerHTML={{ __html: 'goodbye' }} />,
-          container
-        );
+        ReactDOM.render(<div dangerouslySetInnerHTML={{ __html: 'goodbye' }} />, container);
         expect(container.firstChild.innerHTML).toEqual('goodbye');
       });
 
       it('should transition from innerHTML to string content', function() {
         var container = document.createElement('div');
-        ReactDOM.render(
-          <div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />,
-          container
-        );
+        ReactDOM.render(<div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />, container);
 
         expect(container.firstChild.innerHTML).toEqual('bonjour');
         ReactDOM.render(<div>adieu</div>, container);

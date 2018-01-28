@@ -93,11 +93,7 @@ describe('Mobx Misc', () => {
         render() {
           return (
             <div>
-              <input
-                type="text"
-                onChange={e => (this.props.exampleState.name = e.target.value)}
-                value={this.props.exampleState.name}
-              />
+              <input type="text" onChange={e => (this.props.exampleState.name = e.target.value)} value={this.props.exampleState.name} />
               <span>{this.props.exampleState.greetings}</span>
             </div>
           );
@@ -107,9 +103,7 @@ describe('Mobx Misc', () => {
 
     const exampleState = new ExampleState();
     render(<ExampleView exampleState={exampleState} />, container);
-    expect(container.querySelector('span').textContent).toBe(
-      'Hello my name is test'
-    );
+    expect(container.querySelector('span').textContent).toBe('Hello my name is test');
 
     done();
   });

@@ -36,13 +36,8 @@ export const wrapMergePropsFunc = mergeProps => {
   };
 };
 
-export const whenMergePropsIsFunction = mergeProps =>
-  typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
+export const whenMergePropsIsFunction = mergeProps => (typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined);
 
-export const whenMergePropsIsOmitted = mergeProps =>
-  !mergeProps ? () => defaultMergeProps : undefined;
+export const whenMergePropsIsOmitted = mergeProps => (!mergeProps ? () => defaultMergeProps : undefined);
 
-export const defaultMergePropsFactories = [
-  whenMergePropsIsFunction,
-  whenMergePropsIsOmitted
-];
+export const defaultMergePropsFactories = [whenMergePropsIsFunction, whenMergePropsIsOmitted];

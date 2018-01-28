@@ -38,11 +38,7 @@ describe('A <Route>', () => {
 
     render(
       <MemoryRouter initialEntries={['/mint']}>
-        <Route
-          location={{ pathname: '/tamarind' }}
-          path="/tamarind"
-          render={() => <h1>{TEXT}</h1>}
-        />
+        <Route location={{ pathname: '/tamarind' }} path="/tamarind" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
       node
     );
@@ -91,9 +87,7 @@ describe('A <Route>', () => {
 
     expect(() => {
       render(<Route path="/" render={() => null} />, node);
-    }).toThrowError(
-      /You should not use <Route> or withRouter\(\) outside a <Router>/
-    );
+    }).toThrowError(/You should not use <Route> or withRouter\(\) outside a <Router>/);
   });
 });
 
@@ -102,10 +96,7 @@ describe('A <Route> with dynamic segments in the path', () => {
     const node = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/a%20dynamic%20segment']}>
-        <Route
-          path="/:id"
-          render={({ match }) => <div>{match.params.id}</div>}
-        />
+        <Route path="/:id" render={({ match }) => <div>{match.params.id}</div>} />
       </MemoryRouter>,
       node
     );
@@ -311,11 +302,7 @@ describe('A <Route location>', () => {
 
     render(
       <MemoryRouter initialEntries={['/mint']}>
-        <Route
-          location={{ pathname: '/tamarind' }}
-          path="/tamarind"
-          render={() => <h1>{TEXT}</h1>}
-        />
+        <Route location={{ pathname: '/tamarind' }} path="/tamarind" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
       node
     );
@@ -333,9 +320,7 @@ describe('A <Route location>', () => {
           <Route
             location={{ pathname: '/pretzels/cheddar' }}
             path="/pretzels"
-            render={() => (
-              <Route path="/pretzels/cheddar" render={() => <h1>{TEXT}</h1>} />
-            )}
+            render={() => <Route path="/pretzels/cheddar" render={() => <h1>{TEXT}</h1>} />}
           />
         </MemoryRouter>,
         node
@@ -355,12 +340,7 @@ describe('A <Route location>', () => {
             path="/pretzels"
             render={({ history }) => {
               push = history.push;
-              return (
-                <Route
-                  path="/pretzels/cheddar"
-                  render={() => <h1>{TEXT}</h1>}
-                />
-              );
+              return <Route path="/pretzels/cheddar" render={() => <h1>{TEXT}</h1>} />;
             }}
           />
         </MemoryRouter>,

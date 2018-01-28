@@ -125,9 +125,7 @@ function mergeNoDupes(previous: any, current: any) {
     for (const key in current) {
       if (current.hasOwnProperty(key)) {
         if (previous.hasOwnProperty(key)) {
-          throwError(
-            `Mixins return duplicate key ${key} in their return values`
-          );
+          throwError(`Mixins return duplicate key ${key} in their return values`);
         }
 
         previous[key] = current[key];
@@ -137,18 +135,10 @@ function mergeNoDupes(previous: any, current: any) {
   return previous;
 }
 
-function applyMixin<P, S>(
-  key: string,
-  inst: Component<P, S>,
-  mixin: Function[]
-): void {
+function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
   const hooks = isUndefined(inst[key]) ? mixin : mixin.concat(inst[key]);
 
-  if (
-    key === 'getDefaultProps' ||
-    key === 'getInitialState' ||
-    key === 'getChildContext'
-  ) {
+  if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
     inst[key] = multihook(hooks, mergeNoDupes);
   } else {
     inst[key] = multihook(hooks);
@@ -177,9 +167,7 @@ function applyMixins(Cl: any, mixins: Function[] | any[]) {
   }
 }
 
-export function createClass<P, S>(
-  obj: ComponentSpec<P, S>
-): ClassicComponentClass<P, S> {
+export function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComponentClass<P, S> {
   class Cl extends Component<P, S> {
     public static defaultProps;
     public static displayName = obj.name || obj.displayName || 'Component';

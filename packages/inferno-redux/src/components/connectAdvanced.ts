@@ -106,10 +106,7 @@ export interface IConnectOptions {
 }
 
 // TODO: This should be typed better. Spesifically, the output and input props should be generic.
-export type SelectorFactory = (
-  dispatch: Dispatch<any>,
-  options: IConnectOptions
-) => (state: any, props: any) => any;
+export type SelectorFactory = (dispatch: Dispatch<any>, options: IConnectOptions) => (state: any, props: any) => any;
 
 // TODO: Move
 const invariant = (test: boolean, error: string) => {
@@ -140,14 +137,10 @@ export function connectAdvanced(
   const wrapWithConnect = <T extends Function>(WrappedComponent: T): T => {
     invariant(
       typeof WrappedComponent === 'function',
-      `You must pass a component to the function returned by ` +
-        `connect. Instead received ${WrappedComponent}`
+      `You must pass a component to the function returned by ` + `connect. Instead received ${WrappedComponent}`
     );
 
-    const wrappedComponentName: string =
-      (WrappedComponent as any).displayName ||
-      WrappedComponent.name ||
-      'Component';
+    const wrappedComponentName: string = (WrappedComponent as any).displayName || WrappedComponent.name || 'Component';
 
     const displayName = getDisplayName(wrappedComponentName);
 
@@ -257,11 +250,7 @@ export function connectAdvanced(
       }
 
       public getWrappedInstance() {
-        invariant(
-          withRef,
-          `To access the wrapped instance, you need to specify ` +
-            `{ withRef: true } in the options argument of the ${methodName}() call.`
-        );
+        invariant(withRef, `To access the wrapped instance, you need to specify ` + `{ withRef: true } in the options argument of the ${methodName}() call.`);
 
         return this.wrappedInstance;
       }
@@ -271,10 +260,7 @@ export function connectAdvanced(
       }
 
       public initSelector() {
-        const sourceSelector = selectorFactory(
-          this.store!.dispatch,
-          selectorFactoryOptions
-        );
+        const sourceSelector = selectorFactory(this.store!.dispatch, selectorFactoryOptions);
         this.selector = makeSelectorStateful(sourceSelector, this.store);
         this.selector.run(this.props);
       }
@@ -286,14 +272,8 @@ export function connectAdvanced(
 
         // parentSub's source should match where store came from: props vs. context. A component
         // connected to the store via props shouldn't use subscription from context, or vice versa.
-        const parentSub = (this.propsMode ? this.props : this.context)[
-          subscriptionKey
-        ];
-        this.subscription = new Subscription(
-          this.store!,
-          parentSub,
-          this.onStateChange.bind(this)
-        );
+        const parentSub = (this.propsMode ? this.props : this.context)[subscriptionKey];
+        this.subscription = new Subscription(this.store!, parentSub, this.onStateChange.bind(this));
 
         // `notifyNestedSubs` is duplicated to handle the case where the component is  unmounted in
         // the middle of the notification loop, where `this.subscription` will then be null. An
@@ -301,9 +281,7 @@ export function connectAdvanced(
         // replacing it with a no-op on unmount. This can probably be avoided if Subscription's
         // listeners logic is changed to not call listeners that have been unsubscribed in the
         // middle of the notification loop.
-        this.notifyNestedSubs = this.subscription!.notifyNestedSubs.bind(
-          this.subscription
-        );
+        this.notifyNestedSubs = this.subscription!.notifyNestedSubs.bind(this.subscription);
       }
 
       private onStateChange() {

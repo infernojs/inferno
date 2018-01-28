@@ -236,10 +236,7 @@ describe('ReactElement', function() {
     });
 
     var container = document.createElement('div');
-    var instance = ReactDOM.render(
-      React.createElement(Component, { fruit: 'mango' }),
-      container
-    );
+    var instance = ReactDOM.render(React.createElement(Component, { fruit: 'mango' }), container);
     expect(instance.props.fruit).toBe('mango');
 
     ReactDOM.render(React.createElement(Component), container);
@@ -256,14 +253,10 @@ describe('ReactElement', function() {
       }
     });
 
-    var instance = ReactTestUtils.renderIntoDocument(
-      React.createElement(Component)
-    );
+    var instance = ReactTestUtils.renderIntoDocument(React.createElement(Component));
     expect(instance.$LI.children.props.prop).toBe('testKey');
 
-    var inst2 = ReactTestUtils.renderIntoDocument(
-      React.createElement(Component, { prop: null })
-    );
+    var inst2 = ReactTestUtils.renderIntoDocument(React.createElement(Component, { prop: null }));
     expect(inst2.$LI.children.props.prop).toBe(null);
   });
 

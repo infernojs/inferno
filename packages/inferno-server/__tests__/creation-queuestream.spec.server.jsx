@@ -27,11 +27,7 @@ class StatefulPromiseComponent extends Component {
   }
 
   render() {
-    return createElement(
-      'span',
-      null,
-      `Stateless Item ${this.props.index}: ${this.props.value}`
-    );
+    return createElement('span', null, `Stateless Item ${this.props.index}: ${this.props.value}`);
   }
 }
 
@@ -49,11 +45,7 @@ class StatefulHierchicalPromiseComponent extends Component {
 
   render() {
     if (this.props.index > 4) {
-      return createElement(
-        'span',
-        null,
-        `Final Stateless Item ${this.props.index}: ${this.props.value}`
-      );
+      return createElement('span', null, `Final Stateless Item ${this.props.index}: ${this.props.value}`);
     } else {
       return createElement(
         'div',
@@ -67,8 +59,7 @@ class StatefulHierchicalPromiseComponent extends Component {
   }
 }
 
-const FunctionalComponent = ({ value }) =>
-  createElement('span', null, `stateless ${value}!`);
+const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${value}!`);
 
 describe('SSR Creation Queue Streams - (non-JSX)', () => {
   const testEntries = [
@@ -79,12 +70,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should render div with span child and styling',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: 'border-left: 10px;' })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: 'border-left: 10px;' })),
       result: '<div><span style="border-left: 10px;"></span></div>'
     },
     // TODO: Fix this
@@ -101,32 +87,17 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     // },
     {
       description: 'should render div with span child and styling #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: { borderLeft: 10 } })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: { borderLeft: 10 } })),
       result: '<div><span style="border-left:10px;"></span></div>'
     },
     {
       description: 'should render div with span child and styling #3',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: { fontFamily: 'Arial' } })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: { fontFamily: 'Arial' } })),
       result: '<div><span style="font-family:Arial;"></span></div>'
     },
     {
       description: 'should render div with span child (with className)',
-      template: () =>
-        createElement(
-          'div',
-          { className: 'foo' },
-          createElement('span', { className: 'bar' })
-        ),
+      template: () => createElement('div', { className: 'foo' }, createElement('span', { className: 'bar' })),
       result: '<div class="foo"><span class="bar"></span></div>'
     },
     {
@@ -136,14 +107,8 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should render div with text child (XSS script attack)',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello world <img src="x" onerror="alert(\'XSS\')">'
-        ),
-      result:
-        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
+      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'XSS\')">'),
+      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
     },
     {
       description: 'should render div with text children',
@@ -157,26 +122,13 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should render div with node children',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', null, 'Hello'),
-          createElement('span', null, ' world!')
-        ),
+      template: () => createElement('div', null, createElement('span', null, 'Hello'), createElement('span', null, ' world!')),
       result: '<div><span>Hello</span><span> world!</span></div>'
     },
     {
       description: 'should render div with node children #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { id: '123' }, 'Hello'),
-          createElement('span', { className: 'foo' }, ' world!')
-        ),
-      result:
-        '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
+      template: () => createElement('div', null, createElement('span', { id: '123' }, 'Hello'), createElement('span', { className: 'foo' }, ' world!')),
+      result: '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
     },
     {
       description: 'should render div with falsy children',
@@ -193,18 +145,12 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should render a stateless component',
-      template: value =>
-        createElement(
-          'div',
-          null,
-          createElement(FunctionalComponent, { value })
-        ),
+      template: value => createElement('div', null, createElement(FunctionalComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     {
       description: 'should render a div with styles',
-      template: () =>
-        createElement('div', { style: { display: 'block', width: '50px' } }),
+      template: () => createElement('div', { style: { display: 'block', width: '50px' } }),
       result: '<div style="display:block;width:50px;"></div>'
     },
     {
@@ -219,46 +165,23 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should render a stateful component',
-      template: value =>
-        createElement('div', null, createElement(StatefulComponent, { value })),
+      template: value => createElement('div', null, createElement(StatefulComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     // Following tests check for not only concatenated output, but chunked streams
     {
       description: 'should render a stateless component',
-      template: value =>
-        createElement(
-          'div',
-          null,
-          createElement(FunctionalComponent, { value })
-        ),
-      result: [
-        ['<div>', '<span>', 'stateless foo!', '</span>', '</div>'],
-        '<div><span>stateless foo!</span></div>'
-      ]
+      template: value => createElement('div', null, createElement(FunctionalComponent, { value })),
+      result: [['<div>', '<span>', 'stateless foo!', '</span>', '</div>'], '<div><span>stateless foo!</span></div>']
     },
     {
       description: 'should render a stateful component with promise',
-      template: value =>
-        createElement(
-          'div',
-          null,
-          createElement(StatefulPromiseComponent, { index: 1 })
-        ),
-      result: [
-        [
-          '<div>',
-          '<span>Stateless Item 1: I waited long enough!</span>',
-          '</div>'
-        ],
-        '<div><span>Stateless Item 1: I waited long enough!</span></div>'
-      ]
+      template: value => createElement('div', null, createElement(StatefulPromiseComponent, { index: 1 })),
+      result: [['<div>', '<span>Stateless Item 1: I waited long enough!</span>', '</div>'], '<div><span>Stateless Item 1: I waited long enough!</span></div>']
     },
     {
-      description:
-        'should render a stateful component with promise as hierarchy',
-      template: value =>
-        createElement(StatefulHierchicalPromiseComponent, { index: 1 }),
+      description: 'should render a stateful component with promise as hierarchy',
+      template: value => createElement(StatefulHierchicalPromiseComponent, { index: 1 }),
       result: [
         [
           '<div class="child">Stateless Item 1: I waited long enough for 1!',
@@ -366,14 +289,12 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<input value="bar">'
     },
     {
-      description:
-        'should render input with value when defaultValue is present',
+      description: 'should render input with value when defaultValue is present',
       template: () => <input value="bar" defaultValue="foo" />,
       result: '<input value="bar">'
     },
     {
-      description:
-        'should render input when value is not present with defaultValue',
+      description: 'should render input when value is not present with defaultValue',
       template: () => <input defaultValue="foo" />,
       result: '<input value="foo">'
     },
@@ -383,8 +304,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<input value="123">'
     },
     {
-      description:
-        'should render input of type text with value when input is wrapped',
+      description: 'should render input of type text with value when input is wrapped',
       template: () => <WrappedInput value="foo" />,
       result: '<input type="text" value="foo">'
     },
@@ -411,38 +331,23 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'Should render backgroundColor',
-      template: () => (
-        <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />
-      ),
-      result:
-        '<div style="background-color:red;border-bottom-color:green;"></div>'
+      template: () => <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />,
+      result: '<div style="background-color:red;border-bottom-color:green;"></div>'
     },
     {
       description: 'Should not render null styles',
-      template: () => (
-        <div style={{ backgroundColor: null, borderBottomColor: null }} />
-      ),
-      result:
-        '<div style=""></div>'
+      template: () => <div style={{ backgroundColor: null, borderBottomColor: null }} />,
+      result: '<div style=""></div>'
     },
     {
       description: 'Should style attribute if null',
-      template: () => (
-        <div style={null} />
-      ),
-      result:
-        '<div></div>'
+      template: () => <div style={null} />,
+      result: '<div></div>'
     },
     {
       description: 'should render div with text child (XSS script attack) #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello world <img src="x" onerror="alert(\'&XSS&\')">'
-        ),
-      result:
-        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
+      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'&XSS&\')">'),
+      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
     },
     {
       description: 'Should render style opacity #1',
@@ -641,9 +546,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
           <Foobar />
         </div>
       ).then(function(output) {
-        expect(output[1]).toEqual(
-          '<div><input count="1" type="checkbox" checked="true"></div>'
-        );
+        expect(output[1]).toEqual('<div><input count="1" type="checkbox" checked="true"></div>');
         done();
       });
     });

@@ -4,18 +4,7 @@
 /** TypeDoc Comment */
 
 import { EMPTY_OBJ } from 'inferno';
-import {
-  combineFrom,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isNumber,
-  isString,
-  isTrue,
-  isUndefined,
-  throwError
-} from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, isUndefined, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
@@ -42,10 +31,7 @@ export class RenderQueueStream extends Readable {
     if (!isNullOrUndef(position)) {
       const lastSlot = this.promises[position].length - 1;
       // Combine as array or push into promise collector
-      if (
-        typeof this.promises[position][lastSlot] === 'string' &&
-        typeof node === 'string'
-      ) {
+      if (typeof this.promises[position][lastSlot] === 'string' && typeof node === 'string') {
         this.promises[position][lastSlot] += node;
       } else {
         this.promises[position].push(node);
@@ -54,10 +40,7 @@ export class RenderQueueStream extends Readable {
     } else if (typeof node === 'string' && this.collector.length - 1 === 0) {
       this.push(node);
       // Last element in collector and incoming are same then concat
-    } else if (
-      typeof node === 'string' &&
-      typeof this.collector[this.collector.length - 2] === 'string'
-    ) {
+    } else if (typeof node === 'string' && typeof this.collector[this.collector.length - 2] === 'string') {
       this.collector[this.collector.length - 2] += node;
       // Push the element to collector (before Infinity)
     } else {
@@ -72,11 +55,7 @@ export class RenderQueueStream extends Readable {
       this.push(chunk);
       this.collector.shift();
       // For fulfilled promises, merge into collector
-    } else if (
-      !!chunk &&
-      (typeof chunk === 'object' || isFunction(chunk)) &&
-      isFunction(chunk.then)
-    ) {
+    } else if (!!chunk && (typeof chunk === 'object' || isFunction(chunk)) && isFunction(chunk.then)) {
       const self = this;
       chunk.then(index => {
         self.collector.splice(0, 1, ...self.promises[index]);
@@ -137,10 +116,7 @@ export class RenderQueueStream extends Readable {
         }
         // Trigger extra promise-based lifecycle hook
         if (isFunction(instance.getInitialProps)) {
-          const initialProps = instance.getInitialProps(
-            instance.props,
-            instance.context
-          );
+          const initialProps = instance.getInitialProps(instance.props, instance.context);
           if (initialProps) {
             if (Promise.resolve(initialProps) === initialProps) {
               const promisePosition = this.promises.push([]) - 1;
@@ -148,17 +124,10 @@ export class RenderQueueStream extends Readable {
                 initialProps.then(dataForContext => {
                   instance.$PSS = false;
                   if (typeof dataForContext === 'object') {
-                    instance.props = combineFrom(
-                      instance.props,
-                      dataForContext
-                    );
+                    instance.props = combineFrom(instance.props, dataForContext);
                   }
 
-                  const renderOut = instance.render(
-                    instance.props,
-                    instance.state,
-                    instance.context
-                  );
+                  const renderOut = instance.render(instance.props, instance.state, instance.context);
                   if (isInvalid(renderOut)) {
                     this.addToQueue('<!--!-->', promisePosition);
                   } else if (isString(renderOut)) {
@@ -166,12 +135,7 @@ export class RenderQueueStream extends Readable {
                   } else if (isNumber(renderOut)) {
                     this.addToQueue(renderOut + '', promisePosition);
                   } else {
-                    this.renderVNodeToQueue(
-                      renderOut,
-                      instance.context,
-                      true,
-                      promisePosition
-                    );
+                    this.renderVNodeToQueue(renderOut, instance.context, true, promisePosition);
                   }
 
                   setTimeout(this.pushQueue, 0);
@@ -185,11 +149,7 @@ export class RenderQueueStream extends Readable {
             }
           }
         }
-        const renderOutput = instance.render(
-          instance.props,
-          instance.state,
-          instance.context
-        );
+        const renderOutput = instance.render(instance.props, instance.state, instance.context);
         instance.$PSS = false;
 
         if (isInvalid(renderOutput)) {
@@ -240,9 +200,7 @@ export class RenderQueueStream extends Readable {
           } else if (prop === 'defaultValue') {
             // Use default values if normal values are not present
             if (!props.value) {
-              renderedString += ` value="${
-                isString(value) ? escapeText(value) : value
-              }"`;
+              renderedString += ` value="${isString(value) ? escapeText(value) : value}"`;
             }
           } else if (prop === 'defaultChecked') {
             // Use default values if normal values are not present
@@ -292,24 +250,14 @@ export class RenderQueueStream extends Readable {
       }
       // Push text directly to queue
     } else if ((flags & VNodeFlags.Text) > 0) {
-      this.addToQueue(
-        (firstChild ? '' : '<!---->') +
-          (children === '' ? ' ' : escapeText(children)),
-        position
-      );
+      this.addToQueue((firstChild ? '' : '<!---->') + (children === '' ? ' ' : escapeText(children)), position);
       // Handle errors
     } else {
       if (process.env.NODE_ENV !== 'production') {
         if (typeof vNode === 'object') {
-          throwError(
-            `renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
-              vNode
-            )}".`
-          );
+          throwError(`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(vNode)}".`);
         } else {
-          throwError(
-            `renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
-          );
+          throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
         }
       }
       throwError();

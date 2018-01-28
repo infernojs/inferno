@@ -93,9 +93,7 @@ describe('inject based context', () => {
     });
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('context:bar1337');
-    expect(container.querySelector('section').textContent).toBe(
-      'context:421337'
-    );
+    expect(container.querySelector('section').textContent).toBe('context:421337');
     done();
   });
 
@@ -121,9 +119,7 @@ describe('inject based context', () => {
     try {
       render(<A />, container);
     } catch (e) {
-      expect(e.message).toBe(
-        "MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider"
-      );
+      expect(e.message).toBe("MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider");
       done();
     }
   });
@@ -200,9 +196,7 @@ describe('inject based context', () => {
     expect(container.querySelector('span').textContent).toBe('42');
     expect(container.querySelector('div').textContent).toBe('context:3');
 
-    expect(msg).toBe(
-      "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children"
-    );
+    expect(msg).toBe("MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children");
     console.error = baseWarn;
     done();
   });

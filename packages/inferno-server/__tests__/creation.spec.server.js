@@ -8,8 +8,7 @@ import { renderToStaticMarkup } from 'inferno-server';
  }
  }*/
 
-const FunctionalComponent = ({ value }) =>
-  createElement('span', null, `stateless ${value}!`);
+const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${value}!`);
 
 describe('SSR Creation (non-JSX)', () => {
   const testEntries = [
@@ -20,42 +19,22 @@ describe('SSR Creation (non-JSX)', () => {
     },
     {
       description: 'should render div with span child and styling',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: 'border-left: 10px;' })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: 'border-left: 10px;' })),
       result: '<div><span style="border-left: 10px;"></span></div>'
     },
     {
       description: 'should render div with span child and styling #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: { borderLeft: 10 } })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: { borderLeft: 10 } })),
       result: '<div><span style="border-left:10px;"></span></div>'
     },
     {
       description: 'should render div with span child and styling #3',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { style: { fontFamily: 'Arial' } })
-        ),
+      template: () => createElement('div', null, createElement('span', { style: { fontFamily: 'Arial' } })),
       result: '<div><span style="font-family:Arial;"></span></div>'
     },
     {
       description: 'should render div with span child (with className)',
-      template: () =>
-        createElement(
-          'div',
-          { className: 'foo' },
-          createElement('span', { className: 'bar' })
-        ),
+      template: () => createElement('div', { className: 'foo' }, createElement('span', { className: 'bar' })),
       result: '<div class="foo"><span class="bar"></span></div>'
     },
     {
@@ -65,14 +44,8 @@ describe('SSR Creation (non-JSX)', () => {
     },
     {
       description: 'should render div with text child (XSS script attack)',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello world <img src="x" onerror="alert(\'XSS\')">'
-        ),
-      result:
-        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
+      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'XSS\')">'),
+      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
     },
     {
       description: 'should render div with text children',
@@ -86,26 +59,13 @@ describe('SSR Creation (non-JSX)', () => {
     },
     {
       description: 'should render div with node children',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', null, 'Hello'),
-          createElement('span', null, ' world!')
-        ),
+      template: () => createElement('div', null, createElement('span', null, 'Hello'), createElement('span', null, ' world!')),
       result: '<div><span>Hello</span><span> world!</span></div>'
     },
     {
       description: 'should render div with node children #2',
-      template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span', { id: '123' }, 'Hello'),
-          createElement('span', { className: 'foo' }, ' world!')
-        ),
-      result:
-        '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
+      template: () => createElement('div', null, createElement('span', { id: '123' }, 'Hello'), createElement('span', { className: 'foo' }, ' world!')),
+      result: '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
     },
     {
       description: 'should render div with falsy children',
@@ -122,18 +82,12 @@ describe('SSR Creation (non-JSX)', () => {
     },
     {
       description: 'should render a stateless component',
-      template: value =>
-        createElement(
-          'div',
-          null,
-          createElement(FunctionalComponent, { value })
-        ),
+      template: value => createElement('div', null, createElement(FunctionalComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     {
       description: 'should render a div with styles',
-      template: () =>
-        createElement('div', { style: { display: 'block', width: '50px' } }),
+      template: () => createElement('div', { style: { display: 'block', width: '50px' } }),
       result: '<div style="display:block;width:50px;"></div>'
     },
     {

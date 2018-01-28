@@ -45,11 +45,6 @@ describe('ReactES6Class', function() {
     return instance;
   }
 
-  it('preserves the name of the class for use in error messages', function() {
-    class Foo extends React.Component {}
-    expect(Foo.name).toBe('Foo');
-  });
-
   it('renders a simple stateless component with prop', function() {
     class Foo extends React.Component {
       render() {
@@ -183,9 +178,7 @@ describe('ReactES6Class', function() {
         this.setState({ bar: 'bar' });
       }
       render() {
-        return (
-          <Inner name={this.state.bar} onClick={this.handleClick.bind(this)} />
-        );
+        return <Inner name={this.state.bar} onClick={this.handleClick.bind(this)} />;
       }
     }
     test(<Foo initialValue="foo" />, 'DIV', 'foo');
@@ -221,12 +214,7 @@ describe('ReactES6Class', function() {
         this.forceUpdate();
       }
       render() {
-        return (
-          <Inner
-            name={this.mutativeValue}
-            onClick={this.handleClick.bind(this)}
-          />
-        );
+        return <Inner name={this.mutativeValue} onClick={this.handleClick.bind(this)} />;
       }
     }
     test(<Foo initialValue="foo" />, 'DIV', 'foo');

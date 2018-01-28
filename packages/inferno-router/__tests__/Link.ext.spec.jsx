@@ -16,9 +16,7 @@ describe('Link (jsx)', () => {
     document.body.removeChild(node);
   });
 
-  it.skip('should trigger when clicked', done => {
-    const node = document.createElement('div');
-
+  it('should trigger when clicked', done => {
     let history;
     const ContextChecker = (props, context) => {
       history = context.router.history;
@@ -26,11 +24,13 @@ describe('Link (jsx)', () => {
     };
 
     render(
-      <MemoryRouter>
-        <ContextChecker>
-          <Link to="/clicked">link</Link>
-        </ContextChecker>
-      </MemoryRouter>,
+      <div>
+        <MemoryRouter>
+          <ContextChecker>
+            <Link to="/clicked">link</Link>
+          </ContextChecker>
+        </MemoryRouter>
+      </div>,
       node
     );
 
@@ -40,8 +40,7 @@ describe('Link (jsx)', () => {
     done();
   });
 
-  it.skip('should trigger custom onClick', done => {
-    const node = document.createElement('div');
+  it('should trigger custom onClick', done => {
     const spy = sinon.spy(() => {});
 
     render(

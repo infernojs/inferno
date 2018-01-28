@@ -73,9 +73,7 @@ describe('A <StaticRouter>', () => {
     render(<StaticRouter context={context} history={history} />, node);
 
     expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain(
-      '<StaticRouter> ignores the history prop'
-    );
+    expect(console.error.calls.mostRecent().args[0]).toContain('<StaticRouter> ignores the history prop');
     // expect(console.error).toHaveBeenCalledWith(
     //   expect.stringContaining('<StaticRouter> ignores the history prop')
     // )
@@ -161,11 +159,7 @@ describe('A <StaticRouter>', () => {
       const context = {};
 
       renderToStaticMarkup(
-        <StaticRouter
-          context={context}
-          basename="/the-base"
-          location="/the-base/path"
-        >
+        <StaticRouter context={context} basename="/the-base" location="/the-base/path">
           <Route component={LocationChecker} />
         </StaticRouter>
       );
@@ -204,13 +198,7 @@ describe('A <StaticRouter>', () => {
       const node = document.createElement('div');
       const pathname = '/test-path-please-ignore';
 
-      const Link = ({ to, children }) => (
-        <Route
-          children={({ history: { createHref } }) => (
-            <a href={createHref(to)}>{children}</a>
-          )}
-        />
-      );
+      const Link = ({ to, children }) => <Route children={({ history: { createHref } }) => <a href={createHref(to)}>{children}</a>} />;
 
       render(
         <StaticRouter context={context}>
