@@ -17,11 +17,6 @@ const customLaunchers = {
     browserName: 'iphone',
     version: '10.3'
   },
-  slSafari7: {
-    base: 'SauceLabs',
-    browserName: 'safari',
-    platform: 'OS X 10.9'
-  },
   slSafari8: {
     base: 'SauceLabs',
     browserName: 'safari',

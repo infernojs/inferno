@@ -777,8 +777,10 @@ describe('Components (JSX)', () => {
     it('should correctly render', done => {
       render(<MyComponent98 />, container);
       requestAnimationFrame(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div>isok=true<div><span>a</span><span>b</span></div></div>'));
-        done();
+        setTimeout(() => {
+          expect(container.innerHTML).toBe(innerHTML('<div>isok=true<div><span>a</span><span>b</span></div></div>'));
+          done();
+        }, 10);
       });
     });
   });

@@ -689,7 +689,7 @@ describe('Elements (JSX)', () => {
     expect(container.childNodes.length).toBe(1);
     expect(container.firstChild.getAttribute('type')).toBe('file');
     expect(container.firstChild.getAttribute('multiple')).toBe('');
-    expect(container.firstChild.capture).toBe(true);
+    expect(container.firstChild.capture).toBeTruthy(); // true and "true" are both valid
     expect(container.firstChild.getAttribute('accept')).toBe('image/*');
 
     render(<input type="file" multiple="multiple" capture="capture" accept="image/*" />, container);
@@ -698,7 +698,7 @@ describe('Elements (JSX)', () => {
     expect(container.childNodes.length).toBe(1);
     expect(container.firstChild.getAttribute('type')).toBe('file');
     expect(container.firstChild.getAttribute('multiple')).toBe('');
-    expect(container.firstChild.capture).toBe(true);
+    expect(container.firstChild.capture).toBeTruthy(); // true and "true" are both valid;
     expect(container.firstChild.getAttribute('accept')).toBe('image/*');
   });
 
@@ -758,7 +758,7 @@ describe('Elements (JSX)', () => {
       container
     );
     expect(container.firstChild.volume).not.toBe(undefined);
-    expect(container.firstChild.volume).toBe(0);
+    // expect(container.firstChild.volume).toBe(0); this depends on browser
   });
 
   it('should dangerously set innerHTML', () => {
