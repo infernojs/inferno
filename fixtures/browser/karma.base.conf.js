@@ -10,10 +10,7 @@ module.exports = function(config) {
     detectBrowsers: {
       postDetection(browserList) {
         const results = [];
-        //   browserList.indexOf('PhantomJS') && browserList.length === 1
-        //     ? ['PhantomJS']
-        //     : [];
-        //
+
         if (browserList.indexOf('Chrome') > -1) {
           results.push('Chrome');
         }
@@ -41,7 +38,7 @@ module.exports = function(config) {
       './packages/*/__tests__/*': ['webpack']
     },
 
-    reporters: [process.env.CI ? 'failed' : 'progress'],
+    reporters: ['progress'],
 
     browserConsoleLogOptions: {
       level: 'warn',
