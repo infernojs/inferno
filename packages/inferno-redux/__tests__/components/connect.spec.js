@@ -8,7 +8,8 @@ import sinon from 'sinon';
 
 describe('Inferno', () => {
   // IE does not support function names so error messages are different
-  const supportFnName = Function.prototype.name === '';
+  const testFunction = function testFunction() {};
+  const supportFnName = testFunction.name === 'testFunction';
   const unmountDOM = elm => render(null, elm);
   let container;
 
