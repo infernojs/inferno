@@ -54,6 +54,10 @@ export function isUndefined(o: any): o is undefined {
   return o === void 0;
 }
 
+export function isDefined(o: any) {
+  return o !== void 0;
+}
+
 export function isObject(o: any): o is object {
   return typeof o === 'object';
 }

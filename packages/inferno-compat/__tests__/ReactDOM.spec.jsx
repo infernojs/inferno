@@ -8,12 +8,31 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
+import { createComponentVNode, render } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 var div = React.createFactory('div');
 
 describe('ReactDOM', function() {
+  let container;
+
+  function renderIntoDocument(input) {
+    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
   // TODO: uncomment this test once we can run in phantom, which
   // supports real submit events.
   /*
@@ -45,18 +64,18 @@ describe('ReactDOM', function() {
 
   it('allows a DOM element to be used with a string', function() {
     var element = React.createElement('div', { className: 'foo' });
-    var instance = ReactTestUtils.renderIntoDocument(element);
+    var instance = renderIntoDocument(element);
     expect(ReactDOM.findDOMNode(instance).tagName).toBe('DIV');
   });
 
   it('should allow children to be passed as an argument', function() {
-    var argDiv = ReactTestUtils.renderIntoDocument(div(null, 'child'));
+    var argDiv = renderIntoDocument(div(null, 'child'));
     var argNode = ReactDOM.findDOMNode(argDiv);
     expect(argNode.innerHTML).toBe('child');
   });
 
   it('should overwrite props.children with children argument', function() {
-    var conflictDiv = ReactTestUtils.renderIntoDocument(div({ children: 'fakechild' }, 'child'));
+    var conflictDiv = renderIntoDocument(div({ children: 'fakechild' }, 'child'));
     var conflictNode = ReactDOM.findDOMNode(conflictDiv);
     expect(conflictNode.innerHTML).toBe('child');
   });
@@ -66,34 +85,34 @@ describe('ReactDOM', function() {
    * DOM, instead of a stale cache.
    */
   it('should purge the DOM cache when removing nodes', function() {
-    var myDiv = ReactTestUtils.renderIntoDocument(
+    var myDiv = renderIntoDocument(
       <div>
         <div key="theDog" className="dog" />
         <div key="theBird" className="bird" />
       </div>
     );
     // Warm the cache with theDog
-    myDiv = ReactTestUtils.renderIntoDocument(
+    myDiv = renderIntoDocument(
       <div>
         <div key="theDog" className="dogbeforedelete" />
         <div key="theBird" className="bird" />
       </div>
     );
     // Remove theDog - this should purge the cache
-    myDiv = ReactTestUtils.renderIntoDocument(
+    myDiv = renderIntoDocument(
       <div>
         <div key="theBird" className="bird" />
       </div>
     );
     // Now, put theDog back. It's now a different DOM node.
-    myDiv = ReactTestUtils.renderIntoDocument(
+    myDiv = renderIntoDocument(
       <div>
         <div key="theDog" className="dog" />
         <div key="theBird" className="bird" />
       </div>
     );
     // Change the className of theDog. It will use the same element
-    myDiv = ReactTestUtils.renderIntoDocument(
+    myDiv = renderIntoDocument(
       <div>
         <div key="theDog" className="bigdog" />
         <div key="theBird" className="bird" />

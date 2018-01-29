@@ -6,106 +6,109 @@ export const xlinkNS = 'http://www.w3.org/1999/xlink';
 export const xmlNS = 'http://www.w3.org/XML/1998/namespace';
 export const svgNS = 'http://www.w3.org/2000/svg';
 
-export const strictProps = new Set<string>();
-strictProps.add('volume');
-strictProps.add('defaultChecked');
-strictProps.add('value');
+export const strictProps: Record<string, number> = {
+  defaultChecked: 1,
+  value: 1,
+  volume: 1
+};
 
-export const booleanProps = new Set<string>();
-booleanProps.add('muted');
-booleanProps.add('scoped');
-booleanProps.add('loop');
-booleanProps.add('open');
-booleanProps.add('checked');
-booleanProps.add('default');
-booleanProps.add('capture');
-booleanProps.add('disabled');
-booleanProps.add('readOnly');
-booleanProps.add('required');
-booleanProps.add('autoplay');
-booleanProps.add('controls');
-booleanProps.add('seamless');
-booleanProps.add('reversed');
-booleanProps.add('allowfullscreen');
-booleanProps.add('novalidate');
-booleanProps.add('hidden');
-booleanProps.add('autoFocus');
-booleanProps.add('selected');
-booleanProps.add('indeterminate');
+export const booleanProps: Record<string, number> = {
+  allowfullscreen: 1,
+  autoFocus: 1,
+  autoplay: 1,
+  capture: 1,
+  checked: 1,
+  controls: 1,
+  default: 1,
+  disabled: 1,
+  hidden: 1,
+  indeterminate: 1,
+  loop: 1,
+  muted: 1,
+  novalidate: 1,
+  open: 1,
+  readOnly: 1,
+  required: 1,
+  reversed: 1,
+  scoped: 1,
+  seamless: 1,
+  selected: 1
+};
 
-// TODO: MathML namespace
-export const namespaces = new Map<string, string>();
-namespaces.set('xlink:href', xlinkNS);
-namespaces.set('xlink:arcrole', xlinkNS);
-namespaces.set('xlink:actuate', xlinkNS);
-namespaces.set('xlink:show', xlinkNS);
-namespaces.set('xlink:role', xlinkNS);
-namespaces.set('xlink:title', xlinkNS);
-namespaces.set('xlink:type', xlinkNS);
-namespaces.set('xml:base', xmlNS);
-namespaces.set('xml:lang', xmlNS);
-namespaces.set('xml:space', xmlNS);
+export const namespaces: Record<string, string> = {
+  'xlink:actuate': xlinkNS,
+  'xlink:arcrole': xlinkNS,
+  'xlink:href': xlinkNS,
+  'xlink:role': xlinkNS,
+  'xlink:show': xlinkNS,
+  'xlink:title': xlinkNS,
+  'xlink:type': xlinkNS,
+  'xml:base': xmlNS,
+  'xml:lang': xmlNS,
+  'xml:space': xmlNS
+};
 
-export const isUnitlessNumber = new Set<string>();
-isUnitlessNumber.add('animationIterationCount');
-isUnitlessNumber.add('borderImageOutset');
-isUnitlessNumber.add('borderImageSlice');
-isUnitlessNumber.add('borderImageWidth');
-isUnitlessNumber.add('boxFlex');
-isUnitlessNumber.add('boxFlexGroup');
-isUnitlessNumber.add('boxOrdinalGroup');
-isUnitlessNumber.add('columnCount');
-isUnitlessNumber.add('flex');
-isUnitlessNumber.add('flexGrow');
-isUnitlessNumber.add('flexPositive');
-isUnitlessNumber.add('flexShrink');
-isUnitlessNumber.add('flexNegative');
-isUnitlessNumber.add('flexOrder');
-isUnitlessNumber.add('gridRow');
-isUnitlessNumber.add('gridColumn');
-isUnitlessNumber.add('fontWeight');
-isUnitlessNumber.add('lineClamp');
-isUnitlessNumber.add('lineHeight');
-isUnitlessNumber.add('opacity');
-isUnitlessNumber.add('order');
-isUnitlessNumber.add('orphans');
-isUnitlessNumber.add('tabSize');
-isUnitlessNumber.add('widows');
-isUnitlessNumber.add('zIndex');
-isUnitlessNumber.add('zoom');
-isUnitlessNumber.add('fillOpacity');
-isUnitlessNumber.add('floodOpacity');
-isUnitlessNumber.add('stopOpacity');
-isUnitlessNumber.add('strokeDasharray');
-isUnitlessNumber.add('strokeDashoffset');
-isUnitlessNumber.add('strokeMiterlimit');
-isUnitlessNumber.add('strokeOpacity');
-isUnitlessNumber.add('strokeWidth');
+export const isUnitlessNumber: Record<string, number> = {
+  animationIterationCount: 1,
+  borderImageOutset: 1,
+  borderImageSlice: 1,
+  borderImageWidth: 1,
+  boxFlex: 1,
+  boxFlexGroup: 1,
+  boxOrdinalGroup: 1,
+  columnCount: 1,
+  fillOpacity: 1,
+  flex: 1,
+  flexGrow: 1,
+  flexNegative: 1,
+  flexOrder: 1,
+  flexPositive: 1,
+  flexShrink: 1,
+  floodOpacity: 1,
+  fontWeight: 1,
+  gridColumn: 1,
+  gridRow: 1,
+  lineClamp: 1,
+  lineHeight: 1,
+  opacity: 1,
+  order: 1,
+  orphans: 1,
+  stopOpacity: 1,
+  strokeDasharray: 1,
+  strokeDashoffset: 1,
+  strokeMiterlimit: 1,
+  strokeOpacity: 1,
+  strokeWidth: 1,
+  tabSize: 1,
+  widows: 1,
+  zIndex: 1,
+  zoom: 1
+};
 
-export const skipProps = new Set<string>();
-skipProps.add('children');
-skipProps.add('childrenType');
-skipProps.add('className');
-skipProps.add('defaultValue');
-skipProps.add('ref');
-skipProps.add('key');
-skipProps.add('checked');
-skipProps.add('multiple');
+export const skipProps: Record<string, number> = {
+  checked: 1,
+  children: 1,
+  childrenType: 1,
+  className: 1,
+  defaultValue: 1,
+  key: 1,
+  multiple: 1,
+  ref: 1
+};
 
-export const delegatedEvents = new Set<string>();
-delegatedEvents.add('onClick');
-delegatedEvents.add('onMouseDown');
-delegatedEvents.add('onMouseUp');
-delegatedEvents.add('onMouseMove');
-
-delegatedEvents.add('onTouchStart');
-delegatedEvents.add('onTouchEnd');
-delegatedEvents.add('onTouchMove');
-
-delegatedEvents.add('onSubmit');
-delegatedEvents.add('onDblClick');
-delegatedEvents.add('onKeyDown');
-delegatedEvents.add('onKeyUp');
-delegatedEvents.add('onKeyPress');
-delegatedEvents.add('onFocusIn');
-delegatedEvents.add('onFocusOut');
+export const delegatedEvents: Record<string, number> = {
+  onClick: 1,
+  onDblClick: 1,
+  onFocusIn: 1,
+  onFocusOut: 1,
+  onKeyDown: 1,
+  onKeyPress: 1,
+  onKeyUp: 1,
+  onMouseDown: 1,
+  onMouseMove: 1,
+  onMouseUp: 1,
+  onSubmit: 1,
+  onTouchEnd: 1,
+  onTouchMove: 1,
+  onTouchStart: 1
+};

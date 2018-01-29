@@ -52,7 +52,6 @@ describe('Utils', () => {
 			`;
       const validCSS = 'position: relative; right: 10px;';
 
-      debugger;
       expect(styleStringToArray(createStyler(CSS))).toEqual(styleStringToArray(validCSS));
     });
   });

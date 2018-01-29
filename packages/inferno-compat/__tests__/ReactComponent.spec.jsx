@@ -8,18 +8,34 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
+import { createComponentVNode, render } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 var mocks;
 
 describe('ReactComponent', function() {
-  beforeEach(function() {
+  let container;
+
+  function renderIntoDocument(input) {
+    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+  }
+
+  beforeEach(() => {
     mocks = {
       getMockFunction: function() {
         return jasmine.createSpy();
       }
     };
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
   });
 
   it('should throw on invalid render targets', function() {
@@ -72,7 +88,8 @@ describe('ReactComponent', function() {
     });
 
     var instance = <Component />;
-    instance = ReactTestUtils.renderIntoDocument(instance);
+
+    renderIntoDocument(instance);
   });
 
   it('should not have refs on unmounted components', function() {
@@ -95,7 +112,7 @@ describe('ReactComponent', function() {
     });
 
     var instance = <Parent child={<span />} />;
-    instance = ReactTestUtils.renderIntoDocument(instance);
+    renderIntoDocument(instance);
   });
 
   it('should support new-style refs', function() {
@@ -130,7 +147,7 @@ describe('ReactComponent', function() {
     });
 
     var instance = <Component />;
-    instance = ReactTestUtils.renderIntoDocument(instance);
+    renderIntoDocument(instance);
     expect(mounted).toBe(true);
   });
 
@@ -163,7 +180,7 @@ describe('ReactComponent', function() {
     });
 
     var instance = <Component />;
-    instance = ReactTestUtils.renderIntoDocument(instance);
+    renderIntoDocument(instance);
     expect(mounted).toBe(true);
   });
 
@@ -286,10 +303,10 @@ describe('ReactComponent', function() {
     //spyOn(console, 'error');
 
     var X = undefined;
-    expect(() => ReactTestUtils.renderIntoDocument(<X />)).toThrow();
+    expect(() => renderIntoDocument(<X />)).toThrow();
 
     var Z = {};
-    expect(() => ReactTestUtils.renderIntoDocument(<Z />)).toThrow();
+    expect(() => renderIntoDocument(<Z />)).toThrow();
 
     // One warning for each element creation
     //expect(console.error.calls.count()).toBe(3);
@@ -333,7 +350,7 @@ describe('ReactComponent', function() {
       }
     });
 
-    var component = ReactTestUtils.renderIntoDocument(<Parent />);
+    var component = renderIntoDocument(<Parent />);
     expect(ReactDOM.findDOMNode(component).innerHTML).toBe('bar');
   });
 });

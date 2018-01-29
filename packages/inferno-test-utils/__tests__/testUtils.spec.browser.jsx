@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, render, createComponentVNode } from 'inferno';
 import { createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import {
@@ -21,13 +21,14 @@ import {
   isRenderedClassComponentOfType,
   isVNode,
   isVNodeOfType,
-  renderIntoDocument,
   scryRenderedDOMElementsWithClass,
   scryRenderedDOMElementsWithTag,
   scryRenderedVNodesWithType,
   scryVNodesWithType
 } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
+import { Wrapper } from '../src/utils';
 
 const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'key', 'ref', 'parentVNode', 'props', 'type'].sort();
 
@@ -71,6 +72,22 @@ describe('Test Utils', () => {
   const SpanProto = Object.getPrototypeOf(document.createElement('span')).constructor;
   const H1Proto = Object.getPrototypeOf(document.createElement('h1')).constructor;
   const ParagraphProto = Object.getPrototypeOf(document.createElement('p')).constructor;
+
+  let container;
+
+  function renderIntoDocument(input) {
+    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    container.innerHTML = '';
+  });
 
   describe('isVNode', () => {
     it('should return true for VNodes', () => {
@@ -293,15 +310,6 @@ describe('Test Utils', () => {
       expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), CreateClassComponent)).toBe(false);
       expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), FunctionalComponent)).toBe(false);
       expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), 'div')).toBe(false);
-    });
-  });
-
-  describe('renderIntoDocument', () => {
-    it('should return a rendered class component', () => {
-      expect(isRenderedClassComponent(renderIntoDocument(createElement('div')))).toBe(true);
-      expect(isRenderedClassComponent(renderIntoDocument(createElement(FunctionalComponent)))).toBe(true);
-      expect(isRenderedClassComponent(renderIntoDocument(createElement(CreateClassComponent)))).toBe(true);
-      expect(isRenderedClassComponent(renderIntoDocument(createElement(ExtendClassComponent)))).toBe(true);
     });
   });
 

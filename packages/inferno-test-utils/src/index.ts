@@ -12,7 +12,6 @@ import {
   isFunctionalVNode as _isFunctionalVNode,
   isTextVNode as _isTextVNode,
   isVNode as _isVNode,
-  renderIntoDocument as _renderIntoDocument,
   Wrapper as _Wrapper
 } from './utils';
 import { renderToSnapshot as _renderToSnapshot, vNodeToSnapshot as _vNodeToSnapshot } from './jest';
@@ -170,5 +169,4 @@ export const isDOMVNode = _isDOMVNode;
 export const isFunctionalVNode = _isFunctionalVNode;
 export const isTextVNode = _isTextVNode;
 export const isVNode = _isVNode;
-export const renderIntoDocument = _renderIntoDocument;
 export const Wrapper = _Wrapper;

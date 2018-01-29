@@ -8,7 +8,9 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
+import { createComponentVNode, render } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
@@ -81,6 +83,23 @@ var ComponentLifeCycle = {
  * some cases. Better to just block all updates in initialization.
  */
 describe('ReactComponentLifeCycle', function() {
+  let container;
+
+  function renderIntoDocument(input) {
+    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
   it('should not reuse an instance when it has been unmounted', function() {
     var container = document.createElement('div');
     var StatefulComponent = React.createClass({
@@ -132,7 +151,7 @@ describe('ReactComponentLifeCycle', function() {
     });
 
     var instance = <SwitcherParent />;
-    instance = ReactTestUtils.renderIntoDocument(instance);
+    renderIntoDocument(instance);
     setTimeout(() => {
       expect(_testJournal).toEqual(['SwitcherParent:getInitialState', 'SwitcherParent:onDOMReady', 'Child:onDOMReady']);
       done();
@@ -169,7 +188,7 @@ describe('ReactComponentLifeCycle', function() {
     });
     var instance = <StatefulComponent />;
     expect(function() {
-      instance = ReactTestUtils.renderIntoDocument(instance);
+      renderIntoDocument(instance);
     }).not.toThrow();
   });
 
@@ -185,7 +204,7 @@ describe('ReactComponentLifeCycle', function() {
         return <div />;
       }
     });
-    expect(() => ReactTestUtils.renderIntoDocument(<StatefulComponent />)).toThrow();
+    expect(() => renderIntoDocument(<StatefulComponent />)).toThrow();
     // expect(console.error.calls.count()).toBe(1);
     // expect(console.error.argsForCall[0][0]).toBe(
     //   'Warning: setState(...): Can only update a mounted or ' +
@@ -212,7 +231,7 @@ describe('ReactComponentLifeCycle', function() {
 
     var element = <Component />;
 
-    var instance = ReactTestUtils.renderIntoDocument(element);
+    var instance = renderIntoDocument(element);
     expect(instance.$LI.children.isMounted()).toBeTruthy();
 
     // expect(console.error.calls.count()).toBe(1);
@@ -238,7 +257,7 @@ describe('ReactComponentLifeCycle', function() {
 
     var element = <Component />;
 
-    var instance = ReactTestUtils.renderIntoDocument(element);
+    var instance = renderIntoDocument(element);
     expect(instance.$LI.children.isMounted()).toBeTruthy();
 
     // expect(console.error.calls.count()).toBe(1);
@@ -503,7 +522,7 @@ describe('ReactComponentLifeCycle', function() {
       }
     });
     var instance = <SetStateInComponentDidMount valueToUseInitially="hello" valueToUseInOnDOMReady="goodbye" />;
-    instance = ReactTestUtils.renderIntoDocument(instance);
+    instance = renderIntoDocument(instance);
 
     requestAnimationFrame(() => {
       setTimeout(() => {

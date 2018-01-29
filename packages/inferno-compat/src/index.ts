@@ -28,7 +28,7 @@ import {
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement as infernoCreateElement } from 'inferno-create-element';
-import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError } from 'inferno-shared';
+import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
@@ -39,9 +39,6 @@ declare global {
     persist: Function;
   }
 }
-
-const componentToDOMNodeMap = new Map();
-options.findDOMNodeEnabled = true;
 
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
   render(null, container);
@@ -142,24 +139,7 @@ options.afterRender = function(): void {
 };
 const nextAfterMount = options.afterMount;
 
-// React returns null when Component rendered nothing, we need to mimic this behavior
-// In Inferno Component returns empty text as placeholder
-function getDOMIgnoreVoid(vNode) {
-  let dom = null;
-
-  if (vNode.children && vNode.children.flags & VNodeFlags.Void) {
-    dom = null;
-  } else {
-    dom = vNode.dom;
-  }
-
-  return dom;
-}
-
 options.afterMount = vNode => {
-  if (options.findDOMNodeEnabled) {
-    componentToDOMNodeMap.set(vNode.children, getDOMIgnoreVoid(vNode));
-  }
   if (nextAfterMount) {
     nextAfterMount(vNode);
   }
@@ -167,9 +147,6 @@ options.afterMount = vNode => {
 const nextAfterUpdate = options.afterUpdate;
 
 options.afterUpdate = vNode => {
-  if (options.findDOMNodeEnabled) {
-    componentToDOMNodeMap.set(vNode.children, getDOMIgnoreVoid(vNode));
-  }
   if (nextAfterUpdate) {
     nextAfterUpdate(vNode);
   }
@@ -178,9 +155,6 @@ options.afterUpdate = vNode => {
 const nextBeforeUnmount = options.beforeUnmount;
 
 options.beforeUnmount = vNode => {
-  if (options.findDOMNodeEnabled) {
-    componentToDOMNodeMap.delete(vNode.children);
-  }
   if (nextBeforeUnmount) {
     nextBeforeUnmount(vNode);
   }
@@ -385,17 +359,11 @@ for (let i = ELEMENTS.length; i--; ) {
 }
 
 function findDOMNode(ref) {
-  if (!options.findDOMNodeEnabled) {
-    if (process.env.NODE_ENV !== 'production') {
-      throwError(
-        'findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!'
-      );
-    }
-    throwError();
+  if (ref && ref.nodeType) {
+    return ref;
   }
-  const dom = ref && ref.nodeType ? ref : null;
 
-  return componentToDOMNodeMap.has(ref) ? componentToDOMNodeMap.get(ref) : dom;
+  return ref.$UN ? null : ref.$LI.dom || ref;
 }
 
 // Mask React global in browser enviornments when React is not used.

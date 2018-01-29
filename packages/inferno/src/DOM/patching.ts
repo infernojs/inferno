@@ -3,7 +3,7 @@
  */
 /** TypeDoc Comment */
 
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isString, isUndefined, NO_OP, throwError } from 'inferno-shared';
+import { combineFrom, isDefined, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
@@ -67,7 +67,6 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
   } else {
     const dom = lastVNode.dom as Element;
     const nextFlags = nextVNode.flags;
-
     const lastProps = lastVNode.props;
     const nextProps = nextVNode.props;
     let isFormElement = false;
@@ -96,13 +95,13 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
         for (const prop in lastPropsOrEmpty) {
           // do not add a hasOwnProperty check here, it affects performance
           if (!nextPropsOrEmpty.hasOwnProperty(prop) && !isNullOrUndef(lastPropsOrEmpty[prop])) {
-            if (strictProps.has(prop)) {
+            if (isDefined(strictProps[prop])) {
               // When removing value of select element, it needs to be set to null instead empty string, because empty string is valid value for option which makes that option selected
               // MS IE/Edge don't follow html spec for textArea and input elements and we need to set empty string to value in those cases to avoid "null" and "undefined" texts
               (dom as any)[prop] = nextFlags & VNodeFlags.SelectElement ? null : '';
             } else if (prop === 'style') {
               dom.removeAttribute('style');
-            } else if (delegatedEvents.has(prop)) {
+            } else if (isDefined(delegatedEvents[prop])) {
               handleEvent(prop, null, dom);
             } else if (isAttrAnEvent(prop)) {
               patchEvent(prop, lastPropsOrEmpty[prop], null, dom);
@@ -525,11 +524,11 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
         }
       }
     } else {
-      const keyIndex = new Map();
+      const keyIndex: Record<string, number> = {};
 
       // Map keys by their index in array
       for (i = bStart; i <= bEnd; i++) {
-        keyIndex.set(b[i].key, i);
+        keyIndex[b[i].key as string | number] = i;
       }
 
       // Try to patch same keys
@@ -537,9 +536,9 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
         aNode = a[i];
 
         if (patched < bLeft) {
-          j = keyIndex.get(aNode.key);
+          j = keyIndex[aNode.key];
 
-          if (!isUndefined(j)) {
+          if (isDefined(j)) {
             bNode = b[j];
             sources[j - bStart] = i;
             if (pos > j) {

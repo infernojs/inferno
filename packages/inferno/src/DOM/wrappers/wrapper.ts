@@ -22,7 +22,7 @@ function triggerEventListener(props, methodName, e) {
 export function createWrappedFunction(methodName: string | string[], applyValue?: Function): Function {
   const fnMethod = function(e) {
     e.stopPropagation();
-    const vNode = this.vNode;
+    const vNode = this.$V;
     // If vNode is gone by the time event fires, no-op
     if (!vNode) {
       return;
@@ -39,7 +39,7 @@ export function createWrappedFunction(methodName: string | string[], applyValue?
     }
 
     if (isFunction(applyValue)) {
-      const newVNode = this.vNode;
+      const newVNode = this.$V;
       const newProps = newVNode.props || EMPTY_OBJ;
 
       applyValue(newProps, dom, false, newVNode);

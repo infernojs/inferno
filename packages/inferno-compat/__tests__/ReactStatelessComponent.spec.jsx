@@ -10,7 +10,9 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
+import { createComponentVNode, render } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
@@ -19,6 +21,23 @@ function StatelessComponent(props) {
 }
 
 describe('ReactStatelessComponent', function() {
+  let container;
+
+  function renderIntoDocument(input) {
+    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
   it('should render stateless component', function() {
     var el = document.createElement('div');
     ReactDOM.render(<StatelessComponent name="A" />, el);
@@ -96,7 +115,7 @@ describe('ReactStatelessComponent', function() {
       return [<div />, <div />];
     }
     expect(function() {
-      ReactTestUtils.renderIntoDocument(
+      React.render(
         <div>
           <NotAComponent />
         </div>
@@ -207,21 +226,21 @@ describe('ReactStatelessComponent', function() {
     // arrow function.
     Child = Child.bind(this);
 
-    expect(() => ReactTestUtils.renderIntoDocument(<Child />)).not.toThrow();
+    expect(() => renderIntoDocument(<Child />)).not.toThrow();
   });
 
   it('should allow simple functions to return null', function() {
     var Child = function() {
       return null;
     };
-    expect(() => ReactTestUtils.renderIntoDocument(<Child />)).not.toThrow();
+    expect(() => renderIntoDocument(<Child />)).not.toThrow();
   });
 
   it('should allow simple functions to return false', function() {
     function Child() {
       return false;
     }
-    expect(() => ReactTestUtils.renderIntoDocument(<Child />)).not.toThrow();
+    expect(() => renderIntoDocument(<Child />)).not.toThrow();
   });
 
   // it('should warn when using non-React functions in JSX', function() {

@@ -23,11 +23,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(
-  input: InfernoInput,
-  parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node,
-  callback?: Function
-): InfernoChildren {
+export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node, callback?: Function): InfernoChildren {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDom) {
@@ -38,7 +34,16 @@ export function render(
     return;
   }
   const lifecycle = [];
-  let rootInput = roots.get(parentDom);
+  const rootLen = roots.length;
+  let rootInput;
+  let index;
+
+  for (index = 0; index < rootLen; index++) {
+    if (roots[index] === parentDom) {
+      rootInput = (parentDom as any).$V as VNode;
+      break;
+    }
+  }
 
   if (isUndefined(rootInput)) {
     if (!isInvalid(input)) {
@@ -48,20 +53,20 @@ export function render(
       if (!hydrateRoot(input, parentDom as any, lifecycle)) {
         mount(input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false);
       }
-      roots.set(parentDom, input);
+      (parentDom as any).$V = input;
+      roots.push(parentDom);
       rootInput = input;
     }
   } else {
     if (isNullOrUndef(input)) {
       remove(rootInput as VNode, parentDom as Element);
-      roots.delete(parentDom);
+      roots.splice(index, 1);
     } else {
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
       }
       patch(rootInput as VNode, input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false);
-      roots.set(parentDom, input);
-      rootInput = input;
+      rootInput = (parentDom as any).$V = input;
     }
   }
 

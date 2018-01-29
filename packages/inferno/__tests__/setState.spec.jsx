@@ -9,6 +9,7 @@ describe('setState', () => {
   });
 
   afterEach(function() {
+    render(null, container);
     container.innerHTML = '';
   });
 

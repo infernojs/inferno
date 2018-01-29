@@ -620,8 +620,6 @@ describe('FormElements', () => {
 
         render(<CompA />, container);
 
-        debugger;
-
         expect(container.firstChild.firstChild.checked).toBe(false);
         // expect(container.querySelectorAll('input:checked').length).toEqual(1);
 

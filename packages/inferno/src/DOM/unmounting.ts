@@ -2,7 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isFunction, isNull, isNullOrUndef, isObject } from 'inferno-shared';
+import { isDefined, isFunction, isNull, isNullOrUndef, isObject } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { options, VNode } from '../core/implementation';
 import { delegatedEvents } from './constants';
@@ -42,7 +42,7 @@ export function unmount(vNode) {
     if (!isNull(props)) {
       for (const name in props) {
         // Remove all delegated events, regular events die with dom node
-        if (delegatedEvents.has(name)) {
+        if (isDefined(delegatedEvents[name])) {
           handleEvent(name, null, vNode.dom);
         }
       }

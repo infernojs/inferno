@@ -1,4 +1,4 @@
-import { isArray, isInvalid, isNullOrUndef, throwError } from 'inferno-shared';
+import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 function getTagName(vNode) {
@@ -14,7 +14,8 @@ function getTagName(vNode) {
   } else {
     const type = vNode.type;
 
-    const componentName = type.name || type.displayName || type.constructor.name || (type.toString().match(/^function\s*([^\s(]+)/) || [])[1]; // Fallback for IE
+    // Fallback for IE
+    const componentName = type.name || type.displayName || type.constructor.name || (type.toString().match(/^function\s*([^\s(]+)/) || [])[1];
 
     tagName = `<${componentName} />`;
   }
@@ -23,7 +24,7 @@ function getTagName(vNode) {
 }
 
 function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
-  const foundKeys = new Set();
+  const foundKeys: any[] = [];
 
   for (let i = 0, len = vNodeTree.length; i < len; i++) {
     const childNode = vNodeTree[i];
@@ -35,12 +36,17 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     if (isInvalid(childNode)) {
       if (forceKeyed) {
         return 'Encountered invalid node when preparing to keyed algorithm. Location: ' + getTagName(childNode);
-      } else if (foundKeys.size !== 0) {
+      } else if (foundKeys.length !== 0) {
         return 'Encountered invalid node with mixed keys. Location: ' + getTagName(childNode);
       }
       continue;
     }
-    const key = childNode.key;
+    const key = childNode.key as null | string | number | undefined;
+
+    if (!isNullOrUndef(key) && !isStringOrNumber(key)) {
+      return 'Encountered child vNode where key property is not string or number. Location: ' + getTagName(childNode);
+    }
+
     const children = childNode.children;
     const childFlags = childNode.childFlags;
     if (!isInvalid(children)) {
@@ -59,15 +65,15 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     if (forceKeyed && isNullOrUndef(key)) {
       return 'Encountered child vNode without key during keyed algorithm. Location: ' + getTagName(childNode);
     } else if (!forceKeyed && isNullOrUndef(key)) {
-      if (foundKeys.size !== 0) {
+      if (foundKeys.length !== 0) {
         return 'Encountered children with key missing. Location: ' + getTagName(childNode);
       }
       continue;
     }
-    if (foundKeys.has(key)) {
+    if (foundKeys.indexOf(key) > -1) {
       return 'Encountered two children with same key: {' + key + '}. Location: ' + getTagName(childNode);
     }
-    foundKeys.add(key);
+    foundKeys.push(key);
   }
 }
 

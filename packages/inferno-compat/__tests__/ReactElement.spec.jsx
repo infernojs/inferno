@@ -8,7 +8,9 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
+import { createComponentVNode, render } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
@@ -26,9 +28,20 @@ describe('ReactElement', function() {
         return React.createElement('div');
       }
     });
+    container = document.createElement('div');
+    document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  let container;
+
+  function renderIntoDocument(input) {
+    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+  }
+
+  afterEach(() => {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
     global.Symbol = originalSymbol;
   });
 
@@ -253,10 +266,10 @@ describe('ReactElement', function() {
       }
     });
 
-    var instance = ReactTestUtils.renderIntoDocument(React.createElement(Component));
+    var instance = renderIntoDocument(React.createElement(Component));
     expect(instance.$LI.children.props.prop).toBe('testKey');
 
-    var inst2 = ReactTestUtils.renderIntoDocument(React.createElement(Component, { prop: null }));
+    var inst2 = renderIntoDocument(React.createElement(Component, { prop: null }));
     expect(inst2.$LI.children.props.prop).toBe(null);
   });
 
@@ -305,7 +318,7 @@ describe('ReactElement', function() {
         return <div />;
       }
     });
-    var test = ReactTestUtils.renderIntoDocument(<Test value={+undefined} />);
+    var test = renderIntoDocument(<Test value={+undefined} />);
     expect(test.$LI.children.props.value).toBeNaN();
     expect(console.error.calls.count()).toBe(0);
   });

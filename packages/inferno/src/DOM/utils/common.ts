@@ -2,7 +2,7 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isNullOrUndef, isUndefined } from 'inferno-shared';
+import { isDefined, isNullOrUndef } from 'inferno-shared';
 import { svgNS } from '../constants';
 
 // We need EMPTY_OBJ defined in one place.
@@ -43,7 +43,7 @@ export function removeChild(parentDom: Element, dom: Element) {
 
 export function callAll(arrayFn: Function[]) {
   let listener;
-  while (!isUndefined((listener = arrayFn.shift()))) {
+  while (isDefined((listener = arrayFn.shift()))) {
     listener();
   }
 }

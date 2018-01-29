@@ -10,6 +10,7 @@ describe('BUG: instance - null', () => {
   });
 
   afterEach(function() {
+    render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });

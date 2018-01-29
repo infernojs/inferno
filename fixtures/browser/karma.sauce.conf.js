@@ -105,6 +105,10 @@ module.exports = function(config) {
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
 
+    captureTimeout: 300000,
+    browserNoActivityTimeout: 300000,
+    browserDisconnectTolerance: 2,
+
     browserConsoleLogOptions: {
       level: 'warn',
       terminal: false

@@ -1080,6 +1080,11 @@ describe('Components (JSX)', () => {
       container.appendChild(secondDiv);
     });
 
+    afterEach(function() {
+      render(null, firstDiv);
+      render(null, secondDiv);
+    });
+
     const StatelessComponent = ({ value }) => <p>{value}</p>;
 
     class First extends Component {

@@ -2,7 +2,7 @@ import { Component, render } from 'inferno';
 import { createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { connect } from 'inferno-redux';
-import { findRenderedVNodeWithType, renderIntoDocument, Wrapper } from 'inferno-test-utils';
+import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
 import sinon from 'sinon';
 
@@ -533,22 +533,21 @@ describe('Inferno', () => {
         }
       }
 
-      const tree = renderIntoDocument(<OuterContainer />);
-      const outerStub = findRenderedVNodeWithType(tree, OuterContainer).children;
-      const stub = findRenderedVNodeWithType(tree, Passthrough).children;
+      const outerStub = render(<OuterContainer />, document.createElement('div'));
+      const stub = findRenderedVNodeWithType(outerStub, Passthrough).children;
       expect(stub.props.stateThing).toBe('');
       stub.props.mergedDoSomething('a');
-      tree.setState({}, () => {
+      outerStub.setState({}, () => {
         expect(stub.props.stateThing).toBe('HELLO az');
 
         stub.props.mergedDoSomething('b');
-        tree.setState({}, () => {
+        outerStub.setState({}, () => {
           expect(stub.props.stateThing).toBe('HELLO azbz');
 
           outerStub.setState({ extra: 'Z' });
-          tree.setState({}, () => {
+          outerStub.setState({}, () => {
             stub.props.mergedDoSomething('c');
-            tree.setState({}, () => {
+            outerStub.setState({}, () => {
               expect(stub.props.stateThing).toBe('HELLO azbzcZ');
 
               done();

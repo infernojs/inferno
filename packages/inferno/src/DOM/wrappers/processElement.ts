@@ -24,7 +24,7 @@ export function processElement(flags: VNodeFlags, vNode: VNode, dom: Element, ne
     applyValueTextArea(nextPropsOrEmpty, dom, mounting);
   }
   if (isControlled) {
-    (dom as any).vNode = vNode;
+    (dom as any).$V = vNode;
   }
 }
 

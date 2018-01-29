@@ -3,7 +3,7 @@
  */ /** TypeDoc Comment */
 
 import { createComponentVNode, createTextVNode, createVNode, directClone, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
-import { combineFrom, isArray, isInvalid, isStringOrNumber, isUndefined } from 'inferno-shared';
+import { combineFrom, isArray, isDefined, isInvalid, isStringOrNumber } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 /*
@@ -44,14 +44,14 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
   let key = vNodeToClone.key;
   let ref = vNodeToClone.ref;
   if (props) {
-    if (!isUndefined(props.className)) {
+    if (isDefined(props.className)) {
       className = props.className as string;
     }
-    if (!isUndefined(props.ref)) {
+    if (isDefined(props.ref)) {
       ref = props.ref;
     }
 
-    if (!isUndefined(props.key)) {
+    if (isDefined(props.key)) {
       key = props.key;
     }
   }
@@ -92,7 +92,7 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
     }
     newVNode = createVNode(flags, vNodeToClone.type, className, null, ChildFlags.HasInvalidChildren, combineFrom(vNodeToClone.props, props), key, ref);
   } else if (flags & VNodeFlags.Text) {
-    newVNode = createTextVNode(vNodeToClone.children);
+    newVNode = createTextVNode(vNodeToClone.children as string);
   }
 
   return normalizeProps(newVNode);

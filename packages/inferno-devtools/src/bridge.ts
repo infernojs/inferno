@@ -10,7 +10,7 @@ function findVNodeFromDom(vNode, dom) {
   if (!vNode) {
     const roots = options.roots;
 
-    return roots.get(dom);
+    return roots[roots.indexOf(dom)];
   } else {
     if (vNode.dom === dom) {
       return vNode;
@@ -218,7 +218,7 @@ export function createDevToolsBridge() {
 }
 
 function isRootVNode(vNode) {
-  return Boolean(vNode.dom && vNode.dom.parentNode && options.roots.has(vNode.dom.parentNode));
+  return Boolean(vNode.dom && vNode.dom.parentNode && options.roots.indexOf(vNode.dom.parentNode) > -1);
 }
 
 /**

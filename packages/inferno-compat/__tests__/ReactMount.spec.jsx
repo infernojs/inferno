@@ -10,7 +10,6 @@
 'use strict';
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
 
 var ReactDOM = React;
 var mocks = {
@@ -40,7 +39,7 @@ describe('ReactMount', function() {
       }
     });
     expect(function() {
-      ReactTestUtils.renderIntoDocument(Component);
+      React.render(Component, document.createElement('div'));
     }).toThrow();
   });
 

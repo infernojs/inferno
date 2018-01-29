@@ -17,7 +17,7 @@ export function renderStylesToString(styles: string | object): string {
       if (isString(value)) {
         renderedString += `${getCssPropertyName(styleName)}${value};`;
       } else if (isNumber(value)) {
-        renderedString += `${getCssPropertyName(styleName)}${value}${isUnitlessNumber.has(styleName) ? '' : 'px'};`;
+        renderedString += `${getCssPropertyName(styleName)}${value}${isUnitlessNumber[styleName] ? '' : 'px'};`;
       }
     }
     return renderedString;

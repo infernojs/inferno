@@ -8,13 +8,28 @@
  */
 
 import React from 'inferno-compat';
-import * as ReactTestUtils from 'inferno-test-utils';
+import { createComponentVNode, render } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
 describe('ReactClass-spec', function() {
-  beforeEach(function() {
-    spyOn(console, 'error');
+  let container;
+
+  function renderIntoDocument(input) {
+    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
   });
 
   // it('should warn on invalid prop types', function() {
@@ -214,7 +229,7 @@ describe('ReactClass-spec', function() {
     });
 
     var instance = <Component />;
-    instance = ReactTestUtils.renderIntoDocument(instance).$LI.children;
+    instance = renderIntoDocument(instance).$LI.children;
 
     expect(instance.constructor.abc).toBe('def');
     expect(Component.abc).toBe('def');
@@ -240,7 +255,7 @@ describe('ReactClass-spec', function() {
       }
     });
     var instance = <Component />;
-    instance = ReactTestUtils.renderIntoDocument(instance);
+    instance = renderIntoDocument(instance);
     expect(instance.$LI.children.state.occupation).toEqual('clown');
   });
 
@@ -303,7 +318,7 @@ describe('ReactClass-spec', function() {
         return <span />;
       }
     });
-    expect(() => ReactTestUtils.renderIntoDocument(<Component />)).not.toThrow();
+    expect(() => renderIntoDocument(<Component />)).not.toThrow();
   });
 
   // it('should throw when using legacy factories', function() {

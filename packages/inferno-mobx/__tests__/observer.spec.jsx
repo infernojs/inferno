@@ -379,6 +379,7 @@ describe('Mobx Observer', () => {
     const Component = observer(
       createClass({
         onClick() {
+          debugger;
           this.setState({});
         },
         render() {

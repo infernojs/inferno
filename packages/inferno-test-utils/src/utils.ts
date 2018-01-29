@@ -2,7 +2,7 @@
  * @module Inferno-Test-Utils
  */ /** TypeDoc Comment */
 
-import { Component, createComponentVNode, render, VNode } from 'inferno';
+import { Component, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isNumber, isObject } from 'inferno-shared';
 
@@ -38,11 +38,4 @@ export class Wrapper extends Component<any, any> {
   public render() {
     return this.props.children;
   }
-}
-
-export function renderIntoDocument(input): Wrapper {
-  const wrappedInput = createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input });
-  const parent = document.createElement('div');
-  document.body.appendChild(parent);
-  return render(wrappedInput, parent) as any;
 }

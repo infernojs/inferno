@@ -11,7 +11,6 @@ npm install inferno-test-utils --save-dev
 
 ## Contents
 
-* [`renderIntoDocument`](#renderintodocumentvnodetree)
 * [`findAllInRenderedTree`](#findallinrenderedtreerenderedtree-predicate)
 * [`findAllInVNodeTree`](#findallinvnodetreevnodetree-predicate)
 * [`scryRenderedDOMElementsWithClass`](#scryrendereddomelementswithclassrenderedtree-classnames)
@@ -37,7 +36,7 @@ npm install inferno-test-utils --save-dev
 
 ## Usage
 
-### `renderIntoDocument(vNodeTree)`
+### `render(vNodeTree, DOM)`
 
 Renders `vNodeTree` into a detached DOM element in the document and returns a rendered `VNode` tree.
 
@@ -49,7 +48,7 @@ const vNodeTree = (
     <SomeComponent className="inner"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 ```
 
 ### `findAllInRenderedTree(renderedTree, predicate)`
@@ -64,7 +63,7 @@ const vNodeTree = (
     <SomeComponent className="inner"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 const predicate = (vNode) => vNode.type === SomeComponent;
 const result = findAllInRenderedTree(renderedTree, predicate);
 ```
@@ -98,7 +97,7 @@ const vNodeTree = (
     <SomeComponent className="inner two"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 const result1 = scryRenderedDOMElementsWithClass(renderedTree, 'inner');
 const result2 = scryRenderedDOMElementsWithClass(renderedTree, 'inner one');
 const result3 = scryRenderedDOMElementsWithClass(renderedTree, ['inner', 'two']);
@@ -118,7 +117,7 @@ const vNodeTree = (
     <SomeComponent className="inner two"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 const result1 = scryRenderedDOMElementsWithClass(renderedTree, 'outer');
 const result2 = scryRenderedDOMElementsWithClass(renderedTree, 'inner one');
 // Will throw an error because more than 1 matches were found...
@@ -138,7 +137,7 @@ const vNodeTree = (
     <p>Paragraph Three</p>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 const result1 = scryRenderedDOMElementsWithTag(renderedTree, 'h1');
 const result3 = scryRenderedDOMElementsWithTag(renderedTree, 'p');
 const result4 = scryRenderedVNodesWithType(renderedTree, 'span'); // Empty array
@@ -159,7 +158,7 @@ const vNodeTree = (
     </div>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 const result1 = findRenderedDOMElementWithTag(renderedTree, 'h1');
 // Will throw an error because more than 1 matches were found...
 const result2 = findRenderedDOMElementWithTag(renderedTree, 'p');
@@ -177,7 +176,7 @@ const vNodeTree = (
     <SomeComponent/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 const result1 = scryRenderedVNodesWithType(renderedTree, 'h1');
 const result2 = scryRenderedVNodesWithType(renderedTree, SomeComponent);
 const result3 = scryRenderedVNodesWithType(renderedTree, 'p'); // Empty array
@@ -198,7 +197,7 @@ const vNodeTree = (
     <AnotherComponent/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedTree = render(vNodeTree, DOM);
 const result1 = findRenderedVNodeWithType(renderedTree, 'h1');
 const result2 = findRenderedVNodeWithType(renderedTree, SomeComponent);
 // Will throw an error because more than 1 matches were found...

@@ -1,14 +1,16 @@
 /**
  * @module Inferno
- */ /** TypeDoc Comment */
+ */
+/** TypeDoc Comment */
 
 import { isNull } from 'inferno-shared';
+import { delegatedEvents } from '../constants';
 
-const delegatedEvents: Map<string, IDelegate> = new Map();
-
-interface IDelegate {
-  docEvent: any;
-  items: any;
+const attachedEventCounts = {};
+const attachedEvents = {};
+for (const ev in delegatedEvents) {
+  attachedEventCounts[ev] = 0;
+  attachedEvents[ev] = null;
 }
 
 interface IEventData {
@@ -16,54 +18,58 @@ interface IEventData {
 }
 
 export function handleEvent(name: string, nextEvent: Function | null, dom) {
-  let delegatedRoots = delegatedEvents.get(name);
-
+  const eventsLeft: number = attachedEventCounts[name];
+  let domEvents = dom.$EV;
   if (nextEvent) {
     // TODO: Refactor this.
     if (dom[name.toLowerCase()] && dom[name.toLowerCase()].wrapped) {
       return;
     }
-    if (!delegatedRoots) {
-      delegatedRoots = { items: new Map(), docEvent: null };
-      delegatedRoots.docEvent = attachEventToDocument(name, delegatedRoots);
-      delegatedEvents.set(name, delegatedRoots);
+    if (eventsLeft === 0) {
+      attachedEvents[name] = attachEventToDocument(name);
     }
-    delegatedRoots.items.set(dom, nextEvent);
-  } else if (delegatedRoots) {
-    const items = delegatedRoots.items;
-
-    if (items.delete(dom)) {
-      // If any items were deleted, check if listener need to be removed
-      if (items.size === 0) {
-        document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
-        delegatedEvents.delete(name);
-      }
+    if (!domEvents) {
+      domEvents = (dom as any).$EV = {};
     }
+    if (!domEvents[name]) {
+      attachedEventCounts[name]++;
+    }
+    domEvents[name] = nextEvent;
+  } else if (domEvents && domEvents[name]) {
+    attachedEventCounts[name]--;
+    if (eventsLeft === 1) {
+      document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
+      attachedEvents[name] = null;
+    }
+    domEvents[name] = nextEvent;
   }
 }
 
-function dispatchEvents(event, target, items, count: number, isClick: boolean, eventData: IEventData) {
+function dispatchEvents(event, target, isClick: boolean, name: string, eventData: IEventData) {
   let dom = target;
-  while (count > 0 && !isNull(dom)) {
+  while (!isNull(dom)) {
     // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
     // because the event listener is on document.body
     // Don't process clicks on disabled elements
     if (isClick && dom.disabled) {
       return;
     }
-    const eventsToTrigger = items.get(dom);
+    const eventsObject = dom.$EV;
 
-    if (eventsToTrigger) {
-      count--;
-      // linkEvent object
-      eventData.dom = dom;
-      if (eventsToTrigger.event) {
-        eventsToTrigger.event(eventsToTrigger.data, event);
-      } else {
-        eventsToTrigger(event);
-      }
-      if (event.cancelBubble) {
-        return;
+    if (eventsObject) {
+      const currentEvent = eventsObject[name];
+
+      if (currentEvent) {
+        // linkEvent object
+        eventData.dom = dom;
+        if (currentEvent.event) {
+          currentEvent.event(currentEvent.data, event);
+        } else {
+          currentEvent(event);
+        }
+        if (event.cancelBubble) {
+          return;
+        }
       }
     }
     dom = dom.parentNode;
@@ -79,30 +85,26 @@ function stopPropagation() {
   this.stopImmediatePropagation();
 }
 
-function attachEventToDocument(name, delegatedRoots: IDelegate) {
+function attachEventToDocument(name: string) {
   const docEvent = (event: Event) => {
-    const count = delegatedRoots.items.size;
+    event.stopPropagation = stopPropagation;
+    // Event data needs to be object to save reference to currentTarget getter
+    const eventData: IEventData = {
+      dom: document as any
+    };
 
-    if (count > 0) {
-      event.stopPropagation = stopPropagation;
-      // Event data needs to be object to save reference to currentTarget getter
-      const eventData: IEventData = {
-        dom: document as any
-      };
-
-      try {
-        Object.defineProperty(event, 'currentTarget', {
-          configurable: true,
-          get: function get() {
-            return eventData.dom;
-          }
-        });
-      } catch (e) {
-        /* safari7 and phantomJS will crash */
-      }
-
-      dispatchEvents(event, event.target, delegatedRoots.items, count, event.type === 'click', eventData);
+    try {
+      Object.defineProperty(event, 'currentTarget', {
+        configurable: true,
+        get: function get() {
+          return eventData.dom;
+        }
+      });
+    } catch (e) {
+      /* safari7 and phantomJS will crash */
     }
+
+    dispatchEvents(event, event.target, event.type === 'click', name, eventData);
   };
   document.addEventListener(normalizeEventName(name), docEvent);
   return docEvent;

@@ -6,13 +6,14 @@ import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, 
 import { isInvalid, isNullOrUndef, isObject, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-const componentHooks = new Set<string>();
-componentHooks.add('onComponentWillMount');
-componentHooks.add('onComponentDidMount');
-componentHooks.add('onComponentWillUnmount');
-componentHooks.add('onComponentShouldUpdate');
-componentHooks.add('onComponentWillUpdate');
-componentHooks.add('onComponentDidUpdate');
+const componentHooks = {
+  onComponentDidMount: 1,
+  onComponentDidUpdate: 1,
+  onComponentShouldUpdate: 1,
+  onComponentWillMount: 1,
+  onComponentWillUnmount: 1,
+  onComponentWillUpdate: 1
+};
 
 /**
  * Creates virtual node
@@ -73,7 +74,7 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
       newProps = {} as T & Props;
 
       for (const prop in props) {
-        if (componentHooks.has(prop)) {
+        if ((componentHooks as any)[prop] !== void 0) {
           if (!ref) {
             ref = {};
           }

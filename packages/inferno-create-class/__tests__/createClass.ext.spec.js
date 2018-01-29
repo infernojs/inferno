@@ -13,8 +13,8 @@ describe('Components createClass (non-JSX)', () => {
   });
 
   afterEach(function() {
-    document.body.removeChild(container);
     render(null, container);
+    document.body.removeChild(container);
   });
 
   const BasicComponent = createClass({

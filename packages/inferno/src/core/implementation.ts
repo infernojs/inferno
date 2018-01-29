@@ -3,7 +3,19 @@
  */ /** TypeDoc Comment */
 
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isStringOrNumber, isUndefined, throwError } from 'inferno-shared';
+import {
+  isArray,
+  isDefined,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  isStringOrNumber,
+  isUndefined,
+  throwError
+} from 'inferno-shared';
 import { validateVNodeElementChildren } from './validate';
 
 const keyPrefix = '$';
@@ -14,7 +26,7 @@ export interface VNode {
   dom: Element | null;
   className: string | null | undefined;
   flags: VNodeFlags;
-  key: any;
+  key: null | number | string;
   parentVNode: VNode | null;
   props: Props | null;
   ref: Ref | Refs | null;
@@ -63,7 +75,7 @@ export function createVNode(
   children?: InfernoChildren,
   childFlags?: ChildFlags,
   props?: Props | null,
-  key?: any,
+  key?: string | number | null,
   ref?: Ref | Refs | null
 ): VNode {
   if (process.env.NODE_ENV !== 'production') {
@@ -86,7 +98,7 @@ export function createVNode(
   return vNode;
 }
 
-export function createComponentVNode(flags: VNodeFlags, type, props?: Props | null, key?: any, ref?: Ref | Refs | null) {
+export function createComponentVNode(flags: VNodeFlags, type, props?: Props | null, key?: null | string | number, ref?: Ref | Refs | null) {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.HtmlElement) {
       throwError('Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.');
@@ -94,7 +106,7 @@ export function createComponentVNode(flags: VNodeFlags, type, props?: Props | nu
   }
 
   if ((flags & VNodeFlags.ComponentUnknown) > 0) {
-    flags = !isUndefined(type.prototype) && isFunction(type.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+    flags = isDefined(type.prototype) && isFunction(type.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
   }
 
   // set default props
@@ -138,7 +150,7 @@ export function createComponentVNode(flags: VNodeFlags, type, props?: Props | nu
   return vNode;
 }
 
-export function createTextVNode(text, key?) {
+export function createTextVNode(text?: string | number, key?: string | number | null): VNode {
   return getVNode(ChildFlags.HasInvalidChildren, isNullOrUndef(text) ? '' : text, null, VNodeFlags.Text, key, null, null, null);
 }
 
@@ -147,19 +159,19 @@ export function normalizeProps(vNode) {
 
   if (props) {
     if (vNode.flags & VNodeFlags.Element) {
-      if (!isUndefined(props.children) && isNullOrUndef(vNode.children)) {
+      if (isDefined(props.children) && isNullOrUndef(vNode.children)) {
         normalizeChildren(vNode, props.children);
       }
-      if (!isUndefined(props.className)) {
+      if (isDefined(props.className)) {
         vNode.className = props.className || null;
         props.className = undefined;
       }
     }
-    if (!isUndefined(props.key)) {
+    if (isDefined(props.key)) {
       vNode.key = props.key;
       props.key = undefined;
     }
-    if (!isUndefined(props.ref)) {
+    if (isDefined(props.ref)) {
       vNode.ref = props.ref as any;
       props.ref = undefined;
     }
@@ -344,7 +356,7 @@ export const options: {
   beforeUnmount: null | Function;
   createVNode: null | Function;
   findDOMNodeEnabled: boolean;
-  roots: Map<any, any>;
+  roots: any[];
 } = {
   afterMount: null,
   afterRender: null,
@@ -353,5 +365,5 @@ export const options: {
   beforeUnmount: null,
   createVNode: null,
   findDOMNodeEnabled: false,
-  roots: new Map<any, any>()
+  roots: []
 };
