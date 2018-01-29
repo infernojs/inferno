@@ -1,0 +1,29 @@
+{
+  "name": "inferno-component",
+  "version": "4.0.0-16",
+  "license": "MIT",
+  "description": "Inferno ES6 Component",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "keywords": [
+    "component",
+    "inferno"
+  ],
+  "rollup": {
+    "moduleName": "Inferno"
+  },
+  "main": "index.js",
+  "module": "index.mjs",
+  "dev:module": "dist/index.dev.mjs",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/infernojs/inferno",
+  "dependencies": {
+    "inferno": "4.0.0-16"
+  }
+}

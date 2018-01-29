@@ -5,6 +5,7 @@
 		"paths": {
 			"inferno": [ "packages/inferno/src" ],
 			"inferno-compat": [ "packages/inferno-compat/src" ],
+      "inferno-component": [ "packages/inferno-component/src" ],
 			"inferno-create-class": [ "packages/inferno-create-class/src" ],
 			"inferno-create-element": [ "packages/inferno-create-element/src" ],
 			"inferno-devtools": [ "packages/inferno-devtools/src" ],

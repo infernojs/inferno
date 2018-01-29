@@ -19,14 +19,10 @@ let isUsingStaticRendering = false;
 
 let warnedAboutObserverInjectDeprecation = false;
 
-export const componentByNodeRegistery = new WeakMap();
 export const renderReporter = new EventEmitter();
 
 function reportRendering(component) {
   const node = component.$LI.dom;
-  if (node) {
-    componentByNodeRegistery.set(node, component);
-  }
 
   renderReporter.emit({
     component,
@@ -224,9 +220,7 @@ const reactiveMixin = {
     this.__$mobxIsUnmounted = true;
     if (isDevtoolsEnabled) {
       const node = this.$LI.dom;
-      if (node) {
-        componentByNodeRegistery.delete(node);
-      }
+
       renderReporter.emit({
         component: this,
         event: 'destroy',

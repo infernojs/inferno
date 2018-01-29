@@ -88,6 +88,7 @@ module.exports = function(config) {
       resolve: {
         alias: {
           inferno: resolve('inferno'),
+          'inferno-component': resolve('inferno-component'),
           'inferno-compat': resolve('inferno-compat'),
           'inferno-create-class': resolve('inferno-create-class'),
           'inferno-create-element': resolve('inferno-create-element'),
