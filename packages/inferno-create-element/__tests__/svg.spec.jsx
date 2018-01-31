@@ -163,12 +163,12 @@ describe('createTree - SVG (JSX)', () => {
     render(<svg viewBox="0 0 100 100" />, container);
 
     expect(container.firstChild.tagName).toEqual('svg');
-    expect(container.firstChild.hasAttribute('viewBox')).toBe(true);
+    expect(container.firstChild.getAttribute('viewBox')).not.toBe(null);
 
     render(<svg />, container);
 
     expect(container.firstChild.tagName).toEqual('svg');
-    expect(container.firstChild.hasAttribute('viewBox')).toBe(false);
+    expect(container.firstChild.getAttribute('viewBox')).toBe(null);
   });
 
   it('should remove arbitrary SVG camel case attributes', () => {

@@ -74,11 +74,6 @@ const customLaunchers = {
     base: 'SauceLabs',
     browserName: 'android',
     version: '5.1'
-  },
-  slAndroid4: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    version: '4.4'
   }
 };
 

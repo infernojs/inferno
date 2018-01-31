@@ -10,12 +10,12 @@ import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ } from '../DOM/utils/common';
 
 const resolvedPromise: any = typeof Promise === 'undefined' ? null : Promise.resolve();
-
+const fallbackMethod = typeof requestAnimationFrame === 'undefined' ? setTimeout : requestAnimationFrame;
 function nextTick(fn) {
   if (resolvedPromise) {
     return resolvedPromise.then(fn);
   }
-  return requestAnimationFrame(fn);
+  return fallbackMethod(fn);
 }
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback?: Function): void {

@@ -108,12 +108,12 @@ describe('Switch (jsx)', () => {
     // Inferno does last iteration async, thats why setTimeout here
     expect(node.textContent).toBe('');
 
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       setTimeout(() => {
         expect(node.textContent).toBe('three');
         done();
-      }, 10);
-    });
+      }, 25);
+    }, 25);
   });
 
   it('warns when redirecting to same route, both strings', () => {
@@ -252,13 +252,13 @@ describe('Switch (jsx)', () => {
     expect(node.innerHTML).toBe('');
     expect(console.error.calls.count()).toBe(0);
 
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       setTimeout(() => {
         expect(node.innerHTML).toContain('done');
         expect(console.error.calls.count()).toBe(0);
         d();
-      }, 10);
-    });
+      }, 25);
+    }, 25);
   });
 
   it('handles comments', () => {

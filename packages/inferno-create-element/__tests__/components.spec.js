@@ -887,10 +887,10 @@ describe('Components (non-JSX)', () => {
 
         buttons.forEach(button => button.click());
 
-        requestAnimationFrame(() => {
+        setTimeout(() => {
           expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><div>VISIBLE</div>'));
           done();
-        });
+        }, 25);
       });
     });
 

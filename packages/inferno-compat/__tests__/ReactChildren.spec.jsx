@@ -91,17 +91,17 @@ describe('ReactChildren', function() {
     };
 
     // TODO: Use an object to test, after non-object fragments has fully landed.
-    var scopeTester = 'scope tester';
+    var scopeTester = {fooScope: 'barScope'};
 
     var simpleKid = <span key="simple" />;
     var instance = <div>{simpleKid}</div>;
     ReactChildren.forEach(instance.children, callback, scopeTester);
-    expect(lastContext).toBe(scopeTester);
+    expect(lastContext).toEqual(scopeTester);
 
     var mappedChildren = ReactChildren.map(instance.children, callback, scopeTester);
 
     expect(ReactChildren.count(mappedChildren)).toBe(1);
-    expect(mappedChildren[0]).toBe(scopeTester);
+    expect(mappedChildren[0]).toEqual(scopeTester);
   });
 
   it('ForEach should not fail if null children is provided', () => {

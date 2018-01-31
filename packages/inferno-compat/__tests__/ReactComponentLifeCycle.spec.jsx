@@ -155,7 +155,7 @@ describe('ReactComponentLifeCycle', function() {
     setTimeout(() => {
       expect(_testJournal).toEqual(['SwitcherParent:getInitialState', 'SwitcherParent:onDOMReady', 'Child:onDOMReady']);
       done();
-    }, 5);
+    }, 20);
   });
 
   // You could assign state here, but not access members of it, unless you
@@ -524,12 +524,10 @@ describe('ReactComponentLifeCycle', function() {
     var instance = <SetStateInComponentDidMount valueToUseInitially="hello" valueToUseInOnDOMReady="goodbye" />;
     instance = renderIntoDocument(instance);
 
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        expect(instance.$LI.children.state.stateField).toBe('goodbye');
-        done();
-      }, 5);
-    });
+    setTimeout(() => {
+      expect(instance.$LI.children.state.stateField).toBe('goodbye');
+      done();
+    }, 25);
   });
 
   it('should call nested lifecycle methods in the right order', function() {

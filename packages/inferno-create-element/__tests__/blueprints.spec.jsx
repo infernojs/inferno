@@ -92,7 +92,7 @@ describe('Blueprints (JSX)', () => {
 
       // requestAnimationFrame is needed here because
       // setState fires after a requestAnimationFrame
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         expect(container.innerHTML).toBe(
           innerHTML(
             '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>'
@@ -100,7 +100,7 @@ describe('Blueprints (JSX)', () => {
         );
         render(null, container);
         done();
-      });
+      }, 25);
     });
   });
 

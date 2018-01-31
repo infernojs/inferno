@@ -190,28 +190,28 @@ describe('linkEvent', () => {
       render(<FunctionalComponent />, container);
       const input = container.querySelector('input');
       simulateFocus(input);
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         simulateBlur(input);
-        requestAnimationFrame(() => {
+        setTimeout(() => {
           expect(isFocus).toBe('1234');
           expect(isBlur).toBe('4321');
           done();
-        });
-      });
+        }, 25);
+      }, 25);
     });
 
     it('should work correctly for stateful components', done => {
       render(<StatefulComponent />, container);
       const input = container.querySelector('input');
       simulateFocus(input);
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         simulateBlur(input);
-        requestAnimationFrame(() => {
+        setTimeout(() => {
           expect(isFocus).toBe('1234');
           expect(isBlur).toBe('4321');
           done();
-        });
-      });
+        }, 25);
+      }, 25);
     });
   });
 });

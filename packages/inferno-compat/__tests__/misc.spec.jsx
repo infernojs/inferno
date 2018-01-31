@@ -122,10 +122,13 @@ describe('MISC', () => {
     });
 
     it('should support defaultValue', () => {
-      let scratch = document.createElement('div');
-      (document.body || document.documentElement).appendChild(scratch);
-      render(<input defaultValue="foo" />, scratch);
-      expect(scratch.firstElementChild.value).toBe('foo');
+      let div2 = document.createElement('div');
+      (document.body || document.documentElement).appendChild(div2);
+      render(<input defaultValue="foo" />, div2);
+      expect(div2.firstElementChild.value).toBe('foo');
+
+      render(null, div2);
+      document.body.removeChild(div2);
     });
   });
 
