@@ -10,11 +10,9 @@ import { mount, mountArrayChildren, mountRef } from './mounting';
 import { remove, removeAllChildren, unmount } from './unmounting';
 import { appendChild, EMPTY_OBJ, insertOrAppend, replaceChild } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
-import { isAttrAnEvent, patchEvent, patchProp } from './props';
+import { patchProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
-import { handleEvent } from './events/delegation';
-import { delegatedEvents, strictProps } from './constants';
 
 function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle: Function[], context: Object, isSVG: boolean) {
   unmount(lastNode);
@@ -88,28 +86,18 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
         }
 
         for (const prop in nextPropsOrEmpty) {
-          patchProp(prop, lastPropsOrEmpty[prop], nextPropsOrEmpty[prop], dom, isSVG, hasControlledValue, lastVNode);
+          const lastValue = lastPropsOrEmpty[prop];
+          const nextValue = nextPropsOrEmpty[prop];
+          if (lastValue !== nextValue) {
+            patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode);
+          }
         }
       }
       if (lastPropsOrEmpty !== EMPTY_OBJ) {
         for (const prop in lastPropsOrEmpty) {
           // do not add a hasOwnProperty check here, it affects performance
           if (!nextPropsOrEmpty.hasOwnProperty(prop) && !isNullOrUndef(lastPropsOrEmpty[prop])) {
-            if (isDefined(strictProps[prop])) {
-              // When removing value of select element, it needs to be set to null instead empty string, because empty string is valid value for option which makes that option selected
-              // MS IE/Edge don't follow html spec for textArea and input elements and we need to set empty string to value in those cases to avoid "null" and "undefined" texts
-              (dom as any)[prop] = nextFlags & VNodeFlags.SelectElement ? null : '';
-            } else if (prop === 'style') {
-              dom.removeAttribute('style');
-            } else if (isDefined(delegatedEvents[prop])) {
-              handleEvent(prop, null, dom);
-            } else if (isAttrAnEvent(prop)) {
-              patchEvent(prop, lastPropsOrEmpty[prop], null, dom);
-            } else if (prop === 'dangerouslySetInnerHTML') {
-              dom.textContent = '';
-            } else {
-              dom.removeAttribute(prop);
-            }
+            patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode);
           }
         }
       }
@@ -162,49 +150,59 @@ function patchChildren(
   context: Object,
   isSVG: boolean
 ) {
-  if (lastChildFlags & ChildFlags.HasVNodeChildren) {
-    if (nextChildFlags & ChildFlags.HasVNodeChildren) {
-      patch(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG);
-    } else if (nextChildFlags & ChildFlags.HasInvalidChildren) {
-      remove(lastChildren, parentDOM);
-    } else {
-      remove(lastChildren, parentDOM);
-      mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
-    }
-  } else if (lastChildFlags & ChildFlags.HasInvalidChildren) {
-    if (nextChildFlags & ChildFlags.HasInvalidChildren) {
-      return;
-    }
-    if (nextChildFlags & ChildFlags.HasVNodeChildren) {
-      mount(nextChildren, parentDOM, lifecycle, context, isSVG);
-    } else {
-      mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
-    }
-  } else {
-    if (nextChildFlags & ChildFlags.MultipleChildren) {
-      const lastLength = lastChildren.length;
-      const nextLength = nextChildren.length;
-
-      // Fast path's for both algorithms
-      if (lastLength === 0) {
-        if (nextLength > 0) {
+  switch (lastChildFlags) {
+    case ChildFlags.HasVNodeChildren:
+      switch (nextChildFlags) {
+        case ChildFlags.HasVNodeChildren:
+          patch(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG);
+          break;
+        case ChildFlags.HasInvalidChildren:
+          remove(lastChildren, parentDOM);
+          break;
+        default:
+          remove(lastChildren, parentDOM);
           mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
+          break;
+      }
+      break;
+    case ChildFlags.HasInvalidChildren:
+      switch (nextChildFlags) {
+        case ChildFlags.HasVNodeChildren:
+          mount(nextChildren, parentDOM, lifecycle, context, isSVG);
+          break;
+        case ChildFlags.HasInvalidChildren:
+          break;
+        default:
+          mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
+          break;
+      }
+      break;
+    default:
+      if (nextChildFlags & ChildFlags.MultipleChildren) {
+        const lastLength = lastChildren.length;
+        const nextLength = nextChildren.length;
+
+        // Fast path's for both algorithms
+        if (lastLength === 0) {
+          if (nextLength > 0) {
+            mountArrayChildren(nextChildren, parentDOM, lifecycle, context, isSVG);
+          }
+        } else if (nextLength === 0) {
+          removeAllChildren(parentDOM, lastChildren);
+        } else {
+          if ((nextChildFlags & ChildFlags.HasKeyedChildren) === (lastChildFlags & ChildFlags.HasKeyedChildren)) {
+            patchKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
+          } else {
+            patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
+          }
         }
-      } else if (nextLength === 0) {
+      } else if (nextChildFlags & ChildFlags.HasInvalidChildren) {
         removeAllChildren(parentDOM, lastChildren);
       } else {
-        if (nextChildFlags & ChildFlags.HasKeyedChildren && lastChildFlags & ChildFlags.HasKeyedChildren) {
-          patchKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
-        } else {
-          patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
-        }
+        removeAllChildren(parentDOM, lastChildren);
+        mount(nextChildren, parentDOM, lifecycle, context, isSVG);
       }
-    } else if (nextChildFlags & ChildFlags.HasInvalidChildren) {
-      removeAllChildren(parentDOM, lastChildren);
-    } else {
-      removeAllChildren(parentDOM, lastChildren);
-      mount(nextChildren, parentDOM, lifecycle, context, isSVG);
-    }
+      break;
   }
 }
 

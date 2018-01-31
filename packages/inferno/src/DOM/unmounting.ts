@@ -2,10 +2,9 @@
  * @module Inferno
  */ /** TypeDoc Comment */
 
-import { isDefined, isFunction, isNull, isNullOrUndef, isObject } from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isObject } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { options, VNode } from '../core/implementation';
-import { delegatedEvents } from './constants';
 import { handleEvent } from './events/delegation';
 import { EMPTY_OBJ, removeChild } from './utils/common';
 
@@ -41,9 +40,25 @@ export function unmount(vNode) {
 
     if (!isNull(props)) {
       for (const name in props) {
-        // Remove all delegated events, regular events die with dom node
-        if (isDefined(delegatedEvents[name])) {
-          handleEvent(name, null, vNode.dom);
+        switch (name) {
+          case 'onClick':
+          case 'onDblClick':
+          case 'onFocusIn':
+          case 'onFocusOut':
+          case 'onKeyDown':
+          case 'onKeyPress':
+          case 'onKeyUp':
+          case 'onMouseDown':
+          case 'onMouseMove':
+          case 'onMouseUp':
+          case 'onSubmit':
+          case 'onTouchEnd':
+          case 'onTouchMove':
+          case 'onTouchStart':
+            handleEvent(name, null, vNode.dom);
+            break;
+          default:
+            break;
         }
       }
     }

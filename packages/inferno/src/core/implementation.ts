@@ -309,7 +309,7 @@ export function normalizeChildren(vNode, children) {
         } else {
           const key = n.key;
           const isNullDom = isNull(n.dom);
-          const isNullKey = isNullOrUndef(key);
+          const isNullKey = isNull(key);
           const isPrefixed = !isNullKey && key[0] === keyPrefix;
 
           if (!isNullDom || isNullKey || isPrefixed) {

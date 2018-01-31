@@ -15,7 +15,7 @@ import {
   getFlagsForElementVnode,
   InfernoChildren,
   InfernoInput,
-  isUnitlessNumber,
+  getNumberStyleValue,
   linkEvent,
   normalizeChildren,
   normalizeProps,
@@ -149,14 +149,6 @@ const nextAfterUpdate = options.afterUpdate;
 options.afterUpdate = vNode => {
   if (nextAfterUpdate) {
     nextAfterUpdate(vNode);
-  }
-};
-
-const nextBeforeUnmount = options.beforeUnmount;
-
-options.beforeUnmount = vNode => {
-  if (nextBeforeUnmount) {
-    nextBeforeUnmount(vNode);
   }
 };
 
@@ -390,7 +382,7 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
     directClone,
     findDOMNode,
     getFlagsForElementVnode,
-    isUnitlessNumber,
+    getNumberStyleValue,
     isValidElement,
     linkEvent,
     normalizeChildren,
@@ -437,7 +429,7 @@ export {
   extend as __spread,
   findDOMNode,
   getFlagsForElementVnode,
-  isUnitlessNumber,
+  getNumberStyleValue,
   isValidElement,
   linkEvent,
   normalizeChildren,
@@ -471,7 +463,7 @@ export default {
   directClone,
   findDOMNode,
   getFlagsForElementVnode,
-  isUnitlessNumber,
+  getNumberStyleValue,
   isValidElement,
   linkEvent,
   normalizeChildren,

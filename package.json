@@ -74,7 +74,7 @@
   },
   "devDependencies": {
     "@types/history": "^4.6.2",
-    "@types/jest": "^22.1.0",
+    "@types/jest": "^22.1.1",
     "@types/node": "^9.4.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -104,7 +104,7 @@
     "gzip-size": "^4.1.0",
     "history": "^4.7.2",
     "jest": "^22.1.4",
-    "jsdom": "^11.6.1",
+    "jsdom": "^11.6.2",
     "lerna": "2.8.0",
     "lint-staged": "^6.1.0",
     "madge": "^3.0.0",

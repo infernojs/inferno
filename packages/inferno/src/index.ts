@@ -19,11 +19,11 @@ import {
   Refs,
   VNode
 } from './core/implementation';
-import { isUnitlessNumber } from './DOM/constants';
 import { linkEvent } from './DOM/events/linkEvent';
 import { createPortal, createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils/common';
 import { Component } from './core/component';
+import { getNumberStyleValue } from './DOM/props';
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
@@ -56,7 +56,7 @@ export {
   createVNode,
   directClone,
   getFlagsForElementVnode,
-  isUnitlessNumber,
+  getNumberStyleValue,
   linkEvent,
   normalizeChildren,
   normalizeProps,

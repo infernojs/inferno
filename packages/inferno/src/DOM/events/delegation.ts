@@ -4,14 +4,9 @@
 /** TypeDoc Comment */
 
 import { isNull } from 'inferno-shared';
-import { delegatedEvents } from '../constants';
 
 const attachedEventCounts = {};
 const attachedEvents = {};
-for (const ev in delegatedEvents) {
-  attachedEventCounts[ev] = 0;
-  attachedEvents[ev] = null;
-}
 
 interface IEventData {
   dom: Element;
@@ -19,29 +14,30 @@ interface IEventData {
 
 export function handleEvent(name: string, nextEvent: Function | null, dom) {
   const eventsLeft: number = attachedEventCounts[name];
-  let domEvents = dom.$EV;
+  let eventsObject = dom.$EV;
   if (nextEvent) {
     // TODO: Refactor this.
-    if (dom[name.toLowerCase()] && dom[name.toLowerCase()].wrapped) {
-      return;
-    }
-    if (eventsLeft === 0) {
+    // if (dom[name.toLowerCase()] && dom[name.toLowerCase()].wrapped) {
+    //   return;
+    // }
+    if (!eventsLeft) {
       attachedEvents[name] = attachEventToDocument(name);
+      attachedEventCounts[name] = 0;
     }
-    if (!domEvents) {
-      domEvents = (dom as any).$EV = {};
+    if (!eventsObject) {
+      eventsObject = (dom as any).$EV = {};
     }
-    if (!domEvents[name]) {
+    if (!eventsObject[name]) {
       attachedEventCounts[name]++;
     }
-    domEvents[name] = nextEvent;
-  } else if (domEvents && domEvents[name]) {
+    eventsObject[name] = nextEvent;
+  } else if (eventsObject && eventsObject[name]) {
     attachedEventCounts[name]--;
     if (eventsLeft === 1) {
       document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
       attachedEvents[name] = null;
     }
-    domEvents[name] = nextEvent;
+    eventsObject[name] = nextEvent;
   }
 }
 
