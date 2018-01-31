@@ -16,10 +16,6 @@ export function handleEvent(name: string, nextEvent: Function | null, dom) {
   const eventsLeft: number = attachedEventCounts[name];
   let eventsObject = dom.$EV;
   if (nextEvent) {
-    // TODO: Refactor this.
-    // if (dom[name.toLowerCase()] && dom[name.toLowerCase()].wrapped) {
-    //   return;
-    // }
     if (!eventsLeft) {
       attachedEvents[name] = attachEventToDocument(name);
       attachedEventCounts[name] = 0;
