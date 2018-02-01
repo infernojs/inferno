@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 import { warning } from '../utils/warning';
 
 export const verify = (selector, methodName: string, displayName: string) => {

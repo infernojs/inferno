@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { isFunction } from 'inferno-shared';
 
 /**

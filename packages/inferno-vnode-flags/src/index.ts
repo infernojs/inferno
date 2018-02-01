@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Vnode-Flags
- */ /** TypeDoc Comment */
-
 /* If editing these values check babel-plugin-also */
 export const enum VNodeFlags {
   /* First set of bits define shape of vNode */

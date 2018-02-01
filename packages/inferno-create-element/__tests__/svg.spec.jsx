@@ -159,18 +159,6 @@ describe('createTree - SVG (JSX)', () => {
     expect(container.firstChild.hasAttribute('class')).toBe(false);
   });
 
-  it('should remove known SVG camel case attributes', () => {
-    render(<svg viewBox="0 0 100 100" />, container);
-
-    expect(container.firstChild.tagName).toEqual('svg');
-    expect(container.firstChild.getAttribute('viewBox')).not.toBe(null);
-
-    render(<svg />, container);
-
-    expect(container.firstChild.tagName).toEqual('svg');
-    expect(container.firstChild.getAttribute('viewBox')).toBe(null);
-  });
-
   it('should remove arbitrary SVG camel case attributes', () => {
     render(<svg theWord="theBird" />, container);
 

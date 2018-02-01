@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
-
 import { createComponentVNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { NavLink } from './NavLink';

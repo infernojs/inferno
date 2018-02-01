@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Mobx
- */ /** TypeDoc Comment */
-
 import * as mobx from 'mobx';
 import { Component, createComponentVNode, options } from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';

@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Create-Element
- */ /** TypeDoc Comment */
-
 import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, normalizeChildren, Props, VNode } from 'inferno';
 import { isInvalid, isNullOrUndef, isObject, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';

@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 import { wrapMapToPropsConstant, wrapMapToPropsFunc } from './wrapMapToProps';
 
 import { bindActionCreators } from 'redux';

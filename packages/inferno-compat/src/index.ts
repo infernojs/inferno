@@ -1,8 +1,3 @@
-/**
- * @module Inferno-Compat
- */
-/** TypeDoc Comment */
-
 import {
   Component,
   createComponentVNode,

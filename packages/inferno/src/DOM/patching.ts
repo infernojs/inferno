@@ -1,8 +1,3 @@
-/**
- * @module Inferno
- */
-/** TypeDoc Comment */
-
 import { combineFrom, isDefined, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';

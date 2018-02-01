@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { isArray, isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils/common';
 import { createWrappedFunction } from './wrapper';
@@ -46,8 +42,9 @@ export function selectEvents(dom) {
 }
 
 export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode) {
-  if (!isNullOrUndef(nextPropsOrEmpty.multiple) && nextPropsOrEmpty.multiple !== dom.multiple) {
-    dom.multiple = nextPropsOrEmpty.multiple;
+  const multiplePropInBoolean = Boolean(nextPropsOrEmpty.multiple);
+  if (!isNullOrUndef(nextPropsOrEmpty.multiple) && multiplePropInBoolean !== dom.multiple) {
+    dom.multiple = multiplePropInBoolean;
   }
   const childFlags = vNode.childFlags;
 

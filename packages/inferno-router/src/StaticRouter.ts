@@ -1,13 +1,12 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
-
 import { Component, createComponentVNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createPath, parsePath } from 'history';
-import { addLeadingSlash } from 'history/es/PathUtils';
 import { Router } from './Router';
 import { invariant, warning } from './utils';
+
+function addLeadingSlash(path) {
+  return path.charAt(0) === '/' ? path : '/' + path;
+}
 
 // tslint:disable-next-line:no-empty
 const noop = () => {};

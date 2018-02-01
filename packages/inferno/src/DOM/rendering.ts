@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { isBrowser, isFunction, isInvalid, isNullOrUndef, isUndefined, NO_OP, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createVNode, directClone, InfernoChildren, InfernoInput, normalizeChildren, options, VNode } from '../core/implementation';

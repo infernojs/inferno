@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { isNullOrUndef } from 'inferno-shared';
 import { createWrappedFunction } from './wrapper';
 

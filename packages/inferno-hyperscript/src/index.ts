@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Hyperscript
- */ /** TypeDoc Comment */
-
 import { createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, normalizeChildren, VNode } from 'inferno';
 import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';

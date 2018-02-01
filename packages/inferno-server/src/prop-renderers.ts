@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Server
- */ /** TypeDoc Comment */
-
 import { getNumberStyleValue } from 'inferno';
 import { isNumber, isString } from 'inferno-shared';
 import { getCssPropertyName } from './utils';

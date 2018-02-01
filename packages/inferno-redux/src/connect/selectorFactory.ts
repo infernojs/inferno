@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 import { verifySubselectors } from './verifySubselectors';
 
 export const impureFinalPropsSelectorFactory = (mapStateToProps, mapDispatchToProps, mergeProps, dispatch) => {

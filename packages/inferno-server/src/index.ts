@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Server
- */ /** TypeDoc Comment */
-
 import { renderToString } from './renderToString';
 import { RenderQueueStream, streamQueueAsString } from './renderToString.queuestream';
 import { RenderStream, streamAsString } from './renderToString.stream';

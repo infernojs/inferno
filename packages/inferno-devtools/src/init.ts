@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Devtools
- */ /** TypeDoc Comment */
-
 import { Component, options } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createDevToolsBridge } from './bridge';

@@ -1,8 +1,3 @@
-/**
- * @module Inferno-Server
- */
-/** TypeDoc Comment */
-
 import { EMPTY_OBJ } from 'inferno';
 import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';

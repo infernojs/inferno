@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 import { isNullOrUndef, toArray } from 'inferno-shared';
 import { Component } from 'inferno';
 import { Store } from 'redux';

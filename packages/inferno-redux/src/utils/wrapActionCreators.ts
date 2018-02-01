@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 import { bindActionCreators, Dispatch } from 'redux';
 
 export function wrapActionCreators(actionCreators) {

@@ -4,7 +4,6 @@
 // import test from 'tape'
 // import mobx from 'mobx'
 // import { observer } from 'inferno-mobx'
-// import _ from 'lodash'
 // import {createTestRoot} from "./index"
 //
 // const testRoot = createTestRoot();

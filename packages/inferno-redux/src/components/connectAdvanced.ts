@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Dispatch, Store } from 'redux';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';

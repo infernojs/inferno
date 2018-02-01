@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Mobx
- */ /** TypeDoc Comment */
-
 import { errorsReporter, inject, Observer, observer, renderReporter, trackComponents, useStaticRendering } from './observer';
 import { Provider } from './Provider';
 import { EventEmitter } from './utils/EventEmitter';

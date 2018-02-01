@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Test-Utils
- */ /** TypeDoc Comment */
-
 import { VNode } from 'inferno';
 import { isArray, isFunction, isInvalid, isNullOrUndef, isObject, isString, throwError } from 'inferno-shared';
 import {

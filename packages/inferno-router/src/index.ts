@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
-
 import { StaticRouter } from './StaticRouter';
 import { BrowserRouter } from './BrowserRouter';
 import { HashRouter } from './HashRouter';

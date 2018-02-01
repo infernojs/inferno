@@ -1,8 +1,3 @@
-/**
- * @module Inferno-Router
- */
-/** TypeDoc Comment */
-
 import { Component, createComponentVNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Children, invariant, warning } from './utils';
@@ -93,7 +88,7 @@ class Route extends Component<IRouteProps, any> {
     }
 
     if (typeof children === 'function') {
-      return children(props);
+      return (children as Function)(props);
     }
 
     if (children && !isEmptyChildren(children)) {

@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Mobx
- */ /** TypeDoc Comment */
-
 export class EventEmitter {
   public listeners: Function[] = [];
 

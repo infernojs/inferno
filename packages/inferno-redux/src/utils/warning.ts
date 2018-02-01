@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 export const warning = (message: string) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
     // tslint:disable-next-line:no-console

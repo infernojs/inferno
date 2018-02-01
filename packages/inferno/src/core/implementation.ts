@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   isArray,

@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Clone-VNode
- */ /** TypeDoc Comment */
-
 import { createComponentVNode, createTextVNode, createVNode, directClone, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
 import { combineFrom, isArray, isDefined, isInvalid, isStringOrNumber } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';

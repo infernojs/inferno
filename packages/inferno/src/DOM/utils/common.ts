@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { isDefined, isNullOrUndef } from 'inferno-shared';
 import { svgNS } from '../constants';
 

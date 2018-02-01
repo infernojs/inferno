@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { createTextVNode, createVoidVNode, directClone, options, Props, VNode } from '../../core/implementation';
 import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { EMPTY_OBJ } from './common';

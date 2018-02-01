@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Create-Class
- */ /** TypeDoc Comment */
-
 import { Component } from 'inferno';
 import { isDefined, isFunction, isObject, throwError } from 'inferno-shared';
 

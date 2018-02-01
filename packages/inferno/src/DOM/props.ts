@@ -1,7 +1,3 @@
-/**
- * @module Inferno
- */ /** TypeDoc Comment */
-
 import { namespaces } from './constants';
 import { isFunction, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
 import { handleEvent } from './events/delegation';

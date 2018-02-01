@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Compat
- */ /** TypeDoc Comment */
-
 import { VNode } from 'inferno';
 import { isNull, isObject } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';

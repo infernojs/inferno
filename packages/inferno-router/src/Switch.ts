@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
-
 import { Component, createComponentVNode, VNode } from 'inferno';
 import { matchPath } from './matchPath';
 import { Children, invariant, isValidElement, warning } from './utils';

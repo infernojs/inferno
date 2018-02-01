@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
-
 import { linkEvent, createVNode, normalizeChildren } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';

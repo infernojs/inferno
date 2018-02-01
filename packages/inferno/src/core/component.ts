@@ -1,8 +1,3 @@
-/**
- * @module Inferno
- */
-/** TypeDoc Comment */
-
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Props, VNode } from './implementation';
 import { combineFrom, isFunction, isNull, isNullOrUndef, throwError } from 'inferno-shared';

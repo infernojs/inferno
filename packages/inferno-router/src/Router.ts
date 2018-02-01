@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Router
- */ /** TypeDoc Comment */
-
 import { Component } from 'inferno';
 import { Children, invariant, warning } from './utils';
 

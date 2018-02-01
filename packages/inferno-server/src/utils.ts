@@ -1,8 +1,5 @@
-/**
- * @module Inferno-Server
- */ /** TypeDoc Comment */
-
 const rxUnescaped = /["'&<>]/;
+
 export function escapeText(text: string): string {
   /* Much faster when there is no unescaped characters */
   if (!rxUnescaped.test(text)) {

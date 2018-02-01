@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Mobx
- */ /** TypeDoc Comment */
-
 import { Component } from 'inferno';
 import { warning } from 'inferno-shared';
 

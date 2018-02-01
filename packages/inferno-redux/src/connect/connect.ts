@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Redux
- */ /** TypeDoc Comment */
-
 import { connectAdvanced, IConnectOptions } from '../components/connectAdvanced';
 import { Dispatch } from 'redux';
 import { shallowEqual } from '../utils/shallowEqual';

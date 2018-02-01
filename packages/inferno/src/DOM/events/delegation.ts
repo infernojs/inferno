@@ -1,8 +1,3 @@
-/**
- * @module Inferno
- */
-/** TypeDoc Comment */
-
 import { isNull } from 'inferno-shared';
 
 const attachedEventCounts = {};

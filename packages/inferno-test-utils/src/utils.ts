@@ -1,7 +1,3 @@
-/**
- * @module Inferno-Test-Utils
- */ /** TypeDoc Comment */
-
 import { Component, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isNumber, isObject } from 'inferno-shared';
