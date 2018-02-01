@@ -1,6 +1,6 @@
 {
   "name": "inferno-router",
-  "version": "4.0.0-16",
+  "version": "4.0.0-17",
   "license": "MIT",
   "description": "Provides routing functionality for Inferno",
   "author": {
@@ -36,9 +36,9 @@
   "dependencies": {
     "history": "^4.7.2",
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "4.0.0-16",
-    "inferno-shared": "4.0.0-16",
-    "inferno-vnode-flags": "4.0.0-16",
+    "inferno": "4.0.0-17",
+    "inferno-shared": "4.0.0-17",
+    "inferno-vnode-flags": "4.0.0-17",
     "path-to-regexp-es6": "1.7.0"
   },
   "devDependencies": {
