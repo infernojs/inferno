@@ -95,8 +95,24 @@ module.exports = function(config) {
       build: 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')',
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
       startConnect: false,
-      testName: `InfernoJS`
+      testName: `InfernoJS`,
+      recordVideo: false,
+      recordScreenshots: false,
+      videoUploadOnPass: false,
+      recordLogs: false,
+      captureHtml: false,
+      commandTimeout: 400,
+
     },
+
+    plugins: [
+      'karma-jasmine',
+      'karma-jasmine-matchers',
+      'karma-webpack',
+      'karma-failed-reporter',
+      'karma-sauce-launcher'
+    ],
+
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
 

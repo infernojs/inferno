@@ -48,6 +48,7 @@ module.exports = function(config) {
       'karma-chrome-launcher',
       'karma-edge-launcher'
     ],
+    
     reporters: ['progress'],
 
     browserConsoleLogOptions: {
