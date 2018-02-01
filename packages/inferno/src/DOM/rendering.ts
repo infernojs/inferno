@@ -17,6 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
+export const lifecycle: Function[] = [];
 const documentBody = isBrowser ? document.body : null;
 
 export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node, callback?: Function): InfernoChildren {
@@ -29,7 +30,6 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
   if ((input as string) === NO_OP) {
     return;
   }
-  const lifecycle = [];
   const rootLen = roots.length;
   let rootInput;
   let index;

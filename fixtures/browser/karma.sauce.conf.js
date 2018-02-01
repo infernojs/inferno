@@ -42,12 +42,6 @@ const customLaunchers = {
     browserName: 'safari',
     platform: 'OS X 10.12'
   },
-  slIE8: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows 7',
-    version: '8'
-  },
   slIE9: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
@@ -110,7 +104,7 @@ const customLaunchers = {
   slAndroid7: {
     base: 'SauceLabs',
     browserName: 'android',
-    version: '7.1'
+    version: '6.0'
   }
 };
 

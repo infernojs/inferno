@@ -351,7 +351,6 @@ export const options: {
   beforeRender: null | Function;
   beforeUnmount: null | Function;
   createVNode: null | Function;
-  findDOMNodeEnabled: boolean;
   roots: any[];
 } = {
   afterMount: null,
@@ -360,6 +359,5 @@ export const options: {
   beforeRender: null,
   beforeUnmount: null,
   createVNode: null,
-  findDOMNodeEnabled: false,
   roots: []
 };

@@ -16,7 +16,6 @@ describe('findDOMNodes (JSX)', () => {
   });
 
   describe('various tests to see if the DOM node is right for the component', () => {
-    options.findDOMNodeEnabled = true;
     let instance1;
     let instance2;
     let instance3;

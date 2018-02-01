@@ -1,5 +1,5 @@
 import * as mobx from 'mobx';
-import { Component, createComponentVNode, options } from 'inferno';
+import { Component, createComponentVNode } from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';
 import { warning } from 'inferno-shared';
 import { isStateless } from './utils/utils';
@@ -32,7 +32,6 @@ function reportRendering(component) {
 export function trackComponents() {
   if (!isDevtoolsEnabled) {
     isDevtoolsEnabled = true;
-    options.findDOMNodeEnabled = true;
     warning('Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.');
   } else {
     isDevtoolsEnabled = false;

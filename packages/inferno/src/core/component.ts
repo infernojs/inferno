@@ -3,6 +3,7 @@ import { Props, VNode } from './implementation';
 import { combineFrom, isFunction, isNull, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ } from '../DOM/utils/common';
+import { lifecycle } from "../DOM/rendering";
 
 const resolvedPromise: any = typeof Promise === 'undefined' ? null : Promise.resolve();
 const fallbackMethod = typeof requestAnimationFrame === 'undefined' ? setTimeout : requestAnimationFrame;
@@ -48,7 +49,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Funct
   } else {
     component.$PSS = true;
     if (component.$BR && isFunction(callback)) {
-      (component._lifecycle as any).push(callback.bind(component));
+      lifecycle.push(callback.bind(component));
     }
   }
 }
@@ -89,7 +90,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       vNode,
       props,
       parentDom,
-      component._lifecycle as any,
+      lifecycle as any,
       context,
       (vNode.flags & VNodeFlags.SvgElement) > 0,
       force,
@@ -108,8 +109,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       }
     }
 
-    if ((component._lifecycle as any).length > 0) {
-      callAll(component._lifecycle as any);
+    if ((lifecycle as any).length > 0) {
+      callAll(lifecycle as any);
     }
   } else {
     component.state = component.$PS as any;
@@ -135,7 +136,6 @@ export class Component<P, S> {
   public $LI: any = null; // LAST INPUT
   public $V: VNode | null = null; // VNODE
   public $UN = false; // UNMOUNTED
-  public _lifecycle = null; // TODO: Remove this from here, lifecycle should be pure.
   public $CX = null; // CHILDCONTEXT
   public $UPD: boolean = true; // UPDATING
   public $QU: Function[] | null = null; // QUEUE

@@ -121,7 +121,7 @@ export function mountComponent(vNode: VNode, parentDom: Element | null, lifecycl
   const ref = vNode.ref;
 
   if (isClass) {
-    const instance = createClassComponentInstance(vNode, type, props, context, lifecycle);
+    const instance = createClassComponentInstance(vNode, type, props, context);
     const input = instance.$LI;
     vNode.dom = dom = mount(input, null, lifecycle, instance.$CX, isSVG);
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);

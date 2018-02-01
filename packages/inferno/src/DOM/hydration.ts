@@ -13,7 +13,7 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: Function[], con
   const props = vNode.props || EMPTY_OBJ;
 
   if (isClass) {
-    const instance = createClassComponentInstance(vNode, type, props, context, lifecycle);
+    const instance = createClassComponentInstance(vNode, type, props, context);
     const input = instance.$LI;
 
     hydrate(input, dom, lifecycle, instance.$CX, isSVG);

@@ -373,10 +373,6 @@ const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an i
 Inferno.render(newVNode, container);
 ```
 
-### `findDOMNode` (package: `inferno`)
-
-Once enabled via `Inferno.options.findDOMNodeEnabled = true;` at the start of an application, `findDOMNode()` is enabled.
-
 Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant performance impact.
 
 If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements.
@@ -431,10 +427,6 @@ Render a virtual node into an HTML string, given the supplied virtual DOM.
 ### `options` (package: `inferno`)
 
 You can set default options for Inferno using `Inferno.options`. Below are the following options:
-
-#### - `findDOMNodeEnabled` (default: `false`)
-
-This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
 
 #### - Inferno < 4.0 `recyclingEnabled` (default: v1.3+ `false`)
 
