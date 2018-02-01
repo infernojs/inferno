@@ -144,6 +144,14 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - Supports asynchronous component rendering using `requestIdleCallback`
 - Unlike Preact and other React-like libraries, Inferno has controlled components for input/select/textarea elements
 
+## Browser support
+Since version 4 we have started running our test suite **without** any polyfills.
+Inferno is now part of [Saucelabs](https://saucelabs.com/) open source program and we use their service for executing the tests.
+
+InfernoJS natively supports the browsers listed below.
+
+[![Build Status](https://saucelabs.com/browser-matrix/Havunen.svg)](https://saucelabs.com/beta/builds/cf68c41f71a54ed682388fade49298fd)
+
 ## Benchmarks
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
@@ -616,23 +624,6 @@ const replace = require('rollup-plugin-replace');
       'process.env.NODE_ENV': JSON.stringify('production'),
     })
   ]
-```
-
-## Browser Support
-
-Inferno supports Edge, Chrome, Firefox and Safari 8+. In order to support IE8-11, Inferno may require polyfills for the following JavaScript features:
-
-- [Promise object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-- [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
-- [WeakMap object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
-- [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
-- [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
-
-Potential solutions include using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
-
-As a quick drop-in solution, you may also use the [Polyfill.io](https://polyfill.io) service to pull in the required polyfills for the user's browser automatically by including the following line in your page:
-```
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,Map,WeakMap,Object.keys"></script>
 ```
 
 ### Custom namespaces
