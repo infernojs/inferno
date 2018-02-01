@@ -14,9 +14,7 @@ sudo: required
 dist: trusty
 addons:
   sauce_connect:
-    username: "Havunen"
-  jwt:
-    secure: "J790OiLG2E0JJLxAJV1xCzbi3itAKsv8ee+twiEOBeL+wRexzTEN/KwfCxJzmgZBKFOREyOZNIMRhar4wpTs1y1e/bJDSNSnm0tzZrYzrRy3X/FKZSYojYHhffMskqJ3jhWhnsO2TU+O816sIBo/pQBoAiN4l09DlYVhB0h6Q2MStr4OVmJb0SZ0wjoGQjqkk1AJdSpr0D16XknDaJ0bF4Y59N5LpDMj+IQxi3BWPICilTuzvBwmbOB4mxs7fZ32mXDbPhheTJfRPunl/bGmV6kJnytflccfPXbsE5U94xVt0GIT4N0FITLrRUqFGw3IO81oFM9/L0lIbsmmp2piP2Ys0S9k/S/h/ckdzjNlYLuFrkDDBC/YAyWUz7W5QBc6JIRTI/ipzM9Tj/6Mv7016QjqjzvK3GhC00DrtMuVBUCJQAzHnm7jamI3g6clKZNitYYlTyv1/xkd7577YgSrqes0Yx6JUkHYko+lWxNyIIoQGr0BUIhjliHETqGUclDYeueap4gLsWv2SXNSRtxUWRN0bQEbiMO3bSLz36m7SmXnI4M3pqvpt6u3o0rQrKaj0u3bYXowtDw2nCkU/xhDWgMbecKVww5FlXiyB4j6Lt5rsd3tj6YYEQuqn9WMK+smjuyHkNGgkiH4uCkMhdsV7LlFHr3QPtY/pWp7oIsghDo="
+    username: Havunen
   chrome: stable
   firefox: latest
 before_script:
@@ -33,3 +31,6 @@ jobs:
     script:
     - npm run build
     - npm run test:package
+env:
+  global:
+    secure: lwjTW+9OrHdksmv1uPWupwaE02fvQCApxrRe3gCQ62KVeB5LIsY2Giu4F44WJQ3o/WbaSj96ttBZy0jKGVmvo4e2qa4v+Ok/KvH6J1kxUBS7wvmjYOzMOUyswibr+/hhO6d/HdYjkWD8oMhYRFIA/a0gK4qLRoLKe70d0OvwkmqNCyrjH/AYqaAUKuMlmi3iMhOsnVX9M5tyLzJYUvAGo/XyT6mWcTH9HrCmstU60mX1xsme5kR+2PK4ZmwU3D2817Nvor/op5/XhpoGYa98+AJQk9CHJ0J1KavegjwzO1w6809rqJwlBTGAxld/ePlUC3WStMwTbGFb4q0RA4IC6Z8fv8f4uQG8pW/kR5ToEtUHJvQQBM8q+HIl+xEdUa4eJU3b5nP8jql9XcnyafsbTANSADAyTbboyXeh+DegyrxQf5EUGQz/SfojEytes7hNu+Um0pGVAI/VojcxKrptqvsn5IrrEp1305C7OylLVdFvtSM8rox3gUcDqrx8TX4uZDHHiVH/Rm2UGHIHsyijrw7L+VPJLwNPnMLwToh+e0dPcZNFdKPIdm6lQtvcLVR0VU8d+VgwTjQvfpw6kxYX4OeWBI6o5YjC4dqXhB3l9hA5dddM/0vK9K8fSLJLpc/cNmtdLtleqOrC5g9YcWVxNzxUp2peVOpv9gSWXghtzRU=

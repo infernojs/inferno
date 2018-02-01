@@ -688,7 +688,17 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.nodeName).toBe('INPUT');
     expect(container.childNodes.length).toBe(1);
     expect(container.firstChild.getAttribute('type')).toBe('file');
-    expect(container.firstChild.multiple).toBe(true);
+
+    let multipleValue = container.firstChild.multiple;
+
+    // Inferno sets multiple using dom property always to boolean,
+    // but some browsers fe. IE9 still set it as multiple="multiple" which also works as expected
+    if (typeof multipleValue === 'string') {
+      expect(multipleValue).toBe('multiple');
+    } else {
+      expect(multipleValue).toBe(true);
+    }
+
     expect(container.firstChild.capture).toBeTruthy(); // true and "true" are both valid
     // expect(container.firstChild.getAttribute('accept')).toBe('image/*');
 
@@ -697,7 +707,17 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.nodeName).toBe('INPUT');
     expect(container.childNodes.length).toBe(1);
     expect(container.firstChild.getAttribute('type')).toBe('file');
-    expect(container.firstChild.multiple).toBe(true);
+
+    multipleValue = container.firstChild.multiple;
+
+    // Inferno sets multiple using dom property always to boolean,
+    // but some browsers fe. IE9 still set it as multiple="multiple" which also works as expected
+    if (typeof multipleValue === 'string') {
+      expect(multipleValue).toBe('multiple');
+    } else {
+      expect(multipleValue).toBe(true);
+    }
+
     expect(container.firstChild.capture).toBeTruthy(); // true and "true" are both valid;
     // expect(container.firstChild.getAttribute('accept')).toBe('image/*');
   });
