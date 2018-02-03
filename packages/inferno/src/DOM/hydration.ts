@@ -1,6 +1,6 @@
-import { isFunction, isNull, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
+import {isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode } from '../core/implementation';
+import {options, VNode} from '../core/implementation';
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountRef, mountText } from './mounting';
 import { callAll, EMPTY_OBJ, LIFECYCLE, replaceChild} from './utils/common';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
@@ -171,7 +171,9 @@ export function hydrate(input, parentDom: Element, callback?: Function) {
   let dom = parentDom.firstChild as Element;
 
   if (!isNull(dom)) {
-    hydrateVNode(input, dom, LIFECYCLE, EMPTY_OBJ, false);
+    if (!isInvalid(input)) {
+      hydrateVNode(input, dom, LIFECYCLE, EMPTY_OBJ, false);
+    }
     dom = parentDom.firstChild as Element;
     // clear any other DOM nodes, there should be only a single entry for the root
     while ((dom = dom.nextSibling as Element)) {
@@ -182,6 +184,11 @@ export function hydrate(input, parentDom: Element, callback?: Function) {
   if (LIFECYCLE.length > 0) {
     callAll(LIFECYCLE);
   }
+
+  if (!(parentDom as any).$V) {
+    options.roots.push(parentDom);
+  }
+  (parentDom as any).$V = input;
 
   if (isFunction(callback)) {
     callback();

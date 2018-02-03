@@ -50,11 +50,11 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
       }
       if (isNull(parentDom.firstChild)) {
         mount(input as VNode, parentDom as Element, LIFECYCLE, EMPTY_OBJ, false);
+        (parentDom as any).$V = input;
+        roots.push(parentDom);
       } else {
         hydrate(input, parentDom as any)
       }
-      (parentDom as any).$V = input;
-      roots.push(parentDom);
       rootInput = input;
     }
   } else {
