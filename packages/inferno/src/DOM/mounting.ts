@@ -82,7 +82,7 @@ export function mountElement(vNode: VNode, parentDom: Element | null, lifecycle:
   if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
     const childrenIsSVG = isSVG === true && vNode.type !== 'foreignObject';
 
-    if (childFlags & ChildFlags.HasVNodeChildren) {
+    if (childFlags === ChildFlags.HasVNodeChildren) {
       mount(children as VNode, dom, lifecycle, context, childrenIsSVG);
     } else if (childFlags & ChildFlags.MultipleChildren) {
       mountArrayChildren(children, dom, lifecycle, context, childrenIsSVG);

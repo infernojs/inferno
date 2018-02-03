@@ -71,7 +71,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Function[], conte
       }
       childNode = dom.firstChild;
 
-      if (childFlags & ChildFlags.HasVNodeChildren) {
+      if (childFlags === ChildFlags.HasVNodeChildren) {
         if (isNull(childNode)) {
           mount(children as VNode, dom, lifecycle, context, isSVG);
         } else {

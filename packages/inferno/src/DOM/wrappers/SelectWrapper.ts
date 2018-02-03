@@ -14,7 +14,7 @@ function updateChildOptionGroup(vNode, value) {
       for (let i = 0, len = children.length; i < len; i++) {
         updateChildOption(children[i], value);
       }
-    } else if (childFlags & ChildFlags.HasVNodeChildren) {
+    } else if (childFlags === ChildFlags.HasVNodeChildren) {
       updateChildOption(children, value);
     }
   } else {
@@ -58,7 +58,7 @@ export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode
       for (let i = 0, len = children.length; i < len; i++) {
         updateChildOptionGroup(children[i], value);
       }
-    } else if (childFlags & ChildFlags.HasVNodeChildren) {
+    } else if (childFlags === ChildFlags.HasVNodeChildren) {
       updateChildOptionGroup(children, value);
     }
   }

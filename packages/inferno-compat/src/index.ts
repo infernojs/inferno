@@ -321,7 +321,15 @@ function findDOMNode(ref) {
     return ref;
   }
 
-  return ref.$UN ? null : ref.$LI.dom || ref;
+  if (!ref || ref.$UN) {
+    return null;
+  }
+
+  if (ref.$LI) {
+    return ref.$LI.dom;
+  }
+
+  return null;
 }
 
 // Mask React global in browser enviornments when React is not used.

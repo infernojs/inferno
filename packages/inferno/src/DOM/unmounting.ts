@@ -30,7 +30,7 @@ export function unmount(vNode) {
 
     if (childFlags & ChildFlags.MultipleChildren) {
       unmountAllChildren(children);
-    } else if (childFlags & ChildFlags.HasVNodeChildren) {
+    } else if (childFlags === ChildFlags.HasVNodeChildren) {
       unmount(children as VNode);
     }
 

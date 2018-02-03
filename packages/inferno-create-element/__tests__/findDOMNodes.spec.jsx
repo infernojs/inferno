@@ -71,5 +71,10 @@ describe('findDOMNodes (JSX)', () => {
       expect(findDOMNode(instance3)).toBe(null);
       expect(findDOMNode(ref) === ref).toBe(true);
     });
+
+    it('Non existent ref should return null', () => {
+      expect(findDOMNode(null)).toBe(null);
+      expect(findDOMNode({})).toBe(null);
+    });
   });
 });

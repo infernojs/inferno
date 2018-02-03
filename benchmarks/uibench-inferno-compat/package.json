@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "uibench-inferno",
+  "name": "uibench-inferno-compat",
   "version": "0.0.1",
   "description": "UI Benchmark: Inferno",
   "author": {
@@ -14,7 +14,7 @@
     "benchmark"
   ],
   "scripts": {
-    "webpack": "webpack"
+    "webpack": "webpack -p"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

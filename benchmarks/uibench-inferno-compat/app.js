@@ -1,11 +1,15 @@
-import {createTextVNode, linkEvent, NO_OP, render, version} from "inferno";
+import {createTextVNode, linkEvent, NO_OP, render, version} from "inferno-compat";
 
-uibench.init('Inferno', version);
+/*
+ * Inferno + inferno-compat without any Inferno specific optimizations
+ * Optimization flags could be used, but the purpose is to track performance of slow code paths
+ */
+
+uibench.init('Inferno compat (simple)', version);
 
 function TreeLeaf({children}) {
   return (
     <li
-      $HasVNodeChildren
       className="TreeLeaf">
       {createTextVNode(children)}
     </li>
@@ -33,7 +37,6 @@ function TreeNode({data}) {
 
   return (
     <ul
-      $HasKeyedChildren
       className="TreeNode">
       {children}
     </ul>
@@ -41,10 +44,6 @@ function TreeNode({data}) {
 }
 
 function tree(data) {
-  /*
-   * $HasVNodeChildren flag is not needed here, because shape of children is known by the compiler
-   * <div> has static children <TreeNode> so there is no need for $HasVNodeChildren
-   */
   return (
     <div className="Tree">
       <TreeNode data={data.root} onComponentShouldUpdate={shouldDataUpdate}/>
@@ -57,7 +56,6 @@ function AnimBox({data}) {
   var style = 'border-radius:' + (time) + 'px;' +
     'background:rgba(0,0,0,' + (0.5 + ((time) / 10)) + ')';
 
-  // We don't need to use $HasVNodeChildren here, because there is no Children
   return (
     <div
       data-id={data.id}
@@ -82,7 +80,6 @@ function anim(data) {
 
   return (
     <div
-      $HasKeyedChildren
       className="Anim">
       {children}
     </div>
@@ -95,18 +92,8 @@ function onClick(text, e) {
 }
 
 function TableCell({children}) {
-  /*
-   * Here we want to optimize for having text child vNode,
-   * It can be done by using $HasVNodeChildren on parent element
-   * and manually calling createTextVNode(value) for the children
-   *
-   * linkEvent is used here to bind the first parameter (text) into second parameter onClick function
-   * linkEvent has benefit of not creating function, it basically returns pre-defined object shape that inferno knows how to handle
-   * the main benefit is that no ".bind" or arrow function "() => {}" is needed. It works well with functional Components
-   */
   return (
     <td
-      $HasVNodeChildren
       onClick={linkEvent(children, onClick)}
       className="TableCell">
       {createTextVNode(children)}
@@ -130,16 +117,10 @@ function TableRow({data}) {
     children[i] = <TableCell onComponentShouldUpdate={shouldDataUpdate}>{cells[i - 1]}</TableCell>;
   }
 
-  /*
-   * Again there is element vNode which children is always constant shape.
-   * Add optimization flags for Children type
-   * This time childrens does not have key, so the type is $HasNonKeyedChildren
-   */
   return (
     <tr
       data-id={data.id}
-      className={classes}
-      $HasNonKeyedChildren>
+      className={classes}>
       {children}
     </tr>
   );
@@ -153,19 +134,11 @@ function table(data) {
   for (var i = 0; i < length; i++) {
     var item = items[i];
 
-    // Components does not need ChildrenType flags, it does not hurt, but gains nothing
-    // Because Component children will be passed through props and will not be normalized before rendering anyway
     children[i] = <TableRow data={item} onComponentShouldUpdate={shouldDataUpdate} key={item.id}>{item}</TableRow>;
   }
 
-  /*
-   * When its known that given element has only one type of children we can optimize this compile time
-   * by adding children type $HasKeyedChildren (list of children - all keyed)
-   * $HasKeyedChildren means that there are no holes in the children array and all keys are correctly set
-   */
   return (
     <table
-      $HasKeyedChildren
       className="Table">
       {children}
     </table>
@@ -194,13 +167,8 @@ function main(data) {
     section = tree(data.tree);
   }
 
-  /*
-   * We know that this div will always have single vNode as its children,
-   * so we can optimize here and add flag $NoNormalize
-   */
   return (
     <div
-      $HasVNodeChildren
       className="Main">
       {section}
     </div>
