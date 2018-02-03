@@ -4,6 +4,7 @@ import { svgNS } from '../constants';
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
 export const EMPTY_OBJ = {};
+export const LIFECYCLE: Function[] = [];
 
 if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);

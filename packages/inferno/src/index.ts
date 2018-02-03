@@ -19,6 +19,7 @@ import { createPortal, createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils/common';
 import { Component } from './core/component';
 import { getNumberStyleValue } from './DOM/props';
+import { hydrate } from "./DOM/hydration";
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
@@ -52,6 +53,7 @@ export {
   directClone,
   getFlagsForElementVnode,
   getNumberStyleValue,
+  hydrate,
   linkEvent,
   normalizeChildren,
   normalizeProps,

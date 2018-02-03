@@ -1,11 +1,14 @@
-import { isBrowser, isFunction, isInvalid, isNullOrUndef, isUndefined, NO_OP, throwError, warning } from 'inferno-shared';
+import {
+  isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isUndefined, NO_OP, throwError,
+  warning
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 import { createVNode, directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
-import { hydrateRoot } from './hydration';
+import { hydrate } from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, EMPTY_OBJ } from './utils/common';
+import { callAll, EMPTY_OBJ, LIFECYCLE } from './utils/common';
 
 const roots = options.roots;
 
@@ -17,7 +20,6 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-export const lifecycle: Function[] = [];
 const documentBody = isBrowser ? document.body : null;
 
 export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node, callback?: Function): InfernoChildren {
@@ -46,8 +48,10 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
       }
-      if (!hydrateRoot(input, parentDom as any, lifecycle)) {
-        mount(input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false);
+      if (isNull(parentDom.firstChild)) {
+        mount(input as VNode, parentDom as Element, LIFECYCLE, EMPTY_OBJ, false);
+      } else {
+        hydrate(input, parentDom as any)
       }
       (parentDom as any).$V = input;
       roots.push(parentDom);
@@ -61,13 +65,13 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false);
+      patch(rootInput as VNode, input as VNode, parentDom as Element, LIFECYCLE, EMPTY_OBJ, false);
       rootInput = (parentDom as any).$V = input;
     }
   }
 
-  if (lifecycle.length > 0) {
-    callAll(lifecycle);
+  if (LIFECYCLE.length > 0) {
+    callAll(LIFECYCLE);
   }
 
   if (isFunction(callback)) {

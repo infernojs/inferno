@@ -1,6 +1,7 @@
-import { Component, createTextVNode, createVNode, render } from 'inferno';
+import { Component, createTextVNode, createVNode, render, hydrate } from 'inferno';
 import { NO_OP } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { triggerEvent } from "inferno-utils";
 
 describe('rendering routine', () => {
   let container;
@@ -206,6 +207,39 @@ describe('rendering routine', () => {
       );
 
       expect(container.innerHTML).toEqual('<div><div>Hello 12</div><div>Hello 21</div><div>Hello 12</div></div>');
+    });
+  });
+
+  // hydrate should be exposed
+  describe('hydrate', () => {
+    it('Should be possible to hydrate manually', () => {
+      // create matching DOM
+      container.innerHTML = '<input type="checkbox"/>';
+
+      let clickChecked = null;
+      let changeChecked = null;
+
+      // Hydrate manually, instead rendering
+      hydrate(
+        <input
+          type="checkbox"
+          checked={false}
+          onClick={e => {
+            clickChecked = e.target.checked;
+          }}
+          onChange={e => {
+            changeChecked = e.target.checked;
+          }}
+        />,
+        container
+      );
+      const input = container.firstChild;
+
+      triggerEvent('click', input);
+
+      expect(input.checked).toBe(false);
+      expect(clickChecked).toBe(true);
+      expect(changeChecked).toBe(true);
     });
   });
 });

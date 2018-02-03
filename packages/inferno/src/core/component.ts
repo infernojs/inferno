@@ -2,8 +2,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { Props, VNode } from './implementation';
 import { combineFrom, isFunction, isNull, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { callAll, EMPTY_OBJ } from '../DOM/utils/common';
-import { lifecycle } from "../DOM/rendering";
+import { callAll, EMPTY_OBJ, LIFECYCLE } from '../DOM/utils/common';
 
 const resolvedPromise: any = typeof Promise === 'undefined' ? null : Promise.resolve();
 const fallbackMethod = typeof requestAnimationFrame === 'undefined' ? setTimeout : requestAnimationFrame;
@@ -49,7 +48,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Funct
   } else {
     component.$PSS = true;
     if (component.$BR && isFunction(callback)) {
-      lifecycle.push(callback.bind(component));
+      LIFECYCLE.push(callback.bind(component));
     }
   }
 }
@@ -90,7 +89,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       vNode,
       props,
       parentDom,
-      lifecycle as any,
+      LIFECYCLE,
       context,
       (vNode.flags & VNodeFlags.SvgElement) > 0,
       force,
@@ -109,8 +108,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       }
     }
 
-    if ((lifecycle as any).length > 0) {
-      callAll(lifecycle as any);
+    if (LIFECYCLE.length > 0) {
+      callAll(LIFECYCLE);
     }
   } else {
     component.state = component.$PS as any;
