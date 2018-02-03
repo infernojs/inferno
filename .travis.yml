@@ -13,8 +13,6 @@ notifications:
 sudo: required
 dist: trusty
 addons:
-  sauce_connect:
-    username: Havunen
   chrome: stable
   firefox: latest
 before_script:
