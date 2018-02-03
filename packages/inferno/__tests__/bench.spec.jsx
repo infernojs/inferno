@@ -5317,7 +5317,7 @@ function runBenchmark(container) {
     return (
       <div onResize={function() {}} className={'_4u-c'}>
         <AdsPEDataTableContainer458 />
-        <div key={'sensor'} className={'_4u-f'}>
+        <div className={'_4u-f'}>
           <iframe tabIndex={'-1'} />
         </div>
       </div>

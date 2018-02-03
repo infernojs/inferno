@@ -1,4 +1,4 @@
-import { createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, normalizeChildren, VNode } from 'inferno';
+import { createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, VNode } from 'inferno';
 import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -100,10 +100,7 @@ export function h(_tag: string | VNode | Function, _props?: any, _children?: Inf
   const { tag, props, key, ref, children, className } = extractProps(_props, isElement, _tag as VNode);
 
   if (isElement) {
-    return normalizeChildren(
-      createVNode(getFlagsForElementVnode(tag), tag, className, null, ChildFlags.HasInvalidChildren, props, key, ref),
-      _children || children
-    );
+    return createVNode(getFlagsForElementVnode(tag), tag, className, _children || children, ChildFlags.UnknownChildren, props, key, ref)
   } else {
     if (children || _children) {
       (props as any).children = children || _children;

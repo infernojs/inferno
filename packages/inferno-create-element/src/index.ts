@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, normalizeChildren, Props, VNode } from 'inferno';
+import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, Props, VNode } from 'inferno';
 import { isInvalid, isNullOrUndef, isObject, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -87,11 +87,6 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
 
     return createComponentVNode(flags, type as string | Function, newProps, key, ref);
   }
-  const vNode = createVNode(flags, type as string | Function, className, null, ChildFlags.HasInvalidChildren, newProps, key, ref);
 
-  if (flags & VNodeFlags.Element) {
-    return normalizeChildren(vNode, children);
-  }
-
-  return vNode;
+  return createVNode(flags, type as string | Function, className, children, ChildFlags.UnknownChildren, newProps, key, ref);
 }

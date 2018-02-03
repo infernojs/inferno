@@ -22,6 +22,7 @@ export interface VNode {
   dom: Element | null;
   className: string | null | undefined;
   flags: VNodeFlags;
+  isValidated?: boolean;
   key: null | number | string;
   parentVNode: VNode | null;
   props: Props | null;
@@ -50,12 +51,28 @@ export interface Refs {
 }
 
 function getVNode(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type): VNode {
+  if (process.env.NODE_ENV === 'production') {
+    return {
+      childFlags,
+      children,
+      className,
+      dom: null,
+      flags,
+      key: key === void 0 ? null : key,
+      parentVNode: null,
+      props: props === void 0 ? null : props,
+      ref: ref === void 0 ? null : ref,
+      type
+    };
+  }
+
   return {
     childFlags,
     children,
     className,
     dom: null,
     flags,
+    isValidated: false,
     key: key === void 0 ? null : key,
     parentVNode: null,
     props: props === void 0 ? null : props,
@@ -79,16 +96,21 @@ export function createVNode(
       throwError('Creating Component vNodes using createVNode is not allowed. Use Inferno.createComponentVNode method.');
     }
   }
-  const vNode = getVNode(childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags, children, className, flags, key, props, ref, type);
-
-  if (process.env.NODE_ENV !== 'production') {
-    validateVNodeElementChildren(vNode);
-  }
+  const childFlag = childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags;
+  const vNode = getVNode(childFlag, children, className, flags, key, props, ref, type);
 
   const optsVNode = options.createVNode;
 
-  if (isFunction(optsVNode)) {
+  if (typeof optsVNode === 'function') {
     optsVNode(vNode);
+  }
+
+  if (childFlag === ChildFlags.UnknownChildren) {
+    normalizeChildren(vNode, vNode.children);
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    validateVNodeElementChildren(vNode);
   }
 
   return vNode;
@@ -194,10 +216,7 @@ export function directClone(vNodeToClone: VNode): VNode {
   } else if (flags & VNodeFlags.Element) {
     const children = vNodeToClone.children;
 
-    newVNode = normalizeChildren(
-      createVNode(flags, vNodeToClone.type, vNodeToClone.className, null, 0, vNodeToClone.props, vNodeToClone.key, vNodeToClone.ref),
-      children
-    );
+    newVNode = createVNode(flags, vNodeToClone.type, vNodeToClone.className, children, ChildFlags.UnknownChildren, vNodeToClone.props, vNodeToClone.key, vNodeToClone.ref);
   } else if (flags & VNodeFlags.Text) {
     newVNode = createTextVNode(vNodeToClone.children as string, vNodeToClone.key);
   } else if (flags & VNodeFlags.Portal) {
@@ -208,7 +227,7 @@ export function directClone(vNodeToClone: VNode): VNode {
 }
 
 export function createVoidVNode(): VNode {
-  return getVNode(ChildFlags.HasInvalidChildren, '', null, VNodeFlags.Void, null, null, null, null);
+  return createTextVNode('', null);
 }
 
 export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey: string) {
@@ -260,7 +279,7 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
   return VNodeFlags.HtmlElement;
 }
 
-export function normalizeChildren(vNode, children) {
+export function normalizeChildren(vNode: VNode, children) {
   let newChildren: any;
   let newChildFlags: number;
 

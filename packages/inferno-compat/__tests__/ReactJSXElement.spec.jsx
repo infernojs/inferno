@@ -223,6 +223,21 @@ describe('ReactJSXElement', function() {
     document.body.removeChild(container);
   });
 
+  it('Should have input onChange event (JSX)', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const spy = sinon.spy(() => {});
+    ReactDOM.render(<input onChange={spy} />, container);
+
+    expect(spy.callCount).toBe(0);
+    const element = container.querySelector('input');
+    element.value = 'test';
+    triggerEvent('input', element);
+    expect(spy.callCount).toBe(1);
+
+    document.body.removeChild(container);
+  });
+
   it('Should map onDoubleClick to html native event', () => {
     const container = document.createElement('div');
 

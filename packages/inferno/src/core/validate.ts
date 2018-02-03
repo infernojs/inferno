@@ -1,26 +1,37 @@
 import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-function getTagName(vNode) {
-  const flags = vNode.flags;
+function getTagName(input) {
   let tagName;
 
-  if (flags & VNodeFlags.Element) {
-    tagName = `<${vNode.type}${vNode.className ? ' class="' + vNode.className + '"' : ''}>`;
-  } else if (flags & VNodeFlags.Text) {
-    tagName = `Text(${vNode.children})`;
-  } else if (flags & VNodeFlags.Portal) {
-    tagName = `Portal*`;
+  if (isArray(input)) {
+    const arrayText = input.length > 3 ? input.slice(0, 3).toString() + ',...' : input.toString();
+
+    tagName = 'Array(' + arrayText + ')';
+  } else if (isStringOrNumber(input)) {
+    tagName = 'Text(' + input + ')';
+  } else if (isInvalid(input)) {
+    tagName = 'InvalidVNode(' + input + ')';
   } else {
-    const type = vNode.type;
+    const flags = input.flags;
 
-    // Fallback for IE
-    const componentName = type.name || type.displayName || type.constructor.name || (type.toString().match(/^function\s*([^\s(]+)/) || [])[1];
+    if (flags & VNodeFlags.Element) {
+      tagName = `<${input.type}${input.className ? ' class="' + input.className + '"' : ''}>`;
+    } else if (flags & VNodeFlags.Text) {
+      tagName = `Text(${input.children})`;
+    } else if (flags & VNodeFlags.Portal) {
+      tagName = `Portal*`;
+    } else {
+      const type = input.type;
 
-    tagName = `<${componentName} />`;
+      // Fallback for IE
+      const componentName = type.name || type.displayName || type.constructor.name || (type.toString().match(/^function\s*([^\s(]+)/) || [])[1];
+
+      tagName = `<${componentName} />`;
+    }
   }
 
-  return tagName;
+  return '>> ' + tagName + '\n';
 }
 
 function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
@@ -30,21 +41,25 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     const childNode = vNodeTree[i];
 
     if (isArray(childNode)) {
-      return 'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: ' + getTagName(childNode);
+      return 'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n' + getTagName(childNode);
     }
 
     if (isInvalid(childNode)) {
       if (forceKeyed) {
-        return 'Encountered invalid node when preparing to keyed algorithm. Location: ' + getTagName(childNode);
+        return 'Encountered invalid node when preparing to keyed algorithm. Location: \n' + getTagName(childNode);
       } else if (foundKeys.length !== 0) {
-        return 'Encountered invalid node with mixed keys. Location: ' + getTagName(childNode);
+        return 'Encountered invalid node with mixed keys. Location: \n' + getTagName(childNode);
       }
       continue;
     }
+    if (typeof childNode === 'object') {
+      childNode.isValidated = true;
+    }
+
     const key = childNode.key as null | string | number | undefined;
 
     if (!isNullOrUndef(key) && !isStringOrNumber(key)) {
-      return 'Encountered child vNode where key property is not string or number. Location: ' + getTagName(childNode);
+      return 'Encountered child vNode where key property is not string or number. Location: \n' + getTagName(childNode);
     }
 
     const children = childNode.children;
@@ -53,25 +68,25 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
       let val;
       if (childFlags & ChildFlags.MultipleChildren) {
         val = DEV_ValidateKeys(children, childNode, childNode.childFlags & ChildFlags.HasKeyedChildren);
-      } else if (childFlags & ChildFlags.HasVNodeChildren) {
+      } else if (childFlags === ChildFlags.HasVNodeChildren) {
         val = DEV_ValidateKeys([children], childNode, childNode.childFlags & ChildFlags.HasKeyedChildren);
       }
       if (val) {
-        val += ' :: ' + getTagName(childNode);
+        val += getTagName(childNode);
 
         return val;
       }
     }
     if (forceKeyed && isNullOrUndef(key)) {
-      return 'Encountered child vNode without key during keyed algorithm. Location: ' + getTagName(childNode);
+      return 'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n' + getTagName(childNode);
     } else if (!forceKeyed && isNullOrUndef(key)) {
       if (foundKeys.length !== 0) {
-        return 'Encountered children with key missing. Location: ' + getTagName(childNode);
+        return 'Encountered children with key missing. Location: \n' + getTagName(childNode);
       }
       continue;
     }
     if (foundKeys.indexOf(key) > -1) {
-      return 'Encountered two children with same key: {' + key + '}. Location: ' + getTagName(childNode);
+      return 'Encountered two children with same key: {' + key + '}. Location: \n' + getTagName(childNode);
     }
     foundKeys.push(key);
   }
@@ -103,15 +118,16 @@ export function validateVNodeElementChildren(vNode) {
   }
 }
 
-export function validateKeys(vNode, forceKeyed) {
+export function validateKeys(vNode) {
   if (process.env.NODE_ENV !== 'production') {
     // Checks if there is any key missing or duplicate keys
-    if (vNode.children && vNode.flags & VNodeFlags.Element) {
-      const error = DEV_ValidateKeys(vNode.children, vNode, forceKeyed);
+    if (vNode.isValidated === false && vNode.children && vNode.flags & VNodeFlags.Element) {
+      const error = DEV_ValidateKeys(Array.isArray(vNode.children) ? vNode.children : [vNode.children], vNode, (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0);
 
       if (error) {
-        throwError(error + ' :: ' + getTagName(vNode));
+        throwError(error + getTagName(vNode));
       }
     }
+    vNode.isValidated = true;
   }
 }

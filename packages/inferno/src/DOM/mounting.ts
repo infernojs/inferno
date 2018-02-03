@@ -9,10 +9,6 @@ import { validateKeys } from '../core/validate';
 export function mount(vNode: VNode, parentDom: Element | null, lifecycle: Function[], context: Object, isSVG: boolean) {
   const flags = vNode.flags;
 
-  if (process.env.NODE_ENV !== 'production') {
-    validateKeys(vNode, false);
-  }
-
   if (flags & VNodeFlags.Element) {
     return mountElement(vNode, parentDom, lifecycle, context, isSVG);
   }
@@ -73,6 +69,10 @@ export function mountElement(vNode: VNode, parentDom: Element | null, lifecycle:
     } else {
       dom.className = className;
     }
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    validateKeys(vNode);
   }
 
   if (!isNull(parentDom)) {

@@ -1,4 +1,4 @@
-import { linkEvent, createVNode, normalizeChildren } from 'inferno';
+import { linkEvent, createVNode, VNode } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 
@@ -41,33 +41,30 @@ function handleClick({ props, context }, event) {
 /**
  * The public API for rendering a history-aware <a>.
  */
-export function Link(props: ILinkProps, context) {
+export function Link(props: ILinkProps, context): VNode {
   const { replace, children, className, to = '', innerRef, ...rest } = props;
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 
   const href = context.router.history.createHref(typeof to === 'string' ? { pathname: to } : to);
 
-  return normalizeChildren(
-    createVNode(
-      VNodeFlags.HtmlElement,
-      'a',
-      className,
-      null,
-      ChildFlags.HasInvalidChildren,
-      {
-        ...rest,
-        href,
-        onClick: linkEvent(
-          {
-            context,
-            props
-          },
-          handleClick
-        )
-      },
-      null,
-      innerRef ? x => innerRef(x) : null
-    ),
-    children
+  return createVNode(
+    VNodeFlags.HtmlElement,
+    'a',
+    className,
+    children,
+    ChildFlags.UnknownChildren,
+    {
+      ...rest,
+      href,
+      onClick: linkEvent(
+        {
+          context,
+          props
+        },
+        handleClick
+      )
+    },
+    null,
+    innerRef ? x => innerRef(x) : null
   );
 }

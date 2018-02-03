@@ -105,7 +105,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
 
     if (lastChildren !== nextChildren) {
       if (process.env.NODE_ENV !== 'production') {
-        validateKeys(nextVNode, nextVNode.childFlags & ChildFlags.HasKeyedChildren);
+        validateKeys(nextVNode);
       }
       patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG && nextTag !== 'foreignObject');
     }

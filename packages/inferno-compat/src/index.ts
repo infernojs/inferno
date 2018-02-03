@@ -22,9 +22,9 @@ import {
 } from 'inferno';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
-import { createElement as infernoCreateElement } from 'inferno-create-element';
+import { createElement } from 'inferno-create-element';
 import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
@@ -135,7 +135,25 @@ options.afterRender = function(): void {
 
 const version = '15.4.2';
 
-function normProps(name: string, props: Props | any) {
+function normalizeGenericProps(props) {
+  for (const prop in props) {
+    if (prop === 'onDoubleClick') {
+      props.onDblClick = props[prop];
+      props[prop] = void 0;
+    }
+    if (prop === 'htmlFor') {
+      props.for = props[prop];
+      props[prop] = void 0;
+    }
+    const mappedProp = SVGDOMPropertyConfig[prop];
+    if (mappedProp && mappedProp !== prop) {
+      props[mappedProp] = props[prop];
+      props[prop] = void 0;
+    }
+  }
+}
+
+function normalizeFormProps(name: string, props: Props | any) {
   if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
     const type = props.type;
     let eventName;
@@ -150,22 +168,7 @@ function normProps(name: string, props: Props | any) {
 
     if (!props[eventName]) {
       props[eventName] = props.onChange;
-      delete props.onChange;
-    }
-  }
-  for (const prop in props) {
-    if (prop === 'onDoubleClick') {
-      props.onDblClick = props[prop];
-      delete props[prop];
-    }
-    if (prop === 'htmlFor') {
-      props.for = props[prop];
-      delete props[prop];
-    }
-    const mappedProp = SVGDOMPropertyConfig[prop];
-    if (mappedProp && mappedProp !== prop) {
-      props[mappedProp] = props[prop];
-      delete props[prop];
+      props.onChange = void 0;
     }
   }
 }
@@ -197,55 +200,33 @@ function iterableToArray(iterable) {
 const g: any = typeof window === 'undefined' ? global : window;
 const hasSymbolSupport = typeof g.Symbol !== 'undefined';
 const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
-
-const injectStringRefs = function(originalFunction) {
-  return function(name, _props, ...children) {
-    if (_props) {
-      if (typeof name === 'string') {
-        normProps(name, _props);
-      }
-    }
-
-    // React supports iterable children, in addition to Array-like
-    if (hasSymbolSupport) {
-      for (let i = 0, len = children.length; i < len; i++) {
-        const child = children[i];
-        if (child && !isArray(child) && !isString(child) && isFunction(child[symbolIterator])) {
-          children[i] = iterableToArray(child[symbolIterator]());
-        }
-      }
-    }
-    const vnode = originalFunction(name, _props, ...children);
-    if (_props && typeof _props.ref === 'string' && !isNull(currentComponent)) {
-      if (!currentComponent.refs) {
-        currentComponent.refs = {};
-      }
-      vnode.ref = function(val) {
-        (this as any).refs[_props.ref] = val;
-      }.bind(currentComponent);
-    }
-    if (vnode.className) {
-      vnode.props = vnode.props || {};
-      vnode.props.className = vnode.className;
-    }
-
-    return vnode;
-  };
-};
-
-const createElement = injectStringRefs(infernoCreateElement);
-const cloneElement = injectStringRefs(cloneVNode);
-
 const oldCreateVNode = options.createVNode;
 
-options.createVNode = (vNode: VNode): void => {
-  const children = vNode.children;
+options.createVNode = (vNode: VNode): boolean => {
+  const children = vNode.children as any;
   const ref = vNode.ref;
-  let props = vNode.props;
+  let props: any = vNode.props;
 
   if (isNullOrUndef(props)) {
     props = vNode.props = {};
   }
+
+  // React supports iterable children, in addition to Array-like
+  if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && isFunction(children[symbolIterator])) {
+    vNode.children = iterableToArray(children[symbolIterator]());
+  }
+  if (typeof ref === 'string' && !isNull(currentComponent)) {
+    if (!currentComponent.refs) {
+      currentComponent.refs = {};
+    }
+    vNode.ref = function(val) {
+      (this as any).refs[ref] = val;
+    }.bind(currentComponent);
+  }
+  if (vNode.className) {
+    props.className = vNode.className;
+  }
+
   if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
     props.children = children;
   }
@@ -257,17 +238,21 @@ options.createVNode = (vNode: VNode): void => {
       }
     }
   }
-  if (typeof ref === 'string' && !isNull(currentComponent)) {
-    if (!currentComponent.refs) {
-      currentComponent.refs = {};
-    }
-    vNode.ref = function(val) {
-      this.refs[ref] = val;
-    }.bind(currentComponent);
+
+  const flags = vNode.flags;
+
+  if (flags & VNodeFlags.FormElement) {
+    normalizeFormProps(vNode.type, props);
   }
+  if (flags & VNodeFlags.Element) {
+    normalizeGenericProps(props);
+  }
+
   if (oldCreateVNode) {
     oldCreateVNode(vNode);
   }
+
+  return (flags & VNodeFlags.Element) > 0;
 };
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
@@ -350,7 +335,7 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
     PropTypes,
     PureComponent,
     __spread: extend,
-    cloneElement,
+    cloneElement: cloneVNode,
     cloneVNode,
     createClass,
     createComponentVNode,
@@ -380,7 +365,6 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
 }
 
 export {
-  ChildFlags,
   Children,
   ClassicComponentClass,
   Component,
@@ -395,8 +379,7 @@ export {
   PureComponent,
   Refs,
   VNode,
-  VNodeFlags,
-  cloneElement,
+  cloneVNode as cloneElement,
   cloneVNode,
   createClass,
   createComponentVNode,
@@ -431,7 +414,7 @@ export default {
   PropTypes,
   PureComponent,
   __spread: extend,
-  cloneElement,
+  cloneElement: cloneVNode,
   cloneVNode,
   createClass,
   createComponentVNode,

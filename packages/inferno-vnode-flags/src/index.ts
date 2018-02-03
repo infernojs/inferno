@@ -25,6 +25,7 @@ export const enum VNodeFlags {
 
 // Combinations are not possible, its bitwise only to reduce vNode size
 export const enum ChildFlags {
+  UnknownChildren = 0, // When zero is passed children will be normalized
   /* Second set of bits define shape of children */
   HasInvalidChildren = 1,
   HasVNodeChildren = 1 << 1,

@@ -1,6 +1,6 @@
 import { isBrowser, isFunction, isInvalid, isNullOrUndef, isUndefined, NO_OP, throwError, warning } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { createVNode, directClone, InfernoChildren, InfernoInput, normalizeChildren, options, VNode } from '../core/implementation';
+import { ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import { createVNode, directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
 import { hydrateRoot } from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -88,5 +88,5 @@ export function createRenderer(parentDom?) {
 }
 
 export function createPortal(children, container) {
-  return normalizeChildren(createVNode(VNodeFlags.Portal, container, null, null, 0, null, isInvalid(children) ? null : children.key, null), children);
+  return createVNode(VNodeFlags.Portal, container, null, children, ChildFlags.UnknownChildren, null, isInvalid(children) ? null : children.key, null);
 }
