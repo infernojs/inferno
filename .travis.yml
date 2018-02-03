@@ -26,7 +26,10 @@ jobs:
   - script:
     - npm run test:coverage
     - npm run coveralls
-  - script: npm run test:browser:sauce
+  - stage: SauceLabs
+    if: (branch = master) AND (NOT (type IN (pull_request)))
+    script:
+    - npm run test:browser:sauce
   - stage: Build
     script:
     - npm run build
