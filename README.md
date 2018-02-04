@@ -44,6 +44,10 @@ InfernoJS natively supports the browsers listed below.
 
 [![Build Status](https://saucelabs.com/browser-matrix/Havunen.svg)](https://saucelabs.com/beta/builds/cf68c41f71a54ed682388fade49298fd)
 
+
+## Migration to v4
+List of breaking changes can be found from [here]()
+
 ## Benchmarks
 
 - [UI Bench](https://localvoid.github.io/uibench/)
