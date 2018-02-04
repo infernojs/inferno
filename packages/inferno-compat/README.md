@@ -6,11 +6,20 @@ It provides the same exports as `react` and `react-dom`, meaning you can use you
 
 Do note however, as with almost all compatability layer libraries, there is an associated cost of extra overhead. As such, you should never expect native Inferno performance when using `inferno-compat`.
 
+This package is mostly not about any specific methods. It's about making Inferno behave the same way as React. This package adds support for string refs. 
+It automatically includes children to props. It converts React specific events for example: `onChange` to `onInput`.
+
 ## How to install?
 
+Inferno-compat does not automatically install all its features. For example: If you need createElement support you should also install `inferno-create-element`.
+
+All packages:
 ```bash
 npm install --save inferno
 npm install --save inferno-compat
+npm install --save inferno-clone-vnode
+npm install --save inferno-create-class
+npm install --save inferno-create-element
 ```
 
 ## What is currently supported?
@@ -39,7 +48,7 @@ Note: Inferno will not currently validate `PropTypes`
 
 ## Usage with Webpack
 
-Using `inferno-compat` with Webpack is easy.
+Using `inferno-compat` with Webpack is easy. You might not always need the `inferno-compat` package. Just the alias below to Inferno is enough.
 
 All you have to do is add an alias for `react` and `react-dom`:
 

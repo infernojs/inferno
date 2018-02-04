@@ -552,9 +552,9 @@ For inspiration on how to use it click [here](https://hackernoon.com/using-a-rea
 ### `hydrate` (package: `inferno`)
 
 ```javascript
-import Inferno from 'inferno';
+import { hydrate } from 'inferno';
 
-Inferno.hydrate(<div />, document.getElementById("app"));
+hydrate(<div />, document.getElementById("app"));
 ```
 
 Same as `render()`, but is used to hydrate a container whose HTML contents were rendered by `inferno-server`. Inferno will attempt to attach event listeners to the existing markup.

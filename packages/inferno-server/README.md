@@ -12,13 +12,20 @@ npm install inferno inferno-server
 ## Contents
 
 * renderToString
+* RenderQueueStream
+* RenderStream
+* renderToStaticMarkup
+* renderToString
+* streamAsStaticMarkup
+* streamAsString
+* streamQueueAsStaticMarkup
+* streamQueueAsString
 
 ## Usage
 
 ```js
-import Inferno from 'inferno';
-import InfernoServer from 'inferno-server';
+import { renderToString } from 'inferno-server';
 
-InfernoServer.renderToString(<div>Hello world</div>, container);
+renderToString(<div>Hello world</div>, container);
 ```
 
