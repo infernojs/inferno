@@ -46,7 +46,7 @@ InfernoJS natively supports the browsers listed below.
 
 
 ## Migration to v4
-List of breaking changes can be found from [here]()
+List of breaking changes can be found from [here](https://github.com/infernojs/inferno/blob/master/docs/v4-migration.md)
 
 ## Benchmarks
 
