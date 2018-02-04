@@ -165,7 +165,7 @@ describe('Compat Children', () => {
 
   describe('using JSX', () => {
     it('should create a VNode with the correct className', function() {
-      const element = <div className="foo" test="hi"/>;
+      const element = <div className="foo" test="hi" />;
       expect(element.className).toBe('foo');
       expect(element.props).toEqual({ test: 'hi', className: 'foo' });
     });
@@ -225,7 +225,7 @@ describe('Compat Children', () => {
       const first_child = <span>first text</span>;
       expect(isValidElement(first_child)).toBe(true);
 
-      const second_child =<span>second text</span>;
+      const second_child = <span>second text</span>;
       expect(isValidElement(second_child)).toBe(true);
 
       const element = <div>{[first_child, second_child]}</div>;

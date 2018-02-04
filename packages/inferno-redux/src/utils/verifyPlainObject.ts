@@ -1,18 +1,18 @@
 import { warning } from './warning';
 
 function isPlainObject(value) {
-  if (typeof value !== 'object' || (value + '') !== '[object Object]') {
-    return false
+  if (typeof value !== 'object' || value + '' !== '[object Object]') {
+    return false;
   }
   if (Object.getPrototypeOf(value) === null) {
-    return true
+    return true;
   }
   let proto = value;
 
   while (Object.getPrototypeOf(proto) !== null) {
-    proto = Object.getPrototypeOf(proto)
+    proto = Object.getPrototypeOf(proto);
   }
-  return Object.getPrototypeOf(value) === proto
+  return Object.getPrototypeOf(value) === proto;
 }
 
 export const verifyPlainObject = (value: any, displayName: string, methodName: string) => {

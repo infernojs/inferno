@@ -1,8 +1,8 @@
-import {isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning} from 'inferno-shared';
+import { isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import {options, VNode} from '../core/implementation';
+import { options, VNode } from '../core/implementation';
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountRef, mountText } from './mounting';
-import { callAll, EMPTY_OBJ, LIFECYCLE, replaceChild} from './utils/common';
+import { callAll, EMPTY_OBJ, LIFECYCLE, replaceChild } from './utils/common';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { isSamePropsInnerHTML } from './utils/innerhtml';
 import { mountProps } from './props';
