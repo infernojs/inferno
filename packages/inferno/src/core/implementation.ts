@@ -216,7 +216,16 @@ export function directClone(vNodeToClone: VNode): VNode {
   } else if (flags & VNodeFlags.Element) {
     const children = vNodeToClone.children;
 
-    newVNode = createVNode(flags, vNodeToClone.type, vNodeToClone.className, children, ChildFlags.UnknownChildren, vNodeToClone.props, vNodeToClone.key, vNodeToClone.ref);
+    newVNode = createVNode(
+      flags,
+      vNodeToClone.type,
+      vNodeToClone.className,
+      children,
+      ChildFlags.UnknownChildren,
+      vNodeToClone.props,
+      vNodeToClone.key,
+      vNodeToClone.ref
+    );
   } else if (flags & VNodeFlags.Text) {
     newVNode = createTextVNode(vNodeToClone.children as string, vNodeToClone.key);
   } else if (flags & VNodeFlags.Portal) {

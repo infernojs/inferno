@@ -132,17 +132,10 @@ module.exports = function(config) {
       videoUploadOnPass: false,
       recordLogs: false,
       captureHtml: false,
-      commandTimeout: 400,
-
+      commandTimeout: 400
     },
 
-    plugins: [
-      'karma-jasmine',
-      'karma-jasmine-matchers',
-      'karma-webpack',
-      'karma-failed-reporter',
-      'karma-sauce-launcher'
-    ],
+    plugins: ['karma-jasmine', 'karma-jasmine-matchers', 'karma-webpack', 'karma-failed-reporter', 'karma-sauce-launcher'],
 
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),

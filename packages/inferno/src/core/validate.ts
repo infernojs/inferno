@@ -78,7 +78,10 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
       }
     }
     if (forceKeyed && isNullOrUndef(key)) {
-      return 'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n' + getTagName(childNode);
+      return (
+        'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n' +
+        getTagName(childNode)
+      );
     } else if (!forceKeyed && isNullOrUndef(key)) {
       if (foundKeys.length !== 0) {
         return 'Encountered children with key missing. Location: \n' + getTagName(childNode);
@@ -122,7 +125,11 @@ export function validateKeys(vNode) {
   if (process.env.NODE_ENV !== 'production') {
     // Checks if there is any key missing or duplicate keys
     if (vNode.isValidated === false && vNode.children && vNode.flags & VNodeFlags.Element) {
-      const error = DEV_ValidateKeys(Array.isArray(vNode.children) ? vNode.children : [vNode.children], vNode, (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0);
+      const error = DEV_ValidateKeys(
+        Array.isArray(vNode.children) ? vNode.children : [vNode.children],
+        vNode,
+        (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0
+      );
 
       if (error) {
         throwError(error + getTagName(vNode));

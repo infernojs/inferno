@@ -1,8 +1,5 @@
-import {
-  isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isUndefined, NO_OP, throwError,
-  warning
-} from 'inferno-shared';
-import { ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import { isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isUndefined, NO_OP, throwError, warning } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVNode, directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
 import { hydrate } from './hydration';
 import { mount } from './mounting';
@@ -53,7 +50,7 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
         (parentDom as any).$V = input;
         roots.push(parentDom);
       } else {
-        hydrate(input, parentDom as any)
+        hydrate(input, parentDom as any);
       }
       rootInput = input;
     }

@@ -1,8 +1,8 @@
 import { Component, createTextVNode, createVNode, render, hydrate } from 'inferno';
 import { NO_OP } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { triggerEvent } from "inferno-utils";
-import sinon from "sinon";
+import { triggerEvent } from 'inferno-utils';
+import sinon from 'sinon';
 
 describe('rendering routine', () => {
   let container;
