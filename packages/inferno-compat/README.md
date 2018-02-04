@@ -31,6 +31,7 @@ Note: Inferno will not currently validate `PropTypes`
 ### `react-dom`
 
 - `ReactDOM.render`
+- `ReactDOM.hydrate`
 - `ReactDOM.unmountComponentAtNode`
 - `ReactDOM.findDOMNode`
 - `React.DOM`

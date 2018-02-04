@@ -235,6 +235,16 @@ into the container, this will perform an update on it and only mutate the DOM as
 
 Warning: If the container element is not empty before rendering, the content of the container will be overwritten on the initial render.
 
+### `hydrate` (package: `inferno`)
+
+```javascript
+import Inferno from 'inferno';
+
+Inferno.hydrate(<div />, document.getElementById("app"));
+```
+
+Same as `render()`, but is used to hydrate a container whose HTML contents were rendered by `inferno-server`. Inferno will attempt to attach event listeners to the existing markup.
+
 ### `createRenderer` (package: `inferno`)
 
 `createRenderer` creates an alternative render function with a signature matching that of the first argument passed to a reduce/scan function. This allows for easier integration with reactive programming libraries, like [RxJS](https://github.com/ReactiveX/rxjs) and [Most](https://github.com/cujojs/most).
