@@ -8,15 +8,4 @@ import { EventEmitter } from './utils/EventEmitter';
 
 const onError = fn => errorsReporter.on(fn);
 
-export {
-  errorsReporter,
-  inject,
-  observer,
-  onError,
-  EventEmitter,
-  Observer,
-  Provider,
-  renderReporter,
-  trackComponents,
-  useStaticRendering
-};
+export { errorsReporter, inject, observer, onError, EventEmitter, Observer, Provider, renderReporter, trackComponents, useStaticRendering };

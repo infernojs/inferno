@@ -803,41 +803,41 @@ describe('Basic event tests', () => {
 
   // TODO: This test randomly fails to browser window not having focus
   // if (typeof global !== 'undefined' && !global.usingJSDOM) {
-    // Only run this test with real browser, jsdom focus event is too buggy
-    // describe('Synthetic onFocusIn & OnFocusOut Github#1210', () => {
-    //   it('Focus in and focus out should propagate', () => {
-    //     const focusInSpy = sinon.spy();
-    //     const focusOutSpy = sinon.spy();
-    //
-    //     const outerFocusInSpy = sinon.spy();
-    //     const outerFocusOutSpy = sinon.spy();
-    //
-    //     render(
-    //       <div onFocusOut={outerFocusOutSpy} onFocusIn={outerFocusInSpy}>
-    //         <div>
-    //           <input onFocusOut={focusOutSpy} onFocusIn={focusInSpy} type="text" />
-    //         </div>
-    //       </div>,
-    //       container
-    //     );
-    //
-    //     const input = container.querySelector('input');
-    //     input.focus();
-    //
-    //     expect(focusInSpy.callCount).toBe(1);
-    //     expect(outerFocusInSpy.callCount).toBe(1);
-    //
-    //     expect(focusOutSpy.callCount).toBe(0);
-    //     expect(outerFocusOutSpy.callCount).toBe(0);
-    //
-    //     input.blur();
-    //
-    //     expect(focusInSpy.callCount).toBe(1);
-    //     expect(outerFocusInSpy.callCount).toBe(1);
-    //
-    //     expect(focusOutSpy.callCount).toBe(1);
-    //     expect(outerFocusOutSpy.callCount).toBe(1);
-    //   });
-    // });
+  // Only run this test with real browser, jsdom focus event is too buggy
+  // describe('Synthetic onFocusIn & OnFocusOut Github#1210', () => {
+  //   it('Focus in and focus out should propagate', () => {
+  //     const focusInSpy = sinon.spy();
+  //     const focusOutSpy = sinon.spy();
+  //
+  //     const outerFocusInSpy = sinon.spy();
+  //     const outerFocusOutSpy = sinon.spy();
+  //
+  //     render(
+  //       <div onFocusOut={outerFocusOutSpy} onFocusIn={outerFocusInSpy}>
+  //         <div>
+  //           <input onFocusOut={focusOutSpy} onFocusIn={focusInSpy} type="text" />
+  //         </div>
+  //       </div>,
+  //       container
+  //     );
+  //
+  //     const input = container.querySelector('input');
+  //     input.focus();
+  //
+  //     expect(focusInSpy.callCount).toBe(1);
+  //     expect(outerFocusInSpy.callCount).toBe(1);
+  //
+  //     expect(focusOutSpy.callCount).toBe(0);
+  //     expect(outerFocusOutSpy.callCount).toBe(0);
+  //
+  //     input.blur();
+  //
+  //     expect(focusInSpy.callCount).toBe(1);
+  //     expect(outerFocusInSpy.callCount).toBe(1);
+  //
+  //     expect(focusOutSpy.callCount).toBe(1);
+  //     expect(outerFocusOutSpy.callCount).toBe(1);
+  //   });
+  // });
   // }
 });
