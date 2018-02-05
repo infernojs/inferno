@@ -1,6 +1,6 @@
 {
   "name": "inferno-devtools",
-  "version": "4.0.0-18",
+  "version": "4.0.0-19",
   "license": "MIT",
   "description": "Provides support for React's Dev Tools for Inferno",
   "author": {
@@ -27,9 +27,9 @@
     "inferno": ">=4"
   },
   "devDependencies": {
-    "inferno": "4.0.0-18",
-    "inferno-shared": "4.0.0-18",
-    "inferno-vnode-flags": "4.0.0-18"
+    "inferno": "4.0.0-19",
+    "inferno-shared": "4.0.0-19",
+    "inferno-vnode-flags": "4.0.0-19"
   },
   "rollup": {
     "bundledDependencies": [
