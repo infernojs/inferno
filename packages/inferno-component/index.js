@@ -5,5 +5,3 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   module.exports = require('./dist/index.cjs.js');
 }
-
-module.exports.default = module.exports;
