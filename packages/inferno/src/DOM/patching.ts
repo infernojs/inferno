@@ -185,13 +185,13 @@ function patchChildren(
         } else if (nextLength === 0) {
           removeAllChildren(parentDOM, lastChildren);
         } else {
-          if ((nextChildFlags & ChildFlags.HasKeyedChildren) === (lastChildFlags & ChildFlags.HasKeyedChildren)) {
+          if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
             patchKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
           } else {
             patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
           }
         }
-      } else if (nextChildFlags & ChildFlags.HasInvalidChildren) {
+      } else if (nextChildFlags === ChildFlags.HasInvalidChildren) {
         removeAllChildren(parentDOM, lastChildren);
       } else {
         removeAllChildren(parentDOM, lastChildren);
