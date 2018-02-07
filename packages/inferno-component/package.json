@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "4.0.0-18",
+  "version": "4.0.0-19",
   "license": "MIT",
   "description": "Inferno ES6 Component",
   "author": {
@@ -19,11 +19,11 @@
     "moduleName": "Inferno"
   },
   "main": "index.js",
-  "module": "index.mjs",
+  "module": "dist/index.mjs",
   "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "4.0.0-18"
+    "inferno": "4.0.0-19"
   }
 }
