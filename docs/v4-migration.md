@@ -13,11 +13,28 @@ Inferno packages are now using peerDependencies to external components to avoid 
 
 `module` entry has been added to package.json for all packages.
 
-NOTE: This points to production build of Inferno. If you are doing development using Inferno you should use `dist/index.dev.js` or use module entry point: `dev:module`
+**NOTE:** module entry point (`"module": "index.mjs"`) targets to production build of Inferno. If you are doing development using Inferno you should use `dist/index.dev.js` - file or module entry point: `"dev:module": "dist/index.dev.mjs"`
 
-`creatVNode` cannot be used to create Component vNodes anymore. use `createComponentVNode(flags, type, props, key, ref)` instead.
+`createVNode` cannot be used to create Component vNodes anymore. use `createComponentVNode(flags, type, props, key, ref)` instead.
 
-There is no more "noNormalize" parameter for `createVNode` if you have been using it and you need to normalize children use `Inferno.normalizeChildren` method.
+There is no more "noNormalize" parameter for `createVNode` if you have been using it and you need to normalize children you need to pass `childFlags.UnknownChildren` as childFlags parameter.
+
+example:
+```javascript
+import {createVNode, render} from 'inferno';
+import {VNodeFlags, ChildFlags} from 'inferno-vnode-flags';
+
+render(
+    createVNode(
+        VNodeFlags.HtmlElement,
+        'div',
+        'example-class'
+        data, // unknown children
+        ChildFlags.UnknownChildren // This tells inferno to normalize (data)
+    ),
+    document.getElementById('root')
+);
+```
 
 inferno-compat users should install all dependencies they use themselves. For example:
 
