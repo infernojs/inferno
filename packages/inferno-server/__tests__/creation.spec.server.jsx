@@ -1,5 +1,5 @@
 import { renderToStaticMarkup, renderToString } from 'inferno-server';
-import { Component } from 'inferno';
+import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 
 function WrappedInput(props) {
@@ -373,6 +373,42 @@ describe('SSR Creation (JSX)', () => {
           </div>
         )
       ).toEqual('<div style="background-color:red;"><div style="background-color:red;"></div></div>');
+    });
+
+    it('text nodes should match 1:1', () => {
+      const container = document.createElement('div');
+      const version = '4.0.0-21';
+      const renderedString = renderToString(
+        <div className="built">
+          Website built with Inferno {version} using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a>
+        </div>
+      );
+      expect(renderedString).toEqual("<div class=\"built\">Website built with Inferno <!---->4.0.0-21<!----> using <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://github.com/infernojs/create-inferno-app\">create-inferno-app</a></div>");
+
+      container.innerHTML = renderedString;
+
+      const wrapperDiv = container.firstChild;
+      const websiteText = wrapperDiv.firstChild; // Website built with Inferno
+      const versionString = wrapperDiv.childNodes[2];
+      const usingString = wrapperDiv.childNodes[4];
+      const link = wrapperDiv.childNodes[5];
+
+
+      function WrapperComponent() {
+        return (
+          <div className="built">
+            Website built with Inferno {version} using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a>
+          </div>
+        )
+      }
+
+      render(<WrapperComponent/>, container);
+      expect(container.firstChild).toBe(wrapperDiv);
+      expect(wrapperDiv.childNodes.length).toBe(4);
+      expect(wrapperDiv.childNodes[0]).toBe(websiteText);
+      expect(wrapperDiv.childNodes[1]).toBe(versionString);
+      expect(wrapperDiv.childNodes[2]).toBe(usingString);
+      expect(wrapperDiv.childNodes[3]).toBe(link);
     });
   });
 });

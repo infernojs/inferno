@@ -52,22 +52,19 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Function[], conte
     const childFlags = vNode.childFlags;
 
     if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
+      let nextSibling: Node|null = null;
+
       while (childNode) {
+        nextSibling = childNode.nextSibling;
+
         if (childNode.nodeType === 8) {
           if ((childNode as any).data === '!') {
-            const placeholder = document.createTextNode('');
-
-            dom.replaceChild(placeholder, childNode);
-            childNode = childNode.nextSibling;
+            dom.replaceChild(document.createTextNode(''), childNode);
           } else {
-            const lastDom = childNode.previousSibling;
-
             dom.removeChild(childNode);
-            childNode = lastDom || dom.firstChild;
           }
-        } else {
-          childNode = childNode.nextSibling;
         }
+        childNode = nextSibling;
       }
       childNode = dom.firstChild;
 
@@ -75,7 +72,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Function[], conte
         if (isNull(childNode)) {
           mount(children as VNode, dom, lifecycle, context, isSVG);
         } else {
-          const nextSibling = childNode.nextSibling;
+          nextSibling = childNode.nextSibling;
 
           hydrateVNode(children as VNode, childNode as Element, lifecycle, context, isSVG);
           childNode = nextSibling;
@@ -87,7 +84,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Function[], conte
           if (isNull(childNode)) {
             mount(child as VNode, dom, lifecycle, context, isSVG);
           } else {
-            const nextSibling = childNode.nextSibling;
+            nextSibling = childNode.nextSibling;
             hydrateVNode(child as VNode, childNode as Element, lifecycle, context, isSVG);
             childNode = nextSibling;
           }
@@ -96,7 +93,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Function[], conte
 
       // clear any other DOM nodes, there should be only a single entry for the root
       while (childNode) {
-        const nextSibling = childNode.nextSibling;
+        nextSibling = childNode.nextSibling;
         dom.removeChild(childNode);
         childNode = nextSibling;
       }
