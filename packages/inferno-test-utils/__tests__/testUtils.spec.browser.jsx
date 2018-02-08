@@ -378,6 +378,22 @@ describe('Test Utils', () => {
       sinon.assert.calledWithMatch(predicate, { children: 'world' });
       sinon.assert.calledWithMatch(predicate, { children: '!' });
     });
+
+    it('should work without class wrappers', () => {
+      const predicate = sinon.spy();
+      const Hello = ({ who }) => <div>Hello, {who}!</div>;
+      const treeWithText = <Hello who="world" />;
+      render(treeWithText, container);
+
+      sinon.assert.notCalled(predicate);
+      findAllInRenderedTree(treeWithText, predicate);
+      sinon.assert.callCount(predicate, 5);
+      sinon.assert.calledWithMatch(predicate, { type: Hello });
+      sinon.assert.calledWithMatch(predicate, { type: 'div' });
+      sinon.assert.calledWithMatch(predicate, { children: 'Hello, ' });
+      sinon.assert.calledWithMatch(predicate, { children: 'world' });
+      sinon.assert.calledWithMatch(predicate, { children: '!' });
+    });
   });
 
   describe('findAllInVNodeTree', () => {

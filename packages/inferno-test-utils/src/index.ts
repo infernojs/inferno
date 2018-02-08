@@ -58,7 +58,7 @@ export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNod
   if (isRenderedClassComponent(renderedTree)) {
     return findAllInVNodeTree(renderedTree.$LI, predicate);
   } else {
-    throwError('findAllInRenderedTree(renderedTree, predicate) renderedTree must be a rendered class component');
+    return findAllInVNodeTree(renderedTree, predicate);
   }
 }
 
