@@ -83,7 +83,7 @@ class MyComponent extends Component {
     super(props);
     this.state = {
       counter: 0
-    }
+    };
   }
   render() {
     return (
@@ -91,7 +91,7 @@ class MyComponent extends Component {
         <h1>Header!</h1>
         <span>Counter is at: { this.state.counter }</span>
       </div>
-    )
+    );
   }
 }
 
@@ -102,16 +102,18 @@ render(
 ```
 
 Because performance is an important aspect of this library, we want to show you how to optimize your application even further.
+In the example below we optimize diffing process by using JSX **$HasVNodeChildren** to predefine children shape compile time.
+Then we create text vNode using `Inferno.createTextVNode`.
 
 ```jsx
-import { render, Component } from 'inferno';
+import { createTextVNode, render, Component } from 'inferno';
 
 class MyComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       counter: 0
-    }
+    };
   }
   render() {
     return (
@@ -119,7 +121,7 @@ class MyComponent extends Component {
         <h1>Header!</h1>
         <span $HasVNodeChildren>{createTextVNode('Counter is at: ' + this.state.counter)}</span>
       </div>
-    )
+    );
   }
 }
 
@@ -215,7 +217,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
 - Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them since they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
 - Inferno includes `render` on the main core package, rather than have an `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
-- Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
+- Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than ES2015 classes.
 - Inferno is able to use the React Dev Tools extensions for Chrome/Firefox/etc to provide the same level of debugging experience to the Inferno user via `inferno-devtools`.
 
 ## Differences from Preact
@@ -224,7 +226,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno has a partial synthetic event system, resulting in better performance via delegation of certain events.
 - Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except when loading from server-side rendered content), which means it can make drastic improvements. Unfortunately, diffing against the real DOM has a 30-40% overhead cost in operations.
 - Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
-- Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
+- Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than ES2015 classes.
 
 ## Event System
 
@@ -248,6 +250,42 @@ Available synthetic events are:
 - `onChange`
 - `onFocusIn`
 - `onFocusOut`
+
+### `linkEvent` (package: `inferno`)
+
+`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. This is extremely useful when dealing with events in functional components. Below is an example:
+
+```jsx
+import { linkEvent } from 'inferno';
+
+function handleClick(props, event) {
+  props.validateValue(event.target.value);
+}
+
+function MyComponent(props) {
+  return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
+}
+```
+
+This is an example of using it with ES2015 classes:
+
+
+```jsx
+import { linkEvent, Component } from 'inferno';
+
+function handleClick(instance, event) {
+  instance.setState({ data: event.target.value });
+}
+
+class MyComponent extends Component {
+  render () {
+    return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
+  }
+}
+```
+
+`linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so use it where possible.
+
 
 ## Controlled Components
 
@@ -350,7 +388,7 @@ Static.defaultHooks = {
     onComponentShouldUpdate() {
         return false;
     }
-}
+};
 ```
 
 Functional components are first-class functions where their first argument is the `props` passed through from their parent.
@@ -570,41 +608,6 @@ Note: we recommend using a `ref` callback on a component to find its instance, r
 
 If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements.
 In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode()` at all. When render returns null or false, `findDOMNode()` returns null.
-
-### `linkEvent` (package: `inferno`)
-
-`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. This is extremely useful when dealing with events in functional components. Below is an example:
-
-```jsx
-import { linkEvent } from 'inferno';
-
-function handleClick(props, event) {
-  props.validateValue(event.target.value);
-}
-
-function MyComponent(props) {
-  return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
-}
-```
-
-This is an example of using it with ES2015 classes:
-
-
-```jsx
-import { linkEvent, Component } from 'inferno';
-
-function handleClick(instance, event) {
-  instance.setState({ data: event.target.value });
-}
-
-class MyComponent extends Component {
-  render () {
-    return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-  }
-}
-```
-
-`linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so use it where possible.
 
 ### Inferno Flags (package: inferno-vnode-flags)
 

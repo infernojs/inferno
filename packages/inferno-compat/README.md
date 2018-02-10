@@ -32,7 +32,7 @@ As in React:
 Inferno-compat does not automatically install all its features. For example: If you need createElement support you should also install `inferno-create-element`.
 
 All packages:
-```bash
+```
 npm install --save inferno
 npm install --save inferno-compat
 npm install --save inferno-clone-vnode
