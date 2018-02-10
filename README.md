@@ -742,7 +742,7 @@ There is an [Inferno Slack](https://infernojs.slack.com). You can join via [infe
 ### Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="graphs/contributors"><img src="https://opencollective.com/inferno/contributors.svg?width=890" /></a>
+<a href="https://github.com/infernojs/inferno/graphs/contributors"><img src="https://opencollective.com/inferno/contributors.svg?width=890" /></a>
 
 
 ### Backers
