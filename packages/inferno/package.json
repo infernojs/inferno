@@ -12,9 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "keywords": [
-    "babel",
-    "react",
     "inferno",
+    "performance",
     "framework",
     "interfaces",
     "user interfaces",

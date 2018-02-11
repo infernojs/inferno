@@ -31,9 +31,7 @@
     "inferno-create-element": ">=4"
   },
   "dependencies": {
-    "inferno": "4.0.0-21",
-    "inferno-transition-group": "next",
-    "rc-css-transition-group-modern": "^2.1.6"
+    "inferno": "4.0.0-21"
   },
   "devDependencies": {
     "inferno-clone-vnode": "4.0.0-21",

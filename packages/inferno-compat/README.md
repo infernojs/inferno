@@ -38,7 +38,17 @@ npm install --save inferno-compat
 npm install --save inferno-clone-vnode
 npm install --save inferno-create-class
 npm install --save inferno-create-element
+
 ```
+
+If you use React/lib/ReactCSSTransitionGroup.js
+
+install `inferno-transition-group` package.
+
+If you use React/lib/ReactCSSTransitionGroup.js
+
+install `rc-css-transition-group-modern` package.
+
 
 ## What is currently supported?
 
