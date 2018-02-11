@@ -41,6 +41,25 @@ class MyComponent extends Component {
 export default MyComponent
 ```
 
+If you're not using decorators, you can do this instead:
+
+```javascript
+// MyComponent.js
+import Inferno, { Component } from 'inferno';
+import { connect } from 'inferno-mobx';
+
+class MyComponent extends Component {
+    render({ englishStore, frenchStore }) {
+        return <div>
+            <p>{ englishStore.title }</p>
+            <p>{ frenchStore.title }</p>
+        </div>
+    }
+}
+
+export default connect(['englishStore', 'frenchStore'])(MyComponent);
+```
+
 Just make sure that you provided your stores using the `Provider`. Ex:
 
 ```javascript
