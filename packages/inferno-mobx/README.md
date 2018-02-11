@@ -45,7 +45,7 @@ If you're not using decorators, you can do this instead:
 
 ```javascript
 // MyComponent.js
-import Inferno, { Component } from 'inferno';
+import { Component } from 'inferno';
 import { connect } from 'inferno-mobx';
 
 class MyComponent extends Component {
