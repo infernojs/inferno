@@ -25,11 +25,13 @@
     "rollup",
     "vdom"
   ],
-  "postinstall": "opencollective postinstall",
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/inferno",
     "logo": "https://opencollective.com/inferno/logo.txt"
+  },
+  "scripts": {
+    "postinstall": "opencollective postinstall"
   },
   "rollup": {
     "bundledDependencies": [
