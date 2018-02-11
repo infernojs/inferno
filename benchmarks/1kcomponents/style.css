@@ -5,7 +5,14 @@ body {
     font-family: sans-serif;
     width: 100%;
     height: 100%;
+    background: #111;
+    color: #777;
 }
+
+a {
+    color: #777;
+}
+
 .demo {
     overflow-x: hidden;
     position: relative;
@@ -21,7 +28,7 @@ body {
     top: 0;
     width: 100%;
     padding: 15px;
-    background: orangered;
+    background: #e41f1c;
     border-bottom: 1px solid darkred;
     display: -webkit-box;
     display: -ms-flexbox;

@@ -10,15 +10,15 @@ var ENV = ENV || (function () {
 	});
 
 	function formatElapsed(value) {
-		var str = parseFloat(value).toFixed(2);
+		var comps;
+
 		if (value > 60) {
-			minutes = Math.floor(value / 60);
 			comps = (value % 60).toFixed(2).split('.');
-			seconds = comps[0].lpad('0', 2);
-			ms = comps[1];
-			str = minutes + ":" + seconds + "." + ms;
+
+			return Math.floor(value / 60) + ":" + comps[0].lpad('0', 2) + "." + comps[1];
 		}
-		return str;
+
+		return parseFloat(value).toFixed(2);
 	}
 
 	function getElapsedClassName(elapsed) {

@@ -17,6 +17,8 @@ Inferno packages are now using peerDependencies to external components to avoid 
 
 `createVNode` cannot be used to create Component vNodes anymore. use `createComponentVNode(flags, type, props, key, ref)` instead.
 
+VNodeFlags and ChildrenFlags have changed, see inferno-vnode-flags package for new flags.
+
 There is no more "noNormalize" parameter for `createVNode` if you have been using it and you need to normalize children you need to pass `childFlags.UnknownChildren` as childFlags parameter.
 
 example:

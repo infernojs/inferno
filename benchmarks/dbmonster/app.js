@@ -7,6 +7,8 @@
 	perfMonitor.initProfiler('view update');
 
 	var createVNode = Inferno.createVNode;
+	var render = Inferno.render;
+	var createTextVNode = Inferno.createTextVNode;
 
 	function renderBenchmark(dbs) {
 		var length = dbs.length;
@@ -17,36 +19,36 @@
 			var lastSample = db.lastSample;
 			var children = new Array(7);
 
-			children[0] = createVNode(2, 'td', 'dbname', db.dbname, null, null, null);
-			children[1] = createVNode(2, 'td', 'query-count',
-				createVNode(2, 'span', lastSample.countClassName, lastSample.nbQueries, null, null, null),
-			null, null, null);
+			children[0] = createVNode(1, 'td', 'dbname', createTextVNode(db.dbname), 2);
+			children[1] = createVNode(1, 'td', 'query-count',
+				createVNode(1, 'span', lastSample.countClassName, createTextVNode(lastSample.nbQueries), 2),
+			2);
 
 			for (var i2 = 0; i2 < 5; i2++) {
 				var query = lastSample.topFiveQueries[i2];
 
-				children[i2 + 2] = createVNode(66, 'td', query.elapsedClassName, [
-					createVNode(2, 'div', 'foo', query.formatElapsed, null, null, null),
-					createVNode(66, 'div', 'popover left', [
-						createVNode(2, 'div', 'popover-content', query.query, null, null, null),
-						createVNode(2, 'div', 'arrow', null, null, null, null)
-					], null, null, null)
-				], null, null, null);
+				children[i2 + 2] = createVNode(1, 'td', query.elapsedClassName, [
+					createVNode(1, 'div', null, createTextVNode(query.formatElapsed), 2),
+					createVNode(1, 'div', 'popover left', [
+						createVNode(1, 'div', 'popover-content', createTextVNode(query.query), 2),
+						createVNode(1, 'div', 'arrow')
+					], 4)
+				], 4);
 			}
-			databases[i] = createVNode(66, 'tr', null, children, null, null, null);
+			databases[i] = createVNode(1, 'tr', null, children, 4);
 		}
 
-		Inferno.render(
-			createVNode(2, 'table', 'table table-striped latest-data', createVNode(66, 'tbody', null, databases, null, null, null), null, null, null),
+		render(
+			createVNode(1, 'table', 'table table-striped latest-data', createVNode(1, 'tbody', null, databases, 4), 2),
 		elem);
 	}
 
-	function render() {
+	function loop() {
 		var dbs = ENV.generateData(false).toArray();
 		perfMonitor.startProfile('view update');
 		renderBenchmark(dbs);
 		perfMonitor.endProfile('view update');
-		setTimeout(render, ENV.timeout);
+		setTimeout(loop, ENV.timeout);
 	}
-	render();
+  loop();
 })();

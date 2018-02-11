@@ -1,6 +1,9 @@
 import {Component, render} from 'inferno';
 import { interpolateViridis } from 'd3';
 
+perfMonitor.startFPSMonitor();
+perfMonitor.startMemMonitor();
+
 function map(arr, to) {
   let out = [];
   for (let i=arr.length; i--; ) out[i] = to(arr[i]);
@@ -19,7 +22,6 @@ class Demo extends Component {
   }
 
   updateCount(e) {
-    //console.log(e.target.value);
     this.setState({
       numPoints: e.target.value
     })
@@ -41,7 +43,7 @@ class Demo extends Component {
           {state.numPoints}
         </div>
         <div className="about">
-          InfernoJS 1k Components Demo
+          InfernoJS 4.0.0 1k Components Demo
           based on the Glimmer demo by <a href="http://mlange.io" target="_blank">Michael Lange</a>.
         </div>
       </div>
@@ -130,6 +132,7 @@ class VizDemo extends Component {
   makePoints(count) {
     const newPoints = [];
     for (var i = 0; i < count; i++) {
+      debugger;
       newPoints.push({
         x: 0,
         y: 0,
@@ -165,7 +168,7 @@ class VizDemo extends Component {
   render() {
     return (
       <svg className="demo">
-        <g $NoNormalize $HasNonKeyedChildren>
+        <g $HasNonKeyedChildren>
           { map(this.points, this.renderPoint) }
         </g>
       </svg>

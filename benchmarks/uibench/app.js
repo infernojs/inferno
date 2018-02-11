@@ -1,6 +1,6 @@
-import {createTextVNode, linkEvent, NO_OP, render, version} from "inferno";
+import {createTextVNode, linkEvent, NO_OP, render} from "inferno";
 
-uibench.init('Inferno', version);
+uibench.init('Inferno');
 
 function TreeLeaf({children}) {
   return (

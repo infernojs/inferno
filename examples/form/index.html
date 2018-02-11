@@ -122,11 +122,11 @@
 				h('div.form-group', [
 					h('label', 'What is your favourite food:'),
 					h('div.inline', [
-						h('input', { type: 'radio', name: 'food', checked: false, onClick: handleToggle }),
+						h('input', { type: 'radio', name: 'food', defaultChecked: false, onClick: handleToggle }),
 						h('span', 'Pizza')
 					]),
 					h('div.inline', [
-						h('input', { type: 'radio', name: 'food', checked: true, onClick: handleToggle }),
+						h('input', { type: 'radio', name: 'food', defaultChecked: true, onClick: handleToggle }),
 						h('span', 'Pasta')
 					])
 				]),

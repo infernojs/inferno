@@ -21,7 +21,7 @@
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "ts-loader": "^3.4.0",
-    "webpack": "^3.10.0"
+    "ts-loader": "^3.5.0",
+    "webpack": "^3.11.0"
   }
 }

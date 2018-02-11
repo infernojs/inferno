@@ -18,10 +18,11 @@
 	var container = document.getElementById('app1');
 	var render = Inferno.render;
 	var createVNode = Inferno.createVNode;
+    var createTextVNode = Inferno.createTextVNode;
 
 	function loop() {
 		// Mount
-		render(createVNode(2, 'div', 'foo bar', 'First', {
+		render(createVNode(1, 'div', 'foo bar', createTextVNode('First'), 2, {
 			style: {
 				color: 'red',
 				float: 'left'
@@ -33,7 +34,7 @@
 		// Change
     setTimeout(
     	function () {
-				render(createVNode(2, 'div', 'bar', 'Second', {
+				render(createVNode(1, 'div', 'bar', createTextVNode('Second'), 2, {
 					style: {color: 'blue'},
 					'data-attribute': 'data-value'
 				}), 
