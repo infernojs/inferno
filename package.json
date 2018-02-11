@@ -121,7 +121,7 @@
     "rollup-plugin-typescript2": "0.11.1",
     "rollup-plugin-uglify": "^3.0.0",
     "sinon": "^4.3.0",
-    "ts-jest": "^22.0.3",
+    "ts-jest": "^22.0.4",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.7.0",
     "typescript": "2.7.1"

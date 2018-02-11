@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node, callback?: Function): InfernoChildren {
+export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node | null, callback?: Function): InfernoChildren {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDom) {
@@ -45,7 +45,7 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
       }
-      if (isNull(parentDom.firstChild)) {
+      if (isNull((parentDom as Node).firstChild)) {
         mount(input as VNode, parentDom as Element, LIFECYCLE, EMPTY_OBJ, false);
         (parentDom as any).$V = input;
         roots.push(parentDom);
