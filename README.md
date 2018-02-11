@@ -54,7 +54,7 @@ List of breaking changes can be found from [here](https://github.com/infernojs/i
 - [dbmonster](https://rawgit.com/infernojs/dbmonster-inferno/master/index.html)
 - [JS Web Frameworks Benchmark - Round 6](http://stefankrause.net/js-frameworks-benchmark6/webdriver-ts/table.html)
 - [Isomorphic-UI-Benchmark](https://github.com/marko-js/isomorphic-ui-benchmarks)
-- 1k Components
+- [1k Components](https://rawgit.com/infernojs/inferno/master/benchmarks/1kcomponents/index.html)
 
 ## Code Example
 
