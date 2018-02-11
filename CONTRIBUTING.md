@@ -98,3 +98,35 @@ Pro tip: You can filter down number of tests by editing `debug` -task:
 `node --inspect-brk ./node_modules/.bin/jest {*edit this*} --runInBand --no-cache --no-watchman`
 Change parameter to jest to match only files you want to run.
 Happy debugging!
+
+
+## Credits
+
+
+### Contributors
+
+Thank you to all the people who have already contributed to inferno!
+<a href="graphs/contributors"><img src="https://opencollective.com/inferno/contributors.svg?width=890" /></a>
+
+
+### Backers
+
+Thank you to all our backers! [[Become a backer](https://opencollective.com/inferno#backer)]
+
+<a href="https://opencollective.com/inferno#backers" target="_blank"><img src="https://opencollective.com/inferno/backers.svg?width=890"></a>
+
+
+### Sponsors
+
+Thank you to all our sponsors! (please ask your company to also support this open source project by [becoming a sponsor](https://opencollective.com/inferno#sponsor))
+
+<a href="https://opencollective.com/inferno/sponsor/0/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/1/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/2/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/3/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/4/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/5/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/6/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/7/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/8/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/inferno/sponsor/9/website" target="_blank"><img src="https://opencollective.com/inferno/sponsor/9/avatar.svg"></a>

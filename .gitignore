@@ -9,7 +9,6 @@
 
 build
 coverage
-docs
 node_modules
 fixtures/browser/*.cmd
 

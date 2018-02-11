@@ -21,7 +21,7 @@ Usage of `inferno-redux` is similar to that of [react-redux](https://github.com/
 Inspiration was taken from `react-redux` to provide Inferno with a similar API.
 
 ```js
-import Inferno from 'inferno';
+import { render } from 'inferno';
 import { Router, Route, browserHistory } from 'inferno-router';
 import { Provider } from 'inferno-redux';
 import { createStore } from 'redux';
@@ -31,7 +31,7 @@ const store = createStore(function(state, action) {
     case 'CHANGE_NAME':    
       return {
         name: action.name
-      }
+      };
     default:
       return {
         name: 'TOM'
@@ -83,7 +83,7 @@ class BasicComponent2 extends Component {
     }
 }
 
-InfernoDOM.render((
+render((
     <Provider store={ store }>
         <Router history={ browserHistory } component={ App }>
             <Route path='/next' component={ BasicComponent2 } />

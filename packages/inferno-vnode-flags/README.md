@@ -2,7 +2,7 @@
 
 Inferno VNode Flags is a small utility library for [Inferno](https://github.com/infernojs/inferno).
 
-Usage of `inferno-vnode-flags` should be limited to assigning `VNodeFlags` when using `Inferno.createVNode`.
+Usage of `inferno-vnode-flags` should be limited to assigning `VNodeFlags` and `ChildFlags` when using creating vNodes.
 
 ## Install
 
@@ -12,32 +12,35 @@ npm install --save inferno-vnode-flags
 
 ## Contents
 
-- `VNodeFlags.Text`
+**VNodeFlags:**
 - `VNodeFlags.HtmlElement`
+- `VNodeFlags.ComponentUnknown`
 - `VNodeFlags.ComponentClass`
 - `VNodeFlags.ComponentFunction`
-- `VNodeFlags.ComponentUnknown`
-- `VNodeFlags.HasKeyedChildren`
-- `VNodeFlags.HasNonKeyedChildren`
+- `VNodeFlags.Text`
 - `VNodeFlags.SvgElement`
 - `VNodeFlags.InputElement`
 - `VNodeFlags.TextareaElement`
 - `VNodeFlags.SelectElement`
 - `VNodeFlags.Void`
+- `VNodeFlags.Portal`
+- `VNodeFlags.ReCreate` (JSX **$ReCreate**) always re-creates the vNode
+
+**VNodeFlags Masks:**
+- `VNodeFlags.FormElement` - Is from element
+- `VNodeFlags.Element` - Is vNode element
+- `VNodeFlags.Component` - Is vNode Component
+- `VNodeFlags.VNodeShape` - mask for defining type
+
+
+**ChildFlags**
+- `ChildFlags.UnknownChildren` needs Normalization
+- `ChildFlags.HasInvalidChildren` is invalid (null, undefined, false, true)
+- `ChildFlags.HasVNodeChildren` (JSX **$HasVNodeChildren**) is single vNode (Element/Component)
+- `ChildFlags.HasNonKeyedChildren` (JSX **$HasNonKeyedChildren**) is Array of vNodes non keyed (no nesting, no holes)
+- `ChildFlags.HasKeyedChildren` (JSX **$HasKeyedChildren**) is Array of vNodes keyed (no nesting, no holes)
+
+**ChildFlags Masks**
+- `ChildFlags.MultipleChildren` Is Array
 
 You can easily combine multiple flags, by using bitwise operators. A common use case is an element that has keyed children:
-
-```js
-const flag = VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren;
-```
-
-## Example Usage
-
-```js
-import Inferno from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
-
-const vNode = Inferno.createVNode(VNodeFlags.Element, 'div', { className: 'example' }, 'Hello world!');
-
-Inferno.render(vNode, container);
-```

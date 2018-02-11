@@ -26,6 +26,12 @@
     "rollup",
     "vdom"
   ],
+  "postinstall": "opencollective postinstall",
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/inferno",
+    "logo": "https://opencollective.com/inferno/logo.txt"
+  },
   "rollup": {
     "bundledDependencies": [
       "inferno-shared",
@@ -43,6 +49,7 @@
     "inferno-utils": "4.0.0-21"
   },
   "dependencies": {
-    "inferno-vnode-flags": "4.0.0-21"
+    "inferno-vnode-flags": "4.0.0-21",
+    "opencollective": "^1.0.3"
   }
 }

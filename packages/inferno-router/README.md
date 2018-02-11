@@ -1,8 +1,5 @@
 # inferno-router
 
-<p align="center"><img src="https://www.infernojs.org/assets/infernojs-logo.png"></p>
-<p>&nbsp;</p>
-
 Inferno Router is a routing library for [Inferno](https://github.com/infernojs/inferno). It is a port of [react-router 4](https://reacttraining.com/react-router/).  
 
 ## Install
@@ -21,26 +18,26 @@ See official react-router [documentation](https://reacttraining.com/react-router
 ## Usage (client-side)
 
 ```js
-import Inferno from 'inferno';
-import { BrowserRouter, Route, Link } from 'inferno-router'
+import { render } from 'inferno';
+import { BrowserRouter, Route, Link } from 'inferno-router';
 
 const Home = () => (
   <div>
     <h2>Home</h2>
   </div>
-)
+);
 
 const About = () => (
   <div>
     <h2>About</h2>
   </div>
-)
+);
 
 const Topic = ({ match }) => (
   <div>
     <h3>{match.params.topicId}</h3>
   </div>
-)
+);
 
 const Topics = ({ match }) => (
   <div>
@@ -68,7 +65,7 @@ const Topics = ({ match }) => (
       <h3>Please select a topic.</h3>
     )}/>
   </div>
-)
+);
 
 const MyWebsite = () => (
   <BrowserRouter>
@@ -86,10 +83,10 @@ const MyWebsite = () => (
       <Route path="/topics" component={Topics}/>
     </div>
   </BrowserRouter>
-)
+);
 
 // Render HTML on the browser
-Inferno.render(MyWebsite, document.getElementById('root'));
+render(MyWebsite, document.getElementById('root'));
 ```
 
 
@@ -114,8 +111,7 @@ export default function Html({ children }) {
 ```
 
 ```js
-import Inferno from 'inferno';
-import { renderToString } from 'inferno-server'
+import { renderToString } from 'inferno-server';
 import { StaticRouter } from 'inferno-router';
 import express from 'express';
 import Html from './Html';
@@ -129,12 +125,12 @@ app.use((req, res) => {
     return res.redirect(renderProps.redirect)
   }
     
-  const context = {}
+  const context = {};
   const content = renderToString(
     <StaticRouter location={ctx.url} context={context}>
       <Html/>
     </StaticRouter>
-  )
+  );
 
   res.send('<!DOCTYPE html>\n' + renderToString(content));
 });
@@ -143,22 +139,21 @@ app.use((req, res) => {
 ## Usage (server) with koa v2
 
 ```js
-import Inferno from 'inferno';
-import { renderToString } from 'inferno-server'
+import { renderToString } from 'inferno-server';
 import { StaticRouter } from 'inferno-router';
 import Koa from 'koa';
 import Html from './Html';
 
-const app = new Koa()
+const app = new Koa();
 
-app.use(async(ctx, next) => { 
+app.use(async(ctx, next) => {
 
-  const context = {}
+  const context = {};
   const content = renderToString(
     <StaticRouter location={ctx.url} context={context}>
       <Html/>
     </StaticRouter>
-  )
+  );
     
   // This will contain the URL to redirect to if <Redirect> was used
   if (context.url) {
