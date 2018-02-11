@@ -7,7 +7,7 @@
 string components now require `inferno-compat`
 
 Default exports have been removed from all packages except `inferno-compat`. If you are getting exception for example:
-cannot read `Inferno.createComponentVNode` make sure you have babel-plugin-inferno before babel module transformers in your `.babelrc` file. 
+cannot read `Inferno.createComponentVNode` make sure you have babel-plugin-inferno before babel module transformers in your `.babelrc` file.
 
 Inferno packages are now using peerDependencies to external components to avoid duplicates
 
@@ -50,3 +50,7 @@ npm install --save inferno-create-element
 
 - Many JSX flags have changed, see babel-plugin-inferno README for more information
 
+
+### Create Inferno App
+
+It now uses `npx create-inferno-app your-app` to create new application
