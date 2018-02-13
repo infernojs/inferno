@@ -135,7 +135,7 @@ render(
 
 If you have built something using Inferno you can add them here:
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wt5vL603/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/pzmqLjo7/)
 
 
 ## Getting Started
