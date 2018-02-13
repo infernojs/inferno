@@ -1,5 +1,6 @@
 import { Component, render } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
+import sinon from "sinon";
 
 describe('BUG: instance - null', () => {
   let container;
@@ -354,6 +355,45 @@ describe('BUG: instance - null', () => {
           done();
         }, 10);
       }, 10);
+    }, 10);
+  });
+
+  it('Should not propagate mid/right mouse buttons clicks', (done) => {
+    const obj = {
+      spy() {}
+    };
+    const spy = sinon.spy(obj, 'spy');
+
+    render(
+      <div>
+        <div onClick={spy} id="MAGICBUTTON">test</div>
+      </div>,
+      container
+    );
+
+    const event = document.createEvent('MouseEvents');
+    // Simulate right click
+    Object.defineProperty(event, 'button', {
+      value: 2
+    });
+
+    // If changing button for click event is not supported, then we can skip this test.
+    if (event.button === 0) {
+      done();
+      return;
+    }
+
+    event.initEvent('click', true, true);
+
+    expect(spy.callCount).toBe(0);
+
+    const node = container.querySelector('#MAGICBUTTON');
+    debugger;
+    node.dispatchEvent(event, true);
+
+    setTimeout(function() {
+      expect(spy.callCount).toBe(0);
+      done();
     }, 10);
   });
 

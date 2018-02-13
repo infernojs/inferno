@@ -74,6 +74,18 @@ function stopPropagation() {
 
 function attachEventToDocument(name: string) {
   const docEvent = (event: Event) => {
+    const type = event.type;
+    const isClick = type === 'click' || type === 'dblclick';
+
+    if (isClick && (event as MouseEvent).button !== 0) {
+      // Firefox incorrectly triggers click event for mid/right mouse buttons.
+      // This bug has been active for 12 years.
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=184051
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    }
+
     event.stopPropagation = stopPropagation;
     // Event data needs to be object to save reference to currentTarget getter
     const eventData: IEventData = {
@@ -91,7 +103,7 @@ function attachEventToDocument(name: string) {
       /* safari7 and phantomJS will crash */
     }
 
-    dispatchEvents(event, event.target, event.type === 'click', name, eventData);
+    dispatchEvents(event, event.target, isClick, name, eventData);
   };
   document.addEventListener(normalizeEventName(name), docEvent);
   return docEvent;
