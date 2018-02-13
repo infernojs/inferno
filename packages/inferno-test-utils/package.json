@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "license": "MIT",
   "description": "Suite of utilities for testing Inferno applications",
   "author": {
@@ -24,10 +24,10 @@
     "inferno": ">=4"
   },
   "devDependencies": {
-    "inferno": "4.0.2",
-    "inferno-server": "4.0.2",
-    "inferno-shared": "4.0.2",
-    "inferno-vnode-flags": "4.0.2"
+    "inferno": "4.0.3",
+    "inferno-server": "4.0.3",
+    "inferno-shared": "4.0.3",
+    "inferno-vnode-flags": "4.0.3"
   },
   "rollup": {
     "bundledDependencies": [
