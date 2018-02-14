@@ -42,7 +42,7 @@ Inferno is now part of [Saucelabs](https://saucelabs.com/) open source program a
 
 InfernoJS natively supports the browsers listed below.
 
-[![Build Status](https://saucelabs.com/browser-matrix/Havunen.svg)](https://saucelabs.com/beta/builds/cf68c41f71a54ed682388fade49298fd)
+[![Build Status](https://saucelabs.com/browser-matrix/Havunen.svg)](https://saucelabs.com/open_sauce/user/Havunen)
 
 
 ## Migration to v4
