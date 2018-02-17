@@ -5,7 +5,7 @@ This is a fork of [mobx-react](https://github.com/mobxjs/mobx-react) for [Infern
 The module is compatible with Inferno v1+, for older versions use [mobx-inferno](https://www.npmjs.com/package/mobx-inferno)
 
 This package provides the bindings for MobX and Inferno.
-Exports `observer` and `connect` decorators, a `Provider` and some development utilities.
+Exports `observer` and `inject` decorators, a `Provider` and some development utilities.
 
 ## Install
 
@@ -26,9 +26,9 @@ You can inject props using the following syntax
 ```javascript
 // MyComponent.js
 import { Component } from 'inferno';
-import { connect } from 'inferno-mobx';
+import { inject, observer } from 'inferno-mobx';
 
-@connect(['englishStore', 'frenchStore'])
+@inject(['englishStore', 'frenchStore']) @observer
 class MyComponent extends Component {
     render({ englishStore, frenchStore }) {
         return <div>
@@ -46,7 +46,7 @@ If you're not using decorators, you can do this instead:
 ```javascript
 // MyComponent.js
 import { Component } from 'inferno';
-import { connect } from 'inferno-mobx';
+import { inject, observer } from 'inferno-mobx';
 
 class MyComponent extends Component {
     render({ englishStore, frenchStore }) {
@@ -57,7 +57,7 @@ class MyComponent extends Component {
     }
 }
 
-export default connect(['englishStore', 'frenchStore'])(MyComponent);
+export default inject(['englishStore', 'frenchStore'])(observer(MyComponent));
 ```
 
 Just make sure that you provided your stores using the `Provider`. Ex:
