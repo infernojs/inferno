@@ -1,6 +1,6 @@
 {
   "name": "inferno-clone-vnode",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "license": "MIT",
   "description": "provides helper function to clone Inferno's vNodes",
   "author": {
@@ -28,9 +28,9 @@
     "inferno": ">=4"
   },
   "devDependencies": {
-    "inferno": "4.0.3",
-    "inferno-shared": "4.0.3",
-    "inferno-vnode-flags": "4.0.3"
+    "inferno": "4.0.4",
+    "inferno-shared": "4.0.4",
+    "inferno-vnode-flags": "4.0.4"
   },
   "rollup": {
     "bundledDependencies": [
