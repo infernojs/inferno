@@ -112,7 +112,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^1.10.2",
     "rimraf": "^2.6.2",
-    "rollup": "^0.56.1",
+    "rollup": "^0.56.2",
     "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^8.3.0",

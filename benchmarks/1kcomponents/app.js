@@ -132,7 +132,6 @@ class VizDemo extends Component {
   makePoints(count) {
     const newPoints = [];
     for (var i = 0; i < count; i++) {
-      debugger;
       newPoints.push({
         x: 0,
         y: 0,

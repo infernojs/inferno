@@ -60,6 +60,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.nodeName).toBe('DIV');
     expect(container.firstChild.childNodes.length).toBe(5);
     expect(container.firstChild.firstChild.nodeName).toBe('SPAN');
+
     render(
       <div>
         <span />

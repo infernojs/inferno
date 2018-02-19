@@ -3,7 +3,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
 import { remove, removeAllChildren, unmount } from './unmounting';
-import { appendChild, EMPTY_OBJ, insertOrAppend, replaceChild } from './utils/common';
+import { EMPTY_OBJ, insertOrAppend, replaceChild } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
@@ -184,12 +184,10 @@ function patchChildren(
           }
         } else if (nextLength === 0) {
           removeAllChildren(parentDOM, lastChildren);
+        } else if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
+          patchKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
         } else {
-          if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
-            patchKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
-          } else {
-            patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
-          }
+          patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, lifecycle, context, isSVG, lastLength, nextLength);
         }
       } else if (nextChildFlags === ChildFlags.HasInvalidChildren) {
         removeAllChildren(parentDOM, lastChildren);
@@ -396,7 +394,7 @@ function patchNonKeyedChildren(
       if (nextChild.dom) {
         nextChild = nextChildren[i] = directClone(nextChild);
       }
-      appendChild(dom, mount(nextChild, null, lifecycle, context, isSVG));
+      mount(nextChild, dom, lifecycle, context, isSVG);
     }
   } else if (lastChildrenLength > nextChildrenLength) {
     for (i = commonLength; i < lastChildrenLength; i++) {

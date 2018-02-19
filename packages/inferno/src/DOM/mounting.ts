@@ -122,14 +122,13 @@ export function mountComponent(vNode: VNode, parentDom: Element | null, lifecycl
 
   if (isClass) {
     const instance = createClassComponentInstance(vNode, type, props, context);
-    const input = instance.$LI;
-    vNode.dom = dom = mount(input, null, lifecycle, instance.$CX, isSVG);
+    vNode.dom = dom = mount(instance.$LI, null, lifecycle, instance.$CX, isSVG);
     mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
     instance.$UPD = false;
   } else {
     const input = handleComponentInput(type(props, context), vNode);
-    vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
     vNode.children = input;
+    vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
     mountFunctionalComponentCallbacks(props, ref, dom, lifecycle);
   }
   if (!isNull(parentDom)) {

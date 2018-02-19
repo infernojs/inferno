@@ -1,7 +1,7 @@
 import { isNullOrUndef } from 'inferno-shared';
 import { createWrappedFunction } from './wrapper';
 
-export function isCheckedType(type) {
+export function isCheckedType(type): boolean {
   return type === 'checkbox' || type === 'radio';
 }
 
