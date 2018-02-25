@@ -24,7 +24,7 @@ import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
-import { VNodeFlags} from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
@@ -275,7 +275,7 @@ class PureComponent<P, S> extends Component<P, S> {
 class WrapperComponent<P, S> extends Component<P, S> {
   public getChildContext() {
     // tslint:disable-next-line
-    return this.props.context;
+    return (this.props as any).context; // TODO: Is this intentional???
   }
 
   public render(props) {

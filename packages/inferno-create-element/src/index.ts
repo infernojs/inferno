@@ -25,7 +25,7 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
   let children: any = _children;
   let ref: any = null;
   let key = null;
-  let className = null;
+  let className: string | null = null;
   let flags = 0;
   let newProps;
 
@@ -44,7 +44,7 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
 
       for (const prop in props) {
         if (prop === 'className' || prop === 'class') {
-          className = props[prop];
+          className = (props as any)[prop];
         } else if (prop === 'key') {
           key = props.key;
         } else if (prop === 'children' && isUndefined(children)) {
