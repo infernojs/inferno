@@ -38,7 +38,6 @@ export interface Props {
   ref?: Ref | null;
   key?: any;
   className?: string;
-  // [k: string]: any;
 }
 
 export interface Refs<P> {

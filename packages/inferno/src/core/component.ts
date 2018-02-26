@@ -198,9 +198,6 @@ export interface StatelessComponent<P = {}> {
 export interface ComponentClass<P = {}> {
   new (props?: P, context?: any): Component<P, {}>;
 
-  propTypes?: ValidationMap<P>;
-  contextTypes?: ValidationMap<any>;
-  childContextTypes?: ValidationMap<any>;
   defaultProps?: Partial<P>;
   displayName?: string;
 }
