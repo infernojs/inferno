@@ -12,7 +12,6 @@ module.exports = {
     usingJSDOM: true,
     usingJest: true
   },
-  mapCoverage: true,
   moduleFileExtensions: ["ts", "js", "jsx", "json"],
   moduleNameMapper: {
     "^inferno-router/utils": "<rootDir>/packages/inferno-router/src/utils",

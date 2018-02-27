@@ -46,10 +46,10 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "devDependencies": {
-    "inferno-shared": "4.0.4",
     "inferno-utils": "4.0.4"
   },
   "dependencies": {
+    "inferno-shared": "4.0.4",
     "inferno-vnode-flags": "4.0.4",
     "opencollective": "^1.0.3"
   }
