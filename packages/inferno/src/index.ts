@@ -26,6 +26,9 @@ import {
 import { getNumberStyleValue } from './DOM/props';
 import { hydrate } from './DOM/hydration';
 
+import * as JSX from "./JSX";
+
+
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
   const testFunc = function testFn() {};
@@ -67,5 +70,6 @@ export {
   normalizeProps,
   options,
   render,
-  version
+  version,
+  JSX
 };

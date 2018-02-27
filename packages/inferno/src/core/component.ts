@@ -189,8 +189,6 @@ export type SFC<P = {}> = StatelessComponent<P>;
 export interface StatelessComponent<P = {}> {
   (props: P & { children?: InfernoChildren }, context?: any): VNode<P> | null;
 
-  propTypes?: ValidationMap<P>;
-  contextTypes?: ValidationMap<any>;
   defaultProps?: Partial<P>;
   displayName?: string;
 }
