@@ -51,13 +51,14 @@ export interface Refs {
 }
 
 function getVNode(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type): VNode {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     return {
       childFlags,
       children,
       className,
       dom: null,
       flags,
+      isValidated: false,
       key: key === void 0 ? null : key,
       parentVNode: null,
       props: props === void 0 ? null : props,
@@ -72,7 +73,6 @@ function getVNode(childFlags: ChildFlags, children, className: string | null | u
     className,
     dom: null,
     flags,
-    isValidated: false,
     key: key === void 0 ? null : key,
     parentVNode: null,
     props: props === void 0 ? null : props,
@@ -290,11 +290,10 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
 
 export function normalizeChildren(vNode: VNode, children) {
   let newChildren: any;
-  let newChildFlags: number;
+  let newChildFlags: number = ChildFlags.HasInvalidChildren;
 
   // Don't change children to match strict equal (===) true in patching
   if (isInvalid(children)) {
-    newChildFlags = ChildFlags.HasInvalidChildren;
     newChildren = children;
   } else if (isString(children)) {
     newChildFlags = ChildFlags.HasVNodeChildren;

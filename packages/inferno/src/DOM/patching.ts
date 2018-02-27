@@ -16,7 +16,7 @@ function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle: Function[]
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, lifecycle: Function[], context: Object, isSVG: boolean) {
   if (lastVNode !== nextVNode) {
-    const nextFlags = nextVNode.flags;
+    const nextFlags = nextVNode.flags|0;
 
     if (lastVNode.flags !== nextFlags || nextFlags & VNodeFlags.ReCreate) {
       replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
