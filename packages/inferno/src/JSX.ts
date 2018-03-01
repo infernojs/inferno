@@ -1,4 +1,21 @@
-import { Component, ComponentClass, StatelessComponent, InfernoChildren, SFC, VNode } from "inferno";
+import {
+  Component, ComponentClass, StatelessComponent, InfernoChildren, SFC, VNode,
+  InfernoEventHandler, KeyboardEventHandler, FormEventHandler, CompositionEventHandler, ClipboardEventHandler,
+  FocusEventHandler, MouseEventHandler, DragEventHandler, WheelEventHandler, UIEventHandler, TouchEventHandler,
+  AnimationEventHandler, TransitionEventHandler, ChangeEventHandler
+} from "inferno";
+
+export type NativeAnimationEvent = AnimationEvent;
+export type NativeClipboardEvent = ClipboardEvent;
+export type NativeCompositionEvent = CompositionEvent;
+export type NativeDragEvent = DragEvent;
+export type NativeFocusEvent = FocusEvent;
+export type NativeKeyboardEvent = KeyboardEvent;
+export type NativeMouseEvent = MouseEvent;
+export type NativeTouchEvent = TouchEvent;
+export type NativeTransitionEvent = TransitionEvent;
+export type NativeUIEvent = UIEvent;
+export type NativeWheelEvent = WheelEvent;
 
 declare global {
   // Based on Type definitions for React 16.0
@@ -21,18 +38,6 @@ declare global {
   // TypeScript Version: 2.6
 
   /// <reference path="global.d.ts" />
-
-  type NativeAnimationEvent = AnimationEvent;
-  type NativeClipboardEvent = ClipboardEvent;
-  type NativeCompositionEvent = CompositionEvent;
-  type NativeDragEvent = DragEvent;
-  type NativeFocusEvent = FocusEvent;
-  type NativeKeyboardEvent = KeyboardEvent;
-  type NativeMouseEvent = MouseEvent;
-  type NativeTouchEvent = TouchEvent;
-  type NativeTransitionEvent = TransitionEvent;
-  type NativeUIEvent = UIEvent;
-  type NativeWheelEvent = WheelEvent;
 
 // tslint:disable-next-line:export-just-namespace
 // export = InfernoJSX;
@@ -307,190 +312,6 @@ declare global {
     //
     //   [propertyName: string]: any;
     // }
-
-    //
-    // Event System
-    // ----------------------------------------------------------------------
-
-    interface SyntheticEvent<T> {
-      bubbles: boolean;
-      /**
-       * A reference to the element on which the event listener is registered.
-       */
-      currentTarget: EventTarget & T;
-      cancelable: boolean;
-      defaultPrevented: boolean;
-      eventPhase: number;
-      isTrusted: boolean;
-      nativeEvent: Event;
-
-      preventDefault(): void;
-
-      isDefaultPrevented(): boolean;
-
-      stopPropagation(): void;
-
-      isPropagationStopped(): boolean;
-
-      persist(): void;
-
-      // If you thought this should be `EventTarget & T`, see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/12239
-      /**
-       * A reference to the element from which the event was originally dispatched.
-       * This might be a child element to the element on which the event listener is registered.
-       *
-       * @see currentTarget
-       */
-      target: EventTarget;
-      timeStamp: number;
-      type: string;
-    }
-
-    interface ClipboardEvent<T> extends SyntheticEvent<T> {
-      clipboardData: DataTransfer;
-      nativeEvent: NativeClipboardEvent;
-    }
-
-    interface CompositionEvent<T> extends SyntheticEvent<T> {
-      data: string;
-      nativeEvent: NativeCompositionEvent;
-    }
-
-    interface DragEvent<T> extends MouseEvent<T> {
-      dataTransfer: DataTransfer;
-      nativeEvent: NativeDragEvent;
-    }
-
-    interface FocusEvent<T> extends SyntheticEvent<T> {
-      nativeEvent: NativeFocusEvent;
-      relatedTarget: EventTarget;
-    }
-
-    // tslint:disable-next-line:no-empty-interface
-    interface FormEvent<T> extends SyntheticEvent<T> {
-    }
-
-    interface InvalidEvent<T> extends SyntheticEvent<T> {
-      target: EventTarget & T;
-    }
-
-    interface ChangeEvent<T> extends SyntheticEvent<T> {
-      target: EventTarget & T;
-    }
-
-    interface KeyboardEvent<T> extends SyntheticEvent<T> {
-      altKey: boolean;
-      charCode: number;
-      ctrlKey: boolean;
-
-      /**
-       * See [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#keys-modifier). for a list of valid (case-sensitive) arguments to this method.
-       */
-      getModifierState(key: string): boolean;
-
-      /**
-       * See the [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#named-key-attribute-values). for possible values
-       */
-      key: string;
-      keyCode: number;
-      locale: string;
-      location: number;
-      metaKey: boolean;
-      nativeEvent: NativeKeyboardEvent;
-      repeat: boolean;
-      shiftKey: boolean;
-      which: number;
-    }
-
-    interface MouseEvent<T> extends SyntheticEvent<T> {
-      altKey: boolean;
-      button: number;
-      buttons: number;
-      clientX: number;
-      clientY: number;
-      ctrlKey: boolean;
-
-      /**
-       * See [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#keys-modifier). for a list of valid (case-sensitive) arguments to this method.
-       */
-      getModifierState(key: string): boolean;
-
-      metaKey: boolean;
-      nativeEvent: NativeMouseEvent;
-      pageX: number;
-      pageY: number;
-      relatedTarget: EventTarget;
-      screenX: number;
-      screenY: number;
-      shiftKey: boolean;
-    }
-
-    interface TouchEvent<T> extends SyntheticEvent<T> {
-      altKey: boolean;
-      changedTouches: TouchList;
-      ctrlKey: boolean;
-
-      /**
-       * See [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#keys-modifier). for a list of valid (case-sensitive) arguments to this method.
-       */
-      getModifierState(key: string): boolean;
-
-      metaKey: boolean;
-      nativeEvent: NativeTouchEvent;
-      shiftKey: boolean;
-      targetTouches: TouchList;
-      touches: TouchList;
-    }
-
-    interface UIEvent<T> extends SyntheticEvent<T> {
-      detail: number;
-      nativeEvent: NativeUIEvent;
-      view: AbstractView;
-    }
-
-    interface WheelEvent<T> extends MouseEvent<T> {
-      deltaMode: number;
-      deltaX: number;
-      deltaY: number;
-      deltaZ: number;
-      nativeEvent: NativeWheelEvent;
-    }
-
-    interface AnimationEvent<T> extends SyntheticEvent<T> {
-      animationName: string;
-      elapsedTime: number;
-      nativeEvent: NativeAnimationEvent;
-      pseudoElement: string;
-    }
-
-    interface TransitionEvent<T> extends SyntheticEvent<T> {
-      elapsedTime: number;
-      nativeEvent: NativeTransitionEvent;
-      propertyName: string;
-      pseudoElement: string;
-    }
-
-    //
-    // Event Handler Types
-    // ----------------------------------------------------------------------
-
-    type EventHandler<E extends SyntheticEvent<any>> = { bivarianceHack(event: E): void }["bivarianceHack"];
-
-    type InfernoEventHandler<T> = EventHandler<SyntheticEvent<T>>;
-
-    type ClipboardEventHandler<T> = EventHandler<ClipboardEvent<T>>;
-    type CompositionEventHandler<T> = EventHandler<CompositionEvent<T>>;
-    type DragEventHandler<T> = EventHandler<DragEvent<T>>;
-    type FocusEventHandler<T> = EventHandler<FocusEvent<T>>;
-    type FormEventHandler<T> = EventHandler<FormEvent<T>>;
-    type ChangeEventHandler<T> = EventHandler<ChangeEvent<T>>;
-    type KeyboardEventHandler<T> = EventHandler<KeyboardEvent<T>>;
-    type MouseEventHandler<T> = EventHandler<MouseEvent<T>>;
-    type TouchEventHandler<T> = EventHandler<TouchEvent<T>>;
-    type UIEventHandler<T> = EventHandler<UIEvent<T>>;
-    type WheelEventHandler<T> = EventHandler<WheelEvent<T>>;
-    type AnimationEventHandler<T> = EventHandler<AnimationEvent<T>>;
-    type TransitionEventHandler<T> = EventHandler<TransitionEvent<T>>;
 
     //
     // Props / DOM Attributes

@@ -13,7 +13,7 @@ import {
   Refs,
   VNode
 } from './core/implementation';
-import { linkEvent } from './DOM/events/linkEvent';
+import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createPortal, createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils/common';
 import {
@@ -27,7 +27,7 @@ import { getNumberStyleValue } from './DOM/props';
 import { hydrate } from './DOM/hydration';
 
 import * as JSX from "./JSX";
-
+export * from "./DOM/events/events";
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
@@ -67,6 +67,7 @@ export {
   getNumberStyleValue,
   hydrate,
   linkEvent,
+  LinkedEvent,
   normalizeProps,
   options,
   render,
