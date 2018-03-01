@@ -1,6 +1,5 @@
-import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import { createElement, isValidElement } from 'inferno-compat';
+import { createElement, isValidElement, render, Component } from 'inferno-compat';
 
 describe('Compat Children', () => {
   let container;
@@ -313,5 +312,39 @@ describe('Compat Children', () => {
       render(<Div>Hello World</Div>, container);
       expect(container.innerHTML).toBe(innerHTML('<div>Hello World</div>'));
     });
+  });
+
+  describe('Iterables', () => {
+    it('Should render 0 as "0" text node (Array)', () => {
+      class Hello extends Component {
+        render() {
+          return <div>Hello {0} Inferno</div>;
+        }
+      }
+
+      render(<Hello />, container);
+
+      expect(container.innerHTML).toBe('<div>Hello 0 Inferno</div>');
+    });
+
+    if ('Set' in window) {
+      it('Should render 0 as "0" text node (Set)', () => {
+        class Hello extends Component {
+          render() {
+            const set = new Set();
+
+            set.add('Hello ');
+            set.add(0);
+            set.add(' Inferno');
+
+            return <div>{set}</div>;
+          }
+        }
+
+        render(<Hello />, container);
+
+        expect(container.innerHTML).toBe('<div>Hello 0 Inferno</div>');
+      });
+    }
   });
 });

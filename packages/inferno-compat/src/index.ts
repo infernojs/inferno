@@ -24,7 +24,7 @@ import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags} from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
@@ -189,9 +189,7 @@ function iterableToArray(iterable) {
   const tmpArr: any[] = [];
   do {
     iterStep = iterable.next();
-    if (iterStep.value) {
-      tmpArr.push(iterStep.value);
-    }
+    tmpArr.push(iterStep.value);
   } while (!iterStep.done);
 
   return tmpArr;
@@ -202,7 +200,7 @@ const hasSymbolSupport = typeof g.Symbol !== 'undefined';
 const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 const oldCreateVNode = options.createVNode;
 
-options.createVNode = (vNode: VNode): boolean => {
+options.createVNode = (vNode: VNode) => {
   const children = vNode.children as any;
   const ref = vNode.ref;
   let props: any = vNode.props;
@@ -212,7 +210,7 @@ options.createVNode = (vNode: VNode): boolean => {
   }
 
   // React supports iterable children, in addition to Array-like
-  if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && isFunction(children[symbolIterator])) {
+  if (hasSymbolSupport && !isNull(children) && !isArray(children) && typeof children === 'object'&& isFunction(children[symbolIterator])) {
     vNode.children = iterableToArray(children[symbolIterator]());
   }
   if (typeof ref === 'string' && !isNull(currentComponent)) {
@@ -251,8 +249,6 @@ options.createVNode = (vNode: VNode): boolean => {
   if (oldCreateVNode) {
     oldCreateVNode(vNode);
   }
-
-  return (flags & VNodeFlags.Element) > 0;
 };
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
