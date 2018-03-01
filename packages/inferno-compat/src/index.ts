@@ -275,7 +275,7 @@ class PureComponent<P, S> extends Component<P, S> {
 class WrapperComponent<P, S> extends Component<P, S> {
   public getChildContext() {
     // tslint:disable-next-line
-    return (this.props as any).context; // TODO: Is this intentional???
+    return (this.props as any).context;
   }
 
   public render(props) {
