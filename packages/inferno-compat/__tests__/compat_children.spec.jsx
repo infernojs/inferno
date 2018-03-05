@@ -327,7 +327,10 @@ describe('Compat Children', () => {
       expect(container.innerHTML).toBe('<div>Hello 0 Inferno</div>');
     });
 
-    if ('Set' in window) {
+    const g = typeof window === 'undefined' ? global : window;
+    const hasSymbolSupport = typeof g.Symbol !== 'undefined';
+
+    if (hasSymbolSupport && 'Set' in window) {
       it('Should render 0 as "0" text node (Set)', () => {
         class Hello extends Component {
           render() {

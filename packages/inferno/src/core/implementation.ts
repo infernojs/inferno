@@ -1,5 +1,6 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
+  combineFrom,
   isArray,
   isDefined,
   isFunction,
@@ -7,6 +8,7 @@ import {
   isNull,
   isNullOrUndef,
   isNumber,
+  isObject,
   isString,
   isStringOrNumber,
   isUndefined,
@@ -176,7 +178,9 @@ export function normalizeProps(vNode) {
   const props = vNode.props;
 
   if (props) {
-    if (vNode.flags & VNodeFlags.Element) {
+    const flags = vNode.flags;
+
+    if (flags & VNodeFlags.Element) {
       if (isDefined(props.children) && isNullOrUndef(vNode.children)) {
         normalizeChildren(vNode, props.children);
       }
@@ -190,7 +194,12 @@ export function normalizeProps(vNode) {
       props.key = undefined;
     }
     if (isDefined(props.ref)) {
-      vNode.ref = props.ref as any;
+      if (flags & VNodeFlags.ComponentFunction) {
+        vNode.ref = combineFrom(vNode.ref, props.ref);
+      } else {
+        vNode.ref = props.ref as any;
+      }
+
       props.ref = undefined;
     }
   }

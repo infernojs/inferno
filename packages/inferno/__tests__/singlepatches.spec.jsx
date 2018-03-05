@@ -354,6 +354,52 @@ describe('All single patch variations', () => {
       expect(container.innerHTML).toEqual('<div>2<div>2</div></div>');
       expect(mountCounter).toBe(1);
     });
+
+    it('Should be possible to define default hooks and use spread operator', () => {
+      let counter = 0;
+      let mountCounter = 0;
+
+      function Static() {
+        return <div>{counter}</div>;
+      }
+
+      Static.defaultHooks = {
+        onComponentShouldUpdate() {
+          return false;
+        },
+        onComponentWillMount() {
+          mountCounter++;
+        }
+      };
+
+      const props = {ref: {
+        onComponentShouldUpdate: () => true
+      }};
+
+      function doRender() {
+        debugger;
+
+        render(
+          <div>
+            {counter}
+            <Static {...props} />
+          </div>,
+          container
+        );
+      }
+
+      doRender();
+      expect(container.innerHTML).toEqual('<div>0<div>0</div></div>');
+      counter++;
+      expect(mountCounter).toBe(1);
+      doRender();
+      expect(container.innerHTML).toEqual('<div>1<div>1</div></div>');
+      counter++;
+      expect(mountCounter).toBe(1);
+      doRender();
+      expect(container.innerHTML).toEqual('<div>2<div>2</div></div>');
+      expect(mountCounter).toBe(1);
+    });
   });
 
   describe('immutable children', () => {
