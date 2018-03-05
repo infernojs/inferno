@@ -8,7 +8,6 @@ import {
   isNull,
   isNullOrUndef,
   isNumber,
-  isObject,
   isString,
   isStringOrNumber,
   isUndefined,

@@ -103,7 +103,7 @@ render(
 
 Because performance is an important aspect of this library, we want to show you how to optimize your application even further.
 In the example below we optimize diffing process by using JSX **$HasVNodeChildren** to predefine children shape compile time.
-Then we create text vNode using `Inferno.createTextVNode`.
+Then we create text vNode using `createTextVNode`.
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -395,7 +395,9 @@ Functional components are first-class functions where their first argument is th
 
 ### `createVNode` (package: `inferno`)
 ```js
-Inferno.createVNode(
+import { createVNode } from 'inferno';
+
+createVNode(
   flags,
   type,
   [className],
@@ -412,13 +414,13 @@ createVNode is used to create html element's virtual node object. Typically `cre
 
 ```javascript
 import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
-import { createVNode, createTextVNode } from 'inferno';
+import { createVNode, createTextVNode, render } from 'inferno';
 
 const vNode = createVNode(VNodeFlags.HtmlElement, 'div', 'example', createTextVNode('Hello world!'), ChildFlags.HasVNodeChildren);
 
 // <div class="example">Hello world!</div>
 
-Inferno.render(vNode, container);
+render(vNode, container);
 ```
 
 `createVNode` arguments explained:
@@ -442,7 +444,9 @@ Inferno.render(vNode, container);
 
 ### `createComponentVNode` (package: 'inferno')
 ```js
-Inferno.createComponentVNode(
+import { createComponentVNode } from 'inferno';
+
+createComponentVNode(
   flags,
   type,
   [props],
@@ -456,7 +460,7 @@ createComponentVNode is used for creating vNode for Class/Functional Component.
 Example:
 ```javascript
 import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
-import { createVNode, createTextVNode, createComponentVNode } from 'inferno';
+import { createVNode, createTextVNode, createComponentVNode, render } from 'inferno';
 
 function MyComponent(props, context) {
   return createVNode(VNodeFlags.HtmlElement, 'div', 'example', createTextVNode(props.greeting), ChildFlags.HasVNodeChildren);
@@ -472,7 +476,7 @@ const vNode = createComponentVNode(VNodeFlags.ComponentFunction, MyComponent, {
 
 // <div class="example">Hello Community!</div>
 
-Inferno.render(vNode, container);
+render(vNode, container);
 ```
 
 
@@ -499,16 +503,23 @@ text: (string) is a value for text node to be created.
 key: (string|number) unique key within this vNodes siblings to identify it during keyed algorithm.
 
 ```js
-Inferno.createTextVNode(
+import { createTextVNode } from 'inferno';
+
+createTextVNode(
   text,
   key
 )
 ```
 
 
-### `cloneVNode` (package: `inferno`)
+### `cloneVNode` (package: `inferno-clone-vnode`)
+
+This package has same API as React.cloneElement
+
 ```javascript
-Inferno.cloneVNode(
+import {cloneVNode} from 'inferno-clone-vnode';
+
+cloneVNode(
   vNode,
   [props],
   [...children]
@@ -669,6 +680,8 @@ Render a virtual node into an HTML string, given the supplied virtual DOM.
 Functional lifecycle events must be explicitly assigned via props onto a functional component like shown below:
 
 ```javascript
+import { render } from 'inferno';
+
 function mounted(domNode) {
   // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
@@ -677,7 +690,7 @@ function FunctionalComponent({ props }) {
   return <div>Hello world</div>;
 }
 
-Inferno.render(
+render(
   <FunctionalComponent onComponentDidMount={ mounted } />,
   document.getElementById("app")
 );
@@ -700,7 +713,7 @@ When running Inferno on the browser using Webpack or Rollup, a replacement will 
 
 #### Webpack
 
-Use the following configuration in your Webpack build:
+Use the following configuration in your Webpack build for production build:
 
 ```js
   ...
@@ -711,6 +724,19 @@ Use the following configuration in your Webpack build:
       }
     })
   ]
+```
+
+When you are building for development, you may want to use `inferno.dev.mjs` ("dev:module": "dist/index.dev.mjs",) file.
+That build version has extra level of validation for development purposes. You can use it by adding following code to your webpack config.
+
+```js
+    ...
+	resolve: {
+    /* When doing development workflow we want to make sure webpack picks up development build of inferno */
+		alias: {
+			inferno: __dirname + "/node_modules/inferno/dist/index.dev.mjs"
+		}
+	}
 ```
 
 #### Rollup
@@ -728,6 +754,21 @@ const replace = require('rollup-plugin-replace');
       'process.env.NODE_ENV': JSON.stringify('production'),
     })
   ]
+```
+
+When you are building for development, you may want to use `inferno.dev.mjs` ("dev:module": "dist/index.dev.mjs",) file.
+That build version has extra level of validation for development purposes. You can use it by adding following code to your rollup config.
+
+```js
+    const alias = require('rollup-plugin-alias');
+
+    ...
+	plugins: {
+    /* When doing development workflow we want to make sure webpack picks up development build of inferno */
+		alias: {
+			'inferno': __dirname + '/node_modules/inferno/dist/index.dev.mjs'
+		}
+	}
 ```
 
 ### Custom namespaces
