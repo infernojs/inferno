@@ -272,10 +272,16 @@ class PureComponent<P, S> extends Component<P, S> {
   }
 }
 
-class WrapperComponent<P, S> extends Component<P, S> {
+interface ContextProps {
+  context: any;
+}
+
+type WrapperComponentProps<P> = P & ContextProps;
+
+class WrapperComponent<P, S> extends Component<WrapperComponentProps<P>, S> {
   public getChildContext() {
     // tslint:disable-next-line
-    return (this.props as any).context;
+    return this.props.context;
   }
 
   public render(props) {
