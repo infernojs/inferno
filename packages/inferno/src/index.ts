@@ -10,6 +10,7 @@ import {
   normalizeProps,
   options,
   Props,
+  Ref,
   Refs,
   VNode
 } from './core/implementation';
@@ -20,6 +21,7 @@ import {
   Component,
   ComponentClass,
   ComponentLifecycle,
+  ComponentType,
   SFC,
   StatelessComponent
 } from './core/component';
@@ -47,6 +49,7 @@ const version = process.env.INFERNO_VERSION;
 export {
   Component,
   ComponentLifecycle,
+  ComponentType,
   SFC,
   StatelessComponent,
   ComponentClass,
@@ -55,6 +58,7 @@ export {
   InfernoInput,
   NO_OP,
   Props,
+  Ref,
   Refs,
   VNode,
   createComponentVNode,

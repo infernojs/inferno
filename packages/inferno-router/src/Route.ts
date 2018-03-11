@@ -1,20 +1,35 @@
-import { Component, createComponentVNode, VNode } from 'inferno';
+import { Component, ComponentType, createComponentVNode, InfernoChildren, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Children, invariant, warning } from './utils';
 import { matchPath } from './matchPath';
+import * as H from 'history';
 
 const isEmptyChildren = children => Children.count(children) === 0;
 
+export interface Match<P> {
+  params: P;
+  isExact: boolean;
+  path: string;
+  url: string;
+}
+
+export interface RouteComponentProps<P> {
+  match: Match<P>;
+  location: H.Location;
+  history: H.History;
+  staticContext?: any;
+}
+
 export interface IRouteProps {
-  computedMatch: any; // private, from <Switch>
-  path: any;
-  exact: any;
-  strict: any;
-  sensitive: any;
-  component: any;
-  render: any;
-  location: any;
-  children: Array<Component<any, any>>;
+  computedMatch?: any; // private, from <Switch>
+  path?: string;
+  exact?: boolean;
+  strict?: boolean;
+  sensitive?: boolean;
+  component?: ComponentType<RouteComponentProps<any>> | ComponentType<any>;
+  render?: ((props: RouteComponentProps<any>) => VNode);
+  location?: H.Location;
+  children: ((props: RouteComponentProps<any>) => VNode) | InfernoChildren;
 }
 
 /**
@@ -40,7 +55,7 @@ class Route extends Component<IRouteProps, any> {
     };
   }
 
-  public computeMatch({ computedMatch, location, path, strict, exact, sensitive }, router) {
+  public computeMatch({computedMatch, location, path, strict, exact, sensitive}, router) {
     if (computedMatch) {
       // <Switch> already computed the match for us
       return computedMatch;
@@ -48,10 +63,10 @@ class Route extends Component<IRouteProps, any> {
 
     invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
 
-    const { route } = router;
+    const {route} = router;
     const pathname = (location || route.location).pathname;
 
-    return path ? matchPath(pathname, { path, strict, exact, sensitive }) : route.match;
+    return path ? matchPath(pathname, {path, strict, exact, sensitive}) : route.match;
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
@@ -73,11 +88,11 @@ class Route extends Component<IRouteProps, any> {
   }
 
   public render(): VNode | null {
-    const { match } = this.state;
-    const { children, component, render } = this.props;
-    const { history, route, staticContext } = this.context.router;
+    const {match} = this.state;
+    const {children, component, render} = this.props;
+    const {history, route, staticContext} = this.context.router;
     const location = this.props.location || route.location;
-    const props = { match, location, history, staticContext };
+    const props = {match, location, history, staticContext};
 
     if (component) {
       return match ? createComponentVNode(VNodeFlags.ComponentUnknown, component, props) : null;
@@ -100,7 +115,7 @@ class Route extends Component<IRouteProps, any> {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  Route.prototype.componentWillMount = function() {
+  Route.prototype.componentWillMount = function () {
     warning(
       !(this.props.component && this.props.render),
       'You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored'

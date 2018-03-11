@@ -6,7 +6,7 @@ import { IRouteProps } from "./Route";
 
 export interface ISwitchProps extends IRouteProps {
   router: any;
-  children: Array<Component<any, any>>;
+  // children: Array<Component<any, any>>;
 }
 
 /**

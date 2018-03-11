@@ -184,6 +184,8 @@ export class Component<P, S> {
   }
 }
 
+export type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
+
 export type SFC<P = {}> = StatelessComponent<P>;
 
 export interface StatelessComponent<P = {}> {

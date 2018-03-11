@@ -1,8 +1,8 @@
 import {
-  Component, ComponentClass, StatelessComponent, InfernoChildren, SFC, VNode,
+  Component, InfernoChildren, VNode,
   InfernoEventHandler, KeyboardEventHandler, FormEventHandler, CompositionEventHandler, ClipboardEventHandler,
   FocusEventHandler, MouseEventHandler, DragEventHandler, WheelEventHandler, UIEventHandler, TouchEventHandler,
-  AnimationEventHandler, TransitionEventHandler, ChangeEventHandler
+  AnimationEventHandler, TransitionEventHandler, ChangeEventHandler, Ref
 } from "inferno";
 
 export type NativeAnimationEvent = AnimationEvent;
@@ -39,58 +39,25 @@ declare global {
 
   /// <reference path="global.d.ts" />
 
-// tslint:disable-next-line:export-just-namespace
-// export = InfernoJSX;
-// export as namespace InfernoJSX;
-
   namespace _InfernoJSX {
     //
     // React Elements
     // ----------------------------------------------------------------------
 
-    type InfernoJSXType<P = any> = string | ComponentType<P>;
-    type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
-
-    type Key = string | number;
-    type Ref<T> = { bivarianceHack(instance: T | null): any }["bivarianceHack"];
-
-    // tslint:disable-next-line:interface-over-type-literal
-    type ComponentState = {};
+    // type InfernoJSXType<P = any> = string | ComponentType<P>;
 
     interface Attributes {
-      key?: Key;
+      key?: any;
     }
 
     interface ClassAttributes<T> extends Attributes {
       ref?: Ref<T>;
     }
 
-    interface InfernoJSXElement<P> extends VNode<P> {
-      // type: string | ComponentClass<P> | SFC<P>;
-      // props: P;
-      // key: Key | null;
-    }
-
-    interface SFCElement<P> extends InfernoJSXElement<P> {
-      type: SFC<P>;
-    }
-
-    // type CElement<P, T extends Component<P, ComponentState>> = ComponentElement<P, T>;
-    // interface ComponentElement<P, T extends Component<P, ComponentState>> extends InfernoJSXElement<P> {
-    //   type: ComponentClass<P>;
-    //   // ref?: Ref<T>;
-    //   ref: Ref<P>;
-    // }
-
     // string fallback for custom web-components
-    interface DOMElement<P extends HTMLAttributes<T> | SVGAttributes<T>, T extends Element> extends InfernoJSXElement<P> {
+    interface DOMElement<P extends HTMLAttributes<T> | SVGAttributes<T>, T extends Element> extends VNode<P> {
       type: string;
       ref: Ref<T>;
-    }
-
-    // ReactHTML for ReactHTMLElement
-    // tslint:disable-next-line:no-empty-interface
-    interface InfernoHTMLElement<T extends HTMLElement> extends DetailedInfernoHTMLElement<AllHTMLAttributes<T>, T> {
     }
 
     interface DetailedInfernoHTMLElement<P extends HTMLAttributes<T>, T extends HTMLElement> extends DOMElement<P, T> {
@@ -102,38 +69,15 @@ declare global {
       type: keyof InfernoSVG;
     }
 
-    interface InfernoJSXPortal {
-      key: Key | null;
-      children: InfernoJSXNode;
-    }
-
-    //
-    // Factories
-    // ----------------------------------------------------------------------
-
-    type Factory<P> = (props?: Attributes & P, ...children: InfernoJSXNode[]) => InfernoJSXElement<P>;
-
-    type SFCFactory<P> = (props?: Attributes & P, ...children: InfernoJSXNode[]) => SFCElement<P>;
-
-    // type ComponentFactory<P, T extends Component<P, ComponentState>> =
-    //   (props?: ClassAttributes<T> & P, ...children: InfernoJSXNode[]) => CElement<P, T>;
-
-    // type CFactory<P, T extends Component<P, ComponentState>> = ComponentFactory<P, T>;
-    // type ClassicFactory<P> = CFactory<P, ClassicComponent<P, ComponentState>>;
-
     type DOMFactory<P extends DOMAttributes<T>, T extends Element> =
-      (props?: ClassAttributes<T> & P | null, ...children: InfernoJSXNode[]) => DOMElement<P, T>;
-
-    // tslint:disable-next-line:no-empty-interface
-    interface HTMLFactory<T extends HTMLElement> extends DetailedHTMLFactory<AllHTMLAttributes<T>, T> {
-    }
+      (props?: ClassAttributes<T> & P | null, ...children: InfernoChildren[]) => DOMElement<P, T>;
 
     interface DetailedHTMLFactory<P extends HTMLAttributes<T>, T extends HTMLElement> extends DOMFactory<P, T> {
-      (props?: ClassAttributes<T> & P | null, ...children: InfernoJSXNode[]): DetailedInfernoHTMLElement<P, T>;
+      (props?: ClassAttributes<T> & P | null, ...children: InfernoChildren[]): DetailedInfernoHTMLElement<P, T>;
     }
 
     interface SVGFactory extends DOMFactory<SVGAttributes<SVGElement>, SVGElement> {
-      (props?: ClassAttributes<SVGElement> & SVGAttributes<SVGElement> | null, ...children: InfernoJSXNode[]): InfernoSVGElement;
+      (props?: ClassAttributes<SVGElement> & SVGAttributes<SVGElement> | null, ...children: InfernoChildren[]): InfernoSVGElement;
     }
 
     //
@@ -141,204 +85,8 @@ declare global {
     // http://facebook.github.io/react/docs/glossary.html
     // ----------------------------------------------------------------------
 
-    type InfernoJSXText = string | number;
-    type InfernoJSXChild = InfernoJSXElement<any> | InfernoJSXText;
-
     // Should be Array<ReactNode> but type aliases cannot be recursive
     // type InfernoJSXFragment = {} | Array<InfernoJSXChild | any[] | boolean>;
-    type InfernoJSXNode = InfernoChildren;
-
-    //
-    // Top Level API
-    // ----------------------------------------------------------------------
-
-    // DOM Elements
-    // function createFactory<T extends HTMLElement>(
-    //   type: keyof InfernoHTML): HTMLFactory<T>;
-    // function createFactory(
-    //   type: keyof InfernoSVG): SVGFactory;
-    // function createFactory<P extends DOMAttributes<T>, T extends Element>(
-    //   type: string): DOMFactory<P, T>;
-
-    // Custom components
-    // function createFactory<P>(type: SFC<P>): SFCFactory<P>;
-    // function createFactory<P>(
-    //   type: ClassType<P, ClassicComponent<P, ComponentState>, ClassicComponentClass<P>>): CFactory<P, ClassicComponent<P, ComponentState>>;
-    // function createFactory<P, T extends Component<P, ComponentState>, C extends ComponentClass<P>>(
-    //   type: ClassType<P, T, C>): CFactory<P, T>;
-    // function createFactory<P>(type: ComponentClass<P>): Factory<P>;
-
-    // DOM Elements
-    // TODO: generalize this to everything in `keyof ReactHTML`, not just "input"
-    // function createElement(
-    //   type: "input",
-    //   props?: InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement> | null,
-    //   ...children: InfernoJSXNode[]): DetailedInfernoHTMLElement<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-    // function createElement<P extends HTMLAttributes<T>, T extends HTMLElement>(
-    //   type: keyof InfernoHTML,
-    //   props?: ClassAttributes<T> & P | null,
-    //   ...children: InfernoJSXNode[]): DetailedInfernoHTMLElement<P, T>;
-    // function createElement<P extends SVGAttributes<T>, T extends SVGElement>(
-    //   type: keyof InfernoSVG,
-    //   props?: ClassAttributes<T> & P | null,
-    //   ...children: InfernoJSXNode[]): InfernoSVGElement;
-    // function createElement<P extends DOMAttributes<T>, T extends Element>(
-    //   type: string,
-    //   props?: ClassAttributes<T> & P | null,
-    //   ...children: InfernoJSXNode[]): DOMElement<P, T>;
-
-    // Custom components
-    // function createElement<P>(
-    //   type: SFC<P>,
-    //   props?: Attributes & P | null,
-    //   ...children: InfernoJSXNode[]): SFCElement<P>;
-    // function createElement<P>(
-    //   type: ClassType<P, ClassicComponent<P, ComponentState>, ClassicComponentClass<P>>,
-    //   props?: ClassAttributes<ClassicComponent<P, ComponentState>> & P | null,
-    //   ...children: InfernoJSXNode[]): CElement<P, ClassicComponent<P, ComponentState>>;
-    // function createElement<P, T extends Component<P, ComponentState>, C extends ComponentClass<P>>(
-    //   type: ClassType<P, T, C>,
-    //   props?: ClassAttributes<T> & P | null,
-    //   ...children: InfernoJSXNode[]): CElement<P, T>;
-    // function createElement<P>(
-    //   type: SFC<P> | ComponentClass<P> | string,
-    //   props?: Attributes & P | null,
-    //   ...children: InfernoJSXNode[]): InfernoJSXElement<P>;
-
-    // DOM Elements
-    // ReactHTMLElement
-    // function cloneElement<P extends HTMLAttributes<T>, T extends HTMLElement>(
-    //   element: DetailedInfernoHTMLElement<P, T>,
-    //   props?: P,
-    //   ...children: InfernoJSXNode[]): DetailedInfernoHTMLElement<P, T>;
-    // // ReactHTMLElement, less specific
-    // function cloneElement<P extends HTMLAttributes<T>, T extends HTMLElement>(
-    //   element: InfernoHTMLElement<T>,
-    //   props?: P,
-    //   ...children: InfernoJSXNode[]): InfernoHTMLElement<T>;
-    // // SVGElement
-    // function cloneElement<P extends SVGAttributes<T>, T extends SVGElement>(
-    //   element: InfernoSVGElement,
-    //   props?: P,
-    //   ...children: InfernoJSXNode[]): InfernoSVGElement;
-    // // DOM Element (has to be the last, because type checking stops at first overload that fits)
-    // function cloneElement<P extends DOMAttributes<T>, T extends Element>(
-    //   element: DOMElement<P, T>,
-    //   props?: DOMAttributes<T> & P,
-    //   ...children: InfernoJSXNode[]): DOMElement<P, T>;
-
-    // // Custom components
-    // function cloneElement<P extends Q, Q>(
-    //   element: SFCElement<P>,
-    //   props?: Q, // should be Q & Attributes, but then Q is inferred as {}
-    //   ...children: InfernoJSXNode[]): SFCElement<P>;
-    // function cloneElement<P extends Q, Q, T extends Component<P, ComponentState>>(
-    //   element: CElement<P, T>,
-    //   props?: Q, // should be Q & ClassAttributes<T>
-    //   ...children: InfernoJSXNode[]): CElement<P, T>;
-    // function cloneElement<P extends Q, Q>(
-    //   element: InfernoJSXElement<P>,
-    //   props?: Q, // should be Q & Attributes
-    //   ...children: InfernoJSXNode[]): InfernoJSXElement<P>;
-
-    // function isValidElement<P>(object: {} | null | undefined): object is InfernoJSXElement<P>;
-
-    // const Children: ReactChildren;
-    // const Fragment: ComponentType;
-    // const version: string;
-
-    //
-    // Component API
-    // ----------------------------------------------------------------------
-
-    type InfernoJSXInstance = Component<any> | Element;
-
-    // Base component for plain JS classes
-    // tslint:disable-next-line:no-empty-interface
-    // interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> { }
-
-    // class PureComponent<P = {}, S = {}> extends Component<P, S> { }
-
-    // interface ClassicComponent<P = {}, S = {}> extends Component<P, S> {
-    //   replaceState(nextState: S, callback?: () => void): void;
-    //   isMounted(): boolean;
-    //   getInitialState?(): S;
-    // }
-
-    // interface ChildContextProvider<CC> {
-    //   getChildContext(): CC;
-    // }
-
-    //
-    // Class Interfaces
-    // ----------------------------------------------------------------------
-
-    // interface ClassicComponentClass<P = {}> extends ComponentClass<P> {
-    //   new (props: P, context?: any): ClassicComponent<P, ComponentState>;
-    //   getDefaultProps?(): P;
-    // }
-
-    /**
-     * We use an intersection type to infer multiple type parameters from
-     * a single argument, which is useful for many top-level API defs.
-     * See https://github.com/Microsoft/TypeScript/issues/7234 for more info.
-     */
-    type ClassType<P, T extends Component<P, ComponentState>, C extends ComponentClass<P>> =
-      C &
-      (new (props?: P, context?: any) => T) &
-      (new (props?: P, context?: any) => { props: P });
-
-    //
-    // Component Specs and Lifecycle
-    // ----------------------------------------------------------------------
-
-    // interface Mixin<P, S> extends ComponentLifecycle<P, S> {
-    //   mixins?: Array<Mixin<P, S>>;
-    //   statics?: {
-    //     [key: string]: any;
-    //   };
-    //
-    //   displayName?: string;
-    //   propTypes?: ValidationMap<any>;
-    //   contextTypes?: ValidationMap<any>;
-    //   childContextTypes?: ValidationMap<any>;
-    //
-    //   getDefaultProps?(): P;
-    //   getInitialState?(): S;
-    // }
-
-    // interface ComponentSpec<P, S> extends Mixin<P, S> {
-    //   render(): InfernoJSXNode;
-    //
-    //   [propertyName: string]: any;
-    // }
-
-    //
-    // Props / DOM Attributes
-    // ----------------------------------------------------------------------
-
-    /**
-     * @deprecated. This was used to allow clients to pass `ref` and `key`
-     * to `createElement`, which is no longer necessary due to intersection
-     * types. If you need to declare a props object before passing it to
-     * `createElement` or a factory, use `ClassAttributes<T>`:
-     *
-     * ```ts
-     * var b: Button | null;
-     * var props: ButtonProps & ClassAttributes<Button> = {
-     *     ref: b => button = b, // ok!
-     *     label: "I'm a Button"
-     * };
-     * ```
-     */
-    interface Props<T> {
-      children?: InfernoJSXNode;
-      key?: Key;
-      ref?: Ref<T>;
-    }
-
-    interface HTMLProps<T> extends AllHTMLAttributes<T>, ClassAttributes<T> {
-    }
 
     type DetailedHTMLProps<E extends HTMLAttributes<T>, T> = ClassAttributes<T> & E;
 
@@ -346,7 +94,7 @@ declare global {
     }
 
     interface DOMAttributes<T> {
-      children?: InfernoJSXNode;
+      children?: InfernoChildren;
       dangerouslySetInnerHTML?: {
         __html: string;
       };
@@ -3364,53 +3112,6 @@ declare global {
       view: SVGFactory;
     }
 
-    interface ReactDOM extends InfernoHTML, InfernoSVG {
-    }
-
-    //
-    // React.PropTypes
-    // ----------------------------------------------------------------------
-
-    // export interface ReactPropTypes {
-    //   any: Requireable<any>;
-    //   array: Requireable<any>;
-    //   bool: Requireable<any>;
-    //   func: Requireable<any>;
-    //   number: Requireable<any>;
-    //   object: Requireable<any>;
-    //   string: Requireable<any>;
-    //   node: Requireable<any>;
-    //   element: Requireable<any>;
-    //
-    //   instanceOf(expectedClass: {}): Requireable<any>;
-    //
-    //   oneOf(types: any[]): Requireable<any>;
-    //
-    //   oneOfType(types: Array<Validator<any>>): Requireable<any>;
-    //
-    //   arrayOf(type: Validator<any>): Requireable<any>;
-    //
-    //   objectOf(type: Validator<any>): Requireable<any>;
-    //
-    //   shape(type: ValidationMap<any>): Requireable<any>;
-    // }
-
-    //
-    // React.Children
-    // ----------------------------------------------------------------------
-
-    interface ReactChildren {
-      map<T>(children: InfernoJSXNode, fn: (child: InfernoJSXChild, index: number) => T): T[];
-
-      forEach(children: InfernoJSXNode, fn: (child: InfernoJSXChild, index: number) => void): void;
-
-      count(children: InfernoJSXNode): number;
-
-      only(children: InfernoJSXNode): InfernoJSXElement<any>;
-
-      toArray(children: InfernoJSXNode): InfernoJSXChild[];
-    }
-
     //
     // Browser Interfaces
     // https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts
@@ -3441,22 +3142,12 @@ declare global {
 
       identifiedTouch(identifier: number): Touch;
     }
-
-    //
-    // Error Interfaces
-    // ----------------------------------------------------------------------
-    interface ErrorInfo {
-      /**
-       * Captures which component contained the exception, and its ancestors.
-       */
-      componentStack: string;
-    }
   }
 
 
   namespace JSX {
     // tslint:disable-next-line:no-empty-interface
-    interface Element extends _InfernoJSX.InfernoJSXElement<any> {
+    interface Element extends VNode<any> {
     }
 
     interface ElementClass extends Component<any> {

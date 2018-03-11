@@ -30,12 +30,12 @@ export interface VNode<P = {}> {
   type: any;
 }
 export type InfernoInput = VNode | null | string | number;
-export type Ref<T = Element> = (node?: T | null) => any;
+export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }["bivarianceHack"];
 export type InfernoChildren = string | number | boolean | undefined | VNode | Array<string | number | VNode> | null;
 
-export interface Props {
+export interface Props<T = Element> {
   children?: InfernoChildren;
-  ref?: Ref | null;
+  ref?: Ref<T> | null;
   key?: any;
   className?: string;
 }
