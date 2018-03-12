@@ -160,7 +160,7 @@ describe('inject based context', () => {
     let msg;
     const baseWarn = console.error;
     console.error = m => (msg = m);
-    const a = mobx.observable(3);
+    const a = mobx.observable.box(3);
     const C = observer(
       ['foo'],
       createClass({

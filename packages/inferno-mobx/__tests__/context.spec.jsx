@@ -152,7 +152,7 @@ describe('observer based context', () => {
     let msg = null;
     const baseWarn = console.error;
     console.error = m => (msg = m);
-    const a = mobx.observable(3);
+    const a = mobx.observable.box(3);
     const C = observer(
       ['foo'],
       createClass({
@@ -193,7 +193,7 @@ describe('observer based context', () => {
     let msg = null;
     const baseWarn = console.error;
     console.error = m => (msg = m);
-    const a = mobx.observable(3);
+    const a = mobx.observable.box(3);
     const C = observer(
       ['foo'],
       createClass({

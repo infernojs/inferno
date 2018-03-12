@@ -19,8 +19,8 @@ describe('Mobx Transacations', () => {
 
   it('mobx issue 50', done => {
     const foo = {
-      a: mobx.observable(true),
-      b: mobx.observable(false),
+      a: mobx.observable.box(true),
+      b: mobx.observable.box(false),
       c: mobx.computed(function() {
         return foo.b.get();
       })
@@ -54,8 +54,8 @@ describe('Mobx Transacations', () => {
   });
 
   it('React.render should respect transaction', done => {
-    const a = mobx.observable(2);
-    const loaded = mobx.observable(false);
+    const a = mobx.observable.box(2);
+    const loaded = mobx.observable.box(false);
     const valuesSeen = [];
 
     const Component = observer(() => {
@@ -79,8 +79,8 @@ describe('Mobx Transacations', () => {
   });
 
   it('React.render in transaction should succeed', done => {
-    const a = mobx.observable(2);
-    const loaded = mobx.observable(false);
+    const a = mobx.observable.box(2);
+    const loaded = mobx.observable.box(false);
     const valuesSeen = [];
     const Component = observer(() => {
       valuesSeen.push(a.get());

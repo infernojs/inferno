@@ -32,7 +32,7 @@
     "inferno-create-element": ">=4",
     "inferno-server": ">=4",
     "inferno-shared": ">=4",
-    "mobx": ">=3.0.0"
+    "mobx": "^4.0.0"
   },
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",

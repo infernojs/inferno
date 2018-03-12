@@ -1,4 +1,4 @@
-import * as mobx from 'mobx';
+import { createAtom, Reaction, _allowStateChanges } from 'mobx';
 import { Component, createComponentVNode } from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';
 import { warning } from 'inferno-shared';
@@ -117,7 +117,7 @@ const reactiveMixin = {
 
     function makePropertyObservableReference(propName) {
       let valueHolder = this[propName];
-      const atom = new mobx.Atom('reactive ' + propName);
+      const atom = createAtom('reactive ' + propName);
       Object.defineProperty(this, propName, {
         configurable: true,
         enumerable: true,
@@ -147,11 +147,11 @@ const reactiveMixin = {
     const me = this;
     const render = this.render.bind(this);
     const baseRender = () => render(me.props, me.state, me.context);
-    let reaction: mobx.Reaction | null = null;
+    let reaction: Reaction | null = null;
     let isRenderingPending = false;
 
     const initialRender = () => {
-      reaction = new mobx.Reaction(`${initialName}#${rootNodeID}.render()`, () => {
+      reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
         if (!isRenderingPending) {
           // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
           // This unidiomatic React usage but React will correctly warn about this so we continue as usual
@@ -185,7 +185,7 @@ const reactiveMixin = {
           this.__$mobRenderStart = Date.now();
         }
         try {
-          rendering = mobx.extras.allowStateChanges(false, baseRender);
+          rendering = _allowStateChanges(false, baseRender);
         } catch (e) {
           exception = e;
         }

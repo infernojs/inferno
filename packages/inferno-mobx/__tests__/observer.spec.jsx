@@ -491,7 +491,7 @@ describe('Mobx Observer', () => {
   // })
 
   it('Observer regions should react', done => {
-    const data = mobx.observable('hi');
+    const data = mobx.observable.box('hi');
     const Comp = () => (
       <div>
         <Observer>{() => <span>{data.get()}</span>}</Observer>
