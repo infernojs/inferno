@@ -92,16 +92,12 @@ function attachEventToDocument(name: string) {
       dom: document as any
     };
 
-    try {
-      Object.defineProperty(event, 'currentTarget', {
-        configurable: true,
-        get: function get() {
-          return eventData.dom;
-        }
-      });
-    } catch (e) {
-      /* safari7 and phantomJS will crash */
-    }
+    Object.defineProperty(event, 'currentTarget', {
+      configurable: true,
+      get: function get() {
+        return eventData.dom;
+      }
+    });
 
     dispatchEvents(event, event.target, isClick, name, eventData);
   };
