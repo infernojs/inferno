@@ -24,7 +24,7 @@ import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
-import { VNodeFlags} from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
@@ -208,7 +208,7 @@ options.createVNode = (vNode: VNode) => {
   }
 
   // React supports iterable children, in addition to Array-like
-  if (hasSymbolSupport && !isNull(children) && !isArray(children) && typeof children === 'object'&& isFunction(children[symbolIterator])) {
+  if (hasSymbolSupport && !isNull(children) && !isArray(children) && typeof children === 'object' && isFunction(children[symbolIterator])) {
     vNode.children = iterableToArray(children[symbolIterator]());
   }
   if (typeof ref === 'string' && !isNull(currentComponent)) {

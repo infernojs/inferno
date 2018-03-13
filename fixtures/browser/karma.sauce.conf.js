@@ -114,14 +114,11 @@ module.exports = function(config) {
 
     frameworks: ['jasmine', 'jasmine-matchers'],
 
-    files: [
-      path.join(__dirname, '../../fixtures/browser/test.index.js'),
-    ],
+    files: [path.join(__dirname, '../../fixtures/browser/test.index.js')],
 
     preprocessors: {
       './fixtures/browser/test.index.js': ['webpack']
     },
-
 
     client: {
       jasmine: {
@@ -216,7 +213,7 @@ module.exports = function(config) {
           'inferno-utils': resolve('inferno-utils'),
           'inferno-vnode-flags': resolve('inferno-vnode-flags'),
           'inferno-clone-vnode': resolve('inferno-clone-vnode'),
-          'mobx': path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
+          mobx: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
         },
         extensions: ['.js', '.jsx', '.ts'],
         mainFields: ['browser', 'main']

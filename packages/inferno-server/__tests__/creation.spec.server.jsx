@@ -393,16 +393,15 @@ describe('SSR Creation (JSX)', () => {
       const usingString = wrapperDiv.childNodes[4];
       const link = wrapperDiv.childNodes[5];
 
-
       function WrapperComponent() {
         return (
           <div className="built">
             Website built with Inferno {version} using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a>
           </div>
-        )
+        );
       }
 
-      render(<WrapperComponent/>, container);
+      render(<WrapperComponent />, container);
       expect(container.firstChild).toBe(wrapperDiv);
       expect(wrapperDiv.childNodes.length).toBe(4);
       expect(wrapperDiv.childNodes[0]).toBe(websiteText);

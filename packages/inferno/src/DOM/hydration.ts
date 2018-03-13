@@ -52,7 +52,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Function[], conte
     const childFlags = vNode.childFlags;
 
     if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
-      let nextSibling: Node|null = null;
+      let nextSibling: Node | null = null;
 
       while (childNode) {
         nextSibling = childNode.nextSibling;

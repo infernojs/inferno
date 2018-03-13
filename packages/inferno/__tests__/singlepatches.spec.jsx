@@ -372,9 +372,11 @@ describe('All single patch variations', () => {
         }
       };
 
-      const props = {ref: {
-        onComponentShouldUpdate: () => true
-      }};
+      const props = {
+        ref: {
+          onComponentShouldUpdate: () => true
+        }
+      };
 
       function doRender() {
         render(
@@ -446,28 +448,12 @@ describe('All single patch variations', () => {
 
   describe('it should use non keyed algorithm if its forced Github #1275', () => {
     it('last & prev are flagged $HasNonKeyedChildren', () => {
-      render(
-        <div $HasNonKeyedChildren>
-          {[
-            <div key="1">1</div>,
-            <div key="2">2</div>
-          ]}
-        </div>,
-        container
-      );
+      render(<div $HasNonKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
 
       const oldFirstNode = container.firstChild.firstChild;
       expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
 
-      render(
-        <div $HasNonKeyedChildren>
-          {[
-            <div key="2">2</div>,
-            <div key="1">1</div>
-          ]}
-        </div>,
-        container
-      );
+      render(<div $HasNonKeyedChildren>{[<div key="2">2</div>, <div key="1">1</div>]}</div>, container);
 
       expect(container.innerHTML).toBe('<div><div>2</div><div>1</div></div>');
       expect(container.firstChild.firstChild).toBe(oldFirstNode);

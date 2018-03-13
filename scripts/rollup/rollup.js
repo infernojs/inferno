@@ -15,9 +15,11 @@ module.exports = function(options) {
 
   // All dependencies are excluded unless specified in bundledDependencies
   const deps = Object.assign({}, devDependencies, peerDependencies, dependencies);
-  const external = Object.keys(deps).filter(exclusionFilter).filter(function(elem, index, self) {
-    return index === self.indexOf(elem);
-  });
+  const external = Object.keys(deps)
+    .filter(exclusionFilter)
+    .filter(function(elem, index, self) {
+      return index === self.indexOf(elem);
+    });
   const plugins = createPlugins(version, options);
 
   return rollup({

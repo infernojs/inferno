@@ -20,45 +20,37 @@ describe('Inferno - redux -specifics', () => {
     document.body.removeChild(container);
   });
 
-
   describe('Functional component connect', () => {
     it('Should be possible to define lifecycle events', () => {
       const store = createStore(stringBuilder);
       let mountedCalled = 0;
 
       function FunctionalComponent() {
-        return <div>Hello world</div>
+        return <div>Hello world</div>;
       }
 
-      const Container = connect(() => ({}),
-          dispatch => (
-            {
-              dispatch,
-              ref: {
-                onComponentDidMount() {
-                  mountedCalled++;
-                }
-              }
+      const Container = connect(
+        () => ({}),
+        dispatch => ({
+          dispatch,
+          ref: {
+            onComponentDidMount() {
+              mountedCalled++;
             }
-          )
+          }
+        })
       )(FunctionalComponent);
 
       const div = document.createElement('div');
 
-      render(
-        <Container store={store} />,
-        div
-      );
+      render(<Container store={store} />, div);
 
       expect(mountedCalled).toBe(1);
 
       expect(div.innerHTML).toBe('<div>Hello world</div>');
       store.dispatch({ type: 'APPEND', payload: 'a' });
 
-      render(
-        <Container store={store} />,
-        div
-      );
+      render(<Container store={store} />, div);
 
       expect(div.innerHTML).toBe('<div>Hello world</div>');
       expect(mountedCalled).toBe(1);
@@ -70,7 +62,7 @@ describe('Inferno - redux -specifics', () => {
       let updateCounter = 0;
 
       function FunctionalComponent(props) {
-        return <div>Hello {props.name}!</div>
+        return <div>Hello {props.name}!</div>;
       }
 
       FunctionalComponent.defaultHooks = {
@@ -79,25 +71,21 @@ describe('Inferno - redux -specifics', () => {
         }
       };
 
-      const Container = connect(() => ({}),
-        dispatch => (
-          {
-            dispatch,
-            ref: {
-              onComponentDidMount() {
-                mountedCalled++;
-              }
+      const Container = connect(
+        () => ({}),
+        dispatch => ({
+          dispatch,
+          ref: {
+            onComponentDidMount() {
+              mountedCalled++;
             }
           }
-        )
+        })
       )(FunctionalComponent);
 
       const div = document.createElement('div');
 
-      render(
-        <Container name="Inferno" store={store} />,
-        div
-      );
+      render(<Container name="Inferno" store={store} />, div);
 
       expect(updateCounter).toBe(0);
       expect(mountedCalled).toBe(1);
@@ -106,13 +94,10 @@ describe('Inferno - redux -specifics', () => {
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
 
-      render(
-        <Container name="Inferno1" store={store} />,
-        div
-      );
+      render(<Container name="Inferno1" store={store} />, div);
       expect(div.innerHTML).toBe('<div>Hello Inferno1!</div>');
       expect(updateCounter).toBe(1);
       expect(mountedCalled).toBe(1);
     });
-  })
+  });
 });

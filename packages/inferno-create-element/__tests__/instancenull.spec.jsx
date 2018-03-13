@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
-import sinon from "sinon";
+import sinon from 'sinon';
 
 describe('BUG: instance - null', () => {
   let container;
@@ -358,7 +358,7 @@ describe('BUG: instance - null', () => {
     }, 10);
   });
 
-  it('Should not propagate mid/right mouse buttons clicks', (done) => {
+  it('Should not propagate mid/right mouse buttons clicks', done => {
     const obj = {
       spy() {}
     };
@@ -366,7 +366,9 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <div onClick={spy} id="MAGICBUTTON">test</div>
+        <div onClick={spy} id="MAGICBUTTON">
+          test
+        </div>
       </div>,
       container
     );

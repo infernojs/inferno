@@ -1,7 +1,7 @@
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Dispatch, Store } from 'redux';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
-import {Component, createComponentVNode, normalizeProps} from 'inferno';
+import { Component, createComponentVNode, normalizeProps } from 'inferno';
 import { Subscription } from '../utils/Subscription';
 
 let hotReloadingVersion = 0;
@@ -332,13 +332,15 @@ export function connectAdvanced(
         if (selector.error) {
           throw selector.error;
         } else {
-          return normalizeProps(createComponentVNode(
-            VNodeFlags.ComponentUnknown,
-            WrappedComponent,
-            this.addExtraProps(selector.props),
-            null,
-            withRef ? this.setWrappedInstance : null
-          ));
+          return normalizeProps(
+            createComponentVNode(
+              VNodeFlags.ComponentUnknown,
+              WrappedComponent,
+              this.addExtraProps(selector.props),
+              null,
+              withRef ? this.setWrappedInstance : null
+            )
+          );
         }
       }
     }

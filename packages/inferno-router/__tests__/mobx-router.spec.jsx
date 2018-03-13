@@ -83,7 +83,6 @@ describe('Github #1236', () => {
       </Provider>
     );
 
-
     render(appRoutes, container);
 
     expect(container.innerHTML).toEqual('<div><a id="test-btn" href="#front">link</a><div>default</div></div>');

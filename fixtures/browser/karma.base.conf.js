@@ -2,7 +2,7 @@ const path = require('path');
 const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src');
 const useInfernoCompatPkg = process.env.InfernoCompat == '1';
 
-console.info('*** Starting karma tests, Inferno-compat is ' + ( useInfernoCompatPkg ? 'on.' : 'off.') + ' ***');
+console.info('*** Starting karma tests, Inferno-compat is ' + (useInfernoCompatPkg ? 'on.' : 'off.') + ' ***');
 
 const preProcessorOptions = {};
 
@@ -42,9 +42,7 @@ module.exports = function(config) {
       }
     },
 
-    files: [
-      path.join(__dirname, '../../fixtures/browser/', useInfernoCompatPkg ? 'test.index.js' : 'test.no-compat.index.js'),
-    ],
+    files: [path.join(__dirname, '../../fixtures/browser/', useInfernoCompatPkg ? 'test.index.js' : 'test.no-compat.index.js')],
 
     preprocessors: preProcessorOptions,
 
@@ -131,7 +129,7 @@ module.exports = function(config) {
           'inferno-utils': resolve('inferno-utils'),
           'inferno-vnode-flags': resolve('inferno-vnode-flags'),
           'inferno-clone-vnode': resolve('inferno-clone-vnode'),
-          'mobx': path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
+          mobx: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
         },
         extensions: ['.js', '.jsx', '.ts'],
         mainFields: ['browser', 'main']

@@ -1,5 +1,7 @@
 // This file includes all test files including inferno-compat
-function requireAll(r) { r.keys().forEach(r); }
+function requireAll(r) {
+  r.keys().forEach(r);
+}
 
 requireAll(require.context('../../packages/inferno/__tests__', true, /\.jsx?$/));
 requireAll(require.context('../../packages/inferno-clone-vnode/__tests__', true, /\.jsx?$/));

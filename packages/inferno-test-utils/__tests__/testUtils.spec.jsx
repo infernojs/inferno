@@ -421,7 +421,6 @@ describe('Test Utils', () => {
   });
 
   describe('scryRenderedDOMElementsWithClass', () => {
-
     const tree3 = renderIntoDocument(
       <div className="level-1 one">
         <div className="level-2 one">

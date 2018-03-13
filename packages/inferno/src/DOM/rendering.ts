@@ -19,7 +19,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node | null, callback?: Function): InfernoChildren {
+export function render(
+  input: InfernoInput,
+  parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node | null,
+  callback?: Function
+): InfernoChildren {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDom) {
