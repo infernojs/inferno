@@ -1,5 +1,4 @@
-import { Component, options, render } from '../../inferno/index';
-import { findDOMNode } from 'inferno-compat';
+import { Component, options, render, findDOMNode } from 'inferno-compat';
 
 describe('findDOMNodes (JSX)', () => {
   let container;
