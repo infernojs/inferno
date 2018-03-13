@@ -6,6 +6,7 @@ module.exports = {
   output: {
     filename: 'output.js'
   },
+  mode: 'production',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {

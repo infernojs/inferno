@@ -186,30 +186,40 @@ export class RenderQueueStream extends Readable {
         for (const prop in props) {
           const value = props[prop];
 
-          if (prop === 'dangerouslySetInnerHTML') {
-            html = value.__html;
-          } else if (prop === 'style' && !isNullOrUndef(props.style)) {
-            renderedString += ` style="${renderStylesToString(props.style)}"`;
-          } else if (prop === 'children') {
-            // Ignore children as prop.
-          } else if (prop === 'defaultValue') {
-            // Use default values if normal values are not present
-            if (!props.value) {
-              renderedString += ` value="${isString(value) ? escapeText(value) : value}"`;
-            }
-          } else if (prop === 'defaultChecked') {
-            // Use default values if normal values are not present
-            if (!props.checked) {
-              renderedString += ` checked="${value}"`;
-            }
-          } else {
-            if (isString(value)) {
-              renderedString += ` ${prop}="${escapeText(value)}"`;
-            } else if (isNumber(value)) {
-              renderedString += ` ${prop}="${value}"`;
-            } else if (isTrue(value)) {
-              renderedString += ` ${prop}`;
-            }
+          switch (prop) {
+            case 'dangerouslySetInnerHTML':
+              html = value.__html;
+              break;
+            case 'style':
+              if (!isNullOrUndef(props.style)) {
+                renderedString += ` style="${renderStylesToString(props.style)}"`;
+              }
+              break;
+            case 'children':
+            case 'className':
+              // Ignore
+              break;
+            case 'defaultValue':
+              // Use default values if normal values are not present
+              if (!props.value) {
+                renderedString += ` value="${isString(value) ? escapeText(value) : value}"`;
+              }
+              break;
+            case 'defaultChecked':
+              // Use default values if normal values are not present
+              if (!props.checked) {
+                renderedString += ` checked="${value}"`;
+              }
+              break;
+            default:
+              if (isString(value)) {
+                renderedString += ` ${prop}="${escapeText(value)}"`;
+              } else if (isNumber(value)) {
+                renderedString += ` ${prop}="${value}"`;
+              } else if (isTrue(value)) {
+                renderedString += ` ${prop}`;
+              }
+              break;
           }
         }
       }

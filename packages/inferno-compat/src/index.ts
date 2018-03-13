@@ -158,15 +158,13 @@ function normalizeFormProps(name: string, props: Props | any) {
     const type = props.type;
     let eventName;
 
-    if (type === 'checkbox') {
-      eventName = 'onclick';
+    if (!type || type === 'text') {
+      eventName = 'oninput';
     } else if (type === 'file') {
       eventName = 'onchange';
-    } else {
-      eventName = 'oninput';
     }
 
-    if (!props[eventName]) {
+    if (eventName && !props[eventName]) {
       props[eventName] = props.onChange;
       props.onChange = void 0;
     }

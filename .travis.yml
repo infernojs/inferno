@@ -23,6 +23,7 @@ jobs:
   - script: npm run lint
   - script:
     - npm run test:coverage
+    - npm run test:browser
     - npm run coveralls
   - stage: SauceLabs
     if: "(branch = master) AND (NOT (type IN (pull_request)))"

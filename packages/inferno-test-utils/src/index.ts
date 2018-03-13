@@ -111,10 +111,12 @@ export function scryRenderedDOMElementsWithClass(renderedTree: any, classNames: 
   return findAllInRenderedTree(renderedTree, instance => {
     if (_isDOMVNode(instance)) {
       let domClassName = !isNullOrUndef(instance.dom) ? (instance.dom as Element).className : '';
+
       if (!isString(domClassName) && !isNullOrUndef(instance.dom) && isFunction(instance.dom.getAttribute)) {
         // SVG || null, probably
         domClassName = (instance.dom as Element).getAttribute('class') || '';
       }
+
       const domClassList = parseSelector(domClassName);
       return parseSelector(classNames).every(className => {
         return domClassList.indexOf(className) !== -1;

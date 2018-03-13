@@ -377,8 +377,6 @@ describe('All single patch variations', () => {
       }};
 
       function doRender() {
-        debugger;
-
         render(
           <div>
             {counter}

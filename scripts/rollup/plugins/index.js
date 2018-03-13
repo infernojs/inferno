@@ -10,7 +10,7 @@ module.exports = function(version, options) {
   const plugins = [
     aliasPlugin,
     nodeResolve({
-      extensions: ['.mjs', '.ts', '.js', '.json'],
+      extensions: ['.ts', '.js', '.json'],
       jsnext: true
     }),
     commonjs({

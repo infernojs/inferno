@@ -36,7 +36,6 @@ describe('Inferno - redux -specifics', () => {
               dispatch,
               ref: {
                 onComponentDidMount() {
-                  debugger;
                   mountedCalled++;
                 }
               }
@@ -107,7 +106,6 @@ describe('Inferno - redux -specifics', () => {
 
       store.dispatch({ type: 'APPEND', payload: 'a' });
 
-      debugger;
       render(
         <Container name="Inferno1" store={store} />,
         div

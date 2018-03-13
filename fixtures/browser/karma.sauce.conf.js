@@ -114,11 +114,19 @@ module.exports = function(config) {
 
     frameworks: ['jasmine', 'jasmine-matchers'],
 
-    files: ['./packages/*/__tests__/**/*.spec.js', './packages/*/__tests__/**/*.spec.jsx'],
+    files: [
+      path.join(__dirname, '../../fixtures/browser/test.index.js'),
+    ],
 
     preprocessors: {
-      './packages/*/__tests__/**/*': ['webpack'],
-      './packages/*/__tests__/*': ['webpack']
+      './fixtures/browser/test.index.js': ['webpack']
+    },
+
+
+    client: {
+      jasmine: {
+        random: false // Adding jasmine.random false disables test random order
+      }
     },
 
     reporters: ['failed', 'saucelabs'],
@@ -158,6 +166,7 @@ module.exports = function(config) {
       noInfo: true
     },
     webpack: {
+      mode: 'development',
       module: {
         rules: [
           {
@@ -169,7 +178,6 @@ module.exports = function(config) {
               plugins: [
                 'transform-decorators-legacy',
                 ['babel-plugin-inferno', { imports: true }],
-                'transform-es2015-modules-commonjs',
                 'transform-class-properties',
                 'transform-object-rest-spread',
                 'babel-plugin-syntax-jsx',
@@ -207,7 +215,8 @@ module.exports = function(config) {
           'inferno-test-utils': resolve('inferno-test-utils'),
           'inferno-utils': resolve('inferno-utils'),
           'inferno-vnode-flags': resolve('inferno-vnode-flags'),
-          'inferno-clone-vnode': resolve('inferno-clone-vnode')
+          'inferno-clone-vnode': resolve('inferno-clone-vnode'),
+          'mobx': path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
         },
         extensions: ['.js', '.jsx', '.ts'],
         mainFields: ['browser', 'main']

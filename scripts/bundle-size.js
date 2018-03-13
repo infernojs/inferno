@@ -25,7 +25,7 @@ async function printFileSizes() {
       `INFERNO - ${INFERNO_VERSION}`.cyan,
       'Browser'.cyan + ' (gzip)'.green,
       'Browser prod (min)'.cyan + ' (gzip)'.green,
-      '(es2016)'.cyan + ' (gzip)'.green,
+      '(es2015)'.cyan + ' (gzip)'.green,
       'cjs'.cyan + ' (gzip)'.green,
       'cjs prod'.cyan + ' (gzip)'.green
     ],
@@ -33,7 +33,7 @@ async function printFileSizes() {
   });
 
   for (const name of packages.sort()) {
-    const filesToStat = [name + '.js', name + '.min.js', 'index.mjs', 'index.cjs.js', 'index.cjs.min.js'];
+    const filesToStat = [name + '.js', name + '.min.js', 'index.esm.js', 'index.cjs.js', 'index.cjs.min.js'];
     const row = [name];
 
     for (const file of filesToStat) {

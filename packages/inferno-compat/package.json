@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "module": "dist/index.mjs",
-  "dev:module": "dist/index.dev.mjs",
+  "module": "dist/index.esm.js",
+  "dev:module": "dist/index.dev.esm.js",
   "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
@@ -29,9 +29,6 @@
     "inferno-clone-vnode": ">=4",
     "inferno-create-class": ">=4",
     "inferno-create-element": ">=4"
-  },
-  "dependencies": {
-    "inferno": "4.0.8"
   },
   "devDependencies": {
     "inferno-clone-vnode": "4.0.8",

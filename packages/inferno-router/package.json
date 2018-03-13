@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "module": "index.mjs",
-  "dev:module": "dist/index.dev.mjs",
+  "module": "dist/index.esm.js",
+  "dev:module": "dist/index.dev.esm.js",
   "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
@@ -40,8 +40,7 @@
     "path-to-regexp-es6": "1.7.0"
   },
   "devDependencies": {
-    "inferno-vnode-flags": "4.0.8",
-    "mobx": ">=3.0.0"
+    "inferno-vnode-flags": "4.0.8"
   },
   "rollup": {
     "bundledDependencies": [

@@ -72,17 +72,17 @@ describe('Github #1236', () => {
     /**
      * Routing
      */
-
     const searchStore = new SearchStore();
     const memHistory = createMemoryHistory();
 
     const appRoutes = (
       <Provider searchStore={searchStore}>
         <Router history={memHistory}>
-          <IndexRoute component={SearchPage} />
+          <Route component={SearchPage} />
         </Router>
       </Provider>
     );
+
 
     render(appRoutes, container);
 

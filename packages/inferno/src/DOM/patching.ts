@@ -214,7 +214,6 @@ export function updateClassComponent(
   const lastState = instance.state;
   const lastProps = instance.props;
   nextVNode.children = instance;
-  const lastInput = instance.$LI;
   let renderOutput;
 
   if (instance.$UN) {
@@ -241,7 +240,6 @@ export function updateClassComponent(
       instance.$PS = null;
     }
   }
-
   /* Update if scu is not defined, or it returns truthy value or force */
   const hasSCU = isFunction(instance.shouldComponentUpdate);
 
@@ -279,6 +277,7 @@ export function updateClassComponent(
     instance.$CX = childContext;
 
     if (didUpdate) {
+      const lastInput = instance.$LI;
       const nextInput = (instance.$LI = handleComponentInput(renderOutput, nextVNode));
       patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG);
       if (isFunction(instance.componentDidUpdate)) {

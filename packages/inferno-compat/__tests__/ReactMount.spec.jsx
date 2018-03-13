@@ -52,6 +52,7 @@ describe('ReactMount', function() {
 
     ReactMount.render(<span />, container);
     expect(container.firstChild.nodeName).toBe('SPAN');
+    document.body.removeChild(container);
   });
 
   it('should unmount and remount if the key changes', function() {

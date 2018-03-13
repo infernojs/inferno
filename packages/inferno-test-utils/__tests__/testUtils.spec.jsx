@@ -24,13 +24,13 @@ import {
   scryRenderedDOMElementsWithClass,
   scryRenderedDOMElementsWithTag,
   scryRenderedVNodesWithType,
-  scryVNodesWithType
+  scryVNodesWithType,
+  Wrapper
 } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
-import { Wrapper } from '../src/utils';
 
-const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'key', 'ref', 'parentVNode', 'props', 'type'].sort();
+const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'isValidated', 'key', 'ref', 'parentVNode', 'props', 'type'].sort();
 
 const createDOMElement = tagName => document.createElement(tagName);
 
@@ -67,20 +67,16 @@ class AnotherExtendClassComponent extends Component {
 }
 
 describe('Test Utils', () => {
-  const DivProto = Object.getPrototypeOf(document.createElement('div')).constructor;
-  const AnchorProto = Object.getPrototypeOf(document.createElement('a')).constructor;
-  const SpanProto = Object.getPrototypeOf(document.createElement('span')).constructor;
-  const H1Proto = Object.getPrototypeOf(document.createElement('h1')).constructor;
-  const ParagraphProto = Object.getPrototypeOf(document.createElement('p')).constructor;
-
+  // TODO: These tests are sort of messed up, we should always tear down the DOM after each test
   let container;
 
   function renderIntoDocument(input) {
+    container = document.createElement('div');
+
     return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
   }
 
   beforeEach(() => {
-    container = document.createElement('div');
     document.body.appendChild(container);
   });
 
@@ -314,42 +310,21 @@ describe('Test Utils', () => {
   });
 
   describe('findAllInRenderedTree', () => {
-    const tree = renderIntoDocument(
-      <section className="outer">
-        <FunctionalComponent />
-      </section>
-    );
+    let tree1;
 
-    it('should throw an error when not passed a rendered class component', () => {
-      const errorRegex = /findAllInRenderedTree/;
-      const predicate = vNode => {
-        return true;
-      };
-      const testValue = value => {
-        expect(() => {
-          findAllInRenderedTree(value, predicate);
-        }).toThrowError(Error);
-      };
-      testValue(createElement(CreateClassComponent));
-      testValue(createElement(ExtendClassComponent));
-      testValue(createElement(FunctionalComponent));
-      testValue(createElement('div'));
-      testValue(CreateClassComponent);
-      testValue(ExtendClassComponent);
-      testValue(FunctionalComponent);
-      testValue(createDOMElement('div'));
-      testValue(undefined);
-      testValue(null);
-      testValue('foo');
-      testValue({});
-      testValue([]);
-      testValue(10);
+    beforeEach(() => {
+      tree1 = (
+        <section className="outer">
+          <FunctionalComponent />
+        </section>
+      );
+      render(tree1, container);
     });
 
     it('should call predicate for each VNode instance in a rendered tree', () => {
       const predicate = sinon.spy();
       sinon.assert.notCalled(predicate);
-      findAllInRenderedTree(tree, predicate);
+      findAllInRenderedTree(tree1, predicate);
       // 0: section
       // 1: FunctionalComponent
       // 2: div
@@ -361,16 +336,17 @@ describe('Test Utils', () => {
 
     it('should call predicate in the correct order', () => {
       const types = [];
-      findAllInRenderedTree(tree, ({ type }) => types.push(type));
+      findAllInRenderedTree(tree1, ({ type }) => types.push(type));
       expect(types).toEqual(['section', FunctionalComponent, 'div']);
     });
 
     it('should work with interpolated text', () => {
       const predicate = sinon.spy();
       const Hello = ({ who }) => <div>Hello, {who}!</div>;
-      const treeWithText = renderIntoDocument(<Hello who="world" />);
+      const tree = <Hello who="world" />;
+      render(tree, container);
       sinon.assert.notCalled(predicate);
-      findAllInRenderedTree(treeWithText, predicate);
+      findAllInRenderedTree(tree, predicate);
       sinon.assert.callCount(predicate, 5);
       sinon.assert.calledWithMatch(predicate, { type: Hello });
       sinon.assert.calledWithMatch(predicate, { type: 'div' });
@@ -397,7 +373,7 @@ describe('Test Utils', () => {
   });
 
   describe('findAllInVNodeTree', () => {
-    const tree = (
+    const tree2 = (
       <section className="outer">
         <FunctionalComponent />
       </section>
@@ -411,9 +387,9 @@ describe('Test Utils', () => {
       const testValue = value => {
         expect(() => {
           findAllInVNodeTree(value, predicate);
-        }).toThrowError(Error);
+        }).toThrowError();
       };
-      testValue(renderIntoDocument(<div />));
+      testValue(render(<div />, container));
       testValue(CreateClassComponent);
       testValue(ExtendClassComponent);
       testValue(FunctionalComponent);
@@ -429,7 +405,7 @@ describe('Test Utils', () => {
     it('should call predicate for each VNode instance in an non-rendered tree', () => {
       const predicate = sinon.spy();
       sinon.assert.notCalled(predicate);
-      findAllInVNodeTree(tree, predicate);
+      findAllInVNodeTree(tree2, predicate);
       // 0: section
       // 1: FunctionalComponent
       sinon.assert.callCount(predicate, 2);
@@ -439,13 +415,14 @@ describe('Test Utils', () => {
 
     it('should call predicate in the correct order', () => {
       const types = [];
-      findAllInVNodeTree(tree, ({ type }) => types.push(type));
+      findAllInVNodeTree(tree2, ({ type }) => types.push(type));
       expect(types).toEqual(['section', FunctionalComponent]);
     });
   });
 
   describe('scryRenderedDOMElementsWithClass', () => {
-    const tree = renderIntoDocument(
+
+    const tree3 = renderIntoDocument(
       <div className="level-1 one">
         <div className="level-2 one">
           <div className="level-3 one" />
@@ -457,43 +434,43 @@ describe('Test Utils', () => {
     );
 
     it('should return an array of matched DOM elements', () => {
-      const result1 = scryRenderedDOMElementsWithClass(tree, 'one');
+      const result1 = scryRenderedDOMElementsWithClass(tree3, 'one');
       expect(result1 instanceof Array).toBeTruthy();
-      expect(result1.length).toBeCloseTo(3);
+      expect(result1.length).toBe(3);
       result1.forEach(result => {
-        expect(result instanceof DivProto).toBe(true);
+        expect(result.tagName).toBe('DIV');
       });
 
-      const result2 = scryRenderedDOMElementsWithClass(tree, 'two');
+      const result2 = scryRenderedDOMElementsWithClass(tree3, 'two');
       expect(result2 instanceof Array).toBeTruthy();
-      expect(result2.length).toBeCloseTo(2);
-      expect(result2[0] instanceof DivProto).toBe(true);
-      expect(result2[1] instanceof SpanProto).toBe(true);
+      expect(result2.length).toBe(2);
+      expect(result2[0].tagName).toBe('DIV');
+      expect(result2[1].tagName).toBe('SPAN');
 
-      const result3 = scryRenderedDOMElementsWithClass(tree, 'three');
+      const result3 = scryRenderedDOMElementsWithClass(tree3, 'three');
       expect(result3 instanceof Array).toBeTruthy();
-      expect(result3.length).toBeCloseTo(0);
+      expect(result3.length).toBe(0);
     });
 
     it('should accept a space separated string of class names', () => {
-      const result1 = scryRenderedDOMElementsWithClass(tree, 'level-2');
+      const result1 = scryRenderedDOMElementsWithClass(tree3, 'level-2');
       expect(result1 instanceof Array).toBeTruthy();
-      expect(result1.length).toBeCloseTo(2);
+      expect(result1.length).toBe(2);
 
-      const result2 = scryRenderedDOMElementsWithClass(tree, 'level-2 one');
+      const result2 = scryRenderedDOMElementsWithClass(tree3, 'level-2 one');
       expect(result2 instanceof Array).toBeTruthy();
-      expect(result2.length).toBeCloseTo(1);
+      expect(result2.length).toBe(1);
     });
 
     it('should accept an array of class names', () => {
-      const result = scryRenderedDOMElementsWithClass(tree, ['level-2', 'one']);
+      const result = scryRenderedDOMElementsWithClass(tree3, ['level-2', 'one']);
       expect(result instanceof Array).toBeTruthy();
-      expect(result.length).toBeCloseTo(1);
+      expect(result.length).toBe(1);
     });
   });
 
   describe('scryRenderedDOMElementsWithTag', () => {
-    const tree = renderIntoDocument(
+    const tree4 = renderIntoDocument(
       <div>
         <header>
           <h1>Hello</h1>
@@ -509,22 +486,22 @@ describe('Test Utils', () => {
 
     it('should return an array of matched DOM elements', () => {
       const testValue = (tagName, length, instance) => {
-        const result = scryRenderedDOMElementsWithTag(tree, tagName);
+        const result = scryRenderedDOMElementsWithTag(tree4, tagName);
         expect(result instanceof Array).toBeTruthy();
-        expect(result.length).toBeCloseTo(length);
+        expect(result.length).toBe(length);
         result.forEach(item => {
-          expect(item instanceof instance).toBe(true);
+          expect(item.tagName).toBe(tagName.toUpperCase());
         });
       };
-      testValue('div', 1, DivProto);
-      testValue('h1', 2, H1Proto);
-      testValue('p', 3, ParagraphProto);
-      testValue('span', 0, SpanProto);
+      testValue('div', 1);
+      testValue('h1', 2);
+      testValue('p', 3);
+      testValue('span', 0);
     });
   });
 
   describe('scryRenderedVNodesWithType', () => {
-    const tree = renderIntoDocument(
+    const tree5 = renderIntoDocument(
       <div>
         <FunctionalComponent />
         <FunctionalComponent />
@@ -537,9 +514,9 @@ describe('Test Utils', () => {
 
     it('should return an array of matched VNodes', () => {
       const testValue = (type, length) => {
-        const result = scryRenderedVNodesWithType(tree, type);
+        const result = scryRenderedVNodesWithType(tree5, type);
         expect(result instanceof Array).toBeTruthy();
-        expect(result.length).toBeCloseTo(length);
+        expect(result.length).toBe(length);
         result.forEach(item => {
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
@@ -556,7 +533,7 @@ describe('Test Utils', () => {
   });
 
   describe('scryVNodesWithType', () => {
-    const tree = (
+    const tree6 = (
       <div>
         <FunctionalComponent />
         <FunctionalComponent />
@@ -569,9 +546,9 @@ describe('Test Utils', () => {
 
     it('should return an array of matched VNodes', () => {
       const testValue = (type, length) => {
-        const result = scryVNodesWithType(tree, type);
+        const result = scryVNodesWithType(tree6, type);
         expect(result instanceof Array).toBeTruthy();
-        expect(result.length).toBeCloseTo(length);
+        expect(result.length).toBe(length);
         result.forEach(item => {
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
@@ -588,7 +565,7 @@ describe('Test Utils', () => {
   });
 
   describe('findRenderedDOMElementWithClass', () => {
-    const tree = renderIntoDocument(
+    const tree7 = renderIntoDocument(
       <div className="level-1 one">
         <div className="level-2 one">
           <div className="level-3 one" />
@@ -603,8 +580,8 @@ describe('Test Utils', () => {
       const errorRegex = /Did not find exactly one match/;
       const testValue = classNames => {
         expect(() => {
-          findRenderedDOMElementWithClass(tree, classNames);
-        }).toThrowError(Error);
+          findRenderedDOMElementWithClass(tree7, classNames);
+        }).toThrowError();
       };
       testValue('level-2');
       testValue('level-3');
@@ -612,12 +589,15 @@ describe('Test Utils', () => {
 
     it('should return a matched DOM element', () => {
       const testValue = (classNames, instance) => {
-        const result = findRenderedDOMElementWithClass(tree, classNames);
-        expect(result instanceof instance).toBe(true);
+        const result = findRenderedDOMElementWithClass(tree7, classNames);
+        const arrOfClassName = classNames.split(' ');
+        for (let i = 0; i < arrOfClassName.length; i++) {
+          expect(result.classList.contains(arrOfClassName[i])).toBe(true);
+        }
       };
-      testValue('level-1', DivProto);
-      testValue('level-2 one', DivProto);
-      testValue('level-3 two', SpanProto);
+      testValue('level-1');
+      testValue('level-2 one');
+      testValue('level-3 two');
     });
 
     it('should be able to handle null elements', () => {
@@ -634,7 +614,7 @@ describe('Test Utils', () => {
   });
 
   describe('findRenderedDOMElementWithTag', () => {
-    const tree = renderIntoDocument(
+    const tree8 = renderIntoDocument(
       <div>
         <header>
           <h1>Head1</h1>
@@ -654,8 +634,8 @@ describe('Test Utils', () => {
       const errorRegex = /Did not find exactly one match/;
       const testValue = tagName => {
         expect(() => {
-          findRenderedDOMElementWithTag(tree, tagName);
-        }).toThrowError(Error);
+          findRenderedDOMElementWithTag(tree8, tagName);
+        }).toThrowError();
       };
       testValue('h1');
       testValue('p');
@@ -663,17 +643,18 @@ describe('Test Utils', () => {
 
     it('should return a matched DOM element', () => {
       const testValue = (tagName, instance) => {
-        const result = findRenderedDOMElementWithTag(tree, tagName);
-        expect(result instanceof instance).toBe(true);
+        const result = findRenderedDOMElementWithTag(tree8, tagName);
+
+        expect(result.tagName).toBe(tagName.toUpperCase());
       };
-      testValue('div', DivProto);
-      testValue('span', SpanProto);
-      testValue('a', AnchorProto);
+      testValue('div');
+      testValue('span');
+      testValue('a');
     });
   });
 
   describe('findRenderedVNodeWithType', () => {
-    const tree = renderIntoDocument(
+    const tree9 = renderIntoDocument(
       <div>
         <h1>Hello</h1>
         <FunctionalComponent />
@@ -687,8 +668,8 @@ describe('Test Utils', () => {
       const errorRegex = /Did not find exactly one match/;
       const testValue = type => {
         expect(() => {
-          findRenderedVNodeWithType(tree, type);
-        }).toThrowError(Error);
+          findRenderedVNodeWithType(tree9, type);
+        }).toThrowError();
       };
       testValue('div');
       testValue(FunctionalComponent);
@@ -696,7 +677,7 @@ describe('Test Utils', () => {
 
     it('should return a matched VNode #1', () => {
       const testValue = type => {
-        const result = findRenderedVNodeWithType(tree, type);
+        const result = findRenderedVNodeWithType(tree9, type);
         expect(result instanceof Object).toBeTruthy();
         expect(Object.keys(result).sort()).toEqual(VNodeKeys);
         expect(isVNode(result)).toBe(true);
@@ -709,7 +690,7 @@ describe('Test Utils', () => {
   });
 
   describe('findVNodeWithType', () => {
-    const tree = (
+    const tree10 = (
       <div>
         <div>
           <h1>Hello</h1>
@@ -725,8 +706,8 @@ describe('Test Utils', () => {
       const errorRegex = /Did not find exactly one match/;
       const testValue = type => {
         expect(() => {
-          findVNodeWithType(tree, type);
-        }).toThrowError(Error);
+          findVNodeWithType(tree10, type);
+        }).toThrowError();
       };
       testValue('div');
       testValue(FunctionalComponent);
@@ -734,7 +715,7 @@ describe('Test Utils', () => {
 
     it('should return a matched VNode #2', () => {
       const testValue = type => {
-        const result = findVNodeWithType(tree, type);
+        const result = findVNodeWithType(tree10, type);
         expect(result instanceof Object).toBeTruthy();
         expect(Object.keys(result).sort()).toEqual(VNodeKeys);
         expect(isVNode(result)).toBe(true);

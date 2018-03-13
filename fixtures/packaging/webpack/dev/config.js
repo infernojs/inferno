@@ -5,6 +5,7 @@ module.exports = {
   output: {
     filename: 'output.js'
   },
+  mode: 'development',
   resolve: {
     modules: [path.resolve('../../../../packages'), 'node_modules']
   }

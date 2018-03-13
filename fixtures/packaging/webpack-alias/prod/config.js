@@ -5,6 +5,7 @@ module.exports = {
   output: {
     filename: 'output.js'
   },
+  mode: 'production',
   resolve: {
     alias: {
       inferno: 'inferno/dist/inferno.min',

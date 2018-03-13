@@ -9,7 +9,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.esm.js",
+  "dev:module": "dist/index.dev.esm.js",
   "typings": "dist/index.d.ts",
   "keywords": [
     "inferno",

@@ -726,7 +726,7 @@ Use the following configuration in your Webpack build for production build:
   ]
 ```
 
-When you are building for development, you may want to use `inferno.dev.mjs` ("dev:module": "dist/index.dev.mjs",) file.
+When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
 That build version has extra level of validation for development purposes. You can use it by adding following code to your webpack config.
 
 ```js
@@ -734,7 +734,7 @@ That build version has extra level of validation for development purposes. You c
 	resolve: {
     /* When doing development workflow we want to make sure webpack picks up development build of inferno */
 		alias: {
-			inferno: __dirname + "/node_modules/inferno/dist/index.dev.mjs"
+			inferno: __dirname + "/node_modules/inferno/dist/index.dev.esm.js"
 		}
 	}
 ```
@@ -756,7 +756,7 @@ const replace = require('rollup-plugin-replace');
   ]
 ```
 
-When you are building for development, you may want to use `inferno.dev.mjs` ("dev:module": "dist/index.dev.mjs",) file.
+When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
 That build version has extra level of validation for development purposes. You can use it by adding following code to your rollup config.
 
 ```js
@@ -766,7 +766,7 @@ That build version has extra level of validation for development purposes. You c
 	plugins: {
     /* When doing development workflow we want to make sure webpack picks up development build of inferno */
 		alias: {
-			'inferno': __dirname + '/node_modules/inferno/dist/index.dev.mjs'
+			'inferno': __dirname + '/node_modules/inferno/dist/index.dev.esm.js'
 		}
 	}
 ```

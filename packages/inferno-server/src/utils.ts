@@ -1,4 +1,4 @@
-const rxUnescaped = /["'&<>]/;
+const rxUnescaped = new RegExp(/["'&<>]/);
 
 export function escapeText(text: string): string {
   /* Much faster when there is no unescaped characters */

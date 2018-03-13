@@ -35,6 +35,7 @@ describe('ReactMount', function() {
     expect(firstRootDiv.firstChild).toBeNull();
     ReactDOM.unmountComponentAtNode(secondRootDiv);
     expect(secondRootDiv.firstChild).toBeNull();
+    document.body.removeChild(mainContainerDiv);
   });
 
   // it('should warn when unmounting a non-container root node', function() {

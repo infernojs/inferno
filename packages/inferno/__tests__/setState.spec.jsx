@@ -23,7 +23,7 @@ describe('setState', () => {
       }
     }
 
-    expect(render.bind(render, <TestComponent />, container)).toThrowError(Error);
+    expect(() => render(<TestComponent />, container)).toThrowError(Error);
   });
 
   it('callback should be fired after state has changed', done => {

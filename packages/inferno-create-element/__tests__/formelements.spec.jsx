@@ -1,8 +1,9 @@
-import { Component, linkEvent, render } from 'inferno';
+import { Component, linkEvent, render, options } from 'inferno';
 import sinon from 'sinon';
 import { triggerEvent } from 'inferno-utils';
 
 describe('FormElements', () => {
+  const isInfernoCompatEnabled = Boolean(options.createVNode);
   let container;
 
   beforeEach(function() {
@@ -322,7 +323,7 @@ describe('FormElements', () => {
       render(<Example callback={spy} value={1} />, container);
 
       let event = document.createEvent('Event');
-      event.initEvent('change', true, true);
+      event.initEvent(isInfernoCompatEnabled ? 'input' : 'change', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledOnce).toBe(true);
@@ -332,7 +333,7 @@ describe('FormElements', () => {
       render(<Example callback={spy} value={2} />, container);
 
       event = document.createEvent('Event');
-      event.initEvent('change', true, true);
+      event.initEvent(isInfernoCompatEnabled ? 'input' : 'change', true, true);
       container.firstChild.dispatchEvent(event, true);
 
       expect(spy.calledTwice).toBe(true);
@@ -674,14 +675,14 @@ describe('FormElements', () => {
 
         input.value = 'foo';
 
-        triggerEvent('change', input);
+        triggerEvent(isInfernoCompatEnabled ? 'input' : 'change', input);
 
         expect(spy.calledOnce).toBe(true);
         expect(spy.args[0][1]).toBe('foo');
 
         input.value = 'bar';
 
-        triggerEvent('change', input);
+        triggerEvent(isInfernoCompatEnabled ? 'input' : 'change', input);
 
         expect(spy.calledTwice).toBe(true);
         expect(spy.args[1][1]).toBe('bar');

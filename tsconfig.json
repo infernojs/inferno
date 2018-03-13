@@ -15,7 +15,7 @@
 			"inferno-router": [ "packages/inferno-router/src" ],
 			"inferno-server": [ "packages/inferno-server/src" ],
 			"inferno-shared": [ "packages/inferno-shared/src" ],
-      		"inferno-clone-vnode": [ "packages/inferno-clone-vnode/src" ],
+      "inferno-clone-vnode": [ "packages/inferno-clone-vnode/src" ],
 			"inferno-test-utils": [ "packages/inferno-test-utils/src" ],
 			"inferno-utils": [ "packages/inferno-utils/src" ],
 			"inferno-vnode-flags": [ "packages/inferno-vnode-flags/src" ]

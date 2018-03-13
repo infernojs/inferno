@@ -1,5 +1,16 @@
 const path = require('path');
 const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src');
+const useInfernoCompatPkg = process.env.InfernoCompat == '1';
+
+console.info('*** Starting karma tests, Inferno-compat is ' + ( useInfernoCompatPkg ? 'on.' : 'off.') + ' ***');
+
+const preProcessorOptions = {};
+
+if (useInfernoCompatPkg) {
+  preProcessorOptions['./fixtures/browser/test.index.js'] = ['webpack'];
+} else {
+  preProcessorOptions['./fixtures/browser/test.no-compat.index.js'] = ['webpack'];
+}
 
 module.exports = function(config) {
   config.set({
@@ -31,12 +42,11 @@ module.exports = function(config) {
       }
     },
 
-    files: ['./packages/*/__tests__/**/*.spec.js', './packages/*/__tests__/**/*.spec.jsx'],
+    files: [
+      path.join(__dirname, '../../fixtures/browser/', useInfernoCompatPkg ? 'test.index.js' : 'test.no-compat.index.js'),
+    ],
 
-    preprocessors: {
-      './packages/*/__tests__/**/*': ['webpack'],
-      './packages/*/__tests__/*': ['webpack']
-    },
+    preprocessors: preProcessorOptions,
 
     plugins: [
       'karma-ie-launcher',
@@ -63,7 +73,15 @@ module.exports = function(config) {
       stats: 'errors-only',
       noInfo: true
     },
+
+    client: {
+      jasmine: {
+        random: false // Adding jasmine.random false disables test random order
+      }
+    },
+
     webpack: {
+      mode: 'development',
       module: {
         rules: [
           {
@@ -75,7 +93,6 @@ module.exports = function(config) {
               plugins: [
                 'transform-decorators-legacy',
                 ['babel-plugin-inferno', { imports: true }],
-                'transform-es2015-modules-commonjs',
                 'transform-class-properties',
                 'transform-object-rest-spread',
                 'babel-plugin-syntax-jsx',
@@ -113,7 +130,8 @@ module.exports = function(config) {
           'inferno-test-utils': resolve('inferno-test-utils'),
           'inferno-utils': resolve('inferno-utils'),
           'inferno-vnode-flags': resolve('inferno-vnode-flags'),
-          'inferno-clone-vnode': resolve('inferno-clone-vnode')
+          'inferno-clone-vnode': resolve('inferno-clone-vnode'),
+          'mobx': path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
         },
         extensions: ['.js', '.jsx', '.ts'],
         mainFields: ['browser', 'main']

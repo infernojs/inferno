@@ -19,8 +19,8 @@
     "moduleName": "Inferno"
   },
   "main": "index.js",
-  "module": "dist/index.mjs",
-  "dev:module": "dist/index.dev.mjs",
+  "module": "dist/index.esm.js",
+  "dev:module": "dist/index.dev.esm.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
