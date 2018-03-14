@@ -13,20 +13,20 @@ import React, {
 } from 'inferno-compat';
 
 describe('MISC', () => {
+  let container;
+
+  beforeEach(function() {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(function() {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
   describe('PropTypes', () => {
-    let container;
-
-    beforeEach(function() {
-      container = document.createElement('div');
-      document.body.appendChild(container);
-    });
-
-    afterEach(function() {
-      render(null, container);
-      container.innerHTML = '';
-      document.body.removeChild(container);
-    });
-
     it('PropTypes should exists in inferno-compat', () => {
       expect(typeof PropTypes).toBe('object');
       expect(PropTypes.any()).toBeTruthy();
@@ -37,6 +37,31 @@ describe('MISC', () => {
     it('checkPropTypes should return null', () => {
       expect(PropTypes.checkPropTypes()).toBeNull();
     });
+  });
+
+  describe('React Synthetic event simulation', () => {
+    it('should have isPropagationStopped and isDefaultPrevented defined in Event prototype', () => {
+      const spyObj = {
+        foo: (event) => {
+          expect(event.isDefaultPrevented()).toBe(false);
+          expect(event.isPropagationStopped()).toBe(false);
+
+          event.preventDefault();
+          expect(event.isDefaultPrevented()).toBe(true);
+
+          event.stopPropagation();
+          expect(event.isPropagationStopped()).toBe(true);
+        }
+      };
+      spyOn(spyObj, 'foo').and.callThrough();
+
+      render(<div onClick={spyObj.foo}/>, container);
+
+
+      container.firstChild.click();
+
+      expect(spyObj.foo).toHaveBeenCalledTimes(1);
+    })
   });
 
   describe('Children Only', () => {

@@ -177,9 +177,23 @@ function normalizeFormProps(name: string, props: Props | any) {
 // every prop event that starts with "on", i.e. onClick or onKeyPress
 // but in reality devs use onSomething for many things, not only for
 // input events
-if (typeof Event !== 'undefined' && !Event.prototype.persist) {
-  // tslint:disable-next-line:no-empty
-  Event.prototype.persist = function() {};
+if (typeof Event !== 'undefined') {
+  const eventProtoType = Event.prototype as any;
+
+  if (!eventProtoType.persist) {
+    // tslint:disable-next-line:no-empty
+    eventProtoType.persist = function() {};
+  }
+  if (!eventProtoType.isDefaultPrevented) {
+    eventProtoType.isDefaultPrevented = function () {
+      return this.defaultPrevented;
+    }
+  }
+  if (!eventProtoType.isPropagationStopped) {
+    eventProtoType.isPropagationStopped = function () {
+      return this.cancelBubble;
+    }
+  }
 }
 
 function iterableToArray(iterable) {
