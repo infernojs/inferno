@@ -37,8 +37,6 @@ declare global {
   // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
   // TypeScript Version: 2.6
 
-  /// <reference path="global.d.ts" />
-
   namespace _InfernoJSX {
     //
     // React Elements
@@ -3051,7 +3049,7 @@ declare global {
       "var": DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
       video: DetailedHTMLFactory<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
       wbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-      webview: DetailedHTMLFactory<WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>; // TODO: why error?
+      // webview: DetailedHTMLFactory<WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
     }
 
     interface InfernoSVG {
@@ -3286,7 +3284,7 @@ declare global {
       "var": _InfernoJSX.DetailedHTMLProps<_InfernoJSX.HTMLAttributes<HTMLElement>, HTMLElement>;
       video: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
       wbr: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.HTMLAttributes<HTMLElement>, HTMLElement>;
-      webview: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>; // TODO: why is this erroring?
+      // webview: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
 
       // SVG
       svg: _InfernoJSX.SVGProps<SVGSVGElement>;
