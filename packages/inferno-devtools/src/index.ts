@@ -1,3 +1,1 @@
-import { initDevTools } from './init';
-
-initDevTools();
+export { initDevTools } from './init';

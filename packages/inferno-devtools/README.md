@@ -8,6 +8,6 @@ You can install the React Chrome Dev Tools plugin [here](https://chrome.google.c
 
 ## Enabling Inferno Dev Tools
 
-To enable the Inferno development tool you must install the `inferno-devtools` module and then `require('inferno-devtools')` before the initial `render(...)`.
+To enable the Inferno development tool you must install the `inferno-devtools` module and then `import {initDevTools} from 'inferno-devtools';` and call `initDevTools()` before the initial `render(...)`.
 
 The module translates Inferno components so that they are visible via the React Chrome plugin. Be sure to de-activate the tools in production as the development tool module adds extra overhead that will impact your application.
