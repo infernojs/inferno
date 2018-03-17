@@ -5,7 +5,7 @@ const customLaunchers = {
   slIphone5: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    version: '8.4'
+    version: '9.3.5'
   },
   slIpad: {
     base: 'SauceLabs',
