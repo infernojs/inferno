@@ -5,7 +5,8 @@ import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, LIFECYCLE } from '../DOM/utils/common';
 
 const resolvedPromise: any = typeof Promise === 'undefined' ? null : Promise.resolve();
-const fallbackMethod = typeof requestAnimationFrame === 'undefined' ? setTimeout : requestAnimationFrame;
+// raf.bind(window) is needed to work around bug in IE10-IE11 strict mode (TypeError: Invalid calling object)
+const fallbackMethod = typeof requestAnimationFrame === 'undefined' ? setTimeout : requestAnimationFrame.bind(window);
 function nextTick(fn) {
   if (resolvedPromise) {
     return resolvedPromise.then(fn);

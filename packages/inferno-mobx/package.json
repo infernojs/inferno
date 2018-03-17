@@ -27,11 +27,10 @@
   "repository": "https://github.com/infernojs/inferno",
   "peerDependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": ">=4",
-    "inferno-create-class": ">=4",
-    "inferno-create-element": ">=4",
-    "inferno-server": ">=4",
-    "inferno-shared": ">=4",
+    "inferno": ">=5",
+    "inferno-create-class": ">=5",
+    "inferno-create-element": ">=5",
+    "inferno-shared": ">=5",
     "mobx": "^4.0.0"
   },
   "dependencies": {
@@ -39,7 +38,6 @@
     "inferno": "5.0.0-2",
     "inferno-create-class": "5.0.0-2",
     "inferno-create-element": "5.0.0-2",
-    "inferno-server": "5.0.0-2",
     "inferno-shared": "5.0.0-2"
   },
   "rollup": {

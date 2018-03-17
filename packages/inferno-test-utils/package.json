@@ -21,11 +21,10 @@
     "utils"
   ],
   "peerDependencies": {
-    "inferno": ">=4"
+    "inferno": ">=5"
   },
   "devDependencies": {
     "inferno": "5.0.0-2",
-    "inferno-server": "5.0.0-2",
     "inferno-shared": "5.0.0-2",
     "inferno-vnode-flags": "5.0.0-2"
   },
