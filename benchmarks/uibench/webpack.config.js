@@ -9,6 +9,7 @@ module.exports = {
     publicPath: __dirname,
     filename: 'bundle.js'
   },
+  mode: "production",
   module: {
     rules: [
       {
@@ -54,8 +55,7 @@ module.exports = {
     mainFields: ['module', 'main']
   },
   plugins: [
-    new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } })
   ],
   devServer: {
     port: process.env.PORT || 8000
