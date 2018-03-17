@@ -2,7 +2,7 @@ import { Component, createComponentVNode, VNode } from 'inferno';
 import { matchPath } from './matchPath';
 import { Children, invariant, isValidElement, warning } from './utils';
 import { combineFrom } from 'inferno-shared';
-import { IRouteProps } from "./Route";
+import { IRouteProps } from './Route';
 
 export interface ISwitchProps extends IRouteProps {
   router: any;

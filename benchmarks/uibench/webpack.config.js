@@ -9,7 +9,6 @@ module.exports = {
     publicPath: __dirname,
     filename: 'bundle.js'
   },
-  mode: "production",
   module: {
     rules: [
       {

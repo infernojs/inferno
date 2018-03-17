@@ -180,19 +180,19 @@ function normalizeFormProps(name: string, props: Props | any) {
 if (typeof Event !== 'undefined') {
   const eventProtoType = Event.prototype as any;
 
-  if (!eventProtoType.persist) {
+  if (!eventProtoType.persist) {
     // tslint:disable-next-line:no-empty
     eventProtoType.persist = function() {};
   }
   if (!eventProtoType.isDefaultPrevented) {
-    eventProtoType.isDefaultPrevented = function () {
+    eventProtoType.isDefaultPrevented = function() {
       return this.defaultPrevented;
-    }
+    };
   }
   if (!eventProtoType.isPropagationStopped) {
-    eventProtoType.isPropagationStopped = function () {
+    eventProtoType.isPropagationStopped = function() {
       return this.cancelBubble;
-    }
+    };
   }
 }
 

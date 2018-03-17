@@ -17,19 +17,12 @@ import {
 import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createPortal, createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils/common';
-import {
-  Component,
-  ComponentClass,
-  ComponentLifecycle,
-  ComponentType,
-  SFC,
-  StatelessComponent
-} from './core/component';
+import { Component, ComponentClass, ComponentLifecycle, ComponentType, SFC, StatelessComponent } from './core/component';
 import { getNumberStyleValue } from './DOM/props';
 import { hydrate } from './DOM/hydration';
 
-import * as JSX from "./JSX";
-export * from "./DOM/events/events";
+import * as JSX from './JSX';
+export * from './DOM/events/events';
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */

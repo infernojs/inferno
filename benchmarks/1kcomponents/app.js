@@ -43,7 +43,7 @@ class Demo extends Component {
           {state.numPoints}
         </div>
         <div className="about">
-          InfernoJS 4.0.0 1k Components Demo
+          InfernoJS 1k Components Demo
           based on the Glimmer demo by <a href="http://mlange.io" target="_blank">Michael Lange</a>.
         </div>
       </div>

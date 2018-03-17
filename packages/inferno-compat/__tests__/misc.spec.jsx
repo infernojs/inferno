@@ -42,7 +42,7 @@ describe('MISC', () => {
   describe('React Synthetic event simulation', () => {
     it('should have isPropagationStopped and isDefaultPrevented defined in Event prototype', () => {
       const spyObj = {
-        foo: (event) => {
+        foo: event => {
           expect(event.isDefaultPrevented()).toBe(false);
           expect(event.isPropagationStopped()).toBe(false);
 
@@ -55,13 +55,12 @@ describe('MISC', () => {
       };
       spyOn(spyObj, 'foo').and.callThrough();
 
-      render(<div onClick={spyObj.foo}/>, container);
-
+      render(<div onClick={spyObj.foo} />, container);
 
       container.firstChild.click();
 
       expect(spyObj.foo).toHaveBeenCalledTimes(1);
-    })
+    });
   });
 
   describe('Children Only', () => {

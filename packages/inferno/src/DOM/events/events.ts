@@ -3,11 +3,19 @@
 // ----------------------------------------------------------------------
 
 import {
-  NativeAnimationEvent, NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent,
+  NativeAnimationEvent,
+  NativeClipboardEvent,
+  NativeCompositionEvent,
+  NativeDragEvent,
+  NativeFocusEvent,
   NativeKeyboardEvent,
-  NativeMouseEvent, NativeTouchEvent, NativeTransitionEvent, NativeUIEvent, NativeWheelEvent
-} from "../../JSX";
-import { LinkedEvent } from "./linkEvent";
+  NativeMouseEvent,
+  NativeTouchEvent,
+  NativeTransitionEvent,
+  NativeUIEvent,
+  NativeWheelEvent
+} from '../../JSX';
+import { LinkedEvent } from './linkEvent';
 
 export interface SemiSyntheticEvent<T> extends Event {
   /**
@@ -42,7 +50,7 @@ export type TransitionEvent<T> = SemiSyntheticEvent<T> & NativeTransitionEvent;
 // Event Handler Types
 // ----------------------------------------------------------------------
 
-export type EventHandler<E extends SemiSyntheticEvent<any>> = { bivarianceHack(event: E): void }["bivarianceHack"] | LinkedEvent<any, E>;
+export type EventHandler<E extends SemiSyntheticEvent<any>> = { bivarianceHack(event: E): void }['bivarianceHack'] | LinkedEvent<any, E>;
 
 export type InfernoEventHandler<T> = EventHandler<SemiSyntheticEvent<T>>;
 

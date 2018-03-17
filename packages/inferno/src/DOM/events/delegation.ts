@@ -1,5 +1,5 @@
 import { isNull } from 'inferno-shared';
-import { SemiSyntheticEvent } from "inferno";
+import { SemiSyntheticEvent } from 'inferno';
 
 const attachedEventCounts = {};
 const attachedEvents = {};

@@ -55,7 +55,7 @@ class Route extends Component<IRouteProps, any> {
     };
   }
 
-  public computeMatch({computedMatch, location, path, strict, exact, sensitive}, router) {
+  public computeMatch({ computedMatch, location, path, strict, exact, sensitive }, router) {
     if (computedMatch) {
       // <Switch> already computed the match for us
       return computedMatch;
@@ -63,10 +63,10 @@ class Route extends Component<IRouteProps, any> {
 
     invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
 
-    const {route} = router;
+    const { route } = router;
     const pathname = (location || route.location).pathname;
 
-    return path ? matchPath(pathname, {path, strict, exact, sensitive}) : route.match;
+    return path ? matchPath(pathname, { path, strict, exact, sensitive }) : route.match;
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
@@ -88,11 +88,11 @@ class Route extends Component<IRouteProps, any> {
   }
 
   public render(): VNode | null {
-    const {match} = this.state;
-    const {children, component, render} = this.props;
-    const {history, route, staticContext} = this.context.router;
+    const { match } = this.state;
+    const { children, component, render } = this.props;
+    const { history, route, staticContext } = this.context.router;
     const location = this.props.location || route.location;
-    const props = {match, location, history, staticContext};
+    const props = { match, location, history, staticContext };
 
     if (component) {
       return match ? createComponentVNode(VNodeFlags.ComponentUnknown, component, props) : null;
@@ -115,7 +115,7 @@ class Route extends Component<IRouteProps, any> {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  Route.prototype.componentWillMount = function () {
+  Route.prototype.componentWillMount = function() {
     warning(
       !(this.props.component && this.props.render),
       'You should not use <Route component> and <Route render> in the same route; <Route render> will be ignored'

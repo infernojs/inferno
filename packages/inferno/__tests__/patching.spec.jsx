@@ -114,25 +114,22 @@ describe('patching routine', () => {
               onClick={() => {
                 callCount++;
                 this.setState({});
-              }}>Click twice !
+              }}
+            >
+              Click twice !
             </button>
             {this.props.children}
           </div>
         );
-
       }
     }
-
 
     class Clock extends Component {
       render() {
         return (
           <Collapsible>
             <div>
-              {[
-                <p>Hello 0</p>,
-                <p>Hello 1</p>
-              ]}
+              {[<p>Hello 0</p>, <p>Hello 1</p>]}
               <strong>Hello 2</strong>
             </div>
             <p>Hello 3</p>
@@ -143,7 +140,7 @@ describe('patching routine', () => {
 
     const expectedDOM = '<div><button>Click twice !</button><div><p>Hello 0</p><p>Hello 1</p><strong>Hello 2</strong></div><p>Hello 3</p></div>';
 
-    render(<Clock/>, container);
+    render(<Clock />, container);
 
     expect(container.innerHTML).toBe(expectedDOM);
 
@@ -175,17 +172,13 @@ describe('patching routine', () => {
   });
 
   it('Should not re-mount hoisted vNode', () => {
-    const Com1 = () => (
-      <div>1</div>
-    );
-    const Com2 = () => (
-      <div>2</div>
-    );
+    const Com1 = () => <div>1</div>;
+    const Com2 = () => <div>2</div>;
 
     const div = (
       <div>
-        <Com1/>
-        <Com2/>
+        <Com1 />
+        <Com2 />
       </div>
     );
 
@@ -193,26 +186,25 @@ describe('patching routine', () => {
       return div;
     }
 
-    render(<Comp/>, container);
+    render(<Comp />, container);
 
     expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
 
     const first = container.firstChild.childNodes[0];
     const second = container.firstChild.childNodes[1];
 
-    render(<Comp/>, container);
+    render(<Comp />, container);
 
     expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
 
     const first2 = container.firstChild.childNodes[0];
     const second2 = container.firstChild.childNodes[1];
 
-
     // Verify dom nodes did not change
     expect(first).toBe(first2);
     expect(second).toBe(second2);
 
-    render(<Comp/>, container);
+    render(<Comp />, container);
 
     expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
 

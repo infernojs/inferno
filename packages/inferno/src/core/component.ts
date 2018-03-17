@@ -202,11 +202,10 @@ export interface ComponentClass<P = {}> {
   displayName?: string;
 }
 
-export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }["bivarianceHack"];
+export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }['bivarianceHack'];
 
 export interface Requireable<T> extends Validator<T> {
   isRequired: Validator<T>;
 }
 
-export type ValidationMap<T> = {[K in keyof T]?: Validator<T> };
-
+export type ValidationMap<T> = { [K in keyof T]?: Validator<T> };

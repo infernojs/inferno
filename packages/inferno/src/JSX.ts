@@ -1,9 +1,23 @@
 import {
-  Component, InfernoChildren, VNode,
-  InfernoEventHandler, KeyboardEventHandler, FormEventHandler, CompositionEventHandler, ClipboardEventHandler,
-  FocusEventHandler, MouseEventHandler, DragEventHandler, WheelEventHandler, UIEventHandler, TouchEventHandler,
-  AnimationEventHandler, TransitionEventHandler, ChangeEventHandler, Ref
-} from "inferno";
+  Component,
+  InfernoChildren,
+  VNode,
+  InfernoEventHandler,
+  KeyboardEventHandler,
+  FormEventHandler,
+  CompositionEventHandler,
+  ClipboardEventHandler,
+  FocusEventHandler,
+  MouseEventHandler,
+  DragEventHandler,
+  WheelEventHandler,
+  UIEventHandler,
+  TouchEventHandler,
+  AnimationEventHandler,
+  TransitionEventHandler,
+  ChangeEventHandler,
+  Ref
+} from 'inferno';
 
 export type NativeAnimationEvent = AnimationEvent;
 export type NativeClipboardEvent = ClipboardEvent;
@@ -67,8 +81,10 @@ declare global {
       type: keyof InfernoSVG;
     }
 
-    type DOMFactory<P extends DOMAttributes<T>, T extends Element> =
-      (props?: ClassAttributes<T> & P | null, ...children: InfernoChildren[]) => DOMElement<P, T>;
+    type DOMFactory<P extends DOMAttributes<T>, T extends Element> = (
+      props?: ClassAttributes<T> & P | null,
+      ...children: InfernoChildren[]
+    ) => DOMElement<P, T>;
 
     interface DetailedHTMLFactory<P extends HTMLAttributes<T>, T extends HTMLElement> extends DOMFactory<P, T> {
       (props?: ClassAttributes<T> & P | null, ...children: InfernoChildren[]): DetailedInfernoHTMLElement<P, T>;
@@ -88,8 +104,7 @@ declare global {
 
     type DetailedHTMLProps<E extends HTMLAttributes<T>, T> = ClassAttributes<T> & E;
 
-    interface SVGProps<T> extends SVGAttributes<T>, ClassAttributes<T> {
-    }
+    interface SVGProps<T> extends SVGAttributes<T>, ClassAttributes<T> {}
 
     interface DOMAttributes<T> {
       children?: InfernoChildren;
@@ -265,7 +280,7 @@ declare global {
     // See CSS 3 CSS-wide keywords https://www.w3.org/TR/css3-values/#common-keywords
     // See CSS 3 Explicit Defaulting https://www.w3.org/TR/css-cascade-3/#defaulting-keywords
     // "all CSS properties can accept these values"
-    type CSSWideKeyword = "initial" | "inherit" | "unset";
+    type CSSWideKeyword = 'initial' | 'inherit' | 'unset';
 
     // See CSS 3 <percentage> type https://drafts.csswg.org/css-values-3/#percentages
     type CSSPercentage = string;
@@ -279,17 +294,17 @@ declare global {
       /**
        * Aligns a flex container's lines within the flex container when there is extra space in the cross-axis, similar to how justify-content aligns individual items within the main-axis.
        */
-      alignContent?: CSSWideKeyword | "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "stretch";
+      alignContent?: CSSWideKeyword | 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'stretch';
 
       /**
        * Sets the default alignment in the cross axis for all of the flex container's items, including anonymous flex items, similarly to how justify-content aligns items along the main axis.
        */
-      alignItems?: CSSWideKeyword | "flex-start" | "flex-end" | "center" | "baseline" | "stretch";
+      alignItems?: CSSWideKeyword | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
 
       /**
        * Allows the default alignment to be overridden for individual flex items.
        */
-      alignSelf?: CSSWideKeyword | "auto" | "flex-start" | "flex-end" | "center" | "baseline" | "stretch";
+      alignSelf?: CSSWideKeyword | 'auto' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
 
       /**
        * This property allows precise alignment of elements, such as graphics,
@@ -350,7 +365,7 @@ declare global {
        * or scrolls along with its containing block.
        * See CSS 3 background-attachment property https://drafts.csswg.org/css-backgrounds-3/#the-background-attachment
        */
-      backgroundAttachment?: CSSWideKeyword | "scroll" | "fixed" | "local";
+      backgroundAttachment?: CSSWideKeyword | 'scroll' | 'fixed' | 'local';
 
       /**
        * This property describes how the element's background images should blend with each other and the element's background color.
@@ -706,7 +721,7 @@ declare global {
        * Describes the number of columns of the element.
        * See CSS 3 column-count property https://www.w3.org/TR/css3-multicol/#cc
        */
-      columnCount?: CSSWideKeyword | number | "auto";
+      columnCount?: CSSWideKeyword | number | 'auto';
 
       /**
        * Specifies how to fill columns (balanced or sequential).
@@ -842,7 +857,7 @@ declare global {
       /**
        * The flex-direction CSS property describes how flex items are placed in the flex container, by setting the direction of the flex container's main axis.
        */
-      flexDirection?: CSSWideKeyword | "row" | "row-reverse" | "column" | "column-reverse";
+      flexDirection?: CSSWideKeyword | 'row' | 'row-reverse' | 'column' | 'column-reverse';
 
       /**
        * The flex-flow CSS property defines the flex container's main and cross axis. It is a shorthand property for the flex-direction and flex-wrap properties.
@@ -883,7 +898,7 @@ declare global {
        * If wrapping is allowed, this property also enables you to control the direction in which lines are stacked.
        * See CSS flex-wrap property https://drafts.csswg.org/css-flexbox-1/#flex-wrap-property
        */
-      flexWrap?: CSSWideKeyword | "nowrap" | "wrap" | "wrap-reverse";
+      flexWrap?: CSSWideKeyword | 'nowrap' | 'wrap' | 'wrap-reverse';
 
       /**
        * Elements which have the style float are floated horizontally.
@@ -920,10 +935,19 @@ declare global {
        * Specifies the size of the font. Used to compute em and ex units.
        * See CSS 3 font-size property https://www.w3.org/TR/css-fonts-3/#propdef-font-size
        */
-      fontSize?: CSSWideKeyword |
-        "xx-small" | "x-small" | "small" | "medium" | "large" | "x-large" | "xx-large" |
-        "larger" | "smaller" |
-        CSSLength | CSSPercentage;
+      fontSize?:
+        | CSSWideKeyword
+        | 'xx-small'
+        | 'x-small'
+        | 'small'
+        | 'medium'
+        | 'large'
+        | 'x-large'
+        | 'xx-large'
+        | 'larger'
+        | 'smaller'
+        | CSSLength
+        | CSSPercentage;
 
       /**
        * The font-size-adjust property adjusts the font-size of the fallback fonts defined with font-family,
@@ -931,15 +955,23 @@ declare global {
        * This preserves the readability of the text when fallback happens.
        * See CSS 3 font-size-adjust property https://www.w3.org/TR/css-fonts-3/#propdef-font-size-adjust
        */
-      fontSizeAdjust?: CSSWideKeyword | "none" | number;
+      fontSizeAdjust?: CSSWideKeyword | 'none' | number;
 
       /**
        * Allows you to expand or condense the widths for a normal, condensed, or expanded font face.
        * See CSS 3 font-stretch property https://drafts.csswg.org/css-fonts-3/#propdef-font-stretch
        */
-      fontStretch?: CSSWideKeyword |
-        "normal" | "ultra-condensed" | "extra-condensed" | "condensed" | "semi-condensed" |
-        "semi-expanded" | "expanded" | "extra-expanded" | "ultra-expanded";
+      fontStretch?:
+        | CSSWideKeyword
+        | 'normal'
+        | 'ultra-condensed'
+        | 'extra-condensed'
+        | 'condensed'
+        | 'semi-condensed'
+        | 'semi-expanded'
+        | 'expanded'
+        | 'extra-expanded'
+        | 'ultra-expanded';
 
       /**
        * The font-style property allows normal, italic, or oblique faces to be selected.
@@ -947,7 +979,7 @@ declare global {
        * Oblique faces can be simulated by artificially sloping the glyphs of the regular face.
        * See CSS 3 font-style property https://www.w3.org/TR/css-fonts-3/#propdef-font-style
        */
-      fontStyle?: CSSWideKeyword | "normal" | "italic" | "oblique";
+      fontStyle?: CSSWideKeyword | 'normal' | 'italic' | 'oblique';
 
       /**
        * This value specifies whether the user agent is allowed to synthesize bold or oblique font faces when a font family lacks bold or italic faces.
@@ -968,7 +1000,7 @@ declare global {
        * Specifies the weight or boldness of the font.
        * See CSS 3 'font-weight' property https://www.w3.org/TR/css-fonts-3/#propdef-font-weight
        */
-      fontWeight?: CSSWideKeyword | "normal" | "bold" | "bolder" | "lighter" | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+      fontWeight?: CSSWideKeyword | 'normal' | 'bold' | 'bolder' | 'lighter' | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 
       /**
        * Lays out one or more grid items bound by 4 grid lines. Shorthand for setting grid-column-start, grid-column-end, grid-row-start, and grid-row-end in a single declaration.
@@ -1065,7 +1097,7 @@ declare global {
        * along the main-axis of their container.
        * See CSS justify-content property https://www.w3.org/TR/css-flexbox-1/#justify-content-property
        */
-      justifyContent?: CSSWideKeyword | "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly" | "stretch";
+      justifyContent?: CSSWideKeyword | 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' | 'stretch';
 
       layoutGrid?: CSSWideKeyword | any;
 
@@ -1098,7 +1130,7 @@ declare global {
        * Specifies the height of an inline block level element.
        * See CSS 2.1 line-height property https://www.w3.org/TR/CSS21/visudet.html#propdef-line-height
        */
-      lineHeight?: CSSWideKeyword | "normal" | number | CSSLength | CSSPercentage;
+      lineHeight?: CSSWideKeyword | 'normal' | number | CSSLength | CSSPercentage;
 
       /**
        * Shorthand property that sets the list-style-type, list-style-position and list-style-image properties in one declaration.
@@ -1283,7 +1315,7 @@ declare global {
        * The overflow property controls how extra content exceeding the bounding box of an element is rendered.
        * It can be used in conjunction with an element that has a fixed width and height, to eliminate text-induced page distortion.
        */
-      overflow?: CSSWideKeyword | "auto" | "hidden" | "scroll" | "visible";
+      overflow?: CSSWideKeyword | 'auto' | 'hidden' | 'scroll' | 'visible';
 
       /**
        * Specifies the preferred scrolling methods for elements that overflow.
@@ -1293,12 +1325,12 @@ declare global {
       /**
        * Controls how extra content exceeding the x-axis of the bounding box of an element is rendered.
        */
-      overflowX?: CSSWideKeyword | "auto" | "hidden" | "scroll" | "visible";
+      overflowX?: CSSWideKeyword | 'auto' | 'hidden' | 'scroll' | 'visible';
 
       /**
        * Controls how extra content exceeding the y-axis of the bounding box of an element is rendered.
        */
-      overflowY?: CSSWideKeyword | "auto" | "hidden" | "scroll" | "visible";
+      overflowY?: CSSWideKeyword | 'auto' | 'hidden' | 'scroll' | 'visible';
 
       /**
        * The padding optional CSS property sets the required padding space on one to four sides of an element.
@@ -1406,7 +1438,7 @@ declare global {
        * The position property controls the type of positioning used by an element within its parent elements.
        * The effect of the position property depends on a lot of factors, for example the position property of parent elements.
        */
-      position?: CSSWideKeyword | "static" | "relative" | "absolute" | "fixed" | "sticky";
+      position?: CSSWideKeyword | 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
 
       /**
        * Obsolete: unsupported.
@@ -1890,13 +1922,13 @@ declare global {
        * When elements overlap, z-order determines which one covers the other.
        * See CSS 2 z-index property https://www.w3.org/TR/CSS2/visuren.html#z-index
        */
-      zIndex?: CSSWideKeyword | "auto" | number;
+      zIndex?: CSSWideKeyword | 'auto' | number;
 
       /**
        * Sets the initial zoom factor of a document defined by @viewport.
        * See CSS zoom descriptor https://drafts.csswg.org/css-device-adapt/#zoom-desc
        */
-      zoom?: CSSWideKeyword | "auto" | number | CSSPercentage;
+      zoom?: CSSWideKeyword | 'auto' | number | CSSPercentage;
 
       [propertyName: string]: any;
     }
@@ -2261,8 +2293,7 @@ declare global {
     }
 
     // tslint:disable-next-line:no-empty-interface
-    interface AudioHTMLAttributes<T> extends MediaHTMLAttributes<T> {
-    }
+    interface AudioHTMLAttributes<T> extends MediaHTMLAttributes<T> {}
 
     interface AreaHTMLAttributes<T> extends HTMLAttributes<T> {
       alt?: string;
@@ -2372,7 +2403,7 @@ declare global {
 
     interface ImgHTMLAttributes<T> extends HTMLAttributes<T> {
       alt?: string;
-      crossOrigin?: "anonymous" | "use-credentials" | "";
+      crossOrigin?: 'anonymous' | 'use-credentials' | '';
       height?: number | string;
       sizes?: string;
       src?: string;
@@ -2670,14 +2701,26 @@ declare global {
 
       // SVG Specific attributes
       accentHeight?: number | string;
-      accumulate?: "none" | "sum";
-      additive?: "replace" | "sum";
-      alignmentBaseline?: "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" |
-        "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit";
-      allowReorder?: "no" | "yes";
+      accumulate?: 'none' | 'sum';
+      additive?: 'replace' | 'sum';
+      alignmentBaseline?:
+        | 'auto'
+        | 'baseline'
+        | 'before-edge'
+        | 'text-before-edge'
+        | 'middle'
+        | 'central'
+        | 'after-edge'
+        | 'text-after-edge'
+        | 'ideographic'
+        | 'alphabetic'
+        | 'hanging'
+        | 'mathematical'
+        | 'inherit';
+      allowReorder?: 'no' | 'yes';
       alphabetic?: number | string;
       amplitude?: number | string;
-      arabicForm?: "initial" | "medial" | "terminal" | "isolated";
+      arabicForm?: 'initial' | 'medial' | 'terminal' | 'isolated';
       ascent?: number | string;
       attributeName?: string;
       attributeType?: string;
@@ -2697,7 +2740,7 @@ declare global {
       clipPathUnits?: number | string;
       clipRule?: number | string;
       colorInterpolation?: number | string;
-      colorInterpolationFilters?: "auto" | "sRGB" | "linearRGB" | "inherit";
+      colorInterpolationFilters?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit';
       colorProfile?: number | string;
       colorRendering?: number | string;
       contentScriptType?: number | string;
@@ -2724,7 +2767,7 @@ declare global {
       externalResourcesRequired?: number | string;
       fill?: string;
       fillOpacity?: number | string;
-      fillRule?: "nonzero" | "evenodd" | "inherit";
+      fillRule?: 'nonzero' | 'evenodd' | 'inherit';
       filter?: string;
       filterRes?: number | string;
       filterUnits?: number | string;
@@ -2846,8 +2889,8 @@ declare global {
       stroke?: string;
       strokeDasharray?: string | number;
       strokeDashoffset?: string | number;
-      strokeLinecap?: "butt" | "round" | "square" | "inherit";
-      strokeLinejoin?: "miter" | "round" | "bevel" | "inherit";
+      strokeLinecap?: 'butt' | 'round' | 'square' | 'inherit';
+      strokeLinejoin?: 'miter' | 'round' | 'bevel' | 'inherit';
       strokeMiterlimit?: number | string;
       strokeOpacity?: number | string;
       strokeWidth?: number | string;
@@ -3046,7 +3089,7 @@ declare global {
       track: DetailedHTMLFactory<TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
       u: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
       ul: DetailedHTMLFactory<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;
-      "var": DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+      var: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
       video: DetailedHTMLFactory<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
       wbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
       // webview: DetailedHTMLFactory<WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
@@ -3142,11 +3185,9 @@ declare global {
     }
   }
 
-
   namespace JSX {
     // tslint:disable-next-line:no-empty-interface
-    interface Element extends VNode<any> {
-    }
+    interface Element extends VNode<any> {}
 
     interface ElementClass extends Component<any> {
       // render(): InfernoJSX.InfernoJSXNode;
@@ -3161,12 +3202,10 @@ declare global {
     }
 
     // tslint:disable-next-line:no-empty-interface
-    interface IntrinsicAttributes extends _InfernoJSX.Attributes {
-    }
+    interface IntrinsicAttributes extends _InfernoJSX.Attributes {}
 
     // tslint:disable-next-line:no-empty-interface
-    interface IntrinsicClassAttributes<T> extends _InfernoJSX.ClassAttributes<T> {
-    }
+    interface IntrinsicClassAttributes<T> extends _InfernoJSX.ClassAttributes<T> {}
 
     interface IntrinsicElements {
       // HTML
@@ -3281,7 +3320,7 @@ declare global {
       track: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
       u: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.HTMLAttributes<HTMLElement>, HTMLElement>;
       ul: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.HTMLAttributes<HTMLUListElement>, HTMLUListElement>;
-      "var": _InfernoJSX.DetailedHTMLProps<_InfernoJSX.HTMLAttributes<HTMLElement>, HTMLElement>;
+      var: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.HTMLAttributes<HTMLElement>, HTMLElement>;
       video: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
       wbr: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.HTMLAttributes<HTMLElement>, HTMLElement>;
       // webview: _InfernoJSX.DetailedHTMLProps<_InfernoJSX.WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
