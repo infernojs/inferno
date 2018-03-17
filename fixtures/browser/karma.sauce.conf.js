@@ -16,6 +16,11 @@ const customLaunchers = {
     browserName: 'ipad',
     version: '10.3'
   },
+  slIpad2: {
+    base: 'SauceLabs',
+    browserName: 'ipad',
+    version: '11.2'
+  },
   slIphone6: {
     base: 'SauceLabs',
     browserName: 'iphone',
@@ -24,7 +29,7 @@ const customLaunchers = {
   slIphone7: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    version: '11'
+    version: '11.2'
   },
   slSafari8: {
     base: 'SauceLabs',
@@ -44,7 +49,8 @@ const customLaunchers = {
   sl_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.12'
+    platform: 'OS X 10.12',
+    version: "11"
   },
   slIE10: {
     base: 'SauceLabs',
