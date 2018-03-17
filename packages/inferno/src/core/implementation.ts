@@ -17,7 +17,7 @@ import { validateVNodeElementChildren } from './validate';
 
 const keyPrefix = '$';
 
-export interface VNode {
+export interface VNode<P = {}> {
   children: InfernoChildren;
   childFlags: ChildFlags;
   dom: Element | null;
@@ -26,28 +26,27 @@ export interface VNode {
   isValidated?: boolean;
   key: null | number | string;
   parentVNode: VNode | null;
-  props: Props | null;
-  ref: Ref | Refs | null;
+  props: Props & P | null;
+  ref: Ref | Refs<P> | null;
   type: any;
 }
 export type InfernoInput = VNode | null | string | number;
-export type Ref = (node?: Element | null) => any;
+export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }["bivarianceHack"];
 export type InfernoChildren = string | number | boolean | undefined | VNode | Array<string | number | VNode> | null;
 
-export interface Props {
+export interface Props<T = Element> {
   children?: InfernoChildren;
-  ref?: Ref | null;
+  ref?: Ref<T> | null;
   key?: any;
   className?: string;
-  [k: string]: any;
 }
 
-export interface Refs {
+export interface Refs<P> {
   onComponentDidMount?: (domNode: Element) => void;
   onComponentWillMount?(): void;
-  onComponentShouldUpdate?(lastProps, nextProps): boolean;
-  onComponentWillUpdate?(lastProps, nextProps): void;
-  onComponentDidUpdate?(lastProps, nextProps): void;
+  onComponentShouldUpdate?(lastProps: P, nextProps: P): boolean;
+  onComponentWillUpdate?(lastProps: P, nextProps: P): void;
+  onComponentDidUpdate?(lastProps: P, nextProps: P): void;
   onComponentWillUnmount?(domNode: Element): void;
 }
 
@@ -82,15 +81,15 @@ function getVNode(childFlags: ChildFlags, children, className: string | null | u
   };
 }
 
-export function createVNode(
+export function createVNode<P>(
   flags: VNodeFlags,
   type,
   className?: string | null,
   children?: InfernoChildren,
   childFlags?: ChildFlags,
-  props?: Props | null,
+  props?: Props & P | null,
   key?: string | number | null,
-  ref?: Ref | Refs | null
+  ref?: Ref | Refs<P> | null
 ): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.Component) {
@@ -117,7 +116,7 @@ export function createVNode(
   return vNode;
 }
 
-export function createComponentVNode(flags: VNodeFlags, type, props?: Props | null, key?: null | string | number, ref?: Ref | Refs | null) {
+export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props & P | null, key?: null | string | number, ref?: Ref | Refs<P> | null) {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.HtmlElement) {
       throwError('Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.');
@@ -133,11 +132,11 @@ export function createComponentVNode(flags: VNodeFlags, type, props?: Props | nu
 
   if (!isNullOrUndef(defaultProps)) {
     if (!props) {
-      props = {}; // Props can be referenced and modified at application level so always create new object
+      (props as any) = {}; // Props can be referenced and modified at application level so always create new object
     }
     for (const prop in defaultProps) {
-      if (isUndefined(props[prop])) {
-        props[prop] = defaultProps[prop];
+      if (isUndefined(props![prop])) {
+        props![prop] = defaultProps[prop];
       }
     }
   }

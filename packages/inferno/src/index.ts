@@ -10,15 +10,26 @@ import {
   normalizeProps,
   options,
   Props,
+  Ref,
   Refs,
   VNode
 } from './core/implementation';
-import { linkEvent } from './DOM/events/linkEvent';
+import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createPortal, createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils/common';
-import { Component } from './core/component';
+import {
+  Component,
+  ComponentClass,
+  ComponentLifecycle,
+  ComponentType,
+  SFC,
+  StatelessComponent
+} from './core/component';
 import { getNumberStyleValue } from './DOM/props';
 import { hydrate } from './DOM/hydration';
+
+import * as JSX from "./JSX";
+export * from "./DOM/events/events";
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
@@ -37,11 +48,17 @@ const version = process.env.INFERNO_VERSION;
 
 export {
   Component,
+  ComponentLifecycle,
+  ComponentType,
+  SFC,
+  StatelessComponent,
+  ComponentClass,
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,
   NO_OP,
   Props,
+  Ref,
   Refs,
   VNode,
   createComponentVNode,
@@ -54,8 +71,10 @@ export {
   getNumberStyleValue,
   hydrate,
   linkEvent,
+  LinkedEvent,
   normalizeProps,
   options,
   render,
-  version
+  version,
+  JSX
 };
