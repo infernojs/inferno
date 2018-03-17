@@ -173,4 +173,54 @@ describe('patching routine', () => {
 
     expect(container.innerHTML).toBe(expectedDOM);
   });
+
+  it('Should not re-mount hoisted vNode', () => {
+    const Com1 = () => (
+      <div>1</div>
+    );
+    const Com2 = () => (
+      <div>2</div>
+    );
+
+    const div = (
+      <div>
+        <Com1/>
+        <Com2/>
+      </div>
+    );
+
+    function Comp() {
+      return div;
+    }
+
+    render(<Comp/>, container);
+
+    expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
+
+    const first = container.firstChild.childNodes[0];
+    const second = container.firstChild.childNodes[1];
+
+    render(<Comp/>, container);
+
+    expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
+
+    const first2 = container.firstChild.childNodes[0];
+    const second2 = container.firstChild.childNodes[1];
+
+
+    // Verify dom nodes did not change
+    expect(first).toBe(first2);
+    expect(second).toBe(second2);
+
+    render(<Comp/>, container);
+
+    expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
+
+    const first3 = container.firstChild.childNodes[0];
+    const second3 = container.firstChild.childNodes[1];
+
+    // Verify dom nodes did not change
+    expect(first).toBe(first3);
+    expect(second).toBe(second3);
+  });
 });

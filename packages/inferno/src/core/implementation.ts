@@ -229,7 +229,7 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.type,
       vNodeToClone.className,
       children,
-      ChildFlags.UnknownChildren,
+      vNodeToClone.childFlags,
       vNodeToClone.props,
       vNodeToClone.key,
       vNodeToClone.ref
