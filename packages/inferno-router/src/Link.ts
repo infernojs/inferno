@@ -9,9 +9,9 @@ export interface ILinkProps {
   onClick?: any;
   target?: string;
   className?: string;
-  replace: boolean;
+  replace?: boolean;
   to?: string | {};
-  innerRef: any;
+  innerRef?: any;
 }
 
 function handleClick({ props, context }, event: MouseEvent<any>) {
