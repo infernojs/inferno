@@ -1,4 +1,4 @@
-import { createTextVNode, createVNode, render } from 'inferno';
+import { createTextVNode, createVNode, render, Component } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
 
@@ -101,5 +101,76 @@ describe('patching routine', () => {
     expect(spy2.callCount).toBe(1);
     expect(spy2.getCall(0).args.length).toBe(1);
     expect(spy2.getCall(0).args[0]).toEqual(container.firstChild);
+  });
+
+  it('Should not mutate previous children', () => {
+    let callCount = 0;
+
+    class Collapsible extends Component {
+      render() {
+        return (
+          <div>
+            <button
+              onClick={() => {
+                callCount++;
+                this.setState({});
+              }}>Click twice !
+            </button>
+            {this.props.children}
+          </div>
+        );
+
+      }
+    }
+
+
+    class Clock extends Component {
+      render() {
+        return (
+          <Collapsible>
+            <div>
+              {[
+                <p>Hello 0</p>,
+                <p>Hello 1</p>
+              ]}
+              <strong>Hello 2</strong>
+            </div>
+            <p>Hello 3</p>
+          </Collapsible>
+        );
+      }
+    }
+
+    const expectedDOM = '<div><button>Click twice !</button><div><p>Hello 0</p><p>Hello 1</p><strong>Hello 2</strong></div><p>Hello 3</p></div>';
+
+    render(<Clock/>, container);
+
+    expect(container.innerHTML).toBe(expectedDOM);
+
+    const btn = container.querySelector('button');
+
+    btn.click();
+
+    expect(callCount).toBe(1);
+
+    expect(container.innerHTML).toBe(expectedDOM);
+
+    btn.click();
+
+    expect(callCount).toBe(2);
+
+    expect(container.innerHTML).toBe(expectedDOM);
+
+    btn.click();
+
+    expect(callCount).toBe(3);
+
+    expect(container.innerHTML).toBe(expectedDOM);
+
+    btn.click();
+
+    expect(callCount).toBe(4);
+
+    expect(container.innerHTML).toBe(expectedDOM);
   });
 });
