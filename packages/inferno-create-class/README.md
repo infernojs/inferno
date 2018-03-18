@@ -18,7 +18,7 @@ import { render } from 'inferno';
 const MyComponent = createClass({
 	displayName: 'MyComponent',
 	render: function() {
-		return <div>Hell world!</div>;
+		return <div>Hello, world!</div>;
 	}
 });
 
