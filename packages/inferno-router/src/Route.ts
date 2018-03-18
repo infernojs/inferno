@@ -29,7 +29,7 @@ export interface IRouteProps {
   component?: ComponentType<RouteComponentProps<any>> | ComponentType<any>;
   render?: ((props: RouteComponentProps<any>) => VNode);
   location?: H.Location;
-  children: ((props: RouteComponentProps<any>) => VNode) | InfernoChildren;
+  children?: ((props: RouteComponentProps<any>) => VNode) | InfernoChildren;
 }
 
 /**
