@@ -165,6 +165,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string | undef
     }
     throwError();
   }
+  return undefined;
 }
 
 export function renderToString(input: any): string {

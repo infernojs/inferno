@@ -81,6 +81,7 @@ export function render(
   if (rootInput && rootInput.flags & VNodeFlags.Component) {
     return rootInput.children;
   }
+  return;
 }
 
 export function createRenderer(parentDom?) {

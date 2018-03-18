@@ -36,6 +36,8 @@
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
+		"noImplicitReturns": true,
+		"alwaysStrict": true,
 		"strictNullChecks": true,
 		"strictFunctionTypes": true,
 		"removeComments": false,
