@@ -37,6 +37,7 @@
 		"jsx": "preserve",
 		"noUnusedLocals": true,
 		"strictNullChecks": true,
+		"strictFunctionTypes": true,
 		"removeComments": false,
         "experimentalDecorators": true,
 		"rootDir": "."

@@ -12,6 +12,5 @@ requireAll(require.context('../../packages/inferno-hyperscript/__tests__', true,
 requireAll(require.context('../../packages/inferno-mobx/__tests__', true, /\.jsx?$/));
 requireAll(require.context('../../packages/inferno-redux/__tests__', true, /\.jsx?$/));
 requireAll(require.context('../../packages/inferno-router/__tests__', true, /\.jsx?$/));
-requireAll(require.context('../../packages/inferno-server/__tests__', true, /\.jsx?$/));
 requireAll(require.context('../../packages/inferno-test-utils/__tests__', true, /\.jsx?$/));
 requireAll(require.context('../../packages/inferno-utils/__tests__', true, /\.jsx?$/));

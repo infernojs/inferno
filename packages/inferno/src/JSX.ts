@@ -135,8 +135,8 @@ declare global {
       onBlurCapture?: FocusEventHandler<T>;
 
       // Form Events
-      onChange?: FormEventHandler<T>;
-      onChangeCapture?: FormEventHandler<T>;
+      onChange?: ChangeEventHandler<T>;
+      onChangeCapture?: ChangeEventHandler<T>;
       onInput?: FormEventHandler<T>;
       onInputCapture?: FormEventHandler<T>;
       onReset?: FormEventHandler<T>;
