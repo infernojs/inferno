@@ -101,7 +101,7 @@ function attachEventToDocument(name: string) {
     });
 
     dispatchEvents(event, event.target, isClick, name, eventData);
-    return true;
+    return;
   };
   document.addEventListener(normalizeEventName(name), docEvent);
   return docEvent;
