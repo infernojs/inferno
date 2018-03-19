@@ -2,15 +2,24 @@ const path = require('path');
 const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src');
 
 const customLaunchers = {
+  slChrome: {
+    base: 'SauceLabs',
+    browserName: 'chrome'
+  },
   slIphone5: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    version: '8.4'
+    version: '9.3'
   },
   slIpad: {
     base: 'SauceLabs',
     browserName: 'ipad',
     version: '10.3'
+  },
+  slIpad2: {
+    base: 'SauceLabs',
+    browserName: 'ipad',
+    version: '11.2'
   },
   slIphone6: {
     base: 'SauceLabs',
@@ -20,7 +29,7 @@ const customLaunchers = {
   slIphone7: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    version: '11'
+    version: '11.2'
   },
   slSafari8: {
     base: 'SauceLabs',
@@ -40,7 +49,8 @@ const customLaunchers = {
   sl_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.12'
+    platform: 'OS X 10.12',
+    version: "11"
   },
   slIE10: {
     base: 'SauceLabs',
@@ -81,10 +91,6 @@ const customLaunchers = {
     base: 'SauceLabs',
     browserName: 'chrome',
     platform: 'macOS 10.12'
-  },
-  slChrome: {
-    base: 'SauceLabs',
-    browserName: 'chrome'
   },
   slFirefox: {
     base: 'SauceLabs',
