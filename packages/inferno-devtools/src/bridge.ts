@@ -297,6 +297,7 @@ function normalizeKey(key) {
   if (key && key[0] === '.') {
     return null;
   }
+  return undefined;
 }
 
 /**
