@@ -1941,6 +1941,7 @@ declare global {
 
       // Standard HTML Attributes
       accessKey?: string;
+      class?: string;
       className?: string;
       contentEditable?: boolean;
       contextMenu?: string;
@@ -1952,6 +1953,7 @@ declare global {
       slot?: string;
       spellCheck?: boolean;
       style?: CSSProperties;
+      styleName?: string; // CSS Modules support
       tabIndex?: number;
       title?: string;
 
@@ -2680,6 +2682,7 @@ declare global {
     interface SVGAttributes<T> extends DOMAttributes<T> {
       // Attributes which also defined in HTMLAttributes
       // See comment in SVGDOMPropertyConfig.js
+      class?: string;
       className?: string;
       color?: string;
       height?: number | string;
