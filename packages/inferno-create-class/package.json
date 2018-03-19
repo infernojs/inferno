@@ -26,7 +26,7 @@
     "vdom"
   ],
   "peerDependencies": {
-    "inferno": ">=5"
+    "inferno": "^5"
   },
   "devDependencies": {
     "inferno": "5.0.0",
