@@ -11,9 +11,9 @@ export interface LinkedEvent<T, E extends Event> {
  * @param {Function} event Function to be called when event occurs
  * @returns {{data: *, event: Function}}
  */
-export function linkEvent<T, E extends Event>(data: T, event: (data: T, event: E) => void): LinkedEvent<T, E> | null {
+export function linkEvent<T, E extends Event>(data: T, event: (data: T, event: E) => void): LinkedEvent<T, E> | undefined {
   if (isFunction(event)) {
     return { data, event };
   }
-  return null; // Return null when event is invalid, to avoid creating unnecessary event handlers
+  return undefined; // Return undefined when event is invalid, to avoid creating unnecessary event handlers
 }
