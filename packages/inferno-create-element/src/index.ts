@@ -18,7 +18,7 @@ const componentHooks = {
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual ndoe
  */
-export function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props | null, ..._children: Array<InfernoChildren | any>): VNode {
+export function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props<T> | null, ..._children: Array<InfernoChildren | any>): VNode {
   if (isInvalid(type) || isObject(type)) {
     throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
   }
@@ -40,7 +40,7 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
     flags = getFlagsForElementVnode(type as string);
 
     if (!isNullOrUndef(props)) {
-      newProps = {} as T & Props;
+      newProps = {} as T & Props<T>;
 
       for (const prop in props) {
         if (prop === 'className' || prop === 'class') {
@@ -67,7 +67,7 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
     }
 
     if (!isNullOrUndef(props)) {
-      newProps = {} as T & Props;
+      newProps = {} as T & Props<T>;
 
       for (const prop in props) {
         if ((componentHooks as any)[prop] !== void 0) {
