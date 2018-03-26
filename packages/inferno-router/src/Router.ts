@@ -1,14 +1,10 @@
-import { Component } from 'inferno';
+import { Component, InfernoChildren } from 'inferno';
 import { Children, invariant, warning } from './utils';
+import * as H from 'history';
 
 export interface IRouterProps {
-  history: {
-    listen: (callback: any) => {};
-    location: {
-      pathname: string;
-    };
-  };
-  children: Array<Component<any, any>>;
+  history: H.History;
+  children: InfernoChildren;
 }
 
 /**
