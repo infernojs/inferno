@@ -27,7 +27,7 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.ReCreate` (JSX **$ReCreate**) always re-creates the vNode
 
 **VNodeFlags Masks:**
-- `VNodeFlags.FormElement` - Is from element
+- `VNodeFlags.FormElement` - Is form element
 - `VNodeFlags.Element` - Is vNode element
 - `VNodeFlags.Component` - Is vNode Component
 - `VNodeFlags.VNodeShape` - mask for defining type
