@@ -17,14 +17,14 @@ describe('Component lifecycle', () => {
 
   it('componentWillUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
-    class Com extends Component {
-      componentWillUpdate(nextProps, nextState) {
+    class Com extends Component<{value: number}> {
+      public componentWillUpdate(nextProps, nextState) {
         callCount++;
         expect(this.props.value).toBe(1);
         expect(nextProps.value).toBe(2);
       }
 
-      render() {
+      public render() {
         return <div>{this.props.value}</div>;
       }
     }
@@ -41,15 +41,16 @@ describe('Component lifecycle', () => {
 
   it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', done => {
     let doSomething;
-    class Child extends Component {
+    class Child extends Component<{active: boolean}> {
+      public state = {
+        active: false
+      };
+
       constructor() {
         super();
-        this.state = {
-          active: false
-        };
       }
 
-      componentWillReceiveProps(nextProps) {
+      public componentWillReceiveProps(nextProps) {
         if (!this.props.active && nextProps.active) {
           this.setState({
             active: true
@@ -57,32 +58,33 @@ describe('Component lifecycle', () => {
         }
       }
 
-      componentWillUpdate(nextProps, nextState) {
+      public componentWillUpdate(nextProps, nextState) {
         expect(this.state.active).toBe(false);
         expect(nextState.active).toBe(true);
       }
 
-      render() {
+      public render() {
         return <div>{this.state.active ? 'true' : 'false'}</div>;
       }
     }
 
     class Parent extends Component {
+      public state = {
+        active: false
+      };
+
       constructor() {
         super();
-        this.state = {
-          active: false
-        };
         doSomething = this._setActive = this._setActive.bind(this);
       }
 
-      _setActive() {
+      public _setActive() {
         this.setState({
           active: true
         });
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <Child active={this.state.active} />
@@ -101,8 +103,8 @@ describe('Component lifecycle', () => {
 
   it('shouldComponentUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
-    class Com extends Component {
-      shouldComponentUpdate(nextProps, nextState) {
+    class Com extends Component<{value: number}> {
+      public shouldComponentUpdate(nextProps, nextState) {
         callCount++;
         expect(this.props.value).toBe(1);
         expect(nextProps.value).toBe(2);
@@ -110,7 +112,7 @@ describe('Component lifecycle', () => {
         return true;
       }
 
-      render() {
+      public render() {
         return <div>{this.props.value}</div>;
       }
     }
@@ -126,8 +128,8 @@ describe('Component lifecycle', () => {
   });
 
   it('Should call componentWillUnmount before node is removed from DOM tree', () => {
-    class Parent extends Component {
-      render() {
+    class Parent extends Component<{foo: boolean}> {
+      public render() {
         if (this.props.foo) {
           return (
             <div>
@@ -146,15 +148,17 @@ describe('Component lifecycle', () => {
     }
 
     class Child extends Component {
-      componentWillUnmount() {
+      private element: Element;
+
+      public componentWillUnmount() {
         // verify its not removed from DOM tree yet.
-        expect(this.element.parentElement.parentElement).toBe(container);
+        expect(this.element.parentElement != null ? this.element.parentElement.parentElement : null).toBe(container);
       }
 
-      render() {
+      public render() {
         // eslint-disable-next-line
         return (
-          <div className="foobar" ref={el => (this.element = el)}>
+          <div className="foobar" ref={el => (this.element = el!)}>
             1
           </div>
         );
@@ -169,11 +173,12 @@ describe('Component lifecycle', () => {
   });
 
   it('Should not fail if componentDidUpdate is undefined #922', () => {
+    // @ts-ignore
     let callCount = 0;
-    let c = null;
+    let c;
 
-    class Com extends Component {
-      componentDidUpdate(nextProps, nextState) {
+    class Com extends Component<{value: number}> {
+      public componentDidUpdate(nextProps, nextState) {
         callCount++;
         expect(this.props.value).toBe(1);
         expect(nextProps.value).toBe(2);
@@ -181,13 +186,13 @@ describe('Component lifecycle', () => {
         return true;
       }
 
-      render() {
+      public render() {
         return <div>{this.props.value}</div>;
       }
     }
 
     // eslint-disable-next-line no-return-assign
-    render(<Com ref={inst => (c = inst)} value={1} />, container);
+    render(<Com ref={inst => {c = inst}} value={1} />, container);
 
     c.componentDidUpdate = undefined;
 

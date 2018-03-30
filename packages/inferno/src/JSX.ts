@@ -16,7 +16,9 @@ import {
   AnimationEventHandler,
   TransitionEventHandler,
   ChangeEventHandler,
-  Ref
+  Ref,
+  Refs,
+  Props
 } from 'inferno';
 
 export type NativeAnimationEvent = AnimationEvent;
@@ -60,10 +62,15 @@ declare global {
 
     interface Attributes {
       key?: any;
+
+      $HasVNodeChildren?: boolean;
+      $HasNonKeyedChildren?: boolean;
+      $HasKeyedChildren?: boolean;
+      $ChildFlag?: number;
     }
 
     interface ClassAttributes<T> extends Attributes {
-      ref?: Ref<T>;
+      ref?: Ref<T> | Refs<T>;
     }
 
     // string fallback for custom web-components
@@ -3205,7 +3212,7 @@ declare global {
     }
 
     // tslint:disable-next-line:no-empty-interface
-    interface IntrinsicAttributes extends _InfernoJSX.Attributes {}
+    interface IntrinsicAttributes<P> extends _InfernoJSX.Attributes, Props<P> {}
 
     // tslint:disable-next-line:no-empty-interface
     interface IntrinsicClassAttributes<T> extends _InfernoJSX.ClassAttributes<T> {}

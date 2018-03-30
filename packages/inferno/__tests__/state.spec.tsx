@@ -4,22 +4,22 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 let renderCount = 0;
 
 class TestCWRP extends Component {
+  public state = {
+    a: 0,
+    b: 0
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      a: 0,
-      b: 0
-    };
   }
 
-  componentWillReceiveProps() {
+  public componentWillReceiveProps() {
     this.setState({ a: 1 });
 
     expect(this.state.a).toBe(0); // It should be 0 because state is not synchronously updated
   }
 
-  render() {
+  public render() {
     if (renderCount === 0) {
       expect(this.state.a).toBe(0);
     } else if (renderCount === 1) {
@@ -79,44 +79,45 @@ describe('state', () => {
 
   describe('didUpdate and setState', () => {
     it('order', done => {
-      class Test extends Component {
+      class Test extends Component<{scrollTop: number}> {
+        public state = {
+          testScrollTop: 0
+        };
+
         constructor(props, context) {
           super(props, context);
-
-          this.state = {
-            testScrollTop: 0
-          };
         }
 
-        componentWillReceiveProps(nextProps) {
+        public componentWillReceiveProps(nextProps) {
           if (nextProps.scrollTop !== 0) {
             this.setState({ testScrollTop: nextProps.scrollTop });
           }
         }
 
-        componentDidUpdate(prevProps, prevState) {
+        public componentDidUpdate(prevProps, prevState) {
           expect(prevState.testScrollTop).toBe(0);
           expect(this.state.testScrollTop).toBe(200);
         }
 
-        render() {
+        public render() {
           return <div>aa</div>;
         }
       }
 
-      class Example extends Component {
+      class Example extends Component<{name: string}> {
+        public state = {
+          exampleScrollTop: 0
+        };
+
         constructor(props, context) {
           super(props, context);
-          this.state = {
-            exampleScrollTop: 0
-          };
         }
 
-        render() {
+        public render() {
           return <Test scrollTop={this.state.exampleScrollTop} />;
         }
 
-        componentDidMount() {
+        public componentDidMount() {
           setTimeout(() => {
             this.setState({ exampleScrollTop: 200 });
 
@@ -127,7 +128,7 @@ describe('state', () => {
         }
       }
 
-      render(<Example name="World" />, container);
+      render(<Example name="World"/>, container);
     });
   });
 });

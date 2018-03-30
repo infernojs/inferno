@@ -153,7 +153,7 @@ function normalizeGenericProps(props) {
   }
 }
 
-function normalizeFormProps(name: string, props: Props | any) {
+function normalizeFormProps<P>(name: string, props: Props<P> | any) {
   if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
     const type = props.type;
     let eventName;
