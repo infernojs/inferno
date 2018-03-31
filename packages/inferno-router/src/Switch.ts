@@ -4,15 +4,10 @@ import { Children, invariant, isValidElement, warning } from './utils';
 import { combineFrom } from 'inferno-shared';
 import { IRouteProps } from './Route';
 
-export interface ISwitchProps extends IRouteProps {
-  router: any;
-  // children: Array<Component<any, any>>;
-}
-
 /**
  * The public API for rendering the first <Route> that matches.
  */
-export class Switch extends Component<ISwitchProps, any> {
+export class Switch extends Component<IRouteProps, any> {
   public componentWillMount() {
     invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
   }
