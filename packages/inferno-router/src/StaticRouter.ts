@@ -72,7 +72,7 @@ export class StaticRouter extends Component<IStaticRouterProps, any> {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       ...props,
       history
-    });
+    } as any); // TODO: check these props types!
   }
 }
 

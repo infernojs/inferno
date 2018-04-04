@@ -1,5 +1,5 @@
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { Props, VNode, InfernoChildren } from './implementation';
+import { Props, VNode, InfernoChildren, Refs } from './implementation';
 import { combineFrom, isFunction, isNull, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, LIFECYCLE } from '../DOM/utils/common';
@@ -133,7 +133,7 @@ export class Component<P, S> {
   // Public
   public static defaultProps: {} | null = null;
   public state: S | null = null;
-  public props: P & Props;
+  public props: Props<P, this> & P;
   public context: any;
 
   // Internal properties
@@ -148,7 +148,7 @@ export class Component<P, S> {
   public $UPD: boolean = true; // UPDATING
   public $QU: Function[] | null = null; // QUEUE
 
-  constructor(props: P, context?: any) {
+  constructor(props?: P, context?: any) {
     /** @type {object} */
     this.props = props || (EMPTY_OBJ as P);
 
@@ -194,6 +194,7 @@ export interface StatelessComponent<P = {}> {
 
   defaultProps?: Partial<P>;
   displayName?: string;
+  defaultHooks?: Refs<P>;
 }
 
 export interface ComponentClass<P = {}> {

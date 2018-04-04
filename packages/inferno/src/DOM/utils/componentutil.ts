@@ -3,7 +3,7 @@ import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isS
 import { EMPTY_OBJ } from './common';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object) {
+export function createClassComponentInstance<P>(vNode: VNode, Component, props: Props<P>, context: Object) {
   const instance = new Component(props, context);
   vNode.children = instance;
   instance.$V = vNode;

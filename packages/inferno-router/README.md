@@ -86,7 +86,7 @@ const MyWebsite = () => (
 );
 
 // Render HTML on the browser
-render(MyWebsite, document.getElementById('root'));
+render(<MyWebsite />, document.getElementById('root'));
 ```
 
 

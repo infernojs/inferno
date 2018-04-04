@@ -1,8 +1,8 @@
-import { Component, render } from 'inferno';
+import {Component, render, SFC} from 'inferno';
 import sinon, { assert } from 'sinon';
 
 describe('All single patch variations', () => {
-  let templateRefSpy = sinon.spy();
+  const templateRefSpy = sinon.spy();
   let container;
   let mountSpy;
   let updateSpy;
@@ -32,32 +32,35 @@ describe('All single patch variations', () => {
     expect(container.innerHTML).toBe('');
   }
 
+  /* tslint:disable:no-empty */
   class ComA extends Component {
-    componentDidMount() {}
+    public componentDidMount() {}
 
-    componentWillMount() {}
+    public componentWillMount() {}
 
-    componentWillReceiveProps(nextProps, nextContext) {}
+    public componentWillReceiveProps(nextProps, nextContext) {}
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    public shouldComponentUpdate(nextProps, nextState, nextContext) {
       return true;
     }
 
-    componentWillUpdate(nextProps, nextState, nextContext) {}
+    public componentWillUpdate(nextProps, nextState, nextContext) {}
 
-    componentDidUpdate(prevProps, prevState, prevContext) {}
+    public componentDidUpdate(prevProps, prevState, prevContext) {}
 
-    componentWillUnmount() {}
+    public componentWillUnmount() {}
 
-    render({ children }) {
+    public render({ children }) {
       return children;
     }
   }
+  /* tslint:enable */
 
   mountSpy = sinon.spy(ComA.prototype, 'componentWillMount');
   updateSpy = sinon.spy(ComA.prototype, 'componentWillUpdate');
   unmountSpy = sinon.spy(ComA.prototype, 'componentWillUnmount');
 
+  // @ts-ignore
   function ComB({ children }) {
     return children;
   }
@@ -218,9 +221,10 @@ describe('All single patch variations', () => {
 
     it('vNode (Com different)', () => {
       class ComC extends Component {
+        // tslint:disable-next-line
         componentWillMount() {}
 
-        render({ children }) {
+        public render({ children }) {
           return children;
         }
       }
@@ -285,9 +289,9 @@ describe('All single patch variations', () => {
     it('Should never update if defaultProps refs SCU returns false', () => {
       let counter = 0;
 
-      function Static() {
+      const Static: SFC = function() {
         return <div>{counter}</div>;
-      }
+      };
 
       Static.defaultHooks = {
         onComponentShouldUpdate() {
@@ -319,9 +323,9 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      function Static() {
+      const Static: SFC = function() {
         return <div>{counter}</div>;
-      }
+      };
 
       Static.defaultHooks = {
         onComponentShouldUpdate() {
@@ -359,9 +363,9 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      function Static() {
+      const Static: SFC = function() {
         return <div>{counter}</div>;
-      }
+      };
 
       Static.defaultHooks = {
         onComponentShouldUpdate() {

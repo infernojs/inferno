@@ -26,17 +26,17 @@ export interface VNode<P = {}> {
   isValidated?: boolean;
   key: null | number | string;
   parentVNode: VNode | null;
-  props: Props & P | null;
+  props: Props<P> & P | null;
   ref: Ref | Refs<P> | null;
   type: any;
 }
 export type InfernoInput = VNode | null | string | number;
 export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'];
-export type InfernoChildren = string | number | boolean | undefined | VNode | Array<string | number | VNode> | null;
+export type InfernoChildren = string | number | boolean | undefined | VNode | Array<string | number | VNode | null | undefined> | null;
 
-export interface Props<T = Element> {
+export interface Props<P, T = Element> extends Refs<P> {
   children?: InfernoChildren;
-  ref?: Ref<T> | null;
+  ref?: Ref<T> | Refs<P> | null;
   key?: any;
   className?: string;
 }
@@ -87,7 +87,7 @@ export function createVNode<P>(
   className?: string | null,
   children?: InfernoChildren,
   childFlags?: ChildFlags,
-  props?: Props & P | null,
+  props?: Props<P> & P | null,
   key?: string | number | null,
   ref?: Ref | Refs<P> | null
 ): VNode {
@@ -116,7 +116,7 @@ export function createVNode<P>(
   return vNode;
 }
 
-export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props & P | null, key?: null | string | number, ref?: Ref | Refs<P> | null) {
+export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props<P> & P | null, key?: null | string | number, ref?: Ref | Refs<P> | null) {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.HtmlElement) {
       throwError('Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.');
