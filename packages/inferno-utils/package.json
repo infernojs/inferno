@@ -1,6 +1,6 @@
 {
   "name": "inferno-utils",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Meta test utilities which are not for userland",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
