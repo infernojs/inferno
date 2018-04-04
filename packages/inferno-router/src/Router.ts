@@ -1,4 +1,5 @@
 import { Component, InfernoChildren } from 'inferno';
+import { cloneVNode } from 'inferno-clone-vnode';
 import { Children, invariant, warning } from './utils';
 import * as H from 'history';
 
@@ -66,6 +67,6 @@ export class Router extends Component<IRouterProps, any> {
   }
 
   public render(props): any {
-    return props.children;
+    return props.children ? cloneVNode(props.children) : null;
   }
 }
