@@ -257,6 +257,9 @@ const reactiveMixin = {
 /**
  * Observer function / decorator
  */
+export function observer(stores: string[]): <T>(clazz: T) => void;
+export function observer<T>(stores: string[], clazz: T): T;
+export function observer<T>(target: T): T;
 export function observer(arg1, arg2?) {
   if (typeof arg1 === 'string') {
     throw new Error('Store names should be provided as array');
@@ -320,7 +323,7 @@ function mixinLifecycleEvents(target) {
 // TODO: support injection somehow as well?
 export const Observer = observer(({ children }) => children());
 
-Observer.displayName = 'Observer';
+(Observer as any).displayName = 'Observer';
 
 const proxiedInjectorProps = {
   isMobxInjector: {
@@ -413,6 +416,8 @@ function grabStoresByName(storeNames: string[]) {
  * storesToProps(mobxStores, props, context) => newProps
  */
 // TODO: Type
+export function inject(...storeNames: string[]): <T>(target: T) => T;
+export function inject(fn: Function): <T>(target: T) => T;
 export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
   let grabStoresFn;
   if (typeof arguments[0] === 'function') {
