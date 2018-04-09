@@ -35,7 +35,7 @@ function getTagName(input) {
 }
 
 function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
-  const foundKeys: any[] = [];
+  const foundKeys: any = {};
 
   for (let i = 0, len = vNodeTree.length; i < len; i++) {
     const childNode = vNodeTree[i];
@@ -47,7 +47,7 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     if (isInvalid(childNode)) {
       if (forceKeyed) {
         return 'Encountered invalid node when preparing to keyed algorithm. Location: \n' + getTagName(childNode);
-      } else if (foundKeys.length !== 0) {
+      } else if (Object.keys(foundKeys).length !== 0) {
         return 'Encountered invalid node with mixed keys. Location: \n' + getTagName(childNode);
       }
       continue;
@@ -56,7 +56,8 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
       childNode.isValidated = true;
     }
 
-    const key = childNode.key as null | string | number | undefined;
+    // Key can be undefined, null too. But typescript complains for no real reason
+    const key: string | number = childNode.key as string | number;
 
     if (!isNullOrUndef(key) && !isStringOrNumber(key)) {
       return 'Encountered child vNode where key property is not string or number. Location: \n' + getTagName(childNode);
@@ -83,15 +84,15 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
         getTagName(childNode)
       );
     } else if (!forceKeyed && isNullOrUndef(key)) {
-      if (foundKeys.length !== 0) {
+      if (Object.keys(foundKeys).length !== 0) {
         return 'Encountered children with key missing. Location: \n' + getTagName(childNode);
       }
       continue;
     }
-    if (foundKeys.indexOf(key) > -1) {
+    if (foundKeys[key]) {
       return 'Encountered two children with same key: {' + key + '}. Location: \n' + getTagName(childNode);
     }
-    foundKeys.push(key);
+    foundKeys[key] = true;
   }
 }
 

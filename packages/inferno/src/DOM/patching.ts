@@ -377,9 +377,10 @@ function patchNonKeyedChildren(
 ) {
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
   let i = 0;
+  let nextChild;
 
   for (; i < commonLength; i++) {
-    let nextChild = nextChildren[i];
+    nextChild = nextChildren[i];
 
     if (nextChild.dom) {
       nextChild = nextChildren[i] = directClone(nextChild);
@@ -388,7 +389,7 @@ function patchNonKeyedChildren(
   }
   if (lastChildrenLength < nextChildrenLength) {
     for (i = commonLength; i < nextChildrenLength; i++) {
-      let nextChild = nextChildren[i];
+      nextChild = nextChildren[i];
 
       if (nextChild.dom) {
         nextChild = nextChildren[i] = directClone(nextChild);
