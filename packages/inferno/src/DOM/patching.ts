@@ -472,9 +472,9 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
   } else {
     const aLeft: number = aEnd - aStart + 1;
     const bLeft: number = bEnd - bStart + 1;
-    const sources = new Array(bLeft);
+    const sources: number[] = [];
     for (i = 0; i < bLeft; i++) {
-      sources[i] = -1;
+      sources.push(0);
     }
     // Keep track if its possible to remove whole DOM using textContent = '';
     let canRemoveWholeContent: boolean = aLeft === aLength;
@@ -490,7 +490,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
           for (j = bStart; j <= bEnd; j++) {
             bNode = b[j];
             if (aNode.key === bNode.key) {
-              sources[j - bStart] = i;
+              sources[j - bStart] = i + 1;
               if (canRemoveWholeContent) {
                 canRemoveWholeContent = false;
                 while (i > aStart) {
@@ -540,7 +540,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
               }
             }
             bNode = b[j];
-            sources[j - bStart] = i;
+            sources[j - bStart] = i + 1;
             if (pos > j) {
               moved = true;
             } else {
@@ -568,7 +568,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
         const seq = lis_algorithm(sources);
         j = seq.length - 1;
         for (i = bLeft - 1; i >= 0; i--) {
-          if (sources[i] === -1) {
+          if (sources[i] === 0) {
             pos = i + bStart;
             bNode = b[pos];
             if (bNode.dom) {
@@ -589,7 +589,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
         // when patched count doesn't match b length we need to insert those new ones
         // loop backwards so we can use insertBefore
         for (i = bLeft - 1; i >= 0; i--) {
-          if (sources[i] === -1) {
+          if (sources[i] === 0) {
             pos = i + bStart;
             bNode = b[pos];
             if (bNode.dom) {
@@ -618,7 +618,7 @@ function lis_algorithm(arr: number[]): number[] {
   for (i = 0; i < len; i++) {
     const arrI = arr[i];
 
-    if (arrI !== -1) {
+    if (arrI !== 0) {
       j = result[result.length - 1];
       if (arr[j] < arrI) {
         p[i] = j;
