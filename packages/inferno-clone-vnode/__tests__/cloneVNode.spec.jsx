@@ -219,6 +219,15 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toEqual('foobar');
   });
 
+  it('Should clone textVnode with new content', () => {
+    const textNode = createTextVNode('foobar');
+    const clone = cloneVNode(textNode, null, 'foo');
+
+    render(clone, container);
+
+    expect(container.innerHTML).toEqual('foo');
+  });
+
   it('Should prefer children in order', () => {
     function Bar({ children }) {
       return <div>{children}</div>;

@@ -88,7 +88,7 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
     }
     newVNode = createVNode(flags, vNodeToClone.type, className, null, ChildFlags.HasInvalidChildren, combineFrom(vNodeToClone.props, props), key, ref);
   } else if (flags & VNodeFlags.Text) {
-    newVNode = createTextVNode(vNodeToClone.children as string);
+    return createTextVNode(props ? props.children : vNodeToClone.children as string);
   }
 
   return normalizeProps(newVNode);
