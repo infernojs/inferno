@@ -70,7 +70,9 @@ function normalizeEventName(name) {
 
 function stopPropagation() {
   this.cancelBubble = true;
-  this.stopImmediatePropagation();
+  if (!this.immediatePropagationStopped) {
+    this.stopImmediatePropagation();
+  }
 }
 
 function attachEventToDocument(name: string) {
