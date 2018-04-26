@@ -58,7 +58,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
   if (lastVNode.type !== nextTag) {
     replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
   } else {
-    const dom = lastVNode.dom as Element;
+    const dom = (lastVNode.dom || parentDom) as Element;
     const nextFlags = nextVNode.flags;
     const lastProps = lastVNode.props;
     const nextProps = nextVNode.props;
