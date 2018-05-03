@@ -1,6 +1,6 @@
 import { isNullOrUndef, toArray } from 'inferno-shared';
 import { Component } from 'inferno';
-import { Store } from 'redux';
+import { Store, AnyAction } from 'redux';
 import { warning } from '../utils/warning';
 
 let didWarnAboutReceivingStore = false;
@@ -21,7 +21,7 @@ export interface Props {
 
 export class Provider extends Component<Props, any> {
   public static displayName = 'Provider';
-  private store: Store<any>;
+  private readonly store: Store<any, AnyAction|any>;
 
   constructor(props: Props, context: any) {
     super(props, context);
