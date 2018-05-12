@@ -1,4 +1,4 @@
-import { combineFrom, isDefined, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
@@ -313,7 +313,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Function[], 
       instance.$V = nextVNode;
       instance.$UPD = false;
     } else {
-      let shouldUpdate = true;
+      let shouldUpdate: any = true;
       const lastProps = lastVNode.props;
       const nextHooks = nextVNode.ref;
       const nextHooksDefined = !isNullOrUndef(nextHooks);
@@ -483,7 +483,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
     let patched: number = 0;
 
     // When sizes are small, just loop them through
-    if (bLeft <= 4 || aLeft * bLeft <= 16) {
+    if (bLength < 4 || (aLeft | bLeft) < 32) {
       for (i = aStart; i <= aEnd; i++) {
         aNode = a[i];
         if (patched < bLeft) {
@@ -520,7 +520,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
     } else {
       const keyIndex: Record<string, number> = {};
 
-      // Map keys by their index in array
+      // Map keys by their index
       for (i = bStart; i <= bEnd; i++) {
         keyIndex[b[i].key as string | number] = i;
       }
@@ -532,7 +532,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
         if (patched < bLeft) {
           j = keyIndex[aNode.key as string | number];
 
-          if (isDefined(j)) {
+          if (j !== void 0) {
             if (canRemoveWholeContent) {
               canRemoveWholeContent = false;
               while (i > aStart) {
@@ -604,7 +604,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Function[], 
   }
 }
 
-// // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(arr: number[]): number[] {
   const p = arr.slice();
   const result: number[] = [0];

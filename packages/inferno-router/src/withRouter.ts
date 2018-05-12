@@ -15,7 +15,7 @@ export function withRouter(Com) {
     const { wrappedComponentRef, ...remainingProps } = props;
 
     return createComponentVNode<any>(VNodeFlags.ComponentClass, Route, {
-      render(routeComponentProps) {
+      render(routeComponentProps: IWithRouterProps) {
         return createComponentVNode(
           VNodeFlags.ComponentUnknown,
           Com,

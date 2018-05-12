@@ -2,7 +2,14 @@ import { Component } from 'inferno';
 import { createLocation, locationsAreEqual } from 'history';
 import { invariant } from './utils';
 
-export class Redirect extends Component<any, any> {
+export interface RedirectProps {
+  from?: string,
+  to: string,
+  exact?: any,
+  push?: boolean
+}
+
+export class Redirect extends Component<RedirectProps, any> {
   public isStatic() {
     return this.context.router && this.context.router.staticContext;
   }

@@ -27,7 +27,7 @@ export interface IRouteProps {
   strict?: boolean;
   sensitive?: boolean;
   component?: ComponentType<RouteComponentProps<any>> | ComponentType<any>;
-  render?: ((props: RouteComponentProps<any>) => VNode);
+  render?: ((props: RouteComponentProps<any>, context: any) => VNode);
   location?: H.Location;
   children?: ((props: RouteComponentProps<any>) => VNode) | InfernoChildren;
 }
@@ -99,7 +99,7 @@ class Route extends Component<IRouteProps, any> {
     }
 
     if (render) {
-      return match ? render(props) : null;
+      return match ? render(props, this.context) : null;
     }
 
     if (typeof children === 'function') {

@@ -1,5 +1,5 @@
 import { createComponentVNode, createTextVNode, createVNode, directClone, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
-import { combineFrom, isArray, isDefined, isInvalid, isStringOrNumber } from 'inferno-shared';
+import { combineFrom, isArray, isInvalid, isStringOrNumber } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 /*
@@ -40,14 +40,14 @@ export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
   let key = vNodeToClone.key;
   let ref = vNodeToClone.ref;
   if (props) {
-    if (isDefined(props.className)) {
+    if (props.className !== void 0) {
       className = props.className as string;
     }
-    if (isDefined(props.ref)) {
+    if (props.ref !== void 0) {
       ref = props.ref;
     }
 
-    if (isDefined(props.key)) {
+    if (props.key !== void 0) {
       key = props.key;
     }
   }

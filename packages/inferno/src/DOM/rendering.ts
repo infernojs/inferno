@@ -23,7 +23,7 @@ export function render(
   input: InfernoInput,
   parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node | null,
   callback?: Function
-): InfernoChildren {
+): InfernoChildren|void {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDom) {
@@ -81,7 +81,6 @@ export function render(
   if (rootInput && rootInput.flags & VNodeFlags.Component) {
     return rootInput.children;
   }
-  return;
 }
 
 export function createRenderer(parentDom?) {

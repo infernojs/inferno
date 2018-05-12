@@ -1,5 +1,5 @@
 import { isNullOrUndef, toArray } from 'inferno-shared';
-import { Component } from 'inferno';
+import { Component, VNode } from 'inferno';
 import { Store, AnyAction } from 'redux';
 import { warning } from '../utils/warning';
 
@@ -16,7 +16,7 @@ const warnAboutReceivingStore = () => {
 
 export interface Props {
   store: Store<any>;
-  children: any;
+  children?: VNode|null|undefined;
 }
 
 export class Provider extends Component<Props, any> {
@@ -33,12 +33,14 @@ export class Provider extends Component<Props, any> {
   }
 
   public render() {
+    const children = this.props.children;
+
     // TODO: Maybe not allocate an array here for no reason?
-    if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
+    if (isNullOrUndef(children) || toArray(children).length !== 1) {
       throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
     }
 
-    return this.props.children;
+    return children;
   }
 }
 

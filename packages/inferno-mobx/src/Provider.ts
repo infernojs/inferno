@@ -7,8 +7,8 @@ const specialKeys = {
   ref: true
 };
 
-export class Provider<P, S> extends Component<P, S> {
-  public render(props) {
+export class Provider extends Component<any, any> {
+  public render(props: any, state: any, context: any) {
     return props.children;
   }
 

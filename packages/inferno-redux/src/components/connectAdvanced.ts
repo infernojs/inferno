@@ -153,13 +153,13 @@ export function connectAdvanced(
       wrappedComponentName
     };
 
-    class Connect extends Component<any, any> {
+    class Connect<P, S> extends Component<P, S> {
       public static displayName = displayName;
       public static WrappedComponent = WrappedComponent;
 
       public version: number;
       private renderCount: number;
-      private propsMode: boolean;
+      private readonly propsMode: boolean;
       private store: Store<any> | null;
       private notifyNestedSubs: (() => void) | null;
       private subscription: Subscription | null;
@@ -171,11 +171,11 @@ export function connectAdvanced(
         run: (props: any) => void;
       };
 
-      constructor(props: any, context: any) {
+      constructor(props: P, context?: any) {
         super(props, context);
 
         this.version = version;
-        this.state = {};
+        this.state = {} as S;
         this.renderCount = 0;
         this.store = this.props[storeKey] || this.context[storeKey];
         this.propsMode = Boolean(props[storeKey]);

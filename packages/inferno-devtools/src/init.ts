@@ -11,7 +11,7 @@ function wrapFunctionalComponent(vNode) {
   const wrappers = functionalComponentWrappers;
 
   if (!wrappers.has(originalRender)) {
-    const wrapper = class extends Component<any, any> {
+    const wrapper = class Wrapper<P, S> extends Component<P, S> {
       public render(props, state, context) {
         return originalRender(props, context);
       }

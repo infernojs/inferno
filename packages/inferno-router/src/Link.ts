@@ -5,7 +5,7 @@ import { invariant } from './utils';
 const isModifiedEvent = (event: MouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
 export interface ILinkProps {
-  children: any;
+  children?: any;
   onClick?: any;
   target?: string;
   className?: string;

@@ -2,7 +2,6 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   combineFrom,
   isArray,
-  isDefined,
   isFunction,
   isInvalid,
   isNull,
@@ -124,7 +123,7 @@ export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props<P
   }
 
   if ((flags & VNodeFlags.ComponentUnknown) > 0) {
-    flags = isDefined(type.prototype) && isFunction(type.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+    flags = type.prototype && isFunction(type.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
   }
 
   // set default props
@@ -179,19 +178,19 @@ export function normalizeProps(vNode) {
     const flags = vNode.flags;
 
     if (flags & VNodeFlags.Element) {
-      if (isDefined(props.children) && isNullOrUndef(vNode.children)) {
+      if (props.children !== void 0 && isNullOrUndef(vNode.children)) {
         normalizeChildren(vNode, props.children);
       }
-      if (isDefined(props.className)) {
+      if (props.className !== void 0) {
         vNode.className = props.className || null;
         props.className = undefined;
       }
     }
-    if (isDefined(props.key)) {
+    if (props.key !== void 0) {
       vNode.key = props.key;
       props.key = undefined;
     }
-    if (isDefined(props.ref)) {
+    if (props.ref !== void 0) {
       if (flags & VNodeFlags.ComponentFunction) {
         vNode.ref = combineFrom(vNode.ref, props.ref);
       } else {

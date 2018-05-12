@@ -135,6 +135,7 @@ export class Component<P, S> {
   public state: S | null = null;
   public props: Props<P, this> & P;
   public context: any;
+  public refs?: any;
 
   // Internal properties
   public $BR: boolean = false; // BLOCK RENDER
@@ -180,9 +181,7 @@ export class Component<P, S> {
   }
 
   // tslint:disable-next-line:no-empty
-  public render(nextProps?: P, nextState?, nextContext?): InfernoChildren {
-    return undefined;
-  }
+  public render(nextProps: P, nextState, nextContext): InfernoChildren|void {}
 }
 
 export type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
@@ -202,6 +201,7 @@ export interface ComponentClass<P = {}> {
 
   defaultProps?: Partial<P>;
   displayName?: string;
+  refs?: any
 }
 
 export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }['bivarianceHack'];

@@ -1,5 +1,5 @@
 import { Component } from 'inferno';
-import { isDefined, isFunction, isObject, throwError } from 'inferno-shared';
+import { isFunction, isObject, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
   statics?: {
@@ -25,7 +25,7 @@ export interface ComponentClass<P, S> extends Mixin<P, S> {
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {
   [propertyName: string]: any;
-  render(props?, context?): any;
+  render(props: P, context): any;
 }
 
 export interface ClassicComponent<P, S> extends Component<P, S> {
@@ -99,7 +99,7 @@ function multihook(hooks: Function[], mergeFn?: Function): any {
 
       if (mergeFn) {
         ret = mergeFn(ret, r);
-      } else if (isDefined(r)) {
+      } else if (r) {
         ret = r;
       }
     }
@@ -109,7 +109,7 @@ function multihook(hooks: Function[], mergeFn?: Function): any {
 }
 
 function mergeNoDupes(previous: any, current: any) {
-  if (isDefined(current)) {
+  if (current) {
     if (!isObject(current)) {
       throwError('Expected Mixin to return value to be an object or null.');
     }
@@ -132,7 +132,7 @@ function mergeNoDupes(previous: any, current: any) {
 }
 
 function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
-  const hooks = isDefined(inst[key]) ? mixin.concat(inst[key]) : mixin;
+  const hooks = inst[key] !== void 0 ? mixin.concat(inst[key]) : mixin;
 
   if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
     inst[key] = multihook(hooks, mergeNoDupes);

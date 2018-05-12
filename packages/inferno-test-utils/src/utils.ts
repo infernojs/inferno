@@ -30,7 +30,7 @@ export function isDOMVNode(inst: VNode): boolean {
   return !isComponentVNode(inst) && !isTextVNode(inst);
 }
 
-export class Wrapper extends Component<any, any> {
+export class Wrapper<P, S> extends Component<P, S> {
   public render() {
     return this.props.children;
   }
