@@ -22,7 +22,7 @@ function createSnapshotObject(object: object) {
   return object;
 }
 
-export function vNodeToSnapshot(node: VNode) {
+export function vNodeToSnapshot(node: VNode|Element) {
   let object;
   const children: any[] = [];
   if (isDOMVNode(node)) {
@@ -52,7 +52,7 @@ export function vNodeToSnapshot(node: VNode) {
   } else if (isString(node.children)) {
     children.push(node.children);
   } else if (isObject(node.children) && !isNull(node.children)) {
-    const asJSON = vNodeToSnapshot(node.children);
+    const asJSON = vNodeToSnapshot(node.children as any);
     if (asJSON) {
       children.push(asJSON);
     }
