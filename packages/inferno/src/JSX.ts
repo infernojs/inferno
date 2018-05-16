@@ -1959,7 +1959,7 @@ declare global {
       lang?: string;
       slot?: string;
       spellCheck?: boolean;
-      style?: CSSProperties;
+      style?: CSSProperties | string;
       styleName?: string; // CSS Modules support
       tabIndex?: number;
       title?: string;
