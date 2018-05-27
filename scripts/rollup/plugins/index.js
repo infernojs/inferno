@@ -3,7 +3,7 @@ const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replacePlugin = require('rollup-plugin-replace');
 const tsPlugin = require('rollup-plugin-typescript2');
-const uglify = require('rollup-plugin-uglify');
+const uglify = require('rollup-plugin-uglify').uglify;
 const aliasPlugin = require('./alias');
 
 module.exports = function(version, options) {
