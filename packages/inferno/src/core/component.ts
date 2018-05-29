@@ -130,7 +130,7 @@ export interface ComponentLifecycle<P, S> {
 export interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {}
 export class Component<P, S> {
   // Public
-  public static defaultProps: {} | null = null;
+  public static defaultProps?: Partial<any>;
   public state: S | null = null;
   public props: Props<P, this> & P;
   public context: any;
