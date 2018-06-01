@@ -33,7 +33,7 @@ The performance is achieved through multiple optimizations, for example:
 - Unlike React and Preact, Inferno has lifecycle events on functional components
 - Unlike Preact and other React-like libraries, Inferno has controlled components for input/select/textarea elements
 - Components can be rendered outside their current html hierarchy using `createPortal` - API
-- Support for [older browsers](https://github.com/infernojs/inferno#browser-supports) without any polyfills
+- Support for [older browsers](https://github.com/infernojs/inferno#browser-support) without any polyfills
 - defaultHooks for Functional components, this way re-defining lifecycle events per usage can be avoided
 
 ## Browser support
