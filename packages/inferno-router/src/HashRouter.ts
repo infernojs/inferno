@@ -8,7 +8,7 @@ export interface IHashRouterProps {
   basename?: string;
   getUserConfirmation?: () => {};
   hashType?: string;
-  children: Array<Component<any, any>>;
+  children: Array<Component<any, any>> | JSX.Element;
 }
 
 export class HashRouter extends Component<IHashRouterProps, any> {
