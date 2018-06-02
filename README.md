@@ -103,7 +103,7 @@ render(
 
 Because performance is an important aspect of this library, we want to show you how to optimize your application even further.
 In the example below we optimize diffing process by using JSX **$HasVNodeChildren** to predefine children shape compile time.
-Then we create text vNode using `createTextVNode`.
+Then we create text vNode using `createTextVNode`. All child flags are documented [here](https://infernojs.org/docs/guides/optimizations). 
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -130,6 +130,32 @@ render(
   document.getElementById("app")
 );
 ```
+
+### Tear down
+
+To tear down inferno application you need to render null on root element. 
+Rendering `null` will trigger unmount lifecycle hooks for whole vDOM tree and remove global event listeners.
+It is important to unmount unused vNode trees to free browser memory. 
+
+```jsx
+import { createTextVNode, render, Component } from 'inferno';
+
+const rootElement = document.getElementById("app");
+
+// Start the application
+render(
+  <ExampleComponent/>,
+  rootElement
+);
+
+// Tear down
+render(
+  null,
+  rootElement
+);
+
+```
+
 
 ### More Examples
 
