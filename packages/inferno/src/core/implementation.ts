@@ -220,13 +220,11 @@ export function directClone(vNodeToClone: VNode): VNode {
     }
     newVNode = createComponentVNode(flags, vNodeToClone.type, props, vNodeToClone.key, vNodeToClone.ref);
   } else if (flags & VNodeFlags.Element) {
-    const children = vNodeToClone.children;
-
     newVNode = createVNode(
       flags,
       vNodeToClone.type,
       vNodeToClone.className,
-      children,
+      vNodeToClone.children,
       vNodeToClone.childFlags,
       vNodeToClone.props,
       vNodeToClone.key,

@@ -58,10 +58,6 @@ export class Router extends Component<IRouterProps, any> {
     });
   }
 
-  public componentWillReceiveProps(nextProps) {
-    warning(this.props.history === nextProps.history, 'You cannot change <Router history>');
-  }
-
   public componentWillUnmount() {
     this.unlisten();
   }
@@ -69,4 +65,10 @@ export class Router extends Component<IRouterProps, any> {
   public render(props: IRouterProps, state, context) : VNode|null {
     return props.children ? cloneVNode(props.children) : null;
   }
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  Router.prototype.componentWillReceiveProps = function(nextProps) {
+    warning(this.props.history === nextProps.history, 'You cannot change <Router history>');
+  };
 }

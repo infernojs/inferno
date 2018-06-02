@@ -2,6 +2,7 @@ import { createComponentVNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Route } from './Route';
 import { Link } from './Link';
+import { combineFrom } from "inferno-shared";
 
 /**
  * A <Link> wrapper that knows if it's "active" or not.
@@ -25,9 +26,8 @@ export function NavLink({
     return createComponentVNode(VNodeFlags.ComponentFunction, Link, {
       'aria-current': isActive && ariaCurrent,
       className: isActive ? [className, activeClassName].filter(i => i).join(' ') : className,
-      exact,
       onClick,
-      style: isActive ? { ...style, ...activeStyle } : style,
+      style: isActive ? combineFrom(style, activeStyle) : style,
       to,
       ...rest
     });

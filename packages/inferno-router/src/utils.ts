@@ -10,7 +10,8 @@ export function warning(condition, message) {
 
 export function isValidElement(obj: any): boolean {
   const isNotANullObject = isObject(obj) && isNull(obj) === false;
-  if (isNotANullObject === false) {
+
+  if (!isNotANullObject) {
     return false;
   }
   const flags = obj.flags;

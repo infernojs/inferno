@@ -184,6 +184,7 @@ describe('NavLink', () => {
       );
       const a = node.getElementsByTagName('a')[0];
       expect(a.className).toEqual('active');
+      expect(a.getAttribute('exact')).toBeNull();
     });
 
     it('sets active passed value only for exact matches', () => {
