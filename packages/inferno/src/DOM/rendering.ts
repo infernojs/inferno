@@ -50,7 +50,7 @@ export function render(
         input = directClone(input as VNode);
       }
       if (isNull((parentDom as Node).firstChild)) {
-        mount(input as VNode, parentDom as Element, LIFECYCLE, EMPTY_OBJ, false);
+        mount(input as VNode, parentDom as Element, EMPTY_OBJ, false);
         (parentDom as any).$V = input;
         roots.push(parentDom);
       } else {
@@ -66,7 +66,7 @@ export function render(
       if ((input as VNode).dom) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDom as Element, LIFECYCLE, EMPTY_OBJ, false);
+      patch(rootInput as VNode, input as VNode, parentDom as Element, EMPTY_OBJ, false);
       rootInput = (parentDom as any).$V = input;
     }
   }
