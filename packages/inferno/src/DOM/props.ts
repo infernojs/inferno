@@ -137,9 +137,11 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
     case 'key':
     case 'multiple':
     case 'ref':
-      return;
-    case 'allowfullscreen':
+      break;
     case 'autoFocus':
+        (dom as any).autofocus = !!nextValue;
+      break;
+    case 'allowfullscreen':
     case 'autoplay':
     case 'capture':
     case 'checked':
@@ -158,7 +160,6 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
     case 'scoped':
     case 'seamless':
     case 'selected':
-      prop = prop === 'autoFocus' ? prop.toLowerCase() : prop;
       dom[prop] = !!nextValue;
       break;
     case 'defaultChecked':
@@ -198,7 +199,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       } else if (prop === 'style') {
         patchStyle(lastValue, nextValue, dom);
       } else if (isSVG && namespaces[prop]) {
-        // We optimize for NS being boolean. Its 99.9% time false
+        // We optimize for isSVG being false
         // If we end up in this path we can read property again
         dom.setAttributeNS(namespaces[prop], prop, nextValue);
       } else {
