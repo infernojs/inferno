@@ -1,6 +1,6 @@
 import { isFunction, isNull, isNullOrUndef, isObject } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { options, VNode } from '../core/implementation';
+import { VNode } from '../core/implementation';
 import { handleEvent } from './events/delegation';
 import { EMPTY_OBJ, removeChild } from './utils/common';
 
@@ -63,9 +63,6 @@ export function unmount(vNode) {
     const ref = vNode.ref as any;
 
     if (flags & VNodeFlags.ComponentClass) {
-      if (isFunction(options.beforeUnmount)) {
-        options.beforeUnmount(vNode);
-      }
       if (isFunction(instance.componentWillUnmount)) {
         instance.componentWillUnmount();
       }

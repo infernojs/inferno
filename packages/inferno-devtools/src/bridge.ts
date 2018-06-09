@@ -1,399 +1,354 @@
-import { options } from 'inferno';
-import { combineFrom, isArray, isInvalid, isObject, isStringOrNumber, isUndefined } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {options, VNode} from 'inferno';
+import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import {isInvalid, isNullOrUndef} from "inferno-shared";
 
-function findVNodeFromDom(vNode, dom) {
-  if (!vNode) {
-    const roots = options.roots;
+let updatingDevTool = false;
+let Reconciler;
+let Mount;
 
-    return roots[roots.indexOf(dom)];
-  } else {
-    if (vNode.dom === dom) {
-      return vNode;
-    }
-    const flags = vNode.flags;
-    let children = vNode.children;
-
-    if (flags & VNodeFlags.Component) {
-      children = children.$LI || children;
-    }
-    if (children) {
-      if (isArray(children)) {
-        for (let i = 0, len = children.length; i < len; i++) {
-          const child = children[i];
-
-          if (child) {
-            const result = findVNodeFromDom(child, dom);
-
-            if (result) {
-              return result;
-            }
-          }
-        }
-      } else if (isObject(children)) {
-        const result = findVNodeFromDom(children, dom);
-
-        if (result) {
-          return result;
-        }
-      }
-    }
-  }
-}
-
-const instanceMap = new Map();
-
-function getKeyForVNode(vNode) {
-  const flags = vNode.flags;
-
-  if (flags & VNodeFlags.ComponentClass) {
-    return vNode.children;
-  }
-
-  return vNode.dom;
-}
-
-function getInstanceFromVNode(vNode) {
-  const key = getKeyForVNode(vNode);
-
-  return instanceMap.get(key);
-}
-
-function createInstanceFromVNode(vNode, instance) {
-  const key = getKeyForVNode(vNode);
-
-  instanceMap.set(key, instance);
-}
-
-function deleteInstanceForVNode(vNode) {
-  const key = getKeyForVNode(vNode);
-
-  instanceMap.delete(key);
-}
-
-/**
- * Create a bridge for exposing Inferno's component tree to React DevTools.
- *
- * It creates implementations of the interfaces that ReactDOM passes to
- * devtools to enable it to query the component tree and hook into component
- * updates.
- *
- * See https://github.com/facebook/react/blob/59ff7749eda0cd858d5ee568315bcba1be75a1ca/src/renderers/dom/ReactDOM.js
- * for how ReactDOM exports its internals for use by the devtools and
- * the `attachRenderer()` function in
- * https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/attachRenderer.js
- * for how the devtools consumes the resulting objects.
- */
-export function createDevToolsBridge() {
-  const ComponentTree = {
-    getNodeFromInstance(instance) {
-      return instance.node;
-    },
-    getClosestInstanceFromNode(dom) {
-      const vNode = findVNodeFromDom(null, dom);
-
-      return vNode ? updateReactComponent(vNode, null) : null;
-    }
-  };
-
-  // Map of root ID (the ID is unimportant) to component instance.
-  const roots = {};
-
-  findRoots(roots);
-
-  const Mount = {
-    _instancesByReactRootID: roots,
-    // tslint:disable-next-line:no-empty
-    _renderNewRootComponent(instance?) {}
-  };
-
-  const Reconciler = {
-    // tslint:disable-next-line:no-empty
-    mountComponent(instance?) {},
-    // tslint:disable-next-line:no-empty
-    performUpdateIfNecessary(instance?) {},
-    // tslint:disable-next-line:no-empty
-    receiveComponent(instance?) {},
-    // tslint:disable-next-line:no-empty
-    unmountComponent(instance?) {}
-  };
-
-  const queuedMountComponents = new Map();
-  const queuedReceiveComponents = new Map();
-  const queuedUnmountComponents = new Map();
-
-  const queueUpdate = (updater, map, component) => {
-    if (!map.has(component)) {
-      map.set(component, true);
-      requestAnimationFrame(function() {
-        updater(component);
-        map.delete(component);
-      });
-    }
-  };
-
-  const queueMountComponent = component => queueUpdate(Reconciler.mountComponent, queuedMountComponents, component);
-  const queueReceiveComponent = component => queueUpdate(Reconciler.receiveComponent, queuedReceiveComponents, component);
-  const queueUnmountComponent = component => queueUpdate(Reconciler.unmountComponent, queuedUnmountComponents, component);
-
-  /** Notify devtools that a new component instance has been mounted into the DOM. */
-  const componentAdded = vNode => {
-    const instance = updateReactComponent(vNode, null);
-    if (isRootVNode(vNode)) {
-      instance._rootID = nextRootKey(roots);
-      roots[instance._rootID] = instance;
-      Mount._renderNewRootComponent(instance);
-    }
-    visitNonCompositeChildren(instance, childInst => {
-      if (childInst) {
-        childInst._inDevTools = true;
-        queueMountComponent(childInst);
-      }
-    });
-    queueMountComponent(instance);
-  };
-
-  /** Notify devtools that a component has been updated with new props/state. */
-  const componentUpdated = vNode => {
-    const prevRenderedChildren: any[] = [];
-
-    visitNonCompositeChildren(getInstanceFromVNode(vNode), childInst => {
-      prevRenderedChildren.push(childInst);
-    });
-
-    // Notify devtools about updates to this component and any non-composite
-    // children
-    const instance = updateReactComponent(vNode, null);
-    queueReceiveComponent(instance);
-    visitNonCompositeChildren(instance, childInst => {
-      if (!childInst._inDevTools) {
-        // New DOM child component
-        childInst._inDevTools = true;
-        queueMountComponent(childInst);
-      } else {
-        // Updated DOM child component
-        queueReceiveComponent(childInst);
-      }
-    });
-
-    // For any non-composite children that were removed by the latest render,
-    // remove the corresponding ReactDOMComponent-like instances and notify
-    // the devtools
-    prevRenderedChildren.forEach(childInst => {
-      if (!document.body.contains(childInst.node)) {
-        deleteInstanceForVNode(childInst.vNode);
-        queueUnmountComponent(childInst);
-      }
-    });
-  };
-
-  /** Notify devtools that a component has been unmounted from the DOM. */
-  const componentRemoved = vNode => {
-    const instance = updateReactComponent(vNode, null);
-
-    visitNonCompositeChildren(childInst => {
-      deleteInstanceForVNode(childInst.vNode);
-      queueUnmountComponent(childInst);
-    });
-    queueUnmountComponent(instance);
-    deleteInstanceForVNode(vNode);
-    if (instance._rootID) {
-      delete roots[instance._rootID];
-    }
-  };
-
-  return {
-    ComponentTree,
-    Mount,
-    Reconciler,
-
-    componentAdded,
-    componentRemoved,
-    componentUpdated
-  };
-}
-
-function isRootVNode(vNode) {
-  return Boolean(vNode.dom && vNode.dom.parentNode && options.roots.indexOf(vNode.dom.parentNode) > -1);
-}
-
-/**
- * Update (and create if necessary) the ReactDOMComponent|ReactCompositeComponent-like
- * instance for a given Inferno component instance or DOM Node.
- */
-function updateReactComponent(vNode, parentDom) {
-  if (!vNode) {
-    return null;
-  }
-  const flags = vNode.flags;
-  const oldInstance = getInstanceFromVNode(vNode);
-  let newInstance;
-
-  if (flags & VNodeFlags.Component) {
-    newInstance = createReactCompositeComponent(vNode, isUndefined(oldInstance));
-  } else {
-    newInstance = createReactDOMComponent(vNode, parentDom);
-  }
-
-  if (oldInstance) {
-    for (const key in newInstance) {
-      oldInstance[key] = newInstance[key];
-    }
-
-    return oldInstance;
-  }
-  createInstanceFromVNode(vNode, newInstance);
-  return newInstance;
-}
-
-function isInvalidChild(child) {
-  return isInvalid(child) || child === '';
-}
-
-function normalizeChildren(children, dom) {
-  if (isArray(children)) {
-    return children.filter(child => !isInvalidChild(child)).map(child => updateReactComponent(child, dom));
-  } else {
-    return !(isInvalidChild(children) || children === '') ? [updateReactComponent(children, dom)] : [];
-  }
-}
-
-/**
- * Create a ReactDOMComponent-compatible object for a given DOM node rendered
- * by Inferno.
- *
- * This implements the subset of the ReactDOMComponent interface that
- * React DevTools requires in order to display DOM nodes in the inspector with
- * the correct type and properties.
- */
-function createReactDOMComponent(vNode, parentDom) {
-  const flags = vNode.flags;
-
-  if (flags & VNodeFlags.Void) {
-    return null;
-  }
-  const type = vNode.type;
-  const children = vNode.children === 0 ? vNode.children.toString() : vNode.children;
-  const props = vNode.props;
-  const dom = vNode.dom;
-  const isText = flags & VNodeFlags.Text || isStringOrNumber(vNode);
-
-  return {
-    _currentElement: isText
-      ? children || vNode
-      : {
-          props,
-          type
-        },
-    _inDevTools: false,
-    _renderedChildren: !isText && normalizeChildren(children, dom),
-    _stringText: isText ? (children || vNode).toString() : null,
-    node: dom || parentDom,
-    vNode
-  };
-}
-
-function normalizeKey(key) {
-  if (key && key[0] === '.') {
-    return null;
-  }
-  return undefined;
-}
-
-/**
- * Return a ReactCompositeComponent-compatible object for a given Inferno
- * component instance.
- *
- * This implements the subset of the ReactCompositeComponent interface that
- * the DevTools requires in order to walk the component tree and inspect the
- * component's properties.
- *
- * See https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/getData.js
- */
-function createReactCompositeComponent(vNode, isFirstCreation) {
-  const type = vNode.type;
-  const instance = vNode.children;
-  const lastInput = instance.$LI || instance;
-  const dom = vNode.dom;
-
-  const compositeComponent = {
-    _currentElement: {
-      key: normalizeKey(vNode.key),
-      props: vNode.props,
-      ref: null,
-      type
-    },
-    _instance: instance,
-    _renderedComponent: updateReactComponent(lastInput, dom),
-    getName() {
-      return typeName(type);
-    },
-    node: dom,
-    props: instance && instance.props,
-    setState: instance && instance.setState && instance.setState.bind(instance),
-    state: instance && instance.state,
-    vNode
-  };
-
-  if (isFirstCreation && instance && instance.forceUpdate) {
-    const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
-    instance.forceUpdate = () => {
-      instance.props = vNode.props = combineFrom(
-        // These are the regular Inferno props.
-        instance.props,
-        // This is what gets updated by the React devtools when props are edited.
-        compositeComponent._currentElement.props
-      );
-
-      forceInstanceUpdate();
+function createReactElement(vNode) {
+    return {
+        key: vNode.key,
+        props: vNode.props,
+        ref: vNode.ref,
+        type: vNode.type
     };
-  }
+}
 
-  return compositeComponent;
+function createReactDOMComponent(vNode, oldDevToolInstance?) {
+    const flags = vNode.flags;
+
+    if ((flags & VNodeFlags.Void) > 0) {
+        return null;
+    }
+
+    const devToolChildren = oldDevToolInstance ? oldDevToolInstance._renderedChildren : null;
+    const isTextVNode = (flags & VNodeFlags.Text) > 0;
+    const childFlags = vNode.childFlags;
+    let renderedChildren;
+
+    if (childFlags & ChildFlags.HasInvalidChildren) {
+        renderedChildren = null;
+    } else if (childFlags & ChildFlags.MultipleChildren) {
+        renderedChildren = [];
+
+        for (let i = 0; i < vNode.children.length; i++) {
+            renderedChildren.push(updateReactComponent(vNode.children[i], devToolChildren ? devToolChildren[i] : null))
+        }
+    } else if (childFlags & ChildFlags.HasVNodeChildren) {
+        renderedChildren = [updateReactComponent(vNode.children, devToolChildren ? devToolChildren[0] : devToolChildren)];
+    }
+
+    return {
+        // --- ReactDOMComponent interface
+        _currentElement: isTextVNode ? (vNode.children + '') : {
+            props: vNode.props,
+            type: vNode.type
+        },
+        _inDevTools: false,
+        _renderedChildren: renderedChildren,
+        _stringText: isTextVNode ? vNode.children : null,
+        vNode
+    };
+}
+
+function typeName(element) {
+    if (typeof element.type === 'function') {
+        return element.type.displayName || element.type.name;
+    }
+    return element.type;
+}
+
+function createReactCompositeComponent(vNode, oldDevToolInstance) {
+    const flags = vNode.flags;
+    const _currentElement = createReactElement(vNode);
+    const component = (flags & VNodeFlags.ComponentClass) > 0 ? vNode.children : vNode.type;
+
+    const instance = {
+        // --- ReactDOMComponent properties
+        getName() {
+            return typeName(_currentElement);
+        },
+        _currentElement: createReactElement(vNode),
+        _instance: component,
+        forceUpdate: null,
+        props: component.props,
+        setState: null,
+        state: component.state,
+        vNode
+    };
+
+    if (!oldDevToolInstance) {
+        if (component && component.forceUpdate) {
+            const forceInstanceUpdate = component.forceUpdate.bind(component); // Save off for use below.
+
+            component.forceUpdate = (instance as any).forceUpdate = function (originalCallback) {
+                if (!updatingDevTool) {
+                    updatingDevTool = true;
+                    instance.props = vNode.props = Object.assign(instance.props, instance._currentElement.props);
+                    forceInstanceUpdate(function () {
+                        if (originalCallback) {
+                            originalCallback();
+                        }
+                        checkVNode(component.$V, instance);
+                    });
+                    checkVNode(component.$V, instance);
+                    updatingDevTool = false;
+                    return;
+                }
+                instance.props = vNode.props = Object.assign(instance.props, instance._currentElement.props);
+                forceInstanceUpdate(originalCallback);
+            };
+        }
+        if (component && component.setState) {
+            const setInstanceState = component.setState.bind(component);
+
+            component.setState = (instance as any).setState = function (newState, callback) {
+                if (!updatingDevTool) {
+                    updatingDevTool = true;
+                    setInstanceState(newState, function () {
+                        if (callback) {
+                            callback();
+                        }
+                        checkVNode(component.$V, instance);
+                    });
+                    updatingDevTool = false;
+                    return;
+                }
+                setInstanceState(newState, callback);
+            };
+        }
+    }
+
+    if ((flags & VNodeFlags.Component) > 0) {
+        (instance as any)._renderedComponent = updateReactComponent(
+            (flags & VNodeFlags.ComponentClass) > 0 ? vNode.children.$LI : vNode.children,
+            oldDevToolInstance ? oldDevToolInstance._renderedComponent : null
+        );
+    }
+
+    return instance;
+}
+
+
+function updateReactComponent(vNode, oldDevToolInstance?) {
+    const newInstance = (vNode.flags & (VNodeFlags.Element | VNodeFlags.Text)) > 0 ?
+        createReactDOMComponent(vNode, oldDevToolInstance) :
+        createReactCompositeComponent(vNode, oldDevToolInstance);
+
+    if (oldDevToolInstance) {
+        Object.assign(oldDevToolInstance, newInstance);
+
+        return oldDevToolInstance;
+    }
+
+    return newInstance;
 }
 
 function nextRootKey(roots) {
-  return '.' + Object.keys(roots).length;
+    return '.' + Object.keys(roots).length;
 }
 
-/**
- * Visit all child instances of a ReactCompositeComponent-like object that are
- * not composite components (ie. they represent DOM elements or text)
- */
-function visitNonCompositeChildren(component, visitor?) {
-  if (component._renderedComponent) {
-    if (!component._renderedComponent._component) {
-      visitor(component._renderedComponent);
-      visitNonCompositeChildren(component._renderedComponent, visitor);
-    }
-  } else if (component._renderedChildren) {
-    component._renderedChildren.forEach(child => {
-      if (child) {
-        visitor(child);
-        if (!child._component) {
-          visitNonCompositeChildren(child, visitor);
-        }
-      }
-    });
-  }
-}
-
-/**
- * Return the name of a component created by a `ReactElement`-like object.
- */
-function typeName(type) {
-  if (typeof type === 'function') {
-    return type.displayName || type.name;
-  }
-  return type;
-}
-
-/**
- * Find all root component instances rendered by Inferno in `node`'s children
- * and add them to the `roots` map.
- */
 function findRoots(roots) {
-  options.roots.forEach(root => {
-    roots[nextRootKey(roots)] = updateReactComponent(root.input, null);
-  });
+    const elements = document.body.querySelectorAll('*');
+
+    for (let i = 0; i < elements.length; i++) {
+        const vNode = (elements[i] as any).$V;
+
+        if (vNode && isRootVNode(vNode)) {
+            roots[nextRootKey(roots)] = updateReactComponent(vNode);
+        }
+    }
+}
+
+function mountDevToolComponentTree(component) {
+    if (!component) {
+        return;
+    }
+
+    Reconciler.mountComponent(component);
+
+    if (component._renderedComponent) {
+        mountDevToolComponentTree(component._renderedComponent);
+    } else if (component._renderedChildren) {
+        for (let i = 0; i < component._renderedChildren.length; i++) {
+            mountDevToolComponentTree(component._renderedChildren[i]);
+        }
+    }
+}
+
+function checkChildVNodes(childFlags, children, devToolComponent) {
+    const devToolChildren = devToolComponent._renderedChildren;
+    let i;
+
+    switch (childFlags) {
+        case ChildFlags.HasVNodeChildren:
+            checkVNode(children, devToolChildren[0], devToolComponent);
+
+            if (devToolChildren.length > 1) {
+                for (i = 1; i < devToolChildren.length; i++) {
+                    Reconciler.unmountComponent(devToolChildren[i])
+                }
+            }
+
+            break;
+        case ChildFlags.HasKeyedChildren:
+        case ChildFlags.HasNonKeyedChildren:
+            const vNodeLength = children.length;
+            const devToolLength = devToolChildren.length;
+            const commonLength = vNodeLength > devToolLength ? devToolLength : vNodeLength;
+            i = 0;
+
+            for (; i < commonLength; i++) {
+                checkVNode(children[i], devToolChildren[i], devToolComponent, i);
+            }
+            if (devToolLength < vNodeLength) {
+                const newDevToolChildren = updateReactComponent(children[i]);
+
+                devToolChildren.push(newDevToolChildren);
+
+                mountDevToolComponentTree(newDevToolChildren);
+            } else if (devToolLength > vNodeLength) {
+                for (i = commonLength; i < devToolLength; i++) {
+                    Reconciler.unmountComponent(devToolChildren.pop());
+                }
+            }
+            break;
+        case ChildFlags.HasInvalidChildren:
+            if (devToolChildren) {
+                Reconciler.unmountComponent(devToolChildren);
+            }
+            break;
+    }
+}
+
+function isRootVNode(vNode: VNode): boolean {
+    if (!vNode.dom) {
+        return false;
+    }
+    const parentNode = vNode.dom.parentNode as any;
+
+    if (!parentNode) {
+        return false;
+    }
+
+    return Boolean(parentNode && parentNode.$V === vNode);
+}
+
+function checkVNode(vNode, devToolNode, devToolParentNode?, index?: number) {
+    if (!devToolNode) {
+        return updateReactComponent(vNode);
+    }
+    const vNodeDevTool = devToolNode.vNode;
+
+    if (vNode.type === vNodeDevTool.type &&
+        vNode.key === vNodeDevTool.key) {
+
+        if ((vNode.flags & 4) > 0) {
+            checkVNode(vNode.children.$LI, devToolNode._renderedComponent, devToolNode);
+        } else if ((vNode.flags & 8) > 0) {
+            checkVNode(vNode.children, devToolNode._renderedComponent, devToolNode);
+        } else {
+            checkChildVNodes(vNode.childFlags, vNode.children, devToolNode);
+        }
+
+        Reconciler.receiveComponent(updateReactComponent(vNode, devToolNode));
+    }
+    else {
+        Reconciler.unmountComponent(devToolNode);
+
+        const newDevToolComponent = updateReactComponent(vNode);
+
+        // Is component ?
+        if (devToolParentNode) {
+            if (devToolParentNode._renderedComponent) {
+                devToolParentNode._renderedComponent = newDevToolComponent;
+            } else if (!isNullOrUndef(index)) {
+                devToolParentNode._renderedChildren[index] = newDevToolComponent;
+            } else {
+                devToolParentNode._renderedChildren = [newDevToolComponent];
+            }
+        }
+
+        mountDevToolComponentTree(newDevToolComponent);
+    }
+}
+
+export function createDevToolsBridge() {
+    const ComponentTree = {
+        getNodeFromInstance(instance) {
+            return instance.vNode.dom;
+        },
+        getClosestInstanceFromNode(vNode) {
+            while (vNode && !vNode.$V) {
+                vNode = vNode.parentNode;
+            }
+            return vNode ? updateReactComponent(vNode.$V) : null;
+        }
+    };
+
+    // Map of root ID (the ID is unimportant) to component instance.
+    const roots = Object.create(null);
+
+    findRoots(roots);
+
+    // ReactMount-like object
+    //
+    // Used by devtools to discover the list of root component instances and get
+    // notified when new root components are rendered.
+    Mount = {
+        _instancesByReactRootID: roots,
+        _renderNewRootComponent(instance) {
+            return instance;
+        }
+    };
+
+    // ReactReconciler-like object
+    Reconciler = {
+        // tslint:disable-next-line:no-empty
+        mountComponent(instance) {},
+        // tslint:disable-next-line:no-empty
+        performUpdateIfNecessary(instance) {},
+        // tslint:disable-next-line:no-empty
+        receiveComponent(instance) {},
+        // tslint:disable-next-line:no-empty
+        unmountComponent(instance) {}
+    };
+
+    const oldRenderComplete = options.renderComplete;
+
+    options.renderComplete = function (rootInput) {
+        if (!isInvalid(rootInput)) {
+            const instance = updateReactComponent(rootInput);
+
+            if (isRootVNode(rootInput)) {
+                instance._rootNodeID = nextRootKey(roots);
+                roots[instance._rootNodeID] = instance;
+                mountDevToolComponentTree(instance);
+                Mount._renderNewRootComponent(instance);
+            } else if (rootInput.dom === null) {
+                for (const rootKey in roots) {
+                    const rootInstance = roots[rootKey];
+
+                    if (!rootInstance.vNode.dom) {
+                        Reconciler.unmountComponent(rootInstance);
+
+                        delete roots[rootKey];
+
+                        return;
+                    }
+                }
+            }
+            if (oldRenderComplete) {
+                oldRenderComplete(rootInput);
+            }
+        }
+    };
+
+
+    return {
+        ComponentTree,
+        Mount,
+        Reconciler
+    };
 }

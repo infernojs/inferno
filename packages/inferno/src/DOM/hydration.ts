@@ -1,6 +1,6 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { options, VNode } from '../core/implementation';
+import { VNode } from '../core/implementation';
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountRef, mountText } from './mounting';
 import { callAll, EMPTY_OBJ, LIFECYCLE, replaceChild } from './utils/common';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
@@ -182,9 +182,7 @@ export function hydrate(input, parentDom: Element, callback?: Function) {
     callAll(LIFECYCLE);
   }
 
-  if (!(parentDom as any).$V) {
-    options.roots.push(parentDom);
-  }
+
   (parentDom as any).$V = input;
 
   if (isFunction(callback)) {

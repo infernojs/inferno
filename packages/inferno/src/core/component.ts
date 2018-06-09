@@ -83,7 +83,6 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     let vNode = component.$V as VNode;
     const lastInput = component.$LI as VNode;
     const parentDom = lastInput.dom && lastInput.dom.parentNode;
-
     updateClassComponent(component, nextState, vNode, props, parentDom, context, (vNode.flags & VNodeFlags.SvgElement) > 0, force, true);
     if (component.$UN) {
       return;

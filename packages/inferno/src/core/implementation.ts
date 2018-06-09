@@ -29,7 +29,7 @@ export interface VNode<P = {}> {
   ref: Ref | Refs<P> | null;
   type: any;
 }
-export type InfernoInput = VNode | null | string | number;
+export type InfernoInput = VNode | null | string;
 export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'];
 export type InfernoChildren = Element | string | number | boolean | undefined | VNode | Array<Element | boolean | string | number | VNode | null | undefined> | null;
 
@@ -41,7 +41,7 @@ export interface Props<P, T = Element> extends Refs<P> {
 }
 
 export interface Refs<P> {
-  onComponentDidMount?: (domNode: Element) => void;
+  onComponentDidMount?: (domNode: Element, nextProps: P) => void;
   onComponentWillMount?(): void;
   onComponentShouldUpdate?(lastProps: P, nextProps: P): boolean;
   onComponentWillUpdate?(lastProps: P, nextProps: P): void;
@@ -376,19 +376,13 @@ export function normalizeChildren(vNode: VNode, children) {
 }
 
 export const options: {
-  afterMount: null | Function;
   afterRender: null | Function;
-  afterUpdate: null | Function;
   beforeRender: null | Function;
-  beforeUnmount: null | Function;
   createVNode: null | Function;
-  roots: any[];
+  renderComplete: null | Function
 } = {
-  afterMount: null,
   afterRender: null,
-  afterUpdate: null,
   beforeRender: null,
-  beforeUnmount: null,
   createVNode: null,
-  roots: []
+  renderComplete: null
 };

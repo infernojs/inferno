@@ -1,6 +1,6 @@
 import { isFunction, isNull, isNullOrUndef, isObject, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { createVoidVNode, directClone, options, VNode } from '../core/implementation';
+import { createVoidVNode, directClone, VNode } from '../core/implementation';
 import {appendChild, documentCreateElement, EMPTY_OBJ, LIFECYCLE} from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
@@ -137,15 +137,10 @@ export function mountComponent(vNode: VNode, parentDom: Element | null, context:
   return dom;
 }
 
-function createClassMountCallback(instance, hasAfterMount, afterMount, vNode, hasDidMount) {
+function createClassMountCallback(instance) {
   return () => {
     instance.$UPD = true;
-    if (hasAfterMount) {
-      (afterMount as Function)(vNode);
-    }
-    if (hasDidMount) {
-      instance.componentDidMount();
-    }
+    instance.componentDidMount();
     instance.$UPD = false;
   };
 }
@@ -162,16 +157,12 @@ export function mountClassComponentCallbacks(vNode: VNode, ref, instance) {
       }
     }
   }
-  const hasDidMount = isFunction(instance.componentDidMount);
-  const afterMount = options.afterMount;
-  const hasAfterMount = isFunction(afterMount);
 
-  if (hasDidMount || hasAfterMount) {
-    LIFECYCLE.push(createClassMountCallback(instance, hasAfterMount, afterMount, vNode, hasDidMount));
+  if (isFunction(instance.componentDidMount)) {
+    LIFECYCLE.push(createClassMountCallback(instance));
   }
 }
 
-// Create did mount callback lazily to avoid creating function context if not needed
 function createOnMountCallback(ref, dom, props) {
   return () => ref.onComponentDidMount(dom, props);
 }

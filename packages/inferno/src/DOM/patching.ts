@@ -281,9 +281,6 @@ export function updateClassComponent(
       if (isFunction(instance.componentDidUpdate)) {
         instance.componentDidUpdate(lastProps, lastState);
       }
-      if (isFunction(options.afterUpdate)) {
-        options.afterUpdate(nextVNode);
-      }
     }
   } else {
     instance.props = nextProps;
