@@ -160,8 +160,10 @@ export class Component<P, S> {
     if (this.$UN) {
       return;
     }
-
+    // Do not allow double render during force update
+    this.$BR = true;
     applyState(this, true, callback);
+    this.$BR = false;
   }
 
   public setState(newState: { [k in keyof S]?: S[k] } | Function, callback?: Function) {

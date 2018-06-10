@@ -42,39 +42,26 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
     return {
         // --- ReactDOMComponent interface
         _currentElement: isTextVNode ? (vNode.children + '') : {
-            props: vNode.props,
+            props: vNode.className ? Object.assign({}, vNode.props, {className: vNode.className}) : vNode.props,
             type: vNode.type
         },
         _inDevTools: false,
         _renderedChildren: renderedChildren,
-        _stringText: isTextVNode ? vNode.children : null,
+        _stringText: isTextVNode ? (vNode.children + '') : null,
         vNode
     };
 }
 
-function typeName(element) {
-    if (typeof element.type === 'function') {
-        return element.type.displayName || element.type.name;
-    }
-    return element.type;
-}
-
 function createReactCompositeComponent(vNode, oldDevToolInstance) {
     const flags = vNode.flags;
-    const _currentElement = createReactElement(vNode);
     const component = (flags & VNodeFlags.ComponentClass) > 0 ? vNode.children : vNode.type;
 
     const instance = {
         // --- ReactDOMComponent properties
-        getName() {
-            return typeName(_currentElement);
-        },
         _currentElement: createReactElement(vNode),
         _instance: component,
-        forceUpdate: null,
-        props: component.props,
-        setState: null,
-        state: component.state,
+        props: vNode.props,
+        state: component && component.state,
         vNode
     };
 
@@ -82,36 +69,27 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
         if (component && component.forceUpdate) {
             const forceInstanceUpdate = component.forceUpdate.bind(component); // Save off for use below.
 
-            component.forceUpdate = (instance as any).forceUpdate = function (originalCallback) {
-                if (!updatingDevTool) {
+            component.forceUpdate = (instance as any).forceUpdate = function (callback) {
+                instance.props = vNode.props = Object.assign(instance.props, instance._currentElement.props);
+
+                if (!updatingDevTool && !component.$BR && !component.QU) {
                     updatingDevTool = true;
-                    instance.props = vNode.props = Object.assign(instance.props, instance._currentElement.props);
-                    forceInstanceUpdate(function () {
-                        if (originalCallback) {
-                            originalCallback();
-                        }
-                        checkVNode(component.$V, instance);
-                    });
+                    forceInstanceUpdate(callback);
                     checkVNode(component.$V, instance);
                     updatingDevTool = false;
                     return;
                 }
-                instance.props = vNode.props = Object.assign(instance.props, instance._currentElement.props);
-                forceInstanceUpdate(originalCallback);
+                forceInstanceUpdate(callback);
             };
         }
         if (component && component.setState) {
             const setInstanceState = component.setState.bind(component);
 
             component.setState = (instance as any).setState = function (newState, callback) {
-                if (!updatingDevTool) {
+                if (!updatingDevTool && !component.$BR && !component.QU) {
                     updatingDevTool = true;
-                    setInstanceState(newState, function () {
-                        if (callback) {
-                            callback();
-                        }
-                        checkVNode(component.$V, instance);
-                    });
+                    setInstanceState(newState, callback);
+                    checkVNode(component.$V, instance);
                     updatingDevTool = false;
                     return;
                 }
@@ -121,10 +99,14 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
     }
 
     if ((flags & VNodeFlags.Component) > 0) {
-        (instance as any)._renderedComponent = updateReactComponent(
-            (flags & VNodeFlags.ComponentClass) > 0 ? vNode.children.$LI : vNode.children,
-            oldDevToolInstance ? oldDevToolInstance._renderedComponent : null
-        );
+        const lastVNode = (flags & VNodeFlags.ComponentClass) > 0 ? (vNode.children ? vNode.children.$LI : null) : vNode.children;
+
+        if (lastVNode) {
+            (instance as any)._renderedComponent = updateReactComponent(
+                lastVNode,
+                oldDevToolInstance ? oldDevToolInstance._renderedComponent : null
+            );
+        }
     }
 
     return instance;
@@ -162,7 +144,7 @@ function findRoots(roots) {
 }
 
 function mountDevToolComponentTree(component) {
-    if (!component) {
+    if (!component || component._instance === null) {
         return;
     }
 
@@ -178,15 +160,16 @@ function mountDevToolComponentTree(component) {
 }
 
 function checkChildVNodes(childFlags, children, devToolComponent) {
-    const devToolChildren = devToolComponent._renderedChildren;
+    let devToolChildren = devToolComponent._renderedChildren;
+    const devToolLength = devToolChildren ? devToolChildren.length : 0;
     let i;
 
     switch (childFlags) {
         case ChildFlags.HasVNodeChildren:
-            checkVNode(children, devToolChildren[0], devToolComponent);
+            checkVNode(children, devToolChildren ? devToolChildren[0] : null, devToolComponent);
 
-            if (devToolChildren.length > 1) {
-                for (i = 1; i < devToolChildren.length; i++) {
+            if (devToolLength > 1) {
+                for (i = 1; i < devToolLength; i++) {
                     Reconciler.unmountComponent(devToolChildren[i])
                 }
             }
@@ -195,7 +178,6 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
         case ChildFlags.HasKeyedChildren:
         case ChildFlags.HasNonKeyedChildren:
             const vNodeLength = children.length;
-            const devToolLength = devToolChildren.length;
             const commonLength = vNodeLength > devToolLength ? devToolLength : vNodeLength;
             i = 0;
 
@@ -205,6 +187,9 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
             if (devToolLength < vNodeLength) {
                 const newDevToolChildren = updateReactComponent(children[i]);
 
+                if (!devToolChildren) {
+                    devToolChildren = devToolComponent._renderedChildren = [];
+                }
                 devToolChildren.push(newDevToolChildren);
 
                 mountDevToolComponentTree(newDevToolChildren);
@@ -215,8 +200,8 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
             }
             break;
         case ChildFlags.HasInvalidChildren:
-            if (devToolChildren) {
-                Reconciler.unmountComponent(devToolChildren);
+            for (i = 0; i < devToolLength; i++) {
+                Reconciler.unmountComponent(devToolChildren[i]);
             }
             break;
     }
@@ -236,42 +221,60 @@ function isRootVNode(vNode: VNode): boolean {
 }
 
 function checkVNode(vNode, devToolNode, devToolParentNode?, index?: number) {
-    if (!devToolNode) {
-        return updateReactComponent(vNode);
-    }
-    const vNodeDevTool = devToolNode.vNode;
+    if (!devToolNode && vNode) {
+        mountNewVNode(vNode, devToolParentNode, index);
+        return;
+    } else if (devToolNode && vNode) {
+        const vNodeDevTool = devToolNode.vNode;
 
-    if (vNode.type === vNodeDevTool.type &&
-        vNode.key === vNodeDevTool.key) {
-
-        if ((vNode.flags & 4) > 0) {
-            checkVNode(vNode.children.$LI, devToolNode._renderedComponent, devToolNode);
-        } else if ((vNode.flags & 8) > 0) {
-            checkVNode(vNode.children, devToolNode._renderedComponent, devToolNode);
-        } else {
-            checkChildVNodes(vNode.childFlags, vNode.children, devToolNode);
-        }
-
-        Reconciler.receiveComponent(updateReactComponent(vNode, devToolNode));
-    }
-    else {
-        Reconciler.unmountComponent(devToolNode);
-
-        const newDevToolComponent = updateReactComponent(vNode);
-
-        // Is component ?
-        if (devToolParentNode) {
-            if (devToolParentNode._renderedComponent) {
-                devToolParentNode._renderedComponent = newDevToolComponent;
-            } else if (!isNullOrUndef(index)) {
-                devToolParentNode._renderedChildren[index] = newDevToolComponent;
-            } else {
-                devToolParentNode._renderedChildren = [newDevToolComponent];
+        if (vNode.type === vNodeDevTool.type &&
+            vNode.key === vNodeDevTool.key) {
+            if ((vNode.flags & 4) > 0) {
+                checkVNode((vNode.children ? vNode.children.$LI : null), devToolNode._renderedComponent, devToolNode);
+            }
+            else if ((vNode.flags & 8) > 0) {
+                checkVNode(vNode.children, devToolNode._renderedComponent, devToolNode);
+            }
+            else {
+                checkChildVNodes(vNode.childFlags, vNode.children, devToolNode);
+            }
+            devToolNode.vNode = vNode;
+            // Dont inform dev tools if component is not yet functional
+            if (devToolNode._instance !== null) {
+                Reconciler.receiveComponent(devToolNode);
             }
         }
-
-        mountDevToolComponentTree(newDevToolComponent);
+        else {
+            Reconciler.unmountComponent(devToolNode);
+            mountNewVNode(vNode, devToolParentNode, index);
+        }
+    } else if (!vNode && devToolNode) {
+        if (devToolParentNode._renderedChildren) {
+            devToolParentNode._renderedChildren = [];
+        } else if (devToolParentNode._renderedComponent) {
+            devToolParentNode._renderedComponent = null;
+        }
+        Reconciler.unmountComponent(devToolNode);
     }
+}
+
+function mountNewVNode(vNode, devToolParentNode?, index?: number) {
+    const newDevToolComponent = updateReactComponent(vNode);
+
+    // Is component ?
+    if (devToolParentNode) {
+        if (devToolParentNode._renderedComponent) {
+            devToolParentNode._renderedComponent = newDevToolComponent;
+        } else if (!isNullOrUndef(index)) {
+            devToolParentNode._renderedChildren[index] = newDevToolComponent;
+        } if (devToolParentNode._renderedChildren) {
+            devToolParentNode._renderedChildren.splice(0, devToolParentNode._renderedChildren.length, newDevToolComponent);
+        } else {
+            devToolParentNode._renderedChildren = [newDevToolComponent];
+        }
+    }
+
+    mountDevToolComponentTree(newDevToolComponent);
 }
 
 export function createDevToolsBridge() {
@@ -305,29 +308,51 @@ export function createDevToolsBridge() {
 
     // ReactReconciler-like object
     Reconciler = {
-        // tslint:disable-next-line:no-empty
-        mountComponent(instance) {},
-        // tslint:disable-next-line:no-empty
-        performUpdateIfNecessary(instance) {},
-        // tslint:disable-next-line:no-empty
-        receiveComponent(instance) {},
-        // tslint:disable-next-line:no-empty
-        unmountComponent(instance) {}
+        mountComponent(instance) {
+            return instance;
+        },
+        performUpdateIfNecessary(instance) {
+            return instance;
+        },
+        receiveComponent(instance) {
+            return instance;
+        },
+        unmountComponent(instance) {
+            return instance;
+        }
     };
 
     const oldRenderComplete = options.renderComplete;
 
     options.renderComplete = function (rootInput) {
         if (!isInvalid(rootInput)) {
-            const instance = updateReactComponent(rootInput);
+            let rootKey;
+            let instance;
 
             if (isRootVNode(rootInput)) {
+                // Check if root exists
+                for (rootKey in roots) {
+                    const rootInstance = roots[rootKey];
+                    const rootNode = rootInstance.vNode.dom;
+
+                    if (!rootNode.parentNode) {
+                        Reconciler.unmountComponent(rootInstance);
+
+                        delete roots[rootKey];
+
+                        break;
+                    } else if (rootNode === rootInput.dom) {
+                        checkVNode(rootInput, rootInstance);
+                        return;
+                    }
+                }
+                instance = updateReactComponent(rootInput);
                 instance._rootNodeID = nextRootKey(roots);
                 roots[instance._rootNodeID] = instance;
                 mountDevToolComponentTree(instance);
                 Mount._renderNewRootComponent(instance);
             } else if (rootInput.dom === null) {
-                for (const rootKey in roots) {
+                for (rootKey in roots) {
                     const rootInstance = roots[rootKey];
 
                     if (!rootInstance.vNode.dom) {
