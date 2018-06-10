@@ -121,167 +121,200 @@ declare global {
 
       // Clipboard Events
       onCopy?: ClipboardEventHandler<T>;
-      onCopyCapture?: ClipboardEventHandler<T>;
       onCut?: ClipboardEventHandler<T>;
-      onCutCapture?: ClipboardEventHandler<T>;
       onPaste?: ClipboardEventHandler<T>;
-      onPasteCapture?: ClipboardEventHandler<T>;
 
       // Composition Events
       onCompositionEnd?: CompositionEventHandler<T>;
-      onCompositionEndCapture?: CompositionEventHandler<T>;
       onCompositionStart?: CompositionEventHandler<T>;
-      onCompositionStartCapture?: CompositionEventHandler<T>;
       onCompositionUpdate?: CompositionEventHandler<T>;
-      onCompositionUpdateCapture?: CompositionEventHandler<T>;
 
       // Focus Events
       onFocus?: FocusEventHandler<T>;
-      onFocusCapture?: FocusEventHandler<T>;
       onBlur?: FocusEventHandler<T>;
-      onBlurCapture?: FocusEventHandler<T>;
 
       // Form Events
       onChange?: ChangeEventHandler<T>;
-      onChangeCapture?: ChangeEventHandler<T>;
       onInput?: FormEventHandler<T>;
-      onInputCapture?: FormEventHandler<T>;
       onReset?: FormEventHandler<T>;
-      onResetCapture?: FormEventHandler<T>;
       onSubmit?: FormEventHandler<T>;
-      onSubmitCapture?: FormEventHandler<T>;
       onInvalid?: FormEventHandler<T>;
-      onInvalidCapture?: FormEventHandler<T>;
 
       // Image Events
       onLoad?: InfernoEventHandler<T>;
-      onLoadCapture?: InfernoEventHandler<T>;
       onError?: InfernoEventHandler<T>; // also a Media Event
-      onErrorCapture?: InfernoEventHandler<T>; // also a Media Event
 
       // Keyboard Events
       onKeyDown?: KeyboardEventHandler<T>;
-      onKeyDownCapture?: KeyboardEventHandler<T>;
       onKeyPress?: KeyboardEventHandler<T>;
-      onKeyPressCapture?: KeyboardEventHandler<T>;
       onKeyUp?: KeyboardEventHandler<T>;
-      onKeyUpCapture?: KeyboardEventHandler<T>;
 
       // Media Events
       onAbort?: InfernoEventHandler<T>;
-      onAbortCapture?: InfernoEventHandler<T>;
       onCanPlay?: InfernoEventHandler<T>;
-      onCanPlayCapture?: InfernoEventHandler<T>;
       onCanPlayThrough?: InfernoEventHandler<T>;
-      onCanPlayThroughCapture?: InfernoEventHandler<T>;
       onDurationChange?: InfernoEventHandler<T>;
-      onDurationChangeCapture?: InfernoEventHandler<T>;
       onEmptied?: InfernoEventHandler<T>;
-      onEmptiedCapture?: InfernoEventHandler<T>;
       onEncrypted?: InfernoEventHandler<T>;
-      onEncryptedCapture?: InfernoEventHandler<T>;
       onEnded?: InfernoEventHandler<T>;
-      onEndedCapture?: InfernoEventHandler<T>;
       onLoadedData?: InfernoEventHandler<T>;
-      onLoadedDataCapture?: InfernoEventHandler<T>;
       onLoadedMetadata?: InfernoEventHandler<T>;
-      onLoadedMetadataCapture?: InfernoEventHandler<T>;
       onLoadStart?: InfernoEventHandler<T>;
-      onLoadStartCapture?: InfernoEventHandler<T>;
       onPause?: InfernoEventHandler<T>;
-      onPauseCapture?: InfernoEventHandler<T>;
       onPlay?: InfernoEventHandler<T>;
-      onPlayCapture?: InfernoEventHandler<T>;
       onPlaying?: InfernoEventHandler<T>;
-      onPlayingCapture?: InfernoEventHandler<T>;
       onProgress?: InfernoEventHandler<T>;
-      onProgressCapture?: InfernoEventHandler<T>;
       onRateChange?: InfernoEventHandler<T>;
-      onRateChangeCapture?: InfernoEventHandler<T>;
       onSeeked?: InfernoEventHandler<T>;
-      onSeekedCapture?: InfernoEventHandler<T>;
       onSeeking?: InfernoEventHandler<T>;
-      onSeekingCapture?: InfernoEventHandler<T>;
       onStalled?: InfernoEventHandler<T>;
-      onStalledCapture?: InfernoEventHandler<T>;
       onSuspend?: InfernoEventHandler<T>;
-      onSuspendCapture?: InfernoEventHandler<T>;
       onTimeUpdate?: InfernoEventHandler<T>;
-      onTimeUpdateCapture?: InfernoEventHandler<T>;
       onVolumeChange?: InfernoEventHandler<T>;
-      onVolumeChangeCapture?: InfernoEventHandler<T>;
       onWaiting?: InfernoEventHandler<T>;
-      onWaitingCapture?: InfernoEventHandler<T>;
 
       // MouseEvents
       onClick?: MouseEventHandler<T>;
-      onClickCapture?: MouseEventHandler<T>;
       onContextMenu?: MouseEventHandler<T>;
-      onContextMenuCapture?: MouseEventHandler<T>;
       onDoubleClick?: MouseEventHandler<T>;
-      onDoubleClickCapture?: MouseEventHandler<T>;
       onDrag?: DragEventHandler<T>;
-      onDragCapture?: DragEventHandler<T>;
       onDragEnd?: DragEventHandler<T>;
-      onDragEndCapture?: DragEventHandler<T>;
       onDragEnter?: DragEventHandler<T>;
-      onDragEnterCapture?: DragEventHandler<T>;
       onDragExit?: DragEventHandler<T>;
-      onDragExitCapture?: DragEventHandler<T>;
       onDragLeave?: DragEventHandler<T>;
-      onDragLeaveCapture?: DragEventHandler<T>;
       onDragOver?: DragEventHandler<T>;
-      onDragOverCapture?: DragEventHandler<T>;
       onDragStart?: DragEventHandler<T>;
-      onDragStartCapture?: DragEventHandler<T>;
       onDrop?: DragEventHandler<T>;
-      onDropCapture?: DragEventHandler<T>;
       onMouseDown?: MouseEventHandler<T>;
-      onMouseDownCapture?: MouseEventHandler<T>;
       onMouseEnter?: MouseEventHandler<T>;
       onMouseLeave?: MouseEventHandler<T>;
       onMouseMove?: MouseEventHandler<T>;
-      onMouseMoveCapture?: MouseEventHandler<T>;
       onMouseOut?: MouseEventHandler<T>;
-      onMouseOutCapture?: MouseEventHandler<T>;
       onMouseOver?: MouseEventHandler<T>;
-      onMouseOverCapture?: MouseEventHandler<T>;
       onMouseUp?: MouseEventHandler<T>;
-      onMouseUpCapture?: MouseEventHandler<T>;
 
       // Selection Events
       onSelect?: InfernoEventHandler<T>;
-      onSelectCapture?: InfernoEventHandler<T>;
 
       // Touch Events
       onTouchCancel?: TouchEventHandler<T>;
-      onTouchCancelCapture?: TouchEventHandler<T>;
       onTouchEnd?: TouchEventHandler<T>;
-      onTouchEndCapture?: TouchEventHandler<T>;
       onTouchMove?: TouchEventHandler<T>;
-      onTouchMoveCapture?: TouchEventHandler<T>;
       onTouchStart?: TouchEventHandler<T>;
-      onTouchStartCapture?: TouchEventHandler<T>;
 
       // UI Events
       onScroll?: UIEventHandler<T>;
-      onScrollCapture?: UIEventHandler<T>;
 
       // Wheel Events
       onWheel?: WheelEventHandler<T>;
-      onWheelCapture?: WheelEventHandler<T>;
 
       // Animation Events
       onAnimationStart?: AnimationEventHandler<T>;
-      onAnimationStartCapture?: AnimationEventHandler<T>;
       onAnimationEnd?: AnimationEventHandler<T>;
-      onAnimationEndCapture?: AnimationEventHandler<T>;
       onAnimationIteration?: AnimationEventHandler<T>;
-      onAnimationIterationCapture?: AnimationEventHandler<T>;
 
       // Transition Events
       onTransitionEnd?: TransitionEventHandler<T>;
-      onTransitionEndCapture?: TransitionEventHandler<T>;
+
+      /**
+       * NON SYNTHETIC EVENTS ARE ACTUALLY SAME
+       */
+      // Clipboard Events
+      oncopy?: ClipboardEventHandler<T>;
+      oncut?: ClipboardEventHandler<T>;
+      onpaste?: ClipboardEventHandler<T>;
+
+      // Composition Events
+      oncompositionend?: CompositionEventHandler<T>;
+      oncompositionstart?: CompositionEventHandler<T>;
+      oncompositionupdate?: CompositionEventHandler<T>;
+
+      // Focus Events
+      onfocus?: FocusEventHandler<T>;
+      onblur?: FocusEventHandler<T>;
+
+      // Form Events
+      onchange?: ChangeEventHandler<T>;
+      oninput?: FormEventHandler<T>;
+      onreset?: FormEventHandler<T>;
+      onsubmit?: FormEventHandler<T>;
+      oninvalid?: FormEventHandler<T>;
+
+      // Image Events
+      onload?: InfernoEventHandler<T>;
+      onerror?: InfernoEventHandler<T>; // also a Media Event
+
+      // Keyboard Events
+      onkeydown?: KeyboardEventHandler<T>;
+      onkeypress?: KeyboardEventHandler<T>;
+      onkeyup?: KeyboardEventHandler<T>;
+
+      // Media Events
+      onabort?: InfernoEventHandler<T>;
+      oncanplay?: InfernoEventHandler<T>;
+      oncanplaythrough?: InfernoEventHandler<T>;
+      ondurationchange?: InfernoEventHandler<T>;
+      onemptied?: InfernoEventHandler<T>;
+      onencrypted?: InfernoEventHandler<T>;
+      onended?: InfernoEventHandler<T>;
+      onloadeddata?: InfernoEventHandler<T>;
+      onloadedmetadata?: InfernoEventHandler<T>;
+      onloadstart?: InfernoEventHandler<T>;
+      onpause?: InfernoEventHandler<T>;
+      onplay?: InfernoEventHandler<T>;
+      onplaying?: InfernoEventHandler<T>;
+      onprogress?: InfernoEventHandler<T>;
+      onratechange?: InfernoEventHandler<T>;
+      onseeked?: InfernoEventHandler<T>;
+      onseeking?: InfernoEventHandler<T>;
+      onstalled?: InfernoEventHandler<T>;
+      onsuspend?: InfernoEventHandler<T>;
+      ontimeupdate?: InfernoEventHandler<T>;
+      onvolumechange?: InfernoEventHandler<T>;
+      onwaiting?: InfernoEventHandler<T>;
+
+      // MouseEvents
+      onclick?: MouseEventHandler<T>;
+      oncontextmenu?: MouseEventHandler<T>;
+      ondoubleclick?: MouseEventHandler<T>;
+      ondrag?: DragEventHandler<T>;
+      ondragend?: DragEventHandler<T>;
+      ondragenter?: DragEventHandler<T>;
+      ondragexit?: DragEventHandler<T>;
+      ondragleave?: DragEventHandler<T>;
+      ondragover?: DragEventHandler<T>;
+      ondragstart?: DragEventHandler<T>;
+      ondrop?: DragEventHandler<T>;
+      onmousedown?: MouseEventHandler<T>;
+      onmouseenter?: MouseEventHandler<T>;
+      onmouseleave?: MouseEventHandler<T>;
+      onmousemove?: MouseEventHandler<T>;
+      onmouseout?: MouseEventHandler<T>;
+      onmouseover?: MouseEventHandler<T>;
+      onmouseup?: MouseEventHandler<T>;
+
+      // Selection Events
+      onselect?: InfernoEventHandler<T>;
+
+      // Touch Events
+      ontouchcancel?: TouchEventHandler<T>;
+      ontouchend?: TouchEventHandler<T>;
+      ontouchmove?: TouchEventHandler<T>;
+      ontouchstart?: TouchEventHandler<T>;
+
+      // UI Events
+      onscroll?: UIEventHandler<T>;
+
+      // Wheel Events
+      onwheel?: WheelEventHandler<T>;
+
+      // Animation Events
+      onanimationstart?: AnimationEventHandler<T>;
+      onanimationend?: AnimationEventHandler<T>;
+      onanimationiteration?: AnimationEventHandler<T>;
+
+      // Transition Events
+      ontransitionend?: TransitionEventHandler<T>;
     }
 
     // See CSS 3 CSS-wide keywords https://www.w3.org/TR/css3-values/#common-keywords
