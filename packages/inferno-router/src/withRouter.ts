@@ -2,7 +2,7 @@ import { createComponentVNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 import { Route } from './Route';
-import {combineFrom} from "inferno-shared";
+import { combineFrom } from 'inferno-shared';
 
 interface IWithRouterProps {
   wrappedComponentRef: any;
@@ -17,16 +17,7 @@ export function withRouter(Com) {
 
     return createComponentVNode<any>(VNodeFlags.ComponentClass, Route, {
       render(routeComponentProps: IWithRouterProps) {
-        return createComponentVNode(
-          VNodeFlags.ComponentUnknown,
-          Com,
-          combineFrom(
-            remainingProps,
-            routeComponentProps
-          ),
-          null,
-          wrappedComponentRef
-        );
+        return createComponentVNode(VNodeFlags.ComponentUnknown, Com, combineFrom(remainingProps, routeComponentProps), null, wrappedComponentRef);
       }
     });
   };

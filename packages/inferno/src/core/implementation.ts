@@ -31,7 +31,15 @@ export interface VNode<P = {}> {
 }
 export type InfernoInput = VNode | null | string;
 export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'];
-export type InfernoChildren = Element | string | number | boolean | undefined | VNode | Array<Element | boolean | string | number | VNode | null | undefined> | null;
+export type InfernoChildren =
+  | Element
+  | string
+  | number
+  | boolean
+  | undefined
+  | VNode
+  | Array<Element | boolean | string | number | VNode | null | undefined>
+  | null;
 
 export interface Props<P, T = Element> extends Refs<P> {
   children?: InfernoChildren;
@@ -379,7 +387,7 @@ export const options: {
   afterRender: null | Function;
   beforeRender: null | Function;
   createVNode: null | Function;
-  renderComplete: null | Function
+  renderComplete: null | Function;
 } = {
   afterRender: null,
   beforeRender: null,

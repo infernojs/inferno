@@ -182,7 +182,6 @@ export function hydrate(input, parentDom: Element, callback?: Function) {
     callAll(LIFECYCLE);
   }
 
-
   (parentDom as any).$V = input;
 
   if (isFunction(callback)) {

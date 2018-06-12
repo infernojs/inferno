@@ -182,7 +182,7 @@ export class Component<P, S> {
   }
 
   // tslint:disable-next-line:no-empty
-  public render(nextProps: P, nextState, nextContext): InfernoChildren|void {}
+  public render(nextProps: P, nextState, nextContext): InfernoChildren | void {}
 }
 
 export type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
@@ -202,7 +202,7 @@ export interface ComponentClass<P = {}> {
 
   defaultProps?: Partial<P>;
   displayName?: string;
-  refs?: any
+  refs?: any;
 }
 
 export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }['bivarianceHack'];

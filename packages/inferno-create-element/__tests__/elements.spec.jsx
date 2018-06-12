@@ -226,7 +226,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.firstChild.nodeName).toBe('DIV');
     expect(container.firstChild.firstChild.getAttribute('id')).toBe('id#4');
 
-    attrs = 13 - 44 * 4 / 4;
+    attrs = 13 - (44 * 4) / 4;
 
     let b = <b className={123}>Hello, World!</b>;
     let n = <n>{b}</n>;
@@ -250,7 +250,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.innerHTML).toBe('Hello, World!');
     expect(container.firstChild.firstChild.firstChild.firstChild.firstChild.getAttribute('class')).toBe('123');
 
-    attrs = 13 - 44 * 4 / 4;
+    attrs = 13 - (44 * 4) / 4;
 
     b = <b className={1243}>Hello, World!</b>;
     n = <n>{b}</n>;

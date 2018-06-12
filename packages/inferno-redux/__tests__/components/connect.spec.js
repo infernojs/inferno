@@ -360,7 +360,10 @@ describe('Inferno', () => {
       let props = { x: true };
       let container;
 
-      const ConnectContainer = connect(() => ({}), () => ({}))(
+      const ConnectContainer = connect(
+        () => ({}),
+        () => ({})
+      )(
         class ConnectContainer extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -563,7 +566,10 @@ describe('Inferno', () => {
         foo: 'bar'
       }));
 
-      const Container = connect(state => state, dispatch => ({ dispatch }))(
+      const Container = connect(
+        state => state,
+        dispatch => ({ dispatch })
+      )(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -756,10 +762,13 @@ describe('Inferno', () => {
 
       let invocationCount = 0;
 
-      const WithoutProps = connect(null, _arg1 => {
-        invocationCount++;
-        return {};
-      })(
+      const WithoutProps = connect(
+        null,
+        _arg1 => {
+          invocationCount++;
+          return {};
+        }
+      )(
         class WithoutProps extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -808,10 +817,13 @@ describe('Inferno', () => {
 
       let invocationCount = 0;
 
-      const WithoutProps = connect(null, () => {
-        invocationCount++;
-        return {};
-      })(
+      const WithoutProps = connect(
+        null,
+        () => {
+          invocationCount++;
+          return {};
+        }
+      )(
         class WithoutProps extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -863,11 +875,14 @@ describe('Inferno', () => {
       let propsPassedIn;
       let invocationCount = 0;
 
-      const WithoutProps = connect(null, (_state, props) => {
-        invocationCount++;
-        propsPassedIn = props;
-        return {};
-      })(
+      const WithoutProps = connect(
+        null,
+        (_state, props) => {
+          invocationCount++;
+          propsPassedIn = props;
+          return {};
+        }
+      )(
         class WithoutProps extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -967,7 +982,10 @@ describe('Inferno', () => {
         };
       };
 
-      const Container = connect(state => ({ string: state }), dispatch => ({ dispatch }))(
+      const Container = connect(
+        state => ({ string: state }),
+        dispatch => ({ dispatch })
+      )(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -992,7 +1010,10 @@ describe('Inferno', () => {
       const store = createStore(stringBuilder);
       let mapStateToPropsCalls = 0;
 
-      const Container = connect(() => ({ calls: ++mapStateToPropsCalls }), dispatch => ({ dispatch }))(
+      const Container = connect(
+        () => ({ calls: ++mapStateToPropsCalls }),
+        dispatch => ({ dispatch })
+      )(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -1187,7 +1208,10 @@ describe('Inferno', () => {
       const store = createStore(stringBuilder);
       let mapStateToPropsCalls = 0;
 
-      const Container = connect(state => ({ calls: mapStateToPropsCalls++ }), dispatch => ({ dispatch }))(
+      const Container = connect(
+        state => ({ calls: mapStateToPropsCalls++ }),
+        dispatch => ({ dispatch })
+      )(
         class Container extends Component {
           componentWillUnmount() {
             this.props.dispatch({ type: 'APPEND', payload: 'a' });
@@ -1222,7 +1246,10 @@ describe('Inferno', () => {
       const store = createStore(stringBuilder);
       let renderCallCount = 0;
 
-      const Container = connect(state => ({ string: state }), dispatch => ({ dispatch }))(
+      const Container = connect(
+        state => ({ string: state }),
+        dispatch => ({ dispatch })
+      )(
         class Container extends Component {
           render() {
             const { string } = this.props;
@@ -1440,7 +1467,10 @@ describe('Inferno', () => {
     it('should recalculate the state and rebind the actions on hot update', () => {
       const store = createStore(() => {});
 
-      const ContainerBefore = connect(null, () => ({ scooby: 'doo' }))(
+      const ContainerBefore = connect(
+        null,
+        () => ({ scooby: 'doo' })
+      )(
         class ContainerBefore extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -1448,7 +1478,10 @@ describe('Inferno', () => {
         }
       );
 
-      const ContainerAfter = connect(() => ({ foo: 'baz' }), () => ({ scooby: 'foo' }))(
+      const ContainerAfter = connect(
+        () => ({ foo: 'baz' }),
+        () => ({ scooby: 'foo' })
+      )(
         class ContainerAfter extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -1456,7 +1489,10 @@ describe('Inferno', () => {
         }
       );
 
-      const ContainerNext = connect(() => ({ foo: 'bar' }), () => ({ scooby: 'boo' }))(
+      const ContainerNext = connect(
+        () => ({ foo: 'bar' }),
+        () => ({ scooby: 'boo' })
+      )(
         class ContainerNext extends Component {
           render() {
             return <Passthrough {...this.props} />;
@@ -1641,7 +1677,12 @@ describe('Inferno', () => {
         }
       }
 
-      const decorator = connect(state => state, null, null, { withRef: true });
+      const decorator = connect(
+        state => state,
+        null,
+        null,
+        { withRef: true }
+      );
       const Decorated = decorator(Container);
 
       const tree = renderToContainer(
@@ -1665,7 +1706,12 @@ describe('Inferno', () => {
         }
       }
 
-      const decorator = connect(state => state, null, null, { pure: false });
+      const decorator = connect(
+        state => state,
+        null,
+        null,
+        { pure: false }
+      );
       const Decorated = decorator(ImpureComponent);
 
       class StatefulWrapper extends Component {
@@ -1772,9 +1818,14 @@ describe('Inferno', () => {
       store.dispatch({ type: 'APPEND', payload: 'a' });
       let childMapStateInvokes = 0;
 
-      const Container = connect(state => ({ state }), null, null, {
-        withRef: true
-      })(
+      const Container = connect(
+        state => ({ state }),
+        null,
+        null,
+        {
+          withRef: true
+        }
+      )(
         class Container extends Component {
           emitChange() {
             store.dispatch({ type: 'APPEND', payload: 'b' });
@@ -2072,7 +2123,11 @@ describe('Inferno', () => {
         name: parentProps.name
       });
 
-      const Passthrough = connect(null, mapDispatchFactory, mergeParentDispatch)(
+      const Passthrough = connect(
+        null,
+        mapDispatchFactory,
+        mergeParentDispatch
+      )(
         class Passthrough extends Component {
           componentWillUpdate() {
             updatedCount++;
@@ -2125,9 +2180,13 @@ describe('Inferno', () => {
       let renderCalls = 0;
       const store = createStore(stringBuilder);
 
-      const Container = connect(() => ({ a: ++mapStateCalls }), null, () => ({
-        changed: false
-      }))(
+      const Container = connect(
+        () => ({ a: ++mapStateCalls }),
+        null,
+        () => ({
+          changed: false
+        })
+      )(
         class Container extends Component {
           render() {
             renderCalls++;
@@ -2157,7 +2216,12 @@ describe('Inferno', () => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
-      const Container = connect(null, null, () => ({ a: 1 }), { pure: false })(
+      const Container = connect(
+        null,
+        null,
+        () => ({ a: 1 }),
+        { pure: false }
+      )(
         class Container extends Component {
           render() {
             renderCount++;
@@ -2239,9 +2303,14 @@ describe('Inferno', () => {
     });
 
     it('should allow custom displayName', () => {
-      const MyComponent = connect(null, null, null, {
-        getDisplayName: name => `Custom(${name})`
-      })(
+      const MyComponent = connect(
+        null,
+        null,
+        null,
+        {
+          getDisplayName: name => `Custom(${name})`
+        }
+      )(
         class MyComponent extends Component {
           render() {
             return <div />;
@@ -2260,7 +2329,12 @@ describe('Inferno', () => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
-      const ImpureComponent = connect(() => ({}), null, null, { pure: false })(
+      const ImpureComponent = connect(
+        () => ({}),
+        null,
+        null,
+        { pure: false }
+      )(
         class ImpureComponent extends Component {
           render() {
             renderCount++;
@@ -2298,7 +2372,10 @@ describe('Inferno', () => {
     });
 
     it('should throw a helpful error for invalid mapDispatchToProps arguments', () => {
-      const InvalidMapDispatch = connect(null, 'invalid')(
+      const InvalidMapDispatch = connect(
+        null,
+        'invalid'
+      )(
         class InvalidMapDispatch extends Component {
           render() {
             return <div />;
@@ -2315,7 +2392,11 @@ describe('Inferno', () => {
     });
 
     it('should throw a helpful error for invalid mergeProps arguments', () => {
-      const InvalidMerge = connect(null, null, 'invalid')(
+      const InvalidMerge = connect(
+        null,
+        null,
+        'invalid'
+      )(
         class InvalidMerge extends Component {
           render() {
             return <div />;

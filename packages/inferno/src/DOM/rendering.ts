@@ -21,7 +21,7 @@ export function render(
   input: InfernoInput,
   parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node | null,
   callback?: Function
-): InfernoChildren|void {
+): InfernoChildren | void {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDom) {
@@ -50,7 +50,7 @@ export function render(
   } else {
     if (isNullOrUndef(input)) {
       remove(rootInput as VNode, parentDom as Element);
-        (parentDom as any).$V = null;
+      (parentDom as any).$V = null;
     } else {
       if ((input as VNode).dom) {
         input = directClone(input as VNode);

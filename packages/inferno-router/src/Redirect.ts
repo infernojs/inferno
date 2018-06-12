@@ -3,10 +3,10 @@ import { createLocation, locationsAreEqual } from 'history';
 import { invariant } from './utils';
 
 export interface RedirectProps {
-  from?: string,
-  to: string,
-  exact?: any,
-  push?: boolean
+  from?: string;
+  to: string;
+  exact?: any;
+  push?: boolean;
 }
 
 export class Redirect extends Component<RedirectProps, any> {

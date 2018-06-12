@@ -2,7 +2,7 @@ import { createComponentVNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Route } from './Route';
 import { Link } from './Link';
-import { combineFrom } from "inferno-shared";
+import { combineFrom } from 'inferno-shared';
 
 /**
  * A <Link> wrapper that knows if it's "active" or not.

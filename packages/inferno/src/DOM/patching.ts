@@ -360,15 +360,7 @@ function patchText(lastVNode: VNode, nextVNode: VNode, parentDom: Element) {
   nextVNode.dom = dom;
 }
 
-function patchNonKeyedChildren(
-  lastChildren,
-  nextChildren,
-  dom,
-  context: Object,
-  isSVG: boolean,
-  lastChildrenLength: number,
-  nextChildrenLength: number
-) {
+function patchNonKeyedChildren(lastChildren, nextChildren, dom, context: Object, isSVG: boolean, lastChildrenLength: number, nextChildrenLength: number) {
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
   let i = 0;
   let nextChild;

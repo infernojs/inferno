@@ -1,7 +1,7 @@
 import { isFunction, isNull, isNullOrUndef, isObject, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone, VNode } from '../core/implementation';
-import {appendChild, documentCreateElement, EMPTY_OBJ, LIFECYCLE} from './utils/common';
+import { appendChild, documentCreateElement, EMPTY_OBJ, LIFECYCLE } from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';

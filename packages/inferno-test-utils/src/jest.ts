@@ -22,7 +22,7 @@ function createSnapshotObject(object: object) {
   return object;
 }
 
-export function vNodeToSnapshot(node: VNode|Element) {
+export function vNodeToSnapshot(node: VNode | Element) {
   let object;
   const children: any[] = [];
   if (isDOMVNode(node)) {

@@ -161,9 +161,14 @@ describe('redux', () => {
         }
       );
 
-      const Container = connect(state => ({ state }), null, null, {
-        withRef: true
-      })(
+      const Container = connect(
+        state => ({ state }),
+        null,
+        null,
+        {
+          withRef: true
+        }
+      )(
         class Container extends Component {
           emitChange() {
             store.dispatch({ type: 'APPEND', payload: 'b' });

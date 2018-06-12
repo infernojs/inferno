@@ -139,7 +139,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
     case 'ref':
       break;
     case 'autoFocus':
-        (dom as any).autofocus = !!nextValue;
+      (dom as any).autofocus = !!nextValue;
       break;
     case 'allowfullscreen':
     case 'autoplay':

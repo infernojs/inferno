@@ -16,12 +16,12 @@ const warnAboutReceivingStore = () => {
 
 export interface Props {
   store: Store<any>;
-  children?: VNode|null|undefined;
+  children?: VNode | null | undefined;
 }
 
 export class Provider extends Component<Props, any> {
   public static displayName = 'Provider';
-  private readonly store: Store<any, AnyAction|any>;
+  private readonly store: Store<any, AnyAction | any>;
 
   constructor(props: Props, context: any) {
     super(props, context);

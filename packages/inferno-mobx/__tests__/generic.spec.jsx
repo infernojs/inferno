@@ -23,7 +23,7 @@ describe('generic higher order components', () => {
     /** @type {<T>(x: T | null | undefined) => T} */
     const nullthrows = (/** @type {any} */ x) => {
       if (!x) {
-        throw new Error("Unexpected falsy value.");
+        throw new Error('Unexpected falsy value.');
       }
 
       return x;
@@ -53,15 +53,20 @@ describe('generic higher order components', () => {
         const { foo } = nullthrows(this.props.apiService);
         const { baz } = nullthrows(this.props.todoService);
 
-        return <p>{foo}{baz}</p>;
+        return (
+          <p>
+            {foo}
+            {baz}
+          </p>
+        );
       }
     }
 
-    let Todo = inject("apiService", "todoService")(observer(TodoView));
+    let Todo = inject('apiService', 'todoService')(observer(TodoView));
 
     // Legacy.
-    Todo = observer(["apiService", "todoService"])(TodoView);
-    Todo = observer(["apiService", "todoService"], TodoView);
+    Todo = observer(['apiService', 'todoService'])(TodoView);
+    Todo = observer(['apiService', 'todoService'], TodoView);
 
     const services = {
       apiService: new ApiService(),

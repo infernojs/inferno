@@ -62,7 +62,7 @@ export class Router extends Component<IRouterProps, any> {
     this.unlisten();
   }
 
-  public render(props: IRouterProps, state, context) : VNode|null {
+  public render(props: IRouterProps, state, context): VNode | null {
     return props.children ? cloneVNode(props.children) : null;
   }
 }
