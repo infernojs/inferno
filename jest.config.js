@@ -3,7 +3,6 @@ module.exports = {
     "packages/*/src/**/*.ts",
     "!**/*.ts.js",
     "!**/inferno-utils/**/*",
-    "!**/inferno-devtools/**/*",
     "!**/inferno-router/**/utils.ts",
   ],
   coverageDirectory: "coverage",

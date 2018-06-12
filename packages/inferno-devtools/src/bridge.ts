@@ -5,6 +5,7 @@ import {isInvalid, isNullOrUndef} from "inferno-shared";
 let updatingDevTool = false;
 let Reconciler;
 let Mount;
+let rootKey = 0;
 
 function createReactElement(vNode) {
     return {
@@ -45,7 +46,6 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
             props: vNode.className ? Object.assign({}, vNode.props, {className: vNode.className}) : vNode.props,
             type: vNode.type
         },
-        _inDevTools: false,
         _renderedChildren: renderedChildren,
         _stringText: isTextVNode ? (vNode.children + '') : null,
         vNode
@@ -127,8 +127,8 @@ function updateReactComponent(vNode, oldDevToolInstance?) {
     return newInstance;
 }
 
-function nextRootKey(roots) {
-    return '.' + Object.keys(roots).length;
+function nextRootKey() {
+    return '.' + (rootKey++);
 }
 
 function findRoots(roots) {
@@ -138,7 +138,7 @@ function findRoots(roots) {
         const vNode = (elements[i] as any).$V;
 
         if (vNode && isRootVNode(vNode)) {
-            roots[nextRootKey(roots)] = updateReactComponent(vNode);
+            roots[nextRootKey()] = updateReactComponent(vNode);
         }
     }
 }
@@ -185,14 +185,16 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
                 checkVNode(children[i], devToolChildren[i], devToolComponent, i);
             }
             if (devToolLength < vNodeLength) {
-                const newDevToolChildren = updateReactComponent(children[i]);
+                for (i = commonLength; i < vNodeLength; i++) {
+                    const newDevToolChildren = updateReactComponent(children[i]);
 
-                if (!devToolChildren) {
-                    devToolChildren = devToolComponent._renderedChildren = [];
+                    if (!devToolChildren) {
+                        devToolChildren = devToolComponent._renderedChildren = [];
+                    }
+                    devToolChildren.push(newDevToolChildren);
+
+                    mountDevToolComponentTree(newDevToolChildren);
                 }
-                devToolChildren.push(newDevToolChildren);
-
-                mountDevToolComponentTree(newDevToolChildren);
             } else if (devToolLength > vNodeLength) {
                 for (i = commonLength; i < devToolLength; i++) {
                     Reconciler.unmountComponent(devToolChildren.pop());
@@ -203,6 +205,7 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
             for (i = 0; i < devToolLength; i++) {
                 Reconciler.unmountComponent(devToolChildren[i]);
             }
+            devToolComponent._renderedChildren = null;
             break;
     }
 }
@@ -229,7 +232,10 @@ function checkVNode(vNode, devToolNode, devToolParentNode?, index?: number) {
 
         if (vNode.type === vNodeDevTool.type &&
             vNode.key === vNodeDevTool.key) {
-            if ((vNode.flags & 4) > 0) {
+            if ((vNode.flags & VNodeFlags.Text) > 0 && devToolNode._stringText) {
+                devToolNode._currentElement = (vNode.children + '');
+                devToolNode._stringText = (vNode.children + '');
+            } else if ((vNode.flags & 4) > 0) {
                 checkVNode((vNode.children ? vNode.children.$LI : null), devToolNode._renderedComponent, devToolNode);
             }
             else if ((vNode.flags & 8) > 0) {
@@ -267,8 +273,8 @@ function mountNewVNode(vNode, devToolParentNode?, index?: number) {
             devToolParentNode._renderedComponent = newDevToolComponent;
         } else if (!isNullOrUndef(index)) {
             devToolParentNode._renderedChildren[index] = newDevToolComponent;
-        } if (devToolParentNode._renderedChildren) {
-            devToolParentNode._renderedChildren.splice(0, devToolParentNode._renderedChildren.length, newDevToolComponent);
+        } else if (devToolParentNode._renderedChildren) {
+            devToolParentNode._renderedChildren.splice(0, devToolParentNode._renderedChildren.length - 1, newDevToolComponent);
         } else {
             devToolParentNode._renderedChildren = [newDevToolComponent];
         }
@@ -326,19 +332,19 @@ export function createDevToolsBridge() {
 
     options.renderComplete = function (rootInput) {
         if (!isInvalid(rootInput)) {
-            let rootKey;
+            let root;
             let instance;
 
             if (isRootVNode(rootInput)) {
                 // Check if root exists
-                for (rootKey in roots) {
-                    const rootInstance = roots[rootKey];
+                for (root in roots) {
+                    const rootInstance = roots[root];
                     const rootNode = rootInstance.vNode.dom;
 
                     if (!rootNode.parentNode) {
                         Reconciler.unmountComponent(rootInstance);
 
-                        delete roots[rootKey];
+                        delete roots[root];
 
                         break;
                     } else if (rootNode === rootInput.dom) {
@@ -347,18 +353,18 @@ export function createDevToolsBridge() {
                     }
                 }
                 instance = updateReactComponent(rootInput);
-                instance._rootNodeID = nextRootKey(roots);
+                instance._rootNodeID = nextRootKey();
                 roots[instance._rootNodeID] = instance;
                 mountDevToolComponentTree(instance);
                 Mount._renderNewRootComponent(instance);
             } else if (rootInput.dom === null) {
-                for (rootKey in roots) {
-                    const rootInstance = roots[rootKey];
+                for (root in roots) {
+                    const rootInstance = roots[root];
 
                     if (!rootInstance.vNode.dom) {
                         Reconciler.unmountComponent(rootInstance);
 
-                        delete roots[rootKey];
+                        delete roots[root];
 
                         return;
                     }
