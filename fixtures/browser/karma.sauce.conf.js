@@ -140,7 +140,7 @@ module.exports = function(config) {
       commandTimeout: 400
     },
 
-    plugins: ['karma-jasmine', 'karma-jasmine-matchers', 'karma-webpack', 'karma-failed-reporter', 'karma-sauce-launcher'],
+    plugins: ['karma-jasmine', 'karma-jasmine-matchers', 'karma-webpack', 'karma-sauce-launcher'],
 
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
