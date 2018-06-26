@@ -176,7 +176,7 @@ declare global {
       // MouseEvents
       onClick?: MouseEventHandler<T>;
       onContextMenu?: MouseEventHandler<T>;
-      onDoubleClick?: MouseEventHandler<T>;
+      onDblClick?: MouseEventHandler<T>;
       onDrag?: DragEventHandler<T>;
       onDragEnd?: DragEventHandler<T>;
       onDragEnter?: DragEventHandler<T>;
@@ -276,7 +276,7 @@ declare global {
       // MouseEvents
       onclick?: MouseEventHandler<T>;
       oncontextmenu?: MouseEventHandler<T>;
-      ondoubleclick?: MouseEventHandler<T>;
+      ondblclick?: MouseEventHandler<T>;
       ondrag?: DragEventHandler<T>;
       ondragend?: DragEventHandler<T>;
       ondragenter?: DragEventHandler<T>;
