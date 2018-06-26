@@ -109,28 +109,54 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
   }
 }
 
-export interface ComponentLifecycle<P, S> {
-  componentDidMount?(): void;
+export type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
 
-  componentWillMount?(): void;
+export type SFC<P = {}> = StatelessComponent<P>;
 
-  componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+export interface StatelessComponent<P = {}> {
+    (props: P & { children?: InfernoChildren }, context?: any): VNode<P> | null;
 
-  shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
-
-  componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
-
-  componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
-
-  componentWillUnmount?(): void;
-
-  getChildContext?(): void;
+    defaultProps?: Partial<P>;
+    displayName?: string;
+    defaultHooks?: Refs<P>;
 }
 
-export interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {}
+export interface ComponentClass<P = {}, S ={}> {
+    new (props?: P, context?: any): Component<P, {}>;
+
+    defaultProps?: Partial<P>;
+    displayName?: string;
+    refs?: any;
+
+    componentDidMount?(): void;
+
+    componentWillMount?(): void;
+
+    componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+
+    shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+
+    componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+
+    componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+
+    componentWillUnmount?(): void;
+
+    getChildContext?(): void;
+}
+
+export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }['bivarianceHack'];
+
+export interface Requireable<T> extends Validator<T> {
+    isRequired: Validator<T>;
+}
+
+export type ValidationMap<T> = { [K in keyof T]?: Validator<T> };
+
+export interface Component<P = {}, S = {}> extends ComponentClass<P, S> {}
 export class Component<P, S> {
   // Public
-  public static defaultProps?: Partial<any>;
+  public static defaultProps;
   public state: S | null = null;
   public props: Props<P, this> & P;
   public context: any;
@@ -185,30 +211,3 @@ export class Component<P, S> {
   public render(nextProps: P, nextState, nextContext): InfernoChildren | void {}
 }
 
-export type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
-
-export type SFC<P = {}> = StatelessComponent<P>;
-
-export interface StatelessComponent<P = {}> {
-  (props: P & { children?: InfernoChildren }, context?: any): VNode<P> | null;
-
-  defaultProps?: Partial<P>;
-  displayName?: string;
-  defaultHooks?: Refs<P>;
-}
-
-export interface ComponentClass<P = {}> {
-  new (props?: P, context?: any): Component<P, {}>;
-
-  defaultProps?: Partial<P>;
-  displayName?: string;
-  refs?: any;
-}
-
-export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }['bivarianceHack'];
-
-export interface Requireable<T> extends Validator<T> {
-  isRequired: Validator<T>;
-}
-
-export type ValidationMap<T> = { [K in keyof T]?: Validator<T> };

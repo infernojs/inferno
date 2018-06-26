@@ -22,7 +22,7 @@ describe('Github1176', () => {
     const Loader = () => <div className="loader">Loader...</div>;
 
     class Component1 extends Component {
-      render() {
+      public render() {
         return (
           <div className="component1">
             Component 1 <br />
@@ -43,7 +43,7 @@ describe('Github1176', () => {
         };
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         setTimeout(() => {
           this.setState({
             loading: false
@@ -51,12 +51,12 @@ describe('Github1176', () => {
         }, 10);
       }
 
-      clearApp() {
+      public clearApp() {
         render(null, container);
       }
 
-      render() {
-        if (this.state.loading) {
+      public render() {
+        if ((this.state as any).loading) {
           return <Loader />;
         }
 

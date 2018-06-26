@@ -41,7 +41,7 @@ function handleClick({ props, context }, event: MouseEvent<any>) {
 /**
  * The public API for rendering a history-aware <a>.
  */
-export function Link(props: ILinkProps, context): VNode {
+export function Link(props: ILinkProps & _InfernoJSX.LinkHTMLAttributes<HTMLLinkElement>, context): VNode {
   const { replace, children, className, to = '', innerRef, ...rest } = props;
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 
