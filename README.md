@@ -168,7 +168,12 @@ If you have built something using Inferno you can add them here:
 
 The best way to get started with Inferno is by using [Create Inferno App](https://github.com/infernojs/create-inferno-app).
 
-Alternatively, you can use the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup. For a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/). For using Inferno to build a mobile app, try [Inferno Mobile Starter Project](https://github.com/Rudy-Zidan/inferno-mobile) by [Rudy-Zidan](https://github.com/Rudy-Zidan).
+Alternatively, you can try any of the following:
+* the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup.
+* for a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/).
+* for using Inferno to build a mobile app, try [Inferno Mobile Starter Project](https://github.com/Rudy-Zidan/inferno-mobile) by [Rudy-Zidan](https://github.com/Rudy-Zidan).
+* for [TypeScript](https://www.typescriptlang.org/) support and bundling with [Browserify](https://www.npmjs.com/package/browserify): https://github.com/smcatala/inferno-typescript-browserify-example
+* for an example of how to use Inferno in [codesandbox](https://codesandbox.io/): https://codesandbox.io/s/znmyj24w4p
 
 Core package:
 
