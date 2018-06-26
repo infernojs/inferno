@@ -84,7 +84,6 @@ function attachEventToDocument(name: string) {
       // Firefox incorrectly triggers click event for mid/right mouse buttons.
       // This bug has been active for 12 years.
       // https://bugzilla.mozilla.org/show_bug.cgi?id=184051
-      event.preventDefault();
       event.stopPropagation();
       return false;
     }
