@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "license": "MIT",
   "description": "Inferno ES6 Component",
   "author": {
@@ -24,6 +24,6 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "5.2.0"
+    "inferno": "5.3.0"
   }
 }
