@@ -160,12 +160,8 @@ const reactiveMixin = {
           if (typeof this.componentWillReact === 'function') {
             this.componentWillReact(); // TODO: wrap in action?
           }
-          if (this.__$mobxIsUnmounted !== true) {
-            if (!skipRender) {
-              this.$UPD = true;
-              this.forceUpdate();
-              this.$UPD = false;
-            }
+          if (!skipRender) {
+            this.forceUpdate();
           }
         }
       });
@@ -212,7 +208,6 @@ const reactiveMixin = {
       this.render.$mobx.dispose();
     }
 
-    this.__$mobxIsUnmounted = true;
     if (isDevtoolsEnabled) {
       const node = this.$LI.dom;
 

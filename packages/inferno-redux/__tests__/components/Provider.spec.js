@@ -29,16 +29,6 @@ describe('redux', () => {
       }
     }
 
-    it('should enforce a single child', () => {
-      const store = createStore(() => ({}));
-
-      expect(() => renderIntoContainer(createElement(Provider, { store }, createElement('div', {})))).not.toThrow();
-
-      expect(() => renderIntoContainer(createElement(Provider, { store }))).toThrowError(/Only one child/);
-
-      expect(() => renderIntoContainer(createElement(Provider, { store }, createElement('div', {}), createElement('div', {})))).toThrowError(/Only one child/);
-    });
-
     it('should add the store to the child context', () => {
       const store1 = createStore(() => ({}));
       const store2 = createStore(() => ({}));

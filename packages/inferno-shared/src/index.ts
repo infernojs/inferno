@@ -1,15 +1,8 @@
 export const NO_OP = '$NO_OP';
 export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
-// This should be boolean and not reference to window.document
-export const isBrowser = !!(typeof window !== 'undefined' && window.document);
+export const isBrowser: boolean = !!(typeof window !== 'undefined' && window.document);
 
-export function toArray(children): any[] {
-  return isArray(children) ? children : children ? [children] : children;
-}
-
-// this is MUCH faster than .constructor === Array and instanceof Array
-// in Node 7 and the later versions of V8, slower in older versions though
 export const isArray = Array.isArray;
 
 export function isStringOrNumber(o: any): o is string | number {

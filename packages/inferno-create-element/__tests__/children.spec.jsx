@@ -787,7 +787,6 @@ describe('Children - (JSX)', () => {
 
   describe('Functions non keyed', () => {
     it('Should render correctly functions and nodes mixed', () => {
-      // references for the sake of test case
       let updaterFirst = null;
       let updaterSecond = null;
 

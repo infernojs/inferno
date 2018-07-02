@@ -390,7 +390,6 @@ describe('Components (JSX)', () => {
         done();
       });
     });
-    // setState causes a render, so we should expect 2
   });
 
   it('should render with null in the initial state property', function(done) {
@@ -516,8 +515,6 @@ describe('Components (JSX)', () => {
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
       buttons.forEach(button => button.click());
 
-      // requestAnimationFrame is needed here because
-      // setState fires after a requestAnimationFrame
       setTimeout(() => {
         expect(container.innerHTML).toBe(
           innerHTML(
@@ -655,20 +652,12 @@ describe('Components (JSX)', () => {
 
     class Repeater extends Component {
       render() {
-        // this doesn't work - only the last value is updated
         const children = [];
         for (let i = 0; i < 3; i++) {
           children.push(<Value key={i} value={this.props.value} />);
         }
 
         return <div>{children}</div>;
-
-        // this works - all values are updated
-        // return <div>
-        //    <Value value={ this.props.value }/>
-        //    <Value value={ this.props.value }/>
-        //    <Value value={ this.props.value }/>
-        // </div>
       }
     }
 
@@ -922,7 +911,6 @@ describe('Components (JSX)', () => {
           list: ['1', '2', '3', '4']
         };
 
-        // Bindings
         this.handleClick = this.handleClick.bind(this);
       }
 
@@ -1249,7 +1237,6 @@ describe('Components (JSX)', () => {
       }
 
       const data = [
-        // Data structure should provide stable keys.
         { key: '0', data: 'Foo' },
         {
           key: '1',
@@ -1281,7 +1268,6 @@ describe('Components (JSX)', () => {
       }
 
       const data = [
-        // Data structure should provide stable keys.
         { key: '0', data: 'Foo' },
         {
           key: '1',

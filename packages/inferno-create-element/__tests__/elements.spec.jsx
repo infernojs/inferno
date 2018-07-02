@@ -123,7 +123,7 @@ describe('Elements (JSX)', () => {
     render(<div className={'hello'} />, container);
     expect(container.firstChild.nodeName).toBe('DIV');
     expect(container.firstChild.childNodes.length).toBe(0);
-    expect(container.firstChild.getAttribute('class')).toBe('hello'); // 'class¨attribute exist!
+    expect(container.firstChild.getAttribute('class')).toBe('hello'); // class attribute exist!
 
     render(<div id="hello" />, container);
     expect(container.firstChild.nodeName).toBe('DIV');
@@ -529,18 +529,6 @@ describe('Elements (JSX)', () => {
   });
 
   it('should render "className" attribute', () => {
-    // Bad tests, you shouldn't use className on SVG elements
-
-    // render(<div className="Dominic rocks!" />, container);
-    // expect(container.firstChild.className).to.eql('Dominic rocks!');
-    // expect(
-    // 	container.innerHTML
-    // ).toEqual(
-    // 	innerHTML('<div className="Dominic rocks!"></div>')
-    // );
-    // render(<div className='' />, container);
-    // expect(container.firstChild.className).to.eql('');
-
     render(<div className="123" />, container);
     expect(container.firstChild.getAttribute('class')).toEqual('123');
 
@@ -569,7 +557,6 @@ describe('Elements (JSX)', () => {
 
     expect(container.innerHTML).toBe(innerHTML('<input>'));
 
-    // unset
     render(null, container);
     expect(container.nodeName).toBe('DIV');
     expect(container.childNodes.length).toBe(0);
@@ -847,7 +834,6 @@ describe('Elements (JSX)', () => {
     const sinonSpy = sinon.spy(obj, 'fn');
     const spyClick = sinon.spy(obj, 'click');
 
-    // TODO: Fails to creation of node fix needed
     render(
       <input
         type="text"
@@ -868,10 +854,9 @@ describe('Elements (JSX)', () => {
       />,
       container
     );
-    // TODO: Somehow verify hooks / events work. Not sure this is as expected
     const input = container.querySelector('#test');
     sinon.assert.calledOnce(sinonSpy); // Verify hook works
-    input.click(); // Focus fails with async tests - changed to tests
+    input.click();
     setTimeout(() => {
       sinon.assert.calledOnce(spyClick); // Verify hook works
       done();

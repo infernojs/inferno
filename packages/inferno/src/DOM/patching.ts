@@ -1,4 +1,4 @@
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
@@ -216,7 +216,7 @@ export function updateClassComponent(
 
   if (instance.$UN) {
     if (process.env.NODE_ENV !== 'production') {
-      throwError(
+      warning(
         'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.'
       );
     }
@@ -239,7 +239,7 @@ export function updateClassComponent(
     }
   }
   /* Update if scu is not defined, or it returns truthy value or force */
-  const hasSCU = isFunction(instance.shouldComponentUpdate);
+  const hasSCU = Boolean(instance.shouldComponentUpdate);
 
   if (force || !hasSCU || (hasSCU && (instance.shouldComponentUpdate as Function)(nextProps, nextState, context))) {
     if (isFunction(instance.componentWillUpdate)) {
@@ -303,9 +303,8 @@ function patchComponent(lastVNode, nextVNode, parentDom, context, isSVG: boolean
     if (isClass) {
       const instance = lastVNode.children;
       instance.$UPD = true;
-
-      updateClassComponent(instance, instance.state, nextVNode, nextProps, parentDom, context, isSVG, false, false);
       instance.$V = nextVNode;
+      updateClassComponent(instance, instance.state, nextVNode, nextProps, parentDom, context, isSVG, false, false);
       instance.$UPD = false;
     } else {
       let shouldUpdate: any = true;
@@ -364,14 +363,18 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, context: Object,
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
   let i = 0;
   let nextChild;
+  let lastChild;
 
   for (; i < commonLength; i++) {
     nextChild = nextChildren[i];
+    lastChild = lastChildren[i];
 
     if (nextChild.dom) {
       nextChild = nextChildren[i] = directClone(nextChild);
     }
-    patch(lastChildren[i], nextChild, dom, context, isSVG);
+
+    patch(lastChild, nextChild, dom, context, isSVG);
+    lastChildren[i] = nextChild;
   }
   if (lastChildrenLength < nextChildrenLength) {
     for (i = commonLength; i < nextChildrenLength; i++) {
@@ -392,13 +395,10 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, context: Object,
 function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean, aLength: number, bLength: number) {
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;
-  let aStart = 0;
-  let bStart = 0;
   let i: number;
-  let j: number;
-  let aNode: VNode = a[aStart];
-  let bNode: VNode = b[bStart];
-  let nextNode;
+  let j: number = 0;
+  let aNode: VNode = a[j];
+  let bNode: VNode = b[j];
   let nextPos: number;
 
   // Step 1
@@ -407,17 +407,18 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
     // Sync nodes with the same key at the beginning.
     while (aNode.key === bNode.key) {
       if (bNode.dom) {
-        b[bStart] = bNode = directClone(bNode);
+        b[j] = bNode = directClone(bNode);
       }
       patch(aNode, bNode, dom, context, isSVG);
-      aStart++;
-      bStart++;
-      if (aStart > aEnd || bStart > bEnd) {
+      a[j] = bNode;
+      j++;
+      if (j > aEnd || j > bEnd) {
         break outer;
       }
-      aNode = a[aStart];
-      bNode = b[bStart];
+      aNode = a[j];
+      bNode = b[j];
     }
+
 
     aNode = a[aEnd];
     bNode = b[bEnd];
@@ -428,9 +429,10 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
         b[bEnd] = bNode = directClone(bNode);
       }
       patch(aNode, bNode, dom, context, isSVG);
+      a[aEnd] = bNode;
       aEnd--;
       bEnd--;
-      if (aStart > aEnd || bStart > bEnd) {
+      if (j > aEnd || j > bEnd) {
         break outer;
       }
       aNode = a[aEnd];
@@ -438,26 +440,28 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
     }
   }
 
-  if (aStart > aEnd) {
-    if (bStart <= bEnd) {
+  if (j > aEnd) {
+    if (j <= bEnd) {
       nextPos = bEnd + 1;
-      nextNode = nextPos < bLength ? b[nextPos].dom : null;
-      while (bStart <= bEnd) {
-        bNode = b[bStart];
+      const nextNode = nextPos < bLength ? b[nextPos].dom : null;
+      while (j <= bEnd) {
+        bNode = b[j];
         if (bNode.dom) {
-          b[bStart] = bNode = directClone(bNode);
+          b[j] = bNode = directClone(bNode);
         }
-        bStart++;
+        j++;
         insertOrAppend(dom, mount(bNode, null, context, isSVG), nextNode);
       }
     }
-  } else if (bStart > bEnd) {
-    while (aStart <= aEnd) {
-      remove(a[aStart++], dom);
+  } else if (j > bEnd) {
+    while (j <= aEnd) {
+      remove(a[j++], dom);
     }
   } else {
-    const aLeft: number = aEnd - aStart + 1;
-    const bLeft: number = bEnd - bStart + 1;
+    let aStart = j;
+    const bStart= j;
+    const aLeft: number = aEnd - j + 1;
+    const bLeft: number = bEnd - j + 1;
     const sources: number[] = [];
     for (i = 0; i < bLeft; i++) {
       sources.push(0);

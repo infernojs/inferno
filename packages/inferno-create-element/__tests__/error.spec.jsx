@@ -95,63 +95,444 @@ describe('Error recovery', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  // it('Should be able to recover from subtree crash', () => {
-  // 	class Crasher extends Component {
-  // 		constructor(props, context) {
-  // 			super(props, context);
-  //
-  // 			this.state = {
-  // 				value: 1
-  // 			};
-  // 		}
-  //
-  //
-  // 		componentWillMount() {
-  // 			if (this.props.crash) {
-  // 				throw Error('test');
-  // 			}
-  //
-  // 			this.setState({
-  // 				value: 2
-  // 			});
-  // 		}
-  //
-  // 		render() {
-  // 			return (
-  // 				<div>{this.state.value}</div>
-  // 			);
-  // 		}
-  // 	}
-  //
-  // 	function TreeOfCrashers({suffle, crash}) {
-  // 		let arr = [];
-  // 		if (suffle) {
-  // 			arr.push(<div>1</div>);
-  // 			arr.push(<Crasher crash={false} />);
-  // 		} else {
-  // 			arr.push(<Crasher crash={false} />);
-  // 		}
-  //
-  //
-  // 		arr.push(<Crasher crash={crash} />);
-  //
-  // 		return (
-  // 			<div>
-  // 				{arr}
-  // 			</div>
-  // 		);
-  // 	}
-  //
-  // 	render(<TreeOfCrashers crash={false}/>, container);
-  //
-  //
-  // 	try {
-  // 		render(<TreeOfCrashers suffle={true} crash={true}/>, container);
-  // 	} catch (ex) {
-  // 		expect(ex.message).toEqual('test');
-  // 	}
-  //
-  // 	render(<TreeOfCrashers crash={false}/>, container);
-  // 	expect(container.firstChild.innerHTML).toEqual('2');
-  // });
+  /*
+   * THROW ERROR IN
+   *
+   * last  node - render - willMount, didMount, willUpdate, didUpdate, constructor, cwrp
+   * mid   node - render - willMount, didMount, willUpdate, didUpdate, constructor, cwrp
+   * first node - render - willMount, didMount, willUpdate, didUpdate, constructor, cwrp
+   *
+   * force keyed? force non keyed?
+   */
+
+  describe('Error recovery from user land errors', () => {
+      ['last', 'mid', 'first'].forEach((location) => {
+          [
+              'render',
+              'constructor',
+              'DidMount',
+              'WillMount',
+              'WillReceiveProps',
+              'shouldUpdate',
+              'WillUpdate',
+              'DidUpdate',
+              'getChildContext'
+          ].forEach((crashLocation) => {
+              it('Should recover from subtree crash in ' + location + ' of children when crash happens in components ' + crashLocation, () => {
+                  class Crasher extends Component {
+                      constructor(props, context) {
+                          super(props, context);
+
+                          this.state = {
+                              value: ''
+                          };
+
+                          if (props.crash && crashLocation === 'constructor') {
+                              throw Error('test');
+                          }
+                      }
+
+
+                      componentWillMount() {
+
+                          this.setState({
+                              value: 'mounted'
+                          });
+
+                          if (this.props.crash && crashLocation === 'WillMount') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentWillReceiveProps(props) {
+                          if (props.crash && crashLocation === 'WillReceiveProps') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentDidMount() {
+                          if (this.props.crash && crashLocation === 'DidMount') {
+                              throw Error('test');
+                          }
+                      }
+
+                      shouldComponentUpdate(props) {
+                          if (props.crash && crashLocation === 'shouldUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentWillUpdate() {
+                          if (this.props.crash && crashLocation === 'WillUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentDidUpdate() {
+                          if (this.props.crash && crashLocation === 'DidUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      // Unmount hook is still an issue
+                      // componentWillUnmount() {
+                      //     if (this.props.crash && crashLocation === 'WillUnmount') {
+                      //         throw Error('test');
+                      //     }
+                      // }
+
+                      getChildContext() {
+                          if (this.props.crash && crashLocation === 'getChildContext') {
+                              throw Error('test');
+                          }
+
+                          return {};
+                      }
+
+                      render() {
+                          if (this.props.crash && crashLocation === 'render') {
+                              throw Error('test');
+                          }
+
+                          return (
+                              <div>{this.state.value}</div>
+                          );
+                      }
+                  }
+
+                  function TreeOfCrashers({suffle, crash}) {
+                      let arr = [];
+
+                      if (location === 'first') {
+                          arr.push(<Crasher crash={crash} />);
+                      }
+
+                      if (suffle) {
+                          arr.push(<span>1</span>);
+                          if (location === 'mid') {
+                              arr.push(<Crasher crash={crash} />);
+                          }
+                          arr.push(<Crasher crash={false} />);
+                      } else {
+                          if (location === 'mid') {
+                              arr.push(<Crasher crash={crash} />);
+                          }
+                          arr.push(<Crasher crash={false} />);
+                      }
+
+
+                      if (location === 'last') {
+                          arr.push(<Crasher crash={crash} />);
+                      }
+
+
+                      return (
+                          <div>
+                              {arr}
+                          </div>
+                      );
+                  }
+
+                  render(<TreeOfCrashers crash={false}/>, container);
+
+
+                  try {
+                      render(<TreeOfCrashers suffle={true} crash={true}/>, container);
+                  } catch (ex) {
+                      // do nothing
+                  }
+
+                  render(<TreeOfCrashers crash={false}/>, container);
+
+                  expect(container.firstChild.innerHTML).toBe('<div>mounted</div><div>mounted</div>');
+              });
+          });
+      });
+
+      ['last', 'mid', 'first'].forEach((location) => {
+          [
+              'render',
+              'constructor',
+              'DidMount',
+              'WillMount',
+              'WillReceiveProps',
+              'shouldUpdate',
+              'WillUpdate',
+              'DidUpdate',
+              'getChildContext'
+          ].forEach((crashLocation) => {
+              it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
+                  class Crasher extends Component {
+                      constructor(props, context) {
+                          super(props, context);
+
+                          this.state = {
+                              value: ''
+                          };
+
+                          if (props.crash && crashLocation === 'constructor') {
+                              throw Error('test');
+                          }
+                      }
+
+
+                      componentWillMount() {
+
+                          this.setState({
+                              value: 'mounted'
+                          });
+
+                          if (this.props.crash && crashLocation === 'WillMount') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentWillReceiveProps(props) {
+                          if (props.crash && crashLocation === 'WillReceiveProps') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentDidMount() {
+                          if (this.props.crash && crashLocation === 'DidMount') {
+                              throw Error('test');
+                          }
+                      }
+
+                      shouldComponentUpdate(props) {
+                          if (props.crash && crashLocation === 'shouldUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentWillUpdate() {
+                          if (this.props.crash && crashLocation === 'WillUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentDidUpdate() {
+                          if (this.props.crash && crashLocation === 'DidUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      // Unmount hook is still an issue
+                      // componentWillUnmount() {
+                      //     if (this.props.crash && crashLocation === 'WillUnmount') {
+                      //         throw Error('test');
+                      //     }
+                      // }
+
+                      getChildContext() {
+                          if (this.props.crash && crashLocation === 'getChildContext') {
+                              throw Error('test');
+                          }
+
+                          return {};
+                      }
+
+                      render() {
+                          if (this.props.crash && crashLocation === 'render') {
+                              throw Error('test');
+                          }
+
+                          return (
+                              <div>{this.state.value}</div>
+                          );
+                      }
+                  }
+
+                  function TreeOfCrashers({suffle, crash}) {
+                      let arr = [];
+
+                      if (location === 'first') {
+                          arr.push(<Crasher crash={crash} />);
+                      }
+
+                      if (suffle) {
+                          arr.push(<span>1</span>);
+                          if (location === 'mid') {
+                              arr.push(<Crasher crash={crash} />);
+                          }
+                          arr.push(<Crasher crash={false} />);
+                      } else {
+                          if (location === 'mid') {
+                              arr.push(<Crasher crash={crash} />);
+                          }
+                          arr.push(<Crasher crash={false} />);
+                      }
+
+
+                      if (location === 'last') {
+                          arr.push(<Crasher crash={crash} />);
+                      }
+
+
+                      return (
+                          <div $HasNonKeyedChildren>
+                              {arr}
+                          </div>
+                      );
+                  }
+
+                  render(<TreeOfCrashers crash={false}/>, container);
+
+
+                  try {
+                      render(<TreeOfCrashers suffle={true} crash={true}/>, container);
+                  } catch (ex) {
+                      // do nothing
+                  }
+
+                  render(<TreeOfCrashers crash={false}/>, container);
+
+                  expect(container.firstChild.innerHTML).toBe('<div>mounted</div><div>mounted</div>');
+              });
+          });
+      });
+
+          ['last', 'mid', 'first'].forEach((location) => {
+          [
+              'render',
+              'constructor',
+              'DidMount',
+              'WillMount',
+              'WillReceiveProps',
+              'shouldUpdate',
+              'WillUpdate',
+              'DidUpdate',
+              'getChildContext'
+          ].forEach((crashLocation) => {
+              it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
+                  class Crasher extends Component {
+                      constructor(props, context) {
+                          super(props, context);
+
+                          this.state = {
+                              value: ''
+                          };
+
+                          if (props.crash && crashLocation === 'constructor') {
+                              throw Error('test');
+                          }
+                      }
+
+
+                      componentWillMount() {
+
+                          this.setState({
+                              value: 'mounted'
+                          });
+
+                          if (this.props.crash && crashLocation === 'WillMount') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentWillReceiveProps(props) {
+                          if (props.crash && crashLocation === 'WillReceiveProps') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentDidMount() {
+                          if (this.props.crash && crashLocation === 'DidMount') {
+                              throw Error('test');
+                          }
+                      }
+
+                      shouldComponentUpdate(props) {
+                          if (props.crash && crashLocation === 'shouldUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentWillUpdate() {
+                          if (this.props.crash && crashLocation === 'WillUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      componentDidUpdate() {
+                          if (this.props.crash && crashLocation === 'DidUpdate') {
+                              throw Error('test');
+                          }
+                      }
+
+                      // Unmount hook is still an issue
+                      // componentWillUnmount() {
+                      //     if (this.props.crash && crashLocation === 'WillUnmount') {
+                      //         throw Error('test');
+                      //     }
+                      // }
+
+                      getChildContext() {
+                          if (this.props.crash && crashLocation === 'getChildContext') {
+                              throw Error('test');
+                          }
+
+                          return {};
+                      }
+
+                      render() {
+                          if (this.props.crash && crashLocation === 'render') {
+                              throw Error('test');
+                          }
+
+                          return (
+                              <div>{this.state.value}</div>
+                          );
+                      }
+                  }
+
+                  function TreeOfCrashers({suffle, crash}) {
+                      let arr = [];
+
+                      if (location === 'first') {
+                          arr.push(<Crasher key="first" crash={crash} />);
+                      }
+
+                      if (suffle) {
+                          arr.push(<span key="span">1</span>);
+                          if (location === 'mid') {
+                              arr.push(<Crasher key="mid" crash={crash} />);
+                          }
+                          arr.push(<Crasher key="false-suffle" crash={false} />);
+                      } else {
+                          if (location === 'mid') {
+                              arr.push(<Crasher key="mid" crash={crash} />);
+                          }
+                          arr.push(<Crasher key="true-suffle" crash={false} />);
+                      }
+
+
+                      if (location === 'last') {
+                          arr.push(<Crasher key="last" crash={crash} />);
+                      }
+
+
+                      return (
+                          <div $HasKeyedChildren>
+                              {arr}
+                          </div>
+                      );
+                  }
+
+                  render(<TreeOfCrashers crash={false}/>, container);
+
+
+                  try {
+                      render(<TreeOfCrashers suffle={true} crash={true}/>, container);
+                  } catch (ex) {
+                      // do nothing
+                  }
+
+                  render(<TreeOfCrashers crash={false}/>, container);
+
+                  expect(container.firstChild.innerHTML).toBe('<div>mounted</div><div>mounted</div>');
+              });
+          });
+      });
+  });
 });

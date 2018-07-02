@@ -307,4 +307,92 @@ describe('rendering routine', () => {
       expect(spy.callCount).toBe(2);
     });
   });
+
+  describe('render during component construction', () => {
+      it('Should queue updates and not fail if HOC updates during child component construction', (done) => {
+          class Hello extends Component {
+              constructor(props, context) {
+                  super(props, context);
+
+                  this.state = {foo: 'foobar'};
+
+                  console.log(container.innerHTML, this.props.tag);
+                  // expect(container.innerHTML).toBe('');
+                  expect(this.props.tag).toBe(0);
+                  props.callback();
+                  // expect(container.innerHTML).toBe('');
+                  expect(this.props.tag).toBe(0);
+                  props.callback();
+                  // expect(container.innerHTML).toBe('');
+                  expect(this.props.tag).toBe(0);
+                  props.callback();
+                  // expect(container.innerHTML).toBe('');
+                  expect(this.props.tag).toBe(0);
+              }
+
+              render() {
+                  console.log("render child", this.props.tag);
+                  return <div>Hello {this.props.name} {this.props.tag} {this.state.foo}</div>;
+              }
+          }
+
+          class HOC extends Component {
+              constructor(props, context) {
+                  super(props, context);
+
+                  this.state = { tag: 0 };
+
+                  this.renderAgain = this.renderAgain.bind(this);
+              }
+
+              renderAgain() {
+                  this.props.renderAgain()
+              }
+
+              render() {
+                  console.log("render HOC");
+                  return (
+                      <div>
+                          {this.state.tag > 0 ? <div>1</div> : null}
+                          {this.state.tag > 1 ? <div>1</div> : null}
+                          <Hello name={this.props.name} tag={this.state.tag} callback={this.renderAgain} />
+                          <span>2</span>
+                      </div>
+                  )
+              }
+          }
+
+          class Parent extends Component {
+              constructor(props, context) {
+                  super(props, context);
+
+                  this.state = {
+                      foo: false
+                  };
+              }
+              render() {
+                  return (
+                      <span id="click" onClick={() => this.setState({foo: !this.state.foo})}>
+                        {this.state.foo ? <HOC renderAgain={() => this.setState({})} /> : null}
+                      </span>
+                  )
+              }
+          }
+
+          render(
+              <Parent />,
+              container
+          );
+
+
+          container.querySelector('#click').click();
+
+
+          setTimeout(function () {
+              console.log(container.innerHTML);
+              // expect(container.innerHTML).toBe('');
+              done();
+          }, 10);
+      });
+  });
 });

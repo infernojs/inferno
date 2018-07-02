@@ -90,8 +90,6 @@ describe('Blueprints (JSX)', () => {
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
       buttons.forEach(button => button.click());
 
-      // requestAnimationFrame is needed here because
-      // setState fires after a requestAnimationFrame
       setTimeout(() => {
         expect(container.innerHTML).toBe(
           innerHTML(
@@ -117,8 +115,7 @@ describe('Blueprints (JSX)', () => {
           this.onWilAttach = this.onWilAttach.bind(this);
         }
 
-        onWilAttach(node) {
-          // Do something with node and setState
+        onWilAttach() {
           this.setState({
             text: 'animate'
           });

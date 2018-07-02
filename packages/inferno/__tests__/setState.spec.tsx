@@ -459,7 +459,6 @@ describe('setState', () => {
   });
 
   it('Should have new state in render when changing state during componentWillMount and render only once', () => {
-    // const changeFoo; // TODO: What is this?
     const spy = sinon.spy();
 
     class Parent extends Component {

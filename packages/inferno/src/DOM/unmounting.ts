@@ -1,4 +1,4 @@
-import { isFunction, isNull, isNullOrUndef, isObject } from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/implementation';
 import { handleEvent } from './events/delegation';
@@ -7,7 +7,7 @@ import { EMPTY_OBJ, removeChild } from './utils/common';
 export function remove(vNode: VNode, parentDom: Element | null) {
   unmount(vNode);
 
-  if (!isNull(parentDom)) {
+  if (parentDom && vNode.dom) {
     removeChild(parentDom, vNode.dom as Element);
     // Let carbage collector free memory
     vNode.dom = null;
@@ -58,33 +58,37 @@ export function unmount(vNode) {
         }
       }
     }
-  } else if (flags & VNodeFlags.Component) {
-    const instance = vNode.children as any;
-    const ref = vNode.ref as any;
+  } else {
+      const children = vNode.children;
 
-    if (flags & VNodeFlags.ComponentClass) {
-      if (isFunction(instance.componentWillUnmount)) {
-        instance.componentWillUnmount();
+      // Safe guard for crashed VNode
+      if (children) {
+          if (flags & VNodeFlags.Component) {
+              const ref = vNode.ref as any;
+
+              if (flags & VNodeFlags.ComponentClass) {
+                  if (isFunction(children.componentWillUnmount)) {
+                      children.componentWillUnmount();
+                  }
+                  if (isFunction(ref)) {
+                      ref(null);
+                  }
+                  children.$UN = true;
+
+                  if (children.$LI) {
+                      unmount(children.$LI);
+                  }
+              } else {
+                  if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
+                      ref.onComponentWillUnmount(vNode.dom, vNode.props || EMPTY_OBJ);
+                  }
+
+                  unmount(children);
+              }
+          } else if (flags & VNodeFlags.Portal) {
+              remove(children as VNode, vNode.type);
+          }
       }
-      if (isFunction(ref)) {
-        ref(null);
-      }
-      instance.$UN = true;
-
-      unmount(instance.$LI);
-    } else {
-      if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
-        ref.onComponentWillUnmount(vNode.dom, vNode.props || EMPTY_OBJ);
-      }
-
-      unmount(instance);
-    }
-  } else if (flags & VNodeFlags.Portal) {
-    const children = vNode.children;
-
-    if (!isNull(children) && isObject(children)) {
-      remove(children as VNode, vNode.type);
-    }
   }
 }
 

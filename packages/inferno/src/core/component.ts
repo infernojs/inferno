@@ -14,7 +14,7 @@ function nextTick(fn) {
   return fallbackMethod(fn);
 }
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback?: Function): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback: Function|undefined, force: boolean): void {
   if (isFunction(newState)) {
     newState = newState(component.state, component.props, component.context) as S;
   }
@@ -32,7 +32,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Funct
     if (!component.$UPD) {
       component.$PSS = true;
       component.$UPD = true;
-      applyState(component, false, callback);
+      applyState(component, force, callback);
       component.$UPD = false;
     } else {
       // Async
@@ -187,9 +187,7 @@ export class Component<P, S> {
       return;
     }
     // Do not allow double render during force update
-    this.$BR = true;
-    applyState(this, true, callback);
-    this.$BR = false;
+    queueStateChanges(this, {} as any, callback, true);
   }
 
   public setState(newState: { [k in keyof S]?: S[k] } | Function, callback?: Function) {
@@ -197,7 +195,7 @@ export class Component<P, S> {
       return;
     }
     if (!this.$BS) {
-      queueStateChanges(this, newState, callback);
+      queueStateChanges(this, newState, callback, false);
     } else {
       // Development warning
       if (process.env.NODE_ENV !== 'production') {

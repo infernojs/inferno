@@ -236,7 +236,7 @@ describe('Inferno', () => {
 
       const Container = connect(state => ({ string: state }))(
         class Container extends Component {
-          componentWillMount() {
+          componentDidMount() {
             store.dispatch({ type: 'APPEND', payload: 'a' });
           }
 

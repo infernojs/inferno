@@ -67,8 +67,8 @@ describe('Mobx Misc', () => {
     expect(container.querySelector('div').textContent).toBe('value:6');
     expect(called).toBe(1);
 
-    y.set(42);
-    // expect(container.querySelector('div').textContent).toBe('value:6'); // not updated! TODO: fix
+    y.set(42); // SCU => False
+    expect(container.querySelector('div').textContent).toBe('value:42');
     expect(called).toBe(2);
 
     y.set(7);
@@ -108,31 +108,32 @@ describe('Mobx Misc', () => {
     done();
   });
 
-  // TODO: At the moment inferno cannot handle this scenario it will just fail,
-  // TODO: It happens because child component calls "up" for update before its instance is constructed
-  // TODO: It would be "nice to have" this fixed, but we anyway throw error if setState is called during construction, so probably its not an issue
-  // it('#85 Should handle state changing in constructors', function(done) {
-  //   debugger;
-  //   const a = mobx.observable(2);
-  //   const Child = observer(createClass({
-  //     displayName: 'Child',
-  //     getInitialState() {
-  //       debugger;
-  //       a.set(3); // one shouldn't do this!
-  //       return {};
-  //     },
-  //     render: () => <div>child:{ a.get() } - </div>
-  //   }));
-  //   const ParentWrapper = observer(function Parent() {
-  //     return <span><Child />parent:{ a.get() }</span>
-  //   });
-  //   render(<ParentWrapper />, container);
-  //
-  //   expect(container.getElementsByTagName('span')[0].textContent).toBe('child:3 - parent:3');
-  //   a.set(5);
-  //   expect(container.getElementsByTagName('span')[0].textContent).toBe('child:5 - parent:5');
-  //   a.set(7);
-  //   expect(container.getElementsByTagName('span')[0].textContent).toBe('child:7 - parent:7');
-  //   done();
-  // });
+  it('#85 Should handle state changing in constructors', function(done) {
+    const a = mobx.observable.box(2);
+    const Child = observer(createClass({
+      displayName: 'Child',
+      getInitialState() {
+        a.set(3); // one shouldn't do this!
+        return {};
+      },
+      render: () => <div>child:{ a.get() } - </div>
+    }));
+    const ParentWrapper = observer(function Parent() {
+      return <span><Child />parent:{ a.get() }</span>
+    });
+    render(<ParentWrapper />, container);
+
+      expect(container.getElementsByTagName("span")[0].textContent).toBe("child:3 - parent:2");
+      a.set(5);
+      setTimeout(() => {
+          expect(container.getElementsByTagName("span")[0].textContent).toBe("child:5 - parent:5");
+          a.set(7);
+          setTimeout(() => {
+              expect(container.getElementsByTagName("span")[0].textContent).toBe(
+                  "child:7 - parent:7"
+              );
+              done()
+          }, 10);
+      }, 10);
+  });
 });
