@@ -791,15 +791,15 @@ When you are building for development, you may want to use `inferno.dev.esm.js` 
 That build version has extra level of validation for development purposes. You can use it by adding following code to your rollup config.
 
 ```js
-    const alias = require('rollup-plugin-alias');
+const alias = require('rollup-plugin-alias');
 
     ...
-	plugins: {
-    /* When doing development workflow we want to make sure webpack picks up development build of inferno */
-		alias: {
-			'inferno': __dirname + '/node_modules/inferno/dist/index.dev.esm.js'
-		}
-	}
+  plugins: [
+    alias({
+      'inferno': __dirname + '/node_modules/inferno/dist/index.dev.esm.js'
+    }),
+  ]
+
 ```
 
 ### Custom namespaces
