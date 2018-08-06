@@ -1,7 +1,7 @@
 {
   "name": "brunch-dev-test",
   "devDependencies": {
-    "brunch": "^2.10.12",
+    "brunch": "^2.10.15",
     "javascript-brunch": "^2.10.0"
   },
   "scripts": {

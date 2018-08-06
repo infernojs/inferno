@@ -1,4 +1,5 @@
 export const warning = (message: string) => {
+  // tslint:disable-next-line:no-console
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
     // tslint:disable-next-line:no-console
     console.error(message);
