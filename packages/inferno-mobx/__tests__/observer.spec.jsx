@@ -32,7 +32,9 @@ const TodoList = observer(
       return (
         <div>
           <hi>{todos.length}</hi>
-          {todos.map((todo, idx) => <TodoItem key={idx} todo={todo} />)}
+          {todos.map((todo, idx) => (
+            <TodoItem key={idx} todo={todo} />
+          ))}
         </div>
       );
     }
@@ -242,7 +244,13 @@ describe('Mobx Observer', () => {
 
     /** table stateles component */
     const Table = observer(function table() {
-      return <div>{data.items.map(item => <Row key={item.name} item={item} />)}</div>;
+      return (
+        <div>
+          {data.items.map(item => (
+            <Row key={item.name} item={item} />
+          ))}
+        </div>
+      );
     });
 
     render(<Table />, container);
@@ -270,7 +278,12 @@ describe('Mobx Observer', () => {
       inject('foo')(
         createClass({
           render() {
-            return <div>context:{this.props.foo}</div>;
+            return (
+              <div>
+                context:
+                {this.props.foo}
+              </div>
+            );
           }
         })
       )
@@ -319,7 +332,12 @@ describe('Mobx Observer', () => {
           });
         },
         render() {
-          return <span>x:{this.computedProp}</span>;
+          return (
+            <span>
+              x:
+              {this.computedProp}
+            </span>
+          );
         }
       })
     );

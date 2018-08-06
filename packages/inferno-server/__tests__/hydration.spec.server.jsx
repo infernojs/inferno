@@ -59,7 +59,8 @@ describe('SSR Hydration - (JSX)', () => {
       node: (
         <div>
           <p>
-            Hello world<sup>
+            Hello world
+            <sup>
               <a>Foo</a>
             </sup>
           </p>
@@ -123,7 +124,12 @@ describe('SSR Hydration - (JSX)', () => {
       expect2: '<div>Hello world, Foo!Bar!</div>'
     },
     {
-      node: <div>Hello world!{null}</div>,
+      node: (
+        <div>
+          Hello world!
+          {null}
+        </div>
+      ),
       expect1: '<div>Hello world!</div>',
       expect2: '<div>Hello world!</div>'
     },
@@ -517,7 +523,8 @@ describe('SSR Hydration - (JSX)', () => {
         SSR: (
           <div>
             <p>
-              Hello world<sup>
+              Hello world
+              <sup>
                 <a>Foo</a>
               </sup>
             </p>
@@ -527,7 +534,8 @@ describe('SSR Hydration - (JSX)', () => {
         CSR: (
           <div>
             <p>
-              Hello bar<span>
+              Hello bar
+              <span>
                 <em>Foo</em>
               </span>
             </p>
@@ -557,7 +565,8 @@ describe('SSR Hydration - (JSX)', () => {
         CSR: (
           <div>
             <p>
-              Hello bar<span>
+              Hello bar
+              <span>
                 <em>Foo</em>
               </span>
             </p>
@@ -637,9 +646,19 @@ describe('SSR Hydration - (JSX)', () => {
         CSR_expected: '<div>Hello world, Foo!Bar!</div>'
       },
       {
-        SSR: <div>Hello world!{null}</div>,
+        SSR: (
+          <div>
+            Hello world!
+            {null}
+          </div>
+        ),
         SSR_expected: '<div>Hello world!</div>',
-        CSR: <div>Hello world!{false}</div>,
+        CSR: (
+          <div>
+            Hello world!
+            {false}
+          </div>
+        ),
         CSR_expected: '<div>Hello world!</div>'
       },
       {
@@ -754,7 +773,8 @@ describe('SSR Hydration - (JSX)', () => {
         SSR: (
           <div>
             <p>
-              Hello world<sup>
+              Hello world
+              <sup>
                 <a>Foo</a>
               </sup>
             </p>
@@ -764,7 +784,8 @@ describe('SSR Hydration - (JSX)', () => {
         CSR: (
           <div>
             <p>
-              Hello bar<span>
+              Hello bar
+              <span>
                 <em>Foo</em>
               </span>
             </p>
@@ -800,7 +821,8 @@ describe('SSR Hydration - (JSX)', () => {
         CSR: (
           <div>
             <p>
-              Hello bar<span>
+              Hello bar
+              <span>
                 <em>Foo</em>
               </span>
             </p>
@@ -892,9 +914,19 @@ describe('SSR Hydration - (JSX)', () => {
         CSR2_expected: '<span>B</span>'
       },
       {
-        SSR: <div>Hello world!{null}</div>,
+        SSR: (
+          <div>
+            Hello world!
+            {null}
+          </div>
+        ),
         SSR_expected: '<div>Hello world!</div>',
-        CSR: <div>Hello world!{false}</div>,
+        CSR: (
+          <div>
+            Hello world!
+            {false}
+          </div>
+        ),
         CSR_expected: '<div>Hello world!</div>',
         CSR2: <B />,
         CSR2_expected: '<span>B</span>'

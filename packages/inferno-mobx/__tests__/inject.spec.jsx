@@ -22,7 +22,12 @@ describe('inject based context', () => {
       observer(
         createClass({
           render() {
-            return <div>context:{this.props.foo}</div>;
+            return (
+              <div>
+                context:
+                {this.props.foo}
+              </div>
+            );
           }
         })
       )
@@ -42,7 +47,12 @@ describe('inject based context', () => {
     const C = inject('foo')(
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );
@@ -66,7 +76,8 @@ describe('inject based context', () => {
           render() {
             return (
               <div>
-                context:{this.props.foo}
+                context:
+                {this.props.foo}
                 {this.props.bar}
               </div>
             );
@@ -102,7 +113,12 @@ describe('inject based context', () => {
       observer(
         createClass({
           render() {
-            return <div>context:{this.props.foo}</div>;
+            return (
+              <div>
+                context:
+                {this.props.foo}
+              </div>
+            );
           }
         })
       )
@@ -129,7 +145,12 @@ describe('inject based context', () => {
       observer(
         createClass({
           render() {
-            return <div>context:{this.props.foo}</div>;
+            return (
+              <div>
+                context:
+                {this.props.foo}
+              </div>
+            );
           }
         })
       )
@@ -165,7 +186,12 @@ describe('inject based context', () => {
       ['foo'],
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );
@@ -217,7 +243,8 @@ describe('inject based context', () => {
           render() {
             return (
               <div>
-                context:{this.props.zoom}
+                context:
+                {this.props.zoom}
                 {this.props.baz}
               </div>
             );

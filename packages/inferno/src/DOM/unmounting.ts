@@ -59,36 +59,36 @@ export function unmount(vNode) {
       }
     }
   } else {
-      const children = vNode.children;
+    const children = vNode.children;
 
-      // Safe guard for crashed VNode
-      if (children) {
-          if (flags & VNodeFlags.Component) {
-              const ref = vNode.ref as any;
+    // Safe guard for crashed VNode
+    if (children) {
+      if (flags & VNodeFlags.Component) {
+        const ref = vNode.ref as any;
 
-              if (flags & VNodeFlags.ComponentClass) {
-                  if (isFunction(children.componentWillUnmount)) {
-                      children.componentWillUnmount();
-                  }
-                  if (isFunction(ref)) {
-                      ref(null);
-                  }
-                  children.$UN = true;
-
-                  if (children.$LI) {
-                      unmount(children.$LI);
-                  }
-              } else {
-                  if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
-                      ref.onComponentWillUnmount(vNode.dom, vNode.props || EMPTY_OBJ);
-                  }
-
-                  unmount(children);
-              }
-          } else if (flags & VNodeFlags.Portal) {
-              remove(children as VNode, vNode.type);
+        if (flags & VNodeFlags.ComponentClass) {
+          if (isFunction(children.componentWillUnmount)) {
+            children.componentWillUnmount();
           }
+          if (isFunction(ref)) {
+            ref(null);
+          }
+          children.$UN = true;
+
+          if (children.$LI) {
+            unmount(children.$LI);
+          }
+        } else {
+          if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
+            ref.onComponentWillUnmount(vNode.dom, vNode.props || EMPTY_OBJ);
+          }
+
+          unmount(children);
+        }
+      } else if (flags & VNodeFlags.Portal) {
+        remove(children as VNode, vNode.type);
       }
+    }
   }
 }
 

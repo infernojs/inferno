@@ -14,7 +14,7 @@ function nextTick(fn) {
   return fallbackMethod(fn);
 }
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback: Function|undefined, force: boolean): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback: Function | undefined, force: boolean): void {
   if (isFunction(newState)) {
     newState = newState(component.state, component.props, component.context) as S;
   }
@@ -114,41 +114,41 @@ export type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
 export type SFC<P = {}> = StatelessComponent<P>;
 
 export interface StatelessComponent<P = {}> {
-    (props: P & { children?: InfernoChildren }, context?: any): VNode<P> | null;
+  (props: P & { children?: InfernoChildren }, context?: any): VNode<P> | null;
 
-    defaultProps?: Partial<P>;
-    displayName?: string;
-    defaultHooks?: Refs<P>;
+  defaultProps?: Partial<P>;
+  displayName?: string;
+  defaultHooks?: Refs<P>;
 }
 
-export interface ComponentClass<P = {}, S ={}> {
-    new (props?: P, context?: any): Component<P, {}>;
+export interface ComponentClass<P = {}, S = {}> {
+  new (props?: P, context?: any): Component<P, {}>;
 
-    defaultProps?: Partial<P>;
-    displayName?: string;
-    refs?: any;
+  defaultProps?: Partial<P>;
+  displayName?: string;
+  refs?: any;
 
-    componentDidMount?(): void;
+  componentDidMount?(): void;
 
-    componentWillMount?(): void;
+  componentWillMount?(): void;
 
-    componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+  componentWillReceiveProps?(nextProps: P, nextContext: any): void;
 
-    shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+  shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
 
-    componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+  componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
 
-    componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+  componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
 
-    componentWillUnmount?(): void;
+  componentWillUnmount?(): void;
 
-    getChildContext?(): void;
+  getChildContext?(): void;
 }
 
 export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }['bivarianceHack'];
 
 export interface Requireable<T> extends Validator<T> {
-    isRequired: Validator<T>;
+  isRequired: Validator<T>;
 }
 
 export type ValidationMap<T> = { [K in keyof T]?: Validator<T> };
@@ -208,4 +208,3 @@ export class Component<P, S> {
   // tslint:disable-next-line:no-empty
   public render(nextProps: P, nextState, nextContext): InfernoChildren | void {}
 }
-

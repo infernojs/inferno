@@ -751,7 +751,8 @@ describe('Components (JSX)', () => {
       render() {
         return (
           <div>
-            isok={this.props.isok ? 'true' : 'false'}
+            isok=
+            {this.props.isok ? 'true' : 'false'}
             <div>
               {this.props.isok &&
                 ['a', 'b'].map(x => {

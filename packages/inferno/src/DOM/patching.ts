@@ -419,7 +419,6 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
       bNode = b[j];
     }
 
-
     aNode = a[aEnd];
     bNode = b[bEnd];
 
@@ -459,7 +458,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
     }
   } else {
     let aStart = j;
-    const bStart= j;
+    const bStart = j;
     const aLeft: number = aEnd - j + 1;
     const bLeft: number = bEnd - j + 1;
     const sources: number[] = [];

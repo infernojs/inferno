@@ -36,7 +36,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -90,7 +92,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -130,7 +134,9 @@ describe('Children - (JSX)', () => {
         return (
           <div className="tab-group">
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />
+            ))}
           </div>
         );
       }
@@ -168,9 +174,13 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />
+            ))}
           </div>
         );
       }
@@ -213,7 +223,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -254,7 +266,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -282,7 +296,14 @@ describe('Children - (JSX)', () => {
       }
 
       function TabGroup({ tabs }) {
-        return <div className="tab-group">inlineText{tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} />)}</div>;
+        return (
+          <div className="tab-group">
+            inlineText
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} />
+            ))}
+          </div>
+        );
       }
 
       function renderIt() {
@@ -307,7 +328,14 @@ describe('Children - (JSX)', () => {
       }
 
       function TabGroup({ tabs }) {
-        return <div className="tab-group">{tabs.map((tab, i) => <Tab key={'Item ' + i} title={tab.title} />)}inlineText</div>;
+        return (
+          <div className="tab-group">
+            {tabs.map((tab, i) => (
+              <Tab key={'Item ' + i} title={tab.title} />
+            ))}
+            inlineText
+          </div>
+        );
       }
 
       function renderIt() {
@@ -345,7 +373,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -399,7 +429,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -439,7 +471,9 @@ describe('Children - (JSX)', () => {
         return (
           <div className="tab-group">
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) => <Tab title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} onSelect={() => undefined} />
+            ))}
           </div>
         );
       }
@@ -477,9 +511,13 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) => <Tab title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} onSelect={() => undefined} />
+            ))}
           </div>
         );
       }
@@ -522,7 +560,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -563,7 +603,9 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => <Tab title={tab.title} onSelect={() => undefined} />)}
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} onSelect={() => undefined} />
+            ))}
             <Tab onSelect={create} id="add" title="Add" />
           </div>
         );
@@ -591,7 +633,14 @@ describe('Children - (JSX)', () => {
       }
 
       function TabGroup({ tabs }) {
-        return <div className="tab-group">inlineText{tabs.map((tab, i) => <Tab title={tab.title} />)}</div>;
+        return (
+          <div className="tab-group">
+            inlineText
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} />
+            ))}
+          </div>
+        );
       }
 
       function renderIt() {
@@ -616,7 +665,14 @@ describe('Children - (JSX)', () => {
       }
 
       function TabGroup({ tabs }) {
-        return <div className="tab-group">{tabs.map((tab, i) => <Tab title={tab.title} />)}inlineText</div>;
+        return (
+          <div className="tab-group">
+            {tabs.map((tab, i) => (
+              <Tab title={tab.title} />
+            ))}
+            inlineText
+          </div>
+        );
       }
 
       function renderIt() {
@@ -650,7 +706,9 @@ describe('Children - (JSX)', () => {
         return (
           <div className="c">
             {visibleStatic ? <Loop text="static" /> : null}
-            {collectionOne.map(text => <Loop text={text} />)}
+            {collectionOne.map(text => (
+              <Loop text={text} />
+            ))}
           </div>
         );
       }
@@ -698,9 +756,13 @@ describe('Children - (JSX)', () => {
         return (
           <div className="c">
             {visibleStaticOne ? <Loop text="static" /> : null}
-            {collectionOne.map(text => <Loop text={text} />)}
+            {collectionOne.map(text => (
+              <Loop text={text} />
+            ))}
             {visibleStaticTwo ? <Loop text="static" /> : null}
-            {collectionTwo.map(text => <Loop text={text} />)}
+            {collectionTwo.map(text => (
+              <Loop text={text} />
+            ))}
           </div>
         );
       }
@@ -754,7 +816,9 @@ describe('Children - (JSX)', () => {
         return (
           <div className="c">
             {visibleStatic ? <Loop i={-1} text="static" /> : null}
-            {collectionOne.map((text, i) => <Loop key={i} text={text} />)}
+            {collectionOne.map((text, i) => (
+              <Loop key={i} text={text} />
+            ))}
           </div>
         );
       }
@@ -909,7 +973,9 @@ describe('Children - (JSX)', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item => <span>{item}</span>)}
+          {items.map(item => (
+            <span>{item}</span>
+          ))}
           <div>end</div>
         </div>
       );
@@ -931,7 +997,9 @@ describe('Children - (JSX)', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item => <span key={item}>{item}</span>)}
+          {items.map(item => (
+            <span key={item}>{item}</span>
+          ))}
           <div>end</div>
         </div>
       );
@@ -953,7 +1021,9 @@ describe('Children - (JSX)', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item => <span key={item}>{item}</span>)}
+          {items.map(item => (
+            <span key={item}>{item}</span>
+          ))}
           <div>end</div>
         </div>
       );

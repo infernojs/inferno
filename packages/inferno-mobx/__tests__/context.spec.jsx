@@ -38,7 +38,12 @@ describe('observer based context', () => {
       ['foo'],
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );
@@ -59,7 +64,12 @@ describe('observer based context', () => {
       ['foo'],
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );
@@ -81,7 +91,8 @@ describe('observer based context', () => {
         render() {
           return (
             <div>
-              context:{this.props.foo}
+              context:
+              {this.props.foo}
               {this.props.bar}
             </div>
           );
@@ -115,7 +126,12 @@ describe('observer based context', () => {
       ['foo'],
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );
@@ -138,7 +154,12 @@ describe('observer based context', () => {
       ['foo'],
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );
@@ -157,7 +178,12 @@ describe('observer based context', () => {
       ['foo'],
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );
@@ -198,7 +224,12 @@ describe('observer based context', () => {
       ['foo'],
       createClass({
         render() {
-          return <div>context:{this.props.foo}</div>;
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
         }
       })
     );

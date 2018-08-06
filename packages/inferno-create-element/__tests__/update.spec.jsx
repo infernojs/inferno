@@ -416,9 +416,19 @@ describe('Stateful Component updates', () => {
           <div className="common-root">
             {(() => {
               if (this.props.i % 2 === 0) {
-                return <div>DIV{this.props.value}</div>;
+                return (
+                  <div>
+                    DIV
+                    {this.props.value}
+                  </div>
+                );
               } else {
-                return <span>SPAN{this.props.value}</span>;
+                return (
+                  <span>
+                    SPAN
+                    {this.props.value}
+                  </span>
+                );
               }
             })()}
           </div>

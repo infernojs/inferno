@@ -655,7 +655,10 @@ describe('FormElements', () => {
           render() {
             return (
               <div className="inputContainer" style={{ width: this.props.width ? this.props.width : '100%' }}>
-                <div className="label">{this.props.label}&nbsp;</div>
+                <div className="label">
+                  {this.props.label}
+                  &nbsp;
+                </div>
                 <input type={this.props.type} onChange={this.handleChange} value={this.props.value} />
                 <div className="hint">{this.props.hint}</div>
                 {this.state.error && <div className="error">{this.state.error}</div>}

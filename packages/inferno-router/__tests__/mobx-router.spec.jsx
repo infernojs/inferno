@@ -20,7 +20,8 @@ describe('Github #1236', () => {
 
   it('Should not patch twice', () => {
     class SearchStore {
-      @observable query = undefined;
+      @observable
+      query = undefined;
 
       @action
       doSearch(search) {

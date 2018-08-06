@@ -164,13 +164,21 @@ describe('Columns like tests - (JSX)', () => {
           return (
             <div>
               <span key="column">column</span>
-              {items.map(item => <ItemKeyed key={item.id} text={item.text} />)}
+              {items.map(item => (
+                <ItemKeyed key={item.id} text={item.text} />
+              ))}
             </div>
           );
         }
       }
 
-      const ViewKeyed = ({ columns }) => <div>{columns.map(column => <ColumnKeyed key={column.id} items={column.items} />)}</div>;
+      const ViewKeyed = ({ columns }) => (
+        <div>
+          {columns.map(column => (
+            <ColumnKeyed key={column.id} items={column.items} />
+          ))}
+        </div>
+      );
 
       let mountedColumnSpy = null;
       let unmountColumnSpy = null;
@@ -310,13 +318,21 @@ describe('Columns like tests - (JSX)', () => {
           return (
             <div>
               <span>column</span>
-              {items.map(item => <Item text={item.text} />)}
+              {items.map(item => (
+                <Item text={item.text} />
+              ))}
             </div>
           );
         }
       }
 
-      const View = ({ columns }) => <div>{columns.map(column => <Column items={column.items} />)}</div>;
+      const View = ({ columns }) => (
+        <div>
+          {columns.map(column => (
+            <Column items={column.items} />
+          ))}
+        </div>
+      );
 
       let mountedColumnSpy = null;
       let unmountColumnSpy = null;
