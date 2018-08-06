@@ -2,9 +2,9 @@ import { EMPTY_OBJ } from 'inferno';
 import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { renderStylesToString } from './prop-renderers';
-import { escapeText, voidElements } from './utils';
+import { escapeText, isAttributeNameSafe, voidElements } from './utils';
 
-function renderVNodeToString(vNode, parent, context, firstChild): string | undefined {
+function renderVNodeToString(vNode, parent, context, firstChild): string {
   const flags = vNode.flags;
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
@@ -79,6 +79,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string | undef
   } else if ((flags & VNodeFlags.Element) > 0) {
     let renderedString = `<${type}`;
     let html;
+
     const isVoidElement = voidElements.has(type);
     const className = vNode.className;
 
@@ -118,13 +119,16 @@ function renderVNodeToString(vNode, parent, context, firstChild): string | undef
             }
             break;
           default:
-            if (isString(value)) {
-              renderedString += ` ${prop}="${escapeText(value)}"`;
-            } else if (isNumber(value)) {
-              renderedString += ` ${prop}="${value}"`;
-            } else if (isTrue(value)) {
-              renderedString += ` ${prop}`;
+            if (isAttributeNameSafe(prop)) {
+              if (isString(value)) {
+                renderedString += ` ${prop}="${escapeText(value)}"`;
+              } else if (isNumber(value)) {
+                renderedString += ` ${prop}="${value}"`;
+              } else if (isTrue(value)) {
+                renderedString += ` ${prop}`;
+              }
             }
+
             break;
         }
       }
@@ -152,6 +156,11 @@ function renderVNodeToString(vNode, parent, context, firstChild): string | undef
         renderedString += `</${type}>`;
       }
     }
+
+    if (String(type).match(/[\s\n\/='"\0<>]/)) {
+      throw renderedString;
+    }
+
     return renderedString;
   } else if ((flags & VNodeFlags.Text) > 0) {
     return (firstChild ? '' : '<!---->') + (children === '' ? ' ' : escapeText(children));
@@ -165,7 +174,8 @@ function renderVNodeToString(vNode, parent, context, firstChild): string | undef
     }
     throwError();
   }
-  return undefined;
+
+  return '';
 }
 
 export function renderToString(input: any): string {

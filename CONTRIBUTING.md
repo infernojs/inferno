@@ -95,8 +95,8 @@ Just run `npm run test:browser:debug` Open localhost:9876 and click debug!
 Debugging NodeJS
 ----------------
 Its possible to debug inferno tests by running following command `npm run debug` and open chrome web address: chrome://inspect/#devices
-However: The issue is that ts-jest does post processing to compiled files this needs to be avoided.
-Edit following files: /node_modules/ts-jest/dist/postprocess.js and remove following settings line numer 15 => retainLines: true, sourceMaps: 'inline'.
+However: There is issue with ts-jest; It does additional post processing to compiled files this needs to be disabled to see source files.
+Edit following file: `/node_modules/typescript-babel-jest/node_modules/babel-jest/build/index.js` and change hardcoded babel option `retainLines` property to false.
 
 Pro tip: You can filter down number of tests by editing `debug` -task:
 `node --inspect-brk ./node_modules/.bin/jest {*edit this*} --runInBand --no-cache --no-watchman`

@@ -2,7 +2,7 @@ import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, is
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
-import { escapeText, voidElements } from './utils';
+import { escapeText, isAttributeNameSafe, voidElements } from './utils';
 import { VNode } from 'inferno';
 
 const resolvedPromise = Promise.resolve();
@@ -181,24 +181,30 @@ export class RenderStream extends Readable {
             }
             break;
           default:
-            if (isString(value)) {
-              renderedString += ` ${prop}="${escapeText(value)}"`;
-            } else if (isNumber(value)) {
-              renderedString += ` ${prop}="${value}"`;
-            } else if (isTrue(value)) {
-              renderedString += ` ${prop}`;
+            if (isAttributeNameSafe(prop)) {
+              if (isString(value)) {
+                renderedString += ` ${prop}="${escapeText(value)}"`;
+              } else if (isNumber(value)) {
+                renderedString += ` ${prop}="${value}"`;
+              } else if (isTrue(value)) {
+                renderedString += ` ${prop}`;
+              }
+              break;
             }
-            break;
         }
       }
     }
+
+    renderedString += `>`;
+    this.push(renderedString);
+
+    if (String(type).match(/[\s\n\/='"\0<>]/)) {
+      throw renderedString;
+    }
+
     if (isVoidElement) {
-      renderedString += `>`;
-      this.push(renderedString);
       return;
     } else {
-      renderedString += `>`;
-      this.push(renderedString);
       if (html) {
         this.push(html);
         this.push(`</${type}>`);

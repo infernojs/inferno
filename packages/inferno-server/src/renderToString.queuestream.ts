@@ -3,7 +3,7 @@ import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, is
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
-import { escapeText, voidElements } from './utils';
+import { escapeText, isAttributeNameSafe, voidElements } from './utils';
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
@@ -212,23 +212,30 @@ export class RenderQueueStream extends Readable {
               }
               break;
             default:
-              if (isString(value)) {
-                renderedString += ` ${prop}="${escapeText(value)}"`;
-              } else if (isNumber(value)) {
-                renderedString += ` ${prop}="${value}"`;
-              } else if (isTrue(value)) {
-                renderedString += ` ${prop}`;
+              if (isAttributeNameSafe(prop)) {
+                if (isString(value)) {
+                  renderedString += ` ${prop}="${escapeText(value)}"`;
+                } else if (isNumber(value)) {
+                  renderedString += ` ${prop}="${value}"`;
+                } else if (isTrue(value)) {
+                  renderedString += ` ${prop}`;
+                }
               }
               break;
           }
         }
       }
+      renderedString += `>`;
+
+      if (String(type).match(/[\s\n\/='"\0<>]/)) {
+        throw renderedString;
+      }
+
       // Voided element, push directly to queue
       if (isVoidElement) {
-        this.addToQueue(renderedString + `>`, position);
+        this.addToQueue(renderedString, position);
         // Regular element with content
       } else {
-        renderedString += `>`;
         // Element has children, build them in
         const childFlags = vNode.childFlags;
 
