@@ -28,7 +28,7 @@ You can inject props using the following syntax
 import { Component } from 'inferno';
 import { inject, observer } from 'inferno-mobx';
 
-@inject(['englishStore', 'frenchStore']) @observer
+@inject('englishStore', 'frenchStore') @observer
 class MyComponent extends Component {
     render({ englishStore, frenchStore }) {
         return <div>
@@ -57,7 +57,7 @@ class MyComponent extends Component {
     }
 }
 
-export default inject(['englishStore', 'frenchStore'])(observer(MyComponent));
+export default inject('englishStore', 'frenchStore')(observer(MyComponent));
 ```
 
 Just make sure that you provided your stores using the `Provider`. Ex:
