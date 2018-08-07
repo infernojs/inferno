@@ -67,9 +67,8 @@ const Topics = ({ match }) => (
   </div>
 );
 
-// This functional component wrapper make sure vNodes are re-created when needed
-const AllRoutes = () => {
-  return (
+const MyWebsite = () => (
+  <BrowserRouter>
     <div>
       <ul>
         <li><Link to="/">Home</Link></li>
@@ -81,12 +80,6 @@ const AllRoutes = () => {
       <Route path="/about" component={About}/>
       <Route path="/topics" component={Topics}/>
     </div>
-  );
-}
-
-const MyWebsite = () => (
-  <BrowserRouter>
-    <AllRoutes/>
   </BrowserRouter>
 );
 
