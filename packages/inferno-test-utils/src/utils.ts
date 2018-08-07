@@ -1,4 +1,4 @@
-import { Component, VNode } from 'inferno';
+import { Component, VNode, InfernoChildren } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isNumber, isObject } from 'inferno-shared';
 
@@ -31,7 +31,7 @@ export function isDOMVNode(inst: any): inst is VNode {
 }
 
 export class Wrapper<P, S> extends Component<P, S> {
-  public render() {
+  public render(): InfernoChildren {
     return this.props.children;
   }
 }

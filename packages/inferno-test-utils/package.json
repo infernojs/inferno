@@ -28,6 +28,9 @@
     "inferno-shared": "5.3.0",
     "inferno-vnode-flags": "5.3.0"
   },
+  "dependencies": {
+    "inferno": "5.3.0"
+  },
   "rollup": {
     "bundledDependencies": [
       "inferno-shared",
