@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { MemoryRouter, Route, Link } from 'inferno-router';
+import { MemoryRouter, Route, Link, NavLink } from 'inferno-router';
 
 describe('Github #1322', () => {
   let container;
@@ -93,5 +93,57 @@ describe('Github #1322', () => {
     homeLink.click();
 
     expect(container.querySelector('h2').innerHTML).toEqual('Home');
+  });
+
+  it('Should change activeClass on links without functional component Wrapper, Github #1345', () => {
+    function CompList() {
+      return <div id="first">FIRST</div>;
+    }
+
+    function CreateComp() {
+      return <div id="second">SECOND</div>;
+    }
+
+    const tree  = (
+      <MemoryRouter>
+        <div>
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container py-2" style="border-bottom: 1px solid rgba(0, 0, 0, 0.13);">
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav text-muted">
+                  <li class="nav-item mr-2"><NavLink exact to="/" activeClassName="active">Play</NavLink></li>
+                  <li class="nav-item mr-2"><NavLink to="/create" activeClassName="active">Create</NavLink></li>
+                  <li class="nav-item mr-2"><NavLink to="/publish" activeClassName="active">Publish</NavLink></li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+          <Route exact path="/" component={CompList} />
+          <Route path="/create" component={CreateComp} />
+          <Route path="/publish" component={() => <div>Publish</div>} />
+        </div>
+      </MemoryRouter >
+    );
+
+    render(tree, container);
+
+    expect(container.querySelector('#first')).toBeDefined();
+
+    const links = container.querySelectorAll('li');
+
+    expect(links[0].firstChild.classList.contains('active')).toBeTruthy();
+
+    links[1].firstChild.click();
+
+    expect(links[0].firstChild.classList.contains('active')).toBeFalsy();
+    expect(links[1].firstChild.classList.contains('active')).toBeTruthy();
+    expect(container.querySelector('#first')).toBeNull();
+    expect(container.querySelector('#second')).toBeDefined();
+
+    links[0].firstChild.click();
+    expect(links[0].firstChild.classList.contains('active')).toBeTruthy();
+    expect(links[1].firstChild.classList.contains('active')).toBeFalsy();
+    expect(container.querySelector('#first')).toBeDefined();
+    expect(container.querySelector('#second')).toBeNull();
   });
 });

@@ -53,7 +53,7 @@ export const errorsReporter = new EventEmitter();
  * Utilities
  */
 
-function patch(target, funcName, runMixinFirst = false) {
+function patch(target, funcName, runMixinFirst) {
   const base = target[funcName];
   const mixinFunc = reactiveMixin[funcName];
   const f = !base
@@ -307,9 +307,9 @@ export function observer(arg1, arg2?) {
 
 function mixinLifecycleEvents(target) {
   patch(target, 'componentWillMount', true);
-  ['componentDidMount', 'componentWillUnmount', 'componentDidUpdate'].forEach(function(funcName) {
-    patch(target, funcName);
-  });
+  patch(target, 'componentDidMount', false);
+  patch(target, 'componentWillUnmount', false);
+  patch(target, 'componentDidUpdate', false);
   if (!target.shouldComponentUpdate) {
     target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
   }

@@ -23,7 +23,7 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 }
 
 export function documentCreateElement(tag, isSVG: boolean): Element {
-  if (isSVG === true) {
+  if (isSVG) {
     return document.createElementNS(svgNS, tag);
   }
 

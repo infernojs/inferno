@@ -82,22 +82,6 @@ describe('ReactElement', function() {
     expect(element.props.foo).toBe(1);
   });
 
-  // TODO: Check this
-  // it('extracts key and ref from the config', function() {
-  //   debugger;
-  //   var element = React.createFactory(ComponentClass)({
-  //     key: '12',
-  //     ref: '34',
-  //     foo: '56',
-  //   });
-  //   expect(element.type).toBe(ComponentClass);
-  //   expect(element.key).toBe('12');
-  //   expect(element.ref).toBe('34');
-  //   var expectation = {foo:'56'};
-  //   Object.freeze(expectation);
-  //   expect(element.props).toEqual(expectation);
-  // });
-
   it('coerces the key to a string', function() {
     var element = React.createFactory(ComponentClass)({
       key: 12,

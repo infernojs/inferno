@@ -322,5 +322,34 @@ describe('HyperScript (non-JSX)', () => {
       };
       render(h(app, null), container);
     });
+
+    let shouldUpdate = false;
+
+    class Test2 extends Component {
+      shouldComponentUpdate() {
+        return shouldUpdate;
+      }
+
+      render() {
+        return h('div', {'contenteditable': true}, this.props.foo);
+      }
+    }
+
+    it('Should not fail contenteditable if text node has external change Github#1207 - createElement', () => {
+      shouldUpdate = false;
+      render(<Test2 foo="bar" />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true">bar</div>'));
+      render(<Test2 foo="yar" />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true">bar</div>'));
+
+      container.firstChild.removeChild(container.firstChild.firstChild); // When div is contentEditable user can remove whole text content
+      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true"></div>'));
+
+      shouldUpdate = true;
+      render(<Test2 foo="foo" />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true">foo</div>'));
+      render(null, container);
+      expect(container.innerHTML).toBe('');
+    });
   });
 });

@@ -56,6 +56,9 @@ export function createElement<T>(
         } else if (prop === 'ref') {
           ref = props.ref;
         } else {
+          if (prop === 'contenteditable') {
+            flags |= VNodeFlags.ContentEditable;
+          }
           newProps[prop] = props[prop];
         }
       }

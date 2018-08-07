@@ -139,7 +139,9 @@ export function mountComponent(vNode: VNode, parentDom: Element | null, context:
 
 function createClassMountCallback(instance) {
   return () => {
+    instance.$UPD = true;
     instance.componentDidMount();
+    instance.$UPD = false;
   };
 }
 

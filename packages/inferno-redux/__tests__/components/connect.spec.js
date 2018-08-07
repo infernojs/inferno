@@ -231,7 +231,7 @@ describe('Inferno', () => {
       expect(stub.props.string).toBe('a');
     });
 
-    it('should handle dispatches before componentDidMount', () => {
+    it('should handle dispatches before componentDidMount', (done) => {
       const store = createStore(stringBuilder);
 
       const Container = connect(state => ({ string: state }))(
@@ -252,8 +252,11 @@ describe('Inferno', () => {
         </ProviderMock>
       );
 
-      const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.string).toBe('a');
+      setTimeout(() => {
+        const stub = findRenderedVNodeWithType(tree, Passthrough).children;
+        expect(stub.props.string).toBe('a');
+        done();
+      }, 20);
     });
 
     it('should handle additional prop changes in addition to slice', done => {
@@ -313,7 +316,7 @@ describe('Inferno', () => {
       }, 500);
     });
 
-    it('should handle unexpected prop changes with forceUpdate()', () => {
+    it('should handle unexpected prop changes with forceUpdate()', (done) => {
       const store = createStore(() => ({}));
 
       const ConnectContainer = connect(state => state)(
@@ -351,8 +354,12 @@ describe('Inferno', () => {
       }
 
       const tree = renderToContainer(<Container />);
-      const stub = findRenderedVNodeWithType(tree, Passthrough).children;
-      expect(stub.props.bar).toBe('foo');
+
+      setTimeout(() => {
+        const stub = findRenderedVNodeWithType(tree, Passthrough).children;
+        expect(stub.props.bar).toBe('foo');
+        done();
+      }, 20);
     });
 
     it('should remove undefined props', () => {
@@ -2212,7 +2219,7 @@ describe('Inferno', () => {
       expect(renderCalls).toBe(1);
     });
 
-    it('should update impure components with custom mergeProps', () => {
+    it('should update impure components with custom mergeProps', (done) => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
@@ -2248,7 +2255,12 @@ describe('Inferno', () => {
         </ProviderMock>
       );
 
-      expect(renderCount).toBe(2);
+      expect(renderCount).toBe(1);
+
+      setTimeout(() => {
+        expect(renderCount).toBe(2);
+        done();
+      }, 20);
     });
 
     it('should allow to clean up child state in parent componentWillUnmount', () => {

@@ -1,4 +1,4 @@
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP, throwError, warning } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNullOrUndef, isString, NO_OP, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountRef } from './mounting';
@@ -15,23 +15,26 @@ function replaceWithNewNode(lastNode, nextNode, parentDom, context: Object, isSV
 }
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, context: Object, isSVG: boolean) {
-  if (lastVNode !== nextVNode) {
-    const nextFlags = nextVNode.flags | 0;
+  const nextFlags = nextVNode.flags | 0;
 
-    if (lastVNode.flags !== nextFlags || nextFlags & VNodeFlags.ReCreate) {
-      replaceWithNewNode(lastVNode, nextVNode, parentDom, context, isSVG);
-    } else if (nextFlags & VNodeFlags.Element) {
-      patchElement(lastVNode, nextVNode, parentDom, context, isSVG);
-    } else if (nextFlags & VNodeFlags.Component) {
-      patchComponent(lastVNode, nextVNode, parentDom, context, isSVG, (nextFlags & VNodeFlags.ComponentClass) > 0);
-    } else if (nextFlags & VNodeFlags.Text) {
-      patchText(lastVNode, nextVNode, parentDom);
-    } else if (nextFlags & VNodeFlags.Void) {
-      nextVNode.dom = lastVNode.dom;
-    } else {
-      // Portal
-      patchPortal(lastVNode, nextVNode, context);
-    }
+  if (lastVNode.flags !== nextFlags || nextFlags & VNodeFlags.ReCreate) {
+    replaceWithNewNode(lastVNode, nextVNode, parentDom, context, isSVG);
+  } else if (nextFlags & VNodeFlags.Element) {
+    patchElement(lastVNode, nextVNode, parentDom, context, isSVG, nextFlags);
+  } else if (nextFlags & VNodeFlags.Component) {
+    patchComponent(lastVNode, nextVNode, parentDom, context, isSVG, (nextFlags & VNodeFlags.ComponentClass) > 0);
+  } else if (nextFlags & VNodeFlags.Text) {
+    patchText(lastVNode, nextVNode);
+  } else if (nextFlags & VNodeFlags.Void) {
+    nextVNode.dom = lastVNode.dom;
+  } else {
+    patchPortal(lastVNode, nextVNode, context);
+  }
+}
+
+function patchContentEditableChildren(dom, nextVNode) {
+  if (dom.textContent !== nextVNode.children) {
+    dom.textContent = nextVNode.children;
   }
 }
 
@@ -52,14 +55,13 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context) {
   }
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextFlags: number) {
   const nextTag = nextVNode.type;
 
   if (lastVNode.type !== nextTag) {
     replaceWithNewNode(lastVNode, nextVNode, parentDom, context, isSVG);
   } else {
     const dom = lastVNode.dom as Element;
-    const nextFlags = nextVNode.flags;
     const lastProps = lastVNode.props;
     const nextProps = nextVNode.props;
     let isFormElement = false;
@@ -90,7 +92,6 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
       }
       if (lastPropsOrEmpty !== EMPTY_OBJ) {
         for (const prop in lastPropsOrEmpty) {
-          // do not add a hasOwnProperty check here, it affects performance
           if (!nextPropsOrEmpty.hasOwnProperty(prop) && !isNullOrUndef(lastPropsOrEmpty[prop])) {
             patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode);
           }
@@ -103,10 +104,12 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
     const lastClassName = lastVNode.className;
     const nextClassName = nextVNode.className;
 
-    if (lastChildren !== nextChildren) {
-      if (process.env.NODE_ENV !== 'production') {
-        validateKeys(nextVNode);
-      }
+    if (process.env.NODE_ENV !== 'production') {
+      validateKeys(nextVNode);
+    }
+    if (nextFlags & VNodeFlags.ContentEditable) {
+      patchContentEditableChildren(dom, nextChildren);
+    } else {
       patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastChildren, nextChildren, dom, context, isSVG && nextTag !== 'foreignObject');
     }
 
@@ -190,7 +193,7 @@ function patchChildren(
         }
       } else if (nextChildFlags === ChildFlags.HasInvalidChildren) {
         removeAllChildren(parentDOM, lastChildren);
-      } else {
+      } else if (nextChildFlags === ChildFlags.HasVNodeChildren) {
         removeAllChildren(parentDOM, lastChildren);
         mount(nextChildren, parentDOM, context, isSVG);
       }
@@ -342,20 +345,14 @@ function patchComponent(lastVNode, nextVNode, parentDom, context, isSVG: boolean
   }
 }
 
-function patchText(lastVNode: VNode, nextVNode: VNode, parentDom: Element) {
+function patchText(lastVNode: VNode, nextVNode: VNode) {
   const nextText = nextVNode.children as string;
-  const textNode = parentDom.firstChild;
-  let dom;
-  // Guard against external change on DOM node.
-  if (isNull(textNode)) {
-    parentDom.textContent = nextText;
-    dom = parentDom.firstChild as Element;
-  } else {
-    dom = lastVNode.dom;
-    if (nextText !== lastVNode.children) {
-      (dom as Element).nodeValue = nextText;
-    }
+  const dom = lastVNode.dom;
+
+  if (nextText !== lastVNode.children) {
+    (dom as Element).nodeValue = nextText;
   }
+
   nextVNode.dom = dom;
 }
 
