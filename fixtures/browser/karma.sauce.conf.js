@@ -49,7 +49,7 @@ const customLaunchers = {
   sl_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.12',
+    platform: 'OS X 10.13',
     version: '11'
   },
   slIE10: {
@@ -80,11 +80,6 @@ const customLaunchers = {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
     version: '15',
-    platform: 'Windows 10'
-  },
-  slEdge: {
-    base: 'SauceLabs',
-    browserName: 'MicrosoftEdge',
     platform: 'Windows 10'
   },
   sl_mac_chrome: {
