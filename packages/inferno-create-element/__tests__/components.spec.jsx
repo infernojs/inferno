@@ -1760,7 +1760,7 @@ describe('Components (JSX)', () => {
 
       render() {
         instance = this;
-        return createElement('div', {'contenteditable': true}, this.props.foo);
+        return createElement('div', { contenteditable: true }, this.props.foo);
       }
     }
 

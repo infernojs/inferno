@@ -331,7 +331,7 @@ describe('HyperScript (non-JSX)', () => {
       }
 
       render() {
-        return h('div', {'contenteditable': true}, this.props.foo);
+        return h('div', { contenteditable: true }, this.props.foo);
       }
     }
 

@@ -29,7 +29,7 @@ describe('static tree as child nodes', () => {
       }
 
       render() {
-        const {children, ...restProps} = this.props;
+        const { children, ...restProps } = this.props;
         return (
           <div {...restProps}>
             <button onClick={this.handleClick}>test</button>
@@ -43,9 +43,7 @@ describe('static tree as child nodes', () => {
       render() {
         renderCounter++;
 
-        return (
-          <div>hello test</div>
-        );
+        return <div>hello test</div>;
       }
     }
 
@@ -55,14 +53,13 @@ describe('static tree as child nodes', () => {
           <Form>
             <div>
               <div>
-                <Test/>
+                <Test />
               </div>
             </div>
           </Form>
         );
       }
     }
-
 
     render(<App />, container);
 
@@ -85,6 +82,5 @@ describe('static tree as child nodes', () => {
     btn.click();
 
     expect(renderCounter).toBe(5);
-
   });
 });

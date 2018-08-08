@@ -146,7 +146,7 @@ function normalizeGenericProps(props) {
       props[prop] = void 0;
     }
     const mappedProp = SVGDOMPropertyConfig[prop];
-    if (mappedProp && mappedProp !== prop) {
+    if (mappedProp && props[prop] && mappedProp !== prop) {
       props[mappedProp] = props[prop];
       props[prop] = void 0;
     }

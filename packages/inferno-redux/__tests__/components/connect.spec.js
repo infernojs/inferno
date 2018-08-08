@@ -231,7 +231,7 @@ describe('Inferno', () => {
       expect(stub.props.string).toBe('a');
     });
 
-    it('should handle dispatches before componentDidMount', (done) => {
+    it('should handle dispatches before componentDidMount', done => {
       const store = createStore(stringBuilder);
 
       const Container = connect(state => ({ string: state }))(
@@ -316,7 +316,7 @@ describe('Inferno', () => {
       }, 500);
     });
 
-    it('should handle unexpected prop changes with forceUpdate()', (done) => {
+    it('should handle unexpected prop changes with forceUpdate()', done => {
       const store = createStore(() => ({}));
 
       const ConnectContainer = connect(state => state)(
@@ -2219,7 +2219,7 @@ describe('Inferno', () => {
       expect(renderCalls).toBe(1);
     });
 
-    it('should update impure components with custom mergeProps', (done) => {
+    it('should update impure components with custom mergeProps', done => {
       const store = createStore(() => ({}));
       let renderCount = 0;
 
