@@ -61,7 +61,7 @@
     "prettier:src:ts": "prettier --print-width 160 --write --list-different --parser=typescript packages/*/src/**/*.{ts,tsx}",
     "prettier:src:fixtures": "prettier --print-width 160 --write --list-different fixtures/**/*.{js,jsx}",
     "prettier:src:scripts": "prettier --print-width 160 --write --list-different scripts/**/*.{js,jsx}",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --hoist",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "npm run test:node && npm run test:browser",
     "test:node": "cross-env NODE_ENV=test jest --no-cache",
