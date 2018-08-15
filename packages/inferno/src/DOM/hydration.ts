@@ -41,7 +41,7 @@ function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: bool
     if (process.env.NODE_ENV !== 'production') {
       warning("Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty");
     }
-    const newDom = mountElement(vNode, null, context, isSVG);
+    const newDom = mountElement(vNode, null, context, isSVG, null);
 
     vNode.dom = newDom;
     replaceChild(dom.parentNode, newDom, dom);
@@ -70,7 +70,7 @@ function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: bool
 
       if (childFlags === ChildFlags.HasVNodeChildren) {
         if (isNull(childNode)) {
-          mount(children as VNode, dom, context, isSVG);
+          mount(children as VNode, dom, context, isSVG, null);
         } else {
           nextSibling = childNode.nextSibling;
 
@@ -82,7 +82,7 @@ function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: bool
           const child = (children as VNode[])[i];
 
           if (isNull(childNode)) {
-            mount(child as VNode, dom, context, isSVG);
+            mount(child as VNode, dom, context, isSVG, null);
           } else {
             nextSibling = childNode.nextSibling;
             hydrateVNode(child as VNode, childNode as Element, context, isSVG);
@@ -131,7 +131,7 @@ function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: bool
 
 function hydrateText(vNode: VNode, dom: Element) {
   if (dom.nodeType !== 3) {
-    const newDom = mountText(vNode, null);
+    const newDom = mountText(vNode, null, null);
 
     vNode.dom = newDom;
     replaceChild(dom.parentNode, newDom, dom);

@@ -16,6 +16,7 @@ export const enum VNodeFlags {
   Portal = 1 << 10,
   ReCreate = 1 << 11,
   ContentEditable = 1 << 12,
+  Fragment = 1 << 13,
 
   /* Masks */
   FormElement = InputElement | TextareaElement | SelectElement,

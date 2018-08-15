@@ -1,4 +1,4 @@
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 import {
   combineFrom,
   isArray,
@@ -12,7 +12,7 @@ import {
   isUndefined,
   throwError
 } from 'inferno-shared';
-import { validateVNodeElementChildren } from './validate';
+import {validateVNodeElementChildren} from './validate';
 
 const keyPrefix = '$';
 
@@ -177,6 +177,26 @@ export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props<P
 
 export function createTextVNode(text?: string | number, key?: string | number | null): VNode {
   return getVNode(ChildFlags.HasInvalidChildren, isNullOrUndef(text) ? '' : text, null, VNodeFlags.Text, key, null, null, null);
+}
+
+export function createFragment(children?: any[], key?: string | number | null, childFlags?: ChildFlags): VNode {
+  const fragment = createVNode(
+    VNodeFlags.Fragment,
+    null,
+    null,
+    children,
+    childFlags,
+    null,
+    key,
+    null
+  );
+
+  if (fragment.childFlags === ChildFlags.HasInvalidChildren) {
+    fragment.children = createVoidVNode();
+    fragment.childFlags = ChildFlags.HasVNodeChildren;
+  }
+
+  return fragment;
 }
 
 export function normalizeProps(vNode) {

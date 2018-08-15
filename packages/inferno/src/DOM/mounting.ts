@@ -1,30 +1,34 @@
-import { isFunction, isNull, isNullOrUndef, isObject, isString, isStringOrNumber, throwError } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { createVoidVNode, directClone, VNode } from '../core/implementation';
-import { appendChild, documentCreateElement, EMPTY_OBJ, LIFECYCLE } from './utils/common';
-import { mountProps } from './props';
-import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
-import { validateKeys } from '../core/validate';
+import {isFunction, isNull, isNullOrUndef, isObject, isString, isStringOrNumber, throwError} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {createVoidVNode, directClone, VNode} from '../core/implementation';
+import {documentCreateElement, EMPTY_OBJ, insertOrAppend, LIFECYCLE} from './utils/common';
+import {mountProps} from './props';
+import {createClassComponentInstance, handleComponentInput} from './utils/componentutil';
+import {validateKeys} from '../core/validate';
 
-export function mount(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean) {
+export function mount(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null) {
   const flags = vNode.flags;
 
   if (flags & VNodeFlags.Element) {
-    return mountElement(vNode, parentDom, context, isSVG);
+    return mountElement(vNode, parentDom, context, isSVG, nextNode);
   }
 
   if (flags & VNodeFlags.Component) {
-    return mountComponent(vNode, parentDom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
+    return mountComponent(vNode, parentDom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0, nextNode);
   }
 
   if (flags & VNodeFlags.Void || flags & VNodeFlags.Text) {
-    return mountText(vNode, parentDom);
+    return mountText(vNode, parentDom, nextNode);
+  }
+
+  if (flags & VNodeFlags.Fragment) {
+    return mountFragment(vNode, parentDom, context, isSVG, nextNode);
   }
 
   if (flags & VNodeFlags.Portal) {
-    mount(vNode.children as VNode, vNode.type, context, false);
+    mount(vNode.children as VNode, vNode.type, context, false, null);
 
-    return (vNode.dom = mountText(createVoidVNode(), parentDom) as any);
+    return (vNode.dom = mountText(createVoidVNode(), parentDom, nextNode) as any);
   }
 
   // Development validation, in production we don't need to throw because it crashes anyway
@@ -41,17 +45,32 @@ export function mount(vNode: VNode, parentDom: Element | null, context: Object, 
   }
 }
 
-export function mountText(vNode: VNode, parentDom: Element | null): any {
+function mountFragment(vNode, parentDom, context, isSVG, nextNode) {
+  const children = vNode.children;
+  const childFlags = vNode.childFlags;
+  let dom;
+
+  if (childFlags === ChildFlags.HasVNodeChildren) {
+    dom = mountText(children as VNode, parentDom, nextNode);
+  } else {
+    mountArrayChildren(children, parentDom, context, isSVG, nextNode);
+    dom = children[0].dom;
+  }
+
+  return (vNode.dom = dom);
+}
+
+export function mountText(vNode: VNode, parentDom: Element | null, nextNode: Element | null): any {
   const dom = (vNode.dom = document.createTextNode(vNode.children as string) as any);
 
   if (!isNull(parentDom)) {
-    appendChild(parentDom, dom);
+    insertOrAppend(parentDom, dom, nextNode);
   }
 
   return dom;
 }
 
-export function mountElement(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean) {
+export function mountElement(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null) {
   const flags = vNode.flags;
   const children = vNode.children;
   const props = vNode.props;
@@ -76,16 +95,16 @@ export function mountElement(vNode: VNode, parentDom: Element | null, context: O
   }
 
   if (!isNull(parentDom)) {
-    appendChild(parentDom, dom);
+    insertOrAppend(parentDom, dom, nextNode);
   }
 
   if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
     const childrenIsSVG = isSVG === true && vNode.type !== 'foreignObject';
 
     if (childFlags === ChildFlags.HasVNodeChildren) {
-      mount(children as VNode, dom, context, childrenIsSVG);
+      mount(children as VNode, dom, context, childrenIsSVG, null);
     } else if (childFlags & ChildFlags.MultipleChildren) {
-      mountArrayChildren(children, dom, context, childrenIsSVG);
+      mountArrayChildren(children, dom, context, childrenIsSVG, null);
     }
   }
   if (!isNull(props)) {
@@ -103,18 +122,18 @@ export function mountElement(vNode: VNode, parentDom: Element | null, context: O
   return dom;
 }
 
-export function mountArrayChildren(children, dom: Element, context: Object, isSVG: boolean) {
+export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null) {
   for (let i = 0, len = children.length; i < len; i++) {
     let child = children[i];
 
     if (!isNull(child.dom)) {
       children[i] = child = directClone(child);
     }
-    mount(child, dom, context, isSVG);
+    mount(child, dom, context, isSVG, nextNode);
   }
 }
 
-export function mountComponent(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, isClass: boolean) {
+export function mountComponent(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, isClass: boolean, nextNode: Element | null) {
   let dom;
   const type = vNode.type as Function;
   const props = vNode.props || EMPTY_OBJ;
@@ -122,17 +141,17 @@ export function mountComponent(vNode: VNode, parentDom: Element | null, context:
 
   if (isClass) {
     const instance = createClassComponentInstance(vNode, type, props, context);
-    vNode.dom = dom = mount(instance.$LI, null, instance.$CX, isSVG);
+    vNode.dom = dom = mount(instance.$LI, null, instance.$CX, isSVG, null);
     mountClassComponentCallbacks(vNode, ref, instance);
     instance.$UPD = false;
   } else {
     const input = handleComponentInput(type(props, context), vNode);
     vNode.children = input;
-    vNode.dom = dom = mount(input, null, context, isSVG);
+    vNode.dom = dom = mount(input, null, context, isSVG, null);
     mountFunctionalComponentCallbacks(props, ref, dom);
   }
   if (!isNull(parentDom)) {
-    appendChild(parentDom, dom);
+    insertOrAppend(parentDom, dom, nextNode);
   }
   return dom;
 }

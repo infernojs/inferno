@@ -1,7 +1,15 @@
-import { createTextVNode, createVoidVNode, directClone, options, Props, VNode } from '../../core/implementation';
-import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
-import { EMPTY_OBJ } from './common';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {
+  createFragment,
+  createTextVNode,
+  createVoidVNode,
+  directClone,
+  options,
+  Props,
+  VNode
+} from '../../core/implementation';
+import {combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber} from 'inferno-shared';
+import {EMPTY_OBJ} from './common';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 
 export function createClassComponentInstance<P>(vNode: VNode, Component, props: Props<P>, context: Object) {
   const instance = new Component(props, context);
@@ -61,16 +69,12 @@ export function createClassComponentInstance<P>(vNode: VNode, Component, props: 
 }
 
 export function handleComponentInput(input: any, componentVNode: VNode): VNode {
-  // Development validation
-  if (process.env.NODE_ENV !== 'production') {
-    if (isArray(input)) {
-      throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-    }
-  }
   if (isInvalid(input)) {
     input = createVoidVNode();
   } else if (isStringOrNumber(input)) {
     input = createTextVNode(input, null);
+  } else if (isArray(input)) {
+    input = createFragment(input, null, ChildFlags.UnknownChildren);
   } else {
     if (input.dom) {
       input = directClone(input);
