@@ -272,7 +272,6 @@ describe('rendering routine', () => {
 
       expect(spy.callCount).toBe(1);
 
-      // Hydrate manually, instead rendering
       render(
         <div ref={spy}>
           <input

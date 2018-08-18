@@ -1,8 +1,18 @@
-import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, throwError } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { renderStylesToString } from './prop-renderers';
-import { escapeText, isAttributeNameSafe, voidElements } from './utils';
+import {EMPTY_OBJ} from 'inferno';
+import {
+  combineFrom,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  isTrue,
+  throwError
+} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {renderStylesToString} from './prop-renderers';
+import {escapeText, isAttributeNameSafe, voidElements} from './utils';
 
 function renderVNodeToString(vNode, parent, context, firstChild): string {
   const flags = vNode.flags;
@@ -143,12 +153,14 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
       renderedString += `>`;
       const childFlags = vNode.childFlags;
 
-      if (childFlags & ChildFlags.HasVNodeChildren) {
+      if (childFlags === ChildFlags.HasVNodeChildren) {
         renderedString += renderVNodeToString(children, vNode, context, true);
       } else if (childFlags & ChildFlags.MultipleChildren) {
         for (let i = 0, len = children.length; i < len; i++) {
           renderedString += renderVNodeToString(children[i], vNode, context, i === 0);
         }
+      } else if (childFlags === ChildFlags.HasTextChildren) {
+        renderedString += children === '' ? ' ' : escapeText(children);
       } else if (html) {
         renderedString += html;
       }

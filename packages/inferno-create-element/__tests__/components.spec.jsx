@@ -2233,56 +2233,6 @@ describe('Components (JSX)', () => {
       render(<Comp1 foo={true} />, container);
       expect(container.innerHTML).toEqual('');
     });
-
-    it('Should throw when array returned - statefull', () => {
-      class Comp1 extends Component {
-        constructor(props) {
-          super(props);
-        }
-
-        render() {
-          if (this.props.foo) {
-            return [<div>rendered1</div>, <div>rendered2</div>];
-          }
-
-          return <div>rendered</div>;
-        }
-      }
-
-      render(<Comp1 />, container);
-      expect(container.innerHTML).toEqual('<div>rendered</div>');
-      try {
-        render(<Comp1 foo={true} />, container);
-      } catch (e) {
-        expect(e.message).toEqual(
-          'Inferno Error: a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
-        );
-      }
-
-      expect(container.innerHTML).toEqual('<div>rendered</div>');
-    });
-
-    it('Should throw when array returned - stateless', () => {
-      const Comp1 = ({ foo }) => {
-        if (foo) {
-          return [<div>rendered1</div>, <div>rendered2</div>];
-        }
-
-        return <div>rendered</div>;
-      };
-
-      render(<Comp1 />, container);
-      expect(container.innerHTML).toEqual('<div>rendered</div>');
-      try {
-        render(<Comp1 foo={true} />, container);
-      } catch (e) {
-        expect(e.message).toEqual(
-          'Inferno Error: a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
-        );
-      }
-
-      expect(container.innerHTML).toEqual('<div>rendered</div>');
-    });
   });
 
   describe('Root handling issues #1', () => {

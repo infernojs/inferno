@@ -49,13 +49,13 @@ export function validateNodeTree(node: any): boolean {
   if (isStringOrNumber(node)) {
     return true;
   }
-  if (!node.dom) {
-    return false;
-  }
   const children = node.children;
   const flags = node.flags;
 
   if ((flags & VNodeFlags.Element) > 0) {
+    if (!node.dom) {
+      return false;
+    }
     if (!isNullOrUndef(children)) {
       if (isArray(children)) {
         for (const child of children) {

@@ -1417,7 +1417,6 @@ describe('Inferno', () => {
     //     ? /mapStateToProps\(\) in Connect\(Container\) must return a plain object/
     //     : /mapStateToProps\(\) in Connect\(Component\) must return a plain object/;
     //
-    //   debugger;
     //   expect(spy.calls.count()).toBe(1);
     //   expect(spyValue).toMatch(errorMsg);
     //

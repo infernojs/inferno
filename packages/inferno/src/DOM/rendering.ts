@@ -1,6 +1,6 @@
 import { isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, NO_OP, throwError, warning } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { createVNode, directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
 import { hydrate } from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -36,7 +36,7 @@ export function render(
 
   if (isNullOrUndef(rootInput)) {
     if (!isInvalid(input)) {
-      if ((input as VNode).dom) {
+      if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
       if (isNull((parentDom as Node).firstChild)) {
@@ -52,7 +52,7 @@ export function render(
       remove(rootInput as VNode, parentDom as Element);
       (parentDom as any).$V = null;
     } else {
-      if ((input as VNode).dom) {
+      if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
       patch(rootInput as VNode, input as VNode, parentDom as Element, EMPTY_OBJ, false, null);
@@ -82,8 +82,4 @@ export function createRenderer(parentDom?) {
     }
     render(nextInput, parentDom);
   };
-}
-
-export function createPortal(children, container) {
-  return createVNode(VNodeFlags.Portal, container, null, children, ChildFlags.UnknownChildren, null, isInvalid(children) ? null : children.key, null);
 }

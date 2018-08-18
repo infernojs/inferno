@@ -223,7 +223,7 @@ describe('Children - (non-JSX)', () => {
     }
   ];
 
-  preDefined.forEach(arg => {
+  preDefined.forEach((arg, i) => {
     [
       {
         description: 'should set static children as ' + arg.name,

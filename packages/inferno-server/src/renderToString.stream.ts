@@ -1,9 +1,9 @@
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { Readable } from 'stream';
-import { renderStylesToString } from './prop-renderers';
-import { escapeText, isAttributeNameSafe, voidElements } from './utils';
-import { VNode } from 'inferno';
+import {combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {Readable} from 'stream';
+import {renderStylesToString} from './prop-renderers';
+import {escapeText, isAttributeNameSafe, voidElements} from './utils';
+import {VNode} from 'inferno';
 
 const resolvedPromise = Promise.resolve();
 
@@ -115,9 +115,12 @@ export class RenderStream extends Readable {
     });
   }
 
-  public renderChildren(children: VNode[] | VNode, context: any, childFlags: ChildFlags) {
-    if (childFlags & ChildFlags.HasVNodeChildren) {
+  public renderChildren(children: VNode[] | VNode | string, context: any, childFlags: ChildFlags) {
+    if (childFlags === ChildFlags.HasVNodeChildren) {
       return this.renderNode(children, context, false);
+    }
+    if (childFlags === ChildFlags.HasTextChildren) {
+      return this.push(children === '' ? ' ' : escapeText(children + ''));
     }
     if (childFlags & ChildFlags.MultipleChildren) {
       return (children as VNode[]).reduce((p, child) => {
@@ -213,10 +216,11 @@ export class RenderStream extends Readable {
     }
     const childFlags = vNode.childFlags;
 
-    if (childFlags & ChildFlags.HasInvalidChildren) {
+    if (childFlags === ChildFlags.HasInvalidChildren) {
       this.push(`</${type}>`);
       return;
     }
+
     return Promise.resolve(this.renderChildren(vNode.children, context, childFlags)).then(() => {
       this.push(`</${type}>`);
     });

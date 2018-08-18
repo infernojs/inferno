@@ -6,7 +6,6 @@ import {
   isInvalid,
   isNull,
   isNullOrUndef,
-  isNumber,
   isString,
   isStringOrNumber,
   isUndefined,
@@ -24,9 +23,8 @@ export interface VNode<P = {}> {
   flags: VNodeFlags;
   isValidated?: boolean;
   key: null | number | string;
-  parentVNode: VNode | null;
   props: Props<P> & P | null;
-  ref: Ref | Refs<P> | null;
+  ref: any;
   type: any;
 }
 export type InfernoInput = VNode | null | string;
@@ -67,7 +65,6 @@ function getVNode(childFlags: ChildFlags, children, className: string | null | u
       flags,
       isValidated: false,
       key: key === void 0 ? null : key,
-      parentVNode: null,
       props: props === void 0 ? null : props,
       ref: ref === void 0 ? null : ref,
       type
@@ -81,7 +78,6 @@ function getVNode(childFlags: ChildFlags, children, className: string | null | u
     dom: null,
     flags,
     key: key === void 0 ? null : key,
-    parentVNode: null,
     props: props === void 0 ? null : props,
     ref: ref === void 0 ? null : ref,
     type
@@ -182,7 +178,7 @@ export function createTextVNode(text?: string | number, key?: string | number | 
 export function createFragment(children?: any[], key?: string | number | null, childFlags?: ChildFlags): VNode {
   const fragment = createVNode(
     VNodeFlags.Fragment,
-    null,
+    VNodeFlags.Fragment,
     null,
     children,
     childFlags,
@@ -261,7 +257,7 @@ export function directClone(vNodeToClone: VNode): VNode {
   } else if (flags & VNodeFlags.Text) {
     newVNode = createTextVNode(vNodeToClone.children as string, vNodeToClone.key);
   } else if (flags & VNodeFlags.Portal) {
-    newVNode = vNodeToClone;
+    newVNode = createPortal(vNodeToClone.children, vNodeToClone.ref);
   }
 
   return newVNode;
@@ -269,6 +265,19 @@ export function directClone(vNodeToClone: VNode): VNode {
 
 export function createVoidVNode(): VNode {
   return createTextVNode('', null);
+}
+
+export function createPortal(children, container) {
+  return createVNode(
+    VNodeFlags.Portal,
+    VNodeFlags.Portal,
+    null,
+    children,
+    ChildFlags.UnknownChildren,
+    null,
+    isInvalid(children) ? null : children.key,
+    container
+  );
 }
 
 export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey: string) {
@@ -287,7 +296,7 @@ export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, c
           const oldKey = n.key;
           const isPrefixedKey = isString(oldKey) && oldKey[0] === keyPrefix;
 
-          if (!isNull(n.dom) || isPrefixedKey) {
+          if ((n.flags & VNodeFlags.InUse) || isPrefixedKey) {
             n = directClone(n);
           }
           if (isNull(oldKey) || isPrefixedKey) {
@@ -304,20 +313,18 @@ export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, c
 }
 
 export function getFlagsForElementVnode(type: string): VNodeFlags {
-  if (type === 'svg') {
-    return VNodeFlags.SvgElement;
+  switch (type) {
+    case 'svg':
+      return VNodeFlags.SvgElement;
+    case 'input':
+      return VNodeFlags.InputElement;
+    case 'select':
+      return VNodeFlags.SelectElement;
+    case 'textarea':
+      return VNodeFlags.TextareaElement;
+    default:
+      return VNodeFlags.HtmlElement;
   }
-  if (type === 'input') {
-    return VNodeFlags.InputElement;
-  }
-  if (type === 'select') {
-    return VNodeFlags.SelectElement;
-  }
-  if (type === 'textarea') {
-    return VNodeFlags.TextareaElement;
-  }
-
-  return VNodeFlags.HtmlElement;
 }
 
 export function normalizeChildren(vNode: VNode, children) {
@@ -327,12 +334,9 @@ export function normalizeChildren(vNode: VNode, children) {
   // Don't change children to match strict equal (===) true in patching
   if (isInvalid(children)) {
     newChildren = children;
-  } else if (isString(children)) {
-    newChildFlags = ChildFlags.HasVNodeChildren;
-    newChildren = createTextVNode(children);
-  } else if (isNumber(children)) {
-    newChildFlags = ChildFlags.HasVNodeChildren;
-    newChildren = createTextVNode(children + '');
+  } else if (isStringOrNumber(children)) {
+    newChildFlags = ChildFlags.HasTextChildren;
+    newChildren = children;
   } else if (isArray(children)) {
     const len = children.length;
 
@@ -363,13 +367,13 @@ export function normalizeChildren(vNode: VNode, children) {
           newChildren.push(createTextVNode(n, keyPrefix + i));
         } else {
           const key = n.key;
-          const isNullDom = isNull(n.dom);
+          const needsCloning = (n.flags & VNodeFlags.InUse) > 0;
           const isNullKey = isNull(key);
-          const isPrefixed = !isNullKey && key[0] === keyPrefix;
+          const isPrefixed = isString(key) && key[0] === keyPrefix;
 
-          if (!isNullDom || isNullKey || isPrefixed) {
+          if (needsCloning || isNullKey || isPrefixed) {
             newChildren = newChildren || children.slice(0, i);
-            if (!isNullDom || isPrefixed) {
+            if (needsCloning || isPrefixed) {
               n = directClone(n);
             }
             if (isNullKey || isPrefixed) {
@@ -387,7 +391,7 @@ export function normalizeChildren(vNode: VNode, children) {
   } else {
     newChildren = children;
 
-    if (!isNull((children as VNode).dom)) {
+    if (children.flags & VNodeFlags.InUse) {
       newChildren = directClone(children as VNode);
     }
     newChildFlags = ChildFlags.HasVNodeChildren;

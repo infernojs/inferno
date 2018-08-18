@@ -147,10 +147,47 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div><p>Hello World!</p></div>'));
   });
 
-  it('Should handle empty textNodes correctly Github #1137', () => {
+  it('hasTextChildren - Should handle empty textNodes correctly Github #1137', () => {
     const container = createContainerWithHTML('<span class="error"></span>');
 
     const vNode = <span className="error">{''}</span>;
+
+    expect(vNode.children).toEqual('');
+
+    render(vNode, container); // This should create empty text node
+
+    render(<span className="error">{'Okay!'}</span>, container);
+
+    expect(container.textContent).toBe('Okay!');
+  });
+
+  it('hasTextChildren - Should handle empty textNodes correctly Github #1137 variation#2', () => {
+    const container = createContainerWithHTML('<div><span class="error"></span></div>');
+
+    const vNode = (
+      <div>
+        <span className="error">{''}</span>
+      </div>
+    );
+
+    expect(vNode.children.children).toEqual('');
+
+    render(vNode, container); // This should create empty text node
+
+    render(
+      <div>
+        <span className="error">{'Okay!'}</span>
+      </div>,
+      container
+    );
+
+    expect(container.textContent).toBe('Okay!');
+  });
+
+  it('createTextVNode - Should handle empty textNodes correctly Github #1137', () => {
+    const container = createContainerWithHTML('<span class="error"></span>');
+
+    const vNode = <span className="error">{createTextVNode('')}</span>;
 
     expect(vNode.children).toEqual(createTextVNode(''));
 
@@ -163,12 +200,12 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.textContent).toBe('Okay!');
   });
 
-  it('Should handle empty textNodes correctly Github #1137 variation#2', () => {
+  it('createTextVNode - Should handle empty textNodes correctly Github #1137 variation#2', () => {
     const container = createContainerWithHTML('<div><span class="error"></span></div>');
 
     const vNode = (
       <div>
-        <span className="error">{''}</span>
+        <span className="error">{createTextVNode('')}</span>
       </div>
     );
 

@@ -30,7 +30,7 @@ import {
 import { VNodeFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
 
-const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'isValidated', 'key', 'ref', 'parentVNode', 'props', 'type'].sort();
+const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'isValidated', 'key', 'ref', 'props', 'type'].sort();
 
 const createDOMElement = tagName => document.createElement(tagName);
 

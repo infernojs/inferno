@@ -52,7 +52,7 @@ export function createElement<T>(
         } else if (prop === 'key') {
           key = props.key;
         } else if (prop === 'children' && isUndefined(children)) {
-          children = props.children; // always favour children args, default to props
+          children = props.children; // always favour children args over props
         } else if (prop === 'ref') {
           ref = props.ref;
         } else {

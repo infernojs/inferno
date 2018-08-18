@@ -17,11 +17,13 @@ export const enum VNodeFlags {
   ReCreate = 1 << 11,
   ContentEditable = 1 << 12,
   Fragment = 1 << 13,
+  InUse = 1 << 14,
 
   /* Masks */
   FormElement = InputElement | TextareaElement | SelectElement,
   Element = HtmlElement | SvgElement | InputElement | TextareaElement | SelectElement,
   Component = ComponentFunction | ComponentClass | ComponentUnknown,
+  DOMRef = Element | Text | Void | Portal,
   VNodeShape = HtmlElement | ComponentClass | ComponentFunction | Text | Void | Portal
 }
 
@@ -33,6 +35,7 @@ export const enum ChildFlags {
   HasVNodeChildren = 1 << 1,
   HasNonKeyedChildren = 1 << 2,
   HasKeyedChildren = 1 << 3,
+  HasTextChildren = 1 << 4,
 
   MultipleChildren = HasNonKeyedChildren | HasKeyedChildren
 }

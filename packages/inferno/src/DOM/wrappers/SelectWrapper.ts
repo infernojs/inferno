@@ -48,7 +48,7 @@ export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode
   }
   const childFlags = vNode.childFlags;
 
-  if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {
+  if (childFlags !== ChildFlags.HasInvalidChildren) {
     const children = vNode.children;
     let value = nextPropsOrEmpty.value;
     if (mounting && isNullOrUndef(value)) {

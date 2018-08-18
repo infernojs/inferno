@@ -2,7 +2,7 @@ import {VNodeFlags} from 'inferno-vnode-flags';
 import {InfernoChildren, Props, Refs, VNode} from './implementation';
 import {combineFrom, isFunction, isNull, isNullOrUndef, throwError} from 'inferno-shared';
 import {updateClassComponent} from '../DOM/patching';
-import {callAll, EMPTY_OBJ, LIFECYCLE} from '../DOM/utils/common';
+import {callAll, EMPTY_OBJ, findDOMfromVNode, LIFECYCLE} from '../DOM/utils/common';
 
 const resolvedPromise: any = typeof Promise === 'undefined' ? null : Promise.resolve();
 // raf.bind(window) is needed to work around bug in IE10-IE11 strict mode (TypeError: Invalid calling object)
@@ -80,33 +80,23 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     const context = component.context;
 
     component.$PS = null;
-    let vNode = component.$V as VNode;
     const lastInput = component.$LI as VNode;
-    const parentDom = lastInput.dom && lastInput.dom.parentNode;
+    const dom = findDOMfromVNode(lastInput);
+    const parentDom = dom && dom.parentNode;
 
     updateClassComponent(
       component,
       nextState,
-      vNode,
       props,
-      parentDom,
+      parentDom as Element,
       context,
-      (vNode.flags & VNodeFlags.SvgElement) > 0,
+      false,
       force,
       true,
       (lastInput.flags & VNodeFlags.Fragment) > 0 ? (lastInput.dom as any).nextSibling as Element | null : null
       );
     if (component.$UN) {
       return;
-    }
-
-    if ((component.$LI.flags & VNodeFlags.Portal) === 0) {
-      const dom = component.$LI.dom;
-      while (!isNull((vNode = vNode.parentVNode as any))) {
-        if ((vNode.flags & VNodeFlags.Component) > 0) {
-          vNode.dom = dom;
-        }
-      }
     }
 
     if (LIFECYCLE.length > 0) {
@@ -180,7 +170,6 @@ export class Component<P, S> {
   public $PSS: boolean = false; // PENDING SET STATE
   public $PS: S | null = null; // PENDING STATE (PARTIAL or FULL)
   public $LI: any = null; // LAST INPUT
-  public $V: VNode | null = null; // VNODE
   public $UN = false; // UNMOUNTED
   public $CX = null; // CHILDCONTEXT
   public $UPD: boolean = true; // UPDATING

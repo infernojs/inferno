@@ -1,5 +1,6 @@
 import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNode } from './implementation';
 
 function getTagName(input) {
   let tagName;
@@ -34,7 +35,7 @@ function getTagName(input) {
   return '>> ' + tagName + '\n';
 }
 
-function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
+function DEV_ValidateKeys(vNodeTree, vNode: VNode, forceKeyed: boolean) {
   const foundKeys: any = {};
 
   for (let i = 0, len = vNodeTree.length; i < len; i++) {
@@ -68,9 +69,9 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     if (!isInvalid(children)) {
       let val;
       if (childFlags & ChildFlags.MultipleChildren) {
-        val = DEV_ValidateKeys(children, childNode, childNode.childFlags & ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys(children, childNode, childNode.childFlags === ChildFlags.HasKeyedChildren);
       } else if (childFlags === ChildFlags.HasVNodeChildren) {
-        val = DEV_ValidateKeys([children], childNode, childNode.childFlags & ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys([children], childNode, childNode.childFlags === ChildFlags.HasKeyedChildren);
       }
       if (val) {
         val += getTagName(childNode);
@@ -98,7 +99,9 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
 
 export function validateVNodeElementChildren(vNode) {
   if (process.env.NODE_ENV !== 'production') {
-    if (vNode.childFlags & ChildFlags.HasInvalidChildren) {
+    // TODO: Validate portal children, vNode, Fragment, no arrays
+
+    if (vNode.childFlags === ChildFlags.HasInvalidChildren) {
       return;
     }
     if (vNode.flags & VNodeFlags.InputElement) {
@@ -108,15 +111,31 @@ export function validateVNodeElementChildren(vNode) {
       throwError("textarea elements can't have children.");
     }
     if (vNode.flags & VNodeFlags.Element) {
-      const voidTypes = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+      const voidTypes = {
+        'area': true,
+        'base': true,
+        'br': true,
+        'col': true,
+        'command': true,
+        'embed': true,
+        'hr': true,
+        'img': true,
+        'input': true,
+        'keygen': true,
+        'link': true,
+        'meta': true,
+        'param': true,
+        'source': true,
+        'track': true,
+        'wbr': true
+      };
       const tag = vNode.type.toLowerCase();
 
       if (tag === 'media') {
         throwError("media elements can't have children.");
       }
-      const idx = voidTypes.indexOf(tag);
-      if (idx !== -1) {
-        throwError(`${voidTypes[idx]} elements can't have children.`);
+      if (voidTypes[tag]) {
+        throwError(`${tag} elements can't have children.`);
       }
     }
   }
@@ -129,7 +148,7 @@ export function validateKeys(vNode) {
       const error = DEV_ValidateKeys(
         Array.isArray(vNode.children) ? vNode.children : [vNode.children],
         vNode,
-        (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0
+        vNode.childFlags === ChildFlags.HasKeyedChildren
       );
 
       if (error) {

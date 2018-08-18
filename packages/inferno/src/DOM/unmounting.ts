@@ -2,15 +2,13 @@ import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/implementation';
 import { handleEvent } from './events/delegation';
-import { EMPTY_OBJ, removeChild } from './utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, removeChild, removeVNodeDOM } from './utils/common';
 
 export function remove(vNode: VNode, parentDom: Element | null) {
   unmount(vNode);
 
-  if (parentDom && vNode.dom) {
-    removeChild(parentDom, vNode.dom as Element);
-    // Let carbage collector free memory
-    vNode.dom = null;
+  if (parentDom) {
+    removeVNodeDOM(vNode, parentDom);
   }
 }
 
@@ -27,12 +25,6 @@ export function unmount(vNode) {
 
     const children = vNode.children;
     const childFlags = vNode.childFlags;
-
-    if (childFlags & ChildFlags.MultipleChildren) {
-      unmountAllChildren(children);
-    } else if (childFlags === ChildFlags.HasVNodeChildren) {
-      unmount(children as VNode);
-    }
 
     if (!isNull(props)) {
       for (const name in props) {
@@ -58,6 +50,12 @@ export function unmount(vNode) {
         }
       }
     }
+
+    if (childFlags & ChildFlags.MultipleChildren) {
+      unmountAllChildren(children);
+    } else if (childFlags === ChildFlags.HasVNodeChildren) {
+      unmount(children as VNode);
+    }
   } else {
     const children = vNode.children;
 
@@ -80,13 +78,13 @@ export function unmount(vNode) {
           }
         } else {
           if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
-            ref.onComponentWillUnmount(vNode.dom, vNode.props || EMPTY_OBJ);
+            ref.onComponentWillUnmount(findDOMfromVNode(vNode), vNode.props || EMPTY_OBJ);
           }
 
           unmount(children);
         }
       } else if (flags & VNodeFlags.Portal) {
-        remove(children as VNode, vNode.type);
+        remove(children as VNode, vNode.ref);
       }
     }
   }
@@ -101,4 +99,12 @@ export function unmountAllChildren(children: VNode[]) {
 export function removeAllChildren(dom: Element, children) {
   unmountAllChildren(children);
   dom.textContent = '';
+}
+
+export function removeTextNode(dom: Element) {
+  const child = dom.firstChild;
+
+  if (child) {
+    removeChild(dom, child as Element);
+  }
 }

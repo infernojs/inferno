@@ -47,7 +47,7 @@ export function createClassComponentInstance<P>(vNode: VNode, Component, props: 
     options.beforeRender(instance);
   }
 
-  const input = handleComponentInput(instance.render(props, instance.state, context), vNode);
+  const input = handleComponentInput(instance.render(props, instance.state, context));
 
   let childContext;
   if (isFunction(instance.getChildContext)) {
@@ -68,7 +68,7 @@ export function createClassComponentInstance<P>(vNode: VNode, Component, props: 
   return instance;
 }
 
-export function handleComponentInput(input: any, componentVNode: VNode): VNode {
+export function handleComponentInput(input: any): VNode {
   if (isInvalid(input)) {
     input = createVoidVNode();
   } else if (isStringOrNumber(input)) {
@@ -76,14 +76,8 @@ export function handleComponentInput(input: any, componentVNode: VNode): VNode {
   } else if (isArray(input)) {
     input = createFragment(input, null, ChildFlags.UnknownChildren);
   } else {
-    if (input.dom) {
+    if (input.flags & VNodeFlags.InUse) {
       input = directClone(input);
-    }
-    if (input.flags & VNodeFlags.Component) {
-      // if we have an input that is also a component, we run into a tricky situation
-      // where the root vNode needs to always have the correct DOM entry
-      // we can optimise this in the future, but this gets us out of a lot of issues
-      input.parentVNode = componentVNode;
     }
   }
   return input;

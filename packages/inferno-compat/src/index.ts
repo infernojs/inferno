@@ -18,7 +18,8 @@ import {
   Props,
   Refs,
   render,
-  VNode
+  VNode,
+  findDOMfromVNode
 } from 'inferno';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
@@ -340,7 +341,7 @@ function findDOMNode(ref) {
   }
 
   if (ref.$LI) {
-    return ref.$LI.dom;
+    return findDOMfromVNode(ref.$LI);
   }
 
   return null;
@@ -448,6 +449,7 @@ export default {
   createVNode,
   directClone,
   findDOMNode,
+  findDOMfromVNode,
   getFlagsForElementVnode,
   getNumberStyleValue,
   hydrate,

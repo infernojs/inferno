@@ -1,9 +1,20 @@
-import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, isUndefined, throwError } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { Readable } from 'stream';
-import { renderStylesToString } from './prop-renderers';
-import { escapeText, isAttributeNameSafe, voidElements } from './utils';
+import {EMPTY_OBJ} from 'inferno';
+import {
+  combineFrom,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  isTrue,
+  isUndefined,
+  throwError
+} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {Readable} from 'stream';
+import {renderStylesToString} from './prop-renderers';
+import {escapeText, isAttributeNameSafe, voidElements} from './utils';
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
@@ -239,17 +250,23 @@ export class RenderQueueStream extends Readable {
         // Element has children, build them in
         const childFlags = vNode.childFlags;
 
-        if (childFlags & ChildFlags.HasVNodeChildren) {
+        if (childFlags === ChildFlags.HasVNodeChildren) {
           this.addToQueue(renderedString, position);
           this.renderVNodeToQueue(children, context, true, position);
           this.addToQueue('</' + type + '>', position);
           return;
+        } else if (childFlags === ChildFlags.HasTextChildren) {
+          this.addToQueue(renderedString, position);
+          this.addToQueue(children === '' ? ' ' : escapeText(children + ''), position);
+          this.addToQueue('</' + type + '>', position);
+          return;
         } else if (childFlags & ChildFlags.MultipleChildren) {
           this.addToQueue(renderedString, position);
-          renderedString = '';
           for (let i = 0, len = children.length; i < len; i++) {
             this.renderVNodeToQueue(children[i], context, i === 0, position);
           }
+          this.addToQueue('</' + type + '>', position);
+          return;
         }
         if (html) {
           this.addToQueue(renderedString + html + '</' + type + '>', position);

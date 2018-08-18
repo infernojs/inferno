@@ -5,9 +5,9 @@ uibench.init('Inferno');
 function TreeLeaf({children}) {
   return (
     <li
-      $HasVNodeChildren
+      $HasTextChildren
       className="TreeLeaf">
-      {createTextVNode(children)}
+      {children}
     </li>
   );
 }
@@ -106,10 +106,10 @@ function TableCell({children}) {
    */
   return (
     <td
-      $HasVNodeChildren
+      $HasTextChildren
       onClick={linkEvent(children, onClick)}
       className="TableCell">
-      {createTextVNode(children)}
+      {children}
     </td>
   );
 }

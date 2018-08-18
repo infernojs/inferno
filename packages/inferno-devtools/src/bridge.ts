@@ -1,4 +1,4 @@
-import { options, VNode } from 'inferno';
+import { findDOMfromVNode, options, VNode } from 'inferno';
 import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 import { isInvalid, isNullOrUndef } from 'inferno-shared';
 
@@ -28,7 +28,7 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
   const childFlags = vNode.childFlags;
   let renderedChildren;
 
-  if (childFlags & ChildFlags.HasInvalidChildren) {
+  if (childFlags === ChildFlags.HasInvalidChildren) {
     renderedChildren = null;
   } else if (childFlags & ChildFlags.MultipleChildren) {
     renderedChildren = [];
@@ -36,7 +36,7 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
     for (let i = 0; i < vNode.children.length; i++) {
       renderedChildren.push(updateReactComponent(vNode.children[i], devToolChildren ? devToolChildren[i] : null));
     }
-  } else if (childFlags & ChildFlags.HasVNodeChildren) {
+  } else if (childFlags === ChildFlags.HasVNodeChildren) {
     renderedChildren = [updateReactComponent(vNode.children, devToolChildren ? devToolChildren[0] : devToolChildren)];
   }
 
@@ -101,7 +101,7 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
   }
 
   if ((flags & VNodeFlags.Component) > 0) {
-    const lastVNode = (flags & VNodeFlags.ComponentClass) > 0 ? (vNode.children ? vNode.children.$LI : null) : vNode.children;
+    const lastVNode = (flags & VNodeFlags.ComponentClass) > 0 ? (vNode.children ? (vNode.children as any).$LI : null) : vNode.children;
 
     if (lastVNode) {
       (instance as any)._renderedComponent = updateReactComponent(lastVNode, oldDevToolInstance ? oldDevToolInstance._renderedComponent : null);
@@ -210,10 +210,15 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
 }
 
 function isRootVNode(vNode: VNode): boolean {
-  if (!vNode.dom) {
+  if (!(vNode.flags & VNodeFlags.InUse)) {
     return false;
   }
-  const parentNode = vNode.dom.parentNode as any;
+  const dom = findDOMfromVNode(vNode);
+
+  if (!dom) {
+    return false;
+  }
+  const parentNode = dom.parentNode as any;
 
   if (!parentNode) {
     return false;
@@ -234,7 +239,7 @@ function checkVNode(vNode, devToolNode, devToolParentNode?, index?: number) {
         devToolNode._currentElement = vNode.children + '';
         devToolNode._stringText = vNode.children + '';
       } else if ((vNode.flags & 4) > 0) {
-        checkVNode(vNode.children ? vNode.children.$LI : null, devToolNode._renderedComponent, devToolNode);
+        checkVNode(vNode.children ? (vNode.children as any).$LI : null, devToolNode._renderedComponent, devToolNode);
       } else if ((vNode.flags & 8) > 0) {
         checkVNode(vNode.children, devToolNode._renderedComponent, devToolNode);
       } else {
@@ -334,9 +339,9 @@ export function createDevToolsBridge() {
         // Check if root exists
         for (root in roots) {
           const rootInstance = roots[root];
-          const rootNode = rootInstance.vNode.dom;
+          const rootNode = findDOMfromVNode(rootInstance.vNode);
 
-          if (!rootNode.parentNode) {
+          if (!rootNode || !rootNode.parentNode) {
             Reconciler.unmountComponent(rootInstance);
 
             delete roots[root];

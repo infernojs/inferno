@@ -1,5 +1,6 @@
 import {Component, render, SFC} from 'inferno';
 import sinon, { assert } from 'sinon';
+import {innerHTML} from "inferno-utils";
 
 describe('All single patch variations', () => {
   const templateRefSpy = sinon.spy();
@@ -460,7 +461,55 @@ describe('All single patch variations', () => {
       render(<div $HasNonKeyedChildren>{[<div key="2">2</div>, <div key="1">1</div>]}</div>, container);
 
       expect(container.innerHTML).toBe('<div><div>2</div><div>1</div></div>');
-      expect(container.firstChild.firstChild).toBe(oldFirstNode);
+
+      // It is forced to do non keyed, so elements are remounted
+      expect(container.firstChild.firstChild).not.toBe(oldFirstNode);
     });
+  });
+
+  it('Should remount whole vNode tree when parent element vNode key changes', () => {
+    let mountCallCount = 0;
+    let unmountCallCount = 0;
+
+    class ComponentFooBar extends Component {
+      public componentWillMount() {
+        mountCallCount++;
+      }
+
+      public componentWillUnmount() {
+        unmountCallCount++;
+      }
+
+      public render() {
+        return <div>Component</div>
+      }
+    }
+
+    render((
+        <div>
+          <div key="First"><ComponentFooBar/></div>
+        </div>
+      ),
+      container
+    );
+
+    expect(container.innerHTML).toEqual(innerHTML('<div><div><div>Component</div></div></div>'));
+
+    expect(mountCallCount).toBe(1);
+    expect(unmountCallCount).toBe(0);
+
+
+    render((
+        <div>
+          <div key="Another"><ComponentFooBar/></div>
+        </div>
+      ),
+      container
+    );
+
+    expect(container.innerHTML).toEqual(innerHTML('<div><div><div>Component</div></div></div>'));
+
+    expect(mountCallCount).toBe(2);
+    expect(unmountCallCount).toBe(1);
   });
 });

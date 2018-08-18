@@ -339,7 +339,7 @@ describe('Text', () => {
       name: 'empty string',
       value: '',
       expected: '',
-      children: 1
+      children: 0
     },
     {
       name: 'string with whitespace',

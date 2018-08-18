@@ -1,6 +1,7 @@
 import { NO_OP, warning } from 'inferno-shared';
 import {
   createComponentVNode,
+  createPortal,
   createTextVNode,
   createVNode,
   directClone,
@@ -15,8 +16,8 @@ import {
   VNode
 } from './core/implementation';
 import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
-import { createPortal, createRenderer, render } from './DOM/rendering';
-import { EMPTY_OBJ } from './DOM/utils/common';
+import { createRenderer, render } from './DOM/rendering';
+import { EMPTY_OBJ, findDOMfromVNode } from './DOM/utils/common';
 import { Component, ComponentClass, ComponentType, SFC, StatelessComponent } from './core/component';
 import { getNumberStyleValue } from './DOM/props';
 import { hydrate } from './DOM/hydration';
@@ -62,6 +63,7 @@ export {
   createTextVNode,
   createVNode,
   directClone,
+  findDOMfromVNode,
   getFlagsForElementVnode,
   getNumberStyleValue,
   hydrate,

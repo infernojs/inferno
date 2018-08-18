@@ -609,14 +609,12 @@ describe('Mobx Observer', () => {
   //   });
   //
   //   const Child = observer(() => {
-  //     debugger;
   //     events.push("child")
   //     return <span>Logged in as: {ostore.user.name}</span>;
   //   });
   //
   //   render(<Parent />, container)
   //   expect(container.textContent).toBe('Logged in as: testerLogout');
-  //   debugger;
   //   tryLogout();
   //   expect(container.textContent).toBe('wqd');
   //   expect(events).toEqual(["parent", "child", "parent"])
