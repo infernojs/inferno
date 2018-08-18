@@ -42,7 +42,6 @@ describe('Components (non-JSX)', () => {
     }
 
     it('should recover from a basic error', () => {
-      debugger
       const template = (Component, title) =>
         createElement(
           'div',
