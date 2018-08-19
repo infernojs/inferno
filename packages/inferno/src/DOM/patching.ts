@@ -473,6 +473,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
   let aNode: VNode = a[j];
   let bNode: VNode = b[j];
   let nextPos: number;
+  let nextNode;
 
   // Step 1
   // tslint:disable-next-line
@@ -515,7 +516,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
   if (j > aEnd) {
     if (j <= bEnd) {
       nextPos = bEnd + 1;
-      const nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge;
+      nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge;
 
       while (j <= bEnd) {
         bNode = b[j];
@@ -643,8 +644,15 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
             pos = i + bStart;
             bNode = b[pos];
             nextPos = pos + 1;
-            // TODO: Move fragment
-            insertOrAppend(dom, findDOMfromVNode(bNode), nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge);
+            nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge;
+
+            if ((bNode.flags & VNodeFlags.Fragment) && bNode.childFlags & ChildFlags.MultipleChildren) {
+              for (let k = 0, len = (bNode.children as VNode[]).length; k < len; k++) {
+                insertOrAppend(dom, findDOMfromVNode((bNode.children as VNode[])[k]), nextNode);
+              }
+            } else {
+              insertOrAppend(dom, findDOMfromVNode(bNode), nextNode);
+            }
           } else {
             j--;
           }

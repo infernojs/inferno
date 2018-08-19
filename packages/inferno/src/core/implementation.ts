@@ -1,4 +1,4 @@
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   combineFrom,
   isArray,
@@ -11,7 +11,7 @@ import {
   isUndefined,
   throwError
 } from 'inferno-shared';
-import {validateVNodeElementChildren} from './validate';
+import { validateVNodeElementChildren } from './validate';
 
 const keyPrefix = '$';
 
@@ -175,7 +175,7 @@ export function createTextVNode(text?: string | number, key?: string | number | 
   return getVNode(ChildFlags.HasInvalidChildren, isNullOrUndef(text) ? '' : text, null, VNodeFlags.Text, key, null, null, null);
 }
 
-export function createFragment(children?: any[], key?: string | number | null, childFlags?: ChildFlags): VNode {
+export function createFragment(children: any[], childFlags: ChildFlags, key?: string | number | null): VNode {
   const fragment = createVNode(
     VNodeFlags.Fragment,
     VNodeFlags.Fragment,
@@ -258,6 +258,8 @@ export function directClone(vNodeToClone: VNode): VNode {
     newVNode = createTextVNode(vNodeToClone.children as string, vNodeToClone.key);
   } else if (flags & VNodeFlags.Portal) {
     newVNode = createPortal(vNodeToClone.children, vNodeToClone.ref);
+  } else if (flags & VNodeFlags.Fragment) {
+    newVNode = createFragment(vNodeToClone.children as any[], vNodeToClone.childFlags, vNodeToClone.key)
   }
 
   return newVNode;

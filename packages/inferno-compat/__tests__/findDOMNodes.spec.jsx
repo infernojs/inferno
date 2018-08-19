@@ -75,5 +75,68 @@ describe('findDOMNodes (JSX)', () => {
       expect(findDOMNode(null)).toBe(null);
       expect(findDOMNode({})).toBe(null);
     });
+
+    it('finds the first child when a component returns a fragment', () => {
+      class Fragment extends Component {
+        render() {
+          return [<div key="a" />, <span key="b" />];
+        }
+      }
+
+      let instance = null;
+      render(<Fragment ref={ref => (instance = ref)} />, container);
+
+      expect(container.childNodes.length).toBe(2);
+
+      const firstNode = findDOMNode(instance);
+      expect(firstNode).toBe(container.firstChild);
+      expect(firstNode.tagName).toBe('DIV');
+    });
+
+    it('finds the first child even when fragment is nested', () => {
+      class Wrapper extends Component {
+        render() {
+          return this.props.children;
+        }
+      }
+
+      class Fragment extends Component {
+        render() {
+          return [<Wrapper key="a"><div /></Wrapper>, <span key="b" />];
+        }
+      }
+
+      let instance = null;
+      render(<Fragment ref={ref => (instance = ref)} />, container);
+
+      expect(container.childNodes.length).toBe(2);
+
+      const firstNode = findDOMNode(instance);
+      expect(firstNode).toBe(container.firstChild);
+      expect(firstNode.tagName).toBe('DIV');
+    });
+
+    it('finds the first child even when first child renders null', () => {
+      class NullComponent extends Component {
+        render() {
+          return null;
+        }
+      }
+
+      class Fragment extends Component {
+        render() {
+          return [<NullComponent key="a" />, <div key="b" />, <span key="c" />];
+        }
+      }
+
+      let instance = null;
+      ReactDOM.render(<Fragment ref={ref => (instance = ref)} />, container);
+
+      expect(container.childNodes.length).toBe(3);
+
+      const firstNode = findDOMNode(instance);
+      expect(firstNode).toBe(container.firstChild);
+      // expect(firstNode.tagName).toBe('DIV'); This is components placeholder
+    });
   });
 });

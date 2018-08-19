@@ -344,6 +344,10 @@ function findDOMNode(ref) {
     return findDOMfromVNode(ref.$LI);
   }
 
+  if (ref.flags) {
+    return findDOMfromVNode(ref);
+  }
+
   return null;
 }
 

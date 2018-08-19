@@ -13,7 +13,8 @@ import {
   Props,
   Ref,
   Refs,
-  VNode
+  VNode,
+  createFragment
 } from './core/implementation';
 import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createRenderer, render } from './DOM/rendering';
@@ -58,6 +59,7 @@ export {
   Refs,
   VNode,
   createComponentVNode,
+  createFragment,
   createPortal,
   createRenderer,
   createTextVNode,

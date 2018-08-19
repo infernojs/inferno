@@ -74,7 +74,7 @@ export function handleComponentInput(input: any): VNode {
   } else if (isStringOrNumber(input)) {
     input = createTextVNode(input, null);
   } else if (isArray(input)) {
-    input = createFragment(input, null, ChildFlags.UnknownChildren);
+    input = createFragment(input, ChildFlags.UnknownChildren, null);
   } else {
     if (input.flags & VNodeFlags.InUse) {
       input = directClone(input);
