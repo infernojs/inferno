@@ -26,7 +26,6 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "peerDependencies": {
-    "hoist-non-inferno-statics": "^1.1.3",
     "mobx": "^4"
   },
   "dependencies": {
