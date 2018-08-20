@@ -61,7 +61,7 @@
     "prettier:src:ts": "prettier --print-width 160 --write --list-different --parser=typescript packages/*/src/**/*.{ts,tsx}",
     "prettier:src:fixtures": "prettier --print-width 160 --write --list-different fixtures/**/*.{js,jsx}",
     "prettier:src:scripts": "prettier --print-width 160 --write --list-different scripts/**/*.{js,jsx}",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --no-ci",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "npm run test:node && npm run test:browser",
     "test:node": "cross-env NODE_ENV=test jest --no-cache",
@@ -72,8 +72,7 @@
     "test:browser:debug": "npm run --prefix fixtures/browser debug",
     "test:browser:sauce": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test -- --forceExit",
-    "test:package": "node fixtures/packaging/build-all.js",
-    "uninstall": "lerna clean && rm -rf node_modules"
+    "test:package": "node fixtures/packaging/build-all.js"
   },
   "devDependencies": {
     "@types/history": "^4.7.0",
