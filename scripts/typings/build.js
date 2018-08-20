@@ -12,7 +12,8 @@ try {
   dts.bundle({
     main: join(__dirname, '../../build/packages/', pkgJSON.name, 'src/index.d.ts'),
     name: pkgJSON.name,
-    out: join(cwd, 'dist/index.d.ts')
+    out: join(cwd, 'dist/index.d.ts'),
+    outputAsModuleFolder: true
   });
   console.log(`${pkgJSON.name} in typings is DONE`);
 } catch (e) {

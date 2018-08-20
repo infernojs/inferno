@@ -258,32 +258,36 @@ function patchChildren(
       }
       break;
     default:
-      if (nextChildFlags & ChildFlags.MultipleChildren) {
-        const lastLength = lastChildren.length;
-        const nextLength = nextChildren.length;
-
-        // Fast path's for both algorithms
-        if (lastLength === 0) {
-          if (nextLength > 0) {
-            mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode);
-          }
-        } else if (nextLength === 0) {
+      switch (nextChildFlags) {
+        case ChildFlags.HasTextChildren:
+          unmountAllChildren(lastChildren);
+          mountTextContent(parentDOM, nextChildren);
+          break;
+        case ChildFlags.HasVNodeChildren:
           removeAllChildren(parentDOM, lastChildren);
-        } else if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
-          patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode);
-        } else {
-          patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode);
-        }
-      } else if (nextChildFlags === ChildFlags.HasInvalidChildren) {
-        removeAllChildren(parentDOM, lastChildren);
-      } else if (nextChildFlags === ChildFlags.HasVNodeChildren) {
-        removeAllChildren(parentDOM, lastChildren);
-        mount(nextChildren, parentDOM, context, isSVG, nextNode);
-      } else if (nextChildFlags === ChildFlags.HasTextChildren) {
-        unmountAllChildren(lastChildren);
-        mountTextContent(parentDOM, nextChildren);
+          mount(nextChildren, parentDOM, context, isSVG, nextNode);
+          break;
+        case ChildFlags.HasInvalidChildren:
+          removeAllChildren(parentDOM, lastChildren);
+          break;
+        default:
+          const lastLength = lastChildren.length;
+          const nextLength = nextChildren.length;
+
+          // Fast path's for both algorithms
+          if (lastLength === 0) {
+            if (nextLength > 0) {
+              mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode);
+            }
+          } else if (nextLength === 0) {
+            removeAllChildren(parentDOM, lastChildren);
+          } else if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
+            patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode);
+          } else {
+            patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode);
+          }
+          break;
       }
-      break;
   }
 }
 

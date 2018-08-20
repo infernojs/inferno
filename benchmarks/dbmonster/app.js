@@ -8,7 +8,6 @@
 
 	var createVNode = Inferno.createVNode;
 	var render = Inferno.render;
-	var createTextVNode = Inferno.createTextVNode;
 
 	function renderBenchmark(dbs) {
 		var length = dbs.length;
@@ -19,18 +18,18 @@
 			var lastSample = db.lastSample;
 			var children = new Array(7);
 
-			children[0] = createVNode(1, 'td', 'dbname', createTextVNode(db.dbname), 2);
+			children[0] = createVNode(1, 'td', 'dbname', db.dbname, 16);
 			children[1] = createVNode(1, 'td', 'query-count',
-				createVNode(1, 'span', lastSample.countClassName, createTextVNode(lastSample.nbQueries), 2),
+				createVNode(1, 'span', lastSample.countClassName, lastSample.nbQueries, 16),
 			2);
 
 			for (var i2 = 0; i2 < 5; i2++) {
 				var query = lastSample.topFiveQueries[i2];
 
 				children[i2 + 2] = createVNode(1, 'td', query.elapsedClassName, [
-					createVNode(1, 'div', null, createTextVNode(query.formatElapsed), 2),
+					createVNode(1, 'div', null, query.formatElapsed, 16),
 					createVNode(1, 'div', 'popover left', [
-						createVNode(1, 'div', 'popover-content', createTextVNode(query.query), 2),
+						createVNode(1, 'div', 'popover-content', query.query, 16),
 						createVNode(1, 'div', 'arrow')
 					], 4)
 				], 4);

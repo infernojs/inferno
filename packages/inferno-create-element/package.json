@@ -24,11 +24,10 @@
     "user interfaces",
     "vdom"
   ],
-  "peerDependencies": {
-    "inferno": "^5"
+  "dependencies": {
+    "inferno": "5.4.0"
   },
   "devDependencies": {
-    "inferno": "5.4.0",
     "inferno-shared": "5.4.0",
     "inferno-vnode-flags": "5.4.0"
   },

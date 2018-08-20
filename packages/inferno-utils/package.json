@@ -5,6 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "devDependencies": {
+    "inferno-shared": "5.4.0",
+    "inferno-vnode-flags": "5.4.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
