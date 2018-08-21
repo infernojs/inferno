@@ -279,8 +279,9 @@ export function updateClassComponent(
 
     if (didUpdate) {
       const lastInput = instance.$LI;
-      const nextInput = (instance.$LI = handleComponentInput(renderOutput, nextVNode));
+      const nextInput = handleComponentInput(renderOutput, nextVNode);
       patch(lastInput, nextInput, parentDom, childContext, isSVG);
+      instance.$LI = nextInput;
       if (isFunction(instance.componentDidUpdate)) {
         instance.componentDidUpdate(lastProps, lastState);
       }
