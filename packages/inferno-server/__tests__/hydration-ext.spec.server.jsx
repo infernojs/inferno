@@ -1,6 +1,5 @@
-import { Component, render } from 'inferno';
+import { Component, render, createTextVNode } from 'inferno';
 import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
-import { createTextVNode } from '../../inferno/src';
 
 class Comp extends Component {
   render() {
@@ -86,7 +85,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   });
 
   it('Should hydrate correctly when CSR children is missing', () => {
-    const container = createContainerWithHTML('<div><!----> </div></div>');
+    const container = createContainerWithHTML('<div> </div></div>');
 
     render(
       <InnerNested>
@@ -116,7 +115,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   });
 
   it('Should hydrate correctly when there are comment nodes', () => {
-    const container = createContainerWithHTML('<div><!----></div>');
+    const container = createContainerWithHTML('<div></div>');
 
     render(
       <div>
@@ -131,7 +130,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   });
 
   it('Should hydrate correctly when there are comment nodes #2', () => {
-    const container = createContainerWithHTML('<div><!----><!----><!----></div>');
+    const container = createContainerWithHTML('<div></div>');
 
     render(
       <div>

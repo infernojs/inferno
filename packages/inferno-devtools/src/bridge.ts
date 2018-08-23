@@ -1,5 +1,5 @@
 import { findDOMfromVNode, options, VNode } from 'inferno';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isInvalid, isNullOrUndef } from 'inferno-shared';
 
 let updatingDevTool = false;
@@ -24,7 +24,7 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
   }
 
   const devToolChildren = oldDevToolInstance ? oldDevToolInstance._renderedChildren : null;
-  const isTextVNode = (flags & VNodeFlags.Text) > 0;
+  const isTextVNode = (flags & VNodeFlags.Text) > 0 || (vNode.childFlags & ChildFlags.HasTextChildren) !== 0;
   const childFlags = vNode.childFlags;
   let renderedChildren;
 
@@ -42,7 +42,7 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
 
   return {
     // --- ReactDOMComponent interface
-    _currentElement: isTextVNode
+    _currentElement: (flags & VNodeFlags.Text) > 0
       ? vNode.children + ''
       : {
           props: vNode.className ? Object.assign({}, vNode.props, { className: vNode.className }) : vNode.props,
@@ -174,6 +174,9 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
       }
 
       break;
+    case ChildFlags.HasTextChildren:
+      devToolComponent._stringText = children;
+      break;
     case ChildFlags.HasKeyedChildren:
     case ChildFlags.HasNonKeyedChildren:
       const vNodeLength = children.length;
@@ -238,9 +241,9 @@ function checkVNode(vNode, devToolNode, devToolParentNode?, index?: number) {
       if ((vNode.flags & VNodeFlags.Text) > 0 && devToolNode._stringText) {
         devToolNode._currentElement = vNode.children + '';
         devToolNode._stringText = vNode.children + '';
-      } else if ((vNode.flags & 4) > 0) {
+      } else if ((vNode.flags & VNodeFlags.ComponentClass) > 0) {
         checkVNode(vNode.children ? (vNode.children as any).$LI : null, devToolNode._renderedComponent, devToolNode);
-      } else if ((vNode.flags & 8) > 0) {
+      } else if ((vNode.flags & VNodeFlags.ComponentFunction) > 0) {
         checkVNode(vNode.children, devToolNode._renderedComponent, devToolNode);
       } else {
         checkChildVNodes(vNode.childFlags, vNode.children, devToolNode);

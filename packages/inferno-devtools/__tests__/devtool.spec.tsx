@@ -64,7 +64,7 @@ describe('Devtools', () => {
             container
         );
 
-        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(3); // Root, div, text
+        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(2); // Root, div
         expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(1);
         expect(Object.keys(Mount._instancesByReactRootID)).toEqual(['.0']);
 
@@ -77,7 +77,7 @@ describe('Devtools', () => {
             root2
         );
 
-        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(6); // Root, div, text
+        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4); // Root, div
         expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(2);
         expect(Object.keys(Mount._instancesByReactRootID)).toEqual(['.0', '.1']);
 
@@ -87,7 +87,7 @@ describe('Devtools', () => {
             container
         );
 
-        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(6);
+        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4);
         expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(2);
         expect(Reconciler.unmountComponent).toHaveBeenCalledTimes(1);
         expect(Object.keys(Mount._instancesByReactRootID)).toEqual(['.1']);
@@ -98,7 +98,7 @@ describe('Devtools', () => {
             container
         );
 
-        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(9);
+        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(6);
         expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(3);
         expect(Reconciler.unmountComponent).toHaveBeenCalledTimes(1);
         expect(Object.keys(Mount._instancesByReactRootID)).toEqual(['.1', '.2']);
@@ -158,7 +158,7 @@ describe('Devtools', () => {
         });
 
         expect(container.innerHTML).toEqual('<div><div>first</div><div>second</div></div>');
-        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(6);
+        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4);
 
         nodes = [
             <div>first</div>,
@@ -171,7 +171,7 @@ describe('Devtools', () => {
         });
 
         expect(container.innerHTML).toEqual('<div><div>first</div><div>middle</div><div>second</div></div>');
-        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(8);
+        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(5);
 
         // Remove all
 
@@ -231,8 +231,8 @@ describe('Devtools', () => {
         });
 
         expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('div');
-        expect(devToolRoot._renderedComponent._renderedChildren[0]._renderedChildren[0]._stringText).toBe('second');
-        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4);
+        expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('second');
+        expect(Reconciler.mountComponent).toHaveBeenCalledTimes(3);
 
         nodes = <div>first</div>;
 
@@ -243,7 +243,7 @@ describe('Devtools', () => {
 
 
         expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('div');
-        expect(devToolRoot._renderedComponent._renderedChildren[0]._renderedChildren[0]._stringText).toBe('first');
+        expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('first');
 
         nodes = null;
 
@@ -262,7 +262,7 @@ describe('Devtools', () => {
         });
 
         expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('div');
-        expect(devToolRoot._renderedComponent._renderedChildren[0]._renderedChildren[0]._stringText).toBe('second');
+        expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('second');
 
 
         nodes = <div key="test2">test2</div>;
@@ -274,7 +274,7 @@ describe('Devtools', () => {
 
 
         expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('div');
-        expect(devToolRoot._renderedComponent._renderedChildren[0]._renderedChildren[0]._stringText).toBe('test2');
+        expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('test2');
 
         // Update by changing type
         nodes = <span>ok</span>;
@@ -284,7 +284,7 @@ describe('Devtools', () => {
         });
 
         expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('span');
-        expect(devToolRoot._renderedComponent._renderedChildren[0]._renderedChildren[0]._stringText).toBe('ok');
+        expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('ok');
     });
 
     it('Should handle keyed child arrays', () => {

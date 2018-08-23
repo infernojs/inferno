@@ -37,7 +37,7 @@
     "inferno-create-element": "5.4.0",
     "inferno-shared": "5.4.0",
     "inferno-vnode-flags": "5.4.0",
-    "mobx": "^4"
+    "mobx": "*"
   },
   "rollup": {
     "bundledDependencies": [

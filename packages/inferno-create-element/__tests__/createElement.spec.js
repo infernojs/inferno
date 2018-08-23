@@ -155,4 +155,22 @@ describe('CreateElement (non-JSX)', () => {
     };
     render(createElement(app, null), container);
   });
+
+  // TODO:
+  // describe('Fragments', () => {
+  //   return React.createElement(
+  //     React.Fragment,
+  //     { foo: a => console.log(a) },
+  //     React.createElement(
+  //       "div",
+  //       null,
+  //       "Ok"
+  //     ),
+  //     React.createElement(
+  //       "span",
+  //       null,
+  //       "Test"
+  //     )
+  //   )
+  // })
 });

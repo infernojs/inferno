@@ -62,7 +62,6 @@ describe('Fragments', () => {
   });
 
   it('Should be to replace component with fragment with another component', () => {
-    debugger;
     class Example extends Component {
       render() {
         return (

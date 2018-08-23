@@ -5,7 +5,7 @@
 		"paths": {
 			"inferno": [ "packages/inferno/src" ],
 			"inferno-compat": [ "packages/inferno-compat/src" ],
-      "inferno-component": [ "packages/inferno-component/src" ],
+            "inferno-component": [ "packages/inferno-component/src" ],
 			"inferno-create-class": [ "packages/inferno-create-class/src" ],
 			"inferno-create-element": [ "packages/inferno-create-element/src" ],
 			"inferno-devtools": [ "packages/inferno-devtools/src" ],
@@ -15,7 +15,7 @@
 			"inferno-router": [ "packages/inferno-router/src" ],
 			"inferno-server": [ "packages/inferno-server/src" ],
 			"inferno-shared": [ "packages/inferno-shared/src" ],
-      "inferno-clone-vnode": [ "packages/inferno-clone-vnode/src" ],
+            "inferno-clone-vnode": [ "packages/inferno-clone-vnode/src" ],
 			"inferno-test-utils": [ "packages/inferno-test-utils/src" ],
 			"inferno-utils": [ "packages/inferno-utils/src" ],
 			"inferno-vnode-flags": [ "packages/inferno-vnode-flags/src" ]

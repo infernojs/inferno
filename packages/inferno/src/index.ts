@@ -42,6 +42,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
+const Fragment = '$F';
 const version = process.env.INFERNO_VERSION;
 
 export {
@@ -50,6 +51,7 @@ export {
   SFC,
   StatelessComponent,
   ComponentClass,
+  Fragment,
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,

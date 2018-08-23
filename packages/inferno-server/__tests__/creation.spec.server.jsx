@@ -1,6 +1,7 @@
 import { renderToStaticMarkup, renderToString } from 'inferno-server';
-import { Component, render } from 'inferno';
+import { Component, render, createFragment } from 'inferno';
 import { createElement } from 'inferno-create-element';
+import { ChildFlags } from 'inferno-vnode-flags';
 
 function WrappedInput(props) {
   return <input type="text" value={props.value} />;
@@ -35,7 +36,7 @@ describe('SSR Creation (JSX)', () => {
           Hello world, {'1'}2{'3'}
         </div>
       ),
-      result: '<div>Hello world, <!---->1<!---->2<!---->3</div>'
+      result: '<div>Hello world, 123</div>'
     },
     {
       description: 'should render text with escaped symbols',
@@ -50,7 +51,7 @@ describe('SSR Creation (JSX)', () => {
     {
       description: 'should render mixed invalid/valid children',
       template: () => <div>{[null, '123', null, '456']}</div>,
-      result: '<div>123<!---->456</div>'
+      result: '<div>123456</div>'
     },
     {
       description: 'should ignore children as props',
@@ -375,28 +376,30 @@ describe('SSR Creation (JSX)', () => {
       ).toEqual('<div style="background-color:red;"><div style="background-color:red;"></div></div>');
     });
 
-    it('text nodes should match 1:1', () => {
+    it('text nodes should match 1:1 after hydration', () => {
+      class LinkComponent extends Component {
+        render() {
+          return <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a>;
+        }
+      }
       const container = document.createElement('div');
       const version = '4.0.0-21';
       const renderedString = renderToString(
         <div className="built">
-          Website built with Inferno {version} using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a>
+          Website built with Inferno {version} using <LinkComponent/>
         </div>
       );
-      expect(renderedString).toEqual("<div class=\"built\">Website built with Inferno <!---->4.0.0-21<!----> using <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://github.com/infernojs/create-inferno-app\">create-inferno-app</a></div>");
+      expect(renderedString).toEqual("<div class=\"built\">Website built with Inferno 4.0.0-21 using <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://github.com/infernojs/create-inferno-app\">create-inferno-app</a></div>");
 
       container.innerHTML = renderedString;
 
+      const AnchorNode = container.querySelector('a');
       const wrapperDiv = container.firstChild;
-      const websiteText = wrapperDiv.firstChild; // Website built with Inferno
-      const versionString = wrapperDiv.childNodes[2];
-      const usingString = wrapperDiv.childNodes[4];
-      const link = wrapperDiv.childNodes[5];
 
       function WrapperComponent() {
         return (
           <div className="built">
-            Website built with Inferno {version} using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a>
+            Website built with Inferno {version} using <LinkComponent/>
           </div>
         );
       }
@@ -404,10 +407,81 @@ describe('SSR Creation (JSX)', () => {
       render(<WrapperComponent />, container);
       expect(container.firstChild).toBe(wrapperDiv);
       expect(wrapperDiv.childNodes.length).toBe(4);
-      expect(wrapperDiv.childNodes[0]).toBe(websiteText);
-      expect(wrapperDiv.childNodes[1]).toBe(versionString);
-      expect(wrapperDiv.childNodes[2]).toBe(usingString);
-      expect(wrapperDiv.childNodes[3]).toBe(link);
+      expect(wrapperDiv.childNodes[0].nodeValue).toBe('Website built with Inferno ');
+      expect(wrapperDiv.childNodes[1].nodeValue).toBe('4.0.0-21');
+      expect(wrapperDiv.childNodes[2].nodeValue).toBe(' using ');
+      expect(wrapperDiv.childNodes[3]).toBe(AnchorNode);
+    });
+
+    it('Should be possible to render Fragment #1', () => {
+      const vNode = (
+        <div>
+          {
+            createFragment(
+            [
+              <div>Lets go!</div>,
+              null,
+              createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren),
+              'text node'
+            ],
+            ChildFlags.UnknownChildren)
+          }
+        </div>);
+      const renderedString = renderToString(vNode);
+
+      expect(renderedString).toBe('<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>');
+
+      const container = document.createElement('div');
+
+      container.innerHTML = renderedString;
+
+      const emTag = container.querySelector('em');
+
+      render(vNode, container);
+
+      expect(container.innerHTML).toBe('<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>');
+      expect(container.querySelector('em')).toBe(emTag);
+    });
+
+    it('Should be possible to render Fragment #2', () => {
+      class Fragmented extends Component {
+        render() {
+          return createFragment([<div id="m">More</div>, 'Fragments'], ChildFlags.UnknownChildren);
+        }
+      }
+
+      const vNode = (
+        <div>
+          {
+            createFragment(
+              [
+                <div>Lets go!</div>,
+                <Fragmented/>,
+                null,
+                createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren),
+                'text node',
+                createFragment([null, 'Go', <em>Code</em>], ChildFlags.UnknownChildren),
+              ],
+              ChildFlags.UnknownChildren)
+          }
+        </div>
+      );
+      const renderedString = renderToString(vNode);
+
+      expect(renderedString).toBe('<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>');
+
+      const container = document.createElement('div');
+
+      container.innerHTML = renderedString;
+
+      const moreDiv = container.querySelector('#m');
+      const emTag = container.querySelector('em');
+
+      render(vNode, container);
+
+      expect(container.innerHTML).toBe('<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>');
+      expect(container.querySelector('em')).toBe(emTag);
+      expect(container.querySelector('#m')).toBe(moreDiv);
     });
   });
 });

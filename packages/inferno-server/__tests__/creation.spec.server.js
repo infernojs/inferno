@@ -50,7 +50,7 @@ describe('SSR Creation (non-JSX)', () => {
     {
       description: 'should render div with text children',
       template: () => createElement('div', null, 'Hello', ' world'),
-      result: '<div>Hello<!----> world</div>'
+      result: '<div>Hello world</div>'
     },
     {
       description: 'should render a void element correct',

@@ -113,7 +113,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     {
       description: 'should render div with text children',
       template: () => createElement('div', null, 'Hello', ' world'),
-      result: '<div>Hello<!----> world</div>'
+      result: '<div>Hello world</div>'
     },
     {
       description: 'should render a void element correct',
@@ -261,7 +261,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
           Hello world, {'1'}2{'3'}
         </div>
       ),
-      result: '<div>Hello world, <!---->1<!---->2<!---->3</div>'
+      result: '<div>Hello world, 123</div>'
     },
     {
       description: 'should render text with escaped symbols',
@@ -276,7 +276,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     {
       description: 'should render mixed invalid/valid children',
       template: () => <div>{[null, '123', null, '456']}</div>,
-      result: '<div>123<!---->456</div>'
+      result: '<div>123456</div>'
     },
     {
       description: 'should ignore children as props',

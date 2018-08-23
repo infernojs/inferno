@@ -1,6 +1,6 @@
-import {isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {VNode} from '../core/implementation';
+import { isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNode } from '../core/implementation';
 import {
   mount,
   mountClassComponentCallbacks,
@@ -10,32 +10,97 @@ import {
   mountText
 } from './mounting';
 import { callAll, EMPTY_OBJ, LIFECYCLE, removeChild, replaceChild } from './utils/common';
-import {createClassComponentInstance, handleComponentInput} from './utils/componentutil';
-import {isSamePropsInnerHTML} from './utils/innerhtml';
-import {mountProps} from './props';
+import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
+import { isSamePropsInnerHTML } from './utils/innerhtml';
+import { mountProps } from './props';
 
-function hydrateComponent(vNode: VNode, dom: Element, context, isSVG: boolean, isClass: boolean) {
+function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, isClass: boolean) {
   const type = vNode.type as Function;
   const ref = vNode.ref;
   const props = vNode.props || EMPTY_OBJ;
+  let currentNode;
 
   if (isClass) {
     const instance = createClassComponentInstance(vNode, type, props, context);
     const input = instance.$LI;
 
-    hydrateVNode(input, dom, instance.$CX, isSVG);
+    currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG);
     mountClassComponentCallbacks(vNode, ref, instance);
     instance.$UPD = false; // Mount finished allow going sync
   } else {
     const input = handleComponentInput(type(props, context));
-    hydrateVNode(input, dom, context, isSVG);
+    currentNode = hydrateVNode(input, parentDOM, dom, context, isSVG);
     vNode.children = input;
     mountFunctionalComponentCallbacks(props, ref, vNode);
   }
+
+  return currentNode;
 }
 
-function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: boolean) {
-  const children = vNode.children;
+function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG) {
+  const childFlags = parentVNode.childFlags;
+  const children = parentVNode.children;
+  const props = parentVNode.props;
+  const flags = parentVNode.flags;
+
+  if (childFlags !== ChildFlags.HasInvalidChildren) {
+    let nextNode;
+
+    if (childFlags === ChildFlags.HasVNodeChildren) {
+      if (isNull(currentNode)) {
+        mount(children as VNode, parentNode, context, isSVG, null);
+      } else {
+        nextNode = currentNode.nextSibling;
+        currentNode = hydrateVNode(children as VNode, parentNode, currentNode as Element, context, isSVG);
+        currentNode = currentNode ? currentNode.nextSibling : nextNode;
+      }
+    } else if (childFlags === ChildFlags.HasTextChildren) {
+      if (isNull(currentNode) || parentNode.childNodes.length !== 1 || currentNode.nodeType !== 3) {
+        parentNode.textContent = children as string;
+      } else {
+        if (currentNode.nodeValue !== children) {
+          currentNode.nodeValue = children as string;
+        }
+      }
+      currentNode = null;
+    } else if (childFlags & ChildFlags.MultipleChildren) {
+      let prevVNodeIsTextNode = false;
+
+      for (let i = 0, len = (children as VNode[]).length; i < len; i++) {
+        const child = (children as VNode[])[i];
+
+        if (isNull(currentNode) || (prevVNodeIsTextNode && (child.flags & VNodeFlags.Text) > 0)) {
+          mount(child as VNode, parentNode, context, isSVG, currentNode);
+        } else {
+          nextNode = currentNode.nextSibling;
+          currentNode = hydrateVNode(child as VNode, parentNode, currentNode as Element, context, isSVG);
+          currentNode = currentNode ? currentNode.nextSibling : nextNode;
+        }
+
+        prevVNodeIsTextNode = (child.flags & VNodeFlags.Text) > 0;
+      }
+    }
+
+    // clear any other DOM nodes, there should be only a single entry for the root
+    if ((flags & VNodeFlags.Fragment) === 0) {
+      let nextSibling: Node|null = null;
+
+      while (currentNode) {
+        nextSibling = currentNode.nextSibling;
+        removeChild(parentNode, currentNode as Element);
+        currentNode = nextSibling;
+      }
+    }
+  } else if (!isNull(parentNode.firstChild) && !isSamePropsInnerHTML(parentNode, props)) {
+    parentNode.textContent = ''; // dom has content, but VNode has no children remove everything from DOM
+    if (flags & VNodeFlags.FormElement) {
+      // If element is form element, we need to clear defaultValue also
+      (parentNode as any).defaultValue = '';
+    }
+  }
+}
+
+function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean) {
   const props = vNode.props;
   const className = vNode.className;
   const flags = vNode.flags;
@@ -47,77 +112,11 @@ function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: bool
       warning("Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty");
     }
     mountElement(vNode, null, context, isSVG, null);
-    replaceChild(dom.parentNode, vNode.dom, dom);
+    replaceChild(parentDOM, vNode.dom, dom);
   } else {
     vNode.dom = dom;
 
-    const childFlags = vNode.childFlags;
-
-    if (childFlags !== ChildFlags.HasInvalidChildren) {
-      let childNode = dom.firstChild;
-      let nextSibling: Node | null = null;
-
-      while (childNode) {
-        nextSibling = childNode.nextSibling;
-
-        if (childNode.nodeType === 8) {
-          if ((childNode as any).data === '!') {
-            replaceChild(dom, document.createTextNode(''), childNode);
-          } else {
-            removeChild(dom, childNode as Element);
-          }
-        }
-        childNode = nextSibling;
-      }
-      childNode = dom.firstChild;
-
-      if (childFlags === ChildFlags.HasVNodeChildren) {
-        if (isNull(childNode)) {
-          mount(children as VNode, dom, context, isSVG, null);
-        } else {
-          nextSibling = childNode.nextSibling;
-
-          hydrateVNode(children as VNode, childNode as Element, context, isSVG);
-          childNode = nextSibling;
-        }
-      } else if (childFlags === ChildFlags.HasTextChildren) {
-        if (isNull(childNode) || childNode.childNodes.length !== 1) {
-          dom.textContent = children as string;
-          childNode = null;
-        } else {
-          const child = childNode.firstChild as Element;
-
-          if (child.nodeValue !== children) {
-            child.nodeValue = children as string;
-          }
-        }
-      } else if (childFlags & ChildFlags.MultipleChildren) {
-        for (let i = 0, len = (children as VNode[]).length; i < len; i++) {
-          const child = (children as VNode[])[i];
-
-          if (isNull(childNode)) {
-            mount(child as VNode, dom, context, isSVG, null);
-          } else {
-            nextSibling = childNode.nextSibling;
-            hydrateVNode(child as VNode, childNode as Element, context, isSVG);
-            childNode = nextSibling;
-          }
-        }
-      }
-
-      // clear any other DOM nodes, there should be only a single entry for the root
-      while (childNode) {
-        nextSibling = childNode.nextSibling;
-        removeChild(dom, childNode as Element);
-        childNode = nextSibling;
-      }
-    } else if (!isNull(dom.firstChild) && !isSamePropsInnerHTML(dom, props)) {
-      dom.textContent = ''; // dom has content, but VNode has no children remove everything from DOM
-      if (flags & VNodeFlags.FormElement) {
-        // If element is form element, we need to clear defaultValue also
-        (dom as any).defaultValue = '';
-      }
-    }
+    hydrateChildren(vNode, dom, dom.firstChild, context, isSVG);
 
     if (!isNull(props)) {
       mountProps(vNode, flags, props, dom, isSVG);
@@ -141,12 +140,14 @@ function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: bool
       }
     }
   }
+
+  return vNode.dom;
 }
 
-function hydrateText(vNode: VNode, dom: Element) {
+function hydrateText(vNode: VNode, parentDOM: Element, dom: Element) {
   if (dom.nodeType !== 3) {
     mountText(vNode, null, null);
-    replaceChild(dom.parentNode, vNode.dom, dom);
+    replaceChild(parentDOM, vNode.dom, dom);
   } else {
     const text = vNode.children;
 
@@ -155,25 +156,47 @@ function hydrateText(vNode: VNode, dom: Element) {
     }
     vNode.dom = dom;
   }
+
+  return vNode.dom;
 }
 
-function hydrateVNode(vNode: VNode, dom: Element, context: Object, isSVG: boolean) {
+function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean): Element {
+  const children = vNode.children;
+
+  if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    hydrateText(children as VNode, parentDOM, dom);
+    return (vNode.dom = (children as any).dom);
+  }
+
+  hydrateChildren(vNode, parentDOM, dom, context, isSVG);
+  return (vNode.dom = (children as any)[(children as any).length - 1].dom);
+}
+
+function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean): Element | null {
   const flags = vNode.flags |= VNodeFlags.InUse;
 
   if (flags & VNodeFlags.Component) {
-    hydrateComponent(vNode, dom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
-  } else if (flags & VNodeFlags.Element) {
-    hydrateElement(vNode, dom, context, isSVG);
-  } else if (flags & VNodeFlags.Text) {
-    hydrateText(vNode, dom);
-  } else if (flags & VNodeFlags.Void) {
-    vNode.dom = dom;
-  } else {
-    if (process.env.NODE_ENV !== 'production') {
-      throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
-    }
-    throwError();
+    return hydrateComponent(vNode, parentDOM, currentDom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
   }
+  if (flags & VNodeFlags.Element) {
+    return hydrateElement(vNode, parentDOM, currentDom, context, isSVG);
+  }
+  if (flags & VNodeFlags.Text) {
+    return hydrateText(vNode, parentDOM, currentDom);
+  }
+  if (flags & VNodeFlags.Void) {
+    return (vNode.dom = currentDom);
+  }
+  if (flags & VNodeFlags.Fragment) {
+    return hydrateFragment(vNode, parentDOM, currentDom, context, isSVG)
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
+  }
+  throwError();
+
+  return null;
 }
 
 export function hydrate(input, parentDom: Element, callback?: Function) {
@@ -181,11 +204,10 @@ export function hydrate(input, parentDom: Element, callback?: Function) {
 
   if (!isNull(dom)) {
     if (!isInvalid(input)) {
-      hydrateVNode(input, dom, EMPTY_OBJ, false);
+      dom = hydrateVNode(input, parentDom, dom, EMPTY_OBJ, false) as Element;
     }
-    dom = parentDom.firstChild as Element;
     // clear any other DOM nodes, there should be only a single entry for the root
-    while ((dom = dom.nextSibling as Element)) {
+    while (dom && (dom = dom.nextSibling as Element)) {
       removeChild(parentDom, dom);
     }
   }

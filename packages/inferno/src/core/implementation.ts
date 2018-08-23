@@ -126,7 +126,7 @@ export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props<P
     }
   }
 
-  if ((flags & VNodeFlags.ComponentUnknown) > 0) {
+  if ((flags & VNodeFlags.ComponentUnknown) !== 0) {
     flags = type.prototype && isFunction(type.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
   }
 

@@ -77,14 +77,14 @@ describe('findDOMNodes (JSX)', () => {
     });
 
     it('finds the first child when a component returns a fragment', () => {
-      class Fragment extends Component {
+      class FragmentTester extends Component {
         render() {
           return [<div key="a" />, <span key="b" />];
         }
       }
 
       let instance = null;
-      render(<Fragment ref={ref => (instance = ref)} />, container);
+      render(<FragmentTester ref={ref => (instance = ref)} />, container);
 
       expect(container.childNodes.length).toBe(2);
 
@@ -100,14 +100,14 @@ describe('findDOMNodes (JSX)', () => {
         }
       }
 
-      class Fragment extends Component {
+      class FragmentTester extends Component {
         render() {
           return [<Wrapper key="a"><div /></Wrapper>, <span key="b" />];
         }
       }
 
       let instance = null;
-      render(<Fragment ref={ref => (instance = ref)} />, container);
+      render(<FragmentTester ref={ref => (instance = ref)} />, container);
 
       expect(container.childNodes.length).toBe(2);
 
@@ -123,14 +123,14 @@ describe('findDOMNodes (JSX)', () => {
         }
       }
 
-      class Fragment extends Component {
+      class FragmentTester extends Component {
         render() {
           return [<NullComponent key="a" />, <div key="b" />, <span key="c" />];
         }
       }
 
       let instance = null;
-      ReactDOM.render(<Fragment ref={ref => (instance = ref)} />, container);
+      ReactDOM.render(<FragmentTester ref={ref => (instance = ref)} />, container);
 
       expect(container.childNodes.length).toBe(3);
 

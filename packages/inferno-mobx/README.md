@@ -21,7 +21,7 @@ npm install --save mobx
 
 ## Example
 
-You can inject props using the following syntax
+You can inject props using the following syntax ( This example requires, babel decorators-legacy plugin )
 
 ```javascript
 // MyComponent.js

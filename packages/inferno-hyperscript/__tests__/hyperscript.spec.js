@@ -1,8 +1,7 @@
-import { render } from 'inferno';
+import { render, Component } from 'inferno';
 import { h } from 'inferno-hyperscript';
 import { innerHTML } from 'inferno-utils';
 import sinon from 'sinon';
-import { Component } from '../../inferno/src';
 
 describe('HyperScript (non-JSX)', () => {
   let container;

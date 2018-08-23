@@ -106,6 +106,6 @@ describe('SSR render() arguments', () => {
         </TestContext>
       </TestProvider>
     );
-    expect(output).toBe('<p>context-works<!---->|<!---->context-wrap-works</p>');
+    expect(output).toBe('<p>context-works|context-wrap-works</p>');
   });
 });

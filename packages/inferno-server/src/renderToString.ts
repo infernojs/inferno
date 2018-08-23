@@ -14,13 +14,13 @@ import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 import {renderStylesToString} from './prop-renderers';
 import {escapeText, isAttributeNameSafe, voidElements} from './utils';
 
-function renderVNodeToString(vNode, parent, context, firstChild): string {
+function renderVNodeToString(vNode, parent, context): string {
   const flags = vNode.flags;
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
   const children = vNode.children;
 
-  if ((flags & VNodeFlags.Component) > 0) {
+  if ((flags & VNodeFlags.Component) !== 0) {
     const isClass = flags & VNodeFlags.ComponentClass;
 
     if (isClass) {
@@ -71,7 +71,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, childContext, true);
+      return renderVNodeToString(renderOutput, vNode, childContext);
     } else {
       const renderOutput = type(props, context);
 
@@ -84,9 +84,9 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, context, true);
+      return renderVNodeToString(renderOutput, vNode, context);
     }
-  } else if ((flags & VNodeFlags.Element) > 0) {
+  } else if ((flags & VNodeFlags.Element) !== 0) {
     let renderedString = `<${type}`;
     let html;
 
@@ -154,10 +154,10 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
       const childFlags = vNode.childFlags;
 
       if (childFlags === ChildFlags.HasVNodeChildren) {
-        renderedString += renderVNodeToString(children, vNode, context, true);
+        renderedString += renderVNodeToString(children, vNode, context);
       } else if (childFlags & ChildFlags.MultipleChildren) {
         for (let i = 0, len = children.length; i < len; i++) {
-          renderedString += renderVNodeToString(children[i], vNode, context, i === 0);
+          renderedString += renderVNodeToString(children[i], vNode, context);
         }
       } else if (childFlags === ChildFlags.HasTextChildren) {
         renderedString += children === '' ? ' ' : escapeText(children);
@@ -174,8 +174,22 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
     }
 
     return renderedString;
-  } else if ((flags & VNodeFlags.Text) > 0) {
-    return (firstChild ? '' : '<!---->') + (children === '' ? ' ' : escapeText(children));
+  } else if ((flags & VNodeFlags.Text) !== 0) {
+    return children === '' ? ' ' : escapeText(children);
+  } else if ((flags & VNodeFlags.Fragment) !== 0) {
+    const childFlags = vNode.childFlags;
+
+    if (childFlags === ChildFlags.HasVNodeChildren) {
+      return '<!--!-->';
+    } else if (childFlags & ChildFlags.MultipleChildren) {
+      let renderedString = '';
+
+      for (let i = 0, len = children.length; i < len; i++) {
+        renderedString += renderVNodeToString(children[i], vNode, context);
+      }
+
+      return renderedString;
+    }
   } else {
     if (process.env.NODE_ENV !== 'production') {
       if (typeof vNode === 'object') {
@@ -191,5 +205,5 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 }
 
 export function renderToString(input: any): string {
-  return renderVNodeToString(input, {}, {}, true) as string;
+  return renderVNodeToString(input, {}, {}) as string;
 }

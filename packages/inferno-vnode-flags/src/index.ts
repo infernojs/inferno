@@ -21,10 +21,9 @@ export const enum VNodeFlags {
 
   /* Masks */
   FormElement = InputElement | TextareaElement | SelectElement,
-  Element = HtmlElement | SvgElement | InputElement | TextareaElement | SelectElement,
+  Element = HtmlElement | SvgElement | FormElement,
   Component = ComponentFunction | ComponentClass | ComponentUnknown,
-  DOMRef = Element | Text | Void | Portal,
-  VNodeShape = HtmlElement | ComponentClass | ComponentFunction | Text | Void | Portal
+  DOMRef = Element | Text | Void | Portal
 }
 
 // Combinations are not possible, its bitwise only to reduce vNode size
