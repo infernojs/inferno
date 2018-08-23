@@ -23,31 +23,15 @@ const jestConfig = require('./jest.config.js');
 
 module.exports = {
   process(src, path) {
-    const isTypeScript = path.endsWith('.ts') || path.endsWith('.tsx');
-    const isJavaScript = path.endsWith('.js') || path.endsWith('.jsx');
-
-    if (isTypeScript) {
-      src = typescript.transpile(
+    return babelJest.process(
+      typescript.transpile(
         src,
         tsConfig.compilerOptions,
         path,
         [],
-      );
-    }
-
-    if (isJavaScript || isTypeScript) {
-      // babel-jest hack for transpile src without file
-      const fileName = isJavaScript
-        ? path
-        : 'file.js';
-
-      src = babelJest.process(
-        src,
-        fileName,
-        jestConfig
-      );
-    }
-
-    return src;
+      ),
+      path,
+      jestConfig
+    );
   },
 };

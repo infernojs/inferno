@@ -477,5 +477,82 @@ describe('Error recovery', () => {
         }
       );
     });
+
+    describe('Error in child component', () => {
+      it('Should not block future updates', (done) => {
+        let parentInstance = null;
+        let childCrasherInstance = null;
+
+        class BadComponent extends Component {
+          constructor(props) {
+            super(props);
+          }
+
+          componentWillMount() {
+            throw 'Oops!'
+          }
+
+          render() {
+            return 1;
+          }
+        }
+
+        class ChildCrasher extends Component {
+          constructor(props) {
+            super(props);
+
+            this.state = {
+              fail: false,
+            };
+
+            childCrasherInstance = this; // For the sake of test
+          }
+
+          render() {
+            if (!this.state.fail) {
+              return null;
+            }
+
+            return (
+                <BadComponent/>
+            );
+          }
+        }
+
+        class Parent extends Component {
+          constructor(props) {
+            super(props);
+
+            parentInstance = this; // For the sake of test
+          }
+
+          render() {
+            return (
+              <div>
+                <ChildCrasher />
+              </div>
+            )
+          }
+        }
+
+        render(<Parent/>, container);
+
+        expect(container.innerHTML).toBe('<div></div>');
+
+        expect(() => childCrasherInstance.setState({
+          fail: true
+        })).toThrow('Oops!');
+
+        // Recover from it
+        childCrasherInstance.setState({
+          fail: false
+        });
+
+        setTimeout(function () {
+          expect(container.innerHTML).toBe('<div></div>');
+          done();
+        }, 10);
+      });
+    });
   });
 });
