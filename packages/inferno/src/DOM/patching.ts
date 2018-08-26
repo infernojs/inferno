@@ -29,10 +29,11 @@ import { validateKeys } from '../core/validate';
 function replaceWithNewNode(lastVNode, nextVNode, parentDom, context: Object, isSVG: boolean) {
   unmount(lastVNode);
 
-  if (nextVNode.flags & VNodeFlags.DOMRef) {
+  if ((lastVNode.flags & VNodeFlags.DOMRef) !== 0 && (nextVNode.flags & VNodeFlags.DOMRef) !== 0) {
     // Single DOM operation, when we have dom references available
     mount(nextVNode, null, context, isSVG, null);
-    replaceChild(parentDom, nextVNode.dom, findDOMfromVNode(lastVNode));
+    // Single DOM operation, when we have dom references available
+    replaceChild(parentDom, nextVNode.dom, lastVNode.dom);
   } else {
     mount(nextVNode, parentDom, context, isSVG, findDOMfromVNode(lastVNode));
     removeVNodeDOM(lastVNode, parentDom);
@@ -85,22 +86,27 @@ function patchContentEditableChildren(dom, nextChildren) {
 }
 
 function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDom: Element, context: Object, isSVG: boolean, nextNode: Element | null) {
+  const lastChildren = lastVNode.children as VNode[];
+  let _nextNode;
+
+  if (
+    (nextVNode.childFlags & ChildFlags.HasVNodeChildren) === 0 &&
+    (nextVNode.children as VNode[]).length > lastChildren.length
+  ) {
+    _nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1]) as Element).nextSibling;
+  }
+
   patchChildren(
     lastVNode.childFlags,
     nextVNode.childFlags,
-    lastVNode.children as VNode,
+    lastChildren,
     nextVNode.children,
     parentDom,
     context,
     isSVG,
-    nextNode
+    _nextNode,
+    lastVNode
   );
-
-  if (nextVNode.childFlags === ChildFlags.HasVNodeChildren) {
-    nextVNode.dom = lastVNode.dom;
-  } else {
-    nextVNode.dom = (nextVNode.children as VNode[])[0].dom;
-  }
 }
 
 function patchPortal(lastVNode: VNode, nextVNode: VNode, context) {
@@ -108,7 +114,17 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context) {
   const nextContainer = nextVNode.ref as Element;
   const nextChildren = nextVNode.children as VNode;
 
-  patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children as VNode, nextChildren, lastContainer as Element, context, false, null);
+  patchChildren(
+    lastVNode.childFlags,
+    nextVNode.childFlags,
+    lastVNode.children as VNode,
+    nextChildren,
+    lastContainer as Element,
+    context,
+    false,
+    null,
+    lastVNode
+  );
 
   nextVNode.dom = lastVNode.dom;
 
@@ -168,7 +184,17 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
   if (nextFlags & VNodeFlags.ContentEditable) {
     patchContentEditableChildren(dom, nextChildren);
   } else {
-    patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, dom, context, isSVG && nextVNode.type !== 'foreignObject', null);
+    patchChildren(
+      lastVNode.childFlags,
+      nextVNode.childFlags,
+      lastVNode.children,
+      nextChildren,
+      dom,
+      context,
+      isSVG && nextVNode.type !== 'foreignObject',
+      null,
+      lastVNode
+    );
   }
 
   if (isFormElement) {
@@ -203,7 +229,8 @@ function patchChildren(
   parentDOM: Element,
   context: Object,
   isSVG: boolean,
-  nextNode: Element | null
+  nextNode: Element | null,
+  parentVNode: VNode
 ) {
   switch (lastChildFlags) {
     case ChildFlags.HasVNodeChildren:
@@ -264,11 +291,11 @@ function patchChildren(
           mountTextContent(parentDOM, nextChildren);
           break;
         case ChildFlags.HasVNodeChildren:
-          removeAllChildren(parentDOM, lastChildren);
+          removeAllChildren(parentDOM, parentVNode, lastChildren);
           mount(nextChildren, parentDOM, context, isSVG, nextNode);
           break;
         case ChildFlags.HasInvalidChildren:
-          removeAllChildren(parentDOM, lastChildren);
+          removeAllChildren(parentDOM, parentVNode, lastChildren);
           break;
         default:
           const lastLength = lastChildren.length;
@@ -280,9 +307,9 @@ function patchChildren(
               mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode);
             }
           } else if (nextLength === 0) {
-            removeAllChildren(parentDOM, lastChildren);
+            removeAllChildren(parentDOM, parentVNode, lastChildren);
           } else if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
-            patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode);
+            patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode);
           } else {
             patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode);
           }
@@ -469,7 +496,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, context: Object,
   }
 }
 
-function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean, aLength: number, bLength: number, outerEdge: Element | null) {
+function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean, aLength: number, bLength: number, outerEdge: Element | null, parentVNode: VNode) {
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;
   let i: number;
@@ -629,7 +656,7 @@ function patchKeyedChildren(a: VNode[], b: VNode[], dom, context, isSVG: boolean
     }
     // fast-path: if nothing patched remove all old and add all new
     if (canRemoveWholeContent) {
-      removeAllChildren(dom, a);
+      removeAllChildren(dom, parentVNode, a);
       mountArrayChildren(b, dom, context, isSVG, outerEdge);
     } else {
       if (moved) {

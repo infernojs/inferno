@@ -85,6 +85,10 @@ export function unmount(vNode) {
         }
       } else if (flags & VNodeFlags.Portal) {
         remove(children as VNode, vNode.ref);
+      } else if (flags & VNodeFlags.Fragment) {
+        if (vNode.childFlags & ChildFlags.MultipleChildren) {
+          unmountAllChildren(children);
+        }
       }
     }
   }
@@ -96,9 +100,15 @@ export function unmountAllChildren(children: VNode[]) {
   }
 }
 
-export function removeAllChildren(dom: Element, children) {
+export function removeAllChildren(dom: Element, vNode: VNode, children) {
   unmountAllChildren(children);
-  dom.textContent = '';
+
+  if (vNode.flags & VNodeFlags.Fragment) {
+    removeVNodeDOM(vNode, dom);
+  } else {
+    // Optimization for clearing dom
+    dom.textContent = '';
+  }
 }
 
 export function removeTextNode(dom: Element) {

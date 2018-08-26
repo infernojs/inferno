@@ -1,4 +1,4 @@
-import { isNullOrUndef } from 'inferno-shared';
+import { isNull } from 'inferno-shared';
 import { svgNS } from '../constants';
 import { ChildFlags, VNodeFlags } from "inferno-vnode-flags";
 import { VNode } from './../../core/implementation';
@@ -17,7 +17,7 @@ export function appendChild(parentDom, dom) {
 }
 
 export function insertOrAppend(parentDom, newNode, nextNode) {
-  if (isNullOrUndef(nextNode)) {
+  if (isNull(nextNode)) {
     appendChild(parentDom, newNode);
   } else {
     parentDom.insertBefore(newNode, nextNode);
@@ -48,25 +48,24 @@ export function callAll(arrayFn: Function[]) {
 }
 
 export function findDOMfromVNode(vNode: VNode) {
-  let childVNode = vNode;
   let flags;
   let children;
 
-  while (childVNode) {
-    flags = childVNode.flags;
+  while (vNode) {
+    flags = vNode.flags;
 
     if (flags & VNodeFlags.DOMRef) {
-      return childVNode.dom;
+      return vNode.dom;
     }
 
-    children = childVNode.children;
+    children = vNode.children;
 
     if (flags & VNodeFlags.Fragment) {
-      childVNode = childVNode.childFlags === ChildFlags.HasVNodeChildren ? children as VNode : (children as VNode[])[0];
+      vNode = vNode.childFlags === ChildFlags.HasVNodeChildren ? children as VNode : (children as VNode[])[0];
     } else if (flags & VNodeFlags.ComponentClass) {
-      childVNode = (children as any).$LI;
+      vNode = (children as any).$LI;
     } else {
-      childVNode = children;
+      vNode = children;
     }
   }
 

@@ -175,7 +175,7 @@ export function createTextVNode(text?: string | number, key?: string | number | 
   return getVNode(ChildFlags.HasInvalidChildren, isNullOrUndef(text) ? '' : text, null, VNodeFlags.Text, key, null, null, null);
 }
 
-export function createFragment(children: any[], childFlags: ChildFlags, key?: string | number | null): VNode {
+export function createFragment(children: any, childFlags: ChildFlags, key?: string | number | null): VNode {
   const fragment = createVNode(
     VNodeFlags.Fragment,
     VNodeFlags.Fragment,
@@ -187,9 +187,17 @@ export function createFragment(children: any[], childFlags: ChildFlags, key?: st
     null
   );
 
-  if (fragment.childFlags === ChildFlags.HasInvalidChildren) {
-    fragment.children = createVoidVNode();
-    fragment.childFlags = ChildFlags.HasVNodeChildren;
+  switch (fragment.childFlags) {
+    case ChildFlags.HasInvalidChildren:
+      fragment.children = createVoidVNode();
+      fragment.childFlags = ChildFlags.HasVNodeChildren;
+      break;
+    case ChildFlags.HasTextChildren:
+      fragment.children = [createTextVNode(children)];
+      fragment.childFlags = ChildFlags.HasNonKeyedChildren;
+      break;
+    default:
+      break;
   }
 
   return fragment;

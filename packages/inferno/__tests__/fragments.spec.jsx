@@ -1,4 +1,4 @@
-import { Component, createFragment, render } from "inferno";
+import { Component, createPortal, createFragment, render } from "inferno";
 import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('Fragments', () => {
@@ -166,5 +166,310 @@ describe('Fragments', () => {
     expect(container.querySelector('#a1')).toBe(null);
     expect(container.querySelector('#b1')).toBe(B1);
     expect(container.querySelector('#c1')).toBe(C1);
+  });
+
+  it('Should be possible to render fragments JSX way', () => {
+    function Fragmenter({first, mid, last, changeOrder}) {
+      if (changeOrder) {
+        return (
+          <>
+            <div>{first}</div>
+            <>
+                More
+                {null}
+                Hey!
+                <Fragment>
+                  <>Large {last}</>
+                  <Fragment>And Small</Fragment>
+                </Fragment>
+                <>
+                  Nesting
+                </>
+                {mid}
+            </>
+            <span>bar</span>
+            {null}
+          </>
+        )
+      }
+      return (
+        <>
+          <div>{first}</div>
+          Hey!
+          <>
+            More
+            <>
+              Nesting
+            </>
+            {mid}
+            <Fragment>
+              <>Large {last}</>
+              <Fragment>And Small</Fragment>
+            </Fragment>
+          </>
+          <span>bar</span>
+        </>
+      );
+    }
+
+    let mountCounter = 0;
+    let unmountCounter = 0;
+
+    class FoobarCom extends Component {
+      componentWillMount() {
+        mountCounter++;
+      }
+
+      componentWillUnmount() {
+        unmountCounter++;
+      }
+
+      render(props) {
+        return (
+          <>
+            {props.children}
+            {createPortal(<div>InvisiblePortalCreator</div>, props.node)}
+            {null}
+            Try out some crazy stuff
+          </>
+        );
+      }
+    }
+
+    const portalNode = document.createElement('div');
+
+    render(
+      <FoobarCom node={portalNode}>
+        <Fragmenter first="first" mid="MID" last={<div>Why?</div>}/>
+      </FoobarCom>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
+    expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
+
+    render(
+      <FoobarCom node={portalNode}>
+        <Fragmenter
+          first={<span>GoGo</span>}
+          mid="MID"
+          last={<div>Why?</div>}
+          changeOrder={true}
+        />
+      </FoobarCom>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff');
+    expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
+
+    render(
+      <FoobarCom node={portalNode}>
+        <Fragmenter first="first" mid="MID" last={<div>Why?</div>}/>
+      </FoobarCom>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
+    expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
+  });
+
+  it('Should render deeply nested fragment', () => {
+    function Fragmenter2() {
+      return (
+        <>
+          <>
+            <>
+              <>
+                <>
+                  <>
+                    <>
+                      <>
+                        Okay!
+                      </>
+                    </>
+                  </>
+                </>
+              </>
+            </>
+          </>
+        </>
+      )
+    }
+
+    render(<Fragmenter2/>, container);
+
+    expect(container.innerHTML).toBe('Okay!');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should append DOM nodes to correct position when component root Fragmnet change', () => {
+    class TestRoot extends Component {
+      render() {
+        return (
+          <>
+            {this.props.children}
+          </>
+        );
+      }
+    }
+
+
+    render(
+      <div>
+        <TestRoot>
+          <div>1</div>
+          <div>2</div>
+        </TestRoot>
+        <TestRoot>
+          <span>Ok</span>
+          <span>Test</span>
+        </TestRoot>
+      </div>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>');
+
+    render(
+      <div>
+        <TestRoot>
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+          <div>4</div>
+        </TestRoot>
+        <TestRoot>
+          <div>Other</div>
+        </TestRoot>
+      </div>,
+      container
+    );
+    expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><div>3</div><div>4</div><div>Other</div></div>');
+  });
+
+  it('Should not clear whole parent element when fragment children are cleared', () => {
+    class TestRoot extends Component {
+      render() {
+        return (
+          <>
+            {this.props.children}
+          </>
+        );
+      }
+    }
+
+    render(
+      <div>
+        <TestRoot>
+          <div>1</div>
+          <div>2</div>
+        </TestRoot>
+        <TestRoot>
+          <span>Ok</span>
+          <span>Test</span>
+        </TestRoot>
+      </div>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>');
+
+    render(
+      <div>
+        <TestRoot>
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+          <div>4</div>
+        </TestRoot>
+        <TestRoot>
+        </TestRoot>
+      </div>,
+      container
+    );
+    expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><div>3</div><div>4</div></div>');
+  });
+
+  it('Should move fragment and all its contents when using Fragment long syntax with keys', () => {
+    let unmountCounter = 0;
+    let mountCounter = 0;
+
+    class TestLifecycle extends Component {
+      componentWillUnmount() {
+        unmountCounter++;
+      }
+
+      componentWillMount() {
+        mountCounter++;
+      }
+
+      render() {
+        return (
+          <>
+            {this.props.children}
+          </>
+        );
+      }
+    }
+
+    render(
+      <div>
+        <Fragment key="1">
+          <TestLifecycle>1a</TestLifecycle>
+          <TestLifecycle>1b</TestLifecycle>
+        </Fragment>
+        <Fragment key="2">
+          <TestLifecycle>2a</TestLifecycle>
+          <TestLifecycle>2b</TestLifecycle>
+        </Fragment>
+      </div>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>1a1b2a2b</div>');
+    expect(unmountCounter).toBe(0);
+    expect(mountCounter).toBe(4);
+
+    render(
+      <div>
+        <Fragment key="2">
+          <TestLifecycle>2a</TestLifecycle>
+          <TestLifecycle>2b</TestLifecycle>
+          <TestLifecycle>2c</TestLifecycle>
+        </Fragment>
+        <Fragment key="1">
+          <TestLifecycle>1a</TestLifecycle>
+          <TestLifecycle>1b</TestLifecycle>
+        </Fragment>
+      </div>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>2a2b2c1a1b</div>');
+    expect(unmountCounter).toBe(0);
+    expect(mountCounter).toBe(5);
+
+    render(
+      <div>
+        <Fragment key="3">
+          <TestLifecycle>3a</TestLifecycle>
+          <TestLifecycle>3b</TestLifecycle>
+          <TestLifecycle>3c</TestLifecycle>
+        </Fragment>
+        <Fragment key="2">
+          <TestLifecycle>2a</TestLifecycle>
+          <TestLifecycle>2Patched</TestLifecycle>
+        </Fragment>
+      </div>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>3a3b3c2a2Patched</div>');
+    expect(unmountCounter).toBe(3);
+    expect(mountCounter).toBe(8);
   });
 });
