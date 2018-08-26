@@ -18,12 +18,14 @@ import {
 } from './core/implementation';
 import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createRenderer, render } from './DOM/rendering';
-import { EMPTY_OBJ, findDOMfromVNode } from './DOM/utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE } from './DOM/utils/common';
 import { Component, ComponentClass, ComponentType, SFC, StatelessComponent } from './core/component';
-import { getNumberStyleValue } from './DOM/props';
-import { hydrate } from './DOM/hydration';
+import { getNumberStyleValue, mountProps } from './DOM/props';
 
 import * as JSX from './JSX';
+import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
+import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountRef, mountText } from './DOM/mounting';
+
 export * from './DOM/events/events';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -70,12 +72,24 @@ export {
   findDOMfromVNode,
   getFlagsForElementVnode,
   getNumberStyleValue,
-  hydrate,
   linkEvent,
   LinkedEvent,
   normalizeProps,
   options,
   render,
   version,
-  JSX
+  JSX,
+
+  // Internal methods, used by hydration
+  LIFECYCLE as _L,
+  createClassComponentInstance as _CI,
+  handleComponentInput as _HI,
+  mount as _M,
+  mountClassComponentCallbacks as _MCCC,
+  mountElement as _ME,
+  mountFunctionalComponentCallbacks as _MFCC,
+  mountRef as _MR,
+  mountText as _MT,
+  mountProps as _MP,
+
 };

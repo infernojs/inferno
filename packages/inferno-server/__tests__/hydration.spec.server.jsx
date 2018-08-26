@@ -2,6 +2,7 @@ import { Component, createTextVNode, createVNode, render } from 'inferno';
 import { renderToString } from 'inferno-server';
 import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { hydrate } from "inferno-hydrate";
 
 function Comp1() {
   return <span>Worked!</span>;
@@ -197,7 +198,7 @@ describe('SSR Hydration - (JSX)', () => {
       const container = createContainerWithHTML(html);
 
       expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect1));
-      render(node, container);
+      hydrate(node, container);
       expect(validateNodeTree(node)).toBe(true);
       expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect2));
       render(node, container);
@@ -383,7 +384,7 @@ describe('SSR Hydration - (JSX)', () => {
       const container = createContainerWithHTML(html);
 
       expect(container.innerHTML).toBe(expect1);
-      render(node, container);
+      hydrate(node, container);
       expect(validateNodeTree(node)).toBe(true);
       render(node2, container);
       expect(validateNodeTree(node2)).toBe(true);
@@ -399,7 +400,7 @@ describe('SSR Hydration - (JSX)', () => {
     const vNode = createVNode(VNodeFlags.HtmlElement, 'div', 'example', createTextVNode('Hello world!'), ChildFlags.HasVNodeChildren);
 
     container.innerHTML = '<h1><div>Existing DOM content</div></h1>';
-    render(vNode, container);
+    hydrate(vNode, container);
     expect(container.innerHTML).toBe(innerHTML('<div class="example">Hello world!</div>'));
   });
 
@@ -410,7 +411,7 @@ describe('SSR Hydration - (JSX)', () => {
     container.appendChild(document.createTextNode(''));
     container.appendChild(document.createElement('h1'));
     container.appendChild(document.createTextNode(''));
-    render(vNode, container);
+    hydrate(vNode, container);
     expect(container.innerHTML).toBe(innerHTML('<div class="example">Hello world!</div>'));
   });
 
@@ -429,7 +430,7 @@ describe('SSR Hydration - (JSX)', () => {
 
     container.innerHTML =
       '<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
-    render(vNode, container);
+    hydrate(vNode, container);
     expect(container.innerHTML).toBe(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
   });
 
@@ -447,7 +448,7 @@ describe('SSR Hydration - (JSX)', () => {
     );
 
     container.innerHTML = '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';
-    render(vNode, container);
+    hydrate(vNode, container);
     expect(container.innerHTML).toBe(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
   });
 
@@ -489,7 +490,7 @@ describe('SSR Hydration - (JSX)', () => {
 
     document.body.appendChild(container);
     container.innerHTML = '<div>1<span>1</span></div>';
-    render(<Comp3 />, container);
+    hydrate(<Comp3 />, container);
     expect(container.innerHTML).toBe(innerHTML('<div>1<span>1</span></div>'));
 
     container.querySelector('span').click();
@@ -1035,7 +1036,7 @@ describe('SSR Hydration - (JSX)', () => {
         const SsrContainer = createContainerWithHTML(ssrString);
 
         expect(innerHTML(SsrContainer.innerHTML)).toBe(innerHTML(SSR_expected));
-        render(CSR, SsrContainer); // Mount
+        hydrate(CSR, SsrContainer);
 
         if (CSR2) {
           // Do some repeating here to verify vNodes are correctly set

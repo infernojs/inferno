@@ -38,6 +38,7 @@
     "inferno-create-element": "5.4.2",
     "inferno-shared": "5.4.2",
     "inferno-vnode-flags": "5.4.2",
+    "inferno-hydrate": "5.4.2",
     "mobx": "*"
   },
   "dependencies": {

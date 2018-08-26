@@ -1,7 +1,6 @@
-import { isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, NO_OP, throwError, warning } from 'inferno-shared';
+import { isBrowser, isFunction, isInvalid, isNullOrUndef, NO_OP, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
-import { hydrate } from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
@@ -39,12 +38,8 @@ export function render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      if (isNull((parentDom as Node).firstChild)) {
-        mount(input as VNode, parentDom as Element, EMPTY_OBJ, false, null);
-        (parentDom as any).$V = input;
-      } else {
-        hydrate(input, parentDom as any);
-      }
+      mount(input as VNode, parentDom as Element, EMPTY_OBJ, false, null);
+      (parentDom as any).$V = input;
       rootInput = input as VNode;
     }
   } else {

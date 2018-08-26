@@ -1,5 +1,6 @@
 import { Component, render, createTextVNode } from 'inferno';
 import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
+import { hydrate } from "inferno-hydrate";
 
 class Comp extends Component {
   render() {
@@ -78,7 +79,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   ].forEach(({ html, component }, i) => {
     it(`do test #${i + 1}`, () => {
       const container = createContainerWithHTML(html);
-      render(component, container);
+      hydrate(component, container);
 
       expect(innerHTML(container.innerHTML)).toEqual(innerHTML(compHtml));
     });
@@ -87,7 +88,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   it('Should hydrate correctly when CSR children is missing', () => {
     const container = createContainerWithHTML('<div> </div></div>');
 
-    render(
+    hydrate(
       <InnerNested>
         <Nested>
           <Comp2 />
@@ -102,7 +103,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   it('Should hydrate correctly when CSR component returns null', () => {
     const container = createContainerWithHTML('<div></div>');
 
-    render(
+    hydrate(
       <div>
         <Nested>
           <InnerNested />
@@ -117,7 +118,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   it('Should hydrate correctly when there are comment nodes', () => {
     const container = createContainerWithHTML('<div></div>');
 
-    render(
+    hydrate(
       <div>
         <Nested>
           <InnerNested />
@@ -132,7 +133,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
   it('Should hydrate correctly when there are comment nodes #2', () => {
     const container = createContainerWithHTML('<div></div>');
 
-    render(
+    hydrate(
       <div>
         <Nested>
           <InnerNested>
@@ -153,7 +154,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
 
     expect(vNode.children).toEqual('');
 
-    render(vNode, container); // This should create empty text node
+    hydrate(vNode, container); // This should create empty text node
 
     render(<span className="error">{'Okay!'}</span>, container);
 
@@ -171,7 +172,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
 
     expect(vNode.children.children).toEqual('');
 
-    render(vNode, container); // This should create empty text node
+    hydrate(vNode, container); // This should create empty text node
 
     render(
       <div>
@@ -190,7 +191,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
 
     expect(vNode.children).toEqual(createTextVNode(''));
 
-    render(vNode, container); // This should create empty text node
+    hydrate(vNode, container); // This should create empty text node
 
     expect(container.firstChild.firstChild).not.toBeNull();
 
@@ -210,7 +211,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
 
     expect(vNode.children.children).toEqual(createTextVNode(''));
 
-    render(vNode, container); // This should create empty text node
+    hydrate(vNode, container); // This should create empty text node
 
     expect(container.firstChild.firstChild.firstChild).not.toBeNull();
 

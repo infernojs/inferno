@@ -14,5 +14,6 @@ module.exports = alias({
   'inferno-router': resolve(ROOT, 'packages/inferno-router/dist/index.esm.js'),
   'inferno-server': resolve(ROOT, 'packages/inferno-server/dist/index.esm.js'),
   'inferno-shared': resolve(ROOT, 'packages/inferno-shared/dist/index.esm.js'),
-  'inferno-clone-vnode': resolve(ROOT, 'packages/inferno-clone-vnode/dist/index.esm.js')
+  'inferno-clone-vnode': resolve(ROOT, 'packages/inferno-clone-vnode/dist/index.esm.js'),
+  'inferno-hydrate': resolve(ROOT, 'packages/inferno-hydrate/dist/index.esm.js')
 });

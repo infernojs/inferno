@@ -52,16 +52,6 @@ describe('HTML Form Elements', () => {
       expect(container.firstChild.value).toBe('false');
       expect(container.firstChild.defaultValue).toBe('false');
     });
-
-    it('Should change value and defaultValue to empty when hydrating over existing textArea', () => {
-      container.innerHTML = '<textarea>foobar</textarea>';
-
-      render(<textarea />, container);
-      expect(container.firstChild.value).toBe('');
-      expect(container.firstChild.defaultValue).toBe('');
-    });
-
-    it('Should trigger onChange when text changes', () => {});
   });
 
   describe('Input - defaultValue', () => {

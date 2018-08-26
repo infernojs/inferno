@@ -7,6 +7,7 @@ import React, {
   Component,
   createClass,
   createElement,
+  hydrate,
   isValidElement,
   PropTypes,
   unstable_renderSubtreeIntoContainer
@@ -112,11 +113,11 @@ describe('MISC', () => {
       initialChild.appendChild(Text('initial content'));
       root.appendChild(initialChild);
 
-      render(<div>dynamic content</div>, root);
+      hydrate(<div>dynamic content</div>, root);
       expect(root.textContent).toEqual('dynamic content');
     });
 
-    it('should remove extra elements', () => {
+    it('hydrate should remove extra elements', () => {
       let ce = type => document.createElement(type);
       let Text = text => document.createTextNode(text);
       let root = ce('div');
@@ -129,7 +130,7 @@ describe('MISC', () => {
       c2.appendChild(Text('extra content'));
       root.appendChild(c2);
 
-      render(<div>dynamic content</div>, root);
+      hydrate(<div>dynamic content</div>, root);
       expect(root.textContent).toEqual('dynamic content');
     });
 
@@ -141,7 +142,7 @@ describe('MISC', () => {
       root.appendChild(Text('Text Content in the root'));
       root.appendChild(Text('More Text Content'));
 
-      render(<div>dynamic content</div>, root);
+      hydrate(<div>dynamic content</div>, root);
       expect(root.textContent).toEqual('dynamic content');
     });
 

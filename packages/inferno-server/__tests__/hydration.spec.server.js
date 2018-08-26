@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { renderToString } from 'inferno-server';
-
+import { hydrate } from "inferno-hydrate";
 import { createElement } from 'inferno-create-element';
 import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
 
@@ -17,7 +17,7 @@ describe('SSR Hydration - (non-JSX)', () => {
       const container = createContainerWithHTML(html);
 
       expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect1));
-      render(node, container);
+      hydrate(node, container);
       expect(validateNodeTree(node)).toBe(true);
       expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect2));
       render(node, container);

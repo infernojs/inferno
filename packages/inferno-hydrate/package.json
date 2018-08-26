@@ -1,8 +1,8 @@
 {
-  "name": "inferno-clone-vnode",
+  "name": "inferno-hydrate",
   "version": "5.4.2",
   "license": "MIT",
-  "description": "provides helper function to clone Inferno's vNodes",
+  "description": "Hydrate plugin to inferno. This package can be used to reuse server side rendered html",
   "author": {
     "name": "Sampo Kivistö<Havunen>",
     "email": "sampo.kivisto@live.fi",
@@ -23,21 +23,23 @@
     "framework",
     "interfaces",
     "user interfaces",
-    "class",
     "vdom"
   ],
   "dependencies": {
     "inferno": "5.4.2"
   },
   "devDependencies": {
-    "inferno": "5.4.2",
     "inferno-shared": "5.4.2",
     "inferno-vnode-flags": "5.4.2"
   },
   "rollup": {
     "bundledDependencies": [
-      "inferno-shared"
+      "inferno-shared",
+      "inferno-vnode-flags"
     ],
-    "moduleName": "Inferno"
+    "moduleName": "Inferno",
+    "moduleGlobals": {
+      "inferno": "Inferno"
+    }
   }
 }

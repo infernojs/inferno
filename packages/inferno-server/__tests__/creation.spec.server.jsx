@@ -2,6 +2,7 @@ import { renderToStaticMarkup, renderToString } from 'inferno-server';
 import { Component, render, createFragment } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
+import { hydrate } from 'inferno-hydrate';
 
 function WrappedInput(props) {
   return <input type="text" value={props.value} />;
@@ -404,7 +405,7 @@ describe('SSR Creation (JSX)', () => {
         );
       }
 
-      render(<WrapperComponent />, container);
+      hydrate(<WrapperComponent />, container);
       expect(container.firstChild).toBe(wrapperDiv);
       expect(wrapperDiv.childNodes.length).toBe(4);
       expect(wrapperDiv.childNodes[0].nodeValue).toBe('Website built with Inferno ');
@@ -437,7 +438,7 @@ describe('SSR Creation (JSX)', () => {
 
       const emTag = container.querySelector('em');
 
-      render(vNode, container);
+      hydrate(vNode, container);
 
       expect(container.innerHTML).toBe('<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>');
       expect(container.querySelector('em')).toBe(emTag);
@@ -477,7 +478,7 @@ describe('SSR Creation (JSX)', () => {
       const moreDiv = container.querySelector('#m');
       const emTag = container.querySelector('em');
 
-      render(vNode, container);
+      hydrate(vNode, container);
 
       expect(container.innerHTML).toBe('<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>');
       expect(container.querySelector('em')).toBe(emTag);

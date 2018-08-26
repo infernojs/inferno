@@ -39,6 +39,7 @@ module.exports = {
       'inferno-create-class': resolve('inferno-create-class'),
       'inferno-create-element': resolve('inferno-create-element'),
       'inferno-devtools': resolve('inferno-devtools'),
+      'inferno-hydrate': resolve('inferno-hydrate'),
       'inferno-hyperscript': resolve('inferno-hyperscript'),
       'inferno-mobx': resolve('inferno-mobx'),
       'inferno-redux': resolve('inferno-redux'),

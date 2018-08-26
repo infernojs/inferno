@@ -1,8 +1,7 @@
-import { Component, createTextVNode, createVNode, render, hydrate } from 'inferno';
+import { Component, createTextVNode, createVNode, render } from 'inferno';
 import { NO_OP } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { triggerEvent } from 'inferno-utils';
-import sinon from 'sinon';
 
 describe('rendering routine', () => {
   let container;
@@ -208,102 +207,6 @@ describe('rendering routine', () => {
       );
 
       expect(container.innerHTML).toEqual('<div><div>Hello 12</div><div>Hello 21</div><div>Hello 12</div></div>');
-    });
-  });
-
-  // hydrate should be exposed
-  describe('hydrate', () => {
-    it('Should be possible to hydrate manually', () => {
-      // create matching DOM
-      container.innerHTML = '<input type="checkbox"/>';
-
-      let clickChecked = null;
-      let changeChecked = null;
-
-      // Hydrate manually, instead rendering
-      hydrate(
-        <input
-          type="checkbox"
-          checked={false}
-          onClick={e => {
-            clickChecked = e.target.checked;
-          }}
-          onChange={e => {
-            changeChecked = e.target.checked;
-          }}
-        />,
-        container
-      );
-      const input = container.firstChild;
-
-      triggerEvent('click', input);
-
-      expect(input.checked).toBe(false);
-      expect(clickChecked).toBe(true);
-      expect(changeChecked).toBe(true);
-    });
-
-    it('Should Manually hydrating should also attach root and patch when rendering next time', () => {
-      // create matching DOM
-      const spy = sinon.spy();
-      container.innerHTML = '<div><input type="checkbox"/></div>';
-
-      let clickChecked = null;
-      let changeChecked = null;
-
-      // Hydrate manually, instead rendering
-      hydrate(
-        <div ref={spy}>
-          <input
-            type="checkbox"
-            checked={false}
-            onClick={e => {
-              clickChecked = e.target.checked;
-            }}
-            onChange={e => {
-              changeChecked = e.target.checked;
-            }}
-          />
-        </div>,
-        container
-      );
-
-      const oldInput = container.firstChild.firstChild;
-
-      expect(spy.callCount).toBe(1);
-
-      render(
-        <div ref={spy}>
-          <input
-            type="checkbox"
-            checked={true}
-            className="new-class"
-            onClick={e => {
-              clickChecked = e.target.checked;
-            }}
-            onChange={e => {
-              changeChecked = e.target.checked;
-            }}
-          />
-        </div>,
-        container
-      );
-
-      expect(spy.callCount).toBe(1);
-
-      const input = container.querySelector('input.new-class');
-
-      expect(oldInput).toBe(input); // It should still be the same DOM node
-
-      triggerEvent('click', input);
-
-      expect(input.checked).toBe(true);
-      expect(clickChecked).toBe(false);
-      expect(changeChecked).toBe(false);
-
-      render(null, container);
-
-      expect(spy.callCount).toBe(2);
     });
   });
 

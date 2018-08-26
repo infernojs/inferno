@@ -6,7 +6,6 @@ import {
   createTextVNode,
   createVNode,
   directClone,
-  hydrate,
   EMPTY_OBJ,
   getFlagsForElementVnode,
   InfernoChildren,
@@ -21,6 +20,7 @@ import {
   VNode,
   findDOMfromVNode
 } from 'inferno';
+import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';

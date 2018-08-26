@@ -33,6 +33,7 @@
   "devDependencies": {
     "inferno-create-class": "5.4.2",
     "inferno-create-element": "5.4.2",
+    "inferno-hydrate": "5.4.2",
     "inferno-hyperscript": "5.4.2",
     "inferno-shared": "5.4.2",
     "inferno-test-utils": "5.4.2",
