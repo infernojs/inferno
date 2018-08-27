@@ -472,4 +472,37 @@ describe('Fragments', () => {
     expect(unmountCounter).toBe(3);
     expect(mountCounter).toBe(8);
   });
+
+  it('Should unmount empty fragments', () => {
+    render(
+      <Fragment>
+        <Fragment/>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    render(
+      <Fragment>
+        <div/>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div></div>');
+
+    render(
+      <Fragment>
+        <Fragment/>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
 });

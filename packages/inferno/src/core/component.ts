@@ -1,4 +1,3 @@
-import {VNodeFlags} from 'inferno-vnode-flags';
 import {InfernoChildren, Props, Refs, VNode} from './implementation';
 import {combineFrom, isFunction, isNull, isNullOrUndef, throwError} from 'inferno-shared';
 import {updateClassComponent} from '../DOM/patching';
@@ -74,27 +73,20 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
   if (force || !component.$BR) {
     component.$PSS = false;
     const pendingState = component.$PS;
-    const prevState = component.state;
-    const nextState = combineFrom(prevState, pendingState) as any;
-    const props = component.props as P;
-    const context = component.context;
 
     component.$PS = null;
-    const lastInput = component.$LI as VNode;
-    const dom = findDOMfromVNode(lastInput);
-    const parentDom = dom && dom.parentNode;
 
     updateClassComponent(
       component,
-      nextState,
-      props,
-      parentDom as Element,
-      context,
+      combineFrom(component.state, pendingState),
+      component.props,
+      (findDOMfromVNode(component.$LI) as Element).parentNode as Element,
+      component.context,
       false,
       force,
       true,
-      (lastInput.flags & VNodeFlags.Fragment) > 0 ? (lastInput.dom as any).nextSibling as Element | null : null
-      );
+      null
+    );
     if (component.$UN) {
       return;
     }

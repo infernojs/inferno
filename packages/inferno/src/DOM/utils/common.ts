@@ -86,7 +86,7 @@ export function removeVNodeDOM(vNode: VNode, dom: Element) {
       removeVNodeDOM(children, dom);
     } else if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        removeChild(dom, children);
+        removeVNodeDOM(children, dom);
       } else {
         for (let i = 0, len = children.length; i < len; i++) {
           removeVNodeDOM(children[i], dom);
