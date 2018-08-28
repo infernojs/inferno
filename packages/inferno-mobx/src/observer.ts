@@ -103,7 +103,7 @@ const reactiveMixin = {
 
     // Generate friendly name for debugging
     const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
-    const rootNodeID = this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
+    const rootNodeID = (this._reactInternalInstance && this._reactInternalInstance._rootNodeID) || null;
 
     /**
      * If props are shallowly modified, react will render anyway,
@@ -151,7 +151,7 @@ const reactiveMixin = {
     let isRenderingPending = false;
 
     const initialRender = () => {
-      reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
+      reaction = new Reaction(`${initialName}${!rootNodeID ? '' : `#${rootNodeID}`}.render()`, () => {
         if (!isRenderingPending) {
           // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
           // This unidiomatic React usage but React will correctly warn about this so we continue as usual
