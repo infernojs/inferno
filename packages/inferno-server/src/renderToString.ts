@@ -26,6 +26,7 @@ function renderVNodeToString(vNode, parent, context): string {
     if (isClass) {
       const instance = new type(props, context);
       instance.$BS = false;
+      instance.$SSR = true;
       let childContext;
       if (isFunction(instance.getChildContext)) {
         childContext = instance.getChildContext();

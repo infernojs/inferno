@@ -41,7 +41,6 @@ describe('Mobx Misc', () => {
   });
 
   it('custom shouldComponentUpdate is not respected for observable changes (#50) - 2', done => {
-    // TODO: shouldComponentUpdate is meaningless with observable props...., just show warning in component definition?
     let called = 0;
     const y = mobx.observable.box(5);
     const C = observer(

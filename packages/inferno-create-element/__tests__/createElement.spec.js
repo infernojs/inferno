@@ -156,7 +156,6 @@ describe('CreateElement (non-JSX)', () => {
     render(createElement(app, null), container);
   });
 
-  // TODO:
   // describe('Fragments', () => {
   //   return React.createElement(
   //     React.Fragment,

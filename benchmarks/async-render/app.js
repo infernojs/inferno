@@ -29,7 +29,7 @@
 		componentDidMount() {
 			let i = 0;
 
-			while (this.items.length < 200) {
+			while (this.items.length < 2000) {
 				this.items[this.items.length] = createElement(ListItem, {key: ++i}, `${this.items.length}bar`);
 				this.setState({ items: this.items });
 			}
@@ -44,21 +44,21 @@
 		var container = document.querySelector('#App');
 
 		const times = [];
-		const count = 100;
+		const count = 2;
 		let totalTime = 0;
 
 		for (var i = 0; i < count; i++) {
 			// var start = window.performance.now();
-
+			//
 			Inferno.render(createElement(List), container);
 
 			// var end = window.performance.now();
-      //
+
 			// Inferno.render(null, container);
-      //
+			//
 			// var roundTime = end - start;
 			// totalTime += roundTime;
-      //
+			//
 			// times.push(roundTime);
 		}
 

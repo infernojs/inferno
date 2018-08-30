@@ -8,7 +8,7 @@
  */
 
 import React from 'inferno-compat';
-import { createComponentVNode, render } from 'inferno';
+import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
@@ -86,7 +86,7 @@ describe('ReactComponentLifeCycle', function() {
   let container;
 
   function renderIntoDocument(input) {
-    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
   }
 
   beforeEach(() => {
@@ -95,7 +95,7 @@ describe('ReactComponentLifeCycle', function() {
   });
 
   afterEach(() => {
-    render(null, container);
+    React.render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
@@ -111,6 +111,7 @@ describe('ReactComponentLifeCycle', function() {
       }
     });
     var element = <StatefulComponent />;
+
     var firstInstance = ReactDOM.render(element, container);
     ReactDOM.unmountComponentAtNode(container);
     var secondInstance = ReactDOM.render(element, container);

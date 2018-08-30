@@ -1,6 +1,4 @@
-import { Component, render } from 'inferno';
-import { createClass } from 'inferno-create-class';
-import { createElement } from 'inferno-create-element';
+import { render } from 'inferno';
 import { connect } from 'inferno-redux';
 import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';

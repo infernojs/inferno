@@ -1,6 +1,7 @@
 import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from './implementation';
+import { getComponentName } from "../DOM/utils/common";
 
 function getTagName(input) {
   let tagName;
@@ -23,12 +24,7 @@ function getTagName(input) {
     } else if (flags & VNodeFlags.Portal) {
       tagName = `Portal*`;
     } else {
-      const type = input.type;
-
-      // Fallback for IE
-      const componentName = type.name || type.displayName || type.constructor.name || (type.toString().match(/^function\s*([^\s(]+)/) || [])[1];
-
-      tagName = `<${componentName} />`;
+      tagName = `<${getComponentName(input.type)} />`;
     }
   }
 

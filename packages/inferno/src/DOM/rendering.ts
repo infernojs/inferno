@@ -1,4 +1,4 @@
-import { isBrowser, isFunction, isInvalid, isNullOrUndef, NO_OP, throwError, warning } from 'inferno-shared';
+import { isBrowser, isFunction, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
 import { mount } from './mounting';
@@ -18,7 +18,7 @@ const documentBody = isBrowser ? document.body : null;
 
 export function render(
   input: InfernoInput,
-  parentDom: Element | SVGAElement | DocumentFragment | HTMLElement | Node | null,
+  parentDom: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback?: Function
 ): InfernoChildren | void {
   // Development warning
@@ -27,14 +27,10 @@ export function render(
       throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
     }
   }
-  if ((input as string) === NO_OP) {
-    return;
-  }
-
   let rootInput = (parentDom as any).$V as VNode;
 
   if (isNullOrUndef(rootInput)) {
-    if (!isInvalid(input)) {
+    if (!isNullOrUndef(input)) {
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
@@ -64,9 +60,6 @@ export function render(
   }
   if (isFunction(options.renderComplete)) {
     options.renderComplete(rootInput);
-  }
-  if (rootInput && rootInput.flags & VNodeFlags.Component) {
-    return rootInput.children;
   }
 }
 

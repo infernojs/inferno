@@ -1,8 +1,21 @@
-import { Component, createPortal, render } from 'inferno';
+import { Component, createPortal, render as _render } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
+import { VNodeFlags } from "inferno-vnode-flags";
 
 describe('Portal spec', () => {
   let container;
+
+  function render(input, container, cb) {
+    _render(input, container, cb);
+
+    const rootInput = container.$V;
+
+    if (rootInput && rootInput.flags & VNodeFlags.Component) {
+      return rootInput.children;
+    }
+
+    return rootInput;
+  }
 
   beforeEach(function() {
     container = document.createElement('div');

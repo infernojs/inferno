@@ -1,5 +1,4 @@
-import { render } from 'inferno';
-import { createElement } from 'inferno-compat';
+import { createElement, render } from 'inferno-compat';
 
 describe('svg', () => {
   let container;

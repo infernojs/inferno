@@ -1,10 +1,10 @@
-import { Component, render } from 'inferno';
+import { Component, render as _render, rerender } from 'inferno';
 import { createClass } from 'inferno-create-class';
-import { createElement } from 'inferno-create-element';
 import { connect } from 'inferno-redux';
 import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
 import sinon from 'sinon';
+import { VNodeFlags } from "inferno-vnode-flags";
 
 describe('Inferno', () => {
   // IE does not support function names so error messages are different
@@ -13,7 +13,16 @@ describe('Inferno', () => {
   const unmountDOM = elm => render(null, elm);
   let container;
 
+  function render(vNode, container, cb) {
+    _render(vNode, container, cb);
+
+    if (vNode && vNode.flags & VNodeFlags.Component) {
+      return vNode.children;
+    }
+  }
+
   beforeEach(() => {
+    rerender();
     container = document.createElement('div');
     document.body.appendChild(container);
   });

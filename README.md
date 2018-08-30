@@ -8,6 +8,7 @@
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/inferno/dist/inferno.min.js?compression=gzip)](https://unpkg.com/inferno/dist/inferno.min.js)
 [![Backers on Open Collective](https://opencollective.com/inferno/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/inferno/sponsors/badge.svg)](#sponsors)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
 Inferno is an insanely fast, React-like library for building high-performance user interfaces on both the client and server.
 

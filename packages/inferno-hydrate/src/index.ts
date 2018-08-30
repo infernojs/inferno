@@ -27,7 +27,7 @@ function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, contex
     const input = instance.$LI;
 
     currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG);
-    _MCCC(vNode, ref, instance);
+    _MCCC(ref, instance);
     instance.$UPD = false; // Mount finished allow going sync
   } else {
     const input = _HI(type(props, context));

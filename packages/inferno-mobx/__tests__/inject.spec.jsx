@@ -334,7 +334,7 @@ describe('inject based context', () => {
     expect(container.querySelector('h1').textContent).toBe('Veria');
     done();
   });
-  // TODO: fix this!
+
   // it('using a custom injector is not too reactive', done => {
   //   let listRender = 0;
   //   let itemRender = 0;

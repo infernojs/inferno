@@ -1,4 +1,4 @@
-import { NO_OP, warning } from 'inferno-shared';
+import { warning } from 'inferno-shared';
 import {
   createComponentVNode,
   createPortal,
@@ -19,7 +19,7 @@ import {
 import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE } from './DOM/utils/common';
-import { Component, ComponentClass, ComponentType, SFC, StatelessComponent } from './core/component';
+import { Component, ComponentClass, ComponentType, SFC, StatelessComponent, rerender } from './core/component';
 import { getNumberStyleValue, mountProps } from './DOM/props';
 
 import * as JSX from './JSX';
@@ -47,6 +47,22 @@ if (process.env.NODE_ENV !== 'production') {
 const Fragment = '$F';
 const version = process.env.INFERNO_VERSION;
 
+function createRef() {
+  if (process.env.NODE_ENV === 'production') {
+    return {
+      current: null
+    }
+  }
+
+  const refObject = {
+    current: null
+  };
+
+  Object.seal(refObject);
+
+  return refObject;
+}
+
 export {
   Component,
   ComponentType,
@@ -57,7 +73,6 @@ export {
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,
-  NO_OP,
   Props,
   Ref,
   Refs,
@@ -65,6 +80,7 @@ export {
   createComponentVNode,
   createFragment,
   createPortal,
+  createRef,
   createRenderer,
   createTextVNode,
   createVNode,
@@ -77,6 +93,7 @@ export {
   normalizeProps,
   options,
   render,
+  rerender,
   version,
   JSX,
 
@@ -90,6 +107,5 @@ export {
   mountFunctionalComponentCallbacks as _MFCC,
   mountRef as _MR,
   mountText as _MT,
-  mountProps as _MP,
-
+  mountProps as _MP
 };

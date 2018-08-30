@@ -90,7 +90,6 @@ describe('ReactChildren', function() {
       return this;
     };
 
-    // TODO: Use an object to test, after non-object fragments has fully landed.
     var scopeTester = { fooScope: 'barScope' };
 
     var simpleKid = <span key="simple" />;

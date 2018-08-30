@@ -293,7 +293,6 @@ describe('BUG: instance - null', () => {
     //
 
     render() {
-      // TODO: setting arrow true breaks in runtime to "Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'"
       return (
         <Popover
           ref={this._refPopover}

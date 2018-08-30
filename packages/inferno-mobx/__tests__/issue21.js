@@ -1,4 +1,3 @@
-// TODO: Convert this
 // import React, { createClass, createElement, DOM } from 'react'
 // import ReactDOM from 'react-dom'
 // import test from 'tape'

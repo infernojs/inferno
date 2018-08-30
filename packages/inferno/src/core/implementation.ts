@@ -27,7 +27,7 @@ export interface VNode<P = {}> {
   ref: any;
   type: any;
 }
-export type InfernoInput = VNode | null | string;
+export type InfernoInput = VNode | null;
 export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'];
 export type InfernoChildren =
   | Element

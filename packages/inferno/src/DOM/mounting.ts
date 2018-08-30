@@ -1,4 +1,4 @@
-import {isFunction, isNull, isNullOrUndef, isObject, isString, isStringOrNumber, throwError} from 'inferno-shared';
+import {isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError} from 'inferno-shared';
 import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 import {createVoidVNode, directClone, VNode} from '../core/implementation';
 import {documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, LIFECYCLE} from './utils/common';
@@ -116,8 +116,12 @@ export function mountElement(vNode: VNode, parentDom: Element | null, context: O
       throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
     }
   }
-  if (isFunction(ref)) {
-    mountRef(dom, ref);
+  if (ref) {
+    if (isFunction(ref)) {
+      mountRef(dom, ref);
+    } else if (ref.current !== void 0) {
+      ref.current = dom;
+    }
   }
 }
 
@@ -140,7 +144,7 @@ export function mountComponent(vNode: VNode, parentDom: Element | null, context:
   if (isClass) {
     const instance = createClassComponentInstance(vNode, type, props, context);
     mount(instance.$LI, parentDom, instance.$CX, isSVG, nextNode);
-    mountClassComponentCallbacks(vNode, ref, instance);
+    mountClassComponentCallbacks(ref, instance);
     instance.$UPD = false;
   } else {
     const input = handleComponentInput(type(props, context));
@@ -158,14 +162,16 @@ function createClassMountCallback(instance) {
   };
 }
 
-export function mountClassComponentCallbacks(vNode: VNode, ref, instance) {
+export function mountClassComponentCallbacks(ref, instance) {
   if (isFunction(ref)) {
     ref(instance);
+  } else if (ref && ref.current !== void 0) {
+    ref.current = instance;
   } else {
     if (process.env.NODE_ENV !== 'production') {
       if (isStringOrNumber(ref)) {
         throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-      } else if (!isNullOrUndef(ref) && isObject(ref) && vNode.flags & VNodeFlags.ComponentClass) {
+      } else if (!isNullOrUndef(ref) && typeof ref === 'object' && ref.current === void 0) {
         throwError('functional component lifecycle events are not supported on ES2015 class components.');
       }
     }

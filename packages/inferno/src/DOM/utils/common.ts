@@ -1,5 +1,4 @@
 import { isNull } from 'inferno-shared';
-import { svgNS } from '../constants';
 import { ChildFlags, VNodeFlags } from "inferno-vnode-flags";
 import { VNode } from './../../core/implementation';
 
@@ -26,7 +25,7 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 
 export function documentCreateElement(tag, isSVG: boolean): Element {
   if (isSVG) {
-    return document.createElementNS(svgNS, tag);
+    return document.createElementNS('http://www.w3.org/2000/svg', tag);
   }
 
   return document.createElement(tag);
@@ -94,4 +93,9 @@ export function removeVNodeDOM(vNode: VNode, dom: Element) {
       }
     }
   }
+}
+
+export function getComponentName(instance): string {
+  // Fallback for IE
+  return (instance.name || instance.displayName || instance.constructor.name || (instance.toString().match(/^function\s*([^\s(]+)/) || [])[1]);
 }

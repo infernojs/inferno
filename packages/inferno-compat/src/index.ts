@@ -16,7 +16,7 @@ import {
   options,
   Props,
   Refs,
-  render,
+  render as _render,
   VNode,
   findDOMfromVNode
 } from 'inferno';
@@ -24,7 +24,7 @@ import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
-import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
+import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
@@ -37,7 +37,7 @@ declare global {
 }
 
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
-  render(null, container);
+  _render(null, container);
   return true;
 }
 
@@ -307,7 +307,7 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
     children: vNode,
     context: parentComponent.context
   });
-  render(wrapperVNode, container);
+  render(wrapperVNode, container, null);
   const component = vNode.children;
 
   if (callback) {
@@ -351,6 +351,16 @@ function findDOMNode(ref) {
   return null;
 }
 
+function render(rootInput, container, cb) {
+  _render(rootInput, container, cb);
+
+  const input = container.$V;
+
+  if (input && input.flags & VNodeFlags.Component) {
+    return input.children;
+  }
+}
+
 // Mask React global in browser enviornments when React is not used.
 if (isBrowser && typeof (window as any).React === 'undefined') {
   const exports = {
@@ -358,7 +368,6 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
     Component,
     DOM,
     EMPTY_OBJ,
-    NO_OP,
     PropTypes,
     PureComponent,
     __spread: extend,
@@ -400,7 +409,6 @@ export {
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,
-  NO_OP,
   Props,
   PropTypes,
   PureComponent,
@@ -437,7 +445,6 @@ export default {
   Component,
   DOM,
   EMPTY_OBJ,
-  NO_OP,
   PropTypes,
   PureComponent,
   __spread: extend,

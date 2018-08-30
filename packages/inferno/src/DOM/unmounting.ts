@@ -19,8 +19,12 @@ export function unmount(vNode) {
     const ref = vNode.ref as any;
     const props = vNode.props;
 
-    if (isFunction(ref)) {
-      ref(null);
+    if (ref) {
+      if (isFunction(ref)) {
+        ref(null);
+      } else if (ref.current) {
+        ref.current = null;
+      }
     }
 
     const children = vNode.children;
@@ -68,8 +72,12 @@ export function unmount(vNode) {
           if (isFunction(children.componentWillUnmount)) {
             children.componentWillUnmount();
           }
-          if (isFunction(ref)) {
-            ref(null);
+          if (ref) {
+            if (isFunction(ref)) {
+              ref(null);
+            } else if (ref.current) {
+              ref.current = null;
+            }
           }
           children.$UN = true;
 

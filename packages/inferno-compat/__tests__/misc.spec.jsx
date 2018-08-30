@@ -1,4 +1,3 @@
-import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 import React, {
   __spread,
@@ -7,6 +6,7 @@ import React, {
   Component,
   createClass,
   createElement,
+  render,
   hydrate,
   isValidElement,
   PropTypes,
@@ -206,7 +206,6 @@ describe('MISC', () => {
           a<span>b</span>
         </foo>
       );
-      // TODO: Cloning changes parent childFlags to keyed.
       expect(JSON.stringify(cloneElement(element).children)).toEqual(JSON.stringify(element.children));
     });
 

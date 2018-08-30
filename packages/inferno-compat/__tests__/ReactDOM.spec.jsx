@@ -8,7 +8,7 @@
  */
 
 import React from 'inferno-compat';
-import { createComponentVNode, render } from 'inferno';
+import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
@@ -19,7 +19,7 @@ describe('ReactDOM', function() {
   let container;
 
   function renderIntoDocument(input) {
-    return render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
   }
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('ReactDOM', function() {
   });
 
   afterEach(() => {
-    render(null, container);
+    React.render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });

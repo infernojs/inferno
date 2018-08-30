@@ -4,13 +4,12 @@ import {
   isInvalid,
   isNullOrUndef,
   isString,
-  NO_OP,
   throwError,
   warning
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options, VNode } from '../core/implementation';
-import { mount, mountArrayChildren, mountRef, mountTextContent } from './mounting';
+import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { remove, removeAllChildren, removeTextNode, unmount, unmountAllChildren } from './unmounting';
 import {
   appendChild,
@@ -25,6 +24,7 @@ import { isControlledFormElement, processElement } from './wrappers/processEleme
 import { patchProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
+import { createDerivedState } from "../core/component";
 
 function replaceWithNewNode(lastVNode, nextVNode, parentDom, context: Object, isSVG: boolean) {
   unmount(lastVNode);
@@ -175,7 +175,6 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
     }
   }
   const nextChildren = nextVNode.children;
-  const nextRef = nextVNode.ref;
   const nextClassName = nextVNode.className;
 
   if (process.env.NODE_ENV !== 'production') {
@@ -210,12 +209,29 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
       dom.className = nextClassName;
     }
   }
-  if (isFunction(nextRef) && lastVNode.ref !== nextRef) {
-    mountRef(dom as Element, nextRef);
-  } else {
-    if (process.env.NODE_ENV !== 'production') {
-      if (isString(nextRef)) {
-        throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+  const nextRef = nextVNode.ref;
+  const lastRef = lastVNode.ref;
+
+  // TODO: Refactor
+  if (lastRef !== nextRef) {
+    if (lastRef) {
+      if (isFunction(lastRef)) {
+        lastRef(null);
+      } else if (lastRef.current) {
+        lastRef.current = null;
+      }
+    }
+    if (nextRef) {
+      if (isFunction(nextRef)) {
+        nextRef(dom);
+      } else if (nextRef.current !== void 0) {
+        nextRef.current = dom;
+      } else {
+        if (process.env.NODE_ENV !== 'production') {
+          if (isString(nextRef)) {
+            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+          }
+        }
       }
     }
   }
@@ -341,27 +357,35 @@ export function updateClassComponent(
     }
     return;
   }
+  const usesNewAPI = instance.$N;
+
   if (lastProps !== nextProps || nextProps === EMPTY_OBJ) {
-    if (!fromSetState && isFunction(instance.componentWillReceiveProps)) {
-      instance.$BR = true;
-      instance.componentWillReceiveProps(nextProps, context);
-      // If instance component was removed during its own update do nothing...
-      if (instance.$UN) {
-        return;
+    if (!usesNewAPI) {
+      if (!fromSetState && isFunction(instance.componentWillReceiveProps)) {
+        instance.$BR = true;
+        instance.componentWillReceiveProps(nextProps, context);
+        // If instance component was removed during its own update do nothing...
+        if (instance.$UN) {
+          return;
+        }
+        instance.$BR = false;
       }
-      instance.$BR = false;
-    }
-    if (instance.$PSS) {
-      nextState = combineFrom(nextState, instance.$PS) as any;
-      instance.$PSS = false;
-      instance.$PS = null;
+      if (instance.$PSS) {
+        nextState = combineFrom(nextState, instance.$PS) as any;
+        instance.$PSS = false;
+        instance.$PS = null;
+      }
     }
   }
   /* Update if scu is not defined, or it returns truthy value or force */
   const hasSCU = Boolean(instance.shouldComponentUpdate);
 
+  if (usesNewAPI) {
+    nextState = createDerivedState(instance, nextProps, nextState !== lastState ? combineFrom(lastState, nextState) : nextState);
+  }
+
   if (force || !hasSCU || (hasSCU && (instance.shouldComponentUpdate as Function)(nextProps, nextState, context))) {
-    if (isFunction(instance.componentWillUpdate)) {
+    if (!usesNewAPI && isFunction(instance.componentWillUpdate)) {
       instance.$BS = true;
       instance.componentWillUpdate(nextProps, nextState, context);
       instance.$BS = false;
@@ -380,7 +404,11 @@ export function updateClassComponent(
       options.afterRender(instance);
     }
 
-    const didUpdate = renderOutput !== NO_OP;
+    let snapshot;
+
+    if (usesNewAPI && instance.getSnapshotBeforeUpdate) {
+      snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState);
+    }
 
     let childContext;
     if (isFunction(instance.getChildContext)) {
@@ -392,19 +420,16 @@ export function updateClassComponent(
       childContext = combineFrom(context, childContext);
     }
     instance.$CX = childContext;
+    const lastInput = instance.$LI;
+    const nextInput = handleComponentInput(renderOutput);
 
-    if (didUpdate) {
-      const lastInput = instance.$LI;
-      const nextInput = handleComponentInput(renderOutput);
+    patch(lastInput, nextInput, parentDom, childContext, isSVG, nextNode);
 
-      patch(lastInput, nextInput, parentDom, childContext, isSVG, nextNode);
+    // Dont update Last input, until patch has been succesfully executed
+    instance.$LI = nextInput;
 
-      // Dont update Last input, until patch has been succesfully executed
-      instance.$LI = nextInput;
-
-      if (isFunction(instance.componentDidUpdate)) {
-        instance.componentDidUpdate(lastProps, lastState);
-      }
+    if (isFunction(instance.componentDidUpdate)) {
+      instance.componentDidUpdate(lastProps, lastState, snapshot);
     }
   } else {
     instance.props = nextProps;
@@ -415,38 +440,61 @@ export function updateClassComponent(
 
 function patchComponent(lastVNode, nextVNode, parentDom, context, isSVG: boolean, isClass: boolean, nextNode: Element | null): void {
   const nextProps = nextVNode.props || EMPTY_OBJ;
+  const nextRef = nextVNode.ref;
 
   if (isClass) {
     const instance = nextVNode.children = lastVNode.children;
     instance.$UPD = true;
     updateClassComponent(instance, instance.state, nextProps, parentDom, context, isSVG, false, false, nextNode);
+    const lastRef = lastVNode.ref;
+
+    // TODO: Refactor
+    if (lastRef !== nextRef) {
+      if (lastRef) {
+        if (isFunction(lastRef)) {
+          lastRef(null);
+        } else if (lastRef.current) {
+          lastRef.current = null;
+        }
+      }
+      if (nextRef) {
+        if (isFunction(nextRef)) {
+          nextRef(instance);
+        } else if (nextRef.current !== void 0) {
+          nextRef.current = instance;
+        } else {
+          if (process.env.NODE_ENV !== 'production') {
+            if (isString(nextRef)) {
+              throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+            }
+          }
+        }
+      }
+    }
+
     instance.$UPD = false;
   } else {
     let shouldUpdate: any = true;
     const lastProps = lastVNode.props;
-    const nextHooks = nextVNode.ref;
-    const nextHooksDefined = !isNullOrUndef(nextHooks);
+    const nextHooksDefined = !isNullOrUndef(nextRef);
     const lastInput = lastVNode.children;
 
     nextVNode.children = lastInput;
 
-    if (nextHooksDefined && isFunction(nextHooks.onComponentShouldUpdate)) {
-      shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
+    if (nextHooksDefined && isFunction(nextRef.onComponentShouldUpdate)) {
+      shouldUpdate = nextRef.onComponentShouldUpdate(lastProps, nextProps);
     }
 
     if (shouldUpdate !== false) {
-      if (nextHooksDefined && isFunction(nextHooks.onComponentWillUpdate)) {
-        nextHooks.onComponentWillUpdate(lastProps, nextProps);
+      if (nextHooksDefined && isFunction(nextRef.onComponentWillUpdate)) {
+        nextRef.onComponentWillUpdate(lastProps, nextProps);
       }
-      let nextInput = nextVNode.type(nextProps, context);
+      const nextInput = handleComponentInput(nextVNode.type(nextProps, context));
 
-      if (nextInput !== NO_OP) {
-        nextInput = handleComponentInput(nextInput);
-        patch(lastInput, nextInput, parentDom, context, isSVG, nextNode);
-        nextVNode.children = nextInput;
-        if (nextHooksDefined && isFunction(nextHooks.onComponentDidUpdate)) {
-          nextHooks.onComponentDidUpdate(lastProps, nextProps);
-        }
+      patch(lastInput, nextInput, parentDom, context, isSVG, nextNode);
+      nextVNode.children = nextInput;
+      if (nextHooksDefined && isFunction(nextRef.onComponentDidUpdate)) {
+        nextRef.onComponentDidUpdate(lastProps, nextProps);
       }
     }
   }

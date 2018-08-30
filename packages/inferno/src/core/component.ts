@@ -1,17 +1,10 @@
 import {InfernoChildren, Props, Refs, VNode} from './implementation';
-import {combineFrom, isFunction, isNull, isNullOrUndef, throwError} from 'inferno-shared';
+import {combineFrom, isFunction, isNullOrUndef, throwError} from 'inferno-shared';
 import {updateClassComponent} from '../DOM/patching';
 import {callAll, EMPTY_OBJ, findDOMfromVNode, LIFECYCLE} from '../DOM/utils/common';
 
-const resolvedPromise: any = typeof Promise === 'undefined' ? null : Promise.resolve();
-// raf.bind(window) is needed to work around bug in IE10-IE11 strict mode (TypeError: Invalid calling object)
-const fallbackMethod = typeof requestAnimationFrame === 'undefined' ? setTimeout : requestAnimationFrame.bind(window);
-function nextTick(fn) {
-  if (resolvedPromise) {
-    return resolvedPromise.then(fn);
-  }
-  return fallbackMethod(fn);
-}
+const QUEUE: Array<Component<any, any>> = [];
+const nextTick = typeof Promise === 'function' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback: Function | undefined, force: boolean): void {
   if (isFunction(newState)) {
@@ -31,18 +24,22 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Funct
     if (!component.$UPD) {
       component.$PSS = true;
       component.$UPD = true;
-      applyState(component, force, callback);
-      component.$UPD = false;
+      if (QUEUE.length === 0) {
+        applyState(component, force, callback)
+      } else {
+        QUEUE.push(component);
+      }
     } else {
-      // Async
-      let queue = component.$QU;
-
-      if (isNull(queue)) {
-        queue = component.$QU = [] as Function[];
-        nextTick(promiseCallback(component, queue));
+      if (QUEUE.push(component) === 1) {
+        nextTick(rerender)
       }
       if (isFunction(callback)) {
-        queue.push(callback);
+        let QU = component.$QU;
+
+        if (!QU) {
+          QU = component.$QU = [] as Function[];
+        }
+        QU.push(callback);
       }
     }
   } else {
@@ -53,17 +50,25 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Funct
   }
 }
 
-function promiseCallback(component, queue) {
-  return () => {
-    component.$QU = null;
-    component.$UPD = true;
-    applyState(component, false, () => {
-      for (let i = 0, len = (queue as Function[]).length; i < len; i++) {
-        (queue as Function[])[i].call(component);
-      }
-    });
-    component.$UPD = false;
-  };
+function callSetStateCallbacks(component) {
+  const queue = component.$QU;
+
+  for (let i = 0, len = (queue as Function[]).length; i < len; i++) {
+    (queue as Function[])[i].call(component);
+  }
+
+  component.$QU = null;
+}
+
+export function rerender() {
+  let component;
+  while ( (component = QUEUE.pop()) ) {
+    if (!component.$UPD) {
+      const queue = component.$QU;
+
+      applyState(component, false, queue ? callSetStateCallbacks.bind(null, component) : null);
+    }
+  }
 }
 
 function applyState<P, S>(component: Component<P, S>, force: boolean, callback?: Function): void {
@@ -75,6 +80,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     const pendingState = component.$PS;
 
     component.$PS = null;
+    component.$UPD = true;
 
     updateClassComponent(
       component,
@@ -87,6 +93,9 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       true,
       null
     );
+
+    component.$UPD = false;
+
     if (component.$UN) {
       return;
     }
@@ -124,28 +133,29 @@ export interface ComponentClass<P = {}, S = {}> {
 
   componentDidMount?(): void;
 
+  /**
+   * @deprecated since version 6.0
+   */
   componentWillMount?(): void;
 
+  /**
+   * @deprecated since version 6.0
+   */
   componentWillReceiveProps?(nextProps: P, nextContext: any): void;
 
-  shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+  shouldComponentUpdate?(nextProps: P, nextState: S, context: any): boolean;
 
-  componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+  /**
+   * @deprecated since version 6.0
+   */
+  componentWillUpdate?(nextProps: P, nextState: S, context: any): void;
 
-  componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+  componentDidUpdate?(prevProps: P, prevState: S, snapshot: any): void;
 
   componentWillUnmount?(): void;
 
   getChildContext?(): void;
 }
-
-export type Validator<T> = { bivarianceHack(object: T, key: string, componentName: string, ...rest: any[]): Error | null }['bivarianceHack'];
-
-export interface Requireable<T> extends Validator<T> {
-  isRequired: Validator<T>;
-}
-
-export type ValidationMap<T> = { [K in keyof T]?: Validator<T> };
 
 export interface Component<P = {}, S = {}> extends ComponentClass<P, S> {}
 export class Component<P, S> {
@@ -166,6 +176,8 @@ export class Component<P, S> {
   public $CX = null; // CHILDCONTEXT
   public $UPD: boolean = true; // UPDATING
   public $QU: Function[] | null = null; // QUEUE
+  public $N: boolean = false; // Flag
+  public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client
 
   constructor(props?: P, context?: any) {
     /** @type {object} */
@@ -198,6 +210,18 @@ export class Component<P, S> {
     }
   }
 
+  public getSnapshotBeforeUpdate?(prevProps: Props<any>, prevState: S): any
+
+  public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any
+
   // tslint:disable-next-line:no-empty
   public render(nextProps: P, nextState, nextContext): InfernoChildren | void {}
+}
+
+export function createDerivedState(instance, nextProps, state) {
+  if (instance.constructor.getDerivedStateFromProps) {
+    return combineFrom(state, instance.constructor.getDerivedStateFromProps(nextProps, state));
+  }
+
+  return state;
 }

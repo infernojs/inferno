@@ -205,22 +205,13 @@ export function connectAdvanced(
         };
       }
 
-      public componentDidMount() {
-        if (!shouldHandleStateChanges) {
+      public componentWillMount() {
+        if (!shouldHandleStateChanges  || this.$SSR) {
           return;
         }
 
-        // componentWillMount fires during server side rendering, but componentDidMount and
-        // componentWillUnmount do not. Because of this, trySubscribe happens during ...didMount.
-        // Otherwise, unsubscription would never take place during SSR, causing a memory leak.
-        // To handle the case where a child component may have triggered a state change by
-        // dispatching an action in its componentWillMount, we have to re-run the select and maybe
-        // re-render.
         this.subscription!.trySubscribe();
         this.selector.run(this.props);
-        if (this.selector.shouldComponentUpdate) {
-          this.forceUpdate();
-        }
       }
 
       public componentWillReceiveProps(nextProps) {

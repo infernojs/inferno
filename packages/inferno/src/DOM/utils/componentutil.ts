@@ -4,15 +4,60 @@ import {
   createVoidVNode,
   directClone,
   options,
-  Props,
   VNode
 } from '../../core/implementation';
-import {combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber} from 'inferno-shared';
-import {EMPTY_OBJ} from './common';
+import {
+  combineFrom,
+  isArray,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isStringOrNumber,
+  warning
+} from 'inferno-shared';
+import { EMPTY_OBJ, getComponentName } from './common';
 import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import { createDerivedState } from "../../core/component";
 
-export function createClassComponentInstance<P>(vNode: VNode, Component, props: Props<P>, context: Object) {
+function warnAboutOldLifecycles(component) {
+  const oldLifecycles: string[] = [];
+
+  if (component.componentWillMount) {
+    oldLifecycles.push('componentWillMount');
+  }
+
+  if (component.componentWillReceiveProps) {
+    oldLifecycles.push('componentWillReceiveProps');
+  }
+
+  if (component.componentWillUpdate) {
+    oldLifecycles.push('componentWillUpdate');
+  }
+
+  if (oldLifecycles.length > 0) {
+    warning(`
+      Warning: Unsafe legacy lifecycles will not be called for components using new component APIs.
+      ${getComponentName(component)} contains the following legacy lifecycles:
+      ${oldLifecycles.join('\n')}
+      The above lifecycles should be removed.
+    `)
+  }
+}
+
+export function createClassComponentInstance<P>(vNode: VNode, Component, props, context: Object) {
   const instance = new Component(props, context);
+  const usesNewAPI = instance.$N = Boolean(instance.getSnapshotBeforeUpdate || Component.getDerivedStateFromProps);
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (instance.getDerivedStateFromProps) {
+      warning(`${getComponentName(instance)} getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.`);
+    }
+    if (usesNewAPI) {
+      warnAboutOldLifecycles(instance);
+    }
+  }
+
   vNode.children = instance;
   instance.$V = vNode;
   instance.$BS = false;
@@ -21,30 +66,36 @@ export function createClassComponentInstance<P>(vNode: VNode, Component, props: 
     instance.props = props;
   }
   instance.$UN = false;
-  if (isFunction(instance.componentWillMount)) {
-    instance.$BR = true;
-    instance.componentWillMount();
+  if (!usesNewAPI) {
+    if (isFunction(instance.componentWillMount)) {
+      instance.$BR = true;
+      instance.componentWillMount();
 
-    if (instance.$PSS) {
-      const state = instance.state;
-      const pending = instance.$PS;
+      if (instance.$PSS) {
+        const state = instance.state;
+        const pending = instance.$PS;
 
-      if (isNull(state)) {
-        instance.state = pending;
-      } else {
-        for (const key in pending) {
-          state[key] = pending[key];
+        if (isNull(state)) {
+          instance.state = pending;
+        } else {
+          for (const key in pending) {
+            state[key] = pending[key];
+          }
         }
+        instance.$PSS = false;
+        instance.$PS = null;
       }
-      instance.$PSS = false;
-      instance.$PS = null;
-    }
 
-    instance.$BR = false;
+      instance.$BR = false;
+    }
   }
 
   if (isFunction(options.beforeRender)) {
     options.beforeRender(instance);
+  }
+
+  if (usesNewAPI) {
+    instance.state = createDerivedState(instance, props, instance.state);
   }
 
   const input = handleComponentInput(instance.render(props, instance.state, context));
