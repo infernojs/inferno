@@ -1,17 +1,12 @@
 const rimraf = require('rimraf');
-const { join } = require('path');
-
+const fs = require('fs-extra');
+const join = require('path').join;
 const cwd = process.cwd();
 const pkgJSON = require(join(cwd, 'package.json'));
 
 if (pkgJSON.private) {
   return;
 }
-
-var fs = require('fs-extra');
-var Promise = require('promise');
-var path = require('path');
-
 
 var promiseAllWait = function(promises) {
   // this is the same as Promise.all(), except that it will wait for all promises to fulfill before rejecting
@@ -68,8 +63,8 @@ var moveDir = function(from_dir, to_dir) {
           for(var i_child=0; i_child < children.length; i_child++) {
             child = children[i_child];
             move_promises.push(movePromiser(
-              path.join(from_dir, child),
-              path.join(to_dir, child),
+              join(from_dir, child),
+              join(to_dir, child),
               moved_records
             ));
           }
