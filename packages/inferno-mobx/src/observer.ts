@@ -287,7 +287,7 @@ export function observer(arg1, arg2?) {
       class<P, S> extends Component<P, S> {
         public static displayName = component.displayName || component.name;
         public static defaultProps = component.defaultProps;
-        public render(props, state, context) {
+        public render(props, _state, context) {
           return component(props, context);
         }
       }
@@ -354,7 +354,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
       this.wrappedInstance = instance;
     }
 
-    public render(props, state, context) {
+    public render(props, _state, context) {
       // Optimization: it might be more efficient to apply the mapper function *outside* the render method
       // (if the mapper is a function), that could avoid expensive(?) re-rendering of the injector component
       // See this test: 'using a custom injector is not too reactive' in inject.js

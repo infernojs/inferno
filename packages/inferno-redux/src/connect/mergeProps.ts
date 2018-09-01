@@ -7,7 +7,7 @@ export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({
 });
 
 export const wrapMergePropsFunc = mergeProps => {
-  return (dispatch, { displayName, pure, areMergedPropsEqual }) => {
+  return (_dispatch, { displayName, pure, areMergedPropsEqual }) => {
     let hasRunOnce = false;
     let mergedProps;
 

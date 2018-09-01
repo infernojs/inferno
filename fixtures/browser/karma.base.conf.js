@@ -1,5 +1,5 @@
 const path = require('path');
-const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src');
+const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src', 'index.ts');
 const useInfernoCompatPkg = process.env.InfernoCompat == '1';
 
 console.info('*** Starting karma tests, Inferno-compat is ' + (useInfernoCompatPkg ? 'on.' : 'off.') + ' ***');
@@ -79,28 +79,40 @@ module.exports = function(config) {
     },
 
     webpack: {
+      output: {
+        filename: '[name]'
+      },
       mode: 'development',
       module: {
         rules: [
           {
             test: /\.jsx?$/,
-            loader: 'babel-loader',
+            loader: path.join(__dirname, 'node_modules/babel-loader'),
             exclude: /node_modules/,
-            query: {
-              presets: ['stage-2'],
+            options: {
+              babelrc: false,
+              presets: [
+                ["@babel/preset-env",
+                  {
+                    "loose": true,
+                    "targets": {
+                      "browsers": [
+                        "ie >= 10",
+                        "safari > 7"
+                      ]
+                    }
+                  }
+                ]
+              ],
               plugins: [
-                'transform-decorators-legacy',
-                ['babel-plugin-inferno', { imports: true }],
-                'transform-class-properties',
-                'transform-object-rest-spread',
-                'babel-plugin-syntax-jsx',
-                'transform-class-properties'
+                ["babel-plugin-inferno", {"imports": true}],
+                ["@babel/plugin-proposal-class-properties", { "loose": true }]
               ]
             }
           },
           {
             test: /\.tsx?$/,
-            loader: 'ts-loader',
+            loader: path.join(__dirname, 'node_modules/ts-loader'),
             options: {
               compilerOptions: {
                 target: 'es5',
@@ -110,6 +122,9 @@ module.exports = function(config) {
             }
           }
         ]
+      },
+      output: {
+        filename: '[name]'
       },
       resolve: {
         alias: {

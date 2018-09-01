@@ -8,7 +8,7 @@ const specialKeys = {
 };
 
 export class Provider extends Component<any, any> {
-  public render(props: any, state: any, context: any) {
+  public render(props) {
     return props.children;
   }
 

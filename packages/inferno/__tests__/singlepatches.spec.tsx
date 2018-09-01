@@ -38,15 +38,15 @@ describe('All single patch variations', () => {
 
     public componentWillMount() {}
 
-    public componentWillReceiveProps(nextProps, nextContext) {}
+    public componentWillReceiveProps(_nextProps, _nextContext) {}
 
-    public shouldComponentUpdate(nextProps, nextState, nextContext) {
+    public shouldComponentUpdate(_nextProps, _nextState, _nextContext) {
       return true;
     }
 
-    public componentWillUpdate(nextProps, nextState, nextContext) {}
+    public componentWillUpdate(_nextProps, _nextState, _nextContext) {}
 
-    public componentDidUpdate(prevProps, prevState, prevContext) {}
+    public componentDidUpdate(_prevProps, _prevState, _prevContext) {}
 
     public componentWillUnmount() {}
 
@@ -59,11 +59,6 @@ describe('All single patch variations', () => {
   mountSpy = sinon.spy(ComA.prototype, 'componentWillMount');
   updateSpy = sinon.spy(ComA.prototype, 'componentWillUpdate');
   unmountSpy = sinon.spy(ComA.prototype, 'componentWillUnmount');
-
-  // @ts-ignore
-  function ComB({ children }) {
-    return children;
-  }
 
   describe('Text to', () => {
     let node;

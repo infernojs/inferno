@@ -34,7 +34,7 @@ function getTagName(input) {
   return '>> ' + tagName + '\n';
 }
 
-function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
+function DEV_ValidateKeys(vNodeTree, forceKeyed) {
   const foundKeys: any = {};
 
   for (let i = 0, len = vNodeTree.length; i < len; i++) {
@@ -68,9 +68,9 @@ function DEV_ValidateKeys(vNodeTree, vNode, forceKeyed) {
     if (!isInvalid(children)) {
       let val;
       if (childFlags & ChildFlags.MultipleChildren) {
-        val = DEV_ValidateKeys(children, childNode, childNode.childFlags & ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys(children, childNode.childFlags & ChildFlags.HasKeyedChildren);
       } else if (childFlags === ChildFlags.HasVNodeChildren) {
-        val = DEV_ValidateKeys([children], childNode, childNode.childFlags & ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys([children], childNode.childFlags & ChildFlags.HasKeyedChildren);
       }
       if (val) {
         val += getTagName(childNode);
@@ -128,7 +128,6 @@ export function validateKeys(vNode) {
     if (vNode.isValidated === false && vNode.children && vNode.flags & VNodeFlags.Element) {
       const error = DEV_ValidateKeys(
         Array.isArray(vNode.children) ? vNode.children : [vNode.children],
-        vNode,
         (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0
       );
 

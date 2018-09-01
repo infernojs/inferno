@@ -19,15 +19,75 @@ describe('Github #1236', () => {
   });
 
   it('Should not patch twice', () => {
-    class SearchStore {
-      @observable
-      query = undefined;
+    /*
+       This is pre-compiled from old decorator pattern
+     */
+    var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-      @action
-      doSearch(search) {
-        this.query = search;
-      }
+    function _initDefineProp(target, property, descriptor, context) {
+      if (!descriptor) return;
+      Object.defineProperty(target, property, {
+        enumerable: descriptor.enumerable,
+        configurable: descriptor.configurable,
+        writable: descriptor.writable,
+        value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+      });
     }
+
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+      var desc = {};
+      Object['ke' + 'ys'](descriptor).forEach(function (key) {
+        desc[key] = descriptor[key];
+      });
+      desc.enumerable = !!desc.enumerable;
+      desc.configurable = !!desc.configurable;
+
+      if ('value' in desc || desc.initializer) {
+        desc.writable = true;
+      }
+
+      desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+        return decorator(target, property, desc) || desc;
+      }, desc);
+
+      if (context && desc.initializer !== void 0) {
+        desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+        desc.initializer = undefined;
+      }
+
+      if (desc.initializer === void 0) {
+        Object['define' + 'Property'](target, property, desc);
+        desc = null;
+      }
+
+      return desc;
+    }
+    var _desc, _value, _class, _descriptor;
+    var SearchStore = (_class = function () {
+      function SearchStore() {
+        _classCallCheck(this, SearchStore);
+
+        _initDefineProp(this, 'query', _descriptor, this);
+      }
+
+      _createClass(SearchStore, [{
+        key: 'doSearch',
+        value: function doSearch(search) {
+          this.query = search;
+        }
+      }]);
+
+      return SearchStore;
+    }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
+      enumerable: true,
+      initializer: function initializer() {
+        return undefined;
+      }
+    }), _applyDecoratedDescriptor(_class.prototype, 'doSearch', [action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)), _class);
+
+
 
     let SearchPage = observer(
       class SearchPage extends Component {

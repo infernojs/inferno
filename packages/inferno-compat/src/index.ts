@@ -40,7 +40,7 @@ function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragm
   return true;
 }
 
-function extend(base, props) {
+function extend(base) {
   for (let i = 1, obj; i < arguments.length; i++) {
     if ((obj = arguments[i])) {
       for (const key in obj) {

@@ -11,10 +11,11 @@ module.exports = {
     usingJSDOM: true,
     usingJest: true
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   moduleNameMapper: {
     "^inferno-router/utils": "<rootDir>/packages/inferno-router/src/utils",
-    "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src"
+    "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src/index.ts",
+    "mobx": "<rootDir>/node_modules/mobx"
   },
   rootDir: __dirname,
   setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
@@ -23,8 +24,8 @@ module.exports = {
     "<rootDir>/packages/*/__tests__/**/*spec.server.@(js|ts)?(x)"
   ],
   transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "typescript-babel-jest"
+    "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
+    "^.+\\.tsx?$": "<rootDir>/jest.ts.transform.js"
   },
   setupTestFrameworkScriptFile: require.resolve("./JEST-DEBUG.js")
 };

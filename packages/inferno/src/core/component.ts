@@ -206,5 +206,5 @@ export class Component<P, S> {
   }
 
   // tslint:disable-next-line:no-empty
-  public render(nextProps: P, nextState, nextContext): InfernoChildren | void {}
+  public render(_nextProps: P, _nextState, _nextContext): InfernoChildren | void {}
 }
