@@ -333,6 +333,24 @@ describe('cloneVNode (JSX)', () => {
       expect(container.firstChild.getAttribute('id')).toBe('wow');
       expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div class="test" id="wow"></div>'));
     });
+
+    it('Should be possible to add props to children', () => {
+      function Foobar(props) {
+        return (
+          <div>
+            {cloneVNode(props.children, {foo: 'bar'})}
+          </div>
+        )
+      }
+
+      function ChildCom(props) {
+        return <div>{props.foo}</div>
+      }
+
+      render(<Foobar><ChildCom foo="init"/></Foobar>, container);
+
+      expect(container.innerHTML).toEqual('<div><div>bar</div></div>');
+    });
   });
 
   describe('Cloning key', () => {
