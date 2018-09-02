@@ -15,7 +15,7 @@ import {
   options,
   Props,
   Refs,
-  render as _render,
+  __render,
   VNode,
   findDOMfromVNode
 } from 'inferno';
@@ -23,7 +23,7 @@ import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
-import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString } from 'inferno-shared';
+import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
@@ -36,7 +36,7 @@ declare global {
 }
 
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
-  _render(null, container);
+  __render(null, container);
   return true;
 }
 
@@ -160,11 +160,19 @@ function normalizeFormProps<P>(name: string, props: Props<P> | any) {
 
     if (!type || type === 'text') {
       eventName = 'oninput';
-    } else if (type === 'file') {
-      eventName = 'onchange';
     }
 
     if (eventName && !props[eventName]) {
+      if (process.env.NODE_ENV !== 'production') {
+        const existingMethod = props.oninput || props.onInput;
+
+        if (existingMethod) {
+          warning(
+`Inferno-compat Warning! 'onInput' handler is reserved to support React like 'onChange' event flow.
+Original event handler 'function ${existingMethod.name}' will not be called.`
+          );
+        }
+      }
       props[eventName] = props.onChange;
       props.onChange = void 0;
     }
@@ -362,7 +370,7 @@ function findDOMNode(ref) {
 }
 
 function render(rootInput, container, cb) {
-  _render(rootInput, container, cb);
+  __render(rootInput, container, cb);
 
   const input = container.$V;
 

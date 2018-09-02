@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(
+export function __render(
   input: InfernoInput,
   parentDom: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback?: Function
@@ -61,6 +61,14 @@ export function render(
   if (isFunction(options.renderComplete)) {
     options.renderComplete(rootInput);
   }
+}
+
+export function render(
+  input: InfernoInput,
+  parentDom: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
+  callback?: Function
+): InfernoChildren | void {
+  __render(input, parentDom, callback);
 }
 
 export function createRenderer(parentDom?) {

@@ -271,7 +271,6 @@ describe('Components (JSX)', () => {
   }
 
   it('should render a basic component with styling', () => {
-    debugger;
     render(<BasicComponent3 title="styled!" styles={{ color: 'red', 'padding-left': '10px' }} />, container);
 
     expect(container.innerHTML).toBe(

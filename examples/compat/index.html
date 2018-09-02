@@ -39,7 +39,12 @@
 
     class MyFoo extends Inferno.Component {
         render() {
-            return h('div', {ref: 'hey'}, 'Hello world!')
+            return h('div', {ref: 'hey'}, [
+              'Hello world!',
+              h('input', {type: 'file', onChange: function() {
+                  console.log(this.files)
+              }})
+            ])
         }
 
         componentDidMount() {
