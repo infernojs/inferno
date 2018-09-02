@@ -90,7 +90,7 @@ describe('Switch (jsx)', () => {
     expect(node.innerHTML).toContain('bub');
   });
 
-  it('handles subsequent redirects', done => {
+  it('handles subsequent redirects', () => {
     const node = document.createElement('div');
 
     render(
@@ -105,15 +105,7 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    // Inferno does last iteration async, thats why setTimeout here
-    expect(node.textContent).toBe('');
-
-    setTimeout(() => {
-      setTimeout(() => {
-        expect(node.textContent).toBe('three');
-        done();
-      }, 25);
-    }, 25);
+    expect(node.textContent).toBe('three');
   });
 
   it('warns when redirecting to same route, both strings', () => {
@@ -219,7 +211,7 @@ describe('Switch (jsx)', () => {
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one\?utm=1"/)
   });
 
-  it('does NOT warn when redirecting to same route with different `search`', d => {
+  it('does NOT warn when redirecting to same route with different `search`', () => {
     const node = document.createElement('div');
     let redirected = false;
     let done = false;
@@ -248,17 +240,8 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    // Inferno does last iteration async, thats why setTimeout here
-    expect(node.innerHTML).toBe('');
+    expect(node.innerHTML).toContain('done');
     expect(console.error.calls.count()).toBe(0);
-
-    setTimeout(() => {
-      setTimeout(() => {
-        expect(node.innerHTML).toContain('done');
-        expect(console.error.calls.count()).toBe(0);
-        d();
-      }, 25);
-    }, 25);
   });
 
   it('handles comments', () => {

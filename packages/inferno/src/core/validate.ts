@@ -64,9 +64,9 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
     if (!isInvalid(children)) {
       let val;
       if (childFlags & ChildFlags.MultipleChildren) {
-        val = DEV_ValidateKeys(children, childFlags & ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys(children, (childFlags & ChildFlags.HasKeyedChildren) !== 0);
       } else if (childFlags === ChildFlags.HasVNodeChildren) {
-        val = DEV_ValidateKeys([children], childFlags & ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys([children], false);
       }
       if (val) {
         val += getTagName(childNode);

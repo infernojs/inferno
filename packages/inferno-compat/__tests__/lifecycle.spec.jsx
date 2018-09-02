@@ -19,7 +19,7 @@ describe('Inferno-compat LifeCycle', () => {
   describe('Order of Es6 Lifecycle with string refs and refs', () => {
     it('Should go as per React', () => {
       // We spy console log to verify order of callbacks
-      // React implementation: https://jsfiddle.net/zg7ay23g/
+      // React implementation: https://jsfiddle.net/art58y3L/
       const consoleSpy = sinon.spy(console, 'log');
 
       class Hello2 extends Component {
@@ -141,7 +141,7 @@ describe('Inferno-compat LifeCycle', () => {
       expect(array.length).toEqual(42);
 
       /*
-      correct oder is:
+      React oder is:, Inferno will differenciate in string refs because they are handled same way as callback refs
       Will mount
       Will mount sub
       S2b stringRef
@@ -187,44 +187,53 @@ describe('Inferno-compat LifeCycle', () => {
        */
       
       // // mount
-      // expect(array[0].args).toEqual(['Will mount']);
-      // expect(array[1].args).toEqual(['Will mount sub']);
-      // expect(array[2].args).toEqual(['S2b', 'stringRef']);
-      // expect(array[3].args).toEqual(['S1', 'stringRef']);
-      // expect(array[4].args).toEqual(['Did mount sub', 'stringRef']);
-      // expect(array[5].args).toEqual(['4a', null]);
-      // expect(array[6].args).toEqual(['4b', null]);
-      // expect(array[7].args).toEqual(['3b', 'stringRef']);
-      // expect(array[8].args).toEqual(['2a', 'stringRef']);
-      // expect(array[9].args).toEqual(['2b', 'stringRef']);
-      // expect(array[10].args).toEqual(['1', 'stringRef']);
-      // expect(array[11].args).toEqual(['Did mount', 'stringRef']);
-      //
-      // // update
-      // expect(array[12].args).toEqual(['UPDATE']);
-      // expect(array[13].args).toEqual(['Will update', 'stringRef']);
-      // expect(array[14].args).toEqual(['Will update sub', 'stringRef']);
-      // expect(array[15].args).toEqual(['Did update sub', 'stringRef']);
-      // expect(array[16].args).toEqual(['Did update', 'stringRef']);
-      // expect(array[17].args).toEqual(['S2b', 'stringRef']);
-      // expect(array[18].args).toEqual(['S1', 'stringRef']);
-      // expect(array[19].args).toEqual(['4a', 'stringRef']);
-      // expect(array[20].args).toEqual(['4b', 'stringRef']);
-      // expect(array[21].args).toEqual(['3b', 'stringRef']);
-      // expect(array[22].args).toEqual(['2a', 'stringRef']);
-      // expect(array[23].args).toEqual(['2b', 'stringRef']);
-      // expect(array[24].args).toEqual(['1', 'stringRef']);
-      //
-      // // unmount
-      // expect(array[25].args).toEqual(['REMOVAL']);
-      // expect(array[26].args).toEqual(['1', 'stringRef']);
-      // expect(array[27].args).toEqual(['2a', 'stringRef']);
-      // expect(array[28].args).toEqual(['S1', 'stringRef']);
-      // expect(array[29].args).toEqual(['S2b', null]);
-      // expect(array[30].args).toEqual(['4a', null]);
-      // expect(array[31].args).toEqual(['4b', null]);
-      // expect(array[32].args).toEqual(['3b', null]);
-      // expect(array[33].args).toEqual(['2b', null]);
+      let i = -1;
+      expect(array[++i].args).toEqual(['Will mount']);
+      expect(array[++i].args).toEqual(['Will mount sub']);
+      expect(array[++i].args).toEqual(['S2b', 'stringRef']);
+      expect(array[++i].args).toEqual(['S1', 'stringRef']);
+      expect(array[++i].args).toEqual(['Did mount sub', 'stringRef']);
+      expect(array[++i].args).toEqual(['4a', null]);
+      expect(array[++i].args).toEqual(['4b', null]);
+      expect(array[++i].args).toEqual(['3b', 'stringRef']);
+      expect(array[++i].args).toEqual(['2a', 'stringRef']);
+      expect(array[++i].args).toEqual(['2b', 'stringRef']);
+      expect(array[++i].args).toEqual(['1', 'stringRef']);
+      expect(array[++i].args).toEqual(['Did mount', 'stringRef']);
+
+      // update
+      expect(array[++i].args).toEqual(['UPDATE']);
+      expect(array[++i].args).toEqual(['Will update', 'stringRef']);
+      expect(array[++i].args).toEqual(['Will update sub', 'stringRef']);
+      expect(array[++i].args).toEqual(['S2b', 'stringRef']);
+      expect(array[++i].args).toEqual(['S2b', 'stringRef']);
+      expect(array[++i].args).toEqual(['S1', 'stringRef']);
+      expect(array[++i].args).toEqual(['S1', 'stringRef']);
+      expect(array[++i].args).toEqual(['4a', 'stringRef']);
+      expect(array[++i].args).toEqual(['4a', 'stringRef']);
+      expect(array[++i].args).toEqual(['4b', 'stringRef']);
+      expect(array[++i].args).toEqual(['4b', 'stringRef']);
+      expect(array[++i].args).toEqual(['3b', 'stringRef']);
+      expect(array[++i].args).toEqual(['3b', 'stringRef']);
+      expect(array[++i].args).toEqual(['2a', 'stringRef']);
+      expect(array[++i].args).toEqual(['2a', 'stringRef']);
+      expect(array[++i].args).toEqual(['2b', 'stringRef']);
+      expect(array[++i].args).toEqual(['2b', 'stringRef']);
+      expect(array[++i].args).toEqual(['1', 'stringRef']);
+      expect(array[++i].args).toEqual(['1', 'stringRef']);
+      expect(array[++i].args).toEqual(['Did update sub', 'stringRef']);
+      expect(array[++i].args).toEqual(['Did update', 'stringRef']);
+
+      // unmount
+      expect(array[++i].args).toEqual(['REMOVAL']);
+      expect(array[++i].args).toEqual(['1', 'stringRef']);
+      expect(array[++i].args).toEqual(['2a', 'stringRef']);
+      expect(array[++i].args).toEqual(['S1', 'stringRef']);
+      expect(array[++i].args).toEqual(['S2b', null]);
+      expect(array[++i].args).toEqual(['4a', null]);
+      expect(array[++i].args).toEqual(['4b', null]);
+      expect(array[++i].args).toEqual(['3b', null]);
+      expect(array[++i].args).toEqual(['2b', null]);
     });
   });
 });

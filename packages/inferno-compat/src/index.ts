@@ -213,6 +213,21 @@ const hasSymbolSupport = typeof g.Symbol !== 'undefined';
 const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 const oldCreateVNode = options.createVNode;
 
+function handleStringRefs(ref: string, vNode: VNode) {
+  if (!currentComponent.refs) {
+    currentComponent.refs = {};
+    currentComponent.$REF = {}; // Cache
+  }
+  if (!currentComponent.$REF[ref]) {
+    vNode.ref = currentComponent.$REF[ref] = function(val) {
+      (this as any).refs[ref] = val;
+    }.bind(currentComponent);
+  } else {
+    // Re-use alredy created function
+    vNode.ref = currentComponent.$REF[ref];
+  }
+}
+
 options.createVNode = (vNode: VNode) => {
   const children = vNode.children as any;
   const ref = vNode.ref;
@@ -223,16 +238,12 @@ options.createVNode = (vNode: VNode) => {
   }
 
   // React supports iterable children, in addition to Array-like
-  if (hasSymbolSupport && !isNull(children) && !isArray(children) && typeof children === 'object' && isFunction(children[symbolIterator])) {
+  if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && !isArray(children) && isFunction(children[symbolIterator])) {
     vNode.children = iterableToArray(children[symbolIterator]());
   }
+  // String ref support
   if (typeof ref === 'string' && !isNull(currentComponent)) {
-    if (!currentComponent.refs) {
-      currentComponent.refs = {};
-    }
-    vNode.ref = function(val) {
-      (this as any).refs[ref] = val;
-    }.bind(currentComponent);
+    handleStringRefs(ref, vNode);
   }
   if (vNode.className) {
     props.className = vNode.className;

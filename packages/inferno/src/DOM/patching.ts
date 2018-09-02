@@ -16,6 +16,7 @@ import {
   EMPTY_OBJ,
   findDOMfromVNode,
   insertOrAppend,
+  LIFECYCLE,
   removeChild,
   removeVNodeDOM,
   replaceChild
@@ -429,7 +430,7 @@ export function updateClassComponent(
     instance.$LI = nextInput;
 
     if (isFunction(instance.componentDidUpdate)) {
-      instance.componentDidUpdate(lastProps, lastState, snapshot);
+      LIFECYCLE.push(() => instance.componentDidUpdate(lastProps, lastState, snapshot))
     }
   } else {
     instance.props = nextProps;
