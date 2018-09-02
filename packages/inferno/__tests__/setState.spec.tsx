@@ -762,7 +762,7 @@ describe('setState', () => {
         this.state = FooBarState;
       }
 
-      public render(props, state) {
+      public render(_props, state) {
         expect(state).toBe(FooBarState);
         expect(this.state).toBe(FooBarState);
         expect(state === FooBarState).toBe(true);
@@ -781,7 +781,7 @@ describe('setState', () => {
   });
 
   it('Should keep context in sync with state #1182', () => {
-    function Child(props, context) {
+    function Child(_props, context) {
       return <div>{(context.active ? 'ACTIVE' : 'INACTIVE') + '   :   ' + (context.state.active ? 'ACTIVE' : 'INACTIVE')}</div>;
     }
 
@@ -826,7 +826,7 @@ describe('setState', () => {
         updater = this.didClick.bind(this);
       }
 
-      public didClick(e) {
+      public didClick() {
         this.setState({
           active: !this.state.active
         });

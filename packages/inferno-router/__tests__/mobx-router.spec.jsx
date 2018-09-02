@@ -2,7 +2,7 @@ import { Component, render } from 'inferno';
 import { inject, observer, Provider } from 'inferno-mobx';
 import { IndexRoute, Route, Router } from 'inferno-router';
 import createMemoryHistory from 'history/createMemoryHistory';
-import * as mobx from 'mobx';
+import { action, observable } from 'mobx';
 
 describe('Github #1236', () => {
   let container;
@@ -80,12 +80,13 @@ describe('Github #1236', () => {
       }]);
 
       return SearchStore;
-    }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [mobx.observable], {
+    }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
       enumerable: true,
       initializer: function initializer() {
         return undefined;
       }
-    }), _applyDecoratedDescriptor(_class.prototype, 'doSearch', [mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)), _class);
+    }), _applyDecoratedDescriptor(_class.prototype, 'doSearch', [action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)), _class);
+
 
 
     let SearchPage = observer(

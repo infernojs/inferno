@@ -13,7 +13,7 @@ function createLinkEvent(linkEvent, nextValue) {
   };
 }
 
-export function patchEvent(name: string, lastValue, nextValue, dom) {
+export function patchEvent(name: string, nextValue, dom) {
   const nameLowerCase = name.toLowerCase();
 
   if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
@@ -193,7 +193,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       break;
     default:
       if (prop[0] === 'o' && prop[1] === 'n') {
-        patchEvent(prop, lastValue, nextValue, dom);
+        patchEvent(prop, nextValue, dom);
       } else if (isNullOrUndef(nextValue)) {
         dom.removeAttribute(prop);
       } else if (prop === 'style') {

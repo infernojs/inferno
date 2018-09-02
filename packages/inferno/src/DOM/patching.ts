@@ -55,7 +55,7 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, co
       mount(nextVNode, parentDom, context, isSVG, nextNode);
     }
   } else if (nextFlags & VNodeFlags.Element) {
-    patchElement(lastVNode, nextVNode, parentDom, context, isSVG, nextFlags);
+    patchElement(lastVNode, nextVNode, context, isSVG, nextFlags);
   } else if (nextFlags & VNodeFlags.Component) {
     patchComponent(lastVNode, nextVNode, parentDom, context, isSVG, (nextFlags & VNodeFlags.ComponentClass) > 0, nextNode);
   } else if (nextFlags & VNodeFlags.Text) {
@@ -63,7 +63,7 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, co
   } else if (nextFlags & VNodeFlags.Void) {
     nextVNode.dom = lastVNode.dom;
   } else if (nextFlags & VNodeFlags.Fragment) {
-    patchFragment(lastVNode, nextVNode, parentDom, context, isSVG, nextNode)
+    patchFragment(lastVNode, nextVNode, parentDom, context, isSVG)
   } else {
     patchPortal(lastVNode, nextVNode, context);
   }
@@ -85,15 +85,15 @@ function patchContentEditableChildren(dom, nextChildren) {
   }
 }
 
-function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDom: Element, context: Object, isSVG: boolean, nextNode: Element | null) {
+function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDom: Element, context: Object, isSVG: boolean) {
   const lastChildren = lastVNode.children as VNode[];
-  let _nextNode;
+  let nextNode;
 
   if (
     (nextVNode.childFlags & ChildFlags.HasVNodeChildren) === 0 &&
     (nextVNode.children as VNode[]).length > lastChildren.length
   ) {
-    _nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1]) as Element).nextSibling;
+    nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1]) as Element).nextSibling;
   }
 
   patchChildren(
@@ -104,7 +104,7 @@ function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDom: Element, c
     parentDom,
     context,
     isSVG,
-    _nextNode,
+    nextNode,
     lastVNode
   );
 }
@@ -136,7 +136,7 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context) {
   }
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextFlags: number) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags) {
   const dom = lastVNode.dom as Element;
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;

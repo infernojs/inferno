@@ -45,7 +45,7 @@ function warnAboutOldLifecycles(component) {
   }
 }
 
-export function createClassComponentInstance<P>(vNode: VNode, Component, props, context: Object) {
+export function createClassComponentInstance(vNode: VNode, Component, props, context: Object) {
   const instance = new Component(props, context);
   const usesNewAPI = instance.$N = Boolean(instance.getSnapshotBeforeUpdate || Component.getDerivedStateFromProps);
 

@@ -9,5 +9,4 @@
 __benchmarks__
 __tests__
 src
-dist/packages
 package-lock.json

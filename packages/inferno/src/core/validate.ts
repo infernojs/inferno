@@ -1,6 +1,5 @@
 import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode } from './implementation';
 import { getComponentName } from "../DOM/utils/common";
 
 function getTagName(input) {
@@ -31,7 +30,7 @@ function getTagName(input) {
   return '>> ' + tagName + '\n';
 }
 
-function DEV_ValidateKeys(vNodeTree, vNode: VNode, forceKeyed: boolean) {
+function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
   const foundKeys: any = {};
 
   for (let i = 0, len = vNodeTree.length; i < len; i++) {
@@ -65,9 +64,9 @@ function DEV_ValidateKeys(vNodeTree, vNode: VNode, forceKeyed: boolean) {
     if (!isInvalid(children)) {
       let val;
       if (childFlags & ChildFlags.MultipleChildren) {
-        val = DEV_ValidateKeys(children, childNode, childNode.childFlags === ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys(children, childFlags & ChildFlags.HasKeyedChildren);
       } else if (childFlags === ChildFlags.HasVNodeChildren) {
-        val = DEV_ValidateKeys([children], childNode, childNode.childFlags === ChildFlags.HasKeyedChildren);
+        val = DEV_ValidateKeys([children], childFlags & ChildFlags.HasKeyedChildren);
       }
       if (val) {
         val += getTagName(childNode);
@@ -143,7 +142,6 @@ export function validateKeys(vNode) {
     if (vNode.isValidated === false && vNode.children && vNode.flags & VNodeFlags.Element) {
       const error = DEV_ValidateKeys(
         Array.isArray(vNode.children) ? vNode.children : [vNode.children],
-        vNode,
         vNode.childFlags === ChildFlags.HasKeyedChildren
       );
 

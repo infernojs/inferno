@@ -24,7 +24,7 @@ export class RenderQueueStream extends Readable {
     super();
     this.pushQueue = this.pushQueue.bind(this);
     if (initNode) {
-      this.renderVNodeToQueue(initNode, null, false, null);
+      this.renderVNodeToQueue(initNode, null, null);
     }
   }
 
@@ -75,7 +75,7 @@ export class RenderQueueStream extends Readable {
     }
   }
 
-  public renderVNodeToQueue(vNode, context, firstChild, position) {
+  public renderVNodeToQueue(vNode, context, position) {
     const flags = vNode.flags;
     const type = vNode.type;
     const props = vNode.props || EMPTY_OBJ;
@@ -142,7 +142,7 @@ export class RenderQueueStream extends Readable {
                   } else if (isNumber(renderOut)) {
                     this.addToQueue(renderOut + '', promisePosition);
                   } else {
-                    this.renderVNodeToQueue(renderOut, instance.context, true, promisePosition);
+                    this.renderVNodeToQueue(renderOut, instance.context, promisePosition);
                   }
 
                   setTimeout(this.pushQueue, 0);
@@ -166,7 +166,7 @@ export class RenderQueueStream extends Readable {
         } else if (isNumber(renderOutput)) {
           this.addToQueue(renderOutput + '', position);
         } else {
-          this.renderVNodeToQueue(renderOutput, context, true, position);
+          this.renderVNodeToQueue(renderOutput, context, position);
         }
       } else {
         const renderOutput = type(props, context);
@@ -178,7 +178,7 @@ export class RenderQueueStream extends Readable {
         } else if (isNumber(renderOutput)) {
           this.addToQueue(renderOutput + '', position);
         } else {
-          this.renderVNodeToQueue(renderOutput, context, true, position);
+          this.renderVNodeToQueue(renderOutput, context, position);
         }
       }
       // If an element
@@ -253,7 +253,7 @@ export class RenderQueueStream extends Readable {
 
         if (childFlags === ChildFlags.HasVNodeChildren) {
           this.addToQueue(renderedString, position);
-          this.renderVNodeToQueue(children, context, true, position);
+          this.renderVNodeToQueue(children, context, position);
           this.addToQueue('</' + type + '>', position);
           return;
         } else if (childFlags === ChildFlags.HasTextChildren) {
@@ -264,7 +264,7 @@ export class RenderQueueStream extends Readable {
         } else if (childFlags & ChildFlags.MultipleChildren) {
           this.addToQueue(renderedString, position);
           for (let i = 0, len = children.length; i < len; i++) {
-            this.renderVNodeToQueue(children[i], context, i === 0, position);
+            this.renderVNodeToQueue(children[i], context, position);
           }
           this.addToQueue('</' + type + '>', position);
           return;

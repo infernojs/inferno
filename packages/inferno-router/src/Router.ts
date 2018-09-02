@@ -61,7 +61,7 @@ export class Router extends Component<IRouterProps, any> {
     this.unlisten();
   }
 
-  public render(props: IRouterProps, state, context) {
+  public render(props: IRouterProps) {
     return props.children;
   }
 }

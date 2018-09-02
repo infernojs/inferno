@@ -1,13 +1,13 @@
 {
   "name": "inferno-utils",
-  "version": "5.4.2",
+  "version": "5.5.0",
   "description": "Meta test utilities which are not for userland",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "inferno-shared": "5.4.2",
-    "inferno-vnode-flags": "5.4.2"
+    "inferno-shared": "5.5.0",
+    "inferno-vnode-flags": "5.5.0"
   },
   "keywords": [],
   "author": "",

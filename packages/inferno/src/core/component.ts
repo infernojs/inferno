@@ -215,7 +215,7 @@ export class Component<P, S> {
   public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any
 
   // tslint:disable-next-line:no-empty
-  public render(nextProps: P, nextState, nextContext): InfernoChildren | void {}
+  public render(_nextProps: P, _nextState, _nextContext): any {}
 }
 
 export function createDerivedState(instance, nextProps, state) {

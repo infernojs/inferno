@@ -125,4 +125,23 @@ describe('Components createClass (non-JSX)', () => {
     render(createElement(Component, {}), container);
     expect(Component.mixins.nestedMixin).toBeDefined();
   });
+
+  it('Should be possible to extend prototype by creating instance of class, Github #1380', () => {
+    function TestMe() {
+
+    }
+
+    TestMe.prototype = {
+      render() {
+        return <div>It works!</div>;
+      }
+    };
+
+
+    const TestMeComponent = createClass(new TestMe());
+
+    render(<TestMeComponent/>, container);
+
+    expect(container.innerHTML).toBe('<div>It works!</div>');
+  })
 });

@@ -130,7 +130,7 @@ describe('Devtools', () => {
                 instance = this;
             }
 
-            public render(props, state) {
+            public render(_props, state) {
                 return (
                     <div>
                         {!state.nodes ? null : state.nodes}
@@ -202,7 +202,7 @@ describe('Devtools', () => {
                 instance = this;
             }
 
-            public render(props, state) {
+            public render(_props, state) {
                 return (
                     <div>
                         {!state.nodes ? null : state.nodes}
@@ -301,7 +301,7 @@ describe('Devtools', () => {
                 instance = this;
             }
 
-            public render(props, state) {
+            public render(_props, state) {
                 return (
                     <div>
                         {!state.nodes ? null : state.nodes}

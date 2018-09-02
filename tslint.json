@@ -28,7 +28,7 @@
 		"ban-types": false,
 		"forin": false,
 		"interface-name": false,
-    "jsdoc-format": false,
+		"jsdoc-format": false,
 		"max-classes-per-file": [true],
 		"max-line-length": [false],
 		"member-access": true,

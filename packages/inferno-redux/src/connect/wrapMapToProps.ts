@@ -34,7 +34,7 @@ export const getDependsOnOwnProps = mapToProps =>
 //    the developer that their mapToProps function is not returning a valid result.
 //
 export const wrapMapToPropsFunc = (mapToProps, methodName) => {
-  return (dispatch, { displayName }) => {
+  return (_dispatch, { displayName }) => {
     const proxy: any = (stateOrDispatch, ownProps) =>
       proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch);
 

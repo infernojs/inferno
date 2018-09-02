@@ -54,9 +54,7 @@ const AUTOBIND_BLACKLIST = {
 
 function extend(base, props) {
   for (const key in props) {
-    if (props.hasOwnProperty(key)) {
-      base[key] = props[key];
-    }
+    base[key] = props[key];
   }
   return base;
 }

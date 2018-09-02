@@ -103,7 +103,6 @@ const reactiveMixin = {
 
     // Generate friendly name for debugging
     const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
-    const rootNodeID = this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
 
     /**
      * If props are shallowly modified, react will render anyway,
@@ -151,7 +150,7 @@ const reactiveMixin = {
     let isRenderingPending = false;
 
     const initialRender = () => {
-      reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
+      reaction = new Reaction(`${initialName}.render()`, () => {
         if (!isRenderingPending) {
           // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
           // This unidiomatic React usage but React will correctly warn about this so we continue as usual
@@ -288,7 +287,7 @@ export function observer(arg1, arg2?) {
       class<P, S> extends Component<P, S> {
         public static displayName = component.displayName || component.name;
         public static defaultProps = component.defaultProps;
-        public render(props, state, context) {
+        public render(props, _state, context) {
           return component(props, context);
         }
       }
@@ -355,7 +354,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
       this.wrappedInstance = instance;
     }
 
-    public render(props, state, context) {
+    public render(props, _state, context) {
       // Optimization: it might be more efficient to apply the mapper function *outside* the render method
       // (if the mapper is a function), that could avoid expensive(?) re-rendering of the injector component
       // See this test: 'using a custom injector is not too reactive' in inject.js

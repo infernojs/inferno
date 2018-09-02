@@ -94,7 +94,7 @@ describe('state', () => {
           }
         }
 
-        public componentDidUpdate(prevProps, prevState) {
+        public componentDidUpdate(_prevProps, prevState) {
           expect(prevState.testScrollTop).toBe(0);
           expect(this.state.testScrollTop).toBe(200);
         }

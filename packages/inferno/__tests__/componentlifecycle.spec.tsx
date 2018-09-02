@@ -18,7 +18,7 @@ describe('Component lifecycle', () => {
   it('componentWillUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
     class Com extends Component<{value: number}> {
-      public componentWillUpdate(nextProps, nextState) {
+      public componentWillUpdate(nextProps) {
         callCount++;
         expect(this.props.value).toBe(1);
         expect(nextProps.value).toBe(2);
@@ -58,7 +58,7 @@ describe('Component lifecycle', () => {
         }
       }
 
-      public componentWillUpdate(nextProps, nextState) {
+      public componentWillUpdate(_nextProps, nextState) {
         expect(this.state.active).toBe(false);
         expect(nextState.active).toBe(true);
       }
@@ -104,7 +104,7 @@ describe('Component lifecycle', () => {
   it('shouldComponentUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
     class Com extends Component<{value: number}> {
-      public shouldComponentUpdate(nextProps, nextState) {
+      public shouldComponentUpdate(nextProps) {
         callCount++;
         expect(this.props.value).toBe(1);
         expect(nextProps.value).toBe(2);
@@ -178,7 +178,7 @@ describe('Component lifecycle', () => {
     let c;
 
     class Com extends Component<{value: number}> {
-      public componentDidUpdate(nextProps, nextState) {
+      public componentDidUpdate(nextProps) {
         callCount++;
         expect(this.props.value).toBe(1);
         expect(nextProps.value).toBe(2);

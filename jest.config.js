@@ -14,7 +14,7 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   moduleNameMapper: {
     "^inferno-router/utils": "<rootDir>/packages/inferno-router/src/utils",
-    "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src",
+    "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src/index.ts",
     "mobx": "<rootDir>/node_modules/mobx"
   },
   rootDir: __dirname,
