@@ -350,5 +350,16 @@ describe('A <Route location>', () => {
       push('/chips');
       expect(node.innerHTML).toContain(TEXT);
     });
+
+    it('Should throw error if element vNode is passed to component property', () => {
+      const node = document.createElement('div');
+
+      expect( () => render(
+        <MemoryRouter initialEntries={['/popcorn']}>
+          <Route component={<div>test</div>} />
+        </MemoryRouter>,
+        node
+      )).toThrow(); // All browsers format error msg differently
+    })
   });
 });

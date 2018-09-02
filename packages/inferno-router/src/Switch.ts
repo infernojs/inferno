@@ -8,22 +8,6 @@ import { IRouteProps } from './Route';
  * The public API for rendering the first <Route> that matches.
  */
 export class Switch extends Component<IRouteProps, any> {
-  public componentWillMount() {
-    invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
-  }
-
-  public componentWillReceiveProps(nextProps) {
-    warning(
-      !(nextProps.location && !this.props.location),
-      '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
-    );
-
-    warning(
-      !(!nextProps.location && this.props.location),
-      '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
-    );
-  }
-
   public render(): VNode | null {
     const { route } = this.context.router;
     const { children } = this.props;
@@ -31,7 +15,6 @@ export class Switch extends Component<IRouteProps, any> {
 
     let match;
     let child;
-
     // optimization: Better to use for loop here so we can return when match found, instead looping through everything
     Children.forEach(children, element => {
       if (!isValidElement(element)) {
@@ -49,4 +32,22 @@ export class Switch extends Component<IRouteProps, any> {
 
     return match ? createComponentVNode(child.flags, child.type, combineFrom(child.props, { location, computedMatch: match }), null, child.ref) : null;
   }
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  Switch.prototype.componentWillMount = function() {
+    invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
+  };
+
+  Switch.prototype.componentWillReceiveProps = function(nextProps) {
+    warning(
+      !(nextProps.location && !this.props.location),
+      '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
+    );
+
+    warning(
+      !(!nextProps.location && this.props.location),
+      '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
+    );
+  };
 }

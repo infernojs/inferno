@@ -3,6 +3,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { Children, invariant, warning } from './utils';
 import { matchPath } from './matchPath';
 import * as H from 'history';
+import { isFunction } from "inferno-shared";
 
 const isEmptyChildren = children => Children.count(children) === 0;
 
@@ -61,7 +62,9 @@ class Route extends Component<IRouteProps, any> {
       return computedMatch;
     }
 
-    invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
+    }
 
     const { route } = router;
     const pathname = (location || route.location).pathname;
@@ -95,6 +98,11 @@ class Route extends Component<IRouteProps, any> {
     const props = { match, location, history, staticContext };
 
     if (component) {
+      if (process.env.NODE_ENV !== 'production') {
+        if (!isFunction(component)) {
+          throw new Error("Inferno error: <Route /> - 'component' property must be prototype of class or functional component, not vNode.");
+        }
+      }
       return match ? createComponentVNode(VNodeFlags.ComponentUnknown, component, props) : null;
     }
 
