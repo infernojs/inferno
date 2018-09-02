@@ -6500,7 +6500,7 @@ function runBenchmark(container) {
         <div className={'_5ira _2vl4 _1h18'}>
           {null}
           {null}
-          <div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
+          <div className={'_2vl9 _1h1f'} style={{ 'background-color': '#fff' }}>
             <div className={'_2vla _1h1g'}>
               <div>
                 {null}
@@ -7286,7 +7286,7 @@ function runBenchmark(container) {
         <div className={'_gon _2vl4 _1h18'}>
           <div className={'_2vln'}>{1001}</div>
           <AdsLabeledField565 />
-          <div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
+          <div className={'_2vl9 _1h1f'} style={{ 'background-color': '#fff' }}>
             <div className={'_2vla _1h1g'}>
               <div>
                 {null}
@@ -7373,7 +7373,7 @@ function runBenchmark(container) {
         <div className={'_gon _2vl4 _1h18'}>
           <div className={'_2vln'}>{18}</div>
           <AdsLabeledField573 />
-          <div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
+          <div className={'_2vl9 _1h1f'} style={{ 'background-color': '#fff' }}>
             <div className={'_2vla _1h1g'}>
               <div>
                 {null}
@@ -7427,7 +7427,7 @@ function runBenchmark(container) {
         <div className={'_gon _2vl4 _2vl6 _1h18 _1h1a'}>
           <div className={'_2vln'}>{74}</div>
           <AdsLabeledField578 />
-          <div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
+          <div className={'_2vl9 _1h1f'} style={{ 'background-color': '#fff' }}>
             <div className={'_2vla _1h1g'}>
               <div>
                 {null}

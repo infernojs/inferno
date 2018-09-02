@@ -1,7 +1,18 @@
-import { render } from 'inferno';
+import { render, Component } from 'inferno';
+import { innerHTML } from 'inferno-utils';
 
 function styleNode(style) {
   return <div style={style} />;
+}
+
+function isCSSvariablesSupported() {
+  const div = document.createElement('div');
+  document.body.appendChild(div);
+  div.style.cssText = '--my-color:red;background-color:var(--my-color);';
+  const backgroundIsRed = getComputedStyle(div).backgroundColor === "rgb(255, 0, 0)";
+  document.body.removeChild(div);
+
+  return backgroundIsRed;
 }
 
 describe('CSS style properties (JSX)', () => {
@@ -19,7 +30,7 @@ describe('CSS style properties (JSX)', () => {
   });
 
   it('should set and remove dynamic styles', () => {
-    const styles = { display: 'none', fontFamily: 'Arial', lineHeight: 2 };
+    const styles = { display: 'none', 'font-family': 'Arial', 'line-height': 2 };
 
     render(<div style={styles} />, container);
     expect(container.firstChild.style.fontFamily).toBe('Arial');
@@ -113,9 +124,9 @@ describe('CSS style properties (JSX)', () => {
   });
 
   it('Should remove style attribute when next value is null', () => {
-    const stylesOne = { float: 'left' };
+    const stylesOne = { color: 'green' };
     render(styleNode(stylesOne), container);
-    expect(container.firstChild.style.float).toBe('left');
+    expect(container.firstChild.style.color).toBe('green');
 
     render(styleNode(null), container);
     expect(container.firstChild.style.cssText).toBe('');
@@ -123,14 +134,31 @@ describe('CSS style properties (JSX)', () => {
   });
 
   it('Should remove style attribute when single prop value is null', () => {
-    const stylesOne = { float: 'left', color: 'red', display: 'block' };
+    const stylesOne = { 'text-align': 'center', color: 'red', display: 'block' };
     render(styleNode(stylesOne), container);
-    expect(container.firstChild.style.float).toBe('left');
+    expect(container.firstChild.style.textAlign).toBe('center');
 
-    const stylesTwo = { float: 'left', display: 'none' };
+    const stylesTwo = { 'text-align': 'start', display: 'none' };
     render(styleNode(stylesTwo), container);
-    expect(container.firstChild.style.float).toBe('left');
+    expect(container.firstChild.style.textAlign).toBe('start');
     expect(container.firstChild.style.display).toBe('none');
     expect(container.firstChild.style.color).toBe('');
   });
+
+  // Test for CSS variable support, depends on browser
+  if (isCSSvariablesSupported()) {
+    it('Should support inline CSS variables string way', () => {
+      render(<div style="--my-color:red;background-color:var(--my-color);"/>, container);
+
+      expect(getComputedStyle(container.firstChild).backgroundColor).toBe("rgb(255, 0, 0)"); // verify its red
+    });
+
+    it('Should support inline CSS variables object way', () => {
+      render(<div style={
+        {"--my-color": "red", "background-color": "var(--my-color)"}
+      }/>, container);
+
+      expect(getComputedStyle(container.firstChild).backgroundColor).toBe("rgb(255, 0, 0)"); // verify its red
+    });
+  }
 });

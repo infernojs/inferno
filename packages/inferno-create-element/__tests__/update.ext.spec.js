@@ -671,7 +671,7 @@ describe('Update (non-jsx)', () => {
     render(
       template({
         color: 'red',
-        paddingLeft: '10px'
+        'padding-left': '10px'
       }),
       container
     );
@@ -710,7 +710,7 @@ describe('Update (non-jsx)', () => {
         render(
           template({
             color: 'red',
-            paddingTop: '10px'
+            'padding-top': '10px'
           }),
           container
         );
@@ -721,7 +721,7 @@ describe('Update (non-jsx)', () => {
         render(
           template({
             color: 'red',
-            paddingLeft: '10px'
+            'padding-left': '10px'
           }),
           container
         );
@@ -741,7 +741,7 @@ describe('Update (non-jsx)', () => {
         render(
           template({
             color: 'blue',
-            marginBottom: '20px'
+            'margin-bottom': '20px'
           }),
           container
         );

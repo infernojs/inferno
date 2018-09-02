@@ -105,13 +105,13 @@ describe('SSR Creation (JSX)', () => {
       result: '<div><div> </div><p>Test</p></div>'
     },
     {
-      description: 'Should render backgroundColor',
-      template: () => <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />,
+      description: 'Should render background color',
+      template: () => <div style={{ 'background-color': 'red', 'border-bottom-color': 'green' }} />,
       result: '<div style="background-color:red;border-bottom-color:green;"></div>'
     },
     {
       description: 'Should not render null styles',
-      template: () => <div style={{ backgroundColor: null, borderBottomColor: null }} />,
+      template: () => <div style={{ 'background-color': null, 'border-bottom-color': null }} />,
       result: '<div style=""></div>'
     },
     {
@@ -370,8 +370,8 @@ describe('SSR Creation (JSX)', () => {
     it('Should re-use Css property names from cache when its used multiple times', () => {
       expect(
         renderToString(
-          <div style={{ backgroundColor: 'red' }}>
-            <div style={{ backgroundColor: 'red' }} />
+          <div style={{ 'background-color': 'red' }}>
+            <div style={{ 'background-color': 'red' }} />
           </div>
         )
       ).toEqual('<div style="background-color:red;"><div style="background-color:red;"></div></div>');

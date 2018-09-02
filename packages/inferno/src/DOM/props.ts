@@ -1,5 +1,5 @@
 import { namespaces } from './constants';
-import { isFunction, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno-shared';
 import { handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
@@ -36,55 +36,12 @@ export function patchEvent(name: string, nextValue, dom) {
   }
 }
 
-export function getNumberStyleValue(style: string, value: number) {
-  switch (style) {
-    case 'animationIterationCount':
-    case 'borderImageOutset':
-    case 'borderImageSlice':
-    case 'borderImageWidth':
-    case 'boxFlex':
-    case 'boxFlexGroup':
-    case 'boxOrdinalGroup':
-    case 'columnCount':
-    case 'fillOpacity':
-    case 'flex':
-    case 'flexGrow':
-    case 'flexNegative':
-    case 'flexOrder':
-    case 'flexPositive':
-    case 'flexShrink':
-    case 'floodOpacity':
-    case 'fontWeight':
-    case 'gridColumn':
-    case 'gridRow':
-    case 'lineClamp':
-    case 'lineHeight':
-    case 'opacity':
-    case 'order':
-    case 'orphans':
-    case 'stopOpacity':
-    case 'strokeDasharray':
-    case 'strokeDashoffset':
-    case 'strokeMiterlimit':
-    case 'strokeOpacity':
-    case 'strokeWidth':
-    case 'tabSize':
-    case 'widows':
-    case 'zIndex':
-    case 'zoom':
-      return value;
-    default:
-      return value + 'px';
-  }
-}
-
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
   const domStyle = dom.style;
   let style;
   let value;
-
   if (isString(nextAttrValue)) {
     domStyle.cssText = nextAttrValue;
     return;
@@ -95,19 +52,19 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
       // do not add a hasOwnProperty check here, it affects performance
       value = nextAttrValue[style];
       if (value !== lastAttrValue[style]) {
-        domStyle[style] = isNumber(value) ? getNumberStyleValue(style, value) : value;
+        domStyle.setProperty(style, value);
       }
     }
 
     for (style in lastAttrValue) {
       if (isNullOrUndef(nextAttrValue[style])) {
-        domStyle[style] = '';
+        domStyle.removeProperty(style);
       }
     }
   } else {
     for (style in nextAttrValue) {
       value = nextAttrValue[style];
-      domStyle[style] = isNumber(value) ? getNumberStyleValue(style, value) : value;
+      domStyle.setProperty(style, value);
     }
   }
 }

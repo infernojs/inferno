@@ -397,7 +397,7 @@ describe('Components (non-JSX)', () => {
             title: 'styled!',
             styles: {
               color: 'red',
-              paddingLeft: '10px'
+              'padding-left': '10px'
             }
           }),
           container
@@ -411,7 +411,7 @@ describe('Components (non-JSX)', () => {
             title: 'styled!',
             styles: {
               color: 'red',
-              paddingLeft: '10px'
+              'padding-left': '10px'
             }
           }),
           container
@@ -426,7 +426,7 @@ describe('Components (non-JSX)', () => {
             title: 'styled (again)!',
             styles: {
               color: 'blue',
-              paddingRight: '20px'
+              'padding-right': '20px'
             }
           }),
           container

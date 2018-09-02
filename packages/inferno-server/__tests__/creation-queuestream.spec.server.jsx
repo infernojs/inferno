@@ -87,12 +87,12 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     // },
     {
       description: 'should render div with span child and styling #2',
-      template: () => createElement('div', null, createElement('span', { style: { borderLeft: 10 } })),
+      template: () => createElement('div', null, createElement('span', { style: { 'border-left': '10px' } })),
       result: '<div><span style="border-left:10px;"></span></div>'
     },
     {
       description: 'should render div with span child and styling #3',
-      template: () => createElement('div', null, createElement('span', { style: { fontFamily: 'Arial' } })),
+      template: () => createElement('div', null, createElement('span', { style: { 'font-family': 'Arial' } })),
       result: '<div><span style="font-family:Arial;"></span></div>'
     },
     {
@@ -330,13 +330,13 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<div><div> </div><p>Test</p></div>'
     },
     {
-      description: 'Should render backgroundColor',
-      template: () => <div style={{ backgroundColor: 'red', borderBottomColor: 'green' }} />,
+      description: 'Should render background color',
+      template: () => <div style={{ 'background-color': 'red', 'border-bottom-color': 'green' }} />,
       result: '<div style="background-color:red;border-bottom-color:green;"></div>'
     },
     {
       description: 'Should not render null styles',
-      template: () => <div style={{ backgroundColor: null, borderBottomColor: null }} />,
+      template: () => <div style={{ 'background-color': null, 'border-bottom-color': null }} />,
       result: '<div style=""></div>'
     },
     {

@@ -1,6 +1,4 @@
-import { getNumberStyleValue } from 'inferno';
-import { isNumber, isString } from 'inferno-shared';
-import { getCssPropertyName } from './utils';
+import { isString, isStringOrNumber } from 'inferno-shared';
 
 export function renderStylesToString(styles: string | object): string {
   if (isString(styles)) {
@@ -10,10 +8,8 @@ export function renderStylesToString(styles: string | object): string {
     for (const styleName in styles) {
       const value = styles[styleName];
 
-      if (isString(value)) {
-        renderedString += `${getCssPropertyName(styleName)}${value};`;
-      } else if (isNumber(value)) {
-        renderedString += `${getCssPropertyName(styleName)}${getNumberStyleValue(styleName, value)};`;
+      if (isStringOrNumber(value)) {
+        renderedString += `${styleName}:${value};`;
       }
     }
     return renderedString;

@@ -20,7 +20,7 @@ import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createRenderer, render } from './DOM/rendering';
 import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE } from './DOM/utils/common';
 import { Component, ComponentClass, ComponentType, SFC, StatelessComponent, rerender } from './core/component';
-import { getNumberStyleValue, mountProps } from './DOM/props';
+import { mountProps } from './DOM/props';
 
 import * as JSX from './JSX';
 import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
@@ -87,7 +87,6 @@ export {
   directClone,
   findDOMfromVNode,
   getFlagsForElementVnode,
-  getNumberStyleValue,
   linkEvent,
   LinkedEvent,
   normalizeProps,

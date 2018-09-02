@@ -39,7 +39,7 @@ describe('ReactDOMComponent', function() {
         var stubStyle = container.firstChild.style;
 
         // set initial style
-        var setup = { display: 'block', left: 1, top: 2, fontFamily: 'Arial' };
+        var setup = { display: 'block', left: '1px', top: '2px', 'font-family': 'Arial' };
         ReactDOM.render(<div style={setup} />, container);
         expect(stubStyle.display).toEqual('block');
         expect(stubStyle.left).toEqual('1px');

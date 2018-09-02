@@ -24,12 +24,12 @@ describe('SSR Creation (non-JSX)', () => {
     },
     {
       description: 'should render div with span child and styling #2',
-      template: () => createElement('div', null, createElement('span', { style: { borderLeft: 10 } })),
-      result: '<div><span style="border-left:10px;"></span></div>'
+      template: () => createElement('div', null, createElement('span', { style: { 'border-left': 10 } })),
+      result: '<div><span style="border-left:10;"></span></div>'
     },
     {
       description: 'should render div with span child and styling #3',
-      template: () => createElement('div', null, createElement('span', { style: { fontFamily: 'Arial' } })),
+      template: () => createElement('div', null, createElement('span', { style: { 'font-family': 'Arial' } })),
       result: '<div><span style="font-family:Arial;"></span></div>'
     },
     {

@@ -100,7 +100,7 @@ describe('state', () => {
         }
 
         public render() {
-          return <div>aa</div>;
+          return <div style={{"background-attachment": 'scroll'}}>aa</div>;
         }
       }
 
