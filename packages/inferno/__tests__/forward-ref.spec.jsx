@@ -72,11 +72,50 @@ describe('Forward Ref', () => {
     expect(container.innerHTML).toBe('');
   });
 
+  describe('Validations', () => {
+    it('Should log error if input is: Component, vNode or invalid value', () => {
+      const spy = spyOn(console, 'error');
+
+      class Foobar extends Component {}
+
+      let i = 0;
+
+      forwardRef(false);
+      expect(spy.calls.count()).toEqual(++i);
+
+      forwardRef(true);
+      expect(spy.calls.count()).toEqual(++i);
+
+      forwardRef({});
+      expect(spy.calls.count()).toEqual(++i);
+
+      forwardRef('asd');
+      expect(spy.calls.count()).toEqual(++i);
+
+      forwardRef(undefined);
+      expect(spy.calls.count()).toEqual(++i);
+
+      forwardRef(8);
+      expect(spy.calls.count()).toEqual(++i);
+
+      forwardRef(<div>1</div>);
+      expect(spy.calls.count()).toEqual(++i);
+
+      forwardRef(<Foobar/>);
+      expect(spy.calls.count()).toEqual(++i);
+
+
+      // This is ok
+      forwardRef(function () {
+        return <div>1</div>
+      });
+      expect(spy.calls.count()).toEqual(i);
+    });
+  });
+
   describe('Inferno specifics', () => {
     it('Should support defaultProps, not - defaultHooks', () => {
       function CoolStuff(props, ref) {
-        debugger;
-
         return (
           <div className={props.className}>
             <span ref={ref}>
