@@ -6,12 +6,14 @@ import {
   isInvalid,
   isNull,
   isNullOrUndef,
+  isObject,
   isString,
   isStringOrNumber,
   isUndefined,
   throwError
 } from 'inferno-shared';
 import { validateVNodeElementChildren } from './validate';
+import { Component } from "inferno";
 
 const keyPrefix = '$';
 
@@ -38,6 +40,10 @@ export type InfernoChildren =
   | VNode
   | Array<Element | boolean | string | number | VNode | null | undefined>
   | null;
+
+export interface ForwardRef {
+  render: Function;
+}
 
 export interface Props<P, T = Element> extends Refs<P> {
   children?: InfernoChildren;
@@ -86,7 +92,7 @@ function getVNode(childFlags: ChildFlags, children, className: string | null | u
 
 export function createVNode<P>(
   flags: VNodeFlags,
-  type,
+  type: string,
   className?: string | null,
   children?: InfernoChildren,
   childFlags?: ChildFlags,
@@ -119,7 +125,7 @@ export function createVNode<P>(
   return vNode;
 }
 
-export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props<P> & P | null, key?: null | string | number, ref?: Ref | Refs<P> | null) {
+export function createComponentVNode<P>(flags: VNodeFlags, type: Function | Component<any, any> | ForwardRef, props?: Props<P> & P | null, key?: null | string | number, ref?: Ref | Refs<P> | null) {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.HtmlElement) {
       throwError('Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.');
@@ -127,7 +133,12 @@ export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props<P
   }
 
   if ((flags & VNodeFlags.ComponentUnknown) !== 0) {
-    flags = type.prototype && isFunction(type.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+    if (isObject(type)) {
+      flags = VNodeFlags.ForwardRef | VNodeFlags.ComponentFunction;
+      type = (type as ForwardRef).render;
+    } else {
+      flags = (type as any).prototype && isFunction((type as any).prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+    }
   }
 
   // set default props
@@ -144,7 +155,7 @@ export function createComponentVNode<P>(flags: VNodeFlags, type, props?: Props<P
     }
   }
 
-  if ((flags & VNodeFlags.ComponentFunction) > 0) {
+  if ((flags & VNodeFlags.ComponentFunction) > 0 && (flags & VNodeFlags.ForwardRef) === 0) {
     const defaultHooks = (type as any).defaultHooks;
 
     if (!isNullOrUndef(defaultHooks)) {
@@ -178,7 +189,7 @@ export function createTextVNode(text?: string | number, key?: string | number | 
 export function createFragment(children: any, childFlags: ChildFlags, key?: string | number | null): VNode {
   const fragment = createVNode(
     VNodeFlags.Fragment,
-    VNodeFlags.Fragment,
+    VNodeFlags.Fragment as any,
     null,
     children,
     childFlags,
@@ -280,7 +291,7 @@ export function createVoidVNode(): VNode {
 export function createPortal(children, container) {
   return createVNode(
     VNodeFlags.Portal,
-    VNodeFlags.Portal,
+    VNodeFlags.Portal as any,
     null,
     children,
     ChildFlags.UnknownChildren,

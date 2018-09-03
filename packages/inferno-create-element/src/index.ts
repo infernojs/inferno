@@ -92,8 +92,8 @@ export function createElement<T>(
       }
     }
 
-    return createComponentVNode(flags, type as string | Function, newProps, key, ref);
+    return createComponentVNode(flags, type as Function, newProps, key, ref);
   }
 
-  return createVNode(flags, type as string | Function, className, children, ChildFlags.UnknownChildren, newProps, key, ref);
+  return createVNode(flags, type as string, className, children, ChildFlags.UnknownChildren, newProps, key, ref);
 }

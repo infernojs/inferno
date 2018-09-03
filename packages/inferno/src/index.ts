@@ -25,6 +25,7 @@ import { mountProps } from './DOM/props';
 import * as JSX from './JSX';
 import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountRef, mountText } from './DOM/mounting';
+import { createRef, forwardRef } from './core/refs';
 
 export * from './DOM/events/events';
 
@@ -47,22 +48,6 @@ if (process.env.NODE_ENV !== 'production') {
 const Fragment = '$F';
 const version = process.env.INFERNO_VERSION;
 
-function createRef() {
-  if (process.env.NODE_ENV === 'production') {
-    return {
-      current: null
-    }
-  }
-
-  const refObject = {
-    current: null
-  };
-
-  Object.seal(refObject);
-
-  return refObject;
-}
-
 export {
   Component,
   ComponentType,
@@ -84,6 +69,7 @@ export {
   createRenderer,
   createTextVNode,
   createVNode,
+  forwardRef,
   directClone,
   findDOMfromVNode,
   getFlagsForElementVnode,

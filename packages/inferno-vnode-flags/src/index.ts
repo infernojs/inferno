@@ -18,6 +18,7 @@ export const enum VNodeFlags {
   ContentEditable = 1 << 12,
   Fragment = 1 << 13,
   InUse = 1 << 14,
+  ForwardRef = 1 << 15,
 
   /* Masks */
   FormElement = InputElement | TextareaElement | SelectElement,

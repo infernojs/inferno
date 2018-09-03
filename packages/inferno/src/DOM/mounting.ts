@@ -1,10 +1,10 @@
-import {isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {createVoidVNode, directClone, VNode} from '../core/implementation';
-import {documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, LIFECYCLE} from './utils/common';
-import {mountProps} from './props';
-import {createClassComponentInstance, handleComponentInput} from './utils/componentutil';
-import {validateKeys} from '../core/validate';
+import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { createVoidVNode, directClone, VNode } from '../core/implementation';
+import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, LIFECYCLE } from './utils/common';
+import { mountProps } from './props';
+import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
+import { validateKeys } from '../core/validate';
 
 export function mount(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
   const flags = vNode.flags |= VNodeFlags.InUse;
@@ -94,7 +94,7 @@ export function mountElement(vNode: VNode, parentDom: Element | null, context: O
   if (childFlags === ChildFlags.HasTextChildren) {
     mountTextContent(dom, children as string);
   } else if (childFlags !== ChildFlags.HasInvalidChildren) {
-    const childrenIsSVG = isSVG === true && vNode.type !== 'foreignObject';
+    const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
     if (childFlags === ChildFlags.HasVNodeChildren) {
       mount(children as VNode, dom, context, childrenIsSVG, null);
@@ -147,7 +147,7 @@ export function mountComponent(vNode: VNode, parentDom: Element | null, context:
     mountClassComponentCallbacks(ref, instance);
     instance.$UPD = false;
   } else {
-    const input = handleComponentInput(type(props, context));
+    const input = handleComponentInput(vNode.flags & VNodeFlags.ForwardRef ? type(props, ref, context) : type(props, context));
     vNode.children = input;
     mount(input, parentDom, context, isSVG, nextNode);
     mountFunctionalComponentCallbacks(props, ref, vNode);
