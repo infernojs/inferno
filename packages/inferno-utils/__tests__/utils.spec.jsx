@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { createContainerWithHTML, createStyler, innerHTML, sortAttributes, style, triggerEvent, validateNodeTree } from 'inferno-utils';
+import { createContainerWithHTML, innerHTML, sortAttributes, triggerEvent, validateNodeTree } from 'inferno-utils';
 import sinon from 'sinon';
 
 function styleStringToArray(styleString) {
@@ -31,50 +31,6 @@ describe('Utils', () => {
       const testHTML = '<div>Hello World <a href="//test.com/">test link</a></div>';
 
       expect(innerHTML(testHTML)).toBe(testHTML);
-    });
-  });
-
-  describe('createStyler', () => {
-    it('should return "" if undefined', () => {
-      expect(createStyler(undefined)).toBe('');
-    });
-
-    it('should return "" if null', () => {
-      expect(createStyler(null)).toBe('');
-    });
-
-    it('should create a valid CSS string', () => {
-      const CSS = `
-				position: relative;
-				top: -20
-				left: 5;
-				right: 10px;
-			`;
-      const validCSS = 'position: relative; right: 10px;';
-
-      expect(styleStringToArray(createStyler(CSS))).toEqual(styleStringToArray(validCSS));
-    });
-  });
-
-  describe('style', () => {
-    it('should map an array', () => {
-      const CSS = ['1', 'position: relative;', '3'];
-
-      const expected = ['', 'position: relative;', ''];
-      const actual = style(CSS);
-
-      expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));
-    });
-
-    it('return the created style', () => {
-      const CSS = `
-				position: relative;
-				top: -20
-				left: 5;
-				right: 10px;
-			`;
-
-      expect(styleStringToArray(style(CSS))).toEqual(styleStringToArray(createStyler(CSS)));
     });
   });
 

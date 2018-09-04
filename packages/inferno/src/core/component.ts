@@ -4,7 +4,7 @@ import {updateClassComponent} from '../DOM/patching';
 import {callAll, EMPTY_OBJ, findDOMfromVNode, LIFECYCLE} from '../DOM/utils/common';
 
 const QUEUE: Array<Component<any, any>> = [];
-const nextTick = typeof Promise === 'function' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
+const nextTick = isFunction(Promise) ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback: Function | undefined, force: boolean): void {
   if (isFunction(newState)) {

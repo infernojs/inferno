@@ -40,6 +40,7 @@
     "prebuild": "npm run clean",
     "postbuild": "rimraf build",
     "build": "run-s build:** && npm run print:size && npm run move-types",
+    "build:tsc": "lerna exec tsc",
     "build:es": "npm run rollup -- --name=index --ext=.esm.js --env=production --format=es --uglify=false",
     "build:es:dev": "npm run rollup -- --name=index --ext=.dev.esm.js --env=development --format=es --uglify=false",
     "build:cjs": "npm run rollup -- --env=development --format=cjs --replace=true --name=index.cjs --uglify=false",
