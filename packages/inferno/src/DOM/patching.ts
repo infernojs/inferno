@@ -13,6 +13,7 @@ import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { remove, removeAllChildren, removeTextNode, unmount, unmountAllChildren } from './unmounting';
 import {
   appendChild,
+  createDerivedState,
   EMPTY_OBJ,
   findDOMfromVNode,
   insertOrAppend,
@@ -25,7 +26,6 @@ import { isControlledFormElement, processElement } from './wrappers/processEleme
 import { patchProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
-import { createDerivedState } from "../core/component";
 
 function replaceWithNewNode(lastVNode, nextVNode, parentDom, context: Object, isSVG: boolean) {
   unmount(lastVNode);

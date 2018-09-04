@@ -1,4 +1,4 @@
-import { isNull } from 'inferno-shared';
+import { combineFrom, isNull } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from "inferno-vnode-flags";
 import { VNode } from './../../core/implementation';
 
@@ -98,4 +98,12 @@ export function removeVNodeDOM(vNode: VNode, dom: Element) {
 export function getComponentName(instance): string {
   // Fallback for IE
   return (instance.name || instance.displayName || instance.constructor.name || (instance.toString().match(/^function\s*([^\s(]+)/) || [])[1]);
+}
+
+export function createDerivedState(instance, nextProps, state) {
+  if (instance.constructor.getDerivedStateFromProps) {
+    return combineFrom(state, instance.constructor.getDerivedStateFromProps(nextProps, state));
+  }
+
+  return state;
 }

@@ -218,11 +218,3 @@ export class Component<P, S> {
   // tslint:disable-next-line:no-empty
   public render(_nextProps: P, _nextState, _nextContext): any {}
 }
-
-export function createDerivedState(instance, nextProps, state) {
-  if (instance.constructor.getDerivedStateFromProps) {
-    return combineFrom(state, instance.constructor.getDerivedStateFromProps(nextProps, state));
-  }
-
-  return state;
-}

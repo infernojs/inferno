@@ -15,9 +15,8 @@ import {
   isStringOrNumber,
   warning
 } from 'inferno-shared';
-import { EMPTY_OBJ, getComponentName } from './common';
+import { createDerivedState, EMPTY_OBJ, getComponentName } from './common';
 import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import { createDerivedState } from "../../core/component";
 
 function warnAboutOldLifecycles(component) {
   const oldLifecycles: string[] = [];

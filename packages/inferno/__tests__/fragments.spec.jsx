@@ -1,4 +1,4 @@
-import { Component, createPortal, createFragment, render } from "inferno";
+import { Fragment, Component, createPortal, createFragment, render } from "inferno";
 import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('Fragments', () => {
@@ -491,6 +491,60 @@ describe('Fragments', () => {
     );
 
     expect(container.innerHTML).toBe('<div></div>');
+
+    render(
+      <Fragment>
+        <Fragment/>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should be possible to replace last element in fragment', () => {
+    render(
+      <Fragment>
+        <Fragment>
+          <span>1a</span>
+          <span>1b</span>
+          <div>1c</div>
+        </Fragment>
+        <Fragment>
+          <span>2a</span>
+          <span>2b</span>
+          <span>2c</span>
+        </Fragment>
+        <Fragment>
+        </Fragment>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<span>1a</span><span>1b</span><div>1c</div><span>2a</span><span>2b</span><span>2c</span>');
+
+    render(
+      <Fragment>
+        <Fragment>
+          <span>1a</span>
+          <span>1c</span>
+        </Fragment>
+        <Fragment>
+          <span>2a</span>
+          <span>2b</span>
+          <span>2c</span>
+        </Fragment>
+        <Fragment>
+        </Fragment>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<span>1a</span><span>1c</span><span>2a</span><span>2b</span><span>2c</span>');
 
     render(
       <Fragment>
