@@ -21,7 +21,6 @@ function triggerEventListener(props, methodName, e) {
 
 export function createWrappedFunction(methodName: string | string[], applyValue?: Function): Function {
   const fnMethod = function(e) {
-    e.stopPropagation();
     const vNode = this.$V;
     // If vNode is gone by the time event fires, no-op
     if (!vNode) {
