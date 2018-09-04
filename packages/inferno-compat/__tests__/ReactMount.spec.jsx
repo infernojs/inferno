@@ -218,8 +218,8 @@ describe('ReactMount', function() {
       render: function() {
         // Add refs to some nodes so that they get traversed and cached
         return (
-          <div ref="a">
-            <div ref="b">b</div>
+          <div>
+            <div>b</div>
             {this.props.showC && <div>c</div>}
           </div>
         );

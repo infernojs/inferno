@@ -429,13 +429,9 @@ export function normalizeChildren(vNode: VNode, children) {
 }
 
 export const options: {
-  afterRender: null | Function;
-  beforeRender: null | Function;
   createVNode: null | Function;
   renderComplete: null | Function;
 } = {
-  afterRender: null,
-  beforeRender: null,
   createVNode: null,
   renderComplete: null
 };

@@ -48,6 +48,38 @@ describe('Input type checkbox', () => {
     expect(changeChecked).toBe(true);
   });
 
+  it('Checkbox click should not propagate to parent', function() {
+    let clickChecked = null;
+    let changeChecked = null;
+    let parentClick = false;
+
+    render(
+      <div onClick={() => parentClick = true}>
+        <input
+          type="checkbox"
+          checked={false}
+          onclick={e => {
+            clickChecked = e.target.checked;
+          }}
+          onchange={e => {
+            changeChecked = e.target.checked;
+          }}
+        />
+      </div>,
+      container
+    );
+    const input = container.querySelector('input');
+
+    expect(parentClick).toBe(false);
+
+    triggerEvent('click', input);
+
+    expect(input.checked).toBe(false);
+    expect(clickChecked).toBe(true);
+    expect(changeChecked).toBe(true);
+    expect(parentClick).toBe(false);
+  });
+
   it('Checked attribute after synthetic Click', function() {
     let clickChecked = null;
     let changeChecked = null;

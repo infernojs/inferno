@@ -8,7 +8,7 @@ import {
   warning
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { directClone, options, VNode } from '../core/implementation';
+import { directClone, VNode } from '../core/implementation';
 import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { remove, removeAllChildren, removeTextNode, unmount, unmountAllChildren } from './unmounting';
 import {
@@ -396,14 +396,7 @@ export function updateClassComponent(
     instance.state = nextState;
     instance.context = context;
 
-    if (isFunction(options.beforeRender)) {
-      options.beforeRender(instance);
-    }
     renderOutput = instance.render(nextProps, nextState, context);
-
-    if (isFunction(options.afterRender)) {
-      options.afterRender(instance);
-    }
 
     let snapshot;
 

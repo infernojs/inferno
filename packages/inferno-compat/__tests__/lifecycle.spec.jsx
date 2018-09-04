@@ -28,15 +28,15 @@ describe('Inferno-compat LifeCycle', () => {
         }
 
         componentDidMount() {
-          console.log('Did mount sub', this.refs['S2a'] ? 'stringRef' : null);
+          console.log('Did mount sub');
         }
 
         componentWillUpdate() {
-          console.log('Will update sub', this.refs['S2a'] ? 'stringRef' : null);
+          console.log('Will update sub');
         }
 
         componentDidUpdate() {
-          console.log('Did update sub', this.refs['S2a'] ? 'stringRef' : null);
+          console.log('Did update sub');
         }
 
         render() {
@@ -44,14 +44,14 @@ describe('Inferno-compat LifeCycle', () => {
             'div',
             {
               ref: () => {
-                console.log('S1', this.refs['S2a'] ? 'stringRef' : null);
+                console.log('S1');
               }
             },
             [
-              createElement('div', { ref: 'S2a' }),
+              createElement('div', {}),
               createElement('div', {
                 ref: () => {
-                  console.log('S2b', this.refs['S2a'] ? 'stringRef' : null);
+                  console.log('S2b');
                 }
               })
             ]
@@ -65,15 +65,15 @@ describe('Inferno-compat LifeCycle', () => {
         }
 
         componentDidMount() {
-          console.log('Did mount', this.refs['3a'] ? 'stringRef' : null);
+          console.log('Did mount');
         }
 
         componentWillUpdate() {
-          console.log('Will update', this.refs['3a'] ? 'stringRef' : null);
+          console.log('Will update');
         }
 
         componentDidUpdate() {
-          console.log('Did update', this.refs['3a'] ? 'stringRef' : null);
+          console.log('Did update');
         }
 
         render() {
@@ -81,7 +81,7 @@ describe('Inferno-compat LifeCycle', () => {
             'div',
             {
               ref: () => {
-                console.log('1', this.refs['3a'] ? 'stringRef' : null);
+                console.log('1');
               }
             },
             [
@@ -89,26 +89,26 @@ describe('Inferno-compat LifeCycle', () => {
                 'div',
                 {
                   ref: () => {
-                    console.log('2a', this.refs['3a'] ? 'stringRef' : null);
+                    console.log('2a');
                   }
                 },
                 [
-                  createElement(Hello2, {}, null),
-                  createElement('div', { ref: '3a' }, [
+                  createElement(Hello2, {}),
+                  createElement('div', null, [
                     createElement('div', {
                       ref: () => {
-                        console.log('4a', this.refs['3a'] ? 'stringRef' : null);
+                        console.log('4a');
                       }
                     }),
                     createElement('div', {
                       ref: () => {
-                        console.log('4b', this.refs['3a'] ? 'stringRef' : null);
+                        console.log('4b');
                       }
                     })
                   ]),
                   createElement('div', {
                     ref: () => {
-                      console.log('3b', this.refs['3a'] ? 'stringRef' : null);
+                      console.log('3b');
                     }
                   })
                 ]
@@ -117,7 +117,7 @@ describe('Inferno-compat LifeCycle', () => {
                 'div',
                 {
                   ref: () => {
-                    console.log('2b', this.refs['3a'] ? 'stringRef' : null);
+                    console.log('2b');
                   }
                 },
                 null
@@ -127,11 +127,11 @@ describe('Inferno-compat LifeCycle', () => {
         }
       }
 
-      render(createElement(Hello, { name: 'Inferno' }, null), container);
+      render(createElement(Hello, { name: 'Inferno' }), container);
 
       console.log('UPDATE');
 
-      render(createElement(Hello, { name: 'Better Lifecycle' }, null), container);
+      render(createElement(Hello, { name: 'Better Lifecycle' }), container);
 
       console.log('REMOVAL');
 
@@ -190,50 +190,50 @@ describe('Inferno-compat LifeCycle', () => {
       let i = -1;
       expect(array[++i].args).toEqual(['Will mount']);
       expect(array[++i].args).toEqual(['Will mount sub']);
-      expect(array[++i].args).toEqual(['S2b', 'stringRef']);
-      expect(array[++i].args).toEqual(['S1', 'stringRef']);
-      expect(array[++i].args).toEqual(['Did mount sub', 'stringRef']);
-      expect(array[++i].args).toEqual(['4a', null]);
-      expect(array[++i].args).toEqual(['4b', null]);
-      expect(array[++i].args).toEqual(['3b', 'stringRef']);
-      expect(array[++i].args).toEqual(['2a', 'stringRef']);
-      expect(array[++i].args).toEqual(['2b', 'stringRef']);
-      expect(array[++i].args).toEqual(['1', 'stringRef']);
-      expect(array[++i].args).toEqual(['Did mount', 'stringRef']);
+      expect(array[++i].args).toEqual(['S2b']);
+      expect(array[++i].args).toEqual(['S1']);
+      expect(array[++i].args).toEqual(['Did mount sub']);
+      expect(array[++i].args).toEqual(['4a']);
+      expect(array[++i].args).toEqual(['4b']);
+      expect(array[++i].args).toEqual(['3b']);
+      expect(array[++i].args).toEqual(['2a']);
+      expect(array[++i].args).toEqual(['2b']);
+      expect(array[++i].args).toEqual(['1']);
+      expect(array[++i].args).toEqual(['Did mount']);
 
       // update
       expect(array[++i].args).toEqual(['UPDATE']);
-      expect(array[++i].args).toEqual(['Will update', 'stringRef']);
-      expect(array[++i].args).toEqual(['Will update sub', 'stringRef']);
-      expect(array[++i].args).toEqual(['S2b', 'stringRef']);
-      expect(array[++i].args).toEqual(['S2b', 'stringRef']);
-      expect(array[++i].args).toEqual(['S1', 'stringRef']);
-      expect(array[++i].args).toEqual(['S1', 'stringRef']);
-      expect(array[++i].args).toEqual(['4a', 'stringRef']);
-      expect(array[++i].args).toEqual(['4a', 'stringRef']);
-      expect(array[++i].args).toEqual(['4b', 'stringRef']);
-      expect(array[++i].args).toEqual(['4b', 'stringRef']);
-      expect(array[++i].args).toEqual(['3b', 'stringRef']);
-      expect(array[++i].args).toEqual(['3b', 'stringRef']);
-      expect(array[++i].args).toEqual(['2a', 'stringRef']);
-      expect(array[++i].args).toEqual(['2a', 'stringRef']);
-      expect(array[++i].args).toEqual(['2b', 'stringRef']);
-      expect(array[++i].args).toEqual(['2b', 'stringRef']);
-      expect(array[++i].args).toEqual(['1', 'stringRef']);
-      expect(array[++i].args).toEqual(['1', 'stringRef']);
-      expect(array[++i].args).toEqual(['Did update sub', 'stringRef']);
-      expect(array[++i].args).toEqual(['Did update', 'stringRef']);
+      expect(array[++i].args).toEqual(['Will update']);
+      expect(array[++i].args).toEqual(['Will update sub']);
+      expect(array[++i].args).toEqual(['S2b']);
+      expect(array[++i].args).toEqual(['S2b']);
+      expect(array[++i].args).toEqual(['S1']);
+      expect(array[++i].args).toEqual(['S1']);
+      expect(array[++i].args).toEqual(['4a']);
+      expect(array[++i].args).toEqual(['4a']);
+      expect(array[++i].args).toEqual(['4b']);
+      expect(array[++i].args).toEqual(['4b']);
+      expect(array[++i].args).toEqual(['3b']);
+      expect(array[++i].args).toEqual(['3b']);
+      expect(array[++i].args).toEqual(['2a']);
+      expect(array[++i].args).toEqual(['2a']);
+      expect(array[++i].args).toEqual(['2b']);
+      expect(array[++i].args).toEqual(['2b']);
+      expect(array[++i].args).toEqual(['1']);
+      expect(array[++i].args).toEqual(['1']);
+      expect(array[++i].args).toEqual(['Did update sub']);
+      expect(array[++i].args).toEqual(['Did update']);
 
       // unmount
       expect(array[++i].args).toEqual(['REMOVAL']);
-      expect(array[++i].args).toEqual(['1', 'stringRef']);
-      expect(array[++i].args).toEqual(['2a', 'stringRef']);
-      expect(array[++i].args).toEqual(['S1', 'stringRef']);
-      expect(array[++i].args).toEqual(['S2b', null]);
-      expect(array[++i].args).toEqual(['4a', null]);
-      expect(array[++i].args).toEqual(['4b', null]);
-      expect(array[++i].args).toEqual(['3b', null]);
-      expect(array[++i].args).toEqual(['2b', null]);
+      expect(array[++i].args).toEqual(['1']);
+      expect(array[++i].args).toEqual(['2a']);
+      expect(array[++i].args).toEqual(['S1']);
+      expect(array[++i].args).toEqual(['S2b']);
+      expect(array[++i].args).toEqual(['4a']);
+      expect(array[++i].args).toEqual(['4b']);
+      expect(array[++i].args).toEqual(['3b']);
+      expect(array[++i].args).toEqual(['2b']);
     });
   });
 });

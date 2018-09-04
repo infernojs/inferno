@@ -193,7 +193,6 @@ describe('ReactElement', function() {
     expect(React.isValidElement(true)).toEqual(false);
     expect(React.isValidElement({})).toEqual(false);
     expect(React.isValidElement('string')).toEqual(false);
-    expect(React.isValidElement(React.DOM.div)).toEqual(false);
     expect(React.isValidElement(Component)).toEqual(false);
     expect(React.isValidElement({ type: 'div', props: {} })).toEqual(false);
 
@@ -336,7 +335,6 @@ describe('ReactElement', function() {
     expect(React.isValidElement(true)).toEqual(false);
     expect(React.isValidElement({})).toEqual(false);
     expect(React.isValidElement('string')).toEqual(false);
-    expect(React.isValidElement(React.DOM.div)).toEqual(false);
     expect(React.isValidElement(Component)).toEqual(false);
     expect(React.isValidElement({ type: 'div', props: {} })).toEqual(false);
 

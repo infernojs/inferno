@@ -284,86 +284,6 @@ describe('ReactComponentLifeCycle', function() {
     expect(instance.isMounted()).toBe(false);
   });
 
-  // it('warns if findDOMNode is used inside render', function() {
-  //   spyOn(console, 'error');
-  //   var Component = React.createClass({
-  //     getInitialState: function() {
-  //       return {isMounted: false};
-  //     },
-  //     componentDidMount: function() {
-  //       this.setState({isMounted: true});
-  //     },
-  //     render: function() {
-  //       if (this.state.isMounted) {
-  //         expect(ReactDOM.findDOMNode(this).tagName).toBe('DIV');
-  //       }
-  //       return <div/>;
-  //     },
-  //   });
-
-  //   ReactTestUtils.renderIntoDocument(<Component />);
-  //   expect(console.error.calls.count()).toBe(1);
-  //   expect(console.error.argsForCall[0][0]).toContain(
-  //     'Component is accessing getDOMNode or findDOMNode inside its render()'
-  //   );
-  // });
-
-  // it('should carry through each of the phases of setup', function() {
-  //   var LifeCycleComponent = React.createClass({
-  //     getInitialState: function() {
-  //       this._testJournal = {};
-  //       var initState = {
-  //         hasWillMountCompleted: false,
-  //         hasDidMountCompleted: false,
-  //         hasRenderCompleted: false,
-  //         hasWillUnmountCompleted: false,
-  //       };
-  //       this._testJournal.returnedFromGetInitialState = clone(initState);
-  //       this._testJournal.lifeCycleAtStartOfGetInitialState =
-  //         getLifeCycleState(this);
-  //       return initState;
-  //     },
-
-  //     componentWillMount: function() {
-  //       this._testJournal.stateAtStartOfWillMount = clone(this.state);
-  //       this._testJournal.lifeCycleAtStartOfWillMount =
-  //         getLifeCycleState(this);
-  //       this.state.hasWillMountCompleted = true;
-  //     },
-
-  //     componentDidMount: function() {
-  //       this._testJournal.stateAtStartOfDidMount = clone(this.state);
-  //       this._testJournal.lifeCycleAtStartOfDidMount =
-  //         getLifeCycleState(this);
-  //       this.setState({hasDidMountCompleted: true});
-  //     },
-
-  //     render: function() {
-  //       var isInitialRender = !this.state.hasRenderCompleted;
-  //       if (isInitialRender) {
-  //         this._testJournal.stateInInitialRender = clone(this.state);
-  //         this._testJournal.lifeCycleInInitialRender = getLifeCycleState(this);
-  //       } else {
-  //         this._testJournal.stateInLaterRender = clone(this.state);
-  //         this._testJournal.lifeCycleInLaterRender = getLifeCycleState(this);
-  //       }
-  //       // you would *NEVER* do anything like this in real code!
-  //       this.state.hasRenderCompleted = true;
-  //       return (
-  //         <div ref="theDiv">
-  //           I am the inner DIV
-  //         </div>
-  //       );
-  //     },
-
-  //     componentWillUnmount: function() {
-  //       this._testJournal.stateAtStartOfWillUnmount = clone(this.state);
-  //       this._testJournal.lifeCycleAtStartOfWillUnmount =
-  //         getLifeCycleState(this);
-  //       this.state.hasWillUnmountCompleted = true;
-  //     },
-  //   });
-
   //   // A component that is merely "constructed" (as in "constructor") but not
   //   // yet initialized, or rendered.
   //   //
@@ -490,7 +410,7 @@ describe('ReactComponentLifeCycle', function() {
     var Component = React.createClass({
       render: function() {
         return (
-          <Tooltip ref="tooltip" tooltip={<div>{this.props.tooltipText}</div>}>
+          <Tooltip tooltip={<div>{this.props.tooltipText}</div>}>
             {this.props.text}
           </Tooltip>
         );

@@ -298,17 +298,4 @@ describe('MISC', () => {
       expect(typeof app.inner.getNode === 'function').toEqual(true);
     });
   });
-
-  describe('Unsupported hidden internal __spread API', () => {
-    it('should work with multiple objects', () => {
-      const start = {};
-      const result = React.__spread(start, { one: 1, two: 3 }, { two: 2 });
-      expect(result).toEqual(start);
-      expect(start).toEqual({ one: 1, two: 2 });
-    });
-
-    it('should be exported on default and as __spread', () => {
-      expect(__spread).toEqual(React.__spread);
-    });
-  });
 });

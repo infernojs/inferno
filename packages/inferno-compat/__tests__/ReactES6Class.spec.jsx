@@ -406,16 +406,6 @@ describe('ReactES6Class', function() {
     test(<Foo />, 'DIV', 'bar-through-context');
   });
 
-  it('supports classic refs', function() {
-    class Foo extends React.Component {
-      render() {
-        return <Inner name="foo" ref="inner" />;
-      }
-    }
-    var instance = test(<Foo />, 'DIV', 'foo');
-    expect(instance.refs.inner.getName()).toBe('foo');
-  });
-
   it('supports drilling through to the DOM using findDOMNode', function() {
     var instance = test(<Inner name="foo" />, 'DIV', 'foo');
     var node = ReactDOM.findDOMNode(instance);

@@ -3,7 +3,6 @@ import {
   createTextVNode,
   createVoidVNode,
   directClone,
-  options,
   VNode
 } from '../../core/implementation';
 import {
@@ -90,10 +89,6 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
     }
   }
 
-  if (isFunction(options.beforeRender)) {
-    options.beforeRender(instance);
-  }
-
   if (usesNewAPI) {
     instance.state = createDerivedState(instance, props, instance.state);
   }
@@ -109,10 +104,6 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
     instance.$CX = context;
   } else {
     instance.$CX = combineFrom(context, childContext);
-  }
-
-  if (isFunction(options.afterRender)) {
-    options.afterRender(instance);
   }
 
   instance.$LI = input;

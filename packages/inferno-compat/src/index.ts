@@ -40,19 +40,6 @@ function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragm
   return true;
 }
 
-function extend(base) {
-  for (let i = 1, obj; i < arguments.length; i++) {
-    if ((obj = arguments[i])) {
-      for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          base[key] = obj[key];
-        }
-      }
-    }
-  }
-  return base;
-}
-
 export type IterateChildrenFn = (value: InfernoChildren | any, index: number, array: Array<InfernoChildren | any>) => any;
 
 function flatten(arr, result) {
@@ -123,15 +110,6 @@ const Children = {
 };
 
 (Component.prototype as any).isReactComponent = {};
-
-let currentComponent: any = null;
-
-options.beforeRender = function(component): void {
-  currentComponent = component;
-};
-options.afterRender = function(): void {
-  currentComponent = null;
-};
 
 const version = '15.4.2';
 
@@ -220,24 +198,8 @@ const hasSymbolSupport = typeof g.Symbol !== 'undefined';
 const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 const oldCreateVNode = options.createVNode;
 
-function handleStringRefs(ref: string, vNode: VNode) {
-  if (!currentComponent.refs) {
-    currentComponent.refs = {};
-    currentComponent.$REF = {}; // Cache
-  }
-  if (!currentComponent.$REF[ref]) {
-    vNode.ref = currentComponent.$REF[ref] = function(val) {
-      (this as any).refs[ref] = val;
-    }.bind(currentComponent);
-  } else {
-    // Re-use alredy created function
-    vNode.ref = currentComponent.$REF[ref];
-  }
-}
-
 options.createVNode = (vNode: VNode) => {
   const children = vNode.children as any;
-  const ref = vNode.ref;
   let props: any = vNode.props;
 
   if (isNullOrUndef(props)) {
@@ -247,10 +209,6 @@ options.createVNode = (vNode: VNode) => {
   // React supports iterable children, in addition to Array-like
   if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && !isArray(children) && isFunction(children[symbolIterator])) {
     vNode.children = iterableToArray(children[symbolIterator]());
-  }
-  // String ref support
-  if (typeof ref === 'string' && !isNull(currentComponent)) {
-    handleStringRefs(ref, vNode);
   }
   if (vNode.className) {
     props.className = vNode.className;
@@ -284,12 +242,15 @@ options.createVNode = (vNode: VNode) => {
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
 function shallowDiffers(a, b): boolean {
-  for (const i in a) {
+  let i;
+
+  for (i in a) {
     if (!(i in b)) {
       return true;
     }
   }
-  for (const i in b) {
+
+  for (i in b) {
     if (a[i] !== b[i]) {
       return true;
     }
@@ -335,18 +296,8 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
   return component;
 }
 
-// Credit: preact-compat - https://github.com/developit/preact-compat
-const ELEMENTS = 'a abbr address area article aside audio b base bdi bdo big blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link main map mark menu menuitem meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr circle clipPath defs ellipse g image line linearGradient mask path pattern polygon polyline radialGradient rect stop svg text tspan'.split(
-  ' '
-);
-
 function createFactory(type) {
   return createElement.bind(null, type);
-}
-
-const DOM = {};
-for (let i = ELEMENTS.length; i--; ) {
-  DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
 }
 
 function findDOMNode(ref) {
@@ -384,11 +335,9 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
   const exports = {
     Children,
     Component,
-    DOM,
     EMPTY_OBJ,
     PropTypes,
     PureComponent,
-    __spread: extend,
     cloneElement: cloneVNode,
     cloneVNode,
     createClass,
@@ -422,7 +371,6 @@ export {
   ClassicComponentClass,
   Component,
   ComponentSpec,
-  DOM,
   EMPTY_OBJ,
   InfernoChildren,
   InfernoInput,
@@ -442,7 +390,6 @@ export {
   createTextVNode,
   createVNode,
   directClone,
-  extend as __spread,
   findDOMNode,
   getFlagsForElementVnode,
   hydrate,
@@ -459,11 +406,9 @@ export {
 export default {
   Children,
   Component,
-  DOM,
   EMPTY_OBJ,
   PropTypes,
   PureComponent,
-  __spread: extend,
   cloneElement: cloneVNode,
   cloneVNode,
   createClass,

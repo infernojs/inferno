@@ -67,23 +67,6 @@ describe('ReactElementClone', function() {
     expect(ReactDOM.findDOMNode(component).childNodes[0].className).toBe('xyz');
   });
 
-  it('should keep the original ref if it is not overridden', function() {
-    var Grandparent = React.createClass({
-      render: function() {
-        return <Parent child={<div ref="yolo" />} />;
-      }
-    });
-
-    var Parent = React.createClass({
-      render: function() {
-        return <div>{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
-      }
-    });
-
-    var component = renderIntoDocument(<Grandparent />);
-    expect(component.$LI.children.refs.yolo.tagName).toBe('DIV');
-  });
-
   it('should transfer the key property', function() {
     var Component = React.createClass({
       render: function() {
