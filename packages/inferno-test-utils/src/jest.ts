@@ -1,5 +1,5 @@
 import { render, VNode } from 'inferno';
-import { isArray, isNull, isObject, isString } from 'inferno-shared';
+import { combineFrom, isArray, isNull, isObject, isString } from 'inferno-shared';
 import { getTagNameOfVNode, isDOMVNode } from './utils';
 
 // Jest Snapshot Utilities
@@ -26,7 +26,7 @@ export function vNodeToSnapshot(node: VNode | Element) {
   let object;
   const children: any[] = [];
   if (isDOMVNode(node)) {
-    const props = { className: node.className || undefined, ...node.props };
+    const props = combineFrom({ className: node.className || undefined }, node.props);
 
     // Remove undefined props
     Object.keys(props).forEach(propKey => {

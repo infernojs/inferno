@@ -1,6 +1,7 @@
 import { linkEvent, createVNode, VNode, MouseEvent } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
+import { combineFrom } from 'inferno-shared';
 
 const isModifiedEvent = (event: MouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
@@ -46,25 +47,16 @@ export function Link(props: ILinkProps & _InfernoJSX.LinkHTMLAttributes<HTMLLink
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 
   const href = context.router.history.createHref(typeof to === 'string' ? { pathname: to } : to);
+  const newProps: any = combineFrom(rest);
 
-  return createVNode(
-    VNodeFlags.HtmlElement,
-    'a',
-    className,
-    children,
-    ChildFlags.UnknownChildren,
+  newProps.href = href;
+  newProps.onClick = linkEvent(
     {
-      ...rest,
-      href,
-      onClick: linkEvent(
-        {
-          context,
-          props
-        },
-        handleClick
-      )
+      context,
+      props
     },
-    null,
-    innerRef ? x => innerRef(x) : null
+    handleClick
   );
+
+  return createVNode(VNodeFlags.HtmlElement, 'a', className, children, ChildFlags.UnknownChildren, newProps, null, innerRef);
 }

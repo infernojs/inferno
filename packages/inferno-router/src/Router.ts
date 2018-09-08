@@ -1,6 +1,7 @@
 import { Component, VNode } from 'inferno';
 import { Children, invariant, warning } from './utils';
 import * as H from 'history';
+import { combineFrom } from 'inferno-shared';
 
 export interface IRouterProps {
   history: H.History;
@@ -21,15 +22,16 @@ export class Router extends Component<IRouterProps, any> {
   }
 
   public getChildContext() {
+    const childContext: any = combineFrom(this.context.router);
+
+    childContext.history = this.props.history;
+    childContext.route = {
+      location: childContext.history.location,
+      match: this.state.match
+    };
+
     return {
-      router: {
-        ...this.context.router,
-        history: this.props.history,
-        route: {
-          location: this.props.history.location,
-          match: this.state.match
-        }
-      }
+      router: childContext
     };
   }
 

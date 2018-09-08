@@ -22,7 +22,22 @@ describe('Github #1236', () => {
     /*
        This is pre-compiled from old decorator pattern
      */
-    var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+    var _createClass = (function() {
+      function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+          var descriptor = props[i];
+          descriptor.enumerable = descriptor.enumerable || false;
+          descriptor.configurable = true;
+          if ('value' in descriptor) descriptor.writable = true;
+          Object.defineProperty(target, descriptor.key, descriptor);
+        }
+      }
+      return function(Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);
+        if (staticProps) defineProperties(Constructor, staticProps);
+        return Constructor;
+      };
+    })();
 
     function _initDefineProp(target, property, descriptor, context) {
       if (!descriptor) return;
@@ -34,11 +49,15 @@ describe('Github #1236', () => {
       });
     }
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+    function _classCallCheck(instance, Constructor) {
+      if (!(instance instanceof Constructor)) {
+        throw new TypeError('Cannot call a class as a function');
+      }
+    }
 
     function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
       var desc = {};
-      Object['ke' + 'ys'](descriptor).forEach(function (key) {
+      Object['ke' + 'ys'](descriptor).forEach(function(key) {
         desc[key] = descriptor[key];
       });
       desc.enumerable = !!desc.enumerable;
@@ -48,9 +67,12 @@ describe('Github #1236', () => {
         desc.writable = true;
       }
 
-      desc = decorators.slice().reverse().reduce(function (desc, decorator) {
-        return decorator(target, property, desc) || desc;
-      }, desc);
+      desc = decorators
+        .slice()
+        .reverse()
+        .reduce(function(desc, decorator) {
+          return decorator(target, property, desc) || desc;
+        }, desc);
 
       if (context && desc.initializer !== void 0) {
         desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
@@ -65,29 +87,32 @@ describe('Github #1236', () => {
       return desc;
     }
     var _desc, _value, _class, _descriptor;
-    var SearchStore = (_class = function () {
+    var SearchStore = ((_class = (function() {
       function SearchStore() {
         _classCallCheck(this, SearchStore);
 
         _initDefineProp(this, 'query', _descriptor, this);
       }
 
-      _createClass(SearchStore, [{
-        key: 'doSearch',
-        value: function doSearch(search) {
-          this.query = search;
+      _createClass(SearchStore, [
+        {
+          key: 'doSearch',
+          value: function doSearch(search) {
+            this.query = search;
+          }
         }
-      }]);
+      ]);
 
       return SearchStore;
-    }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
+    })()),
+    ((_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
       enumerable: true,
       initializer: function initializer() {
         return undefined;
       }
-    }), _applyDecoratedDescriptor(_class.prototype, 'doSearch', [action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)), _class);
-
-
+    })),
+    _applyDecoratedDescriptor(_class.prototype, 'doSearch', [action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)),
+    _class);
 
     let SearchPage = observer(
       class SearchPage extends Component {

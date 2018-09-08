@@ -3,6 +3,7 @@ import { Dispatch, Store } from 'redux';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 import { Component, createComponentVNode, normalizeProps } from 'inferno';
 import { Subscription } from '../utils/Subscription';
+import { combineFrom } from 'inferno-shared';
 
 let hotReloadingVersion = 0;
 const dummyState = {};
@@ -140,8 +141,7 @@ export function connectAdvanced(
 
     const displayName = getDisplayName(wrappedComponentName);
 
-    const selectorFactoryOptions = {
-      ...connectOptions,
+    const selectorFactoryOptions: IConnectOptions = combineFrom(connectOptions, {
       WrappedComponent,
       displayName,
       getDisplayName,
@@ -151,7 +151,7 @@ export function connectAdvanced(
       storeKey,
       withRef,
       wrappedComponentName
-    };
+    }) as any;
 
     class Connect<P, S> extends Component<P, S> {
       public static displayName = displayName;
@@ -314,7 +314,7 @@ export function connectAdvanced(
         // this is especially important for 'ref' since that's a reference back to the component
         // instance. a singleton memoized selector would then be holding a reference to the
         // instance, preventing the instance from being garbage collected, and that would be bad
-        const withExtras = { ...props };
+        const withExtras = combineFrom(props);
 
         if (renderCountProp) {
           withExtras[renderCountProp] = this.renderCount++;

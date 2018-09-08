@@ -3,6 +3,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { Children, invariant, warning } from './utils';
 import { matchPath } from './matchPath';
 import * as H from 'history';
+import { combineFrom } from 'inferno-shared';
 
 const isEmptyChildren = children => Children.count(children) === 0;
 
@@ -37,14 +38,15 @@ export interface IRouteProps {
  */
 class Route extends Component<IRouteProps, any> {
   public getChildContext() {
+    const childContext: any = combineFrom(this.context.router);
+
+    childContext.route = {
+      location: this.props.location || this.context.router.route.location,
+      match: this.state.match
+    };
+
     return {
-      router: {
-        ...this.context.router,
-        route: {
-          location: this.props.location || this.context.router.route.location,
-          match: this.state.match
-        }
-      }
+      router: childContext
     };
   }
 

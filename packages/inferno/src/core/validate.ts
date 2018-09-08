@@ -126,10 +126,7 @@ export function validateKeys(vNode) {
   if (process.env.NODE_ENV !== 'production') {
     // Checks if there is any key missing or duplicate keys
     if (vNode.isValidated === false && vNode.children && vNode.flags & VNodeFlags.Element) {
-      const error = DEV_ValidateKeys(
-        Array.isArray(vNode.children) ? vNode.children : [vNode.children],
-        (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0
-      );
+      const error = DEV_ValidateKeys(Array.isArray(vNode.children) ? vNode.children : [vNode.children], (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0);
 
       if (error) {
         throwError(error + getTagName(vNode));

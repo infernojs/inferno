@@ -154,7 +154,7 @@ describe('Mobx Misc', () => {
       setTimeout(() => {
         expect(container.getElementsByTagName('span')[0].textContent).toBe('child:7 - parent:7');
         done();
-      }, 10);
-    }, 10);
+      }, 20);
+    }, 20);
   });
 });

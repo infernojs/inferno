@@ -5,6 +5,7 @@ import { defaultMapDispatchToPropsFactories } from './mapDispatchToProps';
 import { defaultMapStateToPropsFactories } from './mapStateToProps';
 import { defaultMergePropsFactories } from './mergeProps';
 import { defaultSelectorFactory } from './selectorFactory';
+import { combineFrom } from 'inferno-shared';
 
 const match = (arg, factories, name) => {
   for (let i = factories.length - 1; i >= 0; i--) {
@@ -46,30 +47,33 @@ export const createConnect = ({
   const initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
   const initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
 
-  return connectHOC(selectorFactory as any, {
-    // used in error messages
-    methodName: 'connect',
+  return connectHOC(
+    selectorFactory as any,
+    combineFrom(
+      {
+        // used in error messages
+        methodName: 'connect',
 
-    // used to compute Connect's displayName from the wrapped component's displayName.
-    // tslint:disable-next-line:object-literal-sort-keys
-    getDisplayName: name => `Connect(${name})`,
+        // used to compute Connect's displayName from the wrapped component's displayName.
+        // tslint:disable-next-line:object-literal-sort-keys
+        getDisplayName: name => `Connect(${name})`,
 
-    // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
-    shouldHandleStateChanges: !!mapStateToProps,
+        // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
+        shouldHandleStateChanges: !!mapStateToProps,
 
-    // passed through to selectorFactory
-    areMergedPropsEqual,
-    areOwnPropsEqual,
-    areStatePropsEqual,
-    areStatesEqual,
-    initMapDispatchToProps,
-    initMapStateToProps,
-    initMergeProps,
-    pure,
-
-    // any extra options args can override defaults of connect or connectAdvanced
-    ...extraOptions
-  });
+        // passed through to selectorFactory
+        areMergedPropsEqual,
+        areOwnPropsEqual,
+        areStatePropsEqual,
+        areStatesEqual,
+        initMapDispatchToProps,
+        initMapStateToProps,
+        initMergeProps,
+        pure
+      },
+      extraOptions /* any extra options args can override defaults of connect or connectAdvanced */
+    )
+  );
 };
 
 export const connect = createConnect();

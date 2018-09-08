@@ -4,6 +4,10 @@ import { Route } from './Route';
 import { Link } from './Link';
 import { combineFrom } from 'inferno-shared';
 
+function filter(i) {
+  return i;
+}
+
 /**
  * A <Link> wrapper that knows if it's "active" or not.
  */
@@ -23,14 +27,21 @@ export function NavLink({
 }): any {
   function linkComponent({ location, match }): VNode {
     const isActive = !!(getIsActive ? getIsActive(match, location) : match);
-    return createComponentVNode(VNodeFlags.ComponentFunction, Link, {
-      'aria-current': isActive && ariaCurrent,
-      className: isActive ? [className, activeClassName].filter(i => i).join(' ') : className,
-      onClick,
-      style: isActive ? combineFrom(style, activeStyle) : style,
-      to,
-      ...rest
-    });
+
+    return createComponentVNode(
+      VNodeFlags.ComponentFunction,
+      Link,
+      combineFrom(
+        {
+          'aria-current': isActive && ariaCurrent,
+          className: isActive ? [className, activeClassName].filter(filter).join(' ') : className,
+          onClick,
+          style: isActive ? combineFrom(style, activeStyle) : style,
+          to
+        },
+        rest
+      )
+    );
   }
 
   return createComponentVNode(VNodeFlags.ComponentClass, Route, {

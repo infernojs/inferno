@@ -1,10 +1,17 @@
 import { verifyPlainObject } from '../utils/verifyPlainObject';
+import { combineFrom } from 'inferno-shared';
 
-export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...ownProps,
-  ...stateProps,
-  ...dispatchProps
-});
+export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => {
+  const merged = combineFrom(ownProps, stateProps);
+
+  if (dispatchProps) {
+    for (const key in dispatchProps) {
+      merged[key] = dispatchProps[key];
+    }
+  }
+
+  return merged;
+};
 
 export const wrapMergePropsFunc = mergeProps => {
   return (_dispatch, { displayName, pure, areMergedPropsEqual }) => {

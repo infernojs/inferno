@@ -345,7 +345,7 @@ export function normalizeChildren(vNode: VNode, children) {
           const key = n.key;
           const isNullDom = isNull(n.dom);
           const isNullKey = isNull(key);
-          const isPrefixed = !isNullKey && key[0] === keyPrefix;
+          const isPrefixed = !isNullKey && isString(key) && key[0] === keyPrefix;
 
           if (!isNullDom || isNullKey || isPrefixed) {
             newChildren = newChildren || children.slice(0, i);
