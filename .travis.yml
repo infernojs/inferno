@@ -30,6 +30,8 @@ jobs:
   - stage: SauceLabs
     if: "(branch = master) AND (NOT (type IN (pull_request)))"
     script:
+    - npm run build:es
+    - npm run build:es:dev
     - npm run test:browser:sauce
 env:
   global:
