@@ -20,6 +20,9 @@
       "inferno-devtools": [
         "packages/inferno-devtools/src/index.ts"
       ],
+      "inferno-extras": [
+        "packages/inferno-extras/src/index.ts"
+      ],
       "inferno-hyperscript": [
         "packages/inferno-hyperscript/src/index.ts"
       ],

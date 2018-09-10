@@ -33,6 +33,7 @@ inferno
 inferno-hyperscript
 inferno-create-element
 inferno-devtools
+inferno-extras
 inferno-router
 inferno-create-class
 inferno-compat

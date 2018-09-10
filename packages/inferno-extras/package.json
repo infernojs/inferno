@@ -1,0 +1,36 @@
+{
+  "name": "inferno-extras",
+  "version": "5.6.0",
+  "license": "MIT",
+  "description": "Collection of utilities for InfernoJS",
+  "author": {
+    "name": "Sampo Kivistö<Havunen>",
+    "email": "sampo.kivisto@live.fi",
+    "url": "https://github.com/havunen"
+  },
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "keywords": [
+    "inferno",
+    "performance",
+    "extras",
+    "methods",
+    "utils"
+  ],
+  "rollup": {
+    "moduleName": "Inferno"
+  },
+  "main": "index.js",
+  "module": "dist/index.esm.js",
+  "dev:module": "dist/index.dev.esm.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/infernojs/inferno",
+  "dependencies": {
+    "inferno": "5.6.0"
+  },
+  "devDependencies": {
+    "inferno-vnode-flags": "5.6.0"
+  }
+}
