@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "license": "MIT",
   "description": "Provides methods to render HTML strings from Inferno elements",
   "author": {
@@ -37,11 +37,11 @@
     "inferno": "^5"
   },
   "devDependencies": {
-    "inferno": "5.6.0",
-    "inferno-create-class": "5.6.0",
-    "inferno-create-element": "5.6.0",
-    "inferno-shared": "5.6.0",
-    "inferno-vnode-flags": "5.6.0"
+    "inferno": "5.6.1",
+    "inferno-create-class": "5.6.1",
+    "inferno-create-element": "5.6.1",
+    "inferno-shared": "5.6.1",
+    "inferno-vnode-flags": "5.6.1"
   },
   "rollup": {
     "bundledDependencies": [
