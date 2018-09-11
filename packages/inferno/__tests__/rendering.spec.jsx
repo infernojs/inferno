@@ -210,7 +210,7 @@ describe('rendering routine', () => {
     });
   });
 
-  // https://jsfiddle.net/Ldqyu475/ 
+  // https://jsfiddle.net/Ldqyu475/
   describe('render during component construction', () => {
     it('Should queue updates and not fail if HOC updates during child component construction', done => {
       class Hello extends Component {

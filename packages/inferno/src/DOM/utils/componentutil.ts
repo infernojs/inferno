@@ -1,22 +1,7 @@
-import {
-  createFragment,
-  createTextVNode,
-  createVoidVNode,
-  directClone,
-  VNode
-} from '../../core/implementation';
-import {
-  combineFrom,
-  isArray,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isStringOrNumber,
-  warning
-} from 'inferno-shared';
+import { createFragment, createTextVNode, createVoidVNode, directClone, VNode } from '../../core/implementation';
+import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber, warning } from 'inferno-shared';
 import { createDerivedState, EMPTY_OBJ, getComponentName } from './common';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 function warnAboutOldLifecycles(component) {
   const oldLifecycles: string[] = [];
@@ -39,17 +24,19 @@ function warnAboutOldLifecycles(component) {
       ${getComponentName(component)} contains the following legacy lifecycles:
       ${oldLifecycles.join('\n')}
       The above lifecycles should be removed.
-    `)
+    `);
   }
 }
 
 export function createClassComponentInstance(vNode: VNode, Component, props, context: Object) {
   const instance = new Component(props, context);
-  const usesNewAPI = instance.$N = Boolean(instance.getSnapshotBeforeUpdate || Component.getDerivedStateFromProps);
+  const usesNewAPI = (instance.$N = Boolean(instance.getSnapshotBeforeUpdate || Component.getDerivedStateFromProps));
 
   if (process.env.NODE_ENV !== 'production') {
     if (instance.getDerivedStateFromProps) {
-      warning(`${getComponentName(instance)} getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.`);
+      warning(
+        `${getComponentName(instance)} getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.`
+      );
     }
     if (usesNewAPI) {
       warnAboutOldLifecycles(instance);

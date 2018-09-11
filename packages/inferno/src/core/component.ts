@@ -1,7 +1,7 @@
-import {InfernoChildren, Props, Refs, VNode} from './implementation';
-import {combineFrom, isFunction, isNullOrUndef, throwError} from 'inferno-shared';
-import {updateClassComponent} from '../DOM/patching';
-import {callAll, EMPTY_OBJ, findDOMfromVNode, LIFECYCLE} from '../DOM/utils/common';
+import { InfernoChildren, Props, Refs, VNode } from './implementation';
+import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
+import { updateClassComponent } from '../DOM/patching';
+import { callAll, EMPTY_OBJ, findDOMfromVNode, LIFECYCLE } from '../DOM/utils/common';
 
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = isFunction(Promise) ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
@@ -25,13 +25,13 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Funct
       component.$PSS = true;
       component.$UPD = true;
       if (QUEUE.length === 0) {
-        applyState(component, force, callback)
+        applyState(component, force, callback);
       } else {
         QUEUE.push(component);
       }
     } else {
       if (QUEUE.push(component) === 1) {
-        nextTick(rerender)
+        nextTick(rerender);
       }
       if (isFunction(callback)) {
         let QU = component.$QU;
@@ -62,7 +62,7 @@ function callSetStateCallbacks(component) {
 
 export function rerender() {
   let component;
-  while ( (component = QUEUE.pop()) ) {
+  while ((component = QUEUE.pop())) {
     if (!component.$UPD) {
       const queue = component.$QU;
 
@@ -211,9 +211,9 @@ export class Component<P, S> {
     }
   }
 
-  public getSnapshotBeforeUpdate?(prevProps: Props<any>, prevState: S): any
+  public getSnapshotBeforeUpdate?(prevProps: Props<any>, prevState: S): any;
 
-  public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any
+  public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any;
 
   // tslint:disable-next-line:no-empty
   public render(_nextProps: P, _nextState, _nextContext): any {}

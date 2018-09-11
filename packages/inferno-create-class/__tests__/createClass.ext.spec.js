@@ -127,9 +127,7 @@ describe('Components createClass (non-JSX)', () => {
   });
 
   it('Should be possible to extend prototype by creating instance of class, Github #1380', () => {
-    function TestMe() {
-
-    }
+    function TestMe() {}
 
     TestMe.prototype = {
       render() {
@@ -137,11 +135,10 @@ describe('Components createClass (non-JSX)', () => {
       }
     };
 
-
     const TestMeComponent = createClass(new TestMe());
 
-    render(<TestMeComponent/>, container);
+    render(<TestMeComponent />, container);
 
     expect(container.innerHTML).toBe('<div>It works!</div>');
-  })
+  });
 });

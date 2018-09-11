@@ -336,18 +336,19 @@ describe('cloneVNode (JSX)', () => {
 
     it('Should be possible to add props to children', () => {
       function Foobar(props) {
-        return (
-          <div>
-            {cloneVNode(props.children, {foo: 'bar'})}
-          </div>
-        )
+        return <div>{cloneVNode(props.children, { foo: 'bar' })}</div>;
       }
 
       function ChildCom(props) {
-        return <div>{props.foo}</div>
+        return <div>{props.foo}</div>;
       }
 
-      render(<Foobar><ChildCom foo="init"/></Foobar>, container);
+      render(
+        <Foobar>
+          <ChildCom foo="init" />
+        </Foobar>,
+        container
+      );
 
       expect(container.innerHTML).toEqual('<div><div>bar</div></div>');
     });

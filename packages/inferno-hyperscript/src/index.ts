@@ -1,4 +1,4 @@
-import { createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, VNode } from 'inferno';
+import { createComponentVNode, createFragment, createVNode, getFlagsForElementVnode, InfernoChildren, VNode, Fragment } from 'inferno';
 import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -8,6 +8,9 @@ const notClassId = /^\.|#/;
 function parseTag(tag: string | null, props: any): string {
   if (!tag) {
     return 'div';
+  }
+  if (tag === Fragment) {
+    return tag;
   }
   const noId = props && isUndefined(props.id);
   const tagParts = tag.split(classIdSplit);
@@ -50,10 +53,24 @@ function isChildren(x: any): boolean {
   return isStringOrNumber(x) || (x && isArray(x));
 }
 
-function extractProps(_props: any, isElement: boolean, _tag: string | VNode): any {
+/**
+ * Creates virtual node
+ * @param {string|VNode|Function} _tag Name for virtual node
+ * @param {object=} _props Additional properties for virtual node
+ * @param {string|number|VNode|Array<string|number|VNode>|null=} _children Optional children for virtual node
+ * @param {boolean} noNormalize Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
+ * @returns {VNode} returns new virtual node
+ */
+export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode {
+  // If a child array or text node are passed as the second argument, shift them
+  if (!_children && isChildren(_props)) {
+    _children = _props;
+    _props = {};
+  }
+  const isElement = isString(_tag);
   _props = _props || {};
   const tag = isElement ? parseTag(_tag as string, _props) : _tag;
-  const newProps = {};
+  const newProps: any = {};
   let key = null;
   let ref: any = null;
   let children = null;
@@ -79,38 +96,23 @@ function extractProps(_props: any, isElement: boolean, _tag: string | VNode): an
       newProps[prop] = _props[prop];
     }
   }
-  return { tag, props: newProps, key, ref, children, className };
-}
-
-/**
- * Creates virtual node
- * @param {string|VNode|Function} _tag Name for virtual node
- * @param {object=} _props Additional properties for virtual node
- * @param {string|number|VNode|Array<string|number|VNode>|null=} _children Optional children for virtual node
- * @param {boolean} noNormalize Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
- * @returns {VNode} returns new virtual node
- */
-export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode {
-  // If a child array or text node are passed as the second argument, shift them
-  if (!_children && isChildren(_props)) {
-    _children = _props;
-    _props = {};
-  }
-  const isElement = isString(_tag);
-  const { tag, props, key, ref, children, className } = extractProps(_props, isElement, _tag as VNode);
 
   if (isElement) {
-    let flags = getFlagsForElementVnode(tag);
+    let flags = getFlagsForElementVnode(tag as string);
 
-    if (props.contenteditable !== void 0) {
+    if (flags & VNodeFlags.Fragment) {
+      return createFragment(_children || children, ChildFlags.UnknownChildren, key);
+    }
+
+    if (newProps.contenteditable !== void 0) {
       flags |= VNodeFlags.ContentEditable;
     }
 
-    return createVNode(flags, tag, className, _children || children, ChildFlags.UnknownChildren, props, key, ref);
+    return createVNode(flags, tag as string, className, _children || children, ChildFlags.UnknownChildren, newProps, key, ref);
   } else {
     if (children || _children) {
-      (props as any).children = children || _children;
+      newProps.children = children || _children;
     }
-    return createComponentVNode(VNodeFlags.ComponentUnknown, tag, props, key, ref);
+    return createComponentVNode(VNodeFlags.ComponentUnknown, tag as Function, newProps, key, ref);
   }
 }

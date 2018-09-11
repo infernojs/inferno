@@ -51,7 +51,6 @@ describe('A <MemoryRouter>', () => {
     expect(console.error.calls.mostRecent().args[0]).toContain('<MemoryRouter> ignores the history prop');
   });
 
-
   it('Should be possible to render multiple sub routes, Github #1360', () => {
     function Home() {
       return <h1>You are in home!</h1>;
@@ -90,5 +89,5 @@ describe('A <MemoryRouter>', () => {
     container.querySelector('a').click();
 
     expect(container.innerHTML).toBe('<div>Header</div><h1>You are in test route!</h1><ul><li><a href="/test">Home</a></li></ul><div>Footer</div>');
-  })
+  });
 });

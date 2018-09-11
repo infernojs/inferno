@@ -1,6 +1,6 @@
 import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { getComponentName } from "../DOM/utils/common";
+import { getComponentName } from '../DOM/utils/common';
 
 function getTagName(input) {
   let tagName;
@@ -107,22 +107,22 @@ export function validateVNodeElementChildren(vNode) {
     }
     if (vNode.flags & VNodeFlags.Element) {
       const voidTypes = {
-        'area': true,
-        'base': true,
-        'br': true,
-        'col': true,
-        'command': true,
-        'embed': true,
-        'hr': true,
-        'img': true,
-        'input': true,
-        'keygen': true,
-        'link': true,
-        'meta': true,
-        'param': true,
-        'source': true,
-        'track': true,
-        'wbr': true
+        area: true,
+        base: true,
+        br: true,
+        col: true,
+        command: true,
+        embed: true,
+        hr: true,
+        img: true,
+        input: true,
+        keygen: true,
+        link: true,
+        meta: true,
+        param: true,
+        source: true,
+        track: true,
+        wbr: true
       };
       const tag = vNode.type.toLowerCase();
 
@@ -140,10 +140,7 @@ export function validateKeys(vNode) {
   if (process.env.NODE_ENV !== 'production') {
     // Checks if there is any key missing or duplicate keys
     if (vNode.isValidated === false && vNode.children && vNode.flags & VNodeFlags.Element) {
-      const error = DEV_ValidateKeys(
-        Array.isArray(vNode.children) ? vNode.children : [vNode.children],
-        vNode.childFlags === ChildFlags.HasKeyedChildren
-      );
+      const error = DEV_ValidateKeys(Array.isArray(vNode.children) ? vNode.children : [vNode.children], vNode.childFlags === ChildFlags.HasKeyedChildren);
 
       if (error) {
         throwError(error + getTagName(vNode));

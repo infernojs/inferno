@@ -1,17 +1,17 @@
 import { render } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
-import sinon from "sinon";
+import sinon from 'sinon';
 import { triggerEvent } from 'inferno-utils';
 
 describe('rendering routine', () => {
   let container;
 
-  beforeEach(function () {
+  beforeEach(function() {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function () {
+  afterEach(function() {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);

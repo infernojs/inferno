@@ -1,7 +1,6 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode, _CI, _HI, _L, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP } from "inferno";
-
+import { VNode, _CI, _HI, _L, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP } from 'inferno';
 
 function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
   const tempdom = document.createElement('i');
@@ -13,8 +12,6 @@ function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
 function isSamePropsInnerHTML(dom: Element, props): boolean {
   return Boolean(props && props.dangerouslySetInnerHTML && props.dangerouslySetInnerHTML.__html && isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html));
 }
-
-
 
 function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, isClass: boolean) {
   const type = vNode.type as Function;
@@ -87,7 +84,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
 
     // clear any other DOM nodes, there should be only a single entry for the root
     if ((flags & VNodeFlags.Fragment) === 0) {
-      let nextSibling: Node|null = null;
+      let nextSibling: Node | null = null;
 
       while (currentNode) {
         nextSibling = currentNode.nextSibling;
@@ -177,7 +174,7 @@ function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context
 }
 
 function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean): Element | null {
-  const flags = vNode.flags |= VNodeFlags.InUse;
+  const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Component) {
     return hydrateComponent(vNode, parentDOM, currentDom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
@@ -192,7 +189,7 @@ function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, con
     return (vNode.dom = currentDom);
   }
   if (flags & VNodeFlags.Fragment) {
-    return hydrateFragment(vNode, parentDOM, currentDom, context, isSVG)
+    return hydrateFragment(vNode, parentDOM, currentDom, context, isSVG);
   }
 
   if (process.env.NODE_ENV !== 'production') {

@@ -1,3 +1,5 @@
+import { combineFrom } from 'inferno-shared';
+
 const rxUnescaped = new RegExp(/["'&<>]/);
 
 export function escapeText(text: string): string {
@@ -97,3 +99,11 @@ export const voidElements = new Set([
   'track',
   'wbr'
 ]);
+
+export function createDerivedState(instance, nextProps, state) {
+  if (instance.constructor.getDerivedStateFromProps) {
+    return combineFrom(state, instance.constructor.getDerivedStateFromProps(nextProps, state));
+  }
+
+  return state;
+}

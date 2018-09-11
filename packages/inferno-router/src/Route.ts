@@ -1,11 +1,9 @@
 import { Component, ComponentType, createComponentVNode, InfernoChildren, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { Children, invariant, warning } from './utils';
+import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
 import * as H from 'history';
-import { isFunction } from "inferno-shared";
-
-const isEmptyChildren = children => Children.count(children) === 0;
+import { isFunction } from 'inferno-shared';
 
 export interface Match<P> {
   params: P;
@@ -90,7 +88,7 @@ class Route extends Component<IRouteProps, any> {
     });
   }
 
-  public render(): VNode | null {
+  public render() {
     const { match } = this.state;
     const { children, component, render } = this.props;
     const { history, route, staticContext } = this.context.router;
@@ -114,11 +112,7 @@ class Route extends Component<IRouteProps, any> {
       return (children as Function)(props);
     }
 
-    if (children && !isEmptyChildren(children)) {
-      return Children.only(children);
-    }
-
-    return null;
+    return children;
   }
 }
 
@@ -130,12 +124,12 @@ if (process.env.NODE_ENV !== 'production') {
     );
 
     warning(
-      !(this.props.component && this.props.children && !isEmptyChildren(this.props.children)),
+      !(this.props.component && this.props.children),
       'You should not use <Route component> and <Route children> in the same route; <Route children> will be ignored'
     );
 
     warning(
-      !(this.props.render && this.props.children && !isEmptyChildren(this.props.children)),
+      !(this.props.render && this.props.children),
       'You should not use <Route render> and <Route children> in the same route; <Route children> will be ignored'
     );
   };

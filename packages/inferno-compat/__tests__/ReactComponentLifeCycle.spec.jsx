@@ -409,11 +409,7 @@ describe('ReactComponentLifeCycle', function() {
     });
     var Component = React.createClass({
       render: function() {
-        return (
-          <Tooltip tooltip={<div>{this.props.tooltipText}</div>}>
-            {this.props.text}
-          </Tooltip>
-        );
+        return <Tooltip tooltip={<div>{this.props.tooltipText}</div>}>{this.props.text}</Tooltip>;
       }
     });
 

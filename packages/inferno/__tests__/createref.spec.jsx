@@ -1,4 +1,4 @@
-import {createRef, Component, render, rerender} from 'inferno';
+import { createRef, Component, render, rerender } from 'inferno';
 
 describe('createRef', () => {
   let container;
@@ -52,15 +52,17 @@ describe('createRef', () => {
       render() {
         return (
           <div>
-            <span id="span" ref={this.element}>Ok</span>
-            <Testing ref={this.es6}/>
+            <span id="span" ref={this.element}>
+              Ok
+            </span>
+            <Testing ref={this.es6} />
             <Functional ref={this.functional} />
           </div>
         );
       }
     }
 
-    render(<Foobar/>, container);
+    render(<Foobar />, container);
     rerender();
   });
 
@@ -87,12 +89,11 @@ describe('createRef', () => {
 
         instance = this;
 
-
-        this.es6Old = function (arg) {
+        this.es6Old = function(arg) {
           oldCounter++;
           oldValue = arg;
         };
-        this.es6new = function (arg) {
+        this.es6new = function(arg) {
           newCounter++;
           newValue = arg;
         };
@@ -101,20 +102,20 @@ describe('createRef', () => {
       render(props) {
         return (
           <div>
-            <Testing ref={props.swap ? this.es6Old : this.es6new}/>
+            <Testing ref={props.swap ? this.es6Old : this.es6new} />
           </div>
         );
       }
     }
 
-    render(<Foobar swap={true}/>, container);
+    render(<Foobar swap={true} />, container);
 
     expect(oldCounter).toBe(1);
     expect(oldValue).toBe(instanceTesting);
     expect(newCounter).toBe(0);
     expect(newValue).toBe(null);
 
-    render(<Foobar swap={false}/>, container);
+    render(<Foobar swap={false} />, container);
 
     expect(oldCounter).toBe(2);
     expect(oldValue).toBe(null);
@@ -135,12 +136,11 @@ describe('createRef', () => {
 
         instance = this;
 
-
-        this.es6Old = function (arg) {
+        this.es6Old = function(arg) {
           oldCounter++;
           oldValue = arg;
         };
-        this.es6new = function (arg) {
+        this.es6new = function(arg) {
           newCounter++;
           newValue = arg;
         };
@@ -149,13 +149,13 @@ describe('createRef', () => {
       render(props) {
         return (
           <div>
-            <div id={'divi'} ref={props.swap ? this.es6Old : this.es6new}/>
+            <div id={'divi'} ref={props.swap ? this.es6Old : this.es6new} />
           </div>
         );
       }
     }
 
-    render(<Foobar swap={true}/>, container);
+    render(<Foobar swap={true} />, container);
 
     const instanceTesting = container.querySelector('#divi');
 
@@ -164,7 +164,7 @@ describe('createRef', () => {
     expect(newCounter).toBe(0);
     expect(newValue).toBe(null);
 
-    render(<Foobar swap={false}/>, container);
+    render(<Foobar swap={false} />, container);
 
     expect(oldCounter).toBe(2);
     expect(oldValue).toBe(null);
@@ -203,7 +203,7 @@ describe('createRef', () => {
 
         this.state = {
           swap: true
-        }
+        };
       }
 
       componentWillMount() {
@@ -228,18 +228,20 @@ describe('createRef', () => {
         });
       }
 
-      render(props, {swap}) {
+      render(props, { swap }) {
         return (
           <div>
-            <span id="span" ref={swap ? this.elementOld : this.elementNew}>Ok</span>
-            <Testing ref={swap ? this.es6Old : this.es6new}/>
+            <span id="span" ref={swap ? this.elementOld : this.elementNew}>
+              Ok
+            </span>
+            <Testing ref={swap ? this.es6Old : this.es6new} />
             <Functional ref={swap ? this.functionalOLD : this.functionalNEW} />
           </div>
         );
       }
     }
 
-    render(<Foobar/>, container);
+    render(<Foobar />, container);
     rerender();
 
     // Verify ref updated

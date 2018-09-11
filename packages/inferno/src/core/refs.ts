@@ -1,9 +1,9 @@
-import { isFunction, warning } from "inferno-shared";
+import { isFunction, warning } from 'inferno-shared';
 
 export function createRef() {
   return {
     current: null
-  }
+  };
 }
 
 export function forwardRef(render) {

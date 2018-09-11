@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { renderToString } from 'inferno-server';
-import { hydrate } from "inferno-hydrate";
+import { hydrate } from 'inferno-hydrate';
 import { createElement } from 'inferno-create-element';
 import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
 

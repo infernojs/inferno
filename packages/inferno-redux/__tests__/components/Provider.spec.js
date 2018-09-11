@@ -4,7 +4,7 @@ import { connect, Provider } from 'inferno-redux';
 import { findRenderedVNodeWithType } from 'inferno-test-utils';
 import { createStore } from 'redux';
 import sinon from 'sinon';
-import { VNodeFlags } from "inferno-vnode-flags";
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('redux', () => {
   let container;

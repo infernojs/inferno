@@ -5,7 +5,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
-import { VNode } from 'inferno';
+import { VNode } from '../core/implementation';
 
 function createLinkEvent(linkEvent, nextValue) {
   return function(e) {

@@ -1,4 +1,4 @@
-import {render, Component} from 'inferno';
+import { render, Component } from 'inferno';
 
 describe('ComponentDidUpdate', () => {
   let container;
@@ -20,14 +20,18 @@ describe('ComponentDidUpdate', () => {
         toggled: false
       };
 
-      toggleDynamicComponent = () => this.setState({
-        toggled: !this.state.toggled
-      });
+      toggleDynamicComponent = () =>
+        this.setState({
+          toggled: !this.state.toggled
+        });
 
       renderDynamicComponent = () => (
-        <div id="dynamic" ref={el => {
-          this.dynamicEl = el;
-        }}>
+        <div
+          id="dynamic"
+          ref={el => {
+            this.dynamicEl = el;
+          }}
+        >
           <p>Dynamic component!</p>
         </div>
       );
@@ -46,9 +50,12 @@ describe('ComponentDidUpdate', () => {
       };
 
       render = () => (
-        <div id="static" ref={el => {
-          this.staticEl = el;
-        }}>
+        <div
+          id="static"
+          ref={el => {
+            this.staticEl = el;
+          }}
+        >
           {this.state.toggled && this.renderDynamicComponent()}
           <button onClick={this.toggleDynamicComponent}>Toggle dynamic component</button>
         </div>

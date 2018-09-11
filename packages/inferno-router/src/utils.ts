@@ -1,5 +1,5 @@
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { isArray, isNull, isNullOrUndef, isObject } from 'inferno-shared';
+import { isNull, isObject } from 'inferno-shared';
 
 export function warning(condition, message) {
   if (!condition) {
@@ -39,33 +39,3 @@ export function invariant(condition, format, a?, b?, c?, d?, e?, f?) {
     throw error;
   }
 }
-
-const ARR = [];
-
-export const Children = {
-  forEach(children: any, fn: Function): void {
-    if (isNullOrUndef(children)) {
-      return;
-    }
-    children = Children.toArray(children);
-    for (let i = 0, len = children.length; i < len; i++) {
-      fn(children[i], i, children);
-    }
-  },
-
-  count(children: any): number {
-    return Children.toArray(children).length;
-  },
-
-  only(children: any): any {
-    children = Children.toArray(children);
-    if (children.length !== 1) {
-      throw new Error('Children.only() expects only one child.');
-    }
-    return children[0];
-  },
-
-  toArray(children: any): any[] {
-    return isNullOrUndef(children) ? [] : isArray(children) ? children : ARR.concat(children);
-  }
-};

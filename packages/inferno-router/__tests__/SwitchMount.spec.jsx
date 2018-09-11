@@ -42,4 +42,54 @@ describe('A <Switch>', () => {
 
     expect(mountCount).toBe(1);
   });
+
+  it('Should be possible to have multiple children in Route', () => {
+    const node = document.createElement('div');
+
+    let mountCount = 0;
+
+    class App extends Component {
+      componentWillMount() {
+        mountCount++;
+      }
+
+      render() {
+        return <div />;
+      }
+    }
+
+    function Foobar() {
+      return <span>Okay</span>;
+    }
+
+    const history = createHistory({
+      initialEntries: ['/one']
+    });
+
+    render(
+      <Router history={history}>
+        <Switch>
+          <Route path="/one">
+            <App />
+            <App />
+            <div>Test</div>
+          </Route>
+          <Route path="/two">
+            <Foobar />
+          </Route>
+        </Switch>
+      </Router>,
+      node
+    );
+
+    expect(node.innerHTML).toBe('<div></div><div></div><div>Test</div>');
+
+    history.push('/two');
+
+    expect(node.innerHTML).toBe('<span>Okay</span>');
+
+    history.push('/one');
+
+    expect(node.innerHTML).toBe('<div></div><div></div><div>Test</div>');
+  });
 });

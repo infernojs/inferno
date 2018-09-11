@@ -380,17 +380,23 @@ describe('SSR Creation (JSX)', () => {
     it('text nodes should match 1:1 after hydration', () => {
       class LinkComponent extends Component {
         render() {
-          return <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a>;
+          return (
+            <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">
+              create-inferno-app
+            </a>
+          );
         }
       }
       const container = document.createElement('div');
       const version = '4.0.0-21';
       const renderedString = renderToString(
         <div className="built">
-          Website built with Inferno {version} using <LinkComponent/>
+          Website built with Inferno {version} using <LinkComponent />
         </div>
       );
-      expect(renderedString).toEqual("<div class=\"built\">Website built with Inferno 4.0.0-21 using <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://github.com/infernojs/create-inferno-app\">create-inferno-app</a></div>");
+      expect(renderedString).toEqual(
+        '<div class="built">Website built with Inferno 4.0.0-21 using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a></div>'
+      );
 
       container.innerHTML = renderedString;
 
@@ -400,7 +406,7 @@ describe('SSR Creation (JSX)', () => {
       function WrapperComponent() {
         return (
           <div className="built">
-            Website built with Inferno {version} using <LinkComponent/>
+            Website built with Inferno {version} using <LinkComponent />
           </div>
         );
       }
@@ -417,17 +423,12 @@ describe('SSR Creation (JSX)', () => {
     it('Should be possible to render Fragment #1', () => {
       const vNode = (
         <div>
-          {
-            createFragment(
-            [
-              <div>Lets go!</div>,
-              null,
-              createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren),
-              'text node'
-            ],
-            ChildFlags.UnknownChildren)
-          }
-        </div>);
+          {createFragment(
+            [<div>Lets go!</div>, null, createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren), 'text node'],
+            ChildFlags.UnknownChildren
+          )}
+        </div>
+      );
       const renderedString = renderToString(vNode);
 
       expect(renderedString).toBe('<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>');
@@ -453,18 +454,17 @@ describe('SSR Creation (JSX)', () => {
 
       const vNode = (
         <div>
-          {
-            createFragment(
-              [
-                <div>Lets go!</div>,
-                <Fragmented/>,
-                null,
-                createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren),
-                'text node',
-                createFragment([null, 'Go', <em>Code</em>], ChildFlags.UnknownChildren),
-              ],
-              ChildFlags.UnknownChildren)
-          }
+          {createFragment(
+            [
+              <div>Lets go!</div>,
+              <Fragmented />,
+              null,
+              createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren),
+              'text node',
+              createFragment([null, 'Go', <em>Code</em>], ChildFlags.UnknownChildren)
+            ],
+            ChildFlags.UnknownChildren
+          )}
         </div>
       );
       const renderedString = renderToString(vNode);
@@ -480,9 +480,35 @@ describe('SSR Creation (JSX)', () => {
 
       hydrate(vNode, container);
 
-      expect(container.innerHTML).toBe('<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>'
+      );
       expect(container.querySelector('em')).toBe(emTag);
       expect(container.querySelector('#m')).toBe(moreDiv);
+    });
+
+    it('Should be possible to use getDerivedStateFromProps', () => {
+      class Test extends Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            value: 0
+          };
+        }
+
+        static getDerivedStateFromProps(props, state) {
+          return {
+            value: state.value + 1
+          };
+        }
+
+        render() {
+          return <div>{this.state.value}</div>;
+        }
+      }
+
+      expect(renderToString(<Test />)).toBe('<div>1</div>');
     });
   });
 });

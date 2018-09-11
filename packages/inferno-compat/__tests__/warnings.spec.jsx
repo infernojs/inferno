@@ -1,4 +1,4 @@
-import {render} from 'inferno-compat';
+import { render } from 'inferno-compat';
 
 describe('Warnings', () => {
   let container;
@@ -23,7 +23,9 @@ describe('Warnings', () => {
     render(<input type="text" onChange={anotherMethod} onInput={myTest} />, container);
 
     expect(spy.calls.count()).toBe(1);
-    expect(spy.calls.argsFor(0)).toEqual([`Inferno-compat Warning! 'onInput' handler is reserved to support React like 'onChange' event flow.
-Original event handler 'function myTest' will not be called.`]);
+    expect(spy.calls.argsFor(0)).toEqual([
+      `Inferno-compat Warning! 'onInput' handler is reserved to support React like 'onChange' event flow.
+Original event handler 'function myTest' will not be called.`
+    ]);
   });
 });

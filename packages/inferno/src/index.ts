@@ -18,7 +18,7 @@ import {
 } from './core/implementation';
 import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
 import { createRenderer, render, __render } from './DOM/rendering';
-import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE } from './DOM/utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE, Fragment } from './DOM/utils/common';
 import { Component, ComponentClass, ComponentType, SFC, StatelessComponent, rerender } from './core/component';
 import { mountProps } from './DOM/props';
 
@@ -45,7 +45,6 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-const Fragment = '$F';
 const version = process.env.INFERNO_VERSION;
 
 export {
@@ -81,7 +80,6 @@ export {
   rerender,
   version,
   JSX,
-
   // Internal methods, used by hydration
   LIFECYCLE as _L,
   createClassComponentInstance as _CI,

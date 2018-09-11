@@ -54,7 +54,7 @@ describe('Input type checkbox', () => {
     let parentClick = false;
 
     render(
-      <div onClick={() => parentClick = true}>
+      <div onClick={() => (parentClick = true)}>
         <input
           type="checkbox"
           checked={false}

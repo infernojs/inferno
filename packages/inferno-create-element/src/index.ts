@@ -1,5 +1,5 @@
-import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, Props, VNode } from 'inferno';
-import { isInvalid, isNullOrUndef, isObject, isString, isUndefined } from 'inferno-shared';
+import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, Props, VNode, createFragment } from 'inferno';
+import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const componentHooks = {
@@ -23,8 +23,10 @@ export function createElement<T>(
   props?: T & Props<T> | null,
   ..._children: Array<InfernoChildren | any>
 ): VNode {
-  if (isInvalid(type) || isObject(type)) {
-    throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
+  if (isInvalid(type)) {
+    throw new Error(
+      'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class, function or forwardRef.'
+    );
   }
   let children: any = _children;
   let ref: any = null;
@@ -93,6 +95,10 @@ export function createElement<T>(
     }
 
     return createComponentVNode(flags, type as Function, newProps, key, ref);
+  }
+
+  if (flags & VNodeFlags.Fragment) {
+    return createFragment(children, ChildFlags.UnknownChildren, key);
   }
 
   return createVNode(flags, type as string, className, children, ChildFlags.UnknownChildren, newProps, key, ref);

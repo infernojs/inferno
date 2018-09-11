@@ -146,7 +146,7 @@ function normalizeFormProps<P>(name: string, props: Props<P> | any) {
 
         if (existingMethod) {
           warning(
-`Inferno-compat Warning! 'onInput' handler is reserved to support React like 'onChange' event flow.
+            `Inferno-compat Warning! 'onInput' handler is reserved to support React like 'onChange' event flow.
 Original event handler 'function ${existingMethod.name}' will not be called.`
           );
         }

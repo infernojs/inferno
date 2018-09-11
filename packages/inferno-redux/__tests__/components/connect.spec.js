@@ -4,7 +4,7 @@ import { connect } from 'inferno-redux';
 import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
 import sinon from 'sinon';
-import { VNodeFlags } from "inferno-vnode-flags";
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('Inferno', () => {
   // IE does not support function names so error messages are different

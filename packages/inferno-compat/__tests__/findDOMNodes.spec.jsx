@@ -102,7 +102,12 @@ describe('findDOMNodes (JSX)', () => {
 
       class FragmentTester extends Component {
         render() {
-          return [<Wrapper key="a"><div /></Wrapper>, <span key="b" />];
+          return [
+            <Wrapper key="a">
+              <div />
+            </Wrapper>,
+            <span key="b" />
+          ];
         }
       }
 

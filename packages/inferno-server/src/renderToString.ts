@@ -1,18 +1,8 @@
-import {EMPTY_OBJ} from 'inferno';
-import {
-  combineFrom,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isNumber,
-  isString,
-  isTrue,
-  throwError
-} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {renderStylesToString} from './prop-renderers';
-import {escapeText, isAttributeNameSafe, voidElements} from './utils';
+import { EMPTY_OBJ } from 'inferno';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, throwError } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { renderStylesToString } from './prop-renderers';
+import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
 
 function renderVNodeToString(vNode, parent, context): string {
   const flags = vNode.flags;
@@ -25,6 +15,7 @@ function renderVNodeToString(vNode, parent, context): string {
 
     if (isClass) {
       const instance = new type(props, context);
+      const hasNewAPI = Boolean(type.getDerivedStateFromProps);
       instance.$BS = false;
       instance.$SSR = true;
       let childContext;
@@ -42,24 +33,27 @@ function renderVNodeToString(vNode, parent, context): string {
       }
       instance.context = context;
       instance.$UN = false;
-      if (isFunction(instance.componentWillMount)) {
+      if (!hasNewAPI && isFunction(instance.componentWillMount)) {
         instance.$BR = true;
         instance.componentWillMount();
         instance.$BR = false;
-      }
-      if (instance.$PSS) {
-        const state = instance.state;
-        const pending = instance.$PS;
+        if (instance.$PSS) {
+          const state = instance.state;
+          const pending = instance.$PS;
 
-        if (state === null) {
-          instance.state = pending;
-        } else {
-          for (const key in pending) {
-            state[key] = pending[key];
+          if (state === null) {
+            instance.state = pending;
+          } else {
+            for (const key in pending) {
+              state[key] = pending[key];
+            }
           }
+          instance.$PSS = false;
+          instance.$PS = null;
         }
-        instance.$PSS = false;
-        instance.$PS = null;
+      }
+      if (hasNewAPI) {
+        instance.state = createDerivedState(instance, props, instance.state);
       }
       const renderOutput = instance.render(props, instance.state, instance.context);
       // In case render returns invalid stuff

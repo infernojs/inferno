@@ -479,7 +479,7 @@ describe('Error recovery', () => {
     });
 
     describe('Error in child component', () => {
-      it('Should not block future updates', (done) => {
+      it('Should not block future updates', done => {
         let parentInstance = null;
         let childCrasherInstance = null;
 
@@ -489,7 +489,7 @@ describe('Error recovery', () => {
           }
 
           componentWillMount() {
-            throw 'Oops!'
+            throw 'Oops!';
           }
 
           render() {
@@ -502,7 +502,7 @@ describe('Error recovery', () => {
             super(props);
 
             this.state = {
-              fail: false,
+              fail: false
             };
 
             childCrasherInstance = this; // For the sake of test
@@ -513,9 +513,7 @@ describe('Error recovery', () => {
               return null;
             }
 
-            return (
-                <BadComponent/>
-            );
+            return <BadComponent />;
           }
         }
 
@@ -531,24 +529,26 @@ describe('Error recovery', () => {
               <div>
                 <ChildCrasher />
               </div>
-            )
+            );
           }
         }
 
-        render(<Parent/>, container);
+        render(<Parent />, container);
 
         expect(container.innerHTML).toBe('<div></div>');
 
-        expect(() => childCrasherInstance.setState({
-          fail: true
-        })).toThrow('Oops!');
+        expect(() =>
+          childCrasherInstance.setState({
+            fail: true
+          })
+        ).toThrow('Oops!');
 
         // Recover from it
         childCrasherInstance.setState({
           fail: false
         });
 
-        setTimeout(function () {
+        setTimeout(function() {
           expect(container.innerHTML).toBe('<div></div>');
           done();
         }, 10);

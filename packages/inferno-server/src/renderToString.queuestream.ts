@@ -1,20 +1,9 @@
-import {EMPTY_OBJ} from 'inferno';
-import {
-  combineFrom,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isNumber,
-  isString,
-  isTrue,
-  isUndefined,
-  throwError
-} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {Readable} from 'stream';
-import {renderStylesToString} from './prop-renderers';
-import {escapeText, isAttributeNameSafe, voidElements} from './utils';
+import { EMPTY_OBJ } from 'inferno';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, isUndefined, throwError } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { Readable } from 'stream';
+import { renderStylesToString } from './prop-renderers';
+import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
@@ -87,6 +76,7 @@ export class RenderQueueStream extends Readable {
       // Render the
       if (isClass) {
         const instance = new type(props, context);
+        const hasNewAPI = Boolean(type.getDerivedStateFromProps);
         instance.$BS = false;
         instance.$SSR = true;
         let childContext;
@@ -102,7 +92,7 @@ export class RenderQueueStream extends Readable {
         instance.context = context;
         instance.$UN = false;
         // Trigger lifecycle hook
-        if (isFunction(instance.componentWillMount)) {
+        if (!hasNewAPI && isFunction(instance.componentWillMount)) {
           instance.$BR = true;
           instance.componentWillMount();
           if (instance.$PSS) {
@@ -155,6 +145,9 @@ export class RenderQueueStream extends Readable {
               instance.props = combineFrom(instance.props, initialProps);
             }
           }
+        }
+        if (hasNewAPI) {
+          instance.state = createDerivedState(instance, props, instance.state);
         }
         const renderOutput = instance.render(instance.props, instance.state, instance.context);
         instance.$PSS = false;

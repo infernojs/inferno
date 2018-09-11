@@ -7,7 +7,7 @@ import { createClassComponentInstance, handleComponentInput } from './utils/comp
 import { validateKeys } from '../core/validate';
 
 export function mount(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
-  const flags = vNode.flags |= VNodeFlags.InUse;
+  const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
     mountElement(vNode, parentDom, context, isSVG, nextNode);

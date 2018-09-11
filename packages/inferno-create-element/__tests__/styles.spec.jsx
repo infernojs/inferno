@@ -9,7 +9,7 @@ function isCSSvariablesSupported() {
   const div = document.createElement('div');
   document.body.appendChild(div);
   div.style.cssText = '--my-color:red;background-color:var(--my-color);';
-  const backgroundIsRed = getComputedStyle(div).backgroundColor === "rgb(255, 0, 0)";
+  const backgroundIsRed = getComputedStyle(div).backgroundColor === 'rgb(255, 0, 0)';
   document.body.removeChild(div);
 
   return backgroundIsRed;
@@ -148,17 +148,15 @@ describe('CSS style properties (JSX)', () => {
   // Test for CSS variable support, depends on browser
   if (isCSSvariablesSupported()) {
     it('Should support inline CSS variables string way', () => {
-      render(<div style="--my-color:red;background-color:var(--my-color);"/>, container);
+      render(<div style="--my-color:red;background-color:var(--my-color);" />, container);
 
-      expect(getComputedStyle(container.firstChild).backgroundColor).toBe("rgb(255, 0, 0)"); // verify its red
+      expect(getComputedStyle(container.firstChild).backgroundColor).toBe('rgb(255, 0, 0)'); // verify its red
     });
 
     it('Should support inline CSS variables object way', () => {
-      render(<div style={
-        {"--my-color": "red", "background-color": "var(--my-color)"}
-      }/>, container);
+      render(<div style={{ '--my-color': 'red', 'background-color': 'var(--my-color)' }} />, container);
 
-      expect(getComputedStyle(container.firstChild).backgroundColor).toBe("rgb(255, 0, 0)"); // verify its red
+      expect(getComputedStyle(container.firstChild).backgroundColor).toBe('rgb(255, 0, 0)'); // verify its red
     });
   }
 });

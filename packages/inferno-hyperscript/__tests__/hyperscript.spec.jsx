@@ -1,6 +1,6 @@
-import { render, Component } from 'inferno';
 import { h } from 'inferno-hyperscript';
 import { innerHTML } from 'inferno-utils';
+import { render, Component, Fragment, forwardRef, createRef } from 'inferno';
 import sinon from 'sinon';
 
 describe('HyperScript (non-JSX)', () => {
@@ -350,5 +350,50 @@ describe('HyperScript (non-JSX)', () => {
       render(null, container);
       expect(container.innerHTML).toBe('');
     });
+  });
+
+  describe('Fragments', () => {
+    it('Should render Fragment with key', () => {
+      render(h(Fragment, { key: 'first' }, [h('div', null, 'Ok'), h('span', null, 'Test')]), container);
+
+      expect(container.innerHTML).toBe('<div>Ok</div><span>Test</span>');
+
+      const div = container.querySelector('div');
+      const span = container.querySelector('span');
+
+      render(h(Fragment, { key: 'foobar' }, [h('div', null, 'Ok'), h('span', null, 'Test')]), container);
+
+      // Verify key works
+      expect(container.innerHTML).toBe('<div>Ok</div><span>Test</span>');
+
+      expect(div).not.toBe(container.querySelector('div'));
+      expect(span).not.toBe(container.querySelector('span'));
+    });
+  });
+
+  it('Should be possible to forward createRef', () => {
+    const FancyButton = forwardRef((props, ref) => h('button', { ref: ref, className: 'FancyButton' }, props.children));
+
+    expect(FancyButton.render).toBeDefined();
+
+    class Hello extends Component {
+      constructor(props) {
+        super(props);
+
+        // You can now get a ref directly to the DOM button:
+        this.btn = createRef();
+      }
+
+      componentDidMount() {
+        expect(this.btn.current).toBe(container.querySelector('button'));
+      }
+      render() {
+        return h(FancyButton, { ref: this.btn }, 'Click me!');
+      }
+    }
+
+    render(h(Hello), container);
+
+    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
   });
 });

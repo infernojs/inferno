@@ -206,7 +206,7 @@ export function connectAdvanced(
       }
 
       public componentWillMount() {
-        if (!shouldHandleStateChanges  || this.$SSR) {
+        if (!shouldHandleStateChanges || this.$SSR) {
           return;
         }
 

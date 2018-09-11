@@ -1,9 +1,9 @@
-import {combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {Readable} from 'stream';
-import {renderStylesToString} from './prop-renderers';
-import {escapeText, isAttributeNameSafe, voidElements} from './utils';
-import {VNode} from 'inferno';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { Readable } from 'stream';
+import { renderStylesToString } from './prop-renderers';
+import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
+import { VNode } from 'inferno';
 
 const resolvedPromise = Promise.resolve();
 
@@ -68,6 +68,7 @@ export class RenderStream extends Readable {
     }
 
     const instance = new type(props, context);
+    const hasNewAPI = Boolean(type.getDerivedStateFromProps);
     instance.$BS = false;
     instance.$SSR = true;
     let childContext;
@@ -81,7 +82,7 @@ export class RenderStream extends Readable {
     instance.context = context;
     instance.$BR = true;
 
-    return Promise.resolve(instance.componentWillMount && instance.componentWillMount()).then(() => {
+    return Promise.resolve(!hasNewAPI && instance.componentWillMount && instance.componentWillMount()).then(() => {
       if (instance.$PSS) {
         const state = instance.state;
         const pending = instance.$PS;
@@ -98,7 +99,9 @@ export class RenderStream extends Readable {
       }
 
       instance.$BR = false;
-
+      if (hasNewAPI) {
+        instance.state = createDerivedState(instance, props, instance.state);
+      }
       const renderOutput = instance.render(instance.props, instance.state, instance.context);
       instance.$PSS = false;
 

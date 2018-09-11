@@ -185,7 +185,7 @@ describe('Inferno-compat LifeCycle', () => {
       3b null
       2b null
        */
-      
+
       // // mount
       let i = -1;
       expect(array[++i].args).toEqual(['Will mount']);

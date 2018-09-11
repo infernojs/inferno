@@ -13,7 +13,8 @@ import {
   throwError
 } from 'inferno-shared';
 import { validateVNodeElementChildren } from './validate';
-import { Component } from "inferno";
+import { Component } from './component';
+import { Fragment } from './../DOM/utils/common';
 
 const keyPrefix = '$';
 
@@ -125,7 +126,13 @@ export function createVNode<P>(
   return vNode;
 }
 
-export function createComponentVNode<P>(flags: VNodeFlags, type: Function | Component<any, any> | ForwardRef, props?: Props<P> & P | null, key?: null | string | number, ref?: Ref | Refs<P> | null) {
+export function createComponentVNode<P>(
+  flags: VNodeFlags,
+  type: Function | Component<any, any> | ForwardRef,
+  props?: Props<P> & P | null,
+  key?: null | string | number,
+  ref?: Ref | Refs<P> | null
+) {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.HtmlElement) {
       throwError('Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.');
@@ -187,16 +194,7 @@ export function createTextVNode(text?: string | number, key?: string | number | 
 }
 
 export function createFragment(children: any, childFlags: ChildFlags, key?: string | number | null): VNode {
-  const fragment = createVNode(
-    VNodeFlags.Fragment,
-    VNodeFlags.Fragment as any,
-    null,
-    children,
-    childFlags,
-    null,
-    key,
-    null
-  );
+  const fragment = createVNode(VNodeFlags.Fragment, VNodeFlags.Fragment as any, null, children, childFlags, null, key, null);
 
   switch (fragment.childFlags) {
     case ChildFlags.HasInvalidChildren:
@@ -278,7 +276,7 @@ export function directClone(vNodeToClone: VNode): VNode {
   } else if (flags & VNodeFlags.Portal) {
     newVNode = createPortal(vNodeToClone.children, vNodeToClone.ref);
   } else if (flags & VNodeFlags.Fragment) {
-    newVNode = createFragment(vNodeToClone.children as any[], vNodeToClone.childFlags, vNodeToClone.key)
+    newVNode = createFragment(vNodeToClone.children as any[], vNodeToClone.childFlags, vNodeToClone.key);
   }
 
   return newVNode;
@@ -317,7 +315,7 @@ export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, c
           const oldKey = n.key;
           const isPrefixedKey = isString(oldKey) && oldKey[0] === keyPrefix;
 
-          if ((n.flags & VNodeFlags.InUse) || isPrefixedKey) {
+          if (n.flags & VNodeFlags.InUse || isPrefixedKey) {
             n = directClone(n);
           }
           if (isNull(oldKey) || isPrefixedKey) {
@@ -343,6 +341,8 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
       return VNodeFlags.SelectElement;
     case 'textarea':
       return VNodeFlags.TextareaElement;
+    case Fragment:
+      return VNodeFlags.Fragment;
     default:
       return VNodeFlags.HtmlElement;
   }

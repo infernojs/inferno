@@ -171,22 +171,17 @@ module.exports = function(config) {
             options: {
               babelrc: false,
               presets: [
-                ["@babel/preset-env",
+                [
+                  '@babel/preset-env',
                   {
-                    "loose": true,
-                    "targets": {
-                      "browsers": [
-                        "ie >= 10",
-                        "safari > 7"
-                      ]
+                    loose: true,
+                    targets: {
+                      browsers: ['ie >= 10', 'safari > 7']
                     }
                   }
                 ]
               ],
-              plugins: [
-                ["babel-plugin-inferno", {"imports": true}],
-                ["@babel/plugin-proposal-class-properties", { "loose": true }]
-              ]
+              plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
             }
           },
           {

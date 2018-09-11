@@ -1,6 +1,6 @@
 import { Component, createPortal, render as _render } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
-import { VNodeFlags } from "inferno-vnode-flags";
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('Portal spec', () => {
   let container;

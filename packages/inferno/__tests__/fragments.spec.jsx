@@ -1,4 +1,4 @@
-import { Fragment, Component, createPortal, createFragment, render } from "inferno";
+import { Fragment, Component, createPortal, createFragment, render } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('Fragments', () => {
@@ -18,16 +18,11 @@ describe('Fragments', () => {
   it('Should render and unmount fragment', () => {
     class Example extends Component {
       render() {
-        return (
-          createFragment([
-            <div>First</div>,
-            <div>second</div>
-          ], ChildFlags.HasNonKeyedChildren)
-        )
+        return createFragment([<div>First</div>, <div>second</div>], ChildFlags.HasNonKeyedChildren);
       }
     }
 
-    render(<Example/>, container);
+    render(<Example />, container);
 
     expect(container.innerHTML).toBe('<div>First</div><div>second</div>');
 
@@ -39,20 +34,14 @@ describe('Fragments', () => {
   it('Should render nested fragment', () => {
     class Example extends Component {
       render() {
-        return (
-          createFragment([
-            <div>First</div>,
-            createFragment([
-              <div>Sub1</div>,
-              <div>Sub2</div>,
-            ], ChildFlags.HasNonKeyedChildren),
-            <div>second</div>
-          ], ChildFlags.HasNonKeyedChildren)
-        )
+        return createFragment(
+          [<div>First</div>, createFragment([<div>Sub1</div>, <div>Sub2</div>], ChildFlags.HasNonKeyedChildren), <div>second</div>],
+          ChildFlags.HasNonKeyedChildren
+        );
       }
     }
 
-    render(<Example/>, container);
+    render(<Example />, container);
 
     expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
 
@@ -64,71 +53,50 @@ describe('Fragments', () => {
   it('Should be to replace component with fragment with another component', () => {
     class Example extends Component {
       render() {
-        return (
-          createFragment([
-            <div>First</div>,
-            createFragment([
-              <div>Sub1</div>,
-              <div>Sub2</div>,
-            ], ChildFlags.HasNonKeyedChildren),
-            <div>second</div>
-          ], ChildFlags.HasNonKeyedChildren)
-        )
+        return createFragment(
+          [<div>First</div>, createFragment([<div>Sub1</div>, <div>Sub2</div>], ChildFlags.HasNonKeyedChildren), <div>second</div>],
+          ChildFlags.HasNonKeyedChildren
+        );
       }
     }
 
     function FunctionalComp() {
-      return (
-        createFragment(
-          [<div>Functional</div>], ChildFlags.HasNonKeyedChildren
-        )
-      )
+      return createFragment([<div>Functional</div>], ChildFlags.HasNonKeyedChildren);
     }
 
-    render(<Example/>, container);
+    render(<Example />, container);
 
     expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
 
-    render(<FunctionalComp/>, container);
+    render(<FunctionalComp />, container);
 
     expect(container.innerHTML).toBe('<div>Functional</div>');
 
-    render(<Example/>, container);
+    render(<Example />, container);
 
     expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
 
-    render(<FunctionalComp/>, container);
+    render(<FunctionalComp />, container);
     render(null, container);
 
     expect(container.innerHTML).toBe('');
   });
 
   it('Should be possible to move fragments', () => {
-    const fragmentA = createFragment([
-        <div id="a1">A1</div>,
-        <div>A2</div>
-      ], ChildFlags.HasNonKeyedChildren, 'A'
-    );
+    const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
 
-    const fragmentB = createFragment([
-        <div id="b1">B1</div>,
-      ], ChildFlags.HasNonKeyedChildren, 'B'
-    );
+    const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
 
-    const fragmentC = createFragment([
-        <div id="c1">C1</div>,
-        <div>C2</div>,
-        <div>C3</div>
-      ], ChildFlags.HasNonKeyedChildren, 'C'
-    );
+    const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
 
-    render((
+    render(
       <div>
         {fragmentA}
         {fragmentB}
         {fragmentC}
-      </div>
-    ), container);
+      </div>,
+      container
+    );
 
     expect(container.innerHTML).toBe('<div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>');
 
@@ -137,13 +105,14 @@ describe('Fragments', () => {
     let C1 = container.querySelector('#c1');
 
     // Switch order
-    render((
+    render(
       <div>
         {fragmentC}
         {fragmentA}
         {fragmentB}
-      </div>
-    ), container);
+      </div>,
+      container
+    );
 
     // Verify dom has changed and nodes are the same
     expect(container.innerHTML).toBe('<div><div id="c1">C1</div><div>C2</div><div>C3</div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div></div>');
@@ -153,12 +122,13 @@ describe('Fragments', () => {
     expect(container.querySelector('#c1')).toBe(C1);
 
     // Switch order again
-    render((
+    render(
       <div>
         {fragmentB}
         {fragmentC}
-      </div>
-    ), container);
+      </div>,
+      container
+    );
 
     // Verify dom has changed and nodes are the same
     expect(container.innerHTML).toBe('<div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>');
@@ -169,28 +139,26 @@ describe('Fragments', () => {
   });
 
   it('Should be possible to render fragments JSX way', () => {
-    function Fragmenter({first, mid, last, changeOrder}) {
+    function Fragmenter({ first, mid, last, changeOrder }) {
       if (changeOrder) {
         return (
           <>
             <div>{first}</div>
             <>
-                More
-                {null}
-                Hey!
-                <Fragment>
-                  <>Large {last}</>
-                  <Fragment>And Small</Fragment>
-                </Fragment>
-                <>
-                  Nesting
-                </>
-                {mid}
+              More
+              {null}
+              Hey!
+              <Fragment>
+                <>Large {last}</>
+                <Fragment>And Small</Fragment>
+              </Fragment>
+              <>Nesting</>
+              {mid}
             </>
             <span>bar</span>
             {null}
           </>
-        )
+        );
       }
       return (
         <>
@@ -198,9 +166,7 @@ describe('Fragments', () => {
           Hey!
           <>
             More
-            <>
-              Nesting
-            </>
+            <>Nesting</>
             {mid}
             <Fragment>
               <>Large {last}</>
@@ -240,7 +206,7 @@ describe('Fragments', () => {
 
     render(
       <FoobarCom node={portalNode}>
-        <Fragmenter first="first" mid="MID" last={<div>Why?</div>}/>
+        <Fragmenter first="first" mid="MID" last={<div>Why?</div>} />
       </FoobarCom>,
       container
     );
@@ -250,12 +216,7 @@ describe('Fragments', () => {
 
     render(
       <FoobarCom node={portalNode}>
-        <Fragmenter
-          first={<span>GoGo</span>}
-          mid="MID"
-          last={<div>Why?</div>}
-          changeOrder={true}
-        />
+        <Fragmenter first={<span>GoGo</span>} mid="MID" last={<div>Why?</div>} changeOrder={true} />
       </FoobarCom>,
       container
     );
@@ -265,7 +226,7 @@ describe('Fragments', () => {
 
     render(
       <FoobarCom node={portalNode}>
-        <Fragmenter first="first" mid="MID" last={<div>Why?</div>}/>
+        <Fragmenter first="first" mid="MID" last={<div>Why?</div>} />
       </FoobarCom>,
       container
     );
@@ -284,9 +245,7 @@ describe('Fragments', () => {
                 <>
                   <>
                     <>
-                      <>
-                        Okay!
-                      </>
+                      <>Okay!</>
                     </>
                   </>
                 </>
@@ -294,10 +253,10 @@ describe('Fragments', () => {
             </>
           </>
         </>
-      )
+      );
     }
 
-    render(<Fragmenter2/>, container);
+    render(<Fragmenter2 />, container);
 
     expect(container.innerHTML).toBe('Okay!');
 
@@ -307,16 +266,11 @@ describe('Fragments', () => {
   });
 
   it('Should append DOM nodes to correct position when component root Fragmnet change', () => {
-    class TestRoot extends Component {
+    class TestRoot extends Component {
       render() {
-        return (
-          <>
-            {this.props.children}
-          </>
-        );
+        return <>{this.props.children}</>;
       }
     }
-
 
     render(
       <div>
@@ -352,13 +306,9 @@ describe('Fragments', () => {
   });
 
   it('Should not clear whole parent element when fragment children are cleared', () => {
-    class TestRoot extends Component {
+    class TestRoot extends Component {
       render() {
-        return (
-          <>
-            {this.props.children}
-          </>
-        );
+        return <>{this.props.children}</>;
       }
     }
 
@@ -386,8 +336,7 @@ describe('Fragments', () => {
           <div>3</div>
           <div>4</div>
         </TestRoot>
-        <TestRoot>
-        </TestRoot>
+        <TestRoot />
       </div>,
       container
     );
@@ -398,7 +347,7 @@ describe('Fragments', () => {
     let unmountCounter = 0;
     let mountCounter = 0;
 
-    class TestLifecycle extends Component {
+    class TestLifecycle extends Component {
       componentWillUnmount() {
         unmountCounter++;
       }
@@ -408,11 +357,7 @@ describe('Fragments', () => {
       }
 
       render() {
-        return (
-          <>
-            {this.props.children}
-          </>
-        );
+        return <>{this.props.children}</>;
       }
     }
 
@@ -476,7 +421,7 @@ describe('Fragments', () => {
   it('Should unmount empty fragments', () => {
     render(
       <Fragment>
-        <Fragment/>
+        <Fragment />
       </Fragment>,
       container
     );
@@ -485,7 +430,7 @@ describe('Fragments', () => {
 
     render(
       <Fragment>
-        <div/>
+        <div />
       </Fragment>,
       container
     );
@@ -494,7 +439,7 @@ describe('Fragments', () => {
 
     render(
       <Fragment>
-        <Fragment/>
+        <Fragment />
       </Fragment>,
       container
     );
@@ -519,8 +464,7 @@ describe('Fragments', () => {
           <span>2b</span>
           <span>2c</span>
         </Fragment>
-        <Fragment>
-        </Fragment>
+        <Fragment />
       </Fragment>,
       container
     );
@@ -538,8 +482,7 @@ describe('Fragments', () => {
           <span>2b</span>
           <span>2c</span>
         </Fragment>
-        <Fragment>
-        </Fragment>
+        <Fragment />
       </Fragment>,
       container
     );
@@ -548,7 +491,7 @@ describe('Fragments', () => {
 
     render(
       <Fragment>
-        <Fragment/>
+        <Fragment />
       </Fragment>,
       container
     );

@@ -582,6 +582,32 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         done();
       });
     });
+
+    it('Should be possible to use getDerivedStateFromProps', done => {
+      class Test extends Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            value: 0
+          };
+        }
+
+        static getDerivedStateFromProps(props, state) {
+          return {
+            value: state.value + 1
+          };
+        }
+
+        render() {
+          return <div>{this.state.value}</div>;
+        }
+      }
+      return streamPromise(<Test />).then(function(output) {
+        expect(output[1]).toEqual('<div>1</div>');
+        done();
+      });
+    });
   });
 });
 

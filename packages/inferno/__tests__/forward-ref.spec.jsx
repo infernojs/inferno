@@ -1,4 +1,4 @@
-import {render, createRef, forwardRef, Component} from 'inferno';
+import { render, createRef, forwardRef, Component } from 'inferno';
 
 describe('Forward Ref', () => {
   let container;
@@ -55,11 +55,17 @@ describe('Forward Ref', () => {
 
     class Hello extends Component {
       render() {
-        return <FancyButton ref={(btn) => {
-          if (btn) {
-            expect(btn).toBe(container.querySelector('button'))
-          }
-        }}>Click me!</FancyButton>;
+        return (
+          <FancyButton
+            ref={btn => {
+              if (btn) {
+                expect(btn).toBe(container.querySelector('button'));
+              }
+            }}
+          >
+            Click me!
+          </FancyButton>
+        );
       }
     }
 
@@ -101,13 +107,12 @@ describe('Forward Ref', () => {
       forwardRef(<div>1</div>);
       expect(spy.calls.count()).toEqual(++i);
 
-      forwardRef(<Foobar/>);
+      forwardRef(<Foobar />);
       expect(spy.calls.count()).toEqual(++i);
 
-
       // This is ok
-      forwardRef(function () {
-        return <div>1</div>
+      forwardRef(function() {
+        return <div>1</div>;
       });
       expect(spy.calls.count()).toEqual(i);
     });
@@ -118,12 +123,10 @@ describe('Forward Ref', () => {
       function CoolStuff(props, ref) {
         return (
           <div className={props.className}>
-            <span ref={ref}>
-              {props.children}
-            </span>
+            <span ref={ref}>{props.children}</span>
             {props.foo}
           </div>
-        )
+        );
       }
 
       CoolStuff.defaultProps = {
@@ -141,11 +144,18 @@ describe('Forward Ref', () => {
 
       class Hello extends Component {
         render() {
-          return <ForwardCom className="okay" ref={(btn) => {
-            if (btn) {
-              expect(btn).toBe(container.querySelector('span'));
-            }
-          }}><a>1</a></ForwardCom>;
+          return (
+            <ForwardCom
+              className="okay"
+              ref={btn => {
+                if (btn) {
+                  expect(btn).toBe(container.querySelector('span'));
+                }
+              }}
+            >
+              <a>1</a>
+            </ForwardCom>
+          );
         }
       }
 
@@ -158,5 +168,5 @@ describe('Forward Ref', () => {
 
       expect(container.innerHTML).toBe('');
     });
-  })
+  });
 });

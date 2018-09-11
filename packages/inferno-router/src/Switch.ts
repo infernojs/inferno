@@ -1,36 +1,50 @@
 import { Component, createComponentVNode, VNode } from 'inferno';
 import { matchPath } from './matchPath';
-import { Children, invariant, isValidElement, warning } from './utils';
-import { combineFrom } from 'inferno-shared';
+import { invariant, warning } from './utils';
+import { combineFrom, isInvalid, isArray } from 'inferno-shared';
 import { IRouteProps } from './Route';
 
-/**
- * The public API for rendering the first <Route> that matches.
- */
+function getMatch({ path, exact, strict, sensitive, from }, route, location) {
+  const pathProp = path || from;
+
+  return pathProp ? matchPath(location.pathname, { path: pathProp, exact, strict, sensitive }) : route.match;
+}
+
 export class Switch extends Component<IRouteProps, any> {
   public render(): VNode | null {
     const { route } = this.context.router;
     const { children } = this.props;
     const location = this.props.location || route.location;
 
+    if (isInvalid(children)) {
+      return null;
+    }
+
     let match;
-    let child;
-    // optimization: Better to use for loop here so we can return when match found, instead looping through everything
-    Children.forEach(children, element => {
-      if (!isValidElement(element)) {
-        return;
+    let _child: any;
+
+    if (isArray(children)) {
+      for (let i = 0; i < children.length; i++) {
+        debugger;
+        _child = children[i];
+
+        match = getMatch(_child.props, route, location);
+
+        if (match) {
+          break;
+        }
       }
+    } else {
+      debugger;
+      match = getMatch((children as any).props, route, location);
+      _child = children;
+    }
 
-      const { path: pathProp, exact, strict, sensitive, from } = element.props;
-      const path = pathProp || from;
+    if (match) {
+      return createComponentVNode(_child.flags, _child.type, combineFrom(_child.props, { location, computedMatch: match }));
+    }
 
-      if (match == null) {
-        child = element;
-        match = path ? matchPath(location.pathname, { path, exact, strict, sensitive }) : route.match;
-      }
-    });
-
-    return match ? createComponentVNode(child.flags, child.type, combineFrom(child.props, { location, computedMatch: match }), null, child.ref) : null;
+    return null;
   }
 }
 

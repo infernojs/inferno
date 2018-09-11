@@ -42,12 +42,13 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
 
   return {
     // --- ReactDOMComponent interface
-    _currentElement: (flags & VNodeFlags.Text) > 0
-      ? vNode.children + ''
-      : {
-          props: vNode.className ? Object.assign({}, vNode.props, { className: vNode.className }) : vNode.props,
-          type: vNode.type
-        },
+    _currentElement:
+      (flags & VNodeFlags.Text) > 0
+        ? vNode.children + ''
+        : {
+            props: vNode.className ? Object.assign({}, vNode.props, { className: vNode.className }) : vNode.props,
+            type: vNode.type
+          },
     _renderedChildren: renderedChildren,
     _stringText: isTextVNode ? vNode.children + '' : null,
     vNode
@@ -175,7 +176,7 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
 
       break;
     case ChildFlags.HasTextChildren:
-      devToolComponent._stringText = children;
+      devToolComponent._stringText = children + '';
       break;
     case ChildFlags.HasKeyedChildren:
     case ChildFlags.HasNonKeyedChildren:

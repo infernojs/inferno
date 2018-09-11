@@ -1,10 +1,11 @@
 import { combineFrom, isNull } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from "inferno-vnode-flags";
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from './../../core/implementation';
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
 export const EMPTY_OBJ = {};
+export const Fragment: string = '$F';
 export const LIFECYCLE: Function[] = [];
 
 if (process.env.NODE_ENV !== 'production') {
@@ -60,7 +61,7 @@ export function findDOMfromVNode(vNode: VNode) {
     children = vNode.children;
 
     if (flags & VNodeFlags.Fragment) {
-      vNode = vNode.childFlags === ChildFlags.HasVNodeChildren ? children as VNode : (children as VNode[])[0];
+      vNode = vNode.childFlags === ChildFlags.HasVNodeChildren ? (children as VNode) : (children as VNode[])[0];
     } else if (flags & VNodeFlags.ComponentClass) {
       vNode = (children as any).$LI;
     } else {
@@ -97,7 +98,7 @@ export function removeVNodeDOM(vNode: VNode, dom: Element) {
 
 export function getComponentName(instance): string {
   // Fallback for IE
-  return (instance.name || instance.displayName || instance.constructor.name || (instance.toString().match(/^function\s*([^\s(]+)/) || [])[1]);
+  return instance.name || instance.displayName || instance.constructor.name || (instance.toString().match(/^function\s*([^\s(]+)/) || [])[1];
 }
 
 export function createDerivedState(instance, nextProps, state) {
