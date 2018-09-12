@@ -49,6 +49,9 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
       continue;
     }
     if (typeof childNode === 'object') {
+      if (childNode.isValidated) {
+        continue;
+      }
       childNode.isValidated = true;
     }
 
