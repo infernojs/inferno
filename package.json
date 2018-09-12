@@ -43,6 +43,7 @@
     "build:tsc": "lerna exec tsc",
     "build:es": "npm run rollup -- --name=index --ext=.esm.js --env=production --format=es --uglify=false",
     "build:es:dev": "npm run rollup -- --name=index --ext=.dev.esm.js --env=development --format=es --uglify=false",
+    "build:esnext": "npm run rollup -- --name=index --ext=.esnext.js --env=production --format=es --esnext=true --uglify=false",
     "build:cjs": "npm run rollup -- --env=development --format=cjs --replace=true --name=index.cjs --uglify=false",
     "build:cjs:prod": "npm run rollup -- --env=production --format=cjs --replace=true --name=index.cjs --uglify=true --ext=.min.js",
     "build:umd:dev": "npm run rollup -- --uglify=false",
@@ -74,7 +75,7 @@
     "test:package": "node fixtures/packaging/build-all.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.0.1",
     "@babel/plugin-proposal-class-properties": "7.0.0",
     "@babel/preset-env": "7.0.0",
     "@types/history": "^4.7.0",
@@ -93,7 +94,7 @@
     "history": "^4.7.2",
     "jest": "^23.6.0",
     "jsdom": "12.0.0",
-    "lerna": "3.3.0",
+    "lerna": "3.3.1",
     "lint-staged": "^7.2.2",
     "madge": "^3.2.0",
     "minimist": "^1.2.0",

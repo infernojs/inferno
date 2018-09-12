@@ -1,75 +1,86 @@
 import { render, VNode } from 'inferno';
-import { isArray, isNull, isObject, isString } from 'inferno-shared';
-import { getTagNameOfVNode, isDOMVNode } from './utils';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { isArray, isNullOrUndef } from 'inferno-shared';
+import { getTagNameOfVNode } from './utils';
 
 // Jest Snapshot Utilities
 // Jest formats it's snapshots prettily because it knows how to play with the React test renderer.
 // Symbols and algorithm have been reversed from the following file:
 // https://github.com/facebook/react/blob/v15.4.2/src/renderers/testing/ReactTestRenderer.js#L98
 
-function createSnapshotObject(object: object) {
-  let value;
-  if (typeof Symbol === 'undefined') {
-    value = 'react.test.json';
-  } else {
-    value = Symbol.for('react.test.json');
-  }
+const symbolValue = typeof Symbol === 'undefined' ? 'react.test.json' : Symbol.for('react.test.json');
 
+function createSnapshotObject(object: object) {
   Object.defineProperty(object, '$$typeof', {
-    value
+    value: symbolValue
   });
 
   return object;
 }
 
-export function vNodeToSnapshot(node: VNode | Element) {
-  let object;
-  const children: any[] = [];
-  if (isDOMVNode(node)) {
-    const props = { className: node.className || undefined, ...node.props };
+function buildVNodeSnapshot(vNode: VNode) {
+  const flags = vNode.flags;
+  const children: any = vNode.children;
+  let childVNode;
 
-    // Remove undefined props
-    Object.keys(props).forEach(propKey => {
-      if (props[propKey] === undefined) {
-        delete props[propKey];
-      }
-    });
-
-    // Create the actual object that Jest will interpret as the snapshot for this VNode
-    object = createSnapshotObject({
-      props,
-      type: getTagNameOfVNode(node)
-    });
+  if (flags & VNodeFlags.ComponentClass) {
+    childVNode = buildVNodeSnapshot(children.$LI);
+  } else if (flags & VNodeFlags.ComponentFunction) {
+    childVNode = buildVNodeSnapshot(children);
   }
 
-  if (isArray(node.children)) {
-    node.children.forEach(child => {
-      const asJSON = vNodeToSnapshot(child as VNode);
-      if (asJSON) {
-        children.push(asJSON);
-      }
-    });
-  } else if (isString(node.children)) {
-    children.push(node.children);
-  } else if (isObject(node.children) && !isNull(node.children)) {
-    const asJSON = vNodeToSnapshot(node.children as any);
-    if (asJSON) {
-      children.push(asJSON);
+  if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    childVNode = buildVNodeSnapshot(children);
+  } else if (vNode.childFlags & ChildFlags.MultipleChildren) {
+    childVNode = [];
+
+    for (let i = 0, len = children.length; i < len; i++) {
+      childVNode.push(buildVNodeSnapshot(children[i]));
     }
+  } else if (vNode.childFlags & ChildFlags.HasTextChildren) {
+    childVNode = vNode.children + '';
   }
 
-  if (object) {
-    object.children = children.length ? children : null;
-    return object;
+  if (flags & VNodeFlags.Element) {
+    const snapShotProps: any = {};
+    const props = vNode.props;
+
+    if (props) {
+      const keys = Object.keys(props);
+
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const value = props[key];
+
+        if (value !== undefined) {
+          snapShotProps[key] = value;
+        }
+      }
+    }
+
+    if (!isNullOrUndef(vNode.className)) {
+      snapShotProps.className = vNode.className;
+    }
+
+    // Jest expects children to always be array
+    if (childVNode && !isArray(childVNode)) {
+      childVNode = [childVNode];
+    }
+
+    return createSnapshotObject({
+      children: childVNode,
+      props: snapShotProps,
+      type: getTagNameOfVNode(vNode),
+    });
+  } else if (flags & VNodeFlags.Text) {
+    childVNode = vNode.children + '';
   }
 
-  if (children.length > 1) {
-    return children;
-  } else if (children.length === 1) {
-    return children[0];
-  }
+  return childVNode;
+}
 
-  return object;
+export function vNodeToSnapshot(vNode: VNode) {
+  return buildVNodeSnapshot(vNode);
 }
 
 export function renderToSnapshot(input: VNode) {

@@ -7,27 +7,27 @@ export function isVNode(inst: any): inst is VNode {
 }
 
 export function isTextVNode(inst: VNode): inst is VNode {
-  return isVNode(inst) && (inst.flags & VNodeFlags.Text) !== 0;
+  return (inst.flags & VNodeFlags.Text) > 0;
 }
 
 export function isFunctionalVNode(inst: VNode): inst is VNode {
-  return isVNode(inst) && (inst.flags & VNodeFlags.ComponentFunction) !== 0;
+  return isVNode(inst) && (inst.flags & VNodeFlags.ComponentFunction) > 0;
 }
 
 export function isClassVNode(inst: VNode): inst is VNode {
-  return isVNode(inst) && (inst.flags & VNodeFlags.ComponentClass) !== 0;
+  return isVNode(inst) && (inst.flags & VNodeFlags.ComponentClass) > 0;
 }
 
 export function isComponentVNode(inst: VNode): inst is VNode {
   return isFunctionalVNode(inst) || isClassVNode(inst);
 }
 
-export function getTagNameOfVNode(vNode: any) {
+export function getTagNameOfVNode(vNode: VNode) {
   return (vNode && vNode.dom && vNode.dom.tagName.toLowerCase()) || undefined;
 }
 
-export function isDOMVNode(inst: any): inst is VNode {
-  return isVNode(inst) && (inst.flags & VNodeFlags.Element) !== 0;
+export function isDOMVNode(vNode: any): vNode is VNode {
+  return !isComponentVNode(vNode) && !isTextVNode(vNode) && (vNode.flags & VNodeFlags.Element) > 0;
 }
 
 export class Wrapper<P, S> extends Component<P, S> {

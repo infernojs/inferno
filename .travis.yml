@@ -10,19 +10,19 @@ addons:
   firefox: latest
 jobs:
   include:
-  - script: npm run lint
   - script:
+    - npm run lint
+    - npm run build
+    - npm run test:package
     - npm run test:coverage
     - npm run test:browser
     - npm run coveralls
   - stage: SauceLabs
     if: "(branch = master) AND (NOT (type IN (pull_request)))"
     script:
+    - npm run build:es
+    - npm run build:es:dev
     - npm run test:browser:sauce
-  - stage: Build
-    script:
-    - npm run build
-    - npm run test:package
 env:
   global:
   - secure: lwjTW+9OrHdksmv1uPWupwaE02fvQCApxrRe3gCQ62KVeB5LIsY2Giu4F44WJQ3o/WbaSj96ttBZy0jKGVmvo4e2qa4v+Ok/KvH6J1kxUBS7wvmjYOzMOUyswibr+/hhO6d/HdYjkWD8oMhYRFIA/a0gK4qLRoLKe70d0OvwkmqNCyrjH/AYqaAUKuMlmi3iMhOsnVX9M5tyLzJYUvAGo/XyT6mWcTH9HrCmstU60mX1xsme5kR+2PK4ZmwU3D2817Nvor/op5/XhpoGYa98+AJQk9CHJ0J1KavegjwzO1w6809rqJwlBTGAxld/ePlUC3WStMwTbGFb4q0RA4IC6Z8fv8f4uQG8pW/kR5ToEtUHJvQQBM8q+HIl+xEdUa4eJU3b5nP8jql9XcnyafsbTANSADAyTbboyXeh+DegyrxQf5EUGQz/SfojEytes7hNu+Um0pGVAI/VojcxKrptqvsn5IrrEp1305C7OylLVdFvtSM8rox3gUcDqrx8TX4uZDHHiVH/Rm2UGHIHsyijrw7L+VPJLwNPnMLwToh+e0dPcZNFdKPIdm6lQtvcLVR0VU8d+VgwTjQvfpw6kxYX4OeWBI6o5YjC4dqXhB3l9hA5dddM/0vK9K8fSLJLpc/cNmtdLtleqOrC5g9YcWVxNzxUp2peVOpv9gSWXghtzRU=

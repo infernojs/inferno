@@ -390,7 +390,7 @@ export function normalizeChildren(vNode: VNode, children) {
           const key = n.key;
           const needsCloning = (n.flags & VNodeFlags.InUse) > 0;
           const isNullKey = isNull(key);
-          const isPrefixed = isString(key) && key[0] === keyPrefix;
+          const isPrefixed = !isNullKey && isString(key) && key[0] === keyPrefix;
 
           if (needsCloning || isNullKey || isPrefixed) {
             newChildren = newChildren || children.slice(0, i);

@@ -1,56 +1,92 @@
 {
-	"compilerOptions": {
-		"baseUrl": ".",
-		"paths": {
-			"inferno": [ "packages/inferno/src/index.ts" ],
-			"inferno-compat": [ "packages/inferno-compat/src/index.ts" ],
-			"inferno-component": [ "packages/inferno-component/src/index.ts" ],
-			"inferno-create-class": [ "packages/inferno-create-class/src/index.ts" ],
-			"inferno-create-element": [ "packages/inferno-create-element/src/index.ts" ],
-			"inferno-devtools": [ "packages/inferno-devtools/src/index.ts" ],
-			"inferno-hydrate": [ "packages/inferno-hydrate/src/index.ts" ],
-			"inferno-hyperscript": [ "packages/inferno-hyperscript/src/index.ts" ],
-			"inferno-mobx": [ "packages/inferno-mobx/src/index.ts" ],
-			"inferno-redux": [ "packages/inferno-redux/src/index.ts" ],
-			"inferno-router": [ "packages/inferno-router/src/index.ts" ],
-			"inferno-server": [ "packages/inferno-server/src/index.ts" ],
-			"inferno-shared": [ "packages/inferno-shared/src/index.ts" ],
-			"inferno-clone-vnode": [ "packages/inferno-clone-vnode/src/index.ts" ],
-			"inferno-test-utils": [ "packages/inferno-test-utils/src/index.ts" ],
-			"inferno-utils": [ "packages/inferno-utils/src/index.ts" ],
-			"inferno-vnode-flags": [ "packages/inferno-vnode-flags/src/index.ts" ],
-			"mobx": [ "node_modules/mobx/lib/mobx.module.js" ]
-		},
-		"newLine": "LF",
-		"noUnusedParameters": true,
-		"allowSyntheticDefaultImports": false,
-		"declaration": true,
-		"target": "es2016",
-		"module": "esnext",
-		"allowJs": false,
-		"moduleResolution": "node",
-		"preserveConstEnums": true,
-		"outDir": "build",
-		"sourceMap": false,
-		"lib": [
-			"es6",
-			"es7",
-			"dom"
-		],
-		"jsx": "preserve",
-		"noUnusedLocals": true,
-		"noImplicitThis": false,
-		"noImplicitAny": false,
-		"noImplicitReturns": true,
-		"alwaysStrict": true,
-		"strictNullChecks": true,
-		"strictFunctionTypes": true,
-		"removeComments": false,
-		"experimentalDecorators": false,
-		"rootDir": "."
-	},
-	"include": [
-		"packages/*/src",
-		"packages/*/__tests__"
-	]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "inferno": [
+        "packages/inferno/src/index.ts"
+      ],
+      "inferno-compat": [
+        "packages/inferno-compat/src/index.ts"
+      ],
+      "inferno-component": [
+        "packages/inferno-component/src/index.ts"
+      ],
+      "inferno-create-class": [
+        "packages/inferno-create-class/src/index.ts"
+      ],
+      "inferno-create-element": [
+        "packages/inferno-create-element/src/index.ts"
+      ],
+      "inferno-devtools": [
+        "packages/inferno-devtools/src/index.ts"
+      ],
+      "inferno-hydrate": [
+        "packages/inferno-hydrate/src/index.ts"
+      ],
+      "inferno-extras": [
+        "packages/inferno-extras/src/index.ts"
+      ],
+      "inferno-hyperscript": [
+        "packages/inferno-hyperscript/src/index.ts"
+      ],
+      "inferno-mobx": [
+        "packages/inferno-mobx/src/index.ts"
+      ],
+      "inferno-redux": [
+        "packages/inferno-redux/src/index.ts"
+      ],
+      "inferno-router": [
+        "packages/inferno-router/src/index.ts"
+      ],
+      "inferno-server": [
+        "packages/inferno-server/src/index.ts"
+      ],
+      "inferno-shared": [
+        "packages/inferno-shared/src/index.ts"
+      ],
+      "inferno-clone-vnode": [
+        "packages/inferno-clone-vnode/src/index.ts"
+      ],
+      "inferno-test-utils": [
+        "packages/inferno-test-utils/src/index.ts"
+      ],
+      "inferno-utils": [
+        "packages/inferno-utils/src/index.ts"
+      ],
+      "inferno-vnode-flags": [
+        "packages/inferno-vnode-flags/src/index.ts"
+      ],
+      "mobx": [
+        "node_modules/mobx/lib/mobx.module.js"
+      ]
+    },
+    "newLine": "LF",
+    "noUnusedParameters": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "target": "esnext",
+    "module": "esnext",
+    "allowJs": false,
+    "moduleResolution": "node",
+    "preserveConstEnums": true,
+    "outDir": "build",
+    "sourceMap": false,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "jsx": "preserve",
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "removeComments": false,
+    "experimentalDecorators": false,
+    "rootDir": "."
+  },
+  "include": [
+    "packages/*/src",
+    "packages/*/__tests__"
+  ]
 }

@@ -15,7 +15,7 @@ Same as react-router v4, except react-native support which we have tested at thi
 See official react-router [documentation](https://reacttraining.com/react-router/native/guides/philosophy)
 
 
-## Usage (client-side)
+## Client side usage
 
 ```js
 import { render } from 'inferno';
@@ -88,79 +88,81 @@ render(<MyWebsite />, document.getElementById('root'));
 ```
 
 
-## Usage (server) with express
+## Sever side usage with Koa
 
 First, let's create our component to render boilerplate HTML, header, body etc.
 
-```js
-// Routes will be rendered into children
-export default function Html({ children }) {
-  return (
-    <html>
-      <head>
-        <title>My Application</title>
-      </head>
-      <body>
-        <div id="root">{children}</div>
-      </body>
-  </html>
-  );
-}
-```
-
-```js
-import { renderToString } from 'inferno-server';
-import { StaticRouter } from 'inferno-router';
-import express from 'express';
-import Html from './Html';
-
-const app = express();
-
-app.use((req, res) => {
-  const renderProps = match(routes, req.originalUrl);
-  
-  if (renderProps.redirect) {
-    return res.redirect(renderProps.redirect)
-  }
-    
-  const context = {};
-  const content = renderToString(
-    <StaticRouter location={ctx.url} context={context}>
-      <Html/>
-    </StaticRouter>
-  );
-
-  res.send('<!DOCTYPE html>\n' + renderToString(content));
-});
-```
-
-## Usage (server) with koa v2
-
-```js
-import { renderToString } from 'inferno-server';
-import { StaticRouter } from 'inferno-router';
+```jsx
 import Koa from 'koa';
-import Html from './Html';
+import { renderToString } from 'inferno-server';
+import { Switch, StaticRouter, Route } from 'inferno-router';
 
 const app = new Koa();
 
-app.use(async(ctx, next) => {
+function Index({children}) {
+  return (
+    <html>
+    <head>
+      <meta charSet="utf-8"/>
+      <title>Inferno</title>
+    </head>
+    <body>
+    <div id="app">{children}</div>
+    </body>
+    </html>
+  )
+}
 
+// Example routes
+function Home() {
+  return <div>Welcome Home!</div>
+}
+
+function Foo() {
+  return <span>Bar</span>
+}
+
+function NotFound() {
+  return <h2>404</h2>;
+}
+
+const routes = (
+  <Switch>
+    <Route exact path="/" component={Home}/>
+    <Route exact path="/demo" component={Foo}/>
+    <Route path="*" component={NotFound}/>
+  </Switch>
+);
+
+// Server-side render
+async function render(ctx, next) {
   const context = {};
   const content = renderToString(
     <StaticRouter location={ctx.url} context={context}>
-      <Html/>
+      <Index hostname={ctx.hostname}>
+        {routes}
+      </Index>
     </StaticRouter>
   );
-    
+
   // This will contain the URL to redirect to if <Redirect> was used
   if (context.url) {
-    return ctx.redirect(context.url)
+    return ctx.redirect(context.url);
   }
-  
+
+  ctx.type = 'text/html';
   ctx.body = '<!DOCTYPE html>\n' + content;
   await next();
+}
+
+// Add infero render as middleware
+app.use(render);
+
+
+app.listen(8080, function () {
+  console.log('Listening on port ' + 8080);
 });
+
 ```
 
 

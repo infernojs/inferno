@@ -340,7 +340,7 @@ export function updateClassComponent(
       if (!fromSetState && isFunction(instance.componentWillReceiveProps)) {
         instance.$BR = true;
         instance.componentWillReceiveProps(nextProps, context);
-        // If instance component was removed during its own update do nothing...
+        // If instance component was removed during its own update do nothing.
         if (instance.$UN) {
           return;
         }

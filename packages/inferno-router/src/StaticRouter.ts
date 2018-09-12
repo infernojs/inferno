@@ -3,6 +3,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { createPath, parsePath } from 'history';
 import { Router } from './Router';
 import { invariant, warning } from './utils';
+import { combineFrom } from 'inferno-shared';
 
 function addLeadingSlash(path) {
   return path.charAt(0) === '/' ? path : '/' + path;
@@ -53,26 +54,25 @@ export class StaticRouter<P, S> extends Component<IStaticRouterProps<P, any>, S>
   // tslint:disable-next-line:no-empty
   public handleBlock = () => noop;
 
-  public render(): VNode {
-    const { basename, context, location, ...props } = this.props;
-
-    const history = {
-      action: 'POP',
-      block: this.handleBlock,
-      createHref: this.createHref,
-      go: staticHandler('go'),
-      goBack: staticHandler('goBack'),
-      goForward: staticHandler('goForward'),
-      listen: this.handleListen,
-      location: stripBasename(basename, createLocation(location)),
-      push: this.handlePush,
-      replace: this.handleReplace
-    };
-
-    return createComponentVNode(VNodeFlags.ComponentClass, Router, {
-      ...props,
-      history
-    } as any); // TODO: check these props types!
+  public render({ basename, context, location, ...props }): VNode {
+    return createComponentVNode(
+      VNodeFlags.ComponentClass,
+      Router,
+      combineFrom(props, {
+        history: {
+          action: 'POP',
+          block: this.handleBlock,
+          createHref: this.createHref,
+          go: staticHandler('go'),
+          goBack: staticHandler('goBack'),
+          goForward: staticHandler('goForward'),
+          listen: this.handleListen,
+          location: stripBasename(basename, createLocation(location)),
+          push: this.handlePush,
+          replace: this.handleReplace
+        }
+      })
+    );
   }
 }
 
@@ -98,10 +98,7 @@ function addBasename(basename, location) {
     return location;
   }
 
-  return {
-    ...location,
-    pathname: addLeadingSlash(basename) + location.pathname
-  };
+  return combineFrom(location, { pathname: addLeadingSlash(basename) + location.pathname });
 }
 
 function stripBasename(basename, location) {
@@ -115,10 +112,7 @@ function stripBasename(basename, location) {
     return location;
   }
 
-  return {
-    ...location,
-    pathname: location.pathname.substr(base.length)
-  };
+  return combineFrom(location, { pathname: location.pathname.substr(base.length) });
 }
 
 function createLocation(location) {

@@ -20,7 +20,7 @@
     "@babel/plugin-proposal-decorators": "7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "7.0.0",
     "@babel/preset-env": "7.0.0",
-    "babel-loader": "^8.0.0",
+    "babel-loader": "^8.0.2",
     "jasmine-core": "^3.2.1",
     "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
@@ -32,8 +32,8 @@
     "karma-jasmine-matchers": "^3.8.3",
     "karma-sauce-launcher": "^1.2.0",
     "karma-webpack": "^4.0.0-rc.0",
-    "ts-loader": "^4.5.0",
+    "ts-loader": "^5.0.0",
     "wd": "^1.10.3",
-    "webpack": "^4.17.1"
+    "webpack": "^4.17.2"
   }
 }

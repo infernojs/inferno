@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshots JSX Should render attributes and className 1`] = `
+<div
+  className="Testing"
+/>
+`;
+
+exports[`Snapshots JSX Should render component children 1`] = `
+<div
+  className="Testing"
+>
+  <div
+    className="ok"
+  >
+    ABC
+  </div>
+</div>
+`;
+
+exports[`Snapshots JSX Should render deeper component 1`] = `
+<div
+  aria-rowindex={1}
+  className="okay"
+  onClick={[Function]}
+>
+  <div>
+    Okay
+    <div>
+      <ul>
+        <li>
+          Okay
+        </li>
+      </ul>
+    </div>
+    <span
+      className="yea"
+    />
+  </div>
+</div>
+`;
+
+exports[`Snapshots JSX Should render fragment 1`] = `
+<div>
+  Array [
+    <div
+      id="a1"
+    >
+      A1
+    </div>,
+    <div>
+      A2
+    </div>,
+  ]
+  Array [
+    <div
+      id="b1"
+    >
+      B1
+    </div>,
+  ]
+  Array [
+    <div
+      id="c1"
+    >
+      C1
+    </div>,
+    <div>
+      C2
+    </div>,
+    <div>
+      C3
+    </div>,
+  ]
+</div>
+`;
+
+exports[`Snapshots JSX Should render html element 1`] = `
+<a
+  aria-colspan="3"
+  className="foo"
+  onClick={[Function]}
+>
+  Bar
+</a>
+`;
+
+exports[`Snapshots JSX Should render multiple elements 1`] = `
+<span>
+  <a>
+    T
+  </a>
+  <span
+    className="foo"
+  >
+    est
+  </span>
+  12
+  Extra
+</span>
+`;

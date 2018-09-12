@@ -26,7 +26,7 @@ module.exports = function(version, options) {
     })
   ];
 
-  if (!options.es6) {
+  if (!options.esnext) {
     plugins.push(bublePlugin());
   }
 
