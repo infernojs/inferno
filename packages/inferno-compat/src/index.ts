@@ -28,6 +28,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
+import { findDOMNode } from 'inferno-extras';
 
 declare global {
   interface Event {
@@ -298,26 +299,6 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
 
 function createFactory(type) {
   return createElement.bind(null, type);
-}
-
-function findDOMNode(ref) {
-  if (ref && ref.nodeType) {
-    return ref;
-  }
-
-  if (!ref || ref.$UN) {
-    return null;
-  }
-
-  if (ref.$LI) {
-    return findDOMfromVNode(ref.$LI);
-  }
-
-  if (ref.flags) {
-    return findDOMfromVNode(ref);
-  }
-
-  return null;
 }
 
 function render(rootInput, container, cb) {
