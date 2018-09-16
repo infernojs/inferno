@@ -5,6 +5,7 @@ import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, LIF
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
+import { mountRef } from "../core/refs";
 
 export function mount(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
@@ -118,13 +119,7 @@ export function mountElement(vNode: VNode, parentDom: Element | null, context: O
       throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
     }
   }
-  if (ref) {
-    if (isFunction(ref)) {
-      mountRef(dom, ref);
-    } else if (ref.current !== void 0) {
-      ref.current = dom;
-    }
-  }
+  mountRef(ref, dom);
 }
 
 export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
@@ -165,19 +160,16 @@ function createClassMountCallback(instance) {
 }
 
 export function mountClassComponentCallbacks(ref, instance) {
-  if (isFunction(ref)) {
-    ref(instance);
-  } else if (ref && ref.current !== void 0) {
-    ref.current = instance;
-  } else {
-    if (process.env.NODE_ENV !== 'production') {
-      if (isStringOrNumber(ref)) {
-        throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-      } else if (!isNullOrUndef(ref) && typeof ref === 'object' && ref.current === void 0) {
-        throwError('functional component lifecycle events are not supported on ES2015 class components.');
-      }
+  mountRef(ref, instance);
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (isStringOrNumber(ref)) {
+      throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+    } else if (!isNullOrUndef(ref) && typeof ref === 'object' && ref.current === void 0) {
+      throwError('functional component lifecycle events are not supported on ES2015 class components.');
     }
   }
+
 
   if (isFunction(instance.componentDidMount)) {
     LIFECYCLE.push(createClassMountCallback(instance));
@@ -199,14 +191,3 @@ export function mountFunctionalComponentCallbacks(props, ref, vNode: VNode) {
   }
 }
 
-export function mountRef(dom: Element | null, value) {
-  LIFECYCLE.push(() => value(dom));
-}
-
-export function unmountRef(value) {
-  LIFECYCLE.unshift(() => value(null));
-}
-
-export function unshiftRef(dom, value) {
-  LIFECYCLE.unshift(() => value(dom));
-}

@@ -10,6 +10,7 @@ import {
   NativeFocusEvent,
   NativeKeyboardEvent,
   NativeMouseEvent,
+  NativePointerEvent,
   NativeTouchEvent,
   NativeTransitionEvent,
   NativeUIEvent,
@@ -41,6 +42,7 @@ export interface ChangeEvent<T> extends SemiSyntheticEvent<T> {
 export type KeyboardEvent<T> = SemiSyntheticEvent<T> & NativeKeyboardEvent;
 export type MouseEvent<T> = SemiSyntheticEvent<T> & NativeMouseEvent;
 export type TouchEvent<T> = SemiSyntheticEvent<T> & NativeTouchEvent;
+export type PointerEvent<T> = SemiSyntheticEvent<T> & NativePointerEvent;
 export type UIEvent<T> = SemiSyntheticEvent<T> & NativeUIEvent;
 export type WheelEvent<T> = MouseEvent<T> & NativeWheelEvent;
 export type AnimationEvent<T> = SemiSyntheticEvent<T> & NativeAnimationEvent;

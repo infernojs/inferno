@@ -1,7 +1,7 @@
-import { combineFrom, isFunction, isInvalid, isNullOrUndef, isString, throwError } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, VNode } from '../core/implementation';
-import { mount, mountArrayChildren, mountRef, mountTextContent, unshiftRef } from './mounting';
+import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { remove, removeAllChildren, removeTextNode, unmount, unmountAllChildren } from './unmounting';
 import {
   appendChild,
@@ -18,6 +18,7 @@ import { isControlledFormElement, processElement } from './wrappers/processEleme
 import { patchProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
+import { mountRef, unmountRef } from "../core/refs";
 
 function replaceWithNewNode(lastVNode, nextVNode, parentDom, context: Object, isSVG: boolean) {
   unmount(lastVNode);
@@ -157,14 +158,6 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   const nextRef = nextVNode.ref;
   const lastRef = lastVNode.ref;
 
-  if (lastRef !== nextRef && lastRef) {
-    if (isFunction(lastRef)) {
-      unshiftRef(null, lastRef);
-    } else if (lastRef.current) {
-      lastRef.current = null;
-    }
-  }
-
   // inlined patchProps  -- ends --
   if (lastVNode.className !== nextClassName) {
     if (isNullOrUndef(nextClassName)) {
@@ -199,18 +192,9 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
     processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
   }
 
-  if (lastRef !== nextRef && nextRef) {
-    if (isFunction(nextRef)) {
-      mountRef(dom, nextRef);
-    } else if (nextRef.current !== void 0) {
-      nextRef.current = dom;
-    } else {
-      if (process.env.NODE_ENV !== 'production') {
-        if (isString(nextRef)) {
-          throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-        }
-      }
-    }
+  if (lastRef !== nextRef) {
+    unmountRef(lastRef);
+    mountRef(nextRef, dom);
   }
 }
 
@@ -407,28 +391,9 @@ function patchClassComponent(lastVNode, nextVNode, parentDom, context, isSVG: bo
 
   const lastRef = lastVNode.ref;
 
-  // TODO: Refactor
   if (lastRef !== nextRef) {
-    if (lastRef) {
-      if (isFunction(lastRef)) {
-        lastRef(null);
-      } else if (lastRef.current) {
-        lastRef.current = null;
-      }
-    }
-    if (nextRef) {
-      if (isFunction(nextRef)) {
-        nextRef(instance);
-      } else if (nextRef.current !== void 0) {
-        nextRef.current = instance;
-      } else {
-        if (process.env.NODE_ENV !== 'production') {
-          if (isString(nextRef)) {
-            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-          }
-        }
-      }
-    }
+    unmountRef(lastRef);
+    mountRef(nextRef, instance);
   }
 
   instance.$UPD = false;

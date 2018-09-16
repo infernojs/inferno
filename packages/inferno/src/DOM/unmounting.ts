@@ -3,6 +3,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/implementation';
 import { handleEvent } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeChild, removeVNodeDOM } from './utils/common';
+import { unmountRef } from "../core/refs";
 
 export function remove(vNode: VNode, parentDom: Element | null) {
   unmount(vNode);
@@ -19,13 +20,7 @@ export function unmount(vNode) {
     const ref = vNode.ref as any;
     const props = vNode.props;
 
-    if (ref) {
-      if (isFunction(ref)) {
-        ref(null);
-      } else if (ref.current) {
-        ref.current = null;
-      }
-    }
+    unmountRef(ref);
 
     const children = vNode.children;
     const childFlags = vNode.childFlags;
@@ -72,13 +67,8 @@ export function unmount(vNode) {
           if (isFunction(children.componentWillUnmount)) {
             children.componentWillUnmount();
           }
-          if (ref) {
-            if (isFunction(ref)) {
-              ref(null);
-            } else if (ref.current) {
-              ref.current = null;
-            }
-          }
+          unmountRef(ref);
+
           children.$UN = true;
 
           if (children.$LI) {
