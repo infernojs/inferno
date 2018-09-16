@@ -11,8 +11,10 @@ export function mount(vNode: VNode, parentDom: Element | null, context: Object, 
 
   if (flags & VNodeFlags.Element) {
     mountElement(vNode, parentDom, context, isSVG, nextNode);
-  } else if (flags & VNodeFlags.Component) {
-    mountComponent(vNode, parentDom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0, nextNode);
+  } else if (flags & VNodeFlags.ComponentClass) {
+    mountClassComponent(vNode, parentDom, context, isSVG, nextNode);
+  } else if (flags & VNodeFlags.ComponentFunction) {
+    mountFunctionalComponent(vNode, parentDom, context, isSVG, nextNode);
   } else if (flags & VNodeFlags.Void || flags & VNodeFlags.Text) {
     mountText(vNode, parentDom, nextNode);
   } else if (flags & VNodeFlags.Fragment) {
@@ -136,22 +138,22 @@ export function mountArrayChildren(children, dom: Element | null, context: Objec
   }
 }
 
-export function mountComponent(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, isClass: boolean, nextNode: Element | null): void {
-  const type = vNode.type as Function;
+export function mountClassComponent(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null) {
+  const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context);
+  mount(instance.$LI, parentDom, instance.$CX, isSVG, nextNode);
+  mountClassComponentCallbacks(vNode.ref, instance);
+  instance.$UPD = false;
+}
+
+export function mountFunctionalComponent(vNode: VNode, parentDom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
+  const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref;
 
-  if (isClass) {
-    const instance = createClassComponentInstance(vNode, type, props, context);
-    mount(instance.$LI, parentDom, instance.$CX, isSVG, nextNode);
-    mountClassComponentCallbacks(ref, instance);
-    instance.$UPD = false;
-  } else {
-    const input = handleComponentInput(vNode.flags & VNodeFlags.ForwardRef ? type(props, ref, context) : type(props, context));
-    vNode.children = input;
-    mount(input, parentDom, context, isSVG, nextNode);
-    mountFunctionalComponentCallbacks(props, ref, vNode);
-  }
+  const input = handleComponentInput(vNode.flags & VNodeFlags.ForwardRef ? type(props, ref, context) : type(props, context));
+  vNode.children = input;
+  mount(input, parentDom, context, isSVG, nextNode);
+  mountFunctionalComponentCallbacks(props, ref, vNode);
 }
 
 function createClassMountCallback(instance) {
@@ -182,8 +184,8 @@ export function mountClassComponentCallbacks(ref, instance) {
   }
 }
 
-function createOnMountCallback(ref, dom, props) {
-  return () => ref.onComponentDidMount(dom, props);
+function createOnMountCallback(ref, vNode, props) {
+  return () => ref.onComponentDidMount(findDOMfromVNode(vNode), props);
 }
 
 export function mountFunctionalComponentCallbacks(props, ref, vNode: VNode) {
@@ -192,11 +194,19 @@ export function mountFunctionalComponentCallbacks(props, ref, vNode: VNode) {
       ref.onComponentWillMount(props);
     }
     if (isFunction(ref.onComponentDidMount)) {
-      LIFECYCLE.push(createOnMountCallback(ref, findDOMfromVNode(vNode), props));
+      LIFECYCLE.push(createOnMountCallback(ref, vNode, props));
     }
   }
 }
 
-export function mountRef(dom: Element, value) {
+export function mountRef(dom: Element | null, value) {
   LIFECYCLE.push(() => value(dom));
+}
+
+export function unmountRef(value) {
+  LIFECYCLE.unshift(() => value(null));
+}
+
+export function unshiftRef(dom, value) {
+  LIFECYCLE.unshift(() => value(dom));
 }

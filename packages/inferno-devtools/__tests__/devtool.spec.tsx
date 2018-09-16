@@ -6,11 +6,13 @@ describe('Devtools', () => {
   let ComponentTree;
   let Mount;
   let Reconciler;
+  let listener;
 
   beforeAll(function () {
     // tslint:disable-next-line
     window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] = {
       inject(hooks) {
+        listener = hooks._listener;
         ComponentTree = hooks.ComponentTree;
 
         Mount = hooks.Mount;
@@ -28,18 +30,30 @@ describe('Devtools', () => {
   });
 
   beforeEach(function () {
+    container = document.createElement('div');
+    listener({
+      data: {
+        payload: {
+          type: 'resume'
+        },
+        source: 'react-devtools-content-script'
+      },
+      source: window
+    });
+
+    document.body.appendChild(container);
+
     Mount._renderNewRootComponent.calls.reset();
     Reconciler.mountComponent.calls.reset();
     Reconciler.performUpdateIfNecessary.calls.reset();
     Reconciler.receiveComponent.calls.reset();
     Reconciler.unmountComponent.calls.reset();
-
-    container = document.createElement('div');
   });
 
   afterEach(function () {
     render(null, container);
     container.innerHTML = '';
+    document.body.removeChild(container);
   });
 
   it('Should inject the callbacks', () => {
@@ -71,7 +85,7 @@ describe('Devtools', () => {
     // Add another root
 
     const root2 = document.createElement('div');
-
+    document.body.appendChild(root2);
     render(
       <DevToolsTester/>,
       root2
@@ -114,6 +128,8 @@ describe('Devtools', () => {
     render(null, root2);
 
     expect(Object.keys(Mount._instancesByReactRootID)).toEqual([]);
+
+    document.body.removeChild(root2);
   });
 
   it('Should handle children arrays adding & removing', () => {
@@ -423,7 +439,6 @@ describe('Devtools', () => {
     expect(devToolRoot._renderedComponent._renderedChildren[3]._currentElement.type).toBe('div');
     expect(devToolRoot._renderedComponent._renderedChildren[3]._stringText).toBe('1001');
 
-    debugger;
     instance.setState({
       nodes: [
           createVNode(1, "div", null, 8, 16, null, "1"),

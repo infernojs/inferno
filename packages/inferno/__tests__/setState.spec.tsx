@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import sinon from 'sinon';
 
 describe('setState', () => {
@@ -678,6 +678,50 @@ describe('setState', () => {
     setTimeout(function() {
       done();
     }, 45);
+  });
+
+  it('Should be possible to update state in componentWillUpdate', () => {
+    interface MyState {
+      foo: string
+    }
+
+    class Hello extends Component<any, MyState> {
+      constructor(p, c) {
+        super(p, c);
+
+        this.state = {
+          foo: 'je'
+        };
+      }
+      public componentWillUpdate() {
+        if (this.state!.foo === 'je') {
+          this.setState({
+            foo: 'bar'
+          })
+        }
+      }
+      public render() {
+        return <div>Hello {this.state!.foo}</div>;
+      }
+    }
+
+    expect(container.innerHTML).toBe('');
+
+    render(
+      <Hello name="World" />,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Hello je</div>');
+
+    render(
+      <Hello name="World" />,
+      container
+    );
+
+    rerender();
+
+    expect(container.innerHTML).toBe('<div>Hello bar</div>');
   });
 
   it('setState must be sync like React if no state changes are pending', () => {

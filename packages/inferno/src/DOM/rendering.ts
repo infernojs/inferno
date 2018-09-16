@@ -59,7 +59,7 @@ export function __render(
     callback();
   }
   if (isFunction(options.renderComplete)) {
-    options.renderComplete(rootInput);
+    options.renderComplete(rootInput, parentDom);
   }
 }
 

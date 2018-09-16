@@ -30,10 +30,10 @@ function warnAboutOldLifecycles(component) {
 
 export function createClassComponentInstance(vNode: VNode, Component, props, context: Object) {
   const instance = new Component(props, context);
-  const usesNewAPI = (instance.$N = Boolean(instance.getSnapshotBeforeUpdate || Component.getDerivedStateFromProps));
+  const usesNewAPI = (instance.$N = Boolean(Component.getDerivedStateFromProps || instance.getSnapshotBeforeUpdate));
 
   if (process.env.NODE_ENV !== 'production') {
-    if (instance.getDerivedStateFromProps) {
+    if ((instance as any).getDerivedStateFromProps) {
       warning(
         `${getComponentName(instance)} getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.`
       );
@@ -43,14 +43,12 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
     }
   }
 
-  vNode.children = instance;
-  instance.$V = vNode;
+  vNode.children = instance as any;
   instance.$BS = false;
   instance.context = context;
   if (instance.props === EMPTY_OBJ) {
     instance.props = props;
   }
-  instance.$UN = false;
   if (!usesNewAPI) {
     if (isFunction(instance.componentWillMount)) {
       instance.$BR = true;
@@ -58,7 +56,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
 
       if (instance.$PSS) {
         const state = instance.state;
-        const pending = instance.$PS;
+        const pending = instance.$PS as any;
 
         if (isNull(state)) {
           instance.state = pending;
@@ -73,15 +71,13 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
 
       instance.$BR = false;
     }
-  }
-
-  if (usesNewAPI) {
+  } else {
     instance.state = createDerivedState(instance, props, instance.state);
   }
 
   const input = handleComponentInput(instance.render(props, instance.state, context));
-
   let childContext;
+
   if (isFunction(instance.getChildContext)) {
     childContext = instance.getChildContext();
   }

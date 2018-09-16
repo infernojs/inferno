@@ -45,12 +45,12 @@ export function isDOMElementOfType(instance: any, type: string): boolean {
 
 export function isRenderedClassComponent(instance: any): boolean {
   return (
-    Boolean(instance) && isObject(instance) && _isVNode((instance as any).$V) && isFunction((instance as any).render) && isFunction((instance as any).setState)
+    Boolean(instance) && isObject(instance) && _isVNode((instance as any).$LI) && isFunction((instance as any).render) && isFunction((instance as any).setState)
   );
 }
 
 export function isRenderedClassComponentOfType(instance: any, type: Function): boolean {
-  return isRenderedClassComponent(instance) && isFunction(type) && instance.$V.type === type;
+  return isRenderedClassComponent(instance) && isFunction(type) && instance.constructor === type;
 }
 
 // Recursive Finder Functions

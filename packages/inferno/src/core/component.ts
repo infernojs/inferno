@@ -90,16 +90,11 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       component.context,
       false,
       force,
-      true,
       null
     );
 
     component.$UPD = false;
-
-    if (component.$UN) {
-      return;
-    }
-
+    
     if (LIFECYCLE.length > 0) {
       callAll(LIFECYCLE);
     }
@@ -172,13 +167,12 @@ export class Component<P, S> {
   public $PSS: boolean = false; // PENDING SET STATE
   public $PS: S | null = null; // PENDING STATE (PARTIAL or FULL)
   public $LI: any = null; // LAST INPUT
-  public $UN = false; // UNMOUNTED
-  public $CX = null; // CHILDCONTEXT
+  public $UN : boolean= false; // UNMOUNTED
+  public $CX: any = null; // CHILDCONTEXT
   public $UPD: boolean = true; // UPDATING
   public $QU: Function[] | null = null; // QUEUE
   public $N: boolean = false; // Flag
   public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client
-  public $REF?: any; // String ref cache to inferno-compat
 
   constructor(props?: P, context?: any) {
     /** @type {object} */
@@ -205,7 +199,7 @@ export class Component<P, S> {
     } else {
       // Development warning
       if (process.env.NODE_ENV !== 'production') {
-        throwError('cannot update state via setState() in componentWillUpdate() or constructor.');
+        throwError('cannot update state via setState() in constructor. Instead, assign to `this.state` directly or define a `state = {};`');
       }
       return;
     }

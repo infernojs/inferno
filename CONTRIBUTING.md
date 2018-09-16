@@ -26,7 +26,6 @@ run after `npm install`. `lerna` executes command based on a topological-sorted 
 For example, if you want to see the order of packages being processed, you can do:
 ```
 $ lerna exec -- node -e "console.log(require('./package.json').name)"
-Lerna v2.0.0-beta.36
 inferno-shared
 inferno-vnode-flags
 inferno

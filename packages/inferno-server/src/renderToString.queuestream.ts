@@ -90,7 +90,6 @@ export class RenderQueueStream extends Readable {
           instance.props = props;
         }
         instance.context = context;
-        instance.$UN = false;
         // Trigger lifecycle hook
         if (!hasNewAPI && isFunction(instance.componentWillMount)) {
           instance.$BR = true;

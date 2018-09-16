@@ -1,7 +1,7 @@
-import { combineFrom, isFunction, isInvalid, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNullOrUndef, isString, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, VNode } from '../core/implementation';
-import { mount, mountArrayChildren, mountTextContent } from './mounting';
+import { mount, mountArrayChildren, mountRef, mountTextContent, unshiftRef } from './mounting';
 import { remove, removeAllChildren, removeTextNode, unmount, unmountAllChildren } from './unmounting';
 import {
   appendChild,
@@ -34,7 +34,7 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDom, context: Object, is
 }
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, context: Object, isSVG: boolean, nextNode: Element | null) {
-  const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
+  const nextFlags = nextVNode.flags |= VNodeFlags.InUse;
 
   if (lastVNode.flags !== nextFlags || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || (nextFlags & VNodeFlags.ReCreate) > 0) {
     if (lastVNode.flags & VNodeFlags.InUse) {
@@ -45,8 +45,10 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, co
     }
   } else if (nextFlags & VNodeFlags.Element) {
     patchElement(lastVNode, nextVNode, context, isSVG, nextFlags);
-  } else if (nextFlags & VNodeFlags.Component) {
-    patchComponent(lastVNode, nextVNode, parentDom, context, isSVG, (nextFlags & VNodeFlags.ComponentClass) > 0, nextNode);
+  } else if (nextFlags & VNodeFlags.ComponentClass) {
+    patchClassComponent(lastVNode, nextVNode, parentDom, context, isSVG, nextNode);
+  } else if (nextFlags & VNodeFlags.ComponentFunction) {
+    patchFunctionalComponent(lastVNode, nextVNode, parentDom, context, isSVG, nextNode);
   } else if (nextFlags & VNodeFlags.Text) {
     patchText(lastVNode, nextVNode);
   } else if (nextFlags & VNodeFlags.Void) {
@@ -152,6 +154,27 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   }
   const nextChildren = nextVNode.children;
   const nextClassName = nextVNode.className;
+  const nextRef = nextVNode.ref;
+  const lastRef = lastVNode.ref;
+
+  if (lastRef !== nextRef && lastRef) {
+    if (isFunction(lastRef)) {
+      unshiftRef(null, lastRef);
+    } else if (lastRef.current) {
+      lastRef.current = null;
+    }
+  }
+
+  // inlined patchProps  -- ends --
+  if (lastVNode.className !== nextClassName) {
+    if (isNullOrUndef(nextClassName)) {
+      dom.removeAttribute('class');
+    } else if (isSVG) {
+      dom.setAttribute('class', nextClassName);
+    } else {
+      dom.className = nextClassName;
+    }
+  }
 
   if (process.env.NODE_ENV !== 'production') {
     validateKeys(nextVNode);
@@ -175,38 +198,16 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   if (isFormElement) {
     processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
   }
-  // inlined patchProps  -- ends --
-  if (lastVNode.className !== nextClassName) {
-    if (isNullOrUndef(nextClassName)) {
-      dom.removeAttribute('class');
-    } else if (isSVG) {
-      dom.setAttribute('class', nextClassName);
-    } else {
-      dom.className = nextClassName;
-    }
-  }
-  const nextRef = nextVNode.ref;
-  const lastRef = lastVNode.ref;
 
-  // TODO: Refactor
-  if (lastRef !== nextRef) {
-    if (lastRef) {
-      if (isFunction(lastRef)) {
-        lastRef(null);
-      } else if (lastRef.current) {
-        lastRef.current = null;
-      }
-    }
-    if (nextRef) {
-      if (isFunction(nextRef)) {
-        nextRef(dom);
-      } else if (nextRef.current !== void 0) {
-        nextRef.current = dom;
-      } else {
-        if (process.env.NODE_ENV !== 'production') {
-          if (isString(nextRef)) {
-            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-          }
+  if (lastRef !== nextRef && nextRef) {
+    if (isFunction(nextRef)) {
+      mountRef(dom, nextRef);
+    } else if (nextRef.current !== void 0) {
+      nextRef.current = dom;
+    } else {
+      if (process.env.NODE_ENV !== 'production') {
+        if (isString(nextRef)) {
+          throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
       }
     }
@@ -310,6 +311,10 @@ function patchChildren(
   }
 }
 
+function createDidUpdate(instance, lastProps, lastState, snapshot) {
+  LIFECYCLE.push(() => instance.componentDidUpdate(lastProps, lastState, snapshot));
+}
+
 export function updateClassComponent(
   instance,
   nextState,
@@ -318,43 +323,12 @@ export function updateClassComponent(
   context,
   isSVG: boolean,
   force: boolean,
-  fromSetState: boolean,
   nextNode: Element | null
 ) {
   const lastState = instance.state;
   const lastProps = instance.props;
-  let renderOutput;
-
-  if (instance.$UN) {
-    if (process.env.NODE_ENV !== 'production') {
-      warning(
-        'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.'
-      );
-    }
-    return;
-  }
   const usesNewAPI = instance.$N;
-
-  if (lastProps !== nextProps || nextProps === EMPTY_OBJ) {
-    if (!usesNewAPI) {
-      if (!fromSetState && isFunction(instance.componentWillReceiveProps)) {
-        instance.$BR = true;
-        instance.componentWillReceiveProps(nextProps, context);
-        // If instance component was removed during its own update do nothing.
-        if (instance.$UN) {
-          return;
-        }
-        instance.$BR = false;
-      }
-      if (instance.$PSS) {
-        nextState = combineFrom(nextState, instance.$PS) as any;
-        instance.$PSS = false;
-        instance.$PS = null;
-      }
-    }
-  }
-  /* Update if scu is not defined, or it returns truthy value or force */
-  const hasSCU = Boolean(instance.shouldComponentUpdate);
+  const hasSCU = isFunction(instance.shouldComponentUpdate);
 
   if (usesNewAPI) {
     nextState = createDerivedState(instance, nextProps, nextState !== lastState ? combineFrom(lastState, nextState) : nextState);
@@ -362,20 +336,17 @@ export function updateClassComponent(
 
   if (force || !hasSCU || (hasSCU && (instance.shouldComponentUpdate as Function)(nextProps, nextState, context))) {
     if (!usesNewAPI && isFunction(instance.componentWillUpdate)) {
-      instance.$BS = true;
       instance.componentWillUpdate(nextProps, nextState, context);
-      instance.$BS = false;
     }
 
     instance.props = nextProps;
     instance.state = nextState;
     instance.context = context;
 
-    renderOutput = instance.render(nextProps, nextState, context);
+    const renderOutput = instance.render(nextProps, nextState, context);
+    let snapshot = null;
 
-    let snapshot;
-
-    if (usesNewAPI && instance.getSnapshotBeforeUpdate) {
+    if (usesNewAPI && isFunction(instance.getSnapshotBeforeUpdate)) {
       snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState);
     }
 
@@ -389,16 +360,15 @@ export function updateClassComponent(
       childContext = combineFrom(context, childContext);
     }
     instance.$CX = childContext;
-    const lastInput = instance.$LI;
     const nextInput = handleComponentInput(renderOutput);
 
-    patch(lastInput, nextInput, parentDom, childContext, isSVG, nextNode);
+    patch(instance.$LI, nextInput, parentDom, childContext, isSVG, nextNode);
 
     // Dont update Last input, until patch has been succesfully executed
     instance.$LI = nextInput;
 
     if (isFunction(instance.componentDidUpdate)) {
-      LIFECYCLE.push(() => instance.componentDidUpdate(lastProps, lastState, snapshot));
+      createDidUpdate(instance, lastProps, lastState, snapshot);
     }
   } else {
     instance.props = nextProps;
@@ -407,67 +377,91 @@ export function updateClassComponent(
   }
 }
 
-function patchComponent(lastVNode, nextVNode, parentDom, context, isSVG: boolean, isClass: boolean, nextNode: Element | null): void {
+function patchClassComponent(lastVNode, nextVNode, parentDom, context, isSVG: boolean, nextNode: Element | null) {
   const nextProps = nextVNode.props || EMPTY_OBJ;
   const nextRef = nextVNode.ref;
+  const instance = nextVNode.children = lastVNode.children;
 
-  if (isClass) {
-    const instance = (nextVNode.children = lastVNode.children);
-    instance.$UPD = true;
-    updateClassComponent(instance, instance.state, nextProps, parentDom, context, isSVG, false, false, nextNode);
-    const lastRef = lastVNode.ref;
+  instance.$UPD = true;
 
-    // TODO: Refactor
-    if (lastRef !== nextRef) {
-      if (lastRef) {
-        if (isFunction(lastRef)) {
-          lastRef(null);
-        } else if (lastRef.current) {
-          lastRef.current = null;
-        }
+  let nextState = instance.state;
+
+  if (!instance.$N) {
+    if (isFunction(instance.componentWillReceiveProps)) {
+      instance.$BR = true;
+      instance.componentWillReceiveProps(nextProps, context);
+      // If instance component was removed during its own update do nothing.
+      if (instance.$UN) {
+        return;
       }
-      if (nextRef) {
-        if (isFunction(nextRef)) {
-          nextRef(instance);
-        } else if (nextRef.current !== void 0) {
-          nextRef.current = instance;
-        } else {
-          if (process.env.NODE_ENV !== 'production') {
-            if (isString(nextRef)) {
-              throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-            }
+      instance.$BR = false;
+    }
+    if (instance.$PSS) {
+      nextState = combineFrom(nextState, instance.$PS) as any;
+      instance.$PSS = false;
+      instance.$PS = null;
+    }
+  }
+
+  updateClassComponent(instance, nextState, nextProps, parentDom, context, isSVG, false, nextNode);
+
+  const lastRef = lastVNode.ref;
+
+  // TODO: Refactor
+  if (lastRef !== nextRef) {
+    if (lastRef) {
+      if (isFunction(lastRef)) {
+        lastRef(null);
+      } else if (lastRef.current) {
+        lastRef.current = null;
+      }
+    }
+    if (nextRef) {
+      if (isFunction(nextRef)) {
+        nextRef(instance);
+      } else if (nextRef.current !== void 0) {
+        nextRef.current = instance;
+      } else {
+        if (process.env.NODE_ENV !== 'production') {
+          if (isString(nextRef)) {
+            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
           }
         }
       }
     }
+  }
 
-    instance.$UPD = false;
+  instance.$UPD = false;
+}
+
+function patchFunctionalComponent(lastVNode, nextVNode, parentDom, context, isSVG: boolean, nextNode: Element | null) {
+  let shouldUpdate: boolean = true;
+  const nextProps = nextVNode.props || EMPTY_OBJ;
+  const nextRef = nextVNode.ref;
+  const lastProps = lastVNode.props;
+  const nextHooksDefined = !isNullOrUndef(nextRef);
+  const lastInput = lastVNode.children;
+
+  if (nextHooksDefined && isFunction(nextRef.onComponentShouldUpdate)) {
+    shouldUpdate = nextRef.onComponentShouldUpdate(lastProps, nextProps);
+  }
+
+  if (shouldUpdate !== false) {
+    if (nextHooksDefined && isFunction(nextRef.onComponentWillUpdate)) {
+      nextRef.onComponentWillUpdate(lastProps, nextProps);
+    }
+    const nextInput = handleComponentInput(nextVNode.type(nextProps, context));
+
+    patch(lastInput, nextInput, parentDom, context, isSVG, nextNode);
+    nextVNode.children = nextInput;
+    if (nextHooksDefined && isFunction(nextRef.onComponentDidUpdate)) {
+      nextRef.onComponentDidUpdate(lastProps, nextProps);
+    }
   } else {
-    let shouldUpdate: any = true;
-    const lastProps = lastVNode.props;
-    const nextHooksDefined = !isNullOrUndef(nextRef);
-    const lastInput = lastVNode.children;
-
     nextVNode.children = lastInput;
-
-    if (nextHooksDefined && isFunction(nextRef.onComponentShouldUpdate)) {
-      shouldUpdate = nextRef.onComponentShouldUpdate(lastProps, nextProps);
-    }
-
-    if (shouldUpdate !== false) {
-      if (nextHooksDefined && isFunction(nextRef.onComponentWillUpdate)) {
-        nextRef.onComponentWillUpdate(lastProps, nextProps);
-      }
-      const nextInput = handleComponentInput(nextVNode.type(nextProps, context));
-
-      patch(lastInput, nextInput, parentDom, context, isSVG, nextNode);
-      nextVNode.children = nextInput;
-      if (nextHooksDefined && isFunction(nextRef.onComponentDidUpdate)) {
-        nextRef.onComponentDidUpdate(lastProps, nextProps);
-      }
-    }
   }
 }
+
 
 function patchText(lastVNode: VNode, nextVNode: VNode) {
   const nextText = nextVNode.children as string;

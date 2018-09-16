@@ -1,11 +1,13 @@
 import { findDOMfromVNode, options, VNode } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isInvalid, isNullOrUndef } from 'inferno-shared';
+import { findDOMNode } from 'inferno-extras';
 
 let updatingDevTool = false;
 let Reconciler;
 let Mount;
 let rootKey = 0;
+let isActive = false;
 
 function createReactElement(vNode) {
   return {
@@ -14,6 +16,26 @@ function createReactElement(vNode) {
     ref: vNode.ref,
     type: vNode.type
   };
+}
+
+// Reading offsetParent causes forced re-flow
+function isDetached(child) {
+  if (child === null) {
+    return true;
+  }
+
+  const documentBody = document.body;
+  let node = child;
+
+  do {
+    node = node.parentNode;
+
+    if (node === null) {
+      return true;
+    }
+  } while (node !== documentBody);
+
+  return false;
 }
 
 function createReactDOMComponent(vNode, oldDevToolInstance?) {
@@ -47,12 +69,22 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
         ? vNode.children + ''
         : {
             props: vNode.className ? Object.assign({}, vNode.props, { className: vNode.className }) : vNode.props,
-            type: vNode.type
+            type: flags & VNodeFlags.Portal ? 'InfernoPortal' : vNode.type
           },
     _renderedChildren: renderedChildren,
     _stringText: isTextVNode ? vNode.children + '' : null,
     vNode
   };
+}
+
+function updateComponentRoot(lastInput, devToolNode) {
+  if ((lastInput.flags & VNodeFlags.ComponentClass) > 0) {
+    checkVNode(lastInput.children ? (lastInput.children as any).$LI : null, devToolNode._renderedComponent, devToolNode);
+  } else if ((lastInput.flags & VNodeFlags.ComponentFunction) > 0) {
+    checkVNode(lastInput.children, devToolNode._renderedComponent, devToolNode);
+  } else {
+    checkChildVNodes(lastInput.childFlags, lastInput.children, devToolNode);
+  }
 }
 
 function createReactCompositeComponent(vNode, oldDevToolInstance) {
@@ -73,12 +105,15 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
       const forceInstanceUpdate = component.forceUpdate.bind(component); // Save off for use below.
 
       component.forceUpdate = (instance as any).forceUpdate = function(callback) {
+        if (!isActive) {
+          return;
+        }
         instance.props = vNode.props = Object.assign(instance.props, instance._currentElement.props);
 
         if (!updatingDevTool && !component.$BR && !component.QU) {
           updatingDevTool = true;
           forceInstanceUpdate(callback);
-          checkVNode(component.$V, instance);
+          updateComponentRoot(component.$LI, (instance as any)._renderedComponent);
           updatingDevTool = false;
           return;
         }
@@ -89,10 +124,13 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
       const setInstanceState = component.setState.bind(component);
 
       component.setState = (instance as any).setState = function(newState, callback) {
+        if (!isActive) {
+          return;
+        }
         if (!updatingDevTool && !component.$BR && !component.QU) {
           updatingDevTool = true;
           setInstanceState(newState, callback);
-          checkVNode(component.$V, instance);
+          updateComponentRoot(component.$LI, (instance as any)._renderedComponent);
           updatingDevTool = false;
           return;
         }
@@ -114,7 +152,7 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
 
 function updateReactComponent(vNode, oldDevToolInstance?) {
   const newInstance =
-    (vNode.flags & (VNodeFlags.Element | VNodeFlags.Text)) > 0
+    (vNode.flags & (VNodeFlags.Element | VNodeFlags.Text | VNodeFlags.Portal)) > 0
       ? createReactDOMComponent(vNode, oldDevToolInstance)
       : createReactCompositeComponent(vNode, oldDevToolInstance);
 
@@ -289,8 +327,8 @@ function mountNewVNode(vNode, devToolParentNode?, index?: number) {
 
 export function createDevToolsBridge() {
   const ComponentTree = {
-    getNodeFromInstance(instance) {
-      return instance.vNode.dom;
+    getNodeFromInstance(devToolNode) {
+      return findDOMNode(devToolNode.vNode);
     },
     getClosestInstanceFromNode(vNode) {
       while (vNode && !vNode.$V) {
@@ -301,9 +339,7 @@ export function createDevToolsBridge() {
   };
 
   // Map of root ID (the ID is unimportant) to component instance.
-  const roots = Object.create(null);
-
-  findRoots(roots);
+  let roots = Object.create(null);
 
   // ReactMount-like object
   //
@@ -334,24 +370,27 @@ export function createDevToolsBridge() {
 
   const oldRenderComplete = options.renderComplete;
 
-  options.renderComplete = function(rootInput) {
+  options.renderComplete = function(rootInput, parentDOM) {
+    if (!isActive) {
+      return;
+    }
     if (!isInvalid(rootInput)) {
       let root;
       let instance;
 
-      if (isRootVNode(rootInput)) {
+      if (parentDOM.$V) {
         // Check if root exists
         for (root in roots) {
           const rootInstance = roots[root];
           const rootNode = findDOMfromVNode(rootInstance.vNode);
 
-          if (!rootNode || !rootNode.parentNode) {
+          if (isDetached(rootNode)) {
             Reconciler.unmountComponent(rootInstance);
 
             delete roots[root];
 
             break;
-          } else if (rootNode === rootInput.dom) {
+          } else if (rootNode === findDOMNode(rootInput)) {
             checkVNode(rootInput, rootInstance);
             return;
           }
@@ -361,16 +400,20 @@ export function createDevToolsBridge() {
         roots[instance._rootNodeID] = instance;
         mountDevToolComponentTree(instance);
         Mount._renderNewRootComponent(instance);
-      } else if (rootInput.dom === null) {
-        for (root in roots) {
-          const rootInstance = roots[root];
+      } else {
+        const dom = findDOMNode(rootInput);
 
-          if (!rootInstance.vNode.dom) {
-            Reconciler.unmountComponent(rootInstance);
+        if (isDetached(dom)) {
+          for (root in roots) {
+            const rootInstance = roots[root];
 
-            delete roots[root];
+            if (isDetached(findDOMNode(rootInstance.vNode))) {
+              Reconciler.unmountComponent(rootInstance);
 
-            return;
+              delete roots[root];
+
+              return;
+            }
           }
         }
       }
@@ -380,9 +423,27 @@ export function createDevToolsBridge() {
     }
   };
 
+  function _listener(evt) {
+    if (evt.source !== window || !evt.data || evt.data.source !== 'react-devtools-content-script' || !evt.data.payload) {
+      return;
+    }
+    const type = evt.data.payload.type;
+
+    if (type === 'resume') {
+      isActive = true;
+      findRoots(roots);
+    } else if (type === 'pause') {
+      isActive = false;
+      roots = Object.create(null);
+    }
+  }
+
+  window.addEventListener('message', _listener);
+
   return {
     ComponentTree,
     Mount,
-    Reconciler
+    Reconciler,
+    _listener
   };
 }

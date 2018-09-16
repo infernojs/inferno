@@ -32,7 +32,6 @@ function renderVNodeToString(vNode, parent, context): string {
         instance.props = props;
       }
       instance.context = context;
-      instance.$UN = false;
       if (!hasNewAPI && isFunction(instance.componentWillMount)) {
         instance.$BR = true;
         instance.componentWillMount();
