@@ -25,7 +25,7 @@ import { mountProps } from './DOM/props';
 import * as JSX from './JSX';
 import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountText } from './DOM/mounting';
-import { createRef, forwardRef, pushRef } from './core/refs';
+import { createRef, forwardRef, mountRef } from './core/refs';
 
 export * from './DOM/events/events';
 
@@ -88,7 +88,7 @@ export {
   mountClassComponentCallbacks as _MCCC,
   mountElement as _ME,
   mountFunctionalComponentCallbacks as _MFCC,
-  pushRef as _MR,
+  mountRef as _MR,
   mountText as _MT,
   mountProps as _MP,
   __render

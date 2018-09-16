@@ -1,4 +1,4 @@
-import { isFunction, isInvalid, isNull, isNullOrUndef, isString, throwError, warning } from 'inferno-shared';
+import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode, _CI, _HI, _L, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP } from 'inferno';
 
@@ -131,15 +131,7 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
     } else {
       dom.className = className;
     }
-    if (isFunction(ref)) {
-      _MR(dom, ref);
-    } else {
-      if (process.env.NODE_ENV !== 'production') {
-        if (isString(ref)) {
-          throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-        }
-      }
-    }
+    _MR(ref, dom);
   }
 
   return vNode.dom;

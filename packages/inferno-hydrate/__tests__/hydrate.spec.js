@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, createRef, Component, Fragment } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import sinon from 'sinon';
 import { triggerEvent } from 'inferno-utils';
@@ -117,6 +117,55 @@ describe('rendering routine', () => {
       hydrate(<textarea />, container);
       expect(container.firstChild.value).toBe('');
       expect(container.firstChild.defaultValue).toBe('');
+    });
+
+    it('Should work with object ref on element vNode', () => {
+      // create matching DOM
+      container.innerHTML = '<div>Okay<span>foobar</span></div>';
+
+      let newRef = createRef();
+
+      hydrate(
+        <div>Okay<span ref={newRef}>Foobar</span></div>,
+        container
+      );
+
+      expect(newRef.current).toBe(container.querySelector('span'));
+      expect(container.innerHTML).toBe('<div>Okay<span>Foobar</span></div>')
+    });
+
+    it('Should work with object ref on component vNode', () => {
+      // create matching DOM
+      container.innerHTML = '<div>Okay<span>foobar</span></div>';
+
+      let instance = null;
+
+      class Foobar extends Component {
+        constructor(props, context) {
+          super(props, context);
+
+          instance = this;
+        }
+        render() {
+          return (
+            <Fragment>
+              <span>1</span>
+              {this.props.children}
+              <span>2</span>
+            </Fragment>
+          );
+        }
+      }
+
+      let newRef = createRef();
+
+      hydrate(
+        <div>Okay<Foobar ref={newRef}>Foobar</Foobar></div>,
+        container
+      );
+
+      expect(newRef.current).toBe(instance);
+      expect(container.innerHTML).toBe('<div>Okay<span>1</span>Foobar<span>2</span></div>')
     });
   });
 });
