@@ -18,6 +18,7 @@ import {
   ChangeEventHandler,
   Ref,
   Refs,
+  PointerEventHandler,
   Props
 } from 'inferno';
 
@@ -29,12 +30,13 @@ export type NativeFocusEvent = FocusEvent;
 export type NativeKeyboardEvent = KeyboardEvent;
 export type NativeMouseEvent = MouseEvent;
 export type NativeTouchEvent = TouchEvent;
+export type NativePointerEvent = PointerEvent;
 export type NativeTransitionEvent = TransitionEvent;
 export type NativeUIEvent = UIEvent;
 export type NativeWheelEvent = WheelEvent;
 
 declare global {
-  // Based on Type definitions for React 16.0
+  // Based on Type definitions for React 16.4
   // Project: http://facebook.github.io/react/
   // Definitions by: Asana <https://asana.com>
   //                 AssureSign <http://www.assuresign.com>
@@ -202,6 +204,16 @@ declare global {
       onTouchMove?: TouchEventHandler<T>;
       onTouchStart?: TouchEventHandler<T>;
 
+      // Pointer events
+      onPointerDown?: PointerEventHandler<T>;
+      onPointerMove?: PointerEventHandler<T>;
+      onPointerUp?: PointerEventHandler<T>;
+      onPointerCancel?: PointerEventHandler<T>;
+      onPointerEnter?: PointerEventHandler<T>;
+      onPointerLeave?: PointerEventHandler<T>;
+      onPointerOver?: PointerEventHandler<T>;
+      onPointerOut?: PointerEventHandler<T>;
+
       // UI Events
       onScroll?: UIEventHandler<T>;
 
@@ -301,6 +313,16 @@ declare global {
       ontouchend?: TouchEventHandler<T>;
       ontouchmove?: TouchEventHandler<T>;
       ontouchstart?: TouchEventHandler<T>;
+
+      // Pointer events
+      onpointerdown?: PointerEventHandler<T>;
+      onpointermove?: PointerEventHandler<T>;
+      onpointerup?: PointerEventHandler<T>;
+      onpointercancel?: PointerEventHandler<T>;
+      onpointerenter?: PointerEventHandler<T>;
+      onpointerleave?: PointerEventHandler<T>;
+      onpointerover?: PointerEventHandler<T>;
+      onpointerout?: PointerEventHandler<T>;
 
       // UI Events
       onscroll?: UIEventHandler<T>;

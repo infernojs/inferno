@@ -52,18 +52,19 @@ export type TransitionEvent<T> = SemiSyntheticEvent<T> & NativeTransitionEvent;
 
 export type EventHandler<E extends SemiSyntheticEvent<any>> = { bivarianceHack(event: E): void }['bivarianceHack'] | LinkedEvent<any, E> | null;
 
-export type InfernoEventHandler<T> = EventHandler<SemiSyntheticEvent<T>>;
+export type InfernoEventHandler<T= Element> = EventHandler<SemiSyntheticEvent<T>>;
 
-export type ClipboardEventHandler<T> = EventHandler<ClipboardEvent<T>>;
-export type CompositionEventHandler<T> = EventHandler<CompositionEvent<T>>;
-export type DragEventHandler<T> = EventHandler<DragEvent<T>>;
-export type FocusEventHandler<T> = EventHandler<FocusEvent<T>>;
-export type FormEventHandler<T> = EventHandler<FormEvent<T>>;
-export type ChangeEventHandler<T> = EventHandler<ChangeEvent<T>>;
-export type KeyboardEventHandler<T> = EventHandler<KeyboardEvent<T>>;
-export type MouseEventHandler<T> = EventHandler<MouseEvent<T>>;
-export type TouchEventHandler<T> = EventHandler<TouchEvent<T>>;
-export type UIEventHandler<T> = EventHandler<UIEvent<T>>;
-export type WheelEventHandler<T> = EventHandler<WheelEvent<T>>;
-export type AnimationEventHandler<T> = EventHandler<AnimationEvent<T>>;
-export type TransitionEventHandler<T> = EventHandler<TransitionEvent<T>>;
+export type ClipboardEventHandler<T = Element> = EventHandler<ClipboardEvent<T>>;
+export type CompositionEventHandler<T = Element> = EventHandler<CompositionEvent<T>>;
+export type DragEventHandler<T = Element> = EventHandler<DragEvent<T>>;
+export type FocusEventHandler<T = Element> = EventHandler<FocusEvent<T>>;
+export type FormEventHandler<T = Element> = EventHandler<FormEvent<T>>;
+export type ChangeEventHandler<T = Element> = EventHandler<ChangeEvent<T>>;
+export type KeyboardEventHandler<T = Element> = EventHandler<KeyboardEvent<T>>;
+export type MouseEventHandler<T = Element> = EventHandler<MouseEvent<T>>;
+export type TouchEventHandler<T = Element> = EventHandler<TouchEvent<T>>;
+export type PointerEventHandler<T = Element> = EventHandler<PointerEvent<T>>;
+export type UIEventHandler<T = Element> = EventHandler<UIEvent<T>>;
+export type WheelEventHandler<T = Element> = EventHandler<WheelEvent<T>>;
+export type AnimationEventHandler<T = Element> = EventHandler<AnimationEvent<T>>;
+export type TransitionEventHandler<T = Element> = EventHandler<TransitionEvent<T>>;
