@@ -365,10 +365,10 @@ function patchClassComponent(lastVNode, nextVNode, parentDom, context, isSVG: bo
   const nextProps = nextVNode.props || EMPTY_OBJ;
   const nextRef = nextVNode.ref;
   const instance = nextVNode.children = lastVNode.children;
+  const lastRef = lastVNode.ref;
+  let nextState = instance.state;
 
   instance.$UPD = true;
-
-  let nextState = instance.state;
 
   if (!instance.$N) {
     if (isFunction(instance.componentWillReceiveProps)) {
@@ -388,8 +388,6 @@ function patchClassComponent(lastVNode, nextVNode, parentDom, context, isSVG: bo
   }
 
   updateClassComponent(instance, nextState, nextProps, parentDom, context, isSVG, false, nextNode);
-
-  const lastRef = lastVNode.ref;
 
   if (lastRef !== nextRef) {
     unmountRef(lastRef);

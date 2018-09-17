@@ -211,9 +211,6 @@ options.createVNode = (vNode: VNode) => {
   if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && !isArray(children) && isFunction(children[symbolIterator])) {
     vNode.children = iterableToArray(children[symbolIterator]());
   }
-  if (vNode.className) {
-    props.className = vNode.className;
-  }
 
   if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
     props.children = children;
@@ -233,6 +230,9 @@ options.createVNode = (vNode: VNode) => {
     normalizeFormProps(vNode.type, props);
   }
   if (flags & VNodeFlags.Element) {
+    if (vNode.className) {
+      props.className = vNode.className;
+    }
     normalizeGenericProps(props);
   }
 

@@ -21,6 +21,7 @@ export const enum VNodeFlags {
   ForwardRef = 1 << 15,
 
   /* Masks */
+  ForwardRefComponent = ForwardRef | ComponentFunction,
   FormElement = InputElement | TextareaElement | SelectElement,
   Element = HtmlElement | SvgElement | FormElement,
   Component = ComponentFunction | ComponentClass | ComponentUnknown,

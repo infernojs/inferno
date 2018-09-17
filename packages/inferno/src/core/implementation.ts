@@ -6,7 +6,6 @@ import {
   isInvalid,
   isNull,
   isNullOrUndef,
-  isObject,
   isString,
   isStringOrNumber,
   isUndefined,
@@ -143,8 +142,8 @@ export function createComponentVNode<P>(
   }
 
   if ((flags & VNodeFlags.ComponentUnknown) !== 0) {
-    if (isObject(type)) {
-      flags = VNodeFlags.ForwardRef | VNodeFlags.ComponentFunction;
+    if ((type as any).render) {
+      flags = VNodeFlags.ForwardRefComponent;
       type = (type as ForwardRef).render;
     } else {
       flags = (type as any).prototype && isFunction((type as any).prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
@@ -368,14 +367,6 @@ export function normalizeChildren(vNode: VNode, children) {
       newChildren = null;
       newChildFlags = ChildFlags.HasInvalidChildren;
     } else {
-      // we assign $ which basically means we've flagged this array for future note
-      // if it comes back again, we need to clone it, as people are using it
-      // in an immutable way
-      // tslint:disable-next-line
-      if (Object.isFrozen(children) || children['$'] === true) {
-        children = children.slice();
-      }
-
       newChildFlags = ChildFlags.HasKeyedChildren;
 
       for (let i = 0; i < len; i++) {
@@ -408,6 +399,14 @@ export function normalizeChildren(vNode: VNode, children) {
             newChildren.push(n);
           }
         }
+      }
+      // we assign $ which basically means we've flagged this array for future note
+      // if it comes back again, we need to clone it, as people are using it
+      // in an immutable way
+
+      // tslint:disable-next-line
+      if (!newChildren && (Object.isFrozen(children) || children['$'] === true)) {
+        newChildren = children.slice();
       }
       newChildren = newChildren || children;
       newChildren.$ = true;

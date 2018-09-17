@@ -134,10 +134,6 @@ describe('CreateElement (non-JSX)', () => {
     expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
   });
 
-  it('Should throw with invalid name', () => {
-    expect(() => createElement({}, null)).toThrowError(Error);
-  });
-
   it('Should handle node with refs', done => {
     let myRef = 'myRef';
 
