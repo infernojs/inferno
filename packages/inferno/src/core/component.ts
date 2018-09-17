@@ -173,7 +173,6 @@ export class Component<P, S> {
   public $QU: Function[] | null = null; // QUEUE
   public $N: boolean = false; // Flag
   public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client
-  public $P: Element | null = null;
 
   constructor(props?: P, context?: any) {
     /** @type {object} */
