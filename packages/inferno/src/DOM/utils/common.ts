@@ -12,15 +12,15 @@ if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
 }
 
-export function appendChild(parentDom, dom) {
-  parentDom.appendChild(dom);
+export function appendChild(parentDOM, dom) {
+  parentDOM.appendChild(dom);
 }
 
-export function insertOrAppend(parentDom, newNode, nextNode) {
+export function insertOrAppend(parentDOM: Element, newNode, nextNode) {
   if (isNull(nextNode)) {
-    appendChild(parentDom, newNode);
+    appendChild(parentDOM, newNode);
   } else {
-    parentDom.insertBefore(newNode, nextNode);
+    parentDOM.insertBefore(newNode, nextNode);
   }
 }
 
@@ -32,12 +32,12 @@ export function documentCreateElement(tag, isSVG: boolean): Element {
   return document.createElement(tag);
 }
 
-export function replaceChild(parentDom, newDom, lastDom) {
-  parentDom.replaceChild(newDom, lastDom);
+export function replaceChild(parentDOM: Element, newDom, lastDom) {
+  parentDOM.replaceChild(newDom, lastDom);
 }
 
-export function removeChild(parentDom: Element, childNode: Element) {
-  parentDom.removeChild(childNode);
+export function removeChild(parentDOM: Element, childNode: Element) {
+  parentDOM.removeChild(childNode);
 }
 
 export function callAll(arrayFn: Function[]) {

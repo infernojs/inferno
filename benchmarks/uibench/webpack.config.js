@@ -15,8 +15,7 @@ module.exports = {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        query: {
-          presets: [['es2015', { loose: true, modules: false }], 'stage-0'],
+        options: {
           plugins: [[require(__dirname + './../../node_modules/babel-plugin-inferno'), {imports: true}]]
         }
       },

@@ -192,16 +192,16 @@ function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, con
   return null;
 }
 
-export function hydrate(input, parentDom: Element, callback?: Function) {
-  let dom = parentDom.firstChild as Element;
+export function hydrate(input, parentDOM: Element, callback?: Function) {
+  let dom = parentDOM.firstChild as Element;
 
   if (!isNull(dom)) {
     if (!isInvalid(input)) {
-      dom = hydrateVNode(input, parentDom, dom, {}, false) as Element;
+      dom = hydrateVNode(input, parentDOM, dom, {}, false) as Element;
     }
     // clear any other DOM nodes, there should be only a single entry for the root
     while (dom && (dom = dom.nextSibling as Element)) {
-      parentDom.removeChild(dom);
+      parentDOM.removeChild(dom);
     }
   }
 
@@ -212,7 +212,7 @@ export function hydrate(input, parentDom: Element, callback?: Function) {
     }
   }
 
-  (parentDom as any).$V = input;
+  (parentDOM as any).$V = input;
 
   if (isFunction(callback)) {
     callback();

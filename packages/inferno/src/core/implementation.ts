@@ -249,7 +249,9 @@ export function normalizeProps(vNode) {
 
 export function directClone(vNodeToClone: VNode): VNode {
   let newVNode;
-  const flags = vNodeToClone.flags;
+  let flags = vNodeToClone.flags;
+
+  flags &= VNodeFlags.ClearInUse;
 
   if (flags & VNodeFlags.Component) {
     let props;

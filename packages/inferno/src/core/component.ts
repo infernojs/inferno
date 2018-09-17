@@ -1,7 +1,7 @@
 import { InfernoChildren, Props, Refs, VNode } from './implementation';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { callAll, EMPTY_OBJ, findDOMfromVNode, LIFECYCLE } from '../DOM/utils/common';
+import { callAll, EMPTY_OBJ, LIFECYCLE, findDOMfromVNode } from '../DOM/utils/common';
 
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = isFunction(Promise) ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
@@ -173,6 +173,7 @@ export class Component<P, S> {
   public $QU: Function[] | null = null; // QUEUE
   public $N: boolean = false; // Flag
   public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client
+  public $P: Element | null = null;
 
   constructor(props?: P, context?: any) {
     /** @type {object} */

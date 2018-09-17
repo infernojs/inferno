@@ -25,7 +25,8 @@ export const enum VNodeFlags {
   FormElement = InputElement | TextareaElement | SelectElement,
   Element = HtmlElement | SvgElement | FormElement,
   Component = ComponentFunction | ComponentClass | ComponentUnknown,
-  DOMRef = Element | Text | Void | Portal
+  DOMRef = Element | Text | Void | Portal,
+  ClearInUse = ~InUse
 }
 
 // Combinations are not possible, its bitwise only to reduce vNode size

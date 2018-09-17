@@ -18,36 +18,36 @@ const documentBody = isBrowser ? document.body : null;
 
 export function __render(
   input: InfernoInput,
-  parentDom: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
+  parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback?: Function
 ): InfernoChildren | void {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
-    if (documentBody === parentDom) {
+    if (documentBody === parentDOM) {
       throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
     }
   }
-  let rootInput = (parentDom as any).$V as VNode;
+  let rootInput = (parentDOM as any).$V as VNode;
 
   if (isNullOrUndef(rootInput)) {
     if (!isNullOrUndef(input)) {
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      mount(input as VNode, parentDom as Element, EMPTY_OBJ, false, null);
-      (parentDom as any).$V = input;
+      mount(input as VNode, parentDOM as Element, EMPTY_OBJ, false, null);
+      (parentDOM as any).$V = input;
       rootInput = input as VNode;
     }
   } else {
     if (isNullOrUndef(input)) {
-      remove(rootInput as VNode, parentDom as Element);
-      (parentDom as any).$V = null;
+      remove(rootInput as VNode, parentDOM as Element);
+      (parentDOM as any).$V = null;
     } else {
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDom as Element, EMPTY_OBJ, false, null);
-      rootInput = (parentDom as any).$V = input as VNode;
+      patch(rootInput as VNode, input as VNode, parentDOM as Element, EMPTY_OBJ, false, null);
+      rootInput = (parentDOM as any).$V = input as VNode;
     }
   }
 
@@ -59,23 +59,23 @@ export function __render(
     callback();
   }
   if (isFunction(options.renderComplete)) {
-    options.renderComplete(rootInput, parentDom);
+    options.renderComplete(rootInput, parentDOM);
   }
 }
 
 export function render(
   input: InfernoInput,
-  parentDom: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
+  parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback?: Function
 ): InfernoChildren | void {
-  __render(input, parentDom, callback);
+  __render(input, parentDOM, callback);
 }
 
-export function createRenderer(parentDom?) {
+export function createRenderer(parentDOM?) {
   return function renderer(lastInput, nextInput) {
-    if (!parentDom) {
-      parentDom = lastInput;
+    if (!parentDOM) {
+      parentDOM = lastInput;
     }
-    render(nextInput, parentDom);
+    render(nextInput, parentDOM);
   };
 }

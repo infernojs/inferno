@@ -1,4 +1,12 @@
-import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, InfernoChildren, Props, VNode, createFragment } from 'inferno';
+import {
+  Component,
+  createComponentVNode,
+  createVNode,
+  getFlagsForElementVnode,
+  Props,
+  VNode,
+  createFragment,
+} from 'inferno';
 import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -21,25 +29,30 @@ const componentHooks = {
 export function createElement<T>(
   type: string | Function | Component<any, any>,
   props?: T & Props<T> | null,
-  ..._children: Array<InfernoChildren | any>
+  _children?: any
 ): VNode {
-  if (isInvalid(type)) {
-    throw new Error(
-      'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class, function or forwardRef.'
-    );
+  if (process.env.NODE_ENV !== 'production') {
+    if (isInvalid(type)) {
+      throw new Error(
+        'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class, function or forwardRef.'
+      );
+    }
   }
-  let children: any = _children;
+  let children: any;
   let ref: any = null;
   let key = null;
   let className: string | null = null;
   let flags = 0;
   let newProps;
+  let childLen = arguments.length - 2;
 
-  if (_children) {
-    if (_children.length === 1) {
-      children = _children[0];
-    } else if (_children.length === 0) {
-      children = void 0;
+  if (childLen === 1) {
+    children = _children;
+  } else if (childLen > 1) {
+    children = [];
+
+    while ( childLen-- > 0 ) {
+      children[ childLen ] = arguments[ childLen + 2 ];
     }
   }
   if (isString(type)) {
@@ -79,7 +92,7 @@ export function createElement<T>(
       newProps = {} as T & Props<T>;
 
       for (const prop in props) {
-        if ((componentHooks as any)[prop] !== void 0) {
+        if ((componentHooks as any)[prop] === 1) {
           if (!ref) {
             ref = {};
           }

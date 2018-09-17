@@ -5,11 +5,11 @@ import { handleEvent } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeChild, removeVNodeDOM } from './utils/common';
 import { unmountRef } from "../core/refs";
 
-export function remove(vNode: VNode, parentDom: Element | null) {
+export function remove(vNode: VNode, parentDOM: Element | null) {
   unmount(vNode);
 
-  if (parentDom) {
-    removeVNodeDOM(vNode, parentDom);
+  if (parentDOM) {
+    removeVNodeDOM(vNode, parentDOM);
   }
 }
 
