@@ -6,9 +6,9 @@ import { callAll, EMPTY_OBJ, findDOMfromVNode, LIFECYCLE } from '../DOM/utils/co
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = isFunction(Promise) ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState: S | Function, callback: Function | undefined, force: boolean): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState: Partial<S> | ((s: S, p: P, c: any) => Partial<S>), callback: Function | undefined, force: boolean): void {
   if (isFunction(newState)) {
-    newState = newState(component.state, component.props, component.context) as S;
+    newState = newState(component.state!, component.props, component.context);
   }
   const pending = component.$PS;
 
@@ -165,7 +165,7 @@ export class Component<P, S> {
   public $BR: boolean = false; // BLOCK RENDER
   public $BS: boolean = true; // BLOCK STATE
   public $PSS: boolean = false; // PENDING SET STATE
-  public $PS: S | null = null; // PENDING STATE (PARTIAL or FULL)
+  public $PS: Partial<S> | null = null; // PENDING STATE (PARTIAL or FULL)
   public $LI: any = null; // LAST INPUT
   public $UN : boolean= false; // UNMOUNTED
   public $CX: any = null; // CHILDCONTEXT
@@ -190,7 +190,7 @@ export class Component<P, S> {
     queueStateChanges(this, {} as any, callback, true);
   }
 
-  public setState(newState: { [k in keyof S]?: S[k] } | Function, callback?: Function) {
+  public setState(newState: Partial<S> | ((s: S, p: P, c: any) => Partial<S>), callback?: Function) {
     if (this.$UN) {
       return;
     }
