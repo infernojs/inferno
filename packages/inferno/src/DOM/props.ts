@@ -39,6 +39,10 @@ export function patchEvent(name: string, nextValue, dom) {
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
+  if (isNullOrUndef(nextAttrValue)) {
+    dom.removeAttribute('style');
+    return;
+  }
   const domStyle = dom.style;
   let style;
   let value;
@@ -130,6 +134,9 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
         dom[prop] = value;
       }
       break;
+    case 'style':
+      patchStyle(lastValue, nextValue, dom);
+      break;
     case 'dangerouslySetInnerHTML':
       const lastHtml = (lastValue && lastValue.__html) || '';
       const nextHtml = (nextValue && nextValue.__html) || '';
@@ -149,12 +156,10 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       }
       break;
     default:
-      if (prop[0] === 'o' && prop[1] === 'n') {
+      if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
         patchEvent(prop, nextValue, dom);
       } else if (isNullOrUndef(nextValue)) {
         dom.removeAttribute(prop);
-      } else if (prop === 'style') {
-        patchStyle(lastValue, nextValue, dom);
       } else if (isSVG && namespaces[prop]) {
         // We optimize for isSVG being false
         // If we end up in this path we can read property again
