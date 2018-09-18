@@ -19,7 +19,8 @@ const documentBody = isBrowser ? document.body : null;
 export function __render(
   input: InfernoInput,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
-  callback?: Function
+  callback?: Function | null,
+  context?: any
 ): InfernoChildren | void {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
@@ -34,7 +35,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      mount(input as VNode, parentDOM as Element, EMPTY_OBJ, false, null);
+      mount(input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null);
       (parentDOM as any).$V = input;
       rootInput = input as VNode;
     }
@@ -46,7 +47,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDOM as Element, EMPTY_OBJ, false, null);
+      patch(rootInput as VNode, input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null);
       rootInput = (parentDOM as any).$V = input as VNode;
     }
   }
@@ -66,9 +67,10 @@ export function __render(
 export function render(
   input: InfernoInput,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
-  callback?: Function
+  callback?: Function | null,
+  context?: any
 ): InfernoChildren | void {
-  __render(input, parentDOM, callback);
+  __render(input, parentDOM, callback, context);
 }
 
 export function createRenderer(parentDOM?) {

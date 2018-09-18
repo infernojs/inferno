@@ -301,8 +301,8 @@ function createFactory(type) {
   return createElement.bind(null, type);
 }
 
-function render(rootInput, container, cb) {
-  __render(rootInput, container, cb);
+function render(rootInput, container, cb?, context?) {
+  __render(rootInput, container, cb, context);
 
   const input = container.$V;
 
