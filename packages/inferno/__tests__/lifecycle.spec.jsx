@@ -122,7 +122,7 @@ describe('ComponentDidUpdate', () => {
     expect(spyer.calls.argsFor(1)).toEqual(['outer-outer']);
     expect(spyer.calls.argsFor(2)).toEqual(['parent-didmount']);
 
-    render(<App child={true}/>, container);
+    render(<App child={true} />, container);
 
     expect(spyer.calls.argsFor(3)).toEqual(['inner-null']);
     expect(spyer.calls.argsFor(4)).toEqual(['outer-null']);
@@ -132,7 +132,7 @@ describe('ComponentDidUpdate', () => {
 
     expect(spyer).toHaveBeenCalledTimes(8);
 
-    render(<App child={false}/>, container);
+    render(<App child={false} />, container);
 
     expect(spyer.calls.argsFor(8)).toEqual(['child-willunmount']);
     expect(spyer.calls.argsFor(9)).toEqual(['inner-null']);
@@ -142,7 +142,7 @@ describe('ComponentDidUpdate', () => {
 
     expect(spyer).toHaveBeenCalledTimes(13);
 
-    render(<App child={true}/>, container);
+    render(<App child={true} />, container);
 
     expect(spyer.calls.argsFor(13)).toEqual(['inner-null']);
     expect(spyer.calls.argsFor(14)).toEqual(['outer-null']);
@@ -215,7 +215,7 @@ describe('ComponentDidUpdate', () => {
     expect(spyer.calls.argsFor(2)).toEqual(['outer-outer']);
     expect(spyer.calls.argsFor(3)).toEqual(['parent-didmount']);
 
-    render(<App child={true}/>, container);
+    render(<App child={true} />, container);
 
     expect(spyer.calls.argsFor(4)).toEqual(['inner-null']);
     expect(spyer.calls.argsFor(5)).toEqual(['outer-null']);

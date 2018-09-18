@@ -4,12 +4,12 @@ import { isDOMinsideComponent, isDOMinsideVNode } from 'inferno-extras';
 describe('Extras', () => {
   let container;
 
-  beforeEach(function () {
+  beforeEach(function() {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function () {
+  afterEach(function() {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -34,11 +34,9 @@ describe('Extras', () => {
               Move It
               {createPortal(
                 <div>
-                <span>
-                  test
-                </span>
+                  <span>test</span>
                   <ul id="target">
-                    <li></li>
+                    <li />
                   </ul>
                 </div>,
                 secondRoot
@@ -48,7 +46,7 @@ describe('Extras', () => {
         }
       }
 
-      render(<Tester/>, container);
+      render(<Tester />, container);
 
       expect(container.innerHTML).toBe('<div>Move It</div>');
 
@@ -66,12 +64,12 @@ describe('Extras', () => {
 
       let instance;
 
-      function Functional({children}) {
+      function Functional({ children }) {
         return (
           <div>
             <span>{children}</span>
           </div>
-        )
+        );
       }
 
       class Tester extends Component {
@@ -87,24 +85,17 @@ describe('Extras', () => {
               Move It
               <div>
                 <div>
-                  <div></div>
-                  <div></div>
+                  <div />
+                  <div />
                 </div>
               </div>
               {createPortal(
                 <div>
                   <span>
-                    <Functional>
-                      {[
-                        <div>
-                        </div>,
-                        'Okay',
-                        <span id="target"></span>
-                      ]}
-                    </Functional>
+                    <Functional>{[<div />, 'Okay', <span id="target" />]}</Functional>
                   </span>
                   <ul>
-                    <li></li>
+                    <li />
                   </ul>
                 </div>,
                 secondRoot
@@ -114,7 +105,7 @@ describe('Extras', () => {
         }
       }
 
-      render(<Tester/>, container);
+      render(<Tester />, container);
 
       expect(container.innerHTML).toBe('<div>Move It<div><div><div></div><div></div></div></div></div>');
 
@@ -138,12 +129,15 @@ describe('Extras', () => {
         }
 
         render() {
-          return <div id="target"><span/></div>;
+          return (
+            <div id="target">
+              <span />
+            </div>
+          );
         }
       }
 
-      render(<Tester/>, container);
-
+      render(<Tester />, container);
 
       const target = container.querySelector('#target');
 
@@ -161,18 +155,22 @@ describe('Extras', () => {
         }
 
         render() {
-          return <div id={this.props.id}><span/></div>;
+          return (
+            <div id={this.props.id}>
+              <span />
+            </div>
+          );
         }
       }
 
       render(
         <div>
-          <Tester/>
-          <Tester id="target"/>
-          <Tester/>
+          <Tester />
+          <Tester id="target" />
+          <Tester />
         </div>,
-        container);
-
+        container
+      );
 
       const target = container.querySelector('#target');
 
@@ -192,18 +190,22 @@ describe('Extras', () => {
         }
 
         render() {
-          return <div id={this.props.id}><span/></div>;
+          return (
+            <div id={this.props.id}>
+              <span />
+            </div>
+          );
         }
       }
 
       render(
         <div>
-          <Tester key="1"/>
-          <Tester key="2" id="target"/>
-          <Tester key="3"/>
+          <Tester key="1" />
+          <Tester key="2" id="target" />
+          <Tester key="3" />
         </div>,
-        container);
-
+        container
+      );
 
       const target = container.querySelector('#target');
 
@@ -213,11 +215,12 @@ describe('Extras', () => {
 
       render(
         <div>
-          <Tester key="1"/>
-          <Tester key="change-it" id="target"/>
-          <Tester key="3"/>
+          <Tester key="1" />
+          <Tester key="change-it" id="target" />
+          <Tester key="3" />
         </div>,
-        container);
+        container
+      );
 
       expect(isDOMinsideComponent(target, instances[0])).toBe(false);
       expect(isDOMinsideComponent(target, instances[1])).toBe(false);
@@ -245,9 +248,7 @@ describe('Extras', () => {
     });
 
     it('Should return true if that is the ndoe', () => {
-      const vNode = (
-        <div id="target">Ok</div>
-      );
+      const vNode = <div id="target">Ok</div>;
 
       render(
         <div>
@@ -259,5 +260,5 @@ describe('Extras', () => {
 
       expect(isDOMinsideVNode(container.querySelector('#target'), vNode)).toBe(true);
     });
-  })
+  });
 });

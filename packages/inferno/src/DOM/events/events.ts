@@ -54,7 +54,7 @@ export type TransitionEvent<T> = SemiSyntheticEvent<T> & NativeTransitionEvent;
 
 export type EventHandler<E extends SemiSyntheticEvent<any>> = { bivarianceHack(event: E): void }['bivarianceHack'] | LinkedEvent<any, E> | null;
 
-export type InfernoEventHandler<T= Element> = EventHandler<SemiSyntheticEvent<T>>;
+export type InfernoEventHandler<T = Element> = EventHandler<SemiSyntheticEvent<T>>;
 
 export type ClipboardEventHandler<T = Element> = EventHandler<ClipboardEvent<T>>;
 export type CompositionEventHandler<T = Element> = EventHandler<CompositionEvent<T>>;

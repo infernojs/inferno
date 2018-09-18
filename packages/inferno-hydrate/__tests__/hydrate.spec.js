@@ -126,12 +126,15 @@ describe('rendering routine', () => {
       let newRef = createRef();
 
       hydrate(
-        <div>Okay<span ref={newRef}>Foobar</span></div>,
+        <div>
+          Okay
+          <span ref={newRef}>Foobar</span>
+        </div>,
         container
       );
 
       expect(newRef.current).toBe(container.querySelector('span'));
-      expect(container.innerHTML).toBe('<div>Okay<span>Foobar</span></div>')
+      expect(container.innerHTML).toBe('<div>Okay<span>Foobar</span></div>');
     });
 
     it('Should work with object ref on component vNode', () => {
@@ -160,12 +163,15 @@ describe('rendering routine', () => {
       let newRef = createRef();
 
       hydrate(
-        <div>Okay<Foobar ref={newRef}>Foobar</Foobar></div>,
+        <div>
+          Okay
+          <Foobar ref={newRef}>Foobar</Foobar>
+        </div>,
         container
       );
 
       expect(newRef.current).toBe(instance);
-      expect(container.innerHTML).toBe('<div>Okay<span>1</span>Foobar<span>2</span></div>')
+      expect(container.innerHTML).toBe('<div>Okay<span>1</span>Foobar<span>2</span></div>');
     });
   });
 });

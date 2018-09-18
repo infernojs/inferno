@@ -5,12 +5,12 @@ import { Component, render, createElement } from 'inferno-compat';
 describe('Inferno-compat LifeCycle', () => {
   let container;
 
-  beforeEach(function () {
+  beforeEach(function() {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function () {
+  afterEach(function() {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -45,16 +45,16 @@ describe('Inferno-compat LifeCycle', () => {
             {
               key: 'S1',
               id: 'S1',
-              ref: (el) => {
+              ref: el => {
                 console.log('S1' + (el ? el.id : null));
               }
             },
             [
-              createElement('div', {key: 'ee'}),
+              createElement('div', { key: 'ee' }),
               createElement('div', {
                 key: 'S2b',
                 id: 'S2b',
-                ref: (el) => {
+                ref: el => {
                   console.log('S2b' + (el ? el.id : null));
                 }
               })
@@ -86,7 +86,7 @@ describe('Inferno-compat LifeCycle', () => {
             {
               key: '1',
               id: '1',
-              ref: (el) => {
+              ref: el => {
                 console.log('1' + (el ? el.id : null));
               }
             },
@@ -96,24 +96,24 @@ describe('Inferno-compat LifeCycle', () => {
                 {
                   key: '2a',
                   id: '2a',
-                  ref: (el) => {
+                  ref: el => {
                     console.log('2a' + (el ? el.id : null));
                   }
                 },
                 [
-                  createElement(Hello2, {key: 'Hello2'}),
-                  createElement('div', {key: 'empt'}, [
+                  createElement(Hello2, { key: 'Hello2' }),
+                  createElement('div', { key: 'empt' }, [
                     createElement('div', {
                       key: '4a',
                       id: '4a',
-                      ref: (el) => {
+                      ref: el => {
                         console.log('4a' + (el ? el.id : null));
                       }
                     }),
                     createElement('div', {
                       key: '4b',
                       id: '4b',
-                      ref: (el) => {
+                      ref: el => {
                         console.log('4b' + (el ? el.id : null));
                       }
                     })
@@ -121,7 +121,7 @@ describe('Inferno-compat LifeCycle', () => {
                   createElement('div', {
                     key: '3b',
                     id: '3b',
-                    ref: (el) => {
+                    ref: el => {
                       console.log('3b' + (el ? el.id : null));
                     }
                   })
@@ -132,7 +132,7 @@ describe('Inferno-compat LifeCycle', () => {
                 {
                   key: '2b',
                   id: '2b',
-                  ref: (el) => {
+                  ref: el => {
                     console.log('2b' + (el ? el.id : null));
                   }
                 },
@@ -143,15 +143,15 @@ describe('Inferno-compat LifeCycle', () => {
         }
       }
 
-      render(createElement(Hello, {name: 'Inferno'}), container);
+      render(createElement(Hello, { name: 'Inferno' }), container);
 
       console.log('UPDATE');
 
-      render(createElement(Hello, {name: 'Better Lifecycle'}), container);
+      render(createElement(Hello, { name: 'Better Lifecycle' }), container);
 
       console.log('REMOVAL');
 
-      render(<div/>, container);
+      render(<div />, container);
 
       const array = consoleSpy.getCalls();
       expect(array.length).toEqual(42);

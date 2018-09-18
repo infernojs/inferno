@@ -18,7 +18,7 @@ import { isControlledFormElement, processElement } from './wrappers/processEleme
 import { patchProp } from './props';
 import { handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
-import { mountRef, unmountRef } from "../core/refs";
+import { mountRef, unmountRef } from '../core/refs';
 
 function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean) {
   unmount(lastVNode);
@@ -35,7 +35,7 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
 }
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, nextNode: Element | null) {
-  const nextFlags = nextVNode.flags |= VNodeFlags.InUse;
+  const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
   if (lastVNode.flags !== nextFlags || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || (nextFlags & VNodeFlags.ReCreate) > 0) {
     if (lastVNode.flags & VNodeFlags.InUse) {
@@ -299,16 +299,7 @@ function createDidUpdate(instance, lastProps, lastState, snapshot) {
   LIFECYCLE.push(() => instance.componentDidUpdate(lastProps, lastState, snapshot));
 }
 
-export function updateClassComponent(
-  instance,
-  nextState,
-  nextProps,
-  parentDOM: Element,
-  context,
-  isSVG: boolean,
-  force: boolean,
-  nextNode: Element | null
-) {
+export function updateClassComponent(instance, nextState, nextProps, parentDOM: Element, context, isSVG: boolean, force: boolean, nextNode: Element | null) {
   const lastState = instance.state;
   const lastProps = instance.props;
   const usesNewAPI = instance.$N;
@@ -364,7 +355,7 @@ export function updateClassComponent(
 function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null) {
   const nextProps = nextVNode.props || EMPTY_OBJ;
   const nextRef = nextVNode.ref;
-  const instance = nextVNode.children = lastVNode.children;
+  const instance = (nextVNode.children = lastVNode.children);
   const lastRef = lastVNode.ref;
   let nextState = instance.state;
 
@@ -424,7 +415,6 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
     nextVNode.children = lastInput;
   }
 }
-
 
 function patchText(lastVNode: VNode, nextVNode: VNode) {
   const nextText = nextVNode.children as string;

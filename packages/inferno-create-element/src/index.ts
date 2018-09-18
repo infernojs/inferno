@@ -1,12 +1,4 @@
-import {
-  Component,
-  createComponentVNode,
-  createVNode,
-  getFlagsForElementVnode,
-  Props,
-  VNode,
-  createFragment,
-} from 'inferno';
+import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, Props, VNode, createFragment } from 'inferno';
 import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -26,11 +18,7 @@ const componentHooks = {
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual ndoe
  */
-export function createElement<T>(
-  type: string | Function | Component<any, any>,
-  props?: T & Props<T> | null,
-  _children?: any
-): VNode {
+export function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props<T> | null, _children?: any): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (isInvalid(type)) {
       throw new Error(
@@ -51,8 +39,8 @@ export function createElement<T>(
   } else if (childLen > 1) {
     children = [];
 
-    while ( childLen-- > 0 ) {
-      children[ childLen ] = arguments[ childLen + 2 ];
+    while (childLen-- > 0) {
+      children[childLen] = arguments[childLen + 2];
     }
   }
   if (isString(type)) {

@@ -39,7 +39,7 @@
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest --runInBand --no-cache --no-watchman",
     "prebuild": "npm run clean",
     "postbuild": "rimraf build",
-    "build": "run-s build:** && npm run print:size && npm run move-types",
+    "build": "run-p build:** && npm run print:size && npm run move-types",
     "build:tsc": "lerna exec tsc",
     "build:es": "npm run rollup -- --name=index --ext=.esm.js --env=production --format=es --uglify=false",
     "build:es:dev": "npm run rollup -- --name=index --ext=.dev.esm.js --env=development --format=es --uglify=false",

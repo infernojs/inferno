@@ -70,7 +70,7 @@ function buildVNodeSnapshot(vNode: VNode) {
     return createSnapshotObject({
       children: childVNode,
       props: snapShotProps,
-      type: getTagNameOfVNode(vNode),
+      type: getTagNameOfVNode(vNode)
     });
   } else if (flags & VNodeFlags.Text) {
     childVNode = vNode.children + '';

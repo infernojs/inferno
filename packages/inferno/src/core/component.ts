@@ -6,7 +6,12 @@ import { callAll, EMPTY_OBJ, LIFECYCLE, findDOMfromVNode } from '../DOM/utils/co
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = isFunction(Promise) ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState: Partial<S> | ((s: S, p: P, c: any) => Partial<S>), callback: Function | undefined, force: boolean): void {
+function queueStateChanges<P, S>(
+  component: Component<P, S>,
+  newState: Partial<S> | ((s: S, p: P, c: any) => Partial<S>),
+  callback: Function | undefined,
+  force: boolean
+): void {
   if (isFunction(newState)) {
     newState = newState(component.state!, component.props, component.context);
   }
@@ -92,7 +97,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     );
 
     component.$UPD = false;
-    
+
     if (LIFECYCLE.length > 0) {
       callAll(LIFECYCLE);
     }
@@ -165,7 +170,7 @@ export class Component<P, S> {
   public $PSS: boolean = false; // PENDING SET STATE
   public $PS: Partial<S> | null = null; // PENDING STATE (PARTIAL or FULL)
   public $LI: any = null; // LAST INPUT
-  public $UN : boolean= false; // UNMOUNTED
+  public $UN: boolean = false; // UNMOUNTED
   public $CX: any = null; // CHILDCONTEXT
   public $UPD: boolean = true; // UPDATING
   public $QU: Function[] | null = null; // QUEUE

@@ -1,4 +1,4 @@
-import { Component, VNode } from "inferno";
+import { Component, VNode } from 'inferno';
 import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
 
 export function isDOMinsideVNode(DOM: Element, vNode: VNode): boolean {

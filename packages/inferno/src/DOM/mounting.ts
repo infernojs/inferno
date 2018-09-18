@@ -5,7 +5,7 @@ import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, LIF
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
-import { mountRef } from "../core/refs";
+import { mountRef } from '../core/refs';
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
@@ -170,7 +170,6 @@ export function mountClassComponentCallbacks(ref, instance) {
     }
   }
 
-
   if (isFunction(instance.componentDidMount)) {
     LIFECYCLE.push(createClassMountCallback(instance));
   }
@@ -190,4 +189,3 @@ export function mountFunctionalComponentCallbacks(props, ref, vNode: VNode) {
     }
   }
 }
-

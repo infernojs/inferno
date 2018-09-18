@@ -1,5 +1,5 @@
 import { isFunction, warning } from 'inferno-shared';
-import { LIFECYCLE } from "../DOM/utils/common";
+import { LIFECYCLE } from '../DOM/utils/common';
 
 export function createRef() {
   return {
@@ -37,7 +37,7 @@ export function unshiftRef(dom, value) {
   LIFECYCLE.unshift(() => value(dom));
 }
 
-export function unmountRef(ref) {
+export function unmountRef(ref) {
   if (ref) {
     if (isFunction(ref)) {
       ref(null);
