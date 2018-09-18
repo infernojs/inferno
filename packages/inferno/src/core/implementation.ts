@@ -422,9 +422,11 @@ export function normalizeChildren(vNode: VNode, children) {
 }
 
 export const options: {
+  componentComparator: null | Function;
   createVNode: null | Function;
   renderComplete: null | Function;
 } = {
+  componentComparator: null,
   createVNode: null,
   renderComplete: null
 };
