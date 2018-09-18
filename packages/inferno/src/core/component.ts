@@ -63,11 +63,9 @@ function callSetStateCallbacks(component) {
 export function rerender() {
   let component;
   while ((component = QUEUE.pop())) {
-    if (!component.$UPD) {
-      const queue = component.$QU;
+    const queue = component.$QU;
 
-      applyState(component, false, queue ? callSetStateCallbacks.bind(null, component) : null);
-    }
+    applyState(component, false, queue ? callSetStateCallbacks.bind(null, component) : null);
   }
 }
 
