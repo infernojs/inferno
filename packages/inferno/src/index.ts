@@ -33,7 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
   const testFunc = function testFn() {};
   /* tslint:disable-next-line*/
-  console.info('Inferno is in development mode.');
+  console.log('Inferno is in development mode.');
 
   if (((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
     warning(

@@ -16,7 +16,7 @@ describe('Link (jsx)', () => {
     document.body.removeChild(node);
   });
 
-  it('should trigger when clicked', done => {
+  it('should trigger when clicked', () => {
     let history;
     const ContextChecker = (props, context) => {
       history = context.router.history;
@@ -37,10 +37,9 @@ describe('Link (jsx)', () => {
     const element = node.querySelector('a');
     triggerEvent('click', element);
     expect(history.location.pathname).toBe('/clicked');
-    done();
   });
 
-  it('should trigger custom onClick', done => {
+  it('should trigger custom onClick', () => {
     const spy = sinon.spy(() => {});
 
     render(
@@ -55,6 +54,5 @@ describe('Link (jsx)', () => {
     const element = node.querySelector('a');
     triggerEvent('click', element);
     expect(spy.callCount).toBe(1);
-    done();
   });
 });

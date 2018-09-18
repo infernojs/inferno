@@ -27,5 +27,6 @@ module.exports = {
     "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
     "^.+\\.tsx?$": "<rootDir>/jest.ts.transform.js"
   },
-  setupTestFrameworkScriptFile: require.resolve("./JEST-DEBUG.js")
+  setupTestFrameworkScriptFile: require.resolve("./JEST-DEBUG.js"),
+  reporters: [["jest-silent-reporter", { "useDots": true }]]
 };
