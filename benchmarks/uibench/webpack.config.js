@@ -57,6 +57,9 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } })
   ],
+  optimization: {
+    minimize: false
+  },
   devServer: {
     port: process.env.PORT || 8000
   }

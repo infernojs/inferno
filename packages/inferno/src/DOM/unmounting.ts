@@ -15,14 +15,15 @@ export function remove(vNode: VNode, parentDOM: Element | null) {
 
 export function unmount(vNode) {
   const flags = vNode.flags;
+  const children = vNode.children;
+  let ref;
 
   if (flags & VNodeFlags.Element) {
-    const ref = vNode.ref as any;
+    ref = vNode.ref as any;
     const props = vNode.props;
 
     unmountRef(ref);
 
-    const children = vNode.children;
     const childFlags = vNode.childFlags;
 
     if (!isNull(props)) {
@@ -55,39 +56,28 @@ export function unmount(vNode) {
     } else if (childFlags === ChildFlags.HasVNodeChildren) {
       unmount(children as VNode);
     }
-  } else {
-    const children = vNode.children;
+  } else if (flags & VNodeFlags.ComponentClass) {
+    if (isFunction(children.componentWillUnmount)) {
+      children.componentWillUnmount();
+    }
+    unmountRef(vNode.ref);
+    children.$UN = true;
+    unmount(children.$LI);
+  } else if (flags & VNodeFlags.ComponentFunction) {
+    ref = vNode.ref;
 
-    // Safe guard for crashed VNode
+    if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
+      ref.onComponentWillUnmount(findDOMfromVNode(vNode), vNode.props || EMPTY_OBJ);
+    }
+
+    unmount(children);
+  } else if (flags & VNodeFlags.Portal) {
     if (children) {
-      if (flags & VNodeFlags.Component) {
-        const ref = vNode.ref as any;
-
-        if (flags & VNodeFlags.ComponentClass) {
-          if (isFunction(children.componentWillUnmount)) {
-            children.componentWillUnmount();
-          }
-          unmountRef(ref);
-
-          children.$UN = true;
-
-          if (children.$LI) {
-            unmount(children.$LI);
-          }
-        } else {
-          if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
-            ref.onComponentWillUnmount(findDOMfromVNode(vNode), vNode.props || EMPTY_OBJ);
-          }
-
-          unmount(children);
-        }
-      } else if (flags & VNodeFlags.Portal) {
-        remove(children as VNode, vNode.ref);
-      } else if (flags & VNodeFlags.Fragment) {
-        if (vNode.childFlags & ChildFlags.MultipleChildren) {
-          unmountAllChildren(children);
-        }
-      }
+      remove(children as VNode, vNode.ref);
+    }
+  } else if (flags & VNodeFlags.Fragment) {
+    if (vNode.childFlags & ChildFlags.MultipleChildren) {
+      unmountAllChildren(children);
     }
   }
 }

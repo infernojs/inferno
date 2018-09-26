@@ -9,10 +9,9 @@ interface IEventData {
 }
 
 export function handleEvent(name: string, nextEvent: Function | null, dom) {
-  const eventsLeft: number = attachedEventCounts[name];
   let eventsObject = dom.$EV;
   if (nextEvent) {
-    if (!eventsLeft) {
+    if (!attachedEventCounts[name]) {
       attachedEvents[name] = attachEventToDocument(name);
       attachedEventCounts[name] = 0;
     }
@@ -24,8 +23,7 @@ export function handleEvent(name: string, nextEvent: Function | null, dom) {
     }
     eventsObject[name] = nextEvent;
   } else if (eventsObject && eventsObject[name]) {
-    attachedEventCounts[name]--;
-    if (eventsLeft === 1) {
+    if (--attachedEventCounts[name] === 0) {
       document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
       attachedEvents[name] = null;
     }
@@ -76,16 +74,15 @@ function stopPropagation() {
 }
 
 function attachEventToDocument(name: string) {
-  const docEvent = (event: Event) => {
-    const type = event.type;
-    const isClick = type === 'click' || type === 'dblclick';
+  const docEvent = function (event: Event) {
+    const isClick = name === 'onClick' || name === 'onDblClick';
 
     if (isClick && (event as MouseEvent).button !== 0) {
       // Firefox incorrectly triggers click event for mid/right mouse buttons.
       // This bug has been active for 12 years.
       // https://bugzilla.mozilla.org/show_bug.cgi?id=184051
       event.stopPropagation();
-      return false;
+      return;
     }
 
     event.stopPropagation = stopPropagation;
@@ -102,7 +99,6 @@ function attachEventToDocument(name: string) {
     });
 
     dispatchEvents(event, event.target, isClick, name, eventData);
-    return;
   };
   document.addEventListener(normalizeEventName(name), docEvent);
   return docEvent;
