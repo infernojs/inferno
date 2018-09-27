@@ -236,7 +236,7 @@ Inferno now has bindings available for some of the major state management librar
 
 - Redux via [`inferno-redux`](https://github.com/infernojs/inferno/tree/dev/packages/inferno-redux)
 - MobX via [`inferno-mobx`](https://github.com/infernojs/inferno/tree/dev/packages/inferno-mobx)
-- Cerebral via [`cerebral-view-inferno`](https://github.com/cerebral/cerebral-view-inferno)
+- Cerebral via [`@cerebral/inferno`](https://github.com/cerebral/cerebral/tree/master/packages/node_modules/@cerebral/inferno)
 
 ## JSX
 
