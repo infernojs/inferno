@@ -1,9 +1,5 @@
 import { isFunction } from 'inferno-shared';
-
-export interface LinkedEvent<T, E extends Event> {
-  data: T;
-  event: (data: T, event: E) => void;
-}
+import { LinkedEvent } from '../../core/types';
 
 /**
  * Links given data to event as first parameter

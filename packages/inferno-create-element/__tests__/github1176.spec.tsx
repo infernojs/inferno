@@ -34,7 +34,7 @@ describe('Github1176', () => {
       }
     }
 
-    class Component2 extends Component {
+    class Component2 extends Component<any, any> {
       constructor(props) {
         super(props);
 
@@ -71,11 +71,16 @@ describe('Github1176', () => {
       }
     }
 
+    function Foobar() {
+      return <div>Ok</div>
+    }
+
     const routes = (
       <Router history={browserHistory}>
         <Switch>
           <Route component={Component1} path="/" exact />
           <Route component={Component2} path="/component2" exact />
+          <Route component={Foobar} path="/component333" exact />
         </Switch>
       </Router>
     );

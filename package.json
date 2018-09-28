@@ -80,7 +80,7 @@
     "@babel/preset-env": "7.1.0",
     "@types/history": "^4.7.0",
     "@types/jest": "^23.3.2",
-    "@types/node": "^10.10.3",
+    "@types/node": "^10.11.2",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-plugin-inferno": "6.0.0-3",
@@ -115,6 +115,6 @@
     "sinon": "^6.3.4",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
-    "typescript": "3.0.3"
+    "typescript": "3.1.1"
   }
 }

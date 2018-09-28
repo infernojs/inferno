@@ -41,7 +41,7 @@ describe('Component lifecycle', () => {
 
   it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', done => {
     let doSomething;
-    class Child extends Component<{active: boolean}> {
+    class Child extends Component<{active: boolean}, {active: boolean}> {
       public state = {
         active: false
       };
@@ -68,7 +68,7 @@ describe('Component lifecycle', () => {
       }
     }
 
-    class Parent extends Component {
+    class Parent extends Component<{}, {active: boolean}> {
       public state = {
         active: false
       };

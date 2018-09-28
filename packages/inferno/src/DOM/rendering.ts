@@ -1,6 +1,7 @@
 import { isBrowser, isFunction, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { directClone, InfernoChildren, InfernoInput, options, VNode } from '../core/implementation';
+import { directClone, options } from '../core/implementation';
+import { InfernoNode, VNode } from '../core/types';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
@@ -17,11 +18,11 @@ if (process.env.NODE_ENV !== 'production') {
 const documentBody = isBrowser ? document.body : null;
 
 export function __render(
-  input: InfernoInput,
+  input: VNode | null | InfernoNode | undefined,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback?: Function | null,
   context?: any
-): InfernoChildren | void {
+): void {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDOM) {
@@ -65,11 +66,11 @@ export function __render(
 }
 
 export function render(
-  input: InfernoInput,
+  input: VNode | null | InfernoNode | undefined,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback?: Function | null,
   context?: any
-): InfernoChildren | void {
+): void {
   __render(input, parentDOM, callback, context);
 }
 

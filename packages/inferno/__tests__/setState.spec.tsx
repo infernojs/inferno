@@ -14,7 +14,7 @@ describe('setState', () => {
   });
 
   it('should throw an error when setState is called in constructor', () => {
-    class TestComponent extends Component {
+    class TestComponent extends Component<any, any> {
       constructor(props, ctx) {
         super(props, ctx);
         this.setState({
@@ -27,7 +27,7 @@ describe('setState', () => {
   });
 
   it('callback should be fired after state has changed', done => {
-    class TestComponent extends Component<{value: string}> {
+    class TestComponent extends Component<any, {value: string}> {
       public state = {
         value: this.props.value
       };
@@ -59,7 +59,7 @@ describe('setState', () => {
       }
     }
 
-    class BaseComp extends Component {
+    class BaseComp extends Component<any, any> {
       public state = {
         value: '__OLDVALUE__'
       };
@@ -80,7 +80,7 @@ describe('setState', () => {
   });
 
   it('Should not fail if callback is object and not function ( invalid used scenario )', () => {
-    class TestComponent extends Component<{value: string}> {
+    class TestComponent extends Component<{value: string}, any> {
       constructor(props) {
         super(props);
         this.state = {
@@ -102,7 +102,7 @@ describe('setState', () => {
       }
     }
 
-    class BaseComp extends Component {
+    class BaseComp extends Component<any, any> {
       public state = {
         value: '__OLDVALUE__'
       };
@@ -123,7 +123,7 @@ describe('setState', () => {
   });
 
   it('Should not fail if componentDidUpdate is not defined', done => {
-    class TestComponent extends Component<{value: string}> {
+    class TestComponent extends Component<{value: string}, any> {
       public state = {
         value: this.props.value
       };
@@ -154,7 +154,7 @@ describe('setState', () => {
       }
     }
 
-    class BaseComp extends Component {
+    class BaseComp extends Component<any, any> {
       public state = {
         value: '__OLDVALUE__'
       };
@@ -179,7 +179,7 @@ describe('setState', () => {
   it('Should not get stuck in infinite loop #1', done => {
     let doSomething;
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         active: false,
         foo: 'b'
@@ -247,7 +247,7 @@ describe('setState', () => {
   it('Should not fail during rendering', done => {
     let doSomething;
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         active: false,
         foo: 'b'
@@ -320,7 +320,7 @@ describe('setState', () => {
   it('Should not fail during rendering #2', done => {
     let doSomething;
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         active: false,
         foo: 'b'
@@ -395,7 +395,7 @@ describe('setState', () => {
   it('Should have new state in render when changing state during componentWillReceiveProps', done => {
     let changeFoo;
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         foo: 'bar'
       };
@@ -421,7 +421,7 @@ describe('setState', () => {
       }
     }
 
-    class Child extends Component<{foo: string}> {
+    class Child extends Component<{foo: string}, {foo: string}> {
       public state = {
         foo: this.props.foo
       };
@@ -461,7 +461,7 @@ describe('setState', () => {
   it('Should have new state in render when changing state during componentWillMount and render only once', () => {
     const spy = sinon.spy();
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         foo: 'bar'
       };
@@ -480,7 +480,7 @@ describe('setState', () => {
     }
 
     let renderCount = 0;
-    class Child extends Component<{foo: string}> {
+    class Child extends Component<{foo: string}, {foo: string}> {
       public state = {
         foo: this.props.foo
       };
@@ -543,7 +543,7 @@ describe('setState', () => {
   it('Should not get stuck in infinite loop #1 sync', done => {
     let doSomething;
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         active: false,
         foo: 'b'
@@ -611,7 +611,7 @@ describe('setState', () => {
   it('Should not fail during rendering sync', done => {
     let doSomething;
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         active: false,
         foo: 'b'
@@ -727,7 +727,7 @@ describe('setState', () => {
   it('setState must be sync like React if no state changes are pending', () => {
     let doSomething;
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public state = {
         foo: 'b'
       };
@@ -799,7 +799,7 @@ describe('setState', () => {
   it('Should not re-create state if no setState is called', () => {
     const FooBarState = [1];
 
-    class FooBar extends Component {
+    class FooBar extends Component<any, any> {
       constructor(props, context) {
         super(props, context);
 
@@ -829,7 +829,7 @@ describe('setState', () => {
       return <div>{(context.active ? 'ACTIVE' : 'INACTIVE') + '   :   ' + (context.state.active ? 'ACTIVE' : 'INACTIVE')}</div>;
     }
 
-    class Container extends Component<{active: boolean}> {
+    class Container extends Component<{active: boolean}, {active: boolean}> {
       public state = {
         active: false
       };
@@ -859,7 +859,7 @@ describe('setState', () => {
     }
 
     let updater;
-    class App extends Component {
+    class App extends Component<any, any> {
       public state = {
         active: false
       };

@@ -1,6 +1,7 @@
-import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, Props, VNode, createFragment } from 'inferno';
+import { Component, createComponentVNode, createVNode, getFlagsForElementVnode, Key, Props, VNode, createFragment } from 'inferno';
 import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import {} from 'readline';
 
 const componentHooks = {
   onComponentDidMount: 1,
@@ -28,7 +29,7 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
   }
   let children: any;
   let ref: any = null;
-  let key = null;
+  let key: Key = null;
   let className: string | null = null;
   let flags = 0;
   let newProps;

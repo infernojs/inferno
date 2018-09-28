@@ -1,11 +1,11 @@
-import { Component, VNode } from 'inferno';
+import { Component, InfernoNode } from 'inferno';
 import { warning } from './utils';
 import * as H from 'history';
 import { combineFrom } from 'inferno-shared';
 
 export interface IRouterProps {
   history: H.History;
-  children: undefined | VNode | null;
+  children: InfernoNode;
 }
 
 /**

@@ -3,7 +3,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 
 let renderCount = 0;
 
-class TestCWRP extends Component {
+class TestCWRP extends Component<any, any> {
   public state = {
     a: 0,
     b: 0
@@ -48,7 +48,7 @@ describe('state', () => {
 
   // As per React
   it('Should not have state defined in base constructor', () => {
-    class Foo extends Component {
+    class Foo extends Component<any, any> {
       constructor(p, c) {
         super(p, c);
 
@@ -79,7 +79,7 @@ describe('state', () => {
 
   describe('didUpdate and setState', () => {
     it('order', done => {
-      class Test extends Component<{scrollTop: number}> {
+      class Test extends Component<{scrollTop: number}, any> {
         public state = {
           testScrollTop: 0
         };
@@ -104,7 +104,7 @@ describe('state', () => {
         }
       }
 
-      class Example extends Component<{name: string}> {
+      class Example extends Component<{name: string}, {exampleScrollTop: number}> {
         public state = {
           exampleScrollTop: 0
         };

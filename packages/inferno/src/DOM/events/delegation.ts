@@ -1,4 +1,4 @@
-import { SemiSyntheticEvent } from './events';
+import { SemiSyntheticEvent } from './../../core/types';
 import { isNull } from 'inferno-shared';
 
 const attachedEventCounts = {};
@@ -74,7 +74,7 @@ function stopPropagation() {
 }
 
 function attachEventToDocument(name: string) {
-  const docEvent = function (event: Event) {
+  const docEvent = function(event: Event) {
     const isClick = name === 'onClick' || name === 'onDblClick';
 
     if (isClick && (event as MouseEvent).button !== 0) {

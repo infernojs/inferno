@@ -1,4 +1,4 @@
-import { createComponentVNode, createFragment, createVNode, getFlagsForElementVnode, InfernoChildren, VNode, Fragment } from 'inferno';
+import { createComponentVNode, createFragment, createVNode, getFlagsForElementVnode, InfernoNode, VNode, Fragment } from 'inferno';
 import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -61,7 +61,7 @@ function isChildren(x: any): boolean {
  * @param {boolean} noNormalize Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
  * @returns {VNode} returns new virtual node
  */
-export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode {
+export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoNode): VNode {
   // If a child array or text node are passed as the second argument, shift them
   if (!_children && isChildren(_props)) {
     _children = _props;

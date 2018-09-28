@@ -6,28 +6,21 @@ import {
   createVNode,
   directClone,
   getFlagsForElementVnode,
-  InfernoChildren,
-  InfernoInput,
   normalizeProps,
   options,
-  Props,
-  Ref,
-  Refs,
-  VNode,
   createFragment
 } from './core/implementation';
-import { linkEvent, LinkedEvent } from './DOM/events/linkEvent';
+import { linkEvent } from './DOM/events/linkEvent';
 import { createRenderer, render, __render } from './DOM/rendering';
 import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE, Fragment } from './DOM/utils/common';
-import { Component, ComponentClass, ComponentType, SFC, StatelessComponent, rerender } from './core/component';
+import { Component, ComponentType, rerender } from './core/component';
 import { mountProps } from './DOM/props';
 
-import * as JSX from './JSX';
 import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountText } from './DOM/mounting';
 import { createRef, forwardRef, mountRef } from './core/refs';
 
-export * from './DOM/events/events';
+export * from './core/types';
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
@@ -50,17 +43,8 @@ const version = process.env.INFERNO_VERSION;
 export {
   Component,
   ComponentType,
-  SFC,
-  StatelessComponent,
-  ComponentClass,
   Fragment,
   EMPTY_OBJ,
-  InfernoChildren,
-  InfernoInput,
-  Props,
-  Ref,
-  Refs,
-  VNode,
   createComponentVNode,
   createFragment,
   createPortal,
@@ -73,13 +57,11 @@ export {
   findDOMfromVNode,
   getFlagsForElementVnode,
   linkEvent,
-  LinkedEvent,
   normalizeProps,
   options,
   render,
   rerender,
   version,
-  JSX,
   // Internal methods, used by hydration
   LIFECYCLE as _L,
   createClassComponentInstance as _CI,

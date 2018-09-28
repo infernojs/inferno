@@ -1,57 +1,10 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, isUndefined, throwError } from 'inferno-shared';
 import { validateVNodeElementChildren } from './validate';
-import { Component } from './component';
 import { Fragment } from './../DOM/utils/common';
+import { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';
 
 const keyPrefix = '$';
-
-export interface VNode<P = {}> {
-  children: InfernoChildren;
-  childFlags: ChildFlags;
-  dom: Element | null;
-  className: string | null | undefined;
-  flags: VNodeFlags;
-  isValidated?: boolean;
-  key: null | number | string;
-  props: Props<P> & P | null;
-  ref: any;
-  type: any;
-}
-export interface RefObject<T> {
-  readonly current: T | null;
-}
-export type InfernoInput = VNode | null;
-export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'] | RefObject<T>;
-export type InfernoChildren =
-  | Element
-  | string
-  | number
-  | boolean
-  | undefined
-  | VNode
-  | Array<Element | boolean | string | number | VNode | null | undefined>
-  | null;
-
-export interface ForwardRef {
-  render: Function;
-}
-
-export interface Props<P, T = Element> extends Refs<P> {
-  children?: InfernoChildren;
-  ref?: Ref<T> | Refs<P> | null;
-  key?: any;
-  className?: string;
-}
-
-export interface Refs<P> {
-  onComponentDidMount?: (domNode: Element, nextProps: P) => void;
-  onComponentWillMount?(): void;
-  onComponentShouldUpdate?(lastProps: P, nextProps: P): boolean;
-  onComponentWillUpdate?(lastProps: P, nextProps: P): void;
-  onComponentDidUpdate?(lastProps: P, nextProps: P): void;
-  onComponentWillUnmount?(domNode: Element): void;
-}
 
 function getVNode(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type): VNode {
   if (process.env.NODE_ENV !== 'production') {
@@ -86,7 +39,7 @@ export function createVNode<P>(
   flags: VNodeFlags,
   type: string,
   className?: string | null,
-  children?: InfernoChildren,
+  children?: InfernoNode,
   childFlags?: ChildFlags,
   props?: Props<P> & P | null,
   key?: string | number | null,
@@ -119,7 +72,7 @@ export function createVNode<P>(
 
 export function createComponentVNode<P>(
   flags: VNodeFlags,
-  type: Function | Component<any, any> | ForwardRef,
+  type: Function | IComponent<any, any> | ForwardRef,
   props?: Props<P> & P | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null
@@ -131,11 +84,13 @@ export function createComponentVNode<P>(
   }
 
   if ((flags & VNodeFlags.ComponentUnknown) !== 0) {
-    if ((type as any).render) {
+    if ((type as any).prototype && (type as any).prototype.render) {
+      flags = VNodeFlags.ComponentClass;
+    } else if ((type as any).render) {
       flags = VNodeFlags.ForwardRefComponent;
       type = (type as ForwardRef).render;
     } else {
-      flags = (type as any).prototype && isFunction((type as any).prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+      flags = VNodeFlags.ComponentFunction;
     }
   }
 

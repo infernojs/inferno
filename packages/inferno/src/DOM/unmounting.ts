@@ -1,6 +1,6 @@
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode } from '../core/implementation';
+import { VNode } from '../core/types';
 import { handleEvent } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeChild, removeVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';

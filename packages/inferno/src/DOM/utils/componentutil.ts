@@ -1,7 +1,8 @@
-import { createFragment, createTextVNode, createVoidVNode, directClone, VNode } from '../../core/implementation';
+import { createFragment, createTextVNode, createVoidVNode, directClone } from '../../core/implementation';
 import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber, warning } from 'inferno-shared';
 import { createDerivedState, EMPTY_OBJ, getComponentName } from './common';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNode } from './../../core/types';
 
 function warnAboutOldLifecycles(component) {
   const oldLifecycles: string[] = [];

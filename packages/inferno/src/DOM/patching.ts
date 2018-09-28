@@ -1,6 +1,7 @@
 import { combineFrom, isFunction, isInvalid, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { directClone, options, VNode } from '../core/implementation';
+import { directClone, options } from '../core/implementation';
+import { VNode } from '../core/types';
 import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { remove, removeAllChildren, removeTextNode, unmount, unmountAllChildren } from './unmounting';
 import {
@@ -35,10 +36,10 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
 }
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, nextNode: Element | null) {
-  const nextFlags = nextVNode.flags |= VNodeFlags.InUse;
+  const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
   if (process.env.NODE_ENV !== 'production') {
-    if (isFunction(options.componentComparator) && (lastVNode.flags & nextFlags & VNodeFlags.ComponentClass)) {
+    if (isFunction(options.componentComparator) && lastVNode.flags & nextFlags & VNodeFlags.ComponentClass) {
       if (options.componentComparator(lastVNode, nextVNode) === false) {
         patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode);
         return;

@@ -1,4 +1,4 @@
-import { InfernoChildren, Props, Refs, VNode } from './implementation';
+import { IComponent, InfernoNode, Props, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, LIFECYCLE, findDOMfromVNode } from '../DOM/utils/common';
@@ -6,12 +6,7 @@ import { callAll, EMPTY_OBJ, LIFECYCLE, findDOMfromVNode } from '../DOM/utils/co
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = isFunction(Promise) ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout;
 
-function queueStateChanges<P, S>(
-  component: Component<P, S>,
-  newState: Partial<S> | ((s: S, p: P, c: any) => Partial<S>),
-  callback: Function | undefined,
-  force: boolean
-): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState: any, callback: Function | undefined, force: boolean): void {
   if (isFunction(newState)) {
     newState = newState(component.state!, component.props, component.context);
   }
@@ -109,59 +104,16 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     callback.call(component);
   }
 }
+export type ComponentType<P = {}> = Component<P> | StatelessComponent<P>;
 
-export type ComponentType<P = {}> = ComponentClass<P> | StatelessComponent<P>;
-
-export type SFC<P = {}> = StatelessComponent<P>;
-
-export interface StatelessComponent<P = {}> {
-  (props: P & { children?: InfernoChildren }, context?: any): VNode<P> | null;
-
-  defaultProps?: Partial<P>;
-  displayName?: string;
-  defaultHooks?: Refs<P>;
-}
-
-export interface ComponentClass<P = {}, S = {}> {
-  new (props?: P, context?: any): Component<P, {}>;
-
-  defaultProps?: Partial<P>;
-  displayName?: string;
-  refs?: any;
-
-  componentDidMount?(): void;
-
-  /**
-   * @deprecated since version 6.0
-   */
-  componentWillMount?(): void;
-
-  /**
-   * @deprecated since version 6.0
-   */
-  componentWillReceiveProps?(nextProps: P, nextContext: any): void;
-
-  shouldComponentUpdate?(nextProps: P, nextState: S, context: any): boolean;
-
-  /**
-   * @deprecated since version 6.0
-   */
-  componentWillUpdate?(nextProps: P, nextState: S, context: any): void;
-
-  componentDidUpdate?(prevProps: P, prevState: S, snapshot: any): void;
-
-  componentWillUnmount?(): void;
-
-  getChildContext?(): void;
-}
-
-export interface Component<P = {}, S = {}> extends ComponentClass<P, S> {}
-export class Component<P, S> {
+export class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public
-  public static defaultProps;
   public state: S | null = null;
-  public props: Props<P, this> & P;
+  public props: {
+    children?: InfernoNode;
+  } & P;
   public context: any;
+  public displayName?: string;
   public refs?: any;
 
   // Internal properties
@@ -193,7 +145,10 @@ export class Component<P, S> {
     queueStateChanges(this, {} as any, callback, true);
   }
 
-  public setState(newState: Partial<S> | ((s: S, p: P, c: any) => Partial<S>), callback?: Function) {
+  public setState<K extends keyof S>(
+    newState: ((prevState: Readonly<S>, props: Readonly<P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
+    callback?: () => void
+  ): void {
     if (this.$UN) {
       return;
     }
@@ -208,10 +163,30 @@ export class Component<P, S> {
     }
   }
 
+  public componentDidMount?(): void;
+
+  public componentWillMount?(): void;
+
+  public componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+
+  public shouldComponentUpdate?(nextProps: P, nextState: S, context: any): boolean;
+
+  public componentWillUpdate?(nextProps: P, nextState: S, context: any): void;
+
+  public componentDidUpdate?(prevProps: P, prevState: S, snapshot: any): void;
+
+  public componentWillUnmount?(): void;
+
+  public getChildContext?(): void;
+
   public getSnapshotBeforeUpdate?(prevProps: Props<any>, prevState: S): any;
+
+  public static defaultProps?: any;
 
   public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any;
 
-  // tslint:disable-next-line:no-empty
-  public render(_nextProps: P, _nextState, _nextContext): any {}
+  /* tslint:disable:no-empty */
+  // @ts-ignore
+  public render(_nextProps: P, _nextState: S, _nextContext: any): InfernoNode | undefined {}
+  /* tslint:enable:no-empty */
 }

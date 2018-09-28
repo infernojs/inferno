@@ -36,7 +36,7 @@ describe('ComponentDidUpdate', () => {
         </div>
       );
 
-      componentDidUpdate = () => {
+      componentDidUpdate() {
         const dynamic = container.querySelector('#dynamic');
 
         expect(this.dynamicEl).toBe(dynamic);
@@ -47,19 +47,21 @@ describe('ComponentDidUpdate', () => {
         }
 
         expect(this.staticEl).toBe(container.querySelector('#static'));
-      };
+      }
 
-      render = () => (
-        <div
-          id="static"
-          ref={el => {
-            this.staticEl = el;
-          }}
-        >
-          {this.state.toggled && this.renderDynamicComponent()}
-          <button onClick={this.toggleDynamicComponent}>Toggle dynamic component</button>
-        </div>
-      );
+      render() {
+        return (
+          <div
+            id="static"
+            ref={el => {
+              this.staticEl = el;
+            }}
+          >
+            {this.state.toggled && this.renderDynamicComponent()}
+            <button onClick={this.toggleDynamicComponent}>Toggle dynamic component</button>
+          </div>
+        );
+      }
     }
 
     render(<App />, container);
@@ -94,25 +96,27 @@ describe('ComponentDidUpdate', () => {
         spyer('parent-willunmount');
       }
 
-      render = () => (
-        <div
-          id="outer"
-          ref={el => {
-            // Create new function on purpose to trigger changes
-            spyer('outer-' + (el ? el.id : null));
-          }}
-        >
+      render() {
+        return (
           <div
-            id="inner"
+            id="outer"
             ref={el => {
               // Create new function on purpose to trigger changes
-              spyer('inner-' + (el ? el.id : null));
+              spyer('outer-' + (el ? el.id : null));
             }}
           >
-            {this.props.child ? <Mounter /> : null}
+            <div
+              id="inner"
+              ref={el => {
+                // Create new function on purpose to trigger changes
+                spyer('inner-' + (el ? el.id : null));
+              }}
+            >
+              {this.props.child ? <Mounter /> : null}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
 
     render(<App />, container);
@@ -185,26 +189,28 @@ describe('ComponentDidUpdate', () => {
         spyer('parent-willunmount');
       }
 
-      render = () => (
-        <div
-          id="outer"
-          ref={el => {
-            // Create new function on purpose to trigger changes
-            spyer('outer-' + (el ? el.id : null));
-          }}
-        >
-          <Mounter />
+      render() {
+        return (
           <div
-            id="inner"
+            id="outer"
             ref={el => {
               // Create new function on purpose to trigger changes
-              spyer('inner-' + (el ? el.id : null));
+              spyer('outer-' + (el ? el.id : null));
             }}
           >
-            {this.props.child ? <Mounter /> : null}
+            <Mounter />
+            <div
+              id="inner"
+              ref={el => {
+                // Create new function on purpose to trigger changes
+                spyer('inner-' + (el ? el.id : null));
+              }}
+            >
+              {this.props.child ? <Mounter /> : null}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
 
     render(<App />, container);

@@ -18,7 +18,7 @@ export interface Props {
   children?: VNode | null | undefined;
 }
 
-export class Provider extends Component<Props, any> {
+export class Provider extends Component<Props, null> {
   public static displayName = 'Provider';
   private readonly store: Store<any, AnyAction | any>;
 
@@ -34,6 +34,8 @@ export class Provider extends Component<Props, any> {
   public render() {
     return this.props.children;
   }
+
+  public componentWillReceiveProps?(nextProps: Props, nextContext: any): void;
 }
 
 if (process.env.NODE_ENV !== 'production') {

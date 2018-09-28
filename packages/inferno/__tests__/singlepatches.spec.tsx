@@ -34,7 +34,7 @@ describe('All single patch variations', () => {
   }
 
   /* tslint:disable:no-empty */
-  class ComA extends Component {
+  class ComA extends Component<any, any> {
     public componentDidMount() {}
 
     public componentWillMount() {}
@@ -216,7 +216,7 @@ describe('All single patch variations', () => {
     });
 
     it('vNode (Com different)', () => {
-      class ComC extends Component {
+      class ComC extends Component<any, any> {
         // tslint:disable-next-line
         componentWillMount() {}
 
@@ -466,7 +466,7 @@ describe('All single patch variations', () => {
     let mountCallCount = 0;
     let unmountCallCount = 0;
 
-    class ComponentFooBar extends Component {
+    class ComponentFooBar extends Component<any, any> {
       public componentWillMount() {
         mountCallCount++;
       }

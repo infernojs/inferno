@@ -1,4 +1,4 @@
-import { Component, ComponentType, createComponentVNode, InfernoChildren, VNode } from 'inferno';
+import { Component, createComponentVNode, IComponentConstructor, InfernoNode, SFC } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
@@ -25,10 +25,10 @@ export interface IRouteProps {
   exact?: boolean;
   strict?: boolean;
   sensitive?: boolean;
-  component?: ComponentType<RouteComponentProps<any>> | ComponentType<any>;
-  render?: ((props: RouteComponentProps<any>, context: any) => VNode);
+  component?: IComponentConstructor<any> | SFC;
+  render?: ((props: RouteComponentProps<any>, context: any) => InfernoNode);
   location?: H.Location;
-  children?: ((props: RouteComponentProps<any>) => VNode) | InfernoChildren;
+  children?: ((props: RouteComponentProps<any>) => InfernoNode) | InfernoNode;
 }
 
 /**

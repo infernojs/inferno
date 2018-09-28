@@ -1,6 +1,6 @@
 import { combineFrom, isNull } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode } from './../../core/implementation';
+import { VNode } from './../../core/types';
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared

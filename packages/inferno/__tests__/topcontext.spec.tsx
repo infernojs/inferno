@@ -34,7 +34,7 @@ describe('top level context', () => {
       return <span>{context.foo} {context.bar}</span>
     }
 
-    class Parent extends Component {
+    class Parent extends Component<any, any> {
       public getChildContext() {
         return {
           foo: 'bar'
