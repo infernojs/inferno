@@ -502,4 +502,148 @@ describe('Fragments', () => {
 
     expect(container.innerHTML).toBe('');
   });
+
+  it('Should mount Fragment with invalid children', () => {
+    render(
+      <Fragment>
+        {null}
+        {undefined}
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should mount Fragment with invalid children #2', () => {
+    function Foobar() {
+      return null;
+    }
+
+    render(
+      <Fragment>
+        {null}
+        <Foobar />
+        {undefined}
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should mount Fragment with invalid children #2', () => {
+    let add = false;
+
+    function Foobar() {
+      if (add) {
+        return <div>Ok</div>
+      }
+      return null;
+    }
+
+    render(
+      <Fragment>
+        {null}
+        <Foobar />
+        {undefined}
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    add = true;
+
+    render(
+      <Fragment>
+        {null}
+        <Foobar />
+        {undefined}
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Ok</div>');
+  });
+
+  it('Should be possible to update from 0 to 1', () => {
+    function Foobar() {
+      return <div>Ok</div>
+    }
+
+    let content = [null];
+
+    render(
+      <Fragment>
+        <span>1</span>
+        <Fragment>
+          {content}
+        </Fragment>
+        <span>2</span>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
+
+    content = [<Foobar />];
+
+    render(
+      <Fragment>
+        <span>1</span>
+        <Fragment>
+          {content}
+        </Fragment>
+        <span>2</span>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<span>1</span><div>Ok</div><span>2</span>');
+  });
+
+  it('Should be possible to update from 0 to 1 fragment -> fragment', () => {
+    function Foobar() {
+      return <div>Ok</div>
+    }
+
+    let content = [];
+
+    render(
+      <Fragment>
+        <span>1</span>
+        <Fragment>
+          {content}
+        </Fragment>
+        <span>2</span>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
+
+    content = [<Fragment><Foobar/></Fragment>];
+
+    render(
+      <Fragment>
+        <span>1</span>
+        <Fragment>
+          {content}
+        </Fragment>
+        <span>2</span>
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<span>1</span><div>Ok</div><span>2</span>');
+  });
 });

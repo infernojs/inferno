@@ -309,53 +309,52 @@ export function normalizeChildren(vNode: VNode, children) {
   } else if (isArray(children)) {
     const len = children.length;
 
-    if (len === 0) {
-      newChildren = null;
+    for (let i = 0; i < len; i++) {
+      let n = children[i];
+
+      if (isInvalid(n) || isArray(n)) {
+        newChildren = newChildren || children.slice(0, i);
+
+        _normalizeVNodes(children, newChildren, i, '');
+        break;
+      } else if (isStringOrNumber(n)) {
+        newChildren = newChildren || children.slice(0, i);
+        newChildren.push(createTextVNode(n, keyPrefix + i));
+      } else {
+        const key = n.key;
+        const needsCloning = (n.flags & VNodeFlags.InUse) > 0;
+        const isNullKey = isNull(key);
+        const isPrefixed = !isNullKey && isString(key) && key[0] === keyPrefix;
+
+        if (needsCloning || isNullKey || isPrefixed) {
+          newChildren = newChildren || children.slice(0, i);
+          if (needsCloning || isPrefixed) {
+            n = directClone(n);
+          }
+          if (isNullKey || isPrefixed) {
+            n.key = keyPrefix + i;
+          }
+          newChildren.push(n);
+        } else if (newChildren) {
+          newChildren.push(n);
+        }
+      }
+    }
+    // we assign $ which basically means we've flagged this array for future note
+    // if it comes back again, we need to clone it, as people are using it
+    // in an immutable way
+
+    // tslint:disable-next-line
+    if (!newChildren && (Object.isFrozen(children) || children['$'] === true)) {
+      newChildren = children.slice();
+    }
+    newChildren = newChildren || children;
+    newChildren.$ = true;
+
+    if (newChildren.length === 0) {
       newChildFlags = ChildFlags.HasInvalidChildren;
     } else {
       newChildFlags = ChildFlags.HasKeyedChildren;
-
-      for (let i = 0; i < len; i++) {
-        let n = children[i];
-
-        if (isInvalid(n) || isArray(n)) {
-          newChildren = newChildren || children.slice(0, i);
-
-          _normalizeVNodes(children, newChildren, i, '');
-          break;
-        } else if (isStringOrNumber(n)) {
-          newChildren = newChildren || children.slice(0, i);
-          newChildren.push(createTextVNode(n, keyPrefix + i));
-        } else {
-          const key = n.key;
-          const needsCloning = (n.flags & VNodeFlags.InUse) > 0;
-          const isNullKey = isNull(key);
-          const isPrefixed = !isNullKey && isString(key) && key[0] === keyPrefix;
-
-          if (needsCloning || isNullKey || isPrefixed) {
-            newChildren = newChildren || children.slice(0, i);
-            if (needsCloning || isPrefixed) {
-              n = directClone(n);
-            }
-            if (isNullKey || isPrefixed) {
-              n.key = keyPrefix + i;
-            }
-            newChildren.push(n);
-          } else if (newChildren) {
-            newChildren.push(n);
-          }
-        }
-      }
-      // we assign $ which basically means we've flagged this array for future note
-      // if it comes back again, we need to clone it, as people are using it
-      // in an immutable way
-
-      // tslint:disable-next-line
-      if (!newChildren && (Object.isFrozen(children) || children['$'] === true)) {
-        newChildren = children.slice();
-      }
-      newChildren = newChildren || children;
-      newChildren.$ = true;
     }
   } else {
     newChildren = children;

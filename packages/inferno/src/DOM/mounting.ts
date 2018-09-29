@@ -52,10 +52,8 @@ function mountFragment(vNode, parentDOM, context, isSVG, nextNode): void {
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
     mountText(children as VNode, parentDOM, nextNode);
-    vNode.dom = children.dom;
   } else {
     mountArrayChildren(children, parentDOM, context, isSVG, nextNode);
-    vNode.dom = children[0].dom;
   }
 }
 

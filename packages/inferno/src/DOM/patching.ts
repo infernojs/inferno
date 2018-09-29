@@ -3,7 +3,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone, options } from '../core/implementation';
 import { VNode } from '../core/types';
 import { mount, mountArrayChildren, mountTextContent } from './mounting';
-import { remove, removeAllChildren, removeTextNode, unmount, unmountAllChildren } from './unmounting';
+import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
 import {
   appendChild,
   createDerivedState,
@@ -208,6 +208,17 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   }
 }
 
+function replaceOneWithMany(lastChildren, nextChildren, parentDOM, context, isSVG: boolean) {
+  const oldDOM = findDOMfromVNode(lastChildren);
+
+  unmount(lastChildren);
+  mountArrayChildren(nextChildren, parentDOM, context, isSVG, oldDOM);
+
+  if (oldDOM) {
+    removeChild(parentDOM, oldDOM as Element);
+  }
+}
+
 function patchChildren(
   lastChildFlags: ChildFlags,
   nextChildFlags: ChildFlags,
@@ -233,8 +244,7 @@ function patchChildren(
           mountTextContent(parentDOM, nextChildren);
           break;
         default:
-          remove(lastChildren, parentDOM);
-          mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode);
+          replaceOneWithMany(lastChildren, nextChildren, parentDOM, context, isSVG);
           break;
       }
       break;
@@ -259,14 +269,14 @@ function patchChildren(
           patchSingleTextChild(lastChildren, nextChildren, parentDOM);
           break;
         case ChildFlags.HasVNodeChildren:
-          removeTextNode(parentDOM);
+          clearDOM(parentDOM);
           mount(nextChildren, parentDOM, context, isSVG, nextNode);
           break;
         case ChildFlags.HasInvalidChildren:
-          removeTextNode(parentDOM);
+          clearDOM(parentDOM);
           break;
         default:
-          removeTextNode(parentDOM);
+          clearDOM(parentDOM);
           mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode);
           break;
       }
