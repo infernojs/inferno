@@ -72,24 +72,48 @@ export function findDOMfromVNode(vNode: VNode) {
   return null;
 }
 
-export function removeVNodeDOM(vNode: VNode, dom: Element) {
+export function removeVNodeDOM(vNode: VNode, parentDOM: Element) {
   const flags = vNode.flags;
 
   if (flags & VNodeFlags.DOMRef) {
-    removeChild(dom, vNode.dom as Element);
+    removeChild(parentDOM, vNode.dom as Element);
   } else {
     const children = vNode.children as any;
 
     if (flags & VNodeFlags.ComponentClass) {
-      removeVNodeDOM(children.$LI, dom);
+      removeVNodeDOM(children.$LI, parentDOM);
     } else if (flags & VNodeFlags.ComponentFunction) {
-      removeVNodeDOM(children, dom);
+      removeVNodeDOM(children, parentDOM);
     } else if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        removeVNodeDOM(children, dom);
+        removeVNodeDOM(children, parentDOM);
       } else {
         for (let i = 0, len = children.length; i < len; i++) {
-          removeVNodeDOM(children[i], dom);
+          removeVNodeDOM(children[i], parentDOM);
+        }
+      }
+    }
+  }
+}
+
+export function moveVNodeDOM(vNode, parentDOM, nextNode) {
+  const flags = vNode.flags;
+
+  if (flags & VNodeFlags.DOMRef) {
+    insertOrAppend(parentDOM, vNode.dom, nextNode);
+  } else {
+    const children = vNode.children as any;
+
+    if (flags & VNodeFlags.ComponentClass) {
+      moveVNodeDOM(children.$LI, parentDOM, nextNode);
+    } else if (flags & VNodeFlags.ComponentFunction) {
+      moveVNodeDOM(children, parentDOM, nextNode);
+    } else if (flags & VNodeFlags.Fragment) {
+      if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+        moveVNodeDOM(children, parentDOM, nextNode);
+      } else {
+        for (let i = 0, len = children.length; i < len; i++) {
+          moveVNodeDOM(children[i], parentDOM, nextNode);
         }
       }
     }

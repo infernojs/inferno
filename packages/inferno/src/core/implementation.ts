@@ -224,7 +224,7 @@ export function directClone(vNodeToClone: VNode): VNode {
   } else if (flags & VNodeFlags.Portal) {
     newVNode = createPortal(vNodeToClone.children, vNodeToClone.ref);
   } else if (flags & VNodeFlags.Fragment) {
-    newVNode = createFragment(vNodeToClone.children as any[], vNodeToClone.childFlags, vNodeToClone.key);
+    newVNode = createFragment(vNodeToClone.children as any[], ChildFlags.UnknownChildren, vNodeToClone.key);
   }
 
   return newVNode;

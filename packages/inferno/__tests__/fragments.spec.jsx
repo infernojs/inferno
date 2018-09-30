@@ -83,17 +83,17 @@ describe('Fragments', () => {
   });
 
   it('Should be possible to move fragments', () => {
-    const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
+    const fragmentA = () => createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
 
-    const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
+    const fragmentB = () => createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
 
-    const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+    const fragmentC = () => createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
 
     render(
       <div>
-        {fragmentA}
-        {fragmentB}
-        {fragmentC}
+        {fragmentA()}
+        {fragmentB()}
+        {fragmentC()}
       </div>,
       container
     );
@@ -107,9 +107,9 @@ describe('Fragments', () => {
     // Switch order
     render(
       <div>
-        {fragmentC}
-        {fragmentA}
-        {fragmentB}
+        {fragmentC()}
+        {fragmentA()}
+        {fragmentB()}
       </div>,
       container
     );
@@ -124,8 +124,8 @@ describe('Fragments', () => {
     // Switch order again
     render(
       <div>
-        {fragmentB}
-        {fragmentC}
+        {fragmentB()}
+        {fragmentC()}
       </div>,
       container
     );
@@ -136,6 +136,183 @@ describe('Fragments', () => {
     expect(container.querySelector('#a1')).toBe(null);
     expect(container.querySelector('#b1')).toBe(B1);
     expect(container.querySelector('#c1')).toBe(C1);
+  });
+
+  it('Should clone fragment children if they are passed as reference', () => {
+    const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
+    const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
+    const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+
+    const content = [fragmentC];
+
+    function SFC() {
+      return (
+        <Fragment>
+          <span>1</span>
+          <Fragment>{content}</Fragment>
+          <span>2</span>
+        </Fragment>
+      );
+    }
+
+    render(
+      <Fragment>
+        {fragmentA}
+        <SFC key="sfc" />
+        {fragmentB}
+        {fragmentC}
+      </Fragment>,
+      container
+    );
+
+    const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
+    const FragmentBHtml = '<div id="b1">B1</div>';
+    const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
+    const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
+
+    expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml);
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should be possible to move component with fragment root', () => {
+    const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
+    const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
+    const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+
+    const content = [fragmentC];
+
+    function SFC() {
+      return (
+        <Fragment>
+          <span>1</span>
+          <Fragment>{content}</Fragment>
+          <span>2</span>
+        </Fragment>
+      );
+    }
+
+    render(
+      <Fragment>
+        {fragmentA}
+        <SFC key="sfc" />
+        {fragmentB}
+        {fragmentC}
+      </Fragment>,
+      container
+    );
+
+    const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
+    const FragmentBHtml = '<div id="b1">B1</div>';
+    const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
+    const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
+
+    expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml);
+
+    // Switch order
+    render(
+      <Fragment>
+        {fragmentA}
+        {fragmentC}
+        <SFC key="sfc" />
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe(FragmentAHtml + FragmentCHtml + SFCHtml);
+
+    // Switch order again
+    render(
+      <Fragment>
+        <div key="1">1</div>
+        <SFC key="sfc" />
+        {fragmentA}
+        {fragmentC}
+        <div key="1">2</div>
+      </Fragment>,
+      container
+    );
+
+    // Verify dom has changed and nodes are the same
+    expect(container.innerHTML).toBe('<div>1</div>' + SFCHtml + FragmentAHtml + FragmentCHtml + '<div>2</div>');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should be possible to move component with fragment root #2', () => {
+    const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
+    const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
+    const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+
+    const content = [fragmentC];
+
+    function SFC() {
+      return (
+        <Fragment>
+          <span>1</span>
+          <Fragment>{content}</Fragment>
+          <span>2</span>
+        </Fragment>
+      );
+    }
+
+    render(
+      <Fragment>
+        {fragmentA}
+        <SFC key="sfc1" />
+        {fragmentB}
+        <SFC key="sfc2" />
+        {fragmentC}
+        <SFC key="sfc3" />
+      </Fragment>,
+      container
+    );
+
+    const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
+    const FragmentBHtml = '<div id="b1">B1</div>';
+    const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
+    const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
+
+    expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + SFCHtml + FragmentCHtml + SFCHtml);
+
+    // Switch order
+    render(
+      <Fragment>
+        <SFC key="sfc3" />
+        {fragmentA}
+        <SFC key="sfc1" />
+        {fragmentC}
+        <SFC key="sfc2" />
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe(SFCHtml + FragmentAHtml + SFCHtml + FragmentCHtml + SFCHtml);
+
+    // Switch order again
+    render(
+      <Fragment>
+        <div key="1">1</div>
+        <SFC key="sfc1" />
+        <SFC key="sfc2" />
+        {fragmentA}
+        {fragmentC}
+        <div key="1">2</div>
+        <SFC key="sfc3" />
+      </Fragment>,
+      container
+    );
+
+    // Verify dom has changed and nodes are the same
+    expect(container.innerHTML).toBe('<div>1</div>' + SFCHtml + SFCHtml + FragmentAHtml + FragmentCHtml + '<div>2</div>' + SFCHtml);
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
   });
 
   it('Should be possible to render fragments JSX way', () => {
@@ -545,7 +722,7 @@ describe('Fragments', () => {
 
     function Foobar() {
       if (add) {
-        return <div>Ok</div>
+        return <div>Ok</div>;
       }
       return null;
     }
@@ -577,7 +754,7 @@ describe('Fragments', () => {
 
   it('Should be possible to update from 0 to 1', () => {
     function Foobar() {
-      return <div>Ok</div>
+      return <div>Ok</div>;
     }
 
     let content = [null];
@@ -585,9 +762,7 @@ describe('Fragments', () => {
     render(
       <Fragment>
         <span>1</span>
-        <Fragment>
-          {content}
-        </Fragment>
+        <Fragment>{content}</Fragment>
         <span>2</span>
       </Fragment>,
       container
@@ -600,9 +775,7 @@ describe('Fragments', () => {
     render(
       <Fragment>
         <span>1</span>
-        <Fragment>
-          {content}
-        </Fragment>
+        <Fragment>{content}</Fragment>
         <span>2</span>
       </Fragment>,
       container
@@ -613,7 +786,7 @@ describe('Fragments', () => {
 
   it('Should be possible to update from 0 to 1 fragment -> fragment', () => {
     function Foobar() {
-      return <div>Ok</div>
+      return <div>Ok</div>;
     }
 
     let content = [];
@@ -621,9 +794,7 @@ describe('Fragments', () => {
     render(
       <Fragment>
         <span>1</span>
-        <Fragment>
-          {content}
-        </Fragment>
+        <Fragment>{content}</Fragment>
         <span>2</span>
       </Fragment>,
       container
@@ -631,14 +802,16 @@ describe('Fragments', () => {
 
     expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
 
-    content = [<Fragment><Foobar/></Fragment>];
+    content = [
+      <Fragment>
+        <Foobar />
+      </Fragment>
+    ];
 
     render(
       <Fragment>
         <span>1</span>
-        <Fragment>
-          {content}
-        </Fragment>
+        <Fragment>{content}</Fragment>
         <span>2</span>
       </Fragment>,
       container

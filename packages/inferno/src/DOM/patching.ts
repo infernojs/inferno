@@ -9,8 +9,8 @@ import {
   createDerivedState,
   EMPTY_OBJ,
   findDOMfromVNode,
-  insertOrAppend,
   LIFECYCLE,
+  moveVNodeDOM,
   removeChild,
   removeVNodeDOM,
   replaceChild
@@ -680,13 +680,7 @@ function patchKeyedChildren(
             nextPos = pos + 1;
             nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge;
 
-            if (bNode.flags & VNodeFlags.Fragment && bNode.childFlags & ChildFlags.MultipleChildren) {
-              for (let k = 0, len = (bNode.children as VNode[]).length; k < len; k++) {
-                insertOrAppend(dom, findDOMfromVNode((bNode.children as VNode[])[k]), nextNode);
-              }
-            } else {
-              insertOrAppend(dom, findDOMfromVNode(bNode), nextNode);
-            }
+            moveVNodeDOM(bNode, dom, nextNode);
           } else {
             j--;
           }
