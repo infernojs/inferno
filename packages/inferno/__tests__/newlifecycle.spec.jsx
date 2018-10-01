@@ -55,13 +55,11 @@ describe('Lifecycle methods', () => {
         );
       }
     }
-    Object.assign(Outer.prototype, {
-      componentDidMount: logger('outer componentDidMount'),
-      shouldComponentUpdate: logger('outer shouldComponentUpdate'),
-      getSnapshotBeforeUpdate: logger('outer getSnapshotBeforeUpdate'),
-      componentDidUpdate: logger('outer componentDidUpdate'),
-      componentWillUnmount: logger('outer componentWillUnmount')
-    });
+    Outer.prototype.componentDidMount = logger('outer componentDidMount');
+    Outer.prototype.shouldComponentUpdate = logger('outer shouldComponentUpdate');
+    Outer.prototype.getSnapshotBeforeUpdate = logger('outer getSnapshotBeforeUpdate');
+    Outer.prototype.componentDidUpdate = logger('outer componentDidUpdate');
+    Outer.prototype.componentWillUnmount = logger('outer componentWillUnmount');
 
     class Inner extends Component {
       static getDerivedStateFromProps() {

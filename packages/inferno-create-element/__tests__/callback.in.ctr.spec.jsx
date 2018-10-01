@@ -1,6 +1,7 @@
 import { render, Component } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { innerHTML } from 'inferno-utils';
+import { combineFrom } from 'inferno-shared';
 
 describe('Callbacks in constructor', () => {
   // https://github.com/infernojs/inferno/issues/1103
@@ -64,7 +65,7 @@ describe('Callbacks in constructor', () => {
                   this.state.checks[index] &&
                   createElement(
                     childElement,
-                    Object.assign({}, props, {
+                    combineFrom(props, {
                       conf,
                       onNewValue: newValue => this.handleNewValue(index, newValue)
                     })
@@ -94,7 +95,7 @@ describe('Callbacks in constructor', () => {
       }
 
       class ProxyEditor extends Component {
-        constructor(props /*{ conf, onNewValue }*/) {
+        constructor(props) {
           super(props);
           console.log('CONSTRUCTOR');
           const oldValue = props.conf.value;
