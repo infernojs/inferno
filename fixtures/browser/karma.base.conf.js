@@ -19,12 +19,11 @@ module.exports = function(config) {
     frameworks: ['detectBrowsers', 'jasmine', 'jasmine-matchers'],
 
     detectBrowsers: {
+      usePhantomJS: false,
+      preferHeadless: false,
+
       postDetection(browserList) {
         const results = [];
-
-        if (browserList.indexOf('Chrome') > -1) {
-          results.push('Chrome');
-        }
 
         if (browserList.indexOf('Firefox') > -1) {
           results.push('Firefox');

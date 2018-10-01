@@ -7,7 +7,6 @@ notifications:
     on_failure: always
 dist: xenial
 addons:
-  chrome: stable
   firefox: latest
 jobs:
   include:
