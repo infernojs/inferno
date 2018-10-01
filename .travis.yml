@@ -12,7 +12,7 @@ jobs:
   include:
   - script:
     - npm run lint
-    - npm run build
+    - npm run build-slow
     - npm run test:package
     - npm run test:coverage
     - npm run test:browser
