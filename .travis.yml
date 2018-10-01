@@ -6,8 +6,6 @@ notifications:
     on_success: change
     on_failure: always
 dist: xenial
-addons:
-  firefox: latest
 jobs:
   include:
   - script:
@@ -15,7 +13,6 @@ jobs:
     - npm run build-slow
     - npm run test:package
     - npm run test:coverage
-    - npm run test:browser
     - npm run coveralls
   - stage: SauceLabs
     if: "(branch = master) AND (NOT (type IN (pull_request)))"
