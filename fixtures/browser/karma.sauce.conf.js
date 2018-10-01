@@ -1,5 +1,5 @@
 const path = require('path');
-const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'src', 'index.ts');
+const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
 
 const customLaunchers = {
   slChrome: {
@@ -208,6 +208,7 @@ module.exports = function(config) {
           'inferno-create-class': resolve('inferno-create-class'),
           'inferno-create-element': resolve('inferno-create-element'),
           'inferno-devtools': resolve('inferno-devtools'),
+          'inferno-hydrate': resolve('inferno-hydrate'),
           'inferno-extras': resolve('inferno-extras'),
           'inferno-hyperscript': resolve('inferno-hyperscript'),
           'inferno-mobx': resolve('inferno-mobx'),
@@ -216,7 +217,7 @@ module.exports = function(config) {
           'inferno-server': resolve('inferno-server'),
           'inferno-shared': resolve('inferno-shared'),
           'inferno-test-utils': resolve('inferno-test-utils'),
-          'inferno-utils': resolve('inferno-utils'),
+          'inferno-utils': path.join(__dirname, '../../packages', 'inferno-utils', 'src', 'index.ts'),
           'inferno-vnode-flags': resolve('inferno-vnode-flags'),
           'inferno-clone-vnode': resolve('inferno-clone-vnode'),
           mobx: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
