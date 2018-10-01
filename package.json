@@ -65,7 +65,7 @@
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "npm run test:node && npm run test:browser",
     "test:node": "cross-env NODE_ENV=test jest --no-cache",
-    "test:coverage": "cross-env NODE_ENV=test jest --no-cache --coverage",
+    "test:coverage": "cross-env NODE_ENV=test jest --runInBand --no-cache --coverage",
     "test:browser": "npm run --prefix fixtures/browser pretest && npm run test:browser:nocompat && npm run test:browser:compat",
     "test:browser:compat": "cross-env InfernoCompat=1 npm run --prefix fixtures/browser local",
     "test:browser:nocompat": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser local",
