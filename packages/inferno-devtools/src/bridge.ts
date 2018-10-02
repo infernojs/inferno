@@ -1,6 +1,6 @@
 import { findDOMfromVNode, options, VNode } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isInvalid, isNullOrUndef } from 'inferno-shared';
+import { isInvalid, isNullOrUndef, combineFrom } from 'inferno-shared';
 import { findDOMNode } from 'inferno-extras';
 
 let updatingDevTool = false;
@@ -68,7 +68,7 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
       (flags & VNodeFlags.Text) > 0
         ? vNode.children + ''
         : {
-            props: vNode.className ? Object.assign({}, vNode.props, { className: vNode.className }) : vNode.props,
+            props: vNode.className ? combineFrom(vNode.props, { className: vNode.className }) : vNode.props,
             type: flags & VNodeFlags.Portal ? 'InfernoPortal' : vNode.type
           },
     _renderedChildren: renderedChildren,
@@ -108,7 +108,7 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
         if (!isActive) {
           return;
         }
-        instance.props = vNode.props = Object.assign(instance.props, instance._currentElement.props);
+        instance.props = vNode.props = combineFrom(instance.props, instance._currentElement.props);
 
         if (!updatingDevTool && !component.$BR && !component.QU) {
           updatingDevTool = true;
@@ -157,7 +157,7 @@ function updateReactComponent(vNode, oldDevToolInstance?) {
       : createReactCompositeComponent(vNode, oldDevToolInstance);
 
   if (oldDevToolInstance) {
-    Object.assign(oldDevToolInstance, newInstance);
+    oldDevToolInstance = combineFrom(oldDevToolInstance, newInstance);
 
     return oldDevToolInstance;
   }

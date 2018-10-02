@@ -134,14 +134,14 @@ describe('Callbacks in constructor', () => {
 
         handleModChange({ targetIndex, newValue }) {
           this.setState({
-            configs: this.state.configs.map((oldConf, index) => (index !== targetIndex ? oldConf : Object.assign({}, oldConf, { value: newValue })))
+            configs: this.state.configs.map((oldConf, index) => (index !== targetIndex ? oldConf : combineFrom(oldConf, { value: newValue })))
           });
         }
 
         render(props) {
           return createElement(
             ConfigsList,
-            Object.assign({}, props, {
+            combineFrom(props, {
               configs: this.state.configs,
               configToChild: {
                 customProxyStringRaw: ProxyEditor

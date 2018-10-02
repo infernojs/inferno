@@ -86,13 +86,12 @@ describe('Lifecycle methods', () => {
         );
       }
     }
-    Object.assign(Inner.prototype, {
-      componentDidMount: logger('inner componentDidMount'),
-      shouldComponentUpdate: logger('inner shouldComponentUpdate'),
-      getSnapshotBeforeUpdate: logger('inner getSnapshotBeforeUpdate'),
-      componentDidUpdate: logger('inner componentDidUpdate'),
-      componentWillUnmount: logger('inner componentWillUnmount')
-    });
+
+    Inner.prototype.componentDidMount = logger('inner componentDidMount');
+    Inner.prototype.shouldComponentUpdate = logger('inner shouldComponentUpdate');
+    Inner.prototype.getSnapshotBeforeUpdate = logger('inner getSnapshotBeforeUpdate');
+    Inner.prototype.componentDidUpdate = logger('inner componentDidUpdate');
+    Inner.prototype.componentWillUnmount = logger('inner componentWillUnmount');
 
     // Constructor & mounting
     log = [];

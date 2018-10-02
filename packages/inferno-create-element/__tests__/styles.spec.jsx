@@ -138,9 +138,9 @@ describe('CSS style properties (JSX)', () => {
     render(styleNode(stylesOne), container);
     expect(container.firstChild.style.textAlign).toBe('center');
 
-    const stylesTwo = { 'text-align': 'start', display: 'none' };
+    const stylesTwo = { 'text-align': 'left', display: 'none' };
     render(styleNode(stylesTwo), container);
-    expect(container.firstChild.style.textAlign).toBe('start');
+    expect(container.firstChild.style.textAlign).toBe('left');
     expect(container.firstChild.style.display).toBe('none');
     expect(container.firstChild.style.color).toBe('');
   });
