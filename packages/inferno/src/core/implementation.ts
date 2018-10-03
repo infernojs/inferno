@@ -1,7 +1,7 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, isUndefined, throwError } from 'inferno-shared';
 import { validateVNodeElementChildren } from './validate';
-import { Fragment } from './../DOM/utils/common';
+import { Fragment, options } from './../DOM/utils/common';
 import { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';
 
 const keyPrefix = '$';
@@ -374,14 +374,3 @@ export function normalizeChildren(vNode: VNode, children) {
 
   return vNode;
 }
-
-export const options: {
-  componentComparator: null | Function;
-  createVNode: null | Function;
-  renderComplete: null | Function;
-  reactStyles? :boolean;
-} = {
-  componentComparator: null,
-  createVNode: null,
-  renderComplete: null
-};

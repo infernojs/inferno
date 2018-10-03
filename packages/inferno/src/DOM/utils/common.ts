@@ -1,6 +1,6 @@
 import { combineFrom, isNull } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode } from './../../core/types';
+import { InfernoNode, VNode } from './../../core/types';
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
@@ -132,3 +132,15 @@ export function createDerivedState(instance, nextProps, state) {
 
   return state;
 }
+
+
+export const options: {
+  componentComparator: ((lastVNode: VNode, nextVNode: VNode) => boolean) | null;
+  createVNode: ((vNode: VNode) => void) | null;
+  renderComplete: ((rootInput: VNode | InfernoNode, parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node) => void) | null;
+  reactStyles?: boolean;
+} = {
+  componentComparator: null,
+  createVNode: null,
+  renderComplete: null
+};

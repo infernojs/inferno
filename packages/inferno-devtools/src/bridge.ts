@@ -378,7 +378,7 @@ export function createDevToolsBridge() {
       let root;
       let instance;
 
-      if (parentDOM.$V) {
+      if ((parentDOM as any).$V) {
         // Check if root exists
         for (root in roots) {
           const rootInstance = roots[root];
@@ -418,7 +418,7 @@ export function createDevToolsBridge() {
         }
       }
       if (oldRenderComplete) {
-        oldRenderComplete(rootInput);
+        oldRenderComplete(rootInput, parentDOM);
       }
     }
   };

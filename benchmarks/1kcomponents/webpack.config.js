@@ -9,15 +9,27 @@ module.exports = {
     publicPath: __dirname,
     filename: 'bundle.js'
   },
+  mode: "none",
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        query: {
-          presets: [['es2015', { loose: true, modules: false }]],
-          plugins: [[require(__dirname + './../../node_modules/babel-plugin-inferno'), {imports: true}]]
+        options: {
+          babelrc: false,
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                loose: true,
+                targets: {
+                  browsers: ['ie >= 10', 'safari > 7']
+                }
+              }
+            ]
+          ],
+          plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
         }
       },
       {

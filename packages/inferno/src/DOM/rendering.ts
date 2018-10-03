@@ -1,11 +1,11 @@
 import { isBrowser, isFunction, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { directClone, options } from '../core/implementation';
+import { directClone } from '../core/implementation';
 import { InfernoNode, VNode } from '../core/types';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, EMPTY_OBJ, LIFECYCLE } from './utils/common';
+import { callAll, options, EMPTY_OBJ, LIFECYCLE } from './utils/common';
 
 if (process.env.NODE_ENV !== 'production') {
   if (isBrowser && !document.body) {
@@ -29,7 +29,7 @@ export function __render(
       throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
     }
   }
-  let rootInput = (parentDOM as any).$V as VNode;
+  let rootInput = (parentDOM as any).$V as VNode | null;
 
   if (isNullOrUndef(rootInput)) {
     if (!isNullOrUndef(input)) {
@@ -61,7 +61,7 @@ export function __render(
     callback();
   }
   if (isFunction(options.renderComplete)) {
-    options.renderComplete(rootInput, parentDOM);
+    options.renderComplete(rootInput, parentDOM as any);
   }
 }
 

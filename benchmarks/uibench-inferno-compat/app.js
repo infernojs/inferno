@@ -1,4 +1,4 @@
-import {createTextVNode, linkEvent, NO_OP, render, version} from "inferno-compat";
+import {createTextVNode, linkEvent, render, version} from "inferno-compat";
 
 /*
  * Inferno + inferno-compat without any Inferno specific optimizations
@@ -148,13 +148,6 @@ function table(data) {
 var lastMainData;
 
 function main(data) {
-  if (data === lastMainData) {
-    /*
-    * We can short circuit rendering process, by returning Inferno.NO_OP
-    * It behaves same way as shouldComponentUpdate => false
-    * */
-    return NO_OP;
-  }
   lastMainData = data;
   var location = data.location;
   var section;

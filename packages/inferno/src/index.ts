@@ -7,12 +7,11 @@ import {
   directClone,
   getFlagsForElementVnode,
   normalizeProps,
-  options,
   createFragment
 } from './core/implementation';
 import { linkEvent } from './DOM/events/linkEvent';
 import { createRenderer, render, __render } from './DOM/rendering';
-import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE, Fragment } from './DOM/utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, LIFECYCLE, Fragment, options } from './DOM/utils/common';
 import { Component, ComponentType, rerender } from './core/component';
 import { mountProps } from './DOM/props';
 

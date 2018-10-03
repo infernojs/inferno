@@ -14,14 +14,14 @@
     "benchmark"
   ],
   "scripts": {
-    "webpack": "webpack -p --mode production --optimize-minimize",
-    "webpack-dev": "webpack --mode development"
+    "webpack": "webpack --optimize-minimize",
+    "webpack-dev": "webpack"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
-    "babel-loader": "^8.0.2",
-    "ts-loader": "^5.2.0",
-    "webpack": "^4.20.1",
-    "webpack-cli": "^3.1.1"
+    "babel-loader": "^8.0.4",
+    "ts-loader": "^5.2.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   }
 }

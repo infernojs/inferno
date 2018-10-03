@@ -9,6 +9,7 @@ module.exports = {
     publicPath: __dirname,
     filename: 'bundle.js'
   },
+  mode: "none",
   module: {
     rules: [
       {
@@ -16,7 +17,19 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          plugins: [[require(__dirname + './../../node_modules/babel-plugin-inferno'), {imports: true}]]
+          babelrc: false,
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                loose: true,
+                targets: {
+                  browsers: ['ie >= 10', 'safari > 7']
+                }
+              }
+            ]
+          ],
+          plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
         }
       },
       {
