@@ -30,6 +30,7 @@ describe('Compat - styles', () => {
   it('Should be possible to use hyphen case props too', () => {
     render(<div style={{ 'background-color': 'blue', 'z-index': 3 }}>foo</div>, container);
 
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML(`<div style="background-color: blue; z-index: 3;">foo</div>`));
+    expect(container.firstChild.style.backgroundColor).toBe('blue');
+    expect(container.firstChild.style.zIndex).toBe(3);
   });
 });
