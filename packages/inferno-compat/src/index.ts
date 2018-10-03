@@ -22,18 +22,21 @@ import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
-import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isString, warning } from 'inferno-shared';
+import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
 import { findDOMNode } from 'inferno-extras';
+import { getNumberStyleValue, hyphenCase } from './reactstyles';
 
 declare global {
   interface Event {
     persist: Function;
   }
 }
+
+options.reactStyles = true;
 
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
   __render(null, container);
@@ -127,6 +130,21 @@ function normalizeGenericProps(props) {
     if (mappedProp && props[prop] && mappedProp !== prop) {
       props[mappedProp] = props[prop];
       props[prop] = void 0;
+    }
+
+    if (options.reactStyles && prop === 'style') {
+      const styles = props.style;
+
+      if (styles && !isString(styles)) {
+        const newStyles = {};
+        for (const s in styles) {
+          const value = styles[s];
+          const hyphenStr = hyphenCase(s);
+
+          newStyles[hyphenStr] = isNumber(value) ? getNumberStyleValue(hyphenStr, value) : value;
+        }
+        props.style = newStyles;
+      }
     }
   }
 }

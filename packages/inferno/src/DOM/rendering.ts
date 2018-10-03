@@ -8,7 +8,7 @@ import { remove } from './unmounting';
 import { callAll, EMPTY_OBJ, LIFECYCLE } from './utils/common';
 
 if (process.env.NODE_ENV !== 'production') {
-  if (isBrowser && document.body === null) {
+  if (isBrowser && !document.body) {
     warning(
       'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.'
     );

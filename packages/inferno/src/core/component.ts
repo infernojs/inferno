@@ -185,8 +185,7 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any;
 
-  /* tslint:disable:no-empty */
-  // @ts-ignore
-  public render(_nextProps: P, _nextState: S, _nextContext: any): InfernoNode | undefined {}
-  /* tslint:enable:no-empty */
+  public render(_nextProps: P, _nextState: S, _nextContext: any): InfernoNode | undefined {
+    return;
+  }
 }

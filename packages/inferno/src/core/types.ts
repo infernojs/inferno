@@ -61,10 +61,6 @@ export type DragEvent<T> = InfernoMouseEvent<T>;
 export type FocusEvent<T> = SemiSyntheticEvent<T>;
 export type FormEvent<T> = SemiSyntheticEvent<T>;
 
-export interface InvalidEvent<T> extends SemiSyntheticEvent<T> {
-  target: EventTarget & T;
-}
-
 export interface ChangeEvent<T> extends SemiSyntheticEvent<T> {
   target: EventTarget & T;
 }
@@ -187,15 +183,6 @@ declare global {
   //
   // Inferno Elements
   // ----------------------------------------------------------------------
-
-  type InfernoType<P = any> = string | ComponentType<P>;
-  type ComponentType<P = {}, S = {}> = IComponent<P, S>;
-
-  interface RefObject<T> {
-    readonly current: T | null;
-  }
-
-  type ComponentState = any;
 
   interface InfernoElement<P> {
     type: string | IComponent<P, {}> | SFC<P>;
