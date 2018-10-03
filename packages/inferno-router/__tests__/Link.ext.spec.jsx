@@ -40,7 +40,6 @@ describe('Link (jsx)', () => {
   });
 
   it('should trigger custom onClick', () => {
-    debugger;
     const spy = sinon.spy(() => {});
 
     render(

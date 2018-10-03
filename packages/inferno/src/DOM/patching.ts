@@ -89,10 +89,10 @@ function patchContentEditableChildren(dom, nextChildren) {
 
 function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean) {
   const lastChildren = lastVNode.children as VNode[];
-  let nextNode;
+  let nextNode: Element | null = null;
 
   if ((nextVNode.childFlags & ChildFlags.HasVNodeChildren) === 0 && (nextVNode.children as VNode[]).length > lastChildren.length) {
-    nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1]) as Element).nextSibling;
+    nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1]) as Element).nextSibling as Element | null;
   }
 
   patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastChildren, nextVNode.children, parentDOM, context, isSVG, nextNode, lastVNode);
