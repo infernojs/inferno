@@ -79,7 +79,6 @@ const customLaunchers = {
   slEdge15: {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
-    version: '15',
     platform: 'Windows 10'
   },
   sl_mac_chrome: {

@@ -31,6 +31,6 @@ describe('Compat - styles', () => {
     render(<div style={{ 'background-color': 'blue', 'z-index': 3 }}>foo</div>, container);
 
     expect(container.firstChild.style.backgroundColor).toBe('blue');
-    expect(container.firstChild.style.zIndex).toBe(3);
+    expect(container.firstChild.style.zIndex + '').toBe('3');
   });
 });
