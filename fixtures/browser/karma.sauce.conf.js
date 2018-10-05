@@ -157,6 +157,11 @@ module.exports = function(config) {
       stats: 'errors-only',
       noInfo: true
     },
+    client: {
+      jasmine: {
+        random: false // Adding jasmine.random false disables test random order
+      }
+    },
     webpack: {
       output: {
         filename: '[name]'
@@ -184,22 +189,8 @@ module.exports = function(config) {
               ],
               plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
             }
-          },
-          {
-            test: /\.tsx?$/,
-            loader: path.join(__dirname, 'node_modules/ts-loader'),
-            options: {
-              compilerOptions: {
-                target: 'es5',
-                module: 'commonjs',
-                sourceMap: false
-              }
-            }
           }
         ]
-      },
-      output: {
-        filename: '[name]'
       },
       resolve: {
         alias: {
