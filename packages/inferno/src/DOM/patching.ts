@@ -1,4 +1,4 @@
-import { combineFrom, isFunction, isInvalid, isNullOrUndef } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
 import { VNode } from '../core/types';
@@ -374,9 +374,14 @@ export function updateClassComponent(instance, nextState, nextProps, parentDOM: 
 }
 
 function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null) {
+  const instance = nextVNode.children = lastVNode.children;
+  // If Component has crashed, ignore it to stay functional
+  if (isNull(instance)) {
+    return;
+  }
+
   const nextProps = nextVNode.props || EMPTY_OBJ;
   const nextRef = nextVNode.ref;
-  const instance = (nextVNode.children = lastVNode.children);
   const lastRef = lastVNode.ref;
   let nextState = instance.state;
 

@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 
 describe('Error recovery', () => {
@@ -552,6 +552,101 @@ describe('Error recovery', () => {
           expect(container.innerHTML).toBe('<div></div>');
           done();
         }, 10);
+      });
+
+      it('Should not block future updates - variation 2', () => {
+        let parentInstance = null;
+        let childCrasherInstance = null;
+
+        class BadComponent extends Component {
+          constructor(props) {
+            super(props);
+
+            throw 'Oops!';
+          }
+
+          render() {
+            return <div>Ok</div>
+          }
+        }
+
+        class ChildCrasher extends Component {
+          constructor(props) {
+            super(props);
+
+            childCrasherInstance = this; // For the sake of test
+          }
+
+          render() {
+            if (!this.props.fail) {
+              return null;
+            }
+
+            return (
+              <div>
+                <span>1</span>
+                <BadComponent />
+              </div>
+            );
+          }
+        }
+
+        class Parent extends Component {
+          constructor(props) {
+            super(props);
+
+            this.state = {
+              nodes: false
+            };
+
+            parentInstance = this; // For the sake of test
+          }
+
+          render() {
+            return (
+              <div>
+                <span>1</span>
+                {this.nodes ? <div>2</div> : null}
+                <ChildCrasher fail={this.props.fail} />
+              </div>
+            );
+          }
+        }
+
+        expect(() =>
+          render(<Parent fail={true}/>, container)
+        ).toThrow('Oops!');
+
+        expect(() =>
+          render(<Parent fail={true}/>, container)
+        ).toThrow('Oops!');
+
+        parentInstance.setState({
+          nodes: true
+        });
+        rerender();
+
+        expect(container.innerHTML).toEqual('');
+
+        render(<Parent fail={false}/>, container);
+
+        expect(() =>
+          render(<Parent fail={true}/>, container)
+        ).toThrow('Oops!');
+
+        expect(() => {
+          parentInstance.setState({
+            nodes: false
+          });
+          rerender();
+        }).toThrow('Oops!');
+
+        expect(() => {
+          parentInstance.setState({
+            nodes: true
+          });
+          rerender();
+        }).toThrow('Oops!');
       });
     });
   });

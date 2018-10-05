@@ -25,6 +25,10 @@ module.exports = function(config) {
       postDetection(browserList) {
         const results = [];
 
+        if (browserList.indexOf('Chrome') > -1) {
+          results.push('Chrome');
+        }
+
         if (browserList.indexOf('Firefox') > -1) {
           results.push('Firefox');
         }
@@ -85,7 +89,7 @@ module.exports = function(config) {
       module: {
         rules: [
           {
-            test: /\.jsx?$/,
+            test: /\.(js|jsx|tsx|ts)$/,
             loader: path.join(__dirname, 'node_modules/babel-loader'),
             exclude: /node_modules/,
             options: {
@@ -99,26 +103,13 @@ module.exports = function(config) {
                       browsers: ['ie >= 10', 'safari > 7']
                     }
                   }
-                ]
+                ],
+                '@babel/typescript',
               ],
               plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
             }
-          },
-          {
-            test: /\.tsx?$/,
-            loader: path.join(__dirname, 'node_modules/ts-loader'),
-            options: {
-              compilerOptions: {
-                target: 'es5',
-                module: 'commonjs',
-                sourceMap: false
-              }
-            }
           }
         ]
-      },
-      output: {
-        filename: '[name]'
       },
       resolve: {
         alias: {
@@ -142,8 +133,8 @@ module.exports = function(config) {
           'inferno-clone-vnode': resolve('inferno-clone-vnode'),
           mobx: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
         },
-        extensions: ['.js', '.jsx', '.ts'],
-        mainFields: ['browser', 'main']
+        extensions: ['*', '.js', '.jsx', '.tsx', '.ts'],
+        mainFields: ['main']
       },
       devServer: {
         noInfo: true

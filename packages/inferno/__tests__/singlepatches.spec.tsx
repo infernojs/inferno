@@ -1,4 +1,4 @@
-import {Component, render, SFC} from 'inferno';
+import { Component, Fragment, render, SFC } from 'inferno';
 import sinon, { assert } from 'sinon';
 import {innerHTML} from "inferno-utils";
 
@@ -506,5 +506,84 @@ describe('All single patch variations', () => {
 
     expect(mountCallCount).toBe(2);
     expect(unmountCallCount).toBe(1);
+  });
+
+  it('Should handle situation where same element ref is used multiple times', () => {
+    const div = <div>Fun</div>;
+
+    render(
+      <Fragment $HasNonKeyedChildren>
+        {[
+          div,
+          div,
+          <div $HasNonKeyedChildren>
+            {div}
+            <div $HasVNodeChildren>
+              {div}
+            </div>
+          </div>,
+          div
+        ]}
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Fun</div><div>Fun</div><div><div>Fun</div><div><div>Fun</div></div></div><div>Fun</div>');
+
+    expect(container.$V.children[1].children[0]).not.toBe(container.$V.children[0]);
+    expect(container.$V.children[0]).not.toBe(container.$V.children[3]);
+
+    render(
+      <Fragment $HasNonKeyedChildren>
+        {[
+          div,
+          div,
+          <div $HasNonKeyedChildren>
+            {div}
+            <div $HasVNodeChildren>
+              {div}
+            </div>
+            {div}
+          </div>,
+          div
+        ]}
+      </Fragment>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Fun</div><div>Fun</div><div><div>Fun</div><div><div>Fun</div></div><div>Fun</div></div><div>Fun</div>');
+    expect(container.$V.children[0]).not.toBe(container.$V.children[3]);
+  });
+
+  it('Should unmount root fragment with hoisted children', () => {
+    const div = <div>Fun</div>;
+
+    render(
+      <Fragment $HasNonKeyedChildren>
+        {[
+          div,
+          div,
+          div,
+          <div $HasNonKeyedChildren>
+            {div}
+            <div $HasVNodeChildren>
+              {div}
+            </div>
+            {div}
+          </div>,
+          div,
+          div,
+          div
+        ]}
+      </Fragment>,
+      container
+    );
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+
+    render(null, container);
+    render(null, container);
   });
 });

@@ -79,6 +79,7 @@
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "7.1.0",
     "@babel/preset-env": "7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
     "@types/history": "^4.7.0",
     "@types/jest": "^23.3.3",
     "@types/node": "^10.11.4",

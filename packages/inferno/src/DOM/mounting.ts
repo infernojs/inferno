@@ -9,7 +9,7 @@ import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
-  const flags = (vNode.flags |= VNodeFlags.InUse);
+  const flags = vNode.flags |= VNodeFlags.InUse;
 
   if (flags & VNodeFlags.Element) {
     mountElement(vNode, parentDOM, context, isSVG, nextNode);
@@ -71,10 +71,10 @@ export function mountTextContent(dom: Element, children: string): void {
 
 export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
   const flags = vNode.flags;
-  const children = vNode.children;
   const props = vNode.props;
   const className = vNode.className;
   const ref = vNode.ref;
+  let children = vNode.children;
   const childFlags = vNode.childFlags;
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
   const dom = documentCreateElement(vNode.type, isSVG);
@@ -99,6 +99,9 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
     if (childFlags === ChildFlags.HasVNodeChildren) {
+      if ((children as VNode).flags & VNodeFlags.InUse) {
+        vNode.children = children = directClone(children as VNode);
+      }
       mount(children as VNode, dom, context, childrenIsSVG, null);
     } else if (childFlags === ChildFlags.HasKeyedChildren || childFlags === ChildFlags.HasNonKeyedChildren) {
       mountArrayChildren(children, dom, context, childrenIsSVG, null);

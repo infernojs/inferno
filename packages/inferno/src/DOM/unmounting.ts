@@ -56,28 +56,28 @@ export function unmount(vNode) {
     } else if (childFlags === ChildFlags.HasVNodeChildren) {
       unmount(children as VNode);
     }
-  } else if (flags & VNodeFlags.ComponentClass) {
-    if (isFunction(children.componentWillUnmount)) {
-      children.componentWillUnmount();
-    }
-    unmountRef(vNode.ref);
-    children.$UN = true;
-    unmount(children.$LI);
-  } else if (flags & VNodeFlags.ComponentFunction) {
-    ref = vNode.ref;
+  } else if (children) {
+    if (flags & VNodeFlags.ComponentClass) {
+      if (isFunction(children.componentWillUnmount)) {
+        children.componentWillUnmount();
+      }
+      unmountRef(vNode.ref);
+      children.$UN = true;
+      unmount(children.$LI);
+    } else if (flags & VNodeFlags.ComponentFunction) {
+      ref = vNode.ref;
 
-    if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
-      ref.onComponentWillUnmount(findDOMfromVNode(vNode), vNode.props || EMPTY_OBJ);
-    }
+      if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
+        ref.onComponentWillUnmount(findDOMfromVNode(vNode), vNode.props || EMPTY_OBJ);
+      }
 
-    unmount(children);
-  } else if (flags & VNodeFlags.Portal) {
-    if (children) {
+      unmount(children);
+    } else if (flags & VNodeFlags.Portal) {
       remove(children as VNode, vNode.ref);
-    }
-  } else if (flags & VNodeFlags.Fragment) {
-    if (vNode.childFlags & ChildFlags.MultipleChildren) {
-      unmountAllChildren(children);
+    } else if (flags & VNodeFlags.Fragment) {
+      if (vNode.childFlags & ChildFlags.MultipleChildren) {
+        unmountAllChildren(children);
+      }
     }
   }
 }

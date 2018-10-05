@@ -21,7 +21,6 @@ module.exports = function(version, options) {
       cacheRoot: `.rpt2_cache_${options.env}`,
       check: false,
       clean: true,
-      exclude: ['*.spec*', '**/*.spec*'],
       tsconfig: __dirname + '/../../../tsconfig.json' // Have absolute path to fix windows build
     })
   ];
