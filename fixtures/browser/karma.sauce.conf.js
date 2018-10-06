@@ -214,8 +214,8 @@ module.exports = function(config) {
           'inferno-clone-vnode': resolve('inferno-clone-vnode'),
           mobx: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
         },
-        extensions: ['*', '.js', '.jsx', '.tsx', '.ts'],
-        mainFields: ['main']
+        extensions: ['.js', '.jsx', '.tsx', '.ts'],
+        mainFields: ['browser', 'main']
       },
       devServer: {
         noInfo: true
