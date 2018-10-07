@@ -1,16 +1,5 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import {
-  combineFrom,
-  isArray,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isString,
-  isStringOrNumber,
-  isUndefined,
-  throwError
-} from 'inferno-shared';
+import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, isUndefined, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
 import { Fragment, options } from './../DOM/utils/common';
 import { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';

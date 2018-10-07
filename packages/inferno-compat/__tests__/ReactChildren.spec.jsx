@@ -27,7 +27,11 @@ describe('ReactChildren', function() {
     // First pass children into a component to fully simulate what happens when
     // using structures that arrive from transforms.
 
-    var instance = <div><span key="simple" /></div>;
+    var instance = (
+      <div>
+        <span key="simple" />
+      </div>
+    );
     ReactChildren.forEach(instance.children, callback);
     expect(callback).toHaveBeenCalledWith(simpleKid, 0, jasmine.any(Array));
     callback.calls.reset();
@@ -42,7 +46,11 @@ describe('ReactChildren', function() {
     });
 
     var simpleKid = <span />;
-    var instance = <div><span /></div>;
+    var instance = (
+      <div>
+        <span />
+      </div>
+    );
     ReactChildren.forEach(instance.children, callback);
     expect(callback).toHaveBeenCalledWith(simpleKid, 0, jasmine.any(Array));
     callback.calls.reset();
@@ -73,7 +81,11 @@ describe('ReactChildren', function() {
     var mapFn = function(kid, index) {
       return <div>{kid}</div>;
     };
-    var instance = <div><span key="simple" /></div>;
+    var instance = (
+      <div>
+        <span key="simple" />
+      </div>
+    );
 
     var mappedChildren = ReactChildren.map(instance.children, mapFn);
 

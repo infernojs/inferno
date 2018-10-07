@@ -28,7 +28,11 @@ import {
   _HI,
   _M,
   _MCCC,
-  _ME, _MFCC, _MR, _MT, _MP
+  _ME,
+  _MFCC,
+  _MR,
+  _MT,
+  _MP
 } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
@@ -388,7 +392,7 @@ if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined
     rerender,
     unmountComponentAtNode,
     unstable_renderSubtreeIntoContainer,
-    version,
+    version
   };
 
   (window as any).React = exports;
@@ -403,8 +407,12 @@ export {
   ComponentType,
   EMPTY_OBJ,
   Fragment,
+  InfernoNode,
+  Props,
   PropTypes,
   PureComponent,
+  Refs,
+  VNode,
   // Internal methods
   _CI,
   _HI,
