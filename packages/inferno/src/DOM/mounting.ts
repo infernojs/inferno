@@ -9,7 +9,7 @@ import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null): void {
-  const flags = vNode.flags |= VNodeFlags.InUse;
+  const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
     mountElement(vNode, parentDOM, context, isSVG, nextNode);
@@ -118,7 +118,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
 
   if (process.env.NODE_ENV !== 'production') {
     if (isString(ref)) {
-      throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+      throwError('string "refs" are not supported in Inferno 1.0. Use callback ref or Inferno.createRef() API instead.');
     }
   }
   mountRef(ref, dom);
@@ -166,7 +166,7 @@ export function mountClassComponentCallbacks(ref, instance) {
 
   if (process.env.NODE_ENV !== 'production') {
     if (isStringOrNumber(ref)) {
-      throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+      throwError('string "refs" are not supported in Inferno 1.0. Use callback ref or Inferno.createRef() API instead.');
     } else if (!isNullOrUndef(ref) && typeof ref === 'object' && ref.current === void 0) {
       throwError('functional component lifecycle events are not supported on ES2015 class components.');
     }

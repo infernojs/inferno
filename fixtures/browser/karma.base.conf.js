@@ -104,7 +104,7 @@ module.exports = function(config) {
                     }
                   }
                 ],
-                '@babel/typescript',
+                '@babel/typescript'
               ],
               plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
             }

@@ -1,5 +1,5 @@
 import { createFragment, createTextVNode, createVoidVNode, directClone } from '../../core/implementation';
-import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isStringOrNumber, warning } from 'inferno-shared';
+import { combineFrom, isArray, isFunction, isInvalid, isNull, isStringOrNumber, warning } from 'inferno-shared';
 import { createDerivedState, EMPTY_OBJ, getComponentName } from './common';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from './../../core/types';
@@ -27,6 +27,18 @@ function warnAboutOldLifecycles(component) {
       The above lifecycles should be removed.
     `);
   }
+}
+
+export function renderNewInput(instance, props, context) {
+  const nextInput = handleComponentInput(instance.render(props, instance.state, context));
+
+  let childContext = context;
+  if (isFunction(instance.getChildContext)) {
+    childContext = combineFrom(context, instance.getChildContext());
+  }
+  instance.$CX = childContext;
+
+  return nextInput;
 }
 
 export function createClassComponentInstance(vNode: VNode, Component, props, context: Object) {
@@ -76,20 +88,8 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
     instance.state = createDerivedState(instance, props, instance.state);
   }
 
-  const input = handleComponentInput(instance.render(props, instance.state, context));
-  let childContext;
+  instance.$LI = renderNewInput(instance, props, context);
 
-  if (isFunction(instance.getChildContext)) {
-    childContext = instance.getChildContext();
-  }
-
-  if (isNullOrUndef(childContext)) {
-    instance.$CX = context;
-  } else {
-    instance.$CX = combineFrom(context, childContext);
-  }
-
-  instance.$LI = input;
   return instance;
 }
 
@@ -100,10 +100,8 @@ export function handleComponentInput(input: any): VNode {
     input = createTextVNode(input, null);
   } else if (isArray(input)) {
     input = createFragment(input, ChildFlags.UnknownChildren, null);
-  } else {
-    if (input.flags & VNodeFlags.InUse) {
-      input = directClone(input);
-    }
+  } else if (input.flags & VNodeFlags.InUse) {
+    input = directClone(input);
   }
   return input;
 }

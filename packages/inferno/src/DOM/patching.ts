@@ -18,7 +18,7 @@ import {
 } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
-import { handleComponentInput } from './utils/componentutil';
+import { handleComponentInput, renderNewInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 
@@ -37,11 +37,11 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
 }
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, nextNode: Element | null) {
-  const nextFlags = nextVNode.flags |= VNodeFlags.InUse;
+  const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
   if (process.env.NODE_ENV !== 'production') {
     if (isFunction(options.componentComparator) && lastVNode.flags & nextFlags & VNodeFlags.ComponentClass) {
-      if (options.componentComparator(lastVNode, nextVNode) === false) {
+      if ((options.componentComparator as Function)(lastVNode, nextVNode) === false) {
         patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode);
         return;
       }
@@ -323,7 +323,7 @@ function createDidUpdate(instance, lastProps, lastState, snapshot) {
 export function updateClassComponent(instance, nextState, nextProps, parentDOM: Element, context, isSVG: boolean, force: boolean, nextNode: Element | null) {
   const lastState = instance.state;
   const lastProps = instance.props;
-  const usesNewAPI = instance.$N;
+  const usesNewAPI = Boolean(instance.$N);
   const hasSCU = isFunction(instance.shouldComponentUpdate);
 
   if (usesNewAPI) {
@@ -338,27 +338,14 @@ export function updateClassComponent(instance, nextState, nextProps, parentDOM: 
     instance.props = nextProps;
     instance.state = nextState;
     instance.context = context;
-
-    const renderOutput = instance.render(nextProps, nextState, context);
     let snapshot = null;
+    const nextInput = renderNewInput(instance, nextProps, context);
 
     if (usesNewAPI && isFunction(instance.getSnapshotBeforeUpdate)) {
       snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState);
     }
 
-    let childContext;
-    if (isFunction(instance.getChildContext)) {
-      childContext = instance.getChildContext();
-    }
-    if (isNullOrUndef(childContext)) {
-      childContext = context;
-    } else {
-      childContext = combineFrom(context, childContext);
-    }
-    instance.$CX = childContext;
-    const nextInput = handleComponentInput(renderOutput);
-
-    patch(instance.$LI, nextInput, parentDOM, childContext, isSVG, nextNode);
+    patch(instance.$LI, nextInput, parentDOM, instance.$CX, isSVG, nextNode);
 
     // Dont update Last input, until patch has been succesfully executed
     instance.$LI = nextInput;
@@ -374,7 +361,7 @@ export function updateClassComponent(instance, nextState, nextProps, parentDOM: 
 }
 
 function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null) {
-  const instance = nextVNode.children = lastVNode.children;
+  const instance = (nextVNode.children = lastVNode.children);
   // If Component has crashed, ignore it to stay functional
   if (isNull(instance)) {
     return;

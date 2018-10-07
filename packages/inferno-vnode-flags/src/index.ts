@@ -19,6 +19,7 @@ export const enum VNodeFlags {
   Fragment = 1 << 13,
   InUse = 1 << 14,
   ForwardRef = 1 << 15,
+  Normalized = 1 << 16,
 
   /* Masks */
   ForwardRefComponent = ForwardRef | ComponentFunction,
@@ -26,7 +27,8 @@ export const enum VNodeFlags {
   Element = HtmlElement | SvgElement | FormElement,
   Component = ComponentFunction | ComponentClass | ComponentUnknown,
   DOMRef = Element | Text | Void | Portal,
-  ClearInUse = ~InUse
+  InUseOrNormalized = InUse | Normalized,
+  ClearInUseNormalized = ~InUseOrNormalized
 }
 
 // Combinations are not possible, its bitwise only to reduce vNode size

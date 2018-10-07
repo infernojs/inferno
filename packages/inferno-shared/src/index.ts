@@ -1,7 +1,5 @@
 export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
-export const isBrowser: boolean = !!(typeof window !== 'undefined' && window.document);
-
 export const isArray = Array.isArray;
 
 export function isStringOrNumber(o: any): o is string | number {
@@ -58,7 +56,7 @@ export function warning(message: string) {
   console.error(message);
 }
 
-export function combineFrom(first?: {} | null, second?: {} | null): object {
+export function combineFrom(first: {} | null, second: {} | null): object {
   const out = {};
   if (first) {
     for (const key in first) {

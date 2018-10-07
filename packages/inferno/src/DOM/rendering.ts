@@ -1,4 +1,4 @@
-import { isBrowser, isFunction, isNullOrUndef, throwError, warning } from 'inferno-shared';
+import { isFunction, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
 import { InfernoNode, VNode } from '../core/types';
@@ -6,6 +6,8 @@ import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
 import { callAll, options, EMPTY_OBJ, LIFECYCLE } from './utils/common';
+
+const isBrowser: boolean = typeof window !== 'undefined';
 
 if (process.env.NODE_ENV !== 'production') {
   if (isBrowser && !document.body) {
@@ -58,10 +60,10 @@ export function __render(
   }
 
   if (isFunction(callback)) {
-    callback();
+    (callback as Function)();
   }
   if (isFunction(options.renderComplete)) {
-    options.renderComplete(rootInput, parentDOM as any);
+    (options.renderComplete as Function)(rootInput, parentDOM as any);
   }
 }
 

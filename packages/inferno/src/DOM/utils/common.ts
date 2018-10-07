@@ -133,7 +133,6 @@ export function createDerivedState(instance, nextProps, state) {
   return state;
 }
 
-
 export const options: {
   componentComparator: ((lastVNode: VNode, nextVNode: VNode) => boolean) | null;
   createVNode: ((vNode: VNode) => void) | null;

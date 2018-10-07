@@ -586,4 +586,60 @@ describe('All single patch variations', () => {
     render(null, container);
     render(null, container);
   });
+
+  it('Should handle hoisted nodes correctly', () => {
+    const div = <div>Fun</div>;
+
+    function Okay() {
+      return div;
+    }
+
+    const OkayHoisted = <Okay/>;
+
+    function Nested() {
+      return OkayHoisted;
+    }
+
+    class Foobar extends Component {
+      public render() {
+        return (
+          <>
+            {div}
+            <span>Ok</span>
+            <Okay/>
+          </>
+        )
+      }
+    }
+
+    const NestedHoisted = <Nested />;
+    const FooBarHoisted = <Foobar/>;
+
+    render(
+      <Fragment>
+        {[
+          FooBarHoisted,
+          <Foobar/>,
+          div,
+          <div>
+            {NestedHoisted}
+            <div>
+              {div}
+            </div>
+            {NestedHoisted}
+          </div>,
+          FooBarHoisted,
+          div,
+          div
+        ]}
+      </Fragment>,
+      container
+    );
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+
+    render(null, container);
+    render(null, container);
+  });
 });

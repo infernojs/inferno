@@ -47,7 +47,7 @@ export function Link(props: ILinkProps & LinkHTMLAttributes<HTMLLinkElement>, co
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 
   const href = context.router.history.createHref(typeof to === 'string' ? { pathname: to } : to);
-  const newProps: any = combineFrom(rest);
+  const newProps: any = combineFrom(rest, null);
 
   newProps.href = href;
   newProps.onClick = linkEvent(

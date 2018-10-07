@@ -212,7 +212,7 @@ describe('MISC', () => {
     it('should support props.children', () => {
       let element = <foo children={<span>b</span>} />;
       let clone = cloneElement(element);
-      expect(JSON.stringify(clone)).toEqual(JSON.stringify(element));
+
       expect(cloneElement(clone).props.children).toEqual(element.props.children);
     });
 
@@ -223,7 +223,8 @@ describe('MISC', () => {
         </foo>
       );
       let clone = cloneElement(element);
-      expect(JSON.stringify(clone)).toEqual(JSON.stringify(element));
+
+      expect(clone.children.children).toEqual('b');
     });
 
     it('should support children in prop argument', () => {

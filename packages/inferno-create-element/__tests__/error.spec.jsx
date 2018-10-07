@@ -566,7 +566,7 @@ describe('Error recovery', () => {
           }
 
           render() {
-            return <div>Ok</div>
+            return <div>Ok</div>;
           }
         }
 
@@ -613,13 +613,9 @@ describe('Error recovery', () => {
           }
         }
 
-        expect(() =>
-          render(<Parent fail={true}/>, container)
-        ).toThrow('Oops!');
+        expect(() => render(<Parent fail={true} />, container)).toThrow('Oops!');
 
-        expect(() =>
-          render(<Parent fail={true}/>, container)
-        ).toThrow('Oops!');
+        expect(() => render(<Parent fail={true} />, container)).toThrow('Oops!');
 
         parentInstance.setState({
           nodes: true
@@ -628,11 +624,9 @@ describe('Error recovery', () => {
 
         expect(container.innerHTML).toEqual('');
 
-        render(<Parent fail={false}/>, container);
+        render(<Parent fail={false} />, container);
 
-        expect(() =>
-          render(<Parent fail={true}/>, container)
-        ).toThrow('Oops!');
+        expect(() => render(<Parent fail={true} />, container)).toThrow('Oops!');
 
         expect(() => {
           parentInstance.setState({

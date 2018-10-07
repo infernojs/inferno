@@ -22,7 +22,7 @@ import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
-import { isArray, isBrowser, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
+import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
@@ -329,7 +329,7 @@ function render(rootInput, container, cb?, context?) {
 }
 
 // Mask React global in browser enviornments when React is not used.
-if (isBrowser && typeof (window as any).React === 'undefined') {
+if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined') {
   const exports = {
     Children,
     Component,

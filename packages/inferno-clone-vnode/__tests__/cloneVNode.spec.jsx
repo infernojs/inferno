@@ -1,5 +1,5 @@
 import { cloneVNode } from 'inferno-clone-vnode';
-import { Component, createTextVNode, render } from 'inferno';
+import { Component, createTextVNode, render, Fragment } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 
 // React Fiddle for Cloning https://jsfiddle.net/es4u02jv/

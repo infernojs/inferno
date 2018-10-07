@@ -186,6 +186,6 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any;
 
   public render(_nextProps: P, _nextState: S, _nextContext: any): InfernoNode | undefined {
-    return;
+    return null;
   }
 }

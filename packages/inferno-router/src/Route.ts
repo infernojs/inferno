@@ -36,7 +36,7 @@ export interface IRouteProps {
  */
 class Route extends Component<IRouteProps, any> {
   public getChildContext() {
-    const childContext: any = combineFrom(this.context.router);
+    const childContext: any = combineFrom(this.context.router, null);
 
     childContext.route = {
       location: this.props.location || this.context.router.route.location,

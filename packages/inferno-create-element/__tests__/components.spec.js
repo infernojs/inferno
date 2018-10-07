@@ -780,63 +780,65 @@ describe('Components (non-JSX)', () => {
       });
     });
 
-    function BasicStatelessComponent1({ name, title }) {
-      const template = (_name, _title) =>
-        createElement(
-          'div',
-          {
-            className: 'basic'
-          },
+    describe('BasicStateless', () => {
+      function BasicStatelessComponent1({ name, title }) {
+        const template = (_name, _title) =>
           createElement(
-            'span',
+            'div',
             {
-              className: _name
+              className: 'basic'
             },
-            'The title is ',
-            _title
-          )
-        );
-      return template(name, title);
-    }
+            createElement(
+              'span',
+              {
+                className: _name
+              },
+              'The title is ',
+              _title
+            )
+          );
+        return template(name, title);
+      }
 
-    it('should render a stateless component', () => {
-      const template = (Component, title) =>
-        createElement(
-          'div',
-          null,
-          createElement(Component, {
-            title,
-            name: 'Hello, World!'
-          })
-        );
+      it('should render a stateless component', () => {
+        const template = (Component, title) =>
+          createElement(
+            'div',
+            null,
+            createElement(Component, {
+              title,
+              name: 'Hello, World!'
+            })
+          );
 
-      render(template(BasicStatelessComponent1, 'abc'), container);
-      expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
-      expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
-      expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is abc');
-      render(template(BasicStatelessComponent1, null), container);
-      render(template(BasicStatelessComponent1, 'abc'), container);
-      expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
-      expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
-      expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is abc');
+        render(template(BasicStatelessComponent1, 'abc'), container);
+        expect(container.firstChild.childNodes.length).toBe(1);
+        expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
+        expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
+        expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
+        expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is abc');
+        render(template(BasicStatelessComponent1, null), container);
+        render(template(BasicStatelessComponent1, 'abc'), container);
+        expect(container.firstChild.childNodes.length).toBe(1);
+        expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
+        expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
+        expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
+        expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is abc');
 
-      render(template(BasicStatelessComponent1), container);
-      expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
-      expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
-      expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is ');
+        render(template(BasicStatelessComponent1), container);
+        expect(container.firstChild.childNodes.length).toBe(1);
+        expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
+        expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
+        expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
+        expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is ');
 
-      render(template(BasicStatelessComponent1), container);
-      expect(container.firstChild.childNodes.length).toBe(1);
-      expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
-      expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
-      expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
-      expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is ');
+        render(template(BasicStatelessComponent1), container);
+        expect(container.firstChild.childNodes.length).toBe(1);
+        expect(container.firstChild.firstChild.getAttribute('class')).toBe('basic');
+        expect(container.firstChild.firstChild.firstChild.getAttribute('class')).toBe('Hello, World!');
+        expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
+        expect(container.firstChild.firstChild.firstChild.textContent).toBe('The title is ');
+      });
     });
 
     describe('should render a component with a conditional state item', () => {

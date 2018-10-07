@@ -1,6 +1,7 @@
-import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, throwError } from 'inferno-shared';
+import { isArray, isInvalid, isNullOrUndef, isNumber, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { getComponentName } from '../DOM/utils/common';
+import { VNode } from './types';
 
 function getTagName(input) {
   let tagName;
@@ -48,7 +49,7 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
       }
       continue;
     }
-    if (typeof childNode === 'object') {
+    if (typeof (childNode as VNode) === 'object') {
       if (childNode.isValidated) {
         continue;
       }
@@ -150,5 +151,13 @@ export function validateKeys(vNode) {
       }
     }
     vNode.isValidated = true;
+  }
+}
+
+export function throwIfObjectIsNotVNode(input) {
+  if (!isNumber(input.flags)) {
+    throwError(
+      `normalization received an object that's not a valid VNode, you should stringify it first or fix createVNode flags. Object: "${JSON.stringify(input)}".`
+    );
   }
 }

@@ -305,7 +305,7 @@ export function connectAdvanced(
         // this is especially important for 'ref' since that's a reference back to the component
         // instance. a singleton memoized selector would then be holding a reference to the
         // instance, preventing the instance from being garbage collected, and that would be bad
-        const withExtras = combineFrom(props);
+        const withExtras = combineFrom(props, null);
 
         if (renderCountProp) {
           withExtras[renderCountProp] = this.renderCount++;

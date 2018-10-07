@@ -22,7 +22,7 @@ export class Router extends Component<IRouterProps, any> {
   }
 
   public getChildContext() {
-    const childContext: any = combineFrom(this.context.router);
+    const childContext: any = combineFrom(this.context.router, null);
 
     childContext.history = this.props.history;
     childContext.route = {
