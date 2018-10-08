@@ -1,12 +1,37 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode, _CI, _HI, _L, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP } from 'inferno';
+import { VNode, _CI, _HI, _L, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render } from 'inferno';
 
 function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
   const tempdom = document.createElement('i');
 
   tempdom.innerHTML = innerHTML;
   return tempdom.innerHTML === dom.innerHTML;
+}
+
+function findLastDOMFromVNode(vNode: VNode) {
+  let flags;
+  let children;
+
+  while (vNode) {
+    flags = vNode.flags;
+
+    if (flags & VNodeFlags.DOMRef) {
+      return vNode.dom;
+    }
+
+    children = vNode.children;
+
+    if (flags & VNodeFlags.Fragment) {
+      vNode = vNode.childFlags === ChildFlags.HasVNodeChildren ? (children as VNode) : (children as VNode[])[children.length - 1];
+    } else if (flags & VNodeFlags.ComponentClass) {
+      vNode = (children as any).$LI;
+    } else {
+      vNode = children;
+    }
+  }
+
+  return null;
 }
 
 function isSamePropsInnerHTML(dom: Element, props): boolean {
@@ -43,15 +68,12 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
   const flags = parentVNode.flags;
 
   if (childFlags !== ChildFlags.HasInvalidChildren) {
-    let nextNode;
-
     if (childFlags === ChildFlags.HasVNodeChildren) {
       if (isNull(currentNode)) {
         _M(children as VNode, parentNode, context, isSVG, null);
       } else {
-        nextNode = currentNode.nextSibling;
         currentNode = hydrateVNode(children as VNode, parentNode, currentNode as Element, context, isSVG);
-        currentNode = currentNode ? currentNode.nextSibling : nextNode;
+        currentNode = currentNode ? currentNode.nextSibling : null;
       }
     } else if (childFlags === ChildFlags.HasTextChildren) {
       if (isNull(currentNode)) {
@@ -73,9 +95,8 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
         if (isNull(currentNode) || (prevVNodeIsTextNode && (child.flags & VNodeFlags.Text) > 0)) {
           _M(child as VNode, parentNode, context, isSVG, currentNode);
         } else {
-          nextNode = currentNode.nextSibling;
           currentNode = hydrateVNode(child as VNode, parentNode, currentNode as Element, context, isSVG);
-          currentNode = currentNode ? currentNode.nextSibling : nextNode;
+          currentNode = currentNode ? currentNode.nextSibling : null;
         }
 
         prevVNodeIsTextNode = (child.flags & VNodeFlags.Text) > 0;
@@ -110,7 +131,7 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
   if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
     if (process.env.NODE_ENV !== 'production') {
-      warning("Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty");
+      warning("Inferno hydration: Server-side markup doesn't match client-side markup");
     }
     _ME(vNode, null, context, isSVG, null);
     parentDOM.replaceChild(vNode.dom as Element, dom);
@@ -158,11 +179,12 @@ function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
     hydrateText(children as VNode, parentDOM, dom);
-    return (vNode.dom = (children as any).dom);
+    return children.dom as Element;
   }
 
   hydrateChildren(vNode, parentDOM, dom, context, isSVG);
-  return (vNode.dom = (children as any)[(children as any).length - 1].dom);
+
+  return findLastDOMFromVNode((children as VNode[])[children.length - 1]);
 }
 
 function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean): Element | null {
@@ -195,7 +217,12 @@ function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, con
 export function hydrate(input, parentDOM: Element, callback?: Function) {
   let dom = parentDOM.firstChild as Element;
 
-  if (!isNull(dom)) {
+  if (isNull(dom)) {
+    if (process.env.NODE_ENV !== 'production') {
+      warning("Inferno hydration: Server-side markup doesn't match client-side markup");
+    }
+    render(input, parentDOM, callback);
+  } else {
     if (!isInvalid(input)) {
       dom = hydrateVNode(input, parentDOM, dom, {}, false) as Element;
     }

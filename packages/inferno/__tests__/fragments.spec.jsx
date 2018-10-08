@@ -819,4 +819,249 @@ describe('Fragments', () => {
 
     expect(container.innerHTML).toBe('<span>1</span><div>Ok</div><span>2</span>');
   });
+
+  it('Should be possible to mount and patch single component fragment children', () => {
+    let counter = 0;
+
+    class Foobar extends Component {
+      componentWillMount() {
+        counter++;
+      }
+      render() {
+        return null;
+      }
+    }
+
+    render(
+      <>
+      </>,
+      container
+    );
+
+    render(
+      <>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+    expect(counter).toBe(1);
+
+    render(
+      <>
+        <div>Ok</div>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Ok</div>');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should be possible to mount and patch single component fragment children - variation 2', () => {
+    let counter = 0;
+
+    class Foobar extends Component {
+      componentWillMount() {
+        counter++;
+      }
+      render() {
+        return null;
+      }
+    }
+
+    let nodes = [];
+
+    render(
+      <>
+        {nodes}
+      </>,
+      container
+    );
+
+    nodes = [<Foobar/>];
+
+    render(
+      <>
+        {nodes}
+      </>,
+      container
+    );
+
+    nodes = [<Foobar/>, <Foobar/>, <Foobar/>];
+
+    render(
+      <>
+        {nodes}
+      </>,
+      container
+    );
+
+    nodes = [];
+
+    render(
+      <>
+        {nodes}
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+    expect(counter).toBe(3);
+
+    render(
+      <>
+        <div>Ok</div>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Ok</div>');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should be possible to patch single fragment child component', () => {
+    let counter = 0;
+
+    class Foobar extends Component {
+      componentWillMount() {
+        counter++;
+      }
+      render() {
+        return null;
+      }
+    }
+
+    render(
+      <>
+        <>
+          <Foobar/>
+        </>
+        <>
+          <Foobar/>
+        </>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+    expect(counter).toBe(2);
+
+    render(
+      <>
+        <></>
+        <>
+          <Foobar/>
+        </>
+        <>
+          <Foobar/>
+        </>
+        <></>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+    expect(counter).toBe(4);
+
+    render(
+      <>
+        <div>Ok</div>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Ok</div>');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should be possible to mount and patch single component fragment children', () => {
+    class Foobar extends Component {
+      render() {
+        return null;
+      }
+    }
+
+    render(
+      <>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    render(
+      <>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    render(
+      <>
+        <div>Ok</div>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Ok</div>');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
+
+  it('Should be possible to mount and patch single component fragment children', () => {
+    class Foobar extends Component {
+      render() {
+        return null;
+      }
+    }
+
+    render(
+      <>
+        {null}
+      </>,
+      container
+    );
+
+    render(
+      <>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('');
+
+    render(
+      <>
+        <div>Ok</div>
+        <Foobar/>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div>Ok</div>');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
 });
