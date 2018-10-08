@@ -179,12 +179,13 @@ function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
     hydrateText(children as VNode, parentDOM, dom);
-    return children.dom as Element;
+
+    return (children as VNode).dom as Element;
   }
 
   hydrateChildren(vNode, parentDOM, dom, context, isSVG);
 
-  return findLastDOMFromVNode((children as VNode[])[children.length - 1]);
+  return findLastDOMFromVNode((children as VNode[])[(children as VNode[]).length - 1]) as Element;
 }
 
 function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean): Element | null {
