@@ -76,7 +76,7 @@ And make sure the PR haven't been published before!
 
 There isn't (yet) a formal style guide for Inferno, so please take care to adhere to existing conventions:
 
-* Tabs, not spaces!
+* 2-space indentation, not tabs!
 * Semi-colons
 * Single-quotes for strings
 

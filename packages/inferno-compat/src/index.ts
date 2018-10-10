@@ -132,6 +132,21 @@ const Children = {
 
 const version = '15.4.2';
 
+const validLineInputs = {
+  date: true,
+  'datetime-local': true,
+  email: true,
+  month: true,
+  number: true,
+  password: true,
+  search: true,
+  tel: true,
+  text: true,
+  time: true,
+  url: true,
+  week: true
+};
+
 function normalizeGenericProps(props) {
   for (const prop in props) {
     if (prop === 'onDoubleClick') {
@@ -167,10 +182,10 @@ function normalizeGenericProps(props) {
 
 function normalizeFormProps<P>(name: string, props: Props<P> | any) {
   if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
-    const type = props.type;
+    const type = props.type && props.type.toLowerCase();
     let eventName;
 
-    if (!type || type === 'text') {
+    if (!type || validLineInputs[type]) {
       eventName = 'oninput';
     }
 
