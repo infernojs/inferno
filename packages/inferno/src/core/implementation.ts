@@ -178,6 +178,29 @@ export function normalizeProps(vNode) {
   return vNode;
 }
 
+/*
+ * Fragment is different than normal vNode,
+ * because when it needs to be cloned we need to clone its children too
+ * But not normalize, because otherwise those possibly get KEY and re-mount
+ */
+function cloneFragment(vNodeToClone) {
+  let clonedChildren;
+  const oldChildren = vNodeToClone.children;
+  const childFlags = vNodeToClone.childFlags;
+
+  if (childFlags === ChildFlags.HasVNodeChildren) {
+    clonedChildren = directClone(oldChildren as VNode);
+  } else if (childFlags & ChildFlags.MultipleChildren) {
+    clonedChildren = [];
+
+    for (let i = 0, len = oldChildren.length; i < len; i++) {
+      clonedChildren.push(directClone(oldChildren[i]));
+    }
+  }
+
+  return createFragment(clonedChildren, childFlags, vNodeToClone.key);
+}
+
 export function directClone(vNodeToClone: VNode): VNode {
   const flags = vNodeToClone.flags & VNodeFlags.ClearInUseNormalized;
   let props = vNodeToClone.props;
@@ -204,7 +227,7 @@ export function directClone(vNodeToClone: VNode): VNode {
     ) as VNode;
   }
 
-  return createFragment(vNodeToClone.children as any[], ChildFlags.UnknownChildren, vNodeToClone.key);
+  return cloneFragment(vNodeToClone);
 }
 
 export function createVoidVNode(): VNode {

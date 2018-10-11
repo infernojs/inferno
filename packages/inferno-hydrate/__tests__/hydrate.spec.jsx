@@ -177,7 +177,6 @@ describe('rendering routine', () => {
   });
 
   describe('Hydrate fragments', () => {
-
     function runAllTests() {
       it('Should hydrate and unmount fragment', () => {
         class Example extends Component {
@@ -562,7 +561,9 @@ describe('rendering routine', () => {
           container
         );
 
-        expect(container.innerHTML).toBe('<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff');
+        expect(container.innerHTML).toBe(
+          '<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff'
+        );
         expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
 
         render(
@@ -996,17 +997,13 @@ describe('rendering routine', () => {
           }
         }
 
-        hydrate(
-          <>
-          </>,
-          container
-        );
+        hydrate(<></>, container);
 
         expect(container.innerHTML).toBe('');
 
         render(
           <>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1017,7 +1014,7 @@ describe('rendering routine', () => {
         render(
           <>
             <div>Ok</div>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1043,39 +1040,19 @@ describe('rendering routine', () => {
 
         let nodes = [];
 
-        hydrate(
-          <>
-            {nodes}
-          </>,
-          container
-        );
+        hydrate(<>{nodes}</>, container);
 
-        nodes = [<Foobar/>];
+        nodes = [<Foobar />];
 
-        render(
-          <>
-            {nodes}
-          </>,
-          container
-        );
+        render(<>{nodes}</>, container);
 
-        nodes = [<Foobar/>, <Foobar/>, <Foobar/>];
+        nodes = [<Foobar />, <Foobar />, <Foobar />];
 
-        render(
-          <>
-            {nodes}
-          </>,
-          container
-        );
+        render(<>{nodes}</>, container);
 
         nodes = [];
 
-        render(
-          <>
-            {nodes}
-          </>,
-          container
-        );
+        render(<>{nodes}</>, container);
 
         expect(container.innerHTML).toBe('');
         expect(counter).toBe(3);
@@ -1083,7 +1060,7 @@ describe('rendering routine', () => {
         render(
           <>
             <div>Ok</div>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1110,10 +1087,10 @@ describe('rendering routine', () => {
         hydrate(
           <>
             <>
-              <Foobar/>
+              <Foobar />
             </>
             <>
-              <Foobar/>
+              <Foobar />
             </>
           </>,
           container
@@ -1126,13 +1103,13 @@ describe('rendering routine', () => {
           <>
             <></>
             <>
-              <Foobar/>
+              <Foobar />
             </>
             <>
-              <Foobar/>
+              <Foobar />
             </>
             <></>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1143,7 +1120,7 @@ describe('rendering routine', () => {
         render(
           <>
             <div>Ok</div>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1164,14 +1141,14 @@ describe('rendering routine', () => {
 
         hydrate(
           <>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
 
         render(
           <>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1181,7 +1158,7 @@ describe('rendering routine', () => {
         render(
           <>
             <div>Ok</div>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1200,16 +1177,11 @@ describe('rendering routine', () => {
           }
         }
 
-        hydrate(
-          <>
-            {null}
-          </>,
-          container
-        );
+        hydrate(<>{null}</>, container);
 
         render(
           <>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1219,7 +1191,7 @@ describe('rendering routine', () => {
         render(
           <>
             <div>Ok</div>
-            <Foobar/>
+            <Foobar />
           </>,
           container
         );
@@ -1242,6 +1214,6 @@ describe('rendering routine', () => {
       });
 
       runAllTests();
-    })
+    });
   });
 });

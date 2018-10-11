@@ -832,15 +832,11 @@ describe('Fragments', () => {
       }
     }
 
-    render(
-      <>
-      </>,
-      container
-    );
+    render(<></>, container);
 
     render(
       <>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -851,7 +847,7 @@ describe('Fragments', () => {
     render(
       <>
         <div>Ok</div>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -877,39 +873,19 @@ describe('Fragments', () => {
 
     let nodes = [];
 
-    render(
-      <>
-        {nodes}
-      </>,
-      container
-    );
+    render(<>{nodes}</>, container);
 
-    nodes = [<Foobar/>];
+    nodes = [<Foobar />];
 
-    render(
-      <>
-        {nodes}
-      </>,
-      container
-    );
+    render(<>{nodes}</>, container);
 
-    nodes = [<Foobar/>, <Foobar/>, <Foobar/>];
+    nodes = [<Foobar />, <Foobar />, <Foobar />];
 
-    render(
-      <>
-        {nodes}
-      </>,
-      container
-    );
+    render(<>{nodes}</>, container);
 
     nodes = [];
 
-    render(
-      <>
-        {nodes}
-      </>,
-      container
-    );
+    render(<>{nodes}</>, container);
 
     expect(container.innerHTML).toBe('');
     expect(counter).toBe(3);
@@ -917,7 +893,7 @@ describe('Fragments', () => {
     render(
       <>
         <div>Ok</div>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -944,10 +920,10 @@ describe('Fragments', () => {
     render(
       <>
         <>
-          <Foobar/>
+          <Foobar />
         </>
         <>
-          <Foobar/>
+          <Foobar />
         </>
       </>,
       container
@@ -960,13 +936,13 @@ describe('Fragments', () => {
       <>
         <></>
         <>
-          <Foobar/>
+          <Foobar />
         </>
         <>
-          <Foobar/>
+          <Foobar />
         </>
         <></>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -977,7 +953,7 @@ describe('Fragments', () => {
     render(
       <>
         <div>Ok</div>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -998,14 +974,14 @@ describe('Fragments', () => {
 
     render(
       <>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
 
     render(
       <>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -1015,7 +991,7 @@ describe('Fragments', () => {
     render(
       <>
         <div>Ok</div>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -1034,16 +1010,11 @@ describe('Fragments', () => {
       }
     }
 
-    render(
-      <>
-        {null}
-      </>,
-      container
-    );
+    render(<>{null}</>, container);
 
     render(
       <>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );
@@ -1053,7 +1024,7 @@ describe('Fragments', () => {
     render(
       <>
         <div>Ok</div>
-        <Foobar/>
+        <Foobar />
       </>,
       container
     );

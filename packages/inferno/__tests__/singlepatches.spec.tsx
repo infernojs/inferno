@@ -642,4 +642,70 @@ describe('All single patch variations', () => {
     render(null, container);
     render(null, container);
   });
+
+  it('Should not re-mount fragment contents', () => {
+    class Foobar extends Component<any, {
+      val: number
+    }> {
+
+      public state = {
+        val: 1
+      };
+
+      constructor(props, context) {
+        super(props, context);
+      }
+
+      public render() {
+        debugger;
+
+        return (
+          <div onClick={() => this.setState({val: ++this.state.val})}>
+            <span>{this.state.val}</span>
+            {this.props.children}
+          </div>
+        )
+      }
+    }
+
+    function Foobar2(props) {
+      return <span className={props.data}>Foo</span>
+    }
+
+    render(
+      <>
+        <Foobar>
+          <div>
+            <Foobar2 data="first"/>
+          </div>
+          <>
+            <>
+              <Foobar2 data="second"/>
+              <Foobar2 data="third"/>
+            </>
+          </>
+        </Foobar>
+      </>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<div><span>1</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>');
+
+    const firstNode = container.querySelector('.first');
+    const secondNode = container.querySelector('.second');
+
+    container.firstChild.click();
+
+    expect(container.innerHTML).toBe('<div><span>2</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>');
+
+    expect(container.querySelector('.first')).toBe(firstNode);
+    expect(container.querySelector('.second')).toBe(secondNode);
+
+    container.firstChild.click();
+
+    expect(container.innerHTML).toBe('<div><span>3</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>');
+
+    expect(container.querySelector('.first')).toBe(firstNode);
+    expect(container.querySelector('.second')).toBe(secondNode);
+  });
 });
