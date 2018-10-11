@@ -81,8 +81,8 @@
     "@babel/preset-env": "7.1.0",
     "@babel/preset-typescript": "^7.1.0",
     "@types/history": "^4.7.0",
-    "@types/jest": "^23.3.4",
-    "@types/node": "^10.11.4",
+    "@types/jest": "^23.3.5",
+    "@types/node": "^10.11.7",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-plugin-inferno": "6.0.0-6",
@@ -97,7 +97,7 @@
     "jest": "^23.6.0",
     "jest-silent-reporter": "^0.1.1",
     "jsdom": "12.2.0",
-    "lerna": "3.4.1",
+    "lerna": "3.4.3",
     "lint-staged": "^7.3.0",
     "madge": "^3.2.0",
     "minimist": "^1.2.0",
@@ -106,10 +106,10 @@
     "pre-commit": "^1.2.2",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
-    "rollup": "^0.66.4",
+    "rollup": "^0.66.6",
     "rollup-plugin-alias": "^1.4.0",
-    "rollup-plugin-buble": "^0.19.2",
-    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-buble": "^0.19.4",
+    "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-typescript2": "0.17.1",
@@ -117,6 +117,6 @@
     "sinon": "^6.3.5",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
-    "typescript": "3.1.1"
+    "typescript": "3.1.2"
   }
 }
