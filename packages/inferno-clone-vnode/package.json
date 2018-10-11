@@ -30,7 +30,6 @@
     "inferno": "^6.0.0-rc.5"
   },
   "devDependencies": {
-    "inferno": "5.5.0",
     "inferno-shared": "^6.0.0-rc.5",
     "inferno-vnode-flags": "^6.0.0-rc.5"
   },
