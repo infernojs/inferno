@@ -1,5 +1,5 @@
 import { createComponentVNode, createTextVNode, createVNode, directClone, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
-import { combineFrom, isArray, isInvalid, isStringOrNumber } from 'inferno-shared';
+import { combineFrom, isArray, isInvalid, isStringOrNumber, flatten } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 /*
@@ -14,25 +14,32 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
  * Clones given virtual node by creating new instance of it
  * @param {VNode} vNodeToClone virtual node to be cloned
  * @param {Props=} props additional props for new virtual node
- * @param {...*} _children new children for new virtual node
  * @returns {VNode} new virtual node
  */
-export function cloneVNode(vNodeToClone: VNode, props?, ..._children): VNode {
-  if (arguments.length === 3) {
-    if (!props) {
-      props = {};
-    }
-    props.children = _children[0] as VNode;
-  } else {
-    const childrenLen = _children.length;
-
-    if (childrenLen > 0) {
-      if (!props) {
-        props = {};
-      }
-      props.children = _children as any;
-    }
+export function cloneVNode(vNodeToClone: VNode, props?): VNode {
+  let children: any;
+  if (props && props.children) {
+    children = props.children;
   }
+
+  const childLen = arguments.length - 2;
+  if (childLen === 1) {
+    children = arguments[2];
+  } else if (childLen > 1) {
+    const [, , ...childArgs] = [...arguments];
+    children = childArgs;
+  } else if (children == null) {
+    const existingChildren = (vNodeToClone.props && vNodeToClone.props.children)
+      ? vNodeToClone.props.children
+      : vNodeToClone.children;
+
+    children = (Array.isArray(existingChildren) && existingChildren.length > 0) 
+      ? flatten(existingChildren) 
+      : existingChildren;
+  } 
+
+  props = props || {};
+  props.children = children;
 
   let newVNode;
   const flags = vNodeToClone.flags;
