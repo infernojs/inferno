@@ -82,10 +82,16 @@ module.exports = function(config) {
     },
 
     webpack: {
+      devtool: 'none',
       output: {
         filename: '[name]'
       },
-      mode: 'development',
+      mode: 'production',
+      optimization: {
+        splitChunks: false,
+        runtimeChunk: false,
+        minimize: true
+      },
       module: {
         rules: [
           {
