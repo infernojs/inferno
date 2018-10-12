@@ -99,7 +99,7 @@ export function createElement<T>(type: string | Function | Component<any, any>, 
   }
 
   if (flags & VNodeFlags.Fragment) {
-    return createFragment(children, ChildFlags.UnknownChildren, key);
+    return createFragment(childLen === 1 ? [children] : children, ChildFlags.UnknownChildren, key);
   }
 
   return createVNode(flags, type as string, className, children, ChildFlags.UnknownChildren, newProps, key, ref);

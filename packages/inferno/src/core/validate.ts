@@ -98,8 +98,6 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
 
 export function validateVNodeElementChildren(vNode) {
   if (process.env.NODE_ENV !== 'production') {
-    // TODO: Validate portal children, vNode, Fragment, no arrays
-
     if (vNode.childFlags === ChildFlags.HasInvalidChildren) {
       return;
     }

@@ -657,8 +657,6 @@ describe('All single patch variations', () => {
       }
 
       public render() {
-        debugger;
-
         return (
           <div onClick={() => this.setState({val: ++this.state.val})}>
             <span>{this.state.val}</span>
