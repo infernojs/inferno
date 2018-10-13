@@ -25,12 +25,20 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.Void`
 - `VNodeFlags.Portal`
 - `VNodeFlags.ReCreate` (JSX **$ReCreate**) always re-creates the vNode
+- `VNodeFlags.ContentEditable`
+- `VNodeFlags.Fragment`
+- `VNodeFlags.InUse`
+- `VnodeFlags.ForwardRef`
+- `VNodeFlags.Normalized`
 
 **VNodeFlags Masks:**
+- `VNodeFlags.ForwardRefComponent` Functional component wrapped in forward ref
 - `VNodeFlags.FormElement` - Is form element
 - `VNodeFlags.Element` - Is vNode element
 - `VNodeFlags.Component` - Is vNode Component
-- `VNodeFlags.VNodeShape` - mask for defining type
+- `VNodeFlags.DOMRef` - Bit set when vNode holds DOM reference
+- `VNodeFlags.InUseOrNormalized` - VNode is used somewhere else or came from normalization process
+- `VNodeFlags.ClearInUseNormalized` - Opposite mask of InUse or Normalized
 
 
 **ChildFlags**
@@ -39,6 +47,7 @@ npm install --save inferno-vnode-flags
 - `ChildFlags.HasVNodeChildren` (JSX **$HasVNodeChildren**) is single vNode (Element/Component)
 - `ChildFlags.HasNonKeyedChildren` (JSX **$HasNonKeyedChildren**) is Array of vNodes non keyed (no nesting, no holes)
 - `ChildFlags.HasKeyedChildren` (JSX **$HasKeyedChildren**) is Array of vNodes keyed (no nesting, no holes)
+- `ChildFlags.HasTextChildren` (JSX **$HasTextChildren**) vNode contains only text
 
 **ChildFlags Masks**
 - `ChildFlags.MultipleChildren` Is Array

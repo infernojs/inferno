@@ -77,10 +77,10 @@ export function render(
 }
 
 export function createRenderer(parentDOM?) {
-  return function renderer(lastInput, nextInput) {
+  return function renderer(lastInput, nextInput, callback, context) {
     if (!parentDOM) {
       parentDOM = lastInput;
     }
-    render(nextInput, parentDOM);
+    render(nextInput, parentDOM, callback, context);
   };
 }
