@@ -19,7 +19,7 @@ const customLaunchers = {
   slIphone7: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    version: '12'
+    version: '11'
   },
   slSafari8: {
     base: 'SauceLabs',
@@ -39,7 +39,7 @@ const customLaunchers = {
   sl_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    version: '12'
+    version: '11'
   },
   slIE10: {
     base: 'SauceLabs',
