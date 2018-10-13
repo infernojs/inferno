@@ -1,4 +1,4 @@
-import { isFunction, isNullOrUndef, throwError, warning } from 'inferno-shared';
+import { isFunction, isInvalid, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
 import { InfernoNode, VNode } from '../core/types';
@@ -29,6 +29,9 @@ export function __render(
   if (process.env.NODE_ENV !== 'production') {
     if (documentBody === parentDOM) {
       throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
+    }
+    if (isInvalid(parentDOM)) {
+      throwError(`render target ( DOM ) is mandatory, received ${parentDOM === null ? 'null' : typeof parentDOM}`);
     }
   }
   let rootInput = (parentDOM as any).$V as VNode | null;
