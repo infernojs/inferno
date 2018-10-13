@@ -83,6 +83,8 @@ There isn't (yet) a formal style guide for Inferno, so please take care to adher
 Above all, code should be clean and readable, and commented where necessary. If you add a new feature, make sure you add a test to go along with it!
 
 
+Before you commit your changes, please run `npm run prettier` to format code correctly
+
 Small print
 -----------
 

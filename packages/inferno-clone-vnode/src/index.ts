@@ -1,5 +1,5 @@
-import { createComponentVNode, createTextVNode, createVNode, directClone, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
-import { combineFrom, isArray, isInvalid, isStringOrNumber, flatten } from 'inferno-shared';
+import { createComponentVNode, createFragment, createTextVNode, createVNode, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
+import { combineFrom } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 /*
@@ -14,35 +14,13 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
  * Clones given virtual node by creating new instance of it
  * @param {VNode} vNodeToClone virtual node to be cloned
  * @param {Props=} props additional props for new virtual node
+ * @param {...*} _children new children for new virtual node
  * @returns {VNode} new virtual node
  */
-export function cloneVNode(vNodeToClone: VNode, props?): VNode {
-  let children: any;
-  if (props && props.children) {
-    children = props.children;
-  }
-
-  const childLen = arguments.length - 2;
-  if (childLen === 1) {
-    children = arguments[2];
-  } else if (childLen > 1) {
-    const [, , ...childArgs] = [...arguments];
-    children = childArgs;
-  } else if (children == null) {
-    const existingChildren = (vNodeToClone.props && vNodeToClone.props.children)
-      ? vNodeToClone.props.children
-      : vNodeToClone.children;
-
-    children = (Array.isArray(existingChildren) && existingChildren.length > 0) 
-      ? flatten(existingChildren) 
-      : existingChildren;
-  } 
-
-  props = props || {};
-  props.children = children;
-
-  let newVNode;
+export function cloneVNode(vNodeToClone: VNode, props?, _children?): VNode {
   const flags = vNodeToClone.flags;
+  let children = flags & VNodeFlags.Component ? vNodeToClone.props && vNodeToClone.props.children : vNodeToClone.children;
+  let childLen = arguments.length - 2;
   let className = vNodeToClone.className;
   let key = vNodeToClone.key;
   let ref = vNodeToClone.ref;
@@ -53,50 +31,41 @@ export function cloneVNode(vNodeToClone: VNode, props?): VNode {
     if (props.ref !== void 0) {
       ref = props.ref;
     }
-
     if (props.key !== void 0) {
       key = props.key;
     }
+    if (props.children !== void 0) {
+      children = props.children;
+    }
+  } else {
+    props = {};
   }
+
+  if (childLen === 1) {
+    children = _children;
+  } else if (childLen > 1) {
+    children = [];
+
+    while (childLen-- > 0) {
+      children[childLen] = arguments[childLen + 2];
+    }
+  }
+
+  props.children = children;
 
   if (flags & VNodeFlags.Component) {
-    newVNode = createComponentVNode(flags, vNodeToClone.type, !vNodeToClone.props && !props ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props), key, ref);
-    const newProps = newVNode.props;
-    const newChildren = newProps.children;
-    // we need to also clone component children that are in props
-    // as the children may also have been hoisted
-    if (newChildren) {
-      if (isArray(newChildren)) {
-        const len = newChildren.length;
-        if (len > 0) {
-          const tmpArray: any[] = [];
-
-          for (let i = 0; i < len; i++) {
-            const child = newChildren[i];
-
-            if (isStringOrNumber(child)) {
-              tmpArray.push(child);
-            } else if (!isInvalid(child) && child.flags) {
-              tmpArray.push(directClone(child));
-            }
-          }
-          newProps.children = tmpArray;
-        }
-      } else if (newChildren.flags) {
-        newProps.children = directClone(newChildren);
-      }
-    }
-    newVNode.children = null;
-  } else if (flags & VNodeFlags.Element) {
-    if (!props) {
-      props = {
-        children: vNodeToClone.children
-      };
-    }
-    newVNode = createVNode(flags, vNodeToClone.type, className, null, ChildFlags.HasInvalidChildren, combineFrom(vNodeToClone.props, props), key, ref);
-  } else if (flags & VNodeFlags.Text) {
-    return createTextVNode(props ? props.children : (vNodeToClone.children as string));
+    return createComponentVNode(flags, vNodeToClone.type, !vNodeToClone.props && !props ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props), key, ref);
   }
 
-  return normalizeProps(newVNode);
+  if (flags & VNodeFlags.Text) {
+    return createTextVNode(children);
+  }
+
+  if (flags & VNodeFlags.Fragment) {
+    return createFragment(childLen === 1 ? [children] : children, ChildFlags.UnknownChildren, key);
+  }
+
+  return normalizeProps(
+    createVNode(flags, vNodeToClone.type, className, null, ChildFlags.HasInvalidChildren, combineFrom(vNodeToClone.props, props), key, ref)
+  );
 }

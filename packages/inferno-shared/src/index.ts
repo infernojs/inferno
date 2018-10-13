@@ -70,8 +70,3 @@ export function combineFrom(first: {} | null, second: {} | null): object {
   }
   return out;
 }
-
-export const flatten = (xs: {} | any[]): any[] => {
-  const items = Array.isArray(xs) ? xs : [xs];
-  return items.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
-};
