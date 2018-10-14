@@ -7,17 +7,17 @@ import { patch } from './patching';
 import { remove } from './unmounting';
 import { callAll, options, EMPTY_OBJ, LIFECYCLE } from './utils/common';
 
-const isBrowser: boolean = typeof window !== 'undefined';
+const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
 if (process.env.NODE_ENV !== 'production') {
-  if (isBrowser && !document.body) {
+  if (hasDocumentAvailable && !document.body) {
     warning(
       'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.'
     );
   }
 }
 
-const documentBody = isBrowser ? document.body : null;
+const documentBody = hasDocumentAvailable ? document.body : null;
 
 export function __render(
   input: VNode | null | InfernoNode | undefined,
