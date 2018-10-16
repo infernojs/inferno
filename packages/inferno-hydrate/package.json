@@ -1,6 +1,6 @@
 {
   "name": "inferno-hydrate",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "license": "MIT",
   "description": "Hydrate plugin to inferno. This package can be used to reuse server side rendered html",
   "author": {
@@ -26,11 +26,11 @@
     "vdom"
   ],
   "dependencies": {
-    "inferno": "6.0.1"
+    "inferno": "6.0.2"
   },
   "devDependencies": {
-    "inferno-shared": "6.0.1",
-    "inferno-vnode-flags": "6.0.1"
+    "inferno-shared": "6.0.2",
+    "inferno-vnode-flags": "6.0.2"
   },
   "rollup": {
     "bundledDependencies": [
