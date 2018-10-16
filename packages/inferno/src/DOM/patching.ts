@@ -209,15 +209,18 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   }
 }
 
-function replaceOneWithMany(lastChildren, nextChildren, parentDOM, context, isSVG: boolean) {
-  const oldDOM = findDOMfromVNode(lastChildren);
-
+function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean) {
   unmount(lastChildren);
-  mountArrayChildren(nextChildren, parentDOM, context, isSVG, oldDOM);
 
-  if (oldDOM) {
-    removeChild(parentDOM, oldDOM as Element);
-  }
+  mountArrayChildren(
+    nextChildren,
+    parentDOM,
+    context,
+    isSVG,
+    findDOMfromVNode(lastChildren)
+  );
+
+  removeVNodeDOM(lastChildren, parentDOM);
 }
 
 function patchChildren(
@@ -245,7 +248,7 @@ function patchChildren(
           mountTextContent(parentDOM, nextChildren);
           break;
         default:
-          replaceOneWithMany(lastChildren, nextChildren, parentDOM, context, isSVG);
+          replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG);
           break;
       }
       break;

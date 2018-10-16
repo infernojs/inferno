@@ -1,24 +1,26 @@
 import { isArray, isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils/common';
 import { createWrappedFunction } from './wrapper';
-import { ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-function updateChildOptionGroup(vNode, value) {
-  const type = vNode.type;
-
-  if (type === 'optgroup') {
-    const children = vNode.children;
-    const childFlags = vNode.childFlags;
-
-    if (childFlags & ChildFlags.MultipleChildren) {
-      for (let i = 0, len = children.length; i < len; i++) {
-        updateChildOption(children[i], value);
-      }
-    } else if (childFlags === ChildFlags.HasVNodeChildren) {
-      updateChildOption(children, value);
-    }
-  } else {
+function updateChildOptions(vNode, value) {
+  if (vNode.type === 'option') {
     updateChildOption(vNode, value);
+  } else {
+    const children = vNode.children as any;
+    const flags = vNode.flags;
+
+    if (flags & VNodeFlags.ComponentClass) {
+      updateChildOptions(children.$LI, value);
+    } else if (flags & VNodeFlags.ComponentFunction) {
+      updateChildOptions(children, value);
+    } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      updateChildOptions(children, value);
+    } else if (vNode.childFlags & ChildFlags.MultipleChildren) {
+      for (let i = 0, len = children.length; i < len; i++) {
+        updateChildOptions(children[i], value);
+      }
+    }
   }
 }
 
@@ -28,7 +30,7 @@ function updateChildOption(vNode, value) {
 
   // we do this as multiple may have changed
   dom.value = props.value;
-  if ((isArray(value) && value.indexOf(props.value) !== -1) || props.value === value) {
+  if (props.value === value || (isArray(value) && value.indexOf(props.value) !== -1)) {
     dom.selected = true;
   } else if (!isNullOrUndef(value) || !isNullOrUndef(props.selected)) {
     dom.selected = props.selected || false;
@@ -49,17 +51,10 @@ export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode
   const childFlags = vNode.childFlags;
 
   if (childFlags !== ChildFlags.HasInvalidChildren) {
-    const children = vNode.children;
     let value = nextPropsOrEmpty.value;
     if (mounting && isNullOrUndef(value)) {
       value = nextPropsOrEmpty.defaultValue;
     }
-    if (childFlags & ChildFlags.MultipleChildren) {
-      for (let i = 0, len = children.length; i < len; i++) {
-        updateChildOptionGroup(children[i], value);
-      }
-    } else if (childFlags === ChildFlags.HasVNodeChildren) {
-      updateChildOptionGroup(children, value);
-    }
+    updateChildOptions(vNode, value);
   }
 }

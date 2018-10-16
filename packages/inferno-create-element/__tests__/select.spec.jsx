@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, Component } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 
 describe('Select / select multiple (JSX)', () => {
@@ -448,5 +448,115 @@ describe('Select / select multiple (JSX)', () => {
     );
     expect(container.firstChild.value).toBe('');
     expect([0, -1]).toContain(container.firstChild.selectedIndex);
+  });
+
+  it('Should be possible to render select element with options wrapped in functional Component', () => {
+    const CustomOption = ({selected, value, children}) => <option selected={selected} value={value}>{children}</option>;
+
+    render(
+      <select value={1}>
+        <CustomOption value={1}>1st</CustomOption>
+        <CustomOption value={2}>2nd</CustomOption>
+        <CustomOption value={3}>3rd</CustomOption>
+      </select>,
+      container
+    );
+
+    const selectElement = container.firstChild;
+
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(selectElement.children[0].selected).toBe(true);
+    expect(selectElement.children[1].selected).toBe(false);
+    expect(selectElement.children[2].selected).toBe(false);
+
+    render(
+      <select value={2}>
+        <CustomOption key={1} value={1}>1st</CustomOption>
+        <CustomOption key={2} value={2}>2nd</CustomOption>
+        <CustomOption key={3} value={3}>3rd</CustomOption>
+      </select>,
+      container
+    );
+
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(selectElement.children[0].selected).toBe(false);
+    expect(selectElement.children[1].selected).toBe(true);
+    expect(selectElement.children[2].selected).toBe(false);
+  });
+
+  it('Should be possible to render select element with options wrapped in Class Component', () => {
+    class CustomOption extends Component {
+      render() {
+        return <option value={this.props.value}>{this.props.children}</option>;
+      }
+    }
+
+    render(
+      <select value={1}>
+        <CustomOption value={1}>1st</CustomOption>
+        <CustomOption value={2}>2nd</CustomOption>
+        <CustomOption value={3}>3rd</CustomOption>
+      </select>,
+      container
+    );
+
+    const selectElement = container.firstChild;
+
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(selectElement.children[0].selected).toBe(true);
+    expect(selectElement.children[1].selected).toBe(false);
+    expect(selectElement.children[2].selected).toBe(false);
+
+    render(
+      <select value={2}>
+        <CustomOption key={1} value={1}>1st</CustomOption>
+        <CustomOption key={2} value={2}>2nd</CustomOption>
+        <CustomOption key={3} value={3}>3rd</CustomOption>
+      </select>,
+      container
+    );
+
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(selectElement.children[0].selected).toBe(false);
+    expect(selectElement.children[1].selected).toBe(true);
+    expect(selectElement.children[2].selected).toBe(false);
+  });
+
+  it('Should be possible to render select element with options wrapped in Fragment', () => {
+    render(
+      <select value={1}>
+        <>
+          <><option value={1}>1st</option></>
+          <option value={2}>2nd</option>
+          <><option value={3}>3rd</option></>
+        </>
+      </select>,
+      container
+    );
+
+    const selectElement = container.firstChild;
+
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(selectElement.children[0].selected).toBe(true);
+    expect(selectElement.children[1].selected).toBe(false);
+    expect(selectElement.children[2].selected).toBe(false);
+
+    render(
+      <select value={2}>
+        <>
+          <><option value={1}>1st</option></>
+          <><option value={2}>2nd</option></>
+        </>
+        <>
+          <option value={3}>3rd</option>
+        </>
+      </select>,
+      container
+    );
+
+    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(selectElement.children[0].selected).toBe(false);
+    expect(selectElement.children[1].selected).toBe(true);
+    expect(selectElement.children[2].selected).toBe(false);
   });
 });
