@@ -96,12 +96,12 @@ module.exports = function(config) {
   config.set({
     basePath: '../../',
 
-    frameworks: ['jasmine', 'jasmine-matchers'],
+    frameworks: ['gzip', 'jasmine'],
 
     files: [path.join(__dirname, '../../fixtures/browser/test.index.js')],
 
     preprocessors: {
-      './fixtures/browser/test.index.js': ['webpack']
+      './fixtures/browser/test.index.js': ['webpack', 'gzip']
     },
 
     client: {
@@ -124,7 +124,7 @@ module.exports = function(config) {
       commandTimeout: 400
     },
 
-    plugins: ['karma-jasmine', 'karma-jasmine-matchers', 'karma-webpack', 'karma-sauce-launcher'],
+    plugins: ['karma-jasmine', 'karma-gzip', 'karma-webpack', 'karma-sauce-launcher'],
 
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),

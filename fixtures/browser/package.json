@@ -27,13 +27,13 @@
     "karma-detect-browsers": "^2.3.3",
     "karma-edge-launcher": "^0.4.2",
     "karma-firefox-launcher": "^1.1.0",
+    "karma-gzip": "^2.0.1",
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^1.1.2",
-    "karma-jasmine-matchers": "^3.8.3",
     "karma-sauce-launcher": "^1.2.0",
     "karma-webpack": "^4.0.0-rc.0",
-    "ts-loader": "^5.2.1",
-    "wd": "^1.10.3",
+    "ts-loader": "^5.2.2",
+    "wd": "^1.11.0",
     "webpack": "^4.20.2"
   }
 }

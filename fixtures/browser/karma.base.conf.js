@@ -7,16 +7,16 @@ console.info('*** Starting karma tests, Inferno-compat is ' + (useInfernoCompatP
 const preProcessorOptions = {};
 
 if (useInfernoCompatPkg) {
-  preProcessorOptions['./fixtures/browser/test.index.js'] = ['webpack'];
+  preProcessorOptions['./fixtures/browser/test.index.js'] = ['webpack', 'gzip'];
 } else {
-  preProcessorOptions['./fixtures/browser/test.no-compat.index.js'] = ['webpack'];
+  preProcessorOptions['./fixtures/browser/test.no-compat.index.js'] = ['webpack', 'gzip'];
 }
 
 module.exports = function(config) {
   config.set({
     basePath: '../../',
 
-    frameworks: ['detectBrowsers', 'jasmine', 'jasmine-matchers'],
+    frameworks: ['gzip', 'detectBrowsers', 'jasmine'],
 
     detectBrowsers: {
       usePhantomJS: false,
@@ -52,8 +52,8 @@ module.exports = function(config) {
     plugins: [
       'karma-ie-launcher',
       'karma-detect-browsers',
+      'karma-gzip',
       'karma-jasmine',
-      'karma-jasmine-matchers',
       'karma-firefox-launcher',
       'karma-webpack',
       'karma-chrome-launcher',
