@@ -188,16 +188,15 @@ describe('Components (JSX) #2', () => {
     }
 
     // For some reason this one breaks but if components are imported separately, it works
-    it('Should not reuse children if parent changes #1', done => {
+    it('Should not reuse children if parent changes #1', () => {
       render(<ParentFirst />, container);
       expect(container.innerHTML).toBe(innerHTML('<div><div>Firstfoo</div></div>'));
       container.firstChild.firstChild.click();
-      setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
-        render(<ParentSecond />, container);
-        expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
-        done();
-      }, 10);
+
+      expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
+      render(<ParentSecond />, container);
+
+      expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
     });
   });
 
@@ -264,30 +263,24 @@ describe('Components (JSX) #2', () => {
     }
 
     // For some reason this one breaks but if components are imported separately, it works
-    it('Should not reuse children if parent changes #2', done => {
+    it('Should not reuse children if parent changes #2', () => {
       render(<ParentFirst />, container);
       expect(container.innerHTML).toBe(innerHTML('<div><div>Firstfoo</div></div>'));
       container.firstChild.firstChild.click();
-      setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
-        render(<ParentSecond />, container);
-        expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
-        done();
-      }, 10);
+      expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
+      render(<ParentSecond />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
     });
   });
 
   describe('Inheritance with 1 component per file Common BASE', () => {
-    it('Should not reuse children if parent changes #3', done => {
+    it('Should not reuse children if parent changes #3', () => {
       render(<ParentFirstCommon />, container);
       expect(container.innerHTML).toBe(innerHTML('<div><div>Firstfoo</div></div>'));
       container.firstChild.firstChild.click();
-      setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
-        render(<ParentSecondCommon />, container);
-        expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
-        done();
-      }, 10);
+      expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
+      render(<ParentSecondCommon />, container);
+      expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
     });
   });
 

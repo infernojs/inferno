@@ -458,7 +458,7 @@ describe('Basic event tests', () => {
       expect(spy1.callCount).toBe(2);
     });
 
-    it('Should stop propagating normal event to document', done => {
+    it('Should stop propagating normal event to document', () => {
       const eventHandlerSpy = sinon.spy();
       const eventHandler = function(event) {
         eventHandlerSpy();
@@ -481,12 +481,10 @@ describe('Basic event tests', () => {
       document.addEventListener('click', bodySpy);
 
       container.querySelector('#tester').click();
-      setTimeout(function() {
-        expect(eventHandlerSpy.callCount).toBe(1);
-        expect(bodySpy.callCount).toBe(0);
-        document.removeEventListener('click', bodySpy);
-        done();
-      }, 20);
+
+      expect(eventHandlerSpy.callCount).toBe(1);
+      expect(bodySpy.callCount).toBe(0);
+      document.removeEventListener('click', bodySpy);
     });
 
     it('Should stop propagating normal event to parentElement with synthetic event', done => {
@@ -637,10 +635,12 @@ describe('Basic event tests', () => {
       container.firstChild.click();
     });
 
-    it('Current target should not be the clicked element, but the one with listener', done => {
+    it('Current target should not be the clicked element, but the one with listener', () => {
+      let called = false;
+
       function verifyCurrentTarget(event) {
         expect(event.currentTarget).toBe(container.firstChild);
-        done();
+        called = true;
       }
 
       render(
@@ -651,6 +651,8 @@ describe('Basic event tests', () => {
       );
 
       container.querySelector('span').click();
+
+      expect(called).toBe(true);
     });
 
     it('Should work with deeply nested tree', done => {

@@ -1530,7 +1530,7 @@ describe('Children - (JSX)', () => {
         expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
         calledOnce(unMountSpy);
         done();
-      });
+      }, 10);
     });
 
     it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', done => {

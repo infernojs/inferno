@@ -19,7 +19,7 @@ describe('Mobx Observer Server', () => {
     document.body.removeChild(container);
   });
 
-  it('does not views alive when using static + string rendering', function(done) {
+  it('does not views alive when using static + string rendering', function() {
     useStaticRendering(true);
 
     let renderCount = 0;
@@ -36,14 +36,11 @@ describe('Mobx Observer Server', () => {
 
     data.z = 'hello';
 
-    setTimeout(() => {
-      expect(output).toBe('<div>hi</div>');
-      expect(renderCount).toBe(1);
+    expect(output).toBe('<div>hi</div>');
+    expect(renderCount).toBe(1);
 
-      expect(getDNode(data, 'z').observers.length).toBe(0);
+    expect(getDNode(data, 'z').observers.length).toBe(0);
 
-      useStaticRendering(false);
-      done();
-    }, 100);
+    useStaticRendering(false);
   });
 });

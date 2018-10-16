@@ -42,7 +42,7 @@ describe('setState', () => {
         expect(value).toBe('__NEWVALUE__');
         setTimeout(function() {
           done();
-        }, 100);
+        }, 50);
       }
 
       public componentWillReceiveProps(nextProps) {
@@ -137,7 +137,7 @@ describe('setState', () => {
         expect(value).toBe('__NEWVALUE__');
         setTimeout(function() {
           done();
-        }, 100);
+        }, 50);
       }
 
       public componentWillReceiveProps(nextProps) {

@@ -62,7 +62,7 @@ describe('Components createClass (non-JSX)', () => {
     setTimeout(() => {
       expect(context === context2).toBe(true);
       done();
-    }, 2);
+    }, 10);
   });
 
   it('should have propTypes on created class', () => {

@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, rerender } from 'inferno';
 import * as mobx from 'mobx';
 import { observer } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
@@ -117,7 +117,7 @@ describe('Mobx Misc', () => {
     done();
   });
 
-  it('#85 Should handle state changing in constructors', function(done) {
+  it('#85 Should handle state changing in constructors', function() {
     const a = mobx.observable.box(2);
     const Child = observer(
       createClass({
@@ -147,13 +147,14 @@ describe('Mobx Misc', () => {
 
     expect(container.getElementsByTagName('span')[0].textContent).toBe('child:3 - parent:2');
     a.set(5);
-    setTimeout(() => {
-      expect(container.getElementsByTagName('span')[0].textContent).toBe('child:5 - parent:5');
-      a.set(7);
-      setTimeout(() => {
-        expect(container.getElementsByTagName('span')[0].textContent).toBe('child:7 - parent:7');
-        done();
-      }, 20);
-    }, 20);
+
+    rerender();
+
+    expect(container.getElementsByTagName('span')[0].textContent).toBe('child:5 - parent:5');
+    a.set(7);
+
+    rerender();
+
+    expect(container.getElementsByTagName('span')[0].textContent).toBe('child:7 - parent:7');
   });
 });

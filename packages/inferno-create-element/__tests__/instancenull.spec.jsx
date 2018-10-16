@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
 import sinon from 'sinon';
 
@@ -312,7 +312,7 @@ describe('BUG: instance - null', () => {
     }
   }
 
-  it('Should not fail', done => {
+  it('Should not fail', () => {
     const items = [
       {
         text: 'Implementation',
@@ -331,7 +331,6 @@ describe('BUG: instance - null', () => {
       }
     ];
     const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
-    const text = 'pena';
 
     render(
       <div>
@@ -340,21 +339,26 @@ describe('BUG: instance - null', () => {
       container
     );
 
+
+    debugger;
     triggerEvent('click', container.querySelector('#MAGICBUTTON'));
 
-    setTimeout(function() {
-      triggerEvent('click', container.querySelector('#MAGICBUTTON'));
+    rerender();
+    expect(container.querySelectorAll('.dd-item').length).toBe(3);
 
-      setTimeout(function() {
-        triggerEvent('click', container.querySelector('#MAGICBUTTON'));
+    triggerEvent('click', container.querySelector('#MAGICBUTTON'));
 
-        setTimeout(function() {
-          render(null, container);
+    rerender();
+    expect(container.querySelectorAll('.dd-item').length).toBe(0);
 
-          done();
-        }, 10);
-      }, 10);
-    }, 10);
+    rerender();
+    triggerEvent('click', container.querySelector('#MAGICBUTTON'));
+
+    expect(container.querySelectorAll('.dd-item').length).toBe(3);
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
   });
 
   it('Should not propagate mid/right mouse buttons clicks', done => {
@@ -416,7 +420,6 @@ describe('BUG: instance - null', () => {
       }
     ];
     const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
-    const text = 'pena';
 
     render(
       <div>

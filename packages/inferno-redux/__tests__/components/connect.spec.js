@@ -268,7 +268,7 @@ describe('Inferno', () => {
       }, 20);
     });
 
-    it('should handle additional prop changes in addition to slice', done => {
+    it('should handle additional prop changes in addition to slice', () => {
       const store = createStore(() => ({
         foo: 'bar'
       }));
@@ -318,11 +318,10 @@ describe('Inferno', () => {
 
       renderToContainer(vNode);
 
-      setTimeout(() => {
-        expect(stub.props.foo).toBe('bar');
-        expect(stub.props.pass).toBe('through');
-        done();
-      }, 500);
+      rerender();
+
+      expect(stub.props.foo).toBe('bar');
+      expect(stub.props.pass).toBe('through');
     });
 
     it('should handle unexpected prop changes with forceUpdate()', done => {

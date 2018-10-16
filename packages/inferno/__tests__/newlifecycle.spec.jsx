@@ -1437,7 +1437,7 @@ describe('Lifecycle methods', () => {
         expect(componentState).toEqual({ key: 'value' });
         expect(stateConstant).toEqual({});
         done();
-      }, 2);
+      }, 10);
     });
   });
 
@@ -1469,7 +1469,6 @@ describe('Lifecycle methods', () => {
           this.state = { show: true };
           setState = s => {
             this.setState(s);
-            this.forceUpdate();
           };
         }
         componentWillMount() {
@@ -1480,9 +1479,6 @@ describe('Lifecycle methods', () => {
         }
         componentWillUnmount() {
           expect(document.getElementById('OuterDiv')).not.toBeNull();
-          setTimeout(() => {
-            expect(document.getElementById('OuterDiv')).toBeNull();
-          }, 0);
         }
         render(props, { show }) {
           return (
@@ -1506,9 +1502,6 @@ describe('Lifecycle methods', () => {
         }
         componentWillUnmount() {
           expect(document.getElementById('InnerDiv')).not.toBeNull();
-          setTimeout(() => {
-            expect(document.getElementById('InnerDiv')).toBeNull();
-          }, 0);
         }
 
         render() {
@@ -1535,10 +1528,14 @@ describe('Lifecycle methods', () => {
       reset();
       setState({ show: false });
 
+      expect(document.getElementById('InnerDiv')).toBeNull();
+
       expect(proto.componentWillUnmount.callCount).toBe(1);
 
       reset();
       setState({ show: true });
+
+      expect(document.getElementById('InnerDiv')).not.toBeNull();
 
       expect(willMountSpy.callCount).toBe(1);
       willMountSpy.calledBefore(didMountSpy);

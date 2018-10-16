@@ -61,7 +61,7 @@ describe('Mobx Observer', () => {
 
   trackComponents();
 
-  it('nestedRendering', done => {
+  it('nestedRendering', () => {
     render(<App />, container);
     expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
     expect(todoListWillReactCount).toEqual(0); //, 'should not have reacted yet')
@@ -75,7 +75,7 @@ describe('Mobx Observer', () => {
 
     store.todos[0].title += 'a';
 
-    setTimeout(() => {
+
       expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
       expect(todoListWillReactCount).toEqual(0); //, 'should not have reacted')
       expect(todoItemRenderings).toEqual(2); //, 'item1 should have rendered twice');
@@ -87,38 +87,32 @@ describe('Mobx Observer', () => {
         completed: true
       });
 
-      setTimeout(() => {
-        expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
-        const expectedOutput = [];
-        const nodes = container.querySelectorAll('li');
+      expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
+      const expectedOutput = [];
+      const nodes = container.querySelectorAll('li');
 
-        for (let i = 0; i < nodes.length; i++) {
-          expectedOutput.push(nodes[i].textContent);
-        }
-        expect(expectedOutput).toEqual(['|aa', '|b']);
+      for (let i = 0; i < nodes.length; i++) {
+        expectedOutput.push(nodes[i].textContent);
+      }
+      expect(expectedOutput).toEqual(['|aa', '|b']);
 
-        expect(todoListRenderings).toBe(2); //'should have rendered list twice');
-        expect(todoListWillReactCount).toBe(1); //, 'should have reacted')
-        expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
-        expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-        expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
+      expect(todoListRenderings).toBe(2); //'should have rendered list twice');
+      expect(todoListWillReactCount).toBe(1); //, 'should have reacted')
+      expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
+      expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
+      expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
 
-        const oldTodo = store.todos.pop();
-        setTimeout(() => {
-          expect(todoListRenderings).toBe(3); //, 'should have rendered list another time');
-          expect(todoListWillReactCount).toBe(2); //, 'should have reacted')
-          expect(todoItemRenderings).toBe(3); //, 'item1 should not have rerendered');
-          expect(container.querySelectorAll('li').length).toBe(1); //, 'list should have only on item in list now');
-          expect(getDNode(oldTodo, 'title').observers.length).toBe(0); //, 'title observers should have decreased');
-          expect(getDNode(oldTodo, 'completed').observers.length).toBe(0); //, 'completed observers should not have decreased');
+      const oldTodo = store.todos.pop();
 
-          done();
-        });
-      }, 100);
-    }, 100);
+      expect(todoListRenderings).toBe(3); //, 'should have rendered list another time');
+      expect(todoListWillReactCount).toBe(2); //, 'should have reacted')
+      expect(todoItemRenderings).toBe(3); //, 'item1 should not have rerendered');
+      expect(container.querySelectorAll('li').length).toBe(1); //, 'list should have only on item in list now');
+      expect(getDNode(oldTodo, 'title').observers.length).toBe(0); //, 'title observers should have decreased');
+      expect(getDNode(oldTodo, 'completed').observers.length).toBe(0); //, 'completed observers should not have decreased');
   });
 
-  it('keep views alive', done => {
+  it('keep views alive', () => {
     let yCalcCount = 0;
     const data = mobx.observable({
       x: 3,
@@ -145,19 +139,16 @@ describe('Mobx Observer', () => {
     data.z = 'hello';
     // test: rerender should not need a recomputation of data.y because the subscription is kept alive
 
-    setTimeout(() => {
-      expect(yCalcCount).toBe(1);
+    expect(yCalcCount).toBe(1);
 
-      expect(container.textContent).toBe('hello6');
-      expect(yCalcCount).toBe(1);
+    expect(container.textContent).toBe('hello6');
+    expect(yCalcCount).toBe(1);
 
-      expect(getDNode(data, 'y').observers.length).toBe(1);
+    expect(getDNode(data, 'y').observers.length).toBe(1);
 
-      render(<div />, container);
+    render(<div />, container);
 
-      expect(getDNode(data, 'y').observers.length).toBe(0);
-      done();
-    }, 100);
+    expect(getDNode(data, 'y').observers.length).toBe(0);
   });
 
   it('componentWillMount from mixin is run first', done => {
@@ -179,7 +170,7 @@ describe('Mobx Observer', () => {
     done();
   });
 
-  it('does not views alive when using static rendering', done => {
+  it('does not views alive when using static rendering', () => {
     useStaticRendering(true);
 
     let renderCount = 0;
@@ -200,20 +191,17 @@ describe('Mobx Observer', () => {
     data.z = 'hello';
     // no re-rendering on static rendering
 
-    setTimeout(() => {
-      expect(renderCount).toBe(1);
+    expect(renderCount).toBe(1);
 
-      expect(container.querySelector('div').textContent).toBe('hi');
-      expect(renderCount).toBe(1);
+    expect(container.querySelector('div').textContent).toBe('hi');
+    expect(renderCount).toBe(1);
 
-      expect(getDNode(data, 'z').observers.length).toBe(0);
+    expect(getDNode(data, 'z').observers.length).toBe(0);
 
-      useStaticRendering(false);
-      done();
-    }, 100);
+    useStaticRendering(false);
   });
 
-  it('issue 12', function(done) {
+  it('issue 12', function() {
     const data = mobx.observable({
       selected: 'coffee',
       items: [
@@ -263,10 +251,7 @@ describe('Mobx Observer', () => {
       data.selected = 'tea';
     });
 
-    setTimeout(() => {
-      expect(container.querySelector('div').textContent).toBe('soup');
-      done();
-    }, 50);
+    expect(container.querySelector('div').textContent).toBe('soup');
   });
 
   it('component should not be inject', function(done) {
@@ -321,7 +306,7 @@ describe('Mobx Observer', () => {
     done();
   });
 
-  it('124 - react to changes in this.props via computed', function(done) {
+  it('124 - react to changes in this.props via computed', function() {
     const Comp = observer(
       createClass({
         componentWillMount() {
@@ -359,10 +344,7 @@ describe('Mobx Observer', () => {
 
     expect(container.querySelector('span').textContent).toBe('x:1');
     container.querySelector('div').click();
-    setTimeout(() => {
-      expect(container.querySelector('span').textContent).toBe('x:2');
-      done();
-    }, 100);
+    expect(container.querySelector('span').textContent).toBe('x:2');
   });
 
   // Test on skip: since all reactions are now run in batched updates, the original issues can no longer be reproduced
@@ -527,7 +509,7 @@ describe('Mobx Observer', () => {
     done();
   });
 
-  it('Observer should not re-render on shallow equal new props', done => {
+  it('Observer should not re-render on shallow equal new props', () => {
     let childRendering = 0;
     let parentRendering = 0;
     const data = { x: 1 };
@@ -549,12 +531,9 @@ describe('Mobx Observer', () => {
     expect(container.querySelector('span').textContent).toBe('1');
 
     odata.y++;
-    setTimeout(() => {
-      expect(parentRendering).toBe(2);
-      expect(childRendering).toBe(1);
-      expect(container.querySelector('span').textContent).toBe('1');
-      done();
-    }, 20);
+    expect(parentRendering).toBe(2);
+    expect(childRendering).toBe(1);
+    expect(container.querySelector('span').textContent).toBe('1');
   });
 
   // TODO: Reaction Scheduler

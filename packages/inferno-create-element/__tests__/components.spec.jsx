@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
@@ -358,13 +358,12 @@ describe('Components (JSX)', () => {
   });
 
   function test(element, expectedTag, expectedClassName, callback) {
-    render(element, container);
-    setTimeout(() => {
+    render(element, container, () => {
       expect(container.firstChild).not.toBe(null);
       expect(container.firstChild.tagName).toBe(expectedTag);
       expect(container.firstChild.className).toBe(expectedClassName);
       callback();
-    }, 30);
+    });
   }
 
   it('should only render once when setting state in componentWillMount', function(done) {
@@ -567,15 +566,13 @@ describe('Components (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>Not so cool</h1></div>'));
     });
 
-    it('Second render (update with state change) #2', done => {
+    it('Second render (update with state change) #2', () => {
       render(<SomeError />, container);
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
       buttons.forEach(button => button.click());
 
-      setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>'));
-        done();
-      }, 25);
+
+      expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>'));
     });
   });
 
@@ -764,13 +761,14 @@ describe('Components (JSX)', () => {
       }
     }
 
-    it('should correctly render', done => {
+    it('should correctly render', () => {
       render(<MyComponent98 />, container);
 
-      setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div>isok=true<div><span>a</span><span>b</span></div></div>'));
-        done();
-      }, 25);
+      expect(container.innerHTML).toBe(innerHTML('<div>isok=false<div></div></div>'));
+
+      rerender();
+
+      expect(container.innerHTML).toBe(innerHTML('<div>isok=true<div><span>a</span><span>b</span></div></div>'));
     });
   });
 
@@ -891,15 +889,13 @@ describe('Components (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div><button>Empty</button><ul><li>No cars!</li></ul></div>'));
     });
 
-    it('should handle update upon click', done => {
+    it('should handle update upon click', () => {
       render(<BuggyRender />, container);
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
       buttons.forEach(button => button.click());
-      setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div><button>Empty</button><ul><li>BMW</li><li>Volvo</li><li>Saab</li></ul></div>'));
-        done();
-      }, 10);
+
+      expect(container.innerHTML).toBe(innerHTML('<div><button>Empty</button><ul><li>BMW</li><li>Volvo</li><li>Saab</li></ul></div>'));
     });
   });
 

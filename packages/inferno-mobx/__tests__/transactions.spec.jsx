@@ -17,7 +17,7 @@ describe('Mobx Transacations', () => {
     document.body.removeChild(container);
   });
 
-  it('mobx issue 50', done => {
+  it('mobx issue 50', () => {
     const foo = {
       a: mobx.observable.box(true),
       b: mobx.observable.box(false),
@@ -40,20 +40,17 @@ describe('Mobx Transacations', () => {
         render: () => <div id="x">{[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}</div>
       })
     );
-    // In 3 seconds, flip a and b. This will change c.
-    setTimeout(flipStuff, 200);
-
-    setTimeout(() => {
-      expect(asText).toBe('false:true:true');
-      expect(document.getElementById('x').textContent).toBe('false,true,true');
-      expect(willReactCount).toBe(1);
-      done();
-    }, 400);
 
     render(<Test />, container);
+    // In 3 seconds, flip a and b. This will change c.
+    flipStuff();
+
+    expect(asText).toBe('false:true:true');
+    expect(document.getElementById('x').textContent).toBe('false,true,true');
+    expect(willReactCount).toBe(1);
   });
 
-  it('React.render should respect transaction', done => {
+  it('React.render should respect transaction', () => {
     const a = mobx.observable.box(2);
     const loaded = mobx.observable.box(false);
     const valuesSeen = [];
@@ -71,14 +68,11 @@ describe('Mobx Transacations', () => {
       loaded.set(true);
     });
 
-    setTimeout(() => {
-      expect(container.textContent.replace(/\s+/g, '')).toBe('4');
-      expect(valuesSeen).toEqual([2, 4]);
-      done();
-    }, 400);
+    expect(container.textContent.replace(/\s+/g, '')).toBe('4');
+    expect(valuesSeen).toEqual([2, 4]);
   });
 
-  it('React.render in transaction should succeed', done => {
+  it('React.render in transaction should succeed', () => {
     const a = mobx.observable.box(2);
     const loaded = mobx.observable.box(false);
     const valuesSeen = [];
@@ -95,10 +89,7 @@ describe('Mobx Transacations', () => {
       loaded.set(true);
     });
 
-    setTimeout(() => {
-      expect(container.textContent.replace(/\s+/g, '')).toBe('4');
-      expect(valuesSeen).toEqual([3, 4]);
-      done();
-    }, 400);
+    expect(container.textContent.replace(/\s+/g, '')).toBe('4');
+    expect(valuesSeen).toEqual([3, 4]);
   });
 });

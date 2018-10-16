@@ -85,20 +85,17 @@ describe('Blueprints (JSX)', () => {
       render(null, container);
     });
 
-    it('Second render (update)', done => {
+    it('Second render (update)', () => {
       render(<Wrapper />, container);
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
       buttons.forEach(button => button.click());
 
-      setTimeout(() => {
-        expect(container.innerHTML).toBe(
-          innerHTML(
-            '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>'
-          )
-        );
-        render(null, container);
-        done();
-      }, 25);
+      expect(container.innerHTML).toBe(
+        innerHTML(
+          '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>'
+        )
+      );
+      render(null, container);
     });
   });
 
