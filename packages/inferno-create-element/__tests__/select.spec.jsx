@@ -451,7 +451,11 @@ describe('Select / select multiple (JSX)', () => {
   });
 
   it('Should be possible to render select element with options wrapped in functional Component', () => {
-    const CustomOption = ({selected, value, children}) => <option selected={selected} value={value}>{children}</option>;
+    const CustomOption = ({ selected, value, children }) => (
+      <option selected={selected} value={value}>
+        {children}
+      </option>
+    );
 
     render(
       <select value={1}>
@@ -464,21 +468,31 @@ describe('Select / select multiple (JSX)', () => {
 
     const selectElement = container.firstChild;
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(innerHTML(container.innerHTML)).toEqual(
+      innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>')
+    );
     expect(selectElement.children[0].selected).toBe(true);
     expect(selectElement.children[1].selected).toBe(false);
     expect(selectElement.children[2].selected).toBe(false);
 
     render(
       <select value={2}>
-        <CustomOption key={1} value={1}>1st</CustomOption>
-        <CustomOption key={2} value={2}>2nd</CustomOption>
-        <CustomOption key={3} value={3}>3rd</CustomOption>
+        <CustomOption key={1} value={1}>
+          1st
+        </CustomOption>
+        <CustomOption key={2} value={2}>
+          2nd
+        </CustomOption>
+        <CustomOption key={3} value={3}>
+          3rd
+        </CustomOption>
       </select>,
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(innerHTML(container.innerHTML)).toEqual(
+      innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>')
+    );
     expect(selectElement.children[0].selected).toBe(false);
     expect(selectElement.children[1].selected).toBe(true);
     expect(selectElement.children[2].selected).toBe(false);
@@ -502,21 +516,31 @@ describe('Select / select multiple (JSX)', () => {
 
     const selectElement = container.firstChild;
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(innerHTML(container.innerHTML)).toEqual(
+      innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>')
+    );
     expect(selectElement.children[0].selected).toBe(true);
     expect(selectElement.children[1].selected).toBe(false);
     expect(selectElement.children[2].selected).toBe(false);
 
     render(
       <select value={2}>
-        <CustomOption key={1} value={1}>1st</CustomOption>
-        <CustomOption key={2} value={2}>2nd</CustomOption>
-        <CustomOption key={3} value={3}>3rd</CustomOption>
+        <CustomOption key={1} value={1}>
+          1st
+        </CustomOption>
+        <CustomOption key={2} value={2}>
+          2nd
+        </CustomOption>
+        <CustomOption key={3} value={3}>
+          3rd
+        </CustomOption>
       </select>,
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(innerHTML(container.innerHTML)).toEqual(
+      innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>')
+    );
     expect(selectElement.children[0].selected).toBe(false);
     expect(selectElement.children[1].selected).toBe(true);
     expect(selectElement.children[2].selected).toBe(false);
@@ -526,9 +550,13 @@ describe('Select / select multiple (JSX)', () => {
     render(
       <select value={1}>
         <>
-          <><option value={1}>1st</option></>
+          <>
+            <option value={1}>1st</option>
+          </>
           <option value={2}>2nd</option>
-          <><option value={3}>3rd</option></>
+          <>
+            <option value={3}>3rd</option>
+          </>
         </>
       </select>,
       container
@@ -536,7 +564,9 @@ describe('Select / select multiple (JSX)', () => {
 
     const selectElement = container.firstChild;
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(innerHTML(container.innerHTML)).toEqual(
+      innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>')
+    );
     expect(selectElement.children[0].selected).toBe(true);
     expect(selectElement.children[1].selected).toBe(false);
     expect(selectElement.children[2].selected).toBe(false);
@@ -544,8 +574,12 @@ describe('Select / select multiple (JSX)', () => {
     render(
       <select value={2}>
         <>
-          <><option value={1}>1st</option></>
-          <><option value={2}>2nd</option></>
+          <>
+            <option value={1}>1st</option>
+          </>
+          <>
+            <option value={2}>2nd</option>
+          </>
         </>
         <>
           <option value={3}>3rd</option>
@@ -554,7 +588,9 @@ describe('Select / select multiple (JSX)', () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>'));
+    expect(innerHTML(container.innerHTML)).toEqual(
+      innerHTML('<select><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>')
+    );
     expect(selectElement.children[0].selected).toBe(false);
     expect(selectElement.children[1].selected).toBe(true);
     expect(selectElement.children[2].selected).toBe(false);

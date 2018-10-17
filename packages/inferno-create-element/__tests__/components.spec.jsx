@@ -571,7 +571,6 @@ describe('Components (JSX)', () => {
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
       buttons.forEach(button => button.click());
 
-
       expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>'));
     });
   });

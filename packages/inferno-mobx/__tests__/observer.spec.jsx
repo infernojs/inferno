@@ -75,41 +75,40 @@ describe('Mobx Observer', () => {
 
     store.todos[0].title += 'a';
 
+    expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
+    expect(todoListWillReactCount).toEqual(0); //, 'should not have reacted')
+    expect(todoItemRenderings).toEqual(2); //, 'item1 should have rendered twice');
+    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
 
-      expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
-      expect(todoListWillReactCount).toEqual(0); //, 'should not have reacted')
-      expect(todoItemRenderings).toEqual(2); //, 'item1 should have rendered twice');
-      expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-      expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    store.todos.push({
+      title: 'b',
+      completed: true
+    });
 
-      store.todos.push({
-        title: 'b',
-        completed: true
-      });
+    expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
+    const expectedOutput = [];
+    const nodes = container.querySelectorAll('li');
 
-      expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
-      const expectedOutput = [];
-      const nodes = container.querySelectorAll('li');
+    for (let i = 0; i < nodes.length; i++) {
+      expectedOutput.push(nodes[i].textContent);
+    }
+    expect(expectedOutput).toEqual(['|aa', '|b']);
 
-      for (let i = 0; i < nodes.length; i++) {
-        expectedOutput.push(nodes[i].textContent);
-      }
-      expect(expectedOutput).toEqual(['|aa', '|b']);
+    expect(todoListRenderings).toBe(2); //'should have rendered list twice');
+    expect(todoListWillReactCount).toBe(1); //, 'should have reacted')
+    expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
+    expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
+    expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
 
-      expect(todoListRenderings).toBe(2); //'should have rendered list twice');
-      expect(todoListWillReactCount).toBe(1); //, 'should have reacted')
-      expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
-      expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-      expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
+    const oldTodo = store.todos.pop();
 
-      const oldTodo = store.todos.pop();
-
-      expect(todoListRenderings).toBe(3); //, 'should have rendered list another time');
-      expect(todoListWillReactCount).toBe(2); //, 'should have reacted')
-      expect(todoItemRenderings).toBe(3); //, 'item1 should not have rerendered');
-      expect(container.querySelectorAll('li').length).toBe(1); //, 'list should have only on item in list now');
-      expect(getDNode(oldTodo, 'title').observers.length).toBe(0); //, 'title observers should have decreased');
-      expect(getDNode(oldTodo, 'completed').observers.length).toBe(0); //, 'completed observers should not have decreased');
+    expect(todoListRenderings).toBe(3); //, 'should have rendered list another time');
+    expect(todoListWillReactCount).toBe(2); //, 'should have reacted')
+    expect(todoItemRenderings).toBe(3); //, 'item1 should not have rerendered');
+    expect(container.querySelectorAll('li').length).toBe(1); //, 'list should have only on item in list now');
+    expect(getDNode(oldTodo, 'title').observers.length).toBe(0); //, 'title observers should have decreased');
+    expect(getDNode(oldTodo, 'completed').observers.length).toBe(0); //, 'completed observers should not have decreased');
   });
 
   it('keep views alive', () => {

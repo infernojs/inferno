@@ -212,13 +212,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
 function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean) {
   unmount(lastChildren);
 
-  mountArrayChildren(
-    nextChildren,
-    parentDOM,
-    context,
-    isSVG,
-    findDOMfromVNode(lastChildren)
-  );
+  mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren));
 
   removeVNodeDOM(lastChildren, parentDOM);
 }

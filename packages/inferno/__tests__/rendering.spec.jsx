@@ -27,10 +27,7 @@ describe('rendering routine', () => {
   });
 
   it('Should throw error if second parameter is not given', () => {
-    expect(() => render(
-      <div>1</div>,
-      null
-    )).toThrow();
+    expect(() => render(<div>1</div>, null)).toThrow();
   });
 
   it('Should do nothing if input is NO-OP', () => {

@@ -1035,4 +1035,37 @@ describe('Fragments', () => {
 
     expect(container.innerHTML).toBe('');
   });
+
+  it('Should render fragment inside fragment Github #1399', () => {
+    function Layout(props) {
+      return <>{props.children}</>;
+    }
+
+    class PageTemplate extends Component {
+      test(sim) {
+        return (
+          <>
+            <div>{sim}</div>
+          </>
+        );
+      }
+
+      render() {
+        return (
+          <Layout>
+            <div>test</div>
+            <>{this.test('sim')}</>
+          </Layout>
+        );
+      }
+    }
+
+    render(<PageTemplate />, container);
+
+    expect(container.innerHTML).toBe('<div>test</div><div>sim</div>');
+
+    render(null, container);
+
+    expect(container.innerHTML).toBe('');
+  });
 });

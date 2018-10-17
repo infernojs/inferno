@@ -339,8 +339,6 @@ describe('BUG: instance - null', () => {
       container
     );
 
-
-    debugger;
     triggerEvent('click', container.querySelector('#MAGICBUTTON'));
 
     rerender();
