@@ -252,7 +252,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 - Inferno doesn't have a fully synthetic event system like React does. Inferno has a partially synthetic event system, instead opting to only delegate certain events (such as `onClick`).
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
-- Inferno doesn't support legecacy string refs, use `createRef` or callback `ref` API
+- Inferno doesn't support legacy string refs, use `createRef` or callback `ref` API
 - Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than ES2015 classes.
 - Inferno is able to use the React Dev Tools extensions for Chrome/Firefox/etc to provide the same level of debugging experience to the Inferno user via `inferno-devtools`.
 
