@@ -9,6 +9,7 @@ describe('setState', () => {
   });
 
   afterEach(function() {
+    rerender(); // Flush pending stuff, if any
     render(null, container);
     container.innerHTML = '';
   });
@@ -890,14 +891,17 @@ describe('setState', () => {
     expect(container.textContent).toBe('INACTIVE   :   INACTIVE');
 
     updater();
+    rerender();
 
     expect(container.textContent).toBe('ACTIVE   :   ACTIVE');
 
     updater();
+    rerender();
 
     expect(container.textContent).toBe('INACTIVE   :   INACTIVE');
 
     updater();
+    rerender();
 
     expect(container.textContent).toBe('ACTIVE   :   ACTIVE');
   });
