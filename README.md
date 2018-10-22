@@ -180,7 +180,7 @@ Alternatively, you can try any of the following:
 * the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup.
 * for a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/).
 * for using Inferno to build a mobile app, try [Inferno Mobile Starter Project](https://github.com/Rudy-Zidan/inferno-mobile) by [Rudy-Zidan](https://github.com/Rudy-Zidan).
-* for [TypeScript](https://www.typescriptlang.org/) support and bundling with [Browserify](https://www.npmjs.com/package/browserify): https://github.com/smcatala/inferno-typescript-browserify-example
+* for [TypeScript](https://www.typescriptlang.org/) support and bundling, check out [ts-transform-inferno](https://github.com/deamme/ts-transform-inferno), or [inferno-typescript-example](https://github.com/infernojs/inferno-typescript-example).
 * for an example of how to use Inferno in [codesandbox](https://codesandbox.io/): https://codesandbox.io/s/znmyj24w4p
 
 Core package:
