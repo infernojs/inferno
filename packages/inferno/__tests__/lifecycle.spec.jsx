@@ -239,4 +239,122 @@ describe('ComponentDidUpdate', () => {
 
     expect(spyer).toHaveBeenCalledTimes(14);
   });
+
+  it('Should not call setState callback if another component triggers setState during other tree mount', () => {
+    // This is only to simplify whats going on in real application
+    let testHack = {
+      callback: null
+    };
+
+    let callbackCalled = 0;
+    let setState1Called = 0;
+    let setState2Called = 0;
+
+    class Another extends Component {
+      constructor(props, context) {
+        super(props, context);
+
+        testHack.callback = () => {
+          callbackCalled++;
+          this.setState({a: 112});
+        }
+      }
+
+      render() {
+        return (
+          <div>
+            A
+          </div>
+        );
+      }
+    }
+
+    class TesterOne extends Component {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          foo: 'test'
+        };
+      }
+
+      componentWillMount() {
+        this.setState({
+          foo: 'bar'
+        }, function () {
+          setState1Called++;
+          expect(this.state.foo).toBe('bar');
+        });
+
+        testHack.callback();
+      }
+
+      render() {
+        return (
+          <div>
+            Tester One
+          </div>
+        )
+      }
+    }
+
+    class Outsider extends Component {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          bool: false
+        };
+
+        this._handleClick = this._handleClick.bind(this);
+      }
+
+      _handleClick() {
+        this.setState({
+          bool: true
+        }, function () {
+          setState2Called++;
+          expect(this.state.bool).toBe(true);
+        })
+      }
+
+      render() {
+        return (
+          <div id="tester" onClick={this._handleClick}>
+            {this.state.bool ? (
+              <TesterOne/>
+            ) : <span/>}
+          </div>
+        )
+      }
+    }
+
+    class App extends Component {
+      render() {
+        return (
+          <div>
+            <Outsider/>
+            <Another/>
+          </div>
+        )
+      }
+    }
+
+    render(<App/>, container);
+
+
+    expect(callbackCalled).toBe(0);
+    expect(setState1Called).toBe(0);
+    expect(setState2Called).toBe(0);
+
+    expect(container.innerHTML).toBe('<div><div id="tester"><span></span></div><div>A</div></div>');
+
+    container.querySelector('#tester').click();
+
+    expect(callbackCalled).toBe(1);
+    expect(setState1Called).toBe(1);
+    expect(setState2Called).toBe(1);
+
+    expect(container.innerHTML).toBe('<div><div id="tester"><div>Tester One</div></div><div>A</div></div>');
+  });
 });

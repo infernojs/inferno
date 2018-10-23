@@ -23,7 +23,6 @@ import {
   createRef,
   forwardRef,
   rerender,
-  _L,
   _CI,
   _HI,
   _M,
@@ -371,7 +370,6 @@ if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined
     // Internal methods
     _CI,
     _HI,
-    _L,
     _M,
     _MCCC,
     _ME,
@@ -431,7 +429,6 @@ export {
   // Internal methods
   _CI,
   _HI,
-  _L,
   _M,
   _MCCC,
   _ME,
@@ -480,7 +477,6 @@ export default {
   // Internal methods
   _CI,
   _HI,
-  _L,
   _M,
   _MCCC,
   _ME,

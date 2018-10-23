@@ -1,7 +1,7 @@
 import { IComponent, InfernoNode, Props, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { callAll, EMPTY_OBJ, LIFECYCLE, findDOMfromVNode } from '../DOM/utils/common';
+import { callAll, EMPTY_OBJ, findDOMfromVNode } from '../DOM/utils/common';
 
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);
@@ -45,7 +45,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
   } else {
     component.$PSS = true;
     if (component.$BR && isFunction(callback)) {
-      LIFECYCLE.push(callback.bind(component));
+      (component.$L as Function[]).push(callback.bind(component));
     }
   }
 }
@@ -80,6 +80,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     component.$PS = null;
     component.$UPD = true;
 
+    const lifecycle: Function[] = [];
+
     updateClassComponent(
       component,
       combineFrom(component.state, pendingState),
@@ -88,13 +90,14 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       component.context,
       false,
       force,
-      null
+      null,
+      lifecycle
     );
 
     component.$UPD = false;
 
-    if (LIFECYCLE.length > 0) {
-      callAll(LIFECYCLE);
+    if (lifecycle.length > 0) {
+      callAll(lifecycle);
     }
   } else {
     component.state = component.$PS as any;
@@ -128,6 +131,7 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $QU: Function[] | null = null; // QUEUE
   public $N: boolean = false; // Flag
   public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client
+  public $L: Function[] | null = null; // Current lifecycle of this component
 
   constructor(props?: P, context?: any) {
     /** @type {object} */

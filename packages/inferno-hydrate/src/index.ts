@@ -1,6 +1,6 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode, _CI, _HI, _L, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render } from 'inferno';
+import { VNode, _CI, _HI, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render } from 'inferno';
 
 function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
   const tempdom = document.createElement('i');
@@ -38,30 +38,30 @@ function isSamePropsInnerHTML(dom: Element, props): boolean {
   return Boolean(props && props.dangerouslySetInnerHTML && props.dangerouslySetInnerHTML.__html && isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html));
 }
 
-function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, isClass: boolean) {
+function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, isClass: boolean, lifecycle: Function[]) {
   const type = vNode.type as Function;
   const ref = vNode.ref;
   const props = vNode.props || {};
   let currentNode;
 
   if (isClass) {
-    const instance = _CI(vNode, type, props, context);
+    const instance = _CI(vNode, type, props, context, lifecycle);
     const input = instance.$LI;
 
-    currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG);
-    _MCCC(ref, instance);
+    currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG, lifecycle);
+    _MCCC(ref, instance, lifecycle);
     instance.$UPD = false; // Mount finished allow going sync
   } else {
     const input = _HI(type(props, context));
-    currentNode = hydrateVNode(input, parentDOM, dom, context, isSVG);
+    currentNode = hydrateVNode(input, parentDOM, dom, context, isSVG, lifecycle);
     vNode.children = input;
-    _MFCC(props, ref, vNode);
+    _MFCC(props, ref, vNode, lifecycle);
   }
 
   return currentNode;
 }
 
-function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG) {
+function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG, lifecycle: Function[]) {
   const childFlags = parentVNode.childFlags;
   const children = parentVNode.children;
   const props = parentVNode.props;
@@ -70,9 +70,9 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
   if (childFlags !== ChildFlags.HasInvalidChildren) {
     if (childFlags === ChildFlags.HasVNodeChildren) {
       if (isNull(currentNode)) {
-        _M(children as VNode, parentNode, context, isSVG, null);
+        _M(children as VNode, parentNode, context, isSVG, null, lifecycle);
       } else {
-        currentNode = hydrateVNode(children as VNode, parentNode, currentNode as Element, context, isSVG);
+        currentNode = hydrateVNode(children as VNode, parentNode, currentNode as Element, context, isSVG, lifecycle);
         currentNode = currentNode ? currentNode.nextSibling : null;
       }
     } else if (childFlags === ChildFlags.HasTextChildren) {
@@ -93,9 +93,9 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
         const child = (children as VNode[])[i];
 
         if (isNull(currentNode) || (prevVNodeIsTextNode && (child.flags & VNodeFlags.Text) > 0)) {
-          _M(child as VNode, parentNode, context, isSVG, currentNode);
+          _M(child as VNode, parentNode, context, isSVG, currentNode, lifecycle);
         } else {
-          currentNode = hydrateVNode(child as VNode, parentNode, currentNode as Element, context, isSVG);
+          currentNode = hydrateVNode(child as VNode, parentNode, currentNode as Element, context, isSVG, lifecycle);
           currentNode = currentNode ? currentNode.nextSibling : null;
         }
 
@@ -122,7 +122,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
   }
 }
 
-function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean) {
+function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[]) {
   const props = vNode.props;
   const className = vNode.className;
   const flags = vNode.flags;
@@ -133,12 +133,12 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
     if (process.env.NODE_ENV !== 'production') {
       warning("Inferno hydration: Server-side markup doesn't match client-side markup");
     }
-    _ME(vNode, null, context, isSVG, null);
+    _ME(vNode, null, context, isSVG, null, lifecycle);
     parentDOM.replaceChild(vNode.dom as Element, dom);
   } else {
     vNode.dom = dom;
 
-    hydrateChildren(vNode, dom, dom.firstChild, context, isSVG);
+    hydrateChildren(vNode, dom, dom.firstChild, context, isSVG, lifecycle);
 
     if (!isNull(props)) {
       _MP(vNode, flags, props, dom, isSVG);
@@ -152,7 +152,7 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
     } else {
       dom.className = className;
     }
-    _MR(ref, dom);
+    _MR(ref, dom, lifecycle);
   }
 
   return vNode.dom;
@@ -174,7 +174,7 @@ function hydrateText(vNode: VNode, parentDOM: Element, dom: Element) {
   return vNode.dom;
 }
 
-function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean): Element {
+function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, lifecycle: Function[]): Element {
   const children = vNode.children;
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
@@ -183,19 +183,19 @@ function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context
     return (children as VNode).dom as Element;
   }
 
-  hydrateChildren(vNode, parentDOM, dom, context, isSVG);
+  hydrateChildren(vNode, parentDOM, dom, context, isSVG, lifecycle);
 
   return findLastDOMFromVNode((children as VNode[])[(children as VNode[]).length - 1]) as Element;
 }
 
-function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean): Element | null {
+function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean, lifecycle: Function[]): Element | null {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Component) {
-    return hydrateComponent(vNode, parentDOM, currentDom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
+    return hydrateComponent(vNode, parentDOM, currentDom, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0, lifecycle);
   }
   if (flags & VNodeFlags.Element) {
-    return hydrateElement(vNode, parentDOM, currentDom, context, isSVG);
+    return hydrateElement(vNode, parentDOM, currentDom, context, isSVG, lifecycle);
   }
   if (flags & VNodeFlags.Text) {
     return hydrateText(vNode, parentDOM, currentDom);
@@ -204,7 +204,7 @@ function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, con
     return (vNode.dom = currentDom);
   }
   if (flags & VNodeFlags.Fragment) {
-    return hydrateFragment(vNode, parentDOM, currentDom, context, isSVG);
+    return hydrateFragment(vNode, parentDOM, currentDom, context, isSVG, lifecycle);
   }
 
   if (process.env.NODE_ENV !== 'production') {
@@ -224,19 +224,21 @@ export function hydrate(input, parentDOM: Element, callback?: Function) {
     }
     render(input, parentDOM, callback);
   } else {
+    const lifecycle: Function[] = [];
+
     if (!isInvalid(input)) {
-      dom = hydrateVNode(input, parentDOM, dom, {}, false) as Element;
+      dom = hydrateVNode(input, parentDOM, dom, {}, false, lifecycle) as Element;
     }
     // clear any other DOM nodes, there should be only a single entry for the root
     while (dom && (dom = dom.nextSibling as Element)) {
       parentDOM.removeChild(dom);
     }
-  }
 
-  if (_L.length > 0) {
-    let listener;
-    while ((listener = _L.shift()) !== undefined) {
-      listener();
+    if (lifecycle.length > 0) {
+      let listener;
+      while ((listener = lifecycle.shift()) !== undefined) {
+        listener();
+      }
     }
   }
 

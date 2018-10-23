@@ -5,7 +5,7 @@ import { InfernoNode, VNode } from '../core/types';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, options, EMPTY_OBJ, LIFECYCLE } from './utils/common';
+import { callAll, options, EMPTY_OBJ } from './utils/common';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -34,6 +34,7 @@ export function __render(
       throwError(`render target ( DOM ) is mandatory, received ${parentDOM === null ? 'null' : typeof parentDOM}`);
     }
   }
+  const lifecycle: Function[] = [];
   let rootInput = (parentDOM as any).$V as VNode | null;
 
   if (isNullOrUndef(rootInput)) {
@@ -41,7 +42,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      mount(input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null);
+      mount(input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null, lifecycle);
       (parentDOM as any).$V = input;
       rootInput = input as VNode;
     }
@@ -53,15 +54,14 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null);
+      patch(rootInput as VNode, input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null, lifecycle);
       rootInput = (parentDOM as any).$V = input as VNode;
     }
   }
 
-  if (LIFECYCLE.length > 0) {
-    callAll(LIFECYCLE);
+  if (lifecycle.length > 0) {
+    callAll(lifecycle);
   }
-
   if (isFunction(callback)) {
     (callback as Function)();
   }

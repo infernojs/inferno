@@ -1,5 +1,4 @@
 import { isFunction, warning } from 'inferno-shared';
-import { LIFECYCLE } from '../DOM/utils/common';
 
 export function createRef() {
   return {
@@ -29,8 +28,8 @@ export function forwardRef(render) {
   return fwRef;
 }
 
-export function pushRef(dom: Element | null, value: Function) {
-  LIFECYCLE.push(() => value(dom));
+export function pushRef(dom: Element | null, value: Function, lifecycle: Function[]) {
+  lifecycle.push(() => value(dom));
 }
 
 export function unmountRef(ref) {
@@ -43,10 +42,10 @@ export function unmountRef(ref) {
   }
 }
 
-export function mountRef(ref, value) {
+export function mountRef(ref, value, lifecycle: Function[]) {
   if (ref) {
     if (isFunction(ref)) {
-      pushRef(value, ref);
+      pushRef(value, ref, lifecycle);
     } else if (ref.current !== void 0) {
       ref.current = value;
     }

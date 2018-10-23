@@ -6,7 +6,6 @@ import { InfernoNode, VNode } from './../../core/types';
 // Its used for comparison so we cant inline it into shared
 export const EMPTY_OBJ = {};
 export const Fragment: string = '$F';
-export const LIFECYCLE: Function[] = [];
 
 if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
