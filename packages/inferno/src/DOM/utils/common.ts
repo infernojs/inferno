@@ -1,6 +1,7 @@
 import { combineFrom, isNull } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { InfernoNode, VNode } from './../../core/types';
+import { Component } from "inferno";
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
@@ -118,6 +119,12 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode) {
     }
   }
 }
+
+export const renderInfo = {
+  active: false
+};
+
+export const SetStateQueue: Array<Component<any, any>> = [];
 
 export function getComponentName(instance): string {
   // Fallback for IE

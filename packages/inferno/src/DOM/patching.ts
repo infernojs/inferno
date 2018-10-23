@@ -372,8 +372,6 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
   const lastRef = lastVNode.ref;
   let nextState = instance.state;
 
-  instance.$UPD = true;
-
   if (!instance.$N) {
     if (isFunction(instance.componentWillReceiveProps)) {
       instance.$BR = true;
@@ -384,9 +382,8 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
       }
       instance.$BR = false;
     }
-    if (instance.$PSS) {
+    if (instance.$PS) {
       nextState = combineFrom(nextState, instance.$PS) as any;
-      instance.$PSS = false;
       instance.$PS = null;
     }
   }
@@ -397,8 +394,6 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
     unmountRef(lastRef);
     mountRef(nextRef, instance, lifecycle);
   }
-
-  instance.$UPD = false;
 }
 
 function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]) {

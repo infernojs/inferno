@@ -556,6 +556,9 @@ describe('Inferno', () => {
       const stub = findRenderedVNodeWithType(outerStub, Passthrough).children;
       expect(stub.props.stateThing).toBe('');
       stub.props.mergedDoSomething('a');
+
+      rerender();
+
       outerStub.setState({}, () => {
         expect(stub.props.stateThing).toBe('HELLO az');
 

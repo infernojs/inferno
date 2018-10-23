@@ -1,5 +1,6 @@
 import { isFunction, isString } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils/common';
+import { rerender } from "./../../core/component";
 
 function triggerEventListener(props, methodName, e) {
   if (props[methodName]) {
@@ -36,6 +37,8 @@ export function createWrappedFunction(methodName: string | string[], applyValue?
         triggerEventListener(props, methodName[i], e);
       }
     }
+
+    rerender();
 
     if (isFunction(applyValue)) {
       const newVNode = this.$V;

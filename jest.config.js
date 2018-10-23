@@ -18,7 +18,6 @@ module.exports = {
     "mobx": "<rootDir>/node_modules/mobx"
   },
   rootDir: __dirname,
-  setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
   testMatch: [
     "<rootDir>/packages/*/__tests__/**/*spec.@(js|ts)?(x)",
     "<rootDir>/packages/*/__tests__/**/*spec.server.@(js|ts)?(x)"

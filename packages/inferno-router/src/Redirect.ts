@@ -33,8 +33,10 @@ export class Redirect extends Component<RedirectProps, any> {
     const nextTo = createLocation(this.props.to);
 
     if (locationsAreEqual(prevTo, nextTo)) {
-      // tslint:disable-next-line:no-console
-      console.error(`You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`);
+      if (process.env.NODE_ENV !== 'production') {
+        // tslint:disable-next-line:no-console
+        console.error(`You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`);
+      }
       return;
     }
 

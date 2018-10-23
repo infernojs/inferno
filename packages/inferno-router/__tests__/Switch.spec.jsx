@@ -3,7 +3,7 @@ import { innerHTML } from 'inferno-utils';
 import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
 
 describe('Switch (jsx)', () => {
-  it('renders the first <Route> that matches the URL', () => {
+  it('renders the first <Route> that matches the URL', (d) => {
     const node = document.createElement('div');
 
     render(
@@ -16,10 +16,13 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).toMatch(/one/);
+    setTimeout(() => {
+      expect(node.innerHTML).toMatch(/one/);
+      d()
+    }, 50);
   });
 
-  it('renders the first <Redirect from> that matches the URL', () => {
+  it('renders the first <Redirect from> that matches the URL', (d) => {
     const node = document.createElement('div');
 
     render(
@@ -34,10 +37,13 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).toMatch(/two/);
+    setTimeout(() => {
+      expect(node.innerHTML).toMatch(/two/);
+      d();
+    }, 50);
   });
 
-  it('does not render a second <Route> or <Redirect> that also matches the URL', () => {
+  it('does not render a second <Route> or <Redirect> that also matches the URL', (d) => {
     const node = document.createElement('div');
 
     render(
@@ -52,10 +58,13 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).not.toMatch(/two/);
+    setTimeout(() => {
+      expect(node.innerHTML).not.toMatch(/two/);
+      d();
+    }, 50);
   });
 
-  it('renders pathless Routes', () => {
+  it('renders pathless Routes', (d) => {
     const node = document.createElement('div');
 
     render(
@@ -68,11 +77,14 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain('one');
-    expect(node.innerHTML).toContain('two');
+    setTimeout(() => {
+      expect(node.innerHTML).not.toContain('one');
+      expect(node.innerHTML).toContain('two');
+      d();
+    }, 50);
   });
 
-  it('handles from-less Redirects', () => {
+  it('handles from-less Redirects', (d) => {
     const node = document.createElement('div');
 
     render(
@@ -86,11 +98,14 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain('cup');
-    expect(node.innerHTML).toContain('bub');
+    setTimeout(() => {
+      expect(node.innerHTML).not.toContain('cup');
+      expect(node.innerHTML).toContain('bub');
+      d();
+    }, 50);
   });
 
-  it('handles subsequent redirects', () => {
+  it('handles subsequent redirects', (d) => {
     const node = document.createElement('div');
 
     render(
@@ -105,10 +120,13 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.textContent).toBe('three');
+    setTimeout(() => {
+      expect(node.textContent).toBe('three');
+      d();
+    }, 50);
   });
 
-  it('warns when redirecting to same route, both strings', () => {
+  it('warns when redirecting to same route, both strings', (d) => {
     const node = document.createElement('div');
     let redirected = false;
     let done = false;
@@ -136,12 +154,15 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain('done');
-    expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain('/one');
+    setTimeout(() => {
+      expect(node.innerHTML).not.toContain('done');
+      expect(console.error.calls.count()).toBe(1);
+      expect(console.error.calls.mostRecent().args[0]).toContain('/one');
+      d();
+    }, 50);
   });
 
-  it('warns when redirecting to same route, mixed types', () => {
+  it('warns when redirecting to same route, mixed types', (d) => {
     const node = document.createElement('div');
     let redirected = false;
     let done = false;
@@ -170,13 +191,16 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain('done');
-    expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain('/one');
+    setTimeout(function () {
+      expect(node.innerHTML).not.toContain('done');
+      expect(console.error.calls.count()).toBe(1);
+      expect(console.error.calls.mostRecent().args[0]).toContain('/one');
+      d();
+    }, 50);
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one"/)
   });
 
-  it('warns when redirecting to same route, mixed types, string with query', () => {
+  it('warns when redirecting to same route, mixed types, string with query', (d) => {
     const node = document.createElement('div');
     let redirected = false;
     let done = false;
@@ -205,16 +229,19 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).not.toContain('done');
-    expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain('/one?utm=1');
+    setTimeout(function () {
+      expect(node.innerHTML).not.toContain('done');
+      expect(console.error.calls.count()).toBe(1);
+      expect(console.error.calls.mostRecent().args[0]).toContain('/one?utm=1');
+      d();
+    }, 50);
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one\?utm=1"/)
   });
 
-  it('does NOT warn when redirecting to same route with different `search`', () => {
+  it('does NOT warn when redirecting to same route with different `search`', (done) => {
     const node = document.createElement('div');
     let redirected = false;
-    let done = false;
+    let doneTest = false;
 
     spyOn(console, 'error');
 
@@ -224,13 +251,13 @@ describe('Switch (jsx)', () => {
           <Route
             path="/one"
             render={() => {
-              if (done) return <h1>done</h1>;
+              if (doneTest) return <h1>done</h1>;
 
               if (!redirected) {
                 redirected = true;
                 return <Redirect to={{ pathname: '/one', search: '?utm=1' }} />;
               }
-              done = true;
+              doneTest = true;
 
               return <Redirect to={{ pathname: '/one', search: '?utm=2' }} />;
             }}
@@ -240,8 +267,11 @@ describe('Switch (jsx)', () => {
       node
     );
 
-    expect(node.innerHTML).toContain('done');
-    expect(console.error.calls.count()).toBe(0);
+    setTimeout(function () {
+      expect(node.innerHTML).toContain('done');
+      expect(console.error.calls.count()).toBe(0);
+      done();
+    }, 50);
   });
 
   it('handles comments', () => {

@@ -359,6 +359,7 @@ describe('Components (JSX)', () => {
 
   function test(element, expectedTag, expectedClassName, callback) {
     render(element, container, () => {
+      rerender();
       expect(container.firstChild).not.toBe(null);
       expect(container.firstChild.tagName).toBe(expectedTag);
       expect(container.firstChild.className).toBe(expectedClassName);
@@ -423,10 +424,9 @@ describe('Components (JSX)', () => {
     test(<Foo initialValue="foo" />, 'DIV', 'foo', () => {
       expect(renderedName).toBe('foo');
       attachedListener();
-      setTimeout(() => {
-        expect(renderedName).toBe('bar');
-        done();
-      }, 10);
+      rerender();
+      expect(renderedName).toBe('bar');
+      done();
     });
   });
 
@@ -448,6 +448,7 @@ describe('Components (JSX)', () => {
     }
     test(<Foo initialValue="foo" />, 'DIV', 'foo', function() {
       attachedListener();
+      rerender();
       expect(renderedName).toBe('bar');
       done();
     });

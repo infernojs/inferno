@@ -1,5 +1,7 @@
 import { SemiSyntheticEvent } from './../../core/types';
 import { isNull } from 'inferno-shared';
+import { rerender } from "./../../core/component";
+import { renderInfo } from "../utils/common";
 
 const attachedEventCounts = {};
 const attachedEvents = {};
@@ -76,6 +78,7 @@ function stopPropagation() {
 function attachEventToDocument(name: string) {
   const docEvent = function(event: Event) {
     const isClick = name === 'onClick' || name === 'onDblClick';
+    renderInfo.active = true;
 
     if (isClick && (event as MouseEvent).button !== 0) {
       // Firefox incorrectly triggers click event for mid/right mouse buttons.
@@ -99,6 +102,8 @@ function attachEventToDocument(name: string) {
     });
 
     dispatchEvents(event, event.target, isClick, name, eventData);
+    renderInfo.active = false;
+    rerender();
   };
   document.addEventListener(normalizeEventName(name), docEvent);
   return docEvent;

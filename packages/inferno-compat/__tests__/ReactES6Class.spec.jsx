@@ -219,6 +219,9 @@ describe('ReactES6Class', function() {
     }
     test(<Foo initialValue="foo" />, 'DIV', 'foo');
     attachedListener();
+
+    React.rerender();
+
     expect(renderedName).toBe('bar');
   });
 

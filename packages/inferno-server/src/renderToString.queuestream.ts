@@ -72,6 +72,7 @@ export class RenderQueueStream extends Readable {
 
     // Handles a component render
     if ((flags & VNodeFlags.Component) > 0) {
+      let renderOutput;
       const isClass = flags & VNodeFlags.ComponentClass;
       // Render the
       if (isClass) {
@@ -94,9 +95,11 @@ export class RenderQueueStream extends Readable {
         if (!hasNewAPI && isFunction(instance.componentWillMount)) {
           instance.$BR = true;
           instance.componentWillMount();
-          if (instance.$PSS) {
+
+          const pending = instance.$PS;
+
+          if (pending) {
             const state = instance.state;
-            const pending = instance.$PS;
 
             if (state === null) {
               instance.state = pending;
@@ -105,7 +108,6 @@ export class RenderQueueStream extends Readable {
                 state[key] = pending[key];
               }
             }
-            instance.$PSS = false;
             instance.$PS = null;
           }
           instance.$BR = false;
@@ -118,7 +120,6 @@ export class RenderQueueStream extends Readable {
               const promisePosition = this.promises.push([]) - 1;
               this.addToQueue(
                 initialProps.then(dataForContext => {
-                  instance.$PSS = false;
                   if (typeof dataForContext === 'object') {
                     instance.props = combineFrom(instance.props, dataForContext);
                   }
@@ -148,30 +149,18 @@ export class RenderQueueStream extends Readable {
         if (hasNewAPI) {
           instance.state = createDerivedState(instance, props, instance.state);
         }
-        const renderOutput = instance.render(instance.props, instance.state, instance.context);
-        instance.$PSS = false;
-
-        if (isInvalid(renderOutput)) {
-          this.addToQueue('<!--!-->', position);
-        } else if (isString(renderOutput)) {
-          this.addToQueue(escapeText(renderOutput), position);
-        } else if (isNumber(renderOutput)) {
-          this.addToQueue(renderOutput + '', position);
-        } else {
-          this.renderVNodeToQueue(renderOutput, context, position);
-        }
+        renderOutput = instance.render(instance.props, instance.state, instance.context);
       } else {
-        const renderOutput = type(props, context);
-
-        if (isInvalid(renderOutput)) {
-          this.addToQueue('<!--!-->', position);
-        } else if (isString(renderOutput)) {
-          this.addToQueue(escapeText(renderOutput), position);
-        } else if (isNumber(renderOutput)) {
-          this.addToQueue(renderOutput + '', position);
-        } else {
-          this.renderVNodeToQueue(renderOutput, context, position);
-        }
+        renderOutput = type(props, context);
+      }
+      if (isInvalid(renderOutput)) {
+        this.addToQueue('<!--!-->', position);
+      } else if (isString(renderOutput)) {
+        this.addToQueue(escapeText(renderOutput), position);
+      } else if (isNumber(renderOutput)) {
+        this.addToQueue(renderOutput + '', position);
+      } else {
+        this.renderVNodeToQueue(renderOutput, context, position);
       }
       // If an element
     } else if ((flags & VNodeFlags.Element) > 0) {

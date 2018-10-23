@@ -6,12 +6,14 @@ describe('setState', () => {
 
   beforeEach(function() {
     container = document.createElement('div');
+    document.body.appendChild(container);
   });
 
   afterEach(function() {
     rerender(); // Flush pending stuff, if any
     render(null, container);
     container.innerHTML = '';
+    document.body.removeChild(container);
   });
 
   it('should throw an error when setState is called in constructor', () => {
@@ -904,5 +906,51 @@ describe('setState', () => {
     rerender();
 
     expect(container.textContent).toBe('ACTIVE   :   ACTIVE');
+  });
+
+  it('Should render only once if setState is called 5 times from click event', () => {
+    let renderCounter = 0;
+
+    class Foobar extends Component<any, {counter: number}> {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          counter: 0
+        };
+
+        this.handleClick = this.handleClick.bind(this);
+      }
+
+      public handleClick() {
+        this.setState({counter: this.state!.counter++});
+        this.setState({counter: this.state!.counter++});
+        this.setState({counter: this.state!.counter++});
+        this.setState({counter: this.state!.counter++});
+        this.setState({counter: this.state!.counter++});
+      }
+
+      public render() {
+        renderCounter++;
+
+        return (
+          <div onClick={this.handleClick}>
+            {this.state!.counter}
+          </div>
+        )
+      }
+    }
+
+    render(<Foobar />, container);
+
+    expect(renderCounter).toBe(1);
+
+    expect(container.innerHTML).toBe("<div>0</div>");
+
+    container.firstChild.click();
+
+    expect(renderCounter).toBe(2);
+
+    expect(container.innerHTML).toBe("<div>4</div>");
   });
 });
