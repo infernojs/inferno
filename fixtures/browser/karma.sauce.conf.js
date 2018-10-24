@@ -133,7 +133,7 @@ module.exports = function(config) {
     browserNoActivityTimeout: 600000,
     browserDisconnectTolerance: 2,
     processKillTimeout: 20000,
-    browserDisconnectTimeout: 2000,
+    browserDisconnectTimeout: 10000,
 
     browserConsoleLogOptions: {
       level: 'warn',
@@ -155,9 +155,6 @@ module.exports = function(config) {
     },
     webpack: {
       devtool: 'none',
-      output: {
-        filename: '[name]'
-      },
       mode: 'production',
       optimization: {
         splitChunks: false,
