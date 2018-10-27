@@ -16,8 +16,9 @@ const componentHooks = {
  * @param {string|Function|Component<any, any>} type Type of node
  * @param {object=} props Optional props for virtual node
  * @param {...{object}=} _children Optional children for virtual node
- * @returns {VNode} new virtual ndoe
+ * @returns {VNode} new virtual node
  */
+export function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props<T> | null, ..._children: any[]): VNode;
 export function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props<T> | null, _children?: any): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (isInvalid(type)) {
