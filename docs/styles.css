@@ -38,8 +38,8 @@ a:hover {
 }
 
 .bench-list {
-    width: 50%;
     max-width: 700px;
+    margin: 5vh 0;
 }
 
 .inferno-logo {
