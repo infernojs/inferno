@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    padding: 0 5vw;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+h1 {
+    font-size: 30px;
+    font-weight: normal;
+}
+
+a {
+    color: #dc0030;
+    text-decoration: none;
+    opacity: 1;
+    transition: opacity .2s linear;
+    display: inline-block;
+    -webkit-backface-visibility: hidden;
+}
+
+p {
+    text-align: left;
+}
+
+a:hover {
+    opacity: .5;
+    text-decoration: underline;
+}
+
+.bench-list {
+    width: 50%;
+    max-width: 700px;
+}
+
+.inferno-logo {
+    background: #fff;
+    width: 6rem;
+    height: 6rem;
+    padding: 2rem;
+    border-radius: 2rem;
+}
