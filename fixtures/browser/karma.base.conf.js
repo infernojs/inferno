@@ -84,9 +84,6 @@ module.exports = function(config) {
 
     webpack: {
       devtool: 'none',
-      output: {
-        filename: '[name]'
-      },
       mode: 'production',
       optimization: {
         splitChunks: false,

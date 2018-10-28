@@ -133,7 +133,7 @@ module.exports = function(config) {
     browserNoActivityTimeout: 600000,
     browserDisconnectTolerance: 2,
     processKillTimeout: 20000,
-    browserDisconnectTimeout: 2000,
+    browserDisconnectTimeout: 10000,
 
     browserConsoleLogOptions: {
       level: 'warn',
@@ -148,16 +148,9 @@ module.exports = function(config) {
       stats: 'errors-only',
       noInfo: true
     },
-    client: {
-      jasmine: {
-        random: false // Adding jasmine.random false disables test random order
-      }
-    },
+
     webpack: {
       devtool: 'none',
-      output: {
-        filename: '[name]'
-      },
       mode: 'production',
       optimization: {
         splitChunks: false,
