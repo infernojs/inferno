@@ -4,3 +4,4 @@
 ## How to use?
 
 Run Http-server at the root of Repository and Open up the .html file in your browser.
+Benchmarks depend on packages from the root inferno repository

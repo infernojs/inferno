@@ -9,7 +9,7 @@
 - String refs completely removed
 
 
-For complete list see [Migration guide](https://github.com/infernojs/inferno/blob/master/docs/v6-migration.md)
+For complete list see [Migration guide](https://github.com/infernojs/inferno/blob/master/documentation/v6-migration.md)
 
 ## New features
 

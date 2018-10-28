@@ -48,18 +48,7 @@
 		let totalTime = 0;
 
 		for (var i = 0; i < count; i++) {
-			// var start = window.performance.now();
-			//
 			Inferno.render(createElement(List), container);
-
-			// var end = window.performance.now();
-
-			// Inferno.render(null, container);
-			//
-			// var roundTime = end - start;
-			// totalTime += roundTime;
-			//
-			// times.push(roundTime);
 		}
 
 		setTimeout(function () {

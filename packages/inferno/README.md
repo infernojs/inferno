@@ -51,8 +51,8 @@ InfernoJS natively supports the browsers listed below.
 
 ## Migration guides
 
-- [Inferno v4](https://github.com/infernojs/inferno/blob/master/docs/v4-migration.md)
-- [Inferno v6](https://github.com/infernojs/inferno/blob/master/docs/v6-migration.md)
+- [Inferno v4](https://github.com/infernojs/inferno/blob/master/documentation/v4-migration.md)
+- [Inferno v6](https://github.com/infernojs/inferno/blob/master/documentation/v6-migration.md)
 
 ## Benchmarks
 
