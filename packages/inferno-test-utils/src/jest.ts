@@ -1,4 +1,4 @@
-import { render, VNode } from 'inferno';
+import { render, VNode, rerender } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isArray, isNullOrUndef } from 'inferno-shared';
 import { getTagNameOfVNode } from './utils';
@@ -85,8 +85,16 @@ export function vNodeToSnapshot(vNode: VNode) {
 
 export function renderToSnapshot(input: VNode) {
   render(input, document.createElement('div'));
+  rerender(); // Flush all pending set state calls
   const snapshot = vNodeToSnapshot(input);
 
-  delete snapshot.props.children;
+  if (isArray(snapshot)) {
+    for (let i = 0; i < snapshot.length; i++) {
+      delete snapshot[i].props.children;
+    }
+  } else {
+    delete snapshot.props.children;
+  }
+
   return snapshot;
 }

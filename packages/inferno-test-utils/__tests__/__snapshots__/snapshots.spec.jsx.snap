@@ -1,5 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Snapshots JSX Should flush setStates before building snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo"
+    />
+    <p>
+      Edit 
+      <code>
+        src/App.js
+      </code>
+       and save to reload.
+    </p>
+    <a
+      className="App-link"
+      href="https://reactjs.org"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      ##BAR##
+    </a>
+  </header>
+</div>
+`;
+
+exports[`Snapshots JSX Should not fail when returning children array from component root, Github #1404 1`] = `
+Array [
+  <label />,
+  <span>
+    o
+  </span>,
+  <span>
+    k
+  </span>,
+]
+`;
+
 exports[`Snapshots JSX Should render attributes and className 1`] = `
 <div
   className="Testing"
@@ -73,6 +116,23 @@ exports[`Snapshots JSX Should render fragment 1`] = `
     </div>,
   ]
 </div>
+`;
+
+exports[`Snapshots JSX Should render fragment from component root 1`] = `
+<div>
+  1
+</div>
+`;
+
+exports[`Snapshots JSX Should render fragment root 1`] = `
+Array [
+  <div>
+    First
+  </div>,
+  <div>
+    Second
+  </div>,
+]
 `;
 
 exports[`Snapshots JSX Should render html element 1`] = `

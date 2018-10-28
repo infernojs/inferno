@@ -1,4 +1,4 @@
-import { Component, createFragment } from 'inferno';
+import { Component, Fragment, createFragment } from 'inferno';
 import { renderToSnapshot } from 'inferno-test-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
 
@@ -101,6 +101,104 @@ describe('Snapshots', () => {
           )
         ).toMatchSnapshot();
       });
+
+      it('Should render fragment root', () => {
+        debugger;
+
+        expect(
+          renderToSnapshot(
+            <Fragment>
+              <div>First</div>
+              <div>Second</div>
+            </Fragment>
+          )
+        ).toMatchSnapshot();
+      });
+
+      it('Should render fragment from component root', () => {
+        class Comp extends Component {
+          render() {
+            return <>{this.props.children}</>
+          }
+        }
+
+        expect(
+          renderToSnapshot(
+            <Comp>
+              <div>1</div>
+            </Comp>
+          )
+        ).toMatchSnapshot()
+      });
+
+      it('Should not fail when returning children array from component root, Github #1404', () => {
+        const Label = ({label, htmlFor, children, optional = false, ...props}) => {
+          if(optional && !label) {
+            return children;
+          }
+
+          return <>
+            <label {...props} htmlFor={htmlFor}>{label}</label>
+            {children}
+          </>;
+        };
+
+        expect(
+          renderToSnapshot(
+            <Label>
+              {[
+                <span>o</span>,
+                <span>k</span>
+              ]}
+            </Label>
+          )
+        ).toMatchSnapshot();
+      });
+
+      it('Should flush setStates before building snapshot', () => {
+        class App extends Component {
+          constructor(props) {
+            super(props);
+
+            this.state = {
+              foo: ''
+            };
+          }
+
+          componentDidMount() {
+            this.setState({
+              foo: '##BAR##'
+            })
+          }
+
+          render() {
+            return (
+              <div className="App">
+                <header className="App-header">
+                  <img src="logo" className="App-logo" alt="logo" />
+                  <p>
+                    Edit <code>src/App.js</code> and save to reload.
+                  </p>
+                  <a
+                    className="App-link"
+                    href="https://reactjs.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {this.state.foo}
+                  </a>
+                </header>
+              </div>
+            );
+          }
+        }
+
+        expect(
+          renderToSnapshot(
+            <App/>
+          )
+        ).toMatchSnapshot();
+      })
     }
   });
 });
