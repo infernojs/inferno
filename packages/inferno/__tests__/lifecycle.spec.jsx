@@ -256,16 +256,12 @@ describe('ComponentDidUpdate', () => {
 
         testHack.callback = () => {
           callbackCalled++;
-          this.setState({a: 112});
-        }
+          this.setState({ a: 112 });
+        };
       }
 
       render() {
-        return (
-          <div>
-            A
-          </div>
-        );
+        return <div>A</div>;
       }
     }
 
@@ -279,22 +275,21 @@ describe('ComponentDidUpdate', () => {
       }
 
       componentWillMount() {
-        this.setState({
-          foo: 'bar'
-        }, function () {
-          setState1Called++;
-          expect(this.state.foo).toBe('bar');
-        });
+        this.setState(
+          {
+            foo: 'bar'
+          },
+          function() {
+            setState1Called++;
+            expect(this.state.foo).toBe('bar');
+          }
+        );
 
         testHack.callback();
       }
 
       render() {
-        return (
-          <div>
-            Tester One
-          </div>
-        )
+        return <div>Tester One</div>;
       }
     }
 
@@ -310,22 +305,23 @@ describe('ComponentDidUpdate', () => {
       }
 
       _handleClick() {
-        this.setState({
-          bool: true
-        }, function () {
-          setState2Called++;
-          expect(this.state.bool).toBe(true);
-        })
+        this.setState(
+          {
+            bool: true
+          },
+          function() {
+            setState2Called++;
+            expect(this.state.bool).toBe(true);
+          }
+        );
       }
 
       render() {
         return (
           <div id="tester" onClick={this._handleClick}>
-            {this.state.bool ? (
-              <TesterOne/>
-            ) : <span/>}
+            {this.state.bool ? <TesterOne /> : <span />}
           </div>
-        )
+        );
       }
     }
 
@@ -333,15 +329,14 @@ describe('ComponentDidUpdate', () => {
       render() {
         return (
           <div>
-            <Outsider/>
-            <Another/>
+            <Outsider />
+            <Another />
           </div>
-        )
+        );
       }
     }
 
-    render(<App/>, container);
-
+    render(<App />, container);
 
     expect(callbackCalled).toBe(0);
     expect(setState1Called).toBe(0);

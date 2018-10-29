@@ -4,17 +4,7 @@ import { directClone } from '../core/implementation';
 import { VNode } from '../core/types';
 import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
-import {
-  appendChild,
-  createDerivedState,
-  EMPTY_OBJ,
-  findDOMfromVNode,
-  moveVNodeDOM,
-  options,
-  removeChild,
-  removeVNodeDOM,
-  replaceChild
-} from './utils/common';
+import { appendChild, createDerivedState, EMPTY_OBJ, findDOMfromVNode, moveVNodeDOM, options, removeChild, removeVNodeDOM, replaceChild } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
 import { handleComponentInput, renderNewInput } from './utils/componentutil';
@@ -35,7 +25,15 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
   }
 }
 
-export function patch(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]) {
+export function patch(
+  lastVNode: VNode,
+  nextVNode: VNode,
+  parentDOM: Element,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[]
+) {
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -319,7 +317,17 @@ function createDidUpdate(instance, lastProps, lastState, snapshot, lifecycle) {
   lifecycle.push(() => instance.componentDidUpdate(lastProps, lastState, snapshot));
 }
 
-export function updateClassComponent(instance, nextState, nextProps, parentDOM: Element, context, isSVG: boolean, force: boolean, nextNode: Element | null, lifecycle: Function[]) {
+export function updateClassComponent(
+  instance,
+  nextState,
+  nextProps,
+  parentDOM: Element,
+  context,
+  isSVG: boolean,
+  force: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[]
+) {
   const lastState = instance.state;
   const lastProps = instance.props;
   const usesNewAPI = Boolean(instance.$N);

@@ -43,6 +43,20 @@ Array [
 ]
 `;
 
+exports[`Snapshots JSX Should not fail when returning children array from component root, which contains text node. Github #1404 1`] = `
+Array [
+  <label />,
+  <span>
+    o
+  </span>,
+  <span>
+    k
+  </span>,
+  "asd",
+  "1",
+]
+`;
+
 exports[`Snapshots JSX Should render attributes and className 1`] = `
 <div
   className="Testing"

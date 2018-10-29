@@ -1,6 +1,6 @@
 import { render, VNode, rerender } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isArray, isNullOrUndef } from 'inferno-shared';
+import { isArray, isNullOrUndef, isObject } from 'inferno-shared';
 import { getTagNameOfVNode } from './utils';
 
 // Jest Snapshot Utilities
@@ -90,9 +90,13 @@ export function renderToSnapshot(input: VNode) {
 
   if (isArray(snapshot)) {
     for (let i = 0; i < snapshot.length; i++) {
-      delete snapshot[i].props.children;
+      const _snapshot = snapshot[i];
+
+      if (typeof _snapshot === 'object' && _snapshot.props) {
+        delete _snapshot.props.children;
+      }
     }
-  } else {
+  } else if (typeof snapshot === 'object' && snapshot.props) {
     delete snapshot.props.children;
   }
 

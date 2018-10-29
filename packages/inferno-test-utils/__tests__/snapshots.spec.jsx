@@ -103,8 +103,6 @@ describe('Snapshots', () => {
       });
 
       it('Should render fragment root', () => {
-        debugger;
-
         expect(
           renderToSnapshot(
             <Fragment>
@@ -118,7 +116,7 @@ describe('Snapshots', () => {
       it('Should render fragment from component root', () => {
         class Comp extends Component {
           render() {
-            return <>{this.props.children}</>
+            return <>{this.props.children}</>;
           }
         }
 
@@ -128,31 +126,43 @@ describe('Snapshots', () => {
               <div>1</div>
             </Comp>
           )
-        ).toMatchSnapshot()
+        ).toMatchSnapshot();
+      });
+
+      it('Should not fail when returning children array from component root, which contains text node. Github #1404', () => {
+        const Label = ({ label, htmlFor, children, optional = false, ...props }) => {
+          if (optional && !label) {
+            return children;
+          }
+          return (
+            <>
+              <label {...props} htmlFor={htmlFor}>
+                {label}
+              </label>
+              {children}
+            </>
+          );
+        };
+        expect(renderToSnapshot(<Label>{[<span>o</span>, <span>k</span>, 'asd', 1, null, false, true, void 0]}</Label>)).toMatchSnapshot();
       });
 
       it('Should not fail when returning children array from component root, Github #1404', () => {
-        const Label = ({label, htmlFor, children, optional = false, ...props}) => {
-          if(optional && !label) {
+        const Label = ({ label, htmlFor, children, optional = false, ...props }) => {
+          if (optional && !label) {
             return children;
           }
 
-          return <>
-            <label {...props} htmlFor={htmlFor}>{label}</label>
-            {children}
-          </>;
+          return (
+            <>
+              <label {...props} htmlFor={htmlFor}>
+                {label}
+              </label>
+              {children}
+            </>
+          );
         };
 
-        expect(
-          renderToSnapshot(
-            <Label>
-              {[
-                <span>o</span>,
-                <span>k</span>
-              ]}
-            </Label>
-          )
-        ).toMatchSnapshot();
+        expect(renderToSnapshot(<Label>{[<span>o</span>, <span>k</span>]}</Label>)).toMatchSnapshot();
       });
 
       it('Should flush setStates before building snapshot', () => {
@@ -168,7 +178,7 @@ describe('Snapshots', () => {
           componentDidMount() {
             this.setState({
               foo: '##BAR##'
-            })
+            });
           }
 
           render() {
@@ -179,12 +189,7 @@ describe('Snapshots', () => {
                   <p>
                     Edit <code>src/App.js</code> and save to reload.
                   </p>
-                  <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
                     {this.state.foo}
                   </a>
                 </header>
@@ -193,12 +198,8 @@ describe('Snapshots', () => {
           }
         }
 
-        expect(
-          renderToSnapshot(
-            <App/>
-          )
-        ).toMatchSnapshot();
-      })
+        expect(renderToSnapshot(<App />)).toMatchSnapshot();
+      });
     }
   });
 });
