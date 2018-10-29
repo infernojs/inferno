@@ -1,4 +1,4 @@
-import { Component, Fragment, render, SFC } from 'inferno';
+import { Component, Fragment, render } from 'inferno';
 import sinon, { assert } from 'sinon';
 import {innerHTML} from "inferno-utils";
 
@@ -285,7 +285,7 @@ describe('All single patch variations', () => {
     it('Should never update if defaultProps refs SCU returns false', () => {
       let counter = 0;
 
-      const Static: SFC = function() {
+      const Static = function() {
         return <div>{counter}</div>;
       };
 
@@ -319,7 +319,7 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      const Static: SFC = function() {
+      const Static = function() {
         return <div>{counter}</div>;
       };
 
@@ -359,7 +359,7 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      const Static: SFC = function() {
+      const Static = function() {
         return <div>{counter}</div>;
       };
 

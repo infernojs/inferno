@@ -3246,7 +3246,7 @@ declare global {
   namespace JSX {
     // tslint:disable:no-empty-interface
     // @ts-ignore
-    interface Element extends InfernoNode {}
+    interface Element extends InfernoElement<any> {}
 
     interface ElementClass extends IComponent<any, any> {
       render(nextProps, nextState, nextContext): InfernoNode | undefined;
