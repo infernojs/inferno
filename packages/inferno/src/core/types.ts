@@ -1,7 +1,7 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-export interface IComponentConstructor<T extends IComponent<any, any>> {
-  new (props, context): T;
+export interface IComponentConstructor<T> {
+  new (props: T, context: any): IComponent<T, any>;
 }
 
 // IComponent is defined here, instead of Component to de-couple implementation from interface
@@ -3245,8 +3245,7 @@ declare global {
 
   namespace JSX {
     // tslint:disable:no-empty-interface
-    // @ts-ignore
-    interface Element extends InfernoNode {}
+    interface Element extends InfernoElement<any> {}
 
     interface ElementClass extends IComponent<any, any> {
       render(nextProps, nextState, nextContext): InfernoNode | undefined;
