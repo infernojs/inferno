@@ -100,7 +100,7 @@
     "jest-silent-reporter": "^0.1.1",
     "jsdom": "12.2.0",
     "lerna": "3.4.3",
-    "lint-staged": "^7.3.0",
+    "lint-staged": "^8.0.0",
     "madge": "^3.2.0",
     "minimist": "^1.2.0",
     "mobx": "^4",

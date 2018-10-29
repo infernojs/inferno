@@ -1,6 +1,6 @@
 import { render, VNode, rerender } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isArray, isNullOrUndef, isObject } from 'inferno-shared';
+import { isArray, isNullOrUndef } from 'inferno-shared';
 import { getTagNameOfVNode } from './utils';
 
 // Jest Snapshot Utilities
