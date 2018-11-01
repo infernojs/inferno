@@ -1,4 +1,5 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from "./nativetypes";
 
 export interface IComponentConstructor<T> {
   new (props: T, context: any): IComponent<T, any>;
@@ -55,10 +56,10 @@ export interface SemiSyntheticEvent<T> extends Event {
   currentTarget: EventTarget & T;
 }
 
-export type ClipboardEvent<T> = SemiSyntheticEvent<T>;
-export type CompositionEvent<T> = SemiSyntheticEvent<T>;
-export type DragEvent<T> = InfernoMouseEvent<T>;
-export type FocusEvent<T> = SemiSyntheticEvent<T>;
+export type ClipboardEvent<T> = SemiSyntheticEvent<T> & NativeClipboardEvent;
+export type CompositionEvent<T> = SemiSyntheticEvent<T> & NativeCompositionEvent;
+export type DragEvent<T> = InfernoMouseEvent<T> & NativeDragEvent;
+export type FocusEvent<T> = SemiSyntheticEvent<T> & NativeFocusEvent;
 export type FormEvent<T> = SemiSyntheticEvent<T>;
 
 export interface ChangeEvent<T> extends SemiSyntheticEvent<T> {
@@ -70,7 +71,7 @@ export type InfernoMouseEvent<T> = SemiSyntheticEvent<T> & MouseEvent;
 export type InfernoTouchEvent<T> = SemiSyntheticEvent<T> & TouchEvent;
 export type InfernoPointerEvent<T> = SemiSyntheticEvent<T> & PointerEvent;
 export type InfernoUIEvent<T> = SemiSyntheticEvent<T> & UIEvent;
-export type InernoWheelEvent<T> = InfernoMouseEvent<T> & WheelEvent;
+export type InfernoWheelEvent<T> = InfernoMouseEvent<T> & WheelEvent;
 export type InfernoAnimationEvent<T> = SemiSyntheticEvent<T> & AnimationEvent;
 export type InfernoTransitionEvent<T> = SemiSyntheticEvent<T> & TransitionEvent;
 
@@ -93,7 +94,7 @@ export type MouseEventHandler<T = Element> = EventHandler<InfernoMouseEvent<T>>;
 export type TouchEventHandler<T = Element> = EventHandler<InfernoTouchEvent<T>>;
 export type PointerEventHandler<T = Element> = EventHandler<InfernoPointerEvent<T>>;
 export type UIEventHandler<T = Element> = EventHandler<InfernoUIEvent<T>>;
-export type WheelEventHandler<T = Element> = EventHandler<InernoWheelEvent<T>>;
+export type WheelEventHandler<T = Element> = EventHandler<InfernoWheelEvent<T>>;
 export type AnimationEventHandler<T = Element> = EventHandler<InfernoAnimationEvent<T>>;
 export type TransitionEventHandler<T = Element> = EventHandler<InfernoTransitionEvent<T>>;
 

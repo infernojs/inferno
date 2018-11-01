@@ -1,4 +1,4 @@
-import { Component, render, rerender } from 'inferno';
+import { Component, render, rerender, DragEvent } from 'inferno';
 import sinon from 'sinon';
 
 describe('setState', () => {
@@ -121,6 +121,15 @@ describe('setState', () => {
     }
 
     render(<BaseComp />, container);
+  });
+
+  it('Should have dataTransfer in dragEvent type Github #1411', () => {
+    function handleDrop(evt: DragEvent<HTMLDivElement>) {
+      return evt.dataTransfer;
+    }
+
+    render(<div onDrop={handleDrop}>1</div>, container);
+    expect(container.innerHTML).toBe('<div>1</div>');
   });
 
   it('Should not fail if componentDidUpdate is not defined', done => {
