@@ -1,7 +1,7 @@
-import { render, Component, createFragment, Fragment, createPortal, forwardRef, createRef } from 'inferno';
+import { render, Component, createFragment, Fragment, createPortal, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { innerHTML } from 'inferno-utils';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('CreateElement (non-JSX)', () => {
   let container;
@@ -18,19 +18,6 @@ describe('CreateElement (non-JSX)', () => {
   });
 
   describe('Fragments', () => {
-    let container;
-
-    beforeEach(function() {
-      container = document.createElement('div');
-      document.body.appendChild(container);
-    });
-
-    afterEach(function() {
-      render(null, container);
-      container.innerHTML = '';
-      document.body.removeChild(container);
-    });
-
     it('Should render and unmount fragment', () => {
       let Example = class Example extends Component {
         render() {
@@ -750,6 +737,7 @@ describe('CreateElement (non-JSX)', () => {
         componentWillMount() {
           counter++;
         }
+
         render() {
           return null;
         }
@@ -778,6 +766,7 @@ describe('CreateElement (non-JSX)', () => {
         componentWillMount() {
           counter++;
         }
+
         render() {
           return null;
         }
@@ -818,6 +807,7 @@ describe('CreateElement (non-JSX)', () => {
         componentWillMount() {
           counter++;
         }
+
         render() {
           return null;
         }
@@ -898,6 +888,58 @@ describe('CreateElement (non-JSX)', () => {
       render(null, container);
 
       expect(container.innerHTML).toBe('');
+    });
+
+    it('Should mount fragment children to correct position Github #1412', () => {
+      const f = (...xs) => createFragment(xs, 0);
+
+      class Articles extends Component {
+        constructor() {
+          super();
+          this.state = { articles: ['id2', 'id3'], sections: ['id0', 'id1'] };
+        }
+
+        componentDidMount() {
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><footer>2018</footer>'
+          );
+
+          this.setState({ sections: [] });
+
+          rerender();
+
+          expect(container.innerHTML).toEqual('<h1>App</h1><footer>2018</footer>');
+
+          this.setState({ articles: ['id2', 'id3'], sections: ['id0', 'id1'] });
+
+          rerender();
+
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><footer>2018</footer>'
+          );
+        }
+
+        render() {
+          return f(
+            this.state.sections.map(section =>
+              createElement('section', null, [
+                createElement('h2', null, section),
+                this.state.articles.map(article => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
+              ])
+            )
+          );
+        }
+      }
+
+      class App extends Component {
+        render() {
+          return f(createElement('h1', null, 'App'), createElement(Articles), createElement('footer', null, '2018'));
+        }
+      }
+
+      render(createElement(App), container);
+
+      rerender();
     });
   });
 });

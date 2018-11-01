@@ -1,4 +1,14 @@
-import { createComponentVNode, createVNode, getFlagsForElementVnode, IComponentConstructor, Key, Props, StatelessComponent, VNode, createFragment } from 'inferno';
+import {
+  createComponentVNode,
+  createVNode,
+  getFlagsForElementVnode,
+  IComponentConstructor,
+  Key,
+  Props,
+  StatelessComponent,
+  VNode,
+  createFragment
+} from 'inferno';
 import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
