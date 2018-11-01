@@ -255,7 +255,7 @@ function isRootVNode(vNode: VNode): boolean {
   if (!(vNode.flags & VNodeFlags.InUse)) {
     return false;
   }
-  const dom = findDOMfromVNode(vNode);
+  const dom = findDOMfromVNode(vNode, true);
 
   if (!dom) {
     return false;
@@ -382,7 +382,7 @@ export function createDevToolsBridge() {
         // Check if root exists
         for (root in roots) {
           const rootInstance = roots[root];
-          const rootNode = findDOMfromVNode(rootInstance.vNode);
+          const rootNode = findDOMfromVNode(rootInstance.vNode, true);
 
           if (isDetached(rootNode)) {
             Reconciler.unmountComponent(rootInstance);

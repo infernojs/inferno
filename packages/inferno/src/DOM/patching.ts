@@ -20,7 +20,7 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
     // Single DOM operation, when we have dom references available
     replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
   } else {
-    mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode), lifecycle);
+    mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode, true), lifecycle);
     removeVNodeDOM(lastVNode, parentDOM);
   }
 }
@@ -91,7 +91,7 @@ function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, c
   let nextNode: Element | null = null;
 
   if (lastVNode.childFlags & ChildFlags.MultipleChildren && (nextIsSingle || (!nextIsSingle && (nextVNode.children as VNode[]).length > lastChildren.length))) {
-    nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1]) as Element).nextSibling as Element | null;
+    nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1], false) as Element).nextSibling as Element | null;
   }
 
   patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastChildren, nextVNode.children, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle);
@@ -212,7 +212,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
 function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Function[]) {
   unmount(lastChildren);
 
-  mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren), lifecycle);
+  mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle);
 
   removeVNodeDOM(lastChildren, parentDOM);
 }
@@ -554,7 +554,7 @@ function patchKeyedChildren(
   if (j > aEnd) {
     if (j <= bEnd) {
       nextPos = bEnd + 1;
-      nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge;
+      nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge;
 
       while (j <= bEnd) {
         bNode = b[j];
@@ -676,13 +676,13 @@ function patchKeyedChildren(
             b[pos] = bNode = directClone(bNode);
           }
           nextPos = pos + 1;
-          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge, lifecycle);
+          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
         } else if (j < 0 || i !== seq[j]) {
           pos = i + bStart;
           bNode = b[pos];
           nextPos = pos + 1;
 
-          moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge);
+          moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge);
         } else {
           j--;
         }
@@ -698,7 +698,7 @@ function patchKeyedChildren(
             b[pos] = bNode = directClone(bNode);
           }
           nextPos = pos + 1;
-          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos]) : outerEdge, lifecycle);
+          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
         }
       }
     }

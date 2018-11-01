@@ -68,7 +68,7 @@ export function unmount(vNode) {
       ref = vNode.ref;
 
       if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
-        ref.onComponentWillUnmount(findDOMfromVNode(vNode), vNode.props || EMPTY_OBJ);
+        ref.onComponentWillUnmount(findDOMfromVNode(vNode, true), vNode.props || EMPTY_OBJ);
       }
 
       unmount(children);

@@ -10,11 +10,11 @@ export function findDOMNode(ref) {
   }
 
   if (ref.$LI) {
-    return findDOMfromVNode(ref.$LI);
+    return findDOMfromVNode(ref.$LI, true);
   }
 
   if (ref.flags) {
-    return findDOMfromVNode(ref);
+    return findDOMfromVNode(ref, true);
   }
 
   return null;

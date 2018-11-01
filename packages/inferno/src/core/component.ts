@@ -86,7 +86,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       component,
       combineFrom(component.state, pendingState),
       component.props,
-      (findDOMfromVNode(component.$LI) as Element).parentNode as Element,
+      (findDOMfromVNode(component.$LI, true) as Element).parentNode as Element,
       component.context,
       false,
       force,

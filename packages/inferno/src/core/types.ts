@@ -1,5 +1,5 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from "./nativetypes";
+import { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
 
 export interface IComponentConstructor<T> {
   new (props: T, context: any): IComponent<T, any>;

@@ -941,5 +941,129 @@ describe('CreateElement (non-JSX)', () => {
 
       rerender();
     });
+
+    it('Should re-mount fragment children to correct position when edge is component', () => {
+      const f = (...xs) => createFragment(xs, 0);
+
+      class Articles extends Component {
+        constructor() {
+          super();
+          this.state = { articles: ['id2', 'id3'], sections: ['id0', 'id1'] };
+        }
+
+        componentDidMount() {
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+          );
+
+          this.setState({ sections: [] });
+
+          rerender();
+
+          expect(container.innerHTML).toEqual('<h1>App</h1><footer>2018</footer><div>1</div><div>2</div>');
+
+          this.setState({ articles: ['id2', 'id3'], sections: ['id0', 'id1'] });
+
+          rerender();
+
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+          );
+        }
+
+        render() {
+          return f(
+            this.state.sections.map(section =>
+              createElement(Section, {
+                children: [
+                  createElement('h2', null, section),
+                  this.state.articles.map(article => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
+                ]
+              })
+            )
+          );
+        }
+      }
+
+      function Section(props) {
+        return f(createElement('section', null, props.children), createElement('div', null, 'end'));
+      }
+
+      function EdgeComponent() {
+        return f(createElement('footer', null, '2018'), createElement('div', null, '1'), createElement('div', null, '2'));
+      }
+
+      class App extends Component {
+        render() {
+          return f(createElement('h1', null, 'App'), createElement(Articles), createElement(EdgeComponent));
+        }
+      }
+
+      render(createElement(App), container);
+
+      rerender();
+    });
+
+    it('Should append more fragment children to correct position when edge is component', () => {
+      const f = (...xs) => createFragment(xs, 0);
+
+      class Articles extends Component {
+        constructor() {
+          super();
+          this.state = { articles: ['id2', 'id3'], sections: ['id0', 'id1'] };
+        }
+
+        componentDidMount() {
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+          );
+
+          this.setState({ articles: [], sections: ['id0'] });
+
+          rerender();
+
+          expect(container.innerHTML).toEqual('<h1>App</h1><section><h2>id0</h2></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>');
+
+          this.setState({ articles: ['id2', 'id3'], sections: ['id0', 'id1'] });
+
+          rerender();
+
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+          );
+        }
+
+        render() {
+          return f(
+            this.state.sections.map(section =>
+              createElement(Section, {
+                children: [
+                  createElement('h2', null, section),
+                  this.state.articles.map(article => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
+                ]
+              })
+            )
+          );
+        }
+      }
+
+      function Section(props) {
+        return f(createElement('section', null, props.children), createElement('div', null, 'end'));
+      }
+
+      function EdgeComponent() {
+        return f(createElement('footer', null, '2018'), createElement('div', null, '1'), createElement('div', null, '2'));
+      }
+
+      class App extends Component {
+        render() {
+          return f(createElement('h1', null, 'App'), createElement(Articles), createElement(EdgeComponent));
+        }
+      }
+
+      render(createElement(App), container);
+
+      rerender();
+    });
   });
 });
