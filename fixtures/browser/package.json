@@ -32,7 +32,7 @@
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "git://github.com/Havunen/karma-jasmine.git#b550983f8f0c220bbfbccd927113d1ba6a6de939",
     "karma-webpack": "^4.0.0-rc.0",
-    "ts-loader": "^5.2.2",
+    "ts-loader": "^5.3.0",
     "wd": "^1.11.0",
     "webpack": "^4.23.1"
   }
