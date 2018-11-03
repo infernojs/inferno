@@ -88,7 +88,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       component.props,
       (findDOMfromVNode(component.$LI, true) as Element).parentNode as Element,
       component.context,
-      false,
+      component.$SVG,
       force,
       null,
       lifecycle
@@ -129,9 +129,10 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $CX: any = null; // CHILDCONTEXT
   public $UPD: boolean = true; // UPDATING
   public $QU: Function[] | null = null; // QUEUE
-  public $N: boolean = false; // Flag
+  public $N: boolean = false; // Uses new lifecycle API Flag
   public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client
   public $L: Function[] | null = null; // Current lifecycle of this component
+  public $SVG: boolean = false; // Flag to keep track if component is inside SVG tree
 
   constructor(props?: P, context?: any) {
     /** @type {object} */

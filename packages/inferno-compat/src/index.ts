@@ -41,7 +41,7 @@ import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isStri
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
-import { SVGDOMPropertyConfig } from './SVGDOMPropertyConfig';
+import { InfernoCompatPropertyMap } from './InfernoCompatPropertyMap';
 import { findDOMNode } from 'inferno-extras';
 import { getNumberStyleValue, hyphenCase } from './reactstyles';
 
@@ -148,15 +148,7 @@ const validLineInputs = {
 
 function normalizeGenericProps(props) {
   for (const prop in props) {
-    if (prop === 'onDoubleClick') {
-      props.onDblClick = props[prop];
-      props[prop] = void 0;
-    }
-    if (prop === 'htmlFor') {
-      props.for = props[prop];
-      props[prop] = void 0;
-    }
-    const mappedProp = SVGDOMPropertyConfig[prop];
+    const mappedProp = InfernoCompatPropertyMap[prop];
     if (mappedProp && props[prop] && mappedProp !== prop) {
       props[mappedProp] = props[prop];
       props[prop] = void 0;

@@ -91,7 +91,7 @@ describe('linkEvent', () => {
     let test;
     let event;
 
-    function simulateInput(elm, text) {
+    function simulateInput(elm) {
       if (typeof Event !== 'undefined') {
         const newEvent = document.createEvent('Event');
         newEvent.initEvent('input', true, true);

@@ -97,7 +97,10 @@ const ATTRS = [
   'xml:space'
 ];
 
-export const SVGDOMPropertyConfig = {};
+export const InfernoCompatPropertyMap = {
+  htmlFor: 'for',
+  onDoubleClick: 'onDblClick'
+};
 
 const CAMELIZE = /[\-\:]([a-z])/g;
 const capitalize = token => token[1].toUpperCase();
@@ -105,5 +108,5 @@ const capitalize = token => token[1].toUpperCase();
 ATTRS.forEach(original => {
   const reactName = original.replace(CAMELIZE, capitalize);
 
-  SVGDOMPropertyConfig[reactName] = original;
+  InfernoCompatPropertyMap[reactName] = original;
 });

@@ -45,7 +45,7 @@ function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, contex
   let currentNode;
 
   if (isClass) {
-    const instance = _CI(vNode, type, props, context, lifecycle);
+    const instance = _CI(vNode, type, props, context, isSVG, lifecycle);
     const input = instance.$LI;
 
     currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG, lifecycle);

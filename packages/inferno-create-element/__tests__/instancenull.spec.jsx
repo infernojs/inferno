@@ -391,7 +391,7 @@ describe('BUG: instance - null', () => {
     expect(spy.callCount).toBe(0);
 
     const node = container.querySelector('#MAGICBUTTON');
-    node.dispatchEvent(event, true);
+    node.dispatchEvent(event);
 
     setTimeout(function() {
       expect(spy.callCount).toBe(0);

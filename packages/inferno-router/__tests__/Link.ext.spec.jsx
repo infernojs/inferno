@@ -40,7 +40,7 @@ describe('Link (jsx)', () => {
   });
 
   it('should trigger custom onClick', () => {
-    const spy = sinon.spy(() => {});
+    const spy = sinon.spy();
 
     render(
       <MemoryRouter>

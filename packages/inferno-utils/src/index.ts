@@ -61,7 +61,7 @@ export function validateNodeTree(node: any): boolean {
   return true;
 }
 
-export function triggerEvent(name: string, element: any) {
+export function triggerEvent(name: string, element) {
   let eventType;
 
   if (name === 'click' || name === 'dblclick' || name === 'mousedown' || name === 'mouseup') {
@@ -79,5 +79,5 @@ export function triggerEvent(name: string, element: any) {
     });
   }
   event.initEvent(name, name !== 'change', true);
-  element.dispatchEvent(event, true);
+  element.dispatchEvent(event);
 }

@@ -181,7 +181,7 @@ describe('ReactJSXElement', function() {
   it('Should map onDoubleClick to html native event', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy(() => {});
+    const spy = sinon.spy();
     ReactDOM.render(React.createElement('a', { onDoubleClick: spy }, 'test'), container);
 
     expect(spy.callCount).toBe(0);
@@ -195,7 +195,7 @@ describe('ReactJSXElement', function() {
   it('Should map onDoubleClick to html native even (jsx)t', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy(() => {});
+    const spy = sinon.spy();
     const node = <a onDoubleClick={spy} />;
     expect(node.props.onDblClick).toEqual(spy);
     ReactDOM.render(node, container);
@@ -211,7 +211,7 @@ describe('ReactJSXElement', function() {
   it('Should have input onChange event', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy(() => {});
+    const spy = sinon.spy();
     ReactDOM.render(React.createElement('input', { onChange: spy }), container);
 
     expect(spy.callCount).toBe(0);
@@ -226,7 +226,7 @@ describe('ReactJSXElement', function() {
   it('Should have input onChange event (JSX)', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy(() => {});
+    const spy = sinon.spy();
     ReactDOM.render(<input onChange={spy} />, container);
 
     expect(spy.callCount).toBe(0);
@@ -238,12 +238,13 @@ describe('ReactJSXElement', function() {
     document.body.removeChild(container);
   });
 
-  it('Should map onDoubleClick to html native event', () => {
+  it('Should map onDoubleClick to html native event #1', () => {
     const container = document.createElement('div');
 
+    debugger;
     ReactDOM.render(React.createElement('label', { htmlFor: 'foobarID' }, 'test'), container);
 
     const element = container.querySelector('label');
-    expect(element.htmlFor).toBe('foobarID');
+    expect(element.getAttribute('for')).toBe('foobarID');
   });
 });

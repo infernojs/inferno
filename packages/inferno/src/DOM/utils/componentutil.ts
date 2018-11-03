@@ -41,10 +41,11 @@ export function renderNewInput(instance, props, context) {
   return nextInput;
 }
 
-export function createClassComponentInstance(vNode: VNode, Component, props, context: Object, lifecycle: Function[]) {
+export function createClassComponentInstance(vNode: VNode, Component, props, context: Object, isSVG: boolean, lifecycle: Function[]) {
   const instance = new Component(props, context);
   const usesNewAPI = (instance.$N = Boolean(Component.getDerivedStateFromProps || instance.getSnapshotBeforeUpdate));
 
+  instance.$SVG = isSVG;
   instance.$L = lifecycle;
 
   if (process.env.NODE_ENV !== 'production') {

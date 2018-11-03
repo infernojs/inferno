@@ -1,8 +1,9 @@
-import { render, createRef, createPortal, createFragment, Component, Fragment } from 'inferno';
+import { render, rerender, createRef, createPortal, createFragment, Component, Fragment } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import sinon from 'sinon';
 import { triggerEvent } from 'inferno-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
+import { createElement } from 'inferno-create-element';
 
 describe('rendering routine', () => {
   let container;
@@ -1214,6 +1215,37 @@ describe('rendering routine', () => {
       });
 
       runAllTests();
+    });
+  });
+
+  describe('SVG elements', () => {
+    it('Should keep SVG children flagged when parent is SVG', () => {
+      class Rect extends Component {
+        constructor(p, c) {
+          super(p, c);
+          this.state = { className: 'foo' };
+        }
+
+        componentDidMount() {
+          this.setState({ className: 'bar' });
+        }
+
+        render() {
+          return (
+            createElement('rect', {
+              className: this.state.className
+            })
+          )
+        }
+      }
+
+      hydrate(<svg><Rect/></svg>, container);
+
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe('foo');
+
+      rerender();
+
+      expect(container.firstChild.firstChild.getAttribute('class')).toBe('bar');
     });
   });
 });
