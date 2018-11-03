@@ -141,7 +141,7 @@ module.exports = function(config) {
 
     webpack: {
       devtool: 'none',
-      mode: 'production',
+      mode: 'none',
       optimization: {
         splitChunks: false,
         runtimeChunk: false,
