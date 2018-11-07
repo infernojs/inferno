@@ -39,7 +39,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
       }
       QU.push(callback);
     }
-  } else if (component.$BR && isFunction(callback)) {
+  } else if (isFunction(callback)) {
     (component.$L as Function[]).push(callback.bind(component));
   }
 }
