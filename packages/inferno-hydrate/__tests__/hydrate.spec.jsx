@@ -1231,15 +1231,18 @@ describe('rendering routine', () => {
         }
 
         render() {
-          return (
-            createElement('rect', {
-              className: this.state.className
-            })
-          )
+          return createElement('rect', {
+            className: this.state.className
+          });
         }
       }
 
-      hydrate(<svg><Rect/></svg>, container);
+      hydrate(
+        <svg>
+          <Rect />
+        </svg>,
+        container
+      );
 
       expect(container.firstChild.firstChild.getAttribute('class')).toBe('foo');
 

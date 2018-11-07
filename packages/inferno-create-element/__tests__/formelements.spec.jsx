@@ -118,7 +118,7 @@ describe('FormElements', () => {
       let callCounter = 0;
       let args = [];
 
-      const spy = function (arg) {
+      const spy = function(arg) {
         callCounter++;
         args.push(arg);
       };

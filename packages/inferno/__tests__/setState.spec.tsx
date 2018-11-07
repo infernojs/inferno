@@ -6,11 +6,13 @@ describe('setState', () => {
 
   beforeEach(function() {
     container = document.createElement('div');
+    document.body.appendChild(container);
   });
 
   afterEach(function() {
     rerender(); // Flush pending stuff, if any
     render(null, container);
+    document.body.removeChild(container);
     container.innerHTML = '';
   });
 
@@ -914,4 +916,130 @@ describe('setState', () => {
 
     expect(container.textContent).toBe('ACTIVE   :   ACTIVE');
   });
+
+  it('Should call all setState callbacks', () => {
+    let counter = 0;
+    let setStateCounter = 0;
+
+    class Child extends Component<any, any> {
+      constructor(props) {
+        super(props);
+        this.state = {test: false};
+        this.callCallback = this.callCallback.bind(this);
+      }
+
+      public callCallback() {
+        setStateCounter++;
+        this.setState({test: true}, () => {
+          counter++;
+        });
+      }
+
+      public render() {
+        if (setStateCounter === 1) {
+          this.callCallback();
+          this.props.callback(true);
+        }
+
+        return (
+          <div>Child</div>
+        );
+      }
+    }
+
+    class MidChild extends Component<any, any> {
+      constructor(props) {
+        super(props);
+        this.state = {test: false};
+        this.callCallback = this.callCallback.bind(this);
+      }
+
+      public callCallback() {
+        setStateCounter++;
+        this.setState({test: true}, () => {
+          counter++;
+          this.props.callback(true);
+        });
+      }
+
+      public render() {
+        return [
+          <button onClick={this.callCallback}>Click</button>,
+          <Child callback={this.props.callback}/>
+        ];
+      }
+    }
+
+    class Parent extends Component<any, any> {
+      constructor(props) {
+        super(props);
+        this.state = {test: false, foobar: false};
+        this.doSomething = this.doSomething.bind(this);
+        this.callCallback = this.callCallback.bind(this);
+      }
+
+      public callCallback(testValue) {
+        setStateCounter++;
+        this.setState({test: testValue}, () => {
+          counter++;
+          this.props.callback(true);
+        });
+      }
+
+      public doSomething() {
+        setStateCounter++;
+        this.setState({foobar: true}, () => {
+          counter++;
+        });
+      }
+
+      public render() {
+        return (
+          <div>
+            <MidChild callback={this.callCallback} foobar={this.state.foobar}/>
+          </div>
+        );
+      }
+    }
+
+    class Wrapper extends Component<any, any> {
+      constructor(props) {
+        super(props);
+        this.state = {didCounter: 0};
+        this.doSomething = this.doSomething.bind(this);
+      }
+
+      public doSomething() {
+        setStateCounter++;
+
+        this.setState({didCounter: ++this.state.didCounter}, () => {
+          counter++;
+        });
+      }
+
+      public render() {
+        return (
+          <div>
+            <Parent callback={this.doSomething}/>
+            <span>{this.state.didCounter}</span>
+          </div>
+        );
+      }
+    }
+
+    render(<Wrapper />, container);
+
+    expect(counter).toBe(0);
+    expect(setStateCounter).toBe(0);
+
+    const btn = container.querySelector('button');
+
+    btn.click();
+
+    rerender();
+    expect(setStateCounter).toBe(6);
+    expect(counter).toBe(6);
+
+    expect(container.innerHTML).toEqual('<div><div><button>Click</button><div>Child</div></div><span>2</span></div>');
+  })
 });

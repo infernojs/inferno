@@ -1,7 +1,7 @@
 import { render, Component } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 import { createElement } from 'inferno-create-element';
-import { rerender } from "../../inferno-compat/src";
+import { rerender } from '../../inferno-compat/src';
 
 describe('createTree - SVG (JSX)', () => {
   let container;
@@ -210,7 +210,6 @@ describe('createTree - SVG (JSX)', () => {
     expect(innerHTML(container.innerHTML)).toBe(innerHTML('<svg id="test"></svg>'));
   });
 
-
   describe('SVG elements', () => {
     it('Should keep SVG children flagged when parent is SVG', () => {
       class Rect extends Component {
@@ -224,15 +223,18 @@ describe('createTree - SVG (JSX)', () => {
         }
 
         render() {
-          return (
-            createElement('rect', {
-              className: this.state.className
-            })
-          )
+          return createElement('rect', {
+            className: this.state.className
+          });
         }
       }
 
-      render(<svg><Rect/></svg>, container);
+      render(
+        <svg>
+          <Rect />
+        </svg>,
+        container
+      );
 
       expect(container.firstChild.firstChild.getAttribute('class')).toBe('foo');
 

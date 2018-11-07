@@ -20,33 +20,27 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
     }
   }
 
-  if (!component.$PSS && !component.$BR) {
+  if (!component.$BR) {
     if (!component.$UPD) {
-      component.$PSS = true;
       component.$UPD = true;
       if (QUEUE.length === 0) {
         applyState(component, force, callback);
-      } else {
-        QUEUE.push(component);
+        return;
       }
-    } else {
-      if (QUEUE.push(component) === 1) {
-        nextTick(rerender);
-      }
-      if (isFunction(callback)) {
-        let QU = component.$QU;
+    }
+    if (QUEUE.push(component) === 1) {
+      nextTick(rerender);
+    }
+    if (isFunction(callback)) {
+      let QU = component.$QU;
 
-        if (!QU) {
-          QU = component.$QU = [] as Function[];
-        }
-        QU.push(callback);
+      if (!QU) {
+        QU = component.$QU = [] as Function[];
       }
+      QU.push(callback);
     }
-  } else {
-    component.$PSS = true;
-    if (component.$BR && isFunction(callback)) {
-      (component.$L as Function[]).push(callback.bind(component));
-    }
+  } else if (component.$BR && isFunction(callback)) {
+    (component.$L as Function[]).push(callback.bind(component));
   }
 }
 
@@ -74,7 +68,6 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     return;
   }
   if (force || !component.$BR) {
-    component.$PSS = false;
     const pendingState = component.$PS;
 
     component.$PS = null;
@@ -122,7 +115,6 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Internal properties
   public $BR: boolean = false; // BLOCK RENDER
   public $BS: boolean = true; // BLOCK STATE
-  public $PSS: boolean = false; // PENDING SET STATE
   public $PS: Partial<S> | null = null; // PENDING STATE (PARTIAL or FULL)
   public $LI: any = null; // LAST INPUT
   public $UN: boolean = false; // UNMOUNTED

@@ -83,9 +83,9 @@ export class RenderStream extends Readable {
     instance.$BR = true;
 
     return Promise.resolve(!hasNewAPI && instance.componentWillMount && instance.componentWillMount()).then(() => {
-      if (instance.$PSS) {
+      const pending = instance.$PS;
+      if (pending) {
         const state = instance.state;
-        const pending = instance.$PS;
 
         if (state === null) {
           instance.state = pending;
@@ -94,7 +94,6 @@ export class RenderStream extends Readable {
             state[key] = pending[key];
           }
         }
-        instance.$PSS = false;
         instance.$PS = null;
       }
 
@@ -103,7 +102,6 @@ export class RenderStream extends Readable {
         instance.state = createDerivedState(instance, props, instance.state);
       }
       const renderOutput = instance.render(instance.props, instance.state, instance.context);
-      instance.$PSS = false;
 
       if (isInvalid(renderOutput)) {
         return this.push('<!--!-->');

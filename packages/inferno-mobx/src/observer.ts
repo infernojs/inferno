@@ -59,14 +59,14 @@ function patch(target, funcName, runMixinFirst) {
   const f = !base
     ? mixinFunc
     : runMixinFirst === true
-      ? function() {
-          mixinFunc.apply(this, arguments);
-          base.apply(this, arguments);
-        }
-      : function() {
-          base.apply(this, arguments);
-          mixinFunc.apply(this, arguments);
-        };
+    ? function() {
+        mixinFunc.apply(this, arguments);
+        base.apply(this, arguments);
+      }
+    : function() {
+        base.apply(this, arguments);
+        mixinFunc.apply(this, arguments);
+      };
 
   // MWE: ideally we freeze here to protect against accidental overwrites in component instances, see #195
   // ...but that breaks react-hot-loader, see #231...

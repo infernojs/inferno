@@ -70,9 +70,10 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
       instance.$BR = true;
       instance.componentWillMount();
 
-      if (instance.$PSS) {
+      const pending = instance.$PS as any;
+
+      if (!isNull(pending)) {
         const state = instance.state;
-        const pending = instance.$PS as any;
 
         if (isNull(state)) {
           instance.state = pending;
@@ -81,7 +82,6 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
             state[key] = pending[key];
           }
         }
-        instance.$PSS = false;
         instance.$PS = null;
       }
 

@@ -393,9 +393,8 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
       }
       instance.$BR = false;
     }
-    if (instance.$PSS) {
+    if (!isNull(instance.$PS)) {
       nextState = combineFrom(nextState, instance.$PS) as any;
-      instance.$PSS = false;
       instance.$PS = null;
     }
   }

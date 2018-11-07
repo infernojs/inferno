@@ -36,9 +36,10 @@ function renderVNodeToString(vNode, parent, context): string {
         instance.$BR = true;
         instance.componentWillMount();
         instance.$BR = false;
-        if (instance.$PSS) {
+        const pending = instance.$PS;
+
+        if (pending) {
           const state = instance.state;
-          const pending = instance.$PS;
 
           if (state === null) {
             instance.state = pending;

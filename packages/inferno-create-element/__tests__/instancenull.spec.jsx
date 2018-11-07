@@ -45,9 +45,9 @@ describe('BUG: instance - null', () => {
       }
 
       /*
-			 * FireFox v51.0 fixes issue with href
-			 * iOS still broken (21.1.2017)
-			 */
+       * FireFox v51.0 fixes issue with href
+       * iOS still broken (21.1.2017)
+       */
 
       return (
         <svg focusable="false" className={'svgicon'}>
