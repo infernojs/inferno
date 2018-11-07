@@ -12,19 +12,19 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const benchmarks = readdirSync(__dirname).filter(file => statSync(path.join(__dirname, file)).isDirectory());
 
-const resolve = pkg => path.resolve(__dirname, '../packages', pkg, 'dist', isProduction ? 'index.esm.js' : 'index.dev.esm.js');
+const resolve = pkg => path.resolve(__dirname, '../packages', pkg, 'dist', 'index.esm.js');
 
 
 console.log(resolve('inferno'));
 
 // see below for details on the options
 const plugins = [
+  replace({
+    'process.env.NODE_ENV': '"production"',
+    sourcemap: false
+  }),
   nodeResolvePlugin({
     preferBuiltins: false
-  }),
-  replace({
-    'process.env.NODE_ENV': isProduction ? JSON.stringify('production') : JSON.stringify('development'),
-    sourcemap: false
   }),
   babelPlugin({
     exclude: 'node_modules/**',
@@ -99,7 +99,8 @@ benchmarks.forEach(dir => {
     return opts.write({
       format: 'iife',
       file: path.join(benchmarkPath, 'dist', 'bundle.js'),
-      sourcemap: false
+      sourcemap: false,
+      name: 'inferno'
     });
   });
 });

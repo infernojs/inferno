@@ -241,7 +241,6 @@ describe('ReactJSXElement', function() {
   it('Should map onDoubleClick to html native event #1', () => {
     const container = document.createElement('div');
 
-    debugger;
     ReactDOM.render(React.createElement('label', { htmlFor: 'foobarID' }, 'test'), container);
 
     const element = container.querySelector('label');

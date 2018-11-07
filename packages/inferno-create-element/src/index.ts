@@ -84,22 +84,21 @@ export function createElement<T>(type: string | IComponentConstructor<T> | State
         props = {} as T;
       }
       props.children = children;
-      children = null;
     }
 
     if (!isNullOrUndef(props)) {
       newProps = {} as T & Props<T>;
 
       for (const prop in props) {
-        if ((componentHooks as any)[prop] === 1) {
+        if (prop === 'key') {
+          key = props.key;
+        } else if (prop === 'ref') {
+          ref = props.ref;
+        } else if ((componentHooks as any)[prop] === 1) {
           if (!ref) {
             ref = {};
           }
           ref[prop] = props[prop];
-        } else if (prop === 'key') {
-          key = props.key;
-        } else if (prop === 'ref') {
-          ref = props.ref;
         } else {
           newProps[prop] = props[prop];
         }
