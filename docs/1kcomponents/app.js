@@ -162,7 +162,13 @@ class VizDemo extends Component {
   }
 
   renderPoint(point) {
-    return <Point {...point} />
+    return (
+      <Point
+        x={point.x}
+        y={point.y}
+        color={point.color}
+      />
+    );
   }
 
   render() {
@@ -181,7 +187,7 @@ function Point({ x, y, color }) {
   return (
     <rect
       className="point"
-      transform={`translate(${x}, ${y})`}
+      transform={`translate(${Math.floor(x)}, ${Math.floor(y)})`}
       fill={color}
     />
   );

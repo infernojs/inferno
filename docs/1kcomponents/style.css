@@ -18,10 +18,10 @@ a {
     position: relative;
 }
 .point {
-    width: 5px;
-    height: 5px;
-    background: black;
+    width: 4px;
+    height: 4px;
     position: absolute;
+    shape-rendering: optimizeSpeed;
 }
 .controls {
     position: fixed;

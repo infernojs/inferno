@@ -29,7 +29,9 @@ export function forwardRef(render) {
 }
 
 export function pushRef(dom: Element | null, value: Function, lifecycle: Function[]) {
-  lifecycle.push(() => value(dom));
+  lifecycle.push(() => {
+    value(dom);
+  });
 }
 
 export function unmountRef(ref) {

@@ -84,7 +84,7 @@
     "@babel/preset-typescript": "^7.1.0",
     "@types/history": "^4.7.2",
     "@types/jest": "^23.3.9",
-    "@types/node": "^10.12.2",
+    "@types/node": "^10.12.3",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-plugin-inferno": "6.0.2",

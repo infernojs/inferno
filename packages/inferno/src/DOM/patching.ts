@@ -315,7 +315,9 @@ function patchChildren(
 }
 
 function createDidUpdate(instance, lastProps, lastState, snapshot, lifecycle) {
-  lifecycle.push(() => instance.componentDidUpdate(lastProps, lastState, snapshot));
+  lifecycle.push(() => {
+    instance.componentDidUpdate(lastProps, lastState, snapshot);
+  });
 }
 
 export function updateClassComponent(

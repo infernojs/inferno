@@ -178,7 +178,9 @@ export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[
 }
 
 function createOnMountCallback(ref, vNode, props) {
-  return () => ref.onComponentDidMount(findDOMfromVNode(vNode, true), props);
+  return () => {
+    ref.onComponentDidMount(findDOMfromVNode(vNode, true), props);
+  };
 }
 
 export function mountFunctionalComponentCallbacks(props, ref, vNode: VNode, lifecycle: Function[]) {
