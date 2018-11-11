@@ -32,7 +32,7 @@ export function createWrappedFunction(methodName: string | string[], applyValue?
     if (isString(methodName)) {
       triggerEventListener(props, methodName, e);
     } else {
-      for (let i = 0; i < methodName.length; i++) {
+      for (let i = 0; i < methodName.length; ++i) {
         triggerEventListener(props, methodName[i], e);
       }
     }

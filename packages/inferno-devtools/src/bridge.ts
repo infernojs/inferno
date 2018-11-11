@@ -55,7 +55,7 @@ function createReactDOMComponent(vNode, oldDevToolInstance?) {
   } else if (childFlags & ChildFlags.MultipleChildren) {
     renderedChildren = [];
 
-    for (let i = 0; i < vNode.children.length; i++) {
+    for (let i = 0; i < vNode.children.length; ++i) {
       renderedChildren.push(updateReactComponent(vNode.children[i], devToolChildren ? devToolChildren[i] : null));
     }
   } else if (childFlags === ChildFlags.HasVNodeChildren) {
@@ -172,7 +172,7 @@ function nextRootKey() {
 function findRoots(roots) {
   const elements = document.body.querySelectorAll('*');
 
-  for (let i = 0; i < elements.length; i++) {
+  for (let i = 0; i < elements.length; ++i) {
     const vNode = (elements[i] as any).$V;
 
     if (vNode && isRootVNode(vNode)) {
@@ -191,7 +191,7 @@ function mountDevToolComponentTree(component) {
   if (component._renderedComponent) {
     mountDevToolComponentTree(component._renderedComponent);
   } else if (component._renderedChildren) {
-    for (let i = 0; i < component._renderedChildren.length; i++) {
+    for (let i = 0; i < component._renderedChildren.length; ++i) {
       mountDevToolComponentTree(component._renderedChildren[i]);
     }
   }
@@ -207,7 +207,7 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
       checkVNode(children, devToolChildren ? devToolChildren[0] : null, devToolComponent);
 
       if (devToolLength > 1) {
-        for (i = 1; i < devToolLength; i++) {
+        for (i = 1; i < devToolLength; ++i) {
           Reconciler.unmountComponent(devToolChildren[i]);
         }
       }
@@ -222,11 +222,11 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
       const commonLength = vNodeLength > devToolLength ? devToolLength : vNodeLength;
       i = 0;
 
-      for (; i < commonLength; i++) {
+      for (; i < commonLength; ++i) {
         checkVNode(children[i], devToolChildren[i], devToolComponent, i);
       }
       if (devToolLength < vNodeLength) {
-        for (i = commonLength; i < vNodeLength; i++) {
+        for (i = commonLength; i < vNodeLength; ++i) {
           const newDevToolChildren = updateReactComponent(children[i]);
 
           if (!devToolChildren) {
@@ -237,13 +237,13 @@ function checkChildVNodes(childFlags, children, devToolComponent) {
           mountDevToolComponentTree(newDevToolChildren);
         }
       } else if (devToolLength > vNodeLength) {
-        for (i = commonLength; i < devToolLength; i++) {
+        for (i = commonLength; i < devToolLength; ++i) {
           Reconciler.unmountComponent(devToolChildren.pop());
         }
       }
       break;
     case ChildFlags.HasInvalidChildren:
-      for (i = 0; i < devToolLength; i++) {
+      for (i = 0; i < devToolLength; ++i) {
         Reconciler.unmountComponent(devToolChildren[i]);
       }
       devToolComponent._renderedChildren = null;

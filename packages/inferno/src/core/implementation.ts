@@ -193,7 +193,7 @@ function cloneFragment(vNodeToClone) {
   } else if (childFlags & ChildFlags.MultipleChildren) {
     clonedChildren = [];
 
-    for (let i = 0, len = oldChildren.length; i < len; i++) {
+    for (let i = 0, len = oldChildren.length; i < len; ++i) {
       clonedChildren.push(directClone(oldChildren[i]));
     }
   }
@@ -315,7 +315,7 @@ export function normalizeChildren(vNode: VNode, children) {
   } else if (isArray(children)) {
     const len = children.length;
 
-    for (let i = 0; i < len; i++) {
+    for (let i = 0; i < len; ++i) {
       let n = children[i];
 
       if (isInvalid(n) || isArray(n)) {

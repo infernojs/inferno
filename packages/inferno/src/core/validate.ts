@@ -34,7 +34,7 @@ function getTagName(input) {
 function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
   const foundKeys: any = {};
 
-  for (let i = 0, len = vNodeTree.length; i < len; i++) {
+  for (let i = 0, len = vNodeTree.length; i < len; ++i) {
     const childNode = vNodeTree[i];
 
     if (isArray(childNode)) {

@@ -24,7 +24,7 @@ export class Switch extends Component<IRouteProps, any> {
     let _child: any;
 
     if (isArray(children)) {
-      for (let i = 0; i < children.length; i++) {
+      for (let i = 0; i < children.length; ++i) {
         _child = children[i];
 
         match = getMatch(_child.props, route, location);

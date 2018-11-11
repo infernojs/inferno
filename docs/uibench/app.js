@@ -2,6 +2,14 @@ import {createTextVNode, linkEvent, version, render} from "inferno";
 
 uibench.init('Inferno', version);
 
+function shouldDataUpdate(lastProps, nextProps) {
+  return lastProps !== nextProps;
+}
+
+const SCU_hooks = {
+  onComponentShouldUpdate: shouldDataUpdate
+};
+
 function TreeLeaf({children}) {
   return (
     <li
@@ -12,9 +20,7 @@ function TreeLeaf({children}) {
   );
 }
 
-function shouldDataUpdate(lastProps, nextProps) {
-  return lastProps !== nextProps;
-}
+TreeLeaf.defaultHooks = SCU_hooks;
 
 function TreeNode({data}) {
   var length = data.children.length;
@@ -25,9 +31,9 @@ function TreeNode({data}) {
     var id = n.id;
 
     if (n.container) {
-      children[i] = <TreeNode onComponentShouldUpdate={shouldDataUpdate} data={n} key={id}/>;
+      children[i] = <TreeNode data={n} key={id}/>;
     } else {
-      children[i] = <TreeLeaf onComponentShouldUpdate={shouldDataUpdate} key={id}>{id}</TreeLeaf>;
+      children[i] = <TreeLeaf key={id}>{id}</TreeLeaf>;
     }
   }
 
@@ -40,6 +46,8 @@ function TreeNode({data}) {
   );
 }
 
+TreeNode.defaultHooks = SCU_hooks;
+
 function tree(data) {
   /*
    * $HasVNodeChildren flag is not needed here, because shape of children is known by the compiler
@@ -47,7 +55,7 @@ function tree(data) {
    */
   return (
     <div className="Tree">
-      <TreeNode data={data.root} onComponentShouldUpdate={shouldDataUpdate}/>
+      <TreeNode data={data.root}/>
     </div>
   );
 }
@@ -67,17 +75,17 @@ function AnimBox({data}) {
   );
 }
 
+AnimBox.defaultHooks = SCU_hooks;
+
 function anim(data) {
   var items = data.items;
   var length = items.length;
-  var children = new Array(length);
+  var children = [];
 
   for (var i = 0; i < length; i++) {
     var item = items[i];
 
-    // Here we are using onComponentShouldUpdate functional Component hook, to short circuit rendering process of AnimBox Component
-    // When the data does not change
-    children[i] = <AnimBox data={item} onComponentShouldUpdate={shouldDataUpdate} key={item.id}/>;
+    children.push(<AnimBox data={item} key={item.id}/>);
   }
 
   return (
@@ -114,6 +122,8 @@ function TableCell({children}) {
   );
 }
 
+TableCell.defaultHooks = SCU_hooks;
+
 function TableRow({data}) {
   var classes = 'TableRow';
 
@@ -122,12 +132,10 @@ function TableRow({data}) {
   }
   var cells = data.props;
   var length = cells.length + 1;
-  var children = new Array(length);
-
-  children[0] = <TableCell onComponentShouldUpdate={shouldDataUpdate}>{'#' + data.id}</TableCell>;
+  var children = [<TableCell>{'#' + data.id}</TableCell>];
 
   for (var i = 1; i < length; i++) {
-    children[i] = <TableCell onComponentShouldUpdate={shouldDataUpdate}>{cells[i - 1]}</TableCell>;
+    children.push(<TableCell>{cells[i - 1]}</TableCell>);
   }
 
   /*
@@ -145,17 +153,19 @@ function TableRow({data}) {
   );
 }
 
+TableRow.defaultHooks = SCU_hooks;
+
 function table(data) {
   var items = data.items;
   var length = items.length;
-  var children = new Array(length);
+  var children = [];
 
   for (var i = 0; i < length; i++) {
     var item = items[i];
 
     // Components does not need ChildrenType flags, it does not hurt, but gains nothing
     // Because Component children will be passed through props and will not be normalized before rendering anyway
-    children[i] = <TableRow data={item} onComponentShouldUpdate={shouldDataUpdate} key={item.id}>{item}</TableRow>;
+    children.push(<TableRow data={item} key={item.id}/>);
   }
 
   /*
@@ -205,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
       render(main(state), container);
     },
     function(samples) {
-      render(<pre>{JSON.stringify(samples, null, ' ')}</pre>, container);
+      render(<pre $HasTextChildren>{JSON.stringify(samples, null, ' ')}</pre>, container);
     }
   );
 });

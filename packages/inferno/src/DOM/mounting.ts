@@ -125,7 +125,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
 }
 
 export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
-  for (let i = 0, len = children.length; i < len; i++) {
+  for (let i = 0, len = children.length; i < len; ++i) {
     let child = children[i];
 
     if (child.flags & VNodeFlags.InUse) {

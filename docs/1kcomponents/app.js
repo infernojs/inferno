@@ -7,7 +7,9 @@ startMemMonitor();
 
 function map(arr, to) {
   let out = [];
-  for (let i=arr.length; i--; ) out[i] = to(arr[i]);
+  for (let i = 0; i < arr.length; i++) {
+    out.push(to(arr[i]));
+  }
   return out;
 }
 

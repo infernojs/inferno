@@ -15,28 +15,28 @@ function renderBenchmark(dbs) {
     var db = dbs[i];
     var lastSample = db.lastSample;
     var children = [
-      createVNode(1, 'td', 'dbname', db.dbname, 16),
+      createVNode(1, 'td', 'dbname', db.dbname, 16, null, null, null),
       createVNode(1, 'td', 'query-count',
-        createVNode(1, 'span', lastSample.countClassName, lastSample.nbQueries, 16),
-        2)
+        createVNode(1, 'span', lastSample.countClassName, lastSample.nbQueries, 16, null, null, null),
+      2, null, null, null)
     ];
 
     for (var i2 = 0; i2 < 5; i2++) {
       var query = lastSample.topFiveQueries[i2];
 
       children.push(createVNode(1, 'td', query.elapsedClassName, [
-        createVNode(1, 'div', null, query.formatElapsed, 16),
+        createVNode(1, 'div', null, query.formatElapsed, 16, null, null, null),
         createVNode(1, 'div', 'popover left', [
-          createVNode(1, 'div', 'popover-content', query.query, 16),
-          createVNode(1, 'div', 'arrow')
-        ], 4)
-      ], 4));
+          createVNode(1, 'div', 'popover-content', query.query, 16, null, null, null),
+          createVNode(1, 'div', 'arrow', null, 1, null, null, null)
+        ], 4, null, null, null)
+      ], 4, null, null, null));
     }
-    databases.push(createVNode(1, 'tr', null, children, 4));
+    databases.push(createVNode(1, 'tr', null, children, 4, null, null, null));
   }
 
   render(
-    createVNode(1, 'table', 'table table-striped', createVNode(1, 'tbody', null, databases, 4), 2),
+    createVNode(1, 'table', 'table table-striped', createVNode(1, 'tbody', null, databases, 4, null, null, null), 2, null, null, null),
     elem);
 }
 
@@ -47,4 +47,4 @@ function loop() {
   endProfile('view update');
 }
 
-setInterval(loop, ENV.timeout);
+setInterval(loop, 0);

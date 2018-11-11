@@ -17,7 +17,7 @@ function updateChildOptions(vNode, value) {
     } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
       updateChildOptions(children, value);
     } else if (vNode.childFlags & ChildFlags.MultipleChildren) {
-      for (let i = 0, len = children.length; i < len; i++) {
+      for (let i = 0, len = children.length; i < len; ++i) {
         updateChildOptions(children[i], value);
       }
     }

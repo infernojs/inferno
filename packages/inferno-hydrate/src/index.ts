@@ -89,7 +89,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
     } else if (childFlags & ChildFlags.MultipleChildren) {
       let prevVNodeIsTextNode = false;
 
-      for (let i = 0, len = (children as VNode[]).length; i < len; i++) {
+      for (let i = 0, len = (children as VNode[]).length; i < len; ++i) {
         const child = (children as VNode[])[i];
 
         if (isNull(currentNode) || (prevVNodeIsTextNode && (child.flags & VNodeFlags.Text) > 0)) {

@@ -69,7 +69,7 @@ function bindAll<P, S>(ctx: Component<P, S>) {
 }
 
 function collateMixins(mixins: Function[] | any[], keyed = {}): any {
-  for (let i = 0, len = mixins.length; i < len; i++) {
+  for (let i = 0, len = mixins.length; i < len; ++i) {
     const mixin = mixins[i];
 
     // Surprise: Mixins can have mixins
@@ -91,7 +91,7 @@ function multihook(hooks: Function[], mergeFn?: Function): any {
   return function() {
     let ret;
 
-    for (let i = 0, len = hooks.length; i < len; i++) {
+    for (let i = 0, len = hooks.length; i < len; ++i) {
       const hook = hooks[i];
       const r = hook.apply(this, arguments);
 

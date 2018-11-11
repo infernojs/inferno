@@ -47,7 +47,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
 function callSetStateCallbacks(component) {
   const queue = component.$QU;
 
-  for (let i = 0, len = (queue as Function[]).length; i < len; i++) {
+  for (let i = 0, len = (queue as Function[]).length; i < len; ++i) {
     (queue as Function[])[i].call(component);
   }
 

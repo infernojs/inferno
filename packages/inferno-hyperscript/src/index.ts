@@ -21,7 +21,7 @@ function parseTag(tag: string | null, props: any): string {
   }
   let classes;
 
-  for (let i = 0, len = tagParts.length; i < len; i++) {
+  for (let i = 0, len = tagParts.length; i < len; ++i) {
     const part = tagParts[i];
 
     if (!part) {

@@ -1,11 +1,11 @@
 import { namespaces } from './constants';
 import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno-shared';
-import { handleEvent } from './events/delegation';
+import { delegatedEvents, handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
-import { VNode } from '../core/types';
+import { LinkedEvent, VNode } from '../core/types';
 
 function createLinkEvent(linkEvent, nextValue) {
   return function(e) {
@@ -19,7 +19,7 @@ export function patchEvent(name: string, nextValue, dom) {
   if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
     const linkEvent = nextValue.event;
 
-    if (linkEvent && isFunction(linkEvent)) {
+    if (isFunction(linkEvent)) {
       dom[nameLowerCase] = createLinkEvent(linkEvent, nextValue);
     } else {
       // Development warning
@@ -75,22 +75,6 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null) {
   switch (prop) {
-    case 'onClick':
-    case 'onDblClick':
-    case 'onFocusIn':
-    case 'onFocusOut':
-    case 'onKeyDown':
-    case 'onKeyPress':
-    case 'onKeyUp':
-    case 'onMouseDown':
-    case 'onMouseMove':
-    case 'onMouseUp':
-    case 'onSubmit':
-    case 'onTouchEnd':
-    case 'onTouchMove':
-    case 'onTouchStart':
-      handleEvent(prop, nextValue, dom);
-      break;
     case 'children':
     case 'childrenType':
     case 'className':
@@ -127,7 +111,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
     case 'value':
     case 'volume':
       if (hasControlledValue && prop === 'value') {
-        return;
+        break;
       }
       const value = isNullOrUndef(nextValue) ? '' : nextValue;
       if (dom[prop] !== value) {
@@ -156,7 +140,20 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       }
       break;
     default:
-      if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
+      if (delegatedEvents[prop]) {
+        if (
+          !(
+            lastValue &&
+            nextValue &&
+            !isFunction(lastValue) &&
+            !isFunction(nextValue) &&
+            (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
+            (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
+          )
+        ) {
+          handleEvent(prop, nextValue, dom);
+        }
+      } else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
         patchEvent(prop, nextValue, dom);
       } else if (isNullOrUndef(nextValue)) {
         dom.removeAttribute(prop);

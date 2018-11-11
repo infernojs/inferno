@@ -253,7 +253,7 @@ export class RenderQueueStream extends Readable {
           return;
         } else if (childFlags & ChildFlags.MultipleChildren) {
           this.addToQueue(renderedString, position);
-          for (let i = 0, len = children.length; i < len; i++) {
+          for (let i = 0, len = children.length; i < len; ++i) {
             this.renderVNodeToQueue(children[i], context, position);
           }
           this.addToQueue('</' + type + '>', position);

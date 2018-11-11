@@ -22,8 +22,8 @@ const documentBody = hasDocumentAvailable ? document.body : null;
 export function __render(
   input: VNode | null | InfernoNode | undefined,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
-  callback?: Function | null,
-  context?: any
+  callback: Function | null,
+  context: any
 ): void {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
@@ -42,7 +42,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      mount(input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null, lifecycle);
+      mount(input as VNode, parentDOM as Element, context, false, null, lifecycle);
       (parentDOM as any).$V = input;
       rootInput = input as VNode;
     }
@@ -54,7 +54,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDOM as Element, context || EMPTY_OBJ, false, null, lifecycle);
+      patch(rootInput as VNode, input as VNode, parentDOM as Element, context, false, null, lifecycle);
       rootInput = (parentDOM as any).$V = input as VNode;
     }
   }
@@ -73,8 +73,8 @@ export function __render(
 export function render(
   input: VNode | null | InfernoNode | undefined,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
-  callback?: Function | null,
-  context?: any
+  callback: Function | null = null,
+  context: any = EMPTY_OBJ
 ): void {
   __render(input, parentDOM, callback, context);
 }

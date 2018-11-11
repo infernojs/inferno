@@ -32,7 +32,7 @@ const createListenerCollection = (): IListenerCollection => {
 
     notify: () => {
       const listeners = (current = next!);
-      for (let i = 0; i < listeners.length; i++) {
+      for (let i = 0; i < listeners.length; ++i) {
         listeners[i]();
       }
     },

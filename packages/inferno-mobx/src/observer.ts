@@ -385,7 +385,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
 
 function grabStoresByName(storeNames: string[]) {
   return function(baseStores, nextProps) {
-    for (let i = 0, len = storeNames.length; i < len; i++) {
+    for (let i = 0, len = storeNames.length; i < len; ++i) {
       const storeName = storeNames[i];
 
       if (!(storeName in nextProps)) {
@@ -428,7 +428,7 @@ export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
     };
   } else {
     const storeNames: any = [];
-    for (let i = 0; i < arguments.length; i++) {
+    for (let i = 0; i < arguments.length; ++i) {
       storeNames.push(arguments[i]);
     }
 

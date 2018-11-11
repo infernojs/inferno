@@ -1,25 +1,45 @@
-import { SemiSyntheticEvent } from './../../core/types';
+import { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
 import { isNull } from 'inferno-shared';
-
-const attachedEventCounts = {};
-const attachedEvents = {};
 
 interface IEventData {
   dom: Element;
 }
 
-export function handleEvent(name: string, nextEvent: Function | null, dom) {
+function getDelegatedEventObject(v) {
+  return {
+    onClick: v,
+    onDblClick: v,
+    onFocusIn: v,
+    onFocusOut: v,
+    onKeyDown: v,
+    onKeyPress: v,
+    onKeyUp: v,
+    onMouseDown: v,
+    onMouseMove: v,
+    onMouseUp: v,
+    onSubmit: v,
+    onTouchEnd: v,
+    onTouchMove: v,
+    onTouchStart: v
+  };
+}
+const attachedEventCounts = getDelegatedEventObject(0);
+const attachedEvents = getDelegatedEventObject(null);
+
+export const delegatedEvents = getDelegatedEventObject(true);
+
+export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any, any> | null, dom) {
   let eventsObject = dom.$EV;
+
   if (nextEvent) {
-    if (!attachedEventCounts[name]) {
+    if (attachedEventCounts[name] === 0) {
       attachedEvents[name] = attachEventToDocument(name);
-      attachedEventCounts[name] = 0;
     }
     if (!eventsObject) {
-      eventsObject = (dom as any).$EV = {};
+      eventsObject = (dom as any).$EV = getDelegatedEventObject(null);
     }
     if (!eventsObject[name]) {
-      attachedEventCounts[name]++;
+      ++attachedEventCounts[name];
     }
     eventsObject[name] = nextEvent;
   } else if (eventsObject && eventsObject[name]) {
@@ -27,7 +47,7 @@ export function handleEvent(name: string, nextEvent: Function | null, dom) {
       document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
       attachedEvents[name] = null;
     }
-    eventsObject[name] = nextEvent;
+    eventsObject[name] = null;
   }
 }
 

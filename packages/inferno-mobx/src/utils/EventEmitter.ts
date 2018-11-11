@@ -13,7 +13,7 @@ export class EventEmitter {
 
   public emit(data: any) {
     const listeners = this.listeners;
-    for (let i = 0, len = listeners.length; i < len; i++) {
+    for (let i = 0, len = listeners.length; i < len; ++i) {
       listeners[i](data);
     }
   }

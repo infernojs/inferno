@@ -1,7 +1,7 @@
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/types';
-import { handleEvent } from './events/delegation';
+import { delegatedEvents, handleEvent } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';
 
@@ -27,26 +27,12 @@ export function unmount(vNode) {
     const childFlags = vNode.childFlags;
 
     if (!isNull(props)) {
-      for (const name in props) {
-        switch (name) {
-          case 'onClick':
-          case 'onDblClick':
-          case 'onFocusIn':
-          case 'onFocusOut':
-          case 'onKeyDown':
-          case 'onKeyPress':
-          case 'onKeyUp':
-          case 'onMouseDown':
-          case 'onMouseMove':
-          case 'onMouseUp':
-          case 'onSubmit':
-          case 'onTouchEnd':
-          case 'onTouchMove':
-          case 'onTouchStart':
-            handleEvent(name, null, vNode.dom);
-            break;
-          default:
-            break;
+      const keys = Object.keys(props);
+
+      for (let i = 0, len = keys.length; i < len; i++) {
+        const key = keys[i];
+        if (delegatedEvents[key]) {
+          handleEvent(key, null, vNode.dom);
         }
       }
     }
@@ -83,7 +69,7 @@ export function unmount(vNode) {
 }
 
 export function unmountAllChildren(children: VNode[]) {
-  for (let i = 0, len = children.length; i < len; i++) {
+  for (let i = 0, len = children.length; i < len; ++i) {
     unmount(children[i]);
   }
 }

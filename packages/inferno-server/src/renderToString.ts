@@ -151,7 +151,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (childFlags === ChildFlags.HasVNodeChildren) {
         renderedString += renderVNodeToString(children, vNode, context);
       } else if (childFlags & ChildFlags.MultipleChildren) {
-        for (let i = 0, len = children.length; i < len; i++) {
+        for (let i = 0, len = children.length; i < len; ++i) {
           renderedString += renderVNodeToString(children[i], vNode, context);
         }
       } else if (childFlags === ChildFlags.HasTextChildren) {
@@ -179,7 +179,7 @@ function renderVNodeToString(vNode, parent, context): string {
     } else if (childFlags & ChildFlags.MultipleChildren) {
       let renderedString = '';
 
-      for (let i = 0, len = children.length; i < len; i++) {
+      for (let i = 0, len = children.length; i < len; ++i) {
         renderedString += renderVNodeToString(children[i], vNode, context);
       }
 

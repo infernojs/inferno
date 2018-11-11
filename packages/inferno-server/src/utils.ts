@@ -12,7 +12,7 @@ export function escapeText(text: string): string {
   let escape = '';
   let start = 0;
   let i;
-  for (i = 0; i < text.length; i++) {
+  for (i = 0; i < text.length; ++i) {
     switch (text.charCodeAt(i)) {
       case 34: // "
         escape = '&quot;';

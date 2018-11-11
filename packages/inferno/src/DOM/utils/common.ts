@@ -87,7 +87,7 @@ export function removeVNodeDOM(vNode: VNode, parentDOM: Element) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
         removeVNodeDOM(children, parentDOM);
       } else {
-        for (let i = 0, len = children.length; i < len; i++) {
+        for (let i = 0, len = children.length; i < len; ++i) {
           removeVNodeDOM(children[i], parentDOM);
         }
       }
@@ -111,7 +111,7 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
         moveVNodeDOM(children, parentDOM, nextNode);
       } else {
-        for (let i = 0, len = children.length; i < len; i++) {
+        for (let i = 0, len = children.length; i < len; ++i) {
           moveVNodeDOM(children[i], parentDOM, nextNode);
         }
       }

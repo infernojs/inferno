@@ -34,7 +34,7 @@ function buildVNodeSnapshot(vNode: VNode) {
   } else if (vNode.childFlags & ChildFlags.MultipleChildren) {
     childVNode = [];
 
-    for (let i = 0, len = children.length; i < len; i++) {
+    for (let i = 0, len = children.length; i < len; ++i) {
       childVNode.push(buildVNodeSnapshot(children[i]));
     }
   } else if (vNode.childFlags & ChildFlags.HasTextChildren) {
@@ -48,7 +48,7 @@ function buildVNodeSnapshot(vNode: VNode) {
     if (props) {
       const keys = Object.keys(props);
 
-      for (let i = 0; i < keys.length; i++) {
+      for (let i = 0; i < keys.length; ++i) {
         const key = keys[i];
         const value = props[key];
 
@@ -89,7 +89,7 @@ export function renderToSnapshot(input: VNode) {
   const snapshot = vNodeToSnapshot(input);
 
   if (isArray(snapshot)) {
-    for (let i = 0; i < snapshot.length; i++) {
+    for (let i = 0; i < snapshot.length; ++i) {
       const _snapshot = snapshot[i];
 
       if (typeof _snapshot === 'object' && _snapshot.props) {

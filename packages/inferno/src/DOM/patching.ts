@@ -139,7 +139,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   // inlined patchProps  -- starts --
   if (lastProps !== nextProps) {
     const lastPropsOrEmpty = lastProps || EMPTY_OBJ;
-    nextPropsOrEmpty = nextProps || (EMPTY_OBJ as any);
+    nextPropsOrEmpty = nextProps || EMPTY_OBJ;
 
     if (nextPropsOrEmpty !== EMPTY_OBJ) {
       isFormElement = (nextFlags & VNodeFlags.FormElement) > 0;
@@ -157,7 +157,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
     }
     if (lastPropsOrEmpty !== EMPTY_OBJ) {
       for (const prop in lastPropsOrEmpty) {
-        if (!nextPropsOrEmpty.hasOwnProperty(prop) && !isNullOrUndef(lastPropsOrEmpty[prop])) {
+        if (isNullOrUndef(nextPropsOrEmpty[prop]) && !isNullOrUndef(lastPropsOrEmpty[prop])) {
           patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode);
         }
       }
@@ -165,8 +165,6 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   }
   const nextChildren = nextVNode.children;
   const nextClassName = nextVNode.className;
-  const nextRef = nextVNode.ref;
-  const lastRef = lastVNode.ref;
 
   // inlined patchProps  -- ends --
   if (lastVNode.className !== nextClassName) {
@@ -202,6 +200,9 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   if (isFormElement) {
     processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
   }
+
+  const nextRef = nextVNode.ref;
+  const lastRef = lastVNode.ref;
 
   if (lastRef !== nextRef) {
     unmountRef(lastRef);
@@ -294,8 +295,8 @@ function patchChildren(
           removeAllChildren(parentDOM, parentVNode, lastChildren);
           break;
         default:
-          const lastLength = lastChildren.length;
-          const nextLength = nextChildren.length;
+          const lastLength = lastChildren.length | 0;
+          const nextLength = nextChildren.length | 0;
 
           // Fast path's for both algorithms
           if (lastLength === 0) {
@@ -311,6 +312,7 @@ function patchChildren(
           }
           break;
       }
+      break;
   }
 }
 
@@ -466,7 +468,7 @@ function patchNonKeyedChildren(
   let nextChild;
   let lastChild;
 
-  for (; i < commonLength; i++) {
+  for (; i < commonLength; ++i) {
     nextChild = nextChildren[i];
     lastChild = lastChildren[i];
 
@@ -478,7 +480,7 @@ function patchNonKeyedChildren(
     lastChildren[i] = nextChild;
   }
   if (lastChildrenLength < nextChildrenLength) {
-    for (i = commonLength; i < nextChildrenLength; i++) {
+    for (i = commonLength; i < nextChildrenLength; ++i) {
       nextChild = nextChildren[i];
 
       if (nextChild.flags & VNodeFlags.InUse) {
@@ -487,7 +489,7 @@ function patchNonKeyedChildren(
       mount(nextChild, dom, context, isSVG, nextNode, lifecycle);
     }
   } else if (lastChildrenLength > nextChildrenLength) {
-    for (i = commonLength; i < lastChildrenLength; i++) {
+    for (i = commonLength; i < lastChildrenLength; ++i) {
       remove(lastChildren[i], dom);
     }
   }
@@ -524,7 +526,7 @@ function patchKeyedChildren(
       }
       patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
       a[j] = bNode;
-      j++;
+      ++j;
       if (j > aEnd || j > bEnd) {
         break outer;
       }
@@ -562,7 +564,7 @@ function patchKeyedChildren(
         if (bNode.flags & VNodeFlags.InUse) {
           b[j] = bNode = directClone(bNode);
         }
-        j++;
+        ++j;
         mount(bNode, dom, context, isSVG, nextNode, lifecycle);
       }
     }
@@ -587,7 +589,7 @@ function patchKeyedChildren(
 
     // When sizes are small, just loop them through
     if (bLength < 4 || (aLeft | bLeft) < 32) {
-      for (i = aStart; i <= aEnd; i++) {
+      for (i = aStart; i <= aEnd; ++i) {
         aNode = a[i];
         if (patched < bLeft) {
           for (j = bStart; j <= bEnd; j++) {
@@ -609,7 +611,7 @@ function patchKeyedChildren(
                 b[j] = bNode = directClone(bNode);
               }
               patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
-              patched++;
+              ++patched;
               break;
             }
           }
@@ -624,12 +626,12 @@ function patchKeyedChildren(
       const keyIndex: Record<string, number> = {};
 
       // Map keys by their index
-      for (i = bStart; i <= bEnd; i++) {
+      for (i = bStart; i <= bEnd; ++i) {
         keyIndex[b[i].key as string | number] = i;
       }
 
       // Try to patch same keys
-      for (i = aStart; i <= aEnd; i++) {
+      for (i = aStart; i <= aEnd; ++i) {
         aNode = a[i];
 
         if (patched < bLeft) {
@@ -653,7 +655,7 @@ function patchKeyedChildren(
               b[j] = bNode = directClone(bNode);
             }
             patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
-            patched++;
+            ++patched;
           } else if (!canRemoveWholeContent) {
             remove(aNode, dom);
           }
@@ -717,7 +719,7 @@ function lis_algorithm(arr: number[]): number[] {
   let c;
   const len = arr.length;
 
-  for (i = 0; i < len; i++) {
+  for (i = 0; i < len; ++i) {
     const arrI = arr[i];
 
     if (arrI !== 0) {

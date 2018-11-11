@@ -54,14 +54,14 @@ declare global {
 options.reactStyles = true;
 
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
-  __render(null, container);
+  __render(null, container, null, null);
   return true;
 }
 
 export type IterateChildrenFn = (value: InfernoNode | any, index: number, array: Array<InfernoNode | any>) => any;
 
 function flatten(arr, result) {
-  for (let i = 0, len = arr.length; i < len; i++) {
+  for (let i = 0, len = arr.length; i < len; ++i) {
     const value = arr[i];
     if (isArray(value)) {
       flatten(value, result);
@@ -93,7 +93,7 @@ const Children = {
     if (ctx && ctx !== children) {
       fn = fn.bind(ctx);
     }
-    for (let i = 0, len = children.length; i < len; i++) {
+    for (let i = 0, len = children.length; i < len; ++i) {
       const child = isInvalid(children[i]) ? null : children[i];
 
       fn(child, i, children);
@@ -340,7 +340,7 @@ function createFactory(type) {
   return createElement.bind(null, type);
 }
 
-function render(rootInput, container, cb?, context?) {
+function render(rootInput, container, cb = null, context = EMPTY_OBJ) {
   __render(rootInput, container, cb, context);
 
   const input = container.$V;
