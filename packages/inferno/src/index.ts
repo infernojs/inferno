@@ -20,15 +20,6 @@ import { handleComponentInput, createClassComponentInstance } from './DOM/utils/
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountText } from './DOM/mounting';
 import { createRef, forwardRef, mountRef } from './core/refs';
 
-if (Node) {
-  /*
-   * Defining $EV and $V properties on Node.prototype
-   * fixes v8 "wrong map" de-optimization
-   */
-  (Node.prototype as any).$EV = null;
-  (Node.prototype as any).$V = null;
-}
-
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
   const testFunc = function testFn() {};

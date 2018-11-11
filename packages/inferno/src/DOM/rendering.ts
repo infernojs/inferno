@@ -17,7 +17,17 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-const documentBody = hasDocumentAvailable ? document.body : null;
+let documentBody: HTMLElement | null = null;
+
+if (hasDocumentAvailable) {
+  documentBody = document.body;
+  /*
+   * Defining $EV and $V properties on Node.prototype
+   * fixes v8 "wrong map" de-optimization
+   */
+  (Node.prototype as any).$EV = null;
+  (Node.prototype as any).$V = null;
+}
 
 export function __render(
   input: VNode | null | InfernoNode | undefined,
