@@ -5,12 +5,14 @@ import { callAll, EMPTY_OBJ, findDOMfromVNode } from '../DOM/utils/common';
 
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);
+let microTaskPending = false;
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState: any, callback: Function | undefined, force: boolean): void {
-  if (isFunction(newState)) {
-    newState = newState(component.state!, component.props, component.context);
-  }
   const pending = component.$PS;
+
+  if (isFunction(newState)) {
+    newState = newState(pending ? combineFrom(component.state!, pending) : component.state, component.props, component.context);
+  }
 
   if (isNullOrUndef(pending)) {
     component.$PS = newState;
@@ -28,7 +30,11 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
         return;
       }
     }
-    if (QUEUE.push(component) === 1) {
+    if (QUEUE.indexOf(component) === -1) {
+      QUEUE.push(component);
+    }
+    if (!microTaskPending) {
+      microTaskPending = true;
       nextTick(rerender);
     }
     if (isFunction(callback)) {
@@ -56,6 +62,7 @@ function callSetStateCallbacks(component) {
 
 export function rerender() {
   let component;
+  microTaskPending = false;
   while ((component = QUEUE.pop())) {
     const queue = component.$QU;
 

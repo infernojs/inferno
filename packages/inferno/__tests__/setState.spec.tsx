@@ -1041,5 +1041,89 @@ describe('setState', () => {
     expect(counter).toBe(6);
 
     expect(container.innerHTML).toEqual('<div><div><button>Click</button><div>Child</div></div><span>2</span></div>');
-  })
+  });
+
+  it('Should update setState callback argument - Github #1420', () => {
+    let renderCounter = 0;
+
+    interface TextState {
+      texts: {
+        text1: string,
+        text2: string,
+        text3: string
+      }
+    }
+
+    class BrokenComponent extends Component<any, TextState> {
+      constructor(props, context) {
+        super(props, context);
+        this.state = {
+          texts: {
+            text1: 'Initial text 1',
+            text2: 'Initial text 2',
+            text3: 'Initial text 3'
+          }
+        }
+      }
+
+      public componentDidMount() {
+        // This change is ignored
+        this.setState((prevState) => {
+          // init all
+          return {
+            texts: {
+              ...prevState.texts,
+              text1: 'Updated text 1'
+            }
+          }
+        });
+        // This change is also ignored
+        this.setState((prevState) => {
+          return {
+            texts: {
+              ...prevState.texts,
+              text2: 'Updated text 2'
+            }
+          }
+        });
+        // Only this change is applied
+        this.setState((prevState) => {
+          return {
+            texts: {
+              ...prevState.texts,
+              text3: 'Updated text 3'
+            }
+          }
+        });
+      }
+
+      public render() {
+        const { text1, text2, text3 } = this.state!.texts;
+
+        renderCounter++;
+
+        return (
+          <ul>
+            <li>{text1}</li>
+            <li>{text2}</li>
+            <li>{text3}</li>
+          </ul>
+        )
+      }
+    }
+
+    expect(renderCounter).toBe(0);
+
+    render(<BrokenComponent/>, container);
+
+    expect(renderCounter).toBe(1);
+
+    expect(container.innerHTML).toBe('<ul><li>Initial text 1</li><li>Initial text 2</li><li>Initial text 3</li></ul>');
+
+    rerender();
+
+    expect(renderCounter).toBe(2);
+
+    expect(container.innerHTML).toBe('<ul><li>Updated text 1</li><li>Updated text 2</li><li>Updated text 3</li></ul>');
+  });
 });
