@@ -48,9 +48,17 @@ function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Elemen
 }
 
 function mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle: Function[]): void {
-  const children = vNode.children;
+  let children = vNode.children;
+  let childFlags = vNode.childFlags;
 
-  if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+  // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
+  // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
+  if (childFlags & ChildFlags.MultipleChildren && children.length === 0) {
+    childFlags = vNode.childFlags = ChildFlags.HasVNodeChildren;
+    children = vNode.children = createVoidVNode();
+  }
+
+  if (childFlags === ChildFlags.HasVNodeChildren) {
     mount(children as VNode, parentDOM, nextNode, isSVG, nextNode, lifecycle);
   } else {
     mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle);

@@ -1068,4 +1068,38 @@ describe('Fragments', () => {
 
     expect(container.innerHTML).toBe('');
   });
+
+  it('Should not crash if lastFragment is empty and optimized for keyed ( mount )', () => {
+    let nodes = [];
+
+    render(<Fragment $HasKeyedChildren>{nodes}</Fragment>, container);
+
+    expect(container.innerHTML).toBe('');
+
+    nodes = [<h1>Hello</h1>, <h2>InfernoJS</h2>];
+
+    render(<Fragment $HasKeyedChildren>{nodes}</Fragment>, container);
+
+    expect(container.innerHTML).toBe('<h1>Hello</h1><h2>InfernoJS</h2>');
+  });
+
+  it('Should not crash if lastFragment is empty and optimized for keyed ( patch )', () => {
+    let nodes = [];
+
+    render(<Fragment $HasKeyedChildren>{nodes}</Fragment>, container);
+
+    expect(container.innerHTML).toBe('');
+
+    nodes = nodes.slice();
+
+    render(<Fragment $HasKeyedChildren>{nodes}</Fragment>, container);
+
+    expect(container.innerHTML).toBe('');
+
+    nodes = [<h1>Hello</h1>, <h2>InfernoJS</h2>];
+
+    render(<Fragment $HasKeyedChildren>{nodes}</Fragment>, container);
+
+    expect(container.innerHTML).toBe('<h1>Hello</h1><h2>InfernoJS</h2>');
+  });
 });

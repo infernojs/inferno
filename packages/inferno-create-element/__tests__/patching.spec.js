@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, rerender, Component, createFragment } from 'inferno';
 import { createElement } from 'inferno-create-element';
 
 describe('patching keyed lists (non-jsx)', () => {
@@ -196,5 +196,119 @@ describe('patching keyed lists (non-jsx)', () => {
     expect(container.innerHTML).toBe(createExpected(dataModel));
 
     render(null, container);
+  });
+
+  it('Portal content should stay within its own portal - Github #1421', () => {
+    const f = (...xs) => createFragment(xs, 0);
+
+    class App extends Component {
+      constructor() {
+        super();
+        this.state = { ids: [] };
+      }
+
+      componentDidMount() {
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
+
+        this.setState({ ids: ['test'] });
+        debugger;
+        rerender();
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><footer>2018</footer></div>');
+
+        this.setState({ ids: [] });
+        rerender();
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>'); // Fails too, when skipping the previous assertion.
+      }
+
+      render() {
+        const { ids } = this.state;
+        return f(
+          createElement('h1', null, 'App'),
+          f(
+            ids.length ? ids.map(id => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
+            !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
+          ),
+          createElement('footer', null, '2018')
+        );
+      }
+    }
+
+    render(createElement(App), container);
+  });
+
+  it('Portal content should stay within its own portal - Github #1421 - variation 2', () => {
+    const f = (...xs) => createFragment(xs, 0);
+
+    class App extends Component {
+      constructor() {
+        super();
+        this.state = { ids: [] };
+      }
+
+      componentDidMount() {
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
+
+        this.setState({ ids: ['test', 'test2'] });
+        debugger;
+        rerender();
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><h2>test2</h2><footer>2018</footer></div>');
+
+        this.setState({ ids: [] });
+        rerender();
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>'); // Fails too, when skipping the previous assertion.
+      }
+
+      render() {
+        const { ids } = this.state;
+        return f(
+          createElement('h1', null, 'App'),
+          f(
+            ids.length ? ids.map(id => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
+            !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
+          ),
+          createElement('footer', null, '2018')
+        );
+      }
+    }
+
+    render(createElement(App), container);
+  });
+
+  it('Portal content should stay within its own portal - Github #1421 - variation 3', () => {
+    const f = (...xs) => createFragment(xs, 0);
+
+    class App extends Component {
+      constructor() {
+        super();
+        this.state = { ids: [] };
+      }
+
+      componentDidMount() {
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
+
+        this.setState({ ids: ['test', 'test2', 'test3'] });
+        debugger;
+        rerender();
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><h2>test2</h2><h2>test3</h2><footer>2018</footer></div>');
+
+        this.setState({ ids: [] });
+        rerender();
+        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>'); // Fails too, when skipping the previous assertion.
+      }
+
+      render() {
+        const { ids } = this.state;
+        return f(
+          createElement('h1', null, 'App'),
+          f(
+            ids.length ? ids.map(id => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
+            !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
+          ),
+          createElement('footer', null, '2018')
+        );
+      }
+    }
+
+    render(createElement(App), container);
   });
 });

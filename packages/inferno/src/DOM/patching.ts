@@ -1,6 +1,6 @@
 import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { directClone } from '../core/implementation';
+import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
 import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
@@ -87,14 +87,38 @@ function patchContentEditableChildren(dom, nextChildren) {
 
 function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[]) {
   const lastChildren = lastVNode.children as VNode[];
-  const nextIsSingle: boolean = (nextVNode.childFlags & ChildFlags.HasVNodeChildren) !== 0;
+  let nextChildren = nextVNode.children as any;
+  const lastChildFlags = lastVNode.childFlags;
+  let nextChildFlags = nextVNode.childFlags;
   let nextNode: Element | null = null;
 
-  if (lastVNode.childFlags & ChildFlags.MultipleChildren && (nextIsSingle || (!nextIsSingle && (nextVNode.children as VNode[]).length > lastChildren.length))) {
-    nextNode = (findDOMfromVNode(lastChildren[lastChildren.length - 1], false) as Element).nextSibling as Element | null;
+  // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
+  // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
+  if (nextChildFlags & ChildFlags.MultipleChildren && nextChildren.length === 0) {
+    nextChildFlags = nextVNode.childFlags = ChildFlags.HasVNodeChildren;
+    nextChildren = nextVNode.children = createVoidVNode();
   }
 
-  patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastChildren, nextVNode.children, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle);
+  const nextIsSingle: boolean = (nextChildFlags & ChildFlags.HasVNodeChildren) !== 0;
+
+  if (lastChildFlags & ChildFlags.MultipleChildren) {
+    const lastLen = lastChildren.length;
+
+    // We need to know Fragment's edge node when
+    if (
+      // It uses keyed algorithm
+      (lastChildFlags & ChildFlags.HasKeyedChildren && nextChildFlags & ChildFlags.HasKeyedChildren) ||
+      // It transforms from many to single
+      nextIsSingle ||
+      // It will append more nodes
+      (!nextIsSingle && (nextChildren as VNode[]).length > lastLen)
+    ) {
+      // When fragment has multiple children there is always at least one vNode
+      nextNode = (findDOMfromVNode(lastChildren[lastLen - 1], false) as Element).nextSibling as Element | null;
+    }
+  }
+
+  patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle);
 }
 
 function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Function[]) {
