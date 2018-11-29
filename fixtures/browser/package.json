@@ -14,12 +14,12 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "7.1.5",
+    "@babel/core": "7.1.6",
     "@babel/helper-replace-supers": "7.1.0",
     "@babel/plugin-proposal-class-properties": "7.1.0",
-    "@babel/plugin-proposal-decorators": "7.1.2",
+    "@babel/plugin-proposal-decorators": "7.1.6",
     "@babel/plugin-proposal-object-rest-spread": "7.0.0",
-    "@babel/preset-env": "7.1.5",
+    "@babel/preset-env": "7.1.6",
     "babel-loader": "^8.0.4",
     "havunen-karma-sauce-launcher": "^1.2.1",
     "jasmine-core": "^3.3.0",
@@ -30,10 +30,10 @@
     "karma-firefox-launcher": "^1.1.0",
     "karma-gzip": "^2.0.1",
     "karma-ie-launcher": "^1.0.0",
-    "karma-jasmine": "git://github.com/Havunen/karma-jasmine.git#b550983f8f0c220bbfbccd927113d1ba6a6de939",
-    "karma-webpack": "^4.0.0-rc.0",
-    "ts-loader": "^5.3.0",
-    "wd": "^1.11.0",
-    "webpack": "^4.25.1"
+    "karma-jasmine": "^2.0.1",
+    "karma-webpack": "^4.0.0-rc.4",
+    "ts-loader": "^5.3.1",
+    "wd": "^1.11.1",
+    "webpack": "^4.26.1"
   }
 }

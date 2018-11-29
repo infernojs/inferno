@@ -2,7 +2,7 @@ import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwErr
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
-import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend } from './utils/common';
+import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend } from "./utils/common";
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
@@ -147,7 +147,6 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
   mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
-  instance.$UPD = false;
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {
@@ -163,9 +162,7 @@ export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null
 
 function createClassMountCallback(instance) {
   return () => {
-    instance.$UPD = true;
     instance.componentDidMount();
-    instance.$UPD = false;
   };
 }
 

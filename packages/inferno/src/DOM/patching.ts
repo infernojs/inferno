@@ -4,7 +4,17 @@ import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
 import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
-import { appendChild, createDerivedState, EMPTY_OBJ, findDOMfromVNode, moveVNodeDOM, options, removeChild, removeVNodeDOM, replaceChild } from './utils/common';
+import {
+  appendChild,
+  createDerivedState,
+  EMPTY_OBJ,
+  findDOMfromVNode,
+  moveVNodeDOM,
+  options,
+  removeChild,
+  removeVNodeDOM,
+  replaceChild
+} from "./utils/common";
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
 import { handleComponentInput, renderNewInput } from './utils/componentutil';
@@ -409,8 +419,6 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
   const lastRef = lastVNode.ref;
   let nextState = instance.state;
 
-  instance.$UPD = true;
-
   if (!instance.$N) {
     if (isFunction(instance.componentWillReceiveProps)) {
       instance.$BR = true;
@@ -433,8 +441,6 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
     unmountRef(lastRef);
     mountRef(nextRef, instance, lifecycle);
   }
-
-  instance.$UPD = false;
 }
 
 function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]) {

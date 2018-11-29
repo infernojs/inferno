@@ -71,11 +71,6 @@ module.exports = function(config) {
     autoWatch: false,
     concurrency: 1,
 
-    webpackMiddleware: {
-      stats: 'errors-only',
-      noInfo: true
-    },
-
     client: {
       jasmine: {
         random: false // Adding jasmine.random false disables test random order
@@ -143,7 +138,6 @@ module.exports = function(config) {
       devServer: {
         noInfo: true
       },
-      stats: 'errors-only',
       performance: {
         hints: false
       }

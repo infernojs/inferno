@@ -1,4 +1,4 @@
-import { render, Component } from 'inferno';
+import { render, Component, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { innerHTML } from 'inferno-utils';
 import { combineFrom } from 'inferno-shared';
@@ -169,7 +169,7 @@ describe('Callbacks in constructor', () => {
       expect(checkBoxes[1].checked).toBe(false);
 
       checkBoxes[0].click(); // Click first checkbox
-
+      rerender();
       checkBoxes = container.querySelectorAll('input');
 
       expect(checkBoxes.length).toBe(2);
@@ -178,7 +178,7 @@ describe('Callbacks in constructor', () => {
       expect(checkBoxes[1].checked).toBe(false);
 
       checkBoxes[0].click(); // Click first checkbox again
-
+      rerender();
       checkBoxes = container.querySelectorAll('input');
 
       expect(checkBoxes.length).toBe(2);
@@ -187,6 +187,7 @@ describe('Callbacks in constructor', () => {
       expect(checkBoxes[1].checked).toBe(false);
 
       checkBoxes[1].click(); // Click second checkbox, it should do nothing
+      rerender();
       expect(checkBoxes[1].checked).toBe(false);
     });
   });

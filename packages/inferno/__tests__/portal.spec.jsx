@@ -529,7 +529,6 @@ describe('Portal spec', () => {
         return createPortal(<Comp />, portalContainer);
       }
     }
-
     let instance = render(<Parent />, container);
     expect(portalContainer.innerHTML).toBe('<div>initial-initial</div>');
     expect(container.innerHTML).toBe('');

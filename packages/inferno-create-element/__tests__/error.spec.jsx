@@ -537,11 +537,12 @@ describe('Error recovery', () => {
 
         expect(container.innerHTML).toBe('<div></div>');
 
-        expect(() =>
+        expect(() => {
           childCrasherInstance.setState({
             fail: true
-          })
-        ).toThrow('Oops!');
+          });
+          rerender();
+        }).toThrow('Oops!');
 
         // Recover from it
         childCrasherInstance.setState({

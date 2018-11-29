@@ -134,11 +134,6 @@ module.exports = function(config) {
     autoWatch: false,
     concurrency: 1,
 
-    webpackMiddleware: {
-      stats: 'errors-only',
-      noInfo: true
-    },
-
     webpack: {
       devtool: 'none',
       mode: 'none',
@@ -200,7 +195,6 @@ module.exports = function(config) {
       devServer: {
         noInfo: true
       },
-      stats: 'errors-only',
       performance: {
         hints: false
       }

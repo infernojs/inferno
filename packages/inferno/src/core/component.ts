@@ -1,7 +1,7 @@
 import { IComponent, InfernoNode, Props, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { callAll, EMPTY_OBJ, findDOMfromVNode } from '../DOM/utils/common';
+import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from "../DOM/utils/common";
 
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);
@@ -23,8 +23,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
   }
 
   if (!component.$BR) {
-    if (!component.$UPD) {
-      component.$UPD = true;
+    if (!renderCheck.v) {
       if (QUEUE.length === 0) {
         applyState(component, force, callback);
         return;
@@ -75,12 +74,14 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     return;
   }
   if (force || !component.$BR) {
+
     const pendingState = component.$PS;
 
     component.$PS = null;
-    component.$UPD = true;
 
     const lifecycle: Function[] = [];
+
+    renderCheck.v = true;
 
     updateClassComponent(
       component,
@@ -94,11 +95,11 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       lifecycle
     );
 
-    component.$UPD = false;
-
     if (lifecycle.length > 0) {
       callAll(lifecycle);
     }
+
+    renderCheck.v = false;
   } else {
     component.state = component.$PS as any;
     component.$PS = null;
@@ -126,7 +127,6 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $LI: any = null; // LAST INPUT
   public $UN: boolean = false; // UNMOUNTED
   public $CX: any = null; // CHILDCONTEXT
-  public $UPD: boolean = true; // UPDATING
   public $QU: Function[] | null = null; // QUEUE
   public $N: boolean = false; // Uses new lifecycle API Flag
   public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client

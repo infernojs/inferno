@@ -1,4 +1,4 @@
-import { render, Component } from 'inferno';
+import { render, rerender, Component } from 'inferno';
 
 describe('ComponentDidUpdate', () => {
   let container;
@@ -351,5 +351,129 @@ describe('ComponentDidUpdate', () => {
     expect(setState2Called).toBe(1);
 
     expect(container.innerHTML).toBe('<div><div id="tester"><div>Tester One</div></div><div>A</div></div>');
+  });
+
+  it('Should not fail if mounting subtree propagates callback to parent which renders again', () => {
+    // This is only to simplify whats going on in real application
+    let testHack = {
+      callback: null
+    };
+
+    let callbackCalled = 0;
+    let setState1Called = 0;
+    let setState2Called = 0;
+    let mounterCounter = 0;
+
+    class Another extends Component {
+      render() {
+        return <div>A {this.props.a}</div>;
+      }
+    }
+
+    class TesterOne extends Component {
+      constructor(props) {
+        super(props);
+
+        mounterCounter++;
+
+        this.state = {
+          foo: 'test'
+        };
+      }
+
+      componentWillMount() {
+        this.setState(
+          {
+            foo: 'bar'
+          },
+          function() {
+            setState1Called++;
+            expect(this.state.foo).toBe('bar');
+          }
+        );
+
+        testHack.callback();
+      }
+
+      render() {
+        return <div>Tester One {this.props.a}</div>;
+      }
+    }
+
+    class Outsider extends Component {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          bool: false
+        };
+
+        this._handleClick = this._handleClick.bind(this);
+      }
+
+      _handleClick() {
+        this.setState(
+          {
+            bool: true
+          },
+          function() {
+            setState2Called++;
+            expect(this.state.bool).toBe(true);
+          }
+        );
+      }
+
+      render() {
+        return (
+          <div id="tester" onClick={this._handleClick}>
+            {this.state.bool ? <TesterOne a={this.props.a} /> : <span>{this.props.a}</span>}
+          </div>
+        );
+      }
+    }
+
+    class App extends Component {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          a: 0
+        };
+
+        testHack.callback = () => {
+          callbackCalled++;
+          this.setState({ a: 112 });
+        };
+      }
+
+      render() {
+        return (
+          <div>
+            <Outsider a={this.state.a} />
+            <Another a={this.state.a} />
+          </div>
+        );
+      }
+    }
+
+    render(<App />, container);
+
+    expect(mounterCounter).toBe(0);
+    expect(callbackCalled).toBe(0);
+    expect(setState1Called).toBe(0);
+    expect(setState2Called).toBe(0);
+
+    expect(container.innerHTML).toBe('<div><div id="tester"><span>0</span></div><div>A 0</div></div>');
+
+    container.querySelector('#tester').click();
+
+    rerender();
+
+    expect(mounterCounter).toBe(1);
+    expect(callbackCalled).toBe(1);
+    expect(setState1Called).toBe(1);
+    expect(setState2Called).toBe(1);
+
+    expect(container.innerHTML).toBe('<div><div id="tester"><div>Tester One 112</div></div><div>A 112</div></div>');
   });
 });

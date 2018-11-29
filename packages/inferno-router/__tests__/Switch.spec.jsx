@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, rerender } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
 
@@ -33,6 +33,8 @@ describe('Switch (jsx)', () => {
       </MemoryRouter>,
       node
     );
+
+    rerender();
 
     expect(node.innerHTML).toMatch(/two/);
   });
@@ -86,6 +88,8 @@ describe('Switch (jsx)', () => {
       node
     );
 
+    rerender();
+
     expect(node.innerHTML).not.toContain('cup');
     expect(node.innerHTML).toContain('bub');
   });
@@ -104,6 +108,8 @@ describe('Switch (jsx)', () => {
       </MemoryRouter>,
       node
     );
+
+    rerender();
 
     expect(node.textContent).toBe('three');
   });
@@ -135,6 +141,8 @@ describe('Switch (jsx)', () => {
       </MemoryRouter>,
       node
     );
+
+    rerender();
 
     expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
@@ -169,6 +177,8 @@ describe('Switch (jsx)', () => {
       </MemoryRouter>,
       node
     );
+
+    rerender();
 
     expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
@@ -205,6 +215,8 @@ describe('Switch (jsx)', () => {
       node
     );
 
+    rerender();
+
     expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
     expect(console.error.calls.mostRecent().args[0]).toContain('/one?utm=1');
@@ -239,6 +251,8 @@ describe('Switch (jsx)', () => {
       </MemoryRouter>,
       node
     );
+
+    rerender();
 
     expect(node.innerHTML).toContain('done');
     expect(console.error.calls.count()).toBe(0);

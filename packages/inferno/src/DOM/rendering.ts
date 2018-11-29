@@ -5,7 +5,7 @@ import { InfernoNode, VNode } from '../core/types';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, options, EMPTY_OBJ } from './utils/common';
+import { callAll, options, EMPTY_OBJ, renderCheck } from "./utils/common";
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -47,6 +47,8 @@ export function __render(
   const lifecycle: Function[] = [];
   let rootInput = (parentDOM as any).$V as VNode | null;
 
+  renderCheck.v = true;
+
   if (isNullOrUndef(rootInput)) {
     if (!isNullOrUndef(input)) {
       if ((input as VNode).flags & VNodeFlags.InUse) {
@@ -72,6 +74,7 @@ export function __render(
   if (lifecycle.length > 0) {
     callAll(lifecycle);
   }
+  renderCheck.v = false;
   if (isFunction(callback)) {
     (callback as Function)();
   }
