@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 
 describe('Component lifecycle', () => {
@@ -39,7 +39,7 @@ describe('Component lifecycle', () => {
     expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>2</div>'));
   });
 
-  it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', done => {
+  it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', () => {
     let doSomething;
     class Child extends Component<{active: boolean}, {active: boolean}> {
       public state = {
@@ -94,11 +94,14 @@ describe('Component lifecycle', () => {
     }
 
     render(<Parent />, container);
+
+    expect(container.innerHTML).toBe('<div><div>false</div></div>');
+
     doSomething();
 
-    setTimeout(function() {
-      done();
-    }, 45);
+    rerender();
+
+    expect(container.innerHTML).toBe('<div><div>true</div></div>');
   });
 
   it('shouldComponentUpdate Should have nextProp in params and old variants in instance', () => {

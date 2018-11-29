@@ -119,6 +119,8 @@ module.exports = function(config) {
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
 
+    reportSlowerThan: 2000,
+
     captureTimeout: 600000,
     browserNoActivityTimeout: 600000,
     browserDisconnectTolerance: 2,
@@ -195,6 +197,7 @@ module.exports = function(config) {
       devServer: {
         noInfo: true
       },
+      stats: 'errors-only',
       performance: {
         hints: false
       }

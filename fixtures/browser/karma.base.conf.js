@@ -61,7 +61,7 @@ module.exports = function(config) {
 
     reporters: ['progress'],
 
-    reportSlowerThan: 1000,
+    reportSlowerThan: 500,
 
     browserConsoleLogOptions: {
       level: 'warn',
@@ -138,6 +138,7 @@ module.exports = function(config) {
       devServer: {
         noInfo: true
       },
+      stats: 'errors-only',
       performance: {
         hints: false
       }

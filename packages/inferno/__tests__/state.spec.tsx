@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, render } from 'inferno';
+import { Component, createComponentVNode, render, rerender } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 let renderCount = 0;
@@ -120,10 +120,9 @@ describe('state', () => {
         public componentDidMount() {
           setTimeout(() => {
             this.setState({ exampleScrollTop: 200 });
+            rerender();
 
-            setTimeout(() => {
-              done();
-            }, 50);
+            done();
           }, 50);
         }
       }

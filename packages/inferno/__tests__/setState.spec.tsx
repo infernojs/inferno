@@ -29,7 +29,8 @@ describe('setState', () => {
     expect(() => render(<TestComponent />, container)).toThrowError(Error);
   });
 
-  it('callback should be fired after state has changed', done => {
+  it('callback should be fired after state has changed', () => {
+    let counter = 0;
     class TestComponent extends Component<any, {value: string}> {
       public state = {
         value: this.props.value
@@ -41,11 +42,9 @@ describe('setState', () => {
       }
 
       public checkSetState() {
+        counter++;
         const value = this.state.value;
         expect(value).toBe('__NEWVALUE__');
-        setTimeout(function() {
-          done();
-        }, 50);
       }
 
       public componentWillReceiveProps(nextProps) {
@@ -80,6 +79,10 @@ describe('setState', () => {
     }
 
     render(<BaseComp />, container);
+    expect(container.innerHTML).toBe('');
+    rerender();
+    expect(container.innerHTML).toBe('');
+    expect(counter).toBe(1);
   });
 
   it('Should not fail if callback is object and not function ( invalid used scenario )', () => {
@@ -134,7 +137,9 @@ describe('setState', () => {
     expect(container.innerHTML).toBe('<div>1</div>');
   });
 
-  it('Should not fail if componentDidUpdate is not defined', done => {
+  it('Should not fail if componentDidUpdate is not defined', () => {
+    let counter = 0;
+
     class TestComponent extends Component<{value: string}, any> {
       public state = {
         value: this.props.value
@@ -146,10 +151,8 @@ describe('setState', () => {
 
       public checkSetState() {
         const value = this.state.value;
+        counter++;
         expect(value).toBe('__NEWVALUE__');
-        setTimeout(function() {
-          done();
-        }, 50);
       }
 
       public componentWillReceiveProps(nextProps) {
@@ -184,11 +187,13 @@ describe('setState', () => {
     }
 
     render(<BaseComp />, container);
+    rerender();
+    expect(counter).toBe(1);
   });
 
   // Should work as Per react: https://jsfiddle.net/f12u8xzb/
   // React does not get stuck
-  it('Should not get stuck in infinite loop #1', done => {
+  it('Should not get stuck in infinite loop #1', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -248,15 +253,14 @@ describe('setState', () => {
 
     render(<Parent />, container);
     doSomething();
-
-    setTimeout(function() {
-      done();
-    }, 45);
+    expect(container.innerHTML).toBe('<div><div>b</div><div><div>b</div></div></div>');
+    rerender();
+    expect(container.innerHTML).toBe('<div><div>bar</div><div><div>bar</div></div></div>');
   });
 
   // Render should work as per React
   // https://jsfiddle.net/qb4ootgm/
-  it('Should not fail during rendering', done => {
+  it('Should not fail during rendering', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -323,13 +327,13 @@ describe('setState', () => {
     render(<Parent />, container);
     doSomething();
 
-    setTimeout(function() {
-      done();
-    }, 45);
+    expect(container.innerHTML).toBe('<div><div>b</div><div><div>b</div></div><div><div>b</div></div><div><div>b</div></div></div>');
+    rerender();
+    expect(container.innerHTML).toBe('<div><div>bar</div><div><div>bar</div></div><div><div>bar</div></div><div><div>bar</div></div></div>');
   });
 
   // https://jsfiddle.net/c6q9bvez/
-  it('Should not fail during rendering #2', done => {
+  it('Should not fail during rendering #2', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -397,14 +401,17 @@ describe('setState', () => {
     }
 
     render(<Parent />, container);
+
+    expect(container.innerHTML).toBe('<div><div><div>b</div></div><div>b</div><div>b</div></div>');
+
     doSomething();
 
-    setTimeout(function() {
-      done();
-    }, 45);
+    rerender();
+
+    expect(container.innerHTML).toBe('<div><div><div>bar</div></div><div>bar</div><div>bar</div></div>');
   });
 
-  it('Should have new state in render when changing state during componentWillReceiveProps', done => {
+  it('Should have new state in render when changing state during componentWillReceiveProps', () => {
     let changeFoo;
 
     class Parent extends Component<any, any> {
@@ -444,7 +451,6 @@ describe('setState', () => {
 
       public callback() {
         expect(container.firstChild.firstChild.innerHTML).toBe('bar2');
-        done();
       }
 
       public componentWillReceiveProps(nextProps) {
@@ -468,6 +474,10 @@ describe('setState', () => {
     expect(container.firstChild.firstChild.innerHTML).toBe('bar');
 
     changeFoo();
+
+    rerender();
+
+    expect(container.innerHTML).toBe('<div><div>bar2</div></div>');
   });
 
   it('Should have new state in render when changing state during componentWillMount and render only once', () => {
@@ -552,7 +562,7 @@ describe('setState', () => {
 
   // Should work as Per react: https://jsfiddle.net/f12u8xzb/
   // React does not get stuck
-  it('Should not get stuck in infinite loop #1 sync', done => {
+  it('Should not get stuck in infinite loop #1 sync', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -612,15 +622,14 @@ describe('setState', () => {
 
     render(<Parent />, container);
     doSomething();
-
-    setTimeout(function() {
-      done();
-    }, 45);
+    expect(container.innerHTML).toBe('<div><div>b</div><div><div>b</div></div></div>');
+    rerender();
+    expect(container.innerHTML).toBe('<div><div>bar</div><div><div>bar</div></div></div>');
   });
 
   // Render should work as per React
   // https://jsfiddle.net/qb4ootgm/
-  it('Should not fail during rendering sync', done => {
+  it('Should not fail during rendering sync', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -686,10 +695,9 @@ describe('setState', () => {
 
     render(<Parent />, container);
     doSomething();
-
-    setTimeout(function() {
-      done();
-    }, 45);
+    expect(container.innerHTML).toBe('<div><div>b</div><div><div>b</div></div><div><div>b</div></div><div><div>b</div></div></div>');
+    rerender();
+    expect(container.innerHTML).toBe('<div><div>bar</div><div><div>bar</div></div><div><div>bar</div></div><div><div>bar</div></div></div>');
   });
 
   it('Should be possible to update state in componentWillUpdate', () => {
