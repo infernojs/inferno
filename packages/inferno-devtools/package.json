@@ -1,6 +1,6 @@
 {
   "name": "inferno-devtools",
-  "version": "6.3.1",
+  "version": "7.0.0",
   "license": "MIT",
   "description": "Provides support for React's Dev Tools for Inferno",
   "author": {
@@ -25,12 +25,12 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "6.3.1",
-    "inferno-extras": "6.3.1"
+    "inferno": "7.0.0",
+    "inferno-extras": "7.0.0"
   },
   "devDependencies": {
-    "inferno-shared": "6.3.1",
-    "inferno-vnode-flags": "6.3.1"
+    "inferno-shared": "7.0.0",
+    "inferno-vnode-flags": "7.0.0"
   },
   "rollup": {
     "bundledDependencies": [
