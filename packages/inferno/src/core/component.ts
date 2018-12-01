@@ -1,4 +1,4 @@
-import { IComponent, InfernoNode, Props, StatelessComponent } from './types';
+import { IComponent, InfernoNode, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from "../DOM/utils/common";
@@ -183,11 +183,11 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public getChildContext?(): void;
 
-  public getSnapshotBeforeUpdate?(prevProps: Props<any>, prevState: S): any;
+  public getSnapshotBeforeUpdate?(prevProps: P, prevState: S): any;
 
   public static defaultProps?: any;
 
-  public static getDerivedStateFromProps?(nextProps: Props<any>, state: any): any;
+  public static getDerivedStateFromProps?(nextProps: any, state: any): any;
 
   public render(_nextProps: P, _nextState: S, _nextContext: any): InfernoNode | undefined {
     return null;
