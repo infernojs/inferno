@@ -134,10 +134,7 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $SVG: boolean = false; // Flag to keep track if component is inside SVG tree
 
   constructor(props?: P, context?: any) {
-    /** @type {object} */
     this.props = props || (EMPTY_OBJ as P);
-
-    /** @type {object} */
     this.context = context || EMPTY_OBJ; // context should not be mutable
   }
 

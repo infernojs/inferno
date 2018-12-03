@@ -496,17 +496,15 @@ function patchNonKeyedChildren(
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
   let i = 0;
   let nextChild;
-  let lastChild;
 
   for (; i < commonLength; ++i) {
     nextChild = nextChildren[i];
-    lastChild = lastChildren[i];
 
     if (nextChild.flags & VNodeFlags.InUse) {
       nextChild = nextChildren[i] = directClone(nextChild);
     }
 
-    patch(lastChild, nextChild, dom, context, isSVG, nextNode, lifecycle);
+    patch(lastChildren[i], nextChild, dom, context, isSVG, nextNode, lifecycle);
     lastChildren[i] = nextChild;
   }
   if (lastChildrenLength < nextChildrenLength) {
