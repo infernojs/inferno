@@ -31,6 +31,24 @@ function getTagName(input) {
   return '>> ' + tagName + '\n';
 }
 
+function findMaxInArray(prev, next) {
+  return ( prev > next ? prev : next );
+}
+function duplicateKeys(key, foundKeys) {
+   let splitKey;
+   const duplicate = key + '-duplicate-';
+   const keys = Object.keys(foundKeys).filter(function (keyItem) {
+           return ~keyItem.indexOf(duplicate);
+       });
+   if (key.indexOf(duplicate) === -1 && keys.length === 0) {
+       return duplicate + '0';
+   }
+   splitKey = keys.map(function (keyItem) {
+       return parseInt(keyItem.split(duplicate)[1], 10);
+   }).reduce(findMaxInArray);
+   return duplicate + (parseInt(splitKey, 10) + 1);
+}
+
 function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
   const foundKeys: any = {};
 
@@ -57,7 +75,7 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
     }
 
     // Key can be undefined, null too. But typescript complains for no real reason
-    const key: string | number = childNode.key as string | number;
+    let key: string | number = childNode.key as string | number;
 
     if (!isNullOrUndef(key) && !isStringOrNumber(key)) {
       return 'Encountered child vNode where key property is not string or number. Location: \n' + getTagName(childNode);
@@ -90,6 +108,16 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
       continue;
     }
     if (foundKeys[key]) {
+      // In case of duplicate keys we don't want to crash the whole app because of that,
+      // so we have to create a fixed duplicate on the fly
+      // @ts-ignore
+      IoC.resolve("ILogger").error(
+          'Deoptimizing perfomance due to duplicate node keys',
+          'Encountered two children with same key: {' + key + '}. Location: \n' + getTagName(childNode)
+      );
+      key = duplicateKeys(childNode.key, foundKeys);
+      childNode.key = key;
+
       return 'Encountered two children with same key: {' + key + '}. Location: \n' + getTagName(childNode);
     }
     foundKeys[key] = true;

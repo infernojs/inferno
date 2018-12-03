@@ -6,7 +6,7 @@ import { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './
 
 const keyPrefix = '$';
 
-function V(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type) {
+function V(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type, markup?: any) {
   if (process.env.NODE_ENV !== 'production') {
     this.isValidated = false;
   }
@@ -20,6 +20,7 @@ function V(childFlags: ChildFlags, children, className: string | null | undefine
   this.props = props === void 0 ? null : props;
   this.ref = ref === void 0 ? null : ref;
   this.type = type;
+  this.markup = markup;
 }
 
 export function createVNode<P>(
@@ -30,7 +31,8 @@ export function createVNode<P>(
   childFlags?: ChildFlags,
   props?: Props<P> & P | null,
   key?: string | number | null,
-  ref?: Ref | Refs<P> | null
+  ref?: Ref | Refs<P> | null,
+  markup?: any
 ): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.Component) {
@@ -38,7 +40,7 @@ export function createVNode<P>(
     }
   }
   const childFlag: ChildFlags = childFlags === void 0 ? ChildFlags.HasInvalidChildren : (childFlags as ChildFlags);
-  const vNode = new V(childFlag, children, className, flags, key, props, ref, type) as VNode;
+  const vNode = new V(childFlag, children, className, flags, key, props, ref, type, markup) as VNode;
 
   const optsVNode = options.createVNode;
 
@@ -226,6 +228,11 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.type
     ) as VNode;
   }
+
+  if (flags === undefined && typeof vNodeToClone.markup === 'string' /* RawMarkupNode Type WS bugfix */) {
+    return vNodeToClone;
+  }
+
 
   return cloneFragment(vNodeToClone);
 }

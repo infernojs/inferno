@@ -28,8 +28,7 @@
     "silent": true,
     "run": [
       "circularDeps",
-      "lint",
-      "test"
+      "lint"
     ]
   },
   "scripts": {

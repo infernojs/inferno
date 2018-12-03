@@ -1,4 +1,4 @@
-import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError, unescape } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
@@ -8,11 +8,11 @@ import { createClassComponentInstance, handleComponentInput } from './utils/comp
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
-export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
+export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
-    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, isRootStart);
   } else if (flags & VNodeFlags.ComponentClass) {
     mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
   } else if (flags & VNodeFlags.ComponentFunction) {
@@ -23,6 +23,9 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
     mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
   } else if (flags & VNodeFlags.Portal) {
     mountPortal(vNode, context, parentDOM, nextNode, lifecycle);
+    // @ts-ignore
+  } else if (vNode instanceof RawMarkupNode) {
+    return mountHTML(vNode, parentDOM);
   } else if (process.env.NODE_ENV !== 'production') {
     // Development validation, in production we don't need to throw because it crashes anyway
     if (typeof vNode === 'object') {
@@ -35,6 +38,16 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
       throwError(`mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
     }
   }
+}
+
+export function mountHTML(vNode: VNode, parentDom: Element | null): any {
+  // @ts-ignore
+  const dom = (vNode.dom = $(vNode.markup)[0]);
+  if (!isNull(parentDom)) {
+    insertOrAppend(parentDom, dom, null);
+  }
+  return dom;
+
 }
 
 function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Element | null, lifecycle: Function[]) {
@@ -58,7 +71,7 @@ function mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle: Fu
 }
 
 export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Element | null): void {
-  const dom = (vNode.dom = document.createTextNode(vNode.children as string) as any);
+  const dom = (vNode.dom = document.createTextNode(unescape(vNode.children as string)) as any);
 
   if (!isNull(parentDOM)) {
     insertOrAppend(parentDOM, dom, nextNode);
@@ -69,7 +82,7 @@ export function mountTextContent(dom: Element, children: string): void {
   dom.textContent = children as string;
 }
 
-export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
+export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean): void {
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
@@ -77,15 +90,17 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   let children = vNode.children;
   const childFlags = vNode.childFlags;
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  const dom = documentCreateElement(vNode.type, isSVG);
+  const dom = isRootStart ? parentDOM : documentCreateElement(vNode.type, isSVG);
 
   vNode.dom = dom;
 
   if (!isNullOrUndef(className) && className !== '') {
-    if (isSVG) {
-      dom.setAttribute('class', className);
-    } else {
-      dom.className = className;
+    if (dom) {
+      if (isSVG) {
+        dom.setAttribute('class', className);
+      } else {
+        dom.className = className;
+      }
     }
   }
 
@@ -94,7 +109,9 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   }
 
   if (childFlags === ChildFlags.HasTextChildren) {
-    mountTextContent(dom, children as string);
+    if (dom) {
+      mountTextContent(dom, children as string);
+    }
   } else if (childFlags !== ChildFlags.HasInvalidChildren) {
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
@@ -104,16 +121,27 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
       }
       mount(children as VNode, dom, context, childrenIsSVG, null, lifecycle);
     } else if (childFlags === ChildFlags.HasKeyedChildren || childFlags === ChildFlags.HasNonKeyedChildren) {
-      mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle);
+      if (dom) {
+        mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle);
+      }
     }
   }
 
-  if (!isNull(parentDOM)) {
+  if (!isRootStart && !isNull(parentDOM)) {
     insertOrAppend(parentDOM, dom, nextNode);
   }
 
   if (!isNull(props)) {
-    mountProps(vNode, flags, props, dom, isSVG);
+    if (vNode.type === 'link') {
+      if (dom) {
+        // @ts-ignore
+        if (props.href !== (dom.attributes.href && dom.attributes.href.value)) {
+          mountProps(vNode, flags, props, dom, isSVG);
+        }
+      }
+    } else {
+      mountProps(vNode, flags, props, dom, isSVG);
+    }
   }
 
   if (process.env.NODE_ENV !== 'production') {

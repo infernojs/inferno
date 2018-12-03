@@ -4,8 +4,8 @@ export const isArray = Array.isArray;
 
 export function isStringOrNumber(o: any): o is string | number {
   const type = typeof o;
-
-  return type === 'string' || type === 'number';
+  // @ts-ignore
+  return type === 'string' || type === 'number' || type instanceof RawMarkupNode;
 }
 
 export function isNullOrUndef(o: any): o is undefined | null {
@@ -53,7 +53,8 @@ export function throwError(message?: string) {
 
 export function warning(message: string) {
   // tslint:disable-next-line:no-console
-  console.error(message);
+  // @ts-ignore
+  IoC.resolve("ILogger").log("Inferno core", message);
 }
 
 export function combineFrom(first: {} | null, second: {} | null): object {
@@ -69,4 +70,19 @@ export function combineFrom(first: {} | null, second: {} | null): object {
     }
   }
   return out;
+}
+
+export function unescape(s: any): string {
+  if (!s || !s.replace) {
+    return s;
+  }
+  const translate_re = /&(nbsp|amp|quot|apos|lt|gt);/g;
+  const translate = {"nbsp": String.fromCharCode(160),"amp" : "&","quot": "\"","apos": "'","lt"  : "<","gt"  : ">"};
+  // @ts-ignore
+  s = unEscapeASCII(s);
+  // @ts-ignore
+  return ( s.replace(translate_re, function(match, entity) {
+    return translate[entity];
+  }) );
+
 }

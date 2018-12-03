@@ -1,5 +1,5 @@
 import { namespaces } from './constants';
-import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isString, throwError, unescape } from 'inferno-shared';
 import { delegatedEvents, handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
@@ -162,7 +162,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
         // If we end up in this path we can read property again
         dom.setAttributeNS(namespaces[prop], prop, nextValue);
       } else {
-        dom.setAttribute(prop, nextValue);
+        dom.setAttribute(prop, unescape(nextValue));
       }
       break;
   }

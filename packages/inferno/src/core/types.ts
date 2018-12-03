@@ -119,6 +119,7 @@ export interface VNode {
   props: any;
   ref: any;
   type: any;
+  markup: any;
 }
 
 export interface RefObject<T> {

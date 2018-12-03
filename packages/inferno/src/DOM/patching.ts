@@ -49,6 +49,24 @@ export function patch(
     if (lastVNode.flags & VNodeFlags.InUse) {
       replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
     } else {
+      let dom = lastVNode.dom as Element;
+      if (!dom && parentDOM) {
+        // IT'S BAD CODE!!! TODO: DELETE IT
+        const elements = parentDOM.getElementsByTagName(lastVNode.type);
+        if (lastVNode.type === 'style'){
+           elements[0].setAttribute('key', lastVNode.key);
+           dom = lastVNode.dom = elements[0];
+        }
+        for(let k=0; k<elements.length; k++) {
+            if (elements[k].attributes.key 
+                && elements[k].attributes.key.value === lastVNode.key) {
+                dom = lastVNode.dom = elements[k];
+                break;
+            }
+        }
+        nextVNode.dom = dom;
+     }
+  
       // Last vNode is not in use, it has crashed at application level. Just mount nextVNode and ignore last one
       mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
     }
@@ -446,7 +464,24 @@ function patchText(lastVNode: VNode, nextVNode: VNode) {
   const dom = lastVNode.dom;
 
   if (nextText !== lastVNode.children) {
-    (dom as Element).nodeValue = nextText;
+    // inner text has to be just for IE 10 and for EmptyTextNode
+    // EmptyTextNode - implementation of empty string value
+    // You can't set nodeValue property in EmptyTextNode
+    // @ts-ignore
+    if (detection.isIE10) {
+      if (dom && dom.parentNode) {
+        // @ts-ignore
+        if (detection.isIE10 || dom.nodeValue === '') {
+          // @ts-ignore
+          dom.parentNode.innerText = nextText;
+        } else {
+          dom.nodeValue = nextText;
+        }
+      }
+    } else {
+      (dom as Element).nodeValue = nextText;
+    }
+    
   }
 
   nextVNode.dom = dom;

@@ -4,7 +4,8 @@ import { isNull, isObject } from 'inferno-shared';
 export function warning(condition, message) {
   if (!condition) {
     // tslint:disable-next-line:no-console
-    console.error(message);
+    // @ts-ignore
+    IoC.resolve("ILogger").log("Inferno core", message);
   }
 }
 

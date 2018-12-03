@@ -27,6 +27,7 @@
 		"arrow-parens": false,
 		"ban-types": false,
 		"forin": false,
+		"no-console": false,
 		"interface-name": false,
 		"jsdoc-format": false,
 		"max-classes-per-file": [true],
