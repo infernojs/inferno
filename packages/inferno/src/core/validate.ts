@@ -117,8 +117,7 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
       );
       key = duplicateKeys(childNode.key, foundKeys);
       childNode.key = key;
-
-      return 'Encountered two children with same key: {' + key + '}. Location: \n' + getTagName(childNode);
+      // return 'Encountered two children with same key: {' + key + '}. Location: \n' + getTagName(childNode);
     }
     foundKeys[key] = true;
   }

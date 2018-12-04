@@ -108,6 +108,10 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
     validateKeys(vNode);
   }
 
+  if (!isRootStart && !isNull(parentDOM)) {
+    insertOrAppend(parentDOM, dom, nextNode);
+  }
+
   if (childFlags === ChildFlags.HasTextChildren) {
     if (dom) {
       mountTextContent(dom, children as string);
@@ -125,10 +129,6 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
         mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle);
       }
     }
-  }
-
-  if (!isRootStart && !isNull(parentDOM)) {
-    insertOrAppend(parentDOM, dom, nextNode);
   }
 
   if (!isNull(props)) {

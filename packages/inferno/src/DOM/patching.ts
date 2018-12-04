@@ -82,9 +82,21 @@ export function patch(
     nextVNode.dom = lastVNode.dom;
   } else if (nextFlags & VNodeFlags.Fragment) {
     patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
+    // @ts-ignore
+  } else if (nextVNode instanceof RawMarkupNode) {
+    patchHTML(lastVNode, nextVNode, parentDOM);
   } else {
     patchPortal(lastVNode, nextVNode, context, lifecycle);
   }
+}
+
+export function patchHTML(lastVNode, nextVNode, parentDOM) {
+  // @ts-ignore
+  if (nextVNode instanceof RawMarkupNode) {
+    if (lastVNode.markup !== nextVNode.markup) {
+       parentDOM.innerHTML = nextVNode.markup;
+    }
+ }
 }
 
 export function patchSingleTextChild(lastChildren, nextChildren, parentDOM: Element) {

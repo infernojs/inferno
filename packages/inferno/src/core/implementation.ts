@@ -216,6 +216,9 @@ export function directClone(vNodeToClone: VNode): VNode {
       }
     }
   }
+  if (!flags && typeof vNodeToClone.markup === 'string' /* RawMarkupNode Type WS bugfix */) {
+    return vNodeToClone;
+  }
   if ((flags & VNodeFlags.Fragment) === 0) {
     return new V(
       vNodeToClone.childFlags,
@@ -228,12 +231,6 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.type
     ) as VNode;
   }
-
-  if (flags === undefined && typeof vNodeToClone.markup === 'string' /* RawMarkupNode Type WS bugfix */) {
-    return vNodeToClone;
-  }
-
-
   return cloneFragment(vNodeToClone);
 }
 
