@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "license": "MIT",
   "description": "An extremely fast, React-like JavaScript library for building modern user interfaces",
   "author": {
@@ -46,11 +46,11 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "devDependencies": {
-    "inferno-utils": "7.0.1"
+    "inferno-utils": "7.0.2"
   },
   "dependencies": {
-    "inferno-shared": "7.0.1",
-    "inferno-vnode-flags": "7.0.1",
+    "inferno-shared": "7.0.2",
+    "inferno-vnode-flags": "7.0.2",
     "opencollective": "^1.0.3"
   }
 }
