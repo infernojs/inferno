@@ -5,7 +5,7 @@ import { InfernoNode, VNode } from '../core/types';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, options, EMPTY_OBJ, renderCheck } from "./utils/common";
+import { callAll, options, EMPTY_OBJ, renderCheck } from './utils/common';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 

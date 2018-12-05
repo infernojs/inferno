@@ -1,7 +1,7 @@
 import { IComponent, InfernoNode, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from "../DOM/utils/common";
+import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
 
 const QUEUE: Array<Component<any, any>> = [];
 const nextTick = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);
@@ -74,7 +74,6 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     return;
   }
   if (force || !component.$BR) {
-
     const pendingState = component.$PS;
 
     component.$PS = null;

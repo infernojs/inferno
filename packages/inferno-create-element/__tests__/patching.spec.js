@@ -211,7 +211,6 @@ describe('patching keyed lists (non-jsx)', () => {
         expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
 
         this.setState({ ids: ['test'] });
-        debugger;
         rerender();
         expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><footer>2018</footer></div>');
 
@@ -249,7 +248,6 @@ describe('patching keyed lists (non-jsx)', () => {
         expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
 
         this.setState({ ids: ['test', 'test2'] });
-        debugger;
         rerender();
         expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><h2>test2</h2><footer>2018</footer></div>');
 
@@ -287,7 +285,6 @@ describe('patching keyed lists (non-jsx)', () => {
         expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
 
         this.setState({ ids: ['test', 'test2', 'test3'] });
-        debugger;
         rerender();
         expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><h2>test2</h2><h2>test3</h2><footer>2018</footer></div>');
 

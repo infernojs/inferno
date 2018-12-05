@@ -4,17 +4,7 @@ import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
 import { mount, mountArrayChildren, mountTextContent } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
-import {
-  appendChild,
-  createDerivedState,
-  EMPTY_OBJ,
-  findDOMfromVNode,
-  moveVNodeDOM,
-  options,
-  removeChild,
-  removeVNodeDOM,
-  replaceChild
-} from "./utils/common";
+import { appendChild, createDerivedState, EMPTY_OBJ, findDOMfromVNode, moveVNodeDOM, options, removeChild, removeVNodeDOM, replaceChild } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
 import { handleComponentInput, renderNewInput } from './utils/componentutil';
@@ -496,15 +486,17 @@ function patchNonKeyedChildren(
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
   let i = 0;
   let nextChild;
+  let lastChild;
 
   for (; i < commonLength; ++i) {
     nextChild = nextChildren[i];
+    lastChild = lastChildren[i];
 
     if (nextChild.flags & VNodeFlags.InUse) {
       nextChild = nextChildren[i] = directClone(nextChild);
     }
 
-    patch(lastChildren[i], nextChild, dom, context, isSVG, nextNode, lifecycle);
+    patch(lastChild, nextChild, dom, context, isSVG, nextNode, lifecycle);
     lastChildren[i] = nextChild;
   }
   if (lastChildrenLength < nextChildrenLength) {

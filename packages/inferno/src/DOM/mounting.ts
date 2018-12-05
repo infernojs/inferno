@@ -2,7 +2,7 @@ import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwErr
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
-import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend } from "./utils/common";
+import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend } from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
