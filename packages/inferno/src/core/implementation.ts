@@ -202,7 +202,7 @@ function cloneFragment(vNodeToClone) {
 }
 
 export function directClone(vNodeToClone: VNode): VNode {
-  const flags = vNodeToClone.flags & VNodeFlags.ClearInUseNormalized;
+  const flags = vNodeToClone.flags & VNodeFlags.ClearInUse;
   let props = vNodeToClone.props;
 
   if (flags & VNodeFlags.Component) {

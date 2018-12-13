@@ -1,5 +1,6 @@
 import { render, rerender, createRef, createPortal, createFragment, Component, Fragment } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
+import { h } from 'inferno-hyperscript';
 import sinon from 'sinon';
 import { triggerEvent } from 'inferno-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
@@ -1250,5 +1251,28 @@ describe('rendering routine', () => {
 
       expect(container.firstChild.firstChild.getAttribute('class')).toBe('bar');
     });
+  });
+
+  it('Should not re-mount after hydrate render render, Github #1426', () => {
+
+    container.innerHTML = '<div><span>do not replace me</span></div>';
+
+    const span = container.firstChild.firstChild;
+
+    let vtree = h('div', [h('span', 'do not replace me')]);
+
+    hydrate(vtree, container);
+
+    expect(span).toBe(container.firstChild.firstChild);
+
+    render(vtree, container);
+
+    expect(span).toBe(container.firstChild.firstChild);
+
+    let vtree2 = h('div', [h('span', 'do not replace me')]);
+
+    render(vtree2, container);
+
+    expect(span).toBe(container.firstChild.firstChild);
   });
 });

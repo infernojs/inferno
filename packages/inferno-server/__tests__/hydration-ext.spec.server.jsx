@@ -184,12 +184,10 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.textContent).toBe('Okay!');
   });
 
-  it('createTextVNode - Should handle empty textNodes correctly Github #1137', () => {
+  it('createTextVNode - Should handle empty textNodes correctly Github #1137 variation#3', () => {
     const container = createContainerWithHTML('<span class="error"></span>');
 
     const vNode = <span className="error">{createTextVNode('')}</span>;
-
-    expect(vNode.children).toEqual(createTextVNode(''));
 
     hydrate(vNode, container); // This should create empty text node
 
@@ -200,7 +198,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.textContent).toBe('Okay!');
   });
 
-  it('createTextVNode - Should handle empty textNodes correctly Github #1137 variation#2', () => {
+  it('createTextVNode - Should handle empty textNodes correctly Github #1137 variation#4', () => {
     const container = createContainerWithHTML('<div><span class="error"></span></div>');
 
     const vNode = (
@@ -208,8 +206,6 @@ describe('SSR Hydration Extended - (JSX)', () => {
         <span className="error">{createTextVNode('')}</span>
       </div>
     );
-
-    expect(vNode.children.children).toEqual(createTextVNode(''));
 
     hydrate(vNode, container); // This should create empty text node
 

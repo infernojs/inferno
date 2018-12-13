@@ -28,7 +28,7 @@ export const enum VNodeFlags {
   Component = ComponentFunction | ComponentClass | ComponentUnknown,
   DOMRef = Element | Text | Void | Portal,
   InUseOrNormalized = InUse | Normalized,
-  ClearInUseNormalized = ~InUseOrNormalized
+  ClearInUse = ~InUse
 }
 
 // Combinations are not possible, its bitwise only to reduce vNode size

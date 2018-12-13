@@ -31,7 +31,8 @@
   "devDependencies": {
     "inferno-create-element": "7.0.2",
     "inferno-shared": "7.0.2",
-    "inferno-vnode-flags": "7.0.2"
+    "inferno-vnode-flags": "7.0.2",
+    "inferno-hyperscript": "7.0.2"
   },
   "rollup": {
     "bundledDependencies": [
