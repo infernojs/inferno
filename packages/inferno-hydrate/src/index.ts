@@ -122,7 +122,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
           if (!isIgnoredNode(currentNode)) {
             currentNode = hydrateVNode(child as VNode, parentNode, currentNode as Element, context, isSVG, lifecycle);
           }
-          currentNode = currentNode ? skipIgnoredNode(currentNode.nextSibling) : null;
+          currentNode = currentNode ? skipIgnoredNode(currentNode) : null;
         }
 
         prevVNodeIsTextNode = (child.flags & VNodeFlags.Text) > 0;
@@ -135,7 +135,9 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
 
       while (currentNode) {
         nextSibling = currentNode.nextSibling;
-        parentNode.removeChild(currentNode);
+        if (!isIgnoredNode(currentNode)) {
+          parentNode.removeChild(currentNode);
+        }
         currentNode = nextSibling;
       }
     }
@@ -172,7 +174,7 @@ function isIgnoredNode(nextSibling) {
   return  (nextSibling && nextSibling.tagName === 'SCRIPT' &&
   nextSibling.attributes && nextSibling.attributes['data-requiremodule']) ||
   ignoreExtensionScripts(nextSibling) ||
-  (nextSibling && nextSibling.tagName === 'LINK' && nextSibling.attributes &&
+  (nextSibling && (nextSibling.tagName === 'LINK' || nextSibling.tagName === 'STYLE') && nextSibling.attributes &&
   nextSibling.attributes['data-vdomignore']) ||
   /*ignore ghostery chrome plugin*/
   (nextSibling && nextSibling.id === 'ghostery-purple-box');

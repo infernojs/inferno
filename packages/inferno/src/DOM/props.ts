@@ -139,6 +139,12 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
         }
       }
       break;
+    // Fix for added focus attributes to the node
+    // TODO: We have to add these attributes at the element properties on the fly
+    case 'ws-creates-context':
+      break;
+    case 'ws-delegates-tabfocus':
+      break;
     default:
       if (delegatedEvents[prop]) {
         if (
