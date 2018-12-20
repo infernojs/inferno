@@ -36,7 +36,7 @@ The performance is achieved through multiple optimizations, for example:
 - Components can be rendered outside their current html hierarchy using `createPortal` - API
 - Support for [older browsers](https://github.com/infernojs/inferno#browser-support) without any polyfills
 - defaultHooks for Functional components, this way re-defining lifecycle events per usage can be avoided
-- Unline React, Inferno supports setting styles using string `<div style="float: left"></div>`
+- Unlike React, Inferno supports setting styles using string `<div style="float: left"></div>`
 - Fragments (v6)
 - createRef and forwardRef APIs (v6)
 
