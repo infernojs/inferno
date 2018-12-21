@@ -190,7 +190,7 @@ function skipIgnoredNode(childNode) {
   }
 }
 
-function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[], isRootStart: boolean) {
+function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[], isRootStart?: boolean) {
   const props = vNode.props;
   const className = vNode.className;
   const flags = vNode.flags;
