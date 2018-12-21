@@ -95,6 +95,7 @@
     "filesize": "^3.6.1",
     "gzip-size": "^5.0.0",
     "history": "^4.7.2",
+    "inferno": "^6.3.1",
     "jest": "^23.6.0",
     "jest-silent-reporter": "^0.1.1",
     "jsdom": "13.0.0",
