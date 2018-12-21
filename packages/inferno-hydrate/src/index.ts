@@ -190,7 +190,7 @@ function skipIgnoredNode(childNode) {
   }
 }
 
-function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[]) {
+function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[], isRootStart: boolean) {
   const props = vNode.props;
   const className = vNode.className;
   const flags = vNode.flags;
@@ -202,7 +202,13 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
       warning("Inferno hydration: Server-side markup doesn't match client-side markup");
     }
     _ME(vNode, null, context, isSVG, null, lifecycle);
-    parentDOM.replaceChild(vNode.dom as Element, dom);
+    if (isRootStart) {
+      if (parentDOM.parentElement && parentDOM === dom) {
+        parentDOM.parentElement.replaceChild(vNode.dom as Element, dom);
+      }
+    } else {
+      parentDOM.replaceChild(vNode.dom as Element, dom);
+    }
   } else {
     vNode.dom = dom;
 
@@ -262,7 +268,7 @@ function hydrateHTML(vNode: VNode, dom: Element) {
   }
 }
 
-function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean, lifecycle: Function[]): Element | null {
+function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean, lifecycle: Function[], isRootStart?: boolean): Element | null {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Component) {
@@ -273,7 +279,7 @@ function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, con
     hydrateHTML(vNode, currentDom);  
   }
   if (flags & VNodeFlags.Element) {
-    return hydrateElement(vNode, parentDOM, currentDom, context, isSVG, lifecycle);
+    return hydrateElement(vNode, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart);
   }
   if (flags & VNodeFlags.Text) {
     return hydrateText(vNode, parentDOM, currentDom);
@@ -305,7 +311,7 @@ export function hydrate(input, parentDOM: Element, callback?: Function, isRootSt
     const lifecycle: Function[] = [];
 
     if (!isInvalid(input)) {
-      dom = hydrateVNode(input, parentDOM, dom, {}, false, lifecycle) as Element;
+      dom = hydrateVNode(input, parentDOM, dom, {}, false, lifecycle, isRootStart) as Element;
     }
     // clear any other DOM nodes, there should be only a single entry for the root
     if (!isRootStart) {
