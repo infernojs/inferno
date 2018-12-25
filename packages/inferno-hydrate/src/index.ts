@@ -266,6 +266,7 @@ function hydrateHTML(vNode: VNode, dom: Element) {
   if (dom.outerHTML !== vNode.markup) {
     dom.outerHTML = vNode.markup;
   }
+  return dom;
 }
 
 function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean, lifecycle: Function[], isRootStart?: boolean): Element | null {
@@ -276,7 +277,7 @@ function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, con
   }
   // @ts-ignore
   if (vNode instanceof RawMarkupNode) {
-    hydrateHTML(vNode, currentDom);  
+    return hydrateHTML(vNode, currentDom);  
   }
   if (flags & VNodeFlags.Element) {
     return hydrateElement(vNode, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart);
