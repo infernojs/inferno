@@ -86,7 +86,7 @@ module.exports = function(config) {
   config.set({
     basePath: '../../',
 
-    frameworks: ['gzip', 'jasmine'],
+    frameworks: ['jasmine'],
 
     files: [path.join(__dirname, '../../fixtures/browser/test.index.js')],
 
@@ -114,7 +114,7 @@ module.exports = function(config) {
       commandTimeout: 400
     },
 
-    plugins: ['karma-jasmine', 'karma-gzip', 'karma-webpack', 'havunen-karma-sauce-launcher'],
+    plugins: ['karma-jasmine', 'karma-gzip-preprocessor', 'karma-webpack', 'havunen-karma-sauce-launcher'],
 
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),

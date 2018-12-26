@@ -28,7 +28,7 @@
     "karma-detect-browsers": "^2.3.3",
     "karma-edge-launcher": "^0.4.2",
     "karma-firefox-launcher": "^1.1.0",
-    "karma-gzip": "^2.0.2",
+    "karma-gzip-preprocessor": "^3.0.1",
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^2.0.1",
     "karma-webpack": "^4.0.0-rc.4",
