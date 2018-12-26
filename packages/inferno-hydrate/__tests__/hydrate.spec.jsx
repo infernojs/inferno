@@ -1254,7 +1254,6 @@ describe('rendering routine', () => {
   });
 
   it('Should not re-mount after hydrate render render, Github #1426', () => {
-
     container.innerHTML = '<div><span>do not replace me</span></div>';
 
     const span = container.firstChild.firstChild;

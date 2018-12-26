@@ -1,9 +1,7 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
 
-export interface IComponentConstructor<T> {
-  new (props: T, context: any): IComponent<T, any>;
-}
+export type IComponentConstructor<T> = new (props: T, context: any) => IComponent<T, any>;
 
 // IComponent is defined here, instead of Component to de-couple implementation from interface
 export interface IComponent<P, S> {
