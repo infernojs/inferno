@@ -21,7 +21,7 @@
     "@babel/plugin-proposal-object-rest-spread": "7.2.0",
     "@babel/preset-env": "7.2.3",
     "babel-loader": "^8.0.4",
-    "havunen-karma-sauce-launcher": "^1.2.1",
+    "karma-sauce-launcher": "^2.0.2",
     "jasmine-core": "^3.3.0",
     "karma": "^3.1.4",
     "karma-chrome-launcher": "^2.2.0",
