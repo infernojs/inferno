@@ -535,7 +535,7 @@ describe('Basic event tests', () => {
       };
 
       const eventHandlerSpy2 = sinon.spy();
-      const eventHandler2 = function(event) {
+      const eventHandler2 = function() {
         eventHandlerSpy2();
       };
 

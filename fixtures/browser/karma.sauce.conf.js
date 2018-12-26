@@ -114,7 +114,7 @@ module.exports = function(config) {
       commandTimeout: 400
     },
 
-    plugins: ['karma-jasmine', 'karma-gzip-preprocessor', 'karma-webpack', 'havunen-karma-sauce-launcher'],
+    plugins: ['karma-jasmine', 'karma-gzip-preprocessor', 'karma-webpack', 'karma-sauce-launcher'],
 
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
