@@ -30,9 +30,8 @@
     "karma-gzip-preprocessor": "^3.0.1",
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^2.0.1",
-    "karma-sauce-launcher": "^1",
+    "karma-sauce-launcher": "^2.0.2",
     "karma-webpack": "4.0.0-rc.5",
-    "selenium-webdriver": "^3",
     "ts-loader": "^5.3.2",
     "wd": "^1.11.1",
     "webpack": "^4.28.2"
