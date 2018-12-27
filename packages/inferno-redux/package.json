@@ -1,6 +1,6 @@
 {
   "name": "inferno-redux",
-  "version": "7.0.4",
+  "version": "7.0.5",
   "license": "MIT",
   "description": "Official Inferno bindings for Redux",
   "author": {
@@ -30,12 +30,12 @@
   },
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "7.0.4"
+    "inferno": "7.0.5"
   },
   "devDependencies": {
-    "inferno-create-class": "7.0.4",
-    "inferno-create-element": "7.0.4",
-    "inferno-shared": "7.0.4",
+    "inferno-create-class": "7.0.5",
+    "inferno-create-element": "7.0.5",
+    "inferno-shared": "7.0.5",
     "redux": "^4"
   },
   "rollup": {
