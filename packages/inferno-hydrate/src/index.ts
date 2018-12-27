@@ -224,7 +224,9 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
     } else if (isSVG) {
       dom.setAttribute('class', className);
     } else {
-      dom.className = className;
+      if (dom.className !== '') {
+        dom.className = className;
+      }
     }
     _MR(ref, dom, lifecycle);
   }
