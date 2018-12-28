@@ -16,6 +16,7 @@ function emptywrapper(event) {
 (emptywrapper as any).wrapped = true;
 
 export function inputEvents(dom, nextPropsOrEmpty) {
+  return;
   if (isCheckedType(nextPropsOrEmpty.type)) {
     dom.onchange = wrappedOnChange;
     dom.onclick = emptywrapper;
