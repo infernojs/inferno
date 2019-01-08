@@ -33,14 +33,15 @@ npm install inferno-test-utils --save-dev
 * [`isDOMElementOfType`](#isdomelementoftypeinstance-type)
 * [`isRenderedClassComponent`](#isrenderedclasscomponentinstance)
 * [`isRenderedClassComponentOfType`](#isrenderedclasscomponentoftypeinstance-type)
+* [`renderIntoContainer`](#renderIntoContainervnodetree)
 
 ## Usage
 
-### `render(vNodeTree, DOM)`
+### `renderIntoContainer(vNodeTree)`
 
 Renders `vNodeTree` into a detached DOM element in the document and returns a rendered `VNode` tree.
 
-_This function requires a DOM_.
+_This function requires a DOM. JEST can provide this for you_.
 
 ```js
 const vNodeTree = (
@@ -48,7 +49,7 @@ const vNodeTree = (
     <SomeComponent className="inner"/>
   </div>
 );
-const renderedTree = render(vNodeTree, DOM);
+const renderedTree = renderIntoContainer(vNodeTree);
 ```
 
 ### `findAllInRenderedTree(renderedTree, predicate)`
