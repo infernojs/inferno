@@ -6,6 +6,7 @@ const onTextareaInputChange = createWrappedFunction('onInput', applyValueTextAre
 const wrappedOnChange = createWrappedFunction('onChange');
 
 export function textAreaEvents(dom, nextPropsOrEmpty) {
+  return;
   dom.oninput = onTextareaInputChange;
   if (nextPropsOrEmpty.onChange) {
     dom.onchange = wrappedOnChange;
