@@ -50,6 +50,7 @@
     "build:cjs:prod": "npm run rollup -- --env=production --format=cjs --replace=true --name=index.cjs --uglify=true --ext=.min.js",
     "build:umd:dev": "npm run rollup -- --uglify=false",
     "build:umd:prod": "npm run rollup -- --env=production --ext=.min.js",
+    "wasaby:compat": "npm run build && node wasaby-compat",
     "predocs": "rimraf docs",
     "print:size": "node scripts/bundle-size.js",
     "examples": "npm run --prefix examples start",
