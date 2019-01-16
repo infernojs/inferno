@@ -81,7 +81,9 @@ describe('Input type checkbox', () => {
   });
 
   it('Checked attribute after synthetic Click', function() {
+    let nClicks = 0;
     let clickChecked = null;
+    let nChanges = 0;
     let changeChecked = null;
 
     render(
@@ -90,9 +92,11 @@ describe('Input type checkbox', () => {
         checked={false}
         onClick={e => {
           clickChecked = e.target.checked;
+          nClicks++;
         }}
         onChange={e => {
           changeChecked = e.target.checked;
+          nChanges++;
         }}
       />,
       container
@@ -102,7 +106,9 @@ describe('Input type checkbox', () => {
     triggerEvent('click', input);
 
     expect(input.checked).toBe(false);
+    expect(nClicks).toBe(1);
     expect(clickChecked).toBe(true);
+    expect(nChanges).toBe(1);
     expect(changeChecked).toBe(true);
   });
 });
