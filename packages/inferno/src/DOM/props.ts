@@ -3,6 +3,7 @@ import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno
 import { delegatedEvents, handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
+import { normalizeEventName } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
 import { LinkedEvent, VNode } from '../core/types';
@@ -15,7 +16,7 @@ function createLinkEvent(linkEvent, nextValue) {
 }
 
 export function patchEvent(name: string, nextValue, dom) {
-  const event = name.substr(2).toLowerCase();
+  const event = normalizeEventName(name);
 
   if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
     const linkEvent = nextValue.event;
