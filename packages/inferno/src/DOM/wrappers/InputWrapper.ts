@@ -1,5 +1,6 @@
 import { isNullOrUndef } from 'inferno-shared';
 import { createWrappedFunction } from './wrapper';
+import { attachEvent } from '../events/attachEvent';
 
 export function isCheckedType(type): boolean {
   return type === 'checkbox' || type === 'radio';
@@ -17,10 +18,10 @@ function emptywrapper(event) {
 
 export function inputEvents(dom, nextPropsOrEmpty) {
   if (isCheckedType(nextPropsOrEmpty.type)) {
-    dom.onchange = wrappedOnChange;
-    dom.onclick = emptywrapper;
+    attachEvent(dom, 'change', wrappedOnChange);
+    attachEvent(dom, 'click', emptywrapper);
   } else {
-    dom.oninput = onTextInputChange;
+    attachEvent(dom, 'input', onTextInputChange);
   }
 }
 
