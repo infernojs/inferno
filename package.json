@@ -1,11 +1,14 @@
 {
-  "name": "inferno-build",
+  "name": "saby-inferno",
   "private": true,
   "license": "MIT",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
   },
+  "files": [
+    "Inferno/*"
+  ],
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
   },
