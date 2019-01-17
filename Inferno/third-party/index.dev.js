@@ -1,4 +1,4 @@
-define('Inferno/Inferno/third-party/index.dev', ['View/Executor/Expressions', 'Core/helpers/String/unEscapeASCII','Core/detection','Core/IoC'], function (Expressions, unEscapeASCII, detection, IoC) {var exports = {}, RawMarkupNode = Expressions.RawMarkupNode; 'use strict';
+define('Inferno/third-party/index.dev', ['View/Executor/Expressions', 'Core/helpers/String/unEscapeASCII','Core/detection','Core/IoC'], function (Expressions, unEscapeASCII, detection, IoC) {var exports = {}, RawMarkupNode = Expressions.RawMarkupNode; 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
