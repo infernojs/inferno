@@ -460,7 +460,8 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
     if (nextHooksDefined && isFunction(nextRef.onComponentWillUpdate)) {
       nextRef.onComponentWillUpdate(lastProps, nextProps);
     }
-    const nextInput = handleComponentInput(nextVNode.type(nextProps, context));
+    const type = nextVNode.type;
+    const nextInput = handleComponentInput(nextVNode.flags & VNodeFlags.ForwardRef ? type(nextProps, nextRef, context) : type(nextProps, context));
 
     patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle);
     nextVNode.children = nextInput;

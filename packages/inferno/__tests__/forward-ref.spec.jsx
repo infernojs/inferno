@@ -78,6 +78,53 @@ describe('Forward Ref', () => {
     expect(container.innerHTML).toBe('');
   });
 
+  it('Should be possible to patch forwardRef component', () => {
+    const FancyButton = forwardRef((props, ref) => {
+      return (
+        <button ref={ref} className="FancyButton">
+          {props.children}
+        </button>
+      );
+    });
+
+    expect(FancyButton.render).toBeDefined();
+
+    let firstVal = null;
+
+    render(
+      <FancyButton
+        ref={btn => {
+          firstVal = btn;
+        }}
+      >
+        Click me!
+      </FancyButton>,
+      container
+    );
+
+    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(firstVal).not.toBe(null);
+
+    let secondVal = null;
+
+    render(
+      <FancyButton
+        ref={btn => {
+          secondVal = btn;
+        }}
+      >
+        Click me! 222
+      </FancyButton>,
+      container
+    );
+
+
+    expect(firstVal).toBe(null);
+    expect(secondVal).not.toBe(null);
+
+    expect(container.innerHTML).toBe('<button class="FancyButton">Click me! 222</button>');
+  });
+
   describe('Validations', () => {
     it('Should log error if input is: Component, vNode or invalid value', () => {
       const spy = spyOn(console, 'error');
