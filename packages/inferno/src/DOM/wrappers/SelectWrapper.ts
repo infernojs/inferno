@@ -1,4 +1,4 @@
-import { isArray, isNullOrUndef } from 'inferno-shared';
+import { isArray, isNullOrUndef, isNumber } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils/common';
 import { createWrappedFunction } from './wrapper';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
@@ -48,10 +48,17 @@ export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode
   if (!isNullOrUndef(nextPropsOrEmpty.multiple) && multiplePropInBoolean !== dom.multiple) {
     dom.multiple = multiplePropInBoolean;
   }
+  const index = nextPropsOrEmpty.selectedIndex;
+  if (!isNullOrUndef(index) && index === -1) {
+    dom.selectedIndex = -1;
+  }
   const childFlags = vNode.childFlags;
 
   if (childFlags !== ChildFlags.HasInvalidChildren) {
     let value = nextPropsOrEmpty.value;
+    if (!isNullOrUndef(index) && isNumber(index) && index > -1 && dom.options[index]) {
+      value = dom.options[index].value;
+    }
     if (mounting && isNullOrUndef(value)) {
       value = nextPropsOrEmpty.defaultValue;
     }
