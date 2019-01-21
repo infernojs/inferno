@@ -3,9 +3,11 @@ import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno
 import { delegatedEvents, handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
+import { normalizeEventName } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
 import { LinkedEvent, VNode } from '../core/types';
+import { attachEvent } from './events/attachEvent';
 
 function createLinkEvent(linkEvent, nextValue) {
   return function(e) {
@@ -14,13 +16,13 @@ function createLinkEvent(linkEvent, nextValue) {
 }
 
 export function patchEvent(name: string, nextValue, dom) {
-  const nameLowerCase = name.toLowerCase();
+  const event = normalizeEventName(name);
 
   if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
     const linkEvent = nextValue.event;
 
     if (isFunction(linkEvent)) {
-      dom[nameLowerCase] = createLinkEvent(linkEvent, nextValue);
+      attachEvent(dom, event, createLinkEvent(linkEvent, nextValue));
     } else {
       // Development warning
       if (process.env.NODE_ENV !== 'production') {
@@ -28,11 +30,7 @@ export function patchEvent(name: string, nextValue, dom) {
       }
     }
   } else {
-    const domEvent = dom[nameLowerCase];
-    // if the function is wrapped, that means it's been controlled by a wrapper
-    if (!domEvent || !domEvent.wrapped) {
-      dom[nameLowerCase] = nextValue;
-    }
+    attachEvent(dom, event, nextValue);
   }
 }
 

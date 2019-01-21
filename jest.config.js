@@ -23,6 +23,9 @@ module.exports = {
     "<rootDir>/packages/*/__tests__/**/*spec.@(js|ts)?(x)",
     "<rootDir>/packages/*/__tests__/**/*spec.server.@(js|ts)?(x)"
   ],
+  testPathIgnorePatterns: [
+    "<rootDir>/packages/inferno/__tests__/transition.spec.jsx",
+  ],
   transform: {
     "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
     "^.+\\.tsx?$": "<rootDir>/jest.ts.transform.js"

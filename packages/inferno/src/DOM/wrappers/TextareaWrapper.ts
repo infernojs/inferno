@@ -1,14 +1,15 @@
 import { isNullOrUndef } from 'inferno-shared';
 import { createWrappedFunction } from './wrapper';
+import { attachEvent } from '../events/attachEvent';
 
 const onTextareaInputChange = createWrappedFunction('onInput', applyValueTextArea);
 
 const wrappedOnChange = createWrappedFunction('onChange');
 
 export function textAreaEvents(dom, nextPropsOrEmpty) {
-  dom.oninput = onTextareaInputChange;
+  attachEvent(dom, 'input', onTextareaInputChange);
   if (nextPropsOrEmpty.onChange) {
-    dom.onchange = wrappedOnChange;
+    attachEvent(dom, 'change', wrappedOnChange);
   }
 }
 

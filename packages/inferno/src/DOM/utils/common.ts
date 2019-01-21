@@ -11,6 +11,10 @@ if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
 }
 
+export function normalizeEventName(name) {
+  return name.substr(2).toLowerCase();
+}
+
 export function appendChild(parentDOM, dom) {
   parentDOM.appendChild(dom);
 }

@@ -1,5 +1,6 @@
-import { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
 import { isNull } from 'inferno-shared';
+import { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
+import { normalizeEventName } from './../utils/common';
 
 interface IEventData {
   dom: Element;
@@ -80,10 +81,6 @@ function dispatchEvents(event: SemiSyntheticEvent<any>, target, isClick: boolean
     }
     dom = dom.parentNode;
   }
-}
-
-function normalizeEventName(name) {
-  return name.substr(2).toLowerCase();
 }
 
 function stopPropagation() {

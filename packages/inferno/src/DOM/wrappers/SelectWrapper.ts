@@ -1,7 +1,8 @@
 import { isArray, isNullOrUndef, isNumber } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { EMPTY_OBJ } from '../utils/common';
 import { createWrappedFunction } from './wrapper';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { attachEvent } from '../events/attachEvent';
 
 function updateChildOptions(vNode, value) {
   if (vNode.type === 'option') {
@@ -40,7 +41,7 @@ function updateChildOption(vNode, value) {
 const onSelectChange = createWrappedFunction('onChange', applyValueSelect);
 
 export function selectEvents(dom) {
-  dom.onchange = onSelectChange;
+  attachEvent(dom, 'change', onSelectChange);
 }
 
 export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode) {
