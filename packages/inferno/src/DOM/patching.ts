@@ -2,9 +2,20 @@ import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef } from 'infer
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
-import { mount, mountArrayChildren, mountTextContent } from './mounting';
+import { mount, mountArrayChildren } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
-import { appendChild, createDerivedState, EMPTY_OBJ, findDOMfromVNode, moveVNodeDOM, options, removeChild, removeVNodeDOM, replaceChild } from './utils/common';
+import {
+  appendChild,
+  createDerivedState,
+  EMPTY_OBJ,
+  findDOMfromVNode,
+  moveVNodeDOM,
+  options,
+  removeChild,
+  removeVNodeDOM,
+  replaceChild,
+  setTextContent
+} from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
 import { handleComponentInput, renderNewInput } from './utils/componentutil';
@@ -74,7 +85,7 @@ export function patchSingleTextChild(lastChildren, nextChildren, parentDOM: Elem
     if (lastChildren !== '') {
       (parentDOM.firstChild as Node).nodeValue = nextChildren;
     } else {
-      parentDOM.textContent = nextChildren;
+      setTextContent(parentDOM, nextChildren);
     }
   }
 }
@@ -265,7 +276,7 @@ function patchChildren(
           break;
         case ChildFlags.HasTextChildren:
           unmount(lastChildren);
-          mountTextContent(parentDOM, nextChildren);
+          setTextContent(parentDOM, nextChildren);
           break;
         default:
           replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle);
@@ -280,7 +291,7 @@ function patchChildren(
         case ChildFlags.HasInvalidChildren:
           break;
         case ChildFlags.HasTextChildren:
-          mountTextContent(parentDOM, nextChildren);
+          setTextContent(parentDOM, nextChildren);
           break;
         default:
           mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
@@ -309,7 +320,7 @@ function patchChildren(
       switch (nextChildFlags) {
         case ChildFlags.HasTextChildren:
           unmountAllChildren(lastChildren);
-          mountTextContent(parentDOM, nextChildren);
+          setTextContent(parentDOM, nextChildren);
           break;
         case ChildFlags.HasVNodeChildren:
           removeAllChildren(parentDOM, parentVNode, lastChildren);

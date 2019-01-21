@@ -2,7 +2,7 @@ import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwErr
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
-import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend } from './utils/common';
+import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, setTextContent } from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
@@ -73,10 +73,6 @@ export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Ele
   }
 }
 
-export function mountTextContent(dom: Element, children: string): void {
-  dom.textContent = children as string;
-}
-
 export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
   const flags = vNode.flags;
   const props = vNode.props;
@@ -102,7 +98,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   }
 
   if (childFlags === ChildFlags.HasTextChildren) {
-    mountTextContent(dom, children as string);
+    setTextContent(dom, children as string);
   } else if (childFlags !== ChildFlags.HasInvalidChildren) {
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 

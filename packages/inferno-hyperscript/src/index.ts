@@ -58,7 +58,6 @@ function isChildren(x: any): boolean {
  * @param {string|VNode|Function} _tag Name for virtual node
  * @param {object=} _props Additional properties for virtual node
  * @param {string|number|VNode|Array<string|number|VNode>|null=} _children Optional children for virtual node
- * @param {boolean} noNormalize Set true to avoid normalization process. Tells Inferno to trust the input as is. Used for optimization.
  * @returns {VNode} returns new virtual node
  */
 export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoNode): VNode {
@@ -109,10 +108,11 @@ export function h(_tag: string | VNode | Function, _props?: any, _children?: Inf
     }
 
     return createVNode(flags, tag as string, className, _children || children, ChildFlags.UnknownChildren, newProps, key, ref);
-  } else {
-    if (children || _children) {
-      newProps.children = children || _children;
-    }
-    return createComponentVNode(VNodeFlags.ComponentUnknown, tag as Function, newProps, key, ref);
   }
+
+  if (children || _children) {
+    newProps.children = children || _children;
+  }
+
+  return createComponentVNode(VNodeFlags.ComponentUnknown, tag as Function, newProps, key, ref);
 }

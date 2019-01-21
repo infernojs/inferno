@@ -153,7 +153,7 @@ export interface Refs<P> {
 export type SFC<P = {}> = StatelessComponent<P>;
 
 export interface StatelessComponent<P = Refs<P>> {
-  (props: P & Refs<P> & {children?: InfernoNode}, context?: any): any
+  (props: P & Refs<P> & { children?: InfernoNode }, context?: any): any;
 
   defaultProps?: Partial<P>;
   defaultHooks?: Refs<P>;

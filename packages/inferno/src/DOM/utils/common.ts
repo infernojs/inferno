@@ -1,6 +1,6 @@
-import { combineFrom, isNull } from 'inferno-shared';
+import { combineFrom, isNull, isObject } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { InfernoNode, VNode } from './../../core/types';
+import { InfernoNode, LinkedEvent, VNode } from './../../core/types';
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
@@ -150,3 +150,18 @@ export const options: {
   createVNode: null,
   renderComplete: null
 };
+
+export function setTextContent(dom: Element, children): void {
+  dom.textContent = children;
+}
+
+export function isSameLinkEvent(lastValue, nextValue): boolean {
+  return (
+    lastValue &&
+    nextValue &&
+    isObject(lastValue) &&
+    isObject(nextValue) &&
+    (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
+    (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
+  );
+}

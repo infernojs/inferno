@@ -28,7 +28,8 @@ describe('Select selectedIndex', () => {
     );
 
     const select = container.firstElementChild;
-    if (window.name === 'nodejs') { //bug in JSdom =(
+    if (window.name === 'nodejs') {
+      //bug in JSdom =(
       expect(select.selectedIndex).toBe(0);
     } else {
       expect(select.selectedIndex).toBe(-1);

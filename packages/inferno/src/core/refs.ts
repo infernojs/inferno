@@ -6,25 +6,28 @@ export function createRef() {
   };
 }
 
-export const forwardRef = (process.env.NODE_ENV !== 'production') ? function (render) {
-  if (!isFunction(render)) {
-    warning(`forwardRef requires a render function but was given ${render === null ? 'null' : typeof render}.`);
+export const forwardRef =
+  process.env.NODE_ENV !== 'production'
+    ? function(render) {
+        if (!isFunction(render)) {
+          warning(`forwardRef requires a render function but was given ${render === null ? 'null' : typeof render}.`);
 
-    return;
-  }
+          return;
+        }
 
-  const fwRef = {
-    render
-  };
+        const fwRef = {
+          render
+        };
 
-  Object.seal(fwRef);
+        Object.seal(fwRef);
 
-  return fwRef;
-} : function (render) {
-  return {
-    render
-  };
-};
+        return fwRef;
+      }
+    : function(render) {
+        return {
+          render
+        };
+      };
 
 export function pushRef(dom: Element | null, value: Function, lifecycle: Function[]) {
   lifecycle.push(() => {

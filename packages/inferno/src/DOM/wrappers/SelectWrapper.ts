@@ -50,14 +50,14 @@ export function applyValueSelect(nextPropsOrEmpty, dom, mounting: boolean, vNode
     dom.multiple = multiplePropInBoolean;
   }
   const index = nextPropsOrEmpty.selectedIndex;
-  if (!isNullOrUndef(index) && index === -1) {
+  if (index === -1) {
     dom.selectedIndex = -1;
   }
   const childFlags = vNode.childFlags;
 
   if (childFlags !== ChildFlags.HasInvalidChildren) {
     let value = nextPropsOrEmpty.value;
-    if (!isNullOrUndef(index) && isNumber(index) && index > -1 && dom.options[index]) {
+    if (isNumber(index) && index > -1 && dom.options[index]) {
       value = dom.options[index].value;
     }
     if (mounting && isNullOrUndef(value)) {

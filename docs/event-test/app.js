@@ -8,7 +8,7 @@ function hoistedNonSyntheticEvents() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onclick={hoistedEvent} $HasTextChildren>${i}</li>)
+    listItems.push(<li onclick={hoistedEvent} $HasTextChildren>{i}</li>)
   }
 
   return (
@@ -22,7 +22,7 @@ function hoistedLinkEventNonSynthetic() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onclick={linkEvent(i, hoistedEvent)} $HasTextChildren>${i}</li>)
+    listItems.push(<li onclick={linkEvent(i, hoistedEvent)} $HasTextChildren>{i}</li>)
   }
 
   return (
@@ -36,7 +36,7 @@ function hoistedSyntheticEvents() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onClick={hoistedEvent} $HasTextChildren>${i}</li>)
+    listItems.push(<li onClick={hoistedEvent} $HasTextChildren>{i}</li>)
   }
 
   return (
@@ -50,7 +50,7 @@ function newFuncsNonSyntheticEvents() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onclick={() => {console.log("ok")}} $HasTextChildren>${i}</li>)
+    listItems.push(<li onclick={() => {console.log("ok")}} $HasTextChildren>{i}</li>)
   }
 
   return (

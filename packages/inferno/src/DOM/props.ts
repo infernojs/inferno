@@ -1,9 +1,9 @@
 import { namespaces } from './constants';
-import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isObject, isString, throwError } from 'inferno-shared';
 import { delegatedEvents, handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
-import { normalizeEventName } from './utils/common';
+import { isSameLinkEvent, normalizeEventName } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
 import { LinkedEvent, VNode } from '../core/types';
@@ -15,19 +15,21 @@ function createLinkEvent(linkEvent, nextValue) {
   };
 }
 
-export function patchEvent(name: string, nextValue, dom) {
+export function patchEvent(name: string, lastValue, nextValue, dom) {
   const event = normalizeEventName(name);
 
-  if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-    const linkEvent = nextValue.event;
+  if (isObject(nextValue) && !isNull(nextValue)) {
+    const linkEvent = (nextValue as LinkedEvent<any, any>).event;
 
-    if (isFunction(linkEvent)) {
-      attachEvent(dom, event, createLinkEvent(linkEvent, nextValue));
-    } else {
-      // Development warning
-      if (process.env.NODE_ENV !== 'production') {
+    // Development warning
+    if (process.env.NODE_ENV !== 'production') {
+      if (!isFunction(linkEvent)) {
         throwError(`an event on a VNode "${name}". was not a function or a valid linkEvent.`);
       }
+    }
+
+    if (!isSameLinkEvent(lastValue, nextValue)) {
+      attachEvent(dom, event, createLinkEvent(linkEvent, nextValue));
     }
   } else {
     attachEvent(dom, event, nextValue);
@@ -139,20 +141,11 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       break;
     default:
       if (delegatedEvents[prop]) {
-        if (
-          !(
-            lastValue &&
-            nextValue &&
-            !isFunction(lastValue) &&
-            !isFunction(nextValue) &&
-            (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
-            (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
-          )
-        ) {
+        if (!isSameLinkEvent(lastValue, nextValue)) {
           handleEvent(prop, nextValue, dom);
         }
       } else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
-        patchEvent(prop, nextValue, dom);
+        patchEvent(prop, lastValue, nextValue, dom);
       } else if (isNullOrUndef(nextValue)) {
         dom.removeAttribute(prop);
       } else if (isSVG && namespaces[prop]) {
