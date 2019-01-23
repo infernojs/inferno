@@ -1,87 +1,98 @@
 import { render } from 'inferno';
 import { innerHTML, triggerEvent } from 'inferno-utils';
 
-describe('transition events', () => {
-  let container;
+function getChromeVersion () {
+  var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
-  beforeEach(function() {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-  });
+  return raw ? parseInt(raw[2], 10) : false;
+}
 
-  afterEach(function() {
-    render(null, container);
-    container.innerHTML = '';
-    document.body.removeChild(container);
-  });
+const version = getChromeVersion();
 
-  const transitionStyles = {
-    position: 'absolute',
-    top: '16px',
-    left: '16px',
-    transition: 'left 50ms',
-    background: 'red',
-    height: '16px',
-    width: '16px'
-  };
+// Old versions of chrome does not support this test
+if (version > 60 || version === false) {
+  describe('transition events', () => {
+    let container;
 
-  it('should call "ontransitionend" at the end of a transition', done => {
-    let clickOccurred = null;
-    let handlerFired = null;
+    beforeEach(function() {
+      container = document.createElement('div');
+      document.body.appendChild(container);
+    });
 
-    render(
-      <div
-        style={transitionStyles}
-        onclick={e => {
-          e.target.style.left = '50px';
-          clickOccurred = true;
-        }}
-        ontransitionend={e => {
-          handlerFired = true;
-        }}
-      />,
-      container
-    );
+    afterEach(function() {
+      render(null, container);
+      container.innerHTML = '';
+      document.body.removeChild(container);
+    });
 
-    const div = container.firstChild;
-    setTimeout(() => {
-      triggerEvent('click', div);
+    const transitionStyles = {
+      position: 'absolute',
+      top: '16px',
+      left: '16px',
+      transition: 'left 50ms',
+      background: 'red',
+      height: '16px',
+      width: '16px'
+    };
 
+    it('should call "ontransitionend" at the end of a transition', done => {
+      let clickOccurred = null;
+      let handlerFired = null;
+
+      render(
+        <div
+          style={transitionStyles}
+          onclick={e => {
+            e.target.style.left = '50px';
+            clickOccurred = true;
+          }}
+          ontransitionend={e => {
+            handlerFired = true;
+          }}
+        />,
+        container
+      );
+
+      const div = container.firstChild;
       setTimeout(() => {
-        expect(clickOccurred).toBe(true);
-        expect(handlerFired).toBe(true);
-        done();
-      }, 250);
-    }, 25);
-  });
+        triggerEvent('click', div);
 
-  it('should call "onTransitionEnd" at the end of a transition', done => {
-    let clickOccurred = null;
-    let handlerFired = null;
+        setTimeout(() => {
+          expect(clickOccurred).toBe(true);
+          expect(handlerFired).toBe(true);
+          done();
+        }, 250);
+      }, 25);
+    });
 
-    render(
-      <div
-        style={transitionStyles}
-        onclick={e => {
-          e.target.style.left = '100px';
-          clickOccurred = true;
-        }}
-        onTransitionEnd={e => {
-          handlerFired = true;
-        }}
-      />,
-      container
-    );
+    it('should call "onTransitionEnd" at the end of a transition', done => {
+      let clickOccurred = null;
+      let handlerFired = null;
 
-    const div = container.firstChild;
-    setTimeout(() => {
-      triggerEvent('click', div);
+      render(
+        <div
+          style={transitionStyles}
+          onclick={e => {
+            e.target.style.left = '100px';
+            clickOccurred = true;
+          }}
+          onTransitionEnd={e => {
+            handlerFired = true;
+          }}
+        />,
+        container
+      );
 
+      const div = container.firstChild;
       setTimeout(() => {
-        expect(clickOccurred).toBe(true);
-        expect(handlerFired).toBe(true);
-        done();
-      }, 250);
-    }, 25);
+        triggerEvent('click', div);
+
+        setTimeout(() => {
+          expect(clickOccurred).toBe(true);
+          expect(handlerFired).toBe(true);
+          done();
+        }, 250);
+      }, 25);
+    });
   });
-});
+}
