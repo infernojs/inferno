@@ -104,7 +104,7 @@
     "lint-staged": "^8.1.0",
     "madge": "^3.4.3",
     "minimist": "^1.2.0",
-    "mobx": "^4",
+    "mobx": "4.8.0",
     "npm-run-all": "^4.1.5",
     "perf-monitor": "^0.4.1",
     "pre-commit": "^1.2.2",
