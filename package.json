@@ -99,7 +99,7 @@
     "history": "^4.7.2",
     "jest": "^23.6.0",
     "jest-silent-reporter": "^0.1.1",
-    "jsdom": "13.1.0",
+    "jsdom": "13.2.0",
     "lerna": "3.10.7",
     "lint-staged": "^8.1.0",
     "madge": "^3.4.3",

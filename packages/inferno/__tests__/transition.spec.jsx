@@ -1,7 +1,7 @@
 import { render } from 'inferno';
 import { innerHTML, triggerEvent } from 'inferno-utils';
 
-function getChromeVersion () {
+function getChromeVersion() {
   var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
   return raw ? parseInt(raw[2], 10) : false;

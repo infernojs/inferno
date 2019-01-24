@@ -118,7 +118,6 @@ describe('Forward Ref', () => {
       container
     );
 
-
     expect(firstVal).toBe(null);
     expect(secondVal).not.toBe(null);
 
