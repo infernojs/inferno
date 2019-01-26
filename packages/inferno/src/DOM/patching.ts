@@ -609,10 +609,8 @@ function patchKeyedChildren(
     const bStart: number = j;
     const aLeft: number = aEnd - j + 1;
     const bLeft: number = bEnd - j + 1;
-    const sources: number[] = [];
-    while (i++ <= bLeft) {
-      sources.push(0);
-    }
+    const sources = new Int32Array(bLeft - i + 1);
+    i = bLeft + 2;
     // Keep track if its possible to remove whole DOM using textContent = '';
     let canRemoveWholeContent: boolean = aLeft === aLength;
     let moved: boolean = false;
@@ -740,14 +738,13 @@ function patchKeyedChildren(
   }
 }
 
-type UintArray = Uint8Array | Uint16Array | Uint32Array;
 
-let result: UintArray;
-let p: UintArray;
+let result: Int32Array;
+let p: Int32Array;
 let maxLen = 0;
 // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 
-function lis_algorithm(arr: number[]): UintArray {
+function lis_algorithm(arr: Int32Array): Int32Array {
   let arrI = 0;
   let i = 0;
   let j = 0;
@@ -756,12 +753,11 @@ function lis_algorithm(arr: number[]): UintArray {
   let v = 0;
   let c = 0;
   const len = arr.length;
-  const TArr = len < 0xFF ? Uint8Array : len < 0xFFFF ? Uint16Array : Uint32Array;
   
   if (len > maxLen) {
     maxLen = len;
-    result = new TArr(len);
-    p = new TArr(len);
+    result = new Int32Array(len);
+    p = new Int32Array(len);
   }
 
 
@@ -798,7 +794,7 @@ function lis_algorithm(arr: number[]): UintArray {
   }
 
   u = i = k + 1;
-  const seq = new TArr(u);
+  const seq = new Int32Array(u);
   v = result[u - 1];
 
   while (u-- > 0) {
