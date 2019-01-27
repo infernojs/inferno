@@ -609,10 +609,8 @@ function patchKeyedChildren(
     const bStart: number = j;
     const aLeft: number = aEnd - j + 1;
     const bLeft: number = bEnd - j + 1;
-    const sources: number[] = [];
-    while (i++ <= bLeft) {
-      sources.push(0);
-    }
+    const sources = new Int32Array(bLeft - i + 1);
+    i = bLeft + 2;
     // Keep track if its possible to remove whole DOM using textContent = '';
     let canRemoveWholeContent: boolean = aLeft === aLength;
     let moved: boolean = false;
@@ -740,33 +738,45 @@ function patchKeyedChildren(
   }
 }
 
-// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-function lis_algorithm(arr: number[]): number[] {
-  const p = arr.slice();
-  const result: number[] = [0];
-  let i;
-  let j;
-  let u;
-  let v;
-  let c;
-  const len = arr.length;
 
-  for (i = 0; i < len; ++i) {
-    const arrI = arr[i];
+let result: Int32Array;
+let p: Int32Array;
+let maxLen = 0;
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+
+function lis_algorithm(arr: Int32Array): Int32Array {
+  let arrI = 0;
+  let i = 0;
+  let j = 0;
+  let k = 0;
+  let u = 0;
+  let v = 0;
+  let c = 0;
+  const len = arr.length;
+  
+  if (len > maxLen) {
+    maxLen = len;
+    result = new Int32Array(len);
+    p = new Int32Array(len);
+  }
+
+
+  for (; i < len; ++i) {
+    arrI = arr[i];
 
     if (arrI !== 0) {
-      j = result[result.length - 1];
+      j = result[k];
       if (arr[j] < arrI) {
         p[i] = j;
-        result.push(i);
+        result[++k] = i;
         continue;
       }
 
       u = 0;
-      v = result.length - 1;
+      v = k;
 
       while (u < v) {
-        c = ((u + v) / 2) | 0;
+        c = (u + v) >> 1;
         if (arr[result[c]] < arrI) {
           u = c + 1;
         } else {
@@ -783,13 +793,16 @@ function lis_algorithm(arr: number[]): number[] {
     }
   }
 
-  u = result.length;
+  u = i = k + 1;
+  const seq = new Int32Array(u);
   v = result[u - 1];
 
   while (u-- > 0) {
-    result[u] = v;
+    seq[u] = v;
     v = p[v];
   }
-
-  return result;
+  while (i-- > 0) {
+    result[i] = 0;
+  }
+  return seq;
 }
