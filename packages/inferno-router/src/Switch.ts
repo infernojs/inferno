@@ -10,6 +10,34 @@ function getMatch({ path, exact, strict, sensitive, from }, route, location) {
   return pathProp ? matchPath(location.pathname, { path: pathProp, exact, strict, sensitive }) : route.match;
 }
 
+function extractMatchFromChildren(children, route, location) {
+  let match;
+  let _child: any;
+
+  if (isArray(children)) {
+    for (let i = 0; i < children.length; ++i) {
+      _child = children[i];
+
+      if (isArray(_child)) {
+        const nestedMatch = extractMatchFromChildren(_child, route, location);
+        match = nestedMatch.match;
+        _child = nestedMatch._child;
+      } else {
+        match = getMatch(_child.props, route, location);
+      }
+
+      if (match) {
+        break;
+      }
+    }
+  } else {
+    match = getMatch((children as any).props, route, location);
+    _child = children;
+  }
+
+  return { match, _child };
+}
+
 export class Switch extends Component<IRouteProps, any> {
   public render(): VNode | null {
     const { route } = this.context.router;
@@ -20,23 +48,7 @@ export class Switch extends Component<IRouteProps, any> {
       return null;
     }
 
-    let match;
-    let _child: any;
-
-    if (isArray(children)) {
-      for (let i = 0; i < children.length; ++i) {
-        _child = children[i];
-
-        match = getMatch(_child.props, route, location);
-
-        if (match) {
-          break;
-        }
-      }
-    } else {
-      match = getMatch((children as any).props, route, location);
-      _child = children;
-    }
+    const { match, _child } = extractMatchFromChildren(children, route, location);
 
     if (match) {
       return createComponentVNode(_child.flags, _child.type, combineFrom(_child.props, { location, computedMatch: match }));
