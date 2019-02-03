@@ -182,8 +182,7 @@ function isIgnoredNode(nextSibling) {
   return  (nextSibling && nextSibling.tagName === 'SCRIPT' &&
   nextSibling.attributes && nextSibling.attributes['data-requiremodule']) ||
   ignoreExtensionScripts(nextSibling) ||
-  (nextSibling && (nextSibling.tagName === 'LINK' || nextSibling.tagName === 'STYLE') && nextSibling.attributes &&
-  nextSibling.attributes['data-vdomignore']) ||
+  (nextSibling && nextSibling.attributes && nextSibling.attributes['data-vdomignore']) ||
   /*ignore ghostery chrome plugin*/
   ignoredById(nextSibling);
 }
