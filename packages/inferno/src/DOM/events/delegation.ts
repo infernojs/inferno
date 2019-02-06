@@ -90,11 +90,19 @@ function stopPropagation() {
   }
 }
 
+function isDefaultPrevented() {
+  return this.defaultPrevented;
+}
+
+function isPropagationStopped() {
+  return this.cancelBubble;
+}
+
 function attachEventToDocument(name: string) {
-  const docEvent = function(event: Event) {
+  const docEvent = function(event: SemiSyntheticEvent<any>) {
     const isClick = name === 'onClick' || name === 'onDblClick';
 
-    if (isClick && (event as MouseEvent).button !== 0) {
+    if (isClick && (event as any).button !== 0) {
       // Firefox incorrectly triggers click event for mid/right mouse buttons.
       // This bug has been active for 12 years.
       // https://bugzilla.mozilla.org/show_bug.cgi?id=184051
@@ -102,6 +110,8 @@ function attachEventToDocument(name: string) {
       return;
     }
 
+    event.isDefaultPrevented = isDefaultPrevented;
+    event.isPropagationStopped = isPropagationStopped;
     event.stopPropagation = stopPropagation;
     // Event data needs to be object to save reference to currentTarget getter
     const eventData: IEventData = {

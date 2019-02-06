@@ -210,16 +210,6 @@ if (typeof Event !== 'undefined') {
     // tslint:disable-next-line:no-empty
     eventProtoType.persist = function() {};
   }
-  if (!eventProtoType.isDefaultPrevented) {
-    eventProtoType.isDefaultPrevented = function() {
-      return this.defaultPrevented;
-    };
-  }
-  if (!eventProtoType.isPropagationStopped) {
-    eventProtoType.isPropagationStopped = function() {
-      return this.cancelBubble;
-    };
-  }
 }
 
 function iterableToArray(iterable) {

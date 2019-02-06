@@ -52,6 +52,8 @@ export interface SemiSyntheticEvent<T> extends Event {
    * A reference to the element on which the event listener is registered.
    */
   currentTarget: EventTarget & T;
+  isDefaultPrevented: () => boolean;
+  isPropagationStopped: () => boolean;
 }
 
 export type ClipboardEvent<T> = SemiSyntheticEvent<T> & NativeClipboardEvent;
@@ -129,13 +131,6 @@ export interface ForwardRef {
   render: Function;
 }
 
-export interface Props<P, T = Element> extends Refs<P> {
-  children?: InfernoNode;
-  ref?: Ref<T> | Refs<P> | null;
-  key?: Key;
-  className?: string;
-}
-
 export interface Refs<P> {
   onComponentDidMount?: (domNode: Element, nextProps: P) => void;
 
@@ -150,9 +145,16 @@ export interface Refs<P> {
   onComponentWillUnmount?(domNode: Element): void;
 }
 
+export interface Props<P, T = Element> extends Refs<P> {
+  children?: InfernoNode;
+  ref?: Ref<T> | Refs<P> | null;
+  key?: Key;
+  className?: string;
+}
+
 export type SFC<P = {}> = StatelessComponent<P>;
 
-export interface StatelessComponent<P = Refs<P>> {
+export interface StatelessComponent<P> {
   (props: P & Refs<P> & { children?: InfernoNode }, context?: any): any;
 
   defaultProps?: Partial<P>;
