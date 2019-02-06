@@ -305,6 +305,50 @@ describe('Switch (jsx)', () => {
       );
     }).toThrowError(/You should not use <Switch> outside a <Router>/);
   });
+
+  it('matches and renders array children correctly', () => {
+    const node = document.createElement('div');
+
+    render(
+      <MemoryRouter initialEntries={['/bubblegum']}>
+        <Switch>
+          <Route path="/ice-cream" render={() => <div>beb</div>} />
+          {[<Route path="/bubblegum" render={() => <div>bub</div>} />]}
+          <Route path="/cupcakes" render={() => <div>cup</div>} />
+        </Switch>
+      </MemoryRouter>,
+      node
+    );
+
+    expect(node.innerHTML).not.toContain('beb');
+    expect(node.innerHTML).toContain('bub');
+    expect(node.innerHTML).not.toContain('cup');
+  });
+
+  it('matches and renders children in nested arrays correctly', () => {
+    const node = document.createElement('div');
+
+    render(
+      <MemoryRouter initialEntries={['/bubblegum']}>
+        <Switch>
+          {[[<Route path="/ice-cream" render={() => <div>beb</div>} />]]}
+          {[
+            <Route path="/something" render={() => <div>bab</div>} />,
+            <Route path="/something-else" render={() => <div>bib</div>} />,
+            [<Route path="/bubblegum" render={() => <div>bub</div>} />]
+          ]}
+          <Route path="/cupcakes" render={() => <div>cup</div>} />
+        </Switch>
+      </MemoryRouter>,
+      node
+    );
+
+    expect(node.innerHTML).toContain('bub');
+    expect(node.innerHTML).not.toContain('beb');
+    expect(node.innerHTML).not.toContain('bab');
+    expect(node.innerHTML).not.toContain('bib');
+    expect(node.innerHTML).not.toContain('cup');
+  });
 });
 
 describe('A <Switch location>', () => {
