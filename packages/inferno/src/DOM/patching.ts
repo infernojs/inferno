@@ -480,10 +480,10 @@ function patchText(lastVNode: VNode, nextVNode: VNode) {
     // EmptyTextNode - implementation of empty string value
     // You can't set nodeValue property in EmptyTextNode
     // @ts-ignore
-    if (detection.isIE10) {
+    if (detection.isIE) {
       if (dom && dom.parentNode) {
         // @ts-ignore
-        if (detection.isIE10 || dom.nodeValue === '') {
+        if (detection.isIE || dom.nodeValue === '') {
           // @ts-ignore
           dom.parentNode.innerText = nextText;
         } else {
