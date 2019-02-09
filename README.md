@@ -171,8 +171,9 @@ If you have built something using Inferno you can add them here:
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/2nm1kqct/)
 - [**Simple Clock v5** (@JSFiddle)](https://jsfiddle.net/pzmqLjo7/)
-- [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox) : SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
-
+- [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox): SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
+- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer) 
+(state machine library) 
 
 ## Getting Started
 
