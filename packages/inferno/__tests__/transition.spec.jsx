@@ -57,11 +57,13 @@ if (version > 60 || version === false) {
       setTimeout(() => {
         triggerEvent('click', div);
 
-        setTimeout(() => {
-          expect(clickOccurred).toBe(true);
-          expect(handlerFired).toBe(true);
-          done();
-        }, 250);
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            expect(clickOccurred).toBe(true);
+            expect(handlerFired).toBe(true);
+            done();
+          }, 250);
+        });
       }, 25);
     });
 
@@ -87,11 +89,13 @@ if (version > 60 || version === false) {
       setTimeout(() => {
         triggerEvent('click', div);
 
-        setTimeout(() => {
-          expect(clickOccurred).toBe(true);
-          expect(handlerFired).toBe(true);
-          done();
-        }, 250);
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            expect(clickOccurred).toBe(true);
+            expect(handlerFired).toBe(true);
+            done();
+          }, 250);
+        });
       }, 25);
     });
   });
