@@ -37,6 +37,7 @@
       "inferno": "Inferno"
     }
   },
+  "files": ["index.js", "dist/", "README.md", "package.json"],
   "main": "index.js",
   "module": "dist/index.esm.js",
   "dev:module": "dist/index.dev.esm.js",

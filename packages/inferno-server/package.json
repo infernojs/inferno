@@ -25,6 +25,7 @@
     "browser",
     "rollup"
   ],
+  "files": ["index.js", "index.esm.js", "dist/", "README.md", "package.json"],
   "main": "index.js",
   "module": "index.esm.js",
   "dev:module": "dist/index.dev.esm.js",

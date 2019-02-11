@@ -11,6 +11,7 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
+  "files": ["index.js", "prop-types.js", "lib", "dist/", "README.md", "package.json"],
   "main": "index.js",
   "module": "dist/index.esm.js",
   "dev:module": "dist/index.dev.esm.js",

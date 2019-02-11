@@ -738,7 +738,6 @@ function patchKeyedChildren(
   }
 }
 
-
 let result: Int32Array;
 let p: Int32Array;
 let maxLen = 0;
@@ -753,13 +752,12 @@ function lis_algorithm(arr: Int32Array): Int32Array {
   let v = 0;
   let c = 0;
   const len = arr.length;
-  
+
   if (len > maxLen) {
     maxLen = len;
     result = new Int32Array(len);
     p = new Int32Array(len);
   }
-
 
   for (; i < len; ++i) {
     arrI = arr[i];
