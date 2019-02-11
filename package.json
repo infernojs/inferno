@@ -58,7 +58,7 @@
     "lint-staged": "lint-staged",
     "move-types": "lerna exec -- node ../../scripts/typings/move.js",
     "publish": "lerna publish --exact --force-publish=* --skip-git --skip-npm && npm run build && npm run test && lerna publish --exact",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run build-slow",
     "prettier": "npm-run-all prettier:src:*",
     "prettier:src:js": "prettier --print-width 160 --single-quote true --write --list-different packages/*/__tests__/**/*.{js,jsx}",
     "prettier:src:ts": "prettier --print-width 160 --single-quote true --write --list-different --parser=typescript packages/*/src/**/*.{ts,tsx}",
@@ -84,7 +84,7 @@
     "@babel/preset-typescript": "^7.1.0",
     "@types/history": "^4.7.2",
     "@types/jest": "^24.0.0",
-    "@types/node": "^10.12.21",
+    "@types/node": "^10.12.24",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.1.0",
     "babel-plugin-inferno": "6.0.4",
@@ -122,6 +122,6 @@
     "sinon": "^7.2.3",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "3.3.1"
+    "typescript": "3.3.3"
   }
 }
