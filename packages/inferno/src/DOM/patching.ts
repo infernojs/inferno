@@ -472,7 +472,7 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
 }
 
 function patchText(lastVNode: VNode, nextVNode: VNode) {
-  const nextText = unescape(nextVNode.children as string);
+  const nextText = nextVNode.children as string;
   const dom = lastVNode.dom;
 
   if (nextText !== lastVNode.children) {
