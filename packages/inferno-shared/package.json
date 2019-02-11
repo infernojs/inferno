@@ -1,6 +1,6 @@
 {
   "name": "inferno-shared",
-  "version": "7.1.6",
+  "version": "7.1.7",
   "license": "MIT",
   "description": "Helpers functions for Inferno",
   "author": {
@@ -11,7 +11,11 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "files": ["index.js", "dist/", "package.json"],
+  "files": [
+    "index.js",
+    "dist/",
+    "package.json"
+  ],
   "main": "index.js",
   "module": "dist/index.esm.js",
   "dev:module": "dist/index.dev.esm.js",

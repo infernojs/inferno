@@ -1,6 +1,6 @@
 {
   "name": "inferno-hyperscript",
-  "version": "7.1.6",
+  "version": "7.1.7",
   "license": "MIT",
   "description": "Bridging hyperscript to InfernoJS",
   "author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
@@ -8,7 +8,12 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "files": ["index.js", "dist/", "README.md", "package.json"],
+  "files": [
+    "index.js",
+    "dist/",
+    "README.md",
+    "package.json"
+  ],
   "main": "index.js",
   "module": "dist/index.esm.js",
   "dev:module": "dist/index.dev.esm.js",
@@ -19,11 +24,11 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "7.1.6"
+    "inferno": "7.1.7"
   },
   "devDependencies": {
-    "inferno-shared": "7.1.6",
-    "inferno-vnode-flags": "7.1.6"
+    "inferno-shared": "7.1.7",
+    "inferno-vnode-flags": "7.1.7"
   },
   "rollup": {
     "bundledDependencies": [

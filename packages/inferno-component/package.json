@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "7.1.6",
+  "version": "7.1.7",
   "license": "MIT",
   "description": "Inferno ES6 Component",
   "author": {
@@ -18,13 +18,18 @@
   "rollup": {
     "moduleName": "Inferno"
   },
-  "files": ["index.js", "dist/", "README.md", "package.json"],
+  "files": [
+    "index.js",
+    "dist/",
+    "README.md",
+    "package.json"
+  ],
   "main": "index.js",
   "module": "dist/index.esm.js",
   "dev:module": "dist/index.dev.esm.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "7.1.6"
+    "inferno": "7.1.7"
   }
 }
