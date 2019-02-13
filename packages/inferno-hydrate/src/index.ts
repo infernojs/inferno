@@ -150,7 +150,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
   }
 }
 
-const domPropertySearchMap = ['chrome-extension', 'mc.yandex.ru'];
+const domPropertySearchMap = ['chrome-extension', 'mc.yandex.ru', 'kaspersky'];
 
 const ignoredNodeId = ['ghostery-purple-box', 'StayFocusd-infobar'];
 
@@ -167,7 +167,13 @@ function searchForExtension(domProperty) {
 function ignoreExtensionScripts(dom) {
   return dom &&
      dom.tagName === 'SCRIPT' &&
-     (searchForExtension(dom.innerText) || searchForExtension(dom.getAttribute('src')));;
+     (searchForExtension(dom.innerText) || searchForExtension(dom.getAttribute('src')));
+}
+
+function ignoreExtensionCSS(dom) {
+  return dom &&
+     dom.tagName === 'LINK' &&
+     searchForExtension(dom.getAttribute('href'));
 }
 
 function ignoredById(node) {
@@ -181,7 +187,7 @@ function ignoredById(node) {
 function isIgnoredNode(nextSibling) {
   return  (nextSibling && nextSibling.tagName === 'SCRIPT' &&
   nextSibling.attributes && nextSibling.attributes['data-requiremodule']) ||
-  ignoreExtensionScripts(nextSibling) ||
+  ignoreExtensionScripts(nextSibling) || ignoreExtensionCSS(nextSibling) ||
   (nextSibling && nextSibling.attributes && nextSibling.attributes['data-vdomignore']) ||
   /*ignore ghostery chrome plugin*/
   ignoredById(nextSibling);
