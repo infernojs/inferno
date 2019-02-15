@@ -24,29 +24,60 @@ function getDelegatedEventObject(v) {
     onTouchStart: v
   };
 }
-const attachedEventCounts = getDelegatedEventObject(0);
-const attachedEvents = getDelegatedEventObject(null);
 
-export const delegatedEvents = getDelegatedEventObject(true);
+export function getDocumentId(doc: Document) {
+  for (const docId in documentsScopes) {
+    if (documentsScopes[docId] === doc) {
+      return docId;
+    }
+  }
+
+  return null;
+}
+
+function registerDocScope(doc: HTMLDocument) {
+  const docId = (Date.now().toString(36) + Math.random().toString(36)).toUpperCase();
+  documentsScopes[docId] = doc;
+  attachedEventCounts[docId] = getDelegatedEventObject(0);
+  attachedEvents[docId] = getDelegatedEventObject(null);
+  delegatedEvents[docId] = getDelegatedEventObject(true);
+
+  return docId;
+}
+
+const documentsScopes = {};
+const attachedEventCounts = {};
+const attachedEvents = {};
+
+export const delegatedEvents = {};
+
+registerDocScope(document);
 
 export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any, any> | null, dom) {
+  const doc = dom.ownerDocument;
+  let docId = getDocumentId(doc);
+
+  if (!docId) {
+    docId = registerDocScope(doc);
+  }
+
   let eventsObject = dom.$EV;
 
   if (nextEvent) {
-    if (attachedEventCounts[name] === 0) {
-      attachedEvents[name] = attachEventToDocument(name);
+    if (attachedEventCounts[docId][name] === 0) {
+      attachedEvents[docId][name] = attachEventToDocument(name, doc);
     }
     if (!eventsObject) {
       eventsObject = (dom as any).$EV = getDelegatedEventObject(null);
     }
     if (!eventsObject[name]) {
-      ++attachedEventCounts[name];
+      ++attachedEventCounts[docId][name];
     }
     eventsObject[name] = nextEvent;
   } else if (eventsObject && eventsObject[name]) {
-    if (--attachedEventCounts[name] === 0) {
-      document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
-      attachedEvents[name] = null;
+    if (--attachedEventCounts[docId][name] === 0) {
+      doc.removeEventListener(normalizeEventName(name), attachedEvents[docId][name]);
+      attachedEvents[docId][name] = null;
     }
     eventsObject[name] = null;
   }
@@ -98,7 +129,7 @@ function isPropagationStopped() {
   return this.cancelBubble;
 }
 
-function attachEventToDocument(name: string) {
+function attachEventToDocument(name: string, doc: HTMLDocument) {
   const docEvent = function(event: SemiSyntheticEvent<any>) {
     const isClick = name === 'onClick' || name === 'onDblClick';
 
@@ -115,7 +146,7 @@ function attachEventToDocument(name: string) {
     event.stopPropagation = stopPropagation;
     // Event data needs to be object to save reference to currentTarget getter
     const eventData: IEventData = {
-      dom: document as any
+      dom: doc as any
     };
 
     Object.defineProperty(event, 'currentTarget', {
@@ -127,6 +158,7 @@ function attachEventToDocument(name: string) {
 
     dispatchEvents(event, event.target, isClick, name, eventData);
   };
-  document.addEventListener(normalizeEventName(name), docEvent);
+
+  doc.addEventListener(normalizeEventName(name), docEvent);
   return docEvent;
 }

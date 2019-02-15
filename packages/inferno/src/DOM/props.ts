@@ -1,6 +1,6 @@
 import { namespaces } from './constants';
 import { isFunction, isNull, isNullOrUndef, isObject, isString, throwError } from 'inferno-shared';
-import { delegatedEvents, handleEvent } from './events/delegation';
+import { delegatedEvents, handleEvent, getDocumentId } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
 import { isSameLinkEvent, normalizeEventName } from './utils/common';
@@ -140,7 +140,10 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       }
       break;
     default:
-      if (delegatedEvents[prop]) {
+      const doc = dom.ownerDocument || document;
+      const docId = getDocumentId(doc);
+
+      if (docId && delegatedEvents[docId] && delegatedEvents[docId][prop]) {
         if (!isSameLinkEvent(lastValue, nextValue)) {
           handleEvent(prop, nextValue, dom);
         }

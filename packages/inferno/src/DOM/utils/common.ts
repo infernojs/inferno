@@ -27,12 +27,14 @@ export function insertOrAppend(parentDOM: Element, newNode, nextNode) {
   }
 }
 
-export function documentCreateElement(tag, isSVG: boolean): Element {
+export function documentCreateElement(tag, isSVG: boolean, docEl: Document | void): Element {
+  const doc = docEl ? docEl : document;
+
   if (isSVG) {
-    return document.createElementNS('http://www.w3.org/2000/svg', tag);
+    return doc.createElementNS('http://www.w3.org/2000/svg', tag);
   }
 
-  return document.createElement(tag);
+  return doc.createElement(tag);
 }
 
 export function replaceChild(parentDOM: Element, newDom, lastDom) {

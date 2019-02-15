@@ -66,7 +66,13 @@ function mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle: Fu
 }
 
 export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Element | null): void {
-  const dom = (vNode.dom = document.createTextNode(vNode.children as string) as any);
+  let doc = parentDOM ? parentDOM.ownerDocument : document;
+
+  if (!doc) {
+    doc = document;
+  }
+
+  const dom = (vNode.dom = doc.createTextNode(vNode.children as string) as any);
 
   if (!isNull(parentDOM)) {
     insertOrAppend(parentDOM, dom, nextNode);
@@ -81,8 +87,13 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   let children = vNode.children;
   const childFlags = vNode.childFlags;
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  const dom = documentCreateElement(vNode.type, isSVG);
+  let doc = parentDOM ? parentDOM.ownerDocument : document;
 
+  if (!doc) {
+    doc = document;
+  }
+
+  const dom = documentCreateElement(vNode.type, isSVG, doc);
   vNode.dom = dom;
 
   if (!isNullOrUndef(className) && className !== '') {
