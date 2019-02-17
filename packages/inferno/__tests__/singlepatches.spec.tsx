@@ -706,4 +706,104 @@ describe('All single patch variations', () => {
     expect(container.querySelector('.first')).toBe(firstNode);
     expect(container.querySelector('.second')).toBe(secondNode);
   });
+
+  it('Should keep given key even for deeply nested content', () => {
+    render(
+      <div>
+        {[
+          null,
+          <div key="first">First</div>,
+          <div key="second">Second</div>
+        ]}
+      </div>,
+      container
+    );
+
+    const firstDiv = container.firstChild.firstChild;
+    const secondDiv = container.firstChild.childNodes[1];
+
+    expect(container.innerHTML).toBe('<div><div>First</div><div>Second</div></div>');
+
+    render(
+      <div>
+        {[
+          null,
+          undefined,
+          <div key="first">First</div>,
+          <div key="second">Second</div>
+        ]}
+      </div>,
+      container
+    );
+    const firstDiv2 = container.firstChild.firstChild;
+    const secondDiv2 = container.firstChild.childNodes[1];
+
+    expect(container.innerHTML).toBe('<div><div>First</div><div>Second</div></div>');
+
+    expect(firstDiv).toBe(firstDiv2);
+    expect(secondDiv).toBe(secondDiv2);
+  });
+
+  it('Should keep given key even for deeply nested content #2', () => {
+    const vNode1 = <div key="first">First</div>;
+
+    render(
+      <div>
+        {[
+          null,
+          <div key="first1">First</div>,
+          vNode1,
+          <div key="second">Second</div>
+        ]}
+      </div>,
+      container
+    );
+
+    const domNode = container.firstChild.childNodes[1];
+
+    expect(container.innerHTML).toBe('<div><div>First</div><div>First</div><div>Second</div></div>');
+
+    render(
+      <div>
+        {[
+          null,
+          undefined,
+          <div key="first1">First</div>,
+          [vNode1],
+          <div key="second">Second</div>
+        ]}
+      </div>,
+      container
+    );
+    const domNode2 = container.firstChild.childNodes[1];
+
+    expect(container.innerHTML).toBe('<div><div>First</div><div>First</div><div>Second</div></div>');
+
+    expect(domNode).not.toBe(domNode2);
+  });
+
+  it('Should differenciate between location even if key is same', () => {
+    render(
+      <div>
+        {[
+          <div key="ok">ok</div>
+        ]}
+      </div>,
+      container
+    );
+
+    const domNode = container.firstChild.childNodes[0];
+
+    render(
+      <div>
+        {[
+          [[[[[<div key="ok">ok</div>]]]]]
+        ]}
+      </div>,
+      container
+    );
+    const domNode2 = container.firstChild.childNodes[0];
+
+    expect(domNode).not.toBe(domNode2);
+  })
 });
