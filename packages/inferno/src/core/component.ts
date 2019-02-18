@@ -82,16 +82,20 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 
     renderCheck.v = true;
 
+    const parentDOM = (findDOMfromVNode(component.$LI, true) as Element).parentNode as Element;
+    const doc = (parentDOM || document).ownerDocument || document;
+
     updateClassComponent(
       component,
       combineFrom(component.state, pendingState),
       component.props,
-      (findDOMfromVNode(component.$LI, true) as Element).parentNode as Element,
+      parentDOM,
       component.context,
       component.$SVG,
       force,
       null,
-      lifecycle
+      lifecycle,
+      doc
     );
 
     if (lifecycle.length > 0) {

@@ -1,7 +1,7 @@
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/types';
-import { delegatedEvents, handleEvent } from './events/delegation';
+import { delegatedEvents, handleEvent, getDocumentId } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';
 
@@ -28,11 +28,17 @@ export function unmount(vNode) {
 
     if (!isNull(props)) {
       const keys = Object.keys(props);
+      const doc = vNode.dom.ownerDocument || document;
+      const docId = getDocumentId(doc);
 
-      for (let i = 0, len = keys.length; i < len; i++) {
-        const key = keys[i];
-        if (delegatedEvents[key]) {
-          handleEvent(key, null, vNode.dom);
+      if (docId) {
+        const delegatedEventsDoc = delegatedEvents[docId];
+
+        for (let i = 0, len = keys.length; i < len; i++) {
+          const key = keys[i];
+          if (delegatedEventsDoc[key]) {
+            handleEvent(key, null, vNode.dom, docId);
+          }
         }
       }
     }

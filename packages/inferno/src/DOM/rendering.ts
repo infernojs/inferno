@@ -6,6 +6,7 @@ import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
 import { callAll, options, EMPTY_OBJ, renderCheck } from './utils/common';
+import { getDocumentId, registerDocumentScope } from './events/delegation';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -46,6 +47,11 @@ export function __render(
   }
   const lifecycle: Function[] = [];
   let rootInput = (parentDOM as any).$V as VNode | null;
+  const doc = (parentDOM || document).ownerDocument || document;
+
+  if (!getDocumentId(doc)) {
+    registerDocumentScope(doc);
+  }
 
   renderCheck.v = true;
 
@@ -54,7 +60,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      mount(input as VNode, parentDOM as Element, context, false, null, lifecycle);
+      mount(input as VNode, parentDOM as Element, context, false, null, lifecycle, doc);
       (parentDOM as any).$V = input;
       rootInput = input as VNode;
     }
@@ -66,7 +72,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDOM as Element, context, false, null, lifecycle);
+      patch(rootInput as VNode, input as VNode, parentDOM as Element, context, false, null, lifecycle, doc);
       rootInput = (parentDOM as any).$V = input as VNode;
     }
   }

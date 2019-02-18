@@ -73,7 +73,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   }
 }
 
-export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null) {
+export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null, doc: Document) {
   switch (prop) {
     case 'children':
     case 'childrenType':
@@ -140,12 +140,11 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       }
       break;
     default:
-      const doc = dom.ownerDocument || document;
       const docId = getDocumentId(doc);
 
       if (docId && delegatedEvents[docId] && delegatedEvents[docId][prop]) {
         if (!isSameLinkEvent(lastValue, nextValue)) {
-          handleEvent(prop, nextValue, dom);
+          handleEvent(prop, nextValue, dom, docId);
         }
       } else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
         patchEvent(prop, lastValue, nextValue, dom);
@@ -162,7 +161,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
   }
 }
 
-export function mountProps(vNode, flags, props, dom, isSVG) {
+export function mountProps(vNode, flags, props, dom, isSVG, doc) {
   let hasControlledValue: boolean = false;
   const isFormElement = (flags & VNodeFlags.FormElement) > 0;
   if (isFormElement) {
@@ -173,7 +172,7 @@ export function mountProps(vNode, flags, props, dom, isSVG) {
   }
   for (const prop in props) {
     // do not add a hasOwnProperty check here, it affects performance
-    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
+    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null, doc);
   }
   if (isFormElement) {
     processElement(flags, vNode, dom, props, true, hasControlledValue);

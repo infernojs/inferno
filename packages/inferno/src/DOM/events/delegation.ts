@@ -35,13 +35,14 @@ export function getDocumentId(doc: Document) {
   return null;
 }
 
-function registerDocScope(doc: HTMLDocument) {
-  const docId = (Date.now().toString(36) + Math.random().toString(36)).toUpperCase();
+let uniqueId: number = 1;
+
+export function registerDocumentScope(doc: Document) {
+  const docId = (uniqueId++).toString();
   documentsScopes[docId] = doc;
   attachedEventCounts[docId] = getDelegatedEventObject(0);
   attachedEvents[docId] = getDelegatedEventObject(null);
   delegatedEvents[docId] = getDelegatedEventObject(true);
-
   return docId;
 }
 
@@ -51,17 +52,9 @@ const attachedEvents = {};
 
 export const delegatedEvents = {};
 
-registerDocScope(document);
-
-export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any, any> | null, dom) {
-  const doc = dom.ownerDocument;
-  let docId = getDocumentId(doc);
-
-  if (!docId) {
-    docId = registerDocScope(doc);
-  }
-
+export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any, any> | null, dom, docId: number | string) {
   let eventsObject = dom.$EV;
+  const doc = documentsScopes[docId];
 
   if (nextEvent) {
     if (attachedEventCounts[docId][name] === 0) {
@@ -129,7 +122,7 @@ function isPropagationStopped() {
   return this.cancelBubble;
 }
 
-function attachEventToDocument(name: string, doc: HTMLDocument) {
+function attachEventToDocument(name: string, doc: Document) {
   const docEvent = function(event: SemiSyntheticEvent<any>) {
     const isClick = name === 'onClick' || name === 'onDblClick';
 
