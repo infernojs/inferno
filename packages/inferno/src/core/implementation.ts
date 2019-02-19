@@ -272,9 +272,13 @@ export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, c
 
           n.flags |= VNodeFlags.Normalized;
 
-          if (isNull(oldKey) || isPrefixedKey) {
-            n.key = newKey;
-          } else {
+          if (!isPrefixedKey) {
+            if (isNull(oldKey)) {
+              n.key = newKey;
+            } else {
+              n.key = currentKey + oldKey;
+            }
+          } else if (oldKey.substring(0, currentKey.length) !== currentKey) {
             n.key = currentKey + oldKey;
           }
         }

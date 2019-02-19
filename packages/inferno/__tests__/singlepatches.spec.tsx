@@ -783,27 +783,194 @@ describe('All single patch variations', () => {
   });
 
   it('Should differenciate between location even if key is same', () => {
+    let changeState: any = null;
+    const okDiv = <div key="ok">ok</div>;
+
+    class Example extends Component<{
+      test: boolean
+    }> {
+      constructor(props, context) {
+        super(props, context);
+
+        changeState = () => this.setState({});
+      }
+
+      public render() {
+        if (this.props.test) {
+          return (
+            <div>
+              {[
+                [[[[[okDiv]]]]]
+              ]}
+            </div>
+          );
+        }
+
+        return (
+          <div>
+            {[[
+              okDiv
+            ]]}
+          </div>
+        );
+      }
+    }
     render(
-      <div>
-        {[
-          <div key="ok">ok</div>
-        ]}
-      </div>,
+      <Example test={false}/>,
       container
     );
 
     const domNode = container.firstChild.childNodes[0];
 
+    changeState();
+
+    // set state should keep it the same
+    expect(domNode).toBe(container.firstChild.childNodes[0]);
+
     render(
-      <div>
-        {[
-          [[[[[<div key="ok">ok</div>]]]]]
-        ]}
-      </div>,
+      <Example test={true}/>,
       container
     );
-    const domNode2 = container.firstChild.childNodes[0];
 
-    expect(domNode).not.toBe(domNode2);
-  })
+    // Rendered to different array, create new dom
+    const newDomNode = container.firstChild.childNodes[0];
+
+    expect(newDomNode).not.toBe(domNode);
+
+    changeState();
+
+    expect(newDomNode).toBe(container.firstChild.childNodes[0]);
+  });
+
+  it('Should differenciate between location even if key is same (props.children)', () => {
+    let changeState: any = null;
+
+    class Example extends Component<{
+      test: boolean
+    }> {
+      constructor(props, context) {
+        super(props, context);
+
+        changeState = () => this.setState({});
+      }
+
+      public render() {
+        if (this.props.test) {
+          return (
+            <div>
+              {[
+                [[[[[this.props.children]]]]]
+              ]}
+            </div>
+          );
+        }
+
+        return (
+          <div>
+            {[[
+              this.props.children
+            ]]}
+          </div>
+        );
+      }
+    }
+
+    function start(bool: boolean) {
+      render(
+        <Example test={bool}>
+          <div key="ok">ok</div>
+        </Example>,
+        container
+      );
+    }
+
+    start(false);
+
+    const domNode = container.firstChild.childNodes[0];
+
+    changeState();
+
+    // set state should keep it the same
+    expect(domNode).toBe(container.firstChild.childNodes[0]);
+
+    start(true);
+
+    // Rendered to different array, create new dom
+    const newDomNode = container.firstChild.childNodes[0];
+
+    expect(newDomNode).not.toBe(domNode);
+
+    changeState();
+
+    expect(newDomNode).toBe(container.firstChild.childNodes[0]);
+  });
+
+  it('Should not recreate DOM nodes if key is given and does not change', () => {
+    let changeState: any = null;
+
+    class Example extends Component {
+      constructor(props, context) {
+        super(props, context);
+
+        changeState = () => this.setState({});
+      }
+
+      public render() {
+        return (
+          <div key="exampleDiv">
+            <input key="button" type="button" value="rerender"/>
+            {this.props.children}
+          </div>
+        );
+      }
+    }
+
+    const rerender = function() {
+      // children must be defiend outside the Exampe Component
+      // if defined insite render of Exampe and/or its a single child, there is no issue
+      render(
+        <Example key="exmapleApp">
+          <div class="anim1" key="div1"/>
+          <div class="anim2" key="div22"/>
+        </Example>,
+        container
+      );
+    };
+
+    rerender();
+
+    const originalInput = container.firstChild.children[0];
+    const originalDiv1 = container.firstChild.children[1];
+    const originalDiv2 = container.firstChild.children[2];
+
+    changeState();
+
+    expect(originalInput).toBe(container.firstChild.children[0]);
+    expect(originalDiv1).toBe(container.firstChild.children[1]);
+    expect(originalDiv2).toBe(container.firstChild.children[2]);
+
+    changeState();
+
+    expect(originalInput).toBe(container.firstChild.children[0]);
+    expect(originalDiv1).toBe(container.firstChild.children[1]);
+    expect(originalDiv2).toBe(container.firstChild.children[2]);
+
+    rerender();
+
+    expect(originalInput).toBe(container.firstChild.children[0]);
+    expect(originalDiv1).toBe(container.firstChild.children[1]);
+    expect(originalDiv2).toBe(container.firstChild.children[2]);
+
+    changeState();
+
+    expect(originalInput).toBe(container.firstChild.children[0]);
+    expect(originalDiv1).toBe(container.firstChild.children[1]);
+    expect(originalDiv2).toBe(container.firstChild.children[2]);
+
+    rerender();
+
+    expect(originalInput).toBe(container.firstChild.children[0]);
+    expect(originalDiv1).toBe(container.firstChild.children[1]);
+    expect(originalDiv2).toBe(container.firstChild.children[2]);
+  });
 });
