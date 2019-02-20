@@ -1,4 +1,4 @@
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, unescape } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
 import { VNode } from '../core/types';
@@ -472,7 +472,7 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
 }
 
 function patchText(lastVNode: VNode, nextVNode: VNode) {
-  const nextText = nextVNode.children as string;
+  const nextText = unescape(nextVNode.children as string);
   const dom = lastVNode.dom;
 
   if (nextText !== lastVNode.children) {
