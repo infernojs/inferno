@@ -31,7 +31,7 @@
     "logo": "https://opencollective.com/inferno/logo.txt"
   },
   "scripts": {
-    "postinstall": "opencollective postinstall"
+    "postinstall": "opencollective-postinstall"
   },
   "rollup": {
     "bundledDependencies": [
@@ -58,6 +58,6 @@
   "dependencies": {
     "inferno-shared": "7.1.8",
     "inferno-vnode-flags": "7.1.8",
-    "opencollective": "^1.0.3"
+    "opencollective-postinstall": "^2.0.2"
   }
 }
