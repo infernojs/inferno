@@ -60,7 +60,7 @@ function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, contex
   return currentNode;
 }
 
-function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG, lifecycle: Function[], doc) {
+function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG, lifecycle: Function[], doc: HTMLDocument) {
   const childFlags = parentVNode.childFlags;
   const children = parentVNode.children;
   const props = parentVNode.props;
@@ -76,7 +76,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
       }
     } else if (childFlags === ChildFlags.HasTextChildren) {
       if (isNull(currentNode)) {
-        parentNode.appendChild(document.createTextNode(children as string));
+        parentNode.appendChild(doc.createTextNode(children as string));
       } else if (parentNode.childNodes.length !== 1 || currentNode.nodeType !== 3) {
         parentNode.textContent = children as string;
       } else {
@@ -173,7 +173,7 @@ function hydrateText(vNode: VNode, parentDOM: Element, dom: Element, doc: HTMLDo
   return vNode.dom;
 }
 
-function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, lifecycle: Function[], doc): Element {
+function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument): Element {
   const children = vNode.children;
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
