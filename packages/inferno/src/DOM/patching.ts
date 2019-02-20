@@ -77,7 +77,7 @@ export function patch(
   } else if (nextFlags & VNodeFlags.ComponentFunction) {
     patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
   } else if (nextFlags & VNodeFlags.Text) {
-    patchText(lastVNode, nextVNode);
+    patchText(lastVNode, nextVNode, parentDOM);
   } else if (nextFlags & VNodeFlags.Void) {
     nextVNode.dom = lastVNode.dom;
   } else if (nextFlags & VNodeFlags.Fragment) {
@@ -471,7 +471,7 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
   }
 }
 
-function patchText(lastVNode: VNode, nextVNode: VNode) {
+function patchText(lastVNode: VNode, nextVNode: VNode, parentDOM: Element) {
   const nextText = nextVNode.children as string;
   const dom = lastVNode.dom;
 
@@ -489,6 +489,9 @@ function patchText(lastVNode: VNode, nextVNode: VNode) {
         } else {
           dom.nodeValue = nextText;
         }
+      } else {
+        // @ts-ignore
+        parentDOM.innerText = nextText;
       }
     } else {
       (dom as Element).nodeValue = nextText;
