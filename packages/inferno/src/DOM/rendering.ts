@@ -49,7 +49,7 @@ export function __render(
   let rootInput = (parentDOM as any).$V as VNode | null;
   const doc = (parentDOM || document).ownerDocument || document;
 
-  if (!getDocumentId(doc)) {
+  if (getDocumentId(doc) === null) {
     registerDocumentScope(doc);
   }
 
@@ -66,7 +66,7 @@ export function __render(
     }
   } else {
     if (isNullOrUndef(input)) {
-      remove(rootInput as VNode, parentDOM as Element);
+      remove(rootInput as VNode, parentDOM as Element, doc);
       (parentDOM as any).$V = null;
     } else {
       if ((input as VNode).flags & VNodeFlags.InUse) {

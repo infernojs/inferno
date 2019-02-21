@@ -38,11 +38,10 @@ export function getDocumentId(doc: HTMLDocument) {
 let uniqueId: number = 1;
 
 export function registerDocumentScope(doc: HTMLDocument) {
-  const docId = (uniqueId++).toString();
+  const docId = uniqueId++;
   documentsScopes[docId] = doc;
   attachedEventCounts[docId] = getDelegatedEventObject(0);
   attachedEvents[docId] = getDelegatedEventObject(null);
-  delegatedEvents[docId] = getDelegatedEventObject(true);
   return docId;
 }
 
@@ -50,29 +49,31 @@ const documentsScopes = {};
 const attachedEventCounts = {};
 const attachedEvents = {};
 
-export const delegatedEvents = {};
+export const delegatedEvents = getDelegatedEventObject(true);
 
-export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any, any> | null, dom, docId: number | string) {
+export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any, any> | null, dom, doc: HTMLDocument) {
   let eventsObject = dom.$EV;
-  const doc: HTMLDocument = documentsScopes[docId];
+  const docId: string | null = getDocumentId(doc);
 
-  if (nextEvent) {
-    if (attachedEventCounts[docId][name] === 0) {
-      attachedEvents[docId][name] = attachEventToDocument(name, doc);
+  if (docId !== null) {
+    if (nextEvent) {
+      if (attachedEventCounts[docId][name] === 0) {
+        attachedEvents[docId][name] = attachEventToDocument(name, doc);
+      }
+      if (!eventsObject) {
+        eventsObject = (dom as any).$EV = getDelegatedEventObject(null);
+      }
+      if (!eventsObject[name]) {
+        ++attachedEventCounts[docId][name];
+      }
+      eventsObject[name] = nextEvent;
+    } else if (eventsObject && eventsObject[name]) {
+      if (--attachedEventCounts[docId][name] === 0) {
+        doc.removeEventListener(normalizeEventName(name), attachedEvents[docId][name]);
+        attachedEvents[docId][name] = null;
+      }
+      eventsObject[name] = null;
     }
-    if (!eventsObject) {
-      eventsObject = (dom as any).$EV = getDelegatedEventObject(null);
-    }
-    if (!eventsObject[name]) {
-      ++attachedEventCounts[docId][name];
-    }
-    eventsObject[name] = nextEvent;
-  } else if (eventsObject && eventsObject[name]) {
-    if (--attachedEventCounts[docId][name] === 0) {
-      doc.removeEventListener(normalizeEventName(name), attachedEvents[docId][name]);
-      attachedEvents[docId][name] = null;
-    }
-    eventsObject[name] = null;
   }
 }
 

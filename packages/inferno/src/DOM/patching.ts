@@ -23,7 +23,7 @@ import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 
 function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument) {
-  unmount(lastVNode);
+  unmount(lastVNode, doc);
 
   if ((nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0) {
     // Single DOM operation, when we have dom references available
@@ -249,7 +249,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
 }
 
 function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument) {
-  unmount(lastChildren);
+  unmount(lastChildren, doc);
 
   mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle, doc);
 
@@ -276,10 +276,10 @@ function patchChildren(
           patch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, doc);
           break;
         case ChildFlags.HasInvalidChildren:
-          remove(lastChildren, parentDOM);
+          remove(lastChildren, parentDOM, doc);
           break;
         case ChildFlags.HasTextChildren:
-          unmount(lastChildren);
+          unmount(lastChildren, doc);
           setTextContent(parentDOM, nextChildren);
           break;
         default:
@@ -323,15 +323,15 @@ function patchChildren(
     default:
       switch (nextChildFlags) {
         case ChildFlags.HasTextChildren:
-          unmountAllChildren(lastChildren);
+          unmountAllChildren(lastChildren, doc);
           setTextContent(parentDOM, nextChildren);
           break;
         case ChildFlags.HasVNodeChildren:
-          removeAllChildren(parentDOM, parentVNode, lastChildren);
+          removeAllChildren(parentDOM, parentVNode, lastChildren, doc);
           mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, doc);
           break;
         case ChildFlags.HasInvalidChildren:
-          removeAllChildren(parentDOM, parentVNode, lastChildren);
+          removeAllChildren(parentDOM, parentVNode, lastChildren, doc);
           break;
         default:
           const lastLength = lastChildren.length | 0;
@@ -343,7 +343,7 @@ function patchChildren(
               mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, doc);
             }
           } else if (nextLength === 0) {
-            removeAllChildren(parentDOM, parentVNode, lastChildren);
+            removeAllChildren(parentDOM, parentVNode, lastChildren, doc);
           } else if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
             patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle, doc);
           } else {
@@ -528,7 +528,7 @@ function patchNonKeyedChildren(
     }
   } else if (lastChildrenLength > nextChildrenLength) {
     for (i = commonLength; i < lastChildrenLength; ++i) {
-      remove(lastChildren[i], dom);
+      remove(lastChildren[i], dom, doc);
     }
   }
 }
@@ -609,7 +609,7 @@ function patchKeyedChildren(
     }
   } else if (j > bEnd) {
     while (j <= aEnd) {
-      remove(a[j++], dom);
+      remove(a[j++], dom, doc);
     }
   } else {
     let aStart: number = j;
@@ -636,7 +636,7 @@ function patchKeyedChildren(
               if (canRemoveWholeContent) {
                 canRemoveWholeContent = false;
                 while (aStart < i) {
-                  remove(a[aStart++], dom);
+                  remove(a[aStart++], dom, doc);
                 }
               }
               if (pos > j) {
@@ -653,10 +653,10 @@ function patchKeyedChildren(
             }
           }
           if (!canRemoveWholeContent && j > bEnd) {
-            remove(aNode, dom);
+            remove(aNode, dom, doc);
           }
         } else if (!canRemoveWholeContent) {
-          remove(aNode, dom);
+          remove(aNode, dom, doc);
         }
       }
     } else {
@@ -678,7 +678,7 @@ function patchKeyedChildren(
             if (canRemoveWholeContent) {
               canRemoveWholeContent = false;
               while (i > aStart) {
-                remove(a[aStart++], dom);
+                remove(a[aStart++], dom, doc);
               }
             }
             bNode = b[j];
@@ -694,16 +694,16 @@ function patchKeyedChildren(
             patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, doc);
             ++patched;
           } else if (!canRemoveWholeContent) {
-            remove(aNode, dom);
+            remove(aNode, dom, doc);
           }
         } else if (!canRemoveWholeContent) {
-          remove(aNode, dom);
+          remove(aNode, dom, doc);
         }
       }
     }
     // fast-path: if nothing patched remove all old and add all new
     if (canRemoveWholeContent) {
-      removeAllChildren(dom, parentVNode, a);
+      removeAllChildren(dom, parentVNode, a, doc);
       mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle, doc);
     } else if (moved) {
       const seq = lis_algorithm(sources);

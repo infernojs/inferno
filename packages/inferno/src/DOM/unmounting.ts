@@ -1,19 +1,19 @@
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { VNode } from '../core/types';
-import { delegatedEvents, handleEvent, getDocumentId } from './events/delegation';
+import { delegatedEvents, handleEvent } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';
 
-export function remove(vNode: VNode, parentDOM: Element | null) {
-  unmount(vNode);
+export function remove(vNode: VNode, parentDOM: Element | null, doc: HTMLDocument) {
+  unmount(vNode, doc);
 
   if (parentDOM) {
     removeVNodeDOM(vNode, parentDOM);
   }
 }
 
-export function unmount(vNode) {
+export function unmount(vNode, doc: HTMLDocument) {
   const flags = vNode.flags;
   const children = vNode.children;
   let ref;
@@ -28,25 +28,18 @@ export function unmount(vNode) {
 
     if (!isNull(props)) {
       const keys = Object.keys(props);
-      const doc = vNode.dom.ownerDocument || document;
-      const docId = getDocumentId(doc);
-
-      if (docId) {
-        const delegatedEventsDoc = delegatedEvents[docId];
-
-        for (let i = 0, len = keys.length; i < len; i++) {
-          const key = keys[i];
-          if (delegatedEventsDoc[key]) {
-            handleEvent(key, null, vNode.dom, docId);
-          }
+      for (let i = 0, len = keys.length; i < len; i++) {
+        const key = keys[i];
+        if (delegatedEvents[key]) {
+          handleEvent(key, null, vNode.dom, doc);
         }
       }
     }
 
     if (childFlags & ChildFlags.MultipleChildren) {
-      unmountAllChildren(children);
+      unmountAllChildren(children, doc);
     } else if (childFlags === ChildFlags.HasVNodeChildren) {
-      unmount(children as VNode);
+      unmount(children as VNode, doc);
     }
   } else if (children) {
     if (flags & VNodeFlags.ComponentClass) {
@@ -55,7 +48,7 @@ export function unmount(vNode) {
       }
       unmountRef(vNode.ref);
       children.$UN = true;
-      unmount(children.$LI);
+      unmount(children.$LI, doc);
     } else if (flags & VNodeFlags.ComponentFunction) {
       ref = vNode.ref;
 
@@ -63,20 +56,20 @@ export function unmount(vNode) {
         ref.onComponentWillUnmount(findDOMfromVNode(vNode, true), vNode.props || EMPTY_OBJ);
       }
 
-      unmount(children);
+      unmount(children, doc);
     } else if (flags & VNodeFlags.Portal) {
-      remove(children as VNode, vNode.ref);
+      remove(children as VNode, vNode.ref, doc);
     } else if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags & ChildFlags.MultipleChildren) {
-        unmountAllChildren(children);
+        unmountAllChildren(children, doc);
       }
     }
   }
 }
 
-export function unmountAllChildren(children: VNode[]) {
+export function unmountAllChildren(children: VNode[], doc: HTMLDocument) {
   for (let i = 0, len = children.length; i < len; ++i) {
-    unmount(children[i]);
+    unmount(children[i], doc);
   }
 }
 
@@ -85,8 +78,8 @@ export function clearDOM(dom) {
   dom.textContent = '';
 }
 
-export function removeAllChildren(dom: Element, vNode: VNode, children) {
-  unmountAllChildren(children);
+export function removeAllChildren(dom: Element, vNode: VNode, children, doc: HTMLDocument) {
+  unmountAllChildren(children, doc);
 
   if (vNode.flags & VNodeFlags.Fragment) {
     removeVNodeDOM(vNode, dom);

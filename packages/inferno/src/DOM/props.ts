@@ -1,6 +1,6 @@
 import { namespaces } from './constants';
 import { isFunction, isNull, isNullOrUndef, isObject, isString, throwError } from 'inferno-shared';
-import { delegatedEvents, handleEvent, getDocumentId } from './events/delegation';
+import { delegatedEvents, handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
 import { isSameLinkEvent, normalizeEventName } from './utils/common';
@@ -128,9 +128,9 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
         if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
           if (!isNull(lastVNode)) {
             if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
-              unmountAllChildren(lastVNode.children as VNode[]);
+              unmountAllChildren(lastVNode.children as VNode[], doc);
             } else if (lastVNode.childFlags === ChildFlags.HasVNodeChildren) {
-              unmount(lastVNode.children);
+              unmount(lastVNode.children, doc);
             }
             lastVNode.children = null;
             lastVNode.childFlags = ChildFlags.HasInvalidChildren;
@@ -140,11 +140,9 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       }
       break;
     default:
-      const docId = getDocumentId(doc);
-
-      if (docId && delegatedEvents[docId] && delegatedEvents[docId][prop]) {
+      if (delegatedEvents[prop]) {
         if (!isSameLinkEvent(lastValue, nextValue)) {
-          handleEvent(prop, nextValue, dom, docId);
+          handleEvent(prop, nextValue, dom, doc);
         }
       } else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
         patchEvent(prop, lastValue, nextValue, dom);
