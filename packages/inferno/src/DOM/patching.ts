@@ -22,7 +22,7 @@ import { handleComponentInput, renderNewInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 
-function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument) {
+function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: Document) {
   unmount(lastVNode, doc);
 
   if ((nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0) {
@@ -44,7 +44,7 @@ export function patch(
   isSVG: boolean,
   nextNode: Element | null,
   lifecycle: Function[],
-  doc: HTMLDocument
+  doc: Document
 ) {
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
@@ -97,7 +97,7 @@ function patchContentEditableChildren(dom, nextChildren) {
   }
 }
 
-function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument) {
+function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: Document) {
   const lastChildren = lastVNode.children as VNode[];
   let nextChildren = nextVNode.children as any;
   const lastChildFlags = lastVNode.childFlags;
@@ -133,7 +133,7 @@ function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, c
   patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle, doc);
 }
 
-function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Function[], doc: HTMLDocument) {
+function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Function[], doc: Document) {
   const lastContainer = lastVNode.ref as Element;
   const nextContainer = nextVNode.ref as Element;
   const nextChildren = nextVNode.children as VNode;
@@ -162,7 +162,7 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Fun
   }
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[], doc: HTMLDocument) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[], doc: Document) {
   const dom = lastVNode.dom as Element;
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
@@ -248,7 +248,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
   }
 }
 
-function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument) {
+function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Function[], doc: Document) {
   unmount(lastChildren, doc);
 
   mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle, doc);
@@ -267,7 +267,7 @@ function patchChildren(
   nextNode: Element | null,
   parentVNode: VNode,
   lifecycle: Function[],
-  doc: HTMLDocument
+  doc: Document
 ) {
   switch (lastChildFlags) {
     case ChildFlags.HasVNodeChildren:
@@ -371,7 +371,7 @@ export function updateClassComponent(
   force: boolean,
   nextNode: Element | null,
   lifecycle: Function[],
-  doc: HTMLDocument
+  doc: Document
 ) {
   const lastState = instance.state;
   const lastProps = instance.props;
@@ -412,7 +412,7 @@ export function updateClassComponent(
   }
 }
 
-function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: HTMLDocument) {
+function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: Document) {
   const instance = (nextVNode.children = lastVNode.children);
   // If Component has crashed, ignore it to stay functional
   if (isNull(instance)) {
@@ -449,7 +449,7 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
   }
 }
 
-function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: HTMLDocument) {
+function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: Document) {
   let shouldUpdate: boolean = true;
   const nextProps = nextVNode.props || EMPTY_OBJ;
   const nextRef = nextVNode.ref;
@@ -499,7 +499,7 @@ function patchNonKeyedChildren(
   nextChildrenLength: number,
   nextNode: Element | null,
   lifecycle: Function[],
-  doc: HTMLDocument
+  doc: Document
 ) {
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
   let i = 0;
@@ -544,7 +544,7 @@ function patchKeyedChildren(
   outerEdge: Element | null,
   parentVNode: VNode,
   lifecycle,
-  doc: HTMLDocument
+  doc: Document
 ) {
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;

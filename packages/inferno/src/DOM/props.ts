@@ -73,7 +73,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   }
 }
 
-export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null, doc: HTMLDocument) {
+export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null, doc: Document) {
   switch (prop) {
     case 'children':
     case 'childrenType':

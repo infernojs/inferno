@@ -5,7 +5,7 @@ import { delegatedEvents, handleEvent } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';
 
-export function remove(vNode: VNode, parentDOM: Element | null, doc: HTMLDocument) {
+export function remove(vNode: VNode, parentDOM: Element | null, doc: Document) {
   unmount(vNode, doc);
 
   if (parentDOM) {
@@ -13,7 +13,7 @@ export function remove(vNode: VNode, parentDOM: Element | null, doc: HTMLDocumen
   }
 }
 
-export function unmount(vNode, doc: HTMLDocument) {
+export function unmount(vNode, doc: Document) {
   const flags = vNode.flags;
   const children = vNode.children;
   let ref;
@@ -67,7 +67,7 @@ export function unmount(vNode, doc: HTMLDocument) {
   }
 }
 
-export function unmountAllChildren(children: VNode[], doc: HTMLDocument) {
+export function unmountAllChildren(children: VNode[], doc: Document) {
   for (let i = 0, len = children.length; i < len; ++i) {
     unmount(children[i], doc);
   }
@@ -78,7 +78,7 @@ export function clearDOM(dom) {
   dom.textContent = '';
 }
 
-export function removeAllChildren(dom: Element, vNode: VNode, children, doc: HTMLDocument) {
+export function removeAllChildren(dom: Element, vNode: VNode, children, doc: Document) {
   unmountAllChildren(children, doc);
 
   if (vNode.flags & VNodeFlags.Fragment) {

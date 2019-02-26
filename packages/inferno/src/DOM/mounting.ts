@@ -8,7 +8,7 @@ import { createClassComponentInstance, handleComponentInput } from './utils/comp
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
-export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: HTMLDocument): void {
+export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: Document): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
@@ -37,7 +37,7 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
   }
 }
 
-function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Element | null, lifecycle: Function[], doc: HTMLDocument) {
+function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Element | null, lifecycle: Function[], doc: Document) {
   mount(vNode.children as VNode, vNode.ref, context, false, null, lifecycle, doc);
 
   const placeHolderVNode = createVoidVNode();
@@ -47,7 +47,7 @@ function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Elemen
   vNode.dom = placeHolderVNode.dom;
 }
 
-function mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle: Function[], doc: HTMLDocument): void {
+function mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle: Function[], doc: Document): void {
   let children = vNode.children;
   let childFlags = vNode.childFlags;
 
@@ -65,7 +65,7 @@ function mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle: Fu
   }
 }
 
-export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Element | null, doc: HTMLDocument): void {
+export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Element | null, doc: Document): void {
   const dom = (vNode.dom = doc.createTextNode(vNode.children as string) as any);
 
   if (!isNull(parentDOM)) {
@@ -73,7 +73,7 @@ export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Ele
   }
 }
 
-export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: HTMLDocument): void {
+export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: Document): void {
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
@@ -127,7 +127,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   mountRef(ref, dom, lifecycle);
 }
 
-export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: HTMLDocument): void {
+export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: Document): void {
   for (let i = 0, len = children.length; i < len; ++i) {
     let child = children[i];
 
@@ -138,13 +138,13 @@ export function mountArrayChildren(children, dom: Element | null, context: Objec
   }
 }
 
-export function mountClassComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: HTMLDocument) {
+export function mountClassComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], doc: Document) {
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
   mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, doc);
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
 }
 
-export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle, doc: HTMLDocument): void {
+export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle, doc: Document): void {
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref;

@@ -83,7 +83,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
     renderCheck.v = true;
 
     const parentDOM = (findDOMfromVNode(component.$LI, true) as Element).parentNode as Element;
-    const doc = parentDOM.ownerDocument as HTMLDocument;
+    const doc = (parentDOM || document).ownerDocument || document;
 
     updateClassComponent(
       component,

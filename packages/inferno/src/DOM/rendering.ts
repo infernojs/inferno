@@ -47,7 +47,7 @@ export function __render(
   }
   const lifecycle: Function[] = [];
   let rootInput = (parentDOM as any).$V as VNode | null;
-  const doc = (parentDOM as Element).ownerDocument as HTMLDocument;
+  const doc = (parentDOM as Element).ownerDocument as Document;
 
   if (getDocumentId(doc) === null) {
     registerDocumentScope(doc);

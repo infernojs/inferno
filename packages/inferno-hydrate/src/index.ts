@@ -38,7 +38,7 @@ function isSamePropsInnerHTML(dom: Element, props): boolean {
   return Boolean(props && props.dangerouslySetInnerHTML && props.dangerouslySetInnerHTML.__html && isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html));
 }
 
-function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, isClass: boolean, lifecycle: Function[], doc: HTMLDocument) {
+function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, isClass: boolean, lifecycle: Function[], doc: Document) {
   const type = vNode.type as Function;
   const ref = vNode.ref;
   const props = vNode.props || {};
@@ -60,7 +60,7 @@ function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, contex
   return currentNode;
 }
 
-function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG, lifecycle: Function[], doc: HTMLDocument) {
+function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG, lifecycle: Function[], doc: Document) {
   const childFlags = parentVNode.childFlags;
   const children = parentVNode.children;
   const props = parentVNode.props;
@@ -121,7 +121,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
   }
 }
 
-function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument) {
+function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: Document) {
   const props = vNode.props;
   const className = vNode.className;
   const flags = vNode.flags;
@@ -157,7 +157,7 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
   return vNode.dom;
 }
 
-function hydrateText(vNode: VNode, parentDOM: Element, dom: Element, doc: HTMLDocument) {
+function hydrateText(vNode: VNode, parentDOM: Element, dom: Element, doc: Document) {
   if (dom.nodeType !== 3) {
     _MT(vNode, null, null, doc);
     parentDOM.replaceChild(vNode.dom as Element, dom);
@@ -173,7 +173,7 @@ function hydrateText(vNode: VNode, parentDOM: Element, dom: Element, doc: HTMLDo
   return vNode.dom;
 }
 
-function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument): Element {
+function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, lifecycle: Function[], doc: Document): Element {
   const children = vNode.children;
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
@@ -187,7 +187,7 @@ function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context
   return findLastDOMFromVNode((children as VNode[])[(children as VNode[]).length - 1]) as Element;
 }
 
-function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: HTMLDocument): Element | null {
+function hydrateVNode(vNode: VNode, parentDOM: Element, currentDom: Element, context: Object, isSVG: boolean, lifecycle: Function[], doc: Document): Element | null {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Component) {
