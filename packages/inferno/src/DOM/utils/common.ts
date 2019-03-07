@@ -142,7 +142,7 @@ export const renderCheck = {
 
 export const options: {
   componentComparator: ((lastVNode: VNode, nextVNode: VNode) => boolean) | null;
-  createSnapshotObject: ((object: {children:any, props: any, type: string | undefined}) => void) | null;
+  createSnapshotObject: ((object: {children:any, props: any, type: string | undefined}, vNode: VNode) => void) | null;
   createVNode: ((vNode: VNode) => void) | null;
   renderComplete: ((rootInput: VNode | InfernoNode, parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node) => void) | null;
   reactStyles?: boolean;

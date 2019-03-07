@@ -286,44 +286,42 @@ const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 const oldCreateVNode = options.createVNode;
 
 options.createVNode = (vNode: VNode) => {
-  if (!(vNode.flags & VNodeFlags.CompatElement)) {
-    return;
-  }
+  if (vNode.flags & VNodeFlags.CompatElement) {
+    const children = vNode.children as any;
+    let props: any = vNode.props;
 
-  const children = vNode.children as any;
-  let props: any = vNode.props;
+    if (isNullOrUndef(props)) {
+      props = vNode.props = {};
+    }
 
-  if (isNullOrUndef(props)) {
-    props = vNode.props = {};
-  }
+    // React supports iterable children, in addition to Array-like
+    if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && !isArray(children) && isFunction(children[symbolIterator])) {
+      vNode.children = iterableToArray(children[symbolIterator]());
+    }
 
-  // React supports iterable children, in addition to Array-like
-  if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && !isArray(children) && isFunction(children[symbolIterator])) {
-    vNode.children = iterableToArray(children[symbolIterator]());
-  }
-
-  if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
-    props.children = children;
-  }
-  if (vNode.flags & VNodeFlags.Component) {
-    if (isString(vNode.type)) {
-      vNode.flags = getFlagsForElementVnode(vNode.type as string);
-      if (props) {
-        normalizeProps(vNode);
+    if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
+      props.children = children;
+    }
+    if (vNode.flags & VNodeFlags.Component) {
+      if (isString(vNode.type)) {
+        vNode.flags = getFlagsForElementVnode(vNode.type as string);
+        if (props) {
+          normalizeProps(vNode);
+        }
       }
     }
-  }
 
-  const flags = vNode.flags;
+    const flags = vNode.flags;
 
-  if (flags & VNodeFlags.FormElement) {
-    normalizeFormProps(vNode.type, props);
-  }
-  if (flags & VNodeFlags.Element) {
-    if (vNode.className) {
-      props.className = vNode.className;
+    if (flags & VNodeFlags.FormElement) {
+      normalizeFormProps(vNode.type, props);
     }
-    normalizeGenericProps(props);
+    if (flags & VNodeFlags.Element) {
+      if (vNode.className) {
+        props.className = vNode.className;
+      }
+      normalizeGenericProps(props);
+    }
   }
 
   if (oldCreateVNode) {
@@ -331,8 +329,16 @@ options.createVNode = (vNode: VNode) => {
   }
 };
 
-options.createSnapshotObject = (object: {children:any, props: any, type: string | undefined}) => {
-  delete object.props.children;
+const oldCreateSnapshotObject = options.createSnapshotObject;
+
+options.createSnapshotObject = (object: {children:any, props: any, type: string | undefined}, vNode: VNode) => {
+  if (vNode.flags & VNodeFlags.CompatElement) {
+    delete object.props.children;
+  }
+
+  if (oldCreateSnapshotObject) {
+    oldCreateSnapshotObject(object, vNode);
+  }
 };
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)

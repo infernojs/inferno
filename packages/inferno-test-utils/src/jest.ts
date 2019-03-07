@@ -10,11 +10,11 @@ import { getTagNameOfVNode } from './utils';
 
 const symbolValue = typeof Symbol === 'undefined' ? 'react.test.json' : Symbol.for('react.test.json');
 
-function createSnapshotObject(object: {children:any, props: any, type: string | undefined}) {
+function createSnapshotObject(object: {children:any, props: any, type: string | undefined}, vNode: VNode) {
   const optsSnapshotObject = options.createSnapshotObject;
 
   if (isFunction(optsSnapshotObject)) {
-    optsSnapshotObject(object);
+    optsSnapshotObject(object, vNode);
   }
 
   Object.defineProperty(object, '$$typeof', {
@@ -77,7 +77,7 @@ function buildVNodeSnapshot(vNode: VNode) {
       children: childVNode,
       props: snapShotProps,
       type: getTagNameOfVNode(vNode)
-    });
+    }, vNode);
   } else if (flags & VNodeFlags.Text) {
     childVNode = vNode.children + '';
   }
