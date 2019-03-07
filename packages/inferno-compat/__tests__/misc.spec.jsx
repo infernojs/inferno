@@ -10,7 +10,8 @@ import React, {
   hydrate,
   isValidElement,
   PropTypes,
-  unstable_renderSubtreeIntoContainer
+  unstable_renderSubtreeIntoContainer,
+  createVNode
 } from 'inferno-compat';
 
 describe('MISC', () => {

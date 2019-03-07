@@ -70,6 +70,8 @@ export function createComponentVNode<P>(
     }
   }
 
+  const compatFlag = flags & VNodeFlags.CompatElement;
+
   if ((flags & VNodeFlags.ComponentUnknown) !== 0) {
     if ((type as any).prototype && (type as any).prototype.render) {
       flags = VNodeFlags.ComponentClass;
@@ -80,6 +82,8 @@ export function createComponentVNode<P>(
       flags = VNodeFlags.ComponentFunction;
     }
   }
+
+  flags |= compatFlag;
 
   // set default props
   const defaultProps = (type as any).defaultProps;

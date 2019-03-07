@@ -69,6 +69,8 @@ export function createElement<T>(type: string | IComponentConstructor<T> | State
           children = props.children; // always favour children args over props
         } else if (prop === 'ref') {
           ref = props.ref;
+        } else if (prop === (VNodeFlags.CompatElement+'')) {
+          flags |= VNodeFlags.CompatElement;
         } else {
           if (prop === 'contenteditable') {
             flags |= VNodeFlags.ContentEditable;
@@ -94,6 +96,8 @@ export function createElement<T>(type: string | IComponentConstructor<T> | State
           key = props.key;
         } else if (prop === 'ref') {
           ref = props.ref;
+        } else if (prop === (VNodeFlags.CompatElement+'')) {
+          flags |= VNodeFlags.CompatElement;
         } else if ((componentHooks as any)[prop] === 1) {
           if (!ref) {
             ref = {};

@@ -7,7 +7,7 @@
  * @emails react-core
  */
 
-import React from 'inferno-compat';
+import React, { createVNode, createComponentVNode } from 'inferno-compat';
 
 var ReactDOM = React;
 

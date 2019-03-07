@@ -1,4 +1,4 @@
-import { render } from 'inferno-compat';
+import { render, createVNode } from 'inferno-compat';
 
 describe('Warnings', () => {
   let container;

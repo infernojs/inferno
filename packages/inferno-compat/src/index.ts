@@ -1,11 +1,11 @@
 import {
   Component,
   ComponentType,
-  createComponentVNode,
+  createComponentVNode as _createComponentVNode,
   createPortal,
   createRenderer,
   createTextVNode,
-  createVNode,
+  createVNode as _createVNode,
   directClone,
   EMPTY_OBJ,
   getFlagsForElementVnode,
@@ -19,10 +19,13 @@ import {
   VNode,
   findDOMfromVNode,
   Fragment,
-  createFragment,
+  createFragment as _createFragment,
   createRef,
   forwardRef,
   rerender,
+  IComponent,
+  Ref,
+  ForwardRef,
   _CI,
   _HI,
   _M,
@@ -36,9 +39,9 @@ import {
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
-import { createElement } from 'inferno-create-element';
+import { createElement as _createElement } from 'inferno-create-element';
 import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
 import { InfernoCompatPropertyMap } from './InfernoCompatPropertyMap';
@@ -52,6 +55,60 @@ declare global {
 }
 
 options.reactStyles = true;
+
+function createElement(type, props, _children): VNode {
+  let children: any;
+  let childLen = arguments.length - 2;
+
+  if (childLen === 1) {
+    children = _children;
+  } else if (childLen > 1) {
+    children = [];
+
+    while (childLen-- > 0) {
+      children[childLen] = arguments[childLen + 2];
+    }
+  }
+
+  const newProps = {
+    [VNodeFlags.CompatElement+'']: true
+  };
+
+  if (!isNullOrUndef(props)) {
+    for (const prop in props) {
+      newProps[prop] = props[prop];
+    }
+  }
+
+  return _createElement(type, newProps, children);
+}
+
+function createComponentVNode<P>(
+  flags: VNodeFlags,
+  type: Function | IComponent<any, any> | ForwardRef,
+  props?: Props<P> & P | null,
+  key?: null | string | number,
+  ref?: Ref | Refs<P> | null
+): VNode {
+  return _createComponentVNode(flags | VNodeFlags.CompatElement, type, props, key, ref);
+}
+
+function createFragment(children: any, childFlags: ChildFlags, key?: string | number | null): VNode {
+  return _createFragment(children, childFlags | VNodeFlags.CompatElement, key);
+}
+
+function createVNode<P>(
+  flags: VNodeFlags,
+  type: string,
+  className?: string | null,
+  children?: InfernoNode,
+  childFlags?: ChildFlags,
+  props?: Props<P> & P | null,
+  key?: string | number | null,
+  ref?: Ref | Refs<P> | null
+): VNode {
+  return _createVNode(flags | VNodeFlags.CompatElement, type, className, children, childFlags, props, key, ref);
+}
 
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
   __render(null, container, null, null);
@@ -229,6 +286,10 @@ const symbolIterator = hasSymbolSupport ? g.Symbol.iterator : '';
 const oldCreateVNode = options.createVNode;
 
 options.createVNode = (vNode: VNode) => {
+  if (!(vNode.flags & VNodeFlags.CompatElement)) {
+    return;
+  }
+
   const children = vNode.children as any;
   let props: any = vNode.props;
 
@@ -268,6 +329,10 @@ options.createVNode = (vNode: VNode) => {
   if (oldCreateVNode) {
     oldCreateVNode(vNode);
   }
+};
+
+options.createSnapshotObject = (object: {children:any, props: any, type: string | undefined}) => {
+  delete object.props.children;
 };
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)

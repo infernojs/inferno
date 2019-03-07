@@ -1,4 +1,4 @@
-import { render, options } from 'inferno-compat';
+import { render, options, createVNode } from 'inferno-compat';
 import { innerHTML } from 'inferno-utils';
 
 describe('Compat - styles', () => {

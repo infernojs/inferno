@@ -7,7 +7,7 @@
  * @emails react-core
  */
 
-import React from 'inferno-compat';
+import React, { createVNode } from 'inferno-compat';
 
 describe('ReactChildren', function() {
   var ReactChildren;
