@@ -83,22 +83,24 @@ export function vNodeToSnapshot(vNode: VNode) {
   return buildVNodeSnapshot(vNode);
 }
 
+const removeChildren = (item) => {
+  if(Array.isArray(item)) {
+    for(let i = 0; i < item.length; ++i) {
+      removeChildren(item[i]);
+    }
+  }
+  else if(typeof item === 'object' && item.props) {
+    delete item.props.children;
+    removeChildren(item.children);
+  }
+};
+
 export function renderToSnapshot(input: VNode) {
   render(input, document.createElement('div'));
   rerender(); // Flush all pending set state calls
   const snapshot = vNodeToSnapshot(input);
 
-  if (isArray(snapshot)) {
-    for (let i = 0; i < snapshot.length; ++i) {
-      const _snapshot = snapshot[i];
-
-      if (typeof _snapshot === 'object' && _snapshot.props) {
-        delete _snapshot.props.children;
-      }
-    }
-  } else if (typeof snapshot === 'object' && snapshot.props) {
-    delete snapshot.props.children;
-  }
+  removeChildren(snapshot);
 
   return snapshot;
 }
