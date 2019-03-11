@@ -18,6 +18,20 @@ function createSnapshotObject(object: object) {
   return object;
 }
 
+function removeChildren(item) {
+  if (Array.isArray(item)) {
+    for (let i = 0; i < item.length; ++i) {
+      removeChildren(item[i]);
+    }
+  } else if (item && item.props) {
+    if (item.props.hasOwnProperty('children')) {
+      delete item.props.children;
+    }
+
+    removeChildren(item.children);
+  }
+}
+
 function buildVNodeSnapshot(vNode: VNode) {
   const flags = vNode.flags;
   const children: any = vNode.children;
@@ -82,18 +96,6 @@ function buildVNodeSnapshot(vNode: VNode) {
 export function vNodeToSnapshot(vNode: VNode) {
   return buildVNodeSnapshot(vNode);
 }
-
-const removeChildren = (item) => {
-  if(Array.isArray(item)) {
-    for(let i = 0; i < item.length; ++i) {
-      removeChildren(item[i]);
-    }
-  }
-  else if(typeof item === 'object' && item.props) {
-    delete item.props.children;
-    removeChildren(item.children);
-  }
-};
 
 export function renderToSnapshot(input: VNode) {
   render(input, document.createElement('div'));
