@@ -54,7 +54,7 @@ export function throwError(message?: string) {
 export function warning(message: string) {
   // tslint:disable-next-line:no-console
   // @ts-ignore
-  IoC.resolve("ILogger").log("Inferno core", message);
+  Env.IoC.resolve("ILogger").log("Inferno core", message);
 }
 
 export function combineFrom(first: {} | null, second: {} | null): object {

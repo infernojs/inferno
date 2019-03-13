@@ -5,7 +5,7 @@ export function warning(condition, message) {
   if (!condition) {
     // tslint:disable-next-line:no-console
     // @ts-ignore
-    IoC.resolve("ILogger").log("Inferno core", message);
+    Env.IoC.resolve("ILogger").log("Inferno core", message);
   }
 }
 

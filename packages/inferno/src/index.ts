@@ -25,7 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
   const testFunc = function testFn() {};
   /* tslint:disable-next-line*/
   // @ts-ignore
-  IoC.resolve("ILogger").log("Inferno core", "Inferno is in development mode.");
+  Env.IoC.resolve("ILogger").log("Inferno core", "Inferno is in development mode.");
 
   if (((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
     warning(
