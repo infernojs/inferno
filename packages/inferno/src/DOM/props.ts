@@ -38,7 +38,7 @@ export function patchEvent(name: string, nextValue, dom) {
 
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
-function patchStyle(lastAttrValue, nextAttrValue, dom) {
+export function patchStyle(lastAttrValue, nextAttrValue, dom) {
   if (isNullOrUndef(nextAttrValue)) {
     dom.removeAttribute('style');
     return;

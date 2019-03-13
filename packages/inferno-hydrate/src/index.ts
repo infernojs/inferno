@@ -1,6 +1,6 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning, unescape } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode, _CI, _HI, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render } from 'inferno';
+import { VNode, _CI, _HI, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render, _PS } from 'inferno';
 
 function checkIfHydrationNeeded(sibling: Node | Element | null): boolean {
   // @ts-ignore
@@ -229,6 +229,10 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
     hydrateChildren(vNode, dom, dom.firstChild, context, isSVG, lifecycle);
 
     if (!isNull(props)) {
+      // when running hydrate we have to make sure all styles on dom elements are cleaned up
+      if (!props.style) {
+        _PS(undefined, undefined, dom);
+      }
       _MP(vNode, flags, props, dom, isSVG);
     }
     if (isNullOrUndef(className)) {
