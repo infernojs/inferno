@@ -1,0 +1,40 @@
+{
+   "name": "inferno-wasaby",
+   "version": "1.0.0",
+   "license": "MIT",
+   "description": "Provides compatibility with wasaby controls",
+   "author": {
+     "name": "Nikita Izygin",
+     "email": "calacitizen@gmail.com"
+   },
+   "bugs": {
+     "url": "https://github.com/saby/inferno/issues"
+   },
+   "homepage": "https://github.com/saby/inferno#readme",
+   "keywords": [
+     "babel",
+     "react",
+     "inferno",
+     "framework",
+     "interfaces",
+     "user interfaces",
+     "html",
+     "renderToString",
+     "server",
+     "dom",
+     "browser",
+     "rollup",
+     "vnode",
+     "createVNode",
+     "flags"
+   ],
+   "rollup": {
+     "moduleName": "Inferno"
+   },
+   "main": "index.js",
+   "module": "dist/index.esm.js",
+   "dev:module": "dist/index.dev.esm.js",
+   "typings": "dist/index.d.ts",
+   "repository": "https://github.com/saby/inferno"
+ }
+ 
