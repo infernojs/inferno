@@ -1,33 +1,34 @@
 function getModuleDefaultCtor(mod) {
-   return typeof mod === 'function' ? mod : mod['constructor'];
+   // @ts-nocheck
+   return typeof mod === 'function' ? mod : mod.constructor;
 }
 
 function getControlNodeParams(control, controlClass, environment) {
-   //@ts-ignore
-   var composedDecorator = composeWithResultApply.call(undefined, [environment.getMarkupNodeDecorator()]).bind(control);
+   // @ts-ignore
+   const composedDecorator = composeWithResultApply.call(undefined, [environment.getMarkupNodeDecorator()]).bind(control);
    return {
-      markupDecorator: composedDecorator,
-      defaultOptions: {} //нет больше понятия опция по умолчанию
+      defaultOptions: {}, // нет больше понятия опция по умолчанию
+      markupDecorator: composedDecorator
    };
 }
 
 function collectObjectVersions(collection) {
-   var versions = {};
-   for (var key in collection) {
+   const versions = {};
+   for (const key in collection) {
       if (collection.hasOwnProperty(key)) {
          if (collection[key] && collection[key].getVersion) {
             versions[key] = collection[key].getVersion();
          } else if (collection[key] && collection[key].isDataArray) {
             
-            //тут нужно собрать версии всех объектов,
-            //которые используются внутри контентных опций
-            //здесь учитывается кейс, когда внутри контентной опции
-            //есть контентная опция
-            //по итогу получаем плоский список всех версий всех объектов
-            //внутри контентных опций
-            for (var kfn = 0; kfn < collection[key].length; kfn++) {
-               var innerVersions = collectObjectVersions(collection[key][kfn].internal || {});
-               for(var innerKey in innerVersions) {
+            // тут нужно собрать версии всех объектов,
+            // которые используются внутри контентных опций
+            // здесь учитывается кейс, когда внутри контентной опции
+            // есть контентная опция
+            // по итогу получаем плоский список всех версий всех объектов
+            // внутри контентных опций
+            for (let kfn = 0; kfn < collection[key].length; kfn++) {
+               const innerVersions = collectObjectVersions(collection[key][kfn].internal || {});
+               for(const innerKey in innerVersions) {
                   if (innerVersions.hasOwnProperty(innerKey)) {
                      versions[key + ';' + kfn + ';' + innerKey] = innerVersions[innerKey];
                   }
@@ -40,7 +41,7 @@ function collectObjectVersions(collection) {
 }
 
 function shallowMerge(dest, src) {
-   var i;
+   let i;
    for (i in src) {
       if (src.hasOwnProperty(i)) {
          dest[i] = src[i];
@@ -60,12 +61,12 @@ function fixInternalParentOptions(internalOptions, userOptions, parentNode) {
 }
 
 export function createNode(controlClass_, options, key, environment, parentNode, serialized, vnode?) {
-   let controlCnstr = getModuleDefaultCtor(controlClass_),
-      compound = vnode && vnode.compound,
-      serializedState = (serialized && serialized.state) || { vdomCORE: true }, // сериализованное состояние компонента
-      userOptions = options.user, // прикладные опции
-      internalOptions = options.internal || {}, // служебные опции
-      result;
+   const controlCnstr = getModuleDefaultCtor(controlClass_);
+   const compound = vnode && vnode.compound;
+   const serializedState = (serialized && serialized.state) || { vdomCORE: true }; // сериализованное состояние компонента
+   const userOptions = options.user; // прикладные опции
+   const internalOptions = options.internal || {}; // служебные опции
+   let result;
 
       fixInternalParentOptions(internalOptions, userOptions, parentNode);
 
@@ -78,12 +79,12 @@ export function createNode(controlClass_, options, key, environment, parentNode,
 
       if (compound) {
          // Создаем виртуальную ноду для compound контрола
-         //@ts-ignore
+         // @ts-ignore
          if (!DirtyCheckingCompatible) {
             // @ts-ignore
             DirtyCheckingCompatible = _dcc;
          }
-         //@ts-ignore
+         // @ts-ignore
          result = DirtyCheckingCompatible.createCompoundControlNode(
             controlClass_,
             controlCnstr,
@@ -95,21 +96,21 @@ export function createNode(controlClass_, options, key, environment, parentNode,
          );
       } else {
       // Создаем виртуальную ноду для не-compound контрола
-      let
-         invisible = vnode && vnode.invisible,
+      const invisible = vnode && vnode.invisible;
          // подмешиваем сериализованное состояние к прикладным опциям
-         optionsWithState = serializedState ? shallowMerge(userOptions, serializedState) : userOptions,
-         optionsVersions,
-         contextVersions,
-         control,
-         params,
-         context,
-         instCompat,
-         defaultOptions;
+      let optionsWithState = serializedState ? shallowMerge(userOptions, serializedState) : userOptions;
+      let optionsVersions;
+      let contextVersions;
+      let control;
+      // @ts-ignore
+      const params;
+      let context;
+      let instCompat;
+      let defaultOptions;
          
          if (typeof controlClass_ === 'function') {
             // создаем инстанс компонента
-            //@ts-ignore
+            // @ts-ignore
             instCompat = Compatible.createInstanceCompatible(controlCnstr, optionsWithState, internalOptions);
             control = instCompat.instance;
             optionsWithState = instCompat.resolvedOptions;
@@ -117,11 +118,11 @@ export function createNode(controlClass_, options, key, environment, parentNode,
          } else {
             // инстанс уже есть, работаем с его опциями
             control = controlClass_;
-            //@ts-ignore
+            // @ts-ignore
             defaultOptions = OptionsResolver.getDefaultOptions(controlClass_);
-            //@ts-ignore
+            // @ts-ignore
             if (isJs.compat) {
-               //@ts-ignore
+               // @ts-ignore
                optionsWithState = Compatible.combineOptionsIfCompatible(
                   controlCnstr.prototype,
                   optionsWithState,
