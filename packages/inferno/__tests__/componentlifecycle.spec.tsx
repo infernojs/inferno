@@ -1,5 +1,6 @@
 import { Component, render, rerender } from 'inferno';
 import { innerHTML } from 'inferno-utils';
+import sinon from 'sinon';
 
 describe('Component lifecycle', () => {
   let container;
@@ -203,3 +204,99 @@ describe('Component lifecycle', () => {
     render(<Com ref={inst => (c = inst)} value={2} />, container);
   });
 });
+
+
+describe('legacy life cycle', () => {
+  let consoleErrorStub;
+  let container;
+
+  beforeEach(() => {
+    consoleErrorStub = sinon.stub(console, 'error');
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    consoleErrorStub.restore();
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
+  it('should warn when mix legacy life cycle with new ones', () => {
+    /* tslint:disable:member-access no-empty */
+
+    // build the component and element to be rendered
+    class Foo extends Component {
+        // just added to force the warnings
+        static getDerivedStateFromProps() { }
+
+        componentWillMount() { }
+
+        componentWillReceiveProps() { }
+
+        componentWillUpdate() { }
+
+        render() { return <div>Foo</div> }
+    }
+
+    const element = <Foo />;
+
+    // render the element
+    render(element, container);
+
+    // retrieve the arguments of all calls for console.error
+    // so multiple calls to console.error should not broke this test
+    const callArgs = consoleErrorStub
+                        .getCalls()
+                        .map(c => c.args.length && c.args[0]);
+
+    // should have at least one warnings containing:
+    // componentWillMount, componentWillReceiveProps, componentWillUpdate
+
+    expect(callArgs.length).toBeGreaterThan(0);
+
+    for(let i = 0; i < callArgs.length; i++) {
+      expect(callArgs[i]).toMatch(/(componentWillMount)|(componentWillReceiveProps)|(componentWillUpdate)/);
+    }
+
+    /* tslint:enable:member-access no-empty */
+  });
+
+  it('should allow suppress legacy life cycles when mixed with new APIs', () => {
+    /* tslint:disable:member-access no-empty */
+    // build the component and element to be rendered
+    class Foo extends Component {
+        // just added to force the warnings
+        static getDerivedStateFromProps() { }
+
+        componentWillMount() { }
+
+        componentWillReceiveProps() { }
+
+        componentWillUpdate() { }
+
+        render() { return <div>Foo</div> }
+    }
+    // suppress the warnings
+    // @ts-ignore
+    Foo.prototype.componentWillMount.__suppressDeprecationWarning = true;
+    // @ts-ignore
+    Foo.prototype.componentWillReceiveProps.__suppressDeprecationWarning = true;
+    // @ts-ignore
+    Foo.prototype.componentWillUpdate.__suppressDeprecationWarning = true;
+
+    const element = <Foo />;
+    // render the element
+    render(element, container);
+
+    const callArgs = consoleErrorStub
+                        .getCalls()
+                        .map(c => c.args.length && c.args[0]);
+
+    for(let i = 0; i < callArgs.length;i++) {
+      expect(callArgs[i]).not.toMatch(/(componentWillMount)|(componentWillReceiveProps)|(componentWillUpdate)/);
+    }
+    /* tslint:enable:member-access no-empty */
+  });
+})
