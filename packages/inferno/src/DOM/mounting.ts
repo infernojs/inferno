@@ -177,10 +177,10 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, contex
   const controlNode = createNode(
     vNode.controlClass,
     {
-      user: options,
-      internal: vNode.controlInternalProperties,
       attributes: vNode.controlAttributes,
-      events: vNode.controlEvents
+      events: vNode.controlEvents,
+      internal: vNode.controlInternalProperties,
+      user: options
     },
     vNode.key,
     vNode.environment,
@@ -210,7 +210,7 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, contex
      }
   }
 
-  //@ts-ignore
+  // @ts-ignore
   controlNode.markup = VdomMarkup.getDecoratedMarkup(controlNode, isRootStart);
   mount(controlNode.markup, parentDOM, {}, isSVG, nextNode, lifecycle);
 }
