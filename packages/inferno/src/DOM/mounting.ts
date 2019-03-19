@@ -2,11 +2,12 @@ import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwErr
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
-import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend } from './utils/common';
+import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, options } from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
+import { createNode } from '../../../inferno-wasaby/src/index'
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
@@ -26,6 +27,8 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
     // @ts-ignore
   } else if (vNode instanceof RawMarkupNode) {
     return mountHTML(vNode, parentDOM);
+  } else if (flags & VNodeFlags.WasabyControl) {
+    mountWasabyControl(vNode, parentDOM, context, isSVG, nextNode, lifecycle, isRootStart);
   } else if (process.env.NODE_ENV !== 'production') {
     // Development validation, in production we don't need to throw because it crashes anyway
     if (typeof vNode === 'object') {
@@ -168,6 +171,48 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
   mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
   instance.$UPD = false;
+}
+
+export function mountWasabyControl(vNode: any, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean) {
+  const controlNode = createNode(
+    vNode.controlClass,
+    {
+      user: options,
+      internal: vNode.controlInternalProperties,
+      attributes: vNode.controlAttributes,
+      events: vNode.controlEvents
+    },
+    vNode.key,
+    vNode.environment,
+    vNode.parentNode,
+    vNode.serialized,
+    vNode
+  );
+  if (!controlNode.control._mounted && !controlNode.control._unmounted) {
+     // let carrier = Vdom.getReceivedState(controlNode, vnode, Slr);
+     // if (carrier) {
+     //    controlNode.receivedState = carrier;
+     // }
+     if (controlNode.control.saveOptions) {
+        controlNode.control.saveOptions(controlNode.options, controlNode);
+     } else {
+      /**
+        * Поддержка для совместимости версий контролов
+       */
+      controlNode.control._options = controlNode.options;
+      controlNode.control._container = controlNode.element;
+      controlNode.control._setInternalOptions(vNode.controlInternalProperties || {});
+
+      //  if (isJs.compat) {
+      //     // @ts-ignore
+      //     controlNode.control._container = $(controlNode.element);
+      //  }
+     }
+  }
+
+  //@ts-ignore
+  controlNode.markup = VdomMarkup.getDecoratedMarkup(controlNode, isRootStart);
+  mount(controlNode.markup, parentDOM, {}, isSVG, nextNode, lifecycle);
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {

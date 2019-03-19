@@ -1,3 +1,5 @@
+import { createTextVNode } from 'inferno'
+
 function getModuleDefaultCtor(mod) {
    // @ts-nocheck
    return typeof mod === 'function' ? mod : mod.constructor;
@@ -103,7 +105,7 @@ export function createNode(controlClass_, options, key, environment, parentNode,
       let contextVersions;
       let control;
       // @ts-ignore
-      const params;
+      let params;
       let context;
       let instCompat;
       let defaultOptions;
@@ -140,8 +142,73 @@ export function createNode(controlClass_, options, key, environment, parentNode,
          // check current context field versions
          context = (vnode && vnode.context) || {};
          contextVersions = collectObjectVersions(context);
+         params = getControlNodeParams(control, controlCnstr, environment);
+
+         result = new WCN(
+            options, 
+            control,
+            controlCnstr,
+            optionsWithState,
+            internalOptions,
+            optionsVersions,
+            serialized,
+            parentNode,
+            key,
+            invisible,
+            params,
+            defaultOptions,
+            vnode,
+            contextVersions
+         );
+
+         environment.setupControlNode(result);
+
+         
+
+         return result;
 
       }
+}
+
+function WCN(
+   options, 
+   control, 
+   controlCnstr, 
+   optionsWithState, 
+   internalOptions,
+   optionsVersions,
+   serialized, 
+   parentNode, 
+   key,
+   invisible,
+   params,
+   defaultOptions,
+   vnode,
+   contextVersions) {
+      this.attributes = options.attriutes;
+      this.events = options.events;
+      this.control = control;
+      this.errors = serialized && serialized.errors;
+      this.controlClass = controlCnstr;
+      this.options = optionsWithState;
+      this.internalOptions = internalOptions;
+      this.optionsVersions = optionsVersions;
+      this.id = control._instId || 0;
+      this.parent = parentNode;
+      this.key = key;
+      this.defaultOptions = defaultOptions;
+      this.markup = invisible ? createTextVNode('') : undefined;
+      this.fullMarkup = undefined;
+      this.childrenNodes = [];
+      this.markupDecorator = params && params.markupDecorator;
+      this.serializedChildren = serialized && serialized.childrenNodes;
+      this.hasCompound = false;
+      this.receivedState = undefined;
+      this.invisible = invisible;
+
+      this.contextVersions = contextVersions;
+      this.context = (vnode && vnode.context) || {},
+      this.inheritOptions = (vnode && vnode.inheritOptions) || {}
 }
 
 export interface WasabyCompatControlNode {
@@ -179,7 +246,6 @@ export interface WasabyControlNode {
    hasCompound: boolean,
    receivedState: any,
    invisible: any,
-
    contextVersions: any,
    context: object,
    inheritOptions: object
