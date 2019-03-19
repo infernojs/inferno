@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "inferno-shared": "6.2.1",
+    "inferno-wasaby": "1.0.0",
     "inferno-vnode-flags": "6.2.1",
     "opencollective": "^1.0.3"
   }

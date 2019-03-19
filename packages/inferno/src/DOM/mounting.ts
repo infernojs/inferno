@@ -7,7 +7,7 @@ import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
-import { createNode } from '../../../inferno-wasaby/src/index'
+import { createNode } from 'inferno-wasaby'
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
@@ -28,7 +28,7 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
   } else if (vNode instanceof RawMarkupNode) {
     return mountHTML(vNode, parentDOM);
   } else if (flags & VNodeFlags.WasabyControl) {
-    mountWasabyControl(vNode, parentDOM, context, isSVG, nextNode, lifecycle, isRootStart);
+    mountWasabyControl(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart);
   } else if (process.env.NODE_ENV !== 'production') {
     // Development validation, in production we don't need to throw because it crashes anyway
     if (typeof vNode === 'object') {
@@ -173,7 +173,7 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
   instance.$UPD = false;
 }
 
-export function mountWasabyControl(vNode: any, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean) {
+export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean) {
   const controlNode = createNode(
     vNode.controlClass,
     {

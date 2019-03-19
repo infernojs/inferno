@@ -1,11 +1,9 @@
-import { createTextVNode } from 'inferno'
-
 function getModuleDefaultCtor(mod) {
    // @ts-nocheck
    return typeof mod === 'function' ? mod : mod.constructor;
 }
 
-function getControlNodeParams(control, controlClass, environment) {
+function getControlNodeParams(control, environment) {
    // @ts-ignore
    const composedDecorator = composeWithResultApply.call(undefined, [environment.getMarkupNodeDecorator()]).bind(control);
    return {
@@ -142,7 +140,7 @@ export function createNode(controlClass_, options, key, environment, parentNode,
          // check current context field versions
          context = (vnode && vnode.context) || {};
          contextVersions = collectObjectVersions(context);
-         params = getControlNodeParams(control, controlCnstr, environment);
+         params = getControlNodeParams(control, environment);
 
          result = new WCN(
             options, 
@@ -197,7 +195,7 @@ function WCN(
       this.parent = parentNode;
       this.key = key;
       this.defaultOptions = defaultOptions;
-      this.markup = invisible ? createTextVNode('') : undefined;
+      this.markup = undefined;
       this.fullMarkup = undefined;
       this.childrenNodes = [];
       this.markupDecorator = params && params.markupDecorator;
