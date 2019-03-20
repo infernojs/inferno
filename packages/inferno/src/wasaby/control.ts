@@ -1,3 +1,5 @@
+import { createTextVNode } from '../core/implementation'
+
 function getModuleDefaultCtor(mod) {
    // @ts-nocheck
    return typeof mod === 'function' ? mod : mod.constructor;
