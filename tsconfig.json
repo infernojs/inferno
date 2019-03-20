@@ -56,9 +56,6 @@
       "inferno-vnode-flags": [
         "packages/inferno-vnode-flags/src/index.ts"
       ],
-      "inferno-wasaby": [
-        "packages/inferno-wasaby/src/index.ts"
-      ],
       "mobx": [
         "node_modules/mobx/lib/mobx.module.js"
       ]
