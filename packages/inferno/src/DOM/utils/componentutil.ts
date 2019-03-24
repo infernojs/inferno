@@ -7,19 +7,16 @@ import { VNode } from './../../core/types';
 function warnAboutOldLifecycles(component) {
   const oldLifecycles: string[] = [];
 
-   // Don't warn about react polyfilled components.
-  if (component.componentWillMount
-      && component.componentWillMount.__suppressDeprecationWarning !== true) {
+  // Don't warn about react polyfilled components.
+  if (component.componentWillMount && component.componentWillMount.__suppressDeprecationWarning !== true) {
     oldLifecycles.push('componentWillMount');
   }
 
-  if (component.componentWillReceiveProps
-      && component.componentWillReceiveProps.__suppressDeprecationWarning !== true) {
+  if (component.componentWillReceiveProps && component.componentWillReceiveProps.__suppressDeprecationWarning !== true) {
     oldLifecycles.push('componentWillReceiveProps');
   }
 
-  if (component.componentWillUpdate
-      && component.componentWillUpdate.__suppressDeprecationWarning !== true) {
+  if (component.componentWillUpdate && component.componentWillUpdate.__suppressDeprecationWarning !== true) {
     oldLifecycles.push('componentWillUpdate');
   }
 
