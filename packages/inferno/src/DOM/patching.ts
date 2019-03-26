@@ -84,7 +84,8 @@ export function patch(
     patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
     // @ts-ignore
   } else if (flags & VNodeFlags.WasabyControl) {
-    patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
+    patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle)
+    // @ts-ignore
   } else if (nextVNode instanceof RawMarkupNode) {
     patchHTML(lastVNode, nextVNode, parentDOM);
   } else {
@@ -445,6 +446,7 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
   instance.$UPD = false;
 }
 
+// @ts-ignore
 function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle) {
   // для не-compound контролов делаем проверку изменения служебных опций
   // @ts-ignore
@@ -473,9 +475,11 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
   const childControlNode = lastVNode.instance;
   const childControl = childControlNode.control;
   const environment = lastVNode.instance.environment;
+  // @ts-ignore
   let shouldUpdate = true;
   const oldChildNodeContext = lastVNode.instance.context;
   const newChildNodeContext = nextVNode.context || {};
+  // @ts-ignore
   let beforeUpdateResults;
   const newOptions = nextVNode.compound ? 
       // @ts-ignore

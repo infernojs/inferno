@@ -54,7 +54,7 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      mount(input as VNode, parentDOM as Element, context, false, null, lifecycle, isRootStart);
+      mount(input as VNode, parentDOM as Element, context, false, null, lifecycle, isRootStart, environment);
       (parentDOM as any).$V = input;
       rootInput = input as VNode;
     }
