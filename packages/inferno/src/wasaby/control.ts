@@ -1,5 +1,3 @@
-import { createTextVNode } from '../core/implementation'
-
 function getModuleDefaultCtor(mod) {
    // @ts-nocheck
    return typeof mod === 'function' ? mod : mod.constructor;
@@ -197,7 +195,7 @@ function WCN(
       this.parent = parentNode;
       this.key = key;
       this.defaultOptions = defaultOptions;
-      this.markup = invisible ? createTextVNode('') : undefined;
+      this.markup = undefined;
       this.fullMarkup = undefined;
       this.childrenNodes = [];
       this.markupDecorator = params && params.markupDecorator;
