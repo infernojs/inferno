@@ -9,11 +9,11 @@ import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 import { createNode } from '../wasaby/control'
 
-export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean): void {
+export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
-    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, isRootStart);
+    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, isRootStart, environment);
   } else if (flags & VNodeFlags.ComponentClass) {
     mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
   } else if (flags & VNodeFlags.ComponentFunction) {
@@ -28,7 +28,7 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
   } else if (vNode instanceof RawMarkupNode) {
     return mountHTML(vNode, parentDOM);
   } else if (flags & VNodeFlags.WasabyControl) {
-    mountWasabyControl(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart);
+    mountWasabyControl(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment);
   } else if (process.env.NODE_ENV !== 'production') {
     // Development validation, in production we don't need to throw because it crashes anyway
     if (typeof vNode === 'object') {
@@ -85,7 +85,7 @@ export function mountTextContent(dom: Element, children: string): void {
   dom.textContent = children as string;
 }
 
-export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean): void {
+export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any): void {
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
@@ -129,7 +129,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
       mount(children as VNode, dom, context, childrenIsSVG, null, lifecycle);
     } else if (childFlags === ChildFlags.HasKeyedChildren || childFlags === ChildFlags.HasNonKeyedChildren) {
       if (dom) {
-        mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle);
+        mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle, environment);
       }
     }
   }
@@ -155,14 +155,14 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   mountRef(ref, dom, lifecycle);
 }
 
-export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
+export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], environment?: any): void {
   for (let i = 0, len = children.length; i < len; ++i) {
     let child = children[i];
 
     if (child.flags & VNodeFlags.InUse) {
       children[i] = child = directClone(child);
     }
-    mount(child, dom, context, isSVG, nextNode, lifecycle);
+    mount(child, dom, context, isSVG, nextNode, lifecycle, environment);
   }
 }
 
@@ -173,14 +173,14 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
   instance.$UPD = false;
 }
 
-export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean) {
+export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment: any) {
   const controlNode = createNode(
     vNode.controlClass,
     {
       attributes: vNode.controlAttributes,
       events: vNode.controlEvents,
       internal: vNode.controlInternalProperties,
-      user: options
+      user: vNode.controlProperties
     },
     vNode.key,
     vNode.environment,
@@ -212,7 +212,8 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG:
 
   // @ts-ignore
   controlNode.markup = VdomMarkup.getDecoratedMarkup(controlNode, isRootStart);
-  mount(controlNode.markup, parentDOM, {}, isSVG, nextNode, lifecycle);
+  vNode.instance = controlNode;
+  mount(controlNode.markup, parentDOM, {}, isSVG, nextNode, lifecycle, isRootStart, environment);
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {

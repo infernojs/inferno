@@ -83,6 +83,8 @@ export function patch(
   } else if (nextFlags & VNodeFlags.Fragment) {
     patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
     // @ts-ignore
+  } else if (flags & VNodeFlags.WasabyControl) {
+    patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
   } else if (nextVNode instanceof RawMarkupNode) {
     patchHTML(lastVNode, nextVNode, parentDOM);
   } else {
@@ -441,6 +443,96 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
   }
 
   instance.$UPD = false;
+}
+
+function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle) {
+  // для не-compound контролов делаем проверку изменения служебных опций
+  // @ts-ignore
+  const changedInternalOptions = DC.getChangedOptions(nextVNode.controlInternalProperties, lastVNode.internalOptions);    
+  // Атрибуты тоже учавствуют в DirtyChecking
+  // @ts-ignore
+  const changedOptions = DC.getChangedOptions(
+         nextVNode.controlProperties, 
+         lastVNode.controlProperties, 
+         nextVNode.compound, 
+         lastVNode.instance.optionsVersions
+      ); 
+  // @ts-ignore
+  const changedContext = DC.getChangedOptions(
+          nextVNode.context, 
+          lastVNode.instance.context, 
+          false, 
+          lastVNode.instance.contextVersions
+      );
+  const oldOptions = lastVNode.instance.options;
+  const oldAttrs = lastVNode.controlAttributes || lastVNode.instance.attributes;
+  // @ts-ignore
+  const changedContextProto = changedContext ? changedContext : DC.getChangedOptions(nextVNode.context, lastVNode.context, false, lastVNode.instance.contextVersions, true);
+  // @ts-ignore
+  const changedAttrs = DC.getChangedOptions(nextVNode.controlAttributes, oldAttrs, nextVNode.compound);
+  const childControlNode = lastVNode.instance;
+  const childControl = childControlNode.control;
+  const environment = lastVNode.instance.environment;
+  let shouldUpdate = true;
+  const oldChildNodeContext = lastVNode.instance.context;
+  const newChildNodeContext = nextVNode.context || {};
+  let beforeUpdateResults;
+  const newOptions = nextVNode.compound ? 
+      // @ts-ignore
+             Utils_1.Compatible.createCombinedOptions(nextVNode.controlProperties, nextVNode.controlInternalProperties) 
+             : nextVNode.controlProperties;
+      
+  // Атрибуты тоже учавствуют в DirtyChecking
+  if (changedOptions || changedInternalOptions || changedAttrs || changedContext) {
+      try {
+          let resolvedContext;
+         
+         //  Logger.log('DirtyChecking (update node with changed)', [
+         //      '',
+         //      '',
+         //      changedOptions || changedInternalOptions || changedAttrs || changedContext
+         //  ]);
+          environment.setRebuildIgnoreId(childControlNode.id);
+          // @ts-ignore
+          Utils_1.OptionsResolver.resolveInheritOptions(childControlNode.controlClass, childControlNode, newOptions);
+          childControl.saveInheritOptions(childControlNode.inheritOptions);
+          // @ts-ignore
+          resolvedContext = Expressions_2.ContextResolver.resolveContext(childControlNode.controlClass, newChildNodeContext, childControlNode.control);
+          // Utils_1.OptionsResolver.resolveOptions(childControlNode.controlClass, childControlNode.defaultOptions, newOptions, childControlNode.parent.control._moduleName);    // Forbid force update in the time between _beforeUpdate and _afterUpdate
+          // Forbid force update in the time between _beforeUpdate and _afterUpdate
+          beforeUpdateResults = childControl._beforeUpdate && childControl.__beforeUpdate(newOptions, resolvedContext);
+          childControl._options = newOptions;
+          shouldUpdate = (childControl._shouldUpdate ? childControl._shouldUpdate(newOptions, resolvedContext) : true) || changedInternalOptions;
+          childControl._setInternalOptions(changedInternalOptions || {});
+          childControlNode.oldOptions = oldOptions;    // TODO Для afterUpdate подумать, как еще можно передать
+          // TODO Для afterUpdate подумать, как еще можно передать
+          childControlNode.oldContext = oldChildNodeContext;    // TODO Для afterUpdate подумать, как еще можно передать
+          // TODO Для afterUpdate подумать, как еще можно передать
+          childControlNode.attributes = nextVNode.controlAttributes;
+          childControlNode.events = nextVNode.controlEvents;
+          childControl._saveContextObject(resolvedContext);
+          // @ts-ignore
+          childControl.saveFullContext(Expressions_2.ContextResolver.wrapContext(childControl, childControl._context));
+      } finally {
+          /**
+           * TODO: удалить после синхронизации с контролами
+           */
+          const shouldUp = childControl._shouldUpdate ? childControl._shouldUpdate(newOptions, newChildNodeContext) || changedInternalOptions : true;
+          childControl._setInternalOptions(changedInternalOptions || {});
+          if (shouldUp) {
+              environment.setRebuildIgnoreId(null);
+          }
+          childControlNode.options = newOptions;
+          childControlNode.context = newChildNodeContext;
+          if (!nextVNode.compound) {
+              childControlNode.internalOptions = nextVNode.controlInternalProperties;
+          }
+      }
+      // @ts-ignore
+      const nextInput = VdomMarkup.getDecoratedMarkup(childControlNode, false);
+      nextVNode.instance = childControlNode;
+      patch(lastVNode.instance.markup, nextInput, parentDOM, {}, isSVG, nextVNode, lifecycle);
+  }
 }
 
 function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]) {

@@ -34,7 +34,8 @@ export function __render(
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback: Function | null,
   context: any,
-  isRootStart?: boolean
+  isRootStart?: boolean,
+  environment?: any
 ): void {
   // Development warning
   if (process.env.NODE_ENV !== 'production') {
@@ -86,9 +87,10 @@ export function render(
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback: Function | null = null,
   context: any = EMPTY_OBJ,
-  isRootStart?: boolean
+  isRootStart?: boolean,
+  environment?: any
 ): void {
-  __render(input, parentDOM, callback, context, isRootStart);
+  __render(input, parentDOM, callback, context, isRootStart, environment);
 }
 
 export function createRenderer(parentDOM?) {
