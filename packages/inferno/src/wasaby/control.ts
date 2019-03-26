@@ -7,7 +7,7 @@ function getModuleDefaultCtor(mod) {
 
 function getControlNodeParams(control, environment) {
    // @ts-ignore
-   const composedDecorator = composeWithResultApply.call(undefined, [environment.getMarkupNodeDecorator()]).bind(control);
+   const composedDecorator = FunctionalUtils.composeWithResultApply.call(undefined, [environment.getMarkupNodeDecorator()]).bind(control);
    return {
       defaultOptions: {}, // нет больше понятия опция по умолчанию
       markupDecorator: composedDecorator
