@@ -7,7 +7,7 @@ import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
-import { createNode } from '../wasaby/control'
+import { createNode, getDecoratedMarkup } from '../wasaby/control'
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
@@ -211,7 +211,7 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG:
   }
 
   // @ts-ignore
-  controlNode.markup = VdomMarkup.getDecoratedMarkup(controlNode, isRootStart);
+  controlNode.markup = getDecoratedMarkup(controlNode, isRootStart);
   vNode.instance = controlNode;
   mount(controlNode.markup, parentDOM, {}, isSVG, nextNode, lifecycle, isRootStart, environment);
 }

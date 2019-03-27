@@ -62,6 +62,18 @@ function fixInternalParentOptions(internalOptions, userOptions, parentNode) {
       null;
 }
 
+export function getDecoratedMarkup(controlNode, isRoot) {
+   return controlNode.control._getMarkup(controlNode.key, isRoot, {
+      key: controlNode.key,
+      attributes: controlNode.attributes,
+      events: controlNode.events,
+      inheritOptions: controlNode.inheritOptions,
+      templateContext: controlNode.templateContext,
+      internal: controlNode.internal,
+      domNodeProps: controlNode.domNodeProps
+   });
+}
+
 export function createNode(controlClass_, options, key, environment, parentNode, serialized, vnode?) {
    const controlCnstr = getModuleDefaultCtor(controlClass_);
    const compound = vnode && vnode.compound;

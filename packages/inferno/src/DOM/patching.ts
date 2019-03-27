@@ -10,6 +10,7 @@ import { patchProp } from './props';
 import { handleComponentInput, renderNewInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
+import { getDecoratedMarkup } from '../wasaby/control'
 
 function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[]) {
   unmount(lastVNode);
@@ -483,7 +484,7 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
   let beforeUpdateResults;
   const newOptions = nextVNode.compound ? 
       // @ts-ignore
-             Utils_1.Compatible.createCombinedOptions(nextVNode.controlProperties, nextVNode.controlInternalProperties) 
+             Compatible.createCombinedOptions(nextVNode.controlProperties, nextVNode.controlInternalProperties) 
              : nextVNode.controlProperties;
       
   // Атрибуты тоже учавствуют в DirtyChecking
@@ -498,10 +499,10 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
          //  ]);
           environment.setRebuildIgnoreId(childControlNode.id);
           // @ts-ignore
-          Utils_1.OptionsResolver.resolveInheritOptions(childControlNode.controlClass, childControlNode, newOptions);
+          OptionsResolver.resolveInheritOptions(childControlNode.controlClass, childControlNode, newOptions);
           childControl.saveInheritOptions(childControlNode.inheritOptions);
           // @ts-ignore
-          resolvedContext = Expressions_2.ContextResolver.resolveContext(childControlNode.controlClass, newChildNodeContext, childControlNode.control);
+          resolvedContext = ContextResolver.resolveContext(childControlNode.controlClass, newChildNodeContext, childControlNode.control);
           // Utils_1.OptionsResolver.resolveOptions(childControlNode.controlClass, childControlNode.defaultOptions, newOptions, childControlNode.parent.control._moduleName);    // Forbid force update in the time between _beforeUpdate and _afterUpdate
           // Forbid force update in the time between _beforeUpdate and _afterUpdate
           beforeUpdateResults = childControl._beforeUpdate && childControl.__beforeUpdate(newOptions, resolvedContext);
@@ -516,7 +517,7 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
           childControlNode.events = nextVNode.controlEvents;
           childControl._saveContextObject(resolvedContext);
           // @ts-ignore
-          childControl.saveFullContext(Expressions_2.ContextResolver.wrapContext(childControl, childControl._context));
+          childControl.saveFullContext(ContextResolver.wrapContext(childControl, childControl._context));
       } finally {
           /**
            * TODO: удалить после синхронизации с контролами
@@ -533,7 +534,7 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
           }
       }
       // @ts-ignore
-      const nextInput = VdomMarkup.getDecoratedMarkup(childControlNode, false);
+      const nextInput = getDecoratedMarkup(childControlNode, false);
       nextVNode.instance = childControlNode;
       patch(lastVNode.instance.markup, nextInput, parentDOM, {}, isSVG, nextVNode, lifecycle);
   }
