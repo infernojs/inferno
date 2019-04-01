@@ -317,6 +317,7 @@ function updateWasabyControl(controlNode, parentDOM, lifecycle) {
       // @ts-ignore
       ReactiveObserver.pauseReactive(controlNode.control, () => {
         // Forbid force update in the time between _beforeUpdate and _afterUpdate
+        // @ts-ignore
         const beforeUpdateResults = controlNode.control._beforeUpdate && controlNode.control.__beforeUpdate(controlNode.control._options, resolvedContext);
       });
       // controlNode.control._options = newOptions;
