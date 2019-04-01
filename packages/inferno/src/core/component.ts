@@ -27,6 +27,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
         return;
       }
     }
+    // @ts-ignore
     if (QUEUE.push(component) === 1) {
       nextTick(rerender);
     }

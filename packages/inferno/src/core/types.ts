@@ -120,6 +120,7 @@ export interface VNode {
   ref: any;
   type: any;
   markup: any;
+  hprops: any;
 }
 
 export interface RefObject<T> {

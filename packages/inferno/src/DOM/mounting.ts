@@ -13,7 +13,7 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
-    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode, parentVNode);
+    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode);
   } else if (flags & VNodeFlags.ComponentClass) {
     mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
   } else if (flags & VNodeFlags.ComponentFunction) {
@@ -87,7 +87,7 @@ export function mountTextContent(dom: Element, children: string): void {
   dom.textContent = children as string;
 }
 
-export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentControlNode?: any, parentVNode?: any): void {
+export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentControlNode?: any): void {
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
@@ -191,6 +191,7 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
 
 function afterMountProcess(controlNode) {
   try {
+      // @ts-ignore
       const afterMountValue = controlNode.control._afterMount && controlNode.control._afterMount(controlNode.options, controlNode.context);
       controlNode.control._mounted = true;
       if (controlNode.control._$needForceUpdate) {
@@ -222,6 +223,7 @@ export function mountWasabyCallback(controlNode) {
            */
           try {
               if (!controlNode.control._destroyed) {
+                // @ts-ignore
                 const afterUpdateResult = controlNode.control._afterUpdate && controlNode.control._afterUpdate(controlNode.oldOptions || controlNode.options, controlNode.oldContext);
               }
           } catch (error) {
@@ -395,7 +397,7 @@ export function getMarkupForTemplatedNode(vNode) {
   : vNode.template(vNode.controlProperties, vNode.attributes, vNode.context, true);
 }
 
-
+// @ts-ignore
 function mountWasabyTemplateNode(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode) {
   vNode.markup = getMarkupForTemplatedNode(vNode);
   vNode.markup.forEach(function (node) {

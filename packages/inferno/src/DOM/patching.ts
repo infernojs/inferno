@@ -77,7 +77,7 @@ export function patch(
       mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, parentControlNode, parentVNode);
     }
   } else if (nextFlags & VNodeFlags.Element) {
-    patchElement(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle, environment, parentControlNode, parentVNode);
+    patchElement(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle, environment, parentControlNode);
   } else if (nextFlags & VNodeFlags.ComponentClass) {
     patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
   } else if (nextFlags & VNodeFlags.ComponentFunction) {
@@ -167,7 +167,7 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Fun
   }
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[], environment?: any, parentControlNode?: any, parentVNode?: any) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[], environment?: any, parentControlNode?: any) {
   const dom = lastVNode.dom as Element;
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
@@ -380,8 +380,10 @@ function updateWasabyControl(controlNode, parentDOM, lifecycle) {
       // @ts-ignore
       resolvedContext = ContextResolver.resolveContext(controlNode.controlClass, controlNode.context, controlNode.control);
       // Forbid force update in the time between _beforeUpdate and _afterUpdate
+      // @ts-ignore
       const beforeUpdateResults = controlNode.control._beforeUpdate && controlNode.control.__beforeUpdate(controlNode.control._options, resolvedContext);
       // controlNode.control._options = newOptions;
+      // @ts-ignore
       const shouldUpdate = (controlNode.control._shouldUpdate ? controlNode.control._shouldUpdate(controlNode.control._options, resolvedContext) : true);
       // controlNode.control._setInternalOptions(changedInternalOptions || {});
       controlNode.oldOptions = controlNode.options; // TODO Для afterUpdate подумать, как еще можно передать
@@ -412,6 +414,7 @@ function updateWasabyControl(controlNode, parentDOM, lifecycle) {
   }
 }
 
+// @ts-ignore
 function patchWasabyTemplateNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, environment, parentControlNode) {
   // @ts-ignore
   const changedOptions = DC.getChangedOptions(nextVNode.controlProperties, lastVNode.controlProperties, false, lastVNode.optionsVersions);
@@ -535,11 +538,13 @@ function applyWasabyState(component) {
   }
 }
 
+// @ts-ignore
 function queueWasabyControlChanges(controlNode) {
   if (QUEUE.length === 0) {
       applyWasabyState(controlNode);
       return;
   }
+  // @ts-ignore
   if (QUEUE.push(controlNode) === 1) {
       nextTickWasaby(rerenderWasaby);
   }
@@ -579,7 +584,7 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
   const changedAttrs = DC.getChangedOptions(nextVNode.controlAttributes, oldAttrs, nextVNode.compound);
   const childControlNode = lastVNode.instance;
   const childControl = childControlNode.control;
-  const environment = lastVNode.instance.environment;
+  environment = lastVNode.instance.environment;
   // @ts-ignore
   let shouldUpdate = true;
   const oldChildNodeContext = lastVNode.instance.context;
@@ -720,8 +725,11 @@ function patchNonKeyedChildren(
   nextChildrenLength: number,
   nextNode: Element | null,
   lifecycle: Function[],
+  // @ts-ignore
   environment?: any,
-  parentControlNode?: any, 
+  // @ts-ignore
+  parentControlNode?: any,
+  // @ts-ignore
   parentVNodeW?: any
 ) {
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
