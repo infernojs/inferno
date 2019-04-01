@@ -64,7 +64,7 @@ export function unmount(vNode) {
       if (vNode.childFlags & ChildFlags.MultipleChildren) {
         unmountAllChildren(children);
       }
-    } else if (VNodeFlags.WasabyControl) {
+    } else if (flags & VNodeFlags.WasabyControl) {
       vNode.instance.control._beforeUnmount();
       unmount(vNode.instance.markup);
       vNode.instance.control._mounted = false;
@@ -72,7 +72,7 @@ export function unmount(vNode) {
       if (!vNode.instance.control._destroyed) {
           vNode.instance.control.destroy();
       }
-    } else if (VNodeFlags.TemplateWasabyNode) {
+    } else if (flags & VNodeFlags.TemplateWasabyNode) {
       unmountAllChildren(vNode.markup);
     }
   }
