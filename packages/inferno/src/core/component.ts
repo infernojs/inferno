@@ -1,9 +1,8 @@
 import { IComponent, InfernoNode, Props, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
-import { updateClassComponent } from '../DOM/patching';
+import { updateClassComponent, QUEUE } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, findDOMfromVNode } from '../DOM/utils/common';
 
-const QUEUE: Array<Component<any, any>> = [];
 const nextTick = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState: any, callback: Function | undefined, force: boolean): void {

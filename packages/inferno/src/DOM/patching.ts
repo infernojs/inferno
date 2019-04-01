@@ -2,17 +2,19 @@ import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, unescape } f
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
 import { VNode } from '../core/types';
-import { mount, mountArrayChildren, mountTextContent } from './mounting';
+import { mount, mountArrayChildren, mountTextContent, mountWasabyCallback, getMarkupForTemplatedNode } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
-import { appendChild, createDerivedState, EMPTY_OBJ, findDOMfromVNode, moveVNodeDOM, options, removeChild, removeVNodeDOM, replaceChild } from './utils/common';
+import { appendChild, createDerivedState, EMPTY_OBJ, findDOMfromVNode, moveVNodeDOM, options, removeChild, removeVNodeDOM, replaceChild, callAll } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
 import { handleComponentInput, renderNewInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
-import { getDecoratedMarkup } from '../wasaby/control'
+import { getDecoratedMarkup, nextTickWasaby } from '../wasaby/control'
 
-function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[]) {
+export const QUEUE = [];
+
+function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], environment?: any, parentControlNode?: any) {
   unmount(lastVNode);
 
   if ((nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0) {
@@ -21,7 +23,7 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
     // Single DOM operation, when we have dom references available
     replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
   } else {
-    mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode, true), lifecycle);
+    mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode, true), lifecycle, false, environment, parentControlNode);
     removeVNodeDOM(lastVNode, parentDOM);
   }
 }
@@ -33,7 +35,10 @@ export function patch(
   context: Object,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[]
+  lifecycle: Function[],
+  environment?: any, 
+  parentControlNode?: any, 
+  parentVNode?: any
 ) {
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
@@ -48,7 +53,7 @@ export function patch(
 
   if (lastVNode.flags !== nextFlags || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || (nextFlags & VNodeFlags.ReCreate) !== 0) {
     if (lastVNode.flags & VNodeFlags.InUse) {
-      replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
+      replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, environment, parentControlNode);
     } else {
       let dom = lastVNode.dom as Element;
       if (!dom && parentDOM) {
@@ -69,10 +74,10 @@ export function patch(
      }
   
       // Last vNode is not in use, it has crashed at application level. Just mount nextVNode and ignore last one
-      mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
+      mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, parentControlNode, parentVNode);
     }
   } else if (nextFlags & VNodeFlags.Element) {
-    patchElement(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle);
+    patchElement(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle, environment, parentControlNode, parentVNode);
   } else if (nextFlags & VNodeFlags.ComponentClass) {
     patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
   } else if (nextFlags & VNodeFlags.ComponentFunction) {
@@ -84,8 +89,11 @@ export function patch(
   } else if (nextFlags & VNodeFlags.Fragment) {
     patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
     // @ts-ignore
-  } else if (flags & VNodeFlags.WasabyControl) {
-    patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle)
+  } else if (nextFlags & VNodeFlags.WasabyControl) {
+    patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, environment, parentControlNode, parentVNode);
+    // @ts-ignore
+  } else if (nextFlags & VNodeFlags.TemplateWasabyNode) {
+    patchWasabyTemplateNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, environment, parentControlNode);
     // @ts-ignore
   } else if (nextVNode instanceof RawMarkupNode) {
     patchHTML(lastVNode, nextVNode, parentDOM);
@@ -159,7 +167,7 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Fun
   }
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[]) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[], environment?: any, parentControlNode?: any, parentVNode?: any) {
   const dom = lastVNode.dom as Element;
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
@@ -227,7 +235,10 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
       isSVG && nextVNode.type !== 'foreignObject',
       null,
       lastVNode,
-      lifecycle
+      lifecycle,
+      environment, 
+      parentControlNode, 
+      nextVNode
     );
   }
 
@@ -262,13 +273,16 @@ function patchChildren(
   isSVG: boolean,
   nextNode: Element | null,
   parentVNode: VNode,
-  lifecycle: Function[]
+  lifecycle: Function[],
+  environment?: any, 
+  parentControlNode?: any, 
+  parentVNodeW?: any
 ) {
   switch (lastChildFlags) {
     case ChildFlags.HasVNodeChildren:
       switch (nextChildFlags) {
         case ChildFlags.HasVNodeChildren:
-          patch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+          patch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
           break;
         case ChildFlags.HasInvalidChildren:
           remove(lastChildren, parentDOM);
@@ -285,7 +299,7 @@ function patchChildren(
     case ChildFlags.HasInvalidChildren:
       switch (nextChildFlags) {
         case ChildFlags.HasVNodeChildren:
-          mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+          mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
           break;
         case ChildFlags.HasInvalidChildren:
           break;
@@ -304,14 +318,14 @@ function patchChildren(
           break;
         case ChildFlags.HasVNodeChildren:
           clearDOM(parentDOM);
-          mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+          mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
           break;
         case ChildFlags.HasInvalidChildren:
           clearDOM(parentDOM);
           break;
         default:
           clearDOM(parentDOM);
-          mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+          mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
           break;
       }
       break;
@@ -323,7 +337,7 @@ function patchChildren(
           break;
         case ChildFlags.HasVNodeChildren:
           removeAllChildren(parentDOM, parentVNode, lastChildren);
-          mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+          mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
           break;
         case ChildFlags.HasInvalidChildren:
           removeAllChildren(parentDOM, parentVNode, lastChildren);
@@ -335,19 +349,85 @@ function patchChildren(
           // Fast path's for both algorithms
           if (lastLength === 0) {
             if (nextLength > 0) {
-              mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+              mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
             }
           } else if (nextLength === 0) {
             removeAllChildren(parentDOM, parentVNode, lastChildren);
           } else if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
-            patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle);
+            patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle, environment, parentControlNode, parentVNodeW);
           } else {
-            patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, lifecycle);
+            patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
           }
           break;
       }
       break;
   }
+}
+
+function updateWasabyControl(controlNode, parentDOM, lifecycle) {
+  let shouldUp;
+  try {
+      let resolvedContext;
+      //  Logger.log('DirtyChecking (update node with changed)', [
+      //      '',
+      //      '',
+      //      changedOptions || changedInternalOptions || changedAttrs || changedContext
+      //  ]);
+      controlNode.environment.setRebuildIgnoreId(controlNode.id);
+      // @ts-ignore
+      OptionsResolver.resolveInheritOptions(controlNode.controlClass, controlNode, controlNode.options);
+      controlNode.control.saveInheritOptions(controlNode.inheritOptions);
+      // @ts-ignore
+      resolvedContext = ContextResolver.resolveContext(controlNode.controlClass, controlNode.context, controlNode.control);
+      // Forbid force update in the time between _beforeUpdate and _afterUpdate
+      const beforeUpdateResults = controlNode.control._beforeUpdate && controlNode.control.__beforeUpdate(controlNode.control._options, resolvedContext);
+      // controlNode.control._options = newOptions;
+      const shouldUpdate = (controlNode.control._shouldUpdate ? controlNode.control._shouldUpdate(controlNode.control._options, resolvedContext) : true);
+      // controlNode.control._setInternalOptions(changedInternalOptions || {});
+      controlNode.oldOptions = controlNode.options; // TODO Для afterUpdate подумать, как еще можно передать
+      // TODO Для afterUpdate подумать, как еще можно передать
+      controlNode.oldContext = controlNode.context; // TODO Для afterUpdate подумать, как еще можно передать
+      // TODO Для afterUpdate подумать, как еще можно передать
+      // controlNode.attributes = nextVNode.controlAttributes;
+      // controlNode.events = nextVNode.controlEvents;
+      controlNode.control._saveContextObject(resolvedContext);
+      // @ts-ignore
+      controlNode.control.saveFullContext(ContextResolver.wrapContext(controlNode.control, controlNode.control._context));
+  }
+  finally {
+      /**
+       * TODO: удалить после синхронизации с контролами
+       */
+      shouldUp = controlNode.control._shouldUpdate ? controlNode.control._shouldUpdate(controlNode.control._options, controlNode.context) : true;
+  }
+  if (shouldUp) {
+      // @ts-ignore
+      const nextInput = getDecoratedMarkup(controlNode, false);
+      // nextVNode.instance = controlNode;
+      nextInput.ref = controlNode.markup.ref;
+      lifecycle.push(mountWasabyCallback(controlNode));
+      patch(controlNode.markup, nextInput, parentDOM, {}, false, controlNode, lifecycle, controlNode.environment, controlNode);
+      controlNode.markup = nextInput;
+      controlNode.fullMarkup = controlNode.markup;
+  }
+}
+
+function patchWasabyTemplateNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, environment, parentControlNode) {
+  // @ts-ignore
+  const changedOptions = DC.getChangedOptions(nextVNode.controlProperties, lastVNode.controlProperties, false, lastVNode.optionsVersions);
+  const oldAttrs = lastVNode.attributes.attributes;
+  const newAttrs = nextVNode.attributes.attributes;
+  // @ts-ignore
+  const changedAttrs = DC.getChangedOptions(newAttrs, oldAttrs, false, {});
+  const changedTemplate = lastVNode.template !== nextVNode.template;
+  let nextInput;
+
+   if (changedOptions || changedAttrs || changedTemplate) {
+   //    Logger.log('DirtyChecking (update template with changed options)', ['', '', changedOptions]);
+      nextInput = getMarkupForTemplatedNode(nextVNode);
+      patchChildren(lastVNode.markup.flags, nextInput.flags, lastVNode.markup, nextInput, parentDOM, {}, isSVG, nextVNode, lastVNode, lifecycle, environment, parentControlNode);
+      nextVNode.markup = nextInput;
+   }
 }
 
 function createDidUpdate(instance, lastProps, lastState, snapshot, lifecycle) {
@@ -447,8 +527,32 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
   instance.$UPD = false;
 }
 
+function applyWasabyState(component) {
+  const lifecycle = [];
+  updateWasabyControl(component, component.control._container[0], lifecycle);
+  if (lifecycle.length > 0) {
+    callAll(lifecycle);
+  }
+}
+
+function queueWasabyControlChanges(controlNode) {
+  if (QUEUE.length === 0) {
+      applyWasabyState(controlNode);
+      return;
+  }
+  if (QUEUE.push(controlNode) === 1) {
+      nextTickWasaby(rerenderWasaby);
+  }
+}
+function rerenderWasaby() {
+  let component;
+  while ((component = QUEUE.pop())) {
+    applyWasabyState(component);
+  }
+}
+
 // @ts-ignore
-function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle) {
+function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, environment, parentControlNode, parentVNode) {
   // для не-compound контролов делаем проверку изменения служебных опций
   // @ts-ignore
   const changedInternalOptions = DC.getChangedOptions(nextVNode.controlInternalProperties, lastVNode.internalOptions);    
@@ -536,7 +640,14 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
       // @ts-ignore
       const nextInput = getDecoratedMarkup(childControlNode, false);
       nextVNode.instance = childControlNode;
-      patch(lastVNode.instance.markup, nextInput, parentDOM, {}, isSVG, nextVNode, lifecycle);
+      lifecycle.push(mountWasabyCallback(childControlNode));
+      patch(lastVNode.instance.markup, nextInput, parentDOM, {}, isSVG, nextVNode, lifecycle, environment, nextVNode.instance, nextInput);
+      nextVNode.instance.markup = nextInput;
+  } else {
+      nextVNode.instance = lastVNode.instance;
+  }
+  if (lastVNode.instance.markup && lastVNode.instance.markup.type === 'invisible-node') {
+    parentVNode.ref = lastVNode.ref;
   }
 }
 
@@ -608,7 +719,10 @@ function patchNonKeyedChildren(
   lastChildrenLength: number,
   nextChildrenLength: number,
   nextNode: Element | null,
-  lifecycle: Function[]
+  lifecycle: Function[],
+  environment?: any,
+  parentControlNode?: any, 
+  parentVNodeW?: any
 ) {
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
   let i = 0;
@@ -652,7 +766,10 @@ function patchKeyedChildren(
   bLength: number,
   outerEdge: Element | null,
   parentVNode: VNode,
-  lifecycle
+  lifecycle,
+  environment?: any, 
+  parentControlNode?: any, 
+  parentVNodeW?: any
 ) {
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;
@@ -671,7 +788,7 @@ function patchKeyedChildren(
       if (bNode.flags & VNodeFlags.InUse) {
         b[j] = bNode = directClone(bNode);
       }
-      patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+      patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, environment, parentControlNode, parentVNodeW);
       a[j] = bNode;
       ++j;
       if (j > aEnd || j > bEnd) {
@@ -689,7 +806,7 @@ function patchKeyedChildren(
       if (bNode.flags & VNodeFlags.InUse) {
         b[bEnd] = bNode = directClone(bNode);
       }
-      patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+      patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, environment, parentControlNode, parentVNodeW);
       a[aEnd] = bNode;
       aEnd--;
       bEnd--;
@@ -712,7 +829,7 @@ function patchKeyedChildren(
           b[j] = bNode = directClone(bNode);
         }
         ++j;
-        mount(bNode, dom, context, isSVG, nextNode, lifecycle);
+        mount(bNode, dom, context, isSVG, nextNode, lifecycle, false, environment, parentControlNode);
       }
     }
   } else if (j > bEnd) {
@@ -757,7 +874,7 @@ function patchKeyedChildren(
               if (bNode.flags & VNodeFlags.InUse) {
                 b[j] = bNode = directClone(bNode);
               }
-              patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+              patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, environment, parentControlNode, parentVNodeW);
               ++patched;
               break;
             }
@@ -801,7 +918,7 @@ function patchKeyedChildren(
             if (bNode.flags & VNodeFlags.InUse) {
               b[j] = bNode = directClone(bNode);
             }
-            patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+            patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, environment, parentControlNode, parentVNodeW);
             ++patched;
           } else if (!canRemoveWholeContent) {
             remove(aNode, dom);
@@ -814,7 +931,7 @@ function patchKeyedChildren(
     // fast-path: if nothing patched remove all old and add all new
     if (canRemoveWholeContent) {
       removeAllChildren(dom, parentVNode, a);
-      mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle);
+      mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle, environment, parentControlNode, parentVNodeW);
     } else if (moved) {
       const seq = lis_algorithm(sources);
       j = seq.length - 1;
@@ -848,7 +965,7 @@ function patchKeyedChildren(
             b[pos] = bNode = directClone(bNode);
           }
           nextPos = pos + 1;
-          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
+          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle, environment, parentControlNode, parentVNodeW);
         }
       }
     }

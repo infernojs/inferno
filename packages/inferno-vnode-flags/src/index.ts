@@ -29,7 +29,8 @@ export const enum VNodeFlags {
   DOMRef = Element | Text | Void | Portal,
   InUseOrNormalized = InUse | Normalized,
   ClearInUseNormalized = ~InUseOrNormalized,
-  WasabyControl = 1 << 17
+  WasabyControl = 1 << 17,
+  TemplateWasabyNode = 1 << 18
 }
 
 // Combinations are not possible, its bitwise only to reduce vNode size

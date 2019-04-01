@@ -24,7 +24,7 @@ function getTagName(input) {
     } else if (flags & VNodeFlags.Portal) {
       tagName = `Portal*`;
     } else {
-      tagName = `<${getComponentName(input.type)} />`;
+      tagName = `<${getComponentName(input.type || (input.controlClass && input.controlClass.prototype && input.controlClass.prototype._moduleName))} />`;
     }
   }
 

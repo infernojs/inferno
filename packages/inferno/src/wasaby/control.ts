@@ -64,13 +64,13 @@ function fixInternalParentOptions(internalOptions, userOptions, parentNode) {
 
 export function getDecoratedMarkup(controlNode, isRoot) {
    return controlNode.control._getMarkup(controlNode.key, isRoot, {
-      key: controlNode.key,
       attributes: controlNode.attributes,
+      domNodeProps: controlNode.domNodeProps,
       events: controlNode.events,
       inheritOptions: controlNode.inheritOptions,
-      templateContext: controlNode.templateContext,
       internal: controlNode.internal,
-      domNodeProps: controlNode.domNodeProps
+      key: controlNode.key,
+      templateContext: controlNode.templateContext
    });
 }
 
@@ -94,20 +94,8 @@ export function createNode(controlClass_, options, key, environment, parentNode,
       if (compound) {
          // Создаем виртуальную ноду для compound контрола
          // @ts-ignore
-         if (!DirtyCheckingCompatible) {
-            // @ts-ignore
-            DirtyCheckingCompatible = _dcc;
-         }
-         // @ts-ignore
-         result = DirtyCheckingCompatible.createCompoundControlNode(
-            controlClass_,
-            controlCnstr,
-            userOptions,
-            internalOptions,
-            key,
-            parentNode,
-            vnode
-         );
+         result = Compatible.createCompoundControlNode(controlClass_, controlCnstr, [], userOptions, internalOptions, key, parentNode, vnode, MarkupGeneratorText.default);
+         return result;
       } else {
       // Создаем виртуальную ноду для не-compound контрола
       const invisible = vnode && vnode.invisible;
@@ -197,7 +185,7 @@ function WCN(
    defaultOptions,
    vnode,
    contextVersions) {
-      this.attributes = options.attriutes;
+      this.attributes = options.attributes;
       this.events = options.events;
       this.control = control;
       this.errors = serialized && serialized.errors;
@@ -222,6 +210,8 @@ function WCN(
       this.context = (vnode && vnode.context) || {},
       this.inheritOptions = (vnode && vnode.inheritOptions) || {}
 }
+
+export const nextTickWasaby = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);
 
 export interface WasabyCompatControlNode {
    control: any,
