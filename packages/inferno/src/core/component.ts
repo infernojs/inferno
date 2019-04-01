@@ -1,6 +1,7 @@
 import { IComponent, InfernoNode, Props, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
-import { updateClassComponent, QUEUE } from '../DOM/patching';
+import { updateClassComponent } from '../DOM/patching';
+import { QUEUE } from '../DOM/mounting';
 import { callAll, EMPTY_OBJ, findDOMfromVNode } from '../DOM/utils/common';
 
 const nextTick = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);

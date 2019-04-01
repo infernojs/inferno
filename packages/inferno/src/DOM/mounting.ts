@@ -2,12 +2,13 @@ import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwErr
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone } from '../core/implementation';
 import { VNode } from '../core/types';
-import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend } from './utils/common';
+import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, callAll } from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
-import { createNode, getDecoratedMarkup } from '../wasaby/control'
+import { createNode, getDecoratedMarkup, nextTickWasaby } from '../wasaby/control';
+export const QUEUE = [];
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentControlNode?: any, parentVNode?: any): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
@@ -178,7 +179,7 @@ export function mountArrayChildren(children, dom: Element | null, context: Objec
     if (child.flags & VNodeFlags.InUse) {
       children[i] = child = directClone(child);
     }
-    mount(child, dom, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNode);
+    mount(child, dom, context, isSVG, nextNode, lifecycle, false, environment, parentControlNode, parentVNode);
   }
 }
 
@@ -297,6 +298,82 @@ function getStateReadyOrCall(stateVar, control, vnode, serializer) {
   return res;
 }
 
+function updateWasabyControl(controlNode, parentDOM, lifecycle) {
+  let shouldUp;
+  try {
+      let resolvedContext;
+      //  Logger.log('DirtyChecking (update node with changed)', [
+      //      '',
+      //      '',
+      //      changedOptions || changedInternalOptions || changedAttrs || changedContext
+      //  ]);
+      controlNode.environment.setRebuildIgnoreId(controlNode.id);
+      // @ts-ignore
+      OptionsResolver.resolveInheritOptions(controlNode.controlClass, controlNode, controlNode.options);
+      controlNode.control.saveInheritOptions(controlNode.inheritOptions);
+      // @ts-ignore
+      resolvedContext = ContextResolver.resolveContext(controlNode.controlClass, controlNode.context, controlNode.control);
+      // Forbid force update in the time between _beforeUpdate and _afterUpdate
+      // @ts-ignore
+      const beforeUpdateResults = controlNode.control._beforeUpdate && controlNode.control.__beforeUpdate(controlNode.control._options, resolvedContext);
+      // controlNode.control._options = newOptions;
+      // @ts-ignore
+      const shouldUpdate = (controlNode.control._shouldUpdate ? controlNode.control._shouldUpdate(controlNode.control._options, resolvedContext) : true);
+      // controlNode.control._setInternalOptions(changedInternalOptions || {});
+      controlNode.oldOptions = controlNode.options; // TODO Для afterUpdate подумать, как еще можно передать
+      // TODO Для afterUpdate подумать, как еще можно передать
+      controlNode.oldContext = controlNode.context; // TODO Для afterUpdate подумать, как еще можно передать
+      // TODO Для afterUpdate подумать, как еще можно передать
+      // controlNode.attributes = nextVNode.controlAttributes;
+      // controlNode.events = nextVNode.controlEvents;
+      controlNode.control._saveContextObject(resolvedContext);
+      // @ts-ignore
+      controlNode.control.saveFullContext(ContextResolver.wrapContext(controlNode.control, controlNode.control._context));
+  }
+  finally {
+      /**
+       * TODO: удалить после синхронизации с контролами
+       */
+      shouldUp = controlNode.control._shouldUpdate ? controlNode.control._shouldUpdate(controlNode.control._options, controlNode.context) : true;
+  }
+  if (shouldUp) {
+      // @ts-ignore
+      const nextInput = getDecoratedMarkup(controlNode, false);
+      // nextVNode.instance = controlNode;
+      nextInput.ref = controlNode.markup.ref;
+      lifecycle.push(mountWasabyCallback(controlNode));
+      // @ts-ignore
+      patch(controlNode.markup, nextInput, parentDOM, {}, false, controlNode, lifecycle, controlNode.environment, controlNode);
+      controlNode.markup = nextInput;
+      controlNode.fullMarkup = controlNode.markup;
+  }
+}
+
+function applyWasabyState(component) {
+  const lifecycle = [];
+  updateWasabyControl(component, component.control._container[0], lifecycle);
+  if (lifecycle.length > 0) {
+    callAll(lifecycle);
+  }
+}
+// @ts-ignore
+function queueWasabyControlChanges(controlNode) {
+  if (QUEUE.length === 0) {
+      applyWasabyState(controlNode);
+      return;
+  }
+  // @ts-ignore
+  if (QUEUE.push(controlNode) === 1) {
+      nextTickWasaby(rerenderWasaby);
+  }
+}
+function rerenderWasaby() {
+  let component;
+  while ((component = QUEUE.pop())) {
+    applyWasabyState(component);
+  }
+}
+
 // var Slr = new Serializer();
 
 export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentVNode?: any) {
@@ -309,7 +386,7 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG:
       user: vNode.controlProperties
     },
     vNode.key,
-    vNode.environment,
+    environment,
     vNode.parentNode,
     vNode.serialized,
     vNode
