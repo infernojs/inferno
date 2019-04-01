@@ -313,8 +313,12 @@ function updateWasabyControl(controlNode, parentDOM, lifecycle) {
       // @ts-ignore
       resolvedContext = ContextResolver.resolveContext(controlNode.controlClass, controlNode.context, controlNode.control);
       // Forbid force update in the time between _beforeUpdate and _afterUpdate
+
       // @ts-ignore
-      const beforeUpdateResults = controlNode.control._beforeUpdate && controlNode.control.__beforeUpdate(controlNode.control._options, resolvedContext);
+      ReactiveObserver.pauseReactive(controlNode.control, () => {
+        // Forbid force update in the time between _beforeUpdate and _afterUpdate
+        const beforeUpdateResults = controlNode.control._beforeUpdate && controlNode.control.__beforeUpdate(controlNode.control._options, resolvedContext);
+      });
       // controlNode.control._options = newOptions;
       // @ts-ignore
       const shouldUpdate = (controlNode.control._shouldUpdate ? controlNode.control._shouldUpdate(controlNode.control._options, resolvedContext) : true);

@@ -538,7 +538,11 @@ function patchWasabyControl(lastVNode, nextVNode, parentDOM, context, isSVG, lif
           resolvedContext = ContextResolver.resolveContext(childControlNode.controlClass, newChildNodeContext, childControlNode.control);
           // Utils_1.OptionsResolver.resolveOptions(childControlNode.controlClass, childControlNode.defaultOptions, newOptions, childControlNode.parent.control._moduleName);    // Forbid force update in the time between _beforeUpdate and _afterUpdate
           // Forbid force update in the time between _beforeUpdate and _afterUpdate
-          beforeUpdateResults = childControl._beforeUpdate && childControl.__beforeUpdate(newOptions, resolvedContext);
+          // @ts-ignore
+          ReactiveObserver.pauseReactive(childControl, () => {
+            // Forbid force update in the time between _beforeUpdate and _afterUpdate
+            beforeUpdateResults = childControl._beforeUpdate && childControl.__beforeUpdate(newOptions, resolvedContext);
+          });
           childControl._options = newOptions;
           shouldUpdate = (childControl._shouldUpdate ? childControl._shouldUpdate(newOptions, resolvedContext) : true) || changedInternalOptions;
           childControl._setInternalOptions(changedInternalOptions || {});
