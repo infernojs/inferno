@@ -121,7 +121,6 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
           vNode.dom = nextNode;
           dom = nextNode;
       }
-    insertOrAppend(parentDOM, dom, nextNode);
   }
 
   if (vNode.hprops && vNode.hprops.events && Object.keys(vNode.hprops.events).length > 0) {

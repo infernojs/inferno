@@ -306,7 +306,7 @@ function patchChildren(
           mountTextContent(parentDOM, nextChildren);
           break;
         default:
-          mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+          mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, environment, parentControlNode, parentVNodeW);
           break;
       }
       break;
