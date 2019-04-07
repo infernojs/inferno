@@ -83,7 +83,7 @@ function hydrateWasabyControl(vNode, parentDOM, currentDom, context, isSVG, life
       if (vNode.instance.control && vNode.instance.control._forceUpdate) {
           vNode.instance.control._forceUpdate = function () {
               // @ts-ignore
-              inferno._queueWasabyControlChanges(vNode.instance);
+              _queueWasabyControlChanges(vNode.instance);
           };
       }
   }
