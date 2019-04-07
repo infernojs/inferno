@@ -1,6 +1,6 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning, unescape } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode, _CI, _HI, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render, _PS, _CWCI, _queueWasabyControlChanges, _MWWC, createWasabyTemplateNode} from 'inferno';
+import { VNode, _CI, _HI, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render, _PS, _CWCI, _queueWasabyControlChanges, _MWWC, _CWTN} from 'inferno';
 
 function checkIfHydrationNeeded(sibling: Node | Element | null): boolean {
   // @ts-ignore
@@ -93,8 +93,9 @@ function hydrateWasabyControl(vNode, parentDOM, currentDom, context, isSVG, life
   return currentNode;
 }
 
+// @ts-ignore
 function hydrateTemplateWasabyNode(vNode, parentDOM, currentDom, context, isSVG, lifecycle, environment, parentControlNode, parentVNode?) {
-  const yVNode = createWasabyTemplateNode(vNode, parentDOM, currentDom, context, isSVG, lifecycle, environment, parentControlNode);
+  const yVNode = _CWTN(vNode, parentDOM, currentDom, context, isSVG, lifecycle, environment, parentControlNode);
   yVNode.children = yVNode.markup;
   yVNode.childFlags = 12;
   hydrateChildren(yVNode, parentDOM, currentDom, context, isSVG, lifecycle, environment, parentControlNode);
@@ -145,7 +146,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
         _M(children as VNode, parentNode, context, isSVG, null, lifecycle, false, environment, parentControlNode, parentVNode);
       } else {
         if (!isIgnoredNode(currentNode)) {
-          currentNode = hydrateVNode(children as VNode, parentNode, currentNode as Element, context, isSVG, lifecycle, environment, parentControlNod);
+          currentNode = hydrateVNode(children as VNode, parentNode, currentNode as Element, context, isSVG, lifecycle, environment, parentControlNode);
         }
         currentNode = hydrateVNode(children as VNode, parentNode, currentNode as Element, context, isSVG, lifecycle, environment, parentControlNode);
         currentNode = currentNode ? currentNode.nextSibling : null;
@@ -255,6 +256,7 @@ function skipIgnoredNode(childNode) {
   }
 }
 
+// @ts-ignore
 function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[], isRootStart?: boolean, environment?, parentControlNode?, parentVNode?) {
   const props = vNode.props;
   const className = vNode.className;

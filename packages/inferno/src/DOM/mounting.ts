@@ -8,6 +8,7 @@ import { createClassComponentInstance, handleComponentInput } from './utils/comp
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 import { createNode, getDecoratedMarkup, nextTickWasaby } from '../wasaby/control';
+// @ts-ignore
 import { createWriteStream } from 'fs';
 export const QUEUE = [];
 
@@ -379,6 +380,7 @@ function rerenderWasaby() {
   }
 }
 
+// @ts-ignore
 export function createWasabyControlInstance(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode, parentVNode) {
   let controlNode;
   let carrier;
@@ -420,7 +422,7 @@ export function createWasabyControlInstance(vNode, parentDOM, isSVG, nextNode, l
     controlNode = vNode.instance;
   }
   if (carrier && carrier.then) {
-    controlNode.markup = createVNode(getFlagsForElementVnode('span'), 'span', {}, [], 0, controlNode.attributes, controlNode.key);
+    controlNode.markup = createVNode(getFlagsForElementVnode('span'), 'span', '', [], 0, controlNode.attributes, controlNode.key);
     vNode.instance = controlNode;
     vNode.instance.parentDOM = parentDOM;
     vNode.carrier = carrier;
@@ -498,6 +500,7 @@ export function getMarkupForTemplatedNode(vNode) {
   : vNode.template(vNode.controlProperties, vNode.attributes, vNode.context, true);
 }
 
+// @ts-ignore
 export function createWasabyTemplateNode(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode) {
   vNode.markup = getMarkupForTemplatedNode(vNode);
   vNode.markup.forEach(function (node) {
