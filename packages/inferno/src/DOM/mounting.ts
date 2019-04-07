@@ -1,6 +1,6 @@
 import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError, unescape } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { createVoidVNode, directClone } from '../core/implementation';
+import { createVoidVNode, directClone, createVNode, getFlagsForElementVnode } from '../core/implementation';
 import { VNode } from '../core/types';
 import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, callAll } from './utils/common';
 import { mountProps } from './props';
@@ -8,6 +8,7 @@ import { createClassComponentInstance, handleComponentInput } from './utils/comp
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 import { createNode, getDecoratedMarkup, nextTickWasaby } from '../wasaby/control';
+import { createWriteStream } from 'fs';
 export const QUEUE = [];
 
 export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentControlNode?: any, parentVNode?: any): void {
@@ -96,7 +97,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   let children = vNode.children;
   const childFlags = vNode.childFlags;
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  let dom = isRootStart ? parentDOM : documentCreateElement(vNode.type, isSVG);
+  let dom = isRootStart && parentDOM ? parentDOM : documentCreateElement(vNode.type, isSVG);
 
   vNode.dom = dom;
 
@@ -353,17 +354,17 @@ function updateWasabyControl(controlNode, parentDOM, lifecycle) {
   }
 }
 
-function applyWasabyState(component) {
+function applyWasabyState(component, pNode?) {
   const lifecycle = [];
-  updateWasabyControl(component, component.control._container[0], lifecycle);
+  updateWasabyControl(component, (component.control._container && (component.control._container[0] || component.control._container) ) || pNode, lifecycle);
   if (lifecycle.length > 0) {
     callAll(lifecycle);
   }
 }
 // @ts-ignore
-function queueWasabyControlChanges(controlNode) {
+export function queueWasabyControlChanges(controlNode, pNode?) {
   if (QUEUE.length === 0) {
-      applyWasabyState(controlNode);
+      applyWasabyState(controlNode, pNode);
       return;
   }
   // @ts-ignore
@@ -378,57 +379,63 @@ function rerenderWasaby() {
   }
 }
 
-// var Slr = new Serializer();
-
-export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentVNode?: any) {
-  const controlNode = createNode(
-    vNode.controlClass,
-    {
-      attributes: vNode.controlAttributes,
-      events: vNode.controlEvents,
-      internal: vNode.controlInternalProperties,
-      user: vNode.controlProperties
-    },
-    vNode.key,
-    environment,
-    vNode.parentNode,
-    vNode.serialized,
-    vNode
-  );
+export function createWasabyControlInstance(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode, parentVNode) {
+  let controlNode;
+  let carrier;
   let setHookFunction;
   let setEventFunction;
   let controlNodeEventRef;
   let controlNodeRef;
-  let carrier;
-
-  if (!controlNode.compound) {
-    if (!controlNode.control._mounted && !controlNode.control._unmounted) {
-      const control = controlNode.control;
-      const rstate = controlNode.key ? findTopConfig(controlNode.key) : '';
-      if (control._beforeMountLimited) {
-        carrier = getStateReadyOrCall(rstate, control, vNode, {});
-      }
-      if (carrier) {
-        controlNode.receivedState = carrier;
-      }
-      if (controlNode.control.saveOptions) {
-        controlNode.control.saveOptions(controlNode.options, controlNode);
-      }
-      else {
-      /**
-        * Поддержка для совместимости версий контролов
-       */
-        controlNode.control._options = controlNode.options;
-        controlNode.control._container = controlNode.element;
-        controlNode.control._setInternalOptions(vNode.controlInternalProperties || {});
+  if (vNode && !vNode.instance) {
+    controlNode = createNode(vNode.controlClass, {
+      attributes: vNode.controlAttributes,
+      events: vNode.controlEvents,
+      internal: vNode.controlInternalProperties,
+      user: vNode.controlProperties
+    }, vNode.key, environment, vNode.parentNode, vNode.serialized, vNode);
+    if (!controlNode.compound) {
+      if (!controlNode.control._mounted && !controlNode.control._unmounted) {
+        const control = controlNode.control;
+        const rstate = controlNode.key ? findTopConfig(controlNode.key) : '';
+        if (control._beforeMountLimited) {
+            carrier = getStateReadyOrCall(rstate, control, vNode, {});
+        }
+        if (carrier) {
+            controlNode.receivedState = carrier;
+        }
+        if (controlNode.control.saveOptions) {
+            controlNode.control.saveOptions(controlNode.options, controlNode);
+        }
+        else {
+            /**
+              * Поддержка для совместимости версий контролов
+             */
+            controlNode.control._options = controlNode.options;
+            controlNode.control._container = controlNode.element;
+            controlNode.control._setInternalOptions(vNode.controlInternalProperties || {});
+        }
       }
     }
+  } else {
+    controlNode = vNode.instance;
   }
-  // @ts-ignore
-  controlNode.markup = getDecoratedMarkup(controlNode, isRootStart);
-  if (controlNode.markup && controlNode.markup.type && controlNode.markup.type === 'invisible-node') {
+  if (carrier && carrier.then) {
+    controlNode.markup = createVNode(getFlagsForElementVnode('span'), 'span', {}, [], 0, controlNode.attributes, controlNode.key);
+    vNode.instance = controlNode;
+    vNode.instance.parentDOM = parentDOM;
+    vNode.carrier = carrier;
+  } else {
+    controlNode.markup = getDecoratedMarkup(controlNode, isRootStart);
+    if (controlNode.markup && controlNode.markup.type && controlNode.markup.type === 'invisible-node') {
       // @ts-ignore
       setHookFunction = Hooks.setControlNodeHook(controlNode);
+      if (controlNode.markup.ref && parentVNode.ref) {
+          const cnmRef = controlNode.markup.ref; 
+          controlNode.markup.ref = function (domNode) {
+              cnmRef(domNode);
+              parentVNode.ref(domNode);
+          }
+      }
       controlNodeRef = setHookFunction(controlNode.markup.type, controlNode.markup.props, controlNode.markup.children, controlNode.key, controlNode, parentVNode.ref || controlNode.markup.ref);
       parentVNode.ref = controlNodeRef[4];
       // @ts-ignore
@@ -436,39 +443,52 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG:
       controlNodeEventRef = setEventFunction(controlNode.markup.type, {
           attributes: vNode.controlAttributes,
           events: (controlNode.markup.hprops && controlNode.markup.hprops.events) || vNode.controlEvents
-      }, controlNode.markup.children, controlNode.key, controlNode, parentVNode.ref)
+      }, controlNode.markup.children, controlNode.key, controlNode, parentVNode.ref);
       parentVNode.ref = controlNodeEventRef[4];
       controlNode.fullMarkup = controlNode.markup;
       vNode.instance = controlNode;
       vNode.instance.parentDOM = parentDOM;
       vNode.ref = parentVNode.ref;
-      mountRef(parentVNode.ref, parentVNode.dom, lifecycle);
-  } else {
+      mountRef(parentVNode.ref, parentVNode.dom || parentVNode.element || parentDOM, lifecycle);
+    } else {
       // @ts-ignore
       setHookFunction = Hooks.setControlNodeHook(controlNode);
-      controlNodeRef = setHookFunction(controlNode.markup.type, controlNode.markup.props, controlNode.markup.children, controlNode.key, controlNode, vNode.ref || controlNode.markup.ref);
+      if (controlNode.markup.ref && vNode.ref) {
+          const cnmRef = controlNode.markup.ref; 
+          controlNode.markup.ref = function (domNode) {
+              cnmRef(domNode);
+              vNode.ref(domNode);
+          }
+      }
+      controlNodeRef = setHookFunction(controlNode.markup.type, controlNode.markup.props, controlNode.markup.children, controlNode.key, controlNode, controlNode.markup.ref || vNode.ref);
       controlNode.markup.ref = controlNodeRef[4];
       // @ts-ignore
       setEventFunction = Hooks.setEventHooks(environment);
       controlNodeEventRef = setEventFunction(controlNode.markup.type, {
           attributes: vNode.controlAttributes,
           events: (controlNode.markup.hprops && controlNode.markup.hprops.events) || vNode.controlEvents
-      }, controlNode.markup.children, controlNode.key, controlNode, controlNode.markup.ref)
+      }, controlNode.markup.children, controlNode.key, controlNode, controlNode.markup.ref);
       vNode.instance = controlNode;
-      vNode.instance.markup.fullMarkup = controlNode.markup;
-      vNode.instance.markup = controlNode.markup;
       vNode.instance.parentDOM = parentDOM;
       vNode.instance.markup.ref = controlNodeEventRef[4];
+    }
   }
-  lifecycle.push(mountWasabyCallback(vNode.instance));
-  if (vNode.instance.control && vNode.instance.control._forceUpdate) {
-      vNode.instance.control._forceUpdate = function () {
+  return vNode;
+}
+
+// var Slr = new Serializer();
+
+export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentVNode?: any) {
+  const VirtualNode = createWasabyControlInstance(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, undefined, parentVNode);
+  lifecycle.push(mountWasabyCallback(VirtualNode.instance));
+  if (VirtualNode.instance.control && VirtualNode.instance.control._forceUpdate) {
+      VirtualNode.instance.control._forceUpdate = function () {
           // @ts-ignore
-          queueWasabyControlChanges(vNode.instance);
-      }
+          queueWasabyControlChanges(VirtualNode.instance);
+      };
   }
-  if (vNode.compound || (vNode.instance.markup && vNode.instance.markup.type !== 'invisible-node')) {
-    mount(vNode.instance.markup, parentDOM, {}, isSVG, nextNode, lifecycle, isRootStart, environment, vNode.instance);
+  if (VirtualNode.compound || (VirtualNode.instance.markup && VirtualNode.instance.markup.type !== 'invisible-node')) {
+      mount(VirtualNode.instance.markup, parentDOM, {}, isSVG, nextNode, lifecycle, isRootStart, environment, VirtualNode.instance);
   }
 }
 
@@ -478,18 +498,23 @@ export function getMarkupForTemplatedNode(vNode) {
   : vNode.template(vNode.controlProperties, vNode.attributes, vNode.context, true);
 }
 
-// @ts-ignore
-function mountWasabyTemplateNode(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode) {
+export function createWasabyTemplateNode(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode) {
   vNode.markup = getMarkupForTemplatedNode(vNode);
   vNode.markup.forEach(function (node) {
       if (node.hprops) {
           // @ts-ignore
           const setEventFunction = Hooks.setEventHooks(environment);
-          const templateNodeEventRef = setEventFunction(node.type, node.hprops, node.children, node.key, parentControlNode, node.ref)
+          const templateNodeEventRef = setEventFunction(node.type, node.hprops, node.children, node.key, parentControlNode, node.ref);
           node.ref = templateNodeEventRef[4];
-           }
+      }
   });
-  mountArrayChildren(vNode.markup, parentDOM, {}, isSVG, nextNode, lifecycle, environment, parentControlNode);
+  return vNode;
+}
+
+// @ts-ignore
+function mountWasabyTemplateNode(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode) {
+  const yVNode = createWasabyTemplateNode(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentControlNode);
+  mountArrayChildren(yVNode.markup, parentDOM, {}, isSVG, nextNode, lifecycle, environment, parentControlNode);
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {

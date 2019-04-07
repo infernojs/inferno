@@ -48,6 +48,7 @@
 		"prefer-for-of": false,
 		"quotemark": false,
 		"trailing-comma": [true],
-		"variable-name": false
+		"variable-name": false,
+		"no-shadowed-variable": false
 	}
 }

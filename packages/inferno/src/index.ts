@@ -12,12 +12,22 @@ import {
 } from './core/implementation';
 import { linkEvent } from './DOM/events/linkEvent';
 import { createRenderer, render, __render } from './DOM/rendering';
-import { EMPTY_OBJ, findDOMfromVNode, Fragment, options } from './DOM/utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, Fragment, options, callAll } from './DOM/utils/common';
 import { Component, ComponentType, rerender } from './core/component';
 import { mountProps, patchStyle } from './DOM/props';
 
 import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
-import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountText } from './DOM/mounting';
+import { 
+  mount, 
+  mountClassComponentCallbacks, 
+  mountElement, 
+  mountFunctionalComponentCallbacks, 
+  mountText, 
+  createWasabyControlInstance,
+  mountWasabyCallback,
+  createWasabyTemplateNode,
+  queueWasabyControlChanges
+} from './DOM/mounting';
 import { createRef, forwardRef, mountRef } from './core/refs';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -72,5 +82,10 @@ export {
   mountText as _MT,
   mountProps as _MP,
   __render,
-  patchStyle as _PS
+  patchStyle as _PS,
+  createWasabyControlInstance as _CWCI,
+  mountWasabyCallback as _MWWC,
+  createWasabyTemplateNode as _CWTN,
+  queueWasabyControlChanges as _queueWasabyControlChanges,
+  callAll as _callAll
 };

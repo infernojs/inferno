@@ -63,6 +63,9 @@ export function findDOMfromVNode(vNode: VNode, start: boolean) {
       vNode = vNode.childFlags === ChildFlags.HasVNodeChildren ? (children as VNode) : (children as VNode[])[start ? 0 : children.length - 1];
     } else if (flags & VNodeFlags.ComponentClass) {
       vNode = (children as any).$LI;
+    } else if (flags & VNodeFlags.WasabyControl) {
+      // @ts-ignore
+      return vNode.instance.element;
     } else {
       vNode = children;
     }
