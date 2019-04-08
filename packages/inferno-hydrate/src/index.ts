@@ -57,13 +57,13 @@ function hydrateWasabyControl(vNode, parentDOM, currentDom, context, isSVG, life
   if (yVNode.carrier && yVNode.carrier.then) {
       if (yVNode.instance.control && yVNode.instance.control._forceUpdate) {
          yVNode.instance.control._forceUpdate = function (memo) {
-              var lifecycle = [];
+              const lifecycle = [];
               if (memo === 'hydrate') {
                   hydrateVNode(yVNode, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart, environment, yVNode.instance);
                   // @ts-ignore
                   lifecycle.push(_MWWC(yVNode.instance));
                   if (lifecycle.length > 0) {
-                      var listener;
+                      let listener;
                       while ((listener = lifecycle.shift()) !== undefined) {
                         listener();
                       }

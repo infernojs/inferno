@@ -370,7 +370,7 @@ function applyWasabyState(component, pNode?) {
     callAll(lifecycle);
   }
   // @ts-ignore
-  var ind = QUEUE.indexOf(component);
+  const ind = QUEUE.indexOf(component);
   QUEUE.splice(ind, 1);
 }
 // @ts-ignore
@@ -402,7 +402,7 @@ function setWasabyControlNodeHooks(controlNode, vNode, parentVNode, isRootStart,
     // @ts-ignore
     setHookFunction = Hooks.setControlNodeHook(controlNode);
     if (controlNode.markup.ref && parentVNode.ref) {
-       let cnmRef = controlNode.markup.ref;
+       const cnmRef = controlNode.markup.ref;
        controlNode.markup.ref = function (domNode) {
           cnmRef(domNode);
           parentVNode.ref(domNode);
@@ -427,7 +427,7 @@ function setWasabyControlNodeHooks(controlNode, vNode, parentVNode, isRootStart,
     // @ts-ignore
     setHookFunction = Hooks.setControlNodeHook(controlNode);
     if (controlNode.markup.ref && vNode.ref) {
-       let cnmRef = controlNode.markup.ref;
+       const cnmRef = controlNode.markup.ref;
        controlNode.markup.ref = function (domNode) {
           cnmRef(domNode);
           vNode.ref(domNode);
@@ -549,7 +549,7 @@ export function createWasabyControlInstance(vNode, parentDOM, isSVG, nextNode, l
 // var Slr = new Serializer();
 
 export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], isRootStart?: boolean, environment?: any, parentVNode?: any) {
-  let VirtualNode = createWasabyControlInstance(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, parentVNode);
+  let VirtualNode = createWasabyControlInstance(vNode, parentDOM, isSVG, nextNode, lifecycle, isRootStart, environment, undefined, parentVNode);
   if (VirtualNode.carrier && VirtualNode.carrier.then) {
      if (VirtualNode.instance.control && VirtualNode.instance.control._forceUpdate) {
         VirtualNode.instance.control._forceUpdate = function (memo) {
