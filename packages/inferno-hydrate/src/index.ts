@@ -69,7 +69,7 @@ function hydrateWasabyControl(vNode, parentDOM, currentDom, context, isSVG, life
                       }
                   }
               } else {
-                  _queueWasabyControlChanges(vNode.instance);
+                  _queueWasabyControlChanges(vNode.instance, currentNode);
               }
            };
        }
@@ -84,7 +84,7 @@ function hydrateWasabyControl(vNode, parentDOM, currentDom, context, isSVG, life
       if (yVNode.instance.control && yVNode.instance.control._forceUpdate) {
          yVNode.instance.control._forceUpdate = function () {
               nextTickWasaby(function () {
-                 _queueWasabyControlChanges(yVNode.instance);
+                 _queueWasabyControlChanges(yVNode.instance, yVNode.instance.parentDOM);
               });
           };
       }

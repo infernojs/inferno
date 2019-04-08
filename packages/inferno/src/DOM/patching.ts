@@ -79,7 +79,7 @@ export function patch(
      }
   
       // Last vNode is not in use, it has crashed at application level. Just mount nextVNode and ignore last one
-      mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, parentControlNode, parentVNode);
+      mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, false, environment, parentControlNode, parentVNode);
     }
   } else if (nextFlags & VNodeFlags.Element) {
     patchElement(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle, environment, parentControlNode);

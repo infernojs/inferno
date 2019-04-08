@@ -349,10 +349,11 @@ function updateWasabyControl(controlNode, parentDOM, lifecycle) {
   if (shouldUp) {
       // @ts-ignore
       const nextInput = getDecoratedMarkup(controlNode, false);
+      const controlElement = (nextInput.instance && nextInput.instance.markup.dom);
       // nextVNode.instance = controlNode;
       nextInput.ref = controlNode.markup.ref;
       // @ts-ignore
-      patch(controlNode.markup, nextInput, parentDOM, {}, false, controlNode, lifecycle, controlNode.environment, controlNode);
+      patch(controlNode.markup, nextInput, parentDOM, {}, false, controlElement, lifecycle, controlNode.environment, controlNode);
       controlNode.markup = nextInput;
       controlNode.fullMarkup = controlNode.markup;
       lifecycle.push(mountWasabyCallback(controlNode));
@@ -361,7 +362,8 @@ function updateWasabyControl(controlNode, parentDOM, lifecycle) {
 
 function applyWasabyState(component, pNode?) {
   const lifecycle = [];
-  updateWasabyControl(component, (component.control._container && (component.control._container[0] || component.control._container) ) || pNode, lifecycle);
+  const controlContainer = (component.control._container && (component.control._container[0] || component.control._container));
+  updateWasabyControl(component, pNode || controlContainer, lifecycle);
   // @ts-ignore
   if (QUEUE.indexOf(component) === -1 && QUEUE.push(component) === 1) {
     nextTickWasaby(rerenderWasaby);
@@ -567,7 +569,9 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG:
                  }
               }
            } else {
-              queueWasabyControlChanges(VirtualNode.instance);
+             nextTickWasaby(function () {
+               queueWasabyControlChanges(VirtualNode.instance, VirtualNode.instance.parentDOM);
+             });
            }
         };
         VirtualNode.carrier.then(function (data) {
@@ -579,14 +583,15 @@ export function mountWasabyControl(vNode: any, parentDOM: Element | null, isSVG:
         });
      }
   } else {
+     const isInvisibleNode = VirtualNode.instance.markup && VirtualNode.instance.markup.type !== 'invisible-node';
      if (VirtualNode.instance.control && VirtualNode.instance.control._forceUpdate) {
         VirtualNode.instance.control._forceUpdate = function () {
            // @ts-ignore
            queueWasabyControlChanges(VirtualNode.instance);
         };
      }
-     if (VirtualNode.compound || (VirtualNode.instance.markup && VirtualNode.instance.markup.type !== 'invisible-node')) {
-        mount(VirtualNode.instance.markup, parentDOM, {}, isSVG, nextNode, lifecycle, isRootStart, environment, VirtualNode.instance);
+     if (VirtualNode.compound || isInvisibleNode) {
+        mount(VirtualNode.instance.markup, parentDOM, {}, isSVG, VirtualNode.instance.markup.dom, lifecycle, isRootStart, environment, VirtualNode.instance);
      }
   }
 
