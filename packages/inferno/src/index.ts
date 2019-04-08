@@ -18,7 +18,7 @@ import { mountProps, patchStyle } from './DOM/props';
 
 import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
 import { 
-  mount, 
+  mount,
   mountClassComponentCallbacks, 
   mountElement, 
   mountFunctionalComponentCallbacks, 
@@ -29,6 +29,7 @@ import {
   queueWasabyControlChanges
 } from './DOM/mounting';
 import { createRef, forwardRef, mountRef } from './core/refs';
+import { nextTickWasaby } from './wasaby/control';
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
@@ -87,5 +88,6 @@ export {
   mountWasabyCallback as _MWWC,
   createWasabyTemplateNode as _CWTN,
   queueWasabyControlChanges as _queueWasabyControlChanges,
-  callAll as _callAll
+  callAll as _callAll,
+  nextTickWasaby
 };

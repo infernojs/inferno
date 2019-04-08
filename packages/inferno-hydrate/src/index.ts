@@ -1,6 +1,6 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning, unescape } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode, _CI, _HI, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render, _PS, _CWCI, _queueWasabyControlChanges, _MWWC, _CWTN} from 'inferno';
+import { VNode, _CI, _HI, _MT, _M, _MCCC, _ME, _MFCC, _MR, _MP, render, _PS, _CWCI, _queueWasabyControlChanges, _MWWC, _CWTN, nextTickWasaby} from 'inferno';
 
 function checkIfHydrationNeeded(sibling: Node | Element | null): boolean {
   // @ts-ignore
@@ -51,19 +51,21 @@ function isSamePropsInnerHTML(dom: Element, props): boolean {
 }
 
 function hydrateWasabyControl(vNode, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart, environment, parentControlNode, parentVNode) {
-  const yVNode = _CWCI(vNode, parentDOM, isSVG, {}, lifecycle, isRootStart, environment, parentControlNode, parentVNode);
+  const yVNode = _CWCI(vNode, parentDOM, isSVG, {}, lifecycle, isRootStart, environment, parentControlNode, parentVNode, true);
   const input = yVNode.instance.markup;
-  if (vNode.carrier && vNode.carrier.then) {
-      if (vNode.instance.control && vNode.instance.control._forceUpdate) {
-          vNode.instance.control._forceUpdate = function (memo) {
-              // @ts-ignore
-              const lifecycle = [];
+  let currentNode = parentDOM;
+  if (yVNode.carrier && yVNode.carrier.then) {
+      if (yVNode.instance.control && yVNode.instance.control._forceUpdate) {
+         yVNode.instance.control._forceUpdate = function (memo) {
+              var lifecycle = [];
               if (memo === 'hydrate') {
-                  hydrateVNode(vNode, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart, environment, vNode.instance)
+                  hydrateVNode(yVNode, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart, environment, yVNode.instance);
+                  // @ts-ignore
+                  lifecycle.push(_MWWC(yVNode.instance));
                   if (lifecycle.length > 0) {
-                      let listener;
+                      var listener;
                       while ((listener = lifecycle.shift()) !== undefined) {
-                          listener();
+                        listener();
                       }
                   }
               } else {
@@ -71,25 +73,26 @@ function hydrateWasabyControl(vNode, parentDOM, currentDom, context, isSVG, life
               }
            };
        }
-      vNode.carrier.then(function (data) {
-          vNode.instance.receivedState = data;
-          vNode.carrier = undefined;
-          vNode.instance.control._forceUpdate('hydrate');
-          
+     yVNode.carrier.then(function (data) {
+        yVNode.instance.receivedState = data;
+        yVNode.carrier = undefined;
+        yVNode.instance.control._forceUpdate('hydrate');
       }, function (error) {
-          console.log("Hydrate error: ", error, vNode.instance.control._moduleName);
+          console.log("Hydrate error: ", error, yVNode.instance.control._moduleName);
       });
   } else {
-      if (vNode.instance.control && vNode.instance.control._forceUpdate) {
-          vNode.instance.control._forceUpdate = function () {
-              // @ts-ignore
-              _queueWasabyControlChanges(vNode.instance);
+      if (yVNode.instance.control && yVNode.instance.control._forceUpdate) {
+         yVNode.instance.control._forceUpdate = function () {
+              nextTickWasaby(function () {
+                 _queueWasabyControlChanges(yVNode.instance);
+              });
           };
       }
-  }
 
-  const currentNode = hydrateVNode(input, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart, environment, yVNode.instance);
-  lifecycle.push(_MWWC(yVNode.instance));
+
+      currentNode = hydrateVNode(input, parentDOM, currentDom, context, isSVG, lifecycle, isRootStart, environment, yVNode.instance);
+      lifecycle.push(_MWWC(yVNode.instance));
+  }
   return currentNode;
 }
 
@@ -169,7 +172,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
         const child = (children as VNode[])[i];
 
         if (isNull(currentNode) || (prevVNodeIsTextNode && (child.flags & VNodeFlags.Text) > 0)) {
-          _M(child as VNode, parentNode, context, isSVG, currentNode, lifecycle);
+          _M(child as VNode, parentNode, context, isSVG, currentNode, lifecycle, false, environment, parentControlNode, parentVNode);
         } else {
           if (!isIgnoredNode(currentNode)) {
             currentNode = hydrateVNode(child as VNode, parentNode, currentNode as Element, context, isSVG, lifecycle, false, environment, parentControlNode, parentVNode);
