@@ -30,15 +30,15 @@ export const forwardRef =
       };
 
 export function pushRef(dom: Element | null, ref, lifecycle: Function[]) {
-  lifecycle.push(() => {
-    if (ref) {
+  if (ref) {
+    lifecycle.push(() => {
       if (isFunction(ref)) {
         ref(dom);
       } else if (ref.current !== void 0) {
         ref.current = dom;
       }
-    }
-  });
+    });
+  }
 }
 
 export function unmountRef(ref) {
