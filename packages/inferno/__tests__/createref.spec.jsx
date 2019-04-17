@@ -261,4 +261,66 @@ describe('createRef', () => {
     expect(instance.functionalOLD.current).toBe(null);
     expect(instance.functionalNEW.current).toBe(null);
   });
+
+  it('Should change ref to the selected element in a list', () => {
+    const TOTAL_CHILDREN = 5;
+    let setSelected;
+    class Parent extends Component {
+      constructor() {
+        super();
+        setSelected = this._setSelected = this._setSelected.bind(this);
+
+        this.selectedRef = createRef();
+        this.state = {
+          selected: 1
+        };
+      }
+
+      componentDidMount() {
+        expect(this.selectedRef.current).toBe(container.querySelector('#child' + this.state.selected));
+      }
+
+      componentDidUpdate() {
+        expect(this.selectedRef.current).toBe(container.querySelector('#child' + this.state.selected));
+      }
+
+      render() {
+        const children = [];
+        for(let i = 0; i < TOTAL_CHILDREN; i++) {
+          const selected = this.state.selected === i ? this.selectedRef : null;
+          children.push(<div key={i} id={'child' + i} ref={selected} />);
+        }
+
+        return (
+          <div id="parent">
+            {children}
+          </div>
+        );
+      }
+
+      _setSelected(selected) {
+        this.setState({
+          selected
+        });
+      }
+    }
+
+    render(<Parent/>, container);
+
+    setSelected(2);
+
+    rerender();
+
+    setSelected(3);
+
+    rerender();
+
+    setSelected(2);
+
+    rerender();
+
+    setSelected(1);
+
+    rerender();
+  });
 });

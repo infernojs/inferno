@@ -29,10 +29,16 @@ export const forwardRef =
         };
       };
 
-export function pushRef(dom: Element | null, value: Function, lifecycle: Function[]) {
-  lifecycle.push(() => {
-    value(dom);
-  });
+export function pushRef(dom: Element | null, ref, lifecycle: Function[]) {
+  if (ref) {
+    lifecycle.push(() => {
+      if (isFunction(ref)) {
+        ref(dom);
+      } else if (ref.current !== void 0) {
+        ref.current = dom;
+      }
+    });
+  }
 }
 
 export function unmountRef(ref) {
@@ -46,11 +52,7 @@ export function unmountRef(ref) {
 }
 
 export function mountRef(ref, value, lifecycle: Function[]) {
-  if (ref) {
-    if (isFunction(ref)) {
-      pushRef(value, ref, lifecycle);
-    } else if (ref.current !== void 0) {
-      ref.current = value;
-    }
+  if (ref && (isFunction(ref) || ref.current !== void 0)) {
+    pushRef(value, ref, lifecycle);
   }
 }
