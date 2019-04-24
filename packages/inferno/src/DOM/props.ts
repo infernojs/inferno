@@ -82,6 +82,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
     case 'key':
     case 'multiple':
     case 'ref':
+    case 'selectedIndex':
       break;
     case 'autoFocus':
       (dom as any).autofocus = !!nextValue;
