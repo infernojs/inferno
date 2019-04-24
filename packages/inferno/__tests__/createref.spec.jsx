@@ -286,16 +286,12 @@ describe('createRef', () => {
 
       render() {
         const children = [];
-        for(let i = 0; i < TOTAL_CHILDREN; i++) {
+        for (let i = 0; i < TOTAL_CHILDREN; i++) {
           const selected = this.state.selected === i ? this.selectedRef : null;
           children.push(<div key={i} id={'child' + i} ref={selected} />);
         }
 
-        return (
-          <div id="parent">
-            {children}
-          </div>
-        );
+        return <div id="parent">{children}</div>;
       }
 
       _setSelected(selected) {
@@ -305,7 +301,7 @@ describe('createRef', () => {
       }
     }
 
-    render(<Parent/>, container);
+    render(<Parent />, container);
 
     setSelected(2);
 

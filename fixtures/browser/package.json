@@ -14,15 +14,15 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "7.4.0",
+    "@babel/core": "7.4.3",
     "@babel/helper-replace-supers": "7.4.0",
     "@babel/plugin-proposal-class-properties": "7.4.0",
     "@babel/plugin-proposal-decorators": "7.4.0",
-    "@babel/plugin-proposal-object-rest-spread": "7.4.0",
-    "@babel/preset-env": "7.4.2",
+    "@babel/plugin-proposal-object-rest-spread": "7.4.3",
+    "@babel/preset-env": "7.4.3",
     "babel-loader": "^8.0.5",
-    "jasmine-core": "^3.3.0",
-    "karma": "^4.0.1",
+    "jasmine-core": "^3.4.0",
+    "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-detect-browsers": "^2.3.3",
     "karma-edge-launcher": "^0.4.2",
@@ -32,8 +32,8 @@
     "karma-jasmine": "^2.0.1",
     "karma-sauce-launcher": "^1",
     "karma-webpack": "4.0.0-rc.5",
-    "ts-loader": "^5.3.3",
-    "wd": "^1.11.1",
-    "webpack": "^4.29.6"
+    "ts-loader": "^5.4.3",
+    "wd": "^1.11.2",
+    "webpack": "^4.30.0"
   }
 }

@@ -29,18 +29,6 @@ export const forwardRef =
         };
       };
 
-export function pushRef(dom: Element | null, ref, lifecycle: Function[]) {
-  if (ref) {
-    lifecycle.push(() => {
-      if (isFunction(ref)) {
-        ref(dom);
-      } else if (ref.current !== void 0) {
-        ref.current = dom;
-      }
-    });
-  }
-}
-
 export function unmountRef(ref) {
   if (ref) {
     if (isFunction(ref)) {
@@ -53,6 +41,12 @@ export function unmountRef(ref) {
 
 export function mountRef(ref, value, lifecycle: Function[]) {
   if (ref && (isFunction(ref) || ref.current !== void 0)) {
-    pushRef(value, ref, lifecycle);
+    lifecycle.push(() => {
+      if (isFunction(ref)) {
+        ref(value);
+      } else if (ref.current !== void 0) {
+        ref.current = value;
+      }
+    });
   }
 }
