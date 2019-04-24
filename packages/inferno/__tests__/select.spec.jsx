@@ -90,4 +90,20 @@ describe('Select selectedIndex', () => {
     expect(select.selectedIndex).toBe(3);
     expect(select.value).toBe('3');
   });
+
+  it('Should not render attribute selectedIndex', () => {
+    render(
+      <select selectedIndex={-1}>
+        <option value="0">Leonardo</option>
+        <option value="1">Donatello</option>
+        <option value="2">Rafael</option>
+        <option value="3">Michelangelo</option>
+        <option value="4">Splinter</option>
+      </select>,
+      container
+    );
+
+    const select = container.firstElementChild;
+    expect(select.getAttribute('selectedIndex')).toBe(null);
+  });
 });
