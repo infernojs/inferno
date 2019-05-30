@@ -429,7 +429,7 @@ export function createDevToolsBridge() {
     }
     const type = evt.data.payload.type;
 
-    if (type === 'resume') {
+    if (type === 'resume' || (type === 'callback' && !isActive)) {
       isActive = true;
       findRoots(roots);
     } else if (type === 'pause') {

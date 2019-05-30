@@ -166,11 +166,15 @@ describe('Forward Ref', () => {
 
   it('Should be possible to extent forwardRef object', () => {
     const objRef = createRef();
-    const RefComponent = forwardRef((props, ref) => <div ref={ref} {...props}>1</div>);
+    const RefComponent = forwardRef((props, ref) => (
+      <div ref={ref} {...props}>
+        1
+      </div>
+    ));
 
     RefComponent.staticMember = 'asd';
 
-    render(<RefComponent ref={objRef}/>, container);
+    render(<RefComponent ref={objRef} />, container);
 
     expect(container.innerHTML).toBe('<div>1</div>');
     expect(objRef.current.outerHTML).toBe('<div>1</div>');
