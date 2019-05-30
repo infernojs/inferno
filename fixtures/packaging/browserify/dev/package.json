@@ -2,7 +2,7 @@
   "name": "browserify-dev-test",
   "private": true,
   "dependencies": {
-    "browserify": "^16.2.2"
+    "browserify": "^16.2.3"
   },
   "scripts": {
     "build": "rm -f output.js && NODE_PATH=../../../../packages browserify ./input.js -o output.js"

@@ -9,7 +9,7 @@ const customLaunchers = {
   slIphone5: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    version: '9.3'
+    version: '10.3'
   },
   slSafari8: {
     base: 'SauceLabs',
@@ -26,12 +26,6 @@ const customLaunchers = {
     browserName: 'firefox',
     platform: 'OS X 10.12'
   },
-  // Saucelabs launcher and webdriver are not compatible with Safari 12, uncomment when its fixed in the upstream
-  // sl_safari: {
-  //   base: 'SauceLabs',
-  //   browserName: 'safari',
-  //   version: 'latest'
-  // },
   slIE10: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
