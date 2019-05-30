@@ -1,6 +1,6 @@
 {
   "name": "inferno-extras",
-  "version": "7.1.12",
+  "version": "7.1.13",
   "license": "MIT",
   "description": "Collection of utilities for InfernoJS",
   "author": {
@@ -34,9 +34,9 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "7.1.12"
+    "inferno": "7.1.13"
   },
   "devDependencies": {
-    "inferno-vnode-flags": "7.1.12"
+    "inferno-vnode-flags": "7.1.13"
   }
 }
