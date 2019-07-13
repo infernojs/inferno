@@ -14,16 +14,16 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "7.4.5",
+    "@babel/core": "7.5.4",
     "@babel/helper-replace-supers": "7.4.4",
-    "@babel/plugin-proposal-class-properties": "7.4.4",
+    "@babel/plugin-proposal-class-properties": "7.5.0",
     "@babel/plugin-proposal-decorators": "7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "7.4.4",
-    "@babel/preset-env": "7.4.5",
+    "@babel/plugin-proposal-object-rest-spread": "7.5.4",
+    "@babel/preset-env": "7.5.4",
     "babel-loader": "^8.0.6",
     "jasmine-core": "^3.4.0",
-    "karma": "^4.1.0",
-    "karma-chrome-launcher": "^2.2.0",
+    "karma": "^4.2.0",
+    "karma-chrome-launcher": "^3.0.0",
     "karma-detect-browsers": "^2.3.3",
     "karma-edge-launcher": "^0.4.2",
     "karma-firefox-launcher": "^1.1.0",
@@ -31,9 +31,9 @@
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^2.0.1",
     "karma-sauce-launcher": "^1",
-    "karma-webpack": "4.0.0-rc.5",
-    "ts-loader": "^6.0.1",
+    "karma-webpack": "4.0.2",
+    "ts-loader": "^6.0.4",
     "wd": "^1.11.2",
-    "webpack": "^4.32.2"
+    "webpack": "^4.35.3"
   }
 }

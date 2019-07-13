@@ -87,32 +87,33 @@ describe('Github #1236', () => {
       return desc;
     }
     var _desc, _value, _class, _descriptor;
-    var SearchStore = ((_class = (function() {
-      function SearchStore() {
-        _classCallCheck(this, SearchStore);
+    var SearchStore =
+      ((_class = (function() {
+        function SearchStore() {
+          _classCallCheck(this, SearchStore);
 
-        _initDefineProp(this, 'query', _descriptor, this);
-      }
-
-      _createClass(SearchStore, [
-        {
-          key: 'doSearch',
-          value: function doSearch(search) {
-            this.query = search;
-          }
+          _initDefineProp(this, 'query', _descriptor, this);
         }
-      ]);
 
-      return SearchStore;
-    })()),
-    ((_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
-      enumerable: true,
-      initializer: function initializer() {
-        return undefined;
-      }
-    })),
-    _applyDecoratedDescriptor(_class.prototype, 'doSearch', [action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)),
-    _class);
+        _createClass(SearchStore, [
+          {
+            key: 'doSearch',
+            value: function doSearch(search) {
+              this.query = search;
+            }
+          }
+        ]);
+
+        return SearchStore;
+      })()),
+      ((_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
+        enumerable: true,
+        initializer: function initializer() {
+          return undefined;
+        }
+      })),
+      _applyDecoratedDescriptor(_class.prototype, 'doSearch', [action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)),
+      _class);
 
     let SearchPage = observer(
       class SearchPage extends Component {
