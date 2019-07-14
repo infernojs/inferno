@@ -4,11 +4,10 @@ export function attachEvent(dom, event, handler) {
   const previousKey = `$${event}`;
   const previousArgs = dom[previousKey];
 
-  if (previousArgs && previousArgs[1].wrapped) {
-    return;
-  }
-
   if (previousArgs) {
+    if (previousArgs[1].wrapped) {
+      return;
+    }
     dom.removeEventListener.apply(dom, previousArgs);
     dom[previousKey] = null;
   }
