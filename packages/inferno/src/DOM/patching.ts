@@ -161,14 +161,13 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Fun
 }
 
 export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[]) {
-  const dom = lastVNode.dom as Element;
+  const dom = (nextVNode.dom = lastVNode.dom as Element);
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
   let isFormElement = false;
   let hasControlledValue = false;
   let nextPropsOrEmpty;
 
-  nextVNode.dom = dom;
   isSVG = isSVG || (nextFlags & VNodeFlags.SvgElement) > 0;
 
   // inlined patchProps  -- starts --
@@ -475,13 +474,11 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
 
 function patchText(lastVNode: VNode, nextVNode: VNode) {
   const nextText = nextVNode.children as string;
-  const dom = lastVNode.dom;
+  const dom = (nextVNode.dom = lastVNode.dom);
 
   if (nextText !== lastVNode.children) {
     (dom as Element).nodeValue = nextText;
   }
-
-  nextVNode.dom = dom;
 }
 
 function patchNonKeyedChildren(
