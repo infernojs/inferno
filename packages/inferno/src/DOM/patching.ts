@@ -607,7 +607,6 @@ function patchKeyedChildren(
     const aLeft: number = aEnd - j + 1;
     const bLeft: number = bEnd - j + 1;
     const sources = new Int32Array(bLeft - i + 1);
-    i = bLeft + 2;
     // Keep track if its possible to remove whole DOM using textContent = '';
     let canRemoveWholeContent: boolean = aLeft === aLength;
     let moved: boolean = false;
@@ -788,16 +787,15 @@ function lis_algorithm(arr: Int32Array): Int32Array {
     }
   }
 
-  u = i = k + 1;
+  u = k + 1;
   const seq = new Int32Array(u);
   v = result[u - 1];
 
   while (u-- > 0) {
     seq[u] = v;
     v = p[v];
+    result[u] = 0;
   }
-  while (i-- > 0) {
-    result[i] = 0;
-  }
+
   return seq;
 }

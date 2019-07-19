@@ -1,4 +1,4 @@
-import { combineFrom, isNull, isObject } from 'inferno-shared';
+import { combineFrom, isNull } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { InfernoNode, LinkedEvent, VNode } from './../../core/types';
 
@@ -159,8 +159,7 @@ export function isSameLinkEvent(lastValue, nextValue): boolean {
   return (
     lastValue &&
     nextValue &&
-    isObject(lastValue) &&
-    isObject(nextValue) &&
+    typeof lastValue === typeof nextValue &&
     (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
     (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
   );

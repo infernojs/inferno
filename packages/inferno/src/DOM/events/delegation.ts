@@ -54,7 +54,7 @@ export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any,
 
 function dispatchEvents(event: SemiSyntheticEvent<any>, target, isClick: boolean, name: string, eventData: IEventData) {
   let dom = target;
-  while (!isNull(dom)) {
+  do {
     // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
     // because the event listener is on document.body
     // Don't process clicks on disabled elements
@@ -80,7 +80,7 @@ function dispatchEvents(event: SemiSyntheticEvent<any>, target, isClick: boolean
       }
     }
     dom = dom.parentNode;
-  }
+  } while (!isNull(dom));
 }
 
 function stopPropagation() {

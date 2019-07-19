@@ -77,13 +77,9 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
-  const ref = vNode.ref;
   let children = vNode.children;
   const childFlags = vNode.childFlags;
-  isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  const dom = documentCreateElement(vNode.type, isSVG);
-
-  vNode.dom = dom;
+  const dom = (vNode.dom = documentCreateElement(vNode.type, (isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0)));
 
   if (!isNullOrUndef(className) && className !== '') {
     if (isSVG) {
@@ -121,11 +117,11 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    if (isString(ref)) {
+    if (isString(vNode.ref)) {
       throwError('string "refs" are not supported in Inferno 1.0. Use callback ref or Inferno.createRef() API instead.');
     }
   }
-  mountRef(ref, dom, lifecycle);
+  mountRef(vNode.ref, dom, lifecycle);
 }
 
 export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {

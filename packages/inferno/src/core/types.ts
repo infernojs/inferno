@@ -132,7 +132,7 @@ export interface ForwardRef {
 }
 
 export interface Refs<P> {
-  onComponentDidMount?: (domNode: Element, nextProps: P) => void;
+  onComponentDidMount?: (domNode: Element | null, nextProps: P) => void;
 
   onComponentWillMount?(): void;
 
