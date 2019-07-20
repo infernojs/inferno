@@ -99,13 +99,17 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
 
 export function handleComponentInput(input: any): VNode {
   if (isInvalid(input)) {
-    input = createVoidVNode();
-  } else if (isStringOrNumber(input)) {
-    input = createTextVNode(input, null);
-  } else if (isArray(input)) {
-    input = createFragment(input, ChildFlags.UnknownChildren, null);
-  } else if (input.flags & VNodeFlags.InUse) {
-    input = directClone(input);
+    return createVoidVNode();
   }
+  if (isStringOrNumber(input)) {
+    return createTextVNode(input, null);
+  }
+  if (isArray(input)) {
+    return createFragment(input, ChildFlags.UnknownChildren, null);
+  }
+  if (input.flags & VNodeFlags.InUse) {
+    return directClone(input);
+  }
+
   return input;
 }

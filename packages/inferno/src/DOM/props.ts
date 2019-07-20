@@ -16,8 +16,6 @@ function createLinkEvent(linkEvent, nextValue) {
 }
 
 export function patchEvent(name: string, lastValue, nextValue, dom) {
-  const event = normalizeEventName(name);
-
   if (isObject(nextValue) && !isNull(nextValue)) {
     const linkEvent = (nextValue as LinkedEvent<any, any>).event;
 
@@ -29,10 +27,10 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
     }
 
     if (!isSameLinkEvent(lastValue, nextValue)) {
-      attachEvent(dom, event, createLinkEvent(linkEvent, nextValue));
+      attachEvent(dom, normalizeEventName(name), createLinkEvent(linkEvent, nextValue));
     }
   } else {
-    attachEvent(dom, event, nextValue);
+    attachEvent(dom, normalizeEventName(name), nextValue);
   }
 }
 

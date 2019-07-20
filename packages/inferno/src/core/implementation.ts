@@ -40,10 +40,8 @@ export function createVNode<P>(
   const childFlag: ChildFlags = childFlags === void 0 ? ChildFlags.HasInvalidChildren : (childFlags as ChildFlags);
   const vNode = new V(childFlag, children, className, flags, key, props, ref, type) as VNode;
 
-  const optsVNode = options.createVNode;
-
-  if (isFunction(optsVNode)) {
-    optsVNode(vNode);
+  if (options.createVNode) {
+    options.createVNode(vNode);
   }
 
   if (childFlag === ChildFlags.UnknownChildren) {

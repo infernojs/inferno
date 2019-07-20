@@ -1,7 +1,7 @@
 import { isFunction } from 'inferno-shared';
 
-export function attachEvent(dom, event, handler) {
-  const previousKey = `$${event}`;
+export function attachEvent(dom, eventName, handler) {
+  const previousKey = `$${eventName}`;
   const previousArgs = dom[previousKey];
 
   if (previousArgs) {
@@ -13,7 +13,7 @@ export function attachEvent(dom, event, handler) {
   }
 
   if (isFunction(handler)) {
-    dom.addEventListener(event, handler);
-    dom[previousKey] = [event, handler];
+    dom.addEventListener(eventName, handler);
+    dom[previousKey] = [eventName, handler];
   }
 }

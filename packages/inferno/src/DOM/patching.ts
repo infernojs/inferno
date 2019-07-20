@@ -534,11 +534,10 @@ function patchKeyedChildren(
   bLength: number,
   outerEdge: Element | null,
   parentVNode: VNode,
-  lifecycle
+  lifecycle: Function[]
 ) {
   let aEnd = aLength - 1;
   let bEnd = bLength - 1;
-  let i: number = 0;
   let j: number = 0;
   let aNode: VNode = a[j];
   let bNode: VNode = b[j];
@@ -602,76 +601,69 @@ function patchKeyedChildren(
       remove(a[j++], dom);
     }
   } else {
-    let aStart: number = j;
-    const bStart: number = j;
-    const aLeft: number = aEnd - j + 1;
-    const bLeft: number = bEnd - j + 1;
-    const sources = new Int32Array(bLeft - i + 1);
-    // Keep track if its possible to remove whole DOM using textContent = '';
-    let canRemoveWholeContent: boolean = aLeft === aLength;
-    let moved: boolean = false;
-    let pos: number = 0;
-    let patched: number = 0;
+    patchKeyedChildrenComplex(
+      a,
+      b,
+      context,
+      aLength,
+      bLength,
+      aEnd,
+      bEnd,
+      j,
+      dom,
+      isSVG,
+      outerEdge,
+      parentVNode,
+      lifecycle
+    );
+  }
+}
 
-    // When sizes are small, just loop them through
-    if (bLength < 4 || (aLeft | bLeft) < 32) {
-      for (i = aStart; i <= aEnd; ++i) {
-        aNode = a[i];
-        if (patched < bLeft) {
-          for (j = bStart; j <= bEnd; j++) {
-            bNode = b[j];
-            if (aNode.key === bNode.key) {
-              sources[j - bStart] = i + 1;
-              if (canRemoveWholeContent) {
-                canRemoveWholeContent = false;
-                while (aStart < i) {
-                  remove(a[aStart++], dom);
-                }
-              }
-              if (pos > j) {
-                moved = true;
-              } else {
-                pos = j;
-              }
-              if (bNode.flags & VNodeFlags.InUse) {
-                b[j] = bNode = directClone(bNode);
-              }
-              patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
-              ++patched;
-              break;
-            }
-          }
-          if (!canRemoveWholeContent && j > bEnd) {
-            remove(aNode, dom);
-          }
-        } else if (!canRemoveWholeContent) {
-          remove(aNode, dom);
-        }
-      }
-    } else {
-      const keyIndex: Record<string, number> = {};
+function patchKeyedChildrenComplex(
+  a: VNode[],
+  b: VNode[],
+  context,
+  aLength: number,
+  bLength: number,
+  aEnd,
+  bEnd,
+  j: number,
+  dom: Element,
+  isSVG: boolean,
+  outerEdge: Element | null,
+  parentVNode: VNode,
+  lifecycle: Function[]
+) {
+  let aNode: VNode = a[j];
+  let bNode: VNode = b[j];
+  let nextPos: number;
+  let i: number = 0;
+  let aStart: number = j;
+  const bStart: number = j;
+  const aLeft: number = aEnd - j + 1;
+  const bLeft: number = bEnd - j + 1;
+  const sources = new Int32Array(bLeft - i + 1);
+  // Keep track if its possible to remove whole DOM using textContent = '';
+  let canRemoveWholeContent: boolean = aLeft === aLength;
+  let moved: boolean = false;
+  let pos: number = 0;
+  let patched: number = 0;
 
-      // Map keys by their index
-      for (i = bStart; i <= bEnd; ++i) {
-        keyIndex[b[i].key as string | number] = i;
-      }
-
-      // Try to patch same keys
-      for (i = aStart; i <= aEnd; ++i) {
-        aNode = a[i];
-
-        if (patched < bLeft) {
-          j = keyIndex[aNode.key as string | number];
-
-          if (j !== void 0) {
+  // When sizes are small, just loop them through
+  if (bLength < 4 || (aLeft | bLeft) < 32) {
+    for (i = aStart; i <= aEnd; ++i) {
+      aNode = a[i];
+      if (patched < bLeft) {
+        for (j = bStart; j <= bEnd; j++) {
+          bNode = b[j];
+          if (aNode.key === bNode.key) {
+            sources[j - bStart] = i + 1;
             if (canRemoveWholeContent) {
               canRemoveWholeContent = false;
-              while (i > aStart) {
+              while (aStart < i) {
                 remove(a[aStart++], dom);
               }
             }
-            bNode = b[j];
-            sources[j - bStart] = i + 1;
             if (pos > j) {
               moved = true;
             } else {
@@ -682,53 +674,96 @@ function patchKeyedChildren(
             }
             patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
             ++patched;
-          } else if (!canRemoveWholeContent) {
-            remove(aNode, dom);
+            break;
           }
+        }
+        if (!canRemoveWholeContent && j > bEnd) {
+          remove(aNode, dom);
+        }
+      } else if (!canRemoveWholeContent) {
+        remove(aNode, dom);
+      }
+    }
+  } else {
+    const keyIndex: Record<string, number> = {};
+
+    // Map keys by their index
+    for (i = bStart; i <= bEnd; ++i) {
+      keyIndex[b[i].key as string | number] = i;
+    }
+
+    // Try to patch same keys
+    for (i = aStart; i <= aEnd; ++i) {
+      aNode = a[i];
+
+      if (patched < bLeft) {
+        j = keyIndex[aNode.key as string | number];
+
+        if (j !== void 0) {
+          if (canRemoveWholeContent) {
+            canRemoveWholeContent = false;
+            while (i > aStart) {
+              remove(a[aStart++], dom);
+            }
+          }
+          bNode = b[j];
+          sources[j - bStart] = i + 1;
+          if (pos > j) {
+            moved = true;
+          } else {
+            pos = j;
+          }
+          if (bNode.flags & VNodeFlags.InUse) {
+            b[j] = bNode = directClone(bNode);
+          }
+          patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+          ++patched;
         } else if (!canRemoveWholeContent) {
           remove(aNode, dom);
         }
+      } else if (!canRemoveWholeContent) {
+        remove(aNode, dom);
       }
     }
-    // fast-path: if nothing patched remove all old and add all new
-    if (canRemoveWholeContent) {
-      removeAllChildren(dom, parentVNode, a);
-      mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle);
-    } else if (moved) {
-      const seq = lis_algorithm(sources);
-      j = seq.length - 1;
-      for (i = bLeft - 1; i >= 0; i--) {
-        if (sources[i] === 0) {
-          pos = i + bStart;
-          bNode = b[pos];
-          if (bNode.flags & VNodeFlags.InUse) {
-            b[pos] = bNode = directClone(bNode);
-          }
-          nextPos = pos + 1;
-          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
-        } else if (j < 0 || i !== seq[j]) {
-          pos = i + bStart;
-          bNode = b[pos];
-          nextPos = pos + 1;
+  }
+  // fast-path: if nothing patched remove all old and add all new
+  if (canRemoveWholeContent) {
+    removeAllChildren(dom, parentVNode, a);
+    mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle);
+  } else if (moved) {
+    const seq = lis_algorithm(sources);
+    j = seq.length - 1;
+    for (i = bLeft - 1; i >= 0; i--) {
+      if (sources[i] === 0) {
+        pos = i + bStart;
+        bNode = b[pos];
+        if (bNode.flags & VNodeFlags.InUse) {
+          b[pos] = bNode = directClone(bNode);
+        }
+        nextPos = pos + 1;
+        mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
+      } else if (j < 0 || i !== seq[j]) {
+        pos = i + bStart;
+        bNode = b[pos];
+        nextPos = pos + 1;
 
-          moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge);
-        } else {
-          j--;
-        }
+        moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge);
+      } else {
+        j--;
       }
-    } else if (patched !== bLeft) {
-      // when patched count doesn't match b length we need to insert those new ones
-      // loop backwards so we can use insertBefore
-      for (i = bLeft - 1; i >= 0; i--) {
-        if (sources[i] === 0) {
-          pos = i + bStart;
-          bNode = b[pos];
-          if (bNode.flags & VNodeFlags.InUse) {
-            b[pos] = bNode = directClone(bNode);
-          }
-          nextPos = pos + 1;
-          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
+    }
+  } else if (patched !== bLeft) {
+    // when patched count doesn't match b length we need to insert those new ones
+    // loop backwards so we can use insertBefore
+    for (i = bLeft - 1; i >= 0; i--) {
+      if (sources[i] === 0) {
+        pos = i + bStart;
+        bNode = b[pos];
+        if (bNode.flags & VNodeFlags.InUse) {
+          b[pos] = bNode = directClone(bNode);
         }
+        nextPos = pos + 1;
+        mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
       }
     }
   }

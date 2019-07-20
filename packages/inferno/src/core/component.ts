@@ -159,7 +159,6 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
       if (process.env.NODE_ENV !== 'production') {
         throwError('cannot update state via setState() in constructor. Instead, assign to `this.state` directly or define a `state = {};`');
       }
-      return;
     }
   }
 

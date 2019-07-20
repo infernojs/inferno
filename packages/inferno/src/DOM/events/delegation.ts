@@ -69,11 +69,7 @@ function dispatchEvents(event: SemiSyntheticEvent<any>, target, isClick: boolean
       if (currentEvent) {
         // linkEvent object
         eventData.dom = dom;
-        if (currentEvent.event) {
-          currentEvent.event(currentEvent.data, event);
-        } else {
-          currentEvent(event);
-        }
+        currentEvent.event ? currentEvent.event(currentEvent.data, event) : currentEvent(event);
         if (event.cancelBubble) {
           return;
         }
@@ -98,35 +94,56 @@ function isPropagationStopped() {
   return this.cancelBubble;
 }
 
-function attachEventToDocument(name: string) {
-  const docEvent = function(event: SemiSyntheticEvent<any>) {
-    const isClick = name === 'onClick' || name === 'onDblClick';
+function extendEventProperties(event) {
+  // Event data needs to be object to save reference to currentTarget getter
+  const eventData: IEventData = {
+    dom: document as any
+  };
 
-    if (isClick && (event as any).button !== 0) {
+  Object.defineProperties(event, {
+    currentTarget: {
+      get() {
+        return eventData.dom;
+      }
+    },
+    isDefaultPrevented: {
+      value: isDefaultPrevented
+    },
+    isPropagationStopped: {
+      value: isPropagationStopped
+    },
+    stopPropagation: {
+      value: stopPropagation
+    }
+  });
+
+  return eventData;
+}
+
+function rootClickEvent(name: string) {
+  return function (event) {
+    if ((event as any).button !== 0) {
       // Firefox incorrectly triggers click event for mid/right mouse buttons.
-      // This bug has been active for 12 years.
+      // This bug has been active for 17 years.
       // https://bugzilla.mozilla.org/show_bug.cgi?id=184051
       event.stopPropagation();
       return;
     }
 
-    event.isDefaultPrevented = isDefaultPrevented;
-    event.isPropagationStopped = isPropagationStopped;
-    event.stopPropagation = stopPropagation;
-    // Event data needs to be object to save reference to currentTarget getter
-    const eventData: IEventData = {
-      dom: document as any
-    };
+    dispatchEvents(event, event.target, true, name, extendEventProperties(event));
+  }
+}
 
-    Object.defineProperty(event, 'currentTarget', {
-      configurable: true,
-      get: function get() {
-        return eventData.dom;
-      }
-    });
-
-    dispatchEvents(event, event.target, isClick, name, eventData);
+function rootEvent(name: string) {
+  return function (event: SemiSyntheticEvent<any>) {
+    dispatchEvents(event, event.target, false, name, extendEventProperties(event));
   };
-  document.addEventListener(normalizeEventName(name), docEvent);
-  return docEvent;
+}
+
+function attachEventToDocument(name: string) {
+  const attachedEvent = (name === 'onClick' || name === 'onDblClick') ? rootClickEvent(name) : rootEvent(name);
+
+  document.addEventListener(normalizeEventName(name), attachedEvent);
+
+  return attachedEvent;
 }
