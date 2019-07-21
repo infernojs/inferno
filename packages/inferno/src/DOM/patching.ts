@@ -601,21 +601,7 @@ function patchKeyedChildren(
       remove(a[j++], dom);
     }
   } else {
-    patchKeyedChildrenComplex(
-      a,
-      b,
-      context,
-      aLength,
-      bLength,
-      aEnd,
-      bEnd,
-      j,
-      dom,
-      isSVG,
-      outerEdge,
-      parentVNode,
-      lifecycle
-    );
+    patchKeyedChildrenComplex(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle);
   }
 }
 
@@ -634,15 +620,15 @@ function patchKeyedChildrenComplex(
   parentVNode: VNode,
   lifecycle: Function[]
 ) {
-  let aNode: VNode = a[j];
-  let bNode: VNode = b[j];
+  let aNode: VNode;
+  let bNode: VNode;
   let nextPos: number;
   let i: number = 0;
   let aStart: number = j;
   const bStart: number = j;
   const aLeft: number = aEnd - j + 1;
   const bLeft: number = bEnd - j + 1;
-  const sources = new Int32Array(bLeft - i + 1);
+  const sources = new Int32Array(bLeft + 1);
   // Keep track if its possible to remove whole DOM using textContent = '';
   let canRemoveWholeContent: boolean = aLeft === aLength;
   let moved: boolean = false;
@@ -706,13 +692,13 @@ function patchKeyedChildrenComplex(
               remove(a[aStart++], dom);
             }
           }
-          bNode = b[j];
           sources[j - bStart] = i + 1;
           if (pos > j) {
             moved = true;
           } else {
             pos = j;
           }
+          bNode = b[j];
           if (bNode.flags & VNodeFlags.InUse) {
             b[j] = bNode = directClone(bNode);
           }
