@@ -40,10 +40,6 @@ export function isUndefined(o: any): o is undefined {
   return o === void 0;
 }
 
-export function isObject(o: any): o is object {
-  return typeof o === 'object';
-}
-
 export function throwError(message?: string) {
   if (!message) {
     message = ERROR_MSG;

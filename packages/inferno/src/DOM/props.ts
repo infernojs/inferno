@@ -1,5 +1,5 @@
 import { namespaces } from './constants';
-import { isFunction, isNull, isNullOrUndef, isObject, isString, throwError } from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno-shared';
 import { delegatedEvents, handleEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
@@ -16,7 +16,7 @@ function createLinkEvent(linkEvent, nextValue) {
 }
 
 export function patchEvent(name: string, lastValue, nextValue, dom) {
-  if (isObject(nextValue) && !isNull(nextValue)) {
+  if (typeof nextValue === 'object' && !isNull(nextValue)) {
     const linkEvent = (nextValue as LinkedEvent<any, any>).event;
 
     // Development warning

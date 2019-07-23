@@ -14,12 +14,12 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "7.5.4",
-    "@babel/helper-replace-supers": "7.4.4",
-    "@babel/plugin-proposal-class-properties": "7.5.0",
+    "@babel/core": "7.5.5",
+    "@babel/helper-replace-supers": "7.5.5",
+    "@babel/plugin-proposal-class-properties": "7.5.5",
     "@babel/plugin-proposal-decorators": "7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "7.5.4",
-    "@babel/preset-env": "7.5.4",
+    "@babel/plugin-proposal-object-rest-spread": "7.5.5",
+    "@babel/preset-env": "7.5.5",
     "babel-loader": "^8.0.6",
     "jasmine-core": "^3.4.0",
     "karma": "^4.2.0",
@@ -33,7 +33,7 @@
     "karma-sauce-launcher": "^1",
     "karma-webpack": "4.0.2",
     "ts-loader": "^6.0.4",
-    "wd": "^1.11.2",
-    "webpack": "^4.35.3"
+    "wd": "^1.11.3",
+    "webpack": "^4.37.0"
   }
 }

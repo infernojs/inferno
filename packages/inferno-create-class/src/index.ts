@@ -1,5 +1,5 @@
 import { Component } from 'inferno';
-import { isFunction, isObject, throwError } from 'inferno-shared';
+import { isFunction, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
   statics?: {
@@ -108,7 +108,7 @@ function multihook(hooks: Function[], mergeFn?: Function): any {
 
 function mergeNoDupes(previous: any, current: any) {
   if (current) {
-    if (!isObject(current)) {
+    if (typeof current !== 'object') {
       throwError('Expected Mixin to return value to be an object or null.');
     }
 

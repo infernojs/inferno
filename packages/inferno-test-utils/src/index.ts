@@ -1,5 +1,5 @@
 import { VNode, render } from 'inferno';
-import { isArray, isFunction, isInvalid, isNullOrUndef, isObject, isString, throwError } from 'inferno-shared';
+import { isArray, isFunction, isInvalid, isNullOrUndef, isString, throwError } from 'inferno-shared';
 import {
   getTagNameOfVNode as _getTagNameOfVNode,
   isClassVNode as _isClassVNode,
@@ -15,42 +15,40 @@ import { renderToSnapshot as _renderToSnapshot, vNodeToSnapshot as _vNodeToSnaps
 
 // Type Checkers
 
-export function isVNodeOfType(instance: VNode, type: string | Function): boolean {
-  return _isVNode(instance) && instance.type === type;
+export function isVNodeOfType(obj: VNode, type: string | Function): boolean {
+  return _isVNode(obj) && obj.type === type;
 }
 
-export function isDOMVNodeOfType(instance: VNode, type: string): boolean {
-  return _isDOMVNode(instance) && instance.type === type;
+export function isDOMVNodeOfType(obj: VNode, type: string): boolean {
+  return _isDOMVNode(obj) && obj.type === type;
 }
 
-export function isFunctionalVNodeOfType(instance: VNode, type: Function): boolean {
-  return _isFunctionalVNode(instance) && instance.type === type;
+export function isFunctionalVNodeOfType(obj: VNode, type: Function): boolean {
+  return _isFunctionalVNode(obj) && obj.type === type;
 }
 
-export function isClassVNodeOfType(instance: VNode, type: Function): boolean {
-  return _isClassVNode(instance) && instance.type === type;
+export function isClassVNodeOfType(obj: VNode, type: Function): boolean {
+  return _isClassVNode(obj) && obj.type === type;
 }
 
-export function isComponentVNodeOfType(inst: VNode, type: Function): boolean {
-  return (_isFunctionalVNode(inst) || _isClassVNode(inst)) && inst.type === type;
+export function isComponentVNodeOfType(obj: VNode, type: Function): boolean {
+  return (_isFunctionalVNode(obj) || _isClassVNode(obj)) && obj.type === type;
 }
 
-export function isDOMElement(instance: any): boolean {
-  return Boolean(instance) && isObject(instance) && (instance as any).nodeType === 1 && isString((instance as any).tagName);
+export function isDOMElement(obj: any): boolean {
+  return Boolean(obj) && typeof obj === 'object' && (obj as any).nodeType === 1 && isString((obj as any).tagName);
 }
 
-export function isDOMElementOfType(instance: any, type: string): boolean {
-  return isDOMElement(instance) && isString(type) && instance.tagName.toLowerCase() === type.toLowerCase();
+export function isDOMElementOfType(obj: any, type: string): boolean {
+  return isDOMElement(obj) && isString(type) && obj.tagName.toLowerCase() === type.toLowerCase();
 }
 
-export function isRenderedClassComponent(instance: any): boolean {
-  return (
-    Boolean(instance) && isObject(instance) && _isVNode((instance as any).$LI) && isFunction((instance as any).render) && isFunction((instance as any).setState)
-  );
+export function isRenderedClassComponent(obj: any): boolean {
+  return Boolean(obj) && typeof obj === 'object' && _isVNode((obj as any).$LI) && isFunction((obj as any).render) && isFunction((obj as any).setState);
 }
 
-export function isRenderedClassComponentOfType(instance: any, type: Function): boolean {
-  return isRenderedClassComponent(instance) && isFunction(type) && instance.constructor === type;
+export function isRenderedClassComponentOfType(obj: any, type: Function): boolean {
+  return isRenderedClassComponent(obj) && isFunction(type) && obj.constructor === type;
 }
 
 // Recursive Finder Functions

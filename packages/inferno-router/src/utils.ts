@@ -1,5 +1,5 @@
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { isNull, isObject } from 'inferno-shared';
+import { isNull } from 'inferno-shared';
 
 export function warning(condition, message) {
   if (!condition) {
@@ -9,14 +9,13 @@ export function warning(condition, message) {
 }
 
 export function isValidElement(obj: any): boolean {
-  const isNotANullObject = isObject(obj) && isNull(obj) === false;
+  const isValidObject = typeof obj === 'object' && !isNull(obj);
 
-  if (!isNotANullObject) {
+  if (!isValidObject) {
     return false;
   }
-  const flags = obj.flags;
 
-  return (flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
+  return (obj.flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
 }
 
 export function invariant(condition, format, a?, b?, c?, d?, e?, f?) {

@@ -7,9 +7,9 @@ console.info('*** Starting karma tests, Inferno-compat is ' + (useInfernoCompatP
 const preProcessorOptions = {};
 
 if (useInfernoCompatPkg) {
-  preProcessorOptions['./fixtures/browser/test.index.js'] = ['webpack'];
+  preProcessorOptions['./fixtures/browser/test.index.js'] = ['webpack', 'gzip'];
 } else {
-  preProcessorOptions['./fixtures/browser/test.no-compat.index.js'] = ['webpack'];
+  preProcessorOptions['./fixtures/browser/test.no-compat.index.js'] = ['webpack', 'gzip'];
 }
 
 module.exports = function(config) {
@@ -56,10 +56,11 @@ module.exports = function(config) {
       'karma-firefox-launcher',
       'karma-webpack',
       'karma-chrome-launcher',
-      'karma-edge-launcher'
+      'karma-edge-launcher',
+      'karma-gzip-preprocessor'
     ],
 
-    reporters: ['progress'],
+    reporters: ['dots'],
 
     reportSlowerThan: 500,
 
@@ -74,7 +75,9 @@ module.exports = function(config) {
     client: {
       jasmine: {
         random: false // Adding jasmine.random false disables test random order
-      }
+      },
+      captureConsole: false,
+      logLevel: config.LOG_ERROR
     },
 
     webpack: {

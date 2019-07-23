@@ -4,7 +4,12 @@ import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
 
 const QUEUE: Array<Component<any, any>> = [];
-const nextTick = typeof Promise !== 'undefined' ? Promise.resolve().then.bind(Promise.resolve()) : setTimeout.bind(window);
+const nextTick =
+  typeof Promise !== 'undefined'
+    ? Promise.resolve().then.bind(Promise.resolve())
+    : function(a) {
+        window.setTimeout(a, 0);
+      };
 let microTaskPending = false;
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState: any, callback: Function | undefined, force: boolean): void {

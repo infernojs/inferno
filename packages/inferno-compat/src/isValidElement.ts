@@ -1,13 +1,13 @@
 import { VNode } from 'inferno';
-import { isNull, isObject } from 'inferno-shared';
+import { isNull } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 export function isValidElement(obj: VNode): boolean {
-  const isNotANullObject = isObject(obj) && isNull(obj) === false;
-  if (isNotANullObject === false) {
+  const isValidObject = typeof obj === 'object' && !isNull(obj);
+
+  if (!isValidObject) {
     return false;
   }
-  const flags = obj.flags;
 
-  return (flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
+  return (obj.flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
 }
