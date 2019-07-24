@@ -26,12 +26,6 @@ const customLaunchers = {
     browserName: 'firefox',
     platform: 'OS X 10.12'
   },
-  slIE10: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows 7',
-    version: '10'
-  },
   slIE11: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
