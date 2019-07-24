@@ -1,4 +1,4 @@
-import { combineFrom, isNull } from 'inferno-shared';
+import { combineFrom, isNull, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { InfernoNode, LinkedEvent, VNode } from './../../core/types';
 
@@ -50,9 +50,22 @@ export function callAll(arrayFn: Function[]) {
   }
 }
 
-export function findDOMfromVNode(vNode: VNode, start: boolean) {
+function findChildVNode(vNode: VNode, startEdge: boolean, flags: VNodeFlags) {
+  const children = vNode.children;
+
+  if (flags & VNodeFlags.ComponentClass) {
+    return (children as any).$LI;
+  }
+
+  if (flags & VNodeFlags.Fragment) {
+    return vNode.childFlags === ChildFlags.HasVNodeChildren ? (children as VNode) : (children as VNode[])[startEdge ? 0 : (children as VNode[]).length - 1];
+  }
+
+  return children;
+}
+
+export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
   let flags;
-  let children;
 
   while (vNode) {
     flags = vNode.flags;
@@ -61,66 +74,68 @@ export function findDOMfromVNode(vNode: VNode, start: boolean) {
       return vNode.dom;
     }
 
-    children = vNode.children;
-
-    if (flags & VNodeFlags.Fragment) {
-      vNode = vNode.childFlags === ChildFlags.HasVNodeChildren ? (children as VNode) : (children as VNode[])[start ? 0 : children.length - 1];
-    } else if (flags & VNodeFlags.ComponentClass) {
-      vNode = (children as any).$LI;
-    } else {
-      vNode = children;
-    }
+    vNode = findChildVNode(vNode, startEdge, flags);
   }
 
   return null;
 }
 
 export function removeVNodeDOM(vNode: VNode, parentDOM: Element) {
-  const flags = vNode.flags;
+  do {
+    const flags = vNode.flags;
 
-  if (flags & VNodeFlags.DOMRef) {
-    removeChild(parentDOM, vNode.dom as Element);
-  } else {
+    if (flags & VNodeFlags.DOMRef) {
+      removeChild(parentDOM, vNode.dom as Element);
+      return;
+    }
     const children = vNode.children as any;
 
     if (flags & VNodeFlags.ComponentClass) {
-      removeVNodeDOM(children.$LI, parentDOM);
-    } else if (flags & VNodeFlags.ComponentFunction) {
-      removeVNodeDOM(children, parentDOM);
-    } else if (flags & VNodeFlags.Fragment) {
+      vNode = children.$LI;
+    }
+    if (flags & VNodeFlags.ComponentFunction) {
+      vNode = children;
+    }
+    if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        removeVNodeDOM(children, parentDOM);
+        vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
           removeVNodeDOM(children[i], parentDOM);
         }
+        return;
       }
     }
-  }
+  } while (vNode);
 }
 
 export function moveVNodeDOM(vNode, parentDOM, nextNode) {
-  const flags = vNode.flags;
+  do {
+    const flags = vNode.flags;
 
-  if (flags & VNodeFlags.DOMRef) {
-    insertOrAppend(parentDOM, vNode.dom, nextNode);
-  } else {
+    if (flags & VNodeFlags.DOMRef) {
+      insertOrAppend(parentDOM, vNode.dom, nextNode);
+      return;
+    }
     const children = vNode.children as any;
 
     if (flags & VNodeFlags.ComponentClass) {
-      moveVNodeDOM(children.$LI, parentDOM, nextNode);
-    } else if (flags & VNodeFlags.ComponentFunction) {
-      moveVNodeDOM(children, parentDOM, nextNode);
-    } else if (flags & VNodeFlags.Fragment) {
+      vNode = children.$LI;
+    }
+    if (flags & VNodeFlags.ComponentFunction) {
+      vNode = children;
+    }
+    if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        moveVNodeDOM(children, parentDOM, nextNode);
+        vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
           moveVNodeDOM(children[i], parentDOM, nextNode);
         }
+        return;
       }
     }
-  }
+  } while (vNode);
 }
 
 export function getComponentName(instance): string {
@@ -163,4 +178,14 @@ export function isSameLinkEvent(lastValue, nextValue): boolean {
     (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
     (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
   );
+}
+
+export function mergeUnsetProperties(to, from) {
+  for (const propName in from) {
+    if (isUndefined(to[propName])) {
+      to[propName] = from[propName];
+    }
+  }
+
+  return to;
 }

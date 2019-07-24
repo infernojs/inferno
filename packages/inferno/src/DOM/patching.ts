@@ -56,7 +56,7 @@ export function patch(
     }
   }
 
-  if (lastVNode.flags !== nextFlags || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || (nextFlags & VNodeFlags.ReCreate) !== 0) {
+  if (lastVNode.flags !== nextFlags || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || nextFlags & VNodeFlags.ReCreate) {
     if (lastVNode.flags & VNodeFlags.InUse) {
       replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
     } else {
@@ -460,7 +460,7 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
       nextRef.onComponentWillUpdate(lastProps, nextProps);
     }
     const type = nextVNode.type;
-    const nextInput = handleComponentInput(nextVNode.flags & VNodeFlags.ForwardRef ? type(nextProps, nextRef, context) : type(nextProps, context));
+    const nextInput = handleComponentInput(nextVNode.flags & VNodeFlags.ForwardRef ? type.render(nextProps, nextRef, context) : type(nextProps, context));
 
     patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle);
     nextVNode.children = nextInput;

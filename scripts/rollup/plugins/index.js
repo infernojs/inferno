@@ -3,7 +3,7 @@ const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replacePlugin = require('rollup-plugin-replace');
 const tsPlugin = require('rollup-plugin-typescript2');
-const uglify = require('rollup-plugin-uglify').uglify;
+const terser = require('rollup-plugin-terser').terser;
 const aliasPlugin = require('./alias');
 
 module.exports = function(version, options) {
@@ -39,18 +39,16 @@ module.exports = function(version, options) {
 
   plugins.push(replacePlugin(replaceValues));
 
-  if (options.uglify) {
+  if (options.minify) {
     plugins.push(
-      uglify({
+      terser({
         compress: {
-          // compress options
-          booleans: true,
-          dead_code: true,
-          drop_debugger: true,
-          unused: true,
-          keep_fnames: false,
-          keep_infinity: true,
-          passes: 3
+          ecma: 5,
+          inline: true,
+          if_return: false,
+          reduce_funcs: false,
+          passes: 5,
+          comparisons: false
         },
         ie8: false,
         mangle: {

@@ -1,7 +1,7 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, isUndefined, throwError } from 'inferno-shared';
+import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
-import { Fragment, options } from './../DOM/utils/common';
+import { Fragment, options, mergeUnsetProperties } from './../DOM/utils/common';
 import { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';
 
 const keyPrefix = '$';
@@ -10,7 +10,6 @@ function V(childFlags: ChildFlags, children, className: string | null | undefine
   if (process.env.NODE_ENV !== 'production') {
     this.isValidated = false;
   }
-
   this.childFlags = childFlags;
   this.children = children;
   this.className = className;
@@ -55,6 +54,55 @@ export function createVNode<P>(
   return vNode;
 }
 
+function mergeDefaultHooks(flags, type, ref) {
+  if (flags & VNodeFlags.ComponentClass) {
+    return ref;
+  }
+
+  const defaultHooks = (flags & VNodeFlags.ForwardRef ? type.render : type).defaultHooks;
+
+  if (isNullOrUndef(defaultHooks)) {
+    return ref;
+  }
+
+  if (isNullOrUndef(ref)) {
+    return defaultHooks;
+  }
+
+  return mergeUnsetProperties(ref, defaultHooks);
+}
+
+function mergeDefaultProps(flags, type, props) {
+  // set default props
+  const defaultProps = (flags & VNodeFlags.ForwardRef ? type.render : type).defaultProps;
+
+  if (isNullOrUndef(defaultProps)) {
+    return props;
+  }
+
+  if (isNullOrUndef(props)) {
+    return combineFrom(defaultProps, null);
+  }
+
+  return mergeUnsetProperties(props, defaultProps);
+}
+
+function resolveComponentFlags(flags, type) {
+  if (flags & VNodeFlags.ComponentKnown) {
+    return flags;
+  }
+
+  if (type.prototype && type.prototype.render) {
+    return VNodeFlags.ComponentClass;
+  }
+
+  if (type.render) {
+    return VNodeFlags.ForwardRefComponent;
+  }
+
+  return VNodeFlags.ComponentFunction;
+}
+
 export function createComponentVNode<P>(
   flags: VNodeFlags,
   type: Function | IComponent<any, any> | ForwardRef,
@@ -68,60 +116,37 @@ export function createComponentVNode<P>(
     }
   }
 
-  if ((flags & VNodeFlags.ComponentUnknown) !== 0) {
-    if ((type as any).prototype && (type as any).prototype.render) {
-      flags = VNodeFlags.ComponentClass;
-    } else if ((type as any).render) {
-      flags = VNodeFlags.ForwardRefComponent;
-      type = (type as ForwardRef).render;
-    } else {
-      flags = VNodeFlags.ComponentFunction;
-    }
-  }
+  flags = resolveComponentFlags(flags, type);
 
-  // set default props
-  const defaultProps = (type as any).defaultProps;
+  const vNode = new V(
+    ChildFlags.HasInvalidChildren,
+    null,
+    null,
+    flags,
+    key,
+    mergeDefaultProps(flags, type, props),
+    mergeDefaultHooks(flags, type, ref),
+    type
+  ) as VNode;
 
-  if (!isNullOrUndef(defaultProps)) {
-    if (!props) {
-      (props as any) = {}; // Props can be referenced and modified at application level so always create new object
-    }
-    for (const prop in defaultProps) {
-      if (isUndefined(props![prop])) {
-        props![prop] = defaultProps[prop];
-      }
-    }
-  }
-
-  if ((flags & VNodeFlags.ComponentFunction) > 0 && (flags & VNodeFlags.ForwardRef) === 0) {
-    const defaultHooks = (type as any).defaultHooks;
-
-    if (!isNullOrUndef(defaultHooks)) {
-      if (!ref) {
-        // As ref cannot be referenced from application level, we can use the same refs object
-        ref = defaultHooks;
-      } else {
-        for (const prop in defaultHooks) {
-          if (isUndefined(ref[prop])) {
-            ref[prop] = defaultHooks[prop];
-          }
-        }
-      }
-    }
-  }
-
-  const vNode = new V(ChildFlags.HasInvalidChildren, null, null, flags, key, props, ref, type) as VNode;
-  const optsVNode = options.createVNode;
-
-  if (isFunction(optsVNode)) {
-    optsVNode(vNode);
+  if (options.createVNode) {
+    options.createVNode(vNode);
   }
 
   return vNode;
 }
 
-export function createTextVNode(text?: string | number, key?: string | number | null): VNode {
-  return new V(ChildFlags.HasInvalidChildren, isNullOrUndef(text) ? '' : text, null, VNodeFlags.Text, key, null, null, null) as VNode;
+export function createTextVNode(text?: string | boolean | null | number, key?: string | number | null): VNode {
+  return new V(
+    ChildFlags.HasInvalidChildren,
+    isNullOrUndef(text) || text === true || text === false ? '' : text,
+    null,
+    VNodeFlags.Text,
+    key,
+    null,
+    null,
+    null
+  ) as VNode;
 }
 
 export function createFragment(children: any, childFlags: ChildFlags, key?: string | number | null): VNode {

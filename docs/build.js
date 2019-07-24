@@ -5,7 +5,7 @@ const nodeResolvePlugin = require('rollup-plugin-node-resolve');
 const babelPlugin = require('rollup-plugin-babel');
 const path = require('path');
 const replace = require('rollup-plugin-replace');
-const { uglify } = require('rollup-plugin-uglify');
+const terser = require('rollup-plugin-terser').terser;
 const alias = require('rollup-plugin-alias');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -59,28 +59,29 @@ const plugins = [
 ];
 
 if (isProduction) {
-  plugins.push(uglify({
-    compress: {
-      booleans: false,
-      dead_code: true,
-      drop_debugger: true,
-      unused: true,
-      keep_fnames: false,
-      keep_infinity: true,
-      passes: 3
-    },
-    ie8: false,
-    mangle: {
-      toplevel: true
-    },
-    parse: {
-      html5_comments: false,
-      shebang: false
-    },
-    sourcemap: false,
-    toplevel: true,
-    warnings: false
-  }));
+  plugins.push(
+    terser({
+      compress: {
+        ecma: 5,
+        inline: true,
+        if_return: false,
+        reduce_funcs: false,
+        passes: 5,
+        comparisons: false,
+      },
+      ie8: false,
+      mangle: {
+        toplevel: true
+      },
+      parse: {
+        html5_comments: false,
+        shebang: false
+      },
+      sourcemap: false,
+      toplevel: false,
+      warnings: false
+    })
+  );
 }
 
 benchmarks.forEach(dir => {

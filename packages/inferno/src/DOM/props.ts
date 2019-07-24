@@ -71,6 +71,26 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   }
 }
 
+function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom) {
+  const lastHtml = (lastValue && lastValue.__html) || '';
+  const nextHtml = (nextValue && nextValue.__html) || '';
+
+  if (lastHtml !== nextHtml) {
+    if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
+      if (!isNull(lastVNode)) {
+        if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
+          unmountAllChildren(lastVNode.children as VNode[]);
+        } else if (lastVNode.childFlags === ChildFlags.HasVNodeChildren) {
+          unmount(lastVNode.children);
+        }
+        lastVNode.children = null;
+        lastVNode.childFlags = ChildFlags.HasInvalidChildren;
+      }
+      dom.innerHTML = nextHtml;
+    }
+  }
+}
+
 export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null) {
   switch (prop) {
     case 'children':
@@ -121,22 +141,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       patchStyle(lastValue, nextValue, dom);
       break;
     case 'dangerouslySetInnerHTML':
-      const lastHtml = (lastValue && lastValue.__html) || '';
-      const nextHtml = (nextValue && nextValue.__html) || '';
-      if (lastHtml !== nextHtml) {
-        if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
-          if (!isNull(lastVNode)) {
-            if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
-              unmountAllChildren(lastVNode.children as VNode[]);
-            } else if (lastVNode.childFlags === ChildFlags.HasVNodeChildren) {
-              unmount(lastVNode.children);
-            }
-            lastVNode.children = null;
-            lastVNode.childFlags = ChildFlags.HasInvalidChildren;
-          }
-          dom.innerHTML = nextHtml;
-        }
-      }
+      patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
       break;
     default:
       if (delegatedEvents[prop]) {

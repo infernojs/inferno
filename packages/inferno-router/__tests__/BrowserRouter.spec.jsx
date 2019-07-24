@@ -1,5 +1,4 @@
 import { render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 import { BrowserRouter } from 'inferno-router';
 
 describe('BrowserRouter (jsx)', () => {

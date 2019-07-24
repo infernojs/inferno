@@ -18,7 +18,6 @@ function getDelegatedEventObject(v) {
     onMouseDown: v,
     onMouseMove: v,
     onMouseUp: v,
-    onSubmit: v,
     onTouchEnd: v,
     onTouchMove: v,
     onTouchStart: v

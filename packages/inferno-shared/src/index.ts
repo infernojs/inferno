@@ -9,11 +9,11 @@ export function isStringOrNumber(o: any): o is string | number {
 }
 
 export function isNullOrUndef(o: any): o is undefined | null {
-  return isUndefined(o) || isNull(o);
+  return o === void 0 || o === null;
 }
 
-export function isInvalid(o: any): o is null | false | true | undefined {
-  return isNull(o) || o === false || isTrue(o) || isUndefined(o);
+export function isInvalid(o: any): o is null | boolean | undefined {
+  return o === null || o === false || o === true || o === void 0;
 }
 
 export function isFunction(o: any): o is Function {
@@ -30,10 +30,6 @@ export function isNumber(o: any): o is number {
 
 export function isNull(o: any): o is null {
   return o === null;
-}
-
-export function isTrue(o: any): o is true {
-  return o === true;
 }
 
 export function isUndefined(o: any): o is undefined {

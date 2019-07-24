@@ -1,5 +1,5 @@
 import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, isUndefined, throwError } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isUndefined, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
@@ -219,7 +219,7 @@ export class RenderQueueStream extends Readable {
                   renderedString += ` ${prop}="${escapeText(value)}"`;
                 } else if (isNumber(value)) {
                   renderedString += ` ${prop}="${value}"`;
-                } else if (isTrue(value)) {
+                } else if (value === true) {
                   renderedString += ` ${prop}`;
                 }
               }

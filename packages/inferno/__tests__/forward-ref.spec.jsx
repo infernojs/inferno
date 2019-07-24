@@ -183,7 +183,8 @@ describe('Forward Ref', () => {
   });
 
   describe('Inferno specifics', () => {
-    it('Should support defaultProps, not - defaultHooks', () => {
+    it('Should support defaultProps and defaultHooks', () => {
+      debugger;
       function CoolStuff(props, ref) {
         return (
           <div className={props.className}>
@@ -226,7 +227,7 @@ describe('Forward Ref', () => {
       render(<Hello />, container);
 
       expect(container.innerHTML).toBe('<div class="okay"><span><a>1</a></span>bar</div>');
-      expect(spy.calls.count()).toBe(0);
+      expect(spy.calls.count()).toBe(1);
 
       render(null, container);
 

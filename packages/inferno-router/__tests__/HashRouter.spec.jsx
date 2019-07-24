@@ -1,5 +1,4 @@
 import { render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 import { HashRouter } from 'inferno-router';
 
 describe('A <HashRouter>', () => {

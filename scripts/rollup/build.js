@@ -16,14 +16,14 @@ mkdir(join(cwd, 'dist'), err => {
   var exit = process.exit;
 
   const options = require('minimist')(process.argv.slice(2), {
-    boolean: ['replace', 'optimize', 'uglify'],
+    boolean: ['replace', 'optimize', 'minify'],
     default: {
       env: 'development',
       ext: '.js',
       format: 'umd',
       name: pkgJSON.name,
       replace: true,
-      uglify: true,
+      minify: true,
       version: pkgJSON.version
     }
   });

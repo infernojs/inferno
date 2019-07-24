@@ -1,4 +1,4 @@
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
@@ -186,7 +186,7 @@ export class RenderStream extends Readable {
                 renderedString += ` ${prop}="${escapeText(value)}"`;
               } else if (isNumber(value)) {
                 renderedString += ` ${prop}="${value}"`;
-              } else if (isTrue(value)) {
+              } else if (value === true) {
                 renderedString += ` ${prop}`;
               }
               break;

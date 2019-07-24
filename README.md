@@ -278,17 +278,17 @@ native DOM event is `oninput`).
 Available synthetic events are:
 - `onClick`
 - `onDblClick`
-- `onMouseMove`
-- `onMouseDown`
-- `onMouseUp`
-- `onSubmit`
-- `onKeyPress`
-- `onKeyDown`
-- `onKeyUp`
-- `onInput`
-- `onChange`
 - `onFocusIn`
 - `onFocusOut`
+- `onKeyDown`
+- `onKeyPress`
+- `onKeyUp`
+- `onMouseDown`
+- `onMouseMove`
+- `onMouseUp`
+- `onTouchEnd`
+- `onTouchMove`
+- `onTouchStart`
 
 ### `linkEvent` (package: `inferno`)
 

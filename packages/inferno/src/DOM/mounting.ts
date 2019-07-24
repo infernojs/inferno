@@ -125,7 +125,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
 }
 
 export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
-  for (let i = 0, len = children.length; i < len; ++i) {
+  for (let i = 0; i < children.length; ++i) {
     let child = children[i];
 
     if (child.flags & VNodeFlags.InUse) {
@@ -146,9 +146,14 @@ export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null
   const props = vNode.props || EMPTY_OBJ;
   const ref = vNode.ref;
 
-  const input = handleComponentInput(vNode.flags & VNodeFlags.ForwardRef ? type(props, ref, context) : type(props, context));
-  vNode.children = input;
-  mount(input, parentDOM, context, isSVG, nextNode, lifecycle);
+  mount(
+    (vNode.children = handleComponentInput(vNode.flags & VNodeFlags.ForwardRef ? type.render(props, ref, context) : type(props, context))),
+    parentDOM,
+    context,
+    isSVG,
+    nextNode,
+    lifecycle
+  );
   mountFunctionalComponentCallbacks(props, ref, vNode, lifecycle);
 }
 

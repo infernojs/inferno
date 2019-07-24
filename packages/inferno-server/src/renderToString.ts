@@ -1,5 +1,5 @@
 import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isTrue, throwError } from 'inferno-shared';
+import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { renderStylesToString } from './prop-renderers';
 import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
@@ -129,7 +129,7 @@ function renderVNodeToString(vNode, parent, context): string {
                 renderedString += ` ${prop}="${escapeText(value)}"`;
               } else if (isNumber(value)) {
                 renderedString += ` ${prop}="${value}"`;
-              } else if (isTrue(value)) {
+              } else if (value === true) {
                 renderedString += ` ${prop}`;
               }
             }
