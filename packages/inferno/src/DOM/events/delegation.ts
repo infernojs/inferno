@@ -99,20 +99,14 @@ function extendEventProperties(event) {
     dom: document as any
   };
 
-  Object.defineProperties(event, {
-    currentTarget: {
-      get() {
-        return eventData.dom;
-      }
-    },
-    isDefaultPrevented: {
-      value: isDefaultPrevented
-    },
-    isPropagationStopped: {
-      value: isPropagationStopped
-    },
-    stopPropagation: {
-      value: stopPropagation
+  event.isDefaultPrevented = isDefaultPrevented;
+  event.isPropagationStopped = isPropagationStopped;
+  event.stopPropagation = stopPropagation;
+
+  Object.defineProperty(event, 'currentTarget', {
+    configurable: true,
+    get: function get() {
+      return eventData.dom;
     }
   });
 

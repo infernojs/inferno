@@ -184,7 +184,6 @@ describe('Forward Ref', () => {
 
   describe('Inferno specifics', () => {
     it('Should support defaultProps and defaultHooks', () => {
-      debugger;
       function CoolStuff(props, ref) {
         return (
           <div className={props.className}>
