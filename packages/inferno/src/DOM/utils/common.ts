@@ -1,4 +1,4 @@
-import { combineFrom, isNull, isUndefined } from 'inferno-shared';
+import { combineFrom, isFunction, isNull, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { InfernoNode, LinkedEvent, VNode } from './../../core/types';
 import { isLinkEventObject } from '../events/linkEvent';
@@ -188,4 +188,8 @@ export function mergeUnsetProperties(to, from) {
   }
 
   return to;
+}
+
+export function safeCall1(method: Function | null | undefined, arg1: any): boolean {
+  return !!isFunction(method) && (method(arg1), true);
 }

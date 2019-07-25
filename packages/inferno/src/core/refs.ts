@@ -1,4 +1,5 @@
 import { isFunction, warning } from 'inferno-shared';
+import { safeCall1 } from '../DOM/utils/common';
 
 export function createRef() {
   return {
@@ -22,9 +23,7 @@ export function forwardRef(render) {
 
 export function unmountRef(ref) {
   if (ref) {
-    if (isFunction(ref)) {
-      ref(null);
-    } else if (ref.current) {
+    if (!safeCall1(ref, null) && ref.current) {
       ref.current = null;
     }
   }
@@ -33,9 +32,7 @@ export function unmountRef(ref) {
 export function mountRef(ref, value, lifecycle: Function[]) {
   if (ref && (isFunction(ref) || ref.current !== void 0)) {
     lifecycle.push(() => {
-      if (isFunction(ref)) {
-        ref(value);
-      } else if (ref.current !== void 0) {
+      if (!safeCall1(ref, value) && ref.current !== void 0) {
         ref.current = value;
       }
     });
