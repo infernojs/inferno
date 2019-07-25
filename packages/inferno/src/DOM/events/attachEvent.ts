@@ -8,7 +8,7 @@ export function attachEvent(dom, eventName, handler) {
     if (previousArgs[1].wrapped) {
       return;
     }
-    dom.removeEventListener.apply(dom, previousArgs);
+    dom.removeEventListener(previousArgs[0], previousArgs[1]);
     dom[previousKey] = null;
   }
 

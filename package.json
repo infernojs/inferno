@@ -101,7 +101,7 @@
     "jest-silent-reporter": "^0.1.2",
     "jsdom": "15.1.1",
     "lerna": "3.16.4",
-    "lint-staged": "^9.2.0",
+    "lint-staged": "^9.2.1",
     "madge": "^3.4.4",
     "merge-dirs": "^0.2.1",
     "minimist": "^1.2.0",

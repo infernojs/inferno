@@ -29,19 +29,19 @@ const attachedEvents = getDelegatedEventObject(null);
 
 export const syntheticEvents = getDelegatedEventObject(true);
 
-function updateOrAddSyntheticEvent(name, nextEvent, dom) {
+function updateOrAddSyntheticEvent(name: string, dom) {
   let eventsObject = dom.$EV;
 
-  if (attachedEventCounts[name] === 0) {
-    attachedEvents[name] = attachEventToDocument(name);
-  }
   if (!eventsObject) {
     eventsObject = (dom as any).$EV = getDelegatedEventObject(null);
   }
   if (!eventsObject[name]) {
-    ++attachedEventCounts[name];
+    if (++attachedEventCounts[name] === 1) {
+      attachedEvents[name] = attachEventToDocument(name);
+    }
   }
-  eventsObject[name] = nextEvent;
+
+  return eventsObject;
 }
 
 export function unmountSyntheticEvent(name: string, dom) {
@@ -63,12 +63,12 @@ export function handleSyntheticEvent(
   dom
 ) {
   if (isFunction(nextEvent)) {
-    updateOrAddSyntheticEvent(name, nextEvent, dom);
+    updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
   } else if (isLinkEventObject(nextEvent)) {
     if (isLastValueSameLinkEvent(lastEvent, nextEvent)) {
       return;
     }
-    updateOrAddSyntheticEvent(name, nextEvent, dom);
+    updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
   } else {
     unmountSyntheticEvent(name, dom);
   }

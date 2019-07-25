@@ -1,6 +1,7 @@
 import { combineFrom, isNull, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { InfernoNode, LinkedEvent, VNode } from './../../core/types';
+import { isLinkEventObject } from '../events/linkEvent';
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
@@ -173,8 +174,7 @@ export function setTextContent(dom: Element, children): void {
 // Calling this function assumes, nextValue is linkEvent
 export function isLastValueSameLinkEvent(lastValue, nextValue): boolean {
   return (
-    lastValue &&
-    typeof lastValue === 'object' &&
+    isLinkEventObject(lastValue) &&
     (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
     (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
   );
