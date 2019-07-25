@@ -1,4 +1,4 @@
-import { isFunction } from 'inferno-shared';
+import { isFunction, isNull } from 'inferno-shared';
 import { LinkedEvent } from '../../core/types';
 
 /**
@@ -12,4 +12,9 @@ export function linkEvent<T, E extends Event>(data: T, event: (data: T, event: E
     return { data, event };
   }
   return null; // Return null when event is invalid, to avoid creating unnecessary event handlers
+}
+
+// object.event should always be function, otherwise its badly created object.
+export function isLinkEventObject(o): o is LinkedEvent<any, any> {
+  return !isNull(o) && typeof o === 'object';
 }

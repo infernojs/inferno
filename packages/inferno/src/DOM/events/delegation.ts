@@ -1,6 +1,7 @@
-import { isNull } from 'inferno-shared';
+import { isFunction, isNull } from 'inferno-shared';
 import { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
-import { normalizeEventName } from './../utils/common';
+import { isLastValueSameLinkEvent, normalizeEventName } from './../utils/common';
+import { isLinkEventObject } from './linkEvent';
 
 interface IEventData {
   dom: Element;
@@ -26,28 +27,50 @@ function getDelegatedEventObject(v) {
 const attachedEventCounts = getDelegatedEventObject(0);
 const attachedEvents = getDelegatedEventObject(null);
 
-export const delegatedEvents = getDelegatedEventObject(true);
+export const syntheticEvents = getDelegatedEventObject(true);
 
-export function handleEvent(name: string, nextEvent: Function | LinkedEvent<any, any> | null, dom) {
+function updateOrAddSyntheticEvent(name, nextEvent, dom) {
   let eventsObject = dom.$EV;
 
-  if (nextEvent) {
-    if (attachedEventCounts[name] === 0) {
-      attachedEvents[name] = attachEventToDocument(name);
-    }
-    if (!eventsObject) {
-      eventsObject = (dom as any).$EV = getDelegatedEventObject(null);
-    }
-    if (!eventsObject[name]) {
-      ++attachedEventCounts[name];
-    }
-    eventsObject[name] = nextEvent;
-  } else if (eventsObject && eventsObject[name]) {
+  if (attachedEventCounts[name] === 0) {
+    attachedEvents[name] = attachEventToDocument(name);
+  }
+  if (!eventsObject) {
+    eventsObject = (dom as any).$EV = getDelegatedEventObject(null);
+  }
+  if (!eventsObject[name]) {
+    ++attachedEventCounts[name];
+  }
+  eventsObject[name] = nextEvent;
+}
+
+export function unmountSyntheticEvent(name: string, dom) {
+  const eventsObject = dom.$EV;
+
+  if (eventsObject && eventsObject[name]) {
     if (--attachedEventCounts[name] === 0) {
       document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
       attachedEvents[name] = null;
     }
     eventsObject[name] = null;
+  }
+}
+
+export function handleSyntheticEvent(
+  name: string,
+  lastEvent: Function | LinkedEvent<any, any> | null | false | true,
+  nextEvent: Function | LinkedEvent<any, any> | null | false | true,
+  dom
+) {
+  if (isFunction(nextEvent)) {
+    updateOrAddSyntheticEvent(name, nextEvent, dom);
+  } else if (isLinkEventObject(nextEvent)) {
+    if (isLastValueSameLinkEvent(lastEvent, nextEvent)) {
+      return;
+    }
+    updateOrAddSyntheticEvent(name, nextEvent, dom);
+  } else {
+    unmountSyntheticEvent(name, dom);
   }
 }
 

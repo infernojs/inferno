@@ -1,37 +1,32 @@
 import { namespaces } from './constants';
-import { isFunction, isNull, isNullOrUndef, isString, throwError } from 'inferno-shared';
-import { delegatedEvents, handleEvent } from './events/delegation';
+import { isNull, isNullOrUndef, isString } from 'inferno-shared';
+import { syntheticEvents, handleSyntheticEvent } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerhtml';
-import { isSameLinkEvent, normalizeEventName } from './utils/common';
+import { isLastValueSameLinkEvent, normalizeEventName } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
-import { LinkedEvent, VNode } from '../core/types';
+import { VNode } from '../core/types';
 import { attachEvent } from './events/attachEvent';
+import { isLinkEventObject } from './events/linkEvent';
 
-function createLinkEvent(linkEvent, nextValue) {
+function wrapLinkEvent(nextValue) {
+  // This variable makes sure there is no "this" context in callback
+  const ev = nextValue.event;
+
   return function(e) {
-    linkEvent(nextValue.data, e);
+    ev(nextValue.data, e);
   };
 }
 
 export function patchEvent(name: string, lastValue, nextValue, dom) {
-  if (typeof nextValue === 'object' && !isNull(nextValue)) {
-    const linkEvent = (nextValue as LinkedEvent<any, any>).event;
-
-    // Development warning
-    if (process.env.NODE_ENV !== 'production') {
-      if (!isFunction(linkEvent)) {
-        throwError(`an event on a VNode "${name}". was not a function or a valid linkEvent.`);
-      }
+  if (isLinkEventObject(nextValue)) {
+    if (isLastValueSameLinkEvent(lastValue, nextValue)) {
+      return;
     }
-
-    if (!isSameLinkEvent(lastValue, nextValue)) {
-      attachEvent(dom, normalizeEventName(name), createLinkEvent(linkEvent, nextValue));
-    }
-  } else {
-    attachEvent(dom, normalizeEventName(name), nextValue);
+    nextValue = wrapLinkEvent(nextValue);
   }
+  attachEvent(dom, normalizeEventName(name), nextValue);
 }
 
 // We are assuming here that we come from patchProp routine
@@ -144,10 +139,8 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
       patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
       break;
     default:
-      if (delegatedEvents[prop]) {
-        if (!isSameLinkEvent(lastValue, nextValue)) {
-          handleEvent(prop, nextValue, dom);
-        }
+      if (syntheticEvents[prop]) {
+        handleSyntheticEvent(prop, lastValue, nextValue, dom);
       } else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
         patchEvent(prop, lastValue, nextValue, dom);
       } else if (isNullOrUndef(nextValue)) {

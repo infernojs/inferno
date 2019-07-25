@@ -1,4 +1,4 @@
-import { createTextVNode, createVNode, render, Component } from 'inferno';
+import { createTextVNode, createVNode, render, Component, linkEvent } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
 
@@ -214,5 +214,557 @@ describe('patching routine', () => {
     // Verify dom nodes did not change
     expect(first).toBe(first3);
     expect(second).toBe(second3);
+  });
+
+  describe('Event changes', () => {
+    describe('Synthetic', () => {
+      it('Should remove function if next is boolean (false)', () => {
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkObj.methodFn} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onClick={false} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onclick={linkObj.methodFn} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should remove function if next is boolean (true)', () => {
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkObj.methodFn} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onClick={true} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onclick={linkObj.methodFn} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should remove linkEvent if next is boolean (false)', () => {
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onClick={false} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onClick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should remove linkEvent if next is boolean (true)', () => {
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onClick={true} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onClick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should change from LinkEvent to Function', () => {
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onClick={anotherObj.anotherFn} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from Function to LinkEvent', () => {
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onClick={anotherObj.anotherFn} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from Function to different Function', () => {
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkObj.methodFn} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onClick={anotherObj.anotherFn} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from LinkEvent fn to different LinkEvent fn', () => {
+        const data = { foo: 1 };
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onClick={linkEvent(data, anotherObj.anotherFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onClick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from LinkEvent data to different LinkEvent data', () => {
+        const obj1 = { foo: 1 };
+        const obj2 = { foo: 2 };
+        let secondArg = null;
+
+        const anotherObj = {
+          anotherFn(o, ev) {
+            secondArg = ev;
+          }
+        };
+
+        spyOn(anotherObj, 'anotherFn').and.callThrough();
+
+        render(<div onClick={linkEvent(obj1, anotherObj.anotherFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj1, secondArg);
+
+        anotherObj.anotherFn.calls.reset();
+
+        render(<div onClick={linkEvent(obj2, anotherObj.anotherFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj2, secondArg);
+      });
+    });
+
+    describe('Regular', () => {
+      it('Should remove function if next is boolean (false)', () => {
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkObj.methodFn} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onclick={false} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onclick={linkObj.methodFn} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should remove function if next is boolean (true)', () => {
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkObj.methodFn} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onclick={true} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onclick={linkObj.methodFn} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should remove linkEvent if next is boolean (false)', () => {
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onclick={false} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onclick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should remove linkEvent if next is boolean (true)', () => {
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        render(<div onclick={true} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        // ADD BACK
+
+        render(<div onclick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(2);
+      });
+
+      it('Should change from LinkEvent to Function', () => {
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onclick={anotherObj.anotherFn} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from Function to LinkEvent', () => {
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onclick={anotherObj.anotherFn} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+
+        const data = { foo: 1 };
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from Function to different Function', () => {
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkObj.methodFn} />, container);
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onclick={anotherObj.anotherFn} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from LinkEvent fn to different LinkEvent fn', () => {
+        const data = { foo: 1 };
+        const anotherObj = {
+          anotherFn() {}
+        };
+        spyOn(anotherObj, 'anotherFn');
+
+        render(<div onclick={linkEvent(data, anotherObj.anotherFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+
+        const linkObj = {
+          methodFn() {}
+        };
+        spyOn(linkObj, 'methodFn');
+
+        render(<div onclick={linkEvent(data, linkObj.methodFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should change from LinkEvent data to different LinkEvent data', () => {
+        const obj1 = { foo: 1 };
+        const obj2 = { foo: 2 };
+        let secondArg = null;
+
+        const anotherObj = {
+          anotherFn(o, ev) {
+            secondArg = ev;
+          }
+        };
+
+        spyOn(anotherObj, 'anotherFn').and.callThrough();
+
+        render(<div onclick={linkEvent(obj1, anotherObj.anotherFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj1, secondArg);
+
+        anotherObj.anotherFn.calls.reset();
+
+        render(<div onclick={linkEvent(obj2, anotherObj.anotherFn)} />, container);
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
+        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj2, secondArg);
+      });
+    });
   });
 });

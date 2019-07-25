@@ -170,11 +170,11 @@ export function setTextContent(dom: Element, children): void {
   dom.textContent = children;
 }
 
-export function isSameLinkEvent(lastValue, nextValue): boolean {
+// Calling this function assumes, nextValue is linkEvent
+export function isLastValueSameLinkEvent(lastValue, nextValue): boolean {
   return (
     lastValue &&
-    nextValue &&
-    typeof lastValue === typeof nextValue &&
+    typeof lastValue === 'object' &&
     (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
     (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
   );
