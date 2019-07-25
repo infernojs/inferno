@@ -159,7 +159,7 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
 
 function hydrateText(vNode: VNode, parentDOM: Element, dom: Element) {
   if (dom.nodeType !== 3) {
-    parentDOM.replaceChild(vNode.dom = document.createTextNode(vNode.children as string) as any, dom);
+    parentDOM.replaceChild((vNode.dom = document.createTextNode(vNode.children as string) as any), dom);
   } else {
     const text = vNode.children;
 

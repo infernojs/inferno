@@ -143,18 +143,11 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
 }
 
 function renderFunctionalComponent(vNode: VNode, context) {
-  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(vNode.props || EMPTY_OBJ, vNode.ref, context) : vNode.type(vNode.props || EMPTY_OBJ, context)
+  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(vNode.props || EMPTY_OBJ, vNode.ref, context) : vNode.type(vNode.props || EMPTY_OBJ, context);
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {
-  mount(
-    (vNode.children = handleComponentInput(renderFunctionalComponent(vNode, context))),
-    parentDOM,
-    context,
-    isSVG,
-    nextNode,
-    lifecycle
-  );
+  mount((vNode.children = handleComponentInput(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle);
 }
 
 function createClassMountCallback(instance) {
