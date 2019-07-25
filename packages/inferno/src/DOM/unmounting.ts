@@ -5,12 +5,9 @@ import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
 import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';
 
-export function remove(vNode: VNode, parentDOM: Element | null) {
+export function remove(vNode: VNode, parentDOM: Element) {
   unmount(vNode);
-
-  if (parentDOM) {
-    removeVNodeDOM(vNode, parentDOM);
-  }
+  removeVNodeDOM(vNode, parentDOM);
 }
 
 export function unmount(vNode) {

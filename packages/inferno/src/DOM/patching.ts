@@ -26,7 +26,6 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
   unmount(lastVNode);
 
   if ((nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0) {
-    // Single DOM operation, when we have dom references available
     mount(nextVNode, null, context, isSVG, null, lifecycle);
     // Single DOM operation, when we have dom references available
     replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);

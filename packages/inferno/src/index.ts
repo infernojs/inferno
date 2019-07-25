@@ -17,7 +17,7 @@ import { Component, ComponentType, rerender } from './core/component';
 import { mountProps } from './DOM/props';
 
 import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
-import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks, mountText } from './DOM/mounting';
+import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks } from './DOM/mounting';
 import { createRef, mountRef, forwardRef } from './core/refs';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -68,7 +68,6 @@ export {
   mountElement as _ME,
   mountFunctionalComponentCallbacks as _MFCC,
   mountRef as _MR,
-  mountText as _MT,
   mountProps as _MP,
   __render
 };

@@ -30,7 +30,6 @@ import {
   _ME,
   _MFCC,
   _MR,
-  _MT,
   _MP
 } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
@@ -358,7 +357,6 @@ if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined
     _MFCC,
     _MP,
     _MR,
-    _MT,
     __render,
     // Public methods
     cloneElement: cloneVNode,
@@ -417,7 +415,6 @@ export {
   _MFCC,
   _MP,
   _MR,
-  _MT,
   __render,
   // Public methods
   cloneVNode as cloneElement,
@@ -465,7 +462,6 @@ export default {
   _MFCC,
   _MP,
   _MR,
-  _MT,
   __render,
   // Public methods
   cloneElement: cloneVNode,
