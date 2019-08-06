@@ -36,7 +36,7 @@ The performance is achieved through multiple optimizations, for example:
 - Components can be rendered outside their current html hierarchy using `createPortal` - API
 - Support for [older browsers](https://github.com/infernojs/inferno#browser-support) without any polyfills
 - defaultHooks for Functional components, this way re-defining lifecycle events per usage can be avoided
-- Unline React, Inferno supports setting styles using string `<div style="float: left"></div>`
+- Unlike React, Inferno supports setting styles using string `<div style="float: left"></div>`
 - Fragments (v6)
 - createRef and forwardRef APIs (v6)
 
@@ -55,6 +55,8 @@ InfernoJS natively supports the browsers listed below.
 - [Inferno v6](https://github.com/infernojs/inferno/blob/master/documentation/v6-migration.md)
 
 ## Benchmarks
+
+Live examples at [https://infernojs.github.io/inferno](https://infernojs.github.io/inferno)
 
 - [UI Bench](https://localvoid.github.io/uibench/)
 - [dbmonster](https://rawgit.com/infernojs/dbmonster-inferno/master/index.html)
@@ -139,9 +141,9 @@ render(
 
 ### Tear down
 
-To tear down inferno application you need to render null on root element.
+To tear down inferno application you need to render null on root element. 
 Rendering `null` will trigger unmount lifecycle hooks for whole vDOM tree and remove global event listeners.
-It is important to unmount unused vNode trees to free browser memory.
+It is important to unmount unused vNode trees to free browser memory. 
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -167,9 +169,12 @@ render(
 
 If you have built something using Inferno you can add them here:
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/pzmqLjo7/)
-- [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox) : SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
-
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/2nm1kqct/)
+- [**Simple Clock v5** (@JSFiddle)](https://jsfiddle.net/pzmqLjo7/)
+- [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox): SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
+- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer) 
+(state machine library) 
+- [**Lemmy - a self-hostable reddit alternative** (front end in Inferno)](https://github.com/dessalines/lemmy)
 
 ## Getting Started
 
@@ -179,7 +184,7 @@ Alternatively, you can try any of the following:
 * the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup.
 * for a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/).
 * for using Inferno to build a mobile app, try [Inferno Mobile Starter Project](https://github.com/Rudy-Zidan/inferno-mobile) by [Rudy-Zidan](https://github.com/Rudy-Zidan).
-* for [TypeScript](https://www.typescriptlang.org/) support and bundling with [Browserify](https://www.npmjs.com/package/browserify): https://github.com/smcatala/inferno-typescript-browserify-example
+* for [TypeScript](https://www.typescriptlang.org/) support and bundling, check out [ts-transform-inferno](https://github.com/deamme/ts-transform-inferno), or [inferno-typescript-example](https://github.com/infernojs/inferno-typescript-example).
 * for an example of how to use Inferno in [codesandbox](https://codesandbox.io/): https://codesandbox.io/s/znmyj24w4p
 
 Core package:
@@ -251,7 +256,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 - Inferno doesn't have a fully synthetic event system like React does. Inferno has a partially synthetic event system, instead opting to only delegate certain events (such as `onClick`).
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
-- Inferno doesn't support legecacy string refs, use `createRef` or callback `ref` API
+- Inferno doesn't support legacy string refs, use `createRef` or callback `ref` API
 - Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than ES2015 classes.
 - Inferno is able to use the React Dev Tools extensions for Chrome/Firefox/etc to provide the same level of debugging experience to the Inferno user via `inferno-devtools`.
 
@@ -273,17 +278,17 @@ native DOM event is `oninput`).
 Available synthetic events are:
 - `onClick`
 - `onDblClick`
-- `onMouseMove`
-- `onMouseDown`
-- `onMouseUp`
-- `onSubmit`
-- `onKeyPress`
-- `onKeyDown`
-- `onKeyUp`
-- `onInput`
-- `onChange`
 - `onFocusIn`
 - `onFocusOut`
+- `onKeyDown`
+- `onKeyPress`
+- `onKeyUp`
+- `onMouseDown`
+- `onMouseMove`
+- `onMouseUp`
+- `onTouchEnd`
+- `onTouchMove`
+- `onTouchStart`
 
 ### `linkEvent` (package: `inferno`)
 
