@@ -29,6 +29,10 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
   attachEvent(dom, normalizeEventName(name), nextValue);
 }
 
+function setProperty(name, value, domStyle) {
+  domStyle.setProperty(name.replace(/[A-Z]/g, '-$&').toLowerCase(), value);
+}
+
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
@@ -49,7 +53,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
       // do not add a hasOwnProperty check here, it affects performance
       value = nextAttrValue[style];
       if (value !== lastAttrValue[style]) {
-        domStyle.setProperty(style, value);
+        setProperty(style, value, domStyle);
       }
     }
 
@@ -61,7 +65,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   } else {
     for (style in nextAttrValue) {
       value = nextAttrValue[style];
-      domStyle.setProperty(style, value);
+      setProperty(style, value, domStyle);
     }
   }
 }
