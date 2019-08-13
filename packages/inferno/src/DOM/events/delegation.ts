@@ -74,8 +74,13 @@ export function handleSyntheticEvent(
   }
 }
 
-function dispatchEvents(event: SemiSyntheticEvent<any>, target, isClick: boolean, name: string, eventData: IEventData) {
-  let dom = target;
+// When browsers fully support event.composedPath we could loop it through instead of using parentNode property
+function getTargetNode(event) {
+  return isFunction(event.composedPath) ? event.composedPath()[0] : event.target;
+}
+
+function dispatchEvents(event: SemiSyntheticEvent<any>, isClick: boolean, name: string, eventData: IEventData) {
+  let dom = getTargetNode(event);
   do {
     // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
     // because the event listener is on document.body
@@ -146,13 +151,13 @@ function rootClickEvent(name: string) {
       return;
     }
 
-    dispatchEvents(event, event.target, true, name, extendEventProperties(event));
+    dispatchEvents(event, true, name, extendEventProperties(event));
   };
 }
 
 function rootEvent(name: string) {
   return function(event: SemiSyntheticEvent<any>) {
-    dispatchEvents(event, event.target, false, name, extendEventProperties(event));
+    dispatchEvents(event, false, name, extendEventProperties(event));
   };
 }
 
