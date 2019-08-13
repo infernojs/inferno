@@ -1,7 +1,7 @@
-import { render, Component } from 'inferno';
-import { createElement } from 'inferno-create-element';
+import {Component, render} from 'inferno';
+import {createElement} from 'inferno-create-element';
 import sinon from 'sinon';
-import { innerHTML } from 'inferno-utils';
+import {innerHTML} from 'inferno-utils';
 
 describe('lifecycle hooks', () => {
   describe('Stateless component hooks', () => {

@@ -1,4 +1,4 @@
-import { render, createTextVNode } from 'inferno';
+import { createTextVNode, render } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('Development warnings', () => {

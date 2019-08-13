@@ -1,5 +1,5 @@
 import { innerHTML } from 'inferno-utils';
-import { createElement, isValidElement, render, Component } from 'inferno-compat';
+import { Component, createElement, isValidElement, render } from 'inferno-compat';
 
 describe('Compat Children', () => {
   let container;

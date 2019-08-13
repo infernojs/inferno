@@ -1,4 +1,4 @@
-import { Component, render, createVNode, createTextVNode } from 'inferno';
+import { Component, createTextVNode, createVNode, render } from 'inferno';
 import { initDevTools } from 'inferno-devtools';
 
 describe('Devtools', () => {
@@ -8,7 +8,7 @@ describe('Devtools', () => {
   let Reconciler;
   let listener;
 
-  beforeAll(function () {
+  beforeAll(function() {
     // tslint:disable-next-line
     window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] = {
       inject(hooks) {
@@ -29,7 +29,7 @@ describe('Devtools', () => {
     initDevTools();
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     container = document.createElement('div');
     listener({
       data: {
@@ -50,7 +50,7 @@ describe('Devtools', () => {
     Reconciler.unmountComponent.calls.reset();
   });
 
-  afterEach(function () {
+  afterEach(function() {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -65,18 +65,11 @@ describe('Devtools', () => {
   it('Should register root components', () => {
     class DevToolsTester extends Component {
       public render() {
-        return (
-          <div>
-            Test
-          </div>
-        )
+        return <div>Test</div>;
       }
     }
 
-    render(
-      <DevToolsTester/>,
-      container
-    );
+    render(<DevToolsTester />, container);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(2); // Root, div
     expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(1);
@@ -86,20 +79,14 @@ describe('Devtools', () => {
 
     const root2 = document.createElement('div');
     document.body.appendChild(root2);
-    render(
-      <DevToolsTester/>,
-      root2
-    );
+    render(<DevToolsTester />, root2);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4); // Root, div
     expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(2);
     expect(Object.keys(Mount._instancesByReactRootID)).toEqual(['.0', '.1']);
 
     // Remove first root
-    render(
-      null,
-      container
-    );
+    render(null, container);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4);
     expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(2);
@@ -107,10 +94,7 @@ describe('Devtools', () => {
     expect(Object.keys(Mount._instancesByReactRootID)).toEqual(['.1']);
 
     // Add first root back
-    render(
-      <DevToolsTester/>,
-      container
-    );
+    render(<DevToolsTester />, container);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(6);
     expect(Mount._renderNewRootComponent).toHaveBeenCalledTimes(3);
@@ -147,27 +131,16 @@ describe('Devtools', () => {
       }
 
       public render(_props, state) {
-        return (
-          <div>
-            {!state.nodes ? null : state.nodes}
-          </div>
-        )
+        return <div>{!state.nodes ? null : state.nodes}</div>;
       }
     }
 
-
-    render(
-      <TestToolTester/>,
-      container
-    );
+    render(<TestToolTester />, container);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(2);
     expect(container.innerHTML).toEqual('<div></div>');
 
-    let nodes: any = [
-      <div>first</div>,
-      <div>second</div>
-    ];
+    let nodes: any = [<div>first</div>, <div>second</div>];
 
     instance.setState({
       nodes
@@ -176,11 +149,7 @@ describe('Devtools', () => {
     expect(container.innerHTML).toEqual('<div><div>first</div><div>second</div></div>');
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4);
 
-    nodes = [
-      <div>first</div>,
-      <div>middle</div>,
-      <div>second</div>
-    ];
+    nodes = [<div>first</div>, <div>middle</div>, <div>second</div>];
 
     instance.setState({
       nodes
@@ -219,19 +188,11 @@ describe('Devtools', () => {
       }
 
       public render(_props, state) {
-        return (
-          <div>
-            {!state.nodes ? null : state.nodes}
-          </div>
-        )
+        return <div>{!state.nodes ? null : state.nodes}</div>;
       }
     }
 
-
-    render(
-      <TestToolTester/>,
-      container
-    );
+    render(<TestToolTester />, container);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(2);
     expect(container.innerHTML).toEqual('<div></div>');
@@ -239,7 +200,6 @@ describe('Devtools', () => {
     const devToolRoot = Mount._instancesByReactRootID[Object.keys(Mount._instancesByReactRootID)[0]];
 
     let nodes: any = <div>second</div>;
-
 
     // Add single
     instance.setState({
@@ -256,7 +216,6 @@ describe('Devtools', () => {
     instance.setState({
       nodes
     });
-
 
     expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('div');
     expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('first');
@@ -280,14 +239,12 @@ describe('Devtools', () => {
     expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('div');
     expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('second');
 
-
     nodes = <div key="test2">test2</div>;
 
     // Update by changing key
     instance.setState({
       nodes
     });
-
 
     expect(devToolRoot._renderedComponent._renderedChildren[0]._currentElement.type).toBe('div');
     expect(devToolRoot._renderedComponent._renderedChildren[0]._stringText).toBe('test2');
@@ -318,27 +275,16 @@ describe('Devtools', () => {
       }
 
       public render(_props, state) {
-        return (
-          <div>
-            {!state.nodes ? null : state.nodes}
-          </div>
-        )
+        return <div>{!state.nodes ? null : state.nodes}</div>;
       }
     }
 
-
-    render(
-      <TestToolTester/>,
-      container
-    );
+    render(<TestToolTester />, container);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(2);
     expect(container.innerHTML).toEqual('<div></div>');
 
-    let nodes: any = [
-      <div key="1"></div>,
-      <div key="2"></div>
-    ];
+    let nodes: any = [<div key="1"></div>, <div key="2"></div>];
 
     instance.setState({
       nodes
@@ -347,14 +293,7 @@ describe('Devtools', () => {
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(4);
     expect(Reconciler.unmountComponent).toHaveBeenCalledTimes(0);
 
-    nodes = [
-      <div key="1"></div>,
-      <div key="x1"></div>,
-      <div key="x2"></div>,
-      <div key="x3"></div>,
-      <div key="x4"></div>,
-      <div key="2"></div>
-    ];
+    nodes = [<div key="1"></div>, <div key="x1"></div>, <div key="x2"></div>, <div key="x3"></div>, <div key="x4"></div>, <div key="2"></div>];
 
     instance.setState({
       nodes
@@ -363,12 +302,7 @@ describe('Devtools', () => {
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(9);
     expect(Reconciler.unmountComponent).toHaveBeenCalledTimes(1);
 
-    nodes = [
-      <div key="1"></div>,
-      <div key="x1"></div>,
-      <div key="x2"></div>,
-      <div key="2"></div>
-    ];
+    nodes = [<div key="1"></div>, <div key="x1"></div>, <div key="x2"></div>, <div key="2"></div>];
 
     instance.setState({
       nodes
@@ -393,29 +327,21 @@ describe('Devtools', () => {
       }
 
       public render(_props, state) {
-        return (
-          <div>
-            {!state.nodes ? null : state.nodes}
-          </div>
-        )
+        return <div>{!state.nodes ? null : state.nodes}</div>;
       }
     }
 
-
-    render(
-      <TestToolTester/>,
-      container
-    );
+    render(<TestToolTester />, container);
 
     expect(Reconciler.mountComponent).toHaveBeenCalledTimes(2);
     expect(container.innerHTML).toEqual('<div></div>');
 
     instance.setState({
       nodes: [
-        createVNode(1, "div", null, 1, 16, null, "1"),
-        createVNode(1, "div", null, [1, 2], 0, null, "2"),
-        createVNode(1, "div", null, [createTextVNode(1), createTextVNode(2)], 0, null, "3"),
-        createVNode(1, "div", null, 1001, 16, null, "4")
+        createVNode(1, 'div', null, 1, 16, null, '1'),
+        createVNode(1, 'div', null, [1, 2], 0, null, '2'),
+        createVNode(1, 'div', null, [createTextVNode(1), createTextVNode(2)], 0, null, '3'),
+        createVNode(1, 'div', null, 1001, 16, null, '4')
       ]
     });
 
@@ -441,10 +367,10 @@ describe('Devtools', () => {
 
     instance.setState({
       nodes: [
-          createVNode(1, "div", null, 8, 16, null, "1"),
-          createVNode(1, "div", null, [8, 9], 0, null, "2"),
-          createVNode(1, "div", null, [createTextVNode(8), createTextVNode(9)], 0, null, "3"),
-          createVNode(1, "div", null, 899, 16, null, "4")
+        createVNode(1, 'div', null, 8, 16, null, '1'),
+        createVNode(1, 'div', null, [8, 9], 0, null, '2'),
+        createVNode(1, 'div', null, [createTextVNode(8), createTextVNode(9)], 0, null, '3'),
+        createVNode(1, 'div', null, 899, 16, null, '4')
       ]
     });
 

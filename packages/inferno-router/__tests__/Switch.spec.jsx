@@ -1,5 +1,4 @@
 import { render, rerender } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
 
 describe('Switch (jsx)', () => {

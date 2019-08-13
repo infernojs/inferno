@@ -1,5 +1,5 @@
-import { Component } from 'inferno';
-import { isFunction, throwError } from 'inferno-shared';
+import {Component} from 'inferno';
+import {isFunction, throwError} from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
   statics?: {

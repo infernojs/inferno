@@ -1,6 +1,5 @@
 import sinon from 'sinon';
-import { innerHTML } from 'inferno-utils';
-import { Component, render, createElement } from 'inferno-compat';
+import { Component, createElement, render } from 'inferno-compat';
 
 describe('Inferno-compat LifeCycle', () => {
   let container;

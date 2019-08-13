@@ -3,7 +3,6 @@
 import { render } from 'inferno';
 import { Component } from 'inferno-component';
 import { inject, observer, Provider } from 'inferno-mobx';
-import * as mobx from 'mobx';
 
 describe('generic higher order components', () => {
   let container;

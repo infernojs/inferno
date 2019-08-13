@@ -1,7 +1,6 @@
-import { render, Component, createFragment, Fragment, createPortal, rerender } from 'inferno';
-import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
-import { ChildFlags } from 'inferno-vnode-flags';
+import {Component, createFragment, createPortal, Fragment, render, rerender} from 'inferno';
+import {createElement} from 'inferno-create-element';
+import {ChildFlags} from 'inferno-vnode-flags';
 
 describe('CreateElement (non-JSX)', () => {
   let container;

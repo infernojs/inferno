@@ -1,5 +1,4 @@
 import { Component, render, rerender } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 
 describe('Error recovery', () => {
   let container;

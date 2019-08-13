@@ -1,10 +1,10 @@
 import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { createVoidVNode, directClone } from '../core/implementation';
+import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
 import { VNode } from '../core/types';
 import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, safeCall1, setTextContent } from './utils/common';
 import { mountProps } from './props';
-import { createClassComponentInstance, handleComponentInput } from './utils/componentutil';
+import { createClassComponentInstance } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
@@ -21,7 +21,7 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
   } else if (flags & VNodeFlags.Void || flags & VNodeFlags.Text) {
     mountText(vNode, parentDOM, nextNode);
   } else if (flags & VNodeFlags.Fragment) {
-    mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+    mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle);
   } else if (flags & VNodeFlags.Portal) {
     mountPortal(vNode, context, parentDOM, nextNode, lifecycle);
   } else if (process.env.NODE_ENV !== 'production') {
@@ -48,7 +48,7 @@ function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Elemen
   vNode.dom = placeHolderVNode.dom;
 }
 
-function mountFragment(vNode, parentDOM, context, isSVG, nextNode, lifecycle: Function[]): void {
+function mountFragment(vNode, context, parentDOM: Element | null, isSVG, nextNode, lifecycle: Function[]): void {
   let children = vNode.children;
   let childFlags = vNode.childFlags;
 
@@ -147,7 +147,7 @@ function renderFunctionalComponent(vNode: VNode, context) {
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {
-  mount((vNode.children = handleComponentInput(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle);
+  mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle);
 }
 
 function createClassMountCallback(instance) {

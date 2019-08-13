@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import * as mobx from 'mobx';
-import { inject, observer, Observer, offError, trackComponents, useStaticRendering } from 'inferno-mobx';
+import { inject, observer, Observer, trackComponents, useStaticRendering } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
 
 const store = mobx.observable({

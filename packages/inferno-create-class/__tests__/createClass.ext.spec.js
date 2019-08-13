@@ -1,7 +1,7 @@
-import { render } from 'inferno';
-import { createClass } from 'inferno-create-class';
-import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
+import {render} from 'inferno';
+import {createClass} from 'inferno-create-class';
+import {createElement} from 'inferno-create-element';
+import {innerHTML} from 'inferno-utils';
 
 describe('Components createClass (non-JSX)', () => {
   let container;

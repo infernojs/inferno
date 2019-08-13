@@ -1,16 +1,16 @@
 import {
   createComponentVNode,
+  createFragment,
   createVNode,
   getFlagsForElementVnode,
   IComponentConstructor,
   Key,
   Props,
   StatelessComponent,
-  VNode,
-  createFragment
+  VNode
 } from 'inferno';
-import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import {isInvalid, isNullOrUndef, isString, isUndefined} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 
 const componentHooks = {
   onComponentDidMount: 1,

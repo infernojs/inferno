@@ -1,7 +1,7 @@
-import { isFunction, isNull } from 'inferno-shared';
-import { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
-import { isLastValueSameLinkEvent, normalizeEventName } from './../utils/common';
-import { isLinkEventObject } from './linkEvent';
+import {isFunction, isNull} from 'inferno-shared';
+import {LinkedEvent, SemiSyntheticEvent} from './../../core/types';
+import {isLastValueSameLinkEvent, normalizeEventName} from './../utils/common';
+import {isLinkEventObject} from './linkEvent';
 
 interface IEventData {
   dom: Element;

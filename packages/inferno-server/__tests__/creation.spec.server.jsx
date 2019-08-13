@@ -1,5 +1,5 @@
 import { renderToStaticMarkup, renderToString } from 'inferno-server';
-import { Component, render, createFragment } from 'inferno';
+import { Component, createFragment } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
 import { hydrate } from 'inferno-hydrate';

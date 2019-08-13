@@ -1,6 +1,6 @@
-import { isNullOrUndef } from 'inferno-shared';
-import { createWrappedFunction } from './wrapper';
-import { attachEvent } from '../events/attachEvent';
+import {isNullOrUndef} from 'inferno-shared';
+import {createWrappedFunction} from './wrapper';
+import {attachEvent} from '../events/attachEvent';
 
 const onTextareaInputChange = createWrappedFunction('onInput', applyValueTextArea);
 

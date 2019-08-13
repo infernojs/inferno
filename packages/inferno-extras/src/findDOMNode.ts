@@ -1,4 +1,4 @@
-import { findDOMfromVNode } from 'inferno';
+import {findDOMfromVNode} from 'inferno';
 
 export function findDOMNode(ref) {
   if (ref && ref.nodeType) {

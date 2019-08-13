@@ -1,6 +1,14 @@
-import { createComponentVNode, createFragment, createVNode, getFlagsForElementVnode, InfernoNode, VNode, Fragment } from 'inferno';
-import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import {
+  createComponentVNode,
+  createFragment,
+  createVNode,
+  Fragment,
+  getFlagsForElementVnode,
+  InfernoNode,
+  VNode
+} from 'inferno';
+import {isArray, isString, isStringOrNumber, isUndefined} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;

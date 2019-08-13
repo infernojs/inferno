@@ -1,7 +1,6 @@
 import { Component, createTextVNode, createVNode, render } from 'inferno';
 import { NO_OP } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { triggerEvent } from 'inferno-utils';
 
 describe('rendering routine', () => {
   let container;

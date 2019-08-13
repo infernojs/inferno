@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { MemoryRouter, Route, Link, NavLink } from 'inferno-router';
+import { Link, MemoryRouter, NavLink, Route } from 'inferno-router';
 
 describe('Github #1322', () => {
   let container;

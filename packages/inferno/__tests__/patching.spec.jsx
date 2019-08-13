@@ -1,4 +1,4 @@
-import { createTextVNode, createVNode, render, Component, linkEvent } from 'inferno';
+import { Component, createTextVNode, createVNode, linkEvent, render } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import sinon from 'sinon';
 

@@ -1,5 +1,5 @@
-import { Component } from 'inferno';
-import { invariant } from './utils';
+import {Component} from 'inferno';
+import {invariant} from './utils';
 
 export interface IPromptProps {
   when: any;

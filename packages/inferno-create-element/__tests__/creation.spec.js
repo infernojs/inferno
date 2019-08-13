@@ -1,5 +1,5 @@
-import { render } from 'inferno';
-import { createElement } from 'inferno-create-element';
+import {render} from 'inferno';
+import {createElement} from 'inferno-create-element';
 
 describe('Creation - (non-JSX)', () => {
   let container;

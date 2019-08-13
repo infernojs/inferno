@@ -1,4 +1,4 @@
-import { createRef, Component, render, rerender } from 'inferno';
+import { Component, createRef, render, rerender } from 'inferno';
 
 describe('createRef', () => {
   let container;

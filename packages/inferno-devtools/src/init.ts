@@ -1,4 +1,4 @@
-import { createDevToolsBridge } from './bridge';
+import {createDevToolsBridge} from './bridge';
 
 export function initDevTools() {
   /* tslint:disable */

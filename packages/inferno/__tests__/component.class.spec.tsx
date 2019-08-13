@@ -4,7 +4,7 @@ describe('Component', () => {
   it('Should be assignable where IComponentConstructor is expected', () => {
     class ClassName extends Component<{ className: string }, any> {
       public render() {
-        return <div>{this.props.className}</div>
+        return <div>{this.props.className}</div>;
       }
     }
     const $ClassName: IComponentConstructor<{ className: string }> = ClassName;
@@ -12,7 +12,7 @@ describe('Component', () => {
 
     class None extends Component<{}, any> {
       public render() {
-        return <div />
+        return <div />;
       }
     }
     const $None: IComponentConstructor<{}> = None;
@@ -20,23 +20,27 @@ describe('Component', () => {
 
     class Id extends Component<{ id: string }, any> {
       public render() {
-        return <div>{this.props.id}</div>
+        return <div>{this.props.id}</div>;
       }
     }
     const $Id: IComponentConstructor<{ id: string }> = Id;
     expect(Id).toBe($Id);
 
-    class Two extends Component<{ className: string, id: string }, any> {
+    class Two extends Component<{ className: string; id: string }, any> {
       public render() {
-        return <div>{this.props.className} {this.props.id}</div>
+        return (
+          <div>
+            {this.props.className} {this.props.id}
+          </div>
+        );
       }
     }
-    const $Two: IComponentConstructor<{ className: string, id: string }> = Two;
+    const $Two: IComponentConstructor<{ className: string; id: string }> = Two;
     expect(Two).toBe($Two);
 
     class Whatever extends Component<any, any> {
       public render() {
-        return <div />
+        return <div />;
       }
     }
     const $Whatever: IComponentConstructor<any> = Whatever;

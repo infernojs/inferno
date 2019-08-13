@@ -1,8 +1,8 @@
-import { createComponentVNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {createComponentVNode} from 'inferno';
+import {VNodeFlags} from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
-import { Route } from './Route';
-import { combineFrom } from 'inferno-shared';
+import {Route} from './Route';
+import {combineFrom} from 'inferno-shared';
 
 interface IWithRouterProps {
   wrappedComponentRef: any;

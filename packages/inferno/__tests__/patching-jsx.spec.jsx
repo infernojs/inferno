@@ -1,4 +1,4 @@
-import { createVNode, render, Component, rerender } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import sinon from 'sinon';
 
 describe('patching routine (JSX)', () => {

@@ -1,4 +1,4 @@
-import { render, Component } from 'inferno';
+import { Component, render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 
 describe('Select / select multiple (JSX)', () => {

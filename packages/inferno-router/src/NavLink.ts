@@ -1,8 +1,8 @@
-import { createComponentVNode, VNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { Route } from './Route';
-import { Link } from './Link';
-import { combineFrom } from 'inferno-shared';
+import {createComponentVNode, VNode} from 'inferno';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {Route} from './Route';
+import {Link} from './Link';
+import {combineFrom} from 'inferno-shared';
 
 function filter(i) {
   return i;

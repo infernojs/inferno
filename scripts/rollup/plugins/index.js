@@ -6,7 +6,7 @@ const tsPlugin = require('rollup-plugin-typescript2');
 const terser = require('rollup-plugin-terser').terser;
 const aliasPlugin = require('./alias');
 
-module.exports = function(version, options) {
+module.exports = function (version, options) {
   const plugins = [
     aliasPlugin,
     nodeResolve({

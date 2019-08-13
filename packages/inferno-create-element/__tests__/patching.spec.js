@@ -1,5 +1,5 @@
-import { render, rerender, Component, createFragment } from 'inferno';
-import { createElement } from 'inferno-create-element';
+import {Component, createFragment, render, rerender} from 'inferno';
+import {createElement} from 'inferno-create-element';
 
 describe('patching keyed lists (non-jsx)', () => {
   function createDataModels() {

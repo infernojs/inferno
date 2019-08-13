@@ -1,6 +1,6 @@
-import { Component } from 'inferno';
-import { createLocation, locationsAreEqual } from 'history';
-import { invariant } from './utils';
+import {Component} from 'inferno';
+import {createLocation, locationsAreEqual} from 'history';
+import {invariant} from './utils';
 
 export interface RedirectProps {
   from?: string;

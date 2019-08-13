@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import * as mobx from 'mobx';
-import { observer, trackComponents, useStaticRendering } from 'inferno-mobx';
+import { observer, useStaticRendering } from 'inferno-mobx';
 import { renderToStaticMarkup } from 'inferno-server';
 
 const getDNode = (obj, prop) => obj.$mobx.values[prop];

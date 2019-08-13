@@ -72,7 +72,7 @@ describe('Github1176', () => {
     }
 
     function Foobar() {
-      return <div>Ok</div>
+      return <div>Ok</div>;
     }
 
     const routes = (

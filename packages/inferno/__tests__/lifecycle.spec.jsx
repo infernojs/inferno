@@ -1,4 +1,4 @@
-import { render, rerender, Component } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 
 describe('ComponentDidUpdate', () => {
   let container;

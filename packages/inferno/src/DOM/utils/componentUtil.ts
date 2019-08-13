@@ -1,8 +1,7 @@
-import { createFragment, createTextVNode, directClone } from '../../core/implementation';
-import { combineFrom, isArray, isFunction, isInvalid, isNull, isStringOrNumber, warning } from 'inferno-shared';
-import { createDerivedState, EMPTY_OBJ, getComponentName } from './common';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode } from './../../core/types';
+import {combineFrom, isFunction, isNull, warning} from 'inferno-shared';
+import {createDerivedState, EMPTY_OBJ, getComponentName} from './common';
+import {VNode} from './../../core/types';
+import {normalizeRoot} from "../../core/implementation";
 
 function warnAboutOldLifecycles(component) {
   const oldLifecycles: string[] = [];
@@ -31,7 +30,7 @@ function warnAboutOldLifecycles(component) {
 }
 
 export function renderNewInput(instance, props, context) {
-  const nextInput = handleComponentInput(instance.render(props, instance.state, context));
+  const nextInput = normalizeRoot(instance.render(props, instance.state, context));
 
   let childContext = context;
   if (isFunction(instance.getChildContext)) {
@@ -95,15 +94,4 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
   instance.$LI = renderNewInput(instance, props, context);
 
   return instance;
-}
-
-export function handleComponentInput(input: any): VNode {
-  if (isInvalid(input) || isStringOrNumber(input)) {
-    return createTextVNode(input, null);
-  }
-  if (isArray(input)) {
-    return createFragment(input, ChildFlags.UnknownChildren, null);
-  }
-
-  return input.flags & VNodeFlags.InUse ? directClone(input) : input;
 }

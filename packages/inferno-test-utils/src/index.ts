@@ -1,5 +1,5 @@
-import { VNode, render } from 'inferno';
-import { isArray, isFunction, isInvalid, isNullOrUndef, isString, throwError } from 'inferno-shared';
+import {render, VNode} from 'inferno';
+import {isArray, isFunction, isInvalid, isNullOrUndef, isString, throwError} from 'inferno-shared';
 import {
   getTagNameOfVNode as _getTagNameOfVNode,
   isClassVNode as _isClassVNode,
@@ -10,8 +10,8 @@ import {
   isVNode as _isVNode,
   Wrapper as _Wrapper
 } from './utils';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { renderToSnapshot as _renderToSnapshot, vNodeToSnapshot as _vNodeToSnapshot } from './jest';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {renderToSnapshot as _renderToSnapshot, vNodeToSnapshot as _vNodeToSnapshot} from './jest';
 
 // Type Checkers
 

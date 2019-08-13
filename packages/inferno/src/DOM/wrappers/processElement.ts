@@ -1,9 +1,9 @@
-import { isNullOrUndef } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { VNode } from '../../core/types';
-import { applyValueInput, inputEvents, isCheckedType } from './InputWrapper';
-import { applyValueSelect, selectEvents } from './SelectWrapper';
-import { applyValueTextArea, textAreaEvents } from './TextareaWrapper';
+import {isNullOrUndef} from 'inferno-shared';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {VNode} from '../../core/types';
+import {applyValueInput, inputEvents, isCheckedType} from './InputWrapper';
+import {applyValueSelect, selectEvents} from './SelectWrapper';
+import {applyValueTextArea, textAreaEvents} from './TextareaWrapper';
 
 /**
  * There is currently no support for switching same input between controlled and nonControlled

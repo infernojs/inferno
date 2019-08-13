@@ -1,5 +1,5 @@
-import { isArray, isNullOrUndef, isStringOrNumber } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {isArray, isNullOrUndef, isStringOrNumber} from 'inferno-shared';
+import {VNodeFlags} from 'inferno-vnode-flags';
 
 const comparer = document.createElement('div');
 

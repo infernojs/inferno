@@ -1,7 +1,7 @@
-import { render, VNode, rerender } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isArray, isNullOrUndef } from 'inferno-shared';
-import { getTagNameOfVNode } from './utils';
+import {render, rerender, VNode} from 'inferno';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {isArray, isNullOrUndef} from 'inferno-shared';
+import {getTagNameOfVNode} from './utils';
 
 // Jest Snapshot Utilities
 // Jest formats it's snapshots prettily because it knows how to play with the React test renderer.

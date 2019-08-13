@@ -1,6 +1,6 @@
-import { render, Component, Fragment, forwardRef, createRef } from 'inferno';
-import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
+import {Component, createRef, forwardRef, Fragment, render} from 'inferno';
+import {createElement} from 'inferno-create-element';
+import {innerHTML} from 'inferno-utils';
 
 describe('CreateElement (non-JSX)', () => {
   let container;

@@ -1,5 +1,5 @@
-import { render } from 'inferno';
-import { createElement } from 'inferno-create-element';
+import {render} from 'inferno';
+import {createElement} from 'inferno-create-element';
 
 function spanTagWithText(text) {
   return createElement(

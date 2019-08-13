@@ -1,5 +1,4 @@
 import { Component, createPortal, render as _render } from 'inferno';
-import { triggerEvent } from 'inferno-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('Portal spec', () => {
@@ -67,6 +66,120 @@ describe('Portal spec', () => {
     render(null, container);
     expect(portalContainer.innerHTML).toBe('');
     expect(container.innerHTML).toBe('');
+  });
+
+  it('Should allow Arrays as portal content', () => {
+    let portalContainer = document.createElement('div');
+    let mountCount = 0;
+    let unmountCount = 0;
+
+    class Tester extends Component {
+      componentWillUnmount() {
+        unmountCount++;
+      }
+
+      componentWillMount() {
+        mountCount++;
+      }
+
+      render({ children }) {
+        return children;
+      }
+    }
+
+    render(createPortal([<Tester key={1}>1</Tester>, <Tester key={2}>2</Tester>, <Tester key={3}>3</Tester>], portalContainer), container);
+    expect(portalContainer.innerHTML).toBe('123');
+    expect(container.innerHTML).toBe('');
+
+    expect(mountCount).toBe(3);
+    expect(unmountCount).toBe(0);
+
+    render(createPortal([<Tester key={3}>3</Tester>, <Tester key={4}>4</Tester>, <Tester key={1}>1</Tester>], portalContainer), container);
+    expect(portalContainer.innerHTML).toBe('341');
+    expect(container.innerHTML).toBe('');
+
+    expect(mountCount).toBe(4);
+    expect(unmountCount).toBe(1);
+
+    render(createPortal(<Tester key={1}>1</Tester>, portalContainer), container);
+    expect(portalContainer.innerHTML).toBe('1');
+    expect(container.innerHTML).toBe('');
+
+    expect(mountCount).toBe(5);
+    expect(unmountCount).toBe(4);
+
+    render(null, container);
+    expect(portalContainer.innerHTML).toBe('');
+    expect(container.innerHTML).toBe('');
+
+    expect(unmountCount).toBe(5);
+  });
+
+  it('Should allow Fragments as portal content', () => {
+    let portalContainer = document.createElement('div');
+    let mountCount = 0;
+    let unmountCount = 0;
+
+    class Tester extends Component {
+      componentWillUnmount() {
+        unmountCount++;
+      }
+
+      componentWillMount() {
+        mountCount++;
+      }
+
+      render({ children }) {
+        return children;
+      }
+    }
+
+    render(
+      createPortal(
+        <>
+          <Tester key={1}>1</Tester>
+          <Tester key={2}>2</Tester>
+          <Tester key={3}>3</Tester>
+        </>,
+        portalContainer
+      ),
+      container
+    );
+    expect(portalContainer.innerHTML).toBe('123');
+    expect(container.innerHTML).toBe('');
+
+    expect(mountCount).toBe(3);
+    expect(unmountCount).toBe(0);
+
+    render(
+      createPortal(
+        <>
+          <Tester key={3}>3</Tester>
+          <Tester key={4}>4</Tester>
+          <Tester key={1}>1</Tester>
+        </>,
+        portalContainer
+      ),
+      container
+    );
+    expect(portalContainer.innerHTML).toBe('341');
+    expect(container.innerHTML).toBe('');
+
+    expect(mountCount).toBe(4);
+    expect(unmountCount).toBe(1);
+
+    render(createPortal(<Tester key={1}>1</Tester>, portalContainer), container);
+    expect(portalContainer.innerHTML).toBe('1');
+    expect(container.innerHTML).toBe('');
+
+    expect(mountCount).toBe(5);
+    expect(unmountCount).toBe(4);
+
+    render(null, container);
+    expect(portalContainer.innerHTML).toBe('');
+    expect(container.innerHTML).toBe('');
+
+    expect(unmountCount).toBe(5);
   });
 
   it('Should mount/render/patch one portal', () => {

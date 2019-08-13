@@ -1,4 +1,4 @@
-import { Component, render, rerender, DragEvent } from 'inferno';
+import { Component, DragEvent, render, rerender } from 'inferno';
 import sinon from 'sinon';
 
 describe('setState', () => {
@@ -31,7 +31,7 @@ describe('setState', () => {
 
   it('callback should be fired after state has changed', () => {
     let counter = 0;
-    class TestComponent extends Component<any, {value: string}> {
+    class TestComponent extends Component<any, { value: string }> {
       public state = {
         value: this.props.value
       };
@@ -86,7 +86,7 @@ describe('setState', () => {
   });
 
   it('Should not fail if callback is object and not function ( invalid used scenario )', () => {
-    class TestComponent extends Component<{value: string}, any> {
+    class TestComponent extends Component<{ value: string }, any> {
       constructor(props) {
         super(props);
         this.state = {
@@ -140,7 +140,7 @@ describe('setState', () => {
   it('Should not fail if componentDidUpdate is not defined', () => {
     let counter = 0;
 
-    class TestComponent extends Component<{value: string}, any> {
+    class TestComponent extends Component<{ value: string }, any> {
       public state = {
         value: this.props.value
       };
@@ -231,7 +231,7 @@ describe('setState', () => {
       }
     }
 
-    class Child extends Component<{foo: string, callback: () => void}> {
+    class Child extends Component<{ foo: string; callback: () => void }> {
       constructor(props, context) {
         super(props, context);
       }
@@ -300,7 +300,7 @@ describe('setState', () => {
       }
     }
 
-    class Child extends Component<{foo: string, callback: () => void}> {
+    class Child extends Component<{ foo: string; callback: () => void }> {
       constructor(props, context) {
         super(props, context);
       }
@@ -355,7 +355,7 @@ describe('setState', () => {
         });
       }
 
-      private  _setActive() {
+      private _setActive() {
         this.setState({
           active: true
         });
@@ -376,7 +376,7 @@ describe('setState', () => {
       return <div>{foo}</div>;
     }
 
-    class Child extends Component<{foo: string, callback: () => void}> {
+    class Child extends Component<{ foo: string; callback: () => void }> {
       constructor(props, context) {
         super(props, context);
       }
@@ -440,7 +440,7 @@ describe('setState', () => {
       }
     }
 
-    class Child extends Component<{foo: string}, {foo: string}> {
+    class Child extends Component<{ foo: string }, { foo: string }> {
       public state = {
         foo: this.props.foo
       };
@@ -502,7 +502,7 @@ describe('setState', () => {
     }
 
     let renderCount = 0;
-    class Child extends Component<{foo: string}, {foo: string}> {
+    class Child extends Component<{ foo: string }, { foo: string }> {
       public state = {
         foo: this.props.foo
       };
@@ -600,7 +600,7 @@ describe('setState', () => {
       }
     }
 
-    class Child extends Component<{foo: string, callback: () => void}> {
+    class Child extends Component<{ foo: string; callback: () => void }> {
       constructor(props, context) {
         super(props, context);
       }
@@ -669,7 +669,7 @@ describe('setState', () => {
       }
     }
 
-    class Child extends Component<{foo: string, callback: () => void}> {
+    class Child extends Component<{ foo: string; callback: () => void }> {
       constructor(props, context) {
         super(props, context);
       }
@@ -702,7 +702,7 @@ describe('setState', () => {
 
   it('Should be possible to update state in componentWillUpdate', () => {
     interface MyState {
-      foo: string
+      foo: string;
     }
 
     class Hello extends Component<any, MyState> {
@@ -717,7 +717,7 @@ describe('setState', () => {
         if (this.state!.foo === 'je') {
           this.setState({
             foo: 'bar'
-          })
+          });
         }
       }
       public render() {
@@ -727,17 +727,11 @@ describe('setState', () => {
 
     expect(container.innerHTML).toBe('');
 
-    render(
-      <Hello name="World" />,
-      container
-    );
+    render(<Hello name="World" />, container);
 
     expect(container.innerHTML).toBe('<div>Hello je</div>');
 
-    render(
-      <Hello name="World" />,
-      container
-    );
+    render(<Hello name="World" />, container);
 
     rerender();
 
@@ -849,7 +843,7 @@ describe('setState', () => {
       return <div>{(context.active ? 'ACTIVE' : 'INACTIVE') + '   :   ' + (context.state.active ? 'ACTIVE' : 'INACTIVE')}</div>;
     }
 
-    class Container extends Component<{active: boolean}, {active: boolean}> {
+    class Container extends Component<{ active: boolean }, { active: boolean }> {
       public state = {
         active: false
       };
@@ -932,13 +926,13 @@ describe('setState', () => {
     class Child extends Component<any, any> {
       constructor(props) {
         super(props);
-        this.state = {test: false};
+        this.state = { test: false };
         this.callCallback = this.callCallback.bind(this);
       }
 
       public callCallback() {
         setStateCounter++;
-        this.setState({test: true}, () => {
+        this.setState({ test: true }, () => {
           counter++;
         });
       }
@@ -949,46 +943,41 @@ describe('setState', () => {
           this.props.callback(true);
         }
 
-        return (
-          <div>Child</div>
-        );
+        return <div>Child</div>;
       }
     }
 
     class MidChild extends Component<any, any> {
       constructor(props) {
         super(props);
-        this.state = {test: false};
+        this.state = { test: false };
         this.callCallback = this.callCallback.bind(this);
       }
 
       public callCallback() {
         setStateCounter++;
-        this.setState({test: true}, () => {
+        this.setState({ test: true }, () => {
           counter++;
           this.props.callback(true);
         });
       }
 
       public render() {
-        return [
-          <button onClick={this.callCallback}>Click</button>,
-          <Child callback={this.props.callback}/>
-        ];
+        return [<button onClick={this.callCallback}>Click</button>, <Child callback={this.props.callback} />];
       }
     }
 
     class Parent extends Component<any, any> {
       constructor(props) {
         super(props);
-        this.state = {test: false, foobar: false};
+        this.state = { test: false, foobar: false };
         this.doSomething = this.doSomething.bind(this);
         this.callCallback = this.callCallback.bind(this);
       }
 
       public callCallback(testValue) {
         setStateCounter++;
-        this.setState({test: testValue}, () => {
+        this.setState({ test: testValue }, () => {
           counter++;
           this.props.callback(true);
         });
@@ -996,7 +985,7 @@ describe('setState', () => {
 
       public doSomething() {
         setStateCounter++;
-        this.setState({foobar: true}, () => {
+        this.setState({ foobar: true }, () => {
           counter++;
         });
       }
@@ -1004,7 +993,7 @@ describe('setState', () => {
       public render() {
         return (
           <div>
-            <MidChild callback={this.callCallback} foobar={this.state.foobar}/>
+            <MidChild callback={this.callCallback} foobar={this.state.foobar} />
           </div>
         );
       }
@@ -1013,14 +1002,14 @@ describe('setState', () => {
     class Wrapper extends Component<any, any> {
       constructor(props) {
         super(props);
-        this.state = {didCounter: 0};
+        this.state = { didCounter: 0 };
         this.doSomething = this.doSomething.bind(this);
       }
 
       public doSomething() {
         setStateCounter++;
 
-        this.setState({didCounter: ++this.state.didCounter}, () => {
+        this.setState({ didCounter: ++this.state.didCounter }, () => {
           counter++;
         });
       }
@@ -1028,7 +1017,7 @@ describe('setState', () => {
       public render() {
         return (
           <div>
-            <Parent callback={this.doSomething}/>
+            <Parent callback={this.doSomething} />
             <span>{this.state.didCounter}</span>
           </div>
         );
@@ -1056,10 +1045,10 @@ describe('setState', () => {
 
     interface TextState {
       texts: {
-        text1: string,
-        text2: string,
-        text3: string
-      }
+        text1: string;
+        text2: string;
+        text3: string;
+      };
     }
 
     class BrokenComponent extends Component<any, TextState> {
@@ -1071,37 +1060,37 @@ describe('setState', () => {
             text2: 'Initial text 2',
             text3: 'Initial text 3'
           }
-        }
+        };
       }
 
       public componentDidMount() {
         // This change is ignored
-        this.setState((prevState) => {
+        this.setState(prevState => {
           // init all
           return {
             texts: {
               ...prevState.texts,
               text1: 'Updated text 1'
             }
-          }
+          };
         });
         // This change is also ignored
-        this.setState((prevState) => {
+        this.setState(prevState => {
           return {
             texts: {
               ...prevState.texts,
               text2: 'Updated text 2'
             }
-          }
+          };
         });
         // Only this change is applied
-        this.setState((prevState) => {
+        this.setState(prevState => {
           return {
             texts: {
               ...prevState.texts,
               text3: 'Updated text 3'
             }
-          }
+          };
         });
       }
 
@@ -1116,13 +1105,13 @@ describe('setState', () => {
             <li>{text2}</li>
             <li>{text3}</li>
           </ul>
-        )
+        );
       }
     }
 
     expect(renderCounter).toBe(0);
 
-    render(<BrokenComponent/>, container);
+    render(<BrokenComponent />, container);
 
     expect(renderCounter).toBe(1);
 

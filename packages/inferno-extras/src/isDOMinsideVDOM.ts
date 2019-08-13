@@ -1,5 +1,5 @@
-import { Component, VNode } from 'inferno';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import {Component, VNode} from 'inferno';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 
 export function isDOMinsideVNode(DOM: Element, vNode: VNode): boolean {
   const stack = [vNode];

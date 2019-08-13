@@ -1,8 +1,17 @@
-import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { renderStylesToString } from './prop-renderers';
-import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
+import {EMPTY_OBJ} from 'inferno';
+import {
+  combineFrom,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  throwError
+} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {renderStylesToString} from './prop-renderers';
+import {createDerivedState, escapeText, isAttributeNameSafe, voidElements} from './utils';
 
 function renderVNodeToString(vNode, parent, context): string {
   const flags = vNode.flags;

@@ -1,4 +1,3 @@
-import { render } from 'inferno';
 import { createContainerWithHTML, innerHTML, sortAttributes, triggerEvent, validateNodeTree } from 'inferno-utils';
 import sinon from 'sinon';
 

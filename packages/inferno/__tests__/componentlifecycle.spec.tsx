@@ -18,7 +18,7 @@ describe('Component lifecycle', () => {
 
   it('componentWillUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
-    class Com extends Component<{value: number}> {
+    class Com extends Component<{ value: number }> {
       public componentWillUpdate(nextProps) {
         callCount++;
         expect(this.props.value).toBe(1);
@@ -42,7 +42,7 @@ describe('Component lifecycle', () => {
 
   it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', () => {
     let doSomething;
-    class Child extends Component<{active: boolean}, {active: boolean}> {
+    class Child extends Component<{ active: boolean }, { active: boolean }> {
       public state = {
         active: false
       };
@@ -69,7 +69,7 @@ describe('Component lifecycle', () => {
       }
     }
 
-    class Parent extends Component<{}, {active: boolean}> {
+    class Parent extends Component<{}, { active: boolean }> {
       public state = {
         active: false
       };
@@ -107,7 +107,7 @@ describe('Component lifecycle', () => {
 
   it('shouldComponentUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
-    class Com extends Component<{value: number}> {
+    class Com extends Component<{ value: number }> {
       public shouldComponentUpdate(nextProps) {
         callCount++;
         expect(this.props.value).toBe(1);
@@ -132,7 +132,7 @@ describe('Component lifecycle', () => {
   });
 
   it('Should call componentWillUnmount before node is removed from DOM tree', () => {
-    class Parent extends Component<{foo: boolean}> {
+    class Parent extends Component<{ foo: boolean }> {
       public render() {
         if (this.props.foo) {
           return (
@@ -181,7 +181,7 @@ describe('Component lifecycle', () => {
     let callCount = 0;
     let c;
 
-    class Com extends Component<{value: number}> {
+    class Com extends Component<{ value: number }> {
       public componentDidUpdate(nextProps) {
         callCount++;
         expect(this.props.value).toBe(1);
@@ -196,7 +196,15 @@ describe('Component lifecycle', () => {
     }
 
     // eslint-disable-next-line no-return-assign
-    render(<Com ref={inst => {c = inst}} value={1} />, container);
+    render(
+      <Com
+        ref={inst => {
+          c = inst;
+        }}
+        value={1}
+      />,
+      container
+    );
 
     c.componentDidUpdate = undefined;
 
@@ -204,7 +212,6 @@ describe('Component lifecycle', () => {
     render(<Com ref={inst => (c = inst)} value={2} />, container);
   });
 });
-
 
 describe('legacy life cycle', () => {
   let consoleErrorStub;
@@ -228,16 +235,18 @@ describe('legacy life cycle', () => {
 
     // build the component and element to be rendered
     class Foo extends Component {
-        // just added to force the warnings
-        static getDerivedStateFromProps() { }
+      // just added to force the warnings
+      static getDerivedStateFromProps() {}
 
-        componentWillMount() { }
+      componentWillMount() {}
 
-        componentWillReceiveProps() { }
+      componentWillReceiveProps() {}
 
-        componentWillUpdate() { }
+      componentWillUpdate() {}
 
-        render() { return <div>Foo</div> }
+      render() {
+        return <div>Foo</div>;
+      }
     }
 
     const element = <Foo />;
@@ -247,16 +256,14 @@ describe('legacy life cycle', () => {
 
     // retrieve the arguments of all calls for console.error
     // so multiple calls to console.error should not broke this test
-    const callArgs = consoleErrorStub
-                        .getCalls()
-                        .map(c => c.args.length && c.args[0]);
+    const callArgs = consoleErrorStub.getCalls().map(c => c.args.length && c.args[0]);
 
     // should have at least one warnings containing:
     // componentWillMount, componentWillReceiveProps, componentWillUpdate
 
     expect(callArgs.length).toBeGreaterThan(0);
 
-    for(let i = 0; i < callArgs.length; i++) {
+    for (let i = 0; i < callArgs.length; i++) {
       expect(callArgs[i]).toMatch(/(componentWillMount)|(componentWillReceiveProps)|(componentWillUpdate)/);
     }
 
@@ -267,16 +274,18 @@ describe('legacy life cycle', () => {
     /* tslint:disable:member-access no-empty */
     // build the component and element to be rendered
     class Foo extends Component {
-        // just added to force the warnings
-        static getDerivedStateFromProps() { }
+      // just added to force the warnings
+      static getDerivedStateFromProps() {}
 
-        componentWillMount() { }
+      componentWillMount() {}
 
-        componentWillReceiveProps() { }
+      componentWillReceiveProps() {}
 
-        componentWillUpdate() { }
+      componentWillUpdate() {}
 
-        render() { return <div>Foo</div> }
+      render() {
+        return <div>Foo</div>;
+      }
     }
     // suppress the warnings
     // @ts-ignore
@@ -290,13 +299,11 @@ describe('legacy life cycle', () => {
     // render the element
     render(element, container);
 
-    const callArgs = consoleErrorStub
-                        .getCalls()
-                        .map(c => c.args.length && c.args[0]);
+    const callArgs = consoleErrorStub.getCalls().map(c => c.args.length && c.args[0]);
 
-    for(let i = 0; i < callArgs.length;i++) {
+    for (let i = 0; i < callArgs.length; i++) {
       expect(callArgs[i]).not.toMatch(/(componentWillMount)|(componentWillReceiveProps)|(componentWillUpdate)/);
     }
     /* tslint:enable:member-access no-empty */
   });
-})
+});

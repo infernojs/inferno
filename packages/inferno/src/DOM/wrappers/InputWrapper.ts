@@ -1,6 +1,6 @@
-import { isNullOrUndef } from 'inferno-shared';
-import { createWrappedFunction } from './wrapper';
-import { attachEvent } from '../events/attachEvent';
+import {isNullOrUndef} from 'inferno-shared';
+import {createWrappedFunction} from './wrapper';
+import {attachEvent} from '../events/attachEvent';
 
 export function isCheckedType(type): boolean {
   return type === 'checkbox' || type === 'radio';

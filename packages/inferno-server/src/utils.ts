@@ -1,4 +1,4 @@
-import { combineFrom } from 'inferno-shared';
+import {combineFrom} from 'inferno-shared';
 
 const rxUnescaped = new RegExp(/["'&<>]/);
 

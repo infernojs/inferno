@@ -1,7 +1,7 @@
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
-import { Fragment, options, mergeUnsetProperties } from './../DOM/utils/common';
+import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
 import { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';
 
 const keyPrefix = '$';
@@ -258,16 +258,9 @@ export function createVoidVNode(): VNode {
 }
 
 export function createPortal(children, container) {
-  return createVNode(
-    VNodeFlags.Portal,
-    VNodeFlags.Portal as any,
-    null,
-    children,
-    ChildFlags.UnknownChildren,
-    null,
-    isInvalid(children) ? null : children.key,
-    container
-  );
+  const normalizedRoot = normalizeRoot(children);
+
+  return createVNode(VNodeFlags.Portal, VNodeFlags.Portal as any, null, normalizedRoot, ChildFlags.UnknownChildren, null, normalizedRoot.key, container);
 }
 
 export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey: string) {
@@ -398,4 +391,15 @@ export function normalizeChildren(vNode: VNode, children) {
   vNode.childFlags = newChildFlags;
 
   return vNode;
+}
+
+export function normalizeRoot(input: any): VNode {
+  if (isInvalid(input) || isStringOrNumber(input)) {
+    return createTextVNode(input, null);
+  }
+  if (isArray(input)) {
+    return createFragment(input, ChildFlags.UnknownChildren, null);
+  }
+
+  return input.flags & VNodeFlags.InUse ? directClone(input) : input;
 }

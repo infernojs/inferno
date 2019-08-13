@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 import { MemoryRouter, Route, StaticRouter, withRouter } from 'inferno-router';
 
 describe('withRouter', () => {

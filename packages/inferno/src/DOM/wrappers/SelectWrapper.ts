@@ -1,8 +1,8 @@
-import { isArray, isNullOrUndef, isNumber } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { EMPTY_OBJ } from '../utils/common';
-import { createWrappedFunction } from './wrapper';
-import { attachEvent } from '../events/attachEvent';
+import {isArray, isNullOrUndef, isNumber} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {EMPTY_OBJ} from '../utils/common';
+import {createWrappedFunction} from './wrapper';
+import {attachEvent} from '../events/attachEvent';
 
 function updateChildOptions(vNode, value) {
   if (vNode.type === 'option') {

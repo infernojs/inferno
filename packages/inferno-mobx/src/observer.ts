@@ -1,9 +1,9 @@
-import { createAtom, Reaction, _allowStateChanges } from 'mobx';
-import { Component, createComponentVNode } from 'inferno';
-import { EventEmitter } from './utils/EventEmitter';
-import { warning } from 'inferno-shared';
-import { isStateless } from './utils/utils';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {_allowStateChanges, createAtom, Reaction} from 'mobx';
+import {Component, createComponentVNode} from 'inferno';
+import {EventEmitter} from './utils/EventEmitter';
+import {warning} from 'inferno-shared';
+import {isStateless} from './utils/utils';
+import {VNodeFlags} from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 
 /**

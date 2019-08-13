@@ -1,8 +1,8 @@
-import { Component, createComponentVNode, VNode } from 'inferno';
-import { matchPath } from './matchPath';
-import { invariant, warning } from './utils';
-import { combineFrom, isInvalid, isArray } from 'inferno-shared';
-import { IRouteProps } from './Route';
+import {Component, createComponentVNode, VNode} from 'inferno';
+import {matchPath} from './matchPath';
+import {invariant, warning} from './utils';
+import {combineFrom, isArray, isInvalid} from 'inferno-shared';
+import {IRouteProps} from './Route';
 
 function getMatch({ path, exact, strict, sensitive, from }, route, location) {
   const pathProp = path || from;

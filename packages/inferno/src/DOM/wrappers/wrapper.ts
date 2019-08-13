@@ -1,5 +1,5 @@
-import { isFunction, isString } from 'inferno-shared';
-import { EMPTY_OBJ } from '../utils/common';
+import {isFunction, isString} from 'inferno-shared';
+import {EMPTY_OBJ} from '../utils/common';
 
 function triggerEventListener(props, methodName, e) {
   if (props[methodName]) {

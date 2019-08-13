@@ -1,5 +1,5 @@
-import { render } from 'inferno';
-import { innerHTML, triggerEvent } from 'inferno-utils';
+import {render} from 'inferno';
+import {triggerEvent} from 'inferno-utils';
 
 describe('Input type checkbox', () => {
   let container;

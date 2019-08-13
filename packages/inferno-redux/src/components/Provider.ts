@@ -1,5 +1,5 @@
 import { Component, VNode } from 'inferno';
-import { Store, AnyAction } from 'redux';
+import { AnyAction, Store } from 'redux';
 import { warning } from '../utils/warning';
 
 let didWarnAboutReceivingStore = false;

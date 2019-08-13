@@ -1,6 +1,6 @@
 import { h } from 'inferno-hyperscript';
 import { innerHTML } from 'inferno-utils';
-import { render, Component, Fragment, forwardRef, createRef } from 'inferno';
+import { Component, createRef, forwardRef, Fragment, render } from 'inferno';
 import sinon from 'sinon';
 
 describe('HyperScript (non-JSX)', () => {

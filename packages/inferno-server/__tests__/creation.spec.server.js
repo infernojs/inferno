@@ -1,5 +1,5 @@
-import { createElement } from 'inferno-create-element';
-import { renderToStaticMarkup } from 'inferno-server';
+import {createElement} from 'inferno-create-element';
+import {renderToStaticMarkup} from 'inferno-server';
 
 /*
  class StatefulComponent extends Component {

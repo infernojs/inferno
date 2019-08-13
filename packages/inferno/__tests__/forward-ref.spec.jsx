@@ -1,4 +1,4 @@
-import { render, createRef, forwardRef, Component } from 'inferno';
+import { Component, createRef, forwardRef, render } from 'inferno';
 
 describe('Forward Ref', () => {
   let container;

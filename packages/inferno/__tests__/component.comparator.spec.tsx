@@ -1,15 +1,14 @@
-import { render, Component, options } from "inferno";
-
+import { Component, options, render } from 'inferno';
 
 describe('top level context', () => {
   let container;
 
-  beforeEach(function () {
+  beforeEach(function() {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function () {
+  afterEach(function() {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -24,11 +23,11 @@ describe('top level context', () => {
 
         this.state = {
           abc: 123
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc}</div>
+        return <div>{this.state.abc}</div>;
       }
     }
 
@@ -38,15 +37,15 @@ describe('top level context', () => {
 
         this.state = {
           abc: 333
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>
+        return <div>{this.state.abc} new</div>;
       }
     }
 
-    options.componentComparator = function () {
+    options.componentComparator = function() {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;
@@ -54,17 +53,17 @@ describe('top level context', () => {
       return false;
     };
 
-    render(<ComponentA/>, container);
+    render(<ComponentA />, container);
 
     expect(container.innerHTML).toBe('<div>123</div>');
 
     const oldNode = container.firstChild;
 
-    render(<ComponentB/>, container);
+    render(<ComponentB />, container);
 
     expect(container.innerHTML).toBe('<div>123 new</div>');
 
-    expect(container.firstChild).toBe(oldNode)
+    expect(container.firstChild).toBe(oldNode);
   });
 
   it('Should be possible to use custom component comparator to avoid replacing whole subtree', () => {
@@ -74,11 +73,11 @@ describe('top level context', () => {
 
         this.state = {
           abc: 123
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc}</div>
+        return <div>{this.state.abc}</div>;
       }
     }
 
@@ -88,15 +87,15 @@ describe('top level context', () => {
 
         this.state = {
           abc: 333
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>
+        return <div>{this.state.abc} new</div>;
       }
     }
 
-    options.componentComparator = function () {
+    options.componentComparator = function() {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;
@@ -104,17 +103,17 @@ describe('top level context', () => {
       return false;
     };
 
-    render(<ComponentA/>, container);
+    render(<ComponentA />, container);
 
     expect(container.innerHTML).toBe('<div>123</div>');
 
     const oldNode = container.firstChild;
 
-    render(<ComponentB/>, container);
+    render(<ComponentB />, container);
 
     expect(container.innerHTML).toBe('<div>123 new</div>');
 
-    expect(container.firstChild).toBe(oldNode)
+    expect(container.firstChild).toBe(oldNode);
   });
 
   it('Should override keys, flags, reCreate', () => {
@@ -124,11 +123,11 @@ describe('top level context', () => {
 
         this.state = {
           abc: 123
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc}</div>
+        return <div>{this.state.abc}</div>;
       }
     }
 
@@ -138,15 +137,15 @@ describe('top level context', () => {
 
         this.state = {
           abc: 333
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>
+        return <div>{this.state.abc} new</div>;
       }
     }
 
-    options.componentComparator = function () {
+    options.componentComparator = function() {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;
@@ -154,17 +153,17 @@ describe('top level context', () => {
       return false;
     };
 
-    render(<ComponentA key={'a'} $ReCreate/>, container);
+    render(<ComponentA key={'a'} $ReCreate />, container);
 
     expect(container.innerHTML).toBe('<div>123</div>');
 
     const oldNode = container.firstChild;
 
-    render(<ComponentB key={'b'} $ReCreate/>, container);
+    render(<ComponentB key={'b'} $ReCreate />, container);
 
     expect(container.innerHTML).toBe('<div>123 new</div>');
 
-    expect(container.firstChild).toBe(oldNode)
+    expect(container.firstChild).toBe(oldNode);
   });
 
   it('Should do normal replace if comparator returns true', () => {
@@ -174,11 +173,11 @@ describe('top level context', () => {
 
         this.state = {
           abc: 123
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc}</div>
+        return <div>{this.state.abc}</div>;
       }
     }
 
@@ -188,15 +187,15 @@ describe('top level context', () => {
 
         this.state = {
           abc: 333
-        }
+        };
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>
+        return <div>{this.state.abc} new</div>;
       }
     }
 
-    options.componentComparator = function () {
+    options.componentComparator = function() {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;
@@ -204,16 +203,16 @@ describe('top level context', () => {
       return true;
     };
 
-    render(<ComponentA key={'a'} $ReCreate/>, container);
+    render(<ComponentA key={'a'} $ReCreate />, container);
 
     expect(container.innerHTML).toBe('<div>123</div>');
 
     const oldNode = container.firstChild;
 
-    render(<ComponentB key={'b'} $ReCreate/>, container);
+    render(<ComponentB key={'b'} $ReCreate />, container);
 
     expect(container.innerHTML).toBe('<div>333 new</div>');
 
-    expect(container.firstChild).not.toBe(oldNode)
-  })
+    expect(container.firstChild).not.toBe(oldNode);
+  });
 });

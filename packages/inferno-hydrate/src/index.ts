@@ -1,6 +1,6 @@
-import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { VNode, _CI, _HI, _M, _MCCC, _ME, _MFCC, _MR, _MP, render } from 'inferno';
+import {isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {_CI, _HI, _M, _MCCC, _ME, _MFCC, _MP, _MR, render, VNode} from 'inferno';
 
 function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
   const tempdom = document.createElement('i');

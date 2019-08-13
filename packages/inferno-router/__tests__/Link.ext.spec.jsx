@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { innerHTML, triggerEvent } from 'inferno-utils';
+import { triggerEvent } from 'inferno-utils';
 import { Link, MemoryRouter } from 'inferno-router';
 import sinon from 'sinon';
 

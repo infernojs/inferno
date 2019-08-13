@@ -1,6 +1,6 @@
-import { Component, VNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { isNumber } from 'inferno-shared';
+import {Component, VNode} from 'inferno';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {isNumber} from 'inferno-shared';
 
 export function isVNode(obj: any): obj is VNode {
   return Boolean(obj) && typeof obj === 'object' && isNumber((obj as any).flags) && (obj as any).flags > 0;

@@ -1,6 +1,5 @@
 import { render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
-import { Link, MemoryRouter, NavLink } from 'inferno-router';
+import { MemoryRouter, NavLink } from 'inferno-router';
 
 describe('NavLink', () => {
   let node;

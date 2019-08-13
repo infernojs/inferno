@@ -1,4 +1,4 @@
-import { render, Component } from 'inferno';
+import { Component, render } from 'inferno';
 
 describe('static tree as child nodes', () => {
   let container;

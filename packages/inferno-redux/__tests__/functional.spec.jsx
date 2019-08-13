@@ -1,6 +1,5 @@
 import { render } from 'inferno';
 import { connect } from 'inferno-redux';
-import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
 
 describe('Inferno - redux -specifics', () => {

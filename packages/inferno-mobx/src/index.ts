@@ -1,6 +1,14 @@
-import { errorsReporter, inject, Observer, observer, renderReporter, trackComponents, useStaticRendering } from './observer';
-import { Provider } from './Provider';
-import { EventEmitter } from './utils/EventEmitter';
+import {
+  errorsReporter,
+  inject,
+  Observer,
+  observer,
+  renderReporter,
+  trackComponents,
+  useStaticRendering
+} from './observer';
+import {Provider} from './Provider';
+import {EventEmitter} from './utils/EventEmitter';
 
 // THIS IS PORT OF AWESOME MOBX-REACT to INFERNO
 // LAST POINT OF PORT

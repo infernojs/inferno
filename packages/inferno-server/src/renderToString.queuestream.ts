@@ -1,9 +1,19 @@
-import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isUndefined, throwError } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { Readable } from 'stream';
-import { renderStylesToString } from './prop-renderers';
-import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
+import {EMPTY_OBJ} from 'inferno';
+import {
+  combineFrom,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  isUndefined,
+  throwError
+} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {Readable} from 'stream';
+import {renderStylesToString} from './prop-renderers';
+import {createDerivedState, escapeText, isAttributeNameSafe, voidElements} from './utils';
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream

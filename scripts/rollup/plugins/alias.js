@@ -1,4 +1,4 @@
-const { resolve, join } = require('path');
+const {resolve, join} = require('path');
 const alias = require('rollup-plugin-alias');
 const ROOT = join(__dirname, '../../../');
 

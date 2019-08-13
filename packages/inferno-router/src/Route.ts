@@ -1,9 +1,9 @@
-import { Component, createComponentVNode, IComponentConstructor, InfernoNode, SFC } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { invariant, warning } from './utils';
-import { matchPath } from './matchPath';
+import {Component, createComponentVNode, IComponentConstructor, InfernoNode, SFC} from 'inferno';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {invariant, warning} from './utils';
+import {matchPath} from './matchPath';
 import * as H from 'history';
-import { isFunction, combineFrom } from 'inferno-shared';
+import {combineFrom, isFunction} from 'inferno-shared';
 
 export interface Match<P> {
   params: P;

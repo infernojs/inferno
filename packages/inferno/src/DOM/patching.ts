@@ -1,6 +1,6 @@
 import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { createVoidVNode, directClone } from '../core/implementation';
+import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
 import { VNode } from '../core/types';
 import { mount, mountArrayChildren } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
@@ -18,7 +18,7 @@ import {
 } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
-import { handleComponentInput, renderNewInput } from './utils/componentutil';
+import { renderNewInput } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 
@@ -459,7 +459,7 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
       nextRef.onComponentWillUpdate(lastProps, nextProps);
     }
     const type = nextVNode.type;
-    const nextInput = handleComponentInput(nextVNode.flags & VNodeFlags.ForwardRef ? type.render(nextProps, nextRef, context) : type(nextProps, context));
+    const nextInput = normalizeRoot(nextVNode.flags & VNodeFlags.ForwardRef ? type.render(nextProps, nextRef, context) : type(nextProps, context));
 
     patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle);
     nextVNode.children = nextInput;

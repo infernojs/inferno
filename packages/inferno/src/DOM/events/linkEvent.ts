@@ -1,5 +1,5 @@
-import { isFunction, isNull } from 'inferno-shared';
-import { LinkedEvent } from '../../core/types';
+import {isFunction, isNull} from 'inferno-shared';
+import {LinkedEvent} from '../../core/types';
 
 /**
  * Links given data to event as first parameter

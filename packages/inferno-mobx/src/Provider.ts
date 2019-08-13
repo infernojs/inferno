@@ -1,5 +1,5 @@
-import { Component } from 'inferno';
-import { warning } from 'inferno-shared';
+import {Component} from 'inferno';
+import {warning} from 'inferno-shared';
 
 const specialKeys = {
   children: true,

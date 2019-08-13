@@ -79,7 +79,7 @@ describe('state', () => {
 
   describe('didUpdate and setState', () => {
     it('order', done => {
-      class Test extends Component<{scrollTop: number}, any> {
+      class Test extends Component<{ scrollTop: number }, any> {
         public state = {
           testScrollTop: 0
         };
@@ -100,11 +100,11 @@ describe('state', () => {
         }
 
         public render() {
-          return <div style={{"background-attachment": 'scroll'}}>aa</div>;
+          return <div style={{ 'background-attachment': 'scroll' }}>aa</div>;
         }
       }
 
-      class Example extends Component<{name: string}, {exampleScrollTop: number}> {
+      class Example extends Component<{ name: string }, { exampleScrollTop: number }> {
         public state = {
           exampleScrollTop: 0
         };
@@ -127,7 +127,7 @@ describe('state', () => {
         }
       }
 
-      render(<Example name="World"/>, container);
+      render(<Example name="World" />, container);
     });
   });
 });

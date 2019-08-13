@@ -1,8 +1,8 @@
 import { namespaces } from './constants';
 import { isNull, isNullOrUndef, isString } from 'inferno-shared';
-import { syntheticEvents, handleSyntheticEvent } from './events/delegation';
+import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isSameInnerHTML } from './utils/innerhtml';
+import { isSameInnerHTML } from './utils/innerHTML';
 import { isLastValueSameLinkEvent, normalizeEventName } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';

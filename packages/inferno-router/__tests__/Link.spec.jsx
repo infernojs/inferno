@@ -1,5 +1,4 @@
 import { render } from 'inferno';
-import { innerHTML, triggerEvent } from 'inferno-utils';
 import { HashRouter, Link, MemoryRouter } from 'inferno-router';
 
 describe('Link (jsx)', () => {

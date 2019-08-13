@@ -1,6 +1,14 @@
-import { createComponentVNode, createFragment, createTextVNode, createVNode, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
-import { combineFrom } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import {
+  createComponentVNode,
+  createFragment,
+  createTextVNode,
+  createVNode,
+  EMPTY_OBJ,
+  normalizeProps,
+  VNode
+} from 'inferno';
+import {combineFrom} from 'inferno-shared';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 
 /*
  directClone is preferred over cloneVNode and used internally also.

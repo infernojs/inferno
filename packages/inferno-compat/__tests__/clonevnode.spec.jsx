@@ -1,5 +1,5 @@
-import { directClone, createVNode } from 'inferno-compat';
-import { VNodeFlags, ChildFlags } from 'inferno-vnode-flags';
+import { createVNode, directClone } from 'inferno-compat';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('directClone inferno-compat', () => {
   it('Should not lose props when cloning multiple times', () => {

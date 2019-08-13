@@ -1,4 +1,4 @@
-import { matchPath } from 'inferno-router';
+import {matchPath} from 'inferno-router';
 
 describe('matchPath', () => {
   describe('with path="/"', () => {

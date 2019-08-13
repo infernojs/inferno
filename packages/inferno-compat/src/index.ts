@@ -1,13 +1,27 @@
 import {
+  __render,
+  _CI,
+  _HI,
+  _M,
+  _MCCC,
+  _ME,
+  _MFCC,
+  _MP,
+  _MR,
   Component,
   ComponentType,
   createComponentVNode,
+  createFragment,
   createPortal,
+  createRef,
   createRenderer,
   createTextVNode,
   createVNode,
   directClone,
   EMPTY_OBJ,
+  findDOMfromVNode,
+  forwardRef,
+  Fragment,
   getFlagsForElementVnode,
   InfernoNode,
   linkEvent,
@@ -15,34 +29,20 @@ import {
   options,
   Props,
   Refs,
-  __render,
-  VNode,
-  findDOMfromVNode,
-  Fragment,
-  createFragment,
-  createRef,
-  forwardRef,
   rerender,
-  _CI,
-  _HI,
-  _M,
-  _MCCC,
-  _ME,
-  _MFCC,
-  _MR,
-  _MP
+  VNode
 } from 'inferno';
-import { hydrate } from 'inferno-hydrate';
-import { cloneVNode } from 'inferno-clone-vnode';
-import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
-import { createElement } from 'inferno-create-element';
-import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { isValidElement } from './isValidElement';
+import {hydrate} from 'inferno-hydrate';
+import {cloneVNode} from 'inferno-clone-vnode';
+import {ClassicComponentClass, ComponentSpec, createClass} from 'inferno-create-class';
+import {createElement} from 'inferno-create-element';
+import {isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning} from 'inferno-shared';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {isValidElement} from './isValidElement';
 import PropTypes from './PropTypes';
-import { InfernoCompatPropertyMap } from './InfernoCompatPropertyMap';
-import { findDOMNode } from 'inferno-extras';
-import { getNumberStyleValue, hyphenCase } from './reactstyles';
+import {InfernoCompatPropertyMap} from './InfernoCompatPropertyMap';
+import {findDOMNode} from 'inferno-extras';
+import {getNumberStyleValue, hyphenCase} from './reactstyles';
 
 declare global {
   interface Event {

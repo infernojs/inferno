@@ -1,7 +1,7 @@
-import { findDOMfromVNode, options, VNode } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { isInvalid, isNullOrUndef, combineFrom } from 'inferno-shared';
-import { findDOMNode } from 'inferno-extras';
+import {findDOMfromVNode, options, VNode} from 'inferno';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {combineFrom, isInvalid, isNullOrUndef} from 'inferno-shared';
+import {findDOMNode} from 'inferno-extras';
 
 let updatingDevTool = false;
 let Reconciler;

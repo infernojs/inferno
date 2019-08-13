@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 import { Prompt, StaticRouter } from 'inferno-router';
 
 describe('A <Prompt>', () => {

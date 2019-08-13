@@ -1,5 +1,4 @@
 import { render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 import { Router } from 'inferno-router';
 import createHistory from 'history/createMemoryHistory';
 

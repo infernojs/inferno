@@ -1,9 +1,9 @@
-import { Component, createComponentVNode, VNode, Props } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { createPath, parsePath } from 'history';
-import { Router } from './Router';
-import { invariant, warning } from './utils';
-import { combineFrom } from 'inferno-shared';
+import {Component, createComponentVNode, Props, VNode} from 'inferno';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {createPath, parsePath} from 'history';
+import {Router} from './Router';
+import {invariant, warning} from './utils';
+import {combineFrom} from 'inferno-shared';
 
 function addLeadingSlash(path) {
   return path.charAt(0) === '/' ? path : '/' + path;

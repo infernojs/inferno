@@ -1,5 +1,5 @@
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { isNull } from 'inferno-shared';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {isNull} from 'inferno-shared';
 
 export function warning(condition, message) {
   if (!condition) {

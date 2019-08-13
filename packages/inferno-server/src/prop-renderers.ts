@@ -1,4 +1,4 @@
-import { isString, isStringOrNumber } from 'inferno-shared';
+import {isString, isStringOrNumber} from 'inferno-shared';
 
 export function renderStylesToString(styles: string | object): string {
   if (isString(styles)) {

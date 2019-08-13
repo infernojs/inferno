@@ -1,6 +1,6 @@
-import { render } from 'inferno';
-import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
+import {render} from 'inferno';
+import {createElement} from 'inferno-create-element';
+import {innerHTML} from 'inferno-utils';
 
 describe('Select / select multiple (non-JSX)', () => {
   let container;

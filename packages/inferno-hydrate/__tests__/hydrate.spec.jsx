@@ -1,4 +1,4 @@
-import { render, rerender, createRef, createPortal, createFragment, Component, Fragment } from 'inferno';
+import { Component, createFragment, createPortal, createRef, Fragment, render, rerender } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { h } from 'inferno-hyperscript';
 import sinon from 'sinon';

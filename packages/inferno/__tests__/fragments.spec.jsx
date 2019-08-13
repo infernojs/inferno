@@ -1,4 +1,4 @@
-import { Fragment, Component, createPortal, createFragment, render } from 'inferno';
+import { Component, createFragment, createPortal, Fragment, render } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('Fragments', () => {

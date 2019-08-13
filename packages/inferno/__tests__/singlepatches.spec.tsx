@@ -1,6 +1,6 @@
 import { Component, Fragment, render } from 'inferno';
 import sinon, { assert } from 'sinon';
-import {innerHTML} from "inferno-utils";
+import { innerHTML } from 'inferno-utils';
 
 describe('All single patch variations', () => {
   const templateRefSpy = sinon.spy();
@@ -476,15 +476,16 @@ describe('All single patch variations', () => {
       }
 
       public render() {
-        return <div>Component</div>
+        return <div>Component</div>;
       }
     }
 
-    render((
-        <div>
-          <div key="First"><ComponentFooBar/></div>
+    render(
+      <div>
+        <div key="First">
+          <ComponentFooBar />
         </div>
-      ),
+      </div>,
       container
     );
 
@@ -493,12 +494,12 @@ describe('All single patch variations', () => {
     expect(mountCallCount).toBe(1);
     expect(unmountCallCount).toBe(0);
 
-
-    render((
-        <div>
-          <div key="Another"><ComponentFooBar/></div>
+    render(
+      <div>
+        <div key="Another">
+          <ComponentFooBar />
         </div>
-      ),
+      </div>,
       container
     );
 
@@ -518,9 +519,7 @@ describe('All single patch variations', () => {
           div,
           <div $HasNonKeyedChildren>
             {div}
-            <div $HasVNodeChildren>
-              {div}
-            </div>
+            <div $HasVNodeChildren>{div}</div>
           </div>,
           div
         ]}
@@ -540,9 +539,7 @@ describe('All single patch variations', () => {
           div,
           <div $HasNonKeyedChildren>
             {div}
-            <div $HasVNodeChildren>
-              {div}
-            </div>
+            <div $HasVNodeChildren>{div}</div>
             {div}
           </div>,
           div
@@ -566,9 +563,7 @@ describe('All single patch variations', () => {
           div,
           <div $HasNonKeyedChildren>
             {div}
-            <div $HasVNodeChildren>
-              {div}
-            </div>
+            <div $HasVNodeChildren>{div}</div>
             {div}
           </div>,
           div,
@@ -594,7 +589,7 @@ describe('All single patch variations', () => {
       return div;
     }
 
-    const OkayHoisted = <Okay/>;
+    const OkayHoisted = <Okay />;
 
     function Nested() {
       return OkayHoisted;
@@ -606,26 +601,24 @@ describe('All single patch variations', () => {
           <>
             {div}
             <span>Ok</span>
-            <Okay/>
+            <Okay />
           </>
-        )
+        );
       }
     }
 
     const NestedHoisted = <Nested />;
-    const FooBarHoisted = <Foobar/>;
+    const FooBarHoisted = <Foobar />;
 
     render(
       <Fragment>
         {[
           FooBarHoisted,
-          <Foobar/>,
+          <Foobar />,
           div,
           <div>
             {NestedHoisted}
-            <div>
-              {div}
-            </div>
+            <div>{div}</div>
             {NestedHoisted}
           </div>,
           FooBarHoisted,
@@ -644,10 +637,12 @@ describe('All single patch variations', () => {
   });
 
   it('Should not re-mount fragment contents', () => {
-    class Foobar extends Component<any, {
-      val: number
-    }> {
-
+    class Foobar extends Component<
+      any,
+      {
+        val: number;
+      }
+    > {
       public state = {
         val: 1
       };
@@ -658,28 +653,28 @@ describe('All single patch variations', () => {
 
       public render() {
         return (
-          <div onClick={() => this.setState({val: ++this.state.val})}>
+          <div onClick={() => this.setState({ val: ++this.state.val })}>
             <span>{this.state.val}</span>
             {this.props.children}
           </div>
-        )
+        );
       }
     }
 
     function Foobar2(props) {
-      return <span className={props.data}>Foo</span>
+      return <span className={props.data}>Foo</span>;
     }
 
     render(
       <>
         <Foobar>
           <div>
-            <Foobar2 data="first"/>
+            <Foobar2 data="first" />
           </div>
           <>
             <>
-              <Foobar2 data="second"/>
-              <Foobar2 data="third"/>
+              <Foobar2 data="second" />
+              <Foobar2 data="third" />
             </>
           </>
         </Foobar>
@@ -687,54 +682,41 @@ describe('All single patch variations', () => {
       container
     );
 
-    expect(container.innerHTML).toBe('<div><span>1</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>1</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>'
+    );
 
     const firstNode = container.querySelector('.first');
     const secondNode = container.querySelector('.second');
 
     container.firstChild.click();
 
-    expect(container.innerHTML).toBe('<div><span>2</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>2</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>'
+    );
 
     expect(container.querySelector('.first')).toBe(firstNode);
     expect(container.querySelector('.second')).toBe(secondNode);
 
     container.firstChild.click();
 
-    expect(container.innerHTML).toBe('<div><span>3</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>3</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>'
+    );
 
     expect(container.querySelector('.first')).toBe(firstNode);
     expect(container.querySelector('.second')).toBe(secondNode);
   });
 
   it('Should keep given key even for deeply nested content', () => {
-    render(
-      <div>
-        {[
-          null,
-          <div key="first">First</div>,
-          <div key="second">Second</div>
-        ]}
-      </div>,
-      container
-    );
+    render(<div>{[null, <div key="first">First</div>, <div key="second">Second</div>]}</div>, container);
 
     const firstDiv = container.firstChild.firstChild;
     const secondDiv = container.firstChild.childNodes[1];
 
     expect(container.innerHTML).toBe('<div><div>First</div><div>Second</div></div>');
 
-    render(
-      <div>
-        {[
-          null,
-          undefined,
-          <div key="first">First</div>,
-          <div key="second">Second</div>
-        ]}
-      </div>,
-      container
-    );
+    render(<div>{[null, undefined, <div key="first">First</div>, <div key="second">Second</div>]}</div>, container);
     const firstDiv2 = container.firstChild.firstChild;
     const secondDiv2 = container.firstChild.childNodes[1];
 
@@ -747,34 +729,13 @@ describe('All single patch variations', () => {
   it('Should keep given key even for deeply nested content #2', () => {
     const vNode1 = <div key="first">First</div>;
 
-    render(
-      <div>
-        {[
-          null,
-          <div key="first1">First</div>,
-          vNode1,
-          <div key="second">Second</div>
-        ]}
-      </div>,
-      container
-    );
+    render(<div>{[null, <div key="first1">First</div>, vNode1, <div key="second">Second</div>]}</div>, container);
 
     const domNode = container.firstChild.childNodes[1];
 
     expect(container.innerHTML).toBe('<div><div>First</div><div>First</div><div>Second</div></div>');
 
-    render(
-      <div>
-        {[
-          null,
-          undefined,
-          <div key="first1">First</div>,
-          [vNode1],
-          <div key="second">Second</div>
-        ]}
-      </div>,
-      container
-    );
+    render(<div>{[null, undefined, <div key="first1">First</div>, [vNode1], <div key="second">Second</div>]}</div>, container);
     const domNode2 = container.firstChild.childNodes[1];
 
     expect(container.innerHTML).toBe('<div><div>First</div><div>First</div><div>Second</div></div>');
@@ -787,7 +748,7 @@ describe('All single patch variations', () => {
     const okDiv = <div key="ok">ok</div>;
 
     class Example extends Component<{
-      test: boolean
+      test: boolean;
     }> {
       constructor(props, context) {
         super(props, context);
@@ -797,28 +758,13 @@ describe('All single patch variations', () => {
 
       public render() {
         if (this.props.test) {
-          return (
-            <div>
-              {[
-                [[[[[okDiv]]]]]
-              ]}
-            </div>
-          );
+          return <div>{[[[[[[okDiv]]]]]]}</div>;
         }
 
-        return (
-          <div>
-            {[[
-              okDiv
-            ]]}
-          </div>
-        );
+        return <div>{[[okDiv]]}</div>;
       }
     }
-    render(
-      <Example test={false}/>,
-      container
-    );
+    render(<Example test={false} />, container);
 
     const domNode = container.firstChild.childNodes[0];
 
@@ -827,10 +773,7 @@ describe('All single patch variations', () => {
     // set state should keep it the same
     expect(domNode).toBe(container.firstChild.childNodes[0]);
 
-    render(
-      <Example test={true}/>,
-      container
-    );
+    render(<Example test={true} />, container);
 
     // Rendered to different array, create new dom
     const newDomNode = container.firstChild.childNodes[0];
@@ -846,7 +789,7 @@ describe('All single patch variations', () => {
     let changeState: any = null;
 
     class Example extends Component<{
-      test: boolean
+      test: boolean;
     }> {
       constructor(props, context) {
         super(props, context);
@@ -856,22 +799,10 @@ describe('All single patch variations', () => {
 
       public render() {
         if (this.props.test) {
-          return (
-            <div>
-              {[
-                [[[[[this.props.children]]]]]
-              ]}
-            </div>
-          );
+          return <div>{[[[[[[this.props.children]]]]]]}</div>;
         }
 
-        return (
-          <div>
-            {[[
-              this.props.children
-            ]]}
-          </div>
-        );
+        return <div>{[[this.props.children]]}</div>;
       }
     }
 
@@ -918,7 +849,7 @@ describe('All single patch variations', () => {
       public render() {
         return (
           <div key="exampleDiv">
-            <input key="button" type="button" value="rerender"/>
+            <input key="button" type="button" value="rerender" />
             {this.props.children}
           </div>
         );
@@ -930,8 +861,8 @@ describe('All single patch variations', () => {
       // if defined insite render of Exampe and/or its a single child, there is no issue
       render(
         <Example key="exmapleApp">
-          <div class="anim1" key="div1"/>
-          <div class="anim2" key="div22"/>
+          <div class="anim1" key="div1" />
+          <div class="anim2" key="div22" />
         </Example>,
         container
       );

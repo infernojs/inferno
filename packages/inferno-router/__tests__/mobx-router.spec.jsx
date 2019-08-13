@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import { inject, observer, Provider } from 'inferno-mobx';
-import { IndexRoute, Route, Router } from 'inferno-router';
+import { Route, Router } from 'inferno-router';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { action, observable } from 'mobx';
 

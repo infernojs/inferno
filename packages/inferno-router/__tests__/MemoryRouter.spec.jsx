@@ -1,6 +1,5 @@
 import { render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
-import { MemoryRouter, Link, Route, Switch } from 'inferno-router';
+import { Link, MemoryRouter, Route, Switch } from 'inferno-router';
 
 describe('A <MemoryRouter>', () => {
   let container;

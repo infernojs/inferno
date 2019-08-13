@@ -1,7 +1,7 @@
-import { linkEvent, createVNode, VNode, InfernoMouseEvent } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { invariant } from './utils';
-import { combineFrom } from 'inferno-shared';
+import {createVNode, InfernoMouseEvent, linkEvent, VNode} from 'inferno';
+import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import {invariant} from './utils';
+import {combineFrom} from 'inferno-shared';
 
 const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 

@@ -1,5 +1,5 @@
 export * from './core/types';
-import { warning } from 'inferno-shared';
+import {warning} from 'inferno-shared';
 import {
   createComponentVNode,
   createFragment,
@@ -8,17 +8,17 @@ import {
   createVNode,
   directClone,
   getFlagsForElementVnode,
-  normalizeProps
+  normalizeProps,
+  normalizeRoot
 } from './core/implementation';
-import { linkEvent } from './DOM/events/linkEvent';
-import { createRenderer, render, __render } from './DOM/rendering';
-import { EMPTY_OBJ, findDOMfromVNode, Fragment, options } from './DOM/utils/common';
-import { Component, ComponentType, rerender } from './core/component';
-import { mountProps } from './DOM/props';
-
-import { handleComponentInput, createClassComponentInstance } from './DOM/utils/componentutil';
-import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks } from './DOM/mounting';
-import { createRef, mountRef, forwardRef } from './core/refs';
+import {linkEvent} from './DOM/events/linkEvent';
+import {__render, createRenderer, render} from './DOM/rendering';
+import {EMPTY_OBJ, findDOMfromVNode, Fragment, options} from './DOM/utils/common';
+import {Component, ComponentType, rerender} from './core/component';
+import {mountProps} from './DOM/props';
+import {createClassComponentInstance} from './DOM/utils/componentUtil';
+import {mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks} from './DOM/mounting';
+import {createRef, forwardRef, mountRef} from './core/refs';
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
@@ -62,7 +62,7 @@ export {
   version,
   // Internal methods, used by hydration
   createClassComponentInstance as _CI,
-  handleComponentInput as _HI,
+  normalizeRoot as _HI,
   mount as _M,
   mountClassComponentCallbacks as _MCCC,
   mountElement as _ME,

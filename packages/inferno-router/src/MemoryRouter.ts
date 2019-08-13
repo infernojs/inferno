@@ -1,8 +1,8 @@
-import { Component, createComponentVNode, VNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { createMemoryHistory } from 'history';
-import { Router } from './Router';
-import { warning } from './utils';
+import {Component, createComponentVNode, VNode} from 'inferno';
+import {VNodeFlags} from 'inferno-vnode-flags';
+import {createMemoryHistory} from 'history';
+import {Router} from './Router';
+import {warning} from './utils';
 
 export interface IMemoryRouterProps {
   initialEntries?: string[];

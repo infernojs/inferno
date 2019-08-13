@@ -25,8 +25,7 @@ import {
   scryRenderedDOMElementsWithClass,
   scryRenderedDOMElementsWithTag,
   scryRenderedVNodesWithType,
-  scryVNodesWithType,
-  Wrapper
+  scryVNodesWithType
 } from 'inferno-test-utils';
 import sinon from 'sinon';
 

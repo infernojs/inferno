@@ -1,15 +1,12 @@
-import { innerHTML } from 'inferno-utils';
 import React, {
-  __spread,
   Children,
   cloneElement,
   Component,
   createClass,
   createElement,
-  render,
   hydrate,
-  isValidElement,
   PropTypes,
+  render,
   unstable_renderSubtreeIntoContainer
 } from 'inferno-compat';
 

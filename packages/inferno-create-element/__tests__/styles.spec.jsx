@@ -1,5 +1,4 @@
-import { render, Component } from 'inferno';
-import { innerHTML } from 'inferno-utils';
+import { render } from 'inferno';
 
 function styleNode(style) {
   return <div style={style} />;

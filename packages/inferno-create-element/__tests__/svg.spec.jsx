@@ -1,4 +1,4 @@
-import { render, Component } from 'inferno';
+import { Component, render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 import { createElement } from 'inferno-create-element';
 import { rerender } from '../../inferno-compat/src';
