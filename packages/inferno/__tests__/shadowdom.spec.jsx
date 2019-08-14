@@ -16,8 +16,8 @@ describe('Shadow DOM', () => {
   });
 
   it('Should propagate events through shadow dom boundaries', () => {
-    // Run these tests only in environments which support shadow-dom
-    if (!container.attachShadow) {
+    // Run this test only in environments which support shadow-dom and composedPath API's
+    if (!container.attachShadow || !Event.prototype.composedPath) {
       return;
     }
 
