@@ -1,6 +1,6 @@
 import {isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning} from 'inferno-shared';
 import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {_CI, _HI, _M, _MCCC, _ME, _MFCC, _MP, _MR, render, VNode} from 'inferno';
+import {_CI, _HI, _M, _MCCC, _ME, _MFCC, _MP, _MR, EMPTY_OBJ, render, VNode} from 'inferno';
 
 function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
   const tempdom = document.createElement('i');
@@ -38,10 +38,14 @@ function isSamePropsInnerHTML(dom: Element, props): boolean {
   return Boolean(props && props.dangerouslySetInnerHTML && props.dangerouslySetInnerHTML.__html && isSameInnerHTML(dom, props.dangerouslySetInnerHTML.__html));
 }
 
+function renderFunctionalComponent(vNode: VNode, context, props) {
+  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context);
+}
+
 function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, isClass: boolean, lifecycle: Function[]) {
   const type = vNode.type as Function;
   const ref = vNode.ref;
-  const props = vNode.props || {};
+  const props = vNode.props || EMPTY_OBJ;
   let currentNode;
 
   if (isClass) {
@@ -51,7 +55,7 @@ function hydrateComponent(vNode: VNode, parentDOM: Element, dom: Element, contex
     currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG, lifecycle);
     _MCCC(ref, instance, lifecycle);
   } else {
-    const input = _HI(type(props, context));
+    const input = _HI(renderFunctionalComponent(vNode, context, props));
     currentNode = hydrateVNode(input, parentDOM, dom, context, isSVG, lifecycle);
     vNode.children = input;
     _MFCC(vNode, lifecycle);
