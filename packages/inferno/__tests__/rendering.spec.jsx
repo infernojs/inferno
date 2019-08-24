@@ -1,5 +1,4 @@
 import { Component, createTextVNode, createVNode, render } from 'inferno';
-import { NO_OP } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('rendering routine', () => {
@@ -27,11 +26,6 @@ describe('rendering routine', () => {
 
   it('Should throw error if second parameter is not given', () => {
     expect(() => render(<div>1</div>, null)).toThrow();
-  });
-
-  it('Should do nothing if input is NO-OP', () => {
-    render(NO_OP, container);
-    expect(container.innerHTML).toEqual('');
   });
 
   it('Should create new object when dom exists', () => {
