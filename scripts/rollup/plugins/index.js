@@ -11,7 +11,8 @@ module.exports = function (version, options) {
     aliasPlugin,
     nodeResolve({
       extensions: ['.ts', '.js', '.json'],
-      mainFields: ['module', 'main']
+      mainFields: ['module', 'main'],
+      preferBuiltins: true
     }),
     commonjs({
       include: 'node_modules/**'

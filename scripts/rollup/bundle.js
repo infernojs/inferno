@@ -32,7 +32,9 @@ module.exports = function(options) {
   };
 
   if (options.format === 'cjs') {
-    bundleOptions.exports = 'named';
+    bundleOptions.output = {
+      exports: 'named'
+    };
   }
 
   return ({ write }) => write(bundleOptions);

@@ -29,7 +29,7 @@ if (version > 60 || version === false) {
       position: 'absolute',
       top: '16px',
       left: '16px',
-      transition: 'left 50ms',
+      transition: 'left 1ms',
       background: 'red',
       height: '16px',
       width: '16px'
@@ -58,11 +58,13 @@ if (version > 60 || version === false) {
         triggerEvent('click', div);
 
         requestAnimationFrame(() => {
-          setTimeout(() => {
-            expect(clickOccurred).toBe(true);
-            expect(handlerFired).toBe(true);
-            done();
-          }, 250);
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              expect(clickOccurred).toBe(true);
+              expect(handlerFired).toBe(true);
+              done();
+            }, 150);
+          });
         });
       }, 25);
     });
@@ -90,11 +92,13 @@ if (version > 60 || version === false) {
         triggerEvent('click', div);
 
         requestAnimationFrame(() => {
-          setTimeout(() => {
-            expect(clickOccurred).toBe(true);
-            expect(handlerFired).toBe(true);
-            done();
-          }, 250);
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              expect(clickOccurred).toBe(true);
+              expect(handlerFired).toBe(true);
+              done();
+            }, 150);
+          });
         });
       }, 25);
     });

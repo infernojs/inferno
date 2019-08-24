@@ -20,6 +20,8 @@ module.exports = function(options) {
     .filter(function(elem, index, self) {
       return index === self.indexOf(elem);
     });
+  // stream is NodeJS module mark it as external
+  external.push('stream');
   const plugins = createPlugins(version, options);
 
   return rollup({
