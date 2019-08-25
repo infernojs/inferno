@@ -59,10 +59,10 @@ InfernoJS natively supports the browsers listed below.
 Live examples at [https://infernojs.github.io/inferno](https://infernojs.github.io/inferno)
 
 - [UI Bench](https://localvoid.github.io/uibench/)
-- [dbmonster](https://rawgit.com/infernojs/dbmonster-inferno/master/index.html)
+- [dbmonster](https://raw.githack.com/infernojs/inferno/master/docs/dbmonster/index.html)
 - [JS Web Frameworks Benchmark (current)](https://krausest.github.io/js-framework-benchmark/current.html)
 - [Isomorphic-UI-Benchmark](https://github.com/marko-js/isomorphic-ui-benchmarks)
-- [1k Components](https://rawgit.com/infernojs/inferno/master/benchmarks/1kcomponents/index.html)
+- [1k Components](https://raw.githack.com/infernojs/inferno/master/docs/1kcomponents/index.html)
 
 ## Code Example
 
@@ -561,7 +561,7 @@ createTextVNode(
 This package has same API as React.cloneElement
 
 ```javascript
-import {cloneVNode} from 'inferno-clone-vnode';
+import { cloneVNode } from 'inferno-clone-vnode';
 
 cloneVNode(
   vNode,
@@ -580,7 +580,8 @@ Clone and return a new Inferno `VNode` using a `VNode` as the starting point. Th
 An example of using `cloneVNode`:
 
 ```javascript
-import { cloneVNode, createVNode, render } from 'inferno';
+import { createVNode, render } from 'inferno';
+import { cloneVNode } from 'inferno-clone-vnode';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 const vNode = createVNode(VNodeFlags.HtmlElement, 'div', 'example', 'Hello world!');
@@ -592,7 +593,8 @@ render(newVNode, container);
 If you're using JSX:
 
 ```jsx
-import { render, cloneVNode } from 'inferno';
+import { render } from 'inferno';
+import { cloneVNode } from 'inferno-clone-vnode';
 
 const vNode = <div className="example">Hello world</div>;
 const newVNode = cloneVNode(vNode, { id: 'new' }); // we are adding an id prop to the VNode
