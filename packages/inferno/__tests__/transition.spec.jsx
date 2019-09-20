@@ -55,7 +55,7 @@ if (version > 60 || version === false) {
 
       const div = container.firstChild;
       setTimeout(() => {
-        triggerEvent('click', div);
+        div.click();
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -89,7 +89,7 @@ if (version > 60 || version === false) {
 
       const div = container.firstChild;
       setTimeout(() => {
-        triggerEvent('click', div);
+        div.click();
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
