@@ -25,8 +25,10 @@ if (hasDocumentAvailable) {
    * Defining $EV and $V properties on Node.prototype
    * fixes v8 "wrong map" de-optimization
    */
-  (Node.prototype as any).$EV = null;
-  (Node.prototype as any).$V = null;
+  if (window.Node) {
+    (Node.prototype as any).$EV = null;
+    (Node.prototype as any).$V = null;
+  }
 }
 
 export function __render(
