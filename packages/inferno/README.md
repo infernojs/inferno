@@ -960,10 +960,13 @@ const alias = require('rollup-plugin-alias');
 
     ...
   plugins: [
-    alias({
-      'inferno': __dirname + '/node_modules/inferno/dist/index.dev.esm.js'
-    }),
-  ]
+   alias({
+       resolve: ['.js'],
+       entries: [
+         {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
+       ]
+   }),
+ ]
 
 ```
 

@@ -1,5 +1,5 @@
 const rollup = require('rollup');
-const { readdirSync, statSync } = require('fs');
+const {readdirSync, statSync} = require('fs');
 const commonjsPlugin = require('rollup-plugin-commonjs');
 const nodeResolvePlugin = require('rollup-plugin-node-resolve');
 const babelPlugin = require('rollup-plugin-babel');
@@ -30,31 +30,34 @@ const plugins = [
     exclude: 'node_modules/**',
     sourceMaps: false,
     babelrc: false,
-    presets: [['@babel/env', { loose: true, modules: false }]],
-    plugins: [['babel-plugin-inferno', { imports: true, defineAllArguments: true }]]
+    presets: [['@babel/env', {loose: true, modules: false}]],
+    plugins: [['babel-plugin-inferno', {imports: true, defineAllArguments: true}]]
   }),
   commonjsPlugin({
     sourceMap: false
   }),
   alias({
-    inferno: resolve('inferno'),
-    'inferno-component': resolve('inferno-component'),
-    'inferno-compat': resolve('inferno-compat'),
-    'inferno-create-class': resolve('inferno-create-class'),
-    'inferno-create-element': resolve('inferno-create-element'),
-    'inferno-devtools': resolve('inferno-devtools'),
-    'inferno-hydrate': resolve('inferno-hydrate'),
-    'inferno-extras': resolve('inferno-extras'),
-    'inferno-hyperscript': resolve('inferno-hyperscript'),
-    'inferno-mobx': resolve('inferno-mobx'),
-    'inferno-redux': resolve('inferno-redux'),
-    'inferno-router': resolve('inferno-router'),
-    'inferno-server': resolve('inferno-server'),
-    'inferno-shared': resolve('inferno-shared'),
-    'inferno-test-utils': resolve('inferno-test-utils'),
-    'inferno-vnode-flags': resolve('inferno-vnode-flags'),
-    'inferno-clone-vnode': resolve('inferno-clone-vnode'),
-    mobx: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
+    resolve: ['.js'],
+    entries: [
+      {find: 'inferno', replacement: resolve('inferno')},
+      {find: 'inferno-component', replacement: resolve('inferno-component')},
+      {find: 'inferno-compat', replacement: resolve('inferno-compat')},
+      {find: 'inferno-create-class', replacement: resolve('inferno-create-class')},
+      {find: 'inferno-create-element', replacement: resolve('inferno-create-element')},
+      {find: 'inferno-devtools', replacement: resolve('inferno-devtools')},
+      {find: 'inferno-hydrate', replacement: resolve('inferno-hydrate')},
+      {find: 'inferno-extras', replacement: resolve('inferno-extras')},
+      {find: 'inferno-hyperscript', replacement: resolve('inferno-hyperscript')},
+      {find: 'inferno-mobx', replacement: resolve('inferno-mobx')},
+      {find: 'inferno-redux', replacement: resolve('inferno-redux')},
+      {find: 'inferno-router', replacement: resolve('inferno-router')},
+      {find: 'inferno-server', replacement: resolve('inferno-server')},
+      {find: 'inferno-shared', replacement: resolve('inferno-shared')},
+      {find: 'inferno-test-utils', replacement: resolve('inferno-test-utils')},
+      {find: 'inferno-vnode-flags', replacement: resolve('inferno-vnode-flags')},
+      {find: 'inferno-clone-vnode', replacement: resolve('inferno-clone-vnode')},
+      {find: 'mobx', replacement: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')}
+    ]
   })
 ];
 
