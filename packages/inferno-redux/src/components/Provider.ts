@@ -1,4 +1,4 @@
-import { Component, VNode } from 'inferno';
+import { Component, InfernoNode } from 'inferno';
 import { Action, AnyAction, Store } from 'redux';
 import { warning } from '../utils/warning';
 
@@ -15,7 +15,7 @@ const warnAboutReceivingStore = () => {
 
 export interface Props<A extends Action = AnyAction> {
   store: Store<any, A>;
-  children?: VNode | null;
+  children?: InfernoNode;
 }
 
 export class Provider<A extends Action = AnyAction> extends Component<Props<A>, null> {
