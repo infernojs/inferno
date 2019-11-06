@@ -20,7 +20,7 @@ export interface Props<A extends Action = AnyAction> {
 
 export class Provider<A extends Action = AnyAction> extends Component<Props<A>, null> {
   public static displayName = 'Provider';
-  private readonly store: Props<A>['store'];
+  private readonly store: Store<any, A>;
 
   constructor(props: Props<A>, context: any) {
     super(props, context);
@@ -31,7 +31,9 @@ export class Provider<A extends Action = AnyAction> extends Component<Props<A>, 
     return { store: this.store, storeSubscription: null };
   }
 
-  public render() {
+  // Don't infer the return type. It may be expanded and cause reference errors
+  // in the output.
+  public render(): InfernoNode | undefined {
     return this.props.children;
   }
 
