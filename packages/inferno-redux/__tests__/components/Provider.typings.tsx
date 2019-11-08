@@ -18,7 +18,6 @@ describe('Component typings', () => {
 
   afterEach(function() {
     render(null, container);
-    container.innerHTML = '';
     document.body.removeChild(container);
   });
 
@@ -30,6 +29,7 @@ describe('Component typings', () => {
     const store = createStore(rootReducer);
 
     render(<Provider store={store}></Provider>, container);
+    expect(container.innerHTML).toBe('');
   });
 
   it('should accept store with custom action type', () => {
@@ -50,13 +50,13 @@ describe('Component typings', () => {
     const store = createStore(rootReducer);
 
     render(<Provider store={store}></Provider>, container);
+    expect(container.innerHTML).toBe('');
   });
 
   it('should accept children', () => {
     const HelloComponent = () => <p>Hello my friends!</p>;
 
-    // tslint:disable-next-line: no-empty
-    const store = createStore(() => {});
+    const store = createStore(() => ({}));
 
     render(
       <Provider store={store}>
@@ -66,5 +66,6 @@ describe('Component typings', () => {
       </Provider>,
       container
     );
+    expect(container.innerHTML).toBe('<h1>Hello Page</h1><p>Hello my friends!</p><p>Another greetings!</p>');
   });
 });
