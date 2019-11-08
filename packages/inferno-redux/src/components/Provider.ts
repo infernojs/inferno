@@ -1,5 +1,5 @@
-import { Component, VNode } from 'inferno';
-import { AnyAction, Store } from 'redux';
+import { Component, InfernoNode } from 'inferno';
+import { Action, AnyAction, Store } from 'redux';
 import { warning } from '../utils/warning';
 
 let didWarnAboutReceivingStore = false;
@@ -13,16 +13,16 @@ const warnAboutReceivingStore = () => {
   warning('<Provider> does not support changing `store` on the fly.');
 };
 
-export interface Props {
-  store: Store<any>;
-  children?: VNode | null | undefined;
+export interface Props<A extends Action = AnyAction> {
+  store: Store<any, A>;
+  children?: InfernoNode;
 }
 
-export class Provider extends Component<Props, null> {
+export class Provider<A extends Action = AnyAction> extends Component<Props<A>, null> {
   public static displayName = 'Provider';
-  private readonly store: Store<any, AnyAction | any>;
+  private readonly store: Store<any, A>;
 
-  constructor(props: Props, context: any) {
+  constructor(props: Props<A>, context: any) {
     super(props, context);
     this.store = props.store;
   }
@@ -31,11 +31,13 @@ export class Provider extends Component<Props, null> {
     return { store: this.store, storeSubscription: null };
   }
 
-  public render() {
+  // Don't infer the return type. It may be expanded and cause reference errors
+  // in the output.
+  public render(): InfernoNode | undefined {
     return this.props.children;
   }
 
-  public componentWillReceiveProps?(nextProps: Props, nextContext: any): void;
+  public componentWillReceiveProps?(nextProps: Props<A>, nextContext: any): void;
 }
 
 if (process.env.NODE_ENV !== 'production') {
