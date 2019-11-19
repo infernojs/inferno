@@ -6,7 +6,7 @@ const babelPlugin = require('rollup-plugin-babel');
 const path = require('path');
 const replace = require('rollup-plugin-replace');
 const terser = require('rollup-plugin-terser').terser;
-const alias = require('rollup-plugin-alias');
+const alias = require('@rollup/plugin-alias');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
