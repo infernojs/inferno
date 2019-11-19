@@ -1,5 +1,5 @@
 const {resolve, join} = require('path');
-const alias = require('rollup-plugin-alias');
+const alias = require('@rollup/plugin-alias');
 const ROOT = join(__dirname, '../../../');
 
 module.exports = alias({

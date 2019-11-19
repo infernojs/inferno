@@ -2,8 +2,8 @@
   "name": "webpack-prod-test",
   "private": true,
   "dependencies": {
-    "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "scripts": {
     "build": "rm -f output.js && webpack --config config.js"
