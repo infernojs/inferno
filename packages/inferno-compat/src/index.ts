@@ -79,7 +79,7 @@ const Children = {
       return children;
     }
     children = Children.toArray(children);
-    if (ctx && ctx !== children) {
+    if (ctx) {
       fn = fn.bind(ctx);
     }
     return children.map(fn);
@@ -89,7 +89,7 @@ const Children = {
       return;
     }
     children = Children.toArray(children);
-    if (ctx && ctx !== children) {
+    if (ctx) {
       fn = fn.bind(ctx);
     }
     for (let i = 0, len = children.length; i < len; ++i) {

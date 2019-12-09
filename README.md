@@ -975,6 +975,17 @@ const alias = require('@rollup/plugin-alias');
 
 Inferno always wants to deliver great performance. In order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work, so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
 
+## Development
+If you want to contribute code, fork this project and submit a PR from your fork. To run browser tests you need to build the repos. A complete rebuild of the repos can take >5 mins.
+
+```sh
+$ git clone git@github.com:infernojs/inferno.git
+$ cd inferno && npm i
+$ npm run test:node
+$ npm run build
+$ npm run test:browser
+```
+
 ## Community
 
 There is an [Inferno Slack](https://infernojs.slack.com). You can join via [inferno-slack.herokuapp.com](https://inferno-slack.herokuapp.com).
