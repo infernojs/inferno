@@ -284,20 +284,18 @@ export class RenderQueueStream extends Readable {
       this.addToQueue(children === '' ? ' ' : escapeText(children), position);
       // Handle fragments and arrays
     } else if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
-
       const childFlags = vNode.childFlags;
     
       if (childFlags === ChildFlags.HasVNodeChildren || (isArray(vNode) && vNode.length === 0)) {
         this.addToQueue ('<!--!-->', position);
       } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
-        const children = isArray(vNode) ? vNode : vNode.children;
+        const tmpChildren = isArray(vNode) ? vNode : vNode.children;
         
-        for (let i = 0, len = children.length; i < len; ++i) {
-          this.renderVNodeToQueue(children[i], context, position);
+        for (let i = 0, len = tmpChildren.length; i < len; ++i) {
+          this.renderVNodeToQueue(tmpChildren[i], context, position);
         }
         return;
       }
-
       // Handle errors
     } else {
       if (process.env.NODE_ENV !== 'production') {
