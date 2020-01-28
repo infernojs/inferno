@@ -152,6 +152,43 @@ describe('SSR Creation (JSX)', () => {
         </div>
       ),
       result: '<div><br></div>'
+    },
+    {
+      description: 'You should be able to render an array',
+      template: () => (
+        [
+          <p>1</p>,
+          <p>2</p>,
+          <p>3</p>
+        ]
+      ),
+      result: '<p>1</p><p>2</p><p>3</p>'
+    },
+    {
+      description: 'You should be able to render an empty array',
+      template: () => [],
+      result: '<!--!-->'
+    },
+    {
+      description: 'You should be able to render a fragment',
+      template: () => (
+        <>
+          <p>1</p>
+          <p>2</p>
+          <p>3</p>
+        </> /* reset syntax highlighting */
+      ),
+      result: '<p>1</p><p>2</p><p>3</p>'
+    },
+    {
+      description: 'You should be able to render an empty fragment',
+      template: () => (<></>), /* reset syntax highlighting */
+      result: '<!--!-->'
+    },
+    {
+      description: 'You should be able to render fragment with single child',
+      template: () => (<><p>1</p></>), /* reset syntax highlighting */
+      result: '<p>1</p>'
     }
   ];
 
