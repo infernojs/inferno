@@ -1,4 +1,4 @@
-import {combineFrom, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString} from 'inferno-shared';
+import {combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString} from 'inferno-shared';
 import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
 import {Readable} from 'stream';
 import {renderStylesToString} from './prop-renderers';
@@ -43,8 +43,28 @@ export class RenderStream extends Readable {
     if ((flags & VNodeFlags.Element) > 0) {
       return this.renderElement(vNode, context);
     }
+    if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
+      return this.renderArrayOrFragment(vNode, context)
+    }
+
 
     return this.renderText(vNode);
+  }
+
+  public renderArrayOrFragment(vNode, context) {
+    const childFlags = vNode.childFlags;
+    
+    if (childFlags === ChildFlags.HasVNodeChildren || (isArray(vNode) && vNode.length === 0)) {
+      return this.push('<!--!-->');
+    } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
+      const children = isArray(vNode) ? vNode : vNode.children;
+
+      return (children as VNode[]).reduce((p, child) => {
+        return p.then(() => {
+          return Promise.resolve(this.renderNode(child, context)).then(() => !!(child.flags & VNodeFlags.Text));
+        });
+      }, Promise.resolve(false));
+    }
   }
 
   public renderComponent(vComponent, context, isClass) {
