@@ -16,6 +16,10 @@ import {Readable} from 'stream';
 import {renderStylesToString} from './prop-renderers';
 import {createDerivedState, escapeText, isAttributeNameSafe, voidElements} from './utils';
 
+function concat(...args: string[]): string {
+  return args.join('');
+}
+
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
   public promises: any[] = [];
@@ -184,15 +188,15 @@ export class RenderQueueStream extends Readable {
       }
       // If an element
     } else if ((flags & VNodeFlags.Element) > 0) {
-      let renderedString = `<${type}`;
+      const tmpARR = [`<${type}`];
       let html;
       const isVoidElement = voidElements.has(type);
       const className = vNode.className;
 
       if (isString(className)) {
-        renderedString += ` class="${escapeText(className)}"`;
+        tmpARR.push(` class="${escapeText(className)}"`);
       } else if (isNumber(className)) {
-        renderedString += ` class="${className}"`;
+        tmpARR.push(` class="${className}"`);
       }
 
       if (!isNull(props)) {
@@ -205,7 +209,7 @@ export class RenderQueueStream extends Readable {
               break;
             case 'style':
               if (!isNullOrUndef(props.style)) {
-                renderedString += ` style="${renderStylesToString(props.style)}"`;
+                tmpARR.push(` style="${renderStylesToString(props.style)}"`);
               }
               break;
             case 'children':
@@ -215,68 +219,68 @@ export class RenderQueueStream extends Readable {
             case 'defaultValue':
               // Use default values if normal values are not present
               if (!props.value) {
-                renderedString += ` value="${isString(value) ? escapeText(value) : value}"`;
+                tmpARR.push(` value="${isString(value) ? escapeText(value) : value}"`);
               }
               break;
             case 'defaultChecked':
               // Use default values if normal values are not present
               if (!props.checked) {
-                renderedString += ` checked="${value}"`;
+                tmpARR.push(` checked="${value}"`);
               }
               break;
             default:
               if (isAttributeNameSafe(prop)) {
                 if (isString(value)) {
-                  renderedString += ` ${prop}="${escapeText(value)}"`;
+                  tmpARR.push(` ${prop}="${escapeText(value)}"`);
                 } else if (isNumber(value)) {
-                  renderedString += ` ${prop}="${value}"`;
+                  tmpARR.push(` ${prop}="${value}"`);
                 } else if (value === true) {
-                  renderedString += ` ${prop}`;
+                  tmpARR.push(` ${prop}`);
                 }
               }
               break;
           }
         }
       }
-      renderedString += `>`;
+      tmpARR.push(`>`);
 
       if (String(type).match(/[\s\n\/='"\0<>]/)) {
-        throw renderedString;
+        throw tmpARR.join('');
       }
 
       // Voided element, push directly to queue
       if (isVoidElement) {
-        this.addToQueue(renderedString, position);
+        this.addToQueue(tmpARR.join(''), position);
         // Regular element with content
       } else {
         // Element has children, build them in
         const childFlags = vNode.childFlags;
 
         if (childFlags === ChildFlags.HasVNodeChildren) {
-          this.addToQueue(renderedString, position);
+          this.addToQueue(tmpARR.join(''), position);
           this.renderVNodeToQueue(children, context, position);
-          this.addToQueue('</' + type + '>', position);
+          this.addToQueue(concat('</', type, '>'), position);
           return;
         } else if (childFlags === ChildFlags.HasTextChildren) {
-          this.addToQueue(renderedString, position);
+          this.addToQueue(tmpARR.join(''), position);
           this.addToQueue(children === '' ? ' ' : escapeText(children + ''), position);
-          this.addToQueue('</' + type + '>', position);
+          this.addToQueue(concat('</', type, '>'), position);
           return;
         } else if (childFlags & ChildFlags.MultipleChildren) {
-          this.addToQueue(renderedString, position);
+          this.addToQueue(tmpARR.join(''), position);
           for (let i = 0, len = children.length; i < len; ++i) {
             this.renderVNodeToQueue(children[i], context, position);
           }
-          this.addToQueue('</' + type + '>', position);
+          this.addToQueue(concat('</', type, '>'), position);
           return;
         }
         if (html) {
-          this.addToQueue(renderedString + html + '</' + type + '>', position);
+          this.addToQueue(concat(tmpARR.join(''), html,'</', type, '>'), position);
           return;
         }
         // Close element if it's not void
         if (!isVoidElement) {
-          this.addToQueue(renderedString + '</' + type + '>', position);
+          this.addToQueue(concat(tmpARR.join(''), '</', type, '>'), position);
         }
       }
       // Push text directly to queue
