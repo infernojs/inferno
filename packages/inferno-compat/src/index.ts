@@ -57,7 +57,7 @@ function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragm
   return true;
 }
 
-export type IterateChildrenFn = (value: InfernoNode | any, index: number, array: Array<InfernoNode | any>) => any;
+export type IterateChildrenFn = (value: InfernoNode | any, index: number, array: any[]) => any;
 
 function flatten(arr, result) {
   for (let i = 0, len = arr.length; i < len; ++i) {
@@ -74,7 +74,7 @@ function flatten(arr, result) {
 const ARR = [];
 
 const Children = {
-  map(children: Array<InfernoNode | any>, fn: IterateChildrenFn, ctx: any): any[] {
+  map(children: any[], fn: IterateChildrenFn, ctx: any): any[] {
     if (isNullOrUndef(children)) {
       return children;
     }
@@ -84,7 +84,7 @@ const Children = {
     }
     return children.map(fn);
   },
-  forEach(children: Array<InfernoNode | any>, fn: IterateChildrenFn, ctx?: any): void {
+  forEach(children: any[], fn: IterateChildrenFn, ctx?: any): void {
     if (isNullOrUndef(children)) {
       return;
     }
@@ -98,18 +98,18 @@ const Children = {
       fn(child, i, children);
     }
   },
-  count(children: Array<InfernoNode | any>): number {
+  count(children: any[]): number {
     children = Children.toArray(children);
     return children.length;
   },
-  only(children: Array<InfernoNode | any>): InfernoNode | any {
+  only(children: any[]): InfernoNode | any {
     children = Children.toArray(children);
     if (children.length !== 1) {
       throw new Error('Children.only() expects only one child.');
     }
     return children[0];
   },
-  toArray(children: Array<InfernoNode | any>): Array<InfernoNode | any> {
+  toArray(children: any[]): any[] {
     if (isNullOrUndef(children)) {
       return [];
     }

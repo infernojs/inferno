@@ -9,7 +9,7 @@ export interface IBrowserRouterProps {
   forceRefresh?: boolean;
   getUserConfirmation?: () => {};
   keyLength?: number;
-  children: Array<Component<any, any>> | JSX.Element;
+  children: Component<any, any>[] | JSX.Element;
 }
 
 export class BrowserRouter extends Component<IBrowserRouterProps, any> {

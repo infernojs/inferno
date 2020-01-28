@@ -9,7 +9,7 @@ export interface IMemoryRouterProps {
   initialIndex?: number;
   getUserConfirmation?: () => {};
   keyLength?: number;
-  children: Array<Component<any, any>> | JSX.Element;
+  children: Component<any, any>[] | JSX.Element;
 }
 
 export class MemoryRouter extends Component<IMemoryRouterProps, any> {

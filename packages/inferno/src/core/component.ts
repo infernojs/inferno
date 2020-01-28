@@ -3,7 +3,8 @@ import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shar
 import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
 
-const QUEUE: Array<Component<any, any>> = [];
+const QUEUE: Component<any, any>[] = [];
+
 const nextTick =
   typeof Promise !== 'undefined'
     ? Promise.resolve().then.bind(Promise.resolve())
