@@ -1,6 +1,7 @@
 import {EMPTY_OBJ} from 'inferno';
 import {
   combineFrom,
+  isArray,
   isFunction,
   isInvalid,
   isNull,
@@ -180,16 +181,17 @@ function renderVNodeToString(vNode, parent, context): string {
     return renderedString;
   } else if ((flags & VNodeFlags.Text) !== 0) {
     return children === '' ? ' ' : escapeText(children);
-  } else if ((flags & VNodeFlags.Fragment) !== 0) {
+  } else if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
     const childFlags = vNode.childFlags;
-
-    if (childFlags === ChildFlags.HasVNodeChildren) {
+    
+    if (childFlags === ChildFlags.HasVNodeChildren || (isArray(vNode) && vNode.length === 0)) {
       return '<!--!-->';
-    } else if (childFlags & ChildFlags.MultipleChildren) {
+    } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
+      const tmpNodes = isArray(vNode) ? vNode : children;
       let renderedString = '';
-
-      for (let i = 0, len = children.length; i < len; ++i) {
-        renderedString += renderVNodeToString(children[i], vNode, context);
+      
+      for (let i = 0, len = tmpNodes.length; i < len; ++i) {
+        renderedString += renderVNodeToString(tmpNodes[i], vNode, context);
       }
 
       return renderedString;
