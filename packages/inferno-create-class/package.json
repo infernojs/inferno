@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-class",
-  "version": "7.3.3",
+  "version": "7.4.0",
   "license": "MIT",
   "description": "Provides a helper to create Inferno Components without needing ES2015",
   "author": {
@@ -32,11 +32,11 @@
     "vdom"
   ],
   "dependencies": {
-    "inferno": "7.3.3"
+    "inferno": "7.4.0"
   },
   "devDependencies": {
-    "inferno-create-element": "7.3.3",
-    "inferno-shared": "7.3.3"
+    "inferno-create-element": "7.4.0",
+    "inferno-shared": "7.4.0"
   },
   "rollup": {
     "bundledDependencies": [
