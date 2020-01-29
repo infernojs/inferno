@@ -174,6 +174,13 @@ describe('SSR Creation (JSX)', () => {
     }
     console.log("Timing: ", timing)
     console.log("Memory delta: ", memory)
+
+    console.log("Average: ",
+      Math.round(timing.reduce((prev, curr, i, arr) => prev + curr / arr.length, 0) * 1000) / 1000 + "ms",
+      Math.round(memory.filter((i) => i.heapUsed > 0).reduce((prev, curr, i, arr) => prev + curr.heapUsed / arr.length, 0) * 10) / 10 + "kb",
+      Math.round(memory.reduce((prev, curr, i, arr) => prev + curr.heapUsed / arr.length, 0) * 10) / 10 + "kb"
+    )
+    console.log("(time/call – heap delta/call – heap delta overall")
     
     expect(typeof output).toBe('string');
     expect(output.length).toBeGreaterThan(1000);
