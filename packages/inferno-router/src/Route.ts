@@ -25,7 +25,7 @@ export interface IRouteProps {
   exact?: boolean;
   strict?: boolean;
   sensitive?: boolean;
-  component?: IComponentConstructor<any> | SFC;
+  component?: IComponentConstructor<any> | SFC<any>;
   render?: (props: RouteComponentProps<any>, context: any) => InfernoNode;
   location?: H.Location;
   children?: ((props: RouteComponentProps<any>) => InfernoNode) | InfernoNode;
