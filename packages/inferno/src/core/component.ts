@@ -31,7 +31,10 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
   if (!component.$BR) {
     if (!renderCheck.v) {
       if (QUEUE.length === 0) {
-        applyState(component, force, callback);
+        applyState(component, force);
+        if (isFunction(callback)) {
+          callback.call(component);
+        }
         return;
       }
     }
@@ -57,10 +60,9 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
 
 function callSetStateCallbacks(component) {
   const queue = component.$QU;
-  let setStateCb: Function;
 
-  while ((setStateCb = queue.pop())) {
-    (setStateCb).call(component);
+  for (let i = 0; i < queue.length; ++i) {
+    queue[i].call(component);
   }
 
   component.$QU = null;
@@ -69,17 +71,17 @@ function callSetStateCallbacks(component) {
 export function rerender() {
   let component;
   microTaskPending = false;
-  while ((component = QUEUE.pop())) {
-    const queue = component.$QU;
 
-    applyState(component, false, queue ? callSetStateCallbacks.bind(null, component) : null);
+  while ((component = QUEUE.shift())) {
+    applyState(component, false);
+
+    if (component.$QU) {
+      callSetStateCallbacks(component);
+    }
   }
 }
 
-function applyState<P, S>(component: Component<P, S>, force: boolean, callback?: Function): void {
-  if (component.$UN) {
-    return;
-  }
+function applyState<P, S>(component: Component<P, S>, force: boolean): void {
   if (force || !component.$BR) {
     const pendingState = component.$PS;
 
@@ -100,18 +102,12 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
       null,
       lifecycle
     );
-
-    if (lifecycle.length > 0) {
-      callAll(lifecycle);
-    }
+    callAll(lifecycle);
 
     renderCheck.v = false;
   } else {
     component.state = component.$PS as any;
     component.$PS = null;
-  }
-  if (isFunction(callback)) {
-    callback.call(component);
   }
 }
 export type ComponentType<P = {}> = Component<P> | StatelessComponent<P>;

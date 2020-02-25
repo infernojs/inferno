@@ -72,10 +72,7 @@ export function __render(
       rootInput = (parentDOM as any).$V = input as VNode;
     }
   }
-
-  if (lifecycle.length > 0) {
-    callAll(lifecycle);
-  }
+  callAll(lifecycle);
   renderCheck.v = false;
   if (isFunction(callback)) {
     (callback as Function)();

@@ -45,9 +45,8 @@ export function removeChild(parentDOM: Element, childNode: Element) {
 }
 
 export function callAll(arrayFn: Function[]) {
-  let listener;
-  while ((listener = arrayFn.shift()) !== undefined) {
-    listener();
+  for (let i = 0; i < arrayFn.length; i++) {
+    arrayFn[i]();
   }
 }
 
