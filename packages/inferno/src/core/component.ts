@@ -57,9 +57,10 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
 
 function callSetStateCallbacks(component) {
   const queue = component.$QU;
+  let setStateCb: Function;
 
-  for (let i = 0, len = (queue as Function[]).length; i < len; ++i) {
-    (queue as Function[])[i].call(component);
+  while ((setStateCb = queue.pop())) {
+    (setStateCb).call(component);
   }
 
   component.$QU = null;
