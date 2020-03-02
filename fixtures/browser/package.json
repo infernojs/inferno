@@ -5,7 +5,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pretest": "npm install",
     "test": "karma start karma.sauce.conf.js --single-run",
     "local": "karma start karma.base.conf.js --single-run --reporters dots",
     "debug": "karma start karma.base.conf.js --no-single-run"

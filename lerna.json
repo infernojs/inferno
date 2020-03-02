@@ -7,5 +7,6 @@
   "packages": [
     "packages/*"
   ],
+  "ignoreChanges": ["docs/**"],
   "version": "7.4.1"
 }
