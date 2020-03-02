@@ -73,10 +73,12 @@ export function rerender() {
   microTaskPending = false;
 
   while ((component = QUEUE.shift())) {
-    applyState(component, false);
+    if (!component.$UN) {
+      applyState(component, false);
 
-    if (component.$QU) {
-      callSetStateCallbacks(component);
+      if (component.$QU) {
+        callSetStateCallbacks(component);
+      }
     }
   }
 }
