@@ -58,7 +58,7 @@
     "lint-staged": "lint-staged",
     "move-types": "lerna exec -- node ../../scripts/bundle/move-typings.js",
     "publish": "lerna publish --exact --force-publish=*",
-    "version": "npm run build && npm run benchmarks && npm run test",
+    "version": "npm run build && npm run benchmarks && git add docs && npm run test",
     "prettier": "npm-run-all prettier:*",
     "prettier:tests-js": "prettier --print-width 160 --single-quote true --write --list-different packages/*/__tests__/**/*.{js,jsx}",
     "prettier:tests-ts": "prettier --print-width 160 --single-quote true --write --list-different --parser=typescript packages/*/__tests__/**/*.{ts,tsx}",
