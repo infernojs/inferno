@@ -22,19 +22,19 @@ module.exports = function(options) {
   const filename = `${options.name}${options.ext}`;
 
   const bundleOptions = {
-    file: `dist/${filename}`,
-    format: options.format,
-    globals: Object.assign(moduleGlobals, rollupConfig.moduleGlobals),
+    output: {
+      file: `dist/${filename}`,
+      format: options.format,
+      globals: Object.assign(moduleGlobals, rollupConfig.moduleGlobals),
+      name: rollupConfig.moduleName,
+    },
     indent: true,
-    name: rollupConfig.moduleName,
     extend: true,
     sourcemap: false
   };
 
   if (options.format === 'cjs') {
-    bundleOptions.output = {
-      exports: 'named'
-    };
+    bundleOptions.output.exports = 'named';
   }
 
   return ({ write }) => write(bundleOptions);
