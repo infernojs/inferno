@@ -59,7 +59,6 @@ module.exports = function (version, options) {
           html5_comments: false,
           shebang: false
         },
-        sourcemap: false,
         toplevel: false,
         warnings: false
       })

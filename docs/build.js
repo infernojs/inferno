@@ -80,7 +80,6 @@ if (isProduction) {
         html5_comments: false,
         shebang: false
       },
-      sourcemap: false,
       toplevel: false,
       warnings: false
     })
