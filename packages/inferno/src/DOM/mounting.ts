@@ -4,7 +4,7 @@ import { createVoidVNode, directClone, normalizeRoot } from '../core/implementat
 import { VNode } from '../core/types';
 import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, safeCall1, setTextContent } from './utils/common';
 import { mountProps } from './props';
-import { createClassComponentInstance } from './utils/componentUtil';
+import { createClassComponentInstance, renderFunctionalComponent } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
@@ -140,10 +140,6 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
   mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
-}
-
-function renderFunctionalComponent(vNode: VNode, context) {
-  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(vNode.props || EMPTY_OBJ, vNode.ref, context) : vNode.type(vNode.props || EMPTY_OBJ, context);
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {

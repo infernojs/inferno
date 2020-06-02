@@ -18,7 +18,7 @@ import {
 } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
-import { renderNewInput } from './utils/componentUtil';
+import { renderNewInput, renderFunctionalComponent } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 
@@ -458,8 +458,7 @@ function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSV
     if (nextHooksDefined && isFunction(nextRef.onComponentWillUpdate)) {
       nextRef.onComponentWillUpdate(lastProps, nextProps);
     }
-    const type = nextVNode.type;
-    const nextInput = normalizeRoot(nextVNode.flags & VNodeFlags.ForwardRef ? type.render(nextProps, nextRef, context) : type(nextProps, context));
+    const nextInput = normalizeRoot(renderFunctionalComponent(nextVNode, context));
 
     patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle);
     nextVNode.children = nextInput;
