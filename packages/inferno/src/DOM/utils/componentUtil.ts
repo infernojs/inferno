@@ -1,7 +1,8 @@
-import {combineFrom, isFunction, isNull, warning} from 'inferno-shared';
-import {createDerivedState, EMPTY_OBJ, getComponentName} from './common';
-import {VNode} from './../../core/types';
-import {normalizeRoot} from "../../core/implementation";
+import { combineFrom, isFunction, isNull, warning } from 'inferno-shared';
+import { createDerivedState, EMPTY_OBJ, getComponentName } from './common';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { VNode } from './../../core/types';
+import { normalizeRoot } from "../../core/implementation";
 
 function warnAboutOldLifecycles(component) {
   const oldLifecycles: string[] = [];
@@ -94,4 +95,9 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
   instance.$LI = renderNewInput(instance, props, context);
 
   return instance;
+}
+
+export function renderFunctionalComponent(vNode: VNode, context) {
+  const props = vNode.props || EMPTY_OBJ;
+  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context);
 }
