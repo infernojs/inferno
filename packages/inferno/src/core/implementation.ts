@@ -207,21 +207,14 @@ export function normalizeProps(vNode) {
  * But not normalize, because otherwise those possibly get KEY and re-mount
  */
 function cloneFragment(vNodeToClone) {
-  let clonedChildren;
   const oldChildren = vNodeToClone.children;
   const childFlags = vNodeToClone.childFlags;
 
-  if (childFlags === ChildFlags.HasVNodeChildren) {
-    clonedChildren = directClone(oldChildren as VNode);
-  } else if (childFlags & ChildFlags.MultipleChildren) {
-    clonedChildren = [];
-
-    for (let i = 0, len = oldChildren.length; i < len; ++i) {
-      clonedChildren.push(directClone(oldChildren[i]));
-    }
-  }
-
-  return createFragment(clonedChildren, childFlags, vNodeToClone.key);
+  return createFragment(
+    childFlags === ChildFlags.HasVNodeChildren ? directClone(oldChildren as VNode) : oldChildren.map(directClone),
+    childFlags,
+    vNodeToClone.key
+  );
 }
 
 export function directClone(vNodeToClone: VNode): VNode {
