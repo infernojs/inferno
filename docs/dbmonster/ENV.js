@@ -139,14 +139,14 @@ var ENV = ENV || (function () {
 			data = [];
 			for (var i = 1; i <= ENV.rows; i++) {
 				data.push({ dbname: 'cluster' + i, query: "", formatElapsed: "", elapsedClassName: "" });
-				data.push({ dbname: 'cluster' + i + ' slave', query: "", formatElapsed: "", elapsedClassName: "" });
+				data.push({ dbname: 'cluster' + i + ' replica', query: "", formatElapsed: "", elapsedClassName: "" });
 			}
 		}
 		if (!data) { // first init when keepIdentity
 			data = [];
 			for (var i = 1; i <= ENV.rows; i++) {
 				data.push({ dbname: 'cluster' + i });
-				data.push({ dbname: 'cluster' + i + ' slave' });
+				data.push({ dbname: 'cluster' + i + ' replica' });
 			}
 			oldData = data;
 		}
