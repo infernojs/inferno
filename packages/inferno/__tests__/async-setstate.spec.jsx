@@ -1,15 +1,15 @@
 import { Component, render } from 'inferno';
-import {spy} from 'sinon';
+import { spy } from 'sinon';
 
 describe('Async set state issue', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -30,8 +30,8 @@ describe('Async set state issue', () => {
       render(props) {
         return (
           <div>
-            <Test update={this.update} run={props.run} name="first"/>
-            <Test update={this.update} run={props.run} name="second"/>
+            <Test update={this.update} run={props.run} name="first" />
+            <Test update={this.update} run={props.run} name="second" />
           </div>
         );
       }
@@ -79,9 +79,12 @@ describe('Async set state issue', () => {
         this._forceASYNC();
 
         _justBecauseCBRequested++;
-        this.setState({
-          success: 1
-        }, this._justBecause);
+        this.setState(
+          {
+            success: 1
+          },
+          this._justBecause
+        );
       }
 
       _failureCreator() {
@@ -89,9 +92,12 @@ describe('Async set state issue', () => {
         this._forceASYNC();
 
         _callMePlsCBRequested++;
-        this.setState({
-          failure: true
-        }, this._callMePls);
+        this.setState(
+          {
+            failure: true
+          },
+          this._callMePls
+        );
       }
 
       _fromCWRP() {
@@ -100,25 +106,27 @@ describe('Async set state issue', () => {
 
         _failureCreatorCBRequested++;
         // This setState triggers async flow
-        this.setState({
-          async: true
-        }, this._failureCreator);
+        this.setState(
+          {
+            async: true
+          },
+          this._failureCreator
+        );
       }
 
       componentWillReceiveProps(nextProps, nextContext) {
         _fromCWRPCBRequested++;
 
-        this.setState({
-          counter: this.state.counter + 1
-        }, this._fromCWRP);
+        this.setState(
+          {
+            counter: this.state.counter + 1
+          },
+          this._fromCWRP
+        );
       }
 
       render() {
-        return (
-          <div>
-            {`${this.props.name} ${this.state.success} ${this.state.counter} ${this.state.async} ${this.state.failure}`}
-          </div>
-        );
+        return <div>{`${this.props.name} ${this.state.success} ${this.state.counter} ${this.state.async} ${this.state.failure}`}</div>;
       }
     }
 
@@ -158,17 +166,14 @@ describe('Async set state issue', () => {
       render(props) {
         return (
           <div>
-            <TestBefore update={this.update} run={props.run}/>
-            <TestAfter update={this.update} run={props.run}/>
+            <TestBefore update={this.update} run={props.run} />
+            <TestAfter update={this.update} run={props.run} />
           </div>
         );
       }
     }
 
-    let testBeforeBeforeSpy,
-      testBeforeAfterSpy,
-      testAfterBeforeSpy,
-      testAfterAfterSpy;
+    let testBeforeBeforeSpy, testBeforeAfterSpy, testAfterBeforeSpy, testAfterAfterSpy;
 
     class TestBefore extends Component {
       constructor(props) {
@@ -196,27 +201,32 @@ describe('Async set state issue', () => {
       _fromCWRP() {
         this._forceASYNC();
 
-        this.setState({
-          async: 1
-        }, this._before);
+        this.setState(
+          {
+            async: 1
+          },
+          this._before
+        );
 
-        this.setState({
-          async: 2
-        }, this._after);
+        this.setState(
+          {
+            async: 2
+          },
+          this._after
+        );
       }
 
       componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({
-          counter: this.state.counter + 1
-        }, this._fromCWRP);
+        this.setState(
+          {
+            counter: this.state.counter + 1
+          },
+          this._fromCWRP
+        );
       }
 
       render() {
-        return (
-          <div>
-            {`${this.state.async}`}
-          </div>
-        );
+        return <div>{`${this.state.async}`}</div>;
       }
     }
 
@@ -246,27 +256,32 @@ describe('Async set state issue', () => {
       _fromCWRP() {
         this._forceASYNC();
 
-        this.setState({
-          async: 1
-        }, this._before);
+        this.setState(
+          {
+            async: 1
+          },
+          this._before
+        );
 
-        this.setState({
-          async: 2
-        }, this._after);
+        this.setState(
+          {
+            async: 2
+          },
+          this._after
+        );
       }
 
       componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({
-          counter: this.state.counter + 1
-        }, this._fromCWRP);
+        this.setState(
+          {
+            counter: this.state.counter + 1
+          },
+          this._fromCWRP
+        );
       }
 
       render() {
-        return (
-          <div>
-            {`${this.state.async}`}
-          </div>
-        );
+        return <div>{`${this.state.async}`}</div>;
       }
     }
 
@@ -305,17 +320,14 @@ describe('Async set state issue', () => {
       render(props) {
         return (
           <div>
-            <TestBefore update={this.update} run={props.run}/>
-            <TestAfter update={this.update} run={props.run}/>
+            <TestBefore update={this.update} run={props.run} />
+            <TestAfter update={this.update} run={props.run} />
           </div>
         );
       }
     }
 
-    let testBeforeBeforeSpy,
-      testBeforeAfterSpy,
-      testAfterBeforeSpy,
-      testAfterAfterSpy;
+    let testBeforeBeforeSpy, testBeforeAfterSpy, testAfterBeforeSpy, testAfterAfterSpy;
 
     class TestBefore extends Component {
       constructor(props) {
@@ -343,27 +355,32 @@ describe('Async set state issue', () => {
       _fromCWRP() {
         this._forceASYNC();
 
-        this.setState({
-          async: 1
-        }, this._before);
+        this.setState(
+          {
+            async: 1
+          },
+          this._before
+        );
 
-        this.setState({
-          async: 2
-        }, this._after);
+        this.setState(
+          {
+            async: 2
+          },
+          this._after
+        );
       }
 
       componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({
-          counter: this.state.counter + 1
-        }, this._fromCWRP);
+        this.setState(
+          {
+            counter: this.state.counter + 1
+          },
+          this._fromCWRP
+        );
       }
 
       render() {
-        return (
-          <div>
-            {`${this.state.async}`}
-          </div>
-        );
+        return <div>{`${this.state.async}`}</div>;
       }
     }
 
@@ -393,27 +410,32 @@ describe('Async set state issue', () => {
       _fromCWRP() {
         this._forceASYNC();
 
-        this.setState({
-          async: 1
-        }, this._before);
+        this.setState(
+          {
+            async: 1
+          },
+          this._before
+        );
 
-        this.setState({
-          async: 2
-        }, this._after);
+        this.setState(
+          {
+            async: 2
+          },
+          this._after
+        );
       }
 
       componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({
-          counter: this.state.counter + 1
-        }, this._fromCWRP);
+        this.setState(
+          {
+            counter: this.state.counter + 1
+          },
+          this._fromCWRP
+        );
       }
 
       render() {
-        return (
-          <div>
-            {`${this.state.async}`}
-          </div>
-        );
+        return <div>{`${this.state.async}`}</div>;
       }
     }
 

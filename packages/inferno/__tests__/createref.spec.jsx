@@ -3,12 +3,12 @@ import { Component, createRef, render, rerender } from 'inferno';
 describe('createRef', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -89,11 +89,11 @@ describe('createRef', () => {
 
         instance = this;
 
-        this.es6Old = function(arg) {
+        this.es6Old = function (arg) {
           oldCounter++;
           oldValue = arg;
         };
-        this.es6new = function(arg) {
+        this.es6new = function (arg) {
           newCounter++;
           newValue = arg;
         };
@@ -136,11 +136,11 @@ describe('createRef', () => {
 
         instance = this;
 
-        this.es6Old = function(arg) {
+        this.es6Old = function (arg) {
           oldCounter++;
           oldValue = arg;
         };
-        this.es6new = function(arg) {
+        this.es6new = function (arg) {
           newCounter++;
           newValue = arg;
         };

@@ -31,13 +31,13 @@ import sinon from 'sinon';
 
 const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'isValidated', 'key', 'ref', 'props', 'type'].sort();
 
-const createDOMElement = tagName => document.createElement(tagName);
+const createDOMElement = (tagName) => document.createElement(tagName);
 
-const FunctionalComponent = function(props) {
+const FunctionalComponent = function (props) {
   return createElement('div', props);
 };
 
-const AnotherFunctionalComponent = function(props) {
+const AnotherFunctionalComponent = function (props) {
   return createElement('div', props);
 };
 
@@ -374,10 +374,10 @@ describe('Test Utils', () => {
 
     it('should throw an error when not passed a VNode', () => {
       const errorRegex = /findAllInVNodeTree/;
-      const predicate = vNode => {
+      const predicate = (vNode) => {
         return true;
       };
-      const testValue = value => {
+      const testValue = (value) => {
         expect(() => {
           findAllInVNodeTree(value, predicate);
         }).toThrowError();
@@ -429,7 +429,7 @@ describe('Test Utils', () => {
       const result1 = scryRenderedDOMElementsWithClass(tree3, 'one');
       expect(result1 instanceof Array).toBeTruthy();
       expect(result1.length).toBe(3);
-      result1.forEach(result => {
+      result1.forEach((result) => {
         expect(result.tagName).toBe('DIV');
       });
 
@@ -481,7 +481,7 @@ describe('Test Utils', () => {
         const result = scryRenderedDOMElementsWithTag(tree4, tagName);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        result.forEach(item => {
+        result.forEach((item) => {
           expect(item.tagName).toBe(tagName.toUpperCase());
         });
       };
@@ -509,7 +509,7 @@ describe('Test Utils', () => {
         const result = scryRenderedVNodesWithType(tree5, type);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        result.forEach(item => {
+        result.forEach((item) => {
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
           expect(isVNode(item)).toBe(true);
@@ -541,7 +541,7 @@ describe('Test Utils', () => {
         const result = scryVNodesWithType(tree6, type);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        result.forEach(item => {
+        result.forEach((item) => {
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
           expect(isVNode(item)).toBe(true);
@@ -570,7 +570,7 @@ describe('Test Utils', () => {
 
     it('should throw an error when more than one result is found #1', () => {
       const errorRegex = /Did not find exactly one match/;
-      const testValue = classNames => {
+      const testValue = (classNames) => {
         expect(() => {
           findRenderedDOMElementWithClass(tree7, classNames);
         }).toThrowError();
@@ -624,7 +624,7 @@ describe('Test Utils', () => {
 
     it('should throw an error when more than one result is found #2', () => {
       const errorRegex = /Did not find exactly one match/;
-      const testValue = tagName => {
+      const testValue = (tagName) => {
         expect(() => {
           findRenderedDOMElementWithTag(tree8, tagName);
         }).toThrowError();
@@ -658,7 +658,7 @@ describe('Test Utils', () => {
 
     it('should throw an error when more than one result is found #3', () => {
       const errorRegex = /Did not find exactly one match/;
-      const testValue = type => {
+      const testValue = (type) => {
         expect(() => {
           findRenderedVNodeWithType(tree9, type);
         }).toThrowError();
@@ -668,7 +668,7 @@ describe('Test Utils', () => {
     });
 
     it('should return a matched VNode #1', () => {
-      const testValue = type => {
+      const testValue = (type) => {
         const result = findRenderedVNodeWithType(tree9, type);
         expect(result instanceof Object).toBeTruthy();
         expect(Object.keys(result).sort()).toEqual(VNodeKeys);
@@ -696,7 +696,7 @@ describe('Test Utils', () => {
 
     it('should throw an error when more than one result is found #4', () => {
       const errorRegex = /Did not find exactly one match/;
-      const testValue = type => {
+      const testValue = (type) => {
         expect(() => {
           findVNodeWithType(tree10, type);
         }).toThrowError();
@@ -706,7 +706,7 @@ describe('Test Utils', () => {
     });
 
     it('should return a matched VNode #2', () => {
-      const testValue = type => {
+      const testValue = (type) => {
         const result = findVNodeWithType(tree10, type);
         expect(result instanceof Object).toBeTruthy();
         expect(Object.keys(result).sort()).toEqual(VNodeKeys);

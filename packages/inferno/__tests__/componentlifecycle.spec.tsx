@@ -5,12 +5,12 @@ import sinon from 'sinon';
 describe('Component lifecycle', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -162,7 +162,7 @@ describe('Component lifecycle', () => {
       public render() {
         // eslint-disable-next-line
         return (
-          <div className="foobar" ref={el => (this.element = el!)}>
+          <div className="foobar" ref={(el) => (this.element = el!)}>
             1
           </div>
         );
@@ -198,7 +198,7 @@ describe('Component lifecycle', () => {
     // eslint-disable-next-line no-return-assign
     render(
       <Com
-        ref={inst => {
+        ref={(inst) => {
           c = inst;
         }}
         value={1}
@@ -209,7 +209,7 @@ describe('Component lifecycle', () => {
     c.componentDidUpdate = undefined;
 
     // eslint-disable-next-line no-return-assign
-    render(<Com ref={inst => (c = inst)} value={2} />, container);
+    render(<Com ref={(inst) => (c = inst)} value={2} />, container);
   });
 });
 
@@ -256,7 +256,7 @@ describe('legacy life cycle', () => {
 
     // retrieve the arguments of all calls for console.error
     // so multiple calls to console.error should not broke this test
-    const callArgs = consoleErrorStub.getCalls().map(c => c.args.length && c.args[0]);
+    const callArgs = consoleErrorStub.getCalls().map((c) => c.args.length && c.args[0]);
 
     // should have at least one warnings containing:
     // componentWillMount, componentWillReceiveProps, componentWillUpdate
@@ -299,7 +299,7 @@ describe('legacy life cycle', () => {
     // render the element
     render(element, container);
 
-    const callArgs = consoleErrorStub.getCalls().map(c => c.args.length && c.args[0]);
+    const callArgs = consoleErrorStub.getCalls().map((c) => c.args.length && c.args[0]);
 
     for (let i = 0; i < callArgs.length; i++) {
       expect(callArgs[i]).not.toMatch(/(componentWillMount)|(componentWillReceiveProps)|(componentWillUpdate)/);

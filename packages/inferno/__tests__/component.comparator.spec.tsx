@@ -3,12 +3,12 @@ import { Component, options, render } from 'inferno';
 describe('top level context', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -45,7 +45,7 @@ describe('top level context', () => {
       }
     }
 
-    options.componentComparator = function() {
+    options.componentComparator = function () {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;
@@ -95,7 +95,7 @@ describe('top level context', () => {
       }
     }
 
-    options.componentComparator = function() {
+    options.componentComparator = function () {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;
@@ -145,7 +145,7 @@ describe('top level context', () => {
       }
     }
 
-    options.componentComparator = function() {
+    options.componentComparator = function () {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;
@@ -195,7 +195,7 @@ describe('top level context', () => {
       }
     }
 
-    options.componentComparator = function() {
+    options.componentComparator = function () {
       // Simulate ComponentA being changed
       ComponentA.prototype.render = ComponentB.prototype.render;
       ComponentA.constructor = ComponentB.constructor;

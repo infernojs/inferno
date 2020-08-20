@@ -1,20 +1,20 @@
-import {render} from 'inferno';
-import {createElement} from 'inferno-create-element';
-import {innerHTML} from 'inferno-utils';
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import { innerHTML } from 'inferno-utils';
 
 describe('Update (non-jsx)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
   });
 
   it('should insert an additionnal tag node', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
     let span;
 
     span = () => createElement('div', null, 'hello ', 'to');
@@ -41,7 +41,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should insert an additional tag node', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
     const span = () => createElement('span', null);
 
     render(template(span()), container);
@@ -53,7 +53,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should insert an additional tag node', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
     const div = () => createElement('div', null);
 
     render(template(null), container);
@@ -63,7 +63,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should insert an additional tag node', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
     // const span = () => createElement('div');
 
     render(template(null), container);
@@ -73,7 +73,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should insert multiple additional tag node', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
     const span = () => createElement('div', null);
 
     render(template(span()), container);
@@ -179,7 +179,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update a node with static text', () => {
-    const template = val =>
+    const template = (val) =>
       createElement(
         'div',
         {
@@ -211,7 +211,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update a node with multiple children and static text', () => {
-    const template = val1 =>
+    const template = (val1) =>
       createElement(
         'div',
         {
@@ -234,7 +234,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update a node with multiple children and static text #2', () => {
-    const template = val1 =>
+    const template = (val1) =>
       createElement(
         'div',
         {
@@ -260,7 +260,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update a div with class attribute, and dynamic children with static text', () => {
-    const template = child =>
+    const template = (child) =>
       createElement(
         'div',
         {
@@ -271,7 +271,7 @@ describe('Update (non-jsx)', () => {
 
     const spanList = () => createElement('span', null, '1', '2', '3');
 
-    const span = _b => createElement('span', null, _b);
+    const span = (_b) => createElement('span', null, _b);
 
     render(template(null), container);
 
@@ -293,7 +293,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should handle lots of dynamic variables', () => {
-    const template = function(val1, val2, val3, val4, val5, val6) {
+    const template = function (val1, val2, val3, val4, val5, val6) {
       return createElement(
         'div',
         {
@@ -413,18 +413,18 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should render a basic example #7', () => {
-    const div = child => createElement('div', null, child);
+    const div = (child) => createElement('div', null, child);
     const span1 = () => 'Hello world!';
 
     render(div(span1()), container);
     expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
-    const span2 = child => createElement('span', null, 'Im updated!');
+    const span2 = (child) => createElement('span', null, 'Im updated!');
 
     render(div(span2()), container);
   });
 
   it('should patch a wrapped text node with its container', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
 
     render(template(null), container);
     expect(container.innerHTML).toBe(innerHTML('<div></div>'));
@@ -438,8 +438,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should patch a text node into a tag node', () => {
-    const template = child => createElement('div', null, child);
-    const span = function() {
+    const template = (child) => createElement('div', null, child);
+    const span = function () {
       return 'Hello';
     };
 
@@ -448,7 +448,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should patch a tag node into a text node #2', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
 
     const span = () => createElement('span', null, 'Good bye!');
     render(template(span()), container);
@@ -459,8 +459,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should render text then update it', () => {
-    const template = child => createElement('div', null, child);
-    const span = function() {
+    const template = (child) => createElement('div', null, child);
+    const span = function () {
       return 'Hello';
     };
 
@@ -471,8 +471,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should render text then update to an array of text nodes', () => {
-    const template = child => createElement('div', null, child);
-    const span = function() {
+    const template = (child) => createElement('div', null, child);
+    const span = function () {
       return createElement('span', null, 'Hello ', 'World', '!');
     };
 
@@ -483,8 +483,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should render an array of text nodes then update to a single text node', () => {
-    const template = child => createElement('div', null, child);
-    const span = function() {
+    const template = (child) => createElement('div', null, child);
+    const span = function () {
       return createElement('span', null, 'Hello ', 'World', '!');
     };
 
@@ -493,8 +493,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update and array of text nodes to another array of text nodes', () => {
-    const template = child => createElement('div', null, child);
-    const span = function() {
+    const template = (child) => createElement('div', null, child);
+    const span = function () {
       return createElement('span', null, 'Hello ', 'World');
     };
 
@@ -503,8 +503,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update and array of text nodes to another array of text nodes #2', () => {
-    const template = child => createElement('div', null, child);
-    const span = function() {
+    const template = (child) => createElement('div', null, child);
+    const span = function () {
       return createElement('span', null, 'Hello ', 'World', '!');
     };
 
@@ -515,7 +515,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update an node with static child', () => {
-    const template = child =>
+    const template = (child) =>
       createElement(
         'div',
         null,
@@ -538,8 +538,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update an node with static child and dynamic custom attribute', () => {
-    const template = child => createElement('div', null, createElement('div', null, child));
-    const span = function(val) {
+    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const span = function (val) {
       return createElement('span', {
         custom_attr: val
       });
@@ -552,8 +552,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update an node with static child and dynamic custom attribute and static text', () => {
-    const template = child => createElement('div', null, createElement('div', null, child));
-    const span = function(val) {
+    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const span = function (val) {
       return createElement(
         'span',
         {
@@ -570,8 +570,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update an node with static child and dynamic custom attribute and static text #2', () => {
-    const template = child => createElement('div', null, createElement('div', null, child));
-    const span = function(val) {
+    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const span = function (val) {
       return createElement(
         'span',
         {
@@ -595,7 +595,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should remove a text node', () => {
-    const template = child => createElement('div', null, child);
+    const template = (child) => createElement('div', null, child);
 
     render(template(['hello', 'world']), container);
     expect(container.firstChild.childNodes.length).toBe(2);
@@ -633,8 +633,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update an node with dynamic child', () => {
-    const template = child => createElement('div', null, createElement('div', null, child));
-    const span = function() {
+    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const span = function () {
       return createElement('span', null, 'Hello ', 'World');
     };
     render(template(span()), container);
@@ -642,7 +642,7 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should inject dynamic text various places', () => {
-    const div = text => createElement('div', null, 'There is ', text, ' spoon!');
+    const div = (text) => createElement('div', null, 'There is ', text, ' spoon!');
 
     render(div('no'), container);
     expect(container.innerHTML).toBe(innerHTML('<div>There is no spoon!</div>'));
@@ -663,7 +663,7 @@ describe('Update (non-jsx)', () => {
   it('should render a div tag and remove styling', () => {
     let template;
 
-    template = styleRule =>
+    template = (styleRule) =>
       createElement('div', {
         style: styleRule
       });
@@ -687,7 +687,7 @@ describe('Update (non-jsx)', () => {
     describe('should render styling on root node, and set and remove styling on multiple children', () => {
       let template;
 
-      template = styleRule =>
+      template = (styleRule) =>
         createElement(
           'div',
           {

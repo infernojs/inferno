@@ -5,19 +5,19 @@ import { innerHTML } from 'inferno-utils';
 describe('Children - (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  describe('keyed - children', function() {
-    it('Should push to correct location when it keyed list has siblings', function() {
+  describe('keyed - children', function () {
+    it('Should push to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, key, id }) {
@@ -73,7 +73,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function() {
+    it('Should append child node to correct location when its empty at the beginning ', function () {
       const _tabs = [];
 
       function Tab({ title, onSelect, key, id }) {
@@ -114,7 +114,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>'));
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function() {
+    it('Should append child node to correct location when its empty at the beginning ', function () {
       const _tabs = [];
 
       function Tab({ title, onSelect, key, id }) {
@@ -155,7 +155,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>'));
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function() {
+    it('Should append child node to correct location when its empty at the beginning ', function () {
       const _tabs = [];
 
       function Tab({ title, onSelect, key, id }) {
@@ -202,7 +202,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should appendx3 to correct location when it keyed list has siblings', function() {
+    it('Should appendx3 to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, key, id }) {
@@ -245,7 +245,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should unshiftx3 to correct location when it keyed list has siblings', function() {
+    it('Should unshiftx3 to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, key, id }) {
@@ -288,7 +288,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Inline text element before array list', function() {
+    it('Inline text element before array list', function () {
       const _tabs = [];
 
       function Tab({ title, key }) {
@@ -320,7 +320,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="tab-group">inlineText<div>New 0</div></div>'));
     });
 
-    it('Inline text element after array list', function() {
+    it('Inline text element after array list', function () {
       const _tabs = [];
 
       function Tab({ title, key }) {
@@ -353,8 +353,8 @@ describe('Children - (JSX)', () => {
     });
   });
 
-  describe('nonKeyed - children', function() {
-    it('Should push to correct location when it keyed list has siblings', function() {
+  describe('nonKeyed - children', function () {
+    it('Should push to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, id }) {
@@ -410,7 +410,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function() {
+    it('Should append child node to correct location when its empty at the beginning ', function () {
       const _tabs = [];
 
       function Tab({ title, onSelect, id }) {
@@ -451,7 +451,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>'));
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function() {
+    it('Should append child node to correct location when its empty at the beginning ', function () {
       const _tabs = [];
 
       function Tab({ title, onSelect, id }) {
@@ -492,7 +492,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>'));
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function() {
+    it('Should append child node to correct location when its empty at the beginning ', function () {
       const _tabs = [];
 
       function Tab({ title, onSelect, id }) {
@@ -539,7 +539,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should appendx3 to correct location when it list has siblings', function() {
+    it('Should appendx3 to correct location when it list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, id }) {
@@ -582,7 +582,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should unshiftx3 to correct location when it list has siblings', function() {
+    it('Should unshiftx3 to correct location when it list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       function Tab({ title, onSelect, id }) {
@@ -625,7 +625,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Inline text element before array list', function() {
+    it('Inline text element before array list', function () {
       const _tabs = [];
 
       function Tab({ title }) {
@@ -657,7 +657,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="tab-group">inlineText<div>New 0</div></div>'));
     });
 
-    it('Inline text element after array list', function() {
+    it('Inline text element after array list', function () {
       const _tabs = [];
 
       function Tab({ title }) {
@@ -690,8 +690,8 @@ describe('Children - (JSX)', () => {
     });
   });
 
-  describe('mixed children edge cases', function() {
-    it('NONKEYED - should remove children from correct location when there is dynamic static item', function() {
+  describe('mixed children edge cases', function () {
+    it('NONKEYED - should remove children from correct location when there is dynamic static item', function () {
       const items = ['a', 'b', 'c'];
       const emptyArray = [];
       const items3 = ['v', 'a'];
@@ -706,7 +706,7 @@ describe('Children - (JSX)', () => {
         return (
           <div className="c">
             {visibleStatic ? <Loop text="static" /> : null}
-            {collectionOne.map(text => (
+            {collectionOne.map((text) => (
               <Loop text={text} />
             ))}
           </div>
@@ -738,7 +738,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="c"><p>static</p></div>'));
     });
 
-    it('NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists', function() {
+    it('NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists', function () {
       const items = ['a', 'b', 'c'];
       const emptyArray = [];
       const items3 = ['v', 'a'];
@@ -756,11 +756,11 @@ describe('Children - (JSX)', () => {
         return (
           <div className="c">
             {visibleStaticOne ? <Loop text="static" /> : null}
-            {collectionOne.map(text => (
+            {collectionOne.map((text) => (
               <Loop text={text} />
             ))}
             {visibleStaticTwo ? <Loop text="static" /> : null}
-            {collectionTwo.map(text => (
+            {collectionTwo.map((text) => (
               <Loop text={text} />
             ))}
           </div>
@@ -800,7 +800,7 @@ describe('Children - (JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p><p>static</p></div>'));
     });
 
-    it('KEYED - should remove children from correct location when there is dynamic static item', function() {
+    it('KEYED - should remove children from correct location when there is dynamic static item', function () {
       const items = ['a', 'b', 'c'];
       const emptyArray = [];
       const items3 = ['v', 'a'];
@@ -871,14 +871,14 @@ describe('Children - (JSX)', () => {
           return (
             <div>
               <p>1</p>
-              {function() {
+              {function () {
                 if (this.state.first) {
                   return <span>abc</span>;
                 }
                 return null;
               }.call(this)}
               <p>2</p>
-              {function() {
+              {function () {
                 if (this.state.second) {
                   return <span>def</span>;
                 }
@@ -973,7 +973,7 @@ describe('Children - (JSX)', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item => (
+          {items.map((item) => (
             <span>{item}</span>
           ))}
           <div>end</div>
@@ -997,7 +997,7 @@ describe('Children - (JSX)', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item => (
+          {items.map((item) => (
             <span key={item}>{item}</span>
           ))}
           <div>end</div>
@@ -1021,7 +1021,7 @@ describe('Children - (JSX)', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
-          {items.map(item => (
+          {items.map((item) => (
             <span key={item}>{item}</span>
           ))}
           <div>end</div>
@@ -1221,7 +1221,7 @@ describe('Children - (JSX)', () => {
   });
 
   describe('Children lifecycle with fastUnmount', () => {
-    it('Should call componentWillUnmount for children', done => {
+    it('Should call componentWillUnmount for children', (done) => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1290,7 +1290,7 @@ describe('Children - (JSX)', () => {
       }, 10);
     });
 
-    it('Should call componentWillUnmount for nested children', done => {
+    it('Should call componentWillUnmount for nested children', (done) => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1361,7 +1361,7 @@ describe('Children - (JSX)', () => {
       }, 10);
     });
 
-    it('Should call componentWillUnmount for nested children #2', done => {
+    it('Should call componentWillUnmount for nested children #2', (done) => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1437,7 +1437,7 @@ describe('Children - (JSX)', () => {
       }, 10);
     });
 
-    it('Should call componentWillUnmount for deeply nested children', done => {
+    it('Should call componentWillUnmount for deeply nested children', (done) => {
       let toggle;
 
       class Wrapper extends Component {
@@ -1533,7 +1533,7 @@ describe('Children - (JSX)', () => {
       }, 10);
     });
 
-    it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', done => {
+    it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', (done) => {
       class Wrapper extends Component {
         constructor(props) {
           super(props);
@@ -1591,7 +1591,7 @@ describe('Children - (JSX)', () => {
       }, 10);
     });
 
-    it('Should fastUnmount child component when only parent has unmount callback', done => {
+    it('Should fastUnmount child component when only parent has unmount callback', (done) => {
       class Wrapper extends Component {
         constructor(props) {
           super(props);
@@ -1651,7 +1651,7 @@ describe('Children - (JSX)', () => {
         }
 
         render() {
-          return <pre onclick={function() {}}>{this.state.text}</pre>;
+          return <pre onclick={function () {}}>{this.state.text}</pre>;
         }
       }
 
@@ -1946,7 +1946,7 @@ describe('Children - (JSX)', () => {
       expect(unMountTest).toEqual(1);
     });
 
-    it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', done => {
+    it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', (done) => {
       let unMountTest = 0,
         unMountTwoTest = 0;
 

@@ -7,7 +7,7 @@ const cwd = process.cwd();
 const { rollup: rollupConfig = {} } = require(join(cwd, 'package.json'));
 
 const moduleGlobals = readdirSync(ROOT)
-  .filter(path => lstatSync(join(ROOT, path)).isDirectory())
+  .filter((path) => lstatSync(join(ROOT, path)).isDirectory())
   .reduce((acc, pkgName) => {
     const pkgJSON = require(join(ROOT, pkgName, 'package.json'));
 
@@ -18,7 +18,7 @@ const moduleGlobals = readdirSync(ROOT)
     return acc;
   }, {});
 
-module.exports = function(options) {
+module.exports = function (options) {
   const filename = `${options.name}${options.ext}`;
 
   const bundleOptions = {
@@ -26,7 +26,7 @@ module.exports = function(options) {
       file: `dist/${filename}`,
       format: options.format,
       globals: Object.assign(moduleGlobals, rollupConfig.moduleGlobals),
-      name: rollupConfig.moduleName,
+      name: rollupConfig.moduleName
     },
     indent: true,
     extend: true,

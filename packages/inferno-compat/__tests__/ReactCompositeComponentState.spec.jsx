@@ -13,91 +13,91 @@ var ReactDOM = React;
 
 var TestComponent;
 
-describe('ReactCompositeComponent-state', function() {
-  beforeEach(function() {
+describe('ReactCompositeComponent-state', function () {
+  beforeEach(function () {
     TestComponent = React.createClass({
-      peekAtState: function(from, state) {
+      peekAtState: function (from, state) {
         state = state || this.state;
         this.props.stateListener(from, state && state.color);
       },
 
-      peekAtCallback: function(from) {
+      peekAtCallback: function (from) {
         return () => this.peekAtState(from);
       },
 
-      setFavoriteColor: function(nextColor) {
+      setFavoriteColor: function (nextColor) {
         this.setState({ color: nextColor }, this.peekAtCallback('setFavoriteColor'));
       },
 
-      getInitialState: function() {
+      getInitialState: function () {
         this.peekAtState('getInitialState');
         return { color: 'red' };
       },
 
-      render: function() {
+      render: function () {
         this.peekAtState('render');
         return <div>{this.state.color}</div>;
       },
 
-      componentWillMount: function() {
+      componentWillMount: function () {
         this.peekAtState('componentWillMount-start');
-        this.setState(function(state) {
+        this.setState(function (state) {
           this.peekAtState('before-setState-sunrise', state);
         });
         this.setState({ color: 'sunrise' }, this.peekAtCallback('setState-sunrise'));
-        this.setState(function(state) {
+        this.setState(function (state) {
           this.peekAtState('after-setState-sunrise', state);
         });
         this.peekAtState('componentWillMount-after-sunrise');
         this.setState({ color: 'orange' }, this.peekAtCallback('setState-orange'));
-        this.setState(function(state) {
+        this.setState(function (state) {
           this.peekAtState('after-setState-orange', state);
         });
         this.peekAtState('componentWillMount-end');
       },
 
-      componentDidMount: function() {
+      componentDidMount: function () {
         this.peekAtState('componentDidMount-start');
         this.setState({ color: 'yellow' }, this.peekAtCallback('setState-yellow'));
         this.peekAtState('componentDidMount-end');
       },
 
-      componentWillReceiveProps: function(newProps) {
+      componentWillReceiveProps: function (newProps) {
         this.peekAtState('componentWillReceiveProps-start');
         if (newProps.nextColor) {
-          this.setState(function(state) {
+          this.setState(function (state) {
             this.peekAtState('before-setState-receiveProps', state);
             return { color: newProps.nextColor };
           });
           this.replaceState({ color: undefined });
-          this.setState(function(state) {
+          this.setState(function (state) {
             this.peekAtState('before-setState-again-receiveProps', state);
             return { color: newProps.nextColor };
           }, this.peekAtCallback('setState-receiveProps'));
-          this.setState(function(state) {
+          this.setState(function (state) {
             this.peekAtState('after-setState-receiveProps', state);
           });
         }
         this.peekAtState('componentWillReceiveProps-end');
       },
 
-      shouldComponentUpdate: function(nextProps, nextState) {
+      shouldComponentUpdate: function (nextProps, nextState) {
         this.peekAtState('shouldComponentUpdate-currentState');
         this.peekAtState('shouldComponentUpdate-nextState', nextState);
         return true;
       },
 
-      componentWillUpdate: function(nextProps, nextState) {
+      componentWillUpdate: function (nextProps, nextState) {
         this.peekAtState('componentWillUpdate-currentState');
         this.peekAtState('componentWillUpdate-nextState', nextState);
       },
 
-      componentDidUpdate: function(prevProps, prevState) {
+      componentDidUpdate: function (prevProps, prevState) {
         this.peekAtState('componentDidUpdate-currentState');
         this.peekAtState('componentDidUpdate-prevState', prevState);
       },
 
-      componentWillUnmount: function() {
+      componentWillUnmount: function () {
         this.peekAtState('componentWillUnmount');
       }
     });
@@ -193,23 +193,23 @@ describe('ReactCompositeComponent-state', function() {
   //   ].join('\n'));
   // });
 
-  it('should batch unmounts', function() {
+  it('should batch unmounts', function () {
     var outer;
     var Inner = React.createClass({
-      render: function() {
+      render: function () {
         return <div />;
       },
-      componentWillUnmount: function() {
+      componentWillUnmount: function () {
         // This should get silently ignored (maybe with a warning), but it
         // shouldn't break React.
         outer.setState({ showInner: false });
       }
     });
     var Outer = React.createClass({
-      getInitialState: function() {
+      getInitialState: function () {
         return { showInner: true };
       },
-      render: function() {
+      render: function () {
         return <div>{this.state.showInner && <Inner />}</div>;
       }
     });

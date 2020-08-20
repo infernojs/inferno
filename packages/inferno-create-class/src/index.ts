@@ -1,5 +1,5 @@
-import {Component} from 'inferno';
-import {isFunction, throwError} from 'inferno-shared';
+import { Component } from 'inferno';
+import { isFunction, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
   statics?: {
@@ -88,7 +88,7 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 }
 
 function multihook(hooks: Function[], mergeFn?: Function): any {
-  return function() {
+  return function () {
     let ret;
 
     for (let i = 0, len = hooks.length; i < len; ++i) {

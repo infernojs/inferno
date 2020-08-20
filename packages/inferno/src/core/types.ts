@@ -219,14 +219,14 @@ declare global {
     type: keyof InfernoSVG;
   }
 
-  type DOMFactory<P extends DOMAttributes<T>, T extends Element> = (props?: ClassAttributes<T> & P | null, ...children: InfernoNode[]) => DOMElement<P, T>;
+  type DOMFactory<P extends DOMAttributes<T>, T extends Element> = (props?: (ClassAttributes<T> & P) | null, ...children: InfernoNode[]) => DOMElement<P, T>;
 
   interface DetailedHTMLFactory<P extends HTMLAttributes<T>, T extends HTMLElement> extends DOMFactory<P, T> {
-    (props?: ClassAttributes<T> & P | null, ...children: InfernoNode[]): DetailedInfernoHTMLElement<P, T>;
+    (props?: (ClassAttributes<T> & P) | null, ...children: InfernoNode[]): DetailedInfernoHTMLElement<P, T>;
   }
 
   interface SVGFactory extends DOMFactory<SVGAttributes<SVGElement>, SVGElement> {
-    (props?: ClassAttributes<SVGElement> & SVGAttributes<SVGElement> | null, ...children: InfernoNode[]): InfernoSVGElement;
+    (props?: (ClassAttributes<SVGElement> & SVGAttributes<SVGElement>) | null, ...children: InfernoNode[]): InfernoSVGElement;
   }
 
   //

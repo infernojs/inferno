@@ -3,12 +3,12 @@ import { HashRouter, Link, MemoryRouter } from 'inferno-router';
 
 describe('Link (jsx)', () => {
   let node;
-  beforeEach(function() {
+  beforeEach(function () {
     node = document.createElement('div');
     document.body.appendChild(node);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, node);
     document.body.removeChild(node);
   });
@@ -37,9 +37,9 @@ describe('Link (jsx)', () => {
     }).toThrowError(/You should not use <Link> outside a <Router>/);
   });
 
-  it('exposes its ref via an innerRef prop', done => {
+  it('exposes its ref via an innerRef prop', (done) => {
     const node = document.createElement('div');
-    const refCallback = n => {
+    const refCallback = (n) => {
       expect(n.tagName).toEqual('A');
       done();
     };
@@ -59,12 +59,12 @@ describe('Link (jsx)', () => {
 
 describe('A <Link> underneath a <HashRouter>', () => {
   let node;
-  beforeEach(function() {
+  beforeEach(function () {
     node = document.createElement('div');
     document.body.appendChild(node);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, node);
     document.body.removeChild(node);
   });

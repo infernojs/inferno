@@ -14,17 +14,17 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
-describe('ReactElement', function() {
+describe('ReactElement', function () {
   var ComponentClass;
   var originalSymbol;
 
-  beforeEach(function() {
+  beforeEach(function () {
     // Delete the native Symbol if we have one to ensure we test the
     // unpolyfilled environment.
     originalSymbol = global.Symbol;
     global.Symbol = undefined;
     ComponentClass = React.createClass({
-      render: function() {
+      render: function () {
         return React.createElement('div');
       }
     });
@@ -49,7 +49,7 @@ describe('ReactElement', function() {
   //   expect(<div />.$$typeof).toBe(0xeac7);
   // });
 
-  it('returns a complete element according to spec', function() {
+  it('returns a complete element according to spec', function () {
     var element = React.createFactory(ComponentClass)();
     expect(element.type).toBe(ComponentClass);
     expect(element.key).toBe(null);
@@ -59,7 +59,7 @@ describe('ReactElement', function() {
     expect(element.props).toEqual(expectation);
   });
 
-  it('allows a string to be passed as the type', function() {
+  it('allows a string to be passed as the type', function () {
     var element = React.createFactory('div')();
     expect(element.type).toBe('div');
     expect(element.key).toBe(null);
@@ -74,7 +74,7 @@ describe('ReactElement', function() {
   //   expect(() => element.type = 'div').toThrow();
   // });
 
-  it('does not reuse the original config object', function() {
+  it('does not reuse the original config object', function () {
     var config = { foo: 1 };
     var element = React.createFactory(ComponentClass)(config);
     expect(element.props.foo).toBe(1);
@@ -82,7 +82,7 @@ describe('ReactElement', function() {
     expect(element.props.foo).toBe(1);
   });
 
-  it('coerces the key to a string', function() {
+  it('coerces the key to a string', function () {
     var element = React.createFactory(ComponentClass)({
       key: 12,
       foo: '56'
@@ -113,7 +113,7 @@ describe('ReactElement', function() {
   //   expect(element._owner.getPublicInstance()).toBe(instance);
   // });
 
-  it('merges an additional argument onto the children prop', function() {
+  it('merges an additional argument onto the children prop', function () {
     spyOn(console, 'error');
     var a = 1;
     var element = React.createFactory(ComponentClass)(
@@ -126,7 +126,7 @@ describe('ReactElement', function() {
     expect(console.error.calls.count()).toBe(0);
   });
 
-  it('does not override children if no rest args are provided', function() {
+  it('does not override children if no rest args are provided', function () {
     spyOn(console, 'error');
     var element = React.createFactory(ComponentClass)({
       children: 'text'
@@ -135,7 +135,7 @@ describe('ReactElement', function() {
     expect(console.error.calls.count()).toBe(0);
   });
 
-  it('overrides children if null is provided as an argument', function() {
+  it('overrides children if null is provided as an argument', function () {
     spyOn(console, 'error');
     var element = React.createFactory(ComponentClass)(
       {
@@ -147,7 +147,7 @@ describe('ReactElement', function() {
     expect(console.error.calls.count()).toBe(0);
   });
 
-  it('merges rest arguments onto the children prop in an array', function() {
+  it('merges rest arguments onto the children prop in an array', function () {
     spyOn(console, 'error');
     var a = 1;
     var b = 2;
@@ -157,19 +157,19 @@ describe('ReactElement', function() {
     expect(console.error.calls.count()).toBe(0);
   });
 
-  it('allows static methods to be called using the type property', function() {
+  it('allows static methods to be called using the type property', function () {
     spyOn(console, 'error');
 
     var StaticMethodComponentClass = React.createClass({
       statics: {
-        someStaticMethod: function() {
+        someStaticMethod: function () {
           return 'someReturnValue';
         }
       },
-      getInitialState: function() {
+      getInitialState: function () {
         return { valueToReturn: 'hi' };
       },
-      render: function() {
+      render: function () {
         return React.createElement('div');
       }
     });
@@ -179,9 +179,9 @@ describe('ReactElement', function() {
     expect(console.error.calls.count()).toBe(0);
   });
 
-  it('identifies valid elements', function() {
+  it('identifies valid elements', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return React.createElement('div');
       }
     });
@@ -200,7 +200,7 @@ describe('ReactElement', function() {
     // expect(React.isValidElement(JSON.parse(jsonElement))).toBe(true);
   });
 
-  it('allows the use of PropTypes validators in statics', function() {
+  it('allows the use of PropTypes validators in statics', function () {
     // TODO: This test was added to cover a special case where we proxied
     // methods. However, we don't do that any more so this test can probably
     // be removed. Leaving it in classic as a safety precausion.
@@ -221,12 +221,12 @@ describe('ReactElement', function() {
   //   expect(element.constructor).toBe(object.constructor);
   // });
 
-  it('should use default prop value when removing a prop', function() {
+  it('should use default prop value when removing a prop', function () {
     var Component = React.createClass({
-      getDefaultProps: function() {
+      getDefaultProps: function () {
         return { fruit: 'persimmon' };
       },
-      render: function() {
+      render: function () {
         return React.createElement('span');
       }
     });
@@ -239,12 +239,12 @@ describe('ReactElement', function() {
     expect(instance.props.fruit).toBe('persimmon');
   });
 
-  it('should normalize props with default values', function() {
+  it('should normalize props with default values', function () {
     var Component = React.createClass({
-      getDefaultProps: function() {
+      getDefaultProps: function () {
         return { prop: 'testKey' };
       },
-      render: function() {
+      render: function () {
         return React.createElement('span', null, this.props.prop);
       }
     });
@@ -294,10 +294,10 @@ describe('ReactElement', function() {
   //   expect(ReactDOM.findDOMNode(outer).className).toBe('');
   // });
 
-  it('does not warn for NaN props', function() {
+  it('does not warn for NaN props', function () {
     spyOn(console, 'error');
     var Test = React.createClass({
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
@@ -306,16 +306,16 @@ describe('ReactElement', function() {
     expect(console.error.calls.count()).toBe(0);
   });
 
-  it('identifies elements, but not JSON, if Symbols are supported', function() {
+  it('identifies elements, but not JSON, if Symbols are supported', function () {
     // Rudimentary polyfill
     // Once all jest engines support Symbols natively we can swap this to test
     // WITH native Symbols by default.
-    var REACT_ELEMENT_TYPE = function() {}; // fake Symbol
-    var OTHER_SYMBOL = function() {}; // another fake Symbol
-    global.Symbol = function(name) {
+    var REACT_ELEMENT_TYPE = function () {}; // fake Symbol
+    var OTHER_SYMBOL = function () {}; // another fake Symbol
+    global.Symbol = function (name) {
       return OTHER_SYMBOL;
     };
-    global.Symbol.for = function(key) {
+    global.Symbol.for = function (key) {
       if (key === 'react.element') {
         return REACT_ELEMENT_TYPE;
       }
@@ -323,7 +323,7 @@ describe('ReactElement', function() {
     };
 
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return React.createElement('div');
       }
     });

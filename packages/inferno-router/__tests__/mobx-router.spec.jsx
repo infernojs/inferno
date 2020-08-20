@@ -7,12 +7,12 @@ import { action, observable } from 'mobx';
 describe('Github #1236', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -22,7 +22,7 @@ describe('Github #1236', () => {
     /*
        This is pre-compiled from old decorator pattern
      */
-    var _createClass = (function() {
+    var _createClass = (function () {
       function defineProperties(target, props) {
         for (var i = 0; i < props.length; i++) {
           var descriptor = props[i];
@@ -32,7 +32,7 @@ describe('Github #1236', () => {
           Object.defineProperty(target, descriptor.key, descriptor);
         }
       }
-      return function(Constructor, protoProps, staticProps) {
+      return function (Constructor, protoProps, staticProps) {
         if (protoProps) defineProperties(Constructor.prototype, protoProps);
         if (staticProps) defineProperties(Constructor, staticProps);
         return Constructor;
@@ -57,7 +57,7 @@ describe('Github #1236', () => {
 
     function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
       var desc = {};
-      Object['ke' + 'ys'](descriptor).forEach(function(key) {
+      Object['ke' + 'ys'](descriptor).forEach(function (key) {
         desc[key] = descriptor[key];
       });
       desc.enumerable = !!desc.enumerable;
@@ -70,7 +70,7 @@ describe('Github #1236', () => {
       desc = decorators
         .slice()
         .reverse()
-        .reduce(function(desc, decorator) {
+        .reduce(function (desc, decorator) {
           return decorator(target, property, desc) || desc;
         }, desc);
 
@@ -88,7 +88,7 @@ describe('Github #1236', () => {
     }
     var _desc, _value, _class, _descriptor;
     var SearchStore =
-      ((_class = (function() {
+      ((_class = (function () {
         function SearchStore() {
           _classCallCheck(this, SearchStore);
 

@@ -8,7 +8,7 @@ const QUEUE: Component<any, any>[] = [];
 const nextTick =
   typeof Promise !== 'undefined'
     ? Promise.resolve().then.bind(Promise.resolve())
-    : function(a) {
+    : function (a) {
         window.setTimeout(a, 0);
       };
 let microTaskPending = false;

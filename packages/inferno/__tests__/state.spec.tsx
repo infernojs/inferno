@@ -35,12 +35,12 @@ class TestCWRP extends Component<any, any> {
 describe('state', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -62,7 +62,7 @@ describe('state', () => {
   });
 
   describe('setting state', () => {
-    it('setState should apply state during componentWillReceiveProps', done => {
+    it('setState should apply state during componentWillReceiveProps', (done) => {
       render(createComponentVNode(VNodeFlags.ComponentClass, TestCWRP, {}), container);
       expect(renderCount).toBe(1);
 
@@ -78,7 +78,7 @@ describe('state', () => {
   });
 
   describe('didUpdate and setState', () => {
-    it('order', done => {
+    it('order', (done) => {
       class Test extends Component<{ scrollTop: number }, any> {
         public state = {
           testScrollTop: 0

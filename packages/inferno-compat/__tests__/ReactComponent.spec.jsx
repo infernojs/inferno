@@ -15,7 +15,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 var ReactDOM = React;
 var mocks;
 
-describe('ReactComponent', function() {
+describe('ReactComponent', function () {
   let container;
 
   function renderIntoDocument(input) {
@@ -24,7 +24,7 @@ describe('ReactComponent', function() {
 
   beforeEach(() => {
     mocks = {
-      getMockFunction: function() {
+      getMockFunction: function () {
         return jasmine.createSpy();
       }
     };
@@ -38,43 +38,43 @@ describe('ReactComponent', function() {
     document.body.removeChild(container);
   });
 
-  it('should throw on invalid render targets', function() {
+  it('should throw on invalid render targets', function () {
     var container = document.createElement('div');
     // jQuery objects are basically arrays; people often pass them in by mistake
-    expect(function() {
+    expect(function () {
       ReactDOM.render(<div />, [container]);
     }).toThrow();
 
-    expect(function() {
+    expect(function () {
       ReactDOM.render(<div />, null);
     }).toThrow();
   });
 
-  it('should support new-style refs', function() {
+  it('should support new-style refs', function () {
     var innerObj = {};
     var outerObj = {};
 
     var Wrapper = React.createClass({
-      getObject: function() {
+      getObject: function () {
         return this.props.object;
       },
-      render: function() {
+      render: function () {
         return <div>{this.props.children}</div>;
       }
     });
 
     var mounted = false;
     var Component = React.createClass({
-      render: function() {
-        var inner = <Wrapper object={innerObj} ref={c => (this.innerRef = c)} />;
+      render: function () {
+        var inner = <Wrapper object={innerObj} ref={(c) => (this.innerRef = c)} />;
         var outer = (
-          <Wrapper object={outerObj} ref={c => (this.outerRef = c)}>
+          <Wrapper object={outerObj} ref={(c) => (this.outerRef = c)}>
             {inner}
           </Wrapper>
         );
         return outer;
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         expect(this.innerRef.getObject()).toEqual(innerObj);
         expect(this.outerRef.getObject()).toEqual(outerObj);
         mounted = true;
@@ -170,7 +170,7 @@ describe('ReactComponent', function() {
   //   /* eslint-enable indent */
   // });
 
-  it('fires the callback after a component is rendered', function() {
+  it('fires the callback after a component is rendered', function () {
     var callback = mocks.getMockFunction();
     var container = document.createElement('div');
     ReactDOM.render(<div />, container, callback);
@@ -201,7 +201,7 @@ describe('ReactComponent', function() {
   // //   );
   // // });
 
-  it('throws usefully when rendering badly-typed elements', function() {
+  it('throws usefully when rendering badly-typed elements', function () {
     //spyOn(console, 'error');
 
     var X = undefined;
@@ -215,9 +215,9 @@ describe('ReactComponent', function() {
   });
 
   // other
-  it('should pass context to children when not owner', function() {
+  it('should pass context to children when not owner', function () {
     var Parent = React.createClass({
-      render: function() {
+      render: function () {
         return (
           <Child>
             <Grandchild />
@@ -231,13 +231,13 @@ describe('ReactComponent', function() {
         foo: React.PropTypes.string
       },
 
-      getChildContext: function() {
+      getChildContext: function () {
         return {
           foo: 'bar'
         };
       },
 
-      render: function() {
+      render: function () {
         return React.Children.only(this.props.children);
       }
     });
@@ -247,7 +247,7 @@ describe('ReactComponent', function() {
         foo: React.PropTypes.string
       },
 
-      render: function() {
+      render: function () {
         return <div>{this.context.foo}</div>;
       }
     });

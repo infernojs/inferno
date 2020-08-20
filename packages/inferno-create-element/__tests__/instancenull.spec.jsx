@@ -5,12 +5,12 @@ import sinon from 'sinon';
 describe('BUG: instance - null', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -334,7 +334,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
+        <Dropdown items={items} changeCallback={function () {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
       </div>,
       container
     );
@@ -359,7 +359,7 @@ describe('BUG: instance - null', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should not propagate mid/right mouse buttons clicks', done => {
+  it('Should not propagate mid/right mouse buttons clicks', (done) => {
     const obj = {
       spy() {}
     };
@@ -393,7 +393,7 @@ describe('BUG: instance - null', () => {
     const node = container.querySelector('#MAGICBUTTON');
     node.dispatchEvent(event);
 
-    setTimeout(function() {
+    setTimeout(function () {
       expect(spy.callCount).toBe(0);
       done();
     }, 10);
@@ -421,7 +421,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
+        <Dropdown items={items} changeCallback={function () {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
       </div>,
       container
     );
@@ -459,7 +459,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
+        <Dropdown items={items} changeCallback={function () {}} changeParams={{ guid: 'foo', field: 'activityType' }} value={value} />
       </div>,
       container
     );
@@ -468,7 +468,7 @@ describe('BUG: instance - null', () => {
 
     render(
       <div>
-        <Dropdown items={items} changeCallback={function() {}} changeParams={{ guid: 'dwqwdq', field: 'activityType' }} value={value} />
+        <Dropdown items={items} changeCallback={function () {}} changeParams={{ guid: 'dwqwdq', field: 'activityType' }} value={value} />
       </div>,
       container
     );

@@ -4,7 +4,7 @@ const { existsSync, openSync, readdirSync, statSync } = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const fixtureDirs = readdirSync(__dirname).filter(file => statSync(path.join(__dirname, file)).isDirectory());
+const fixtureDirs = readdirSync(__dirname).filter((file) => statSync(path.join(__dirname, file)).isDirectory());
 
 const table = new Table({
   head: [chalk.gray.yellow('Fixture'), chalk.gray.yellow('Environment'), chalk.gray.yellow('Passed'), chalk.gray.yellow('Message')]
@@ -52,7 +52,7 @@ function buildFixture(tool, environment) {
   };
 }
 
-fixtureDirs.forEach(dir => {
+fixtureDirs.forEach((dir) => {
   const devPath = path.join(__dirname, dir, 'dev');
   if (existsSync(devPath)) {
     addResult(dir, 'dev', buildFixture(dir, 'dev'));

@@ -1,7 +1,7 @@
-import {Component, render} from 'inferno';
-import {createElement} from 'inferno-create-element';
+import { Component, render } from 'inferno';
+import { createElement } from 'inferno-create-element';
 import sinon from 'sinon';
-import {innerHTML} from 'inferno-utils';
+import { innerHTML } from 'inferno-utils';
 
 describe('lifecycle hooks', () => {
   describe('Stateless component hooks', () => {
@@ -15,11 +15,11 @@ describe('lifecycle hooks', () => {
       return divTemplate();
     }
 
-    afterEach(function() {
+    afterEach(function () {
       render(null, container);
     });
 
-    beforeEach(function() {
+    beforeEach(function () {
       container = document.createElement('div');
 
       template = (
@@ -30,7 +30,7 @@ describe('lifecycle hooks', () => {
         onComponentDidUpdate,
         onComponentShouldUpdate,
         StatelessComponent
-      ) => props => {
+      ) => (props) => {
         return createElement(
           StatelessComponent,
           {
@@ -190,7 +190,7 @@ describe('lifecycle hooks', () => {
     });
   });
 
-  describe('Class Component hooks', function() {
+  describe('Class Component hooks', function () {
     it('Should trigger ref callback when component is mounting and unmounting', () => {
       const container = document.createElement('div');
       class FooBar extends Component {

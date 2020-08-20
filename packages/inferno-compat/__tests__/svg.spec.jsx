@@ -3,11 +3,11 @@ import { createElement, render } from 'inferno-compat';
 describe('svg', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
   });
 

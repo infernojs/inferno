@@ -1,7 +1,7 @@
 import { createElement } from 'inferno-create-element';
 import * as TestUtils from 'inferno-test-utils';
 
-const FunctionalComponent = function(props) {
+const FunctionalComponent = function (props) {
   return createElement('div', props);
 };
 
@@ -32,7 +32,7 @@ describe('renderToSnapshot', () => {
   });
 
   it('should return a snapshot with className prop, multiple children', () => {
-    const TestComponent = props => (
+    const TestComponent = (props) => (
       <div className="test">
         {props.children}
         <span>1</span>

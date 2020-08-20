@@ -8,18 +8,18 @@ const getDNode = (obj, prop) => obj.$mobx.values[prop];
 describe('Mobx Observer Server', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('does not views alive when using static + string rendering', function() {
+  it('does not views alive when using static + string rendering', function () {
     useStaticRendering(true);
 
     let renderCount = 0;

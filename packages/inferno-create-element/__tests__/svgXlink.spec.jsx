@@ -3,11 +3,11 @@ import { render } from 'inferno';
 describe('createTree - SVG (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
   });
 

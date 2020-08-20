@@ -14,7 +14,7 @@ function wrapLinkEvent(nextValue) {
   // This variable makes sure there is no "this" context in callback
   const ev = nextValue.event;
 
-  return function(e) {
+  return function (e) {
     ev(nextValue.data, e);
   };
 }

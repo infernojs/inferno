@@ -1,8 +1,8 @@
-import {createComponentVNode} from 'inferno';
-import {VNodeFlags} from 'inferno-vnode-flags';
+import { createComponentVNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
-import {Route} from './Route';
-import {combineFrom} from 'inferno-shared';
+import { Route } from './Route';
+import { combineFrom } from 'inferno-shared';
 
 interface IWithRouterProps {
   wrappedComponentRef: any;
@@ -12,7 +12,7 @@ interface IWithRouterProps {
  * A public higher-order component to access the imperative API
  */
 export function withRouter(Com) {
-  const C: any = function(props: IWithRouterProps) {
+  const C: any = function (props: IWithRouterProps) {
     const { wrappedComponentRef, ...remainingProps } = props;
 
     return createComponentVNode<any>(VNodeFlags.ComponentClass, Route, {

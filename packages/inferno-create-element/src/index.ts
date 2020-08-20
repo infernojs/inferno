@@ -9,8 +9,8 @@ import {
   StatelessComponent,
   VNode
 } from 'inferno';
-import {isInvalid, isNullOrUndef, isString, isUndefined} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
+import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const componentHooks = {
   onComponentDidMount: 1,
@@ -28,8 +28,8 @@ const componentHooks = {
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual node
  */
-export function createElement<T>(type: string | IComponentConstructor<T> | StatelessComponent<T>, props?: T & Props<T> | null, ..._children: any[]): VNode;
-export function createElement<T>(type: string | IComponentConstructor<T> | StatelessComponent<T>, props?: T & Props<T> | null, _children?: any): VNode {
+export function createElement<T>(type: string | IComponentConstructor<T> | StatelessComponent<T>, props?: (T & Props<T>) | null, ..._children: any[]): VNode;
+export function createElement<T>(type: string | IComponentConstructor<T> | StatelessComponent<T>, props?: (T & Props<T>) | null, _children?: any): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (isInvalid(type)) {
       throw new Error(

@@ -6,12 +6,12 @@ import sinon from 'sinon';
 describe('HyperScript (non-JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -34,7 +34,7 @@ describe('HyperScript (non-JSX)', () => {
 
   const StatelessComponent = () => h('div', 'Hello world!');
 
-  describe('Class Component hooks', function() {
+  describe('Class Component hooks', function () {
     it('Should trigger ref callback when component is mounting and unmounting', () => {
       const container = document.createElement('div');
       class FooBar extends Component {
@@ -98,7 +98,7 @@ describe('HyperScript (non-JSX)', () => {
       h('div#myId.test', {
         onComponentDidMount() {},
         key: 'myKey',
-        ref: c => c,
+        ref: (c) => c,
         className: 'myClass',
         children: 'Hello world!'
       });
@@ -213,7 +213,7 @@ describe('HyperScript (non-JSX)', () => {
       expect(triggered).toBe(false);
 
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-      buttons.forEach(button => button.click());
+      buttons.forEach((button) => button.click());
 
       expect(triggered).toBe(true);
     });
@@ -243,7 +243,7 @@ describe('HyperScript (non-JSX)', () => {
       expect(triggered).toBe(false);
 
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-      buttons.forEach(button => button.click());
+      buttons.forEach((button) => button.click());
 
       expect(triggered).toBe(true);
     });
@@ -265,7 +265,7 @@ describe('HyperScript (non-JSX)', () => {
     });
 
     it('Should allow passing childs through "children" property (custom component)', () => {
-      const Button = props => h('button', props);
+      const Button = (props) => h('button', props);
       const app = () => {
         return h(
           'div',
@@ -281,7 +281,7 @@ describe('HyperScript (non-JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
     });
 
-    it('Should handle node with hooks and key', done => {
+    it('Should handle node with hooks and key', (done) => {
       const node = () => h('div', { key: 'key2' }, 'Hooks');
       const app = h(node, {
         key: 'key1',
@@ -304,13 +304,13 @@ describe('HyperScript (non-JSX)', () => {
       expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
     });
 
-    it('Should handle node with refs', done => {
+    it('Should handle node with refs', (done) => {
       let myRef = 'myRef';
 
       const app = () => {
         const node = () =>
           h('a', {
-            ref: c => (myRef = c)
+            ref: (c) => (myRef = c)
           });
         return h(node, {
           onComponentDidMount() {

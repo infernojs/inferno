@@ -1,5 +1,5 @@
-import {Component, createFragment, render, rerender} from 'inferno';
-import {createElement} from 'inferno-create-element';
+import { Component, createFragment, render, rerender } from 'inferno';
+import { createElement } from 'inferno-create-element';
 
 describe('patching keyed lists (non-jsx)', () => {
   function createDataModels() {
@@ -74,11 +74,11 @@ describe('patching keyed lists (non-jsx)', () => {
   const container = document.createElement('div');
   let dataModels = null;
 
-  beforeEach(function() {
+  beforeEach(function () {
     dataModels = createDataModels();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     dataModels = null;
   });
 
@@ -224,7 +224,7 @@ describe('patching keyed lists (non-jsx)', () => {
         return f(
           createElement('h1', null, 'App'),
           f(
-            ids.length ? ids.map(id => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
+            ids.length ? ids.map((id) => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
             !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
           ),
           createElement('footer', null, '2018')
@@ -261,7 +261,7 @@ describe('patching keyed lists (non-jsx)', () => {
         return f(
           createElement('h1', null, 'App'),
           f(
-            ids.length ? ids.map(id => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
+            ids.length ? ids.map((id) => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
             !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
           ),
           createElement('footer', null, '2018')
@@ -298,7 +298,7 @@ describe('patching keyed lists (non-jsx)', () => {
         return f(
           createElement('h1', null, 'App'),
           f(
-            ids.length ? ids.map(id => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
+            ids.length ? ids.map((id) => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
             !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
           ),
           createElement('footer', null, '2018')

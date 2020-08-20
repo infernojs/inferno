@@ -4,12 +4,12 @@ import sinon from 'sinon';
 describe('Lifecycle methods', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -22,8 +22,8 @@ describe('Lifecycle methods', () => {
     let forceUpdateInner;
 
     let log;
-    const logger = function(msg) {
-      return function() {
+    const logger = function (msg) {
+      return function () {
         // return true for shouldComponentUpdate
         log.push(msg);
         return true;
@@ -390,7 +390,7 @@ describe('Lifecycle methods', () => {
 
         render() {
           logs.push('parent render');
-          return <Child parentRenders={this.state.parentRenders} ref={child => (childRef = child)} />;
+          return <Child parentRenders={this.state.parentRenders} ref={(child) => (childRef = child)} />;
         }
       }
 
@@ -567,7 +567,7 @@ describe('Lifecycle methods', () => {
         }
         render() {
           log.push('render');
-          return <div ref={ref => (this.divRef = ref)}>{`value:${this.props.value}`}</div>;
+          return <div ref={(ref) => (this.divRef = ref)}>{`value:${this.props.value}`}</div>;
         }
       }
 
@@ -1120,7 +1120,7 @@ describe('Lifecycle methods', () => {
       constructor(p, c) {
         super(p, c);
         this.state = { show: true };
-        setState = s => this.setState(s);
+        setState = (s) => this.setState(s);
       }
       render(props, { show }) {
         return <div>{show && <Inner {...props} />}</div>;
@@ -1159,10 +1159,10 @@ describe('Lifecycle methods', () => {
 
     let spies = ['_constructor', 'componentWillMount', 'componentDidMount', 'componentWillUnmount'];
 
-    let verifyLifecycleMethods = TestComponent => {
+    let verifyLifecycleMethods = (TestComponent) => {
       let proto = TestComponent.prototype;
-      spies.forEach(s => sinon.spy(proto, s));
-      let reset = () => spies.forEach(s => proto[s].resetHistory());
+      spies.forEach((s) => sinon.spy(proto, s));
+      let reset = () => spies.forEach((s) => proto[s].resetHistory());
 
       it('should be invoked for components on initial render', () => {
         reset();
@@ -1208,7 +1208,7 @@ describe('Lifecycle methods', () => {
         constructor() {
           super();
           this.state = { show: true };
-          setState = s => this.setState(s);
+          setState = (s) => this.setState(s);
         }
         render(props, { show }) {
           return (
@@ -1237,9 +1237,9 @@ describe('Lifecycle methods', () => {
 
       let proto = Inner.prototype;
       let spies = ['componentWillMount', 'componentDidMount', 'componentWillUnmount'];
-      spies.forEach(s => sinon.spy(proto, s));
+      spies.forEach((s) => sinon.spy(proto, s));
 
-      let reset = () => spies.forEach(s => proto[s].resetHistory());
+      let reset = () => spies.forEach((s) => proto[s].resetHistory());
 
       beforeEach(() => reset());
 
@@ -1283,7 +1283,7 @@ describe('Lifecycle methods', () => {
       constructor() {
         super();
         this.state = { show: true };
-        setState = s => this.setState(s);
+        setState = (s) => this.setState(s);
       }
       render(props, { show }) {
         return show ? <div /> : null;
@@ -1409,7 +1409,7 @@ describe('Lifecycle methods', () => {
   });
 
   describe('#setState', () => {
-    it('should NOT mutate state, only create new versions', done => {
+    it('should NOT mutate state, only create new versions', (done) => {
       const stateConstant = {};
       let didMount = false;
       let componentState;
@@ -1467,7 +1467,7 @@ describe('Lifecycle methods', () => {
         constructor() {
           super();
           this.state = { show: true };
-          setState = s => {
+          setState = (s) => {
             this.setState(s);
           };
         }

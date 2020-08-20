@@ -32,17 +32,17 @@ import {
   rerender,
   VNode
 } from 'inferno';
-import {hydrate} from 'inferno-hydrate';
-import {cloneVNode} from 'inferno-clone-vnode';
-import {ClassicComponentClass, ComponentSpec, createClass} from 'inferno-create-class';
-import {createElement} from 'inferno-create-element';
-import {isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning} from 'inferno-shared';
-import {VNodeFlags} from 'inferno-vnode-flags';
-import {isValidElement} from './isValidElement';
+import { hydrate } from 'inferno-hydrate';
+import { cloneVNode } from 'inferno-clone-vnode';
+import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
+import { createElement } from 'inferno-create-element';
+import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
-import {InfernoCompatPropertyMap} from './InfernoCompatPropertyMap';
-import {findDOMNode} from 'inferno-extras';
-import {getNumberStyleValue, hyphenCase} from './reactstyles';
+import { InfernoCompatPropertyMap } from './InfernoCompatPropertyMap';
+import { findDOMNode } from 'inferno-extras';
+import { getNumberStyleValue, hyphenCase } from './reactstyles';
 
 declare global {
   interface Event {
@@ -207,7 +207,7 @@ if (typeof Event !== 'undefined') {
 
   if (!eventProtoType.persist) {
     // tslint:disable-next-line:no-empty
-    eventProtoType.persist = function() {};
+    eventProtoType.persist = function () {};
   }
 }
 

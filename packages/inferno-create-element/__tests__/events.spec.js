@@ -1,23 +1,23 @@
-import {render} from 'inferno';
-import {createElement} from 'inferno-create-element';
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
 import sinon from 'sinon';
 
 describe('Basic event tests', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('should attach basic click events', done => {
-    const template = val =>
+  it('should attach basic click events', (done) => {
+    const template = (val) =>
       createElement('div', {
         id: 'test',
         onclick: val
@@ -39,7 +39,7 @@ describe('Basic event tests', () => {
     render(template(test), container);
 
     let divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-    divs.forEach(div => div.click());
+    divs.forEach((div) => div.click());
     expect(calledFirstTest).toBe(true);
 
     // reset
@@ -47,7 +47,7 @@ describe('Basic event tests', () => {
 
     render(template(test2), container);
     divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-    divs.forEach(div => div.click());
+    divs.forEach((div) => div.click());
 
     expect(calledFirstTest).toBe(false);
     expect(calledSecondTest).toBe(true);
@@ -58,7 +58,7 @@ describe('Basic event tests', () => {
 
     render(null, container);
     divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-    divs.forEach(div => div.click());
+    divs.forEach((div) => div.click());
 
     expect(calledFirstTest).toBe(false);
     expect(calledSecondTest).toBe(false);
@@ -71,7 +71,7 @@ describe('Basic event tests', () => {
     };
 
     function onClick(d) {
-      return function(e) {
+      return function (e) {
         data = { count: d.count + 1 };
 
         renderIt();
@@ -99,10 +99,10 @@ describe('Basic event tests', () => {
 
     expect(container.firstChild.innerHTML).toBe('Count 0');
     expect(data.count).toBe(0);
-    buttons.forEach(button => button.click());
+    buttons.forEach((button) => button.click());
     expect(container.firstChild.innerHTML).toBe('Count 1');
     expect(data.count).toBe(1);
-    buttons.forEach(button => button.click());
+    buttons.forEach((button) => button.click());
     expect(container.firstChild.innerHTML).toBe('Count 2');
     expect(data.count).toBe(2);
   });
@@ -113,7 +113,7 @@ describe('Basic event tests', () => {
     };
 
     function onClick(d) {
-      return function(e) {
+      return function (e) {
         data = { count: d.count + 1 };
 
         renderIt();
@@ -141,12 +141,12 @@ describe('Basic event tests', () => {
 
     expect(container.firstChild.innerHTML).toBe('<span>Count 0</span>');
     expect(data.count).toBe(0);
-    buttons.forEach(button => button.click());
+    buttons.forEach((button) => button.click());
     expect(container.firstChild.innerHTML).toBe('<span>Count 0</span>');
   });
 
   it('should not leak memory', () => {
-    const eventHandler = function() {};
+    const eventHandler = function () {};
 
     function AppTwo() {
       return createElement('button', null, [2]);
@@ -176,7 +176,7 @@ describe('Basic event tests', () => {
   });
 
   it('should not leak memory #2', () => {
-    const eventHandler = function() {};
+    const eventHandler = function () {};
 
     function App({ toggle }) {
       return createElement(
@@ -198,7 +198,7 @@ describe('Basic event tests', () => {
   });
 
   it('should not leak memory when child changes', () => {
-    const eventHandler = function() {};
+    const eventHandler = function () {};
 
     function smallComponent() {
       return createElement(
@@ -241,9 +241,9 @@ describe('Basic event tests', () => {
   });
 
   describe('Event Propagation', () => {
-    it('Should stop propagating Synthetic event to document', done => {
+    it('Should stop propagating Synthetic event to document', (done) => {
       const eventHandlerSpy = sinon.spy();
-      const eventHandler = function(event) {
+      const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
@@ -265,7 +265,7 @@ describe('Basic event tests', () => {
       document.addEventListener('click', bodySpy);
 
       container.querySelector('#tester').click();
-      setTimeout(function() {
+      setTimeout(function () {
         expect(eventHandlerSpy.callCount).toBe(1);
         expect(bodySpy.callCount).toBe(0);
         document.removeEventListener('click', bodySpy);
@@ -273,15 +273,15 @@ describe('Basic event tests', () => {
       }, 20);
     });
 
-    it('Should stop propagating Synthetic event to parentElement with synthetic event', done => {
+    it('Should stop propagating Synthetic event to parentElement with synthetic event', (done) => {
       const eventHandlerSpy = sinon.spy();
-      const eventHandler = function(event) {
+      const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
       const eventHandlerSpy2 = sinon.spy();
-      const eventHandler2 = function(event) {
+      const eventHandler2 = function (event) {
         eventHandlerSpy2();
       };
 
@@ -306,7 +306,7 @@ describe('Basic event tests', () => {
       render(<SmallComponent />, container);
 
       container.querySelector('#tester').click();
-      setTimeout(function() {
+      setTimeout(function () {
         expect(eventHandlerSpy.callCount).toBe(1);
         expect(eventHandlerSpy2.callCount).toBe(0);
         done();
@@ -314,15 +314,15 @@ describe('Basic event tests', () => {
     });
 
     // React does not block propagating synthetic event to parent with normal event either.
-    it('Should NOT stop propagating Synthetic event to parentElement with normal event', done => {
+    it('Should NOT stop propagating Synthetic event to parentElement with normal event', (done) => {
       const eventHandlerSpy = sinon.spy();
-      const eventHandler = function(event) {
+      const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
       const eventHandlerSpy2 = sinon.spy();
-      const eventHandler2 = function(event) {
+      const eventHandler2 = function (event) {
         eventHandlerSpy2();
       };
 
@@ -347,7 +347,7 @@ describe('Basic event tests', () => {
       render(<SmallComponent />, container);
 
       container.querySelector('#tester').click();
-      setTimeout(function() {
+      setTimeout(function () {
         expect(eventHandlerSpy.callCount).toBe(1);
         expect(eventHandlerSpy2.callCount).toBe(1);
         done();
@@ -459,7 +459,7 @@ describe('Basic event tests', () => {
 
     it('Should stop propagating normal event to document', () => {
       const eventHandlerSpy = sinon.spy();
-      const eventHandler = function(event) {
+      const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
@@ -486,15 +486,15 @@ describe('Basic event tests', () => {
       document.removeEventListener('click', bodySpy);
     });
 
-    it('Should stop propagating normal event to parentElement with synthetic event', done => {
+    it('Should stop propagating normal event to parentElement with synthetic event', (done) => {
       const eventHandlerSpy = sinon.spy();
-      const eventHandler = function(event) {
+      const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
       const eventHandlerSpy2 = sinon.spy();
-      const eventHandler2 = function(event) {
+      const eventHandler2 = function (event) {
         eventHandlerSpy2();
       };
 
@@ -519,22 +519,22 @@ describe('Basic event tests', () => {
       render(<SmallComponent />, container);
 
       container.querySelector('#tester').click();
-      setTimeout(function() {
+      setTimeout(function () {
         expect(eventHandlerSpy.callCount).toBe(1);
         expect(eventHandlerSpy2.callCount).toBe(0);
         done();
       }, 20);
     });
 
-    it('Should stop propagating normal event to normal event', done => {
+    it('Should stop propagating normal event to normal event', (done) => {
       const eventHandlerSpy = sinon.spy();
-      const eventHandler = function(event) {
+      const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
       const eventHandlerSpy2 = sinon.spy();
-      const eventHandler2 = function() {
+      const eventHandler2 = function () {
         eventHandlerSpy2();
       };
 
@@ -559,7 +559,7 @@ describe('Basic event tests', () => {
       render(<SmallComponent />, container);
 
       container.querySelector('#tester').click();
-      setTimeout(function() {
+      setTimeout(function () {
         expect(eventHandlerSpy.callCount).toBe(1);
         expect(eventHandlerSpy2.callCount).toBe(0);
         done();
@@ -567,7 +567,7 @@ describe('Basic event tests', () => {
     });
   });
 
-  it('Should work with spread attributes', done => {
+  it('Should work with spread attributes', (done) => {
     function SmallComponent(props) {
       return (
         <div id="testClick" {...props}>
@@ -577,7 +577,7 @@ describe('Basic event tests', () => {
     }
 
     const obj = {
-      test: function() {
+      test: function () {
         done();
       }
     };
@@ -623,7 +623,7 @@ describe('Basic event tests', () => {
   });
 
   describe('currentTarget', () => {
-    it('Should have currentTarget', done => {
+    it('Should have currentTarget', (done) => {
       function verifyCurrentTarget(event) {
         expect(event.currentTarget).toBe(container.firstChild);
         done();
@@ -654,7 +654,7 @@ describe('Basic event tests', () => {
       expect(called).toBe(true);
     });
 
-    it('Should work with deeply nested tree', done => {
+    it('Should work with deeply nested tree', (done) => {
       function verifyCurrentTarget(event) {
         expect(event.currentTarget).toBe(container.querySelector('#test'));
         done();
@@ -681,7 +681,7 @@ describe('Basic event tests', () => {
       container.querySelector('span').click();
     });
 
-    it('currentTarget should propagate work with multiple levels of children', done => {
+    it('currentTarget should propagate work with multiple levels of children', (done) => {
       function verifyCurrentTarget(event) {
         expect(event.currentTarget).toBe(container.querySelector('#test'));
         done();

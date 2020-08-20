@@ -1,23 +1,23 @@
-import {render} from 'inferno';
-import {createElement} from 'inferno-create-element';
-import {innerHTML} from 'inferno-utils';
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import { innerHTML } from 'inferno-utils';
 
 describe('Select / select multiple (non-JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
   it('should render "select" boolean on select options with numbers', () => {
-    const template = val =>
+    const template = (val) =>
       createElement(
         'select',
         {
@@ -104,7 +104,7 @@ describe('Select / select multiple (non-JSX)', () => {
   // });
 
   it('should render "select" boolean on select options #2 browser', () => {
-    const template = val =>
+    const template = (val) =>
       createElement(
         'select',
         {
@@ -137,7 +137,7 @@ describe('Select / select multiple (non-JSX)', () => {
   });
 
   it('should populate the value attribute on select multiple using groups', () => {
-    const template = val =>
+    const template = (val) =>
       createElement(
         'select',
         {
@@ -194,7 +194,7 @@ describe('Select / select multiple (non-JSX)', () => {
   });
 
   it('should render "select" boolean on select options #3 browser', () => {
-    const template = val =>
+    const template = (val) =>
       createElement(
         'select',
         {
@@ -236,7 +236,7 @@ describe('Select / select multiple (non-JSX)', () => {
   });
 
   it('should assure the value attribute also set the value property for `textarea`', () => {
-    const template = val =>
+    const template = (val) =>
       createElement('textarea', {
         value: val
       });
@@ -262,7 +262,7 @@ describe('Select / select multiple (non-JSX)', () => {
   });
 
   it('should handle when multiple values passed in as an array', () => {
-    const template = val =>
+    const template = (val) =>
       createElement(
         'select',
         {

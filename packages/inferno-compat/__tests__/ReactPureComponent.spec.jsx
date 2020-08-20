@@ -13,8 +13,8 @@ import React from 'inferno-compat';
 
 var ReactDOM = React;
 
-describe('ReactPureComponent', function() {
-  it('should render', function() {
+describe('ReactPureComponent', function () {
+  it('should render', function () {
     var renders = 0;
     class Component extends React.PureComponent {
       constructor() {
@@ -57,7 +57,7 @@ describe('ReactPureComponent', function() {
     expect(renders).toBe(3);
   });
 
-  it('should render when props or state mismatch in prop count', function() {
+  it('should render when props or state mismatch in prop count', function () {
     var renders = 0;
     class Component extends React.PureComponent {
       constructor() {
@@ -88,7 +88,7 @@ describe('ReactPureComponent', function() {
     expect(renders).toBe(2);
   });
 
-  it('can override shouldComponentUpdate', function() {
+  it('can override shouldComponentUpdate', function () {
     var renders = 0;
     class Component extends React.PureComponent {
       render() {
@@ -105,7 +105,7 @@ describe('ReactPureComponent', function() {
     expect(renders).toBe(2);
   });
 
-  it('extends React.Component', function() {
+  it('extends React.Component', function () {
     var renders = 0;
     class Component extends React.PureComponent {
       render() {

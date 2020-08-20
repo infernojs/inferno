@@ -155,13 +155,7 @@ describe('SSR Creation (JSX)', () => {
     },
     {
       description: 'You should be able to render an array',
-      template: () => (
-        [
-          <p>1</p>,
-          <p>2</p>,
-          <p>3</p>
-        ]
-      ),
+      template: () => [<p>1</p>, <p>2</p>, <p>3</p>],
       result: '<p>1</p><p>2</p><p>3</p>'
     },
     {
@@ -182,17 +176,21 @@ describe('SSR Creation (JSX)', () => {
     },
     {
       description: 'You should be able to render an empty fragment',
-      template: () => (<></>), /* reset syntax highlighting */
+      template: () => <></> /* reset syntax highlighting */,
       result: '<!--!-->'
     },
     {
       description: 'You should be able to render fragment with single child',
-      template: () => (<><p>1</p></>), /* reset syntax highlighting */
+      template: () => (
+        <>
+          <p>1</p>
+        </>
+      ) /* reset syntax highlighting */,
       result: '<p>1</p>'
     }
   ];
 
-  testEntries.forEach(test => {
+  testEntries.forEach((test) => {
     it(test.description, () => {
       const container = document.createElement('div');
       const vDom = test.template('foo');

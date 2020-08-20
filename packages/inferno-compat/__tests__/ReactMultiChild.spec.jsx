@@ -11,14 +11,14 @@ import React from 'inferno-compat';
 
 var ReactDOM = React;
 var mocks = {
-  getMockFunction: function() {
+  getMockFunction: function () {
     return jasmine.createSpy();
   }
 };
 
-describe('ReactMultiChild', function() {
-  describe('reconciliation', function() {
-    it('should update children when possible', function() {
+describe('ReactMultiChild', function () {
+  describe('reconciliation', function () {
+    it('should update children when possible', function () {
       var container = document.createElement('div');
 
       var mockMount = mocks.getMockFunction();
@@ -29,7 +29,7 @@ describe('ReactMultiChild', function() {
         componentDidMount: mockMount,
         componentDidUpdate: mockUpdate,
         componentWillUnmount: mockUnmount,
-        render: function() {
+        render: function () {
           return <span />;
         }
       });
@@ -61,7 +61,7 @@ describe('ReactMultiChild', function() {
       expect(mockUnmount.calls.count()).toBe(0);
     });
 
-    it('should replace children with different constructors', function() {
+    it('should replace children with different constructors', function () {
       var container = document.createElement('div');
 
       var mockMount = mocks.getMockFunction();
@@ -70,7 +70,7 @@ describe('ReactMultiChild', function() {
       var MockComponent = React.createClass({
         componentDidMount: mockMount,
         componentWillUnmount: mockUnmount,
-        render: function() {
+        render: function () {
           return <span />;
         }
       });
@@ -99,7 +99,7 @@ describe('ReactMultiChild', function() {
       expect(mockUnmount.calls.count()).toBe(1);
     });
 
-    it('should NOT replace children with different owners', function() {
+    it('should NOT replace children with different owners', function () {
       var container = document.createElement('div');
 
       var mockMount = mocks.getMockFunction();
@@ -108,13 +108,13 @@ describe('ReactMultiChild', function() {
       var MockComponent = React.createClass({
         componentDidMount: mockMount,
         componentWillUnmount: mockUnmount,
-        render: function() {
+        render: function () {
           return <span />;
         }
       });
 
       var WrapperComponent = React.createClass({
-        render: function() {
+        render: function () {
           return this.props.children || <MockComponent />;
         }
       });
@@ -138,7 +138,7 @@ describe('ReactMultiChild', function() {
       expect(mockUnmount.calls.count()).toBe(0);
     });
 
-    it('should replace children with different keys', function() {
+    it('should replace children with different keys', function () {
       var container = document.createElement('div');
 
       var mockMount = mocks.getMockFunction();
@@ -147,7 +147,7 @@ describe('ReactMultiChild', function() {
       var MockComponent = React.createClass({
         componentDidMount: mockMount,
         componentWillUnmount: mockUnmount,
-        render: function() {
+        render: function () {
           return <span />;
         }
       });

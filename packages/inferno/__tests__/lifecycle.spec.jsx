@@ -3,12 +3,12 @@ import { Component, render, rerender } from 'inferno';
 describe('ComponentDidUpdate', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -28,7 +28,7 @@ describe('ComponentDidUpdate', () => {
       renderDynamicComponent = () => (
         <div
           id="dynamic"
-          ref={el => {
+          ref={(el) => {
             this.dynamicEl = el;
           }}
         >
@@ -53,7 +53,7 @@ describe('ComponentDidUpdate', () => {
         return (
           <div
             id="static"
-            ref={el => {
+            ref={(el) => {
               this.staticEl = el;
             }}
           >
@@ -100,14 +100,14 @@ describe('ComponentDidUpdate', () => {
         return (
           <div
             id="outer"
-            ref={el => {
+            ref={(el) => {
               // Create new function on purpose to trigger changes
               spyer('outer-' + (el ? el.id : null));
             }}
           >
             <div
               id="inner"
-              ref={el => {
+              ref={(el) => {
                 // Create new function on purpose to trigger changes
                 spyer('inner-' + (el ? el.id : null));
               }}
@@ -193,7 +193,7 @@ describe('ComponentDidUpdate', () => {
         return (
           <div
             id="outer"
-            ref={el => {
+            ref={(el) => {
               // Create new function on purpose to trigger changes
               spyer('outer-' + (el ? el.id : null));
             }}
@@ -201,7 +201,7 @@ describe('ComponentDidUpdate', () => {
             <Mounter />
             <div
               id="inner"
-              ref={el => {
+              ref={(el) => {
                 // Create new function on purpose to trigger changes
                 spyer('inner-' + (el ? el.id : null));
               }}
@@ -279,7 +279,7 @@ describe('ComponentDidUpdate', () => {
           {
             foo: 'bar'
           },
-          function() {
+          function () {
             setState1Called++;
             expect(this.state.foo).toBe('bar');
           }
@@ -309,7 +309,7 @@ describe('ComponentDidUpdate', () => {
           {
             bool: true
           },
-          function() {
+          function () {
             setState2Called++;
             expect(this.state.bool).toBe(true);
           }
@@ -386,7 +386,7 @@ describe('ComponentDidUpdate', () => {
           {
             foo: 'bar'
           },
-          function() {
+          function () {
             setState1Called++;
             expect(this.state.foo).toBe('bar');
           }
@@ -416,7 +416,7 @@ describe('ComponentDidUpdate', () => {
           {
             bool: true
           },
-          function() {
+          function () {
             setState2Called++;
             expect(this.state.bool).toBe(true);
           }

@@ -14,7 +14,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
-describe('ReactClass-spec', function() {
+describe('ReactClass-spec', function () {
   let container;
 
   function renderIntoDocument(input) {
@@ -211,19 +211,19 @@ describe('ReactClass-spec', function() {
   //   );
   // });
 
-  it('should support statics', function() {
+  it('should support statics', function () {
     var Component = React.createClass({
       statics: {
         abc: 'def',
         def: 0,
         ghi: null,
         jkl: 'mno',
-        pqr: function() {
+        pqr: function () {
           return this;
         }
       },
 
-      render: function() {
+      render: function () {
         return <span />;
       }
     });
@@ -243,14 +243,14 @@ describe('ReactClass-spec', function() {
     expect(Component.pqr()).toBe(Component);
   });
 
-  it('should work with object getInitialState() return values', function() {
+  it('should work with object getInitialState() return values', function () {
     var Component = React.createClass({
-      getInitialState: function() {
+      getInitialState: function () {
         return {
           occupation: 'clown'
         };
       },
-      render: function() {
+      render: function () {
         return <span />;
       }
     });
@@ -259,7 +259,7 @@ describe('ReactClass-spec', function() {
     expect(instance.$LI.children.state.occupation).toEqual('clown');
   });
 
-  it('renders based on context getInitialState', function() {
+  it('renders based on context getInitialState', function () {
     var Foo = React.createClass({
       contextTypes: {
         className: React.PropTypes.string
@@ -309,12 +309,12 @@ describe('ReactClass-spec', function() {
   //   });
   // });
 
-  it('should work with a null getInitialState() return value', function() {
+  it('should work with a null getInitialState() return value', function () {
     var Component = React.createClass({
-      getInitialState: function() {
+      getInitialState: function () {
         return null;
       },
-      render: function() {
+      render: function () {
         return <span />;
       }
     });

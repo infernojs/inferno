@@ -1,7 +1,7 @@
-import {findDOMfromVNode, options, VNode} from 'inferno';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {combineFrom, isInvalid, isNullOrUndef} from 'inferno-shared';
-import {findDOMNode} from 'inferno-extras';
+import { findDOMfromVNode, options, VNode } from 'inferno';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { combineFrom, isInvalid, isNullOrUndef } from 'inferno-shared';
+import { findDOMNode } from 'inferno-extras';
 
 let updatingDevTool = false;
 let Reconciler;
@@ -104,7 +104,7 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
     if (component && component.forceUpdate) {
       const forceInstanceUpdate = component.forceUpdate.bind(component); // Save off for use below.
 
-      component.forceUpdate = (instance as any).forceUpdate = function(callback) {
+      component.forceUpdate = (instance as any).forceUpdate = function (callback) {
         if (!isActive) {
           return;
         }
@@ -123,7 +123,7 @@ function createReactCompositeComponent(vNode, oldDevToolInstance) {
     if (component && component.setState) {
       const setInstanceState = component.setState.bind(component);
 
-      component.setState = (instance as any).setState = function(newState, callback) {
+      component.setState = (instance as any).setState = function (newState, callback) {
         if (!isActive) {
           return;
         }
@@ -370,7 +370,7 @@ export function createDevToolsBridge() {
 
   const oldRenderComplete = options.renderComplete;
 
-  options.renderComplete = function(rootInput, parentDOM) {
+  options.renderComplete = function (rootInput, parentDOM) {
     if (!isActive) {
       return;
     }

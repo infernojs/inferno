@@ -1,5 +1,5 @@
-import {Component} from 'inferno';
-import {warning} from 'inferno-shared';
+import { Component } from 'inferno';
+import { warning } from 'inferno-shared';
 
 const specialKeys = {
   children: true,
@@ -38,7 +38,7 @@ export class Provider extends Component<any, any> {
 
 // Development warning
 if (process.env.NODE_ENV !== 'production') {
-  Provider.prototype.componentWillReceiveProps = function(nextProps) {
+  Provider.prototype.componentWillReceiveProps = function (nextProps) {
     // Maybe this warning is too aggressive?
     if (Object.keys(nextProps).length !== Object.keys(this.props).length) {
       warning('MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children');

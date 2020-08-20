@@ -18,7 +18,7 @@ async function printFileSizes() {
   const dirs = await globAsync(PACKAGES_DIR + '/*');
 
   // Exclude private packages
-  const packages = dirs.filter(d => !require(join(d, 'package.json')).private).map(file => basename(file));
+  const packages = dirs.filter((d) => !require(join(d, 'package.json')).private).map((file) => basename(file));
 
   const table = new Table({
     head: [
@@ -47,7 +47,7 @@ async function printFileSizes() {
   console.log(table.toString());
 }
 
-printFileSizes().catch(err => {
+printFileSizes().catch((err) => {
   console.error(err);
 });
 

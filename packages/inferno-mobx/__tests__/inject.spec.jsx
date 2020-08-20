@@ -6,18 +6,18 @@ import { inject, observer, Provider } from 'inferno-mobx';
 describe('inject based context', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('basic context', done => {
+  it('basic context', (done) => {
     const C = inject('foo')(
       observer(
         createClass({
@@ -43,7 +43,7 @@ describe('inject based context', () => {
     done();
   });
 
-  it('props override context', done => {
+  it('props override context', (done) => {
     const C = inject('foo')(
       createClass({
         render() {
@@ -69,8 +69,11 @@ describe('inject based context', () => {
     done();
   });
 
-  it('overriding stores is supported', done => {
-    const C = inject('foo', 'bar')(
+  it('overriding stores is supported', (done) => {
+    const C = inject(
+      'foo',
+      'bar'
+    )(
       observer(
         createClass({
           render() {
@@ -108,7 +111,7 @@ describe('inject based context', () => {
     done();
   });
 
-  it('store should be available', done => {
+  it('store should be available', (done) => {
     const C = inject('foo')(
       observer(
         createClass({
@@ -140,7 +143,7 @@ describe('inject based context', () => {
     }
   });
 
-  it('store is not required if prop is available', done => {
+  it('store is not required if prop is available', (done) => {
     const C = inject('foo')(
       observer(
         createClass({
@@ -161,7 +164,7 @@ describe('inject based context', () => {
     done();
   });
 
-  it('inject merges (and overrides) props', done => {
+  it('inject merges (and overrides) props', (done) => {
     const C = inject(() => ({ a: 1 }))(
       observer(
         createClass({
@@ -177,10 +180,10 @@ describe('inject based context', () => {
     done();
   });
 
-  it('warning is printed when changing stores', done => {
+  it('warning is printed when changing stores', (done) => {
     let msg;
     const baseWarn = console.error;
-    console.error = m => (msg = m);
+    console.error = (m) => (msg = m);
     const a = mobx.observable.box(3);
     const C = observer(
       ['foo'],
@@ -227,7 +230,7 @@ describe('inject based context', () => {
     done();
   });
 
-  it('custom storesToProps', done => {
+  it('custom storesToProps', (done) => {
     const C = inject((stores, props, context) => {
       expect(context).toEqual({ mobxStores: { foo: 'bar' } });
       expect(stores).toEqual({ foo: 'bar' });
@@ -265,7 +268,7 @@ describe('inject based context', () => {
     done();
   });
 
-  it('support static hoisting, wrappedComponent and wrappedInstance', done => {
+  it('support static hoisting, wrappedComponent and wrappedInstance', (done) => {
     const B = createClass({
       render() {
         this.testField = 1;
@@ -281,16 +284,16 @@ describe('inject based context', () => {
     expect(C.bla).toBe(17);
 
     let c = null;
-    render(<C ref={i => (c = i)} booh={42} />, container);
+    render(<C ref={(i) => (c = i)} booh={42} />, container);
     expect(c.wrappedInstance.testField).toBe(1);
     done();
   });
 
   // DefaultProps only, there are no propTypes in inferno
-  it('propTypes and defaultProps are forwarded', done => {
+  it('propTypes and defaultProps are forwarded', (done) => {
     const msg = [];
     const baseError = console.error;
-    console.error = m => msg.push(m);
+    console.error = (m) => msg.push(m);
 
     const C = inject('foo')(
       createClass({
@@ -316,10 +319,10 @@ describe('inject based context', () => {
     done();
   });
 
-  it('using a custom injector is reactive', done => {
+  it('using a custom injector is reactive', (done) => {
     const user = mobx.observable({ name: 'Noa' });
-    const mapper = stores => ({ name: stores.user.name });
-    const DisplayName = props => <h1>{props.name}</h1>;
+    const mapper = (stores) => ({ name: stores.user.name });
+    const DisplayName = (props) => <h1>{props.name}</h1>;
     const User = inject(mapper)(DisplayName);
     const App = () => (
       <Provider user={user}>

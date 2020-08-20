@@ -4,12 +4,12 @@ import { MemoryRouter, NavLink } from 'inferno-router';
 describe('NavLink', () => {
   let node;
 
-  beforeEach(function() {
+  beforeEach(function () {
     node = document.createElement('div');
     document.body.appendChild(node);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, node);
     document.body.removeChild(node);
   });

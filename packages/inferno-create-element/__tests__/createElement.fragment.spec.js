@@ -1,16 +1,16 @@
-import {Component, createFragment, createPortal, Fragment, render, rerender} from 'inferno';
-import {createElement} from 'inferno-create-element';
-import {ChildFlags} from 'inferno-vnode-flags';
+import { Component, createFragment, createPortal, Fragment, render, rerender } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('CreateElement (non-JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -920,10 +920,10 @@ describe('CreateElement (non-JSX)', () => {
 
         render() {
           return f(
-            this.state.sections.map(section =>
+            this.state.sections.map((section) =>
               createElement('section', null, [
                 createElement('h2', null, section),
-                this.state.articles.map(article => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
+                this.state.articles.map((article) => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
               ])
             )
           );
@@ -972,11 +972,11 @@ describe('CreateElement (non-JSX)', () => {
 
         render() {
           return f(
-            this.state.sections.map(section =>
+            this.state.sections.map((section) =>
               createElement(Section, {
                 children: [
                   createElement('h2', null, section),
-                  this.state.articles.map(article => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
+                  this.state.articles.map((article) => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
                 ]
               })
             )
@@ -1034,11 +1034,11 @@ describe('CreateElement (non-JSX)', () => {
 
         render() {
           return f(
-            this.state.sections.map(section =>
+            this.state.sections.map((section) =>
               createElement(Section, {
                 children: [
                   createElement('h2', null, section),
-                  this.state.articles.map(article => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
+                  this.state.articles.map((article) => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
                 ]
               })
             )

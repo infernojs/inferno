@@ -14,7 +14,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
-var clone = function(o) {
+var clone = function (o) {
   return JSON.parse(JSON.stringify(o));
 };
 
@@ -82,7 +82,7 @@ var ComponentLifeCycle = {
  * is *reused*, then that won't be the case and things will appear to work in
  * some cases. Better to just block all updates in initialization.
  */
-describe('ReactComponentLifeCycle', function() {
+describe('ReactComponentLifeCycle', function () {
   let container;
 
   function renderIntoDocument(input) {
@@ -100,13 +100,13 @@ describe('ReactComponentLifeCycle', function() {
     document.body.removeChild(container);
   });
 
-  it('should not reuse an instance when it has been unmounted', function() {
+  it('should not reuse an instance when it has been unmounted', function () {
     var container = document.createElement('div');
     var StatefulComponent = React.createClass({
-      getInitialState: function() {
+      getInitialState: function () {
         return {};
       },
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
@@ -122,31 +122,31 @@ describe('ReactComponentLifeCycle', function() {
    * If a state update triggers rerendering that in turn fires an onDOMReady,
    * that second onDOMReady should not fail.
    */
-  it('it should fire onDOMReady when already in onDOMReady', function(done) {
+  it('it should fire onDOMReady when already in onDOMReady', function (done) {
     var _testJournal = [];
 
     var Child = React.createClass({
-      componentDidMount: function() {
+      componentDidMount: function () {
         _testJournal.push('Child:onDOMReady');
       },
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
 
     var SwitcherParent = React.createClass({
-      getInitialState: function() {
+      getInitialState: function () {
         _testJournal.push('SwitcherParent:getInitialState');
         return { showHasOnDOMReadyComponent: false };
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         _testJournal.push('SwitcherParent:onDOMReady');
         this.switchIt();
       },
-      switchIt: function() {
+      switchIt: function () {
         this.setState({ showHasOnDOMReadyComponent: true });
       },
-      render: function() {
+      render: function () {
         return <div>{this.state.showHasOnDOMReadyComponent ? <Child /> : <div> </div>}</div>;
       }
     });
@@ -178,30 +178,30 @@ describe('ReactComponentLifeCycle', function() {
   //   }).toThrow();
   // });
 
-  it('should allow update state inside of componentWillMount', function() {
+  it('should allow update state inside of componentWillMount', function () {
     var StatefulComponent = React.createClass({
-      componentWillMount: function() {
+      componentWillMount: function () {
         this.setState({ stateField: 'something' });
       },
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
     var instance = <StatefulComponent />;
-    expect(function() {
+    expect(function () {
       renderIntoDocument(instance);
     }).not.toThrow();
   });
 
-  it('should not allow update state inside of getInitialState', function() {
+  it('should not allow update state inside of getInitialState', function () {
     spyOn(console, 'error');
     var StatefulComponent = React.createClass({
-      getInitialState: function() {
+      getInitialState: function () {
         this.setState({ stateField: 'something' });
 
         return { stateField: 'somethingelse' };
       },
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
@@ -215,16 +215,16 @@ describe('ReactComponentLifeCycle', function() {
     // );
   });
 
-  it('should correctly determine if a component is mounted', function() {
+  it('should correctly determine if a component is mounted', function () {
     spyOn(console, 'error');
     var Component = React.createClass({
-      componentWillMount: function() {
+      componentWillMount: function () {
         expect(this.isMounted()).toBeFalsy();
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         expect(this.isMounted()).toBeTruthy();
       },
-      render: function() {
+      render: function () {
         expect(this.isMounted()).toBeFalsy();
         return <div />;
       }
@@ -241,16 +241,16 @@ describe('ReactComponentLifeCycle', function() {
     // );
   });
 
-  it('should correctly determine if a null component is mounted', function() {
+  it('should correctly determine if a null component is mounted', function () {
     spyOn(console, 'error');
     var Component = React.createClass({
-      componentWillMount: function() {
+      componentWillMount: function () {
         expect(this.isMounted()).toBeFalsy();
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         expect(this.isMounted()).toBeTruthy();
       },
-      render: function() {
+      render: function () {
         expect(this.isMounted()).toBeFalsy();
         return null;
       }
@@ -267,9 +267,9 @@ describe('ReactComponentLifeCycle', function() {
     // );
   });
 
-  it('isMounted should return false when unmounted', function() {
+  it('isMounted should return false when unmounted', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
@@ -389,26 +389,26 @@ describe('ReactComponentLifeCycle', function() {
   //   expect(console.error.calls.count()).toBe(1);  // setProps deprecated
   // });
 
-  it('should not throw when updating an auxiliary component', function() {
+  it('should not throw when updating an auxiliary component', function () {
     var Tooltip = React.createClass({
-      render: function() {
+      render: function () {
         return <div>{this.props.children}</div>;
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         this.container = document.createElement('div');
         this.updateTooltip();
       },
-      componentDidUpdate: function() {
+      componentDidUpdate: function () {
         this.updateTooltip();
       },
-      updateTooltip: function() {
+      updateTooltip: function () {
         // Even though this.props.tooltip has an owner, updating it shouldn't
         // throw here because it's mounted as a root component
         ReactDOM.render(this.props.tooltip, this.container);
       }
     });
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return <Tooltip tooltip={<div>{this.props.tooltipText}</div>}>{this.props.text}</Tooltip>;
       }
     });
@@ -421,20 +421,20 @@ describe('ReactComponentLifeCycle', function() {
     ReactDOM.render(<Component text="dos" tooltipText="two" />, container);
   });
 
-  it('should allow state updates in componentDidMount', function(done) {
+  it('should allow state updates in componentDidMount', function (done) {
     /**
      * calls setState in an componentDidMount.
      */
     var SetStateInComponentDidMount = React.createClass({
-      getInitialState: function() {
+      getInitialState: function () {
         return {
           stateField: this.props.valueToUseInitially
         };
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         this.setState({ stateField: this.props.valueToUseInOnDOMReady });
       },
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
@@ -447,17 +447,17 @@ describe('ReactComponentLifeCycle', function() {
     }, 25);
   });
 
-  it('should call nested lifecycle methods in the right order', function() {
+  it('should call nested lifecycle methods in the right order', function () {
     var log;
-    var logger = function(msg) {
-      return function() {
+    var logger = function (msg) {
+      return function () {
         // return true for shouldComponentUpdate
         log.push(msg);
         return true;
       };
     };
     var Outer = React.createClass({
-      render: function() {
+      render: function () {
         return (
           <div>
             <Inner x={this.props.x} />
@@ -473,7 +473,7 @@ describe('ReactComponentLifeCycle', function() {
       componentWillUnmount: logger('outer componentWillUnmount')
     });
     var Inner = React.createClass({
-      render: function() {
+      render: function () {
         return <span>{this.props.x}</span>;
       },
       componentWillMount: logger('inner componentWillMount'),

@@ -103,9 +103,9 @@ export const InfernoCompatPropertyMap = {
 };
 
 const CAMELIZE = /[\-\:]([a-z])/g;
-const capitalize = token => token[1].toUpperCase();
+const capitalize = (token) => token[1].toUpperCase();
 
-ATTRS.forEach(original => {
+ATTRS.forEach((original) => {
   const reactName = original.replace(CAMELIZE, capitalize);
 
   InfernoCompatPropertyMap[reactName] = original;

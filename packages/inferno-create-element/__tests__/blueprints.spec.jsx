@@ -4,12 +4,12 @@ import { innerHTML } from 'inferno-utils';
 describe('Blueprints (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     document.body.removeChild(container);
     container = null;
@@ -65,7 +65,7 @@ describe('Blueprints (JSX)', () => {
       render() {
         return (
           <div>
-            {['Saab', 'Volvo', 'BMW'].map(function(c) {
+            {['Saab', 'Volvo', 'BMW'].map(function (c) {
               return <Counter car={c} />;
             })}
           </div>
@@ -88,7 +88,7 @@ describe('Blueprints (JSX)', () => {
     it('Second render (update)', () => {
       render(<Wrapper />, container);
       const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-      buttons.forEach(button => button.click());
+      buttons.forEach((button) => button.click());
 
       expect(container.innerHTML).toBe(
         innerHTML(
@@ -100,7 +100,7 @@ describe('Blueprints (JSX)', () => {
   });
 
   describe('Infinite loop issue', () => {
-    it('Should not get stuck when doing setState from ref callback', done => {
+    it('Should not get stuck when doing setState from ref callback', (done) => {
       class A extends Component {
         constructor(props) {
           super(props);
@@ -153,9 +153,9 @@ describe('Blueprints (JSX)', () => {
 
         render() {
           return (
-            <div ref={node => (this._first = node)}>
+            <div ref={(node) => (this._first = node)}>
               <span>1</span>
-              <span ref={node => (this._second = node)}>2</span>
+              <span ref={(node) => (this._second = node)}>2</span>
             </div>
           );
         }

@@ -14,7 +14,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
-describe('Render Select with multiple values', function() {
+describe('Render Select with multiple values', function () {
   let container;
 
   function renderIntoDocument(input) {
@@ -53,7 +53,7 @@ describe('Render Select with multiple values', function() {
     }
   }
 
-  it('should mark correct option as selected', function() {
+  it('should mark correct option as selected', function () {
     var instance = renderIntoDocument(<Component />);
     var root = ReactDOM.findDOMNode(instance);
     expect(root.childNodes[0].options[0].selected).toBe(true);
@@ -63,7 +63,7 @@ describe('Render Select with multiple values', function() {
   });
 });
 
-describe('Render Select with single value', function() {
+describe('Render Select with single value', function () {
   let container;
   function renderIntoDocument(input) {
     return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
@@ -101,7 +101,7 @@ describe('Render Select with single value', function() {
     }
   }
 
-  it('should mark correct option as selected', function() {
+  it('should mark correct option as selected', function () {
     var instance = renderIntoDocument(<Component />);
     var root = ReactDOM.findDOMNode(instance);
 

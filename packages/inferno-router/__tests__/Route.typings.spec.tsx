@@ -15,7 +15,7 @@ describe('<Route component>', () => {
     let actual: RouteProps = {
       history: null,
       location: null,
-      match: null,
+      match: null
     };
     const Component = (props: RouteProps) => (actual = props) && null;
 

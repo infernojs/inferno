@@ -36,27 +36,27 @@ describe('Security - SSR', () => {
   });
 
   describe('streams', () => {
-    [streamAsString, streamQueueAsString].forEach(method => {
+    [streamAsString, streamQueueAsString].forEach((method) => {
       it('Should not render invalid attribute names', () => {
         const props = {};
         const userProvidedData = '></div><script>alert("hi")</script>';
 
         props[userProvidedData] = 'hello';
 
-        streamPromise(<div {...props} />, method).then(html => expect(html).toBe('<div></div>'));
+        streamPromise(<div {...props} />, method).then((html) => expect(html).toBe('<div></div>'));
       });
 
-      it('should reject attribute key injection attack on markup', done => {
+      it('should reject attribute key injection attack on markup', (done) => {
         const element1 = createElement('div', { 'blah" onclick="beevil" noise="hi': 'selected' }, null);
-        streamPromise(element1, method).then(result1 => {
+        streamPromise(element1, method).then((result1) => {
           expect(result1.toLowerCase()).not.toContain('onclick');
           done();
         });
       });
 
-      it('should reject attribute key injection attack on markup #2', done => {
+      it('should reject attribute key injection attack on markup #2', (done) => {
         const element2 = createElement('div', { '></div><script>alert("hi")</script>': 'selected' }, null);
-        streamPromise(element2, method).then(result2 => {
+        streamPromise(element2, method).then((result2) => {
           expect(result2.toLowerCase()).not.toContain('script');
           done();
         });
@@ -66,11 +66,11 @@ describe('Security - SSR', () => {
 });
 
 function streamPromise(dom, method) {
-  return new Promise(function(res, rej) {
+  return new Promise(function (res, rej) {
     method(dom)
       .on('error', rej)
       .pipe(
-        concatStream(function(buffer) {
+        concatStream(function (buffer) {
           res(buffer.toString('utf-8'));
         })
       );

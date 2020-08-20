@@ -6,7 +6,7 @@ import { innerHTML } from 'inferno-utils';
 describe('cloneVNode (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
   });
 
@@ -485,7 +485,7 @@ describe('cloneVNode (JSX)', () => {
     it('should render children one level deep', () => {
       class NameContainer extends Component {
         render() {
-          const children = this.props.children.map(c =>
+          const children = this.props.children.map((c) =>
             cloneVNode(c, {
               name: 'Henry'
             })
@@ -527,7 +527,7 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
 
       class Wrapper2 extends Component {
         render() {
-          const children = this.props.children.map(c => {
+          const children = this.props.children.map((c) => {
             return cloneVNode(c, {
               propsIndex: c.props && c.props.index,
               name: (c.props && c.props.index) != null ? this.props.items[c.props.index].name : 'default-name',

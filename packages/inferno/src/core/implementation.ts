@@ -27,7 +27,7 @@ export function createVNode<P>(
   className?: string | null,
   children?: InfernoNode,
   childFlags?: ChildFlags,
-  props?: Props<P> & P | null,
+  props?: (Props<P> & P) | null,
   key?: string | number | null,
   ref?: Ref | Refs<P> | null
 ): VNode {
@@ -106,7 +106,7 @@ function resolveComponentFlags(flags, type) {
 export function createComponentVNode<P>(
   flags: VNodeFlags,
   type: Function | IComponent<any, any> | ForwardRef,
-  props?: Props<P> & P | null,
+  props?: (Props<P> & P) | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null
 ) {

@@ -14,12 +14,12 @@ if (version > 60 || version === false) {
   describe('transition events', () => {
     let container;
 
-    beforeEach(function() {
+    beforeEach(function () {
       container = document.createElement('div');
       document.body.appendChild(container);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       render(null, container);
       container.innerHTML = '';
       document.body.removeChild(container);
@@ -35,18 +35,18 @@ if (version > 60 || version === false) {
       width: '16px'
     };
 
-    it('should call "ontransitionend" at the end of a transition', done => {
+    it('should call "ontransitionend" at the end of a transition', (done) => {
       let clickOccurred = null;
       let handlerFired = null;
 
       render(
         <div
           style={transitionStyles}
-          onclick={e => {
+          onclick={(e) => {
             e.target.style.left = '50px';
             clickOccurred = true;
           }}
-          ontransitionend={e => {
+          ontransitionend={(e) => {
             handlerFired = true;
           }}
         />,
@@ -69,18 +69,18 @@ if (version > 60 || version === false) {
       }, 25);
     });
 
-    it('should call "onTransitionEnd" at the end of a transition', done => {
+    it('should call "onTransitionEnd" at the end of a transition', (done) => {
       let clickOccurred = null;
       let handlerFired = null;
 
       render(
         <div
           style={transitionStyles}
-          onclick={e => {
+          onclick={(e) => {
             e.target.style.left = '100px';
             clickOccurred = true;
           }}
-          onTransitionEnd={e => {
+          onTransitionEnd={(e) => {
             handlerFired = true;
           }}
         />,

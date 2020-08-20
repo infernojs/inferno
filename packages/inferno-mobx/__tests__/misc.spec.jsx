@@ -6,18 +6,18 @@ import { createClass } from 'inferno-create-class';
 describe('Mobx Misc', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('custom shouldComponentUpdate is not respected for observable changes (#50)', done => {
+  it('custom shouldComponentUpdate is not respected for observable changes (#50)', (done) => {
     let called = 0;
     const x = mobx.observable.box(3);
     const C = observer(
@@ -40,7 +40,7 @@ describe('Mobx Misc', () => {
     done();
   });
 
-  it('custom shouldComponentUpdate is not respected for observable changes (#50) - 2', done => {
+  it('custom shouldComponentUpdate is not respected for observable changes (#50) - 2', (done) => {
     let called = 0;
     const y = mobx.observable.box(5);
     const C = observer(
@@ -87,7 +87,7 @@ describe('Mobx Misc', () => {
     done();
   });
 
-  it('issue mobx 405', done => {
+  it('issue mobx 405', (done) => {
     function ExampleState() {
       mobx.extendObservable(this, {
         name: 'test',
@@ -102,7 +102,7 @@ describe('Mobx Misc', () => {
         render() {
           return (
             <div>
-              <input type="text" onChange={e => (this.props.exampleState.name = e.target.value)} value={this.props.exampleState.name} />
+              <input type="text" onChange={(e) => (this.props.exampleState.name = e.target.value)} value={this.props.exampleState.name} />
               <span>{this.props.exampleState.greetings}</span>
             </div>
           );
@@ -117,7 +117,7 @@ describe('Mobx Misc', () => {
     done();
   });
 
-  it('#85 Should handle state changing in constructors', function() {
+  it('#85 Should handle state changing in constructors', function () {
     const a = mobx.observable.box(2);
     const Child = observer(
       createClass({

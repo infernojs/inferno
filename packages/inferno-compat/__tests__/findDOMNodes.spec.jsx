@@ -3,12 +3,12 @@ import { Component, findDOMNode, render } from 'inferno-compat';
 describe('findDOMNodes (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -19,7 +19,7 @@ describe('findDOMNodes (JSX)', () => {
     let instance2;
     let instance3;
     let ref;
-    const refFunc = dom => {
+    const refFunc = (dom) => {
       if (dom) {
         ref = dom;
       }
@@ -84,7 +84,7 @@ describe('findDOMNodes (JSX)', () => {
       }
 
       let instance = null;
-      render(<FragmentTester ref={ref => (instance = ref)} />, container);
+      render(<FragmentTester ref={(ref) => (instance = ref)} />, container);
 
       expect(container.childNodes.length).toBe(2);
 
@@ -112,7 +112,7 @@ describe('findDOMNodes (JSX)', () => {
       }
 
       let instance = null;
-      render(<FragmentTester ref={ref => (instance = ref)} />, container);
+      render(<FragmentTester ref={(ref) => (instance = ref)} />, container);
 
       expect(container.childNodes.length).toBe(2);
 
@@ -135,7 +135,7 @@ describe('findDOMNodes (JSX)', () => {
       }
 
       let instance = null;
-      ReactDOM.render(<FragmentTester ref={ref => (instance = ref)} />, container);
+      ReactDOM.render(<FragmentTester ref={(ref) => (instance = ref)} />, container);
 
       expect(container.childNodes.length).toBe(3);
 

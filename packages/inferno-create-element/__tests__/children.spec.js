@@ -1,15 +1,15 @@
-import {render} from 'inferno';
-import {createElement} from 'inferno-create-element';
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
 
 describe('Children - (non-JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -229,7 +229,7 @@ describe('Children - (non-JSX)', () => {
         description: 'should set static children as ' + arg.name,
         template: () => createElement('div', null, arg.value)
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -241,13 +241,13 @@ describe('Children - (non-JSX)', () => {
     });
   });
 
-  preDefined.forEach(arg => {
+  preDefined.forEach((arg) => {
     [
       {
         description: 'should set static deep children as ' + arg.name,
         template: () => createElement('div', null, createElement('span', null, arg.value))
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -263,13 +263,13 @@ describe('Children - (non-JSX)', () => {
     });
   });
 
-  preDefined.forEach(arg => {
+  preDefined.forEach((arg) => {
     [
       {
         description: 'should set very deep static children as ' + arg.name,
         template: () => createElement('div', null, createElement('span', null, createElement('b', null, createElement('b', null, arg.value))))
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -285,14 +285,14 @@ describe('Children - (non-JSX)', () => {
     });
   });
 
-  preDefined.forEach(arg => {
+  preDefined.forEach((arg) => {
     [
       {
         description: 'should set dynamic children as ' + arg.name,
 
-        template: child => createElement('div', null, child)
+        template: (child) => createElement('div', null, child)
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -355,13 +355,13 @@ describe('Children - (non-JSX)', () => {
     });
   });
 
-  preDefined.forEach(arg => {
+  preDefined.forEach((arg) => {
     [
       {
         description: 'should set deep dynamic children as ' + arg.name,
-        template: child => createElement('div', null, createElement('b', null, child))
+        template: (child) => createElement('div', null, createElement('b', null, child))
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.firstChild.nodeType).toBe(1);

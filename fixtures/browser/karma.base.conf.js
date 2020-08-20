@@ -1,5 +1,5 @@
 const path = require('path');
-const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
+const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
 const useInfernoCompatPkg = process.env.InfernoCompat === '1';
 
 console.info('*** Starting karma tests, Inferno-compat is ' + (useInfernoCompatPkg ? 'on.' : 'off.') + ' ***');
@@ -12,7 +12,7 @@ if (useInfernoCompatPkg) {
   preProcessorOptions['./fixtures/browser/test.no-compat.index.js'] = ['webpack', 'gzip'];
 }
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '../../',
 
@@ -108,7 +108,10 @@ module.exports = function(config) {
                 ],
                 '@babel/typescript'
               ],
-              plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
+              plugins: [
+                ['babel-plugin-inferno', { imports: true }],
+                ['@babel/plugin-proposal-class-properties', { loose: true }]
+              ]
             }
           }
         ]

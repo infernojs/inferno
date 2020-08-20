@@ -56,7 +56,7 @@ export const createConnect = ({
 
         // used to compute Connect's displayName from the wrapped component's displayName.
         // tslint:disable-next-line:object-literal-sort-keys
-        getDisplayName: name => `Connect(${name})`,
+        getDisplayName: (name) => `Connect(${name})`,
 
         // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
         shouldHandleStateChanges: !!mapStateToProps,

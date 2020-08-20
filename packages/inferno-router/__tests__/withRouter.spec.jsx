@@ -4,18 +4,18 @@ import { MemoryRouter, Route, StaticRouter, withRouter } from 'inferno-router';
 describe('withRouter', () => {
   let node;
 
-  beforeEach(function() {
+  beforeEach(function () {
     node = document.createElement('div');
     document.body.appendChild(node);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, node);
     document.body.removeChild(node);
   });
 
   it('provides { match, location, history } props', () => {
-    const PropsChecker = withRouter(props => {
+    const PropsChecker = withRouter((props) => {
       expect(typeof props.match).toBe('object');
       expect(typeof props.location).toBe('object');
       expect(typeof props.history).toBe('object');
@@ -32,7 +32,7 @@ describe('withRouter', () => {
 
   it('provides the parent match as a prop to the wrapped component', () => {
     let parentMatch;
-    const PropsChecker = withRouter(props => {
+    const PropsChecker = withRouter((props) => {
       expect(props.match).toEqual(parentMatch);
       return null;
     });
@@ -53,7 +53,7 @@ describe('withRouter', () => {
 
   describe('inside a <StaticRouter>', () => {
     it('provides the staticContext prop', () => {
-      const PropsChecker = withRouter(props => {
+      const PropsChecker = withRouter((props) => {
         expect(typeof props.staticContext).toBe('object');
         expect(props.staticContext).toBe(context);
         return null;
@@ -87,7 +87,7 @@ describe('withRouter', () => {
     let ref;
     render(
       <MemoryRouter initialEntries={['/bubblegum']}>
-        <Route path="/bubblegum" render={() => <TestComponent wrappedComponentRef={r => (ref = r)} />} />
+        <Route path="/bubblegum" render={() => <TestComponent wrappedComponentRef={(r) => (ref = r)} />} />
       </MemoryRouter>,
       node
     );

@@ -99,32 +99,32 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'should render a stateful component',
-      template: value => createElement('div', null, createElement(StatefulComponent, { value })),
+      template: (value) => createElement('div', null, createElement(StatefulComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     {
       description: 'should render a stateless component',
-      template: value => createElement('div', null, createElement(FunctionalComponent, { value })),
+      template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     {
       description: 'should render a stateless component with object props',
-      template: value => createElement('a', { [value]: true }),
+      template: (value) => createElement('a', { [value]: true }),
       result: '<a foo></a>'
     },
     {
       description: 'should render with array text children',
-      template: value => createElement('a', null, ['a', 'b']),
+      template: (value) => createElement('a', null, ['a', 'b']),
       result: '<a>ab</a>'
     },
     {
       description: 'should render with array children containing an array of text children',
-      template: value => createElement('a', null, [['a', 'b']]),
+      template: (value) => createElement('a', null, [['a', 'b']]),
       result: '<a>ab</a>'
     },
     {
       description: 'should render with array null children',
-      template: value => createElement('a', null, ['a', null]),
+      template: (value) => createElement('a', null, ['a', null]),
       result: '<a>a</a>'
     },
     {
@@ -293,13 +293,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'You should be able to render an array',
-      template: () => (
-        [
-          <p>1</p>,
-          <p>2</p>,
-          <p>3</p>
-        ]
-      ),
+      template: () => [<p>1</p>, <p>2</p>, <p>3</p>],
       result: '<p>1</p><p>2</p><p>3</p>'
     },
     {
@@ -320,21 +314,25 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'You should be able to render an empty fragment',
-      template: () => (<></>), /* reset syntax highlighting */
+      template: () => <></> /* reset syntax highlighting */,
       result: '<!--!-->'
     },
     {
       description: 'You should be able to render fragment with single child',
-      template: () => (<><p>1</p></>), /* reset syntax highlighting */
+      template: () => (
+        <>
+          <p>1</p>
+        </>
+      ) /* reset syntax highlighting */,
       result: '<p>1</p>'
     }
   ];
 
-  testEntries.forEach(test => {
+  testEntries.forEach((test) => {
     it(test.description, () => {
       const container = document.createElement('div');
       const vDom = test.template('foo');
-      return streamPromise(vDom).then(function(output) {
+      return streamPromise(vDom).then(function (output) {
         document.body.appendChild(container);
         container.innerHTML = output;
         expect(output).toBe(test.result);
@@ -391,7 +389,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       }
 
       const vDom = <Tester />;
-      return streamPromise(vDom).then(function(output) {
+      return streamPromise(vDom).then(function (output) {
         const container = document.createElement('div');
         document.body.appendChild(container);
         container.innerHTML = output;
@@ -402,7 +400,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
   });
 
   describe('misc', () => {
-    it('Should render single text node using state', done => {
+    it('Should render single text node using state', (done) => {
       class Foobar extends Component {
         render() {
           return this.state.text;
@@ -419,13 +417,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         <div>
           <Foobar />
         </div>
-      ).then(function(output) {
+      ).then(function (output) {
         expect(output).toEqual('<div>foo</div>');
         done();
       });
     });
 
-    it('Should render single (number) text node using state', done => {
+    it('Should render single (number) text node using state', (done) => {
       class Foobar extends Component {
         render() {
           return this.state.text;
@@ -442,13 +440,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         <div>
           <Foobar />
         </div>
-      ).then(function(output) {
+      ).then(function (output) {
         expect(output).toEqual('<div>331</div>');
         done();
       });
     });
 
-    it('Should render single text node Functional Component', done => {
+    it('Should render single text node Functional Component', (done) => {
       function Foobar() {
         return 'foo';
       }
@@ -457,13 +455,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         <div>
           <Foobar />
         </div>
-      ).then(function(output) {
+      ).then(function (output) {
         expect(output).toEqual('<div>foo</div>');
         done();
       });
     });
 
-    it('Should render single (number) text node Functional Component', done => {
+    it('Should render single (number) text node Functional Component', (done) => {
       function Foobar() {
         return 0;
       }
@@ -472,7 +470,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         <div>
           <Foobar />
         </div>
-      ).then(function(output) {
+      ).then(function (output) {
         expect(output).toEqual('<div>0</div>');
         done();
       });
@@ -491,7 +489,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     //   });
     // });
 
-    it('Should render comment when component returns invalid node', done => {
+    it('Should render comment when component returns invalid node', (done) => {
       function Foobar() {
         return null;
       }
@@ -500,13 +498,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         <div>
           <Foobar />
         </div>
-      ).then(function(output) {
+      ).then(function (output) {
         expect(output).toEqual('<div><!--!--></div>');
         done();
       });
     });
 
-    it('Should render single text node Class Component', done => {
+    it('Should render single text node Class Component', (done) => {
       class Foobar extends Component {
         render() {
           return null;
@@ -517,13 +515,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         <div>
           <Foobar />
         </div>
-      ).then(function(output) {
+      ).then(function (output) {
         expect(output).toEqual('<div><!--!--></div>');
         done();
       });
     });
 
-    it('Should be possible to use getDerivedStateFromProps', done => {
+    it('Should be possible to use getDerivedStateFromProps', (done) => {
       class Test extends Component {
         constructor(props) {
           super(props);
@@ -543,7 +541,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           return <div>{this.state.value}</div>;
         }
       }
-      return streamPromise(<Test />).then(function(output) {
+      return streamPromise(<Test />).then(function (output) {
         expect(output).toEqual('<div>1</div>');
         done();
       });
@@ -552,11 +550,11 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 });
 
 function streamPromise(dom) {
-  return new Promise(function(res, rej) {
+  return new Promise(function (res, rej) {
     streamAsString(dom)
       .on('error', rej)
       .pipe(
-        concatStream(function(buffer) {
+        concatStream(function (buffer) {
           res(buffer.toString('utf-8'));
         })
       );

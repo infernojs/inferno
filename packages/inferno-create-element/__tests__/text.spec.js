@@ -1,14 +1,14 @@
-import {render} from 'inferno';
-import {createElement} from 'inferno-create-element';
+import { render } from 'inferno';
+import { createElement } from 'inferno-create-element';
 
 describe('Text', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
   });
 
@@ -95,13 +95,13 @@ describe('Text', () => {
     }
   ];
 
-  emptyDefinitions.forEach(arg => {
+  emptyDefinitions.forEach((arg) => {
     [
       {
         description: 'should create a static text node with ' + arg.name,
         template: () => createElement('div', null, arg.value)
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -116,13 +116,13 @@ describe('Text', () => {
     });
   });
 
-  emptyDefinitions.forEach(arg => {
+  emptyDefinitions.forEach((arg) => {
     [
       {
         description: 'should create a static text node with null',
         template: () => createElement('div', null, null)
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -137,13 +137,13 @@ describe('Text', () => {
     });
   });
 
-  emptyDefinitions.forEach(arg => {
+  emptyDefinitions.forEach((arg) => {
     [
       {
         description: 'should create a dynamic text node with ' + arg.name + ' - text property',
-        template: text => createElement('div', null, text)
+        template: (text) => createElement('div', null, text)
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -170,13 +170,13 @@ describe('Text', () => {
     });
   });
 
-  emptyDefinitions.forEach(arg => {
+  emptyDefinitions.forEach((arg) => {
     [
       {
         description: 'should create a dynamic text node with ' + arg.name + ' - children node text',
-        template: text => createElement('div', null, createElement('span', null, text))
+        template: (text) => createElement('div', null, createElement('span', null, text))
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -193,13 +193,13 @@ describe('Text', () => {
     });
   });
 
-  emptyDefinitions.forEach(arg => {
+  emptyDefinitions.forEach((arg) => {
     [
       {
         description: 'should create a dynamic text node with ' + arg.name + ' - single child with text ',
-        template: text => createElement('div', null, text)
+        template: (text) => createElement('div', null, text)
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -216,13 +216,13 @@ describe('Text', () => {
     });
   });
 
-  emptyDefinitions.forEach(arg => {
+  emptyDefinitions.forEach((arg) => {
     [
       {
         description: 'should create a dynamic text node with ' + arg.name + ' - deep child with text property ',
-        template: text => createElement('div', null, createElement('span', null, text))
+        template: (text) => createElement('div', null, createElement('span', null, text))
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -239,13 +239,13 @@ describe('Text', () => {
     });
   });
 
-  emptyDefinitions.forEach(arg => {
+  emptyDefinitions.forEach((arg) => {
     [
       {
         description: 'should create a dynamic text node with ' + arg.name + ' - deeper child with text property ',
-        template: text => createElement('div', null, createElement('span', null, createElement('b', null, text)))
+        template: (text) => createElement('div', null, createElement('span', null, createElement('b', null, text)))
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -397,13 +397,13 @@ describe('Text', () => {
     }
   ];
 
-  multiArray.forEach(arg => {
+  multiArray.forEach((arg) => {
     [
       {
         description: 'should create a children property with ' + arg.name,
-        template: textVar => createElement('div', null, textVar)
+        template: (textVar) => createElement('div', null, textVar)
       }
-    ].forEach(test => {
+    ].forEach((test) => {
       it(test.description, () => {
         render(test.template(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);

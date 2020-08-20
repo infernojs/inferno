@@ -13,12 +13,12 @@ import React from 'inferno-compat';
 
 var ReactDOM = React;
 var mocks = {
-  getMockFunction: function() {
+  getMockFunction: function () {
     return jasmine.createSpy();
   }
 };
 
-describe('ReactMount', function() {
+describe('ReactMount', function () {
   var ReactMount = React;
   var WebComponents;
 
@@ -32,18 +32,18 @@ describe('ReactMount', function() {
     // Leave WebComponents undefined.
   }
 
-  it('throws when given a factory', function() {
+  it('throws when given a factory', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return <div />;
       }
     });
-    expect(function() {
+    expect(function () {
       React.render(Component, document.createElement('div'));
     }).toThrow();
   });
 
-  it('should render different components in same root', function() {
+  it('should render different components in same root', function () {
     var container = document.createElement('container');
     document.body.appendChild(container);
 
@@ -55,7 +55,7 @@ describe('ReactMount', function() {
     document.body.removeChild(container);
   });
 
-  it('should unmount and remount if the key changes', function() {
+  it('should unmount and remount if the key changes', function () {
     var container = document.createElement('container');
 
     var mockMount = mocks.getMockFunction();
@@ -64,7 +64,7 @@ describe('ReactMount', function() {
     var Component = React.createClass({
       componentDidMount: mockMount,
       componentWillUnmount: mockUnmount,
-      render: function() {
+      render: function () {
         return <span>{this.props.text}</span>;
       }
     });
@@ -90,7 +90,7 @@ describe('ReactMount', function() {
     expect(mockUnmount.calls.count()).toBe(1);
   });
 
-  it('should reuse markup if rendering to the same target twice', function() {
+  it('should reuse markup if rendering to the same target twice', function () {
     var container = document.createElement('container');
     var instance1 = ReactDOM.render(<div />, container);
     var instance2 = ReactDOM.render(<div />, container);
@@ -144,11 +144,11 @@ describe('ReactMount', function() {
   // });
 
   if (WebComponents !== undefined) {
-    it('should allow mounting/unmounting to document fragment container', function() {
+    it('should allow mounting/unmounting to document fragment container', function () {
       var shadowRoot;
       var proto = Object.create(HTMLElement.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             shadowRoot = this.createShadowRoot();
             ReactDOM.render(<div>Hi, from within a WC!</div>, shadowRoot);
             expect(shadowRoot.firstChild.tagName).toBe('DIV');
@@ -157,7 +157,7 @@ describe('ReactMount', function() {
           }
         }
       });
-      proto.unmount = function() {
+      proto.unmount = function () {
         ReactDOM.unmountComponentAtNode(shadowRoot);
       };
       document.registerElement('x-foo', { prototype: proto });
@@ -213,9 +213,9 @@ describe('ReactMount', function() {
   //   );
   // });
 
-  it('should not crash in node cache when unmounting', function() {
+  it('should not crash in node cache when unmounting', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         // Add refs to some nodes so that they get traversed and cached
         return (
           <div>
@@ -258,14 +258,14 @@ describe('ReactMount', function() {
     ReactDOM.unmountComponentAtNode(container);
   });
 
-  it('should not crash in node cache when unmounting, case 2', function() {
+  it('should not crash in node cache when unmounting, case 2', function () {
     var A = React.createClass({
-      render: function() {
+      render: function () {
         return <a key={this.props.innerKey}>{this.props.innerKey}</a>;
       }
     });
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return (
           <b>
             <i>{this.props.step === 1 && <q />}</i>

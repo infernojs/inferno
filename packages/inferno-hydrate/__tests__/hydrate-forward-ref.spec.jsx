@@ -4,12 +4,12 @@ import { hydrate } from 'inferno-hydrate';
 describe('Hydrate - Forward Ref', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -60,7 +60,7 @@ describe('Hydrate - Forward Ref', () => {
       render() {
         return (
           <FancyButton
-            ref={btn => {
+            ref={(btn) => {
               if (btn) {
                 expect(btn).toBe(container.querySelector('button'));
               }
@@ -100,7 +100,7 @@ describe('Hydrate - Forward Ref', () => {
 
     hydrate(
       <FancyButton
-        ref={btn => {
+        ref={(btn) => {
           firstVal = btn;
         }}
       >
@@ -116,7 +116,7 @@ describe('Hydrate - Forward Ref', () => {
 
     render(
       <FancyButton
-        ref={btn => {
+        ref={(btn) => {
           secondVal = btn;
         }}
       >

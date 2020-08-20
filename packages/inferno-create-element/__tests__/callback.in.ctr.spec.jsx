@@ -7,12 +7,12 @@ describe('Callbacks in constructor', () => {
   // https://github.com/infernojs/inferno/issues/1103
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -35,7 +35,7 @@ describe('Callbacks in constructor', () => {
         constructor(props) {
           super(props);
           this.state = {
-            checks: props.configs.map(conf => Boolean(conf.value))
+            checks: props.configs.map((conf) => Boolean(conf.value))
           };
         }
 
@@ -67,7 +67,7 @@ describe('Callbacks in constructor', () => {
                     childElement,
                     combineFrom(props, {
                       conf,
-                      onNewValue: newValue => this.handleNewValue(index, newValue)
+                      onNewValue: (newValue) => this.handleNewValue(index, newValue)
                     })
                   );
 
@@ -84,7 +84,7 @@ describe('Callbacks in constructor', () => {
                 //   </li>);
 
                 return (
-                  <InfoLi conf={conf} checked={conf.value} onChange={event => this.handleCheck(index, event.target.checked)}>
+                  <InfoLi conf={conf} checked={conf.value} onChange={(event) => this.handleCheck(index, event.target.checked)}>
                     {child}
                   </InfoLi>
                 );

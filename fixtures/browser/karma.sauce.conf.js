@@ -1,5 +1,5 @@
 const path = require('path');
-const resolve = pkg => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
+const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
 
 const customLaunchers = {
   slChrome: {
@@ -71,7 +71,7 @@ const customLaunchers = {
   }
 };
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '../../',
 
@@ -153,7 +153,10 @@ module.exports = function(config) {
                 ],
                 '@babel/typescript'
               ],
-              plugins: [['babel-plugin-inferno', { imports: true }], ['@babel/plugin-proposal-class-properties', { loose: true }]]
+              plugins: [
+                ['babel-plugin-inferno', { imports: true }],
+                ['@babel/plugin-proposal-class-properties', { loose: true }]
+              ]
             }
           }
         ]

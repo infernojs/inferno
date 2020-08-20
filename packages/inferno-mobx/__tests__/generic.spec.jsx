@@ -7,18 +7,18 @@ import { inject, observer, Provider } from 'inferno-mobx';
 describe('generic higher order components', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('injects and observes', done => {
+  it('injects and observes', (done) => {
     /** @type {<T>(x: T | null | undefined) => T} */
     const nullthrows = (/** @type {any} */ x) => {
       if (!x) {

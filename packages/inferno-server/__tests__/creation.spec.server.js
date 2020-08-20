@@ -1,5 +1,5 @@
-import {createElement} from 'inferno-create-element';
-import {renderToStaticMarkup} from 'inferno-server';
+import { createElement } from 'inferno-create-element';
+import { renderToStaticMarkup } from 'inferno-server';
 
 /*
  class StatefulComponent extends Component {
@@ -82,7 +82,7 @@ describe('SSR Creation (non-JSX)', () => {
     },
     {
       description: 'should render a stateless component',
-      template: value => createElement('div', null, createElement(FunctionalComponent, { value })),
+      template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
       result: '<div><span>stateless foo!</span></div>'
     },
     {
@@ -107,7 +107,7 @@ describe('SSR Creation (non-JSX)', () => {
     }
   ];
 
-  testEntries.forEach(test => {
+  testEntries.forEach((test) => {
     it(test.description, () => {
       const container = document.createElement('div');
       const vDom = test.template('foo');

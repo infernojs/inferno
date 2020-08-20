@@ -9,16 +9,16 @@
 
 import React from 'inferno-compat';
 
-describe('ReactChildren', function() {
+describe('ReactChildren', function () {
   var ReactChildren;
   var ReactFragment;
 
-  beforeEach(function() {
+  beforeEach(function () {
     ReactChildren = React.Children;
   });
 
-  it('should support identity for simple', function() {
-    var callback = jasmine.createSpy().and.callFake(function(kid, index) {
+  it('should support identity for simple', function () {
+    var callback = jasmine.createSpy().and.callFake(function (kid, index) {
       return kid;
     });
 
@@ -40,8 +40,8 @@ describe('ReactChildren', function() {
     // expect(mappedChildren[0]).toEqual(<span key="simple" />);
   });
 
-  it('should treat single arrayless child as being in array', function() {
-    var callback = jasmine.createSpy().and.callFake(function(kid, index) {
+  it('should treat single arrayless child as being in array', function () {
+    var callback = jasmine.createSpy().and.callFake(function (kid, index) {
       return kid;
     });
 
@@ -59,8 +59,8 @@ describe('ReactChildren', function() {
     // expect(mappedChildren[0]).toEqual(<span key=".0" />);
   });
 
-  it('should treat single child in array as expected', function() {
-    var callback = jasmine.createSpy().and.callFake(function(kid, index) {
+  it('should treat single child in array as expected', function () {
+    var callback = jasmine.createSpy().and.callFake(function (kid, index) {
       return kid;
     });
 
@@ -77,8 +77,8 @@ describe('ReactChildren', function() {
     // Flags dont match because its implementation detail in Inferno
   });
 
-  it('should pass key to returned component', function() {
-    var mapFn = function(kid, index) {
+  it('should pass key to returned component', function () {
+    var mapFn = function (kid, index) {
       return <div>{kid}</div>;
     };
     var instance = (
@@ -93,9 +93,9 @@ describe('ReactChildren', function() {
     expect(mappedChildren[0].children.key).toBe('simple');
   });
 
-  it('should invoke callback with the right context', function() {
+  it('should invoke callback with the right context', function () {
     var lastContext;
-    var callback = function(kid, index) {
+    var callback = function (kid, index) {
       lastContext = this;
       return this;
     };
@@ -296,11 +296,11 @@ describe('ReactChildren', function() {
   //
   // });
 
-  it('should not throw if key provided is a dupe with array key', function() {
+  it('should not throw if key provided is a dupe with array key', function () {
     var zero = <div />;
     var one = <div key="0" />;
 
-    var mapFn = function() {
+    var mapFn = function () {
       return null;
     };
 
@@ -311,29 +311,29 @@ describe('ReactChildren', function() {
       </div>
     );
 
-    expect(function() {
+    expect(function () {
       ReactChildren.map(instance.props.children, mapFn);
     }).not.toThrow();
   });
 
-  it('should return 0 for null children', function() {
+  it('should return 0 for null children', function () {
     var numberOfChildren = ReactChildren.count(null);
     expect(numberOfChildren).toBe(0);
   });
 
-  it('should return 0 for undefined children', function() {
+  it('should return 0 for undefined children', function () {
     var numberOfChildren = ReactChildren.count(undefined);
     expect(numberOfChildren).toBe(0);
   });
 
-  it('should return 1 for single child', function() {
+  it('should return 1 for single child', function () {
     var simpleKid = <span key="simple" />;
     var instance = <div>{simpleKid}</div>;
     var numberOfChildren = ReactChildren.count(instance.children);
     expect(numberOfChildren).toBe(1);
   });
 
-  it('should count the number of children in flat structure', function() {
+  it('should count the number of children in flat structure', function () {
     var zero = <div key="keyZero" />;
     var one = null;
     var two = <div key="keyTwo" />;
@@ -382,7 +382,7 @@ describe('ReactChildren', function() {
   //   expect(numberOfChildren).toBe(5);
   // });
 
-  it('should flatten children to an array', function() {
+  it('should flatten children to an array', function () {
     expect(ReactChildren.toArray(undefined)).toEqual([]);
     expect(ReactChildren.toArray(null)).toEqual([]);
 
@@ -417,9 +417,9 @@ describe('ReactChildren', function() {
     // );
   });
 
-  it('should normalize children in forEach', function() {
+  it('should normalize children in forEach', function () {
     var children = [];
-    var callback = function(child) {
+    var callback = function (child) {
       children.push(child);
     };
 

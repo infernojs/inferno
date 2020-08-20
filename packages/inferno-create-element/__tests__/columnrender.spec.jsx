@@ -5,12 +5,12 @@ import sinon from 'sinon';
 describe('Columns like tests - (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -103,16 +103,16 @@ describe('Columns like tests - (JSX)', () => {
     }
 
     function getDifferentObjects(arr1, arr2) {
-      return arr1.filter(function(obj) {
-        return !arr2.some(function(obj2) {
+      return arr1.filter(function (obj) {
+        return !arr2.some(function (obj2) {
           return obj._testKey === obj2._testKey;
         });
       });
     }
 
     function getSameObjects(arr1, arr2) {
-      return arr1.filter(function(obj) {
-        return arr2.some(function(obj2) {
+      return arr1.filter(function (obj) {
+        return arr2.some(function (obj2) {
           return obj._testKey === obj2._testKey;
         });
       });
@@ -164,7 +164,7 @@ describe('Columns like tests - (JSX)', () => {
           return (
             <div>
               <span key="column">column</span>
-              {items.map(item => (
+              {items.map((item) => (
                 <ItemKeyed key={item.id} text={item.text} />
               ))}
             </div>
@@ -174,7 +174,7 @@ describe('Columns like tests - (JSX)', () => {
 
       const ViewKeyed = ({ columns }) => (
         <div>
-          {columns.map(column => (
+          {columns.map((column) => (
             <ColumnKeyed key={column.id} items={column.items} />
           ))}
         </div>
@@ -187,7 +187,7 @@ describe('Columns like tests - (JSX)', () => {
       let unmountItemSpy = null;
       let updateItemSpy = null;
 
-      beforeEach(function() {
+      beforeEach(function () {
         mountedColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillMount');
         unmountColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUnmount');
         updateColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUpdate');
@@ -196,7 +196,7 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUpdate');
       });
 
-      afterEach(function() {
+      afterEach(function () {
         mountedColumnSpy.restore();
         unmountColumnSpy.restore();
         updateColumnSpy.restore();
@@ -205,7 +205,7 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy.restore();
       });
 
-      keyedTests.forEach(testCase => {
+      keyedTests.forEach((testCase) => {
         it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(testCase.update, testCase.initial);
           const columnsToUpdate = getSameObjects(testCase.update, testCase.initial);
@@ -318,7 +318,7 @@ describe('Columns like tests - (JSX)', () => {
           return (
             <div>
               <span>column</span>
-              {items.map(item => (
+              {items.map((item) => (
                 <Item text={item.text} />
               ))}
             </div>
@@ -328,7 +328,7 @@ describe('Columns like tests - (JSX)', () => {
 
       const View = ({ columns }) => (
         <div>
-          {columns.map(column => (
+          {columns.map((column) => (
             <Column items={column.items} />
           ))}
         </div>
@@ -341,7 +341,7 @@ describe('Columns like tests - (JSX)', () => {
       let unmountItemSpy = null;
       let updateItemSpy = null;
 
-      beforeEach(function() {
+      beforeEach(function () {
         mountedColumnSpy = sinon.spy(Column.prototype, 'componentWillMount');
         unmountColumnSpy = sinon.spy(Column.prototype, 'componentWillUnmount');
         updateColumnSpy = sinon.spy(Column.prototype, 'componentWillUpdate');
@@ -350,7 +350,7 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy = sinon.spy(Item.prototype, 'componentWillUpdate');
       });
 
-      afterEach(function() {
+      afterEach(function () {
         mountedColumnSpy.restore();
         unmountColumnSpy.restore();
         updateColumnSpy.restore();
@@ -359,7 +359,7 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy.restore();
       });
 
-      nonKeyedTestCases.forEach(testCase => {
+      nonKeyedTestCases.forEach((testCase) => {
         it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(testCase.update, testCase.initial);
           const columnsToUpdate = getSameObjects(testCase.update, testCase.initial);

@@ -3,12 +3,12 @@ import { Component, render, rerender } from 'inferno';
 describe('Error recovery', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -105,9 +105,9 @@ describe('Error recovery', () => {
    */
 
   describe('Error recovery from user land errors', () => {
-    ['last', 'mid', 'first'].forEach(location => {
+    ['last', 'mid', 'first'].forEach((location) => {
       ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
-        crashLocation => {
+        (crashLocation) => {
           it('Should recover from subtree crash in ' + location + ' of children when crash happens in components ' + crashLocation, () => {
             class Crasher extends Component {
               constructor(props, context) {
@@ -229,9 +229,9 @@ describe('Error recovery', () => {
       );
     });
 
-    ['last', 'mid', 'first'].forEach(location => {
+    ['last', 'mid', 'first'].forEach((location) => {
       ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
-        crashLocation => {
+        (crashLocation) => {
           it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
             class Crasher extends Component {
               constructor(props, context) {
@@ -353,9 +353,9 @@ describe('Error recovery', () => {
       );
     });
 
-    ['last', 'mid', 'first'].forEach(location => {
+    ['last', 'mid', 'first'].forEach((location) => {
       ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
-        crashLocation => {
+        (crashLocation) => {
           it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
             class Crasher extends Component {
               constructor(props, context) {
@@ -478,7 +478,7 @@ describe('Error recovery', () => {
     });
 
     describe('Error in child component', () => {
-      it('Should not block future updates', done => {
+      it('Should not block future updates', (done) => {
         let parentInstance = null;
         let childCrasherInstance = null;
 
@@ -548,7 +548,7 @@ describe('Error recovery', () => {
           fail: false
         });
 
-        setTimeout(function() {
+        setTimeout(function () {
           expect(container.innerHTML).toBe('<div></div>');
           done();
         }, 10);

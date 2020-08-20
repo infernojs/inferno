@@ -140,7 +140,7 @@ describe('<Route render>', () => {
 
     render(
       <Router history={history}>
-        <Route path="/" render={props => (actual = props) && null} />
+        <Route path="/" render={(props) => (actual = props) && null} />
       </Router>,
       node
     );
@@ -171,7 +171,7 @@ describe('<Route component>', () => {
 
   it('receives { match, location, history } props', () => {
     let actual = null;
-    const Component = props => (actual = props) && null;
+    const Component = (props) => (actual = props) && null;
 
     render(
       <Router history={history}>
@@ -223,7 +223,7 @@ describe('<Route children>', () => {
 
     render(
       <Router history={history}>
-        <Route path="/" children={props => (actual = props) && null} />
+        <Route path="/" children={(props) => (actual = props) && null} />
       </Router>,
       node
     );

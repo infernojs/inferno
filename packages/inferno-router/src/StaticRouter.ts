@@ -1,9 +1,9 @@
-import {Component, createComponentVNode, Props, VNode} from 'inferno';
-import {VNodeFlags} from 'inferno-vnode-flags';
-import {createPath, parsePath} from 'history';
-import {Router} from './Router';
-import {invariant, warning} from './utils';
-import {combineFrom} from 'inferno-shared';
+import { Component, createComponentVNode, Props, VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { createPath, parsePath } from 'history';
+import { Router } from './Router';
+import { invariant, warning } from './utils';
+import { combineFrom } from 'inferno-shared';
 
 function addLeadingSlash(path) {
   return path.charAt(0) === '/' ? path : '/' + path;
@@ -32,16 +32,16 @@ export class StaticRouter<P, S> extends Component<IStaticRouterProps<P, any>, S>
     };
   }
 
-  public createHref = path => addLeadingSlash(this.props.basename + createURL(path));
+  public createHref = (path) => addLeadingSlash(this.props.basename + createURL(path));
 
-  public handlePush = location => {
+  public handlePush = (location) => {
     const { basename, context } = this.props;
     context.action = 'PUSH';
     context.location = addBasename(basename, createLocation(location));
     context.url = createURL(context.location);
   };
 
-  public handleReplace = location => {
+  public handleReplace = (location) => {
     const { basename, context } = this.props;
     context.action = 'REPLACE';
     context.location = addBasename(basename, createLocation(location));
@@ -77,7 +77,7 @@ export class StaticRouter<P, S> extends Component<IStaticRouterProps<P, any>, S>
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  StaticRouter.prototype.componentWillMount = function() {
+  StaticRouter.prototype.componentWillMount = function () {
     warning(
       !this.props.history,
       '<StaticRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { StaticRouter as Router }`.'

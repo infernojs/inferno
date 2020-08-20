@@ -13,14 +13,14 @@ import sinon from 'sinon';
 
 var ReactDOM = React;
 
-describe('ReactJSXElement', function() {
+describe('ReactJSXElement', function () {
   class Component extends React.Component {
     render() {
       return <div />;
     }
   }
 
-  it('returns a complete element according to spec', function() {
+  it('returns a complete element according to spec', function () {
     var element = <Component />;
     expect(element.type).toBe(Component);
     expect(element.key).toBe(null);
@@ -30,7 +30,7 @@ describe('ReactJSXElement', function() {
     expect(element.props).toEqual(expectation);
   });
 
-  it('allows a lower-case to be passed as the string type', function() {
+  it('allows a lower-case to be passed as the string type', function () {
     var element = <div />;
     expect(element.type).toBe('div');
     expect(element.key).toBe(null);
@@ -40,7 +40,7 @@ describe('ReactJSXElement', function() {
     expect(element.props).toEqual(expectation);
   });
 
-  it('allows a string to be passed as the type', function() {
+  it('allows a string to be passed as the type', function () {
     var TagName = 'div';
     var element = <TagName />;
     expect(element.type).toBe('div');
@@ -56,7 +56,7 @@ describe('ReactJSXElement', function() {
   //   expect(() => element.type = 'div').toThrow();
   // });
 
-  it('does not reuse the object that is spread into props', function() {
+  it('does not reuse the object that is spread into props', function () {
     var config = { foo: 1 };
     var element = <Component {...config} />;
     expect(element.props.foo).toBe(1);
@@ -92,7 +92,7 @@ describe('ReactJSXElement', function() {
   //   expect(console.error.calls.count()).toBe(0);
   // });
 
-  it('does not override children if no JSX children are provided', function() {
+  it('does not override children if no JSX children are provided', function () {
     spyOn(console, 'error');
     var element = <Component children="text" />;
     expect(element.props.children).toBe('text');
@@ -116,7 +116,7 @@ describe('ReactJSXElement', function() {
   //   expect(console.error.calls.count()).toBe(0);
   // });
 
-  it('allows static methods to be called using the type property', function() {
+  it('allows static methods to be called using the type property', function () {
     spyOn(console, 'error');
 
     class StaticMethodComponent {
@@ -133,7 +133,7 @@ describe('ReactJSXElement', function() {
     expect(console.error.calls.count()).toBe(0);
   });
 
-  it('identifies valid elements', function() {
+  it('identifies valid elements', function () {
     expect(React.isValidElement(<div />)).toEqual(true);
     expect(React.isValidElement(<Component />)).toEqual(true);
 
@@ -151,7 +151,7 @@ describe('ReactJSXElement', function() {
   //   expect(element.constructor).toBe(object.constructor);
   // });
 
-  it('should use default prop value when removing a prop', function() {
+  it('should use default prop value when removing a prop', function () {
     Component.defaultProps = { fruit: 'persimmon' };
 
     var container = document.createElement('div');

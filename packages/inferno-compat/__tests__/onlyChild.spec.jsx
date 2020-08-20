@@ -11,22 +11,22 @@ import React from 'inferno-compat';
 
 var ReactDOM = React;
 
-describe('onlyChild', function() {
+describe('onlyChild', function () {
   var ReactFragment;
   var onlyChild;
   var WrapComponent;
 
-  beforeEach(function() {
+  beforeEach(function () {
     onlyChild = React.Children.only;
     WrapComponent = React.createClass({
-      render: function() {
+      render: function () {
         return <div>{onlyChild(this.props.children, this.props.mapFn, this)}</div>;
       }
     });
   });
 
-  it('should fail when passed two children', function() {
-    expect(function() {
+  it('should fail when passed two children', function () {
+    expect(function () {
       var instance = (
         <WrapComponent>
           <div />
@@ -37,13 +37,13 @@ describe('onlyChild', function() {
     }).toThrow();
   });
 
-  it('should fail when passed nully values', function() {
-    expect(function() {
+  it('should fail when passed nully values', function () {
+    expect(function () {
       var instance = <WrapComponent>{null}</WrapComponent>;
       onlyChild(instance.props.children);
     }).toThrow();
 
-    expect(function() {
+    expect(function () {
       var instance = <WrapComponent>{undefined}</WrapComponent>;
       onlyChild(instance.props.children);
     }).toThrow();
@@ -59,15 +59,15 @@ describe('onlyChild', function() {
   //   }).toThrow();
   // });
 
-  it('should not fail when passed interpolated single child', function() {
-    expect(function() {
+  it('should not fail when passed interpolated single child', function () {
+    expect(function () {
       var instance = <WrapComponent>{<span />}</WrapComponent>;
       onlyChild(instance.props.children);
     }).not.toThrow();
   });
 
-  it('should return the only child', function() {
-    expect(function() {
+  it('should return the only child', function () {
+    expect(function () {
       var instance = (
         <WrapComponent>
           <span />

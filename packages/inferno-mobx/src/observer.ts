@@ -1,9 +1,9 @@
-import {_allowStateChanges, createAtom, Reaction} from 'mobx';
-import {Component, createComponentVNode} from 'inferno';
-import {EventEmitter} from './utils/EventEmitter';
-import {warning} from 'inferno-shared';
-import {isStateless} from './utils/utils';
-import {VNodeFlags} from 'inferno-vnode-flags';
+import { _allowStateChanges, createAtom, Reaction } from 'mobx';
+import { Component, createComponentVNode } from 'inferno';
+import { EventEmitter } from './utils/EventEmitter';
+import { warning } from 'inferno-shared';
+import { isStateless } from './utils/utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 
 /**
@@ -59,11 +59,11 @@ function patch(target, funcName, runMixinFirst) {
   const f = !base
     ? mixinFunc
     : runMixinFirst === true
-    ? function() {
+    ? function () {
         mixinFunc.apply(this, arguments);
         base.apply(this, arguments);
       }
-    : function() {
+    : function () {
         base.apply(this, arguments);
         mixinFunc.apply(this, arguments);
       };
@@ -268,7 +268,7 @@ export function observer(arg1, arg2?) {
     }
     if (!arg2) {
       // invoked as decorator
-      return componentClass => observer(arg1, componentClass);
+      return (componentClass) => observer(arg1, componentClass);
     } else {
       return (inject as any).apply(null, arg1)(observer(arg2));
     }
@@ -384,7 +384,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
 }
 
 function grabStoresByName(storeNames: string[]) {
-  return function(baseStores, nextProps) {
+  return function (baseStores, nextProps) {
     for (let i = 0, len = storeNames.length; i < len; ++i) {
       const storeName = storeNames[i];
 
@@ -417,7 +417,7 @@ export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
   if (typeof arguments[0] === 'function') {
     grabStoresFn = arguments[0];
 
-    return function(componentClass) {
+    return function (componentClass) {
       let injected = createStoreInjector(grabStoresFn, componentClass);
       injected.isMobxInjector = false; // supress warning
       // mark the Injector as observer, to make it react to expressions in `grabStoresFn`,
@@ -433,7 +433,7 @@ export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
     }
 
     grabStoresFn = grabStoresByName(storeNames);
-    return function(componentClass) {
+    return function (componentClass) {
       return createStoreInjector(grabStoresFn, componentClass, storeNames.join('-'));
     };
   }

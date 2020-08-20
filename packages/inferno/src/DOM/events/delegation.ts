@@ -1,7 +1,7 @@
-import {isFunction, isNull} from 'inferno-shared';
-import {LinkedEvent, SemiSyntheticEvent} from './../../core/types';
-import {isLastValueSameLinkEvent, normalizeEventName} from './../utils/common';
-import {isLinkEventObject} from './linkEvent';
+import { isFunction, isNull } from 'inferno-shared';
+import { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
+import { isLastValueSameLinkEvent, normalizeEventName } from './../utils/common';
+import { isLinkEventObject } from './linkEvent';
 
 interface IEventData {
   dom: Element;
@@ -142,7 +142,7 @@ function extendEventProperties(event) {
 }
 
 function rootClickEvent(name: string) {
-  return function(event) {
+  return function (event) {
     if ((event as any).button !== 0) {
       // Firefox incorrectly triggers click event for mid/right mouse buttons.
       // This bug has been active for 17 years.
@@ -156,7 +156,7 @@ function rootClickEvent(name: string) {
 }
 
 function rootEvent(name: string) {
-  return function(event: SemiSyntheticEvent<any>) {
+  return function (event: SemiSyntheticEvent<any>) {
     dispatchEvents(event, false, name, extendEventProperties(event));
   };
 }

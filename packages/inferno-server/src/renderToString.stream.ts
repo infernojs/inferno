@@ -1,9 +1,9 @@
-import {combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {Readable} from 'stream';
-import {renderStylesToString} from './prop-renderers';
-import {createDerivedState, escapeText, isAttributeNameSafe, voidElements} from './utils';
-import {VNode} from 'inferno';
+import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { Readable } from 'stream';
+import { renderStylesToString } from './prop-renderers';
+import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
+import { VNode } from 'inferno';
 
 const resolvedPromise = Promise.resolve();
 
@@ -29,7 +29,7 @@ export class RenderStream extends Readable {
       .then(() => {
         this.push(null);
       })
-      .catch(err => {
+      .catch((err) => {
         this.emit('error', err);
       });
   }
@@ -44,16 +44,15 @@ export class RenderStream extends Readable {
       return this.renderElement(vNode, context);
     }
     if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
-      return this.renderArrayOrFragment(vNode, context)
+      return this.renderArrayOrFragment(vNode, context);
     }
-
 
     return this.renderText(vNode);
   }
 
   public renderArrayOrFragment(vNode, context) {
     const childFlags = vNode.childFlags;
-    
+
     if (childFlags === ChildFlags.HasVNodeChildren || (isArray(vNode) && vNode.length === 0)) {
       return this.push('<!--!-->');
     } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {

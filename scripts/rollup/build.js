@@ -8,7 +8,7 @@ if (pkgJSON.private || !pkgJSON.rollup) {
   return;
 }
 
-mkdir(join(cwd, 'dist'), err => {
+mkdir(join(cwd, 'dist'), (err) => {
   if (err && err.code !== 'EEXIST') {
     throw Error(e);
   }
@@ -39,7 +39,7 @@ mkdir(join(cwd, 'dist'), err => {
     .then(() => {
       console.log(`${pkgJSON.name} in ${options.format} is DONE`);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error); // Print whole error object
 
       if (error.snippet) {

@@ -22,16 +22,16 @@ import { createRef, forwardRef, mountRef } from './core/refs';
 
 if (process.env.NODE_ENV !== 'production') {
   /* tslint:disable-next-line:no-empty */
-  const testFunc = function testFn() { };
+  const testFunc = function testFn() {};
   /* tslint:disable-next-line*/
   console.log('Inferno is in development mode.');
 
   if (((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
     warning(
       "It looks like you're using a minified copy of the development build " +
-      'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-      'the production build which skips development warnings and is faster. ' +
-      'See http://infernojs.org for more details.'
+        'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+        'the production build which skips development warnings and is faster. ' +
+        'See http://infernojs.org for more details.'
     );
   }
 }
@@ -70,5 +70,5 @@ export {
   mountRef as _MR,
   mountProps as _MP,
   __render,
-  renderFunctionalComponent as _RFC,
+  renderFunctionalComponent as _RFC
 };

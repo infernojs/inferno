@@ -9,12 +9,12 @@ import { createElement } from 'inferno-create-element';
 describe('rendering routine', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -33,10 +33,10 @@ describe('rendering routine', () => {
         <input
           type="checkbox"
           checked={false}
-          onClick={e => {
+          onClick={(e) => {
             clickChecked = e.target.checked;
           }}
-          onChange={e => {
+          onChange={(e) => {
             changeChecked = e.target.checked;
           }}
         />,
@@ -65,10 +65,10 @@ describe('rendering routine', () => {
           <input
             type="checkbox"
             checked={false}
-            onClick={e => {
+            onClick={(e) => {
               clickChecked = e.target.checked;
             }}
-            onChange={e => {
+            onChange={(e) => {
               changeChecked = e.target.checked;
             }}
           />
@@ -86,10 +86,10 @@ describe('rendering routine', () => {
             type="checkbox"
             checked={true}
             className="new-class"
-            onClick={e => {
+            onClick={(e) => {
               clickChecked = e.target.checked;
             }}
-            onChange={e => {
+            onChange={(e) => {
               changeChecked = e.target.checked;
             }}
           />

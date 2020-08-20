@@ -4,7 +4,7 @@ import { createClass } from 'inferno-create-class';
 function runBenchmark(container) {
   const Link0 = createClass({
     render() {
-      return <a href={'/'} className={'_5ljn'} rel={undefined} onClick={function() {}} />;
+      return <a href={'/'} className={'_5ljn'} rel={undefined} onClick={function () {}} />;
     }
   });
 
@@ -25,8 +25,8 @@ function runBenchmark(container) {
           className={'_387r _55pi _2agf _387r _55pi _4jy0 _4jy3 _517h _51sy _42ft'}
           href={'#'}
           haschevron={true}
-          onClick={function() {}}
-          onToggle={function() {}}
+          onClick={function () {}}
+          onToggle={function () {}}
           size={'medium'}
           use={'default'}
           borderShade={'light'}
@@ -88,7 +88,7 @@ function runBenchmark(container) {
           id={'downloadButton'}
           className={'_5lk0 _4jy0 _4jy3 _517h _51sy _42ft'}
           label={null}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           size={'medium'}
           borderShade={'light'}
@@ -138,7 +138,7 @@ function runBenchmark(container) {
           image={{}}
           use={'default'}
           label={null}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'medium'}
           borderShade={'light'}
           suppressed={false}
@@ -171,7 +171,7 @@ function runBenchmark(container) {
         <button
           className={'_5ljz _4jy0 _4jy3 _517h _51sy _42ft'}
           label={null}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           size={'medium'}
           borderShade={'light'}
@@ -318,12 +318,12 @@ function runBenchmark(container) {
           focused={false}
           tabIndex={null}
           hideFocusRing={true}
-          onClick={function() {}}
-          onMouseDown={function() {}}
-          onFocus={function() {}}
-          onBlur={function() {}}
+          onClick={function () {}}
+          onMouseDown={function () {}}
+          onFocus={function () {}}
+          onBlur={function () {}}
           className={'_5vwz _5vwy _45hc _1hqh'}
-          wrapper={function() {}}
+          wrapper={function () {}}
           shouldWrapTab={true}
           mockSpacebarClick={true}
           role={'presentation'}
@@ -337,7 +337,7 @@ function runBenchmark(container) {
             tabIndex={0}
             className={''}
             aria-selected={true}
-            onKeyDown={function() {}}
+            onKeyDown={function () {}}
           >
             <div className={'_4jq5'}>{'Manage Ads'}</div>
             <span className={'_13xf'} />
@@ -373,17 +373,17 @@ function runBenchmark(container) {
           focused={false}
           tabIndex={null}
           hideFocusRing={true}
-          onClick={function() {}}
-          onMouseDown={function() {}}
-          onFocus={function() {}}
-          onBlur={function() {}}
+          onClick={function () {}}
+          onMouseDown={function () {}}
+          onFocus={function () {}}
+          onBlur={function () {}}
           className={'_5vwz _45hc'}
-          wrapper={function() {}}
+          wrapper={function () {}}
           shouldWrapTab={true}
           mockSpacebarClick={true}
           role={'presentation'}
         >
-          <a aria-selected={false} onKeyDown={function() {}}>
+          <a aria-selected={false} onKeyDown={function () {}}>
             <div className={'_4jq5'}>{'Audiences'}</div>
             <span className={'_13xf'} />
           </a>
@@ -418,17 +418,17 @@ function runBenchmark(container) {
           focused={false}
           tabIndex={null}
           hideFocusRing={true}
-          onClick={function() {}}
-          onMouseDown={function() {}}
-          onFocus={function() {}}
-          onBlur={function() {}}
+          onClick={function () {}}
+          onMouseDown={function () {}}
+          onFocus={function () {}}
+          onBlur={function () {}}
           className={'_5vwz _45hc'}
-          wrapper={function() {}}
+          wrapper={function () {}}
           shouldWrapTab={true}
           mockSpacebarClick={true}
           role={'presentation'}
         >
-          <a aria-selected={false} onKeyDown={function() {}}>
+          <a aria-selected={false} onKeyDown={function () {}}>
             <div className={'_4jq5'}>{'Image Library'}</div>
             <span className={'_13xf'} />
           </a>
@@ -463,17 +463,17 @@ function runBenchmark(container) {
           focused={false}
           tabIndex={null}
           hideFocusRing={true}
-          onClick={function() {}}
-          onMouseDown={function() {}}
-          onFocus={function() {}}
-          onBlur={function() {}}
+          onClick={function () {}}
+          onMouseDown={function () {}}
+          onFocus={function () {}}
+          onBlur={function () {}}
           className={'_5vwz _45hc'}
-          wrapper={function() {}}
+          wrapper={function () {}}
           shouldWrapTab={true}
           mockSpacebarClick={true}
           role={'presentation'}
         >
-          <a aria-selected={false} onKeyDown={function() {}}>
+          <a aria-selected={false} onKeyDown={function () {}}>
             <div className={'_4jq5'}>
               {'Reporting'}
               {null}
@@ -511,17 +511,17 @@ function runBenchmark(container) {
           focused={false}
           tabIndex={null}
           hideFocusRing={true}
-          onClick={function() {}}
-          onMouseDown={function() {}}
-          onFocus={function() {}}
-          onBlur={function() {}}
+          onClick={function () {}}
+          onMouseDown={function () {}}
+          onFocus={function () {}}
+          onBlur={function () {}}
           className={'_5vwz _45hc'}
-          wrapper={function() {}}
+          wrapper={function () {}}
           shouldWrapTab={true}
           mockSpacebarClick={true}
           role={'presentation'}
         >
-          <a aria-selected={false} onKeyDown={function() {}}>
+          <a aria-selected={false} onKeyDown={function () {}}>
             <div className={'_4jq5'}>{'Page Posts'}</div>
             <span className={'_13xf'} />
           </a>
@@ -591,19 +591,19 @@ function runBenchmark(container) {
     render() {
       return (
         <ul
-          onTabClick={function() {}}
+          onTabClick={function () {}}
           activeTabKey={'MANAGE_ADS'}
-          onWidthCalculated={function() {}}
+          onWidthCalculated={function () {}}
           width={null}
           maxTabsVisible={5}
           moreLabel={'Tools'}
           alwaysShowActive={true}
-          dropdownTabComponent={function() {}}
+          dropdownTabComponent={function () {}}
           shouldCalculateVisibleTabs={true}
           className={'_43o4'}
           role={'tablist'}
-          onKeyDown={function() {}}
-          onKeyUp={function() {}}
+          onKeyDown={function () {}}
+          onKeyUp={function () {}}
         >
           <TabBarItemWrapper30 key={'MANAGE_ADS'} />
           <TabBarItemWrapper34 key={'AUDIENCES'} />
@@ -677,7 +677,7 @@ function runBenchmark(container) {
         <a
           className={'_585q _50zy _50-0 _50z- _5upp _42ft'}
           href={'#'}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'medium'}
           shade={'dark'}
           type={null}
@@ -728,7 +728,7 @@ function runBenchmark(container) {
   const Link63 = createClass({
     render() {
       return (
-        <a href={'/ads/manage/billing.php?act=10149999073643408'} target={'_blank'} rel={undefined} onClick={function() {}}>
+        <a href={'/ads/manage/billing.php?act=10149999073643408'} target={'_blank'} rel={undefined} onClick={function () {}}>
           <XUIText62 />
         </a>
       );
@@ -767,7 +767,7 @@ function runBenchmark(container) {
           transitionAppear={false}
           transitionEnter={true}
           transitionLeave={true}
-          childFactory={function() {}}
+          childFactory={function () {}}
           component={'span'}
         >
           <ReactCSSTransitionGroupChild65 key={'.0'} />
@@ -821,7 +821,7 @@ function runBenchmark(container) {
           className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'}
           href={'#'}
           haschevron={true}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'large'}
           use={'default'}
           borderShade={'light'}
@@ -887,7 +887,7 @@ function runBenchmark(container) {
           className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'}
           href={'#'}
           haschevron={true}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'large'}
           use={'default'}
           borderShade={'light'}
@@ -953,7 +953,7 @@ function runBenchmark(container) {
         <button
           className={'_3yz9 _1t-2 _50z_ _50zy _50zz _50z- _5upp _42ft'}
           size={'small'}
-          onClick={function() {}}
+          onClick={function () {}}
           shade={'dark'}
           type={'button'}
           label={null}
@@ -997,7 +997,7 @@ function runBenchmark(container) {
   const AdsPopoverLink91 = createClass({
     render() {
       return (
-        <span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+        <span onMouseEnter={function () {}} onMouseLeave={function () {}}>
           <span className={'_3o_j'} />
           <ReactImage90 />
         </span>
@@ -1018,7 +1018,7 @@ function runBenchmark(container) {
           className={'_5b5u _5b5v _4jy0 _4jy3 _517h _51sy _42ft'}
           label={null}
           use={'default'}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'medium'}
           borderShade={'light'}
           suppressed={false}
@@ -1061,7 +1061,7 @@ function runBenchmark(container) {
       return (
         <div className={'_3yz1 _3yz2 _3dad'}>
           <div aria-hidden={false}>
-            <div onClick={function() {}} className={'_3yz5'}>
+            <div onClick={function () {}} className={'_3yz5'}>
               <ReactImage85 />
               <div className={'_3yz7'}>{'Ads:'}</div>
               <div className={'ellipsis _3yz8'} data-hover={'tooltip'} data-tooltip-display={'overflow'}>
@@ -1088,7 +1088,7 @@ function runBenchmark(container) {
         <button
           className={'_1wdf _4jy0 _517i _517h _51sy _42ft'}
           size={'small'}
-          onClick={function() {}}
+          onClick={function () {}}
           image={{}}
           use={'default'}
           borderShade={'light'}
@@ -1215,7 +1215,7 @@ function runBenchmark(container) {
           chevron={{}}
           use={'default'}
           borderShade={'light'}
-          onClick={function() {}}
+          onClick={function () {}}
           rel={undefined}
         >
           {null}
@@ -1266,7 +1266,7 @@ function runBenchmark(container) {
           className={'_3c5o _3c5p _6a _6b'}
           defaultValue={'LIFETIME'}
           size={'large'}
-          onChange={function() {}}
+          onChange={function () {}}
           disabled={false}
           alignv={'middle'}
           fullWidth={false}
@@ -1299,7 +1299,7 @@ function runBenchmark(container) {
           data-hover={'tooltip'}
           image={{}}
           size={'large'}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           borderShade={'light'}
           suppressed={false}
@@ -1370,7 +1370,7 @@ function runBenchmark(container) {
           className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'}
           label={null}
           size={'large'}
-          onClick={function() {}}
+          onClick={function () {}}
           image={{}}
           use={'default'}
           borderShade={'light'}
@@ -1469,7 +1469,7 @@ function runBenchmark(container) {
           image={{}}
           data-hover={'tooltip'}
           aria-label={'Edit Ads (Ctrl+U)'}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           label={null}
           borderShade={'light'}
@@ -1507,7 +1507,7 @@ function runBenchmark(container) {
           disabled={false}
           image={{}}
           size={'large'}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           borderShade={'light'}
           suppressed={false}
@@ -1545,7 +1545,7 @@ function runBenchmark(container) {
           disabled={true}
           image={{}}
           size={'large'}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           borderShade={'light'}
           suppressed={false}
@@ -1583,7 +1583,7 @@ function runBenchmark(container) {
           data-hover={'tooltip'}
           disabled={false}
           size={'large'}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           borderShade={'light'}
           suppressed={false}
@@ -1633,7 +1633,7 @@ function runBenchmark(container) {
           image={{}}
           data-hover={'tooltip'}
           aria-label={'Save Audience'}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           borderShade={'light'}
           suppressed={false}
@@ -1667,7 +1667,7 @@ function runBenchmark(container) {
         <button
           size={'large'}
           className={'_u_k noMargin _p _4jy0 _4jy4 _517h _51sy _42ft'}
-          onClick={function() {}}
+          onClick={function () {}}
           image={{}}
           data-hover={'tooltip'}
           aria-label={'Export & Import'}
@@ -1757,7 +1757,7 @@ function runBenchmark(container) {
         <button
           size={'large'}
           disabled={false}
-          onClick={function() {}}
+          onClick={function () {}}
           className={'_u_k _5n7z _4jy0 _4jy4 _517h _51sy _42ft'}
           image={{}}
           style={{ boxSizing: 'border-box', height: '28px', width: '48px' }}
@@ -1792,7 +1792,7 @@ function runBenchmark(container) {
           disabled={true}
           className={'hidden_elem _5n7z _4jy0 _4jy4 _517h _51sy _42ft _42fr'}
           label={null}
-          onClick={function() {}}
+          onClick={function () {}}
           use={'default'}
           borderShade={'light'}
           suppressed={false}
@@ -1884,7 +1884,7 @@ function runBenchmark(container) {
           data-tooltip-position={'right'}
           aria-label={'Campaigns'}
           data-hover={'tooltip'}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'xxlarge'}
           use={'default'}
           borderShade={'light'}
@@ -1919,7 +1919,7 @@ function runBenchmark(container) {
           data-tooltip-position={'right'}
           aria-label={'Ad Sets'}
           data-hover={'tooltip'}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'xxlarge'}
           use={'default'}
           borderShade={'light'}
@@ -1954,7 +1954,7 @@ function runBenchmark(container) {
           data-tooltip-position={'right'}
           aria-label={'Ads'}
           data-hover={'tooltip'}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'xxlarge'}
           use={'default'}
           borderShade={'light'}
@@ -2036,7 +2036,7 @@ function runBenchmark(container) {
           isHeaderCell={true}
           label={'Ads'}
           dataKey={0}
-          groupHeaderRenderer={function() {}}
+          groupHeaderRenderer={function () {}}
           groupHeaderLabels={{}}
           groupHeaderData={{}}
           columnKey={undefined}
@@ -2115,7 +2115,7 @@ function runBenchmark(container) {
           isHeaderCell={true}
           label={'Delivery'}
           dataKey={1}
-          groupHeaderRenderer={function() {}}
+          groupHeaderRenderer={function () {}}
           groupHeaderLabels={{}}
           groupHeaderData={{}}
           columnKey={undefined}
@@ -2164,7 +2164,7 @@ function runBenchmark(container) {
           isHeaderCell={true}
           label={'Performance'}
           dataKey={2}
-          groupHeaderRenderer={function() {}}
+          groupHeaderRenderer={function () {}}
           groupHeaderLabels={{}}
           groupHeaderData={{}}
           columnKey={undefined}
@@ -2213,7 +2213,7 @@ function runBenchmark(container) {
           isHeaderCell={true}
           label={'Overview'}
           dataKey={3}
-          groupHeaderRenderer={function() {}}
+          groupHeaderRenderer={function () {}}
           groupHeaderLabels={{}}
           groupHeaderData={{}}
           columnKey={undefined}
@@ -2262,7 +2262,7 @@ function runBenchmark(container) {
           isHeaderCell={true}
           label={'Creative Assets'}
           dataKey={4}
-          groupHeaderRenderer={function() {}}
+          groupHeaderRenderer={function () {}}
           groupHeaderLabels={{}}
           groupHeaderData={{}}
           columnKey={undefined}
@@ -2311,7 +2311,7 @@ function runBenchmark(container) {
           isHeaderCell={true}
           label={'Toplines'}
           dataKey={5}
-          groupHeaderRenderer={function() {}}
+          groupHeaderRenderer={function () {}}
           groupHeaderLabels={{}}
           groupHeaderData={{}}
           columnKey={undefined}
@@ -2355,7 +2355,7 @@ function runBenchmark(container) {
           isHeaderCell={true}
           label={''}
           dataKey={6}
-          groupHeaderRenderer={function() {}}
+          groupHeaderRenderer={function () {}}
           groupHeaderLabels={{}}
           groupHeaderData={{}}
           columnKey={undefined}
@@ -2466,7 +2466,7 @@ function runBenchmark(container) {
     render() {
       return (
         <label className={'_4h2r _55sg _kv1'}>
-          <input checked={undefined} onChange={function() {}} className={null} type={'checkbox'} />
+          <input checked={undefined} onChange={function () {}} className={null} type={'checkbox'} />
           <span data-hover={null} aria-label={undefined} />
         </label>
       );
@@ -2489,8 +2489,8 @@ function runBenchmark(container) {
           dataKey={'common.id'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'common.id'}
           height={25}
           style={{ height: 25, width: 42 }}
@@ -2530,7 +2530,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader212 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader211 />
@@ -2556,8 +2556,8 @@ function runBenchmark(container) {
           dataKey={'ad.name'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.name'}
           height={25}
           style={{ height: 25, width: 200 }}
@@ -2576,7 +2576,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 200, left: 42 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell214 />
@@ -2605,7 +2605,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader218 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _1kst _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _1kst _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader217 />
@@ -2631,8 +2631,8 @@ function runBenchmark(container) {
           dataKey={'edit_status'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'edit_status'}
           height={25}
           style={{ height: 25, width: 33 }}
@@ -2678,7 +2678,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader224 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _1kst _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _1kst _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader223 />
@@ -2704,8 +2704,8 @@ function runBenchmark(container) {
           dataKey={'errors'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'errors'}
           height={25}
           style={{ height: 25, width: 36 }}
@@ -2745,7 +2745,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader229 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader228 />
@@ -2771,8 +2771,8 @@ function runBenchmark(container) {
           dataKey={'ad.adgroup_status'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.adgroup_status'}
           height={25}
           style={{ height: 25, width: 60 }}
@@ -2812,7 +2812,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader234 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader233 />
@@ -2838,8 +2838,8 @@ function runBenchmark(container) {
           dataKey={'ukiAdData.computed_activity_status'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ukiAdData.computed_activity_status'}
           height={25}
           style={{ height: 25, width: 150 }}
@@ -2858,7 +2858,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 150, left: 371 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell236 />
@@ -2916,7 +2916,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader241 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader240 />
@@ -2942,8 +2942,8 @@ function runBenchmark(container) {
           dataKey={'stats.unique_impressions'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.unique_impressions'}
           height={25}
           style={{ height: 25, width: 60 }}
@@ -2962,7 +2962,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 60, left: 0 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell243 />
@@ -2985,7 +2985,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader246 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader245 />
@@ -3011,8 +3011,8 @@ function runBenchmark(container) {
           dataKey={'stats.impressions'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.impressions'}
           height={25}
           style={{ height: 25, width: 80 }}
@@ -3031,7 +3031,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 60 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell248 />
@@ -3054,7 +3054,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader251 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader250 />
@@ -3080,8 +3080,8 @@ function runBenchmark(container) {
           dataKey={'stats.avg_cpm'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.avg_cpm'}
           height={25}
           style={{ height: 25, width: 80 }}
@@ -3100,7 +3100,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 140 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell253 />
@@ -3123,7 +3123,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader256 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader255 />
@@ -3149,8 +3149,8 @@ function runBenchmark(container) {
           dataKey={'stats.avg_cpc'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.avg_cpc'}
           height={25}
           style={{ height: 25, width: 78 }}
@@ -3169,7 +3169,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 78, left: 220 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell258 />
@@ -3199,8 +3199,8 @@ function runBenchmark(container) {
           dataKey={'stats.actions'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.actions'}
           height={25}
           style={{ height: 25, width: 140 }}
@@ -3219,7 +3219,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 140, left: 298 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell261 />
@@ -3249,8 +3249,8 @@ function runBenchmark(container) {
           dataKey={'stats.cpa'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.cpa'}
           height={25}
           style={{ height: 25, width: 140 }}
@@ -3269,7 +3269,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 140, left: 438 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell264 />
@@ -3292,7 +3292,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader267 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader266 />
@@ -3318,8 +3318,8 @@ function runBenchmark(container) {
           dataKey={'stats.clicks'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.clicks'}
           height={25}
           style={{ height: 25, width: 60 }}
@@ -3338,7 +3338,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 60, left: 578 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell269 />
@@ -3361,7 +3361,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader272 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader271 />
@@ -3387,8 +3387,8 @@ function runBenchmark(container) {
           dataKey={'stats.ctr'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.ctr'}
           height={25}
           style={{ height: 25, width: 70 }}
@@ -3407,7 +3407,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 70, left: 638 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell274 />
@@ -3430,7 +3430,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader277 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader276 />
@@ -3456,8 +3456,8 @@ function runBenchmark(container) {
           dataKey={'stats.social_percent'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.social_percent'}
           height={25}
           style={{ height: 25, width: 80 }}
@@ -3476,7 +3476,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 708 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell279 />
@@ -3499,7 +3499,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader282 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader281 />
@@ -3525,8 +3525,8 @@ function runBenchmark(container) {
           dataKey={'campaign.name'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'campaign.name'}
           height={25}
           style={{ height: 25, width: 100 }}
@@ -3545,7 +3545,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 100, left: 788 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell284 />
@@ -3568,7 +3568,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader287 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader286 />
@@ -3594,8 +3594,8 @@ function runBenchmark(container) {
           dataKey={'campaignGroup.name'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'campaignGroup.name'}
           height={25}
           style={{ height: 25, width: 150 }}
@@ -3614,7 +3614,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 150, left: 888 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell289 />
@@ -3637,7 +3637,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader292 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader291 />
@@ -3663,8 +3663,8 @@ function runBenchmark(container) {
           dataKey={'ad.id'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.id'}
           height={25}
           style={{ height: 25, width: 120 }}
@@ -3683,7 +3683,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 120, left: 1038 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell294 />
@@ -3706,7 +3706,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader297 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader296 />
@@ -3732,8 +3732,8 @@ function runBenchmark(container) {
           dataKey={'campaignGroup.objective'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'campaignGroup.objective'}
           height={25}
           style={{ height: 25, width: 80 }}
@@ -3752,7 +3752,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1158 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell299 />
@@ -3775,7 +3775,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader302 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader301 />
@@ -3801,8 +3801,8 @@ function runBenchmark(container) {
           dataKey={'stats.spent_100'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'stats.spent_100'}
           height={25}
           style={{ height: 25, width: 70 }}
@@ -3821,7 +3821,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 70, left: 1238 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell304 />
@@ -3844,7 +3844,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader307 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader306 />
@@ -3870,8 +3870,8 @@ function runBenchmark(container) {
           dataKey={'derivedCampaign.startDate'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'derivedCampaign.startDate'}
           height={25}
           style={{ height: 25, width: 113 }}
@@ -3890,7 +3890,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1308 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell309 />
@@ -3913,7 +3913,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader312 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader311 />
@@ -3939,8 +3939,8 @@ function runBenchmark(container) {
           dataKey={'derivedCampaign.endDate'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'derivedCampaign.endDate'}
           height={25}
           style={{ height: 25, width: 113 }}
@@ -3959,7 +3959,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1421 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell314 />
@@ -3982,7 +3982,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader317 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader316 />
@@ -4008,8 +4008,8 @@ function runBenchmark(container) {
           dataKey={'ad.created_time'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.created_time'}
           height={25}
           style={{ height: 25, width: 113 }}
@@ -4028,7 +4028,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1534 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell319 />
@@ -4051,7 +4051,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader322 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader321 />
@@ -4077,8 +4077,8 @@ function runBenchmark(container) {
           dataKey={'ad.updated_time'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.updated_time'}
           height={25}
           style={{ height: 25, width: 113 }}
@@ -4097,7 +4097,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1647 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell324 />
@@ -4120,7 +4120,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader327 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader326 />
@@ -4146,8 +4146,8 @@ function runBenchmark(container) {
           dataKey={'ad.title'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.title'}
           height={25}
           style={{ height: 25, width: 80 }}
@@ -4166,7 +4166,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1760 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell329 />
@@ -4189,7 +4189,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader332 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader331 />
@@ -4215,8 +4215,8 @@ function runBenchmark(container) {
           dataKey={'ad.creative.body'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.creative.body'}
           height={25}
           style={{ height: 25, width: 80 }}
@@ -4235,7 +4235,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1840 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell334 />
@@ -4258,7 +4258,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader337 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader336 />
@@ -4284,8 +4284,8 @@ function runBenchmark(container) {
           dataKey={'destination'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'destination'}
           height={25}
           style={{ height: 25, width: 92 }}
@@ -4304,7 +4304,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 92, left: 1920 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell339 />
@@ -4327,7 +4327,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader342 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader341 />
@@ -4353,8 +4353,8 @@ function runBenchmark(container) {
           dataKey={'ad.creative.link_url'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.creative.link_url'}
           height={25}
           style={{ height: 25, width: 70 }}
@@ -4373,7 +4373,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 70, left: 2012 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell344 />
@@ -4396,7 +4396,7 @@ function runBenchmark(container) {
   const FixedDataTableAbstractSortableHeader347 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
+        <div onClick={function () {}} className={'_54_8 _4h2r _2wzx'}>
           <div className={'_2eq6'}>
             {null}
             <AdsPETableHeader346 />
@@ -4422,8 +4422,8 @@ function runBenchmark(container) {
           dataKey={'page'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'page'}
           height={25}
           style={{ height: 25, width: 92 }}
@@ -4442,7 +4442,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 92, left: 2082 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell349 />
@@ -4472,8 +4472,8 @@ function runBenchmark(container) {
           dataKey={'ad.demolink_hash'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'ad.demolink_hash'}
           height={25}
           style={{ height: 25, width: 100 }}
@@ -4492,7 +4492,7 @@ function runBenchmark(container) {
     render() {
       return (
         <div className={'_4lg0 _4h2m'} style={{ height: 25, width: 100, left: 2174 }}>
-          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+          <div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {}}>
             <div className={'_4lga _4lgb'} style={{ height: 25 }} />
           </div>
           <TransitionCell352 />
@@ -4517,8 +4517,8 @@ function runBenchmark(container) {
           dataKey={'scrollbar_spacer'}
           className={'_4lgc _4h2u'}
           columnData={{}}
-          cellRenderer={function() {}}
-          headerDataGetter={function() {}}
+          cellRenderer={function () {}}
+          headerDataGetter={function () {}}
           columnKey={'scrollbar_spacer'}
           height={25}
           style={{ height: 25, width: 25 }}
@@ -4643,7 +4643,7 @@ function runBenchmark(container) {
     render() {
       return (
         <label className={'_5hhv _55sg _kv1'}>
-          <input className={null} disabled={false} inline={true} checked={true} value={undefined} onChange={function() {}} type={'checkbox'} />
+          <input className={null} disabled={false} inline={true} checked={true} value={undefined} onChange={function () {}} type={'checkbox'} />
           <span data-hover={null} aria-label={undefined} />
         </label>
       );
@@ -4662,11 +4662,11 @@ function runBenchmark(container) {
         <div
           dataKey={'common.id'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={42}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'common.id'}
           height={32}
           rowIndex={0}
@@ -4674,7 +4674,7 @@ function runBenchmark(container) {
         >
           <div className={'_4lgd _4h2w'}>
             <div className={'_4lge _4h2x'}>
-              <span className={'_5hhu _4h2r'} onMouseDown={function() {}}>
+              <span className={'_5hhu _4h2r'} onMouseDown={function () {}}>
                 <XUICheckboxInput362 />
               </span>
             </div>
@@ -4698,7 +4698,7 @@ function runBenchmark(container) {
   const AdsEditableTextCellDisplay365 = createClass({
     render() {
       return (
-        <div className={'_vew'} onDoubleClick={function() {}} onMouseEnter={function() {}} onMouseLeave={function() {}}>
+        <div className={'_vew'} onDoubleClick={function () {}} onMouseEnter={function () {}} onMouseLeave={function () {}}>
           <div className={'_vex _5w6k'}>
             <div className={'_vey'}>{'Test Ad'}</div>
             <div className={'_5w6_'} />
@@ -4724,11 +4724,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.name'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={200}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.name'}
           height={32}
           rowIndex={0}
@@ -4761,11 +4761,11 @@ function runBenchmark(container) {
         <div
           dataKey={'edit_status'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={33}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'edit_status'}
           height={32}
           rowIndex={0}
@@ -4804,11 +4804,11 @@ function runBenchmark(container) {
         <div
           dataKey={'errors'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={36}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'errors'}
           height={32}
           rowIndex={0}
@@ -4847,7 +4847,7 @@ function runBenchmark(container) {
         <div
           value={true}
           disabled={true}
-          onToggle={function() {}}
+          onToggle={function () {}}
           data-hover={'tooltip'}
           data-tooltip-position={'below'}
           aria-label={'Currently active and you can not deactivate it.'}
@@ -4856,7 +4856,7 @@ function runBenchmark(container) {
           role={'checkbox'}
           aria-checked={'true'}
         >
-          <div className={'_128o'} onClick={function() {}} onKeyDown={function() {}} onMouseDown={function() {}} tabIndex={'-1'}>
+          <div className={'_128o'} onClick={function () {}} onKeyDown={function () {}} onMouseDown={function () {}} tabIndex={'-1'}>
             <div className={'_128p'} />
           </div>
           {null}
@@ -4883,11 +4883,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.adgroup_status'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={60}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.adgroup_status'}
           height={32}
           rowIndex={0}
@@ -4940,11 +4940,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ukiAdData.computed_activity_status'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={150}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ukiAdData.computed_activity_status'}
           height={32}
           rowIndex={0}
@@ -5014,11 +5014,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.unique_impressions'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={60}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.unique_impressions'}
           height={32}
           rowIndex={0}
@@ -5051,11 +5051,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.impressions'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={80}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.impressions'}
           height={32}
           rowIndex={0}
@@ -5088,11 +5088,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.avg_cpm'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={80}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.avg_cpm'}
           height={32}
           rowIndex={0}
@@ -5125,11 +5125,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.avg_cpc'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={78}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.avg_cpc'}
           height={32}
           rowIndex={0}
@@ -5162,11 +5162,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.actions'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={140}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.actions'}
           height={32}
           rowIndex={0}
@@ -5199,11 +5199,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.cpa'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={140}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.cpa'}
           height={32}
           rowIndex={0}
@@ -5236,11 +5236,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.clicks'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={60}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.clicks'}
           height={32}
           rowIndex={0}
@@ -5273,11 +5273,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.ctr'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={70}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.ctr'}
           height={32}
           rowIndex={0}
@@ -5310,11 +5310,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.social_percent'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={80}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.social_percent'}
           height={32}
           rowIndex={0}
@@ -5347,10 +5347,10 @@ function runBenchmark(container) {
         <div
           dataKey={'campaign.name'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={100}
           columnData={{}}
-          cellDataGetter={function() {}}
+          cellDataGetter={function () {}}
           cellRenderer={undefined}
           columnKey={'campaign.name'}
           height={32}
@@ -5390,10 +5390,10 @@ function runBenchmark(container) {
         <div
           dataKey={'campaignGroup.name'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={150}
           columnData={{}}
-          cellDataGetter={function() {}}
+          cellDataGetter={function () {}}
           cellRenderer={undefined}
           columnKey={'campaignGroup.name'}
           height={32}
@@ -5433,11 +5433,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.id'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={120}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.id'}
           height={32}
           rowIndex={0}
@@ -5470,11 +5470,11 @@ function runBenchmark(container) {
         <div
           dataKey={'campaignGroup.objective'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={80}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'campaignGroup.objective'}
           height={32}
           rowIndex={0}
@@ -5507,11 +5507,11 @@ function runBenchmark(container) {
         <div
           dataKey={'stats.spent_100'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={70}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'stats.spent_100'}
           height={32}
           rowIndex={0}
@@ -5550,11 +5550,11 @@ function runBenchmark(container) {
         <div
           dataKey={'derivedCampaign.startDate'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={113}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'derivedCampaign.startDate'}
           height={32}
           rowIndex={0}
@@ -5589,11 +5589,11 @@ function runBenchmark(container) {
         <div
           dataKey={'derivedCampaign.endDate'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={113}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'derivedCampaign.endDate'}
           height={32}
           rowIndex={0}
@@ -5632,11 +5632,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.created_time'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={113}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.created_time'}
           height={32}
           rowIndex={0}
@@ -5677,11 +5677,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.updated_time'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={113}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.updated_time'}
           height={32}
           rowIndex={0}
@@ -5716,11 +5716,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.title'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={80}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.title'}
           height={32}
           rowIndex={0}
@@ -5753,11 +5753,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.creative.body'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={80}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.creative.body'}
           height={32}
           rowIndex={0}
@@ -5790,11 +5790,11 @@ function runBenchmark(container) {
         <div
           dataKey={'destination'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={92}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'destination'}
           height={32}
           rowIndex={0}
@@ -5827,11 +5827,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.creative.link_url'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={70}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.creative.link_url'}
           height={32}
           rowIndex={0}
@@ -5864,11 +5864,11 @@ function runBenchmark(container) {
         <div
           dataKey={'page'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={92}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'page'}
           height={32}
           rowIndex={0}
@@ -5908,7 +5908,7 @@ function runBenchmark(container) {
           href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}
           target={'_blank'}
           rel={undefined}
-          onClick={function() {}}
+          onClick={function () {}}
         >
           {'Preview Ad'}
         </a>
@@ -5925,7 +5925,7 @@ function runBenchmark(container) {
   const AdsPopoverLink440 = createClass({
     render() {
       return (
-        <span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+        <span onMouseEnter={function () {}} onMouseLeave={function () {}}>
           <span className={'_3o_j'} />
           <ReactImage439 />
         </span>
@@ -5945,11 +5945,11 @@ function runBenchmark(container) {
         <div
           dataKey={'ad.demolink_hash'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={100}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'ad.demolink_hash'}
           height={32}
           rowIndex={0}
@@ -5985,11 +5985,11 @@ function runBenchmark(container) {
         <div
           dataKey={'scrollbar_spacer'}
           className={'_4lgc _4h2u'}
-          rowGetter={function() {}}
+          rowGetter={function () {}}
           width={25}
           columnData={{}}
-          cellDataGetter={function() {}}
-          cellRenderer={function() {}}
+          cellDataGetter={function () {}}
+          cellRenderer={function () {}}
           columnKey={'scrollbar_spacer'}
           height={32}
           rowIndex={0}
@@ -6077,7 +6077,7 @@ function runBenchmark(container) {
           className={'_1gd4 _4li _52no _35m0 _35m1 _3c7k _4efq _4efs'}
           onClick={null}
           onDoubleClick={null}
-          onMouseDown={function() {}}
+          onMouseDown={function () {}}
           onMouseEnter={null}
           onMouseLeave={null}
           style={{ width: 1083, height: 32 }}
@@ -6132,11 +6132,11 @@ function runBenchmark(container) {
     render() {
       return (
         <div
-          onFocus={function() {}}
-          onBlur={function() {}}
-          onKeyDown={function() {}}
-          onMouseDown={function() {}}
-          onWheel={function() {}}
+          onFocus={function () {}}
+          onBlur={function () {}}
+          onKeyDown={function () {}}
+          onMouseDown={function () {}}
+          onWheel={function () {}}
           className={'_1t0r _1t0t _4jdr _1t0u'}
           style={{ width: 1083, zIndex: 99 }}
           tabIndex={0}
@@ -6177,7 +6177,7 @@ function runBenchmark(container) {
   const FixedDataTable453 = createClass({
     render() {
       return (
-        <div className={'_3h1i _1mie'} onWheel={function() {}} style={{ height: 532, width: 1083 }}>
+        <div className={'_3h1i _1mie'} onWheel={function () {}} style={{ height: 532, width: 1083 }}>
           <div className={'_3h1j'} style={{ height: 515, width: 1083 }}>
             <FixedDataTableColumnResizeHandle178 />
             <FixedDataTableRow206 key={'group_header'} />
@@ -6213,7 +6213,7 @@ function runBenchmark(container) {
   const AdsDataTableKeyboardSupportDecorator456 = createClass({
     render() {
       return (
-        <div onKeyDown={function() {}}>
+        <div onKeyDown={function () {}}>
           <AdsSelectableFixedDataTable455 />
         </div>
       );
@@ -6223,7 +6223,7 @@ function runBenchmark(container) {
   const AdsEditableDataTableDecorator457 = createClass({
     render() {
       return (
-        <div onCopy={function() {}}>
+        <div onCopy={function () {}}>
           <AdsDataTableKeyboardSupportDecorator456 />
         </div>
       );
@@ -6245,7 +6245,7 @@ function runBenchmark(container) {
   const ResponsiveBlock459 = createClass({
     render() {
       return (
-        <div onResize={function() {}} className={'_4u-c'}>
+        <div onResize={function () {}} className={'_4u-c'}>
           <AdsPEDataTableContainer458 />
           <div className={'_4u-f'}>
             <iframe tabIndex={'-1'} />
@@ -6332,7 +6332,7 @@ function runBenchmark(container) {
   const AdsPESideTrayTabButton468 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={'_1-ly _59j9 _d9a'}>
+        <div onClick={function () {}} className={'_1-ly _59j9 _d9a'}>
           <ReactImage467 />
           <div className={'_vf7'} />
           <div className={'_vf8'} />
@@ -6356,7 +6356,7 @@ function runBenchmark(container) {
   const AdsPESideTrayTabButton471 = createClass({
     render() {
       return (
-        <div onClick={function() {}} className={' _1-lz _d9a'}>
+        <div onClick={function () {}} className={' _1-lz _d9a'}>
           <ReactImage470 />
           <div className={'_vf7'} />
           <div className={'_vf8'} />
@@ -6390,17 +6390,17 @@ function runBenchmark(container) {
           style={{ height: 550 }}
           className={'_4a2j _2ciy _2ciz'}
           horizontal={true}
-          onStart={function() {}}
-          onEnd={function() {}}
-          onChange={function() {}}
-          initialData={function() {}}
+          onStart={function () {}}
+          onEnd={function () {}}
+          onChange={function () {}}
+          initialData={function () {}}
           vertical={false}
           throttle={25}
           delay={0}
           threshold={0}
-          onMouseDown={function() {}}
-          onMouseUp={function() {}}
-          onMouseLeave={function() {}}
+          onMouseDown={function () {}}
+          onMouseUp={function () {}}
+          onMouseLeave={function () {}}
         />
       );
     }
@@ -6525,7 +6525,7 @@ function runBenchmark(container) {
   const Link488 = createClass({
     render() {
       return (
-        <a className={'_5ir9'} label={'Rename using available fields'} onMouseDown={function() {}} href={'#'} rel={undefined} onClick={function() {}}>
+        <a className={'_5ir9'} label={'Rename using available fields'} onMouseDown={function () {}} href={'#'} rel={undefined} onClick={function () {}}>
           {'Rename using available fields'}
         </a>
       );
@@ -6568,7 +6568,7 @@ function runBenchmark(container) {
         <div
           value={true}
           disabled={true}
-          onToggle={function() {}}
+          onToggle={function () {}}
           data-hover={'tooltip'}
           data-tooltip-position={'below'}
           aria-label={'Currently active and you can not deactivate it.'}
@@ -6577,7 +6577,7 @@ function runBenchmark(container) {
           role={'checkbox'}
           aria-checked={'true'}
         >
-          <div className={'_128o'} onClick={function() {}} onKeyDown={function() {}} onMouseDown={function() {}} tabIndex={'-1'}>
+          <div className={'_128o'} onClick={function () {}} onKeyDown={function () {}} onMouseDown={function () {}} tabIndex={'-1'}>
             <div className={'_128p'} />
           </div>
           {null}
@@ -6708,7 +6708,7 @@ function runBenchmark(container) {
   const Link506 = createClass({
     render() {
       return (
-        <a target={'_blank'} href={'/ads/manager/ad/?ids=98010048849345'} onClick={function() {}} rel={undefined}>
+        <a target={'_blank'} href={'/ads/manager/ad/?ids=98010048849345'} onClick={function () {}} rel={undefined}>
           {'Open in Ads Manager'}
         </a>
       );
@@ -6718,7 +6718,7 @@ function runBenchmark(container) {
   const Link507 = createClass({
     render() {
       return (
-        <a target={'_blank'} href={'#'} onClick={function() {}} rel={undefined}>
+        <a target={'_blank'} href={'#'} onClick={function () {}} rel={undefined}>
           {'Open in Ads Reporting'}
         </a>
       );
@@ -6731,7 +6731,7 @@ function runBenchmark(container) {
         <a
           target={'_blank'}
           href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}
-          onClick={function() {}}
+          onClick={function () {}}
           rel={undefined}
         >
           {'View on Desktop Right Column'}
@@ -6743,7 +6743,7 @@ function runBenchmark(container) {
   const Link509 = createClass({
     render() {
       return (
-        <a target={'_blank'} href={'/ads/manage/powereditor/?act=10149999073643408&adgroup=98010048849345'} onClick={function() {}} rel={undefined}>
+        <a target={'_blank'} href={'/ads/manage/powereditor/?act=10149999073643408&adgroup=98010048849345'} onClick={function () {}} rel={undefined}>
           {'Open Power Editor with this ad selected'}
         </a>
       );
@@ -6882,7 +6882,7 @@ function runBenchmark(container) {
   const PillButton523 = createClass({
     render() {
       return (
-        <a label={null} selected={true} onClick={function() {}} href={'#'} className={'uiPillButton uiPillButtonSelected'}>
+        <a label={null} selected={true} onClick={function () {}} href={'#'} className={'uiPillButton uiPillButtonSelected'}>
           {'Desktop Right Column'}
         </a>
       );
@@ -7121,7 +7121,7 @@ function runBenchmark(container) {
   const Link548 = createClass({
     render() {
       return (
-        <a className={'fwb'} onClick={function() {}} href={'#'} rel={undefined}>
+        <a className={'fwb'} onClick={function () {}} href={'#'} rel={undefined}>
           {'Connect a Facebook Page'}
         </a>
       );
@@ -7244,7 +7244,7 @@ function runBenchmark(container) {
   const AdsPopoverLink563 = createClass({
     render() {
       return (
-        <span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+        <span onMouseEnter={function () {}} onMouseLeave={function () {}}>
           <span className={'_3o_j'} />
           <ReactImage562 />
         </span>
@@ -7329,7 +7329,7 @@ function runBenchmark(container) {
   const AdsPopoverLink571 = createClass({
     render() {
       return (
-        <span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+        <span onMouseEnter={function () {}} onMouseLeave={function () {}}>
           <span className={'_3o_j'} />
           <ReactImage570 />
         </span>
@@ -7471,7 +7471,7 @@ function runBenchmark(container) {
       return (
         <button
           label={null}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'large'}
           use={'default'}
           borderShade={'light'}
@@ -7569,7 +7569,7 @@ function runBenchmark(container) {
   const Link590 = createClass({
     render() {
       return (
-        <a href={'/business/ads-guide/'} target={'_blank'} rel={undefined} onClick={function() {}}>
+        <a href={'/business/ads-guide/'} target={'_blank'} rel={undefined} onClick={function () {}}>
           {'Facebook Ad Guidelines'}
         </a>
       );
@@ -7790,7 +7790,7 @@ function runBenchmark(container) {
   const AdsPopoverLink614 = createClass({
     render() {
       return (
-        <span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+        <span onMouseEnter={function () {}} onMouseLeave={function () {}}>
           <span className={'_3o_j'} />
           <ReactImage613 />
         </span>
@@ -7856,7 +7856,7 @@ function runBenchmark(container) {
   const Link622 = createClass({
     render() {
       return (
-        <a href={'/help/336923339852238'} target={'_blank'} rel={undefined} onClick={function() {}}>
+        <a href={'/help/336923339852238'} target={'_blank'} rel={undefined} onClick={function () {}}>
           <XUIText621 />
         </a>
       );
@@ -7888,7 +7888,7 @@ function runBenchmark(container) {
         <button
           className={'_23ng _4jy0 _4jy4 _4jy1 _51sy selected _42ft'}
           label={null}
-          onClick={function() {}}
+          onClick={function () {}}
           size={'large'}
           use={'confirm'}
           borderShade={'light'}
@@ -8267,12 +8267,12 @@ function runBenchmark(container) {
 describe('Benchmark - createClass (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     document.body.removeChild(container);
   });

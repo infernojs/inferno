@@ -14,7 +14,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 
 var ReactDOM = React;
 
-describe('ReactElementClone', function() {
+describe('ReactElementClone', function () {
   let container;
 
   function renderIntoDocument(input) {
@@ -32,14 +32,14 @@ describe('ReactElementClone', function() {
     document.body.removeChild(container);
   });
 
-  it('should clone a DOM component with new props', function() {
+  it('should clone a DOM component with new props', function () {
     var Grandparent = React.createClass({
-      render: function() {
+      render: function () {
         return <Parent child={<div className="child" />} />;
       }
     });
     var Parent = React.createClass({
-      render: function() {
+      render: function () {
         return <div className="parent">{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
       }
     });
@@ -47,19 +47,19 @@ describe('ReactElementClone', function() {
     expect(ReactDOM.findDOMNode(component).childNodes[0].className).toBe('xyz');
   });
 
-  it('should clone a composite component with new props', function() {
+  it('should clone a composite component with new props', function () {
     var Child = React.createClass({
-      render: function() {
+      render: function () {
         return <div className={this.props.className} />;
       }
     });
     var Grandparent = React.createClass({
-      render: function() {
+      render: function () {
         return <Parent child={<Child className="child" />} />;
       }
     });
     var Parent = React.createClass({
-      render: function() {
+      render: function () {
         return <div className="parent">{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
       }
     });
@@ -67,9 +67,9 @@ describe('ReactElementClone', function() {
     expect(ReactDOM.findDOMNode(component).childNodes[0].className).toBe('xyz');
   });
 
-  it('should transfer the key property', function() {
+  it('should transfer the key property', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return null;
       }
     });
@@ -77,9 +77,9 @@ describe('ReactElementClone', function() {
     expect(clone.key).toBe('xyz');
   });
 
-  it('should transfer children', function() {
+  it('should transfer children', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         expect(this.props.children).toBe('xyz');
         return <div />;
       }
@@ -88,9 +88,9 @@ describe('ReactElementClone', function() {
     renderIntoDocument(React.cloneElement(<Component />, { children: 'xyz' }));
   });
 
-  it('should shallow clone children', function() {
+  it('should shallow clone children', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         expect(this.props.children).toBe('xyz');
         return <div />;
       }
@@ -99,9 +99,9 @@ describe('ReactElementClone', function() {
     renderIntoDocument(React.cloneElement(<Component>xyz</Component>, {}));
   });
 
-  it('should accept children as rest arguments', function() {
+  it('should accept children as rest arguments', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         return null;
       }
     });
@@ -152,9 +152,9 @@ describe('ReactElementClone', function() {
   //   expect(component.refs.parent.refs.xyz.tagName).toBe('SPAN');
   // });
 
-  it('should overwrite props', function() {
+  it('should overwrite props', function () {
     var Component = React.createClass({
-      render: function() {
+      render: function () {
         expect(this.props.myprop).toBe('xyz');
         return <div />;
       }

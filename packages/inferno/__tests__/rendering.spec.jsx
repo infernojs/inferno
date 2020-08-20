@@ -4,12 +4,12 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 describe('rendering routine', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -209,7 +209,7 @@ describe('rendering routine', () => {
 
   // https://jsfiddle.net/Ldqyu475/
   describe('render during component construction', () => {
-    it('Should queue updates and not fail if HOC updates during child component construction', done => {
+    it('Should queue updates and not fail if HOC updates during child component construction', (done) => {
       class Hello extends Component {
         constructor(props, context) {
           super(props, context);
@@ -287,7 +287,7 @@ describe('rendering routine', () => {
 
       container.querySelector('#click').click();
 
-      setTimeout(function() {
+      setTimeout(function () {
         console.log(container.innerHTML);
         // expect(container.innerHTML).toBe('');
         done();

@@ -9,7 +9,7 @@ describe('All single patch variations', () => {
   let updateSpy;
   let unmountSpy;
 
-  beforeEach(function() {
+  beforeEach(function () {
     mountSpy.resetHistory();
     updateSpy.resetHistory();
     unmountSpy.resetHistory();
@@ -18,7 +18,7 @@ describe('All single patch variations', () => {
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -285,7 +285,7 @@ describe('All single patch variations', () => {
     it('Should never update if defaultProps refs SCU returns false', () => {
       let counter = 0;
 
-      const Static = function() {
+      const Static = function () {
         return <div>{counter}</div>;
       };
 
@@ -319,7 +319,7 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      const Static = function() {
+      const Static = function () {
         return <div>{counter}</div>;
       };
 
@@ -359,7 +359,7 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      const Static = function() {
+      const Static = function () {
         return <div>{counter}</div>;
       };
 
@@ -856,7 +856,7 @@ describe('All single patch variations', () => {
       }
     }
 
-    const rerender = function() {
+    const rerender = function () {
       // children must be defiend outside the Exampe Component
       // if defined insite render of Exampe and/or its a single child, there is no issue
       render(

@@ -1,5 +1,5 @@
-import {render, VNode} from 'inferno';
-import {isArray, isFunction, isInvalid, isNullOrUndef, isString, throwError} from 'inferno-shared';
+import { render, VNode } from 'inferno';
+import { isArray, isFunction, isInvalid, isNullOrUndef, isString, throwError } from 'inferno-shared';
 import {
   getTagNameOfVNode as _getTagNameOfVNode,
   isClassVNode as _isClassVNode,
@@ -10,8 +10,8 @@ import {
   isVNode as _isVNode,
   Wrapper as _Wrapper
 } from './utils';
-import {VNodeFlags} from 'inferno-vnode-flags';
-import {renderToSnapshot as _renderToSnapshot, vNodeToSnapshot as _vNodeToSnapshot} from './jest';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { renderToSnapshot as _renderToSnapshot, vNodeToSnapshot as _vNodeToSnapshot } from './jest';
 
 // Type Checkers
 
@@ -71,7 +71,7 @@ export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) =
     } else if (_isVNode(children)) {
       result = result.concat(findAllInVNodeTree(children, predicate) as VNode[]);
     } else if (isArray(children)) {
-      children.forEach(child => {
+      children.forEach((child) => {
         if (!isInvalid(child)) {
           result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);
         }
@@ -107,7 +107,7 @@ function findOneOf(tree: any, filter: any, name: string, finder: Function): any 
 // Scry Utilities
 
 export function scryRenderedDOMElementsWithClass(renderedTree: any, classNames: string | string[]): Element[] {
-  return findAllInRenderedTree(renderedTree, instance => {
+  return findAllInRenderedTree(renderedTree, (instance) => {
     if (_isDOMVNode(instance)) {
       let domClassName = !isNullOrUndef(instance.dom) ? (instance.dom as Element).className : '';
 
@@ -117,26 +117,26 @@ export function scryRenderedDOMElementsWithClass(renderedTree: any, classNames: 
       }
 
       const domClassList = parseSelector(domClassName);
-      return parseSelector(classNames).every(className => {
+      return parseSelector(classNames).every((className) => {
         return domClassList.indexOf(className) !== -1;
       });
     }
     return false;
-  }).map(instance => instance.dom);
+  }).map((instance) => instance.dom);
 }
 
 export function scryRenderedDOMElementsWithTag(renderedTree: any, tagName: string): Element[] {
-  return findAllInRenderedTree(renderedTree, instance => {
+  return findAllInRenderedTree(renderedTree, (instance) => {
     return isDOMVNodeOfType(instance, tagName);
-  }).map(instance => instance.dom);
+  }).map((instance) => instance.dom);
 }
 
 export function scryRenderedVNodesWithType(renderedTree: any, type: string | Function): VNode[] {
-  return findAllInRenderedTree(renderedTree, instance => isVNodeOfType(instance, type));
+  return findAllInRenderedTree(renderedTree, (instance) => isVNodeOfType(instance, type));
 }
 
 export function scryVNodesWithType(vNodeTree: VNode, type: string | Function): VNode[] {
-  return findAllInVNodeTree(vNodeTree, instance => isVNodeOfType(instance, type));
+  return findAllInVNodeTree(vNodeTree, (instance) => isVNodeOfType(instance, type));
 }
 
 // Find Utilities

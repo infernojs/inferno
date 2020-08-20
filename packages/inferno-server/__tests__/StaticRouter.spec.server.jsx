@@ -130,7 +130,7 @@ describe('A <StaticRouter>', () => {
   });
 
   it('knows how to parse raw URLs', () => {
-    const LocationChecker = props => {
+    const LocationChecker = (props) => {
       expect(props.location).toEqual({
         pathname: '/the/path',
         search: '?the=query',
@@ -150,7 +150,7 @@ describe('A <StaticRouter>', () => {
 
   describe('with a basename', () => {
     it('strips the basename from location pathnames', () => {
-      const LocationChecker = props => {
+      const LocationChecker = (props) => {
         expect(props.location.pathname).toBe('/path');
         return null;
       };

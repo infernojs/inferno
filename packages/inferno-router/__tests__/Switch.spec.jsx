@@ -372,7 +372,7 @@ describe('A <Switch location>', () => {
       const node = document.createElement('div');
 
       let propLocation;
-      const RouteHoneytrap = props => {
+      const RouteHoneytrap = (props) => {
         propLocation = props.location;
         return <Route {...props} />;
       };

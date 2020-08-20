@@ -3,12 +3,12 @@ import { Component, createRef, forwardRef, render } from 'inferno';
 describe('Forward Ref', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -57,7 +57,7 @@ describe('Forward Ref', () => {
       render() {
         return (
           <FancyButton
-            ref={btn => {
+            ref={(btn) => {
               if (btn) {
                 expect(btn).toBe(container.querySelector('button'));
               }
@@ -93,7 +93,7 @@ describe('Forward Ref', () => {
 
     render(
       <FancyButton
-        ref={btn => {
+        ref={(btn) => {
           firstVal = btn;
         }}
       >
@@ -109,7 +109,7 @@ describe('Forward Ref', () => {
 
     render(
       <FancyButton
-        ref={btn => {
+        ref={(btn) => {
           secondVal = btn;
         }}
       >
@@ -157,7 +157,7 @@ describe('Forward Ref', () => {
       expect(spy.calls.count()).toEqual(++i);
 
       // This is ok
-      forwardRef(function() {
+      forwardRef(function () {
         return <div>1</div>;
       });
       expect(spy.calls.count()).toEqual(i);
@@ -211,7 +211,7 @@ describe('Forward Ref', () => {
           return (
             <ForwardCom
               className="okay"
-              ref={btn => {
+              ref={(btn) => {
                 if (btn) {
                   expect(btn).toBe(container.querySelector('span'));
                 }

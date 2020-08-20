@@ -20,7 +20,7 @@ function StatelessComponent(props) {
   return <div>{props.name}</div>;
 }
 
-describe('ReactStatelessComponent', function() {
+describe('ReactStatelessComponent', function () {
   let container;
 
   function renderIntoDocument(input) {
@@ -38,14 +38,14 @@ describe('ReactStatelessComponent', function() {
     document.body.removeChild(container);
   });
 
-  it('should render stateless component', function() {
+  it('should render stateless component', function () {
     var el = document.createElement('div');
     ReactDOM.render(<StatelessComponent name="A" />, el);
 
     expect(el.textContent).toBe('A');
   });
 
-  it('should update stateless component', function() {
+  it('should update stateless component', function () {
     var Parent = React.createClass({
       render() {
         return <StatelessComponent {...this.props} />;
@@ -60,7 +60,7 @@ describe('ReactStatelessComponent', function() {
     expect(el.textContent).toBe('B');
   });
 
-  it('should unmount stateless component', function() {
+  it('should unmount stateless component', function () {
     var container = document.createElement('div');
 
     ReactDOM.render(<StatelessComponent name="A" />, container);
@@ -70,13 +70,13 @@ describe('ReactStatelessComponent', function() {
     expect(container.textContent).toBe('');
   });
 
-  it('should pass context thru stateless component', function() {
+  it('should pass context thru stateless component', function () {
     var Child = React.createClass({
       contextTypes: {
         test: React.PropTypes.string.isRequired
       },
 
-      render: function() {
+      render: function () {
         return <div>{this.context.test}</div>;
       }
     });
@@ -94,7 +94,7 @@ describe('ReactStatelessComponent', function() {
         return { test: this.props.test };
       },
 
-      render: function() {
+      render: function () {
         return <Parent />;
       }
     });
@@ -109,12 +109,12 @@ describe('ReactStatelessComponent', function() {
     expect(el.textContent).toBe('mest');
   });
 
-  it('should warn when stateless component returns array', function() {
+  it('should warn when stateless component returns array', function () {
     spyOn(console, 'error');
     function NotAComponent() {
       return [<div />, <div />];
     }
-    expect(function() {
+    expect(function () {
       React.render(
         <div>
           <NotAComponent />
@@ -196,15 +196,15 @@ describe('ReactStatelessComponent', function() {
   //   );
   // });
 
-  it('should receive context', function() {
+  it('should receive context', function () {
     var Parent = React.createClass({
       childContextTypes: {
         lang: React.PropTypes.string
       },
-      getChildContext: function() {
+      getChildContext: function () {
         return { lang: 'en' };
       },
-      render: function() {
+      render: function () {
         return <Child />;
       }
     });
@@ -218,8 +218,8 @@ describe('ReactStatelessComponent', function() {
     expect(el.textContent).toBe('en');
   });
 
-  it('should work with arrow functions', function() {
-    var Child = function() {
+  it('should work with arrow functions', function () {
+    var Child = function () {
       return <div />;
     };
     // Will create a new bound function without a prototype, much like a native
@@ -229,14 +229,14 @@ describe('ReactStatelessComponent', function() {
     expect(() => renderIntoDocument(<Child />)).not.toThrow();
   });
 
-  it('should allow simple functions to return null', function() {
-    var Child = function() {
+  it('should allow simple functions to return null', function () {
+    var Child = function () {
       return null;
     };
     expect(() => renderIntoDocument(<Child />)).not.toThrow();
   });
 
-  it('should allow simple functions to return false', function() {
+  it('should allow simple functions to return false', function () {
     function Child() {
       return false;
     }

@@ -63,7 +63,7 @@ describe('Utils', () => {
     const spyDispatch = sinon.spy(element, 'dispatchEvent');
     let spyCreateMouseEvent;
 
-    afterEach(function() {
+    afterEach(function () {
       spyDispatch.resetHistory();
       spyCreateMouseEvent.restore();
     });
@@ -78,7 +78,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;
@@ -99,7 +99,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;
@@ -120,7 +120,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;
@@ -141,7 +141,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;
@@ -162,7 +162,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;
@@ -183,7 +183,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;
@@ -204,7 +204,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;
@@ -225,7 +225,7 @@ describe('Utils', () => {
           expect(cancelable).toBe(true);
         }
       };
-      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake(eventInterface => {
+      spyCreateMouseEvent = sinon.stub(document, 'createEvent').callsFake((eventInterface) => {
         expect(eventInterface).toBe(triggeredEventType);
 
         return event;

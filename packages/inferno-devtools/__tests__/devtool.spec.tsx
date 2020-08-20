@@ -8,7 +8,7 @@ describe('Devtools', () => {
   let Reconciler;
   let listener;
 
-  beforeAll(function() {
+  beforeAll(function () {
     // tslint:disable-next-line
     window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] = {
       inject(hooks) {
@@ -29,7 +29,7 @@ describe('Devtools', () => {
     initDevTools();
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     listener({
       data: {
@@ -50,7 +50,7 @@ describe('Devtools', () => {
     Reconciler.unmountComponent.calls.reset();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);

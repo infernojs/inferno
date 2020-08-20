@@ -4,12 +4,12 @@ import sinon from 'sinon';
 describe('setState', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     rerender(); // Flush pending stuff, if any
     render(null, container);
     document.body.removeChild(container);
@@ -1065,7 +1065,7 @@ describe('setState', () => {
 
       public componentDidMount() {
         // This change is ignored
-        this.setState(prevState => {
+        this.setState((prevState) => {
           // init all
           return {
             texts: {
@@ -1075,7 +1075,7 @@ describe('setState', () => {
           };
         });
         // This change is also ignored
-        this.setState(prevState => {
+        this.setState((prevState) => {
           return {
             texts: {
               ...prevState.texts,
@@ -1084,7 +1084,7 @@ describe('setState', () => {
           };
         });
         // Only this change is applied
-        this.setState(prevState => {
+        this.setState((prevState) => {
           return {
             texts: {
               ...prevState.texts,

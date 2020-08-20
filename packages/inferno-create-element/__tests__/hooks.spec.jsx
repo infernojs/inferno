@@ -5,12 +5,12 @@ import { innerHTML } from 'inferno-utils';
 describe('Component lifecycle (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -371,11 +371,11 @@ describe('Component lifecycle (JSX)', () => {
       return <div>Hello world</div>;
     }
 
-    afterEach(function() {
+    afterEach(function () {
       render(null, _container);
     });
 
-    beforeEach(function() {
+    beforeEach(function () {
       _container = document.createElement('div');
     });
 
@@ -534,7 +534,7 @@ describe('Component lifecycle (JSX)', () => {
     const spyInner = sinon.spy(fakeObj, 'innerCallback');
     const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
-    beforeEach(function() {
+    beforeEach(function () {
       spyOuter.resetHistory();
       spyInner.resetHistory();
       spyInnerSecond.resetHistory();
@@ -709,7 +709,7 @@ describe('Component lifecycle (JSX)', () => {
       return <div>{bool ? <RefTester inner={inner} innersecond={innersecond} /> : <PlainDiv />}</div>;
     };
 
-    afterEach(function() {
+    afterEach(function () {
       spyOuter.resetHistory();
       spyInner.resetHistory();
       spyInnerSecond.resetHistory();
@@ -814,7 +814,7 @@ describe('Component lifecycle (JSX)', () => {
     const spyInner = sinon.spy(fakeObj, 'innerCallback');
     const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
 
-    beforeEach(function() {
+    beforeEach(function () {
       spyOuter.resetHistory();
       spyInner.resetHistory();
       spyInnerSecond.resetHistory();
@@ -971,7 +971,7 @@ describe('Component lifecycle (JSX)', () => {
       }
     }
 
-    afterEach(function() {
+    afterEach(function () {
       spyOuter.resetHistory();
       spyInner.resetHistory();
       spyInnerSecond.resetHistory();

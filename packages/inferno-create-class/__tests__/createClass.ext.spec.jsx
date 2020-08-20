@@ -5,13 +5,13 @@ import { createClass } from 'inferno-create-class';
 describe('Components createClass (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     container.style.display = 'none';
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     document.body.removeChild(container);
   });
@@ -39,7 +39,7 @@ describe('Components createClass (JSX)', () => {
         let a;
         render(
           <Foo
-            ref={function(i) {
+            ref={function (i) {
               a = i;
             }}
           />,
@@ -86,7 +86,7 @@ describe('Components createClass (JSX)', () => {
         let a;
         render(
           <Foo
-            ref={function(i) {
+            ref={function (i) {
               a = i;
             }}
           />,
@@ -159,7 +159,7 @@ describe('Components createClass (JSX)', () => {
         let a;
         render(
           <Foo
-            ref={function(i) {
+            ref={function (i) {
               a = i;
             }}
           />,

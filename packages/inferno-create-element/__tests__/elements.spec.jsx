@@ -7,12 +7,12 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 describe('Elements (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -804,7 +804,7 @@ describe('Elements (JSX)', () => {
     expect(container.innerHTML).toBe(innerHTML('<span><div></div></span>'));
   });
 
-  it('should be able to construct input with Hooks, Events, Attributes defined', done => {
+  it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
     function test() {}
 
     const obj = {
@@ -992,15 +992,15 @@ describe('Elements (JSX)', () => {
   });
 
   describe('REST Spread JSX', () => {
-    it('Should render click event, style, className', done => {
-      const TextField = function(props) {
+    it('Should render click event, style, className', (done) => {
+      const TextField = function (props) {
         return <input {...props} />;
       };
       const MyTextField = ({ name, className, changeName }) => (
         <TextField
           className={className}
           value={name}
-          onClick={function() {
+          onClick={function () {
             done();
           }}
         />

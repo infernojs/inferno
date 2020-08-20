@@ -1,8 +1,8 @@
-import {Component, createComponentVNode, VNode} from 'inferno';
-import {VNodeFlags} from 'inferno-vnode-flags';
-import {createBrowserHistory} from 'history';
-import {Router} from './Router';
-import {warning} from './utils';
+import { Component, createComponentVNode, VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { createBrowserHistory } from 'history';
+import { Router } from './Router';
+import { warning } from './utils';
 
 export interface IBrowserRouterProps {
   basename?: string;
@@ -29,7 +29,7 @@ export class BrowserRouter extends Component<IBrowserRouterProps, any> {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  BrowserRouter.prototype.componentWillMount = function() {
+  BrowserRouter.prototype.componentWillMount = function () {
     warning(
       !this.props.history,
       '<BrowserRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { BrowserRouter as Router }`.'

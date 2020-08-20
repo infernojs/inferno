@@ -10,7 +10,7 @@ describe('Components (JSX) #2', () => {
   let attachedListener = null;
   let renderedName = null;
 
-  beforeEach(function() {
+  beforeEach(function () {
     attachedListener = null;
     renderedName = null;
 
@@ -27,7 +27,7 @@ describe('Components (JSX) #2', () => {
     };
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     document.body.removeChild(container);
   });

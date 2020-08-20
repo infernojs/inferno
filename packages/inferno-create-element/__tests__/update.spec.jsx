@@ -6,18 +6,18 @@ import { createElement } from 'inferno-create-element';
 describe('Stateful Component updates', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('Should forget old updates', done => {
+  it('Should forget old updates', (done) => {
     let updatesAfromOutside;
 
     class A extends Component {
@@ -154,7 +154,7 @@ describe('Stateful Component updates', () => {
       render() {
         return (
           <div>
-            {this.state.values.map(function(value) {
+            {this.state.values.map(function (value) {
               return <input type="checkbox" checked={value.checked} />;
             })}
           </div>
@@ -461,7 +461,7 @@ describe('Stateful Component updates', () => {
         return (
           <div>
             <ul>
-              {this.state.items.map(function(item, i) {
+              {this.state.items.map(function (item, i) {
                 return (
                   <DropdownItem key={item.value}>
                     <InnerComponentToGetUnmounted key={0} i={i} value={item.value} />
@@ -477,7 +477,12 @@ describe('Stateful Component updates', () => {
 
     render(<Looper />, container);
     expect(container.innerHTML).toBe(innerHTML('<div><ul></ul></div>'));
-    setItems([{ value: 'val1', text: 'key1' }, { value: 'val2', text: 'key2' }, { value: 'val3', text: 'key3' }, { value: 'val4', text: 'key4' }]);
+    setItems([
+      { value: 'val1', text: 'key1' },
+      { value: 'val2', text: 'key2' },
+      { value: 'val3', text: 'key3' },
+      { value: 'val4', text: 'key4' }
+    ]);
 
     expect(container.innerHTML).toBe(
       innerHTML(
@@ -485,14 +490,22 @@ describe('Stateful Component updates', () => {
       )
     );
 
-    setItems([{ value: 'val2', text: 'key2' }, { value: 'val3', text: 'key3' }]);
+    setItems([
+      { value: 'val2', text: 'key2' },
+      { value: 'val3', text: 'key3' }
+    ]);
     expect(container.innerHTML).toBe(
       innerHTML(
         '<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>'
       )
     );
 
-    setItems([{ value: 'val1', text: 'key1' }, { value: 'val2', text: 'key2' }, { value: 'val3', text: 'key3' }, { value: 'val4', text: 'key4' }]);
+    setItems([
+      { value: 'val1', text: 'key1' },
+      { value: 'val2', text: 'key2' },
+      { value: 'val3', text: 'key3' },
+      { value: 'val4', text: 'key4' }
+    ]);
     expect(container.innerHTML).toBe(
       innerHTML(
         '<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
@@ -503,7 +516,7 @@ describe('Stateful Component updates', () => {
   it('Should not crash when patching array to array with hooks', () => {
     let updater = null;
     const stuff = [<div>{['Test']}</div>, <span>1</span>];
-    const orig = [[<span ref={function() {}}>{'1'}</span>]];
+    const orig = [[<span ref={function () {}}>{'1'}</span>]];
     class Stuff extends Component {
       constructor(props) {
         super(props);
@@ -512,7 +525,7 @@ describe('Stateful Component updates', () => {
           stuff
         };
 
-        updater = _stuff => {
+        updater = (_stuff) => {
           this.setState({ stuff: _stuff });
         };
       }
@@ -547,7 +560,7 @@ describe('Stateful Component updates', () => {
           <form>
             <input
               id="inputId"
-              onFocus={e => {
+              onFocus={(e) => {
                 expect(e).toBeTruthy();
               }}
               type="text"
@@ -565,7 +578,7 @@ describe('Stateful Component updates', () => {
   });
 
   it('Should not append when replacing ES6 component with functional component', () => {
-    const A = function() {
+    const A = function () {
       return (
         <div>
           <div className="topheader">
@@ -654,7 +667,7 @@ describe('Stateful Component updates', () => {
       constructor(props) {
         super(props);
         this.state = {
-          checks: props.orderedConfigs.map(mod => Boolean(mod.value))
+          checks: props.orderedConfigs.map((mod) => Boolean(mod.value))
         };
       }
 
@@ -674,7 +687,7 @@ describe('Stateful Component updates', () => {
                   label={conf}
                   type="checkbox"
                   checked={this.state.checks[index]}
-                  onClick={event => {
+                  onClick={(event) => {
                     this.handleCheck(index, event.target.checked);
                   }}
                 >

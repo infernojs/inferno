@@ -15,7 +15,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 var ReactDOM = React;
 var div = React.createFactory('div');
 
-describe('ReactDOM', function() {
+describe('ReactDOM', function () {
   let container;
 
   function renderIntoDocument(input) {
@@ -62,19 +62,19 @@ describe('ReactDOM', function() {
   });
   */
 
-  it('allows a DOM element to be used with a string', function() {
+  it('allows a DOM element to be used with a string', function () {
     var element = React.createElement('div', { className: 'foo' });
     var instance = renderIntoDocument(element);
     expect(ReactDOM.findDOMNode(instance).tagName).toBe('DIV');
   });
 
-  it('should allow children to be passed as an argument', function() {
+  it('should allow children to be passed as an argument', function () {
     var argDiv = renderIntoDocument(div(null, 'child'));
     var argNode = ReactDOM.findDOMNode(argDiv);
     expect(argNode.innerHTML).toBe('child');
   });
 
-  it('should overwrite props.children with children argument', function() {
+  it('should overwrite props.children with children argument', function () {
     var conflictDiv = renderIntoDocument(div({ children: 'fakechild' }, 'child'));
     var conflictNode = ReactDOM.findDOMNode(conflictDiv);
     expect(conflictNode.innerHTML).toBe('child');
@@ -84,7 +84,7 @@ describe('ReactDOM', function() {
    * We need to make sure that updates occur to the actual node that's in the
    * DOM, instead of a stale cache.
    */
-  it('should purge the DOM cache when removing nodes', function() {
+  it('should purge the DOM cache when removing nodes', function () {
     var myDiv = renderIntoDocument(
       <div>
         <div key="theDog" className="dog" />
@@ -124,7 +124,7 @@ describe('ReactDOM', function() {
     expect(dog.className).toBe('bigdog');
   });
 
-  it('allow React.DOM factories to be called without warnings', function() {
+  it('allow React.DOM factories to be called without warnings', function () {
     spyOn(console, 'error');
     var element = div();
     expect(element.type).toBe('div');

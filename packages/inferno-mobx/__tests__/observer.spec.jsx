@@ -48,12 +48,12 @@ const getDNode = (obj, prop) => obj.$mobx.values[prop];
 describe('Mobx Observer', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -150,10 +150,10 @@ describe('Mobx Observer', () => {
     expect(getDNode(data, 'y').observers.length).toBe(0);
   });
 
-  it('componentWillMount from mixin is run first', done => {
+  it('componentWillMount from mixin is run first', (done) => {
     let origRenderMethod;
     const clss = createClass({
-      componentWillMount: function() {
+      componentWillMount: function () {
         // ugly check, but proofs that observer.willmount has run
         // We cannot use function.prototype.name here like in react-redux tests because it is not supported in Edge/IE
         expect(this.render).not.toBe(origRenderMethod);
@@ -200,7 +200,7 @@ describe('Mobx Observer', () => {
     useStaticRendering(false);
   });
 
-  it('issue 12', function() {
+  it('issue 12', function () {
     const data = mobx.observable({
       selected: 'coffee',
       items: [
@@ -233,7 +233,7 @@ describe('Mobx Observer', () => {
     const Table = observer(function table() {
       return (
         <div>
-          {data.items.map(item => (
+          {data.items.map((item) => (
             <Row key={item.name} item={item} />
           ))}
         </div>
@@ -253,10 +253,10 @@ describe('Mobx Observer', () => {
     expect(container.querySelector('div').textContent).toBe('soup');
   });
 
-  it('component should not be inject', function(done) {
+  it('component should not be inject', function (done) {
     const msg = [];
     const baseWarn = console.error;
-    console.error = m => msg.push(m);
+    console.error = (m) => msg.push(m);
 
     observer(
       inject('foo')(
@@ -278,10 +278,10 @@ describe('Mobx Observer', () => {
     done();
   });
 
-  it('observer component can be injected', done => {
+  it('observer component can be injected', (done) => {
     const msg = [];
     const baseWarn = console.error;
-    console.error = m => msg.push(m);
+    console.error = (m) => msg.push(m);
 
     inject('foo')(
       observer(
@@ -305,7 +305,7 @@ describe('Mobx Observer', () => {
     done();
   });
 
-  it('124 - react to changes in this.props via computed', function() {
+  it('124 - react to changes in this.props via computed', function () {
     const Comp = observer(
       createClass({
         componentWillMount() {
@@ -373,7 +373,7 @@ describe('Mobx Observer', () => {
   //   });
   // });
 
-  it('should render component even if setState called with exactly the same props', function(done) {
+  it('should render component even if setState called with exactly the same props', function (done) {
     let renderCount = 0;
     const Component = observer(
       createClass({
@@ -489,7 +489,7 @@ describe('Mobx Observer', () => {
   //   }, 20);
   // })
 
-  it('Observer regions should react', done => {
+  it('Observer regions should react', (done) => {
     const data = mobx.observable.box('hi');
     const Comp = () => (
       <div>

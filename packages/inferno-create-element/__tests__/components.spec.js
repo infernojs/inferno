@@ -1,16 +1,16 @@
-import {Component, render} from 'inferno';
-import {createElement} from 'inferno-create-element';
-import {innerHTML} from 'inferno-utils';
+import { Component, render } from 'inferno';
+import { createElement } from 'inferno-create-element';
+import { innerHTML } from 'inferno-utils';
 
 describe('Components (non-JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     document.body.removeChild(container);
   });
@@ -354,14 +354,14 @@ describe('Components (non-JSX)', () => {
 
     class BasicComponent2b extends Component {
       render() {
-        const template = children => createElement('div', null, createElement('span', null, 'component!'), createElement('div', null, children));
+        const template = (children) => createElement('div', null, createElement('span', null, 'component!'), createElement('div', null, children));
         return template(this.props.children);
       }
     }
 
     class BasicComponent2c extends Component {
       render() {
-        const template = children => createElement('div', null, createElement('span', null, 'other component!'), createElement('div', null, children));
+        const template = (children) => createElement('div', null, createElement('span', null, 'other component!'), createElement('div', null, children));
         return template(this.props.children);
       }
     }
@@ -484,7 +484,7 @@ describe('Components (non-JSX)', () => {
 
       class ComponentLifecycleCheck extends Component {
         render() {
-          const _template = children => createElement('div', null, createElement('span', null, 'component!'), createElement('div', null, children));
+          const _template = (children) => createElement('div', null, createElement('span', null, 'component!'), createElement('div', null, children));
           return _template(this.props.children);
         }
 
@@ -557,7 +557,7 @@ describe('Components (non-JSX)', () => {
 
       mountCount = 0;
       unmountCount = 0;
-      template = Component => createElement(Component, null);
+      template = (Component) => createElement(Component, null);
       render(template(ComponentLifecycleCheck), container);
 
       expect(mountCount).toBe(1);
@@ -609,7 +609,7 @@ describe('Components (non-JSX)', () => {
         }
 
         render() {
-          const _template = counter => createElement('div', null, createElement('span', {}, counter));
+          const _template = (counter) => createElement('div', null, createElement('span', {}, counter));
           return _template(this.state.counter);
         }
 
@@ -623,7 +623,7 @@ describe('Components (non-JSX)', () => {
 
       beforeEach(() => {
         componentWillMountCount = 0;
-        template = Component => createElement(Component, null);
+        template = (Component) => createElement(Component, null);
         render(template(ComponentLifecycleCheck), container);
       });
 
@@ -658,7 +658,7 @@ describe('Components (non-JSX)', () => {
         }
 
         render() {
-          const _template = counter => createElement('div', null, createElement('span', {}, counter));
+          const _template = (counter) => createElement('div', null, createElement('span', {}, counter));
           return _template(this.state.counter);
         }
 
@@ -685,7 +685,7 @@ describe('Components (non-JSX)', () => {
         shouldComponentUpdateCount = 0;
         componentDidUpdateCount = 0;
         componentWillUpdateCount = 0;
-        template = Component => createElement(Component, null);
+        template = (Component) => createElement(Component, null);
         render(template(ComponentLifecycleCheck), container);
         update();
       });
@@ -708,10 +708,10 @@ describe('Components (non-JSX)', () => {
     });
 
     describe('should render a basic component with conditional fragment', () => {
-      const tpl3625453295 = function() {
+      const tpl3625453295 = function () {
         return createElement('h1', null, 'BIG');
       };
-      const tpl4021787591 = function() {
+      const tpl4021787591 = function () {
         return createElement('h2', null, 'small');
       };
 
@@ -730,13 +730,13 @@ describe('Components (non-JSX)', () => {
     });
 
     describe('should render a basic component with a list of values from state', () => {
-      const tpl2026545261 = function(v0) {
+      const tpl2026545261 = function (v0) {
         return createElement('ul', { class: 'login-organizationlist' }, '', v0, '');
       };
-      const tpl3192647933 = function(v0) {
+      const tpl3192647933 = function (v0) {
         return createElement('li', null, v0);
       };
-      const tpl1546018623 = function(v0) {
+      const tpl1546018623 = function (v0) {
         return createElement(v0, null);
       };
 
@@ -757,7 +757,7 @@ describe('Components (non-JSX)', () => {
 
         render() {
           return tpl2026545261(
-            this.state.organizations.map(function(result) {
+            this.state.organizations.map(function (result) {
               return tpl3192647933(result.name);
             })
           );
@@ -842,14 +842,14 @@ describe('Components (non-JSX)', () => {
     });
 
     describe('should render a component with a conditional state item', () => {
-      const tpl3578458729 = function(v0) {
+      const tpl3578458729 = function (v0) {
         return createElement('div', { className: 'login-view bg-visma' }, v0);
       };
-      const tpl188998005 = function() {
+      const tpl188998005 = function () {
         return createElement('div', null, 'VISIBLE');
       };
 
-      const tpl3754840163 = function(v0) {
+      const tpl3754840163 = function (v0) {
         return createElement('div', null, createElement('button', { onclick: v0 }, 'Make visible'));
       };
 
@@ -860,7 +860,7 @@ describe('Components (non-JSX)', () => {
             show: false
           };
 
-          this.makeVisible = function() {
+          this.makeVisible = function () {
             this.setState({
               show: true
             });
@@ -869,7 +869,7 @@ describe('Components (non-JSX)', () => {
 
         render() {
           return tpl3578458729(
-            function() {
+            function () {
               if (this.state.show === true) {
                 return tpl188998005();
               } else {
@@ -880,7 +880,7 @@ describe('Components (non-JSX)', () => {
         }
       }
 
-      const tpl79713834 = function(v0) {
+      const tpl79713834 = function (v0) {
         return createElement(v0, null);
       };
 
@@ -889,12 +889,12 @@ describe('Components (non-JSX)', () => {
         expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><div><button>Make visible</button></div></div>'));
       });
 
-      it('Second render (update with state change)', done => {
+      it('Second render (update with state change)', (done) => {
         render(tpl79713834(TEST), container);
         render(tpl79713834(TEST), container);
         const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
-        buttons.forEach(button => button.click());
+        buttons.forEach((button) => button.click());
 
         setTimeout(() => {
           expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><div>VISIBLE</div>'));
@@ -904,15 +904,15 @@ describe('Components (non-JSX)', () => {
     });
 
     describe('should render a component with a list of divs', () => {
-      const BaseView = function(v0, v1) {
+      const BaseView = function (v0, v1) {
         return createElement('div', { class: 'login-view' }, createElement('button', { onclick: v0 }, 'ADD'), createElement('br', null), v1);
       };
 
-      const Looper = function(v0) {
+      const Looper = function (v0) {
         return createElement('div', null, createElement('h1', null, v0));
       };
 
-      const starter = function(v0) {
+      const starter = function (v0) {
         return createElement(v0, null);
       };
 
@@ -928,8 +928,8 @@ describe('Components (non-JSX)', () => {
           /* eslint new-cap:0 */
           return BaseView(
             this.toggle,
-            function() {
-              return this.state.list.map(function(result) {
+            function () {
+              return this.state.list.map(function (result) {
                 return Looper(result);
               });
             }.call(this)
@@ -949,15 +949,15 @@ describe('Components (non-JSX)', () => {
     });
 
     describe('should render a component with a list of text nodes', () => {
-      const root = function(children) {
+      const root = function (children) {
         return createElement('div', null, children);
       };
 
-      const header = function(children) {
+      const header = function (children) {
         return createElement('div', null, children);
       };
 
-      const view = function(state) {
+      const view = function (state) {
         return root([state ? header(['Foo']) : header(['Bar', 'Qux'])]);
       };
 
@@ -973,7 +973,7 @@ describe('Components (non-JSX)', () => {
     });
 
     describe('SetState function callback', () => {
-      it('Should have state, props, and context as parameters', done => {
+      it('Should have state, props, and context as parameters', (done) => {
         function checkParams(state, props, context) {
           expect(state).toEqual({ btnstate: 'btnstate' });
           expect(props).toEqual({ buttonProp: 'magic', children: 'btn' });
@@ -1019,7 +1019,7 @@ describe('Components (non-JSX)', () => {
           }
 
           render() {
-            const children = this.props.messages.map(function(message) {
+            const children = this.props.messages.map(function (message) {
               return createElement(Message, { text: message.text });
             });
 

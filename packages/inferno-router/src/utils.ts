@@ -1,5 +1,5 @@
-import {VNodeFlags} from 'inferno-vnode-flags';
-import {isNull} from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { isNull } from 'inferno-shared';
 
 export function warning(condition, message) {
   if (!condition) {
@@ -27,7 +27,7 @@ export function invariant(condition, format, a?, b?, c?, d?, e?, f?) {
       const args = [a, b, c, d, e, f];
       let argIndex = 0;
       error = new Error(
-        format.replace(/%s/g, function() {
+        format.replace(/%s/g, function () {
           return args[argIndex++];
         })
       );

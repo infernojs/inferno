@@ -1,8 +1,8 @@
-import {Component, createComponentVNode, VNode} from 'inferno';
-import {matchPath} from './matchPath';
-import {invariant, warning} from './utils';
-import {combineFrom, isArray, isInvalid} from 'inferno-shared';
-import {IRouteProps} from './Route';
+import { Component, createComponentVNode, VNode } from 'inferno';
+import { matchPath } from './matchPath';
+import { invariant, warning } from './utils';
+import { combineFrom, isArray, isInvalid } from 'inferno-shared';
+import { IRouteProps } from './Route';
 
 function getMatch({ path, exact, strict, sensitive, from }, route, location) {
   const pathProp = path || from;
@@ -59,11 +59,11 @@ export class Switch extends Component<IRouteProps, any> {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  Switch.prototype.componentWillMount = function() {
+  Switch.prototype.componentWillMount = function () {
     invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
   };
 
-  Switch.prototype.componentWillReceiveProps = function(nextProps) {
+  Switch.prototype.componentWillReceiveProps = function (nextProps) {
     warning(
       !(nextProps.location && !this.props.location),
       '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'

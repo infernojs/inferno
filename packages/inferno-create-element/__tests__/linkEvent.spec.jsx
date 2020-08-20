@@ -3,12 +3,12 @@ import { Component, linkEvent, render } from 'inferno';
 describe('linkEvent', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -186,7 +186,7 @@ describe('linkEvent', () => {
       }
     }
 
-    it('should work correctly for functional components', done => {
+    it('should work correctly for functional components', (done) => {
       render(<FunctionalComponent />, container);
       const input = container.querySelector('input');
       simulateFocus(input);
@@ -200,7 +200,7 @@ describe('linkEvent', () => {
       }, 25);
     });
 
-    it('should work correctly for stateful components', done => {
+    it('should work correctly for stateful components', (done) => {
       render(<StatefulComponent />, container);
       const input = container.querySelector('input');
       simulateFocus(input);

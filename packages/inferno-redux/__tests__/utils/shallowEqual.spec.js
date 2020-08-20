@@ -11,7 +11,7 @@ describe('redux', () => {
         const o = {};
         expect(shallowEqual({ a: 1, b: 2, c: o }, { a: 1, b: 2, c: o })).toBe(true);
 
-        const d = function() {
+        const d = function () {
           return 1;
         };
         expect(shallowEqual({ a: 1, b: 2, c: o, d }, { a: 1, b: 2, c: o, d })).toBe(true);
@@ -24,7 +24,7 @@ describe('redux', () => {
             {
               a: 1,
               b: 2,
-              d: function() {
+              d: function () {
                 return 1;
               }
             },
@@ -32,7 +32,7 @@ describe('redux', () => {
             {
               a: 1,
               b: 2,
-              d: function() {
+              d: function () {
                 return 1;
               }
             }

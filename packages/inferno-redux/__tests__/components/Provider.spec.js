@@ -100,7 +100,7 @@ describe('redux', () => {
 
       const innerStore = createStore(reducer1);
       innerStore.__store_name__ = 'innerStore'; // for debugging
-      const innerMapStateToProps = sinon.spy(state => ({ count: state }));
+      const innerMapStateToProps = sinon.spy((state) => ({ count: state }));
 
       const Inner = connect(innerMapStateToProps)(
         class Inner extends Component {
@@ -112,7 +112,7 @@ describe('redux', () => {
 
       const outerStore = createStore(reducer2);
       outerStore.__store_name__ = 'outerStore'; // for debugging
-      const Outer = connect(state => ({ count: state }))(
+      const Outer = connect((state) => ({ count: state }))(
         class Outer extends Component {
           render() {
             return (
@@ -156,14 +156,9 @@ describe('redux', () => {
         }
       );
 
-      const Container = connect(
-        state => ({ state }),
-        null,
-        null,
-        {
-          withRef: true
-        }
-      )(
+      const Container = connect((state) => ({ state }), null, null, {
+        withRef: true
+      })(
         class Container extends Component {
           emitChange() {
             store.dispatch({ type: 'APPEND', payload: 'b' });
@@ -174,7 +169,7 @@ describe('redux', () => {
             return (
               <div>
                 <button
-                  ref={btn => {
+                  ref={(btn) => {
                     this.button = btn;
                   }}
                   onClick={this.emitChange.bind(this)}

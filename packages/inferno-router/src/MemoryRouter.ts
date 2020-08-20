@@ -1,8 +1,8 @@
-import {Component, createComponentVNode, VNode} from 'inferno';
-import {VNodeFlags} from 'inferno-vnode-flags';
-import {createMemoryHistory} from 'history';
-import {Router} from './Router';
-import {warning} from './utils';
+import { Component, createComponentVNode, VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+import { createMemoryHistory } from 'history';
+import { Router } from './Router';
+import { warning } from './utils';
 
 export interface IMemoryRouterProps {
   initialEntries?: string[];
@@ -29,7 +29,7 @@ export class MemoryRouter extends Component<IMemoryRouterProps, any> {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  MemoryRouter.prototype.componentWillMount = function() {
+  MemoryRouter.prototype.componentWillMount = function () {
     warning(
       !this.props.history,
       '<MemoryRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { MemoryRouter as Router }`.'

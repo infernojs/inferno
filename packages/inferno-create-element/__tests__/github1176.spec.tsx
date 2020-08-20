@@ -7,18 +7,18 @@ describe('Github1176', () => {
   let container;
   const browserHistory = createMemoryHistory();
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('Should not crash', done => {
+  it('Should not crash', (done) => {
     const Loader = () => <div className="loader">Loader...</div>;
 
     class Component1 extends Component {

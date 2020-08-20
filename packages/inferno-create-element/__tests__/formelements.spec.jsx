@@ -4,7 +4,7 @@ import sinon from 'sinon';
 describe('FormElements', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
@@ -116,7 +116,7 @@ describe('FormElements', () => {
       let callCounter = 0;
       let args = [];
 
-      const spy = function(arg) {
+      const spy = function (arg) {
         callCounter++;
         args.push(arg);
       };
@@ -372,17 +372,17 @@ describe('FormElements', () => {
     it('Should support indeterminate state', () => {
       let input;
 
-      render(<input ref={dom => (input = dom)} type="checkbox" checked={false} indeterminate={true} />, container);
+      render(<input ref={(dom) => (input = dom)} type="checkbox" checked={false} indeterminate={true} />, container);
 
       expect(input.indeterminate).toBe(true);
       expect(input.checked).toBe(false);
 
-      render(<input ref={dom => (input = dom)} type="checkbox" checked={false} indeterminate={false} />, container);
+      render(<input ref={(dom) => (input = dom)} type="checkbox" checked={false} indeterminate={false} />, container);
 
       expect(input.indeterminate).toBe(false);
       expect(input.checked).toBe(false);
 
-      render(<input ref={dom => (input = dom)} type="checkbox" checked={true} indeterminate={false} />, container);
+      render(<input ref={(dom) => (input = dom)} type="checkbox" checked={true} indeterminate={false} />, container);
 
       expect(input.indeterminate).toBe(false);
       expect(input.checked).toBe(true);
@@ -444,7 +444,7 @@ describe('FormElements', () => {
             value: 'A'
           };
 
-          updater = e => {
+          updater = (e) => {
             this.setState(e);
           };
         }
@@ -462,7 +462,7 @@ describe('FormElements', () => {
         }
       }
 
-      it('Should pre select option by value on update', done => {
+      it('Should pre select option by value on update', (done) => {
         render(<SelectList />, container);
         let selectList = container.querySelector('select');
         expect(selectList.childNodes[0].selected).toBe(true);
@@ -630,7 +630,7 @@ describe('FormElements', () => {
             this.state = { checked: false };
           }
           handleClick(event) {
-            this.setState(state => ({ checked: !state.checked }));
+            this.setState((state) => ({ checked: !state.checked }));
           }
           render() {
             return (
@@ -667,12 +667,12 @@ describe('FormElements', () => {
           handleClick(event) {
             expect(event.currentTarget.checked).toBe(false);
 
-            this.setState(state => ({ checked: changeToValue }));
+            this.setState((state) => ({ checked: changeToValue }));
           }
           render() {
             return (
               <div>
-                <input onClick={e => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
+                <input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
               </div>
             );
           }
@@ -709,12 +709,12 @@ describe('FormElements', () => {
           handleClick(event) {
             expect(event.currentTarget.checked).toBe(true);
 
-            this.setState(state => ({ checked: changeToValue }));
+            this.setState((state) => ({ checked: changeToValue }));
           }
           render() {
             return (
               <div>
-                <input onClick={e => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
+                <input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
               </div>
             );
           }

@@ -12,18 +12,18 @@ stateLessComp.defaultProps = {
 describe('Stateless components MOBX', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('stateless component', done => {
+  it('stateless component', (done) => {
     const StatelessCompObserver = observer(stateLessComp);
     expect(StatelessCompObserver.defaultProps.testProp).toBe('default value for prop testProp');
     const wrapper = <StatelessCompObserver testProp={10} />;
@@ -34,7 +34,7 @@ describe('Stateless components MOBX', () => {
     done();
   });
 
-  it('stateless component with context support', done => {
+  it('stateless component with context support', (done) => {
     const StateLessCompWithContext = (props, context) => createElement('div', {}, 'context: ' + context.testContext);
     const StateLessCompWithContextObserver = observer(StateLessCompWithContext);
     const ContextProvider = createClass({

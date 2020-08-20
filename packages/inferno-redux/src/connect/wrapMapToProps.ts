@@ -1,7 +1,7 @@
 import { verifyPlainObject } from '../utils/verifyPlainObject';
 
 // TODO: Type
-export const wrapMapToPropsConstant = getConstant => {
+export const wrapMapToPropsConstant = (getConstant) => {
   return (dispatch, options) => {
     const constant = getConstant(dispatch, options);
 
@@ -18,7 +18,7 @@ export const wrapMapToPropsConstant = getConstant => {
 // A length of one signals that mapToProps does not depend on props from the parent component.
 // A length of zero is assumed to mean mapToProps is getting args via arguments or ...args and
 // therefore not reporting its length accurately..
-export const getDependsOnOwnProps = mapToProps =>
+export const getDependsOnOwnProps = (mapToProps) =>
   mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? !!mapToProps.dependsOnOwnProps : mapToProps.length !== 1;
 
 // Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,

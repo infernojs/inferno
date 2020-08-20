@@ -16,36 +16,36 @@ describe('Portal spec', () => {
     return rootInput;
   }
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
   let svgEls, htmlEls, mathEls;
-  let expectSVG = { ref: el => svgEls.push(el) };
-  let expectHTML = { ref: el => htmlEls.push(el) };
-  let expectMath = { ref: el => mathEls.push(el) };
+  let expectSVG = { ref: (el) => svgEls.push(el) };
+  let expectHTML = { ref: (el) => htmlEls.push(el) };
+  let expectMath = { ref: (el) => mathEls.push(el) };
 
-  let usePortal = function(tree) {
+  let usePortal = function (tree) {
     return createPortal(tree, document.createElement('div'));
   };
 
-  let assertNamespacesMatch = function(tree) {
+  let assertNamespacesMatch = function (tree) {
     svgEls = [];
     htmlEls = [];
     mathEls = [];
 
     render(tree, container);
-    svgEls.forEach(el => {
+    svgEls.forEach((el) => {
       expect(el.namespaceURI).toBe('http://www.w3.org/2000/svg');
     });
-    htmlEls.forEach(el => {
+    htmlEls.forEach((el) => {
       expect(el.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
     });
     // mathEls.forEach(el => {

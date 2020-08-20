@@ -1,7 +1,7 @@
-import {Component, InfernoNode} from 'inferno';
-import {warning} from './utils';
+import { Component, InfernoNode } from 'inferno';
+import { warning } from './utils';
 import * as H from 'history';
-import {combineFrom} from 'inferno-shared';
+import { combineFrom } from 'inferno-shared';
 
 export interface IRouterProps {
   history: H.History;
@@ -67,7 +67,7 @@ export class Router extends Component<IRouterProps, any> {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  Router.prototype.componentWillReceiveProps = function(nextProps) {
+  Router.prototype.componentWillReceiveProps = function (nextProps) {
     warning(this.props.history === nextProps.history, 'You cannot change <Router history>');
   };
 }

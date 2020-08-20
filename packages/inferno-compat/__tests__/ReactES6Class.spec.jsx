@@ -11,9 +11,9 @@ import React from 'inferno-compat';
 
 var ReactDOM = React;
 
-describe('ReactES6Class', function() {
+describe('ReactES6Class', function () {
   var container;
-  var freeze = function(expectation) {
+  var freeze = function (expectation) {
     Object.freeze(expectation);
     return expectation;
   };
@@ -21,7 +21,7 @@ describe('ReactES6Class', function() {
   var attachedListener = null;
   var renderedName = null;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     attachedListener = null;
     renderedName = null;
@@ -45,7 +45,7 @@ describe('ReactES6Class', function() {
     return instance;
   }
 
-  it('renders a simple stateless component with prop', function() {
+  it('renders a simple stateless component with prop', function () {
     class Foo extends React.Component {
       render() {
         return <Inner name={this.props.bar} />;
@@ -55,7 +55,7 @@ describe('ReactES6Class', function() {
     test(<Foo bar="bar" />, 'DIV', 'bar');
   });
 
-  it('renders based on state using initial values in this.props', function() {
+  it('renders based on state using initial values in this.props', function () {
     class Foo extends React.Component {
       constructor(props) {
         super(props);
@@ -68,7 +68,7 @@ describe('ReactES6Class', function() {
     test(<Foo initialValue="foo" />, 'SPAN', 'foo');
   });
 
-  it('renders based on state using props in the constructor', function() {
+  it('renders based on state using props in the constructor', function () {
     class Foo extends React.Component {
       constructor(props) {
         super(props);
@@ -89,7 +89,7 @@ describe('ReactES6Class', function() {
     test(<Foo />, 'SPAN', 'bar');
   });
 
-  it('renders based on context in the constructor', function() {
+  it('renders based on context in the constructor', function () {
     class Foo extends React.Component {
       constructor(props, context) {
         super(props, context);
@@ -121,7 +121,7 @@ describe('ReactES6Class', function() {
     test(<Outer />, 'SPAN', 'foo');
   });
 
-  it('renders only once when setting state in componentWillMount', function() {
+  it('renders only once when setting state in componentWillMount', function () {
     var renderCount = 0;
     class Foo extends React.Component {
       constructor(props) {
@@ -155,7 +155,7 @@ describe('ReactES6Class', function() {
   //   });
   // });
 
-  it('should render with null in the initial state property', function() {
+  it('should render with null in the initial state property', function () {
     class Foo extends React.Component {
       constructor() {
         super();
@@ -168,7 +168,7 @@ describe('ReactES6Class', function() {
     test(<Foo />, 'SPAN', '');
   });
 
-  it('setState through an event handler', function() {
+  it('setState through an event handler', function () {
     class Foo extends React.Component {
       constructor(props) {
         super(props);
@@ -186,7 +186,7 @@ describe('ReactES6Class', function() {
     expect(renderedName).toBe('bar');
   });
 
-  it('should not implicitly bind event handlers', function() {
+  it('should not implicitly bind event handlers', function () {
     class Foo extends React.Component {
       constructor(props) {
         super(props);
@@ -203,7 +203,7 @@ describe('ReactES6Class', function() {
     expect(attachedListener).toThrow();
   });
 
-  it('renders using forceUpdate even when there is no state', function() {
+  it('renders using forceUpdate even when there is no state', function () {
     class Foo extends React.Component {
       constructor(props) {
         super(props);
@@ -222,7 +222,7 @@ describe('ReactES6Class', function() {
     expect(renderedName).toBe('bar');
   });
 
-  it('will call all the normal life cycle methods', function() {
+  it('will call all the normal life cycle methods', function () {
     var lifeCycles = [];
     class Foo extends React.Component {
       constructor() {
@@ -277,7 +277,7 @@ describe('ReactES6Class', function() {
     expect(lifeCycles).toEqual(['will-unmount']);
   });
 
-  it('warns when classic properties are defined on the instance, but does not invoke them.', function() {
+  it('warns when classic properties are defined on the instance, but does not invoke them.', function () {
     spyOn(console, 'error');
     var getDefaultPropsWasCalled = false;
     var getInitialStateWasCalled = false;
@@ -387,7 +387,7 @@ describe('ReactES6Class', function() {
   //   );
   // });
 
-  it('supports this.context passed via getChildContext', function() {
+  it('supports this.context passed via getChildContext', function () {
     class Bar extends React.Component {
       render() {
         return <div className={this.context.bar} />;
@@ -406,7 +406,7 @@ describe('ReactES6Class', function() {
     test(<Foo />, 'DIV', 'bar-through-context');
   });
 
-  it('supports drilling through to the DOM using findDOMNode', function() {
+  it('supports drilling through to the DOM using findDOMNode', function () {
     var instance = test(<Inner name="foo" />, 'DIV', 'foo');
     var node = ReactDOM.findDOMNode(instance);
     expect(node).toBe(container.firstChild);

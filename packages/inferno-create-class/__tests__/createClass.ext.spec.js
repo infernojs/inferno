@@ -1,18 +1,18 @@
-import {render} from 'inferno';
-import {createClass} from 'inferno-create-class';
-import {createElement} from 'inferno-create-element';
-import {innerHTML} from 'inferno-utils';
+import { render } from 'inferno';
+import { createClass } from 'inferno-create-class';
+import { createElement } from 'inferno-create-element';
+import { innerHTML } from 'inferno-utils';
 
 describe('Components createClass (non-JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     container.style.display = 'none';
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     document.body.removeChild(container);
   });
@@ -43,7 +43,7 @@ describe('Components createClass (non-JSX)', () => {
     expect(componentWillUpdate).toBe(true);
   });
 
-  it('should have context available in getInitialState', done => {
+  it('should have context available in getInitialState', (done) => {
     let context;
     let context2;
     const BoundComponent = createClass({

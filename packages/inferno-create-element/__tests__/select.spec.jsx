@@ -4,12 +4,12 @@ import { innerHTML } from 'inferno-utils';
 describe('Select / select multiple (JSX)', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -109,7 +109,7 @@ describe('Select / select multiple (JSX)', () => {
   });
 
   it('should populate the value attribute on select multiple using groups', () => {
-    const template = val => (
+    const template = (val) => (
       <select multiple={true} value={val}>
         <optgroup label="foo-group">
           <option value="foo" />
@@ -166,7 +166,7 @@ describe('Select / select multiple (JSX)', () => {
   });
 
   it('should not fail if optgroup is empty', () => {
-    const template = val => (
+    const template = (val) => (
       <select multiple={true} value={val}>
         <optgroup label="foo-group">
           <option value="foo" />
@@ -189,7 +189,7 @@ describe('Select / select multiple (JSX)', () => {
   });
 
   it('should populate the value attribute on select multiple using groups, multiple optgroups and options', () => {
-    const template = val => (
+    const template = (val) => (
       <select multiple={true} value={val}>
         <optgroup label="foo-group">
           <option value="foo" />

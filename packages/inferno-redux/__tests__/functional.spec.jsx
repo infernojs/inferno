@@ -28,7 +28,7 @@ describe('Inferno - redux -specifics', () => {
 
       const Container = connect(
         () => ({}),
-        dispatch => ({
+        (dispatch) => ({
           dispatch,
           ref: {
             onComponentDidMount() {
@@ -70,7 +70,7 @@ describe('Inferno - redux -specifics', () => {
 
       const Container = connect(
         () => ({}),
-        dispatch => ({
+        (dispatch) => ({
           dispatch,
           ref: {
             onComponentDidMount() {

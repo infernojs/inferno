@@ -1,5 +1,5 @@
-import {isFunction, isString} from 'inferno-shared';
-import {EMPTY_OBJ} from '../utils/common';
+import { isFunction, isString } from 'inferno-shared';
+import { EMPTY_OBJ } from '../utils/common';
 
 function triggerEventListener(props, methodName, e) {
   if (props[methodName]) {
@@ -20,7 +20,7 @@ function triggerEventListener(props, methodName, e) {
 }
 
 export function createWrappedFunction(methodName: string | string[], applyValue?: Function): Function {
-  const fnMethod = function(e) {
+  const fnMethod = function (e) {
     const vNode = this.$V;
     // If vNode is gone by the time event fires, no-op
     if (!vNode) {

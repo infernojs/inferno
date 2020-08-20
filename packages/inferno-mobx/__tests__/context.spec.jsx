@@ -6,21 +6,21 @@ import { observer, Provider } from 'inferno-mobx';
 describe('observer based context', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  it('using observer to inject throws warning', done => {
+  it('using observer to inject throws warning', (done) => {
     const w = console.error;
     const warns = [];
-    console.error = msg => warns.push(msg);
+    console.error = (msg) => warns.push(msg);
 
     observer(['test'], () => null);
 
@@ -33,7 +33,7 @@ describe('observer based context', () => {
     done();
   });
 
-  it('basic context', done => {
+  it('basic context', (done) => {
     const C = observer(
       ['foo'],
       createClass({
@@ -59,7 +59,7 @@ describe('observer based context', () => {
     done();
   });
 
-  it('props override context', done => {
+  it('props override context', (done) => {
     const C = observer(
       ['foo'],
       createClass({
@@ -84,7 +84,7 @@ describe('observer based context', () => {
     done();
   });
 
-  it('overriding stores is supported', done => {
+  it('overriding stores is supported', (done) => {
     const C = observer(
       ['foo', 'bar'],
       createClass({
@@ -121,7 +121,7 @@ describe('observer based context', () => {
     done();
   });
 
-  it('store should be available', done => {
+  it('store should be available', (done) => {
     const C = observer(
       ['foo'],
       createClass({
@@ -149,7 +149,7 @@ describe('observer based context', () => {
     }
   });
 
-  it('store is not required if prop is available', done => {
+  it('store is not required if prop is available', (done) => {
     const C = observer(
       ['foo'],
       createClass({
@@ -169,10 +169,10 @@ describe('observer based context', () => {
     done();
   });
 
-  it('warning is printed when changing stores', done => {
+  it('warning is printed when changing stores', (done) => {
     let msg = null;
     const baseWarn = console.error;
-    console.error = m => (msg = m);
+    console.error = (m) => (msg = m);
     const a = mobx.observable.box(3);
     const C = observer(
       ['foo'],
@@ -215,10 +215,10 @@ describe('observer based context', () => {
     done();
   });
 
-  it('warning is not printed when changing stores, but suppressed explicitly', done => {
+  it('warning is not printed when changing stores, but suppressed explicitly', (done) => {
     let msg = null;
     const baseWarn = console.error;
-    console.error = m => (msg = m);
+    console.error = (m) => (msg = m);
     const a = mobx.observable.box(3);
     const C = observer(
       ['foo'],

@@ -1,20 +1,9 @@
-import {EMPTY_OBJ} from 'inferno';
-import {
-  combineFrom,
-  isArray,
-  isFunction,
-  isInvalid,
-  isNull,
-  isNullOrUndef,
-  isNumber,
-  isString,
-  isUndefined,
-  throwError
-} from 'inferno-shared';
-import {ChildFlags, VNodeFlags} from 'inferno-vnode-flags';
-import {Readable} from 'stream';
-import {renderStylesToString} from './prop-renderers';
-import {createDerivedState, escapeText, isAttributeNameSafe, voidElements} from './utils';
+import { EMPTY_OBJ } from 'inferno';
+import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isUndefined, throwError } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { Readable } from 'stream';
+import { renderStylesToString } from './prop-renderers';
+import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
@@ -63,7 +52,7 @@ export class RenderQueueStream extends Readable {
       // For fulfilled promises, merge into collector
     } else if (!!chunk && (typeof chunk === 'object' || isFunction(chunk)) && isFunction(chunk.then)) {
       const self = this;
-      chunk.then(index => {
+      chunk.then((index) => {
         self.collector.splice(0, 1, ...self.promises[index]);
         self.promises[index] = null;
         setTimeout(self.pushQueue, 0);
@@ -128,7 +117,7 @@ export class RenderQueueStream extends Readable {
             if (Promise.resolve(initialProps) === initialProps) {
               const promisePosition = this.promises.push([]) - 1;
               this.addToQueue(
-                initialProps.then(dataForContext => {
+                initialProps.then((dataForContext) => {
                   if (typeof dataForContext === 'object') {
                     instance.props = combineFrom(instance.props, dataForContext);
                   }
@@ -285,12 +274,12 @@ export class RenderQueueStream extends Readable {
       // Handle fragments and arrays
     } else if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
       const childFlags = vNode.childFlags;
-    
+
       if (childFlags === ChildFlags.HasVNodeChildren || (isArray(vNode) && vNode.length === 0)) {
-        this.addToQueue ('<!--!-->', position);
+        this.addToQueue('<!--!-->', position);
       } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
         const tmpChildren = isArray(vNode) ? vNode : vNode.children;
-        
+
         for (let i = 0, len = tmpChildren.length; i < len; ++i) {
           this.renderVNodeToQueue(tmpChildren[i], context, position);
         }

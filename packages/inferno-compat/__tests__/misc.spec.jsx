@@ -13,12 +13,12 @@ import React, {
 describe('MISC', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -40,7 +40,7 @@ describe('MISC', () => {
   describe('React Synthetic event simulation', () => {
     it('should have isPropagationStopped and isDefaultPrevented defined in Event prototype', () => {
       const spyObj = {
-        foo: event => {
+        foo: (event) => {
           expect(event.isDefaultPrevented()).toBe(false);
           expect(event.isPropagationStopped()).toBe(false);
 
@@ -103,8 +103,8 @@ describe('MISC', () => {
     });
 
     it('should replace isomorphic content', () => {
-      let ce = type => document.createElement(type);
-      let Text = text => document.createTextNode(text);
+      let ce = (type) => document.createElement(type);
+      let Text = (text) => document.createTextNode(text);
       let root = ce('div');
       let initialChild = ce('div');
       initialChild.appendChild(Text('initial content'));
@@ -115,8 +115,8 @@ describe('MISC', () => {
     });
 
     it('hydrate should remove extra elements', () => {
-      let ce = type => document.createElement(type);
-      let Text = text => document.createTextNode(text);
+      let ce = (type) => document.createElement(type);
+      let Text = (text) => document.createTextNode(text);
       let root = ce('div');
 
       let c1 = ce('div');
@@ -132,8 +132,8 @@ describe('MISC', () => {
     });
 
     it('should remove text nodes', () => {
-      let ce = type => document.createElement(type);
-      let Text = text => document.createTextNode(text);
+      let ce = (type) => document.createElement(type);
+      let Text = (text) => document.createTextNode(text);
       let root = ce('div');
 
       root.appendChild(Text('Text Content in the root'));
@@ -286,7 +286,7 @@ describe('MISC', () => {
         renderInner() {
           const wrapper = document.createElement('div');
           const self = this;
-          unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper, function() {
+          unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper, function () {
             self.inner = this;
           });
         }
