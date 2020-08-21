@@ -13,14 +13,14 @@ function filter(i) {
  */
 export function NavLink({
   to,
-  exact,
-  strict,
-  onClick,
+  exact = false,
+  strict = false,
+  onClick = null,
   location: linkLocation,
   activeClassName = 'active',
-  className,
-  activeStyle,
-  style,
+  className = null,
+  activeStyle = null,
+  style = null,
   isActive: getIsActive,
   ariaCurrent = 'true',
   ...rest
@@ -34,10 +34,12 @@ export function NavLink({
       combineFrom(
         {
           'aria-current': isActive && ariaCurrent,
-          className: isActive ? [className, activeClassName].filter(filter).join(' ') : className,
+          className: isActive
+            ? [className, activeClassName].filter(filter).join(' ')
+            : className,
           onClick,
           style: isActive ? combineFrom(style, activeStyle) : style,
-          to
+          to,
         },
         rest
       )
@@ -49,6 +51,6 @@ export function NavLink({
     exact,
     location: linkLocation,
     path: typeof to === 'object' ? to.pathname : to,
-    strict
+    strict,
   });
 }
