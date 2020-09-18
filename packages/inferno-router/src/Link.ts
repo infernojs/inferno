@@ -2,6 +2,7 @@ import { createVNode, InfernoMouseEvent, linkEvent, VNode } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 import { combineFrom } from 'inferno-shared';
+import type { Location } from "history";
 
 const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
@@ -11,7 +12,7 @@ export interface ILinkProps {
   target?: string;
   className?: string;
   replace?: boolean;
-  to?: string | {};
+  to?: string | Location;
   innerRef?: any;
 }
 

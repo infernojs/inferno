@@ -3,14 +3,30 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { Route } from './Route';
 import { Link } from './Link';
 import { combineFrom } from 'inferno-shared';
+import type { Location } from "history";
 
 function filter(i) {
   return i;
 }
 
+interface NavLinkProps {
+  to: string | Location,
+  exact?: boolean,
+  strict?: boolean,
+  onClick?: any,
+  location?: any,
+  activeClassName?: string,
+  className?: string,
+  activeStyle?: any,
+  style?: any,
+  isActive?: (match, location) => boolean,
+  ariaCurrent?: string
+}
+
 /**
  * A <Link> wrapper that knows if it's "active" or not.
  */
+
 export function NavLink({
   to,
   exact,
@@ -24,9 +40,9 @@ export function NavLink({
   isActive: getIsActive,
   ariaCurrent = 'true',
   ...rest
-}): any {
+} : NavLinkProps): any {
   function linkComponent({ location, match }): VNode {
-    const isActive = !!(getIsActive ? getIsActive(match, location) : match);
+    const isActive = Boolean(getIsActive ? getIsActive(match, location) : match);
 
     return createComponentVNode(
       VNodeFlags.ComponentFunction,
