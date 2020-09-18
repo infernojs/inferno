@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { Route, Router } from 'inferno-router';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from "history";
 
 describe('<Route component>', () => {
   const history = createMemoryHistory();
