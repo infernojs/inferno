@@ -1,7 +1,7 @@
+import type { InfernoNode, VNode } from '../core/types';
 import { isFunction, isInvalid, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
-import { InfernoNode, VNode } from '../core/types';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';

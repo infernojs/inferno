@@ -1,8 +1,8 @@
+import type { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
-import { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';
 
 const keyPrefix = '$';
 

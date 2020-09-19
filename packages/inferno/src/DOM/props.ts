@@ -1,3 +1,4 @@
+import type { VNode } from '../core/types';
 import { namespaces } from './constants';
 import { isNull, isNullOrUndef, isString } from 'inferno-shared';
 import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
@@ -6,7 +7,6 @@ import { isSameInnerHTML } from './utils/innerHTML';
 import { isLastValueSameLinkEvent, normalizeEventName } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
-import { VNode } from '../core/types';
 import { attachEvent } from './events/attachEvent';
 import { isLinkEventObject } from './events/linkEvent';
 

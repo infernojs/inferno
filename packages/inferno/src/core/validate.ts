@@ -1,7 +1,7 @@
+import type { VNode } from './types';
 import { isArray, isInvalid, isNullOrUndef, isNumber, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { getComponentName } from '../DOM/utils/common';
-import { VNode } from './types';
 
 function getTagName(input) {
   let tagName;

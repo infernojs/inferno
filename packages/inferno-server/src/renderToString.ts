@@ -2,7 +2,7 @@ import { EMPTY_OBJ } from 'inferno';
 import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { renderStylesToString } from './prop-renderers';
-import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
+import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
 
 function renderVNodeToString(vNode, parent, context): string {
   const flags = vNode.flags;
@@ -68,7 +68,7 @@ function renderVNodeToString(vNode, parent, context): string {
       }
       return renderVNodeToString(renderOutput, vNode, childContext);
     } else {
-      const renderOutput = type(props, context);
+      const renderOutput = renderFunctionalComponent(vNode, context);
 
       if (isInvalid(renderOutput)) {
         return '<!--!-->';

@@ -1,5 +1,5 @@
+import type { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
 
 export type IComponentConstructor<T> = new (props: T, context: any) => IComponent<T, any>;
 
@@ -128,7 +128,7 @@ export interface RefObject<T> {
 export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'] | RefObject<T>;
 
 export interface ForwardRef {
-  render: Function;
+  readonly render: Function;
 }
 
 export interface Refs<P> {

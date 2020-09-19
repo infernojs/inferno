@@ -2,8 +2,9 @@ import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isN
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
-import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
-import { VNode } from 'inferno';
+import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
+import type { VNode } from 'inferno';
+import { mergePendingState } from "./stream/streamUtils";
 
 const resolvedPromise = Promise.resolve();
 
@@ -71,7 +72,7 @@ export class RenderStream extends Readable {
     const props = vComponent.props;
 
     if (!isClass) {
-      const renderOutput = type(props, context);
+      const renderOutput = renderFunctionalComponent(vComponent, context);
 
       if (isInvalid(renderOutput)) {
         return this.push('<!--!-->');
@@ -102,21 +103,8 @@ export class RenderStream extends Readable {
     instance.$BR = true;
 
     return Promise.resolve(!hasNewAPI && instance.componentWillMount && instance.componentWillMount()).then(() => {
-      const pending = instance.$PS;
-      if (pending) {
-        const state = instance.state;
+      mergePendingState(instance);
 
-        if (state === null) {
-          instance.state = pending;
-        } else {
-          for (const key in pending) {
-            state[key] = pending[key];
-          }
-        }
-        instance.$PS = null;
-      }
-
-      instance.$BR = false;
       if (hasNewAPI) {
         instance.state = createDerivedState(instance, props, instance.state);
       }

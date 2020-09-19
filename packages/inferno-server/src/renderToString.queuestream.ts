@@ -3,7 +3,8 @@ import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isN
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
-import { createDerivedState, escapeText, isAttributeNameSafe, voidElements } from './utils';
+import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
+import { mergePendingState } from "./stream/streamUtils";
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
@@ -94,21 +95,7 @@ export class RenderQueueStream extends Readable {
         if (!hasNewAPI && isFunction(instance.componentWillMount)) {
           instance.$BR = true;
           instance.componentWillMount();
-          const pending = instance.$PS;
-
-          if (pending) {
-            const state = instance.state;
-
-            if (state === null) {
-              instance.state = pending;
-            } else {
-              for (const key in pending) {
-                state[key] = pending[key];
-              }
-            }
-            instance.$PS = null;
-          }
-          instance.$BR = false;
+          mergePendingState(instance);
         }
         // Trigger extra promise-based lifecycle hook
         if (isFunction(instance.getInitialProps)) {
@@ -159,7 +146,7 @@ export class RenderQueueStream extends Readable {
           this.renderVNodeToQueue(renderOutput, context, position);
         }
       } else {
-        const renderOutput = type(props, context);
+        const renderOutput =  renderFunctionalComponent(vNode, context);
 
         if (isInvalid(renderOutput)) {
           this.addToQueue('<!--!-->', position);

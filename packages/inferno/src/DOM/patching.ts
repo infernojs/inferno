@@ -1,7 +1,7 @@
+import type { VNode } from '../core/types';
 import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
-import { VNode } from '../core/types';
 import { mount, mountArrayChildren } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
 import {

@@ -1,4 +1,6 @@
 import { combineFrom } from 'inferno-shared';
+import { EMPTY_OBJ, VNode } from "inferno";
+import { VNodeFlags } from "inferno-vnode-flags";
 
 const rxUnescaped = new RegExp(/["'&<>]/);
 
@@ -106,4 +108,9 @@ export function createDerivedState(instance, nextProps, state) {
   }
 
   return state;
+}
+
+export function renderFunctionalComponent(vNode: VNode, context) {
+  const props = vNode.props || EMPTY_OBJ;
+  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context);
 }

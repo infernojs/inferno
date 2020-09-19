@@ -1,5 +1,5 @@
+import type { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
 import { isFunction, isNull } from 'inferno-shared';
-import { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
 import { isLastValueSameLinkEvent, normalizeEventName } from './../utils/common';
 import { isLinkEventObject } from './linkEvent';
 

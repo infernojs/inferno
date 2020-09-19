@@ -1,6 +1,6 @@
+import type { InfernoNode, LinkedEvent, VNode } from './../../core/types';
 import { combineFrom, isFunction, isNull, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { InfernoNode, LinkedEvent, VNode } from './../../core/types';
 import { isLinkEventObject } from '../events/linkEvent';
 
 // We need EMPTY_OBJ defined in one place.

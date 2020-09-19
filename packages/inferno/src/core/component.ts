@@ -1,4 +1,4 @@
-import { IComponent, InfernoNode, StatelessComponent } from './types';
+import type { IComponent, InfernoNode, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
