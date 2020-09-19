@@ -102,7 +102,7 @@ export const InfernoCompatPropertyMap = {
   onDoubleClick: 'onDblClick'
 };
 
-const CAMELIZE = /[\-\:]([a-z])/g;
+const CAMELIZE = /[\-:]([a-z])/g;
 const capitalize = (token) => token[1].toUpperCase();
 
 ATTRS.forEach((original) => {

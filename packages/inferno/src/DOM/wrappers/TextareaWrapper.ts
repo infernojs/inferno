@@ -3,7 +3,6 @@ import { createWrappedFunction } from './wrapper';
 import { attachEvent } from '../events/attachEvent';
 
 const onTextareaInputChange = createWrappedFunction('onInput', applyValueTextArea);
-
 const wrappedOnChange = createWrappedFunction('onChange');
 
 export function textAreaEvents(dom, nextPropsOrEmpty) {

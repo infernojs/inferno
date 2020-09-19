@@ -78,9 +78,9 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
-  let children = vNode.children;
   const childFlags = vNode.childFlags;
   const dom = (vNode.dom = documentCreateElement(vNode.type, (isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0)));
+  let children = vNode.children;
 
   if (!isNullOrUndef(className) && className !== '') {
     if (isSVG) {

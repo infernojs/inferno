@@ -5,12 +5,6 @@ import { applyValueInput, inputEvents, isCheckedType } from './InputWrapper';
 import { applyValueSelect, selectEvents } from './SelectWrapper';
 import { applyValueTextArea, textAreaEvents } from './TextareaWrapper';
 
-/**
- * There is currently no support for switching same input between controlled and nonControlled
- * If that ever becomes a real issue, then re design controlled elements
- * Currently user must choose either controlled or non-controlled and stick with that
- */
-
 export function processElement(flags: VNodeFlags, vNode: VNode, dom: Element, nextPropsOrEmpty, mounting: boolean, isControlled: boolean): void {
   if (flags & VNodeFlags.InputElement) {
     applyValueInput(nextPropsOrEmpty, dom);
