@@ -56,7 +56,6 @@ module.exports = function (config) {
       'karma-firefox-launcher',
       'karma-webpack',
       'karma-chrome-launcher',
-      'karma-edge-launcher',
       'karma-gzip-preprocessor'
     ],
 
