@@ -1,6 +1,6 @@
 import { combineFrom } from 'inferno-shared';
-import { EMPTY_OBJ, VNode } from "inferno";
-import { VNodeFlags } from "inferno-vnode-flags";
+import { EMPTY_OBJ, VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 const rxUnescaped = new RegExp(/["'&<>]/);
 

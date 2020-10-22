@@ -1,4 +1,3 @@
-
 export function mergePendingState(componentInstance) {
   const pendingState = componentInstance.$PS;
 

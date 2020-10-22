@@ -4,7 +4,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
 import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
-import { mergePendingState } from "./stream/streamUtils";
+import { mergePendingState } from './stream/streamUtils';
 
 export class RenderQueueStream extends Readable {
   public collector: any[] = [Infinity]; // Infinity marks the end of the stream
@@ -146,7 +146,7 @@ export class RenderQueueStream extends Readable {
           this.renderVNodeToQueue(renderOutput, context, position);
         }
       } else {
-        const renderOutput =  renderFunctionalComponent(vNode, context);
+        const renderOutput = renderFunctionalComponent(vNode, context);
 
         if (isInvalid(renderOutput)) {
           this.addToQueue('<!--!-->', position);

@@ -26,11 +26,11 @@ module.exports = function (options) {
       file: `dist/${filename}`,
       format: options.format,
       globals: Object.assign(moduleGlobals, rollupConfig.moduleGlobals),
-      name: rollupConfig.moduleName
-    },
-    indent: true,
-    extend: true,
-    sourcemap: false
+      name: rollupConfig.moduleName,
+      indent: true,
+      extend: true,
+      sourcemap: false
+    }
   };
 
   if (options.format === 'cjs') {

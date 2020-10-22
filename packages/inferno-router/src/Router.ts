@@ -1,7 +1,7 @@
 import { Component, InfernoNode } from 'inferno';
 import { warning } from './utils';
 import { combineFrom } from 'inferno-shared';
-import type {History} from "history";
+import type { History } from 'history';
 
 export interface IRouterProps {
   history: History<any>;

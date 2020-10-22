@@ -1,7 +1,7 @@
 import { Component, render } from 'inferno';
 import { Link, Route, Router, Switch } from 'inferno-router';
 import { triggerEvent } from 'inferno-utils';
-import { createMemoryHistory } from "history";
+import { createMemoryHistory } from 'history';
 
 describe('Github1176', () => {
   let container;

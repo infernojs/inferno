@@ -4,7 +4,7 @@ import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
 import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
 import type { VNode } from 'inferno';
-import { mergePendingState } from "./stream/streamUtils";
+import { mergePendingState } from './stream/streamUtils';
 
 const resolvedPromise = Promise.resolve();
 

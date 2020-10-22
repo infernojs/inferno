@@ -1,18 +1,18 @@
 import { Component, createRef, forwardRef, RefObject, render } from 'inferno';
 import { renderToString, streamAsString, streamQueueAsString } from 'inferno-server';
-import { hydrate } from "inferno-hydrate";
-import { isString } from "inferno-shared";
+import { hydrate } from 'inferno-hydrate';
+import { isString } from 'inferno-shared';
 import concatStream from 'concat-stream-es6';
 
 describe('SSR -> Hydrate - Forward Ref', () => {
   let container;
 
-  beforeEach(function() {
+  beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -91,7 +91,7 @@ describe('SSR -> Hydrate - Forward Ref', () => {
         public render() {
           return (
             <FancyButton
-              ref={btn => {
+              ref={(btn) => {
                 if (btn) {
                   expect(btn).toBe(container.querySelector('button'));
                 }
@@ -132,13 +132,13 @@ describe('SSR -> Hydrate - Forward Ref', () => {
       expect(FancyButton.render).toBeDefined();
 
       SSRtoString(method, <FancyButton />, function (htmlString) {
-        let firstVal : Element | null = null;
+        let firstVal: Element | null = null;
 
         container.innerHTML = htmlString;
 
         hydrate(
           <FancyButton
-            ref={btn => {
+            ref={(btn) => {
               firstVal = btn;
             }}
           >
@@ -150,11 +150,11 @@ describe('SSR -> Hydrate - Forward Ref', () => {
         expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
         expect(firstVal).not.toBe(null);
 
-        let secondVal : Element | null = null;
+        let secondVal: Element | null = null;
 
         render(
           <FancyButton
-            ref={btn => {
+            ref={(btn) => {
               secondVal = btn;
             }}
           >
@@ -169,5 +169,5 @@ describe('SSR -> Hydrate - Forward Ref', () => {
         expect(container.innerHTML).toBe('<button class="FancyButton">Click me! 222</button>');
       });
     });
-  })
+  });
 });
