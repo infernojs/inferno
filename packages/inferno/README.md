@@ -860,7 +860,7 @@ All these Component lifecycle methods ( including `render` and `setState - callb
 
 | Name                              | Triggered when                                                                        | Arguments to callback           |
 | -----------                       | --------------                                                                        | -----------------------         |
-| `componentDidMount`               | component has been mounted succesfully                                                |                                 |
+| `componentDidMount`               | component has been mounted successfully                                                |                                 |
 | `componentWillMount`              | component is about to mount                                                           |                                 |
 | `componentWillReceiveProps`       | before render when component updates                                                  | `nextProps, context`            |
 | `shouldComponentUpdate`           | component has been triggered to update                                                | `nextProps, nextState`          |
