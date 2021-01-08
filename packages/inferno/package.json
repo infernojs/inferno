@@ -58,6 +58,6 @@
   "dependencies": {
     "inferno-shared": "7.4.6",
     "inferno-vnode-flags": "7.4.6",
-    "opencollective-postinstall": "^2.0.2"
+    "opencollective-postinstall": "^2.0.3"
   }
 }
