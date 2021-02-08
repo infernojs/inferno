@@ -41,6 +41,9 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
     if (QUEUE.indexOf(component) === -1) {
       QUEUE.push(component);
     }
+    if (force) {
+      component.$F = true;
+    }
     if (!microTaskPending) {
       microTaskPending = true;
       nextTick(rerender);
@@ -74,7 +77,9 @@ export function rerender() {
 
   while ((component = QUEUE.shift())) {
     if (!component.$UN) {
-      applyState(component, false);
+      const force = component.$F;
+      component.$F = false;
+      applyState(component, force);
 
       if (component.$QU) {
         callSetStateCallbacks(component);
@@ -136,6 +141,7 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $SSR?: boolean; // Server side rendering flag, true when rendering on server, non existent on client
   public $L: Function[] | null = null; // Current lifecycle of this component
   public $SVG: boolean = false; // Flag to keep track if component is inside SVG tree
+  public $F: boolean = false; // Force update flag
 
   constructor(props?: P, context?: any) {
     this.props = props || (EMPTY_OBJ as P);
