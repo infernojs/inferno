@@ -54,8 +54,9 @@ describe('transition events', () => {
   it('should call "didAppear" when component has been inserted into DOM', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      didAppear() {
+      didAppear(dom) {
         spyer('didAppear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
       }
       componentDidMount() {
         spyer('didMount');
@@ -76,7 +77,7 @@ describe('transition events', () => {
     const spyer = jasmine.createSpy();
     class Child extends Component {
       didAppear() {
-        spyer('childDidAppear');
+        spyer('no-op');
       }
       componentDidMount() {
         spyer('childDidMount');
@@ -87,8 +88,9 @@ describe('transition events', () => {
     }
 
     class App extends Component {
-      didAppear() {
+      didAppear(dom) {
         spyer('didAppear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
       }
       componentDidMount() {
         spyer('didMount');
@@ -104,6 +106,42 @@ describe('transition events', () => {
     expect(spyer.calls.argsFor(0)).toEqual(['childDidMount']);
     expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(2)).toEqual(['didAppear']);
+  });
+
+  it('should call all "didAppear" when multiple siblings have been inserted into DOM', () => {
+    const spyer = jasmine.createSpy();
+    class Child extends Component {
+      didAppear(dom) {
+        spyer('childDidAppear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+      }
+      render () {
+        return (<div />)
+      }
+    }
+
+    class App extends Component {
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render () {
+        return (<div>
+          <Child />
+          <Child />
+          <Child />
+          <Child />
+        </div>)
+      }
+    }
+
+    render(<App />, container);
+
+    expect(spyer).toHaveBeenCalledTimes(5);
+    expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(1)).toEqual(['childDidAppear']);
+    expect(spyer.calls.argsFor(2)).toEqual(['childDidAppear']);
+    expect(spyer.calls.argsFor(3)).toEqual(['childDidAppear']);
+    expect(spyer.calls.argsFor(4)).toEqual(['childDidAppear']);
   });
 
   it('should call "willDisappear" when component is about to be removed from DOM', () => {});

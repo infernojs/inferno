@@ -161,7 +161,7 @@ function createClassMountCallback(instance) {
 
 function createClassAnimationHook(instance) {
   return () => {
-    instance.didAppear(instance.$LI);
+    instance.didAppear(instance.$LI.dom);
   };
 }
 
