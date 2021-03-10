@@ -74,9 +74,12 @@
     "test:browser:compat": "cross-env InfernoCompat=1 npm run --prefix fixtures/browser local",
     "test:browser:nocompat": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser local",
     "test:browser:debug": "cross-env InfernoCompat=1 npm run --prefix fixtures/browser debug",
+    "test:browser:debug-nocompat": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser debug",
     "test:browser:sauce": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test -- --forceExit",
-    "test:package": "node fixtures/packaging/build-all.js"
+    "test:package": "node fixtures/packaging/build-all.js",
+    "quick-test:browser": "run-s build:s:** && npm run build:p:cjs:prod && npm run test:browser:nocompat",
+    "quick-test:browser:debug": "run-s build:s:** && npm run build:p:cjs:prod && npm run test:browser:debug-nocompat",
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

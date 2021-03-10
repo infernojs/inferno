@@ -987,6 +987,8 @@ $ npm run build
 $ npm run test:browser
 ```
 
+NOTE: If you only want to run the browser tests for a quicker turnaround run `npm run quick-test:browser` or `npm run quick-test:browser:debug`.
+
 ## Community
 
 There is an [Inferno Slack](https://infernojs.slack.com). You can join via [inferno-slack.herokuapp.com](https://inferno-slack.herokuapp.com).
