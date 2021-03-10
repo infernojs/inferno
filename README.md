@@ -987,7 +987,13 @@ $ npm run build
 $ npm run test:browser
 ```
 
-NOTE: If you only want to run the browser tests for a quicker turnaround run `npm run quick-test:browser` or `npm run quick-test:browser:debug`.
+If you only want to run the browser tests when coding, use the following to reduce turnaround by 50-80%:
+
+```sh
+$ npm run quick-test:browser # Compiles all packages and runs browser tests
+$ npm run quick-test:browser-inferno # Only compiles the inferno package and runs browser tests
+$ npm run quick-test:browser-debug # Compiles all packages and runs browser tests with "debug"
+```
 
 ## Community
 
