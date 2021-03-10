@@ -34,7 +34,7 @@ describe('transition events', () => {
    * We will start by implementing this for class components. Animations are expensive so it is probably a reasonable
    * tradeoff to force the use of class componnents.
    * 
-   * ** How do we handle nested animations? **
+   * QUESTION: How do we handle nested animations?
    * Normally we only want to animated the outermost animation, but there are situation when the dev might want to
    * do this differenty. Should we:
    * - always block animations in children?
@@ -44,6 +44,11 @@ describe('transition events', () => {
    * 
    * ANSWER: I will block all animations down stream for starters. Giving an option requires A LOT of thought on
    * edge cases.
+   * 
+   * QUESTION: What if we add a set of siblings in a list, then all of them should animate, no?
+   * TODO: Investigate how to solve this. Right now only one item will animate.
+   * 
+   * Perhaps animations should be a tree and only the root node animates
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
@@ -65,6 +70,40 @@ describe('transition events', () => {
     expect(spyer).toHaveBeenCalledTimes(2);
     expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(1)).toEqual(['didAppear']);
+  });
+
+  it('should only call parent "didAppear" when component tree has been inserted into DOM', () => {
+    const spyer = jasmine.createSpy();
+    class Child extends Component {
+      didAppear() {
+        spyer('childDidAppear');
+      }
+      componentDidMount() {
+        spyer('childDidMount');
+      }
+      render () {
+        return (<div />)
+      }
+    }
+
+    class App extends Component {
+      didAppear() {
+        spyer('didAppear');
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render () {
+        return (<div><Child /></div>)
+      }
+    }
+
+    render(<App />, container);
+
+    expect(spyer).toHaveBeenCalledTimes(3);
+    expect(spyer.calls.argsFor(0)).toEqual(['childDidMount']);
+    expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(2)).toEqual(['didAppear']);
   });
 
   it('should call "willDisappear" when component is about to be removed from DOM', () => {});

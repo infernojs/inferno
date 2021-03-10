@@ -137,10 +137,16 @@ export function mountArrayChildren(children, dom: Element | null, context: Objec
 }
 
 export function mountClassComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: Function[]) {
+  // TODO: Should we pass animations here?
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
-  mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, animations);
+
+  // If we have a didAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+  let childAnimations = animations;
+  if (isFunction(instance.didAppear)) {
+    childAnimations = [];
+  }
+  mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
-  // Possible entrypoint for animation hook
 }
 
 export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle, animations: Function[]): void {
@@ -174,7 +180,6 @@ export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[
     lifecycle.push(createClassMountCallback(instance));
   }
   if (isFunction(instance.didAppear)) {
-    // Do we need to pass animations just like lifecycle?
     animations.push(createClassAnimationHook(instance));
   }
 }

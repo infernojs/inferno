@@ -5,7 +5,7 @@ import { directClone } from '../core/implementation';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, callLast, EMPTY_OBJ, options, renderCheck } from './utils/common';
+import { callAll, EMPTY_OBJ, options, renderCheck } from './utils/common';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -74,7 +74,7 @@ export function __render(
     }
   }
   callAll(lifecycle);
-  callLast(animations);
+  callAll(animations);
 
   renderCheck.v = false;
   if (isFunction(callback)) {
