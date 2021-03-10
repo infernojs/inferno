@@ -63,7 +63,7 @@ export function __render(
     }
   } else {
     if (isNullOrUndef(input)) {
-      remove(rootInput as VNode, parentDOM as Element);
+      remove(rootInput as VNode, parentDOM as Element, animations);
       (parentDOM as any).$V = null;
     } else {
       if ((input as VNode).flags & VNodeFlags.InUse) {

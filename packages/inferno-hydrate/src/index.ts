@@ -140,7 +140,7 @@ function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context:
     hydrateChildren(vNode, dom, dom.firstChild, context, isSVG, lifecycle, animations);
 
     if (!isNull(props)) {
-      _MP(vNode, flags, props, dom, isSVG);
+      _MP(vNode, flags, props, dom, isSVG, animations);
     }
     if (isNullOrUndef(className)) {
       if (dom.className !== '') {

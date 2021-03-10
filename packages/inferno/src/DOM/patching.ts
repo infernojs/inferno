@@ -23,7 +23,7 @@ import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 
 function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], animations: Function[]) {
-  unmount(lastVNode);
+  unmount(lastVNode, animations);
 
   if ((nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0) {
     mount(nextVNode, null, context, isSVG, null, lifecycle, animations);
@@ -187,14 +187,14 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
         const lastValue = lastPropsOrEmpty[prop];
         const nextValue = nextPropsOrEmpty[prop];
         if (lastValue !== nextValue) {
-          patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode);
+          patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode, animations);
         }
       }
     }
     if (lastPropsOrEmpty !== EMPTY_OBJ) {
       for (const prop in lastPropsOrEmpty) {
         if (isNullOrUndef(nextPropsOrEmpty[prop]) && !isNullOrUndef(lastPropsOrEmpty[prop])) {
-          patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode);
+          patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode, animations);
         }
       }
     }
@@ -248,7 +248,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object
 }
 
 function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Function[], animations: Function[]) {
-  unmount(lastChildren);
+  unmount(lastChildren, animations);
 
   mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle, animations);
 
@@ -275,10 +275,10 @@ function patchChildren(
           patch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
           break;
         case ChildFlags.HasInvalidChildren:
-          remove(lastChildren, parentDOM);
+          remove(lastChildren, parentDOM, animations);
           break;
         case ChildFlags.HasTextChildren:
-          unmount(lastChildren);
+          unmount(lastChildren, animations);
           setTextContent(parentDOM, nextChildren);
           break;
         default:
@@ -322,15 +322,15 @@ function patchChildren(
     default:
       switch (nextChildFlags) {
         case ChildFlags.HasTextChildren:
-          unmountAllChildren(lastChildren);
+          unmountAllChildren(lastChildren, animations);
           setTextContent(parentDOM, nextChildren);
           break;
         case ChildFlags.HasVNodeChildren:
-          removeAllChildren(parentDOM, parentVNode, lastChildren);
+          removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
           mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
           break;
         case ChildFlags.HasInvalidChildren:
-          removeAllChildren(parentDOM, parentVNode, lastChildren);
+          removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
           break;
         default:
           const lastLength = lastChildren.length | 0;
@@ -342,7 +342,7 @@ function patchChildren(
               mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
             }
           } else if (nextLength === 0) {
-            removeAllChildren(parentDOM, parentVNode, lastChildren);
+            removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
           } else if (nextChildFlags === ChildFlags.HasKeyedChildren && lastChildFlags === ChildFlags.HasKeyedChildren) {
             patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle, animations);
           } else {
@@ -524,7 +524,7 @@ function patchNonKeyedChildren(
     }
   } else if (lastChildrenLength > nextChildrenLength) {
     for (i = commonLength; i < lastChildrenLength; ++i) {
-      remove(lastChildren[i], dom);
+      remove(lastChildren[i], dom, animations);
     }
   }
 }
@@ -604,7 +604,7 @@ function patchKeyedChildren(
     }
   } else if (j > bEnd) {
     while (j <= aEnd) {
-      remove(a[j++], dom);
+      remove(a[j++], dom, animations);
     }
   } else {
     patchKeyedChildrenComplex(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle, animations);
@@ -654,7 +654,7 @@ function patchKeyedChildrenComplex(
             if (canRemoveWholeContent) {
               canRemoveWholeContent = false;
               while (aStart < i) {
-                remove(a[aStart++], dom);
+                remove(a[aStart++], dom, animations);
               }
             }
             if (pos > j) {
@@ -671,10 +671,10 @@ function patchKeyedChildrenComplex(
           }
         }
         if (!canRemoveWholeContent && j > bEnd) {
-          remove(aNode, dom);
+          remove(aNode, dom, animations);
         }
       } else if (!canRemoveWholeContent) {
-        remove(aNode, dom);
+        remove(aNode, dom, animations);
       }
     }
   } else {
@@ -696,7 +696,7 @@ function patchKeyedChildrenComplex(
           if (canRemoveWholeContent) {
             canRemoveWholeContent = false;
             while (i > aStart) {
-              remove(a[aStart++], dom);
+              remove(a[aStart++], dom, animations);
             }
           }
           sources[j - bStart] = i + 1;
@@ -712,16 +712,16 @@ function patchKeyedChildrenComplex(
           patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
           ++patched;
         } else if (!canRemoveWholeContent) {
-          remove(aNode, dom);
+          remove(aNode, dom, animations);
         }
       } else if (!canRemoveWholeContent) {
-        remove(aNode, dom);
+        remove(aNode, dom, animations);
       }
     }
   }
   // fast-path: if nothing patched remove all old and add all new
   if (canRemoveWholeContent) {
-    removeAllChildren(dom, parentVNode, a);
+    removeAllChildren(dom, parentVNode, a, animations);
     mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle, animations);
   } else if (moved) {
     const seq = lis_algorithm(sources);

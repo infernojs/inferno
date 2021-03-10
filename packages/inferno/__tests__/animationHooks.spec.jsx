@@ -144,7 +144,32 @@ describe('transition events', () => {
     expect(spyer.calls.argsFor(4)).toEqual(['childDidAppear']);
   });
 
-  it('should call "willDisappear" when component is about to be removed from DOM', () => {});
+  it('should call "willDisappear" when component is about to be removed from DOM', () => {
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      willDisappear(dom, done) {
+        spyer('willDisappear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+        expect(done instanceof Function).toEqual(true);
+        done()
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render () {
+        return (<div />)
+      }
+    }
+
+    render(<App />, container);
+    
+    render(null, container);
+
+    expect(spyer).toHaveBeenCalledTimes(2);
+    expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(1)).toEqual(['willDisappear']);
+
+  });
   it('should call "willMove" when component is about to be moved to another part of DOM', () => {});
 
 });

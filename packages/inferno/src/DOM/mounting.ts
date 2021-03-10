@@ -114,7 +114,7 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   }
 
   if (!isNull(props)) {
-    mountProps(vNode, flags, props, dom, isSVG);
+    mountProps(vNode, flags, props, dom, isSVG, animations);
   }
 
   if (process.env.NODE_ENV !== 'production') {
