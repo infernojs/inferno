@@ -8,22 +8,22 @@ import { createClassComponentInstance, renderFunctionalComponent } from './utils
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
-export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
+export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: Function[]): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
-    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
   } else if (flags & VNodeFlags.ComponentClass) {
-    mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+    mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
   } else if (flags & VNodeFlags.ComponentFunction) {
-    mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+    mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
     mountFunctionalComponentCallbacks(vNode, lifecycle);
   } else if (flags & VNodeFlags.Void || flags & VNodeFlags.Text) {
     mountText(vNode, parentDOM, nextNode);
   } else if (flags & VNodeFlags.Fragment) {
-    mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle);
+    mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle, animations);
   } else if (flags & VNodeFlags.Portal) {
-    mountPortal(vNode, context, parentDOM, nextNode, lifecycle);
+    mountPortal(vNode, context, parentDOM, nextNode, lifecycle, animations);
   } else if (process.env.NODE_ENV !== 'production') {
     // Development validation, in production we don't need to throw because it crashes anyway
     if (typeof vNode === 'object') {
@@ -38,8 +38,8 @@ export function mount(vNode: VNode, parentDOM: Element | null, context: Object, 
   }
 }
 
-function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Element | null, lifecycle: Function[]) {
-  mount(vNode.children as VNode, vNode.ref, context, false, null, lifecycle);
+function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Element | null, lifecycle: Function[], animations: Function[]) {
+  mount(vNode.children as VNode, vNode.ref, context, false, null, lifecycle, animations);
 
   const placeHolderVNode = createVoidVNode();
 
@@ -48,7 +48,7 @@ function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Elemen
   vNode.dom = placeHolderVNode.dom;
 }
 
-function mountFragment(vNode, context, parentDOM: Element | null, isSVG, nextNode, lifecycle: Function[]): void {
+function mountFragment(vNode, context, parentDOM: Element | null, isSVG, nextNode, lifecycle: Function[], animations: Function[]): void {
   let children = vNode.children;
   let childFlags = vNode.childFlags;
 
@@ -60,9 +60,9 @@ function mountFragment(vNode, context, parentDOM: Element | null, isSVG, nextNod
   }
 
   if (childFlags === ChildFlags.HasVNodeChildren) {
-    mount(children as VNode, parentDOM, nextNode, isSVG, nextNode, lifecycle);
+    mount(children as VNode, parentDOM, nextNode, isSVG, nextNode, lifecycle, animations);
   } else {
-    mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle);
+    mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle, animations);
   }
 }
 
@@ -74,7 +74,7 @@ export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Ele
   }
 }
 
-export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
+export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: Function[]): void {
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
@@ -103,9 +103,9 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
       if ((children as VNode).flags & VNodeFlags.InUse) {
         vNode.children = children = directClone(children as VNode);
       }
-      mount(children as VNode, dom, context, childrenIsSVG, null, lifecycle);
+      mount(children as VNode, dom, context, childrenIsSVG, null, lifecycle, animations);
     } else if (childFlags === ChildFlags.HasKeyedChildren || childFlags === ChildFlags.HasNonKeyedChildren) {
-      mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle);
+      mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle, animations);
     }
   }
 
@@ -125,25 +125,26 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   mountRef(vNode.ref, dom, lifecycle);
 }
 
-export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]): void {
+export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: Function[]): void {
   for (let i = 0; i < children.length; ++i) {
     let child = children[i];
 
     if (child.flags & VNodeFlags.InUse) {
       children[i] = child = directClone(child);
     }
-    mount(child, dom, context, isSVG, nextNode, lifecycle);
+    mount(child, dom, context, isSVG, nextNode, lifecycle, animations);
   }
 }
 
-export function mountClassComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[]) {
+export function mountClassComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: Function[]) {
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
-  mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
-  mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
+  mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, animations);
+  mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
+  // Possible entrypoint for animation hook
 }
 
-export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle): void {
-  mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle);
+export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle, animations: Function[]): void {
+  mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle, animations);
 }
 
 function createClassMountCallback(instance) {
@@ -152,7 +153,13 @@ function createClassMountCallback(instance) {
   };
 }
 
-export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[]) {
+function createClassAnimationHook(instance) {
+  return () => {
+    instance.didAppear(instance.$LI);
+  };
+}
+
+export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[], animations: Function[]) {
   mountRef(ref, instance, lifecycle);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -165,6 +172,10 @@ export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[
 
   if (isFunction(instance.componentDidMount)) {
     lifecycle.push(createClassMountCallback(instance));
+  }
+  if (isFunction(instance.didAppear)) {
+    // Do we need to pass animations just like lifecycle?
+    animations.push(createClassAnimationHook(instance));
   }
 }
 

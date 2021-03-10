@@ -95,6 +95,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
     component.$PS = null;
 
     const lifecycle: Function[] = [];
+    const animations: Function[] = [];
 
     renderCheck.v = true;
 
@@ -107,7 +108,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
       component.$SVG,
       force,
       null,
-      lifecycle
+      lifecycle,
+      animations
     );
     callAll(lifecycle);
 

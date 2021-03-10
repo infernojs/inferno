@@ -42,6 +42,7 @@ export function unmount(vNode) {
   } else if (children) {
     if (flags & VNodeFlags.ComponentClass) {
       if (isFunction(children.componentWillUnmount)) {
+        // TODO: Possible entrypoint
         children.componentWillUnmount();
       }
       unmountRef(vNode.ref);
@@ -51,14 +52,17 @@ export function unmount(vNode) {
       ref = vNode.ref;
 
       if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
+        // TODO: Possible entrypoint
         ref.onComponentWillUnmount(findDOMfromVNode(vNode, true) as Element, vNode.props || EMPTY_OBJ);
       }
 
       unmount(children);
     } else if (flags & VNodeFlags.Portal) {
+      // TODO: Possible entrypoint
       remove(children as VNode, vNode.ref);
     } else if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags & ChildFlags.MultipleChildren) {
+        // TODO: Possible entrypoint
         unmountAllChildren(children);
       }
     }

@@ -50,6 +50,12 @@ export function callAll(arrayFn: Function[]) {
   }
 }
 
+export function callLast(arrayFn: Function[]) {
+  if (arrayFn.length > 0) {
+    arrayFn[arrayFn.length - 1]()
+  }
+}
+
 function findChildVNode(vNode: VNode, startEdge: boolean, flags: VNodeFlags) {
   const children = vNode.children;
 
