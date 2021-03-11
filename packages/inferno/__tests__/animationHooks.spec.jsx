@@ -1,5 +1,6 @@
 import { Component, render } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
+import { finished } from 'stream';
 
 describe('transition events', () => {
   let container;
@@ -106,6 +107,58 @@ describe('transition events', () => {
     expect(spyer.calls.argsFor(0)).toEqual(['childDidMount']);
     expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(2)).toEqual(['didAppear']);
+  });
+
+  it('should only call "didAppear" when child component has been inserted into DOM', (done) => {
+    const spyer = jasmine.createSpy();
+    class Child extends Component {
+      didAppear() {
+        spyer('childDidAppear');
+      }
+      componentDidMount() {
+        spyer('childDidMount');
+      }
+      render () {
+        return (<div>{this.props.children}</div>)
+      }
+    }
+
+    class App extends Component {
+      constructor() {
+        super(...arguments);
+        this.state = {
+          items: [1]
+        };
+      }
+
+      componentDidMount() {
+        spyer('didMount');
+        setTimeout(() => {
+          this.setState({
+            items: [1, 2]
+          });
+          // Make sure inferno is done and then check the results
+          setTimeout(finished, 5)
+        }, 5)
+      }
+
+      render () {
+        return (<div>{this.state.items.map((i) => <Child key={i}>{i}</Child>)}</div>)
+      }
+    }
+
+    render(<App />, container);
+
+    const finished = () => {
+      expect(spyer).toHaveBeenCalledTimes(5);
+      expect(spyer.calls.argsFor(0)).toEqual(['childDidMount']);
+      expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(2)).toEqual(['childDidAppear']);
+      expect(spyer.calls.argsFor(3)).toEqual(['childDidMount']);
+      expect(spyer.calls.argsFor(4)).toEqual(['childDidAppear']);
+      expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>')
+      done();
+    }
   });
 
   it('should call all "didAppear" when multiple siblings have been inserted into DOM', () => {

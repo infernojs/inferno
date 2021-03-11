@@ -112,6 +112,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
       animations
     );
     callAll(lifecycle);
+    callAll(animations);
 
     renderCheck.v = false;
   } else {
