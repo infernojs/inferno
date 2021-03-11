@@ -47,9 +47,9 @@ describe('transition events', () => {
    * edge cases.
    * 
    * QUESTION: What if we add a set of siblings in a list, then all of them should animate, no?
-   * TODO: Investigate how to solve this. Right now only one item will animate.
+   * TODO: Investigate how to solve this.
    * 
-   * Perhaps animations should be a tree and only the root node animates
+   * ANSWER: Animations should be a tree and only the highest node animates, but all siblings will animate
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
