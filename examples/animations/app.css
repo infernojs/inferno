@@ -6,27 +6,77 @@
 .HeightAndFade-leave-active {
     /* Leave animation transitions */
     overflow: hidden;
-    transition: height 0.3s ease-out, opacity 0.2s ease-in;
+    transition: padding .15s ease-out, height 0.15s ease-out, opacity 0.2s ease-in;
 }
 
 .HeightAndFade-leave-end {
     /* Leave animation end state */
     height: 0;
     opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .HeightAndFade-enter {
     /* Enter animation start state */
     height: 0;
     opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .HeightAndFade-enter-active {
     /* Enter animation transitions */
-    transition: height 1s ease-out, opacity .5s ease-in;
+    transition: padding .25s ease-out, height .25s ease-out, opacity .6s ease-in;
 }
 
 .HeightAndFade-enter-end {
     /* Enter animation end state */
     opacity: 1;
+}
+
+ul {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin-bottom: 1rem;
+}
+
+li {
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  background: #4A90E2;
+  color: white;
+  text-align: center;
+  max-width: 10rem;
+  border-top: 1px solid #fff;
+} li:hover {
+  background: #3775bb;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background: #4A90E2;
+  color: white;
+  border-style: none;
+  border-radius: 4px;
+  width: 10rem;
+} button:hover {
+  background: #3775bb;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#App {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 100vh;
+  padding: 1rem;
 }
