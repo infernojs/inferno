@@ -69,9 +69,13 @@ button {
 body {
   margin: 0;
   padding: 0;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
 }
 
-#App {
+#App1,
+#App2 {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -79,4 +83,12 @@ body {
   justify-content: flex-end;
   min-height: 100vh;
   padding: 1rem;
+}
+
+h2 {
+  font-family: helvetica;
+  font-size: 1rem;
+  font-weight: 100;
+  color: #4A90E2;
+  text-align: center;
 }

@@ -55,21 +55,18 @@
 
 		render() {
 			return createElement('div', null, [
-        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: 'HeightAndFade', onClick: this.doRemove}, `${item.key + 1}bar`))),
+        createElement('h2', null, this.props.animation),
+        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`))),
         createElement('button', { onClick: this.doAdd }, 'Add')
       ]);
 		}
 	}
 
 	document.addEventListener('DOMContentLoaded', function () {
-		var container = document.querySelector('#App');
+		var container_1 = document.querySelector('#App1');
+		var container_2 = document.querySelector('#App2');
 
-		const times = [];
-		const count = 2;
-		let totalTime = 0;
-
-		for (var i = 0; i < count; i++) {
-			Inferno.render(createElement(List), container);
-		}
+    Inferno.render(createElement(List, {animation: 'HeightAndFade'}), container_1);
+    Inferno.render(createElement(List, {animation: 'NoTranistionEvent'}), container_2);
 	});
 })();
