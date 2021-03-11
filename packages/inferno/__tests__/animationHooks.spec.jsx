@@ -170,6 +170,88 @@ describe('transition events', () => {
     expect(spyer.calls.argsFor(1)).toEqual(['willDisappear']);
 
   });
+
+  it('should handle async callbacks from "willDisappear"', (done) => {
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      willDisappear(dom, callback) {
+        spyer('willDisappear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+        expect(done instanceof Function).toEqual(true);
+        setTimeout(() => {
+          callback()
+          didFinish()
+        }, 10);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render () {
+        return (<div />)
+      }
+    }
+
+    render(<App />, container);
+    
+    render(null, container);
+
+    function didFinish() {
+      expect(spyer).toHaveBeenCalledTimes(2);
+      expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(1)).toEqual(['willDisappear']);
+      done();
+    }
+  });
+
+  it('should handle async callbacks from "willDisappear" and mounting components with "didAppear"', (done) => {
+    const spyer = jasmine.createSpy();
+    // Always call the willDisappear callback after last render
+    let lastRenderDone = false;
+    let callMeAfterLastRender;
+    
+    class App extends Component {
+      didAppear(dom) {
+        spyer('didAppear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+      }
+      willDisappear(dom, callback) {
+        spyer('willDisappear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+        expect(done instanceof Function).toEqual(true);
+        setTimeout(() => {
+          callMeAfterLastRender = () => {
+            callback()
+            didFinish()
+          }
+          lastRenderDone && callMeAfterLastRender();
+        }, 10);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render () {
+        return (<div />)
+      }
+    }
+
+    render(<App />, container);
+    render(null, container);
+    render(<App />, container);
+
+    lastRenderDone = true;
+    callMeAfterLastRender && callMeAfterLastRender();
+
+    function didFinish() {
+      expect(spyer).toHaveBeenCalledTimes(5);
+      expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(1)).toEqual(['didAppear']);
+      expect(spyer.calls.argsFor(2)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(3)).toEqual(['didAppear']);
+      expect(spyer.calls.argsFor(4)).toEqual(['willDisappear']);
+      done();
+    }
+  });
+
   it('should call "willMove" when component is about to be moved to another part of DOM', () => {});
 
 });
