@@ -218,13 +218,19 @@ describe('transition events', () => {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(done instanceof Function).toEqual(true);
-        setTimeout(() => {
-          callMeAfterLastRender = () => {
-            callback()
-            didFinish()
-          }
-          lastRenderDone && callMeAfterLastRender();
-        }, 10);
+
+        if (this.props.forceDone) {
+          callback();
+        }
+        else {
+          setTimeout(() => {
+            callMeAfterLastRender = () => {
+              callback()
+              didFinish()
+            }
+            lastRenderDone && callMeAfterLastRender();
+          }, 10);
+        }
       }
       componentDidMount() {
         spyer('didMount');
@@ -236,18 +242,25 @@ describe('transition events', () => {
 
     render(<App />, container);
     render(null, container);
-    render(<App />, container);
+    // forceDone completes the willDissapear hook immediately
+    render(<App forceDone />, container);
 
+    expect(container.innerHTML).toBe('<div></div><div></div>');
+      
     lastRenderDone = true;
     callMeAfterLastRender && callMeAfterLastRender();
-
+    
     function didFinish() {
       expect(spyer).toHaveBeenCalledTimes(5);
       expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
       expect(spyer.calls.argsFor(1)).toEqual(['didAppear']);
-      expect(spyer.calls.argsFor(2)).toEqual(['didMount']);
-      expect(spyer.calls.argsFor(3)).toEqual(['didAppear']);
-      expect(spyer.calls.argsFor(4)).toEqual(['willDisappear']);
+      expect(spyer.calls.argsFor(2)).toEqual(['willDisappear']);
+      expect(spyer.calls.argsFor(3)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(4)).toEqual(['didAppear']);
+      expect(container.innerHTML).toBe('<div></div>');
+
+      render(null, container);
+      expect(container.innerHTML).toBe('');
       done();
     }
   });
