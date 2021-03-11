@@ -98,7 +98,6 @@ export function unmountAllChildren(children: VNode[], animations: Function[]) {
 }
 
 export function clearDOM(dom) {
-  debugger
   // Optimization for clearing dom
   dom.textContent = '';
 }
