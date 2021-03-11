@@ -987,6 +987,14 @@ $ npm run build
 $ npm run test:browser
 ```
 
+If you only want to run the browser tests when coding, use the following to reduce turnaround by 50-80%:
+
+```sh
+$ npm run quick-test:browser # Compiles all packages and runs browser tests
+$ npm run quick-test:browser-inferno # Only compiles the inferno package and runs browser tests
+$ npm run quick-test:browser-debug # Compiles all packages and runs browser tests with "debug"
+```
+
 ## Community
 
 There is an [Inferno Slack](https://infernojs.slack.com). You can join via [inferno-slack.herokuapp.com](https://inferno-slack.herokuapp.com).

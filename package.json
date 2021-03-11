@@ -74,9 +74,13 @@
     "test:browser:compat": "cross-env InfernoCompat=1 npm run --prefix fixtures/browser local",
     "test:browser:nocompat": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser local",
     "test:browser:debug": "cross-env InfernoCompat=1 npm run --prefix fixtures/browser debug",
+    "test:browser:debug-nocompat": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser debug",
     "test:browser:sauce": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test -- --forceExit",
-    "test:package": "node fixtures/packaging/build-all.js"
+    "test:package": "node fixtures/packaging/build-all.js",
+    "quick-test:browser": "run-s build:s:** && npm run build:p:cjs:prod && npm run test:browser:nocompat",
+    "quick-test:browser:debug": "run-s build:s:** && npm run build:p:cjs:prod && npm run test:browser:debug-nocompat",
+    "quick-test:browser-inferno": "lerna exec --scope 'inferno' tsc -- --noEmit && lerna exec --scope 'inferno' -- node ../../scripts/rollup/build.js --name=index --ext=.dev.esm.js --env=development --format=es --minify=false && lerna exec --scope 'inferno' -- node ../../scripts/rollup/build.js --env=production --format=cjs --replace=true --name=index.cjs --minify=true --ext=.min.js && npm run test:browser:nocompat"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
