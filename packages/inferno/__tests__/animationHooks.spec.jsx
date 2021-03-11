@@ -50,6 +50,9 @@ describe('transition events', () => {
    * TODO: Investigate how to solve this.
    * 
    * ANSWER: Animations should be a tree and only the highest node animates, but all siblings will animate
+   * 
+   * TODO: Fix code path when removing last item in a list using clearDOM(dom) optmisation
+   * TODO: The callback is lost when transition is completed by the timeout
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
