@@ -1,0 +1,32 @@
+.HeightAndFade-leave {
+    /* Leave animation start state */
+    opacity: 1;
+}
+
+.HeightAndFade-leave-active {
+    /* Leave animation transitions */
+    overflow: hidden;
+    transition: height 0.3s ease-out, opacity 0.2s ease-in;
+}
+
+.HeightAndFade-leave-end {
+    /* Leave animation end state */
+    height: 0;
+    opacity: 0;
+}
+
+.HeightAndFade-enter {
+    /* Enter animation start state */
+    height: 0;
+    opacity: 0;
+}
+
+.HeightAndFade-enter-active {
+    /* Enter animation transitions */
+    transition: height 1s ease-out, opacity .5s ease-in;
+}
+
+.HeightAndFade-enter-end {
+    /* Enter animation end state */
+    opacity: 1;
+}
