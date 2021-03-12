@@ -162,7 +162,7 @@
       e.preventDefault();
       var newItems = this.state.items.concat([]);
       var nextKey = newItems.reduce((prev, curr) => curr.key > prev ? curr.key : prev, 0) + 1;
-      newItems.push({key: nextKey});
+      newItems.push({key: nextKey, val: nextKey + 1});
       this.setState({
         items: newItems
       });
@@ -175,6 +175,17 @@
       this.setState({
         items: newItems
       });
+    }
+
+    doReassignKeys = (e) => {
+      var tmpItems = this.state.items.concat([]);
+      shuffle(tmpItems);
+      var newItems = this.state.items.map((item, index) => {
+        return Object.assign({}, item, { key: tmpItems[index].key })
+      })
+      this.setState({
+        items: newItems
+      })
     }
 
     doRemoveMix = (e) => {
@@ -194,7 +205,8 @@
 			let i = 0;
 
 			while (this.items.length < 20) {
-				this.items[this.items.length] = {key: i++};
+				this.items[this.items.length] = {key: i, val: i + 1};
+        i++;
 			}
       this.setState({ items: this.items });
 		}
@@ -202,9 +214,10 @@
 		render() {
 			return createElement('div', null, [
         createElement('h2', null, 'Shuffle'),
-        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`))),
+        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
         createElement('button', { onClick: this.doAdd }, 'Add'),
-        createElement('button', { onClick: this.doMix }, 'Mix'),
+        createElement('button', { onClick: this.doMix }, 'Shuffle'),
+        createElement('button', { onClick: this.doReassignKeys }, 'Shuffle keys'),
         createElement('button', { onClick: this.doRemoveMix }, 'Remove' + (this.state.deleted ? ` (${this.state.deleted})` : '')),
       ]);
 		}

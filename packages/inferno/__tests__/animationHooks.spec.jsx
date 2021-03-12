@@ -57,7 +57,7 @@ describe('transition events', () => {
    * DONE: remove intermediate elements during animation in list
    * DONE: randomly reassign keys in a list (before/during animation)
    * DONE: randomly sort list during animation
-   * 
+   * DONE: shuffle keys
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
