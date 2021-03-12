@@ -6,7 +6,7 @@
 .HeightAndFade-leave-active {
     /* Leave animation transitions */
     overflow: hidden;
-    transition: padding .15s ease-out, height 0.15s ease-out, opacity 0.2s ease-in;
+    transition: padding 1s ease-out, height 1s ease-out, opacity 1.2s ease-in;
 }
 
 .HeightAndFade-leave-end {
@@ -40,7 +40,7 @@ ul {
   margin: 0;
   padding: 0;
   list-style: none;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 li {
@@ -55,8 +55,16 @@ li {
   background: #3775bb;
 }
 
+li.divider {
+  height: 5px;
+  background: #eee;
+  border-width: 0;
+}
+
 button {
   padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  display: block;
   background: #4A90E2;
   color: white;
   border-style: none;
@@ -67,21 +75,22 @@ button {
 }
 
 body {
+  box-sizing: border-box;
   margin: 0;
-  padding: 0;
+  padding: 1rem;
   display: flex;
   gap: 2rem;
   justify-content: center;
+  align-items: flex-end;
+  min-height: 100vh;
 }
 
-#App1,
-#App2 {
+.App {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  min-height: 100vh;
   padding: 1rem;
 }
 
@@ -91,4 +100,13 @@ h2 {
   font-weight: 100;
   color: #4A90E2;
   text-align: center;
+}
+
+h3 {
+  font-family: helvetica;
+  font-size: 0.8rem;
+  font-weight: 100;
+  color: #4A90E2;
+  text-align: center;
+  margin-top: -0.5em;
 }

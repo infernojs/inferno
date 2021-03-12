@@ -51,6 +51,13 @@ describe('transition events', () => {
    * 
    * DONE: Fix code path when removing last item in a list using clearDOM(dom) optmisation
    * DONE: The callback is lost when transition is completed by the timeout
+   * QUESTION: Should I require the component to have a key?
+   * ANSWER: No, they should only be required in lists.
+   * DONE: What happens if order of DOM is changed during animation?
+   * DONE: remove intermediate elements during animation in list
+   * DONE: randomly reassign keys in a list (before/during animation)
+   * DONE: randomly sort list during animation
+   * 
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
