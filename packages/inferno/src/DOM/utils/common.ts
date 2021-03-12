@@ -80,33 +80,56 @@ export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
   return null;
 }
 
-export function removeVNodeDOM(vNode: VNode, parentDOM: Element) {
+export function callAllAnimationHooks(animations: Function[], callback: Function) {
+  let animsLeft = animations.length;
   do {
-    const flags = vNode.flags;
-
-    if (flags & VNodeFlags.DOMRef) {
-      removeChild(parentDOM, vNode.dom as Element);
-      return;
-    }
-    const children = vNode.children as any;
-
-    if (flags & VNodeFlags.ComponentClass) {
-      vNode = children.$LI;
-    }
-    if (flags & VNodeFlags.ComponentFunction) {
-      vNode = children;
-    }
-    if (flags & VNodeFlags.Fragment) {
-      if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        vNode = children;
-      } else {
-        for (let i = 0, len = children.length; i < len; ++i) {
-          removeVNodeDOM(children[i], parentDOM);
+    const fn = animations.pop();
+    // This check shouldn't be needed but TS complains so adding it
+    if (fn !== undefined) {
+      fn(() => {
+        // When all animations are done, remove everything.
+        // INVESTIGATE: If we add a sibling when the animation is active, will it be removed?
+        if (--animsLeft <= 0) {
+          callback();
         }
+      });
+    }
+  } while (animations.length > 0);
+}
+
+export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: Function[]) {
+  if (animations.length > 0) {
+    // Wait until animations are finished before removing actual dom nodes
+    callAllAnimationHooks(animations, () => removeVNodeDOM(vNode, parentDOM, animations));
+  }
+  else {
+    do {
+      const flags = vNode.flags;
+
+      if (flags & VNodeFlags.DOMRef) {
+        removeChild(parentDOM, vNode.dom as Element);
         return;
       }
-    }
-  } while (vNode);
+      const children = vNode.children as any;
+
+      if (flags & VNodeFlags.ComponentClass) {
+        vNode = children.$LI;
+      }
+      if (flags & VNodeFlags.ComponentFunction) {
+        vNode = children;
+      }
+      if (flags & VNodeFlags.Fragment) {
+        if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+          vNode = children;
+        } else {
+          for (let i = 0, len = children.length; i < len; ++i) {
+            removeVNodeDOM(children[i], parentDOM, animations);
+          }
+          return;
+        }
+      }
+    } while (vNode);
+  }
 }
 
 export function moveVNodeDOM(vNode, parentDOM, nextNode) {

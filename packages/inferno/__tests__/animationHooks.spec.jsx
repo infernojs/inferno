@@ -42,17 +42,15 @@ describe('transition events', () => {
    * - allow the dev to specify?
    * 
    * Ex. you have a page animation and also animations on items in that page.
-   * 
    * ANSWER: I will block all animations down stream for starters. Giving an option requires A LOT of thought on
    * edge cases.
    * 
    * QUESTION: What if we add a set of siblings in a list, then all of them should animate, no?
-   * TODO: Investigate how to solve this.
-   * 
+   * DONE: Investigate how to solve this.
    * ANSWER: Animations should be a tree and only the highest node animates, but all siblings will animate
    * 
-   * TODO: Fix code path when removing last item in a list using clearDOM(dom) optmisation
-   * TODO: The callback is lost when transition is completed by the timeout
+   * DONE: Fix code path when removing last item in a list using clearDOM(dom) optmisation
+   * DONE: The callback is lost when transition is completed by the timeout
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {

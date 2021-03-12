@@ -2,26 +2,12 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
-import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM } from './utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM, callAllAnimationHooks } from './utils/common';
 import { unmountRef } from '../core/refs';
 
 export function remove(vNode: VNode, parentDOM: Element, animations: Function[]) {
   unmount(vNode, animations);
-  
-  let animsLeft = animations.length;
-  if (animsLeft > 0) {
-    // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations, () => {
-      if (--animsLeft <= 0) {
-        // When all animations are done, remove everything.
-        // NOTE: If we add a sibling when the animation is active, will it be removed?
-        removeVNodeDOM(vNode, parentDOM);
-      }
-    });
-  }
-  else {
-    removeVNodeDOM(vNode, parentDOM);
-  }
+  removeVNodeDOM(vNode, parentDOM, animations);
 }
 
 export function unmount(vNode, animations: Function[]) {
@@ -97,18 +83,24 @@ export function unmountAllChildren(children: VNode[], animations: Function[]) {
   }
 }
 
-export function clearDOM(dom) {
-  // Optimization for clearing dom
-  dom.textContent = '';
+export function clearDOM(dom, animations: Function[]) {
+  if (animations.length > 0) {
+    // Wait until animations are finished before removing actual dom nodes
+    callAllAnimationHooks(animations, () => dom.textContent = '');
+  }
+  else {
+    // Optimization for clearing dom
+    dom.textContent = '';
+  }
 }
 
 export function removeAllChildren(dom: Element, vNode: VNode, children, animations: Function[]) {
   unmountAllChildren(children, animations);
 
   if (vNode.flags & VNodeFlags.Fragment) {
-    removeVNodeDOM(vNode, dom);
+    removeVNodeDOM(vNode, dom, animations);
   } else {
-    clearDOM(dom);
+    clearDOM(dom, animations);
   }
 }
 
@@ -118,12 +110,3 @@ function createClassAnimationHook(instance, dom: Element) {
   };
 }
 
-function callAllAnimationHooks(arrayFn: Function[], callback: Function) {
-  for (let i = 0; i < arrayFn.length; i++) {
-    const fn = arrayFn.pop();
-    // This check shouldn't be needed but TS complains so adding it
-    if (fn !== undefined) {
-      fn(callback);
-    }
-  }
-}

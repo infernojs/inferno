@@ -31,7 +31,7 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
     replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
   } else {
     mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode, true), lifecycle, animations);
-    removeVNodeDOM(lastVNode, parentDOM);
+    removeVNodeDOM(lastVNode, parentDOM, animations);
   }
 }
 
@@ -252,7 +252,7 @@ function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM
 
   mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle, animations);
 
-  removeVNodeDOM(lastChildren, parentDOM);
+  removeVNodeDOM(lastChildren, parentDOM, animations);
 }
 
 function patchChildren(
@@ -307,14 +307,14 @@ function patchChildren(
           patchSingleTextChild(lastChildren, nextChildren, parentDOM);
           break;
         case ChildFlags.HasVNodeChildren:
-          clearDOM(parentDOM);
+          clearDOM(parentDOM, animations);
           mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
           break;
         case ChildFlags.HasInvalidChildren:
-          clearDOM(parentDOM);
+          clearDOM(parentDOM, animations);
           break;
         default:
-          clearDOM(parentDOM);
+          clearDOM(parentDOM, animations);
           mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
           break;
       }
