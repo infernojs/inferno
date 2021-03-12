@@ -35,6 +35,7 @@
     opacity: 1;
 }
 
+article,
 ul {
   box-sizing: border-box;
   margin: 0;
@@ -43,6 +44,7 @@ ul {
   margin-bottom: 0.5rem;
 }
 
+section,
 li {
   box-sizing: border-box;
   padding: 0.5rem 1rem;
@@ -55,7 +57,9 @@ li {
   background: #3775bb;
 }
 
+span.divider,
 li.divider {
+  display: block;
   height: 5px;
   background: #eee;
   border-width: 0;

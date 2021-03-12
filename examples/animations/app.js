@@ -15,6 +15,13 @@
     }
   }
 
+  class SectionItem extends AnimatedComponent {
+    render() {
+    	renderCounter++;
+      return createElement('section', { onClick: (e) => this.props.onClick(e, this.props.index)}, this.props.children);
+    }
+  }
+
 	class List extends Component {
 		constructor() {
 			super();
@@ -108,7 +115,7 @@
     doAdd = (e) => {
       e.preventDefault();
       var newItems = this.state.items.concat([]);
-      var nextKey = newItems.length === 0 ? 0 : newItems[newItems.length - 1].key + 1;
+      var nextKey = newItems.reduce((prev, curr) => curr.key > prev ? curr.key : prev, 0) + 1;
       newItems.push({key: nextKey, isListItem: true});
       newItems.push({key: nextKey + 1});
       this.setState({
@@ -126,12 +133,13 @@
 		}
 
 		render() {
+      // Mixing <section> and <span> instead of using <li> for all to trigger special code path in Inferno
 			return createElement('div', null, [
         createElement('h2', null, 'Mixed list'),
         createElement('h3', null, '(no anim on divider)'),
-        createElement('ul', null, this.state.items.map((item, i) => (item.isListItem
-          ? createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`)
-          : createElement('li', {className: 'divider'})))),
+        createElement('article', null, this.state.items.map((item, i) => (item.isListItem
+          ? createElement(SectionItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`)
+          : createElement('span', {className: 'divider'})))),
         createElement('button', { onClick: this.doAdd }, 'Add'),
         createElement('button', { onClick: this.doRemoveSpecial }, 'Remove')
       ]);
