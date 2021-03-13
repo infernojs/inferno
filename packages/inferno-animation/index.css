@@ -1,0 +1,49 @@
+:root {
+  --infernoAnimationEnter: all 0.3s ease-out;
+  --infernoAnimationLeave: all 0.2s ease-out;
+}
+
+.inferno-animation-leave {
+  /* Leave animation start state */
+  opacity: 1;
+}
+
+.inferno-animation-leave-active {
+  /* Leave animation transitions */
+  overflow: hidden;
+  transition: var(--infernoAnimationLeave);
+}
+
+.inferno-animation-leave-end {
+  /* Leave animation end state */
+  opacity: 0;
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.inferno-animation-enter {
+  /* Enter animation start state */
+  opacity: 0;
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.inferno-animation-enter-active {
+  /* Enter animation transitions */
+  transition: var(--infernoAnimationEnter);
+}
+
+.inferno-animation-enter-end {
+  /* Enter animation end state */
+  opacity: 1;
+}

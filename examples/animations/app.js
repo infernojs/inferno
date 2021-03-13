@@ -5,6 +5,12 @@
   var InfernoAnimation = Inferno.Animation;
 
   var AnimatedComponent = InfernoAnimation.AnimatedComponent;
+  var {
+    addClassName,
+    removeClassName,
+    forceReflow,
+    registerTransitionListener,
+  } = InfernoAnimation.utils;
 
 	let renderCounter = 0;
 
@@ -25,8 +31,8 @@
 	class List extends Component {
 		constructor() {
 			super();
-			// set initial time:
-			this.state = {
+
+      this.state = {
 				items: []
 			};
 			this.items = [];
@@ -62,8 +68,9 @@
 
 		render() {
 			return createElement('div', null, [
-        createElement('h2', null, this.props.animation),
         createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`))),
+        createElement('h2', null, this.props.animation),
+        createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add')
       ]);
 		}
@@ -73,12 +80,74 @@
 	class MixedList extends Component {
 		constructor() {
 			super();
-			// set initial time:
+
+      let i = 0;
+      let items = [];
+			while (items.length < 40) {
+				items[items.length] = {key: i++, isListItem: true};
+				items[items.length] = {key: i++};
+			}
+
 			this.state = {
-				items: []
+				items
 			};
-			this.items = [];
 		}
+
+    didAppear = (dom) => {
+      const animCls = {
+        'start': 'fade-enter',
+        'active': 'fade-enter-active',
+        'end': 'fade-enter-end'
+      }
+      // 1. Set animation start state
+      addClassName(dom, animCls.start)
+      forceReflow()
+    
+      // 2. Activate transition
+      addClassName(dom, animCls.active)
+    
+      // 3. Set an animation listener, code at end
+      // Needs to be done after activating so timeout is calculated correctly
+      registerTransitionListener([dom, dom.children[0]], function () {
+        // *** Cleanup ***
+        // 5. Remove the element
+        removeClassName(dom, animCls.active)
+        removeClassName(dom, animCls.end)
+      }, false)
+
+      // 4. Activate target state
+      setTimeout(() => {
+        removeClassName(dom, animCls.start)
+        addClassName(dom, animCls.end)
+      }, 5)
+    }
+
+    willDisappear = (dom, callback) => {
+      const animCls = {
+        'start': 'fade-leave',
+        'active': 'fade-leave-active',
+        'end': 'fade-leave-end'
+      }
+    
+      // 1. Set animation start state
+      addClassName(dom, animCls.start)
+      
+      // 2. Activate transitions
+      addClassName(dom, animCls.active);
+    
+      // 3. Set an animation listener, code at end
+      // Needs to be done after activating so timeout is calculated correctly
+      registerTransitionListener(dom, function () {
+        // *** Cleanup ***
+        callback()
+      }, false)
+    
+      // 4. Activate target state
+      setTimeout(() => {
+        addClassName(dom, animCls.end)
+        removeClassName(dom, animCls.start)
+      }, 5)
+    }
 
     doRemove = (e, index) => {
       e.preventDefault();
@@ -123,23 +192,14 @@
       });
     }
 
-		componentDidMount() {
-			let i = 0;
-			while (this.items.length < 40) {
-				this.items[this.items.length] = {key: i++, isListItem: true};
-				this.items[this.items.length] = {key: i++};
-			}
-      this.setState({ items: this.items });
-		}
-
 		render() {
       // Mixing <section> and <span> instead of using <li> for all to trigger special code path in Inferno
 			return createElement('div', null, [
-        createElement('h2', null, 'Mixed list'),
-        createElement('h3', null, '(no anim on divider)'),
         createElement('article', null, this.state.items.map((item, i) => (item.isListItem
           ? createElement(SectionItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`)
           : createElement('span', {className: 'divider'})))),
+        createElement('h2', null, 'Mixed list'),
+        createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add'),
         createElement('button', { onClick: this.doRemoveSpecial }, 'Remove')
       ]);
@@ -221,8 +281,9 @@
 
 		render() {
 			return createElement('div', null, [
-        createElement('h2', null, 'Shuffle'),
         createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
+        createElement('h2', null, 'Shuffle'),
+        createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add'),
         createElement('button', { onClick: this.doMix }, 'Shuffle'),
         createElement('button', { onClick: this.doReassignKeys }, 'Shuffle keys'),
@@ -297,33 +358,51 @@
 
 		render() {
 			return createElement('div', null, [
-        createElement('h2', null, 'patchKeyedChildren'),
         createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
+        createElement('h2', null, 'patchKeyedChildren'),
+        createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add'),
       ]);
 		}
 	}
-
-  const renderToFive = (e) => {
-    e && e.preventDefault();
-    var container_5 = document.querySelector('#App5');
-    //Inferno.render(createElement('div', null, createElement(RerenderList, {animation: 'HeightAndFade', items: 5})), container_5);
-    Inferno.render(createElement(RerenderList, {animation: 'HeightAndFade', items: 5}), container_5);
-  }
 
 	document.addEventListener('DOMContentLoaded', function () {
 		var container_1 = document.querySelector('#App1');
 		var container_2 = document.querySelector('#App2');
 		var container_3 = document.querySelector('#App3');
 		var container_4 = document.querySelector('#App4');
+    var container_5 = document.querySelector('#App5');
 		
 
-    Inferno.render(createElement(List, {animation: 'HeightAndFade'}), container_1);
-    Inferno.render(createElement(List, {animation: 'NoTranistionEvent'}), container_2);
-    Inferno.render(createElement(MixedList, {animation: 'HeightAndFade'}), container_3);
-    Inferno.render(createElement(ShuffleList, {animation: 'HeightAndFade'}), container_4);
+    Inferno.render(createElement(List, {
+      animation: 'HeightAndFade',
+      description: 'The children in this container animate opacity and height when added and removed. Click an item to remove it.',
+    }), container_1);
+    
+    Inferno.render(createElement(List, {
+      animation: 'NoTranistionEvent',
+      description: 'The children in this container have a broken animation. This is detected by inferno-animation and the animation callback is called immediately. Click an item to remove it.',
+    }), container_2);
+    
+    Inferno.render(createElement(MixedList, {
+      animation: 'HeightAndFade',
+      description: 'This container fades in and blocks the children from animating on first render. There is no animation on divider between elements. When you click [Remove] a random row and another random divder will be removed. Click an item to remove it (leaving the divider).',
+    }), container_3);
+    
+    Inferno.render(createElement(ShuffleList, {
+      animation: 'HeightAndFade',
+      description: 'This container will shuffle keys or items. Click an item to remove it.',
+    }), container_4);
     
     var btn = document.querySelector('#Rerender > button')
-    btn.addEventListener('click', renderToFive);
+    btn.addEventListener('click', (e) => {
+      e && e.preventDefault();
+      //Inferno.render(createElement('div', null, createElement(RerenderList, {animation: 'HeightAndFade', items: 5})), container_5);
+      Inferno.render(createElement(RerenderList, {
+        animation: 'HeightAndFade', 
+        items: 5,
+        description: 'This container will be filled with 5 rows every time you click the button. Click an item to remove it.',
+      }), container_5);
+    });
 	});
 })();

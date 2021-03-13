@@ -20,7 +20,7 @@ export default class AnimatedComponent extends Component<Props> {
       animCls = this.props.animation;
     }
     else {
-      const animationName = this.props.animation;
+      const animationName = this.props.animation || 'inferno-animation';
       animCls = {
         'start': animationName + '-enter',
         'active': animationName + '-enter-active',
@@ -63,7 +63,7 @@ export default class AnimatedComponent extends Component<Props> {
       animCls = this.props.animation;
     }
     else {
-      const animationName = this.props.animation;
+      const animationName = this.props.animation || 'inferno-animation';
       animCls = {
         'start': animationName + '-leave',
         'active': animationName + '-leave-active',
@@ -71,7 +71,7 @@ export default class AnimatedComponent extends Component<Props> {
       }
     }
   
-    // 1. Clone DOM node, inject it and hide original
+    // 1. Get dimensions and set animation start state
     const { width, height } = getDimensions(node)
     setDimensions(node, width, height)
     addClassName(node, animCls.start)
