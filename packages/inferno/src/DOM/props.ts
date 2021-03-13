@@ -4,7 +4,7 @@ import { isNull, isNullOrUndef, isString } from 'inferno-shared';
 import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerHTML';
-import { isLastValueSameLinkEvent, normalizeEventName } from './utils/common';
+import { isLastValueSameLinkEvent, normalizeEventName, AnimationQueues } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
 import { attachEvent } from './events/attachEvent';
@@ -66,7 +66,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   }
 }
 
-function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations: Function[]) {
+function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations: AnimationQueues) {
   const lastHtml = (lastValue && lastValue.__html) || '';
   const nextHtml = (nextValue && nextValue.__html) || '';
 
@@ -86,7 +86,7 @@ function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations: 
   }
 }
 
-export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null, animations: Function[]) {
+export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null, animations: AnimationQueues) {
   switch (prop) {
     case 'children':
     case 'childrenType':
@@ -156,7 +156,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
   }
 }
 
-export function mountProps(vNode, flags, props, dom, isSVG, animations: Function[]) {
+export function mountProps(vNode, flags, props, dom, isSVG, animations: AnimationQueues) {
   let hasControlledValue: boolean = false;
   const isFormElement = (flags & VNodeFlags.FormElement) > 0;
   if (isFormElement) {

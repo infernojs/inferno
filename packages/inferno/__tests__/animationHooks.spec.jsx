@@ -59,11 +59,11 @@ describe('animation hooks', () => {
    * DONE: randomly reassign keys in a list (before/during animation)
    * DONE: randomly sort list during animation
    * DONE: shuffle keys
-   * TODO: Compare with tests in patchKeyedChildren.spec.js
+   * DONE: The keyed patching appears to add children despite existing nodes with same key
+   * DONE: When rerendering a list 1,3,4,5,6 to 1,2,3,4,5 there are issues in the patching algorithm where 6 is left in DOM
+   * STARTED: Compare with tests in patchKeyedChildren.spec.js
    * TODO: Investigate adding animations in https://github.com/infernojs/inferno/tree/master/docs/uibench-reactlike
    * TODO: Add an animation blocking parent component to example
-   * TODO: The keyed patching appears to add children despite existing nodes with same key
-   * TODO: When rerendering a list 1,3,4,5,6 to 1,2,3,4,5 there are issues in the patching algorithm where 6 is left in DOM
    * 
    */
 
@@ -369,7 +369,6 @@ describe('animation hooks', () => {
   it('should size down', () => {
     const spyer = jasmine.createSpy();
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
-    // Here all nodes are destroyed on the next render
     render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
     // expect(spyer).toHaveBeenCalledTimes(2);
     expect(container.textContent).toBe('#0#1');
@@ -377,6 +376,7 @@ describe('animation hooks', () => {
 
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
     render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
+
     //expect(spyer).toHaveBeenCalledTimes(10);
     expect(container.textContent).toBe('#0#1');
     expect(container.firstChild.childNodes.length).toBe(2);

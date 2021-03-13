@@ -2,15 +2,15 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
-import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM, callAllAnimationHooks } from './utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM, callAllAnimationHooks, AnimationQueues } from './utils/common';
 import { unmountRef } from '../core/refs';
 
-export function remove(vNode: VNode, parentDOM: Element, animations: Function[]) {
+export function remove(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
   unmount(vNode, animations);
   removeVNodeDOM(vNode, parentDOM, animations);
 }
 
-export function unmount(vNode, animations: Function[]) {
+export function unmount(vNode, animations: AnimationQueues) {
   const flags = vNode.flags;
   const children = vNode.children;
   let ref;
@@ -49,8 +49,8 @@ export function unmount(vNode, animations: Function[]) {
       // If we have a willDisappear on this component, block children
       let childAnimations = animations;
       if (isFunction(children.willDisappear)) {
-        childAnimations = [];
-        animations.push(createClassAnimationHook(children, children.$LI.dom));
+        childAnimations = new AnimationQueues();
+        addDisappearAnimationHook(animations, children, children.$LI.dom);
       }
 
       unmountRef(vNode.ref);
@@ -77,16 +77,16 @@ export function unmount(vNode, animations: Function[]) {
   }
 }
 
-export function unmountAllChildren(children: VNode[], animations: Function[]) {
+export function unmountAllChildren(children: VNode[], animations: AnimationQueues) {
   for (let i = 0, len = children.length; i < len; ++i) {
     unmount(children[i], animations);
   }
 }
 
-export function clearDOM(dom, animations: Function[]) {
-  if (animations.length > 0) {
+export function clearDOM(dom, animations: AnimationQueues) {
+  if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations, () => dom.textContent = '');
+    callAllAnimationHooks(animations.willDisappear, () => dom.textContent = '');
   }
   else {
     // Optimization for clearing dom
@@ -94,7 +94,7 @@ export function clearDOM(dom, animations: Function[]) {
   }
 }
 
-export function removeAllChildren(dom: Element, vNode: VNode, children, animations: Function[]) {
+export function removeAllChildren(dom: Element, vNode: VNode, children, animations: AnimationQueues) {
   unmountAllChildren(children, animations);
 
   if (vNode.flags & VNodeFlags.Fragment) {
@@ -104,9 +104,9 @@ export function removeAllChildren(dom: Element, vNode: VNode, children, animatio
   }
 }
 
-function createClassAnimationHook(instance, dom: Element) {
-  return (callback: Function) => {
+function addDisappearAnimationHook(animations: AnimationQueues, instance, dom: Element) {
+  animations.willDisappear.push((callback: Function) => {
     instance.willDisappear(dom, callback);
-  };
+  });
 }
 

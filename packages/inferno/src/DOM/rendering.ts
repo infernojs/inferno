@@ -5,7 +5,7 @@ import { directClone } from '../core/implementation';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, EMPTY_OBJ, options, renderCheck } from './utils/common';
+import { callAll, callAllAnimationHooks, EMPTY_OBJ, options, renderCheck, AnimationQueues } from './utils/common';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -47,7 +47,7 @@ export function __render(
     }
   }
   const lifecycle: Function[] = [];
-  const animations: Function[] = [];
+  const animations: AnimationQueues = new AnimationQueues();
   let rootInput = (parentDOM as any).$V as VNode | null;
 
   renderCheck.v = true;
@@ -74,7 +74,7 @@ export function __render(
     }
   }
   callAll(lifecycle);
-  callAll(animations);
+  callAllAnimationHooks(animations.didAppear);
 
   renderCheck.v = false;
   if (isFunction(callback)) {

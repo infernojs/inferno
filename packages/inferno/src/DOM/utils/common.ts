@@ -8,6 +8,16 @@ import { isLinkEventObject } from '../events/linkEvent';
 export const EMPTY_OBJ = {};
 export const Fragment: string = '$F';
 
+export class AnimationQueues {
+  didAppear: Function[];
+  willDisappear: Function[];
+
+  constructor() {
+    this.didAppear = []; 
+    this.willDisappear = []; 
+  }
+}
+
 if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
 }
@@ -80,27 +90,27 @@ export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
   return null;
 }
 
-export function callAllAnimationHooks(animations: Function[], callback: Function) {
-  let animsLeft = animations.length;
+export function callAllAnimationHooks(animationQueue: Function[], callback?: Function) {
+  let animsLeft = animationQueue.length;
   do {
-    const fn = animations.pop();
+    const fn = animationQueue.pop();
     // This check shouldn't be needed but TS complains so adding it
     if (fn !== undefined) {
       fn(() => {
         // When all animations are done, remove everything.
         // INVESTIGATE: If we add a sibling when the animation is active, will it be removed?
-        if (--animsLeft <= 0) {
+        if (--animsLeft <= 0 && isFunction(callback)) {
           callback();
         }
       });
     }
-  } while (animations.length > 0);
+  } while (animationQueue.length > 0);
 }
 
-export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: Function[]) {
-  if (animations.length > 0) {
+export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
+  if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations, () => removeVNodeDOM(vNode, parentDOM, animations));
+    callAllAnimationHooks(animations.willDisappear, () => removeVNodeDOM(vNode, parentDOM, animations));
   }
   else {
     do {
