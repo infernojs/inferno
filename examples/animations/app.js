@@ -297,7 +297,7 @@
 
 		render() {
 			return createElement('div', null, [
-        createElement('h2', null, 'Shuffle'),
+        createElement('h2', null, 'patchKeyedChildren'),
         createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
         createElement('button', { onClick: this.doAdd }, 'Add'),
       ]);
@@ -307,6 +307,7 @@
   const renderToFive = (e) => {
     e && e.preventDefault();
     var container_5 = document.querySelector('#App5');
+    //Inferno.render(createElement('div', null, createElement(RerenderList, {animation: 'HeightAndFade', items: 5})), container_5);
     Inferno.render(createElement(RerenderList, {animation: 'HeightAndFade', items: 5}), container_5);
   }
 
