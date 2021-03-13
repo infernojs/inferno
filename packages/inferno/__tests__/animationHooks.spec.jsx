@@ -1,8 +1,9 @@
 import { Component, render } from 'inferno';
+import { createElement } from 'inferno-create-element';
 import { triggerEvent } from 'inferno-utils';
 import { finished } from 'stream';
 
-describe('transition events', () => {
+describe('animation hooks', () => {
   let container;
 
   beforeEach(function () {
@@ -58,6 +59,10 @@ describe('transition events', () => {
    * DONE: randomly reassign keys in a list (before/during animation)
    * DONE: randomly sort list during animation
    * DONE: shuffle keys
+   * TODO: Compare with tests in patchKeyedChildren.spec.js
+   * TODO: Investigate adding animations in https://github.com/infernojs/inferno/tree/master/docs/uibench-reactlike
+   * TODO: Add an animation blocking parent component to example
+   * TODO: The keyed patching appears to add children despite existing nodes with same key
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
@@ -328,4 +333,88 @@ describe('transition events', () => {
 
   it('should call "willMove" when component is about to be moved to another part of DOM', () => {});
 
+  const template = function (child) {
+    return createElement('div', null, child);
+  };
+
+  it('should add all nodes', () => {
+    const spyer = jasmine.createSpy();
+
+    render(template(generateKeyNodes([], spyer)), container);
+    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    expect(container.textContent).toBe('#0#1#2#3');
+    expect(container.firstChild.childNodes.length).toBe(4);
+    //expect(spyer).toHaveBeenCalledTimes(4);
+
+    render(null, container);
+    expect(container.innerHTML).toBe('');
+    //expect(spyer).toHaveBeenCalledTimes(8);
+  });
+
+  it('should size up', () => {
+    const spyer = jasmine.createSpy();
+    render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
+    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    expect(container.textContent).toBe('#0#1#2#3');
+    expect(container.firstChild.childNodes.length).toBe(4);
+    //expect(spyer).toHaveBeenCalledTimes(4);
+
+    render(null, container);
+    expect(container.innerHTML).toBe('');
+    // expect(spyer).toHaveBeenCalledTimes(8);
+  });
+
+  it('should size down', () => {
+    const spyer = jasmine.createSpy();
+    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    // Here all nodes are destroyed on the next render
+    render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
+    // expect(spyer).toHaveBeenCalledTimes(2);
+    expect(container.textContent).toBe('#0#1');
+    expect(container.firstChild.childNodes.length).toBe(2);
+
+    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
+    //expect(spyer).toHaveBeenCalledTimes(10);
+    expect(container.textContent).toBe('#0#1');
+    expect(container.firstChild.childNodes.length).toBe(2);
+
+    render(null, container);
+    expect(container.innerHTML).toBe('');
+    //expect(spyer).toHaveBeenCalledTimes(12);
+  });
 });
+
+function factory(spyer) {
+  return class Animated extends Component {
+    didAppear(dom) {
+      spyer('didAppear');
+    }
+    willDisappear(dom, done) {
+      spyer('willDisappear');
+      done()
+    }
+    render ({ children }) {
+      return (<div>{children}</div>)
+    }
+  }
+}
+
+function generateKeyNodes(array, spyer) {
+  let i, id, key;
+  const children = [];
+  let newKey;
+  const Tag = factory(spyer)
+
+  for (i = 0; i < array.length; i++) {
+    id = key = array[i];
+    if (key !== null && (typeof key !== 'string' || key[0] !== '#')) {
+      newKey = key;
+    } else {
+      newKey = null;
+    }
+
+    children.push(<Tag key={newKey} id={String(id)}>{id}</Tag>);
+  }
+  return children;
+}

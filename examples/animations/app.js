@@ -251,15 +251,78 @@
     return array;
   }
 
+
+	class RerenderList extends Component {
+		constructor() {
+			super();
+			// set initial time:
+			this.state = {
+				items: []
+			};
+			this.items = [];
+		}
+
+    doRemove = (e, index) => {
+      e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      newItems.splice(index, 1)
+      this.setState({
+        items: newItems
+      })
+    }
+
+    doAdd = (e) => {
+      e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      var nextKey = newItems.reduce((prev, curr) => curr.key > prev ? curr.key : prev, 0) + 1;
+      newItems.push({key: nextKey, val: nextKey + 1});
+      this.setState({
+        items: newItems
+      });
+    }
+
+    componentDidMount() {
+      this.componentWillReceiveProps(this.props);
+    }
+
+    componentWillReceiveProps(nextProps) {
+			let i = 0;
+
+			while (this.items.length < nextProps.items) {
+				this.items[this.items.length] = {key: i, val: i + 1};
+        i++;
+			}
+      this.setState({ items: this.items });
+    }
+
+		render() {
+			return createElement('div', null, [
+        createElement('h2', null, 'Shuffle'),
+        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
+        createElement('button', { onClick: this.doAdd }, 'Add'),
+      ]);
+		}
+	}
+
+  const renderToFive = (e) => {
+    e && e.preventDefault();
+    var container_5 = document.querySelector('#App5');
+    Inferno.render(createElement(RerenderList, {animation: 'HeightAndFade', items: 5}), container_5);
+  }
+
 	document.addEventListener('DOMContentLoaded', function () {
 		var container_1 = document.querySelector('#App1');
 		var container_2 = document.querySelector('#App2');
 		var container_3 = document.querySelector('#App3');
 		var container_4 = document.querySelector('#App4');
+		
 
     Inferno.render(createElement(List, {animation: 'HeightAndFade'}), container_1);
     Inferno.render(createElement(List, {animation: 'NoTranistionEvent'}), container_2);
     Inferno.render(createElement(MixedList, {animation: 'HeightAndFade'}), container_3);
     Inferno.render(createElement(ShuffleList, {animation: 'HeightAndFade'}), container_4);
+    
+    var btn = document.querySelector('#Rerender > button')
+    btn.addEventListener('click', renderToFive);
 	});
 })();
