@@ -63,6 +63,8 @@ describe('animation hooks', () => {
    * TODO: Investigate adding animations in https://github.com/infernojs/inferno/tree/master/docs/uibench-reactlike
    * TODO: Add an animation blocking parent component to example
    * TODO: The keyed patching appears to add children despite existing nodes with same key
+   * TODO: When rerendering a list 1,3,4,5,6 to 1,2,3,4,5 there are issues in the patching algorithm where 6 is left in DOM
+   * 
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
