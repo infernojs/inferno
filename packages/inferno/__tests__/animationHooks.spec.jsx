@@ -331,6 +331,47 @@ describe('animation hooks', () => {
     }
   });
 
+  it('should handle async callbacks even when parent is removed during animation', (done) => {
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      willDisappear(dom, callback) {
+        spyer('willDisappear');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+        expect(done instanceof Function).toEqual(true);
+        setTimeout(() => {
+          callback()
+        }, 10);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render () {
+        return (<div />)
+      }
+    }
+
+    render(<div><App /><App /></div>, container);
+    render(<div><App /></div>, container);
+    render(null, container);
+
+    expect(container.innerHTML).not.toEqual('');
+    // Wait for all async operations to finish
+    var checkRenderComplete_ONE = () => {
+      if (container.innerHTML !== '') {
+        return setTimeout(checkRenderComplete_ONE, 10);
+      };
+      expect(spyer).toHaveBeenCalledTimes(6);
+      expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(2)).toEqual(['willDisappear']);
+      expect(spyer.calls.argsFor(3)).toEqual(['willDisappear']);
+      expect(spyer.calls.argsFor(4)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(5)).toEqual(['willDisappear']);
+      done();
+    }
+    checkRenderComplete_ONE();
+  });
+
   it('should call "willMove" when component is about to be moved to another part of DOM', () => {});
 
   const template = function (child) {
@@ -364,6 +405,19 @@ describe('animation hooks', () => {
     // expect(spyer).toHaveBeenCalledTimes(8);
   });
 
+  it('should do smiple size down', () => {
+    const spyer = jasmine.createSpy();
+    render(template(generateKeyNodes(['#0', '#1', '#2'], spyer)), container);
+    render(template(generateKeyNodes(['#0', '#2'], spyer)), container);
+    expect(container.textContent).toBe('#0#2');
+    expect(container.firstChild.childNodes.length).toBe(2);
+    //expect(spyer).toHaveBeenCalledTimes(4);
+
+    render(null, container);
+    expect(container.innerHTML).toBe('');
+    // expect(spyer).toHaveBeenCalledTimes(8);
+  });
+
   it('should size down', () => {
     const spyer = jasmine.createSpy();
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
@@ -377,6 +431,26 @@ describe('animation hooks', () => {
 
     //expect(spyer).toHaveBeenCalledTimes(10);
     expect(container.textContent).toBe('#0#1');
+    expect(container.firstChild.childNodes.length).toBe(2);
+
+    render(null, container);
+    expect(container.innerHTML).toBe('');
+    //expect(spyer).toHaveBeenCalledTimes(12);
+  });
+
+  it('should handle multiple removes of siblings combined with adds', () => {
+    const spyer = jasmine.createSpy();
+    render(template(generateKeyNodes(['#0', '#1', '#2', '#3', '#4', '#5'], spyer)), container);
+    render(template(generateKeyNodes(['#0', '#2', '#5', '#6'], spyer)), container);
+    // expect(spyer).toHaveBeenCalledTimes(2);
+    expect(container.textContent).toBe('#0#2#5#6');
+    expect(container.firstChild.childNodes.length).toBe(4);
+
+    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(template(generateKeyNodes(['#10', '#11'], spyer)), container);
+
+    //expect(spyer).toHaveBeenCalledTimes(10);
+    expect(container.textContent).toBe('#10#11');
     expect(container.firstChild.childNodes.length).toBe(2);
 
     render(null, container);
