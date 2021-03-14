@@ -14,7 +14,7 @@ type Props = {
 }
 
 export default class AnimatedComponent extends Component<Props> {
-  didAppear (node) {
+  didAppear (dom) {
     let animCls: any; // TODO: This should be typed properly
     if (typeof this.props.animation === 'object') {
       animCls = this.props.animation;
@@ -29,21 +29,21 @@ export default class AnimatedComponent extends Component<Props> {
     }
   
     // 1. Get height and set start of animation
-    const { width, height } = getDimensions(node)
-    addClassName(node, animCls.start)
+    const { width, height } = getDimensions(dom)
+    addClassName(dom, animCls.start)
     forceReflow()
   
     // 2. Activate transition
-    addClassName(node, animCls.active)
+    addClassName(dom, animCls.active)
   
     // 3. Set an animation listener, code at end
     // Needs to be done after activating so timeout is calculated correctly
-    registerTransitionListener([node, node.children[0]], function () {
+    registerTransitionListener([dom, dom.children[0]], function () {
       // *** Cleanup ***
       // 5. Remove the element
-      clearDimensions(node)
-      removeClassName(node, animCls.active)
-      removeClassName(node, animCls.end)
+      clearDimensions(dom)
+      removeClassName(dom, animCls.active)
+      removeClassName(dom, animCls.end)
       
       // 6. Call callback to allow stuff to happen
       // callback(node)
@@ -51,13 +51,13 @@ export default class AnimatedComponent extends Component<Props> {
   
     // 4. Activate target state
     setTimeout(() => {
-      setDimensions(node, width, height)
-      removeClassName(node, animCls.start)
-      addClassName(node, animCls.end)
+      setDimensions(dom, width, height)
+      removeClassName(dom, animCls.start)
+      addClassName(dom, animCls.end)
     }, 5)
   }
 
-  willDisappear (node, callback) {
+  willDisappear (dom, callback) {
     let animCls;
     if (typeof this.props.animation === 'object') {
       animCls = this.props.animation;
@@ -72,25 +72,25 @@ export default class AnimatedComponent extends Component<Props> {
     }
   
     // 1. Get dimensions and set animation start state
-    const { width, height } = getDimensions(node)
-    setDimensions(node, width, height)
-    addClassName(node, animCls.start)
+    const { width, height } = getDimensions(dom)
+    setDimensions(dom, width, height)
+    addClassName(dom, animCls.start)
     
     // 2. Activate transitions
-    addClassName(node, animCls.active);
+    addClassName(dom, animCls.active);
   
     // 3. Set an animation listener, code at end
     // Needs to be done after activating so timeout is calculated correctly
-    registerTransitionListener(node, function () {
-      // *** Cleanup ***
+    registerTransitionListener(dom, function () {
+      // *** Cleanup not needed since node is removed ***
       callback()
     }, false)
   
     // 4. Activate target state
     setTimeout(() => {
-      addClassName(node, animCls.end)
-      removeClassName(node, animCls.start)
-      clearDimensions(node)
+      addClassName(dom, animCls.end)
+      removeClassName(dom, animCls.start)
+      clearDimensions(dom)
     }, 5)
   }
 }

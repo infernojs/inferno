@@ -1,7 +1,5 @@
 import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { triggerEvent } from 'inferno-utils';
-import { finished } from 'stream';
 
 describe('animation hooks', () => {
   let container;
