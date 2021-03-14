@@ -34,14 +34,8 @@ export function setDisplay(node: HTMLElement, value?: string) {
       node.style.setProperty('display', value)
     }
     else {
-      if (node.style.length === 1 && node.style.hasOwnProperty('display')) {
-        // If it is the only style prop then we remove it entirely
-        // https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
-        node.removeAttribute('style')
-      }
-      else {
-        node.style.removeProperty('display')
-      }
+      node.style.removeProperty('display')
+      _cleanStyle(node);
     }
   }
   return oldVal

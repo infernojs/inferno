@@ -26,6 +26,7 @@ describe('inferno-animation utils', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     addClassName(el, 'test');
+    addClassName(el, '');
     expect(el.className).toEqual('target test');
   });
 
@@ -33,6 +34,7 @@ describe('inferno-animation utils', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     removeClassName(el, 'target');
+    removeClassName(el, '');
     expect(el.className).toEqual('');
   });
 
@@ -46,6 +48,7 @@ describe('inferno-animation utils', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     setDisplay(el, 'block');
+    setDisplay(el, 'block');
     expect(el.style.getPropertyValue('display')).toEqual('block');
 
     // Removes style prop
@@ -56,6 +59,7 @@ describe('inferno-animation utils', () => {
     expect(el.outerHTML).toEqual('<div class="target" style="">content</div>');
     
     // Just clear display prop
+    
     setDisplay(el, 'block');
     setDimensions(el, 10, 10);
     setDisplay(el, undefined);
