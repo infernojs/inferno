@@ -105,8 +105,11 @@ export function removeAllChildren(dom: Element, vNode: VNode, children, animatio
 }
 
 function addDisappearAnimationHook(animations: AnimationQueues, instance, dom: Element) {
-  animations.willDisappear.push((callback: Function) => {
-    instance.willDisappear(dom, callback);
-  });
+  // Only do animations in browser
+  if (typeof window !== 'undefined') {
+    animations.willDisappear.push((callback: Function) => {
+      instance.willDisappear(dom, callback);
+    });
+  }
 }
 
