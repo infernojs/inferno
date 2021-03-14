@@ -5,7 +5,7 @@ declare global {
   var __DEBUG_ANIMATIONS__: Boolean;
 }
 
-export function addClassName (node, className) {
+export function addClassName (node: HTMLElement, className: string) {
   if (className) {
     const tmp = className.split(' ')
     for (let i=0; i < tmp.length; i++) {
@@ -14,7 +14,7 @@ export function addClassName (node, className) {
   }
 }
 
-export function removeClassName (node, className) {
+export function removeClassName (node: HTMLElement, className: string) {
   if (className) {
     const tmp = className.split(' ')
     for (let i=0; i < tmp.length; i++) {
@@ -27,15 +27,16 @@ export function forceReflow () {
   return document.body.clientHeight;
 }
 
-export function setDisplay(node, value) {
+export function setDisplay(node: HTMLElement, value?: string) {
   var oldVal = node.style.getPropertyValue('display')
   if (oldVal !== value) {
-    if (value) {
+    if (value !== undefined) {
       node.style.setProperty('display', value)
     }
     else {
       if (node.style.length === 1 && node.style.hasOwnProperty('display')) {
         // If it is the only style prop then we remove it entirely
+        // https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
         node.removeAttribute('style')
       }
       else {
@@ -46,13 +47,14 @@ export function setDisplay(node, value) {
   return oldVal
 }
 
-function _cleanStyle(node) {
+function _cleanStyle(node: HTMLElement) {
   if (!node.style) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
     node.removeAttribute('style')
   }
 }
 
-export function getDimensions(node) {
+export function getDimensions(node: HTMLElement) {
   var tmpDisplay = node.style.getPropertyValue('display')
   var isDisplayNone = window.getComputedStyle(node).getPropertyValue('display') === 'none'
   if (isDisplayNone) {
@@ -73,12 +75,12 @@ export function getDimensions(node) {
   }
 }
 
-export function setDimensions(node, width, height) {
+export function setDimensions(node: HTMLElement, width: number, height: number) {
   node.style.width = width + 'px'
   node.style.height = height + 'px'
 }
 
-export function clearDimensions(node) {
+export function clearDimensions(node: HTMLElement) {
   node.style.width = node.style.height = ''
 }
 
@@ -116,7 +118,6 @@ function _getMaxTransitionDuration (/* add nodes as args*/) {
 }
 
 function whichTransitionEvent(){
-  var t;
   var el = document.createElement('fakeelement');
   var transitions = {
     'transition':'transitionend',
@@ -125,15 +126,20 @@ function whichTransitionEvent(){
     'WebkitTransition':'webkitTransitionEnd'
   }
 
-  for(t in transitions){
+  for(let t in transitions){
       if( el.style[t] !== undefined ){
           return transitions[t];
       }
   }
 }
-var transitionEndName
+var transitionEndName: string;
 
-export function registerTransitionListener(nodes, callback, noTimeout) {
+/**
+ * You need to pass the root element and ALL animated children that have transitions,
+ * if there are any,  so the timeout is set to the longest duration. Otherwise there
+ * will be animations that fail to complete before the timeout is triggered.
+ */
+export function registerTransitionListener(nodes: HTMLElement[], callback: Function, noTimeout: boolean = false) {
   // I am doing this lazily because there where issues with document being undefined
   // and checks seemed to go bust due to transpilation
   if (!transitionEndName) {
@@ -192,7 +198,7 @@ export function registerTransitionListener(nodes, callback, noTimeout) {
   // Fallback if transitionend fails
   // This is disabled during debug so we can set breakpoints
   if (!window.__DEBUG_ANIMATIONS__ && !noTimeout) {
-    if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
+    if (rootNode.nodeName === 'IMG' && !(rootNode as any).complete) {
       // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
       // due to loading delay
       rootNode.addEventListener('load', () => {
@@ -200,7 +206,7 @@ export function registerTransitionListener(nodes, callback, noTimeout) {
       })
     }
     else {
-      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100) 
+      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100)
     }
   }
 }
