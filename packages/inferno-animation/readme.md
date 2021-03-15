@@ -1,19 +1,62 @@
-# inferno-hydrate
-Same as `render()`, but is used to hydrate a container whose HTML contents were rendered by `Inferno-server`. Inferno will attempt to attach event listeners to the existing markup.
+# inferno-animation
+Helper components and utils to add smooth CSS-anmiations to your Inferno apps. Extend from `<AnimatedComponent>` and include the css from index.css in this package to get default animation on opacity and height. Requires setting `box-sizing: border-box;` on the animated element.
+
+If you want to customise your animations, just use index.css as a template and replace "inferno-animation" prefix in the CSS-class names with your custom animation name (i.e. mySuperAnimation). Then pass that name to your animated compoent as an attribute `<MyComponent animation="mySuperAnimation" />` and your customised animation will be used.
+
+For examples of what animations look like you can try inferno/examples/animations/index.html.
 
 ## Install
 
 ```
-npm install inferno-hydrate
+npm install inferno-animation
 ```
 
 ## Usage
 
+app.js
 ```js
-import { hydrate } from 'inferno-hydrate';
+import { Component } from 'inferno';
+import { AnimatedComponent } from 'inferno-animation';
+import './app.css';
 
-hydrate(
-  createElement('div', { className: 'test' }, "I'm a child!"),
-  document.getElementById("app")
-);
+class MyAnimated extends AnimatedComponent {
+
+  render () {
+    return <li className="test">{this.props.children}</li>
+  }
+}
+
+class MyList extends Component {
+  constructor() {
+    super()
+    this.state = {
+      items: [1, 2, 3, 4, 5]
+    }
+  }
+
+  render () {
+    return (
+      <ul>
+        {this.state.items.map((item) => <MyAnimated animation="inferno-animation">{item}</MyAnimated>)}
+      </ul>
+    )
+  }
+}
+```
+
+app.css
+```css
+@import '~inferno-animation/index.css';
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li.test {
+  box-sizing: border-box;
+  font-size: 2em;
+  background: #ddd;
+  border-bottom: 1px solid white;
+}
 ```
