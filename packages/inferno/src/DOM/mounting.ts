@@ -143,7 +143,7 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
   // If we have a didAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
   let childAnimations = animations;
   if (isFunction(instance.didAppear)) {
-    childAnimations = new AnimationQueues;
+    childAnimations = new AnimationQueues();
   }
   mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
