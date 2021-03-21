@@ -9,12 +9,12 @@ export const EMPTY_OBJ = {};
 export const Fragment: string = '$F';
 
 export class AnimationQueues {
-  didAppear: Function[];
-  willDisappear: Function[];
+  public didAppear: Function[];
+  public willDisappear: Function[];
 
   constructor() {
-    this.didAppear = []; 
-    this.willDisappear = []; 
+    this.didAppear = [];
+    this.willDisappear = [];
   }
 }
 
@@ -107,38 +107,51 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
   } while (animationQueue.length > 0);
 }
 
+function clearVNodeDOM(vNode: VNode, parentDOM: Element,) {
+  do {
+    const flags = vNode.flags;
+
+    if (flags & VNodeFlags.DOMRef) {
+      removeChild(parentDOM, vNode.dom as Element);
+      return;
+    }
+    const children = vNode.children as any;
+
+    if (flags & VNodeFlags.ComponentClass) {
+      vNode = children.$LI;
+    }
+    if (flags & VNodeFlags.ComponentFunction) {
+      vNode = children;
+    }
+    if (flags & VNodeFlags.Fragment) {
+      if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+        vNode = children;
+      } else {
+        for (let i = 0, len = children.length; i < len; ++i) {
+          clearVNodeDOM(children[i], parentDOM);
+        }
+        return;
+      }
+    }
+  } while (vNode);
+}
+
+function deferRemoval(vNode, parentDOM) {
+  return function () {
+    if (vNode.dom !== null) {
+      clearVNodeDOM(vNode, parentDOM)
+      vNode.dom = null;
+    }
+  }
+}
+
 export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
   if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations.willDisappear, () => removeVNodeDOM(vNode, parentDOM, animations));
+    callAllAnimationHooks(animations.willDisappear, deferRemoval(vNode, parentDOM));
   }
   else {
-    do {
-      const flags = vNode.flags;
-
-      if (flags & VNodeFlags.DOMRef) {
-        removeChild(parentDOM, vNode.dom as Element);
-        return;
-      }
-      const children = vNode.children as any;
-
-      if (flags & VNodeFlags.ComponentClass) {
-        vNode = children.$LI;
-      }
-      if (flags & VNodeFlags.ComponentFunction) {
-        vNode = children;
-      }
-      if (flags & VNodeFlags.Fragment) {
-        if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-          vNode = children;
-        } else {
-          for (let i = 0, len = children.length; i < len; ++i) {
-            removeVNodeDOM(children[i], parentDOM, animations);
-          }
-          return;
-        }
-      }
-    } while (vNode);
+    clearVNodeDOM(vNode, parentDOM);
   }
 }
 

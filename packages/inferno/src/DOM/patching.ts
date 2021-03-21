@@ -630,7 +630,7 @@ function patchKeyedChildrenComplex(
 ) {
   let aNode: VNode;
   let bNode: VNode;
-  let nextPos: number;
+  let nextPos: number = 0;
   let i: number = 0;
   let aStart: number = j;
   const bStart: number = j;

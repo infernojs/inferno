@@ -54,7 +54,7 @@ export function getDimensions(node: HTMLElement) {
   if (isDisplayNone) {
     node.style.setProperty('display', 'block')
   }
-  
+
   var tmp = node.getBoundingClientRect()
 
   if (isDisplayNone) {
@@ -104,7 +104,7 @@ function _getMaxTransitionDuration (/* add nodes as args*/) {
       maxDuration = animTimeout
     }
   }
-  
+
   return {
     nrofTransitions: nrofTransitions,
     maxDuration: maxDuration
@@ -151,13 +151,13 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
   /**
    * Here comes the transition event listener
-   */ 
+   */
   let { nrofTransitions: nrofTransitionsLeft, maxDuration } = _getMaxTransitionDuration.apply(this, nodes)
   let done = false
 
   function onTransitionEnd (event) {
     // Make sure this is an actual event
-    if (!event || done) {
+    if (!event || done) {
       return
     }
 
@@ -171,7 +171,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
         }
       }
       if (!goAhead) return
-  
+
       // Wait for all transitions
       if (--nrofTransitionsLeft > 0) {
         return
@@ -183,7 +183,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
     /**
      * Perform cleanup
-     */ 
+     */
     rootNode.removeEventListener(transitionEndName, onTransitionEnd, false)
     callback && callback()
   }
@@ -196,7 +196,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
       // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
       // due to loading delay
       rootNode.addEventListener('load', () => {
-        setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100) 
+        setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100)
       })
     }
     else {

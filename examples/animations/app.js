@@ -102,10 +102,10 @@
       // 1. Set animation start state
       addClassName(dom, animCls.start)
       forceReflow()
-    
+
       // 2. Activate transition
       addClassName(dom, animCls.active)
-    
+
       // 3. Set an animation listener, code at end
       // Needs to be done after activating so timeout is calculated correctly
       registerTransitionListener([dom, dom.children[0]], function () {
@@ -128,20 +128,25 @@
         'active': 'fade-leave-active',
         'end': 'fade-leave-end'
       }
-    
+
       // 1. Set animation start state
       addClassName(dom, animCls.start)
-      
+
       // 2. Activate transitions
       addClassName(dom, animCls.active);
-    
+
       // 3. Set an animation listener, code at end
       // Needs to be done after activating so timeout is calculated correctly
       registerTransitionListener(dom, function () {
         // *** Cleanup ***
-        callback()
+
+        // Simulate some work is being done
+        // setTimeout(function () {
+        //   callback();
+        // }, 1000);
+        callback();
       }, false)
-    
+
       // 4. Activate target state
       setTimeout(() => {
         addClassName(dom, animCls.end)
@@ -257,6 +262,9 @@
     }
 
     doRemoveMix = (e) => {
+		  if (this.state.items.length === 0) {
+		    return;
+      }
       // Remove random ListItem and trigger animation
       var toDeleteIndex = parseInt(Math.round(Math.random() * (this.state.items.length - 1)));
       var toDeleteKey = this.state.items[toDeleteIndex].key;
@@ -267,6 +275,26 @@
       });
 
       setTimeout(() => this.doMix(e), 100);
+    }
+
+    removeAndShuffle = (e) => {
+		  for (let i = 0; i < 20; i++) {
+        this.doRemove(e);
+        this.doReassignKeys(e);
+		    this.doMix(e);
+      }
+    }
+
+    doAdd20 = (e) => {
+		   // Add data
+		   for (let i = 0; i < 20; i++) {
+		     this.doAdd(e)
+       }
+		    // Shuffle them
+		   for (let i = 0; i < 5; i++) {
+         this.doReassignKeys(e);
+         this.doMix(e);
+       }
     }
 
 		componentDidMount() {
@@ -288,27 +316,65 @@
         createElement('button', { onClick: this.doMix }, 'Shuffle'),
         createElement('button', { onClick: this.doReassignKeys }, 'Shuffle keys'),
         createElement('button', { onClick: this.doRemoveMix }, 'Remove' + (this.state.deleted ? ` (${this.state.deleted})` : '')),
+        createElement('button', { onClick: this.doAdd20 }, 'Add and shuffle 20'),
+        createElement('button', { onClick: this.removeAndShuffle }, 'Remove and shuffle 20')
       ]);
 		}
 	}
 
+  class PatchingIssues extends Component {
+    constructor() {
+      super();
+      // set initial time:
+      this.state = {
+        items: [
+          this.item(1),
+          this.item(2),
+          this.item(3),
+          this.item(4)
+        ]
+      };
+      this.items = [];
+    }
+
+    item(i) {
+      return {key: i, val: i}
+    }
+
+    useCase1 = (e) => {
+      // Setup the test
+      this.setState({
+
+      });
+    }
+
+    render() {
+      return createElement('div', null, [
+        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation}, `${item.val}bar (${item.key})`))),
+        createElement('h2', null, 'Patching bugs'),
+        createElement('p', null, this.props.description),
+        createElement('button', { onClick: this.useCase1 }, 'Use case 1')
+      ]);
+    }
+  }
+
   // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   var shuffle = (array) => {
     var currentIndex = array.length, temporaryValue, randomIndex;
-  
+
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-  
+
       // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
-  
+
       // And swap it with the current element.
       temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
     }
-  
+
     return array;
   }
 
@@ -372,37 +438,43 @@
 		var container_3 = document.querySelector('#App3');
 		var container_4 = document.querySelector('#App4');
     var container_5 = document.querySelector('#App5');
-		
+    var container_6 = document.querySelector('#App6');
+
 
     Inferno.render(createElement(List, {
       animation: 'HeightAndFade',
       description: 'The children in this container animate opacity and height when added and removed. Click an item to remove it.',
     }), container_1);
-    
+
     Inferno.render(createElement(List, {
       animation: 'NoTranistionEvent',
       description: 'The children in this container have a broken animation. This is detected by inferno-animation and the animation callback is called immediately. Click an item to remove it.',
     }), container_2);
-    
+
     Inferno.render(createElement(MixedList, {
       animation: 'HeightAndFade',
       description: 'This container fades in and blocks the children from animating on first render. There is no animation on divider between elements. When you click [Remove] a random row and another random divder will be removed. Click an item to remove it (leaving the divider).',
     }), container_3);
-    
+
     Inferno.render(createElement(ShuffleList, {
       animation: 'HeightAndFade',
       description: 'This container will shuffle keys or items. Click an item to remove it.',
     }), container_4);
-    
+
     var btn = document.querySelector('#Rerender > button')
     btn.addEventListener('click', (e) => {
       e && e.preventDefault();
       //Inferno.render(createElement('div', null, createElement(RerenderList, {animation: 'HeightAndFade', items: 5})), container_5);
       Inferno.render(createElement(RerenderList, {
-        animation: 'HeightAndFade', 
+        animation: 'HeightAndFade',
         items: 5,
         description: 'This container will be filled with 5 rows every time you click the button. Click an item to remove it.',
       }), container_5);
     });
+
+    Inferno.render(createElement(PatchingIssues, {
+      animation: 'HeightAndFade',
+      description: 'This reproduce issues with patching and deferred removal of nodes.',
+    }), container_6);
 	});
 })();
