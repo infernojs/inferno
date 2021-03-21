@@ -136,19 +136,16 @@ function clearVNodeDOM(vNode: VNode, parentDOM: Element,) {
   } while (vNode);
 }
 
-function deferRemoval(vNode, parentDOM) {
+function deferComponentClassRemoval(vNode, parentDOM) {
   return function () {
-    if (vNode.dom !== null) {
-      clearVNodeDOM(vNode, parentDOM)
-      vNode.dom = null;
-    }
+    clearVNodeDOM(vNode, parentDOM);
   }
 }
 
 export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
   if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations.willDisappear, deferRemoval(vNode, parentDOM));
+    callAllAnimationHooks(animations.willDisappear, deferComponentClassRemoval(vNode, parentDOM));
   }
   else {
     clearVNodeDOM(vNode, parentDOM);
