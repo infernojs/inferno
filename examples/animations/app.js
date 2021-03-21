@@ -331,17 +331,27 @@
       // set initial time:
       this.state = {
         items: [
-          this.item(1),
-          this.item(2),
-          this.item(3),
-          this.item(4)
+          this._getItem(1),
+          this._getItem(2),
+          this._getItem(3),
+          this._getItem(4)
         ]
       };
       this.items = [];
     }
 
-    item(i) {
+    _getItem(i) {
       return {key: i, val: i}
+    }
+
+
+    doRemove = (e, index) => {
+      e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      newItems.splice(index, 1)
+      this.setState({
+        items: newItems
+      })
     }
 
     useCase1 = (e) => {
@@ -353,7 +363,7 @@
 
     render() {
       return createElement('div', null, [
-        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation}, `${item.val}bar (${item.key})`))),
+        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
         createElement('h2', null, 'Patching bugs'),
         createElement('p', null, this.props.description),
         createElement('button', { onClick: this.useCase1 }, 'Use case 1')
