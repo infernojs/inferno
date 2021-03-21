@@ -223,7 +223,7 @@
 		}
 
     doRemove = (e, index) => {
-      e.preventDefault();
+      e && e.preventDefault();
       var newItems = this.state.items.concat([]);
       newItems.splice(index, 1)
       this.setState({
@@ -232,7 +232,7 @@
     }
 
     doAdd = (e) => {
-      e.preventDefault();
+      e && e.preventDefault();
       var newItems = this.state.items.concat([]);
       var nextKey = newItems.reduce((prev, curr) => curr.key > prev ? curr.key : prev, 0) + 1;
       newItems.push({key: nextKey, val: nextKey + 1});
@@ -242,7 +242,7 @@
     }
 
     doMix = (e) => {
-      e.preventDefault();
+      e && e.preventDefault();
       var newItems = this.state.items.concat([]);
       shuffle(newItems);
       this.setState({
@@ -282,22 +282,41 @@
     removeAndShuffle = (e) => {
       e && e.preventDefault();
 		  for (let i = 0; i < 20; i++) {
-        this.doRemove(e);
-        this.doReassignKeys(e);
-		    this.doMix(e);
+        setTimeout(() => {
+          var toDeleteIndex = parseInt(Math.round(Math.random() * (this.state.items.length - 1)));
+          this.doRemove(undefined, toDeleteIndex);
+          this.doReassignKeys();
+          this.doMix();
+        })
       }
     }
 
     doAdd20 = (e) => {
-		   // Add data
-		   for (let i = 0; i < 20; i++) {
-		     this.doAdd(e)
-       }
-		    // Shuffle them
-		   for (let i = 0; i < 5; i++) {
-         this.doReassignKeys(e);
-         this.doMix(e);
-       }
+      e && e.preventDefault();
+      // Add data
+      for (let i = 0; i < 20; i++) {
+        this.doAdd()
+      }
+      // Shuffle them
+      for (let i = 0; i < 5; i++) {
+        this.doReassignKeys();
+        this.doMix();
+      }
+    }
+    
+    doAdd20SeqMix = (e) => {
+      e && e.preventDefault();
+      // Add data
+      for (let i = 0; i < 20; i++) {
+        this.doAdd()
+      }
+      // Shuffle them
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          // this.doReassignKeys(e);
+          this.doMix();
+        }, 500 + 100 * i)
+      }
     }
 
 		componentDidMount() {
@@ -320,6 +339,7 @@
         createElement('button', { onClick: this.doReassignKeys }, 'Shuffle keys'),
         createElement('button', { onClick: this.doRemoveMix }, 'Remove' + (this.state.deleted ? ` (${this.state.deleted})` : '')),
         createElement('button', { onClick: this.doAdd20 }, 'Add and shuffle 20'),
+        createElement('button', { onClick: this.doAdd20SeqMix }, 'Add 20 do 5 shuffle'),
         createElement('button', { onClick: this.removeAndShuffle }, 'Remove and shuffle 20')
       ]);
 		}
