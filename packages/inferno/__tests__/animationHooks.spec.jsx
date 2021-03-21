@@ -269,6 +269,82 @@ describe('animation hooks', () => {
     }
   });
 
+  it('should handle async callbacks "willDisappear" when removing the two last elements in list', (done) => {
+    /**
+     * This test is hard to get to consistently fail. It should trigger
+     * clearDOM from last animation callback prior to deferComponentClassRemoval
+     * of at least one item. But it does work as expected now
+     * Change
+     * clearVNodeDOM(vNode, parentDOM, true);
+     * to
+     * clearVNodeDOM(vNode, parentDOM);
+     * in
+     * function deferComponentClassRemoval
+     * to force failure
+     */
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      state = {
+        items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+      }
+
+      render () {
+        if (this.state.items.length > 0) {
+          setTimeout(() => {
+            const items = this.state.items;
+            items.pop();
+            this.setState({ items });
+          })
+        }
+
+        if (this.state.items.length === 0) {
+          return <div />
+        }
+
+        return (
+          <div>
+            {this.state.items.map(i => <Item key={i} index={i} />)}
+          </div>
+        )
+      }
+    }
+
+    class Item extends Component {
+      willDisappear(dom, callback) {
+        spyer('willDisappear ' + this.props.index);
+
+        let timeout = 10
+        if (this.props.index === 0) {
+          timeout = 0
+        }
+        setTimeout(() => {
+          callback()
+        }, timeout);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render () {
+        return (<div />)
+      }
+    }
+
+    render(<App />, container);
+    
+    var checkRenderComplete_ONE = () => {
+      if (container.innerHTML !== '<div></div>') {
+        return setTimeout(checkRenderComplete_ONE, 10);
+      };
+      expect(spyer).toHaveBeenCalledTimes(40);
+      expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(19)).toEqual(['didMount']);
+      expect(spyer.calls.argsFor(20)).toEqual(['willDisappear 19']);
+      expect(spyer.calls.argsFor(39)).toEqual(['willDisappear 0']);
+      done();
+    }
+    checkRenderComplete_ONE();
+  });
+
   it('should handle async callbacks from "willDisappear" and mounting components with "didAppear"', (done) => {
     const spyer = jasmine.createSpy();
     // Always call the willDisappear callback after last render
