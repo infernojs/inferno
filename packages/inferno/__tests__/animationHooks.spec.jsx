@@ -243,10 +243,10 @@ describe('animation hooks', () => {
       willDisappear(dom, callback) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
-        expect(done instanceof Function).toEqual(true);
+        expect(callback instanceof Function).toEqual(true);
         setTimeout(() => {
           callback()
-          didFinish()
+          setTimeout(() => didFinish(), 10)
         }, 10);
       }
       componentDidMount() {
@@ -283,7 +283,7 @@ describe('animation hooks', () => {
       willDisappear(dom, callback) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
-        expect(done instanceof Function).toEqual(true);
+        expect(callback instanceof Function).toEqual(true);
 
         if (this.props.forceDone) {
           callback();
@@ -292,7 +292,7 @@ describe('animation hooks', () => {
           setTimeout(() => {
             callMeAfterLastRender = () => {
               callback()
-              didFinish()
+              setTimeout(() => didFinish(), 10)
             }
             lastRenderDone && callMeAfterLastRender();
           }, 10);
@@ -337,7 +337,7 @@ describe('animation hooks', () => {
       willDisappear(dom, callback) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
-        expect(done instanceof Function).toEqual(true);
+        expect(callback instanceof Function).toEqual(true);
         setTimeout(() => {
           callback()
         }, 10);
