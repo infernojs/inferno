@@ -505,9 +505,10 @@
       }), container_5);
     });
 
-    Inferno.render(createElement(PatchingIssues, {
-      animation: 'HeightAndFade',
-      description: 'This reproduce issues with patching and deferred removal of nodes.',
-    }), container_6);
+    // This currently doesn't do anything so hiding
+    // Inferno.render(createElement(PatchingIssues, {
+    //   animation: 'HeightAndFade',
+    //   description: 'This reproduce issues with patching and deferred removal of nodes.',
+    // }), container_6);
 	});
 })();
