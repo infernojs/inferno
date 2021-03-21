@@ -251,6 +251,7 @@
     }
 
     doReassignKeys = (e) => {
+      e && e.preventDefault();
       var tmpItems = this.state.items.concat([]);
       shuffle(tmpItems);
       var newItems = this.state.items.map((item, index) => {
@@ -262,6 +263,7 @@
     }
 
     doRemoveMix = (e) => {
+      e && e.preventDefault();
 		  if (this.state.items.length === 0) {
 		    return;
       }
@@ -278,6 +280,7 @@
     }
 
     removeAndShuffle = (e) => {
+      e && e.preventDefault();
 		  for (let i = 0; i < 20; i++) {
         this.doRemove(e);
         this.doReassignKeys(e);
