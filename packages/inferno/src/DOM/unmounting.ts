@@ -86,7 +86,8 @@ export function unmountAllChildren(children: VNode[], animations: AnimationQueue
 export function clearDOM(dom, animations: AnimationQueues) {
   if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations.willDisappear, () => dom.textContent = '');
+    // Be aware that the element could be removed by a later operation
+    callAllAnimationHooks(animations.willDisappear, () => { if (dom) dom.textContent = '' });
   }
   else {
     // Optimization for clearing dom

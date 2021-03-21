@@ -107,12 +107,16 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
   } while (animationQueue.length > 0);
 }
 
-function clearVNodeDOM(vNode: VNode, parentDOM: Element,) {
+function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval = false) {
   do {
     const flags = vNode.flags;
 
     if (flags & VNodeFlags.DOMRef) {
-      removeChild(parentDOM, vNode.dom as Element);
+      // On defered removals the node might disappear because of later
+      // operations
+      if (!deferedRemoval || (parentDOM && parentDOM.contains(vNode.dom))) {
+        removeChild(parentDOM, vNode.dom as Element);
+      }
       return;
     }
     const children = vNode.children as any;
@@ -138,7 +142,9 @@ function clearVNodeDOM(vNode: VNode, parentDOM: Element,) {
 
 function deferComponentClassRemoval(vNode, parentDOM) {
   return function () {
-    clearVNodeDOM(vNode, parentDOM);
+    // Mark removal as deferred to trigger check that node
+    // still exists
+    clearVNodeDOM(vNode, parentDOM, true);
   }
 }
 
