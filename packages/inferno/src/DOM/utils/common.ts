@@ -114,7 +114,7 @@ function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval = false)
     if (flags & VNodeFlags.DOMRef) {
       // On defered removals the node might disappear because of later
       // operations
-      if (!deferedRemoval || (parentDOM && parentDOM.contains(vNode.dom))) {
+      if (!deferedRemoval || (vNode.dom as Element).parentNode === parentDOM) {
         removeChild(parentDOM, vNode.dom as Element);
       }
       return;
