@@ -50,11 +50,11 @@ export default class AnimatedComponent extends Component<Props> {
     }, false)
   
     // 4. Activate target state
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       setDimensions(dom, width, height);
       removeClassName(dom, animCls.start);
       addClassName(dom, animCls.end);
-    }, 5);
+    });
   }
 
   willDisappear (dom, callback) {
@@ -87,10 +87,10 @@ export default class AnimatedComponent extends Component<Props> {
     }, false)
   
     // 4. Activate target state
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       addClassName(dom, animCls.end);
       removeClassName(dom, animCls.start);
       clearDimensions(dom);
-    }, 5);
+    });
   }
 }
