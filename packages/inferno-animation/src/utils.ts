@@ -52,6 +52,11 @@ function _cleanStyle(node: HTMLElement) {
 
 export function getDimensions(node: HTMLElement) {
   var tmpDisplay = node.style.getPropertyValue('display');
+
+  // The `display: none;` workaround was added to support Bootstrap animations in
+  // https://github.com/jhsware/inferno-bootstrap/blob/be4a17bff5e785b993a66a2927846cd463fecae3/src/Modal/AnimateModal.js
+  // we should consider deprecating this, or providing a different solution for
+  // those who only do normal animations.
   var isDisplayNone = window.getComputedStyle(node).getPropertyValue('display') === 'none';
   if (isDisplayNone) {
     node.style.setProperty('display', 'block');
