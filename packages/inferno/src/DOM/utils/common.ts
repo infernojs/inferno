@@ -92,7 +92,7 @@ export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
 
 export function callAllAnimationHooks(animationQueue: Function[], callback?: Function) {
   let animsLeft = animationQueue.length;
-  for (let i = 0; i < animationQueue.length; i++) {
+  while (animationQueue.length > 0) {
     // Picknig from top because it is faster, invokation order should be irrelevant
     // since all animations are to be run and we can't predict the order in which
     // they complete.
