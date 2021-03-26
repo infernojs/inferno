@@ -92,19 +92,18 @@ export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
 
 export function callAllAnimationHooks(animationQueue: Function[], callback?: Function) {
   let animsLeft = animationQueue.length;
-  do {
-    const fn = animationQueue.pop();
-    // This check shouldn't be needed but TS complains so adding it
-    if (fn !== undefined) {
-      fn(() => {
-        // When all animations are done, remove everything.
-        // INVESTIGATE: If we add a sibling when the animation is active, will it be removed?
-        if (--animsLeft <= 0 && isFunction(callback)) {
-          callback();
-        }
-      });
-    }
-  } while (animationQueue.length > 0);
+  for (let i = 0; i < animationQueue.length; i++) {
+    // Picknig from top because it is faster, invokation order should be irrelevant
+    // since all animations are to be run and we can't predict the order in which
+    // they complete.
+    const fn = animationQueue.pop() as Function;
+    fn(() => {
+      // When all animations are done, remove everything.
+      if (--animsLeft <= 0 && isFunction(callback)) {
+        callback();
+      }
+    });
+  }
 }
 
 function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval) {
