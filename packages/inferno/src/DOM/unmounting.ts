@@ -2,7 +2,7 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
-import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM, callAllAnimationHooks, AnimationQueues } from './utils/common';
+import { EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM, callAllAnimationHooks, AnimationQueues, clearVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';
 
 export function remove(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
@@ -83,11 +83,19 @@ export function unmountAllChildren(children: VNode[], animations: AnimationQueue
   }
 }
 
-export function clearDOM(dom, animations: AnimationQueues) {
+export function clearDOM(dom, children: VNode[], animations: AnimationQueues) {
   if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
     // Be aware that the element could be removed by a later operation
-    callAllAnimationHooks(animations.willDisappear, () => { if (dom) dom.textContent = '' });
+    callAllAnimationHooks(animations.willDisappear, () => { 
+      // We need to remove children one by one because elements can be added during animation
+      if (dom) {
+        for (let i = 0; i < children.length; i++) {
+          const vNode = children[i];
+          clearVNodeDOM(vNode, dom, false);
+        }
+      }
+    });
   }
   else {
     // Optimization for clearing dom
@@ -101,7 +109,7 @@ export function removeAllChildren(dom: Element, vNode: VNode, children, animatio
   if (vNode.flags & VNodeFlags.Fragment) {
     removeVNodeDOM(vNode, dom, animations);
   } else {
-    clearDOM(dom, animations);
+    clearDOM(dom, children, animations);
   }
 }
 

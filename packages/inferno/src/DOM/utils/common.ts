@@ -106,7 +106,7 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
   }
 }
 
-function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval) {
+export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval) {
   do {
     const flags = vNode.flags;
 

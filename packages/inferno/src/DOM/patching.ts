@@ -308,14 +308,14 @@ function patchChildren(
           patchSingleTextChild(lastChildren, nextChildren, parentDOM);
           break;
         case ChildFlags.HasVNodeChildren:
-          clearDOM(parentDOM, animations);
+          clearDOM(parentDOM, lastChildren, animations);
           mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
           break;
         case ChildFlags.HasInvalidChildren:
-          clearDOM(parentDOM, animations);
+          clearDOM(parentDOM, lastChildren, animations);
           break;
         default:
-          clearDOM(parentDOM, animations);
+          clearDOM(parentDOM, lastChildren, animations);
           mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
           break;
       }
