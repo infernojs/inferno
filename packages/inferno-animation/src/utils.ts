@@ -78,28 +78,41 @@ export function clearDimensions(node: HTMLElement) {
   node.style.width = node.style.height = '';
 }
 
-function _getMaxTransitionDuration (/* add nodes as args*/) {
+function _getMaxTransitionDuration (nodes) {
   let nrofTransitions = 0;
   let maxDuration = 0;
-  for (let i=0; i < arguments.length; i++) {
-    const node = arguments[i];
+  for (let i=0; i < nodes.length; i++) {
+    const node = nodes[i];
     if (!node) continue;
 
     const cs = window.getComputedStyle(node);
     const dur = cs.getPropertyValue('transition-duration').split(',');
     const del = cs.getPropertyValue('transition-delay').split(',');
-    const props = cs.getPropertyValue('transition-property').split(',').map((prop) => prop.trim());
-    props.forEach((prop) => {
-      if (prop[0] === '-') {
-        let tmp = prop.split('-').splice(2).join('-');
-        if (props.indexOf(tmp) >= 0) {
+    const props = cs.getPropertyValue('transition-property').split(',');
+
+    for (let prop in props) {
+      const fixedProp = prop.trim();
+      if (fixedProp[0] === '-') {
+        let tmp = fixedProp.split('-').splice(2).join('-');
+        // Since I increase number of transition events to expect by
+        // number of durations found I need to remove browser prefix
+        // variations of the same property
+        if (fixedProp.indexOf(tmp) >= 0) {
           nrofTransitions--;
         }
-      }
-    })
-    const animTimeout = dur.map((v, index) => parseFloat(v) + parseFloat(del[index])).reduce((prev, curr) => prev > curr ? prev : curr, 0);
+      }      
+    }
+
+    let animTimeout = 0;
+    for (let i = 0; i < dur.length; i++) {
+      const duration = dur[i];
+      const delay = del[i];
+      animTimeout += parseFloat(duration) + parseFloat(delay);
+    }
 
     nrofTransitions += dur.length;
+    // Max duration should be equal to the longest animation duration
+    // of all found transitions including delay
     if (animTimeout > maxDuration) {
       maxDuration = animTimeout;
     }
@@ -152,7 +165,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
   /**
    * Here comes the transition event listener
    */
-  let { nrofTransitions: nrofTransitionsLeft, maxDuration } = _getMaxTransitionDuration.apply(this, nodes);
+  let { nrofTransitions: nrofTransitionsLeft, maxDuration } = _getMaxTransitionDuration(nodes);
   let done = false;
 
   function onTransitionEnd (event) {
