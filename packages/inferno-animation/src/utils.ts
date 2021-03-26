@@ -1,3 +1,5 @@
+import { isString } from 'inferno-shared';
+
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
   // allowing breakpoints in animations for debugging.
@@ -6,7 +8,7 @@ declare global {
 }
 
 export function addClassName (node: HTMLElement, className: string) {
-  if (className) {
+  if (isString(className)) {
     const tmp = className.split(' ');
     for (let i=0; i < tmp.length; i++) {
       node.classList.add(tmp[i]);
@@ -15,7 +17,7 @@ export function addClassName (node: HTMLElement, className: string) {
 }
 
 export function removeClassName (node: HTMLElement, className: string) {
-  if (className) {
+  if (isString(className)) {
     const tmp = className.split(' ');
     for (let i=0; i < tmp.length; i++) {
       node.classList.remove(tmp[i]);
