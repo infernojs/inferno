@@ -29,21 +29,21 @@ export default class AnimatedComponent extends Component<Props> {
     }
   
     // 1. Get height and set start of animation
-    const { width, height } = getDimensions(dom)
-    addClassName(dom, animCls.start)
-    forceReflow()
+    const { width, height } = getDimensions(dom);
+    addClassName(dom, animCls.start);
+    forceReflow();
   
     // 2. Activate transition
-    addClassName(dom, animCls.active)
+    addClassName(dom, animCls.active);
   
     // 3. Set an animation listener, code at end
     // Needs to be done after activating so timeout is calculated correctly
     registerTransitionListener([dom, dom.children[0]], function () {
       // *** Cleanup ***
       // 5. Remove the element
-      clearDimensions(dom)
-      removeClassName(dom, animCls.active)
-      removeClassName(dom, animCls.end)
+      clearDimensions(dom);
+      removeClassName(dom, animCls.active);
+      removeClassName(dom, animCls.end);
       
       // 6. Call callback to allow stuff to happen
       // callback(node)
@@ -51,10 +51,10 @@ export default class AnimatedComponent extends Component<Props> {
   
     // 4. Activate target state
     setTimeout(() => {
-      setDimensions(dom, width, height)
-      removeClassName(dom, animCls.start)
-      addClassName(dom, animCls.end)
-    }, 5)
+      setDimensions(dom, width, height);
+      removeClassName(dom, animCls.start);
+      addClassName(dom, animCls.end);
+    }, 5);
   }
 
   willDisappear (dom, callback) {
@@ -72,9 +72,9 @@ export default class AnimatedComponent extends Component<Props> {
     }
   
     // 1. Get dimensions and set animation start state
-    const { width, height } = getDimensions(dom)
-    setDimensions(dom, width, height)
-    addClassName(dom, animCls.start)
+    const { width, height } = getDimensions(dom);
+    setDimensions(dom, width, height);
+    addClassName(dom, animCls.start);
     
     // 2. Activate transitions
     addClassName(dom, animCls.active);
@@ -83,14 +83,14 @@ export default class AnimatedComponent extends Component<Props> {
     // Needs to be done after activating so timeout is calculated correctly
     registerTransitionListener(dom, function () {
       // *** Cleanup not needed since node is removed ***
-      callback()
+      callback();
     }, false)
   
     // 4. Activate target state
     setTimeout(() => {
-      addClassName(dom, animCls.end)
-      removeClassName(dom, animCls.start)
-      clearDimensions(dom)
-    }, 5)
+      addClassName(dom, animCls.end);
+      removeClassName(dom, animCls.start);
+      clearDimensions(dom);
+    }, 5);
   }
 }
