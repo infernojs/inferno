@@ -277,7 +277,7 @@ describe('animation hooks', () => {
      * Change
      * clearVNodeDOM(vNode, parentDOM, true);
      * to
-     * clearVNodeDOM(vNode, parentDOM);
+     * clearVNodeDOM(vNode, parentDOM, false);
      * in
      * function deferComponentClassRemoval
      * to force failure

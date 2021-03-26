@@ -107,7 +107,7 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
   } while (animationQueue.length > 0);
 }
 
-function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval = false) {
+function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval) {
   do {
     const flags = vNode.flags;
 
@@ -132,7 +132,7 @@ function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval = false)
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
-          clearVNodeDOM(children[i], parentDOM);
+          clearVNodeDOM(children[i], parentDOM, false);
         }
         return;
       }
@@ -154,7 +154,7 @@ export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: Ani
     callAllAnimationHooks(animations.willDisappear, deferComponentClassRemoval(vNode, parentDOM));
   }
   else {
-    clearVNodeDOM(vNode, parentDOM);
+    clearVNodeDOM(vNode, parentDOM, false);
   }
 }
 
