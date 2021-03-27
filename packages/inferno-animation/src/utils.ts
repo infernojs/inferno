@@ -213,7 +213,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
   // Fallback if transitionend fails
   // This is disabled during debug so we can set breakpoints
-  if (!window.__DEBUG_ANIMATIONS__ && !noTimeout) {
+  if (!isDebugAnimationsSet() && !noTimeout) {
     if (rootNode.nodeName === 'IMG' && !(rootNode as any).complete) {
       // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
       // due to loading delay
@@ -225,4 +225,8 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
       setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
     }
   }
+}
+
+function isDebugAnimationsSet () {
+  return process.env.NODE_ENV !== 'production' && window.__DEBUG_ANIMATIONS__ === true
 }
