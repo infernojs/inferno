@@ -5,7 +5,7 @@ import { directClone } from '../core/implementation';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, EMPTY_OBJ, options, renderCheck } from './utils/common';
+import { callAll, callAllAnimationHooks, EMPTY_OBJ, options, renderCheck, AnimationQueues } from './utils/common';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -47,6 +47,7 @@ export function __render(
     }
   }
   const lifecycle: Function[] = [];
+  const animations: AnimationQueues = new AnimationQueues();
   let rootInput = (parentDOM as any).$V as VNode | null;
 
   renderCheck.v = true;
@@ -56,23 +57,25 @@ export function __render(
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      mount(input as VNode, parentDOM as Element, context, false, null, lifecycle);
+      mount(input as VNode, parentDOM as Element, context, false, null, lifecycle, animations);
       (parentDOM as any).$V = input;
       rootInput = input as VNode;
     }
   } else {
     if (isNullOrUndef(input)) {
-      remove(rootInput as VNode, parentDOM as Element);
+      remove(rootInput as VNode, parentDOM as Element, animations);
       (parentDOM as any).$V = null;
     } else {
       if ((input as VNode).flags & VNodeFlags.InUse) {
         input = directClone(input as VNode);
       }
-      patch(rootInput as VNode, input as VNode, parentDOM as Element, context, false, null, lifecycle);
+      patch(rootInput as VNode, input as VNode, parentDOM as Element, context, false, null, lifecycle, animations);
       rootInput = (parentDOM as any).$V = input as VNode;
     }
   }
   callAll(lifecycle);
+  callAllAnimationHooks(animations.didAppear);
+
   renderCheck.v = false;
   if (isFunction(callback)) {
     (callback as Function)();

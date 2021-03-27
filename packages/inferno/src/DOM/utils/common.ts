@@ -8,6 +8,16 @@ import { isLinkEventObject } from '../events/linkEvent';
 export const EMPTY_OBJ = {};
 export const Fragment: string = '$F';
 
+export class AnimationQueues {
+  public didAppear: Function[];
+  public willDisappear: Function[];
+
+  constructor() {
+    this.didAppear = [];
+    this.willDisappear = [];
+  }
+}
+
 if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
 }
@@ -80,12 +90,32 @@ export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
   return null;
 }
 
-export function removeVNodeDOM(vNode: VNode, parentDOM: Element) {
+export function callAllAnimationHooks(animationQueue: Function[], callback?: Function) {
+  let animsLeft = animationQueue.length;
+  // Picknig from top because it is faster, invokation order should be irrelevant
+  // since all animations are to be run and we can't predict the order in which
+  // they complete.
+  let fn;
+  while ((fn = animationQueue.pop()) !== undefined) {
+    fn(() => {
+      // When all animations are done, remove everything.
+      if (--animsLeft <= 0 && isFunction(callback)) {
+        callback();
+      }
+    });
+  }
+}
+
+export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval) {
   do {
     const flags = vNode.flags;
 
     if (flags & VNodeFlags.DOMRef) {
-      removeChild(parentDOM, vNode.dom as Element);
+      // On defered removals the node might disappear because of later
+      // operations
+      if (!deferedRemoval || (vNode.dom as Element).parentNode === parentDOM) {
+        removeChild(parentDOM, vNode.dom as Element);
+      }
       return;
     }
     const children = vNode.children as any;
@@ -101,12 +131,30 @@ export function removeVNodeDOM(vNode: VNode, parentDOM: Element) {
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
-          removeVNodeDOM(children[i], parentDOM);
+          clearVNodeDOM(children[i], parentDOM, false);
         }
         return;
       }
     }
   } while (vNode);
+}
+
+function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
+  return function () {
+    // Mark removal as deferred to trigger check that node
+    // still exists
+    clearVNodeDOM(vNode, parentDOM, true);
+  }
+}
+
+export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
+  if (animations.willDisappear.length > 0) {
+    // Wait until animations are finished before removing actual dom nodes
+    callAllAnimationHooks(animations.willDisappear, createDeferComponentClassRemovalCallback(vNode, parentDOM));
+  }
+  else {
+    clearVNodeDOM(vNode, parentDOM, false);
+  }
 }
 
 export function moveVNodeDOM(vNode, parentDOM, nextNode) {

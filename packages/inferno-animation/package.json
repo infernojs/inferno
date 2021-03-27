@@ -1,0 +1,55 @@
+{
+  "name": "inferno-animation",
+  "version": "7.4.8",
+  "license": "MIT",
+  "description": "Animation helpers inferno. This package can be used to reuse server side rendered html",
+  "author": {
+    "name": "Sebastian Ware",
+    "email": "sebastian@urbantalk.se",
+    "url": "https://github.com/jhsware"
+  },
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "files": [
+    "index.js",
+    "dist/",
+    "README.md",
+    "package.json"
+  ],
+  "main": "index.js",
+  "module": "dist/index.esm.js",
+  "dev:module": "dist/index.dev.esm.js",
+  "typings": "dist/index.d.ts",
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces",
+    "vdom",
+    "animation",
+    "css"
+  ],
+  "dependencies": {
+    "inferno": "7.4.8"
+  },
+  "devDependencies": {
+    "inferno-create-element": "7.4.8",
+    "inferno-utils": "7.4.8",
+    "inferno-shared": "7.4.8",
+    "inferno-vnode-flags": "7.4.8"
+  },
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.Animation",
+    "moduleGlobals": {
+      "inferno": "Inferno"
+    }
+  }
+}

@@ -1,0 +1,167 @@
+:root {
+  --infernoAnimationEnter: border-width .25s ease-out, padding .25s ease-out, height .25s ease-out, opacity .6s ease-in;
+  --infernoAnimationLeave: border-width .25s ease-out, padding 1s ease-out, height 1s ease-out, opacity 1.2s ease-in;
+  --fadeAnimationEnter: opacity 0.1s ease-in;
+  --fadeAnimationLeave: opacity 2s ease-out;
+}
+
+/******************************/
+/* Animate height and opacity */
+/******************************/
+.HeightAndFade-leave {
+    /* Leave animation start state */
+    opacity: 1;
+}
+
+.HeightAndFade-leave-active {
+    /* Leave animation transitions */
+    overflow: hidden;
+    transition: var(--infernoAnimationLeave);
+}
+
+.HeightAndFade-leave-end {
+    /* Leave animation end state */
+    opacity: 0;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+}
+
+.HeightAndFade-enter {
+    /* Enter animation start state */
+    opacity: 0;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+}
+
+.HeightAndFade-enter-active {
+    /* Enter animation transitions */
+    transition: var(--infernoAnimationEnter);
+}
+
+.HeightAndFade-enter-end {
+    /* Enter animation end state */
+    opacity: 1;
+}
+
+/*************************/
+/* Simple fade animation */
+/*************************/
+.fade-enter,
+.fade-leave-end {
+  opacity: 0;
+}
+
+.fade-enter-end,
+.fade-leave {
+  opacity: 1;
+}
+
+.fade-leave-active {
+  /* Leave animation transitions */
+  transition: var(--fadeAnimationLeave);
+}
+
+.fade-enter-active {
+  /* Enter animation transitions */
+  transition: var(--fadeAnimationEnter);
+}
+
+article,
+ul {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin-bottom: 0.5rem;
+}
+
+section,
+li {
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  background: #4A90E2;
+  color: white;
+  text-align: center;
+  max-width: 10rem;
+  border-top: 1px solid #fff;
+}
+
+section:hover,
+li:hover {
+  background: #3775bb;
+}
+
+span.divider,
+li.divider {
+  display: block;
+  height: 5px;
+  background: #ccc;
+  border-width: 0;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  display: block;
+  background: #35a748;
+  color: white;
+  border-style: none;
+  border-radius: 4px;
+  width: 10rem;
+} button:hover {
+  background: #3775bb;
+}
+
+body {
+  font-family: helvetica;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100vh;
+  overflow-y: scroll;
+}
+
+.App {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+h1 {
+  transform: rotate(-90deg);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ddd;
+  text-align: center;
+  margin: 0.5rem;
+  white-space: nowrap;
+  width: 2rem;
+  transform-origin: 50% 50%;
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: 100;
+  color: #4A90E2;
+  text-align: center;
+}
+
+p {
+  width: 10rem;
+  font-size: 0.65rem;
+  font-weight: 100;
+  color: #888;
+  text-align: center;
+  margin-top: -0.5em;
+}

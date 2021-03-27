@@ -1,7 +1,7 @@
 import type { IComponent, InfernoNode, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { callAll, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
+import { callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMfromVNode, renderCheck, AnimationQueues } from '../DOM/utils/common';
 
 const QUEUE: Component<any, any>[] = [];
 
@@ -95,6 +95,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
     component.$PS = null;
 
     const lifecycle: Function[] = [];
+    const animations: AnimationQueues = new AnimationQueues();
 
     renderCheck.v = true;
 
@@ -107,9 +108,11 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
       component.$SVG,
       force,
       null,
-      lifecycle
+      lifecycle,
+      animations
     );
     callAll(lifecycle);
+    callAllAnimationHooks(animations.didAppear);
 
     renderCheck.v = false;
   } else {
