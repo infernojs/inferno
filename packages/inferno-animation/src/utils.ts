@@ -7,8 +7,6 @@ declare global {
   var __INFERNO_ANIMATION_DEBUG__: Boolean;
 }
 
-const DEBUG_ANIMATIONS = (process.env.NODE_ENV !== 'production' && window.__INFERNO_ANIMATION_DEBUG__ === true);
-
 export function addClassName (node: HTMLElement, className: string) {
   if (isString(className)) {
     const tmp = className.split(' ');
@@ -209,7 +207,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
   // Fallback if transitionend fails
   // This is disabled during debug so we can set breakpoints
-  if (!DEBUG_ANIMATIONS && !noTimeout) {
+  if (!(process.env.NODE_ENV !== 'production' && isDebugAnimationsSet()) && !noTimeout) {
     if (rootNode.nodeName === 'IMG' && !(rootNode as any).complete) {
       // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
       // due to loading delay
@@ -221,4 +219,8 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
       setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
     }
   }
+}
+
+function isDebugAnimationsSet () {
+  return window.__INFERNO_ANIMATION_DEBUG__ === true
 }
