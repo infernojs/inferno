@@ -146,7 +146,7 @@ function whichTransitionEvent(){
       }
   }
 }
-var transitionEndName: string;
+var transitionEndName: string = whichTransitionEvent();
 
 /**
  * You need to pass the root element and ALL animated children that have transitions,
@@ -154,12 +154,6 @@ var transitionEndName: string;
  * will be animations that fail to complete before the timeout is triggered.
  */
 export function registerTransitionListener(nodes: HTMLElement[], callback: Function, noTimeout: boolean = false) {
-  // I am doing this lazily because there where issues with document being undefined
-  // and checks seemed to go bust due to transpilation
-  if (!transitionEndName) {
-    transitionEndName = whichTransitionEvent();
-  }
-
   if (!Array.isArray(nodes)) {
     nodes = [nodes];
   }
