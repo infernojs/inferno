@@ -139,7 +139,7 @@ export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferedRemoval) 
   } while (vNode);
 }
 
-function deferComponentClassRemoval(vNode, parentDOM) {
+function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
   return function () {
     // Mark removal as deferred to trigger check that node
     // still exists
@@ -150,7 +150,7 @@ function deferComponentClassRemoval(vNode, parentDOM) {
 export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
   if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations.willDisappear, deferComponentClassRemoval(vNode, parentDOM));
+    callAllAnimationHooks(animations.willDisappear, createDeferComponentClassRemovalCallback(vNode, parentDOM));
   }
   else {
     clearVNodeDOM(vNode, parentDOM, false);

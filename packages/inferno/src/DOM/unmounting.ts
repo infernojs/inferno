@@ -83,23 +83,26 @@ export function unmountAllChildren(children: VNode[], animations: AnimationQueue
   }
 }
 
-export function clearDOM(dom, children: VNode[], animations: AnimationQueues) {
+function createClearAllCallback(children, parentDOM) {
+  return function () {
+    // We need to remove children one by one because elements can be added during animation
+    if (parentDOM) {
+      for (let i = 0; i < children.length; i++) {
+        const vNode = children[i];
+        clearVNodeDOM(vNode, parentDOM, false);
+      }
+    }
+  }
+}
+export function clearDOM(parentDOM, children: VNode[], animations: AnimationQueues) {
   if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
     // Be aware that the element could be removed by a later operation
-    callAllAnimationHooks(animations.willDisappear, () => { 
-      // We need to remove children one by one because elements can be added during animation
-      if (dom) {
-        for (let i = 0; i < children.length; i++) {
-          const vNode = children[i];
-          clearVNodeDOM(vNode, dom, false);
-        }
-      }
-    });
+    callAllAnimationHooks(animations.willDisappear, createClearAllCallback(children, parentDOM));
   }
   else {
     // Optimization for clearing dom
-    dom.textContent = '';
+    parentDOM.textContent = '';
   }
 }
 
