@@ -46,7 +46,8 @@ export default class AnimatedComponent extends Component<Props> {
       removeClassName(dom, animCls.end);
       
       // 6. Call callback to allow stuff to happen
-      // callback(node)
+      // Not currently used but this is where one could 
+      // add a call to something like this.didAppearDone
     }, false)
   
     // 4. Activate target state
