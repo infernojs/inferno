@@ -1,4 +1,4 @@
-import { isString } from 'inferno-shared';
+import { isString, isFunction } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
@@ -205,7 +205,9 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
      * Perform cleanup
      */
     rootNode.removeEventListener(transitionEndName, onTransitionEnd, false);
-    callback && callback();
+    if (isFunction(callback)) {
+      callback();
+    }
   }
   rootNode.addEventListener(transitionEndName, onTransitionEnd, false);
 
