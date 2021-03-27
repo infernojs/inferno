@@ -113,12 +113,11 @@ export function removeAllChildren(dom: Element, vNode: VNode, children, animatio
   }
 }
 
+
+// Only add animations to queue in browser
 function addDisappearAnimationHook(animations: AnimationQueues, instance, dom: Element) {
-  // Only do animations in browser
-  if (typeof window !== 'undefined') {
-    animations.willDisappear.push((callback: Function) => {
-      instance.willDisappear(dom, callback);
-    });
-  }
+  animations.willDisappear.push((callback: Function) => {
+    instance.willDisappear(dom, callback);
+  });
 }
 

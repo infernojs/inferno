@@ -160,12 +160,9 @@ function createClassMountCallback(instance) {
 }
 
 function addAppearAnimationHook(animations: AnimationQueues, instance) {
-  // Only do animations in browser
-  if (typeof window !== 'undefined') {
-    animations.didAppear.push(() => {
-      instance.didAppear(instance.$LI.dom);
-    });
-  }
+  animations.didAppear.push(() => {
+    instance.didAppear(instance.$LI.dom);
+  });
 }
 
 export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[], animations: AnimationQueues) {
