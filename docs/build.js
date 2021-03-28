@@ -40,6 +40,7 @@ const plugins = [
     resolve: ['.js'],
     entries: [
       {find: 'inferno', replacement: resolve('inferno')},
+      {find: 'inferno-animation', replacement: resolve('inferno-animation')},
       {find: 'inferno-component', replacement: resolve('inferno-component')},
       {find: 'inferno-compat', replacement: resolve('inferno-compat')},
       {find: 'inferno-create-class', replacement: resolve('inferno-create-class')},

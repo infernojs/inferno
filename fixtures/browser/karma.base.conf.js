@@ -119,6 +119,7 @@ module.exports = function (config) {
       resolve: {
         alias: {
           inferno: resolve('inferno'),
+          'inferno-animation': resolve('inferno-animation'),
           'inferno-component': resolve('inferno-component'),
           'inferno-compat': resolve('inferno-compat'),
           'inferno-create-class': resolve('inferno-create-class'),

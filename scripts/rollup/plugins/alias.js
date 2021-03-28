@@ -6,6 +6,7 @@ module.exports = alias({
   resolve: ['.js'],
   entries: [
     { find: 'inferno', replacement: resolve(ROOT, 'packages/inferno/dist/index.esm.js') },
+    { find: 'inferno-animation', replacement: resolve(ROOT, 'packages/inferno-animation/dist/index.esm.js') },
     { find: 'inferno-compat', replacement: resolve(ROOT, 'packages/inferno-compat/dist/index.esm.js') },
     { find: 'inferno-create-class', replacement: resolve(ROOT, 'packages/inferno-create-class/dist/index.esm.js') },
     { find: 'inferno-create-element', replacement: resolve(ROOT, 'packages/inferno-create-element/dist/index.esm.js') },
