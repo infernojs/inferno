@@ -143,7 +143,7 @@ function _getMaxTransitionDuration(nodes) {
 }
 
 const transitionEndName: string = (function () {
-  const elementStyle = document.createElement('fakeelement').style;
+  const elementStyle = document.createElement('div').style;
   // tslint:disable:object-literal-sort-keys
   const transitions = {
     transition: 'transitionend',

@@ -91,15 +91,13 @@ export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
 }
 
 export function callAllAnimationHooks(animationQueue: Function[], callback?: Function) {
-  let animsLeft = animationQueue.length;
-  // Picknig from top because it is faster, invokation order should be irrelevant
-  // since all animations are to be run and we can't predict the order in which
-  // they complete.
+  let animationsLeft: number = animationQueue.length;
+  // Picking from the top because it is faster, invocation order should be irrelevant
+  // since all animations are to be run and we can't predict the order in which they complete.
   let fn;
   while ((fn = animationQueue.pop()) !== undefined) {
     fn(() => {
-      // When all animations are done, remove everything.
-      if (--animsLeft <= 0 && isFunction(callback)) {
+      if (--animationsLeft <= 0 && isFunction(callback)) {
         callback();
       }
     });
@@ -111,8 +109,7 @@ export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferredRemoval:
     const flags = vNode.flags;
 
     if (flags & VNodeFlags.DOMRef) {
-      // On defered removals the node might disappear because of later
-      // operations
+      // On deferred removals the node might disappear because of later operations
       if (!deferredRemoval || (vNode.dom as Element).parentNode === parentDOM) {
         removeChild(parentDOM, vNode.dom as Element);
       }
@@ -141,8 +138,7 @@ export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferredRemoval:
 
 function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
   return function () {
-    // Mark removal as deferred to trigger check that node
-    // still exists
+    // Mark removal as deferred to trigger check that node still exists
     clearVNodeDOM(vNode, parentDOM, true);
   };
 }

@@ -169,7 +169,6 @@ export function mountClassComponent(
   lifecycle: Function[],
   animations: AnimationQueues
 ) {
-  // TODO: Should we pass animations here?
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
 
   // If we have a didAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue

@@ -10,17 +10,23 @@ describe('inferno-animation AnimatedComponent', () => {
     document.body.appendChild(container);
   });
 
+  function waitForAnimationAndContinue(condition, callback, arg1) {
+    if (container.textContent !== condition) {
+      return setTimeout(waitForAnimationAndContinue.bind(null, condition, callback, arg1), 10);
+    }
+
+    callback(arg1);
+  }
+
+  function afterEachClear(done) {
+    container.innerHTML = '';
+    document.body.removeChild(container);
+    done();
+  }
+
   afterEach(function (done) {
     render(null, container);
-    var checkRenderComplete_DONE = () => {
-      if (container.innerHTML !== '') {
-        return setTimeout(checkRenderComplete_DONE, 5);
-      }
-      container.innerHTML = '';
-      document.body.removeChild(container);
-      done();
-    };
-    checkRenderComplete_DONE();
+    waitForAnimationAndContinue('', afterEachClear, done);
   });
 
   it('should render class component extending AnimatedComponent into DOM', () => {
@@ -67,12 +73,8 @@ describe('inferno-animation AnimatedComponent', () => {
      * been completed. As long as the render operation eventually completes correctly,
      * the test should be considered successful.
      */
-    // Disappear animations complete async
-    var checkRenderComplete_ONE = () => {
-      if (container.textContent !== '13') {
-        return setTimeout(checkRenderComplete_ONE, 10);
-      }
 
+    waitForAnimationAndContinue('13', function () {
       render(
         <div>
           <My key="#1">1</My>
@@ -81,16 +83,10 @@ describe('inferno-animation AnimatedComponent', () => {
         container
       );
 
-      // Disappear animations complete async
-      var checkRenderComplete_TWO = () => {
-        if (container.textContent !== '14') {
-          return setTimeout(checkRenderComplete_TWO, 10);
-        }
+      waitForAnimationAndContinue('14', function () {
         done();
-      };
-      checkRenderComplete_TWO();
-    };
-    checkRenderComplete_ONE();
+      });
+    });
   });
 
   it('should move class component extending AnimatedComponent from DOM', (done) => {
@@ -128,11 +124,8 @@ describe('inferno-animation AnimatedComponent', () => {
      * the test should be considered successful.
      */
     // Disappear animations complete async
-    var checkRenderComplete_ONE = () => {
-      if (container.textContent !== '132') {
-        return setTimeout(checkRenderComplete_ONE, 10);
-      }
 
+    waitForAnimationAndContinue('132', function () {
       render(
         <div>
           <My key="#4">4</My>
@@ -141,18 +134,11 @@ describe('inferno-animation AnimatedComponent', () => {
         container
       );
 
-      // Disappear animations complete async
-      var checkRenderComplete_TWO = () => {
-        if (container.textContent !== '41') {
-          return setTimeout(checkRenderComplete_TWO, 10);
-        }
-
+      waitForAnimationAndContinue('41', function () {
         render(null, container);
         done();
-      };
-      checkRenderComplete_TWO();
-    };
-    checkRenderComplete_ONE();
+      });
+    });
   });
 
   it('should render class component extending AnimatedComponent to a string', () => {

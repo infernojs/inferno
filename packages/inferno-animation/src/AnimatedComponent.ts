@@ -1,32 +1,46 @@
 import { Component, InfernoNode } from 'inferno';
 import { addClassName, clearDimensions, forceReflow, getDimensions, registerTransitionListener, removeClassName, setDimensions } from './utils';
+import { isNullOrUndef } from 'inferno-shared';
+
+type animationClass = {
+  active: string;
+  end: string;
+  start: string;
+};
 
 type AnimationProp = {
-  animation?: string | object;
+  animation?: string | animationClass;
   children?: InfernoNode;
 };
 
+function getAnimationClass(animationProp: animationClass | string | undefined | null, prefix: string): animationClass {
+  let animCls: animationClass;
+
+  if (!isNullOrUndef(animationProp) && typeof animationProp === 'object') {
+    animCls = animationProp;
+  } else {
+    const animationName = animationProp || 'inferno-animation';
+    animCls = {
+      active: `${animationName}${prefix}-active`,
+      end: `${animationName}${prefix}-end`,
+      start: `${animationName}${prefix}`
+    };
+  }
+
+  return animCls;
+}
+
 export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
   public didAppear(dom) {
-    let animCls: any; // TODO: This should be typed properly
-    if (typeof this.props.animation === 'object') {
-      animCls = this.props.animation;
-    } else {
-      const animationName = this.props.animation || 'inferno-animation';
-      animCls = {
-        active: animationName + '-enter-active',
-        end: animationName + '-enter-end',
-        start: animationName + '-enter'
-      };
-    }
+    const { start, end, active } = getAnimationClass(this.props.animation, '-enter');
 
     // 1. Get height and set start of animation
     const { width, height } = getDimensions(dom);
-    addClassName(dom, animCls.start);
+    addClassName(dom, start);
     forceReflow();
 
     // 2. Activate transition
-    addClassName(dom, animCls.active);
+    addClassName(dom, active);
 
     // 3. Set an animation listener, code at end
     // Needs to be done after activating so timeout is calculated correctly
@@ -36,8 +50,8 @@ export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp &
         // *** Cleanup ***
         // 5. Remove the element
         clearDimensions(dom);
-        removeClassName(dom, animCls.active);
-        removeClassName(dom, animCls.end);
+        removeClassName(dom, active);
+        removeClassName(dom, end);
 
         // 6. Call callback to allow stuff to happen
         // Not currently used but this is where one could
@@ -49,31 +63,21 @@ export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp &
     // 4. Activate target state
     requestAnimationFrame(() => {
       setDimensions(dom, width, height);
-      removeClassName(dom, animCls.start);
-      addClassName(dom, animCls.end);
+      removeClassName(dom, start);
+      addClassName(dom, end);
     });
   }
 
   public willDisappear(dom, callback) {
-    let animCls;
-    if (typeof this.props.animation === 'object') {
-      animCls = this.props.animation;
-    } else {
-      const animationName = this.props.animation || 'inferno-animation';
-      animCls = {
-        active: animationName + '-leave-active',
-        end: animationName + '-leave-end',
-        start: animationName + '-leave'
-      };
-    }
+    const { start, end, active } = getAnimationClass(this.props.animation, '-leave');
 
     // 1. Get dimensions and set animation start state
     const { width, height } = getDimensions(dom);
     setDimensions(dom, width, height);
-    addClassName(dom, animCls.start);
+    addClassName(dom, start);
 
     // 2. Activate transitions
-    addClassName(dom, animCls.active);
+    addClassName(dom, active);
 
     // 3. Set an animation listener, code at end
     // Needs to be done after activating so timeout is calculated correctly
@@ -88,8 +92,8 @@ export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp &
 
     // 4. Activate target state
     requestAnimationFrame(() => {
-      addClassName(dom, animCls.end);
-      removeClassName(dom, animCls.start);
+      addClassName(dom, end);
+      removeClassName(dom, start);
       clearDimensions(dom);
     });
   }
