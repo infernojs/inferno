@@ -37,13 +37,15 @@
     "inferno-clone-vnode": "7.4.8",
     "inferno-create-class": "7.4.8",
     "inferno-create-element": "7.4.8",
-    "inferno-extras": "7.4.8"
+    "inferno-extras": "7.4.8",
+    "inferno-hydrate": "7.4.8"
   },
   "devDependencies": {
     "inferno-hyperscript": "7.4.8",
     "inferno-shared": "7.4.8",
     "inferno-test-utils": "7.4.8",
-    "inferno-vnode-flags": "7.4.8"
+    "inferno-vnode-flags": "7.4.8",
+    "inferno-hydrate": "7.4.8"
   },
   "rollup": {
     "bundledDependencies": [
