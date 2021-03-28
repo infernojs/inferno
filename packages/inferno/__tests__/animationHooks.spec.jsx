@@ -17,37 +17,37 @@ describe('animation hooks', () => {
 
   /**
    * This is how component animation hooks work:
-   * 
+   *
    * On node creation, if there is a callback, a reference to the DOM-node is passed to that callback which allows for CSS-
    * animations to be applied.
-   * 
+   *
    * On node removal, if there is a callback, the node isn't actually removed until the callback has finished.
-   * 
+   *
    * On node move, if there is a callback, the original node is cloned and both a reference to the cloned node and the new
    * node are passed to the callback allowing CSS-animations to be performed.
-   * 
+   *
    * ** Entrypoints **
    * - mounting.ts
    * - unmounnting.ts
-   * 
+   *
    * ** Scope **
    * We will start by implementing this for class components. Animations are expensive so it is probably a reasonable
    * tradeoff to force the use of class componnents.
-   * 
+   *
    * QUESTION: How do we handle nested animations?
    * Normally we only want to animated the outermost animation, but there are situation when the dev might want to
    * do this differenty. Should we:
    * - always block animations in children?
    * - allow the dev to specify?
-   * 
+   *
    * Ex. you have a page animation and also animations on items in that page.
    * ANSWER: I will block all animations down stream for starters. Giving an option requires A LOT of thought on
    * edge cases.
-   * 
+   *
    * QUESTION: What if we add a set of siblings in a list, then all of them should animate, no?
    * DONE: Investigate how to solve this.
    * ANSWER: Animations should be a tree and only the highest node animates, but all siblings will animate
-   * 
+   *
    * DONE: Fix code path when removing last item in a list using clearDOM(dom) optmisation
    * DONE: The callback is lost when transition is completed by the timeout
    * QUESTION: Should I require the component to have a key?
@@ -62,7 +62,7 @@ describe('animation hooks', () => {
    * STARTED: Compare with tests in patchKeyedChildren.spec.js
    * TODO: Investigate adding animations in https://github.com/infernojs/inferno/tree/master/docs/uibench-reactlike
    * TODO: Add an animation blocking parent component to example
-   * 
+   *
    */
 
   it('should call "didAppear" when component has been inserted into DOM', () => {
@@ -75,8 +75,8 @@ describe('animation hooks', () => {
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
@@ -96,8 +96,8 @@ describe('animation hooks', () => {
       componentDidMount() {
         spyer('childDidMount');
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
@@ -109,8 +109,12 @@ describe('animation hooks', () => {
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div><Child /></div>)
+      render() {
+        return (
+          <div>
+            <Child />
+          </div>
+        );
       }
     }
 
@@ -131,8 +135,8 @@ describe('animation hooks', () => {
       componentDidMount() {
         spyer('childDidMount');
       }
-      render () {
-        return (<div>{this.props.children}</div>)
+      render() {
+        return <div>{this.props.children}</div>;
       }
     }
 
@@ -151,12 +155,18 @@ describe('animation hooks', () => {
             items: [1, 2]
           });
           // Make sure inferno is done and then check the results
-          setTimeout(finished, 5)
-        }, 5)
+          setTimeout(finished, 5);
+        }, 5);
       }
 
-      render () {
-        return (<div>{this.state.items.map((i) => <Child key={i}>{i}</Child>)}</div>)
+      render() {
+        return (
+          <div>
+            {this.state.items.map((i) => (
+              <Child key={i}>{i}</Child>
+            ))}
+          </div>
+        );
       }
     }
 
@@ -169,9 +179,9 @@ describe('animation hooks', () => {
       expect(spyer.calls.argsFor(2)).toEqual(['childDidAppear']);
       expect(spyer.calls.argsFor(3)).toEqual(['childDidMount']);
       expect(spyer.calls.argsFor(4)).toEqual(['childDidAppear']);
-      expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>')
+      expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
       done();
-    }
+    };
   });
 
   it('should call all "didAppear" when multiple siblings have been inserted into DOM', () => {
@@ -181,8 +191,8 @@ describe('animation hooks', () => {
         spyer('childDidAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
@@ -190,13 +200,15 @@ describe('animation hooks', () => {
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div>
-          <Child />
-          <Child />
-          <Child />
-          <Child />
-        </div>)
+      render() {
+        return (
+          <div>
+            <Child />
+            <Child />
+            <Child />
+            <Child />
+          </div>
+        );
       }
     }
 
@@ -217,24 +229,23 @@ describe('animation hooks', () => {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(done instanceof Function).toEqual(true);
-        done()
+        done();
       }
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
     render(<App />, container);
-    
+
     render(null, container);
 
     expect(spyer).toHaveBeenCalledTimes(2);
     expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(1)).toEqual(['willDisappear']);
-
   });
 
   it('should handle async callbacks from "willDisappear"', (done) => {
@@ -245,20 +256,20 @@ describe('animation hooks', () => {
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(callback instanceof Function).toEqual(true);
         setTimeout(() => {
-          callback()
-          setTimeout(() => didFinish(), 10)
+          callback();
+          setTimeout(() => didFinish(), 10);
         }, 10);
       }
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
     render(<App />, container);
-    
+
     render(null, container);
 
     function didFinish() {
@@ -285,27 +296,29 @@ describe('animation hooks', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
       state = {
-        items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
-      }
+        items: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+      };
 
-      render () {
+      render() {
         if (this.state.items.length > 0) {
           setTimeout(() => {
             const items = this.state.items;
             items.pop();
             this.setState({ items });
-          })
+          });
         }
 
         if (this.state.items.length === 0) {
-          return <div />
+          return <div />;
         }
 
         return (
           <div>
-            {this.state.items.map(i => <Item key={i} index={i} />)}
+            {this.state.items.map((i) => (
+              <Item key={i} index={i} />
+            ))}
           </div>
-        )
+        );
       }
     }
 
@@ -313,35 +326,35 @@ describe('animation hooks', () => {
       willDisappear(dom, callback) {
         spyer('willDisappear ' + this.props.index);
 
-        let timeout = 10
+        let timeout = 10;
         if (this.props.index === 0) {
-          timeout = 0
+          timeout = 0;
         }
         setTimeout(() => {
-          callback()
+          callback();
         }, timeout);
       }
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
     render(<App />, container);
-    
+
     var checkRenderComplete_ONE = () => {
       if (container.innerHTML !== '<div></div>') {
         return setTimeout(checkRenderComplete_ONE, 10);
-      };
+      }
       expect(spyer).toHaveBeenCalledTimes(40);
       expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
       expect(spyer.calls.argsFor(19)).toEqual(['didMount']);
       expect(spyer.calls.argsFor(20)).toEqual(['willDisappear 19']);
       expect(spyer.calls.argsFor(39)).toEqual(['willDisappear 0']);
       done();
-    }
+    };
     checkRenderComplete_ONE();
   });
 
@@ -350,7 +363,7 @@ describe('animation hooks', () => {
     // Always call the willDisappear callback after last render
     let lastRenderDone = false;
     let callMeAfterLastRender;
-    
+
     class App extends Component {
       didAppear(dom) {
         spyer('didAppear');
@@ -363,13 +376,12 @@ describe('animation hooks', () => {
 
         if (this.props.forceDone) {
           callback();
-        }
-        else {
+        } else {
           setTimeout(() => {
             callMeAfterLastRender = () => {
-              callback()
-              setTimeout(() => didFinish(), 10)
-            }
+              callback();
+              setTimeout(() => didFinish(), 10);
+            };
             lastRenderDone && callMeAfterLastRender();
           }, 10);
         }
@@ -377,8 +389,8 @@ describe('animation hooks', () => {
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
@@ -388,10 +400,10 @@ describe('animation hooks', () => {
     render(<App forceDone />, container);
 
     expect(container.innerHTML).toBe('<div></div><div></div>');
-      
+
     lastRenderDone = true;
     callMeAfterLastRender && callMeAfterLastRender();
-    
+
     function didFinish() {
       expect(spyer).toHaveBeenCalledTimes(5);
       expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
@@ -415,19 +427,30 @@ describe('animation hooks', () => {
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(callback instanceof Function).toEqual(true);
         setTimeout(() => {
-          callback()
+          callback();
         }, 10);
       }
       componentDidMount() {
         spyer('didMount');
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
-    render(<div><App /><App /></div>, container);
-    render(<div><App /></div>, container);
+    render(
+      <div>
+        <App />
+        <App />
+      </div>,
+      container
+    );
+    render(
+      <div>
+        <App />
+      </div>,
+      container
+    );
     render(null, container);
 
     expect(container.innerHTML).not.toEqual('');
@@ -435,7 +458,7 @@ describe('animation hooks', () => {
     var checkRenderComplete_ONE = () => {
       if (container.innerHTML !== '') {
         return setTimeout(checkRenderComplete_ONE, 10);
-      };
+      }
       expect(spyer).toHaveBeenCalledTimes(6);
       expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
       expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
@@ -444,7 +467,7 @@ describe('animation hooks', () => {
       expect(spyer.calls.argsFor(4)).toEqual(['didMount']);
       expect(spyer.calls.argsFor(5)).toEqual(['willDisappear']);
       done();
-    }
+    };
     checkRenderComplete_ONE();
   });
 
@@ -917,7 +940,6 @@ describe('animation hooks', () => {
     }
   });
 
-
   describe('Calendar like layout', () => {
     class Animated extends Component {
       didAppear(dom) {
@@ -925,10 +947,10 @@ describe('animation hooks', () => {
       }
       willDisappear(dom, done) {
         // Trigger animation code paths on remove
-        done()
+        done();
       }
-      render ({ children }) {
-        return (<div>{children}</div>)
+      render({ children }) {
+        return <div>{children}</div>;
       }
     }
 
@@ -1085,19 +1107,19 @@ function factory(spyer) {
     }
     willDisappear(dom, done) {
       spyer && spyer('willDisappear');
-      done()
+      done();
     }
-    render ({ children }) {
-      return (<div>{children}</div>)
+    render({ children }) {
+      return <div>{children}</div>;
     }
-  }
+  };
 }
 
 function generateKeyNodes(array, spyer) {
   let i, id, key;
   const children = [];
   let newKey;
-  const Tag = factory(spyer)
+  const Tag = factory(spyer);
 
   for (i = 0; i < array.length; i++) {
     id = key = array[i];
@@ -1107,7 +1129,11 @@ function generateKeyNodes(array, spyer) {
       newKey = null;
     }
 
-    children.push(<Tag key={newKey} id={String(id)}>{id}</Tag>);
+    children.push(
+      <Tag key={newKey} id={String(id)}>
+        {id}
+      </Tag>
+    );
   }
   return children;
 }

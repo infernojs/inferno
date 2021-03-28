@@ -126,19 +126,19 @@ module.exports = function (config) {
     concurrency: 1,
 
     webpack: {
-      devtool: 'none',
+      devtool: false,
       mode: 'none',
       optimization: {
         splitChunks: false,
         runtimeChunk: false,
         minimize: true
       },
+      target: false,
       module: {
         rules: [
           {
             test: /\.(js|jsx|tsx|ts)$/,
             loader: path.join(__dirname, 'node_modules/babel-loader'),
-            exclude: /node_modules/,
             options: {
               babelrc: false,
               presets: [
@@ -147,7 +147,7 @@ module.exports = function (config) {
                   {
                     loose: true,
                     targets: {
-                      browsers: ['ie >= 10', 'safari > 7']
+                      ie: '11'
                     }
                   }
                 ],

@@ -122,10 +122,10 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
 }
 export type ComponentType<P = {}> = Component<P> | StatelessComponent<P>;
 
-export class Component<P = {}, S = {}> implements IComponent<{ children?: InfernoNode; } & P, S> {
+export class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public
   public state: S | null = null;
-  public props: P;
+  public props: { children?: InfernoNode } & P;
   public context: any;
   public displayName?: string;
   public refs?: any;
@@ -178,25 +178,25 @@ export class Component<P = {}, S = {}> implements IComponent<{ children?: Infern
 
   public componentWillMount?(): void;
 
-  public componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+  public componentWillReceiveProps?(nextProps: { children?: InfernoNode } & P, nextContext: any): void;
 
-  public shouldComponentUpdate?(nextProps: P, nextState: S, context: any): boolean;
+  public shouldComponentUpdate?(nextProps: { children?: InfernoNode } & P, nextState: S, context: any): boolean;
 
-  public componentWillUpdate?(nextProps: P, nextState: S, context: any): void;
+  public componentWillUpdate?(nextProps: { children?: InfernoNode } & P, nextState: S, context: any): void;
 
-  public componentDidUpdate?(prevProps: P, prevState: S, snapshot: any): void;
+  public componentDidUpdate?(prevProps: { children?: InfernoNode } & P, prevState: S, snapshot: any): void;
 
   public componentWillUnmount?(): void;
 
   public getChildContext?(): void;
 
-  public getSnapshotBeforeUpdate?(prevProps: P, prevState: S): any;
+  public getSnapshotBeforeUpdate?(prevProps: { children?: InfernoNode } & P, prevState: S): any;
 
   public static defaultProps?: any;
 
   public static getDerivedStateFromProps?(nextProps: any, state: any): any;
 
-  public render(_nextProps: P, _nextState: S, _nextContext: any): InfernoNode | undefined {
+  public render(_nextProps: { children?: InfernoNode } & P, _nextState: S, _nextContext: any): InfernoNode | undefined {
     return null;
   }
 }

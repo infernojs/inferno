@@ -5,16 +5,7 @@ describe('inferno-animation public API', () => {
     expect(AnimatedComponent).not.toBeUndefined();
   });
   it('should expose utils', () => {
-    const {
-      addClassName,
-      removeClassName,
-      registerTransitionListener,
-      forceReflow,
-      clearDimensions,
-      getDimensions,
-      setDimensions,
-      setDisplay
-    } = utils;
+    const { addClassName, removeClassName, registerTransitionListener, forceReflow, clearDimensions, getDimensions, setDimensions, setDisplay } = utils;
     expect(addClassName).not.toBeUndefined();
     expect(removeClassName).not.toBeUndefined();
     expect(registerTransitionListener).not.toBeUndefined();

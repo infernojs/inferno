@@ -17,7 +17,7 @@ export interface IComponent<P, S> {
   forceUpdate(callback?: Function);
 
   setState<K extends keyof S>(
-    newState: ((prevState: Readonly<S>, props: Readonly<P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
+    newState: ((prevState: Readonly<S>, props: Readonly<{ children?: InfernoNode } & P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
     callback?: () => void
   ): void;
 
@@ -25,21 +25,21 @@ export interface IComponent<P, S> {
 
   componentWillMount?(): void;
 
-  componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+  componentWillReceiveProps?(nextProps: { children?: InfernoNode } & P, nextContext: any): void;
 
-  shouldComponentUpdate?(nextProps: P, nextState: S, context: any): boolean;
+  shouldComponentUpdate?(nextProps: { children?: InfernoNode } & P, nextState: S, context: any): boolean;
 
-  componentWillUpdate?(nextProps: P, nextState: S, context: any): void;
+  componentWillUpdate?(nextProps: { children?: InfernoNode } & P, nextState: S, context: any): void;
 
-  componentDidUpdate?(prevProps: P, prevState: S, snapshot: any): void;
+  componentDidUpdate?(prevProps: { children?: InfernoNode } & P, prevState: S, snapshot: any): void;
 
   componentWillUnmount?(): void;
 
   getChildContext?(): void;
 
-  getSnapshotBeforeUpdate?(prevProps: P, prevState: S): any;
+  getSnapshotBeforeUpdate?(prevProps: { children?: InfernoNode } & P, prevState: S): any;
 
-  render(nextProps: P, nextState: S, nextContext: any): InfernoNode | undefined | void;
+  render(nextProps: { children?: InfernoNode } & P, nextState: S, nextContext: any): InfernoNode | undefined | void;
 }
 
 export interface LinkedEvent<T, E extends Event> {

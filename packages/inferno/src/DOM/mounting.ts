@@ -8,7 +8,15 @@ import { createClassComponentInstance, renderFunctionalComponent } from './utils
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
 
-export function mount(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues): void {
+export function mount(
+  vNode: VNode,
+  parentDOM: Element | null,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues
+): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
   if (flags & VNodeFlags.Element) {
@@ -74,7 +82,15 @@ export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Ele
   }
 }
 
-export function mountElement(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues): void {
+export function mountElement(
+  vNode: VNode,
+  parentDOM: Element | null,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues
+): void {
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
@@ -125,7 +141,15 @@ export function mountElement(vNode: VNode, parentDOM: Element | null, context: O
   mountRef(vNode.ref, dom, lifecycle);
 }
 
-export function mountArrayChildren(children, dom: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues): void {
+export function mountArrayChildren(
+  children,
+  dom: Element | null,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues
+): void {
   for (let i = 0; i < children.length; ++i) {
     let child = children[i];
 
@@ -136,7 +160,15 @@ export function mountArrayChildren(children, dom: Element | null, context: Objec
   }
 }
 
-export function mountClassComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues) {
+export function mountClassComponent(
+  vNode: VNode,
+  parentDOM: Element | null,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues
+) {
   // TODO: Should we pass animations here?
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
 
@@ -149,7 +181,15 @@ export function mountClassComponent(vNode: VNode, parentDOM: Element | null, con
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
 }
 
-export function mountFunctionalComponent(vNode: VNode, parentDOM: Element | null, context: Object, isSVG: boolean, nextNode: Element | null, lifecycle, animations: AnimationQueues): void {
+export function mountFunctionalComponent(
+  vNode: VNode,
+  parentDOM: Element | null,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle,
+  animations: AnimationQueues
+): void {
   mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle, animations);
 }
 

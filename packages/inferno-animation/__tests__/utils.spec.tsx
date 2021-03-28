@@ -1,4 +1,4 @@
-import { 
+import {
   addClassName,
   removeClassName,
   registerTransitionListener,
@@ -6,8 +6,8 @@ import {
   clearDimensions,
   getDimensions,
   setDimensions,
-  setDisplay,
- } from '../src/utils';
+  setDisplay
+} from '../src/utils';
 
 describe('inferno-animation utils', () => {
   let container;
@@ -21,6 +21,10 @@ describe('inferno-animation utils', () => {
     container.innerHTML = '';
     document.body.removeChild(container);
   });
+
+  function renderTemplate(dom) {
+    dom.innerHTML = '<div><div class="target">content</div></div>';
+  }
 
   it('addClassName', () => {
     renderTemplate(container);
@@ -57,21 +61,21 @@ describe('inferno-animation utils', () => {
     // element. This is the recomended though
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
     expect(el.outerHTML).toEqual('<div class="target" style="">content</div>');
-    
+
     // Just clear display prop
-    
+
     setDisplay(el, 'block');
     setDimensions(el, 10, 10);
     setDisplay(el, undefined);
     expect(el.style.getPropertyValue('display')).toEqual('');
   });
-  
+
   it('getDimensions', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     const res = getDimensions(el);
     expect(res).not.toEqual(undefined);
-    
+
     el.style.display = 'none';
     const res2 = getDimensions(el);
     expect(res2).not.toEqual(undefined);
@@ -105,7 +109,7 @@ describe('inferno-animation utils', () => {
     registerTransitionListener([el], () => {
       // We should always get a callback
       done();
-    })
+    });
   });
 
   it('registerTransitionListener for IMG', (done) => {
@@ -115,11 +119,7 @@ describe('inferno-animation utils', () => {
     registerTransitionListener([el], () => {
       // We should always get a callback
       done();
-    })
+    });
     el.dispatchEvent(new Event('load'));
   });
-
-  const renderTemplate = (container) => {
-    container.innerHTML = '<div><div class="target">content</div></div>';
-  }
 });

@@ -15,7 +15,7 @@ import {
   removeVNodeDOM,
   replaceChild,
   setTextContent,
-  AnimationQueues,
+  AnimationQueues
 } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
@@ -98,7 +98,15 @@ function patchContentEditableChildren(dom, nextChildren) {
   }
 }
 
-function patchFragment(lastVNode: VNode, nextVNode: VNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], animations: AnimationQueues) {
+function patchFragment(
+  lastVNode: VNode,
+  nextVNode: VNode,
+  parentDOM: Element,
+  context: Object,
+  isSVG: boolean,
+  lifecycle: Function[],
+  animations: AnimationQueues
+) {
   const lastChildren = lastVNode.children as VNode[];
   let nextChildren = nextVNode.children as any;
   const lastChildFlags = lastVNode.childFlags;
@@ -163,7 +171,15 @@ function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Fun
   }
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, context: Object, isSVG: boolean, nextFlags: VNodeFlags, lifecycle: Function[], animations: AnimationQueues) {
+export function patchElement(
+  lastVNode: VNode,
+  nextVNode: VNode,
+  context: Object,
+  isSVG: boolean,
+  nextFlags: VNodeFlags,
+  lifecycle: Function[],
+  animations: AnimationQueues
+) {
   const dom = (nextVNode.dom = lastVNode.dom as Element);
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
@@ -412,7 +428,16 @@ export function updateClassComponent(
   }
 }
 
-function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues) {
+function patchClassComponent(
+  lastVNode,
+  nextVNode,
+  parentDOM,
+  context,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues
+) {
   const instance = (nextVNode.children = lastVNode.children);
   // If Component has crashed, ignore it to stay functional
   if (isNull(instance)) {
@@ -449,7 +474,16 @@ function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG: bo
   }
 }
 
-function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG: boolean, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues) {
+function patchFunctionalComponent(
+  lastVNode,
+  nextVNode,
+  parentDOM,
+  context,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues
+) {
   let shouldUpdate: boolean = true;
   const nextProps = nextVNode.props || EMPTY_OBJ;
   const nextRef = nextVNode.ref;

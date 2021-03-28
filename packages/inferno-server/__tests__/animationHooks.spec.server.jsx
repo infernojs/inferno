@@ -13,8 +13,8 @@ describe('SSR Creation (JSX)', () => {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
@@ -25,7 +25,7 @@ describe('SSR Creation (JSX)', () => {
       expect(spyer).toHaveBeenCalledTimes(0);
       expect(outp).toEqual('<div></div>');
       done();
-    }, 10)
+    }, 10);
   });
 
   it('should not call "didAppear" when component is rendered with renderToString', (done) => {
@@ -35,8 +35,8 @@ describe('SSR Creation (JSX)', () => {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
-      render () {
-        return (<div />)
+      render() {
+        return <div />;
       }
     }
 
@@ -47,6 +47,6 @@ describe('SSR Creation (JSX)', () => {
       expect(spyer).toHaveBeenCalledTimes(0);
       expect(outp).toEqual('<div></div>');
       done();
-    }, 10)
+    }, 10);
   });
 });

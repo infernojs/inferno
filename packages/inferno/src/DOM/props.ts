@@ -86,7 +86,16 @@ function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations: 
   }
 }
 
-export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean, lastVNode: VNode | null, animations: AnimationQueues) {
+export function patchProp(
+  prop,
+  lastValue,
+  nextValue,
+  dom: Element,
+  isSVG: boolean,
+  hasControlledValue: boolean,
+  lastVNode: VNode | null,
+  animations: AnimationQueues
+) {
   switch (prop) {
     case 'children':
     case 'childrenType':

@@ -46,11 +46,7 @@ describe('forceUpdate', () => {
       }
 
       render() {
-        return (
-          <div>
-            {this.state.foo}
-          </div>
-        );
+        return <div>{this.state.foo}</div>;
       }
     }
 
@@ -94,11 +90,7 @@ describe('forceUpdate', () => {
 
       render() {
         updated++;
-        return (
-          <div>
-            {this.state.foo}
-          </div>
-        );
+        return <div>{this.state.foo}</div>;
       }
     }
 
@@ -111,7 +103,6 @@ describe('forceUpdate', () => {
     expect(container.firstChild.firstChild.innerHTML).toBe('bar');
     expect(updated).toBe(2);
   });
-
 
   // As per React https://jsfiddle.net/pnwLh7au/
   // React has a different flow when setState is called outside lifecycle methods or event handlers (https://jsfiddle.net/egd1kuz6/),
@@ -140,17 +131,13 @@ describe('forceUpdate', () => {
       }
 
       componentDidMount() {
-        this.setState({foo: 'bar2'})
+        this.setState({ foo: 'bar2' });
         this.forceUpdate();
       }
 
       render() {
         updated++;
-        return (
-          <div>
-            {this.state.foo}
-          </div>
-        );
+        return <div>{this.state.foo}</div>;
       }
     }
 
@@ -189,16 +176,12 @@ describe('forceUpdate', () => {
 
       componentDidMount() {
         this.forceUpdate();
-        this.setState({foo: 'bar2'})
+        this.setState({ foo: 'bar2' });
       }
 
       render() {
         updated++;
-        return (
-          <div>
-            {this.state.foo}
-          </div>
-        );
+        return <div>{this.state.foo}</div>;
       }
     }
 

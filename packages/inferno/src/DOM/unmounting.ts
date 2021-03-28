@@ -92,15 +92,14 @@ function createClearAllCallback(children, parentDOM) {
         clearVNodeDOM(vNode, parentDOM, false);
       }
     }
-  }
+  };
 }
 export function clearDOM(parentDOM, children: VNode[], animations: AnimationQueues) {
   if (animations.willDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
     // Be aware that the element could be removed by a later operation
     callAllAnimationHooks(animations.willDisappear, createClearAllCallback(children, parentDOM));
-  }
-  else {
+  } else {
     // Optimization for clearing dom
     parentDOM.textContent = '';
   }
@@ -116,11 +115,9 @@ export function removeAllChildren(dom: Element, vNode: VNode, children, animatio
   }
 }
 
-
 // Only add animations to queue in browser
 function addDisappearAnimationHook(animations: AnimationQueues, instance, dom: Element) {
   animations.willDisappear.push((callback: Function) => {
     instance.willDisappear(dom, callback);
   });
 }
-

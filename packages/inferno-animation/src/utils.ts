@@ -7,40 +7,50 @@ declare global {
   var __INFERNO_ANIMATION_DEBUG__: Boolean;
 }
 
-export function addClassName (node: HTMLElement, className: string) {
+function filterEmpty(c) {
+  return c !== '';
+}
+
+function getClassNameList(className: string) {
+  return className.split(' ').filter(filterEmpty);
+}
+
+export function addClassName(node: HTMLElement, className: string) {
   if (isString(className)) {
-    const tmp = className.split(' ');
-    for (let i=0; i < tmp.length; i++) {
-      node.classList.add(tmp[i]);
+    const classNameList = getClassNameList(className);
+
+    for (let i = 0; i < classNameList.length; i++) {
+      node.classList.add(classNameList[i]);
     }
   }
 }
 
-export function removeClassName (node: HTMLElement, className: string) {
+export function removeClassName(node: HTMLElement, className: string) {
   if (isString(className)) {
-    const tmp = className.split(' ');
-    for (let i=0; i < tmp.length; i++) {
-      node.classList.remove(tmp[i]);
+    const classNameList = getClassNameList(className);
+
+    for (let i = 0; i < classNameList.length; i++) {
+      node.classList.remove(classNameList[i]);
     }
   }
 }
 
-export function forceReflow () {
+export function forceReflow() {
   return document.body.clientHeight;
 }
 
 export function setDisplay(node: HTMLElement, value?: string) {
-  var oldVal = node.style.getPropertyValue('display');
+  const oldVal = node.style.getPropertyValue('display');
+
   if (oldVal !== value) {
     if (value !== undefined) {
       node.style.setProperty('display', value);
-    }
-    else {
+    } else {
       node.style.removeProperty('display');
       _cleanStyle(node);
     }
   }
-  return oldVal
+  return oldVal;
 }
 
 function _cleanStyle(node: HTMLElement) {
@@ -51,18 +61,18 @@ function _cleanStyle(node: HTMLElement) {
 }
 
 export function getDimensions(node: HTMLElement) {
-  var tmpDisplay = node.style.getPropertyValue('display');
+  const tmpDisplay = node.style.getPropertyValue('display');
 
   // The `display: none;` workaround was added to support Bootstrap animations in
   // https://github.com/jhsware/inferno-bootstrap/blob/be4a17bff5e785b993a66a2927846cd463fecae3/src/Modal/AnimateModal.js
   // we should consider deprecating this, or providing a different solution for
   // those who only do normal animations.
-  var isDisplayNone = window.getComputedStyle(node).getPropertyValue('display') === 'none';
+  const isDisplayNone = window.getComputedStyle(node).getPropertyValue('display') === 'none';
   if (isDisplayNone) {
     node.style.setProperty('display', 'block');
   }
 
-  var tmp = node.getBoundingClientRect();
+  const tmp = node.getBoundingClientRect();
 
   if (isDisplayNone) {
     // node.style.display = tmpDisplay
@@ -71,9 +81,9 @@ export function getDimensions(node: HTMLElement) {
   }
 
   return {
-    width: tmp.width,
-    height: tmp.height
-  }
+    height: tmp.height,
+    width: tmp.width
+  };
 }
 
 export function setDimensions(node: HTMLElement, width: number, height: number) {
@@ -85,10 +95,10 @@ export function clearDimensions(node: HTMLElement) {
   node.style.width = node.style.height = '';
 }
 
-function _getMaxTransitionDuration (nodes) {
+function _getMaxTransitionDuration(nodes) {
   let nrofTransitions = 0;
   let maxDuration = 0;
-  for (let i=0; i < nodes.length; i++) {
+  for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
     if (!node) continue;
 
@@ -97,23 +107,24 @@ function _getMaxTransitionDuration (nodes) {
     const del = cs.getPropertyValue('transition-delay').split(',');
     const props = cs.getPropertyValue('transition-property').split(',');
 
-    for (let prop in props) {
+    for (const prop in props) {
       const fixedProp = prop.trim();
       if (fixedProp[0] === '-') {
-        let tmp = fixedProp.split('-').splice(2).join('-');
+        const tmp = fixedProp.split('-').splice(2).join('-');
         // Since I increase number of transition events to expect by
         // number of durations found I need to remove browser prefix
         // variations of the same property
         if (fixedProp.indexOf(tmp) >= 0) {
           nrofTransitions--;
         }
-      }      
+      }
     }
 
     let animTimeout = 0;
-    for (let i = 0; i < dur.length; i++) {
-      const duration = dur[i];
-      const delay = del[i];
+    for (let j = 0; j < dur.length; j++) {
+      const duration = dur[j];
+      const delay = del[j];
+
       animTimeout += parseFloat(duration) + parseFloat(delay);
     }
 
@@ -126,27 +137,40 @@ function _getMaxTransitionDuration (nodes) {
   }
 
   return {
-    nrofTransitions: nrofTransitions,
-    maxDuration: maxDuration
-  }
+    maxDuration,
+    nrofTransitions
+  };
 }
 
-function whichTransitionEvent(){
-  var el = document.createElement('fakeelement');
-  var transitions = {
-    'transition':'transitionend',
-    'OTransition':'oTransitionEnd',
-    'MozTransition':'transitionend',
-    'WebkitTransition':'webkitTransitionEnd'
-  }
+const transitionEndName: string = (function () {
+  const elementStyle = document.createElement('fakeelement').style;
+  // tslint:disable:object-literal-sort-keys
+  const transitions = {
+    transition: 'transitionend',
+    OTransition: 'oTransitionEnd',
+    MozTransition: 'transitionend',
+    WebkitTransition: 'webkitTransitionEnd'
+  };
+  // tslint:enable:object-literal-sort-keys
 
-  for(let t in transitions){
-      if( el.style[t] !== undefined ){
-          return transitions[t];
-      }
+  for (const t in transitions) {
+    if (elementStyle[t] !== undefined) {
+      return transitions[t];
+    }
+  }
+})();
+
+function debugAnimations(onTransitionEnd, rootNode, maxDuration) {
+  if (rootNode.nodeName === 'IMG' && !(rootNode as any).complete) {
+    // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
+    // due to loading delay
+    rootNode.addEventListener('load', () => {
+      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
+    });
+  } else {
+    setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
   }
 }
-var transitionEndName: string = whichTransitionEvent();
 
 /**
  * You need to pass the root element and ALL animated children that have transitions,
@@ -156,8 +180,7 @@ var transitionEndName: string = whichTransitionEvent();
 export function registerTransitionListener(nodes: HTMLElement[], callback: Function, noTimeout: boolean = false) {
   if (!Array.isArray(nodes)) {
     nodes = [nodes];
-  }
-  else {
+  } else {
     // Make sure we don't have undefined nodes (happens when an animated el doesn't have children)
     nodes = nodes.filter((node) => node);
   }
@@ -166,10 +189,12 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
   /**
    * Here comes the transition event listener
    */
-  let { nrofTransitions: nrofTransitionsLeft, maxDuration } = _getMaxTransitionDuration(nodes);
+  const transitionDuration = _getMaxTransitionDuration(nodes);
+  const maxDuration = transitionDuration.maxDuration;
+  let nrofTransitionsLeft = transitionDuration.nrofTransitions;
   let done = false;
 
-  function onTransitionEnd (event) {
+  function onTransitionEnd(event) {
     // Make sure this is an actual event
     if (!event || done) {
       return;
@@ -177,8 +202,8 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
     if (!event.timeout) {
       // Make sure it isn't a child that is triggering the event
-      var goAhead = false;
-      for (var i=0; i < nodes.length; i++) {
+      let goAhead = false;
+      for (let i = 0; i < nodes.length; i++) {
         if (event.target === nodes[i]) {
           goAhead = true;
           break;
@@ -203,24 +228,16 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
       callback();
     }
   }
+
   rootNode.addEventListener(transitionEndName, onTransitionEnd, false);
 
   // Fallback if transitionend fails
   // This is disabled during debug so we can set breakpoints
   if (!(process.env.NODE_ENV !== 'production' && isDebugAnimationsSet()) && !noTimeout) {
-    if (rootNode.nodeName === 'IMG' && !(rootNode as any).complete) {
-      // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
-      // due to loading delay
-      rootNode.addEventListener('load', () => {
-        setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
-      })
-    }
-    else {
-      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
-    }
+    debugAnimations(onTransitionEnd, rootNode, maxDuration);
   }
 }
 
-function isDebugAnimationsSet () {
-  return window.__INFERNO_ANIMATION_DEBUG__ === true
+function isDebugAnimationsSet() {
+  return window.__INFERNO_ANIMATION_DEBUG__ === true;
 }
