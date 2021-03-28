@@ -122,12 +122,10 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
 }
 export type ComponentType<P = {}> = Component<P> | StatelessComponent<P>;
 
-export class Component<P = {}, S = {}> implements IComponent<P, S> {
+export class Component<P = {}, S = {}> implements IComponent<{ children?: InfernoNode; } & P, S> {
   // Public
   public state: S | null = null;
-  public props: {
-    children?: InfernoNode;
-  } & P;
+  public props: P;
   public context: any;
   public displayName?: string;
   public refs?: any;
