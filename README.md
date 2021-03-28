@@ -60,10 +60,10 @@ InfernoJS natively supports the browsers listed below.
 Live examples at [https://infernojs.github.io/inferno](https://infernojs.github.io/inferno)
 
 - [UI Bench](https://localvoid.github.io/uibench/)
-- [dbmonster](https://raw.githack.com/infernojs/inferno/master/docs/dbmonster/index.html)
+- [dbmonster](https://infernojs.github.io/inferno/dbmonster/)
 - [JS Web Frameworks Benchmark (current)](https://krausest.github.io/js-framework-benchmark/current.html)
 - [Isomorphic-UI-Benchmark](https://github.com/marko-js/isomorphic-ui-benchmarks)
-- [1k Components](https://raw.githack.com/infernojs/inferno/master/docs/1kcomponents/index.html)
+- [1k Components](https://infernojs.github.io/inferno/1kcomponents/)
 
 ## Code Example
 

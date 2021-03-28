@@ -36,9 +36,10 @@ The performance is achieved through multiple optimizations, for example:
 - Components can be rendered outside their current html hierarchy using `createPortal` - API
 - Support for [older browsers](https://github.com/infernojs/inferno#browser-support) without any polyfills
 - defaultHooks for Functional components, this way re-defining lifecycle events per usage can be avoided
-- Unlike React, Inferno supports setting styles using string `<div style="float: left"></div>`
+- Inferno supports setting styles using string `<div style="background-color: red"></div>` or using object literal syntax `<div style={{"background-color": "red"}}></div>`. For camelCase syntax support see [`inferno-compat`](https://github.com/infernojs/inferno/tree/master/packages/inferno-compat).
 - Fragments (v6)
 - createRef and forwardRef APIs (v6)
+- didAppear and willDisappear (v7.5.0) - class component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
 
 ## Browser support
 Since version 4 we have started running our test suite **without** any polyfills.
@@ -59,10 +60,10 @@ InfernoJS natively supports the browsers listed below.
 Live examples at [https://infernojs.github.io/inferno](https://infernojs.github.io/inferno)
 
 - [UI Bench](https://localvoid.github.io/uibench/)
-- [dbmonster](https://rawgit.com/infernojs/dbmonster-inferno/master/index.html)
-- [JS Web Frameworks Benchmark - Round 7](https://www.stefankrause.net/js-frameworks-benchmark7/table.html)
+- [dbmonster](https://infernojs.github.io/inferno/dbmonster/)
+- [JS Web Frameworks Benchmark (current)](https://krausest.github.io/js-framework-benchmark/current.html)
 - [Isomorphic-UI-Benchmark](https://github.com/marko-js/isomorphic-ui-benchmarks)
-- [1k Components](https://rawgit.com/infernojs/inferno/master/benchmarks/1kcomponents/index.html)
+- [1k Components](https://infernojs.github.io/inferno/1kcomponents/)
 
 ## Code Example
 
@@ -141,9 +142,9 @@ render(
 
 ### Tear down
 
-To tear down inferno application you need to render null on root element. 
+To tear down inferno application you need to render null on root element.
 Rendering `null` will trigger unmount lifecycle hooks for whole vDOM tree and remove global event listeners.
-It is important to unmount unused vNode trees to free browser memory. 
+It is important to unmount unused vNode trees to free browser memory.
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -170,10 +171,9 @@ render(
 If you have built something using Inferno you can add them here:
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/2nm1kqct/)
-- [**Simple Clock v5** (@JSFiddle)](https://jsfiddle.net/pzmqLjo7/)
 - [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox): SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
-- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer) 
-(state machine library) 
+- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer)
+  (state machine library)
 - [**Lemmy - a self-hostable reddit alternative** (front end in Inferno)](https://github.com/dessalines/lemmy)
 
 ## Getting Started
@@ -186,6 +186,7 @@ Alternatively, you can try any of the following:
 * for using Inferno to build a mobile app, try [Inferno Mobile Starter Project](https://github.com/Rudy-Zidan/inferno-mobile) by [Rudy-Zidan](https://github.com/Rudy-Zidan).
 * for [TypeScript](https://www.typescriptlang.org/) support and bundling, check out [ts-transform-inferno](https://github.com/deamme/ts-transform-inferno), or [inferno-typescript-example](https://github.com/infernojs/inferno-typescript-example).
 * for an example of how to use Inferno in [codesandbox](https://codesandbox.io/): https://codesandbox.io/s/znmyj24w4p
+* for using [parcel and typescript](https://github.com/jayy-lmao/inferno-parcel-ts)
 
 Core package:
 
@@ -562,7 +563,7 @@ createTextVNode(
 This package has same API as React.cloneElement
 
 ```javascript
-import {cloneVNode} from 'inferno-clone-vnode';
+import { cloneVNode } from 'inferno-clone-vnode';
 
 cloneVNode(
   vNode,
@@ -581,7 +582,8 @@ Clone and return a new Inferno `VNode` using a `VNode` as the starting point. Th
 An example of using `cloneVNode`:
 
 ```javascript
-import { cloneVNode, createVNode, render } from 'inferno';
+import { createVNode, render } from 'inferno';
+import { cloneVNode } from 'inferno-clone-vnode';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 const vNode = createVNode(VNodeFlags.HtmlElement, 'div', 'example', 'Hello world!');
@@ -593,7 +595,8 @@ render(newVNode, container);
 If you're using JSX:
 
 ```jsx
-import { render, cloneVNode } from 'inferno';
+import { render } from 'inferno';
+import { cloneVNode } from 'inferno-clone-vnode';
 
 const vNode = <div className="example">Hello world</div>;
 const newVNode = cloneVNode(vNode, { id: 'new' }); // we are adding an id prop to the VNode
@@ -960,19 +963,38 @@ const alias = require('@rollup/plugin-alias');
 
     ...
   plugins: [
-   alias({
-       resolve: ['.js'],
-       entries: [
-         {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
-       ]
-   }),
- ]
+    alias({
+        resolve: ['.js'],
+        entries: [
+          {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
+        ]
+    }),
+  ]
 
 ```
 
 ### Custom namespaces
 
 Inferno always wants to deliver great performance. In order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work, so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
+
+## Development
+If you want to contribute code, fork this project and submit a PR from your fork. To run browser tests you need to build the repos. A complete rebuild of the repos can take >5 mins.
+
+```sh
+$ git clone git@github.com:infernojs/inferno.git
+$ cd inferno && npm i
+$ npm run test:node
+$ npm run build
+$ npm run test:browser
+```
+
+If you only want to run the browser tests when coding, use the following to reduce turnaround by 50-80%:
+
+```sh
+$ npm run quick-test:browser # Compiles all packages and runs browser tests
+$ npm run quick-test:browser-inferno # Only compiles the inferno package and runs browser tests
+$ npm run quick-test:browser-debug # Compiles all packages and runs browser tests with "debug"
+```
 
 ## Community
 
