@@ -1,11 +1,11 @@
 language: node_js
 node_js:
-- '14'
+- lts/*
 notifications:
   email:
     on_success: change
     on_failure: always
-dist: xenial
+dist: focal
 jobs:
   include:
   - script:
