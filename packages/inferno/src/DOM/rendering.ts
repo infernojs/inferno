@@ -5,7 +5,7 @@ import { directClone } from '../core/implementation';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
-import { callAll, callAllAnimationHooks, EMPTY_OBJ, options, renderCheck, AnimationQueues } from './utils/common';
+import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, options, renderCheck } from './utils/common';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 

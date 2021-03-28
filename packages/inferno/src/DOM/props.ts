@@ -4,7 +4,7 @@ import { isNull, isNullOrUndef, isString } from 'inferno-shared';
 import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerHTML';
-import { isLastValueSameLinkEvent, normalizeEventName, AnimationQueues } from './utils/common';
+import { AnimationQueues, isLastValueSameLinkEvent, normalizeEventName } from './utils/common';
 import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
 import { attachEvent } from './events/attachEvent';

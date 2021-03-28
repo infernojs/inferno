@@ -1,5 +1,5 @@
 import { Component, InfernoNode } from 'inferno';
-import { addClassName, removeClassName, registerTransitionListener, forceReflow, clearDimensions, getDimensions, setDimensions } from './utils';
+import { addClassName, clearDimensions, forceReflow, getDimensions, registerTransitionListener, removeClassName, setDimensions } from './utils';
 
 type AnimationProp = {
   animation?: string | object;

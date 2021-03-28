@@ -5,6 +5,7 @@ import { createVoidVNode, directClone, normalizeRoot } from '../core/implementat
 import { mount, mountArrayChildren } from './mounting';
 import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from './unmounting';
 import {
+  AnimationQueues,
   appendChild,
   createDerivedState,
   EMPTY_OBJ,
@@ -14,12 +15,11 @@ import {
   removeChild,
   removeVNodeDOM,
   replaceChild,
-  setTextContent,
-  AnimationQueues
+  setTextContent
 } from './utils/common';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 import { patchProp } from './props';
-import { renderNewInput, renderFunctionalComponent } from './utils/componentUtil';
+import { renderFunctionalComponent, renderNewInput } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 

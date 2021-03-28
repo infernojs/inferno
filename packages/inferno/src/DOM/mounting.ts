@@ -2,7 +2,7 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
-import { documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, safeCall1, setTextContent, AnimationQueues } from './utils/common';
+import { AnimationQueues, documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, safeCall1, setTextContent } from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, renderFunctionalComponent } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';

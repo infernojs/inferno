@@ -1,7 +1,7 @@
 import type { IComponent, InfernoNode, StatelessComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMfromVNode, renderCheck, AnimationQueues } from '../DOM/utils/common';
+import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
 
 const QUEUE: Component<any, any>[] = [];
 

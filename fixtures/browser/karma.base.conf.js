@@ -1,4 +1,5 @@
 const path = require('path');
+const gzipPreprocessor = require('./gzip/gzippreprocessor');
 const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
 const useInfernoCompatPkg = process.env.InfernoCompat === '1';
 
@@ -55,8 +56,8 @@ module.exports = function (config) {
       'karma-jasmine',
       'karma-firefox-launcher',
       'karma-webpack',
-      'karma-chrome-launcher',
-      'karma-gzip-preprocessor'
+      gzipPreprocessor,
+      'karma-chrome-launcher'
     ],
 
     reporters: ['dots'],

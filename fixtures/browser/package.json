@@ -12,7 +12,7 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "7.13.13",
     "@babel/helper-replace-supers": "7.13.12",
     "@babel/plugin-proposal-class-properties": "7.13.0",
@@ -25,7 +25,6 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-detect-browsers": "^2.3.3",
     "karma-firefox-launcher": "^2.1.0",
-    "karma-gzip-preprocessor": "^3.1.0",
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^4.0.1",
     "karma-sauce-launcher": "^4.3.5",

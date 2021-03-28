@@ -1,7 +1,6 @@
 import { isFunction, isInvalid, isNull, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { _CI, _HI, _M, _MCCC, _ME, _MFCC, _MP, _MR, EMPTY_OBJ, render, VNode, _RFC as renderFunctionalComponent } from 'inferno';
-import { AnimationQueues } from 'inferno';
+import { _CI, _HI, _M, _MCCC, _ME, _MFCC, _MP, _MR, _RFC as renderFunctionalComponent, AnimationQueues, EMPTY_OBJ, render, VNode } from 'inferno';
 
 function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
   const tempdom = document.createElement('i');

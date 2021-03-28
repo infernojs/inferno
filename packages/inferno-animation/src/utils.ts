@@ -1,4 +1,4 @@
-import { isString, isFunction } from 'inferno-shared';
+import { isFunction, isString } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts

@@ -1,10 +1,10 @@
 import {
   addClassName,
-  removeClassName,
-  registerTransitionListener,
-  forceReflow,
   clearDimensions,
+  forceReflow,
   getDimensions,
+  registerTransitionListener,
+  removeClassName,
   setDimensions,
   setDisplay
 } from '../src/utils';
