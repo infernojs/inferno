@@ -13,7 +13,7 @@ describe('inferno-animation AnimatedComponent', () => {
     render(null, container);
   });
 
-  it('should render class component extending AnimatedComponent to a string', () => {
+  it('Should be possible to define typed props for AnimatedComponent', () => {
     type MyProps = {
       number: number;
     };
