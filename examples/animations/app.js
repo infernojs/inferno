@@ -108,18 +108,18 @@
 
       // 3. Set an animation listener, code at end
       // Needs to be done after activating so timeout is calculated correctly
-      registerTransitionListener([dom, dom.children[0]], function () {
+      registerTransitionListener([dom], function () {
         // *** Cleanup ***
         // 5. Remove the element
         removeClassName(dom, animCls.active)
         removeClassName(dom, animCls.end)
-      }, false)
+      })
 
       // 4. Activate target state
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         removeClassName(dom, animCls.start)
         addClassName(dom, animCls.end)
-      }, 5)
+      })
     }
 
     componentWillDisappear = (dom, callback) => {
@@ -137,7 +137,7 @@
 
       // 3. Set an animation listener, code at end
       // Needs to be done after activating so timeout is calculated correctly
-      registerTransitionListener(dom, function () {
+      registerTransitionListener([dom], function () {
         // *** Cleanup ***
 
         // Simulate some work is being done
@@ -145,13 +145,13 @@
         //   callback();
         // }, 1000);
         callback();
-      }, false)
+      })
 
       // 4. Activate target state
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         addClassName(dom, animCls.end)
         removeClassName(dom, animCls.start)
-      }, 5)
+      })
     }
 
     doRemove = (e, index) => {
