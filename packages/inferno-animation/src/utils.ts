@@ -1,4 +1,4 @@
-import { isFunction, isString } from 'inferno-shared';
+import { isFunction, isString, warning } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
@@ -176,8 +176,11 @@ function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
  * You need to pass the root element and ALL animated children that have transitions,
  * if there are any,  so the timeout is set to the longest duration. Otherwise there
  * will be animations that fail to complete before the timeout is triggered.
+ * 
+ * @param nodes a list of nodes that have transitions that are part of this animation
+ * @param callback callback when all transitions of participating nodes are completed
  */
-export function registerTransitionListener(nodes: HTMLElement[], callback: Function, noTimeout: boolean = false) {
+export function registerTransitionListener(nodes: HTMLElement[], callback: Function) {
   const rootNode = nodes[0];
 
   /**
@@ -228,8 +231,12 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
   // Fallback if transitionend fails
   // This is disabled during debug so we can set breakpoints
-  if (!(process.env.NODE_ENV !== 'production' && isDebugAnimationsSet()) && !noTimeout) {
+  // WARNING: If the callback isn't called, the DOM nodes won't be removed
+  if (!(process.env.NODE_ENV !== 'production' && isDebugAnimationsSet())) {
     setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
+  }
+  else if (process.env.NODE_ENV !== 'production') {
+    warning('You are in animation debugging mode and fallback timeouts aren\'t set. DOM nodes could be left behind.')
   }
 }
 
