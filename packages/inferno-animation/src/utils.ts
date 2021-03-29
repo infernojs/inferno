@@ -188,7 +188,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
   let nrofTransitionsLeft = transitionDuration.nrofTransitions;
   let done = false;
 
-  function onTransitionEnd(event) {
+  const onTransitionEnd = (event) => {
     // Make sure this is an actual event
     if (!event || done) {
       return;
