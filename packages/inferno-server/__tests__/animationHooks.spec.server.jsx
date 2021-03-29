@@ -6,10 +6,10 @@ import { Component } from 'inferno';
  */
 
 describe('SSR Creation (JSX)', () => {
-  it('should not call "didAppear" when component is rendered with renderToStaticMarkup', (done) => {
+  it('should not call "componentDidAppear" when component is rendered with renderToStaticMarkup', (done) => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      didAppear(dom) {
+      componentDidAppear(dom) {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
@@ -28,10 +28,10 @@ describe('SSR Creation (JSX)', () => {
     }, 10);
   });
 
-  it('should not call "didAppear" when component is rendered with renderToString', (done) => {
+  it('should not call "componentDidAppear" when component is rendered with renderToString', (done) => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      didAppear(dom) {
+      componentDidAppear(dom) {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }

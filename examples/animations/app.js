@@ -93,7 +93,7 @@
 			};
 		}
 
-    didAppear = (dom) => {
+    componentDidAppear = (dom) => {
       const animCls = {
         'start': 'fade-enter',
         'active': 'fade-enter-active',
@@ -122,7 +122,7 @@
       }, 5)
     }
 
-    willDisappear = (dom, callback) => {
+    componentWillDisappear = (dom, callback) => {
       const animCls = {
         'start': 'fade-leave',
         'active': 'fade-leave-active',

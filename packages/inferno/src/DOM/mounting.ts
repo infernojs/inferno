@@ -171,9 +171,9 @@ export function mountClassComponent(
 ) {
   const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
 
-  // If we have a didAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+  // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
   let childAnimations = animations;
-  if (isFunction(instance.didAppear)) {
+  if (isFunction(instance.componentDidAppear)) {
     childAnimations = new AnimationQueues();
   }
   mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
@@ -199,8 +199,8 @@ function createClassMountCallback(instance) {
 }
 
 function addAppearAnimationHook(animations: AnimationQueues, instance) {
-  animations.didAppear.push(() => {
-    instance.didAppear(instance.$LI.dom);
+  animations.componentDidAppear.push(() => {
+    instance.componentDidAppear(instance.$LI.dom);
   });
 }
 
@@ -218,7 +218,7 @@ export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[
   if (isFunction(instance.componentDidMount)) {
     lifecycle.push(createClassMountCallback(instance));
   }
-  if (isFunction(instance.didAppear)) {
+  if (isFunction(instance.componentDidAppear)) {
     addAppearAnimationHook(animations, instance);
   }
 }
