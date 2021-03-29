@@ -46,9 +46,9 @@ export function unmount(vNode, animations: AnimationQueues) {
         children.componentWillUnmount();
       }
 
-      // If we have a willDisappear on this component, block children
+      // If we have a componentWillDisappear on this component, block children
       let childAnimations = animations;
-      if (isFunction(children.willDisappear)) {
+      if (isFunction(children.componentWillDisappear)) {
         childAnimations = new AnimationQueues();
         addDisappearAnimationHook(animations, children, children.$LI.dom);
       }
@@ -95,10 +95,10 @@ function createClearAllCallback(children, parentDOM) {
   };
 }
 export function clearDOM(parentDOM, children: VNode[], animations: AnimationQueues) {
-  if (animations.willDisappear.length > 0) {
+  if (animations.componentWillDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
     // Be aware that the element could be removed by a later operation
-    callAllAnimationHooks(animations.willDisappear, createClearAllCallback(children, parentDOM));
+    callAllAnimationHooks(animations.componentWillDisappear, createClearAllCallback(children, parentDOM));
   } else {
     // Optimization for clearing dom
     parentDOM.textContent = '';
@@ -117,7 +117,7 @@ export function removeAllChildren(dom: Element, vNode: VNode, children, animatio
 
 // Only add animations to queue in browser
 function addDisappearAnimationHook(animations: AnimationQueues, instance, dom: Element) {
-  animations.willDisappear.push((callback: Function) => {
-    instance.willDisappear(dom, callback);
+  animations.componentWillDisappear.push((callback: Function) => {
+    instance.componentWillDisappear(dom, callback);
   });
 }

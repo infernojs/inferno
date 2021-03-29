@@ -65,10 +65,10 @@ describe('animation hooks', () => {
    *
    */
 
-  it('should call "didAppear" when component has been inserted into DOM', () => {
+  it('should call "componentDidAppear" when component has been inserted into DOM', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      didAppear(dom) {
+      componentDidAppear(dom) {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
@@ -87,10 +87,10 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(1)).toEqual(['didAppear']);
   });
 
-  it('should only call parent "didAppear" when component tree has been inserted into DOM', () => {
+  it('should only call parent "componentDidAppear" when component tree has been inserted into DOM', () => {
     const spyer = jasmine.createSpy();
     class Child extends Component {
-      didAppear() {
+      componentDidAppear() {
         spyer('no-op');
       }
       componentDidMount() {
@@ -102,7 +102,7 @@ describe('animation hooks', () => {
     }
 
     class App extends Component {
-      didAppear(dom) {
+      componentDidAppear(dom) {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
@@ -126,10 +126,10 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(2)).toEqual(['didAppear']);
   });
 
-  it('should only call "didAppear" when child component has been inserted into DOM', (done) => {
+  it('should only call "componentDidAppear" when child component has been inserted into DOM', (done) => {
     const spyer = jasmine.createSpy();
     class Child extends Component {
-      didAppear() {
+      componentDidAppear() {
         spyer('childDidAppear');
       }
       componentDidMount() {
@@ -184,10 +184,10 @@ describe('animation hooks', () => {
     };
   });
 
-  it('should call all "didAppear" when multiple siblings have been inserted into DOM', () => {
+  it('should call all "componentDidAppear" when multiple siblings have been inserted into DOM', () => {
     const spyer = jasmine.createSpy();
     class Child extends Component {
-      didAppear(dom) {
+      componentDidAppear(dom) {
         spyer('childDidAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
@@ -222,10 +222,10 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(4)).toEqual(['childDidAppear']);
   });
 
-  it('should call "willDisappear" when component is about to be removed from DOM', () => {
+  it('should call "componentWillDisappear" when component is about to be removed from DOM', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      willDisappear(dom, done) {
+      componentWillDisappear(dom, done) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(done instanceof Function).toEqual(true);
@@ -248,10 +248,10 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(1)).toEqual(['willDisappear']);
   });
 
-  it('should handle async callbacks from "willDisappear"', (done) => {
+  it('should handle async callbacks from "componentWillDisappear"', (done) => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      willDisappear(dom, callback) {
+      componentWillDisappear(dom, callback) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(callback instanceof Function).toEqual(true);
@@ -280,7 +280,7 @@ describe('animation hooks', () => {
     }
   });
 
-  it('should handle async callbacks "willDisappear" when removing the two last elements in list', (done) => {
+  it('should handle async callbacks "componentWillDisappear" when removing the two last elements in list', (done) => {
     /**
      * This test is hard to get to consistently fail. It should trigger
      * clearDOM from last animation callback prior to deferComponentClassRemoval
@@ -323,7 +323,7 @@ describe('animation hooks', () => {
     }
 
     class Item extends Component {
-      willDisappear(dom, callback) {
+      componentWillDisappear(dom, callback) {
         spyer('willDisappear ' + this.props.index);
 
         let timeout = 10;
@@ -358,18 +358,18 @@ describe('animation hooks', () => {
     checkRenderComplete_ONE();
   });
 
-  it('should handle async callbacks from "willDisappear" and mounting components with "didAppear"', (done) => {
+  it('should handle async callbacks from "componentWillDisappear" and mounting components with "componentDidAppear"', (done) => {
     const spyer = jasmine.createSpy();
-    // Always call the willDisappear callback after last render
+    // Always call the componentWillDisappear callback after last render
     let lastRenderDone = false;
     let callMeAfterLastRender;
 
     class App extends Component {
-      didAppear(dom) {
+      componentDidAppear(dom) {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
-      willDisappear(dom, callback) {
+      componentWillDisappear(dom, callback) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(callback instanceof Function).toEqual(true);
@@ -422,7 +422,7 @@ describe('animation hooks', () => {
   it('should handle async callbacks even when parent is removed during animation', (done) => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      willDisappear(dom, callback) {
+      componentWillDisappear(dom, callback) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(callback instanceof Function).toEqual(true);
@@ -942,10 +942,10 @@ describe('animation hooks', () => {
 
   describe('Calendar like layout', () => {
     class Animated extends Component {
-      didAppear(dom) {
+      componentDidAppear(dom) {
         // Trigger animation code paths on add
       }
-      willDisappear(dom, done) {
+      componentWillDisappear(dom, done) {
         // Trigger animation code paths on remove
         done();
       }
@@ -1102,10 +1102,10 @@ describe('animation hooks', () => {
 
 function factory(spyer) {
   return class Animated extends Component {
-    didAppear(dom) {
+    componentDidAppear(dom) {
       spyer && spyer('didAppear');
     }
-    willDisappear(dom, done) {
+    componentWillDisappear(dom, done) {
       spyer && spyer('willDisappear');
       done();
     }

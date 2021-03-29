@@ -9,12 +9,12 @@ export const EMPTY_OBJ = {};
 export const Fragment: string = '$F';
 
 export class AnimationQueues {
-  public didAppear: Function[];
-  public willDisappear: Function[];
+  public componentDidAppear: Function[];
+  public componentWillDisappear: Function[];
 
   constructor() {
-    this.didAppear = [];
-    this.willDisappear = [];
+    this.componentDidAppear = [];
+    this.componentWillDisappear = [];
   }
 }
 
@@ -144,9 +144,9 @@ function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
 }
 
 export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
-  if (animations.willDisappear.length > 0) {
+  if (animations.componentWillDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations.willDisappear, createDeferComponentClassRemovalCallback(vNode, parentDOM));
+    callAllAnimationHooks(animations.componentWillDisappear, createDeferComponentClassRemovalCallback(vNode, parentDOM));
   } else {
     clearVNodeDOM(vNode, parentDOM, false);
   }

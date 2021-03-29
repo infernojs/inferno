@@ -74,7 +74,7 @@ export function __render(
     }
   }
   callAll(lifecycle);
-  callAllAnimationHooks(animations.didAppear);
+  callAllAnimationHooks(animations.componentDidAppear);
 
   renderCheck.v = false;
   if (isFunction(callback)) {

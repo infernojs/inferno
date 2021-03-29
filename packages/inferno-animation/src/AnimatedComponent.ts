@@ -31,7 +31,7 @@ function getAnimationClass(animationProp: animationClass | string | undefined | 
 }
 
 export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
-  public didAppear(dom) {
+  public componentDidAppear(dom) {
     const { start, end, active } = getAnimationClass(this.props.animation, '-enter');
 
     // 1. Get height and set start of animation
@@ -68,7 +68,7 @@ export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp &
     });
   }
 
-  public willDisappear(dom, callback) {
+  public componentWillDisappear(dom, callback) {
     const { start, end, active } = getAnimationClass(this.props.animation, '-leave');
 
     // 1. Get dimensions and set animation start state
