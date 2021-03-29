@@ -178,12 +178,6 @@ function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
  * will be animations that fail to complete before the timeout is triggered.
  */
 export function registerTransitionListener(nodes: HTMLElement[], callback: Function, noTimeout: boolean = false) {
-  if (!Array.isArray(nodes)) {
-    nodes = [nodes];
-  } else {
-    // Make sure we don't have undefined nodes (happens when an animated el doesn't have children)
-    nodes = nodes.filter((node) => node);
-  }
   const rootNode = nodes[0];
 
   /**
@@ -204,7 +198,8 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
       // Make sure it isn't a child that is triggering the event
       let goAhead = false;
       for (let i = 0; i < nodes.length; i++) {
-        if (event.target === nodes[i]) {
+        // Note: Check for undefined nodes (happens when an animated el doesn't have children)
+        if (nodes[i] !== undefined && event.target === nodes[i]) {
           goAhead = true;
           break;
         }
