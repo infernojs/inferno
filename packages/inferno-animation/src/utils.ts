@@ -1,4 +1,4 @@
-import { isFunction, isString } from 'inferno-shared';
+import { isFunction, isString, warning } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
@@ -160,7 +160,7 @@ const transitionEndName: string = (function () {
   }
 })();
 
-function debugAnimations(onTransitionEnd, rootNode, maxDuration) {
+function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
   if (rootNode.nodeName === 'IMG' && !(rootNode as any).complete) {
     // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
     // due to loading delay
@@ -176,14 +176,11 @@ function debugAnimations(onTransitionEnd, rootNode, maxDuration) {
  * You need to pass the root element and ALL animated children that have transitions,
  * if there are any,  so the timeout is set to the longest duration. Otherwise there
  * will be animations that fail to complete before the timeout is triggered.
+ * 
+ * @param nodes a list of nodes that have transitions that are part of this animation
+ * @param callback callback when all transitions of participating nodes are completed
  */
-export function registerTransitionListener(nodes: HTMLElement[], callback: Function, noTimeout: boolean = false) {
-  if (!Array.isArray(nodes)) {
-    nodes = [nodes];
-  } else {
-    // Make sure we don't have undefined nodes (happens when an animated el doesn't have children)
-    nodes = nodes.filter((node) => node);
-  }
+export function registerTransitionListener(nodes: HTMLElement[], callback: Function) {
   const rootNode = nodes[0];
 
   /**
@@ -194,7 +191,7 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
   let nrofTransitionsLeft = transitionDuration.nrofTransitions;
   let done = false;
 
-  function onTransitionEnd(event) {
+  const onTransitionEnd = (event) => {
     // Make sure this is an actual event
     if (!event || done) {
       return;
@@ -204,7 +201,8 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
       // Make sure it isn't a child that is triggering the event
       let goAhead = false;
       for (let i = 0; i < nodes.length; i++) {
-        if (event.target === nodes[i]) {
+        // Note: Check for undefined nodes (happens when an animated el doesn't have children)
+        if (nodes[i] !== undefined && event.target === nodes[i]) {
           goAhead = true;
           break;
         }
@@ -233,8 +231,12 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
   // Fallback if transitionend fails
   // This is disabled during debug so we can set breakpoints
-  if (!(process.env.NODE_ENV !== 'production' && isDebugAnimationsSet()) && !noTimeout) {
-    debugAnimations(onTransitionEnd, rootNode, maxDuration);
+  // WARNING: If the callback isn't called, the DOM nodes won't be removed
+  if (!(process.env.NODE_ENV !== 'production' && isDebugAnimationsSet())) {
+    setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
+  }
+  else if (process.env.NODE_ENV !== 'production') {
+    warning('You are in animation debugging mode and fallback timeouts aren\'t set. DOM nodes could be left behind.')
   }
 }
 

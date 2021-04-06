@@ -45,7 +45,7 @@ export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp &
     // 3. Set an animation listener, code at end
     // Needs to be done after activating so timeout is calculated correctly
     registerTransitionListener(
-      [dom, dom.children[0]],
+      [dom],
       function () {
         // *** Cleanup ***
         // 5. Remove the element
@@ -56,8 +56,7 @@ export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp &
         // 6. Call callback to allow stuff to happen
         // Not currently used but this is where one could
         // add a call to something like this.didAppearDone
-      },
-      false
+      }
     );
 
     // 4. Activate target state
@@ -82,12 +81,11 @@ export class AnimatedComponent<P = {}, S = {}> extends Component<AnimationProp &
     // 3. Set an animation listener, code at end
     // Needs to be done after activating so timeout is calculated correctly
     registerTransitionListener(
-      dom,
+      [dom],
       function () {
         // *** Cleanup not needed since node is removed ***
         callback();
-      },
-      false
+      }
     );
 
     // 4. Activate target state
