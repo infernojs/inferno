@@ -18,7 +18,9 @@ const componentHooks = {
   onComponentShouldUpdate: 1,
   onComponentWillMount: 1,
   onComponentWillUnmount: 1,
-  onComponentWillUpdate: 1
+  onComponentWillUpdate: 1,
+  onComponentDidAppear: 1,
+  onComponentWillDisappear: 1
 };
 
 /**
