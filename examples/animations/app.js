@@ -204,6 +204,9 @@
       });
 
       // Remove random divider during animation
+      // NOTE! If the divider is the last element, it will cause everything to be removed,
+      // thus cutting the running animation short. This is expected behaviour because we don't
+      // check if the parent has an animating child. Opportunity for improvement.
       setTimeout(() => {
         var onlyDividers = this.state.items.filter((item) => !item.isListItem);
         var toDeleteIndex = parseInt(Math.round(Math.random() * (onlyDividers.length - 1)));
