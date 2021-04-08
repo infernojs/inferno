@@ -13,14 +13,14 @@ import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared'
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const componentHooks = {
+  onComponentDidAppear: 1,
   onComponentDidMount: 1,
   onComponentDidUpdate: 1,
   onComponentShouldUpdate: 1,
+  onComponentWillDisappear: 1,
   onComponentWillMount: 1,
   onComponentWillUnmount: 1,
-  onComponentWillUpdate: 1,
-  onComponentDidAppear: 1,
-  onComponentWillDisappear: 1
+  onComponentWillUpdate: 1
 };
 
 /**
