@@ -148,7 +148,8 @@ module.exports = function (config) {
                   {
                     loose: true,
                     targets: {
-                      ie: '11'
+                      ie: '11',
+                      safari: '8'
                     }
                   }
                 ],
