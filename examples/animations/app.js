@@ -460,7 +460,7 @@
       this.setState({ items: this.items });
     }
 
-    renderItem(item, i) {
+    renderItem = (item, i) => {
       if (this.props.useFunctionalComponent) {
         return createElement(FuncListItem, {key: item.key, index: i, animation: this.props.animation, ...anim, onClick: this.doRemove}, `${item.val}bar (${item.key})`);
       }
