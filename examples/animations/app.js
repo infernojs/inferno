@@ -4,7 +4,12 @@
 	var createElement = Inferno.createElement;
   var InfernoAnimation = Inferno.Animation;
 
-  var AnimatedComponent = InfernoAnimation.AnimatedComponent;
+  var {
+    AnimatedComponent,
+    componentDidAppear,
+    componentWillDisappear
+  } = InfernoAnimation;
+  
   var {
     addClassName,
     removeClassName,
@@ -13,6 +18,11 @@
   } = InfernoAnimation.utils;
 
 	let renderCounter = 0;
+
+  const anim = {
+    onComponentDidAppear: componentDidAppear,
+    onComponentWillDisappear: componentWillDisappear
+  }
 
   class ListItem extends AnimatedComponent {
     render() {
@@ -26,6 +36,16 @@
     	renderCounter++;
       return createElement('section', { onClick: (e) => this.props.onClick(e, this.props.index)}, this.props.children);
     }
+  }
+
+  const FuncListItem = ({children, ...props}) => {
+    renderCounter++;
+    return createElement('li', { onClick: (e) => props.onClick(e, props.index)}, children);
+  }
+
+  const FuncSectionItem = ({children, ...props}) => {
+    renderCounter++;
+    return createElement('section', { onClick: (e) => props.onClick(e, props.index)}, children);
   }
 
 	class List extends Component {
@@ -66,9 +86,18 @@
       this.setState({ items: this.items });
 		}
 
+    renderItem = (item, i) => {
+      if (this.props.useFunctionalComponent) {
+        return createElement(FuncListItem, {key: item.key, index: i, animation: this.props.animation, ...anim, onClick: this.doRemove}, `${item.key + 1}bar`);
+      }
+      else {
+        return createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`)
+      }
+    }
+
 		render() {
 			return createElement('div', null, [
-        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`))),
+        createElement('ul', null, this.state.items.map(this.renderItem)),
         createElement('h2', null, this.props.animation),
         createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add')
@@ -175,6 +204,9 @@
       });
 
       // Remove random divider during animation
+      // NOTE! If the divider is the last element, it will cause everything to be removed,
+      // thus cutting the running animation short. This is expected behaviour because we don't
+      // check if the parent has an animating child. Opportunity for improvement.
       setTimeout(() => {
         var onlyDividers = this.state.items.filter((item) => !item.isListItem);
         var toDeleteIndex = parseInt(Math.round(Math.random() * (onlyDividers.length - 1)));
@@ -197,11 +229,21 @@
       });
     }
 
+    renderItem = (item, i) => {
+      if (this.props.useFunctionalComponent) {
+        return createElement(FuncSectionItem, {key: item.key, index: i, animation: this.props.animation, ...anim, onClick: this.doRemove}, `${item.key + 1}bar`)
+      }
+      else {
+        return createElement(SectionItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`)
+      }
+
+    }
+
 		render() {
       // Mixing <section> and <span> instead of using <li> for all to trigger special code path in Inferno
 			return createElement('div', null, [
         createElement('article', null, this.state.items.map((item, i) => (item.isListItem
-          ? createElement(SectionItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.key + 1}bar`)
+          ? this.renderItem(item, i)
           : createElement('span', {className: 'divider'})))),
         createElement('h2', null, 'Mixed list'),
         createElement('p', null, this.props.description),
@@ -329,9 +371,18 @@
       this.setState({ items: this.items });
 		}
 
+    renderItem = (item, i) => {
+      if (this.props.useFunctionalComponent) {
+        return createElement(FuncListItem, {key: item.key, index: i, animation: this.props.animation, ...anim, onClick: this.doRemove}, `${item.val}bar (${item.key})`);
+      }
+      else {
+        return createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`);
+      }
+    }
+
 		render() {
 			return createElement('div', null, [
-        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
+        createElement('ul', null, this.state.items.map(this.renderItem)),
         createElement('h2', null, 'Shuffle'),
         createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add'),
@@ -344,52 +395,6 @@
       ]);
 		}
 	}
-
-  class PatchingIssues extends Component {
-    constructor() {
-      super();
-      // set initial time:
-      this.state = {
-        items: [
-          this._getItem(1),
-          this._getItem(2),
-          this._getItem(3),
-          this._getItem(4)
-        ]
-      };
-      this.items = [];
-    }
-
-    _getItem(i) {
-      return {key: i, val: i}
-    }
-
-
-    doRemove = (e, index) => {
-      e.preventDefault();
-      var newItems = this.state.items.concat([]);
-      newItems.splice(index, 1)
-      this.setState({
-        items: newItems
-      })
-    }
-
-    useCase1 = (e) => {
-      // Setup the test
-      this.setState({
-
-      });
-    }
-
-    render() {
-      return createElement('div', null, [
-        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
-        createElement('h2', null, 'Patching bugs'),
-        createElement('p', null, this.props.description),
-        createElement('button', { onClick: this.useCase1 }, 'Use case 1')
-      ]);
-    }
-  }
 
   // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   var shuffle = (array) => {
@@ -455,9 +460,18 @@
       this.setState({ items: this.items });
     }
 
+    renderItem(item, i) {
+      if (this.props.useFunctionalComponent) {
+        return createElement(FuncListItem, {key: item.key, index: i, animation: this.props.animation, ...anim, onClick: this.doRemove}, `${item.val}bar (${item.key})`);
+      }
+      else {
+        return createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`);
+      }
+    }
+
 		render() {
 			return createElement('div', null, [
-        createElement('ul', null, this.state.items.map((item, i) => createElement(ListItem, {key: item.key, index: i, animation: this.props.animation, onClick: this.doRemove}, `${item.val}bar (${item.key})`))),
+        createElement('ul', null, this.state.items.map(this.renderItem)),
         createElement('h2', null, 'patchKeyedChildren'),
         createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add'),
@@ -471,25 +485,29 @@
 		var container_3 = document.querySelector('#App3');
 		var container_4 = document.querySelector('#App4');
     var container_5 = document.querySelector('#App5');
-    var container_6 = document.querySelector('#App6');
 
+    var useFunctionalComponent = location.search === '?functional'
 
     Inferno.render(createElement(List, {
+      useFunctionalComponent,
       animation: 'HeightAndFade',
       description: 'The children in this container animate opacity and height when added and removed. Click an item to remove it.',
     }), container_1);
 
     Inferno.render(createElement(List, {
+      useFunctionalComponent,
       animation: 'NoTranistionEvent',
       description: 'The children in this container have a broken animation. This is detected by inferno-animation and the animation callback is called immediately. Click an item to remove it.',
     }), container_2);
 
     Inferno.render(createElement(MixedList, {
+      useFunctionalComponent,
       animation: 'HeightAndFade',
       description: 'This container fades in and blocks the children from animating on first render. There is no animation on divider between elements. When you click [Remove] a random row and another random divder will be removed. Click an item to remove it (leaving the divider).',
     }), container_3);
 
     Inferno.render(createElement(ShuffleList, {
+      useFunctionalComponent,
       animation: 'HeightAndFade',
       description: 'This container will shuffle keys or items. Click an item to remove it.',
     }), container_4);
@@ -499,16 +517,11 @@
       e && e.preventDefault();
       //Inferno.render(createElement('div', null, createElement(RerenderList, {animation: 'HeightAndFade', items: 5})), container_5);
       Inferno.render(createElement(RerenderList, {
+        useFunctionalComponent,
         animation: 'HeightAndFade',
         items: 5,
         description: 'This container will be filled with 5 rows every time you click the button. Click an item to remove it.',
       }), container_5);
     });
-
-    // This currently doesn't do anything so hiding
-    // Inferno.render(createElement(PatchingIssues, {
-    //   animation: 'HeightAndFade',
-    //   description: 'This reproduce issues with patching and deferred removal of nodes.',
-    // }), container_6);
 	});
 })();

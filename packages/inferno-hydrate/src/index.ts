@@ -63,7 +63,7 @@ function hydrateComponent(
     const input = _HI(renderFunctionalComponent(vNode, context));
     currentNode = hydrateVNode(input, parentDOM, dom, context, isSVG, lifecycle, animations);
     vNode.children = input;
-    _MFCC(vNode, lifecycle);
+    _MFCC(vNode, lifecycle, animations);
   }
 
   return currentNode;

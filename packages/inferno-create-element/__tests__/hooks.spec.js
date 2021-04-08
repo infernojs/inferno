@@ -7,6 +7,7 @@ describe('lifecycle hooks', () => {
   describe('Stateless component hooks', () => {
     let template;
     let container;
+    let animationTemplate;
 
     function StatelessComponent() {
       const divTemplate = () => {
@@ -40,6 +41,22 @@ describe('lifecycle hooks', () => {
             onComponentWillUpdate,
             onComponentDidUpdate,
             onComponentShouldUpdate,
+            ...props
+          },
+          null
+        );
+      };
+
+      animationTemplate = (
+        onComponentDidAppear,
+        onComponentWillDisappear,
+        StatelessComponent
+      ) => (props) => {
+        return createElement(
+          StatelessComponent,
+          {
+            onComponentDidAppear,
+            onComponentWillDisappear,
             ...props
           },
           null
@@ -187,6 +204,45 @@ describe('lifecycle hooks', () => {
       expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0]).toEqual({ a: 1, children: null });
       expect(sinonSpy.getCall(0).args[1]).toEqual({ a: 2, children: null });
+    });
+
+    it('"onComponentDidAppear" hook should fire, args dom props', () => {
+      const spyObj = {
+        fn: () => {}
+      };
+
+      const sinonSpy = sinon.spy(spyObj, 'fn');
+      const t = animationTemplate(spyObj.fn, null, StatelessComponent);
+  
+      const node1 = t({ a: 1 });
+      render(node1, container);
+      expect(sinonSpy.callCount).toBe(1); // Update 1
+      expect(sinonSpy.getCall(0).args.length).toBe(2);
+      expect(sinonSpy.getCall(0).args[0] instanceof HTMLDivElement).toEqual(true);
+      expect(typeof sinonSpy.getCall(0).args[1] === 'object').toEqual(true);
+  
+      const node2 = t({ a: 2 });
+      render(node2, container);
+      expect(sinonSpy.callCount).toBe(1); // Update 2 (shouldn't trigger animation)
+    });
+
+    it('"onComponentWillDisappear" hook should fire, args dom props', () => {
+      const spyObj = {
+        fn: () => {}
+      };
+
+      const sinonSpy = sinon.spy(spyObj, 'fn');
+      const t = animationTemplate(null, spyObj.fn, StatelessComponent);
+  
+      const node1 = t({ a: 1 });
+      render(node1, container);
+      render(null, container);
+
+      expect(sinonSpy.callCount).toBe(1); // animation triggers on remove
+      expect(sinonSpy.getCall(0).args.length).toBe(3);
+      expect(sinonSpy.getCall(0).args[0] instanceof HTMLDivElement).toEqual(true);
+      expect(typeof sinonSpy.getCall(0).args[1] === 'object').toEqual(true);
+      expect(typeof sinonSpy.getCall(0).args[2] === 'function').toEqual(true);
     });
   });
 

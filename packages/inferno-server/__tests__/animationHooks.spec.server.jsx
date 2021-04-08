@@ -49,4 +49,60 @@ describe('SSR Creation (JSX)', () => {
       done();
     }, 10);
   });
+
+  it('should not call "onComponentDidAppear" when component is rendered with renderToStaticMarkup', (done) => {
+    const spyer = jasmine.createSpy();
+
+    const MyComp = () => {
+      return <div />;
+    }
+
+    const onComponentDidAppear = (dom) => {
+      spyer('didAppear');
+      expect(dom instanceof HTMLDivElement).toEqual(true);
+    }
+
+    class App extends Component {
+      render() {
+        return <MyComp onComponentDidAppear={onComponentDidAppear} />;
+      }
+    }
+
+    const outp = renderToStaticMarkup(<App />);
+
+    // Doing this async to be sure
+    setTimeout(() => {
+      expect(spyer).toHaveBeenCalledTimes(0);
+      expect(outp).toEqual('<div></div>');
+      done();
+    }, 10);
+  });
+
+  it('should not call "onComponentDidAppear" when component is rendered with renderToString', (done) => {
+    const spyer = jasmine.createSpy();
+
+    const MyComp = () => {
+      return <div />;
+    }
+
+    const onComponentDidAppear = (dom) => {
+      spyer('didAppear');
+      expect(dom instanceof HTMLDivElement).toEqual(true);
+    }
+
+    class App extends Component {
+      render() {
+        return <MyComp onComponentDidAppear={onComponentDidAppear} />;
+      }
+    }
+
+    const outp = renderToString(<App />);
+
+    // Doing this async to be sure
+    setTimeout(() => {
+      expect(spyer).toHaveBeenCalledTimes(0);
+      expect(outp).toEqual('<div></div>');
+      done();
+    }, 10);
+  });
 });

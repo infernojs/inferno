@@ -150,6 +150,17 @@ h1 {
   transform-origin: 50% 50%;
 }
 
+h1 small {
+  font-size: 0.5em;
+}
+h1 small a {
+  color: #4A90E2;
+  text-decoration: none;
+}
+h1 small a:hover {
+  color: #3775bb;;
+}
+
 h2 {
   font-size: 1rem;
   font-weight: 100;
