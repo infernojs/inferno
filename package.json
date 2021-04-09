@@ -51,7 +51,6 @@
     "build:p:umd:dev": "npm run rollup -- --minify=false",
     "build:p:umd:prod": "npm run rollup -- --env=production --ext=.min.js",
     "print:size": "node scripts/bundle/bundle-size.js",
-    "examples": "npm run --prefix examples start",
     "install:browsertest": "cd fixtures/browser && npm install",
     "lint": "tslint -p tsconfig.json --project",
     "lint-staged": "lint-staged",
