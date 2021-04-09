@@ -38,7 +38,7 @@
     "coveralls": "coveralls < coverage/lcov.info || true",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest --runInBand --no-cache --no-watchman",
     "docs-build": "cross-env NODE_ENV=production node docs/build.js",
-    "docs-dev": "node docs/build.js",
+    "docs-build:dev": "node docs/build.js",
     "prebuild": "npm run clean",
     "postbuild": "rimraf build",
     "build": "run-s build:s:** && run-p build:p:** && npm run print:size && npm run move-types",
