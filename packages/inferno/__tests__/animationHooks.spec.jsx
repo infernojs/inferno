@@ -60,7 +60,7 @@ describe('animation hooks', () => {
    * DONE: The keyed patching appears to add children despite existing nodes with same key
    * DONE: When rerendering a list 1,3,4,5,6 to 1,2,3,4,5 there are issues in the patching algorithm where 6 is left in DOM
    * STARTED: Compare with tests in patchKeyedChildren.spec.js
-   * TODO: Investigate adding animations in https://github.com/infernojs/inferno/tree/master/examples/uibench-reactlike
+   * TODO: Investigate adding animations in https://github.com/infernojs/inferno/tree/master/docs/uibench-reactlike
    * TODO: Add an animation blocking parent component to example
    *
    */

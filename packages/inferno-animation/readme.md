@@ -3,7 +3,7 @@ Helper components and utils to add smooth CSS-anmiations to your Inferno apps. E
 
 If you want to customise your animations, just use index.css as a template and replace "inferno-animation" prefix in the CSS-class names with your custom animation name (i.e. mySuperAnimation). Then pass that name to your animated compoent as an attribute `<MyComponent animation="mySuperAnimation" />` and your customised animation will be used.
 
-For examples of what animations look like you can try inferno/examples/animations/index.html.
+For examples of what animations look like you can try inferno/docs/animations/index.html.
 
 ## Install
 
