@@ -46,14 +46,12 @@
         ...commonOpts,
         define: { 'NODE_ENV': 'production' },
         outExtension: { '.js': '.esm.js' },
-        minify: true,
       },
-      { // Production esnext
+      { // Esnext
         ...commonOpts,
         define: { 'NODE_ENV': 'production' },
         outExtension: { '.js': '.esnext.js' },
         target: 'esnext',
-        minify: true,
       },
       // TODO: esmnext
       ]
