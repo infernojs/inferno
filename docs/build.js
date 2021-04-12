@@ -31,7 +31,10 @@ const plugins = [
     sourceMaps: false,
     babelrc: false,
     presets: [['@babel/env', {loose: true, modules: false}]],
-    plugins: [['babel-plugin-inferno', {imports: true, defineAllArguments: true}]]
+    plugins: [
+      ['babel-plugin-inferno', {imports: true, defineAllArguments: true}],
+      ["@babel/plugin-proposal-class-properties", { "loose": true }]
+    ]
   }),
   commonjsPlugin({
     sourceMap: false
