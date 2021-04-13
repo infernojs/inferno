@@ -77,7 +77,7 @@ const moduleGlobals = readdirSync(ROOT)
     //umdDev --minify=false
     Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: false, name: pkgJSON.name, ext: '.js'}),
     //umdProd --env=production --ext=.min.js
-    Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: true, name: pkgJSON.name, ext: '.min.js'}),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'umd', minify: true, name: pkgJSON.name, ext: '.min.js'}),
   ]
   
   await targets.forEach(async (options) => {
