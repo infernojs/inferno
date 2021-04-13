@@ -54,6 +54,7 @@ const moduleGlobals = readdirSync(ROOT)
     });
   
   // The import stream is NodeJS specific and should alwats be marked as external
+  // Used in inferno-server
   external.push('stream');
   
   const defaultOptions = {
