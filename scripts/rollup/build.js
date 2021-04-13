@@ -13,6 +13,9 @@ if (pkgJSON.private || !pkgJSON.rollup) {
   return;
 }
 
+
+const args = require('minimist')(process.argv.slice(2));
+
 const moduleGlobals = readdirSync(ROOT)
   .filter((path) => lstatSync(join(ROOT, path)).isDirectory())
   .reduce((acc, pkgName) => {
@@ -78,7 +81,12 @@ const moduleGlobals = readdirSync(ROOT)
     Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: false, name: pkgJSON.name, ext: '.js'}),
     //umdProd --env=production --ext=.min.js
     Object.assign({}, defaultOptions, { env: 'production', format: 'umd', minify: true, name: pkgJSON.name, ext: '.min.js'}),
-  ]
+  ].filter((target) => {
+    if (args['target-ext']) {
+      return target.ext === args['target-ext'];
+    }
+    return true
+  })
   
   await targets.forEach(async (options) => {
     const errorFunc = (error) => {
