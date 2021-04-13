@@ -79,6 +79,24 @@ const moduleGlobals = readdirSync(ROOT)
   ]
   
   await targets.forEach(async (options) => {
+    const errorFunc = (error) => {
+      console.error(error); // Print whole error object
+    
+      if (error.snippet) {
+        console.error('\u001b[31;1m');
+        console.error('\n-------- Details -------');
+        console.error(error.id);
+        console.error(error.loc);
+        console.error('\n-------- Snippet --------');
+        console.error(error.snippet);
+        console.error('\n-------------------------');
+        console.error('\u001b[0m');
+      }
+    
+      console.error(`${pkgJSON.name} in ${options.format} is FAILED ${error.message}`);
+      process.exit(-1); // Do not continue build in case of error to avoid publishing garbage, Github #1157
+    };    
+
     // Minify settings are found in plugins/index.js
     const rollupPlugins = createPlugins(version, options);
     
@@ -117,25 +135,6 @@ const moduleGlobals = readdirSync(ROOT)
     }
   
     await write(bundleOptions).catch(errorFunc);
-    console.log(`${pkgJSON.name} in ${options.name} is DONE`);
+    console.log(`${pkgJSON.name} in ${options.name}${options.ext} is DONE`);
   });
 })();
-
-
-function errorFunc (error) {
-  console.error(error); // Print whole error object
-
-  if (error.snippet) {
-    console.error('\u001b[31;1m');
-    console.error('\n-------- Details -------');
-    console.error(error.id);
-    console.error(error.loc);
-    console.error('\n-------- Snippet --------');
-    console.error(error.snippet);
-    console.error('\n-------------------------');
-    console.error('\u001b[0m');
-  }
-
-  console.error(`${pkgJSON.name} in ${options.format} is FAILED ${error.message}`);
-  exit(-1); // Do not continue build in case of error to avoid publishing garbage, Github #1157
-};
