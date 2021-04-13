@@ -57,25 +57,26 @@ const moduleGlobals = readdirSync(ROOT)
   external.push('stream');
   
   const defaultOptions = {
+    name: 'index',
     replace: true,
     version: pkgJSON.version
   }
   
   const targets = [
     //esmDev --name=index --ext=.dev.esm.js --env=development --format=es --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'es', minify: false, name: 'index.dev.esm.js'}),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'es', minify: false, ext: '.dev.esm.js'}),
     //esmProd --name=index --ext=.esm.js --env=production --format=es --minify=false
-    Object.assign({}, defaultOptions, { env: 'production', format: 'es', minify: false, name: 'index.esm.js'}),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'es', minify: false, ext: '.esm.js'}),
     //esNext --name=index --ext=.esnext.js --env=production --format=es --esnext=true --minify=false
-    Object.assign({}, defaultOptions, { env: 'production', format: 'es', esnext: true, minify: false, name: 'index.esnext.js'}),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'es', esnext: true, minify: false, ext: '.esnext.js'}),
     //cjsDev --env=development --format=cjs --replace=true --name=index.cjs --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'cjs', minify: false, name: 'index.cjs.js'}),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'cjs', minify: false, ext: '.cjs.js'}),
     //cjsProd --env=production --format=cjs --replace=true --name=index.cjs --minify=true --ext=.min.js
-    Object.assign({}, defaultOptions, { env: 'production', format: 'cjs', minify: true, name: 'index.cjs.min.js'}),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'cjs', minify: true, ext: '.cjs.min.js'}),
     //umdDev --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: false, name: 'index.js'}),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: false, name: pkgJSON.name, ext: '.js'}),
     //umdProd --env=production --ext=.min.js
-    Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: true, name: 'index.min.js'}),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: true, name: pkgJSON.name, ext: '.min.js'}),
   ]
   
   await targets.forEach(async (options) => {
