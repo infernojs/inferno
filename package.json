@@ -41,7 +41,7 @@
     "docs-build:dev": "node docs/build.js",
     "prebuild": "npm run clean",
     "postbuild": "rimraf build; lerna exec -- rimraf tmpDist",
-    "build": "npm run clean && tsc --build && npm run build:move-compiled && npm run build:move-types && npm run build:bundle",
+    "build": "npm run clean && tsc --build && npm run build:move-compiled && npm run build:move-types && npm run build:bundle && npm run print:size",
     "build:bundle": "lerna exec --stream -- node ../../scripts/rollup/build.js",
     "build:move-types": "rimraf build/**/*.js && lerna exec -- node ../../scripts/bundle/move-typedefs.js",
     "build:move-compiled": "lerna exec -- node ../../scripts/bundle/move-compiled.js",
