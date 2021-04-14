@@ -1,6 +1,6 @@
 <p align="center"><a href="https://infernojs.org/" target="_blank"><img width="150" alt="Inferno" title="Inferno" src="https://user-images.githubusercontent.com/2021355/36063342-626d7ea8-0e84-11e8-84e1-f22bb3b8c4d5.png"></p>
 
-[![Build Status](https://img.shields.io/travis/infernojs/inferno/master.svg?style=flat-square)](https://travis-ci.org/infernojs/inferno/branches)
+[![Build Status](https://img.shields.io/travis/infernojs/inferno/master.svg?style=flat-square)](https://travis-ci.com/infernojs/inferno/branches)
 [![Coverage Status](https://img.shields.io/coveralls/infernojs/inferno/master.svg?style=flat-square)](https://coveralls.io/github/infernojs/inferno?branch=master)
 [![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/infernojs/inferno/blob/master/LICENSE.md)
 [![NPM](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
@@ -47,7 +47,7 @@ Inferno is now part of [Saucelabs](https://saucelabs.com/) open source program a
 
 InfernoJS natively supports the browsers listed below.
 
-[![Build Status](https://saucelabs.com/browser-matrix/Havunen.svg)](https://saucelabs.com/open_sauce/user/Havunen)
+[![Build Status](https://app.saucelabs.com/browser-matrix/Havunen.svg)](https://app.saucelabs.com/u/Havunen)
 
 
 ## Migration guides
@@ -961,15 +961,15 @@ That build version has extra level of validation for development purposes. You c
 ```js
 const alias = require('@rollup/plugin-alias');
 
-    ...
-  plugins: [
-    alias({
-        resolve: ['.js'],
-        entries: [
-          {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
-        ]
-    }),
-  ]
+...
+plugins: [
+  alias({
+    resolve: ['.js'],
+    entries: [
+      {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
+    ]
+  }),
+]
 
 ```
 
