@@ -112,7 +112,7 @@ const moduleGlobals = readdirSync(ROOT)
     
     // Transform
     const { write } = await rollup({
-      input: join(cwd, 'lib/index.js'),
+      input: join(cwd, 'tmpDist/index.js'),
       external: external,
       plugins: rollupPlugins
     }).catch(errorFunc);

@@ -33,14 +33,14 @@
     ]
   },
   "scripts": {
-    "clean": "lerna exec -- rimraf dist lib .rpt2_cache_development .rpt2_cache_production package-lock.json",
+    "clean": "lerna exec -- rimraf dist tmpDist .rpt2_cache_development .rpt2_cache_production package-lock.json",
     "circularDeps": "lerna exec -- madge --circular src/index.ts",
     "coveralls": "coveralls < coverage/lcov.info || true",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest --runInBand --no-cache --no-watchman",
     "docs-build": "cross-env NODE_ENV=production node docs/build.js",
     "docs-build:dev": "node docs/build.js",
     "prebuild": "npm run clean",
-    "postbuild": "rimraf build; lerna exec -- rimraf lib",
+    "postbuild": "rimraf build; lerna exec -- rimraf tmpDist",
     "build": "npm run clean && tsc --build && npm run build:move-compiled && npm run build:move-types && npm run build:bundle",
     "build:bundle": "lerna exec --stream -- node ../../scripts/rollup/build.js",
     "build:move-types": "rimraf build/**/*.js && lerna exec -- node ../../scripts/bundle/move-typedefs.js",
