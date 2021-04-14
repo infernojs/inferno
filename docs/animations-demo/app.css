@@ -1,0 +1,279 @@
+/* Using CSS-vars for transitions so you can experiment easily */
+:root {
+  --infernoAnimationEnter: all 1.2s ease-out;
+  --infernoAnimationLeave: all .6s ease-out;
+}
+
+/* These are used for <img> and .body transitions */
+.item {
+  --imgEnter: transform .5s ease-out, opacity 1s ease-in;
+  --imgLeave: transform .4s ease-in, opacity .4s ease-in;
+  
+  --bodyEnter: transform .3s .5s ease-out, opacity 1s ease-in;
+  --bodyLeave: transform .2s ease-in, opacity .3s ease-in;
+}
+
+/*******************************************/
+/* Animate height and opacity of card <li> */
+/*******************************************/
+.Complex-leave {
+    /* Leave animation start state */
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.Complex-leave-active {
+    /* Leave animation transitions */
+    overflow: visible;
+    transition: var(--infernoAnimationLeave);
+    pointer-events: none; /* prevent hover to fire transition events */
+}
+
+.Complex-leave-end {
+    /* Leave animation end state */
+    opacity: 0;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+    transform: translateX(100%);
+}
+
+.Complex-enter {
+    /* Enter animation start state */
+    opacity: 0.7;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+}
+
+.Complex-enter-active {
+    /* Enter animation transitions */
+    transition: var(--infernoAnimationEnter);
+    pointer-events: none; /* prevent hover to fire transition events */
+}
+
+.Complex-enter-end {
+    /* Enter animation end state */
+    opacity: 1;
+}
+
+/******************************/
+/* Animate avatar image <img> */
+/******************************/
+.Complex-leave img {
+  /* Leave animation start state */
+  opacity: 1;
+}
+
+.Complex-leave-active img {
+  /* Leave animation transitions */
+  overflow: hidden;
+  transition: var(--infernoAnimationLeave);
+}
+
+.Complex-leave-end img {
+  /* Leave animation end state */
+  opacity: 0;
+}
+
+.Complex-enter img {
+  /* Enter animation start state */
+  opacity: 0;
+  transform: translateX(-150%);
+}
+
+.Complex-enter-active img {
+  /* Enter animation transitions */
+  transition: var(--infernoAnimationEnter);
+}
+
+.Complex-enter-end img {
+  /* Enter animation end state */
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.Complex-enter-end img {
+  /* Enter animation end state */
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/***************************/
+/* Animate card body .body */
+/***************************/
+.Complex-leave .body {
+  /* Leave animation start state */
+  opacity: 1;
+}
+
+.Complex-leave-active .body {
+  /* Leave animation transitions */
+  overflow: hidden;
+  transition: var(--bodyLeave);
+}
+
+.Complex-leave-end .body {
+  /* Leave animation end state */
+  opacity: 0;
+  transform: translateX(150%);
+}
+
+.Complex-enter .body {
+  /* Enter animation start state */
+  opacity: 0;
+  transform: translateX(150%);
+}
+
+.Complex-enter-active .body {
+  /* Enter animation transitions */
+  transition: var(--bodyEnter);
+}
+
+.Complex-enter-end .body {
+  /* Enter animation end state */
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Some CSS for the list and cards */
+
+ul {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin-bottom: 0.5rem;
+  width: 40rem;
+  max-width: 100%;
+}
+
+li {
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  background: #4A90E2;
+  color: white;
+  text-align: center;
+  border-top: 1px solid #fff;
+  overflow: hidden;
+}
+
+li:hover {
+  background: #3775bb;
+}
+
+li.item img {
+  background-color: #fff;
+  border-radius: 50%;
+  margin: 1rem;
+  height: auto;
+  width: auto;
+}
+
+li.item .inner {
+  display: flex;
+  flex-direction: row;
+  height: 8rem;
+}
+
+li.item .body {
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  min-height: 4em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+
+li.item h2 {
+  color: white;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+/* Some general CSS for the example */
+
+button {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem auto 0;
+  display: block;
+  background: #35a748;
+  color: white;
+  border-style: none;
+  border-radius: 4px;
+  width: 10rem;
+} button:hover {
+  background: #3775bb;
+}
+
+body {
+  font-family: helvetica;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.App {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+h1 {
+  transform: rotate(-90deg);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ddd;
+  text-align: center;
+  margin: 0.5rem;
+  white-space: nowrap;
+  width: 2rem;
+  transform-origin: 50% 50%;
+}
+
+h1 small {
+  font-size: 0.5em;
+}
+h1 small a {
+  color: #4A90E2;
+  text-decoration: none;
+}
+h1 small a:hover {
+  color: #3775bb;;
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: 100;
+  color: #4A90E2;
+  text-align: center;
+}
+
+h3 {
+  font-size: 0.85rem;
+  font-weight: 100;
+}
+
+p {
+  font-size: 0.85rem;
+  font-weight: 100;
+  color: #888;
+  text-align: center;
+  margin-top: -0.5em;
+  width: 40rem;
+  max-width: 100%;
+}

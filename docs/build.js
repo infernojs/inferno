@@ -1,5 +1,5 @@
 const rollup = require('rollup');
-const {readdirSync, statSync} = require('fs');
+const {readdirSync, statSync, existsSync} = require('fs');
 const commonjsPlugin = require('rollup-plugin-commonjs');
 const nodeResolvePlugin = require('rollup-plugin-node-resolve');
 const babelPlugin = require('rollup-plugin-babel');
@@ -92,9 +92,13 @@ if (isProduction) {
 
 benchmarks.forEach(dir => {
   const benchmarkPath = path.join(__dirname, dir);
+  const appJsPath = path.resolve(benchmarkPath, 'app.js')
+
+  // Don't build examples that don't have app.js
+  if (!existsSync(appJsPath)) return
 
   const inputOptions = {
-    input: path.resolve(benchmarkPath, 'app.js'),
+    input: appJsPath,
     plugins: plugins
   };
 
