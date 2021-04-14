@@ -2,7 +2,6 @@ const bublePlugin = require('rollup-plugin-buble');
 const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replacePlugin = require('rollup-plugin-replace');
-const tsPlugin = require('rollup-plugin-typescript2');
 const terser = require('rollup-plugin-terser').terser;
 const aliasPlugin = require('./alias');
 
@@ -10,19 +9,12 @@ module.exports = function (version, options) {
   const plugins = [
     aliasPlugin,
     nodeResolve({
-      extensions: ['.ts', '.js', '.json'],
+      extensions: ['.js', '.json'],
       mainFields: ['module', 'main'],
       preferBuiltins: true
     }),
     commonjs({
       include: 'node_modules/**'
-    }),
-    tsPlugin({
-      abortOnError: true,
-      cacheRoot: `.rpt2_cache_${options.env}`,
-      check: false,
-      clean: true,
-      tsconfig: __dirname + '/../../../tsconfig.json' // Have absolute path to fix windows build
     })
   ];
 
