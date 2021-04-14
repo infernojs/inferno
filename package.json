@@ -68,13 +68,7 @@
     "test:browser:debug-nocompat": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser debug",
     "test:browser:sauce": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test -- --forceExit",
-    "test:package": "node fixtures/packaging/build-all.js",
-    "quick-test:build": "npm run clean && tsc --build && npm run build:move-compiled && npm run build:move-types && npm run build:bundle -- --target-ext=.cjs.min.js && npm run postbuild",
-    "quick-test:build-inferno": "tsc --build && npm run build:move-compiled && npm run build:move-types && lerna exec --scope 'inferno' -- node ../../scripts/rollup/build.js && npm run postbuild",
-    "quick-test:browser": "npm run quick-test:build && npm run test:browser:nocompat",
-    "quick-test:browser:debug": "npm run quick-test:build && npm run test:browser:debug-nocompat",
-    "quick-test:browser-inferno": "npm run quick-test:build-inferno && npm run test:browser:nocompat",
-    "quick-test:browser-inferno:debug": "npm run quick-test:build-inferno && npm run test:browser:debug-nocompat"
+    "test:package": "node fixtures/packaging/build-all.js"
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
