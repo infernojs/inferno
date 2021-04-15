@@ -2,6 +2,8 @@ import { forceReflow } from './utils';
 
 export enum AnimationPhase {
   INITIALIZE,
+  MEASURE,
+  SET_START_STATE,
   ACTIVATE_TRANSITIONS,
   REGISTER_LISTENERS,
   ACTIVATE_ANIMATION
@@ -31,31 +33,32 @@ function _runAnimationPhases() {
   // Clear global queue
   _animationQueue = [];
   
-  // Phase 1 - Initialize the animation
-  for (let i = 0; i < animationQueue.length; i++) {
-    animationQueue[i](AnimationPhase.INITIALIZE);
+  // So what this does is run the animation phases in order. Most of the phases are invoked
+  // by a simple call to all the registered callbacks. However:
+  // - ACTIVATE_TRANSITIONS require a reflow in order to not
+  // interfere with the previous setting of the animation start class
+  // - ACTIVATE_ANIMATION needs to be called async so the transitions actually fire,
+  // we choose to use an animation frame.
+  for (let i = 0; i < 6; i++) {
+    const phase = i as AnimationPhase;
+    if (phase !== AnimationPhase.ACTIVATE_ANIMATION) {
+      if (phase === AnimationPhase.ACTIVATE_TRANSITIONS) {
+        forceReflow()
+      }
+      for (let i = 0; i < animationQueue.length; i++) {
+        animationQueue[i](phase);
+      }
+    }
+    else {
+      // Final phase - Activate animations
+      _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
+      if (_nextActivateAnimationFrame === undefined) {
+        // Animations are activated on the next animation frame
+        _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
+      }
+    }
+    
   }
-
-  // Phase 2 - Activate tranistions
-  // Before registering listeners we need to cause a reflow, otherwise
-  // they won't measure durations properly for the fallback timeout
-  forceReflow()
-  for (let i = 0; i < animationQueue.length; i++) {
-    animationQueue[i](AnimationPhase.ACTIVATE_TRANSITIONS);
-  }
-  
-  // Phase 3 - Register transition listeners
-  for (let i = 0; i < animationQueue.length; i++) {
-    animationQueue[i](AnimationPhase.REGISTER_LISTENERS);
-  }
-
-  // Phase 4 - Activate animations
-  _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
-  if (_nextActivateAnimationFrame === undefined) {
-    // Animations are activated on the next animation frame
-    _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
-  }
-
 }
 
 export function queueAnimation(callback: Function) {

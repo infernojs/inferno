@@ -1,4 +1,4 @@
-import { addClassName, clearDimensions, getDimensions, registerTransitionListener, removeClassName, setDimensions, setDisplay } from './utils';
+import { addClassName, clearDimensions, getDimensions, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay } from './utils';
 import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef } from 'inferno-shared';
 
@@ -28,17 +28,25 @@ function getAnimationClass(animationProp: AnimationClass | string | undefined | 
 export function componentDidAppear(dom: HTMLElement, props) {
   // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-enter');
-  const dimensions = getDimensions(dom);
-  const display = setDisplay(dom, 'none');
 
+  // Moved measuring to pre_initialize. It causes a reflow for each component beacuse of the setDisplay of previous component.
+  const dimensions = {};
+  const display = setDisplay(dom, 'none');
   queueAnimation((phase) => _didAppear(phase, dom, cls, dimensions, display));
 }
 
 function _didAppear (phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass, dimensions, display: string) {
   switch (phase) {
     case AnimationPhase.INITIALIZE:
+      // Needs to be done in a single pass to avoid reflows
+      // We set display: none whilst waiting for an animation frame to avoid flicker
+      resetDisplay(dom, display);
+      return;
+    case AnimationPhase.MEASURE:
+      getDimensions(dom);
+      return;
+    case AnimationPhase.SET_START_STATE:
       // 1. Set start of animation
-      setDisplay(dom, display); // Needed because we set display: none whilst waiting for animation frame
       addClassName(dom, cls.start);
       return;
     case AnimationPhase.ACTIVATE_TRANSITIONS:
@@ -80,7 +88,7 @@ export function componentWillDisappear(dom: HTMLElement, props, callback: Functi
 
 function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Function, cls: AnimationClass, dimensions) {
   switch (phase) {
-    case AnimationPhase.INITIALIZE:
+    case AnimationPhase.MEASURE:
       // 1. Get dimensions and set animation start state
       setDimensions(dom, dimensions.width, dimensions.height);
       addClassName(dom, cls.start);
