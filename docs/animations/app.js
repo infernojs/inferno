@@ -77,6 +77,27 @@
       });
     }
 
+    doRemove20 = (e) => {
+      e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      newItems.splice(newItems.length >= 20 ? newItems.length - 20 : 0, newItems.length >= 20 ? 20 : newItems.length);
+      this.setState({
+        items: newItems
+      })
+    }
+
+    doAdd20 = (e) => {
+      e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      var nextKey = newItems.length === 0 ? 0 : newItems[newItems.length - 1].key + 1;
+      for (var i = 0; i < 20; i++) {
+        newItems.push({key: nextKey + i});
+      }
+      this.setState({
+        items: newItems
+      });
+    }
+
 		componentDidMount() {
 			let i = 0;
 
@@ -100,7 +121,9 @@
         createElement('ul', null, this.state.items.map(this.renderItem)),
         createElement('h2', null, this.props.animation),
         createElement('p', null, this.props.description),
-        createElement('button', { onClick: this.doAdd }, 'Add')
+        createElement('button', { onClick: this.doAdd }, 'Add'),
+        createElement('button', { onClick: this.doAdd20 }, 'Add 20'),
+        createElement('button', { onClick: this.doRemove20 }, 'Remove 20'),
       ]);
 		}
 	}
