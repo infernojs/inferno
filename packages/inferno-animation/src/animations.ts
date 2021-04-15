@@ -50,7 +50,7 @@ function _didAppear (phase: AnimationPhase, dom: HTMLElement, cls: AnimationClas
       addClassName(dom, cls.start);
       return;
     case AnimationPhase.ACTIVATE_TRANSITIONS:
-      // 2. Activate transition
+      // 2. Activate transition (after a reflow)
       addClassName(dom, cls.active);
       return;
     case AnimationPhase.REGISTER_LISTENERS:
@@ -71,7 +71,7 @@ function _didAppear (phase: AnimationPhase, dom: HTMLElement, cls: AnimationClas
         }
       );
     case AnimationPhase.ACTIVATE_ANIMATION:
-      // 4. Activate target state
+      // 4. Activate target state (called async via requestAnimationFrame)
       setDimensions(dom, dimensions.width, dimensions.height);
       removeClassName(dom, cls.start);
       addClassName(dom, cls.end);
@@ -94,7 +94,7 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
       addClassName(dom, cls.start);
       return;
     case AnimationPhase.ACTIVATE_TRANSITIONS:
-      // 2. Activate transition
+      // 2. Activate transition (after a reflow)
       addClassName(dom, cls.active);
       return;
     case AnimationPhase.REGISTER_LISTENERS:
@@ -108,7 +108,7 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
         }
       );
     case AnimationPhase.ACTIVATE_ANIMATION:
-      // 4. Activate target state
+      // 4. Activate target state (called async via requestAnimationFrame)
       addClassName(dom, cls.end);
       removeClassName(dom, cls.start);
       clearDimensions(dom);
