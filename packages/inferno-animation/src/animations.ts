@@ -73,7 +73,7 @@ function _didAppear (phase: AnimationPhase, dom: HTMLElement, cls: AnimationClas
 
 export function componentWillDisappear(dom: HTMLElement, props, callback: Function) {
   // Get dimensions and unpack class names
-  const cls = getAnimationClass(props.animation, '-enter');
+  const cls = getAnimationClass(props.animation, '-leave');
   const dimensions = getDimensions(dom);
   queueAnimation((phase) => _willDisappear(phase, dom, callback, cls, dimensions));
 }
