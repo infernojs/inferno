@@ -47,11 +47,7 @@ describe('lifecycle hooks', () => {
         );
       };
 
-      animationTemplate = (
-        onComponentDidAppear,
-        onComponentWillDisappear,
-        StatelessComponent
-      ) => (props) => {
+      animationTemplate = (onComponentDidAppear, onComponentWillDisappear, StatelessComponent) => (props) => {
         return createElement(
           StatelessComponent,
           {
@@ -213,14 +209,14 @@ describe('lifecycle hooks', () => {
 
       const sinonSpy = sinon.spy(spyObj, 'fn');
       const t = animationTemplate(spyObj.fn, null, StatelessComponent);
-  
+
       const node1 = t({ a: 1 });
       render(node1, container);
       expect(sinonSpy.callCount).toBe(1); // Update 1
       expect(sinonSpy.getCall(0).args.length).toBe(2);
       expect(sinonSpy.getCall(0).args[0] instanceof HTMLDivElement).toEqual(true);
       expect(typeof sinonSpy.getCall(0).args[1] === 'object').toEqual(true);
-  
+
       const node2 = t({ a: 2 });
       render(node2, container);
       expect(sinonSpy.callCount).toBe(1); // Update 2 (shouldn't trigger animation)
@@ -233,7 +229,7 @@ describe('lifecycle hooks', () => {
 
       const sinonSpy = sinon.spy(spyObj, 'fn');
       const t = animationTemplate(null, spyObj.fn, StatelessComponent);
-  
+
       const node1 = t({ a: 1 });
       render(node1, container);
       render(null, container);

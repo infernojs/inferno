@@ -37,20 +37,17 @@ export function componentDidAppear(dom: HTMLElement, props) {
 
   // 3. Set an animation listener, code at end
   // Needs to be done after activating so timeout is calculated correctly
-  registerTransitionListener(
-    [dom],
-    function () {
-      // *** Cleanup ***
-      // 5. Remove the element
-      clearDimensions(dom);
-      removeClassName(dom, active);
-      removeClassName(dom, end);
+  registerTransitionListener([dom], function () {
+    // *** Cleanup ***
+    // 5. Remove the element
+    clearDimensions(dom);
+    removeClassName(dom, active);
+    removeClassName(dom, end);
 
-      // 6. Call callback to allow stuff to happen
-      // Not currently used but this is where one could
-      // add a call to something like this.didAppearDone
-    }
-  );
+    // 6. Call callback to allow stuff to happen
+    // Not currently used but this is where one could
+    // add a call to something like this.didAppearDone
+  });
 
   // 4. Activate target state
   requestAnimationFrame(() => {
@@ -73,13 +70,10 @@ export function componentWillDisappear(dom: HTMLElement, props, callback: Functi
 
   // 3. Set an animation listener, code at end
   // Needs to be done after activating so timeout is calculated correctly
-  registerTransitionListener(
-    [dom],
-    function () {
-      // *** Cleanup not needed since node is removed ***
-      callback();
-    }
-  );
+  registerTransitionListener([dom], function () {
+    // *** Cleanup not needed since node is removed ***
+    callback();
+  });
 
   // 4. Activate target state
   requestAnimationFrame(() => {

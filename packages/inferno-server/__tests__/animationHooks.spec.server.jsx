@@ -55,12 +55,12 @@ describe('SSR Creation (JSX)', () => {
 
     const MyComp = () => {
       return <div />;
-    }
+    };
 
     const onComponentDidAppear = (dom) => {
       spyer('didAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
-    }
+    };
 
     class App extends Component {
       render() {
@@ -83,12 +83,12 @@ describe('SSR Creation (JSX)', () => {
 
     const MyComp = () => {
       return <div />;
-    }
+    };
 
     const onComponentDidAppear = (dom) => {
       spyer('didAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
-    }
+    };
 
     class App extends Component {
       render() {

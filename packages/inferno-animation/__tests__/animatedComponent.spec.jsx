@@ -181,29 +181,40 @@ describe('inferno-animation animated functional component', () => {
   });
 
   it('should render class component extending AnimatedComponent into DOM', () => {
-    const MyComponent = ({children}) => {
+    const MyComponent = ({ children }) => {
       return <div>{children}</div>;
-    }
+    };
 
-    render(<MyComponent onComponentDidAppear={componentDidAppear} onComponentWillDisappear={componentWillDisappear}>1</MyComponent>, container);
+    render(
+      <MyComponent onComponentDidAppear={componentDidAppear} onComponentWillDisappear={componentWillDisappear}>
+        1
+      </MyComponent>,
+      container
+    );
     expect(container.textContent).toBe('1');
   });
 
   it('should remove class component extending AnimatedComponent from DOM', (done) => {
-    const My = ({children}) => {
+    const My = ({ children }) => {
       return <div>{children}</div>;
-    }
+    };
 
     const anim = {
       onComponentDidAppear: componentDidAppear,
       onComponentWillDisappear: componentWillDisappear
-    }
+    };
 
     render(
       <div>
-        <My key="#1" {...anim}>1</My>
-        <My key="#2" {...anim}>2</My>
-        <My key="#3" {...anim}>3</My>
+        <My key="#1" {...anim}>
+          1
+        </My>
+        <My key="#2" {...anim}>
+          2
+        </My>
+        <My key="#3" {...anim}>
+          3
+        </My>
       </div>,
       container
     );
@@ -211,8 +222,12 @@ describe('inferno-animation animated functional component', () => {
 
     render(
       <div>
-        <My key="#1" {...anim}>1</My>
-        <My key="#3" {...anim}>3</My>
+        <My key="#1" {...anim}>
+          1
+        </My>
+        <My key="#3" {...anim}>
+          3
+        </My>
       </div>,
       container
     );
@@ -229,8 +244,12 @@ describe('inferno-animation animated functional component', () => {
     waitForAnimationAndContinue('13', function () {
       render(
         <div>
-          <My key="#1" {...anim}>1</My>
-          <My key="#4" {...anim}>4</My>
+          <My key="#1" {...anim}>
+            1
+          </My>
+          <My key="#4" {...anim}>
+            4
+          </My>
         </div>,
         container
       );
@@ -242,20 +261,26 @@ describe('inferno-animation animated functional component', () => {
   });
 
   it('should move class component extending AnimatedComponent from DOM', (done) => {
-    const My = ({children}) => {
+    const My = ({ children }) => {
       return <div>{children}</div>;
-    }
+    };
 
     const anim = {
       onComponentDidAppear: componentDidAppear,
       onComponentWillDisappear: componentWillDisappear
-    }
+    };
 
     render(
       <div>
-        <My key="#1" {...anim}>1</My>
-        <My key="#2" {...anim}>2</My>
-        <My key="#3" {...anim}>3</My>
+        <My key="#1" {...anim}>
+          1
+        </My>
+        <My key="#2" {...anim}>
+          2
+        </My>
+        <My key="#3" {...anim}>
+          3
+        </My>
       </div>,
       container
     );
@@ -263,9 +288,15 @@ describe('inferno-animation animated functional component', () => {
 
     render(
       <div>
-        <My key="#1" {...anim}>1</My>
-        <My key="#3" {...anim}>3</My>
-        <My key="#2" {...anim}>2</My>
+        <My key="#1" {...anim}>
+          1
+        </My>
+        <My key="#3" {...anim}>
+          3
+        </My>
+        <My key="#2" {...anim}>
+          2
+        </My>
       </div>,
       container
     );
@@ -283,8 +314,12 @@ describe('inferno-animation animated functional component', () => {
     waitForAnimationAndContinue('132', function () {
       render(
         <div>
-          <My key="#4" {...anim}>4</My>
-          <My key="#1" {...anim}>1</My>
+          <My key="#4" {...anim}>
+            4
+          </My>
+          <My key="#1" {...anim}>
+            1
+          </My>
         </div>,
         container
       );
@@ -297,14 +332,14 @@ describe('inferno-animation animated functional component', () => {
   });
 
   it('should render class component extending AnimatedComponent to a string', () => {
-    const MyComponent = ({children}) => {
+    const MyComponent = ({ children }) => {
       return <div>{children}</div>;
-    }
+    };
 
     const anim = {
       onComponentDidAppear: componentDidAppear,
       onComponentWillDisappear: componentWillDisappear
-    }
+    };
 
     const outp = renderToString(<MyComponent {...anim}>1</MyComponent>, container);
     expect(outp).toBe('<div>1</div>');

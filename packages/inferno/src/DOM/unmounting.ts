@@ -125,8 +125,7 @@ function addDisappearAnimationHook(animations: AnimationQueues, instanceOrRef, d
   animations.componentWillDisappear.push((callback: Function) => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentWillDisappear(dom, callback);
-    }
-    else if (flags & VNodeFlags.ComponentFunction) {
+    } else if (flags & VNodeFlags.ComponentFunction) {
       instanceOrRef.onComponentWillDisappear(dom, props, callback);
     }
   });

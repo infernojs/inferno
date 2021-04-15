@@ -194,7 +194,7 @@ export function mountFunctionalComponent(
   if (!isNullOrUndef(ref) && isFunction(ref.onComponentDidAppear)) {
     childAnimations = new AnimationQueues();
   }
-  
+
   mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle, childAnimations);
   mountFunctionalComponentCallbacks(vNode, lifecycle, animations);
 }
@@ -209,8 +209,7 @@ function addAppearAnimationHook(animations: AnimationQueues, instanceOrRef, dom:
   animations.componentDidAppear.push(() => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentDidAppear(dom);
-    }
-    else if (flags & VNodeFlags.ComponentFunction) {
+    } else if (flags & VNodeFlags.ComponentFunction) {
       instanceOrRef.onComponentDidAppear(dom, props);
     }
   });

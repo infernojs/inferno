@@ -13,6 +13,7 @@ node_modules
 fixtures/browser/*.cmd
 
 packages/*/dist
+packages/*/tmpDist
 package-lock.json
 
 .rpt2_cache_development

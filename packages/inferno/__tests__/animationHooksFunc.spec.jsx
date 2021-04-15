@@ -20,13 +20,13 @@ describe('animation hooks', () => {
 
     const Animated = () => {
       return <div />;
-    }
+    };
 
     const onComponentDidAppear = (dom, props) => {
       spyer('didAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
       expect(typeof props === 'object').toEqual(true);
-    }
+    };
 
     class App extends Component {
       componentDidMount() {
@@ -49,21 +49,21 @@ describe('animation hooks', () => {
 
     const Child = () => {
       return <div />;
-    }
-    
+    };
+
     const childOnComponentDidAppear = (dom, props) => {
       spyer('no-op');
       expect(dom instanceof HTMLDivElement).toEqual(true);
-    }
+    };
 
     const Parent = () => {
       return <Child onComponentDidAppear={childOnComponentDidAppear} />;
-    }
-    
+    };
+
     const parentOnComponentDidAppear = (dom, props) => {
       spyer('didAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
-    }
+    };
 
     class App extends Component {
       componentDidMount() {
@@ -90,15 +90,15 @@ describe('animation hooks', () => {
 
     const Child = (props) => {
       return <div>{props.children}</div>;
-    }
+    };
 
     const childOnComponentDidMount = () => {
       spyer('childDidMount');
-    }
+    };
 
     const childOnComponentDidAppear = () => {
       spyer('childDidAppear');
-    }
+    };
 
     class App extends Component {
       constructor() {
@@ -123,7 +123,9 @@ describe('animation hooks', () => {
         return (
           <div>
             {this.state.items.map((i) => (
-              <Child key={i} onComponentDidAppear={childOnComponentDidAppear} onComponentDidMount={childOnComponentDidMount}>{i}</Child>
+              <Child key={i} onComponentDidAppear={childOnComponentDidAppear} onComponentDidMount={childOnComponentDidMount}>
+                {i}
+              </Child>
             ))}
           </div>
         );
@@ -149,12 +151,12 @@ describe('animation hooks', () => {
 
     const Child = () => {
       return <div />;
-    }
+    };
 
     const onComponentDidAppear = (dom, props) => {
       spyer('childDidAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
-    }
+    };
 
     class App extends Component {
       componentDidMount() {
@@ -186,19 +188,19 @@ describe('animation hooks', () => {
     const spyer = jasmine.createSpy();
     const App = () => {
       return <div />;
-    }
-    
+    };
+
     const onComponentWillDisappear = (dom, props, callback) => {
       spyer('willDisappear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
       expect(callback instanceof Function).toEqual(true);
       expect(typeof props === 'object').toEqual(true);
       callback();
-    }
+    };
 
     const onComponentDidMount = () => {
       spyer('didMount');
-    }
+    };
 
     render(<App onComponentWillDisappear={onComponentWillDisappear} onComponentDidMount={onComponentDidMount} />, container);
 
@@ -214,8 +216,8 @@ describe('animation hooks', () => {
 
     const App = () => {
       return <div />;
-    }
-    
+    };
+
     const onComponentWillDisappear = (dom, props, callback) => {
       spyer('willDisappear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
@@ -224,11 +226,11 @@ describe('animation hooks', () => {
         callback();
         setTimeout(() => didFinish(), 10);
       }, 10);
-    }
+    };
 
     const onComponentDidMount = () => {
       spyer('didMount');
-    }
+    };
 
     render(<App onComponentWillDisappear={onComponentWillDisappear} onComponentDidMount={onComponentDidMount} />, container);
 
@@ -259,8 +261,8 @@ describe('animation hooks', () => {
 
     const Item = () => {
       return <div />;
-    }
-    
+    };
+
     const getOnComponentWillDisappear = (index) => {
       return (dom, props, callback) => {
         spyer('willDisappear ' + index);
@@ -272,13 +274,12 @@ describe('animation hooks', () => {
         setTimeout(() => {
           callback();
         }, timeout);
-      }
-    }
+      };
+    };
 
     const onComponentDidMount = () => {
       spyer('didMount');
-    }
-
+    };
 
     class App extends Component {
       state = {
@@ -332,13 +333,13 @@ describe('animation hooks', () => {
 
     const App = () => {
       return <div />;
-    }
-    
+    };
+
     const onComponentDidAppear = (dom, props) => {
       spyer('didAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
-    }
-    
+    };
+
     const getOnComponentWillDisappear = (forceDone) => (dom, props, callback) => {
       spyer('willDisappear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
@@ -355,16 +356,30 @@ describe('animation hooks', () => {
           lastRenderDone && callMeAfterLastRender();
         }, 10);
       }
-    }
-      
+    };
+
     const onComponentDidMount = () => {
       spyer('didMount');
-    }
+    };
 
-    render(<App onComponentDidAppear={onComponentDidAppear} onComponentDidMount={onComponentDidMount} onComponentWillDisappear={getOnComponentWillDisappear(false)} />, container);
+    render(
+      <App
+        onComponentDidAppear={onComponentDidAppear}
+        onComponentDidMount={onComponentDidMount}
+        onComponentWillDisappear={getOnComponentWillDisappear(false)}
+      />,
+      container
+    );
     render(null, container);
     // forceDone completes the willDissapear hook immediately
-    render(<App  onComponentDidAppear={onComponentDidAppear} onComponentDidMount={onComponentDidMount} onComponentWillDisappear={getOnComponentWillDisappear(true)} />, container);
+    render(
+      <App
+        onComponentDidAppear={onComponentDidAppear}
+        onComponentDidMount={onComponentDidMount}
+        onComponentWillDisappear={getOnComponentWillDisappear(true)}
+      />,
+      container
+    );
 
     expect(container.innerHTML).toBe('<div></div><div></div>');
 
@@ -390,7 +405,7 @@ describe('animation hooks', () => {
     const spyer = jasmine.createSpy();
     const App = () => {
       return <div />;
-    }
+    };
 
     const onComponentWillDisappear = (dom, props, callback) => {
       spyer('willDisappear');
@@ -399,11 +414,11 @@ describe('animation hooks', () => {
       setTimeout(() => {
         callback();
       }, 10);
-    }
+    };
 
     const onComponentDidMount = () => {
       spyer('didMount');
-    }
+    };
 
     render(
       <div>
@@ -1097,7 +1112,7 @@ function generateKeyNodes(array, spyer) {
     }
 
     children.push(
-      <Tag key={newKey} id={String(id)} onComponentDidAppear={onComponentDidAppear} onComponentWillDisappear={onComponentWillDisappear} >
+      <Tag key={newKey} id={String(id)} onComponentDidAppear={onComponentDidAppear} onComponentWillDisappear={onComponentWillDisappear}>
         {id}
       </Tag>
     );
