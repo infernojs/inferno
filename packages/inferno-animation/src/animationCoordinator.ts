@@ -45,8 +45,8 @@ function _runAnimationPhases() {
       if (phase === AnimationPhase.ACTIVATE_TRANSITIONS) {
         forceReflow()
       }
-      for (let i = 0; i < animationQueue.length; i++) {
-        animationQueue[i](phase);
+      for (let j = 0; j < animationQueue.length; j++) {
+        animationQueue[j](phase);
       }
     }
     else {
