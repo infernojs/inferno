@@ -1,6 +1,6 @@
 import { forceReflow } from './utils';
 
-export enum AnimationPhase {
+export const enum AnimationPhase {
   INITIALIZE,
   MEASURE,
   SET_START_STATE,
@@ -8,6 +8,7 @@ export enum AnimationPhase {
   REGISTER_LISTENERS,
   ACTIVATE_ANIMATION
 }
+const NrofPhases = 6;
 
 let _animationQueue: Function[] = [];
 let _animationActivationQueue: Function[] = [];
@@ -35,29 +36,32 @@ function _runAnimationPhases() {
   
   // So what this does is run the animation phases in order. Most of the phases are invoked
   // by a simple call to all the registered callbacks. However:
+  //
   // - ACTIVATE_TRANSITIONS require a reflow in order to not
   // interfere with the previous setting of the animation start class
+  //
   // - ACTIVATE_ANIMATION needs to be called async so the transitions actually fire,
   // we choose to use an animation frame.
-  for (let i = 0; i < 6; i++) {
+  //
+  for (let i = 0; i < NrofPhases; i++) {
     const phase = i as AnimationPhase;
-    if (phase !== AnimationPhase.ACTIVATE_ANIMATION) {
-      if (phase === AnimationPhase.ACTIVATE_TRANSITIONS) {
-        forceReflow()
-      }
-      for (let j = 0; j < animationQueue.length; j++) {
-        animationQueue[j](phase);
-      }
+    switch (phase) {
+      case AnimationPhase.ACTIVATE_ANIMATION:
+        // Final phase - Activate animations
+        _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
+        if (_nextActivateAnimationFrame === undefined) {
+          // Animations are activated on the next animation frame
+          _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
+        }
+        break;
+      case AnimationPhase.ACTIVATE_TRANSITIONS:
+        // Force reflow before executing ACTIVATE_TRANSITIONS
+        forceReflow();
+      default:
+        for (let j = 0; j < animationQueue.length; j++) {
+          animationQueue[j](phase);
+        }
     }
-    else {
-      // Final phase - Activate animations
-      _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
-      if (_nextActivateAnimationFrame === undefined) {
-        // Animations are activated on the next animation frame
-        _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
-      }
-    }
-    
   }
 }
 
