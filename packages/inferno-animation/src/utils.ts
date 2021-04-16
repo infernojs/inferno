@@ -39,6 +39,16 @@ export function forceReflow() {
   return document.body.clientHeight;
 }
 
+// A quicker version used in pre_initialize
+export function resetDisplay(node: HTMLElement, value?: string) {
+  if (value !== undefined) {
+    node.style.setProperty('display', value);
+  } else {
+    node.style.removeProperty('display');
+    _cleanStyle(node);
+  }
+}
+
 export function setDisplay(node: HTMLElement, value?: string) {
   const oldVal = node.style.getPropertyValue('display');
 

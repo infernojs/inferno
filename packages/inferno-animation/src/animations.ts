@@ -1,4 +1,5 @@
-import { addClassName, clearDimensions, forceReflow, getDimensions, registerTransitionListener, removeClassName, setDimensions } from './utils';
+import { addClassName, clearDimensions, getDimensions, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay } from './utils';
+import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef } from 'inferno-shared';
 
 export type AnimationClass = {
@@ -25,60 +26,91 @@ function getAnimationClass(animationProp: AnimationClass | string | undefined | 
 }
 
 export function componentDidAppear(dom: HTMLElement, props) {
-  const { start, end, active } = getAnimationClass(props.animation, '-enter');
+  // Get dimensions and unpack class names
+  const cls = getAnimationClass(props.animation, '-enter');
 
-  // 1. Get height and set start of animation
-  const { width, height } = getDimensions(dom);
-  addClassName(dom, start);
-  forceReflow();
+  // Moved measuring to pre_initialize. It causes a reflow for each component beacuse of the setDisplay of previous component.
+  const dimensions = {};
+  const display = setDisplay(dom, 'none');
+  queueAnimation((phase) => _didAppear(phase, dom, cls, dimensions, display));
+}
 
-  // 2. Activate transition
-  addClassName(dom, active);
-
-  // 3. Set an animation listener, code at end
-  // Needs to be done after activating so timeout is calculated correctly
-  registerTransitionListener([dom], function () {
-    // *** Cleanup ***
+function _getDidAppearTransitionCallback(dom, cls) {
+  return () => {
     // 5. Remove the element
     clearDimensions(dom);
-    removeClassName(dom, active);
-    removeClassName(dom, end);
-
+    removeClassName(dom, cls.active + ' ' + cls.end);
     // 6. Call callback to allow stuff to happen
     // Not currently used but this is where one could
     // add a call to something like this.didAppearDone
-  });
+  }
+}
 
-  // 4. Activate target state
-  requestAnimationFrame(() => {
-    setDimensions(dom, width, height);
-    removeClassName(dom, start);
-    addClassName(dom, end);
-  });
+function _didAppear (phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass, dimensions, display: string) {
+  switch (phase) {
+    case AnimationPhase.INITIALIZE:
+      // Needs to be done in a single pass to avoid reflows
+      // We set display: none whilst waiting for an animation frame to avoid flicker
+      resetDisplay(dom, display);
+      return;
+    case AnimationPhase.MEASURE:
+      getDimensions(dom);
+      return;
+    case AnimationPhase.SET_START_STATE:
+      // 1. Set start of animation
+      addClassName(dom, cls.start);
+      return;
+    case AnimationPhase.ACTIVATE_TRANSITIONS:
+      // 2. Activate transition (after a reflow)
+      addClassName(dom, cls.active);
+      return;
+    case AnimationPhase.REGISTER_LISTENERS:
+      // 3. Set an animation listener, code at end
+      // Needs to be done after activating so timeout is calculated correctly
+      registerTransitionListener(
+        // *** Cleanup is broken out as micro optimisation ***
+        [dom], _getDidAppearTransitionCallback(dom, cls)
+      );
+    case AnimationPhase.ACTIVATE_ANIMATION:
+      // 4. Activate target state (called async via requestAnimationFrame)
+      setDimensions(dom, dimensions.width, dimensions.height);
+      removeClassName(dom, cls.start);
+      addClassName(dom, cls.end);
+      return;
+  }
 }
 
 export function componentWillDisappear(dom: HTMLElement, props, callback: Function) {
-  const { start, end, active } = getAnimationClass(props.animation, '-leave');
+  // Get dimensions and unpack class names
+  const cls = getAnimationClass(props.animation, '-leave');
+  const dimensions = getDimensions(dom);
+  queueAnimation((phase) => _willDisappear(phase, dom, callback, cls, dimensions));
+}
 
-  // 1. Get dimensions and set animation start state
-  const { width, height } = getDimensions(dom);
-  setDimensions(dom, width, height);
-  addClassName(dom, start);
-
-  // 2. Activate transitions
-  addClassName(dom, active);
-
-  // 3. Set an animation listener, code at end
-  // Needs to be done after activating so timeout is calculated correctly
-  registerTransitionListener([dom], function () {
-    // *** Cleanup not needed since node is removed ***
-    callback();
-  });
-
-  // 4. Activate target state
-  requestAnimationFrame(() => {
-    addClassName(dom, end);
-    removeClassName(dom, start);
-    clearDimensions(dom);
-  });
+function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Function, cls: AnimationClass, dimensions) {
+  switch (phase) {
+    case AnimationPhase.MEASURE:
+      // 1. Get dimensions and set animation start state
+      setDimensions(dom, dimensions.width, dimensions.height);
+      addClassName(dom, cls.start);
+      return;
+    case AnimationPhase.ACTIVATE_TRANSITIONS:
+      // 2. Activate transition (after a reflow)
+      addClassName(dom, cls.active);
+      return;
+    case AnimationPhase.REGISTER_LISTENERS:
+      // 3. Set an animation listener, code at end
+      // Needs to be done after activating so timeout is calculated correctly
+      registerTransitionListener(
+        // Unlike _didAppear, no cleanup needed since node is removed. 
+        // Just passing the componentWillDisappear callback so Inferno can
+        // remove the nodes.
+        [dom], callback
+      );
+    case AnimationPhase.ACTIVATE_ANIMATION:
+      // 4. Activate target state (called async via requestAnimationFrame)
+      addClassName(dom, cls.end);
+      removeClassName(dom, cls.start);
+      clearDimensions(dom);
+  }
 }

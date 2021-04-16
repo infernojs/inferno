@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { renderToString } from 'inferno-server';
-import { AnimatedComponent, componentDidAppear, componentWillDisappear } from 'inferno-animation';
+import { AnimatedComponent, componentDidAppear, componentWillDisappear, hasPendingAnimations } from 'inferno-animation';
 
 describe('inferno-animation AnimatedComponent', () => {
   let container;
@@ -16,6 +16,14 @@ describe('inferno-animation AnimatedComponent', () => {
     }
 
     callback(arg1);
+  }
+
+  function waitForAnimationQueusToFinish(callback) {
+    if (hasPendingAnimations) {
+      setTimeout(() => waitForAnimationQueusToFinish(callback), 5);
+    } else {
+      callback();
+    }
   }
 
   function afterEachClear(done) {
