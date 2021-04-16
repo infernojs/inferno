@@ -6,9 +6,9 @@ export const enum AnimationPhase {
   SET_START_STATE,
   ACTIVATE_TRANSITIONS,
   REGISTER_LISTENERS,
-  ACTIVATE_ANIMATION
+  ACTIVATE_ANIMATION,
+  length, // This will equal lenght of actual phases since TS converts this to a zero based list of ints
 }
-const NrofPhases = 6;
 
 let _animationQueue: Function[] = [];
 let _animationActivationQueue: Function[] = [];
@@ -44,7 +44,7 @@ function _runAnimationPhases() {
   // - ACTIVATE_ANIMATION needs to be called async so the transitions actually fire,
   // we choose to use an animation frame.
   //
-  for (let i = 0; i < NrofPhases; i++) {
+  for (let i = 0; i < AnimationPhase.length; i++) {
     const phase = i as AnimationPhase;
     switch (phase) {
       case AnimationPhase.ACTIVATE_ANIMATION:
