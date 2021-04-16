@@ -21,8 +21,7 @@ describe('inferno-animation AnimatedComponent', () => {
   function waitForAnimationQueusToFinish(callback) {
     if (hasPendingAnimations) {
       setTimeout(() => waitForAnimationQueusToFinish(callback), 5);
-    }
-    else {
+    } else {
       callback();
     }
   }
