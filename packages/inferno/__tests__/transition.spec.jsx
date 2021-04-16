@@ -46,7 +46,7 @@ if (version > 60 || version === false) {
             e.target.style.left = '50px';
           }}
           ontransitionend={(e) => {
-            expect(typeof e === 'object').toEqual(true);
+            expect(e.type).toEqual('transitionend');
             done();
           }}
         />,
@@ -67,7 +67,7 @@ if (version > 60 || version === false) {
 
           }}
           onTransitionEnd={(e) => {
-            expect(typeof e === 'object').toEqual(true);
+            expect(e.type).toEqual('transitionend');
             done();
           }}
         />,
