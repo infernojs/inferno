@@ -12,11 +12,12 @@ const NrofPhases = 6;
 
 let _animationQueue: Function[] = [];
 let _animationActivationQueue: Function[] = [];
-let _nextAnimationFrame;
-let _nextActivateAnimationFrame;
+let _nextAnimationFrame: number;
+let _nextActivateAnimationFrame: number;
+const NOOP = 0;
 
 function _runActivateAnimationPhase() {
-  _nextActivateAnimationFrame = undefined;
+  _nextActivateAnimationFrame = NOOP;
   // Get animations to execute
   const animationQueue = _animationActivationQueue;
   // Clear global queue
@@ -28,7 +29,7 @@ function _runActivateAnimationPhase() {
 }
 
 function _runAnimationPhases() {
-  _nextAnimationFrame = undefined;
+  _nextAnimationFrame = NOOP;
   // Get animations to execute
   const animationQueue = _animationQueue;
   // Clear global queue
@@ -49,7 +50,7 @@ function _runAnimationPhases() {
       case AnimationPhase.ACTIVATE_ANIMATION:
         // Final phase - Activate animations
         _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
-        if (_nextActivateAnimationFrame === undefined) {
+        if (_nextActivateAnimationFrame === NOOP) {
           // Animations are activated on the next animation frame
           _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
         }
@@ -67,7 +68,7 @@ function _runAnimationPhases() {
 
 export function queueAnimation(callback: Function) {
   _animationQueue.push(callback)
-  if (_nextAnimationFrame === undefined) {
+  if (_nextAnimationFrame === NOOP) {
     _nextAnimationFrame = requestAnimationFrame(_runAnimationPhases)
   }
 }
@@ -75,5 +76,5 @@ export function queueAnimation(callback: Function) {
 // This is needed for tests. Coordinated animations are run on
 // next animation frame so we need to make sure we wait for them to finish.
 export function hasPendingAnimations() {
-  return _nextAnimationFrame !== undefined || _nextActivateAnimationFrame !== undefined;
+  return _nextAnimationFrame !== NOOP || _nextActivateAnimationFrame !== NOOP;
 }
