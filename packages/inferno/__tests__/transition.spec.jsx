@@ -13,6 +13,10 @@ if (version > 60 || version === false) {
   describe('transition events', () => {
     let container;
 
+    function forceReflow() {
+      return document.body.clientHeight;
+    }
+
     beforeEach(function () {
       container = document.createElement('div');
       document.body.appendChild(container);
@@ -44,25 +48,29 @@ if (version > 60 || version === false) {
           onclick={(e) => {
             e.target.style.left = '50px';
             clickOccurred = true;
+            forceReflow();
           }}
           ontransitionend={(e) => {
             handlerFired = true;
+            forceReflow();
           }}
         />,
         container
       );
 
+      forceReflow();
+
       const div = container.firstChild;
+
+
       setTimeout(() => {
         div.click();
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            setTimeout(() => {
-              expect(clickOccurred).toBe(true);
-              expect(handlerFired).toBe(true);
-              done();
-            }, 150);
+            expect(clickOccurred).toBe(true);
+            expect(handlerFired).toBe(true);
+            done();
           });
         });
       }, 25);
@@ -78,25 +86,26 @@ if (version > 60 || version === false) {
           onclick={(e) => {
             e.target.style.left = '100px';
             clickOccurred = true;
+            forceReflow();
+
           }}
           onTransitionEnd={(e) => {
             handlerFired = true;
+            forceReflow();
           }}
         />,
         container
       );
-
+      forceReflow();
       const div = container.firstChild;
       setTimeout(() => {
         div.click();
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            setTimeout(() => {
-              expect(clickOccurred).toBe(true);
-              expect(handlerFired).toBe(true);
-              done();
-            }, 150);
+            expect(clickOccurred).toBe(true);
+            expect(handlerFired).toBe(true);
+            done();
           });
         });
       }, 25);
