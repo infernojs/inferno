@@ -35,6 +35,17 @@ export function componentDidAppear(dom: HTMLElement, props) {
   queueAnimation((phase) => _didAppear(phase, dom, cls, dimensions, display));
 }
 
+function _getDidAppearTransitionCallback(dom, cls) {
+  return () => {
+    // 5. Remove the element
+    clearDimensions(dom);
+    removeClassName(dom, cls.active + ' ' + cls.end);
+    // 6. Call callback to allow stuff to happen
+    // Not currently used but this is where one could
+    // add a call to something like this.didAppearDone
+  }
+}
+
 function _didAppear (phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass, dimensions, display: string) {
   switch (phase) {
     case AnimationPhase.INITIALIZE:
@@ -57,18 +68,8 @@ function _didAppear (phase: AnimationPhase, dom: HTMLElement, cls: AnimationClas
       // 3. Set an animation listener, code at end
       // Needs to be done after activating so timeout is calculated correctly
       registerTransitionListener(
-        [dom],
-        function () {
-          // *** Cleanup ***
-          // 5. Remove the element
-          clearDimensions(dom);
-          removeClassName(dom, cls.active);
-          removeClassName(dom, cls.end);
-
-          // 6. Call callback to allow stuff to happen
-          // Not currently used but this is where one could
-          // add a call to something like this.didAppearDone
-        }
+        // *** Cleanup is broken out as micro optimisation ***
+        [dom], _getDidAppearTransitionCallback(dom, cls)
       );
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 4. Activate target state (called async via requestAnimationFrame)
@@ -101,11 +102,10 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
       // 3. Set an animation listener, code at end
       // Needs to be done after activating so timeout is calculated correctly
       registerTransitionListener(
-        [dom],
-        function () {
-          // *** Cleanup not needed since node is removed ***
-          callback();
-        }
+        // Unlike _didAppear, no cleanup needed since node is removed. 
+        // Just passing the componentWillDisappear callback so Inferno can
+        // remove the nodes.
+        [dom], callback
       );
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 4. Activate target state (called async via requestAnimationFrame)
