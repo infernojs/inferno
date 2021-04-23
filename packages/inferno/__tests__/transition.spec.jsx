@@ -39,84 +39,44 @@ if (version > 60 || version === false) {
     };
 
     it('should call "ontransitionend" at the end of a transition', (done) => {
-      let clickOccurred = null;
-      let handlerFired = null;
-
       render(
         <div
           style={transitionStyles}
           onclick={(e) => {
             e.target.style.left = '50px';
-            clickOccurred = true;
-            forceReflow();
           }}
           ontransitionend={(e) => {
-            handlerFired = true;
-            forceReflow();
+            expect(e.type).toEqual('transitionend');
+            done();
           }}
         />,
         container
       );
-
+      // Be absolutely sure the transition has been applied through style
       forceReflow();
-
       const div = container.firstChild;
-
-
-      setTimeout(() => {
-        div.click();
-
-        requestAnimationFrame(() => {
-          forceReflow();
-          requestAnimationFrame(() => {
-            forceReflow();
-            setTimeout(() => {
-              expect(clickOccurred).toBe(true);
-              expect(handlerFired).toBe(true);
-              done();
-            }, 150);
-          });
-        });
-      }, 25);
+      div.click();
     });
 
     it('should call "onTransitionEnd" at the end of a transition', (done) => {
-      let clickOccurred = null;
-      let handlerFired = null;
-
       render(
         <div
           style={transitionStyles}
           onclick={(e) => {
             e.target.style.left = '100px';
-            clickOccurred = true;
-            forceReflow();
 
           }}
           onTransitionEnd={(e) => {
-            handlerFired = true;
-            forceReflow();
+            expect(e.type).toEqual('transitionend');
+            done();
           }}
         />,
         container
       );
+      // Be absolutely sure the transition has been applied through style
       forceReflow();
       const div = container.firstChild;
-      setTimeout(() => {
-        div.click();
-
-        requestAnimationFrame(() => {
-          forceReflow();
-          requestAnimationFrame(() => {
-            forceReflow();
-            setTimeout(() => {
-              expect(clickOccurred).toBe(true);
-              expect(handlerFired).toBe(true);
-              done();
-            }, 150);
-          });
-        });
-      }, 25);
+      div.click();
     });
   });
 }

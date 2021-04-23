@@ -18,8 +18,7 @@ jobs:
   - stage: "SauceLabs"
     if: (branch = master and type = push)
     script:
-    - npm run build:s:es
-    - npm run build:s:es:dev
+    - npm run build
     - npm run test:browser:sauce
 env:
   global:
