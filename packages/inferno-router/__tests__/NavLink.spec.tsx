@@ -327,4 +327,19 @@ describe('NavLink', () => {
       expect(node.textContent).toEqual('Pasta!');
     });
   });
+
+  describe('html link attributes', () => {
+    it('accept html link attributes', () => {
+      render(
+        <MemoryRouter initialEntries={['/pasta']}>
+          <NavLink to="/pasta" title="pasta">
+            Pasta!
+          </NavLink>
+        </MemoryRouter>,
+        node
+      );
+      const a = node.getElementsByTagName('a')[0];
+      expect(a.title).toEqual('pasta');
+    })
+  })
 });
