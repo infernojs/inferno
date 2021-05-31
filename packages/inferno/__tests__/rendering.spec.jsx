@@ -169,6 +169,18 @@ describe('rendering routine', () => {
     });
   });
 
+  describe('className', () => {
+    it('Should override destructured property when defined', function () {
+      const testObj = {
+        className: 'test'
+      };
+
+      render(<div {...testObj} className="bar" />, container);
+
+      expect(container.innerHTML).toEqual('<div class="bar"></div>');
+    });
+  });
+
   describe('Swapping children', () => {
     it('Swapping children in component should affect hoisted children', () => {
       class Hello extends Component {

@@ -179,7 +179,9 @@ export function normalizeProps(vNode) {
         normalizeChildren(vNode, props.children);
       }
       if (props.className !== void 0) {
-        vNode.className = props.className || null;
+        if (isNullOrUndef(vNode.className)) {
+          vNode.className = props.className || null;
+        }
         props.className = undefined;
       }
     }
