@@ -64,7 +64,6 @@ if (version > 60 || version === false) {
           style={transitionStyles}
           onclick={(e) => {
             e.target.style.left = '100px';
-
           }}
           onTransitionEnd={(e) => {
             expect(e.type).toEqual('transitionend');

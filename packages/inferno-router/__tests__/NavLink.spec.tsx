@@ -340,6 +340,6 @@ describe('NavLink', () => {
       );
       const a = node.getElementsByTagName('a')[0];
       expect(a.title).toEqual('pasta');
-    })
-  })
+    });
+  });
 });

@@ -23,29 +23,31 @@ describe('lifecycle hooks', () => {
     beforeEach(function () {
       container = document.createElement('div');
 
-      template = (
-        onComponentWillMount,
-        onComponentDidMount,
-        onComponentWillUnmount,
-        onComponentWillUpdate,
-        onComponentDidUpdate,
-        onComponentShouldUpdate,
-        StatelessComponent
-      ) => (props) => {
-        return createElement(
-          StatelessComponent,
-          {
-            onComponentWillMount,
-            onComponentDidMount,
-            onComponentWillUnmount,
-            onComponentWillUpdate,
-            onComponentDidUpdate,
-            onComponentShouldUpdate,
-            ...props
-          },
-          null
-        );
-      };
+      template =
+        (
+          onComponentWillMount,
+          onComponentDidMount,
+          onComponentWillUnmount,
+          onComponentWillUpdate,
+          onComponentDidUpdate,
+          onComponentShouldUpdate,
+          StatelessComponent
+        ) =>
+        (props) => {
+          return createElement(
+            StatelessComponent,
+            {
+              onComponentWillMount,
+              onComponentDidMount,
+              onComponentWillUnmount,
+              onComponentWillUpdate,
+              onComponentDidUpdate,
+              onComponentShouldUpdate,
+              ...props
+            },
+            null
+          );
+        };
 
       animationTemplate = (onComponentDidAppear, onComponentWillDisappear, StatelessComponent) => (props) => {
         return createElement(

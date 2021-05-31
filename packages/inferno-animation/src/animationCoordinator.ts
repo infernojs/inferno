@@ -7,7 +7,7 @@ export const enum AnimationPhase {
   ACTIVATE_TRANSITIONS,
   REGISTER_LISTENERS,
   ACTIVATE_ANIMATION,
-  length, // This will equal lenght of actual phases since TS converts this to a zero based list of ints
+  length // This will equal lenght of actual phases since TS converts this to a zero based list of ints
 }
 
 let _animationQueue: Function[] = [];
@@ -22,7 +22,7 @@ function _runActivateAnimationPhase() {
   const animationQueue = _animationActivationQueue;
   // Clear global queue
   _animationActivationQueue = [];
-  
+
   for (let i = 0; i < animationQueue.length; i++) {
     animationQueue[i](AnimationPhase.ACTIVATE_ANIMATION);
   }
@@ -34,7 +34,7 @@ function _runAnimationPhases() {
   const animationQueue = _animationQueue;
   // Clear global queue
   _animationQueue = [];
-  
+
   // So what this does is run the animation phases in order. Most of the phases are invoked
   // by a simple call to all the registered callbacks. However:
   //
@@ -67,9 +67,9 @@ function _runAnimationPhases() {
 }
 
 export function queueAnimation(callback: Function) {
-  _animationQueue.push(callback)
+  _animationQueue.push(callback);
   if (_nextAnimationFrame === IDLE) {
-    _nextAnimationFrame = requestAnimationFrame(_runAnimationPhases)
+    _nextAnimationFrame = requestAnimationFrame(_runAnimationPhases);
   }
 }
 

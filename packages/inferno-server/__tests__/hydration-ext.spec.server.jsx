@@ -62,8 +62,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       component: <Comp />
     },
     {
-      html:
-        '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div><span>Hola</span></div>',
+      html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div><span>Hola</span></div>',
       component: <Comp />
     },
     {

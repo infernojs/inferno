@@ -33,5 +33,7 @@ module.exports = {
   setupFilesAfterEnv: [
     require.resolve("./JEST-DEBUG.js")
   ],
+  testEnvironment: "jsdom",
+  testRunner: "jest-jasmine2",
   reporters: [["jest-silent-reporter", { "useDots": true }]]
 };

@@ -1,7 +1,8 @@
 // Custom Jest transform implementation that wraps babel-jest and injects our
 // babel presets, so we don't have to use .babelrc.
+const babelJest = require('babel-jest').default;
 
-module.exports = require('babel-jest').createTransformer({
+const babelTransformer = babelJest.createTransformer({
   babelrc: false,
   presets: [
     ["@babel/preset-env",
@@ -19,3 +20,5 @@ module.exports = require('babel-jest').createTransformer({
     ["@babel/plugin-proposal-class-properties", { "loose": true }]
   ]
 });
+
+module.exports = babelTransformer;

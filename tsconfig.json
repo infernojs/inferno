@@ -67,7 +67,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "target": "esnext",
+    "target": "es2019",
     "module": "esnext",
     "allowJs": false,
     "moduleResolution": "node",

@@ -1,5 +1,7 @@
 const typescript = require('typescript');
-const babelJest = require('babel-jest').createTransformer({
+const babelJest = require('babel-jest').default;
+
+const transformer = babelJest.createTransformer({
   babelrc: false,
   presets: [
     ["@babel/preset-env",
@@ -19,11 +21,10 @@ const babelJest = require('babel-jest').createTransformer({
 });
 
 const tsConfig = require('./tsconfig.json');
-const jestConfig = require('./jest.config.js');
 
 module.exports = {
-  process(src, path) {
-    return babelJest.process(
+  process(src, path, config) {
+    return transformer.process(
       typescript.transpile(
         src,
         tsConfig.compilerOptions,
@@ -31,7 +32,7 @@ module.exports = {
         [],
       ),
       path,
-      jestConfig
+      config
     );
   },
 };

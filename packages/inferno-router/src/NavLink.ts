@@ -1,7 +1,7 @@
 import { createComponentVNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Route } from './Route';
-import {ILinkProps, Link} from './Link';
+import { ILinkProps, Link } from './Link';
 import { combineFrom } from 'inferno-shared';
 import type { Location } from 'history';
 

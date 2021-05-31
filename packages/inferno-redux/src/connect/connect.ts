@@ -24,56 +24,58 @@ const strictEqual = (a, b) => a === b;
 
 // createConnect with default args builds the 'official' connect behavior. Calling it with
 // different options opens up some testing and extensibility scenarios
-export const createConnect = ({
-  connectHOC = connectAdvanced,
-  mapStateToPropsFactories = defaultMapStateToPropsFactories,
-  mapDispatchToPropsFactories = defaultMapDispatchToPropsFactories,
-  mergePropsFactories = defaultMergePropsFactories,
-  selectorFactory = defaultSelectorFactory
-} = {}) => (
-  mapStateToProps?,
-  mapDispatchToProps?,
-  mergeProps?,
-  {
-    pure = true,
-    areStatesEqual = strictEqual,
-    areOwnPropsEqual = shallowEqual,
-    areStatePropsEqual = shallowEqual,
-    areMergedPropsEqual = shallowEqual,
-    ...extraOptions
-  } = {}
-) => {
-  const initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
-  const initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
-  const initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
+export const createConnect =
+  ({
+    connectHOC = connectAdvanced,
+    mapStateToPropsFactories = defaultMapStateToPropsFactories,
+    mapDispatchToPropsFactories = defaultMapDispatchToPropsFactories,
+    mergePropsFactories = defaultMergePropsFactories,
+    selectorFactory = defaultSelectorFactory
+  } = {}) =>
+  (
+    mapStateToProps?,
+    mapDispatchToProps?,
+    mergeProps?,
+    {
+      pure = true,
+      areStatesEqual = strictEqual,
+      areOwnPropsEqual = shallowEqual,
+      areStatePropsEqual = shallowEqual,
+      areMergedPropsEqual = shallowEqual,
+      ...extraOptions
+    } = {}
+  ) => {
+    const initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
+    const initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
+    const initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
 
-  return connectHOC(
-    selectorFactory as any,
-    combineFrom(
-      {
-        // used in error messages
-        methodName: 'connect',
+    return connectHOC(
+      selectorFactory as any,
+      combineFrom(
+        {
+          // used in error messages
+          methodName: 'connect',
 
-        // used to compute Connect's displayName from the wrapped component's displayName.
-        // tslint:disable-next-line:object-literal-sort-keys
-        getDisplayName: (name) => `Connect(${name})`,
+          // used to compute Connect's displayName from the wrapped component's displayName.
+          // tslint:disable-next-line:object-literal-sort-keys
+          getDisplayName: (name) => `Connect(${name})`,
 
-        // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
-        shouldHandleStateChanges: !!mapStateToProps,
+          // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
+          shouldHandleStateChanges: !!mapStateToProps,
 
-        // passed through to selectorFactory
-        areMergedPropsEqual,
-        areOwnPropsEqual,
-        areStatePropsEqual,
-        areStatesEqual,
-        initMapDispatchToProps,
-        initMapStateToProps,
-        initMergeProps,
-        pure
-      },
-      extraOptions /* any extra options args can override defaults of connect or connectAdvanced */
-    )
-  );
-};
+          // passed through to selectorFactory
+          areMergedPropsEqual,
+          areOwnPropsEqual,
+          areStatePropsEqual,
+          areStatesEqual,
+          initMapDispatchToProps,
+          initMapStateToProps,
+          initMergeProps,
+          pure
+        },
+        extraOptions /* any extra options args can override defaults of connect or connectAdvanced */
+      )
+    );
+  };
 
 export const connect = createConnect();

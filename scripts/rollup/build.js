@@ -85,7 +85,7 @@ const moduleGlobals = readdirSync(ROOT)
     return true;
   });
 
-  await targets.forEach(async (options) => {
+  async function startBuilding(options) {
     const errorFunc = (error) => {
       console.error(error); // Print whole error object
 
@@ -143,5 +143,7 @@ const moduleGlobals = readdirSync(ROOT)
 
     await write(bundleOptions).catch(errorFunc);
     console.log(`${pkgJSON.name} in ${options.name}${options.ext} is DONE`);
-  });
+  }
+
+  await Promise.all(targets.map(startBuilding));
 })();
