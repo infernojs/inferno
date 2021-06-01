@@ -39,16 +39,10 @@ const customLaunchers = {
     version: '13',
     platform: 'Windows 10'
   },
-  slEdge14: {
+  slEdge18: {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
-    version: '14',
-    platform: 'Windows 10'
-  },
-  slEdge16: {
-    base: 'SauceLabs',
-    browserName: 'MicrosoftEdge',
-    version: '16',
+    version: '18',
     platform: 'Windows 10'
   },
   sl_mac_chrome: {
