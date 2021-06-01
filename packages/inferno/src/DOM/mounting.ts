@@ -249,8 +249,7 @@ export function mountFunctionalComponentCallbacks(vNode: VNode, lifecycle: Funct
       lifecycle.push(createOnMountCallback(ref, vNode));
     }
     if (isFunction(ref.onComponentDidAppear)) {
-      const domEl = findDOMfromVNode(vNode, true) as Element;
-      addAppearAnimationHook(animations, ref, domEl, VNodeFlags.ComponentFunction, vNode.props);
+      addAppearAnimationHook(animations, ref, findDOMfromVNode(vNode, true) as Element, VNodeFlags.ComponentFunction, vNode.props);
     }
   }
 }

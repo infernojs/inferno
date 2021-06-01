@@ -848,14 +848,18 @@ Render a virtual node into an HTML string, given the supplied virtual DOM.
 
 ## Functional component lifecycle events
 
-| Name                      | Triggered when                                                  | Arguments to callback           |
-| -----------               | --------------                                                  | -----------------------         |
-| `onComponentWillMount`    | a functional component is about to mount                        |                                 |
-| `onComponentDidMount`     | a functional component has mounted successfully                 | `domNode`                       |
-| `onComponentShouldUpdate` | a functional component has been triggered to update             | `lastProps, nextProps`          |
-| `onComponentWillUpdate`   | a functional component is about to perform an update            | `lastProps, nextProps`          |
-| `onComponentDidUpdate`    | a functional component has performed an update                  | `lastProps, nextProps`          |
-| `onComponentWillUnmount`  | a functional component is about to be unmounted                 | `domNode`                       |
+| Name                        | Triggered when                                                  | Arguments to callback           |
+| -----------                 | --------------                                                  | -----------------------         |
+| `onComponentWillMount`      | a functional component is about to mount                        |                                 |
+| `onComponentDidMount`       | a functional component has mounted successfully                 | `domNode`                       |
+| `onComponentShouldUpdate`   | a functional component has been triggered to update             | `lastProps, nextProps`          |
+| `onComponentWillUpdate`     | a functional component is about to perform an update            | `lastProps, nextProps`          |
+| `onComponentDidUpdate`      | a functional component has performed an update                  | `lastProps, nextProps`          |
+| `onComponentWillUnmount`    | a functional component is about to be unmounted                 | `domNode`                       |
+| `onComponentDidAppear`      | a functional component has mounted and is ready for animations  | `domNode, props`                |
+| `onComponentWillDisappear`  | a functional component is unmounted before DOM node is removed  | `domNode, props, callback`      |
+
+onComponentWillDisappear has special type of argument "callback" which needs to be called when component is ready to be removed from the DOM. fe. after animations are finished.
 
 ## Class component lifecycle events
 
@@ -865,14 +869,18 @@ All these Component lifecycle methods ( including `render` and `setState - callb
 | -----------                       | --------------                                                                        | -----------------------         |
 | `componentDidMount`               | component has been mounted successfully                                                |                                 |
 | `componentWillMount`              | component is about to mount                                                           |                                 |
-| `componentWillReceiveProps`       | before render when component updates                                                  | `nextProps, context`            |
-| `shouldComponentUpdate`           | component has been triggered to update                                                | `nextProps, nextState`          |
+| `componentWillReceiveProps`       | before render when component updates                                                  | `nextProps, context`            |
+| `shouldComponentUpdate`           | component has been triggered to update                                                | `nextProps, nextState`          |
 | `componentWillUpdate`             | component is about to perform an update                                               | `nextProps, nextState, context` |
 | `componentDidUpdate`              | component has performed an update                                                     | `lastProps, lastState, snapshot`|
 | `componentWillUnmount`            | component is about to be unmounted                                                    |                                 |
 | `getChildContext`                 | before render method, return value object is combined to sub tree context             |                                 |
 | `getSnapshotBeforeUpdate`         | before component updates, return value is sent to componentDidUpdate as 3rd parameter | `lastProps, lastState`          |
 | `static getDerivedStateFromProps` | before render method                                                                  | `nextProps, state`              |
+| `componentDidAppear`              | component has mounted and is ready for animations                                     | `domNode`                       |
+| `componentWillDisappear`          | component is unmounted before DOM node is removed                                     | `domNode, callback`             |
+
+componentWillDisappear has special type of argument "callback" which needs to be called when component is ready to be removed from the DOM. fe. after animations are finished.
 
 ### Using functional lifecycle events
 

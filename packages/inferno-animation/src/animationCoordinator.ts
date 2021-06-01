@@ -7,7 +7,7 @@ export const enum AnimationPhase {
   ACTIVATE_TRANSITIONS,
   REGISTER_LISTENERS,
   ACTIVATE_ANIMATION,
-  length // This will equal lenght of actual phases since TS converts this to a zero based list of ints
+  length // This will equal length of actual phases since TS converts this to a zero based list of ints
 }
 
 let _animationQueue: Function[] = [];
