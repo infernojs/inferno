@@ -272,10 +272,23 @@ export function appendChild(parentDOM, dom) {
   parentDOM.appendChild(dom);
 }
 
-export function insertOrAppend(parentDOM: Element, newNode, nextNode) {
-  if (isNull(nextNode)) {
-    appendChild(parentDOM, newNode);
+export function insertBefore(parent: Element, newNode: Element, refNode: Element) {
+  if (isNull(refNode)) {
+    appendChild(parent, newNode);
   } else {
-    parentDOM.insertBefore(newNode, nextNode);
+    parent.insertBefore(newNode, refNode);
   }
+}
+
+export function insertAfter(parent: Element, newNode: Element, refNode: Element) {
+  const tmpNextRef = refNode.nextSibling
+  if (isNull(tmpNextRef)) {
+    appendChild(parent, newNode);
+  } else {
+    parent.insertBefore(newNode, tmpNextRef);
+  }
+}
+
+export function removeChild(parent: Element, child: Element) {
+  parent.removeChild(child);
 }
