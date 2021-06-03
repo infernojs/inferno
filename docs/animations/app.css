@@ -3,6 +3,9 @@
   --infernoAnimationLeave: border-width .25s ease-out, padding 1s ease-out, height 1s ease-out, opacity 1.2s ease-in;
   --fadeAnimationEnter: opacity 0.1s ease-in;
   --fadeAnimationLeave: opacity 2s ease-out;
+
+  --movePlaceholderAnimation: height 1s, border-width 1s, padding 1s;
+  --moveAnimation: transform 1s;
 }
 
 /******************************/
@@ -69,6 +72,40 @@
   /* Enter animation transitions */
   transition: var(--fadeAnimationEnter);
 }
+
+/*****************/
+/* Animate moves */
+/*****************/
+.placeholder-src {
+  background-color: red;
+  opacity: 0.3;
+}
+.placeholder-trg {
+  background-color: green;
+  opacity: 0.3;
+}
+.MoveAnim-move-placeholder {
+  height: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+.MoveAnim-move-placeholder-active {
+  /* Move animation transitions */
+  transition: var(--movePlaceholderAnimation);
+  border: 0;
+}
+
+.MoveAnim-move-active {
+  /* Move animation transitions */
+  transition: var(--moveAnimation);
+  position: absolute;
+  z-index: 1;
+}
+
+/***************************/
+/* General styling of page */
+/***************************/
 
 article,
 ul {
