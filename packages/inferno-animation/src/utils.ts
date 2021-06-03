@@ -1,4 +1,4 @@
-import { isFunction, isString, warning } from 'inferno-shared';
+import { isFunction, isNull, isString, warning } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
@@ -94,6 +94,19 @@ export function getDimensions(node: HTMLElement) {
     height: tmp.height,
     width: tmp.width
   };
+}
+
+export function getViewportPosition(node: HTMLElement) {
+  const {x, y} = node.getBoundingClientRect();
+  return {x, y};
+}
+
+export function setTransform(node: HTMLElement, x: number, y: number) {
+  node.style.transform = 'translate(' + x + 'px, ' + y + 'px)'; 
+}
+
+export function clearTransform(node: HTMLElement) {
+  node.style.transform = ''; 
 }
 
 export function setDimensions(node: HTMLElement, width: number, height: number) {
@@ -251,4 +264,18 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
 function isDebugAnimationsSet() {
   return window.__INFERNO_ANIMATION_DEBUG__ === true;
+}
+
+// Utils used in moves
+
+export function appendChild(parentDOM, dom) {
+  parentDOM.appendChild(dom);
+}
+
+export function insertOrAppend(parentDOM: Element, newNode, nextNode) {
+  if (isNull(nextNode)) {
+    appendChild(parentDOM, newNode);
+  } else {
+    parentDOM.insertBefore(newNode, nextNode);
+  }
 }
