@@ -2,7 +2,6 @@ import type { InfernoNode, LinkedEvent, VNode } from './../../core/types';
 import { combineFrom, isFunction, isNull, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isLinkEventObject } from '../events/linkEvent';
-import { vNodeToSnapshot } from 'packages/inferno-test-utils/src/jest';
 
 // We need EMPTY_OBJ defined in one place.
 // Its used for comparison so we cant inline it into shared
@@ -164,24 +163,26 @@ export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: Ani
   }
 }
 
-function addMoveAnimationHook(vNode, parentDOM: Element, nextNode: Element, animations: AnimationQueues) {
+function addMoveAnimationHook(animations: AnimationQueues, refOrInstance, dom: Element, parentDOM: Element, nextNode: Element, flags, props) {
   animations.componentWillMove.push(() => {
-    if (vNode.flags & VNodeFlags.ComponentClass) {
-      vNode.componentWillMove(vNode, parentDOM, nextNode);
-    } else if (vNode.flags & VNodeFlags.ComponentFunction) {
-      vNode.onComponentWillMove(vNode, parentDOM, nextNode);
+    if (flags & VNodeFlags.ComponentClass) {
+      refOrInstance.componentWillMove(refOrInstance, dom, parentDOM, nextNode, props);
+    } else if (flags & VNodeFlags.ComponentFunction) {
+      refOrInstance.onComponentWillMove(refOrInstance, dom, parentDOM, nextNode, props);
     }
   });
 }
 
 export function moveVNodeDOM(vNode, parentDOM, nextNode, animations: AnimationQueues) {
+  let refOrInstance;
+  let instanceProps;
+  let instanceFlags = vNode.flags
   do {
     const flags = vNode.flags;
 
     if (flags & VNodeFlags.DOMRef) {
-      if (isFunction(vNode.componentWillMove)
-          || (flags & VNodeFlags.ComponentFunction && isFunction(vNode.ref.onComponentWillMove))) {
-        addMoveAnimationHook(vNode, parentDOM, nextNode, animations);
+      if (isFunction(refOrInstance.componentWillMove) || isFunction(refOrInstance.onComponentWillMove)) {
+        addMoveAnimationHook(animations, refOrInstance, vNode.dom, parentDOM, nextNode, instanceFlags, instanceProps);
       } else {
         // TODO: Should we delay this too to support mixing animated moves with regular?
         insertOrAppend(parentDOM, vNode.dom, nextNode);
@@ -191,9 +192,13 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode, animations: AnimationQu
     const children = vNode.children as any;
 
     if (flags & VNodeFlags.ComponentClass) {
+      refOrInstance = vNode.children;
+      instanceProps = vNode.props;
       vNode = children.$LI;
     }
     if (flags & VNodeFlags.ComponentFunction) {
+      refOrInstance = vNode.ref;
+      instanceProps = vNode.props;
       vNode = children;
     }
     if (flags & VNodeFlags.Fragment) {
