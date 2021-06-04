@@ -272,6 +272,10 @@ export function appendChild(parentDOM, dom) {
   parentDOM.appendChild(dom);
 }
 
+export function replaceChild(parent: Element, newNode: Element, refNode: Element) {
+  return parent.replaceChild(newNode, refNode);
+}
+
 export function insertBefore(parent: Element, newNode: Element, refNode: Element) {
   if (isNull(refNode)) {
     appendChild(parent, newNode);
