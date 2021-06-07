@@ -96,9 +96,12 @@ export function getDimensions(node: HTMLElement) {
   };
 }
 
-export function getViewportPosition(node: HTMLElement) {
-  const {x, y} = node.getBoundingClientRect();
-  return {x, y};
+export function getOffsetPosition(node: HTMLElement) {
+  // const {x, y} = node.getBoundingClientRect();
+  return {
+    x: node.offsetLeft,
+    y: node.offsetTop
+  };
 }
 
 export function setTransform(node: HTMLElement, x: number, y: number) {
@@ -272,9 +275,10 @@ export function appendChild(parentDOM, dom) {
   parentDOM.appendChild(dom);
 }
 
-export function replaceChild(parent: Element, newNode: Element, refNode: Element) {
-  return parent.replaceChild(newNode, refNode);
-}
+// TODO: Remove this
+// export function replaceChild(parent: Element, newNode: Element, refNode: Element) {
+//   return parent.replaceChild(newNode, refNode);
+// }
 
 export function insertBefore(parent: Element, newNode: Element, refNode: Element) {
   if (isNull(refNode)) {
@@ -295,4 +299,11 @@ export function insertAfter(parent: Element, newNode: Element, refNode: Element)
 
 export function removeChild(parent: Element, child: Element) {
   parent.removeChild(child);
+}
+
+export function insertDebugMarker(parent: Element, refNode: Element, type, text) {
+  const marker = document.createElement('i');
+  addClassName(marker, 'debugMarker debugMarker-' + type);
+  marker.innerText = text || '';
+  insertBefore(parent, marker, refNode);
 }
