@@ -1,6 +1,9 @@
-import { addClassName, clearDimensions, getDimensions, getViewportPosition, insertAfter, insertBefore, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform, removeChild } from './utils';
+import { addClassName, clearDimensions, getDimensions, getOffsetPosition, insertAfter, insertBefore, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform, removeChild } from './utils';
 import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef, isNull } from 'inferno-shared';
+
+// Show debug output and debugging markers during developmen of move animations
+const _DBG_MVE_ = false && process.env.NODE_ENV !== 'production';
 
 export type AnimationClass = {
   active: string;
@@ -118,18 +121,31 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
   }
 }
 
+
+
 export function componentWillMove(refOrInsance, dom: HTMLElement, parent: HTMLElement, next: HTMLElement, props: any) {
-  const cls = getAnimationClass(props.animation, '-move');
+  // Source marker
+  if (_DBG_MVE_) insertDebugMarker(parent, dom, 'src', dom.innerText);
+
+  // Create placeholders
   const clsPlaceholder = getAnimationClass(props.animation, '-move-placeholder');
-  const { height, width } = getDimensions(dom);
-  const { x, y } = getViewportPosition(dom);
 
   const srcPlaceholder = (isNull(refOrInsance.$TP) ? document.createElement(dom.tagName) : refOrInsance.$TP);
   srcPlaceholder.dataset.placeholder = 'src';
+  if (_DBG_MVE_) (srcPlaceholder.innerHTML = dom.innerHTML);
   addClassName(srcPlaceholder, 'placeholder-src');
+
   const trgPlaceholder = document.createElement(dom.tagName);
   trgPlaceholder.dataset.placeholder = 'trg';
+  if (_DBG_MVE_) (trgPlaceholder.innerHTML = dom.innerHTML);
   addClassName(trgPlaceholder, 'placeholder-trg');
+
+  if (_DBG_MVE_) console.log('Animating move', dom)
+
+  // Measure source geometry of node being moved
+  const cls = getAnimationClass(props.animation, '-move');
+  const { height, width } = getDimensions(dom);
+  const { x, y } = getOffsetPosition(dom);
 
   const animState = {
     ref: refOrInsance,
@@ -151,7 +167,6 @@ export function componentWillMove(refOrInsance, dom: HTMLElement, parent: HTMLEl
   queueAnimation((phase) => _willMove(phase, dom, parent, next, cls, clsPlaceholder, animState));
 };
 
-
 function _willMove (
   phase: AnimationPhase,
   dom: HTMLElement,
@@ -165,37 +180,54 @@ function _willMove (
   switch (phase) {
     case AnimationPhase.INITIALIZE:
       // 0. If no ref.$TP then a, otherwise b
-      //   a. Inject source placeholder
+      //   a. Inject source placeholder (has size 0 at this point)
       //   b. Current target placeholder becomes new source placeholder, do nothing
-      insertBefore(parent, srcPlaceholder, dom);
+      // TODO: Implement case b
       addClassName(srcPlaceholder, clsPlaceholder.placeholder);
-      // TODO: Handle case b
+      insertBefore(parent, srcPlaceholder, dom);
+      // replaceChild(parent, srcPlaceholder, dom);
+      // TODO: Remove replaceChild from utils.js
+
       // 1. Move the node to target
       insertBefore(parent, dom, next);
-      // TODO: If moving, I should temporarily remove the transform
-      return;
-    case AnimationPhase.MEASURE:
-      // 2. Get geometry of target and store in animState
-      const { height, width } = getDimensions(dom);
-      const { x, y } = getViewportPosition(dom);
-      animState.trgGeometry.height = height;
-      animState.trgGeometry.width = width;
-      animState.trgGeometry.x = x;
-      animState.trgGeometry.y = y;
-      return;
-    case AnimationPhase.SET_START_STATE:
-      // Apply sourece geometry to placeholder
-      setDimensions(srcPlaceholder, srcGeometry.width, srcGeometry.height);
-      // 3. Inject target placeholder with size 0
+
+      // 2. Inject target placeholder (has size 0 at this point)
       addClassName(trgPlaceholder, clsPlaceholder.placeholder);
       insertAfter(parent, trgPlaceholder, dom);
-      // 4. Apply transform to target to place it at start position
+
+      // Target marker
+      if (_DBG_MVE_) insertDebugMarker(parent, dom, 'trg', dom.innerText);
+      return;
+    case AnimationPhase.MEASURE:
+      // 3. Get geometry of moving node at target and store in animState
+      const { height, width } = getDimensions(dom);
+      animState.trgGeometry.height = height;
+      animState.trgGeometry.width = width;
+      if (_DBG_MVE_) console.log(dom.innerText, animState, dom)
+      return;
+    case AnimationPhase.EXPAND_SOURCE_PLACEHOLDER:
+      // 4. Apply source geometry to placeholder
+      setDimensions(srcPlaceholder, srcGeometry.width, srcGeometry.height);
+      addClassName(dom, cls.start);      
+      return
+    case AnimationPhase.MEASURE_TARGET:
+      // 5. Get position of target and apply transform to place node at start position
+      const { x:  domTrgX, y: domTrgY } = getOffsetPosition(dom);
+      animState.trgGeometry.x = domTrgX;
+      animState.trgGeometry.y = domTrgY;     
+      return
+    case AnimationPhase.SET_START_STATE:
+      /**
+       * At this state we have measure the size of the moving node
+       * both at source and target so now we let the source placeholder
+       * fill the source space and move the node to start position
+       * by transform
+       */
       const deltaX = srcGeometry.x - trgGeometry.x;
       const deltaY = srcGeometry.y - trgGeometry.y;
-      setTransform(dom,
-        deltaX < 0 ? deltaX - srcGeometry.width : deltaX,
-        deltaY < 0 ? deltaY - srcGeometry.height : deltaY);
+      setTransform(dom, deltaX, deltaY);
       setDimensions(dom, srcGeometry.width, srcGeometry.height);
+      if (_DBG_MVE_) console.log(dom.innerText, {deltaX, deltaY});
       return;
     case AnimationPhase.ACTIVATE_TRANSITIONS:
       // A reflow is triggered prior to this step
@@ -203,26 +235,32 @@ function _willMove (
       addClassName(srcPlaceholder, clsPlaceholder.active);
       addClassName(trgPlaceholder, clsPlaceholder.active);
       addClassName(dom, cls.active);
+      removeClassName(dom, cls.start);
       return;
     case AnimationPhase.REGISTER_LISTENERS:
       // 6. Set an animation listener, code at end
       // Needs to be done after activating so timeout is calculated correctly
       // IMPORTANT! It is up to the animation handler to remove placeholders
+      // TODO: Consider using three distinct listeners for: srcPlaceholder,
+      // trgPlacehoder, dom.
       registerTransitionListener(
         [dom], _getWillMoveTransitionCallback(dom, parent, cls, animState)
       );
       return
     case AnimationPhase.ACTIVATE_ANIMATION:
-      // 7. Set source placeholder size to 0
+      // 7. Set source placeholder size to 0 to collapse
       clearDimensions(srcPlaceholder);
+
       // 8. if ref.$TP then set size of vNode.$TP to 0 to collapse it
       if (!isNull(ref.$TP)) {
-        clearDimensions(trgPlaceholder);
-        addClassName(trgPlaceholder, cls.placeholder);
+        clearDimensions(ref.$TP);
       }
-      // 9. Apply target dimensions to target placeholder and assign to ref.$TP
+
+      // 9. Apply target dimensions to target placeholder to expand
+      //    and assign to ref.$TP
       setDimensions(trgPlaceholder, trgGeometry.width, trgGeometry.height);
       ref.$TP = trgPlaceholder;
+
       // 10. Apply target geometry of node to target
       setTransform(dom, 0, 0);
       setDimensions(dom, trgGeometry.width, trgGeometry.height);
@@ -231,12 +269,14 @@ function _willMove (
 
 function _getWillMoveTransitionCallback(dom: HTMLElement, parent: HTMLElement, cls: AnimationClass, animState) {
   return () => {
+    if (_DBG_MVE_) console.log('Finished animating move', dom, animState);
+
     const { ref, srcPlaceholder, trgPlaceholder } = animState;
     // 11. Remove source placeholder element
     removeChild(parent, srcPlaceholder);
     // 12. Remove target placeholder element
     removeChild(parent, trgPlaceholder);
-    // 13. if ref.$TP === targetPlaceholder do a otherwise do b
+    // 13. if ref.$TP === targetPlaceholder do A otherwise do B
     //     a. we are done, cleanup node and set ref.$TP = null
     //     b. it is still animating so do nothing
     if (ref.$TP === trgPlaceholder) {

@@ -570,6 +570,14 @@
       });
     }
 
+    doClearMarkers = (e) => {
+      e && e.preventDefault();
+      const tmp = document.querySelectorAll('.debugMarker');
+      tmp.forEach((marker) => {
+        marker.parentNode.removeChild(marker);
+      })
+    }
+
 		componentDidMount() {
 			let i = 0;
 
@@ -598,6 +606,7 @@
         createElement('button', { onClick: this.doMix }, 'Shuffle'),
         createElement('button', { onClick: this.doMoveOne }, 'Move 1'),
         createElement('button', { onClick: this.doRemoveMix }, 'Remove' + (this.state.deleted ? ` (${this.state.deleted})` : '')),
+        createElement('button', { onClick: this.doClearMarkers }, 'Clear debug markers'),
       ]);
 		}
 	}
