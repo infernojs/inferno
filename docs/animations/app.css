@@ -96,7 +96,7 @@
 
 .MoveAnim-move-placeholder-active {
   /* Move animation transitions */
-  transition: height 1s 1s, border-width 1s 1s, padding 1s 1s; /* var(--movePlaceholderAnimation); */
+  transition: height 1.5s; /* var(--movePlaceholderAnimation); */
   position: relative;
 }
 
@@ -108,7 +108,7 @@
 .MoveAnim-move-active {
   --moveAnimation: ;
   /* Move animation transitions */
-  transition: transform 1s 1s; /*var(--moveAnimation);*/
+  transition: transform 1.5s; /*var(--moveAnimation);*/
   position: absolute;
   z-index: 1;
   opacity: 0.6;

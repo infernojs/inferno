@@ -97,11 +97,12 @@ export function getDimensions(node: HTMLElement) {
 }
 
 export function getOffsetPosition(node: HTMLElement) {
-  // const {x, y} = node.getBoundingClientRect();
-  return {
-    x: node.offsetLeft,
-    y: node.offsetTop
-  };
+  const {x, y} = node.getBoundingClientRect();
+  return  { x, y };
+  // return {
+  //   x: node.offsetLeft,
+  //   y: node.offsetTop
+  // };
 }
 
 export function setTransform(node: HTMLElement, x: number, y: number) {
@@ -151,7 +152,8 @@ function _getMaxTransitionDuration(nodes) {
       const duration = dur[j];
       const delay = del[j];
 
-      animTimeout += parseFloat(duration) + parseFloat(delay);
+      const tp = parseFloat(duration) + parseFloat(delay);
+      if (tp > animTimeout) animTimeout = tp;
     }
 
     nrofTransitions += dur.length;

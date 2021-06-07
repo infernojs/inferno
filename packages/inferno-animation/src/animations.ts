@@ -124,16 +124,18 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
 
 
 export function componentWillMove(refOrInsance, dom: HTMLElement, parent: HTMLElement, next: HTMLElement, props: any) {
+  const isFirstMove = isNull(refOrInsance.$TP);
+
   // Source marker
   if (_DBG_MVE_) insertDebugMarker(parent, dom, 'src', dom.innerText);
 
   // Create placeholders
   const clsPlaceholder = getAnimationClass(props.animation, '-move-placeholder');
 
-  const srcPlaceholder = (isNull(refOrInsance.$TP) ? document.createElement(dom.tagName) : refOrInsance.$TP);
+  const srcPlaceholder = (isFirstMove ? document.createElement(dom.tagName) : refOrInsance.$TP);
   srcPlaceholder.dataset.placeholder = 'src';
   if (_DBG_MVE_) (srcPlaceholder.innerHTML = dom.innerHTML);
-  addClassName(srcPlaceholder, 'placeholder-src');
+  if (isFirstMove) addClassName(srcPlaceholder, 'placeholder-src');
 
   const trgPlaceholder = document.createElement(dom.tagName);
   trgPlaceholder.dataset.placeholder = 'trg';
@@ -148,6 +150,7 @@ export function componentWillMove(refOrInsance, dom: HTMLElement, parent: HTMLEl
   const { x, y } = getOffsetPosition(dom);
 
   const animState = {
+    isFirstMove,
     ref: refOrInsance,
     srcPlaceholder,
     trgPlaceholder,
@@ -175,7 +178,7 @@ function _willMove (
   cls: AnimationClass,
   clsPlaceholder: AnimationClass,
   animState) {
-  const { ref, srcPlaceholder, trgPlaceholder, srcGeometry, trgGeometry } = animState;
+  const { isFirstMove, ref, srcPlaceholder, trgPlaceholder, srcGeometry, trgGeometry } = animState;
 
   switch (phase) {
     case AnimationPhase.INITIALIZE:
@@ -183,10 +186,11 @@ function _willMove (
       //   a. Inject source placeholder (has size 0 at this point)
       //   b. Current target placeholder becomes new source placeholder, do nothing
       // TODO: Implement case b
-      addClassName(srcPlaceholder, clsPlaceholder.placeholder);
-      insertBefore(parent, srcPlaceholder, dom);
-      // replaceChild(parent, srcPlaceholder, dom);
-      // TODO: Remove replaceChild from utils.js
+      if (isFirstMove) {
+        if (_DBG_MVE_) console.log('isFirstMove');
+        addClassName(srcPlaceholder, clsPlaceholder.placeholder);
+        insertBefore(parent, srcPlaceholder, dom);
+      }
 
       // 1. Move the node to target
       insertBefore(parent, dom, next);
@@ -206,9 +210,11 @@ function _willMove (
       if (_DBG_MVE_) console.log(dom.innerText, animState, dom)
       return;
     case AnimationPhase.EXPAND_SOURCE_PLACEHOLDER:
-      // 4. Apply source geometry to placeholder
-      setDimensions(srcPlaceholder, srcGeometry.width, srcGeometry.height);
-      addClassName(dom, cls.start);      
+      // 4. Apply source geometry to placeholder unless it was the prev target
+      if (isFirstMove) {
+        setDimensions(srcPlaceholder, srcGeometry.width, srcGeometry.height);
+        addClassName(dom, cls.start);
+      }
       return
     case AnimationPhase.MEASURE_TARGET:
       // 5. Get position of target and apply transform to place node at start position
@@ -244,17 +250,16 @@ function _willMove (
       // TODO: Consider using three distinct listeners for: srcPlaceholder,
       // trgPlacehoder, dom.
       registerTransitionListener(
-        [dom], _getWillMoveTransitionCallback(dom, parent, cls, animState)
+        [dom], _getWillMoveTransitionCallback(dom, cls, animState)
+      );
+      registerTransitionListener(
+        [srcPlaceholder], _getWillMovePlaceholderTransitionCallback(srcPlaceholder)
       );
       return
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 7. Set source placeholder size to 0 to collapse
       clearDimensions(srcPlaceholder);
-
-      // 8. if ref.$TP then set size of vNode.$TP to 0 to collapse it
-      if (!isNull(ref.$TP)) {
-        clearDimensions(ref.$TP);
-      }
+      if (_DBG_MVE_) console.log('Collapse', srcPlaceholder);
 
       // 9. Apply target dimensions to target placeholder to expand
       //    and assign to ref.$TP
@@ -267,23 +272,30 @@ function _willMove (
   }
 };
 
-function _getWillMoveTransitionCallback(dom: HTMLElement, parent: HTMLElement, cls: AnimationClass, animState) {
+function _getWillMoveTransitionCallback(dom: HTMLElement, cls: AnimationClass, animState) {
   return () => {
     if (_DBG_MVE_) console.log('Finished animating move', dom, animState);
 
-    const { ref, srcPlaceholder, trgPlaceholder } = animState;
-    // 11. Remove source placeholder element
-    removeChild(parent, srcPlaceholder);
-    // 12. Remove target placeholder element
-    removeChild(parent, trgPlaceholder);
+    const { ref, trgPlaceholder } = animState;
     // 13. if ref.$TP === targetPlaceholder do A otherwise do B
     //     a. we are done, cleanup node and set ref.$TP = null
     //     b. it is still animating so do nothing
     if (ref.$TP === trgPlaceholder) {
+      removeChild(trgPlaceholder.parentNode as Element, trgPlaceholder);
       clearDimensions(dom);
       clearTransform(dom);
       removeClassName(dom, cls.active);
       ref.$TP = null;
+    } else {
+      if (_DBG_MVE_) console.log('_getWillMoveTransitionCallback', trgPlaceholder);
+    }
+  }
+}
+
+function _getWillMovePlaceholderTransitionCallback(placeholder: HTMLElement) {
+  return () => {
+    if (!isNull(placeholder.parentNode)) {
+      removeChild(placeholder.parentNode as Element, placeholder);
     }
   }
 }
