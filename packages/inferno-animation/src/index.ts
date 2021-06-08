@@ -1,4 +1,5 @@
 export { AnimatedComponent } from './AnimatedComponent';
+export { AnimatedMoveComponent } from './AnimatedMoveComponent';
 export { componentDidAppear, componentWillDisappear, AnimationClass } from './animations';
 export { hasPendingAnimations } from './animationCoordinator';
 

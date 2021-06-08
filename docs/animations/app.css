@@ -3,6 +3,9 @@
   --infernoAnimationLeave: border-width .25s ease-out, padding 1s ease-out, height 1s ease-out, opacity 1.2s ease-in;
   --fadeAnimationEnter: opacity 0.1s ease-in;
   --fadeAnimationLeave: opacity 2s ease-out;
+
+  --movePlaceholderAnimation: height 1s, border-width 1s, padding 1s;
+  --moveAnimation: transform 1s;
 }
 
 /******************************/
@@ -69,6 +72,21 @@
   /* Enter animation transitions */
   transition: var(--fadeAnimationEnter);
 }
+
+/*****************/
+/* Animate moves */
+/*****************/
+.MoveAnim-move-active {
+  --moveAnimation: ;
+  /* Move animation transitions */
+  transition: transform 1.5s; /*var(--moveAnimation);*/
+  z-index: 1;
+  opacity: 0.6;
+}
+
+/***************************/
+/* General styling of page */
+/***************************/
 
 article,
 ul {
@@ -175,4 +193,44 @@ p {
   color: #888;
   text-align: center;
   margin-top: -0.5em;
+}
+
+/**
+ * Debug markers
+ * To render debug markers, set _DBG_MVE_ = true in animations.ts
+ **/
+
+.debugMarker {
+  display: block;
+  position: absolute;
+  transform: translate(calc(-100% - 7px), -50%);
+  padding-right: 15px;
+  z-index: 999;
+  font-size: 10px;
+}
+
+.debugMarker-src:after {
+  position: absolute;
+  content: '';
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 10px solid transparent;
+  border-left-color: red;
+  opacity: 0.3;
+}
+
+.debugMarker-src {
+  transform: translate(calc(-200% - 7px), -50%);
+}
+
+.debugMarker-trg:after {
+  position: absolute;
+  content: '';
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 10px solid transparent;
+  border-left-color: green;
+  opacity: 0.3;
 }

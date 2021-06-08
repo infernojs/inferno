@@ -1,4 +1,4 @@
-import { isFunction, isString, warning } from 'inferno-shared';
+import { isFunction, isNull, warning } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
@@ -16,22 +16,18 @@ function getClassNameList(className: string) {
 }
 
 export function addClassName(node: HTMLElement, className: string) {
-  if (isString(className)) {
-    const classNameList = getClassNameList(className);
+  const classNameList = getClassNameList(className);
 
-    for (let i = 0; i < classNameList.length; i++) {
-      node.classList.add(classNameList[i]);
-    }
+  for (let i = 0; i < classNameList.length; i++) {
+    node.classList.add(classNameList[i]);
   }
 }
 
 export function removeClassName(node: HTMLElement, className: string) {
-  if (isString(className)) {
-    const classNameList = getClassNameList(className);
+  const classNameList = getClassNameList(className);
 
-    for (let i = 0; i < classNameList.length; i++) {
-      node.classList.remove(classNameList[i]);
-    }
+  for (let i = 0; i < classNameList.length; i++) {
+    node.classList.remove(classNameList[i]);
   }
 }
 
@@ -96,6 +92,24 @@ export function getDimensions(node: HTMLElement) {
   };
 }
 
+export function getOffsetPosition(node: HTMLElement) {
+  const {x, y} = node.getBoundingClientRect();
+  return  { x, y };
+}
+
+export function getGeometry(node: HTMLElement) {
+  const { x, y, width, height } = node.getBoundingClientRect();
+  return { x, y, width, height };
+}
+
+export function setTransform(node: HTMLElement, x: number, y: number) {
+  node.style.transform = 'translate(' + x + 'px, ' + y + 'px)'; 
+}
+
+export function clearTransform(node: HTMLElement) {
+  node.style.transform = ''; 
+}
+
 export function setDimensions(node: HTMLElement, width: number, height: number) {
   node.style.width = width + 'px';
   node.style.height = height + 'px';
@@ -135,7 +149,8 @@ function _getMaxTransitionDuration(nodes) {
       const duration = dur[j];
       const delay = del[j];
 
-      animTimeout += parseFloat(duration) + parseFloat(delay);
+      const tp = parseFloat(duration) + parseFloat(delay);
+      if (tp > animTimeout) animTimeout = tp;
     }
 
     nrofTransitions += dur.length;
@@ -251,4 +266,63 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
 function isDebugAnimationsSet() {
   return window.__INFERNO_ANIMATION_DEBUG__ === true;
+}
+
+// Utils used in moves
+export function appendChild(parentDOM, dom) {
+  parentDOM.appendChild(dom);
+}
+
+export function insertBefore(parent: Element, newNode: Element, refNode: Element) {
+  if (isNull(refNode)) {
+    appendChild(parent, newNode);
+  } else {
+    parent.insertBefore(newNode, refNode);
+  }
+}
+
+export function insertAfter(parent: Element, newNode: Element, refNode: Element) {
+  const tmpNextRef = refNode.nextSibling
+  if (isNull(tmpNextRef)) {
+    appendChild(parent, newNode);
+  } else {
+    parent.insertBefore(newNode, tmpNextRef);
+  }
+}
+
+export function removeChild(parent: Element, child: Element) {
+  parent.removeChild(child);
+}
+
+export function insertDebugMarker(parent: Element, refNode: Element, type, text) {
+  const marker = document.createElement('i');
+  addClassName(marker, 'debugMarker debugMarker-' + type);
+  marker.innerText = text || '';
+  insertBefore(parent, marker, refNode);
+}
+
+export function incrementMoveCbCount (node) {
+  let curr = parseInt(node.dataset.moveCbCount);
+  if (isNaN(curr)) {
+    curr = 1;
+  } else {
+    curr++;
+  }
+  node.dataset.moveCbCount = curr;
+  return curr;
+}
+
+export function decrementMoveCbCount (node) {
+  let curr = parseInt(node.dataset.moveCbCount);
+  if (isNaN(curr)) {
+    curr = 0;
+  } else {
+    curr--;
+    if (curr === 0) {
+      node.dataset.moveCbCount = '';
+    } else {
+      node.dataset.moveCbCount = curr;
+    }
+  }
+  return curr;
 }
