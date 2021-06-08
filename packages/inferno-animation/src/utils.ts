@@ -1,4 +1,4 @@
-import { isFunction, isNull, isString, warning } from 'inferno-shared';
+import { isFunction, isNull, warning } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
@@ -16,22 +16,18 @@ function getClassNameList(className: string) {
 }
 
 export function addClassName(node: HTMLElement, className: string) {
-  if (isString(className)) {
-    const classNameList = getClassNameList(className);
+  const classNameList = getClassNameList(className);
 
-    for (let i = 0; i < classNameList.length; i++) {
-      node.classList.add(classNameList[i]);
-    }
+  for (let i = 0; i < classNameList.length; i++) {
+    node.classList.add(classNameList[i]);
   }
 }
 
 export function removeClassName(node: HTMLElement, className: string) {
-  if (isString(className)) {
-    const classNameList = getClassNameList(className);
+  const classNameList = getClassNameList(className);
 
-    for (let i = 0; i < classNameList.length; i++) {
-      node.classList.remove(classNameList[i]);
-    }
+  for (let i = 0; i < classNameList.length; i++) {
+    node.classList.remove(classNameList[i]);
   }
 }
 
