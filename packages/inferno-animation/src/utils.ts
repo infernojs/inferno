@@ -273,15 +273,9 @@ function isDebugAnimationsSet() {
 }
 
 // Utils used in moves
-
 export function appendChild(parentDOM, dom) {
   parentDOM.appendChild(dom);
 }
-
-// TODO: Remove this
-// export function replaceChild(parent: Element, newNode: Element, refNode: Element) {
-//   return parent.replaceChild(newNode, refNode);
-// }
 
 export function insertBefore(parent: Element, newNode: Element, refNode: Element) {
   if (isNull(refNode)) {
@@ -309,4 +303,30 @@ export function insertDebugMarker(parent: Element, refNode: Element, type, text)
   addClassName(marker, 'debugMarker debugMarker-' + type);
   marker.innerText = text || '';
   insertBefore(parent, marker, refNode);
+}
+
+export function incrementMoveCbCount (node) {
+  let curr = parseInt(node.dataset.moveCbCount);
+  if (isNaN(curr)) {
+    curr = 1;
+  } else {
+    curr++;
+  }
+  node.dataset.moveCbCount = curr;
+  return curr;
+}
+
+export function decrementMoveCbCount (node) {
+  let curr = parseInt(node.dataset.moveCbCount);
+  if (isNaN(curr)) {
+    curr = 0;
+  } else {
+    curr--;
+    if (curr === 0) {
+      node.dataset.moveCbCount = '';
+    } else {
+      node.dataset.moveCbCount = curr;
+    }
+  }
+  return curr;
 }
