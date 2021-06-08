@@ -1,5 +1,5 @@
 import type { InfernoNode, LinkedEvent, VNode } from './../../core/types';
-import { combineFrom, isFunction, isNull, isUndefined } from 'inferno-shared';
+import { combineFrom, isFunction, isNull, isNullOrUndef, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isLinkEventObject } from '../events/linkEvent';
 
@@ -181,7 +181,7 @@ export function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations
     const flags = vNode.flags;
 
     if (flags & VNodeFlags.DOMRef) {
-      if (isFunction(refOrInstance.componentWillMove) || isFunction(refOrInstance.onComponentWillMove)) {
+      if (!isNullOrUndef(refOrInstance) && (isFunction(refOrInstance.componentWillMove) || isFunction(refOrInstance.onComponentWillMove))) {
         addMoveAnimationHook(animations, parentVNode, refOrInstance, vNode.dom, parentDOM, nextNode, instanceFlags, instanceProps);
       } else {
         // TODO: Should we delay this too to support mixing animated moves with regular?
