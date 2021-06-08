@@ -99,10 +99,11 @@ export function getDimensions(node: HTMLElement) {
 export function getOffsetPosition(node: HTMLElement) {
   const {x, y} = node.getBoundingClientRect();
   return  { x, y };
-  // return {
-  //   x: node.offsetLeft,
-  //   y: node.offsetTop
-  // };
+}
+
+export function getGeometry(node: HTMLElement) {
+  const { x, y, width, height } = node.getBoundingClientRect();
+  return { x, y, width, height };
 }
 
 export function setTransform(node: HTMLElement, x: number, y: number) {

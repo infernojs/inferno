@@ -163,17 +163,17 @@ export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: Ani
   }
 }
 
-function addMoveAnimationHook(animations: AnimationQueues, refOrInstance, dom: Element, parentDOM: Element, nextNode: Element, flags, props) {
+function addMoveAnimationHook(animations: AnimationQueues, parentVNode, refOrInstance, dom: Element, parentDOM: Element, nextNode: Element, flags, props) {
   animations.componentWillMove.push(() => {
     if (flags & VNodeFlags.ComponentClass) {
-      refOrInstance.componentWillMove(refOrInstance, dom, parentDOM, nextNode, props);
+      refOrInstance.componentWillMove(parentVNode, dom, parentDOM, nextNode, props);
     } else if (flags & VNodeFlags.ComponentFunction) {
-      refOrInstance.onComponentWillMove(refOrInstance, dom, parentDOM, nextNode, props);
+      refOrInstance.onComponentWillMove(parentVNode, dom, parentDOM, nextNode, props);
     }
   });
 }
 
-export function moveVNodeDOM(vNode, parentDOM, nextNode, animations: AnimationQueues) {
+export function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations: AnimationQueues) {
   let refOrInstance;
   let instanceProps;
   let instanceFlags = vNode.flags
@@ -182,7 +182,7 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode, animations: AnimationQu
 
     if (flags & VNodeFlags.DOMRef) {
       if (isFunction(refOrInstance.componentWillMove) || isFunction(refOrInstance.onComponentWillMove)) {
-        addMoveAnimationHook(animations, refOrInstance, vNode.dom, parentDOM, nextNode, instanceFlags, instanceProps);
+        addMoveAnimationHook(animations, parentVNode, refOrInstance, vNode.dom, parentDOM, nextNode, instanceFlags, instanceProps);
       } else {
         // TODO: Should we delay this too to support mixing animated moves with regular?
         insertOrAppend(parentDOM, vNode.dom, nextNode);
@@ -206,7 +206,7 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode, animations: AnimationQu
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
-          moveVNodeDOM(children[i], parentDOM, nextNode, animations);
+          moveVNodeDOM(parentVNode, children[i], parentDOM, nextNode, animations);
         }
         return;
       }

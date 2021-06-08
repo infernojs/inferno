@@ -143,7 +143,7 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $L: Function[] | null = null; // Current lifecycle of this component
   public $SVG: boolean = false; // Flag to keep track if component is inside SVG tree
   public $F: boolean = false; // Force update flag
-  public $TP: any = null; // Target placeholder used for move animations
+  public $MV: boolean = false; // Participating in move animation (set on parent node)
 
   constructor(props?: P, context?: any) {
     this.props = props || (EMPTY_OBJ as P);
