@@ -782,7 +782,7 @@ function patchKeyedChildrenComplex(
         nextPos = pos + 1;
 
         // --- the DOM-node is moved by a call to insertAppend
-        moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, animations);
+        moveVNodeDOM(parentVNode, bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, animations);
       } else {
         j--;
       }

@@ -76,40 +76,10 @@
 /*****************/
 /* Animate moves */
 /*****************/
-.placeholder-src {
-  background-color: red;
-  opacity: 0.2;
-  /* transform: translateX(-20px); */
-}
-.placeholder-trg {
-  background-color: green;
-  opacity: 0.2;
-  border-width: 0;
-  /* transform: translateX(20px); */
-}
-
-.MoveAnim-move-placeholder {
-  height: 0;
-  padding: 0;
-  border-width: 0;
-}
-
-.MoveAnim-move-placeholder-active {
-  /* Move animation transitions */
-  transition: height 1.5s; /* var(--movePlaceholderAnimation); */
-  position: relative;
-}
-
-.MoveAnim-move {
-  /* Needs to be absolute to allow measurements */
-  position: absolute;
-}
-
 .MoveAnim-move-active {
   --moveAnimation: ;
   /* Move animation transitions */
   transition: transform 1.5s; /*var(--moveAnimation);*/
-  position: absolute;
   z-index: 1;
   opacity: 0.6;
 }

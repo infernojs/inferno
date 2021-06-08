@@ -1,4 +1,4 @@
-import { addClassName, clearDimensions, getDimensions, getOffsetPosition, insertAfter, insertBefore, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform, removeChild } from './utils';
+import { addClassName, clearDimensions, getDimensions, getGeometry, insertBefore, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform } from './utils';
 import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef, isNull } from 'inferno-shared';
 
@@ -9,7 +9,6 @@ export type AnimationClass = {
   active: string;
   end: string;
   start: string;
-  placeholder: string;
 };
 
 function getAnimationClass(animationProp: AnimationClass | string | undefined | null, prefix: string): AnimationClass {
@@ -23,8 +22,7 @@ function getAnimationClass(animationProp: AnimationClass | string | undefined | 
     animCls = {
       active: placeholder + '-active',
       end: placeholder + '-end',
-      start: placeholder,
-      placeholder
+      start: placeholder
     };
   }
 
@@ -123,51 +121,38 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
 
 
 
-export function componentWillMove(refOrInsance, dom: HTMLElement, parent: HTMLElement, next: HTMLElement, props: any) {
-  const isFirstMove = isNull(refOrInsance.$TP);
-
+export function componentWillMove(parentVNode, dom: HTMLElement, parent: HTMLElement, next: HTMLElement, props: any) {
   // Source marker
   if (_DBG_MVE_) insertDebugMarker(parent, dom, 'src', dom.innerText);
-
-  // Create placeholders
-  const clsPlaceholder = getAnimationClass(props.animation, '-move-placeholder');
-
-  const srcPlaceholder = (isFirstMove ? document.createElement(dom.tagName) : refOrInsance.$TP);
-  srcPlaceholder.dataset.placeholder = 'src';
-  if (_DBG_MVE_) (srcPlaceholder.innerHTML = dom.innerHTML);
-  if (isFirstMove) addClassName(srcPlaceholder, 'placeholder-src');
-
-  const trgPlaceholder = document.createElement(dom.tagName);
-  trgPlaceholder.dataset.placeholder = 'trg';
-  if (_DBG_MVE_) (trgPlaceholder.innerHTML = dom.innerHTML);
-  addClassName(trgPlaceholder, 'placeholder-trg');
-
   if (_DBG_MVE_) console.log('Animating move', dom)
 
-  // Measure source geometry of node being moved
-  const cls = getAnimationClass(props.animation, '-move');
-  const { height, width } = getDimensions(dom);
-  const { x, y } = getOffsetPosition(dom);
 
-  const animState = {
-    isFirstMove,
-    ref: refOrInsance,
-    srcPlaceholder,
-    trgPlaceholder,
-    srcGeometry: {
-      height,
-      width,
-      x,
-      y
-    },
-    trgGeometry: {
-      height: null,
-      width: null,
-      x: null,
-      y: null
+  // Measure all siblings of moved node once before any mutations are done
+  let els;
+  if (!parentVNode.$MV) {
+    parentVNode.$MV = true;
+    els = [];
+    let tmpEl = parent.firstChild as HTMLElement;
+    while (!isNull(tmpEl)) {
+      els.push({
+        node: tmpEl,
+        geometry: getGeometry(tmpEl),
+        dx: 0,
+        dy: 0,
+        moved: false
+      })
+      tmpEl = tmpEl.nextSibling as HTMLElement;
     }
   }
-  queueAnimation((phase) => _willMove(phase, dom, parent, next, cls, clsPlaceholder, animState));
+
+  // Get animation class names
+  const cls = getAnimationClass(props.animation, '-move');
+
+  const animState = {
+    isMaster: !isNullOrUndef(els),
+    els
+  }
+  queueAnimation((phase) => _willMove(phase, dom, parent, next, cls, animState));
 };
 
 function _willMove (
@@ -176,52 +161,34 @@ function _willMove (
   parent: HTMLElement,
   next: HTMLElement,
   cls: AnimationClass,
-  clsPlaceholder: AnimationClass,
   animState) {
-  const { isFirstMove, ref, srcPlaceholder, trgPlaceholder, srcGeometry, trgGeometry } = animState;
+  const { els, isMaster } = animState;
 
   switch (phase) {
     case AnimationPhase.INITIALIZE:
-      // 0. If no ref.$TP then a, otherwise b
-      //   a. Inject source placeholder (has size 0 at this point)
-      //   b. Current target placeholder becomes new source placeholder, do nothing
-      // TODO: Implement case b
-      if (isFirstMove) {
-        if (_DBG_MVE_) console.log('isFirstMove');
-        addClassName(srcPlaceholder, clsPlaceholder.placeholder);
-        insertBefore(parent, srcPlaceholder, dom);
-      }
-
       // 1. Move the node to target
       insertBefore(parent, dom, next);
-
-      // 2. Inject target placeholder (has size 0 at this point)
-      addClassName(trgPlaceholder, clsPlaceholder.placeholder);
-      insertAfter(parent, trgPlaceholder, dom);
 
       // Target marker
       if (_DBG_MVE_) insertDebugMarker(parent, dom, 'trg', dom.innerText);
       return;
     case AnimationPhase.MEASURE:
-      // 3. Get geometry of moving node at target and store in animState
-      const { height, width } = getDimensions(dom);
-      animState.trgGeometry.height = height;
-      animState.trgGeometry.width = width;
-      if (_DBG_MVE_) console.log(dom.innerText, animState, dom)
-      return;
-    case AnimationPhase.EXPAND_SOURCE_PLACEHOLDER:
-      // 4. Apply source geometry to placeholder unless it was the prev target
-      if (isFirstMove) {
-        setDimensions(srcPlaceholder, srcGeometry.width, srcGeometry.height);
-        addClassName(dom, cls.start);
+      // If we are responsible for triggering measures, we check all the target positions
+      if (isMaster) {
+        for (let i = 0; i < els.length; i++) {
+          const tmpItem = els[i];
+          const geometry = getGeometry(tmpItem.node);
+          let deltaX = tmpItem.geometry.x - geometry.x;
+          let deltaY = tmpItem.geometry.y - geometry.y;
+          if (deltaX !== 0 || deltaY !== 0) {
+            tmpItem.moved = true
+            tmpItem.dx = deltaX;
+            tmpItem.dy = deltaY;
+          }
+          // TODO: Check dimensions
+        }
       }
-      return
-    case AnimationPhase.MEASURE_TARGET:
-      // 5. Get position of target and apply transform to place node at start position
-      const { x:  domTrgX, y: domTrgY } = getOffsetPosition(dom);
-      animState.trgGeometry.x = domTrgX;
-      animState.trgGeometry.y = domTrgY;     
-      return
+      return;
     case AnimationPhase.SET_START_STATE:
       /**
        * At this state we have measure the size of the moving node
@@ -229,73 +196,58 @@ function _willMove (
        * fill the source space and move the node to start position
        * by transform
        */
-      const deltaX = srcGeometry.x - trgGeometry.x;
-      const deltaY = srcGeometry.y - trgGeometry.y;
-      setTransform(dom, deltaX, deltaY);
-      setDimensions(dom, srcGeometry.width, srcGeometry.height);
-      if (_DBG_MVE_) console.log(dom.innerText, {deltaX, deltaY});
+       if (isMaster) {
+        for (let i = 0; i < els.length; i++) {
+          const tmpItem = els[i];
+          if (tmpItem.moved) {
+            setTransform(tmpItem.node, tmpItem.dx, tmpItem.dy);
+          }
+          // TODO: Set dimensions
+        }
+      }
       return;
     case AnimationPhase.ACTIVATE_TRANSITIONS:
       // A reflow is triggered prior to this step
-      // 5. Activate animation on source placeholder, target placeholder, element
-      addClassName(srcPlaceholder, clsPlaceholder.active);
-      addClassName(trgPlaceholder, clsPlaceholder.active);
-      addClassName(dom, cls.active);
-      removeClassName(dom, cls.start);
+      if (isMaster) {
+        for (let i = 0; i < els.length; i++) {
+          const tmpItem = els[i];
+          if (tmpItem.moved) {
+            addClassName(tmpItem.node, cls.active);
+          }
+        }
+      }
       return;
     case AnimationPhase.REGISTER_LISTENERS:
-      // 6. Set an animation listener, code at end
-      // Needs to be done after activating so timeout is calculated correctly
-      // IMPORTANT! It is up to the animation handler to remove placeholders
-      // TODO: Consider using three distinct listeners for: srcPlaceholder,
-      // trgPlacehoder, dom.
-      registerTransitionListener(
-        [dom], _getWillMoveTransitionCallback(dom, cls, animState)
-      );
-      registerTransitionListener(
-        [srcPlaceholder], _getWillMovePlaceholderTransitionCallback(srcPlaceholder)
-      );
+      if (isMaster) {
+        for (let i = 0; i < els.length; i++) {
+          const tmpItem = els[i];
+          if (tmpItem.moved) {
+            registerTransitionListener(
+              [tmpItem.node], _getWillMoveTransitionCallback(tmpItem.node, cls)
+            );
+          }
+        }
+      }
       return
     case AnimationPhase.ACTIVATE_ANIMATION:
-      // 7. Set source placeholder size to 0 to collapse
-      clearDimensions(srcPlaceholder);
-      if (_DBG_MVE_) console.log('Collapse', srcPlaceholder);
-
-      // 9. Apply target dimensions to target placeholder to expand
-      //    and assign to ref.$TP
-      setDimensions(trgPlaceholder, trgGeometry.width, trgGeometry.height);
-      ref.$TP = trgPlaceholder;
-
       // 10. Apply target geometry of node to target
-      setTransform(dom, 0, 0);
-      setDimensions(dom, trgGeometry.width, trgGeometry.height);
+      if (isMaster) {
+        for (let i = 0; i < els.length; i++) {
+          const tmpItem = els[i];
+          if (tmpItem.moved) {
+            setTransform(tmpItem.node, 0, 0);
+          }
+        }
+      }
+      // TODO: Set dimensions
   }
 };
 
-function _getWillMoveTransitionCallback(dom: HTMLElement, cls: AnimationClass, animState) {
+function _getWillMoveTransitionCallback(dom: HTMLElement, cls: AnimationClass) {
   return () => {
-    if (_DBG_MVE_) console.log('Finished animating move', dom, animState);
-
-    const { ref, trgPlaceholder } = animState;
-    // 13. if ref.$TP === targetPlaceholder do A otherwise do B
-    //     a. we are done, cleanup node and set ref.$TP = null
-    //     b. it is still animating so do nothing
-    if (ref.$TP === trgPlaceholder) {
-      removeChild(trgPlaceholder.parentNode as Element, trgPlaceholder);
-      clearDimensions(dom);
-      clearTransform(dom);
-      removeClassName(dom, cls.active);
-      ref.$TP = null;
-    } else {
-      if (_DBG_MVE_) console.log('_getWillMoveTransitionCallback', trgPlaceholder);
-    }
-  }
-}
-
-function _getWillMovePlaceholderTransitionCallback(placeholder: HTMLElement) {
-  return () => {
-    if (!isNull(placeholder.parentNode)) {
-      removeChild(placeholder.parentNode as Element, placeholder);
-    }
+    // TODO: Need to keep track if this is a compound move
+    clearDimensions(dom);
+    clearTransform(dom);
+    removeClassName(dom, cls.active);
   }
 }

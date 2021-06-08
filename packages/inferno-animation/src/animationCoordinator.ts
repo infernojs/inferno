@@ -7,8 +7,6 @@ const _DBG_COORD_ = false && process.env.NODE_ENV !== 'production';
 export const enum AnimationPhase {
   INITIALIZE,
   MEASURE,
-  EXPAND_SOURCE_PLACEHOLDER,  // Used for move anim
-  MEASURE_TARGET,             // Used for move anim
   SET_START_STATE,
   ACTIVATE_TRANSITIONS,
   REGISTER_LISTENERS,
