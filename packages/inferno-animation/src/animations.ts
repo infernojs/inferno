@@ -1,4 +1,4 @@
-import { addClassName, clearDimensions, getDimensions, getGeometry, insertBefore, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform } from './utils';
+import { addClassName, clearDimensions, decrementMoveCbCount, getDimensions, getGeometry, incrementMoveCbCount, insertBefore, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform } from './utils';
 import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef, isNull } from 'inferno-shared';
 
@@ -119,9 +119,7 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
   }
 }
 
-
-
-export function componentWillMove(parentVNode, dom: HTMLElement, parent: HTMLElement, next: HTMLElement, props: any) {
+export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, next: HTMLElement, props: any) {
   // Source marker
   if (_DBG_MVE_) insertDebugMarker(parent, dom, 'src', dom.innerText);
   if (_DBG_MVE_) console.log('Animating move', dom)
@@ -150,7 +148,8 @@ export function componentWillMove(parentVNode, dom: HTMLElement, parent: HTMLEle
 
   const animState = {
     isMaster: !isNullOrUndef(els),
-    els
+    els,
+    parentVNode
   }
   queueAnimation((phase) => _willMove(phase, dom, parent, next, cls, animState));
 };
@@ -162,7 +161,7 @@ function _willMove (
   next: HTMLElement,
   cls: AnimationClass,
   animState) {
-  const { els, isMaster } = animState;
+  const { els, isMaster, parentVNode } = animState;
 
   switch (phase) {
     case AnimationPhase.INITIALIZE:
@@ -177,6 +176,9 @@ function _willMove (
       if (isMaster) {
         for (let i = 0; i < els.length; i++) {
           const tmpItem = els[i];
+          // Make sure we can measure target properly
+          removeClassName(tmpItem.node, cls.active);
+          // Measure
           const geometry = getGeometry(tmpItem.node);
           let deltaX = tmpItem.geometry.x - geometry.x;
           let deltaY = tmpItem.geometry.y - geometry.y;
@@ -223,8 +225,11 @@ function _willMove (
           const tmpItem = els[i];
           if (tmpItem.moved) {
             registerTransitionListener(
+              // How to know if this is a compound move?
               [tmpItem.node], _getWillMoveTransitionCallback(tmpItem.node, cls)
             );
+            // Keep track of how many callbacks will be fired
+            incrementMoveCbCount(tmpItem.node);
           }
         }
       }
@@ -240,14 +245,18 @@ function _willMove (
         }
       }
       // TODO: Set dimensions
+      if (parentVNode.$MV) parentVNode.$MV = false;
   }
 };
 
 function _getWillMoveTransitionCallback(dom: HTMLElement, cls: AnimationClass) {
   return () => {
-    // TODO: Need to keep track if this is a compound move
-    clearDimensions(dom);
-    clearTransform(dom);
-    removeClassName(dom, cls.active);
+    // Only remove these if the translate has completed
+    const cbCount = decrementMoveCbCount(dom);
+    if (cbCount === 0) {
+      clearDimensions(dom);
+      clearTransform(dom);
+      removeClassName(dom, cls.active);
+    }
   }
 }
