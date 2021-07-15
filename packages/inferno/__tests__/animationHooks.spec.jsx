@@ -2,14 +2,6 @@ import { Component, render, VNode } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { isNull } from 'inferno-shared';
 
-function mockInsertBefore(parent, newNode, refNode) {
-  if (isNull(refNode)) {
-    parent.appendChild(newNode);
-  } else {
-    parent.insertBefore(newNode, refNode);
-  }
-}
-
 describe('animation hooks', () => {
   let container;
 
@@ -77,7 +69,7 @@ describe('animation hooks', () => {
   it('should NOT call "componentWillMove" when component is inserted into DOM', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      componentWillMove(parentVNode, parent, dom, next, props) {
+      componentWillMove(parentVNode, parent, dom, props) {
         spyer('willMove');
         expect(parentVNode instanceof VNode).toEqual(true);
         expect(parent instanceof HTMLDivElement).toEqual(true);
@@ -100,7 +92,7 @@ describe('animation hooks', () => {
   it('should NOT call "componentWillMove" when component is removed from DOM', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      componentWillMove(parentVNode, parent, dom, next, props) {
+      componentWillMove(parentVNode, parent, dom, props) {
         spyer('willMove');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
@@ -123,10 +115,9 @@ describe('animation hooks', () => {
   it('should call "componentWillMove" when component is about to be moved in DOM', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      componentWillMove(parentVNode, parent, dom, next, props) {
+      componentWillMove(parentVNode, parent, dom, props) {
         spyer('willMove');
         expect(dom instanceof HTMLDivElement).toEqual(true);
-        mockInsertBefore(parent, dom, next);
       }
       componentDidMount() {
         spyer('didMount');
@@ -159,10 +150,9 @@ describe('animation hooks', () => {
   it('should call "componentWillMove" when component is about to be moved in DOM', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
-      componentWillMove(parentVNode, parent, dom, next, props) {
+      componentWillMove(parentVNode, parent, dom, props) {
         spyer('willMove');
         expect(dom instanceof HTMLDivElement).toEqual(true);
-        mockInsertBefore(parent, dom, next);
       }
       componentDidMount() {
         spyer('didMount');
@@ -200,11 +190,10 @@ describe('animation hooks', () => {
     const spyer = jasmine.createSpy();
     let parentDom;
     class App extends Component {
-      componentWillMove(parentVNode, parent, dom, next, props) {
+      componentWillMove(parentVNode, parent, dom, props) {
         spyer('willMove');
         expect(dom instanceof HTMLDivElement).toEqual(true);
         parentDom = parentDom || parent;
-        mockInsertBefore(parent, dom, next);
       }
       componentDidMount() {
         spyer('didMount');

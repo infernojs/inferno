@@ -8,10 +8,17 @@ import { isLinkEventObject } from '../events/linkEvent';
 export const EMPTY_OBJ = {};
 export const Fragment: string = '$F';
 
+export type MoveQueueItem = {
+  parent: Element;
+  dom: Element;
+  next: Element;
+  fn: Function;
+};
+
 export class AnimationQueues {
   public componentDidAppear: Function[];
   public componentWillDisappear: Function[];
-  public componentWillMove: Function[];
+  public componentWillMove: MoveQueueItem[];
 
   constructor() {
     this.componentDidAppear = [];
@@ -98,20 +105,33 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
   // since all animations are to be run and we can't predict the order in which they complete.
   let fn;
   while ((fn = animationQueue.pop()) !== undefined) {
-    fn(() => {
-      if (--animationsLeft <= 0 && isFunction(callback)) {
-        callback();
-      }
-    });
+    try {
+      fn(() => {
+        if (--animationsLeft <= 0 && isFunction(callback)) {
+          callback();
+        }
+      });
+    } catch (e) {
+      // Perhaps we should fail silently in production?
+      throw e;
+    }
   }
 }
 
-export function callAllMoveAnimationHooks(animationQueue: Function[]) {
-  // Picking from the top because it is faster, invocation order should be irrelevant
-  // since all animations are to be run and we can't predict the order in which they complete.
-  let fn;
-  while ((fn = animationQueue.shift()) !== undefined) {
-    fn();
+export function callAllMoveAnimationHooks(animationQueue: MoveQueueItem[]) {
+  // Start the animations.
+  for (let i = 0; i < animationQueue.length;  i++) {
+    try {
+      animationQueue[i].fn();
+    } catch (e) {
+      // Perhaps we should only fail silently in production?
+      // throw e;
+    }
+  }
+  // Perform the actual move
+  let tmp;
+  while ((tmp = animationQueue.shift()) !== undefined) {
+    insertOrAppend(tmp.parent, tmp.dom, tmp.next);
   }
 }
 
@@ -164,11 +184,16 @@ export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: Ani
 }
 
 function addMoveAnimationHook(animations: AnimationQueues, parentVNode, refOrInstance, dom: Element, parentDOM: Element, nextNode: Element, flags, props) {
-  animations.componentWillMove.push(() => {
-    if (flags & VNodeFlags.ComponentClass) {
-      refOrInstance.componentWillMove(parentVNode, parentDOM, dom, nextNode, props);
-    } else if (flags & VNodeFlags.ComponentFunction) {
-      refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, nextNode, props);
+  animations.componentWillMove.push({
+    parent: parentDOM,
+    dom: dom,
+    next: nextNode,
+    fn: () => {
+      if (flags & VNodeFlags.ComponentClass) {
+        refOrInstance.componentWillMove(parentVNode, parentDOM, dom, props);
+      } else if (flags & VNodeFlags.ComponentFunction) {
+        refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, props);
+      }
     }
   });
 }
