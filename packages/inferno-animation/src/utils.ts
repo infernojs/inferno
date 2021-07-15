@@ -302,7 +302,7 @@ export function insertDebugMarker(parent: Element, refNode: Element, type, text)
 }
 
 export function incrementMoveCbCount (node) {
-  let curr = parseInt(node.dataset.moveCbCount);
+  let curr = parseInt(node.dataset.moveCbCount, 10);
   if (isNaN(curr)) {
     curr = 1;
   } else {
@@ -313,7 +313,7 @@ export function incrementMoveCbCount (node) {
 }
 
 export function decrementMoveCbCount (node) {
-  let curr = parseInt(node.dataset.moveCbCount);
+  let curr = parseInt(node.dataset.moveCbCount, 10);
   if (isNaN(curr)) {
     curr = 0;
   } else {

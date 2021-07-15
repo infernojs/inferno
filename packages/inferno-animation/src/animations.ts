@@ -122,6 +122,7 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
 export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, next: HTMLElement, props: any) {
   // Source marker
   if (_DBG_MVE_) insertDebugMarker(parent, dom, 'src', dom.innerText);
+  // tslint:disable-next-line
   if (_DBG_MVE_) console.log('Animating move', dom)
 
 
@@ -133,11 +134,11 @@ export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLEle
     let tmpEl = parent.firstChild as HTMLElement;
     while (!isNull(tmpEl)) {
       els.push({
-        node: tmpEl,
-        geometry: getGeometry(tmpEl),
         dx: 0,
         dy: 0,
-        moved: false
+        geometry: getGeometry(tmpEl),
+        moved: false,
+        node: tmpEl
       })
       tmpEl = tmpEl.nextSibling as HTMLElement;
     }
@@ -147,8 +148,8 @@ export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLEle
   const cls = getAnimationClass(props.animation, '-move');
 
   const animState = {
-    isMaster: !isNullOrUndef(els),
     els,
+    isMaster: !isNullOrUndef(els),
     parentVNode
   }
   queueAnimation((phase) => _willMove(phase, dom, parent, next, cls, animState));
@@ -180,8 +181,8 @@ function _willMove (
           removeClassName(tmpItem.node, cls.active);
           // Measure
           const geometry = getGeometry(tmpItem.node);
-          let deltaX = tmpItem.geometry.x - geometry.x;
-          let deltaY = tmpItem.geometry.y - geometry.y;
+          const deltaX = tmpItem.geometry.x - geometry.x;
+          const deltaY = tmpItem.geometry.y - geometry.y;
           if (deltaX !== 0 || deltaY !== 0) {
             tmpItem.moved = true
             tmpItem.dx = deltaX;
