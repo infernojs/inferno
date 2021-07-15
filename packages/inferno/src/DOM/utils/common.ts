@@ -176,7 +176,7 @@ function addMoveAnimationHook(animations: AnimationQueues, parentVNode, refOrIns
 export function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations: AnimationQueues) {
   let refOrInstance;
   let instanceProps;
-  let instanceFlags = vNode.flags
+  const instanceFlags = vNode.flags
   do {
     const flags = vNode.flags;
 
