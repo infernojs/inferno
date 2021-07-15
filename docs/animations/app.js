@@ -571,6 +571,34 @@
       }, 100)
     }
 
+    doDoubleMix = (e) => {
+      e && e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      shuffle(newItems);
+      
+      // So this is the shuffled order
+      console.log('Expected order 1: ' + newItems.map((el) => '(' + el.val + ')').join(','))
+
+      this.setState({
+        items: newItems
+      });
+
+      setTimeout(() => {
+        var newItems2 = newItems.concat([]);
+        shuffle(newItems2);
+        this.setState({
+          items: newItems2
+        });
+        console.log('Expected order 2: ' + newItems2.map((el) => '(' + el.val + ')').join(','))
+      }, 1)
+
+      // And this is what the DOM looks like
+      setTimeout(() => {
+        const res = document.querySelector('#App6 ul').textContent.match(/\(\d*\)/g);
+        console.log('Actual order:     ' + res.join(','));
+      }, 100)
+    }
+
     doMoveOne = (e) => {
       e && e.preventDefault();
       var newItems = this.state.items.concat([]);
@@ -614,6 +642,7 @@
         createElement('p', null, this.props.description),
         createElement('button', { onClick: this.doAdd }, 'Add'),
         createElement('button', { onClick: this.doMix }, 'Shuffle'),
+        createElement('button', { onClick: this.doDoubleMix }, 'DoubleShuffle'),
         createElement('button', { onClick: this.doMoveOne }, 'Move 1'),
         createElement('button', { onClick: this.doRemoveMix }, 'Remove' + (this.state.deleted ? ` (${this.state.deleted})` : '')),
         createElement('button', { onClick: this.doClearMarkers }, 'Clear debug markers'),

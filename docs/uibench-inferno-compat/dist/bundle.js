@@ -3110,7 +3110,6 @@
             pos = i + bStart;
             bNode = b[pos];
             nextPos = pos + 1; // --- the DOM-node is moved by a call to insertAppend
-            // INVESTIGATE: findDOMfromVNode and outerEdge, if they change on each loop, there could be a
 
             moveVNodeDOM(parentVNode, bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, animations);
           } else {

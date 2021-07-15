@@ -864,6 +864,40 @@
           }, 100);
         };
 
+        _this9.doDoubleMix = function (e) {
+          e && e.preventDefault();
+
+          var newItems = _this9.state.items.concat([]);
+
+          shuffle(newItems); // So this is the shuffled order
+
+          console.log('Expected order 1: ' + newItems.map(function (el) {
+            return '(' + el.val + ')';
+          }).join(','));
+
+          _this9.setState({
+            items: newItems
+          });
+
+          setTimeout(function () {
+            var newItems2 = newItems.concat([]);
+            shuffle(newItems2);
+
+            _this9.setState({
+              items: newItems2
+            });
+
+            console.log('Expected order 2: ' + newItems2.map(function (el) {
+              return '(' + el.val + ')';
+            }).join(','));
+          }, 1); // And this is what the DOM looks like
+
+          setTimeout(function () {
+            var res = document.querySelector('#App6 ul').textContent.match(/\(\d*\)/g);
+            console.log('Actual order:     ' + res.join(','));
+          }, 100);
+        };
+
         _this9.doMoveOne = function (e) {
           e && e.preventDefault();
 
@@ -934,6 +968,8 @@
         }, 'Add'), createElement('button', {
           onClick: this.doMix
         }, 'Shuffle'), createElement('button', {
+          onClick: this.doDoubleMix
+        }, 'DoubleShuffle'), createElement('button', {
           onClick: this.doMoveOne
         }, 'Move 1'), createElement('button', {
           onClick: this.doRemoveMix
