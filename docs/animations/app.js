@@ -556,9 +556,19 @@
       e && e.preventDefault();
       var newItems = this.state.items.concat([]);
       shuffle(newItems);
+      
+      // So this is the shuffled order
+      console.log('Expected order: ' + newItems.map((el) => '(' + el.val + ')').join(','))
+
       this.setState({
         items: newItems
       });
+
+      // And this is what the DOM looks like
+      setTimeout(() => {
+        const res = document.querySelector('#App6 ul').textContent.match(/\(\d*\)/g);
+        console.log('Actual order:   ' + res.join(','));
+      }, 100)
     }
 
     doMoveOne = (e) => {
