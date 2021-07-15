@@ -1,1 +1,2252 @@
-!function(){"use strict";var e,n,t=function(e,n,t,i){this.min=e,this.max=n,this.mean=t,this.last=i},i=function(){function e(e){this.samples=[],this.maxSamples=e,this._i=-1}return e.prototype.addSample=function(e){this._i=(this._i+1)%this.maxSamples,this.samples[this._i]=e},e.prototype.each=function(e){for(var n=this.samples,t=0;t<n.length;t++)e(n[(this._i+1+t)%n.length],t)},e.prototype.calc=function(){var e=this.samples;if(0===e.length)return new t(0,0,0,0);for(var n=e[(this._i+1)%e.length],i=n,o=0,r=0;r<e.length;r++){var l=e[(this._i+1+r)%e.length];l<n&&(n=l),l>i&&(i=l),o+=l}var a=e[this._i],u=o/e.length;return new t(n,i,u,a)},e}(),o=[],r=-1,l=(e=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(e,n){e.__proto__=n}||function(e,n){for(var t in n)n.hasOwnProperty(t)&&(e[t]=n[t])},function(n,t){function i(){this.constructor=n}e(n,t),n.prototype=null===t?Object.create(t):(i.prototype=t.prototype,new i)}),a=function(){function e(e){var n=this;this._sync=function(){n.sync(),n._dirty=!1},this.name=e,this.element=document.createElement("div"),this.element.style.cssText="padding: 2px;background-color: #020;font-family: monospace;font-size: 12px;color: #0f0",this._dirty=!1,this.invalidate()}return e.prototype.invalidate=function(){var e;this._dirty||(this._dirty=!0,e=this._sync,o.push(e),-1===r&&requestAnimationFrame((function(e){r=-1;var n=o;o=[];for(var t=0;t<n.length;t++)n[t]()})))},e.prototype.sync=function(){throw new Error("sync method not implemented")},e}();!function(e){e[e.HideMin=1]="HideMin",e[e.HideMax=2]="HideMax",e[e.HideMean=4]="HideMean",e[e.HideLast=8]="HideLast",e[e.HideGraph=16]="HideGraph",e[e.RoundValues=32]="RoundValues"}(n||(n={}));var u=function(e){function t(t,i,o,r){var l=e.call(this,t)||this;l.flags=i,l.unitName=o,l.samples=r;var a=document.createElement("div");a.style.cssText="text-align: center",a.textContent=l.name;var u=document.createElement("div");return 0===(i&n.HideMin)?(l.minText=document.createElement("div"),u.appendChild(l.minText)):l.minText=null,0===(i&n.HideMax)?(l.maxText=document.createElement("div"),u.appendChild(l.maxText)):l.maxText=null,0===(i&n.HideMean)?(l.meanText=document.createElement("div"),u.appendChild(l.meanText)):l.meanText=null,0===(i&n.HideLast)?(l.lastText=document.createElement("div"),u.appendChild(l.lastText)):l.lastText=null,l.element.appendChild(a),l.element.appendChild(u),0===(i&n.HideGraph)?(l.canvas=document.createElement("canvas"),l.canvas.style.cssText="display: block; padding: 0; margin: 0",l.canvas.width=100,l.canvas.height=30,l.ctx=l.canvas.getContext("2d"),l.element.appendChild(l.canvas)):(l.canvas=null,l.ctx=null),l}return l(t,e),t.prototype.sync=function(){var e,t,i,o,r=this,l=this.samples.calc(),a=30/(1.2*l.max);0===(this.flags&n.RoundValues)?(e=l.min.toFixed(2),t=l.max.toFixed(2),i=l.mean.toFixed(2),o=l.last.toFixed(2)):(e=Math.round(l.min).toString(),t=Math.round(l.max).toString(),i=Math.round(l.mean).toString(),o=Math.round(l.last).toString()),null!==this.minText&&(this.minText.textContent="min:  "+e+this.unitName),null!==this.maxText&&(this.maxText.textContent="max:  "+t+this.unitName),null!==this.meanText&&(this.meanText.textContent="mean: "+i+this.unitName),null!==this.lastText&&(this.lastText.textContent="last: "+o+this.unitName),null!==this.ctx&&(this.ctx.fillStyle="#010",this.ctx.fillRect(0,0,100,30),this.ctx.fillStyle="#0f0",this.samples.each((function(e,n){r.ctx.fillRect(n,30,1,-e*a)})))},t}(a);!function(e){function n(n,t){var i=e.call(this,n)||this;return i.counter=t,i.text=document.createElement("div"),i.element.appendChild(i.text),i}l(n,e),n.prototype.sync=function(){this.text.textContent=this.name+": "+this.counter.value}}(a);var c=null;function s(){c||((c=document.createElement("div")).style.cssText="position: fixed;opacity: 0.9;right: 0;bottom: 0",document.body.appendChild(c))}var f=function(e,n,t){this.data=new i(100),this.widget=new u(e,t,n,this.data),this.startTime=-1},d={},p=Array.isArray;function h(e){var n=typeof e;return"string"===n||"number"===n}function v(e){return void 0===e||null===e}function m(e){return null===e||!1===e||!0===e||void 0===e}function g(e){return"function"===typeof e}function y(e){return"string"===typeof e}function x(e){return null===e}function b(e,n){var t={};if(e)for(var i in e)t[i]=e[i];if(n)for(var o in n)t[o]=n[o];return t}function C(e){return!x(e)&&"object"===typeof e}var k={},w=function(){this.componentDidAppear=[],this.componentWillDisappear=[],this.componentWillMove=[]};function M(e){return e.substr(2).toLowerCase()}function $(e,n){e.appendChild(n)}function F(e,n,t){x(t)?$(e,n):e.insertBefore(n,t)}function T(e,n){e.removeChild(n)}function S(e,n,t){var i=e.children;if(4&t)return i.$LI;if(8192&t)return 2===e.childFlags?i:i[n?0:i.length-1];return i}function D(e,n){for(var t;e;){if(2033&(t=e.flags))return e.dom;e=S(e,n,t)}return null}function N(e,n){for(var t,i=e.length;void 0!==(t=e.pop());)t((function(){--i<=0&&g(n)&&n()}))}function P(e,n,t){do{var i=e.flags;if(2033&i)return void(t&&e.dom.parentNode!==n||T(n,e.dom));var o=e.children;if(4&i&&(e=o.$LI),8&i&&(e=o),8192&i){if(2!==e.childFlags){for(var r=0,l=o.length;r<l;++r)P(o[r],n,!1);return}e=o}}while(e)}function V(e,n,t){t.componentWillDisappear.length>0?N(t.componentWillDisappear,function(e,n){return function(){P(e,n,!0)}}(e,n)):P(e,n,!1)}function W(e,n,t,i,o,r,l,a){e.componentWillMove.push((function(){4&l?t.componentWillMove(n,o,i,r,a):8&l&&t.onComponentWillMove(n,o,i,r,a)}))}function A(e,n,t,i,o){var r,l,a=n.flags;do{var u=n.flags;if(2033&u)return void(g(r.componentWillMove)||g(r.onComponentWillMove)?W(o,e,r,n.dom,t,i,a,l):F(t,n.dom,i));var c=n.children;if(4&u&&(r=n.children,l=n.props,n=c.$LI),8&u&&(r=n.ref,l=n.props,n=c),8192&u){if(2!==n.childFlags){for(var s=0,f=c.length;s<f;++s)A(e,c[s],t,i,o);return}n=c}}while(n)}function L(e,n,t){if(e.constructor.getDerivedStateFromProps)return b(t,e.constructor.getDerivedStateFromProps(n,t));return t}var E={componentComparator:null,createVNode:null,renderComplete:null};function H(e,n){e.textContent=n}function _(e,n){return C(e)&&e.event===n.event&&e.data===n.data}function I(e,n){return!!g(e)&&(e(n),!0)}var U="$";function B(e,n,t,i,o,r,l,a){this.childFlags=e,this.children=n,this.className=t,this.dom=null,this.flags=i,this.key=void 0===o?null:o,this.props=void 0===r?null:r,this.ref=void 0===l?null:l,this.type=a}function O(e,n,t,i,o,r,l,a){var u=void 0===o?1:o,c=new B(u,i,t,e,l,r,a,n);return E.createVNode&&E.createVNode(c),0===u&&function(e,n){var t,i=1;if(m(n))t=n;else if(h(n))i=16,t=n;else if(p(n)){for(var o=n.length,r=0;r<o;++r){var l=n[r];if(m(l)||p(l)){t=t||n.slice(0,r),X(n,t,r,"");break}if(h(l))(t=t||n.slice(0,r)).push(R(l,U+r));else{var a=l.key,u=(81920&l.flags)>0,c=x(a),s=y(a)&&a[0]===U;u||c||s?(t=t||n.slice(0,r),(u||s)&&(l=q(l)),(c||s)&&(l.key=U+r),t.push(l)):t&&t.push(l),l.flags|=65536}}i=0===(t=t||n).length?1:8}else(t=n).flags|=65536,81920&n.flags&&(t=q(n)),i=2;e.children=t,e.childFlags=i}(c,c.children),c}function R(e,n){return new B(1,v(e)||!0===e||!1===e?"":e,null,16,n,null,null,null)}function j(e,n,t){var i=O(8192,8192,null,e,n,null,t,null);switch(i.childFlags){case 1:i.children=G(),i.childFlags=2;break;case 16:i.children=[R(e)],i.childFlags=4}return i}function q(e){var n=-16385&e.flags,t=e.props;if(14&n&&!x(t)){var i=t;for(var o in t={},i)t[o]=i[o]}if(0===(8192&n))return new B(e.childFlags,e.children,e.className,n,e.key,t,e.ref,e.type);return function(e){var n=e.children,t=e.childFlags;return j(2===t?q(n):n.map(q),t,e.key)}(e)}function G(){return R("",null)}function X(e,n,t,i){for(var o=e.length;t<o;t++){var r=e[t];if(!m(r)){var l=i+U+t;if(p(r))X(r,n,0,l);else{if(h(r))r=R(r,l);else{var a=r.key,u=y(a)&&a[0]===U;(81920&r.flags||u)&&(r=q(r)),r.flags|=65536,u?a.substring(0,i.length)!==i&&(r.key=i+a):x(a)?r.key=l:r.key=i+a}n.push(r)}}}}function K(e){if(m(e)||h(e))return R(e,null);if(p(e))return j(e,0,null);return 16384&e.flags?q(e):e}var z="http://www.w3.org/1999/xlink",Q="http://www.w3.org/XML/1998/namespace",J={"xlink:actuate":z,"xlink:arcrole":z,"xlink:href":z,"xlink:role":z,"xlink:show":z,"xlink:title":z,"xlink:type":z,"xml:base":Q,"xml:lang":Q,"xml:space":Q};function Y(e){return{onClick:e,onDblClick:e,onFocusIn:e,onFocusOut:e,onKeyDown:e,onKeyPress:e,onKeyUp:e,onMouseDown:e,onMouseMove:e,onMouseUp:e,onTouchEnd:e,onTouchMove:e,onTouchStart:e}}var Z=Y(0),ee=Y(null),ne=Y(!0);function te(e,n){var t=n.$EV;return t||(t=n.$EV=Y(null)),t[e]||1===++Z[e]&&(ee[e]=function(e){var n="onClick"===e||"onDblClick"===e?function(e){return function(n){if(0!==n.button)return void n.stopPropagation();oe(n,!0,e,ue(n))}}(e):function(e){return function(n){oe(n,!1,e,ue(n))}}(e);return document.addEventListener(M(e),n),n}(e)),t}function ie(e,n){var t=n.$EV;t&&t[e]&&(0===--Z[e]&&(document.removeEventListener(M(e),ee[e]),ee[e]=null),t[e]=null)}function oe(e,n,t,i){var o=function(e){return g(e.composedPath)?e.composedPath()[0]:e.target}(e);do{if(n&&o.disabled)return;var r=o.$EV;if(r){var l=r[t];if(l&&(i.dom=o,l.event?l.event(l.data,e):l(e),e.cancelBubble))return}o=o.parentNode}while(!x(o))}function re(){this.cancelBubble=!0,this.immediatePropagationStopped||this.stopImmediatePropagation()}function le(){return this.defaultPrevented}function ae(){return this.cancelBubble}function ue(e){var n={dom:document};return e.isDefaultPrevented=le,e.isPropagationStopped=ae,e.stopPropagation=re,Object.defineProperty(e,"currentTarget",{configurable:!0,get:function(){return n.dom}}),n}function ce(e,n,t){if(e[n]){var i=e[n];i.event?i.event(i.data,t):i(t)}else{var o=n.toLowerCase();e[o]&&e[o](t)}}function se(e,n){var t=function(t){var i=this.$V;if(!i)return;var o=i.props||k,r=i.dom;if(y(e))ce(o,e,t);else for(var l=0;l<e.length;++l)ce(o,e[l],t);if(g(n)){var a=this.$V,u=a.props||k;n(u,r,!1,a)}};return Object.defineProperty(t,"wrapped",{configurable:!1,enumerable:!1,value:!0,writable:!1}),t}function fe(e,n,t){var i="$"+n,o=e[i];if(o){if(o[1].wrapped)return;e.removeEventListener(o[0],o[1]),e[i]=null}g(t)&&(e.addEventListener(n,t),e[i]=[n,t])}function de(e){return"checkbox"===e||"radio"===e}var pe=se("onInput",me),he=se(["onClick","onChange"],me);function ve(e){e.stopPropagation()}function me(e,n){var t=e.type,i=e.value,o=e.checked,r=e.multiple,l=e.defaultValue,a=!v(i);t&&t!==n.type&&n.setAttribute("type",t),v(r)||r===n.multiple||(n.multiple=r),v(l)||a||(n.defaultValue=l+""),de(t)?(a&&(n.value=i),v(o)||(n.checked=o)):a&&n.value!==i?(n.defaultValue=i,n.value=i):v(o)||(n.checked=o)}function ge(e,n){if("option"===e.type)!function(e,n){var t=e.props||k,i=e.dom;i.value=t.value,t.value===n||p(n)&&-1!==n.indexOf(t.value)?i.selected=!0:v(n)&&v(t.selected)||(i.selected=t.selected||!1)}(e,n);else{var t=e.children,i=e.flags;if(4&i)ge(t.$LI,n);else if(8&i)ge(t,n);else if(2===e.childFlags)ge(t,n);else if(12&e.childFlags)for(var o=0,r=t.length;o<r;++o)ge(t[o],n)}}ve.wrapped=!0;var ye=se("onChange",xe);function xe(e,n,t,i){var o=Boolean(e.multiple);v(e.multiple)||o===n.multiple||(n.multiple=o);var r=e.selectedIndex;if(-1===r&&(n.selectedIndex=-1),1!==i.childFlags){var l=e.value;"number"===typeof r&&r>-1&&n.options[r]&&(l=n.options[r].value),t&&v(l)&&(l=e.defaultValue),ge(i,l)}}var be,Ce,ke=se("onInput",Me),we=se("onChange");function Me(e,n,t){var i=e.value,o=n.value;if(v(i)){if(t){var r=e.defaultValue;v(r)||r===o||(n.defaultValue=r,n.value=r)}}else o!==i&&(n.defaultValue=i,n.value=i)}function $e(e,n,t,i,o,r){64&e?me(i,t):256&e?xe(i,t,o,n):128&e&&Me(i,t,o),r&&(t.$V=n)}function Fe(e){return e.type&&de(e.type)?!v(e.checked):!v(e.value)}function Te(e){e&&!I(e,null)&&e.current&&(e.current=null)}function Se(e,n,t){e&&(g(e)||void 0!==e.current)&&t.push((function(){I(e,n)||void 0===e.current||(e.current=n)}))}function De(e,n,t){Ne(e,t),V(e,n,t)}function Ne(e,n){var t,i=e.flags,o=e.children;if(481&i){t=e.ref;var r=e.props;Te(t);var l=e.childFlags;if(!x(r))for(var a=Object.keys(r),u=0,c=a.length;u<c;u++){var s=a[u];ne[s]&&ie(s,e.dom)}12&l?Pe(o,n):2===l&&Ne(o,n)}else if(o)if(4&i){g(o.componentWillUnmount)&&o.componentWillUnmount();var f=n;g(o.componentWillDisappear)&&(f=new w,Ae(n,o,o.$LI.dom,i,void 0)),Te(e.ref),o.$UN=!0,Ne(o.$LI,f)}else if(8&i){var d=n;if(!v(t=e.ref)){var p=D(e,!0);g(t.onComponentWillUnmount)&&t.onComponentWillUnmount(p,e.props||k),g(t.onComponentWillDisappear)&&(d=new w,Ae(n,t,p,i,e.props))}Ne(o,d)}else 1024&i?De(o,e.ref,n):8192&i&&12&e.childFlags&&Pe(o,n)}function Pe(e,n){for(var t=0,i=e.length;t<i;++t)Ne(e[t],n)}function Ve(e,n,t){t.componentWillDisappear.length>0?N(t.componentWillDisappear,function(e,n){return function(){if(n)for(var t=0;t<e.length;t++)P(e[t],n,!1)}}(n,e)):e.textContent=""}function We(e,n,t,i){Pe(t,i),8192&n.flags?V(n,e,i):Ve(e,t,i)}function Ae(e,n,t,i,o){e.componentWillDisappear.push((function(e){4&i?n.componentWillDisappear(t,e):8&i&&n.onComponentWillDisappear(t,o,e)}))}function Le(e,n,t,i,o,r,l,a){switch(e){case"children":case"childrenType":case"className":case"defaultValue":case"key":case"multiple":case"ref":case"selectedIndex":break;case"autoFocus":i.autofocus=!!t;break;case"allowfullscreen":case"autoplay":case"capture":case"checked":case"controls":case"default":case"disabled":case"hidden":case"indeterminate":case"loop":case"muted":case"novalidate":case"open":case"readOnly":case"required":case"reversed":case"scoped":case"seamless":case"selected":i[e]=!!t;break;case"defaultChecked":case"value":case"volume":if(r&&"value"===e)break;var u=v(t)?"":t;i[e]!==u&&(i[e]=u);break;case"style":!function(e,n,t){if(v(n))return void t.removeAttribute("style");var i,o,r=t.style;if(y(n))return void(r.cssText=n);if(v(e)||y(e))for(i in n)o=n[i],r.setProperty(i,o);else{for(i in n)(o=n[i])!==e[i]&&r.setProperty(i,o);for(i in e)v(n[i])&&r.removeProperty(i)}}(n,t,i);break;case"dangerouslySetInnerHTML":!function(e,n,t,i,o){var r=e&&e.__html||"",l=n&&n.__html||"";r!==l&&(v(l)||function(e,n){var t=document.createElement("i");return t.innerHTML=n,t.innerHTML===e.innerHTML}(i,l)||(x(t)||(12&t.childFlags?Pe(t.children,o):2===t.childFlags&&Ne(t.children,o),t.children=null,t.childFlags=1),i.innerHTML=l))}(n,t,l,i,a);break;default:ne[e]?function(e,n,t,i){if(g(t))te(e,i)[e]=t;else if(C(t)){if(_(n,t))return;te(e,i)[e]=t}else ie(e,i)}(e,n,t,i):111===e.charCodeAt(0)&&110===e.charCodeAt(1)?function(e,n,t,i){if(C(t)){if(_(n,t))return;t=function(e){var n=e.event;return function(t){n(e.data,t)}}(t)}fe(i,M(e),t)}(e,n,t,i):v(t)?i.removeAttribute(e):o&&J[e]?i.setAttributeNS(J[e],e,t):i.setAttribute(e,t)}}function Ee(e,n,t){var i=K(e.render(n,e.state,t)),o=t;return g(e.getChildContext)&&(o=b(t,e.getChildContext())),e.$CX=o,i}function He(e,n){var t=e.props||k;return 32768&e.flags?e.type.render(t,e.ref,n):e.type(t,n)}function _e(e,n,t,i,o,r,l){var a=e.flags|=16384;481&a?function(e,n,t,i,o,r,l){var a=e.flags,u=e.props,c=e.className,s=e.childFlags,f=e.dom=function(e,n){if(n)return document.createElementNS("http://www.w3.org/2000/svg",e);return document.createElement(e)}(e.type,i=i||(32&a)>0),d=e.children;if(v(c)||""===c||(i?f.setAttribute("class",c):f.className=c),16===s)H(f,d);else if(1!==s){var p=i&&"foreignObject"!==e.type;2===s?(16384&d.flags&&(e.children=d=q(d)),_e(d,f,t,p,null,r,l)):8!==s&&4!==s||Ue(d,f,t,p,null,r,l)}x(n)||F(n,f,o),x(u)||function(e,n,t,i,o,r){var l=!1,a=(448&n)>0;for(var u in a&&(l=Fe(t))&&function(e,n,t){64&e?function(e,n){de(n.type)?(fe(e,"change",he),fe(e,"click",ve)):fe(e,"input",pe)}(n,t):256&e?function(e){fe(e,"change",ye)}(n):128&e&&function(e,n){fe(e,"input",ke),n.onChange&&fe(e,"change",we)}(n,t)}(n,i,t),t)Le(u,null,t[u],i,o,l,null,r);a&&$e(n,e,i,t,!0,l)}(e,a,u,f,i,l),Se(e.ref,f,r)}(e,n,t,i,o,r,l):4&a?function(e,n,t,i,o,r,l){var a=function(e,n,t,i,o,r){var l=new n(t,i),a=l.$N=Boolean(n.getDerivedStateFromProps||l.getSnapshotBeforeUpdate);if(l.$SVG=o,l.$L=r,e.children=l,l.$BS=!1,l.context=i,l.props===k&&(l.props=t),a)l.state=L(l,t,l.state);else if(g(l.componentWillMount)){l.$BR=!0,l.componentWillMount();var u=l.$PS;if(!x(u)){var c=l.state;if(x(c))l.state=u;else for(var s in u)c[s]=u[s];l.$PS=null}l.$BR=!1}return l.$LI=Ee(l,t,i),l}(e,e.type,e.props||k,t,i,r),u=l;g(a.componentDidAppear)&&(u=new w),_e(a.$LI,n,a.$CX,i,o,r,u),function(e,n,t,i){Se(e,n,t),g(n.componentDidMount)&&t.push(function(e){return function(){e.componentDidMount()}}(n)),g(n.componentDidAppear)&&Be(i,n,n.$LI.dom,4,void 0)}(e.ref,a,r,l)}(e,n,t,i,o,r,l):8&a?function(e,n,t,i,o,r,l){var a=e.ref,u=l;!v(a)&&g(a.onComponentDidAppear)&&(u=new w),_e(e.children=K(He(e,t)),n,t,i,o,r,u),function(e,n,t){var i=e.ref;v(i)||(I(i.onComponentWillMount,e.props||k),g(i.onComponentDidMount)&&n.push(function(e,n){return function(){e.onComponentDidMount(D(n,!0),n.props||k)}}(i,e)),g(i.onComponentDidAppear)&&Be(t,i,D(e,!0),8,e.props))}(e,r,l)}(e,n,t,i,o,r,l):512&a||16&a?Ie(e,n,o):8192&a?function(e,n,t,i,o,r,l){var a=e.children,u=e.childFlags;12&u&&0===a.length&&(u=e.childFlags=2,a=e.children=G()),2===u?_e(a,t,o,i,o,r,l):Ue(a,t,n,i,o,r,l)}(e,t,n,i,o,r,l):1024&a&&function(e,n,t,i,o,r){_e(e.children,e.ref,n,!1,null,o,r);var l=G();Ie(l,t,i),e.dom=l.dom}(e,t,n,o,r,l)}function Ie(e,n,t){var i=e.dom=document.createTextNode(e.children);x(n)||F(n,i,t)}function Ue(e,n,t,i,o,r,l){for(var a=0;a<e.length;++a){var u=e[a];16384&u.flags&&(e[a]=u=q(u)),_e(u,n,t,i,o,r,l)}}function Be(e,n,t,i,o){e.componentDidAppear.push((function(){4&i?n.componentDidAppear(t):8&i&&n.onComponentDidAppear(t,o)}))}function Oe(e,n,t,i,o,r,l,a){var u=n.flags|=16384;e.flags!==u||e.type!==n.type||e.key!==n.key||2048&u?16384&e.flags?function(e,n,t,i,o,r,l){Ne(e,l),0!==(n.flags&e.flags&2033)?(_e(n,null,i,o,null,r,l),function(e,n,t){e.replaceChild(n,t)}(t,n.dom,e.dom)):(_e(n,t,i,o,D(e,!0),r,l),V(e,t,l))}(e,n,t,i,o,l,a):_e(n,t,i,o,r,l,a):481&u?function(e,n,t,i,o,r,l){var a,u=n.dom=e.dom,c=e.props,s=n.props,f=!1,d=!1;if(i=i||(32&o)>0,c!==s){var p=c||k;if((a=s||k)!==k)for(var h in(f=(448&o)>0)&&(d=Fe(a)),a){var m=p[h],g=a[h];m!==g&&Le(h,m,g,u,i,d,e,l)}if(p!==k)for(var y in p)v(a[y])&&!v(p[y])&&Le(y,p[y],null,u,i,d,e,l)}var x=n.children,b=n.className;e.className!==b&&(v(b)?u.removeAttribute("class"):i?u.setAttribute("class",b):u.className=b),4096&o?function(e,n){e.textContent!==n&&(e.textContent=n)}(u,x):Re(e.childFlags,n.childFlags,e.children,x,u,t,i&&"foreignObject"!==n.type,null,e,r,l),f&&$e(o,n,u,a,!1,d);var C=n.ref,w=e.ref;w!==C&&(Te(w),Se(C,u,r))}(e,n,i,o,u,l,a):4&u?function(e,n,t,i,o,r,l,a){var u=n.children=e.children;if(x(u))return;u.$L=l;var c=n.props||k,s=n.ref,f=e.ref,d=u.state;if(!u.$N){if(g(u.componentWillReceiveProps)){if(u.$BR=!0,u.componentWillReceiveProps(c,i),u.$UN)return;u.$BR=!1}x(u.$PS)||(d=b(d,u.$PS),u.$PS=null)}(function(e,n,t,i,o,r,l,a,u,c){var s=e.state,f=e.props,d=Boolean(e.$N),p=g(e.shouldComponentUpdate);if(d&&(n=L(e,t,n!==s?b(s,n):n)),!p||p&&e.shouldComponentUpdate(t,n,o)){!d&&g(e.componentWillUpdate)&&e.componentWillUpdate(t,n,o),e.props=t,e.state=n,e.context=o;var h=null,v=Ee(e,t,o);d&&g(e.getSnapshotBeforeUpdate)&&(h=e.getSnapshotBeforeUpdate(f,s)),Oe(e.$LI,v,i,e.$CX,r,a,u,c),e.$LI=v,g(e.componentDidUpdate)&&function(e,n,t,i,o){o.push((function(){e.componentDidUpdate(n,t,i)}))}(e,f,s,h,u)}else e.props=t,e.state=n,e.context=o})(u,d,c,t,i,o,0,r,l,a),f!==s&&(Te(f),Se(s,u,l))}(e,n,t,i,o,r,l,a):8&u?function(e,n,t,i,o,r,l,a){var u=!0,c=n.props||k,s=n.ref,f=e.props,d=!v(s),p=e.children;if(d&&g(s.onComponentShouldUpdate)&&(u=s.onComponentShouldUpdate(f,c)),!1!==u){d&&g(s.onComponentWillUpdate)&&s.onComponentWillUpdate(f,c);var h=K(He(n,i));Oe(p,h,t,i,o,r,l,a),n.children=h,d&&g(s.onComponentDidUpdate)&&s.onComponentDidUpdate(f,c)}else n.children=p}(e,n,t,i,o,r,l,a):16&u?function(e,n){var t=n.children,i=n.dom=e.dom;t!==e.children&&(i.nodeValue=t)}(e,n):512&u?n.dom=e.dom:8192&u?function(e,n,t,i,o,r,l){var a=e.children,u=n.children,c=e.childFlags,s=n.childFlags,f=null;12&s&&0===u.length&&(s=n.childFlags=2,u=n.children=G());var d=0!==(2&s);if(12&c){var p=a.length;(8&c&&8&s||d||!d&&u.length>p)&&(f=D(a[p-1],!1).nextSibling)}Re(c,s,a,u,t,i,o,f,e,r,l)}(e,n,t,i,o,l,a):function(e,n,t,i,o){var r=e.ref,l=n.ref,a=n.children;if(Re(e.childFlags,n.childFlags,e.children,a,r,t,!1,null,e,i,o),n.dom=e.dom,r!==l&&!m(a)){var u=a.dom;T(r,u),$(l,u)}}(e,n,i,l,a),a.componentWillMove.length>0&&function(e){for(var n;void 0!==(n=e.pop());)n()}(a.componentWillMove)}function Re(e,n,t,i,o,r,l,a,u,c,s){switch(e){case 2:switch(n){case 2:Oe(t,i,o,r,l,a,c,s);break;case 1:De(t,o,s);break;case 16:Ne(t,s),H(o,i);break;default:!function(e,n,t,i,o,r,l){Ne(e,l),Ue(n,t,i,o,D(e,!0),r,l),V(e,t,l)}(t,i,o,r,l,c,s)}break;case 1:switch(n){case 2:_e(i,o,r,l,a,c,s);break;case 1:break;case 16:H(o,i);break;default:Ue(i,o,r,l,a,c,s)}break;case 16:switch(n){case 16:!function(e,n,t){e!==n&&(""!==e?t.firstChild.nodeValue=n:H(t,n))}(t,i,o);break;case 2:Ve(o,t,s),_e(i,o,r,l,a,c,s);break;case 1:Ve(o,t,s);break;default:Ve(o,t,s),Ue(i,o,r,l,a,c,s)}break;default:switch(n){case 16:Pe(t,s),H(o,i);break;case 2:We(o,u,t,s),_e(i,o,r,l,a,c,s);break;case 1:We(o,u,t,s);break;default:var f=0|t.length,d=0|i.length;0===f?d>0&&Ue(i,o,r,l,a,c,s):0===d?We(o,u,t,s):8===n&&8===e?function(e,n,t,i,o,r,l,a,u,c,s){var f,d,p=r-1,h=l-1,v=0,m=e[v],g=n[v];e:{for(;m.key===g.key;){if(16384&g.flags&&(n[v]=g=q(g)),Oe(m,g,t,i,o,a,c,s),e[v]=g,++v>p||v>h)break e;m=e[v],g=n[v]}for(m=e[p],g=n[h];m.key===g.key;){if(16384&g.flags&&(n[h]=g=q(g)),Oe(m,g,t,i,o,a,c,s),e[p]=g,h--,v>--p||v>h)break e;m=e[p],g=n[h]}}if(v>p){if(v<=h)for(d=(f=h+1)<l?D(n[f],!0):a;v<=h;)16384&(g=n[v]).flags&&(n[v]=g=q(g)),++v,_e(g,t,i,o,d,c,s)}else if(v>h)for(;v<=p;)De(e[v++],t,s);else!function(e,n,t,i,o,r,l,a,u,c,s,f,d,p){var h,v,m=0,g=0,y=a,x=a,b=r-a+1,C=l-a+1,k=new Int32Array(C+1),w=b===i,M=!1,$=0,F=0;if(o<4||(b|C)<32)for(g=y;g<=r;++g)if(h=e[g],F<C){for(a=x;a<=l;a++)if(v=n[a],h.key===v.key){if(k[a-x]=g+1,w)for(w=!1;y<g;)De(e[y++],u,p);$>a?M=!0:$=a,16384&v.flags&&(n[a]=v=q(v)),Oe(h,v,u,t,c,s,d,p),++F;break}!w&&a>l&&De(h,u,p)}else w||De(h,u,p);else{var T={};for(g=x;g<=l;++g)T[n[g].key]=g;for(g=y;g<=r;++g)if(h=e[g],F<C)if(void 0!==(a=T[h.key])){if(w)for(w=!1;g>y;)De(e[y++],u,p);k[a-x]=g+1,$>a?M=!0:$=a,16384&(v=n[a]).flags&&(n[a]=v=q(v)),Oe(h,v,u,t,c,s,d,p),++F}else w||De(h,u,p);else w||De(h,u,p)}if(w)We(u,f,e,p),Ue(n,u,t,c,s,d,p);else if(M){var S=function(e){var n=0,t=0,i=0,o=0,r=0,l=0,a=0,u=e.length;for(u>je&&(je=u,be=new Int32Array(u),Ce=new Int32Array(u));t<u;++t)if(0!==(n=e[t])){if(e[i=be[o]]<n){Ce[t]=i,be[++o]=t;continue}for(r=0,l=o;r<l;)e[be[a=r+l>>1]]<n?r=a+1:l=a;n<e[be[r]]&&(r>0&&(Ce[t]=be[r-1]),be[r]=t)}r=o+1;var c=new Int32Array(r);for(l=be[r-1];r-- >0;)c[r]=l,l=Ce[l],be[r]=0;return c}(k);for(a=S.length-1,g=C-1;g>=0;g--)0===k[g]?(16384&(v=n[$=g+x]).flags&&(n[$]=v=q(v)),_e(v,u,t,c,(m=$+1)<o?D(n[m],!0):s,d,p)):a<0||g!==S[a]?A(f,v=n[$=g+x],u,(m=$+1)<o?D(n[m],!0):s,p):a--}else if(F!==C)for(g=C-1;g>=0;g--)0===k[g]&&(16384&(v=n[$=g+x]).flags&&(n[$]=v=q(v)),_e(v,u,t,c,(m=$+1)<o?D(n[m],!0):s,d,p))}(e,n,i,r,l,p,h,v,t,o,a,u,c,s)}(t,i,o,r,l,f,d,a,u,c,s):function(e,n,t,i,o,r,l,a,u,c){for(var s,f,d=r>l?l:r,p=0;p<d;++p)s=n[p],f=e[p],16384&s.flags&&(s=n[p]=q(s)),Oe(f,s,t,i,o,a,u,c),e[p]=s;if(r<l)for(p=d;p<l;++p)16384&(s=n[p]).flags&&(s=n[p]=q(s)),_e(s,t,i,o,a,u,c);else if(r>l)for(p=d;p<r;++p)De(e[p],t,c)}(t,i,o,r,l,f,d,a,c,s)}}}var je=0;"undefined"!==typeof document&&window.Node&&(Node.prototype.$EV=null,Node.prototype.$V=null),"undefined"!==typeof Promise&&Promise.resolve().then.bind(Promise.resolve());var qe=document.getElementById("app");!function(e){void 0===e&&(e=n.HideMin|n.HideMax|n.HideMean|n.RoundValues),s();var t=new i(100),o=new u("FPS",e,"",t);c.appendChild(o.element);var r=0,l=60;requestAnimationFrame((function e(n){r>0&&(l+=.01652892561983471*(1e3/(n-r)-l)),r=n,t.addSample(l),o.invalidate(),requestAnimationFrame(e)}))}(),function(e){if(void 0===e&&(e=n.HideMin|n.HideMean),s(),void 0===performance.memory)return;var t=new i(100),o=new u("Memory",e,"MB",t);c.appendChild(o.element),function e(){t.addSample(Math.round(performance.memory.usedJSHeapSize/1048576)),o.invalidate(),setTimeout(e,30)}()}(),function(e,n){void 0===n&&(n=0),s();var t=d[e];void 0===t&&(d[e]=t=new f(e,"ms",n),c.appendChild(t.widget.element))}("view update"),setInterval((function(){var e,n=ENV.generateData(!1).toArray();void 0!==(e=d["view update"])&&(e.startTime=performance.now()),function(e){for(var n=e.length,t=[],i=0;i<n;i++){for(var o=e[i],r=o.lastSample,l=[O(1,"td","dbname",o.dbname,16,null,null,null),O(1,"td","query-count",O(1,"span",r.countClassName,r.nbQueries,16,null,null,null),2,null,null,null)],a=0;a<5;a++){var u=r.topFiveQueries[a];l.push(O(1,"td",u.elapsedClassName,[O(1,"div",null,u.formatElapsed,16,null,null,null),O(1,"div","popover left",[O(1,"div","popover-content",u.query,16,null,null,null),O(1,"div","arrow",null,1,null,null,null)],4,null,null,null)],4,null,null,null))}t.push(O(1,"tr",null,l,4,null,null,null))}var c,s,f;c=O(1,"table","table table-striped",O(1,"tbody",null,t,4,null,null,null),2,null,null,null),void 0===s&&(s=null),void 0===f&&(f=k),function(e,n,t,i){var o=[],r=new w,l=n.$V;v(l)?v(e)||(16384&e.flags&&(e=q(e)),_e(e,n,i,!1,null,o,r),n.$V=e,l=e):v(e)?(De(l,n,r),n.$V=null):(16384&e.flags&&(e=q(e)),Oe(l,e,n,i,!1,null,o,r),l=n.$V=e),function(e){for(var n=0;n<e.length;n++)e[n]()}(o),N(r.componentDidAppear),g(t)&&t(),g(E.renderComplete)&&E.renderComplete(l,n)}(c,qe,s,f)}(n),function(e){var n=performance.now(),t=d["view update"];void 0!==t&&-1!==t.startTime&&(t.data.addSample(n-t.startTime),t.widget.invalidate())}()}),0)}();
+(function () {
+    'use strict';
+
+    var MonitorMaxSamples = 100;
+    var MonitorSamplesResult = (function () {
+        function MonitorSamplesResult(min, max, mean, last) {
+            this.min = min;
+            this.max = max;
+            this.mean = mean;
+            this.last = last;
+        }
+        return MonitorSamplesResult;
+    }());
+    /**
+     * Profile Samples.
+     */
+    var MonitorSamples = (function () {
+        function MonitorSamples(maxSamples) {
+            this.samples = [];
+            this.maxSamples = maxSamples;
+            this._i = -1;
+        }
+        MonitorSamples.prototype.addSample = function (v) {
+            this._i = (this._i + 1) % this.maxSamples;
+            this.samples[this._i] = v;
+        };
+        MonitorSamples.prototype.each = function (fn) {
+            var samples = this.samples;
+            for (var i = 0; i < samples.length; i++) {
+                fn(samples[(this._i + 1 + i) % samples.length], i);
+            }
+        };
+        MonitorSamples.prototype.calc = function () {
+            var samples = this.samples;
+            if (samples.length === 0) {
+                return new MonitorSamplesResult(0, 0, 0, 0);
+            }
+            var min = samples[(this._i + 1) % samples.length];
+            var max = min;
+            var sum = 0;
+            for (var i = 0; i < samples.length; i++) {
+                var k = samples[(this._i + 1 + i) % samples.length];
+                if (k < min) {
+                    min = k;
+                }
+                if (k > max) {
+                    max = k;
+                }
+                sum += k;
+            }
+            var last = samples[this._i];
+            var mean = sum / samples.length;
+            return new MonitorSamplesResult(min, max, mean, last);
+        };
+        return MonitorSamples;
+    }());
+
+    var frameTasks = [];
+    var rafId = -1;
+    /**
+     * Schedule new task that will be executed on the next frame.
+     */
+    function scheduleNextFrameTask(task) {
+        frameTasks.push(task);
+        if (rafId === -1) {
+            requestAnimationFrame(function (t) {
+                rafId = -1;
+                var tasks = frameTasks;
+                frameTasks = [];
+                for (var i = 0; i < tasks.length; i++) {
+                    tasks[i]();
+                }
+            });
+        }
+    }
+
+    var __extends = (function () {
+        var extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return function (d, b) {
+            extendStatics(d, b);
+            function __() { this.constructor = d; }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        };
+    })();
+    var MonitorGraphHeight = 30;
+    var MonitorGraphWidth = MonitorMaxSamples;
+    var Widget = (function () {
+        function Widget(name) {
+            var _this = this;
+            this._sync = function () {
+                _this.sync();
+                _this._dirty = false;
+            };
+            this.name = name;
+            this.element = document.createElement("div");
+            this.element.style.cssText = "padding: 2px;" +
+                "background-color: #020;" +
+                "font-family: monospace;" +
+                "font-size: 12px;" +
+                "color: #0f0";
+            this._dirty = false;
+            this.invalidate();
+        }
+        Widget.prototype.invalidate = function () {
+            if (!this._dirty) {
+                this._dirty = true;
+                scheduleNextFrameTask(this._sync);
+            }
+        };
+        Widget.prototype.sync = function () {
+            throw new Error("sync method not implemented");
+        };
+        return Widget;
+    }());
+    var MonitorWidgetFlags;
+    (function (MonitorWidgetFlags) {
+        MonitorWidgetFlags[MonitorWidgetFlags["HideMin"] = 1] = "HideMin";
+        MonitorWidgetFlags[MonitorWidgetFlags["HideMax"] = 2] = "HideMax";
+        MonitorWidgetFlags[MonitorWidgetFlags["HideMean"] = 4] = "HideMean";
+        MonitorWidgetFlags[MonitorWidgetFlags["HideLast"] = 8] = "HideLast";
+        MonitorWidgetFlags[MonitorWidgetFlags["HideGraph"] = 16] = "HideGraph";
+        MonitorWidgetFlags[MonitorWidgetFlags["RoundValues"] = 32] = "RoundValues";
+    })(MonitorWidgetFlags || (MonitorWidgetFlags = {}));
+    var MonitorWidget = (function (_super) {
+        __extends(MonitorWidget, _super);
+        function MonitorWidget(name, flags, unitName, samples) {
+            var _this = _super.call(this, name) || this;
+            _this.flags = flags;
+            _this.unitName = unitName;
+            _this.samples = samples;
+            var label = document.createElement("div");
+            label.style.cssText = "text-align: center";
+            label.textContent = _this.name;
+            var text = document.createElement("div");
+            if ((flags & MonitorWidgetFlags.HideMin) === 0) {
+                _this.minText = document.createElement("div");
+                text.appendChild(_this.minText);
+            }
+            else {
+                _this.minText = null;
+            }
+            if ((flags & MonitorWidgetFlags.HideMax) === 0) {
+                _this.maxText = document.createElement("div");
+                text.appendChild(_this.maxText);
+            }
+            else {
+                _this.maxText = null;
+            }
+            if ((flags & MonitorWidgetFlags.HideMean) === 0) {
+                _this.meanText = document.createElement("div");
+                text.appendChild(_this.meanText);
+            }
+            else {
+                _this.meanText = null;
+            }
+            if ((flags & MonitorWidgetFlags.HideLast) === 0) {
+                _this.lastText = document.createElement("div");
+                text.appendChild(_this.lastText);
+            }
+            else {
+                _this.lastText = null;
+            }
+            _this.element.appendChild(label);
+            _this.element.appendChild(text);
+            if ((flags & MonitorWidgetFlags.HideGraph) === 0) {
+                _this.canvas = document.createElement("canvas");
+                _this.canvas.style.cssText = "display: block; padding: 0; margin: 0";
+                _this.canvas.width = MonitorGraphWidth;
+                _this.canvas.height = MonitorGraphHeight;
+                _this.ctx = _this.canvas.getContext("2d");
+                _this.element.appendChild(_this.canvas);
+            }
+            else {
+                _this.canvas = null;
+                _this.ctx = null;
+            }
+            return _this;
+        }
+        MonitorWidget.prototype.sync = function () {
+            var _this = this;
+            var result = this.samples.calc();
+            var scale = MonitorGraphHeight / (result.max * 1.2);
+            var min;
+            var max;
+            var mean;
+            var last;
+            if ((this.flags & MonitorWidgetFlags.RoundValues) === 0) {
+                min = result.min.toFixed(2);
+                max = result.max.toFixed(2);
+                mean = result.mean.toFixed(2);
+                last = result.last.toFixed(2);
+            }
+            else {
+                min = Math.round(result.min).toString();
+                max = Math.round(result.max).toString();
+                mean = Math.round(result.mean).toString();
+                last = Math.round(result.last).toString();
+            }
+            if (this.minText !== null) {
+                this.minText.textContent = "min: \u00A0" + min + this.unitName;
+            }
+            if (this.maxText !== null) {
+                this.maxText.textContent = "max: \u00A0" + max + this.unitName;
+            }
+            if (this.meanText !== null) {
+                this.meanText.textContent = "mean: " + mean + this.unitName;
+            }
+            if (this.lastText !== null) {
+                this.lastText.textContent = "last: " + last + this.unitName;
+            }
+            if (this.ctx !== null) {
+                this.ctx.fillStyle = "#010";
+                this.ctx.fillRect(0, 0, MonitorGraphWidth, MonitorGraphHeight);
+                this.ctx.fillStyle = "#0f0";
+                this.samples.each(function (v, i) {
+                    _this.ctx.fillRect(i, MonitorGraphHeight, 1, -(v * scale));
+                });
+            }
+        };
+        return MonitorWidget;
+    }(Widget));
+    ((function (_super) {
+        __extends(CounterWidget, _super);
+        function CounterWidget(name, counter) {
+            var _this = _super.call(this, name) || this;
+            _this.counter = counter;
+            _this.text = document.createElement("div");
+            _this.element.appendChild(_this.text);
+            return _this;
+        }
+        CounterWidget.prototype.sync = function () {
+            this.text.textContent = this.name + ": " + this.counter.value;
+        };
+        return CounterWidget;
+    })(Widget));
+
+    var container = null;
+    /**
+     * Check that everything is properly initialized.
+     */
+    function checkInit() {
+        if (!container) {
+            container = document.createElement("div");
+            container.style.cssText = "position: fixed;" +
+                "opacity: 0.9;" +
+                "right: 0;" +
+                "bottom: 0";
+            document.body.appendChild(container);
+        }
+    }
+    /**
+     * Start FPS monitor
+     */
+    function startFPSMonitor(flags) {
+        if (flags === void 0) { flags = MonitorWidgetFlags.HideMin | MonitorWidgetFlags.HideMax |
+            MonitorWidgetFlags.HideMean | MonitorWidgetFlags.RoundValues; }
+        checkInit();
+        var data = new MonitorSamples(MonitorMaxSamples);
+        var w = new MonitorWidget("FPS", flags, "", data);
+        container.appendChild(w.element);
+        var alpha = 2 / 121;
+        var last = 0;
+        var fps = 60;
+        function update(now) {
+            if (last > 0) {
+                fps += alpha * ((1000 / (now - last)) - fps);
+            }
+            last = now;
+            data.addSample(fps);
+            w.invalidate();
+            requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+    /**
+     * Start Memory Monitor
+     */
+    function startMemMonitor(flags) {
+        if (flags === void 0) { flags = MonitorWidgetFlags.HideMin | MonitorWidgetFlags.HideMean; }
+        checkInit();
+        if (performance.memory === undefined) {
+            return;
+        }
+        var data = new MonitorSamples(MonitorMaxSamples);
+        var w = new MonitorWidget("Memory", flags, "MB", data);
+        container.appendChild(w.element);
+        function update() {
+            data.addSample(Math.round(performance.memory.usedJSHeapSize / (1024 * 1024)));
+            w.invalidate();
+            setTimeout(update, 30);
+        }
+        update();
+    }
+    var ProfilerDetails = (function () {
+        function ProfilerDetails(name, unitName, flags) {
+            this.data = new MonitorSamples(MonitorMaxSamples);
+            this.widget = new MonitorWidget(name, flags, unitName, this.data);
+            this.startTime = -1;
+        }
+        return ProfilerDetails;
+    }());
+    var profilerInstances = {};
+    /**
+     * Initialize profiler and insert into container.
+     */
+    function initProfiler(name, flags) {
+        if (flags === void 0) { flags = 0; }
+        checkInit();
+        var profiler = profilerInstances[name];
+        if (profiler === void 0) {
+            profilerInstances[name] = profiler = new ProfilerDetails(name, "ms", flags);
+            container.appendChild(profiler.widget.element);
+        }
+    }
+    function startProfile(name) {
+        var profiler = profilerInstances[name];
+        if (profiler !== void 0) {
+            profiler.startTime = performance.now();
+        }
+    }
+    function endProfile(name) {
+        var now = performance.now();
+        var profiler = profilerInstances[name];
+        if (profiler !== void 0 && profiler.startTime !== -1) {
+            profiler.data.addSample(now - profiler.startTime);
+            profiler.widget.invalidate();
+        }
+    }
+
+    var isArray = Array.isArray;
+    function isStringOrNumber(o) {
+        var type = typeof o;
+        return type === 'string' || type === 'number';
+    }
+    function isNullOrUndef(o) {
+        return o === void 0 || o === null;
+    }
+    function isInvalid(o) {
+        return o === null || o === false || o === true || o === void 0;
+    }
+    function isFunction(o) {
+        return typeof o === 'function';
+    }
+    function isString(o) {
+        return typeof o === 'string';
+    }
+    function isNumber(o) {
+        return typeof o === 'number';
+    }
+    function isNull(o) {
+        return o === null;
+    }
+    function combineFrom(first, second) {
+        var out = {};
+        if (first) {
+            for (var key in first) {
+                out[key] = first[key];
+            }
+        }
+        if (second) {
+            for (var key$1 in second) {
+                out[key$1] = second[key$1];
+            }
+        }
+        return out;
+    }
+    // object.event should always be function, otherwise its badly created object.
+    function isLinkEventObject(o) {
+        return !isNull(o) && typeof o === 'object';
+    }
+
+    // We need EMPTY_OBJ defined in one place.
+    // Its used for comparison so we cant inline it into shared
+    var EMPTY_OBJ = {};
+    function normalizeEventName(name) {
+        return name.substr(2).toLowerCase();
+    }
+    function appendChild(parentDOM, dom) {
+        parentDOM.appendChild(dom);
+    }
+    function insertOrAppend(parentDOM, newNode, nextNode) {
+        if (isNull(nextNode)) {
+            appendChild(parentDOM, newNode);
+        }
+        else {
+            parentDOM.insertBefore(newNode, nextNode);
+        }
+    }
+    function documentCreateElement(tag, isSVG) {
+        if (isSVG) {
+            return document.createElementNS('http://www.w3.org/2000/svg', tag);
+        }
+        return document.createElement(tag);
+    }
+    function replaceChild(parentDOM, newDom, lastDom) {
+        parentDOM.replaceChild(newDom, lastDom);
+    }
+    function removeChild(parentDOM, childNode) {
+        parentDOM.removeChild(childNode);
+    }
+    function callAll(arrayFn) {
+        for (var i = 0; i < arrayFn.length; i++) {
+            arrayFn[i]();
+        }
+    }
+    function findChildVNode(vNode, startEdge, flags) {
+        var children = vNode.children;
+        if (flags & 4 /* ComponentClass */) {
+            return children.$LI;
+        }
+        if (flags & 8192 /* Fragment */) {
+            return vNode.childFlags === 2 /* HasVNodeChildren */ ? children : children[startEdge ? 0 : children.length - 1];
+        }
+        return children;
+    }
+    function findDOMfromVNode(vNode, startEdge) {
+        var flags;
+        while (vNode) {
+            flags = vNode.flags;
+            if (flags & 2033 /* DOMRef */) {
+                return vNode.dom;
+            }
+            vNode = findChildVNode(vNode, startEdge, flags);
+        }
+        return null;
+    }
+    function removeVNodeDOM(vNode, parentDOM) {
+        do {
+            var flags = vNode.flags;
+            if (flags & 2033 /* DOMRef */) {
+                removeChild(parentDOM, vNode.dom);
+                return;
+            }
+            var children = vNode.children;
+            if (flags & 4 /* ComponentClass */) {
+                vNode = children.$LI;
+            }
+            if (flags & 8 /* ComponentFunction */) {
+                vNode = children;
+            }
+            if (flags & 8192 /* Fragment */) {
+                if (vNode.childFlags === 2 /* HasVNodeChildren */) {
+                    vNode = children;
+                }
+                else {
+                    for (var i = 0, len = children.length; i < len; ++i) {
+                        removeVNodeDOM(children[i], parentDOM);
+                    }
+                    return;
+                }
+            }
+        } while (vNode);
+    }
+    function moveVNodeDOM(vNode, parentDOM, nextNode) {
+        do {
+            var flags = vNode.flags;
+            if (flags & 2033 /* DOMRef */) {
+                insertOrAppend(parentDOM, vNode.dom, nextNode);
+                return;
+            }
+            var children = vNode.children;
+            if (flags & 4 /* ComponentClass */) {
+                vNode = children.$LI;
+            }
+            if (flags & 8 /* ComponentFunction */) {
+                vNode = children;
+            }
+            if (flags & 8192 /* Fragment */) {
+                if (vNode.childFlags === 2 /* HasVNodeChildren */) {
+                    vNode = children;
+                }
+                else {
+                    for (var i = 0, len = children.length; i < len; ++i) {
+                        moveVNodeDOM(children[i], parentDOM, nextNode);
+                    }
+                    return;
+                }
+            }
+        } while (vNode);
+    }
+    function createDerivedState(instance, nextProps, state) {
+        if (instance.constructor.getDerivedStateFromProps) {
+            return combineFrom(state, instance.constructor.getDerivedStateFromProps(nextProps, state));
+        }
+        return state;
+    }
+    var options = {
+        componentComparator: null,
+        createVNode: null,
+        renderComplete: null
+    };
+    function setTextContent(dom, children) {
+        dom.textContent = children;
+    }
+    // Calling this function assumes, nextValue is linkEvent
+    function isLastValueSameLinkEvent(lastValue, nextValue) {
+        return (isLinkEventObject(lastValue) &&
+            lastValue.event === nextValue.event &&
+            lastValue.data === nextValue.data);
+    }
+    function safeCall1(method, arg1) {
+        return !!isFunction(method) && (method(arg1), true);
+    }
+
+    var keyPrefix = '$';
+    function V(childFlags, children, className, flags, key, props, ref, type) {
+        this.childFlags = childFlags;
+        this.children = children;
+        this.className = className;
+        this.dom = null;
+        this.flags = flags;
+        this.key = key === void 0 ? null : key;
+        this.props = props === void 0 ? null : props;
+        this.ref = ref === void 0 ? null : ref;
+        this.type = type;
+    }
+    function createVNode(flags, type, className, children, childFlags, props, key, ref) {
+        var childFlag = childFlags === void 0 ? 1 /* HasInvalidChildren */ : childFlags;
+        var vNode = new V(childFlag, children, className, flags, key, props, ref, type);
+        if (childFlag === 0 /* UnknownChildren */) {
+            normalizeChildren(vNode, vNode.children);
+        }
+        return vNode;
+    }
+    function createTextVNode(text, key) {
+        return new V(1 /* HasInvalidChildren */, isNullOrUndef(text) || text === true || text === false ? '' : text, null, 16 /* Text */, key, null, null, null);
+    }
+    function createFragment(children, childFlags, key) {
+        var fragment = createVNode(8192 /* Fragment */, 8192 /* Fragment */, null, children, childFlags, null, key, null);
+        switch (fragment.childFlags) {
+            case 1 /* HasInvalidChildren */:
+                fragment.children = createVoidVNode();
+                fragment.childFlags = 2 /* HasVNodeChildren */;
+                break;
+            case 16 /* HasTextChildren */:
+                fragment.children = [createTextVNode(children)];
+                fragment.childFlags = 4 /* HasNonKeyedChildren */;
+                break;
+        }
+        return fragment;
+    }
+    /*
+     * Fragment is different than normal vNode,
+     * because when it needs to be cloned we need to clone its children too
+     * But not normalize, because otherwise those possibly get KEY and re-mount
+     */
+    function cloneFragment(vNodeToClone) {
+        var oldChildren = vNodeToClone.children;
+        var childFlags = vNodeToClone.childFlags;
+        return createFragment(childFlags === 2 /* HasVNodeChildren */ ? directClone(oldChildren) : oldChildren.map(directClone), childFlags, vNodeToClone.key);
+    }
+    function directClone(vNodeToClone) {
+        var flags = vNodeToClone.flags & -16385 /* ClearInUse */;
+        var props = vNodeToClone.props;
+        if (flags & 14 /* Component */) {
+            if (!isNull(props)) {
+                var propsToClone = props;
+                props = {};
+                for (var key in propsToClone) {
+                    props[key] = propsToClone[key];
+                }
+            }
+        }
+        if ((flags & 8192 /* Fragment */) === 0) {
+            return new V(vNodeToClone.childFlags, vNodeToClone.children, vNodeToClone.className, flags, vNodeToClone.key, props, vNodeToClone.ref, vNodeToClone.type);
+        }
+        return cloneFragment(vNodeToClone);
+    }
+    function createVoidVNode() {
+        return createTextVNode('', null);
+    }
+    function _normalizeVNodes(nodes, result, index, currentKey) {
+        for (var len = nodes.length; index < len; index++) {
+            var n = nodes[index];
+            if (!isInvalid(n)) {
+                var newKey = currentKey + keyPrefix + index;
+                if (isArray(n)) {
+                    _normalizeVNodes(n, result, 0, newKey);
+                }
+                else {
+                    if (isStringOrNumber(n)) {
+                        n = createTextVNode(n, newKey);
+                    }
+                    else {
+                        var oldKey = n.key;
+                        var isPrefixedKey = isString(oldKey) && oldKey[0] === keyPrefix;
+                        if (n.flags & 81920 /* InUseOrNormalized */ || isPrefixedKey) {
+                            n = directClone(n);
+                        }
+                        n.flags |= 65536 /* Normalized */;
+                        if (!isPrefixedKey) {
+                            if (isNull(oldKey)) {
+                                n.key = newKey;
+                            }
+                            else {
+                                n.key = currentKey + oldKey;
+                            }
+                        }
+                        else if (oldKey.substring(0, currentKey.length) !== currentKey) {
+                            n.key = currentKey + oldKey;
+                        }
+                    }
+                    result.push(n);
+                }
+            }
+        }
+    }
+    function normalizeChildren(vNode, children) {
+        var newChildren;
+        var newChildFlags = 1 /* HasInvalidChildren */;
+        // Don't change children to match strict equal (===) true in patching
+        if (isInvalid(children)) {
+            newChildren = children;
+        }
+        else if (isStringOrNumber(children)) {
+            newChildFlags = 16 /* HasTextChildren */;
+            newChildren = children;
+        }
+        else if (isArray(children)) {
+            var len = children.length;
+            for (var i = 0; i < len; ++i) {
+                var n = children[i];
+                if (isInvalid(n) || isArray(n)) {
+                    newChildren = newChildren || children.slice(0, i);
+                    _normalizeVNodes(children, newChildren, i, '');
+                    break;
+                }
+                else if (isStringOrNumber(n)) {
+                    newChildren = newChildren || children.slice(0, i);
+                    newChildren.push(createTextVNode(n, keyPrefix + i));
+                }
+                else {
+                    var key = n.key;
+                    var needsCloning = (n.flags & 81920 /* InUseOrNormalized */) > 0;
+                    var isNullKey = isNull(key);
+                    var isPrefixed = isString(key) && key[0] === keyPrefix;
+                    if (needsCloning || isNullKey || isPrefixed) {
+                        newChildren = newChildren || children.slice(0, i);
+                        if (needsCloning || isPrefixed) {
+                            n = directClone(n);
+                        }
+                        if (isNullKey || isPrefixed) {
+                            n.key = keyPrefix + i;
+                        }
+                        newChildren.push(n);
+                    }
+                    else if (newChildren) {
+                        newChildren.push(n);
+                    }
+                    n.flags |= 65536 /* Normalized */;
+                }
+            }
+            newChildren = newChildren || children;
+            if (newChildren.length === 0) {
+                newChildFlags = 1 /* HasInvalidChildren */;
+            }
+            else {
+                newChildFlags = 8 /* HasKeyedChildren */;
+            }
+        }
+        else {
+            newChildren = children;
+            newChildren.flags |= 65536 /* Normalized */;
+            if (children.flags & 81920 /* InUseOrNormalized */) {
+                newChildren = directClone(children);
+            }
+            newChildFlags = 2 /* HasVNodeChildren */;
+        }
+        vNode.children = newChildren;
+        vNode.childFlags = newChildFlags;
+        return vNode;
+    }
+    function normalizeRoot(input) {
+        if (isInvalid(input) || isStringOrNumber(input)) {
+            return createTextVNode(input, null);
+        }
+        if (isArray(input)) {
+            return createFragment(input, 0 /* UnknownChildren */, null);
+        }
+        return input.flags & 16384 /* InUse */ ? directClone(input) : input;
+    }
+
+    var xlinkNS = 'http://www.w3.org/1999/xlink';
+    var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+    var namespaces = {
+        'xlink:actuate': xlinkNS,
+        'xlink:arcrole': xlinkNS,
+        'xlink:href': xlinkNS,
+        'xlink:role': xlinkNS,
+        'xlink:show': xlinkNS,
+        'xlink:title': xlinkNS,
+        'xlink:type': xlinkNS,
+        'xml:base': xmlNS,
+        'xml:lang': xmlNS,
+        'xml:space': xmlNS
+    };
+
+    function getDelegatedEventObject(v) {
+        return {
+            onClick: v,
+            onDblClick: v,
+            onFocusIn: v,
+            onFocusOut: v,
+            onKeyDown: v,
+            onKeyPress: v,
+            onKeyUp: v,
+            onMouseDown: v,
+            onMouseMove: v,
+            onMouseUp: v,
+            onTouchEnd: v,
+            onTouchMove: v,
+            onTouchStart: v
+        };
+    }
+    var attachedEventCounts = getDelegatedEventObject(0);
+    var attachedEvents = getDelegatedEventObject(null);
+    var syntheticEvents = getDelegatedEventObject(true);
+    function updateOrAddSyntheticEvent(name, dom) {
+        var eventsObject = dom.$EV;
+        if (!eventsObject) {
+            eventsObject = dom.$EV = getDelegatedEventObject(null);
+        }
+        if (!eventsObject[name]) {
+            if (++attachedEventCounts[name] === 1) {
+                attachedEvents[name] = attachEventToDocument(name);
+            }
+        }
+        return eventsObject;
+    }
+    function unmountSyntheticEvent(name, dom) {
+        var eventsObject = dom.$EV;
+        if (eventsObject && eventsObject[name]) {
+            if (--attachedEventCounts[name] === 0) {
+                document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
+                attachedEvents[name] = null;
+            }
+            eventsObject[name] = null;
+        }
+    }
+    function handleSyntheticEvent(name, lastEvent, nextEvent, dom) {
+        if (isFunction(nextEvent)) {
+            updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
+        }
+        else if (isLinkEventObject(nextEvent)) {
+            if (isLastValueSameLinkEvent(lastEvent, nextEvent)) {
+                return;
+            }
+            updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
+        }
+        else {
+            unmountSyntheticEvent(name, dom);
+        }
+    }
+    // When browsers fully support event.composedPath we could loop it through instead of using parentNode property
+    function getTargetNode(event) {
+        return isFunction(event.composedPath) ? event.composedPath()[0] : event.target;
+    }
+    function dispatchEvents(event, isClick, name, eventData) {
+        var dom = getTargetNode(event);
+        do {
+            // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
+            // because the event listener is on document.body
+            // Don't process clicks on disabled elements
+            if (isClick && dom.disabled) {
+                return;
+            }
+            var eventsObject = dom.$EV;
+            if (eventsObject) {
+                var currentEvent = eventsObject[name];
+                if (currentEvent) {
+                    // linkEvent object
+                    eventData.dom = dom;
+                    currentEvent.event ? currentEvent.event(currentEvent.data, event) : currentEvent(event);
+                    if (event.cancelBubble) {
+                        return;
+                    }
+                }
+            }
+            dom = dom.parentNode;
+        } while (!isNull(dom));
+    }
+    function stopPropagation() {
+        this.cancelBubble = true;
+        if (!this.immediatePropagationStopped) {
+            this.stopImmediatePropagation();
+        }
+    }
+    function isDefaultPrevented() {
+        return this.defaultPrevented;
+    }
+    function isPropagationStopped() {
+        return this.cancelBubble;
+    }
+    function extendEventProperties(event) {
+        // Event data needs to be object to save reference to currentTarget getter
+        var eventData = {
+            dom: document
+        };
+        event.isDefaultPrevented = isDefaultPrevented;
+        event.isPropagationStopped = isPropagationStopped;
+        event.stopPropagation = stopPropagation;
+        Object.defineProperty(event, 'currentTarget', {
+            configurable: true,
+            get: function get() {
+                return eventData.dom;
+            }
+        });
+        return eventData;
+    }
+    function rootClickEvent(name) {
+        return function (event) {
+            if (event.button !== 0) {
+                // Firefox incorrectly triggers click event for mid/right mouse buttons.
+                // This bug has been active for 17 years.
+                // https://bugzilla.mozilla.org/show_bug.cgi?id=184051
+                event.stopPropagation();
+                return;
+            }
+            dispatchEvents(event, true, name, extendEventProperties(event));
+        };
+    }
+    function rootEvent(name) {
+        return function (event) {
+            dispatchEvents(event, false, name, extendEventProperties(event));
+        };
+    }
+    function attachEventToDocument(name) {
+        var attachedEvent = name === 'onClick' || name === 'onDblClick' ? rootClickEvent(name) : rootEvent(name);
+        document.addEventListener(normalizeEventName(name), attachedEvent);
+        return attachedEvent;
+    }
+
+    function isSameInnerHTML(dom, innerHTML) {
+        var tempdom = document.createElement('i');
+        tempdom.innerHTML = innerHTML;
+        return tempdom.innerHTML === dom.innerHTML;
+    }
+
+    function triggerEventListener(props, methodName, e) {
+        if (props[methodName]) {
+            var listener = props[methodName];
+            if (listener.event) {
+                listener.event(listener.data, e);
+            }
+            else {
+                listener(e);
+            }
+        }
+        else {
+            var nativeListenerName = methodName.toLowerCase();
+            if (props[nativeListenerName]) {
+                props[nativeListenerName](e);
+            }
+        }
+    }
+    function createWrappedFunction(methodName, applyValue) {
+        var fnMethod = function (e) {
+            var vNode = this.$V;
+            // If vNode is gone by the time event fires, no-op
+            if (!vNode) {
+                return;
+            }
+            var props = vNode.props || EMPTY_OBJ;
+            var dom = vNode.dom;
+            if (isString(methodName)) {
+                triggerEventListener(props, methodName, e);
+            }
+            else {
+                for (var i = 0; i < methodName.length; ++i) {
+                    triggerEventListener(props, methodName[i], e);
+                }
+            }
+            if (isFunction(applyValue)) {
+                var newVNode = this.$V;
+                var newProps = newVNode.props || EMPTY_OBJ;
+                applyValue(newProps, dom, false, newVNode);
+            }
+        };
+        Object.defineProperty(fnMethod, 'wrapped', {
+            configurable: false,
+            enumerable: false,
+            value: true,
+            writable: false
+        });
+        return fnMethod;
+    }
+
+    function attachEvent(dom, eventName, handler) {
+        var previousKey = "$" + eventName;
+        var previousArgs = dom[previousKey];
+        if (previousArgs) {
+            if (previousArgs[1].wrapped) {
+                return;
+            }
+            dom.removeEventListener(previousArgs[0], previousArgs[1]);
+            dom[previousKey] = null;
+        }
+        if (isFunction(handler)) {
+            dom.addEventListener(eventName, handler);
+            dom[previousKey] = [eventName, handler];
+        }
+    }
+
+    function isCheckedType(type) {
+        return type === 'checkbox' || type === 'radio';
+    }
+    var onTextInputChange = createWrappedFunction('onInput', applyValueInput);
+    var wrappedOnChange = createWrappedFunction(['onClick', 'onChange'], applyValueInput);
+    /* tslint:disable-next-line:no-empty */
+    function emptywrapper(event) {
+        event.stopPropagation();
+    }
+    emptywrapper.wrapped = true;
+    function inputEvents(dom, nextPropsOrEmpty) {
+        if (isCheckedType(nextPropsOrEmpty.type)) {
+            attachEvent(dom, 'change', wrappedOnChange);
+            attachEvent(dom, 'click', emptywrapper);
+        }
+        else {
+            attachEvent(dom, 'input', onTextInputChange);
+        }
+    }
+    function applyValueInput(nextPropsOrEmpty, dom) {
+        var type = nextPropsOrEmpty.type;
+        var value = nextPropsOrEmpty.value;
+        var checked = nextPropsOrEmpty.checked;
+        var multiple = nextPropsOrEmpty.multiple;
+        var defaultValue = nextPropsOrEmpty.defaultValue;
+        var hasValue = !isNullOrUndef(value);
+        if (type && type !== dom.type) {
+            dom.setAttribute('type', type);
+        }
+        if (!isNullOrUndef(multiple) && multiple !== dom.multiple) {
+            dom.multiple = multiple;
+        }
+        if (!isNullOrUndef(defaultValue) && !hasValue) {
+            dom.defaultValue = defaultValue + '';
+        }
+        if (isCheckedType(type)) {
+            if (hasValue) {
+                dom.value = value;
+            }
+            if (!isNullOrUndef(checked)) {
+                dom.checked = checked;
+            }
+        }
+        else {
+            if (hasValue && dom.value !== value) {
+                dom.defaultValue = value;
+                dom.value = value;
+            }
+            else if (!isNullOrUndef(checked)) {
+                dom.checked = checked;
+            }
+        }
+    }
+
+    function updateChildOptions(vNode, value) {
+        if (vNode.type === 'option') {
+            updateChildOption(vNode, value);
+        }
+        else {
+            var children = vNode.children;
+            var flags = vNode.flags;
+            if (flags & 4 /* ComponentClass */) {
+                updateChildOptions(children.$LI, value);
+            }
+            else if (flags & 8 /* ComponentFunction */) {
+                updateChildOptions(children, value);
+            }
+            else if (vNode.childFlags === 2 /* HasVNodeChildren */) {
+                updateChildOptions(children, value);
+            }
+            else if (vNode.childFlags & 12 /* MultipleChildren */) {
+                for (var i = 0, len = children.length; i < len; ++i) {
+                    updateChildOptions(children[i], value);
+                }
+            }
+        }
+    }
+    function updateChildOption(vNode, value) {
+        var props = vNode.props || EMPTY_OBJ;
+        var dom = vNode.dom;
+        // we do this as multiple may have changed
+        dom.value = props.value;
+        if (props.value === value || (isArray(value) && value.indexOf(props.value) !== -1)) {
+            dom.selected = true;
+        }
+        else if (!isNullOrUndef(value) || !isNullOrUndef(props.selected)) {
+            dom.selected = props.selected || false;
+        }
+    }
+    var onSelectChange = createWrappedFunction('onChange', applyValueSelect);
+    function selectEvents(dom) {
+        attachEvent(dom, 'change', onSelectChange);
+    }
+    function applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode) {
+        var multiplePropInBoolean = Boolean(nextPropsOrEmpty.multiple);
+        if (!isNullOrUndef(nextPropsOrEmpty.multiple) && multiplePropInBoolean !== dom.multiple) {
+            dom.multiple = multiplePropInBoolean;
+        }
+        var index = nextPropsOrEmpty.selectedIndex;
+        if (index === -1) {
+            dom.selectedIndex = -1;
+        }
+        var childFlags = vNode.childFlags;
+        if (childFlags !== 1 /* HasInvalidChildren */) {
+            var value = nextPropsOrEmpty.value;
+            if (isNumber(index) && index > -1 && dom.options[index]) {
+                value = dom.options[index].value;
+            }
+            if (mounting && isNullOrUndef(value)) {
+                value = nextPropsOrEmpty.defaultValue;
+            }
+            updateChildOptions(vNode, value);
+        }
+    }
+
+    var onTextareaInputChange = createWrappedFunction('onInput', applyValueTextArea);
+    var wrappedOnChange$1 = createWrappedFunction('onChange');
+    function textAreaEvents(dom, nextPropsOrEmpty) {
+        attachEvent(dom, 'input', onTextareaInputChange);
+        if (nextPropsOrEmpty.onChange) {
+            attachEvent(dom, 'change', wrappedOnChange$1);
+        }
+    }
+    function applyValueTextArea(nextPropsOrEmpty, dom, mounting) {
+        var value = nextPropsOrEmpty.value;
+        var domValue = dom.value;
+        if (isNullOrUndef(value)) {
+            if (mounting) {
+                var defaultValue = nextPropsOrEmpty.defaultValue;
+                if (!isNullOrUndef(defaultValue) && defaultValue !== domValue) {
+                    dom.defaultValue = defaultValue;
+                    dom.value = defaultValue;
+                }
+            }
+        }
+        else if (domValue !== value) {
+            /* There is value so keep it controlled */
+            dom.defaultValue = value;
+            dom.value = value;
+        }
+    }
+
+    function processElement(flags, vNode, dom, nextPropsOrEmpty, mounting, isControlled) {
+        if (flags & 64 /* InputElement */) {
+            applyValueInput(nextPropsOrEmpty, dom);
+        }
+        else if (flags & 256 /* SelectElement */) {
+            applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode);
+        }
+        else if (flags & 128 /* TextareaElement */) {
+            applyValueTextArea(nextPropsOrEmpty, dom, mounting);
+        }
+        if (isControlled) {
+            dom.$V = vNode;
+        }
+    }
+    function addFormElementEventHandlers(flags, dom, nextPropsOrEmpty) {
+        if (flags & 64 /* InputElement */) {
+            inputEvents(dom, nextPropsOrEmpty);
+        }
+        else if (flags & 256 /* SelectElement */) {
+            selectEvents(dom);
+        }
+        else if (flags & 128 /* TextareaElement */) {
+            textAreaEvents(dom, nextPropsOrEmpty);
+        }
+    }
+    function isControlledFormElement(nextPropsOrEmpty) {
+        return nextPropsOrEmpty.type && isCheckedType(nextPropsOrEmpty.type) ? !isNullOrUndef(nextPropsOrEmpty.checked) : !isNullOrUndef(nextPropsOrEmpty.value);
+    }
+    function unmountRef(ref) {
+        if (ref) {
+            if (!safeCall1(ref, null) && ref.current) {
+                ref.current = null;
+            }
+        }
+    }
+    function mountRef(ref, value, lifecycle) {
+        if (ref && (isFunction(ref) || ref.current !== void 0)) {
+            lifecycle.push(function () {
+                if (!safeCall1(ref, value) && ref.current !== void 0) {
+                    ref.current = value;
+                }
+            });
+        }
+    }
+
+    function remove(vNode, parentDOM) {
+        unmount(vNode);
+        removeVNodeDOM(vNode, parentDOM);
+    }
+    function unmount(vNode) {
+        var flags = vNode.flags;
+        var children = vNode.children;
+        var ref;
+        if (flags & 481 /* Element */) {
+            ref = vNode.ref;
+            var props = vNode.props;
+            unmountRef(ref);
+            var childFlags = vNode.childFlags;
+            if (!isNull(props)) {
+                var keys = Object.keys(props);
+                for (var i = 0, len = keys.length; i < len; i++) {
+                    var key = keys[i];
+                    if (syntheticEvents[key]) {
+                        unmountSyntheticEvent(key, vNode.dom);
+                    }
+                }
+            }
+            if (childFlags & 12 /* MultipleChildren */) {
+                unmountAllChildren(children);
+            }
+            else if (childFlags === 2 /* HasVNodeChildren */) {
+                unmount(children);
+            }
+        }
+        else if (children) {
+            if (flags & 4 /* ComponentClass */) {
+                if (isFunction(children.componentWillUnmount)) {
+                    children.componentWillUnmount();
+                }
+                unmountRef(vNode.ref);
+                children.$UN = true;
+                unmount(children.$LI);
+            }
+            else if (flags & 8 /* ComponentFunction */) {
+                ref = vNode.ref;
+                if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
+                    ref.onComponentWillUnmount(findDOMfromVNode(vNode, true), vNode.props || EMPTY_OBJ);
+                }
+                unmount(children);
+            }
+            else if (flags & 1024 /* Portal */) {
+                remove(children, vNode.ref);
+            }
+            else if (flags & 8192 /* Fragment */) {
+                if (vNode.childFlags & 12 /* MultipleChildren */) {
+                    unmountAllChildren(children);
+                }
+            }
+        }
+    }
+    function unmountAllChildren(children) {
+        for (var i = 0, len = children.length; i < len; ++i) {
+            unmount(children[i]);
+        }
+    }
+    function clearDOM(dom) {
+        // Optimization for clearing dom
+        dom.textContent = '';
+    }
+    function removeAllChildren(dom, vNode, children) {
+        unmountAllChildren(children);
+        if (vNode.flags & 8192 /* Fragment */) {
+            removeVNodeDOM(vNode, dom);
+        }
+        else {
+            clearDOM(dom);
+        }
+    }
+
+    function wrapLinkEvent(nextValue) {
+        // This variable makes sure there is no "this" context in callback
+        var ev = nextValue.event;
+        return function (e) {
+            ev(nextValue.data, e);
+        };
+    }
+    function patchEvent(name, lastValue, nextValue, dom) {
+        if (isLinkEventObject(nextValue)) {
+            if (isLastValueSameLinkEvent(lastValue, nextValue)) {
+                return;
+            }
+            nextValue = wrapLinkEvent(nextValue);
+        }
+        attachEvent(dom, normalizeEventName(name), nextValue);
+    }
+    // We are assuming here that we come from patchProp routine
+    // -nextAttrValue cannot be null or undefined
+    function patchStyle(lastAttrValue, nextAttrValue, dom) {
+        if (isNullOrUndef(nextAttrValue)) {
+            dom.removeAttribute('style');
+            return;
+        }
+        var domStyle = dom.style;
+        var style;
+        var value;
+        if (isString(nextAttrValue)) {
+            domStyle.cssText = nextAttrValue;
+            return;
+        }
+        if (!isNullOrUndef(lastAttrValue) && !isString(lastAttrValue)) {
+            for (style in nextAttrValue) {
+                // do not add a hasOwnProperty check here, it affects performance
+                value = nextAttrValue[style];
+                if (value !== lastAttrValue[style]) {
+                    domStyle.setProperty(style, value);
+                }
+            }
+            for (style in lastAttrValue) {
+                if (isNullOrUndef(nextAttrValue[style])) {
+                    domStyle.removeProperty(style);
+                }
+            }
+        }
+        else {
+            for (style in nextAttrValue) {
+                value = nextAttrValue[style];
+                domStyle.setProperty(style, value);
+            }
+        }
+    }
+    function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom) {
+        var lastHtml = (lastValue && lastValue.__html) || '';
+        var nextHtml = (nextValue && nextValue.__html) || '';
+        if (lastHtml !== nextHtml) {
+            if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
+                if (!isNull(lastVNode)) {
+                    if (lastVNode.childFlags & 12 /* MultipleChildren */) {
+                        unmountAllChildren(lastVNode.children);
+                    }
+                    else if (lastVNode.childFlags === 2 /* HasVNodeChildren */) {
+                        unmount(lastVNode.children);
+                    }
+                    lastVNode.children = null;
+                    lastVNode.childFlags = 1 /* HasInvalidChildren */;
+                }
+                dom.innerHTML = nextHtml;
+            }
+        }
+    }
+    function patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode) {
+        switch (prop) {
+            case 'children':
+            case 'childrenType':
+            case 'className':
+            case 'defaultValue':
+            case 'key':
+            case 'multiple':
+            case 'ref':
+            case 'selectedIndex':
+                break;
+            case 'autoFocus':
+                dom.autofocus = !!nextValue;
+                break;
+            case 'allowfullscreen':
+            case 'autoplay':
+            case 'capture':
+            case 'checked':
+            case 'controls':
+            case 'default':
+            case 'disabled':
+            case 'hidden':
+            case 'indeterminate':
+            case 'loop':
+            case 'muted':
+            case 'novalidate':
+            case 'open':
+            case 'readOnly':
+            case 'required':
+            case 'reversed':
+            case 'scoped':
+            case 'seamless':
+            case 'selected':
+                dom[prop] = !!nextValue;
+                break;
+            case 'defaultChecked':
+            case 'value':
+            case 'volume':
+                if (hasControlledValue && prop === 'value') {
+                    break;
+                }
+                var value = isNullOrUndef(nextValue) ? '' : nextValue;
+                if (dom[prop] !== value) {
+                    dom[prop] = value;
+                }
+                break;
+            case 'style':
+                patchStyle(lastValue, nextValue, dom);
+                break;
+            case 'dangerouslySetInnerHTML':
+                patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
+                break;
+            default:
+                if (syntheticEvents[prop]) {
+                    handleSyntheticEvent(prop, lastValue, nextValue, dom);
+                }
+                else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
+                    patchEvent(prop, lastValue, nextValue, dom);
+                }
+                else if (isNullOrUndef(nextValue)) {
+                    dom.removeAttribute(prop);
+                }
+                else if (isSVG && namespaces[prop]) {
+                    // We optimize for isSVG being false
+                    // If we end up in this path we can read property again
+                    dom.setAttributeNS(namespaces[prop], prop, nextValue);
+                }
+                else {
+                    dom.setAttribute(prop, nextValue);
+                }
+                break;
+        }
+    }
+    function mountProps(vNode, flags, props, dom, isSVG) {
+        var hasControlledValue = false;
+        var isFormElement = (flags & 448 /* FormElement */) > 0;
+        if (isFormElement) {
+            hasControlledValue = isControlledFormElement(props);
+            if (hasControlledValue) {
+                addFormElementEventHandlers(flags, dom, props);
+            }
+        }
+        for (var prop in props) {
+            // do not add a hasOwnProperty check here, it affects performance
+            patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
+        }
+        if (isFormElement) {
+            processElement(flags, vNode, dom, props, true, hasControlledValue);
+        }
+    }
+
+    function renderNewInput(instance, props, context) {
+        var nextInput = normalizeRoot(instance.render(props, instance.state, context));
+        var childContext = context;
+        if (isFunction(instance.getChildContext)) {
+            childContext = combineFrom(context, instance.getChildContext());
+        }
+        instance.$CX = childContext;
+        return nextInput;
+    }
+    function createClassComponentInstance(vNode, Component, props, context, isSVG, lifecycle) {
+        var instance = new Component(props, context);
+        var usesNewAPI = (instance.$N = Boolean(Component.getDerivedStateFromProps || instance.getSnapshotBeforeUpdate));
+        instance.$SVG = isSVG;
+        instance.$L = lifecycle;
+        vNode.children = instance;
+        instance.$BS = false;
+        instance.context = context;
+        if (instance.props === EMPTY_OBJ) {
+            instance.props = props;
+        }
+        if (!usesNewAPI) {
+            if (isFunction(instance.componentWillMount)) {
+                instance.$BR = true;
+                instance.componentWillMount();
+                var pending = instance.$PS;
+                if (!isNull(pending)) {
+                    var state = instance.state;
+                    if (isNull(state)) {
+                        instance.state = pending;
+                    }
+                    else {
+                        for (var key in pending) {
+                            state[key] = pending[key];
+                        }
+                    }
+                    instance.$PS = null;
+                }
+                instance.$BR = false;
+            }
+        }
+        else {
+            instance.state = createDerivedState(instance, props, instance.state);
+        }
+        instance.$LI = renderNewInput(instance, props, context);
+        return instance;
+    }
+    function renderFunctionalComponent(vNode, context) {
+        var props = vNode.props || EMPTY_OBJ;
+        return vNode.flags & 32768 /* ForwardRef */ ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context);
+    }
+
+    function mount(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+        var flags = (vNode.flags |= 16384 /* InUse */);
+        if (flags & 481 /* Element */) {
+            mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+        }
+        else if (flags & 4 /* ComponentClass */) {
+            mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+        }
+        else if (flags & 8 /* ComponentFunction */) {
+            mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
+            mountFunctionalComponentCallbacks(vNode, lifecycle);
+        }
+        else if (flags & 512 /* Void */ || flags & 16 /* Text */) {
+            mountText(vNode, parentDOM, nextNode);
+        }
+        else if (flags & 8192 /* Fragment */) {
+            mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle);
+        }
+        else if (flags & 1024 /* Portal */) {
+            mountPortal(vNode, context, parentDOM, nextNode, lifecycle);
+        }
+        else ;
+    }
+    function mountPortal(vNode, context, parentDOM, nextNode, lifecycle) {
+        mount(vNode.children, vNode.ref, context, false, null, lifecycle);
+        var placeHolderVNode = createVoidVNode();
+        mountText(placeHolderVNode, parentDOM, nextNode);
+        vNode.dom = placeHolderVNode.dom;
+    }
+    function mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle) {
+        var children = vNode.children;
+        var childFlags = vNode.childFlags;
+        // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
+        // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
+        if (childFlags & 12 /* MultipleChildren */ && children.length === 0) {
+            childFlags = vNode.childFlags = 2 /* HasVNodeChildren */;
+            children = vNode.children = createVoidVNode();
+        }
+        if (childFlags === 2 /* HasVNodeChildren */) {
+            mount(children, parentDOM, nextNode, isSVG, nextNode, lifecycle);
+        }
+        else {
+            mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle);
+        }
+    }
+    function mountText(vNode, parentDOM, nextNode) {
+        var dom = (vNode.dom = document.createTextNode(vNode.children));
+        if (!isNull(parentDOM)) {
+            insertOrAppend(parentDOM, dom, nextNode);
+        }
+    }
+    function mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+        var flags = vNode.flags;
+        var props = vNode.props;
+        var className = vNode.className;
+        var childFlags = vNode.childFlags;
+        var dom = (vNode.dom = documentCreateElement(vNode.type, (isSVG = isSVG || (flags & 32 /* SvgElement */) > 0)));
+        var children = vNode.children;
+        if (!isNullOrUndef(className) && className !== '') {
+            if (isSVG) {
+                dom.setAttribute('class', className);
+            }
+            else {
+                dom.className = className;
+            }
+        }
+        if (childFlags === 16 /* HasTextChildren */) {
+            setTextContent(dom, children);
+        }
+        else if (childFlags !== 1 /* HasInvalidChildren */) {
+            var childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
+            if (childFlags === 2 /* HasVNodeChildren */) {
+                if (children.flags & 16384 /* InUse */) {
+                    vNode.children = children = directClone(children);
+                }
+                mount(children, dom, context, childrenIsSVG, null, lifecycle);
+            }
+            else if (childFlags === 8 /* HasKeyedChildren */ || childFlags === 4 /* HasNonKeyedChildren */) {
+                mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle);
+            }
+        }
+        if (!isNull(parentDOM)) {
+            insertOrAppend(parentDOM, dom, nextNode);
+        }
+        if (!isNull(props)) {
+            mountProps(vNode, flags, props, dom, isSVG);
+        }
+        mountRef(vNode.ref, dom, lifecycle);
+    }
+    function mountArrayChildren(children, dom, context, isSVG, nextNode, lifecycle) {
+        for (var i = 0; i < children.length; ++i) {
+            var child = children[i];
+            if (child.flags & 16384 /* InUse */) {
+                children[i] = child = directClone(child);
+            }
+            mount(child, dom, context, isSVG, nextNode, lifecycle);
+        }
+    }
+    function mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+        var instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
+        mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
+        mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
+    }
+    function mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+        mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle);
+    }
+    function createClassMountCallback(instance) {
+        return function () {
+            instance.componentDidMount();
+        };
+    }
+    function mountClassComponentCallbacks(ref, instance, lifecycle) {
+        mountRef(ref, instance, lifecycle);
+        if (isFunction(instance.componentDidMount)) {
+            lifecycle.push(createClassMountCallback(instance));
+        }
+    }
+    function createOnMountCallback(ref, vNode) {
+        return function () {
+            ref.onComponentDidMount(findDOMfromVNode(vNode, true), vNode.props || EMPTY_OBJ);
+        };
+    }
+    function mountFunctionalComponentCallbacks(vNode, lifecycle) {
+        var ref = vNode.ref;
+        if (!isNullOrUndef(ref)) {
+            safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
+            if (isFunction(ref.onComponentDidMount)) {
+                lifecycle.push(createOnMountCallback(ref, vNode));
+            }
+        }
+    }
+
+    function replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle) {
+        unmount(lastVNode);
+        if ((nextVNode.flags & lastVNode.flags & 2033 /* DOMRef */) !== 0) {
+            mount(nextVNode, null, context, isSVG, null, lifecycle);
+            // Single DOM operation, when we have dom references available
+            replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
+        }
+        else {
+            mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode, true), lifecycle);
+            removeVNodeDOM(lastVNode, parentDOM);
+        }
+    }
+    function patch(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+        var nextFlags = (nextVNode.flags |= 16384 /* InUse */);
+        if (lastVNode.flags !== nextFlags || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || nextFlags & 2048 /* ReCreate */) {
+            if (lastVNode.flags & 16384 /* InUse */) {
+                replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
+            }
+            else {
+                // Last vNode is not in use, it has crashed at application level. Just mount nextVNode and ignore last one
+                mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
+            }
+        }
+        else if (nextFlags & 481 /* Element */) {
+            patchElement(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle);
+        }
+        else if (nextFlags & 4 /* ComponentClass */) {
+            patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
+        }
+        else if (nextFlags & 8 /* ComponentFunction */) {
+            patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle);
+        }
+        else if (nextFlags & 16 /* Text */) {
+            patchText(lastVNode, nextVNode);
+        }
+        else if (nextFlags & 512 /* Void */) {
+            nextVNode.dom = lastVNode.dom;
+        }
+        else if (nextFlags & 8192 /* Fragment */) {
+            patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle);
+        }
+        else {
+            patchPortal(lastVNode, nextVNode, context, lifecycle);
+        }
+    }
+    function patchSingleTextChild(lastChildren, nextChildren, parentDOM) {
+        if (lastChildren !== nextChildren) {
+            if (lastChildren !== '') {
+                parentDOM.firstChild.nodeValue = nextChildren;
+            }
+            else {
+                setTextContent(parentDOM, nextChildren);
+            }
+        }
+    }
+    function patchContentEditableChildren(dom, nextChildren) {
+        if (dom.textContent !== nextChildren) {
+            dom.textContent = nextChildren;
+        }
+    }
+    function patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle) {
+        var lastChildren = lastVNode.children;
+        var nextChildren = nextVNode.children;
+        var lastChildFlags = lastVNode.childFlags;
+        var nextChildFlags = nextVNode.childFlags;
+        var nextNode = null;
+        // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
+        // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
+        if (nextChildFlags & 12 /* MultipleChildren */ && nextChildren.length === 0) {
+            nextChildFlags = nextVNode.childFlags = 2 /* HasVNodeChildren */;
+            nextChildren = nextVNode.children = createVoidVNode();
+        }
+        var nextIsSingle = (nextChildFlags & 2 /* HasVNodeChildren */) !== 0;
+        if (lastChildFlags & 12 /* MultipleChildren */) {
+            var lastLen = lastChildren.length;
+            // We need to know Fragment's edge node when
+            if (
+            // It uses keyed algorithm
+            (lastChildFlags & 8 /* HasKeyedChildren */ && nextChildFlags & 8 /* HasKeyedChildren */) ||
+                // It transforms from many to single
+                nextIsSingle ||
+                // It will append more nodes
+                (!nextIsSingle && nextChildren.length > lastLen)) {
+                // When fragment has multiple children there is always at least one vNode
+                nextNode = findDOMfromVNode(lastChildren[lastLen - 1], false).nextSibling;
+            }
+        }
+        patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle);
+    }
+    function patchPortal(lastVNode, nextVNode, context, lifecycle) {
+        var lastContainer = lastVNode.ref;
+        var nextContainer = nextVNode.ref;
+        var nextChildren = nextVNode.children;
+        patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, lastContainer, context, false, null, lastVNode, lifecycle);
+        nextVNode.dom = lastVNode.dom;
+        if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
+            var node = nextChildren.dom;
+            removeChild(lastContainer, node);
+            appendChild(nextContainer, node);
+        }
+    }
+    function patchElement(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle) {
+        var dom = (nextVNode.dom = lastVNode.dom);
+        var lastProps = lastVNode.props;
+        var nextProps = nextVNode.props;
+        var isFormElement = false;
+        var hasControlledValue = false;
+        var nextPropsOrEmpty;
+        isSVG = isSVG || (nextFlags & 32 /* SvgElement */) > 0;
+        // inlined patchProps  -- starts --
+        if (lastProps !== nextProps) {
+            var lastPropsOrEmpty = lastProps || EMPTY_OBJ;
+            nextPropsOrEmpty = nextProps || EMPTY_OBJ;
+            if (nextPropsOrEmpty !== EMPTY_OBJ) {
+                isFormElement = (nextFlags & 448 /* FormElement */) > 0;
+                if (isFormElement) {
+                    hasControlledValue = isControlledFormElement(nextPropsOrEmpty);
+                }
+                for (var prop in nextPropsOrEmpty) {
+                    var lastValue = lastPropsOrEmpty[prop];
+                    var nextValue = nextPropsOrEmpty[prop];
+                    if (lastValue !== nextValue) {
+                        patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode);
+                    }
+                }
+            }
+            if (lastPropsOrEmpty !== EMPTY_OBJ) {
+                for (var prop$1 in lastPropsOrEmpty) {
+                    if (isNullOrUndef(nextPropsOrEmpty[prop$1]) && !isNullOrUndef(lastPropsOrEmpty[prop$1])) {
+                        patchProp(prop$1, lastPropsOrEmpty[prop$1], null, dom, isSVG, hasControlledValue, lastVNode);
+                    }
+                }
+            }
+        }
+        var nextChildren = nextVNode.children;
+        var nextClassName = nextVNode.className;
+        // inlined patchProps  -- ends --
+        if (lastVNode.className !== nextClassName) {
+            if (isNullOrUndef(nextClassName)) {
+                dom.removeAttribute('class');
+            }
+            else if (isSVG) {
+                dom.setAttribute('class', nextClassName);
+            }
+            else {
+                dom.className = nextClassName;
+            }
+        }
+        if (nextFlags & 4096 /* ContentEditable */) {
+            patchContentEditableChildren(dom, nextChildren);
+        }
+        else {
+            patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, dom, context, isSVG && nextVNode.type !== 'foreignObject', null, lastVNode, lifecycle);
+        }
+        if (isFormElement) {
+            processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
+        }
+        var nextRef = nextVNode.ref;
+        var lastRef = lastVNode.ref;
+        if (lastRef !== nextRef) {
+            unmountRef(lastRef);
+            mountRef(nextRef, dom, lifecycle);
+        }
+    }
+    function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle) {
+        unmount(lastChildren);
+        mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle);
+        removeVNodeDOM(lastChildren, parentDOM);
+    }
+    function patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, parentVNode, lifecycle) {
+        switch (lastChildFlags) {
+            case 2 /* HasVNodeChildren */:
+                switch (nextChildFlags) {
+                    case 2 /* HasVNodeChildren */:
+                        patch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                        break;
+                    case 1 /* HasInvalidChildren */:
+                        remove(lastChildren, parentDOM);
+                        break;
+                    case 16 /* HasTextChildren */:
+                        unmount(lastChildren);
+                        setTextContent(parentDOM, nextChildren);
+                        break;
+                    default:
+                        replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle);
+                        break;
+                }
+                break;
+            case 1 /* HasInvalidChildren */:
+                switch (nextChildFlags) {
+                    case 2 /* HasVNodeChildren */:
+                        mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                        break;
+                    case 1 /* HasInvalidChildren */:
+                        break;
+                    case 16 /* HasTextChildren */:
+                        setTextContent(parentDOM, nextChildren);
+                        break;
+                    default:
+                        mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                        break;
+                }
+                break;
+            case 16 /* HasTextChildren */:
+                switch (nextChildFlags) {
+                    case 16 /* HasTextChildren */:
+                        patchSingleTextChild(lastChildren, nextChildren, parentDOM);
+                        break;
+                    case 2 /* HasVNodeChildren */:
+                        clearDOM(parentDOM);
+                        mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                        break;
+                    case 1 /* HasInvalidChildren */:
+                        clearDOM(parentDOM);
+                        break;
+                    default:
+                        clearDOM(parentDOM);
+                        mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                        break;
+                }
+                break;
+            default:
+                switch (nextChildFlags) {
+                    case 16 /* HasTextChildren */:
+                        unmountAllChildren(lastChildren);
+                        setTextContent(parentDOM, nextChildren);
+                        break;
+                    case 2 /* HasVNodeChildren */:
+                        removeAllChildren(parentDOM, parentVNode, lastChildren);
+                        mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                        break;
+                    case 1 /* HasInvalidChildren */:
+                        removeAllChildren(parentDOM, parentVNode, lastChildren);
+                        break;
+                    default:
+                        var lastLength = lastChildren.length | 0;
+                        var nextLength = nextChildren.length | 0;
+                        // Fast path's for both algorithms
+                        if (lastLength === 0) {
+                            if (nextLength > 0) {
+                                mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                            }
+                        }
+                        else if (nextLength === 0) {
+                            removeAllChildren(parentDOM, parentVNode, lastChildren);
+                        }
+                        else if (nextChildFlags === 8 /* HasKeyedChildren */ && lastChildFlags === 8 /* HasKeyedChildren */) {
+                            patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle);
+                        }
+                        else {
+                            patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, lifecycle);
+                        }
+                        break;
+                }
+                break;
+        }
+    }
+    function createDidUpdate(instance, lastProps, lastState, snapshot, lifecycle) {
+        lifecycle.push(function () {
+            instance.componentDidUpdate(lastProps, lastState, snapshot);
+        });
+    }
+    function updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, force, nextNode, lifecycle) {
+        var lastState = instance.state;
+        var lastProps = instance.props;
+        var usesNewAPI = Boolean(instance.$N);
+        var hasSCU = isFunction(instance.shouldComponentUpdate);
+        if (usesNewAPI) {
+            nextState = createDerivedState(instance, nextProps, nextState !== lastState ? combineFrom(lastState, nextState) : nextState);
+        }
+        if (force || !hasSCU || (hasSCU && instance.shouldComponentUpdate(nextProps, nextState, context))) {
+            if (!usesNewAPI && isFunction(instance.componentWillUpdate)) {
+                instance.componentWillUpdate(nextProps, nextState, context);
+            }
+            instance.props = nextProps;
+            instance.state = nextState;
+            instance.context = context;
+            var snapshot = null;
+            var nextInput = renderNewInput(instance, nextProps, context);
+            if (usesNewAPI && isFunction(instance.getSnapshotBeforeUpdate)) {
+                snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState);
+            }
+            patch(instance.$LI, nextInput, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
+            // Dont update Last input, until patch has been succesfully executed
+            instance.$LI = nextInput;
+            if (isFunction(instance.componentDidUpdate)) {
+                createDidUpdate(instance, lastProps, lastState, snapshot, lifecycle);
+            }
+        }
+        else {
+            instance.props = nextProps;
+            instance.state = nextState;
+            instance.context = context;
+        }
+    }
+    function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+        var instance = (nextVNode.children = lastVNode.children);
+        // If Component has crashed, ignore it to stay functional
+        if (isNull(instance)) {
+            return;
+        }
+        instance.$L = lifecycle;
+        var nextProps = nextVNode.props || EMPTY_OBJ;
+        var nextRef = nextVNode.ref;
+        var lastRef = lastVNode.ref;
+        var nextState = instance.state;
+        if (!instance.$N) {
+            if (isFunction(instance.componentWillReceiveProps)) {
+                instance.$BR = true;
+                instance.componentWillReceiveProps(nextProps, context);
+                // If instance component was removed during its own update do nothing.
+                if (instance.$UN) {
+                    return;
+                }
+                instance.$BR = false;
+            }
+            if (!isNull(instance.$PS)) {
+                nextState = combineFrom(nextState, instance.$PS);
+                instance.$PS = null;
+            }
+        }
+        updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, false, nextNode, lifecycle);
+        if (lastRef !== nextRef) {
+            unmountRef(lastRef);
+            mountRef(nextRef, instance, lifecycle);
+        }
+    }
+    function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+        var shouldUpdate = true;
+        var nextProps = nextVNode.props || EMPTY_OBJ;
+        var nextRef = nextVNode.ref;
+        var lastProps = lastVNode.props;
+        var nextHooksDefined = !isNullOrUndef(nextRef);
+        var lastInput = lastVNode.children;
+        if (nextHooksDefined && isFunction(nextRef.onComponentShouldUpdate)) {
+            shouldUpdate = nextRef.onComponentShouldUpdate(lastProps, nextProps);
+        }
+        if (shouldUpdate !== false) {
+            if (nextHooksDefined && isFunction(nextRef.onComponentWillUpdate)) {
+                nextRef.onComponentWillUpdate(lastProps, nextProps);
+            }
+            var nextInput = normalizeRoot(renderFunctionalComponent(nextVNode, context));
+            patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle);
+            nextVNode.children = nextInput;
+            if (nextHooksDefined && isFunction(nextRef.onComponentDidUpdate)) {
+                nextRef.onComponentDidUpdate(lastProps, nextProps);
+            }
+        }
+        else {
+            nextVNode.children = lastInput;
+        }
+    }
+    function patchText(lastVNode, nextVNode) {
+        var nextText = nextVNode.children;
+        var dom = (nextVNode.dom = lastVNode.dom);
+        if (nextText !== lastVNode.children) {
+            dom.nodeValue = nextText;
+        }
+    }
+    function patchNonKeyedChildren(lastChildren, nextChildren, dom, context, isSVG, lastChildrenLength, nextChildrenLength, nextNode, lifecycle) {
+        var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
+        var i = 0;
+        var nextChild;
+        var lastChild;
+        for (; i < commonLength; ++i) {
+            nextChild = nextChildren[i];
+            lastChild = lastChildren[i];
+            if (nextChild.flags & 16384 /* InUse */) {
+                nextChild = nextChildren[i] = directClone(nextChild);
+            }
+            patch(lastChild, nextChild, dom, context, isSVG, nextNode, lifecycle);
+            lastChildren[i] = nextChild;
+        }
+        if (lastChildrenLength < nextChildrenLength) {
+            for (i = commonLength; i < nextChildrenLength; ++i) {
+                nextChild = nextChildren[i];
+                if (nextChild.flags & 16384 /* InUse */) {
+                    nextChild = nextChildren[i] = directClone(nextChild);
+                }
+                mount(nextChild, dom, context, isSVG, nextNode, lifecycle);
+            }
+        }
+        else if (lastChildrenLength > nextChildrenLength) {
+            for (i = commonLength; i < lastChildrenLength; ++i) {
+                remove(lastChildren[i], dom);
+            }
+        }
+    }
+    function patchKeyedChildren(a, b, dom, context, isSVG, aLength, bLength, outerEdge, parentVNode, lifecycle) {
+        var aEnd = aLength - 1;
+        var bEnd = bLength - 1;
+        var j = 0;
+        var aNode = a[j];
+        var bNode = b[j];
+        var nextPos;
+        var nextNode;
+        // Step 1
+        // tslint:disable-next-line
+        outer: {
+            // Sync nodes with the same key at the beginning.
+            while (aNode.key === bNode.key) {
+                if (bNode.flags & 16384 /* InUse */) {
+                    b[j] = bNode = directClone(bNode);
+                }
+                patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                a[j] = bNode;
+                ++j;
+                if (j > aEnd || j > bEnd) {
+                    break outer;
+                }
+                aNode = a[j];
+                bNode = b[j];
+            }
+            aNode = a[aEnd];
+            bNode = b[bEnd];
+            // Sync nodes with the same key at the end.
+            while (aNode.key === bNode.key) {
+                if (bNode.flags & 16384 /* InUse */) {
+                    b[bEnd] = bNode = directClone(bNode);
+                }
+                patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                a[aEnd] = bNode;
+                aEnd--;
+                bEnd--;
+                if (j > aEnd || j > bEnd) {
+                    break outer;
+                }
+                aNode = a[aEnd];
+                bNode = b[bEnd];
+            }
+        }
+        if (j > aEnd) {
+            if (j <= bEnd) {
+                nextPos = bEnd + 1;
+                nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge;
+                while (j <= bEnd) {
+                    bNode = b[j];
+                    if (bNode.flags & 16384 /* InUse */) {
+                        b[j] = bNode = directClone(bNode);
+                    }
+                    ++j;
+                    mount(bNode, dom, context, isSVG, nextNode, lifecycle);
+                }
+            }
+        }
+        else if (j > bEnd) {
+            while (j <= aEnd) {
+                remove(a[j++], dom);
+            }
+        }
+        else {
+            patchKeyedChildrenComplex(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle);
+        }
+    }
+    function patchKeyedChildrenComplex(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle) {
+        var aNode;
+        var bNode;
+        var nextPos;
+        var i = 0;
+        var aStart = j;
+        var bStart = j;
+        var aLeft = aEnd - j + 1;
+        var bLeft = bEnd - j + 1;
+        var sources = new Int32Array(bLeft + 1);
+        // Keep track if its possible to remove whole DOM using textContent = '';
+        var canRemoveWholeContent = aLeft === aLength;
+        var moved = false;
+        var pos = 0;
+        var patched = 0;
+        // When sizes are small, just loop them through
+        if (bLength < 4 || (aLeft | bLeft) < 32) {
+            for (i = aStart; i <= aEnd; ++i) {
+                aNode = a[i];
+                if (patched < bLeft) {
+                    for (j = bStart; j <= bEnd; j++) {
+                        bNode = b[j];
+                        if (aNode.key === bNode.key) {
+                            sources[j - bStart] = i + 1;
+                            if (canRemoveWholeContent) {
+                                canRemoveWholeContent = false;
+                                while (aStart < i) {
+                                    remove(a[aStart++], dom);
+                                }
+                            }
+                            if (pos > j) {
+                                moved = true;
+                            }
+                            else {
+                                pos = j;
+                            }
+                            if (bNode.flags & 16384 /* InUse */) {
+                                b[j] = bNode = directClone(bNode);
+                            }
+                            patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                            ++patched;
+                            break;
+                        }
+                    }
+                    if (!canRemoveWholeContent && j > bEnd) {
+                        remove(aNode, dom);
+                    }
+                }
+                else if (!canRemoveWholeContent) {
+                    remove(aNode, dom);
+                }
+            }
+        }
+        else {
+            var keyIndex = {};
+            // Map keys by their index
+            for (i = bStart; i <= bEnd; ++i) {
+                keyIndex[b[i].key] = i;
+            }
+            // Try to patch same keys
+            for (i = aStart; i <= aEnd; ++i) {
+                aNode = a[i];
+                if (patched < bLeft) {
+                    j = keyIndex[aNode.key];
+                    if (j !== void 0) {
+                        if (canRemoveWholeContent) {
+                            canRemoveWholeContent = false;
+                            while (i > aStart) {
+                                remove(a[aStart++], dom);
+                            }
+                        }
+                        sources[j - bStart] = i + 1;
+                        if (pos > j) {
+                            moved = true;
+                        }
+                        else {
+                            pos = j;
+                        }
+                        bNode = b[j];
+                        if (bNode.flags & 16384 /* InUse */) {
+                            b[j] = bNode = directClone(bNode);
+                        }
+                        patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                        ++patched;
+                    }
+                    else if (!canRemoveWholeContent) {
+                        remove(aNode, dom);
+                    }
+                }
+                else if (!canRemoveWholeContent) {
+                    remove(aNode, dom);
+                }
+            }
+        }
+        // fast-path: if nothing patched remove all old and add all new
+        if (canRemoveWholeContent) {
+            removeAllChildren(dom, parentVNode, a);
+            mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle);
+        }
+        else if (moved) {
+            var seq = lis_algorithm(sources);
+            j = seq.length - 1;
+            for (i = bLeft - 1; i >= 0; i--) {
+                if (sources[i] === 0) {
+                    pos = i + bStart;
+                    bNode = b[pos];
+                    if (bNode.flags & 16384 /* InUse */) {
+                        b[pos] = bNode = directClone(bNode);
+                    }
+                    nextPos = pos + 1;
+                    mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
+                }
+                else if (j < 0 || i !== seq[j]) {
+                    pos = i + bStart;
+                    bNode = b[pos];
+                    nextPos = pos + 1;
+                    moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge);
+                }
+                else {
+                    j--;
+                }
+            }
+        }
+        else if (patched !== bLeft) {
+            // when patched count doesn't match b length we need to insert those new ones
+            // loop backwards so we can use insertBefore
+            for (i = bLeft - 1; i >= 0; i--) {
+                if (sources[i] === 0) {
+                    pos = i + bStart;
+                    bNode = b[pos];
+                    if (bNode.flags & 16384 /* InUse */) {
+                        b[pos] = bNode = directClone(bNode);
+                    }
+                    nextPos = pos + 1;
+                    mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle);
+                }
+            }
+        }
+    }
+    var result;
+    var p;
+    var maxLen = 0;
+    // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+    function lis_algorithm(arr) {
+        var arrI = 0;
+        var i = 0;
+        var j = 0;
+        var k = 0;
+        var u = 0;
+        var v = 0;
+        var c = 0;
+        var len = arr.length;
+        if (len > maxLen) {
+            maxLen = len;
+            result = new Int32Array(len);
+            p = new Int32Array(len);
+        }
+        for (; i < len; ++i) {
+            arrI = arr[i];
+            if (arrI !== 0) {
+                j = result[k];
+                if (arr[j] < arrI) {
+                    p[i] = j;
+                    result[++k] = i;
+                    continue;
+                }
+                u = 0;
+                v = k;
+                while (u < v) {
+                    c = (u + v) >> 1;
+                    if (arr[result[c]] < arrI) {
+                        u = c + 1;
+                    }
+                    else {
+                        v = c;
+                    }
+                }
+                if (arrI < arr[result[u]]) {
+                    if (u > 0) {
+                        p[i] = result[u - 1];
+                    }
+                    result[u] = i;
+                }
+            }
+        }
+        u = k + 1;
+        var seq = new Int32Array(u);
+        v = result[u - 1];
+        while (u-- > 0) {
+            seq[u] = v;
+            v = p[v];
+            result[u] = 0;
+        }
+        return seq;
+    }
+
+    var hasDocumentAvailable = typeof document !== 'undefined';
+    if (hasDocumentAvailable) {
+        /*
+         * Defining $EV and $V properties on Node.prototype
+         * fixes v8 "wrong map" de-optimization
+         */
+        if (window.Node) {
+            Node.prototype.$EV = null;
+            Node.prototype.$V = null;
+        }
+    }
+    function __render(input, parentDOM, callback, context) {
+        var lifecycle = [];
+        var rootInput = parentDOM.$V;
+        if (isNullOrUndef(rootInput)) {
+            if (!isNullOrUndef(input)) {
+                if (input.flags & 16384 /* InUse */) {
+                    input = directClone(input);
+                }
+                mount(input, parentDOM, context, false, null, lifecycle);
+                parentDOM.$V = input;
+                rootInput = input;
+            }
+        }
+        else {
+            if (isNullOrUndef(input)) {
+                remove(rootInput, parentDOM);
+                parentDOM.$V = null;
+            }
+            else {
+                if (input.flags & 16384 /* InUse */) {
+                    input = directClone(input);
+                }
+                patch(rootInput, input, parentDOM, context, false, null, lifecycle);
+                rootInput = parentDOM.$V = input;
+            }
+        }
+        callAll(lifecycle);
+        if (isFunction(callback)) {
+            callback();
+        }
+        if (isFunction(options.renderComplete)) {
+            options.renderComplete(rootInput, parentDOM);
+        }
+    }
+    function render(input, parentDOM, callback, context) {
+        if ( callback === void 0 ) callback = null;
+        if ( context === void 0 ) context = EMPTY_OBJ;
+
+        __render(input, parentDOM, callback, context);
+    }
+    typeof Promise !== 'undefined'
+        ? Promise.resolve().then.bind(Promise.resolve())
+        : function (a) {
+            window.setTimeout(a, 0);
+        };
+
+    var elem = document.getElementById('app');
+    startFPSMonitor();
+    startMemMonitor();
+    initProfiler('view update');
+
+    function renderBenchmark(dbs) {
+      var length = dbs.length;
+      var databases = [];
+
+      for (var i = 0; i < length; i++) {
+        var db = dbs[i];
+        var lastSample = db.lastSample;
+        var children = [createVNode(1, 'td', 'dbname', db.dbname, 16, null, null, null), createVNode(1, 'td', 'query-count', createVNode(1, 'span', lastSample.countClassName, lastSample.nbQueries, 16, null, null, null), 2, null, null, null)];
+
+        for (var i2 = 0; i2 < 5; i2++) {
+          var query = lastSample.topFiveQueries[i2];
+          children.push(createVNode(1, 'td', query.elapsedClassName, [createVNode(1, 'div', null, query.formatElapsed, 16, null, null, null), createVNode(1, 'div', 'popover left', [createVNode(1, 'div', 'popover-content', query.query, 16, null, null, null), createVNode(1, 'div', 'arrow', null, 1, null, null, null)], 4, null, null, null)], 4, null, null, null));
+        }
+
+        databases.push(createVNode(1, 'tr', null, children, 4, null, null, null));
+      }
+
+      render(createVNode(1, 'table', 'table table-striped', createVNode(1, 'tbody', null, databases, 4, null, null, null), 2, null, null, null), elem);
+    }
+
+    function loop() {
+      var dbs = ENV.generateData(false).toArray();
+      startProfile('view update');
+      renderBenchmark(dbs);
+      endProfile('view update');
+    }
+
+    setInterval(loop, 0);
+
+}());
