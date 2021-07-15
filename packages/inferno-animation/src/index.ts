@@ -1,3 +1,4 @@
+export { AnimatedAllComponent } from './AnimatedAllComponent';
 export { AnimatedComponent } from './AnimatedComponent';
 export { AnimatedMoveComponent } from './AnimatedMoveComponent';
 export { componentDidAppear, componentWillDisappear, componentWillMove, AnimationClass } from './animations';
