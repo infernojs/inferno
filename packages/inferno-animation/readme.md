@@ -13,13 +13,32 @@ npm install inferno-animation
 
 ## Usage
 
+There are three base components you can extend from to get animations in a straightforward way without any wiring.
+
+- AnimatedComponent -- animates on add/remove
+- AnimatedMoveComponent -- animates on move (within the same parent)
+- AnimatedAllComponent -- animates on add/remove and move (within the same parent)
+
+If you don't want to extend from one of the pre-wired components, look att src/AnimatedAllComponent.ts to see
+how to wire up the three animation hooks:
+
+- componentDidAppear
+- componentWillDisappear
+- componentWillMove
+
+There are a couple of examples of animations in the main repos in the `docs/animations` and `docs/animations-demo` folder.
+
+Using AnimatedAllComponent is just like working with ordinary components. Don't forget to
+add the CSS or you can get strange results:
+
 app.js
 ```js
 import { Component } from 'inferno';
-import { AnimatedComponent } from 'inferno-animation';
+import { AnimatedAllComponent } from 'inferno-animation';
 import './app.css';
 
-class MyAnimated extends AnimatedComponent {
+// Animate on add/remove
+class MyAnimated extends AnimatedAllComponent {
 
   render () {
     return <li className="test">{this.props.children}</li>
@@ -60,3 +79,18 @@ li.test {
   border-bottom: 1px solid white;
 }
 ```
+
+The syntax for hooking up a function component is straight forward too:
+
+```js
+import { componentDidAppear, componentWillDisappear, componentWillMove } from 'inferno-animation';
+
+<MyFuncComponent
+  onComponentDidAppear={componentDidAppear}
+  onComponentWillDisappear={componentWillDisappear}
+  onComponentWillMove={componentWillMove}>...</MyFuncComponent>
+```
+
+IMPORTANT! Always use the provided helper methods instead of implementing the hooks yourself. There
+might be optimisations and/or changes to how the animation hooks are implemented in future versions
+of Inferno that you want to benefit from.
