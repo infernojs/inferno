@@ -185,16 +185,16 @@ export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: Ani
 
 function addMoveAnimationHook(animations: AnimationQueues, parentVNode, refOrInstance, dom: Element, parentDOM: Element, nextNode: Element, flags, props) {
   animations.componentWillMove.push({
-    parent: parentDOM,
-    dom: dom,
-    next: nextNode,
+    dom,
     fn: () => {
       if (flags & VNodeFlags.ComponentClass) {
         refOrInstance.componentWillMove(parentVNode, parentDOM, dom, props);
       } else if (flags & VNodeFlags.ComponentFunction) {
         refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, props);
       }
-    }
+    },
+    next: nextNode,
+    parent: parentDOM,
   });
 }
 
