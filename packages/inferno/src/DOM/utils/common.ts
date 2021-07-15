@@ -110,7 +110,7 @@ export function callAllMoveAnimationHooks(animationQueue: Function[]) {
   // Picking from the top because it is faster, invocation order should be irrelevant
   // since all animations are to be run and we can't predict the order in which they complete.
   let fn;
-  while ((fn = animationQueue.pop()) !== undefined) {
+  while ((fn = animationQueue.shift()) !== undefined) {
     fn();
   }
 }
