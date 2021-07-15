@@ -619,21 +619,34 @@
       var fn;
 
       while ((fn = animationQueue.pop()) !== undefined) {
-        fn(function () {
-          if (--animationsLeft <= 0 && isFunction$3(callback)) {
-            callback();
-          }
-        });
+        try {
+          fn(function () {
+            if (--animationsLeft <= 0 && isFunction$3(callback)) {
+              callback();
+            }
+          });
+        } catch (e) {
+          // Perhaps we should fail silently in production?
+          throw e;
+        }
       }
     }
 
     function callAllMoveAnimationHooks(animationQueue) {
-      // Picking from the top because it is faster, invocation order should be irrelevant
-      // since all animations are to be run and we can't predict the order in which they complete.
-      var fn;
+      // Start the animations.
+      for (var i = 0; i < animationQueue.length; i++) {
+        try {
+          animationQueue[i].fn();
+        } catch (e) {// Perhaps we should only fail silently in production?
+          // throw e;
+        }
+      } // Perform the actual move
 
-      while ((fn = animationQueue.shift()) !== undefined) {
-        fn();
+
+      var tmp;
+
+      while ((tmp = animationQueue.shift()) !== undefined) {
+        insertOrAppend(tmp.parent, tmp.dom, tmp.next);
       }
     }
 
@@ -701,16 +714,21 @@
     }
 
     function addMoveAnimationHook(animations, parentVNode, refOrInstance, dom, parentDOM, nextNode, flags, props) {
-      animations.componentWillMove.push(function () {
-        if (flags & 4
-        /* ComponentClass */
-        ) {
-            refOrInstance.componentWillMove(parentVNode, parentDOM, dom, nextNode, props);
-          } else if (flags & 8
-        /* ComponentFunction */
-        ) {
-            refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, nextNode, props);
-          }
+      animations.componentWillMove.push({
+        parent: parentDOM,
+        dom: dom,
+        next: nextNode,
+        fn: function fn() {
+          if (flags & 4
+          /* ComponentClass */
+          ) {
+              refOrInstance.componentWillMove(parentVNode, parentDOM, dom, props);
+            } else if (flags & 8
+          /* ComponentFunction */
+          ) {
+              refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, props);
+            }
+        }
       });
     }
 
