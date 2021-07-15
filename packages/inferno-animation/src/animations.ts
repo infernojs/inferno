@@ -1,4 +1,4 @@
-import { addClassName, clearDimensions, decrementMoveCbCount, getDimensions, getGeometry, incrementMoveCbCount, insertBefore, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform } from './utils';
+import { addClassName, clearDimensions, decrementMoveCbCount, getDimensions, getGeometry, incrementMoveCbCount, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform } from './utils';
 import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef, isNull } from 'inferno-shared';
 
@@ -119,7 +119,7 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
   }
 }
 
-export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, next: HTMLElement, props: any) {
+export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, props: any) {
   // Source marker
   if (_DBG_MVE_) insertDebugMarker(parent, dom, 'src', dom.innerText);
   // tslint:disable-next-line
@@ -152,23 +152,19 @@ export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLEle
     isMaster: !isNullOrUndef(els),
     parentVNode
   }
-  queueAnimation((phase) => _willMove(phase, dom, parent, next, cls, animState));
+  queueAnimation((phase) => _willMove(phase, dom, parent, cls, animState));
 };
 
 function _willMove (
   phase: AnimationPhase,
   dom: HTMLElement,
   parent: HTMLElement,
-  next: HTMLElement,
   cls: AnimationClass,
   animState) {
   const { els, isMaster, parentVNode } = animState;
 
   switch (phase) {
     case AnimationPhase.INITIALIZE:
-      // 1. Move the node to target
-      insertBefore(parent, dom, next);
-
       // Target marker
       if (_DBG_MVE_) insertDebugMarker(parent, dom, 'trg', dom.innerText);
       return;

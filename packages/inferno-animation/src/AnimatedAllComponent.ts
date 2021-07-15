@@ -15,7 +15,7 @@ export class AnimatedAllComponent<P = {}, S = {}> extends Component<AnimationPro
     componentWillDisappear(dom, this.props, callback);
   }
 
-  public componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, next: HTMLElement, props: any) {
-    componentWillMove(parentVNode, parent, dom, next, props);
+  public componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, props: any) {
+    componentWillMove(parentVNode, parent, dom, props);
   }
 }
