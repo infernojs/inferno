@@ -2470,6 +2470,7 @@ declare global {
     allowTransparency?: boolean;
     frameBorder?: number | string;
     height?: number | string;
+    loading?: 'eager' | 'lazy';
     marginHeight?: number;
     marginWidth?: number;
     name?: string;
@@ -2485,6 +2486,7 @@ declare global {
     alt?: string;
     crossOrigin?: 'anonymous' | 'use-credentials' | '';
     height?: number | string;
+    loading?: 'eager' | 'lazy';
     sizes?: string;
     src?: string;
     srcSet?: string;
