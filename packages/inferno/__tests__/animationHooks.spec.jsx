@@ -1,5 +1,6 @@
-import { Component, render } from 'inferno';
+import { Component, render, VNode } from 'inferno';
 import { createElement } from 'inferno-create-element';
+import { isNull } from 'inferno-shared';
 
 describe('animation hooks', () => {
   let container;
@@ -64,6 +65,172 @@ describe('animation hooks', () => {
    * TODO: Add an animation blocking parent component to example
    *
    */
+
+  it('should NOT call "componentWillMove" when component is inserted into DOM', () => {
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      componentWillMove(parentVNode, parent, dom, props) {
+        spyer('willMove');
+        expect(parentVNode instanceof VNode).toEqual(true);
+        expect(parent instanceof HTMLDivElement).toEqual(true);
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+        expect(next instanceof HTMLDivElement).toEqual(true);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render() {
+        return <div />;
+      }
+    }
+
+    render(<App />, container);
+
+    expect(spyer).toHaveBeenCalledTimes(1);
+    expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+  });
+  it('should NOT call "componentWillMove" when component is removed from DOM', () => {
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      componentWillMove(parentVNode, parent, dom, props) {
+        spyer('willMove');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render() {
+        return <div />;
+      }
+    }
+
+    render(<App />, container);
+
+    render(null, container);
+
+    expect(spyer).toHaveBeenCalledTimes(1);
+    expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+  });
+
+  it('should call "componentWillMove" when component is about to be moved in DOM', () => {
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      componentWillMove(parentVNode, parent, dom, props) {
+        spyer('willMove');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render() {
+        return <div>{this.props.children}</div>;
+      }
+    }
+
+    render((<div>
+      <App key="1">1</App>
+      <App key="2">2</App>
+    </div>), container);
+    expect(container.textContent).toEqual('12');
+
+    render((<div>
+      <App key="2">2</App>
+      <App key="1">1</App>
+    </div>), container);
+
+    expect(container.textContent).toEqual('21');
+    // Only the first element needs to perform a DOM move
+    // The second element is animated by parent checking positions before and after move
+    expect(spyer).toHaveBeenCalledTimes(3);
+    expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(2)).toEqual(['willMove']);
+  });
+
+  it('should call "componentWillMove" when component is about to be moved in DOM', () => {
+    const spyer = jasmine.createSpy();
+    class App extends Component {
+      componentWillMove(parentVNode, parent, dom, props) {
+        spyer('willMove');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render() {
+        return <div>{this.props.children}</div>;
+      }
+    }
+
+    render((<div>
+      <App key="1">1</App>
+      <App key="2">2</App>
+      <App key="3">3</App>
+    </div>), container);
+    expect(container.textContent).toEqual('123');
+
+    render((<div>
+      <App key="2">2</App>
+      <App key="3">3</App>
+      <App key="1">1</App>
+    </div>), container);
+
+    expect(container.textContent).toEqual('231');
+    // Only the first element needs to perform a DOM move
+    // The second element is animated by parent checking positions before and after move
+    expect(spyer).toHaveBeenCalledTimes(4);
+    expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(2)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(3)).toEqual(['willMove']);
+  });
+
+
+  it('should call "componentWillMove" when component is about to be moved in DOM', () => {
+    const spyer = jasmine.createSpy();
+    let parentDom;
+    class App extends Component {
+      componentWillMove(parentVNode, parent, dom, props) {
+        spyer('willMove');
+        expect(dom instanceof HTMLDivElement).toEqual(true);
+        parentDom = parentDom || parent;
+      }
+      componentDidMount() {
+        spyer('didMount');
+      }
+      render() {
+        return <div>{this.props.children}</div>;
+      }
+    }
+
+    render((<div>
+      <App key="1">1</App>
+      <App key="2">2</App>
+      <App key="3">3</App>
+      <App key="4">4</App>
+    </div>), container);
+    expect(container.textContent).toEqual('1234');
+
+    render((<div>
+      <App key="4">4</App>
+      <App key="3">3</App>
+      <App key="2">2</App>
+      <App key="1">1</App>
+    </div>), container);
+
+    expect(spyer).toHaveBeenCalledTimes(7);
+    // Three elements need to perform a DOM move
+    // The fourth element is animated by parent checking positions before and after move
+    expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(2)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(3)).toEqual(['didMount']);
+    expect(spyer.calls.argsFor(4)).toEqual(['willMove']);
+    expect(spyer.calls.argsFor(5)).toEqual(['willMove']);
+    expect(spyer.calls.argsFor(6)).toEqual(['willMove']);
+    expect(container.textContent).toEqual('4321');
+
+  });
 
   it('should call "componentDidAppear" when component has been inserted into DOM', () => {
     const spyer = jasmine.createSpy();
@@ -470,8 +637,6 @@ describe('animation hooks', () => {
     };
     checkRenderComplete_ONE();
   });
-
-  it('should call "willMove" when component is about to be moved to another part of DOM', () => {});
 
   const template = function (child) {
     return createElement('div', null, child);
@@ -1101,6 +1266,7 @@ describe('animation hooks', () => {
 });
 
 function factory(spyer) {
+  // TODO: Add componentWillMove
   return class Animated extends Component {
     componentDidAppear(dom) {
       spyer && spyer('didAppear');

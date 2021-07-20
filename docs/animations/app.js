@@ -6,8 +6,10 @@
 
   var {
     AnimatedComponent,
+    AnimatedMoveComponent,
     componentDidAppear,
-    componentWillDisappear
+    componentWillDisappear,
+    componentWillMove,
   } = InfernoAnimation;
   
   var {
@@ -22,6 +24,10 @@
   const anim = {
     onComponentDidAppear: componentDidAppear,
     onComponentWillDisappear: componentWillDisappear
+  }
+
+  const animMove = {
+    onComponentWillMove: componentWillMove
   }
 
   class ListItem extends AnimatedComponent {
@@ -47,6 +53,20 @@
     renderCounter++;
     return createElement('section', { onClick: (e) => props.onClick(e, props.index)}, children);
   }
+
+  class ListItemMoveAnim extends AnimatedMoveComponent {
+    render() {
+    	renderCounter++;
+      return createElement('li', { onClick: (e) => this.props.onClick(e, this.props.index)}, this.props.children);
+    }
+  }
+
+  const FuncListItemMoveAnim = ({children, ...props}) => {
+    renderCounter++;
+    return createElement('li', { onClick: (e) => props.onClick(e, props.index)}, children);
+  }
+
+
 
 	class List extends Component {
 		constructor() {
@@ -300,7 +320,7 @@
       e && e.preventDefault();
       var newItems = this.state.items.concat([]);
       var nextKey = newItems.reduce((prev, curr) => curr.key > prev ? curr.key : prev, 0) + 1;
-      newItems.push({key: nextKey, val: nextKey + 1});
+      newItems.push({key: nextKey, val: nextKey});
       this.setState({
         items: newItems
       });
@@ -388,7 +408,7 @@
 			let i = 0;
 
 			while (this.items.length < 20) {
-				this.items[this.items.length] = {key: i, val: i + 1};
+				this.items[this.items.length] = {key: i, val: i};
         i++;
 			}
       this.setState({ items: this.items });
@@ -463,7 +483,7 @@
       e.preventDefault();
       var newItems = this.state.items.concat([]);
       var nextKey = newItems.reduce((prev, curr) => curr.key > prev ? curr.key : prev, 0) + 1;
-      newItems.push({key: nextKey, val: nextKey + 1});
+      newItems.push({key: nextKey, val: nextKey});
       this.setState({
         items: newItems
       });
@@ -477,7 +497,7 @@
 			let i = 0;
 
 			while (this.items.length < nextProps.items) {
-				this.items[this.items.length] = {key: i, val: i + 1};
+				this.items[this.items.length] = {key: i, val: i};
         i++;
 			}
       this.setState({ items: this.items });
@@ -502,12 +522,141 @@
 		}
 	}
 
+  class ShuffleListWithAnimation extends Component {
+		constructor() {
+			super();
+			// set initial time:
+			this.state = {
+				items: []
+			};
+			this.items = [];
+		}
+
+    doMove = (e, index) => {
+      e && e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      var [tmp] = newItems.splice(index, 1)
+      newItems.splice(Math.round(Math.random() * newItems.length), 0, tmp)
+      this.setState({
+        items: newItems
+      })
+    }
+
+    doAdd = (e) => {
+      e && e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      var nextKey = newItems.reduce((prev, curr) => curr.key > prev ? curr.key : prev, 0) + 1;
+      newItems.push({key: nextKey, val: nextKey});
+      this.setState({
+        items: newItems
+      });
+    }
+
+    doMix = (e) => {
+      e && e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      shuffle(newItems);
+      
+      // So this is the shuffled order
+      console.log('Expected order: ' + newItems.map((el) => '(' + el.val + ')').join(','))
+
+      this.setState({
+        items: newItems
+      });
+
+      // And this is what the DOM looks like
+      setTimeout(() => {
+        const res = document.querySelector('#App6 ul').textContent.match(/\(\d*\)/g);
+        console.log('Actual order:   ' + res.join(','));
+      }, 100)
+    }
+
+    doDoubleMix = (e) => {
+      e && e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      shuffle(newItems);
+      
+      // So this is the shuffled order
+      console.log('Expected order 1: ' + newItems.map((el) => '(' + el.val + ')').join(','))
+
+      this.setState({
+        items: newItems
+      });
+
+      setTimeout(() => {
+        var newItems2 = newItems.concat([]);
+        shuffle(newItems2);
+        this.setState({
+          items: newItems2
+        });
+        console.log('Expected order 2: ' + newItems2.map((el) => '(' + el.val + ')').join(','))
+      }, 1)
+
+      // And this is what the DOM looks like
+      setTimeout(() => {
+        const res = document.querySelector('#App6 ul').textContent.match(/\(\d*\)/g);
+        console.log('Actual order:     ' + res.join(','));
+      }, 100)
+    }
+
+    doMoveOne = (e) => {
+      e && e.preventDefault();
+      var newItems = this.state.items.concat([]);
+      newItems.push(newItems.shift());
+      this.setState({
+        items: newItems
+      });
+    }
+
+    doClearMarkers = (e) => {
+      e && e.preventDefault();
+      const tmp = document.querySelectorAll('.debugMarker');
+      tmp.forEach((marker) => {
+        marker.parentNode.removeChild(marker);
+      })
+    }
+
+		componentDidMount() {
+			let i = 0;
+
+			while (this.items.length < 5) {
+				this.items[this.items.length] = {key: i, val: i};
+        i++;
+			}
+      this.setState({ items: this.items });
+		}
+
+    renderItem = (item, i) => {
+      if (this.props.useFunctionalComponent) {
+        return createElement(FuncListItemMoveAnim, {key: item.key, index: i, animation: this.props.animation, ...animMove, onClick: this.doMove}, `${item.val}bar (${item.key})`);
+      }
+      else {
+        return createElement(ListItemMoveAnim, {key: item.key, index: i, animation: this.props.animation, onClick: this.doMove}, `${item.val}bar (${item.key})`);
+      }
+    }
+
+		render() {
+			return createElement('div', null, [
+        createElement('ul', null, this.state.items.map(this.renderItem)),
+        createElement('h2', null, 'Shuffle w. Anim'),
+        createElement('p', null, this.props.description),
+        createElement('button', { onClick: this.doAdd }, 'Add'),
+        createElement('button', { onClick: this.doMix }, 'Shuffle'),
+        createElement('button', { onClick: this.doDoubleMix }, 'DoubleShuffle'),
+        createElement('button', { onClick: this.doMoveOne }, 'Move 1'),
+        createElement('button', { onClick: this.doRemoveMix }, 'Remove' + (this.state.deleted ? ` (${this.state.deleted})` : '')),
+        createElement('button', { onClick: this.doClearMarkers }, 'Clear debug markers'),
+      ]);
+		}
+	}
+
 	document.addEventListener('DOMContentLoaded', function () {
 		var container_1 = document.querySelector('#App1');
 		var container_2 = document.querySelector('#App2');
 		var container_3 = document.querySelector('#App3');
 		var container_4 = document.querySelector('#App4');
     var container_5 = document.querySelector('#App5');
+    var container_6 = document.querySelector('#App6');
 
     var useFunctionalComponent = location.search === '?functional'
 
@@ -546,5 +695,11 @@
         description: 'This container will be filled with 5 rows every time you click the button. Click an item to remove it.',
       }), container_5);
     });
+    Inferno.render(createElement(ShuffleListWithAnimation, {
+      useFunctionalComponent,
+      animation: 'MoveAnim',
+      description: 'This container will animate items on shuffle. Click an item to randomly move it.',
+    }), container_6);
 	});
+
 })();

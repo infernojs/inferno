@@ -7,6 +7,7 @@ import { clearDOM, remove, removeAllChildren, unmount, unmountAllChildren } from
 import {
   AnimationQueues,
   appendChild,
+  callAllMoveAnimationHooks,
   createDerivedState,
   EMPTY_OBJ,
   findDOMfromVNode,
@@ -79,6 +80,11 @@ export function patch(
     patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations);
   } else {
     patchPortal(lastVNode, nextVNode, context, lifecycle, animations);
+  }
+
+  // Invoke move animations when all moves have been calculated
+  if (animations.componentWillMove.length > 0) {
+    callAllMoveAnimationHooks(animations.componentWillMove);
   }
 }
 
@@ -775,7 +781,8 @@ function patchKeyedChildrenComplex(
         bNode = b[pos];
         nextPos = pos + 1;
 
-        moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge);
+        // --- the DOM-node is moved by a call to insertAppend
+        moveVNodeDOM(parentVNode, bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, animations);
       } else {
         j--;
       }
