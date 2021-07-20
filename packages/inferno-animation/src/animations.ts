@@ -159,8 +159,6 @@ function _willMove (
   const { els, isMaster, parentVNode } = animState;
 
   switch (phase) {
-    case AnimationPhase.INITIALIZE:
-      return;
     case AnimationPhase.MEASURE:
       // If we are responsible for triggering measures, we check all the target positions
       if (isMaster) {
