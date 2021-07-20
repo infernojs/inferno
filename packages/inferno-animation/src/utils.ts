@@ -1,4 +1,4 @@
-import { isFunction, isNull, warning } from 'inferno-shared';
+import { isFunction, warning } from 'inferno-shared';
 
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
@@ -266,39 +266,6 @@ export function registerTransitionListener(nodes: HTMLElement[], callback: Funct
 
 function isDebugAnimationsSet() {
   return window.__INFERNO_ANIMATION_DEBUG__ === true;
-}
-
-// Utils used in moves
-export function appendChild(parentDOM, dom) {
-  parentDOM.appendChild(dom);
-}
-
-export function insertBefore(parent: Element, newNode: Element, refNode: Element) {
-  if (isNull(refNode)) {
-    appendChild(parent, newNode);
-  } else {
-    parent.insertBefore(newNode, refNode);
-  }
-}
-
-export function insertAfter(parent: Element, newNode: Element, refNode: Element) {
-  const tmpNextRef = refNode.nextSibling
-  if (isNull(tmpNextRef)) {
-    appendChild(parent, newNode);
-  } else {
-    parent.insertBefore(newNode, tmpNextRef);
-  }
-}
-
-export function removeChild(parent: Element, child: Element) {
-  parent.removeChild(child);
-}
-
-export function insertDebugMarker(parent: Element, refNode: Element, type, text) {
-  const marker = document.createElement('i');
-  addClassName(marker, 'debugMarker debugMarker-' + type);
-  marker.innerText = text || '';
-  insertBefore(parent, marker, refNode);
 }
 
 export function incrementMoveCbCount (node) {

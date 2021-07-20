@@ -1,4 +1,4 @@
-import { addClassName, clearDimensions, decrementMoveCbCount, getDimensions, getGeometry, incrementMoveCbCount, insertDebugMarker, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform } from './utils';
+import { addClassName, clearDimensions, decrementMoveCbCount, getDimensions, getGeometry, incrementMoveCbCount, registerTransitionListener, removeClassName, setDimensions, setDisplay, resetDisplay, setTransform, clearTransform } from './utils';
 import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef, isNull } from 'inferno-shared';
 
@@ -120,11 +120,8 @@ function _willDisappear (phase: AnimationPhase, dom: HTMLElement, callback: Func
 }
 
 export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, props: any) {
-  // Source marker
-  if (_DBG_MVE_) insertDebugMarker(parent, dom, 'src', dom.innerText);
   // tslint:disable-next-line
   if (_DBG_MVE_) console.log('Animating move', dom)
-
 
   // Measure all siblings of moved node once before any mutations are done
   let els;
@@ -152,21 +149,17 @@ export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLEle
     isMaster: !isNullOrUndef(els),
     parentVNode
   }
-  queueAnimation((phase) => _willMove(phase, dom, parent, cls, animState));
+  queueAnimation((phase) => _willMove(phase, cls, animState));
 };
 
 function _willMove (
   phase: AnimationPhase,
-  dom: HTMLElement,
-  parent: HTMLElement,
   cls: AnimationClass,
   animState) {
   const { els, isMaster, parentVNode } = animState;
 
   switch (phase) {
     case AnimationPhase.INITIALIZE:
-      // Target marker
-      if (_DBG_MVE_) insertDebugMarker(parent, dom, 'trg', dom.innerText);
       return;
     case AnimationPhase.MEASURE:
       // If we are responsible for triggering measures, we check all the target positions
