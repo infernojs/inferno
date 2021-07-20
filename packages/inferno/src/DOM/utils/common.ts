@@ -105,28 +105,18 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
   // since all animations are to be run and we can't predict the order in which they complete.
   let fn;
   while ((fn = animationQueue.pop()) !== undefined) {
-    try {
-      fn(() => {
-        if (--animationsLeft <= 0 && isFunction(callback)) {
-          callback();
-        }
-      });
-    } catch (e) {
-      // Perhaps we should fail silently in production?
-      throw e;
-    }
+    fn(() => {
+      if (--animationsLeft <= 0 && isFunction(callback)) {
+        callback();
+      }
+    });
   }
 }
 
 export function callAllMoveAnimationHooks(animationQueue: MoveQueueItem[]) {
   // Start the animations.
   for (let i = 0; i < animationQueue.length;  i++) {
-    try {
-      animationQueue[i].fn();
-    } catch (e) {
-      // Perhaps we should only fail silently in production?
-      // throw e;
-    }
+    animationQueue[i].fn();
   }
   // Perform the actual move
   let tmp;

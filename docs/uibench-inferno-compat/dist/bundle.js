@@ -619,27 +619,18 @@
       var fn;
 
       while ((fn = animationQueue.pop()) !== undefined) {
-        try {
-          fn(function () {
-            if (--animationsLeft <= 0 && isFunction$3(callback)) {
-              callback();
-            }
-          });
-        } catch (e) {
-          // Perhaps we should fail silently in production?
-          throw e;
-        }
+        fn(function () {
+          if (--animationsLeft <= 0 && isFunction$3(callback)) {
+            callback();
+          }
+        });
       }
     }
 
     function callAllMoveAnimationHooks(animationQueue) {
       // Start the animations.
       for (var i = 0; i < animationQueue.length; i++) {
-        try {
-          animationQueue[i].fn();
-        } catch (e) {// Perhaps we should only fail silently in production?
-          // throw e;
-        }
+        animationQueue[i].fn();
       } // Perform the actual move
 
 
@@ -715,9 +706,7 @@
 
     function addMoveAnimationHook(animations, parentVNode, refOrInstance, dom, parentDOM, nextNode, flags, props) {
       animations.componentWillMove.push({
-        parent: parentDOM,
         dom: dom,
-        next: nextNode,
         fn: function fn() {
           if (flags & 4
           /* ComponentClass */
@@ -728,7 +717,9 @@
           ) {
               refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, props);
             }
-        }
+        },
+        next: nextNode,
+        parent: parentDOM
       });
     }
 
