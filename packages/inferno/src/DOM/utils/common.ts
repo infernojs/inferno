@@ -118,11 +118,14 @@ export function callAllMoveAnimationHooks(animationQueue: MoveQueueItem[]) {
   for (let i = 0; i < animationQueue.length;  i++) {
     animationQueue[i].fn();
   }
-  // Perform the actual move
-  let tmp;
-  while ((tmp = animationQueue.shift()) !== undefined) {
+  // Perform the actual DOM moves when all measurements of initial
+  // position have been performed. The rest of the animations are done
+  // async.
+  for (let i = 0; i < animationQueue.length; i++) {
+    const tmp = animationQueue[i];
     insertOrAppend(tmp.parent, tmp.dom, tmp.next);
   }
+  animationQueue.splice(0, animationQueue.length);
 }
 
 export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferredRemoval: boolean) {

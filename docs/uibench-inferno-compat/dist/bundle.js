@@ -631,14 +631,17 @@
       // Start the animations.
       for (var i = 0; i < animationQueue.length; i++) {
         animationQueue[i].fn();
-      } // Perform the actual move
+      } // Perform the actual DOM moves when all measurements of initial
+      // position have been performed. The rest of the animations are done
+      // async.
 
 
-      var tmp;
-
-      while ((tmp = animationQueue.shift()) !== undefined) {
+      for (var i$1 = 0; i$1 < animationQueue.length; i$1++) {
+        var tmp = animationQueue[i$1];
         insertOrAppend(tmp.parent, tmp.dom, tmp.next);
       }
+
+      animationQueue.splice(0, animationQueue.length);
     }
 
     function clearVNodeDOM(vNode, parentDOM, deferredRemoval) {
