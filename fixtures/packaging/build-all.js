@@ -3,6 +3,7 @@ const Table = require('cli-table');
 const { existsSync, openSync, readdirSync, statSync } = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const os = require('os');
 
 const fixtureDirs = readdirSync(__dirname).filter((file) => statSync(path.join(__dirname, file)).isDirectory());
 
@@ -20,6 +21,7 @@ function addResult(tool, environment, result) {
 }
 
 function buildFixture(tool, environment) {
+  const isWindows = os.type().indexOf('Windows') !== -1;
   // Let console know what's going on
   console.log(`Running ${tool}:${environment}`);
 
@@ -30,20 +32,20 @@ function buildFixture(tool, environment) {
   };
 
   // Run an NPM install
-  const install_result = spawnSync('npm', ['install'], opts);
-  if (install_result.status !== 0 || install_result.error) {
+  const install_result = spawnSync(isWindows ? 'npm.cmd' : 'npm', ['install'], opts);
+  if (install_result.status !== 0 || install_result.error || install_result.stderr) {
     return {
       passed: false,
-      message: install_result.error
+      message: install_result.error || install_result.stderr
     };
   }
 
   // Run the test
-  const test_result = spawnSync('npm', ['run', 'build'], opts);
-  if (test_result.status !== 0 || test_result.error) {
+  const test_result = spawnSync(isWindows ? 'npm.cmd' : 'npm', ['run', 'build'], opts);
+  if (test_result.status !== 0 || test_result.error || test_result.stderr) {
     return {
       passed: false,
-      message: test_result.error
+      message: test_result.error || test_result.stderr
     };
   }
 
