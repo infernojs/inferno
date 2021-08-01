@@ -115,7 +115,7 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
 
 export function callAllMoveAnimationHooks(animationQueue: MoveQueueItem[]) {
   // Start the animations.
-  for (let i = 0; i < animationQueue.length;  i++) {
+  for (let i = 0; i < animationQueue.length; i++) {
     animationQueue[i].fn();
   }
   // Perform the actual DOM moves when all measurements of initial
@@ -187,14 +187,14 @@ function addMoveAnimationHook(animations: AnimationQueues, parentVNode, refOrIns
       }
     },
     next: nextNode,
-    parent: parentDOM,
+    parent: parentDOM
   });
 }
 
 export function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations: AnimationQueues) {
   let refOrInstance;
   let instanceProps;
-  const instanceFlags = vNode.flags
+  const instanceFlags = vNode.flags;
   do {
     const flags = vNode.flags;
 

@@ -93,8 +93,8 @@ export function getDimensions(node: HTMLElement) {
 }
 
 export function getOffsetPosition(node: HTMLElement) {
-  const {x, y} = node.getBoundingClientRect();
-  return  { x, y };
+  const { x, y } = node.getBoundingClientRect();
+  return { x, y };
 }
 
 export function getGeometry(node: HTMLElement) {
@@ -103,11 +103,11 @@ export function getGeometry(node: HTMLElement) {
 }
 
 export function setTransform(node: HTMLElement, x: number, y: number) {
-  node.style.transform = 'translate(' + x + 'px, ' + y + 'px)'; 
+  node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 }
 
 export function clearTransform(node: HTMLElement) {
-  node.style.transform = ''; 
+  node.style.transform = '';
 }
 
 export function setDimensions(node: HTMLElement, width: number, height: number) {
@@ -268,7 +268,7 @@ function isDebugAnimationsSet() {
   return window.__INFERNO_ANIMATION_DEBUG__ === true;
 }
 
-export function incrementMoveCbCount (node) {
+export function incrementMoveCbCount(node) {
   let curr = parseInt(node.dataset.moveCbCount, 10);
   if (isNaN(curr)) {
     curr = 1;
@@ -279,7 +279,7 @@ export function incrementMoveCbCount (node) {
   return curr;
 }
 
-export function decrementMoveCbCount (node) {
+export function decrementMoveCbCount(node) {
   let curr = parseInt(node.dataset.moveCbCount, 10);
   if (isNaN(curr)) {
     curr = 0;

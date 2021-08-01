@@ -193,12 +193,7 @@ describe('inferno-animation animated functional component', () => {
       return <div>{children}</div>;
     };
 
-    render(
-      <MyComponent onComponentWillMove={componentWillMove}>
-        1
-      </MyComponent>,
-      container
-    );
+    render(<MyComponent onComponentWillMove={componentWillMove}>1</MyComponent>, container);
     expect(container.textContent).toBe('1');
   });
 
@@ -276,7 +271,6 @@ describe('inferno-animation animated functional component', () => {
       onComponentWillMove: componentWillMove
     };
 
-
     render(
       <div>
         <My key="#1" {...anim}>
@@ -346,7 +340,6 @@ describe('inferno-animation animated functional component', () => {
     const anim = {
       onComponentWillMove: componentWillMove
     };
-
 
     const outp = renderToString(<MyComponent {...anim}>1</MyComponent>, container);
     expect(outp).toBe('<div>1</div>');

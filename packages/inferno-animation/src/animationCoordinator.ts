@@ -1,6 +1,5 @@
 import { forceReflow } from './utils';
 
-
 // This is only used for development and should be set to false for release
 const _DBG_COORD_ = false && process.env.NODE_ENV !== 'production';
 
@@ -13,7 +12,6 @@ export const enum AnimationPhase {
   ACTIVATE_ANIMATION,
   length // This will equal length of actual phases since TS converts this to a zero based list of ints
 }
-
 
 let _animationQueue: Function[] = [];
 let _animationActivationQueue: Function[] = [];
@@ -35,7 +33,7 @@ function _runActivateAnimationPhase() {
 
 function _runAnimationPhases() {
   _nextAnimationFrame = IDLE;
-  
+
   // Get animations to execute
   const animationQueue = _animationQueue;
   // Clear global queue
@@ -75,7 +73,7 @@ function _runAnimationPhases() {
 function _debugAnimationPhases(phase: AnimationPhase, animationQueue) {
   // When debugging we call _runAnimationPhases once for each phase
   // so only set to idle when done
-  if (phase === AnimationPhase.length - 1) {
+  if (phase === AnimationPhase.length - 1) {
     _nextAnimationFrame = IDLE;
   }
 
@@ -116,7 +114,7 @@ export function queueAnimation(callback: Function) {
           if (_animationDebugQueue === _animationQueue) {
             _animationQueue = [];
           }
-          
+
           const nextStartPhase = _debugAnimationPhases(startPhase, _animationDebugQueue);
           if (nextStartPhase !== undefined && nextStartPhase < AnimationPhase.length) {
             _runPhase(nextStartPhase);
@@ -127,7 +125,7 @@ export function queueAnimation(callback: Function) {
             _runPhase(0);
           }
         });
-      }
+      };
       // TODO: We could create hooks to show a simply UI to control
       // animation execution. For now you need to set a break point
       _runPhase(0);

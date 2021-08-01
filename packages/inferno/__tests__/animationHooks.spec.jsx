@@ -127,16 +127,22 @@ describe('animation hooks', () => {
       }
     }
 
-    render((<div>
-      <App key="1">1</App>
-      <App key="2">2</App>
-    </div>), container);
+    render(
+      <div>
+        <App key="1">1</App>
+        <App key="2">2</App>
+      </div>,
+      container
+    );
     expect(container.textContent).toEqual('12');
 
-    render((<div>
-      <App key="2">2</App>
-      <App key="1">1</App>
-    </div>), container);
+    render(
+      <div>
+        <App key="2">2</App>
+        <App key="1">1</App>
+      </div>,
+      container
+    );
 
     expect(container.textContent).toEqual('21');
     // Only the first element needs to perform a DOM move
@@ -162,18 +168,24 @@ describe('animation hooks', () => {
       }
     }
 
-    render((<div>
-      <App key="1">1</App>
-      <App key="2">2</App>
-      <App key="3">3</App>
-    </div>), container);
+    render(
+      <div>
+        <App key="1">1</App>
+        <App key="2">2</App>
+        <App key="3">3</App>
+      </div>,
+      container
+    );
     expect(container.textContent).toEqual('123');
 
-    render((<div>
-      <App key="2">2</App>
-      <App key="3">3</App>
-      <App key="1">1</App>
-    </div>), container);
+    render(
+      <div>
+        <App key="2">2</App>
+        <App key="3">3</App>
+        <App key="1">1</App>
+      </div>,
+      container
+    );
 
     expect(container.textContent).toEqual('231');
     // Only the first element needs to perform a DOM move
@@ -184,7 +196,6 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(2)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(3)).toEqual(['willMove']);
   });
-
 
   it('should call "componentWillMove" when component is about to be moved in DOM', () => {
     const spyer = jasmine.createSpy();
@@ -203,20 +214,26 @@ describe('animation hooks', () => {
       }
     }
 
-    render((<div>
-      <App key="1">1</App>
-      <App key="2">2</App>
-      <App key="3">3</App>
-      <App key="4">4</App>
-    </div>), container);
+    render(
+      <div>
+        <App key="1">1</App>
+        <App key="2">2</App>
+        <App key="3">3</App>
+        <App key="4">4</App>
+      </div>,
+      container
+    );
     expect(container.textContent).toEqual('1234');
 
-    render((<div>
-      <App key="4">4</App>
-      <App key="3">3</App>
-      <App key="2">2</App>
-      <App key="1">1</App>
-    </div>), container);
+    render(
+      <div>
+        <App key="4">4</App>
+        <App key="3">3</App>
+        <App key="2">2</App>
+        <App key="1">1</App>
+      </div>,
+      container
+    );
 
     expect(spyer).toHaveBeenCalledTimes(7);
     // Three elements need to perform a DOM move
@@ -229,7 +246,6 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(5)).toEqual(['willMove']);
     expect(spyer.calls.argsFor(6)).toEqual(['willMove']);
     expect(container.textContent).toEqual('4321');
-
   });
 
   it('should call "componentDidAppear" when component has been inserted into DOM', () => {
