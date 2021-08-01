@@ -5,32 +5,32 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "karma start karma.sauce.conf.js --single-run",
-    "local": "karma start karma.base.conf.js --single-run --reporters dots",
-    "debug": "karma start karma.base.conf.js --no-single-run"
+    "test": "karma start ./karma.sauce.conf.js --single-run",
+    "local": "karma start ./karma.base.conf.js --single-run --reporters dots",
+    "debug": "karma start ./karma.base.conf.js --no-single-run"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "7.14.3",
-    "@babel/helper-replace-supers": "7.14.4",
-    "@babel/plugin-proposal-class-properties": "7.13.0",
-    "@babel/plugin-proposal-decorators": "7.14.2",
-    "@babel/plugin-proposal-object-rest-spread": "7.14.4",
-    "@babel/preset-env": "7.14.4",
+    "@babel/core": "7.14.8",
+    "@babel/helper-replace-supers": "7.14.5",
+    "@babel/plugin-proposal-class-properties": "7.14.5",
+    "@babel/plugin-proposal-decorators": "7.14.5",
+    "@babel/plugin-proposal-object-rest-spread": "7.14.7",
+    "@babel/preset-env": "7.14.8",
     "babel-loader": "^8.2.2",
-    "jasmine-core": "^3.7.1",
-    "karma": "^6.3.2",
+    "jasmine-core": "^3.8.0",
+    "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
     "karma-detect-browsers": "^2.3.3",
-    "karma-firefox-launcher": "^2.1.0",
+    "karma-firefox-launcher": "^2.1.1",
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^4.0.1",
     "karma-sauce-launcher": "^4.3.6",
     "karma-webpack": "5.0.0",
-    "ts-loader": "^9.2.2",
+    "ts-loader": "^9.2.4",
     "wd": "^1.14.0",
-    "webpack": "^5.38.1"
+    "webpack": "^5.47.1"
   }
 }

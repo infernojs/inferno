@@ -88,7 +88,7 @@ module.exports = function (config) {
         runtimeChunk: false,
         minimize: false
       },
-      target: false,
+      target: ['web', 'es5'],
       module: {
         rules: [
           {
