@@ -16,5 +16,5 @@
     "docs/**",
     "packages/*/package-lock.json"
   ],
-  "version": "7.4.8"
+  "version": "7.4.9"
 }
