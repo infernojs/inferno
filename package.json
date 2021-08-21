@@ -53,7 +53,7 @@
     "predocs": "rimraf docs",
     "print:size": "node scripts/bundle/bundle-size.js",
     "examples": "npm run --prefix examples start",
-    "install:browsertest": "cd fixtures/browser && npm install",
+    "install:browsertest": "cd fixtures/browser && npm install --legacy-peer-deps",
     "lint": "tslint -p tsconfig.json --project",
     "lint-staged": "lint-staged",
     "move-types": "lerna exec -- node ../../scripts/bundle/move-typings.js",
