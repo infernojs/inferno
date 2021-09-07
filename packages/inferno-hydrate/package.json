@@ -8,6 +8,11 @@
     "email": "sampo.kivisto@live.fi",
     "url": "https://github.com/havunen"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-hydrate"
+  },
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
   },

@@ -5,6 +5,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-utils"
+  },
   "devDependencies": {
     "inferno-shared": "7.4.8",
     "inferno-vnode-flags": "7.4.8"
