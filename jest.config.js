@@ -30,9 +30,6 @@ module.exports = {
     "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
     "^.+\\.tsx?$": "<rootDir>/jest.ts.transform.js"
   },
-  setupFilesAfterEnv: [
-    require.resolve("./JEST-DEBUG.js")
-  ],
   testEnvironment: "jsdom",
   testRunner: "jest-jasmine2",
   reporters: [["jest-silent-reporter", { "useDots": true }]]

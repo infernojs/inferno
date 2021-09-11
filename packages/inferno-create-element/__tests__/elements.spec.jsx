@@ -1,6 +1,5 @@
 import { render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
@@ -808,19 +807,20 @@ describe('Elements (JSX)', () => {
     function test() {}
 
     const obj = {
-      fn() {},
+      ref() {},
       click() {}
     };
     const bool = false;
     const newValue = 't';
     const spread = { id: 'test' };
-    const sinonSpy = sinon.spy(obj, 'fn');
-    const spyClick = sinon.spy(obj, 'click');
+
+    spyOn(obj, 'ref');
+    spyOn(obj, 'click');
 
     render(
       <input
         type="text"
-        ref={obj.fn}
+        ref={obj.ref}
         spellcheck="false"
         readOnly={bool ? 'readonly' : false}
         disabled={bool}
@@ -838,10 +838,11 @@ describe('Elements (JSX)', () => {
       container
     );
     const input = container.querySelector('#test');
-    sinon.assert.calledOnce(sinonSpy); // Verify hook works
+    expect(obj.click).toHaveBeenCalledTimes(0);
+    expect(obj.ref).toHaveBeenCalledTimes(1); // Verify hook works
     input.click();
     setTimeout(() => {
-      sinon.assert.calledOnce(spyClick); // Verify hook works
+      expect(obj.click).toHaveBeenCalledTimes(1); // Verify hook works
       done();
     }, 25);
   });

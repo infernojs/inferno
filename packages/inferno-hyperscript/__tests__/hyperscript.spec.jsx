@@ -1,7 +1,6 @@
 import { h } from 'inferno-hyperscript';
 import { innerHTML } from 'inferno-utils';
 import { Component, createRef, forwardRef, Fragment, render } from 'inferno';
-import sinon from 'sinon';
 
 describe('HyperScript (non-JSX)', () => {
   let container;
@@ -45,20 +44,20 @@ describe('HyperScript (non-JSX)', () => {
       const spyObj = {
         fn: () => {}
       };
-      const sinonSpy = sinon.spy(spyObj, 'fn');
+      const spy = spyOn(spyObj, 'fn');
       const node = h(FooBar, { ref: spyObj.fn });
 
       render(node, container);
 
-      expect(sinonSpy.callCount).toBe(1);
-      expect(sinonSpy.getCall(0).args.length).toBe(1);
-      expect(sinonSpy.getCall(0).args[0]).not.toEqual(null);
+      expect(spy.calls.count()).toBe(1);
+      expect(spy.calls.argsFor(0).length).toBe(1);
+      expect(spy.calls.argsFor(0)[0]).not.toEqual(null);
 
       render(null, container);
 
-      expect(sinonSpy.callCount).toBe(2);
-      expect(sinonSpy.getCall(1).args.length).toBe(1);
-      expect(sinonSpy.getCall(1).args[0]).toEqual(null);
+      expect(spy.calls.count()).toBe(2);
+      expect(spy.calls.argsFor(1).length).toBe(1);
+      expect(spy.calls.argsFor(1)[0]).toEqual(null);
     });
   });
 
@@ -132,19 +131,19 @@ describe('HyperScript (non-JSX)', () => {
   });
 
   it('Should support lifecycle methods on functional components willMount', () => {
-    const callbackSpy = sinon.spy();
+    const callbackSpy = jasmine.createSpy('spy');
     const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks, { onComponentWillMount: callbackSpy }), container);
     expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
-    expect(callbackSpy.calledOnce).toBe(true);
+    expect(callbackSpy).toHaveBeenCalledTimes(1);
   });
 
   it('Should support lifecycle methods on functional components didMount', () => {
-    const callbackSpy = sinon.spy();
+    const callbackSpy = jasmine.createSpy('spy');
     const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks, { onComponentDidMount: callbackSpy }), container);
     expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
-    expect(callbackSpy.calledOnce).toBe(true);
+    expect(callbackSpy).toHaveBeenCalledTimes(1);
   });
 
   it('Should pass classNames through', () => {

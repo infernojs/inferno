@@ -1,6 +1,5 @@
 import { Component, render } from 'inferno';
 import { isNullOrUndef } from 'inferno-shared';
-import sinon from 'sinon';
 
 describe('Columns like tests - (JSX)', () => {
   let container;
@@ -188,21 +187,21 @@ describe('Columns like tests - (JSX)', () => {
       let updateItemSpy = null;
 
       beforeEach(function () {
-        mountedColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillMount');
-        unmountColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUnmount');
-        updateColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUpdate');
-        mountedItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillMount');
-        unmountItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUnmount');
-        updateItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUpdate');
+        mountedColumnSpy = spyOn(ColumnKeyed.prototype, 'componentWillMount');
+        unmountColumnSpy = spyOn(ColumnKeyed.prototype, 'componentWillUnmount');
+        updateColumnSpy = spyOn(ColumnKeyed.prototype, 'componentWillUpdate');
+        mountedItemSpy = spyOn(ItemKeyed.prototype, 'componentWillMount');
+        unmountItemSpy = spyOn(ItemKeyed.prototype, 'componentWillUnmount');
+        updateItemSpy = spyOn(ItemKeyed.prototype, 'componentWillUpdate');
       });
 
       afterEach(function () {
-        mountedColumnSpy.restore();
-        unmountColumnSpy.restore();
-        updateColumnSpy.restore();
-        mountedItemSpy.restore();
-        unmountItemSpy.restore();
-        updateItemSpy.restore();
+        mountedColumnSpy.calls.reset();
+        unmountColumnSpy.calls.reset();
+        updateColumnSpy.calls.reset();
+        mountedItemSpy.calls.reset();
+        unmountItemSpy.calls.reset();
+        updateItemSpy.calls.reset();
       });
 
       keyedTests.forEach((testCase) => {
@@ -242,32 +241,32 @@ describe('Columns like tests - (JSX)', () => {
           // Do initial render
           render(<ViewKeyed columns={testCase.initial} />, container);
           verifyRenderResult(testCase.initial, container);
-          expect(mountedColumnSpy.callCount).toBe(testCase.initial.length); // Initial all mounted
-          expect(unmountColumnSpy.callCount).toBe(0); // Initial render none unmounted
-          expect(updateColumnSpy.callCount).toBe(0); // Initial render none to update
+          expect(mountedColumnSpy.calls.count()).toBe(testCase.initial.length); // Initial all mounted
+          expect(unmountColumnSpy.calls.count()).toBe(0); // Initial render none unmounted
+          expect(updateColumnSpy.calls.count()).toBe(0); // Initial render none to update
 
-          expect(mountedItemSpy.callCount).toBe(initialItemsCount); // Initial render - mount all items once
-          expect(updateItemSpy.callCount).toBe(0); // Initial render none to update
-          expect(unmountItemSpy.callCount).toBe(0); // Initial render none unmounted
+          expect(mountedItemSpy.calls.count()).toBe(initialItemsCount); // Initial render - mount all items once
+          expect(updateItemSpy.calls.count()).toBe(0); // Initial render none to update
+          expect(unmountItemSpy.calls.count()).toBe(0); // Initial render none unmounted
 
           // reset call counts
-          mountedColumnSpy.resetHistory();
-          unmountColumnSpy.resetHistory();
-          updateColumnSpy.resetHistory();
-          mountedItemSpy.resetHistory();
-          updateItemSpy.resetHistory();
-          unmountItemSpy.resetHistory();
+          mountedColumnSpy.calls.reset();
+          unmountColumnSpy.calls.reset();
+          updateColumnSpy.calls.reset();
+          mountedItemSpy.calls.reset();
+          updateItemSpy.calls.reset();
+          unmountItemSpy.calls.reset();
 
           // Do update
           render(<ViewKeyed columns={testCase.update} />, container);
           verifyRenderResult(testCase.update, container);
 
-          expect(mountedColumnSpy.callCount).toBe(columnsToBeAdded.length); // mount count should equal to added count
-          expect(unmountColumnSpy.callCount).toBe(columnsToRemove.length); // Initial render none unmounted
-          expect(updateColumnSpy.callCount).toBe(columnsToUpdate.length); // Initial render none unmounted
-          expect(mountedItemSpy.callCount).toBe(itemsToBeAdded.length); // Initial render - mount all items once
-          expect(updateItemSpy.callCount).toBe(itemsToUpdate.length); // Initial render none to update
-          expect(unmountItemSpy.callCount).toBe(itemsToRemove.length); // Initial render none unmounted
+          expect(mountedColumnSpy.calls.count()).toBe(columnsToBeAdded.length); // mount count should equal to added count
+          expect(unmountColumnSpy.calls.count()).toBe(columnsToRemove.length); // Initial render none unmounted
+          expect(updateColumnSpy.calls.count()).toBe(columnsToUpdate.length); // Initial render none unmounted
+          expect(mountedItemSpy.calls.count()).toBe(itemsToBeAdded.length); // Initial render - mount all items once
+          expect(updateItemSpy.calls.count()).toBe(itemsToUpdate.length); // Initial render none to update
+          expect(unmountItemSpy.calls.count()).toBe(itemsToRemove.length); // Initial render none unmounted
         });
       });
     });
@@ -342,21 +341,21 @@ describe('Columns like tests - (JSX)', () => {
       let updateItemSpy = null;
 
       beforeEach(function () {
-        mountedColumnSpy = sinon.spy(Column.prototype, 'componentWillMount');
-        unmountColumnSpy = sinon.spy(Column.prototype, 'componentWillUnmount');
-        updateColumnSpy = sinon.spy(Column.prototype, 'componentWillUpdate');
-        mountedItemSpy = sinon.spy(Item.prototype, 'componentWillMount');
-        unmountItemSpy = sinon.spy(Item.prototype, 'componentWillUnmount');
-        updateItemSpy = sinon.spy(Item.prototype, 'componentWillUpdate');
+        mountedColumnSpy = spyOn(Column.prototype, 'componentWillMount');
+        unmountColumnSpy = spyOn(Column.prototype, 'componentWillUnmount');
+        updateColumnSpy = spyOn(Column.prototype, 'componentWillUpdate');
+        mountedItemSpy = spyOn(Item.prototype, 'componentWillMount');
+        unmountItemSpy = spyOn(Item.prototype, 'componentWillUnmount');
+        updateItemSpy = spyOn(Item.prototype, 'componentWillUpdate');
       });
 
       afterEach(function () {
-        mountedColumnSpy.restore();
-        unmountColumnSpy.restore();
-        updateColumnSpy.restore();
-        mountedItemSpy.restore();
-        unmountItemSpy.restore();
-        updateItemSpy.restore();
+        mountedColumnSpy.calls.reset();
+        unmountColumnSpy.calls.reset();
+        updateColumnSpy.calls.reset();
+        mountedItemSpy.calls.reset();
+        unmountItemSpy.calls.reset();
+        updateItemSpy.calls.reset();
       });
 
       nonKeyedTestCases.forEach((testCase) => {
@@ -396,32 +395,32 @@ describe('Columns like tests - (JSX)', () => {
           // Do initial render
           render(<View columns={testCase.initial} />, container);
           verifyRenderResult(testCase.initial, container);
-          expect(mountedColumnSpy.callCount).toBe(testCase.initial.length); // Initial all mounted
-          expect(unmountColumnSpy.callCount).toBe(0); // Initial render none unmounted
-          expect(updateColumnSpy.callCount).toBe(0); // Initial render none to update
+          expect(mountedColumnSpy.calls.count()).toBe(testCase.initial.length); // Initial all mounted
+          expect(unmountColumnSpy.calls.count()).toBe(0); // Initial render none unmounted
+          expect(updateColumnSpy.calls.count()).toBe(0); // Initial render none to update
 
-          expect(mountedItemSpy.callCount).toBe(initialItemsCount); // Initial render - mount all items once
-          expect(updateItemSpy.callCount).toBe(0); // Initial render none to update
-          expect(unmountItemSpy.callCount).toBe(0); // Initial render none unmounted
+          expect(mountedItemSpy.calls.count()).toBe(initialItemsCount); // Initial render - mount all items once
+          expect(updateItemSpy.calls.count()).toBe(0); // Initial render none to update
+          expect(unmountItemSpy.calls.count()).toBe(0); // Initial render none unmounted
 
           // reset call counts
-          mountedColumnSpy.resetHistory();
-          unmountColumnSpy.resetHistory();
-          updateColumnSpy.resetHistory();
-          mountedItemSpy.resetHistory();
-          updateItemSpy.resetHistory();
-          unmountItemSpy.resetHistory();
+          mountedColumnSpy.calls.reset();
+          unmountColumnSpy.calls.reset();
+          updateColumnSpy.calls.reset();
+          mountedItemSpy.calls.reset();
+          updateItemSpy.calls.reset();
+          unmountItemSpy.calls.reset();
 
           // Do update
           render(<View columns={testCase.update} />, container);
           verifyRenderResult(testCase.update, container);
 
-          expect(mountedColumnSpy.callCount).toBe(columnsToBeAdded.length); // mount count should equal to added count
-          expect(unmountColumnSpy.callCount).toBe(columnsToRemove.length); // Initial render none unmounted
-          expect(updateColumnSpy.callCount).toBe(columnsToUpdate.length); // Initial render none unmounted
-          expect(mountedItemSpy.callCount).toBe(itemsToBeAdded.length); // Initial render - mount all items once
-          expect(updateItemSpy.callCount).toBe(itemsToUpdate.length); // Initial render none to update
-          expect(unmountItemSpy.callCount).toBe(itemsToRemove.length); // Initial render none unmounted
+          expect(mountedColumnSpy.calls.count()).toBe(columnsToBeAdded.length); // mount count should equal to added count
+          expect(unmountColumnSpy.calls.count()).toBe(columnsToRemove.length); // Initial render none unmounted
+          expect(updateColumnSpy.calls.count()).toBe(columnsToUpdate.length); // Initial render none unmounted
+          expect(mountedItemSpy.calls.count()).toBe(itemsToBeAdded.length); // Initial render - mount all items once
+          expect(updateItemSpy.calls.count()).toBe(itemsToUpdate.length); // Initial render none to update
+          expect(unmountItemSpy.calls.count()).toBe(itemsToRemove.length); // Initial render none unmounted
         });
       });
     });

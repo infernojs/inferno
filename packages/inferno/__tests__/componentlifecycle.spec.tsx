@@ -1,6 +1,7 @@
 import { Component, render, rerender } from 'inferno';
 import { innerHTML } from 'inferno-utils';
-import sinon from 'sinon';
+
+/* tslint:disable:no-console */
 
 describe('Component lifecycle', () => {
   let container;
@@ -18,6 +19,7 @@ describe('Component lifecycle', () => {
 
   it('componentWillUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
+
     class Com extends Component<{ value: number }> {
       public componentWillUpdate(nextProps) {
         callCount++;
@@ -42,6 +44,7 @@ describe('Component lifecycle', () => {
 
   it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', () => {
     let doSomething;
+
     class Child extends Component<{ active: boolean }, { active: boolean }> {
       public state = {
         active: false
@@ -107,6 +110,7 @@ describe('Component lifecycle', () => {
 
   it('shouldComponentUpdate Should have nextProp in params and old variants in instance', () => {
     let callCount = 0;
+
     class Com extends Component<{ value: number }> {
       public shouldComponentUpdate(nextProps) {
         callCount++;
@@ -177,13 +181,10 @@ describe('Component lifecycle', () => {
   });
 
   it('Should not fail if componentDidUpdate is undefined #922', () => {
-    // @ts-ignore
-    let callCount = 0;
     let c;
 
     class Com extends Component<{ value: number }> {
       public componentDidUpdate(nextProps) {
-        callCount++;
         expect(this.props.value).toBe(1);
         expect(nextProps.value).toBe(2);
 
@@ -218,13 +219,12 @@ describe('legacy life cycle', () => {
   let container;
 
   beforeEach(() => {
-    consoleErrorStub = sinon.stub(console, 'error');
+    consoleErrorStub = spyOn(console, 'error');
     container = document.createElement('div');
     document.body.appendChild(container);
   });
 
   afterEach(() => {
-    consoleErrorStub.restore();
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
@@ -251,23 +251,20 @@ describe('legacy life cycle', () => {
 
     const element = <Foo />;
 
+    debugger;
     // render the element
     render(element, container);
 
     // retrieve the arguments of all calls for console.error
     // so multiple calls to console.error should not broke this test
-    const callArgs = consoleErrorStub.getCalls().map((c) => c.args.length && c.args[0]);
 
-    // should have at least one warnings containing:
-    // componentWillMount, componentWillReceiveProps, componentWillUpdate
+    expect(consoleErrorStub).toHaveBeenCalledTimes(1);
 
-    expect(callArgs.length).toBeGreaterThan(0);
-
-    for (let i = 0; i < callArgs.length; i++) {
-      expect(callArgs[i]).toMatch(/(componentWillMount)|(componentWillReceiveProps)|(componentWillUpdate)/);
-    }
-
-    /* tslint:enable:member-access no-empty */
+    const message = consoleErrorStub.calls.argsFor(0)[0];
+    debugger;
+    expect(message.indexOf('componentWillMount')).toBeGreaterThan(-1);
+    expect(message.indexOf('componentWillReceiveProps')).toBeGreaterThan(-1);
+    expect(message.indexOf('componentWillUpdate')).toBeGreaterThan(-1);
   });
 
   it('should allow suppress legacy life cycles when mixed with new APIs', () => {
@@ -287,6 +284,7 @@ describe('legacy life cycle', () => {
         return <div>Foo</div>;
       }
     }
+
     // suppress the warnings
     // @ts-ignore
     Foo.prototype.componentWillMount.__suppressDeprecationWarning = true;
@@ -299,11 +297,6 @@ describe('legacy life cycle', () => {
     // render the element
     render(element, container);
 
-    const callArgs = consoleErrorStub.getCalls().map((c) => c.args.length && c.args[0]);
-
-    for (let i = 0; i < callArgs.length; i++) {
-      expect(callArgs[i]).not.toMatch(/(componentWillMount)|(componentWillReceiveProps)|(componentWillUpdate)/);
-    }
-    /* tslint:enable:member-access no-empty */
+    expect(console.error).toHaveBeenCalledTimes(0);
   });
 });

@@ -1,7 +1,6 @@
 import { render } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
 import { Link, MemoryRouter } from 'inferno-router';
-import sinon from 'sinon';
 
 // These tests are not part of RR4 but it seems to be like they should pass
 describe('Link (jsx)', () => {
@@ -40,7 +39,7 @@ describe('Link (jsx)', () => {
   });
 
   it('should trigger custom onClick', () => {
-    const spy = sinon.spy();
+    const spy = jasmine.createSpy('spy');
 
     render(
       <MemoryRouter>
@@ -50,9 +49,9 @@ describe('Link (jsx)', () => {
       </MemoryRouter>,
       node
     );
-    expect(spy.callCount).toBe(0);
+    expect(spy).toHaveBeenCalledTimes(0);
     const element = node.querySelector('a');
     triggerEvent('click', element);
-    expect(spy.callCount).toBe(1);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });

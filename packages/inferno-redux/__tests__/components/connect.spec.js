@@ -3,7 +3,6 @@ import { createClass } from 'inferno-create-class';
 import { connect } from 'inferno-redux';
 import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
-import sinon from 'sinon';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('Inferno', () => {
@@ -2487,7 +2486,7 @@ describe('Inferno', () => {
         }
       );
 
-      const mapStateToPropsB = sinon.spy((state) => ({ count: state }));
+      const mapStateToPropsB = jasmine.createSpy((state) => ({ count: state }));
       const B = connect(mapStateToPropsB)(
         class B extends Component {
           render() {
@@ -2496,7 +2495,7 @@ describe('Inferno', () => {
         }
       );
 
-      const mapStateToPropsC = sinon.spy((state) => ({ count: state }));
+      const mapStateToPropsC = jasmine.createSpy((state) => ({ count: state }));
       const C = connect(mapStateToPropsC)(
         class C extends Component {
           render() {
@@ -2505,7 +2504,7 @@ describe('Inferno', () => {
         }
       );
 
-      const mapStateToPropsD = sinon.spy((state) => ({ count: state }));
+      const mapStateToPropsD = jasmine.createSpy((state) => ({ count: state }));
       const D = connect(mapStateToPropsD)(
         class D extends Component {
           render() {
@@ -2521,21 +2520,21 @@ describe('Inferno', () => {
       );
       renderToContainer(vNode);
 
-      expect(mapStateToPropsB.callCount).toBe(1);
-      expect(mapStateToPropsC.callCount).toBe(1);
-      expect(mapStateToPropsD.callCount).toBe(1);
+      expect(mapStateToPropsB).toHaveBeenCalledTimes(1);
+      expect(mapStateToPropsC).toHaveBeenCalledTimes(1);
+      expect(mapStateToPropsD).toHaveBeenCalledTimes(1);
 
       store1.dispatch({ type: 'INC' });
       renderToContainer(vNode);
-      expect(mapStateToPropsB.callCount).toBe(1);
-      expect(mapStateToPropsC.callCount).toBe(1);
-      expect(mapStateToPropsD.callCount).toBe(2);
+      expect(mapStateToPropsB).toHaveBeenCalledTimes(1);
+      expect(mapStateToPropsC).toHaveBeenCalledTimes(1);
+      expect(mapStateToPropsD).toHaveBeenCalledTimes(2);
 
       store2.dispatch({ type: 'INC' });
       renderToContainer(vNode);
-      expect(mapStateToPropsB.callCount).toBe(2);
-      expect(mapStateToPropsC.callCount).toBe(2);
-      expect(mapStateToPropsD.callCount).toBe(2);
+      expect(mapStateToPropsB).toHaveBeenCalledTimes(2);
+      expect(mapStateToPropsC).toHaveBeenCalledTimes(2);
+      expect(mapStateToPropsD).toHaveBeenCalledTimes(2);
     });
   });
 });

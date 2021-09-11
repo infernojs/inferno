@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import sinon from 'sinon';
+import { emptyFn } from 'inferno-shared';
 
 describe('Basic event tests', () => {
   let container;
@@ -242,7 +242,7 @@ describe('Basic event tests', () => {
 
   describe('Event Propagation', () => {
     it('Should stop propagating Synthetic event to document', (done) => {
-      const eventHandlerSpy = sinon.spy();
+      const eventHandlerSpy = jasmine.createSpy('spy');
       const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
@@ -261,26 +261,26 @@ describe('Basic event tests', () => {
 
       render(<SmallComponent />, container);
 
-      const bodySpy = sinon.spy();
+      const bodySpy = jasmine.createSpy('spy');
       document.addEventListener('click', bodySpy);
 
       container.querySelector('#tester').click();
       setTimeout(function () {
-        expect(eventHandlerSpy.callCount).toBe(1);
-        expect(bodySpy.callCount).toBe(0);
+        expect(eventHandlerSpy.calls.count()).toBe(1);
+        expect(bodySpy.calls.count()).toBe(0);
         document.removeEventListener('click', bodySpy);
         done();
       }, 20);
     });
 
     it('Should stop propagating Synthetic event to parentElement with synthetic event', (done) => {
-      const eventHandlerSpy = sinon.spy();
+      const eventHandlerSpy = jasmine.createSpy('spy');
       const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
-      const eventHandlerSpy2 = sinon.spy();
+      const eventHandlerSpy2 = jasmine.createSpy('spy');
       const eventHandler2 = function (event) {
         eventHandlerSpy2();
       };
@@ -307,21 +307,21 @@ describe('Basic event tests', () => {
 
       container.querySelector('#tester').click();
       setTimeout(function () {
-        expect(eventHandlerSpy.callCount).toBe(1);
-        expect(eventHandlerSpy2.callCount).toBe(0);
+        expect(eventHandlerSpy.calls.count()).toBe(1);
+        expect(eventHandlerSpy2.calls.count()).toBe(0);
         done();
       }, 20);
     });
 
     // React does not block propagating synthetic event to parent with normal event either.
     it('Should NOT stop propagating Synthetic event to parentElement with normal event', (done) => {
-      const eventHandlerSpy = sinon.spy();
+      const eventHandlerSpy = jasmine.createSpy('spy');
       const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
-      const eventHandlerSpy2 = sinon.spy();
+      const eventHandlerSpy2 = jasmine.createSpy('spy');
       const eventHandler2 = function (event) {
         eventHandlerSpy2();
       };
@@ -348,16 +348,16 @@ describe('Basic event tests', () => {
 
       container.querySelector('#tester').click();
       setTimeout(function () {
-        expect(eventHandlerSpy.callCount).toBe(1);
-        expect(eventHandlerSpy2.callCount).toBe(1);
+        expect(eventHandlerSpy.calls.count()).toBe(1);
+        expect(eventHandlerSpy2.calls.count()).toBe(1);
         done();
       }, 20);
     });
 
     // https://github.com/infernojs/inferno/issues/979
     it('Should trigger child elements synthetic event even if parent Element has null listener', () => {
-      const spy1 = sinon.spy();
-      const spy2 = sinon.spy();
+      const spy1 = jasmine.createSpy('spy');
+      const spy2 = jasmine.createSpy('spy');
 
       function FooBarCom({ test }) {
         return (
@@ -371,23 +371,23 @@ describe('Basic event tests', () => {
 
       render(<FooBarCom test="1" />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(1);
-      expect(spy1.callCount).toBe(1);
+      expect(spy2.calls.count()).toBe(1);
+      expect(spy1.calls.count()).toBe(1);
 
       render(<FooBarCom test="2" />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(2);
-      expect(spy1.callCount).toBe(1);
+      expect(spy2.calls.count()).toBe(2);
+      expect(spy1.calls.count()).toBe(1);
 
       render(<FooBarCom test="3" />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(3);
-      expect(spy1.callCount).toBe(1);
+      expect(spy2.calls.count()).toBe(3);
+      expect(spy1.calls.count()).toBe(1);
     });
 
     it('Should remove synthetic listener if patched to null/undef', () => {
-      const spy1 = sinon.spy();
-      const spy2 = sinon.spy();
+      const spy1 = jasmine.createSpy('spy');
+      const spy2 = jasmine.createSpy('spy');
 
       function FooBarCom({ test }) {
         return (
@@ -407,23 +407,23 @@ describe('Basic event tests', () => {
 
       render(<FooBarCom test={true} />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(1);
-      expect(spy1.callCount).toBe(1);
+      expect(spy2.calls.count()).toBe(1);
+      expect(spy1.calls.count()).toBe(1);
 
       render(<FooBarCom test={false} />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(2);
-      expect(spy1.callCount).toBe(1);
+      expect(spy2.calls.count()).toBe(2);
+      expect(spy1.calls.count()).toBe(1);
 
       render(<FooBarCom test={true} />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(3);
-      expect(spy1.callCount).toBe(2);
+      expect(spy2.calls.count()).toBe(3);
+      expect(spy1.calls.count()).toBe(2);
     });
 
     it('Should remove native listener if patched to null/undef', () => {
-      const spy1 = sinon.spy();
-      const spy2 = sinon.spy();
+      const spy1 = jasmine.createSpy('spy');
+      const spy2 = jasmine.createSpy('spy');
 
       function FooBarCom({ test }) {
         return (
@@ -443,22 +443,22 @@ describe('Basic event tests', () => {
 
       render(<FooBarCom test={true} />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(1);
-      expect(spy1.callCount).toBe(1);
+      expect(spy2.calls.count()).toBe(1);
+      expect(spy1.calls.count()).toBe(1);
 
       render(<FooBarCom test={false} />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(2);
-      expect(spy1.callCount).toBe(1);
+      expect(spy2.calls.count()).toBe(2);
+      expect(spy1.calls.count()).toBe(1);
 
       render(<FooBarCom test={true} />, container);
       container.querySelector('span').click();
-      expect(spy2.callCount).toBe(3);
-      expect(spy1.callCount).toBe(2);
+      expect(spy2.calls.count()).toBe(3);
+      expect(spy1.calls.count()).toBe(2);
     });
 
     it('Should stop propagating normal event to document', () => {
-      const eventHandlerSpy = sinon.spy();
+      const eventHandlerSpy = jasmine.createSpy('spy');
       const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
@@ -476,24 +476,24 @@ describe('Basic event tests', () => {
       }
 
       render(<SmallComponent />, container);
-      const bodySpy = sinon.spy();
+      const bodySpy = jasmine.createSpy('spy');
       document.addEventListener('click', bodySpy);
 
       container.querySelector('#tester').click();
 
-      expect(eventHandlerSpy.callCount).toBe(1);
-      expect(bodySpy.callCount).toBe(0);
+      expect(eventHandlerSpy.calls.count()).toBe(1);
+      expect(bodySpy.calls.count()).toBe(0);
       document.removeEventListener('click', bodySpy);
     });
 
     it('Should stop propagating normal event to parentElement with synthetic event', (done) => {
-      const eventHandlerSpy = sinon.spy();
+      const eventHandlerSpy = jasmine.createSpy('spy');
       const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
-      const eventHandlerSpy2 = sinon.spy();
+      const eventHandlerSpy2 = jasmine.createSpy('spy');
       const eventHandler2 = function (event) {
         eventHandlerSpy2();
       };
@@ -520,20 +520,20 @@ describe('Basic event tests', () => {
 
       container.querySelector('#tester').click();
       setTimeout(function () {
-        expect(eventHandlerSpy.callCount).toBe(1);
-        expect(eventHandlerSpy2.callCount).toBe(0);
+        expect(eventHandlerSpy.calls.count()).toBe(1);
+        expect(eventHandlerSpy2.calls.count()).toBe(0);
         done();
       }, 20);
     });
 
     it('Should stop propagating normal event to normal event', (done) => {
-      const eventHandlerSpy = sinon.spy();
+      const eventHandlerSpy = jasmine.createSpy('spy');
       const eventHandler = function (event) {
         eventHandlerSpy();
         event.stopPropagation();
       };
 
-      const eventHandlerSpy2 = sinon.spy();
+      const eventHandlerSpy2 = jasmine.createSpy('spy');
       const eventHandler2 = function () {
         eventHandlerSpy2();
       };
@@ -560,8 +560,8 @@ describe('Basic event tests', () => {
 
       container.querySelector('#tester').click();
       setTimeout(function () {
-        expect(eventHandlerSpy.callCount).toBe(1);
-        expect(eventHandlerSpy2.callCount).toBe(0);
+        expect(eventHandlerSpy.calls.count()).toBe(1);
+        expect(eventHandlerSpy2.calls.count()).toBe(0);
         done();
       }, 20);
     });
@@ -588,7 +588,7 @@ describe('Basic event tests', () => {
   });
 
   it('Synthetic Events - Should not reduce listener count when nothing was removed', () => {
-    const spy = sinon.spy();
+    const spy = jasmine.createSpy('spy');
     const root1 = document.createElement('div');
     const root2 = document.createElement('div');
     const root3 = document.createElement('div');
@@ -609,7 +609,7 @@ describe('Basic event tests', () => {
     root3.firstChild.click();
     root4.firstChild.click();
 
-    expect(spy.callCount).toBe(1);
+    expect(spy.calls.count()).toBe(1);
 
     render(null, root1);
     render(null, root2);
@@ -720,7 +720,7 @@ describe('Basic event tests', () => {
 
   describe('Event removal', () => {
     it('Should remove events when parent changes', () => {
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
       render(
         <div>
           <div id="test" onClick={spy}>
@@ -730,9 +730,9 @@ describe('Basic event tests', () => {
         container
       );
 
-      expect(spy.callCount).toBe(0);
+      expect(spy.calls.count()).toBe(0);
       container.querySelector('#test').click();
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
 
       render(
         <div>
@@ -742,11 +742,11 @@ describe('Basic event tests', () => {
       );
 
       container.querySelector('#test').click();
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
     });
 
     it('Should NOT remove events when listener remains there', () => {
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
       render(
         <div>
           <div id="test" onClick={spy}>
@@ -756,9 +756,9 @@ describe('Basic event tests', () => {
         container
       );
 
-      expect(spy.callCount).toBe(0);
+      expect(spy.calls.count()).toBe(0);
       container.querySelector('#test').click();
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
 
       render(
         <div>
@@ -770,11 +770,11 @@ describe('Basic event tests', () => {
       );
 
       container.querySelector('#test').click();
-      expect(spy.callCount).toBe(2);
+      expect(spy.calls.count()).toBe(2);
     });
 
     it('Should remove events when listener is nulled', () => {
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
       render(
         <div>
           <div id="test" onClick={spy}>
@@ -784,9 +784,9 @@ describe('Basic event tests', () => {
         container
       );
 
-      expect(spy.callCount).toBe(0);
+      expect(spy.calls.count()).toBe(0);
       container.querySelector('#test').click();
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
 
       render(
         <div>
@@ -798,7 +798,7 @@ describe('Basic event tests', () => {
       );
 
       container.querySelector('#test').click();
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
     });
   });
 });
