@@ -30,7 +30,11 @@
     "user interfaces",
     "router"
   ],
-  "repository": "https://github.com/infernojs/inferno",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-router"
+  },
   "peerDependencies": {
     "history": "^4.10.1",
     "path-to-regexp-es6": "1.7.0"

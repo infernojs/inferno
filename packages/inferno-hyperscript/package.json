@@ -22,7 +22,11 @@
     "inferno",
     "hyperscript"
   ],
-  "repository": "https://github.com/infernojs/inferno",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-hyperscript"
+  },
   "dependencies": {
     "inferno": "7.4.9"
   },

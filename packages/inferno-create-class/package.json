@@ -7,6 +7,11 @@
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-create-class"
+  },
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
   },

@@ -32,7 +32,11 @@
   "module": "dist/index.esm.js",
   "dev:module": "dist/index.dev.esm.js",
   "typings": "dist/index.d.ts",
-  "repository": "https://github.com/infernojs/inferno",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-extras"
+  },
   "dependencies": {
     "inferno": "7.4.9"
   },
