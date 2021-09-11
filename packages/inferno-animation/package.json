@@ -8,6 +8,11 @@
     "email": "sebastian@urbantalk.se",
     "url": "https://github.com/jhsware"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-animation"
+  },
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
   },
