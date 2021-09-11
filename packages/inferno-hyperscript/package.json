@@ -1,6 +1,6 @@
 {
   "name": "inferno-hyperscript",
-  "version": "7.4.8",
+  "version": "7.4.10",
   "license": "MIT",
   "description": "Bridging hyperscript to InfernoJS",
   "author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
@@ -22,13 +22,17 @@
     "inferno",
     "hyperscript"
   ],
-  "repository": "https://github.com/infernojs/inferno",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-hyperscript"
+  },
   "dependencies": {
-    "inferno": "7.4.8"
+    "inferno": "7.4.10"
   },
   "devDependencies": {
-    "inferno-shared": "7.4.8",
-    "inferno-vnode-flags": "7.4.8"
+    "inferno-shared": "7.4.10",
+    "inferno-vnode-flags": "7.4.10"
   },
   "rollup": {
     "bundledDependencies": [

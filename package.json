@@ -46,7 +46,7 @@
     "build:move-types": "rimraf build/**/*.js && lerna exec -- node ../../scripts/bundle/move-typedefs.js",
     "build:move-compiled": "lerna exec -- node ../../scripts/bundle/move-compiled.js",
     "print:size": "node scripts/bundle/bundle-size.js",
-    "install:browsertest": "cd fixtures/browser && npm install",
+    "install:browsertest": "cd fixtures/browser && npm install --legacy-peer-deps",
     "lint": "tslint -p tsconfig.json --project",
     "lint-staged": "lint-staged",
     "publish": "lerna publish --exact --force-publish=*",

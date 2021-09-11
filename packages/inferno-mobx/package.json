@@ -1,6 +1,6 @@
 {
   "name": "inferno-mobx",
-  "version": "7.4.8",
+  "version": "7.4.10",
   "license": "MIT",
   "description": "Official Inferno bindings for Mobx",
   "author": {
@@ -30,17 +30,21 @@
     "mobservable",
     "mobx"
   ],
-  "repository": "https://github.com/infernojs/inferno",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-mobx"
+  },
   "peerDependencies": {
     "mobx": "^4"
   },
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",
-    "inferno": "7.4.8",
-    "inferno-create-class": "7.4.8",
-    "inferno-create-element": "7.4.8",
-    "inferno-shared": "7.4.8",
-    "inferno-vnode-flags": "7.4.8",
+    "inferno": "7.4.10",
+    "inferno-create-class": "7.4.10",
+    "inferno-create-element": "7.4.10",
+    "inferno-shared": "7.4.10",
+    "inferno-vnode-flags": "7.4.10",
     "mobx": "*"
   },
   "rollup": {

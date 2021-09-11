@@ -1,6 +1,6 @@
 {
   "name": "inferno-shared",
-  "version": "7.4.8",
+  "version": "7.4.10",
   "license": "MIT",
   "description": "Helpers functions for Inferno",
   "author": {
@@ -24,7 +24,11 @@
     "inferno",
     "helpers"
   ],
-  "repository": "https://github.com/infernojs/inferno",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-shared"
+  },
   "rollup": {
     "moduleName": "Inferno"
   }
