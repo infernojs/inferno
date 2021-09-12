@@ -1,14 +1,11 @@
-import { Component, createComponentVNode, VNode } from 'inferno';
+import { Component, createComponentVNode, InfernoNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createHashHistory } from 'history';
 import { Router } from './Router';
 import { warning } from './utils';
 
 export interface IHashRouterProps {
-  basename?: string;
-  getUserConfirmation?: () => {};
-  hashType?: string;
-  children: Component<any, any>[] | JSX.Element;
+  children: InfernoNode;
 }
 
 export class HashRouter extends Component<IHashRouterProps, any> {
@@ -16,7 +13,7 @@ export class HashRouter extends Component<IHashRouterProps, any> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
-    this.history = createHashHistory(props);
+    this.history = createHashHistory();
   }
 
   public render(): VNode {

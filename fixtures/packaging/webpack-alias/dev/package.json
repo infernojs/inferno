@@ -2,8 +2,8 @@
   "name": "webpack-alias-dev-test",
   "private": true,
   "dependencies": {
-    "webpack": "^5.47.1",
-    "webpack-cli": "^4.7.2"
+    "webpack": "^5.52.1",
+    "webpack-cli": "^4.8.0"
   },
   "scripts": {
     "build": "rm -f output.js && webpack --config config.js"

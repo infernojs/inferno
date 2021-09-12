@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { Router } from 'inferno-router';
-import createHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from 'history';
 
 describe('A <Router>', () => {
   describe('with exactly one child', () => {
@@ -8,7 +8,7 @@ describe('A <Router>', () => {
       const node = document.createElement('div');
       expect(() => {
         render(
-          <Router history={createHistory()}>
+          <Router history={createMemoryHistory()}>
             <p>Bar</p>
           </Router>,
           node
@@ -21,7 +21,7 @@ describe('A <Router>', () => {
     it('does not throw an error', () => {
       const node = document.createElement('div');
       expect(() => {
-        render(<Router history={createHistory()} />, node);
+        render(<Router history={createMemoryHistory()} />, node);
       }).not.toThrow();
     });
   });
@@ -39,7 +39,7 @@ describe('A <Router>', () => {
 
     it('puts history on context.history', () => {
       const node = document.createElement('div');
-      const history = createHistory();
+      const history = createMemoryHistory();
       render(
         <Router history={history}>
           <ContextChecker />
@@ -52,7 +52,7 @@ describe('A <Router>', () => {
 
     it('sets context.router.route at the root', () => {
       const node = document.createElement('div');
-      const history = createHistory({
+      const history = createMemoryHistory({
         initialEntries: ['/']
       });
 
@@ -72,7 +72,7 @@ describe('A <Router>', () => {
 
     it('updates context.router.route upon navigation', () => {
       const node = document.createElement('div');
-      const history = createHistory({
+      const history = createMemoryHistory({
         initialEntries: ['/']
       });
 
@@ -93,7 +93,7 @@ describe('A <Router>', () => {
 
     it('does not contain context.router.staticContext by default', () => {
       const node = document.createElement('div');
-      const history = createHistory({
+      const history = createMemoryHistory({
         initialEntries: ['/']
       });
 

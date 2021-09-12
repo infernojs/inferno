@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import { Route, Router, Switch } from 'inferno-router';
-import createHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from 'history';
 
 describe('A <Switch>', () => {
   it('does not remount a <Route>', () => {
@@ -18,7 +18,7 @@ describe('A <Switch>', () => {
       }
     }
 
-    const history = createHistory({
+    const history = createMemoryHistory({
       initialEntries: ['/one']
     });
 
@@ -61,7 +61,7 @@ describe('A <Switch>', () => {
       return <span>Okay</span>;
     }
 
-    const history = createHistory({
+    const history = createMemoryHistory({
       initialEntries: ['/one']
     });
 

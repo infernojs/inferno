@@ -251,7 +251,6 @@ describe('legacy life cycle', () => {
 
     const element = <Foo />;
 
-    debugger;
     // render the element
     render(element, container);
 
@@ -261,7 +260,6 @@ describe('legacy life cycle', () => {
     expect(consoleErrorStub).toHaveBeenCalledTimes(1);
 
     const message = consoleErrorStub.calls.argsFor(0)[0];
-    debugger;
     expect(message.indexOf('componentWillMount')).toBeGreaterThan(-1);
     expect(message.indexOf('componentWillReceiveProps')).toBeGreaterThan(-1);
     expect(message.indexOf('componentWillUpdate')).toBeGreaterThan(-1);

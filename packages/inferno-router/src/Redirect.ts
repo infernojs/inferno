@@ -1,12 +1,21 @@
 import { Component } from 'inferno';
-import { createLocation, locationsAreEqual } from 'history';
-import { invariant } from './utils';
+import { parsePath, Location, Path } from 'history';
+import { combinePath, invariant } from './utils';
+import { isString } from 'inferno-shared';
 
 export interface RedirectProps {
   from?: string;
-  to: string;
+  to: string | Location;
   exact?: any;
   push?: boolean;
+}
+
+function getLocationTarget(to): Partial<Path> {
+  if (!isString(to)) {
+    to = combinePath(to);
+  }
+
+  return parsePath(to);
 }
 
 export class Redirect extends Component<RedirectProps, any> {
@@ -29,10 +38,10 @@ export class Redirect extends Component<RedirectProps, any> {
   }
 
   public componentDidUpdate(prevProps) {
-    const prevTo = createLocation(prevProps.to);
-    const nextTo = createLocation(this.props.to);
+    const prevTo = getLocationTarget(prevProps.to);
+    const nextTo = getLocationTarget(this.props.to);
 
-    if (locationsAreEqual(prevTo, nextTo)) {
+    if (prevTo.pathname === nextTo.pathname && prevTo.search === nextTo.search) {
       // tslint:disable-next-line:no-console
       console.error(`You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`);
       return;

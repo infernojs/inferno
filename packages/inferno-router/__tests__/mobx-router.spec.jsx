@@ -1,7 +1,7 @@
 import { Component, render } from 'inferno';
 import { inject, observer, Provider } from 'inferno-mobx';
 import { Route, Router } from 'inferno-router';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from 'history';
 import { action, observable } from 'mobx';
 
 describe('Github #1236', () => {
