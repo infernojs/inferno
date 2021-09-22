@@ -2,7 +2,7 @@
   "name": "webpack-alias-dev-test",
   "private": true,
   "dependencies": {
-    "webpack": "^5.52.1",
+    "webpack": "^5.53.0",
     "webpack-cli": "^4.8.0"
   },
   "scripts": {

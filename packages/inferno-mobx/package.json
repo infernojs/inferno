@@ -44,11 +44,10 @@
     "inferno-create-class": "7.4.10",
     "inferno-create-element": "7.4.10",
     "inferno-shared": "7.4.10",
-    "inferno-vnode-flags": "7.4.10",
-    "mobx": "*"
+    "inferno-vnode-flags": "7.4.10"
   },
   "devDependencies": {
-    "mobx": "4.15.7"
+    "mobx": "*"
   },
   "rollup": {
     "bundledDependencies": [
