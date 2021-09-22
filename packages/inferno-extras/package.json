@@ -1,6 +1,6 @@
 {
   "name": "inferno-extras",
-  "version": "7.4.10",
+  "version": "8.0.0-alpha.0",
   "license": "MIT",
   "description": "Collection of utilities for InfernoJS",
   "author": {
@@ -38,9 +38,9 @@
     "directory": "packages/inferno-extras"
   },
   "dependencies": {
-    "inferno": "7.4.10"
+    "inferno": "8.0.0-alpha.0"
   },
   "devDependencies": {
-    "inferno-vnode-flags": "7.4.10"
+    "inferno-vnode-flags": "8.0.0-alpha.0"
   }
 }

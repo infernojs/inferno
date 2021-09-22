@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "7.4.10",
+  "version": "8.0.0-alpha.0",
   "license": "MIT",
   "description": "Inferno ES6 Component",
   "author": {
@@ -34,6 +34,6 @@
     "directory": "packages/inferno-component"
   },
   "dependencies": {
-    "inferno": "7.4.10"
+    "inferno": "8.0.0-alpha.0"
   }
 }
