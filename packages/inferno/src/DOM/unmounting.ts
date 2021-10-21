@@ -46,7 +46,7 @@ export function unmount(vNode, animations: AnimationQueues) {
         children.componentWillUnmount();
       }
 
-      // If we have a componentWillDisappear on this component, block children
+      // If we have a componentWillDisappear on this component, block children from animating
       let childAnimations = animations;
       if (isFunction(children.componentWillDisappear)) {
         childAnimations = new AnimationQueues();
@@ -57,7 +57,7 @@ export function unmount(vNode, animations: AnimationQueues) {
       children.$UN = true;
       unmount(children.$LI, childAnimations);
     } else if (flags & VNodeFlags.ComponentFunction) {
-      // If we have a onComponentWillDisappear on this component, block children
+      // If we have a onComponentWillDisappear on this component, block children from animating
       let childAnimations = animations;
       ref = vNode.ref;
       if (!isNullOrUndef(ref)) {

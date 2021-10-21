@@ -116,7 +116,7 @@ export function componentWillDisappear(dom: HTMLElement, props, callback: Functi
 function _willDisappear(phase: AnimationPhase, dom: HTMLElement, callback: Function, cls: AnimationClass, dimensions) {
   switch (phase) {
     case AnimationPhase.MEASURE:
-      // 1. Get dimensions and set animation start state
+      // 1. Set animation start state and dimensions
       setDimensions(dom, dimensions.width, dimensions.height);
       addClassName(dom, cls.start);
       return;
