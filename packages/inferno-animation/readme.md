@@ -114,7 +114,7 @@ const {
   setDisplay
 } = utils
 
-export function animateModalOnWillDisappear (dom, props, callback, onClosed) { 
+export function animateModalOnWillDisappear (dom, callback, onClosed) { 
   registerTransitionListener([dom], () => {
     // Always call the dom removal callback first!
     callback && callback()
@@ -126,7 +126,7 @@ export function animateModalOnWillDisappear (dom, props, callback, onClosed) {
   }, 5)
 }
 
-export function animateModalOnDidAppear (dom, props, onOpened) {
+export function animateModalOnDidAppear (dom, onOpened) {
   setDisplay(dom, 'none')
   addClassName(dom, 'fade')
   forceReflow(dom)
