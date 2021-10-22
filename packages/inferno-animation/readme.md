@@ -104,6 +104,8 @@ This is an example of how you could implement a Bootstrap style Modal animation 
 
 Custom animations won't be coordinated with the standard animations to reduce reflow, but performance is not an issue with just a few animations running simultaneously. Use the standard animations for grid or list items.
 
+Call these helper methods from `componentDidAppear` and `componentWillDisapper` of your backdrop and content component when you build a Bootstrap style modal. 
+
 ```js
 import { utils } from 'inferno-animation'
 const {
