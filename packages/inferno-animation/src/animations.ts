@@ -77,7 +77,6 @@ function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass
       if (dom.tagName !== 'IMG' || (dom as any).complete) {
         dimensions = getDimensions(dom);
       } else {
-        // 
         forceReflow();
       }
       return;
