@@ -8,9 +8,6 @@
       "inferno-compat": [
         "packages/inferno-compat/src/index.ts"
       ],
-      "inferno-component": [
-        "packages/inferno-component/src/index.ts"
-      ],
       "inferno-animation": [
         "packages/inferno-create-class/src/index.ts"
       ],
