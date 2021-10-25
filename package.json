@@ -50,7 +50,7 @@
     "lint": "tslint -p tsconfig.json --project",
     "lint-staged": "lint-staged",
     "publish": "lerna publish --exact --force-publish=*",
-    "alpha": "lerna publish --dist-tag next --exact --force-publish=*",
+    "alpha": "lerna publish prerelease --dist-tag next --exact --force-publish=*",
     "version": "npm run build && npm run docs-build && git add docs && npm run test",
     "prettier": "npm-run-all prettier:*",
     "prettier:tests-js": "prettier --print-width 160 --trailing-comma none --single-quote true --write --list-different packages/*/__tests__/**/*.{js,jsx}",
