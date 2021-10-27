@@ -168,6 +168,8 @@ function _getMaxTransitionDuration(nodes) {
 }
 
 const transitionEndName: string = (function () {
+  if (typeof document === 'undefined') return '';
+  
   const elementStyle = document.createElement('div').style;
   // tslint:disable:object-literal-sort-keys
   const transitions = {
