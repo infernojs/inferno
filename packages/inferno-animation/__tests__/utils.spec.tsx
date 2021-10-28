@@ -6,7 +6,8 @@ import {
   registerTransitionListener,
   removeClassName,
   setDimensions,
-  setDisplay
+  setDisplay,
+  transitionEndName,
 } from '../src/utils';
 
 describe('inferno-animation utils', () => {
@@ -121,5 +122,9 @@ describe('inferno-animation utils', () => {
       done();
     });
     el.dispatchEvent(new Event('load'));
+  });
+
+  it('transitionEnd is valid', () => {
+    expect(transitionEndName).toEqual('transitionend');
   });
 });
