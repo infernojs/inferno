@@ -65,11 +65,10 @@ describe('A <StaticRouter>', () => {
   it('warns when passed a history prop', () => {
     const context = {};
     const history = {};
-    const node = document.createElement('div');
 
     spyOn(console, 'error');
 
-    render(<StaticRouter context={context} history={history} />, node);
+    renderToStaticMarkup(<StaticRouter context={context} history={history} />);
 
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error.calls.argsFor(0)[0]).toContain('<StaticRouter> ignores the history prop');
