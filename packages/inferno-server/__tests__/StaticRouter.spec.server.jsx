@@ -194,34 +194,29 @@ describe('A <StaticRouter>', () => {
   describe('no basename', () => {
     it('createHref does not append extra leading slash', () => {
       const context = {};
-      const node = document.createElement('div');
       const pathname = '/test-path-please-ignore';
 
       const Link = ({ to, children }) => <Route children={({ history: { createHref } }) => <a href={createHref(to)}>{children}</a>} />;
 
-      render(
+      const outp = renderToStaticMarkup(
         <StaticRouter context={context}>
           <Link to={pathname} />
-        </StaticRouter>,
-        node
+        </StaticRouter>
       );
 
-      const a = node.getElementsByTagName('a')[0];
-      expect(a.getAttribute('href')).toEqual(pathname);
+      expect(outp).toEqual(`<a href="${pathname}"></a>`);
     });
   });
 
   describe('render a <Prompt>', () => {
     it('does nothing', () => {
       const context = {};
-      const node = document.createElement('div');
 
       expect(() => {
-        render(
+        renderToStaticMarkup(
           <StaticRouter context={context}>
             <Prompt message="this is only a test" />
-          </StaticRouter>,
-          node
+          </StaticRouter>
         );
       }).not.toThrow();
     });
