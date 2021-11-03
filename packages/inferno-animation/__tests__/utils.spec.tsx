@@ -7,7 +7,7 @@ import {
   removeClassName,
   setDimensions,
   setDisplay,
-  transitionEndName,
+  transitionEndName
 } from '../src/utils';
 
 describe('inferno-animation utils', () => {
