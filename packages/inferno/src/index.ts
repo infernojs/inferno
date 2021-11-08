@@ -20,7 +20,14 @@ import { createClassComponentInstance, renderFunctionalComponent } from './DOM/u
 import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks } from './DOM/mounting';
 import { createRef, forwardRef, mountRef } from './core/refs';
 
-if (process.env.NODE_ENV !== 'production') {
+// Checks if Inferno is running in testing environment.
+const testingEnv = process.env.JEST_WORKER_ID !== undefined;
+
+// This message informs developers that they are using development mode (can happen
+// in production because of bundling mistakes) and, therefore, Inferno is slower
+// than in production mode. Skipping the notification for testing mode to keep testing
+// console clear.
+if (process.env.NODE_ENV !== 'production' && !testingEnv) {
   /* tslint:disable-next-line:no-empty */
   const testFunc = function testFn() {};
   /* tslint:disable-next-line*/
