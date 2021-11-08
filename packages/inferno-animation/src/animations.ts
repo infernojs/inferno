@@ -11,7 +11,8 @@ import {
   setDisplay,
   resetDisplay,
   setTransform,
-  clearTransform
+  clearTransform,
+  forceReflow
 } from './utils';
 import { queueAnimation, AnimationPhase } from './animationCoordinator';
 import { isNullOrUndef, isNull } from 'inferno-shared';
@@ -72,7 +73,12 @@ function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass
       resetDisplay(dom, display);
       return;
     case AnimationPhase.MEASURE:
-      getDimensions(dom);
+      // In case of img element that hasn't been loaded, just trigger reflow
+      if (dom.tagName !== 'IMG' || (dom as any).complete) {
+        dimensions = getDimensions(dom);
+      } else {
+        forceReflow();
+      }
       return;
     case AnimationPhase.SET_START_STATE:
       // 1. Set start of animation
@@ -90,6 +96,7 @@ function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass
         [dom],
         _getDidAppearTransitionCallback(dom, cls)
       );
+      return;
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 4. Activate target state (called async via requestAnimationFrame)
       setDimensions(dom, dimensions.width, dimensions.height);
@@ -109,7 +116,7 @@ export function componentWillDisappear(dom: HTMLElement, props, callback: Functi
 function _willDisappear(phase: AnimationPhase, dom: HTMLElement, callback: Function, cls: AnimationClass, dimensions) {
   switch (phase) {
     case AnimationPhase.MEASURE:
-      // 1. Get dimensions and set animation start state
+      // 1. Set animation start state and dimensions
       setDimensions(dom, dimensions.width, dimensions.height);
       addClassName(dom, cls.start);
       return;
@@ -127,11 +134,13 @@ function _willDisappear(phase: AnimationPhase, dom: HTMLElement, callback: Funct
         [dom],
         callback
       );
+      return;
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 4. Activate target state (called async via requestAnimationFrame)
       addClassName(dom, cls.end);
       removeClassName(dom, cls.start);
       clearDimensions(dom);
+      return;
   }
 }
 
@@ -248,6 +257,7 @@ function _willMove(phase: AnimationPhase, cls: AnimationClass, animState) {
       }
       // TODO: Set dimensions
       if (parentVNode.$MV) parentVNode.$MV = false;
+      return;
   }
 }
 

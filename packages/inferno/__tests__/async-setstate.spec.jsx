@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import { spy } from 'sinon';
 
 describe('Async set state issue', () => {
   let container;
@@ -173,6 +172,7 @@ describe('Async set state issue', () => {
       }
     }
 
+    let orderOfCalls = [];
     let testBeforeBeforeSpy, testBeforeAfterSpy, testAfterBeforeSpy, testAfterAfterSpy;
 
     class TestBefore extends Component {
@@ -183,8 +183,12 @@ describe('Async set state issue', () => {
           async: 0
         };
 
-        testBeforeBeforeSpy = spy(this, '_before');
-        testBeforeAfterSpy = spy(this, '_after');
+        testBeforeBeforeSpy = spyOn(this, '_before').and.callFake(function () {
+          orderOfCalls.push('testBeforeBefore');
+        });
+        testBeforeAfterSpy = spyOn(this, '_after').and.callFake(function () {
+          orderOfCalls.push('testBeforeAfter');
+        });
       }
 
       _forceASYNC() {
@@ -238,8 +242,12 @@ describe('Async set state issue', () => {
           async: 0
         };
 
-        testAfterBeforeSpy = spy(this, '_before');
-        testAfterAfterSpy = spy(this, '_after');
+        testAfterBeforeSpy = spyOn(this, '_before').and.callFake(function () {
+          orderOfCalls.push('testAfterBefore');
+        });
+        testAfterAfterSpy = spyOn(this, '_after').and.callFake(function () {
+          orderOfCalls.push('testAfterAfter');
+        });
       }
 
       _forceASYNC() {
@@ -290,14 +298,12 @@ describe('Async set state issue', () => {
 
     setTimeout(function () {
       // Set state should be called as many times as it was requested
-      expect(testBeforeBeforeSpy.calledOnce).toBe(true);
-      expect(testBeforeAfterSpy.calledOnce).toBe(true);
-      expect(testAfterBeforeSpy.calledOnce).toBe(true);
-      expect(testAfterAfterSpy.calledOnce).toBe(true);
+      expect(testBeforeBeforeSpy).toHaveBeenCalledTimes(1);
+      expect(testBeforeAfterSpy).toHaveBeenCalledTimes(1);
+      expect(testAfterBeforeSpy).toHaveBeenCalledTimes(1);
+      expect(testAfterAfterSpy).toHaveBeenCalledTimes(1);
 
-      expect(testBeforeBeforeSpy.calledBefore(testBeforeAfterSpy)).toBe(true);
-      expect(testBeforeAfterSpy.calledBefore(testAfterBeforeSpy)).toBe(true);
-      expect(testAfterBeforeSpy.calledBefore(testAfterAfterSpy)).toBe(true);
+      expect(orderOfCalls).toEqual(['testBeforeBefore', 'testBeforeAfter', 'testAfterBefore', 'testAfterAfter']);
 
       expect(container.innerHTML).toBe('<div><div>2</div><div>2</div></div>');
 
@@ -337,8 +343,8 @@ describe('Async set state issue', () => {
           async: 0
         };
 
-        testBeforeBeforeSpy = spy(this, '_before');
-        testBeforeAfterSpy = spy(this, '_after');
+        testBeforeBeforeSpy = spyOn(this, '_before');
+        testBeforeAfterSpy = spyOn(this, '_after');
       }
 
       _forceASYNC() {
@@ -392,8 +398,8 @@ describe('Async set state issue', () => {
           async: 0
         };
 
-        testAfterBeforeSpy = spy(this, '_before');
-        testAfterAfterSpy = spy(this, '_after');
+        testAfterBeforeSpy = spyOn(this, '_before');
+        testAfterAfterSpy = spyOn(this, '_after');
       }
 
       _forceASYNC() {
@@ -446,10 +452,10 @@ describe('Async set state issue', () => {
 
     setTimeout(function () {
       // Set state should be called as many times as it was requested
-      expect(testBeforeBeforeSpy.callCount).toBe(0);
-      expect(testBeforeAfterSpy.callCount).toBe(0);
-      expect(testAfterBeforeSpy.callCount).toBe(0);
-      expect(testAfterAfterSpy.callCount).toBe(0);
+      expect(testBeforeBeforeSpy.calls.count()).toBe(0);
+      expect(testBeforeAfterSpy.calls.count()).toBe(0);
+      expect(testAfterBeforeSpy.calls.count()).toBe(0);
+      expect(testAfterAfterSpy.calls.count()).toBe(0);
 
       done();
     }, 20);

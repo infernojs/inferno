@@ -62,3 +62,6 @@ export function combineFrom(first: {} | null, second: {} | null): object {
   }
   return out;
 }
+
+// tslint:disable-next-line:no-empty
+export const emptyFn = function () {};

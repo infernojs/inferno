@@ -303,16 +303,16 @@ describe('ReactES6Class', function () {
     expect(getInitialStateWasCalled).toBe(false);
     expect(getDefaultPropsWasCalled).toBe(false);
     // expect(console.error.calls.count()).toBe(4);
-    // expect(console.error.calls[0].args[0]).toContain(
+    // expect(console.error.calls[0].calls.argsFor(0)[0]).toContain(
     //   'getInitialState was defined on Foo, a plain JavaScript class.'
     // );
-    // expect(console.error.calls[1].args[0]).toContain(
+    // expect(console.error.calls[1].calls.argsFor(0)[0]).toContain(
     //   'getDefaultProps was defined on Foo, a plain JavaScript class.'
     // );
-    // expect(console.error.calls[2].args[0]).toContain(
+    // expect(console.error.calls[2].calls.argsFor(0)[0]).toContain(
     //   'propTypes was defined as an instance property on Foo.'
     // );
-    // expect(console.error.calls[3].args[0]).toContain(
+    // expect(console.error.calls[3].calls.argsFor(0)[0]).toContain(
     //   'contextTypes was defined as an instance property on Foo.'
     // );
   });
@@ -331,7 +331,7 @@ describe('ReactES6Class', function () {
   //   test(<NamedComponent />, 'SPAN', 'foo');
 
   //   expect(console.error.calls.count()).toBe(1);
-  //   expect(console.error.calls[0].args[0]).toBe(
+  //   expect(console.error.calls[0].calls.argsFor(0)).toBe(
   //     'Warning: ' +
   //     'NamedComponent has a method called componentShouldUpdate(). Did you ' +
   //     'mean shouldComponentUpdate()? The name is phrased as a question ' +
@@ -353,7 +353,7 @@ describe('ReactES6Class', function () {
   //   test(<NamedComponent />, 'SPAN', 'foo');
 
   //   expect(console.error.calls.count()).toBe(1);
-  //   expect(console.error.calls[0].args[0]).toBe(
+  //   expect(console.error.calls[0].calls.argsFor(0)).toBe(
   //     'Warning: ' +
   //     'NamedComponent has a method called componentWillRecieveProps(). Did ' +
   //     'you mean componentWillReceiveProps()?'
@@ -369,20 +369,20 @@ describe('ReactES6Class', function () {
   //   expect(() => instance.setProps({name: 'bar'})).toThrow();
   //   expect(() => instance.replaceProps({name: 'bar'})).toThrow();
   //   expect(console.error.calls.count()).toBe(5);
-  //   expect(console.error.calls[0].args[0]).toContain(
+  //   expect(console.error.calls[0].calls.argsFor(0)[0]).toContain(
   //     'getDOMNode(...) is deprecated in plain JavaScript React classes. ' +
   //     'Use ReactDOM.findDOMNode(component) instead.'
   //   );
-  //   expect(console.error.calls[1].args[0]).toContain(
+  //   expect(console.error.calls[1].calls.argsFor(0)[0]).toContain(
   //     'replaceState(...) is deprecated in plain JavaScript React classes'
   //   );
-  //   expect(console.error.calls[2].args[0]).toContain(
+  //   expect(console.error.calls[2].calls.argsFor(0)[0]).toContain(
   //     'isMounted(...) is deprecated in plain JavaScript React classes'
   //   );
-  //   expect(console.error.calls[3].args[0]).toContain(
+  //   expect(console.error.calls[3].calls.argsFor(0)[0]).toContain(
   //     'setProps(...) is deprecated in plain JavaScript React classes'
   //   );
-  //   expect(console.error.calls[4].args[0]).toContain(
+  //   expect(console.error.calls[4].calls.argsFor(0)[0]).toContain(
   //     'replaceProps(...) is deprecated in plain JavaScript React classes'
   //   );
   // });

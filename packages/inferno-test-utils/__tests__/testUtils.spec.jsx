@@ -27,7 +27,6 @@ import {
   scryRenderedVNodesWithType,
   scryVNodesWithType
 } from 'inferno-test-utils';
-import sinon from 'sinon';
 
 const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'isValidated', 'key', 'ref', 'props', 'type'].sort();
 
@@ -315,16 +314,18 @@ describe('Test Utils', () => {
     });
 
     it('should call predicate for each VNode instance in a rendered tree', () => {
-      const predicate = sinon.spy();
-      sinon.assert.notCalled(predicate);
-      findAllInRenderedTree(tree1, predicate);
+      const spy = jasmine.createSpy('spy');
+      expect(spy).not.toHaveBeenCalled();
+      findAllInRenderedTree(tree1, (args) => {
+        spy(args.type);
+      });
       // 0: section
       // 1: FunctionalComponent
       // 2: div
-      sinon.assert.callCount(predicate, 3);
-      sinon.assert.calledWithMatch(predicate, { type: 'section' });
-      sinon.assert.calledWithMatch(predicate, { type: FunctionalComponent });
-      sinon.assert.calledWithMatch(predicate, { type: 'div' });
+      expect(spy).toHaveBeenCalledTimes(3);
+      expect(spy).toHaveBeenCalledWith('section');
+      expect(spy).toHaveBeenCalledWith(FunctionalComponent);
+      expect(spy).toHaveBeenCalledWith('div');
     });
 
     it('should call predicate in the correct order', () => {
@@ -334,34 +335,26 @@ describe('Test Utils', () => {
     });
 
     it('should work with interpolated text', () => {
-      const predicate = sinon.spy();
+      const predicate = jasmine.createSpy('spy');
       const Hello = ({ who }) => <div>Hello, {who}!</div>;
       const tree = <Hello who="world" />;
       render(tree, container);
-      sinon.assert.notCalled(predicate);
+      expect(predicate).not.toHaveBeenCalled();
       findAllInRenderedTree(tree, predicate);
-      sinon.assert.callCount(predicate, 5);
-      sinon.assert.calledWithMatch(predicate, { type: Hello });
-      sinon.assert.calledWithMatch(predicate, { type: 'div' });
-      sinon.assert.calledWithMatch(predicate, { children: 'Hello, ' });
-      sinon.assert.calledWithMatch(predicate, { children: 'world' });
-      sinon.assert.calledWithMatch(predicate, { children: '!' });
+
+      expect(predicate).toHaveBeenCalledTimes(5);
     });
 
     it('should work without class wrappers', () => {
-      const predicate = sinon.spy();
+      const predicate = jasmine.createSpy('spy');
       const Hello = ({ who }) => <div>Hello, {who}!</div>;
       const treeWithText = <Hello who="world" />;
       render(treeWithText, container);
 
-      sinon.assert.notCalled(predicate);
+      expect(predicate).not.toHaveBeenCalled();
       findAllInRenderedTree(treeWithText, predicate);
-      sinon.assert.callCount(predicate, 5);
-      sinon.assert.calledWithMatch(predicate, { type: Hello });
-      sinon.assert.calledWithMatch(predicate, { type: 'div' });
-      sinon.assert.calledWithMatch(predicate, { children: 'Hello, ' });
-      sinon.assert.calledWithMatch(predicate, { children: 'world' });
-      sinon.assert.calledWithMatch(predicate, { children: '!' });
+
+      expect(predicate).toHaveBeenCalledTimes(5);
     });
   });
 
@@ -396,14 +389,16 @@ describe('Test Utils', () => {
     });
 
     it('should call predicate for each VNode instance in an non-rendered tree', () => {
-      const predicate = sinon.spy();
-      sinon.assert.notCalled(predicate);
-      findAllInVNodeTree(tree2, predicate);
+      const predicate = jasmine.createSpy('spy');
+
+      findAllInVNodeTree(tree2, (args) => {
+        predicate(args.type);
+      });
       // 0: section
       // 1: FunctionalComponent
-      sinon.assert.callCount(predicate, 2);
-      sinon.assert.calledWithMatch(predicate, { type: 'section' });
-      sinon.assert.calledWithMatch(predicate, { type: FunctionalComponent });
+      expect(predicate).toHaveBeenCalledTimes(2);
+      expect(predicate).toHaveBeenCalledWith('section');
+      expect(predicate).toHaveBeenCalledWith(FunctionalComponent);
     });
 
     it('should call predicate in the correct order', () => {

@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 import { createElement } from 'inferno-create-element';
 
@@ -55,14 +54,14 @@ describe('Stateful Component updates', () => {
     }
 
     // Render A
-    const sinonSpy = sinon.spy(A.prototype, 'componentWillUnmount');
+    const spy = spyOn(A.prototype, 'componentWillUnmount');
     render(<A />, container);
     expect(container.innerHTML).toBe(innerHTML('<div>A Component A</div>'));
     // Render B
     render(<B />, container);
     expect(container.innerHTML).toBe(innerHTML('<div>B Component B</div>'));
-    sinon.assert.calledOnce(sinonSpy); // componentUnMount should have been called
-    sinonSpy.restore();
+    expect(spy).toHaveBeenCalledTimes(1); // componentUnMount should have been called
+    spy.calls.reset();
 
     // delayed update triggers for A
     updatesAfromOutside();
@@ -548,7 +547,7 @@ describe('Stateful Component updates', () => {
     const fakeObj = {
       func() {}
     };
-    const submitSpy = sinon.spy(fakeObj, 'func');
+    const submitSpy = spyOn(fakeObj, 'func');
 
     class Tester extends Component {
       constructor(props) {
@@ -573,7 +572,7 @@ describe('Stateful Component updates', () => {
     render(<Tester />, container);
     expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<form><input id="inputId" type="text"></form>'));
     const input = container.querySelector('#inputId');
-    expect(sinon.assert.notCalled(submitSpy));
+    expect(submitSpy).not.toHaveBeenCalled();
     input.focus();
   });
 

@@ -59,6 +59,6 @@ describe('EventEmitter', () => {
     emitter.emit('foobar');
 
     expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain('foobar');
+    expect(console.error.calls.argsFor(0)[0]).toContain('foobar');
   });
 });

@@ -9,7 +9,6 @@ import {
   _MP,
   _MR,
   Component,
-  ComponentType,
   createComponentVNode,
   createFragment,
   createPortal,
@@ -28,13 +27,14 @@ import {
   normalizeProps,
   options,
   Props,
-  Refs,
   rerender,
   VNode
 } from 'inferno';
+export type { ComponentType, InfernoNode, Props, Refs, VNode } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
-import { ClassicComponentClass, ComponentSpec, createClass } from 'inferno-create-class';
+import { createClass } from 'inferno-create-class';
+export type { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -394,18 +394,11 @@ if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined
 
 export {
   Children,
-  ClassicComponentClass,
   Component,
-  ComponentSpec,
-  ComponentType,
   EMPTY_OBJ,
   Fragment,
-  InfernoNode,
-  Props,
   PropTypes,
   PureComponent,
-  Refs,
-  VNode,
   // Internal methods
   _CI,
   _HI,

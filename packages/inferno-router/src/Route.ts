@@ -2,8 +2,8 @@ import { Component, createComponentVNode, IComponentConstructor, InfernoNode, SF
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
-import * as H from 'history';
 import { combineFrom, isFunction } from 'inferno-shared';
+import type { Location, History } from 'history';
 
 export interface Match<P> {
   params: P;
@@ -14,8 +14,8 @@ export interface Match<P> {
 
 export interface RouteComponentProps<P> {
   match: Match<P>;
-  location: H.Location;
-  history: H.History;
+  location: Location;
+  history: History;
   staticContext?: any;
 }
 
@@ -27,7 +27,7 @@ export interface IRouteProps {
   sensitive?: boolean;
   component?: IComponentConstructor<any> | SFC<any>;
   render?: (props: RouteComponentProps<any>, context: any) => InfernoNode;
-  location?: H.Location;
+  location?: Location;
   children?: ((props: RouteComponentProps<any>) => InfernoNode) | InfernoNode;
 }
 

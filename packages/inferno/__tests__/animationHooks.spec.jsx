@@ -1,6 +1,5 @@
-import { Component, render, VNode } from 'inferno';
+import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { isNull } from 'inferno-shared';
 
 describe('animation hooks', () => {
   let container;
@@ -71,7 +70,7 @@ describe('animation hooks', () => {
     class App extends Component {
       componentWillMove(parentVNode, parent, dom, props) {
         spyer('willMove');
-        expect(parentVNode instanceof VNode).toEqual(true);
+        expect(parentVNode.type).toEqual(App);
         expect(parent instanceof HTMLDivElement).toEqual(true);
         expect(dom instanceof HTMLDivElement).toEqual(true);
         expect(next instanceof HTMLDivElement).toEqual(true);

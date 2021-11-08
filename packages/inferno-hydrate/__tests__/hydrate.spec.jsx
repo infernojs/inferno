@@ -1,7 +1,6 @@
 import { Component, createFragment, createPortal, createRef, Fragment, render, rerender } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { h } from 'inferno-hyperscript';
-import sinon from 'sinon';
 import { triggerEvent } from 'inferno-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
 import { createElement } from 'inferno-create-element';
@@ -53,7 +52,7 @@ describe('rendering routine', () => {
 
     it('Should Manually hydrating should also attach root and patch when rendering next time', () => {
       // create matching DOM
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
       container.innerHTML = '<div><input type="checkbox"/></div>';
 
       let clickChecked = null;
@@ -78,7 +77,7 @@ describe('rendering routine', () => {
 
       const oldInput = container.firstChild.firstChild;
 
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
 
       render(
         <div ref={spy}>
@@ -97,7 +96,7 @@ describe('rendering routine', () => {
         container
       );
 
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
 
       const input = container.querySelector('input.new-class');
 
@@ -111,7 +110,7 @@ describe('rendering routine', () => {
 
       render(null, container);
 
-      expect(spy.callCount).toBe(2);
+      expect(spy.calls.count()).toBe(2);
     });
 
     it('Should change value and defaultValue to empty when hydrating over existing textArea', () => {

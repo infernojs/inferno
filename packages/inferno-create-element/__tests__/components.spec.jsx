@@ -1,6 +1,5 @@
 import { Component, render, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 
 describe('Components (JSX)', () => {
@@ -1548,9 +1547,7 @@ describe('Components (JSX)', () => {
       fn() {}
     };
 
-    const calledOnce = sinon.assert.calledOnce;
-    const notCalled = sinon.assert.notCalled;
-    const sinonSpy = sinon.spy(obj, 'fn');
+    spyOn(obj, 'fn');
 
     class Bar extends Component {
       constructor(props) {
@@ -1585,12 +1582,12 @@ describe('Components (JSX)', () => {
 
     render(<Bar />, container);
     expect(container.innerHTML).toBe(innerHTML('<div>Hello world</div>'));
-    notCalled(sinonSpy);
+    expect(obj.fn).not.toHaveBeenCalled();
 
     updater();
     setTimeout(() => {
       expect(container.innerHTML).toBe(innerHTML('<div><div>Hello world2</div></div>'));
-      calledOnce(sinonSpy);
+      expect(obj.fn).toHaveBeenCalledTimes(1);
       done();
     }, 10);
   });

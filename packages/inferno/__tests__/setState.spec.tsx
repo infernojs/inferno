@@ -1,5 +1,4 @@
 import { Component, DragEvent, render, rerender } from 'inferno';
-import sinon from 'sinon';
 
 describe('setState', () => {
   let container;
@@ -481,7 +480,7 @@ describe('setState', () => {
   });
 
   it('Should have new state in render when changing state during componentWillMount and render only once', () => {
-    const spy = sinon.spy();
+    const spy = jasmine.createSpy('spy');
 
     class Parent extends Component<any, any> {
       public state = {
@@ -556,7 +555,7 @@ describe('setState', () => {
     render(<Parent />, container);
 
     expect(container.firstChild.firstChild.innerHTML).toBe('4');
-    expect(spy.callCount).toBe(5);
+    expect(spy.calls.count()).toBe(5);
     expect(renderCount).toBe(1);
   });
 

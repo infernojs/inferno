@@ -51,8 +51,8 @@ describe('ReactMount', function () {
   //   var rootDiv = mainContainerDiv.firstChild;
   //   spyOn(console, 'error');
   //   ReactDOM.unmountComponentAtNode(rootDiv);
-  //   expect(console.error.callCount).toBe(1);
-  //   expect(console.error.mostRecentCall.args[0]).toBe(
+  //   expect(console.error.calls.count()).toBe(1);
+  //   expect(console.error.mostRecentCall.calls.argsFor(0)).toBe(
   //     'Warning: unmountComponentAtNode(): The node you\'re attempting to ' +
   //     'unmount was rendered by React and is not a top-level container. You ' +
   //     'may have accidentally passed in a React root node instead of its ' +
@@ -75,8 +75,8 @@ describe('ReactMount', function () {
   //   var nonRootDiv = mainContainerDiv.firstChild.firstChild;
   //   spyOn(console, 'error');
   //   ReactDOM.unmountComponentAtNode(nonRootDiv);
-  //   expect(console.error.callCount).toBe(1);
-  //   expect(console.error.mostRecentCall.args[0]).toBe(
+  //   expect(console.error.calls.count()).toBe(1);
+  //   expect(console.error.mostRecentCall.calls.argsFor(0)).toBe(
   //     'Warning: unmountComponentAtNode(): The node you\'re attempting to ' +
   //     'unmount was rendered by React and is not a top-level container. ' +
   //     'Instead, have the parent component update its state and rerender in ' +

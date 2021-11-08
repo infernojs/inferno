@@ -9,7 +9,6 @@
 
 import React from 'inferno-compat';
 import { triggerEvent } from 'inferno-utils';
-import sinon from 'sinon';
 
 var ReactDOM = React;
 
@@ -181,13 +180,13 @@ describe('ReactJSXElement', function () {
   it('Should map onDoubleClick to html native event', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy();
+    const spy = jasmine.createSpy('spy');
     ReactDOM.render(React.createElement('a', { onDoubleClick: spy }, 'test'), container);
 
-    expect(spy.callCount).toBe(0);
+    expect(spy.calls.count()).toBe(0);
     const element = container.querySelector('a');
     triggerEvent('dblclick', element);
-    expect(spy.callCount).toBe(1);
+    expect(spy.calls.count()).toBe(1);
 
     document.body.removeChild(container);
   });
@@ -195,15 +194,15 @@ describe('ReactJSXElement', function () {
   it('Should map onDoubleClick to html native even (jsx)t', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy();
+    const spy = jasmine.createSpy('spy');
     const node = <a onDoubleClick={spy} />;
     expect(node.props.onDblClick).toEqual(spy);
     ReactDOM.render(node, container);
 
-    expect(spy.callCount).toBe(0);
+    expect(spy.calls.count()).toBe(0);
     const element = container.querySelector('a');
     triggerEvent('dblclick', element);
-    expect(spy.callCount).toBe(1);
+    expect(spy.calls.count()).toBe(1);
 
     document.body.removeChild(container);
   });
@@ -211,14 +210,14 @@ describe('ReactJSXElement', function () {
   it('Should have input onChange event', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy();
+    const spy = jasmine.createSpy('spy');
     ReactDOM.render(React.createElement('input', { onChange: spy }), container);
 
-    expect(spy.callCount).toBe(0);
+    expect(spy.calls.count()).toBe(0);
     const element = container.querySelector('input');
     element.value = 'test';
     triggerEvent('input', element);
-    expect(spy.callCount).toBe(1);
+    expect(spy.calls.count()).toBe(1);
 
     document.body.removeChild(container);
   });
@@ -226,14 +225,14 @@ describe('ReactJSXElement', function () {
   it('Should have input onChange event (JSX)', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
-    const spy = sinon.spy();
+    const spy = jasmine.createSpy('spy');
     ReactDOM.render(<input onChange={spy} />, container);
 
-    expect(spy.callCount).toBe(0);
+    expect(spy.calls.count()).toBe(0);
     const element = container.querySelector('input');
     element.value = 'test';
     triggerEvent('input', element);
-    expect(spy.callCount).toBe(1);
+    expect(spy.calls.count()).toBe(1);
 
     document.body.removeChild(container);
   });

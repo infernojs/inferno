@@ -152,7 +152,7 @@ describe('ReactChildren', function () {
   //   expect(callback).toHaveBeenCalledWith(two, 2);
   //   expect(callback).toHaveBeenCalledWith(three, 3);
   //   expect(callback).toHaveBeenCalledWith(four, 4);
-  //   callback.calls.resetHistory();
+  //   callback.calls.calls.reset();
   //
   //   var mappedChildren =
   //     ReactChildren.map(instance.children, callback);
@@ -229,7 +229,7 @@ describe('ReactChildren', function () {
   //   expect(callback).toHaveBeenCalledWith(frag[1], 1);
   //   expect(callback).toHaveBeenCalledWith(frag[2], 2);
   //   expect(callback).toHaveBeenCalledWith(frag[3], 3);
-  //   callback.calls.resetHistory();
+  //   callback.calls.calls.reset();
 
   //   var mappedChildren = ReactChildren.map(instance.props.children, callback);
   //   expect(callback.calls.count()).toBe(4);

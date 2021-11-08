@@ -145,7 +145,7 @@ describe('Switch (jsx)', () => {
 
     expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain('/one');
+    expect(console.error.calls.argsFor(0)[0]).toContain('/one');
   });
 
   it('warns when redirecting to same route, mixed types', () => {
@@ -181,7 +181,7 @@ describe('Switch (jsx)', () => {
 
     expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain('/one');
+    expect(console.error.calls.argsFor(0)[0]).toContain('/one');
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one"/)
   });
 
@@ -218,7 +218,7 @@ describe('Switch (jsx)', () => {
 
     expect(node.innerHTML).not.toContain('done');
     expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.mostRecent().args[0]).toContain('/one?utm=1');
+    expect(console.error.calls.argsFor(0)[0]).toContain('/one?utm=1');
     //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one\?utm=1"/)
   });
 

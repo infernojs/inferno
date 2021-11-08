@@ -3,7 +3,6 @@ import { createElement } from 'inferno-create-element';
 import { connect, Provider } from 'inferno-redux';
 import { findRenderedVNodeWithType } from 'inferno-test-utils';
 import { createStore } from 'redux';
-import sinon from 'sinon';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('redux', () => {
@@ -38,17 +37,17 @@ describe('redux', () => {
       const store1 = createStore(() => ({}));
       const store2 = createStore(() => ({}));
 
-      const spy = spyOn(console, 'error');
+      spyOn(console, 'error');
 
       let tree = renderIntoContainer(createElement(Provider, { store: store1 }, createElement(Child, {})));
-      expect(spy.calls.count()).toEqual(0);
+      expect(console.error).toHaveBeenCalledTimes(0);
 
       let child = findRenderedVNodeWithType(tree, Child).children;
       expect(child.context.store).toBe(store1);
 
       tree = renderIntoContainer(createElement(Provider, { store: store1 }, createElement(Provider, { store: store2 }, createElement(Child, {}))));
 
-      expect(spy.calls.count()).toEqual(0);
+      expect(console.error).toHaveBeenCalledTimes(0);
 
       child = findRenderedVNodeWithType(tree, Child).children;
       expect(child.context.store).toBe(store2);
@@ -79,19 +78,19 @@ describe('redux', () => {
       const child = findRenderedVNodeWithType(container, Child).children;
       expect(child.context.store.getState()).toEqual(11);
 
-      const spy = spyOn(console, 'error');
+      spyOn(console, 'error');
       container.setState({ store: store2 });
       renderIntoContainer(vNode);
 
       expect(child.context.store.getState()).toEqual(11);
-      expect(spy.calls.count()).toEqual(1);
-      expect(spy.calls.argsFor(0)).toEqual(['<Provider> does not support changing `store` on the fly.']);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith('<Provider> does not support changing `store` on the fly.');
 
       container.setState({ store: store3 });
       renderIntoContainer(vNode);
 
       expect(child.context.store.getState()).toEqual(11);
-      expect(spy.calls.count()).toEqual(1);
+      expect(console.error).toHaveBeenCalledTimes(1);
     });
 
     it('should handle subscriptions correctly when there is nested Providers', () => {
@@ -100,7 +99,7 @@ describe('redux', () => {
 
       const innerStore = createStore(reducer1);
       innerStore.__store_name__ = 'innerStore'; // for debugging
-      const innerMapStateToProps = sinon.spy((state) => ({ count: state }));
+      const innerMapStateToProps = jasmine.createSpy((state) => ({ count: state }));
 
       const Inner = connect(innerMapStateToProps)(
         class Inner extends Component {
@@ -129,10 +128,10 @@ describe('redux', () => {
           <Outer />
         </Provider>
       );
-      expect(innerMapStateToProps.callCount).toEqual(1);
+      expect(innerMapStateToProps.calls.count()).toEqual(1);
 
       innerStore.dispatch({ type: 'INC' });
-      expect(innerMapStateToProps.callCount).toEqual(2);
+      expect(innerMapStateToProps.calls.count()).toEqual(2);
     });
 
     it('should pass state consistently to mapState', () => {

@@ -53,16 +53,18 @@ function _runAnimationPhases() {
     switch (phase) {
       case AnimationPhase.ACTIVATE_ANIMATION:
         // Final phase - Activate animations
+        // This is a special case and is executed differently from others
         _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
         if (_nextActivateAnimationFrame === IDLE) {
           // Animations are activated on the next animation frame
           _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
         }
         break;
-      case AnimationPhase.ACTIVATE_TRANSITIONS:
-        // Force reflow before executing ACTIVATE_TRANSITIONS
-        forceReflow();
       default:
+        if (phase === AnimationPhase.ACTIVATE_TRANSITIONS) {
+          // Force reflow before executing ACTIVATE_TRANSITIONS
+          forceReflow();
+        }
         for (let j = 0; j < animationQueue.length; j++) {
           animationQueue[j](phase);
         }
@@ -80,16 +82,18 @@ function _debugAnimationPhases(phase: AnimationPhase, animationQueue) {
   switch (phase) {
     case AnimationPhase.ACTIVATE_ANIMATION:
       // Final phase - Activate animations
+      // This is a special case and is executed differently from others
       _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
       if (_nextActivateAnimationFrame === IDLE) {
         // Animations are activated on the next animation frame
         _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
       }
       break;
-    case AnimationPhase.ACTIVATE_TRANSITIONS:
-      // Force reflow before executing ACTIVATE_TRANSITIONS
-      forceReflow();
     default:
+      if (phase === AnimationPhase.ACTIVATE_TRANSITIONS) {
+        // Force reflow before executing ACTIVATE_TRANSITIONS
+        forceReflow();
+      }
       for (let j = 0; j < animationQueue.length; j++) {
         animationQueue[j](phase);
       }

@@ -19,14 +19,14 @@ There are three base components you can extend from to get animations in a strai
 - AnimatedMoveComponent -- animates on move (within the same parent)
 - AnimatedAllComponent -- animates on add/remove and move (within the same parent)
 
+You can also animate functional components. There are a couple of examples of animations in the main repos in the `docs/animations` and `docs/animations-demo` folder.
+
 If you don't want to extend from one of the pre-wired components, look att src/AnimatedAllComponent.ts to see
 how to wire up the three animation hooks:
 
 - componentDidAppear
 - componentWillDisappear
 - componentWillMove
-
-There are a couple of examples of animations in the main repos in the `docs/animations` and `docs/animations-demo` folder.
 
 Using AnimatedAllComponent is just like working with ordinary components. Don't forget to
 add the CSS or you can get strange results:
@@ -94,3 +94,52 @@ import { componentDidAppear, componentWillDisappear, componentWillMove } from 'i
 IMPORTANT! Always use the provided helper methods instead of implementing the hooks yourself. There
 might be optimisations and/or changes to how the animation hooks are implemented in future versions
 of Inferno that you want to benefit from.
+
+### Bootstrap style modal animation
+This is an example of how you could implement a Bootstrap style Modal animation using inferno-animation. These two animations are used both for the backdrop and the modal and the purpose is to support the CSS-rules without modification.
+
+- always use the inferno-animation utility functions
+- implementation is straight forward
+- `callback` in animateModalOnWillDisappear triggers the dom-removal in Inferno and is crucial!
+
+Custom animations won't be coordinated with the standard animations to reduce reflow, but performance is not an issue with just a few animations running simultaneously. Use the standard animations for grid or list items.
+
+Call these helper methods from `componentDidAppear` and `componentWillDisapper` of your backdrop and content component when you build a Bootstrap style modal. 
+
+```js
+import { utils } from 'inferno-animation'
+const {
+  addClassName,
+  removeClassName,
+  registerTransitionListener,
+  forceReflow,
+  setDisplay
+} = utils
+
+export function animateModalOnWillDisappear (dom, callback, onClosed) { 
+  registerTransitionListener([dom], () => {
+    // Always call the dom removal callback first!
+    callback && callback()
+    onClosed && onClosed()
+  })
+
+  setTimeout(() => {
+    removeClassName(dom, 'show')
+  }, 5)
+}
+
+export function animateModalOnDidAppear (dom, onOpened) {
+  setDisplay(dom, 'none')
+  addClassName(dom, 'fade')
+  forceReflow(dom)
+  setDisplay(dom, undefined)
+
+  registerTransitionListener([dom, dom.children[0]], function () {
+    // *** Cleanup ***
+    setDisplay(dom, undefined)
+    onOpened && onOpened(dom)
+  })
+  
+  addClassName(dom, 'show')
+}
+```

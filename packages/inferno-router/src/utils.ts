@@ -1,11 +1,16 @@
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isNull } from 'inferno-shared';
+import { PartialPath } from 'history';
 
 export function warning(condition, message) {
   if (!condition) {
     // tslint:disable-next-line:no-console
     console.error(message);
   }
+}
+
+export function combinePath({ pathname = '/', search = '', hash = '' }: PartialPath) {
+  return pathname + search + hash;
 }
 
 export function isValidElement(obj: any): boolean {

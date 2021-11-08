@@ -1,6 +1,5 @@
 import { Component, render, rerender } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
-import sinon from 'sinon';
 
 describe('BUG: instance - null', () => {
   let container;
@@ -363,7 +362,7 @@ describe('BUG: instance - null', () => {
     const obj = {
       spy() {}
     };
-    const spy = sinon.spy(obj, 'spy');
+    const spy = spyOn(obj, 'spy');
 
     render(
       <div>
@@ -388,13 +387,13 @@ describe('BUG: instance - null', () => {
 
     event.initEvent('click', true, true);
 
-    expect(spy.callCount).toBe(0);
+    expect(spy.calls.count()).toBe(0);
 
     const node = container.querySelector('#MAGICBUTTON');
     node.dispatchEvent(event);
 
     setTimeout(function () {
-      expect(spy.callCount).toBe(0);
+      expect(spy.calls.count()).toBe(0);
       done();
     }, 10);
   });

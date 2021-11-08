@@ -8,7 +8,7 @@
 .item {
   --imgEnter: transform .5s ease-out, opacity 1s ease-in;
   --imgLeave: transform .4s ease-in, opacity .4s ease-in;
-  
+
   --bodyEnter: transform .3s .5s ease-out, opacity 1s ease-in;
   --bodyLeave: transform .2s ease-in, opacity .3s ease-in;
 }
@@ -253,7 +253,7 @@ h1 small a {
   text-decoration: none;
 }
 h1 small a:hover {
-  color: #3775bb;;
+  color: #3775bb;
 }
 
 h2 {

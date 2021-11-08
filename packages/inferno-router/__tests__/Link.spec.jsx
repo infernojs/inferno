@@ -1,5 +1,6 @@
 import { render } from 'inferno';
 import { HashRouter, Link, MemoryRouter } from 'inferno-router';
+import { parsePath } from 'history';
 
 describe('Link (jsx)', () => {
   let node;
@@ -14,14 +15,9 @@ describe('Link (jsx)', () => {
   });
 
   it('accepts a location "to" prop', () => {
-    const location = {
-      pathname: '/the/path',
-      search: 'the=query',
-      hash: '#the-hash'
-    };
     render(
       <MemoryRouter>
-        <Link to={location}>link</Link>
+        <Link to={parsePath('/the/path?the=query#the-hash')}>link</Link>
       </MemoryRouter>,
       node
     );
@@ -69,9 +65,9 @@ describe('A <Link> underneath a <HashRouter>', () => {
     document.body.removeChild(node);
   });
 
-  const createLinkNode = (hashType, to) => {
+  const createLinkNode = (to) => {
     render(
-      <HashRouter hashType={hashType}>
+      <HashRouter>
         <Link to={to} />
       </HashRouter>,
       node
@@ -80,39 +76,13 @@ describe('A <Link> underneath a <HashRouter>', () => {
     return node.querySelector('a');
   };
 
-  describe('with the "slash" hashType', () => {
-    it('has the correct href', () => {
-      const linkNode = createLinkNode('slash', '/foo');
-      expect(linkNode.getAttribute('href')).toEqual('#/foo');
-    });
-
-    it('has the correct href with a leading slash if it is missing', () => {
-      const linkNode = createLinkNode('slash', 'foo');
-      expect(linkNode.getAttribute('href')).toEqual('#/foo');
-    });
+  it('has the correct href', () => {
+    const linkNode = createLinkNode('/foo');
+    expect(linkNode.getAttribute('href')).toEqual('#/foo');
   });
 
-  describe('with the "hashbang" hashType', () => {
-    it('has the correct href', () => {
-      const linkNode = createLinkNode('hashbang', '/foo');
-      expect(linkNode.getAttribute('href')).toEqual('#!/foo');
-    });
-
-    it('has the correct href with a leading slash if it is missing', () => {
-      const linkNode = createLinkNode('hashbang', 'foo');
-      expect(linkNode.getAttribute('href')).toEqual('#!/foo');
-    });
-  });
-
-  describe('with the "noslash" hashType', () => {
-    it('has the correct href', () => {
-      const linkNode = createLinkNode('noslash', 'foo');
-      expect(linkNode.getAttribute('href')).toEqual('#foo');
-    });
-
-    it('has the correct href and removes the leading slash', () => {
-      const linkNode = createLinkNode('noslash', '/foo');
-      expect(linkNode.getAttribute('href')).toEqual('#foo');
-    });
+  it('has the correct href #2', () => {
+    const linkNode = createLinkNode('foo');
+    expect(linkNode.getAttribute('href')).toEqual('#foo');
   });
 });

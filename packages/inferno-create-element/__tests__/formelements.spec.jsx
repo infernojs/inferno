@@ -1,5 +1,4 @@
 import { Component, linkEvent, render } from 'inferno';
-import sinon from 'sinon';
 
 describe('FormElements', () => {
   let container;
@@ -73,8 +72,7 @@ describe('FormElements', () => {
           return <input type="text" oninput={this._method} value="test" />;
         }
       }
-
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       render(<Example callback={spy} value={1} />, container);
 
@@ -82,8 +80,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledOnce).toBe(true);
-      expect(spy.args[0][0]).toBe(1); // Verify initial props are correct
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.calls.argsFor(0)[0]).toBe(1); // Verify initial props are correct
 
       // Then update component
       render(<Example callback={spy} value={2} />, container);
@@ -92,8 +90,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledTwice).toBe(true);
-      expect(spy.args[1][0]).toBe(2); // Verify props have changed
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy.calls.argsFor(1)[0]).toBe(2); // Verify props have changed
     });
 
     it('Controlled - onInput - Should have updated props in onInput callbacks', () => {
@@ -171,7 +169,7 @@ describe('FormElements', () => {
         }
       }
 
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       render(<Example callback={spy} value={1} />, container);
 
@@ -179,8 +177,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledOnce).toBe(true);
-      expect(spy.args[0][0]).toBe(1); // Verify initial props are correct
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.calls.argsFor(0)[0]).toBe(1); // Verify initial props are correct
 
       // Then update component
       render(<Example callback={spy} value={2} />, container);
@@ -189,8 +187,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledTwice).toBe(true);
-      expect(spy.args[1][0]).toBe(2); // Verify props have changed
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy.calls.argsFor(1)[0]).toBe(2); // Verify props have changed
     });
 
     it('Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
@@ -208,7 +206,7 @@ describe('FormElements', () => {
         }
       }
 
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       render(<Example callback={spy} value={1} />, container);
 
@@ -216,8 +214,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledOnce).toBe(true);
-      expect(spy.args[0][0]).toBe(1); // Verify initial props are correct
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.calls.argsFor(0)[0]).toBe(1); // Verify initial props are correct
 
       // Then update component
       render(<Example callback={spy} value={2} />, container);
@@ -226,8 +224,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledTwice).toBe(true);
-      expect(spy.args[1][0]).toBe(2); // Verify props have changed
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy.calls.argsFor(1)[0]).toBe(2); // Verify props have changed
     });
 
     it('NON Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
@@ -245,7 +243,7 @@ describe('FormElements', () => {
         }
       }
 
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       render(<Example callback={spy} value={1} />, container);
 
@@ -253,8 +251,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledOnce).toBe(true);
-      expect(spy.args[0][0]).toBe(1); // Verify initial props are correct
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.calls.argsFor(0)[0]).toBe(1); // Verify initial props are correct
 
       // Then update component
       render(<Example callback={spy} value={2} />, container);
@@ -263,8 +261,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledTwice).toBe(true);
-      expect(spy.args[1][0]).toBe(2); // Verify props have changed
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy.calls.argsFor(1)[0]).toBe(2); // Verify props have changed
     });
 
     it('NON Controlled - onInput - Should have updated props in onInput callbacks', () => {
@@ -284,7 +282,7 @@ describe('FormElements', () => {
         }
       }
 
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       render(<Example callback={spy} value={1} />, container);
 
@@ -292,8 +290,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledOnce).toBe(true);
-      expect(spy.args[0][0]).toBe(1); // Verify initial props are correct
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.calls.argsFor(0)[0]).toBe(1); // Verify initial props are correct
 
       // Then update component
       render(<Example callback={spy} value={2} />, container);
@@ -302,8 +300,8 @@ describe('FormElements', () => {
       event.initEvent('input', true, true);
       container.firstChild.dispatchEvent(event);
 
-      expect(spy.calledTwice).toBe(true);
-      expect(spy.args[1][0]).toBe(2); // Verify props have changed
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy.calls.argsFor(1)[0]).toBe(2); // Verify props have changed
     });
   });
 

@@ -1,19 +1,18 @@
 import { Component, Fragment, render } from 'inferno';
-import sinon, { assert } from 'sinon';
 import { innerHTML } from 'inferno-utils';
 
 describe('All single patch variations', () => {
-  const templateRefSpy = sinon.spy();
+  let templateRefSpy;
   let container;
   let mountSpy;
   let updateSpy;
   let unmountSpy;
 
   beforeEach(function () {
-    mountSpy.resetHistory();
-    updateSpy.resetHistory();
-    unmountSpy.resetHistory();
-    templateRefSpy.resetHistory();
+    mountSpy = spyOn(ComA.prototype, 'componentWillMount');
+    updateSpy = spyOn(ComA.prototype, 'componentWillUpdate');
+    unmountSpy = spyOn(ComA.prototype, 'componentWillUnmount');
+    templateRefSpy = jasmine.createSpy('spy');
     container = document.createElement('div');
     document.body.appendChild(container);
   });
@@ -57,10 +56,6 @@ describe('All single patch variations', () => {
   }
   /* tslint:enable */
 
-  mountSpy = sinon.spy(ComA.prototype, 'componentWillMount');
-  updateSpy = sinon.spy(ComA.prototype, 'componentWillUpdate');
-  unmountSpy = sinon.spy(ComA.prototype, 'componentWillUnmount');
-
   describe('Text to', () => {
     let node;
 
@@ -97,56 +92,56 @@ describe('All single patch variations', () => {
     });
 
     it('vNode (elem)', () => {
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       rTemplate(<span ref={spy}>1</span>);
       expect(container.innerHTML).toEqual('<div><span>1</span></div>');
 
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
 
       rTemplate(<span ref={spy}>2</span>);
       expect(container.innerHTML).toEqual('<div><span>2</span></div>');
 
-      expect(spy.callCount).toBe(1);
+      expect(spy.calls.count()).toBe(1);
       tearDown();
     });
 
     it('vNode (com)', () => {
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       rTemplate(<ComA ref={spy}>1</ComA>);
       expect(container.innerHTML).toEqual('<div>1</div>');
-      expect(mountSpy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(0);
-      expect(unmountSpy.callCount).toBe(0);
-      expect(spy.callCount).toBe(1);
+      expect(mountSpy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(0);
+      expect(unmountSpy.calls.count()).toBe(0);
+      expect(spy.calls.count()).toBe(1);
 
       rTemplate(<ComA ref={spy}>2</ComA>);
       expect(container.innerHTML).toEqual('<div>2</div>');
-      expect(mountSpy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(1);
-      expect(unmountSpy.callCount).toBe(0);
-      expect(spy.callCount).toBe(1);
+      expect(mountSpy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(1);
+      expect(unmountSpy.calls.count()).toBe(0);
+      expect(spy.calls.count()).toBe(1);
 
       tearDown();
     });
 
     it('Array', () => {
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       rTemplate([<ComA ref={spy}>1</ComA>, 'foo']);
       expect(container.innerHTML).toEqual('<div>1foo</div>');
-      expect(mountSpy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(0);
-      expect(unmountSpy.callCount).toBe(0);
-      expect(spy.callCount).toBe(1);
+      expect(mountSpy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(0);
+      expect(unmountSpy.calls.count()).toBe(0);
+      expect(spy.calls.count()).toBe(1);
 
       rTemplate([<ComA ref={spy}>2</ComA>, null]);
       expect(container.innerHTML).toEqual('<div>2</div>');
-      expect(mountSpy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(1);
-      expect(unmountSpy.callCount).toBe(0);
-      expect(spy.callCount).toBe(1);
+      expect(mountSpy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(1);
+      expect(unmountSpy.calls.count()).toBe(0);
+      expect(spy.calls.count()).toBe(1);
 
       tearDown();
     });
@@ -155,20 +150,20 @@ describe('All single patch variations', () => {
   describe('Component to', () => {
     beforeEach(() => {
       rTemplate(<ComA ref={templateRefSpy}>first</ComA>);
-      expect(templateRefSpy.callCount).toBe(1);
-      templateRefSpy.resetHistory();
+      expect(templateRefSpy.calls.count()).toBe(1);
+      templateRefSpy.calls.reset();
       expect(container.innerHTML).toEqual('<div>first</div>');
-      expect(unmountSpy.callCount).toBe(0);
-      expect(mountSpy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(0);
+      expect(unmountSpy.calls.count()).toBe(0);
+      expect(mountSpy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(0);
     });
 
     it('text', () => {
       rTemplate('more text');
       expect(container.innerHTML).toEqual('<div>more text</div>');
-      expect(unmountSpy.callCount).toBe(1);
-      expect(mountSpy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(0);
+      expect(unmountSpy.calls.count()).toBe(1);
+      expect(mountSpy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(0);
 
       rTemplate('more text2');
       expect(container.innerHTML).toEqual('<div>more text2</div>');
@@ -178,9 +173,9 @@ describe('All single patch variations', () => {
     it('invalid', () => {
       rTemplate(false);
       expect(container.innerHTML).toEqual('<div></div>');
-      expect(unmountSpy.callCount).toBe(1);
-      expect(mountSpy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(0);
+      expect(unmountSpy.calls.count()).toBe(1);
+      expect(mountSpy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(0);
 
       expect(container.firstChild.firstChild).toBe(null);
 
@@ -192,8 +187,8 @@ describe('All single patch variations', () => {
     });
 
     it('vNode (elem)', () => {
-      const spy = sinon.spy();
-      expect(templateRefSpy.callCount).toBe(0);
+      const spy = jasmine.createSpy('spy');
+      expect(templateRefSpy.calls.count()).toBe(0);
 
       rTemplate(
         <div ref={spy} className="component2">
@@ -201,35 +196,36 @@ describe('All single patch variations', () => {
           <span id="clear">clear app</span>
         </div>
       );
-      expect(templateRefSpy.callCount).toBe(1); // unmount
-      expect(unmountSpy.callCount).toBe(1);
-      expect(spy.callCount).toBe(1);
-      expect(updateSpy.callCount).toBe(0);
+      expect(templateRefSpy.calls.count()).toBe(1); // unmount
+      expect(unmountSpy.calls.count()).toBe(1);
+      expect(spy.calls.count()).toBe(1);
+      expect(updateSpy.calls.count()).toBe(0);
       expect(container.innerHTML).toEqual('<div><div class="component2">Component 2 <br><span id="clear">clear app</span></div></div>');
-      assert.callOrder(templateRefSpy, spy); // Unmount should happen before mount
 
       rTemplate(<span ref={spy}>2</span>);
       expect(container.innerHTML).toEqual('<div><span>2</span></div>');
 
-      expect(spy.callCount).toBe(3); // mount, unmount, mount
+      expect(spy.calls.count()).toBe(3); // mount, unmount, mount
       tearDown();
     });
 
     it('vNode (Com different)', () => {
+      const componentWillMountSpy = jasmine.createSpy();
+
       class ComC extends Component<any, any> {
         // tslint:disable-next-line
-        componentWillMount() {}
+        componentWillMount() {
+          componentWillMountSpy();
+        }
 
         public render({ children }) {
           return children;
         }
       }
 
-      const spy = sinon.spy(ComC.prototype, 'componentWillMount');
-
       rTemplate(<ComC>second</ComC>);
 
-      assert.callOrder(unmountSpy, spy); // first unmount then mount
+      expect(componentWillMountSpy).toHaveBeenCalledTimes(1);
 
       tearDown();
     });

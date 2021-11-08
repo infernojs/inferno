@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import sinon from 'sinon';
 import { innerHTML } from 'inferno-utils';
 
 describe('Children - (JSX)', () => {
@@ -959,12 +958,12 @@ describe('Children - (JSX)', () => {
         }
       }
 
-      const unmountSpy = sinon.spy(B.prototype, 'componentWillUnmount');
+      const unmountSpy = spyOn(B.prototype, 'componentWillUnmount');
       render(<A test={<B />} />, container);
       expect(container.innerHTML).toBe(innerHTML('<div><p>B</p></div>'));
       render(<A test={null} />, container);
       expect(container.innerHTML).toBe(innerHTML('<div></div>'));
-      expect(unmountSpy.callCount).toBe(1);
+      expect(unmountSpy.calls.count()).toBe(1);
     });
   });
 
@@ -1207,16 +1206,15 @@ describe('Children - (JSX)', () => {
         }
       }
 
-      const spyUnmount = sinon.spy(UnMountTest.prototype, 'componentWillUnmount');
-      const notCalled = sinon.assert.notCalled;
+      const spyUnmount = spyOn(UnMountTest.prototype, 'componentWillUnmount');
 
       render(<Parent firstClassCitizenIsBack={false} />, container); // initial render
       expect(container.innerHTML).toEqual('<div><div>a</div><span>1</span><div>C</div></div>');
-      notCalled(spyUnmount);
+      expect(spyUnmount).not.toHaveBeenCalled();
 
       render(<Parent firstClassCitizenIsBack={true} />, container);
       expect(container.innerHTML).toEqual('<div><div>a</div><div>b</div><span>1</span><div>C</div></div>');
-      notCalled(spyUnmount);
+      expect(spyUnmount).not.toHaveBeenCalled();
     });
   });
 
@@ -1269,23 +1267,20 @@ describe('Children - (JSX)', () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(FooBar.prototype, 'componentWillUnmount');
-      const mountSpy = sinon.spy(FooBar.prototype, 'componentWillMount');
-
-      const calledOnce = sinon.assert.calledOnce;
-      const notCalled = sinon.assert.notCalled;
+      const unMountSpy = spyOn(FooBar.prototype, 'componentWillUnmount');
+      const mountSpy = spyOn(FooBar.prototype, 'componentWillMount');
 
       expect(container.innerHTML).toEqual('<div><span>foobar</span><span>initial</span></div>');
 
-      mountSpy.resetHistory();
-      unMountSpy.resetHistory();
+      mountSpy.calls.reset();
+      unMountSpy.calls.reset();
 
       toggle(); // Unmount child component
       setTimeout(() => {
         expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
 
-        calledOnce(unMountSpy);
-        notCalled(mountSpy);
+        expect(unMountSpy).toHaveBeenCalledTimes(1);
+        expect(mountSpy).not.toHaveBeenCalled();
         done();
       }, 10);
     });
@@ -1340,23 +1335,20 @@ describe('Children - (JSX)', () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Test.prototype, 'componentWillUnmount');
-      const mountSpy = sinon.spy(Test.prototype, 'componentWillMount');
-
-      const calledOnce = sinon.assert.calledOnce;
-      const notCalled = sinon.assert.notCalled;
+      const unMountSpy = spyOn(Test.prototype, 'componentWillUnmount');
+      const mountSpy = spyOn(Test.prototype, 'componentWillMount');
 
       expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em>f</em></span></div>');
 
-      mountSpy.resetHistory();
-      unMountSpy.resetHistory();
+      mountSpy.calls.reset();
+      unMountSpy.calls.reset();
 
       toggle(); // Unmount child component
       setTimeout(() => {
         expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
 
-        calledOnce(unMountSpy);
-        notCalled(mountSpy);
+        expect(unMountSpy).toHaveBeenCalledTimes(1);
+        expect(mountSpy).not.toHaveBeenCalled();
         done();
       }, 10);
     });
@@ -1418,21 +1410,19 @@ describe('Children - (JSX)', () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Test.prototype, 'componentWillUnmount');
-      const unMountSpy2 = sinon.spy(Foo.prototype, 'componentWillUnmount');
-
-      const calledOnce = sinon.assert.calledOnce;
+      const unMountSpy = spyOn(Test.prototype, 'componentWillUnmount');
+      const unMountSpy2 = spyOn(Foo.prototype, 'componentWillUnmount');
 
       expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em>f</em><em>f</em></span></div>');
 
-      unMountSpy2.resetHistory();
-      unMountSpy.resetHistory();
+      unMountSpy2.calls.reset();
+      unMountSpy.calls.reset();
 
       toggle(); // Unmount child component
       setTimeout(() => {
         expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
-        calledOnce(unMountSpy2);
-        calledOnce(unMountSpy);
+        expect(unMountSpy2).toHaveBeenCalledTimes(1);
+        expect(unMountSpy).toHaveBeenCalledTimes(1);
         done();
       }, 10);
     });
@@ -1515,20 +1505,18 @@ describe('Children - (JSX)', () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Test5.prototype, 'componentWillUnmount');
-
-      const calledOnce = sinon.assert.calledOnce;
+      const unMountSpy = spyOn(Test5.prototype, 'componentWillUnmount');
 
       expect(container.innerHTML).toEqual(
         '<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>'
       );
 
-      unMountSpy.resetHistory();
+      unMountSpy.calls.reset();
 
       toggle(); // Unmount child component
       setTimeout(() => {
         expect(container.innerHTML).toEqual('<div><span>foobar</span></div>');
-        calledOnce(unMountSpy);
+        expect(unMountSpy).toHaveBeenCalledTimes(1);
         done();
       }, 10);
     });
@@ -1571,22 +1559,20 @@ describe('Children - (JSX)', () => {
 
       render(<Wrapper />, container);
 
-      const unMountSpy = sinon.spy(Wrapper.prototype, 'componentWillUnmount');
-      const unMountSpy2 = sinon.spy(FooBar.prototype, 'componentWillUnmount');
-
-      const calledOnce = sinon.assert.calledOnce;
+      const unMountSpy = spyOn(Wrapper.prototype, 'componentWillUnmount');
+      const unMountSpy2 = spyOn(FooBar.prototype, 'componentWillUnmount');
 
       expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em>f</em></span></div>');
 
-      unMountSpy.resetHistory();
-      unMountSpy2.resetHistory();
+      unMountSpy.calls.reset();
+      unMountSpy2.calls.reset();
 
       render(null, container);
       setTimeout(() => {
         expect(container.innerHTML).toEqual('');
 
-        calledOnce(unMountSpy);
-        calledOnce(unMountSpy2);
+        expect(unMountSpy).toHaveBeenCalledTimes(1);
+        expect(unMountSpy2).toHaveBeenCalledTimes(1);
         done();
       }, 10);
     });
@@ -1657,10 +1643,8 @@ describe('Children - (JSX)', () => {
 
       render(<Wrapper kill={false} />, container);
 
-      const unMountSpy = sinon.spy(Wrapper.prototype, 'componentWillUnmount');
-      const unMountSpy2 = sinon.spy(FooBar.prototype, 'componentWillUnmount');
-
-      const notCalled = sinon.assert.notCalled;
+      const unMountSpy = spyOn(Wrapper.prototype, 'componentWillUnmount');
+      const unMountSpy2 = spyOn(FooBar.prototype, 'componentWillUnmount');
 
       expect(container.innerHTML).toEqual('<div><span>foobar</span><span><em><pre>aa</pre></em></span></div>');
 
@@ -1669,8 +1653,8 @@ describe('Children - (JSX)', () => {
       setTimeout(() => {
         expect(container.innerHTML).toEqual('<div><span>foobar</span><span></span></div>');
 
-        notCalled(unMountSpy);
-        notCalled(unMountSpy2);
+        expect(unMountSpy).not.toHaveBeenCalled();
+        expect(unMountSpy2).not.toHaveBeenCalled();
 
         // This component is actually unmounted but fastUnmount skips unmount loop so unmounted remains false
         expect(dirtyReference.$UN).toEqual(true);
@@ -1720,23 +1704,20 @@ describe('Children - (JSX)', () => {
         }
       }
 
-      const unMountSpy = sinon.spy(Parent.prototype, 'componentWillUnmount');
-      const unMountSpy2 = sinon.spy(HasLife.prototype, 'componentWillUnmount');
-
-      const notCalled = sinon.assert.notCalled;
-      const calledOnce = sinon.assert.calledOnce;
+      const unMountSpy = spyOn(Parent.prototype, 'componentWillUnmount');
+      const unMountSpy2 = spyOn(HasLife.prototype, 'componentWillUnmount');
 
       render(<Parent />, container);
 
-      notCalled(unMountSpy);
-      notCalled(unMountSpy2);
+      expect(unMountSpy).not.toHaveBeenCalled();
+      expect(unMountSpy2).not.toHaveBeenCalled();
 
       expect(container.innerHTML).toEqual('<div><span>haslife</span><span>nolife</span></div>');
 
       render(null, container);
 
-      calledOnce(unMountSpy);
-      calledOnce(unMountSpy2);
+      expect(unMountSpy).toHaveBeenCalledTimes(1);
+      expect(unMountSpy2).toHaveBeenCalledTimes(1);
     });
   });
 

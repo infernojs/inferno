@@ -11,10 +11,11 @@ build
 coverage
 node_modules
 fixtures/browser/*.cmd
+fixtures/**/package-lock.json
 
 packages/*/dist
 packages/*/tmpDist
-package-lock.json
+packages/*/package-lock.json
 
 .rpt2_cache_development
 .rpt2_cache_production

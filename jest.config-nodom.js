@@ -18,10 +18,9 @@ module.exports = {
     "mobx": "<rootDir>/node_modules/mobx"
   },
   rootDir: __dirname,
-  setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
+  setupFiles: [],
   testMatch: [
-    "<rootDir>/packages/*/__tests__/**/*spec.@(js|ts)?(x)",
-    "<rootDir>/packages/*/__tests__/**/*spec.server.@(js|ts)?(x)"
+    "<rootDir>/packages/*/__tests__/**/*spec.server-nodom.@(js|ts)?(x)"
   ],
   testPathIgnorePatterns: [
     "<rootDir>/packages/inferno/__tests__/transition.spec.jsx",
@@ -30,7 +29,7 @@ module.exports = {
     "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
     "^.+\\.tsx?$": "<rootDir>/jest.ts.transform.js"
   },
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
   testRunner: "jest-jasmine2",
   reporters: [["jest-silent-reporter", { "useDots": true }]]
 };

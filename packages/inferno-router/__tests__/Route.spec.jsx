@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 import { MemoryRouter, Route, Router } from 'inferno-router';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from 'history';
 
 describe('A <Route>', () => {
   it('renders at the root', () => {
@@ -91,7 +91,8 @@ describe('A <Route>', () => {
 });
 
 describe('A <Route> with dynamic segments in the path', () => {
-  it('decodes them', () => {
+  // https://github.com/remix-run/history/commit/78f016f6e5b49e2a23ec41799faf160dd68d6b6b
+  it('does not decode them', () => {
     const node = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/a%20dynamic%20segment']}>
@@ -100,7 +101,7 @@ describe('A <Route> with dynamic segments in the path', () => {
       node
     );
 
-    expect(node.innerHTML).toContain('a dynamic segment');
+    expect(node.innerHTML).toContain('a%20dynamic%20segment');
   });
 });
 

@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { render } from 'inferno';
 import { innerHTML } from 'inferno-utils';
 
@@ -249,9 +248,9 @@ describe('HTML Form Elements', () => {
     });
 
     it('Should not trigger onClick twice when using synthetic onClick on radio', () => {
-      const spy1 = sinon.spy();
-      const spy2 = sinon.spy();
-      const spy3 = sinon.spy();
+      const spy1 = jasmine.createSpy('spy');
+      const spy2 = jasmine.createSpy('spy');
+      const spy3 = jasmine.createSpy('spy');
 
       render(
         <div>
@@ -270,9 +269,9 @@ describe('HTML Form Elements', () => {
       radiobutton.click();
       expect(radiobutton.checked).toBe(true);
 
-      expect(spy1.callCount).toBe(0);
-      expect(spy2.callCount).toBe(0);
-      expect(spy3.callCount).toBe(1);
+      expect(spy1.calls.count()).toBe(0);
+      expect(spy2.calls.count()).toBe(0);
+      expect(spy3.calls.count()).toBe(1);
 
       //
       // New Render
@@ -287,9 +286,9 @@ describe('HTML Form Elements', () => {
         container
       );
 
-      expect(spy1.callCount).toBe(0);
-      expect(spy2.callCount).toBe(0);
-      expect(spy3.callCount).toBe(1);
+      expect(spy1.calls.count()).toBe(0);
+      expect(spy2.calls.count()).toBe(0);
+      expect(spy3.calls.count()).toBe(1);
 
       //
       // New Render, new value
@@ -304,9 +303,9 @@ describe('HTML Form Elements', () => {
         container
       );
 
-      expect(spy1.callCount).toBe(0);
-      expect(spy2.callCount).toBe(0);
-      expect(spy3.callCount).toBe(1);
+      expect(spy1.calls.count()).toBe(0);
+      expect(spy2.calls.count()).toBe(0);
+      expect(spy3.calls.count()).toBe(1);
 
       render(
         <div>
@@ -317,17 +316,17 @@ describe('HTML Form Elements', () => {
         container
       );
 
-      expect(spy1.callCount).toBe(0);
-      expect(spy2.callCount).toBe(0);
-      expect(spy3.callCount).toBe(1);
+      expect(spy1.calls.count()).toBe(0);
+      expect(spy2.calls.count()).toBe(0);
+      expect(spy3.calls.count()).toBe(1);
 
       radiobutton = container.querySelector('#test');
 
       radiobutton.click();
 
-      expect(spy1.callCount).toBe(1);
-      expect(spy2.callCount).toBe(0);
-      expect(spy3.callCount).toBe(1);
+      expect(spy1.calls.count()).toBe(1);
+      expect(spy2.calls.count()).toBe(0);
+      expect(spy3.calls.count()).toBe(1);
 
       render(
         <div>

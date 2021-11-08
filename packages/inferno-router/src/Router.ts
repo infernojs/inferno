@@ -4,7 +4,7 @@ import { combineFrom } from 'inferno-shared';
 import type { History } from 'history';
 
 export interface IRouterProps {
-  history: History<any>;
+  history: History;
   children: InfernoNode;
 }
 

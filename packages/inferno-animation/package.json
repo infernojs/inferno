@@ -1,12 +1,17 @@
 {
   "name": "inferno-animation",
-  "version": "7.4.8",
+  "version": "8.0.0-alpha.2",
   "license": "MIT",
   "description": "Animation helpers inferno. This package can be used to reuse server side rendered html",
   "author": {
     "name": "Sebastian Ware",
     "email": "sebastian@urbantalk.se",
     "url": "https://github.com/jhsware"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infernojs/inferno.git",
+    "directory": "packages/inferno-animation"
   },
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
@@ -34,13 +39,13 @@
     "css"
   ],
   "dependencies": {
-    "inferno": "7.4.8"
+    "inferno": "8.0.0-alpha.2"
   },
   "devDependencies": {
-    "inferno-create-element": "7.4.8",
-    "inferno-utils": "7.4.8",
-    "inferno-shared": "7.4.8",
-    "inferno-vnode-flags": "7.4.8"
+    "inferno-create-element": "8.0.0-alpha.2",
+    "inferno-shared": "8.0.0-alpha.2",
+    "inferno-utils": "8.0.0-alpha.2",
+    "inferno-vnode-flags": "8.0.0-alpha.2"
   },
   "rollup": {
     "bundledDependencies": [
