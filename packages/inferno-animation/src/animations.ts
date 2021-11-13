@@ -14,7 +14,7 @@ import {
   clearTransform,
   forceReflow
 } from './utils';
-import { queueAnimation, AnimationPhase } from './animationCoordinator';
+import { addGlobalAnimationSource, consumeGlobalAnimationSource, queueAnimation, AnimationPhase, GlobalAnimationState } from './animationCoordinator';
 import { isNullOrUndef, isNull } from 'inferno-shared';
 
 // Show debug output and debugging markers during developmen of move animations
@@ -51,7 +51,8 @@ export function componentDidAppear(dom: HTMLElement, props) {
   // Moved measuring to pre_initialize. It causes a reflow for each component beacuse of the setDisplay of previous component.
   const dimensions = {};
   const display = setDisplay(dom, 'none');
-  queueAnimation((phase) => _didAppear(phase, dom, cls, dimensions, display));
+  const sourceState = props.globalAnimationKey === undefined ? null : consumeGlobalAnimationSource(props.globalAnimationKey);
+  queueAnimation((phase) => _didAppear(phase, dom, cls, dimensions, display, sourceState));
 }
 
 function _getDidAppearTransitionCallback(dom, cls) {
@@ -65,7 +66,7 @@ function _getDidAppearTransitionCallback(dom, cls) {
   };
 }
 
-function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass, dimensions, display: string) {
+function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass, dimensions, display: string, sourceState: GlobalAnimationState | null) {
   switch (phase) {
     case AnimationPhase.INITIALIZE:
       // Needs to be done in a single pass to avoid reflows
@@ -75,13 +76,26 @@ function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass
     case AnimationPhase.MEASURE:
       // In case of img element that hasn't been loaded, just trigger reflow
       if (dom.tagName !== 'IMG' || (dom as any).complete) {
-        dimensions = getDimensions(dom);
+        const tmp = getDimensions(dom);
+        dimensions.x = tmp.x;
+        dimensions.y = tmp.y;
+        dimensions.width = tmp.width;
+        dimensions.height = tmp.height;
       } else {
         forceReflow();
       }
       return;
     case AnimationPhase.SET_START_STATE:
       // 1. Set start of animation
+      if (!isNullOrUndef(sourceState) && dimensions.width !== 0 && dimensions.height !== 0) {
+        // const diffX = (sourceState.width - dimensions.width) / 2;
+        // const diffY = (sourceState.height - dimensions.height) / 2;
+        const dx = sourceState.x - dimensions.x;
+        const dy = sourceState.y - dimensions.y;
+        const scaleX = sourceState.width / dimensions.width;
+        const scaleY = sourceState.height / dimensions.height;
+        setTransform(dom, dx, dy, scaleX, scaleY);
+      }
       addClassName(dom, cls.start);
       return;
     case AnimationPhase.ACTIVATE_TRANSITIONS:
@@ -99,6 +113,9 @@ function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass
       return;
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 4. Activate target state (called async via requestAnimationFrame)
+      if (!isNullOrUndef(sourceState) && dimensions.width !== 0 && dimensions.height !== 0) {
+        clearTransform(dom);
+      }
       setDimensions(dom, dimensions.width, dimensions.height);
       removeClassName(dom, cls.start);
       addClassName(dom, cls.end);
@@ -111,6 +128,10 @@ export function componentWillDisappear(dom: HTMLElement, props, callback: Functi
   const cls = getAnimationClass(props.animation, '-leave');
   const dimensions = getDimensions(dom);
   queueAnimation((phase) => _willDisappear(phase, dom, callback, cls, dimensions));
+  if (props.globalAnimationKey !== undefined) {
+    addGlobalAnimationSource(props.globalAnimationKey, dimensions as GlobalAnimationState);
+    dom.style.setProperty('visibility', 'hidden');
+  }
 }
 
 function _willDisappear(phase: AnimationPhase, dom: HTMLElement, callback: Function, cls: AnimationClass, dimensions) {
@@ -212,7 +233,7 @@ function _willMove(phase: AnimationPhase, cls: AnimationClass, animState) {
         for (let i = 0; i < els.length; i++) {
           const tmpItem = els[i];
           if (tmpItem.moved) {
-            setTransform(tmpItem.node, tmpItem.dx, tmpItem.dy);
+            setTransform(tmpItem.node, tmpItem.dx, tmpItem.dy, 1, 1);
           }
           // TODO: Set dimensions
         }
@@ -251,7 +272,7 @@ function _willMove(phase: AnimationPhase, cls: AnimationClass, animState) {
         for (let i = 0; i < els.length; i++) {
           const tmpItem = els[i];
           if (tmpItem.moved) {
-            setTransform(tmpItem.node, 0, 0);
+            setTransform(tmpItem.node, 0, 0, 1, 1);
           }
         }
       }

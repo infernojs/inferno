@@ -88,7 +88,9 @@ export function getDimensions(node: HTMLElement) {
 
   return {
     height: tmp.height,
-    width: tmp.width
+    width: tmp.width,
+    x: tmp.x,
+    y: tmp.y
   };
 }
 
@@ -102,12 +104,19 @@ export function getGeometry(node: HTMLElement) {
   return { x, y, width, height };
 }
 
-export function setTransform(node: HTMLElement, x: number, y: number) {
-  node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+export function setTransform(node: HTMLElement, x: number, y: number, scaleX: number = 1, scaleY: number = 1) {
+  const doScale = scaleX !== 1 || scaleY !== 1;
+  if (doScale) {
+    node.style.transformOrigin = '0 0';
+    node.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scaleX + ', ' + scaleY + ')';
+  } else {
+    node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';  
+  }
 }
 
 export function clearTransform(node: HTMLElement) {
   node.style.transform = '';
+  node.style.transformOrigin = '';
 }
 
 export function setDimensions(node: HTMLElement, width: number, height: number) {
