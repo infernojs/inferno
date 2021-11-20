@@ -201,10 +201,10 @@ function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
     // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
     // due to loading delay
     rootNode.addEventListener('load', () => {
-      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
+      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), (maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100));
     });
   } else {
-    setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), Math.round(maxDuration * 1000) + 100);
+    setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), (maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100));
   }
 }
 
