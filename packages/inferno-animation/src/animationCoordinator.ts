@@ -22,7 +22,7 @@ export type GlobalAnimationState = {
   y: number;
   ticks: number;
 }
-let _globalAnimationSources: {[index: GlobalAnimationKey]: GlobalAnimationState} = {};
+const _globalAnimationSources: {[index: GlobalAnimationKey]: GlobalAnimationState} = {};
 let _globalAnimationGCTick:number | null = null;
 // TODO: Remove tempfix due to false tslint error I couldn't figure out how to disable (error TS6133)
 if (_globalAnimationGCTick === null) {
@@ -32,7 +32,7 @@ if (_globalAnimationGCTick === null) {
 export function _globalAnimationGC() {
   let entriesLeft = false;
 
-  for (let key in _globalAnimationSources) {
+  for (const key in _globalAnimationSources) {
     if (--_globalAnimationSources[key].ticks < 0) {
       delete _globalAnimationSources[key];
     } else  (
