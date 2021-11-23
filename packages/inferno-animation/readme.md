@@ -95,6 +95,11 @@ IMPORTANT! Always use the provided helper methods instead of implementing the ho
 might be optimisations and/or changes to how the animation hooks are implemented in future versions
 of Inferno that you want to benefit from.
 
+### Global animations
+Global animations allow you to animate a component between positions on two different "pages". Technincally this means they don't have the same parent element. When you mount one page imediately after unmounting the other page, inferno-animation will perform a FLIP-animation between the two positions. To match the elements you use the attribute `globalAnimationKey` which accept a string.
+
+Global animations are very simple to use, [check this example.](https://github.com/infernojs/inferno/blob/master/docs/animations-global-demo/app.js)
+
 ### Bootstrap style modal animation
 This is an example of how you could implement a Bootstrap style Modal animation using inferno-animation. These two animations are used both for the backdrop and the modal and the purpose is to support the CSS-rules without modification.
 

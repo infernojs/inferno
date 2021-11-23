@@ -1,0 +1,150 @@
+/* Using CSS-vars for transitions so you can experiment easily */
+:root {
+  --infernoAnimationEnter: all 0.3s ease-out;
+  --infernoAnimationLeave: all 0s;
+}
+
+/******************************/
+/* Animate avatar image <img> */
+/******************************/
+.AnimateLogo-enter-active {
+  /* Enter animation transitions */
+  transition: var(--infernoAnimationEnter);
+}
+
+/* Some general CSS for the example */
+
+button {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem auto 0;
+  display: block;
+  background: #35a748;
+  color: white;
+  border-style: none;
+  border-radius: 4px;
+  width: 10rem;
+} button:hover {
+  background: #3775bb;
+}
+
+body {
+  font-family: helvetica;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.Page {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.App {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+h1 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: rotate(-90deg);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ddd;
+  text-align: center;
+  margin: 0.5rem;
+  white-space: nowrap;
+  width: 2rem;
+  transform-origin: 50% 50%;
+}
+
+h1 small {
+  font-size: 0.5em;
+}
+
+
+h2 {
+  font-size: 1rem;
+  font-weight: 100;
+  color: #4A90E2;
+  text-align: center;
+}
+
+.Page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.Menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  height: 8rem;
+  flex-grow: 0;
+  flex-shrink: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.Menu .logo {
+  width: 8rem;
+  height: 8rem;
+  transform: translateZ(0);
+}
+.Menu .body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+.Menu .body h3 {
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: 2rem;
+  text-align: right;
+  width: 6em;
+}
+
+.content {
+  height: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.Hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Hero .logo {
+  width: 30rem;
+  height: 30rem;
+  transform: translateZ(0);
+}
+
+.payoff {
+  transform: translateZ(0);
+}
