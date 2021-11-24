@@ -16,12 +16,12 @@
     "@babel/core": "7.16.0",
     "@babel/helper-replace-supers": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
-    "@babel/plugin-proposal-decorators": "7.16.0",
+    "@babel/plugin-proposal-decorators": "7.16.4",
     "@babel/plugin-proposal-object-rest-spread": "7.16.0",
-    "@babel/preset-env": "7.16.0",
+    "@babel/preset-env": "7.16.4",
     "babel-loader": "^8.2.3",
     "jasmine-core": "^3.10.1",
-    "karma": "^6.3.7",
+    "karma": "^6.3.9",
     "karma-chrome-launcher": "^3.1.0",
     "karma-detect-browsers": "^2.3.3",
     "karma-firefox-launcher": "^2.1.2",
@@ -31,6 +31,6 @@
     "karma-webpack": "5.0.0",
     "ts-loader": "^9.2.6",
     "wd": "^1.14.0",
-    "webpack": "^5.61.0"
+    "webpack": "^5.64.3"
   }
 }
