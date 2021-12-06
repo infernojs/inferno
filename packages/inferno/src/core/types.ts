@@ -197,6 +197,7 @@ declare global {
     $HasVNodeChildren?: boolean;
     $HasNonKeyedChildren?: boolean;
     $HasKeyedChildren?: boolean;
+    $HasStaticChildren?: boolean;
     $ChildFlag?: number;
   }
 

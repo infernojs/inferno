@@ -241,7 +241,7 @@ export function patchElement(
   }
   if (nextFlags & VNodeFlags.ContentEditable) {
     patchContentEditableChildren(dom, nextChildren);
-  } else {
+  } else if (nextVNode.childFlags !== ChildFlags.HasStaticChildren) {
     patchChildren(
       lastVNode.childFlags,
       nextVNode.childFlags,

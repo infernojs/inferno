@@ -114,7 +114,7 @@ export function mountElement(
   } else if (childFlags !== ChildFlags.HasInvalidChildren) {
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
-    if (childFlags === ChildFlags.HasVNodeChildren) {
+    if (childFlags === ChildFlags.HasVNodeChildren || childFlags === ChildFlags.HasStaticChildren) {
       if ((children as VNode).flags & VNodeFlags.InUse) {
         vNode.children = children = directClone(children as VNode);
       }

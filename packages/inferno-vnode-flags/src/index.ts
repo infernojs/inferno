@@ -41,6 +41,7 @@ export const enum ChildFlags {
   HasNonKeyedChildren = 1 << 2,
   HasKeyedChildren = 1 << 3,
   HasTextChildren = 1 << 4,
+  HasStaticChildren = 1 << 5,
 
   MultipleChildren = HasNonKeyedChildren | HasKeyedChildren
 }
