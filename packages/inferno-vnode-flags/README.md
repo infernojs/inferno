@@ -22,7 +22,6 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.InputElement`
 - `VNodeFlags.TextareaElement`
 - `VNodeFlags.SelectElement`
-- `VNodeFlags.Void`
 - `VNodeFlags.Portal`
 - `VNodeFlags.ReCreate` (JSX **$ReCreate**) always re-creates the vNode
 - `VNodeFlags.ContentEditable`

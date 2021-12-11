@@ -74,8 +74,6 @@ export function patch(
     patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
   } else if (nextFlags & VNodeFlags.Text) {
     patchText(lastVNode, nextVNode);
-  } else if (nextFlags & VNodeFlags.Void) {
-    nextVNode.dom = lastVNode.dom;
   } else if (nextFlags & VNodeFlags.Fragment) {
     patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations);
   } else {

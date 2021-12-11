@@ -215,9 +215,6 @@ function hydrateVNode(
   if (flags & VNodeFlags.Text) {
     return hydrateText(vNode, parentDOM, currentDom);
   }
-  if (flags & VNodeFlags.Void) {
-    return (vNode.dom = currentDom);
-  }
   if (flags & VNodeFlags.Fragment) {
     return hydrateFragment(vNode, parentDOM, currentDom, context, isSVG, lifecycle, animations);
   }

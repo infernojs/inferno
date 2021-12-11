@@ -40,11 +40,6 @@ function isDetached(child) {
 
 function createReactDOMComponent(vNode, oldDevToolInstance?) {
   const flags = vNode.flags;
-
-  if ((flags & VNodeFlags.Void) > 0) {
-    return null;
-  }
-
   const devToolChildren = oldDevToolInstance ? oldDevToolInstance._renderedChildren : null;
   const isTextVNode = (flags & VNodeFlags.Text) > 0 || (vNode.childFlags & ChildFlags.HasTextChildren) !== 0;
   const childFlags = vNode.childFlags;

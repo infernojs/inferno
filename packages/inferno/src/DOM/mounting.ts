@@ -25,7 +25,7 @@ export function mount(
     mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
   } else if (flags & VNodeFlags.ComponentFunction) {
     mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
-  } else if (flags & VNodeFlags.Void || flags & VNodeFlags.Text) {
+  } else if (flags & VNodeFlags.Text) {
     mountText(vNode, parentDOM, nextNode);
   } else if (flags & VNodeFlags.Fragment) {
     mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle, animations);
