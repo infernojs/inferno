@@ -31,6 +31,6 @@
     "karma-webpack": "5.0.0",
     "ts-loader": "^9.2.6",
     "wd": "^1.14.0",
-    "webpack": "^5.64.3"
+    "webpack": "^5.65.0"
   }
 }
