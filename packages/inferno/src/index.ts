@@ -22,7 +22,7 @@ import { createRef, forwardRef, mountRef } from './core/refs';
 
 if (process.env.NODE_ENV !== 'production') {
   // Checks if Inferno is running in jest testing environment.
-  const testingEnv = (typeof(process) === 'object' && process.env && process.env.JEST_WORKER_ID !== undefined);
+  const testingEnv = typeof process === 'object' && process.env && process.env.JEST_WORKER_ID !== undefined;
 
   // This message informs developers that they are using development mode (can happen
   // in production because of bundling mistakes) and, therefore, Inferno is slower

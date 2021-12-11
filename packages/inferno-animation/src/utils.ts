@@ -110,7 +110,7 @@ export function setTransform(node: HTMLElement, x: number, y: number, scaleX: nu
     node.style.transformOrigin = '0 0';
     node.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scaleX + ', ' + scaleY + ')';
   } else {
-    node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';  
+    node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
   }
 }
 
@@ -201,10 +201,10 @@ function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
     // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
     // due to loading delay
     rootNode.addEventListener('load', () => {
-      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), (maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100));
+      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100);
     });
   } else {
-    setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), (maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100));
+    setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100);
   }
 }
 

@@ -13,7 +13,6 @@ export const enum AnimationPhase {
   length // This will equal length of actual phases since TS converts this to a zero based list of ints
 }
 
-
 type GlobalAnimationKey = string;
 export type GlobalAnimationState = {
   width: number;
@@ -21,9 +20,9 @@ export type GlobalAnimationState = {
   x: number;
   y: number;
   ticks: number;
-}
-const _globalAnimationSources: {[index: GlobalAnimationKey]: GlobalAnimationState} = {};
-let _globalAnimationGCTick:number | null = null;
+};
+const _globalAnimationSources: { [index: GlobalAnimationKey]: GlobalAnimationState } = {};
+let _globalAnimationGCTick: number | null = null;
 // TODO: Remove tempfix due to false tslint error I couldn't figure out how to disable (error TS6133)
 if (_globalAnimationGCTick === null) {
   _globalAnimationGCTick = null;
@@ -43,7 +42,7 @@ export function _globalAnimationGC() {
   _globalAnimationGCTick = entriesLeft ? requestAnimationFrame(_globalAnimationGC) : null;
 }
 
-export function addGlobalAnimationSource (key: GlobalAnimationKey, state:  GlobalAnimationState) {
+export function addGlobalAnimationSource(key: GlobalAnimationKey, state: GlobalAnimationState) {
   state.ticks = 5;
   _globalAnimationSources[key] = state;
 
@@ -55,7 +54,7 @@ export function addGlobalAnimationSource (key: GlobalAnimationKey, state:  Globa
 export function consumeGlobalAnimationSource(key: GlobalAnimationKey) {
   const tmp = _globalAnimationSources[key];
   if (tmp !== undefined) {
-    delete _globalAnimationSources[key]
+    delete _globalAnimationSources[key];
   }
   return tmp;
 }
