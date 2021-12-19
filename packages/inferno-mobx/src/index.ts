@@ -1,6 +1,7 @@
 import { errorsReporter, inject, Observer, observer, renderReporter, trackComponents, useStaticRendering } from './observer';
 import { Provider } from './Provider';
 import { EventEmitter } from './utils/EventEmitter';
+import { observerPatch } from './observerPatch';
 
 // THIS IS PORT OF AWESOME MOBX-REACT to INFERNO
 // LAST POINT OF PORT
@@ -8,4 +9,4 @@ import { EventEmitter } from './utils/EventEmitter';
 
 const onError = (fn) => errorsReporter.on(fn);
 
-export { errorsReporter, inject, observer, onError, EventEmitter, Observer, Provider, renderReporter, trackComponents, useStaticRendering };
+export { errorsReporter, inject, observer, onError, EventEmitter, Observer, observerPatch, Provider, renderReporter, trackComponents, useStaticRendering };
