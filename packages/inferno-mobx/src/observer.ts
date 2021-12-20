@@ -166,6 +166,7 @@ const reactiveMixin = {
       });
       (reaction as any).reactComponent = this;
       (reactiveRender as any).$mobx = reaction;
+      (reactiveRender as any).$base = this.render;
       this.render = reactiveRender;
       return reactiveRender();
     };
@@ -205,6 +206,7 @@ const reactiveMixin = {
 
     if (this.render.$mobx) {
       this.render.$mobx.dispose();
+      this.render = this.render.$base;
     }
 
     if (isDevtoolsEnabled) {
