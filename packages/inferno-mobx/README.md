@@ -25,8 +25,8 @@ npm install --save mobx
 
 Pass a class Component to `observerPatch` to have in automatically re-render if MobX observables read by `render` are modified.
 
-```typescript
-// MyComponent.ts (also works with plain JavaScript)
+```tsx
+// MyComponent.tsx (also works with plain JavaScript)
 import { Component } from 'inferno';
 import { observerPatch } from 'inferno-mobx';
 
@@ -79,7 +79,6 @@ observerPatch(MyComponentD);
 export class MyComponentE extends Component<{ countStore: CountStore }> {
     render({ countStore }: { countStore: CountStore }) {
         // But keep in mind that the whole component will re-render.
-        // 
         return (<div className="fancy">{
             MyComponentF({count: () => countStore.count})
         }</div>);
@@ -91,8 +90,8 @@ observerPatch(MyComponentE);
 // Only Components that depend on MobX observables need to be observers.
 export class MyComponentG extends Component<{ countStore: CountStore }> {
     render({ countStore }: { countStore: CountStore }) {
+        // MyComponentB is an observer and will re-render when countStore.count changes.
         return (<div className="fancy">
-            // MyComponentB is an observer and will re-render when countStore.count changes.
             <MyComponentB count={() => countStore.count} />
         </div>);
     }
@@ -137,8 +136,8 @@ observerPatch(MyComponentK);
 observerPatch(MyComponentK); // NEVER call more than once per class!
 ```
 
-```typescript
-// index.ts
+```tsx
+// index.tsx
 import {
     MyComponentA,
     MyComponentB,
@@ -150,7 +149,7 @@ import {
     MyComponentI,
     MyComponentJ,
     MyComponentK
-} from './MyComponent.ts';
+} from './MyComponent';
 import { render } from 'inferno';
 import { action, observable } from 'mobx';
 
@@ -159,21 +158,30 @@ const store = observable({ count: 0 });
 render(<div>
   <MyComponentA countStore={store} />
   <MyComponentB count={() => store.count} />
-  <MyComponentC count={store.count} /> // This component WILL NOT detect when count changes!
-  <MyComponentD countStore={store} /> // This component WILL NOT detect when count changes!
+  <MyComponentC count={store.count} /> {/* This component WILL NOT detect when count changes! */}
+  <MyComponentD countStore={store} /> {/* This component WILL NOT detect when count changes! */}
   <MyComponentE countStore={store} />
   <MyComponentG countStore={store} />
-  <MyComponentH count={() => store.count} /> // Not an observer so no updating when count changes.
-  <MyComponentI count={() => store.count} /> // Is an observer so it will update.
-  <MyComponentJ countStore={store} /> // Works... BUT! when it unmounts there will be an error!
-  <MyComponentK countStore={store} /> // Works... BUT! when it unmounts there will be an error!
+  <MyComponentH count={() => store.count} /> {/* Not an observer so no updating when count changes. */}
+  <MyComponentI count={() => store.count} /> {/* Is an observer so it will update. */}
+  <MyComponentJ countStore={store} /> {/* Works... BUT! when it unmounts there will be an error! */}
+  <MyComponentK countStore={store} /> {/* Works... BUT! when it unmounts there will be an error! */}
   <button type="button" onClick={action(() => {store.count += 1})}>Click Me</button>
 </div>, document.getElementById('components'));
 ```
 
-NOTE: `observerPatch` installs a `componentWillUnmount` hook to dispose of the MobX Reaction.
+NOTES:
+
+`observerPatch` installs a `componentWillUnmount` hook to dispose of the MobX Reaction.
 It will then call the `componentWillUnmount` from the class's prototype.
 If you dynamically add a `componentWillUnmount` to a class you pass to `observerPatch`, be sure it calls the hook installed by `observerPatch`.
+
+`observerPatch` also replaces the `render` method in the prototype.
+The `render` method gets replaced twice on a per instance basis during the life cycle of a Component.
+It is replaced the first time `render` is called with a version that is wrapped in a MobX reaction.
+Then it is restored to the class's original `render` method when `componentWillUnmount` is called.
+
+It is strongly recommended to avoid replacing the `render` method on classes `observerPatch` is applied to.
 
 ## Legacy Example
 
@@ -305,8 +313,8 @@ Outside of needing to switch functional Components to class Components, that is.
 The `observerPatch` function can be used with `Provider` and `inject` just like with `observer`.
 However, using `inject` as a decorator along side `observerPatch` is not supported.
 
-```typescript
-// MyInjected.ts
+```tsx
+// MyInjected.tsx
 import { Component } from 'inferno';
 import { observerPatch, inject } from 'inferno-mobx';
 
@@ -353,13 +361,13 @@ observerPatch(MyInjectedC); // WRONG! Should be: observerPatch(MyComponentC);
 //Having observerPatch before inject lets tools detect this issue.
 ```
 
-```typescript
-// index.ts
+```tsx
+// index.tsx
 import {
     MyInjectedA,
     MyInjectedB,
     MyInjectedC
-} from './MyInjected.ts';
+} from './MyInjected';
 import { render } from 'inferno';
 import { Provider } from 'inferno-mobx';
 import { action, observable } from 'mobx';
@@ -373,8 +381,8 @@ render(<div>
     <Provider countStore={store}>
         <MyInjectedA />
         <MyInjectedB />
-        <MyInjectedC /> // This one will not update as MyComponentC was not made into an observer.
-        <MyInjectedA countStore={store2} /> // Will not update as direct properties override injection
+        <MyInjectedC /> {/* This one will not update as MyComponentC was not made into an observer. */}
+        <MyInjectedA countStore={store2} /> {/* Will not update as direct properties override injection */}
     </Provider>
   <button type="button" onClick={action(() => {store.count += 1})}>Click Me</button>
 </div>, document.getElementById('root'));
