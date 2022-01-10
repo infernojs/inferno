@@ -535,6 +535,29 @@ describe('Mobx Observer', () => {
     expect(container.querySelector('span').textContent).toBe('1');
   });
 
+  it('observer should throw on new life cycle hooks', () => {
+    class A extends Component {
+      static getDerivedStateFromProps() {
+        return {};
+      }
+    }
+    expect(() => observer(A)).toThrow();
+    class B extends Component {
+      getSnapshotBeforeUpdate() {
+        return {};
+      }
+    }
+    expect(() => observer(B)).toThrow();
+    expect(() =>
+      observer({
+        render: () => undefined,
+        getSnapshotBeforeUpdate: () => {
+          return {};
+        }
+      })
+    ).toThrow();
+  });
+
   // TODO: Reaction Scheduler
   // it('parent / childs render in the right order', done => {
   //   // See: https://jsfiddle.net/gkaemmer/q1kv7hbL/13/

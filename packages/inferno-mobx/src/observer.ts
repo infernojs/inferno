@@ -301,6 +301,14 @@ export function observer(arg1, arg2?) {
   }
 
   const target = component.prototype || component;
+  if (process.env.NODE_ENV !== 'production') {
+    if (component.prototype && typeof component.getDerivedStateFromProps === 'function') {
+      throw new Error("inferno-mobx 'observer' is incompatible with the 'getDerivedStateFromProps' life cycle hook.");
+    }
+    if (typeof target.getSnapshotBeforeUpdate === 'function') {
+      throw new Error("inferno-mobx 'observer' is incompatible with the 'getSnapshotBeforeUpdate' life cycle hook.");
+    }
+  }
   mixinLifecycleEvents(target);
   component.isMobXReactObserver = true;
   return component;
