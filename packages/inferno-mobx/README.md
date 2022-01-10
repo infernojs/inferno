@@ -259,7 +259,7 @@ The differences to be aware of when switching from `observer` to `observerPatch`
 2. `observerPatch` returns `void` instead of returning the class it was applied to
 3. `observerPatch` will not have the observer call `this.componentWillReact()` if such a member exists
 4. `observerPatch` does not add a `shouldComponentUpdate` hook to classes that do not have one
-5. `observerPatch` will not catch exceptions thrown by `render` and forward them to `errorsReporter`
+5. `observerPatch` will not forward exceptions thrown by `render` to `errorsReporter`
 6. `observerPatch` ignores `useStaticRendering(true)`
 7. `observerPatch` will not emit events through `renderReporter` that list how long `render` took
 8. `observerPatch` does not make `this.props` nor `this.state` observable
@@ -275,12 +275,7 @@ For point 4, you can implement your own `shouldComponentUpdate` hook is you want
 The `shouldComponentUpdate` does not affect re-renders triggered by MobX obervables being modified.
 So it exists for when new properties are set or `this.setState` is used.
 
-Errors sent to `errorsReporter` as mentioned in point 5 could then be sent to a custom handler provided to `onError`.
-For exceptions occuring in your render method, catch them in the method and forward to your handler.
-This cuts out extra intermediate steps.
-Otherwise, they will go to the MobX global Reaction error handler set with `onReactionError`.
-Which is where they may have been going anyways.
-There was no unit test checking this behavior.
+For point 5, you can intercept the exceptions in your render method and send them to a handler if desired.
 
 For point 6, all your components other than those passed to `observer` already ignore it.
 If there is demand, generating warning messages might return `useStaticRendering(true)` is called.

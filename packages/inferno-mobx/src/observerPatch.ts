@@ -13,10 +13,19 @@ function makeObserverRender<R extends Render>(update: () => void, render: R, nam
   const track = reactor.track.bind(reactor);
   const observer = function (this, ...parameters: Parameters<typeof render>) {
     let rendered: RenderReturn;
+    let caught;
     track(() => {
-      rendered = render.apply(this, parameters);
+      try {
+        rendered = render.apply(this, parameters);
+      } catch(error) {
+        caught = error;
+      }
     });
-    return rendered;
+    if (caught) {
+      throw caught;
+    } else {
+      return rendered;
+    }
   } as ObserverRender<R>;
   observer.dispose = reactor.dispose.bind(reactor);
   return observer;
