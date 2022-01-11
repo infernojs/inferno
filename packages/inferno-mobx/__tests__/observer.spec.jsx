@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import * as mobx from 'mobx';
-import { inject, observer, Observer, trackComponents, useStaticRendering } from 'inferno-mobx';
+import { inject, observer, Observer, onError, trackComponents, useStaticRendering } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
 
 const store = mobx.observable({
@@ -556,6 +556,25 @@ describe('Mobx Observer', () => {
         }
       })
     ).toThrow();
+  });
+
+  it('observer should send exception to errorsReporter and re-thrown', () => {
+    const exception = new Error('dummy error');
+    let reported;
+    const off = onError((error) => {
+      reported = error;
+    });
+    class Faulty extends Component {
+      render() {
+        throw exception;
+      }
+    }
+    observer(Faulty);
+    expect(() => {
+      render(<Faulty />, container);
+    }).toThrow(exception);
+    expect(reported).toEqual(exception);
+    off();
   });
 
   // TODO: Reaction Scheduler

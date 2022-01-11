@@ -369,6 +369,19 @@ describe('Mobx Observer Patch', () => {
     done();
   });
 
+  it('observerPatch should keep MobX from eating exceptions', () => {
+    const exception = new Error('dummy error');
+    class Faulty extends Component {
+      render() {
+        throw exception;
+      }
+    }
+    observerPatch(Faulty);
+    expect(() => {
+      render(<Faulty />, container);
+    }).toThrow(exception);
+  });
+
   // it('it rerenders correctly if some props are non-observables - 1', done => {
   //   let renderCount = 0;
   //   let odata = observable({ x: 1 })
