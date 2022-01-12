@@ -12,6 +12,7 @@ export const enum VNodeFlags {
   InputElement = 1 << 6,
   TextareaElement = 1 << 7,
   SelectElement = 1 << 8,
+  IsStatic = 1 << 9,
   Portal = 1 << 10,
   ReCreate = 1 << 11,
   ContentEditable = 1 << 12,

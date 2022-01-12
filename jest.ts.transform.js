@@ -15,7 +15,7 @@ const transformer = babelJest.createTransformer({
     ]
   ],
   plugins: [
-    ["babel-plugin-inferno", {"imports": true}],
+    ["babel-plugin-inferno", {"imports": true, defineAllArguments: false, optimizeStaticVNodes: true}],
     ["@babel/plugin-proposal-class-properties", { "loose": true }]
   ]
 });

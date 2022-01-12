@@ -47,6 +47,10 @@ export function insertOrAppend(parentDOM: Element, newNode, nextNode) {
   }
 }
 
+export function documentCloneDom(dom: Element): Element {
+  return dom.cloneNode(true) as Element;
+}
+
 export function documentCreateElement(tag, isSVG: boolean): Element {
   if (isSVG) {
     return document.createElementNS('http://www.w3.org/2000/svg', tag);

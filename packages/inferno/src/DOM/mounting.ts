@@ -2,7 +2,16 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
-import { AnimationQueues, documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, safeCall1, setTextContent } from './utils/common';
+import {
+  AnimationQueues,
+  documentCloneDom,
+  documentCreateElement,
+  EMPTY_OBJ,
+  findDOMfromVNode,
+  insertOrAppend,
+  safeCall1,
+  setTextContent
+} from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, renderFunctionalComponent } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
@@ -19,7 +28,9 @@ export function mount(
 ): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
-  if (flags & VNodeFlags.Element) {
+  if ((flags & VNodeFlags.IsStatic) > 0 && vNode.template && vNode.template.dom) {
+    vNode.dom = documentCloneDom(vNode.template.dom)
+  } if (flags & VNodeFlags.Element) {
     mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
   } else if (flags & VNodeFlags.ComponentClass) {
     mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
@@ -42,6 +53,9 @@ export function mount(
     } else {
       throwError(`mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
     }
+  }
+  if ((flags & VNodeFlags.IsStatic) > 0 && !vNode.template) {
+    vNode.template = vNode;
   }
 }
 

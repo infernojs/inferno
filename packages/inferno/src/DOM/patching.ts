@@ -49,6 +49,10 @@ export function patch(
 ) {
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
+  if ((nextFlags & VNodeFlags.IsStatic) > 0 && nextVNode.template === lastVNode.template) {
+    return;
+  }
+
   if (process.env.NODE_ENV !== 'production') {
     if (isFunction(options.componentComparator) && lastVNode.flags & nextFlags & VNodeFlags.ComponentClass) {
       if ((options.componentComparator as Function)(lastVNode, nextVNode) === false) {

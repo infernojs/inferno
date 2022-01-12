@@ -6,7 +6,7 @@ import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
 
 const keyPrefix = '$';
 
-function V(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type) {
+function V(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type, template: VNode | null) {
   if (process.env.NODE_ENV !== 'production') {
     this.isValidated = false;
   }
@@ -19,6 +19,7 @@ function V(childFlags: ChildFlags, children, className: string | null | undefine
   this.props = props === void 0 ? null : props;
   this.ref = ref === void 0 ? null : ref;
   this.type = type;
+  this.template = template;
 }
 
 export function createVNode<P>(
@@ -37,7 +38,7 @@ export function createVNode<P>(
     }
   }
   const childFlag: ChildFlags = childFlags === void 0 ? ChildFlags.HasInvalidChildren : (childFlags as ChildFlags);
-  const vNode = new V(childFlag, children, className, flags, key, props, ref, type) as VNode;
+  const vNode = new V(childFlag, children, className, flags, key, props, ref, type, null) as VNode;
 
   if (options.createVNode) {
     options.createVNode(vNode);
@@ -126,7 +127,8 @@ export function createComponentVNode<P>(
     key,
     mergeDefaultProps(flags, type, props),
     mergeDefaultHooks(flags, type, ref),
-    type
+    type,
+    null
   ) as VNode;
 
   if (options.createVNode) {
@@ -143,6 +145,7 @@ export function createTextVNode(text?: string | boolean | null | number, key?: s
     null,
     VNodeFlags.Text,
     key,
+    null,
     null,
     null,
     null
@@ -241,7 +244,8 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.key,
       props,
       vNodeToClone.ref,
-      vNodeToClone.type
+      vNodeToClone.type,
+      (flags & VNodeFlags.IsStatic) > 0 ? vNodeToClone : null
     ) as VNode;
   }
 
