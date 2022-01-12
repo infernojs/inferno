@@ -385,3 +385,51 @@ render(<div>
 
 IMPORTANT: The values injected are the ones available to `Provider` when it is first mounted.
 So `Provider` and `inject` are only useful for properties that will NEVER change.
+
+## Server Side Rendering and Hydration
+
+When rendering server side, components only need to be rendered once and does not update.
+This means you do not need your components to act as observers when running on the server.
+
+Furthermore, the functions provided by inferno-server initialize components but does not call their unmount hooks.
+Which for observers means their internal MobX reactions are not disposed.
+
+So for your server code components should not act as observers.
+
+The best way to achieve this is to have calls to `observer` and `observerPatch` be conditional and not called server side.
+
+```tsx
+// MyComponent.tsx
+import { Component } from 'inferno';
+import { observerPatch } from 'inferno-mobx';
+
+interface CountStore {
+    readonly count: number
+}
+
+export class MyComponent extends Component<{ countStore: CountStore }> {
+    render({ countStore }: { countStore: CountStore }) {
+        return (<p>Current Count: {countStore.count.toString()}</p>);
+    }
+}
+
+// You do not have to use an environment variable nor is the specific one used important.
+// The idea would be to replace 'process.env.SERVER_SIDE' with a literal true or false.
+// This can be done when transpiling with Babel or many bundling tools have plugins that can do so.
+// Then a good minifier such a terser can elimitate the if statement for production.
+if (process.env.SERVER_SIDE !== true) {
+    observerPatch(MyComponent); // The same goes can be done for 'observer' calls.
+}
+```
+
+Then you can use `renderToString` and `hydrate` as you would with any other component.
+
+If you use `observer` instead of `observerPatch` you can alternatively call `useStaticRendering(true)` in your server code.
+The `useStaticRendering` function is exported by inferno-mobx and only needs to be called once before any rendering occurs.
+When called with `true`, it will make the components `observer` skip the code that turns them into observers.
+However, simply not calling `observer` server side will yield better performance.
+
+If you use `inject` to supply properties in you render code, you still need to call it on the server side.
+
+When a custom function to get stores is passed to `inject`, it internally calls `observer` on the created class.
+As such if you are using a custom function to get stores for `inject` you need to call `useStaticRendering(true)` in your server side code.
