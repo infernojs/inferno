@@ -99,5 +99,5 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
 
 export function renderFunctionalComponent(vNode: VNode, context) {
   const props = vNode.props || EMPTY_OBJ;
-  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context);
+  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render.call(vNode, props, vNode.ref, context) : vNode.type(props, context);
 }
