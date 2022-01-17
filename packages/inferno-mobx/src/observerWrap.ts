@@ -5,35 +5,30 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 
 type Render = (properties?: any, context?: Record<string, unknown>) => InfernoNode | undefined | void;
 
-function callDispose(props) {
-  const dispose = props.$mobxDispose;
-  if (dispose) {
-    dispose();
-  }
+function callDispose({ dispose }: { readonly dispose: () => void }): void {
+  dispose();
 }
 
-function innerVNode(type: Render, properties: Record<string, unknown>, dispose: () => void) {
-  const props = Object.defineProperty({}, '$mobxDispose', {
-    value: dispose
-  });
-  for (const key in properties) {
-    if (process.env.NODE_ENV !== 'production' && key === '$mobxDispose') {
-      throwError("Properties with the key '$mobxDispose' was passed to a component observerWrap was applied to.");
-    }
-    props[key] = properties[key];
-  }
+interface InnerProperties {
+  readonly args: unknown[]
+  readonly dispose: () => void
+  readonly self: VNode
+  readonly track: (f: () => void) => void
+}
+
+function innerVNode<T>(type: (p: InnerProperties) => T, properties: InnerProperties): VNode {
   const ref = {
     onComponentDidUpdate: callDispose,
-    onComponentWillUnmount: dispose
+    onComponentWillUnmount: properties.dispose
   };
   if (process.env.NODE_ENV !== 'production') {
-    Object.preventExtensions(props);
+    Object.freeze(properties);
     Object.freeze(ref);
   }
-  return createComponentVNode(VNodeFlags.ComponentFunction, type, props, undefined, ref);
+  return createComponentVNode(VNodeFlags.ComponentFunction, type, properties, undefined, ref);
 }
 
-function makeProxy(target: VNode) {
+function makeProxy(target: VNode): { $V: InfernoNode } {
   return {
     get $V() {
       return target.children
@@ -58,7 +53,22 @@ export function observerWrap<T extends Render>(base: T): typeof base {
       warning("'observerWrap' was used on a component that already has 'observerWrap' applied. Please only apply once");
     }
   }
-  function wrapper(this: VNode, ...rest): ReturnType<typeof base> {
+  function tracked({ args, self, track }: InnerProperties): ReturnType<typeof base> {
+    let result;
+    let caught;
+    track(() => {
+      try {
+        result = base.apply(self, args);
+      } catch(error) {
+        caught = error;
+      }
+    });
+    if (caught) {
+      throw caught;
+    }
+    return result;
+  }
+  function wrapper(this: VNode, ...rest): VNode {
     const props = rest[0];
     let onComponentDidUpdate;
     let onComponentWillUpdate;
@@ -87,23 +97,14 @@ export function observerWrap<T extends Render>(base: T): typeof base {
         }
       }
     });
-    const inner = innerVNode(() => {
-      let result;
-      let caught;
-      reaction.track(() => {
-        try {
-          result = base.apply(this, rest);
-        } catch(error) {
-          caught = error;
-        }
-      });
-      if (caught) {
-        throw caught;
-      }
-      return result
-    }, props, reaction.dispose.bind(reaction));
+    const inner = innerVNode(tracked, {
+      args: rest,
+      dispose: reaction.dispose.bind(reaction),
+      self: this,
+      track: reaction.track.bind(reaction)
+    });
     proxy = makeProxy(inner);
-    return inner as ReturnType<typeof base>;
+    return inner;
   }
   wrapper.defaultProps = (base as any).defaultProps;
   wrapper.defaultHooks = (base as any).defaultHooks;
