@@ -91,7 +91,7 @@ export function observerWrap<T extends Render>(base: T): typeof base {
         next = normalizeRoot(base.apply(this, rest));
       });
       if (next) {
-        render(next, proxy as any);
+        render(next, proxy as any); // indirectly call patch as inferno does not export patch
         if (onComponentDidUpdate) {
           onComponentDidUpdate();
         }
