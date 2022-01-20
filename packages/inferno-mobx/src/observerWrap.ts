@@ -10,8 +10,9 @@ function callDispose({ dispose }: { readonly dispose: () => void }): void {
 }
 
 interface InnerProperties {
-  readonly args: unknown[]
+  readonly context: unknown
   readonly dispose: () => void
+  readonly props: unknown
   readonly self: VNode
   readonly track: (f: () => void) => void
 }
@@ -53,12 +54,12 @@ export function observerWrap<T extends Render>(base: T): typeof base {
       warning("'observerWrap' was used on a component that already has 'observerWrap' applied. Please only apply once");
     }
   }
-  function tracked({ args, self, track }: InnerProperties): ReturnType<typeof base> {
+  function tracked({ context, props, self, track }: InnerProperties): ReturnType<typeof base> {
     let result;
     let caught;
     track(() => {
       try {
-        result = base.apply(self, args);
+        result = base.call(self, props, context);
       } catch(error) {
         caught = error;
       }
@@ -68,14 +69,15 @@ export function observerWrap<T extends Render>(base: T): typeof base {
     }
     return result;
   }
-  function wrapper(this: VNode, ...rest): VNode {
-    const props = rest[0];
+  function wrapper(this: VNode, props, context): VNode {
     let onComponentDidUpdate;
     let onComponentWillUpdate;
     if (this.ref) {
       const ref = this.ref;
       if (ref.onComponentDidUpdate) {
         onComponentDidUpdate = ref.onComponentDidUpdate.bind(ref, props, props);
+      } else {
+        onComponentDidUpdate = null;
       }
       if (ref.onComponentWillUpdate) {
         onComponentWillUpdate = ref.onComponentWillUpdate.bind(ref, props, props);
@@ -88,18 +90,17 @@ export function observerWrap<T extends Render>(base: T): typeof base {
         onComponentWillUpdate();
       }
       reaction.track(() => {
-        next = normalizeRoot(base.apply(this, rest));
+        next = normalizeRoot(base.call(this, props, context));
       });
       if (next) {
-        render(next, proxy as any); // indirectly call patch as inferno does not export patch
-        if (onComponentDidUpdate) {
-          onComponentDidUpdate();
-        }
+        // indirectly call patch as inferno does not export patch
+        render(next, proxy as any, onComponentDidUpdate, context);
       }
     });
     const inner = innerVNode(tracked, {
-      args: rest,
+      context,
       dispose: reaction.dispose.bind(reaction),
+      props,
       self: this,
       track: reaction.track.bind(reaction)
     });

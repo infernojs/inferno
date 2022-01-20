@@ -36,20 +36,31 @@ describe('Stateless components observerWrap', () => {
     done();
   });
 
-  it('stateless component with context support', (done) => {
-    const StateLessCompWithContext = (props, context) => createElement('div', {}, 'context: ' + context.testContext);
+  it('stateless component with context support', () => {
+    const InnerComp = (_props, context) => createElement('p', {}, 'inner: ' + context.testContext);
+    const StateLessCompWithContext = ({ store: { value } }, context) => {
+      return createElement('div', {}, [
+        createElement('p', {}, 'value: ' + value + ', '),
+        createElement('p', {}, 'outer: ' + context.testContext + ', '),
+        createElement(InnerComp, {})
+      ]);
+    }
     const StateLessCompWithContextObserver = observerWrap(StateLessCompWithContext);
+    const store = observable({
+      value: 0
+    });
     class ContextProvider extends Component {
       getChildContext() {
-        return {testContext: 'hello world'};
+        return {testContext: 'hello'};
       }
       render() {
-        return <StateLessCompWithContextObserver />;
+        return <StateLessCompWithContextObserver store={store} />;
       }
     }
     render(<ContextProvider />, container);
-    expect(container.textContent.replace(/\n/, '')).toBe('context: hello world');
-    done();
+    expect(container.textContent.replace(/\n/, '')).toBe('value: 0, outer: hello, inner: hello');
+    store.value = 1;
+    expect(container.textContent.replace(/\n/, '')).toBe('value: 1, outer: hello, inner: hello');
   });
 
   it('nestedRendering', () => {
@@ -65,6 +76,7 @@ describe('Stateless components observerWrap', () => {
     let todoItemRenderings = 0;
     let todoItemUnmounts = 0;
     let todoItemUpdates = 0;
+    let todoItemWillUpdates = 0;
     const TodoItemBase = ({ todo }) => {
       todoItemRenderings++;
       return <li>|{todo.title}</li>;
@@ -78,6 +90,9 @@ describe('Stateless components observerWrap', () => {
       },
       onComponentWillUnmount: () => {
         todoItemUnmounts++;
+      },
+      onComponentWillUpdate: () => {
+        todoItemWillUpdates++;
       }
     };
     const TodoItem = observerWrap(TodoItemBase);
@@ -163,6 +178,7 @@ describe('Stateless components observerWrap', () => {
     render(null, container);
     expect(todoItemUnmounts).toBe(2);
     expect(todoItemUpdates).toBe(2);
+    expect(todoItemWillUpdates).toBe(2);
     expect(getDNode(store, 'todos').observers.length).toBe(0);
     expect(getDNode(store.todos[0], 'title').observers.length).toBe(0);
   });
@@ -180,6 +196,7 @@ describe('Stateless components observerWrap', () => {
     let todoItemRenderings = 0;
     let todoItemUnmounts = 0;
     let todoItemUpdates = 0;
+    let todoItemWillUpdates = 0;
     const TodoItemBase = ({ todo }) => {
       todoItemRenderings++;
       return <li>|{todo.title}</li>;
@@ -190,6 +207,9 @@ describe('Stateless components observerWrap', () => {
       },
       onComponentWillUnmount: () => {
         todoItemUnmounts++;
+      },
+      onComponentWillUpdate: () => {
+        todoItemWillUpdates++;
       }
     };
     const TodoItem = observerWrap(TodoItemBase);
@@ -274,6 +294,7 @@ describe('Stateless components observerWrap', () => {
     render(null, container);
     expect(todoItemUnmounts).toBe(2);
     expect(todoItemUpdates).toBe(4);
+    expect(todoItemWillUpdates).toBe(4);
     expect(getDNode(store, 'todos').observers.length).toBe(0);
     expect(getDNode(store.todos[0], 'title').observers.length).toBe(0);
   });
