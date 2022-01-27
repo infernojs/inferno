@@ -40,6 +40,27 @@ function makeProxy(target: VNode): { $V: InfernoNode } {
   };
 }
 
+type UpdateHook = (this: RefType, prev: unknown, next: unknown) => void;
+
+interface RefType {
+  readonly onComponentDidUpdate?: UpdateHook
+  readonly onComponentWillUpdate?: UpdateHook
+}
+
+function getUpdateHooks(ref: RefType | null, props: unknown): (null | (() => void))[] {
+  let onComponentDidUpdate = null;
+  let onComponentWillUpdate = null;
+  if (ref) {
+    if (ref.onComponentDidUpdate) {
+      onComponentDidUpdate = ref.onComponentDidUpdate.bind(ref, props, props);
+    }
+    if (ref.onComponentWillUpdate) {
+      onComponentWillUpdate = ref.onComponentWillUpdate.bind(ref, props, props);
+    }
+  }
+  return [onComponentDidUpdate, onComponentWillUpdate];
+}
+
 export function observerWrap<T extends Render>(base: T): typeof base {
   if (process.env.NODE_ENV !== 'production') {
     if (typeof base !== 'function') {
@@ -70,19 +91,7 @@ export function observerWrap<T extends Render>(base: T): typeof base {
     return result;
   }
   function wrapper(this: VNode, props, context): VNode {
-    let onComponentDidUpdate;
-    let onComponentWillUpdate;
-    if (this.ref) {
-      const ref = this.ref;
-      if (ref.onComponentDidUpdate) {
-        onComponentDidUpdate = ref.onComponentDidUpdate.bind(ref, props, props);
-      } else {
-        onComponentDidUpdate = null;
-      }
-      if (ref.onComponentWillUpdate) {
-        onComponentWillUpdate = ref.onComponentWillUpdate.bind(ref, props, props);
-      }
-    }
+    const [onComponentDidUpdate, onComponentWillUpdate] = getUpdateHooks(this.ref, props);
     let proxy;
     const reaction = new Reaction(base.name, () => {
       let next;
