@@ -21,7 +21,7 @@
     "@babel/preset-env": "7.16.11",
     "babel-loader": "^8.2.3",
     "jasmine-core": "^4.0.0",
-    "karma": "^6.3.13",
+    "karma": "^6.3.15",
     "karma-chrome-launcher": "^3.1.0",
     "karma-detect-browsers": "^2.3.3",
     "karma-firefox-launcher": "^2.1.2",
