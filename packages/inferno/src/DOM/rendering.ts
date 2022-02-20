@@ -1,4 +1,4 @@
-import type { InfernoNode, VNode } from '../core/types';
+import type { VNode } from '../core/types';
 import { isFunction, isInvalid, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
@@ -6,6 +6,7 @@ import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
 import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, options, renderCheck } from './utils/common';
+import { Inferno } from '../core/types';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -32,7 +33,7 @@ if (hasDocumentAvailable) {
 }
 
 export function __render(
-  input: VNode | null | InfernoNode | undefined,
+  input: VNode | null | Inferno.InfernoNode | undefined,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback: Function | null,
   context: any
@@ -86,7 +87,7 @@ export function __render(
 }
 
 export function render(
-  input: VNode | null | InfernoNode | undefined,
+  input: VNode | null | Inferno.InfernoNode | undefined,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback: Function | null = null,
   context: any = EMPTY_OBJ

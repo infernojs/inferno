@@ -1,8 +1,9 @@
-import type { ForwardRef, IComponent, InfernoNode, Props, Ref, Refs, VNode } from './types';
+import type { ForwardRef, Ref, Refs, VNode, Inferno } from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
+import { Component } from 'inferno';
 
 const keyPrefix = '$';
 
@@ -25,9 +26,9 @@ export function createVNode<P>(
   flags: VNodeFlags,
   type: string,
   className?: string | null,
-  children?: InfernoNode,
+  children?: Inferno.InfernoNode,
   childFlags?: ChildFlags,
-  props?: (Props<P> & P) | null,
+  props?: Readonly<P> | null,
   key?: string | number | null,
   ref?: Ref | Refs<P> | null
 ): VNode {
@@ -105,8 +106,8 @@ function resolveComponentFlags(flags, type) {
 
 export function createComponentVNode<P>(
   flags: VNodeFlags,
-  type: Function | IComponent<any, any> | ForwardRef,
-  props?: (Props<P> & P) | null,
+  type: Function | typeof Component | ForwardRef<P, any>,
+  props?: (Readonly<P> & P) | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null
 ) {
@@ -310,6 +311,7 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
       return VNodeFlags.SelectElement;
     case 'textarea':
       return VNodeFlags.TextareaElement;
+    // @ts-ignore
     case Fragment:
       return VNodeFlags.Fragment;
     default:

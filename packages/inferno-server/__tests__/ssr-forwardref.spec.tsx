@@ -42,7 +42,7 @@ describe('SSR -> Hydrate - Forward Ref', () => {
 
       expect(FancyButton.render).toBeDefined();
 
-      class Hello extends Component {
+      class Hello extends Component<any, any> {
         private readonly btn: RefObject<any>;
 
         constructor(props) {

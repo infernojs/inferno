@@ -2,15 +2,13 @@ import {
   createComponentVNode,
   createFragment,
   createVNode,
-  getFlagsForElementVnode,
-  IComponentConstructor,
-  Key,
-  Props,
-  StatelessComponent,
+  getFlagsForElementVnode, IComponentConstructor, Inferno,
+  Key, Props,
   VNode
-} from 'inferno';
+} from "inferno";
 import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import StatelessComponent = Inferno.StatelessComponent;
 
 const componentHooks = {
   onComponentDidAppear: 1,
@@ -30,8 +28,8 @@ const componentHooks = {
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual node
  */
-export function createElement<T>(type: string | IComponentConstructor<T> | StatelessComponent<T>, props?: (T & Props<T>) | null, ..._children: any[]): VNode;
-export function createElement<T>(type: string | IComponentConstructor<T> | StatelessComponent<T>, props?: (T & Props<T>) | null, _children?: any): VNode {
+export function createElement<P>(type: string | IComponentConstructor<P> | StatelessComponent<P>, props?: (P & Props<P>) | null, ..._children: any[]): VNode;
+export function createElement<P>(type: string | IComponentConstructor<P> | StatelessComponent<P>, props?: (P & Props<P>) | null, _children?: any): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (isInvalid(type)) {
       throw new Error(
@@ -83,13 +81,13 @@ export function createElement<T>(type: string | IComponentConstructor<T> | State
     flags = VNodeFlags.ComponentUnknown;
     if (!isUndefined(children)) {
       if (!props) {
-        props = {} as T;
+        props = {} as P;
       }
       props.children = children;
     }
 
     if (!isNullOrUndef(props)) {
-      newProps = {} as T & Props<T>;
+      newProps = {} as P & Props<P>;
 
       for (const prop in props) {
         if (prop === 'key') {

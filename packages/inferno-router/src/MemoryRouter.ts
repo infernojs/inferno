@@ -15,7 +15,7 @@ export interface IMemoryRouterProps {
 export class MemoryRouter extends Component<IMemoryRouterProps, any> {
   public history;
 
-  constructor(props?: any, context?: any) {
+  constructor(props?: IMemoryRouterProps, context?: any) {
     super(props, context);
     this.history = createMemoryHistory(props);
   }
