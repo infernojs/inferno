@@ -383,6 +383,84 @@ describe('Stateless components observerWrap', () => {
     expect(container.querySelector('div').textContent).toBe('soup');
   });
 
+  it('Callbacks are bound on render', function () {
+    const data = observable({
+      name: 'tea'
+    });
+
+    let a = 0;
+    let x = 0;
+    let y = 0;
+    let z = 0;
+
+    const ViewFn = ({ item }) => {
+      return (
+        <span>
+          {item.name}
+        </span>
+      );
+    };
+
+    const View = observerWrap(ViewFn);
+
+    const check = ({item: prev}, {item: next}) => prev !== next;
+
+    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : x++} />,
+      container);
+
+    expect(a).toBe(0);
+    expect(x).toBe(0);
+
+    runInAction(() => {
+      data.name = 'coffee';
+    });
+
+    expect(x).toBe(1);
+
+    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : y++} />,
+      container);
+
+    expect(a).toBe(1);
+    expect(x).toBe(1);
+    expect(y).toBe(0);
+
+    runInAction(() => {
+      data.name = 'soda';
+    });
+
+    expect(a).toBe(1);
+    expect(x).toBe(1);
+    expect(y).toBe(1);
+
+    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : z++} onComponentShouldUpdate={check} />,
+      container);
+
+    expect(a).toBe(1);
+    expect(z).toBe(0);
+    expect(y).toBe(1);
+
+    runInAction(() => {
+      data.name = 'water';
+    });
+
+    expect(y).toBe(2);
+
+    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : x++} />,
+      container);
+
+    expect(a).toBe(2);
+    expect(x).toBe(1);
+    expect(y).toBe(2);
+  
+    runInAction(() => {
+      data.name = 'juice';
+    });
+  
+    expect(a).toBe(2);
+    expect(y).toBe(2);
+    expect(x).toBe(2);
+  });
+
   it('component should not be inject', () => {
     const Foo = ({ foo }) => {
       return (

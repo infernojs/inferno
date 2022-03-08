@@ -319,6 +319,14 @@ This is because the re-rendering of the observer is more expensive than the base
 That does not mean you always want `onComponentShouldUpdate` for observers and never to base components.
 But it can be worth having on observers even if it is not for the base.
 
+Note:
+The MobX Reaction will call `onComponentWillUpdate` and `onComponentDidUpdate` when re-rendering, if present.
+When called by the Reaction the 'previous' and 'next' parameters will be passed the same object.
+
+*Warning*:
+The `onComponentWillUpdate` and `onComponentDidUpdate` are bound when the component is rendered by Inferno.
+The `onComponentShouldUpdate` can prevent the binding from being updated if new callbacks are assigned.
+
 To have a default hook (or property) on just the observer, you need to create a new object that is a copy of the base version.
 And then add the new hook or property.
 
