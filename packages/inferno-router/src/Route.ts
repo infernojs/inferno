@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, IComponentConstructor, InfernoNode, SFC } from 'inferno';
+import { Component, createComponentVNode, IComponentConstructor, Inferno } from "inferno";
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
@@ -25,22 +25,26 @@ export interface IRouteProps {
   exact?: boolean;
   strict?: boolean;
   sensitive?: boolean;
-  component?: IComponentConstructor<any> | SFC<any>;
-  render?: (props: RouteComponentProps<any>, context: any) => InfernoNode;
+  component?: IComponentConstructor<any> | ((props: any, context: any) => Inferno.InfernoNode);
+  render?: (props: RouteComponentProps<any>, context: any) => Inferno.InfernoNode;
   location?: Location;
-  children?: ((props: RouteComponentProps<any>) => InfernoNode) | InfernoNode;
+  children?: ((props: RouteComponentProps<any>) => Inferno.InfernoNode) | Inferno.InfernoNode;
 }
 
 /**
  * The public API for matching a single path and rendering.
  */
-class Route extends Component<IRouteProps, any> {
+type RouteState = {
+  match: boolean
+}
+
+class Route extends Component<IRouteProps, RouteState> {
   public getChildContext() {
     const childContext: any = combineFrom(this.context.router, null);
 
     childContext.route = {
       location: this.props.location || this.context.router.route.location,
-      match: this.state.match
+      match: this.state!.match
     };
 
     return {
@@ -90,7 +94,7 @@ class Route extends Component<IRouteProps, any> {
   }
 
   public render() {
-    const { match } = this.state;
+    const { match } = this.state!;
     const { children, component, render } = this.props;
     const { history, route, staticContext } = this.context.router;
     const location = this.props.location || route.location;
@@ -106,6 +110,7 @@ class Route extends Component<IRouteProps, any> {
     }
 
     if (render) {
+      // @ts-ignore
       return match ? render(props, this.context) : null;
     }
 

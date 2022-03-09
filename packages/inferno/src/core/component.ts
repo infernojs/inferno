@@ -1,7 +1,8 @@
-import type { IComponent, InfernoNode, StatelessComponent } from './types';
+import type { Inferno } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
+import { IComponent } from './types';
 
 const QUEUE: Component<any, any>[] = [];
 
@@ -120,15 +121,14 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
     component.$PS = null;
   }
 }
-export type ComponentType<P = {}> = Component<P> | StatelessComponent<P>;
+export type ComponentType<P = {}> = Component<P> | Inferno.StatelessComponent<P>;
 
 export class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public
-  public state: S | null = null;
-  public props: { children?: InfernoNode } & P;
+  public state: Readonly<S | null> = null;
+  public props: Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>;
   public context: any;
   public displayName?: string;
-  public refs?: any;
 
   // Internal properties
   public $BR: boolean = false; // BLOCK RENDER
@@ -179,25 +179,25 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public componentWillMount?(): void;
 
-  public componentWillReceiveProps?(nextProps: { children?: InfernoNode } & P, nextContext: any): void;
+  public componentWillReceiveProps?(nextProps: { children?: Inferno.InfernoNode } & P, nextContext: any): void;
 
-  public shouldComponentUpdate?(nextProps: { children?: InfernoNode } & P, nextState: S, context: any): boolean;
+  public shouldComponentUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: S, context: any): boolean;
 
-  public componentWillUpdate?(nextProps: { children?: InfernoNode } & P, nextState: S, context: any): void;
+  public componentWillUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: S, context: any): void;
 
-  public componentDidUpdate?(prevProps: { children?: InfernoNode } & P, prevState: S, snapshot: any): void;
+  public componentDidUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: S, snapshot: any): void;
 
   public componentWillUnmount?(): void;
 
   public getChildContext?(): void;
 
-  public getSnapshotBeforeUpdate?(prevProps: { children?: InfernoNode } & P, prevState: S): any;
+  public getSnapshotBeforeUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: S): any;
 
-  public static defaultProps?: any;
+  public static defaultProps?: {};
 
   public static getDerivedStateFromProps?(nextProps: any, state: any): any;
 
-  public render(_nextProps: { children?: InfernoNode } & P, _nextState: S, _nextContext: any): InfernoNode | undefined {
+  public render(_nextProps: { children?: Inferno.InfernoNode } & P, _nextState: S, _nextContext: any): Inferno.InfernoNode {
     return null;
   }
 }

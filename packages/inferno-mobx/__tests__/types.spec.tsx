@@ -1,4 +1,4 @@
-import { Component, render, SFC } from 'inferno';
+import { Component, render } from 'inferno';
 import { Provider } from 'inferno-mobx';
 import * as mobx from 'mobx';
 
@@ -19,24 +19,48 @@ describe('top level context', () => {
   describe('Rendering types', () => {
     it('Should render SFC', () => {
       // SFC
-      const MyComponent: SFC = (props) => {
-        return <div>{props.children}</div>; // Error: Property 'children' does not exist on type 'Refs<{}>'.
+      const MyComponent = (props) => {
+        return <div>{props.children}</div>;
       };
 
       render(
-        <MyComponent />, // Error: JSX element type 'InfernoNode' is not a constructor function for JSX elements. Type 'string' is not assignable to type 'Element | null'
+        <MyComponent />,
         container
       );
     });
 
-    it('Should be possible to return void from render SFC', () => {
+    it('Should be possible to return string from render SFC', () => {
       // SFC
-      const MyComponent: SFC = () => {
-        return;
+      const MyComponent = () => {
+        return 'd';
       };
 
       render(
-        <MyComponent />, // Error: JSX element type 'InfernoNode' is not a constructor function for JSX elements. Type 'string' is not assignable to type 'Element | null'
+        <MyComponent />,
+        container
+      );
+    });
+
+    it('Should be possible to return number from render SFC', () => {
+      // SFC
+      const MyComponent = () => {
+        return 1;
+      };
+
+      render(
+        <MyComponent />,
+        container
+      );
+    });
+
+    it('Should be possible to return null from render SFC', () => {
+      // SFC
+      const MyComponent = () => {
+        return null;
+      };
+
+      render(
+        <MyComponent />,
         container
       );
     });

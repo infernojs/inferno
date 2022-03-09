@@ -1,6 +1,6 @@
 import { isFunction, warning } from 'inferno-shared';
 import { safeCall1 } from '../DOM/utils/common';
-import type { ForwardRef, RefObject, SFC } from './types';
+import type { RefObject, Inferno } from './types';
 
 export function createRef<T = Element>(): RefObject<T> {
   return {
@@ -8,7 +8,10 @@ export function createRef<T = Element>(): RefObject<T> {
   };
 }
 
-export function forwardRef(render: Function): SFC & ForwardRef {
+// TODO: Make this return value typed
+export function forwardRef<T = any, P = {}>(
+  render: (props: Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>, ref: RefObject<T>) => Inferno.InfernoNode
+): any {
   if (process.env.NODE_ENV !== 'production') {
     if (!isFunction(render)) {
       warning(`forwardRef requires a render function but was given ${render === null ? 'null' : typeof render}.`);
@@ -18,10 +21,12 @@ export function forwardRef(render: Function): SFC & ForwardRef {
     }
   }
 
-  // @ts-ignore
-  return {
+  const ref = {
     render
   };
+
+  // @ts-ignore
+  return ref;
 }
 
 export function unmountRef(ref) {

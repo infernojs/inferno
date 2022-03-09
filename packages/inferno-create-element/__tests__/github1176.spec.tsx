@@ -21,7 +21,7 @@ describe('Github1176', () => {
   it('Should not crash', (done) => {
     const Loader = () => <div className="loader">Loader...</div>;
 
-    class Component1 extends Component {
+    class Component1 extends Component<any, any> {
       public render() {
         return (
           <div className="component1">

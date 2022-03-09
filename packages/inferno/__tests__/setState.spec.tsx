@@ -780,7 +780,7 @@ describe('setState', () => {
 
     class Com extends Component<any, any> {
       public doTest() {
-        expect(this.state.a).toBe(cnt);
+        expect(this.state!.a).toBe(cnt);
       }
 
       public componentWillMount() {
@@ -992,7 +992,7 @@ describe('setState', () => {
       public render() {
         return (
           <div>
-            <MidChild callback={this.callCallback} foobar={this.state.foobar} />
+            <MidChild callback={this.callCallback} foobar={this.state!.foobar} />
           </div>
         );
       }
@@ -1008,7 +1008,7 @@ describe('setState', () => {
       public doSomething() {
         setStateCounter++;
 
-        this.setState({ didCounter: ++this.state.didCounter }, () => {
+        this.setState({ didCounter: this.state!.didCounter + 1 }, () => {
           counter++;
         });
       }
@@ -1017,7 +1017,7 @@ describe('setState', () => {
         return (
           <div>
             <Parent callback={this.doSomething} />
-            <span>{this.state.didCounter}</span>
+            <span>{this.state!.didCounter}</span>
           </div>
         );
       }

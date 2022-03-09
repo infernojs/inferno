@@ -7,7 +7,6 @@ const { join, basename } = require('path');
 const fileSize = require('filesize');
 const gzipSize = require('gzip-size');
 const Table = require('cli-table');
-require('colors');
 
 const PACKAGES_DIR = join(__dirname, '../../packages');
 const INFERNO_VERSION = require(join(__dirname, '../../package.json')).version;
@@ -22,12 +21,12 @@ async function printFileSizes() {
 
   const table = new Table({
     head: [
-      `INFERNO - ${INFERNO_VERSION}`.cyan,
-      'Browser'.cyan + ' (gzip)'.green,
-      'Browser prod (min)'.cyan + ' (gzip)'.green,
-      '(es2015)'.cyan + ' (gzip)'.green,
-      'cjs'.cyan + ' (gzip)'.green,
-      'cjs prod'.cyan + ' (gzip)'.green
+      `INFERNO - ${INFERNO_VERSION}`,
+      'Browser' + ' (gzip)',
+      'Browser prod (min)' + ' (gzip)',
+      '(es2015)' + ' (gzip)',
+      'cjs' + ' (gzip)',
+      'cjs prod' + ' (gzip)'
     ],
     colWidth: [100, 200, 200, 200, 200]
   });
@@ -39,7 +38,7 @@ async function printFileSizes() {
     for (const file of filesToStat) {
       const sizes = await getFileSize(`${PACKAGES_DIR}/${name}/dist/${file}`);
 
-      row.push(`${sizes.fileSize}/${sizes.gzipSize.green}`);
+      row.push(`${sizes.fileSize}/${sizes.gzipSize}`);
     }
     table.push(row);
   }
