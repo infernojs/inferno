@@ -1,7 +1,9 @@
-import { InfernoNode, render, VNode, createComponentVNode, _HI as normalizeRoot } from 'inferno';
+import { Inferno, render, VNode, createComponentVNode, _HI as normalizeRoot } from 'inferno';
 import { Reaction } from 'mobx';
 import { throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
+
+type InfernoNode = Inferno.InfernoNode;
 
 type Render = (properties?: any, context?: Record<string, unknown>) => InfernoNode | undefined | void;
 
