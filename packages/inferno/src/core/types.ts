@@ -162,6 +162,7 @@ export declare namespace Inferno {
     $HasVNodeChildren?: boolean;
     $HasNonKeyedChildren?: boolean;
     $HasKeyedChildren?: boolean;
+    $HasTextChildren?: boolean;
     $ChildFlag?: number;
   }
   interface ClassAttributes<T> extends Attributes {
