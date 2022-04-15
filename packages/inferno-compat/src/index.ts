@@ -22,15 +22,14 @@ import {
   forwardRef,
   Fragment,
   getFlagsForElementVnode,
-  InfernoNode,
+  Inferno,
   linkEvent,
   normalizeProps,
   options,
-  Props,
   rerender,
   VNode
 } from 'inferno';
-export type { ComponentType, InfernoNode, Props, Refs, VNode } from 'inferno';
+export type { ComponentType, Inferno, Refs, VNode } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { createClass } from 'inferno-create-class';
@@ -57,7 +56,7 @@ function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragm
   return true;
 }
 
-export type IterateChildrenFn = (value: InfernoNode | any, index: number, array: any[]) => any;
+export type IterateChildrenFn = (value: Inferno.InfernoNode | any, index: number, array: any[]) => any;
 
 function flatten(arr, result) {
   for (let i = 0, len = arr.length; i < len; ++i) {
@@ -102,7 +101,7 @@ const Children = {
     children = Children.toArray(children);
     return children.length;
   },
-  only(children: any[]): InfernoNode | any {
+  only(children: any[]): Inferno.InfernoNode | any {
     children = Children.toArray(children);
     if (children.length !== 1) {
       throw new Error('Children.only() expects only one child.');
@@ -170,7 +169,7 @@ function normalizeGenericProps(props) {
   }
 }
 
-function normalizeFormProps<P>(name: string, props: Props<P> | any) {
+function normalizeFormProps(name: string, props: any) {
   if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
     const type = props.type && props.type.toLowerCase();
     let eventName;

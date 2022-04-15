@@ -1,4 +1,4 @@
-import { createVNode, InfernoMouseEvent, linkEvent, VNode } from 'inferno';
+import { createVNode, Inferno, InfernoMouseEvent, linkEvent, VNode } from "inferno";
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 import { combineFrom, isString } from 'inferno-shared';
@@ -44,7 +44,7 @@ function handleClick({ props, context }, event: InfernoMouseEvent<any>) {
 /**
  * The public API for rendering a history-aware <a>.
  */
-export function Link(props: ILinkProps & LinkHTMLAttributes<HTMLLinkElement>, context): VNode {
+export function Link(props: ILinkProps & Inferno.LinkHTMLAttributes<HTMLLinkElement>, context): VNode {
   const { replace, children, className, to = '', innerRef, ...rest } = props;
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 

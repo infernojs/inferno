@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, Props, VNode } from 'inferno';
+import { Component, createComponentVNode, VNode, Props } from "inferno";
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { parsePath } from 'history';
 import { Router } from './Router';
@@ -12,13 +12,13 @@ function addLeadingSlash(path) {
 // tslint:disable-next-line:no-empty
 const noop = () => {};
 
-export interface IStaticRouterProps<P, T> extends Props<P, T> {
+export interface IStaticRouterProps<T> extends Props<T> {
   basename?: string;
   context: any;
   location: any;
 }
 
-export class StaticRouter<P, S> extends Component<IStaticRouterProps<P, any>, S> {
+export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
   public static defaultProps = {
     basename: '',
     location: '/'

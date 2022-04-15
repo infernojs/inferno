@@ -1,4 +1,12 @@
-import { createComponentVNode, createFragment, createVNode, Fragment, getFlagsForElementVnode, InfernoNode, VNode } from 'inferno';
+import {
+  createComponentVNode,
+  createFragment,
+  createVNode,
+  Fragment,
+  getFlagsForElementVnode,
+  Inferno,
+  VNode
+} from "inferno";
 import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -9,7 +17,7 @@ function parseTag(tag: string | null, props: any): string {
   if (!tag) {
     return 'div';
   }
-  if (tag === Fragment) {
+  if (tag === (Fragment as any)) {
     return tag;
   }
   const noId = props && isUndefined(props.id);
@@ -60,7 +68,7 @@ function isChildren(x: any): boolean {
  * @param {string|number|VNode|Array<string|number|VNode>|null=} _children Optional children for virtual node
  * @returns {VNode} returns new virtual node
  */
-export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoNode): VNode {
+export function h(_tag: string | VNode | Function, _props?: any, _children?: Inferno.InfernoNode): VNode {
   // If a child array or text node are passed as the second argument, shift them
   if (!_children && isChildren(_props)) {
     _children = _props;

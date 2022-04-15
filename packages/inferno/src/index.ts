@@ -71,7 +71,7 @@ export {
   version,
   // Internal methods, used by hydration
   createClassComponentInstance as _CI,
-  normalizeRoot as _HI,
+  normalizeRoot as _HI, // used by inferno-mobx
   mount as _M,
   mountClassComponentCallbacks as _MCCC,
   mountElement as _ME,

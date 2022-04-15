@@ -1,4 +1,4 @@
-import { Component, InfernoNode } from 'inferno';
+import { Component, Inferno } from 'inferno';
 import { Action, AnyAction, Store } from 'redux';
 import { warning } from '../utils/warning';
 
@@ -15,7 +15,7 @@ const warnAboutReceivingStore = () => {
 
 export interface Props<A extends Action = AnyAction> {
   store: Store<any, A>;
-  children?: InfernoNode;
+  children?: Inferno.InfernoNode;
 }
 
 export class Provider<A extends Action = AnyAction> extends Component<Props<A>, null> {
@@ -33,7 +33,7 @@ export class Provider<A extends Action = AnyAction> extends Component<Props<A>, 
 
   // Don't infer the return type. It may be expanded and cause reference errors
   // in the output.
-  public render(): InfernoNode | undefined {
+  public render(): Inferno.InfernoNode | undefined {
     return this.props.children;
   }
 

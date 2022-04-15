@@ -27,7 +27,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc}</div>;
+        return <div>{this.state!.abc}</div>;
       }
     }
 
@@ -41,7 +41,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>;
+        return <div>{this.state!.abc} new</div>;
       }
     }
 
@@ -77,7 +77,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc}</div>;
+        return <div>{this.state!.abc}</div>;
       }
     }
 
@@ -91,7 +91,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>;
+        return <div>{this.state!.abc} new</div>;
       }
     }
 
@@ -127,7 +127,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc}</div>;
+        return <div>{this.state!.abc}</div>;
       }
     }
 
@@ -141,7 +141,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>;
+        return <div>{this.state!.abc} new</div>;
       }
     }
 
@@ -177,7 +177,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc}</div>;
+        return <div>{this.state!.abc}</div>;
       }
     }
 
@@ -191,7 +191,7 @@ describe('top level context', () => {
       }
 
       public render() {
-        return <div>{this.state.abc} new</div>;
+        return <div>{this.state!.abc} new</div>;
       }
     }
 

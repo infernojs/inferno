@@ -315,7 +315,11 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      const Static = function () {
+      type scuTestType = {
+        onComponentShouldUpdate: () => boolean
+      }
+
+      const Static = function(_: scuTestType) {
         return <div>{counter}</div>;
       };
 
@@ -374,10 +378,14 @@ describe('All single patch variations', () => {
         }
       };
 
+      // TODO: Supporting types for "ref: {}" function component hooks probably needs changes to "JSX root types" where are those?
+
       function doRender() {
         render(
           <div>
             {counter}
+            {/*
+ // @ts-ignore */}
             <Static {...props} />
           </div>,
           container

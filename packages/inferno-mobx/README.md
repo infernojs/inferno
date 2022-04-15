@@ -6,8 +6,13 @@ The module is compatible with Inferno v1+, for older versions use [mobx-inferno]
 
 This package provides the bindings for MobX and Inferno.
 Exports `observer` and `inject` decorators, a `Provider` and some development utilities.
+
 *New*: exports `observerPatch`, a function to turn Component classes into MobX observers.
 `observerPatch` is implemented in a better manner, but is separate as it would break compatibility in some cases.
+
+*New*: exports `observerWrap`, a function to turn functional Components into MobX observers.
+Unlike `observer`, `observerWrap` does not wrap them in a class Component.
+This allows the base Component and the observer to be interchangable.
 
 ## Install
 
@@ -21,7 +26,7 @@ Also install [mobx](https://github.com/mobxjs/mobx) dependency _(required)_ if y
 npm install --save mobx
 ```
 
-## Example
+## observerPatch Examples
 
 Pass a class Component to `observerPatch` to have in automatically re-render if MobX observables read by `render` are modified.
 
@@ -183,6 +188,161 @@ Then it is restored to the class's original `render` method when `componentWillU
 
 It is strongly recommended to avoid replacing the `render` method on classes `observerPatch` is applied to.
 
+## observerWrap Examples
+
+`observerWrap` is the companion to `observerPatch`, but for functional Components.
+
+```tsx
+// MyComponent.tsx (also works with plain JavaScript)
+import { observerWrap } from 'inferno-mobx';
+
+interface CountStore {
+    readonly count: number
+}
+
+// For a good debugging experience, have named functions
+function MyComponentA({ countStore }: { countStore: CountStore }) {
+    return (<p>Current Count: {countStore.count.toString()}</p>);
+}
+
+// If you prefer arrow functions, assign them to a const before passing to observerWrap
+const MyComponentB = ({ countStore }: { countStore: CountStore }) => {
+    return (<p>Current Count: {countStore.count.toString()}</p>);
+};
+
+// This works, but if you need to debug the MobX reactions things will be less nice
+const MyComponentC = observerWrap(({ countStore }: { countStore: CountStore }) => {
+    return (<p>Current Count: {countStore.count.toString()}</p>);
+});
+
+const MyObserverB = observerWrap(MyComponentB);
+
+// double wrapping does not cause errors, but is inefficient
+// a warning will be logged for non-production builds
+const MyComponentD = observerWrap(MyComponentC);
+
+const MyComponentE = observerWrap(MyComponentA);
+
+// calling observerWrap on the same component multiple times is fine
+const MyComponentF = observerWrap(MyComponentA);
+
+// but storing the result of the first call for reuse is still better
+// as each wrapper will take memory
+const MyComponentG = MyComponentE;
+
+export {
+    // wrapping separately allow the non-observer component to be used
+    MyComponentA, // not an observer
+    MyObserverB as MyComponentB, // export observer under name of the component
+    MyComponentC,
+    MyComponentD,
+    MyComponentE, // observer version of MyComponentA
+    MyComponentF,
+    MyComponentG
+}
+```
+
+Everything mentioned for `observerPatch` about passing you observables to the components applies to `observerWrap`.
+
+As a note, the function returned by `observerWrap` should *only* be used for constructing Inferno VNodes.
+That means JSX, `createElement`, inferno-hyperscript, or `createComponentVNode`.
+For any other usage, you should use the base function directly.
+
+```tsx
+// index.tsx
+import {
+    MyComponentA,
+    MyComponentB,
+    MyComponentC,
+    MyComponentD,
+    MyComponentE,
+    MyComponentF,
+    MyComponentG
+} from './MyComponent';
+import { render } from 'inferno';
+import { action, observable } from 'mobx';
+
+const store = observable({ count: 0 });
+
+// All but MyComponentA will update when count changes
+// MyComponentA was not wrapped
+render(<div>
+  <MyComponentA countStore={store} />
+  <MyComponentB countStore={store} />
+  <MyComponentC countStore={store} />
+  <MyComponentD countStore={store} />
+  <MyComponentE countStore={store} />
+  <MyComponentF countStore={store} />
+  <MyComponentG countStore={store} />
+  <button type="button" onClick={action(() => {store.count += 1})}>Click Me</button>
+</div>, document.getElementById('components'));
+```
+
+There are a few things to say about `defaultHooks` and `defaultProps`.
+
+```typescript
+import { observerWrap } from 'inferno-mobx';
+
+// For this first component, both the base function and the wrapper will share default hooks and props
+function MyComponentA(props) { /* ... */ }
+MyComponentA.defaultHooks = { /* ... */ }
+MyComponentA.defaultProps = { /* ... */ }
+const MyObserverA = observerWrap(MyComponentA);
+// MyComponentA.defaultHooks === MyObserverA.defaultHooks &&
+// MyComponentA.defaultProps === MyObserverA.defaultProps
+
+// So the following would affect the defaultHooks for both as they refer to the same object:
+MyComponentA.defaultHooks.onComponentShouldUpdate = /* hook */;
+
+// But settting a new object only affects the one being set:
+MyObserverA.defaultProps = { /* ... */ } // Now MyComponentA.defaultProps !== MyObserverA.defaultProps
+
+// If the defaults are set after the wrapper is made, the observer will not have default Hooks nor Props
+function MyComponentB(props) { /* ... */ }
+const MyObserverB = observerWrap(MyComponentB);
+MyComponentB.defaultHooks = { /* ... */ }
+MyComponentB.defaultProps = { /* ... */ }
+// MyObserverB.defaultHooks === undefined && MyObserverB.defaultProps === undefined
+
+// Setting defaults on the observer does not affect the base component
+function MyComponentC(props) { /* ... */ }
+const MyObserverC = observerWrap(MyComponentC);
+MyObserverC.defaultHooks = { /* ... */ }
+MyObserverC.defaultProps = { /* ... */ }
+// MyComponentC.defaultHooks === undefined && MyComponentC.defaultProps === undefined
+```
+
+Generally the first example is what you want. The third is fine if you only use the observer.
+
+The most like case you would want the defaults to be different is for the `onComponentShouldUpdate` hook.
+This is because the re-rendering of the observer is more expensive than the base component.
+That does not mean you always want `onComponentShouldUpdate` for observers and never to base components.
+But it can be worth having on observers even if it is not for the base.
+
+Note:
+The MobX Reaction will call `onComponentWillUpdate` and `onComponentDidUpdate` when re-rendering, if present.
+When called by the Reaction the 'previous' and 'next' parameters will be passed the same object.
+
+*Warning*:
+The `onComponentWillUpdate` and `onComponentDidUpdate` are bound when the component is rendered by Inferno.
+The `onComponentShouldUpdate` can prevent the binding from being updated if new callbacks are assigned.
+
+To have a default hook (or property) on just the observer, you need to create a new object that is a copy of the base version.
+And then add the new hook or property.
+
+```typescript
+function MyComponent(props) { /* ... */ }
+MyComponent.defaultHooks = { /* ... */ }
+MyComponent.defaultProps = { /* ... */ }
+
+const MyObserver = observerWrap(MyComponent);
+
+MyObserver.defaultHooks = {
+    ...MyComponent.defaultHooks, // copy original
+    onComponentShouldUpdate: (prev, next) => { /* ... */ }
+}
+```
+
 ## Legacy Example
 
 You can inject props using the following syntax ( This example requires, babel decorators-legacy plugin )
@@ -264,7 +424,7 @@ The differences to be aware of when switching from `observer` to `observerPatch`
 7. `observerPatch` will not emit events through `renderReporter` that list how long `render` took
 8. `observerPatch` does not make `this.props` nor `this.state` observable
 9. `observerPatch` does not set `isMobXReactObserver = true` as a static class member
-10. `observerPatch` is only for class Components, functional Components are not supported
+10. `observerWrap` returns a functional Component, where `observer` returns a class Component.
 
 Points 1 and 2 are a simple change to call `observerPatch` after the class is defined and removing `observer`.
 
@@ -295,10 +455,7 @@ For point 9, `observerPatch` instead sets `isMobXInfernoObserver = true` as a st
 But it only does do in development builds as it is intended for use internally for sanity checks.
 The issues it is used to spot and warn about should be fixed before reaching production.
 
-Finally for point 10, the way `observer` worked with functional was to wrap them in a class Component.
-It likely was not what you wanted.
-It ignored any default hooks and being wrapped in class Component you could not add new ones.
-And if your functional Component was only ever used as an observer, then directly making it a class Component would be better.
+Finally for point 10, if you specify the Component VNode type to optimize renders, you will need to change the flags.
 
 If this seems intimidating, know that nearly all unit tests for `observer` worked as they were after replacing `observer` with `observerPatch`.
 Outside of needing to switch functional Components to class Components, that is.
@@ -311,7 +468,7 @@ However, using `inject` as a decorator along side `observerPatch` is not support
 ```tsx
 // MyInjected.tsx
 import { Component } from 'inferno';
-import { observerPatch, inject } from 'inferno-mobx';
+import { observerPatch, observerWrap, inject } from 'inferno-mobx';
 
 interface CountStore {
     readonly count: number
@@ -354,6 +511,13 @@ class MyComponentC extends Component<{ countStore?: CountStore }> {
 export const MyInjectedC = inject('countStore')(MyComponentC);
 observerPatch(MyInjectedC); // WRONG! Should be: observerPatch(MyComponentC);
 //Having observerPatch before inject lets tools detect this issue.
+
+// Functional components with observerWrap
+function MyComponentD({ countStore }: { countStore?: CountStore }) {
+    const count = (countStore as CountStore).count.toString();
+    return (<p>Current Count: {count}</p>);
+}
+export const MyInjectedD = inject(observerWrap(MyComponentD));
 ```
 
 ```tsx
@@ -361,7 +525,8 @@ observerPatch(MyInjectedC); // WRONG! Should be: observerPatch(MyComponentC);
 import {
     MyInjectedA,
     MyInjectedB,
-    MyInjectedC
+    MyInjectedC,
+    MyInjectedD
 } from './MyInjected';
 import { render } from 'inferno';
 import { Provider } from 'inferno-mobx';
@@ -377,6 +542,7 @@ render(<div>
         <MyInjectedA />
         <MyInjectedB />
         <MyInjectedC /> {/* This one will not update as MyComponentC was not made into an observer. */}
+        <MyInjectedD />
         <MyInjectedA countStore={store2} /> {/* Will not update as direct properties override injection */}
     </Provider>
   <button type="button" onClick={action(() => {store.count += 1})}>Click Me</button>
@@ -385,3 +551,59 @@ render(<div>
 
 IMPORTANT: The values injected are the ones available to `Provider` when it is first mounted.
 So `Provider` and `inject` are only useful for properties that will NEVER change.
+
+## Server Side Rendering and Hydration
+
+When rendering server side, components only need to be rendered once and does not update.
+This means you do not need your components to act as observers when running on the server.
+
+Furthermore, the functions provided by inferno-server initialize components but does not call their unmount hooks.
+Which for observers means their internal MobX reactions are not disposed.
+
+So for your server code components should not act as observers.
+
+The best way to achieve this is to have calls to `observer` and `observerPatch` be conditional and not called server side.
+
+```tsx
+// MyComponent.tsx
+import { Component } from 'inferno';
+import { observerPatch, observerWrap } from 'inferno-mobx';
+
+interface CountStore {
+    readonly count: number
+}
+
+export class MyComponent extends Component<{ countStore: CountStore }> {
+    render({ countStore }: { countStore: CountStore }) {
+        return (<p>Current Count: {countStore.count.toString()}</p>);
+    }
+}
+
+function MyFunctional({ countStore }: { countStore: CountStore }) {
+    return (<p>Current Count: {countStore.count.toString()}</p>);
+}
+
+// You do not have to use an environment variable nor is the specific one used important.
+// The idea would be to replace 'process.env.SERVER_SIDE' with a literal true or false.
+// This can be done when transpiling with Babel or many bundling tools have plugins that can do so.
+// Then a good minifier such a terser can elimitate the if statement for production.
+if (process.env.SERVER_SIDE !== true) {
+    observerPatch(MyComponent); // The same goes can be done for 'observer' calls.
+}
+
+// For functional components
+const MyObserver = process.env.SERVER_SIDE !== true ? observerWrap(MyFunctional) : MyFunctional;
+export {MyObserver as MyFunctional};
+```
+
+Then you can use `renderToString` and `hydrate` as you would with any other component.
+
+If you use `observer` instead of `observerPatch` you can alternatively call `useStaticRendering(true)` in your server code.
+The `useStaticRendering` function is exported by inferno-mobx and only needs to be called once before any rendering occurs.
+When called with `true`, it will make the components `observer` skip the code that turns them into observers.
+However, simply not calling `observer` server side will yield better performance.
+
+If you use `inject` to supply properties in you render code, you still need to call it on the server side.
+
+When a custom function to get stores is passed to `inject`, it internally calls `observer` on the created class.
+As such if you are using a custom function to get stores for `inject` you need to call `useStaticRendering(true)` in your server side code.

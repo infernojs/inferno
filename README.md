@@ -1,6 +1,6 @@
 <p align="center"><a href="https://infernojs.org/" target="_blank"><img width="150" alt="Inferno" title="Inferno" src="https://user-images.githubusercontent.com/2021355/36063342-626d7ea8-0e84-11e8-84e1-f22bb3b8c4d5.png"></p>
 
-[![Build Status](https://img.shields.io/travis/infernojs/inferno/master.svg?style=flat-square)](https://travis-ci.com/infernojs/inferno/branches)
+[![Build Status](https://app.travis-ci.com/infernojs/inferno.svg?branch=master)](https://app.travis-ci.com/github/infernojs/inferno)
 [![Coverage Status](https://img.shields.io/coveralls/infernojs/inferno/master.svg?style=flat-square)](https://coveralls.io/github/infernojs/inferno?branch=master)
 [![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/infernojs/inferno/blob/master/LICENSE.md)
 [![NPM](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
@@ -38,7 +38,7 @@ The performance is achieved through multiple optimizations, for example:
 - Inferno supports setting styles using string `<div style="background-color: red"></div>` or using object literal syntax `<div style={{"background-color": "red"}}></div>`. For camelCase syntax support see [`inferno-compat`](https://github.com/infernojs/inferno/tree/master/packages/inferno-compat).
 - Fragments (v6)
 - createRef and forwardRef APIs (v6)
-- componentDidAppear and componentWillDisappear (v7.5.0) - class component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
+- componentDidAppear and componentWillDisappear (v8) - class component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
 
 ## Browser support
 Since version 4 we have started running our test suite **without** any polyfills.

@@ -1,11 +1,11 @@
-import { Component, InfernoNode } from 'inferno';
+import { Component, Inferno } from 'inferno';
 import { warning } from './utils';
 import { combineFrom } from 'inferno-shared';
 import type { History } from 'history';
 
 export interface IRouterProps {
   history: History;
-  children: InfernoNode;
+  children: Inferno.InfernoNode;
 }
 
 /**
@@ -27,7 +27,7 @@ export class Router extends Component<IRouterProps, any> {
     childContext.history = this.props.history;
     childContext.route = {
       location: childContext.history.location,
-      match: this.state.match
+      match: this.state?.match
     };
 
     return {

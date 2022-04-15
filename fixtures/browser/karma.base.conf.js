@@ -34,9 +34,9 @@ module.exports = function (config) {
           results.push('Firefox');
         }
 
-        if (browserList.indexOf('IE') > -1) {
-          results.push('IE');
-        }
+        // if (browserList.indexOf('IE') > -1) {
+        //   results.push('IE');
+        // }
 
         if (browserList.indexOf('Edge') > -1) {
           results.push('Edge');
