@@ -17,9 +17,6 @@
       "inferno-create-element": [
         "packages/inferno-create-element/src/index.ts"
       ],
-      "inferno-devtools": [
-        "packages/inferno-devtools/src/index.ts"
-      ],
       "inferno-hydrate": [
         "packages/inferno-hydrate/src/index.ts"
       ],

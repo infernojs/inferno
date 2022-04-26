@@ -47,7 +47,6 @@ const plugins = [
       {find: 'inferno-compat', replacement: resolve('inferno-compat')},
       {find: 'inferno-create-class', replacement: resolve('inferno-create-class')},
       {find: 'inferno-create-element', replacement: resolve('inferno-create-element')},
-      {find: 'inferno-devtools', replacement: resolve('inferno-devtools')},
       {find: 'inferno-hydrate', replacement: resolve('inferno-hydrate')},
       {find: 'inferno-extras', replacement: resolve('inferno-extras')},
       {find: 'inferno-hyperscript', replacement: resolve('inferno-hyperscript')},

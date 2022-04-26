@@ -124,7 +124,6 @@ module.exports = function (config) {
           'inferno-compat': resolve('inferno-compat'),
           'inferno-create-class': resolve('inferno-create-class'),
           'inferno-create-element': resolve('inferno-create-element'),
-          'inferno-devtools': resolve('inferno-devtools'),
           'inferno-hydrate': resolve('inferno-hydrate'),
           'inferno-extras': resolve('inferno-extras'),
           'inferno-hyperscript': resolve('inferno-hyperscript'),
