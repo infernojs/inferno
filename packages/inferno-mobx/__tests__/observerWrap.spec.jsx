@@ -44,14 +44,14 @@ describe('Stateless components observerWrap', () => {
         createElement('p', {}, 'outer: ' + context.testContext + ', '),
         createElement(InnerComp, {})
       ]);
-    }
+    };
     const StateLessCompWithContextObserver = observerWrap(StateLessCompWithContext);
     const store = observable({
       value: 0
     });
     class ContextProvider extends Component {
       getChildContext() {
-        return {testContext: 'hello'};
+        return { testContext: 'hello' };
       }
       render() {
         return <StateLessCompWithContextObserver store={store} />;
@@ -99,17 +99,17 @@ describe('Stateless components observerWrap', () => {
 
     let todoListRenderings = 0;
     const TodoList = observerWrap(() => {
-        todoListRenderings++;
-        const todos = store.todos;
-        return (
-          <div>
-            <p>{todos.length}</p>
-            {todos.map((todo, idx) => (
-              <TodoItem key={idx} todo={todo} />
-            ))}
-          </div>
-        );
-      });
+      todoListRenderings++;
+      const todos = store.todos;
+      return (
+        <div>
+          <p>{todos.length}</p>
+          {todos.map((todo, idx) => (
+            <TodoItem key={idx} todo={todo} />
+          ))}
+        </div>
+      );
+    });
 
     render(<TodoList />, container);
     expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
@@ -216,17 +216,17 @@ describe('Stateless components observerWrap', () => {
 
     let todoListRenderings = 0;
     const TodoList = observerWrap(() => {
-        todoListRenderings++;
-        const todos = store.todos;
-        return (
-          <div>
-            <p>{todos.length}</p>
-            {todos.map((todo, idx) => (
-              <TodoItem key={idx} todo={todo} />
-            ))}
-          </div>
-        );
-      });
+      todoListRenderings++;
+      const todos = store.todos;
+      return (
+        <div>
+          <p>{todos.length}</p>
+          {todos.map((todo, idx) => (
+            <TodoItem key={idx} todo={todo} />
+          ))}
+        </div>
+      );
+    });
 
     render(<TodoList />, container);
     expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
@@ -394,19 +394,14 @@ describe('Stateless components observerWrap', () => {
     let z = 0;
 
     const ViewFn = ({ item }) => {
-      return (
-        <span>
-          {item.name}
-        </span>
-      );
+      return <span>{item.name}</span>;
     };
 
     const View = observerWrap(ViewFn);
 
-    const check = ({item: prev}, {item: next}) => prev !== next;
+    const check = ({ item: prev }, { item: next }) => prev !== next;
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : x++} />,
-      container);
+    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : x++)} />, container);
 
     expect(a).toBe(0);
     expect(x).toBe(0);
@@ -417,8 +412,7 @@ describe('Stateless components observerWrap', () => {
 
     expect(x).toBe(1);
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : y++} />,
-      container);
+    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : y++)} />, container);
 
     expect(a).toBe(1);
     expect(x).toBe(1);
@@ -432,8 +426,7 @@ describe('Stateless components observerWrap', () => {
     expect(x).toBe(1);
     expect(y).toBe(1);
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : z++} onComponentShouldUpdate={check} />,
-      container);
+    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : z++)} onComponentShouldUpdate={check} />, container);
 
     expect(a).toBe(1);
     expect(z).toBe(0);
@@ -445,17 +438,16 @@ describe('Stateless components observerWrap', () => {
 
     expect(y).toBe(2);
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => p !== n? a++ : x++} />,
-      container);
+    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : x++)} />, container);
 
     expect(a).toBe(2);
     expect(x).toBe(1);
     expect(y).toBe(2);
-  
+
     runInAction(() => {
       data.name = 'juice';
     });
-  
+
     expect(a).toBe(2);
     expect(y).toBe(2);
     expect(x).toBe(2);
@@ -492,16 +484,16 @@ describe('Stateless components observerWrap', () => {
     const baseWarn = console.error;
     console.error = (m) => msg.push(m);
 
-    observerWrap(observerWrap(
-      ({ foo }) => {
+    observerWrap(
+      observerWrap(({ foo }) => {
         return (
           <div>
             context:
             {foo}
           </div>
         );
-      }
-    ));
+      })
+    );
 
     expect(msg.length).toBe(1);
     console.error = baseWarn;
