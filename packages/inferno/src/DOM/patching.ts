@@ -10,7 +10,7 @@ import {
   callAllMoveAnimationHooks,
   createDerivedState,
   EMPTY_OBJ,
-  findDOMfromVNode,
+  findDOMFromVNode,
   moveVNodeDOM,
   options,
   removeChild,
@@ -32,7 +32,7 @@ function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: O
     // Single DOM operation, when we have dom references available
     replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
   } else {
-    mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode, true), lifecycle, animations);
+    mount(nextVNode, parentDOM, context, isSVG, findDOMFromVNode(lastVNode, true), lifecycle, animations);
     removeVNodeDOM(lastVNode, parentDOM, animations);
   }
 }
@@ -139,7 +139,7 @@ function patchFragment(
       (!nextIsSingle && (nextChildren as VNode[]).length > lastLen)
     ) {
       // When fragment has multiple children there is always at least one vNode
-      nextNode = (findDOMfromVNode(lastChildren[lastLen - 1], false) as Element).nextSibling as Element | null;
+      nextNode = (findDOMFromVNode(lastChildren[lastLen - 1], false) as Element).nextSibling as Element | null;
     }
   }
 
@@ -271,7 +271,7 @@ export function patchElement(
 function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Function[], animations: AnimationQueues) {
   unmount(lastChildren, animations);
 
-  mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle, animations);
+  mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMFromVNode(lastChildren, true), lifecycle, animations);
 
   removeVNodeDOM(lastChildren, parentDOM, animations);
 }
@@ -630,7 +630,7 @@ function patchKeyedChildren(
   if (j > aEnd) {
     if (j <= bEnd) {
       nextPos = bEnd + 1;
-      nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge;
+      nextNode = nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge;
 
       while (j <= bEnd) {
         bNode = b[j];
@@ -773,14 +773,14 @@ function patchKeyedChildrenComplex(
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;
-        mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
+        mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
       } else if (j < 0 || i !== seq[j]) {
         pos = i + bStart;
         bNode = b[pos];
         nextPos = pos + 1;
 
         // --- the DOM-node is moved by a call to insertAppend
-        moveVNodeDOM(parentVNode, bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, animations);
+        moveVNodeDOM(parentVNode, bNode, dom, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, animations);
       } else {
         j--;
       }
@@ -796,7 +796,7 @@ function patchKeyedChildrenComplex(
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;
-        mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
+        mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
       }
     }
   }

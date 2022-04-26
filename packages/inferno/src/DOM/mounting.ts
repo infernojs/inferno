@@ -2,7 +2,7 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
-import { AnimationQueues, documentCreateElement, EMPTY_OBJ, findDOMfromVNode, insertOrAppend, safeCall1, setTextContent } from './utils/common';
+import { AnimationQueues, documentCreateElement, EMPTY_OBJ, findDOMFromVNode, insertOrAppend, safeCall1, setTextContent } from './utils/common';
 import { mountProps } from './props';
 import { createClassComponentInstance, renderFunctionalComponent } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
@@ -236,7 +236,7 @@ export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[
 
 function createOnMountCallback(ref, vNode) {
   return () => {
-    ref.onComponentDidMount(findDOMfromVNode(vNode, true), vNode.props || EMPTY_OBJ);
+    ref.onComponentDidMount(findDOMFromVNode(vNode, true), vNode.props || EMPTY_OBJ);
   };
 }
 
@@ -249,7 +249,7 @@ export function mountFunctionalComponentCallbacks(vNode: VNode, lifecycle: Funct
       lifecycle.push(createOnMountCallback(ref, vNode));
     }
     if (isFunction(ref.onComponentDidAppear)) {
-      addAppearAnimationHook(animations, ref, findDOMfromVNode(vNode, true) as Element, VNodeFlags.ComponentFunction, vNode.props);
+      addAppearAnimationHook(animations, ref, findDOMFromVNode(vNode, true) as Element, VNodeFlags.ComponentFunction, vNode.props);
     }
   }
 }

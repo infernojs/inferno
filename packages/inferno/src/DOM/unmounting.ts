@@ -2,7 +2,7 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
-import { AnimationQueues, callAllAnimationHooks, clearVNodeDOM, EMPTY_OBJ, findDOMfromVNode, removeVNodeDOM } from './utils/common';
+import { AnimationQueues, callAllAnimationHooks, clearVNodeDOM, EMPTY_OBJ, findDOMFromVNode, removeVNodeDOM } from './utils/common';
 import { unmountRef } from '../core/refs';
 
 export function remove(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {

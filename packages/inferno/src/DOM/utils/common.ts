@@ -85,7 +85,7 @@ function findChildVNode(vNode: VNode, startEdge: boolean, flags: VNodeFlags) {
   return children;
 }
 
-export function findDOMfromVNode(vNode: VNode, startEdge: boolean) {
+export function findDOMFromVNode(vNode: VNode, startEdge: boolean) : Element | null {
   let flags;
 
   while (vNode) {

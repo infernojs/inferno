@@ -13,7 +13,7 @@ import {
 } from './core/implementation';
 import { linkEvent } from './DOM/events/linkEvent';
 import { __render, createRenderer, render } from './DOM/rendering';
-import { AnimationQueues, EMPTY_OBJ, findDOMfromVNode, Fragment, options } from './DOM/utils/common';
+import { AnimationQueues, EMPTY_OBJ, findDOMFromVNode, Fragment, options } from './DOM/utils/common';
 import { Component, ComponentType, rerender } from './core/component';
 import { mountProps } from './DOM/props';
 import { createClassComponentInstance, renderFunctionalComponent } from './DOM/utils/componentUtil';
@@ -61,7 +61,7 @@ export {
   createVNode,
   forwardRef,
   directClone,
-  findDOMfromVNode,
+  findDOMFromVNode,
   getFlagsForElementVnode,
   linkEvent,
   normalizeProps,

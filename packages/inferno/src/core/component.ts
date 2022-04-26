@@ -1,7 +1,7 @@
 import type { Inferno } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
-import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMfromVNode, renderCheck } from '../DOM/utils/common';
+import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMFromVNode, renderCheck } from '../DOM/utils/common';
 import { IComponent } from './types';
 
 const QUEUE: Component<any, any>[] = [];
@@ -104,7 +104,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
       component,
       combineFrom(component.state, pendingState),
       component.props,
-      (findDOMfromVNode(component.$LI, true) as Element).parentNode as Element,
+      (findDOMFromVNode(component.$LI, true) as Element).parentNode as Element,
       component.context,
       component.$SVG,
       force,
