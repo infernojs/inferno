@@ -61,14 +61,16 @@ export function unmount(vNode, animations: AnimationQueues) {
       let childAnimations = animations;
       ref = vNode.ref;
       if (!isNullOrUndef(ref)) {
-        const domEl = findDOMfromVNode(vNode, true) as Element;
+        let domEl : Element | null = null;
 
         if (isFunction(ref.onComponentWillUnmount)) {
+          domEl = findDOMFromVNode(vNode, true);
           ref.onComponentWillUnmount(domEl, vNode.props || EMPTY_OBJ);
         }
         if (isFunction(ref.onComponentWillDisappear)) {
           childAnimations = new AnimationQueues();
-          addDisappearAnimationHook(animations, ref, domEl, flags, vNode.props);
+          domEl = domEl || findDOMFromVNode(vNode, true);
+          addDisappearAnimationHook(animations, ref, domEl as Element, flags, vNode.props);
         }
       }
       unmount(children, childAnimations);
