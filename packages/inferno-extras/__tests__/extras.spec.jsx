@@ -1,5 +1,5 @@
 import { Component, createPortal, render } from 'inferno';
-import { isDOMinsideComponent, isDOMinsideVNode } from 'inferno-extras';
+import { isDOMInsideComponent, isDOMInsideVNode } from 'inferno-extras';
 
 describe('Extras', () => {
   let container;
@@ -15,7 +15,7 @@ describe('Extras', () => {
     document.body.removeChild(container);
   });
 
-  describe('isDOMinsideComponent', () => {
+  describe('isDOMInsideComponent', () => {
     it('Should return true if event.target is found outside Portal', () => {
       const secondRoot = document.createElement('div');
 
@@ -52,11 +52,11 @@ describe('Extras', () => {
 
       const target = secondRoot.querySelector('#target');
 
-      expect(isDOMinsideComponent(target, instance)).toBe(true);
+      expect(isDOMInsideComponent(target, instance)).toBe(true);
 
       render(null, container);
 
-      expect(isDOMinsideComponent(target, instance)).toBe(false);
+      expect(isDOMInsideComponent(target, instance)).toBe(false);
     });
 
     it('Should search through all different shapes of virtual nodes', () => {
@@ -111,11 +111,11 @@ describe('Extras', () => {
 
       const target = secondRoot.querySelector('#target');
 
-      expect(isDOMinsideComponent(target, instance)).toBe(true);
+      expect(isDOMInsideComponent(target, instance)).toBe(true);
 
       render(null, container);
 
-      expect(isDOMinsideComponent(target, instance)).toBe(false);
+      expect(isDOMInsideComponent(target, instance)).toBe(false);
     });
 
     it('Should return true if target node is the root', () => {
@@ -141,7 +141,7 @@ describe('Extras', () => {
 
       const target = container.querySelector('#target');
 
-      expect(isDOMinsideComponent(target, instance)).toBe(true);
+      expect(isDOMInsideComponent(target, instance)).toBe(true);
     });
 
     it('Should return false if target is not found', () => {
@@ -174,9 +174,9 @@ describe('Extras', () => {
 
       const target = container.querySelector('#target');
 
-      expect(isDOMinsideComponent(target, instances[0])).toBe(false);
-      expect(isDOMinsideComponent(target, instances[1])).toBe(true);
-      expect(isDOMinsideComponent(target, instances[2])).toBe(false);
+      expect(isDOMInsideComponent(target, instances[0])).toBe(false);
+      expect(isDOMInsideComponent(target, instances[1])).toBe(true);
+      expect(isDOMInsideComponent(target, instances[2])).toBe(false);
     });
 
     it('Should return false if target is detached', () => {
@@ -209,9 +209,9 @@ describe('Extras', () => {
 
       const target = container.querySelector('#target');
 
-      expect(isDOMinsideComponent(target, instances[0])).toBe(false);
-      expect(isDOMinsideComponent(target, instances[1])).toBe(true);
-      expect(isDOMinsideComponent(target, instances[2])).toBe(false);
+      expect(isDOMInsideComponent(target, instances[0])).toBe(false);
+      expect(isDOMInsideComponent(target, instances[1])).toBe(true);
+      expect(isDOMInsideComponent(target, instances[2])).toBe(false);
 
       render(
         <div>
@@ -222,13 +222,13 @@ describe('Extras', () => {
         container
       );
 
-      expect(isDOMinsideComponent(target, instances[0])).toBe(false);
-      expect(isDOMinsideComponent(target, instances[1])).toBe(false);
-      expect(isDOMinsideComponent(target, instances[2])).toBe(false);
+      expect(isDOMInsideComponent(target, instances[0])).toBe(false);
+      expect(isDOMInsideComponent(target, instances[1])).toBe(false);
+      expect(isDOMInsideComponent(target, instances[2])).toBe(false);
     });
   });
 
-  describe('isDOMinsideVNode', () => {
+  describe('isDOMInsideVNode', () => {
     it('Should work same way but for vNode', () => {
       const vNode = (
         <div>
@@ -244,7 +244,7 @@ describe('Extras', () => {
         container
       );
 
-      expect(isDOMinsideVNode(container.querySelector('#target'), vNode)).toBe(true);
+      expect(isDOMInsideVNode(container.querySelector('#target'), vNode)).toBe(true);
     });
 
     it('Should return true if that is the ndoe', () => {
@@ -258,7 +258,7 @@ describe('Extras', () => {
         container
       );
 
-      expect(isDOMinsideVNode(container.querySelector('#target'), vNode)).toBe(true);
+      expect(isDOMInsideVNode(container.querySelector('#target'), vNode)).toBe(true);
     });
   });
 });

@@ -1,7 +1,7 @@
 import { Component, VNode } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-export function isDOMinsideVNode(DOM: Element, vNode: VNode): boolean {
+export function isDOMInsideVNode(DOM: Element, vNode: VNode): boolean {
   const stack = [vNode];
   let _vNode;
   let flags;
@@ -39,10 +39,10 @@ export function isDOMinsideVNode(DOM: Element, vNode: VNode): boolean {
   return false;
 }
 
-export function isDOMinsideComponent(DOM: Element, instance: Component<any, any>) {
+export function isDOMInsideComponent(DOM: Element, instance: Component<any, any>) {
   if (instance.$UN) {
     return false;
   }
 
-  return isDOMinsideVNode(DOM, instance.$LI);
+  return isDOMInsideVNode(DOM, instance.$LI);
 }
