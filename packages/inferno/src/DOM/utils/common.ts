@@ -215,13 +215,11 @@ export function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations
       refOrInstance = vNode.children;
       instanceProps = vNode.props;
       vNode = children.$LI;
-    }
-    if (flags & VNodeFlags.ComponentFunction) {
+    } else if (flags & VNodeFlags.ComponentFunction) {
       refOrInstance = vNode.ref;
       instanceProps = vNode.props;
       vNode = children;
-    }
-    if (flags & VNodeFlags.Fragment) {
+    } else if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
         vNode = children;
       } else {
