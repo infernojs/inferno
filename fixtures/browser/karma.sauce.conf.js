@@ -7,31 +7,20 @@ const customLaunchers = {
     base: 'SauceLabs',
     browserName: 'chrome'
   },
-  slIphone5: {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    version: '10.3'
-  },
-  slSafari8: {
+  slSafari14: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.10'
+    version: '14'
   },
-  slSafari9: {
+  slSafari15: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.11'
+    version: '15'
   },
   sl_mac_firfox: {
     base: 'SauceLabs',
     browserName: 'firefox',
     platform: 'OS X 10.12'
-  },
-  slIE11: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows 7',
-    version: '11'
   },
   slEdge13: {
     base: 'SauceLabs',
@@ -53,11 +42,6 @@ const customLaunchers = {
   slFirefox: {
     base: 'SauceLabs',
     browserName: 'firefox'
-  },
-  slAndroid5: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    version: '5.1'
   },
   slAndroid7: {
     base: 'SauceLabs',
