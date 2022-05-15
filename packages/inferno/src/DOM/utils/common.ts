@@ -5,7 +5,7 @@ import { isLinkEventObject } from '../events/linkEvent';
 import {  } from "../../core/types";
 
 // We need EMPTY_OBJ defined in one place.
-// Its used for comparison so we cant inline it into shared
+// It's used for comparison, so we can't inline it into shared
 export const EMPTY_OBJ = {};
 // @ts-ignore
 export const Fragment: Inferno.ExoticComponent<{ children?: Inferno.InfernoNode | undefined }> = '$F';
@@ -34,7 +34,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export function normalizeEventName(name) {
-  return name.substr(2).toLowerCase();
+  return name.substring(2).toLowerCase();
 }
 
 export function appendChild(parentDOM, dom) {
