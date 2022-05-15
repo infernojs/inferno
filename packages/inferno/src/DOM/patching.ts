@@ -63,7 +63,6 @@ export function patch(
       replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations);
     } else {
       // Last vNode is not in use, it has crashed at application level. Just mount nextVNode and ignore last one
-      // TODO: What does this mean? Should we not not call animations here?
       mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
     }
   } else if (nextFlags & VNodeFlags.Element) {
@@ -78,11 +77,6 @@ export function patch(
     patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations);
   } else {
     patchPortal(lastVNode, nextVNode, context, lifecycle, animations);
-  }
-
-  // Invoke move animations when all moves have been calculated
-  if (animations.componentWillMove.length > 0) {
-    callAllMoveAnimationHooks(animations.componentWillMove);
   }
 }
 
@@ -784,6 +778,10 @@ function patchKeyedChildrenComplex(
       } else {
         j--;
       }
+    }
+    // Invoke move animations when all moves have been calculated
+    if (animations.componentWillMove.length > 0) {
+      callAllMoveAnimationHooks(animations.componentWillMove);
     }
   } else if (patched !== bLeft) {
     // when patched count doesn't match b length we need to insert those new ones
