@@ -1,4 +1,3 @@
-import { render } from 'inferno';
 import { renderToStaticMarkup } from 'inferno-server';
 import { Prompt, Redirect, Route, StaticRouter } from 'inferno-router';
 

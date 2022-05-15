@@ -1,20 +1,5 @@
 import { createContainerWithHTML, innerHTML, sortAttributes, triggerEvent, validateNodeTree } from 'inferno-utils';
 
-function styleStringToArray(styleString) {
-  const splittedWords = styleString.split(';');
-  const arr = [];
-
-  for (let i = 0; i < splittedWords.length; i++) {
-    const word = splittedWords[i].trim();
-
-    if (word !== '') {
-      arr.push(word);
-    }
-  }
-
-  return arr.sort();
-}
-
 describe('Utils', () => {
   describe('sortAttributes', () => {
     it('should return sorted attributes on HTML strings', () => {

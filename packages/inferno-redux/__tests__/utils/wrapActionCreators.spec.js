@@ -1,4 +1,4 @@
-import { wrapActionCreators } from '../../src/utils/wrapActionCreators';
+import { wrapActionCreators } from 'inferno-redux';
 
 describe('Utils', () => {
   describe('wrapActionCreators', () => {

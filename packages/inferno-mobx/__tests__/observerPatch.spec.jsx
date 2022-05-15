@@ -2,7 +2,6 @@ import { Component, render } from 'inferno';
 import * as mobx from 'mobx';
 import { inject, observer, observerPatch } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
-import { warning } from 'inferno-shared';
 
 const getDNode = (obj, prop) => obj.$mobx.values[prop];
 

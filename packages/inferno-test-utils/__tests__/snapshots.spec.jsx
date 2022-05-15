@@ -2,24 +2,24 @@ import { Component, createFragment, Fragment } from 'inferno';
 import { renderToSnapshot } from 'inferno-test-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
 
-describe('Snapshots', () => {
-  class Foobar extends Component {
-    render({ children }) {
-      return <div className="Testing">{children}</div>;
+if (window.usingJest) {
+  describe('Snapshots', () => {
+    class Foobar extends Component {
+      render({ children }) {
+        return <div className="Testing">{children}</div>;
+      }
     }
-  }
 
-  function Testing({ children }) {
-    return (
-      <span>
-        {children}
-        Extra
-      </span>
-    );
-  }
+    function Testing({ children }) {
+      return (
+        <span>
+          {children}
+          Extra
+        </span>
+      );
+    }
 
-  describe('JSX', () => {
-    if (window.usingJest) {
+    describe('JSX', () => {
       it('Should render attributes and className', () => {
         expect(renderToSnapshot(<Foobar />)).toMatchSnapshot();
       });
@@ -200,6 +200,6 @@ describe('Snapshots', () => {
 
         expect(renderToSnapshot(<App />)).toMatchSnapshot();
       });
-    }
+    });
   });
-});
+}

@@ -4,7 +4,7 @@ import { updateClassComponent } from '../DOM/patching';
 import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMFromVNode, renderCheck } from '../DOM/utils/common';
 import { IComponent } from './types';
 
-const QUEUE: Component<any, any>[] = [];
+const COMPONENTS_QUEUE: Component<any, any>[] = [];
 
 const nextTick =
   typeof Promise !== 'undefined'
@@ -31,7 +31,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
 
   if (!component.$BR) {
     if (!renderCheck.v) {
-      if (QUEUE.length === 0) {
+      if (COMPONENTS_QUEUE.length === 0) {
         applyState(component, force);
         if (isFunction(callback)) {
           callback.call(component);
@@ -39,8 +39,8 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: any, call
         return;
       }
     }
-    if (QUEUE.indexOf(component) === -1) {
-      QUEUE.push(component);
+    if (COMPONENTS_QUEUE.indexOf(component) === -1) {
+      COMPONENTS_QUEUE.push(component);
     }
     if (force) {
       component.$F = true;
@@ -76,7 +76,7 @@ export function rerender() {
   let component;
   microTaskPending = false;
 
-  while ((component = QUEUE.shift())) {
+  while ((component = COMPONENTS_QUEUE.shift())) {
     if (!component.$UN) {
       const force = component.$F;
       component.$F = false;
@@ -143,7 +143,6 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $L: Function[] | null = null; // Current lifecycle of this component
   public $SVG: boolean = false; // Flag to keep track if component is inside SVG tree
   public $F: boolean = false; // Force update flag
-  public $MV: boolean = false; // Coordinating a move animation (set on parent node)
 
   constructor(props?: P, context?: any) {
     this.props = props || (EMPTY_OBJ as P);

@@ -59,7 +59,9 @@ describe('Mobx Observer', () => {
     document.body.removeChild(container);
   });
 
-  trackComponents();
+  beforeAll(function () {
+    trackComponents();
+  });
 
   it('nestedRendering', () => {
     render(<App />, container);

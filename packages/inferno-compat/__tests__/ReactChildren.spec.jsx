@@ -11,7 +11,6 @@ import React from 'inferno-compat';
 
 describe('ReactChildren', function () {
   var ReactChildren;
-  var ReactFragment;
 
   beforeEach(function () {
     ReactChildren = React.Children;

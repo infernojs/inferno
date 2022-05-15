@@ -61,7 +61,7 @@ export function unmount(vNode, animations: AnimationQueues) {
       let childAnimations = animations;
       ref = vNode.ref;
       if (!isNullOrUndef(ref)) {
-        let domEl : Element | null = null;
+        let domEl: Element | null = null;
 
         if (isFunction(ref.onComponentWillUnmount)) {
           domEl = findDOMFromVNode(vNode, true);
