@@ -22,16 +22,9 @@ const customLaunchers = {
     browserName: 'firefox',
     platform: 'OS X 10.12'
   },
-  slEdge13: {
+  slEdge: {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
-    version: '13',
-    platform: 'Windows 10'
-  },
-  slEdge18: {
-    base: 'SauceLabs',
-    browserName: 'MicrosoftEdge',
-    version: '18',
     platform: 'Windows 10'
   },
   sl_mac_chrome: {
