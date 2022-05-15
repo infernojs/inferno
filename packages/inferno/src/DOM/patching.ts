@@ -419,7 +419,7 @@ export function updateClassComponent(
 
     patch(instance.$LI, nextInput, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, animations);
 
-    // Dont update Last input, until patch has been succesfully executed
+    // Don't update Last input, until patch has been successfully executed
     instance.$LI = nextInput;
 
     if (isFunction(instance.componentDidUpdate)) {
