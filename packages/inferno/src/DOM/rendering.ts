@@ -67,11 +67,7 @@ export function __render(
       remove(rootInput as VNode, parentDOM as Element, animations);
       (parentDOM as any).$V = null;
     } else {
-      if ((input as VNode).flags & VNodeFlags.InUse) {
-        input = directClone(input as VNode);
-      }
-      patch(rootInput as VNode, input as VNode, parentDOM as Element, context, false, null, lifecycle, animations);
-      rootInput = (parentDOM as any).$V = input as VNode;
+      rootInput = (parentDOM as any).$V = patch(rootInput as VNode, input as VNode, parentDOM as Element, context, false, null, lifecycle, animations);
     }
   }
   callAll(lifecycle);

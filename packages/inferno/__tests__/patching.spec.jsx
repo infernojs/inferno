@@ -766,4 +766,83 @@ describe('patching routine', () => {
       });
     });
   });
+
+  describe('static vNode $IsStatic', function () {
+    it('Should be able to swap between static nodes', function () {
+      function Swapper(props) {
+        if (props.swap) {
+          return <svg $IsStatic><path d="x" $IsStatic></path></svg>;
+        }
+
+        return <svg $IsStatic><circle $IsStatic></circle><path $IsStatic></path></svg>
+      }
+
+
+      // mount first
+      render(<Swapper swap={true} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><path d=\"x\"></path></svg>");
+
+      // mount second
+      render(<Swapper swap={false} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><circle></circle><path></path></svg>");
+
+      // patch second -> first
+      render(<Swapper swap={true} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><path d=\"x\"></path></svg>");
+
+      // patch first -> second
+      render(<Swapper swap={false} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><circle></circle><path></path></svg>");
+    });
+
+    it('Should be able to swap between static nodes when normalization is needed', function () {
+      function Swapper(props) {
+        if (props.swap) {
+          return <svg><path d="x" $IsStatic></path>{props.swap2 ? <g $IsStatic></g> : null}</svg>;
+        }
+
+        return (
+            <svg>
+              {props.swap2 ? <g $IsStatic></g> : null}
+              <circle $IsStatic></circle>
+              <path $IsStatic></path>
+              {props.swap2 ? <g $IsStatic></g> : null}
+            </svg>
+          );
+      }
+
+
+      // mount first
+      render(<Swapper swap={true} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><path d=\"x\"></path></svg>");
+
+      // mount second
+      render(<Swapper swap={false} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><circle></circle><path></path></svg>");
+
+      // patch second -> first
+      render(<Swapper swap={true} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><path d=\"x\"></path></svg>");
+
+      // patch first -> second
+      render(<Swapper swap={false} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><circle></circle><path></path></svg>");
+
+      render(<Swapper swap={true} swap2={true} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><path d=\"x\"></path><g></g></svg>");
+
+      render(<Swapper swap={false} swap2={true} />, container);
+
+      expect(container.innerHTML).toEqual("<svg><g></g><circle></circle><path></path><g></g></svg>");
+    });
+  });
 });

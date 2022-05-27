@@ -28,7 +28,7 @@ import {
   scryVNodesWithType
 } from 'inferno-test-utils';
 
-const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'isValidated', 'key', 'ref', 'props', 'type'].sort();
+const VNodeKeys = ['children', 'childFlags', 'className', 'dom', 'flags', 'isValidated', 'key', 'ref', 'props', 'type', 'template'].sort();
 
 const createDOMElement = (tagName) => document.createElement(tagName);
 

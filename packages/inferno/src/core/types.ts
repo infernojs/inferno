@@ -112,7 +112,7 @@ export interface VNode {
   key: null | number | string;
   props: any;
   ref: any;
-  template: VNode | null;
+  staticDom: Element | null;
   type: any;
 }
 

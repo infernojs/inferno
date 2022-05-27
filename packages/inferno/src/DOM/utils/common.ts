@@ -41,7 +41,7 @@ export function appendChild(parentDOM, dom) {
   parentDOM.appendChild(dom);
 }
 
-export function insertOrAppend(parentDOM: Element, newNode, nextNode) {
+export function insertOrAppend(parentDOM: Element, newNode: Element, nextNode: Element | null) {
   if (isNull(nextNode)) {
     appendChild(parentDOM, newNode);
   } else {
@@ -65,8 +65,9 @@ export function replaceChild(parentDOM: Element, newDom, lastDom) {
   parentDOM.replaceChild(newDom, lastDom);
 }
 
-export function removeChild(parentDOM: Element, childNode: Element) {
-  parentDOM.removeChild(childNode);
+export function removeChild(parentDOM: Element, vNode: VNode) {
+  parentDOM.removeChild(vNode.dom as Element);
+  vNode.dom = null;
 }
 
 export function callAll(arrayFn: Function[]) {
@@ -141,7 +142,7 @@ export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferredRemoval:
     if (flags & VNodeFlags.DOMRef) {
       // On deferred removals the node might disappear because of later operations
       if (!deferredRemoval || (vNode.dom as Element).parentNode === parentDOM) {
-        removeChild(parentDOM, vNode.dom as Element);
+        removeChild(parentDOM, vNode);
       }
       return;
     }

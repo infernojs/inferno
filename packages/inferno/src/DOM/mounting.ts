@@ -25,12 +25,15 @@ export function mount(
   nextNode: Element | null,
   lifecycle: Function[],
   animations: AnimationQueues
-): void {
+): VNode {
   const flags = (vNode.flags |= VNodeFlags.InUse);
+  const isStatic = (flags & VNodeFlags.IsStatic) > 0;
 
-  if ((flags & VNodeFlags.IsStatic) > 0 && vNode.template && vNode.template.dom) {
-    vNode.dom = documentCloneDom(vNode.template.dom)
-  } if (flags & VNodeFlags.Element) {
+  if (isStatic && vNode.staticDom) {
+    mountTemplate(vNode, parentDOM, nextNode);
+    return vNode;
+  }
+  if (flags & VNodeFlags.Element) {
     mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
   } else if (flags & VNodeFlags.ComponentClass) {
     mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
@@ -54,9 +57,66 @@ export function mount(
       throwError(`mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
     }
   }
-  if ((flags & VNodeFlags.IsStatic) > 0 && !vNode.template) {
-    vNode.template = vNode;
+  if (isStatic && !vNode.staticDom) {
+    vNode.staticDom = vNode.dom;
   }
+
+  return vNode;
+}
+
+export function mountSingle(
+  vNode: VNode,
+  parentDOM: Element | null,
+  parentVNode: VNode,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues
+): VNode {
+  if (vNode.flags & VNodeFlags.InUse) {
+    vNode = parentVNode.children = directClone(vNode);
+  }
+
+  return mount(
+    vNode,
+    parentDOM,
+    context,
+    isSVG,
+    nextNode,
+    lifecycle,
+    animations
+  )
+}
+
+export function mountArrayRef(
+  vNode: VNode,
+  parentDOM: Element | null,
+  context: Object,
+  isSVG: boolean,
+  nextNode: Element | null,
+  lifecycle: Function[],
+  animations: AnimationQueues,
+  nextArrayRef: VNode[],
+  nextArrayIndex: number
+): VNode {
+  const isInUse = (vNode.flags & VNodeFlags.InUse) > 0;
+
+  const newNextNode = mount(
+    vNode,
+    parentDOM,
+    context,
+    isSVG,
+    nextNode,
+    lifecycle,
+    animations
+  );
+
+  if (isInUse) {
+    nextArrayRef[nextArrayIndex] = newNextNode;
+  }
+
+  return newNextNode;
 }
 
 function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues) {
@@ -95,6 +155,18 @@ export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Ele
   }
 }
 
+function mountTemplate(
+  vNode: VNode,
+  parentDOM: Element | null,
+  nextNode: Element | null
+) {
+  const dom = (vNode.dom = documentCloneDom(vNode.staticDom as Element));
+
+  if (!isNull(parentDOM)) {
+    insertOrAppend(parentDOM, dom, nextNode);
+  }
+}
+
 export function mountElement(
   vNode: VNode,
   parentDOM: Element | null,
@@ -109,7 +181,7 @@ export function mountElement(
   const className = vNode.className;
   const childFlags = vNode.childFlags;
   const dom = (vNode.dom = documentCreateElement(vNode.type, (isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0)));
-  let children = vNode.children;
+  const children = vNode.children;
 
   if (!isNullOrUndef(className) && className !== '') {
     if (isSVG) {
@@ -129,10 +201,7 @@ export function mountElement(
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
     if (childFlags === ChildFlags.HasVNodeChildren) {
-      if ((children as VNode).flags & VNodeFlags.InUse) {
-        vNode.children = children = directClone(children as VNode);
-      }
-      mount(children as VNode, dom, context, childrenIsSVG, null, lifecycle, animations);
+      mountSingle(children as VNode, dom, vNode, context, childrenIsSVG, null, lifecycle, animations);
     } else if (childFlags === ChildFlags.HasKeyedChildren || childFlags === ChildFlags.HasNonKeyedChildren) {
       mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle, animations);
     }
@@ -162,14 +231,9 @@ export function mountArrayChildren(
   nextNode: Element | null,
   lifecycle: Function[],
   animations: AnimationQueues
-): void {
+) {
   for (let i = 0; i < children.length; ++i) {
-    let child = children[i];
-
-    if (child.flags & VNodeFlags.InUse) {
-      children[i] = child = directClone(child);
-    }
-    mount(child, dom, context, isSVG, nextNode, lifecycle, animations);
+    mountArrayRef(children[i], dom, context, isSVG, nextNode, lifecycle, animations, children, i);
   }
 }
 
@@ -189,7 +253,7 @@ export function mountClassComponent(
   if (isFunction(instance.componentDidAppear)) {
     childAnimations = new AnimationQueues();
   }
-  mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
+  instance.$LI = mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
 }
 
@@ -209,7 +273,7 @@ export function mountFunctionalComponent(
     childAnimations = new AnimationQueues();
   }
 
-  mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle, childAnimations);
+  vNode.children = mount(normalizeRoot(renderFunctionalComponent(vNode, context)), parentDOM, context, isSVG, nextNode, lifecycle, childAnimations);
   mountFunctionalComponentCallbacks(vNode, lifecycle, animations);
 }
 

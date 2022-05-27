@@ -7,7 +7,7 @@ import { Component } from 'inferno';
 
 const keyPrefix = '$';
 
-function V(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type, template: VNode | null) {
+function V(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type, staticDom: Element | null) {
   if (process.env.NODE_ENV !== 'production') {
     this.isValidated = false;
   }
@@ -19,8 +19,8 @@ function V(childFlags: ChildFlags, children, className: string | null | undefine
   this.key = key === void 0 ? null : key;
   this.props = props === void 0 ? null : props;
   this.ref = ref === void 0 ? null : ref;
+  this.staticDom = staticDom;
   this.type = type;
-  this.template = template;
 }
 
 export function createVNode<P>(
@@ -246,7 +246,7 @@ export function directClone(vNodeToClone: VNode): VNode {
       props,
       vNodeToClone.ref,
       vNodeToClone.type,
-      (flags & VNodeFlags.IsStatic) > 0 ? vNodeToClone : null
+      vNodeToClone.staticDom
     ) as VNode;
   }
 
