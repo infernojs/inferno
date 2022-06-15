@@ -1,15 +1,15 @@
-import fs, {readFileSync} from 'fs';
-import {fileURLToPath} from 'url';
-import {join, dirname} from 'path';
+import fs, { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { join, dirname } from 'path';
 
-import {createPlugins} from './plugins/index.js';
+import { createPlugins } from './plugins/index.js';
 
-import {rollup} from 'rollup';
+import { rollup } from 'rollup';
 
 import minimist from 'minimist';
 
 const {
-  promises: {mkdir: mkdirAsync},
+  promises: { mkdir: mkdirAsync },
   lstatSync,
   readdirSync
 } = fs;
@@ -23,7 +23,6 @@ const pkgJSON = JSON.parse(pkgJSONtext);
 
 // Self calling function to allow async/await for readability
 (async () => {
-
   if (pkgJSON.private || !pkgJSON.rollup) {
     return;
   }
@@ -51,7 +50,7 @@ const pkgJSON = JSON.parse(pkgJSONtext);
   });
 
   // Get info from package.json
-  const {version, rollup: rollupConfig = {}, dependencies = {}, devDependencies = {}, peerDependencies = {}} = pkgJSON;
+  const { version, rollup: rollupConfig = {}, dependencies = {}, devDependencies = {}, peerDependencies = {} } = pkgJSON;
 
   // Figure out from package.json what dependencies to bundle
   function exclusionFilter(name) {
@@ -77,9 +76,9 @@ const pkgJSON = JSON.parse(pkgJSONtext);
 
   const targets = [
     //esmDev --name=index --ext=.dev.esm.js --env=development --format=es --minify=false
-    Object.assign({}, defaultOptions, {env: 'development', format: 'es', minify: false, ext: '.dev.esm.js'}),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'es', minify: false, ext: '.dev.esm.js' }),
     //esmProd --name=index --ext=.esm.js --env=production --format=es --minify=false
-    Object.assign({}, defaultOptions, {env: 'production', format: 'es', minify: false, ext: '.esm.js'}),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'es', minify: false, ext: '.esm.js' }),
     //esNext --name=index --ext=.esnext.js --env=production --format=es --esnext=true --minify=false
     Object.assign({}, defaultOptions, {
       env: 'production',
@@ -89,9 +88,9 @@ const pkgJSON = JSON.parse(pkgJSONtext);
       ext: '.esnext.js'
     }),
     //cjsDev --env=development --format=cjs --replace=true --name=index.cjs --minify=false
-    Object.assign({}, defaultOptions, {env: 'development', format: 'cjs', minify: false, ext: '.cjs.js'}),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'cjs', minify: false, ext: '.cjs.js' }),
     //cjsProd --env=production --format=cjs --replace=true --name=index.cjs --minify=true --ext=.min.js
-    Object.assign({}, defaultOptions, {env: 'production', format: 'cjs', minify: true, ext: '.cjs.min.js'}),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'cjs', minify: true, ext: '.cjs.min.js' }),
     //umdDev --minify=false
     Object.assign({}, defaultOptions, {
       env: 'development',
@@ -138,7 +137,7 @@ const pkgJSON = JSON.parse(pkgJSONtext);
     const rollupPlugins = createPlugins(version, options);
 
     // Transform
-    const {write} = await rollup({
+    const { write } = await rollup({
       input: join(cwd, 'tmpDist/index.js'),
       external: external,
       plugins: rollupPlugins

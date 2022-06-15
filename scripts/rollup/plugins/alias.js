@@ -1,7 +1,7 @@
-import {dirname, join, resolve} from 'path';
+import { dirname, join, resolve } from 'path';
 
 import alias from '@rollup/plugin-alias';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '../../../');

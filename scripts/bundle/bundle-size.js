@@ -1,11 +1,11 @@
-import fs, {readFileSync} from 'fs';
+import fs, { readFileSync } from 'fs';
 import glob from 'glob';
-import {promisify} from 'util';
+import { promisify } from 'util';
 import Table from 'cli-table';
-import {gzipSize} from 'gzip-size';
+import { gzipSize } from 'gzip-size';
 import fileSize from 'filesize';
-import {basename, dirname, join} from 'path';
-import {fileURLToPath} from 'url';
+import { basename, dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PACKAGES_DIR = join(__dirname, '../../packages');
