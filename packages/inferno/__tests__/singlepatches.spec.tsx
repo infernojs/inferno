@@ -316,10 +316,10 @@ describe('All single patch variations', () => {
       let mountCounter = 0;
 
       type scuTestType = {
-        onComponentShouldUpdate: () => boolean
-      }
+        onComponentShouldUpdate: () => boolean;
+      };
 
-      const Static = function(_: scuTestType) {
+      const Static = function (_: scuTestType) {
         return <div>{counter}</div>;
       };
 

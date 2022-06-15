@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, Inferno, VNode } from "inferno";
+import { Component, createComponentVNode, Inferno, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createHashHistory } from 'history';
 import { Router } from './Router';

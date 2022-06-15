@@ -1,5 +1,6 @@
-const typescript = require('typescript');
-const babelJest = require('babel-jest').default;
+import typescript from 'typescript';
+import babelJest from 'babel-jest';
+import {readFileSync} from 'fs';
 
 const transformer = babelJest.createTransformer({
   babelrc: false,
@@ -20,9 +21,9 @@ const transformer = babelJest.createTransformer({
   ]
 });
 
-const tsConfig = require('./tsconfig.json');
+const tsConfig = JSON.parse(readFileSync('./tsconfig.json'));
 
-module.exports = {
+export default {
   process(src, path, config) {
     return transformer.process(
       typescript.transpile(
@@ -35,4 +36,4 @@ module.exports = {
       config
     );
   },
-};
+}

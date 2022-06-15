@@ -1,11 +1,4 @@
-import {
-  createComponentVNode,
-  createFragment,
-  createVNode,
-  getFlagsForElementVnode, IComponentConstructor, Inferno,
-  Key, Props,
-  VNode
-} from "inferno";
+import { createComponentVNode, createFragment, createVNode, getFlagsForElementVnode, IComponentConstructor, Inferno, Key, Props, VNode } from 'inferno';
 import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import StatelessComponent = Inferno.StatelessComponent;

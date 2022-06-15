@@ -1,4 +1,4 @@
-import { createComponentVNode, Inferno, VNode } from "inferno";
+import { createComponentVNode, Inferno, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Route } from './Route';
 import { ILinkProps, Link } from './Link';

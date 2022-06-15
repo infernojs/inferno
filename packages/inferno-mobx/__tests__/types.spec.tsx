@@ -23,10 +23,7 @@ describe('top level context', () => {
         return <div>{props.children}</div>;
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     it('Should be possible to return string from render SFC', () => {
@@ -35,10 +32,7 @@ describe('top level context', () => {
         return 'd';
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     it('Should be possible to return number from render SFC', () => {
@@ -47,10 +41,7 @@ describe('top level context', () => {
         return 1;
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     it('Should be possible to return null from render SFC', () => {
@@ -59,10 +50,7 @@ describe('top level context', () => {
         return null;
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     it('Should render Provider', () => {

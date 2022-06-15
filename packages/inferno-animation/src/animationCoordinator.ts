@@ -34,9 +34,7 @@ export function _globalAnimationGC() {
   for (const key in _globalAnimationSources) {
     if (--_globalAnimationSources[key].ticks < 0) {
       delete _globalAnimationSources[key];
-    } else  (
-      entriesLeft = true
-    )
+    } else entriesLeft = true;
   }
 
   _globalAnimationGCTick = entriesLeft ? requestAnimationFrame(_globalAnimationGC) : null;

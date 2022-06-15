@@ -51,7 +51,7 @@ describe('CreateElement (non-JSX)', () => {
   });
 
   it('Should check component props', () => {
-    type MyComponentProps = { className: string }
+    type MyComponentProps = { className: string };
 
     class App extends Component<MyComponentProps, any> {
       public render() {

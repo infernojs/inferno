@@ -1,8 +1,12 @@
-const { resolve, join } = require('path');
-const alias = require('@rollup/plugin-alias');
+import {dirname, join, resolve} from 'path';
+
+import alias from '@rollup/plugin-alias';
+import {fileURLToPath} from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '../../../');
 
-module.exports = alias({
+export const aliasPlugin = alias({
   resolve: ['.js'],
   entries: [
     { find: 'inferno', replacement: resolve(ROOT, 'packages/inferno/tmpDist/index.js') },

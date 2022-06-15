@@ -1,4 +1,4 @@
-import { Component, Inferno } from "inferno";
+import { Component, Inferno } from 'inferno';
 import { componentDidAppear, componentWillDisappear, componentWillMove, AnimationClass } from './animations';
 
 type AnimationProp = {

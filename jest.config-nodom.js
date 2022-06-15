@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   collectCoverageFrom: [
     "packages/*/src/**/*.ts",
     "!**/*.ts.js",
@@ -17,7 +17,6 @@ module.exports = {
     "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src/index.ts",
     "mobx": "<rootDir>/node_modules/mobx"
   },
-  rootDir: __dirname,
   setupFiles: [],
   testMatch: [
     "<rootDir>/packages/*/__tests__/**/*spec.server-nodom.@(js|ts)?(x)"
@@ -32,4 +31,4 @@ module.exports = {
   testEnvironment: "node",
   testRunner: "jest-jasmine2",
   reporters: [["jest-silent-reporter", { "useDots": true }]]
-};
+}

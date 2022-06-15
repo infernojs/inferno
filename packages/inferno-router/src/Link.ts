@@ -1,4 +1,4 @@
-import { createVNode, Inferno, InfernoMouseEvent, linkEvent, VNode } from "inferno";
+import { createVNode, Inferno, InfernoMouseEvent, linkEvent, VNode } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 import { combineFrom, isString } from 'inferno-shared';

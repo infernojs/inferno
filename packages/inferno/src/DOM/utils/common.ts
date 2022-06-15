@@ -84,7 +84,7 @@ function findChildVNode(vNode: VNode, startEdge: boolean, flags: VNodeFlags) {
   return children;
 }
 
-export function findDOMFromVNode(vNode: VNode, startEdge: boolean) : Element | null {
+export function findDOMFromVNode(vNode: VNode, startEdge: boolean): Element | null {
   let flags;
 
   while (vNode) {
@@ -251,7 +251,9 @@ export const renderCheck = {
 export const options: {
   componentComparator: ((lastVNode: VNode, nextVNode: VNode) => boolean) | null;
   createVNode: ((vNode: VNode) => void) | null;
-  renderComplete: ((rootInput: VNode | Inferno.InfernoNode, parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node) => void) | null;
+  renderComplete:
+    | ((rootInput: VNode | Inferno.InfernoNode, parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node) => void)
+    | null;
   reactStyles?: boolean;
 } = {
   componentComparator: null,

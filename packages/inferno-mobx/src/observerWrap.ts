@@ -12,11 +12,11 @@ function callDispose({ dispose }: { readonly dispose: () => void }): void {
 }
 
 interface InnerProperties {
-  readonly context: unknown
-  readonly dispose: () => void
-  readonly props: unknown
-  readonly self: VNode
-  readonly track: (f: () => void) => void
+  readonly context: unknown;
+  readonly dispose: () => void;
+  readonly props: unknown;
+  readonly self: VNode;
+  readonly track: (f: () => void) => void;
 }
 
 function innerVNode<T>(type: (p: InnerProperties) => T, properties: InnerProperties): VNode {
@@ -34,10 +34,10 @@ function innerVNode<T>(type: (p: InnerProperties) => T, properties: InnerPropert
 function makeProxy(target: VNode): { $V: InfernoNode } {
   return {
     get $V() {
-      return target.children
+      return target.children;
     },
     set $V(value) {
-      target.children = value
+      target.children = value;
     }
   };
 }
@@ -45,8 +45,8 @@ function makeProxy(target: VNode): { $V: InfernoNode } {
 type UpdateHook = (this: RefType, prev: unknown, next: unknown) => void;
 
 interface RefType {
-  readonly onComponentDidUpdate?: UpdateHook
-  readonly onComponentWillUpdate?: UpdateHook
+  readonly onComponentDidUpdate?: UpdateHook;
+  readonly onComponentWillUpdate?: UpdateHook;
 }
 
 function getUpdateHooks(ref: RefType | null, props: unknown): (null | (() => void))[] {
@@ -70,7 +70,7 @@ export function observerWrap<T extends Render>(base: T): typeof base {
     }
     // @ts-ignore
     if (base.prototype && base.prototype.render) {
-      throwError("observerWrap should not be applied to constructors.");
+      throwError('observerWrap should not be applied to constructors.');
     }
     // @ts-ignore
     if (base.isMobXInfernoObserver) {
@@ -83,7 +83,7 @@ export function observerWrap<T extends Render>(base: T): typeof base {
     track(() => {
       try {
         result = base.call(self, props, context);
-      } catch(error) {
+      } catch (error) {
         caught = error;
       }
     });

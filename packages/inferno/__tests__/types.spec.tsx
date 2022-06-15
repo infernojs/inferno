@@ -20,10 +20,7 @@ describe('top level context', () => {
         return <div>{props.children}</div>;
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     it('Should be possible to return string from render SFC', () => {
@@ -31,10 +28,7 @@ describe('top level context', () => {
         return 'd';
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     it('Should be possible to return number from render SFC', () => {
@@ -42,10 +36,7 @@ describe('top level context', () => {
         return 1;
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     it('Should be possible to return null from render SFC', () => {
@@ -53,10 +44,7 @@ describe('top level context', () => {
         return null;
       };
 
-      render(
-        <MyComponent />,
-        container
-      );
+      render(<MyComponent />, container);
     });
 
     describe('class component', function () {
@@ -67,10 +55,7 @@ describe('top level context', () => {
           }
         }
 
-        render(
-          <MyComponent />,
-          container
-        );
+        render(<MyComponent />, container);
       });
 
       it('Should render children directly (props)', () => {
@@ -80,10 +65,7 @@ describe('top level context', () => {
           }
         }
 
-        render(
-          <MyComponent />,
-          container
-        );
+        render(<MyComponent />, container);
       });
 
       it('Should render children directly (this)', () => {
@@ -93,10 +75,7 @@ describe('top level context', () => {
           }
         }
 
-        render(
-          <MyComponent />,
-          container
-        );
+        render(<MyComponent />, container);
       });
 
       it('Should be possible to return string from class component render', () => {
@@ -106,10 +85,7 @@ describe('top level context', () => {
           }
         }
 
-        render(
-          <MyComponent />,
-          container
-        );
+        render(<MyComponent />, container);
       });
 
       it('Should be possible to return number from class component render', () => {
@@ -119,10 +95,7 @@ describe('top level context', () => {
           }
         }
 
-        render(
-          <MyComponent />,
-          container
-        );
+        render(<MyComponent />, container);
       });
 
       it('Should be possible to return null from class component render', () => {
@@ -132,11 +105,8 @@ describe('top level context', () => {
           }
         }
 
-        render(
-          <MyComponent />,
-          container
-        );
+        render(<MyComponent />, container);
       });
-    })
+    });
   });
 });

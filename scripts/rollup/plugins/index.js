@@ -1,11 +1,16 @@
-const bublePlugin = require('rollup-plugin-buble');
-const commonjs = require('rollup-plugin-commonjs');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const replacePlugin = require('rollup-plugin-replace');
-const terser = require('rollup-plugin-terser').terser;
-const aliasPlugin = require('./alias');
+import bublePlugin from 'rollup-plugin-buble';
 
-module.exports = function (version, options) {
+import commonjs from 'rollup-plugin-commonjs';
+
+import nodeResolve from 'rollup-plugin-node-resolve';
+
+import replacePlugin from 'rollup-plugin-replace';
+
+import {terser} from 'rollup-plugin-terser';
+
+import {aliasPlugin} from './alias.js';
+
+export function createPlugins(version, options) {
   const plugins = [
     aliasPlugin,
     nodeResolve({
@@ -58,4 +63,4 @@ module.exports = function (version, options) {
   }
 
   return plugins;
-};
+}

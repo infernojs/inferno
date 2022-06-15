@@ -1,12 +1,4 @@
-import {
-  createComponentVNode,
-  createFragment,
-  createVNode,
-  Fragment,
-  getFlagsForElementVnode,
-  Inferno,
-  VNode
-} from "inferno";
+import { createComponentVNode, createFragment, createVNode, Fragment, getFlagsForElementVnode, Inferno, VNode } from 'inferno';
 import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 

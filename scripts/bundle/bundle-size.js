@@ -1,15 +1,15 @@
-#!/usr/bin/env node
+import fs, {readFileSync} from 'fs';
+import glob from 'glob';
+import {promisify} from 'util';
+import Table from 'cli-table';
+import {gzipSize} from 'gzip-size';
+import fileSize from 'filesize';
+import {basename, dirname, join} from 'path';
+import {fileURLToPath} from 'url';
 
-const fs = require('fs');
-const glob = require('glob');
-const { promisify } = require('util');
-const { join, basename } = require('path');
-const fileSize = require('filesize');
-const gzipSize = require('gzip-size');
-const Table = require('cli-table');
-
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const PACKAGES_DIR = join(__dirname, '../../packages');
-const INFERNO_VERSION = require(join(__dirname, '../../package.json')).version;
+const INFERNO_VERSION = JSON.parse(readFileSync(join(__dirname, '../../package.json'))).version;
 const readFileAsync = promisify(fs.readFile);
 const globAsync = promisify(glob);
 
@@ -17,7 +17,7 @@ async function printFileSizes() {
   const dirs = await globAsync(PACKAGES_DIR + '/*');
 
   // Exclude private packages
-  const packages = dirs.filter((d) => !require(join(d, 'package.json')).private).map((file) => basename(file));
+  const packages = dirs.filter((d) => !JSON.parse(readFileSync(join(d, 'package.json'))).private).map((file) => basename(file));
 
   const table = new Table({
     head: [

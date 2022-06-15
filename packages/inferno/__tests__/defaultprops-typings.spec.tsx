@@ -1,5 +1,4 @@
-import { Component, render } from "inferno";
-
+import { Component, render } from 'inferno';
 
 describe('default prop typings', () => {
   let container;
@@ -16,9 +15,9 @@ describe('default prop typings', () => {
   });
 
   type MyComponentProps = {
-    name: string,
-    value: number
-  }
+    name: string;
+    value: number;
+  };
 
   class MyComponent extends Component<MyComponentProps, any> {
     constructor(props, state) {
@@ -26,12 +25,12 @@ describe('default prop typings', () => {
     }
 
     public static defaultProps = {
-      name: "custom-component",
+      name: 'custom-component',
       value: 107
-    }
+    };
   }
 
   it('TSX Should not require properties from default props', () => {
-    render(<MyComponent name="new-name"/>, container);
+    render(<MyComponent name="new-name" />, container);
   });
-})
+});

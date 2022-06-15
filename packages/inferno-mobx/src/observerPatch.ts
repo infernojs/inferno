@@ -1,6 +1,6 @@
 import { warning } from 'inferno-shared';
 import { Reaction } from 'mobx';
-import { Inferno } from "inferno";
+import { Inferno } from 'inferno';
 
 type Render = (this, properties?, state?, context?) => Inferno.InfernoNode;
 
@@ -15,7 +15,7 @@ function makeObserverRender<R extends Render>(update: () => void, render: R, nam
     track(() => {
       try {
         rendered = render.apply(this, parameters);
-      } catch(error) {
+      } catch (error) {
         caught = error;
       }
     });

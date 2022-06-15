@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   collectCoverageFrom: [
     "packages/*/src/**/*.ts",
     "!**/*.ts.js",
@@ -17,7 +17,6 @@ module.exports = {
     "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src/index.ts",
     "mobx": "<rootDir>/node_modules/mobx"
   },
-  rootDir: __dirname,
   setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
   testMatch: [
     "<rootDir>/packages/*/__tests__/**/*spec.@(js|ts)?(x)",
@@ -33,4 +32,4 @@ module.exports = {
   testEnvironment: "jsdom",
   testRunner: "jest-jasmine2",
   reporters: [["jest-silent-reporter", { "useDots": true }]]
-};
+}

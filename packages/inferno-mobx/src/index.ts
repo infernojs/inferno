@@ -10,4 +10,17 @@ import { observerWrap } from './observerWrap';
 
 const onError = (fn) => errorsReporter.on(fn);
 
-export { errorsReporter, inject, observer, onError, EventEmitter, Observer, observerPatch, observerWrap, Provider, renderReporter, trackComponents, useStaticRendering };
+export {
+  errorsReporter,
+  inject,
+  observer,
+  onError,
+  EventEmitter,
+  Observer,
+  observerPatch,
+  observerWrap,
+  Provider,
+  renderReporter,
+  trackComponents,
+  useStaticRendering
+};

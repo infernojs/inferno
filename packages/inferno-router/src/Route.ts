@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, IComponentConstructor, Inferno } from "inferno";
+import { Component, createComponentVNode, IComponentConstructor, Inferno } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
@@ -35,8 +35,8 @@ export interface IRouteProps {
  * The public API for matching a single path and rendering.
  */
 type RouteState = {
-  match: boolean
-}
+  match: boolean;
+};
 
 class Route extends Component<IRouteProps, RouteState> {
   public getChildContext() {

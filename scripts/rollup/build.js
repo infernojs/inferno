@@ -1,37 +1,48 @@
+import fs, {readFileSync} from 'fs';
+import {fileURLToPath} from 'url';
+import {join, dirname} from 'path';
+
+import {createPlugins} from './plugins/index.js';
+
+import {rollup} from 'rollup';
+
+import minimist from 'minimist';
+
 const {
-  promises: { mkdir: mkdirAsync },
+  promises: {mkdir: mkdirAsync},
   lstatSync,
   readdirSync
-} = require('fs');
-const { join } = require('path');
-const createPlugins = require('./plugins');
-const { rollup } = require('rollup');
+} = fs;
 
 const cwd = process.cwd();
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '../../packages');
 
-const pkgJSON = require(join(cwd, 'package.json'));
-
-if (pkgJSON.private || !pkgJSON.rollup) {
-  return;
-}
-
-const args = require('minimist')(process.argv.slice(2));
-
-const moduleGlobals = readdirSync(ROOT)
-  .filter((path) => lstatSync(join(ROOT, path)).isDirectory())
-  .reduce((acc, pkgName) => {
-    const pkgJSON = require(join(ROOT, pkgName, 'package.json'));
-
-    if (pkgJSON.rollup && pkgJSON.rollup.moduleName) {
-      acc[pkgJSON.name] = pkgJSON.rollup.moduleName;
-    }
-
-    return acc;
-  }, {});
+const pkgJSONtext = readFileSync(join(cwd, 'package.json'));
+const pkgJSON = JSON.parse(pkgJSONtext);
 
 // Self calling function to allow async/await for readability
 (async () => {
+
+  if (pkgJSON.private || !pkgJSON.rollup) {
+    return;
+  }
+
+  const args = minimist(process.argv.slice(2));
+
+  const moduleGlobals = readdirSync(ROOT)
+    .filter((path) => lstatSync(join(ROOT, path)).isDirectory())
+    .reduce((acc, pkgName) => {
+      const pkgJSONtext = readFileSync(join(ROOT, pkgName, 'package.json'));
+      const pkgJSON = JSON.parse(pkgJSONtext);
+
+      if (pkgJSON.rollup && pkgJSON.rollup.moduleName) {
+        acc[pkgJSON.name] = pkgJSON.rollup.moduleName;
+      }
+
+      return acc;
+    }, {});
+
   // Create dist folder
   await mkdirAsync(join(cwd, 'dist')).catch((err) => {
     if (err.code !== 'EEXIST') {
@@ -40,12 +51,13 @@ const moduleGlobals = readdirSync(ROOT)
   });
 
   // Get info from package.json
-  const { version, rollup: rollupConfig = {}, dependencies = {}, devDependencies = {}, peerDependencies = {} } = pkgJSON;
+  const {version, rollup: rollupConfig = {}, dependencies = {}, devDependencies = {}, peerDependencies = {}} = pkgJSON;
 
   // Figure out from package.json what dependencies to bundle
   function exclusionFilter(name) {
     return !(rollupConfig.bundledDependencies || []).includes(name);
   }
+
   const deps = Object.assign({}, devDependencies, peerDependencies, dependencies);
   const external = Object.keys(deps)
     .filter(exclusionFilter)
@@ -65,19 +77,37 @@ const moduleGlobals = readdirSync(ROOT)
 
   const targets = [
     //esmDev --name=index --ext=.dev.esm.js --env=development --format=es --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'es', minify: false, ext: '.dev.esm.js' }),
+    Object.assign({}, defaultOptions, {env: 'development', format: 'es', minify: false, ext: '.dev.esm.js'}),
     //esmProd --name=index --ext=.esm.js --env=production --format=es --minify=false
-    Object.assign({}, defaultOptions, { env: 'production', format: 'es', minify: false, ext: '.esm.js' }),
+    Object.assign({}, defaultOptions, {env: 'production', format: 'es', minify: false, ext: '.esm.js'}),
     //esNext --name=index --ext=.esnext.js --env=production --format=es --esnext=true --minify=false
-    Object.assign({}, defaultOptions, { env: 'production', format: 'es', esnext: true, minify: false, ext: '.esnext.js' }),
+    Object.assign({}, defaultOptions, {
+      env: 'production',
+      format: 'es',
+      esnext: true,
+      minify: false,
+      ext: '.esnext.js'
+    }),
     //cjsDev --env=development --format=cjs --replace=true --name=index.cjs --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'cjs', minify: false, ext: '.cjs.js' }),
+    Object.assign({}, defaultOptions, {env: 'development', format: 'cjs', minify: false, ext: '.cjs.js'}),
     //cjsProd --env=production --format=cjs --replace=true --name=index.cjs --minify=true --ext=.min.js
-    Object.assign({}, defaultOptions, { env: 'production', format: 'cjs', minify: true, ext: '.cjs.min.js' }),
+    Object.assign({}, defaultOptions, {env: 'production', format: 'cjs', minify: true, ext: '.cjs.min.js'}),
     //umdDev --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'umd', minify: false, name: pkgJSON.name, ext: '.js' }),
+    Object.assign({}, defaultOptions, {
+      env: 'development',
+      format: 'umd',
+      minify: false,
+      name: pkgJSON.name,
+      ext: '.js'
+    }),
     //umdProd --env=production --ext=.min.js
-    Object.assign({}, defaultOptions, { env: 'production', format: 'umd', minify: true, name: pkgJSON.name, ext: '.min.js' })
+    Object.assign({}, defaultOptions, {
+      env: 'production',
+      format: 'umd',
+      minify: true,
+      name: pkgJSON.name,
+      ext: '.min.js'
+    })
   ].filter((target) => {
     if (args['target-ext']) {
       return target.ext === args['target-ext'];
@@ -108,7 +138,7 @@ const moduleGlobals = readdirSync(ROOT)
     const rollupPlugins = createPlugins(version, options);
 
     // Transform
-    const { write } = await rollup({
+    const {write} = await rollup({
       input: join(cwd, 'tmpDist/index.js'),
       external: external,
       plugins: rollupPlugins
