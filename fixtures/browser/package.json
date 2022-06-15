@@ -18,24 +18,23 @@
     }
   },
   "dependencies": {
-    "@babel/core": "7.18.2",
+    "@babel/core": "7.18.5",
     "@babel/helper-replace-supers": "7.18.2",
     "@babel/plugin-proposal-class-properties": "7.17.12",
     "@babel/plugin-proposal-decorators": "7.18.2",
     "@babel/plugin-proposal-object-rest-spread": "7.18.0",
     "@babel/preset-env": "7.18.2",
     "babel-loader": "^8.2.5",
-    "jasmine-core": "^4.1.1",
-    "karma": "^6.3.20",
+    "jasmine-core": "^4.2.0",
+    "karma": "^6.4.0",
     "karma-chrome-launcher": "^3.1.1",
     "karma-detect-browsers": "^2.3.3",
     "karma-firefox-launcher": "^2.1.2",
-    "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^5.0.1",
     "karma-sauce-launcher": "^4.3.6",
     "karma-webpack": "5.0.0",
     "saucelabs": "^7.2.0",
     "ts-loader": "^9.3.0",
-    "webpack": "^5.72.1"
+    "webpack": "^5.73.0"
   }
 }

@@ -51,7 +51,6 @@ module.exports = function (config) {
     preprocessors: preProcessorOptions,
 
     plugins: [
-      'karma-ie-launcher',
       'karma-detect-browsers',
       'karma-jasmine',
       'karma-firefox-launcher',
