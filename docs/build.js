@@ -1,21 +1,22 @@
-const rollup = require('rollup');
-const {readdirSync, statSync, existsSync} = require('fs');
-const commonjsPlugin = require('rollup-plugin-commonjs');
-const nodeResolvePlugin = require('rollup-plugin-node-resolve');
-const babelPlugin = require('rollup-plugin-babel');
-const path = require('path');
-const replace = require('rollup-plugin-replace');
-const terser = require('rollup-plugin-terser').terser;
-const alias = require('@rollup/plugin-alias');
+import {rollup} from "rollup";
+import { existsSync, readdirSync, statSync } from "fs";
+import commonjsPlugin from "rollup-plugin-commonjs";
+import nodeResolvePlugin from "rollup-plugin-node-resolve";
+import babelPlugin from "rollup-plugin-babel";
+import { dirname, join, resolve } from "path";
+import replace from "rollup-plugin-replace";
+import { terser } from "rollup-plugin-terser";
+import alias from "@rollup/plugin-alias";
+import { fileURLToPath } from "url";
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const benchmarks = readdirSync(__dirname).filter(file => statSync(path.join(__dirname, file)).isDirectory());
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const benchmarks = readdirSync(__dirname).filter(file => statSync(join(__dirname, file)).isDirectory());
+const resolvePkg = pkg => resolve(__dirname, '../packages', pkg, 'dist', 'index.esm.js');
 
-const resolve = pkg => path.resolve(__dirname, '../packages', pkg, 'dist', 'index.esm.js');
 
-
-console.log(resolve('inferno'));
+console.log(resolvePkg('inferno'));
 
 // see below for details on the options
 const plugins = [
@@ -42,23 +43,23 @@ const plugins = [
   alias({
     resolve: ['.js'],
     entries: [
-      {find: 'inferno', replacement: resolve('inferno')},
-      {find: 'inferno-animation', replacement: resolve('inferno-animation')},
-      {find: 'inferno-compat', replacement: resolve('inferno-compat')},
-      {find: 'inferno-create-class', replacement: resolve('inferno-create-class')},
-      {find: 'inferno-create-element', replacement: resolve('inferno-create-element')},
-      {find: 'inferno-hydrate', replacement: resolve('inferno-hydrate')},
-      {find: 'inferno-extras', replacement: resolve('inferno-extras')},
-      {find: 'inferno-hyperscript', replacement: resolve('inferno-hyperscript')},
-      {find: 'inferno-mobx', replacement: resolve('inferno-mobx')},
-      {find: 'inferno-redux', replacement: resolve('inferno-redux')},
-      {find: 'inferno-router', replacement: resolve('inferno-router')},
-      {find: 'inferno-server', replacement: resolve('inferno-server')},
-      {find: 'inferno-shared', replacement: resolve('inferno-shared')},
-      {find: 'inferno-test-utils', replacement: resolve('inferno-test-utils')},
-      {find: 'inferno-vnode-flags', replacement: resolve('inferno-vnode-flags')},
-      {find: 'inferno-clone-vnode', replacement: resolve('inferno-clone-vnode')},
-      {find: 'mobx', replacement: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')}
+      {find: 'inferno', replacement: resolvePkg('inferno')},
+      {find: 'inferno-animation', replacement: resolvePkg('inferno-animation')},
+      {find: 'inferno-compat', replacement: resolvePkg('inferno-compat')},
+      {find: 'inferno-create-class', replacement: resolvePkg('inferno-create-class')},
+      {find: 'inferno-create-element', replacement: resolvePkg('inferno-create-element')},
+      {find: 'inferno-hydrate', replacement: resolvePkg('inferno-hydrate')},
+      {find: 'inferno-extras', replacement: resolvePkg('inferno-extras')},
+      {find: 'inferno-hyperscript', replacement: resolvePkg('inferno-hyperscript')},
+      {find: 'inferno-mobx', replacement: resolvePkg('inferno-mobx')},
+      {find: 'inferno-redux', replacement: resolvePkg('inferno-redux')},
+      {find: 'inferno-router', replacement: resolvePkg('inferno-router')},
+      {find: 'inferno-server', replacement: resolvePkg('inferno-server')},
+      {find: 'inferno-shared', replacement: resolvePkg('inferno-shared')},
+      {find: 'inferno-test-utils', replacement: resolvePkg('inferno-test-utils')},
+      {find: 'inferno-vnode-flags', replacement: resolvePkg('inferno-vnode-flags')},
+      {find: 'inferno-clone-vnode', replacement: resolvePkg('inferno-clone-vnode')},
+      {find: 'mobx', replacement: join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')}
     ]
   })
 ];
@@ -89,8 +90,8 @@ if (isProduction) {
 }
 
 benchmarks.forEach(dir => {
-  const benchmarkPath = path.join(__dirname, dir);
-  const appJsPath = path.resolve(benchmarkPath, 'app.js')
+  const benchmarkPath = join(__dirname, dir);
+  const appJsPath = resolve(benchmarkPath, 'app.js')
 
   // Don't build examples that don't have app.js
   if (!existsSync(appJsPath)) return
@@ -104,10 +105,10 @@ benchmarks.forEach(dir => {
 
   console.log(`Build started -- ${start}`);
 
-  rollup.rollup(inputOptions).then(function (opts) {
+  rollup(inputOptions).then(function (opts) {
     return opts.write({
       format: 'iife',
-      file: path.join(benchmarkPath, 'dist', 'bundle.js'),
+      file: join(benchmarkPath, 'dist', 'bundle.js'),
       sourcemap: false,
       name: 'inferno'
     });
