@@ -1,6 +1,6 @@
 import type { VNode } from '../core/types';
 import { namespaces } from './constants';
-import { isNull, isNullOrUndef, isString } from 'inferno-shared';
+import { isNull, isNullOrUndef, isString, warning } from 'inferno-shared';
 import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerHTML';
@@ -159,6 +159,11 @@ export function patchProp(
         // If we end up in this path we can read property again
         dom.setAttributeNS(namespaces[prop], prop, nextValue);
       } else {
+        if (process.env.NODE_ENV !== 'production') {
+          if (prop === 'href' && isString(nextValue) && nextValue.indexOf('javascript:') === 0) {
+            warning('Rendering links with javascript: URLs is not recommended. Use event handlers instead if you can. Inferno was passed "' + nextValue + '".');
+          }
+        }
         dom.setAttribute(prop, nextValue);
       }
       break;
