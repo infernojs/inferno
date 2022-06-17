@@ -1,6 +1,5 @@
-import fs, { readFileSync } from 'fs';
-import glob from 'glob';
-import { promisify } from 'util';
+import { readFileSync } from 'fs';
+import { readFile, readdir } from 'fs/promises';
 import Table from 'cli-table';
 import { gzipSize } from 'gzip-size';
 import fileSize from 'filesize';
@@ -8,16 +7,23 @@ import { basename, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PACKAGES_DIR = join(__dirname, '../../packages');
+const PACKAGES_DIR = join(__dirname, '../../packages/');
 const INFERNO_VERSION = JSON.parse(readFileSync(join(__dirname, '../../package.json'))).version;
-const readFileAsync = promisify(fs.readFile);
-const globAsync = promisify(glob);
+
+async function getFileSize(file) {
+  const data = await readFile(file, 'utf-8');
+  return {
+    fileSize: fileSize(Buffer.byteLength(data)),
+    gzipSize: fileSize(await gzipSize(data))
+  };
+}
 
 async function printFileSizes() {
-  const dirs = await globAsync(PACKAGES_DIR + '/*');
+  const files = await readdir(PACKAGES_DIR, { withFileTypes: true });
+  const dirs = files.filter((f) => f.isDirectory).map((dirent) => dirent.name);
 
   // Exclude private packages
-  const packages = dirs.filter((d) => !JSON.parse(readFileSync(join(d, 'package.json'))).private).map((file) => basename(file));
+  const packages = dirs.filter((d) => !JSON.parse(readFileSync(join(PACKAGES_DIR, d, 'package.json'))).private).map((file) => basename(file));
 
   const table = new Table({
     head: [
@@ -49,13 +55,3 @@ async function printFileSizes() {
 printFileSizes().catch((err) => {
   console.error(err);
 });
-
-// ------------- Helpers
-
-async function getFileSize(file) {
-  const data = await readFileAsync(file, 'utf-8');
-  return {
-    fileSize: fileSize(Buffer.byteLength(data)),
-    gzipSize: fileSize(await gzipSize(data))
-  };
-}

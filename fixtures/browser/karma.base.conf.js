@@ -50,14 +50,7 @@ module.exports = function (config) {
 
     preprocessors: preProcessorOptions,
 
-    plugins: [
-      'karma-detect-browsers',
-      'karma-jasmine',
-      'karma-firefox-launcher',
-      'karma-webpack',
-      gzipPreprocessor,
-      'karma-chrome-launcher'
-    ],
+    plugins: ['karma-detect-browsers', 'karma-jasmine', 'karma-firefox-launcher', 'karma-webpack', gzipPreprocessor, 'karma-chrome-launcher'],
 
     reporters: ['dots'],
 
