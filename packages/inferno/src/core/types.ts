@@ -1,6 +1,5 @@
 import type { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { Component } from './component';
 
 export interface LinkedEvent<T, E extends Event> {
   data: T;
@@ -179,8 +178,8 @@ export declare namespace Inferno {
     type: SFC<P>;
   }
 
-  type CElement<P, T extends Component<P, ComponentState>> = ComponentElement<P, T>;
-  interface ComponentElement<P, T extends Component<P, ComponentState>> extends InfernoElement<P> {
+  type CElement<P, T extends IComponent<P, ComponentState>> = ComponentElement<P, T>;
+  interface ComponentElement<P, T extends IComponent<P, ComponentState>> extends InfernoElement<P> {
     type: ComponentClass<P>;
     ref?: Ref<T> | undefined;
   }
@@ -213,9 +212,9 @@ export declare namespace Inferno {
 
   type SFCFactory<P> = (props?: Attributes & P, ...children: InfernoNode[]) => SFCElement<P>;
 
-  type ComponentFactory<P, T extends Component<P, ComponentState>> = (props?: ClassAttributes<T> & P, ...children: InfernoNode[]) => CElement<P, T>;
+  type ComponentFactory<P, T extends IComponent<P, ComponentState>> = (props?: ClassAttributes<T> & P, ...children: InfernoNode[]) => CElement<P, T>;
 
-  type CFactory<P, T extends Component<P, ComponentState>> = ComponentFactory<P, T>;
+  type CFactory<P, T extends IComponent<P, ComponentState>> = ComponentFactory<P, T>;
   type ClassicFactory<P> = CFactory<P, ClassicComponent<P, ComponentState>>;
 
   type DOMFactory<P extends DOMAttributes<T>, T extends Element> = (props?: (ClassAttributes<T> & P) | null, ...children: InfernoNode[]) => DOMElement<P, T>;
@@ -248,7 +247,7 @@ export declare namespace Inferno {
   // Component API
   // ----------------------------------------------------------------------
 
-  interface ClassicComponent<P = {}, S = {}> extends Component<P, S> {
+  interface ClassicComponent<P = {}, S = {}> extends IComponent<P, S> {
     replaceState(nextState: S, callback?: () => any): void;
     isMounted(): boolean;
     getInitialState?(): S;
@@ -270,7 +269,7 @@ export declare namespace Inferno {
   }
 
   interface ComponentClass<P = {}> {
-    new (props?: P, context?: any): Component<P, ComponentState>;
+    new (props?: P, context?: any): IComponent<P, ComponentState>;
     defaultProps?: Partial<P> | undefined;
   }
 
@@ -1789,7 +1788,7 @@ declare global {
   namespace JSX {
     // tslint:disable-next-line:no-empty-interface
     type Element = Inferno.InfernoElement<any> | string | number;
-    interface ElementClass extends Component<any, any> {
+    interface ElementClass extends IComponent<any, any> {
       render(nextProps, nextState, nextContext): Inferno.InfernoNode;
     }
     interface ElementAttributesProperty {
