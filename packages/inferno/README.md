@@ -8,7 +8,6 @@
 [![Discord](https://img.shields.io/discord/825669396823015496.svg?style=flat-square&label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/pYFsMTYndu)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/inferno/dist/inferno.min.js?compression=gzip)](https://unpkg.com/inferno/dist/inferno.min.js)
 [![Backers on Open Collective](https://opencollective.com/inferno/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/inferno/sponsors/badge.svg)](#sponsors)
-[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
 Inferno is an insanely fast, React-like library for building high-performance user interfaces on both the client and server.
 
@@ -39,12 +38,13 @@ The performance is achieved through multiple optimizations, for example:
 - Inferno supports setting styles using string `<div style="background-color: red"></div>` or using object literal syntax `<div style={{"background-color": "red"}}></div>`. For camelCase syntax support see [`inferno-compat`](https://github.com/infernojs/inferno/tree/master/packages/inferno-compat).
 - Fragments (v6)
 - createRef and forwardRef APIs (v6)
-- componentDidAppear and componentWillDisappear (v8) - class component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
+- componentDidAppear, componentWillDisappear and componentWillMove (v8) - class and function component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
 
 ## Browser support
+Since version 4 we have started running our test suite **without** any polyfills.
 Inferno is now part of [Saucelabs](https://saucelabs.com/) open source program and we use their service for executing the tests.
 
-InfernoJS is actively tested against the browsers listed below. It is possible that InfernoJS works with older browsers, but they are not actively tested.
+InfernoJS natively supports the browsers listed below.
 
 [![Build Status](https://app.saucelabs.com/browser-matrix/Havunen.svg)](https://app.saucelabs.com/u/Havunen)
 
@@ -141,9 +141,9 @@ render(
 
 ### Tear down
 
-To tear down inferno application you need to render null on root element. 
+To tear down inferno application you need to render null on root element.
 Rendering `null` will trigger unmount lifecycle hooks for whole vDOM tree and remove global event listeners.
-It is important to unmount unused vNode trees to free browser memory. 
+It is important to unmount unused vNode trees to free browser memory.
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -171,8 +171,8 @@ If you have built something using Inferno you can add them here:
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/xo5jfe64/)
 - [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox): SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
-- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer) 
-(state machine library) 
+- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer)
+  (state machine library)
 - [**Lemmy - a self-hostable reddit alternative** (front end in Inferno)](https://github.com/dessalines/lemmy)
 
 ## Getting Started
@@ -183,7 +183,7 @@ Alternatively, you can try any of the following:
 * the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup.
 * for a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/).
 * for using Inferno to build a mobile app, try [Inferno Mobile Starter Project](https://github.com/Rudy-Zidan/inferno-mobile) by [Rudy-Zidan](https://github.com/Rudy-Zidan).
-* for [TypeScript](https://www.typescriptlang.org/) support and bundling, check out [ts-transform-inferno](https://github.com/deamme/ts-transform-inferno), or [inferno-typescript-example](https://github.com/infernojs/inferno-typescript-example).
+* for [TypeScript](https://www.typescriptlang.org/) support and bundling, check out [ts-plugin-inferno](https://github.com/infernojs/ts-plugin-inferno), or [inferno-typescript-example](https://github.com/infernojs/inferno-typescript-example).
 * for an example of how to use Inferno in [codesandbox](https://codesandbox.io/): https://codesandbox.io/s/znmyj24w4p
 * for using [parcel and typescript](https://github.com/jayy-lmao/inferno-parcel-ts)
 
@@ -302,7 +302,7 @@ function handleClick(props, event) {
 
 function MyComponent(props) {
   return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
-}
+    }
 ```
 
 This is an example of using it with ES2015 classes:
@@ -318,8 +318,8 @@ function handleClick(instance, event) {
 class MyComponent extends Component {
   render () {
     return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-  }
-}
+      }
+      }
 ```
 
 `linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so use it where possible.
@@ -401,7 +401,7 @@ import { Component } from 'inferno';
 
 class MyComponent extends Component {
   render() {
-    ...
+  ...
   }
 }
 ```
@@ -419,13 +419,13 @@ const MyComponent = ({ name, age }) => (
 Another way of using defaultHooks.
 ```javascript
 export function Static() {
-    return <div>1</div>;
+  return <div>1</div>;
 }
 
 Static.defaultHooks = {
-    onComponentShouldUpdate() {
-        return false;
-    }
+  onComponentShouldUpdate() {
+    return false;
+  }
 };
 ```
 
@@ -615,20 +615,20 @@ Javascript:
 const { render, Component, version, createPortal } from 'inferno';
 
 function Outsider(props) {
-	return <div>{`Hello ${props.name}!`}</div>;
+  return <div>{`Hello ${props.name}!`}</div>;
 }
 
 const outsideDiv = document.getElementById('outside');
 const rootDiv = document.getElementById('root');
 
 function App() {
-	return (
-  	    <div>
-    	    Main view
-            ...
-            {createPortal(<Outsider name="Inferno" />, outsideDiv)}
-        </div>
-    );
+  return (
+    <div>
+      Main view
+      ...
+      {createPortal(<Outsider name="Inferno" />, outsideDiv)}
+    </div>
+  );
 }
 
 
@@ -639,10 +639,10 @@ render(<App />, rootDiv);
 Results into:
 ```html
 <div id="root">
-    <div>Main view ...</div>
+  <div>Main view ...</div>
 </div>
 <div id="outside">
-    <div>Hello Inferno!</div>
+  <div>Hello Inferno!</div>
 </div>
 ```
 Cool huh? Updates (props/context) will flow into "Outsider" component from the App component the same way as any other Component.
@@ -704,19 +704,19 @@ import { Fragment, render, createFragment } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 function Foobar() {
-    return (
-      <div $HasKeyedChildren>
-        {createFragment(
-            [<div>Ok</div>, <span>1</span>],
-            ChildFlags.HasNonKeyedChildren,
-            'key1'
-        )}
-        <Fragment key="key2">
-          <div>Ok</div>
-          <span>1</span>
-        </Fragment>
-      </div>
-    );
+  return (
+    <div $HasKeyedChildren>
+      {createFragment(
+        [<div>Ok</div>, <span>1</span>],
+        ChildFlags.HasNonKeyedChildren,
+        'key1'
+      )}
+      <Fragment key="key2">
+        <div>Ok</div>
+        <span>1</span>
+      </Fragment>
+    </div>
+  );
 }
 
 render(<Foobar />, container);
@@ -777,8 +777,8 @@ If anything else than `true` is returned it falls to normal behavior.
 import {options} from 'inferno';
 
 options.componentComparator = function (lastVNode, nextVNode) {
-    /* custom logic */
-    return true; // Replaces lastVNode with nextVNode
+  /* custom logic */
+  return true; // Replaces lastVNode with nextVNode
 }
 ```
 
@@ -921,13 +921,13 @@ Use the following configuration in your Webpack build for production build:
 
 ```js
   ...
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    })
-  ]
+plugins: [
+  new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV': JSON.stringify('production')
+    }
+  })
+]
 ```
 
 When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
@@ -935,12 +935,12 @@ That build version has extra level of validation for development purposes. You c
 
 ```js
     ...
-	resolve: {
-    /* When doing development workflow we want to make sure webpack picks up development build of inferno */
-		alias: {
-			inferno: __dirname + "/node_modules/inferno/dist/index.dev.esm.js"
-		}
-	}
+resolve: {
+  /* When doing development workflow we want to make sure webpack picks up development build of inferno */
+  alias: {
+    inferno: __dirname + "/node_modules/inferno/dist/index.dev.esm.js"
+  }
+}
 ```
 
 #### Rollup
@@ -953,11 +953,11 @@ const replace = require('rollup-plugin-replace');
 
 ```js
   ...
-  plugins: [
-    replace({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    })
-  ]
+plugins: [
+  replace({
+    'process.env.NODE_ENV': JSON.stringify('production'),
+  })
+]
 ```
 
 When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
@@ -966,15 +966,15 @@ That build version has extra level of validation for development purposes. You c
 ```js
 const alias = require('@rollup/plugin-alias');
 
-    ...
-  plugins: [
-    alias({
-        resolve: ['.js'],
-        entries: [
-          {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
-        ]
-    }),
-  ]
+...
+plugins: [
+  alias({
+    resolve: ['.js'],
+    entries: [
+      {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
+    ]
+  }),
+]
 
 ```
 
