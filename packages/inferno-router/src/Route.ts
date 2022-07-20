@@ -3,7 +3,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
 import { combineFrom, isFunction } from 'inferno-shared';
-import type { Location, History } from 'history';
+import type { History, Location } from 'history';
 
 export interface Match<P> {
   params: P;

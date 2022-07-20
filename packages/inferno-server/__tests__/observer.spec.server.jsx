@@ -1,9 +1,7 @@
 import { render } from 'inferno';
-import * as mobx from 'mobx';
 import { observer, useStaticRendering } from 'inferno-mobx';
 import { renderToStaticMarkup } from 'inferno-server';
-
-const getDNode = (obj, prop) => obj.$mobx.values[prop];
+import { getObserverTree, observable } from 'mobx';
 
 describe('Mobx Observer Server', () => {
   let container;
@@ -23,7 +21,7 @@ describe('Mobx Observer Server', () => {
     useStaticRendering(true);
 
     let renderCount = 0;
-    const data = mobx.observable({
+    const data = observable({
       z: 'hi'
     });
 
@@ -39,7 +37,7 @@ describe('Mobx Observer Server', () => {
     expect(output).toBe('<div>hi</div>');
     expect(renderCount).toBe(1);
 
-    expect(getDNode(data, 'z').observers.length).toBe(0);
+    expect(getObserverTree(data, 'z').observers).not.toBeDefined();
 
     useStaticRendering(false);
   });

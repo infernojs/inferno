@@ -128,7 +128,7 @@ module.exports = function (config) {
           'inferno-utils': path.join(__dirname, '../../packages', 'inferno-utils', 'src', 'index.ts'),
           'inferno-vnode-flags': resolve('inferno-vnode-flags'),
           'inferno-clone-vnode': resolve('inferno-clone-vnode'),
-          mobx: path.join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')
+          mobx: path.join(__dirname, '../../node_modules/mobx/dist/mobx.esm.js')
         },
         extensions: ['.js', '.jsx', '.tsx', '.ts'],
         mainFields: ['browser', 'main']

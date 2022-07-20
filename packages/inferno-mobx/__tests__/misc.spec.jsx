@@ -1,7 +1,7 @@
 import { render, rerender } from 'inferno';
-import * as mobx from 'mobx';
 import { observer } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
+import { extendObservable, observable } from 'mobx';
 
 describe('Mobx Misc', () => {
   let container;
@@ -19,7 +19,7 @@ describe('Mobx Misc', () => {
 
   it('custom shouldComponentUpdate is not respected for observable changes (#50)', (done) => {
     let called = 0;
-    const x = mobx.observable.box(3);
+    const x = observable.box(3);
     const C = observer(
       createClass({
         render: () => (
@@ -42,7 +42,7 @@ describe('Mobx Misc', () => {
 
   it('custom shouldComponentUpdate is not respected for observable changes (#50) - 2', (done) => {
     let called = 0;
-    const y = mobx.observable.box(5);
+    const y = observable.box(5);
     const C = observer(
       createClass({
         render() {
@@ -89,7 +89,7 @@ describe('Mobx Misc', () => {
 
   it('issue mobx 405', (done) => {
     function ExampleState() {
-      mobx.extendObservable(this, {
+      extendObservable(this, {
         name: 'test',
         get greetings() {
           return 'Hello my name is ' + this.name;
@@ -118,7 +118,7 @@ describe('Mobx Misc', () => {
   });
 
   it('#85 Should handle state changing in constructors', function () {
-    const a = mobx.observable.box(2);
+    const a = observable.box(2);
     const Child = observer(
       createClass({
         displayName: 'Child',

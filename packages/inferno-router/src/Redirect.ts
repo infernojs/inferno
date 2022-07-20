@@ -1,5 +1,5 @@
 import { Component } from 'inferno';
-import { parsePath, Location, Path } from 'history';
+import { Location, parsePath, Path } from 'history';
 import { combinePath, invariant } from './utils';
 import { isString } from 'inferno-shared';
 

@@ -1,6 +1,5 @@
 import { render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { emptyFn } from 'inferno-shared';
 
 describe('Basic event tests', () => {
   let container;

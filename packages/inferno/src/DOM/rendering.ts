@@ -1,4 +1,5 @@
 import type { VNode } from '../core/types';
+import { Inferno } from '../core/types';
 import { isFunction, isInvalid, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
@@ -6,7 +7,6 @@ import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
 import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, options, renderCheck } from './utils/common';
-import { Inferno } from '../core/types';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 

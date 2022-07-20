@@ -2,8 +2,8 @@ import { createVNode, Inferno, InfernoMouseEvent, linkEvent, VNode } from 'infer
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 import { combineFrom, isString } from 'inferno-shared';
-import { parsePath } from 'history';
 import type { Location } from 'history';
+import { parsePath } from 'history';
 
 const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 

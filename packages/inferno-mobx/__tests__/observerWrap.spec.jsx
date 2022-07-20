@@ -1,9 +1,7 @@
 import { Component, render } from 'inferno';
 import { inject, observer, observerWrap } from 'inferno-mobx';
 import { createElement } from 'inferno-create-element';
-import { observable, runInAction } from 'mobx';
-
-const getDNode = (obj, prop) => obj.$mobx.values[prop];
+import { getObserverTree, observable, runInAction } from 'mobx';
 
 const stateLessComp = ({ testProp }) => <div>result: {testProp}</div>;
 
@@ -118,16 +116,16 @@ describe('Stateless components observerWrap', () => {
 
     expect(todoItemRenderings).toEqual(1); // 'item1 should render once'
 
-    expect(getDNode(store, 'todos').observers.length).toBe(1);
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1);
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1);
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1);
 
     store.todos[0].title += 'a';
 
     expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
     expect(todoItemRenderings).toEqual(2); //, 'item1 should have rendered twice');
     expect(container.querySelector('li').textContent).toEqual('|aa');
-    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
 
     store.todos.push({
       title: 'b',
@@ -145,10 +143,10 @@ describe('Stateless components observerWrap', () => {
 
     expect(todoListRenderings).toBe(2); //'should have rendered list twice');
     expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
-    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
-    expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
+    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
 
     store.todos[1].title += 'b';
 
@@ -163,24 +161,24 @@ describe('Stateless components observerWrap', () => {
 
     expect(todoListRenderings).toBe(2); //'should have rendered list twice');
     expect(todoItemRenderings).toBe(4); //, 'item2 should have rendered as well');
-    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
-    expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
+    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
     expect(todoListRenderings).toBe(3); //, 'should have rendered list another time');
     expect(todoItemRenderings).toBe(4); //, 'item1 should not have rerendered');
     expect(container.querySelectorAll('li').length).toBe(1); //, 'list should have only on item in list now');
-    expect(getDNode(oldTodo, 'title').observers.length).toBe(0); //, 'title observers should have decreased');
-    expect(getDNode(oldTodo, 'completed').observers.length).toBe(0); //, 'completed observers should not have decreased');
+    expect(getObserverTree(oldTodo, 'title').observers).not.toBeDefined(); //, 'title observers should have decreased');
+    expect(getObserverTree(oldTodo, 'completed').observers).not.toBeDefined(); //, 'completed observers should not have decreased');
     render(null, container);
     expect(todoItemUnmounts).toBe(2);
     expect(todoItemUpdates).toBe(2);
     expect(todoItemWillUpdates).toBe(2);
-    expect(getDNode(store, 'todos').observers.length).toBe(0);
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(0);
+    expect(getObserverTree(store, 'todos').observers).not.toBeDefined();
+    expect(getObserverTree(store.todos[0], 'title').observers).not.toBeDefined();
   });
 
   it('nestedRendering without should update hook', () => {
@@ -235,15 +233,15 @@ describe('Stateless components observerWrap', () => {
 
     expect(todoItemRenderings).toEqual(1); // 'item1 should render once'
 
-    expect(getDNode(store, 'todos').observers.length).toBe(1);
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1);
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1);
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1);
 
     store.todos[0].title += 'a';
 
     expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
     expect(todoItemRenderings).toEqual(2); //, 'item1 should have rendered twice');
-    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
 
     store.todos.push({
       title: 'b',
@@ -261,10 +259,10 @@ describe('Stateless components observerWrap', () => {
 
     expect(todoListRenderings).toBe(2); //'should have rendered list twice');
     expect(todoItemRenderings).toBe(4); //, 'item2 should have rendered as well');
-    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
-    expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
+    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
 
     store.todos[1].title += 'b';
 
@@ -279,24 +277,24 @@ describe('Stateless components observerWrap', () => {
 
     expect(todoListRenderings).toBe(2); //'should have rendered list twice');
     expect(todoItemRenderings).toBe(5); //, 'item2 should have rendered as well');
-    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
-    expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
+    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
     expect(todoListRenderings).toBe(3); //, 'should have rendered list another time');
     expect(todoItemRenderings).toBe(6); //, 'item1 should not have rerendered');
     expect(container.querySelectorAll('li').length).toBe(1); //, 'list should have only on item in list now');
-    expect(getDNode(oldTodo, 'title').observers.length).toBe(0); //, 'title observers should have decreased');
-    expect(getDNode(oldTodo, 'completed').observers.length).toBe(0); //, 'completed observers should not have decreased');
+    expect(getObserverTree(oldTodo, 'title').observers).not.toBeDefined(); //, 'title observers should have decreased');
+    expect(getObserverTree(oldTodo, 'completed').observers).not.toBeDefined(); //, 'completed observers should not have decreased');
     render(null, container);
     expect(todoItemUnmounts).toBe(2);
     expect(todoItemUpdates).toBe(4);
     expect(todoItemWillUpdates).toBe(4);
-    expect(getDNode(store, 'todos').observers.length).toBe(0);
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(0);
+    expect(getObserverTree(store, 'todos').observers).not.toBeDefined();
+    expect(getObserverTree(store.todos[0], 'title').observers).not.toBeDefined();
   });
 
   it('keep views alive', () => {
@@ -331,11 +329,11 @@ describe('Stateless components observerWrap', () => {
     expect(container.textContent).toBe('hello6');
     expect(yCalcCount).toBe(1);
 
-    expect(getDNode(data, 'y').observers.length).toBe(1);
+    expect(getObserverTree(data, 'y').observers.length).toBe(1);
 
     render(<div />, container);
 
-    expect(getDNode(data, 'y').observers.length).toBe(0);
+    expect(getObserverTree(data, 'y').observers).not.toBeDefined();
   });
 
   it('issue 12', function () {

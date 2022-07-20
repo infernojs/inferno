@@ -54,7 +54,7 @@
         "packages/inferno-vnode-flags/src/index.ts"
       ],
       "mobx": [
-        "node_modules/mobx/lib/mobx.module.js"
+        "node_modules/mobx/dist/mobx.esm.js"
       ]
     },
     "newLine": "LF",

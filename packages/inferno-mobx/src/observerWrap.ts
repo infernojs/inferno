@@ -1,4 +1,4 @@
-import { Inferno, render, VNode, createComponentVNode, _HI as normalizeRoot } from 'inferno';
+import { _HI as normalizeRoot, createComponentVNode, Inferno, render, VNode } from 'inferno';
 import { Reaction } from 'mobx';
 import { throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';

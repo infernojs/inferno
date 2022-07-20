@@ -1,6 +1,6 @@
 // @ts-check
 
-import { render, Component } from 'inferno';
+import { Component, render } from 'inferno';
 import { inject, observer, Provider } from 'inferno-mobx';
 
 describe('generic higher order components', () => {

@@ -1,7 +1,7 @@
 import { render } from 'inferno';
 import { createClass } from 'inferno-create-class';
-import * as mobx from 'mobx';
 import { inject, observer, Provider } from 'inferno-mobx';
+import { observable } from 'mobx';
 
 describe('inject based context', () => {
   let container;
@@ -184,7 +184,7 @@ describe('inject based context', () => {
     let msg;
     const baseWarn = console.error;
     console.error = (m) => (msg = m);
-    const a = mobx.observable.box(3);
+    const a = observable.box(3);
     const C = observer(
       ['foo'],
       createClass({
@@ -320,7 +320,7 @@ describe('inject based context', () => {
   });
 
   it('using a custom injector is reactive', (done) => {
-    const user = mobx.observable({ name: 'Noa' });
+    const user = observable({ name: 'Noa' });
     const mapper = (stores) => ({ name: stores.user.name });
     const DisplayName = (props) => <h1>{props.name}</h1>;
     const User = inject(mapper)(DisplayName);

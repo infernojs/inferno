@@ -1,5 +1,5 @@
 import { Component, Inferno } from 'inferno';
-import { componentWillMove, AnimationClass } from './animations';
+import { AnimationClass, componentWillMove } from './animations';
 
 type AnimationProp = {
   animation?: string | AnimationClass;

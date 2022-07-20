@@ -1,8 +1,8 @@
 import type { Inferno } from './types';
+import { IComponent } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMFromVNode, renderCheck } from '../DOM/utils/common';
-import { IComponent } from './types';
 
 const COMPONENTS_QUEUE: Component<any, any>[] = [];
 

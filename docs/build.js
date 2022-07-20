@@ -59,7 +59,7 @@ const plugins = [
       {find: 'inferno-test-utils', replacement: resolvePkg('inferno-test-utils')},
       {find: 'inferno-vnode-flags', replacement: resolvePkg('inferno-vnode-flags')},
       {find: 'inferno-clone-vnode', replacement: resolvePkg('inferno-clone-vnode')},
-      {find: 'mobx', replacement: join(__dirname, '../../node_modules/mobx/lib/mobx.module.js')}
+      {find: 'mobx', replacement: join(__dirname, '../../node_modules/mobx/dist/mobx.esm.js')}
     ]
   })
 ];

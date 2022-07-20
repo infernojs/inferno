@@ -1,7 +1,7 @@
 import { render } from 'inferno';
 import { createClass } from 'inferno-create-class';
-import * as mobx from 'mobx';
 import { observer, Provider } from 'inferno-mobx';
+import { observable } from 'mobx';
 
 describe('observer based context', () => {
   let container;
@@ -173,7 +173,7 @@ describe('observer based context', () => {
     let msg = null;
     const baseWarn = console.error;
     console.error = (m) => (msg = m);
-    const a = mobx.observable.box(3);
+    const a = observable.box(3);
     const C = observer(
       ['foo'],
       createClass({
@@ -219,7 +219,7 @@ describe('observer based context', () => {
     let msg = null;
     const baseWarn = console.error;
     console.error = (m) => (msg = m);
-    const a = mobx.observable.box(3);
+    const a = observable.box(3);
     const C = observer(
       ['foo'],
       createClass({

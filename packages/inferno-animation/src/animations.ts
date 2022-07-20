@@ -1,21 +1,21 @@
 import {
   addClassName,
   clearDimensions,
+  clearTransform,
   decrementMoveCbCount,
+  forceReflow,
   getDimensions,
   getGeometry,
   incrementMoveCbCount,
   registerTransitionListener,
   removeClassName,
+  resetDisplay,
   setDimensions,
   setDisplay,
-  resetDisplay,
-  setTransform,
-  clearTransform,
-  forceReflow
+  setTransform
 } from './utils';
-import { addGlobalAnimationSource, consumeGlobalAnimationSource, queueAnimation, AnimationPhase, GlobalAnimationState } from './animationCoordinator';
-import { isNullOrUndef, isNull } from 'inferno-shared';
+import { addGlobalAnimationSource, AnimationPhase, consumeGlobalAnimationSource, GlobalAnimationState, queueAnimation } from './animationCoordinator';
+import { isNull, isNullOrUndef } from 'inferno-shared';
 
 // Show debug output and debugging markers during developmen of move animations
 const _DBG_MVE_ = false && process.env.NODE_ENV !== 'production';

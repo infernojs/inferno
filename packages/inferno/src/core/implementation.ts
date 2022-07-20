@@ -1,4 +1,4 @@
-import type { ForwardRef, Ref, Refs, VNode, Inferno } from './types';
+import type { ForwardRef, Inferno, Ref, Refs, VNode } from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';

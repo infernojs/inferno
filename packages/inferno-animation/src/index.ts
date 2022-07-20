@@ -5,6 +5,7 @@ export { componentDidAppear, componentWillDisappear, componentWillMove, Animatio
 export { hasPendingAnimations } from './animationCoordinator';
 
 import { addClassName, clearDimensions, forceReflow, getDimensions, registerTransitionListener, removeClassName, setDimensions, setDisplay } from './utils';
+
 export const utils = {
   addClassName,
   clearDimensions,

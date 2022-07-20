@@ -1,9 +1,9 @@
 import { Component, render } from 'inferno';
-import * as mobx from 'mobx';
+import { extendObservable, getObserverTree, observable, runInAction } from 'mobx';
 import { inject, observer, Observer, onError, trackComponents, useStaticRendering } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
 
-const store = mobx.observable({
+const store = observable({
   todos: [
     {
       title: 'a',
@@ -43,8 +43,6 @@ const TodoList = observer(
 
 const App = () => <TodoList />;
 
-const getDNode = (obj, prop) => obj.$mobx.values[prop];
-
 describe('Mobx Observer', () => {
   let container;
 
@@ -72,23 +70,23 @@ describe('Mobx Observer', () => {
 
     expect(todoItemRenderings).toEqual(1); // 'item1 should render once'
 
-    expect(getDNode(store, 'todos').observers.length).toBe(1);
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1);
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1);
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1);
 
     store.todos[0].title += 'a';
 
     expect(todoListRenderings).toEqual(1); //, 'should have rendered list once');
     expect(todoListWillReactCount).toEqual(0); //, 'should not have reacted')
     expect(todoItemRenderings).toEqual(2); //, 'item1 should have rendered twice');
-    expect(getDNode(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
-    expect(getDNode(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
+    expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
+    expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
 
     store.todos.push({
       title: 'b',
       completed: true
     });
 
-    expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
+    expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in the list');
     const expectedOutput = [];
     const nodes = container.querySelectorAll('li');
 
@@ -100,8 +98,8 @@ describe('Mobx Observer', () => {
     expect(todoListRenderings).toBe(2); //'should have rendered list twice');
     expect(todoListWillReactCount).toBe(1); //, 'should have reacted')
     expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
-    expect(getDNode(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getDNode(store.todos[1], 'completed').observers.length).toBe(0); //, 'completed observers should not have increased');
+    expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
+    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
@@ -109,13 +107,13 @@ describe('Mobx Observer', () => {
     expect(todoListWillReactCount).toBe(2); //, 'should have reacted')
     expect(todoItemRenderings).toBe(3); //, 'item1 should not have rerendered');
     expect(container.querySelectorAll('li').length).toBe(1); //, 'list should have only on item in list now');
-    expect(getDNode(oldTodo, 'title').observers.length).toBe(0); //, 'title observers should have decreased');
-    expect(getDNode(oldTodo, 'completed').observers.length).toBe(0); //, 'completed observers should not have decreased');
+    expect(getObserverTree(oldTodo, 'title').observers).not.toBeDefined(); //, 'title observers should have decreased');
+    expect(getObserverTree(oldTodo, 'completed').observers).not.toBeDefined(); //, 'completed observers should not have decreased');
   });
 
   it('keep views alive', () => {
     let yCalcCount = 0;
-    const data = mobx.observable({
+    const data = observable({
       x: 3,
       get y() {
         yCalcCount++;
@@ -145,11 +143,11 @@ describe('Mobx Observer', () => {
     expect(container.textContent).toBe('hello6');
     expect(yCalcCount).toBe(1);
 
-    expect(getDNode(data, 'y').observers.length).toBe(1);
+    expect(getObserverTree(data, 'y').observers.length).toBe(1);
 
     render(<div />, container);
 
-    expect(getDNode(data, 'y').observers.length).toBe(0);
+    expect(getObserverTree(data, 'y').observers).not.toBeDefined();
   });
 
   it('componentWillMount from mixin is run first', (done) => {
@@ -175,7 +173,7 @@ describe('Mobx Observer', () => {
     useStaticRendering(true);
 
     let renderCount = 0;
-    const data = mobx.observable({
+    const data = observable({
       z: 'hi'
     });
 
@@ -197,13 +195,13 @@ describe('Mobx Observer', () => {
     expect(container.querySelector('div').textContent).toBe('hi');
     expect(renderCount).toBe(1);
 
-    expect(getDNode(data, 'z').observers.length).toBe(0);
+    expect(getObserverTree(data, 'z').observers).not.toBeDefined();
 
     useStaticRendering(false);
   });
 
   it('issue 12', function () {
-    const data = mobx.observable({
+    const data = observable({
       selected: 'coffee',
       items: [
         {
@@ -246,7 +244,7 @@ describe('Mobx Observer', () => {
 
     expect(container.querySelector('div').textContent).toBe('coffee!tea');
 
-    mobx.runInAction(() => {
+    runInAction(() => {
       data.items[1].name = 'boe';
       data.items.splice(0, 2, { name: 'soup' });
       data.selected = 'tea';
@@ -311,7 +309,7 @@ describe('Mobx Observer', () => {
     const Comp = observer(
       createClass({
         componentWillMount() {
-          mobx.extendObservable(this, {
+          extendObservable(this, {
             get computedProp() {
               return this.props.x;
             }
@@ -347,33 +345,6 @@ describe('Mobx Observer', () => {
     container.querySelector('div').click();
     expect(container.querySelector('span').textContent).toBe('x:2');
   });
-
-  // Test on skip: since all reactions are now run in batched updates, the original issues can no longer be reproduced
-  // it.skip('should stop updating if error was thrown in render (#134)', function(done) {
-  //   const data = mobx.observable(0);
-  //   let renderingsCount = 0;
-  //
-  //   const Comp = observer(function() {
-  //     renderingsCount += 1;
-  //     if (data.get() === 2) {
-  //       throw new Error('Hello');
-  //     }
-  //     return <div />;
-  //   });
-  //
-  //   render(<Comp />, container, () => {
-  //     expect(data.observers.length).toBe(1);
-  //     data.set(1);
-  //     t.throws(() => data.set(2), 'Hello');
-  //     expect(data.observers.length).toBe(0);
-  //     data.set(3);
-  //     data.set(4);
-  //     data.set(5);
-  //
-  //     expect(renderingsCount).toBe(3);
-  //     done();
-  //   });
-  // });
 
   it('should render component even if setState called with exactly the same props', function (done) {
     let renderCount = 0;
@@ -492,7 +463,7 @@ describe('Mobx Observer', () => {
   // })
 
   it('Observer regions should react', (done) => {
-    const data = mobx.observable.box('hi');
+    const data = observable.box('hi');
     const Comp = () => (
       <div>
         <Observer>{() => <span>{data.get()}</span>}</Observer>
@@ -514,7 +485,7 @@ describe('Mobx Observer', () => {
     let childRendering = 0;
     let parentRendering = 0;
     const data = { x: 1 };
-    const odata = mobx.observable({ y: 1 });
+    const odata = observable({ y: 1 });
 
     const Child = observer(({ data }) => {
       childRendering++;

@@ -29,11 +29,9 @@ import {
   rerender,
   VNode
 } from 'inferno';
-export type { ComponentType, Inferno, Refs, VNode } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { createClass } from 'inferno-create-class';
-export type { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -42,6 +40,9 @@ import PropTypes from './PropTypes';
 import { InfernoCompatPropertyMap } from './InfernoCompatPropertyMap';
 import { findDOMNode } from 'inferno-extras';
 import { getNumberStyleValue, hyphenCase } from './reactstyles';
+
+export type { ComponentType, Inferno, Refs, VNode } from 'inferno';
+export type { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
 
 declare global {
   interface Event {

@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import { Provider } from 'inferno-mobx';
-import * as mobx from 'mobx';
+import { observable } from 'mobx';
 
 describe('top level context', () => {
   let container;
@@ -60,7 +60,7 @@ describe('top level context', () => {
         }
       }
 
-      const store = mobx.observable({
+      const store = observable({
         todos: [
           {
             completed: false,

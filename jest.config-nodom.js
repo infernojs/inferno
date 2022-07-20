@@ -13,9 +13,9 @@ export default {
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   moduleNameMapper: {
-    "^inferno-router/utils": "<rootDir>/packages/inferno-router/src/utils",
+    "^inferno-router/utils": "<rootDir>/packages/inferno-router/src/utils.ts",
     "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src/index.ts",
-    "mobx": "<rootDir>/node_modules/mobx"
+    "mobx": "<rootDir>/node_modules/mobx/dist/mobx.cjs.development.js"
   },
   setupFiles: [],
   testMatch: [

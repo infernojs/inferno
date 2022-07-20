@@ -1,7 +1,7 @@
 import { Component, render } from 'inferno';
-import * as mobx from 'mobx';
 import { observer } from 'inferno-mobx';
 import { createClass } from 'inferno-create-class';
+import { autorun, computed, observable, runInAction } from 'mobx';
 
 describe('Mobx Transacations', () => {
   let container;
@@ -19,21 +19,21 @@ describe('Mobx Transacations', () => {
 
   it('mobx issue 50', () => {
     const foo = {
-      a: mobx.observable.box(true),
-      b: mobx.observable.box(false),
-      c: mobx.computed(function () {
+      a: observable.box(true),
+      b: observable.box(false),
+      c: computed(function () {
         return foo.b.get();
       })
     };
     function flipStuff() {
-      mobx.runInAction(() => {
+      runInAction(() => {
         foo.a.set(!foo.a.get());
         foo.b.set(!foo.b.get());
       });
     }
     let asText = '';
     let willReactCount = 0;
-    mobx.autorun(() => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(':')));
+    autorun(() => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(':')));
     const Test = observer(
       createClass({
         componentWillReact: () => willReactCount++,
@@ -51,8 +51,8 @@ describe('Mobx Transacations', () => {
   });
 
   it('React.render should respect transaction', () => {
-    const a = mobx.observable.box(2);
-    const loaded = mobx.observable.box(false);
+    const a = observable.box(2);
+    const loaded = observable.box(false);
     const valuesSeen = [];
 
     const Component = observer(() => {
@@ -62,7 +62,7 @@ describe('Mobx Transacations', () => {
     });
 
     render(<Component />, container);
-    mobx.runInAction(() => {
+    runInAction(() => {
       a.set(3);
       a.set(4);
       loaded.set(true);
@@ -73,8 +73,8 @@ describe('Mobx Transacations', () => {
   });
 
   it('React.render in transaction should succeed', () => {
-    const a = mobx.observable.box(2);
-    const loaded = mobx.observable.box(false);
+    const a = observable.box(2);
+    const loaded = observable.box(false);
     const valuesSeen = [];
     const Component = observer(() => {
       valuesSeen.push(a.get());
@@ -82,7 +82,7 @@ describe('Mobx Transacations', () => {
       else return <div>loading</div>;
     });
 
-    mobx.runInAction(() => {
+    runInAction(() => {
       a.set(3);
       render(<Component />, container);
       a.set(4);

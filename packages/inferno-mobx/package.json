@@ -36,7 +36,7 @@
     "directory": "packages/inferno-mobx"
   },
   "peerDependencies": {
-    "mobx": ">=4"
+    "mobx": ">=6"
   },
   "dependencies": {
     "hoist-non-inferno-statics": "^1.1.3",

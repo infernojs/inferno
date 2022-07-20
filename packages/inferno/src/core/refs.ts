@@ -1,6 +1,6 @@
 import { isFunction, warning } from 'inferno-shared';
 import { safeCall1 } from '../DOM/utils/common';
-import type { RefObject, Inferno } from './types';
+import type { Inferno, RefObject } from './types';
 
 export function createRef<T = Element>(): RefObject<T> {
   return {
