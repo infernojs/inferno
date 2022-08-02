@@ -65,7 +65,7 @@ describe('Components createClass (JSX)', () => {
         });
 
         render(<Foo bar="test" />, container);
-        expect(container.innerHTML).toEqual(innerHTML('<div><div>test</div></div>'));
+        expect(container.innerHTML).toEqual('<div><div>test</div></div>');
       });
 
       it('works as a lifecycle method even when a matching method is already defined', () => {
@@ -252,7 +252,7 @@ describe('Components createClass (JSX)', () => {
         container
       );
 
-      expect(container.innerHTML).toEqual(innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>'));
+      expect(container.innerHTML).toEqual('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>');
     });
   });
 });

@@ -18,17 +18,17 @@ describe('HyperScript (non-JSX)', () => {
 
   it('Should handle a basic example', () => {
     render(h('div'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
   });
 
   it('Should handle a basic example #2', () => {
     render(h('div', 'Hello world!'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
   it('Should handle a basic example #3', () => {
     render(h('div', { className: 'foo' }, 'Hello world!'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div class="foo">Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div class="foo">Hello world!</div>');
   });
 
   const StatelessComponent = () => h('div', 'Hello world!');
@@ -63,7 +63,7 @@ describe('HyperScript (non-JSX)', () => {
 
   it('Should handle a basic example #4', () => {
     render(h(StatelessComponent), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
   it('Should handle a hooks example #1', () => {
@@ -79,7 +79,7 @@ describe('HyperScript (non-JSX)', () => {
       });
 
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
   it('Should handle children as third argument', () => {
@@ -89,7 +89,7 @@ describe('HyperScript (non-JSX)', () => {
     const ComponentHooks = () => h(Component, null, 'Hello world!');
 
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
   it('Should handle different props (key, class, id, ref, children)', () => {
@@ -103,38 +103,38 @@ describe('HyperScript (non-JSX)', () => {
       });
 
     render(h(ComponentHooks), container);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div class="test myClass" id="myId">Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div class="test myClass" id="myId">Hello world!</div>');
   });
 
   it('Should handle tag with no name', () => {
     const ComponentHooks = () => h('', { children: 'Hello world!' });
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
   it('Should be possible to create textarea with hyperscript', () => {
     const ComponentHooks = () => h('textarea', { id: 'test' });
     render(h(ComponentHooks), container);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<textarea id="test"></textarea>'));
+    expect(container.innerHTML).toBe('<textarea id="test"></textarea>');
   });
 
   it('Should be possible to create select element with hyperscript', () => {
     const ComponentHooks = () => h('select', { id: 'select' }, [h('option', { value: 1 }, '1'), h('option', { value: 2 }, '2')]);
     render(h(ComponentHooks), container);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>'));
+    expect(container.innerHTML).toBe('<select id="select"><option value="1">1</option><option value="2">2</option></select>');
   });
 
   it('Should handle tag with no tag name but id is present', () => {
     const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
+    expect(container.innerHTML).toBe('<div id="myId"></div>');
   });
 
   it('Should support lifecycle methods on functional components willMount', () => {
     const callbackSpy = jasmine.createSpy('spy');
     const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks, { onComponentWillMount: callbackSpy }), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
+    expect(container.innerHTML).toBe('<div id="myId"></div>');
     expect(callbackSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -142,7 +142,7 @@ describe('HyperScript (non-JSX)', () => {
     const callbackSpy = jasmine.createSpy('spy');
     const ComponentHooks = () => h('#myId');
     render(h(ComponentHooks, { onComponentDidMount: callbackSpy }), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="myId"></div>'));
+    expect(container.innerHTML).toBe('<div id="myId"></div>');
     expect(callbackSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -208,10 +208,10 @@ describe('HyperScript (non-JSX)', () => {
 
       // eslint-disable-next-line
       render(App(), container);
-      expect(container.innerHTML).toBe(innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>'));
+      expect(container.innerHTML).toBe('<div><div class="title">Example</div><button type="button">Do a thing</button></div>');
       expect(triggered).toBe(false);
 
-      const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+      const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => button.click());
 
       expect(triggered).toBe(true);
@@ -238,10 +238,10 @@ describe('HyperScript (non-JSX)', () => {
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
+      expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
       expect(triggered).toBe(false);
 
-      const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+      const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => button.click());
 
       expect(triggered).toBe(true);
@@ -260,7 +260,7 @@ describe('HyperScript (non-JSX)', () => {
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
+      expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
     });
 
     it('Should allow passing childs through "children" property (custom component)', () => {
@@ -277,7 +277,7 @@ describe('HyperScript (non-JSX)', () => {
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe(innerHTML('<div><button type="button">Do a thing</button></div>'));
+      expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
     });
 
     it('Should handle node with hooks and key', (done) => {
@@ -292,7 +292,7 @@ describe('HyperScript (non-JSX)', () => {
       });
 
       render(app, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
+      expect(container.innerHTML).toBe('<div>Hooks</div>');
     });
 
     it('Should handle node with children but no props', () => {
@@ -300,7 +300,7 @@ describe('HyperScript (non-JSX)', () => {
       const app = h(node, null, 'Hooks');
 
       render(app, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>Hooks</div>'));
+      expect(container.innerHTML).toBe('<div>Hooks</div>');
     });
 
     it('Should handle node with refs', (done) => {
@@ -336,16 +336,16 @@ describe('HyperScript (non-JSX)', () => {
     it('Should not fail contenteditable if text node has external change Github#1207 - createElement', () => {
       shouldUpdate = false;
       render(<Test2 foo="bar" />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true">bar</div>'));
+      expect(container.innerHTML).toBe('<div contenteditable="true">bar</div>');
       render(<Test2 foo="yar" />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true">bar</div>'));
+      expect(container.innerHTML).toBe('<div contenteditable="true">bar</div>');
 
       container.firstChild.removeChild(container.firstChild.firstChild); // When div is contentEditable user can remove whole text content
-      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true"></div>'));
+      expect(container.innerHTML).toBe('<div contenteditable="true"></div>');
 
       shouldUpdate = true;
       render(<Test2 foo="foo" />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div contenteditable="true">foo</div>'));
+      expect(container.innerHTML).toBe('<div contenteditable="true">foo</div>');
       render(null, container);
       expect(container.innerHTML).toBe('');
     });

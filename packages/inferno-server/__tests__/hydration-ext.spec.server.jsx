@@ -80,7 +80,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       const container = createContainerWithHTML(html);
       hydrate(component, container);
 
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML(compHtml));
+      expect(container.innerHTML).toEqual(compHtml);
     });
   });
 
@@ -96,7 +96,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML(compHtml2));
+    expect(container.innerHTML).toEqual(compHtml2);
   });
 
   it('Should hydrate correctly when CSR component returns null', () => {
@@ -111,7 +111,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+    expect(container.innerHTML).toEqual('<div></div>');
   });
 
   it('Should hydrate correctly when there are comment nodes', () => {
@@ -126,7 +126,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+    expect(container.innerHTML).toEqual('<div></div>');
   });
 
   it('Should hydrate correctly when there are comment nodes #2', () => {
@@ -143,7 +143,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       container
     );
 
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div><p>Hello World!</p></div>'));
+    expect(container.innerHTML).toEqual('<div><p>Hello World!</p></div>');
   });
 
   it('hasTextChildren - Should handle empty textNodes correctly Github #1137', () => {

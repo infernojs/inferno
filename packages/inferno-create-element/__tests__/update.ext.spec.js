@@ -45,11 +45,11 @@ describe('Update (non-jsx)', () => {
     const span = () => createElement('span', null);
 
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span></span>'));
+    expect(container.firstChild.innerHTML).toBe('<span></span>');
     render(template(null), container);
     expect(container.firstChild.innerHTML).toBe('');
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span></span>'));
+    expect(container.firstChild.innerHTML).toBe('<span></span>');
   });
 
   it('should insert an additional tag node', () => {
@@ -59,7 +59,7 @@ describe('Update (non-jsx)', () => {
     render(template(null), container);
     expect(container.firstChild.innerHTML).toBe('');
     render(template(div()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div></div>');
   });
 
   it('should insert an additional tag node', () => {
@@ -77,105 +77,105 @@ describe('Update (non-jsx)', () => {
     const span = () => createElement('div', null);
 
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div></div>');
   });
 
   it('should render a node with dynamic values', () => {
     const template = (val1, val2) => createElement('div', null, 'Hello world - ', val1, ' ', val2);
 
     render(template('Inferno', 'Owns'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world - Inferno Owns</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world - Inferno Owns</div>');
     render(template('Inferno', 'Owns'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world - Inferno Owns</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world - Inferno Owns</div>');
 
     render(template('Inferno', null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world - Inferno </div>'));
+    expect(container.innerHTML).toBe('<div>Hello world - Inferno </div>');
 
     render(template(null, 'Owns'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world -  Owns</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world -  Owns</div>');
 
     render(template(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world -  </div>'));
+    expect(container.innerHTML).toBe('<div>Hello world -  </div>');
 
     render(template(undefined), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world -  </div>'));
+    expect(container.innerHTML).toBe('<div>Hello world -  </div>');
 
     render(template(null, 'Owns'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world -  Owns</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world -  Owns</div>');
 
     render(template('Test', 'Works!'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world - Test Works!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world - Test Works!</div>');
   });
 
   it('should update a wrapped text node', () => {
     const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
 
     render(template(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div> foo</div>'));
+    expect(container.innerHTML).toBe('<div> foo</div>');
 
     render(template('Hello', 'Bar'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello fooBar</div>'));
+    expect(container.innerHTML).toBe('<div>Hello fooBar</div>');
 
     render(template(undefined), container);
-    expect(container.innerHTML).toBe(innerHTML('<div> foo</div>'));
+    expect(container.innerHTML).toBe('<div> foo</div>');
 
     render(template('The', ' is dead!'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>The foo is dead!</div>'));
+    expect(container.innerHTML).toBe('<div>The foo is dead!</div>');
   });
 
   it('should update a wrapped text node', () => {
     const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
 
     render(template(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div> foo</div>'));
+    expect(container.innerHTML).toBe('<div> foo</div>');
 
     render(template(undefined), container);
-    expect(container.innerHTML).toBe(innerHTML('<div> foo</div>'));
+    expect(container.innerHTML).toBe('<div> foo</div>');
 
     render(template('Hello', 'Bar'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello fooBar</div>'));
+    expect(container.innerHTML).toBe('<div>Hello fooBar</div>');
 
     render(template('Hello', null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello foo</div>'));
+    expect(container.innerHTML).toBe('<div>Hello foo</div>');
 
     render(template(null, 'Bar'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div> fooBar</div>'));
+    expect(container.innerHTML).toBe('<div> fooBar</div>');
 
     render(template(undefined), container);
-    expect(container.innerHTML).toBe(innerHTML('<div> foo</div>'));
+    expect(container.innerHTML).toBe('<div> foo</div>');
 
     render(template('The', ' is dead!'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>The foo is dead!</div>'));
+    expect(container.innerHTML).toBe('<div>The foo is dead!</div>');
   });
 
   it('should update a wrapped text node with 4 arguments', () => {
     const template = (val1, val2, val3, val4) => createElement('div', null, val1, val2, val3, val4);
 
     render(template('Hello', ' world!', ' and ', 'Bar'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world! and Bar</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world! and Bar</div>');
 
     render(template(null, null, null, null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
 
     render(template(), container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
 
     render(template('Hello', ' world!', ' and ', 'Zoo'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world! and Zoo</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world! and Zoo</div>');
 
     render(template('Hello', null, ' and ', 'Zoo'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello and Zoo</div>'));
+    expect(container.innerHTML).toBe('<div>Hello and Zoo</div>');
 
     expect(() => render(template('Hello', {}, ' and ', 'Zoo'), container)).toThrow();
 
     render(template('Hello', ' poz', ' and ', 'Zoo'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello poz and Zoo</div>'));
+    expect(container.innerHTML).toBe('<div>Hello poz and Zoo</div>');
 
     render(template('The ', 'bar', ' is', ' is dead!'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>The bar is is dead!</div>'));
+    expect(container.innerHTML).toBe('<div>The bar is is dead!</div>');
 
     render(template('Hello', ' world!', null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
   it('should update a node with static text', () => {
@@ -189,25 +189,25 @@ describe('Update (non-jsx)', () => {
       );
 
     render(template('Hello'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="Hello">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
 
     render(template('Bar'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="Bar">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="Bar">Hello, World</div>');
 
     render(template(), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template(), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template('foo'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="foo">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
   });
 
   it('should update a node with multiple children and static text', () => {
@@ -221,16 +221,16 @@ describe('Update (non-jsx)', () => {
       );
 
     render(template('Hello'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="Hello">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
 
     render(template('Hello'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="Hello">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
 
     render(template(null), container); // should unset
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template('foo'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="foo">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
   });
 
   it('should update a node with multiple children and static text #2', () => {
@@ -244,19 +244,19 @@ describe('Update (non-jsx)', () => {
       );
 
     render(template(null), container); // should unset
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template('Hello'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="Hello">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
 
     render(template(undefined), container); // should unset
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template('foo'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div id="foo">Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
 
     render(template(), container); // should unset
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
   });
 
   it('should update a div with class attribute, and dynamic children with static text', () => {
@@ -417,7 +417,7 @@ describe('Update (non-jsx)', () => {
     const span1 = () => 'Hello world!';
 
     render(div(span1()), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
     const span2 = (child) => createElement('span', null, 'Im updated!');
 
     render(div(span2()), container);
@@ -427,14 +427,14 @@ describe('Update (non-jsx)', () => {
     const template = (child) => createElement('div', null, child);
 
     render(template(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
 
     render(template(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
     const span = () => createElement('div', null, 'Hello');
 
     render(template(span()), container);
-    expect(container.innerHTML).toBe(innerHTML('<div><div>Hello</div></div>'));
+    expect(container.innerHTML).toBe('<div><div>Hello</div></div>');
   });
 
   it('should patch a text node into a tag node', () => {
@@ -444,7 +444,7 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span()), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello</div>'));
+    expect(container.innerHTML).toBe('<div>Hello</div>');
   });
 
   it('should patch a tag node into a text node #2', () => {
@@ -452,10 +452,10 @@ describe('Update (non-jsx)', () => {
 
     const span = () => createElement('span', null, 'Good bye!');
     render(template(span()), container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>Good bye!</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>Good bye!</span></div>');
 
     render(template(), container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
   });
 
   it('should render text then update it', () => {
@@ -477,9 +477,9 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span>Hello World!</span>'));
+    expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span>Hello World!</span>'));
+    expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
   });
 
   it('should render an array of text nodes then update to a single text node', () => {
@@ -489,7 +489,7 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span>Hello World!</span>'));
+    expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
   });
 
   it('should update and array of text nodes to another array of text nodes', () => {
@@ -499,7 +499,7 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span>Hello World</span>'));
+    expect(container.firstChild.innerHTML).toBe('<span>Hello World</span>');
   });
 
   it('should update and array of text nodes to another array of text nodes #2', () => {
@@ -509,9 +509,9 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span>Hello World!</span>'));
+    expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<span>Hello World!</span>'));
+    expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
   });
 
   it('should update an node with static child', () => {
@@ -529,12 +529,12 @@ describe('Update (non-jsx)', () => {
       );
 
     render(template('id#1'), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span id="id#1"></span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span id="id#1"></span></div>');
 
     render(template('id#2'), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span id="id#2"></span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span id="id#2"></span></div>');
     render(template('id#3'), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span id="id#3"></span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span id="id#3"></span></div>');
   });
 
   it('should update an node with static child and dynamic custom attribute', () => {
@@ -546,9 +546,9 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span custom_attr="id#1"></span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1"></span></div>');
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span custom_attr="id#1"></span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1"></span></div>');
   });
 
   it('should update an node with static child and dynamic custom attribute and static text', () => {
@@ -564,9 +564,9 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span custom_attr="id#1">Hello!!</span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1">Hello!!</span></div>');
     render(template(span('id#2')), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span custom_attr="id#2">Hello!!</span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#2">Hello!!</span></div>');
   });
 
   it('should update an node with static child and dynamic custom attribute and static text #2', () => {
@@ -582,7 +582,7 @@ describe('Update (non-jsx)', () => {
     };
 
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span custom_attr="id#1">Hello!!</span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1">Hello!!</span></div>');
   });
 
   it('should not ignore a empty text node', () => {
@@ -624,12 +624,12 @@ describe('Update (non-jsx)', () => {
     const template = () => createElement('div', null, createElement('div', null, 'Hello, World'));
 
     render(template(), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.firstChild.innerHTML).toBe('<div>Hello, World</div>');
     render(template(), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.firstChild.innerHTML).toBe('<div>Hello, World</div>');
 
     render(template(), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div>Hello, World</div>'));
+    expect(container.firstChild.innerHTML).toBe('<div>Hello, World</div>');
   });
 
   it('should update an node with dynamic child', () => {
@@ -638,26 +638,26 @@ describe('Update (non-jsx)', () => {
       return createElement('span', null, 'Hello ', 'World');
     };
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe(innerHTML('<div><span>Hello World</span></div>'));
+    expect(container.firstChild.innerHTML).toBe('<div><span>Hello World</span></div>');
   });
 
   it('should inject dynamic text various places', () => {
     const div = (text) => createElement('div', null, 'There is ', text, ' spoon!');
 
     render(div('no'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>There is no spoon!</div>'));
+    expect(container.innerHTML).toBe('<div>There is no spoon!</div>');
 
     render(div('one'), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>There is one spoon!</div>'));
+    expect(container.innerHTML).toBe('<div>There is one spoon!</div>');
 
     render(div(), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>There is  spoon!</div>'));
+    expect(container.innerHTML).toBe('<div>There is  spoon!</div>');
 
     render(div(null), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>There is  spoon!</div>'));
+    expect(container.innerHTML).toBe('<div>There is  spoon!</div>');
 
     render(div(undefined), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>There is  spoon!</div>'));
+    expect(container.innerHTML).toBe('<div>There is  spoon!</div>');
   });
 
   it('should render a div tag and remove styling', () => {
@@ -676,7 +676,7 @@ describe('Update (non-jsx)', () => {
       container
     );
 
-    expect(container.innerHTML).toBe(innerHTML('<div style="color: red; padding-left: 10px;"></div>'));
+    expect(container.innerHTML).toBe('<div style="color: red; padding-left: 10px;"></div>');
 
     render(template(null), container);
 
@@ -716,7 +716,7 @@ describe('Update (non-jsx)', () => {
         );
 
         expect(container.innerHTML).toBe(
-          innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>')
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>'
         );
         render(
           template({
@@ -727,7 +727,7 @@ describe('Update (non-jsx)', () => {
         );
 
         expect(container.innerHTML).toBe(
-          innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>')
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>'
         );
       });
 
@@ -747,7 +747,7 @@ describe('Update (non-jsx)', () => {
         );
 
         expect(container.innerHTML).toBe(
-          innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>')
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>'
         );
       });
     });
@@ -1208,11 +1208,11 @@ describe('Update (non-jsx)', () => {
       A[2] = createElement('div', null, 'text 4');
 
       render(A[0], container);
-      expect(container.innerHTML).toBe(innerHTML('<div>text 1</div>'));
+      expect(container.innerHTML).toBe('<div>text 1</div>');
       render(A[1], container);
-      expect(container.innerHTML).toBe(innerHTML('<div>text 2<br>text 3</div>'));
+      expect(container.innerHTML).toBe('<div>text 2<br>text 3</div>');
       render(A[2], container);
-      expect(container.innerHTML).toBe(innerHTML('<div>text 4</div>'));
+      expect(container.innerHTML).toBe('<div>text 4</div>');
     });
   });
 
@@ -1227,11 +1227,11 @@ describe('Update (non-jsx)', () => {
       A[2] = createElement('div', null, createElement('br', null), 'text 4');
 
       render(A[0], container);
-      expect(container.innerHTML).toBe(innerHTML('<div>text 1<br></div>'));
+      expect(container.innerHTML).toBe('<div>text 1<br></div>');
       render(A[1], container);
-      expect(container.innerHTML).toBe(innerHTML('<div>text 2</div>'));
+      expect(container.innerHTML).toBe('<div>text 2</div>');
       render(A[2], container);
-      expect(container.innerHTML).toBe(innerHTML('<div><br>text 4</div>'));
+      expect(container.innerHTML).toBe('<div><br>text 4</div>');
     });
   });
 });

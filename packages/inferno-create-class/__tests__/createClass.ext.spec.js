@@ -25,7 +25,7 @@ describe('Components createClass (non-JSX)', () => {
 
   it('should render a basic component', () => {
     render(createElement(BasicComponent), container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
   it('should render a basic component with lifecycle', () => {
     let componentWillUpdate = false;

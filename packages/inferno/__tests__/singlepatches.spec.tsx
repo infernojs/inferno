@@ -1,5 +1,4 @@
 import { Component, Fragment, render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 
 describe('All single patch variations', () => {
   let templateRefSpy;
@@ -493,7 +492,7 @@ describe('All single patch variations', () => {
       container
     );
 
-    expect(container.innerHTML).toEqual(innerHTML('<div><div><div>Component</div></div></div>'));
+    expect(container.innerHTML).toEqual('<div><div><div>Component</div></div></div>');
 
     expect(mountCallCount).toBe(1);
     expect(unmountCallCount).toBe(0);
@@ -507,7 +506,7 @@ describe('All single patch variations', () => {
       container
     );
 
-    expect(container.innerHTML).toEqual(innerHTML('<div><div><div>Component</div></div></div>'));
+    expect(container.innerHTML).toEqual('<div><div><div>Component</div></div></div>');
 
     expect(mountCallCount).toBe(2);
     expect(unmountCallCount).toBe(1);

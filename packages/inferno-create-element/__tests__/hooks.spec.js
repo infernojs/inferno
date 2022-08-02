@@ -101,7 +101,7 @@ describe('lifecycle hooks', () => {
 
       expect(spy.calls.count()).toBe(1);
       expect(spy.calls.argsFor(0).length).toBe(2);
-      expect(spy.calls.argsFor(0)[0].outerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+      expect(spy.calls.argsFor(0)[0].outerHTML).toBe('<div>Hello world!</div>');
       expect(spy.calls.argsFor(0)[1]).toEqual({ a: 1, children: null });
     });
 

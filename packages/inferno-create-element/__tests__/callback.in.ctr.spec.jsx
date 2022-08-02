@@ -155,10 +155,8 @@ describe('Callbacks in constructor', () => {
       render(<Main />, container);
 
       // Renders correctly
-      expect(innerHTML(container.innerHTML)).toBe(
-        innerHTML(
-          '<ol><li><input type="checkbox" id="customProxyStringRaw"><label for="customProxyStringRaw">Use proxy? (click this)</label><div></div></li><li><input type="checkbox" id="This one is needed for reproduction too!"><label for="This one is needed for reproduction too!">needed too</label><div></div></li></ol>'
-        )
+      expect(container.innerHTML).toBe(
+        '<ol><li><input type="checkbox" id="customProxyStringRaw"><label for="customProxyStringRaw">Use proxy? (click this)</label><div></div></li><li><input type="checkbox" id="This one is needed for reproduction too!"><label for="This one is needed for reproduction too!">needed too</label><div></div></li></ol>'
       );
 
       let checkBoxes = container.querySelectorAll('input');

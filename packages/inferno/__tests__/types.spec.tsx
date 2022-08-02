@@ -1,4 +1,4 @@
-import { Component, Inferno, render } from "inferno";
+import { Component, Inferno, render } from 'inferno';
 
 describe('top level context', () => {
   let container;
@@ -111,19 +111,18 @@ describe('top level context', () => {
       it('Should be possible to return InfernoNode from class component render', () => {
         class FooBar extends Component<any, any> {
           public render() {
-            return "foobar";
+            return 'foobar';
           }
         }
 
         class MyComponent extends Component<any, any> {
           public render() {
-
-            let Val : Inferno.InfernoNode = <FooBar/>;
+            let Val: Inferno.InfernoNode = <FooBar />;
 
             if (this.props.check) {
               Val = <div>1</div>;
             } else {
-              Val = <div>{Val}</div>
+              Val = <div>{Val}</div>;
             }
 
             return Val;

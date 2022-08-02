@@ -20,8 +20,16 @@ const componentHooks = {
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual node
  */
-export function createElement<P>(type: string | Inferno.ComponentClass<P> | Inferno.StatelessComponent<P>, props?: (P & Props<P>) | null, ..._children: any[]): VNode;
-export function createElement<P>(type: string | Inferno.ComponentClass<P> | Inferno.StatelessComponent<P>, props?: (P & Props<P>) | null, _children?: any): VNode {
+export function createElement<P>(
+  type: string | Inferno.ComponentClass<P> | Inferno.StatelessComponent<P>,
+  props?: (P & Props<P>) | null,
+  ..._children: any[]
+): VNode;
+export function createElement<P>(
+  type: string | Inferno.ComponentClass<P> | Inferno.StatelessComponent<P>,
+  props?: (P & Props<P>) | null,
+  _children?: any
+): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (isInvalid(type)) {
       throw new Error(

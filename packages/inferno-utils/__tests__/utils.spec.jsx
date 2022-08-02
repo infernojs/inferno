@@ -1,22 +1,6 @@
-import { createContainerWithHTML, innerHTML, sortAttributes, triggerEvent, validateNodeTree } from 'inferno-utils';
+import { createContainerWithHTML, triggerEvent, validateNodeTree } from 'inferno-utils';
 
 describe('Utils', () => {
-  describe('sortAttributes', () => {
-    it('should return sorted attributes on HTML strings', () => {
-      expect(
-        sortAttributes('<div zAttribute="test" aAttribute="inferno" bAttribute="running">Inferno <span fAttribute="huh" cAttr="last">is cool!</span></div>')
-      ).toBe('<div aAttribute="inferno" bAttribute="running" zAttribute="test">Inferno <span cAttr="last" fAttribute="huh">is cool!</span></div>');
-    });
-  });
-
-  describe('innerHTML', () => {
-    it('should return the correct innerHTML', () => {
-      const testHTML = '<div>Hello World <a href="//test.com/">test link</a></div>';
-
-      expect(innerHTML(testHTML)).toBe(testHTML);
-    });
-  });
-
   describe('createContainerWithHTML', () => {
     it('should create a container with the passed in HTML', () => {
       const container = createContainerWithHTML('<h1>hello!</h1>');

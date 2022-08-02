@@ -17,7 +17,7 @@ describe('createTree - SVG (JSX)', () => {
   it('should render svg as <svg>', () => {
     render(null, container);
     render(<svg />, container);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<svg></svg>'));
+    expect(container.innerHTML).toBe('<svg></svg>');
   });
 
   it('should use the parent namespace by default', () => {
@@ -28,8 +28,8 @@ describe('createTree - SVG (JSX)', () => {
       </svg>,
       container
     );
-    expect(innerHTML(container.firstChild.firstChild.tagName)).toBe('circle');
-    expect(innerHTML(container.firstChild.getAttribute('xmlns'))).toBe('http://www.w3.org/2000/svg');
+    expect(container.firstChild.firstChild.tagName).toBe('circle');
+    expect(container.firstChild.getAttribute('xmlns')).toBe('http://www.w3.org/2000/svg');
 
     render(null, container);
     expect(container.innerHTML).toBe('');
@@ -207,7 +207,7 @@ describe('createTree - SVG (JSX)', () => {
     const spread = { id: 'test' };
 
     render(<svg {...spread} />, container);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<svg id="test"></svg>'));
+    expect(container.innerHTML).toBe('<svg id="test"></svg>');
   });
 
   describe('SVG elements', () => {

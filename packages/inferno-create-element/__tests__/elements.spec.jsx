@@ -546,7 +546,7 @@ describe('Elements (JSX)', () => {
     render(<input values={null} />, container);
 
     expect(container.value).toBe(undefined);
-    expect(container.innerHTML).toBe(innerHTML('<input>'));
+    expect(container.innerHTML).toBe('<input>');
 
     render(<input values={undefined} />, container);
     expect(container.value).toBe(undefined);
@@ -554,7 +554,7 @@ describe('Elements (JSX)', () => {
     render(<input values={null} />, container);
     expect(container.value).toBe(undefined);
 
-    expect(container.innerHTML).toBe(innerHTML('<input>'));
+    expect(container.innerHTML).toBe('<input>');
 
     render(null, container);
     expect(container.nodeName).toBe('DIV');
@@ -565,17 +565,17 @@ describe('Elements (JSX)', () => {
     render(<input title="Tip!" />, container);
 
     expect(container.firstChild.getAttribute('title')).toEqual('Tip!');
-    expect(container.innerHTML).toBe(innerHTML('<input title="Tip!">'));
+    expect(container.innerHTML).toBe('<input title="Tip!">');
 
     render(<input name="Tip!" />, container);
 
     expect(container.firstChild.getAttribute('name')).toEqual('Tip!');
-    expect(container.innerHTML).toBe(innerHTML('<input name="Tip!">'));
+    expect(container.innerHTML).toBe('<input name="Tip!">');
 
     render(<input title="Tip!" />, container);
 
     expect(container.firstChild.getAttribute('title')).toEqual('Tip!');
-    expect(container.innerHTML).toBe(innerHTML('<input title="Tip!">'));
+    expect(container.innerHTML).toBe('<input title="Tip!">');
   });
 
   it('should render a simple div with dynamic values and props', () => {
@@ -759,18 +759,18 @@ describe('Elements (JSX)', () => {
 
   it('should dangerously set innerHTML', () => {
     render(<div dangerouslySetInnerHTML={{ __html: 'Hello world!' }} />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
   it('Should not dangerously set innerHTML when previous is same as new one', () => {
     render(<div dangerouslySetInnerHTML={{ __html: 'same' }} />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>same</div>'));
+    expect(container.innerHTML).toBe('<div>same</div>');
 
     render(<div dangerouslySetInnerHTML={{ __html: 'same' }} />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>same</div>'));
+    expect(container.innerHTML).toBe('<div>same</div>');
 
     render(<div dangerouslySetInnerHTML={{ __html: 'change' }} />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>change</div>'));
+    expect(container.innerHTML).toBe('<div>change</div>');
   });
 
   it('Should throw error if __html property is not set', () => {
@@ -791,16 +791,16 @@ describe('Elements (JSX)', () => {
     };
 
     render(<div {...foo} {...bar} />, container);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div class="lol" id="test">Hello world!</div>'));
+    expect(container.innerHTML).toBe('<div class="lol" id="test">Hello world!</div>');
   });
 
   it('mixing JSX with non-JSX', () => {
     render(<div>{createElement('div', null)}</div>, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div></div></div>');
     render(<div>{createElement('span', null)}</div>, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span></span></div>'));
+    expect(container.innerHTML).toBe('<div><span></span></div>');
     render(<span>{createElement('div', null)}</span>, container);
-    expect(container.innerHTML).toBe(innerHTML('<span><div></div></span>'));
+    expect(container.innerHTML).toBe('<span><div></div></span>');
   });
 
   it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
@@ -862,16 +862,16 @@ describe('Elements (JSX)', () => {
 
     it('basic example ', () => {
       render(a, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>Hello world</div>'));
+      expect(container.innerHTML).toBe('<div>Hello world</div>');
       render(b, container);
-      expect(container.innerHTML).toBe(innerHTML('<span>This works!</span>'));
+      expect(container.innerHTML).toBe('<span>This works!</span>');
     });
 
     it('basic example #2 ', () => {
       render(<div>{[a, a, a]}</div>, container);
-      expect(container.innerHTML).toBe(innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'));
+      expect(container.innerHTML).toBe('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>');
       render(b, container);
-      expect(container.innerHTML).toBe(innerHTML('<span>This works!</span>'));
+      expect(container.innerHTML).toBe('<span>This works!</span>');
     });
 
     it('basic nested example ', () => {
@@ -882,7 +882,7 @@ describe('Elements (JSX)', () => {
         </div>,
         container
       );
-      expect(container.innerHTML).toBe(innerHTML('<div><div>Hello world</div><span>This works!</span></div>'));
+      expect(container.innerHTML).toBe('<div><div>Hello world</div><span>This works!</span></div>');
       render(
         <div>
           {b}
@@ -890,12 +890,12 @@ describe('Elements (JSX)', () => {
         </div>,
         container
       );
-      expect(container.innerHTML).toBe(innerHTML('<div><span>This works!</span><div>Hello world</div></div>'));
+      expect(container.innerHTML).toBe('<div><span>This works!</span><div>Hello world</div></div>');
     });
 
     it('basic nested component example ', () => {
       render(<C>{a}</C>, container);
-      expect(container.innerHTML).toBe(innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'));
+      expect(container.innerHTML).toBe('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>');
       render(
         <C>
           {b}
@@ -904,9 +904,7 @@ describe('Elements (JSX)', () => {
         container
       );
       expect(container.innerHTML).toBe(
-        innerHTML(
-          '<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>'
-        )
+        '<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>'
       );
     });
   });
@@ -926,14 +924,14 @@ describe('Elements (JSX)', () => {
       render(a, container);
       expect(container.innerHTML).toBe('Hello world');
       render(b, container);
-      expect(container.innerHTML).toBe(innerHTML('This works!'));
+      expect(container.innerHTML).toBe('This works!');
     });
 
     it('basic example #2 ', () => {
       render(<div>{[a, a, a]}</div>, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>Hello worldHello worldHello world</div>'));
+      expect(container.innerHTML).toBe('<div>Hello worldHello worldHello world</div>');
       render(b, container);
-      expect(container.innerHTML).toBe(innerHTML('This works!'));
+      expect(container.innerHTML).toBe('This works!');
     });
 
     it('basic nested example ', () => {
@@ -944,7 +942,7 @@ describe('Elements (JSX)', () => {
         </div>,
         container
       );
-      expect(container.innerHTML).toBe(innerHTML('<div>Hello worldThis works!</div>'));
+      expect(container.innerHTML).toBe('<div>Hello worldThis works!</div>');
       render(
         <div>
           {b}
@@ -952,12 +950,12 @@ describe('Elements (JSX)', () => {
         </div>,
         container
       );
-      expect(container.innerHTML).toBe(innerHTML('<div>This works!Hello world</div>'));
+      expect(container.innerHTML).toBe('<div>This works!Hello world</div>');
     });
 
     it('basic nested component example #2 ', () => {
       render(<C>{a}</C>, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>Hello worldHello worldHello world</div>'));
+      expect(container.innerHTML).toBe('<div>Hello worldHello worldHello world</div>');
       render(
         <C>
           {b}
@@ -965,7 +963,7 @@ describe('Elements (JSX)', () => {
         </C>,
         container
       );
-      expect(container.innerHTML).toBe(innerHTML('<div>This works!Hello worldThis works!Hello worldThis works!Hello world</div>'));
+      expect(container.innerHTML).toBe('<div>This works!Hello worldThis works!Hello worldThis works!Hello world</div>');
     });
   });
 
@@ -985,9 +983,7 @@ describe('Elements (JSX)', () => {
         container
       );
       expect(container.innerHTML).toBe(
-        innerHTML(
-          '<div class="tesla-battery__notice"><p>The actual amount of range that you experience will vary based on your particular use conditions. See how particular use conditions may affect your range in our simulation model.</p><p>Vehicle range may vary depending on the vehicle configuration, battery age and condition, driving style and operating, environmental and climate conditions.</p></div>'
-        )
+        '<div class="tesla-battery__notice"><p>The actual amount of range that you experience will vary based on your particular use conditions. See how particular use conditions may affect your range in our simulation model.</p><p>Vehicle range may vary depending on the vehicle configuration, battery age and condition, driving style and operating, environmental and climate conditions.</p></div>'
       );
     });
   });
@@ -1051,7 +1047,7 @@ describe('Elements (JSX)', () => {
 
       render(<Foo value="100" />, container);
 
-      expect(container.innerHTML).toEqual(innerHTML('<div>100</div>'));
+      expect(container.innerHTML).toEqual('<div>100</div>');
     });
   });
 });

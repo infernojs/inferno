@@ -1,6 +1,5 @@
 import { cloneVNode } from 'inferno-clone-vnode';
 import { Component, createTextVNode, Fragment, render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 
 // React Fiddle for Cloning https://jsfiddle.net/es4u02jv/
 describe('cloneVNode (JSX)', () => {
@@ -13,25 +12,25 @@ describe('cloneVNode (JSX)', () => {
   it('should clone a tag', () => {
     const node = cloneVNode(<a />, null);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<a></a>'));
+    expect(container.innerHTML).toBe('<a></a>');
   });
 
   it('should clone with third argument array', () => {
     const node = cloneVNode(<div />, null, [<span />]);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span></span></div>'));
+    expect(container.innerHTML).toBe('<div><span></span></div>');
   });
 
   it('should clone with third argument overriding props and cloned node children', () => {
     const node = cloneVNode(<div>f</div>, { children: 'x' }, [<a>1</a>]);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><a>1</a></div>'));
+    expect(container.innerHTML).toBe('<div><a>1</a></div>');
   });
 
   it('should clone with third argument overriding props and cloned node children', () => {
     const node = cloneVNode(<div>f</div>, { children: 'x' }, [undefined]);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
   });
 
   it('should clone OPT_ELEMENT', () => {
@@ -41,57 +40,57 @@ describe('cloneVNode (JSX)', () => {
       { children: [<span />] }
     );
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span></span></div>'));
+    expect(container.innerHTML).toBe('<div><span></span></div>');
   });
 
   it('should clone a basic element with array children', () => {
     const node = cloneVNode(<div />, { children: [<span />] });
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span></span></div>'));
+    expect(container.innerHTML).toBe('<div><span></span></div>');
   });
 
   it('should clone a basic element with children in props and as third argument', () => {
     const node1 = cloneVNode(<div />, { children: <span>arr1a</span> }, <span>arr2b</span>);
     render(node1, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>arr2b</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>arr2b</span></div>');
 
     const node2 = cloneVNode(<div />, { children: [<span>arr2a</span>] }, <span>arr2b</span>);
     render(node2, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>arr2b</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>arr2b</span></div>');
 
     const node3 = cloneVNode(<div />, { children: [<span>arr3a</span>] }, [<span>arr3b</span>]);
     render(node3, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3b</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>arr3b</span></div>');
   });
 
   it('Should support multiple parameters as children', () => {
     const node = cloneVNode(<div />, null, <span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>');
   });
 
   it('Should support multiple nodes as children inside array', () => {
     const node = cloneVNode(<div />, null, [<span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>]);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>');
   });
 
   it('Should support single node as children', () => {
     const node = cloneVNode(<div />, null, <span>arr3a</span>);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>arr3a</span></div>');
   });
 
   it('Should support single node as children inside array', () => {
     const node = cloneVNode(<div />, null, [<span>arr3a</span>]);
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><span>arr3a</span></div>'));
+    expect(container.innerHTML).toBe('<div><span>arr3a</span></div>');
   });
 
   it('should clone a basic element with null children', () => {
     const node = cloneVNode(<div />, { children: null });
     render(node, container);
-    expect(container.innerHTML).toBe(innerHTML('<div></div>'));
+    expect(container.innerHTML).toBe('<div></div>');
   });
 
   it('should clone a basic element with key and ref', () => {
@@ -105,19 +104,19 @@ describe('cloneVNode (JSX)', () => {
   it('should clone a basic element with different children and props', () => {
     const node1 = <div>Hello world</div>;
     render(node1, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world</div>');
 
     const node2 = cloneVNode(node1, null, 'Hello world 2!');
     render(node2, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world 2!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world 2!</div>');
 
     const node3 = cloneVNode(node2, { className: 'foo' }, 'Hello world 2!');
     render(node3, container);
-    expect(container.innerHTML).toBe(innerHTML('<div class="foo">Hello world 2!</div>'));
+    expect(container.innerHTML).toBe('<div class="foo">Hello world 2!</div>');
 
     const node4 = cloneVNode(node1, { className: 'foo' }, 'Hello world 3!');
     render(node4, container);
-    expect(container.innerHTML).toBe(innerHTML('<div class="foo">Hello world 3!</div>'));
+    expect(container.innerHTML).toBe('<div class="foo">Hello world 3!</div>');
   });
 
   function StatelessComponent(props) {
@@ -128,18 +127,18 @@ describe('cloneVNode (JSX)', () => {
     const node1 = <StatelessComponent children="Hello world" />;
 
     render(node1, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world</div>');
     const node2 = cloneVNode(node1, { children: 'Hello world 2!' });
 
     render(node2, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>Hello world 2!</div>'));
+    expect(container.innerHTML).toBe('<div>Hello world 2!</div>');
     const node3 = cloneVNode(node1, {
       children: 'Hello world 3!',
       className: 'yo'
     });
 
     render(node3, container);
-    expect(container.innerHTML).toBe(innerHTML('<div class="yo">Hello world 3!</div>'));
+    expect(container.innerHTML).toBe('<div class="yo">Hello world 3!</div>');
   });
 
   it('Should prefer falsy children (undefined) if its provided over existing children', () => {
@@ -285,11 +284,11 @@ describe('cloneVNode (JSX)', () => {
       });
 
       render(newNode, container);
-      // expect(newNode.props.className).toBe(undefined); , This depends if we are running inferno-compat or not
+      // expect(newNode.props.className).toBe(undefined); , This depends on if we are running inferno-compat or not
       // expect(newNode.props.hasOwnProperty('className')).toBe(false);
 
       expect(container.firstChild.className).toBe('foo');
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div class="foo"></div>'));
+      expect(container.innerHTML).toEqual('<div class="foo"></div>');
     });
 
     it('Should remove className if new one is empty', () => {
@@ -305,11 +304,11 @@ describe('cloneVNode (JSX)', () => {
 
       render(newNode, container);
       console.log(newNode.props);
-      // expect(newNode.props.className).toBe(undefined); , This depends if we are running inferno-compat or not
+      // expect(newNode.props.className).toBe(undefined); , This depends on if we are running inferno-compat or not
       // expect(newNode.props.hasOwnProperty('className')).toBe(false);
 
       expect(container.firstChild.className).toBe('');
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
     });
 
     it('Should keep previous className when new props dont have that property at all', () => {
@@ -331,7 +330,7 @@ describe('cloneVNode (JSX)', () => {
 
       expect(container.firstChild.className).toBe('test');
       expect(container.firstChild.getAttribute('id')).toBe('wow');
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div class="test" id="wow"></div>'));
+      expect(container.innerHTML).toEqual('<div class="test" id="wow"></div>');
     });
 
     it('Should be possible to add props to children', () => {
@@ -361,7 +360,7 @@ describe('cloneVNode (JSX)', () => {
       expect(node.key).toEqual('test');
 
       render(node, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
         key: 'foo'
@@ -371,7 +370,7 @@ describe('cloneVNode (JSX)', () => {
       expect(newNode.props.ref).toBe(undefined);
       // expect(newNode.props.hasOwnProperty('key')).toBe(false);
       render(newNode, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
     });
 
     it('Should remove key if new one is empty', () => {
@@ -380,7 +379,7 @@ describe('cloneVNode (JSX)', () => {
       expect(node.key).toEqual('test');
 
       render(node, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
         key: null
@@ -391,7 +390,7 @@ describe('cloneVNode (JSX)', () => {
       render(newNode, container);
       expect(newNode.props.key).toBe(undefined);
       // expect(newNode.props.hasOwnProperty('key')).toBe(false);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
     });
 
     it('Should keep previous key when new props dont have that property at all', () => {
@@ -400,7 +399,7 @@ describe('cloneVNode (JSX)', () => {
       expect(node.key).toEqual('test');
 
       render(node, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
         className: null
@@ -412,7 +411,7 @@ describe('cloneVNode (JSX)', () => {
       // expect(newNode.props.hasOwnProperty('key')).toBe(false);
       // expect(newNode.props.hasOwnProperty('className')).toBe(false);
       render(newNode, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
     });
   });
 
@@ -425,7 +424,7 @@ describe('cloneVNode (JSX)', () => {
       expect(node.ref).toEqual(initialFunc);
 
       render(node, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
 
       function newFunction() {}
 
@@ -437,7 +436,7 @@ describe('cloneVNode (JSX)', () => {
       // expect(newNode.props.hasOwnProperty('ref')).toBe(false);
       expect(newNode.props.ref).toBe(undefined);
       render(newNode, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
     });
 
     it('Should remove ref if new one is empty', () => {
@@ -446,7 +445,7 @@ describe('cloneVNode (JSX)', () => {
       expect(node.ref).toEqual(initialFunc);
 
       render(node, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
         ref: null
@@ -456,7 +455,7 @@ describe('cloneVNode (JSX)', () => {
       // expect(newNode.props.hasOwnProperty('ref')).toBe(false);
       expect(newNode.props.ref).toBe(undefined);
       render(newNode, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
     });
 
     it('Should keep previous ref when new props dont have that property at all', () => {
@@ -465,7 +464,7 @@ describe('cloneVNode (JSX)', () => {
       expect(node.ref).toEqual(initialFunc);
 
       render(node, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
         className: null
@@ -477,7 +476,7 @@ describe('cloneVNode (JSX)', () => {
       expect(newNode.props.className).toBe(undefined);
       expect(newNode.className).toBe(null);
       render(newNode, container);
-      expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<div></div>'));
+      expect(container.innerHTML).toEqual('<div></div>');
     });
   });
 
@@ -604,7 +603,7 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
     const node = <div>{[null, <div>1</div>, [<div>1</div>, <div>2</div>]]}</div>;
     const cloned = cloneVNode(node);
 
-    // Following assertion depends if Inferno-compat is used or not
+    // Following assertion depends on if Inferno-compat is used or not
     // expect(node.props.children).toBe(cloned.props.children);
     expect(node).not.toBe(cloned);
     expect(node.props).not.toBe(cloned.props);

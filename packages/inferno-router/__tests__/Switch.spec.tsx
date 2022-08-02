@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
-import { render, rerender } from "inferno";
-import { MemoryRouter, Redirect, Route, Switch } from "inferno-router";
+import { render, rerender } from 'inferno';
+import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
 
 describe('Switch (jsx)', () => {
   it('renders the first <Route> that matches the URL', () => {

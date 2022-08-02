@@ -32,7 +32,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>body text</div>'));
+      expect(container.innerHTML).toBe('<div>body text</div>');
     });
 
     it('Should render element with an array of one text string', function () {
@@ -41,7 +41,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>body text</div>'));
+      expect(container.innerHTML).toBe('<div>body text</div>');
     });
 
     it('Should render element with an array of two text strings', function () {
@@ -50,7 +50,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>first textsecond text</div>'));
+      expect(container.innerHTML).toBe('<div>first textsecond text</div>');
     });
 
     it('Should render element with child element', function () {
@@ -62,7 +62,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div><span>child body text</span></div>'));
+      expect(container.innerHTML).toBe('<div><span>child body text</span></div>');
     });
 
     it('Should render element with an array of one child element', function () {
@@ -74,7 +74,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div><span>child body text</span></div>'));
+      expect(container.innerHTML).toBe('<div><span>child body text</span></div>');
     });
 
     it('Should render element with an array of two child elements', function () {
@@ -89,7 +89,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div><span>first text</span><span>second text</span></div>'));
+      expect(container.innerHTML).toBe('<div><span>first text</span><span>second text</span></div>');
     });
 
     it('Should render element with an array of a string and a child element', function () {
@@ -101,10 +101,10 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>first text<span>second text</span></div>'));
+      expect(container.innerHTML).toBe('<div>first text<span>second text</span></div>');
     });
 
-    // Test Iterator support, skip if it not supported in browser
+    // Test Iterator support, skip if it is not supported in browser
 
     if (typeof Symbol !== 'undefined' && typeof Symbol.iterator !== 'undefined') {
       function arrayAsBasicIterator(array) {
@@ -131,7 +131,7 @@ describe('Compat Children', () => {
 
         renderCompatTestElement(element);
 
-        expect(container.innerHTML).toBe(innerHTML('<div>generated body text</div>'));
+        expect(container.innerHTML).toBe('<div>generated body text</div>');
       });
 
       it('Should render element with an iterable of one child element', function () {
@@ -144,7 +144,7 @@ describe('Compat Children', () => {
 
         renderCompatTestElement(element);
 
-        expect(container.innerHTML).toBe(innerHTML('<div><span>generated child body text</span></div>'));
+        expect(container.innerHTML).toBe('<div><span>generated child body text</span></div>');
       });
 
       it('Should render element with an iterable of a child element and a string', function () {
@@ -157,7 +157,7 @@ describe('Compat Children', () => {
 
         renderCompatTestElement(element);
 
-        expect(container.innerHTML).toBe(innerHTML('<div><span>generated child body text</span>generated body text</div>'));
+        expect(container.innerHTML).toBe('<div><span>generated child body text</span>generated body text</div>');
       });
     }
   });
@@ -175,7 +175,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>body text</div>'));
+      expect(container.innerHTML).toBe('<div>body text</div>');
     });
 
     it('Should render element with an array of one text string', function () {
@@ -184,7 +184,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>body text</div>'));
+      expect(container.innerHTML).toBe('<div>body text</div>');
     });
 
     it('Should render element with an array of two text strings', function () {
@@ -193,7 +193,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>first textsecond text</div>'));
+      expect(container.innerHTML).toBe('<div>first textsecond text</div>');
     });
 
     it('Should render element with child element', function () {
@@ -205,7 +205,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div><span>child body text</span></div>'));
+      expect(container.innerHTML).toBe('<div><span>child body text</span></div>');
     });
 
     it('Should render element with an array of one child element', function () {
@@ -217,7 +217,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div><span>child body text</span></div>'));
+      expect(container.innerHTML).toBe('<div><span>child body text</span></div>');
     });
 
     it('Should render element with an array of two child elements', function () {
@@ -232,7 +232,7 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div><span>first text</span><span>second text</span></div>'));
+      expect(container.innerHTML).toBe('<div><span>first text</span><span>second text</span></div>');
     });
 
     it('Should render element with an array of a string and a child element', function () {
@@ -244,10 +244,10 @@ describe('Compat Children', () => {
 
       renderCompatTestElement(element);
 
-      expect(container.innerHTML).toBe(innerHTML('<div>first text<span>second text</span></div>'));
+      expect(container.innerHTML).toBe('<div>first text<span>second text</span></div>');
     });
 
-    // Test Iterator support, skip if it not supported in browser
+    // Test Iterator support, skip if it is not supported in browser
 
     if (typeof Symbol !== 'undefined' && typeof Symbol.iterator !== 'undefined') {
       function arrayAsBasicIterator(array) {
@@ -274,7 +274,7 @@ describe('Compat Children', () => {
 
         renderCompatTestElement(element);
 
-        expect(container.innerHTML).toBe(innerHTML('<div>generated body text</div>'));
+        expect(container.innerHTML).toBe('<div>generated body text</div>');
       });
 
       it('Should render element with an iterable of one child element', function () {
@@ -287,7 +287,7 @@ describe('Compat Children', () => {
 
         renderCompatTestElement(element);
 
-        expect(container.innerHTML).toBe(innerHTML('<div><span>generated child body text</span></div>'));
+        expect(container.innerHTML).toBe('<div><span>generated child body text</span></div>');
       });
 
       it('Should render element with an iterable of a child element and a string', function () {
@@ -300,7 +300,7 @@ describe('Compat Children', () => {
 
         renderCompatTestElement(element);
 
-        expect(container.innerHTML).toBe(innerHTML('<div><span>generated child body text</span>generated body text</div>'));
+        expect(container.innerHTML).toBe('<div><span>generated child body text</span>generated body text</div>');
       });
     }
   });
@@ -310,7 +310,7 @@ describe('Compat Children', () => {
     it('Should render a string div', () => {
       const Div = 'div';
       render(<Div>Hello World</Div>, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>Hello World</div>'));
+      expect(container.innerHTML).toBe('<div>Hello World</div>');
     });
   });
 
