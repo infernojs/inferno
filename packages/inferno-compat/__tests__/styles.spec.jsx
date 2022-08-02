@@ -18,13 +18,13 @@ describe('Compat - styles', () => {
   it('Should be possible to use camelCase styles when reactStyles support is on', () => {
     render(<div style={{ backgroundColor: 'red' }}>Test</div>, container);
 
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML(`<div style="background-color: red;">Test</div>`));
+    expect(container.innerHTML).toBe(`<div style="background-color: red;">Test</div>`);
   });
 
   it('Should automatically add px suffix to whitelisted numeric style properties', () => {
     render(<div style={{ width: 10, zIndex: 1 }}>foo</div>, container);
 
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML(`<div style="width: 10px; z-index: 1;">foo</div>`));
+    expect(container.innerHTML).toBe(`<div style="width: 10px; z-index: 1;">foo</div>`);
   });
 
   it('Should be possible to use hyphen case props too', () => {

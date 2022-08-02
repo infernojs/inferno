@@ -1,5 +1,4 @@
 import { Component, render, rerender } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 
 /* tslint:disable:no-console */
 
@@ -34,12 +33,12 @@ describe('Component lifecycle', () => {
 
     render(<Com value={1} />, container);
 
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>1</div>'));
+    expect(container.innerHTML).toBe('<div>1</div>');
 
     render(<Com value={2} />, container);
 
     expect(callCount).toBe(1);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>2</div>'));
+    expect(container.innerHTML).toBe('<div>2</div>');
   });
 
   it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', () => {
@@ -127,12 +126,12 @@ describe('Component lifecycle', () => {
 
     render(<Com value={1} />, container);
 
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>1</div>'));
+    expect(container.innerHTML).toBe('<div>1</div>');
 
     render(<Com value={2} />, container);
 
     expect(callCount).toBe(1);
-    expect(innerHTML(container.innerHTML)).toBe(innerHTML('<div>2</div>'));
+    expect(container.innerHTML).toBe('<div>2</div>');
   });
 
   it('Should call componentWillUnmount before node is removed from DOM tree', () => {

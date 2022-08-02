@@ -56,16 +56,16 @@ describe('Stateful Component updates', () => {
     // Render A
     const spy = spyOn(A.prototype, 'componentWillUnmount');
     render(<A />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>A Component A</div>'));
+    expect(container.innerHTML).toBe('<div>A Component A</div>');
     // Render B
     render(<B />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div>B Component B</div>'));
+    expect(container.innerHTML).toBe('<div>B Component B</div>');
     expect(spy).toHaveBeenCalledTimes(1); // componentUnMount should have been called
     spy.calls.reset();
 
     // delayed update triggers for A
     updatesAfromOutside();
-    expect(container.innerHTML).toBe(innerHTML('<div>B Component B</div>'));
+    expect(container.innerHTML).toBe('<div>B Component B</div>');
 
     done();
   });
@@ -162,7 +162,7 @@ describe('Stateful Component updates', () => {
     }
 
     render(<A />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>'));
+    expect(container.innerHTML).toBe('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>');
     const firstChild = container.firstChild;
     expect(firstChild.childNodes[0].checked).toBe(false);
     expect(firstChild.childNodes[1].checked).toBe(false);
@@ -173,7 +173,7 @@ describe('Stateful Component updates', () => {
     expect(firstChild.childNodes[0].checked).toBe(true);
 
     updateCaller(); // New render
-    expect(container.innerHTML).toBe(innerHTML('<div><input type="checkbox"><input type="checkbox"></div>'));
+    expect(container.innerHTML).toBe('<div><input type="checkbox"><input type="checkbox"></div>');
     expect(firstChild.childNodes[0].checked).toBe(false);
     expect(firstChild.childNodes[1].checked).toBe(false);
   });
@@ -272,20 +272,20 @@ describe('Stateful Component updates', () => {
 
     render(<Parent />, container);
 
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>truefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>truefalse</div></div></div>');
 
     updateCaller();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsefalse</div></div></div>');
     updateCaller();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>truefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>truefalse</div></div></div>');
     updateCaller();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsefalse</div></div></div>');
     stuckChild();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsetrue</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsetrue</div></div></div>');
     stuckChild();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsefalse</div></div></div>');
     stuckChild();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsetrue</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsetrue</div></div></div>');
   });
 
   it('Should Not get stuck in UNMOUNTED state - variation2', () => {
@@ -382,24 +382,24 @@ describe('Stateful Component updates', () => {
 
     render(<Parent />, container);
 
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>truefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>truefalse</div></div></div>');
 
     stuckChild();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>truetrue</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>truetrue</div></div></div>');
     stuckChild();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>truefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>truefalse</div></div></div>');
     stuckChild();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>truetrue</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>truetrue</div></div></div>');
 
     updateCaller();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsetrue</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsetrue</div></div></div>');
     updateCaller();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>truetrue</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>truetrue</div></div></div>');
     updateCaller();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsetrue</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsetrue</div></div></div>');
 
     stuckChild();
-    expect(container.innerHTML).toBe(innerHTML('<div><div><div>falsefalse</div></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><div>falsefalse</div></div></div>');
   });
 
   it('Should keep order of nodes', () => {
@@ -475,7 +475,7 @@ describe('Stateful Component updates', () => {
     }
 
     render(<Looper />, container);
-    expect(container.innerHTML).toBe(innerHTML('<div><ul></ul></div>'));
+    expect(container.innerHTML).toBe('<div><ul></ul></div>');
     setItems([
       { value: 'val1', text: 'key1' },
       { value: 'val2', text: 'key2' },
@@ -484,9 +484,7 @@ describe('Stateful Component updates', () => {
     ]);
 
     expect(container.innerHTML).toBe(
-      innerHTML(
-        '<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
-      )
+      '<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
     );
 
     setItems([
@@ -494,9 +492,7 @@ describe('Stateful Component updates', () => {
       { value: 'val3', text: 'key3' }
     ]);
     expect(container.innerHTML).toBe(
-      innerHTML(
-        '<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>'
-      )
+      '<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>'
     );
 
     setItems([
@@ -506,9 +502,7 @@ describe('Stateful Component updates', () => {
       { value: 'val4', text: 'key4' }
     ]);
     expect(container.innerHTML).toBe(
-      innerHTML(
-        '<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
-      )
+      '<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
     );
   });
 
@@ -540,7 +534,7 @@ describe('Stateful Component updates', () => {
 
     render(<Stuff />, container);
     updater(orig);
-    expect(container.innerHTML).toBe(innerHTML('<div><div><span>1</span></div></div>'));
+    expect(container.innerHTML).toBe('<div><div><span>1</span></div></div>');
   });
 
   it('Should allow camelCase properties when using JSX plugin', () => {
@@ -570,7 +564,7 @@ describe('Stateful Component updates', () => {
     }
 
     render(<Tester />, container);
-    expect(innerHTML(container.innerHTML)).toEqual(innerHTML('<form><input id="inputId" type="text"></form>'));
+    expect(container.innerHTML).toEqual('<form><input id="inputId" type="text"></form>');
     const input = container.querySelector('#inputId');
     expect(submitSpy).not.toHaveBeenCalled();
     input.focus();

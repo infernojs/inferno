@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, Inferno } from "inferno";
+import { Component, createComponentVNode, Inferno } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';

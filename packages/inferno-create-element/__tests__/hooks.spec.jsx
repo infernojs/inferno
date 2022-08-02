@@ -92,21 +92,21 @@ describe('Component lifecycle (JSX)', () => {
       const DSpy = spyOn(D.prototype, 'componentWillUnmount');
 
       render(<A />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
+      expect(container.innerHTML).toBe('<div><button>btn</button></div>');
       expect(Aspy).not.toHaveBeenCalled();
       expect(Bspy).not.toHaveBeenCalled();
       expect(CSpy).not.toHaveBeenCalled();
       expect(DSpy).not.toHaveBeenCalled();
 
       updater();
-      expect(container.innerHTML).toBe(innerHTML('<div><div><div><div>Terve</div></div></div><button>btn</button></div>'));
+      expect(container.innerHTML).toBe('<div><div><div><div>Terve</div></div></div><button>btn</button></div>');
       expect(Aspy).not.toHaveBeenCalled();
       expect(Bspy).not.toHaveBeenCalled();
       expect(CSpy).not.toHaveBeenCalled();
       expect(DSpy).not.toHaveBeenCalled();
 
       updater();
-      expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
+      expect(container.innerHTML).toBe('<div><button>btn</button></div>');
       expect(Aspy).not.toHaveBeenCalled();
       expect(Bspy).toHaveBeenCalledTimes(1);
       expect(CSpy).toHaveBeenCalledTimes(1);
@@ -181,21 +181,21 @@ describe('Component lifecycle (JSX)', () => {
       const DSpy = spyOn(D.prototype, 'componentWillUnmount');
 
       render(<A />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
+      expect(container.innerHTML).toBe('<div><button>btn</button></div>');
       expect(Aspy).not.toHaveBeenCalled();
       expect(Bspy).not.toHaveBeenCalled();
       expect(CSpy).not.toHaveBeenCalled();
       expect(DSpy).not.toHaveBeenCalled();
 
       updater();
-      expect(container.innerHTML).toBe(innerHTML('<div><div>Terve</div><button>btn</button></div>'));
+      expect(container.innerHTML).toBe('<div><div>Terve</div><button>btn</button></div>');
       expect(Aspy).not.toHaveBeenCalled();
       expect(Bspy).not.toHaveBeenCalled();
       expect(CSpy).not.toHaveBeenCalled();
       expect(DSpy).not.toHaveBeenCalled();
 
       updater();
-      expect(container.innerHTML).toBe(innerHTML('<div><button>btn</button></div>'));
+      expect(container.innerHTML).toBe('<div><button>btn</button></div>');
       expect(Aspy).not.toHaveBeenCalled();
       expect(Bspy).toHaveBeenCalledTimes(1);
       expect(CSpy).toHaveBeenCalledTimes(1);
@@ -232,25 +232,25 @@ describe('Component lifecycle (JSX)', () => {
       const DSpy = spyOn(D.prototype, 'componentWillUnmount');
 
       render(<B />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>B</div>'));
+      expect(container.innerHTML).toBe('<div>B</div>');
       expect(Bspy).not.toHaveBeenCalled();
       expect(CSpy).not.toHaveBeenCalled();
       expect(DSpy).not.toHaveBeenCalled();
 
       render(<C />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>C</div>'));
+      expect(container.innerHTML).toBe('<div>C</div>');
       expect(Bspy).toHaveBeenCalledTimes(1);
       expect(CSpy).not.toHaveBeenCalled();
       expect(DSpy).not.toHaveBeenCalled();
 
       render(<D />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>D</div>'));
+      expect(container.innerHTML).toBe('<div>D</div>');
       expect(Bspy).toHaveBeenCalledTimes(1);
       expect(CSpy).toHaveBeenCalledTimes(1);
       expect(DSpy).not.toHaveBeenCalled();
 
       render(<B />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div>B</div>'));
+      expect(container.innerHTML).toBe('<div>B</div>');
       expect(Bspy).toHaveBeenCalledTimes(1);
       expect(CSpy).toHaveBeenCalledTimes(1);
       expect(DSpy).toHaveBeenCalledTimes(1);
@@ -336,7 +336,7 @@ describe('Component lifecycle (JSX)', () => {
       const CSpy = spyOn(C.prototype, 'componentWillUnmount');
 
       render(<B />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div><p>B1</p><p>B2</p></div>'));
+      expect(container.innerHTML).toBe('<div><p>B1</p><p>B2</p></div>');
       expect(Bspy).not.toHaveBeenCalled();
       expect(B1spy).not.toHaveBeenCalled();
       expect(B2spy).not.toHaveBeenCalled();
@@ -348,7 +348,7 @@ describe('Component lifecycle (JSX)', () => {
       CSpy.calls.reset();
 
       render(<C />, container);
-      expect(container.innerHTML).toBe(innerHTML('<div class="c"><p>C1</p><p>C2</p></div>'));
+      expect(container.innerHTML).toBe('<div class="c"><p>C1</p><p>C2</p></div>');
       expect(Bspy).toHaveBeenCalledTimes(1);
       expect(B1spy).toHaveBeenCalledTimes(1);
       expect(B2spy).toHaveBeenCalledTimes(1);
@@ -407,7 +407,7 @@ describe('Component lifecycle (JSX)', () => {
 
       expect(spy.calls.count()).toBe(1);
       expect(spy.calls.argsFor(0).length).toBe(2);
-      expect(spy.calls.argsFor(0)[0].outerHTML).toBe(innerHTML('<div>Hello world</div>'));
+      expect(spy.calls.argsFor(0)[0].outerHTML).toBe('<div>Hello world</div>');
       expect(spy.calls.argsFor(0)[1]).toEqual({ a: 1 });
     });
 

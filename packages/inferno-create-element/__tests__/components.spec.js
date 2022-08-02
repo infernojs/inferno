@@ -157,7 +157,7 @@ describe('Components (non-JSX)', () => {
       expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).toBe('checkbox');
       expect(container.firstChild.firstChild.tagName).toBe('DIV');
       expect(container.firstChild.firstChild.firstChild.tagName).toBe('LABEL');
-      expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(innerHTML('<input type="checkbox">The title is abc'));
+      expect(container.firstChild.firstChild.firstChild.innerHTML).toBe('<input type="checkbox">The title is abc');
       expect(container.querySelector('input').checked).toBe(true);
 
       render(null, container);
@@ -168,7 +168,7 @@ describe('Components (non-JSX)', () => {
       expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).toBe('checkbox');
       expect(container.firstChild.firstChild.tagName).toBe('DIV');
       expect(container.firstChild.firstChild.firstChild.tagName).toBe('LABEL');
-      expect(container.firstChild.firstChild.firstChild.innerHTML).toBe(innerHTML('<input type="checkbox">The title is abc'));
+      expect(container.firstChild.firstChild.firstChild.innerHTML).toBe('<input type="checkbox">The title is abc');
       expect(container.querySelector('input').checked).toBe(false);
     });
 
@@ -249,13 +249,11 @@ describe('Components (non-JSX)', () => {
     it('should render a basic component with inputs #3 #3', () => {
       const template = (Component, title, isDisabled) => createElement('div', null, createElement(Component, { title, isDisabled }));
       render(template(BasicComponent1d, 'abc', true), container);
-      expect(innerHTML(container.innerHTML)).toBe(
-        innerHTML('<div><div class="basic"><label><input disabled="" type="password">The title is abc</label></div></div>')
-      );
+      expect(container.innerHTML).toBe('<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>');
       expect(container.querySelector('input').disabled).toBe(true);
 
       render(template(BasicComponent1d, '123', false), container);
-      expect(innerHTML(container.innerHTML)).toBe('<div><div class="basic"><label><input type="password">The title is 123</label></div></div>');
+      expect(container.innerHTML).toBe('<div><div class="basic"><label><input type="password">The title is 123</label></div></div>');
       expect(container.querySelector('input').disabled).toBe(false);
     });
 
@@ -886,18 +884,18 @@ describe('Components (non-JSX)', () => {
 
       it('Initial render (creation)', () => {
         render(tpl79713834(TEST), container);
-        expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><div><button>Make visible</button></div></div>'));
+        expect(container.innerHTML).toBe('<div class="login-view bg-visma"><div><button>Make visible</button></div></div>');
       });
 
       it('Second render (update with state change)', (done) => {
         render(tpl79713834(TEST), container);
         render(tpl79713834(TEST), container);
-        const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+        const buttons = container.querySelectorAll('button');
 
         buttons.forEach((button) => button.click());
 
         setTimeout(() => {
-          expect(container.innerHTML).toBe(innerHTML('<div class="login-view bg-visma"><div>VISIBLE</div>'));
+          expect(container.innerHTML).toBe('<div class="login-view bg-visma"><div>VISIBLE</div></div>');
           done();
         }, 25);
       });
@@ -940,11 +938,11 @@ describe('Components (non-JSX)', () => {
       it('Initial render (creation)', () => {
         render(starter(SomeError), container);
 
-        expect(container.innerHTML).toBe(innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>'));
+        expect(container.innerHTML).toBe('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>');
 
         render(starter(SomeError), container);
 
-        expect(container.innerHTML).toBe(innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>'));
+        expect(container.innerHTML).toBe('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>');
       });
     });
 
@@ -963,12 +961,12 @@ describe('Components (non-JSX)', () => {
 
       it('Initial render (creation)', () => {
         render(view(true), container);
-        expect(container.innerHTML).toBe(innerHTML('<div><div>Foo</div></div>'));
+        expect(container.innerHTML).toBe('<div><div>Foo</div></div>');
       });
       it('Second render (update)', () => {
         render(view(true), container);
         render(view(false), container);
-        expect(container.innerHTML).toBe(innerHTML('<div><div>BarQux</div></div>'));
+        expect(container.innerHTML).toBe('<div><div>BarQux</div></div>');
       });
     });
 

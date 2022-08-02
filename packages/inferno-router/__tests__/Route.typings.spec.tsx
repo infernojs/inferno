@@ -1,7 +1,7 @@
-import { Component, render } from "inferno";
+import { Component, render } from 'inferno';
 import { Route, Router } from 'inferno-router';
 import { createMemoryHistory } from 'history';
-import { IRouteProps } from "../src/Route";
+import { IRouteProps } from '../src/Route';
 
 describe('<Route component>', () => {
   const history = createMemoryHistory();
@@ -35,7 +35,7 @@ describe('<Route component>', () => {
   it('type check props class component', () => {
     class ComponentA extends Component<any, any> {
       public render() {
-        return "foo";
+        return 'foo';
       }
     }
 
@@ -50,7 +50,7 @@ describe('<Route component>', () => {
   it('type check props render method', () => {
     class ComponentA extends Component<any, any> {
       public render() {
-        return "foo";
+        return 'foo';
       }
     }
 

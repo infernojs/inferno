@@ -77,9 +77,7 @@ describe('Blueprints (JSX)', () => {
       render(<Wrapper />, container);
 
       expect(container.innerHTML).toBe(
-        innerHTML(
-          '<div><div class="my-component"><h1>Saab <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <span>B</span></h1><button type="button">btn</button></div></div>'
-        )
+        '<div><div class="my-component"><h1>Saab <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <span>B</span></h1><button type="button">btn</button></div></div>'
       );
 
       render(null, container);
@@ -87,13 +85,11 @@ describe('Blueprints (JSX)', () => {
 
     it('Second render (update)', () => {
       render(<Wrapper />, container);
-      const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+      const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => button.click());
 
       expect(container.innerHTML).toBe(
-        innerHTML(
-          '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>'
-        )
+        '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>'
       );
       render(null, container);
     });
@@ -131,7 +127,7 @@ describe('Blueprints (JSX)', () => {
 
       render(<A open={true} />, container);
       setTimeout(() => {
-        expect(container.innerHTML).toBe(innerHTML('<div>animate</div>'));
+        expect(container.innerHTML).toBe('<div>animate</div>');
         done();
       }, 10);
     });

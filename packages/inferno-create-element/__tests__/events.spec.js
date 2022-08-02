@@ -37,7 +37,7 @@ describe('Basic event tests', () => {
 
     render(template(test), container);
 
-    let divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+    let divs = container.querySelectorAll('div');
     divs.forEach((div) => div.click());
     expect(calledFirstTest).toBe(true);
 
@@ -45,7 +45,7 @@ describe('Basic event tests', () => {
     calledFirstTest = false;
 
     render(template(test2), container);
-    divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+    divs = container.querySelectorAll('div');
     divs.forEach((div) => div.click());
 
     expect(calledFirstTest).toBe(false);
@@ -56,7 +56,7 @@ describe('Basic event tests', () => {
     calledSecondTest = false;
 
     render(null, container);
-    divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+    divs = container.querySelectorAll('div');
     divs.forEach((div) => div.click());
 
     expect(calledFirstTest).toBe(false);
@@ -94,7 +94,7 @@ describe('Basic event tests', () => {
     }
 
     renderIt();
-    const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+    const buttons = container.querySelectorAll('button');
 
     expect(container.firstChild.innerHTML).toBe('Count 0');
     expect(data.count).toBe(0);
@@ -136,7 +136,7 @@ describe('Basic event tests', () => {
     }
 
     renderIt();
-    const buttons = Array.prototype.slice.call(container.querySelectorAll('span'));
+    const buttons = container.querySelectorAll('span');
 
     expect(container.firstChild.innerHTML).toBe('<span>Count 0</span>');
     expect(data.count).toBe(0);

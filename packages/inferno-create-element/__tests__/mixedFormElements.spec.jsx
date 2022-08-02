@@ -112,7 +112,7 @@ describe('HTML Form Elements', () => {
   describe('After external change', () => {
     it('Should update input check property', () => {
       render(<input type="checkbox" checked={true} />, container);
-      expect(container.innerHTML).toBe(innerHTML('<input type="checkbox">'));
+      expect(container.innerHTML).toBe('<input type="checkbox">');
       expect(container.firstChild.checked).toBe(true);
 
       //
@@ -121,7 +121,7 @@ describe('HTML Form Elements', () => {
 
       const input = container.querySelector('input');
       input.checked = false;
-      expect(container.innerHTML).toBe(innerHTML('<input type="checkbox">'));
+      expect(container.innerHTML).toBe('<input type="checkbox">');
       expect(container.firstChild.checked).toBe(false);
 
       //
@@ -129,7 +129,7 @@ describe('HTML Form Elements', () => {
       //
 
       render(<input type="checkbox" checked={true} />, container);
-      expect(container.innerHTML).toBe(innerHTML('<input type="checkbox">'));
+      expect(container.innerHTML).toBe('<input type="checkbox">');
       expect(container.firstChild.checked).toBe(true);
     });
 
