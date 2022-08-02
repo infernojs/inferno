@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, IComponentConstructor, Inferno } from 'inferno';
+import { Component, createComponentVNode, Inferno } from "inferno";
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
@@ -25,9 +25,9 @@ export interface IRouteProps {
   exact?: boolean;
   strict?: boolean;
   sensitive?: boolean;
-  component?: IComponentConstructor<any> | ((props: any, context: any) => Inferno.InfernoNode);
+  component?: Inferno.ComponentClass<any> | ((props: any, context: any) => Inferno.InfernoNode);
   render?: (props: RouteComponentProps<any>, context: any) => Inferno.InfernoNode;
-  location?: Location;
+  location?: Partial<Location>;
   children?: ((props: RouteComponentProps<any>) => Inferno.InfernoNode) | Inferno.InfernoNode;
 }
 
@@ -38,7 +38,7 @@ type RouteState = {
   match: boolean;
 };
 
-class Route extends Component<IRouteProps, RouteState> {
+class Route extends Component<Partial<IRouteProps>, RouteState> {
   public getChildContext() {
     const childContext: any = combineFrom(this.context.router, null);
 

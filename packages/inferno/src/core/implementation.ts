@@ -3,7 +3,6 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
-import { Component } from 'inferno';
 
 const keyPrefix = '$';
 
@@ -106,7 +105,7 @@ function resolveComponentFlags(flags, type) {
 
 export function createComponentVNode<P>(
   flags: VNodeFlags,
-  type: Function | typeof Component | ForwardRef<P, any>,
+  type: Function | Inferno.ComponentClass<P> | ForwardRef<P, any>,
   props?: (Readonly<P> & P) | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null

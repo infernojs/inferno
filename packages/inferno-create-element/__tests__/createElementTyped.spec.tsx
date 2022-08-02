@@ -65,7 +65,7 @@ describe('CreateElement (non-JSX)', () => {
     // render(createElement(App, { className: 1 }), container);
     // render(createElement(App, {}), container);
 
-    /** Would like to be an error but it'd break createElement('hr'): */
+    /** Would like to be an error, but it'd break createElement('hr'): */
     render(createElement(App), container);
   });
 

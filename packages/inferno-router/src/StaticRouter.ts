@@ -71,7 +71,7 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
           push: this.handlePush,
           replace: this.handleReplace
         }
-      })
+      }) as any
     );
   }
 }

@@ -45,8 +45,6 @@ export interface IComponent<P, S> {
   render(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: S, nextContext: any): Inferno.InfernoNode;
 }
 
-export type IComponentConstructor<T> = new (props: T, context: any) => IComponent<T, any>;
-
 export interface SemiSyntheticEvent<T> extends Event {
   /**
    * A reference to the element on which the event listener is registered.
@@ -231,7 +229,6 @@ export declare namespace Inferno {
 
   //
   // Inferno Nodes
-  // http://facebook.github.io/inferno/docs/glossary.html
   // ----------------------------------------------------------------------
 
   type InfernoText = string | number;
@@ -263,13 +260,24 @@ export declare namespace Inferno {
 
   type SFC<P = {}> = StatelessComponent<P>;
   interface StatelessComponent<P = {}> {
-    (props: P & Refs<P> & { children?: InfernoNode | undefined }, context?: any): InfernoElement | null;
+    (
+      props: {
+        children?: Inferno.InfernoNode;
+      } & P &
+        Refs<P>,
+      context?: any
+    ): InfernoElement | null;
     defaultProps?: Partial<P> | undefined;
     defaultHooks?: Refs<P> | undefined;
   }
 
   interface ComponentClass<P = {}> {
-    new (props?: P, context?: any): IComponent<P, ComponentState>;
+    new (
+      props?: {
+        children?: Inferno.InfernoNode;
+      } & P,
+      context?: any
+    ): IComponent<P, ComponentState>;
     defaultProps?: Partial<P> | undefined;
   }
 
@@ -1314,8 +1322,6 @@ export declare namespace Inferno {
   }
 
   // this list is "complete" in that it contains every SVG attribute
-  // that Inferno supports, but the types can be improved.
-  // Full list here: https://facebook.github.io/inferno/docs/dom-elements.html
   //
   // The three broad type categories are (in order of restrictiveness):
   //   - "number | string"
@@ -1787,7 +1793,7 @@ type InfernoManagedAttributes<C, P> = C extends { defaultProps: infer D } ? Defa
 declare global {
   namespace JSX {
     // tslint:disable-next-line:no-empty-interface
-    type Element = Inferno.InfernoElement<any> | string | number;
+    type Element = Inferno.InfernoElement<any> | Inferno.InfernoNode;
     interface ElementClass extends IComponent<any, any> {
       render(nextProps, nextState, nextContext): Inferno.InfernoNode;
     }
@@ -1928,9 +1934,9 @@ declare global {
       // SVG
       svg: Inferno.SVGProps<SVGSVGElement>;
 
-      animate: Inferno.SVGProps<SVGElement>; // TODO: It is SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now.
+      animate: Inferno.SVGProps<SVGAnimateElement>;
       animateMotion: Inferno.SVGProps<SVGElement>;
-      animateTransform: Inferno.SVGProps<SVGElement>; // TODO: It is SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now.
+      animateTransform: Inferno.SVGProps<SVGAnimateTransformElement>;
       circle: Inferno.SVGProps<SVGCircleElement>;
       clipPath: Inferno.SVGProps<SVGClipPathElement>;
       defs: Inferno.SVGProps<SVGDefsElement>;

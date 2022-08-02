@@ -5,7 +5,7 @@ import { isString } from 'inferno-shared';
 
 export interface RedirectProps {
   from?: string;
-  to: string | Location;
+  to: string | Partial<Location>;
   exact?: any;
   push?: boolean;
 }

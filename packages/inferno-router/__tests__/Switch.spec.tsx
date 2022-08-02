@@ -1,5 +1,6 @@
-import { render, rerender } from 'inferno';
-import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
+/* tslint:disable:no-console */
+import { render, rerender } from "inferno";
+import { MemoryRouter, Redirect, Route, Switch } from "inferno-router";
 
 describe('Switch (jsx)', () => {
   it('renders the first <Route> that matches the URL', () => {
@@ -115,10 +116,10 @@ describe('Switch (jsx)', () => {
 
   it('warns when redirecting to same route, both strings', () => {
     const node = document.createElement('div');
-    let redirected = false;
+    const redirected = false;
     let done = false;
 
-    spyOn(console, 'error');
+    const consoleErrSpy = spyOn(console, 'error');
 
     render(
       <MemoryRouter initialEntries={['/one']}>
@@ -144,8 +145,8 @@ describe('Switch (jsx)', () => {
     rerender();
 
     expect(node.innerHTML).not.toContain('done');
-    expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.argsFor(0)[0]).toContain('/one');
+    expect(consoleErrSpy.calls.count()).toBe(1);
+    expect(consoleErrSpy.calls.argsFor(0)[0]).toContain('/one');
   });
 
   it('warns when redirecting to same route, mixed types', () => {
@@ -153,7 +154,7 @@ describe('Switch (jsx)', () => {
     let redirected = false;
     let done = false;
 
-    spyOn(console, 'error');
+    const consoleErrSpy = spyOn(console, 'error');
 
     render(
       <MemoryRouter initialEntries={['/one']}>
@@ -180,9 +181,8 @@ describe('Switch (jsx)', () => {
     rerender();
 
     expect(node.innerHTML).not.toContain('done');
-    expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.argsFor(0)[0]).toContain('/one');
-    //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one"/)
+    expect(consoleErrSpy.calls.count()).toBe(1);
+    expect(consoleErrSpy.calls.argsFor(0)[0]).toContain('/one');
   });
 
   it('warns when redirecting to same route, mixed types, string with query', () => {
@@ -190,7 +190,7 @@ describe('Switch (jsx)', () => {
     let redirected = false;
     let done = false;
 
-    spyOn(console, 'error');
+    const consoleErrSpy = spyOn(console, 'error');
 
     render(
       <MemoryRouter initialEntries={['/one']}>
@@ -217,9 +217,8 @@ describe('Switch (jsx)', () => {
     rerender();
 
     expect(node.innerHTML).not.toContain('done');
-    expect(console.error.calls.count()).toBe(1);
-    expect(console.error.calls.argsFor(0)[0]).toContain('/one?utm=1');
-    //expect(console.error.calls.argsFor(0)[0]).toMatch(/Warning:.*"\/one\?utm=1"/)
+    expect(consoleErrSpy.calls.count()).toBe(1);
+    expect(consoleErrSpy.calls.argsFor(0)[0]).toContain('/one?utm=1');
   });
 
   it('does NOT warn when redirecting to same route with different `search`', () => {
@@ -227,7 +226,7 @@ describe('Switch (jsx)', () => {
     let redirected = false;
     let done = false;
 
-    spyOn(console, 'error');
+    const consoleErrSpy = spyOn(console, 'error');
 
     render(
       <MemoryRouter initialEntries={['/one']}>
@@ -254,7 +253,7 @@ describe('Switch (jsx)', () => {
     rerender();
 
     expect(node.innerHTML).toContain('done');
-    expect(console.error.calls.count()).toBe(0);
+    expect(consoleErrSpy.calls.count()).toBe(0);
   });
 
   it('handles comments', () => {
@@ -348,6 +347,50 @@ describe('Switch (jsx)', () => {
     expect(node.innerHTML).not.toContain('bib');
     expect(node.innerHTML).not.toContain('cup');
   });
+
+  // TODO: This will not work because component is not mandatory
+  // it('Should allow using component child parameter as result, Github #1601', () => {
+  //   const node = document.createElement('div');
+  //
+  //   class Component1 extends Component<any, any> {
+  //     constructor(p, s) {
+  //       super(p, s);
+  //
+  //       this.state.foo = 1;
+  //     }
+  //     public render() {
+  //       return (
+  //         <div>
+  //           Component
+  //         </div>
+  //       );
+  //     }
+  //   }
+  //
+  //   const routes: IRouteProps[] = [
+  //     {
+  //       component: Component1,
+  //       exact: true,
+  //       path: `/`
+  //     }
+  //   ];
+  //
+  //   render(
+  //     <MemoryRouter initialEntries={['/bubblegum']}>
+  //       <Switch>
+  //         {routes.map(({ path, exact, component: Comp, ...rest }) => (
+  //           <Route
+  //             key={path}
+  //             path={path}
+  //             exact={exact}
+  //             render={props => <Comp {...props} {...rest} />}
+  //           />
+  //         ))}
+  //       </Switch>
+  //     </MemoryRouter>,
+  //     node
+  //   );
+  // });
 });
 
 describe('A <Switch location>', () => {

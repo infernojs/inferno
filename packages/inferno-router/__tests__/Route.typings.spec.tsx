@@ -1,6 +1,7 @@
-import { render } from 'inferno';
+import { Component, render } from "inferno";
 import { Route, Router } from 'inferno-router';
 import { createMemoryHistory } from 'history';
+import { IRouteProps } from "../src/Route";
 
 describe('<Route component>', () => {
   const history = createMemoryHistory();
@@ -17,11 +18,11 @@ describe('<Route component>', () => {
       location: null,
       match: null
     };
-    const Component = (props: RouteProps) => (actual = props) && null;
+    const ComponentAb = (props: RouteProps) => (actual = props) && null;
 
     render(
       <Router history={history}>
-        <Route path="/" component={Component} />
+        <Route path="/" component={ComponentAb} />
       </Router>,
       node
     );
@@ -29,5 +30,41 @@ describe('<Route component>', () => {
     expect(actual.history).toBe(history);
     expect(typeof actual.match).toBe('object');
     expect(typeof actual.location).toBe('object');
+  });
+
+  it('type check props class component', () => {
+    class ComponentA extends Component<any, any> {
+      public render() {
+        return "foo";
+      }
+    }
+
+    render(
+      <Router history={history}>
+        <Route path="/" component={ComponentA} />
+      </Router>,
+      node
+    );
+  });
+
+  it('type check props render method', () => {
+    class ComponentA extends Component<any, any> {
+      public render() {
+        return "foo";
+      }
+    }
+
+    const props: IRouteProps = {
+      component: ComponentA
+    };
+
+    const C = props.component!;
+
+    render(
+      <Router history={history}>
+        <Route path="/" render={(_) => <C {...props} />} />
+      </Router>,
+      node
+    );
   });
 });

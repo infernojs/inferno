@@ -48,8 +48,8 @@ export function warning(message: string) {
   console.error(message);
 }
 
-export function combineFrom(first: {} | null, second: {} | null): object {
-  const out = {};
+export function combineFrom<A, B>(first: A, second: B): A & B {
+  const out = {} as any;
   if (first) {
     for (const key in first) {
       out[key] = first[key];
