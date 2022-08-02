@@ -10,6 +10,10 @@
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
   },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/inferno"
+  },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "keywords": [
     "inferno",
