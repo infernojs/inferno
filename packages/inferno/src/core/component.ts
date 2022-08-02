@@ -125,7 +125,7 @@ export type ComponentType<P = {}> = Component<P> | Inferno.StatelessComponent<P>
 
 export class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public
-  public state: Readonly<S | null> = null;
+  public state: S | null = null;
   public props: Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>;
   public context: any;
   public displayName?: string;
@@ -180,23 +180,23 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public componentWillReceiveProps?(nextProps: { children?: Inferno.InfernoNode } & P, nextContext: any): void;
 
-  public shouldComponentUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: S, context: any): boolean;
+  public shouldComponentUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: Readonly<S>, context: any): boolean;
 
-  public componentWillUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: S, context: any): void;
+  public componentWillUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: Readonly<S>, context: any): void;
 
-  public componentDidUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: S, snapshot: any): void;
+  public componentDidUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: Readonly<S>, snapshot: any): void;
 
   public componentWillUnmount?(): void;
 
   public getChildContext?(): void;
 
-  public getSnapshotBeforeUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: S): any;
+  public getSnapshotBeforeUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: Readonly<S>): any;
 
   public static defaultProps?: {};
 
   public static getDerivedStateFromProps?(nextProps: any, state: any): any;
 
-  public render(_nextProps: { children?: Inferno.InfernoNode } & P, _nextState: S, _nextContext: any): Inferno.InfernoNode {
+  public render(_nextProps: { children?: Inferno.InfernoNode } & P, _nextState: Readonly<S>, _nextContext: any): Inferno.InfernoNode {
     return null;
   }
 }
