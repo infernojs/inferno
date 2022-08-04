@@ -1,4 +1,4 @@
-<p align="center"><a href="https://infernojs.org/" target="_blank"><img width="150" alt="Inferno" title="Inferno" src="https://user-images.githubusercontent.com/2021355/36063342-626d7ea8-0e84-11e8-84e1-f22bb3b8c4d5.png"></p>
+<p align="center"><a href="https://infernojs.org/" target="_blank"><img width="150" alt="Inferno" title="Inferno" src="https://user-images.githubusercontent.com/2021355/36063342-626d7ea8-0e84-11e8-84e1-f22bb3b8c4d5.png"/></a></p>
 
 [![Build Status](https://app.travis-ci.com/infernojs/inferno.svg?branch=master)](https://app.travis-ci.com/github/infernojs/inferno)
 [![Coverage Status](https://img.shields.io/coveralls/infernojs/inferno/master.svg?style=flat-square)](https://coveralls.io/github/infernojs/inferno?branch=master)
@@ -141,9 +141,9 @@ render(
 
 ### Tear down
 
-To tear down inferno application you need to render null on root element.
+To tear down inferno application you need to render null on root element. 
 Rendering `null` will trigger unmount lifecycle hooks for whole vDOM tree and remove global event listeners.
-It is important to unmount unused vNode trees to free browser memory.
+It is important to unmount unused vNode trees to free browser memory. 
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -171,8 +171,8 @@ If you have built something using Inferno you can add them here:
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/xo5jfe64/)
 - [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox): SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
-- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer)
-  (state machine library)
+- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer) 
+(state machine library) 
 - [**Lemmy - a self-hostable reddit alternative** (front end in Inferno)](https://github.com/dessalines/lemmy)
 
 ## Getting Started
@@ -302,7 +302,7 @@ function handleClick(props, event) {
 
 function MyComponent(props) {
   return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
-    }
+}
 ```
 
 This is an example of using it with ES2015 classes:
@@ -318,8 +318,8 @@ function handleClick(instance, event) {
 class MyComponent extends Component {
   render () {
     return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-      }
-      }
+  }
+}
 ```
 
 `linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so use it where possible.
@@ -401,7 +401,7 @@ import { Component } from 'inferno';
 
 class MyComponent extends Component {
   render() {
-  ...
+      return <div>My Component</div>
   }
 }
 ```
@@ -419,19 +419,25 @@ const MyComponent = ({ name, age }) => (
 Another way of using defaultHooks.
 ```javascript
 export function Static() {
-  return <div>1</div>;
+    return <div>1</div>;
 }
 
 Static.defaultHooks = {
-  onComponentShouldUpdate() {
-    return false;
-  }
+    onComponentShouldUpdate() {
+        return false;
+    }
 };
 ```
 
 Default props
 ```jsx
+export function MyFunctionalComponent({value}) {
+    return <div>{value}</div>;
+}
 
+MyFunctionalComponent.defaultProps = {
+    value: 10
+};
 
 ```
 
@@ -615,20 +621,20 @@ Javascript:
 const { render, Component, version, createPortal } from 'inferno';
 
 function Outsider(props) {
-  return <div>{`Hello ${props.name}!`}</div>;
+	return <div>{`Hello ${props.name}!`}</div>;
 }
 
 const outsideDiv = document.getElementById('outside');
 const rootDiv = document.getElementById('root');
 
 function App() {
-  return (
-    <div>
-      Main view
-      ...
-      {createPortal(<Outsider name="Inferno" />, outsideDiv)}
-    </div>
-  );
+	return (
+  	    <div>
+    	    Main view
+            ...
+            {createPortal(<Outsider name="Inferno" />, outsideDiv)}
+        </div>
+    );
 }
 
 
@@ -639,13 +645,13 @@ render(<App />, rootDiv);
 Results into:
 ```html
 <div id="root">
-  <div>Main view ...</div>
+    <div>Main view ...</div>
 </div>
 <div id="outside">
-  <div>Hello Inferno!</div>
+    <div>Hello Inferno!</div>
 </div>
 ```
-Cool huh? Updates (props/context) will flow into "Outsider" component from the App component the same way as any other Component.
+Cool, huh? Updates (props/context) will flow into "Outsider" component from the App component the same way as any other Component.
 For inspiration on how to use it click [here](https://hackernoon.com/using-a-react-16-portal-to-do-something-cool-2a2d627b0202)!
 
 ### `createRef` (package: `inferno`)
@@ -704,19 +710,19 @@ import { Fragment, render, createFragment } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 function Foobar() {
-  return (
-    <div $HasKeyedChildren>
-      {createFragment(
-        [<div>Ok</div>, <span>1</span>],
-        ChildFlags.HasNonKeyedChildren,
-        'key1'
-      )}
-      <Fragment key="key2">
-        <div>Ok</div>
-        <span>1</span>
-      </Fragment>
-    </div>
-  );
+    return (
+      <div $HasKeyedChildren>
+        {createFragment(
+            [<div>Ok</div>, <span>1</span>],
+            ChildFlags.HasNonKeyedChildren,
+            'key1'
+        )}
+        <Fragment key="key2">
+          <div>Ok</div>
+          <span>1</span>
+        </Fragment>
+      </div>
+    );
 }
 
 render(<Foobar />, container);
@@ -777,8 +783,8 @@ If anything else than `true` is returned it falls to normal behavior.
 import {options} from 'inferno';
 
 options.componentComparator = function (lastVNode, nextVNode) {
-  /* custom logic */
-  return true; // Replaces lastVNode with nextVNode
+    /* custom logic */
+    return true; // Replaces lastVNode with nextVNode
 }
 ```
 
@@ -911,71 +917,117 @@ When using Inferno in a production environment, it is highly recommended that yo
 
 Ensure the environment variable `process.env.NODE_ENV` is set to `production`.
 
-### Building Inferno for use in a browser
+## Application bundling
 
-When running Inferno on the browser using Webpack or Rollup, a replacement will need to occur during your build.
+When building your application bundle, ensure `process.env.NODE_ENV` is replaced with string`"development"` or `"production"` based on the workflow.
+It is recommended to use [ts-plugin-inferno](https://github.com/infernojs/ts-plugin-inferno) for typescript TSX compilation and [babel-plugin-infeno](https://github.com/infernojs/babel-plugin-inferno) for javascript JSX compilation.
 
-#### Webpack
+When building for development, you may want to use `inferno.dev.esm.js`. That bundle file contains ES6 exports for better tree-shaking support, improved error messages and added validation to help fixing possible issues during development.
+The file is found from `package.json` - `dev:module` entry point and the file is physically located in `node_modules/inferno/dist/index.dev.esm.js`.
+Remember that it is not recommended to use that file in production due to slower performance. For production usage use `node_modules/inferno/dist/inferno.esm.js` file.
 
-Use the following configuration in your Webpack build for production build:
-
-```js
-  ...
-plugins: [
-  new webpack.DefinePlugin({
-    'process.env': {
-      'NODE_ENV': JSON.stringify('production')
-    }
-  })
-]
-```
-
-When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
-That build version has extra level of validation for development purposes. You can use it by adding following code to your webpack config.
+Example of **Webpack** configuration:
 
 ```js
-    ...
-resolve: {
-  /* When doing development workflow we want to make sure webpack picks up development build of inferno */
-  alias: {
-    inferno: __dirname + "/node_modules/inferno/dist/index.dev.esm.js"
-  }
-}
-```
+const path = require('path');
+const infernoTsx = require('ts-plugin-inferno').default;
 
-#### Rollup
+... webpack config ...
 
-Use the following configuration in your Rollup build:
-
-```js
-const replace = require('rollup-plugin-replace');
-```
-
-```js
-  ...
-plugins: [
-  replace({
-    'process.env.NODE_ENV': JSON.stringify('production'),
-  })
-]
-```
-
-When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
-That build version has extra level of validation for development purposes. You can use it by adding following code to your rollup config.
-
-```js
-const alias = require('@rollup/plugin-alias');
-
-...
-plugins: [
-  alias({
-    resolve: ['.js'],
-    entries: [
-      {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
+    module: {
+        rules: [
+            {
+                test: /\.js$/, // Add "jsx" if your application uses `jsx` file extensions
+                exclude: /node_modules/,
+                use: [{
+                    loader: 'babel-loader',
+                    options: {
+                        plugins: [
+                            // Compile javascript JSX syntax using inferno's own plugin
+                            ['babel-plugin-inferno', {imports: true}]
+                        ]
+                    }
+                }]
+            },
+            {
+                test: /\.ts+(|x)$/, // Compile ts and tsx extensions
+                exclude: /node_modules/,
+                use: [{
+                    loader: 'ts-loader',
+                    options: {
+                        getCustomTransformers: () => ({
+                            // inferno custom TSX plugin
+                            before: [infernoTsx()]
+                        }),
+                        compilerOptions: {
+                            /* typescript compiler options */
+                        }
+                    }
+                }]
+            }
+        ]
+    },
+    resolve: {
+        extensions: ['.js', '.ts', '.tsx'],
+        alias: {
+            // This maps import "inferno" to es6 module entry based on workflow
+            inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')
+        }
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV':  JSON.stringify(isProduction ? 'production' : 'development')
+            }
+        })
     ]
-  }),
-]
+```
 
+Example of **Rollup** configuration:
+
+```js
+const path = require('path');
+const alias = require('@rollup/plugin-alias');
+const {babel} = require('@rollup/plugin-babel');
+const replace = require('@rollup/plugin-replace');
+const typescript = require('rollup-plugin-typescript2');
+const transformInferno = require('ts-plugin-inferno').default;
+
+... Rollup config ...
+{
+    input: /* entry file */,
+    plugins: [
+            alias({
+                resolve: ['.js'],
+                entries: [
+                    // This maps import "inferno" to es6 module entry based on workflow
+                    {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')}
+                ]
+            }),
+            typescript({
+                include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+                transformers: [
+                    () => ({
+                        before: [transformInferno()],
+                        after: []
+                    })
+                ],
+                tsconfig: 'tsconfig.json',
+                tsconfigOverride: {
+                    /* typescript compiler options */
+                }
+            }),
+            babel({
+                babelrc: false,
+                sourceMaps: isDeploy,
+                plugins: [
+                    // Compile javascript JSX syntax using inferno's own plugin
+                    ['babel-plugin-inferno', {imports: true}]
+                ],
+                babelHelpers: 'bundled'
+            })
+    ]
+}
 ```
 
 ### Custom namespaces

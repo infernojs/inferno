@@ -1,4 +1,4 @@
-<p align="center"><a href="https://infernojs.org/" target="_blank"><img width="150" alt="Inferno" title="Inferno" src="https://user-images.githubusercontent.com/2021355/36063342-626d7ea8-0e84-11e8-84e1-f22bb3b8c4d5.png"></p>
+<p align="center"><a href="https://infernojs.org/" target="_blank"><img width="150" alt="Inferno" title="Inferno" src="https://user-images.githubusercontent.com/2021355/36063342-626d7ea8-0e84-11e8-84e1-f22bb3b8c4d5.png"/></a></p>
 
 [![Build Status](https://app.travis-ci.com/infernojs/inferno.svg?branch=master)](https://app.travis-ci.com/github/infernojs/inferno)
 [![Coverage Status](https://img.shields.io/coveralls/infernojs/inferno/master.svg?style=flat-square)](https://coveralls.io/github/infernojs/inferno?branch=master)
@@ -401,7 +401,7 @@ import { Component } from 'inferno';
 
 class MyComponent extends Component {
   render() {
-    ...
+      return <div>My Component</div>
   }
 }
 ```
@@ -431,7 +431,13 @@ Static.defaultHooks = {
 
 Default props
 ```jsx
+export function MyFunctionalComponent({value}) {
+    return <div>{value}</div>;
+}
 
+MyFunctionalComponent.defaultProps = {
+    value: 10
+};
 
 ```
 
@@ -645,7 +651,7 @@ Results into:
     <div>Hello Inferno!</div>
 </div>
 ```
-Cool huh? Updates (props/context) will flow into "Outsider" component from the App component the same way as any other Component.
+Cool, huh? Updates (props/context) will flow into "Outsider" component from the App component the same way as any other Component.
 For inspiration on how to use it click [here](https://hackernoon.com/using-a-react-16-portal-to-do-something-cool-2a2d627b0202)!
 
 ### `createRef` (package: `inferno`)
@@ -911,71 +917,117 @@ When using Inferno in a production environment, it is highly recommended that yo
 
 Ensure the environment variable `process.env.NODE_ENV` is set to `production`.
 
-### Building Inferno for use in a browser
+## Application bundling
 
-When running Inferno on the browser using Webpack or Rollup, a replacement will need to occur during your build.
+When building your application bundle, ensure `process.env.NODE_ENV` is replaced with string`"development"` or `"production"` based on the workflow.
+It is recommended to use [ts-plugin-inferno](https://github.com/infernojs/ts-plugin-inferno) for typescript TSX compilation and [babel-plugin-infeno](https://github.com/infernojs/babel-plugin-inferno) for javascript JSX compilation.
 
-#### Webpack
+When building for development, you may want to use `inferno.dev.esm.js`. That bundle file contains ES6 exports for better tree-shaking support, improved error messages and added validation to help fixing possible issues during development.
+The file is found from `package.json` - `dev:module` entry point and the file is physically located in `node_modules/inferno/dist/index.dev.esm.js`.
+Remember that it is not recommended to use that file in production due to slower performance. For production usage use `node_modules/inferno/dist/inferno.esm.js` file.
 
-Use the following configuration in your Webpack build for production build:
-
-```js
-  ...
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    })
-  ]
-```
-
-When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
-That build version has extra level of validation for development purposes. You can use it by adding following code to your webpack config.
+Example of **Webpack** configuration:
 
 ```js
-    ...
-	resolve: {
-    /* When doing development workflow we want to make sure webpack picks up development build of inferno */
-		alias: {
-			inferno: __dirname + "/node_modules/inferno/dist/index.dev.esm.js"
-		}
-	}
-```
+const path = require('path');
+const infernoTsx = require('ts-plugin-inferno').default;
 
-#### Rollup
+... webpack config ...
 
-Use the following configuration in your Rollup build:
-
-```js
-const replace = require('rollup-plugin-replace');
-```
-
-```js
-  ...
-  plugins: [
-    replace({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    })
-  ]
-```
-
-When you are building for development, you may want to use `inferno.dev.esm.js` ("dev:module": "dist/index.dev.esm.js",) file.
-That build version has extra level of validation for development purposes. You can use it by adding following code to your rollup config.
-
-```js
-const alias = require('@rollup/plugin-alias');
-
-    ...
-  plugins: [
-    alias({
-        resolve: ['.js'],
-        entries: [
-          {find: 'inferno', replacement: __dirname + '/node_modules/inferno/dist/index.dev.esm.js'}
+    module: {
+        rules: [
+            {
+                test: /\.js$/, // Add "jsx" if your application uses `jsx` file extensions
+                exclude: /node_modules/,
+                use: [{
+                    loader: 'babel-loader',
+                    options: {
+                        plugins: [
+                            // Compile javascript JSX syntax using inferno's own plugin
+                            ['babel-plugin-inferno', {imports: true}]
+                        ]
+                    }
+                }]
+            },
+            {
+                test: /\.ts+(|x)$/, // Compile ts and tsx extensions
+                exclude: /node_modules/,
+                use: [{
+                    loader: 'ts-loader',
+                    options: {
+                        getCustomTransformers: () => ({
+                            // inferno custom TSX plugin
+                            before: [infernoTsx()]
+                        }),
+                        compilerOptions: {
+                            /* typescript compiler options */
+                        }
+                    }
+                }]
+            }
         ]
-    }),
-  ]
+    },
+    resolve: {
+        extensions: ['.js', '.ts', '.tsx'],
+        alias: {
+            // This maps import "inferno" to es6 module entry based on workflow
+            inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')
+        }
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV':  JSON.stringify(isProduction ? 'production' : 'development')
+            }
+        })
+    ]
+```
 
+Example of **Rollup** configuration:
+
+```js
+const path = require('path');
+const alias = require('@rollup/plugin-alias');
+const {babel} = require('@rollup/plugin-babel');
+const replace = require('@rollup/plugin-replace');
+const typescript = require('rollup-plugin-typescript2');
+const transformInferno = require('ts-plugin-inferno').default;
+
+... Rollup config ...
+{
+    input: /* entry file */,
+    plugins: [
+            alias({
+                resolve: ['.js'],
+                entries: [
+                    // This maps import "inferno" to es6 module entry based on workflow
+                    {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')}
+                ]
+            }),
+            typescript({
+                include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+                transformers: [
+                    () => ({
+                        before: [transformInferno()],
+                        after: []
+                    })
+                ],
+                tsconfig: 'tsconfig.json',
+                tsconfigOverride: {
+                    /* typescript compiler options */
+                }
+            }),
+            babel({
+                babelrc: false,
+                sourceMaps: isDeploy,
+                plugins: [
+                    // Compile javascript JSX syntax using inferno's own plugin
+                    ['babel-plugin-inferno', {imports: true}]
+                ],
+                babelHelpers: 'bundled'
+            })
+    ]
+}
 ```
 
 ### Custom namespaces
