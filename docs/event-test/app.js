@@ -1,63 +1,68 @@
-import {createComponentVNode, linkEvent, render} from "inferno";
+import { createComponentVNode, linkEvent, render } from 'inferno';
 
 function hoistedEvent(e) {
-  console.log("ok", e);
+  console.log('ok', e);
 }
 
 function hoistedNonSyntheticEvents() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onclick={hoistedEvent} $HasTextChildren>{i}</li>)
+    listItems.push(
+      <li onclick={hoistedEvent} $HasTextChildren>
+        {i}
+      </li>
+    );
   }
 
-  return (
-    <ul $HasNonKeyedChildren>
-      {listItems}
-    </ul>
-  );
+  return <ul $HasNonKeyedChildren>{listItems}</ul>;
 }
 
 function hoistedLinkEventNonSynthetic() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onclick={linkEvent(i, hoistedEvent)} $HasTextChildren>{i}</li>)
+    listItems.push(
+      <li onclick={linkEvent(i, hoistedEvent)} $HasTextChildren>
+        {i}
+      </li>
+    );
   }
 
-  return (
-    <ul $HasNonKeyedChildren>
-      {listItems}
-    </ul>
-  );
+  return <ul $HasNonKeyedChildren>{listItems}</ul>;
 }
 
 function hoistedSyntheticEvents() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onClick={hoistedEvent} $HasTextChildren>{i}</li>)
+    listItems.push(
+      <li onClick={hoistedEvent} $HasTextChildren>
+        {i}
+      </li>
+    );
   }
 
-  return (
-    <ul $HasNonKeyedChildren>
-      {listItems}
-    </ul>
-  );
+  return <ul $HasNonKeyedChildren>{listItems}</ul>;
 }
 
 function newFuncsNonSyntheticEvents() {
   const listItems = [];
 
   for (let i = 0; i < numberOfNodes; i++) {
-    listItems.push(<li onclick={() => {console.log("ok")}} $HasTextChildren>{i}</li>)
+    listItems.push(
+      <li
+        onclick={() => {
+          console.log('ok');
+        }}
+        $HasTextChildren
+      >
+        {i}
+      </li>
+    );
   }
 
-  return (
-    <ul $HasNonKeyedChildren>
-      {listItems}
-    </ul>
-  );
+  return <ul $HasNonKeyedChildren>{listItems}</ul>;
 }
 
 const numberOfNodes = 500;
@@ -69,12 +74,11 @@ const warmUpIterations = 3;
 const roots = [hoistedNonSyntheticEvents, hoistedLinkEventNonSynthetic, hoistedSyntheticEvents, newFuncsNonSyntheticEvents];
 const names = ['hoistedNonSyntheticEvents', 'hoistedLinkEventNonSynthetic', 'hoistedSyntheticEvents', 'newFuncsNonSyntheticEvents'];
 
-const getAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
-const getMin = arr => Math.min(...arr);
-const getMax = arr => Math.max(...arr);
+const getAvg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+const getMin = (arr) => Math.min(...arr);
+const getMax = (arr) => Math.max(...arr);
 
-
-function Results({results}) {
+function Results({ results }) {
   const rows = [];
 
   for (let i = 0; i < results.length; i++) {
@@ -83,7 +87,7 @@ function Results({results}) {
 
     rows.push(<div className="test-name">{testData.name}</div>);
 
-    for (let j = 0; j  < testCases.length; j++) {
+    for (let j = 0; j < testCases.length; j++) {
       const testCase = testCases[j];
       const result = testData[testCase];
 
@@ -95,11 +99,13 @@ function Results({results}) {
   }
 
   return (
-    <div className="results" $HasNonKeyedChildren>{rows}</div>
-  )
+    <div className="results" $HasNonKeyedChildren>
+      {rows}
+    </div>
+  );
 }
 
-document.addEventListener('DOMContentLoaded', function(e) {
+document.addEventListener('DOMContentLoaded', function (e) {
   const container = document.querySelector('#App');
   const result = [];
   let mountTimes = [];
@@ -192,9 +198,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     } else {
       // Finished!
       setTimeout(function () {
-        render(
-          <Results results={result}/>
-        , container);
+        render(<Results results={result} />, container);
       }, 1000);
     }
   }

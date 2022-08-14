@@ -1,4 +1,4 @@
-import {createTextVNode, linkEvent, version, render} from "inferno";
+import { createTextVNode, linkEvent, version, render } from 'inferno';
 
 uibench.init('Inferno', version);
 
@@ -10,11 +10,9 @@ const SCU_hooks = {
   onComponentShouldUpdate: shouldDataUpdate
 };
 
-function TreeLeaf({children}) {
+function TreeLeaf({ children }) {
   return (
-    <li
-      $HasTextChildren
-      className="TreeLeaf">
+    <li $HasTextChildren className="TreeLeaf">
       {children}
     </li>
   );
@@ -22,7 +20,7 @@ function TreeLeaf({children}) {
 
 TreeLeaf.defaultHooks = SCU_hooks;
 
-function TreeNode({data}) {
+function TreeNode({ data }) {
   var length = data.children.length;
   var children = new Array(length);
 
@@ -31,16 +29,14 @@ function TreeNode({data}) {
     var id = n.id;
 
     if (n.container) {
-      children[i] = <TreeNode data={n} key={id}/>;
+      children[i] = <TreeNode data={n} key={id} />;
     } else {
       children[i] = <TreeLeaf key={id}>{id}</TreeLeaf>;
     }
   }
 
   return (
-    <ul
-      $HasKeyedChildren
-      className="TreeNode">
+    <ul $HasKeyedChildren className="TreeNode">
       {children}
     </ul>
   );
@@ -55,24 +51,17 @@ function tree(data) {
    */
   return (
     <div className="Tree">
-      <TreeNode data={data.root}/>
+      <TreeNode data={data.root} />
     </div>
   );
 }
 
-function AnimBox({data}) {
+function AnimBox({ data }) {
   var time = data.time % 10;
-  var style = 'border-radius:' + (time) + 'px;' +
-    'background:rgba(0,0,0,' + (0.5 + ((time) / 10)) + ')';
+  var style = 'border-radius:' + time + 'px;' + 'background:rgba(0,0,0,' + (0.5 + time / 10) + ')';
 
   // We don't need to use $HasVNodeChildren here, because there is no Children
-  return (
-    <div
-      data-id={data.id}
-      style={style}
-      className="AnimBox"
-    />
-  );
+  return <div data-id={data.id} style={style} className="AnimBox" />;
 }
 
 AnimBox.defaultHooks = SCU_hooks;
@@ -85,13 +74,11 @@ function anim(data) {
   for (var i = 0; i < length; i++) {
     var item = items[i];
 
-    children.push(<AnimBox data={item} key={item.id}/>);
+    children.push(<AnimBox data={item} key={item.id} />);
   }
 
   return (
-    <div
-      $HasKeyedChildren
-      className="Anim">
+    <div $HasKeyedChildren className="Anim">
       {children}
     </div>
   );
@@ -102,7 +89,7 @@ function onClick(text, e) {
   e.stopPropagation();
 }
 
-function TableCell({children}) {
+function TableCell({ children }) {
   /*
    * Here we want to optimize for having text child vNode,
    * It can be done by using $HasVNodeChildren on parent element
@@ -113,10 +100,7 @@ function TableCell({children}) {
    * the main benefit is that no ".bind" or arrow function "() => {}" is needed. It works well with functional Components
    */
   return (
-    <td
-      $HasTextChildren
-      onClick={linkEvent(children, onClick)}
-      className="TableCell">
+    <td $HasTextChildren onClick={linkEvent(children, onClick)} className="TableCell">
       {children}
     </td>
   );
@@ -124,7 +108,7 @@ function TableCell({children}) {
 
 TableCell.defaultHooks = SCU_hooks;
 
-function TableRow({data}) {
+function TableRow({ data }) {
   var classes = 'TableRow';
 
   if (data.active) {
@@ -144,10 +128,7 @@ function TableRow({data}) {
    * This time childrens does not have key, so the type is $HasNonKeyedChildren
    */
   return (
-    <tr
-      data-id={data.id}
-      className={classes}
-      $HasNonKeyedChildren>
+    <tr data-id={data.id} className={classes} $HasNonKeyedChildren>
       {children}
     </tr>
   );
@@ -165,7 +146,7 @@ function table(data) {
 
     // Components does not need ChildrenType flags, it does not hurt, but gains nothing
     // Because Component children will be passed through props and will not be normalized before rendering anyway
-    children.push(<TableRow data={item} key={item.id}/>);
+    children.push(<TableRow data={item} key={item.id} />);
   }
 
   /*
@@ -174,9 +155,7 @@ function table(data) {
    * $HasKeyedChildren means that there are no holes in the children array and all keys are correctly set
    */
   return (
-    <table
-      $HasKeyedChildren
-      className="Table">
+    <table $HasKeyedChildren className="Table">
       {children}
     </table>
   );
@@ -199,22 +178,20 @@ function main(data) {
    * so we can optimize here and add flag $NoNormalize
    */
   return (
-    <div
-      $HasVNodeChildren
-      className="Main">
+    <div $HasVNodeChildren className="Main">
       {section}
     </div>
   );
 }
 
-document.addEventListener('DOMContentLoaded', function(e) {
+document.addEventListener('DOMContentLoaded', function (e) {
   var container = document.querySelector('#App');
 
   uibench.run(
-    function(state) {
+    function (state) {
       render(main(state), container);
     },
-    function(samples) {
+    function (samples) {
       render(<pre $HasTextChildren>{JSON.stringify(samples, null, ' ')}</pre>, container);
     }
   );

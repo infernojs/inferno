@@ -1,5 +1,5 @@
-import {Component, render} from 'inferno';
-import {startFPSMonitor, startMemMonitor} from 'perf-monitor';
+import { Component, render } from 'inferno';
+import { startFPSMonitor, startMemMonitor } from 'perf-monitor';
 import { interpolateViridis } from 'd3-scale-chromatic';
 
 startFPSMonitor();
@@ -27,10 +27,10 @@ class Demo extends Component {
   updateCount(e) {
     this.setState({
       numPoints: e.target.value
-    })
-  };
+    });
+  }
 
-  componentDidMount(){
+  componentDidMount() {
     this.setState({
       numPoints: 1000
     });
@@ -46,15 +46,16 @@ class Demo extends Component {
           {state.numPoints}
         </div>
         <div className="about">
-          InfernoJS 1k Components Demo
-          based on the Glimmer demo by <a href="http://mlange.io" target="_blank">Michael Lange</a>.
+          InfernoJS 1k Components Demo based on the Glimmer demo by{' '}
+          <a href="http://mlange.io" target="_blank">
+            Michael Lange
+          </a>
+          .
         </div>
       </div>
     );
   }
 }
-
-
 
 const Layout = {
   PHYLLOTAXIS: 0,
@@ -63,26 +64,20 @@ const Layout = {
   SPIRAL: 3
 };
 
-const LAYOUT_ORDER = [
-  Layout.PHYLLOTAXIS,
-  Layout.SPIRAL,
-  Layout.PHYLLOTAXIS,
-  Layout.GRID,
-  Layout.WAVE
-];
+const LAYOUT_ORDER = [Layout.PHYLLOTAXIS, Layout.SPIRAL, Layout.PHYLLOTAXIS, Layout.GRID, Layout.WAVE];
 
 class VizDemo extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.layout= 0;
-    this.phyllotaxis= genPhyllotaxis(100);
-    this.grid= genGrid(100);
-    this.wave= genWave(100);
-    this.spiral= genSpiral(100);
-    this.points= [];
-    this.step= 0;
-    this.numSteps= 60 * 2;
+    this.layout = 0;
+    this.phyllotaxis = genPhyllotaxis(100);
+    this.grid = genGrid(100);
+    this.wave = genWave(100);
+    this.spiral = genSpiral(100);
+    this.points = [];
+    this.step = 0;
+    this.numSteps = 60 * 2;
   }
 
   next() {
@@ -104,33 +99,31 @@ class VizDemo extends Component {
     const pyProp = yForLayout(currentLayout);
     const nyProp = yForLayout(nextLayout);
 
-    this.points = this.points.map(point => {
-      const newPoint = { ...point};
+    this.points = this.points.map((point) => {
+      const newPoint = { ...point };
       newPoint.x = lerp(newPoint, pct, pxProp, nxProp);
       newPoint.y = lerp(newPoint, pct, pyProp, nyProp);
       return newPoint;
     });
 
     this.setState();
-    requestAnimationFrame(() => { this.next() });
+    requestAnimationFrame(() => {
+      this.next();
+    });
   }
-
-
 
   setAnchors(arr) {
     arr.map((p, index) => {
-      const [ gx, gy ] = project(this.grid(index));
-      const [ wx, wy ] = project(this.wave(index));
-      const [ sx, sy ] = project(this.spiral(index));
-      const [ px, py ] = project(this.phyllotaxis(index));
+      const [gx, gy] = project(this.grid(index));
+      const [wx, wy] = project(this.wave(index));
+      const [sx, sy] = project(this.spiral(index));
+      const [px, py] = project(this.phyllotaxis(index));
 
       Object.assign(p, { gx, gy, wx, wy, sx, sy, px, py });
-
     });
 
     this.points = arr;
   }
-
 
   makePoints(count) {
     const newPoints = [];
@@ -138,22 +131,18 @@ class VizDemo extends Component {
       newPoints.push({
         x: 0,
         y: 0,
-        color: interpolateViridis(i / count),
+        color: interpolateViridis(i / count)
       });
     }
     this.setAnchors(newPoints);
   }
 
-
-
   componentWillReceiveProps(props) {
     if (props.count !== this.props.count) {
-
       this.phyllotaxis = genPhyllotaxis(props.count);
       this.grid = genGrid(props.count);
       this.wave = genWave(props.count);
       this.spiral = genSpiral(props.count);
-
 
       this.makePoints(props.count);
     }
@@ -164,35 +153,20 @@ class VizDemo extends Component {
   }
 
   renderPoint(point) {
-    return (
-      <Point
-        x={point.x}
-        y={point.y}
-        color={point.color}
-      />
-    );
+    return <Point x={point.x} y={point.y} color={point.color} />;
   }
 
   render() {
     return (
       <svg className="demo">
-        <g $HasNonKeyedChildren>
-          { map(this.points, this.renderPoint) }
-        </g>
+        <g $HasNonKeyedChildren>{map(this.points, this.renderPoint)}</g>
       </svg>
     );
   }
 }
 
-
 function Point({ x, y, color }) {
-  return (
-    <rect
-      className="point"
-      transform={`translate(${Math.floor(x)}, ${Math.floor(y)})`}
-      fill={color}
-    />
-  );
+  return <rect className="point" transform={`translate(${Math.floor(x)}, ${Math.floor(y)})`} fill={color} />;
 }
 const theta = Math.PI * (3 - Math.sqrt(5));
 
@@ -228,7 +202,7 @@ function lerp(obj, percent, startProp, endProp) {
 }
 
 function genPhyllotaxis(n) {
-  return i => {
+  return (i) => {
     let r = Math.sqrt(i / n);
     let th = i * theta;
     return [r * Math.cos(th), r * Math.sin(th)];
@@ -237,22 +211,19 @@ function genPhyllotaxis(n) {
 
 function genGrid(n) {
   let rowLength = Math.round(Math.sqrt(n));
-  return i => [
-    -0.8 + 1.6 / rowLength * (i % rowLength),
-    -0.8 + 1.6 / rowLength * Math.floor(i / rowLength),
-  ];
+  return (i) => [-0.8 + (1.6 / rowLength) * (i % rowLength), -0.8 + (1.6 / rowLength) * Math.floor(i / rowLength)];
 }
 
 function genWave(n) {
   let xScale = 2 / (n - 1);
-  return i => {
+  return (i) => {
     let x = -1 + i * xScale;
     return [x, Math.sin(x * Math.PI * 3) * 0.3];
   };
 }
 
 function genSpiral(n) {
-  return i => {
+  return (i) => {
     let t = Math.sqrt(i / (n - 1)),
       phi = t * Math.PI * 10;
     return [t * Math.cos(phi), t * Math.sin(phi)];
@@ -260,7 +231,7 @@ function genSpiral(n) {
 }
 
 function scale(magnitude, vector) {
-  return vector.map(p => p * magnitude);
+  return vector.map((p) => p * magnitude);
 }
 
 function translate(translation, vector) {
@@ -270,8 +241,7 @@ function translate(translation, vector) {
 function project(vector) {
   const wh = window.innerHeight / 2;
   const ww = window.innerWidth / 2;
-  return translate([ ww, wh ], scale(Math.min(wh, ww), vector));
+  return translate([ww, wh], scale(Math.min(wh, ww), vector));
 }
-
 
 render(<Demo />, document.getElementById('app'));

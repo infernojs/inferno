@@ -1,4 +1,4 @@
-import {createTextVNode, linkEvent, render, version} from "inferno-compat";
+import { createTextVNode, linkEvent, render, version } from 'inferno-compat';
 
 /*
  * Inferno + inferno-compat without any Inferno specific optimizations
@@ -7,20 +7,15 @@ import {createTextVNode, linkEvent, render, version} from "inferno-compat";
 
 uibench.init('Inferno compat (simple)', version);
 
-function TreeLeaf({children}) {
-  return (
-    <li
-      className="TreeLeaf">
-      {createTextVNode(children)}
-    </li>
-  );
+function TreeLeaf({ children }) {
+  return <li className="TreeLeaf">{createTextVNode(children)}</li>;
 }
 
 function shouldDataUpdate(lastProps, nextProps) {
   return lastProps !== nextProps;
 }
 
-function TreeNode({data}) {
+function TreeNode({ data }) {
   var length = data.children.length;
   var children = new Array(length);
 
@@ -29,40 +24,32 @@ function TreeNode({data}) {
     var id = n.id;
 
     if (n.container) {
-      children[i] = <TreeNode onComponentShouldUpdate={shouldDataUpdate} data={n} key={id}/>;
+      children[i] = <TreeNode onComponentShouldUpdate={shouldDataUpdate} data={n} key={id} />;
     } else {
-      children[i] = <TreeLeaf onComponentShouldUpdate={shouldDataUpdate} key={id}>{id}</TreeLeaf>;
+      children[i] = (
+        <TreeLeaf onComponentShouldUpdate={shouldDataUpdate} key={id}>
+          {id}
+        </TreeLeaf>
+      );
     }
   }
 
-  return (
-    <ul
-      className="TreeNode">
-      {children}
-    </ul>
-  );
+  return <ul className="TreeNode">{children}</ul>;
 }
 
 function tree(data) {
   return (
     <div className="Tree">
-      <TreeNode data={data.root} onComponentShouldUpdate={shouldDataUpdate}/>
+      <TreeNode data={data.root} onComponentShouldUpdate={shouldDataUpdate} />
     </div>
   );
 }
 
-function AnimBox({data}) {
+function AnimBox({ data }) {
   var time = data.time % 10;
-  var style = 'border-radius:' + (time) + 'px;' +
-    'background:rgba(0,0,0,' + (0.5 + ((time) / 10)) + ')';
+  var style = 'border-radius:' + time + 'px;' + 'background:rgba(0,0,0,' + (0.5 + time / 10) + ')';
 
-  return (
-    <div
-      data-id={data.id}
-      style={style}
-      className="AnimBox"
-    />
-  );
+  return <div data-id={data.id} style={style} className="AnimBox" />;
 }
 
 function anim(data) {
@@ -75,15 +62,10 @@ function anim(data) {
 
     // Here we are using onComponentShouldUpdate functional Component hook, to short circuit rendering process of AnimBox Component
     // When the data does not change
-    children[i] = <AnimBox data={item} onComponentShouldUpdate={shouldDataUpdate} key={item.id}/>;
+    children[i] = <AnimBox data={item} onComponentShouldUpdate={shouldDataUpdate} key={item.id} />;
   }
 
-  return (
-    <div
-      className="Anim">
-      {children}
-    </div>
-  );
+  return <div className="Anim">{children}</div>;
 }
 
 function onClick(text, e) {
@@ -91,17 +73,15 @@ function onClick(text, e) {
   e.stopPropagation();
 }
 
-function TableCell({children}) {
+function TableCell({ children }) {
   return (
-    <td
-      onClick={linkEvent(children, onClick)}
-      className="TableCell">
+    <td onClick={linkEvent(children, onClick)} className="TableCell">
       {createTextVNode(children)}
     </td>
   );
 }
 
-function TableRow({data}) {
+function TableRow({ data }) {
   var classes = 'TableRow';
 
   if (data.active) {
@@ -118,9 +98,7 @@ function TableRow({data}) {
   }
 
   return (
-    <tr
-      data-id={data.id}
-      className={classes}>
+    <tr data-id={data.id} className={classes}>
       {children}
     </tr>
   );
@@ -134,15 +112,14 @@ function table(data) {
   for (var i = 0; i < length; i++) {
     var item = items[i];
 
-    children[i] = <TableRow data={item} onComponentShouldUpdate={shouldDataUpdate} key={item.id}>{item}</TableRow>;
+    children[i] = (
+      <TableRow data={item} onComponentShouldUpdate={shouldDataUpdate} key={item.id}>
+        {item}
+      </TableRow>
+    );
   }
 
-  return (
-    <table
-      className="Table">
-      {children}
-    </table>
-  );
+  return <table className="Table">{children}</table>;
 }
 
 var lastMainData;
@@ -160,22 +137,17 @@ function main(data) {
     section = tree(data.tree);
   }
 
-  return (
-    <div
-      className="Main">
-      {section}
-    </div>
-  );
+  return <div className="Main">{section}</div>;
 }
 
-document.addEventListener('DOMContentLoaded', function(e) {
+document.addEventListener('DOMContentLoaded', function (e) {
   var container = document.querySelector('#App');
 
   uibench.run(
-    function(state) {
+    function (state) {
       render(main(state), container);
     },
-    function(samples) {
+    function (samples) {
       render(<pre>{JSON.stringify(samples, null, ' ')}</pre>, container);
     }
   );

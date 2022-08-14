@@ -1,4 +1,4 @@
-import {version, Component, render} from 'inferno';
+import { version, Component, render } from 'inferno';
 
 uibench.init('Inferno [same as react]', version);
 
@@ -18,7 +18,11 @@ class TableCell extends Component {
   }
 
   render() {
-    return <td className="TableCell" onClick={this.onClick}>{this.props.text}</td>;
+    return (
+      <td className="TableCell" onClick={this.onClick}>
+        {this.props.text}
+      </td>
+    );
   }
 }
 
@@ -31,7 +35,7 @@ class TableRow extends Component {
     const { data } = this.props;
 
     // Interned strings
-    const classes = (data.active) ? 'TableRow active' : 'TableRow';
+    const classes = data.active ? 'TableRow active' : 'TableRow';
 
     const cells = data.props;
 
@@ -43,7 +47,11 @@ class TableRow extends Component {
     }
 
     // First table cell is inserted this way to prevent react from printing warning that it doesn't have key property
-    return <tr className={classes} data-id={data.id}>{children}</tr>;
+    return (
+      <tr className={classes} data-id={data.id}>
+        {children}
+      </tr>
+    );
   }
 }
 
@@ -58,10 +66,14 @@ class Table extends Component {
     const children = [];
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      children.push((<TableRow key={item.id} data={item} />));
+      children.push(<TableRow key={item.id} data={item} />);
     }
 
-    return <table className="Table"><tbody>{children}</tbody></table>;
+    return (
+      <table className="Table">
+        <tbody>{children}</tbody>
+      </table>
+    );
   }
 }
 
@@ -75,7 +87,7 @@ class AnimBox extends Component {
     const time = data.time;
     const style = {
       'border-radius': (time % 10).toString() + 'px',
-      'background': 'rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')'
+      background: 'rgba(0,0,0,' + (0.5 + (time % 10) / 10).toString() + ')'
     };
 
     return <div className="AnimBox" data-id={data.id} style={style} />;
@@ -138,7 +150,11 @@ class Tree extends Component {
   }
 
   render() {
-    return <div className="Tree"><TreeNode data={this.props.data.root} /></div>;
+    return (
+      <div className="Tree">
+        <TreeNode data={this.props.data.root} />
+      </div>
+    );
   }
 }
 
