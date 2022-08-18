@@ -125,7 +125,7 @@ export type ComponentType<P = {}> = Component<P> | Inferno.StatelessComponent<P>
 
 export class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public
-  public state: S | null = null;
+  public state: Readonly<S | null> = null;
   public props: Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>;
   public context: any;
   public displayName?: string;
