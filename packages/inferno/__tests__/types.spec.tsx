@@ -1,4 +1,4 @@
-import { Component, Inferno, render } from 'inferno';
+import { Component, Inferno, linkEvent, render } from 'inferno';
 
 describe('top level context', () => {
   let container;
@@ -131,6 +131,35 @@ describe('top level context', () => {
 
         render(<MyComponent />, container);
       });
+    });
+  });
+
+  describe('JSX', function () {
+    it('Should allow setting events null', function () {
+      render(<div onClick={null} />, container);
+    });
+
+    it('Should allow setting linkEvent as event', function () {
+      const myObj: { a: number } = {
+        a: 1
+      };
+
+      function myFunction(data, ev) {
+        expect(data.a).toBe(1);
+        expect(ev).toBeDefined();
+      }
+
+      render(<div onClick={linkEvent(myObj, myFunction)} />, container);
+    });
+
+    it('styles object', function () {
+      const getColor = () => 'red';
+
+      render(<div style={{ 'background-color': getColor() }} />, container);
+    });
+
+    it('styles as string', function () {
+      render(<div style="background-color: red" />, container);
     });
   });
 });

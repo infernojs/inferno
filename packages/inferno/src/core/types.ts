@@ -1,5 +1,6 @@
 import type { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import type { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import type { PropertiesHyphen } from 'csstype';
 
 export interface LinkedEvent<T, E extends Event> {
   data: T;
@@ -297,6 +298,7 @@ export declare namespace Inferno {
       | {
           __html: string;
         }
+      | null
       | undefined;
 
     // Clipboard Events
@@ -314,7 +316,7 @@ export declare namespace Inferno {
     onBlur?: FocusEventHandler<T> | undefined;
 
     // Form Events
-    onChange?: FormEventHandler<T> | undefined;
+    onChange?: FormEventHandler<T> | undefined | null;
     onBeforeInput?: FormEventHandler<T> | undefined;
     onInput?: FormEventHandler<T> | undefined;
     onReset?: FormEventHandler<T> | undefined;
@@ -358,7 +360,7 @@ export declare namespace Inferno {
     onAuxClick?: MouseEventHandler<T> | undefined;
     onClick?: MouseEventHandler<T> | undefined;
     onContextMenu?: MouseEventHandler<T> | undefined;
-    onDoubleClick?: MouseEventHandler<T> | undefined;
+    onDblClick?: MouseEventHandler<T> | undefined;
     onDrag?: DragEventHandler<T> | undefined;
     onDragEnd?: DragEventHandler<T> | undefined;
     onDragEnter?: DragEventHandler<T> | undefined;
@@ -563,6 +565,7 @@ export declare namespace Inferno {
       | 'text'
       | 'text additions'
       | 'text removals'
+      | null
       | undefined;
     /** Indicates that user input is required on the element before a form may be submitted. */
     'aria-required'?: Booleanish | undefined;
@@ -604,7 +607,7 @@ export declare namespace Inferno {
      * @see aria-valuetext.
      */
     'aria-valuenow'?: number | undefined;
-    /** Defines the human readable text alternative of aria-valuenow for a range widget. */
+    /** Defines the human-readable text alternative of aria-valuenow for a range widget. */
     'aria-valuetext'?: string | undefined;
   }
 
@@ -700,7 +703,7 @@ export declare namespace Inferno {
     placeholder?: string | undefined;
     slot?: string | undefined;
     spellCheck?: Booleanish | undefined;
-    style?: any;
+    style?: PropertiesHyphen | string | null | undefined;
     tabIndex?: number | undefined;
     title?: string | undefined;
     translate?: 'yes' | 'no' | undefined;
@@ -950,6 +953,8 @@ export declare namespace Inferno {
   }
 
   interface DialogHTMLAttributes<T> extends HTMLAttributes<T> {
+    onCancel?: InfernoEventHandler<T> | undefined;
+    onClose?: InfernoEventHandler<T> | undefined;
     open?: boolean | undefined;
   }
 
@@ -1111,6 +1116,7 @@ export declare namespace Inferno {
     integrity?: string | undefined;
     media?: string | undefined;
     imageSrcSet?: string | undefined;
+    imageSizes?: string | undefined;
     referrerPolicy?: HTMLAttributeReferrerPolicy | undefined;
     rel?: string | undefined;
     sizes?: string | undefined;
@@ -1255,8 +1261,13 @@ export declare namespace Inferno {
   }
 
   interface TableHTMLAttributes<T> extends HTMLAttributes<T> {
+    align?: 'left' | 'center' | 'right' | undefined;
+    bgcolor?: string | undefined;
+    border?: number | undefined;
     cellPadding?: number | string | undefined;
     cellSpacing?: number | string | undefined;
+    frame?: boolean | undefined;
+    rules?: 'none' | 'groups' | 'rows' | 'columns' | 'all' | undefined;
     summary?: string | undefined;
     width?: number | string | undefined;
   }
@@ -1346,8 +1357,9 @@ export declare namespace Inferno {
     width?: number | string | undefined;
 
     // Other HTML properties supported by SVG elements in browsers
-    role?: string | undefined;
+    role?: AriaRole | undefined;
     tabIndex?: number | undefined;
+    crossOrigin?: 'anonymous' | 'use-credentials' | '' | undefined;
 
     // SVG Specific attributes
     accentHeight?: number | string | undefined;
@@ -1367,6 +1379,7 @@ export declare namespace Inferno {
       | 'hanging'
       | 'mathematical'
       | 'inherit'
+      | null
       | undefined;
     allowReorder?: 'no' | 'yes' | undefined;
     alphabetic?: number | string | undefined;
@@ -1375,7 +1388,7 @@ export declare namespace Inferno {
     ascent?: number | string | undefined;
     attributeName?: string | undefined;
     attributeType?: string | undefined;
-    autoReverse?: number | string | undefined;
+    autoReverse?: Booleanish | undefined;
     azimuth?: number | string | undefined;
     baseFrequency?: number | string | undefined;
     baselineShift?: number | string | undefined;
@@ -1415,7 +1428,7 @@ export declare namespace Inferno {
     enableBackground?: number | string | undefined;
     end?: number | string | undefined;
     exponent?: number | string | undefined;
-    externalResourcesRequired?: number | string | undefined;
+    externalResourcesRequired?: Booleanish | undefined;
     fill?: string | undefined;
     fillOpacity?: number | string | undefined;
     fillRule?: 'nonzero' | 'evenodd' | 'inherit' | undefined;
@@ -1424,7 +1437,7 @@ export declare namespace Inferno {
     filterUnits?: number | string | undefined;
     floodColor?: number | string | undefined;
     floodOpacity?: number | string | undefined;
-    focusable?: number | string | undefined;
+    focusable?: Booleanish | 'auto' | undefined;
     fontFamily?: string | undefined;
     fontSize?: number | string | undefined;
     fontSizeAdjust?: number | string | undefined;
@@ -1494,6 +1507,7 @@ export declare namespace Inferno {
     overlineThickness?: number | string | undefined;
     paintOrder?: number | string | undefined;
     panose1?: number | string | undefined;
+    path?: string | undefined;
     pathLength?: number | string | undefined;
     patternContentUnits?: string | undefined;
     patternTransform?: number | string | undefined;
@@ -1503,7 +1517,7 @@ export declare namespace Inferno {
     pointsAtX?: number | string | undefined;
     pointsAtY?: number | string | undefined;
     pointsAtZ?: number | string | undefined;
-    preserveAlpha?: number | string | undefined;
+    preserveAlpha?: Booleanish | undefined;
     preserveAspectRatio?: string | undefined;
     primitiveUnits?: number | string | undefined;
     r?: number | string | undefined;
@@ -1607,6 +1621,26 @@ export declare namespace Inferno {
     zoomAndPan?: string | undefined;
   }
 
+  interface WebViewHTMLAttributes<T> extends HTMLAttributes<T> {
+    allowFullScreen?: boolean | undefined;
+    allowpopups?: boolean | undefined;
+    autoFocus?: boolean | undefined;
+    autosize?: boolean | undefined;
+    blinkfeatures?: string | undefined;
+    disableblinkfeatures?: string | undefined;
+    disableguestresize?: boolean | undefined;
+    disablewebsecurity?: boolean | undefined;
+    guestinstance?: string | undefined;
+    httpreferrer?: string | undefined;
+    nodeintegration?: boolean | undefined;
+    partition?: string | undefined;
+    plugins?: boolean | undefined;
+    preload?: string | undefined;
+    src?: string | undefined;
+    useragent?: string | undefined;
+    webpreferences?: string | undefined;
+  }
+
   //
   // Inferno.DOM
   // ----------------------------------------------------------------------
@@ -1624,7 +1658,7 @@ export declare namespace Inferno {
     bdi: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     bdo: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     big: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    blockquote: DetailedHTMLFactory<BlockquoteHTMLAttributes<HTMLElement>, HTMLElement>;
+    blockquote: DetailedHTMLFactory<BlockquoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
     body: DetailedHTMLFactory<HTMLAttributes<HTMLBodyElement>, HTMLBodyElement>;
     br: DetailedHTMLFactory<HTMLAttributes<HTMLBRElement>, HTMLBRElement>;
     button: DetailedHTMLFactory<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
@@ -1637,8 +1671,8 @@ export declare namespace Inferno {
     data: DetailedHTMLFactory<DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
     datalist: DetailedHTMLFactory<HTMLAttributes<HTMLDataListElement>, HTMLDataListElement>;
     dd: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    del: DetailedHTMLFactory<DelHTMLAttributes<HTMLElement>, HTMLElement>;
-    details: DetailedHTMLFactory<DetailsHTMLAttributes<HTMLElement>, HTMLElement>;
+    del: DetailedHTMLFactory<DelHTMLAttributes<HTMLModElement>, HTMLModElement>;
+    details: DetailedHTMLFactory<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>;
     dfn: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     dialog: DetailedHTMLFactory<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
     div: DetailedHTMLFactory<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
@@ -1679,14 +1713,14 @@ export declare namespace Inferno {
     menu: DetailedHTMLFactory<MenuHTMLAttributes<HTMLElement>, HTMLElement>;
     menuitem: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     meta: DetailedHTMLFactory<MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
-    meter: DetailedHTMLFactory<MeterHTMLAttributes<HTMLElement>, HTMLElement>;
+    meter: DetailedHTMLFactory<MeterHTMLAttributes<HTMLMeterElement>, HTMLMeterElement>;
     nav: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     noscript: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     object: DetailedHTMLFactory<ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement>;
     ol: DetailedHTMLFactory<OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
     optgroup: DetailedHTMLFactory<OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
     option: DetailedHTMLFactory<OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
-    output: DetailedHTMLFactory<OutputHTMLAttributes<HTMLElement>, HTMLElement>;
+    output: DetailedHTMLFactory<OutputHTMLAttributes<HTMLOutputElement>, HTMLOutputElement>;
     p: DetailedHTMLFactory<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
     param: DetailedHTMLFactory<ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
     picture: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
@@ -1698,6 +1732,7 @@ export declare namespace Inferno {
     ruby: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     s: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     samp: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+    slot: DetailedHTMLFactory<SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement>;
     script: DetailedHTMLFactory<ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
     section: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     select: DetailedHTMLFactory<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
@@ -1717,7 +1752,7 @@ export declare namespace Inferno {
     tfoot: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
     th: DetailedHTMLFactory<ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
     thead: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-    time: DetailedHTMLFactory<TimeHTMLAttributes<HTMLElement>, HTMLElement>;
+    time: DetailedHTMLFactory<TimeHTMLAttributes<HTMLTimeElement>, HTMLTimeElement>;
     title: DetailedHTMLFactory<HTMLAttributes<HTMLTitleElement>, HTMLTitleElement>;
     tr: DetailedHTMLFactory<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>;
     track: DetailedHTMLFactory<TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
@@ -1730,16 +1765,46 @@ export declare namespace Inferno {
   }
 
   interface InfernoSVG {
-    svg: SVGFactory;
     animate: SVGFactory;
     circle: SVGFactory;
+    clipPath: SVGFactory;
     defs: SVGFactory;
+    desc: SVGFactory;
     ellipse: SVGFactory;
+    feBlend: SVGFactory;
+    feColorMatrix: SVGFactory;
+    feComponentTransfer: SVGFactory;
+    feComposite: SVGFactory;
+    feConvolveMatrix: SVGFactory;
+    feDiffuseLighting: SVGFactory;
+    feDisplacementMap: SVGFactory;
+    feDistantLight: SVGFactory;
+    feDropShadow: SVGFactory;
+    feFlood: SVGFactory;
+    feFuncA: SVGFactory;
+    feFuncB: SVGFactory;
+    feFuncG: SVGFactory;
+    feFuncR: SVGFactory;
+    feGaussianBlur: SVGFactory;
+    feImage: SVGFactory;
+    feMerge: SVGFactory;
+    feMergeNode: SVGFactory;
+    feMorphology: SVGFactory;
+    feOffset: SVGFactory;
+    fePointLight: SVGFactory;
+    feSpecularLighting: SVGFactory;
+    feSpotLight: SVGFactory;
+    feTile: SVGFactory;
+    feTurbulence: SVGFactory;
+    filter: SVGFactory;
+    foreignObject: SVGFactory;
     g: SVGFactory;
     image: SVGFactory;
     line: SVGFactory;
     linearGradient: SVGFactory;
+    marker: SVGFactory;
     mask: SVGFactory;
+    metadata: SVGFactory;
     path: SVGFactory;
     pattern: SVGFactory;
     polygon: SVGFactory;
@@ -1747,10 +1812,14 @@ export declare namespace Inferno {
     radialGradient: SVGFactory;
     rect: SVGFactory;
     stop: SVGFactory;
+    svg: SVGFactory;
+    switch: SVGFactory;
     symbol: SVGFactory;
     text: SVGFactory;
+    textPath: SVGFactory;
     tspan: SVGFactory;
     use: SVGFactory;
+    view: SVGFactory;
   }
 
   //
@@ -1825,7 +1894,7 @@ declare global {
       bdi: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       bdo: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       big: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      blockquote: Inferno.DetailedHTMLProps<Inferno.BlockquoteHTMLAttributes<HTMLElement>, HTMLElement>;
+      blockquote: Inferno.DetailedHTMLProps<Inferno.BlockquoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
       body: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLBodyElement>, HTMLBodyElement>;
       br: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLBRElement>, HTMLBRElement>;
       button: Inferno.DetailedHTMLProps<Inferno.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
@@ -1838,8 +1907,8 @@ declare global {
       data: Inferno.DetailedHTMLProps<Inferno.DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
       datalist: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLDataListElement>, HTMLDataListElement>;
       dd: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      del: Inferno.DetailedHTMLProps<Inferno.DelHTMLAttributes<HTMLElement>, HTMLElement>;
-      details: Inferno.DetailedHTMLProps<Inferno.DetailsHTMLAttributes<HTMLElement>, HTMLElement>;
+      del: Inferno.DetailedHTMLProps<Inferno.DelHTMLAttributes<HTMLModElement>, HTMLModElement>;
+      details: Inferno.DetailedHTMLProps<Inferno.DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>;
       dfn: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       dialog: Inferno.DetailedHTMLProps<Inferno.DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
       div: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
@@ -1880,7 +1949,7 @@ declare global {
       menu: Inferno.DetailedHTMLProps<Inferno.MenuHTMLAttributes<HTMLElement>, HTMLElement>;
       menuitem: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       meta: Inferno.DetailedHTMLProps<Inferno.MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
-      meter: Inferno.DetailedHTMLProps<Inferno.MeterHTMLAttributes<HTMLElement>, HTMLElement>;
+      meter: Inferno.DetailedHTMLProps<Inferno.MeterHTMLAttributes<HTMLMeterElement>, HTMLMeterElement>;
       nav: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       noindex: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       noscript: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
@@ -1888,7 +1957,7 @@ declare global {
       ol: Inferno.DetailedHTMLProps<Inferno.OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
       optgroup: Inferno.DetailedHTMLProps<Inferno.OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
       option: Inferno.DetailedHTMLProps<Inferno.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
-      output: Inferno.DetailedHTMLProps<Inferno.OutputHTMLAttributes<HTMLElement>, HTMLElement>;
+      output: Inferno.DetailedHTMLProps<Inferno.OutputHTMLAttributes<HTMLOutputElement>, HTMLOutputElement>;
       p: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
       param: Inferno.DetailedHTMLProps<Inferno.ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
       picture: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
@@ -1920,7 +1989,7 @@ declare global {
       tfoot: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
       th: Inferno.DetailedHTMLProps<Inferno.ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
       thead: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-      time: Inferno.DetailedHTMLProps<Inferno.TimeHTMLAttributes<HTMLElement>, HTMLElement>;
+      time: Inferno.DetailedHTMLProps<Inferno.TimeHTMLAttributes<HTMLTimeElement>, HTMLTimeElement>;
       title: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTitleElement>, HTMLTitleElement>;
       tr: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>;
       track: Inferno.DetailedHTMLProps<Inferno.TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
