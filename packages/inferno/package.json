@@ -61,10 +61,10 @@
     "directory": "packages/inferno"
   },
   "devDependencies": {
+    "inferno-shared": "8.0.2",
     "inferno-utils": "8.0.2"
   },
   "dependencies": {
-    "inferno-shared": "8.0.2",
     "inferno-vnode-flags": "8.0.2",
     "opencollective-postinstall": "^2.0.3"
   }
