@@ -110,8 +110,16 @@ render(
 ```
 
 Because performance is an important aspect of this library, we want to show you how to optimize your application even further.
-In the example below we optimize diffing process by using JSX **$HasVNodeChildren** to predefine children shape compile time.
-Then we create text vNode using `createTextVNode`. All child flags are documented [here](https://infernojs.org/docs/guides/optimizations).
+In the example below we optimize diffing process by using JSX **$HasVNodeChildren** and **$HasTextChildren** to predefine children shape compile time.
+In the MyComponent render method there is a div that contains JSX expression `node` as its content. Due to dynamic nature of Javascript
+that variable `node` could be anything and Inferno needs to go through the normalization process to make sure there are no nested arrays or other invalid data.
+Inferno offers a feature called ChildFlags for application developers to pre-define the shape of vNode's child node. In this example case
+it is using `$HasVNodeChildren` to tell the JSX compiler, that this vNode contains only single element or component vNode.
+Now inferno will not go into the normalization process runtime, but trusts the developer decision about the shape of the object and correctness of data.
+If this contract is not kept and `node` variable contains invalid value for the pre-defined shape (fe. `null`), then application would crash runtime.
+There is also span-element in the same render method, which content is set dynamically through `_getText()` method. There `$HasTextChildren` child-flag
+fits nicely, because the content of that given "span" is never anything else than text.
+All the available child flags are documented [here](https://infernojs.org/docs/guides/optimizations).
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -123,11 +131,18 @@ class MyComponent extends Component {
       counter: 0
     };
   }
+
+  _getText() {
+     return 'Hello!';
+  }
+  
   render() {
+    const node = this.state.counter > 0 ? <div>0</div> : <span $HasTextChildren>{this._getText()}</span>;
+      
     return (
       <div>
         <h1>Header!</h1>
-        <span $HasVNodeChildren>{createTextVNode('Counter is at: ' + this.state.counter)}</span>
+        <div $HasVNodeChildren>{node}</div>
       </div>
     );
   }
