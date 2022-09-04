@@ -5,7 +5,7 @@
 [![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/infernojs/inferno/blob/master/LICENSE.md)
 [![NPM](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 [![npm downloads](https://img.shields.io/npm/dm/inferno.svg?style=flat-square)](https://www.npmjs.org/package/inferno)
-[![Discord](https://img.shields.io/discord/825669396823015496.svg?style=flat-square&label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/pYFsMTYndu)
+[![Discord](https://img.shields.io/discord/825669396823015496.svg?style=flat-square&label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/SUKuhgaBpF)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/inferno/dist/inferno.min.js?compression=gzip)](https://unpkg.com/inferno/dist/inferno.min.js)
 [![Backers on Open Collective](https://opencollective.com/inferno/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/inferno/sponsors/badge.svg)](#sponsors)
 
@@ -1070,7 +1070,7 @@ $ npm run quick-test:browser-debug # Compiles all packages and runs browser test
 
 ## Community
 
-There is an InfernoJS Discord. You can join via [https://discord.gg/AW92rGbJ](https://discord.gg/pYFsMTYndu).
+There is an InfernoJS Discord. You can join via [https://discord.gg/SUKuhgaBpF](https://discord.gg/SUKuhgaBpF).
 
 
 ### Contributors
