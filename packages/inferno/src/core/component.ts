@@ -145,7 +145,7 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $F: boolean = false; // Force update flag
 
   constructor(props?: P, context?: any) {
-    this.props = props || (EMPTY_OBJ as P);
+    this.props = (props || (EMPTY_OBJ)) as Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>;
     this.context = context || EMPTY_OBJ; // context should not be mutable
   }
 

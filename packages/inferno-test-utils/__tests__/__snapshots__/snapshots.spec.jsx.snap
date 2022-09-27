@@ -32,7 +32,7 @@ exports[`Snapshots JSX Should flush setStates before building snapshot 1`] = `
 `;
 
 exports[`Snapshots JSX Should not fail when returning children array from component root, Github #1404 1`] = `
-Array [
+[
   <label />,
   <span>
     o
@@ -44,7 +44,7 @@ Array [
 `;
 
 exports[`Snapshots JSX Should not fail when returning children array from component root, which contains text node. Github #1404 1`] = `
-Array [
+[
   <label />,
   <span>
     o
@@ -99,7 +99,7 @@ exports[`Snapshots JSX Should render deeper component 1`] = `
 
 exports[`Snapshots JSX Should render fragment 1`] = `
 <div>
-  Array [
+  [
     <div
       id="a1"
     >
@@ -109,14 +109,14 @@ exports[`Snapshots JSX Should render fragment 1`] = `
       A2
     </div>,
   ]
-  Array [
+  [
     <div
       id="b1"
     >
       B1
     </div>,
   ]
-  Array [
+  [
     <div
       id="c1"
     >
@@ -139,7 +139,7 @@ exports[`Snapshots JSX Should render fragment from component root 1`] = `
 `;
 
 exports[`Snapshots JSX Should render fragment root 1`] = `
-Array [
+[
   <div>
     First
   </div>,

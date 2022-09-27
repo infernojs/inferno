@@ -65,7 +65,7 @@
     "inferno-utils": "8.0.3"
   },
   "dependencies": {
-    "csstype": "^3.1.0",
+    "csstype": "^3.1.1",
     "inferno-vnode-flags": "8.0.3",
     "opencollective-postinstall": "^2.0.3"
   }

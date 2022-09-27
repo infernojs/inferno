@@ -81,7 +81,7 @@ export function createElement<P>(
     flags = VNodeFlags.ComponentUnknown;
     if (!isUndefined(children)) {
       if (!props) {
-        props = {} as P;
+        props = {} as P & Props<P>;
       }
       props.children = children;
     }
