@@ -39,6 +39,10 @@ export interface IComponent<P, S> {
 
   componentWillUnmount?(): void;
 
+  componentDidAppear?(domNode: Element): void;
+
+  componentWillDisappear?(domNode: Element, callback: Function): void;
+
   getChildContext?(): void;
 
   getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: S): any;
@@ -135,6 +139,10 @@ export interface Refs<P> {
   onComponentDidUpdate?(lastProps: Readonly<P>, nextProps: Readonly<P>): void;
 
   onComponentWillUnmount?(domNode: Element, nextProps: Readonly<P>): void;
+
+  onComponentDidAppear?(domNode: Element): void;
+
+  onComponentWillDisappear?(domNode: Element, callback: Function): void;
 }
 
 export interface Props<T> {
