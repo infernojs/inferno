@@ -123,7 +123,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
 }
 export type ComponentType<P = {}> = Component<P> | Inferno.StatelessComponent<P>;
 
-export class Component<P = {}, S = {}> implements IComponent<P, S> {
+export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public
   public state: Readonly<S | null> = null;
   public props: Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>;
@@ -178,25 +178,26 @@ export class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public componentWillMount?(): void;
 
-  public componentWillReceiveProps?(nextProps: { children?: Inferno.InfernoNode } & P, nextContext: any): void;
+  public componentWillReceiveProps?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextContext: any): void;
 
-  public shouldComponentUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: Readonly<S>, context: any): boolean;
+  public shouldComponentUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): boolean;
 
-  public componentWillUpdate?(nextProps: { children?: Inferno.InfernoNode } & P, nextState: Readonly<S>, context: any): void;
+  public componentWillUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): void;
 
-  public componentDidUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: Readonly<S>, snapshot: any): void;
+  public componentDidUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
 
   public componentWillUnmount?(): void;
 
   public getChildContext?(): void;
 
-  public getSnapshotBeforeUpdate?(prevProps: { children?: Inferno.InfernoNode } & P, prevState: Readonly<S>): any;
+  public getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>): any;
 
-  public static defaultProps?: {};
+  public static defaultProps?: {} | null = null;
 
   public static getDerivedStateFromProps?(nextProps: any, state: any): any;
 
-  public render(_nextProps: { children?: Inferno.InfernoNode } & P, _nextState: Readonly<S>, _nextContext: any): Inferno.InfernoNode {
+  // @ts-expect-error TS6133
+  public render(props: Readonly<{ children?: Inferno.InfernoNode } & P>, state: Readonly<S>, context: any): Inferno.InfernoNode {
     return null;
   }
 }

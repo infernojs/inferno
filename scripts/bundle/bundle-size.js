@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { readFile, readdir } from 'fs/promises';
 import Table from 'cli-table';
 import { gzipSize } from 'gzip-size';
-import fileSize from 'filesize';
+import { filesize } from 'filesize';
 import { basename, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -13,8 +13,8 @@ const INFERNO_VERSION = JSON.parse(readFileSync(join(__dirname, '../../package.j
 async function getFileSize(file) {
   const data = await readFile(file, 'utf-8');
   return {
-    fileSize: fileSize(Buffer.byteLength(data)),
-    gzipSize: fileSize(await gzipSize(data))
+    fileSize: filesize(Buffer.byteLength(data)),
+    gzipSize: filesize(await gzipSize(data))
   };
 }
 

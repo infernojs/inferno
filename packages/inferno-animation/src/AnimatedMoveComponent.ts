@@ -6,7 +6,7 @@ type AnimationProp = {
   children?: Inferno.InfernoNode;
 };
 
-export class AnimatedMoveComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
+export abstract class AnimatedMoveComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
   public componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, props: any) {
     componentWillMove(parentVNode, parent, dom, props);
   }

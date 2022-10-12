@@ -6,7 +6,7 @@ type AnimationProp = {
   children?: Inferno.InfernoNode;
 };
 
-export class AnimatedAllComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
+export abstract class AnimatedAllComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
   public componentDidAppear(dom: HTMLElement) {
     componentDidAppear(dom, this.props);
   }

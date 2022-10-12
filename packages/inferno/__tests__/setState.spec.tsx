@@ -23,6 +23,9 @@ describe('setState', () => {
           state: 'Something'
         });
       }
+      public render() {
+        return null;
+      }
     }
 
     expect(() => render(<TestComponent />, container)).toThrowError(Error);

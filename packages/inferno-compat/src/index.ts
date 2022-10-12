@@ -287,13 +287,14 @@ function shallowDiffers(a, b): boolean {
   return false;
 }
 
-class PureComponent<P, S> extends Component<P, S> {
+abstract class PureComponent<P, S> extends Component<P, S> {
   public shouldComponentUpdate(props, state) {
     return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
   }
 }
 
 interface ContextProps {
+  children?: Inferno.InfernoChild | undefined
   context: any;
 }
 

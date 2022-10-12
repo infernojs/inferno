@@ -2,12 +2,12 @@ import {rollup} from "rollup";
 import { existsSync, readdirSync, statSync } from "fs";
 import commonjsPlugin from "rollup-plugin-commonjs";
 import nodeResolvePlugin from "rollup-plugin-node-resolve";
-import babelPlugin from "rollup-plugin-babel";
 import { dirname, join, resolve } from "path";
 import replace from "rollup-plugin-replace";
 import { terser } from "rollup-plugin-terser";
 import alias from "@rollup/plugin-alias";
 import { fileURLToPath } from "url";
+import babel from "@rollup/plugin-babel";
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -27,7 +27,7 @@ const plugins = [
   nodeResolvePlugin({
     preferBuiltins: false
   }),
-  babelPlugin({
+  babel({
     exclude: 'node_modules/**',
     sourceMaps: false,
     babelrc: false,

@@ -11,10 +11,10 @@ export interface LinkedEvent<T, E extends Event> {
 export interface IComponent<P, S> {
   // Public
   state: S | null;
-  props: {
+  props: Readonly<{
     children?: Inferno.InfernoNode;
-  } & P;
-  context: any;
+  } & P>;
+  context?: any;
   displayName?: string;
   refs?: any;
 
@@ -121,7 +121,7 @@ export interface RefObject<T> {
   readonly current: T | null;
 }
 
-export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'] | RefObject<T>;
+export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'];
 
 export interface ForwardRef<P, T> extends Inferno.StatelessComponent<P> {
   ref: Ref<T>;
@@ -156,7 +156,6 @@ export declare namespace Inferno {
   // Inferno Elements
   // ----------------------------------------------------------------------
   type Key = string | number;
-  type Ref<T> = string | { bivarianceHack(instance: T | null): any }['bivarianceHack'] | RefObject<T>;
 
   // tslint:disable-next-line:interface-over-type-literal
   type ComponentState = {};
@@ -276,8 +275,8 @@ export declare namespace Inferno {
         Refs<P>,
       context?: any
     ): InfernoElement | null;
-    defaultProps?: Partial<P> | undefined;
-    defaultHooks?: Refs<P> | undefined;
+    defaultProps?: Partial<P> | undefined | null;
+    defaultHooks?: Refs<P> | undefined | null;
   }
 
   interface ComponentClass<P = {}> {
@@ -287,7 +286,7 @@ export declare namespace Inferno {
       } & P,
       context?: any
     ): IComponent<P, ComponentState>;
-    defaultProps?: Partial<P> | undefined;
+    defaultProps?: Partial<P> | undefined | null;
   }
 
   //
@@ -1869,7 +1868,6 @@ type InfernoManagedAttributes<C, P> = C extends { defaultProps: infer D } ? Defa
 
 declare global {
   namespace JSX {
-    // tslint:disable-next-line:no-empty-interface
     type Element = Inferno.InfernoElement<any> | Inferno.InfernoNode;
     interface ElementClass extends IComponent<any, any> {
       render(nextProps, nextState, nextContext): Inferno.InfernoNode;
@@ -1883,8 +1881,7 @@ declare global {
 
     type LibraryManagedAttributes<C, P> = InfernoManagedAttributes<C, P>;
 
-    // tslint:disable-next-line:no-empty-interface
-    // interface IntrinsicAttributes extends Inferno.Attributes { }
+    interface IntrinsicAttributes extends Inferno.Attributes { }
     interface IntrinsicAttributes extends Inferno.Attributes, Refs<any> {}
     interface IntrinsicClassAttributes<T> extends Inferno.ClassAttributes<T> {}
 

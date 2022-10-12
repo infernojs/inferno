@@ -1,14 +1,9 @@
-import bublePlugin from 'rollup-plugin-buble';
-
 import commonjs from 'rollup-plugin-commonjs';
-
 import nodeResolve from 'rollup-plugin-node-resolve';
-
 import replacePlugin from 'rollup-plugin-replace';
-
 import { terser } from 'rollup-plugin-terser';
-
 import { aliasPlugin } from './alias.js';
+import babel from "@rollup/plugin-babel";
 
 export function createPlugins(version, options) {
   const plugins = [
@@ -23,9 +18,17 @@ export function createPlugins(version, options) {
     })
   ];
 
-  if (!options.esnext) {
-    plugins.push(bublePlugin());
-  }
+  plugins.push(babel({
+    exclude: 'node_modules/**',
+    sourceMaps: false,
+    babelrc: false,
+    presets: !options.esnext ? [['@babel/env', {loose: true, modules: false}]] : null,
+    babelHelpers: 'runtime',
+    skipPreflightCheck: true,
+    plugins: [
+      ["@babel/plugin-proposal-class-properties", {"loose": true}]
+    ]
+  }));
 
   const replaceValues = {
     'process.env.INFERNO_VERSION': JSON.stringify(options.version)

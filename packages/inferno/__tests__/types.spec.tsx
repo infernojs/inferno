@@ -1,4 +1,5 @@
-import { Component, Inferno, linkEvent, render } from 'inferno';
+import {Component, createRef, Inferno, linkEvent, render} from 'inferno';
+import {emptyFn} from "inferno-shared";
 
 describe('top level context', () => {
   let container;
@@ -162,4 +163,34 @@ describe('top level context', () => {
       render(<div style="background-color: red" />, container);
     });
   });
+
+  describe('ChildFlags', function () {
+    it('Should allow special flags on all elements', function () {
+      const refObj = createRef<HTMLDivElement>();
+      const text = "foobar";
+      const row = <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>{text}</div>;
+
+
+      render(
+        <div className="floating-row-numbers" ref={refObj} $HasVNodeChildren>
+          {row}
+        </div>,
+        container
+      );
+    });
+
+    it('Should allow special flags on SVG', function () {
+      const refObj = createRef<SVGSVGElement>();
+      const text = "foobar";
+      const row = <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>{text}</div>;
+
+
+      render(
+        <svg className="floating-row-numbers" ref={refObj} $HasVNodeChildren>
+          {row}
+        </svg>,
+        container
+      );
+    });
+  })
 });

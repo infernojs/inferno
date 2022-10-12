@@ -106,7 +106,7 @@ function resolveComponentFlags(flags, type) {
 export function createComponentVNode<P>(
   flags: VNodeFlags,
   type: Function | Inferno.ComponentClass<P> | ForwardRef<P, any>,
-  props?: (Readonly<P> & P) | null,
+  props?: Readonly<P> | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null
 ) {
@@ -204,7 +204,7 @@ export function normalizeProps(vNode) {
 }
 
 /*
- * Fragment is different than normal vNode,
+ * Fragment is different from normal vNode,
  * because when it needs to be cloned we need to clone its children too
  * But not normalize, because otherwise those possibly get KEY and re-mount
  */

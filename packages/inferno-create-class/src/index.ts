@@ -1,4 +1,4 @@
-import { Component } from 'inferno';
+import {Component, Inferno} from 'inferno';
 import { isFunction, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
@@ -185,6 +185,11 @@ export function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComponentCla
 
     public isMounted(): boolean {
       return this.$LI !== null && !this.$UN;
+    }
+
+    // @ts-expect-error TS6133
+    public render(props: Readonly<{ children?: Inferno.InfernoNode } & P>, state: Readonly<S>, context: any) {
+      return null;
     }
   }
 

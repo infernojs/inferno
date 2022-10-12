@@ -37,6 +37,7 @@
 		"no-conditional-assignment": false,
 		"no-debugger": false,
 		"no-empty": true,
+        "no-empty-interface": false,
 		"no-namespace": false,
 		"no-unused-expression": true,
 		"object-literal-sort-keys": true,

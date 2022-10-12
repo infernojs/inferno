@@ -17,15 +17,9 @@ export type MoveQueueItem = {
 };
 
 export class AnimationQueues {
-  public componentDidAppear: Function[];
-  public componentWillDisappear: Function[];
-  public componentWillMove: MoveQueueItem[];
-
-  constructor() {
-    this.componentDidAppear = [];
-    this.componentWillDisappear = [];
-    this.componentWillMove = [];
-  }
+  public componentDidAppear: Function[] = [];
+  public componentWillDisappear: Function[] = [];
+  public componentWillMove: MoveQueueItem[] = [];
 }
 
 if (process.env.NODE_ENV !== 'production') {

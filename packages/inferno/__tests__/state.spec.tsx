@@ -54,6 +54,10 @@ describe('state', () => {
 
         expect(this.state).toBeNull();
       }
+
+      public render() {
+        return null;
+      }
     }
 
     const f = new Foo({}, {});

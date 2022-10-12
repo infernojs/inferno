@@ -28,6 +28,10 @@ describe('default prop typings', () => {
       name: 'custom-component',
       value: 107
     };
+
+    public render() {
+      return null;
+    }
   }
 
   it('TSX Should not require properties from default props', () => {
