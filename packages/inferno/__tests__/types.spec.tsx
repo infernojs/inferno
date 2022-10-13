@@ -192,5 +192,13 @@ describe('top level context', () => {
         container
       );
     });
+
+    it('Should allow null for attributes', function () {
+      const row = <div tabIndex={null}></div>;
+      const aria = <div aria-activedescendant={null}></div>;
+
+      expect(row).not.toBeNull();
+      expect(aria).not.toBeNull();
+    });
   })
 });
