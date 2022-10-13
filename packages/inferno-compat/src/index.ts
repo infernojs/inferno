@@ -294,7 +294,7 @@ abstract class PureComponent<P, S> extends Component<P, S> {
 }
 
 interface ContextProps {
-  children?: Inferno.InfernoChild | undefined
+  children?: Inferno.InfernoChild | undefined;
   context: any;
 }
 

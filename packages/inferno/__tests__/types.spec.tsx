@@ -1,5 +1,5 @@
-import {Component, createRef, Inferno, linkEvent, render} from 'inferno';
-import {emptyFn} from "inferno-shared";
+import { Component, createRef, Inferno, linkEvent, Ref, render } from 'inferno';
+import { emptyFn } from 'inferno-shared';
 
 describe('top level context', () => {
   let container;
@@ -167,9 +167,12 @@ describe('top level context', () => {
   describe('ChildFlags', function () {
     it('Should allow special flags on all elements', function () {
       const refObj = createRef<HTMLDivElement>();
-      const text = "foobar";
-      const row = <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>{text}</div>;
-
+      const text = 'foobar';
+      const row = (
+        <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>
+          {text}
+        </div>
+      );
 
       render(
         <div className="floating-row-numbers" ref={refObj} $HasVNodeChildren>
@@ -181,9 +184,12 @@ describe('top level context', () => {
 
     it('Should allow special flags on SVG', function () {
       const refObj = createRef<SVGSVGElement>();
-      const text = "foobar";
-      const row = <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>{text}</div>;
-
+      const text = 'foobar';
+      const row = (
+        <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>
+          {text}
+        </div>
+      );
 
       render(
         <svg className="floating-row-numbers" ref={refObj} $HasVNodeChildren>
@@ -200,5 +206,15 @@ describe('top level context', () => {
       expect(row).not.toBeNull();
       expect(aria).not.toBeNull();
     });
-  })
+
+    it('Should allow null for ref attribute', function () {
+      const obj: {
+        refWrap: Ref<HTMLDivElement> | null;
+      } = {
+        refWrap: null
+      };
+
+      render(<div ref={obj.refWrap}></div>, container);
+    });
+  });
 });

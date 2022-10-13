@@ -11,9 +11,11 @@ export interface LinkedEvent<T, E extends Event> {
 export interface IComponent<P, S> {
   // Public
   state: S | null;
-  props: Readonly<{
-    children?: Inferno.InfernoNode;
-  } & P>;
+  props: Readonly<
+    {
+      children?: Inferno.InfernoNode;
+    } & P
+  >;
   context?: any;
   displayName?: string;
   refs?: any;
@@ -171,7 +173,7 @@ export declare namespace Inferno {
     $ChildFlag?: number;
   }
   interface ClassAttributes<T> extends Attributes {
-    ref?: Ref<T> | RefObject<T> | undefined;
+    ref?: Ref<T> | RefObject<T> | null | undefined;
   }
 
   interface InfernoElement<P = any> {
@@ -1881,7 +1883,7 @@ declare global {
 
     type LibraryManagedAttributes<C, P> = InfernoManagedAttributes<C, P>;
 
-    interface IntrinsicAttributes extends Inferno.Attributes { }
+    interface IntrinsicAttributes extends Inferno.Attributes {}
     interface IntrinsicAttributes extends Inferno.Attributes, Refs<any> {}
     interface IntrinsicClassAttributes<T> extends Inferno.ClassAttributes<T> {}
 
