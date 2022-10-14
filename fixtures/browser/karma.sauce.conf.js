@@ -20,17 +20,17 @@ const customLaunchers = {
   sl_mac_firfox: {
     base: 'SauceLabs',
     browserName: 'firefox',
-    platform: 'OS X 10.12'
+    platform: 'macOs'
   },
   slEdge: {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
-    platform: 'Windows 10'
+    platform: 'Windows'
   },
   sl_mac_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
-    platform: 'macOS 10.12'
+    platform: 'macOS'
   },
   slFirefox: {
     base: 'SauceLabs',
@@ -39,7 +39,7 @@ const customLaunchers = {
   slAndroid7: {
     base: 'SauceLabs',
     browserName: 'android',
-    version: '6.0'
+    version: '10'
   }
 };
 
