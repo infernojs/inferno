@@ -5,7 +5,8 @@ const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'in
 const customLaunchers = {
   slChrome: {
     base: 'SauceLabs',
-    browserName: 'chrome'
+    browserName: 'chrome',
+    platform: "Windows 11"
   },
   slSafari14: {
     base: 'SauceLabs',
@@ -29,7 +30,8 @@ const customLaunchers = {
   },
   slFirefox: {
     base: 'SauceLabs',
-    browserName: 'firefox'
+    browserName: 'firefox',
+    platform: "Windows 11"
   },
   slAndroid7: {
     base: 'SauceLabs',
