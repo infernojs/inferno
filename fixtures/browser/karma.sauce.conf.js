@@ -6,37 +6,36 @@ const customLaunchers = {
   slChrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
+    browserVersion: 'latest',
     platform: "Windows 11"
   },
   slSafari14: {
     base: 'SauceLabs',
     browserName: 'safari',
-    version: '14'
+    browserVersion: '14'
   },
   slSafari15: {
     base: 'SauceLabs',
     browserName: 'safari',
-    version: '15'
+    browserVersion: '15'
   },
   slEdge: {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
+    browserVersion: 'latest',
     platform: 'Windows 11'
   },
   sl_mac_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
+    browserVersion: 'latest',
     platform: 'macOS 12'
   },
   slFirefox: {
     base: 'SauceLabs',
     browserName: 'firefox',
-    platform: "Windows 10"
-  },
-  slAndroid7: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    version: '10'
+    platform: "Windows 11",
+    browserVersion: 'latest'
   }
 };
 
