@@ -31,7 +31,7 @@ const customLaunchers = {
   slFirefox: {
     base: 'SauceLabs',
     browserName: 'firefox',
-    platform: "Windows 11"
+    platform: "Windows 10"
   },
   slAndroid7: {
     base: 'SauceLabs',
