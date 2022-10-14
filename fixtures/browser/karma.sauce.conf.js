@@ -20,7 +20,7 @@ const customLaunchers = {
   slEdge: {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
-    platform: 'Windows'
+    platform: 'Windows 11'
   },
   sl_mac_chrome: {
     base: 'SauceLabs',
