@@ -17,11 +17,6 @@ const customLaunchers = {
     browserName: 'safari',
     version: '15'
   },
-  sl_mac_firfox: {
-    base: 'SauceLabs',
-    browserName: 'firefox',
-    platform: 'macOs'
-  },
   slEdge: {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
