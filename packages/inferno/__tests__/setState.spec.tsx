@@ -17,8 +17,8 @@ describe('setState', () => {
 
   it('should throw an error when setState is called in constructor', () => {
     class TestComponent extends Component<any, any> {
-      constructor(props, ctx) {
-        super(props, ctx);
+      constructor(props, context) {
+        super(props, context);
         this.setState({
           state: 'Something'
         });

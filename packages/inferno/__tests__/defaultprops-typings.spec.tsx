@@ -20,8 +20,8 @@ describe('default prop typings', () => {
   };
 
   class MyComponent extends Component<MyComponentProps, any> {
-    constructor(props, ctx) {
-      super(props, ctx);
+    constructor(props, context) {
+      super(props, context);
     }
 
     public static defaultProps = {
