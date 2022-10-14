@@ -25,7 +25,7 @@ const customLaunchers = {
   sl_mac_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
-    platform: 'macOS'
+    platform: 'macOS 12'
   },
   slFirefox: {
     base: 'SauceLabs',
