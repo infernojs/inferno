@@ -30,13 +30,14 @@ const customLaunchers = {
     browserName: 'chrome',
     browserVersion: 'latest',
     platform: 'macOS 12'
-  },
-  slFirefox: {
-    base: 'SauceLabs',
-    browserName: 'firefox',
-    platform: "Windows 11",
-    browserVersion: 'latest'
   }
+  // TODO: https://github.com/infernojs/inferno/issues/1611
+  // slFirefox: {
+  //   base: 'SauceLabs',
+  //   browserName: 'firefox',
+  //   platform: "Windows 11",
+  //   browserVersion: 'latest'
+  // }
 };
 
 module.exports = function (config) {
