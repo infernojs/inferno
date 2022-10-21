@@ -32,7 +32,7 @@ const customLaunchers = {
     browserName: 'chrome',
     browserVersion: 'latest',
     platform: 'macOS 12'
-  }
+  },
   slFirefox: {
     base: 'SauceLabs',
     browserName: 'firefox',
