@@ -44,7 +44,7 @@ The performance is achieved through multiple optimizations, for example:
 Since version 4 we have started running our test suite **without** any polyfills.
 Inferno is now part of [Saucelabs](https://saucelabs.com/) open source program and we use their service for executing the tests.
 
-InfernoJS natively supports the browsers listed below.
+InfernoJS is actively tested with browsers listed below, however it may run well on older browsers as well.
 
 [![Browser Test Status](https://app.saucelabs.com/browser-matrix/Havunen.svg)](https://app.saucelabs.com/open_sauce/user/Havunen/tests/vdc)
 
