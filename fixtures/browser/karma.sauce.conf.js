@@ -38,7 +38,7 @@ const customLaunchers = {
     browserName: 'firefox',
     platform: "Windows 11",
     browserVersion: 'latest',
-    geckodriverVersion: "0.32.0"
+    geckodriverVersion: "0.30.0"
   }
 };
 
