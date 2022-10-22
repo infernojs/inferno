@@ -45,6 +45,8 @@ export interface IComponent<P, S> {
 
   componentWillDisappear?(domNode: Element, callback: Function): void;
 
+  componentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element): void;
+
   getChildContext?(): void;
 
   getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: S): any;
@@ -146,6 +148,7 @@ export interface Refs<P> {
 
   onComponentWillDisappear?(domNode: Element, props: Readonly<P>, callback: Function): void;
 
+  onComponentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element, props: Readonly<P>): void;
 }
 
 export interface Props<T> {
