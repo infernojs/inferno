@@ -15,7 +15,7 @@ function getClassNameList(className: string) {
   return className.split(' ').filter(filterEmpty);
 }
 
-export function addClassName(node: HTMLElement, className: string) {
+export function addClassName(node: HTMLElement | SVGElement, className: string) {
   const classNameList = getClassNameList(className);
 
   for (let i = 0; i < classNameList.length; i++) {
@@ -23,7 +23,7 @@ export function addClassName(node: HTMLElement, className: string) {
   }
 }
 
-export function removeClassName(node: HTMLElement, className: string) {
+export function removeClassName(node: HTMLElement | SVGElement, className: string) {
   const classNameList = getClassNameList(className);
 
   for (let i = 0; i < classNameList.length; i++) {
@@ -36,7 +36,7 @@ export function forceReflow() {
 }
 
 // A quicker version used in pre_initialize
-export function resetDisplay(node: HTMLElement, value?: string) {
+export function resetDisplay(node: HTMLElement | SVGElement, value?: string) {
   if (value !== undefined) {
     node.style.setProperty('display', value);
   } else {
@@ -45,7 +45,7 @@ export function resetDisplay(node: HTMLElement, value?: string) {
   }
 }
 
-export function setDisplay(node: HTMLElement, value?: string) {
+export function setDisplay(node: HTMLElement | SVGElement, value?: string) {
   const oldVal = node.style.getPropertyValue('display');
 
   if (oldVal !== value) {
@@ -59,14 +59,14 @@ export function setDisplay(node: HTMLElement, value?: string) {
   return oldVal;
 }
 
-function _cleanStyle(node: HTMLElement) {
+function _cleanStyle(node: HTMLElement | SVGElement) {
   if (!node.style) {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
     node.removeAttribute('style');
   }
 }
 
-export function getDimensions(node: HTMLElement) {
+export function getDimensions(node: HTMLElement | SVGElement) {
   const tmpDisplay = node.style.getPropertyValue('display');
 
   // The `display: none;` workaround was added to support Bootstrap animations in
@@ -94,17 +94,17 @@ export function getDimensions(node: HTMLElement) {
   };
 }
 
-export function getOffsetPosition(node: HTMLElement) {
+export function getOffsetPosition(node: HTMLElement | SVGElement) {
   const { x, y } = node.getBoundingClientRect();
   return { x, y };
 }
 
-export function getGeometry(node: HTMLElement) {
+export function getGeometry(node: HTMLElement | SVGElement) {
   const { x, y, width, height } = node.getBoundingClientRect();
   return { x, y, width, height };
 }
 
-export function setTransform(node: HTMLElement, x: number, y: number, scaleX: number = 1, scaleY: number = 1) {
+export function setTransform(node: HTMLElement | SVGElement, x: number, y: number, scaleX: number = 1, scaleY: number = 1) {
   const doScale = scaleX !== 1 || scaleY !== 1;
   if (doScale) {
     node.style.transformOrigin = '0 0';
@@ -114,17 +114,17 @@ export function setTransform(node: HTMLElement, x: number, y: number, scaleX: nu
   }
 }
 
-export function clearTransform(node: HTMLElement) {
+export function clearTransform(node: HTMLElement | SVGElement) {
   node.style.transform = '';
   node.style.transformOrigin = '';
 }
 
-export function setDimensions(node: HTMLElement, width: number, height: number) {
+export function setDimensions(node: HTMLElement | SVGElement, width: number, height: number) {
   node.style.width = width + 'px';
   node.style.height = height + 'px';
 }
 
-export function clearDimensions(node: HTMLElement) {
+export function clearDimensions(node: HTMLElement | SVGElement) {
   node.style.width = node.style.height = '';
 }
 
@@ -216,7 +216,7 @@ function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
  * @param nodes a list of nodes that have transitions that are part of this animation
  * @param callback callback when all transitions of participating nodes are completed
  */
-export function registerTransitionListener(nodes: HTMLElement[], callback: Function) {
+export function registerTransitionListener(nodes: (HTMLElement | SVGElement)[], callback: Function) {
   const rootNode = nodes[0];
 
   /**

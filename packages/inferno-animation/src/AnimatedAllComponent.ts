@@ -7,15 +7,15 @@ type AnimationProp = {
 };
 
 export abstract class AnimatedAllComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
-  public componentDidAppear(dom: HTMLElement) {
+  public componentDidAppear(dom: HTMLElement | SVGElement) {
     componentDidAppear(dom, this.props);
   }
 
-  public componentWillDisappear(dom: HTMLElement, callback: Function) {
+  public componentWillDisappear(dom: HTMLElement | SVGElement, callback: Function) {
     componentWillDisappear(dom, this.props, callback);
   }
 
-  public componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, props: any) {
-    componentWillMove(parentVNode, parent, dom, props);
+  public componentWillMove(parentVNode, parent: HTMLElement | SVGElement, dom: HTMLElement | SVGElement) {
+    componentWillMove(parentVNode, parent, dom, this.props);
   }
 }
