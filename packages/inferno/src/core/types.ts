@@ -142,9 +142,10 @@ export interface Refs<P> {
 
   onComponentWillUnmount?(domNode: Element, nextProps: Readonly<P>): void;
 
-  onComponentDidAppear?(domNode: Element): void;
+  onComponentDidAppear?(domNode: Element, props: Readonly<P>): void;
 
-  onComponentWillDisappear?(domNode: Element, callback: Function): void;
+  onComponentWillDisappear?(domNode: Element, props: Readonly<P>, callback: Function): void;
+
 }
 
 export interface Props<T> {
