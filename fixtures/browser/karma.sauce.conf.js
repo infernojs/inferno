@@ -39,7 +39,7 @@ const customLaunchers = {
     platform: "Windows 11",
     browserVersion: 'latest',
     'sauce:options': {
-      geckodriverVersion: '0.32.0'
+      geckodriverVersion: '0.30.0'
     }
   }
 };
