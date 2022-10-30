@@ -206,6 +206,8 @@ export function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations
 
     if (flags & VNodeFlags.ComponentClass) {
       refOrInstance = vNode.children;
+      // TODO: We should probably deprecate this in V9 since it is inconsitent with other class component hooks
+      instanceProps = vNode.props;
       vNode = children.$LI;
     } else if (flags & VNodeFlags.ComponentFunction) {
       refOrInstance = vNode.ref;
