@@ -132,23 +132,23 @@ export interface ForwardRef<P, T> extends Inferno.StatelessComponent<P> {
 }
 
 export interface Refs<P> {
-  onComponentDidMount?: (domNode: Element | null, nextProps: Readonly<P>) => void;
+  onComponentDidMount?: (domNode: Element | null, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>) => void;
 
-  onComponentWillMount?(): void;
+  onComponentWillMount?(props: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
 
-  onComponentShouldUpdate?(lastProps: Readonly<P>, nextProps: Readonly<P>): boolean;
+  onComponentShouldUpdate?(lastProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): boolean;
 
-  onComponentWillUpdate?(lastProps: Readonly<P>, nextProps: Readonly<P>): void;
+  onComponentWillUpdate?(lastProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
 
-  onComponentDidUpdate?(lastProps: Readonly<P>, nextProps: Readonly<P>): void;
+  onComponentDidUpdate?(lastProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
 
-  onComponentWillUnmount?(domNode: Element, nextProps: Readonly<P>): void;
+  onComponentWillUnmount?(domNode: Element, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
 
-  onComponentDidAppear?(domNode: Element, props: Readonly<P>): void;
+  onComponentDidAppear?(domNode: Element, props: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
 
-  onComponentWillDisappear?(domNode: Element, props: Readonly<P>, callback: Function): void;
+  onComponentWillDisappear?(domNode: Element, props: Readonly<{ children?: Inferno.InfernoNode } & P>, callback: Function): void;
 
-  onComponentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element, props: Readonly<P>): void;
+  onComponentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element, props: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
 }
 
 export interface Props<T> {
