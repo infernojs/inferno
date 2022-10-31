@@ -11,7 +11,7 @@ export abstract class AnimatedComponent<P = {}, S = {}> extends Component<Animat
     componentDidAppear(dom, this.props);
   }
 
-  public componentWillDisappear(dom: HTMLElement, callback: Function) {
+  public componentWillDisappear(dom: HTMLElement | SVGElement, callback: Function) {
     componentWillDisappear(dom, this.props, callback);
   }
 }

@@ -7,7 +7,7 @@ type AnimationProp = {
 };
 
 export abstract class AnimatedMoveComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {
-  public componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, props: any) {
-    componentWillMove(parentVNode, parent, dom, props);
+  public componentWillMove(parentVNode, parent: HTMLElement | SVGElement, dom: HTMLElement | SVGElement) {
+    componentWillMove(parentVNode, parent, dom, this.props);
   }
 }

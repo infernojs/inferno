@@ -44,7 +44,7 @@ function getAnimationClass(animationProp: AnimationClass | string | undefined | 
   return animCls;
 }
 
-export function componentDidAppear(dom: HTMLElement, props) {
+export function componentDidAppear(dom: HTMLElement | SVGElement, props) {
   // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-enter');
 
@@ -66,7 +66,7 @@ function _getDidAppearTransitionCallback(dom, cls) {
   };
 }
 
-function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass, dimensions, display: string, sourceState: GlobalAnimationState | null) {
+function _didAppear(phase: AnimationPhase, dom: HTMLElement | SVGElement, cls: AnimationClass, dimensions, display: string, sourceState: GlobalAnimationState | null) {
   switch (phase) {
     case AnimationPhase.INITIALIZE:
       // Needs to be done in a single pass to avoid reflows
@@ -123,7 +123,7 @@ function _didAppear(phase: AnimationPhase, dom: HTMLElement, cls: AnimationClass
   }
 }
 
-export function componentWillDisappear(dom: HTMLElement, props, callback: Function) {
+export function componentWillDisappear(dom: HTMLElement | SVGElement , props, callback: Function) {
   // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-leave');
   const dimensions = getDimensions(dom);
@@ -134,7 +134,7 @@ export function componentWillDisappear(dom: HTMLElement, props, callback: Functi
   }
 }
 
-function _willDisappear(phase: AnimationPhase, dom: HTMLElement, callback: Function, cls: AnimationClass, dimensions) {
+function _willDisappear(phase: AnimationPhase, dom: HTMLElement | SVGElement, callback: Function, cls: AnimationClass, dimensions) {
   switch (phase) {
     case AnimationPhase.MEASURE:
       // 1. Set animation start state and dimensions
@@ -165,7 +165,7 @@ function _willDisappear(phase: AnimationPhase, dom: HTMLElement, callback: Funct
   }
 }
 
-export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLElement, props: any) {
+export function componentWillMove(parentVNode, parent: HTMLElement | SVGElement, dom: HTMLElement | SVGElement, props: any) {
   // tslint:disable-next-line
   if (_DBG_MVE_) console.log('Animating move', dom);
 
@@ -174,7 +174,7 @@ export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLEle
   if (!parentVNode.$MV) {
     parentVNode.$MV = true;
     els = [];
-    let tmpEl = parent.firstChild as HTMLElement;
+    let tmpEl = parent.firstChild as HTMLElement | SVGElement;
     while (!isNull(tmpEl)) {
       els.push({
         dx: 0,
@@ -183,7 +183,7 @@ export function componentWillMove(parentVNode, parent: HTMLElement, dom: HTMLEle
         moved: false,
         node: tmpEl
       });
-      tmpEl = tmpEl.nextSibling as HTMLElement;
+      tmpEl = tmpEl.nextSibling as HTMLElement | SVGElement;
     }
   }
 
@@ -282,7 +282,7 @@ function _willMove(phase: AnimationPhase, cls: AnimationClass, animState) {
   }
 }
 
-function _getWillMoveTransitionCallback(dom: HTMLElement, cls: AnimationClass) {
+function _getWillMoveTransitionCallback(dom: HTMLElement | SVGElement, cls: AnimationClass) {
   return () => {
     // Only remove these if the translate has completed
     const cbCount = decrementMoveCbCount(dom);
