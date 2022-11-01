@@ -43,11 +43,11 @@ export function NavLink({
   function linkComponent({ location, match }): VNode {
     const isActive = Boolean(getIsActive ? getIsActive(match, location) : match);
 
-    let className = typeof classNameProp === "function"
+    const className = typeof classNameProp === "function"
       ? classNameProp(isActive)
       : classNameProp;
 
-    let style = typeof styleProp === "function"
+    const style = typeof styleProp === "function"
       ? styleProp(isActive)
       : styleProp;
 
