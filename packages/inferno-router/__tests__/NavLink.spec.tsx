@@ -158,6 +158,80 @@ describe('NavLink', () => {
     });
   });
 
+  it("applies its className when provided as a function", () => {
+    render(
+      <MemoryRouter initialEntries={["/pizza"]}>
+        <NavLink
+          to="/pizza"
+          className={(isActive: boolean) => isActive ? "active-pizza" : "chill-pizza"}
+        >
+        Pizza!
+      </NavLink>
+      </MemoryRouter >,
+      node
+    );
+
+    const a = node.querySelector("a");
+    expect(a.className).toContain("active-pizza");
+  });
+
+  it("applies its style when provided as a function", () => {
+    const defaultStyle = { color: "black" };
+    const activeStyle = { color: "red" };
+
+    render(
+      <MemoryRouter initialEntries={["/pizza"]}>
+        <NavLink
+          to="/pizza"
+          style={isActive => (isActive ? activeStyle : defaultStyle)}
+        >
+          Pizza!
+        </NavLink>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector("a");
+    expect(a.style.color).toBe(activeStyle.color);
+  });
+
+  it("applies its className when provided as a function", () => {
+    render(
+      <MemoryRouter initialEntries={["/pizza"]}>
+        <NavLink
+          to="/salad"
+          className={isActive => (isActive ? "active-salad" : "chill-salad")}
+        >
+          Salad?
+        </NavLink>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector("a");
+    expect(a.className).toContain("chill-salad");
+  });
+
+  it("applies its style when provided as a function", () => {
+    const defaultStyle = { color: "black" };
+    const activeStyle = { color: "red" };
+
+    render(
+      <MemoryRouter initialEntries={["/pizza"]}>
+        <NavLink
+          to="/salad"
+          style={isActive => (isActive ? activeStyle : defaultStyle)}
+        >
+          Salad?
+        </NavLink>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector("a");
+    expect(a.style.color).toBe(defaultStyle.color);
+  });
+
   describe('exact', () => {
     it('does not do exact matching by default', () => {
       render(

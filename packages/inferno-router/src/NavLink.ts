@@ -9,14 +9,15 @@ function filter(i) {
   return i;
 }
 
-interface NavLinkProps extends ILinkProps {
+interface NavLinkProps extends Omit<ILinkProps, 'className'> {
   to: string | Location;
   exact?: boolean;
   strict?: boolean;
   location?: any;
   activeClassName?: string;
+  className?: string | ((isActive: boolean) => string);
   activeStyle?: any;
-  style?: any;
+  style?: object | ((isActive: boolean) => string);
   isActive?: (match, location) => boolean;
   ariaCurrent?: string;
 }
@@ -32,22 +33,30 @@ export function NavLink({
   onClick,
   location: linkLocation,
   activeClassName = 'active',
-  className,
+  className: classNameProp,
   activeStyle,
-  style,
+  style: styleProp,
   isActive: getIsActive,
   ariaCurrent = 'true',
   ...rest
-}: NavLinkProps & Inferno.LinkHTMLAttributes<HTMLLinkElement>): any {
+}: NavLinkProps & Omit<Inferno.LinkHTMLAttributes<HTMLLinkElement>, 'className' | 'style'>): any {
   function linkComponent({ location, match }): VNode {
     const isActive = Boolean(getIsActive ? getIsActive(match, location) : match);
+
+    const className = typeof classNameProp === "function"
+      ? classNameProp(isActive)
+      : classNameProp;
+
+    const style = typeof styleProp === "function"
+      ? styleProp(isActive)
+      : styleProp;
 
     return createComponentVNode(
       VNodeFlags.ComponentFunction,
       Link,
       combineFrom(
         {
-          'aria-current': isActive && ariaCurrent,
+          'aria-current': (isActive && ariaCurrent) || null,
           className: isActive ? [className, activeClassName].filter(filter).join(' ') : className,
           onClick,
           style: isActive ? combineFrom(style, activeStyle) : style,
