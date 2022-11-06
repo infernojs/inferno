@@ -66,7 +66,14 @@ function _getDidAppearTransitionCallback(dom, cls) {
   };
 }
 
-function _didAppear(phase: AnimationPhase, dom: HTMLElement | SVGElement, cls: AnimationClass, dimensions, display: string, sourceState: GlobalAnimationState | null) {
+function _didAppear(
+  phase: AnimationPhase,
+  dom: HTMLElement | SVGElement,
+  cls: AnimationClass,
+  dimensions,
+  display: string,
+  sourceState: GlobalAnimationState | null
+) {
   switch (phase) {
     case AnimationPhase.INITIALIZE:
       // Needs to be done in a single pass to avoid reflows
@@ -123,7 +130,7 @@ function _didAppear(phase: AnimationPhase, dom: HTMLElement | SVGElement, cls: A
   }
 }
 
-export function componentWillDisappear(dom: HTMLElement | SVGElement , props, callback: Function) {
+export function componentWillDisappear(dom: HTMLElement | SVGElement, props, callback: Function) {
   // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-leave');
   const dimensions = getDimensions(dom);
