@@ -85,4 +85,39 @@ describe('A <Link> underneath a <HashRouter>', () => {
     const linkNode = createLinkNode('foo');
     expect(linkNode.getAttribute('href')).toEqual('#foo');
   });
+
+  it("accepts a string `to` prop", () => {
+    const to = "/the/path?the=query#the-hash";
+
+    render(
+      <MemoryRouter>
+        <Link to={to}>link</Link>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector("a");
+
+    expect(a.getAttribute("href")).toEqual("/the/path?the=query#the-hash");
+  });
+
+  it("accepts an object `to` prop", () => {
+    const to = {
+      pathname: "/the/path",
+      search: "the=query",
+      hash: "#the-hash"
+    };
+
+    render(
+      <MemoryRouter>
+        <Link to={to}>link</Link>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector("a");
+
+    expect(a.getAttribute("href")).toEqual("/the/path?the=query#the-hash");
+  });
+
 });
