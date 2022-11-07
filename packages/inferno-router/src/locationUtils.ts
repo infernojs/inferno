@@ -6,6 +6,6 @@ export const normalizeToLocation = (to) => {
 };
 
 export const splitLocation = (location: Location): { to: To, state: any} => {
-    const { key = undefined, state, ...to } = location;
+    const { key = '', state, ...to } = location;
     return { to, state };
 }
