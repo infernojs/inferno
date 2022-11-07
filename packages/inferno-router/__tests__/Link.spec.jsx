@@ -86,8 +86,8 @@ describe('A <Link> underneath a <HashRouter>', () => {
     expect(linkNode.getAttribute('href')).toEqual('#foo');
   });
 
-  it("accepts a string `to` prop", () => {
-    const to = "/the/path?the=query#the-hash";
+  it('accepts a string `to` prop', () => {
+    const to = '/the/path?the=query#the-hash';
 
     render(
       <MemoryRouter>
@@ -96,16 +96,16 @@ describe('A <Link> underneath a <HashRouter>', () => {
       node
     );
 
-    const a = node.querySelector("a");
+    const a = node.querySelector('a');
 
-    expect(a.getAttribute("href")).toEqual("/the/path?the=query#the-hash");
+    expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
   });
 
-  it("accepts an object `to` prop", () => {
+  it('accepts an object `to` prop', () => {
     const to = {
-      pathname: "/the/path",
-      search: "the=query",
-      hash: "#the-hash"
+      pathname: '/the/path',
+      search: 'the=query',
+      hash: '#the-hash'
     };
 
     render(
@@ -115,9 +115,8 @@ describe('A <Link> underneath a <HashRouter>', () => {
       node
     );
 
-    const a = node.querySelector("a");
+    const a = node.querySelector('a');
 
-    expect(a.getAttribute("href")).toEqual("/the/path?the=query#the-hash");
+    expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
   });
-
 });
