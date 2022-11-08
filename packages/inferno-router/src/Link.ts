@@ -4,6 +4,8 @@ import { invariant } from './utils';
 import { combineFrom, isString } from 'inferno-shared';
 import type { Location } from 'history';
 import { parsePath } from 'history';
+import { splitLocation, normalizeToLocation } from "./locationUtils";
+
 
 const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
@@ -31,12 +33,14 @@ function handleClick({ props, context }, event: InfernoMouseEvent<any>) {
     event.preventDefault();
 
     const { history } = context.router;
-    const { replace = false, to } = props;
+    const { replace = false, to: toPropIn } = props;
+    const { to, state } = splitLocation(normalizeToLocation(toPropIn));
+
 
     if (replace) {
-      history.replace(to);
+      history.replace(to, state);
     } else {
-      history.push(to);
+      history.push(to, state);
     }
   }
 }

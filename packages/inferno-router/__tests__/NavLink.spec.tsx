@@ -1,5 +1,6 @@
-import { render } from 'inferno';
-import { MemoryRouter, NavLink } from 'inferno-router';
+import { createMemoryHistory } from 'history';
+import { Component, render } from 'inferno';
+import { HashRouter, MemoryRouter, NavLink } from 'inferno-router';
 
 describe('NavLink', () => {
   let node;
@@ -402,6 +403,127 @@ describe('NavLink', () => {
       );
       const a = node.getElementsByTagName('a')[0];
       expect(a.title).toEqual('pasta');
+    });
+  });
+
+  describe('A <NavLink> underneath a <HashRouter>', () => {
+    let tmpNode;
+    beforeEach(function () {
+      tmpNode = document.createElement('div');
+      document.body.appendChild(tmpNode);
+    });
+  
+    afterEach(function () {
+      render(null, tmpNode);
+      document.body.removeChild(tmpNode);
+    });
+  
+    const createLinkNode = (to) => {
+      render(
+        <HashRouter>
+          <NavLink to={to} />
+        </HashRouter>,
+        tmpNode
+      );
+  
+      return tmpNode.querySelector('a');
+    };
+  
+    it('has the correct href', () => {
+      const linkNode = createLinkNode('/foo');
+      expect(linkNode.getAttribute('href')).toEqual('#/foo');
+    });
+  
+    it('has the correct href #2', () => {
+      const linkNode = createLinkNode('foo');
+      expect(linkNode.getAttribute('href')).toEqual('#foo');
+    });
+  
+    it('accepts a string `to` prop', () => {
+      const to = '/the/path?the=query#the-hash';
+  
+      render(
+        <MemoryRouter>
+          <NavLink to={to}>link</NavLink>
+        </MemoryRouter>,
+        tmpNode
+      );
+  
+      const a = tmpNode.querySelector('a');
+  
+      expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
+    });
+  
+    it('accepts an object `to` prop', () => {
+      const to = {
+        hash: '#the-hash',
+        key: '1',
+        pathname: '/the/path',
+        search: 'the=query',
+        state: null,
+      };
+  
+      render(
+        <MemoryRouter>
+          <NavLink to={to}>link</NavLink>
+        </MemoryRouter>,
+        tmpNode
+      );
+  
+      const a = tmpNode.querySelector('a');
+  
+      expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
+    });
+  
+    it('accepts an object `to` prop with state', async () => {
+      const memoryHistoryFoo = createMemoryHistory({
+        initialEntries: ["/foo"]
+      });
+      memoryHistoryFoo.push = jest.fn();
+  
+      const clickHandler = jest.fn();
+      
+      const to = {
+        hash: '#the-hash',
+        key: '1',
+        pathname: '/the/path',
+        search: 'the=query',
+        state: { test: 'ok' }
+      };
+  
+      class ContextChecker extends Component {
+        public getChildContext() {
+          const { context } = this;
+          context.router.history = memoryHistoryFoo;
+  
+          return {
+            router: context.router
+          };
+        }
+      
+        public render({ children }) {
+          return children;
+        }
+      }    
+  
+      render(
+        <MemoryRouter>
+          <ContextChecker>
+            <NavLink to={to} onClick={clickHandler}>
+              link
+            </NavLink>
+          </ContextChecker>
+        </MemoryRouter>,
+        tmpNode
+      );
+  
+      const a = tmpNode.querySelector("a");
+      a.click();
+  
+      expect(clickHandler).toBeCalledTimes(1);
+      expect(memoryHistoryFoo.push).toBeCalledTimes(1);
+      const { hash, pathname, search, state } = to;
+      expect(memoryHistoryFoo.push).toBeCalledWith({ hash, pathname, search }, state);
     });
   });
 });

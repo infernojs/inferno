@@ -1,6 +1,6 @@
-import { render } from 'inferno';
+import { render, Component } from 'inferno';
 import { HashRouter, Link, MemoryRouter } from 'inferno-router';
-import { parsePath } from 'history';
+import { parsePath, createMemoryHistory } from 'history';
 
 describe('Link (jsx)', () => {
   let node;
@@ -84,5 +84,89 @@ describe('A <Link> underneath a <HashRouter>', () => {
   it('has the correct href #2', () => {
     const linkNode = createLinkNode('foo');
     expect(linkNode.getAttribute('href')).toEqual('#foo');
+  });
+
+  it('accepts a string `to` prop', () => {
+    const to = '/the/path?the=query#the-hash';
+
+    render(
+      <MemoryRouter>
+        <Link to={to}>link</Link>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector('a');
+
+    expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
+  });
+
+  it('accepts an object `to` prop', () => {
+    const to = {
+      pathname: '/the/path',
+      search: 'the=query',
+      hash: '#the-hash'
+    };
+
+    render(
+      <MemoryRouter>
+        <Link to={to}>link</Link>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector('a');
+
+    expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
+  });
+
+  it('accepts an object `to` prop with state', () => {
+    const memoryHistoryFoo = createMemoryHistory({
+      initialEntries: ['/foo']
+    });
+    memoryHistoryFoo.push = jest.fn();
+
+    const clickHandler = jest.fn();
+
+    const to = {
+      pathname: '/the/path',
+      search: 'the=query',
+      hash: '#the-hash',
+      state: { test: 'ok' }
+    };
+
+    class ContextChecker extends Component {
+      getChildContext() {
+        const { context } = this;
+        context.router.history = memoryHistoryFoo;
+
+        return {
+          router: context.router
+        };
+      }
+
+      render({ children }) {
+        return children;
+      }
+    }
+
+    render(
+      <MemoryRouter>
+        <ContextChecker>
+          <Link to={to} onClick={clickHandler}>
+            link
+          </Link>
+        </ContextChecker>
+      </MemoryRouter>,
+      node
+    );
+
+    const a = node.querySelector('a');
+    a.click();
+
+    expect(clickHandler).toBeCalledTimes(1);
+    expect(memoryHistoryFoo.push).toBeCalledTimes(1);
+    const { hash, pathname, search, state } = to;
+    expect(memoryHistoryFoo.push).toBeCalledWith({ hash, pathname, search }, state);
   });
 });
