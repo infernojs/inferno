@@ -18,7 +18,7 @@ export interface Props<A extends Action = AnyAction> {
   children?: Inferno.InfernoNode;
 }
 
-export class Provider<A extends Action = AnyAction> extends Component<Props<A>, null> {
+export class Provider<A extends Action = AnyAction> extends Component<Props<A>> {
   public static displayName = 'Provider';
   private readonly store: Store<any, A>;
 
@@ -37,7 +37,7 @@ export class Provider<A extends Action = AnyAction> extends Component<Props<A>, 
     return this.props.children;
   }
 
-  public componentWillReceiveProps?(nextProps: Props<A>, nextContext: any): void;
+  public componentWillReceiveProps?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & Props<A>>, nextContext: any): void;
 }
 
 if (process.env.NODE_ENV !== 'production') {
