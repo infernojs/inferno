@@ -33,11 +33,11 @@ export interface IComponent<P, S> {
 
   componentWillReceiveProps?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextContext: any): void;
 
-  shouldComponentUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: S, context: any): boolean;
+  shouldComponentUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): boolean;
 
-  componentWillUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: S, context: any): void;
+  componentWillUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): void;
 
-  componentDidUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: S, snapshot: any): void;
+  componentDidUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
 
   componentWillUnmount?(): void;
 
@@ -49,9 +49,9 @@ export interface IComponent<P, S> {
 
   getChildContext?(): void;
 
-  getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: S): any;
+  getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>): any;
 
-  render(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: S, nextContext: any): Inferno.InfernoNode;
+  render(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, nextContext: any): Inferno.InfernoNode;
 }
 
 export interface SemiSyntheticEvent<T> extends Event {

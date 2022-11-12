@@ -1,5 +1,5 @@
 import type { Inferno } from './types';
-import { IComponent } from './types';
+import { IComponent, VNode } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import { AnimationQueues, callAll, callAllAnimationHooks, EMPTY_OBJ, findDOMFromVNode, renderCheck } from '../DOM/utils/common';
@@ -158,7 +158,7 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
   }
 
   public setState<K extends keyof S>(
-    newState: ((prevState: Readonly<S>, props: Readonly<P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
+    newState: ((prevState: Readonly<S>, props: Readonly<{ children?: Inferno.InfernoNode } & P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
     callback?: () => void
   ): void {
     if (this.$UN) {
@@ -187,6 +187,12 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
   public componentDidUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
 
   public componentWillUnmount?(): void;
+
+  public componentDidAppear?(domNode: Element): void;
+
+  public componentWillDisappear?(domNode: Element, callback: Function): void;
+
+  public componentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element): void;
 
   public getChildContext?(): void;
 
