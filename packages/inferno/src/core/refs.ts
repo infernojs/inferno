@@ -10,7 +10,7 @@ export function createRef<T = Element>(): RefObject<T> {
 
 // TODO: Make this return value typed
 export function forwardRef<T = any, P = {}>(
-  render: (props: Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>, ref: RefObject<T>) => Inferno.InfernoNode
+  render: (props: Readonly<{ children?: Inferno.InfernoNode } & P>, ref: RefObject<T>) => Inferno.InfernoNode
 ): any {
   if (process.env.NODE_ENV !== 'production') {
     if (!isFunction(render)) {
@@ -29,19 +29,19 @@ export function forwardRef<T = any, P = {}>(
   return ref;
 }
 
-export function unmountRef(ref) {
+export function unmountRef<T = any>(ref: RefObject<T>) {
   if (ref) {
     if (!safeCall1(ref, null) && ref.current) {
-      ref.current = null;
+      (ref.current as any) = null;
     }
   }
 }
 
-export function mountRef(ref, value, lifecycle: Function[]) {
+export function mountRef<T = any>(ref: RefObject<T>, value, lifecycle: Function[]) {
   if (ref && (isFunction(ref) || ref.current !== void 0)) {
     lifecycle.push(() => {
       if (!safeCall1(ref, value) && ref.current !== void 0) {
-        ref.current = value;
+        (ref.current as any) = value;
       }
     });
   }
