@@ -412,12 +412,12 @@ describe('NavLink', () => {
       tmpNode = document.createElement('div');
       document.body.appendChild(tmpNode);
     });
-  
+
     afterEach(function () {
       render(null, tmpNode);
       document.body.removeChild(tmpNode);
     });
-  
+
     const createLinkNode = (to) => {
       render(
         <HashRouter>
@@ -425,35 +425,35 @@ describe('NavLink', () => {
         </HashRouter>,
         tmpNode
       );
-  
+
       return tmpNode.querySelector('a');
     };
-  
+
     it('has the correct href', () => {
       const linkNode = createLinkNode('/foo');
       expect(linkNode.getAttribute('href')).toEqual('#/foo');
     });
-  
+
     it('has the correct href #2', () => {
       const linkNode = createLinkNode('foo');
       expect(linkNode.getAttribute('href')).toEqual('#foo');
     });
-  
+
     it('accepts a string `to` prop', () => {
       const to = '/the/path?the=query#the-hash';
-  
+
       render(
         <MemoryRouter>
           <NavLink to={to}>link</NavLink>
         </MemoryRouter>,
         tmpNode
       );
-  
+
       const a = tmpNode.querySelector('a');
-  
+
       expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
     });
-  
+
     it('accepts an object `to` prop', () => {
       const to = {
         hash: '#the-hash',
@@ -462,27 +462,27 @@ describe('NavLink', () => {
         search: 'the=query',
         state: null,
       };
-  
+
       render(
         <MemoryRouter>
           <NavLink to={to}>link</NavLink>
         </MemoryRouter>,
         tmpNode
       );
-  
+
       const a = tmpNode.querySelector('a');
-  
+
       expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
     });
-  
+
     it('accepts an object `to` prop with state', async () => {
       const memoryHistoryFoo = createMemoryHistory({
         initialEntries: ["/foo"]
       });
-      memoryHistoryFoo.push = jest.fn();
-  
-      const clickHandler = jest.fn();
-      
+      memoryHistoryFoo.push = jasmine.createSpy();
+
+      const clickHandler = jasmine.createSpy();
+
       const to = {
         hash: '#the-hash',
         key: '1',
@@ -490,22 +490,22 @@ describe('NavLink', () => {
         search: 'the=query',
         state: { test: 'ok' }
       };
-  
+
       class ContextChecker extends Component {
         public getChildContext() {
           const { context } = this;
           context.router.history = memoryHistoryFoo;
-  
+
           return {
             router: context.router
           };
         }
-      
+
         public render({ children }) {
           return children;
         }
-      }    
-  
+      }
+
       render(
         <MemoryRouter>
           <ContextChecker>
@@ -516,14 +516,14 @@ describe('NavLink', () => {
         </MemoryRouter>,
         tmpNode
       );
-  
+
       const a = tmpNode.querySelector("a");
       a.click();
-  
-      expect(clickHandler).toBeCalledTimes(1);
-      expect(memoryHistoryFoo.push).toBeCalledTimes(1);
+
+      expect(clickHandler).toHaveBeenCalledTimes(1);
+      expect(memoryHistoryFoo.push).toHaveBeenCalledTimes(1);
       const { hash, pathname, search, state } = to;
-      expect(memoryHistoryFoo.push).toBeCalledWith({ hash, pathname, search }, state);
+      expect(memoryHistoryFoo.push).toHaveBeenCalledWith({ hash, pathname, search }, state);
     });
   });
 });

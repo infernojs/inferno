@@ -124,9 +124,9 @@ describe('A <Link> underneath a <HashRouter>', () => {
     const memoryHistoryFoo = createMemoryHistory({
       initialEntries: ['/foo']
     });
-    memoryHistoryFoo.push = jest.fn();
+    memoryHistoryFoo.push = jasmine.createSpy();
 
-    const clickHandler = jest.fn();
+    const clickHandler = jasmine.createSpy();
 
     const to = {
       pathname: '/the/path',
@@ -164,9 +164,9 @@ describe('A <Link> underneath a <HashRouter>', () => {
     const a = node.querySelector('a');
     a.click();
 
-    expect(clickHandler).toBeCalledTimes(1);
-    expect(memoryHistoryFoo.push).toBeCalledTimes(1);
+    expect(clickHandler).toHaveBeenCalledTimes(1);
+    expect(memoryHistoryFoo.push).toHaveBeenCalledTimes(1);
     const { hash, pathname, search, state } = to;
-    expect(memoryHistoryFoo.push).toBeCalledWith({ hash, pathname, search }, state);
+    expect(memoryHistoryFoo.push).toHaveBeenCalledWith({ hash, pathname, search }, state);
   });
 });
