@@ -460,7 +460,7 @@ describe('NavLink', () => {
         key: '1',
         pathname: '/the/path',
         search: 'the=query',
-        state: null,
+        state: null
       };
 
       render(
@@ -477,7 +477,7 @@ describe('NavLink', () => {
 
     it('accepts an object `to` prop with state', async () => {
       const memoryHistoryFoo = createMemoryHistory({
-        initialEntries: ["/foo"]
+        initialEntries: ['/foo']
       });
       memoryHistoryFoo.push = jasmine.createSpy();
 
@@ -517,7 +517,7 @@ describe('NavLink', () => {
         tmpNode
       );
 
-      const a = tmpNode.querySelector("a");
+      const a = tmpNode.querySelector('a');
       a.click();
 
       expect(clickHandler).toHaveBeenCalledTimes(1);
