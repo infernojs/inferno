@@ -67,7 +67,7 @@
     "moduleResolution": "node",
     "preserveConstEnums": true,
     "outDir": "build",
-    "sourceMap": false,
+    "sourceMap": true,
     "lib": [
       "es6",
       "dom"
