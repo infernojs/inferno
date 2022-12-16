@@ -75,7 +75,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     const { route } = router;
     const pathname = (location || route.location).pathname;
 
-    return path ? matchPath(pathname, { path, strict, exact, sensitive }) : route.match;
+    return path ? matchPath(pathname, { path, strict, exact, sensitive, loader }) : route.match;
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {

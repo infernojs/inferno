@@ -1,11 +1,12 @@
 import { Component, createComponentVNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createMemoryHistory } from 'history';
-import { Router } from './Router';
+import { Router, TLoaderData } from './Router';
 import { warning } from './utils';
 
 export interface IMemoryRouterProps {
   initialEntries?: string[];
+  loaderData?: TLoaderData;
   initialIndex?: number;
   getUserConfirmation?: () => {};
   keyLength?: number;
@@ -23,7 +24,8 @@ export class MemoryRouter extends Component<IMemoryRouterProps, any> {
   public render(): VNode {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       children: this.props.children,
-      history: this.history
+      history: this.history,
+      loaderData: this.props.loaderData,
     });
   }
 }

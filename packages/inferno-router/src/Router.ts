@@ -2,15 +2,21 @@ import { Component, InfernoNode } from 'inferno';
 import { warning } from './utils';
 import { combineFrom } from 'inferno-shared';
 import type { History } from 'history';
+import { Match } from './Route';
 
 export type TLoaderProps<P> = {
   params?: P;
   request: any; // Fetch request
 }
 
+export type TLoaderData = {
+  res: any;
+  err: any;
+}
 export interface IRouterProps {
   history: History;
   children: InfernoNode;
+  loaderData?: TLoaderData;
 }
 
 /**
@@ -23,16 +29,17 @@ export class Router extends Component<IRouterProps, any> {
   constructor(props: IRouterProps, context?: any) {
     super(props, context);
     this._loaderCount = 0;
+    const { res, err } = props.loaderData ?? {};
     this.state = {
       match: this.computeMatch(props.history.location.pathname),
-      loaderRes: undefined, // TODO: Populate with rehydrated data
-      loaderErr: undefined, // TODO: Populate with rehydrated data
+      loaderRes: res, // TODO: Populate with rehydrated data
+      loaderErr: err, // TODO: Populate with rehydrated data
     };
   }
 
   public getChildContext() {
     const childContext: any = combineFrom(this.context.router, null);
-
+    debugger
     childContext.history = this.props.history;
     childContext.route = {
       location: childContext.history.location,
@@ -46,13 +53,14 @@ export class Router extends Component<IRouterProps, any> {
     };
   }
 
-  public computeMatch(pathname) {
+
+  public computeMatch(pathname): Match<{}> {
     return {
       isExact: pathname === '/',
       params: {},
       path: '/',
       url: '/',
-      loader:  ({ params = {}, request }: TLoaderProps<{}>) => { params; request; return },
+      loader:  undefined,
     };
   }
 
