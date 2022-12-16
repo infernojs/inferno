@@ -4,12 +4,14 @@ import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
 import { combineFrom, isFunction } from 'inferno-shared';
 import type { History, Location } from 'history';
+import type { TLoaderProps } from './Router';
 
 export interface Match<P> {
   params: P;
   isExact: boolean;
   path: string;
   url: string;
+  loader?(props: TLoaderProps<P>): Promise<any>;
 }
 
 export interface RouteComponentProps<P> {
@@ -25,6 +27,7 @@ export interface IRouteProps {
   exact?: boolean;
   strict?: boolean;
   sensitive?: boolean;
+  loader?(props: TLoaderProps<any>): Promise<any>;
   component?: Inferno.ComponentClass<any> | ((props: any, context: any) => InfernoNode);
   render?: (props: RouteComponentProps<any>, context: any) => InfernoNode;
   location?: Partial<Location>;
@@ -59,7 +62,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     };
   }
 
-  public computeMatch({ computedMatch, location, path, strict, exact, sensitive }, router) {
+  public computeMatch({ computedMatch, location, path, strict, exact, sensitive, loader }, router) {
     if (computedMatch) {
       // <Switch> already computed the match for us
       return computedMatch;
