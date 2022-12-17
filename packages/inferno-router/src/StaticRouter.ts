@@ -1,7 +1,7 @@
 import { Component, createComponentVNode, Props, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { parsePath } from 'history';
-import { Router } from './Router';
+import { Router, TLoaderData } from './Router';
 import { combinePath, invariant, warning } from './utils';
 import { combineFrom, isString } from 'inferno-shared';
 
@@ -13,6 +13,7 @@ function addLeadingSlash(path) {
 const noop = () => {};
 
 export interface IStaticRouterProps<T> extends Props<T> {
+  loaderData?: Record<string, TLoaderData>;
   basename?: string;
   context: any;
   location: any;
@@ -27,7 +28,8 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
   public getChildContext() {
     return {
       router: {
-        staticContext: this.props.context
+        staticContext: this.props.context,
+        loaderData: this.props.loaderData,
       }
     };
   }
@@ -70,7 +72,7 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
           location: stripBasename(basename, createLocation(location)),
           push: this.handlePush,
           replace: this.handleReplace
-        }
+        },
       }) as any
     );
   }

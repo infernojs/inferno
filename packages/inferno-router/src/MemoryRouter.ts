@@ -6,8 +6,8 @@ import { warning } from './utils';
 
 export interface IMemoryRouterProps {
   initialEntries?: string[];
-  loaderData?: TLoaderData;
   initialIndex?: number;
+  loaderData?: Record<string, TLoaderData>;
   getUserConfirmation?: () => {};
   keyLength?: number;
   children: Component<any, any>[];

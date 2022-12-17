@@ -2,19 +2,20 @@ import { Component, createComponentVNode, Inferno, InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
-import { combineFrom, isFunction } from 'inferno-shared';
+import { combineFrom, isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import type { History, Location } from 'history';
-import type { TLoaderProps } from './Router';
+import type { TLoader, TLoaderData, TLoaderProps } from './Router';
 
-export interface Match<P> {
+export interface Match<P extends Record<string, string>> {
   params: P;
   isExact: boolean;
   path: string;
   url: string;
   loader?(props: TLoaderProps<P>): Promise<any>;
+  loaderData?: TLoaderData;
 }
 
-export interface RouteComponentProps<P> {
+export interface RouteComponentProps<P extends Record<string, string>> {
   match: Match<P>;
   location: Location;
   history: History;
@@ -38,16 +39,19 @@ export interface IRouteProps {
  * The public API for matching a single path and rendering.
  */
 type RouteState = {
-  match: boolean;
-};
+  match: Match<any>;
+  __loaderData__: TLoaderData;
+}
 
 class Route extends Component<Partial<IRouteProps>, RouteState> {
+  _initialLoader = null;
+
   public getChildContext() {
     const childContext: any = combineFrom(this.context.router, null);
 
     childContext.route = {
       location: this.props.location || this.context.router.route.location,
-      match: this.state!.match
+      match: this.state!.match,
     };
 
     return {
@@ -57,25 +61,48 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
+
+    const match = this.computeMatch(props, context.router);
+    
+    const { res, err } = match?.loaderData ?? {};
+    if (isNullOrUndef(match?.loaderData)) {
+      this._initialLoader = match?.loader ?? null;
+    }
+
     this.state = {
-      match: this.computeMatch(props, context.router)
+      match,
+      __loaderData__: { res, err },
     };
   }
 
-  public computeMatch({ computedMatch, location, path, strict, exact, sensitive, loader }, router) {
+  private async runLoader(loader: TLoader<any, any>, params, request, match) {
+    // TODO: Pass progress callback to loader
+    try {
+      const res = await loader({ params, request });
+      // TODO: should we parse json?
+      this.setState({ match, __loaderData__: { res } });
+    } catch (err) {
+      // Loaders should throw errors
+      this.setState({ match, __loaderData__: { err } })
+    }
+  }
+
+  public computeMatch({ computedMatch, ...props }, router) {
     if (computedMatch) {
       // <Switch> already computed the match for us
       return computedMatch;
     }
 
+    const { location, path, strict, exact, sensitive, loader } = props;
+
     if (process.env.NODE_ENV !== 'production') {
       invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
     }
 
-    const { route } = router;
+    const { route, loaderData } = router; // This is the parent route
     const pathname = (location || route.location).pathname;
 
-    return path ? matchPath(pathname, { path, strict, exact, sensitive, loader }) : route.match;
+    return path ? matchPath(pathname, { path, strict, exact, sensitive, loader, loaderData }) : route.match;
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
@@ -90,18 +117,35 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
         '<Route> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
       );
     }
+    const match = this.computeMatch(nextProps, nextContext.router);
+    // Am I a match? In which case check for loader
 
-    this.setState({
-      match: this.computeMatch(nextProps, nextContext.router)
-    });
+    if (nextProps?.loader) {
+      const params = undefined;
+      const request = undefined;
+      this.runLoader(nextProps.loader, params, request, match);
+      return;
+    }
+
+    this.setState({ match });
   }
 
   public render() {
-    const { match } = this.state!;
-    const { children, component, render } = this.props;
+    const { match, __loaderData__ } = this.state!;
+    
+    // QUESTION: Is there a better way to invoke this on/after first render?
+    if (!isNull(this._initialLoader)) {
+      const params = undefined;
+      const request = undefined;
+      // match.loader has been checked in constructor
+      setTimeout(() => this.runLoader(this._initialLoader!, params, request, match), 0);
+      this._initialLoader = null;
+    }
+
+    const { children, component, render, loader } = this.props;
     const { history, route, staticContext } = this.context.router;
     const location = this.props.location || route.location;
-    const props = { match, location, history, staticContext };
+    const props = { match, location, history, staticContext, component, render, loader, __loaderData__ };
 
     if (component) {
       if (process.env.NODE_ENV !== 'production') {
