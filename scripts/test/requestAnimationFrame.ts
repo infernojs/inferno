@@ -4,9 +4,6 @@
 // requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
 
 // MIT license
-
-declare var global: any;
-
 (function () {
   let lastTime = 0;
   const vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -18,14 +15,14 @@ declare var global: any;
   }
 
   if (!global.requestAnimationFrame) {
-    global.requestAnimationFrame = function (callback) {
+    global.requestAnimationFrame = function (callback): number {
       const currTime = new Date().getTime();
       const timeToCall = Math.max(0, 16 - (currTime - lastTime));
       const id = global.setTimeout(function () {
         callback(currTime + timeToCall);
       }, timeToCall);
       lastTime = currTime + timeToCall;
-      return id;
+      return id as unknown as number;
     };
   }
 

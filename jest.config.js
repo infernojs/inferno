@@ -1,4 +1,5 @@
 export default {
+  preset: "ts-jest",
   collectCoverageFrom: [
     "packages/*/src/**/*.ts",
     "!**/*.ts.js",
@@ -27,7 +28,7 @@ export default {
   ],
   transform: {
     "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
-    "^.+\\.tsx?$": "<rootDir>/jest.ts.transform.js"
+    "^.+\\.tsx?$": [ "ts-jest", { "babelConfig": "<rootDir>/.babelrc.test" } ],
   },
   testEnvironment: "jsdom",
   testRunner: "jest-jasmine2",
