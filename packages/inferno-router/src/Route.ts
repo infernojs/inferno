@@ -2,7 +2,7 @@ import { Component, createComponentVNode, Inferno, InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
-import { combineFrom, isFunction, isNull, isNullOrUndef } from 'inferno-shared';
+import { combineFrom, isFunction, isNull } from 'inferno-shared';
 import type { History, Location } from 'history';
 import type { TLoader, TLoaderData, TLoaderProps } from './Router';
 
@@ -65,9 +65,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     const match = this.computeMatch(props, context.router);
     
     const { res, err } = match?.loaderData ?? {};
-    if (isNullOrUndef(match?.loaderData)) {
-      this._initialLoader = match?.loader ?? null;
-    }
+    this._initialLoader = match?.loader ?? null;
 
     this.state = {
       match,
@@ -138,7 +136,8 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       const params = undefined;
       const request = undefined;
       // match.loader has been checked in constructor
-      setTimeout(() => this.runLoader(this._initialLoader!, params, request, match), 0);
+      const _loader = this._initialLoader
+      setTimeout(() => this.runLoader(_loader, params, request, match), 0);
       this._initialLoader = null;
     }
 
