@@ -1,4 +1,4 @@
-import { isNull, isNullOrUndef } from "inferno-shared";
+import { isNullOrUndef } from "inferno-shared";
 import { matchPath } from "./matchPath";
 import { TLoaderData } from "./Router";
 
@@ -17,15 +17,14 @@ function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
   if (Array.isArray(tree)) {
     const entries = tree.reduce((res, node) => {
       const outpArr = traverseLoaders(location, node);
-      if (isNull(outpArr)) {
-        return res;
-      }
       return [...res, ...outpArr];
     }, []);
     return entries;
   }
 
-  // This is a single node
+  // This is a single node make sure it isn't null
+  if (isNullOrUndef(tree) || isNullOrUndef(tree.props)) return [];
+
   let outp: TLoaderEntry[] = [];
   // Add any loader on this node
   if (tree.props.loader && tree.props.path) {
