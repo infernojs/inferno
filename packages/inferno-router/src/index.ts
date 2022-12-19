@@ -12,6 +12,5 @@ import { Redirect } from './Redirect';
 import { matchPath } from './matchPath';
 import { withRouter } from './withRouter';
 export * from './helpers';
-export * from './ssrLoaderResolver';
 
 export { BrowserRouter, HashRouter, Link, MemoryRouter, NavLink, Prompt, Redirect, Route, Router, StaticRouter, Switch, matchPath, withRouter };

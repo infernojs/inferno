@@ -73,16 +73,18 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     };
   }
 
-  private async runLoader(loader: TLoader<any, any>, params, request, match) {
+  private runLoader(loader: TLoader<any, any>, params, request, match) {
     // TODO: Pass progress callback to loader
-    try {
-      const res = await loader({ params, request });
-      // TODO: should we parse json?
-      this.setState({ match, __loaderData__: { res } });
-    } catch (err) {
-      // Loaders should throw errors
-      this.setState({ match, __loaderData__: { err } })
-    }
+    loader({ params, request })
+      .then((res) => {
+        // TODO: should we parse json?
+        this.setState({ match, __loaderData__: { res } });
+      })
+      .catch((err) => {
+        // Loaders should throw errors
+        this.setState({ match, __loaderData__: { err } })
+
+      });
   }
 
   public computeMatch({ computedMatch, ...props }, router) {

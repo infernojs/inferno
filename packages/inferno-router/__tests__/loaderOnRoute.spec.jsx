@@ -1,6 +1,7 @@
 import { render } from 'inferno';
-import { BrowserRouter, MemoryRouter, StaticRouter, Route, NavLink, resolveLoaders, useLoaderData, useLoaderError } from 'inferno-router';
-import { createEventGuard } from './testUtils';
+import { BrowserRouter, MemoryRouter, StaticRouter, Route, NavLink, useLoaderData, useLoaderError } from 'inferno-router';
+import { resolveLoaders } from 'inferno-server';
+import { createEventGuard } from 'inferno-router/__tests__/testUtils';
 
 describe('A <Route> with loader in a MemoryRouter', () => {
   let container;

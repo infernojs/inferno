@@ -69,7 +69,7 @@ export class Router extends Component<IRouterProps, any> {
     // Do this here so we can setState when a <Redirect> changes the
     // location in componentWillMount. This happens e.g. when doing
     // server rendering using a <StaticRouter>.
-    this.unlisten = history.listen(async () => {
+    this.unlisten = history.listen(() => {
       this.setState({
         match: this.computeMatch(history.location.pathname)
       });
