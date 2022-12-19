@@ -33,7 +33,7 @@ export function matchPath(pathname, options: any): Match<any> | null {
     options = { path: options };
   }
 
-  const { path = '/', exact = false, strict = false, sensitive = false, loader = undefined, loaderData = {} } = options;
+  const { path = '/', exact = false, strict = false, sensitive = false, loader = undefined, initialData = {} } = options;
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 
@@ -41,7 +41,7 @@ export function matchPath(pathname, options: any): Match<any> | null {
     return null;
   }
 
-  const loaderDataEntry = loaderData[path];
+  const intialDataEntry = initialData[path];
 
   const [url, ...values] = match;
   const isExact = pathname === url;
@@ -59,6 +59,6 @@ export function matchPath(pathname, options: any): Match<any> | null {
     path, // the path pattern used to match
     url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
     loader,
-    loaderData: loaderDataEntry
+    initialData: intialDataEntry
   };
 }

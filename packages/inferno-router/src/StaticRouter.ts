@@ -13,7 +13,7 @@ function addLeadingSlash(path) {
 const noop = () => {};
 
 export interface IStaticRouterProps<T> extends Props<T> {
-  loaderData?: Record<string, TLoaderData>;
+  initialData?: Record<string, TLoaderData>;
   basename?: string;
   context: any;
   location: any;
@@ -29,7 +29,7 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
     return {
       router: {
         staticContext: this.props.context,
-        loaderData: this.props.loaderData,
+        initialData: this.props.initialData,
       }
     };
   }

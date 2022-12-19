@@ -22,7 +22,7 @@ export type TLoaderData = {
 export interface IRouterProps {
   history: History;
   children: InfernoNode;
-  loaderData?: Record<string, TLoaderData>; // key is route path to allow resolving
+  initialData?: Record<string, TLoaderData>; // key is route path to allow resolving
 }
 
 /**
@@ -45,7 +45,7 @@ export class Router extends Component<IRouterProps, any> {
       location: childContext.history.location,
       match: this.state?.match, // Why are we sending this? it appears useless.
     };
-    childContext.loaderData = this.props.loaderData; // this is a dictionary of all data available
+    childContext.initialData = this.props.initialData; // this is a dictionary of all data available
 
     return {
       router: childContext

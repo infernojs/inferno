@@ -68,19 +68,19 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
   });
 
-  it('Can access initial loaderData (for hydration)', async () => {
+  it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
     const Component = (props, { router }) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
     const loaderFunc = async () => { return { message: TEXT }}
-    const loaderData = {
+    const initialData = {
       '/flowers': { res: await loaderFunc(), err: undefined, }
     }
 
     render(
-      <MemoryRouter initialEntries={['/flowers']} loaderData={loaderData}>
+      <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </MemoryRouter>,
       container
@@ -222,7 +222,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
   });
 
-  it('Can access initial loaderData (for hydration)', async () => {
+  it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
     const Component = (props, { router }) => {
       const res = useLoaderData(props);
@@ -231,13 +231,13 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
     const loaderFunc = async () => { return { message: TEXT }}
 
-    const loaderData = {
+    const initialData = {
       '/flowers': { res: await loaderFunc(), err: undefined, }
     }
 
     history.replaceState(undefined, undefined, '/flowers');
     render(
-      <BrowserRouter loaderData={loaderData}>
+      <BrowserRouter initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </BrowserRouter>,
       container
@@ -378,7 +378,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
   });
 
-  it('Can access initial loaderData (for hydration)', async () => {
+  it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
     const Component = (props, { router }) => {
       const res = useLoaderData(props);
@@ -387,12 +387,12 @@ describe('A <Route> with loader in a StaticRouter', () => {
 
     const loaderFunc = async () => { return { message: TEXT }}
 
-    const loaderData = {
+    const initialData = {
       '/flowers': { res: await loaderFunc(), err: undefined, }
     }
 
     render(
-      <StaticRouter location="/flowers" loaderData={loaderData}>
+      <StaticRouter location="/flowers" initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </StaticRouter>,
       container
@@ -412,7 +412,7 @@ describe('Resolve loaders during server side rendering', () => {
 
     const loaderFunc = async () => { return { message: TEXT }}
 
-    const loaderData = {
+    const initialData = {
       '/flowers': { res: await loaderFunc() }
     }
 
@@ -421,7 +421,7 @@ describe('Resolve loaders during server side rendering', () => {
       </StaticRouter>;
 
     const result = await resolveLoaders('/flowers', app);
-    expect(result).toEqual(loaderData);
+    expect(result).toEqual(initialData);
   });
 
   it('Can resolve with multiple routes', async () => {
@@ -434,7 +434,7 @@ describe('Resolve loaders during server side rendering', () => {
     const loaderFuncNoHit = async () => { return { message: 'no' }}
     const loaderFunc = async () => { return { message: TEXT }}
 
-    const loaderData = {
+    const initialData = {
       '/birds': { res: await loaderFunc() }
     }
 
@@ -445,7 +445,7 @@ describe('Resolve loaders during server side rendering', () => {
       </StaticRouter>;
 
     const result = await resolveLoaders('/birds', app);
-    expect(result).toEqual(loaderData);
+    expect(result).toEqual(initialData);
   });
 
   it('Can resolve with nested routes', async () => {
@@ -458,7 +458,7 @@ describe('Resolve loaders during server side rendering', () => {
     const loaderFuncNoHit = async () => { return { message: 'no' }}
     const loaderFunc = async () => { return { message: TEXT }}
 
-    const loaderData = {
+    const initialData = {
       '/flowers': { res: await loaderFunc() },
       '/flowers/birds': { res: await loaderFunc() }
     }
@@ -472,6 +472,6 @@ describe('Resolve loaders during server side rendering', () => {
       </StaticRouter>;
 
     const result = await resolveLoaders('/flowers/birds', app);
-    expect(result).toEqual(loaderData);
+    expect(result).toEqual(initialData);
   });
 })

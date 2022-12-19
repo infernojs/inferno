@@ -28,10 +28,6 @@ describe('Resolve loaders during server side rendering', () => {
     const loaderFuncNoHit = async () => { return { message: 'no' }}
     const loaderFunc = async () => { return { message: TEXT }}
 
-    const loaderData = {
-      '/birds': { res: await loaderFunc() }
-    }
-
     const routes = [
         <Route path="/flowers" render={Component} loader={loaderFuncNoHit} />,
         <Route path="/birds" render={Component} loader={loaderFunc} />,
@@ -41,11 +37,11 @@ describe('Resolve loaders during server side rendering', () => {
     const initialData = await resolveLoaders('/birds', routes);
 
     // Render on server
-    const html = renderToString(<StaticRouter location="/birds" loaderData={initialData}>{routes}</StaticRouter>);
+    const html = renderToString(<StaticRouter location="/birds" initialData={initialData}>{routes}</StaticRouter>);
     
     // Render in browser
     history.replaceState(undefined, undefined, '/birds');
-    render(<BrowserRouter loaderData={initialData}>{routes}</BrowserRouter>, container);
+    render(<BrowserRouter initialData={initialData}>{routes}</BrowserRouter>, container);
 
     expect(`<!--!-->${container.innerHTML}<!--!-->`).toEqual(html);
   });

@@ -5,7 +5,7 @@ import { Router, TLoaderData } from './Router';
 import { warning } from './utils';
 
 export interface IBrowserRouterProps {
-  loaderData?: Record<string, TLoaderData>;
+  initialData?: Record<string, TLoaderData>;
   basename?: string;
   forceRefresh?: boolean;
   getUserConfirmation?: () => {};
@@ -25,7 +25,7 @@ export class BrowserRouter extends Component<IBrowserRouterProps, any> {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       children: this.props.children,
       history: this.history,
-      loaderData: this.props.loaderData,
+      initialData: this.props.initialData,
     });
   }
 }

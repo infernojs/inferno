@@ -12,7 +12,7 @@ export interface Match<P extends Record<string, string>> {
   path: string;
   url: string;
   loader?(props: TLoaderProps<P>): Promise<any>;
-  loaderData?: TLoaderData;
+  initialData?: TLoaderData;
 }
 
 export interface RouteComponentProps<P extends Record<string, string>> {
@@ -64,8 +64,11 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
     const match = this.computeMatch(props, context.router);
     
-    const { res, err } = match?.loaderData ?? {};
-    this._initialLoader = match?.loader ?? null;
+    const { res, err } = match?.initialData ?? {};
+    // Only run loader on first render if no data is passed
+    if (!match?.initialData) {
+      this._initialLoader = match?.loader ?? null;
+    }
 
     this.state = {
       match,
@@ -99,10 +102,10 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
     }
 
-    const { route, loaderData } = router; // This is the parent route
+    const { route, initialData } = router; // This is the parent route
     const pathname = (location || route.location).pathname;
 
-    return path ? matchPath(pathname, { path, strict, exact, sensitive, loader, loaderData }) : route.match;
+    return path ? matchPath(pathname, { path, strict, exact, sensitive, loader, initialData }) : route.match;
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {

@@ -7,7 +7,7 @@ import { warning } from './utils';
 export interface IMemoryRouterProps {
   initialEntries?: string[];
   initialIndex?: number;
-  loaderData?: Record<string, TLoaderData>;
+  initialData?: Record<string, TLoaderData>;
   getUserConfirmation?: () => {};
   keyLength?: number;
   children: Component<any, any>[];
@@ -25,7 +25,7 @@ export class MemoryRouter extends Component<IMemoryRouterProps, any> {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       children: this.props.children,
       history: this.history,
-      loaderData: this.props.loaderData,
+      initialData: this.props.initialData,
     });
   }
 }
