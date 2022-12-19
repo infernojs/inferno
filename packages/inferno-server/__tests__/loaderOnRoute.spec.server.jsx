@@ -1,6 +1,6 @@
 import { render } from 'inferno';
-import { renderToString } from 'inferno-server'
-import { BrowserRouter, StaticRouter, Route, resolveLoaders, useLoaderData } from 'inferno-router';
+import { renderToString, resolveLoaders } from 'inferno-server';
+import { BrowserRouter, StaticRouter, Route, useLoaderData } from 'inferno-router';
 
 describe('Resolve loaders during server side rendering', () => {
   let container;
