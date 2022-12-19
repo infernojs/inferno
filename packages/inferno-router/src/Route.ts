@@ -44,7 +44,7 @@ type RouteState = {
 }
 
 class Route extends Component<Partial<IRouteProps>, RouteState> {
-  _initialLoader = null;
+  _initialLoader: ((props: TLoaderProps<any>) => Promise<any>) | null = null;
 
   public getChildContext() {
     const childContext: any = combineFrom(this.context.router, null);
@@ -90,7 +90,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       });
   }
 
-  public computeMatch({ computedMatch, ...props }, router) {
+  public computeMatch({ computedMatch, ...props }, router): Match<any> {
     if (computedMatch) {
       // <Switch> already computed the match for us
       return computedMatch;
@@ -124,7 +124,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     // Am I a match? In which case check for loader
 
     if (nextProps?.loader) {
-      const params = undefined;
+      const params = match.params;
       const request = undefined;
       this.runLoader(nextProps.loader, params, request, match);
       return;
@@ -138,7 +138,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     
     // QUESTION: Is there a better way to invoke this on/after first render?
     if (!isNull(this._initialLoader)) {
-      const params = undefined;
+      const params = match.params;
       const request = undefined;
       // match.loader has been checked in constructor
       const _loader = this._initialLoader

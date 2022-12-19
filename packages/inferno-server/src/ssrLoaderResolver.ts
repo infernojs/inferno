@@ -30,15 +30,18 @@ function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
   if (tree.props.loader && tree.props.path) {
     // TODO: Should we check if we are in Router? It is defensive and could save a bit of time, but is it worth it?
     const { path, exact = false, strict = false, sensitive = false } = tree.props;
-    if (matchPath(location, {
+    const match = matchPath(location, {
       path,
       exact,
       strict,
       sensitive,
-    })) {
+    });
+    if (match) {
+      const { params } = match;
+      // TODO: How do I pass request?
       outp.push({
         path,
-        loader: tree.props.loader,
+        loader: () => tree.props.loader({ params }),
       })
     }
   }
