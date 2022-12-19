@@ -2,9 +2,10 @@ import { isNullOrUndef } from "inferno-shared";
 import { matchPath } from "inferno-router";
 import type { TLoaderData } from "inferno-router/src/Router";
 
-export function resolveLoaders(location: string, tree: any): Promise<Record<string, TLoaderData>> {
+export async function resolveLoaders(location: string, tree: any): Promise<Record<string, TLoaderData>> {
   const promises = traverseLoaders(location, tree).map((({path, loader}) => resolveEntry(path, loader)));
-  return Promise.all(promises).then((result) => Object.fromEntries(result));
+  const result = await Promise.all(promises);
+  return Object.fromEntries(result);
 }
 
 type TLoaderEntry = {
@@ -50,8 +51,11 @@ function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
   return outp;
 }
 
-function resolveEntry(path, loader): Promise<any> {
-  return loader()
-    .then((res) => [path, { res }])
-    .catch((err) => [ path, { err } ]);
+async function resolveEntry(path, loader): Promise<any> {
+  try {
+    const res = await loader()
+    return [path, { res }];
+  } catch (err) {
+    return [ path, { err } ];
+  }
 }
