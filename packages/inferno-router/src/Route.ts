@@ -2,7 +2,7 @@ import { Component, createComponentVNode, Inferno, InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
-import { combineFrom, isFunction, isNull } from 'inferno-shared';
+import { combineFrom, isFunction, isUndefined } from 'inferno-shared';
 import type { History, Location } from 'history';
 import type { TLoader, TLoaderData, TLoaderProps } from './Router';
 
@@ -40,12 +40,10 @@ export interface IRouteProps {
  */
 type RouteState = {
   match: Match<any>;
-  __loaderData__: TLoaderData;
+  __loaderData__?: TLoaderData;
 }
 
 class Route extends Component<Partial<IRouteProps>, RouteState> {
-  _initialLoader: ((props: TLoaderProps<any>) => Promise<any>) | null = null;
-
   public getChildContext() {
     const childContext: any = combineFrom(this.context.router, null);
 
@@ -63,16 +61,10 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     super(props, context);
 
     const match = this.computeMatch(props, context.router);
-    
-    const { res, err } = match?.initialData ?? {};
-    // Only run loader on first render if no data is passed
-    if (!match?.initialData) {
-      this._initialLoader = match?.loader ?? null;
-    }
 
     this.state = {
       match,
-      __loaderData__: { res, err },
+      __loaderData__: match?.initialData,
     };
   }
 
@@ -86,7 +78,6 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       .catch((err) => {
         // Loaders should throw errors
         this.setState({ match, __loaderData__: { err } })
-
       });
   }
 
@@ -106,6 +97,17 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     const pathname = (location || route.location).pathname;
 
     return path ? matchPath(pathname, { path, strict, exact, sensitive, loader, initialData }) : route.match;
+  }
+
+  public componentDidMount(): void {
+    const { match, __loaderData__ } = this.state!;
+    // QUESTION: Is there a better way to invoke this on/after first render?
+    if (!isUndefined(match?.loader) && isUndefined(__loaderData__)) {
+      const params = match.params;
+      const request = undefined;
+      setTimeout(() => this.runLoader(match.loader!, params, request, match), 0);
+    }
+
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
@@ -135,17 +137,6 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
   public render() {
     const { match, __loaderData__ } = this.state!;
-    
-    // QUESTION: Is there a better way to invoke this on/after first render?
-    if (!isNull(this._initialLoader)) {
-      const params = match.params;
-      const request = undefined;
-      // match.loader has been checked in constructor
-      const _loader = this._initialLoader
-      setTimeout(() => this.runLoader(_loader, params, request, match), 0);
-      this._initialLoader = null;
-    }
-
     const { children, component, render, loader } = this.props;
     const { history, route, staticContext } = this.context.router;
     const location = this.props.location || route.location;
