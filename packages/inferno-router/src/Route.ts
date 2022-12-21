@@ -105,9 +105,8 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     if (!isUndefined(match?.loader) && isUndefined(__loaderData__)) {
       const params = match.params;
       const request = undefined;
-      setTimeout(() => this.runLoader(match.loader!, params, request, match), 0);
+      this.runLoader(match.loader!, params, request, match);
     }
-
   }
 
   public componentWillReceiveProps(nextProps, nextContext) {
@@ -123,16 +122,20 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       );
     }
     const match = this.computeMatch(nextProps, nextContext.router);
-    // Am I a match? In which case check for loader
 
-    if (nextProps?.loader) {
+
+    // Am I a match? In which case check for loader
+    if (match?.loader && !match.initialData) {
       const params = match.params;
       const request = undefined;
-      this.runLoader(nextProps.loader, params, request, match);
+      this.runLoader(match.loader, params, request, match);
       return;
     }
 
-    this.setState({ match });
+    this.setState({
+      match,
+      __loaderData__: match?.initialData,
+    });
   }
 
   public render() {

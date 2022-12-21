@@ -18,7 +18,7 @@ export class BrowserRouter extends Component<IBrowserRouterProps, any> {
 
   constructor(props?: IBrowserRouterProps, context?: any) {
     super(props, context);
-    this.history = createBrowserHistory(/*props*/); // TODO: None of the props are defined in createBrowserHistory so skipping
+    this.history = createBrowserHistory();
   }
 
   public render(): VNode {
