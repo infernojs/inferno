@@ -10,32 +10,19 @@ function getMatch({ path, exact, strict, sensitive, from }, route, location) {
   return pathProp ? matchPath(location.pathname, { path: pathProp, exact, strict, sensitive }) : route.match;
 }
 
-function extractMatchFromChildren(children, route, location) {
-  let match;
-  let _child: any;
-
+function extractMatchFromChildren(children, route, location, router) {
   if (isArray(children)) {
     for (let i = 0; i < children.length; ++i) {
-      _child = children[i];
-
-      if (isArray(_child)) {
-        const nestedMatch = extractMatchFromChildren(_child, route, location);
-        match = nestedMatch.match;
-        _child = nestedMatch._child;
-      } else {
-        match = getMatch(_child.props, route, location);
-      }
-
-      if (match) {
-        break;
-      }
+      const nestedMatch = extractMatchFromChildren(children[i], route, location, router);
+      if (nestedMatch.match) return nestedMatch;
     }
-  } else {
-    match = getMatch((children as any).props, route, location);
-    _child = children;
   }
 
-  return { match, _child };
+  return {
+    match: getMatch((children as any).props, route, location, router),
+    _child: children
+  }
+}
 }
 
 export class Switch extends Component<IRouteProps, any> {
