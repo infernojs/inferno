@@ -1,7 +1,7 @@
 import { Component, InfernoNode } from 'inferno';
 import { warning } from './utils';
 import { combineFrom } from 'inferno-shared';
-import type { History } from 'history';
+import type { History, Location } from 'history';
 import { Match } from './Route';
 
 export type TLoaderProps<P extends Record<string, string>> = {
@@ -19,11 +19,26 @@ export type TLoaderData = {
   res?: Response;
   err?: any;
 }
+
+type TInitialData = Record<string, TLoaderData>; // key is route path to allow resolving
+
 export interface IRouterProps {
   history: History;
   children: InfernoNode;
-  initialData?: Record<string, TLoaderData>; // key is route path to allow resolving
+  initialData?: TInitialData;
 }
+
+export type TContextRouter = {
+  history: History;
+  route: {
+    location: Pick<Location, 'pathname'>, // This was Partial<Location> before but this makes pathname optional causing false type error in code
+    match: Match<any> | null;
+  }
+  initialData?: TInitialData;
+  staticContext?: object; // TODO: This should be properly typed
+}
+
+export type RouterContext = { router: TContextRouter };
 
 /**
  * The public API for putting history on context.
@@ -31,24 +46,25 @@ export interface IRouterProps {
 export class Router extends Component<IRouterProps, any> {
   public unlisten;
 
-  constructor(props: IRouterProps, context?: any) {
+  constructor(props: IRouterProps, context: { router: TContextRouter }) {
     super(props, context);
+    const match = this.computeMatch(props.history.location.pathname);
     this.state = {
-      match: this.computeMatch(props.history.location.pathname),
+      match,
     };
   }
 
-  public getChildContext() {
-    const childContext: any = combineFrom(this.context.router, null);
-    childContext.history = this.props.history;
-    childContext.route = {
-      location: childContext.history.location,
+  public getChildContext(): RouterContext {
+    const parentRouter: TContextRouter = this.context.router;
+    const router: TContextRouter = combineFrom(parentRouter, null);
+    router.history = this.props.history;
+    router.route = {
+      location: router.history.location,
       match: this.state?.match, // Why are we sending this? it appears useless.
     };
-    childContext.initialData = this.props.initialData; // this is a dictionary of all data available
-
+    router.initialData = this.props.initialData; // this is a dictionary of all data available
     return {
-      router: childContext
+      router
     };
   }
 

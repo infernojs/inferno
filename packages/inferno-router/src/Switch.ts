@@ -3,26 +3,26 @@ import { matchPath } from './matchPath';
 import { invariant, warning } from './utils';
 import { combineFrom, isArray, isInvalid, isUndefined } from 'inferno-shared';
 import { IRouteProps, Match } from './Route';
-import { TLoader } from './Router';
+import { RouterContext, TLoader } from './Router';
 
-function getMatch({ path, exact, strict, sensitive, loader, from }, route, location, router) {
-  const pathProp = path || from;
-  const { initialData } = router; // This is the parent route
+function getMatch(pathname: string, { path, exact, strict, sensitive, loader, from }, router: { route, initialData?: any }) {
+  path ??= from;
+  const { initialData, route } = router; // This is the parent route
 
-  return pathProp ? matchPath(location.pathname, { path: pathProp, exact, strict, sensitive, loader, initialData }) : route.match;
+  return path ? matchPath(pathname, { path, exact, strict, sensitive, loader, initialData }) : route.match;
 }
 
-function extractMatchFromChildren(children, route, location, router) {
+function extractMatchFromChildren(pathname: string, children, router) {
   if (isArray(children)) {
     for (let i = 0; i < children.length; ++i) {
-      const nestedMatch = extractMatchFromChildren(children[i], route, location, router);
+      const nestedMatch = extractMatchFromChildren(pathname, children[i], router);
       if (nestedMatch.match) return nestedMatch;
     }
     return {};
   }
 
   return {
-    match: getMatch((children as any).props, route, location, router),
+    match: getMatch(pathname, (children as any).props, router),
     _child: children
   }
 }
@@ -33,16 +33,17 @@ type SwitchState = {
 }
 
 export class Switch extends Component<IRouteProps, SwitchState> {
-  constructor(props, context) {
-    super(props);
+  constructor(props, context: RouterContext) {
+    super(props, context);
 
     if (process.env.NODE_ENV !== 'production') {
       invariant(context.router, 'You should not use <Switch> outside a <Router>');
     }
 
-    const { route } = context.router;
-    const { location = route.location, children } = props;
-    const { match, _child } = extractMatchFromChildren(children, route, location, context.router);
+    const { router } = context;
+    const { location, children } = props;
+    const pathname = (location || router.route.location).pathname;
+    const { match, _child } = extractMatchFromChildren(pathname, children, router);
 
     this.state = {
       match,
@@ -54,7 +55,8 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     // TODO: Pass progress callback to loader
     loader({ params, request })
       .then((res) => {
-        // TODO: should we parse json?
+        // TODO: react-router parses json
+        // NOTE: The route stores initialData in state
         match.initialData = { res };
         this.setState({ match, _child });
       })
@@ -75,7 +77,7 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     }
   }
 
-  public componentWillReceiveProps(nextProps, nextContext: any): void {
+  public componentWillReceiveProps(nextProps: IRouteProps, nextContext: RouterContext): void {
     if (process.env.NODE_ENV !== 'production') {
       warning(
         !(nextProps.location && !this.props.location),
@@ -88,11 +90,10 @@ export class Switch extends Component<IRouteProps, SwitchState> {
       );
     }
 
-    const { route } = nextContext.router;
-    const { location = route.location, children } = nextProps;
-
-    // TODO: Check if location has updated?
-    const { match, _child } = extractMatchFromChildren(children, route, location, nextContext.router);
+    const { router } = nextContext;
+    const { location, children } = nextProps;
+    const pathname = (location || router.route.location).pathname;
+    const { match, _child } = extractMatchFromChildren(pathname, children, router);
 
     if (match?.loader) {
       const params = match.params;
@@ -104,7 +105,7 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     this.setState({ match, _child })
   }
 
-  public render({ children, location }, { match, _child }, context): VNode | null {
+  public render({ children, location }: IRouteProps, { match, _child }: SwitchState, context: RouterContext): VNode | null {
 
     if (isInvalid(children)) {
       return null;
@@ -112,7 +113,7 @@ export class Switch extends Component<IRouteProps, SwitchState> {
 
     
     if (match) {
-      location ??= context.router.location;
+      location ??= context.router.route.location;
       return createComponentVNode(_child.flags, _child.type, combineFrom(_child.props, { location, computedMatch: match }));
     }
 

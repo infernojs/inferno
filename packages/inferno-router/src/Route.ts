@@ -2,9 +2,9 @@ import { Component, createComponentVNode, Inferno, InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
-import { combineFrom, isFunction, isUndefined } from 'inferno-shared';
+import { combineFrom, isFunction, isNullOrUndef } from 'inferno-shared';
 import type { History, Location } from 'history';
-import type { TLoader, TLoaderData, TLoaderProps } from './Router';
+import type { RouterContext, TContextRouter, TLoader, TLoaderData, TLoaderProps } from './Router';
 
 export interface Match<P extends Record<string, string>> {
   params: P;
@@ -23,7 +23,7 @@ export interface RouteComponentProps<P extends Record<string, string>> {
 }
 
 export interface IRouteProps {
-  computedMatch?: any; // private, from <Switch>
+  computedMatch?: Match<any> | null; // private, from <Switch>
   path?: string;
   exact?: boolean;
   strict?: boolean;
@@ -31,7 +31,7 @@ export interface IRouteProps {
   loader?(props: TLoaderProps<any>): Promise<any>;
   component?: Inferno.ComponentClass<any> | ((props: any, context: any) => InfernoNode);
   render?: (props: RouteComponentProps<any>, context: any) => InfernoNode;
-  location?: Partial<Location>;
+  location?: Pick<Location, 'pathname'>;
   children?: ((props: RouteComponentProps<any>) => InfernoNode) | InfernoNode;
 }
 
@@ -39,32 +39,31 @@ export interface IRouteProps {
  * The public API for matching a single path and rendering.
  */
 type RouteState = {
-  match: Match<any>;
+  match: Match<any> | null;
   __loaderData__?: TLoaderData;
 }
 
 class Route extends Component<Partial<IRouteProps>, RouteState> {
-  public getChildContext() {
-    const childContext: any = combineFrom(this.context.router, null);
+  constructor(props: IRouteProps, context: RouterContext) {
+    super(props, context);
+    const match = this.computeMatch(props, context.router);
+    this.state = {
+      match,
+      __loaderData__: match?.initialData,
+    };
+  }
 
-    childContext.route = {
-      location: this.props.location || this.context.router.route.location,
+  public getChildContext(): RouterContext {
+    const parentRouter: TContextRouter = this.context.router;
+    const router: TContextRouter = combineFrom(parentRouter, null);
+
+    router.route = {
+      location: this.props.location || parentRouter.route.location,
       match: this.state!.match,
     };
 
     return {
-      router: childContext
-    };
-  }
-
-  constructor(props?: any, context?: any) {
-    super(props, context);
-
-    const match = this.computeMatch(props, context.router);
-
-    this.state = {
-      match,
-      __loaderData__: match?.initialData,
+      router
     };
   }
 
@@ -72,7 +71,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     // TODO: Pass progress callback to loader
     loader({ params, request })
       .then((res) => {
-        // TODO: should we parse json?
+        // TODO: react-router parses json
         this.setState({ match, __loaderData__: { res } });
       })
       .catch((err) => {
@@ -81,20 +80,20 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       });
   }
 
-  public computeMatch({ computedMatch, ...props }, router): Match<any> {
-    if (computedMatch) {
+  public computeMatch({ computedMatch, ...props }: IRouteProps, router: TContextRouter): Match<any> | null {
+    if (!isNullOrUndef(computedMatch)) {
       // <Switch> already computed the match for us
       return computedMatch;
     }
 
-    const { location, path, strict, exact, sensitive, loader } = props;
+    const { path, strict, exact, sensitive, loader } = props;
 
     if (process.env.NODE_ENV !== 'production') {
       invariant(router, 'You should not use <Route> or withRouter() outside a <Router>');
     }
 
     const { route, initialData } = router; // This is the parent route
-    const pathname = (location || route.location).pathname;
+    const pathname = (props.location || route.location).pathname;
 
     return path ? matchPath(pathname, { path, strict, exact, sensitive, loader, initialData }) : route.match;
   }
@@ -102,10 +101,9 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
   public componentDidMount(): void {
     const { match, __loaderData__ } = this.state!;
     // QUESTION: Is there a better way to invoke this on/after first render?
-    if (!isUndefined(match?.loader) && isUndefined(__loaderData__)) {
-      const params = match.params;
+    if (match?.loader && !__loaderData__) {
       const request = undefined;
-      this.runLoader(match.loader!, params, request, match);
+      this.runLoader(match.loader, match.params, request, match);
     }
   }
 
@@ -126,9 +124,8 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
     // Am I a match? In which case check for loader
     if (match?.loader && !match.initialData) {
-      const params = match.params;
       const request = undefined;
-      this.runLoader(match.loader, params, request, match);
+      this.runLoader(match.loader, match.params, request, match);
       return;
     }
 
@@ -138,12 +135,12 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     });
   }
 
-  public render() {
-    const { match, __loaderData__ } = this.state!;
-    const { children, component, render, loader } = this.props;
-    const { history, route, staticContext } = this.context.router;
-    const location = this.props.location || route.location;
-    const props = { match, location, history, staticContext, component, render, loader, __loaderData__ };
+  public render(props: IRouteProps, state: RouteState, context: { router: TContextRouter }) {
+    const { match, __loaderData__ } = state!;
+    const { children, component, render, loader } = props;
+    const { history, route, staticContext } = context.router;
+    const location = props.location || route.location;
+    const renderProps = { match, location, history, staticContext, component, render, loader, __loaderData__ };
 
     if (component) {
       if (process.env.NODE_ENV !== 'production') {
@@ -151,16 +148,16 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
           throw new Error("Inferno error: <Route /> - 'component' property must be prototype of class or functional component, not vNode.");
         }
       }
-      return match ? createComponentVNode(VNodeFlags.ComponentUnknown, component, props) : null;
+      return match ? createComponentVNode(VNodeFlags.ComponentUnknown, component, renderProps) : null;
     }
 
     if (render) {
       // @ts-ignore
-      return match ? render(props, this.context) : null;
+      return match ? render(renderProps, this.context) : null;
     }
 
     if (typeof children === 'function') {
-      return (children as Function)(props);
+      return (children as Function)(renderProps);
     }
 
     return children;

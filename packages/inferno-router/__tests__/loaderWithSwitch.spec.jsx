@@ -247,4 +247,52 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.querySelector('#create').innerHTML).toContain(TEST);
     expect(container.querySelector('#publish')).toBeNull();
   });
+
+  it('can use a `location` prop instead of `router.location`', async () => {
+    const [setSwitch, waitForSwitch] = createEventGuard();
+    const [setDone, waitForRerender] = createEventGuard();
+    
+    const TEST = "ok";
+    const loaderFunc = async () => {
+      await waitForSwitch();
+      setDone();
+      return { message: TEST }
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/one']}>
+        <NavLink id="link" to="/two">Link</NavLink>
+        <Switch>
+          <Route path="/one" render={() => <h1>one</h1>} />
+          <Route path="/two" render={(props) => {
+            const res = useLoaderData(props);
+            return <h1>{res.message}</h1>
+          }} loader={loaderFunc} />
+        </Switch>
+      </MemoryRouter>,
+      container
+    );
+
+    // Check that we are starting in the right place
+    expect(container.innerHTML).toContain('one');
+
+    const link = container.querySelector('#link');
+    link.click();
+
+    await new Promise((resolve) => {
+      // If router doesn't wait for loader the switch to /two would be performed
+      // during setTimeout.
+      setTimeout(async () => {
+        expect(container.innerHTML).toContain('one');
+        // Now loader can be allowed to complete
+        setSwitch();
+        // and now wait for the loader to complete
+        await waitForRerender();
+        // so /two is rendered
+        expect(container.innerHTML).toContain(TEST);
+        resolve();
+      }, 0)
+    })
+
+  });
 });
