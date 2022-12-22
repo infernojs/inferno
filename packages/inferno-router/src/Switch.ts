@@ -18,7 +18,7 @@ function extractMatchFromChildren(children, route, location, router) {
       const nestedMatch = extractMatchFromChildren(children[i], route, location, router);
       if (nestedMatch.match) return nestedMatch;
     }
-    return;
+    return {};
   }
 
   return {
@@ -35,6 +35,10 @@ type SwitchState = {
 export class Switch extends Component<IRouteProps, SwitchState> {
   constructor(props, context) {
     super(props);
+
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(context.router, 'You should not use <Switch> outside a <Router>');
+    }
 
     const { route } = context.router;
     const { location = route.location, children } = props;
@@ -71,11 +75,19 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     }
   }
 
+  public componentWillReceiveProps(nextProps, nextContext: any): void {
+    if (process.env.NODE_ENV !== 'production') {
+      warning(
+        !(nextProps.location && !this.props.location),
+        '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
+      );
 
-  public componentWillUpdate(nextProps, nextState, nextContext: any): void {
-    if (nextContext === this.context) return;
+      warning(
+        !(!nextProps.location && this.props.location),
+        '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
+      );
+    }
 
-    nextState;
     const { route } = nextContext.router;
     const { location = route.location, children } = nextProps;
 
@@ -89,18 +101,25 @@ export class Switch extends Component<IRouteProps, SwitchState> {
       return;
     }
 
-    this.setState({
-      match, _child
-    })
+    this.setState({ match, _child })
   }
 
-  public render({ children }, { match, _child }): VNode | null {
+  // public componentWillUpdate(nextProps, nextState, nextContext: any): void {
+  //   if (nextContext === this.context) return;
+
+  // nextState;
+
+  // }
+
+  public render({ children, location }, { match, _child }, context): VNode | null {
 
     if (isInvalid(children)) {
       return null;
     }
 
+    
     if (match) {
+      location ??= context.router.location;
       return createComponentVNode(_child.flags, _child.type, combineFrom(_child.props, { location, computedMatch: match }));
     }
 
@@ -108,20 +127,20 @@ export class Switch extends Component<IRouteProps, SwitchState> {
   }
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  Switch.prototype.componentWillMount = function () {
-    invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
-  };
+// if (process.env.NODE_ENV !== 'production') {
+//   Switch.prototype.componentWillMount = function () {
+//     invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
+//   };
 
-  Switch.prototype.componentWillReceiveProps = function (nextProps) {
-    warning(
-      !(nextProps.location && !this.props.location),
-      '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
-    );
+//   Switch.prototype.componentWillReceiveProps = function (nextProps) {
+//     warning(
+//       !(nextProps.location && !this.props.location),
+//       '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
+//     );
 
-    warning(
-      !(!nextProps.location && this.props.location),
-      '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
-    );
-  };
-}
+//     warning(
+//       !(!nextProps.location && this.props.location),
+//       '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
+//     );
+//   };
+// }
