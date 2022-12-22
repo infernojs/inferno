@@ -104,13 +104,6 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     this.setState({ match, _child })
   }
 
-  // public componentWillUpdate(nextProps, nextState, nextContext: any): void {
-  //   if (nextContext === this.context) return;
-
-  // nextState;
-
-  // }
-
   public render({ children, location }, { match, _child }, context): VNode | null {
 
     if (isInvalid(children)) {
@@ -126,21 +119,3 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     return null;
   }
 }
-
-// if (process.env.NODE_ENV !== 'production') {
-//   Switch.prototype.componentWillMount = function () {
-//     invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
-//   };
-
-//   Switch.prototype.componentWillReceiveProps = function (nextProps) {
-//     warning(
-//       !(nextProps.location && !this.props.location),
-//       '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
-//     );
-
-//     warning(
-//       !(!nextProps.location && this.props.location),
-//       '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
-//     );
-//   };
-// }
