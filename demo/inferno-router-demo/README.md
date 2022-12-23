@@ -1,5 +1,7 @@
 # Demo of Inferno-Router
 
+NOTE: Requires Nodejs >=18 (uses `fetch`)
+
 ```sh
 cd demo/inferno-router-demo
 npm i

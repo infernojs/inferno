@@ -16,5 +16,6 @@ pwd.txt
 lerna-debug.log
 
 dist
+distServer
 package-lock.json
 .parcel-cache
