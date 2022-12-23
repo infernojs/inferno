@@ -1,11 +1,14 @@
 import koa from 'koa';; // koa@2
 import logger from 'koa-logger';
 import koaRouter from 'koa-router'; // koa-router@next
+import koaStatic from 'koa-static';
+import koaMount from 'koa-mount';
 import koaJSONBody from 'koa-json-body';
 import { renderToString, resolveLoaders } from 'inferno-server';
 import { StaticRouter } from 'inferno-router'
 import {Parcel} from '@parcel/core';
 import { createElement } from 'inferno-create-element';
+import path from 'path';
 
 const PORT = process.env.PORT || 3000
 
@@ -14,7 +17,8 @@ let subscription;
 let bundles;
 
 let bundler = new Parcel({
-  entries: './src/App.tsx',
+  // NOTE: Specifying target: { source: './src/App.tsx' } didn't work for me
+  entries: ['./src/App.tsx', './src/index.tsx'],
   defaultConfig: '@parcel/config-default',
   targets: {
     default: {
@@ -23,6 +27,14 @@ let bundler = new Parcel({
         node: ">=18"
       },
       distDir: "./distServer",
+      publicUrl: "/", // Should be picked up from environment
+    },
+    browser: {
+      context: 'browser',
+      engines: {
+        browsers: '> 0.5%, last 2 versions, not dead'
+      },
+      distDir: "./distBrowser",
       publicUrl: "/", // Should be picked up from environment
     }
   },
@@ -60,10 +72,30 @@ api.get('/api/about', async (ctx) => {
   })
 });
 
+function renderPage(html, initialData) {
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Inferno Router Demo</title>
+    <link rel="stylesheet" href="dist/App.css"/>
+    <script type="module" src="/dist/index.js"></script>
+    <script>
+    window.__initialData__ = ${JSON.stringify(initialData)};
+    </script>
+  </head>
+  <body>
+    <div id="app">${html}</div>
+  </body>
+</html>  
+`
+  return html;
+}
+
 frontend.get('/:slug?', async (ctx) => {
   const location = ctx.params.slug === undefined ? '/': `/${ctx.params.slug}`;
 
-  const pathToAppJs  = bundles.find(b => b.name === 'App.js').filePath;
+  const pathToAppJs  = bundles.find(b => b.name === 'App.js' && b.env.context === 'node').filePath;
   const { appFactory } = require(pathToAppJs)
   const app = appFactory();
 
@@ -75,7 +107,7 @@ frontend.get('/:slug?', async (ctx) => {
     initialData,
   }, app))
 
-  ctx.body = htmlApp;
+  ctx.body = renderPage(htmlApp, initialData);
 })
 
 
@@ -86,6 +118,7 @@ app.use(api.routes());
 app.use(api.allowedMethods());
 app.use(frontend.routes());
 app.use(frontend.allowedMethods());
+app.use(koaMount('/dist', koaStatic('distBrowser')));
 
 // bundler.watch((err, event) => {
 //   if (err) {

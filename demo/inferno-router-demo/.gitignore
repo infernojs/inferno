@@ -17,5 +17,6 @@ lerna-debug.log
 
 dist
 distServer
+distBrowser
 package-lock.json
 .parcel-cache
