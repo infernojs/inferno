@@ -338,7 +338,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
     }
 
     render(
-      <StaticRouter initialEntries={['/']}>
+      <StaticRouter>
         <Route path="/" render={(props) => {
           const data = useLoaderData(props);
           return <h1>{data?.message}</h1>
@@ -363,7 +363,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
     }
 
     render(
-      <StaticRouter initialEntries={['/']}>
+      <StaticRouter>
         <Route path="/" render={(props) => {
           const err = useLoaderError(props);
           return <h1>{err?.message}</h1>
