@@ -279,6 +279,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     const link = container.querySelector('#link');
     link.click();
 
+    // TODO: I believe this test gives a false pass, in a demo, the page switches too early
     await new Promise((resolve) => {
       // If router doesn't wait for loader the switch to /two would be performed
       // during setTimeout.
