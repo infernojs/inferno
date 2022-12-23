@@ -1,0 +1,48 @@
+:root {
+  --rowGap: 2rem;
+}
+
+.page {
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 100vh;
+
+  h1, h2 {
+    margin-bottom: 1.5em;
+  }
+
+  header {
+    flex-grow: 0;
+    & > nav > ul {
+      display: flex;
+      flex-flow: row wrap;
+      gap: var(--rowGap);
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+
+      & > li {
+        list-style: none;
+      }
+    }
+  }
+  main {
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+
+    & > * {
+      max-width: 50rem
+    }
+
+    & > .body {
+      width: 100%;
+    }
+  }
+  footer {
+    flex-grow: 0
+  }
+}
