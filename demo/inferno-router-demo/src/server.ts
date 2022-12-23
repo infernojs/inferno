@@ -18,7 +18,7 @@ let bundles;
 
 let bundler = new Parcel({
   // NOTE: Specifying target: { source: './src/App.tsx' } didn't work for me
-  entries: ['./src/App.tsx', './src/index.tsx'],
+  entries: ['./src/App.tsx', './src/indexServer.tsx'],
   defaultConfig: '@parcel/config-default',
   targets: {
     default: {
@@ -79,7 +79,7 @@ function renderPage(html, initialData) {
     <meta charset="utf-8"/>
     <title>Inferno Router Demo</title>
     <link rel="stylesheet" href="dist/App.css"/>
-    <script type="module" src="/dist/index.js"></script>
+    <script type="module" src="/dist/indexServer.js"></script>
     <script>
     window.__initialData__ = ${JSON.stringify(initialData)};
     </script>

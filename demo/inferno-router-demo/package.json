@@ -14,9 +14,10 @@
   "dependencies": {
     "inferno": "file:../../packages/inferno",
     "inferno-animation": "file:../../packages/inferno-animation",
+    "inferno-create-element": "file:../../packages/inferno-create-element",
+    "inferno-hydrate": "file:../../packages/inferno-hydrate",
     "inferno-router": "file:../../packages/inferno-router",
     "inferno-server": "file:../../packages/inferno-server",
-    "inferno-create-element": "file:../../packages/inferno-create-element",
     "koa": "^2.14.1",
     "koa-json-body": "^5.3.0",
     "koa-logger": "^3.2.1",
