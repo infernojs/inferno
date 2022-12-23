@@ -1,12 +1,12 @@
 import { isNullOrUndef } from "inferno-shared";
-import { matchPath } from "inferno-router";
-import type { TLoaderData } from "inferno-router/src/Router";
+import { matchPath } from "./matchPath";
+import type { TLoaderData } from "./Router";
 
-// TODO: I have moved this back to inferno-router, should import from there
-export async function resolveLoaders(location: string, tree: any): Promise<Record<string, TLoaderData>> {
+export function resolveLoaders(location: string, tree: any): Promise<Record<string, TLoaderData>> {
   const promises = traverseLoaders(location, tree).map((({path, loader}) => resolveEntry(path, loader)));
-  const result = await Promise.all(promises);
-  return Object.fromEntries(result);
+  return Promise.all(promises).then((result) => {
+    return Object.fromEntries(result);
+  });
 }
 
 type TLoaderEntry = {
@@ -21,11 +21,11 @@ function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
   if (Array.isArray(tree)) {
     const entries = tree.reduce((res, node) => {
       const outpArr = traverseLoaders(location, node);
-      // TODO: If in Switch, bail on first hit
       return [...res, ...outpArr];
     }, []);
     return entries;
   }
+
 
   let outp: TLoaderEntry[] = [];
   // Add any loader on this node
@@ -49,15 +49,15 @@ function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
     }
   }
 
+  // Traverse children
   const entries = traverseLoaders(location, tree.children || tree.props?.children);
-  return [...outp, ...entries]
+  return [...outp, ...entries];
 }
 
-async function resolveEntry(path, loader): Promise<any> {
+function resolveEntry(path, loader): Promise<any> {
   try {
-    const res = await loader()
-    return [path, { res }];
+    return loader().then((res) => [path, { res }]);
   } catch (err) {
-    return [ path, { err } ];
+    return Promise.resolve([ path, { err } ]);
   }
 }

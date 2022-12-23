@@ -2,9 +2,9 @@ import { Component, createComponentVNode, Inferno, InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
-import { combineFrom, isFunction, isNullOrUndef } from 'inferno-shared';
+import { combineFrom, isFunction, isNullOrUndef, isUndefined } from 'inferno-shared';
 import type { History, Location } from 'history';
-import type { RouterContext, TContextRouter, TLoader, TLoaderData, TLoaderProps } from './Router';
+import type { RouterContext, TContextRouter, TLoaderData, TLoaderProps } from './Router';
 
 export interface Match<P extends Record<string, string>> {
   params: P;
@@ -67,19 +67,6 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     };
   }
 
-  private runLoader(loader: TLoader<any, any>, params, request, match) {
-    // TODO: Pass progress callback to loader
-    loader({ params, request })
-      .then((res) => {
-        // TODO: react-router parses json
-        this.setState({ match, __loaderData__: { res } });
-      })
-      .catch((err) => {
-        // Loaders should throw errors
-        this.setState({ match, __loaderData__: { err } })
-      });
-  }
-
   public computeMatch({ computedMatch, ...props }: IRouteProps, router: TContextRouter): Match<any> | null {
     if (!isNullOrUndef(computedMatch)) {
       // <Switch> already computed the match for us
@@ -98,16 +85,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     return path ? matchPath(pathname, { path, strict, exact, sensitive, loader, initialData }) : route.match;
   }
 
-  public componentDidMount(): void {
-    const { match, __loaderData__ } = this.state!;
-    // QUESTION: Is there a better way to invoke this on/after first render?
-    if (match?.loader && !__loaderData__) {
-      const request = undefined;
-      this.runLoader(match.loader, match.params, request, match);
-    }
-  }
-
-  public componentWillReceiveProps(nextProps, nextContext) {
+  public componentWillReceiveProps(nextProps, nextContext: { router: TContextRouter }) {
     if (process.env.NODE_ENV !== 'production') {
       warning(
         !(nextProps.location && !this.props.location),
@@ -121,14 +99,6 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     }
     const match = this.computeMatch(nextProps, nextContext.router);
 
-
-    // Am I a match? In which case check for loader
-    if (match?.loader && !match.initialData) {
-      const request = undefined;
-      this.runLoader(match.loader, match.params, request, match);
-      return;
-    }
-
     this.setState({
       match,
       __loaderData__: match?.initialData,
@@ -141,6 +111,11 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     const { history, route, staticContext } = context.router;
     const location = props.location || route.location;
     const renderProps = { match, location, history, staticContext, component, render, loader, __loaderData__ };
+
+    // If we have a loader we don't render until it has been resolved
+    if (!isUndefined(loader) && isUndefined(__loaderData__)) {
+      return null;
+    }
 
     if (component) {
       if (process.env.NODE_ENV !== 'production') {

@@ -12,10 +12,10 @@ function getMatch(pathname: string, { path, exact, strict, sensitive, loader, fr
   return path ? matchPath(pathname, { path, exact, strict, sensitive, loader, initialData }) : route.match;
 }
 
-function extractMatchFromChildren(pathname: string, children, router) {
+function extractFirstMatchFromChildren(pathname: string, children, router) {
   if (isArray(children)) {
     for (let i = 0; i < children.length; ++i) {
-      const nestedMatch = extractMatchFromChildren(pathname, children[i], router);
+      const nestedMatch = extractFirstMatchFromChildren(pathname, children[i], router);
       if (nestedMatch.match) return nestedMatch;
     }
     return {};
@@ -43,7 +43,7 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     const { router } = context;
     const { location, children } = props;
     const pathname = (location || router.route.location).pathname;
-    const { match, _child } = extractMatchFromChildren(pathname, children, router);
+    const { match, _child } = extractFirstMatchFromChildren(pathname, children, router);
 
     this.state = {
       match,
@@ -93,7 +93,7 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     const { router } = nextContext;
     const { location, children } = nextProps;
     const pathname = (location || router.route.location).pathname;
-    const { match, _child } = extractMatchFromChildren(pathname, children, router);
+    const { match, _child } = extractFirstMatchFromChildren(pathname, children, router);
 
     if (match?.loader) {
       const params = match.params;

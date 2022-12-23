@@ -1,8 +1,9 @@
 import { Component, InfernoNode } from 'inferno';
-import { warning } from './utils';
-import { combineFrom } from 'inferno-shared';
+import { combineFrom, isUndefined } from 'inferno-shared';
 import type { History, Location } from 'history';
+import { warning } from './utils';
 import { Match } from './Route';
+import { resolveLoaders } from './resolveLoaders';
 
 export type TLoaderProps<P extends Record<string, string>> = {
   params?: P; // Match params (if any)
@@ -51,6 +52,7 @@ export class Router extends Component<IRouterProps, any> {
     const match = this.computeMatch(props.history.location.pathname);
     this.state = {
       match,
+      initialData: this.props.initialData,
     };
   }
 
@@ -62,7 +64,7 @@ export class Router extends Component<IRouterProps, any> {
       location: router.history.location,
       match: this.state?.match, // Why are we sending this? it appears useless.
     };
-    router.initialData = this.props.initialData; // this is a dictionary of all data available
+    router.initialData = this.state?.initialData; // this is a dictionary of all data available
     return {
       router
     };
@@ -86,10 +88,26 @@ export class Router extends Component<IRouterProps, any> {
     // location in componentWillMount. This happens e.g. when doing
     // server rendering using a <StaticRouter>.
     this.unlisten = history.listen(() => {
-      this.setState({
-        match: this.computeMatch(history.location.pathname)
-      });
+      // First execution of loaders
+      resolveLoaders(history.location.pathname, this.props.children)
+        .then((initialData) => {
+          this.setState({
+            match: this.computeMatch(history.location.pathname),
+            // TODO: resolveLoaders should probably return undefined if no match
+            initialData: Object.keys(initialData).length > 0 ? initialData : undefined,
+          });
+        });
     });
+
+    // First execution of loaders
+    if (isUndefined(this.props.initialData)) {
+      resolveLoaders(history.location.pathname, this.props.children)
+        .then((initialData) => {
+          this.setState({
+            initialData: Object.keys(initialData).length > 0 ? initialData : undefined,
+          });
+        });
+    }
   }
 
   public componentWillUnmount() {
