@@ -3,7 +3,7 @@ import { combineFrom, isUndefined } from 'inferno-shared';
 import type { History, Location } from 'history';
 import { warning } from './utils';
 import { Match } from './Route';
-import { resolveLoaders } from './resolveLoaders';
+import { resolveLoaders, traverseLoaders } from './resolveLoaders';
 
 export type TLoaderProps<P extends Record<string, string>> = {
   params?: P; // Match params (if any)
@@ -88,25 +88,34 @@ export class Router extends Component<IRouterProps, any> {
     // location in componentWillMount. This happens e.g. when doing
     // server rendering using a <StaticRouter>.
     this.unlisten = history.listen(() => {
+      const loaderEntries = traverseLoaders(history.location.pathname, this.props.children);
+      const match = this.computeMatch(history.location.pathname);
+      if (loaderEntries.length === 0) {
+        this.setState({ match });
+        return;
+      }
+
       // First execution of loaders
-      resolveLoaders(history.location.pathname, this.props.children)
+      resolveLoaders(loaderEntries)
         .then((initialData) => {
           this.setState({
-            match: this.computeMatch(history.location.pathname),
-            // TODO: resolveLoaders should probably return undefined if no match
-            initialData: Object.keys(initialData).length > 0 ? initialData : undefined,
+            match,
+            initialData,
           });
         });
     });
 
     // First execution of loaders
     if (isUndefined(this.props.initialData)) {
-      resolveLoaders(history.location.pathname, this.props.children)
+      const promises = traverseLoaders(history.location.pathname, this.props.children);
+      if (promises.length > 0) {
+        resolveLoaders(promises)
         .then((initialData) => {
           this.setState({
             initialData: Object.keys(initialData).length > 0 ? initialData : undefined,
           });
         });
+      }
     }
   }
 

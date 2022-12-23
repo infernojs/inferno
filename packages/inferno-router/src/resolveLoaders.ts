@@ -1,9 +1,16 @@
 import { isNullOrUndef } from "inferno-shared";
 import { matchPath } from "./matchPath";
-import type { TLoaderData } from "./Router";
+import type { TLoaderData, TLoaderProps } from "./Router";
 
-export function resolveLoaders(location: string, tree: any): Promise<Record<string, TLoaderData>> {
-  const promises = traverseLoaders(location, tree).map((({path, loader}) => resolveEntry(path, loader)));
+// export function resolveLoaders(location: string, tree: any): Promise<Record<string, TLoaderData>> {
+//   const promises = traverseLoaders(location, tree).map((({path, loader}) => resolveEntry(path, loader)));
+//   return Promise.all(promises).then((result) => {
+//     return Object.fromEntries(result);
+//   });
+// }
+
+export function resolveLoaders(loaderEntries: TLoaderEntry[]): Promise<Record<string, TLoaderData>> {
+  const promises = loaderEntries.map((({path, loader}) => resolveEntry(path, loader)));
   return Promise.all(promises).then((result) => {
     return Object.fromEntries(result);
   });
@@ -11,10 +18,10 @@ export function resolveLoaders(location: string, tree: any): Promise<Record<stri
 
 type TLoaderEntry = {
   path: string,
-  loader: Function,
+  loader: (TLoaderProps) => Promise<TLoaderEntry>,
 }
 
-function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
+export function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
   // Make sure tree isn't null
   if (isNullOrUndef(tree)) return [];
 
@@ -55,9 +62,7 @@ function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
 }
 
 function resolveEntry(path, loader): Promise<any> {
-  try {
-    return loader().then((res) => [path, { res }]);
-  } catch (err) {
-    return Promise.resolve([ path, { err } ]);
-  }
+  return loader()
+    .then((res) => [path, { res }])
+    .catch((err) => [ path, { err } ]);
 }
