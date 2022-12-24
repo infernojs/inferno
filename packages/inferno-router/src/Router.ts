@@ -8,6 +8,11 @@ import { resolveLoaders, traverseLoaders } from './resolveLoaders';
 export type TLoaderProps<P extends Record<string, string>> = {
   params?: P; // Match params (if any)
   request: Request; // Fetch API Request
+  // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L1004
+  // https://github.com/remix-run/react-router/blob/11156ac7f3d7c1c557c67cc449ecbf9bd5c6a4ca/examples/ssr-data-router/src/entry.server.tsx#L66
+  // https://github.com/remix-run/react-router/blob/59b319feaa12745a434afdef5cadfcabd01206f9/examples/search-params/src/App.tsx#L43
+  // https://github.com/remix-run/react-router/blob/11156ac7f3d7c1c557c67cc449ecbf9bd5c6a4ca/packages/react-router-dom/__tests__/data-static-router-test.tsx#L81
+  
   onProgress?(perc: number): void;
 }
 
