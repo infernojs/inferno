@@ -154,6 +154,32 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     expect(container.querySelector('#create').innerHTML).toContain(TEST);
   });
+
+  it('Should recieve params in loader', async () => {
+    const TEXT = 'bubblegum';
+    const Component = (props, { router }) => {
+      const res = useLoaderData(props);
+      return <div><h1>{res?.message}</h1><p>{res?.slug}</p></div>
+    }
+    const loaderFunc = async ({params, request} = {}) => {
+      return { message: TEXT, slug: params?.slug }
+    }
+
+    const params = { slug: 'flowers' };
+    const initialData = {
+      '/:slug': { res: await loaderFunc({ params }), err: undefined, }
+    }
+
+    render(
+      <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
+        <Route path="/:slug" render={Component} loader={loaderFunc} />
+      </MemoryRouter>,
+      container
+    );
+
+    expect(container.innerHTML).toContain(TEXT);
+    expect(container.innerHTML).toContain('flowers');
+  });
 });
 
 describe('A <Route> with loader in a BrowserRouter', () => {
