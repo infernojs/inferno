@@ -21,6 +21,8 @@ export default function PageTemplate({ id = undefined, children }) {
           <ul>
             <li><Link to="/">Start</Link></li>
             <li><Link to="/about">About</Link></li>
+            <li><Link to="/page/one">Page One</Link></li>
+            <li><Link to="/page/two">Page Two</Link></li>
           </ul>
         </nav>
       </header>

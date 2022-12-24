@@ -6,6 +6,7 @@ import { Route } from 'inferno-router'
  */
 import StartPage from './pages/StartPage'
 import AboutPage from './pages/AboutPage'
+import ContentPage from './pages/ContentPage'
 
 /**
  * The Application
@@ -23,6 +24,7 @@ export function appFactory () {
         {/* Public Pages */}
         <Route exact path={`/`} component={ StartPage } />
         <Route exact path={`/about`} component={ AboutPage } loader={AboutPage.fetchData} />
+        <Route exact path={`/page/:slug`} component={ ContentPage } loader={ContentPage.fetchData} />
       </App>
   )
 }

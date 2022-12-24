@@ -68,7 +68,19 @@ api.get('/api/about', async (ctx) => {
         body: "Routing with async data loader support."
       };
       resolve(null);
-    }, 1000)
+    }, 500)
+  })
+});
+
+api.get('/api/page/:slug', async (ctx) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      ctx.body = {
+        title: ctx.params.slug.toUpperCase(),
+        body: "This is a page."
+      };
+      resolve(null);
+    }, 300)
   })
 });
 
