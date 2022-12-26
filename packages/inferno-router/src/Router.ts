@@ -51,6 +51,7 @@ export type RouterContext = { router: TContextRouter };
  */
 export class Router extends Component<IRouterProps, any> {
   public unlisten;
+  private _loaderFetchControllers: AbortController[] = [];
 
   constructor(props: IRouterProps, context: { router: TContextRouter }) {
     super(props, context);
@@ -93,35 +94,40 @@ export class Router extends Component<IRouterProps, any> {
     // location in componentWillMount. This happens e.g. when doing
     // server rendering using a <StaticRouter>.
     this.unlisten = history.listen(() => {
-      const loaderEntries = traverseLoaders(history.location.pathname, this.props.children);
       const match = this.computeMatch(history.location.pathname);
-      if (loaderEntries.length === 0) {
-        this.setState({ match });
-        return;
-      }
-
-      // First execution of loaders
-      resolveLoaders(loaderEntries)
-        .then((initialData) => {
-          this.setState({
-            match,
-            initialData,
-          });
-        });
+      this._matchAndResolveLoaders(match);
     });
 
     // First execution of loaders
     if (isUndefined(this.props.initialData)) {
-      const promises = traverseLoaders(history.location.pathname, this.props.children);
-      if (promises.length > 0) {
-        resolveLoaders(promises)
-        .then((initialData) => {
-          this.setState({
-            initialData: Object.keys(initialData).length > 0 ? initialData : undefined,
-          });
-        });
-      }
+      this._matchAndResolveLoaders(this.state?.match);
     }
+  }
+
+  private _matchAndResolveLoaders(match?: Match<any>) {
+    for (const controller of this._loaderFetchControllers) {
+      controller.abort();
+    }
+    this._loaderFetchControllers = [];
+
+    const { history, children } = this.props;
+    const loaderEntries = traverseLoaders(history.location.pathname, children);
+    if (loaderEntries.length === 0) {
+      this.setState({ match });
+      return;
+    }
+
+    // Store AbortController instances for each matched loader
+    this._loaderFetchControllers = loaderEntries.map(e => e.controller);
+
+    // First execution of loaders
+    resolveLoaders(loaderEntries)
+      .then((initialData) => {
+        this.setState({
+          match,
+          initialData,
+        });
+      });
   }
 
   public componentWillUnmount() {
