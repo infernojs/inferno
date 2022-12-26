@@ -180,6 +180,80 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
     expect(container.innerHTML).toContain('flowers');
   });
+
+  it('Can abort fetch', async () => {
+    const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+    const [setDone, waitForRerender] = createEventGuard();
+    
+    const TEST = "ok";
+
+    const loaderFunc = async ({ request }) => {
+      expect(request).toBeDefined();
+      expect(request.signal).toBeDefined();
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          setDone();
+          resolve({ message: TEST })
+        }, 5);
+      });
+    };
+
+    function RootComp() {
+      return <div id="root">ROOT</div>;
+    }
+
+    function CreateComp(props) {
+      const res = useLoaderData(props);
+      const err = useLoaderError(props);
+      return <div id="create">{res.message}</div>;
+    }
+
+    function PublishComp() {
+      return <div id="publish">PUBLISH</div>;
+    }
+
+    const tree = (
+      <MemoryRouter>
+        <div>
+          <nav>
+            <ul>
+              <li>
+                <NavLink exact to="/">
+                  Play
+                </NavLink>
+              </li>
+              <li id="createNav">
+                <NavLink to="/create">
+                  Create
+                </NavLink>
+              </li>
+              <li id="publishNav">
+                <NavLink to="/publish">
+                  Publish
+                </NavLink>
+              </li>
+            </ul>
+          </nav>
+          <Route exact path="/" component={RootComp} />
+          <Route path="/create" component={CreateComp} loader={loaderFunc} />
+          <Route path="/publish" component={PublishComp} />
+        </div>
+      </MemoryRouter>
+    );
+
+    render(tree, container);
+
+    expect(container.innerHTML).toContain("ROOT");
+
+    // Click create
+    container.querySelector('#createNav').firstChild.click();
+    container.querySelector('#publishNav').firstChild.click();
+
+    await waitForRerender();
+  
+    expect(abortSpy).toBeCalledTimes(1);
+    expect(container.querySelector('#create')).toBeNull();
+  });
 });
 
 describe('A <Route> with loader in a BrowserRouter', () => {

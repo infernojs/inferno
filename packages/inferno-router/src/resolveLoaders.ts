@@ -34,8 +34,8 @@ export function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
 
 
   let outp: TLoaderEntry[] = [];
-  // Add any loader on this node
-  if (tree.props?.loader && tree.props?.path) {
+  // Add any loader on this node (but only on the VNode)
+  if (!tree.context && tree.props?.loader && tree.props?.path) {
     // TODO: If we traverse a switch, only the first match should be returned
     // TODO: Should we check if we are in Router? It is defensive and could save a bit of time, but is it worth it?
     const { path, exact = false, strict = false, sensitive = false } = tree.props;
