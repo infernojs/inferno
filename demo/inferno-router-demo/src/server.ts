@@ -4,8 +4,8 @@ import koaRouter from 'koa-router'; // koa-router@next
 import koaStatic from 'koa-static';
 import koaMount from 'koa-mount';
 import koaJSONBody from 'koa-json-body';
-import { renderToString, resolveLoaders } from 'inferno-server';
-import { StaticRouter } from 'inferno-router'
+import { renderToString } from 'inferno-server';
+import { StaticRouter, resolveLoaders, traverseLoaders } from 'inferno-router'
 import {Parcel} from '@parcel/core';
 import { createElement } from 'inferno-create-element';
 import path from 'path';
@@ -13,7 +13,7 @@ import path from 'path';
 const PORT = process.env.PORT || 3000
 
 // Parcel watch subscription and bundle output
-let subscription;
+// let subscription;
 let bundles;
 
 let bundler = new Parcel({
@@ -111,7 +111,8 @@ frontend.get('(/page)?/:slug?', async (ctx) => {
   const { appFactory } = require(pathToAppJs)
   const app = appFactory();
 
-  const initialData = await resolveLoaders(location, app);
+  const loaderEntries = traverseLoaders(location, app);
+  const initialData = await resolveLoaders(loaderEntries);
 
   const htmlApp = renderToString(createElement(StaticRouter, {
     context: {},

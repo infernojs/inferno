@@ -1,6 +1,6 @@
 import { render } from 'inferno';
-import { renderToString, resolveLoaders } from 'inferno-server';
-import { BrowserRouter, StaticRouter, Route, useLoaderData } from 'inferno-router';
+import { renderToString } from 'inferno-server';
+import { BrowserRouter, StaticRouter, Route, useLoaderData, resolveLoaders, traverseLoaders } from 'inferno-router';
 
 describe('Resolve loaders during server side rendering', () => {
   let container;
@@ -34,7 +34,8 @@ describe('Resolve loaders during server side rendering', () => {
         <Route path="/bees" render={Component} loader={loaderFuncNoHit} />,
     ]
 
-    const initialData = await resolveLoaders('/birds', routes);
+    const loaderEntries = traverseLoaders('/birds', routes);
+    const initialData = await resolveLoaders(loaderEntries);
 
     // Render on server
     const html = renderToString(<StaticRouter location="/birds" initialData={initialData}>{routes}</StaticRouter>);

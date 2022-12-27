@@ -1,7 +1,6 @@
 import { render } from 'inferno';
 import { MemoryRouter, Route, Switch, NavLink, useLoaderData, useLoaderError } from 'inferno-router';
 // Cherry picked relative import so we don't get node-stuff from inferno-server in browser test
-import { resolveLoaders } from '../../inferno-server/src/ssrLoaderResolver';
 import { createEventGuard } from './testUtils';
 
 describe('A <Route> with loader in a MemoryRouter', () => {

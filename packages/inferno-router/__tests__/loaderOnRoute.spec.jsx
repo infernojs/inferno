@@ -1,7 +1,6 @@
 import { render } from 'inferno';
-import { BrowserRouter, MemoryRouter, StaticRouter, Route, NavLink, useLoaderData, useLoaderError } from 'inferno-router';
+import { BrowserRouter, MemoryRouter, StaticRouter, Route, NavLink, useLoaderData, useLoaderError, resolveLoaders, traverseLoaders } from 'inferno-router';
 // Cherry picked relative import so we don't get node-stuff from inferno-server in browser test
-import { resolveLoaders } from '../../inferno-server/src/ssrLoaderResolver';
 import { createEventGuard } from './testUtils';
 
 describe('A <Route> with loader in a MemoryRouter', () => {
@@ -182,7 +181,13 @@ describe('A <Route> with loader in a MemoryRouter', () => {
   });
 
   it('Can abort fetch', async () => {
-    const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+    const abortCalls = {
+      nrofCalls: 0
+    };
+    const _abortFn = AbortController.prototype.abort;
+    AbortController.prototype.abort = () => {
+      abortCalls.nrofCalls++;
+    }
     const [setDone, waitForRerender] = createEventGuard();
     
     const TEST = "ok";
@@ -251,8 +256,9 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     await waitForRerender();
   
-    expect(abortSpy).toBeCalledTimes(1);
+    expect(abortCalls.nrofCalls).toEqual(1);
     expect(container.querySelector('#create')).toBeNull();
+    AbortController.prototype.abort = _abortFn;
   });
 });
 
@@ -520,7 +526,8 @@ describe('Resolve loaders during server side rendering', () => {
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </StaticRouter>;
 
-    const result = await resolveLoaders('/flowers', app);
+    const loaderEntries = traverseLoaders('/flowers', app);
+    const result = await resolveLoaders(loaderEntries);
     expect(result).toEqual(initialData);
   });
 
@@ -544,7 +551,8 @@ describe('Resolve loaders during server side rendering', () => {
         <Route path="/bees" render={Component} loader={loaderFuncNoHit} />
       </StaticRouter>;
 
-    const result = await resolveLoaders('/birds', app);
+    const loaderEntries = traverseLoaders('/birds', app);
+    const result = await resolveLoaders(loaderEntries);
     expect(result).toEqual(initialData);
   });
 
@@ -571,7 +579,8 @@ describe('Resolve loaders during server side rendering', () => {
         </Route>
       </StaticRouter>;
 
-    const result = await resolveLoaders('/flowers/birds', app);
+    const loaderEntries = traverseLoaders('/flowers/birds', app);
+    const result = await resolveLoaders(loaderEntries);
     expect(result).toEqual(initialData);
   });
 })
