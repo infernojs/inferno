@@ -1,4 +1,3 @@
-import { Path, To } from "history";
 import { isNullOrUndef } from "inferno-shared";
 import { matchPath } from "./matchPath";
 import type { TLoaderData, TLoaderProps } from "./Router";
@@ -111,7 +110,8 @@ function createClientSideRequest(
   signal: AbortSignal,
   // submission?: Submission
 ): Request {
-  let url = createClientSideURL(stripHashFromPath(location)).toString();
+  let url = createClientSideURL(location);
+  url.hash = '';
   let init: RequestInit = { signal };
 
   // TODO: react-router supports submitting forms with loaders, but this needs more investigation
@@ -131,7 +131,7 @@ function createClientSideRequest(
     global.Request = class Request {
       url;
       signal;
-      constructor(url, init) {
+      constructor(url: URL | string, init: RequestInit) {
         this.url = url;
         this.signal = init.signal;
       }
@@ -143,48 +143,8 @@ function createClientSideRequest(
 }
 
 /**
- * Creates a string URL path from the given pathname, search, and hash components.
- */
-export function createPath({
-  pathname = "/",
-  search = "",
-  hash = "",
-}: Partial<Path>) {
-  if (search && search !== "?")
-    pathname += search.charAt(0) === "?" ? search : "?" + search;
-  if (hash && hash !== "#")
-    pathname += hash.charAt(0) === "#" ? hash : "#" + hash;
-  return pathname;
-}
-
-/**
  * Parses a string URL path into its separate pathname, search, and hash components.
  */
-
-// TODO: Shouldn't this be done with URL?
-export function parsePath(path: string): Partial<Path> {
-  let parsedPath: Partial<Path> = {};
-
-  if (path) {
-    let hashIndex = path.indexOf("#");
-    if (hashIndex >= 0) {
-      parsedPath.hash = path.substring(hashIndex);
-      path = path.substring(0, hashIndex);
-    }
-
-    let searchIndex = path.indexOf("?");
-    if (searchIndex >= 0) {
-      parsedPath.search = path.substring(searchIndex);
-      path = path.substring(0, searchIndex);
-    }
-
-    if (path) {
-      parsedPath.pathname = path;
-    }
-  }
-
-  return parsedPath;
-}
 
 export function createClientSideURL(location: Location | string): URL {
   // window.location.origin is "null" (the literal string value) in Firefox
@@ -196,17 +156,22 @@ export function createClientSideURL(location: Location | string): URL {
     window.location.origin !== "null"
       ? window.location.origin
       : window.location.href;
-  let href = typeof location === "string" ? location : createPath(location);
-  // invariant(
-  //   base,
-  //   `No window.location.(origin|href) available to create URL for href: ${href}`
-  // );
-  return new URL(href, base);
-}
 
-function stripHashFromPath(path: To) {
-  let parsedPath = typeof path === "string" ? parsePath(path) : path;
-  return createPath({ ...parsedPath, hash: "" });
+    let url: URL;
+    if (typeof location === "string") {
+      url = new URL(location, base);
+      url.hash = '';
+    } else {
+      url = new URL(location.pathname, base);
+      url.search = location.search;
+      // We don't use the hash on server calls
+    }
+
+    // invariant(
+    //   base,
+    //   `No window.location.(origin|href) available to create URL for href: ${href}`
+    // );
+  return url;
 }
 
 // TODO: react-router supports submitting forms with loaders, this is related to that
