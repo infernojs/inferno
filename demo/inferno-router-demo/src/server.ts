@@ -90,7 +90,7 @@ function renderPage(html, initialData) {
   <head>
     <meta charset="utf-8"/>
     <title>Inferno Router Demo</title>
-    <link rel="stylesheet" href="dist/App.css"/>
+    <link rel="stylesheet" href="/dist/App.css"/>
     <script type="module" src="/dist/indexServer.js"></script>
     <script>
     window.__initialData__ = ${JSON.stringify(initialData)};
@@ -104,8 +104,8 @@ function renderPage(html, initialData) {
   return html;
 }
 
-frontend.get('/:slug?', async (ctx) => {
-  const location = ctx.params.slug === undefined ? '/': `/${ctx.params.slug}`;
+frontend.get('(/page)?/:slug?', async (ctx) => {
+  const location = ctx.path;
 
   const pathToAppJs  = bundles.find(b => b.name === 'App.js' && b.env.context === 'node').filePath;
   const { appFactory } = require(pathToAppJs)
