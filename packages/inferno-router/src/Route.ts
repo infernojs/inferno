@@ -12,7 +12,7 @@ export interface Match<P extends Record<string, string>> {
   path: string;
   url: string;
   loader?(props: TLoaderProps<P>): Promise<any>;
-  initialData?: TLoaderData;
+  loaderData?: TLoaderData;
 }
 
 export interface RouteComponentProps<P extends Record<string, string>> {
@@ -49,7 +49,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     const match = this.computeMatch(props, context.router);
     this.state = {
       match,
-      __loaderData__: match?.initialData,
+      __loaderData__: match?.loaderData,
     };
   }
 
@@ -101,7 +101,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
     this.setState({
       match,
-      __loaderData__: match?.initialData,
+      __loaderData__: match?.loaderData,
     });
   }
 

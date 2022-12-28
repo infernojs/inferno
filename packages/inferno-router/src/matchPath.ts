@@ -41,7 +41,7 @@ export function matchPath(pathname, options: any): Match<any> | null {
     return null;
   }
 
-  const intialDataEntry = initialData[path];
+  const loaderData = initialData[path];
 
   const [url, ...values] = match;
   const isExact = pathname === url;
@@ -59,6 +59,6 @@ export function matchPath(pathname, options: any): Match<any> | null {
     path, // the path pattern used to match
     url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
     loader,
-    initialData: intialDataEntry
+    loaderData,
   };
 }
