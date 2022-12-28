@@ -38,7 +38,8 @@ export function traverseLoaders(location: string, tree: any, parentIsSwitch = fa
 
   let outp: TLoaderEntry[] = [];
   // Add any loader on this node (but only on the VNode)
-  if (!tree.context && tree.props?.loader && tree.props?.path) {
+  let isRouteButNotMatch = false;
+  if (tree.props) {
     // TODO: If we traverse a switch, only the first match should be returned
     // TODO: Should we check if we are in Router? It is defensive and could save a bit of time, but is it worth it?
     const { path, exact = false, strict = false, sensitive = false } = tree.props;
@@ -48,7 +49,11 @@ export function traverseLoaders(location: string, tree: any, parentIsSwitch = fa
       strict,
       sensitive,
     });
-    if (match) {
+
+    // So we can bail out of recursion it this was a Route which didn't match
+    isRouteButNotMatch = !match;
+
+    if (match && !tree.context && tree.props?.loader && tree.props?.path) {
       const { params } = match;
       const controller = new AbortController();
       const request = createClientSideRequest(location, controller.signal);
@@ -63,8 +68,11 @@ export function traverseLoaders(location: string, tree: any, parentIsSwitch = fa
     }
   }
 
+  // Traverse ends here
+  if (isRouteButNotMatch) return outp;
+
   // Traverse children
-  const entries = traverseLoaders(location, tree.children || tree.props?.children);
+  const entries = traverseLoaders(location, tree.children || tree.props?.children, tree.type === Switch);
   return [...outp, ...entries];
 }
 
