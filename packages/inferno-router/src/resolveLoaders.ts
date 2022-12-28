@@ -1,6 +1,7 @@
 import { isNullOrUndef } from "inferno-shared";
 import { matchPath } from "./matchPath";
 import type { TLoaderData, TLoaderProps } from "./Router";
+import { Switch } from "./Switch";
 
 export function resolveLoaders(loaderEntries: TLoaderEntry[]): Promise<Record<string, TLoaderData>> {
   const promises = loaderEntries.map((({path, params, request, loader}) => {
@@ -19,13 +20,16 @@ type TLoaderEntry = {
   loader: (TLoaderProps) => Promise<TLoaderEntry>,
 }
 
-export function traverseLoaders(location: string, tree: any): TLoaderEntry[] {
+export function traverseLoaders(location: string, tree: any, parentIsSwitch = false): TLoaderEntry[] {
   // Make sure tree isn't null
   if (isNullOrUndef(tree)) return [];
 
   if (Array.isArray(tree)) {
+    let hasMatch = false;
     const entries = tree.reduce((res, node) => {
-      const outpArr = traverseLoaders(location, node);
+      if (parentIsSwitch && hasMatch) return res;
+
+      const outpArr = traverseLoaders(location, node, node?.type === Switch);
       return [...res, ...outpArr];
     }, []);
     return entries;
