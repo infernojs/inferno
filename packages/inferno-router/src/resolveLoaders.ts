@@ -110,9 +110,8 @@ function createClientSideRequest(
   signal: AbortSignal,
   // submission?: Submission
 ): Request {
-  let url = createClientSideURL(location);
-  url.hash = '';
-  let init: RequestInit = { signal };
+  const url = createClientSideURL(location);
+  const init: RequestInit = { signal };
 
   // TODO: react-router supports submitting forms with loaders, but this needs more investigation
   // related code is commented out in this file

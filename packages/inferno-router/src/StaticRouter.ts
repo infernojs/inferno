@@ -103,7 +103,7 @@ function addBasename(basename, location) {
   return combineFrom(location, { pathname: addLeadingSlash(basename) + location.pathname });
 }
 
-function stripBasename(basename, location) {
+function stripBasename(basename: string, location) {
   if (!basename) {
     return location;
   }
@@ -114,7 +114,7 @@ function stripBasename(basename, location) {
     return location;
   }
 
-  return combineFrom(location, { pathname: location.pathname.substr(base.length) });
+  return combineFrom(location, { pathname: location.pathname.substring(base.length) });
 }
 
 function createLocation(location) {
