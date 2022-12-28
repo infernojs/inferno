@@ -157,15 +157,9 @@ export function createClientSideURL(location: Location | string): URL {
       ? window.location.origin
       : window.location.href;
 
-    let url: URL;
-    if (typeof location === "string") {
-      url = new URL(location, base);
-      url.hash = '';
-    } else {
-      url = new URL(location.pathname, base);
-      url.search = location.search;
-      // We don't use the hash on server calls
-    }
+  // INVESTIGATE: Do we really need base if we get a Location object?
+  const url = new URL(location.toString(), base);
+  url.hash = '';
 
     // invariant(
     //   base,
