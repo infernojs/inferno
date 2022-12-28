@@ -1,10 +1,10 @@
-import { isNullOrUndef } from "inferno-shared";
+import { isNullOrUndef, isUndefined } from "inferno-shared";
 import { matchPath } from "./matchPath";
 import type { TLoaderData, TLoaderProps } from "./Router";
 import { Switch } from "./Switch";
 
 export function resolveLoaders(loaderEntries: TLoaderEntry[]): Promise<Record<string, TLoaderData>> {
-  const promises = loaderEntries.map((({path, params, request, loader}) => {
+  const promises = loaderEntries.map((({ path, params, request, loader }) => {
     return resolveEntry(path, params, request, loader);
   }));
   return Promise.all(promises).then((result) => {
@@ -20,7 +20,8 @@ type TLoaderEntry = {
   loader: (TLoaderProps) => Promise<TLoaderEntry>,
 }
 
-export function traverseLoaders(location: string, tree: any, parentIsSwitch = false): TLoaderEntry[] {
+// Optionally pass base param during SSR to get fully qualified request URI passed to loader in request param
+export function traverseLoaders(location: string, tree: any, base?: string, parentIsSwitch = false): TLoaderEntry[] {
   // Make sure tree isn't null
   if (isNullOrUndef(tree)) return [];
 
@@ -29,7 +30,7 @@ export function traverseLoaders(location: string, tree: any, parentIsSwitch = fa
     const entries = tree.reduce((res, node) => {
       if (parentIsSwitch && hasMatch) return res;
 
-      const outpArr = traverseLoaders(location, node, node?.type === Switch);
+      const outpArr = traverseLoaders(location, node, base, node?.type === Switch);
       return [...res, ...outpArr];
     }, []);
     return entries;
@@ -37,7 +38,6 @@ export function traverseLoaders(location: string, tree: any, parentIsSwitch = fa
 
 
   let outp: TLoaderEntry[] = [];
-  // Add any loader on this node (but only on the VNode)
   let isRouteButNotMatch = false;
   if (tree.props) {
     // TODO: If we traverse a switch, only the first match should be returned
@@ -53,10 +53,11 @@ export function traverseLoaders(location: string, tree: any, parentIsSwitch = fa
     // So we can bail out of recursion it this was a Route which didn't match
     isRouteButNotMatch = !match;
 
+    // Add any loader on this node (but only on the VNode)
     if (match && !tree.context && tree.props?.loader && tree.props?.path) {
       const { params } = match;
       const controller = new AbortController();
-      const request = createClientSideRequest(location, controller.signal);
+      const request = createClientSideRequest(location, controller.signal, base);
 
       outp.push({
         path,
@@ -72,14 +73,14 @@ export function traverseLoaders(location: string, tree: any, parentIsSwitch = fa
   if (isRouteButNotMatch) return outp;
 
   // Traverse children
-  const entries = traverseLoaders(location, tree.children || tree.props?.children, tree.type === Switch);
+  const entries = traverseLoaders(location, tree.children || tree.props?.children, base, tree.type === Switch);
   return [...outp, ...entries];
 }
 
 function resolveEntry(path, params, request, loader): Promise<any> {
   return loader({ params, request })
-    .then((res) => [ path, { res } ])
-    .catch((err) => [ path, { err } ]);
+    .then((res) => [path, { res }])
+    .catch((err) => [path, { err }]);
 }
 
 // From react-router
@@ -117,12 +118,14 @@ export interface Submission {
 }
 
 
+const inBrowser = typeof window === 'undefined';
 function createClientSideRequest(
   location: string | Location,
   signal: AbortSignal,
   // submission?: Submission
+  base?: string
 ): Request {
-  const url = createClientSideURL(location);
+  const url = inBrowser || !isUndefined(base) ? createClientSideURL(location, base) : location.toString();
   const init: RequestInit = { signal };
 
   // TODO: react-router supports submitting forms with loaders, but this needs more investigation
@@ -148,7 +151,7 @@ function createClientSideRequest(
       }
     }
   }
-  
+
   // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
   return new Request(url, init);
 }
@@ -157,25 +160,18 @@ function createClientSideRequest(
  * Parses a string URL path into its separate pathname, search, and hash components.
  */
 
-export function createClientSideURL(location: Location | string): URL {
-  // window.location.origin is "null" (the literal string value) in Firefox
-  // under certain conditions, notably when serving from a local HTML file
-  // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
-  let base =
-    typeof window !== "undefined" &&
-    typeof window.location !== "undefined" &&
-    window.location.origin !== "null"
+export function createClientSideURL(location: Location | string, base?: string): URL {
+  if (base === undefined && typeof window !== 'undefined') {
+    // window.location.origin is "null" (the literal string value) in Firefox
+    // under certain conditions, notably when serving from a local HTML file
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
+    base = window?.location?.origin !== "null"
       ? window.location.origin
       : window.location.href;
+  }
 
-  // INVESTIGATE: Do we really need base if we get a Location object?
   const url = new URL(location.toString(), base);
   url.hash = '';
-
-    // invariant(
-    //   base,
-    //   `No window.location.(origin|href) available to create URL for href: ${href}`
-    // );
   return url;
 }
 

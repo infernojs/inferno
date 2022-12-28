@@ -10,7 +10,8 @@ import {Parcel} from '@parcel/core';
 import { createElement } from 'inferno-create-element';
 import path from 'path';
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
+const BASE_URI = `http://localhost:${PORT}`;
 
 // Parcel watch subscription and bundle output
 // let subscription;
@@ -111,7 +112,7 @@ frontend.get('(/page)?/:slug?', async (ctx) => {
   const { appFactory } = require(pathToAppJs)
   const app = appFactory();
 
-  const loaderEntries = traverseLoaders(location, app);
+  const loaderEntries = traverseLoaders(location, app, BASE_URI);
   const initialData = await resolveLoaders(loaderEntries);
 
   const htmlApp = renderToString(createElement(StaticRouter, {
