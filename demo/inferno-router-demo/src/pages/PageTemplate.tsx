@@ -2,17 +2,6 @@ import { Link } from 'inferno-router'
 
 import './PageTemplate.scss'
 
-// const env = (typeof window === 'undefined' ? process.env : (window as any).__env__)
-// const { FRONTEND_BASE_URI } = env
-
-interface IProps {
-  children: any,
-}
-
-interface IState {
-
-}
-
 export default function PageTemplate({ id = undefined, children }) {
   return (
     <div id={id} className="page">
