@@ -15,13 +15,14 @@ interface IProps {
 }
 
 export default class AboutPage extends Component<IProps> {
-  static async fetchData(params) {
+  static async fetchData(params, request) {
     const pageSlug = params.id;
 
     const fetchOptions: RequestInit = {
       headers: {
         Accept: 'application/json',
       },
+      signal: request?.signal,
     };
 
     const res = await fetch(new URL('/api/about', BACKEND_HOST), fetchOptions);

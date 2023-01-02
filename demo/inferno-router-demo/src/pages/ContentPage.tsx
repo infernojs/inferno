@@ -22,6 +22,7 @@ export default class ContentPage extends Component<IProps> {
       headers: {
         Accept: 'application/json',
       },
+      signal: request?.signal
     };
 
     const res = await fetch(new URL(`/api/page/${params.slug}`, BACKEND_HOST), fetchOptions);
