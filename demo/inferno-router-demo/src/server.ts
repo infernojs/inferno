@@ -1,14 +1,12 @@
-import koa from 'koa';; // koa@2
+import koa from 'koa'; // koa@2
 import logger from 'koa-logger';
 import koaRouter from 'koa-router'; // koa-router@next
 import koaStatic from 'koa-static';
 import koaMount from 'koa-mount';
-import koaJSONBody from 'koa-json-body';
 import { renderToString } from 'inferno-server';
 import { StaticRouter, resolveLoaders, traverseLoaders } from 'inferno-router'
 import {Parcel} from '@parcel/core';
 import { createElement } from 'inferno-create-element';
-import path from 'path';
 
 const PORT = process.env.PORT || 3000;
 const BASE_URI = `http://localhost:${PORT}`;
