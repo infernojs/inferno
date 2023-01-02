@@ -295,4 +295,76 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     })
 
   });
+
+
+  it('Should only render one (1) component after click with subclass of Switch', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    class SubSwitch extends Switch {}
+    
+    const TEST = "ok";
+    const loaderFunc = async () => {
+      setDone();
+      return { message: TEST }
+    };
+
+    function RootComp() {
+      return <div id="root">ROOT</div>;
+    }
+
+    function CreateComp(props) {
+      const res = useLoaderData(props);
+      const err = useLoaderError(props);
+      return <div id="create">{res.message}</div>;
+    }
+
+    function PublishComp() {
+      return <div id="publish">PUBLISH</div>;
+    }
+
+    const tree = (
+      <MemoryRouter>
+        <div>
+          <nav>
+            <ul>
+              <li>
+                <NavLink exact to="/">
+                  Play
+                </NavLink>
+              </li>
+              <li id="createNav">
+                <NavLink to="/create">
+                  Create
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/publish">
+                  Publish
+                </NavLink>
+              </li>
+            </ul>
+          </nav>
+          <SubSwitch>
+            <Route exact path="/" component={RootComp} />
+            <Route path="/create" component={CreateComp} loader={loaderFunc} />
+            <Route path="/create" component={PublishComp} />
+          </SubSwitch>
+        </div>
+      </MemoryRouter>
+    );
+
+    render(tree, container);
+
+    expect(container.innerHTML).toContain("ROOT");
+
+    // Click create
+    const link = container.querySelector('#createNav');
+    link.firstChild.click();
+
+    // Wait until async loader has completed
+    await waitForRerender();
+
+    expect(container.querySelector('#create').innerHTML).toContain(TEST);
+    expect(container.querySelector('#publish')).toBeNull();
+  });
 });

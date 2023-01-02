@@ -73,7 +73,7 @@ export function traverseLoaders(location: string, tree: any, base?: string, pare
   if (isRouteButNotMatch) return outp;
 
   // Traverse children
-  const entries = traverseLoaders(location, tree.children || tree.props?.children, base, tree.type === Switch);
+  const entries = traverseLoaders(location, tree.children || tree.props?.children, base, tree.type?.prototype instanceof Switch);
   return [...outp, ...entries];
 }
 
