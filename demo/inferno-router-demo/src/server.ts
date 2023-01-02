@@ -100,7 +100,6 @@ function renderPage(html, initialData) {
   </body>
 </html>  
 `
-  return html;
 }
 
 frontend.get('(/page)?/:slug?', async (ctx) => {
