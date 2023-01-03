@@ -21,9 +21,9 @@ export type TLoaderProps<P extends Record<string, string>> = {
  */
 export type TLoader<P extends Record<string, string>, R extends Response> = ({params, request}: TLoaderProps<P>) => Promise<R>;
 
-export type TLoaderData = {
-  res?: Response;
-  err?: any;
+export type TLoaderData<Res = any, Err = any> = {
+  res?: Res;
+  err?: Err;
 }
 
 type TInitialData = Record<string, TLoaderData>; // key is route path to allow resolving

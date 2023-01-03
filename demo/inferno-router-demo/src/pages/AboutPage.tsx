@@ -10,11 +10,7 @@ import { useLoaderError } from 'inferno-router';
 
 const BACKEND_HOST = 'http://localhost:1234';
 
-interface IProps {
-  fetchData: any;
-}
-
-export default class AboutPage extends Component<IProps> {
+export default class AboutPage extends Component {
   static async fetchData(params, request) {
     const pageSlug = params.id;
 
@@ -44,8 +40,8 @@ export default class AboutPage extends Component<IProps> {
   }
 
   render(props, state, context) {
-    const data = useLoaderData(props) as any;
-    const err = useLoaderError(props) as any;
+    const data = useLoaderData<{ title: string, body: string}>(props);
+    const err = useLoaderError<{ message: string }>(props);
 
     return (
       <PageTemplate>
