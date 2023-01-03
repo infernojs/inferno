@@ -22,8 +22,8 @@ function extractFirstMatchFromChildren(pathname: string, children, router) {
   }
 
   return {
+    _child: children,
     match: getMatch(pathname, (children as any).props, router),
-    _child: children
   }
 }
 
@@ -46,8 +46,8 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     const { match, _child } = extractFirstMatchFromChildren(pathname, children, router);
 
     this.state = {
-      match,
       _child,
+      match,
     }
   }
 

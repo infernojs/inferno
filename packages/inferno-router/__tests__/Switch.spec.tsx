@@ -354,7 +354,7 @@ describe('Switch (jsx)', () => {
     const node = document.createElement('div');
   
     class Component1 extends Component<any, any> {
-      state = { foo: 0 }
+      public state = { foo: 0 }
       constructor(p, s) {
         super(p, s);
   

@@ -58,8 +58,8 @@ export class Router extends Component<IRouterProps, any> {
     super(props, context);
     const match = this.computeMatch(props.history.location.pathname);
     this.state = {
-      match,
       initialData: this.props.initialData,
+      match,
     };
   }
 
@@ -81,10 +81,10 @@ export class Router extends Component<IRouterProps, any> {
   public computeMatch(pathname): Match<{}> {
     return {
       isExact: pathname === '/',
+      loader:  undefined,
       params: {},
       path: '/',
       url: '/',
-      loader:  undefined,
     };
   }
 
@@ -134,8 +134,8 @@ export class Router extends Component<IRouterProps, any> {
         // in case they resolve out of order
         if (currentIteration === this._loaderIteration) {
           this.setState({
-            match,
             initialData,
+            match,
           });
         }
       });

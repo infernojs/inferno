@@ -33,7 +33,7 @@ export function matchPath(pathname, options: any): Match<any> | null {
     options = { path: options };
   }
 
-  const { path = '/', exact = false, strict = false, sensitive = false, loader = undefined, initialData = {} } = options;
+  const { path = '/', exact = false, strict = false, sensitive = false, loader, initialData = {} } = options;
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 
@@ -52,13 +52,13 @@ export function matchPath(pathname, options: any): Match<any> | null {
 
   return {
     isExact, // whether or not we matched exactly
+    loader,
+    loaderData,
     params: keys.reduce((memo, key, index) => {
       memo[key.name] = values[index];
       return memo;
     }, {}),
     path, // the path pattern used to match
     url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
-    loader,
-    loaderData,
   };
 }

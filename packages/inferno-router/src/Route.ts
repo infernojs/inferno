@@ -48,8 +48,8 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     super(props, context);
     const match = this.computeMatch(props, context.router);
     this.state = {
-      match,
       __loaderData__: match?.loaderData,
+      match,
     };
   }
 
@@ -100,8 +100,8 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     const match = this.computeMatch(nextProps, nextContext.router);
 
     this.setState({
-      match,
       __loaderData__: match?.loaderData,
+      match,
     });
   }
 

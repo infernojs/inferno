@@ -28,8 +28,8 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
   public getChildContext() {
     return {
       router: {
-        staticContext: this.props.context,
         initialData: this.props.initialData,
+        staticContext: this.props.context,
       }
     };
   }

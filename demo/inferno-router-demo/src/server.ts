@@ -79,7 +79,7 @@ api.get('/api/page/:slug', async (ctx) => {
         body: "This is a page."
       };
       resolve(null);
-    }, 300)
+    }, 1300)
   })
 });
 

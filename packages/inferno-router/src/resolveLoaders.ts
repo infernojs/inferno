@@ -27,27 +27,30 @@ export function traverseLoaders(location: string, tree: any, base?: string, pare
 
   if (Array.isArray(tree)) {
     let hasMatch = false;
-    const entries = tree.reduce((res, node) => {
+    const entriesOfArr = tree.reduce((res, node) => {
       if (parentIsSwitch && hasMatch) return res;
 
       const outpArr = traverseLoaders(location, node, base, node?.type === Switch);
+      if (parentIsSwitch && outpArr.length > 0) {
+        hasMatch = true;
+      }
       return [...res, ...outpArr];
     }, []);
-    return entries;
+    return entriesOfArr;
   }
 
 
-  let outp: TLoaderEntry[] = [];
+  const outp: TLoaderEntry[] = [];
   let isRouteButNotMatch = false;
   if (tree.props) {
     // TODO: If we traverse a switch, only the first match should be returned
     // TODO: Should we check if we are in Router? It is defensive and could save a bit of time, but is it worth it?
     const { path, exact = false, strict = false, sensitive = false } = tree.props;
     const match = matchPath(location, {
-      path,
       exact,
-      strict,
+      path,
       sensitive,
+      strict,
     });
 
     // So we can bail out of recursion it this was a Route which didn't match
@@ -60,11 +63,11 @@ export function traverseLoaders(location: string, tree: any, base?: string, pare
       const request = createClientSideRequest(location, controller.signal, base);
 
       outp.push({
-        path,
-        params,
-        request,
         controller,
         loader: tree.props.loader,
+        params,
+        path,
+        request,
       })
     }
   }
@@ -140,14 +143,14 @@ function createClientSideRequest(
   // }
 
   // Request is undefined when running tests
-  if (typeof Request === 'undefined' && process.env.NODE_ENV === 'test') {
+  if (process.env.NODE_ENV === 'test' && typeof Request === 'undefined') {
     // @ts-ignore
     global.Request = class Request {
-      url;
-      signal;
-      constructor(url: URL | string, init: RequestInit) {
-        this.url = url;
-        this.signal = init.signal;
+      public url;
+      public signal;
+      constructor(_url: URL | string, _init: RequestInit) {
+        this.url = _url;
+        this.signal = _init.signal;
       }
     }
   }
