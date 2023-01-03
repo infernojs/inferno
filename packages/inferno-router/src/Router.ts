@@ -52,6 +52,7 @@ export type RouterContext = { router: TContextRouter };
 export class Router extends Component<IRouterProps, any> {
   public unlisten;
   private _loaderFetchControllers: AbortController[] = [];
+  private _loaderIteration = 0;
 
   constructor(props: IRouterProps, context: { router: TContextRouter }) {
     super(props, context);
@@ -105,6 +106,13 @@ export class Router extends Component<IRouterProps, any> {
   }
 
   private _matchAndResolveLoaders(match?: Match<any>) {
+    // Keep track of invokation order
+    // Bumping the counter needs to be done first because calling abort
+    // triggers promise to resolve with "aborted"
+    this._loaderIteration = (this._loaderIteration + 1) % 10000;
+    const currentIteration = this._loaderIteration;
+
+
     for (const controller of this._loaderFetchControllers) {
       controller.abort();
     }
@@ -120,13 +128,16 @@ export class Router extends Component<IRouterProps, any> {
     // Store AbortController instances for each matched loader
     this._loaderFetchControllers = loaderEntries.map(e => e.controller);
 
-    // First execution of loaders
     resolveLoaders(loaderEntries)
       .then((initialData) => {
-        this.setState({
-          match,
-          initialData,
-        });
+        // On multiple pending navigations, only update interface with last
+        // in case they resolve out of order
+        if (currentIteration === this._loaderIteration) {
+          this.setState({
+            match,
+            initialData,
+          });
+        }
       });
   }
 
