@@ -8,8 +8,8 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "dev": "npm-run-all -l --parallel  dev:*",
-    "dev:frontend": "FORCE_COLOR=1 parcel",
-    "dev:backend": "FORCE_COLOR=1 ts-node-dev --respawn src/server.ts"
+    "dev:frontend": "cross-env FORCE_COLOR=1 parcel",
+    "dev:backend": "cross-env FORCE_COLOR=1 ts-node-dev --respawn src/server.ts"
   },
   "dependencies": {
     "inferno": "file:../../packages/inferno",
@@ -33,6 +33,7 @@
     "@parcel/transformer-typescript-types": "^2.8.1",
     "@types/node": "^18.11.9",
     "babel-plugin-inferno": "^6.5.0",
+    "cross-env": "^7.0.3",
     "jest-environment-jsdom": "^29.1.2",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.8.2",
