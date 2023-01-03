@@ -11,9 +11,7 @@ import { useLoaderError } from 'inferno-router';
 const BACKEND_HOST = 'http://localhost:1234';
 
 export default class AboutPage extends Component {
-  static async fetchData(params, request) {
-    const pageSlug = params.id;
-
+  static async fetchData({ params, request }) {
     const fetchOptions: RequestInit = {
       headers: {
         Accept: 'application/json',
