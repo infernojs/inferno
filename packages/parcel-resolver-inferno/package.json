@@ -1,0 +1,12 @@
+{
+  "name": "package-resolver-inferno",
+  "private": "true",
+  "version": "0.1.0",
+  "engines": {
+    "parcel": "2.x"
+  },
+  "main": "./index.js",
+  "dependencies": {
+    "@parcel/plugin": "^2.8.2"
+  }
+}
