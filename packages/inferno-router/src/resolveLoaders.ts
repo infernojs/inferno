@@ -20,8 +20,12 @@ type TLoaderEntry = {
   loader: (TLoaderProps) => Promise<TLoaderEntry>,
 }
 
+export function traverseLoaders(location: string, tree: any, base?: string): TLoaderEntry[] {
+  return _traverseLoaders(location, tree, base, false);
+}
+
 // Optionally pass base param during SSR to get fully qualified request URI passed to loader in request param
-export function traverseLoaders(location: string, tree: any, base?: string, parentIsSwitch = false): TLoaderEntry[] {
+function _traverseLoaders(location: string, tree: any, base?: string, parentIsSwitch = false): TLoaderEntry[] {
   // Make sure tree isn't null
   if (isNullOrUndef(tree)) return [];
 
@@ -30,7 +34,7 @@ export function traverseLoaders(location: string, tree: any, base?: string, pare
     const entriesOfArr = tree.reduce((res, node) => {
       if (parentIsSwitch && hasMatch) return res;
 
-      const outpArr = traverseLoaders(location, node, base, node?.type === Switch);
+      const outpArr = _traverseLoaders(location, node, base, node?.type === Switch);
       if (parentIsSwitch && outpArr.length > 0) {
         hasMatch = true;
       }
@@ -76,7 +80,7 @@ export function traverseLoaders(location: string, tree: any, base?: string, pare
   if (isRouteButNotMatch) return outp;
 
   // Traverse children
-  const entries = traverseLoaders(location, tree.children || tree.props?.children, base, tree.type?.prototype instanceof Switch);
+  const entries = _traverseLoaders(location, tree.children || tree.props?.children, base, tree.type?.prototype instanceof Switch);
   return [...outp, ...entries];
 }
 
