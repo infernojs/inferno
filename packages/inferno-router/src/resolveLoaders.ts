@@ -34,7 +34,7 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
     const entriesOfArr = tree.reduce((res, node) => {
       if (parentIsSwitch && hasMatch) return res;
 
-      const outpArr = _traverseLoaders(location, node, base, node?.type === Switch);
+      const outpArr = _traverseLoaders(location, node, base, node?.type?.prototype instanceof Switch);
       if (parentIsSwitch && outpArr.length > 0) {
         hasMatch = true;
       }
