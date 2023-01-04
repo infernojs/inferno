@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, rerender } from 'inferno';
 import { MemoryRouter, Route, Switch, NavLink, useLoaderData, useLoaderError } from 'inferno-router';
 // Cherry picked relative import so we don't get node-stuff from inferno-server in browser test
 import { createEventGuard } from './testUtils';
@@ -278,22 +278,17 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     const link = container.querySelector('#link');
     link.click();
 
-    // TODO: I believe this test gives a false pass, in a demo, the page switches too early
-    await new Promise((resolve) => {
-      // If router doesn't wait for loader the switch to /two would be performed
-      // during setTimeout.
-      setTimeout(async () => {
-        expect(container.innerHTML).toContain('one');
-        // Now loader can be allowed to complete
-        setSwitch();
-        // and now wait for the loader to complete
-        await waitForRerender();
-        // so /two is rendered
-        expect(container.innerHTML).toContain(TEST);
-        resolve();
-      }, 0)
-    })
-
+    // Complete any pending render and make sure we don't
+    // prematurely update view
+    rerender();
+    expect(container.innerHTML).toContain('one');
+    // Now loader can be allowed to complete
+    
+    setSwitch();
+    // and now wait for the loader to complete
+    await waitForRerender();
+    // so /two is rendered
+    expect(container.innerHTML).toContain(TEST);
   });
 
 
