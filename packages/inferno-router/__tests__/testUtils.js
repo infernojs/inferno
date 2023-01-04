@@ -1,3 +1,5 @@
+import { rerender } from 'inferno';
+
 export function createEventGuard() {
   const eventState = { done: false };
   const markEventCompleted = () => {
@@ -8,8 +10,11 @@ export function createEventGuard() {
     while (!eventState.done) {
       await new Promise((resolved) => setTimeout(resolved, 1));
     }
-    // Allow render loop to run
+    // Allow resolving promises to finish
     await new Promise((resolved) => setTimeout(resolved, 0));
+    
+    // Allow render loop to complete
+    rerender()
   }
 
   return [
