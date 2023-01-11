@@ -19,7 +19,7 @@ Features added from react-router@5:
 - NavLink supports passing function to style-attibute
 
 Features added from react-router@6:
-- Async data fetching before navigation using `loader`-attribute
+- Async data fetching before navigation using [`loader`-attribute](https://reactrouter.com/en/main/route/loader). See [demo](https://github.com/infernojs/inferno/tree/master/demo/inferno-router-demo).
 
 NOTE: While we want the basic fetch behaviour is the same as react-router@6, we are currently missing:
 - progress bar support
