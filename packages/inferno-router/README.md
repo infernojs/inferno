@@ -10,7 +10,7 @@ npm install inferno-router
 
 ## Features
 
-Same as react-router v4 (later updated to v5), except react-native support which we have tested at this point.
+Same as react-router v4 (later updated to v5), except react-native support.
 
 See official react-router [documentation](https://v5.reactrouter.com/web/guides/philosophy)
 
@@ -19,7 +19,7 @@ Features added from react-router@5:
 - NavLink supports passing function to style-attibute
 
 Features added from react-router@6:
-- Async data fetching before navigation using fetch-attribute
+- Async data fetching before navigation using `loader`-attribute
 
 NOTE: While we want the basic fetch behaviour is the same as react-router@6, we are currently missing:
 - progress bar support
@@ -37,10 +37,8 @@ const Home = () => (
   </div>
 );
 
-// API data fetcher that is completed before navigation is completed
-// The API returns { "body": "..." }
-async aboutApiCall({ params, request }) {
-  const fetchOptions: RequestInit = {
+async aboutLoader({ params, request }) {
+  const fetchOptions = {
     headers: {
       Accept: 'application/json',
     },
@@ -48,22 +46,12 @@ async aboutApiCall({ params, request }) {
   };
 
   const res = await fetch(new URL('/api/about', BACKEND_HOST), fetchOptions);
-
-  if (!res.ok) {
-    throw new Error('Error: Backend not responding in good order');
-  }
-
-  try {
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    throw new Error(`Error: ${err.message}`);
-  }
+  return await res.json();
 }
 
 const About = (props) => {
-  const data = useLoaderData<{ title: string, body: string}>(props);
-  const err = useLoaderError<{ message: string }>(props);
+  const data = useLoaderData(props);
+  const err = useLoaderError(props);
 
   return (
     <div>
@@ -117,7 +105,7 @@ const MyWebsite = () => (
       </ul>
       <hr/>
       <Route exact path="/" component={Home}/>
-      <Route path="/about" component={About} fetch={aboutApiCall} />
+      <Route path="/about" component={About} laoder={aboutLoader} />
       <Route path="/topics" component={Topics}/>
     </div>
   </BrowserRouter>
