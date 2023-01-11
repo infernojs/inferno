@@ -1,6 +1,6 @@
 # inferno-router
 
-Inferno Router is a routing library for [Inferno](https://github.com/infernojs/inferno). It is a port of [react-router 4](https://reacttraining.com/react-router/).  
+Inferno Router is a routing library for [Inferno](https://github.com/infernojs/inferno). It is a port of [react-router 4](https://v5.reactrouter.com/web/guides/quick-start) (later updated to v5).
 
 ## Install
 
@@ -10,16 +10,26 @@ npm install inferno-router
 
 ## Features
 
-Same as react-router v4, except react-native support which we have tested at this point.
+Same as react-router v4 (later updated to v5), except react-native support which we have tested at this point.
 
-See official react-router [documentation](https://reacttraining.com/react-router/native/guides/philosophy)
+See official react-router [documentation](https://v5.reactrouter.com/web/guides/philosophy)
 
+Features added from react-router@5:
+- NavLink supports passing function to className-attibute
+- NavLink supports passing function to style-attibute
+
+Features added from react-router@6:
+- Async data fetching before navigation using fetch-attribute
+
+NOTE: While we want the basic fetch behaviour is the same as react-router@6, we are currently missing:
+- progress bar support
+- form submission
 
 ## Client side usage
 
 ```js
 import { render } from 'inferno';
-import { BrowserRouter, Route, Link } from 'inferno-router';
+import { BrowserRouter, Route, Link, useLoaderData, useLoaderError } from 'inferno-router';
 
 const Home = () => (
   <div>
@@ -27,11 +37,41 @@ const Home = () => (
   </div>
 );
 
-const About = () => (
-  <div>
-    <h2>About</h2>
-  </div>
-);
+// API data fetcher that is completed before navigation is completed
+// The API returns { "body": "..." }
+async aboutApiCall({ params, request }) {
+  const fetchOptions: RequestInit = {
+    headers: {
+      Accept: 'application/json',
+    },
+    signal: request?.signal,
+  };
+
+  const res = await fetch(new URL('/api/about', BACKEND_HOST), fetchOptions);
+
+  if (!res.ok) {
+    throw new Error('Error: Backend not responding in good order');
+  }
+
+  try {
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    throw new Error(`Error: ${err.message}`);
+  }
+}
+
+const About = (props) => {
+  const data = useLoaderData<{ title: string, body: string}>(props);
+  const err = useLoaderError<{ message: string }>(props);
+
+  return (
+    <div>
+      <h2>About</h2>
+      <p>{data?.body || err?.message}</p>
+    </div>
+  )
+};
 
 const Topic = ({ match }) => (
   <div>
@@ -77,7 +117,7 @@ const MyWebsite = () => (
       </ul>
       <hr/>
       <Route exact path="/" component={Home}/>
-      <Route path="/about" component={About}/>
+      <Route path="/about" component={About} fetch={aboutApiCall} />
       <Route path="/topics" component={Topics}/>
     </div>
   </BrowserRouter>
