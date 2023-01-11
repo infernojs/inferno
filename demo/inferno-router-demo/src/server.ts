@@ -1,8 +1,8 @@
-import koa from 'koa'; // koa@2
-import logger from 'koa-logger';
-import koaRouter from 'koa-router'; // koa-router@next
-import koaStatic from 'koa-static';
-import koaMount from 'koa-mount';
+import * as koa from 'koa'; // koa@2
+import * as logger from 'koa-logger';
+import * as koaRouter from 'koa-router'; // koa-router@next
+import * as koaStatic from 'koa-static';
+import * as koaMount from 'koa-mount';
 import { renderToString } from 'inferno-server';
 import { StaticRouter, resolveLoaders, traverseLoaders } from 'inferno-router'
 import {Parcel} from '@parcel/core';
