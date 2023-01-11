@@ -38,9 +38,16 @@
     "jest-environment-jsdom": "^29.1.2",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.8.2",
-    "parcel-resolver-inferno": "file:../../packages/parcel-resolver-inferno",
     "process": "^0.11.10",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.4"
+  },
+  "alias": {
+    "inferno": "inferno/dist/index.dev.esm.js",
+    "inferno-animation": "inferno-animation/dist/index.dev.esm.js",
+    "inferno-create-element": "inferno-create-element/dist/index.dev.esm.js",
+    "inferno-hydrate": "inferno-hydrate/dist/index.dev.esm.js",
+    "inferno-router": "inferno-router/dist/index.dev.esm.js",
+    "inferno-server": "inferno-server/dist/index.dev.esm.js"
   }
 }
