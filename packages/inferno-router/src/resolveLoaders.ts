@@ -86,7 +86,37 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
 
 function resolveEntry(path, params, request, loader): Promise<any> {
   return loader({ params, request })
-    .then((res) => [path, { res }])
+    .then((res: any) => {
+      // This implementation is based on:
+      // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
+      
+      // Check if regular data object (from tests or initialData)
+      if (typeof res.json !== 'function') {
+        return [path, { res }];
+      }
+
+      const contentType = res.headers.get("Content-Type");
+      let dataPromise: Promise<any>;
+      // Check between word boundaries instead of startsWith() due to the last
+      // paragraph of https://httpwg.org/specs/rfc9110.html#field.content-type
+      if (contentType && /\bapplication\/json\b/.test(contentType)) {
+        dataPromise = res.json()
+      } else {
+        dataPromise = res.text();
+      }
+
+      return dataPromise.then((body) => {
+        // We got a JSON error
+        if (!res.ok) {
+          return [path, { err: body }]
+        }
+        // We got JSON response
+        return [path, { res: body }]
+      })
+      // Could not parse JSON
+      .catch((err) => [path, { err }])
+    })
+    // Could not fetch data
     .catch((err) => [path, { err }]);
 }
 

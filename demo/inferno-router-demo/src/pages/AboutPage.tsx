@@ -19,22 +19,7 @@ export default class AboutPage extends Component {
       signal: request?.signal,
     };
 
-    const res = await fetch(new URL('/api/about', BACKEND_HOST), fetchOptions);
-
-    if (res.ok) {
-      try {
-        const data = await res.json();
-        return data;
-      } catch (err) {
-        return {
-          title: `Error: ${err.message}`,
-        };
-      }
-    }
-
-    return {
-      title: 'Error: Backend not responding',
-    };
+    return fetch(new URL('/api/about', BACKEND_HOST), fetchOptions);
   }
 
   render(props, state, context) {

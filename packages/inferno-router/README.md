@@ -21,9 +21,11 @@ Features added from react-router@5:
 Features added from react-router@6:
 - Async data fetching before navigation using [`loader`-attribute](https://reactrouter.com/en/main/route/loader). See [demo](https://github.com/infernojs/inferno/tree/master/demo/inferno-router-demo).
 
-NOTE: While we want the basic fetch behaviour is the same as react-router@6, we are currently missing:
-- progress bar support
+NOTE: While we want the basic fetch behaviour to be the same as react-router@6, we are currently missing:
+- download progress support
 - form submission
+- redirect support
+- not exposing headers, type or status code to render method
 
 ## Client side usage
 
@@ -36,18 +38,6 @@ const Home = () => (
     <h2>Home</h2>
   </div>
 );
-
-async aboutLoader({ params, request }) {
-  const fetchOptions = {
-    headers: {
-      Accept: 'application/json',
-    },
-    signal: request?.signal,
-  };
-
-  const res = await fetch(new URL('/api/about', BACKEND_HOST), fetchOptions);
-  return await res.json();
-}
 
 const About = (props) => {
   const data = useLoaderData(props);
@@ -105,7 +95,7 @@ const MyWebsite = () => (
       </ul>
       <hr/>
       <Route exact path="/" component={Home}/>
-      <Route path="/about" component={About} laoder={aboutLoader} />
+      <Route path="/about" component={About} loader={() => fetch(new URL('/api/about', BACKEND_HOST))} />
       <Route path="/topics" component={Topics}/>
     </div>
   </BrowserRouter>

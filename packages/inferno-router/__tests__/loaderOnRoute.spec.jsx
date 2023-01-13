@@ -1,7 +1,7 @@
 import { render } from 'inferno';
 import { BrowserRouter, MemoryRouter, StaticRouter, Route, NavLink, useLoaderData, useLoaderError, resolveLoaders, traverseLoaders } from 'inferno-router';
 // Cherry picked relative import so we don't get node-stuff from inferno-server in browser test
-import { createEventGuard } from './testUtils';
+import { createEventGuard, createResponse } from './testUtils';
 
 describe('A <Route> with loader in a MemoryRouter', () => {
   let container;
@@ -416,6 +416,59 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
     expect(container.querySelector('#create').innerHTML).toContain(TEST);
   });
+
+  it('calls json() when response is received', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const TEXT = "ok";
+    const loaderFunc = async () => {
+      setDone();
+      const data = { message: TEXT };
+      return createResponse(data, 'json', 200);
+    }
+
+    render(
+      <BrowserRouter initialEntries={['/']}>
+        <Route path="/" render={(props) => {
+          const data = useLoaderData(props);
+          return <h1>{data?.message}</h1>
+        }} loader={loaderFunc} />
+      </BrowserRouter>,
+      container
+    );
+
+    // Wait until async loader has completed
+    await waitForRerender();
+
+    expect(container.innerHTML).toContain(TEXT);
+  });
+
+  it('calls text() when response is received', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const TEXT = "ok";
+    const loaderFunc = async () => {
+      setDone();
+      const data = TEXT;
+      return createResponse(data, 'text', 200);
+    }
+
+    render(
+      <BrowserRouter initialEntries={['/']}>
+        <Route path="/" render={(props) => {
+          const data = useLoaderData(props);
+          return <h1>{data}</h1>
+        }} loader={loaderFunc} />
+      </BrowserRouter>,
+      container
+    );
+
+    // Wait until async loader has completed
+    await waitForRerender();
+
+    expect(container.innerHTML).toContain(TEXT);
+  });
+
 });
 
 describe('A <Route> with loader in a StaticRouter', () => {
