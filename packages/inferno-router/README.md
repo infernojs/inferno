@@ -21,7 +21,7 @@ Features added from react-router@5:
 Features added from react-router@6:
 - Async data fetching before navigation using [`loader`-attribute](https://reactrouter.com/en/main/route/loader). See [demo](https://github.com/infernojs/inferno/tree/master/demo/inferno-router-demo).
 
-NOTE: While we want the basic fetch behaviour to be the same as react-router@6, we are currently missing:
+The following features aren't supported yet:
 - download progress support
 - form submission
 - redirect support
