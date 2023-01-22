@@ -5,7 +5,7 @@
 [![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/infernojs/inferno/blob/master/LICENSE.md)
 [![NPM](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 [![npm downloads](https://img.shields.io/npm/dm/inferno.svg?style=flat-square)](https://www.npmjs.org/package/inferno)
-[![Discord](https://img.shields.io/discord/825669396823015496.svg?style=flat-square&label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/pYFsMTYndu)
+[![Discord](https://img.shields.io/discord/825669396823015496.svg?style=flat-square&label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/SUKuhgaBpF)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/inferno/dist/inferno.min.js?compression=gzip)](https://unpkg.com/inferno/dist/inferno.min.js)
 [![Backers on Open Collective](https://opencollective.com/inferno/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/inferno/sponsors/badge.svg)](#sponsors)
 
@@ -44,10 +44,9 @@ The performance is achieved through multiple optimizations, for example:
 Since version 4 we have started running our test suite **without** any polyfills.
 Inferno is now part of [Saucelabs](https://saucelabs.com/) open source program and we use their service for executing the tests.
 
-InfernoJS natively supports the browsers listed below.
+InfernoJS is actively tested with browsers listed below, however it may run well on older browsers as well.
 
-[![Build Status](https://app.saucelabs.com/browser-matrix/Havunen.svg)](https://app.saucelabs.com/u/Havunen)
-
+[![Browser Test Status](https://app.saucelabs.com/browser-matrix/Havunen.svg)](https://app.saucelabs.com/open_sauce/user/Havunen/tests/vdc)
 
 ## Migration guides
 
@@ -156,9 +155,9 @@ render(
 
 ### Tear down
 
-To tear down inferno application you need to render null on root element. 
+To tear down inferno application you need to render null on root element.
 Rendering `null` will trigger unmount lifecycle hooks for whole vDOM tree and remove global event listeners.
-It is important to unmount unused vNode trees to free browser memory. 
+It is important to unmount unused vNode trees to free browser memory.
 
 ```jsx
 import { createTextVNode, render, Component } from 'inferno';
@@ -184,10 +183,10 @@ render(
 
 If you have built something using Inferno you can add them here:
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/xo5jfe64/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/4bha7kcg/)
 - [**Simple JS Counter** (@github/scorsi)](https://github.com/scorsi/simple-counter-inferno-cerebral-fusebox): SSR Inferno (view) + Cerebral (state manager) + FuseBox (build system/bundler)
-- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer) 
-(state machine library) 
+- [**Online interface to TMDb movie database** (@codesandbox.io)](https://codesandbox.io/s/9zjo5yx8po): Inferno + [Inferno hyperscript](https://github.com/infernojs/inferno) (view) + [Superagent](https://github.com/visionmedia/superagent) (network requests) + Web component ([custom elements v1](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) + [state-transducer](https://github.com/brucou/state-transducer)
+  (state machine library)
 - [**Lemmy - a self-hostable reddit alternative** (front end in Inferno)](https://github.com/dessalines/lemmy)
 
 ## Getting Started
@@ -1070,7 +1069,7 @@ $ npm run quick-test:browser-debug # Compiles all packages and runs browser test
 
 ## Community
 
-There is an InfernoJS Discord. You can join via [https://discord.gg/AW92rGbJ](https://discord.gg/pYFsMTYndu).
+There is an InfernoJS Discord. You can join via [https://discord.gg/SUKuhgaBpF](https://discord.gg/SUKuhgaBpF).
 
 
 ### Contributors
