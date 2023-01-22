@@ -1,9 +1,6 @@
 import { join } from 'path';
-
-import copyLib from 'fs-extra/lib/copy/index.js';
 import { readFileSync } from 'fs';
-
-const { copySync } = copyLib;
+import { copySync } from 'fs-extra/esm';
 
 const cwd = process.cwd();
 const pkgJSONtext = readFileSync(join(cwd, 'package.json'));
