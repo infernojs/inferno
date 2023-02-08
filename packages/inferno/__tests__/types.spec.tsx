@@ -217,4 +217,21 @@ describe('top level context', () => {
       render(<div ref={obj.refWrap}></div>, container);
     });
   });
+
+  it('Should allow setting native events null', function () {
+    render(<div onclick={null} />, container);
+  });
+
+  it('Should allow setting linkEvent as native event handler', function () {
+    const myObj: { a: number } = {
+      a: 1
+    };
+
+    function myFunction(data, ev) {
+      expect(data.a).toBe(1);
+      expect(ev).toBeDefined();
+    }
+
+    render(<div onclick={linkEvent(myObj, myFunction)} />, container);
+  });
 });

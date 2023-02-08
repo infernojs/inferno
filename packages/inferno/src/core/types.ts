@@ -422,6 +422,116 @@ export declare namespace Inferno {
 
     // Transition Events
     onTransitionEnd?: TransitionEventHandler<T> | undefined;
+
+    // NATIVE EVENTS
+    // Clipboard Events
+    oncopy?: ClipboardEventHandler<T> | undefined;
+    oncut?: ClipboardEventHandler<T> | undefined;
+    onpaste?: ClipboardEventHandler<T> | undefined;
+
+    // Composition Events
+    oncompositionend?: CompositionEventHandler<T> | undefined;
+    oncompositionstart?: CompositionEventHandler<T> | undefined;
+    oncompositionupdate?: CompositionEventHandler<T> | undefined;
+
+    // Focus Events
+    onfocus?: FocusEventHandler<T> | undefined;
+    onblur?: FocusEventHandler<T> | undefined;
+
+    // Form Events
+    onchange?: FormEventHandler<T> | undefined | null;
+    onbeforeinput?: FormEventHandler<T> | undefined;
+    oninput?: FormEventHandler<T> | undefined;
+    onreset?: FormEventHandler<T> | undefined;
+    onsubmit?: FormEventHandler<T> | undefined;
+    oninvalid?: FormEventHandler<T> | undefined;
+
+    // Image Events
+    onload?: InfernoEventHandler<T> | undefined;
+    onerror?: InfernoEventHandler<T> | undefined; // also a Media Event
+
+    // Keyboard Events
+    onkeydown?: KeyboardEventHandler<T> | undefined;
+    onkeypress?: KeyboardEventHandler<T> | undefined;
+    onkeyup?: KeyboardEventHandler<T> | undefined;
+
+    // Media Events
+    onabort?: InfernoEventHandler<T> | undefined;
+    oncanplay?: InfernoEventHandler<T> | undefined;
+    oncanplaythrough?: InfernoEventHandler<T> | undefined;
+    ondurationchange?: InfernoEventHandler<T> | undefined;
+    onemptied?: InfernoEventHandler<T> | undefined;
+    onencrypted?: InfernoEventHandler<T> | undefined;
+    onended?: InfernoEventHandler<T> | undefined;
+    onloadeddata?: InfernoEventHandler<T> | undefined;
+    onloadedmetadata?: InfernoEventHandler<T> | undefined;
+    onloadstart?: InfernoEventHandler<T> | undefined;
+    onpause?: InfernoEventHandler<T> | undefined;
+    onplay?: InfernoEventHandler<T> | undefined;
+    onplaying?: InfernoEventHandler<T> | undefined;
+    onprogress?: InfernoEventHandler<T> | undefined;
+    onratechange?: InfernoEventHandler<T> | undefined;
+    onseeked?: InfernoEventHandler<T> | undefined;
+    onseeking?: InfernoEventHandler<T> | undefined;
+    onstalled?: InfernoEventHandler<T> | undefined;
+    onsuspend?: InfernoEventHandler<T> | undefined;
+    ontimeupdate?: InfernoEventHandler<T> | undefined;
+    onvolumechange?: InfernoEventHandler<T> | undefined;
+    onwaiting?: InfernoEventHandler<T> | undefined;
+
+    // MouseEvents
+    onauxclick?: MouseEventHandler<T> | undefined;
+    onclick?: MouseEventHandler<T> | undefined;
+    oncontextmenu?: MouseEventHandler<T> | undefined;
+    ondblclick?: MouseEventHandler<T> | undefined;
+    ondrag?: DragEventHandler<T> | undefined;
+    ondragend?: DragEventHandler<T> | undefined;
+    ondragenter?: DragEventHandler<T> | undefined;
+    ondragexit?: DragEventHandler<T> | undefined;
+    ondragLeave?: DragEventHandler<T> | undefined;
+    ondragover?: DragEventHandler<T> | undefined;
+    ondragstart?: DragEventHandler<T> | undefined;
+    ondrop?: DragEventHandler<T> | undefined;
+    onmousedown?: MouseEventHandler<T> | undefined;
+    onmouseenter?: MouseEventHandler<T> | undefined;
+    onmouseleave?: MouseEventHandler<T> | undefined;
+    onmousemove?: MouseEventHandler<T> | undefined;
+    onmouseout?: MouseEventHandler<T> | undefined;
+    onmouseover?: MouseEventHandler<T> | undefined;
+    onmouseup?: MouseEventHandler<T> | undefined;
+
+    // Selection Events
+    onselect?: InfernoEventHandler<T> | undefined;
+
+    // Touch Events
+    ontouchcancel?: TouchEventHandler<T> | undefined;
+    ontouchend?: TouchEventHandler<T> | undefined;
+    ontouchmove?: TouchEventHandler<T> | undefined;
+    ontouchstart?: TouchEventHandler<T> | undefined;
+
+    // Pointer Events
+    onpointerdown?: PointerEventHandler<T> | undefined;
+    onpointermove?: PointerEventHandler<T> | undefined;
+    onpointerup?: PointerEventHandler<T> | undefined;
+    onpointercancel?: PointerEventHandler<T> | undefined;
+    onpointerenter?: PointerEventHandler<T> | undefined;
+    onpointerleave?: PointerEventHandler<T> | undefined;
+    onpointerover?: PointerEventHandler<T> | undefined;
+    onpointerout?: PointerEventHandler<T> | undefined;
+
+    // UI Events
+    onscroll?: UIEventHandler<T> | undefined;
+
+    // Wheel Events
+    onwheel?: WheelEventHandler<T> | undefined;
+
+    // Animation Events
+    onanimationstart?: AnimationEventHandler<T> | undefined;
+    onanimationend?: AnimationEventHandler<T> | undefined;
+    onanimationiteration?: AnimationEventHandler<T> | undefined;
+
+    // Transition Events
+    ontransitionend?: TransitionEventHandler<T> | undefined;
   }
 
   // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
