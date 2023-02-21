@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 const BASE_URI = `http://localhost:${PORT}`;
 
 // Parcel watch subscription and bundle output
+// NOTE: Currently deactivated watcher (the following line and `bundler.watch` further down)
 // let subscription;
 let bundles;
 

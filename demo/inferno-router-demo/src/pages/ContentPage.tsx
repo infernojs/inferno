@@ -5,9 +5,6 @@ import { useLoaderData } from 'inferno-router';
 import './AboutPage.scss';
 import { useLoaderError } from 'inferno-router';
 
-// const env: any = (typeof window === 'undefined' ? process.env : (window as any).__env__)
-// const { FRONTEND_BASE_URI } = env
-
 const BACKEND_HOST = 'http://localhost:1234';
 
 export default class ContentPage extends Component {
@@ -24,7 +21,7 @@ export default class ContentPage extends Component {
     return fetch(new URL(`/api/page/${params.slug}`, BACKEND_HOST), fetchOptions);
   }
 
-  render(props, state, context) {
+  render(props) {
     const data = useLoaderData<{ title: string, body: string}>(props);
     const err = useLoaderError<{ message: string }>(props);
 

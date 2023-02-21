@@ -5,13 +5,10 @@ import { useLoaderData } from 'inferno-router';
 import './AboutPage.scss';
 import { useLoaderError } from 'inferno-router';
 
-// const env: any = (typeof window === 'undefined' ? process.env : (window as any).__env__)
-// const { FRONTEND_BASE_URI } = env
-
 const BACKEND_HOST = 'http://localhost:1234';
 
 export default class AboutPage extends Component {
-  static async fetchData({ params, request }) {
+  static async fetchData({ request }) {
     const fetchOptions: RequestInit = {
       headers: {
         Accept: 'application/json',
@@ -22,7 +19,7 @@ export default class AboutPage extends Component {
     return fetch(new URL('/api/about', BACKEND_HOST), fetchOptions);
   }
 
-  render(props, state, context) {
+  render(props) {
     const data = useLoaderData<{ title: string, body: string}>(props);
     const err = useLoaderError<{ message: string }>(props);
 
