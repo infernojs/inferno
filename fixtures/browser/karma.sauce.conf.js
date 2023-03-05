@@ -39,7 +39,7 @@ const customLaunchers = {
     platform: 'Windows 11',
     browserVersion: 'latest',
     'sauce:options': {
-      geckodriverVersion: '0.32.2'
+      geckodriverVersion: '0.30.0'
     }
   },
   kaIos2: {
@@ -48,7 +48,7 @@ const customLaunchers = {
     platform: 'Windows 11',
     browserVersion: '48',
     'sauce:options': {
-      geckodriverVersion: '0.32.2'
+      geckodriverVersion: '0.30.0'
     }
   },
   kaIos3: {
@@ -57,7 +57,7 @@ const customLaunchers = {
     platform: 'Windows 11',
     browserVersion: '84',
     'sauce:options': {
-      geckodriverVersion: '0.32.2'
+      geckodriverVersion: '0.30.0'
     }
   }
 };
