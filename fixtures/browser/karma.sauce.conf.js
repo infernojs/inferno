@@ -45,7 +45,7 @@ const customLaunchers = {
   kaIos3: {
     base: 'SauceLabs',
     browserName: 'firefox',
-    platform: 'Linux',
+    platform: 'Windows 10',
     browserVersion: '84',
     'sauce:options': {
       geckodriverVersion: '0.30.0'
@@ -54,7 +54,7 @@ const customLaunchers = {
   kaIos2: {
     base: 'SauceLabs',
     browserName: 'firefox',
-    platform: 'Linux',
+    platform: 'Windows 10',
     browserVersion: '48'
   }
 };
