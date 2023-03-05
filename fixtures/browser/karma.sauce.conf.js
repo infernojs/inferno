@@ -52,10 +52,10 @@ const customLaunchers = {
     }
   },
   kaIos2: {
-    base: 'SauceLabs',
+    name: 'KaiOs2',
     browserName: 'firefox',
-    platform: 'Windows 10',
-    browserVersion: '48'
+    platform: 'Linux',
+    version: '45'
   }
 };
 
