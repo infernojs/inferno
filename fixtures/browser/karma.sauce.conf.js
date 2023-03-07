@@ -42,7 +42,7 @@ const customLaunchers = {
       geckodriverVersion: '0.30.0'
     }
   },
-  kaIos3: {
+  slFirefox_84: {
     base: 'SauceLabs',
     browserName: 'firefox',
     platform: 'Windows 10',
@@ -51,16 +51,12 @@ const customLaunchers = {
       geckodriverVersion: '0.30.0'
     }
   },
-  kaIos2: {
-
+  slFireFox_45: {
+    base: 'SauceLabs',
     name: 'firefox',
-
     browserName: 'firefox',
-
     platform: 'Linux',
-
     version: '45'
-
   }
 };
 
