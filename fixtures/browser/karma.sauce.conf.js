@@ -50,6 +50,17 @@ const customLaunchers = {
     'sauce:options': {
       geckodriverVersion: '0.30.0'
     }
+  },
+  kaIos2: {
+
+    name: 'firefox',
+
+    browserName: 'firefox',
+
+    platform: 'Linux',
+
+    version: '45'
+
   }
 };
 
