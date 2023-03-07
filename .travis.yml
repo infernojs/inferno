@@ -5,7 +5,7 @@ notifications:
   email:
     on_success: change
     on_failure: always
-dist: focal
+dist: jammy
 jobs:
   include:
   - stage: "Tests"
