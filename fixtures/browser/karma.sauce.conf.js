@@ -51,12 +51,12 @@ const customLaunchers = {
       geckodriverVersion: '0.30.0'
     }
   },
-  slFireFox52: {
+  slFireFox60: {
     base: 'SauceLabs',
     name: 'firefox',
     browserName: 'firefox',
     platform: 'Windows 11',
-    version: '52'
+    version: '60'
   }
 };
 
