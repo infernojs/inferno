@@ -1,5 +1,4 @@
 import { render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 import { createClass } from 'inferno-create-class';
 
 describe('Components createClass (JSX)', () => {

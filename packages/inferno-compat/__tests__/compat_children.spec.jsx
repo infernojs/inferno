@@ -1,4 +1,3 @@
-import { innerHTML } from 'inferno-utils';
 import { Component, createElement, isValidElement, render } from 'inferno-compat';
 
 describe('Compat Children', () => {

@@ -1,5 +1,4 @@
 import { render } from 'inferno-compat';
-import { innerHTML } from 'inferno-utils';
 
 describe('Compat - styles', () => {
   let container;

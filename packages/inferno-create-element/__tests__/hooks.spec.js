@@ -1,6 +1,5 @@
 import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
 
 describe('lifecycle hooks', () => {
   describe('Stateless component hooks', () => {

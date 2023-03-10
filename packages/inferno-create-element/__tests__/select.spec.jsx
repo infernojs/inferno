@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 
 describe('Select / select multiple (JSX)', () => {
   let container;

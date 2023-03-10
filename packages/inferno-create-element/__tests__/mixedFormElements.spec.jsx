@@ -1,5 +1,4 @@
 import { render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 
 describe('HTML Form Elements', () => {
   let container;

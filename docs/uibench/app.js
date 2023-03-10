@@ -1,4 +1,4 @@
-import { createTextVNode, linkEvent, version, render } from 'inferno';
+import { linkEvent, version, render } from 'inferno';
 
 uibench.init('Inferno', version);
 

@@ -1,6 +1,5 @@
 import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
 
 describe('Components (non-JSX)', () => {
   let container;
@@ -235,8 +234,8 @@ describe('Components (non-JSX)', () => {
               'label',
               {},
               createElement('input', {
-                type: 'password',
-                disabled: isDisabled
+                disabled: isDisabled,
+                type: 'password'
               }),
               'The title is ',
               title
@@ -249,7 +248,7 @@ describe('Components (non-JSX)', () => {
     it('should render a basic component with inputs #3 #3', () => {
       const template = (Component, title, isDisabled) => createElement('div', null, createElement(Component, { title, isDisabled }));
       render(template(BasicComponent1d, 'abc', true), container);
-      expect(container.innerHTML).toBe('<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>');
+      expect(container.innerHTML).toBe('<div><div class="basic"><label><input disabled="" type="password">The title is abc</label></div></div>');
       expect(container.querySelector('input').disabled).toBe(true);
 
       render(template(BasicComponent1d, '123', false), container);

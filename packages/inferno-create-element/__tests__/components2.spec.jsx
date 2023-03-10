@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import { innerHTML } from 'inferno-utils';
 /* These must be in their own files for test to reproduce */
 import { ParentFirstCommon } from './data/common-render/parentfirstcommon';
 import { ParentSecondCommon } from './data/common-render/parentsecondcommon';

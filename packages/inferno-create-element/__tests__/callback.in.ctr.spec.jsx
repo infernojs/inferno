@@ -1,6 +1,5 @@
 import { Component, render, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
 import { combineFrom } from 'inferno-shared';
 
 describe('Callbacks in constructor', () => {
@@ -24,7 +23,7 @@ describe('Callbacks in constructor', () => {
         const iddy = props.conf.key;
         return (
           <li>
-            <input type="checkbox" checked={props.checked} id={iddy} onClick={props.onChange} />
+            <input id={iddy} type="checkbox" checked={props.checked} onClick={props.onChange} />
             <label for={iddy}>{props.conf.label}</label>
             <div>{props.children}</div>
           </li>
@@ -70,18 +69,6 @@ describe('Callbacks in constructor', () => {
                       onNewValue: (newValue) => this.handleNewValue(index, newValue)
                     })
                   );
-
-                console.log('CHIIIIILD', child);
-
-                // return (
-                //   <li>
-                //     <input
-                //       type="checkbox"
-                //       checked={conf.value}
-                //       onChange={(event) => this.handleCheck(index, event.target.checked)}
-                //     /><label>{conf.label}</label>
-                //     <div>{child}</div>
-                //   </li>);
 
                 return (
                   <InfoLi conf={conf} checked={conf.value} onChange={(event) => this.handleCheck(index, event.target.checked)}>
@@ -156,7 +143,7 @@ describe('Callbacks in constructor', () => {
 
       // Renders correctly
       expect(container.innerHTML).toBe(
-        '<ol><li><input type="checkbox" id="customProxyStringRaw"><label for="customProxyStringRaw">Use proxy? (click this)</label><div></div></li><li><input type="checkbox" id="This one is needed for reproduction too!"><label for="This one is needed for reproduction too!">needed too</label><div></div></li></ol>'
+        '<ol><li><input id="customProxyStringRaw" type="checkbox"><label for="customProxyStringRaw">Use proxy? (click this)</label><div></div></li><li><input id="This one is needed for reproduction too!" type="checkbox"><label for="This one is needed for reproduction too!">needed too</label><div></div></li></ol>'
       );
 
       let checkBoxes = container.querySelectorAll('input');

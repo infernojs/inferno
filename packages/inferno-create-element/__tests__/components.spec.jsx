@@ -1,6 +1,5 @@
 import { Component, render, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
 
 describe('Components (JSX)', () => {
   let container;

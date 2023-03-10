@@ -1,6 +1,6 @@
 import { Component, createTextVNode, createVNode, render } from 'inferno';
 import { renderToString } from 'inferno-server';
-import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
+import { createContainerWithHTML, validateNodeTree } from 'inferno-utils';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { hydrate } from 'inferno-hydrate';
 

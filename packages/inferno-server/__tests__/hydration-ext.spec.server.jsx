@@ -1,5 +1,5 @@
 import { Component, createTextVNode, render } from 'inferno';
-import { createContainerWithHTML, innerHTML } from 'inferno-utils';
+import { createContainerWithHTML } from 'inferno-utils';
 import { hydrate } from 'inferno-hydrate';
 
 class Comp extends Component {

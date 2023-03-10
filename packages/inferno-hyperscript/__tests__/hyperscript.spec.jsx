@@ -1,5 +1,4 @@
 import { h } from 'inferno-hyperscript';
-import { innerHTML } from 'inferno-utils';
 import { Component, createRef, forwardRef, Fragment, render } from 'inferno';
 
 describe('HyperScript (non-JSX)', () => {

@@ -1,6 +1,5 @@
 import { render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('Elements (JSX)', () => {
