@@ -41,7 +41,7 @@ export function createElement<P>(
   let ref: any = null;
   let key: Key = null;
   let className: string | null = null;
-  let flags: VNodeFlags = 0;
+  let flags: VNodeFlags;
   let newProps;
   let childLen = arguments.length - 2;
 

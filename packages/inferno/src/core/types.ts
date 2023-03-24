@@ -1984,7 +1984,6 @@ type InfernoManagedAttributes<C, P> = C extends { defaultProps: infer D } ? Defa
 
 declare global {
   namespace JSX {
-    type Element = Inferno.InfernoElement<any> | Inferno.InfernoNode;
     interface ElementClass extends IComponent<any, any> {
       render(nextProps, nextState, nextContext): Inferno.InfernoNode;
     }
