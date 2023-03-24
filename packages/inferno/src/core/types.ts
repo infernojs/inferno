@@ -1364,6 +1364,7 @@ export declare namespace Inferno {
     required?: boolean | null | undefined;
     size?: number | null | undefined;
     value?: string | ReadonlyArray<string> | number | null | undefined;
+    selectedIndex?: number | null | undefined;
   }
 
   interface SourceHTMLAttributes<T> extends HTMLAttributes<T> {
