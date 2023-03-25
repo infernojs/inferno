@@ -13,7 +13,8 @@ type InfernoChild = Inferno.InfernoElement | InfernoText;
 interface InfernoNodeArray extends Array<InfernoNode> {}
 
 export type InfernoFragment = {} | InfernoNodeArray;
-export type InfernoNode = InfernoChild | InfernoFragment | boolean | null | undefined;
+export type InfernoSingleNode = InfernoChild | boolean | null | undefined;
+export type InfernoNode = InfernoSingleNode | InfernoFragment;
 
 // IComponent is defined here, instead of Component to de-couple implementation from interface
 export interface IComponent<P, S> {
