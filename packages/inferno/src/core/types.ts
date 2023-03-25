@@ -2181,6 +2181,37 @@ declare global {
       tspan: Inferno.SVGProps<SVGTSpanElement>;
       use: Inferno.SVGProps<SVGUseElement>;
       view: Inferno.SVGProps<SVGViewElement>;
+
+      // MathML
+      maction: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      math: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      menclose: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      merror: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mfenced: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mfrac: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mi: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mmultiscripts: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mn: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mo: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mover: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mpadded: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mphantom: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mroot: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mrow: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      ms: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mspace: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      msqrt: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mstyle: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      msub: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      msubsup: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      msup: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mtable: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mtd: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mtext: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      mtr: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      munder: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      munderover: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      semantics: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
     }
   }
 }

@@ -4,10 +4,10 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 describe('Portal spec', () => {
   let container;
 
-  function render(input, container, cb) {
-    _render(input, container, cb);
+  function render(input, $container, cb?) {
+    _render(input, $container, cb);
 
-    const rootInput = container.$V;
+    const rootInput = $container.$V;
 
     if (rootInput && rootInput.flags & VNodeFlags.Component) {
       return rootInput.children;
@@ -22,21 +22,23 @@ describe('Portal spec', () => {
   });
 
   afterEach(function () {
-    render(null, container);
+    render(null, container, null);
     container.innerHTML = '';
     document.body.removeChild(container);
   });
 
-  let svgEls, htmlEls, mathEls;
-  let expectSVG = { ref: (el) => svgEls.push(el) };
-  let expectHTML = { ref: (el) => htmlEls.push(el) };
-  let expectMath = { ref: (el) => mathEls.push(el) };
+  let svgEls;
+  let htmlEls;
+  let mathEls;
+  const expectSVG = { ref: (el) => svgEls.push(el) };
+  const expectHTML = { ref: (el) => htmlEls.push(el) };
+  const expectMath = { ref: (el) => mathEls.push(el) };
 
-  let usePortal = function (tree) {
+  const usePortal = function (tree) {
     return createPortal(tree, document.createElement('div'));
   };
 
-  let assertNamespacesMatch = function (tree) {
+  const assertNamespacesMatch = function (tree) {
     svgEls = [];
     htmlEls = [];
     mathEls = [];
@@ -48,16 +50,13 @@ describe('Portal spec', () => {
     htmlEls.forEach((el) => {
       expect(el.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
     });
-    // mathEls.forEach(el => {
-    //   expect(el.namespaceURI).toBe('http://www.w3.org/1998/Math/MathML');
-    // });
 
     render(null, container);
     expect(container.innerHTML).toBe('');
   };
 
   it('should mount/unmount one portal', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
     render(<div>{createPortal(<div>portal</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal</div>');
@@ -69,20 +68,20 @@ describe('Portal spec', () => {
   });
 
   it('Should allow Arrays as portal content', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
     let mountCount = 0;
     let unmountCount = 0;
 
     class Tester extends Component {
-      componentWillUnmount() {
+      public componentWillUnmount() {
         unmountCount++;
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         mountCount++;
       }
 
-      render({ children }) {
+      public render({ children }) {
         return children;
       }
     }
@@ -116,20 +115,20 @@ describe('Portal spec', () => {
   });
 
   it('Should allow Fragments as portal content', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
     let mountCount = 0;
     let unmountCount = 0;
 
     class Tester extends Component {
-      componentWillUnmount() {
+      public componentWillUnmount() {
         unmountCount++;
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         mountCount++;
       }
 
-      render({ children }) {
+      public render({ children }) {
         return children;
       }
     }
@@ -183,7 +182,7 @@ describe('Portal spec', () => {
   });
 
   it('Should mount/render/patch one portal', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
     render(<div>{createPortal(<div>portal</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal</div>');
@@ -211,8 +210,8 @@ describe('Portal spec', () => {
   });
 
   it('Should move portal based on container', () => {
-    let portalContainer = document.createElement('div');
-    let portalContainer2 = document.createElement('div');
+    const portalContainer = document.createElement('div');
+    const portalContainer2 = document.createElement('div');
 
     render(<div>{createPortal(<div>portal</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal</div>');
@@ -244,43 +243,51 @@ describe('Portal spec', () => {
   });
 
   it('should render many portals', () => {
-    let portalContainer1 = document.createElement('div');
-    let portalContainer2 = document.createElement('div');
+    const portalContainer1 = document.createElement('div');
+    const portalContainer2 = document.createElement('div');
 
-    let ops = [];
+    const ops: string[] = [];
 
-    class Child extends Component {
-      componentDidMount() {
+    interface ChildProps {
+      name: string
+    }
+
+    class Child extends Component<ChildProps> {
+      public componentDidMount() {
         ops.push(`${this.props.name} componentDidMount`);
       }
 
-      componentDidUpdate() {
+      public componentDidUpdate() {
         ops.push(`${this.props.name} componentDidUpdate`);
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         ops.push(`${this.props.name} componentWillUnmount`);
       }
 
-      render() {
+      public render() {
         return <div>{this.props.name}</div>;
       }
     }
 
-    class Parent extends Component {
-      componentDidMount() {
+    interface ParentProps {
+      step: string
+    }
+
+    class Parent extends Component<ParentProps> {
+      public componentDidMount() {
         ops.push(`Parent:${this.props.step} componentDidMount`);
       }
 
-      componentDidUpdate() {
+      public componentDidUpdate() {
         ops.push(`Parent:${this.props.step} componentDidUpdate`);
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         ops.push(`Parent:${this.props.step} componentWillUnmount`);
       }
 
-      render() {
+      public render() {
         const { step } = this.props;
 
         const portalOne = createPortal(<Child key="b" name={`portal1[0]:${step}`} />, portalContainer1);
@@ -349,9 +356,9 @@ describe('Portal spec', () => {
   });
 
   it('should render nested portals', () => {
-    let portalContainer1 = document.createElement('div');
-    let portalContainer2 = document.createElement('div');
-    let portalContainer3 = document.createElement('div');
+    const portalContainer1 = document.createElement('div');
+    const portalContainer2 = document.createElement('div');
+    const portalContainer3 = document.createElement('div');
 
     render(
       <div>
@@ -382,7 +389,7 @@ describe('Portal spec', () => {
   });
 
   it('should reconcile portal children', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
     render(<div>{createPortal(<div>portal:1</div>, portalContainer)}</div>, container);
     expect(portalContainer.innerHTML).toBe('<div>portal:1</div>');
@@ -592,22 +599,22 @@ describe('Portal spec', () => {
   });
 
   it('should pass portal context when rendering subtree elsewhere', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
     class Comp extends Component {
-      render() {
+      public render() {
         return <div>{this.context.foo}</div>;
       }
     }
 
     class Parent extends Component {
-      getChildContext() {
+      public getChildContext() {
         return {
           foo: 'bar'
         };
       }
 
-      render() {
+      public render() {
         return createPortal(<Comp />, portalContainer);
       }
     }
@@ -618,31 +625,31 @@ describe('Portal spec', () => {
   });
 
   it('should update portal context if it changes due to setState', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
     class Comp extends Component {
-      render() {
+      public render() {
         return <div>{this.context.foo + '-' + this.context.getFoo()}</div>;
       }
     }
 
     class Parent extends Component {
-      state = {
+      public state = {
         bar: 'initial'
       };
 
-      getChildContext() {
+      public getChildContext() {
         return {
           foo: this.state.bar,
           getFoo: () => this.state.bar
         };
       }
 
-      render() {
+      public render() {
         return createPortal(<Comp />, portalContainer);
       }
     }
-    let instance = render(<Parent />, container);
+    const instance = render(<Parent />, container);
     expect(portalContainer.innerHTML).toBe('<div>initial-initial</div>');
     expect(container.innerHTML).toBe('');
 
@@ -658,23 +665,27 @@ describe('Portal spec', () => {
   });
 
   it('should update portal context if it changes due to re-render', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
     class Comp extends Component {
-      render() {
+      public render() {
         return <div>{this.context.foo + '-' + this.context.getFoo()}</div>;
       }
     }
 
-    class Parent extends Component {
-      getChildContext() {
+    interface ParentProps {
+      bar: string
+    }
+
+    class Parent extends Component<ParentProps> {
+      public getChildContext() {
         return {
           foo: this.props.bar,
           getFoo: () => this.props.bar
         };
       }
 
-      render() {
+      public render() {
         return createPortal(<Comp />, portalContainer);
       }
     }
@@ -693,21 +704,25 @@ describe('Portal spec', () => {
   });
 
   it('should update portal context if it changes due to re-render - functional comps', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
-    function Comp(props, { foo, getFoo }) {
+    function Comp(_, { foo, getFoo }) {
       return <div>{foo + '-' + getFoo()}</div>;
     }
 
-    class Parent extends Component {
-      getChildContext() {
+    interface ParentProps {
+      bar: string
+    }
+
+    class Parent extends Component<ParentProps> {
+      public getChildContext() {
         return {
           foo: this.props.bar,
           getFoo: () => this.props.bar
         };
       }
 
-      render() {
+      public render() {
         return createPortal(<Comp />, portalContainer);
       }
     }
@@ -726,7 +741,7 @@ describe('Portal spec', () => {
   });
 
   it('should update portal context if it changes due to re-render - functional comps #2', () => {
-    let portalContainer = document.createElement('div');
+    const portalContainer = document.createElement('div');
 
     function Comp({ foo }) {
       return <div>{foo}</div>;
@@ -751,7 +766,7 @@ describe('Portal spec', () => {
 
   describe('Changing portal to other type of vNode', () => {
     it('Should remove portal from its container when its replaced by div', () => {
-      let portalContainer = document.createElement('div');
+      const portalContainer = document.createElement('div');
 
       function Comp({ foo }) {
         return <div>{foo}</div>;
@@ -787,10 +802,10 @@ describe('Portal spec', () => {
     });
 
     it('Should remove portal from its container when its replaced by class component', () => {
-      let portalContainer = document.createElement('div');
+      const portalContainer = document.createElement('div');
 
       class Comp extends Component {
-        render({ children }) {
+        public render({ children }) {
           return <div>{children}</div>;
         }
       }
@@ -829,7 +844,7 @@ describe('Portal spec', () => {
     });
 
     it('Should remove portal from its container when its replaced by functional component', () => {
-      let portalContainer = document.createElement('div');
+      const portalContainer = document.createElement('div');
 
       function Comp({ children }) {
         return <div>{children}</div>;
@@ -869,7 +884,7 @@ describe('Portal spec', () => {
     });
 
     it('Should remove portal from its container when its replaced by invalid node', () => {
-      let portalContainer = document.createElement('div');
+      const portalContainer = document.createElement('div');
 
       function Comp({ children }) {
         return <div>{children}</div>;
@@ -906,21 +921,21 @@ describe('Portal spec', () => {
 
     describe('Multiple portals', () => {
       it('#1', () => {
-        let portalContainer = document.createElement('div');
+        const portalContainer = document.createElement('div');
 
         let mountCount = 0;
         let unMountCount = 0;
 
         class Comp extends Component {
-          componentWillMount() {
+          public componentWillMount() {
             mountCount++;
           }
 
-          componentWillUnmount() {
+          public componentWillUnmount() {
             unMountCount++;
           }
 
-          render({ children }) {
+          public render({ children }) {
             return <div>{children}</div>;
           }
         }
@@ -941,19 +956,19 @@ describe('Portal spec', () => {
           return <div>{innerContent}</div>;
         }
 
-        render(<Parent port={false} bar="initial" />, container);
+        render(<Parent port={false} />, container);
         expect(portalContainer.innerHTML).toBe('');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(0);
         expect(unMountCount).toBe(0);
 
-        render(<Parent port={true} bar="changed" />, container);
+        render(<Parent port={true} />, container);
         expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div>');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(3);
         expect(unMountCount).toBe(0);
 
-        render(<Parent port={false} bar="triple" />, container);
+        render(<Parent port={false} />, container);
         expect(portalContainer.innerHTML).toBe('');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(3);
@@ -967,26 +982,26 @@ describe('Portal spec', () => {
       });
 
       it('#2', () => {
-        let portalContainer = document.createElement('div');
+        const portalContainer = document.createElement('div');
 
         let mountCount = 0;
         let unMountCount = 0;
 
         class Comp extends Component {
-          componentWillMount() {
+          public componentWillMount() {
             mountCount++;
           }
 
-          componentWillUnmount() {
+          public componentWillUnmount() {
             unMountCount++;
           }
 
-          render({ children }) {
+          public render({ children }) {
             return <div>{children}</div>;
           }
         }
 
-        function Parent({ port, nothing }) {
+        function Parent({ port, nothing }: { port?: boolean, nothing?: boolean}) {
           let innerContent;
 
           if (!nothing) {
@@ -1008,19 +1023,19 @@ describe('Portal spec', () => {
           return <div>{innerContent}</div>;
         }
 
-        render(<Parent nothing={true} port={false} bar="initial" />, container);
+        render(<Parent nothing={true} port={false} />, container);
         expect(portalContainer.innerHTML).toBe('');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(0);
         expect(unMountCount).toBe(0);
 
-        render(<Parent port={true} bar="changed" />, container);
+        render(<Parent port={true} />, container);
         expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div>');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(3);
         expect(unMountCount).toBe(0);
 
-        render(<Parent port={false} bar="triple" />, container);
+        render(<Parent port={false} />, container);
         expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>5</div>');
         expect(container.innerHTML).toBe('<div></div>');
         expect(mountCount).toBe(4); // 5 is new
@@ -1034,26 +1049,26 @@ describe('Portal spec', () => {
       });
 
       it('Should be possible to move nodes around portals #1', () => {
-        let portalContainer = document.createElement('div');
+        const portalContainer = document.createElement('div');
 
         let mountCount = 0;
         let unMountCount = 0;
 
         class Comp extends Component {
-          componentWillMount() {
+          public componentWillMount() {
             mountCount++;
           }
 
-          componentWillUnmount() {
+          public componentWillUnmount() {
             unMountCount++;
           }
 
-          render({ children }) {
+          public render({ children }) {
             return <div>{children}</div>;
           }
         }
 
-        function Parent({ port, nothing }) {
+        function Parent({ port }: { port?: boolean}) {
           let innerContent;
 
           if (port) {
@@ -1079,13 +1094,13 @@ describe('Portal spec', () => {
           return <div>{innerContent}</div>;
         }
 
-        render(<Parent port={true} bar="changed" />, container);
+        render(<Parent port={true} />, container);
         expect(container.innerHTML).toBe('<div><span>a</span><span>b</span><span>c</span></div>');
         expect(portalContainer.innerHTML).toBe('<div>1</div><div>2</div><div>3</div>');
         expect(mountCount).toBe(3);
         expect(unMountCount).toBe(0);
 
-        render(<Parent port={false} bar="initial" />, container);
+        render(<Parent port={false} />, container);
         expect(portalContainer.innerHTML).toBe('<div>1</div><div>3</div><div>5</div>');
         expect(container.innerHTML).toBe('<div><span>c</span><span>a</span><span>b</span></div>');
         expect(mountCount).toBe(4);
@@ -1099,26 +1114,26 @@ describe('Portal spec', () => {
       });
 
       it('Should be possible to move nodes around portals #2', () => {
-        let portalContainer = document.createElement('div');
+        const portalContainer = document.createElement('div');
 
         let mountCount = 0;
         let unMountCount = 0;
 
         class Comp extends Component {
-          componentWillMount() {
+          public componentWillMount() {
             mountCount++;
           }
 
-          componentWillUnmount() {
+          public componentWillUnmount() {
             unMountCount++;
           }
 
-          render({ children }) {
+          public render({ children }) {
             return <div>{children}</div>;
           }
         }
 
-        function Parent({ port, nothing }) {
+        function Parent({ port }: { port?: boolean }) {
           let innerContent;
 
           if (port) {
@@ -1160,27 +1175,27 @@ describe('Portal spec', () => {
       });
 
       it('Should be possible to move nodes around portals when portal is root node of component #1', () => {
-        let portalContainer = document.createElement('div');
+        const portalContainer = document.createElement('div');
 
         let mountCount = 0;
         let unMountCount = 0;
 
         class WrapPortal extends Component {
-          render({ children }) {
+          public render({ children }) {
             return createPortal(<Comp>{children}</Comp>, portalContainer);
           }
         }
 
         class Comp extends Component {
-          componentWillMount() {
+          public componentWillMount() {
             mountCount++;
           }
 
-          componentWillUnmount() {
+          public componentWillUnmount() {
             unMountCount++;
           }
 
-          render({ children }) {
+          public render({ children }) {
             return <div>{children}</div>;
           }
         }
@@ -1231,27 +1246,27 @@ describe('Portal spec', () => {
       });
 
       it('Should be possible to move nodes around portals when portal is root node of component #2', () => {
-        let portalContainer = document.createElement('div');
+        const portalContainer = document.createElement('div');
 
         let mountCount = 0;
         let unMountCount = 0;
 
         class WrapPortal extends Component {
-          render({ children }) {
+          public render({ children }) {
             return createPortal(<Comp>{children}</Comp>, portalContainer);
           }
         }
 
         class Comp extends Component {
-          componentWillMount() {
+          public componentWillMount() {
             mountCount++;
           }
 
-          componentWillUnmount() {
+          public componentWillUnmount() {
             unMountCount++;
           }
 
-          render({ children }) {
+          public render({ children }) {
             return <div>{children}</div>;
           }
         }
@@ -1316,27 +1331,27 @@ describe('Portal spec', () => {
       });
 
       it('Should be possible to patch portal non keyed', () => {
-        let portalContainer = document.createElement('div');
+        const portalContainer = document.createElement('div');
 
         let mountCount = 0;
         let unMountCount = 0;
 
         class WrapPortal extends Component {
-          render({ children }) {
+          public render({ children }) {
             return createPortal(<Comp>{children}</Comp>, portalContainer);
           }
         }
 
         class Comp extends Component {
-          componentWillMount() {
+          public componentWillMount() {
             mountCount++;
           }
 
-          componentWillUnmount() {
+          public componentWillUnmount() {
             unMountCount++;
           }
 
-          render({ children }) {
+          public render({ children }) {
             return <div>{children}</div>;
           }
         }
@@ -1392,6 +1407,9 @@ describe('Portal spec', () => {
         render(null, container);
         expect(portalContainer.innerHTML).toBe('');
         expect(container.innerHTML).toBe('');
+
+        expect(mountCount).toBe(12)
+        expect(unMountCount).toBe(12)
       });
     });
   });
