@@ -1,4 +1,5 @@
-import { Component, render } from 'inferno';
+/* tslint:disable:no-unused-expression */
+import { Component, InfernoNode, InfernoSingleNode, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 
 describe('animation hooks', () => {
@@ -29,10 +30,10 @@ describe('animation hooks', () => {
     };
 
     class App extends Component {
-      componentDidMount() {
+      public componentDidMount() {
         spyer('didMount');
       }
-      render() {
+      public render() {
         return <Animated onComponentDidAppear={onComponentDidAppear} />;
       }
     }
@@ -51,7 +52,7 @@ describe('animation hooks', () => {
       return <div />;
     };
 
-    const childOnComponentDidAppear = (dom, props) => {
+    const childOnComponentDidAppear = (dom) => {
       spyer('no-op');
       expect(dom instanceof HTMLDivElement).toEqual(true);
     };
@@ -60,16 +61,16 @@ describe('animation hooks', () => {
       return <Child onComponentDidAppear={childOnComponentDidAppear} />;
     };
 
-    const parentOnComponentDidAppear = (dom, props) => {
+    const parentOnComponentDidAppear = (dom) => {
       spyer('didAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
     };
 
     class App extends Component {
-      componentDidMount() {
+      public componentDidMount() {
         spyer('didMount');
       }
-      render() {
+      public render() {
         return (
           <div>
             <Parent onComponentDidAppear={parentOnComponentDidAppear} />
@@ -100,7 +101,13 @@ describe('animation hooks', () => {
       spyer('childDidAppear');
     };
 
-    class App extends Component {
+    interface AppState {
+      items: number[]
+    }
+
+    class App extends Component<unknown, AppState> {
+      public state: AppState;
+
       constructor() {
         super(...arguments);
         this.state = {
@@ -108,7 +115,7 @@ describe('animation hooks', () => {
         };
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         spyer('didMount');
         setTimeout(() => {
           this.setState({
@@ -119,7 +126,7 @@ describe('animation hooks', () => {
         }, 5);
       }
 
-      render() {
+      public render() {
         return (
           <div>
             {this.state.items.map((i) => (
@@ -153,16 +160,16 @@ describe('animation hooks', () => {
       return <div />;
     };
 
-    const onComponentDidAppear = (dom, props) => {
+    const onComponentDidAppear = (dom) => {
       spyer('childDidAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
     };
 
     class App extends Component {
-      componentDidMount() {
+      public componentDidMount() {
         spyer('didMount');
       }
-      render() {
+      public render() {
         return (
           <div>
             <Child onComponentDidAppear={onComponentDidAppear} />
@@ -218,7 +225,7 @@ describe('animation hooks', () => {
       return <div />;
     };
 
-    const onComponentWillDisappear = (dom, props, callback) => {
+    const onComponentWillDisappear = (dom, _props, callback) => {
       spyer('willDisappear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
       expect(callback instanceof Function).toEqual(true);
@@ -264,7 +271,7 @@ describe('animation hooks', () => {
     };
 
     const getOnComponentWillDisappear = (index) => {
-      return (dom, props, callback) => {
+      return (_dom, _props, callback) => {
         spyer('willDisappear ' + index);
 
         let timeout = 10;
@@ -282,11 +289,11 @@ describe('animation hooks', () => {
     };
 
     class App extends Component {
-      state = {
+      public state = {
         items: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
       };
 
-      render() {
+      public render() {
         if (this.state.items.length > 0) {
           setTimeout(() => {
             const items = this.state.items;
@@ -311,7 +318,7 @@ describe('animation hooks', () => {
 
     render(<App />, container);
 
-    var checkRenderComplete_ONE = () => {
+    const checkRenderComplete_ONE = () => {
       if (container.innerHTML !== '<div></div>') {
         return setTimeout(checkRenderComplete_ONE, 100);
       }
@@ -335,12 +342,12 @@ describe('animation hooks', () => {
       return <div />;
     };
 
-    const onComponentDidAppear = (dom, props) => {
+    const onComponentDidAppear = (dom) => {
       spyer('didAppear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
     };
 
-    const getOnComponentWillDisappear = (forceDone) => (dom, props, callback) => {
+    const getOnComponentWillDisappear = (forceDone) => (dom, _props, callback) => {
       spyer('willDisappear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
       expect(callback instanceof Function).toEqual(true);
@@ -407,7 +414,7 @@ describe('animation hooks', () => {
       return <div />;
     };
 
-    const onComponentWillDisappear = (dom, props, callback) => {
+    const onComponentWillDisappear = (dom, _props, callback) => {
       spyer('willDisappear');
       expect(dom instanceof HTMLDivElement).toEqual(true);
       expect(callback instanceof Function).toEqual(true);
@@ -437,7 +444,7 @@ describe('animation hooks', () => {
 
     expect(container.innerHTML).not.toEqual('');
     // Wait for all async operations to finish
-    var checkRenderComplete_ONE = () => {
+    const checkRenderComplete_ONE = () => {
       if (container.innerHTML !== '') {
         return setTimeout(checkRenderComplete_ONE, 10);
       }
@@ -466,11 +473,11 @@ describe('animation hooks', () => {
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
     expect(container.textContent).toBe('#0#1#2#3');
     expect(container.firstChild.childNodes.length).toBe(4);
-    //expect(spyer).toHaveBeenCalledTimes(4);
+    // expect(spyer).toHaveBeenCalledTimes(4);
 
     render(null, container);
     expect(container.innerHTML).toBe('');
-    //expect(spyer).toHaveBeenCalledTimes(8);
+    // expect(spyer).toHaveBeenCalledTimes(8);
   });
 
   it('should size up', () => {
@@ -479,7 +486,7 @@ describe('animation hooks', () => {
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
     expect(container.textContent).toBe('#0#1#2#3');
     expect(container.firstChild.childNodes.length).toBe(4);
-    //expect(spyer).toHaveBeenCalledTimes(4);
+    // expect(spyer).toHaveBeenCalledTimes(4);
 
     render(null, container);
     expect(container.innerHTML).toBe('');
@@ -492,7 +499,7 @@ describe('animation hooks', () => {
     render(template(generateKeyNodes(['#0', '#2'], spyer)), container);
     expect(container.textContent).toBe('#0#2');
     expect(container.firstChild.childNodes.length).toBe(2);
-    //expect(spyer).toHaveBeenCalledTimes(4);
+    // expect(spyer).toHaveBeenCalledTimes(4);
 
     render(null, container);
     expect(container.innerHTML).toBe('');
@@ -510,13 +517,13 @@ describe('animation hooks', () => {
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
     render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
 
-    //expect(spyer).toHaveBeenCalledTimes(10);
+    // expect(spyer).toHaveBeenCalledTimes(10);
     expect(container.textContent).toBe('#0#1');
     expect(container.firstChild.childNodes.length).toBe(2);
 
     render(null, container);
     expect(container.innerHTML).toBe('');
-    //expect(spyer).toHaveBeenCalledTimes(12);
+    // expect(spyer).toHaveBeenCalledTimes(12);
   });
 
   it('should handle multiple removes of siblings combined with adds', () => {
@@ -530,13 +537,13 @@ describe('animation hooks', () => {
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
     render(template(generateKeyNodes(['#10', '#11'], spyer)), container);
 
-    //expect(spyer).toHaveBeenCalledTimes(10);
+    // expect(spyer).toHaveBeenCalledTimes(10);
     expect(container.textContent).toBe('#10#11');
     expect(container.firstChild.childNodes.length).toBe(2);
 
     render(null, container);
     expect(container.innerHTML).toBe('');
-    //expect(spyer).toHaveBeenCalledTimes(12);
+    // expect(spyer).toHaveBeenCalledTimes(12);
   });
 
   it('should clear all nodes', () => {
@@ -923,15 +930,20 @@ describe('animation hooks', () => {
   });
 
   describe('Calendar like layout', () => {
-    class Animated extends Component {
-      componentDidAppear(dom) {
+    interface AnimatedProps {
+      key: string,
+      children?: any
+    }
+
+    class Animated extends Component<AnimatedProps, unknown> {
+      public componentDidAppear() {
         // Trigger animation code paths on add
       }
-      componentWillDisappear(dom, done) {
+      public componentWillDisappear(_dom, done) {
         // Trigger animation code paths on remove
         done();
       }
-      render({ children }) {
+      public render({ children }: AnimatedProps) {
         return <div>{children}</div>;
       }
     }
@@ -1082,25 +1094,32 @@ describe('animation hooks', () => {
   });
 });
 
-function factory(spyer) {
+interface TagProps {
+  children: InfernoSingleNode,
+  id: string
+}
+
+function factory(spyer?: jasmine.Spy) {
   return {
-    Tag: ({ children }) => {
+    Tag: ({ children }: TagProps) => {
       return <div>{children}</div>;
     },
-    onComponentDidAppear(dom) {
+    onComponentDidAppear(_dom) {
       spyer && spyer('didAppear');
     },
-    onComponentWillDisappear(dom, props, callback) {
+    onComponentWillDisappear(_dom, _props, callback) {
       spyer && spyer('willDisappear');
       callback();
     }
   };
 }
 
-function generateKeyNodes(array, spyer) {
-  let i, id, key;
-  const children = [];
-  let newKey;
+function generateKeyNodes(array: (string|number)[], spyer?) {
+  let i: number;
+  let id: string | number;
+  let key: string | number;
+  const children: InfernoNode[] = [];
+  let newKey: string | number | null;
   const { Tag, onComponentDidAppear, onComponentWillDisappear } = factory(spyer);
 
   for (i = 0; i < array.length; i++) {
