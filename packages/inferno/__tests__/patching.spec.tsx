@@ -76,7 +76,7 @@ describe('patching routine', () => {
 
     render(div, container);
 
-    let firstDiv = container.firstChild;
+    const firstDiv = container.firstChild;
 
     expect(container.innerHTML).toEqual('<div>1</div>');
     expect(spy1.calls.count()).toBe(1);
@@ -106,7 +106,7 @@ describe('patching routine', () => {
     let callCount = 0;
 
     class Collapsible extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <button
@@ -124,7 +124,7 @@ describe('patching routine', () => {
     }
 
     class Clock extends Component {
-      render() {
+      public render() {
         return (
           <Collapsible>
             <div>
@@ -231,7 +231,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onClick={false} />, container);
+        render(<div onClick={false as any} />, container);
 
         container.firstChild.click();
 
@@ -260,7 +260,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onClick={true} />, container);
+        render(<div onClick={true as any} />, container);
 
         container.firstChild.click();
 
@@ -290,7 +290,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onClick={false} />, container);
+        render(<div onClick={false as any} />, container);
 
         container.firstChild.click();
 
@@ -320,7 +320,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onClick={true} />, container);
+        render(<div onClick={true as any} />, container);
 
         container.firstChild.click();
 
@@ -462,32 +462,32 @@ describe('patching routine', () => {
         let secondArg = null;
 
         const anotherObj = {
-          anotherFn(o, ev) {
+          anotherFn(_, ev) {
             secondArg = ev;
           }
         };
 
-        spyOn(anotherObj, 'anotherFn').and.callThrough();
+        const anotherFnSpy = spyOn(anotherObj, 'anotherFn').and.callThrough();
 
-        render(<div onClick={linkEvent(obj1, anotherObj.anotherFn)} />, container);
+        render(<div onClick={linkEvent(obj1, anotherFnSpy)} />, container);
 
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
-
-        container.firstChild.click();
-
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
-        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj1, secondArg);
-
-        anotherObj.anotherFn.calls.reset();
-
-        render(<div onClick={linkEvent(obj2, anotherObj.anotherFn)} />, container);
-
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+        expect(anotherFnSpy).toHaveBeenCalledTimes(0);
 
         container.firstChild.click();
 
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
-        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj2, secondArg);
+        expect(anotherFnSpy).toHaveBeenCalledTimes(1);
+        expect(anotherFnSpy).toHaveBeenCalledWith(obj1, secondArg);
+
+        anotherFnSpy.calls.reset();
+
+        render(<div onClick={linkEvent(obj2, anotherFnSpy)} />, container);
+
+        expect(anotherFnSpy).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherFnSpy).toHaveBeenCalledTimes(1);
+        expect(anotherFnSpy).toHaveBeenCalledWith(obj2, secondArg);
       });
     });
 
@@ -506,7 +506,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onclick={false} />, container);
+        render(<div onclick={false as any} />, container);
 
         container.firstChild.click();
 
@@ -535,7 +535,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onclick={true} />, container);
+        render(<div onclick={true as any} />, container);
 
         container.firstChild.click();
 
@@ -565,7 +565,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onclick={false} />, container);
+        render(<div onclick={false as any} />, container);
 
         container.firstChild.click();
 
@@ -595,7 +595,7 @@ describe('patching routine', () => {
 
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
-        render(<div onclick={true} />, container);
+        render(<div onclick={true as any} />, container);
 
         container.firstChild.click();
 
@@ -737,32 +737,32 @@ describe('patching routine', () => {
         let secondArg = null;
 
         const anotherObj = {
-          anotherFn(o, ev) {
+          anotherFn(_, ev) {
             secondArg = ev;
           }
         };
 
-        spyOn(anotherObj, 'anotherFn').and.callThrough();
+        const anotherFnSpy = spyOn(anotherObj, 'anotherFn').and.callThrough();
 
-        render(<div onclick={linkEvent(obj1, anotherObj.anotherFn)} />, container);
+        render(<div onclick={linkEvent(obj1, anotherFnSpy)} />, container);
 
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
-
-        container.firstChild.click();
-
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
-        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj1, secondArg);
-
-        anotherObj.anotherFn.calls.reset();
-
-        render(<div onclick={linkEvent(obj2, anotherObj.anotherFn)} />, container);
-
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
+        expect(anotherFnSpy).toHaveBeenCalledTimes(0);
 
         container.firstChild.click();
 
-        expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
-        expect(anotherObj.anotherFn).toHaveBeenCalledWith(obj2, secondArg);
+        expect(anotherFnSpy).toHaveBeenCalledTimes(1);
+        expect(anotherFnSpy).toHaveBeenCalledWith(obj1, secondArg);
+
+        anotherFnSpy.calls.reset();
+
+        render(<div onclick={linkEvent(obj2, anotherFnSpy)} />, container);
+
+        expect(anotherFnSpy).toHaveBeenCalledTimes(0);
+
+        container.firstChild.click();
+
+        expect(anotherFnSpy).toHaveBeenCalledTimes(1);
+        expect(anotherFnSpy).toHaveBeenCalledWith(obj2, secondArg);
       });
     });
   });

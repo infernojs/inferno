@@ -58,7 +58,8 @@ describe('Development warnings', () => {
       });
 
       it('Should print nice stack of invalid key location', () => {
-        const FooBar = () => (
+        // @ts-expect-error unused children
+        const FooBar = ({children}) => (
           <span className="parentNode">
             <div key={'dup'} />
             <em key={'dup'} />
@@ -143,12 +144,16 @@ describe('Development warnings', () => {
             <em key={'dup'} />
           </span>
         );
+
+        // @ts-expect-error Foobar has no children defined
+        const foobar = <FooBar>
+          <span>1</span>
+        </FooBar>
+
         const errorNode = (
           <div>
-            <span>
-              <FooBar>
-                <span>1</span>
-              </FooBar>
+            <span $HasVNodeChildren>
+              {foobar}
             </span>
           </div>
         );

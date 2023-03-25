@@ -1,6 +1,7 @@
 /* If editing these values check babel-plugin-also */
 export const enum VNodeFlags {
   /* First set of bits define shape of vNode */
+  Unknown = 0,
   HtmlElement = 1,
   ComponentUnknown = 1 << 1,
   ComponentClass = 1 << 2,

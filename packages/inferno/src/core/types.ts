@@ -2069,6 +2069,7 @@ declare global {
       main: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       map: Inferno.DetailedHTMLProps<Inferno.MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
       mark: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
+      media: Inferno.DetailedHTMLProps<Inferno.MediaHTMLAttributes<HTMLMediaElement>, HTMLMediaElement>;
       menu: Inferno.DetailedHTMLProps<Inferno.MenuHTMLAttributes<HTMLElement>, HTMLElement>;
       menuitem: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
       meta: Inferno.DetailedHTMLProps<Inferno.MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
