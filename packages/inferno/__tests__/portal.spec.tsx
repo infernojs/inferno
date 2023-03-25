@@ -249,7 +249,7 @@ describe('Portal spec', () => {
     const ops: string[] = [];
 
     interface ChildProps {
-      name: string
+      name: string;
     }
 
     class Child extends Component<ChildProps> {
@@ -271,7 +271,7 @@ describe('Portal spec', () => {
     }
 
     interface ParentProps {
-      step: string
+      step: string;
     }
 
     class Parent extends Component<ParentProps> {
@@ -674,7 +674,7 @@ describe('Portal spec', () => {
     }
 
     interface ParentProps {
-      bar: string
+      bar: string;
     }
 
     class Parent extends Component<ParentProps> {
@@ -711,7 +711,7 @@ describe('Portal spec', () => {
     }
 
     interface ParentProps {
-      bar: string
+      bar: string;
     }
 
     class Parent extends Component<ParentProps> {
@@ -1001,7 +1001,7 @@ describe('Portal spec', () => {
           }
         }
 
-        function Parent({ port, nothing }: { port?: boolean, nothing?: boolean}) {
+        function Parent({ port, nothing }: { port?: boolean; nothing?: boolean }) {
           let innerContent;
 
           if (!nothing) {
@@ -1068,7 +1068,7 @@ describe('Portal spec', () => {
           }
         }
 
-        function Parent({ port }: { port?: boolean}) {
+        function Parent({ port }: { port?: boolean }) {
           let innerContent;
 
           if (port) {
@@ -1408,8 +1408,8 @@ describe('Portal spec', () => {
         expect(portalContainer.innerHTML).toBe('');
         expect(container.innerHTML).toBe('');
 
-        expect(mountCount).toBe(12)
-        expect(unMountCount).toBe(12)
+        expect(mountCount).toBe(12);
+        expect(unMountCount).toBe(12);
       });
     });
   });

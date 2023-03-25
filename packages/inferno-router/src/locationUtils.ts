@@ -1,4 +1,4 @@
-import { To, Location, parsePath } from 'history';
+import { Location, parsePath, To } from 'history';
 import { isString } from 'inferno-shared';
 
 export const normalizeToLocation = (to) => {

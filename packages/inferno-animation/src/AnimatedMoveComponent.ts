@@ -1,9 +1,9 @@
-import { Component, Inferno } from 'inferno';
+import { Component, InfernoNode } from 'inferno';
 import { AnimationClass, componentWillMove } from './animations';
 
 type AnimationProp = {
   animation?: string | AnimationClass;
-  children?: Inferno.InfernoNode;
+  children?: InfernoNode;
 };
 
 export abstract class AnimatedMoveComponent<P = {}, S = {}> extends Component<AnimationProp & P, S> {

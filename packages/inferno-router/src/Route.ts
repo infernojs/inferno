@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, Inferno } from 'inferno';
+import { Component, createComponentVNode, Inferno, InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
@@ -25,10 +25,10 @@ export interface IRouteProps {
   exact?: boolean;
   strict?: boolean;
   sensitive?: boolean;
-  component?: Inferno.ComponentClass<any> | ((props: any, context: any) => Inferno.InfernoNode);
-  render?: (props: RouteComponentProps<any>, context: any) => Inferno.InfernoNode;
+  component?: Inferno.ComponentClass<any> | ((props: any, context: any) => InfernoNode);
+  render?: (props: RouteComponentProps<any>, context: any) => InfernoNode;
   location?: Partial<Location>;
-  children?: ((props: RouteComponentProps<any>) => Inferno.InfernoNode) | Inferno.InfernoNode;
+  children?: ((props: RouteComponentProps<any>) => InfernoNode) | InfernoNode;
 }
 
 /**

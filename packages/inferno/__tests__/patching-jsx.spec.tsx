@@ -1,4 +1,4 @@
-import { Component, render, rerender } from 'inferno';
+import { Component, InfernoNode, render, rerender } from 'inferno';
 
 describe('patching routine (JSX)', () => {
   let container;
@@ -28,7 +28,7 @@ describe('patching routine (JSX)', () => {
 
     render(div, container);
 
-    let firstDiv = container.firstChild;
+    const firstDiv = container.firstChild;
 
     expect(container.innerHTML).toEqual('<div>1</div>');
     expect(spy1.calls.count()).toBe(1);
@@ -59,7 +59,13 @@ describe('patching routine (JSX)', () => {
   });
 
   it('Should be able to patch references', () => {
-    class Component1 extends Component {
+    interface Component1State {
+      value: number;
+    }
+
+    class Component1 extends Component<unknown, Component1State> {
+      public state: Component1State;
+
       constructor(p, c) {
         super(p, c);
 
@@ -70,7 +76,7 @@ describe('patching routine (JSX)', () => {
         this.add = this.add.bind(this);
       }
 
-      add(e) {
+      public add(e) {
         e.stopPropagation();
 
         this.setState({
@@ -78,7 +84,7 @@ describe('patching routine (JSX)', () => {
         });
       }
 
-      render(props) {
+      public render(props) {
         return (
           <div id="child" onclick={this.add}>
             <span>{this.state.value}</span>
@@ -88,7 +94,12 @@ describe('patching routine (JSX)', () => {
       }
     }
 
-    class Parent extends Component {
+    interface ParentState {
+      value: number;
+    }
+
+    class Parent extends Component<unknown, ParentState> {
+      public state: ParentState;
       constructor(p, c) {
         super(p, c);
 
@@ -99,7 +110,7 @@ describe('patching routine (JSX)', () => {
         this.add = this.add.bind(this);
       }
 
-      add(e) {
+      public add(e) {
         e.stopPropagation();
 
         this.setState({
@@ -107,8 +118,8 @@ describe('patching routine (JSX)', () => {
         });
       }
 
-      render() {
-        const arr = [];
+      public render() {
+        const arr: InfernoNode[] = [];
 
         arr.push(<div>{this.state.value}</div>);
 

@@ -1,4 +1,4 @@
-import { Component, createTextVNode, createVNode, render, rerender } from "inferno";
+import { Component, createTextVNode, createVNode, render, rerender } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('rendering routine', () => {
@@ -184,7 +184,7 @@ describe('rendering routine', () => {
   describe('Swapping children', () => {
     it('Swapping children in component should affect hoisted children', () => {
       interface HelloProps {
-        name: string
+        name: string;
       }
 
       class Hello extends Component<HelloProps> {
@@ -227,16 +227,16 @@ describe('rendering routine', () => {
   describe('render during component construction', () => {
     it('Should queue updates and not fail if HOC updates during child component construction', () => {
       interface HelloProps {
-        name?: string,
-        tag: number,
-        callback: () => void
+        name?: string;
+        tag: number;
+        callback: () => void;
       }
       interface HelloState {
-        foo: string
+        foo: string;
       }
 
       class Hello extends Component<HelloProps, HelloState> {
-        public state: HelloState
+        public state: HelloState;
         constructor(props, context) {
           super(props, context);
 
@@ -265,16 +265,16 @@ describe('rendering routine', () => {
       }
 
       interface HOCProps {
-        name?: string,
-        renderAgain: () => void
+        name?: string;
+        renderAgain: () => void;
       }
 
       interface HOCState {
-        tag: number
+        tag: number;
       }
 
       class HOC extends Component<HOCProps, HOCState> {
-        public state: HOCState
+        public state: HOCState;
 
         constructor(props, context) {
           super(props, context);
@@ -301,11 +301,11 @@ describe('rendering routine', () => {
       }
 
       interface ParentState {
-        foo: boolean
+        foo: boolean;
       }
 
       class Parent extends Component<unknown, ParentState> {
-        public state: ParentState
+        public state: ParentState;
         constructor(props, context) {
           super(props, context);
 
@@ -327,12 +327,12 @@ describe('rendering routine', () => {
       expect(container.innerHTML).toBe('<span id="click"></span>');
 
       container.querySelector('#click').click();
-      rerender()
+      rerender();
 
       expect(container.innerHTML).toBe('<span id="click"><div><div>Hello  0 foobar</div><span>2</span></div></span>');
 
       container.querySelector('#click').click();
-      rerender()
+      rerender();
 
       expect(container.innerHTML).toBe('<span id="click"></span>');
     });

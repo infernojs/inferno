@@ -1,11 +1,9 @@
-import { _HI as normalizeRoot, createComponentVNode, Inferno, render, VNode } from 'inferno';
+import { _HI as normalizeRoot, createComponentVNode, InfernoNode, render, VNode } from 'inferno';
 import { Reaction } from 'mobx';
 import { throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-type InfernoNode = Inferno.InfernoNode;
-
-type Render = (properties?: any, context?: Record<string, unknown>) => InfernoNode | undefined | void;
+type Render = (properties?: any, context?: Record<string, unknown>) => InfernoNode;
 
 function callDispose({ dispose }: { readonly dispose: () => void }): void {
   dispose();

@@ -1,4 +1,4 @@
-import type { Inferno, LinkedEvent, VNode } from './../../core/types';
+import type { Inferno, InfernoNode, LinkedEvent, VNode } from './../../core/types';
 import { combineFrom, isFunction, isNull, isNullOrUndef, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isLinkEventObject } from '../events/linkEvent';
@@ -7,7 +7,7 @@ import { isLinkEventObject } from '../events/linkEvent';
 // It's used for comparison, so we can't inline it into shared
 export const EMPTY_OBJ = {};
 // @ts-ignore
-export const Fragment: Inferno.ExoticComponent<{ children?: Inferno.InfernoNode | undefined }> = '$F';
+export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> = '$F';
 
 export type MoveQueueItem = {
   parent: Element;
@@ -246,9 +246,7 @@ export const renderCheck = {
 export const options: {
   componentComparator: ((lastVNode: VNode, nextVNode: VNode) => boolean) | null;
   createVNode: ((vNode: VNode) => void) | null;
-  renderComplete:
-    | ((rootInput: VNode | Inferno.InfernoNode, parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node) => void)
-    | null;
+  renderComplete: ((rootInput: VNode | InfernoNode, parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node) => void) | null;
   reactStyles?: boolean;
 } = {
   componentComparator: null,

@@ -1,4 +1,4 @@
-import type { Inferno } from './types';
+import type { Inferno, InfernoNode } from './types';
 import { IComponent, VNode } from './types';
 import { combineFrom, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
@@ -126,7 +126,7 @@ export type ComponentType<P = {}> = Component<P> | Inferno.StatelessComponent<P>
 export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public
   public state: Readonly<S | null> = null;
-  public props: Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>;
+  public props: Readonly<{ children?: InfernoNode }> & Readonly<P>;
   public context: any;
   public displayName?: string;
 
@@ -145,7 +145,7 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
   public $F: boolean = false; // Force update flag
 
   constructor(props?: P, context?: any) {
-    this.props = (props || EMPTY_OBJ) as Readonly<{ children?: Inferno.InfernoNode | undefined }> & Readonly<P>;
+    this.props = (props || EMPTY_OBJ) as Readonly<{ children?: InfernoNode }> & Readonly<P>;
     this.context = context || EMPTY_OBJ; // context should not be mutable
   }
 
@@ -158,7 +158,7 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
   }
 
   public setState<K extends keyof S>(
-    newState: ((prevState: Readonly<S>, props: Readonly<{ children?: Inferno.InfernoNode } & P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
+    newState: ((prevState: Readonly<S>, props: Readonly<{ children?: InfernoNode } & P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
     callback?: () => void
   ): void {
     if (this.$UN) {
@@ -178,13 +178,13 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public componentWillMount?(): void;
 
-  public componentWillReceiveProps?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextContext: any): void;
+  public componentWillReceiveProps?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextContext: any): void;
 
-  public shouldComponentUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): boolean;
+  public shouldComponentUpdate?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, context: any): boolean;
 
-  public componentWillUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): void;
+  public componentWillUpdate?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, context: any): void;
 
-  public componentDidUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
+  public componentDidUpdate?(prevProps: Readonly<{ children?: InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
 
   public componentWillUnmount?(): void;
 
@@ -196,14 +196,14 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public getChildContext?(): void;
 
-  public getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>): any;
+  public getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: InfernoNode } & P>, prevState: Readonly<S>): any;
 
   public static defaultProps?: {} | null = null;
 
   public static getDerivedStateFromProps?(nextProps: any, state: any): any;
 
   // @ts-expect-error TS6133
-  public render(props: Readonly<{ children?: Inferno.InfernoNode } & P>, state: Readonly<S>, context: any): Inferno.InfernoNode {
+  public render(props: Readonly<{ children?: InfernoNode } & P>, state: Readonly<S>, context: any): InfernoNode {
     return null;
   }
 }

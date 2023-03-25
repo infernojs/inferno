@@ -1,5 +1,4 @@
-import type { VNode } from '../core/types';
-import { Inferno } from '../core/types';
+import type { InfernoNode, VNode } from '../core/types';
 import { isFunction, isInvalid, isNullOrUndef, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { directClone } from '../core/implementation';
@@ -33,7 +32,7 @@ if (hasDocumentAvailable) {
 }
 
 export function __render(
-  input: VNode | null | Inferno.InfernoNode | undefined,
+  input: VNode | InfernoNode,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback: Function | null,
   context: any
@@ -87,7 +86,7 @@ export function __render(
 }
 
 export function render(
-  input: VNode | null | Inferno.InfernoNode | undefined,
+  input: VNode | InfernoNode,
   parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node | null,
   callback: Function | null = null,
   context: any = EMPTY_OBJ

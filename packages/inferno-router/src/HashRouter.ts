@@ -1,11 +1,11 @@
-import { Component, createComponentVNode, Inferno, VNode } from 'inferno';
+import { Component, createComponentVNode, InfernoNode, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createHashHistory } from 'history';
 import { Router } from './Router';
 import { warning } from './utils';
 
 export interface IHashRouterProps {
-  children: Inferno.InfernoNode;
+  children: InfernoNode;
 }
 
 export class HashRouter extends Component<IHashRouterProps, any> {

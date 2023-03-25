@@ -1,4 +1,4 @@
-import type { ForwardRef, Inferno, Ref, Refs, VNode } from './types';
+import type { ForwardRef, Inferno, InfernoNode, Ref, Refs, VNode } from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
@@ -25,7 +25,7 @@ export function createVNode<P>(
   flags: VNodeFlags,
   type: string,
   className?: string | null,
-  children?: Inferno.InfernoNode,
+  children?: InfernoNode,
   childFlags?: ChildFlags,
   props?: Readonly<P> | null,
   key?: string | number | null,

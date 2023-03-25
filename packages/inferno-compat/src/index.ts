@@ -22,7 +22,7 @@ import {
   forwardRef,
   Fragment,
   getFlagsForElementVnode,
-  Inferno,
+  InfernoNode,
   linkEvent,
   normalizeProps,
   options,
@@ -57,7 +57,7 @@ function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragm
   return true;
 }
 
-export type IterateChildrenFn = (value: Inferno.InfernoNode | any, index: number, array: any[]) => any;
+export type IterateChildrenFn = (value: InfernoNode | any, index: number, array: any[]) => any;
 
 function flatten(arr, result) {
   for (let i = 0, len = arr.length; i < len; ++i) {
@@ -102,7 +102,7 @@ const Children = {
     children = Children.toArray(children);
     return children.length;
   },
-  only(children: any[]): Inferno.InfernoNode | any {
+  only(children: any[]): InfernoNode | any {
     children = Children.toArray(children);
     if (children.length !== 1) {
       throw new Error('Children.only() expects only one child.');
@@ -294,13 +294,11 @@ abstract class PureComponent<P, S> extends Component<P, S> {
 }
 
 interface ContextProps {
-  children?: Inferno.InfernoChild | undefined;
+  children?: InfernoNode;
   context: any;
 }
 
-type WrapperComponentProps<P> = P & ContextProps;
-
-class WrapperComponent<P, S> extends Component<WrapperComponentProps<P>, S> {
+class WrapperComponent<P, S> extends Component<P & ContextProps, S> {
   public getChildContext() {
     // tslint:disable-next-line
     return this.props.context;

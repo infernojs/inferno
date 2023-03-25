@@ -7,13 +7,21 @@ export interface LinkedEvent<T, E extends Event> {
   event: (data: T, event: E) => void;
 }
 
+type InfernoText = string | number;
+type InfernoChild = Inferno.InfernoElement | InfernoText;
+
+interface InfernoNodeArray extends Array<InfernoNode> {}
+
+export type InfernoFragment = {} | InfernoNodeArray;
+export type InfernoNode = InfernoChild | InfernoFragment | boolean | null | undefined;
+
 // IComponent is defined here, instead of Component to de-couple implementation from interface
 export interface IComponent<P, S> {
   // Public
   state: S | null;
   props: Readonly<
     {
-      children?: Inferno.InfernoNode;
+      children?: InfernoNode;
     } & P
   >;
   context?: any;
@@ -23,7 +31,7 @@ export interface IComponent<P, S> {
   forceUpdate(callback?: Function);
 
   setState<K extends keyof S>(
-    newState: ((prevState: Readonly<S>, props: Readonly<{ children?: Inferno.InfernoNode } & P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
+    newState: ((prevState: Readonly<S>, props: Readonly<{ children?: InfernoNode } & P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
     callback?: () => void
   ): void;
 
@@ -31,13 +39,13 @@ export interface IComponent<P, S> {
 
   componentWillMount?(): void;
 
-  componentWillReceiveProps?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextContext: any): void;
+  componentWillReceiveProps?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextContext: any): void;
 
-  shouldComponentUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): boolean;
+  shouldComponentUpdate?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, context: any): boolean;
 
-  componentWillUpdate?(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, context: any): void;
+  componentWillUpdate?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, context: any): void;
 
-  componentDidUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
+  componentDidUpdate?(prevProps: Readonly<{ children?: InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
 
   componentWillUnmount?(): void;
 
@@ -49,9 +57,9 @@ export interface IComponent<P, S> {
 
   getChildContext?(): void;
 
-  getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: Inferno.InfernoNode } & P>, prevState: Readonly<S>): any;
+  getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: InfernoNode } & P>, prevState: Readonly<S>): any;
 
-  render(nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextState: Readonly<S>, nextContext: any): Inferno.InfernoNode;
+  render(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, nextContext: any): InfernoNode;
 }
 
 export interface SemiSyntheticEvent<T> extends Event {
@@ -109,7 +117,7 @@ export type TransitionEventHandler<T = Element> = EventHandler<InfernoTransition
 export type Key = string | number | undefined | null;
 
 export interface VNode {
-  children: Inferno.InfernoNode;
+  children: InfernoNode;
   childFlags: ChildFlags;
   dom: Element | null;
   className: string | null | undefined;
@@ -132,27 +140,27 @@ export interface ForwardRef<P, T> extends Inferno.StatelessComponent<P> {
 }
 
 export interface Refs<P> {
-  onComponentDidMount?: (domNode: Element | null, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>) => void;
+  onComponentDidMount?: (domNode: Element | null, nextProps: Readonly<{ children?: InfernoNode } & P>) => void;
 
-  onComponentWillMount?(props: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
+  onComponentWillMount?(props: Readonly<{ children?: InfernoNode } & P>): void;
 
-  onComponentShouldUpdate?(lastProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): boolean;
+  onComponentShouldUpdate?(lastProps: Readonly<{ children?: InfernoNode } & P>, nextProps: Readonly<{ children?: InfernoNode } & P>): boolean;
 
-  onComponentWillUpdate?(lastProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
+  onComponentWillUpdate?(lastProps: Readonly<{ children?: InfernoNode } & P>, nextProps: Readonly<{ children?: InfernoNode } & P>): void;
 
-  onComponentDidUpdate?(lastProps: Readonly<{ children?: Inferno.InfernoNode } & P>, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
+  onComponentDidUpdate?(lastProps: Readonly<{ children?: InfernoNode } & P>, nextProps: Readonly<{ children?: InfernoNode } & P>): void;
 
-  onComponentWillUnmount?(domNode: Element, nextProps: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
+  onComponentWillUnmount?(domNode: Element, nextProps: Readonly<{ children?: InfernoNode } & P>): void;
 
-  onComponentDidAppear?(domNode: Element, props: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
+  onComponentDidAppear?(domNode: Element, props: Readonly<{ children?: InfernoNode } & P>): void;
 
-  onComponentWillDisappear?(domNode: Element, props: Readonly<{ children?: Inferno.InfernoNode } & P>, callback: Function): void;
+  onComponentWillDisappear?(domNode: Element, props: Readonly<{ children?: InfernoNode } & P>, callback: Function): void;
 
-  onComponentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element, props: Readonly<{ children?: Inferno.InfernoNode } & P>): void;
+  onComponentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element, props: Readonly<{ children?: InfernoNode } & P>): void;
 }
 
 export interface Props<T> {
-  children?: Inferno.InfernoNode | undefined;
+  children?: InfernoNode;
   key?: Key | undefined;
   ref?: Ref<T> | undefined;
 }
@@ -170,6 +178,7 @@ export declare namespace Inferno {
   interface Attributes {
     key?: Key;
 
+    $ReCreate?: boolean;
     $HasVNodeChildren?: boolean;
     $HasNonKeyedChildren?: boolean;
     $HasKeyedChildren?: boolean;
@@ -245,13 +254,6 @@ export declare namespace Inferno {
   // Inferno Nodes
   // ----------------------------------------------------------------------
 
-  type InfernoText = string | number;
-  type InfernoChild = InfernoElement | InfernoText;
-
-  interface InfernoNodeArray extends Array<InfernoNode> {}
-  type InfernoFragment = {} | InfernoNodeArray;
-  type InfernoNode = InfernoChild | InfernoFragment | boolean | null | undefined;
-
   const version: string;
 
   //
@@ -276,7 +278,7 @@ export declare namespace Inferno {
   interface StatelessComponent<P = {}> {
     (
       props: {
-        children?: Inferno.InfernoNode;
+        children?: InfernoNode;
       } & P &
         Refs<P>,
       context?: any
@@ -288,7 +290,7 @@ export declare namespace Inferno {
   interface ComponentClass<P = {}> {
     new (
       props?: {
-        children?: Inferno.InfernoNode;
+        children?: InfernoNode;
       } & P,
       context?: any
     ): IComponent<P, ComponentState>;
@@ -306,7 +308,7 @@ export declare namespace Inferno {
   interface SVGProps<T> extends SVGAttributes<T>, ClassAttributes<T> {}
 
   interface DOMAttributes<T> {
-    children?: InfernoNode | undefined;
+    children?: InfernoNode;
     dangerouslySetInnerHTML?:
       | {
           __html: string;
@@ -1986,7 +1988,7 @@ type InfernoManagedAttributes<C, P> = C extends { defaultProps: infer D } ? Defa
 declare global {
   namespace JSX {
     interface ElementClass extends IComponent<any, any> {
-      render(nextProps, nextState, nextContext): Inferno.InfernoNode;
+      render(nextProps, nextState, nextContext): InfernoNode;
     }
     interface ElementAttributesProperty {
       props: {};

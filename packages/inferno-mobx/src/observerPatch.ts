@@ -1,8 +1,8 @@
 import { warning } from 'inferno-shared';
 import { Reaction } from 'mobx';
-import { Inferno } from 'inferno';
+import { InfernoNode } from 'inferno';
 
-type Render = (this, properties?, state?, context?) => Inferno.InfernoNode;
+type Render = (this, properties?, state?, context?) => InfernoNode;
 
 type ObserverRender<R extends Render = Render> = R & { dispose: () => void };
 
@@ -10,7 +10,7 @@ function makeObserverRender<R extends Render>(update: () => void, render: R, nam
   const reactor = new Reaction(name, update);
   const track = reactor.track.bind(reactor);
   const observer = function (this, ...parameters: Parameters<typeof render>) {
-    let rendered: Inferno.InfernoNode;
+    let rendered: InfernoNode;
     let caught;
     track(() => {
       try {

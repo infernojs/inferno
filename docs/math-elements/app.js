@@ -59,8 +59,9 @@ class Demo extends Component {
                 <mn>2</mn>
               </msup>
               <mn>6</mn>
-            </mfrac></math
-          >.
+            </mfrac>
+          </math>
+          .
         </p>
       </div>
     );

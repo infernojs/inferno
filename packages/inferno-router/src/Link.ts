@@ -4,7 +4,7 @@ import { invariant } from './utils';
 import { combineFrom, isString } from 'inferno-shared';
 import type { Location } from 'history';
 import { parsePath } from 'history';
-import { splitLocation, normalizeToLocation } from './locationUtils';
+import { normalizeToLocation, splitLocation } from './locationUtils';
 
 const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 

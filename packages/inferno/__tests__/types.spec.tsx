@@ -1,4 +1,4 @@
-import { Component, createRef, Inferno, linkEvent, Ref, render } from 'inferno';
+import { Component, createRef, InfernoNode, linkEvent, Ref, render } from 'inferno';
 import { emptyFn } from 'inferno-shared';
 
 describe('top level context', () => {
@@ -118,7 +118,7 @@ describe('top level context', () => {
 
         class MyComponent extends Component<any, any> {
           public render() {
-            let Val: Inferno.InfernoNode = <FooBar />;
+            let Val: InfernoNode = <FooBar />;
 
             if (this.props.check) {
               Val = <div>1</div>;

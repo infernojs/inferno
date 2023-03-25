@@ -1,6 +1,6 @@
-import { render, Component } from 'inferno';
+import { Component, render } from 'inferno';
 import { HashRouter, Link, MemoryRouter } from 'inferno-router';
-import { parsePath, createMemoryHistory } from 'history';
+import { createMemoryHistory, parsePath } from 'history';
 
 describe('Link (jsx)', () => {
   let node;
