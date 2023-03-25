@@ -19,12 +19,12 @@ describe('transition events', () => {
   });
 
   const transitionStyles = {
-    position: 'absolute',
-    top: '16px',
-    left: '16px',
-    transition: 'left 1ms',
     background: 'red',
     height: '16px',
+    left: '16px',
+    position: 'absolute' as any,
+    top: '16px',
+    transition: 'left 1ms',
     width: '16px'
   };
 
@@ -33,7 +33,7 @@ describe('transition events', () => {
       <div
         style={transitionStyles}
         onclick={(e) => {
-          e.target.style.left = '50px';
+          (e.target as HTMLDivElement).style.left = '50px';
         }}
         ontransitionend={(e) => {
           expect(e.type).toEqual('transitionend');
@@ -46,6 +46,8 @@ describe('transition events', () => {
     forceReflow();
     const div = container.firstChild;
     div.click();
+    // Be absolutely sure the transition has been applied through style
+    forceReflow();
   });
 
   it('should call "onTransitionEnd" at the end of a transition', (done) => {
@@ -53,7 +55,7 @@ describe('transition events', () => {
       <div
         style={transitionStyles}
         onclick={(e) => {
-          e.target.style.left = '100px';
+          (e.target as HTMLDivElement).style.left = '100px';
         }}
         onTransitionEnd={(e) => {
           expect(e.type).toEqual('transitionend');
@@ -66,5 +68,7 @@ describe('transition events', () => {
     forceReflow();
     const div = container.firstChild;
     div.click();
+    // Be absolutely sure the transition has been applied through style
+    forceReflow();
   });
 });

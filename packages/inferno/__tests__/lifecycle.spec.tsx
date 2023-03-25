@@ -16,16 +16,19 @@ describe('ComponentDidUpdate', () => {
 
   it('Should be called after ref updates, Github #1374 Github#1286', () => {
     class App extends Component {
-      state = {
+      public state = {
         toggled: false
       };
 
-      toggleDynamicComponent = () =>
+      private dynamicEl: HTMLDivElement | null;
+      private staticEl: HTMLDivElement | null;
+
+      public toggleDynamicComponent = () =>
         this.setState({
           toggled: !this.state.toggled
         });
 
-      renderDynamicComponent = () => (
+      public renderDynamicComponent = () => (
         <div
           id="dynamic"
           ref={(el) => {
@@ -36,7 +39,7 @@ describe('ComponentDidUpdate', () => {
         </div>
       );
 
-      componentDidUpdate() {
+      public componentDidUpdate() {
         const dynamic = container.querySelector('#dynamic');
 
         expect(this.dynamicEl).toBe(dynamic);
@@ -49,7 +52,7 @@ describe('ComponentDidUpdate', () => {
         expect(this.staticEl).toBe(container.querySelector('#static'));
       }
 
-      render() {
+      public render() {
         return (
           <div
             id="static"
@@ -78,25 +81,29 @@ describe('ComponentDidUpdate', () => {
     const spyer = jasmine.createSpy();
 
     class Mounter extends Component {
-      componentDidMount() {
+      public componentDidMount() {
         spyer('child-didmount');
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         spyer('child-willunmount');
       }
     }
 
-    class App extends Component {
-      componentDidMount() {
+    interface AppProps {
+      child?: boolean
+    }
+
+    class App extends Component<AppProps> {
+      public componentDidMount() {
         spyer('parent-didmount');
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         spyer('parent-willunmount');
       }
 
-      render() {
+      public render() {
         return (
           <div
             id="outer"
@@ -171,25 +178,29 @@ describe('ComponentDidUpdate', () => {
     const spyer = jasmine.createSpy();
 
     class Mounter extends Component {
-      componentDidMount() {
+      public componentDidMount() {
         spyer('child-didmount');
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         spyer('child-willunmount');
       }
     }
 
-    class App extends Component {
-      componentDidMount() {
+    interface AppProps {
+      child?: boolean
+    }
+
+    class App extends Component<AppProps> {
+      public componentDidMount() {
         spyer('parent-didmount');
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         spyer('parent-willunmount');
       }
 
-      render() {
+      public render() {
         return (
           <div
             id="outer"
@@ -242,8 +253,8 @@ describe('ComponentDidUpdate', () => {
 
   it('Should not call setState callback if another component triggers setState during other tree mount', () => {
     // This is only to simplify whats going on in real application
-    let testHack = {
-      callback: null
+    const testHack = {
+      callback: () => {}
     };
 
     let callbackCalled = 0;
@@ -260,7 +271,7 @@ describe('ComponentDidUpdate', () => {
         };
       }
 
-      render() {
+      public render() {
         return <div>A</div>;
       }
     }
@@ -274,7 +285,7 @@ describe('ComponentDidUpdate', () => {
         };
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         this.setState(
           {
             foo: 'bar'
@@ -288,12 +299,18 @@ describe('ComponentDidUpdate', () => {
         testHack.callback();
       }
 
-      render() {
+      public render() {
         return <div>Tester One</div>;
       }
     }
 
-    class Outsider extends Component {
+    interface OutsiderState {
+      bool?: boolean
+    }
+
+    class Outsider extends Component<unknown, OutsiderState> {
+      public state: OutsiderState;
+
       constructor(props) {
         super(props);
 
@@ -304,7 +321,7 @@ describe('ComponentDidUpdate', () => {
         this._handleClick = this._handleClick.bind(this);
       }
 
-      _handleClick() {
+      public _handleClick() {
         this.setState(
           {
             bool: true
@@ -316,7 +333,7 @@ describe('ComponentDidUpdate', () => {
         );
       }
 
-      render() {
+      public render() {
         return (
           <div id="tester" onClick={this._handleClick}>
             {this.state.bool ? <TesterOne /> : <span />}
@@ -326,7 +343,7 @@ describe('ComponentDidUpdate', () => {
     }
 
     class App extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <Outsider />
@@ -355,8 +372,8 @@ describe('ComponentDidUpdate', () => {
 
   it('Should not fail if mounting subtree propagates callback to parent which renders again', () => {
     // This is only to simplify whats going on in real application
-    let testHack = {
-      callback: null
+    const testHack = {
+      callback: () => {}
     };
 
     let callbackCalled = 0;
@@ -364,13 +381,21 @@ describe('ComponentDidUpdate', () => {
     let setState2Called = 0;
     let mounterCounter = 0;
 
-    class Another extends Component {
-      render() {
+    interface AnotherProps {
+      a: number;
+    }
+
+    class Another extends Component<AnotherProps> {
+      public render() {
         return <div>A {this.props.a}</div>;
       }
     }
 
-    class TesterOne extends Component {
+    interface TesterOneProps {
+      a: number
+    }
+
+    class TesterOne extends Component<TesterOneProps> {
       constructor(props) {
         super(props);
 
@@ -381,7 +406,7 @@ describe('ComponentDidUpdate', () => {
         };
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         this.setState(
           {
             foo: 'bar'
@@ -395,12 +420,21 @@ describe('ComponentDidUpdate', () => {
         testHack.callback();
       }
 
-      render() {
+      public render() {
         return <div>Tester One {this.props.a}</div>;
       }
     }
 
-    class Outsider extends Component {
+    interface OutsiderState {
+      bool?: boolean
+    }
+
+    interface OutsiderProps {
+      a: number
+    }
+
+    class Outsider extends Component<OutsiderProps, OutsiderState> {
+      public state: OutsiderState;
       constructor(props) {
         super(props);
 
@@ -411,7 +445,7 @@ describe('ComponentDidUpdate', () => {
         this._handleClick = this._handleClick.bind(this);
       }
 
-      _handleClick() {
+      public _handleClick() {
         this.setState(
           {
             bool: true
@@ -423,7 +457,7 @@ describe('ComponentDidUpdate', () => {
         );
       }
 
-      render() {
+      public render() {
         return (
           <div id="tester" onClick={this._handleClick}>
             {this.state.bool ? <TesterOne a={this.props.a} /> : <span>{this.props.a}</span>}
@@ -432,7 +466,12 @@ describe('ComponentDidUpdate', () => {
       }
     }
 
-    class App extends Component {
+    interface AppState {
+      a: number
+    }
+
+    class App extends Component<unknown, AppState> {
+      public state: AppState
       constructor(props) {
         super(props);
 
@@ -446,7 +485,7 @@ describe('ComponentDidUpdate', () => {
         };
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <Outsider a={this.state.a} />

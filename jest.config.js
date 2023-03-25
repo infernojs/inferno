@@ -24,7 +24,7 @@ export default {
     "<rootDir>/packages/*/__tests__/**/*spec.server.@(js|ts)?(x)"
   ],
   testPathIgnorePatterns: [
-    "<rootDir>/packages/inferno/__tests__/transition.spec.jsx",
+    "<rootDir>/packages/inferno/__tests__/transition.spec.tsx",
   ],
   transform: {
     "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
