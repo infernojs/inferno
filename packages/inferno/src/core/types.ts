@@ -123,7 +123,7 @@ export interface VNode {
   className: string | null | undefined;
   flags: VNodeFlags;
   isValidated?: boolean;
-  key: null | number | string;
+  key: Key;
   props: any;
   ref: any;
   type: any;
@@ -161,7 +161,7 @@ export interface Refs<P> {
 
 export interface Props<T> {
   children?: InfernoNode;
-  key?: Key | undefined;
+  key?: Key;
   ref?: Ref<T> | undefined;
 }
 
@@ -169,8 +169,6 @@ export declare namespace Inferno {
   //
   // Inferno Elements
   // ----------------------------------------------------------------------
-  type Key = string | number;
-
   // tslint:disable-next-line:interface-over-type-literal
   type ComponentState = {};
   type ExoticComponent<P = {}> = (props: P) => InfernoElement;
@@ -192,7 +190,7 @@ export declare namespace Inferno {
   interface InfernoElement<P = any> {
     type: string | ComponentClass<P> | SFC<P>;
     props: P;
-    key: Key | null;
+    key?: Key;
   }
 
   interface SFCElement<P> extends InfernoElement<P> {
@@ -279,8 +277,7 @@ export declare namespace Inferno {
     (
       props: {
         children?: InfernoNode;
-      } & P &
-        Refs<P>,
+      } & P & Refs<P>,
       context?: any
     ): InfernoElement | null;
     defaultProps?: Partial<P> | undefined | null;
