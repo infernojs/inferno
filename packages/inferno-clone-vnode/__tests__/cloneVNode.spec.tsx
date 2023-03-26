@@ -481,7 +481,7 @@ describe('cloneVNode (JSX)', () => {
   describe('without children specified', () => {
     it('should render children one level deep', () => {
       interface NameContainerProps {
-        children: InfernoSingleNode[]
+        children: InfernoSingleNode[];
       }
       class NameContainer extends Component<NameContainerProps> {
         public render() {
@@ -519,7 +519,7 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
       const items2 = [{ age: 28 }, { age: 26 }, { age: 16 }, { age: 15 }];
 
       interface Wrapper1Props {
-        children: InfernoSingleNode
+        children: InfernoSingleNode;
       }
 
       class Wrapper1 extends Component<Wrapper1Props> {
@@ -530,9 +530,9 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
       }
 
       interface Wrapper2Props {
-        items2: {age: number}[]
-        items: {name: string}[]
-        children: NormalItem[]
+        items2: { age: number }[];
+        items: { name: string }[];
+        children: NormalItem[];
       }
 
       class Wrapper2 extends Component<Wrapper2Props> {
@@ -540,8 +540,8 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
           const children = this.props.children.map((c) => {
             return cloneVNode(c as any, {
               age: (c.props && c.props.index) != null ? this.props.items2[c.props.index as number].age : 'default-age',
-              name: (c.props && c.props.index) != null ? this.props.items[c.props.index  as number].name : 'default-name',
-              propsIndex: c.props && c.props.index,
+              name: (c.props && c.props.index) != null ? this.props.items[c.props.index as number].name : 'default-name',
+              propsIndex: c.props && c.props.index
             });
           });
 
@@ -552,7 +552,7 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
       interface ItemProps {
         index?: number;
         name?: string;
-        age?: string
+        age?: string;
       }
 
       class Item extends Component<ItemProps> {
@@ -566,9 +566,9 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
       }
 
       interface NormalItemProps {
-        index?: number
+        index?: number;
         name?: string;
-        age?: string
+        age?: string;
       }
       class NormalItem extends Component<NormalItemProps> {
         public render() {
@@ -588,7 +588,9 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
 
           return (
             <Wrapper1>
-              <Wrapper2 items={[]} items2={items2}>{content}</Wrapper2>
+              <Wrapper2 items={[]} items2={items2}>
+                {content}
+              </Wrapper2>
             </Wrapper1>
           );
         }
@@ -605,7 +607,7 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
 
   it('Should not clone all children of Component', () => {
     // React fiddle of cloneElement https://jsfiddle.net/5wh3cfn0/
-    class Hello extends Component<{name?: string}> {
+    class Hello extends Component<{ name?: string }> {
       public render() {
         return <div>Hello {this.props.name}</div>;
       }
