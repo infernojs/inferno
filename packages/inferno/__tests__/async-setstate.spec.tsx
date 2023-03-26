@@ -241,7 +241,6 @@ describe('Async set state issue', () => {
       public _fromCWRP() {
         this._forceASYNC();
 
-        debugger;
         this.setState(
           {
             async: 1
