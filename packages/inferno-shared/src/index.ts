@@ -2,37 +2,37 @@ export const ERROR_MSG = 'a runtime error occured! Use Inferno in development en
 
 export const isArray = Array.isArray;
 
-export function isStringOrNumber(o: any): o is string | number {
+export function isStringOrNumber(o: unknown): o is string | number {
   const type = typeof o;
 
   return type === 'string' || type === 'number';
 }
 
-export function isNullOrUndef(o: any): o is undefined | null {
+export function isNullOrUndef(o: unknown): o is undefined | null {
   return o === void 0 || o === null;
 }
 
-export function isInvalid(o: any): o is null | boolean | undefined {
+export function isInvalid(o: unknown): o is null | boolean | undefined {
   return o === null || o === false || o === true || o === void 0;
 }
 
-export function isFunction(o: any): o is Function {
+export function isFunction(o: unknown): o is Function {
   return typeof o === 'function';
 }
 
-export function isString(o: any): o is string {
+export function isString(o: unknown): o is string {
   return typeof o === 'string';
 }
 
-export function isNumber(o: any): o is number {
+export function isNumber(o: unknown): o is number {
   return typeof o === 'number';
 }
 
-export function isNull(o: any): o is null {
+export function isNull(o: unknown): o is null {
   return o === null;
 }
 
-export function isUndefined(o: any): o is undefined {
+export function isUndefined(o: unknown): o is undefined {
   return o === void 0;
 }
 

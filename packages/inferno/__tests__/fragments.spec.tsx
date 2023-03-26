@@ -320,7 +320,7 @@ describe('Fragments', () => {
       first: InfernoNode;
       mid: InfernoNode;
       last: InfernoNode;
-      changeOrder?: boolean
+      changeOrder?: boolean;
     }
 
     function Fragmenter({ first, mid, last, changeOrder }: FragmenterProps) {
@@ -366,7 +366,7 @@ describe('Fragments', () => {
     let unmountCounter = 0;
 
     interface FoobarComProps {
-      node: HTMLDivElement
+      node: HTMLDivElement;
     }
 
     class FoobarCom extends Component<FoobarComProps> {

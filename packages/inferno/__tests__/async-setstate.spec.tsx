@@ -16,7 +16,7 @@ describe('Async set state issue', () => {
 
   it('Should always call all set change callbacks', () => {
     interface HoCProps {
-      run: number
+      run: number;
     }
 
     class HoC extends Component<HoCProps> {
@@ -50,16 +50,16 @@ describe('Async set state issue', () => {
     let _justBecauseCalled = 0;
 
     interface TestProps {
-      update: () => void,
-      run: number,
-      name: string
+      update: () => void;
+      run: number;
+      name: string;
     }
 
     interface TestState {
-      async: boolean,
-      counter: number,
-      failure: boolean,
-      success: number
+      async: boolean;
+      counter: number;
+      failure: boolean;
+      success: number;
     }
 
     class Test extends Component<TestProps, TestState> {
@@ -170,7 +170,7 @@ describe('Async set state issue', () => {
 
   it('Should always call all set change callbacks in order of setState requests', () => {
     interface HoCProps {
-      run: number
+      run: number;
     }
 
     class HoC extends Component<HoCProps> {
@@ -201,12 +201,12 @@ describe('Async set state issue', () => {
     let testAfterAfterSpy: jasmine.Spy;
 
     interface TestBeforeProps {
-      update: () => void,
+      update: () => void;
       run: number;
     }
     interface TestBeforeState {
-      async: number,
-      counter: number
+      async: number;
+      counter: number;
     }
 
     class TestBefore extends Component<TestBeforeProps, TestBeforeState> {
@@ -216,7 +216,7 @@ describe('Async set state issue', () => {
 
         this.state = {
           async: 0,
-          counter: 0,
+          counter: 0
         };
 
         testBeforeBeforeSpy = spyOn(this, '_before').and.callFake(function () {
@@ -241,7 +241,7 @@ describe('Async set state issue', () => {
       public _fromCWRP() {
         this._forceASYNC();
 
-        debugger
+        debugger;
         this.setState(
           {
             async: 1
@@ -272,13 +272,13 @@ describe('Async set state issue', () => {
     }
 
     interface TestAfterProps {
-      update: () => void,
+      update: () => void;
       run: number;
     }
 
     interface TestAfterState {
-      async: number,
-      counter: number
+      async: number;
+      counter: number;
     }
 
     class TestAfter extends Component<TestAfterProps, TestAfterState> {
@@ -288,7 +288,7 @@ describe('Async set state issue', () => {
 
         this.state = {
           async: 0,
-          counter: 0,
+          counter: 0
         };
 
         testAfterBeforeSpy = spyOn(this, '_before').and.callFake(function () {
@@ -355,14 +355,14 @@ describe('Async set state issue', () => {
     expect(testAfterAfterSpy!).toHaveBeenCalledTimes(2);
 
     expect(orderOfCalls).toEqual([
-      "testBeforeBefore",
-      "testBeforeAfter",
-      "testBeforeBefore",
-      "testBeforeAfter",
-      "testAfterBefore",
-      "testAfterAfter",
-      "testAfterBefore",
-      "testAfterAfter",
+      'testBeforeBefore',
+      'testBeforeAfter',
+      'testBeforeBefore',
+      'testBeforeAfter',
+      'testAfterBefore',
+      'testAfterAfter',
+      'testAfterBefore',
+      'testAfterAfter'
     ]);
 
     expect(container.innerHTML).toBe('<div><div>2</div><div>2</div></div>');
@@ -370,7 +370,7 @@ describe('Async set state issue', () => {
 
   it('Should not call applystate for components which were unmounted during the micro task startup', function () {
     interface HoCProps {
-      run: number
+      run: number;
     }
 
     class HoC extends Component<HoCProps> {
@@ -400,12 +400,12 @@ describe('Async set state issue', () => {
     let testAfterAfterSpy: jasmine.Spy;
 
     interface TestBeforeProps {
-      update: () => void,
+      update: () => void;
       run: number;
     }
     interface TestBeforeState {
-      async: number,
-      counter: number
+      async: number;
+      counter: number;
     }
 
     class TestBefore extends Component<TestBeforeProps, TestBeforeState> {
@@ -467,13 +467,13 @@ describe('Async set state issue', () => {
     }
 
     interface TestAfterProps {
-      update: () => void,
+      update: () => void;
       run: number;
     }
 
     interface TestAfterState {
-      async: number,
-      counter: number
+      async: number;
+      counter: number;
     }
 
     class TestAfter extends Component<TestAfterProps, TestAfterState> {

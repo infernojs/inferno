@@ -137,7 +137,11 @@ describe('children types', () => {
     const valid2 = <ParentComponent></ParentComponent>;
 
     // Single child also ok
-    const valid3 = <ParentComponent><FooBarCom /></ParentComponent>;
+    const valid3 = (
+      <ParentComponent>
+        <FooBarCom />
+      </ParentComponent>
+    );
 
     expect(valid).toBeDefined();
     expect(valid2).toBeDefined();
@@ -175,21 +179,31 @@ describe('children types', () => {
     }
 
     // Children defined InfernoSingleNode so array is not acceptable
-    // @ts-expect-error
-    const invalid1 = <ParentComponent>
+    const invalid1 = (
+      // @ts-expect-error
+      <ParentComponent>
         <FooBarCom />
         <FooBarCom />
-      </ParentComponent>;
+      </ParentComponent>
+    );
 
     // Children not defined optional so leaving it empty is error
     // @ts-expect-error
     const invalid2 = <ParentComponent></ParentComponent>;
 
     // Single child component is ok
-    const valid1 = <ParentComponent><FooBarCom /></ParentComponent>;
+    const valid1 = (
+      <ParentComponent>
+        <FooBarCom />
+      </ParentComponent>
+    );
 
     // Single child div is ok
-    const valid2 = <ParentComponent><div>1</div></ParentComponent>;
+    const valid2 = (
+      <ParentComponent>
+        <div>1</div>
+      </ParentComponent>
+    );
 
     expect(invalid1).toBeDefined();
     expect(invalid2).toBeDefined();

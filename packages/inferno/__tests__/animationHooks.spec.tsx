@@ -319,7 +319,7 @@ describe('animation hooks', () => {
     }
 
     interface AppState {
-      items: number[]
+      items: number[];
     }
 
     class App extends Component<unknown, AppState> {
@@ -507,7 +507,7 @@ describe('animation hooks', () => {
     }
 
     interface ItemProps {
-      index: number
+      index: number;
     }
 
     class Item extends Component<ItemProps> {
@@ -553,7 +553,7 @@ describe('animation hooks', () => {
     let callMeAfterLastRender;
 
     interface AppProps {
-      forceDone?: boolean
+      forceDone?: boolean;
     }
 
     class App extends Component<AppProps> {
@@ -1134,8 +1134,8 @@ describe('animation hooks', () => {
 
   describe('Calendar like layout', () => {
     interface AnimatedProps {
-      key: string,
-      children?: any
+      key: string;
+      children?: any;
     }
 
     class Animated extends Component<AnimatedProps, unknown> {
@@ -1313,7 +1313,7 @@ function factory(spyer?: jasmine.Spy) {
   };
 }
 
-function generateKeyNodes(array: (string|number)[], spyer?) {
+function generateKeyNodes(array: (string | number)[], spyer?) {
   let i: number = 0;
   let id: string | number;
   let key: string | number;

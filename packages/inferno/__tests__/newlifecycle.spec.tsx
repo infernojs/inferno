@@ -30,12 +30,12 @@ describe('Lifecycle methods', () => {
     };
 
     interface OuterState {
-      value: number
+      value: number;
     }
 
     interface OuterProps {
-      value?: number,
-      x: number
+      value?: number;
+      x: number;
     }
 
     class Outer extends Component<OuterProps, OuterState> {
@@ -75,12 +75,12 @@ describe('Lifecycle methods', () => {
     Outer.prototype.componentWillUnmount = logger('outer componentWillUnmount');
 
     interface InnerProps {
-      x: number,
-      outerValue: number
+      x: number;
+      outerValue: number;
     }
 
     interface InnerState {
-      value: number
+      value: number;
     }
 
     class Inner extends Component<InnerProps, InnerState> {
@@ -215,13 +215,13 @@ describe('Lifecycle methods', () => {
   describe('static getDerivedStateFromProps', () => {
     it('should set initial state with value returned from getDerivedStateFromProps', () => {
       interface FooState {
-        bar: string,
-        foo: string
+        bar: string;
+        foo: string;
       }
 
-      class Foo extends Component<{foo: string}, FooState> {
+      class Foo extends Component<{ foo: string }, FooState> {
         // @ts-expect-error automatic init detection not working with getDerivedStateFromProps
-        public state: FooState
+        public state: FooState;
 
         public static getDerivedStateFromProps(nextProps) {
           return {
@@ -242,7 +242,7 @@ describe('Lifecycle methods', () => {
     it('should update initial state with value returned from getDerivedStateFromProps', () => {
       interface FooState {
         bar: string;
-        foo: string
+        foo: string;
       }
       class Foo extends Component<unknown, FooState> {
         public state: FooState;
@@ -272,15 +272,15 @@ describe('Lifecycle methods', () => {
 
     it("should update the instance's state with the value returned from getDerivedStateFromProps when props change", () => {
       interface FooState {
-        value: string
+        value: string;
       }
 
       interface FooProps {
-        update: boolean
+        update: boolean;
       }
 
       class Foo extends Component<FooProps, FooState> {
-        public state: FooState
+        public state: FooState;
         constructor(props, context) {
           super(props, context);
           this.state = {
@@ -326,7 +326,7 @@ describe('Lifecycle methods', () => {
 
     it("should update the instance's state with the value returned from getDerivedStateFromProps when state changes", () => {
       interface FooState {
-        value: string
+        value: string;
       }
 
       class Foo extends Component<unknown, FooState> {
@@ -372,12 +372,12 @@ describe('Lifecycle methods', () => {
 
     it('should NOT modify state if null is returned', () => {
       interface FooState {
-        bar: string
-        foo: string
+        bar: string;
+        foo: string;
       }
 
       class Foo extends Component<unknown, FooState> {
-        public state: FooState
+        public state: FooState;
         constructor(props, context) {
           super(props, context);
           this.state = {
@@ -406,17 +406,17 @@ describe('Lifecycle methods', () => {
     // React v16.3.2 warns if undefined if returned from getDerivedStateFromProps
     it('should NOT modify state if undefined is returned', () => {
       interface FooState {
-        bar: string
-        foo: string
+        bar: string;
+        foo: string;
       }
 
       class Foo extends Component<unknown, FooState> {
-        public state: FooState
+        public state: FooState;
         constructor(props, context) {
           super(props, context);
           this.state = {
             bar: 'bar',
-            foo: 'foo',
+            foo: 'foo'
           };
         }
 
@@ -462,7 +462,7 @@ describe('Lifecycle methods', () => {
       let childRef;
 
       interface ParentState {
-        parentRenders: number
+        parentRenders: number;
       }
 
       class Parent extends Component<unknown, ParentState> {
@@ -484,7 +484,7 @@ describe('Lifecycle methods', () => {
       }
 
       interface ChildProps {
-        parentRenders: number
+        parentRenders: number;
       }
 
       class Child extends Component<ChildProps> {
@@ -510,11 +510,11 @@ describe('Lifecycle methods', () => {
       let stateArg;
 
       interface FooState {
-        value: number
+        value: number;
       }
 
-      class Foo extends Component<{foo: string}, FooState> {
-        public state: FooState
+      class Foo extends Component<{ foo: string }, FooState> {
+        public state: FooState;
         constructor(props) {
           super(props);
           this.state = {
@@ -611,10 +611,10 @@ describe('Lifecycle methods', () => {
       let log: string[] = [];
 
       interface MyComponentProps {
-        value: string
+        value: string;
       }
       interface MyComponentState {
-        value: number
+        value: number;
       }
 
       class MyComponent extends Component<MyComponentProps, MyComponentState> {
@@ -666,14 +666,14 @@ describe('Lifecycle methods', () => {
       let log: string[] = [];
 
       interface MyComponentProps {
-        value: string
+        value: string;
       }
       interface MyComponentState {
-        value: number
+        value: number;
       }
 
       class MyComponent extends Component<MyComponentProps, MyComponentState> {
-        protected divRef: HTMLDivElement | null
+        protected divRef: HTMLDivElement | null;
 
         public getSnapshotBeforeUpdate(prevProps) {
           log.push('getSnapshotBeforeUpdate');
@@ -709,15 +709,15 @@ describe('Lifecycle methods', () => {
       let curState;
 
       interface FooState {
-        value: number
+        value: number;
       }
 
       interface FooProps {
-        foo: string
+        foo: string;
       }
 
       class Foo extends Component<FooProps, FooState> {
-        public state: FooState
+        public state: FooState;
         constructor(props) {
           super(props);
           this.state = {
@@ -824,7 +824,7 @@ describe('Lifecycle methods', () => {
 
       interface OuterProps {}
       interface OuterState {
-        i: number
+        i: number;
       }
 
       class Outer extends Component<OuterProps, OuterState> {
@@ -871,7 +871,7 @@ describe('Lifecycle methods', () => {
       let doRender;
 
       interface ReceivePropsComponentState {
-        i: number
+        i: number;
       }
 
       class ReceivePropsComponent extends Component<unknown, ReceivePropsComponentState> {
@@ -922,7 +922,7 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      class Outer extends Component<{renderInner?: boolean}> {
+      class Outer extends Component<{ renderInner?: boolean }> {
         public componentDidUpdate() {
           log.push('Outer updated');
         }
@@ -958,7 +958,7 @@ describe('Lifecycle methods', () => {
       let doRender;
 
       interface OuterState {
-        i: number
+        i: number;
       }
 
       class Outer extends Component<unknown, OuterState> {
@@ -979,7 +979,7 @@ describe('Lifecycle methods', () => {
       }
 
       interface InnerProps {
-        i: number
+        i: number;
       }
 
       class Inner extends Component<InnerProps> {
@@ -1012,11 +1012,11 @@ describe('Lifecycle methods', () => {
       let doRender;
 
       interface OuterState {
-        i: number
+        i: number;
       }
 
       class Outer extends Component<unknown, OuterState> {
-        public state: OuterState
+        public state: OuterState;
         constructor(p, c) {
           super(p, c);
           this.state = { i: 0 };
@@ -1088,15 +1088,15 @@ describe('Lifecycle methods', () => {
       let curState;
 
       interface FooProps {
-        foo: string
+        foo: string;
       }
 
       interface FooState {
-        value: number
+        value: number;
       }
 
       class Foo extends Component<FooProps, FooState> {
-        public state: FooState
+        public state: FooState;
         constructor(props) {
           super(props);
           this.state = {
@@ -1188,7 +1188,7 @@ describe('Lifecycle methods', () => {
       let cduCurrentState;
 
       interface PropsProviderState {
-        value: number
+        value: number;
       }
 
       class PropsProvider extends Component<unknown, PropsProviderState> {
@@ -1213,7 +1213,7 @@ describe('Lifecycle methods', () => {
       }
 
       interface PropsReceiverProps {
-        value: number
+        value: number;
       }
 
       class PropsReceiver extends Component<PropsReceiverProps> {
@@ -1241,11 +1241,11 @@ describe('Lifecycle methods', () => {
       let cduCurrentState;
 
       interface FooState {
-        value: number
+        value: number;
       }
 
       class Foo extends Component<unknown, FooState> {
-        public state: FooState
+        public state: FooState;
         constructor() {
           super();
           this.state = { value: 0 };
@@ -1283,11 +1283,11 @@ describe('Lifecycle methods', () => {
       let cduCurrentProps;
 
       interface FooState {
-        value: number
+        value: number;
       }
 
       class Foo extends Component<unknown, FooState> {
-        public state: FooState
+        public state: FooState;
         constructor() {
           super();
           this.state = { value: 0 };
@@ -1325,7 +1325,7 @@ describe('Lifecycle methods', () => {
       let cduCurrentProps;
 
       interface PropsProviderState {
-        value: number
+        value: number;
       }
 
       class PropsProvider extends Component<unknown, PropsProviderState> {
@@ -1350,7 +1350,7 @@ describe('Lifecycle methods', () => {
       }
 
       interface PropsReceiverProps {
-        value: number
+        value: number;
       }
 
       class PropsReceiver extends Component<PropsReceiverProps> {
@@ -1434,13 +1434,13 @@ describe('Lifecycle methods', () => {
         willMountSpy.calls.reset();
         didMountSpy.calls.reset();
         willUnmountSpy.calls.reset();
-      }
+      };
 
       beforeEach(function () {
         constructorSpy = spyOn(Inner.prototype, '_constructor');
-        willMountSpy= spyOn(Inner.prototype, 'componentWillMount');
-        didMountSpy= spyOn(Inner.prototype, 'componentDidMount');
-        willUnmountSpy= spyOn(Inner.prototype, 'componentWillUnmount');
+        willMountSpy = spyOn(Inner.prototype, 'componentWillMount');
+        didMountSpy = spyOn(Inner.prototype, 'componentDidMount');
+        willUnmountSpy = spyOn(Inner.prototype, 'componentWillUnmount');
       });
 
       it('should be invoked for components on initial render', () => {
@@ -1483,13 +1483,13 @@ describe('Lifecycle methods', () => {
         willMountSpy.calls.reset();
         didMountSpy.calls.reset();
         willUnmountSpy.calls.reset();
-      }
+      };
 
       beforeEach(function () {
         constructorSpy = spyOn(InnerMost.prototype, '_constructor');
-        willMountSpy= spyOn(InnerMost.prototype, 'componentWillMount');
-        didMountSpy= spyOn(InnerMost.prototype, 'componentDidMount');
-        willUnmountSpy= spyOn(InnerMost.prototype, 'componentWillUnmount');
+        willMountSpy = spyOn(InnerMost.prototype, 'componentWillMount');
+        didMountSpy = spyOn(InnerMost.prototype, 'componentDidMount');
+        willUnmountSpy = spyOn(InnerMost.prototype, 'componentWillUnmount');
       });
 
       it('should be invoked for components on initial render', () => {
@@ -1565,9 +1565,9 @@ describe('Lifecycle methods', () => {
       let willUnmountSpy: jasmine.Spy;
 
       beforeEach(function () {
-        willMountSpy= spyOn(Inner1.prototype, 'componentWillMount');
-        didMountSpy= spyOn(Inner1.prototype, 'componentDidMount');
-        willUnmountSpy= spyOn(Inner1.prototype, 'componentWillUnmount');
+        willMountSpy = spyOn(Inner1.prototype, 'componentWillMount');
+        didMountSpy = spyOn(Inner1.prototype, 'componentDidMount');
+        willUnmountSpy = spyOn(Inner1.prototype, 'componentWillUnmount');
       });
 
       it('should be invoke normally on initial mount', () => {
@@ -1656,11 +1656,11 @@ describe('Lifecycle methods', () => {
       let nextStateArg;
 
       interface FooState {
-        value: number
+        value: number;
       }
 
-      class Foo extends Component<{foo: string}, FooState> {
-        public state: FooState
+      class Foo extends Component<{ foo: string }, FooState> {
+        public state: FooState;
         constructor(props) {
           super(props);
           this.state = {

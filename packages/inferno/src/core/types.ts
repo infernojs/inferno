@@ -7,8 +7,8 @@ export interface LinkedEvent<T, E extends Event> {
   event: (data: T, event: E) => void;
 }
 
-type InfernoText = string | number;
-type InfernoChild = Inferno.InfernoElement | InfernoText;
+export type InfernoText = string | number;
+export type InfernoChild = Inferno.InfernoElement | InfernoText;
 
 interface InfernoNodeArray extends Array<InfernoNode> {}
 
@@ -278,7 +278,8 @@ export declare namespace Inferno {
     (
       props: {
         children?: InfernoNode;
-      } & P & Refs<P>,
+      } & P &
+        Refs<P>,
       context?: any
     ): InfernoElement | null;
     defaultProps?: Partial<P> | undefined | null;

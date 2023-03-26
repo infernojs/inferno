@@ -91,7 +91,7 @@ describe('ComponentDidUpdate', () => {
     }
 
     interface AppProps {
-      child?: boolean
+      child?: boolean;
     }
 
     class App extends Component<AppProps> {
@@ -188,7 +188,7 @@ describe('ComponentDidUpdate', () => {
     }
 
     interface AppProps {
-      child?: boolean
+      child?: boolean;
     }
 
     class App extends Component<AppProps> {
@@ -305,7 +305,7 @@ describe('ComponentDidUpdate', () => {
     }
 
     interface OutsiderState {
-      bool?: boolean
+      bool?: boolean;
     }
 
     class Outsider extends Component<unknown, OutsiderState> {
@@ -392,7 +392,7 @@ describe('ComponentDidUpdate', () => {
     }
 
     interface TesterOneProps {
-      a: number
+      a: number;
     }
 
     class TesterOne extends Component<TesterOneProps> {
@@ -426,11 +426,11 @@ describe('ComponentDidUpdate', () => {
     }
 
     interface OutsiderState {
-      bool?: boolean
+      bool?: boolean;
     }
 
     interface OutsiderProps {
-      a: number
+      a: number;
     }
 
     class Outsider extends Component<OutsiderProps, OutsiderState> {
@@ -467,11 +467,11 @@ describe('ComponentDidUpdate', () => {
     }
 
     interface AppState {
-      a: number
+      a: number;
     }
 
     class App extends Component<unknown, AppState> {
-      public state: AppState
+      public state: AppState;
       constructor(props) {
         super(props);
 

@@ -1,7 +1,6 @@
 import { cloneVNode } from 'inferno-clone-vnode';
-import { Component, createTextVNode, Fragment, render } from 'inferno';
+import { Component, createTextVNode, Fragment, InfernoSingleNode, render, VNode } from 'inferno';
 
-// React Fiddle for Cloning https://jsfiddle.net/es4u02jv/
 describe('cloneVNode (JSX)', () => {
   let container;
 
@@ -36,6 +35,7 @@ describe('cloneVNode (JSX)', () => {
   it('should clone OPT_ELEMENT', () => {
     const noop = () => {};
     const node = cloneVNode(
+      // @ts-expect-error
       <div onComponentWillMount={noop} onComponentDidMount={noop} onComponentWillUnmount={noop} onComponentShouldUpdate={noop} onComponentWillUpdate={noop} />,
       { children: [<span />] }
     );
@@ -64,6 +64,7 @@ describe('cloneVNode (JSX)', () => {
   });
 
   it('Should support multiple parameters as children', () => {
+    // @ts-ignore
     const node = cloneVNode(<div />, null, <span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>);
     render(node, container);
     expect(container.innerHTML).toBe('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>');
@@ -152,7 +153,7 @@ describe('cloneVNode (JSX)', () => {
 
   it('Should clone Component with vNode div children', () => {
     class Com extends Component {
-      render({ children }) {
+      public render({ children }) {
         return children;
       }
     }
@@ -170,7 +171,7 @@ describe('cloneVNode (JSX)', () => {
 
   it('Should clone Component with no props at all', () => {
     class Com extends Component {
-      render({ children }) {
+      public render({ children }) {
         return children;
       }
     }
@@ -193,7 +194,7 @@ describe('cloneVNode (JSX)', () => {
 
   it('Should clone Component with vNode text children', () => {
     class Com extends Component {
-      render() {
+      public render() {
         return 'Text';
       }
     }
@@ -246,6 +247,7 @@ describe('cloneVNode (JSX)', () => {
 
     expect(container.innerHTML).toBe('<div>Third</div>');
 
+    // @ts-ignore
     render(cloneVNode(nodeToClone, { children: 'Second' }, 'Third', 'Fourth'), container);
 
     expect(container.innerHTML).toBe('<div>ThirdFourth</div>');
@@ -303,9 +305,6 @@ describe('cloneVNode (JSX)', () => {
       });
 
       render(newNode, container);
-      console.log(newNode.props);
-      // expect(newNode.props.className).toBe(undefined); , This depends on if we are running inferno-compat or not
-      // expect(newNode.props.hasOwnProperty('className')).toBe(false);
 
       expect(container.firstChild.className).toBe('');
       expect(container.innerHTML).toEqual('<div></div>');
@@ -470,7 +469,6 @@ describe('cloneVNode (JSX)', () => {
         className: null
       });
 
-      console.log(newNode.props);
       expect(newNode.ref).toEqual(initialFunc);
       // expect(newNode.props.hasOwnProperty('className')).toBe(false);
       expect(newNode.props.className).toBe(undefined);
@@ -482,10 +480,13 @@ describe('cloneVNode (JSX)', () => {
 
   describe('without children specified', () => {
     it('should render children one level deep', () => {
-      class NameContainer extends Component {
-        render() {
+      interface NameContainerProps {
+        children: InfernoSingleNode[]
+      }
+      class NameContainer extends Component<NameContainerProps> {
+        public render() {
           const children = this.props.children.map((c) =>
-            cloneVNode(c, {
+            cloneVNode(c as VNode, {
               name: 'Henry'
             })
           );
@@ -517,20 +518,30 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
       const items = [{ name: 'Mike Brady' }, { name: 'Carol Brady' }, { name: 'Greg Brady' }, { name: 'Marcia Brady' }];
       const items2 = [{ age: 28 }, { age: 26 }, { age: 16 }, { age: 15 }];
 
-      class Wrapper1 extends Component {
-        render() {
-          const children = cloneVNode(this.props.children, { items });
+      interface Wrapper1Props {
+        children: InfernoSingleNode
+      }
+
+      class Wrapper1 extends Component<Wrapper1Props> {
+        public render() {
+          const children = cloneVNode(this.props.children as VNode, { items });
           return <div className="wrapper1">{children}</div>;
         }
       }
 
-      class Wrapper2 extends Component {
-        render() {
+      interface Wrapper2Props {
+        items2: {age: number}[]
+        items: {name: string}[]
+        children: NormalItem[]
+      }
+
+      class Wrapper2 extends Component<Wrapper2Props> {
+        public render() {
           const children = this.props.children.map((c) => {
-            return cloneVNode(c, {
+            return cloneVNode(c as any, {
+              age: (c.props && c.props.index) != null ? this.props.items2[c.props.index as number].age : 'default-age',
+              name: (c.props && c.props.index) != null ? this.props.items[c.props.index  as number].name : 'default-name',
               propsIndex: c.props && c.props.index,
-              name: (c.props && c.props.index) != null ? this.props.items[c.props.index].name : 'default-name',
-              age: (c.props && c.props.index) != null ? this.props.items2[c.props.index].age : 'default-age'
             });
           });
 
@@ -538,8 +549,14 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
         }
       }
 
-      class Item extends Component {
-        render() {
+      interface ItemProps {
+        index?: number;
+        name?: string;
+        age?: string
+      }
+
+      class Item extends Component<ItemProps> {
+        public render() {
           return (
             <span>
               item {this.props.name} - age: {this.props.age}
@@ -548,8 +565,13 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
         }
       }
 
-      class NormalItem extends Component {
-        render() {
+      interface NormalItemProps {
+        index?: number
+        name?: string;
+        age?: string
+      }
+      class NormalItem extends Component<NormalItemProps> {
+        public render() {
           return (
             <span>
               Normal Item {this.props.name} - age: {this.props.age}
@@ -559,14 +581,14 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
       }
 
       class App extends Component {
-        render() {
-          const content = [<NormalItem />, <NormalItem />];
+        public render() {
+          const content: NormalItem[] = [<NormalItem />, <NormalItem />];
 
-          items.forEach((d, idx) => content.push(<Item index={idx} />));
+          items.forEach((_d, idx) => content.push(<Item index={idx} />));
 
           return (
             <Wrapper1>
-              <Wrapper2 items2={items2}>{content}</Wrapper2>
+              <Wrapper2 items={[]} items2={items2}>{content}</Wrapper2>
             </Wrapper1>
           );
         }
@@ -583,8 +605,8 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
 
   it('Should not clone all children of Component', () => {
     // React fiddle of cloneElement https://jsfiddle.net/5wh3cfn0/
-    class Hello extends Component {
-      render() {
+    class Hello extends Component<{name?: string}> {
+      public render() {
         return <div>Hello {this.props.name}</div>;
       }
     }

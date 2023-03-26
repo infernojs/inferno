@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { AnimatedComponent } from '../src/AnimatedComponent';
+import { AnimatedComponent } from 'inferno-animation';
 
 describe('inferno-animation AnimatedComponent', () => {
   let container;

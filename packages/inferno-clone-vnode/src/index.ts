@@ -6,8 +6,6 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
  directClone is preferred over cloneVNode and used internally also.
  This function makes Inferno backwards compatible.
  And can be tree-shaked by modern bundlers
-
- Would be nice to combine this with directClone but could not do it without breaking change
 */
 
 /**

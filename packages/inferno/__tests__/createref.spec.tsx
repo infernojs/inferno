@@ -87,7 +87,7 @@ describe('createRef', () => {
     let newValue = null;
 
     interface FoobarProps {
-      swap?: boolean
+      swap?: boolean;
     }
 
     class Foobar extends Component<FoobarProps> {
@@ -138,7 +138,7 @@ describe('createRef', () => {
     let newValue = null;
 
     interface FoobarProps {
-      swap?: boolean
+      swap?: boolean;
     }
 
     class Foobar extends Component<FoobarProps> {
@@ -287,7 +287,7 @@ describe('createRef', () => {
     let setSelected;
 
     interface ParentState {
-      selected: number
+      selected: number;
     }
 
     class Parent extends Component<unknown, ParentState> {

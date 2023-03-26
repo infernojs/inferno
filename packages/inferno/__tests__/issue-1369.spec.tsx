@@ -112,7 +112,7 @@ describe('static tree as child nodes', () => {
     let constuctCounter = 0;
 
     interface TestState {
-      text: string
+      text: string;
     }
 
     class Test extends Component<unknown, TestState> {
