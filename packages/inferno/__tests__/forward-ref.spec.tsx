@@ -1,4 +1,4 @@
-import { Component, createRef, forwardRef, render } from 'inferno';
+import { Component, createRef, forwardRef, RefObject, render } from 'inferno';
 
 describe('Forward Ref', () => {
   let container;
@@ -24,6 +24,8 @@ describe('Forward Ref', () => {
     expect(FancyButton.render).toBeDefined();
 
     class Hello extends Component {
+      private readonly btn: RefObject<Element>;
+
       constructor(props) {
         super(props);
 
@@ -31,10 +33,10 @@ describe('Forward Ref', () => {
         this.btn = createRef();
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         expect(this.btn.current).toBe(container.querySelector('button'));
       }
-      render() {
+      public render() {
         return <FancyButton ref={this.btn}>Click me!</FancyButton>;
       }
     }
@@ -54,7 +56,7 @@ describe('Forward Ref', () => {
     expect(FancyButton.render).toBeDefined();
 
     class Hello extends Component {
-      render() {
+      public render() {
         return (
           <FancyButton
             ref={(btn) => {
@@ -132,24 +134,31 @@ describe('Forward Ref', () => {
 
       let i = 0;
 
+      // @ts-expect-error
       forwardRef(false);
       expect(spy.calls.count()).toEqual(++i);
 
+      // @ts-expect-error
       forwardRef(true);
       expect(spy.calls.count()).toEqual(++i);
 
+      // @ts-expect-error
       forwardRef({});
       expect(spy.calls.count()).toEqual(++i);
 
+      // @ts-expect-error
       forwardRef('asd');
       expect(spy.calls.count()).toEqual(++i);
 
+      // @ts-expect-error
       forwardRef(undefined);
       expect(spy.calls.count()).toEqual(++i);
 
+      // @ts-expect-error
       forwardRef(8);
       expect(spy.calls.count()).toEqual(++i);
 
+      // TODO: improve forward ref typings
       forwardRef(<div>1</div>);
       expect(spy.calls.count()).toEqual(++i);
 
@@ -177,7 +186,7 @@ describe('Forward Ref', () => {
     render(<RefComponent ref={objRef} />, container);
 
     expect(container.innerHTML).toBe('<div>1</div>');
-    expect(objRef.current.outerHTML).toBe('<div>1</div>');
+    expect(objRef.current!.outerHTML).toBe('<div>1</div>');
 
     expect(RefComponent.staticMember).toBe('asd');
   });
@@ -207,7 +216,7 @@ describe('Forward Ref', () => {
       expect(ForwardCom.render).toBe(CoolStuff);
 
       class Hello extends Component {
-        render() {
+        public render() {
           return (
             <ForwardCom
               className="okay"

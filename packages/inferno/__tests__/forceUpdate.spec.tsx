@@ -20,7 +20,7 @@ describe('forceUpdate', () => {
     let updated = 0;
 
     class Parent extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <Child />
@@ -30,22 +30,22 @@ describe('forceUpdate', () => {
     }
 
     class Child extends Component {
-      state = {
+      public state = {
         foo: 'bar'
       };
 
-      componentDidMount() {
+      public componentDidMount() {
         this.setState({
           foo: 'bar2'
         });
         this.forceUpdate();
       }
 
-      componentDidUpdate() {
+      public componentDidUpdate() {
         updated++;
       }
 
-      render() {
+      public render() {
         return <div>{this.state.foo}</div>;
       }
     }
@@ -63,7 +63,7 @@ describe('forceUpdate', () => {
     let updated = 0;
 
     class Parent extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <Child />
@@ -73,22 +73,22 @@ describe('forceUpdate', () => {
     }
 
     class Child extends Component {
-      state = {
+      public state = {
         foo: 'bar'
       };
 
-      shouldComponentUpdate(prevProps, prevState) {
+      public shouldComponentUpdate(_prevProps, prevState) {
         if (prevState.foo !== this.state.foo) {
           return true;
         }
         return false;
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         this.forceUpdate();
       }
 
-      render() {
+      public render() {
         updated++;
         return <div>{this.state.foo}</div>;
       }
@@ -112,7 +112,7 @@ describe('forceUpdate', () => {
     let updated = 0;
 
     class Parent extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <Child />
@@ -122,20 +122,20 @@ describe('forceUpdate', () => {
     }
 
     class Child extends Component {
-      state = {
+      public state = {
         foo: 'bar'
       };
 
-      shouldComponentUpdate() {
+      public shouldComponentUpdate() {
         return false;
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         this.setState({ foo: 'bar2' });
         this.forceUpdate();
       }
 
-      render() {
+      public render() {
         updated++;
         return <div>{this.state.foo}</div>;
       }
@@ -156,7 +156,7 @@ describe('forceUpdate', () => {
     let updated = 0;
 
     class Parent extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <Child />
@@ -166,20 +166,20 @@ describe('forceUpdate', () => {
     }
 
     class Child extends Component {
-      state = {
+      public state = {
         foo: 'bar'
       };
 
-      shouldComponentUpdate() {
+      public shouldComponentUpdate() {
         return false;
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         this.forceUpdate();
         this.setState({ foo: 'bar2' });
       }
 
-      render() {
+      public render() {
         updated++;
         return <div>{this.state.foo}</div>;
       }

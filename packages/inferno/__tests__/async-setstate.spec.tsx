@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 
 describe('Async set state issue', () => {
   let container;
@@ -14,19 +14,23 @@ describe('Async set state issue', () => {
     document.body.removeChild(container);
   });
 
-  it('Should always call all set change callbacks', (done) => {
-    class HoC extends Component {
+  it('Should always call all set change callbacks', () => {
+    interface HoCProps {
+      run: number
+    }
+
+    class HoC extends Component<HoCProps> {
       constructor(props) {
         super(props);
 
         this.update = this.update.bind(this);
       }
 
-      update() {
+      public update() {
         this.setState({});
       }
 
-      render(props) {
+      public render(props) {
         return (
           <div>
             <Test update={this.update} run={props.run} name="first" />
@@ -36,35 +40,50 @@ describe('Async set state issue', () => {
       }
     }
 
-    let _fromCWRPCBRequested = 0,
-      _failureCreatorCBRequested = 0,
-      _callMePlsCBRequested = 0,
-      _justBecauseCBRequested = 0,
-      _fromCWRPCalled = 0,
-      _failureCreatorCalled = 0,
-      _callMePlsCalled = 0,
-      _justBecauseCalled = 0;
+    let _fromCWRPCBRequested = 0;
+    let _failureCreatorCBRequested = 0;
+    let _callMePlsCBRequested = 0;
+    let _justBecauseCBRequested = 0;
+    let _fromCWRPCalled = 0;
+    let _failureCreatorCalled = 0;
+    let _callMePlsCalled = 0;
+    let _justBecauseCalled = 0;
 
-    class Test extends Component {
+    interface TestProps {
+      update: () => void,
+      run: number,
+      name: string
+    }
+
+    interface TestState {
+      async: boolean,
+      counter: number,
+      failure: boolean,
+      success: number
+    }
+
+    class Test extends Component<TestProps, TestState> {
+      public state: TestState;
+
       constructor(props) {
         super(props);
 
         this.state = {
-          success: 0,
-          counter: 0,
           async: false,
-          failure: false
+          counter: 0,
+          failure: false,
+          success: 0
         };
       }
 
-      _forceASYNC() {
+      public _forceASYNC() {
         // hack just for testing, this forces parent is updating so we can test async setState flow
         if (this.state.counter === 1) {
           this.props.update();
         }
       }
 
-      _justBecause() {
+      public _justBecause() {
         _justBecauseCalled++;
         this._forceASYNC();
 
@@ -73,7 +92,7 @@ describe('Async set state issue', () => {
         });
       }
 
-      _callMePls() {
+      public _callMePls() {
         _callMePlsCalled++;
         this._forceASYNC();
 
@@ -86,7 +105,7 @@ describe('Async set state issue', () => {
         );
       }
 
-      _failureCreator() {
+      public _failureCreator() {
         _failureCreatorCalled++;
         this._forceASYNC();
 
@@ -99,7 +118,7 @@ describe('Async set state issue', () => {
         );
       }
 
-      _fromCWRP() {
+      public _fromCWRP() {
         _fromCWRPCalled++;
         this._forceASYNC();
 
@@ -113,7 +132,7 @@ describe('Async set state issue', () => {
         );
       }
 
-      componentWillReceiveProps(nextProps, nextContext) {
+      public componentWillReceiveProps(_nextProps, _nextContext) {
         _fromCWRPCBRequested++;
 
         this.setState(
@@ -124,45 +143,48 @@ describe('Async set state issue', () => {
         );
       }
 
-      render() {
+      public render() {
         return <div>{`${this.props.name} ${this.state.success} ${this.state.counter} ${this.state.async} ${this.state.failure}`}</div>;
       }
     }
 
     render(<HoC run={1} />, container);
+    rerender();
     render(<HoC run={2} />, container);
-    setTimeout(function () {
-      // Set state should be called as many times as it was requested
-      expect(_fromCWRPCBRequested).toBe(_fromCWRPCalled);
-      expect(_callMePlsCBRequested).toBe(_callMePlsCalled);
-      expect(_failureCreatorCBRequested).toBe(_failureCreatorCalled);
-      expect(_justBecauseCBRequested).toBe(_justBecauseCalled);
+    rerender();
 
-      // This assertion is just to document it used to be 4 iterations
-      expect(_fromCWRPCBRequested).toBe(4);
-      expect(_callMePlsCBRequested).toBe(4);
-      expect(_failureCreatorCBRequested).toBe(4);
-      expect(_justBecauseCBRequested).toBe(4);
+    // Set state should be called as many times as it was requested
+    expect(_fromCWRPCBRequested).toBe(_fromCWRPCalled);
+    expect(_callMePlsCBRequested).toBe(_callMePlsCalled);
+    expect(_failureCreatorCBRequested).toBe(_failureCreatorCalled);
+    expect(_justBecauseCBRequested).toBe(_justBecauseCalled);
 
-      expect(container.innerHTML).toBe('<div><div>first 2 2 true true</div><div>second 2 2 true true</div></div>');
+    // This assertion is just to document it used to be 4 iterations
+    expect(_fromCWRPCBRequested).toBe(4);
+    expect(_callMePlsCBRequested).toBe(4);
+    expect(_failureCreatorCBRequested).toBe(4);
+    expect(_justBecauseCBRequested).toBe(4);
 
-      done();
-    }, 20);
+    expect(container.innerHTML).toBe('<div><div>first 2 2 true true</div><div>second 2 2 true true</div></div>');
   });
 
-  it('Should always call all set change callbacks in order of setState requests', (done) => {
-    class HoC extends Component {
+  it('Should always call all set change callbacks in order of setState requests', () => {
+    interface HoCProps {
+      run: number
+    }
+
+    class HoC extends Component<HoCProps> {
       constructor(props) {
         super(props);
 
         this.update = this.update.bind(this);
       }
 
-      update() {
+      public update() {
         this.setState({});
       }
 
-      render(props) {
+      public render(props) {
         return (
           <div>
             <TestBefore update={this.update} run={props.run} />
@@ -172,15 +194,29 @@ describe('Async set state issue', () => {
       }
     }
 
-    let orderOfCalls = [];
-    let testBeforeBeforeSpy, testBeforeAfterSpy, testAfterBeforeSpy, testAfterAfterSpy;
+    const orderOfCalls: string[] = [];
+    let testBeforeBeforeSpy: jasmine.Spy;
+    let testBeforeAfterSpy: jasmine.Spy;
+    let testAfterBeforeSpy: jasmine.Spy;
+    let testAfterAfterSpy: jasmine.Spy;
 
-    class TestBefore extends Component {
+    interface TestBeforeProps {
+      update: () => void,
+      run: number;
+    }
+    interface TestBeforeState {
+      async: number,
+      counter: number
+    }
+
+    class TestBefore extends Component<TestBeforeProps, TestBeforeState> {
+      public state: TestBeforeState;
       constructor(props) {
         super(props);
 
         this.state = {
-          async: 0
+          async: 0,
+          counter: 0,
         };
 
         testBeforeBeforeSpy = spyOn(this, '_before').and.callFake(function () {
@@ -191,20 +227,21 @@ describe('Async set state issue', () => {
         });
       }
 
-      _forceASYNC() {
+      public _forceASYNC() {
         // hack just for testing, this forces parent is updating so we can test async setState flow
         if (this.state.counter === 1) {
           this.props.update();
         }
       }
 
-      _before() {}
+      public _before() {}
 
-      _after() {}
+      public _after() {}
 
-      _fromCWRP() {
+      public _fromCWRP() {
         this._forceASYNC();
 
+        debugger
         this.setState(
           {
             async: 1
@@ -220,7 +257,7 @@ describe('Async set state issue', () => {
         );
       }
 
-      componentWillReceiveProps(nextProps, nextContext) {
+      public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
             counter: this.state.counter + 1
@@ -229,17 +266,29 @@ describe('Async set state issue', () => {
         );
       }
 
-      render() {
+      public render() {
         return <div>{`${this.state.async}`}</div>;
       }
     }
 
-    class TestAfter extends Component {
+    interface TestAfterProps {
+      update: () => void,
+      run: number;
+    }
+
+    interface TestAfterState {
+      async: number,
+      counter: number
+    }
+
+    class TestAfter extends Component<TestAfterProps, TestAfterState> {
+      public state: TestAfterState;
       constructor(props) {
         super(props);
 
         this.state = {
-          async: 0
+          async: 0,
+          counter: 0,
         };
 
         testAfterBeforeSpy = spyOn(this, '_before').and.callFake(function () {
@@ -250,18 +299,18 @@ describe('Async set state issue', () => {
         });
       }
 
-      _forceASYNC() {
+      public _forceASYNC() {
         // hack just for testing, this forces parent is updating so we can test async setState flow
         if (this.state.counter === 1) {
           this.props.update();
         }
       }
 
-      _before() {}
+      public _before() {}
 
-      _after() {}
+      public _after() {}
 
-      _fromCWRP() {
+      public _fromCWRP() {
         this._forceASYNC();
 
         this.setState(
@@ -279,7 +328,7 @@ describe('Async set state issue', () => {
         );
       }
 
-      componentWillReceiveProps(nextProps, nextContext) {
+      public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
             counter: this.state.counter + 1
@@ -288,42 +337,54 @@ describe('Async set state issue', () => {
         );
       }
 
-      render() {
+      public render() {
         return <div>{`${this.state.async}`}</div>;
       }
     }
 
     render(<HoC run={1} />, container);
+    rerender();
+
     render(<HoC run={2} />, container);
+    rerender();
 
-    setTimeout(function () {
-      // Set state should be called as many times as it was requested
-      expect(testBeforeBeforeSpy).toHaveBeenCalledTimes(1);
-      expect(testBeforeAfterSpy).toHaveBeenCalledTimes(1);
-      expect(testAfterBeforeSpy).toHaveBeenCalledTimes(1);
-      expect(testAfterAfterSpy).toHaveBeenCalledTimes(1);
+    // Set state should be called as many times as it was requested
+    expect(testBeforeBeforeSpy!).toHaveBeenCalledTimes(2);
+    expect(testBeforeAfterSpy!).toHaveBeenCalledTimes(2);
+    expect(testAfterBeforeSpy!).toHaveBeenCalledTimes(2);
+    expect(testAfterAfterSpy!).toHaveBeenCalledTimes(2);
 
-      expect(orderOfCalls).toEqual(['testBeforeBefore', 'testBeforeAfter', 'testAfterBefore', 'testAfterAfter']);
+    expect(orderOfCalls).toEqual([
+      "testBeforeBefore",
+      "testBeforeAfter",
+      "testBeforeBefore",
+      "testBeforeAfter",
+      "testAfterBefore",
+      "testAfterAfter",
+      "testAfterBefore",
+      "testAfterAfter",
+    ]);
 
-      expect(container.innerHTML).toBe('<div><div>2</div><div>2</div></div>');
-
-      done();
-    }, 20);
+    expect(container.innerHTML).toBe('<div><div>2</div><div>2</div></div>');
   });
 
-  it('Should not call applystate for components which were unmounted during the micro task startup', function (done) {
-    class HoC extends Component {
+  it('Should not call applystate for components which were unmounted during the micro task startup', function () {
+    interface HoCProps {
+      run: number
+    }
+
+    class HoC extends Component<HoCProps> {
       constructor(props) {
         super(props);
 
         this.update = this.update.bind(this);
       }
 
-      update() {
+      public update() {
         this.setState({});
       }
 
-      render(props) {
+      public render(props) {
         return (
           <div>
             <TestBefore update={this.update} run={props.run} />
@@ -333,32 +394,47 @@ describe('Async set state issue', () => {
       }
     }
 
-    let testBeforeBeforeSpy, testBeforeAfterSpy, testAfterBeforeSpy, testAfterAfterSpy;
+    let testBeforeBeforeSpy: jasmine.Spy;
+    let testBeforeAfterSpy: jasmine.Spy;
+    let testAfterBeforeSpy: jasmine.Spy;
+    let testAfterAfterSpy: jasmine.Spy;
 
-    class TestBefore extends Component {
+    interface TestBeforeProps {
+      update: () => void,
+      run: number;
+    }
+    interface TestBeforeState {
+      async: number,
+      counter: number
+    }
+
+    class TestBefore extends Component<TestBeforeProps, TestBeforeState> {
+      public state: TestBeforeState;
+
       constructor(props) {
         super(props);
 
         this.state = {
-          async: 0
+          async: 0,
+          counter: 0
         };
 
         testBeforeBeforeSpy = spyOn(this, '_before');
         testBeforeAfterSpy = spyOn(this, '_after');
       }
 
-      _forceASYNC() {
+      public _forceASYNC() {
         // hack just for testing, this forces parent is updating so we can test async setState flow
         if (this.state.counter === 1) {
           this.props.update();
         }
       }
 
-      _before() {}
+      public _before() {}
 
-      _after() {}
+      public _after() {}
 
-      _fromCWRP() {
+      public _fromCWRP() {
         this._forceASYNC();
 
         this.setState(
@@ -376,7 +452,7 @@ describe('Async set state issue', () => {
         );
       }
 
-      componentWillReceiveProps(nextProps, nextContext) {
+      public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
             counter: this.state.counter + 1
@@ -385,35 +461,48 @@ describe('Async set state issue', () => {
         );
       }
 
-      render() {
+      public render() {
         return <div>{`${this.state.async}`}</div>;
       }
     }
 
-    class TestAfter extends Component {
+    interface TestAfterProps {
+      update: () => void,
+      run: number;
+    }
+
+    interface TestAfterState {
+      async: number,
+      counter: number
+    }
+
+    class TestAfter extends Component<TestAfterProps, TestAfterState> {
+      public state: TestAfterState;
+
       constructor(props) {
         super(props);
 
         this.state = {
-          async: 0
+          async: 0,
+          counter: 0
         };
 
         testAfterBeforeSpy = spyOn(this, '_before');
         testAfterAfterSpy = spyOn(this, '_after');
       }
 
-      _forceASYNC() {
+      public _forceASYNC() {
         // hack just for testing, this forces parent is updating so we can test async setState flow
         if (this.state.counter === 1) {
           this.props.update();
         }
       }
 
-      _before() {}
+      public _before() {}
 
-      _after() {}
+      public _after() {}
 
-      _fromCWRP() {
+      public _fromCWRP() {
         this._forceASYNC();
 
         this.setState(
@@ -431,7 +520,7 @@ describe('Async set state issue', () => {
         );
       }
 
-      componentWillReceiveProps(nextProps, nextContext) {
+      public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
             counter: this.state.counter + 1
@@ -440,24 +529,22 @@ describe('Async set state issue', () => {
         );
       }
 
-      render() {
+      public render() {
         return <div>{`${this.state.async}`}</div>;
       }
     }
 
     render(<HoC run={1} />, container);
+    rerender();
     render(<HoC run={2} />, container);
-    // Before micro task runs unmount them
+    rerender();
     render(null, container);
+    rerender();
 
-    setTimeout(function () {
-      // Set state should be called as many times as it was requested
-      expect(testBeforeBeforeSpy.calls.count()).toBe(0);
-      expect(testBeforeAfterSpy.calls.count()).toBe(0);
-      expect(testAfterBeforeSpy.calls.count()).toBe(0);
-      expect(testAfterAfterSpy.calls.count()).toBe(0);
-
-      done();
-    }, 20);
+    // Set state should be called as many times as it was requested
+    expect(testBeforeBeforeSpy!.calls.count()).toBe(2);
+    expect(testBeforeAfterSpy!.calls.count()).toBe(2);
+    expect(testAfterBeforeSpy!.calls.count()).toBe(2);
+    expect(testAfterAfterSpy!.calls.count()).toBe(2);
   });
 });

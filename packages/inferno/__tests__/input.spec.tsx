@@ -23,18 +23,18 @@ describe('Input type checkbox', () => {
   });
 
   it('Checked attribute after Click', function () {
-    let clickChecked = null;
-    let changeChecked = null;
+    let clickChecked: boolean | null = null;
+    let changeChecked: boolean | null = null;
 
     render(
       <input
         type="checkbox"
         checked={false}
         onclick={(e) => {
-          clickChecked = e.target.checked;
+          clickChecked = e.currentTarget.checked;
         }}
         onchange={(e) => {
-          changeChecked = e.target.checked;
+          changeChecked = e.currentTarget.checked;
         }}
       />,
       container
@@ -49,8 +49,8 @@ describe('Input type checkbox', () => {
   });
 
   it('Checkbox click should not propagate to parent', function () {
-    let clickChecked = null;
-    let changeChecked = null;
+    let clickChecked: boolean | null = null;
+    let changeChecked: boolean | null = null;
     let parentClick = false;
 
     render(
@@ -59,10 +59,10 @@ describe('Input type checkbox', () => {
           type="checkbox"
           checked={false}
           onclick={(e) => {
-            clickChecked = e.target.checked;
+            clickChecked = e.currentTarget.checked;
           }}
           onchange={(e) => {
-            changeChecked = e.target.checked;
+            changeChecked = e.currentTarget.checked;
           }}
         />
       </div>,
@@ -82,20 +82,20 @@ describe('Input type checkbox', () => {
 
   it('Checked attribute after synthetic Click', function () {
     let nClicks = 0;
-    let clickChecked = null;
+    let clickChecked: boolean | null = null;
     let nChanges = 0;
-    let changeChecked = null;
+    let changeChecked: boolean | null = null;
 
     render(
       <input
         type="checkbox"
         checked={false}
         onClick={(e) => {
-          clickChecked = e.target.checked;
+          clickChecked = e.currentTarget.checked;
           nClicks++;
         }}
         onChange={(e) => {
-          changeChecked = e.target.checked;
+          changeChecked = e.currentTarget.checked;
           nChanges++;
         }}
       />,
@@ -135,8 +135,8 @@ describe('Input type Radio', () => {
   });
 
   it('Checked attribute after Click #2', function () {
-    let clickChecked = null;
-    let changeChecked = null;
+    let clickChecked: boolean | null = null;
+    let changeChecked: boolean | null = null;
 
     render(
       <input
@@ -144,10 +144,10 @@ describe('Input type Radio', () => {
         checked={false}
         value="magic"
         onclick={(e) => {
-          clickChecked = e.target.checked;
+          clickChecked = e.currentTarget.checked;
         }}
         onchange={(e) => {
-          changeChecked = e.target.checked;
+          changeChecked = e.currentTarget.checked;
         }}
       />,
       container
@@ -162,8 +162,8 @@ describe('Input type Radio', () => {
   });
 
   it('Checked attribute after synthetic Click #3', function () {
-    let clickChecked = null;
-    let changeChecked = null;
+    let clickChecked: boolean | null = null;
+    let changeChecked: boolean | null = null;
 
     render(
       <input
@@ -171,10 +171,10 @@ describe('Input type Radio', () => {
         checked={false}
         value="magic"
         onClick={(e) => {
-          clickChecked = e.target.checked;
+          clickChecked = e.currentTarget.checked;
         }}
         onChange={(e) => {
-          changeChecked = e.target.checked;
+          changeChecked = e.currentTarget.checked;
         }}
       />,
       container

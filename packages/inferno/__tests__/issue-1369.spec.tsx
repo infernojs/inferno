@@ -18,17 +18,17 @@ describe('static tree as child nodes', () => {
     let renderCounter = 0;
 
     class Form extends Component {
-      handleClick = () => {
+      public handleClick = () => {
         this.forceUpdate();
       };
 
-      static childContextTypes = {};
+      public static childContextTypes = {};
 
-      getChildContext() {
+      public getChildContext() {
         return {};
       }
 
-      render() {
+      public render() {
         const { children, ...restProps } = this.props;
         return (
           <div {...restProps}>
@@ -40,7 +40,7 @@ describe('static tree as child nodes', () => {
     }
 
     class Test extends Component {
-      render() {
+      public render() {
         renderCounter++;
 
         return <div>test</div>;
@@ -48,7 +48,7 @@ describe('static tree as child nodes', () => {
     }
 
     class App extends Component {
-      render() {
+      public render() {
         return (
           <Form>
             <div>
@@ -88,17 +88,17 @@ describe('static tree as child nodes', () => {
     let renderCounter = 0;
 
     class Form extends Component {
-      handleClick = () => {
+      public handleClick = () => {
         this.forceUpdate();
       };
 
-      static childContextTypes = {};
+      public static childContextTypes = {};
 
-      getChildContext() {
+      public getChildContext() {
         return {};
       }
 
-      render() {
+      public render() {
         const { children } = this.props;
         return (
           <div>
@@ -111,7 +111,13 @@ describe('static tree as child nodes', () => {
 
     let constuctCounter = 0;
 
-    class Test extends Component {
+    interface TestState {
+      text: string
+    }
+
+    class Test extends Component<unknown, TestState> {
+      public state: TestState;
+
       constructor(props) {
         super(props);
 
@@ -122,7 +128,7 @@ describe('static tree as child nodes', () => {
         constuctCounter++;
       }
 
-      render() {
+      public render() {
         renderCounter++;
 
         return (
@@ -134,7 +140,7 @@ describe('static tree as child nodes', () => {
     }
 
     class App extends Component {
-      render() {
+      public render() {
         const hoistedDiv = (
           <div>
             <Test />

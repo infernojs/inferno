@@ -1,4 +1,4 @@
-import { Component, createRef, render, rerender } from 'inferno';
+import { Component, createRef, InfernoNode, RefObject, render, rerender } from 'inferno';
 
 describe('createRef', () => {
   let container;
@@ -15,10 +15,10 @@ describe('createRef', () => {
   });
 
   it('Should add DOM reference to "current" of ref', () => {
-    let instanceTesting = null;
+    let instanceTesting: Testing | null = null;
 
     class Testing extends Component {
-      render() {
+      public render() {
         instanceTesting = this;
         return 1;
       }
@@ -29,6 +29,10 @@ describe('createRef', () => {
     }
 
     class Foobar extends Component {
+      private readonly element: RefObject<HTMLSpanElement>;
+      private readonly es6: RefObject<Testing>;
+      private readonly functional: RefObject<unknown>;
+
       constructor(props) {
         super(props);
 
@@ -37,25 +41,26 @@ describe('createRef', () => {
         this.functional = createRef();
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         expect(this.element.current).toBe(null);
         expect(this.es6.current).toBe(null);
         expect(this.functional.current).toBe(null);
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         expect(this.element.current).toBe(container.querySelector('#span'));
         expect(this.es6.current).toBe(instanceTesting);
         expect(this.functional.current).toBe(null);
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <span id="span" ref={this.element}>
               Ok
             </span>
             <Testing ref={this.es6} />
+            {/* @ts-expect-error ref is not valid for functional component */}
             <Functional ref={this.functional} />
           </div>
         );
@@ -67,12 +72,10 @@ describe('createRef', () => {
   });
 
   it('Should update callback ref for Components too', () => {
-    let instance = null;
-
-    let instanceTesting = null;
+    let instanceTesting: Testing | null = null;
 
     class Testing extends Component {
-      render() {
+      public render() {
         instanceTesting = this;
         return 1;
       }
@@ -83,11 +86,16 @@ describe('createRef', () => {
     let newCounter = 0;
     let newValue = null;
 
-    class Foobar extends Component {
+    interface FoobarProps {
+      swap?: boolean
+    }
+
+    class Foobar extends Component<FoobarProps> {
+      private readonly es6Old: (arg) => void;
+      private readonly es6new: (arg) => void;
+
       constructor(props) {
         super(props);
-
-        instance = this;
 
         this.es6Old = function (arg) {
           oldCounter++;
@@ -99,7 +107,7 @@ describe('createRef', () => {
         };
       }
 
-      render(props) {
+      public render(props) {
         return (
           <div>
             <Testing ref={props.swap ? this.es6Old : this.es6new} />
@@ -124,17 +132,21 @@ describe('createRef', () => {
   });
 
   it('Should update callback ref for element vNodes too', () => {
-    let instance = null;
     let oldCounter = 0;
     let oldValue = null;
     let newCounter = 0;
     let newValue = null;
 
-    class Foobar extends Component {
+    interface FoobarProps {
+      swap?: boolean
+    }
+
+    class Foobar extends Component<FoobarProps> {
+      private readonly es6Old: (arg) => void;
+      private readonly es6new: (arg) => void;
+
       constructor(props) {
         super(props);
-
-        instance = this;
 
         this.es6Old = function (arg) {
           oldCounter++;
@@ -146,7 +158,7 @@ describe('createRef', () => {
         };
       }
 
-      render(props) {
+      public render(props) {
         return (
           <div>
             <div id={'divi'} ref={props.swap ? this.es6Old : this.es6new} />
@@ -173,12 +185,12 @@ describe('createRef', () => {
   });
 
   it('Should update refs and unmount them', () => {
-    let instance = null;
+    let instance: Foobar | null = null;
 
-    let instanceTesting = null;
+    let instanceTesting: Testing | null = null;
 
     class Testing extends Component {
-      render() {
+      public render() {
         instanceTesting = this;
         return 1;
       }
@@ -189,6 +201,13 @@ describe('createRef', () => {
     }
 
     class Foobar extends Component {
+      public readonly elementOld: RefObject<HTMLSpanElement>;
+      public readonly elementNew: RefObject<HTMLSpanElement>;
+      public readonly es6Old: RefObject<Testing>;
+      public readonly es6new: RefObject<Testing>;
+      public readonly functionalOLD: RefObject<unknown>;
+      public readonly functionalNEW: RefObject<unknown>;
+
       constructor(props) {
         super(props);
 
@@ -206,7 +225,7 @@ describe('createRef', () => {
         };
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         expect(this.elementNew.current).toBe(null);
         expect(this.elementOld.current).toBe(null);
         expect(this.es6Old.current).toBe(null);
@@ -215,7 +234,7 @@ describe('createRef', () => {
         expect(this.functionalNEW.current).toBe(null);
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         expect(this.elementNew.current).toBe(null);
         expect(this.elementOld.current).toBe(container.querySelector('#span'));
         expect(this.es6Old.current).toBe(instanceTesting);
@@ -228,13 +247,14 @@ describe('createRef', () => {
         });
       }
 
-      render(props, { swap }) {
+      public render(_props, { swap }) {
         return (
           <div>
             <span id="span" ref={swap ? this.elementOld : this.elementNew}>
               Ok
             </span>
             <Testing ref={swap ? this.es6Old : this.es6new} />
+            {/* @ts-expect-error Functional component ref */}
             <Functional ref={swap ? this.functionalOLD : this.functionalNEW} />
           </div>
         );
@@ -245,27 +265,35 @@ describe('createRef', () => {
     rerender();
 
     // Verify ref updated
-    expect(instance.elementNew.current).toBe(container.querySelector('#span'));
-    expect(instance.elementOld.current).toBe(null);
-    expect(instance.es6Old.current).toBe(null);
-    expect(instance.es6new.current).toBe(instanceTesting);
-    expect(instance.functionalOLD.current).toBe(null);
-    expect(instance.functionalNEW.current).toBe(null);
+    expect(instance!.elementNew.current).toBe(container.querySelector('#span'));
+    expect(instance!.elementOld.current).toBe(null);
+    expect(instance!.es6Old.current).toBe(null);
+    expect(instance!.es6new.current).toBe(instanceTesting);
+    expect(instance!.functionalOLD.current).toBe(null);
+    expect(instance!.functionalNEW.current).toBe(null);
 
     render(null, container);
 
-    expect(instance.elementNew.current).toBe(null);
-    expect(instance.elementOld.current).toBe(null);
-    expect(instance.es6Old.current).toBe(null);
-    expect(instance.es6new.current).toBe(null);
-    expect(instance.functionalOLD.current).toBe(null);
-    expect(instance.functionalNEW.current).toBe(null);
+    expect(instance!.elementNew.current).toBe(null);
+    expect(instance!.elementOld.current).toBe(null);
+    expect(instance!.es6Old.current).toBe(null);
+    expect(instance!.es6new.current).toBe(null);
+    expect(instance!.functionalOLD.current).toBe(null);
+    expect(instance!.functionalNEW.current).toBe(null);
   });
 
   it('Should change ref to the selected element in a list', () => {
     const TOTAL_CHILDREN = 5;
     let setSelected;
-    class Parent extends Component {
+
+    interface ParentState {
+      selected: number
+    }
+
+    class Parent extends Component<unknown, ParentState> {
+      public state: ParentState;
+      private readonly selectedRef: RefObject<HTMLDivElement>;
+
       constructor() {
         super();
         setSelected = this._setSelected = this._setSelected.bind(this);
@@ -276,16 +304,16 @@ describe('createRef', () => {
         };
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         expect(this.selectedRef.current).toBe(container.querySelector('#child' + this.state.selected));
       }
 
-      componentDidUpdate() {
+      public componentDidUpdate() {
         expect(this.selectedRef.current).toBe(container.querySelector('#child' + this.state.selected));
       }
 
-      render() {
-        const children = [];
+      public render() {
+        const children: InfernoNode[] = [];
         for (let i = 0; i < TOTAL_CHILDREN; i++) {
           const selected = this.state.selected === i ? this.selectedRef : null;
           children.push(<div key={i} id={'child' + i} ref={selected} />);
@@ -294,7 +322,7 @@ describe('createRef', () => {
         return <div id="parent">{children}</div>;
       }
 
-      _setSelected(selected) {
+      public _setSelected(selected) {
         this.setState({
           selected
         });

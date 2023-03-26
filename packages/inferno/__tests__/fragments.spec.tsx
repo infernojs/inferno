@@ -1,4 +1,4 @@
-import { Component, createFragment, createPortal, Fragment, render } from 'inferno';
+import { Component, createFragment, createPortal, Fragment, InfernoNode, render } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('Fragments', () => {
@@ -17,7 +17,7 @@ describe('Fragments', () => {
 
   it('Should render and unmount fragment', () => {
     class Example extends Component {
-      render() {
+      public render() {
         return createFragment([<div>First</div>, <div>second</div>], ChildFlags.HasNonKeyedChildren);
       }
     }
@@ -33,7 +33,7 @@ describe('Fragments', () => {
 
   it('Should render nested fragment', () => {
     class Example extends Component {
-      render() {
+      public render() {
         return createFragment(
           [<div>First</div>, createFragment([<div>Sub1</div>, <div>Sub2</div>], ChildFlags.HasNonKeyedChildren), <div>second</div>],
           ChildFlags.HasNonKeyedChildren
@@ -52,7 +52,7 @@ describe('Fragments', () => {
 
   it('Should be to replace component with fragment with another component', () => {
     class Example extends Component {
-      render() {
+      public render() {
         return createFragment(
           [<div>First</div>, createFragment([<div>Sub1</div>, <div>Sub2</div>], ChildFlags.HasNonKeyedChildren), <div>second</div>],
           ChildFlags.HasNonKeyedChildren
@@ -100,9 +100,9 @@ describe('Fragments', () => {
 
     expect(container.innerHTML).toBe('<div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>');
 
-    let A1 = container.querySelector('#a1');
-    let B1 = container.querySelector('#b1');
-    let C1 = container.querySelector('#c1');
+    const A1 = container.querySelector('#a1');
+    const B1 = container.querySelector('#b1');
+    const C1 = container.querySelector('#c1');
 
     // Switch order
     render(
@@ -316,7 +316,14 @@ describe('Fragments', () => {
   });
 
   it('Should be possible to render fragments JSX way', () => {
-    function Fragmenter({ first, mid, last, changeOrder }) {
+    interface FragmenterProps {
+      first: InfernoNode;
+      mid: InfernoNode;
+      last: InfernoNode;
+      changeOrder?: boolean
+    }
+
+    function Fragmenter({ first, mid, last, changeOrder }: FragmenterProps) {
       if (changeOrder) {
         return (
           <>
@@ -358,16 +365,20 @@ describe('Fragments', () => {
     let mountCounter = 0;
     let unmountCounter = 0;
 
-    class FoobarCom extends Component {
-      componentWillMount() {
+    interface FoobarComProps {
+      node: HTMLDivElement
+    }
+
+    class FoobarCom extends Component<FoobarComProps> {
+      public componentWillMount() {
         mountCounter++;
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         unmountCounter++;
       }
 
-      render(props) {
+      public render(props) {
         return (
           <>
             {props.children}
@@ -388,6 +399,8 @@ describe('Fragments', () => {
       container
     );
 
+    expect(mountCounter).toBe(1);
+    expect(unmountCounter).toBe(0);
     expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
     expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
 
@@ -398,6 +411,8 @@ describe('Fragments', () => {
       container
     );
 
+    expect(mountCounter).toBe(1);
+    expect(unmountCounter).toBe(0);
     expect(container.innerHTML).toBe('<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff');
     expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
 
@@ -407,7 +422,8 @@ describe('Fragments', () => {
       </FoobarCom>,
       container
     );
-
+    expect(mountCounter).toBe(1);
+    expect(unmountCounter).toBe(0);
     expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
     expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
   });
@@ -444,7 +460,7 @@ describe('Fragments', () => {
 
   it('Should append DOM nodes to correct position when component root Fragmnet change', () => {
     class TestRoot extends Component {
-      render() {
+      public render() {
         return <>{this.props.children}</>;
       }
     }
@@ -484,7 +500,7 @@ describe('Fragments', () => {
 
   it('Should not clear whole parent element when fragment children are cleared', () => {
     class TestRoot extends Component {
-      render() {
+      public render() {
         return <>{this.props.children}</>;
       }
     }
@@ -525,15 +541,15 @@ describe('Fragments', () => {
     let mountCounter = 0;
 
     class TestLifecycle extends Component {
-      componentWillUnmount() {
+      public componentWillUnmount() {
         unmountCounter++;
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         mountCounter++;
       }
 
-      render() {
+      public render() {
         return <>{this.props.children}</>;
       }
     }
@@ -789,7 +805,7 @@ describe('Fragments', () => {
       return <div>Ok</div>;
     }
 
-    let content = [];
+    let content: InfernoNode[] = [];
 
     render(
       <Fragment>
@@ -824,10 +840,10 @@ describe('Fragments', () => {
     let counter = 0;
 
     class Foobar extends Component {
-      componentWillMount() {
+      public componentWillMount() {
         counter++;
       }
-      render() {
+      public render() {
         return null;
       }
     }
@@ -863,15 +879,15 @@ describe('Fragments', () => {
     let counter = 0;
 
     class Foobar extends Component {
-      componentWillMount() {
+      public componentWillMount() {
         counter++;
       }
-      render() {
+      public render() {
         return null;
       }
     }
 
-    let nodes = [];
+    let nodes: InfernoNode[] = [];
 
     render(<>{nodes}</>, container);
 
@@ -909,10 +925,10 @@ describe('Fragments', () => {
     let counter = 0;
 
     class Foobar extends Component {
-      componentWillMount() {
+      public componentWillMount() {
         counter++;
       }
-      render() {
+      public render() {
         return null;
       }
     }
@@ -967,7 +983,7 @@ describe('Fragments', () => {
 
   it('Should be possible to mount and patch single component fragment children', () => {
     class Foobar extends Component {
-      render() {
+      public render() {
         return null;
       }
     }
@@ -1005,7 +1021,7 @@ describe('Fragments', () => {
 
   it('Should be possible to mount and patch single component fragment children', () => {
     class Foobar extends Component {
-      render() {
+      public render() {
         return null;
       }
     }
@@ -1042,7 +1058,7 @@ describe('Fragments', () => {
     }
 
     class PageTemplate extends Component {
-      test(sim) {
+      public test(sim) {
         return (
           <>
             <div>{sim}</div>
@@ -1050,7 +1066,7 @@ describe('Fragments', () => {
         );
       }
 
-      render() {
+      public render() {
         return (
           <Layout>
             <div>test</div>
@@ -1070,7 +1086,7 @@ describe('Fragments', () => {
   });
 
   it('Should not crash if lastFragment is empty and optimized for keyed ( mount )', () => {
-    let nodes = [];
+    let nodes: InfernoNode[] = [];
 
     render(<Fragment $HasKeyedChildren>{nodes}</Fragment>, container);
 
@@ -1084,7 +1100,7 @@ describe('Fragments', () => {
   });
 
   it('Should not crash if lastFragment is empty and optimized for keyed ( patch )', () => {
-    let nodes = [];
+    let nodes: InfernoNode[] = [];
 
     render(<Fragment $HasKeyedChildren>{nodes}</Fragment>, container);
 
