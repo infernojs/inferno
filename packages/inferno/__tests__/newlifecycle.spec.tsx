@@ -220,7 +220,7 @@ describe('Lifecycle methods', () => {
       }
 
       class Foo extends Component<{ foo: string }, FooState> {
-        // @ts-expect-error automatic init detection not working with getDerivedStateFromProps
+        // @ts-ignore automatic init detection not working with getDerivedStateFromProps
         public state: FooState;
 
         public static getDerivedStateFromProps(nextProps) {

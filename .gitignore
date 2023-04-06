@@ -8,6 +8,7 @@
 *.log
 
 build
+dist
 coverage
 node_modules
 fixtures/browser/*.cmd

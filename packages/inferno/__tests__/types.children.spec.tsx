@@ -210,4 +210,123 @@ describe('children types', () => {
     expect(valid1).toBeDefined();
     expect(valid2).toBeDefined();
   });
+
+  it('Should be possible to type child as another component type', () => {
+    class FooBarCom extends Component<any, any> {
+      constructor(p, c) {
+        super(p, c);
+      }
+
+      public myMethod() {
+        return 'foobar';
+      }
+
+      public render({ children }) {
+        return <div>{children}</div>;
+      }
+    }
+
+    interface ParentComponentProps {
+      children: FooBarCom[];
+    }
+
+    class ParentComponent extends Component<ParentComponentProps, any> {
+      public render({ children }: ParentComponentProps) {
+        // children.myMethod();
+        // this.props.children.myMethod();
+        return <div>{children}</div>;
+      }
+    }
+
+    // Children defined InfernoSingleNode so array is not acceptable
+    const invalid1 = (
+      <ParentComponent>
+        <FooBarCom />
+        <FooBarCom />
+      </ParentComponent>
+    );
+
+    // Children not defined optional so leaving it empty is error
+    // @ts-expect-error
+    const invalid2 = <ParentComponent></ParentComponent>;
+
+    // Single child component is ok
+    const valid1 = (
+      <ParentComponent>
+        <FooBarCom />
+      </ParentComponent>
+    );
+
+    // Single child div is ok
+    const valid2 = (
+      <ParentComponent>
+        <div>1</div>
+      </ParentComponent>
+    );
+
+    expect(invalid1).toBeDefined();
+    expect(invalid2).toBeDefined();
+    expect(valid1).toBeDefined();
+    expect(valid2).toBeDefined();
+  });
+
+  it('Should be possible to type child as another component type', () => {
+    class FooBarCom extends Component<any, any> {
+      constructor(p, c) {
+        super(p, c);
+      }
+
+      public myMethod() {
+        return 'foobar';
+      }
+
+      public render({ children }: any) {
+        return <div>{children}</div>;
+      }
+    }
+
+    interface ParentComponentProps {
+      children: FooBarCom;
+    }
+
+    class ParentComponent extends Component<ParentComponentProps, any> {
+      public render({ children }: Readonly<ParentComponentProps>) {
+        children.myMethod();
+        this.props.children.myMethod();
+        return <div>{children}</div>;
+      }
+    }
+
+    // Children defined InfernoSingleNode so array is not acceptable
+    const invalid1 = (
+      // @ts-expect-error
+      <ParentComponent>
+        <FooBarCom />
+        <FooBarCom />
+      </ParentComponent>
+    );
+
+    // Children not defined optional so leaving it empty is error
+    // @ts-expect-error
+    const invalid2 = <ParentComponent></ParentComponent>;
+
+    // Single child component is ok
+    const valid1 = (
+      <ParentComponent>
+        <FooBarCom />
+      </ParentComponent>
+    );
+
+    // Single child div is ok
+    const valid2 = (
+      <ParentComponent>
+        <div>1</div>
+      </ParentComponent>
+    );
+
+    expect(invalid1).toBeDefined();
+    expect(invalid2).toBeDefined();
+    expect(valid1).toBeDefined();
+    expect(valid2).toBeDefined();
+  });
 });

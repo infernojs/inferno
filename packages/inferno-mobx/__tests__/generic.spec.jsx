@@ -1,7 +1,5 @@
-// @ts-check
-
 import { Component, render } from 'inferno';
-import { inject, observer, Provider } from 'inferno-mobx';
+import { observer, Provider } from 'inferno-mobx';
 
 describe('generic higher order components', () => {
   let container;
@@ -60,11 +58,7 @@ describe('generic higher order components', () => {
       }
     }
 
-    let Todo = inject('apiService', 'todoService')(observer(TodoView));
-
-    // Legacy.
-    Todo = observer(['apiService', 'todoService'])(TodoView);
-    Todo = observer(['apiService', 'todoService'], TodoView);
+    const Todo = observer(['apiService', 'todoService'], TodoView);
 
     const services = {
       apiService: new ApiService(),

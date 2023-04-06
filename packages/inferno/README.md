@@ -971,7 +971,7 @@ const infernoTsx = require('ts-plugin-inferno').default;
                     options: {
                         getCustomTransformers: () => ({
                             // inferno custom TSX plugin
-                            before: [infernoTsx()]
+                            after: [infernoTsx()]
                         }),
                         compilerOptions: {
                             /* typescript compiler options */
@@ -1022,8 +1022,7 @@ const transformInferno = require('ts-plugin-inferno').default;
                 include: ['*.ts+(|x)', '**/*.ts+(|x)'],
                 transformers: [
                     () => ({
-                        before: [transformInferno()],
-                        after: []
+                        after: [transformInferno()]
                     })
                 ],
                 tsconfig: 'tsconfig.json',

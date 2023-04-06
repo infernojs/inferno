@@ -190,7 +190,7 @@ describe('NavLink', () => {
     expect(a.style.color).toBe(activeStyle.color);
   });
 
-  it('applies its className when provided as a function', () => {
+  it('applies its className when provided as a function #2', () => {
     render(
       <MemoryRouter initialEntries={['/pizza']}>
         <NavLink to="/salad" className={(isActive) => (isActive ? 'active-salad' : 'chill-salad')}>
