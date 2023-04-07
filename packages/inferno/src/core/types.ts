@@ -808,6 +808,10 @@ export declare namespace Inferno {
     | 'treeitem'
     | (string & {});
 
+  interface CssVariables {
+    [key: `--${string}`]: string;
+  }
+
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
     // Inferno-specific Attributes
     class?: string | null | undefined;
@@ -827,7 +831,7 @@ export declare namespace Inferno {
     placeholder?: string | null | undefined;
     slot?: string | null | undefined;
     spellCheck?: Booleanish | null | undefined;
-    style?: PropertiesHyphen | string | null | undefined;
+    style?: PropertiesHyphen | string | null | undefined | CssVariables;
     tabIndex?: number | null | undefined;
     title?: string | null | undefined;
     translate?: 'yes' | 'no' | null | undefined;
