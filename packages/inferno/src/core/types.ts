@@ -1468,6 +1468,8 @@ export declare namespace Inferno {
   //   - "string"
   //   - union of string literals
   interface SVGAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    class?: string | null | undefined;
+
     // Attributes which also defined in HTMLAttributes
     // See comment in SVGDOMPropertyConfig.js
     className?: string | null | undefined;
@@ -1492,9 +1494,26 @@ export declare namespace Inferno {
 
     // SVG Specific attributes
     accentHeight?: number | string | null | undefined;
+    'accent-height'?: number | string | null | undefined;
     accumulate?: 'none' | 'sum' | null | undefined;
     additive?: 'replace' | 'sum' | null | undefined;
     alignmentBaseline?:
+      | 'auto'
+      | 'baseline'
+      | 'before-edge'
+      | 'text-before-edge'
+      | 'middle'
+      | 'central'
+      | 'after-edge'
+      | 'text-after-edge'
+      | 'ideographic'
+      | 'alphabetic'
+      | 'hanging'
+      | 'mathematical'
+      | 'inherit'
+      | null
+      | undefined;
+    'alignment-baseline'?:
       | 'auto'
       | 'baseline'
       | 'before-edge'
@@ -1514,6 +1533,7 @@ export declare namespace Inferno {
     alphabetic?: number | string | null | undefined;
     amplitude?: number | string | null | undefined;
     arabicForm?: 'initial' | 'medial' | 'terminal' | 'isolated' | null | undefined;
+    'arabic-form'?: 'initial' | 'medial' | 'terminal' | 'isolated' | null | undefined;
     ascent?: number | string | null | undefined;
     attributeName?: string | null | undefined;
     attributeType?: string | null | undefined;
@@ -1521,6 +1541,7 @@ export declare namespace Inferno {
     azimuth?: number | string | null | undefined;
     baseFrequency?: number | string | null | undefined;
     baselineShift?: number | string | null | undefined;
+    'baseline-shift'?: number | string | null | undefined;
     baseProfile?: number | string | null | undefined;
     bbox?: number | string | null | undefined;
     begin?: number | string | null | undefined;
@@ -1528,14 +1549,21 @@ export declare namespace Inferno {
     by?: number | string | null | undefined;
     calcMode?: number | string | null | undefined;
     capHeight?: number | string | null | undefined;
+    'cap-height'?: number | string | null | undefined;
     clip?: number | string | null | undefined;
     clipPath?: string | null | undefined;
+    'clip-path'?: string | null | undefined;
     clipPathUnits?: number | string | null | undefined;
     clipRule?: number | string | null | undefined;
+    'clip-rule'?: number | string | null | undefined;
     colorInterpolation?: number | string | null | undefined;
+    'color-interpolation'?: number | string | null | undefined;
     colorInterpolationFilters?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | null | undefined;
+    'color-interpolation-filters'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | null | undefined;
     colorProfile?: number | string | null | undefined;
+    'color-profile'?: number | string | null | undefined;
     colorRendering?: number | string | null | undefined;
+    'color-rendering'?: number | string | null | undefined;
     contentScriptType?: number | string | null | undefined;
     contentStyleType?: number | string | null | undefined;
     cursor?: number | string | null | undefined;
@@ -1549,31 +1577,44 @@ export declare namespace Inferno {
     display?: number | string | null | undefined;
     divisor?: number | string | null | undefined;
     dominantBaseline?: number | string | null | undefined;
+    'dominant-baseline'?: number | string | null | undefined;
     dur?: number | string | null | undefined;
     dx?: number | string | null | undefined;
     dy?: number | string | null | undefined;
     edgeMode?: number | string | null | undefined;
     elevation?: number | string | null | undefined;
     enableBackground?: number | string | null | undefined;
+    'enable-background'?: number | string | null | undefined;
     end?: number | string | null | undefined;
     exponent?: number | string | null | undefined;
     externalResourcesRequired?: Booleanish | null | undefined;
     fill?: string | null | undefined;
     fillOpacity?: number | string | null | undefined;
+    'fill-opacity'?: number | string | null | undefined;
     fillRule?: 'nonzero' | 'evenodd' | 'inherit' | null | undefined;
+    'fill-rule'?: 'nonzero' | 'evenodd' | 'inherit' | null | undefined;
     filter?: string | null | undefined;
     filterRes?: number | string | null | undefined;
     filterUnits?: number | string | null | undefined;
     floodColor?: number | string | null | undefined;
+    'flood-color'?: number | string | null | undefined;
     floodOpacity?: number | string | null | undefined;
+    'flood-opacity'?: number | string | null | undefined;
     focusable?: Booleanish | 'auto' | null | undefined;
     fontFamily?: string | null | undefined;
+    'font-family'?: string | null | undefined;
     fontSize?: number | string | null | undefined;
+    'font-size'?: number | string | null | undefined;
     fontSizeAdjust?: number | string | null | undefined;
+    'font-size-adjust'?: number | string | null | undefined;
     fontStretch?: number | string | null | undefined;
+    'font-stretch'?: number | string | null | undefined;
     fontStyle?: number | string | null | undefined;
+    'font-style'?: number | string | null | undefined;
     fontVariant?: number | string | null | undefined;
+    'font-variant'?: number | string | null | undefined;
     fontWeight?: number | string | null | undefined;
+    'font-weight'?: number | string | null | undefined;
     format?: number | string | null | undefined;
     fr?: number | string | null | undefined;
     from?: number | string | null | undefined;
@@ -1582,17 +1623,23 @@ export declare namespace Inferno {
     g1?: number | string | null | undefined;
     g2?: number | string | null | undefined;
     glyphName?: number | string | null | undefined;
+    'glyph-name'?: number | string | null | undefined;
     glyphOrientationHorizontal?: number | string | null | undefined;
+    'glyph-orientation-horizontal'?: number | string | null | undefined;
     glyphOrientationVertical?: number | string | null | undefined;
+    'glyph-orientation-vertical'?: number | string | null | undefined;
     glyphRef?: number | string | null | undefined;
     gradientTransform?: string | null | undefined;
     gradientUnits?: string | null | undefined;
     hanging?: number | string | null | undefined;
     horizAdvX?: number | string | null | undefined;
+    'horiz-advX'?: number | string | null | undefined;
     horizOriginX?: number | string | null | undefined;
+    'horiz-origin-x'?: number | string | null | undefined;
     href?: string | null | undefined;
     ideographic?: number | string | null | undefined;
     imageRendering?: number | string | null | undefined;
+    'image-rendering'?: number | string | null | undefined;
     in2?: number | string | null | undefined;
     in?: string | null | undefined;
     intercept?: number | string | null | undefined;
@@ -1609,13 +1656,19 @@ export declare namespace Inferno {
     keyTimes?: number | string | null | undefined;
     lengthAdjust?: number | string | null | undefined;
     letterSpacing?: number | string | null | undefined;
+    'letter-spacing'?: number | string | null | undefined;
     lightingColor?: number | string | null | undefined;
+    'lighting-color'?: number | string | null | undefined;
     limitingConeAngle?: number | string | null | undefined;
     local?: number | string | null | undefined;
     markerEnd?: string | null | undefined;
+    'marker-end'?: string | null | undefined;
     markerHeight?: number | string | null | undefined;
+    'marker-height'?: number | string | null | undefined;
     markerMid?: string | null | undefined;
+    'marker-mid'?: string | null | undefined;
     markerStart?: string | null | undefined;
+    'marker-start'?: string | null | undefined;
     markerUnits?: number | string | null | undefined;
     markerWidth?: number | string | null | undefined;
     mask?: string | null | undefined;
@@ -1633,15 +1686,20 @@ export declare namespace Inferno {
     origin?: number | string | null | undefined;
     overflow?: number | string | null | undefined;
     overlinePosition?: number | string | null | undefined;
+    'overline-position'?: number | string | null | undefined;
     overlineThickness?: number | string | null | undefined;
+    'overline-thickness'?: number | string | null | undefined;
     paintOrder?: number | string | null | undefined;
+    'paint-order'?: number | string | null | undefined;
     panose1?: number | string | null | undefined;
+    'panose-1'?: number | string | null | undefined;
     path?: string | null | undefined;
     pathLength?: number | string | null | undefined;
     patternContentUnits?: string | null | undefined;
     patternTransform?: number | string | null | undefined;
     patternUnits?: string | null | undefined;
     pointerEvents?: number | string | null | undefined;
+    'pointer-events'?: number | string | null | undefined;
     points?: string | null | undefined;
     pointsAtX?: number | string | null | undefined;
     pointsAtY?: number | string | null | undefined;
@@ -1654,6 +1712,7 @@ export declare namespace Inferno {
     refX?: number | string | null | undefined;
     refY?: number | string | null | undefined;
     renderingIntent?: number | string | null | undefined;
+    'rendering-intent'?: number | string | null | undefined;
     repeatCount?: number | string | null | undefined;
     repeatDur?: number | string | null | undefined;
     requiredExtensions?: number | string | null | undefined;
@@ -1666,6 +1725,7 @@ export declare namespace Inferno {
     scale?: number | string | null | undefined;
     seed?: number | string | null | undefined;
     shapeRendering?: number | string | null | undefined;
+    'shape-rendering'?: number | string | null | undefined;
     slope?: number | string | null | undefined;
     spacing?: number | string | null | undefined;
     specularConstant?: number | string | null | undefined;
@@ -1678,18 +1738,29 @@ export declare namespace Inferno {
     stemv?: number | string | null | undefined;
     stitchTiles?: number | string | null | undefined;
     stopColor?: string | null | undefined;
+    'stop-color'?: string | null | undefined;
     stopOpacity?: number | string | null | undefined;
+    'stop-opacity'?: number | string | null | undefined;
     strikethroughPosition?: number | string | null | undefined;
+    'strikethrough-position'?: number | string | null | undefined;
     strikethroughThickness?: number | string | null | undefined;
+    'strikethrough-thickness'?: number | string | null | undefined;
     string?: number | string | null | undefined;
     stroke?: string | null | undefined;
     strokeDasharray?: string | number | null | undefined;
+    'stroke-dasharray'?: string | number | null | undefined;
     strokeDashoffset?: string | number | null | undefined;
+    'stroke-dashoffset'?: string | number | null | undefined;
     strokeLinecap?: 'butt' | 'round' | 'square' | 'inherit' | null | undefined;
+    'stroke-linecap'?: 'butt' | 'round' | 'square' | 'inherit' | null | undefined;
     strokeLinejoin?: 'miter' | 'round' | 'bevel' | 'inherit' | null | undefined;
+    'stroke-linejoin'?: 'miter' | 'round' | 'bevel' | 'inherit' | null | undefined;
     strokeMiterlimit?: number | string | null | undefined;
+    'stroke-miterlimit'?: number | string | null | undefined;
     strokeOpacity?: number | string | null | undefined;
+    'stroke-opacity'?: number | string | null | undefined;
     strokeWidth?: number | string | null | undefined;
+    'stroke-width'?: number | string | null | undefined;
     surfaceScale?: number | string | null | undefined;
     systemLanguage?: number | string | null | undefined;
     tableValues?: number | string | null | undefined;
@@ -1697,51 +1768,80 @@ export declare namespace Inferno {
     targetY?: number | string | null | undefined;
     textAnchor?: string | null | undefined;
     textDecoration?: number | string | null | undefined;
+    'text-decoration'?: number | string | null | undefined;
     textLength?: number | string | null | undefined;
     textRendering?: number | string | null | undefined;
+    'text-rendering'?: number | string | null | undefined;
     to?: number | string | null | undefined;
     transform?: string | null | undefined;
     u1?: number | string | null | undefined;
     u2?: number | string | null | undefined;
     underlinePosition?: number | string | null | undefined;
+    'underline-position'?: number | string | null | undefined;
     underlineThickness?: number | string | null | undefined;
+    'underline-thickness'?: number | string | null | undefined;
     unicode?: number | string | null | undefined;
     unicodeBidi?: number | string | null | undefined;
+    'unicode-bidi'?: number | string | null | undefined;
     unicodeRange?: number | string | null | undefined;
+    'unicode-range'?: number | string | null | undefined;
     unitsPerEm?: number | string | null | undefined;
+    'units-per-em'?: number | string | null | undefined;
     vAlphabetic?: number | string | null | undefined;
+    'v-alphabetic'?: number | string | null | undefined;
     values?: string | null | undefined;
     vectorEffect?: number | string | null | undefined;
+    'vector-effect'?: number | string | null | undefined;
     version?: string | null | undefined;
     vertAdvY?: number | string | null | undefined;
+    'vert-adv-y'?: number | string | null | undefined;
     vertOriginX?: number | string | null | undefined;
+    'vert-origin-x'?: number | string | null | undefined;
     vertOriginY?: number | string | null | undefined;
+    'vert-origin-y'?: number | string | null | undefined;
     vHanging?: number | string | null | undefined;
+    'v-hanging'?: number | string | null | undefined;
     vIdeographic?: number | string | null | undefined;
+    'v-ideographic'?: number | string | null | undefined;
     viewBox?: string | null | undefined;
     viewTarget?: number | string | null | undefined;
     visibility?: number | string | null | undefined;
     vMathematical?: number | string | null | undefined;
+    'v-mathematical'?: number | string | null | undefined;
     widths?: number | string | null | undefined;
     wordSpacing?: number | string | null | undefined;
+    'word-spacing'?: number | string | null | undefined;
     writingMode?: number | string | null | undefined;
+    'writing-mode'?: number | string | null | undefined;
     x1?: number | string | null | undefined;
     x2?: number | string | null | undefined;
     x?: number | string | null | undefined;
     xChannelSelector?: string | null | undefined;
     xHeight?: number | string | null | undefined;
+    'x-height'?: number | string | null | undefined;
     xlinkActuate?: string | null | undefined;
+    'xlink:actuate'?: string | null | undefined;
     xlinkArcrole?: string | null | undefined;
+    'xlink:arcrole'?: string | null | undefined;
     xlinkHref?: string | null | undefined;
+    'xlink:href'?: string | null | undefined;
     xlinkRole?: string | null | undefined;
+    'xlink:role'?: string | null | undefined;
     xlinkShow?: string | null | undefined;
+    'xlink:show'?: string | null | undefined;
     xlinkTitle?: string | null | undefined;
+    'xlink:title'?: string | null | undefined;
     xlinkType?: string | null | undefined;
+    'xlink:type'?: string | null | undefined;
     xmlBase?: string | null | undefined;
+    'xml:base'?: string | null | undefined;
     xmlLang?: string | null | undefined;
+    'xml:lang'?: string | null | undefined;
     xmlns?: string | null | undefined;
     xmlnsXlink?: string | null | undefined;
+    'xmlns:xlink'?: string | null | undefined;
     xmlSpace?: string | null | undefined;
+    'xml:space'?: string | null | undefined;
     y1?: number | string | null | undefined;
     y2?: number | string | null | undefined;
     y?: number | string | null | undefined;
