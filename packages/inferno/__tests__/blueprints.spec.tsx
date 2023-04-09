@@ -16,18 +16,28 @@ describe('Blueprints (JSX)', () => {
 
   describe('Should have parentDOM defined #1', () => {
     class A extends Component {
-      render() {
+      public render() {
         return <div>A</div>;
       }
     }
 
     class B extends Component {
-      render() {
+      public render() {
         return <span>B</span>;
       }
     }
 
-    class Counter extends Component {
+    interface CounterProps {
+      car: string;
+    }
+
+    interface CounterState {
+      bool: boolean
+    }
+
+    class Counter extends Component<CounterProps, CounterState> {
+      public state: CounterState;
+
       constructor(props) {
         super(props);
         this.state = {
@@ -36,13 +46,13 @@ describe('Blueprints (JSX)', () => {
         this.btnCount = this.btnCount.bind(this);
       }
 
-      btnCount() {
+      public btnCount() {
         this.setState({
           bool: !this.state.bool
         });
       }
 
-      render() {
+      public render() {
         return (
           <div className="my-component">
             <h1>
@@ -61,7 +71,7 @@ describe('Blueprints (JSX)', () => {
         super(props);
       }
 
-      render() {
+      public render() {
         return (
           <div>
             {['Saab', 'Volvo', 'BMW'].map(function (c) {
@@ -96,7 +106,17 @@ describe('Blueprints (JSX)', () => {
 
   describe('Infinite loop issue', () => {
     it('Should not get stuck when doing setState from ref callback', (done) => {
-      class A extends Component {
+      interface AProps {
+        open?: boolean;
+      }
+
+      interface AState {
+        text: string
+      }
+
+      class A extends Component<AProps, AState> {
+        public state: Readonly<AState>;
+
         constructor(props) {
           super(props);
 
@@ -107,13 +127,13 @@ describe('Blueprints (JSX)', () => {
           this.onWilAttach = this.onWilAttach.bind(this);
         }
 
-        onWilAttach() {
+        public onWilAttach() {
           this.setState({
             text: 'animate'
           });
         }
 
-        render() {
+        public render() {
           if (!this.props.open) {
             return null;
           }
@@ -135,18 +155,21 @@ describe('Blueprints (JSX)', () => {
   describe('Refs inside components', () => {
     it('Should have refs defined when componentDidMount is called', () => {
       class Com extends Component {
+        private _first: HTMLDivElement | null;
+        private _second: HTMLSpanElement | null;
+
         constructor(props) {
           super(props);
           this._first = null;
           this._second = null;
         }
 
-        componentDidMount() {
+        public componentDidMount() {
           expect(this._first).not.toBe(null);
           expect(this._second).not.toBe(null);
         }
 
-        render() {
+        public render() {
           return (
             <div ref={(node) => (this._first = node)}>
               <span>1</span>
@@ -162,12 +185,16 @@ describe('Blueprints (JSX)', () => {
 
   describe('Spread operator and templates', () => {
     it('Should be able to update property', () => {
-      class A extends Component {
+      interface AProps {
+        disabled?: boolean,
+        args?: {}
+      }
+      class A extends Component<AProps> {
         constructor(props) {
           super(props);
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <input disabled={this.props.disabled} {...this.props.args} />

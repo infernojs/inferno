@@ -25,8 +25,12 @@ describe('linkEvent', () => {
       return <button onClick={linkEvent(props, handleOnClick)} />;
     }
 
-    class StatefulComponent extends Component {
-      render() {
+    interface StatefulComponentProps {
+      test?: string
+    }
+
+    class StatefulComponent extends Component<StatefulComponentProps> {
+      public render() {
         return <button onClick={linkEvent(this.props, handleOnClick)} />;
       }
     }
@@ -44,14 +48,19 @@ describe('linkEvent', () => {
     });
 
     it('Should not fail when given event is invalid', () => {
+      // @ts-expect-error
       render(<div onClick={linkEvent({ number: 1 }, null)} />, container);
       container.firstChild.click();
+      // @ts-expect-error
       render(<div onClick={linkEvent({ number: 1 }, undefined)} />, container);
       container.firstChild.click();
+      // @ts-expect-error
       render(<div onClick={linkEvent({ number: 1 }, false)} />, container);
       container.firstChild.click();
+      // @ts-expect-error
       render(<div onClick={linkEvent({ number: 1 }, true)} />, container);
       container.firstChild.click();
+      // @ts-expect-error
       render(<div onClick={linkEvent({ number: 1 }, {})} />, container);
       container.firstChild.click();
     });
@@ -69,7 +78,7 @@ describe('linkEvent', () => {
     }
 
     class StatefulComponent extends Component {
-      render() {
+      public render() {
         return <button onclick={linkEvent(this.props, handleOnClick)} />;
       }
     }
@@ -81,6 +90,7 @@ describe('linkEvent', () => {
     });
 
     it('should work correctly for stateful components', () => {
+      // @ts-expect-error
       render(<StatefulComponent test="456" />, container);
       container.querySelector('button').click();
       expect(test).toBe('456');
@@ -113,22 +123,26 @@ describe('linkEvent', () => {
       return <input type="text" onInput={linkEvent(props, handleOnInput)} value="" />;
     }
 
-    class StatefulComponent extends Component {
-      render() {
+    interface StatelessComponentProps {
+      test?: string
+    }
+
+    class StatefulComponent extends Component<StatelessComponentProps> {
+      public render() {
         return <input type="text" onInput={linkEvent(this.props, handleOnInput)} value="" />;
       }
     }
 
     it('should work correctly for functional components', () => {
       render(<FunctionalComponent test="123" />, container);
-      simulateInput(container.querySelector('input'), '123');
+      simulateInput(container.querySelector('input'));
       expect(test).toBe('123');
       expect(event.target.nodeName).toBe('INPUT');
     });
 
     it('should work correctly for stateful components', () => {
       render(<StatefulComponent test="456" />, container);
-      simulateInput(container.querySelector('input'), '123');
+      simulateInput(container.querySelector('input'));
       expect(test).toBe('456');
       expect(event.target.nodeName).toBe('INPUT');
     });
@@ -146,7 +160,7 @@ describe('linkEvent', () => {
       isBlur = id;
     }
 
-    function FunctionalComponent(props) {
+    function FunctionalComponent() {
       return (
         <div>
           <input onfocus={linkEvent('1234', handleOnFocus)} onblur={linkEvent('4321', handleOnBlur)} />
@@ -155,7 +169,7 @@ describe('linkEvent', () => {
     }
 
     class StatefulComponent extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <input onfocus={linkEvent('1234', handleOnFocus)} onblur={linkEvent('4321', handleOnBlur)} />

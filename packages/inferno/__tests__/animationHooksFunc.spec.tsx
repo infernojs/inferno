@@ -1,6 +1,5 @@
 /* tslint:disable:no-unused-expression */
 import { Component, InfernoNode, InfernoSingleNode, render } from 'inferno';
-import { createElement } from 'inferno-create-element';
 
 describe('animation hooks', () => {
   let container;
@@ -463,7 +462,7 @@ describe('animation hooks', () => {
   it('should call "willMove" when component is about to be moved to another part of DOM', () => {});
 
   const template = function (child) {
-    return createElement('div', null, child);
+    return <div>{child}</div>;
   };
 
   it('should add all nodes', () => {
@@ -949,33 +948,15 @@ describe('animation hooks', () => {
     }
 
     function o(text) {
-      return createElement(
-        Animated,
-        {
-          key: 'o' + text
-        },
-        ',o' + text
-      );
+      return <Animated key={'o' + text}>{',o' + text}</Animated>
     }
 
     function d(text) {
-      return createElement(
-        Animated,
-        {
-          key: 'd' + text
-        },
-        ',d' + text
-      );
+      return <Animated key={'d' + text}>{',d' + text}</Animated>
     }
 
     function wk(text) {
-      return createElement(
-        Animated,
-        {
-          key: 'wk' + text
-        },
-        ',wk' + text
-      );
+      return <Animated key={'wk' + text}>{',wk' + text}</Animated>
     }
 
     it('Should do complex suffle without duplications', () => {

@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, InfernoNode, Key, render } from 'inferno';
 
 describe('Children - (JSX)', () => {
   let container;
@@ -17,8 +17,14 @@ describe('Children - (JSX)', () => {
   describe('keyed - children', function () {
     it('Should push to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
+      interface TabProps {
+        title?: string,
+        onSelect?: () => void,
+        key?: Key,
+        id?: string
+      }
 
-      function Tab({ title, onSelect, key, id }) {
+      function Tab({ title, onSelect, key, id }: TabProps) {
         return (
           <div id={id} key={key} onClick={onSelect}>
             {title}
@@ -70,9 +76,15 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
+      interface TabProps {
+        title?: string,
+        onSelect?: () => void,
+        key?: Key,
+        id?: string
+      }
 
-      function Tab({ title, onSelect, key, id }) {
+      function Tab({ title, onSelect, key, id }: TabProps) {
         return (
           <div id={id} key={key} onClick={onSelect}>
             {title}
@@ -111,9 +123,16 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
 
-      function Tab({ title, onSelect, key, id }) {
+      interface TabProps {
+        title?: string,
+        onSelect?: () => void,
+        key?: Key,
+        id?: string
+      }
+
+      function Tab({ title, onSelect, key, id }: TabProps) {
         return (
           <div id={id} key={key} onClick={onSelect}>
             {title}
@@ -152,9 +171,15 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
+      interface TabProps {
+        title?: string,
+        onSelect?: () => void,
+        key?: Key,
+        id?: string
+      }
 
-      function Tab({ title, onSelect, key, id }) {
+      function Tab({ title, onSelect, key, id }: TabProps) {
         return (
           <div id={id} key={key} onClick={onSelect}>
             {title}
@@ -198,8 +223,14 @@ describe('Children - (JSX)', () => {
 
     it('Should appendx3 to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
+      interface TabProps {
+        title?: string,
+        onSelect?: () => void,
+        key?: Key,
+        id?: string
+      }
 
-      function Tab({ title, onSelect, key, id }) {
+      function Tab({ title, onSelect, key, id }: TabProps) {
         return (
           <div id={id} key={key} onClick={onSelect}>
             {title}
@@ -241,8 +272,14 @@ describe('Children - (JSX)', () => {
 
     it('Should unshiftx3 to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
+      interface TabProps {
+        title?: string,
+        onSelect?: () => void,
+        key?: Key,
+        id?: string
+      }
 
-      function Tab({ title, onSelect, key, id }) {
+      function Tab({ title, onSelect, key, id }: TabProps) {
         return (
           <div id={id} key={key} onClick={onSelect}>
             {title}
@@ -283,9 +320,14 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element before array list', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
 
-      function Tab({ title, key }) {
+      interface TabProps {
+        title?: string,
+        key?: Key,
+      }
+
+      function Tab({ title, key }: TabProps) {
         return <div key={key}>{title}</div>;
       }
 
@@ -315,9 +357,13 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element after array list', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
+      interface TabProps {
+        title?: string,
+        key?: Key,
+      }
 
-      function Tab({ title, key }) {
+      function Tab({ title, key }: TabProps) {
         return <div key={key}>{title}</div>;
       }
 
@@ -351,7 +397,13 @@ describe('Children - (JSX)', () => {
     it('Should push to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
-      function Tab({ title, onSelect, id }) {
+      interface TabProps {
+        title?: string,
+        id?: string,
+        onSelect?: () => void;
+      }
+
+      function Tab({ title, id, onSelect }: TabProps) {
         return (
           <div id={id} onClick={onSelect}>
             {title}
@@ -367,7 +419,7 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} onSelect={() => undefined} />
             ))}
             <Tab onSelect={create} id="add" title="Add" />
@@ -403,9 +455,15 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
 
-      function Tab({ title, onSelect, id }) {
+      interface TabProps {
+        title?: string,
+        id?: string,
+        onSelect?: () => void;
+      }
+
+      function Tab({ title, id, onSelect }: TabProps) {
         return (
           <div id={id} onClick={onSelect}>
             {title}
@@ -421,7 +479,7 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} onSelect={() => undefined} />
             ))}
             <Tab onSelect={create} id="add" title="Add" />
@@ -444,9 +502,15 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
 
-      function Tab({ title, onSelect, id }) {
+      interface TabProps {
+        title?: string,
+        id?: string,
+        onSelect?: () => void;
+      }
+
+      function Tab({ title, id, onSelect }: TabProps) {
         return (
           <div id={id} onClick={onSelect}>
             {title}
@@ -463,7 +527,7 @@ describe('Children - (JSX)', () => {
         return (
           <div className="tab-group">
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} onSelect={() => undefined} />
             ))}
           </div>
@@ -485,9 +549,15 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
 
-      function Tab({ title, onSelect, id }) {
+      interface TabProps {
+        title?: string,
+        id?: string,
+        onSelect?: () => void;
+      }
+
+      function Tab({ title, id, onSelect }: TabProps) {
         return (
           <div id={id} onClick={onSelect}>
             {title}
@@ -503,11 +573,11 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} onSelect={() => undefined} />
             ))}
             <Tab onSelect={create} id="add" title="Add" />
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} onSelect={() => undefined} />
             ))}
           </div>
@@ -532,7 +602,13 @@ describe('Children - (JSX)', () => {
     it('Should appendx3 to correct location when it list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
-      function Tab({ title, onSelect, id }) {
+      interface TabProps {
+        title?: string,
+        id?: string,
+        onSelect?: () => void;
+      }
+
+      function Tab({ title, id, onSelect }: TabProps) {
         return (
           <div id={id} onClick={onSelect}>
             {title}
@@ -550,7 +626,7 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} onSelect={() => undefined} />
             ))}
             <Tab onSelect={create} id="add" title="Add" />
@@ -575,7 +651,13 @@ describe('Children - (JSX)', () => {
     it('Should unshiftx3 to correct location when it list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
-      function Tab({ title, onSelect, id }) {
+      interface TabProps {
+        title?: string,
+        id?: string,
+        onSelect?: () => void;
+      }
+
+      function Tab({ title, id, onSelect }: TabProps) {
         return (
           <div id={id} onClick={onSelect}>
             {title}
@@ -593,7 +675,7 @@ describe('Children - (JSX)', () => {
 
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} onSelect={() => undefined} />
             ))}
             <Tab onSelect={create} id="add" title="Add" />
@@ -616,7 +698,7 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element before array list', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
 
       function Tab({ title }) {
         return <div>{title}</div>;
@@ -626,7 +708,7 @@ describe('Children - (JSX)', () => {
         return (
           <div className="tab-group">
             inlineText
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} />
             ))}
           </div>
@@ -648,7 +730,7 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element after array list', function () {
-      const _tabs = [];
+      const _tabs: {title:string}[] = [];
 
       function Tab({ title }) {
         return <div>{title}</div>;
@@ -657,7 +739,7 @@ describe('Children - (JSX)', () => {
       function TabGroup({ tabs }) {
         return (
           <div className="tab-group">
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
               <Tab title={tab.title} />
             ))}
             inlineText
@@ -805,7 +887,7 @@ describe('Children - (JSX)', () => {
       function Looper({ collectionOne, visibleStatic }) {
         return (
           <div className="c">
-            {visibleStatic ? <Loop i={-1} text="static" /> : null}
+            {visibleStatic ? <Loop text="static" /> : null}
             {collectionOne.map((text, i) => (
               <Loop key={i} text={text} />
             ))}
@@ -841,10 +923,17 @@ describe('Children - (JSX)', () => {
 
   describe('Functions non keyed', () => {
     it('Should render correctly functions and nodes mixed', () => {
-      let updaterFirst = null;
-      let updaterSecond = null;
+      let updaterFirst: (() => void) | null = null;
+      let updaterSecond: (() => void) | null = null;
 
-      class A extends Component {
+      interface AState {
+        first: boolean
+        second: boolean
+      }
+
+      class A extends Component<unknown, AState> {
+        public state: Readonly<AState>;
+
         constructor(props) {
           super(props);
 
@@ -857,7 +946,7 @@ describe('Children - (JSX)', () => {
           updaterSecond = () => this.setState({ second: !this.state.second });
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <p>1</p>
@@ -882,13 +971,13 @@ describe('Children - (JSX)', () => {
 
       render(<A />, container);
       expect(container.innerHTML).toBe('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
-      updaterFirst();
+      updaterFirst!();
       expect(container.innerHTML).toBe('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>');
-      updaterSecond();
+      updaterSecond!();
       expect(container.innerHTML).toBe('<div><p>1</p><p>2</p><p>3</p></div>');
-      updaterSecond();
+      updaterSecond!();
       expect(container.innerHTML).toBe('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>');
-      updaterFirst();
+      updaterFirst!();
       expect(container.innerHTML).toBe('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
     });
   });
@@ -900,7 +989,7 @@ describe('Children - (JSX)', () => {
           super(props);
         }
 
-        render() {
+        public render() {
           return <div>{this.props.children}</div>;
         }
       }
@@ -910,9 +999,9 @@ describe('Children - (JSX)', () => {
           super(props);
         }
 
-        callback() {}
+        public callback() {}
 
-        render() {
+        public render() {
           return (
             <A>
               <div onclick={this.callback}>B</div>
@@ -927,12 +1016,15 @@ describe('Children - (JSX)', () => {
 
   describe('Rendering null on child node', () => {
     it('Should trigger unmount', () => {
-      class A extends Component {
+      interface AProps {
+        test: InfernoNode
+      }
+      class A extends Component<AProps> {
         constructor(props) {
           super(props);
         }
 
-        render() {
+        public render() {
           return <div>{this.props.test}</div>;
         }
       }
@@ -942,9 +1034,9 @@ describe('Children - (JSX)', () => {
           super(props);
         }
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return <p>B</p>;
         }
       }
@@ -1167,17 +1259,21 @@ describe('Children - (JSX)', () => {
   describe('Unmount behavior in lists', () => {
     it('Should not call unmount when changing list length', () => {
       class UnMountTest extends Component {
-        componentWillUnmount() {
+        public componentWillUnmount() {
           // Should not be here
         }
 
-        render() {
+        public render() {
           return <span>1</span>;
         }
       }
 
-      class Parent extends Component {
-        render() {
+      interface ParentProps {
+        firstClassCitizenIsBack?: boolean
+      }
+
+      class Parent extends Component<ParentProps> {
+        public render() {
           let firstClassCitizen = null;
           if (this.props.firstClassCitizenIsBack) {
             firstClassCitizen = <div>b</div>;
@@ -1213,7 +1309,13 @@ describe('Children - (JSX)', () => {
     it('Should call componentWillUnmount for children', (done) => {
       let toggle;
 
-      class Wrapper extends Component {
+      interface WrapperState {
+        bool: boolean
+      }
+
+      class Wrapper extends Component<unknown, WrapperState> {
+        public state: WrapperState;
+
         constructor(props) {
           super(props);
 
@@ -1228,7 +1330,7 @@ describe('Children - (JSX)', () => {
           };
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <span>foobar</span>
@@ -1238,7 +1340,13 @@ describe('Children - (JSX)', () => {
         }
       }
 
-      class FooBar extends Component {
+      interface FoobarState {
+        text: string
+      }
+
+      class FooBar extends Component<unknown, FoobarState> {
+        public state: FoobarState;
+
         constructor(props) {
           super(props);
 
@@ -1247,11 +1355,11 @@ describe('Children - (JSX)', () => {
           };
         }
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        componentWillMount() {}
+        public componentWillMount() {}
 
-        render() {
+        public render() {
           return <span>{this.state.text}</span>;
         }
       }
@@ -1279,7 +1387,12 @@ describe('Children - (JSX)', () => {
     it('Should call componentWillUnmount for nested children', (done) => {
       let toggle;
 
-      class Wrapper extends Component {
+      interface WrapperState {
+        bool: boolean
+      }
+
+      class Wrapper extends Component<unknown, WrapperState> {
+        public state: WrapperState;
         constructor(props) {
           super(props);
 
@@ -1294,7 +1407,7 @@ describe('Children - (JSX)', () => {
           };
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <span>foobar</span>
@@ -1305,7 +1418,7 @@ describe('Children - (JSX)', () => {
       }
 
       class FooBar extends Component {
-        render() {
+        public render() {
           return (
             <span>
               <Test />
@@ -1315,11 +1428,11 @@ describe('Children - (JSX)', () => {
       }
 
       class Test extends Component {
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        componentWillMount() {}
+        public componentWillMount() {}
 
-        render() {
+        public render() {
           return <em>f</em>;
         }
       }
@@ -1347,7 +1460,12 @@ describe('Children - (JSX)', () => {
     it('Should call componentWillUnmount for nested children #2', (done) => {
       let toggle;
 
-      class Wrapper extends Component {
+      interface WrapperState {
+        bool: boolean
+      }
+
+      class Wrapper extends Component<unknown, WrapperState> {
+        public state: WrapperState;
         constructor(props) {
           super(props);
 
@@ -1362,7 +1480,7 @@ describe('Children - (JSX)', () => {
           };
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <span>foobar</span>
@@ -1373,7 +1491,7 @@ describe('Children - (JSX)', () => {
       }
 
       class FooBar extends Component {
-        render() {
+        public render() {
           return (
             <span>
               <Test />
@@ -1384,17 +1502,17 @@ describe('Children - (JSX)', () => {
       }
 
       class Test extends Component {
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return <em>f</em>;
         }
       }
 
       class Foo extends Component {
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return <em>f</em>;
         }
       }
@@ -1421,7 +1539,12 @@ describe('Children - (JSX)', () => {
     it('Should call componentWillUnmount for deeply nested children', (done) => {
       let toggle;
 
-      class Wrapper extends Component {
+      interface WrapperState {
+        bool: boolean
+      }
+
+      class Wrapper extends Component<unknown, WrapperState> {
+        public state: WrapperState;
         constructor(props) {
           super(props);
 
@@ -1436,7 +1559,7 @@ describe('Children - (JSX)', () => {
           };
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <span>foobar</span>
@@ -1447,7 +1570,7 @@ describe('Children - (JSX)', () => {
       }
 
       class FooBar extends Component {
-        render() {
+        public render() {
           return (
             <span>
               <span>
@@ -1463,19 +1586,19 @@ describe('Children - (JSX)', () => {
       }
 
       class Test extends Component {
-        render() {
+        public render() {
           return <Test2 />;
         }
       }
 
       class Test2 extends Component {
-        render() {
+        public render() {
           return <Test4 />;
         }
       }
 
       class Test4 extends Component {
-        render() {
+        public render() {
           return (
             <div>
               <span />
@@ -1487,9 +1610,9 @@ describe('Children - (JSX)', () => {
       }
 
       class Test5 extends Component {
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return <h1>ShouldUnMountMe</h1>;
         }
       }
@@ -1518,9 +1641,9 @@ describe('Children - (JSX)', () => {
           super(props);
         }
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return (
             <div>
               <span>foobar</span>
@@ -1531,9 +1654,9 @@ describe('Children - (JSX)', () => {
       }
 
       class FooBar extends Component {
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return (
             <span>
               <Test />
@@ -1543,7 +1666,7 @@ describe('Children - (JSX)', () => {
       }
 
       class Test extends Component {
-        render() {
+        public render() {
           return <em>f</em>;
         }
       }
@@ -1569,14 +1692,18 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should fastUnmount child component when only parent has unmount callback', (done) => {
-      class Wrapper extends Component {
+      interface WrapperProps {
+        kill: boolean
+      }
+
+      class Wrapper extends Component<WrapperProps> {
         constructor(props) {
           super(props);
         }
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return (
             <div>
               <span>foobar</span>
@@ -1586,16 +1713,20 @@ describe('Children - (JSX)', () => {
         }
       }
 
-      class FooBar extends Component {
-        componentWillUnmount() {}
+      interface FoobarProps {
+        kill: boolean
+      }
 
-        render() {
+      class FooBar extends Component<FoobarProps> {
+        public componentWillUnmount() {}
+
+        public render() {
           return <span>{!this.props.kill ? <Test /> : null}</span>;
         }
       }
 
       class Test extends Component {
-        render() {
+        public render() {
           return (
             <em>
               <FastUnMountThis />
@@ -1604,10 +1735,16 @@ describe('Children - (JSX)', () => {
         }
       }
 
-      let dirtyReference = null;
-      let updateFastUnmountedComponent = null;
+      let dirtyReference: FastUnMountThis | null = null;
+      let updateFastUnmountedComponent: (() => void) | null = null;
 
-      class FastUnMountThis extends Component {
+      interface FastUnMountThisState {
+        text: string
+      }
+
+      class FastUnMountThis extends Component<unknown, FastUnMountThisState> {
+        public state: FastUnMountThisState;
+
         constructor(props) {
           super(props);
 
@@ -1621,13 +1758,13 @@ describe('Children - (JSX)', () => {
           };
         }
 
-        changeText() {
+        public changeText() {
           this.setState({
             text: 'foo'
           });
         }
 
-        render() {
+        public render() {
           return <pre onclick={function () {}}>{this.state.text}</pre>;
         }
       }
@@ -1648,12 +1785,12 @@ describe('Children - (JSX)', () => {
         expect(unMountSpy2).not.toHaveBeenCalled();
 
         // This component is actually unmounted but fastUnmount skips unmount loop so unmounted remains false
-        expect(dirtyReference.$UN).toEqual(true);
+        expect(dirtyReference!.$UN).toEqual(true);
         // Try to do setState and verify it doesn't fail
-        updateFastUnmountedComponent();
+        updateFastUnmountedComponent!();
 
         setTimeout(() => {
-          expect(dirtyReference.$UN).toEqual(true);
+          expect(dirtyReference!.$UN).toEqual(true);
           expect(container.innerHTML).toEqual('<div><span>foobar</span><span></span></div>');
 
           done();
@@ -1667,9 +1804,9 @@ describe('Children - (JSX)', () => {
           super(props);
         }
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return (
             <div>
               <HasLife />
@@ -1681,16 +1818,16 @@ describe('Children - (JSX)', () => {
 
       // This should be able to fastUnmount
       class NoLife extends Component {
-        render() {
+        public render() {
           return <span>nolife</span>;
         }
       }
 
       // This should have fastUnmount false
       class HasLife extends Component {
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return <span>haslife</span>;
         }
       }
@@ -1717,11 +1854,11 @@ describe('Children - (JSX)', () => {
       let mountCalls = 0;
       let unMountCalls = 0;
       const foobarLifecycle = {
-        componentWillUnmount: () => {
-          unMountCalls++;
-        },
         componentWillMount: () => {
           mountCalls++;
+        },
+        componentWillUnmount: () => {
+          unMountCalls++;
         }
       };
 
@@ -1753,15 +1890,15 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should call componentWillUnmount for nested children', () => {
-      let unMountCalls = 0,
-        mountCalls = 0;
+      let unMountCalls = 0;
+      let mountCalls = 0;
 
       const testLifeCycle = {
-        componentWillUnmount: () => {
-          unMountCalls++;
-        },
         componentWillMount: () => {
           mountCalls++;
+        },
+        componentWillUnmount: () => {
+          unMountCalls++;
         }
       };
 
@@ -1801,8 +1938,8 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should call componentWillUnmount for nested children #2', () => {
-      let unMountTest = 0,
-        unMountFoo = 0;
+      let unMountTest = 0;
+      let unMountFoo = 0;
 
       const testLifeCycle = {
         componentWillUnmount: () => {
@@ -1919,8 +2056,8 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', (done) => {
-      let unMountTest = 0,
-        unMountTwoTest = 0;
+      let unMountTest = 0;
+      let unMountTwoTest = 0;
 
       const testLifecycle = {
         componentWillUnmount: () => {
