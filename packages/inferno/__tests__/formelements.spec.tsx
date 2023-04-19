@@ -15,12 +15,15 @@ describe('FormElements', () => {
   });
 
   describe('text input', () => {
-    class TextBox extends Component {
+    interface TextBoxProps {
+      value: string | number;
+    }
+    class TextBox extends Component<TextBoxProps> {
       constructor(props) {
         super(props);
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <input type="text" value={this.props.value} />
@@ -57,18 +60,23 @@ describe('FormElements', () => {
     });
 
     it('Controlled - oninput - Should have updated props in onInput callbacks', () => {
-      class Example extends Component {
+      interface ExampleProps {
+        value: number;
+        callback: (value: number) => void;
+      }
+
+      class Example extends Component<ExampleProps> {
         constructor(props, context) {
           super(props, context);
 
           this._method = this._method.bind(this);
         }
 
-        _method() {
+        public _method() {
           this.props.callback(this.props.value);
         }
 
-        render() {
+        public render() {
           return <input type="text" oninput={this._method} value="test" />;
         }
       }
@@ -95,24 +103,29 @@ describe('FormElements', () => {
     });
 
     it('Controlled - onInput - Should have updated props in onInput callbacks', () => {
-      class Example extends Component {
+      interface ExampleProps {
+        value: number;
+        callback: (value: number) => void;
+      }
+
+      class Example extends Component<ExampleProps> {
         constructor(props, context) {
           super(props, context);
 
           this._method = this._method.bind(this);
         }
 
-        _method() {
+        public _method() {
           this.props.callback(this.props.value);
         }
 
-        render() {
+        public render() {
           return <input type="text" onInput={this._method} value="test" />;
         }
       }
 
       let callCounter = 0;
-      let args = [];
+      const args: number[] = [];
 
       const spy = function (arg) {
         callCounter++;
@@ -140,7 +153,18 @@ describe('FormElements', () => {
     });
 
     it('Controlled - onInput - Should have updated props in onInput callbacks in setState callback', () => {
-      class Example extends Component {
+      interface ExampleProps {
+        value: number;
+        callback: (value: number, a: number) => void;
+      }
+
+      interface ExampleState {
+        a: number;
+      }
+
+      class Example extends Component<ExampleProps, ExampleState> {
+        public state: ExampleState;
+
         constructor(props, context) {
           super(props, context);
 
@@ -151,11 +175,11 @@ describe('FormElements', () => {
           this._method = this._method.bind(this);
         }
 
-        test() {
+        public test() {
           this.props.callback(this.props.value, this.state.a);
         }
 
-        _method() {
+        public _method() {
           this.setState(
             {
               a: this.props.value
@@ -164,7 +188,7 @@ describe('FormElements', () => {
           );
         }
 
-        render() {
+        public render() {
           return <input type="text" onInput={this._method} value="test" />;
         }
       }
@@ -192,16 +216,21 @@ describe('FormElements', () => {
     });
 
     it('Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
-      class Example extends Component {
+      interface ExampleProps {
+        value: number;
+        callback: (value: number, a: number) => void;
+      }
+
+      class Example extends Component<ExampleProps> {
         constructor(props, context) {
           super(props, context);
         }
 
-        static _method(me) {
+        public static _method(me) {
           me.props.callback(me.props.value);
         }
 
-        render() {
+        public render() {
           return <input type="text" onInput={linkEvent(this, Example._method)} value="test" />;
         }
       }
@@ -229,16 +258,21 @@ describe('FormElements', () => {
     });
 
     it('NON Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
-      class Example extends Component {
+      interface ExampleProps {
+        value: number;
+        callback: (value: number, a: number) => void;
+      }
+
+      class Example extends Component<ExampleProps> {
         constructor(props, context) {
           super(props, context);
         }
 
-        static _method(me) {
+        public static _method(me) {
           me.props.callback(me.props.value);
         }
 
-        render() {
+        public render() {
           return <input type="text" onInput={linkEvent(this, Example._method)} />;
         }
       }
@@ -266,18 +300,23 @@ describe('FormElements', () => {
     });
 
     it('NON Controlled - onInput - Should have updated props in onInput callbacks', () => {
-      class Example extends Component {
+      interface ExampleProps {
+        value: number;
+        callback: (value: number) => void;
+      }
+
+      class Example extends Component<ExampleProps> {
         constructor(props, context) {
           super(props, context);
 
           this._method = this._method.bind(this);
         }
 
-        _method() {
+        public _method() {
           this.props.callback(this.props.value);
         }
 
-        render() {
+        public render() {
           return <input type="text" onInput={this._method} />;
         }
       }
@@ -306,12 +345,16 @@ describe('FormElements', () => {
   });
 
   describe('input type checkbox', () => {
-    class CheckBox extends Component {
+    interface CheckBoxProps {
+      checked?: boolean;
+    }
+
+    class CheckBox extends Component<CheckBoxProps> {
       constructor(props) {
         super(props);
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <input type="checkbox" checked={this.props.checked} />
@@ -390,12 +433,16 @@ describe('FormElements', () => {
   // https://facebook.github.io/react/docs/forms.html
   describe('React form spec', () => {
     describe('Controlled select list', () => {
-      class SelectList extends Component {
+      interface SelectListProps {
+        value: string;
+      }
+
+      class SelectList extends Component<SelectListProps> {
         constructor(props) {
           super(props);
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <select value={this.props.value}>
@@ -434,7 +481,13 @@ describe('FormElements', () => {
     describe('Controlled select list updates', () => {
       let updater;
 
-      class SelectList extends Component {
+      interface SelectListState {
+        value: string;
+      }
+
+      class SelectList extends Component<unknown, SelectListState> {
+        public state: SelectListState;
+
         constructor(props) {
           super(props);
 
@@ -447,11 +500,11 @@ describe('FormElements', () => {
           };
         }
 
-        buildOptionsDynamically() {
+        public buildOptionsDynamically() {
           return [<option value="A">A</option>, <option value="B">B</option>, <option value="C">C</option>];
         }
 
-        render() {
+        public render() {
           return (
             <div>
               <select value={this.state.value}>{this.buildOptionsDynamically()}</select>
@@ -481,11 +534,11 @@ describe('FormElements', () => {
     describe('input range scu', () => {
       it('Should have correct value on initial render', () => {
         class TestInputRange extends Component {
-          shouldComponentUpdate() {
+          public shouldComponentUpdate() {
             return false;
           }
 
-          render() {
+          public render() {
             return <input name="test" type="range" min={50} max={500} step={5} defaultValue={260} />;
           }
         }
@@ -497,11 +550,11 @@ describe('FormElements', () => {
 
       it('Should have defaultValue even when defaultValue is omitted, if value exists', () => {
         class TestInputRange extends Component {
-          shouldComponentUpdate() {
+          public shouldComponentUpdate() {
             return false;
           }
 
-          render() {
+          public render() {
             return <input name="test" type="range" min={50} max={500} step={5} value="110" />;
           }
         }
@@ -548,7 +601,11 @@ describe('FormElements', () => {
 
     describe('callbacks with FormElements', () => {
       it('Should call latest calback from props', () => {
-        class CompA extends Component {
+        interface CompAState {
+          orderedConfigs: { value: boolean }[];
+        }
+        class CompA extends Component<unknown, CompAState> {
+          public state: CompAState;
           constructor(props) {
             super(props);
             this.state = {
@@ -556,18 +613,23 @@ describe('FormElements', () => {
             };
           }
 
-          handleClick(that, { targetConf, targetIndex }) {
+          public handleClick(that, { targetConf, targetIndex }) {
             const newConfigs = that.state.orderedConfigs.map((conf, index) => (index === targetIndex ? { value: !targetConf.value } : conf));
 
             this.setState({ orderedConfigs: newConfigs });
           }
 
-          render(props) {
+          public render() {
             return <CompB orderedConfigs={this.state.orderedConfigs} onClick={(...args) => this.handleClick(this, ...args)} />;
           }
         }
 
-        const CompB = function renderCompB(props) {
+        interface CompBProps {
+          orderedConfigs: { value: boolean }[];
+          onClick: (arg: { targetConf: { value: boolean }; targetIndex: number }) => void;
+        }
+
+        const CompB = function renderCompB(props: CompBProps) {
           return (
             <div>
               {props.orderedConfigs.map((conf, index) => (
@@ -622,15 +684,20 @@ describe('FormElements', () => {
       });
 
       it('Should be possible to control checkbox by props', () => {
-        class ComponentTest extends Component {
+        interface ComponentTestState {
+          checked: boolean;
+        }
+        class ComponentTest extends Component<unknown, ComponentTestState> {
+          public state: ComponentTestState;
+
           constructor(props) {
             super(props);
             this.state = { checked: false };
           }
-          handleClick(event) {
+          public handleClick() {
             this.setState((state) => ({ checked: !state.checked }));
           }
-          render() {
+          public render() {
             return (
               <div>
                 <button onClick={() => this.handleClick()} />
@@ -657,17 +724,21 @@ describe('FormElements', () => {
       it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state)', () => {
         let changeToValue = true;
 
-        class ComponentTest extends Component {
+        interface ComponentTestState {
+          checked: boolean;
+        }
+        class ComponentTest extends Component<unknown, ComponentTestState> {
+          public state: ComponentTestState;
           constructor(props) {
             super(props);
             this.state = { checked: true };
           }
-          handleClick(event) {
+          public handleClick(event) {
             expect(event.currentTarget.checked).toBe(false);
 
-            this.setState((state) => ({ checked: changeToValue }));
+            this.setState(() => ({ checked: changeToValue }));
           }
-          render() {
+          public render() {
             return (
               <div>
                 <input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
@@ -699,17 +770,21 @@ describe('FormElements', () => {
       it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state) #2', () => {
         let changeToValue = false;
 
-        class ComponentTest extends Component {
+        interface ComponentTestState {
+          checked: boolean;
+        }
+        class ComponentTest extends Component<unknown, ComponentTestState> {
+          public state: ComponentTestState;
           constructor(props) {
             super(props);
             this.state = { checked: false };
           }
-          handleClick(event) {
+          public handleClick(event) {
             expect(event.currentTarget.checked).toBe(true);
 
-            this.setState((state) => ({ checked: changeToValue }));
+            this.setState(() => ({ checked: changeToValue }));
           }
-          render() {
+          public render() {
             return (
               <div>
                 <input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
@@ -728,7 +803,7 @@ describe('FormElements', () => {
 
         input.click(); // Inside event handler should be true
 
-        expect(input.checked).toBe(false); // After render it should be false again
+        expect(input.checked).toBe(false); // After render, it should be false again
 
         changeToValue = true;
 

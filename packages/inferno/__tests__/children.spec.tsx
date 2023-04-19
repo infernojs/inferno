@@ -18,10 +18,10 @@ describe('Children - (JSX)', () => {
     it('Should push to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
       interface TabProps {
-        title?: string,
-        onSelect?: () => void,
-        key?: Key,
-        id?: string
+        title?: string;
+        onSelect?: () => void;
+        key?: Key;
+        id?: string;
       }
 
       function Tab({ title, onSelect, key, id }: TabProps) {
@@ -76,12 +76,12 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
       interface TabProps {
-        title?: string,
-        onSelect?: () => void,
-        key?: Key,
-        id?: string
+        title?: string;
+        onSelect?: () => void;
+        key?: Key;
+        id?: string;
       }
 
       function Tab({ title, onSelect, key, id }: TabProps) {
@@ -123,13 +123,13 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
 
       interface TabProps {
-        title?: string,
-        onSelect?: () => void,
-        key?: Key,
-        id?: string
+        title?: string;
+        onSelect?: () => void;
+        key?: Key;
+        id?: string;
       }
 
       function Tab({ title, onSelect, key, id }: TabProps) {
@@ -171,12 +171,12 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
       interface TabProps {
-        title?: string,
-        onSelect?: () => void,
-        key?: Key,
-        id?: string
+        title?: string;
+        onSelect?: () => void;
+        key?: Key;
+        id?: string;
       }
 
       function Tab({ title, onSelect, key, id }: TabProps) {
@@ -224,10 +224,10 @@ describe('Children - (JSX)', () => {
     it('Should appendx3 to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
       interface TabProps {
-        title?: string,
-        onSelect?: () => void,
-        key?: Key,
-        id?: string
+        title?: string;
+        onSelect?: () => void;
+        key?: Key;
+        id?: string;
       }
 
       function Tab({ title, onSelect, key, id }: TabProps) {
@@ -273,10 +273,10 @@ describe('Children - (JSX)', () => {
     it('Should unshiftx3 to correct location when it keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
       interface TabProps {
-        title?: string,
-        onSelect?: () => void,
-        key?: Key,
-        id?: string
+        title?: string;
+        onSelect?: () => void;
+        key?: Key;
+        id?: string;
       }
 
       function Tab({ title, onSelect, key, id }: TabProps) {
@@ -320,11 +320,11 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element before array list', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
 
       interface TabProps {
-        title?: string,
-        key?: Key,
+        title?: string;
+        key?: Key;
       }
 
       function Tab({ title, key }: TabProps) {
@@ -357,10 +357,10 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element after array list', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
       interface TabProps {
-        title?: string,
-        key?: Key,
+        title?: string;
+        key?: Key;
       }
 
       function Tab({ title, key }: TabProps) {
@@ -398,8 +398,8 @@ describe('Children - (JSX)', () => {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       interface TabProps {
-        title?: string,
-        id?: string,
+        title?: string;
+        id?: string;
         onSelect?: () => void;
       }
 
@@ -455,11 +455,11 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
 
       interface TabProps {
-        title?: string,
-        id?: string,
+        title?: string;
+        id?: string;
         onSelect?: () => void;
       }
 
@@ -502,11 +502,11 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
 
       interface TabProps {
-        title?: string,
-        id?: string,
+        title?: string;
+        id?: string;
         onSelect?: () => void;
       }
 
@@ -549,11 +549,11 @@ describe('Children - (JSX)', () => {
     });
 
     it('Should append child node to correct location when its empty at the beginning ', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
 
       interface TabProps {
-        title?: string,
-        id?: string,
+        title?: string;
+        id?: string;
         onSelect?: () => void;
       }
 
@@ -603,8 +603,8 @@ describe('Children - (JSX)', () => {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       interface TabProps {
-        title?: string,
-        id?: string,
+        title?: string;
+        id?: string;
         onSelect?: () => void;
       }
 
@@ -652,8 +652,8 @@ describe('Children - (JSX)', () => {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       interface TabProps {
-        title?: string,
-        id?: string,
+        title?: string;
+        id?: string;
         onSelect?: () => void;
       }
 
@@ -698,7 +698,7 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element before array list', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
 
       function Tab({ title }) {
         return <div>{title}</div>;
@@ -730,7 +730,7 @@ describe('Children - (JSX)', () => {
     });
 
     it('Inline text element after array list', function () {
-      const _tabs: {title:string}[] = [];
+      const _tabs: { title: string }[] = [];
 
       function Tab({ title }) {
         return <div>{title}</div>;
@@ -927,8 +927,8 @@ describe('Children - (JSX)', () => {
       let updaterSecond: (() => void) | null = null;
 
       interface AState {
-        first: boolean
-        second: boolean
+        first: boolean;
+        second: boolean;
       }
 
       class A extends Component<unknown, AState> {
@@ -1017,7 +1017,7 @@ describe('Children - (JSX)', () => {
   describe('Rendering null on child node', () => {
     it('Should trigger unmount', () => {
       interface AProps {
-        test: InfernoNode
+        test: InfernoNode;
       }
       class A extends Component<AProps> {
         constructor(props) {
@@ -1269,7 +1269,7 @@ describe('Children - (JSX)', () => {
       }
 
       interface ParentProps {
-        firstClassCitizenIsBack?: boolean
+        firstClassCitizenIsBack?: boolean;
       }
 
       class Parent extends Component<ParentProps> {
@@ -1310,7 +1310,7 @@ describe('Children - (JSX)', () => {
       let toggle;
 
       interface WrapperState {
-        bool: boolean
+        bool: boolean;
       }
 
       class Wrapper extends Component<unknown, WrapperState> {
@@ -1341,7 +1341,7 @@ describe('Children - (JSX)', () => {
       }
 
       interface FoobarState {
-        text: string
+        text: string;
       }
 
       class FooBar extends Component<unknown, FoobarState> {
@@ -1388,7 +1388,7 @@ describe('Children - (JSX)', () => {
       let toggle;
 
       interface WrapperState {
-        bool: boolean
+        bool: boolean;
       }
 
       class Wrapper extends Component<unknown, WrapperState> {
@@ -1461,7 +1461,7 @@ describe('Children - (JSX)', () => {
       let toggle;
 
       interface WrapperState {
-        bool: boolean
+        bool: boolean;
       }
 
       class Wrapper extends Component<unknown, WrapperState> {
@@ -1540,7 +1540,7 @@ describe('Children - (JSX)', () => {
       let toggle;
 
       interface WrapperState {
-        bool: boolean
+        bool: boolean;
       }
 
       class Wrapper extends Component<unknown, WrapperState> {
@@ -1693,7 +1693,7 @@ describe('Children - (JSX)', () => {
 
     it('Should fastUnmount child component when only parent has unmount callback', (done) => {
       interface WrapperProps {
-        kill: boolean
+        kill: boolean;
       }
 
       class Wrapper extends Component<WrapperProps> {
@@ -1714,7 +1714,7 @@ describe('Children - (JSX)', () => {
       }
 
       interface FoobarProps {
-        kill: boolean
+        kill: boolean;
       }
 
       class FooBar extends Component<FoobarProps> {
@@ -1739,7 +1739,7 @@ describe('Children - (JSX)', () => {
       let updateFastUnmountedComponent: (() => void) | null = null;
 
       interface FastUnMountThisState {
-        text: string
+        text: string;
       }
 
       class FastUnMountThis extends Component<unknown, FastUnMountThisState> {

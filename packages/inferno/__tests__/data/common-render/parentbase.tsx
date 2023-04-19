@@ -2,7 +2,9 @@ import { Component } from 'inferno';
 import { ChildCommon } from './child';
 
 export class ParentBaseCommon extends Component {
-  render() {
+  protected foo: string;
+
+  public render() {
     return (
       <div>
         <ChildCommon name={this.foo} />

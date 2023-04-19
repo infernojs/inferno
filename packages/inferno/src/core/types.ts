@@ -1191,6 +1191,7 @@ export declare namespace Inferno {
     crossOrigin?: string | null | undefined;
     disabled?: boolean | null | undefined;
     enterKeyHint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send' | null | undefined;
+    indeterminate?: boolean | null | undefined;
     form?: string | null | undefined;
     formAction?: string | null | undefined;
     formEncType?: string | null | undefined;
@@ -1230,6 +1231,7 @@ export declare namespace Inferno {
   interface LabelHTMLAttributes<T> extends HTMLAttributes<T> {
     form?: string | null | undefined;
     htmlFor?: string | null | undefined;
+    for?: string | null | undefined;
   }
 
   interface LiHTMLAttributes<T> extends HTMLAttributes<T> {

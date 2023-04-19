@@ -1,25 +1,39 @@
 import { Component } from 'inferno';
 
-export class ChildCommon extends Component {
+interface ChildCommonProps {
+  name: string;
+}
+
+interface ChildCommonState {
+  data: string;
+}
+
+export class ChildCommon extends Component<ChildCommonProps, ChildCommonState> {
+  public state: ChildCommonState;
+
   constructor(props) {
     super(props);
+
+    this.state = {
+      data: ''
+    };
 
     this._update = this._update.bind(this);
   }
 
-  _update() {
+  public _update() {
     this.setState({
       data: 'bar'
     });
   }
 
-  componentWillMount() {
+  public componentWillMount() {
     this.setState({
       data: 'foo'
     });
   }
 
-  render() {
+  public render() {
     return (
       <div onclick={this._update}>
         {this.props.name}

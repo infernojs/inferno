@@ -26,7 +26,7 @@ describe('linkEvent', () => {
     }
 
     interface StatefulComponentProps {
-      test?: string
+      test?: string;
     }
 
     class StatefulComponent extends Component<StatefulComponentProps> {
@@ -124,7 +124,7 @@ describe('linkEvent', () => {
     }
 
     interface StatelessComponentProps {
-      test?: string
+      test?: string;
     }
 
     class StatefulComponent extends Component<StatelessComponentProps> {

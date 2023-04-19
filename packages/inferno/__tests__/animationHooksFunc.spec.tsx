@@ -948,15 +948,15 @@ describe('animation hooks', () => {
     }
 
     function o(text) {
-      return <Animated key={'o' + text}>{',o' + text}</Animated>
+      return <Animated key={'o' + text}>{',o' + text}</Animated>;
     }
 
     function d(text) {
-      return <Animated key={'d' + text}>{',d' + text}</Animated>
+      return <Animated key={'d' + text}>{',d' + text}</Animated>;
     }
 
     function wk(text) {
-      return <Animated key={'wk' + text}>{',wk' + text}</Animated>
+      return <Animated key={'wk' + text}>{',wk' + text}</Animated>;
     }
 
     it('Should do complex suffle without duplications', () => {

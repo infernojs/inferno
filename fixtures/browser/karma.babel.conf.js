@@ -85,6 +85,7 @@ module.exports = function (config) {
             options: {
               babelrc: false,
               presets: [
+                '@babel/typescript',
                 [
                   '@babel/preset-env',
                   {
@@ -94,8 +95,7 @@ module.exports = function (config) {
                       safari: '8'
                     }
                   }
-                ],
-                '@babel/typescript'
+                ]
               ],
               plugins: [
                 ['babel-plugin-inferno', { imports: true }],

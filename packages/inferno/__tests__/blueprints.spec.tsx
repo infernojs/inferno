@@ -32,7 +32,7 @@ describe('Blueprints (JSX)', () => {
     }
 
     interface CounterState {
-      bool: boolean
+      bool: boolean;
     }
 
     class Counter extends Component<CounterProps, CounterState> {
@@ -111,7 +111,7 @@ describe('Blueprints (JSX)', () => {
       }
 
       interface AState {
-        text: string
+        text: string;
       }
 
       class A extends Component<AProps, AState> {
@@ -186,8 +186,8 @@ describe('Blueprints (JSX)', () => {
   describe('Spread operator and templates', () => {
     it('Should be able to update property', () => {
       interface AProps {
-        disabled?: boolean,
-        args?: {}
+        disabled?: boolean;
+        args?: {};
       }
       class A extends Component<AProps> {
         constructor(props) {

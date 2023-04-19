@@ -5,25 +5,11 @@ import { ParentSecondCommon } from './data/common-render/parentsecondcommon';
 
 describe('Components (JSX) #2', () => {
   let container;
-  let Inner;
-  let attachedListener = null;
-  let renderedName = null;
 
   beforeEach(function () {
-    attachedListener = null;
-    renderedName = null;
-
     container = document.createElement('div');
     container.style.display = 'none';
     document.body.appendChild(container);
-
-    Inner = class extends Component {
-      render() {
-        attachedListener = this.props.onClick;
-        renderedName = this.props.name;
-        return <div className={this.props.name} />;
-      }
-    };
   });
 
   afterEach(function () {
@@ -33,7 +19,7 @@ describe('Components (JSX) #2', () => {
 
   describe('tracking DOM state', () => {
     class ComponentA extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <span>Something</span>
@@ -43,7 +29,7 @@ describe('Components (JSX) #2', () => {
     }
 
     class ComponentB extends Component {
-      render() {
+      public render() {
         return (
           <div>
             <span>Something</span>
@@ -52,8 +38,22 @@ describe('Components (JSX) #2', () => {
       }
     }
 
-    class ComponentBWithStateChange extends Component {
-      componentWillMount() {
+    interface ComponentBWithStateChangeState {
+      text: string;
+    }
+
+    class ComponentBWithStateChange extends Component<unknown, ComponentBWithStateChangeState> {
+      public state: ComponentBWithStateChangeState;
+
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          text: ''
+        };
+      }
+
+      public componentWillMount() {
         this.setState({
           text: 'newText'
         });
@@ -63,7 +63,7 @@ describe('Components (JSX) #2', () => {
         });
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <span>{this.state.text}</span>
@@ -129,7 +129,17 @@ describe('Components (JSX) #2', () => {
   });
 
   describe('Inheritance with common render', () => {
-    class Child extends Component {
+    interface ChildProps {
+      name: string;
+    }
+
+    interface ChildState {
+      data: string;
+    }
+
+    class Child extends Component<ChildProps, ChildState> {
+      public state: ChildState;
+
       constructor(props) {
         super(props);
 
@@ -138,19 +148,19 @@ describe('Components (JSX) #2', () => {
         this._update = this._update.bind(this);
       }
 
-      _update() {
+      public _update() {
         this.setState({
           data: 'bar'
         });
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         this.setState({
           data: 'foo'
         });
       }
 
-      render() {
+      public render() {
         return (
           <div onclick={this._update}>
             {this.props.name}
@@ -161,7 +171,9 @@ describe('Components (JSX) #2', () => {
     }
 
     class ParentBase extends Component {
-      render() {
+      protected foo: string;
+
+      public render() {
         return (
           <div>
             <Child name={this.foo} />
@@ -200,26 +212,40 @@ describe('Components (JSX) #2', () => {
   });
 
   describe('Inheritance with duplicate render', () => {
-    class Child extends Component {
+    interface ChildProps {
+      name: string;
+    }
+
+    interface ChildState {
+      data: string;
+    }
+
+    class Child extends Component<ChildProps, ChildState> {
+      public state: ChildState;
+
       constructor(props) {
         super(props);
+
+        this.state = {
+          data: ''
+        };
 
         this._update = this._update.bind(this);
       }
 
-      _update() {
+      public _update() {
         this.setState({
           data: 'bar'
         });
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         this.setState({
           data: 'foo'
         });
       }
 
-      render() {
+      public render() {
         return (
           <div onclick={this._update}>
             {this.props.name}
@@ -230,13 +256,15 @@ describe('Components (JSX) #2', () => {
     }
 
     class ParentFirst extends Component {
+      protected foo: string;
+
       constructor(props) {
         super(props);
 
         this.foo = 'First';
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <Child name={this.foo} />
@@ -246,13 +274,15 @@ describe('Components (JSX) #2', () => {
     }
 
     class ParentSecond extends Component {
+      protected foo: string;
+
       constructor(props) {
         super(props);
 
         this.foo = 'Second';
       }
 
-      render() {
+      public render() {
         return (
           <div>
             <Child name={this.foo} />
@@ -284,18 +314,21 @@ describe('Components (JSX) #2', () => {
   });
 
   describe('should handle defaultProps and keys being pass into components', () => {
-    class Comp extends Component {
-      render() {
+    interface CompProps {
+      foo: string;
+    }
+    class Comp extends Component<CompProps> {
+      public render() {
         return this.props.foo;
       }
 
-      static defaultProps = {
+      public static defaultProps = {
         foo: 'bar'
       };
     }
 
     it('should render the component with a key', () => {
-      let val = '1';
+      let val: string | number = '1';
 
       render(<Comp key={val} />, container);
       expect(container.innerHTML).toBe('bar');
@@ -318,16 +351,18 @@ describe('Components (JSX) #2', () => {
           doForce = this.doForceUpdate.bind(this);
         }
 
-        shouldComponentUpdate() {
+        public shouldComponentUpdate() {
           test = true;
+
+          return false;
         }
 
-        doForceUpdate() {
+        public doForceUpdate() {
           called = true;
           this.forceUpdate();
         }
 
-        render() {
+        public render() {
           return <div>1</div>;
         }
       }

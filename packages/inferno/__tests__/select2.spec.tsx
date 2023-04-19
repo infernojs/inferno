@@ -456,9 +456,9 @@ describe('Select / select multiple (JSX)', () => {
 
   it('Should be possible to render select element with options wrapped in functional Component', () => {
     interface CustomOptionProps {
-      selected?: boolean
-      value: number,
-      children: InfernoNode
+      selected?: boolean;
+      value: number;
+      children: InfernoNode;
     }
     const CustomOption = ({ selected, value, children }: CustomOptionProps) => (
       <option selected={selected} value={value}>
@@ -505,9 +505,9 @@ describe('Select / select multiple (JSX)', () => {
 
   it('Should be possible to render select element with options wrapped in Class Component', () => {
     interface CustomOptionProps {
-      selected?: boolean
-      value: number,
-      children: InfernoNode
+      selected?: boolean;
+      value: number;
+      children: InfernoNode;
     }
 
     class CustomOption extends Component<CustomOptionProps> {

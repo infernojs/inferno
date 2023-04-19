@@ -1,4 +1,4 @@
-import { Component, render, rerender } from 'inferno';
+import { Component, InfernoNode, render, rerender } from 'inferno';
 import { triggerEvent } from 'inferno-utils';
 
 describe('BUG: instance - null', () => {
@@ -29,14 +29,18 @@ describe('BUG: instance - null', () => {
     );
   }
 
-  class Icon extends Component {
+  interface IconProps {
+    icon?: string;
+  }
+
+  class Icon extends Component<IconProps> {
     constructor(props, context) {
       super(props, context);
     }
 
-    componentWillMount() {}
+    public componentWillMount() {}
 
-    render() {
+    public render() {
       const props = this.props;
 
       if (!props.icon) {
@@ -56,7 +60,32 @@ describe('BUG: instance - null', () => {
     }
   }
 
-  class Popover extends Component {
+  interface PopoverProps {
+    popoverClassName?: string;
+    align?: string;
+    arrow?: boolean;
+    isOpen?: boolean;
+    target?: HTMLDivElement | null;
+    hasMobileClose?: boolean;
+    body?: InfernoNode;
+    onOuterAction?: (ev: any) => void;
+  }
+
+  interface PopoverState {
+    placement: string;
+  }
+
+  class Popover extends Component<PopoverProps, PopoverState> {
+    private _elements: {
+      container: HTMLDivElement | null;
+      parentPopover: HTMLDivElement | null;
+      popover: HTMLDivElement | null;
+      target: HTMLDivElement | null;
+      popoverBody: HTMLDivElement | null;
+    };
+
+    public state: PopoverState;
+
     constructor(props) {
       super(props);
 
@@ -66,11 +95,11 @@ describe('BUG: instance - null', () => {
 
       // Element references
       this._elements = {
-        popover: null,
-        target: props.target || null,
         container: null,
         parentPopover: null,
-        popoverBody: null
+        popover: null,
+        popoverBody: null,
+        target: props.target || null
       };
 
       // Lexical bindings
@@ -88,7 +117,7 @@ describe('BUG: instance - null', () => {
     // Private
     //
 
-    _popoverRef(node) {
+    public _popoverRef(node) {
       this._elements.popover = node;
       if (node !== null) {
         this.setState({
@@ -97,15 +126,15 @@ describe('BUG: instance - null', () => {
       }
     }
 
-    _refContainer(node) {
+    public _refContainer(node) {
       this._elements.container = node;
     }
 
-    _refPopoverBody(node) {
+    public _refPopoverBody(node) {
       this._elements.popoverBody = node;
     }
 
-    _refTarget(node) {
+    public _refTarget(node) {
       if (!this.props.target) {
         this._elements.target = node;
       }
@@ -118,10 +147,10 @@ describe('BUG: instance - null', () => {
     //
     // OVERRIDEN FROM COMPONENT
     //
-    render() {
+    public render() {
       const props = this.props;
-      let popover = null,
-        closeButton = null;
+      let popover = null;
+      let closeButton = null;
 
       if (props.isOpen) {
         let triangle = null;
@@ -158,25 +187,54 @@ describe('BUG: instance - null', () => {
     }
   }
 
-  class Dropdown extends Component {
+  interface DropdownProps {
+    items: {
+      icon: string;
+      text: string;
+      value: string;
+    }[];
+
+    changeCallback?: () => void;
+    changeParams?: unknown;
+    value?: string;
+  }
+
+  interface DropdownState {
+    activeValue?: string | null;
+    editableText: string;
+    isEditMode: boolean;
+    filteredItems:
+      | {
+          icon: string;
+          text: string;
+          value: string;
+        }[]
+      | null;
+  }
+
+  class Dropdown extends Component<DropdownProps, DropdownState> {
+    private _elements: { bottomLoader: null; activeNode: null; list: null };
+    // @ts-expect-error
+    private _popover: HTMLDivElement | null;
+
+    public state: DropdownState;
+
     constructor(props) {
       super(props);
 
       // Element references
-      this._elements = {};
-      this._elements.list = null;
-      this._elements.activeNode = null;
-      this._elements.bottomLoader = null;
-
-      this.state = {
-        isEditMode: false,
-        editableText: '',
-        activeValue: props.value,
-        filteredItems: null,
-        filteredCustomItems: null
+      this._elements = {
+        activeNode: null,
+        bottomLoader: null,
+        list: null
       };
 
-      this._popover = null;
+      this.state = {
+        activeValue: props.value,
+        editableText: '',
+        filteredItems: null,
+        isEditMode: false
+      };
 
       // Lexical bindings
       this._closePopover = this._closePopover.bind(this);
@@ -192,51 +250,47 @@ describe('BUG: instance - null', () => {
     //
 
     // In some cases, we don't want to stop event propagation, f.e. listView editMode and movements with shift + TAB
-    _closePopover(event, propagate) {
-      if (!propagate) {
-        event.stopPropagation();
-      }
+    public _closePopover(event) {
+      event.stopPropagation();
 
       this.setState({
+        activeValue: this.props.value,
         editableText: '',
-        isEditMode: false,
         filteredItems: null,
-        filteredCustomItems: null,
-        activeValue: this.props.value
+        isEditMode: false
       });
     }
 
-    _onDropDownCreating(node) {
+    public _onDropDownCreating(node) {
       this._elements.list = node;
     }
 
-    _onActiveItemAttached(node) {
+    public _onActiveItemAttached(node) {
       this._elements.activeNode = node;
     }
 
-    _refPopover(instance) {
+    public _refPopover(instance) {
       this._popover = instance;
     }
 
-    _refBottomLoader(node) {
+    public _refBottomLoader(node) {
       this._elements.bottomLoader = node;
     }
 
-    _renderItems(searchText, activeValue) {
+    public _renderItems() {
       const items = this.state.filteredItems || this.props.items || [];
-      const itemsToRender = [];
+      const itemsToRender: InfernoNode[] = [];
 
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
-        const isActive = activeValue === item.value;
 
-        itemsToRender.push(this._renderItem(item, i, items, isActive, searchText));
+        itemsToRender.push(this._renderItem(item, i));
       }
 
       return itemsToRender;
     }
 
-    _renderDropdown() {
+    public _renderDropdown() {
       const currentState = this.state;
 
       // Shortcut dropdown rendering process when its not visible
@@ -244,11 +298,8 @@ describe('BUG: instance - null', () => {
         return null;
       }
 
-      const props = this.props;
-      const searchText = this.state.editableText;
-      const activeValue = this.state.activeValue;
       // Render items
-      const items = this._renderItems(searchText, activeValue);
+      const items = this._renderItems();
 
       return (
         <ul className="editable-dropdown" ref={this._onDropDownCreating}>
@@ -257,22 +308,16 @@ describe('BUG: instance - null', () => {
       );
     }
 
-    _renderItem(dropdownItem, isActive) {
+    public _renderItem(dropdownItem, isActive) {
       return (
-        <DropdownItem
-          attached={isActive ? this._onActiveItemAttached : null}
-          key={dropdownItem.value}
-          item={dropdownItem}
-          clickHandler={this._select}
-          className={'dd-item-icon'}
-        >
-          <Icon className="dd-icon" icon={dropdownItem.icon} />
+        <DropdownItem attached={isActive ? this._onActiveItemAttached : null} key={dropdownItem.value} className={'dd-item-icon'}>
+          <Icon icon={dropdownItem.icon} />
           {dropdownItem.text}
         </DropdownItem>
       );
     }
 
-    _makeEditable() {
+    public _makeEditable() {
       const state = this.state;
       const props = this.props;
 
@@ -282,8 +327,8 @@ describe('BUG: instance - null', () => {
 
       // Updating editable and changing into editmode
       this.setState({
-        isEditMode: true,
-        activeValue: props.value
+        activeValue: props.value,
+        isEditMode: true
       });
     }
 
@@ -291,14 +336,13 @@ describe('BUG: instance - null', () => {
     // OVERRIDDEN FROM COMPONENT
     //
 
-    render() {
+    public render() {
       return (
         <Popover
           ref={this._refPopover}
           arrow={true}
           align="begin"
           hasMobileClose={true}
-          popoverClassName={this._popoverClassName}
           isOpen={this.state.isEditMode}
           body={this._renderDropdown()}
           onOuterAction={this._closePopover}
@@ -314,19 +358,19 @@ describe('BUG: instance - null', () => {
   it('Should not fail', () => {
     const items = [
       {
+        icon: '#user',
         text: 'Implementation',
-        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
-        icon: '#user'
+        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3'
       },
       {
+        icon: '#reminder',
         text: 'Issue',
-        value: '4e0a069d-899a-418a-df27-8ff5ef18d459',
-        icon: '#reminder'
+        value: '4e0a069d-899a-418a-df27-8ff5ef18d459'
       },
       {
+        icon: '#favourite',
         text: 'LomaTaski',
-        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
-        icon: '#favourite'
+        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121'
       }
     ];
     const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
@@ -401,19 +445,19 @@ describe('BUG: instance - null', () => {
   it('Should not fail #2', () => {
     const items = [
       {
+        icon: '#user',
         text: 'Implementation',
-        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
-        icon: '#user'
+        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3'
       },
       {
+        icon: '#reminder',
         text: 'Issue',
-        value: '4e0a069d-899a-418a-df27-8ff5ef18d459',
-        icon: '#reminder'
+        value: '4e0a069d-899a-418a-df27-8ff5ef18d459'
       },
       {
+        icon: '#favourite',
         text: 'LomaTaski',
-        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
-        icon: '#favourite'
+        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121'
       }
     ];
     const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
@@ -438,23 +482,22 @@ describe('BUG: instance - null', () => {
   it('Should not fail #3', () => {
     const items = [
       {
+        icon: '#user',
         text: 'Implementation',
-        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
-        icon: '#user'
+        value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3'
       },
       {
+        icon: '#reminder',
         text: 'Issue',
-        value: '4e0a069d-899a-418a-df27-8ff5ef18d459',
-        icon: '#reminder'
+        value: '4e0a069d-899a-418a-df27-8ff5ef18d459'
       },
       {
+        icon: '#favourite',
         text: 'LomaTaski',
-        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
-        icon: '#favourite'
+        value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121'
       }
     ];
     const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
-    const text = 'pena';
 
     render(
       <div>

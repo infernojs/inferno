@@ -84,16 +84,16 @@ module.exports = function (config) {
             test: /\.(ts|tsx)$/,
             loader: path.join(__dirname, 'node_modules/ts-loader'),
             options: {
-              "compilerOptions": {
-                "module": "es6",
-                "target": "es2018",
-                "jsx": "preserve",
-                "allowJs": true,
-                "moduleResolution": "node"
+              compilerOptions: {
+                module: 'es6',
+                target: 'es2018',
+                jsx: 'preserve',
+                allowJs: true,
+                moduleResolution: 'node'
               },
               getCustomTransformers: () => ({
-                after: [transformInferno()],
-              }),
+                after: [transformInferno()]
+              })
             }
           },
           {
@@ -119,7 +119,7 @@ module.exports = function (config) {
                 ['@babel/plugin-proposal-class-properties', { loose: true }]
               ]
             }
-          },
+          }
         ]
       },
       resolve: {

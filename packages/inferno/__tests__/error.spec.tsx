@@ -1,4 +1,4 @@
-import { Component, render, rerender } from 'inferno';
+import { Component, InfernoNode, render, rerender } from 'inferno';
 
 describe('Error recovery', () => {
   let container;
@@ -15,7 +15,17 @@ describe('Error recovery', () => {
   });
 
   it('Should be possible to render again if user land code crashes in CWM', () => {
-    class Crasher extends Component {
+    interface CrasherProps {
+      crash: boolean;
+    }
+
+    interface CrasherState {
+      value: number;
+    }
+
+    class Crasher extends Component<CrasherProps, CrasherState> {
+      public state: CrasherState;
+
       constructor(props, context) {
         super(props, context);
 
@@ -24,7 +34,7 @@ describe('Error recovery', () => {
         };
       }
 
-      componentWillMount() {
+      public componentWillMount() {
         if (this.props.crash) {
           throw Error('test');
         }
@@ -34,7 +44,7 @@ describe('Error recovery', () => {
         });
       }
 
-      render() {
+      public render() {
         return <div>{this.state.value}</div>;
       }
     }
@@ -50,7 +60,16 @@ describe('Error recovery', () => {
   });
 
   it('Should be possible to render again if user land code crashes in ComponentWillUnmount', () => {
-    class Crasher extends Component {
+    interface CrasherProps {
+      crash: boolean;
+    }
+
+    interface CrasherState {
+      value: number;
+    }
+
+    class Crasher extends Component<CrasherProps, CrasherState> {
+      public state: CrasherState;
       constructor(props, context) {
         super(props, context);
 
@@ -59,13 +78,13 @@ describe('Error recovery', () => {
         };
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         if (this.props.crash) {
           throw Error('test');
         }
       }
 
-      render() {
+      public render() {
         return <div>{this.state.value}</div>;
       }
     }
@@ -109,7 +128,16 @@ describe('Error recovery', () => {
       ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
         (crashLocation) => {
           it('Should recover from subtree crash in ' + location + ' of children when crash happens in components ' + crashLocation, () => {
-            class Crasher extends Component {
+            interface CrasherProps {
+              crash: boolean;
+            }
+
+            interface CrasherState {
+              value: string;
+            }
+
+            class Crasher extends Component<CrasherProps, CrasherState> {
+              public state: CrasherState;
               constructor(props, context) {
                 super(props, context);
 
@@ -122,7 +150,7 @@ describe('Error recovery', () => {
                 }
               }
 
-              componentWillMount() {
+              public componentWillMount() {
                 this.setState({
                   value: 'mounted'
                 });
@@ -132,31 +160,33 @@ describe('Error recovery', () => {
                 }
               }
 
-              componentWillReceiveProps(props) {
+              public componentWillReceiveProps(props) {
                 if (props.crash && crashLocation === 'WillReceiveProps') {
                   throw Error('test');
                 }
               }
 
-              componentDidMount() {
+              public componentDidMount() {
                 if (this.props.crash && crashLocation === 'DidMount') {
                   throw Error('test');
                 }
               }
 
-              shouldComponentUpdate(props) {
+              public shouldComponentUpdate(props) {
                 if (props.crash && crashLocation === 'shouldUpdate') {
                   throw Error('test');
                 }
+
+                return false;
               }
 
-              componentWillUpdate() {
+              public componentWillUpdate() {
                 if (this.props.crash && crashLocation === 'WillUpdate') {
                   throw Error('test');
                 }
               }
 
-              componentDidUpdate() {
+              public componentDidUpdate() {
                 if (this.props.crash && crashLocation === 'DidUpdate') {
                   throw Error('test');
                 }
@@ -169,7 +199,7 @@ describe('Error recovery', () => {
               //     }
               // }
 
-              getChildContext() {
+              public getChildContext() {
                 if (this.props.crash && crashLocation === 'getChildContext') {
                   throw Error('test');
                 }
@@ -177,7 +207,7 @@ describe('Error recovery', () => {
                 return {};
               }
 
-              render() {
+              public render() {
                 if (this.props.crash && crashLocation === 'render') {
                   throw Error('test');
                 }
@@ -186,8 +216,8 @@ describe('Error recovery', () => {
               }
             }
 
-            function TreeOfCrashers({ suffle, crash }) {
-              let arr = [];
+            function TreeOfCrashers({ suffle, crash }: { suffle?: boolean; crash: boolean }) {
+              const arr: InfernoNode[] = [];
 
               if (location === 'first') {
                 arr.push(<Crasher crash={crash} />);
@@ -233,7 +263,16 @@ describe('Error recovery', () => {
       ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
         (crashLocation) => {
           it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
-            class Crasher extends Component {
+            interface CrasherProps {
+              crash: boolean;
+            }
+
+            interface CrasherState {
+              value: string;
+            }
+
+            class Crasher extends Component<CrasherProps, CrasherState> {
+              public state: CrasherState;
               constructor(props, context) {
                 super(props, context);
 
@@ -246,7 +285,7 @@ describe('Error recovery', () => {
                 }
               }
 
-              componentWillMount() {
+              public componentWillMount() {
                 this.setState({
                   value: 'mounted'
                 });
@@ -256,31 +295,33 @@ describe('Error recovery', () => {
                 }
               }
 
-              componentWillReceiveProps(props) {
+              public componentWillReceiveProps(props) {
                 if (props.crash && crashLocation === 'WillReceiveProps') {
                   throw Error('test');
                 }
               }
 
-              componentDidMount() {
+              public componentDidMount() {
                 if (this.props.crash && crashLocation === 'DidMount') {
                   throw Error('test');
                 }
               }
 
-              shouldComponentUpdate(props) {
+              public shouldComponentUpdate(props) {
                 if (props.crash && crashLocation === 'shouldUpdate') {
                   throw Error('test');
                 }
+
+                return false;
               }
 
-              componentWillUpdate() {
+              public componentWillUpdate() {
                 if (this.props.crash && crashLocation === 'WillUpdate') {
                   throw Error('test');
                 }
               }
 
-              componentDidUpdate() {
+              public componentDidUpdate() {
                 if (this.props.crash && crashLocation === 'DidUpdate') {
                   throw Error('test');
                 }
@@ -293,7 +334,7 @@ describe('Error recovery', () => {
               //     }
               // }
 
-              getChildContext() {
+              public getChildContext() {
                 if (this.props.crash && crashLocation === 'getChildContext') {
                   throw Error('test');
                 }
@@ -301,7 +342,7 @@ describe('Error recovery', () => {
                 return {};
               }
 
-              render() {
+              public render() {
                 if (this.props.crash && crashLocation === 'render') {
                   throw Error('test');
                 }
@@ -310,8 +351,8 @@ describe('Error recovery', () => {
               }
             }
 
-            function TreeOfCrashers({ suffle, crash }) {
-              let arr = [];
+            function TreeOfCrashers({ suffle, crash }: { suffle?: boolean; crash: boolean }) {
+              const arr: InfernoNode[] = [];
 
               if (location === 'first') {
                 arr.push(<Crasher crash={crash} />);
@@ -357,7 +398,16 @@ describe('Error recovery', () => {
       ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
         (crashLocation) => {
           it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
-            class Crasher extends Component {
+            interface CrasherProps {
+              crash: boolean;
+            }
+
+            interface CrasherState {
+              value: string;
+            }
+
+            class Crasher extends Component<CrasherProps, CrasherState> {
+              public state: CrasherState;
               constructor(props, context) {
                 super(props, context);
 
@@ -370,7 +420,7 @@ describe('Error recovery', () => {
                 }
               }
 
-              componentWillMount() {
+              public componentWillMount() {
                 this.setState({
                   value: 'mounted'
                 });
@@ -380,31 +430,33 @@ describe('Error recovery', () => {
                 }
               }
 
-              componentWillReceiveProps(props) {
+              public componentWillReceiveProps(props) {
                 if (props.crash && crashLocation === 'WillReceiveProps') {
                   throw Error('test');
                 }
               }
 
-              componentDidMount() {
+              public componentDidMount() {
                 if (this.props.crash && crashLocation === 'DidMount') {
                   throw Error('test');
                 }
               }
 
-              shouldComponentUpdate(props) {
+              public shouldComponentUpdate(props) {
                 if (props.crash && crashLocation === 'shouldUpdate') {
                   throw Error('test');
                 }
+
+                return false;
               }
 
-              componentWillUpdate() {
+              public componentWillUpdate() {
                 if (this.props.crash && crashLocation === 'WillUpdate') {
                   throw Error('test');
                 }
               }
 
-              componentDidUpdate() {
+              public componentDidUpdate() {
                 if (this.props.crash && crashLocation === 'DidUpdate') {
                   throw Error('test');
                 }
@@ -417,7 +469,7 @@ describe('Error recovery', () => {
               //     }
               // }
 
-              getChildContext() {
+              public getChildContext() {
                 if (this.props.crash && crashLocation === 'getChildContext') {
                   throw Error('test');
                 }
@@ -425,7 +477,7 @@ describe('Error recovery', () => {
                 return {};
               }
 
-              render() {
+              public render() {
                 if (this.props.crash && crashLocation === 'render') {
                   throw Error('test');
                 }
@@ -434,8 +486,8 @@ describe('Error recovery', () => {
               }
             }
 
-            function TreeOfCrashers({ suffle, crash }) {
-              let arr = [];
+            function TreeOfCrashers({ suffle, crash }: { suffle?: boolean; crash: boolean }) {
+              const arr: InfernoNode[] = [];
 
               if (location === 'first') {
                 arr.push(<Crasher key="first" crash={crash} />);
@@ -479,24 +531,29 @@ describe('Error recovery', () => {
 
     describe('Error in child component', () => {
       it('Should not block future updates', (done) => {
-        let parentInstance = null;
-        let childCrasherInstance = null;
+        let childCrasherInstance: ChildCrasher | null = null;
 
         class BadComponent extends Component {
           constructor(props) {
             super(props);
           }
 
-          componentWillMount() {
-            throw 'Oops!';
+          public componentWillMount() {
+            throw new Error('Oops!');
           }
 
-          render() {
+          public render() {
             return 1;
           }
         }
 
-        class ChildCrasher extends Component {
+        interface ChildCrasherState {
+          fail: boolean;
+        }
+
+        class ChildCrasher extends Component<unknown, ChildCrasherState> {
+          public state: ChildCrasherState;
+
           constructor(props) {
             super(props);
 
@@ -507,7 +564,7 @@ describe('Error recovery', () => {
             childCrasherInstance = this; // For the sake of test
           }
 
-          render() {
+          public render() {
             if (!this.state.fail) {
               return null;
             }
@@ -517,13 +574,7 @@ describe('Error recovery', () => {
         }
 
         class Parent extends Component {
-          constructor(props) {
-            super(props);
-
-            parentInstance = this; // For the sake of test
-          }
-
-          render() {
+          public render() {
             return (
               <div>
                 <ChildCrasher />
@@ -537,14 +588,14 @@ describe('Error recovery', () => {
         expect(container.innerHTML).toBe('<div></div>');
 
         expect(() => {
-          childCrasherInstance.setState({
+          childCrasherInstance!.setState({
             fail: true
           });
           rerender();
-        }).toThrow('Oops!');
+        }).toThrowError('Oops!');
 
         // Recover from it
-        childCrasherInstance.setState({
+        childCrasherInstance!.setState({
           fail: false
         });
 
@@ -555,29 +606,26 @@ describe('Error recovery', () => {
       });
 
       it('Should not block future updates - variation 2', () => {
-        let parentInstance = null;
-        let childCrasherInstance = null;
+        let parentInstance: Parent | null = null;
 
         class BadComponent extends Component {
           constructor(props) {
             super(props);
 
-            throw 'Oops!';
+            throw new Error('Oops!');
           }
 
-          render() {
+          public render() {
             return <div>Ok</div>;
           }
         }
 
-        class ChildCrasher extends Component {
-          constructor(props) {
-            super(props);
+        interface ChildCrasherProps {
+          fail?: boolean;
+        }
 
-            childCrasherInstance = this; // For the sake of test
-          }
-
-          render() {
+        class ChildCrasher extends Component<ChildCrasherProps> {
+          public render() {
             if (!this.props.fail) {
               return null;
             }
@@ -591,7 +639,17 @@ describe('Error recovery', () => {
           }
         }
 
-        class Parent extends Component {
+        interface ParentProps {
+          fail: boolean;
+        }
+
+        interface ParentState {
+          nodes: boolean;
+        }
+
+        class Parent extends Component<ParentProps, ParentState> {
+          public state: ParentState;
+
           constructor(props) {
             super(props);
 
@@ -602,22 +660,22 @@ describe('Error recovery', () => {
             parentInstance = this; // For the sake of test
           }
 
-          render() {
+          public render() {
             return (
               <div>
                 <span>1</span>
-                {this.nodes ? <div>2</div> : null}
+                {null}
                 <ChildCrasher fail={this.props.fail} />
               </div>
             );
           }
         }
 
-        expect(() => render(<Parent fail={true} />, container)).toThrow('Oops!');
+        expect(() => render(<Parent fail={true} />, container)).toThrowError('Oops!');
 
-        expect(() => render(<Parent fail={true} />, container)).toThrow('Oops!');
+        expect(() => render(<Parent fail={true} />, container)).toThrowError('Oops!');
 
-        parentInstance.setState({
+        parentInstance!.setState({
           nodes: true
         });
         rerender();
@@ -626,21 +684,21 @@ describe('Error recovery', () => {
 
         render(<Parent fail={false} />, container);
 
-        expect(() => render(<Parent fail={true} />, container)).toThrow('Oops!');
+        expect(() => render(<Parent fail={true} />, container)).toThrowError('Oops!');
 
         expect(() => {
-          parentInstance.setState({
+          parentInstance!.setState({
             nodes: false
           });
           rerender();
-        }).toThrow('Oops!');
+        }).toThrowError('Oops!');
 
         expect(() => {
-          parentInstance.setState({
+          parentInstance!.setState({
             nodes: true
           });
           rerender();
-        }).toThrow('Oops!');
+        }).toThrowError('Oops!');
       });
     });
   });

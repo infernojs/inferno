@@ -1,5 +1,6 @@
 import { Component, render } from 'inferno';
 import { isNullOrUndef } from 'inferno-shared';
+import Spy = jasmine.Spy;
 
 describe('Columns like tests - (JSX)', () => {
   let container;
@@ -19,43 +20,43 @@ describe('Columns like tests - (JSX)', () => {
     function buildTestCases(row, item, suffix) {
       return [
         {
-          name: 'add one column -' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'add one column -' + suffix,
           update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4)), row(3, item(5, 5))]
         },
         {
-          name: 'add one item -' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'add one item -' + suffix,
           update: [row(1, item(1, 1), item(2, 2), item(5, 5)), row(2, item(3, 3), item(4, 4))]
         },
         {
-          name: 'add one column and item -' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'add one column and item -' + suffix,
           update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4), item(6, 6)), row(3, item(5, 5))]
         },
         {
-          name: 'swap all items -' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'swap all items -' + suffix,
           update: [row(1, item(2, 2), item(1, 1)), row(2, item(4, 4), item(3, 3))]
         },
         {
-          name: 'remove first item -' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'remove first item -' + suffix,
           update: [row(1, item(2, 2)), row(2, item(4, 4))]
         },
         {
-          name: 'remove last item -' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'remove last item -' + suffix,
           update: [row(1, item(1, 1)), row(2, item(3, 3))]
         },
         {
-          name: 'remove all items-' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'remove all items-' + suffix,
           update: [row(1), row(2)]
         },
         {
-          name: 'remove all columns-' + suffix,
           initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          name: 'remove all columns-' + suffix,
           update: []
         }
       ];
@@ -63,8 +64,8 @@ describe('Columns like tests - (JSX)', () => {
 
     function filterPlaceholders(_nodes) {
       const nodes = [].slice.apply(_nodes);
-      let len = nodes.length,
-        i = 0;
+      let len = nodes.length;
+      let i = 0;
 
       while (i < len) {
         const node = nodes[i];
@@ -130,34 +131,42 @@ describe('Columns like tests - (JSX)', () => {
 
       const keyedTests = buildTestCases(BuildRowKeyed, BuildItemKeyed, 'KEYED');
 
-      class ItemKeyed extends Component {
+      interface ItemKeyedProps {
+        text?: string;
+      }
+
+      class ItemKeyed extends Component<ItemKeyedProps> {
         constructor(props) {
           super(props);
         }
 
-        componentWillUpdate() {}
+        public componentWillUpdate() {}
 
-        componentWillMount() {}
+        public componentWillMount() {}
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return <div>{this.props.text}</div>;
         }
       }
 
-      class ColumnKeyed extends Component {
+      interface ColumnKeyedProps {
+        items: { id: string; text: string }[];
+      }
+
+      class ColumnKeyed extends Component<ColumnKeyedProps> {
         constructor(props) {
           super(props);
         }
 
-        componentWillUpdate() {}
+        public componentWillUpdate() {}
 
-        componentWillMount() {}
+        public componentWillMount() {}
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           const items = this.props.items;
 
           return (
@@ -179,12 +188,12 @@ describe('Columns like tests - (JSX)', () => {
         </div>
       );
 
-      let mountedColumnSpy = null;
-      let unmountColumnSpy = null;
-      let updateColumnSpy = null;
-      let mountedItemSpy = null;
-      let unmountItemSpy = null;
-      let updateItemSpy = null;
+      let mountedColumnSpy: Spy = null as unknown as Spy;
+      let unmountColumnSpy = null as unknown as Spy;
+      let updateColumnSpy = null as unknown as Spy;
+      let mountedItemSpy = null as unknown as Spy;
+      let unmountItemSpy = null as unknown as Spy;
+      let updateItemSpy = null as unknown as Spy;
 
       beforeEach(function () {
         mountedColumnSpy = spyOn(ColumnKeyed.prototype, 'componentWillMount');
@@ -284,34 +293,42 @@ describe('Columns like tests - (JSX)', () => {
 
       const nonKeyedTestCases = buildTestCases(BuildRow, BuildItem, 'NON-KEYED');
 
-      class Item extends Component {
+      interface ItemProps {
+        text: string;
+      }
+
+      class Item extends Component<ItemProps> {
         constructor(props) {
           super(props);
         }
 
-        componentWillUpdate() {}
+        public componentWillUpdate() {}
 
-        componentWillMount() {}
+        public componentWillMount() {}
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           return <div>{this.props.text}</div>;
         }
       }
 
-      class Column extends Component {
+      interface ColumnProps {
+        items: { text: string }[];
+      }
+
+      class Column extends Component<ColumnProps> {
         constructor(props) {
           super(props);
         }
 
-        componentWillUpdate() {}
+        public componentWillUpdate() {}
 
-        componentWillMount() {}
+        public componentWillMount() {}
 
-        componentWillUnmount() {}
+        public componentWillUnmount() {}
 
-        render() {
+        public render() {
           const items = this.props.items;
 
           return (
@@ -333,12 +350,12 @@ describe('Columns like tests - (JSX)', () => {
         </div>
       );
 
-      let mountedColumnSpy = null;
-      let unmountColumnSpy = null;
-      let updateColumnSpy = null;
-      let mountedItemSpy = null;
-      let unmountItemSpy = null;
-      let updateItemSpy = null;
+      let mountedColumnSpy = null as unknown as Spy;
+      let unmountColumnSpy = null as unknown as Spy;
+      let updateColumnSpy = null as unknown as Spy;
+      let mountedItemSpy = null as unknown as Spy;
+      let unmountItemSpy = null as unknown as Spy;
+      let updateItemSpy = null as unknown as Spy;
 
       beforeEach(function () {
         mountedColumnSpy = spyOn(Column.prototype, 'componentWillMount');

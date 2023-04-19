@@ -19,7 +19,7 @@ describe('Callbacks in constructor', () => {
 
   describe('Github #1103', () => {
     it('Should be possible to call callbacks from Component constructor - Use case 1', () => {
-      const InfoLi = function InfoLi(props) {
+      function InfoLi(props) {
         const iddy = props.conf.key;
         return (
           <li>
@@ -28,9 +28,19 @@ describe('Callbacks in constructor', () => {
             <div>{props.children}</div>
           </li>
         );
-      };
+      }
 
-      class ConfigsList extends Component {
+      interface ConfigsListProps {
+        onConfChanged: (arg: { targetIndex: number; newValue: unknown }) => void;
+        configs: unknown[];
+      }
+      interface ConfigsListState {
+        checks: boolean[];
+      }
+
+      class ConfigsList extends Component<ConfigsListProps, ConfigsListState> {
+        public state: ConfigsListState;
+
         constructor(props) {
           super(props);
           this.state = {
@@ -38,22 +48,20 @@ describe('Callbacks in constructor', () => {
           };
         }
 
-        handleCheck(index, ifChecked) {
-          console.log('handle CHECK', index, ifChecked);
+        public handleCheck(index, ifChecked) {
           this.setState({
             checks: this.state.checks.map((ch, i) => (i === index ? ifChecked : ch))
           });
         }
 
-        handleNewValue(index, newValue) {
-          console.log('handle NEW VALUE', index, newValue);
+        public handleNewValue(index, newValue) {
           this.props.onConfChanged({
-            targetIndex: index,
-            newValue: newValue
+            newValue,
+            targetIndex: index
           });
         }
 
-        render(props) {
+        public render(props) {
           return (
             <ol>
               {props.configs.map((conf, index) => {
@@ -81,10 +89,14 @@ describe('Callbacks in constructor', () => {
         }
       }
 
-      class ProxyEditor extends Component {
+      interface ProxyEditorProps {
+        onNewValue: (arg: string) => void;
+      }
+
+      class ProxyEditor extends Component<ProxyEditorProps> {
         constructor(props) {
           super(props);
-          console.log('CONSTRUCTOR');
+
           const oldValue = props.conf.value;
           const newValue = oldValue || 'BA BA BA!';
           if (!oldValue) {
@@ -92,47 +104,53 @@ describe('Callbacks in constructor', () => {
           }
         }
 
-        render() {
+        public render() {
           return <div />;
         }
       }
 
-      class Main extends Component {
+      interface MainState {
+        configs: { category: string; key: string; label: string; value: boolean }[];
+      }
+
+      class Main extends Component<any, MainState> {
+        public state: MainState;
+
         constructor(props) {
           super(props);
           this.state = {
             configs: [
               {
+                category: 'ownProxies',
                 key: 'customProxyStringRaw',
-                value: false,
                 label: 'Use proxy? (click this)',
-                category: 'ownProxies'
+                value: false
               },
               {
+                category: 'ownProxies',
                 key: 'This one is needed for reproduction too!',
-                value: false,
                 label: 'needed too',
-                category: 'ownProxies'
+                value: false
               }
             ]
           };
           this.handleModChange = this.handleModChange.bind(this);
         }
 
-        handleModChange({ targetIndex, newValue }) {
+        public handleModChange({ targetIndex, newValue }) {
           this.setState({
             configs: this.state.configs.map((oldConf, index) => (index !== targetIndex ? oldConf : combineFrom(oldConf, { value: newValue })))
           });
         }
 
-        render(props) {
+        public render(props) {
           return createElement(
             ConfigsList,
             combineFrom(props, {
-              configs: this.state.configs,
               configToChild: {
                 customProxyStringRaw: ProxyEditor
               },
+              configs: this.state.configs,
               onConfChanged: this.handleModChange
             })
           );

@@ -664,7 +664,7 @@ describe('animation hooks', () => {
   });
 
   const template = function (child) {
-    return <div>{child}</div>
+    return <div>{child}</div>;
   };
 
   it('should add all nodes', () => {
@@ -1150,15 +1150,15 @@ describe('animation hooks', () => {
     }
 
     function o(text) {
-      return <Animated key={'o' + text}>{',o' + text}</Animated>
+      return <Animated key={'o' + text}>{',o' + text}</Animated>;
     }
 
     function d(text) {
-      return <Animated key={'d' + text}>{',d' + text}</Animated>
+      return <Animated key={'d' + text}>{',d' + text}</Animated>;
     }
 
     function wk(text) {
-      return <Animated key={'wk' + text}>{',wk' + text}</Animated>
+      return <Animated key={'wk' + text}>{',wk' + text}</Animated>;
     }
 
     it('Should do complex suffle without duplications', () => {
@@ -1281,10 +1281,15 @@ function factory(spyer?: jasmine.Spy) {
   // TODO: Add componentWillMove
   return class Animated extends Component<any, any> {
     public componentDidAppear(_dom) {
-      spyer && spyer('didAppear');
+      if (spyer) {
+        spyer('didAppear');
+      }
     }
     public componentWillDisappear(_dom, done) {
-      spyer && spyer('willDisappear');
+      if (spyer) {
+        spyer('willDisappear');
+      }
+
       done();
     }
     public render({ children }) {
