@@ -28,7 +28,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+        <Route path="/" render={(props: any) => {
           const data = useLoaderData(props);
           return <h1>{data?.message}</h1>
         }} loader={loaderFunc} />
@@ -53,7 +53,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+        <Route path="/" render={(props: any) => {
           const err = useLoaderError(props);
           return <h1>{err?.message}</h1>
         }} loader={loaderFunc} />
@@ -69,7 +69,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -103,7 +103,6 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     function CreateComp(props) {
       const res = useLoaderData(props);
-      const err = useLoaderError(props);
       return <div id="create">{res.message}</div>;
     }
 
@@ -156,11 +155,11 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Should recieve params in loader', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <div><h1>{res?.message}</h1><p>{res?.slug}</p></div>
     }
-    const loaderFunc = async ({params, request} = {}) => {
+    const loaderFunc = async ({params = undefined}: any) => {
       return { message: TEXT, slug: params?.slug }
     }
 
@@ -209,7 +208,6 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     function CreateComp(props) {
       const res = useLoaderData(props);
-      const err = useLoaderError(props);
       return <div id="create">{res.message}</div>;
     }
 
@@ -275,7 +273,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     container.innerHTML = '';
     document.body.removeChild(container);
     // Reset history to root
-    history.replaceState(undefined, undefined, '/');
+    history.replaceState(undefined, '', '/');
   });
 
   it('renders on initial', async () => {
@@ -288,12 +286,12 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     }
 
     render(
-      <BrowserRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+      <MemoryRouter initialEntries={['/']}>
+        <Route path="/" render={(props: any) => {
           const data = useLoaderData(props);
           return <h1>{data?.message}</h1>
         }} loader={loaderFunc} />
-      </BrowserRouter>,
+      </MemoryRouter>,
       container
     );
 
@@ -313,12 +311,12 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     }
 
     render(
-      <BrowserRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+      <MemoryRouter initialEntries={['/']}>
+        <Route path="/" render={(props: any) => {
           const err = useLoaderError(props);
           return <h1>{err?.message}</h1>
         }} loader={loaderFunc} />
-      </BrowserRouter>,
+      </MemoryRouter>,
       container
     );
 
@@ -330,7 +328,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -341,7 +339,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
       '/flowers': { res: await loaderFunc(), err: undefined, }
     }
 
-    history.replaceState(undefined, undefined, '/flowers');
+    history.replaceState(undefined, '', '/flowers');
     render(
       <BrowserRouter initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
@@ -366,7 +364,6 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
     function CreateComp(props) {
       const res = useLoaderData(props);
-      const err = useLoaderError(props);
       return <div id="create">{res.message}</div>;
     }
 
@@ -428,12 +425,12 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     }
 
     render(
-      <BrowserRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+      <MemoryRouter initialEntries={['/']}>
+        <Route path="/" render={(props: any) => {
           const data = useLoaderData(props);
           return <h1>{data?.message}</h1>
         }} loader={loaderFunc} />
-      </BrowserRouter>,
+      </MemoryRouter>,
       container
     );
 
@@ -454,12 +451,12 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     }
 
     render(
-      <BrowserRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+      <MemoryRouter initialEntries={['/']}>
+        <Route path="/" render={(props: any) => {
           const data = useLoaderData(props);
           return <h1>{data}</h1>
         }} loader={loaderFunc} />
-      </BrowserRouter>,
+      </MemoryRouter>,
       container
     );
 
@@ -484,7 +481,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
     container.innerHTML = '';
     document.body.removeChild(container);
     // Reset history to root
-    history.replaceState(undefined, undefined, '/');
+    history.replaceState(undefined, '', '/');
   });
 
   it('renders on initial', async () => {
@@ -497,8 +494,8 @@ describe('A <Route> with loader in a StaticRouter', () => {
     }
 
     render(
-      <StaticRouter>
-        <Route path="/" render={(props) => {
+      <StaticRouter context={{}}>
+        <Route path="/" render={(props: any) => {
           const data = useLoaderData(props);
           return <h1>{data?.message}</h1>
         }} loader={loaderFunc} />
@@ -522,8 +519,8 @@ describe('A <Route> with loader in a StaticRouter', () => {
     }
 
     render(
-      <StaticRouter>
-        <Route path="/" render={(props) => {
+      <StaticRouter context={{}}>
+        <Route path="/" render={(props: any) => {
           const err = useLoaderError(props);
           return <h1>{err?.message}</h1>
         }} loader={loaderFunc} />
@@ -539,7 +536,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
 
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -551,7 +548,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
     }
 
     render(
-      <StaticRouter location="/flowers" initialData={initialData}>
+      <StaticRouter context={{}} location="/flowers" initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </StaticRouter>,
       container
@@ -564,7 +561,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
 describe('Resolve loaders during server side rendering', () => {
   it('Can resolve with single route', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -575,7 +572,7 @@ describe('Resolve loaders during server side rendering', () => {
       '/flowers': { res: await loaderFunc() }
     }
 
-    const app = <StaticRouter location="/flowers">
+    const app = <StaticRouter context={{}} location="/flowers">
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </StaticRouter>;
 
@@ -586,7 +583,7 @@ describe('Resolve loaders during server side rendering', () => {
 
   it('Can resolve with multiple routes', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -598,7 +595,7 @@ describe('Resolve loaders during server side rendering', () => {
       '/birds': { res: await loaderFunc() }
     }
 
-    const app = <StaticRouter location="/birds">
+    const app = <StaticRouter context={{}} location="/birds">
         <Route path="/flowers" render={Component} loader={loaderFuncNoHit} />
         <Route path="/birds" render={Component} loader={loaderFunc} />
         <Route path="/bees" render={Component} loader={loaderFuncNoHit} />
@@ -611,7 +608,7 @@ describe('Resolve loaders during server side rendering', () => {
 
   it('Can resolve with nested routes', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -624,7 +621,7 @@ describe('Resolve loaders during server side rendering', () => {
       '/flowers/birds': { res: await loaderFunc() }
     }
 
-    const app = <StaticRouter location="/flowers/birds">
+    const app = <StaticRouter context={{}} location="/flowers/birds">
         <Route path="/flowers" render={Component} loader={loaderFunc}>
           <Route path="/flowers/birds" render={Component} loader={loaderFunc} />
           <Route path="/flowers/bees" render={Component} loader={loaderFuncNoHit} />

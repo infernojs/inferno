@@ -97,6 +97,8 @@ describe('withRouter', () => {
 
   it('hoists non-react statics from the wrapped component', () => {
     class TestComponent extends Component {
+      static hello: string = 'world';
+
       static foo() {
         return 'bar';
       }
@@ -105,7 +107,6 @@ describe('withRouter', () => {
         return null;
       }
     }
-    TestComponent.hello = 'world';
 
     const decorated = withRouter(TestComponent);
 

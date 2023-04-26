@@ -40,6 +40,9 @@ describe('A <Prompt>', () => {
     let promptWhen;
 
     class App extends Component {
+      private ref: any;
+      public state: any;
+
       constructor() {
         super();
         this.state = { when: true };
@@ -53,6 +56,7 @@ describe('A <Prompt>', () => {
       }
 
       componentWillUpdate(nextProps, nextState) {
+        nextProps;
         expect(this.ref.unblock).toBeTruthy();
         expect(this.state.when).toBe(true);
         expect(nextState.when).toBe(false);
@@ -83,6 +87,7 @@ describe('A <Prompt>', () => {
     const node = document.createElement('div');
 
     expect(() => {
+      // @ts-ignore
       render(<Prompt />, node);
     }).toThrow();
   });

@@ -28,7 +28,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+        <Route path="/" render={(props: any) => {
           const data = useLoaderData(props);
           return <h1>{data?.message}</h1>
         }} loader={loaderFunc} />
@@ -53,7 +53,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props) => {
+        <Route path="/" render={(props: any) => {
           const err = useLoaderError(props);
           return <h1>{err?.message}</h1>
         }} loader={loaderFunc} />
@@ -69,7 +69,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -103,7 +103,6 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     function CreateComp(props) {
       const res = useLoaderData(props);
-      const err = useLoaderError(props);
       return <div id="create">{res.message}</div>;
     }
 
@@ -159,7 +158,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>
     }
@@ -193,7 +192,6 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     function CreateComp(props) {
       const res = useLoaderData(props);
-      const err = useLoaderError(props);
       return <div id="create">{res.message}</div>;
     }
 
@@ -263,7 +261,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
         <NavLink id="link" to="/two">Link</NavLink>
         <Switch>
           <Route path="/one" render={() => <h1>one</h1>} />
-          <Route path="/two" render={(props) => {
+          <Route path="/two" render={(props: any) => {
             const res = useLoaderData(props);
             return <h1>{res.message}</h1>
           }} loader={loaderFunc} />
@@ -309,7 +307,6 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     function CreateComp(props) {
       const res = useLoaderData(props);
-      const err = useLoaderError(props);
       return <div id="create">{res.message}</div>;
     }
 

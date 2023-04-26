@@ -137,7 +137,7 @@ describe('<Route render>', () => {
   });
 
   it('receives { match, location, history } props', () => {
-    let actual = null;
+    let actual: any = null;
 
     render(
       <Router history={history}>
@@ -146,9 +146,9 @@ describe('<Route render>', () => {
       node
     );
 
-    expect(actual.history).toBe(history);
-    expect(typeof actual.match).toBe('object');
-    expect(typeof actual.location).toBe('object');
+    expect(actual?.history).toBe(history);
+    expect(typeof actual?.match).toBe('object');
+    expect(typeof actual?.location).toBe('object');
   });
 });
 
@@ -171,7 +171,7 @@ describe('<Route component>', () => {
   });
 
   it('receives { match, location, history } props', () => {
-    let actual = null;
+    let actual: any = null;
     const Component = (props) => (actual = props) && null;
 
     render(
@@ -181,9 +181,9 @@ describe('<Route component>', () => {
       node
     );
 
-    expect(actual.history).toBe(history);
-    expect(typeof actual.match).toBe('object');
-    expect(typeof actual.location).toBe('object');
+    expect(actual?.history).toBe(history);
+    expect(typeof actual?.match).toBe('object');
+    expect(typeof actual?.location).toBe('object');
   });
 });
 
@@ -220,7 +220,7 @@ describe('<Route children>', () => {
   });
 
   it('receives { match, location, history } props', () => {
-    let actual = null;
+    let actual: any = null;
 
     render(
       <Router history={history}>
@@ -229,9 +229,9 @@ describe('<Route children>', () => {
       node
     );
 
-    expect(actual.history).toBe(history);
-    expect(typeof actual.match).toBe('object');
-    expect(typeof actual.location).toBe('object');
+    expect(actual?.history).toBe(history);
+    expect(typeof actual?.match).toBe('object');
+    expect(typeof actual?.location).toBe('object');
   });
 });
 

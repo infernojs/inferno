@@ -32,7 +32,7 @@ describe('Github #1236', () => {
           Object.defineProperty(target, descriptor.key, descriptor);
         }
       }
-      return function (Constructor, protoProps, staticProps) {
+      return function (Constructor, protoProps, staticProps = undefined) {
         if (protoProps) defineProperties(Constructor.prototype, protoProps);
         if (staticProps) defineProperties(Constructor, staticProps);
         return Constructor;
@@ -55,8 +55,8 @@ describe('Github #1236', () => {
       }
     }
 
-    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
-      var desc = {};
+    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context = undefined) {
+      var desc: any = {};
       Object['ke' + 'ys'](descriptor).forEach(function (key) {
         desc[key] = descriptor[key];
       });
@@ -86,7 +86,7 @@ describe('Github #1236', () => {
 
       return desc;
     }
-    var _desc, _value, _class, _descriptor;
+    var _class, _descriptor;
     var SearchStore =
       ((_class = (function () {
         function SearchStore() {
@@ -132,7 +132,7 @@ describe('Github #1236', () => {
           this.context.router.history.push(nextLoc);
         }
 
-        render({ searchStore }) {
+        render({ searchStore }: any) {
           let showView = searchStore['query'] ? 'results' : 'default';
 
           return (

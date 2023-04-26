@@ -44,6 +44,8 @@ function createTextResponse(data, status = 200) {
 }
 
 class MockResponseHeaders {
+  private _headers;
+
   constructor(headers) {
     this._headers = headers;
   }
@@ -54,6 +56,10 @@ class MockResponseHeaders {
 }
 
 class MockResponse {
+  private _data: any;
+  private _contentType: string;
+  private _statusCode: number;
+
   constructor(data, contentType = 'application/json', statusCode = 200) {
     this._data = data;
     this._contentType = contentType;

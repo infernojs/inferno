@@ -21,6 +21,7 @@ describe('A <Router>', () => {
     it('does not throw an error', () => {
       const node = document.createElement('div');
       expect(() => {
+        // @ts-ignore
         render(<Router history={createMemoryHistory()} />, node);
       }).not.toThrow();
     });
@@ -29,6 +30,7 @@ describe('A <Router>', () => {
   describe('context', () => {
     let rootContext;
     const ContextChecker = (props, context) => {
+      props;
       rootContext = context;
       return null;
     };

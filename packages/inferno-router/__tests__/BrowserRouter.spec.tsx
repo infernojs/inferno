@@ -6,6 +6,7 @@ describe('BrowserRouter (jsx)', () => {
     const node = document.createElement('div');
     let history;
     const ContextChecker = (props, context) => {
+      props;
       history = context.router.history;
       return null;
     };
@@ -26,12 +27,13 @@ describe('BrowserRouter (jsx)', () => {
 
     spyOn(console, 'error');
 
+    // @ts-ignore
     render(<BrowserRouter history={history} />, node);
 
     expect(console.error).toHaveBeenCalledTimes(1);
 
     // browser only?
-    expect(console.error.calls.argsFor(0)[0]).toContain('<BrowserRouter> ignores the history prop');
+    expect((console.error as any).calls.argsFor(0)[0]).toContain('<BrowserRouter> ignores the history prop');
 
     // node only?
     //expect(console.error).toHaveBeenCalledWith(

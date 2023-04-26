@@ -18,6 +18,7 @@ describe('A <MemoryRouter>', () => {
   it('puts history on context.router', () => {
     let history;
     const ContextChecker = (props, context) => {
+      props;
       history = context.router.history;
       return null;
     };
@@ -44,10 +45,11 @@ describe('A <MemoryRouter>', () => {
 
     spyOn(console, 'error');
 
+    // @ts-ignore
     render(<MemoryRouter history={history} />, node);
 
     expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error.calls.argsFor(0)[0]).toContain('<MemoryRouter> ignores the history prop');
+    expect((console.error as any).calls.argsFor(0)[0]).toContain('<MemoryRouter> ignores the history prop');
   });
 
   it('Should be possible to render multiple sub routes, Github #1360', () => {
