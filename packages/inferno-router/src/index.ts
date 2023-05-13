@@ -11,5 +11,7 @@ import { Prompt } from './Prompt';
 import { Redirect } from './Redirect';
 import { matchPath } from './matchPath';
 import { withRouter } from './withRouter';
+export * from './resolveLoaders';
+export * from './helpers';
 
 export { BrowserRouter, HashRouter, Link, MemoryRouter, NavLink, Prompt, Redirect, Route, Router, StaticRouter, Switch, matchPath, withRouter };

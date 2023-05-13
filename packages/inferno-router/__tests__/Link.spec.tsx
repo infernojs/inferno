@@ -14,7 +14,7 @@ describe('Link (jsx)', () => {
     document.body.removeChild(node);
   });
 
-  it('accepts a location "to" prop', () => {
+  it('accepts a location `to` prop', () => {
     render(
       <MemoryRouter>
         <Link to={parsePath('/the/path?the=query#the-hash')}>link</Link>
@@ -34,7 +34,7 @@ describe('Link (jsx)', () => {
   });
 
   it('exposes its ref via an innerRef prop', (done) => {
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     const refCallback = (n) => {
       expect(n.tagName).toEqual('A');
       done();
@@ -46,10 +46,10 @@ describe('Link (jsx)', () => {
           link
         </Link>
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.textContent).toEqual('link');
+    expect(testNode.textContent).toEqual('link');
   });
 });
 
@@ -103,9 +103,9 @@ describe('A <Link> underneath a <HashRouter>', () => {
 
   it('accepts an object `to` prop', () => {
     const to = {
+      hash: '#the-hash',
       pathname: '/the/path',
       search: 'the=query',
-      hash: '#the-hash'
     };
 
     render(
@@ -129,14 +129,14 @@ describe('A <Link> underneath a <HashRouter>', () => {
     const clickHandler = jasmine.createSpy();
 
     const to = {
+      hash: '#the-hash',
       pathname: '/the/path',
       search: 'the=query',
-      hash: '#the-hash',
       state: { test: 'ok' }
     };
 
     class ContextChecker extends Component {
-      getChildContext() {
+      public getChildContext() {
         const { context } = this;
         context.router.history = memoryHistoryFoo;
 
@@ -145,7 +145,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
         };
       }
 
-      render({ children }) {
+      public render({ children }) {
         return children;
       }
     }

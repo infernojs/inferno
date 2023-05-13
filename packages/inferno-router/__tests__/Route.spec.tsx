@@ -125,19 +125,19 @@ describe('<Route render>', () => {
 
   it('renders its return value', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" render={() => <div>{TEXT}</div>} />
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('receives { match, location, history } props', () => {
-    let actual = null;
+    let actual: any = null;
 
     render(
       <Router history={history}>
@@ -146,9 +146,9 @@ describe('<Route render>', () => {
       node
     );
 
-    expect(actual.history).toBe(history);
-    expect(typeof actual.match).toBe('object');
-    expect(typeof actual.location).toBe('object');
+    expect(actual?.history).toBe(history);
+    expect(typeof actual?.match).toBe('object');
+    expect(typeof actual?.location).toBe('object');
   });
 });
 
@@ -158,20 +158,20 @@ describe('<Route component>', () => {
 
   it('renders the component', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     const Home = () => <div>{TEXT}</div>;
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" component={Home} />
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('receives { match, location, history } props', () => {
-    let actual = null;
+    let actual: any = null;
     const Component = (props) => (actual = props) && null;
 
     render(
@@ -181,9 +181,9 @@ describe('<Route component>', () => {
       node
     );
 
-    expect(actual.history).toBe(history);
-    expect(typeof actual.match).toBe('object');
-    expect(typeof actual.location).toBe('object');
+    expect(actual?.history).toBe(history);
+    expect(typeof actual?.match).toBe('object');
+    expect(typeof actual?.location).toBe('object');
   });
 });
 
@@ -193,34 +193,34 @@ describe('<Route children>', () => {
 
   it('renders a function', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" children={() => <div>{TEXT}</div>} />
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('renders a child element', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/">
           <div>{TEXT}</div>
         </Route>
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('receives { match, location, history } props', () => {
-    let actual = null;
+    let actual: any = null;
 
     render(
       <Router history={history}>
@@ -229,9 +229,9 @@ describe('<Route children>', () => {
       node
     );
 
-    expect(actual.history).toBe(history);
-    expect(typeof actual.match).toBe('object');
-    expect(typeof actual.location).toBe('object');
+    expect(actual?.history).toBe(history);
+    expect(typeof actual?.match).toBe('object');
+    expect(typeof actual?.location).toBe('object');
   });
 });
 

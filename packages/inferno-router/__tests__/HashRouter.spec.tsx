@@ -4,7 +4,7 @@ import { HashRouter } from 'inferno-router';
 describe('A <HashRouter>', () => {
   it('puts history on context.router', () => {
     let history;
-    const ContextChecker = (props, context) => {
+    const ContextChecker = (_props, context) => {
       history = context.router.history;
       return null;
     };
@@ -25,11 +25,12 @@ describe('A <HashRouter>', () => {
     const history = {};
     const node = document.createElement('div');
 
-    spyOn(console, 'error');
+    const consoleSpy = spyOn(console, 'error');
 
+    // @ts-ignore
     render(<HashRouter history={history} />, node);
 
-    expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error.calls.argsFor(0)[0]).toContain('<HashRouter> ignores the history prop');
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.calls.argsFor(0)[0]).toContain('<HashRouter> ignores the history prop');
   });
 });

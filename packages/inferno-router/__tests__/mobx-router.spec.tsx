@@ -22,17 +22,17 @@ describe('Github #1236', () => {
     /*
        This is pre-compiled from old decorator pattern
      */
-    var _createClass = (function () {
+    const _createClass = (function () {
       function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-          var descriptor = props[i];
+        for (let i = 0; i < props.length; i++) {
+          const descriptor = props[i];
           descriptor.enumerable = descriptor.enumerable || false;
           descriptor.configurable = true;
           if ('value' in descriptor) descriptor.writable = true;
           Object.defineProperty(target, descriptor.key, descriptor);
         }
       }
-      return function (Constructor, protoProps, staticProps) {
+      return function (Constructor, protoProps, staticProps = undefined) {
         if (protoProps) defineProperties(Constructor.prototype, protoProps);
         if (staticProps) defineProperties(Constructor, staticProps);
         return Constructor;
@@ -42,10 +42,10 @@ describe('Github #1236', () => {
     function _initDefineProp(target, property, descriptor, context) {
       if (!descriptor) return;
       Object.defineProperty(target, property, {
-        enumerable: descriptor.enumerable,
         configurable: descriptor.configurable,
+        enumerable: descriptor.enumerable,
+        value: descriptor.initializer ? descriptor.initializer.call(context) : void 0,
         writable: descriptor.writable,
-        value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
       });
     }
 
@@ -55,8 +55,8 @@ describe('Github #1236', () => {
       }
     }
 
-    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
-      var desc = {};
+    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context?) {
+      let desc: any = {};
       Object['ke' + 'ys'](descriptor).forEach(function (key) {
         desc[key] = descriptor[key];
       });
@@ -70,8 +70,8 @@ describe('Github #1236', () => {
       desc = decorators
         .slice()
         .reverse()
-        .reduce(function (desc, decorator) {
-          return decorator(target, property, desc) || desc;
+        .reduce(function (descIn, decorator) {
+          return decorator(target, property, descIn) || descIn;
         }, desc);
 
       if (context && desc.initializer !== void 0) {
@@ -86,16 +86,17 @@ describe('Github #1236', () => {
 
       return desc;
     }
-    var _desc, _value, _class, _descriptor;
-    var SearchStore =
+    let _class;
+    let _descriptor;
+    const SearchStore =
       ((_class = (function () {
-        function SearchStore() {
-          _classCallCheck(this, SearchStore);
+        function TestSearchStore() {
+          _classCallCheck(this, TestSearchStore);
 
           _initDefineProp(this, 'query', _descriptor, this);
         }
 
-        _createClass(SearchStore, [
+        _createClass(TestSearchStore, [
           {
             key: 'doSearch',
             value: function doSearch(search) {
@@ -104,7 +105,7 @@ describe('Github #1236', () => {
           }
         ]);
 
-        return SearchStore;
+        return TestSearchStore;
       })()),
       ((_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
         enumerable: true,
@@ -116,24 +117,24 @@ describe('Github #1236', () => {
       _class);
 
     let SearchPage = observer(
-      class SearchPage extends Component {
+      class TestSearchPage extends Component {
         constructor(props) {
           super(props);
           this.doSearch = this.doSearch.bind(this);
         }
 
-        componentWillReceiveProps(nextProps) {
+        public componentWillReceiveProps(nextProps) {
           nextProps.searchStore.doSearch(nextProps.location.search);
         }
 
-        doSearch(e) {
+        public doSearch(e) {
           e.preventDefault();
           const nextLoc = this.context.router.history.location.pathname + '?q=test';
           this.context.router.history.push(nextLoc);
         }
 
-        render({ searchStore }) {
-          let showView = searchStore['query'] ? 'results' : 'default';
+        public render({ searchStore: searchStoreIn }: any) {
+          const showView = searchStoreIn.query ? 'results' : 'default';
 
           return (
             <div key="search-container">
@@ -151,7 +152,7 @@ describe('Github #1236', () => {
     SearchPage = inject('searchStore')(SearchPage);
 
     class SearchResult extends Component {
-      render() {
+      public render() {
         return <div>results</div>;
       }
     }

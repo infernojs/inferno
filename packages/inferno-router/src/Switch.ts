@@ -2,76 +2,88 @@ import { Component, createComponentVNode, VNode } from 'inferno';
 import { matchPath } from './matchPath';
 import { invariant, warning } from './utils';
 import { combineFrom, isArray, isInvalid } from 'inferno-shared';
-import { IRouteProps } from './Route';
+import { IRouteProps, Match } from './Route';
+import { RouterContext } from './Router';
 
-function getMatch({ path, exact, strict, sensitive, from }, route, location) {
-  const pathProp = path || from;
+function getMatch(pathname: string, { path, exact, strict, sensitive, loader, from }, router: { route, initialData?: any }) {
+  path ??= from;
+  const { initialData, route } = router; // This is the parent route
 
-  return pathProp ? matchPath(location.pathname, { path: pathProp, exact, strict, sensitive }) : route.match;
+  return path ? matchPath(pathname, { path, exact, strict, sensitive, loader, initialData }) : route.match;
 }
 
-function extractMatchFromChildren(children, route, location) {
-  let match;
-  let _child: any;
-
+function extractFirstMatchFromChildren(pathname: string, children, router) {
   if (isArray(children)) {
     for (let i = 0; i < children.length; ++i) {
-      _child = children[i];
-
-      if (isArray(_child)) {
-        const nestedMatch = extractMatchFromChildren(_child, route, location);
-        match = nestedMatch.match;
-        _child = nestedMatch._child;
-      } else {
-        match = getMatch(_child.props, route, location);
-      }
-
-      if (match) {
-        break;
-      }
+      const nestedMatch = extractFirstMatchFromChildren(pathname, children[i], router);
+      if (nestedMatch.match) return nestedMatch;
     }
-  } else {
-    match = getMatch((children as any).props, route, location);
-    _child = children;
+    return {};
   }
 
-  return { match, _child };
+  return {
+    _child: children,
+    match: getMatch(pathname, (children as any).props, router),
+  }
 }
 
-export class Switch extends Component<IRouteProps, any> {
-  public render(): VNode | null {
-    const { route } = this.context.router;
-    const { children } = this.props;
-    const location = this.props.location || route.location;
+type SwitchState = {
+  match: Match<any>;
+  _child: any;
+}
+
+export class Switch extends Component<IRouteProps, SwitchState> {
+  constructor(props, context: RouterContext) {
+    super(props, context);
+
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(context.router, 'You should not use <Switch> outside a <Router>');
+    }
+
+    const { router } = context;
+    const { location, children } = props;
+    const pathname = (location || router.route.location).pathname;
+    const { match, _child } = extractFirstMatchFromChildren(pathname, children, router);
+
+    this.state = {
+      _child,
+      match,
+    }
+  }
+
+  public componentWillReceiveProps(nextProps: IRouteProps, nextContext: RouterContext): void {
+    if (process.env.NODE_ENV !== 'production') {
+      warning(
+        !(nextProps.location && !this.props.location),
+        '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
+      );
+
+      warning(
+        !(!nextProps.location && this.props.location),
+        '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
+      );
+    }
+
+    const { router } = nextContext;
+    const { location, children } = nextProps;
+    const pathname = (location || router.route.location).pathname;
+    const { match, _child } = extractFirstMatchFromChildren(pathname, children, router);
+
+    this.setState({ match, _child })
+  }
+
+  public render({ children, location }: IRouteProps, { match, _child }: SwitchState, context: RouterContext): VNode | null {
 
     if (isInvalid(children)) {
       return null;
     }
 
-    const { match, _child } = extractMatchFromChildren(children, route, location);
-
+    
     if (match) {
+      location ??= context.router.route.location;
       return createComponentVNode(_child.flags, _child.type, combineFrom(_child.props, { location, computedMatch: match }));
     }
 
     return null;
   }
-}
-
-if (process.env.NODE_ENV !== 'production') {
-  Switch.prototype.componentWillMount = function () {
-    invariant(this.context.router, 'You should not use <Switch> outside a <Router>');
-  };
-
-  Switch.prototype.componentWillReceiveProps = function (nextProps) {
-    warning(
-      !(nextProps.location && !this.props.location),
-      '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.'
-    );
-
-    warning(
-      !(!nextProps.location && this.props.location),
-      '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.'
-    );
-  };
 }

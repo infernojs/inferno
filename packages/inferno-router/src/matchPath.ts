@@ -1,4 +1,5 @@
 import pathToRegexp from 'path-to-regexp-es6';
+import { Match } from './Route';
 
 const patternCache = {};
 const cacheLimit = 10000;
@@ -27,18 +28,20 @@ const compilePath = (pattern, options) => {
 /**
  * Public API for matching a URL pathname to a path pattern.
  */
-export function matchPath(pathname, options: any) {
+export function matchPath(pathname, options: any): Match<any> | null {
   if (typeof options === 'string') {
     options = { path: options };
   }
 
-  const { path = '/', exact = false, strict = false, sensitive = false } = options;
+  const { path = '/', exact = false, strict = false, sensitive = false, loader, initialData = {} } = options;
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 
   if (!match) {
     return null;
   }
+
+  const loaderData = initialData[path];
 
   const [url, ...values] = match;
   const isExact = pathname === url;
@@ -49,11 +52,13 @@ export function matchPath(pathname, options: any) {
 
   return {
     isExact, // whether or not we matched exactly
+    loader,
+    loaderData,
     params: keys.reduce((memo, key, index) => {
       memo[key.name] = values[index];
       return memo;
     }, {}),
     path, // the path pattern used to match
-    url: path === '/' && url === '' ? '/' : url // the matched portion of the URL
+    url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
   };
 }

@@ -1,0 +1,22 @@
+.DS_Store
+.git/
+
+# VS Code specific
+.vscode
+jsconfig.json
+typings/*
+typings.json
+
+# Dependency directory for NPM
+node_modules
+
+# Built at startup
+.env
+pwd.txt
+lerna-debug.log
+
+dist
+distServer
+distBrowser
+package-lock.json
+.parcel-cache

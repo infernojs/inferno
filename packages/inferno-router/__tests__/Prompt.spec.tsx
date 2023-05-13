@@ -40,29 +40,32 @@ describe('A <Prompt>', () => {
     let promptWhen;
 
     class App extends Component {
+      private ref: any;
+      public state: any;
+
       constructor() {
         super();
         this.state = { when: true };
         promptWhen = this._setActive = this._setActive.bind(this);
       }
 
-      _setActive() {
+      private _setActive() {
         this.setState({
           when: false
         });
       }
 
-      componentWillUpdate(nextProps, nextState) {
+      public componentWillUpdate(_nextProps, nextState) {
         expect(this.ref.unblock).toBeTruthy();
         expect(this.state.when).toBe(true);
         expect(nextState.when).toBe(false);
       }
 
-      componentDidUpdate() {
+      public componentDidUpdate() {
         expect(this.ref.unblock).toBeFalsy();
       }
 
-      render() {
+      public render() {
         return <Prompt when={this.state.when} message="this is only a test" ref={(c) => (this.ref = c)} />;
       }
     }
@@ -83,6 +86,7 @@ describe('A <Prompt>', () => {
     const node = document.createElement('div');
 
     expect(() => {
+      // @ts-ignore
       render(<Prompt />, node);
     }).toThrow();
   });

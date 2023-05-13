@@ -1,6 +1,7 @@
 /* tslint:disable:no-console */
-import { render, rerender } from 'inferno';
+import { render, rerender, Component } from 'inferno';
 import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
+import { IRouteProps } from '../src/Route';
 
 describe('Switch (jsx)', () => {
   it('renders the first <Route> that matches the URL', () => {
@@ -349,48 +350,49 @@ describe('Switch (jsx)', () => {
   });
 
   // TODO: This will not work because component is not mandatory
-  // it('Should allow using component child parameter as result, Github #1601', () => {
-  //   const node = document.createElement('div');
-  //
-  //   class Component1 extends Component<any, any> {
-  //     constructor(p, s) {
-  //       super(p, s);
-  //
-  //       this.state.foo = 1;
-  //     }
-  //     public render() {
-  //       return (
-  //         <div>
-  //           Component
-  //         </div>
-  //       );
-  //     }
-  //   }
-  //
-  //   const routes: IRouteProps[] = [
-  //     {
-  //       component: Component1,
-  //       exact: true,
-  //       path: `/`
-  //     }
-  //   ];
-  //
-  //   render(
-  //     <MemoryRouter initialEntries={['/bubblegum']}>
-  //       <Switch>
-  //         {routes.map(({ path, exact, component: Comp, ...rest }) => (
-  //           <Route
-  //             key={path}
-  //             path={path}
-  //             exact={exact}
-  //             render={props => <Comp {...props} {...rest} />}
-  //           />
-  //         ))}
-  //       </Switch>
-  //     </MemoryRouter>,
-  //     node
-  //   );
-  // });
+  it('Should allow using component child parameter as result, Github #1601', () => {
+    const node = document.createElement('div');
+  
+    class Component1 extends Component<any, any> {
+      public state = { foo: 0 }
+      constructor(p, s) {
+        super(p, s);
+  
+        this.state.foo = 1;
+      }
+      public render() {
+        return (
+          <div>
+            Component
+          </div>
+        );
+      }
+    }
+  
+    const routes: IRouteProps[] = [
+      {
+        component: Component1,
+        exact: true,
+        path: `/`
+      }
+    ];
+  
+    render(
+      <MemoryRouter initialEntries={['/bubblegum']}>
+        <Switch>
+          {routes.map(({ path, exact, component: Comp, ...rest }) => (
+            <Route
+              key={path}
+              path={path}
+              exact={exact}
+              render={props => <Component1 {...props} {...rest} />}
+            />
+          ))}
+        </Switch>
+      </MemoryRouter>,
+      node
+    );
+  });
 });
 
 describe('A <Switch location>', () => {

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "moduleResolution": "Node",
+    "jsx": "preserve",
+    "lib": [
+      "dom",
+      "es2020"
+    ],
+    "types": [
+      "inferno",
+      "node"
+    ],
+  }
+}

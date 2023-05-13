@@ -14,7 +14,7 @@ export interface ILinkProps {
   target?: string;
   className?: string;
   replace?: boolean;
-  to?: string | Location;
+  to?: string | Partial<Location>; // INVESTIGATE: Should Partial<Location> be Partial<Path> instead since this is what is returned by history.parsePath?
   innerRef?: any;
 }
 

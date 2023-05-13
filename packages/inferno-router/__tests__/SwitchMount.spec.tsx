@@ -9,11 +9,11 @@ describe('A <Switch>', () => {
     let mountCount = 0;
 
     class App extends Component {
-      componentWillMount() {
+      public componentWillMount() {
         mountCount++;
       }
 
-      render() {
+      public render() {
         return <div />;
       }
     }
@@ -45,14 +45,15 @@ describe('A <Switch>', () => {
   it('Should be possible to have multiple children in Route', () => {
     const node = document.createElement('div');
 
+    // @ts-ignore
     let mountCount = 0;
 
     class App extends Component {
-      componentWillMount() {
+      public componentWillMount() {
         mountCount++;
       }
 
-      render() {
+      public render() {
         return <div />;
       }
     }

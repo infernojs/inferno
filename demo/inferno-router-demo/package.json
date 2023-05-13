@@ -1,0 +1,53 @@
+{
+  "name": "inferno-router-demo",
+  "version": "8.0.5",
+  "description": "Influence CMS Demo",
+  "author": "Sebastian Ware <sebastian@urbantalk.se> (https://github.com/jhsware)",
+  "license": "SEE LICENSE IN LICENSE",
+  "source": "src/index.html",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "scripts": {
+    "dev": "npm-run-all -l --parallel  dev:*",
+    "dev:frontend": "cross-env FORCE_COLOR=1 parcel",
+    "dev:backend": "cross-env FORCE_COLOR=1 ts-node-dev --respawn src/server.ts"
+  },
+  "dependencies": {
+    "inferno": "file:../../packages/inferno",
+    "inferno-animation": "file:../../packages/inferno-animation",
+    "inferno-create-element": "file:../../packages/inferno-create-element",
+    "inferno-hydrate": "file:../../packages/inferno-hydrate",
+    "inferno-router": "file:../../packages/inferno-router",
+    "inferno-server": "file:../../packages/inferno-server",
+    "koa": "^2.14.1",
+    "koa-json-body": "^5.3.0",
+    "koa-logger": "^3.2.1",
+    "koa-mount": "^4.0.0",
+    "koa-router": "^12.0.0",
+    "koa-static": "^5.0.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.20.11",
+    "@parcel/config-default": "^2.8.2",
+    "@parcel/packager-ts": "^2.8.1",
+    "@parcel/transformer-babel": "^2.8.1",
+    "@parcel/transformer-sass": "^2.8.1",
+    "@parcel/transformer-typescript-types": "^2.8.1",
+    "@types/node": "^18.13.0",
+    "babel-plugin-inferno": "^6.6.0",
+    "cross-env": "^7.0.3",
+    "jest-environment-jsdom": "^29.4.2",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^2.8.2",
+    "process": "^0.11.10",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.9.5"
+  },
+  "alias": {
+    "inferno": "inferno/dist/index.dev.esm.js",
+    "inferno-animation": "inferno-animation/dist/index.dev.esm.js",
+    "inferno-create-element": "inferno-create-element/dist/index.dev.esm.js",
+    "inferno-hydrate": "inferno-hydrate/dist/index.dev.esm.js",
+    "inferno-router": "inferno-router/dist/index.dev.esm.js",
+    "inferno-server": "inferno-server/dist/index.dev.esm.js"
+  }
+}

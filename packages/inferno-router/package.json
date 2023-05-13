@@ -46,6 +46,7 @@
     "path-to-regexp-es6": "1.7.0"
   },
   "devDependencies": {
+    "inferno-server": "8.1.1",
     "inferno-vnode-flags": "8.1.1",
     "mobx": "*"
   },
