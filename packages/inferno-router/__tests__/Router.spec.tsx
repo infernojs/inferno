@@ -29,8 +29,7 @@ describe('A <Router>', () => {
 
   describe('context', () => {
     let rootContext;
-    const ContextChecker = (props, context) => {
-      props;
+    const ContextChecker = (_props, context) => {
       rootContext = context;
       return null;
     };

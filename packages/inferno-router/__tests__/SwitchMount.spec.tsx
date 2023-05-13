@@ -9,11 +9,11 @@ describe('A <Switch>', () => {
     let mountCount = 0;
 
     class App extends Component {
-      componentWillMount() {
+      public componentWillMount() {
         mountCount++;
       }
 
-      render() {
+      public render() {
         return <div />;
       }
     }
@@ -49,11 +49,11 @@ describe('A <Switch>', () => {
     let mountCount = 0;
 
     class App extends Component {
-      componentWillMount() {
+      public componentWillMount() {
         mountCount++;
       }
 
-      render() {
+      public render() {
         return <div />;
       }
     }

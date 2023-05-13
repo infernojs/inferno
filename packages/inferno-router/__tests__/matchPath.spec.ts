@@ -68,13 +68,13 @@ describe('matchPath', () => {
     it('creates a cache entry for each exact/strict pair', () => {
       // true/false and false/true will collide when adding booleans
       const trueFalse = matchPath('/one/two', {
-        path: '/one/two/',
         exact: true,
+        path: '/one/two/',
         strict: false
       });
       const falseTrue = matchPath('/one/two', {
-        path: '/one/two/',
         exact: false,
+        path: '/one/two/',
         strict: true
       });
       expect(!!trueFalse).toBe(true);

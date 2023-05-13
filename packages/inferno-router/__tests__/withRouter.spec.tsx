@@ -78,7 +78,7 @@ describe('withRouter', () => {
 
   it('exposes the instance of the wrapped component via wrappedComponentRef', () => {
     class WrappedComponent extends Component {
-      render() {
+      public render() {
         return null;
       }
     }
@@ -97,13 +97,13 @@ describe('withRouter', () => {
 
   it('hoists non-react statics from the wrapped component', () => {
     class TestComponent extends Component {
-      static hello: string = 'world';
+      public static hello: string = 'world';
 
-      static foo() {
+      public static foo() {
         return 'bar';
       }
 
-      render() {
+      public render() {
         return null;
       }
     }

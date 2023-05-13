@@ -50,7 +50,7 @@ class MockResponseHeaders {
     this._headers = headers;
   }
 
-  get(key) {
+  public get(key) {
     return this._headers[key];
   }
 }
@@ -84,11 +84,11 @@ class MockResponse {
     return this._statusCode;
   }
 
-  json() {
+  public json() {
     return Promise.resolve(this._data);
   }
 
-  text() {
+  public text() {
     return Promise.resolve(this._data);
   }
 }

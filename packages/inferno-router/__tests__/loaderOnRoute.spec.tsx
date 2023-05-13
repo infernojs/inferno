@@ -159,8 +159,8 @@ describe('A <Route> with loader in a MemoryRouter', () => {
       const res = useLoaderData(props);
       return <div><h1>{res?.message}</h1><p>{res?.slug}</p></div>
     }
-    const loaderFunc = async ({params = undefined}: any) => {
-      return { message: TEXT, slug: params?.slug }
+    const loaderFunc = async ({params: paramsIn}: any) => {
+      return { message: TEXT, slug: paramsIn?.slug }
     }
 
     const params = { slug: 'flowers' };

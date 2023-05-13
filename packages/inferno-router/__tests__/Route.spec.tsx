@@ -125,15 +125,15 @@ describe('<Route render>', () => {
 
   it('renders its return value', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" render={() => <div>{TEXT}</div>} />
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('receives { match, location, history } props', () => {
@@ -158,16 +158,16 @@ describe('<Route component>', () => {
 
   it('renders the component', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     const Home = () => <div>{TEXT}</div>;
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" component={Home} />
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('receives { match, location, history } props', () => {
@@ -193,30 +193,30 @@ describe('<Route children>', () => {
 
   it('renders a function', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" children={() => <div>{TEXT}</div>} />
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('renders a child element', () => {
     const TEXT = 'Mrs. Kato';
-    const node = document.createElement('div');
+    const testNode = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/']}>
         <Route path="/">
           <div>{TEXT}</div>
         </Route>
       </MemoryRouter>,
-      node
+      testNode
     );
 
-    expect(node.innerHTML).toContain(TEXT);
+    expect(testNode.innerHTML).toContain(TEXT);
   });
 
   it('receives { match, location, history } props', () => {

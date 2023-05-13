@@ -5,8 +5,7 @@ describe('BrowserRouter (jsx)', () => {
   it('puts history on context.router', () => {
     const node = document.createElement('div');
     let history;
-    const ContextChecker = (props, context) => {
-      props;
+    const ContextChecker = (_props, context) => {
       history = context.router.history;
       return null;
     };

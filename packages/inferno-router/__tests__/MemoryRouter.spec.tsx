@@ -17,8 +17,7 @@ describe('A <MemoryRouter>', () => {
 
   it('puts history on context.router', () => {
     let history;
-    const ContextChecker = (props, context) => {
-      props;
+    const ContextChecker = (_props, context) => {
       history = context.router.history;
       return null;
     };
