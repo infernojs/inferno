@@ -43,13 +43,13 @@ describe('A <MemoryRouter>', () => {
     const history = {};
     const node = document.createElement('div');
 
-    spyOn(console, 'error');
+    const consoleSpy = spyOn(console, 'error');
 
     // @ts-ignore
     render(<MemoryRouter history={history} />, node);
 
-    expect(console.error).toHaveBeenCalledTimes(1);
-    expect((console.error as any).calls.argsFor(0)[0]).toContain('<MemoryRouter> ignores the history prop');
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.calls.argsFor(0)[0]).toContain('<MemoryRouter> ignores the history prop');
   });
 
   it('Should be possible to render multiple sub routes, Github #1360', () => {

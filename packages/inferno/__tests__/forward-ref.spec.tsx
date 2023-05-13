@@ -128,7 +128,7 @@ describe('Forward Ref', () => {
 
   describe('Validations', () => {
     it('Should log error if input is: Component, vNode or invalid value', () => {
-      const spy = spyOn(console, 'error');
+      const consoleSpy = spyOn(console, 'error');
 
       class Foobar extends Component {}
 
@@ -136,40 +136,40 @@ describe('Forward Ref', () => {
 
       // @ts-expect-error
       forwardRef(false);
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
       forwardRef(true);
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
       forwardRef({});
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
       forwardRef('asd');
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
       forwardRef(undefined);
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
       forwardRef(8);
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       // TODO: improve forward ref typings
       forwardRef(<div>1</div>);
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       forwardRef(<Foobar />);
-      expect(spy.calls.count()).toEqual(++i);
+      expect(consoleSpy.calls.count()).toEqual(++i);
 
       // This is ok
       forwardRef(function () {
         return <div>1</div>;
       });
-      expect(spy.calls.count()).toEqual(i);
+      expect(consoleSpy.calls.count()).toEqual(i);
     });
   });
 

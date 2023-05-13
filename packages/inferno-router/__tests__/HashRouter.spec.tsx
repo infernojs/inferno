@@ -26,12 +26,12 @@ describe('A <HashRouter>', () => {
     const history = {};
     const node = document.createElement('div');
 
-    spyOn(console, 'error');
+    const consoleSpy = spyOn(console, 'error');
 
     // @ts-ignore
     render(<HashRouter history={history} />, node);
 
-    expect(console.error).toHaveBeenCalledTimes(1);
-    expect((console.error as any).calls.argsFor(0)[0]).toContain('<HashRouter> ignores the history prop');
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.calls.argsFor(0)[0]).toContain('<HashRouter> ignores the history prop');
   });
 });

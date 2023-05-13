@@ -99,19 +99,19 @@ describe('rendering routine', () => {
   });
 
   it('should not warn when rendering into an empty container', () => {
-    const spy = spyOn(console, 'error');
+    const consoleSpy = spyOn(console, 'error');
 
     render(<div>foo</div>, container);
     expect(container.innerHTML).toBe('<div>foo</div>');
 
     render(null, container);
     expect(container.innerHTML).toBe('');
-    expect(spy.calls.count()).toBe(0);
+    expect(consoleSpy.calls.count()).toBe(0);
 
     render(<div>bar</div>, container);
     expect(container.innerHTML).toBe('<div>bar</div>');
 
-    expect(spy.calls.count()).toBe(0);
+    expect(consoleSpy.calls.count()).toBe(0);
   });
 
   it('Should be possible to render Immutable datastructures', () => {
@@ -121,7 +121,7 @@ describe('rendering routine', () => {
       return <div>{array}</div>;
     }
 
-    const spy = spyOn(console, 'error');
+    const consoleSpy = spyOn(console, 'error');
 
     render(<Clock time={1} />, container);
     expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>2</span></div>');
@@ -131,12 +131,12 @@ describe('rendering routine', () => {
 
     render(<Clock time={3} />, container);
     expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>4</span></div>');
-    expect(spy.calls.count()).toBe(0);
+    expect(consoleSpy.calls.count()).toBe(0);
 
     render(null, container);
     expect(container.innerHTML).toBe('');
 
-    expect(spy.calls.count()).toBe(0);
+    expect(consoleSpy.calls.count()).toBe(0);
   });
 
   describe('createTextVNode', () => {
