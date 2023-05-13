@@ -1,6 +1,6 @@
 import { Component, render } from 'inferno';
 import { HashRouter, Link, MemoryRouter } from 'inferno-router';
-import { Path, createMemoryHistory, parsePath } from 'history';
+import { createMemoryHistory, parsePath } from 'history';
 
 describe('Link (jsx)', () => {
   let node;
@@ -14,10 +14,15 @@ describe('Link (jsx)', () => {
     document.body.removeChild(node);
   });
 
-  it('accepts a location "to" prop', () => {
+  it('accepts a location `to` prop', () => {
+    const path = parsePath('/the/path?the=query#the-hash');
+    const loc = new Location();
+    loc.pathname = path.pathname!;
+    loc.search = path.search!;
+    loc.hash = path.hash!;
     render(
       <MemoryRouter>
-        <Link to={parsePath('/the/path?the=query#the-hash') as Path}>link</Link>
+        <Link to={loc}>link</Link>
       </MemoryRouter>,
       node
     );
