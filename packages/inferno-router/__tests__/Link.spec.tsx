@@ -15,18 +15,9 @@ describe('Link (jsx)', () => {
   });
 
   it('accepts a location `to` prop', () => {
-    // INVESTIGATE: In the original test from react-router I believe we set to={tmp}
-    // but the type returned by parsePath is not compatible with Location
-    // I think Location might be too strict.
-    const tmp = parsePath('/the/path?the=query#the-hash');
-    const loc = {
-      hash: tmp.hash!,
-      pathname: tmp.pathname!,
-      search: tmp.search!,
-    };
     render(
       <MemoryRouter>
-        <Link to={loc}>link</Link>
+        <Link to={parsePath('/the/path?the=query#the-hash')}>link</Link>
       </MemoryRouter>,
       node
     );
