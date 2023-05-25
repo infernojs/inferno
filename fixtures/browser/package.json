@@ -27,7 +27,7 @@
     "@babel/plugin-proposal-object-rest-spread": "7.20.7",
     "@babel/preset-env": "7.21.5",
     "babel-loader": "^9.1.2",
-    "jasmine-core": "^4.6.0",
+    "jasmine-core": "^5.0.0",
     "karma": "^6.4.2",
     "karma-chrome-launcher": "^3.2.0",
     "karma-detect-browsers": "^2.3.3",
