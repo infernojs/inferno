@@ -51,13 +51,13 @@ const customLaunchers = {
       geckodriverVersion: '0.30.0'
     }
   },
-  slFireFox60: {
-    base: 'SauceLabs',
-    name: 'firefox',
-    browserName: 'firefox',
-    platform: 'Windows 11',
-    version: '60'
-  }
+  // slFireFox60: {
+  //   base: 'SauceLabs',
+  //   name: 'firefox',
+  //   browserName: 'firefox',
+  //   platform: 'Windows 11',
+  //   version: '60'
+  // }
 };
 
 module.exports = function (config) {
