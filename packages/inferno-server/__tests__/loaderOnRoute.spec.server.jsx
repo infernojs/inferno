@@ -22,28 +22,36 @@ describe('Resolve loaders during server side rendering', () => {
     const TEXT = 'bubblegum';
     const Component = (props, { router }) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
+      return <h1>{res?.message}</h1>;
+    };
 
-    const loaderFuncNoHit = async () => { return { message: 'no' }}
-    const loaderFunc = async () => { return { message: TEXT }}
+    const loaderFuncNoHit = async () => {
+      return { message: 'no' };
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
 
     const routes = [
-        <Route path="/flowers" render={Component} loader={loaderFuncNoHit} />,
-        <Route path="/birds" render={Component} loader={loaderFunc} />,
-        <Route path="/bees" render={Component} loader={loaderFuncNoHit} />,
-    ]
+      <Route path="/flowers" render={Component} loader={loaderFuncNoHit} />,
+      <Route path="/birds" render={Component} loader={loaderFunc} />,
+      <Route path="/bees" render={Component} loader={loaderFuncNoHit} />
+    ];
 
     const loaderEntries = traverseLoaders('/birds', routes);
     const initialData = await resolveLoaders(loaderEntries);
 
     // Render on server
-    const html = renderToString(<StaticRouter location="/birds" initialData={initialData}>{routes}</StaticRouter>);
-    
+    const html = renderToString(
+      <StaticRouter location="/birds" initialData={initialData}>
+        {routes}
+      </StaticRouter>
+    );
+
     // Render in browser
     history.replaceState(undefined, undefined, '/birds');
     render(<BrowserRouter initialData={initialData}>{routes}</BrowserRouter>, container);
 
     expect(`<!--!-->${container.innerHTML}<!--!-->`).toEqual(html);
   });
-})
+});

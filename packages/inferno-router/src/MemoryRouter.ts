@@ -25,7 +25,7 @@ export class MemoryRouter extends Component<IMemoryRouterProps, any> {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       children: this.props.children,
       history: this.history,
-      initialData: this.props.initialData,
+      initialData: this.props.initialData
     });
   }
 }

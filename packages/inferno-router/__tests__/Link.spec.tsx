@@ -105,7 +105,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
     const to = {
       hash: '#the-hash',
       pathname: '/the/path',
-      search: 'the=query',
+      search: 'the=query'
     };
 
     render(

@@ -1,4 +1,4 @@
-import { TLoaderData } from "./Router";
+import { TLoaderData } from './Router';
 
 export function useLoaderData<Res = any>(props: { __loaderData__: TLoaderData<Res, any> }): Res | undefined {
   return props.__loaderData__?.res;

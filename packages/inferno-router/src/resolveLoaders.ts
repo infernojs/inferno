@@ -1,24 +1,24 @@
-import { isNullOrUndef, isUndefined } from "inferno-shared";
-import { matchPath } from "./matchPath";
-import type { TLoaderData, TLoaderProps } from "./Router";
-import { Switch } from "./Switch";
+import { isNullOrUndef, isUndefined } from 'inferno-shared';
+import { matchPath } from './matchPath';
+import type { TLoaderData, TLoaderProps } from './Router';
+import { Switch } from './Switch';
 
 export function resolveLoaders(loaderEntries: TLoaderEntry[]): Promise<Record<string, TLoaderData>> {
-  const promises = loaderEntries.map((({ path, params, request, loader }) => {
+  const promises = loaderEntries.map(({ path, params, request, loader }) => {
     return resolveEntry(path, params, request, loader);
-  }));
+  });
   return Promise.all(promises).then((result) => {
     return Object.fromEntries(result);
   });
 }
 
 type TLoaderEntry = {
-  path: string,
-  params: Record<string, any>,
-  request: Request,
-  controller: AbortController,
-  loader: (TLoaderProps) => Promise<TLoaderEntry>,
-}
+  path: string;
+  params: Record<string, any>;
+  request: Request;
+  controller: AbortController;
+  loader: (TLoaderProps) => Promise<TLoaderEntry>;
+};
 
 export function traverseLoaders(location: string, tree: any, base?: string): TLoaderEntry[] {
   return _traverseLoaders(location, tree, base, false);
@@ -43,7 +43,6 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
     return entriesOfArr;
   }
 
-
   const outp: TLoaderEntry[] = [];
   let isRouteButNotMatch = false;
   if (tree.props) {
@@ -54,7 +53,7 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
       exact,
       path,
       sensitive,
-      strict,
+      strict
     });
 
     // So we can bail out of recursion it this was a Route which didn't match
@@ -71,8 +70,8 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
         loader: tree.props.loader,
         params,
         path,
-        request,
-      })
+        request
+      });
     }
   }
 
@@ -85,51 +84,54 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
 }
 
 function resolveEntry(path, params, request, loader): Promise<any> {
-  return loader({ params, request })
-    .then((res: any) => {
-      // This implementation is based on:
-      // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
-      
-      // Check if regular data object (from tests or initialData)
-      if (typeof res.json !== 'function') {
-        return [path, { res }];
-      }
+  return (
+    loader({ params, request })
+      .then((res: any) => {
+        // This implementation is based on:
+        // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
 
-      const contentType = res.headers.get("Content-Type");
-      let dataPromise: Promise<any>;
-      // Check between word boundaries instead of startsWith() due to the last
-      // paragraph of https://httpwg.org/specs/rfc9110.html#field.content-type
-      if (contentType && /\bapplication\/json\b/.test(contentType)) {
-        dataPromise = res.json()
-      } else {
-        dataPromise = res.text();
-      }
-
-      return dataPromise.then((body) => {
-        // We got a JSON error
-        if (!res.ok) {
-          return [path, { err: body }]
+        // Check if regular data object (from tests or initialData)
+        if (typeof res.json !== 'function') {
+          return [path, { res }];
         }
-        // We got JSON response
-        return [path, { res: body }]
+
+        const contentType = res.headers.get('Content-Type');
+        let dataPromise: Promise<any>;
+        // Check between word boundaries instead of startsWith() due to the last
+        // paragraph of https://httpwg.org/specs/rfc9110.html#field.content-type
+        if (contentType && /\bapplication\/json\b/.test(contentType)) {
+          dataPromise = res.json();
+        } else {
+          dataPromise = res.text();
+        }
+
+        return (
+          dataPromise
+            .then((body) => {
+              // We got a JSON error
+              if (!res.ok) {
+                return [path, { err: body }];
+              }
+              // We got JSON response
+              return [path, { res: body }];
+            })
+            // Could not parse JSON
+            .catch((err) => [path, { err }])
+        );
       })
-      // Could not parse JSON
+      // Could not fetch data
       .catch((err) => [path, { err }])
-    })
-    // Could not fetch data
-    .catch((err) => [path, { err }]);
+  );
 }
 
 // From react-router
 // NOTE: We don't currently support the submission param of createClientSideRequest which is why
 // some of the related code is commented away
 
-export type FormEncType =
-  | "application/x-www-form-urlencoded"
-  | "multipart/form-data";
+export type FormEncType = 'application/x-www-form-urlencoded' | 'multipart/form-data';
 
-export type MutationFormMethod = "post" | "put" | "patch" | "delete";
-export type FormMethod = "get" | MutationFormMethod;
+export type MutationFormMethod = 'post' | 'put' | 'patch' | 'delete';
+export type FormMethod = 'get' | MutationFormMethod;
 
 // TODO: react-router supports submitting forms with loaders, this is related to that
 // const validMutationMethodsArr: MutationFormMethod[] = [
@@ -153,7 +155,6 @@ export interface Submission {
   formEncType: FormEncType;
   formData: FormData;
 }
-
 
 const inBrowser = typeof window === 'undefined';
 function createClientSideRequest(
@@ -186,7 +187,7 @@ function createClientSideRequest(
         this.url = _url;
         this.signal = _init.signal;
       }
-    }
+    };
   }
 
   // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
@@ -202,9 +203,7 @@ export function createClientSideURL(location: Location | string, base?: string):
     // window.location.origin is "null" (the literal string value) in Firefox
     // under certain conditions, notably when serving from a local HTML file
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
-    base = window?.location?.origin !== "null"
-      ? window.location.origin
-      : window.location.href;
+    base = window?.location?.origin !== 'null' ? window.location.origin : window.location.href;
   }
 
   const url = new URL(location.toString(), base);

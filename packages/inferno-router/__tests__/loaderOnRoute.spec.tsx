@@ -20,18 +20,22 @@ describe('A <Route> with loader in a MemoryRouter', () => {
   it('renders on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
-    const TEXT = "ok";
+    const TEXT = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEXT }
-    }
+      return { message: TEXT };
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const data = useLoaderData(props);
-          return <h1>{data?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -44,19 +48,23 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('renders error on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEXT = "An error";
+
+    const TEXT = 'An error';
     const loaderFunc = async () => {
       setDone();
-      throw new Error(TEXT)
-    }
+      throw new Error(TEXT);
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const err = useLoaderError(props);
-          return <h1>{err?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const err = useLoaderError(props);
+            return <h1>{err?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -71,12 +79,14 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
-    const loaderFunc = async () => { return { message: TEXT }}
+      return <h1>{res?.message}</h1>;
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined, }
-    }
+      '/flowers': { res: await loaderFunc(), err: undefined }
+    };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
@@ -90,11 +100,11 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Should render component after after click', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEST = "ok";
+
+    const TEST = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEST }
+      return { message: TEST };
     };
 
     function RootComp() {
@@ -121,14 +131,10 @@ describe('A <Route> with loader in a MemoryRouter', () => {
                 </NavLink>
               </li>
               <li id="createNav">
-                <NavLink to="/create">
-                  Create
-                </NavLink>
+                <NavLink to="/create">Create</NavLink>
               </li>
               <li>
-                <NavLink to="/publish">
-                  Publish
-                </NavLink>
+                <NavLink to="/publish">Publish</NavLink>
               </li>
             </ul>
           </nav>
@@ -141,7 +147,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(tree, container);
 
-    expect(container.innerHTML).toContain("ROOT");
+    expect(container.innerHTML).toContain('ROOT');
 
     // Click create
     const link = container.querySelector('#createNav');
@@ -157,16 +163,21 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <div><h1>{res?.message}</h1><p>{res?.slug}</p></div>
-    }
-    const loaderFunc = async ({params: paramsIn}: any) => {
-      return { message: TEXT, slug: paramsIn?.slug }
-    }
+      return (
+        <div>
+          <h1>{res?.message}</h1>
+          <p>{res?.slug}</p>
+        </div>
+      );
+    };
+    const loaderFunc = async ({ params: paramsIn }: any) => {
+      return { message: TEXT, slug: paramsIn?.slug };
+    };
 
     const params = { slug: 'flowers' };
     const initialData = {
-      '/:slug': { res: await loaderFunc({ params }), err: undefined, }
-    }
+      '/:slug': { res: await loaderFunc({ params }), err: undefined }
+    };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
@@ -186,10 +197,10 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     const _abortFn = AbortController.prototype.abort;
     AbortController.prototype.abort = () => {
       abortCalls.nrofCalls++;
-    }
+    };
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEST = "ok";
+
+    const TEST = 'ok';
 
     const loaderFunc = async ({ request }) => {
       expect(request).toBeDefined();
@@ -197,7 +208,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
       return new Promise((resolve) => {
         setTimeout(() => {
           setDone();
-          resolve({ message: TEST })
+          resolve({ message: TEST });
         }, 5);
       });
     };
@@ -226,14 +237,10 @@ describe('A <Route> with loader in a MemoryRouter', () => {
                 </NavLink>
               </li>
               <li id="createNav">
-                <NavLink to="/create">
-                  Create
-                </NavLink>
+                <NavLink to="/create">Create</NavLink>
               </li>
               <li id="publishNav">
-                <NavLink to="/publish">
-                  Publish
-                </NavLink>
+                <NavLink to="/publish">Publish</NavLink>
               </li>
             </ul>
           </nav>
@@ -246,14 +253,14 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(tree, container);
 
-    expect(container.innerHTML).toContain("ROOT");
+    expect(container.innerHTML).toContain('ROOT');
 
     // Click create
     container.querySelector('#createNav').firstChild.click();
     container.querySelector('#publishNav').firstChild.click();
 
     await waitForRerender();
-  
+
     expect(abortCalls.nrofCalls).toEqual(1);
     expect(container.querySelector('#create')).toBeNull();
     AbortController.prototype.abort = _abortFn;
@@ -279,18 +286,22 @@ describe('A <Route> with loader in a BrowserRouter', () => {
   it('renders on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
-    const TEXT = "ok";
+    const TEXT = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEXT }
-    }
+      return { message: TEXT };
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const data = useLoaderData(props);
-          return <h1>{data?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -303,19 +314,23 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
   it('renders error on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEXT = "An error";
+
+    const TEXT = 'An error';
     const loaderFunc = async () => {
       setDone();
-      throw new Error(TEXT)
-    }
+      throw new Error(TEXT);
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const err = useLoaderError(props);
-          return <h1>{err?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const err = useLoaderError(props);
+            return <h1>{err?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -330,14 +345,16 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
+      return <h1>{res?.message}</h1>;
+    };
 
-    const loaderFunc = async () => { return { message: TEXT }}
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
 
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined, }
-    }
+      '/flowers': { res: await loaderFunc(), err: undefined }
+    };
 
     history.replaceState(undefined, '', '/flowers');
     render(
@@ -352,10 +369,10 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
   it('Should render component after after click', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    const TEST = "ok";
+    const TEST = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEST }
+      return { message: TEST };
     };
 
     function RootComp() {
@@ -382,14 +399,10 @@ describe('A <Route> with loader in a BrowserRouter', () => {
                 </NavLink>
               </li>
               <li id="createNav">
-                <NavLink to="/create">
-                  Create
-                </NavLink>
+                <NavLink to="/create">Create</NavLink>
               </li>
               <li>
-                <NavLink to="/publish">
-                  Publish
-                </NavLink>
+                <NavLink to="/publish">Publish</NavLink>
               </li>
             </ul>
           </nav>
@@ -402,7 +415,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
     render(tree, container);
 
-    expect(container.innerHTML).toContain("ROOT");
+    expect(container.innerHTML).toContain('ROOT');
 
     // Click create
     const link = container.querySelector('#createNav');
@@ -417,19 +430,23 @@ describe('A <Route> with loader in a BrowserRouter', () => {
   it('calls json() when response is received', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
-    const TEXT = "ok";
+    const TEXT = 'ok';
     const loaderFunc = async () => {
       setDone();
       const data = { message: TEXT };
       return createResponse(data, 'json', 200);
-    }
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const data = useLoaderData(props);
-          return <h1>{data?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -443,19 +460,23 @@ describe('A <Route> with loader in a BrowserRouter', () => {
   it('calls text() when response is received', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
-    const TEXT = "ok";
+    const TEXT = 'ok';
     const loaderFunc = async () => {
       setDone();
       const data = TEXT;
       return createResponse(data, 'text', 200);
-    }
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const data = useLoaderData(props);
-          return <h1>{data}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -465,7 +486,6 @@ describe('A <Route> with loader in a BrowserRouter', () => {
 
     expect(container.innerHTML).toContain(TEXT);
   });
-
 });
 
 describe('A <Route> with loader in a StaticRouter', () => {
@@ -487,18 +507,22 @@ describe('A <Route> with loader in a StaticRouter', () => {
   it('renders on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
-    const TEXT = "ok";
+    const TEXT = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEXT }
-    }
+      return { message: TEXT };
+    };
 
     render(
       <StaticRouter context={{}}>
-        <Route path="/" render={(props: any) => {
-          const data = useLoaderData(props);
-          return <h1>{data?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </StaticRouter>,
       container
     );
@@ -511,19 +535,23 @@ describe('A <Route> with loader in a StaticRouter', () => {
 
   it('renders error on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEXT = "An error";
+
+    const TEXT = 'An error';
     const loaderFunc = async () => {
       setDone();
-      throw new Error(TEXT)
-    }
+      throw new Error(TEXT);
+    };
 
     render(
       <StaticRouter context={{}}>
-        <Route path="/" render={(props: any) => {
-          const err = useLoaderError(props);
-          return <h1>{err?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const err = useLoaderError(props);
+            return <h1>{err?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </StaticRouter>,
       container
     );
@@ -538,14 +566,16 @@ describe('A <Route> with loader in a StaticRouter', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
+      return <h1>{res?.message}</h1>;
+    };
 
-    const loaderFunc = async () => { return { message: TEXT }}
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
 
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined, }
-    }
+      '/flowers': { res: await loaderFunc(), err: undefined }
+    };
 
     render(
       <StaticRouter context={{}} location="/flowers" initialData={initialData}>
@@ -563,18 +593,22 @@ describe('Resolve loaders during server side rendering', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
+      return <h1>{res?.message}</h1>;
+    };
 
-    const loaderFunc = async () => { return { message: TEXT }}
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
 
     const initialData = {
       '/flowers': { res: await loaderFunc() }
-    }
+    };
 
-    const app = <StaticRouter context={{}} location="/flowers">
+    const app = (
+      <StaticRouter context={{}} location="/flowers">
         <Route path="/flowers" render={Component} loader={loaderFunc} />
-      </StaticRouter>;
+      </StaticRouter>
+    );
 
     const loaderEntries = traverseLoaders('/flowers', app);
     const result = await resolveLoaders(loaderEntries);
@@ -585,21 +619,27 @@ describe('Resolve loaders during server side rendering', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
+      return <h1>{res?.message}</h1>;
+    };
 
-    const loaderFuncNoHit = async () => { return { message: 'no' }}
-    const loaderFunc = async () => { return { message: TEXT }}
+    const loaderFuncNoHit = async () => {
+      return { message: 'no' };
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
 
     const initialData = {
       '/birds': { res: await loaderFunc() }
-    }
+    };
 
-    const app = <StaticRouter context={{}} location="/birds">
+    const app = (
+      <StaticRouter context={{}} location="/birds">
         <Route path="/flowers" render={Component} loader={loaderFuncNoHit} />
         <Route path="/birds" render={Component} loader={loaderFunc} />
         <Route path="/bees" render={Component} loader={loaderFuncNoHit} />
-      </StaticRouter>;
+      </StaticRouter>
+    );
 
     const loaderEntries = traverseLoaders('/birds', app);
     const result = await resolveLoaders(loaderEntries);
@@ -610,27 +650,33 @@ describe('Resolve loaders during server side rendering', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
+      return <h1>{res?.message}</h1>;
+    };
 
-    const loaderFuncNoHit = async () => { return { message: 'no' }}
-    const loaderFunc = async () => { return { message: TEXT }}
+    const loaderFuncNoHit = async () => {
+      return { message: 'no' };
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
 
     const initialData = {
       '/flowers': { res: await loaderFunc() },
       '/flowers/birds': { res: await loaderFunc() }
-    }
+    };
 
-    const app = <StaticRouter context={{}} location="/flowers/birds">
+    const app = (
+      <StaticRouter context={{}} location="/flowers/birds">
         <Route path="/flowers" render={Component} loader={loaderFunc}>
           <Route path="/flowers/birds" render={Component} loader={loaderFunc} />
           <Route path="/flowers/bees" render={Component} loader={loaderFuncNoHit} />
           {null}
         </Route>
-      </StaticRouter>;
+      </StaticRouter>
+    );
 
     const loaderEntries = traverseLoaders('/flowers/birds', app);
     const result = await resolveLoaders(loaderEntries);
     expect(result).toEqual(initialData);
   });
-})
+});

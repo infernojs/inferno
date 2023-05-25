@@ -352,23 +352,19 @@ describe('Switch (jsx)', () => {
   // TODO: This will not work because component is not mandatory
   it('Should allow using component child parameter as result, Github #1601', () => {
     const node = document.createElement('div');
-  
+
     class Component1 extends Component<any, any> {
-      public state = { foo: 0 }
+      public state = { foo: 0 };
       constructor(p, s) {
         super(p, s);
-  
+
         this.state.foo = 1;
       }
       public render() {
-        return (
-          <div>
-            Component
-          </div>
-        );
+        return <div>Component</div>;
       }
     }
-  
+
     const routes: IRouteProps[] = [
       {
         component: Component1,
@@ -376,17 +372,12 @@ describe('Switch (jsx)', () => {
         path: `/`
       }
     ];
-  
+
     render(
       <MemoryRouter initialEntries={['/bubblegum']}>
         <Switch>
           {routes.map(({ path, exact, component: Comp, ...rest }) => (
-            <Route
-              key={path}
-              path={path}
-              exact={exact}
-              render={props => <Component1 {...props} {...rest} />}
-            />
+            <Route key={path} path={path} exact={exact} render={(props) => <Component1 {...props} {...rest} />} />
           ))}
         </Switch>
       </MemoryRouter>,

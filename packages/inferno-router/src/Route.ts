@@ -41,7 +41,7 @@ export interface IRouteProps {
 type RouteState = {
   match: Match<any> | null;
   __loaderData__?: TLoaderData;
-}
+};
 
 class Route extends Component<Partial<IRouteProps>, RouteState> {
   constructor(props: IRouteProps, context: RouterContext) {
@@ -49,7 +49,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     const match = this.computeMatch(props, context.router);
     this.state = {
       __loaderData__: match?.loaderData,
-      match,
+      match
     };
   }
 
@@ -59,7 +59,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
     router.route = {
       location: this.props.location || parentRouter.route.location,
-      match: this.state!.match,
+      match: this.state!.match
     };
 
     return {
@@ -67,7 +67,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     };
   }
 
-  public computeMatch({ computedMatch, ...props }: IRouteProps, router: TContextRouter): Match<any> | null {
+  public computeMatch({ computedMatch, ...props }: IRouteProps, router: TContextRouter): Match<any> | null {
     if (!isNullOrUndef(computedMatch)) {
       // <Switch> already computed the match for us
       return computedMatch;
@@ -101,7 +101,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
     this.setState({
       __loaderData__: match?.loaderData,
-      match,
+      match
     });
   }
 

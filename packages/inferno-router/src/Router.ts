@@ -12,19 +12,19 @@ export type TLoaderProps<P extends Record<string, string>> = {
   // https://github.com/remix-run/react-router/blob/11156ac7f3d7c1c557c67cc449ecbf9bd5c6a4ca/examples/ssr-data-router/src/entry.server.tsx#L66
   // https://github.com/remix-run/react-router/blob/59b319feaa12745a434afdef5cadfcabd01206f9/examples/search-params/src/App.tsx#L43
   // https://github.com/remix-run/react-router/blob/11156ac7f3d7c1c557c67cc449ecbf9bd5c6a4ca/packages/react-router-dom/__tests__/data-static-router-test.tsx#L81
-  
+
   onProgress?(perc: number): void;
-}
+};
 
 /**
  * Loader returns Response and throws error
  */
-export type TLoader<P extends Record<string, string>, R extends Response> = ({params, request}: TLoaderProps<P>) => Promise<R>;
+export type TLoader<P extends Record<string, string>, R extends Response> = ({ params, request }: TLoaderProps<P>) => Promise<R>;
 
 export type TLoaderData<Res = any, Err = any> = {
   res?: Res;
   err?: Err;
-}
+};
 
 type TInitialData = Record<string, TLoaderData>; // key is route path to allow resolving
 
@@ -37,12 +37,12 @@ export interface IRouterProps {
 export type TContextRouter = {
   history: History;
   route: {
-    location: Pick<Location, 'pathname'>, // This was Partial<Location> before but this makes pathname optional causing false type error in code
+    location: Pick<Location, 'pathname'>; // This was Partial<Location> before but this makes pathname optional causing false type error in code
     match: Match<any> | null;
-  }
+  };
   initialData?: TInitialData;
   staticContext?: object; // TODO: This should be properly typed
-}
+};
 
 export type RouterContext = { router: TContextRouter };
 
@@ -59,7 +59,7 @@ export class Router extends Component<IRouterProps, any> {
     const match = this.computeMatch(props.history.location.pathname);
     this.state = {
       initialData: this.props.initialData,
-      match,
+      match
     };
   }
 
@@ -69,7 +69,7 @@ export class Router extends Component<IRouterProps, any> {
     router.history = this.props.history;
     router.route = {
       location: router.history.location,
-      match: this.state?.match, // Why are we sending this? it appears useless.
+      match: this.state?.match // Why are we sending this? it appears useless.
     };
     router.initialData = this.state?.initialData; // this is a dictionary of all data available
     return {
@@ -77,14 +77,13 @@ export class Router extends Component<IRouterProps, any> {
     };
   }
 
-
   public computeMatch(pathname): Match<{}> {
     return {
       isExact: pathname === '/',
-      loader:  undefined,
+      loader: undefined,
       params: {},
       path: '/',
-      url: '/',
+      url: '/'
     };
   }
 
@@ -112,7 +111,6 @@ export class Router extends Component<IRouterProps, any> {
     this._loaderIteration = (this._loaderIteration + 1) % 10000;
     const currentIteration = this._loaderIteration;
 
-
     for (const controller of this._loaderFetchControllers) {
       controller.abort();
     }
@@ -126,19 +124,18 @@ export class Router extends Component<IRouterProps, any> {
     }
 
     // Store AbortController instances for each matched loader
-    this._loaderFetchControllers = loaderEntries.map(e => e.controller);
+    this._loaderFetchControllers = loaderEntries.map((e) => e.controller);
 
-    resolveLoaders(loaderEntries)
-      .then((initialData) => {
-        // On multiple pending navigations, only update interface with last
-        // in case they resolve out of order
-        if (currentIteration === this._loaderIteration) {
-          this.setState({
-            initialData,
-            match,
-          });
-        }
-      });
+    resolveLoaders(loaderEntries).then((initialData) => {
+      // On multiple pending navigations, only update interface with last
+      // in case they resolve out of order
+      if (currentIteration === this._loaderIteration) {
+        this.setState({
+          initialData,
+          match
+        });
+      }
+    });
   }
 
   public componentWillUnmount() {

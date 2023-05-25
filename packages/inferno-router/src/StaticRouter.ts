@@ -29,7 +29,7 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
     return {
       router: {
         initialData: this.props.initialData,
-        staticContext: this.props.context,
+        staticContext: this.props.context
       }
     };
   }
@@ -72,7 +72,7 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
           location: stripBasename(basename, createLocation(location)),
           push: this.handlePush,
           replace: this.handleReplace
-        },
+        }
       }) as any
     );
   }

@@ -20,18 +20,22 @@ describe('A <Route> with loader in a MemoryRouter', () => {
   it('renders on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
-    const TEXT = "ok";
+    const TEXT = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEXT }
-    }
+      return { message: TEXT };
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const data = useLoaderData(props);
-          return <h1>{data?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -44,19 +48,23 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('renders error on initial', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEXT = "An error";
+
+    const TEXT = 'An error';
     const loaderFunc = async () => {
       setDone();
-      throw new Error(TEXT)
-    }
+      throw new Error(TEXT);
+    };
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Route path="/" render={(props: any) => {
-          const err = useLoaderError(props);
-          return <h1>{err?.message}</h1>
-        }} loader={loaderFunc} />
+        <Route
+          path="/"
+          render={(props: any) => {
+            const err = useLoaderError(props);
+            return <h1>{err?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
       </MemoryRouter>,
       container
     );
@@ -71,12 +79,14 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
-    const loaderFunc = async () => { return { message: TEXT }}
+      return <h1>{res?.message}</h1>;
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined, }
-    }
+      '/flowers': { res: await loaderFunc(), err: undefined }
+    };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
@@ -90,11 +100,11 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Should render component after click', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEST = "ok";
+
+    const TEST = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEST }
+      return { message: TEST };
     };
 
     function RootComp() {
@@ -121,14 +131,10 @@ describe('A <Route> with loader in a MemoryRouter', () => {
                 </NavLink>
               </li>
               <li id="createNav">
-                <NavLink to="/create">
-                  Create
-                </NavLink>
+                <NavLink to="/create">Create</NavLink>
               </li>
               <li>
-                <NavLink to="/publish">
-                  Publish
-                </NavLink>
+                <NavLink to="/publish">Publish</NavLink>
               </li>
             </ul>
           </nav>
@@ -143,7 +149,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(tree, container);
 
-    expect(container.innerHTML).toContain("ROOT");
+    expect(container.innerHTML).toContain('ROOT');
 
     // Click create
     const link = container.querySelector('#createNav');
@@ -155,17 +161,18 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.querySelector('#create').innerHTML).toContain(TEST);
   });
 
-
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
       const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>
-    }
-    const loaderFunc = async () => { return { message: TEXT }}
+      return <h1>{res?.message}</h1>;
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined, }
-    }
+      '/flowers': { res: await loaderFunc(), err: undefined }
+    };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
@@ -179,11 +186,11 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Should only render one (1) component after click', async () => {
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEST = "ok";
+
+    const TEST = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEST }
+      return { message: TEST };
     };
 
     function RootComp() {
@@ -210,14 +217,10 @@ describe('A <Route> with loader in a MemoryRouter', () => {
                 </NavLink>
               </li>
               <li id="createNav">
-                <NavLink to="/create">
-                  Create
-                </NavLink>
+                <NavLink to="/create">Create</NavLink>
               </li>
               <li>
-                <NavLink to="/publish">
-                  Publish
-                </NavLink>
+                <NavLink to="/publish">Publish</NavLink>
               </li>
             </ul>
           </nav>
@@ -232,7 +235,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(tree, container);
 
-    expect(container.innerHTML).toContain("ROOT");
+    expect(container.innerHTML).toContain('ROOT');
 
     // Click create
     const link = container.querySelector('#createNav');
@@ -248,23 +251,29 @@ describe('A <Route> with loader in a MemoryRouter', () => {
   it('can use a `location` prop instead of `router.location`', async () => {
     const [setSwitch, waitForSwitch] = createEventGuard();
     const [setDone, waitForRerender] = createEventGuard();
-    
-    const TEST = "ok";
+
+    const TEST = 'ok';
     const loaderFunc = async () => {
       await waitForSwitch();
       setDone();
-      return { message: TEST }
+      return { message: TEST };
     };
 
     render(
       <MemoryRouter initialEntries={['/one']}>
-        <NavLink id="link" to="/two">Link</NavLink>
+        <NavLink id="link" to="/two">
+          Link
+        </NavLink>
         <Switch>
           <Route path="/one" render={() => <h1>one</h1>} />
-          <Route path="/two" render={(props: any) => {
-            const res = useLoaderData(props);
-            return <h1>{res.message}</h1>
-          }} loader={loaderFunc} />
+          <Route
+            path="/two"
+            render={(props: any) => {
+              const res = useLoaderData(props);
+              return <h1>{res.message}</h1>;
+            }}
+            loader={loaderFunc}
+          />
         </Switch>
       </MemoryRouter>,
       container
@@ -281,7 +290,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     rerender();
     expect(container.innerHTML).toContain('one');
     // Now loader can be allowed to complete
-    
+
     setSwitch();
     // and now wait for the loader to complete
     await waitForRerender();
@@ -289,16 +298,15 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.innerHTML).toContain(TEST);
   });
 
-
   it('Should only render one (1) component after click with subclass of Switch', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
     class SubSwitch extends Switch {}
-    
-    const TEST = "ok";
+
+    const TEST = 'ok';
     const loaderFunc = async () => {
       setDone();
-      return { message: TEST }
+      return { message: TEST };
     };
 
     function RootComp() {
@@ -325,14 +333,10 @@ describe('A <Route> with loader in a MemoryRouter', () => {
                 </NavLink>
               </li>
               <li id="createNav">
-                <NavLink to="/create">
-                  Create
-                </NavLink>
+                <NavLink to="/create">Create</NavLink>
               </li>
               <li>
-                <NavLink to="/publish">
-                  Publish
-                </NavLink>
+                <NavLink to="/publish">Publish</NavLink>
               </li>
             </ul>
           </nav>
@@ -347,7 +351,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     render(tree, container);
 
-    expect(container.innerHTML).toContain("ROOT");
+    expect(container.innerHTML).toContain('ROOT');
 
     // Click create
     const link = container.querySelector('#createNav');

@@ -59,6 +59,6 @@ export function matchPath(pathname, options: any): Match<any> | null {
       return memo;
     }, {}),
     path, // the path pattern used to match
-    url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
+    url: path === '/' && url === '' ? '/' : url // the matched portion of the URL
   };
 }

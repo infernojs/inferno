@@ -5,7 +5,7 @@ import { combineFrom, isArray, isInvalid } from 'inferno-shared';
 import { IRouteProps, Match } from './Route';
 import { RouterContext } from './Router';
 
-function getMatch(pathname: string, { path, exact, strict, sensitive, loader, from }, router: { route, initialData?: any }) {
+function getMatch(pathname: string, { path, exact, strict, sensitive, loader, from }, router: { route; initialData?: any }) {
   path ??= from;
   const { initialData, route } = router; // This is the parent route
 
@@ -23,14 +23,14 @@ function extractFirstMatchFromChildren(pathname: string, children, router) {
 
   return {
     _child: children,
-    match: getMatch(pathname, (children as any).props, router),
-  }
+    match: getMatch(pathname, (children as any).props, router)
+  };
 }
 
 type SwitchState = {
   match: Match<any>;
   _child: any;
-}
+};
 
 export class Switch extends Component<IRouteProps, SwitchState> {
   constructor(props, context: RouterContext) {
@@ -47,8 +47,8 @@ export class Switch extends Component<IRouteProps, SwitchState> {
 
     this.state = {
       _child,
-      match,
-    }
+      match
+    };
   }
 
   public componentWillReceiveProps(nextProps: IRouteProps, nextContext: RouterContext): void {
@@ -69,16 +69,14 @@ export class Switch extends Component<IRouteProps, SwitchState> {
     const pathname = (location || router.route.location).pathname;
     const { match, _child } = extractFirstMatchFromChildren(pathname, children, router);
 
-    this.setState({ match, _child })
+    this.setState({ match, _child });
   }
 
   public render({ children, location }: IRouteProps, { match, _child }: SwitchState, context: RouterContext): VNode | null {
-
     if (isInvalid(children)) {
       return null;
     }
 
-    
     if (match) {
       location ??= context.router.route.location;
       return createComponentVNode(_child.flags, _child.type, combineFrom(_child.props, { location, computedMatch: match }));

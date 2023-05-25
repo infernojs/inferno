@@ -25,7 +25,7 @@ export class BrowserRouter extends Component<IBrowserRouterProps, any> {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       children: this.props.children,
       history: this.history,
-      initialData: this.props.initialData,
+      initialData: this.props.initialData
     });
   }
 }

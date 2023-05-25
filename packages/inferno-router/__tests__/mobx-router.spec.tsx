@@ -45,7 +45,7 @@ describe('Github #1236', () => {
         configurable: descriptor.configurable,
         enumerable: descriptor.enumerable,
         value: descriptor.initializer ? descriptor.initializer.call(context) : void 0,
-        writable: descriptor.writable,
+        writable: descriptor.writable
       });
     }
 
