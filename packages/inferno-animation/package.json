@@ -1,6 +1,6 @@
 {
   "name": "inferno-animation",
-  "version": "8.1.1",
+  "version": "8.2.0",
   "license": "MIT",
   "description": "Animation helpers inferno. This package can be used to reuse server side rendered html",
   "author": {
@@ -39,13 +39,13 @@
     "css"
   ],
   "dependencies": {
-    "inferno": "8.1.1"
+    "inferno": "8.2.0"
   },
   "devDependencies": {
-    "inferno-create-element": "8.1.1",
-    "inferno-shared": "8.1.1",
-    "inferno-utils": "8.1.1",
-    "inferno-vnode-flags": "8.1.1"
+    "inferno-create-element": "8.2.0",
+    "inferno-shared": "8.2.0",
+    "inferno-utils": "8.2.0",
+    "inferno-vnode-flags": "8.2.0"
   },
   "rollup": {
     "bundledDependencies": [

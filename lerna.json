@@ -9,5 +9,5 @@
   },
   "packages": ["packages/*"],
   "ignoreChanges": ["docs/**", "packages/*/package-lock.json"],
-  "version": "8.1.1"
+  "version": "8.2.0"
 }

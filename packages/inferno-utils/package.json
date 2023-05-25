@@ -1,6 +1,6 @@
 {
   "name": "inferno-utils",
-  "version": "8.1.1",
+  "version": "8.2.0",
   "description": "Meta test utilities which are not for userland",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,8 +11,8 @@
     "directory": "packages/inferno-utils"
   },
   "devDependencies": {
-    "inferno-shared": "8.1.1",
-    "inferno-vnode-flags": "8.1.1"
+    "inferno-shared": "8.2.0",
+    "inferno-vnode-flags": "8.2.0"
   },
   "keywords": [],
   "author": "",
