@@ -50,7 +50,7 @@ const customLaunchers = {
     'sauce:options': {
       geckodriverVersion: '0.30.0'
     }
-  },
+  }
   // slFireFox60: {
   //   base: 'SauceLabs',
   //   name: 'firefox',
