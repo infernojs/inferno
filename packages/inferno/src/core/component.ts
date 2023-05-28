@@ -121,7 +121,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
     component.$PS = null;
   }
 }
-export type ComponentType<P = {}> = Component<P> | Inferno.StatelessComponent<P>;
+export type ComponentType<P = {}> = typeof Component<P> | Inferno.StatelessComponent<P>;
 
 export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
   // Public

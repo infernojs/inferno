@@ -1,8 +1,9 @@
-import type { ForwardRef, Inferno, InfernoNode, Ref, Refs, VNode } from './types';
+import type { ForwardRef, InfernoNode, Ref, Refs, VNode } from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
 import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
+import { ComponentType } from './component';
 
 const keyPrefix = '$';
 
@@ -105,7 +106,7 @@ function resolveComponentFlags(flags, type) {
 
 export function createComponentVNode<P>(
   flags: VNodeFlags,
-  type: Function | Inferno.ComponentClass<P> | ForwardRef<P, any>,
+  type: Function | ComponentType<P> | ForwardRef<P, any>,
   props?: Readonly<P> | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null

@@ -1,5 +1,16 @@
-import { Component, createRef, InfernoNode, linkEvent, Ref, render } from 'inferno';
+import {
+  Component,
+  ComponentType,
+  createComponentVNode,
+  createRef,
+  createVNode,
+  InfernoNode,
+  linkEvent,
+  Ref,
+  render
+} from 'inferno';
 import { emptyFn } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('top level context', () => {
   let container;
@@ -58,6 +69,58 @@ describe('top level context', () => {
 
         render(<MyComponent />, container);
       });
+
+      it('Should ComponentType to be used as parameter for createComponentVNode', () => {
+        interface TestCompProps {
+          foo: number,
+          children?: InfernoNode
+        }
+
+        class TestComp extends Component<TestCompProps, any> {
+          public render(props) {
+            return createVNode(
+              VNodeFlags.HtmlElement,
+              "div",
+              null,
+              props.foo,
+              ChildFlags.HasTextChildren
+            )
+          }
+        }
+
+        function TestFuncComp(props: TestCompProps) {
+          return <span>{props.foo}</span>
+        }
+
+        function createComponent(val: number): ComponentType<{
+          foo: number
+        }> {
+          switch (val) {
+            case 0:
+              return TestComp
+            default:
+              return TestFuncComp
+          }
+        }
+
+        class MyComponent extends Component<{val: number}, any> {
+          public render() {
+            return createComponentVNode(
+              VNodeFlags.ComponentUnknown,
+              createComponent(this.props.val),
+              {foo: 765}
+            );
+          }
+        }
+
+        render(<MyComponent val={1} />, container);
+
+        expect(container.innerHTML).toBe('<span>765</span>')
+
+        render(<MyComponent val={0} />, container);
+
+        expect(container.innerHTML).toBe('<div>765</div>')
+      })
 
       it('Should render children directly (props)', () => {
         class MyComponent extends Component<any, any> {
