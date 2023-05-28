@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "license": "MIT",
   "description": "An extremely fast, React-like JavaScript library for building modern user interfaces",
   "author": {
@@ -61,12 +61,12 @@
     "directory": "packages/inferno"
   },
   "devDependencies": {
-    "inferno-shared": "8.2.0",
-    "inferno-utils": "8.2.0"
+    "inferno-shared": "8.2.1",
+    "inferno-utils": "8.2.1"
   },
   "dependencies": {
     "csstype": "^3.1.1",
-    "inferno-vnode-flags": "8.2.0",
+    "inferno-vnode-flags": "8.2.1",
     "opencollective-postinstall": "^2.0.3"
   }
 }
