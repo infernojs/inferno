@@ -17,7 +17,12 @@ export class Prompt extends Component<IPromptProps, any> {
       this.unblock();
     }
 
-    this.unblock = this.context.router.history.block(message);
+    this.unblock = this.context.router.history.block((tx) => {
+      if (message && window.confirm(message)) {
+        this.unblock();
+        tx.retry();
+      }
+    });
   }
 
   public disable() {
