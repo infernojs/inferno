@@ -381,10 +381,13 @@ class ShuffleList extends Component {
     }
     // Shuffle them
     for (let i = 0; i < 5; i++) {
-      setTimeout(() => {
-        // this.doReassignKeys(e);
-        this.doMix();
-      }, 500 + 100 * i);
+      setTimeout(
+        () => {
+          // this.doReassignKeys(e);
+          this.doMix();
+        },
+        500 + 100 * i
+      );
     }
   };
 
