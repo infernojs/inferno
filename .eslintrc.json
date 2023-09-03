@@ -19,6 +19,7 @@
   "rules": {
     "@typescript-eslint/triple-slash-reference": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
     "no-void": "off"
   }
 }
