@@ -45,7 +45,7 @@ function hydrateComponent(
   context,
   isSVG: boolean,
   isClass: boolean,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   const type = vNode.type as Function;
@@ -69,7 +69,7 @@ function hydrateComponent(
   return currentNode;
 }
 
-function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG, lifecycle: Function[], animations: AnimationQueues) {
+function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, isSVG, lifecycle: Array<() => void>, animations: AnimationQueues) {
   const childFlags = parentVNode.childFlags;
   const children = parentVNode.children;
   const props = parentVNode.props;
@@ -130,7 +130,7 @@ function hydrateChildren(parentVNode: VNode, parentNode, currentNode, context, i
   }
 }
 
-function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Function[], animations: AnimationQueues) {
+function hydrateElement(vNode: VNode, parentDOM: Element, dom: Element, context: Object, isSVG: boolean, lifecycle: Array<() => void>, animations: AnimationQueues) {
   const props = vNode.props;
   const className = vNode.className;
   const flags = vNode.flags;
@@ -181,7 +181,7 @@ function hydrateText(vNode: VNode, parentDOM: Element, dom: Element) {
   return vNode.dom;
 }
 
-function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, lifecycle: Function[], animations: AnimationQueues): Element {
+function hydrateFragment(vNode: VNode, parentDOM: Element, dom: Element, context, isSVG: boolean, lifecycle: Array<() => void>, animations: AnimationQueues): Element {
   const children = vNode.children;
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
@@ -201,7 +201,7 @@ function hydrateVNode(
   currentDom: Element,
   context: Object,
   isSVG: boolean,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ): Element | null {
   const flags = (vNode.flags |= VNodeFlags.InUse);
@@ -236,7 +236,7 @@ export function hydrate(input, parentDOM: Element, callback?: Function) {
     }
     render(input, parentDOM, callback);
   } else {
-    const lifecycle: Function[] = [];
+    const lifecycle: Array<() => void> = [];
     const animations: AnimationQueues = new AnimationQueues();
 
     if (!isInvalid(input)) {

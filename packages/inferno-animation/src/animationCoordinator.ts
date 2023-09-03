@@ -57,8 +57,8 @@ export function consumeGlobalAnimationSource(key: GlobalAnimationKey) {
   return tmp;
 }
 
-let _animationQueue: Function[] = [];
-let _animationActivationQueue: Function[] = [];
+let _animationQueue: Array<() => void> = [];
+let _animationActivationQueue: Array<() => void> = [];
 const IDLE = 0;
 let _nextAnimationFrame: number = IDLE;
 let _nextActivateAnimationFrame: number = IDLE;

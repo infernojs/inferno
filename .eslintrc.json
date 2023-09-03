@@ -17,6 +17,8 @@
   },
   "plugins": ["prettier"],
   "rules": {
-    "@typescript-eslint/triple-slash-reference": "off"
+    "@typescript-eslint/triple-slash-reference": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "no-void": "off"
   }
 }

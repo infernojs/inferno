@@ -15,6 +15,16 @@ interface InfernoNodeArray extends Array<InfernoNode> {}
 export type InfernoFragment = {} | InfernoNodeArray;
 export type InfernoSingleNode = InfernoChild | boolean | null | undefined;
 export type InfernoNode = InfernoSingleNode | InfernoFragment;
+export type NonEmptyProps = Record<string, unknown>;
+export type ContextObject = Record<string, unknown>;
+export type ParentDOM =
+  | Element
+  | SVGAElement
+  | ShadowRoot
+  | DocumentFragment
+  | HTMLElement
+  | Node
+  | null;
 
 // IComponent is defined here, instead of Component to de-couple implementation from interface
 export interface IComponent<P, S> {

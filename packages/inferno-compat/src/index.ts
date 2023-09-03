@@ -1,5 +1,5 @@
 import {
-  __render,
+  renderInternal,
   _CI,
   _HI,
   _M,
@@ -53,7 +53,7 @@ declare global {
 options.reactStyles = true;
 
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
-  __render(null, container, null, null);
+  renderInternal(null, container, null, null);
   return true;
 }
 
@@ -329,7 +329,7 @@ function createFactory(type) {
 }
 
 function render(rootInput, container, cb = null, context = EMPTY_OBJ) {
-  __render(rootInput, container, cb, context);
+  renderInternal(rootInput, container, cb, context);
 
   const input = container.$V;
 
@@ -356,7 +356,7 @@ if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined
     _MFCC,
     _MP,
     _MR,
-    __render,
+    __render: renderInternal,
     // Public methods
     cloneElement: cloneVNode,
     cloneVNode,
@@ -407,7 +407,7 @@ export {
   _MFCC,
   _MP,
   _MR,
-  __render,
+  renderInternal,
   // Public methods
   cloneVNode as cloneElement,
   cloneVNode,
@@ -454,7 +454,7 @@ export default {
   _MFCC,
   _MP,
   _MR,
-  __render,
+  __render: renderInternal,
   // Public methods
   cloneElement: cloneVNode,
   cloneVNode,

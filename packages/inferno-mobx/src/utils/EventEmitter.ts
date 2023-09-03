@@ -1,5 +1,5 @@
 export class EventEmitter {
-  public listeners: Function[] = [];
+  public listeners: Array<() => void> = [];
 
   public on(cb: Function) {
     this.listeners.push(cb);

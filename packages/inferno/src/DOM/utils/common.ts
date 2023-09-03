@@ -1,24 +1,38 @@
-import type { Inferno, InfernoNode, LinkedEvent, VNode } from './../../core/types';
-import { combineFrom, isFunction, isNull, isNullOrUndef, isUndefined } from 'inferno-shared';
+import type {
+  Inferno,
+  InfernoNode,
+  LinkedEvent,
+  ParentDOM,
+  VNode,
+} from './../../core/types';
+import {
+  combineFrom,
+  isFunction,
+  isNull,
+  isNullOrUndef,
+  isUndefined,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isLinkEventObject } from '../events/linkEvent';
 
 // We need EMPTY_OBJ defined in one place.
 // It's used for comparison, so we can't inline it into shared
 export const EMPTY_OBJ = {};
-// @ts-ignore
-export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> = '$F';
 
-export type MoveQueueItem = {
+// @ts-expect-error hack for fragment type
+export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> =
+  '$F';
+
+export interface MoveQueueItem {
   parent: Element;
   dom: Element;
   next: Element;
-  fn: Function;
-};
+  fn: () => void;
+}
 
 export class AnimationQueues {
-  public componentDidAppear: Function[] = [];
-  public componentWillDisappear: Function[] = [];
+  public componentDidAppear: Array<() => void> = [];
+  public componentWillDisappear: Array<() => void> = [];
   public componentWillMove: MoveQueueItem[] = [];
 }
 
@@ -26,15 +40,15 @@ if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
 }
 
-export function normalizeEventName(name) {
+export function normalizeEventName(name): string {
   return name.substring(2).toLowerCase();
 }
 
-export function appendChild(parentDOM, dom) {
+export function appendChild(parentDOM, dom): void {
   parentDOM.appendChild(dom);
 }
 
-export function insertOrAppend(parentDOM: Element, newNode, nextNode) {
+export function insertOrAppend(parentDOM: Element, newNode, nextNode): void {
   if (isNull(nextNode)) {
     appendChild(parentDOM, newNode);
   } else {
@@ -50,54 +64,67 @@ export function documentCreateElement(tag, isSVG: boolean): Element {
   return document.createElement(tag);
 }
 
-export function replaceChild(parentDOM: Element, newDom, lastDom) {
+export function replaceChild(parentDOM: Element, newDom, lastDom): void {
   parentDOM.replaceChild(newDom, lastDom);
 }
 
-export function removeChild(parentDOM: Element, childNode: Element) {
+export function removeChild(parentDOM: Element, childNode: Element): void {
   parentDOM.removeChild(childNode);
 }
 
-export function callAll(arrayFn: Function[]) {
+export function callAll(arrayFn: Array<() => void>): void {
   for (let i = 0; i < arrayFn.length; i++) {
     arrayFn[i]();
   }
 }
 
-function findChildVNode(vNode: VNode, startEdge: boolean, flags: VNodeFlags) {
+function findChildVNode(
+  vNode: VNode,
+  startEdge: boolean,
+  flags: VNodeFlags,
+): InfernoNode {
   const children = vNode.children;
 
-  if (flags & VNodeFlags.ComponentClass) {
+  if ((flags & VNodeFlags.ComponentClass) !== 0) {
     return (children as any).$LI;
   }
 
-  if (flags & VNodeFlags.Fragment) {
-    return vNode.childFlags === ChildFlags.HasVNodeChildren ? (children as VNode) : (children as VNode[])[startEdge ? 0 : (children as VNode[]).length - 1];
+  if ((flags & VNodeFlags.Fragment) !== 0) {
+    return vNode.childFlags === ChildFlags.HasVNodeChildren
+      ? (children as VNode)
+      : (children as VNode[])[startEdge ? 0 : (children as VNode[]).length - 1];
   }
 
   return children;
 }
 
-export function findDOMFromVNode(vNode: VNode, startEdge: boolean): Element | null {
-  let flags;
+export function findDOMFromVNode(
+  vNode: VNode,
+  startEdge: boolean,
+): Element | null {
+  let flags: VNodeFlags;
+  let v: VNode | null = vNode;
 
-  while (vNode) {
-    flags = vNode.flags;
+  while (!isNullOrUndef(v)) {
+    flags = v.flags;
 
-    if (flags & VNodeFlags.DOMRef) {
-      return vNode.dom;
+    if ((flags & VNodeFlags.DOMRef) !== 0) {
+      return v.dom;
     }
 
-    vNode = findChildVNode(vNode, startEdge, flags);
+    v = findChildVNode(v, startEdge, flags) as VNode | null;
   }
 
   return null;
 }
 
-export function callAllAnimationHooks(animationQueue: Function[], callback?: Function) {
+export function callAllAnimationHooks(
+  animationQueue: Array<() => void>,
+  callback?: () => void,
+): void {
   let animationsLeft: number = animationQueue.length;
   // Picking from the top because it is faster, invocation order should be irrelevant
-  // since all animations are to be run and we can't predict the order in which they complete.
+  // since all animations are to be run, and we can't predict the order in which they complete.
   let fn;
   while ((fn = animationQueue.pop()) !== undefined) {
     fn(() => {
@@ -108,7 +135,9 @@ export function callAllAnimationHooks(animationQueue: Function[], callback?: Fun
   }
 }
 
-export function callAllMoveAnimationHooks(animationQueue: MoveQueueItem[]) {
+export function callAllMoveAnimationHooks(
+  animationQueue: MoveQueueItem[],
+): void {
   // Start the animations.
   for (let i = 0; i < animationQueue.length; i++) {
     animationQueue[i].fn();
@@ -123,11 +152,15 @@ export function callAllMoveAnimationHooks(animationQueue: MoveQueueItem[]) {
   animationQueue.splice(0, animationQueue.length);
 }
 
-export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferredRemoval: boolean) {
-  do {
+export function clearVNodeDOM(
+  vNode: VNode | null,
+  parentDOM: Element,
+  deferredRemoval: boolean,
+): void {
+  while (!isNullOrUndef(vNode)) {
     const flags = vNode.flags;
 
-    if (flags & VNodeFlags.DOMRef) {
+    if ((flags & VNodeFlags.DOMRef) !== 0) {
       // On deferred removals the node might disappear because of later operations
       if (!deferredRemoval || (vNode.dom as Element).parentNode === parentDOM) {
         removeChild(parentDOM, vNode.dom as Element);
@@ -136,14 +169,14 @@ export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferredRemoval:
     }
     const children = vNode.children as any;
 
-    if (flags & VNodeFlags.ComponentClass) {
+    if ((flags & VNodeFlags.ComponentClass) !== 0) {
       vNode = children.$LI;
     }
-    if (flags & VNodeFlags.ComponentFunction) {
+    if ((flags & VNodeFlags.ComponentFunction) !== 0) {
       vNode = children;
     }
-    if (flags & VNodeFlags.Fragment) {
-      if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    if ((flags & VNodeFlags.Fragment) !== 0) {
+      if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
@@ -152,7 +185,7 @@ export function clearVNodeDOM(vNode: VNode, parentDOM: Element, deferredRemoval:
         return;
       }
     }
-  } while (vNode);
+  }
 }
 
 function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
@@ -162,96 +195,153 @@ function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
   };
 }
 
-export function removeVNodeDOM(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
+export function removeVNodeDOM(
+  vNode: VNode,
+  parentDOM: Element,
+  animations: AnimationQueues,
+): void {
   if (animations.componentWillDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
-    callAllAnimationHooks(animations.componentWillDisappear, createDeferComponentClassRemovalCallback(vNode, parentDOM));
+    callAllAnimationHooks(
+      animations.componentWillDisappear,
+      createDeferComponentClassRemovalCallback(vNode, parentDOM),
+    );
   } else {
     clearVNodeDOM(vNode, parentDOM, false);
   }
 }
 
-function addMoveAnimationHook(animations: AnimationQueues, parentVNode, refOrInstance, dom: Element, parentDOM: Element, nextNode: Element, flags, props?) {
+function addMoveAnimationHook(
+  animations: AnimationQueues,
+  parentVNode,
+  refOrInstance,
+  dom: Element,
+  parentDOM: Element,
+  nextNode: Element,
+  flags,
+  props?,
+): void {
   animations.componentWillMove.push({
     dom,
     fn: () => {
-      if (flags & VNodeFlags.ComponentClass) {
+      if ((flags & VNodeFlags.ComponentClass) !== 0) {
         refOrInstance.componentWillMove(parentVNode, parentDOM, dom);
-      } else if (flags & VNodeFlags.ComponentFunction) {
+      } else if ((flags & VNodeFlags.ComponentFunction) !== 0) {
         refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, props);
       }
     },
     next: nextNode,
-    parent: parentDOM
+    parent: parentDOM,
   });
 }
 
-export function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations: AnimationQueues) {
+export function moveVNodeDOM(
+  parentVNode,
+  vNode,
+  parentDOM,
+  nextNode,
+  animations: AnimationQueues,
+): void {
   let refOrInstance;
   let instanceProps;
   const instanceFlags = vNode.flags;
-  do {
+
+  while (!isNullOrUndef(vNode)) {
     const flags = vNode.flags;
 
-    if (flags & VNodeFlags.DOMRef) {
-      if (!isNullOrUndef(refOrInstance) && (isFunction(refOrInstance.componentWillMove) || isFunction(refOrInstance.onComponentWillMove))) {
-        addMoveAnimationHook(animations, parentVNode, refOrInstance, vNode.dom, parentDOM, nextNode, instanceFlags, instanceProps);
+    if ((flags & VNodeFlags.DOMRef) !== 0) {
+      if (
+        !isNullOrUndef(refOrInstance) &&
+        (isFunction(refOrInstance.componentWillMove) ||
+          isFunction(refOrInstance.onComponentWillMove))
+      ) {
+        addMoveAnimationHook(
+          animations,
+          parentVNode,
+          refOrInstance,
+          vNode.dom,
+          parentDOM,
+          nextNode,
+          instanceFlags,
+          instanceProps,
+        );
       } else {
         // TODO: Should we delay this too to support mixing animated moves with regular?
         insertOrAppend(parentDOM, vNode.dom, nextNode);
       }
       return;
     }
-    const children = vNode.children as any;
+    const children = vNode.children;
 
-    if (flags & VNodeFlags.ComponentClass) {
+    if ((flags & VNodeFlags.ComponentClass) !== 0) {
       refOrInstance = vNode.children;
       // TODO: We should probably deprecate this in V9 since it is inconsitent with other class component hooks
       instanceProps = vNode.props;
       vNode = children.$LI;
-    } else if (flags & VNodeFlags.ComponentFunction) {
+    } else if ((flags & VNodeFlags.ComponentFunction) !== 0) {
       refOrInstance = vNode.ref;
       instanceProps = vNode.props;
       vNode = children;
-    } else if (flags & VNodeFlags.Fragment) {
+    } else if ((flags & VNodeFlags.Fragment) !== 0) {
       if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
-          moveVNodeDOM(parentVNode, children[i], parentDOM, nextNode, animations);
+          moveVNodeDOM(
+            parentVNode,
+            children[i],
+            parentDOM,
+            nextNode,
+            animations,
+          );
         }
         return;
       }
     }
-  } while (vNode);
+  }
 }
 
-export function getComponentName(instance): string {
-  // Fallback for IE
-  return instance.name || instance.displayName || instance.constructor.name || (instance.toString().match(/^function\s*([^\s(]+)/) || [])[1];
+export function getComponentName(instance: any): string {
+  // TODO: Fallback for IE
+  return (
+    instance.name ??
+    instance.displayName ??
+    instance.constructor.name ??
+    // eslint-disable-next-line
+    ((instance as any).toString().match(/^function\s*([^\s(]+)/) || [])[1]
+  );
 }
 
-export function createDerivedState(instance, nextProps, state) {
-  if (instance.constructor.getDerivedStateFromProps) {
-    return combineFrom(state, instance.constructor.getDerivedStateFromProps(nextProps, state));
+export function createDerivedState<TState>(
+  instance,
+  nextProps,
+  state: TState,
+): TState {
+  if (isFunction(instance.constructor.getDerivedStateFromProps)) {
+    return combineFrom(
+      state,
+      instance.constructor.getDerivedStateFromProps(nextProps, state),
+    );
   }
 
   return state;
 }
 
 export const renderCheck = {
-  v: false
+  v: false,
 };
 
 export const options: {
   componentComparator: ((lastVNode: VNode, nextVNode: VNode) => boolean) | null;
   createVNode: ((vNode: VNode) => void) | null;
-  renderComplete: ((rootInput: VNode | InfernoNode, parentDOM: Element | SVGAElement | ShadowRoot | DocumentFragment | HTMLElement | Node) => void) | null;
+  renderComplete:
+    | ((rootInput: VNode | InfernoNode, parentDOM: ParentDOM) => void)
+    | null;
   reactStyles?: boolean;
 } = {
   componentComparator: null,
   createVNode: null,
-  renderComplete: null
+  renderComplete: null,
 };
 
 export function setTextContent(dom: Element, children): void {
@@ -262,21 +352,30 @@ export function setTextContent(dom: Element, children): void {
 export function isLastValueSameLinkEvent(lastValue, nextValue): boolean {
   return (
     isLinkEventObject(lastValue) &&
-    (lastValue as LinkedEvent<any, any>).event === (nextValue as LinkedEvent<any, any>).event &&
-    (lastValue as LinkedEvent<any, any>).data === (nextValue as LinkedEvent<any, any>).data
+    lastValue.event === (nextValue as LinkedEvent<any, any>).event &&
+    lastValue.data === (nextValue as LinkedEvent<any, any>).data
   );
 }
 
-export function mergeUnsetProperties(to, from) {
+export function mergeUnsetProperties<TTo, TFrom>(
+  to: TTo,
+  from: TFrom,
+): TTo & TFrom {
   for (const propName in from) {
+    // @ts-expect-error merge objects
     if (isUndefined(to[propName])) {
+      // @ts-expect-error merge objects
       to[propName] = from[propName];
     }
   }
 
+  // @ts-expect-error merge objects
   return to;
 }
 
-export function safeCall1(method: Function | null | undefined, arg1: any): boolean {
-  return !!isFunction(method) && (method(arg1), true);
+export function safeCall1(
+  method: Function | null | undefined,
+  arg1: any,
+): boolean {
+  return isFunction(method) && (method(arg1), true);
 }

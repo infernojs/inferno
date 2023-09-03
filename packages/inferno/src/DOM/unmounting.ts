@@ -2,21 +2,32 @@ import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
-import { AnimationQueues, callAllAnimationHooks, clearVNodeDOM, EMPTY_OBJ, findDOMFromVNode, removeVNodeDOM } from './utils/common';
+import {
+  AnimationQueues,
+  callAllAnimationHooks,
+  clearVNodeDOM,
+  EMPTY_OBJ,
+  findDOMFromVNode,
+  removeVNodeDOM,
+} from './utils/common';
 import { unmountRef } from '../core/refs';
 
-export function remove(vNode: VNode, parentDOM: Element, animations: AnimationQueues) {
+export function remove(
+  vNode: VNode,
+  parentDOM: Element,
+  animations: AnimationQueues,
+): void {
   unmount(vNode, animations);
   removeVNodeDOM(vNode, parentDOM, animations);
 }
 
-export function unmount(vNode, animations: AnimationQueues) {
+export function unmount(vNode, animations: AnimationQueues): void {
   const flags = vNode.flags;
   const children = vNode.children;
   let ref;
 
-  if (flags & VNodeFlags.Element) {
-    ref = vNode.ref as any;
+  if ((flags & VNodeFlags.Element) !== 0) {
+    ref = vNode.ref;
     const props = vNode.props;
 
     unmountRef(ref);
@@ -50,7 +61,13 @@ export function unmount(vNode, animations: AnimationQueues) {
       let childAnimations = animations;
       if (isFunction(children.componentWillDisappear)) {
         childAnimations = new AnimationQueues();
-        addDisappearAnimationHook(animations, children, children.$LI.dom, flags, undefined);
+        addDisappearAnimationHook(
+          animations,
+          children,
+          children.$LI.dom,
+          flags,
+          undefined,
+        );
       }
 
       unmountRef(vNode.ref);
@@ -70,7 +87,13 @@ export function unmount(vNode, animations: AnimationQueues) {
         if (isFunction(ref.onComponentWillDisappear)) {
           childAnimations = new AnimationQueues();
           domEl = domEl || findDOMFromVNode(vNode, true);
-          addDisappearAnimationHook(animations, ref, domEl as Element, flags, vNode.props);
+          addDisappearAnimationHook(
+            animations,
+            ref,
+            domEl as Element,
+            flags,
+            vNode.props,
+          );
         }
       }
       unmount(children, childAnimations);
@@ -84,7 +107,10 @@ export function unmount(vNode, animations: AnimationQueues) {
   }
 }
 
-export function unmountAllChildren(children: VNode[], animations: AnimationQueues) {
+export function unmountAllChildren(
+  children: VNode[],
+  animations: AnimationQueues,
+) {
   for (let i = 0, len = children.length; i < len; ++i) {
     unmount(children[i], animations);
   }
@@ -101,18 +127,30 @@ function createClearAllCallback(children, parentDOM) {
     }
   };
 }
-export function clearDOM(parentDOM, children: VNode[], animations: AnimationQueues) {
+export function clearDOM(
+  parentDOM,
+  children: VNode[],
+  animations: AnimationQueues,
+) {
   if (animations.componentWillDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
     // Be aware that the element could be removed by a later operation
-    callAllAnimationHooks(animations.componentWillDisappear, createClearAllCallback(children, parentDOM));
+    callAllAnimationHooks(
+      animations.componentWillDisappear,
+      createClearAllCallback(children, parentDOM),
+    );
   } else {
     // Optimization for clearing dom
     parentDOM.textContent = '';
   }
 }
 
-export function removeAllChildren(dom: Element, vNode: VNode, children, animations: AnimationQueues) {
+export function removeAllChildren(
+  dom: Element,
+  vNode: VNode,
+  children,
+  animations: AnimationQueues,
+) {
   unmountAllChildren(children, animations);
 
   if (vNode.flags & VNodeFlags.Fragment) {
@@ -123,7 +161,13 @@ export function removeAllChildren(dom: Element, vNode: VNode, children, animatio
 }
 
 // Only add animations to queue in browser
-function addDisappearAnimationHook(animations: AnimationQueues, instanceOrRef, dom: Element, flags: VNodeFlags, props) {
+function addDisappearAnimationHook(
+  animations: AnimationQueues,
+  instanceOrRef,
+  dom: Element,
+  flags: VNodeFlags,
+  props,
+) {
   animations.componentWillDisappear.push((callback: Function) => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentWillDisappear(dom, callback);

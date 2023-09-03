@@ -1,4 +1,3 @@
-export * from './core/types';
 import { warning } from 'inferno-shared';
 import {
   createComponentVNode,
@@ -9,37 +8,53 @@ import {
   directClone,
   getFlagsForElementVnode,
   normalizeProps,
-  normalizeRoot
+  normalizeRoot,
 } from './core/implementation';
 import { linkEvent } from './DOM/events/linkEvent';
-import { __render, createRenderer, render } from './DOM/rendering';
-import { AnimationQueues, EMPTY_OBJ, findDOMFromVNode, Fragment, options } from './DOM/utils/common';
-import { Component, ComponentType, rerender } from './core/component';
+import { renderInternal, createRenderer, render } from './DOM/rendering';
+import {
+  AnimationQueues,
+  EMPTY_OBJ,
+  findDOMFromVNode,
+  Fragment,
+  options,
+} from './DOM/utils/common';
+import { Component, type ComponentType, rerender } from './core/component';
 import { mountProps } from './DOM/props';
-import { createClassComponentInstance, renderFunctionalComponent } from './DOM/utils/componentUtil';
-import { mount, mountClassComponentCallbacks, mountElement, mountFunctionalComponentCallbacks } from './DOM/mounting';
+import {
+  createClassComponentInstance,
+  renderFunctionalComponent,
+} from './DOM/utils/componentUtil';
+import {
+  mount,
+  mountClassComponentCallbacks,
+  mountElement,
+  mountFunctionalComponentCallbacks,
+} from './DOM/mounting';
 import { createRef, forwardRef, mountRef } from './core/refs';
+export * from './core/types';
 
 if (process.env.NODE_ENV !== 'production') {
   // Checks if Inferno is running in jest testing environment.
-  const testingEnv = typeof process === 'object' && process.env && process.env.JEST_WORKER_ID !== undefined;
+  const testingEnv =
+    typeof process === 'object' && process.env?.JEST_WORKER_ID !== undefined;
 
   // This message informs developers that they are using development mode (can happen
   // in production because of bundling mistakes) and, therefore, Inferno is slower
   // than in production mode. Skipping the notification for testing mode to keep testing
   // console clear.
 
-  /* tslint:disable-next-line:no-empty */
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const testFunc = function testFn() {};
-  /* tslint:disable-next-line*/
   console.log('Inferno is in development mode.');
 
+  // eslint-disable-next-line
   if (!testingEnv && ((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
     warning(
       "It looks like you're using a minified copy of the development build " +
         'of Inferno. When deploying Inferno apps to production, make sure to use ' +
         'the production build which skips development warnings and is faster. ' +
-        'See http://infernojs.org for more details.'
+        'See http://infernojs.org for more details.',
     );
   }
 }
@@ -49,7 +64,7 @@ const version = process.env.INFERNO_VERSION;
 export {
   AnimationQueues,
   Component,
-  ComponentType,
+  type ComponentType,
   Fragment,
   EMPTY_OBJ,
   createComponentVNode,
@@ -78,6 +93,6 @@ export {
   mountFunctionalComponentCallbacks as _MFCC,
   mountRef as _MR,
   mountProps as _MP,
-  __render,
-  renderFunctionalComponent as _RFC
+  renderInternal,
+  renderFunctionalComponent as _RFC,
 };

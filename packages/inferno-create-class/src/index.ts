@@ -68,7 +68,7 @@ function bindAll<P, S>(ctx: Component<P, S>) {
   }
 }
 
-function collateMixins(mixins: Function[] | any[], keyed = {}): any {
+function collateMixins(mixins: Array<() => void> | any[], keyed = {}): any {
   for (let i = 0, len = mixins.length; i < len; ++i) {
     const mixin = mixins[i];
 
@@ -78,7 +78,7 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
       collateMixins(mixin.mixins, keyed);
     }
 
-    for (const key in mixin as Function[]) {
+    for (const key in mixin as Array<() => void>) {
       if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
         (keyed[key] || (keyed[key] = [])).push(mixin[key]);
       }
@@ -87,7 +87,7 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
   return keyed;
 }
 
-function multihook(hooks: Function[], mergeFn?: Function): any {
+function multihook(hooks: Array<() => void>, mergeFn?: Function): any {
   return function () {
     let ret;
 
@@ -129,7 +129,7 @@ function mergeNoDupes(previous: any, current: any) {
   return previous;
 }
 
-function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
+function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Array<() => void>): void {
   const hooks = inst[key] !== void 0 ? mixin.concat(inst[key]) : mixin;
 
   if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
@@ -139,7 +139,7 @@ function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[])
   }
 }
 
-function applyMixins(Cl: any, mixins: Function[] | any[]) {
+function applyMixins(Cl: any, mixins: Array<() => void> | any[]) {
   for (const key in mixins) {
     if (mixins.hasOwnProperty(key)) {
       const mixin = mixins[key];

@@ -1,13 +1,35 @@
 import type { ForwardRef, InfernoNode, Ref, Refs, VNode } from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { combineFrom, isArray, isInvalid, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
-import { throwIfObjectIsNotVNode, validateVNodeElementChildren } from './validate';
+import {
+  combineFrom,
+  isArray,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isString,
+  isStringOrNumber,
+  throwError,
+} from 'inferno-shared';
+import {
+  throwIfObjectIsNotVNode,
+  validateVNodeElementChildren,
+} from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
-import { ComponentType } from './component';
+import { type ComponentType } from './component';
 
 const keyPrefix = '$';
 
-function V(childFlags: ChildFlags, children, className: string | null | undefined, flags: VNodeFlags, key, props, ref, type) {
+function V(
+  childFlags: ChildFlags,
+  children,
+  className: string | null | undefined,
+  flags: VNodeFlags,
+  key,
+  props,
+  ref,
+  type,
+) {
   if (process.env.NODE_ENV !== 'production') {
     this.isValidated = false;
   }
@@ -30,15 +52,27 @@ export function createVNode<P>(
   childFlags?: ChildFlags,
   props?: Readonly<P> | null,
   key?: string | number | null,
-  ref?: Ref | Refs<P> | null
+  ref?: Ref | Refs<P> | null,
 ): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.Component) {
-      throwError('Creating Component vNodes using createVNode is not allowed. Use Inferno.createComponentVNode method.');
+      throwError(
+        'Creating Component vNodes using createVNode is not allowed. Use Inferno.createComponentVNode method.',
+      );
     }
   }
-  const childFlag: ChildFlags = childFlags === void 0 ? ChildFlags.HasInvalidChildren : (childFlags as ChildFlags);
-  const vNode = new V(childFlag, children, className, flags, key, props, ref, type) as VNode;
+  const childFlag: ChildFlags =
+    childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags;
+  const vNode = new V(
+    childFlag,
+    children,
+    className,
+    flags,
+    key,
+    props,
+    ref,
+    type,
+  ) as VNode;
 
   if (options.createVNode) {
     options.createVNode(vNode);
@@ -60,7 +94,8 @@ function mergeDefaultHooks(flags, type, ref) {
     return ref;
   }
 
-  const defaultHooks = (flags & VNodeFlags.ForwardRef ? type.render : type).defaultHooks;
+  const defaultHooks = (flags & VNodeFlags.ForwardRef ? type.render : type)
+    .defaultHooks;
 
   if (isNullOrUndef(defaultHooks)) {
     return ref;
@@ -75,7 +110,8 @@ function mergeDefaultHooks(flags, type, ref) {
 
 function mergeDefaultProps(flags, type, props) {
   // set default props
-  const defaultProps = (flags & VNodeFlags.ForwardRef ? type.render : type).defaultProps;
+  const defaultProps = (flags & VNodeFlags.ForwardRef ? type.render : type)
+    .defaultProps;
 
   if (isNullOrUndef(defaultProps)) {
     return props;
@@ -93,7 +129,7 @@ function resolveComponentFlags(flags, type) {
     return flags;
   }
 
-  if (type.prototype && type.prototype.render) {
+  if (type.prototype?.render) {
     return VNodeFlags.ComponentClass;
   }
 
@@ -109,11 +145,13 @@ export function createComponentVNode<P>(
   type: Function | ComponentType<P> | ForwardRef<P, any>,
   props?: Readonly<P> | null,
   key?: null | string | number,
-  ref?: Ref | Refs<P> | null
-) {
+  ref?: Ref | Refs<P> | null,
+): VNode {
   if (process.env.NODE_ENV !== 'production') {
-    if (flags & VNodeFlags.HtmlElement) {
-      throwError('Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.');
+    if ((flags & VNodeFlags.HtmlElement) !== 0) {
+      throwError(
+        'Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.',
+      );
     }
   }
 
@@ -127,17 +165,20 @@ export function createComponentVNode<P>(
     key,
     mergeDefaultProps(flags, type, props),
     mergeDefaultHooks(flags, type, ref),
-    type
+    type,
   ) as VNode;
 
-  if (options.createVNode) {
+  if (isFunction(options.createVNode)) {
     options.createVNode(vNode);
   }
 
   return vNode;
 }
 
-export function createTextVNode(text?: string | boolean | null | number, key?: string | number | null): VNode {
+export function createTextVNode(
+  text?: string | boolean | null | number,
+  key?: string | number | null,
+): VNode {
   return new V(
     ChildFlags.HasInvalidChildren,
     isNullOrUndef(text) || text === true || text === false ? '' : text,
@@ -146,12 +187,25 @@ export function createTextVNode(text?: string | boolean | null | number, key?: s
     key,
     null,
     null,
-    null
+    null,
   ) as VNode;
 }
 
-export function createFragment(children: any, childFlags: ChildFlags, key?: string | number | null): VNode {
-  const fragment = createVNode(VNodeFlags.Fragment, VNodeFlags.Fragment as any, null, children, childFlags, null, key, null);
+export function createFragment(
+  children: any,
+  childFlags: ChildFlags,
+  key?: string | number | null,
+): VNode {
+  const fragment = createVNode(
+    VNodeFlags.Fragment,
+    VNodeFlags.Fragment as any,
+    null,
+    children,
+    childFlags,
+    null,
+    key,
+    null,
+  );
 
   switch (fragment.childFlags) {
     case ChildFlags.HasInvalidChildren:
@@ -194,7 +248,7 @@ export function normalizeProps(vNode) {
       if (flags & VNodeFlags.ComponentFunction) {
         vNode.ref = combineFrom(vNode.ref, props.ref);
       } else {
-        vNode.ref = props.ref as any;
+        vNode.ref = props.ref;
       }
 
       props.ref = undefined;
@@ -214,9 +268,11 @@ function cloneFragment(vNodeToClone) {
   const childFlags = vNodeToClone.childFlags;
 
   return createFragment(
-    childFlags === ChildFlags.HasVNodeChildren ? directClone(oldChildren as VNode) : oldChildren.map(directClone),
+    childFlags === ChildFlags.HasVNodeChildren
+      ? directClone(oldChildren as VNode)
+      : oldChildren.map(directClone),
     childFlags,
-    vNodeToClone.key
+    vNodeToClone.key,
   );
 }
 
@@ -242,7 +298,7 @@ export function directClone(vNodeToClone: VNode): VNode {
       vNodeToClone.key,
       props,
       vNodeToClone.ref,
-      vNodeToClone.type
+      vNodeToClone.type,
     ) as VNode;
   }
 
@@ -256,10 +312,24 @@ export function createVoidVNode(): VNode {
 export function createPortal(children, container) {
   const normalizedRoot = normalizeRoot(children);
 
-  return createVNode(VNodeFlags.Portal, VNodeFlags.Portal as any, null, normalizedRoot, ChildFlags.UnknownChildren, null, normalizedRoot.key, container);
+  return createVNode(
+    VNodeFlags.Portal,
+    VNodeFlags.Portal as any,
+    null,
+    normalizedRoot,
+    ChildFlags.UnknownChildren,
+    null,
+    normalizedRoot.key,
+    container,
+  );
 }
 
-export function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey: string) {
+export function _normalizeVNodes(
+  nodes: any[],
+  result: VNode[],
+  index: number,
+  currentKey: string,
+) {
   for (const len = nodes.length; index < len; index++) {
     let n = nodes[index];
 
@@ -311,7 +381,7 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
       return VNodeFlags.SelectElement;
     case 'textarea':
       return VNodeFlags.TextareaElement;
-    // @ts-ignore
+    // @ts-expect-error
     case Fragment:
       return VNodeFlags.Fragment;
     default:
@@ -348,7 +418,8 @@ export function normalizeChildren(vNode: VNode, children) {
           throwIfObjectIsNotVNode(n);
         }
         const key = n.key;
-        const needsCloning: boolean = (n.flags & VNodeFlags.InUseOrNormalized) > 0;
+        const needsCloning: boolean =
+          (n.flags & VNodeFlags.InUseOrNormalized) > 0;
         const isNullKey: boolean = isNull(key);
         const isPrefixed: boolean = isString(key) && key[0] === keyPrefix;
 

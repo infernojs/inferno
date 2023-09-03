@@ -24,7 +24,7 @@ import { renderFunctionalComponent, renderNewInput } from './utils/componentUtil
 import { validateKeys } from '../core/validate';
 import { mountRef, unmountRef } from '../core/refs';
 
-function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Function[], animations: AnimationQueues) {
+function replaceWithNewNode(lastVNode, nextVNode, parentDOM: Element, context: Object, isSVG: boolean, lifecycle: Array<() => void>, animations: AnimationQueues) {
   unmount(lastVNode, animations);
 
   if ((nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0) {
@@ -44,7 +44,7 @@ export function patch(
   context: Object,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
@@ -102,7 +102,7 @@ function patchFragment(
   parentDOM: Element,
   context: Object,
   isSVG: boolean,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   const lastChildren = lastVNode.children as VNode[];
@@ -140,7 +140,7 @@ function patchFragment(
   patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle, animations);
 }
 
-function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Function[], animations: AnimationQueues) {
+function patchPortal(lastVNode: VNode, nextVNode: VNode, context, lifecycle: Array<() => void>, animations: AnimationQueues) {
   const lastContainer = lastVNode.ref as Element;
   const nextContainer = nextVNode.ref as Element;
   const nextChildren = nextVNode.children as VNode;
@@ -175,7 +175,7 @@ export function patchElement(
   context: Object,
   isSVG: boolean,
   nextFlags: VNodeFlags,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   const dom = (nextVNode.dom = lastVNode.dom as Element);
@@ -262,7 +262,7 @@ export function patchElement(
   }
 }
 
-function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Function[], animations: AnimationQueues) {
+function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG: boolean, lifecycle: Array<() => void>, animations: AnimationQueues) {
   unmount(lastChildren, animations);
 
   mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMFromVNode(lastChildren, true), lifecycle, animations);
@@ -280,7 +280,7 @@ function patchChildren(
   isSVG: boolean,
   nextNode: Element | null,
   parentVNode: VNode,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   switch (lastChildFlags) {
@@ -384,7 +384,7 @@ export function updateClassComponent(
   isSVG: boolean,
   force: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   const lastState = instance.state;
@@ -433,7 +433,7 @@ function patchClassComponent(
   context,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   const instance = (nextVNode.children = lastVNode.children);
@@ -479,7 +479,7 @@ function patchFunctionalComponent(
   context,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   let shouldUpdate: boolean = true;
@@ -527,7 +527,7 @@ function patchNonKeyedChildren(
   lastChildrenLength: number,
   nextChildrenLength: number,
   nextNode: Element | null,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -572,7 +572,7 @@ function patchKeyedChildren(
   bLength: number,
   outerEdge: Element | null,
   parentVNode: VNode,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   let aEnd = aLength - 1;
@@ -657,7 +657,7 @@ function patchKeyedChildrenComplex(
   isSVG: boolean,
   outerEdge: Element | null,
   parentVNode: VNode,
-  lifecycle: Function[],
+  lifecycle: Array<() => void>,
   animations: AnimationQueues
 ) {
   let aNode: VNode;

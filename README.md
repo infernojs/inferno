@@ -40,6 +40,13 @@ The performance is achieved through multiple optimizations, for example:
 - createRef and forwardRef APIs (v6)
 - componentDidAppear, componentWillDisappear and componentWillMove (v8) - class and function component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
 
+## Runtime requirements
+InfernoJS 9 requires following features to be present in the executing runtime:
+
+- `Promise`
+- `Array.prototype.includes()`
+- `Array.prototype.includes()`
+
 ## Browser support
 Since version 4 we have started running our test suite **without** any polyfills.
 Inferno is now part of [Saucelabs](https://saucelabs.com/) open source program and we use their service for executing the tests.

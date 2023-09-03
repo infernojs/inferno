@@ -1,18 +1,26 @@
-import { isNullOrUndef } from 'inferno-shared';
+import { isFunction, isNullOrUndef } from 'inferno-shared';
 import { createWrappedFunction } from './wrapper';
 import { attachEvent } from '../events/attachEvent';
+import { type NonEmptyProps } from '../../core/types';
 
-const onTextareaInputChange = createWrappedFunction('onInput', applyValueTextArea);
+const onTextareaInputChange = createWrappedFunction(
+  'onInput',
+  applyValueTextArea,
+);
 const wrappedOnChange = createWrappedFunction('onChange');
 
-export function textAreaEvents(dom, nextPropsOrEmpty) {
+export function textAreaEvents(dom, nextPropsOrEmpty): void {
   attachEvent(dom, 'input', onTextareaInputChange);
-  if (nextPropsOrEmpty.onChange) {
+  if (isFunction(nextPropsOrEmpty.onChange)) {
     attachEvent(dom, 'change', wrappedOnChange);
   }
 }
 
-export function applyValueTextArea(nextPropsOrEmpty, dom, mounting: boolean) {
+export function applyValueTextArea(
+  nextPropsOrEmpty: NonEmptyProps,
+  dom,
+  mounting: boolean,
+): void {
   const value = nextPropsOrEmpty.value;
   const domValue = dom.value;
 

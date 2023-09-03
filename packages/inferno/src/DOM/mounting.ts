@@ -1,34 +1,89 @@
 import type { VNode } from '../core/types';
-import { isFunction, isNull, isNullOrUndef, isString, isStringOrNumber, throwError } from 'inferno-shared';
+import {
+  isFunction,
+  isNull,
+  isNullOrUndef,
+  isString,
+  isStringOrNumber,
+  throwError,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
-import { AnimationQueues, documentCreateElement, EMPTY_OBJ, findDOMFromVNode, insertOrAppend, safeCall1, setTextContent } from './utils/common';
+import {
+  createVoidVNode,
+  directClone,
+  normalizeRoot,
+} from '../core/implementation';
+import {
+  AnimationQueues,
+  documentCreateElement,
+  EMPTY_OBJ,
+  findDOMFromVNode,
+  insertOrAppend,
+  safeCall1,
+  setTextContent,
+} from './utils/common';
 import { mountProps } from './props';
-import { createClassComponentInstance, renderFunctionalComponent } from './utils/componentUtil';
+import {
+  createClassComponentInstance,
+  renderFunctionalComponent,
+} from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
+import { ContextObject } from "../core/types";
 
 export function mount(
   vNode: VNode,
   parentDOM: Element | null,
-  context: Object,
+  context: ContextObject,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
-  animations: AnimationQueues
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
 ): void {
   const flags = (vNode.flags |= VNodeFlags.InUse);
 
-  if (flags & VNodeFlags.Element) {
-    mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
-  } else if (flags & VNodeFlags.ComponentClass) {
-    mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+  if ((flags & VNodeFlags.Element) !== 0) {
+    mountElement(
+      vNode,
+      parentDOM,
+      context,
+      isSVG,
+      nextNode,
+      lifecycle,
+      animations,
+    );
+  } else if ((flags & VNodeFlags.ComponentClass) !== 0) {
+    mountClassComponent(
+      vNode,
+      parentDOM,
+      context,
+      isSVG,
+      nextNode,
+      lifecycle,
+      animations,
+    );
   } else if (flags & VNodeFlags.ComponentFunction) {
-    mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    mountFunctionalComponent(
+      vNode,
+      parentDOM,
+      context,
+      isSVG,
+      nextNode,
+      lifecycle,
+      animations,
+    );
   } else if (flags & VNodeFlags.Text) {
     mountText(vNode, parentDOM, nextNode);
   } else if (flags & VNodeFlags.Fragment) {
-    mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle, animations);
+    mountFragment(
+      vNode,
+      context,
+      parentDOM,
+      isSVG,
+      nextNode,
+      lifecycle,
+      animations,
+    );
   } else if (flags & VNodeFlags.Portal) {
     mountPortal(vNode, context, parentDOM, nextNode, lifecycle, animations);
   } else if (process.env.NODE_ENV !== 'production') {
@@ -36,17 +91,34 @@ export function mount(
     if (typeof vNode === 'object') {
       throwError(
         `mount() received an object that's not a valid VNode, you should stringify it first, fix createVNode flags or call normalizeChildren. Object: "${JSON.stringify(
-          vNode
-        )}".`
+          vNode,
+        )}".`,
       );
     } else {
-      throwError(`mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
+      throwError(
+        `mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`,
+      );
     }
   }
 }
 
-function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Element | null, lifecycle: Function[], animations: AnimationQueues) {
-  mount(vNode.children as VNode, vNode.ref, context, false, null, lifecycle, animations);
+function mountPortal(
+  vNode,
+  context,
+  parentDOM: Element | null,
+  nextNode: Element | null,
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
+) {
+  mount(
+    vNode.children as VNode,
+    vNode.ref,
+    context,
+    false,
+    null,
+    lifecycle,
+    animations,
+  );
 
   const placeHolderVNode = createVoidVNode();
 
@@ -55,7 +127,15 @@ function mountPortal(vNode, context, parentDOM: Element | null, nextNode: Elemen
   vNode.dom = placeHolderVNode.dom;
 }
 
-function mountFragment(vNode, context, parentDOM: Element | null, isSVG, nextNode, lifecycle: Function[], animations: AnimationQueues): void {
+function mountFragment(
+  vNode,
+  context,
+  parentDOM: Element | null,
+  isSVG,
+  nextNode,
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
+): void {
   let children = vNode.children;
   let childFlags = vNode.childFlags;
 
@@ -67,14 +147,36 @@ function mountFragment(vNode, context, parentDOM: Element | null, isSVG, nextNod
   }
 
   if (childFlags === ChildFlags.HasVNodeChildren) {
-    mount(children as VNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    mount(
+      children as VNode,
+      parentDOM,
+      context,
+      isSVG,
+      nextNode,
+      lifecycle,
+      animations,
+    );
   } else {
-    mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    mountArrayChildren(
+      children,
+      parentDOM,
+      context,
+      isSVG,
+      nextNode,
+      lifecycle,
+      animations,
+    );
   }
 }
 
-export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Element | null): void {
-  const dom = (vNode.dom = document.createTextNode(vNode.children as string) as any);
+export function mountText(
+  vNode: VNode,
+  parentDOM: Element | null,
+  nextNode: Element | null,
+): void {
+  const dom = (vNode.dom = document.createTextNode(
+    vNode.children as string,
+  ) as any);
 
   if (!isNull(parentDOM)) {
     insertOrAppend(parentDOM, dom, nextNode);
@@ -84,17 +186,20 @@ export function mountText(vNode: VNode, parentDOM: Element | null, nextNode: Ele
 export function mountElement(
   vNode: VNode,
   parentDOM: Element | null,
-  context: Object,
+  context: unknown,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
-  animations: AnimationQueues
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
 ): void {
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
   const childFlags = vNode.childFlags;
-  const dom = (vNode.dom = documentCreateElement(vNode.type, (isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0)));
+  const dom = (vNode.dom = documentCreateElement(
+    vNode.type,
+    (isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0),
+  ));
   let children = vNode.children;
 
   if (!isNullOrUndef(className) && className !== '') {
@@ -118,9 +223,28 @@ export function mountElement(
       if ((children as VNode).flags & VNodeFlags.InUse) {
         vNode.children = children = directClone(children as VNode);
       }
-      mount(children as VNode, dom, context, childrenIsSVG, null, lifecycle, animations);
-    } else if (childFlags === ChildFlags.HasKeyedChildren || childFlags === ChildFlags.HasNonKeyedChildren) {
-      mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle, animations);
+      mount(
+        children as VNode,
+        dom,
+        context,
+        childrenIsSVG,
+        null,
+        lifecycle,
+        animations,
+      );
+    } else if (
+      childFlags === ChildFlags.HasKeyedChildren ||
+      childFlags === ChildFlags.HasNonKeyedChildren
+    ) {
+      mountArrayChildren(
+        children,
+        dom,
+        context,
+        childrenIsSVG,
+        null,
+        lifecycle,
+        animations,
+      );
     }
   }
 
@@ -134,7 +258,9 @@ export function mountElement(
 
   if (process.env.NODE_ENV !== 'production') {
     if (isString(vNode.ref)) {
-      throwError('string "refs" are not supported in Inferno 1.0. Use callback ref or Inferno.createRef() API instead.');
+      throwError(
+        'string "refs" are not supported in Inferno 1.0. Use callback ref or Inferno.createRef() API instead.',
+      );
     }
   }
   mountRef(vNode.ref, dom, lifecycle);
@@ -146,8 +272,8 @@ export function mountArrayChildren(
   context: Object,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
-  animations: AnimationQueues
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
 ): void {
   for (let i = 0; i < children.length; ++i) {
     let child = children[i];
@@ -165,17 +291,32 @@ export function mountClassComponent(
   context: Object,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle: Function[],
-  animations: AnimationQueues
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
 ) {
-  const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
+  const instance = createClassComponentInstance(
+    vNode,
+    vNode.type,
+    vNode.props || EMPTY_OBJ,
+    context,
+    isSVG,
+    lifecycle,
+  );
 
   // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
   let childAnimations = animations;
   if (isFunction(instance.componentDidAppear)) {
     childAnimations = new AnimationQueues();
   }
-  mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
+  mount(
+    instance.$LI,
+    parentDOM,
+    instance.$CX,
+    isSVG,
+    nextNode,
+    lifecycle,
+    childAnimations,
+  );
   mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
 }
 
@@ -186,7 +327,7 @@ export function mountFunctionalComponent(
   isSVG: boolean,
   nextNode: Element | null,
   lifecycle,
-  animations: AnimationQueues
+  animations: AnimationQueues,
 ): void {
   const ref = vNode.ref;
   // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
@@ -195,7 +336,15 @@ export function mountFunctionalComponent(
     childAnimations = new AnimationQueues();
   }
 
-  mount((vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))), parentDOM, context, isSVG, nextNode, lifecycle, childAnimations);
+  mount(
+    (vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context))),
+    parentDOM,
+    context,
+    isSVG,
+    nextNode,
+    lifecycle,
+    childAnimations,
+  );
   mountFunctionalComponentCallbacks(vNode, lifecycle, animations);
 }
 
@@ -205,7 +354,13 @@ function createClassMountCallback(instance) {
   };
 }
 
-function addAppearAnimationHook(animations: AnimationQueues, instanceOrRef, dom: Element, flags: VNodeFlags, props) {
+function addAppearAnimationHook(
+  animations: AnimationQueues,
+  instanceOrRef,
+  dom: Element,
+  flags: VNodeFlags,
+  props,
+) {
   animations.componentDidAppear.push(() => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentDidAppear(dom);
@@ -215,14 +370,27 @@ function addAppearAnimationHook(animations: AnimationQueues, instanceOrRef, dom:
   });
 }
 
-export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[], animations: AnimationQueues) {
+export function mountClassComponentCallbacks(
+  ref,
+  instance,
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
+) {
   mountRef(ref, instance, lifecycle);
 
   if (process.env.NODE_ENV !== 'production') {
     if (isStringOrNumber(ref)) {
-      throwError('string "refs" are not supported in Inferno 1.0. Use callback ref or Inferno.createRef() API instead.');
-    } else if (!isNullOrUndef(ref) && typeof ref === 'object' && ref.current === void 0) {
-      throwError('functional component lifecycle events are not supported on ES2015 class components.');
+      throwError(
+        'string "refs" are not supported in Inferno 1.0. Use callback ref or Inferno.createRef() API instead.',
+      );
+    } else if (
+      !isNullOrUndef(ref) &&
+      typeof ref === 'object' &&
+      ref.current === void 0
+    ) {
+      throwError(
+        'functional component lifecycle events are not supported on ES2015 class components.',
+      );
     }
   }
 
@@ -230,17 +398,30 @@ export function mountClassComponentCallbacks(ref, instance, lifecycle: Function[
     lifecycle.push(createClassMountCallback(instance));
   }
   if (isFunction(instance.componentDidAppear)) {
-    addAppearAnimationHook(animations, instance, instance.$LI.dom, VNodeFlags.ComponentClass, undefined);
+    addAppearAnimationHook(
+      animations,
+      instance,
+      instance.$LI.dom,
+      VNodeFlags.ComponentClass,
+      undefined,
+    );
   }
 }
 
 function createOnMountCallback(ref, vNode) {
   return () => {
-    ref.onComponentDidMount(findDOMFromVNode(vNode, true), vNode.props || EMPTY_OBJ);
+    ref.onComponentDidMount(
+      findDOMFromVNode(vNode, true),
+      vNode.props || EMPTY_OBJ,
+    );
   };
 }
 
-export function mountFunctionalComponentCallbacks(vNode: VNode, lifecycle: Function[], animations: AnimationQueues) {
+export function mountFunctionalComponentCallbacks(
+  vNode: VNode,
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
+) {
   const ref = vNode.ref;
 
   if (!isNullOrUndef(ref)) {
@@ -249,7 +430,13 @@ export function mountFunctionalComponentCallbacks(vNode: VNode, lifecycle: Funct
       lifecycle.push(createOnMountCallback(ref, vNode));
     }
     if (isFunction(ref.onComponentDidAppear)) {
-      addAppearAnimationHook(animations, ref, findDOMFromVNode(vNode, true) as Element, VNodeFlags.ComponentFunction, vNode.props);
+      addAppearAnimationHook(
+        animations,
+        ref,
+        findDOMFromVNode(vNode, true) as Element,
+        VNodeFlags.ComponentFunction,
+        vNode.props,
+      );
     }
   }
 }
