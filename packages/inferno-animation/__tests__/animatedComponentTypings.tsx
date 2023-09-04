@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { type InfernoNode, render } from 'inferno';
 import { AnimatedComponent } from 'inferno-animation';
 
 describe('inferno-animation AnimatedComponent', () => {
@@ -14,12 +14,12 @@ describe('inferno-animation AnimatedComponent', () => {
   });
 
   it('Should be possible to define typed props for AnimatedComponent', () => {
-    type MyProps = {
+    interface MyProps {
       number: number;
-    };
+    }
 
-    class MyComponent extends AnimatedComponent<MyProps> {
-      public render(props) {
+    class MyComponent extends AnimatedComponent<MyProps, any> {
+      public render(props): InfernoNode {
         return <div>{props.number}</div>;
       }
     }

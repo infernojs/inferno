@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, type InfernoNode } from 'inferno';
 import { renderToString } from 'inferno-server';
 import { AnimatedMoveComponent, componentWillMove } from 'inferno-animation';
 
@@ -10,16 +10,19 @@ describe('inferno-animation AnimatedMoveComponent', () => {
     document.body.appendChild(container);
   });
 
-  function waitForAnimationAndContinue(condition, callback, arg1?) {
+  function waitForAnimationAndContinue(condition, callback, arg1?): void {
     if (container.textContent !== condition) {
-      setTimeout(waitForAnimationAndContinue.bind(null, condition, callback, arg1), 10);
+      setTimeout(
+        waitForAnimationAndContinue.bind(null, condition, callback, arg1),
+        10,
+      );
       return;
     }
 
     callback(arg1);
   }
 
-  function afterEachClear(done) {
+  function afterEachClear(done): void {
     container.innerHTML = '';
     document.body.removeChild(container);
     done();
@@ -31,8 +34,8 @@ describe('inferno-animation AnimatedMoveComponent', () => {
   });
 
   it('should render class component extending AnimatedMoveComponent into DOM', () => {
-    class MyComponent extends AnimatedMoveComponent {
-      public render({ children }) {
+    class MyComponent extends AnimatedMoveComponent<any, any> {
+      public render({ children }): InfernoNode {
         return <div>{children}</div>;
       }
     }
@@ -42,8 +45,8 @@ describe('inferno-animation AnimatedMoveComponent', () => {
   });
 
   it('should remove class component extending AnimatedMoveComponent from DOM', (done) => {
-    class My extends AnimatedMoveComponent {
-      public render({ children }) {
+    class My extends AnimatedMoveComponent<any, any> {
+      public render({ children }): InfernoNode {
         return <div>{children}</div>;
       }
     }
@@ -54,7 +57,7 @@ describe('inferno-animation AnimatedMoveComponent', () => {
         <My key="#2">2</My>
         <My key="#3">3</My>
       </div>,
-      container
+      container,
     );
     expect(container.textContent).toBe('123');
 
@@ -63,7 +66,7 @@ describe('inferno-animation AnimatedMoveComponent', () => {
         <My key="#1">1</My>
         <My key="#3">3</My>
       </div>,
-      container
+      container,
     );
 
     /**
@@ -81,7 +84,7 @@ describe('inferno-animation AnimatedMoveComponent', () => {
           <My key="#1">1</My>
           <My key="#4">4</My>
         </div>,
-        container
+        container,
       );
 
       waitForAnimationAndContinue('14', function () {
@@ -91,8 +94,8 @@ describe('inferno-animation AnimatedMoveComponent', () => {
   });
 
   it('should move class component extending AnimatedMoveComponent from DOM', (done) => {
-    class My extends AnimatedMoveComponent {
-      public render({ children }) {
+    class My extends AnimatedMoveComponent<any, any> {
+      public render({ children }): InfernoNode {
         return <div>{children}</div>;
       }
     }
@@ -103,7 +106,7 @@ describe('inferno-animation AnimatedMoveComponent', () => {
         <My key="#2">2</My>
         <My key="#3">3</My>
       </div>,
-      container
+      container,
     );
     expect(container.textContent).toBe('123');
 
@@ -113,7 +116,7 @@ describe('inferno-animation AnimatedMoveComponent', () => {
         <My key="#3">3</My>
         <My key="#2">2</My>
       </div>,
-      container
+      container,
     );
 
     /**
@@ -132,7 +135,7 @@ describe('inferno-animation AnimatedMoveComponent', () => {
           <My key="#4">4</My>
           <My key="#1">1</My>
         </div>,
-        container
+        container,
       );
 
       waitForAnimationAndContinue('41', function () {
@@ -143,8 +146,8 @@ describe('inferno-animation AnimatedMoveComponent', () => {
   });
 
   it('should render class component extending AnimatedMoveComponent to a string', () => {
-    class MyComponent extends AnimatedMoveComponent {
-      public render({ children }) {
+    class MyComponent extends AnimatedMoveComponent<any, any> {
+      public render({ children }): InfernoNode {
         return <div>{children}</div>;
       }
     }
@@ -162,16 +165,19 @@ describe('inferno-animation animated functional component', () => {
     document.body.appendChild(container);
   });
 
-  function waitForAnimationAndContinue(condition, callback, arg1?) {
+  function waitForAnimationAndContinue(condition, callback, arg1?): void {
     if (container.textContent !== condition) {
-      setTimeout(waitForAnimationAndContinue.bind(null, condition, callback, arg1), 10);
+      setTimeout(
+        waitForAnimationAndContinue.bind(null, condition, callback, arg1),
+        10,
+      );
       return;
     }
 
     callback(arg1);
   }
 
-  function afterEachClear(done) {
+  function afterEachClear(done): void {
     container.innerHTML = '';
     document.body.removeChild(container);
     done();
@@ -183,21 +189,24 @@ describe('inferno-animation animated functional component', () => {
   });
 
   it('should render class component extending AnimatedMoveComponent into DOM', () => {
-    const MyComponent = ({ children }) => {
+    const MyComponent = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
 
-    render(<MyComponent onComponentWillMove={componentWillMove}>1</MyComponent>, container);
+    render(
+      <MyComponent onComponentWillMove={componentWillMove}>1</MyComponent>,
+      container,
+    );
     expect(container.textContent).toBe('1');
   });
 
   it('should remove class component extending AnimatedMoveComponent from DOM', (done) => {
-    const My = ({ children }) => {
+    const My = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
 
     const anim = {
-      onComponentWillMove: componentWillMove
+      onComponentWillMove: componentWillMove,
     };
 
     render(
@@ -212,7 +221,7 @@ describe('inferno-animation animated functional component', () => {
           3
         </My>
       </div>,
-      container
+      container,
     );
     expect(container.textContent).toBe('123');
 
@@ -225,7 +234,7 @@ describe('inferno-animation animated functional component', () => {
           3
         </My>
       </div>,
-      container
+      container,
     );
 
     /**
@@ -247,7 +256,7 @@ describe('inferno-animation animated functional component', () => {
             4
           </My>
         </div>,
-        container
+        container,
       );
 
       waitForAnimationAndContinue('14', function () {
@@ -257,12 +266,12 @@ describe('inferno-animation animated functional component', () => {
   });
 
   it('should move class component extending AnimatedMoveComponent from DOM', (done) => {
-    const My = ({ children }) => {
+    const My = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
 
     const anim = {
-      onComponentWillMove: componentWillMove
+      onComponentWillMove: componentWillMove,
     };
 
     render(
@@ -277,7 +286,7 @@ describe('inferno-animation animated functional component', () => {
           3
         </My>
       </div>,
-      container
+      container,
     );
     expect(container.textContent).toBe('123');
 
@@ -293,7 +302,7 @@ describe('inferno-animation animated functional component', () => {
           2
         </My>
       </div>,
-      container
+      container,
     );
 
     /**
@@ -316,7 +325,7 @@ describe('inferno-animation animated functional component', () => {
             1
           </My>
         </div>,
-        container
+        container,
       );
 
       waitForAnimationAndContinue('41', function () {
@@ -327,12 +336,12 @@ describe('inferno-animation animated functional component', () => {
   });
 
   it('should render class component extending AnimatedMoveComponent to a string', () => {
-    const MyComponent = ({ children }) => {
+    const MyComponent = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
 
     const anim = {
-      onComponentWillMove: componentWillMove
+      onComponentWillMove: componentWillMove,
     };
 
     const outputStr = renderToString(<MyComponent {...anim}>1</MyComponent>);
