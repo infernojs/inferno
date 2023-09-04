@@ -10,37 +10,46 @@ export const enum AnimationPhase {
   ACTIVATE_TRANSITIONS,
   REGISTER_LISTENERS,
   ACTIVATE_ANIMATION,
-  length // This will equal length of actual phases since TS converts this to a zero based list of ints
+  length, // This will equal length of actual phases since TS converts this to a zero based list of ints
 }
 
 type GlobalAnimationKey = string;
-export type GlobalAnimationState = {
+export interface GlobalAnimationState {
   width: number;
   height: number;
   x: number;
   y: number;
   ticks: number;
-};
-const _globalAnimationSources: { [index: GlobalAnimationKey]: GlobalAnimationState } = {};
+}
+const _globalAnimationSources: Record<
+  GlobalAnimationKey,
+  GlobalAnimationState
+> = {};
 let _globalAnimationGCTick: number | null = null;
 // TODO: Remove tempfix due to false tslint error I couldn't figure out how to disable (error TS6133)
 if (_globalAnimationGCTick === null) {
   _globalAnimationGCTick = null;
 }
 
-export function _globalAnimationGC() {
+export function _globalAnimationGC(): void {
   let entriesLeft = false;
 
   for (const key in _globalAnimationSources) {
     if (--_globalAnimationSources[key].ticks < 0) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete _globalAnimationSources[key];
     } else entriesLeft = true;
   }
 
-  _globalAnimationGCTick = entriesLeft ? requestAnimationFrame(_globalAnimationGC) : null;
+  _globalAnimationGCTick = entriesLeft
+    ? requestAnimationFrame(_globalAnimationGC)
+    : null;
 }
 
-export function addGlobalAnimationSource(key: GlobalAnimationKey, state: GlobalAnimationState) {
+export function addGlobalAnimationSource(
+  key: GlobalAnimationKey,
+  state: GlobalAnimationState,
+): void {
   state.ticks = 5;
   _globalAnimationSources[key] = state;
 
@@ -49,21 +58,24 @@ export function addGlobalAnimationSource(key: GlobalAnimationKey, state: GlobalA
   }
 }
 
-export function consumeGlobalAnimationSource(key: GlobalAnimationKey) {
+export function consumeGlobalAnimationSource(
+  key: GlobalAnimationKey,
+): GlobalAnimationState {
   const tmp = _globalAnimationSources[key];
   if (tmp !== undefined) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete _globalAnimationSources[key];
   }
   return tmp;
 }
 
-let _animationQueue: Array<() => void> = [];
-let _animationActivationQueue: Array<() => void> = [];
+let _animationQueue: Array<(phase: AnimationPhase) => void> = [];
+let _animationActivationQueue: Array<(phase: AnimationPhase) => void> = [];
 const IDLE = 0;
 let _nextAnimationFrame: number = IDLE;
 let _nextActivateAnimationFrame: number = IDLE;
 
-function _runActivateAnimationPhase() {
+function _runActivateAnimationPhase(): void {
   _nextActivateAnimationFrame = IDLE;
   // Get animations to execute
   const animationQueue = _animationActivationQueue;
@@ -75,7 +87,7 @@ function _runActivateAnimationPhase() {
   }
 }
 
-function _runAnimationPhases() {
+function _runAnimationPhases(): void {
   _nextAnimationFrame = IDLE;
 
   // Get animations to execute
@@ -98,10 +110,13 @@ function _runAnimationPhases() {
       case AnimationPhase.ACTIVATE_ANIMATION:
         // Final phase - Activate animations
         // This is a special case and is executed differently from others
-        _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
+        _animationActivationQueue =
+          _animationActivationQueue.concat(animationQueue);
         if (_nextActivateAnimationFrame === IDLE) {
           // Animations are activated on the next animation frame
-          _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
+          _nextActivateAnimationFrame = requestAnimationFrame(
+            _runActivateAnimationPhase,
+          );
         }
         break;
       default:
@@ -116,7 +131,10 @@ function _runAnimationPhases() {
   }
 }
 
-function _debugAnimationPhases(phase: AnimationPhase, animationQueue) {
+function _debugAnimationPhases(
+  phase: AnimationPhase,
+  animationQueue,
+): AnimationPhase {
   // When debugging we call _runAnimationPhases once for each phase
   // so only set to idle when done
   if (phase === AnimationPhase.length - 1) {
@@ -127,10 +145,13 @@ function _debugAnimationPhases(phase: AnimationPhase, animationQueue) {
     case AnimationPhase.ACTIVATE_ANIMATION:
       // Final phase - Activate animations
       // This is a special case and is executed differently from others
-      _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
+      _animationActivationQueue =
+        _animationActivationQueue.concat(animationQueue);
       if (_nextActivateAnimationFrame === IDLE) {
         // Animations are activated on the next animation frame
-        _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
+        _nextActivateAnimationFrame = requestAnimationFrame(
+          _runActivateAnimationPhase,
+        );
       }
       break;
     default:
@@ -145,17 +166,19 @@ function _debugAnimationPhases(phase: AnimationPhase, animationQueue) {
   return phase + 1;
 }
 
-export function queueAnimation(callback: Function) {
+export function queueAnimation(
+  callback: (phase: AnimationPhase) => void,
+): void {
   _animationQueue.push(callback);
   if (_nextAnimationFrame === IDLE) {
     if (!_DBG_COORD_) {
       _nextAnimationFrame = requestAnimationFrame(_runAnimationPhases);
     } else {
-      /**** DEV DEBUGGING code path ****/
+      /** ** DEV DEBUGGING code path ****/
       // Run animation phases one at a time when debugging
       // to allow visually inspecting changes.
       let _animationDebugQueue = _animationQueue;
-      const _runPhase = (startPhase) => {
+      const _runPhase = (startPhase: AnimationPhase): void => {
         _nextAnimationFrame = requestAnimationFrame(() => {
           // Reset the global animation queue so any changes
           // added during this animation round is queued
@@ -163,8 +186,14 @@ export function queueAnimation(callback: Function) {
             _animationQueue = [];
           }
 
-          const nextStartPhase = _debugAnimationPhases(startPhase, _animationDebugQueue);
-          if (nextStartPhase !== undefined && nextStartPhase < AnimationPhase.length) {
+          const nextStartPhase = _debugAnimationPhases(
+            startPhase,
+            _animationDebugQueue,
+          );
+          if (
+            nextStartPhase !== undefined &&
+            nextStartPhase < AnimationPhase.length
+          ) {
             _runPhase(nextStartPhase);
           } else if (_animationQueue.length > 0) {
             // All phases done, check if the queue has been repopulated
@@ -177,13 +206,13 @@ export function queueAnimation(callback: Function) {
       // TODO: We could create hooks to show a simply UI to control
       // animation execution. For now you need to set a break point
       _runPhase(0);
-      /**** /end DEV DEBUGGING ****/
+      /** ** /end DEV DEBUGGING ****/
     }
   }
 }
 
 // This is needed for tests. Coordinated animations are run on
-// next animation frame so we need to make sure we wait for them to finish.
-export function hasPendingAnimations() {
+// next animation frame, so we need to make sure we wait for them to finish.
+export function hasPendingAnimations(): boolean {
   return _nextAnimationFrame !== IDLE || _nextActivateAnimationFrame !== IDLE;
 }
