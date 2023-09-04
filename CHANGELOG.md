@@ -1,1 +1,1 @@
-See Github for changes https://github.com/infernojs/inferno/releases
+See GitHub for changes https://github.com/infernojs/inferno/releases

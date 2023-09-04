@@ -7,7 +7,10 @@ import { isFunction, isNull } from 'inferno-shared';
  * @param {Function} event Function to be called when event occurs
  * @returns {{data: *, event: Function}}
  */
-export function linkEvent<T, E extends Event>(data: T, event: (data: T, event: E) => void): LinkedEvent<T, E> | null {
+export function linkEvent<T, E extends Event>(
+  data: T,
+  event: (data: T, event: E) => void,
+): LinkedEvent<T, E> | null {
   if (isFunction(event)) {
     return { data, event };
   }

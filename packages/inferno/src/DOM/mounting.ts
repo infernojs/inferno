@@ -1,4 +1,4 @@
-import type { VNode } from '../core/types';
+import type { VNode, ContextObject } from '../core/types';
 import {
   isFunction,
   isNull,
@@ -29,7 +29,6 @@ import {
 } from './utils/componentUtil';
 import { validateKeys } from '../core/validate';
 import { mountRef } from '../core/refs';
-import { ContextObject } from "../core/types";
 
 export function mount(
   vNode: VNode,
@@ -109,7 +108,7 @@ function mountPortal(
   nextNode: Element | null,
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
-) {
+): void {
   mount(
     vNode.children as VNode,
     vNode.ref,
@@ -186,7 +185,7 @@ export function mountText(
 export function mountElement(
   vNode: VNode,
   parentDOM: Element | null,
-  context: unknown,
+  context: ContextObject,
   isSVG: boolean,
   nextNode: Element | null,
   lifecycle: Array<() => void>,
@@ -269,7 +268,7 @@ export function mountElement(
 export function mountArrayChildren(
   children,
   dom: Element | null,
-  context: Object,
+  context: ContextObject,
   isSVG: boolean,
   nextNode: Element | null,
   lifecycle: Array<() => void>,
@@ -288,12 +287,12 @@ export function mountArrayChildren(
 export function mountClassComponent(
   vNode: VNode,
   parentDOM: Element | null,
-  context: Object,
+  context: ContextObject,
   isSVG: boolean,
   nextNode: Element | null,
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
-) {
+): void {
   const instance = createClassComponentInstance(
     vNode,
     vNode.type,
@@ -323,7 +322,7 @@ export function mountClassComponent(
 export function mountFunctionalComponent(
   vNode: VNode,
   parentDOM: Element | null,
-  context: Object,
+  context: ContextObject,
   isSVG: boolean,
   nextNode: Element | null,
   lifecycle,
@@ -360,7 +359,7 @@ function addAppearAnimationHook(
   dom: Element,
   flags: VNodeFlags,
   props,
-) {
+): void {
   animations.componentDidAppear.push(() => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentDidAppear(dom);
@@ -375,7 +374,7 @@ export function mountClassComponentCallbacks(
   instance,
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
-) {
+): void {
   mountRef(ref, instance, lifecycle);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -421,7 +420,7 @@ export function mountFunctionalComponentCallbacks(
   vNode: VNode,
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
-) {
+): void {
   const ref = vNode.ref;
 
   if (!isNullOrUndef(ref)) {

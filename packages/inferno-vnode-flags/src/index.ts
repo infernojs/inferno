@@ -29,7 +29,7 @@ export const enum VNodeFlags {
   DOMRef = Element | Text | Portal,
   InUseOrNormalized = InUse | Normalized,
   ClearInUse = ~InUse,
-  ComponentKnown = ComponentFunction | ComponentClass
+  ComponentKnown = ComponentFunction | ComponentClass,
 }
 
 // Combinations are not possible, its bitwise only to reduce vNode size
@@ -42,5 +42,5 @@ export const enum ChildFlags {
   HasKeyedChildren = 1 << 3,
   HasTextChildren = 1 << 4,
 
-  MultipleChildren = HasNonKeyedChildren | HasKeyedChildren
+  MultipleChildren = HasNonKeyedChildren | HasKeyedChildren,
 }

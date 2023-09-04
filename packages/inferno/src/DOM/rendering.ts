@@ -21,7 +21,6 @@ import {
   callAll,
   callAllAnimationHooks,
   EMPTY_OBJ,
-  options,
   renderCheck,
 } from './utils/common';
 import { type DelegateEventTypes } from './events/delegation';
@@ -52,6 +51,7 @@ if (hasDocumentAvailable) {
   }
 }
 
+// noinspection JSUnusedAssignment
 export function renderInternal(
   input: VNode | InfernoNode,
   parentDOM: ParentDOM,
@@ -123,9 +123,6 @@ export function renderInternal(
   renderCheck.v = false;
   if (isFunction(callback)) {
     callback();
-  }
-  if (isFunction(options.renderComplete)) {
-    options.renderComplete(rootInput, parentDOM as any);
   }
 }
 

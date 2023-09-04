@@ -1,6 +1,6 @@
 import { isFunction } from 'inferno-shared';
 
-export function attachEvent(dom, eventName, handler) {
+export function attachEvent(dom, eventName, handler): void {
   const previousKey = `$${eventName}`;
   const previousArgs = dom[previousKey];
 

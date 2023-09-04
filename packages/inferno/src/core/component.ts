@@ -72,7 +72,7 @@ function queueStateChanges<P, S>(
   }
 }
 
-function callSetStateCallbacks(component) {
+function callSetStateCallbacks(component): void {
   const queue = component.$QU;
 
   for (let i = 0; i < queue.length; ++i) {
@@ -82,7 +82,7 @@ function callSetStateCallbacks(component) {
   component.$QU = null;
 }
 
-export function rerender() {
+export function rerender(): void {
   let component;
   microTaskPending = false;
 
@@ -131,11 +131,15 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
     component.$PS = null;
   }
 }
-export type ComponentType<P = {}> =
+export type ComponentType<P = Record<string, unknown>> =
   | typeof Component<P>
   | Inferno.StatelessComponent<P>;
 
-export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
+export abstract class Component<
+  P = Record<string, unknown>,
+  S = Record<string, unknown>,
+> implements IComponent<P, S>
+{
   // Public
   public state: Readonly<S | null> = null;
   public props: Readonly<{ children?: InfernoNode }> & Readonly<P>;
@@ -162,7 +166,7 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
     this.context = context || EMPTY_OBJ; // context should not be mutable
   }
 
-  public forceUpdate(callback?: Function) {
+  public forceUpdate(callback?: (() => void) | undefined): void {
     if (this.$UN) {
       return;
     }
@@ -225,7 +229,7 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
 
   public componentDidAppear?(domNode: Element): void;
 
-  public componentWillDisappear?(domNode: Element, callback: Function): void;
+  public componentWillDisappear?(domNode: Element, callback: () => void): void;
 
   public componentWillMove?(
     parentVNode: VNode,
@@ -240,16 +244,14 @@ export abstract class Component<P = {}, S = {}> implements IComponent<P, S> {
     prevState: Readonly<S>,
   ): any;
 
-  public static defaultProps?: {} | null = null;
+  public static defaultProps?: Record<string, unknown> | null = null;
 
   public static getDerivedStateFromProps?(nextProps: any, state: any): any;
 
-  // @ts-expect-error TS6133
-  public render(
-    props: Readonly<{ children?: InfernoNode } & P>,
-    state: Readonly<S>,
-    context: any,
-  ): InfernoNode {
+  /* eslint-disable */
+  // @ts-ignore
+  public render(props: Readonly<{ children?: InfernoNode } & P>, state: Readonly<S>, context: any,): InfernoNode {
     return null;
   }
+  /* eslint-enable */
 }

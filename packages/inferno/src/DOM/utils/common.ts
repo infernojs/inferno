@@ -2,15 +2,9 @@ import type {
   Inferno,
   InfernoNode,
   LinkedEvent,
-  ParentDOM,
   VNode,
 } from './../../core/types';
-import {
-  isFunction,
-  isNull,
-  isNullOrUndef,
-  isUndefined,
-} from 'inferno-shared';
+import { isFunction, isNull, isNullOrUndef, isUndefined } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isLinkEventObject } from '../events/linkEvent';
 
@@ -331,16 +325,10 @@ export const renderCheck = {
 };
 
 export const options: {
-  componentComparator: ((lastVNode: VNode, nextVNode: VNode) => boolean) | null;
   createVNode: ((vNode: VNode) => void) | null;
-  renderComplete:
-    | ((rootInput: VNode | InfernoNode, parentDOM: ParentDOM) => void)
-    | null;
   reactStyles?: boolean;
 } = {
-  componentComparator: null,
   createVNode: null,
-  renderComplete: null,
 };
 
 export function setTextContent(dom: Element, children): void {

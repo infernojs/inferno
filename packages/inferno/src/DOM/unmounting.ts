@@ -110,7 +110,7 @@ export function unmount(vNode, animations: AnimationQueues): void {
 export function unmountAllChildren(
   children: VNode[],
   animations: AnimationQueues,
-) {
+): void {
   for (let i = 0, len = children.length; i < len; ++i) {
     unmount(children[i], animations);
   }
@@ -131,7 +131,7 @@ export function clearDOM(
   parentDOM,
   children: VNode[],
   animations: AnimationQueues,
-) {
+): void {
   if (animations.componentWillDisappear.length > 0) {
     // Wait until animations are finished before removing actual dom nodes
     // Be aware that the element could be removed by a later operation
@@ -150,7 +150,7 @@ export function removeAllChildren(
   vNode: VNode,
   children,
   animations: AnimationQueues,
-) {
+): void {
   unmountAllChildren(children, animations);
 
   if (vNode.flags & VNodeFlags.Fragment) {
@@ -168,7 +168,8 @@ function addDisappearAnimationHook(
   flags: VNodeFlags,
   props,
 ): void {
-  animations.componentWillDisappear.push((callback: Function) => {
+  // @ts-expect-error TODO: Here is something weird check this behavior
+  animations.componentWillDisappear.push((callback) => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentWillDisappear(dom, callback);
     } else if (flags & VNodeFlags.ComponentFunction) {

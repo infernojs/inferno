@@ -4,22 +4,30 @@ import { isNull, isNullOrUndef, isString, warning } from 'inferno-shared';
 import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerHTML';
-import { AnimationQueues, isLastValueSameLinkEvent, normalizeEventName } from './utils/common';
-import { addFormElementEventHandlers, isControlledFormElement, processElement } from './wrappers/processElement';
+import {
+  type AnimationQueues,
+  isLastValueSameLinkEvent,
+  normalizeEventName,
+} from './utils/common';
+import {
+  addFormElementEventHandlers,
+  isControlledFormElement,
+  processElement,
+} from './wrappers/processElement';
 import { unmount, unmountAllChildren } from './unmounting';
 import { attachEvent } from './events/attachEvent';
 import { isLinkEventObject } from './events/linkEvent';
 
-function wrapLinkEvent(nextValue) {
+function wrapLinkEvent(nextValue): (e) => void {
   // This variable makes sure there is no "this" context in callback
   const ev = nextValue.event;
 
-  return function (e) {
+  return function (e): void {
     ev(nextValue.data, e);
   };
 }
 
-export function patchEvent(name: string, lastValue, nextValue, dom) {
+export function patchEvent(name: string, lastValue, nextValue, dom): void {
   if (isLinkEventObject(nextValue)) {
     if (isLastValueSameLinkEvent(lastValue, nextValue)) {
       return;
@@ -31,7 +39,7 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
-function patchStyle(lastAttrValue, nextAttrValue, dom) {
+function patchStyle(lastAttrValue, nextAttrValue, dom): void {
   if (isNullOrUndef(nextAttrValue)) {
     dom.removeAttribute('style');
     return;
@@ -66,9 +74,15 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
   }
 }
 
-function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations: AnimationQueues) {
-  const lastHtml = (lastValue && lastValue.__html) || '';
-  const nextHtml = (nextValue && nextValue.__html) || '';
+function patchDangerInnerHTML(
+  lastValue,
+  nextValue,
+  lastVNode,
+  dom,
+  animations: AnimationQueues,
+): void {
+  const lastHtml = lastValue?.__html || '';
+  const nextHtml = nextValue?.__html || '';
 
   if (lastHtml !== nextHtml) {
     if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
@@ -86,16 +100,23 @@ function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations: 
   }
 }
 
+function patchDomProp(nextValue: unknown, dom: Element, prop: string): void {
+  const value = isNullOrUndef(nextValue) ? '' : nextValue;
+  if (dom[prop] !== value) {
+    dom[prop] = value;
+  }
+}
+
 export function patchProp(
-  prop,
-  lastValue,
-  nextValue,
+  prop: string,
+  lastValue: any,
+  nextValue: any,
   dom: Element,
   isSVG: boolean,
   hasControlledValue: boolean,
   lastVNode: VNode | null,
-  animations: AnimationQueues
-) {
+  animations: AnimationQueues,
+): void {
   switch (prop) {
     case 'children':
     case 'childrenType':
@@ -136,10 +157,7 @@ export function patchProp(
       if (hasControlledValue && prop === 'value') {
         break;
       }
-      const value = isNullOrUndef(nextValue) ? '' : nextValue;
-      if (dom[prop] !== value) {
-        dom[prop] = value;
-      }
+      patchDomProp(nextValue, dom, prop);
       break;
     case 'style':
       patchStyle(lastValue, nextValue, dom);
@@ -160,8 +178,16 @@ export function patchProp(
         dom.setAttributeNS(namespaces[prop], prop, nextValue);
       } else {
         if (process.env.NODE_ENV !== 'production') {
-          if (prop === 'href' && isString(nextValue) && nextValue.indexOf('javascript:') === 0) {
-            warning('Rendering links with javascript: URLs is not recommended. Use event handlers instead if you can. Inferno was passed "' + nextValue + '".');
+          if (
+            prop === 'href' &&
+            isString(nextValue) &&
+            nextValue.indexOf('javascript:') === 0
+          ) {
+            warning(
+              'Rendering links with javascript: URLs is not recommended. Use event handlers instead if you can. Inferno was passed "' +
+                nextValue +
+                '".',
+            );
           }
         }
         dom.setAttribute(prop, nextValue);
@@ -170,7 +196,14 @@ export function patchProp(
   }
 }
 
-export function mountProps(vNode, flags, props, dom, isSVG, animations: AnimationQueues) {
+export function mountProps(
+  vNode,
+  flags,
+  props,
+  dom,
+  isSVG,
+  animations: AnimationQueues,
+): void {
   let hasControlledValue: boolean = false;
   const isFormElement = (flags & VNodeFlags.FormElement) > 0;
   if (isFormElement) {
@@ -181,7 +214,16 @@ export function mountProps(vNode, flags, props, dom, isSVG, animations: Animatio
   }
   for (const prop in props) {
     // do not add a hasOwnProperty check here, it affects performance
-    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null, animations);
+    patchProp(
+      prop,
+      null,
+      props[prop],
+      dom,
+      isSVG,
+      hasControlledValue,
+      null,
+      animations,
+    );
   }
   if (isFormElement) {
     processElement(flags, vNode, dom, props, true, hasControlledValue);

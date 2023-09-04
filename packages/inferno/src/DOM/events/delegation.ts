@@ -48,7 +48,7 @@ const attachedEvents = getDelegatedEventObject(null);
 
 export const syntheticEvents = getDelegatedEventObject(true);
 
-function updateOrAddSyntheticEvent(name: string, dom) {
+function updateOrAddSyntheticEvent(name: string, dom): DelegateEventTypes {
   let eventsObject = dom.$EV;
 
   if (!eventsObject) {
@@ -63,7 +63,7 @@ function updateOrAddSyntheticEvent(name: string, dom) {
   return eventsObject;
 }
 
-export function unmountSyntheticEvent(name: string, dom) {
+export function unmountSyntheticEvent(name: string, dom): void {
   const eventsObject = dom.$EV;
 
   if (eventsObject?.[name]) {
@@ -80,10 +80,10 @@ export function unmountSyntheticEvent(name: string, dom) {
 
 export function handleSyntheticEvent(
   name: string,
-  lastEvent: Function | LinkedEvent<any, any> | null | false | true,
-  nextEvent: Function | LinkedEvent<any, any> | null | false | true,
+  lastEvent: (() => void) | LinkedEvent<any, any> | null | false | true,
+  nextEvent: (() => void) | LinkedEvent<any, any> | null | false | true,
   dom,
-) {
+): void {
   if (isFunction(nextEvent)) {
     updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
   } else if (isLinkEventObject(nextEvent)) {
@@ -97,7 +97,7 @@ export function handleSyntheticEvent(
 }
 
 // TODO: When browsers fully support event.composedPath we could loop it through instead of using parentNode property
-function getTargetNode(event) {
+function getTargetNode(event): any {
   return isFunction(event.composedPath)
     ? event.composedPath()[0]
     : event.target;

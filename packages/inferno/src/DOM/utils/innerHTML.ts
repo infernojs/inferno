@@ -1,6 +1,6 @@
 export function isSameInnerHTML(dom: Element, innerHTML: string): boolean {
-  const tempdom = document.createElement('i');
+  const temp = document.createElement('i');
 
-  tempdom.innerHTML = innerHTML;
-  return tempdom.innerHTML === dom.innerHTML;
+  temp.innerHTML = innerHTML;
+  return temp.innerHTML === dom.innerHTML;
 }
