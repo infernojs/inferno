@@ -20,14 +20,14 @@
     }
   },
   "dependencies": {
-    "@babel/core": "7.22.10",
+    "@babel/core": "7.22.15",
     "@babel/helper-replace-supers": "7.22.9",
     "@babel/plugin-proposal-class-properties": "7.18.6",
-    "@babel/plugin-proposal-decorators": "7.22.10",
+    "@babel/plugin-proposal-decorators": "7.22.15",
     "@babel/plugin-proposal-object-rest-spread": "7.20.7",
-    "@babel/preset-env": "7.22.10",
+    "@babel/preset-env": "7.22.15",
     "babel-loader": "^9.1.3",
-    "jasmine-core": "^5.1.0",
+    "jasmine-core": "^5.1.1",
     "karma": "^6.4.2",
     "karma-chrome-launcher": "^3.2.0",
     "karma-detect-browsers": "^2.3.3",
@@ -35,7 +35,7 @@
     "karma-jasmine": "^5.1.0",
     "karma-sauce-launcher": "^4.3.6",
     "karma-webpack": "5.0.0",
-    "saucelabs": "^7.2.2",
+    "saucelabs": "^7.3.0",
     "ts-loader": "^9.4.4",
     "webpack": "^5.88.2"
   }
