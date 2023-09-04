@@ -1,7 +1,7 @@
 import { Component, createComponentVNode, VNode } from 'inferno';
 import { matchPath } from './matchPath';
 import { invariant, warning } from './utils';
-import { combineFrom, isArray, isInvalid } from 'inferno-shared';
+import { isArray, isInvalid } from 'inferno-shared';
 import { IRouteProps, Match } from './Route';
 import { RouterContext } from './Router';
 
@@ -79,7 +79,7 @@ export class Switch extends Component<IRouteProps, SwitchState> {
 
     if (match) {
       location ??= context.router.route.location;
-      return createComponentVNode(_child.flags, _child.type, combineFrom(_child.props, { location, computedMatch: match }));
+      return createComponentVNode(_child.flags, _child.type, {..._child.props, ...{ location, computedMatch: match }}));
     }
 
     return null;

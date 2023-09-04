@@ -6,7 +6,6 @@ import type {
   VNode,
 } from './../../core/types';
 import {
-  combineFrom,
   isFunction,
   isNull,
   isNullOrUndef,
@@ -318,10 +317,10 @@ export function createDerivedState<TState>(
   state: TState,
 ): TState {
   if (isFunction(instance.constructor.getDerivedStateFromProps)) {
-    return combineFrom(
-      state,
-      instance.constructor.getDerivedStateFromProps(nextProps, state),
-    );
+    return {
+      ...state,
+      ...instance.constructor.getDerivedStateFromProps(nextProps, state),
+    };
   }
 
   return state;
@@ -374,6 +373,7 @@ export function mergeUnsetProperties<TTo, TFrom>(
 }
 
 export function safeCall1(
+  // eslint-disable-next-line @typescript-eslint/ban-types
   method: Function | null | undefined,
   arg1: any,
 ): boolean {

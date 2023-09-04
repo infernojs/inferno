@@ -1,6 +1,5 @@
 import { Component, render, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { combineFrom } from 'inferno-shared';
 
 describe('Callbacks in constructor', () => {
   // https://github.com/infernojs/inferno/issues/1103
@@ -23,7 +22,12 @@ describe('Callbacks in constructor', () => {
         const iddy = props.conf.key;
         return (
           <li>
-            <input id={iddy} type="checkbox" checked={props.checked} onClick={props.onChange} />
+            <input
+              id={iddy}
+              type="checkbox"
+              checked={props.checked}
+              onClick={props.onChange}
+            />
             <label for={iddy}>{props.conf.label}</label>
             <div>{props.children}</div>
           </li>
@@ -31,7 +35,10 @@ describe('Callbacks in constructor', () => {
       }
 
       interface ConfigsListProps {
-        onConfChanged: (arg: { targetIndex: number; newValue: unknown }) => void;
+        onConfChanged: (arg: {
+          targetIndex: number;
+          newValue: unknown;
+        }) => void;
         configs: unknown[];
       }
       interface ConfigsListState {
@@ -44,20 +51,22 @@ describe('Callbacks in constructor', () => {
         constructor(props) {
           super(props);
           this.state = {
-            checks: props.configs.map((conf) => Boolean(conf.value))
+            checks: props.configs.map((conf) => Boolean(conf.value)),
           };
         }
 
         public handleCheck(index, ifChecked) {
           this.setState({
-            checks: this.state.checks.map((ch, i) => (i === index ? ifChecked : ch))
+            checks: this.state.checks.map((ch, i) =>
+              i === index ? ifChecked : ch,
+            ),
           });
         }
 
         public handleNewValue(index, newValue) {
           this.props.onConfChanged({
             newValue,
-            targetIndex: index
+            targetIndex: index,
           });
         }
 
@@ -65,21 +74,27 @@ describe('Callbacks in constructor', () => {
           return (
             <ol>
               {props.configs.map((conf, index) => {
-                const childElement = props.configToChild && props.configToChild[conf.key];
+                const childElement = props.configToChild?.[conf.key];
 
                 const child =
                   childElement &&
                   this.state.checks[index] &&
-                  createElement(
-                    childElement,
-                    combineFrom(props, {
-                      conf,
-                      onNewValue: (newValue) => this.handleNewValue(index, newValue)
-                    })
-                  );
+                  createElement(childElement, {
+                    ...props,
+                    conf,
+                    onNewValue: (newValue) => {
+                      this.handleNewValue(index, newValue);
+                    },
+                  });
 
                 return (
-                  <InfoLi conf={conf} checked={conf.value} onChange={(event) => this.handleCheck(index, event.target.checked)}>
+                  <InfoLi
+                    conf={conf}
+                    checked={conf.value}
+                    onChange={(event) => {
+                      this.handleCheck(index, event.target.checked);
+                    }}
+                  >
                     {child}
                   </InfoLi>
                 );
@@ -110,7 +125,12 @@ describe('Callbacks in constructor', () => {
       }
 
       interface MainState {
-        configs: { category: string; key: string; label: string; value: boolean }[];
+        configs: Array<{
+          category: string;
+          key: string;
+          label: string;
+          value: boolean;
+        }>;
       }
 
       class Main extends Component<any, MainState> {
@@ -124,36 +144,36 @@ describe('Callbacks in constructor', () => {
                 category: 'ownProxies',
                 key: 'customProxyStringRaw',
                 label: 'Use proxy? (click this)',
-                value: false
+                value: false,
               },
               {
                 category: 'ownProxies',
                 key: 'This one is needed for reproduction too!',
                 label: 'needed too',
-                value: false
-              }
-            ]
+                value: false,
+              },
+            ],
           };
           this.handleModChange = this.handleModChange.bind(this);
         }
 
         public handleModChange({ targetIndex, newValue }) {
           this.setState({
-            configs: this.state.configs.map((oldConf, index) => (index !== targetIndex ? oldConf : combineFrom(oldConf, { value: newValue })))
+            configs: this.state.configs.map((oldConf, index) =>
+              index !== targetIndex ? oldConf : { ...oldConf, value: newValue },
+            ),
           });
         }
 
         public render(props) {
-          return createElement(
-            ConfigsList,
-            combineFrom(props, {
-              configToChild: {
-                customProxyStringRaw: ProxyEditor
-              },
-              configs: this.state.configs,
-              onConfChanged: this.handleModChange
-            })
-          );
+          return createElement(ConfigsList, {
+            ...props,
+            configToChild: {
+              customProxyStringRaw: ProxyEditor,
+            },
+            configs: this.state.configs,
+            onConfChanged: this.handleModChange,
+          });
         }
       }
 
@@ -161,7 +181,7 @@ describe('Callbacks in constructor', () => {
 
       // Renders correctly
       expect(container.innerHTML).toBe(
-        '<ol><li><input id="customProxyStringRaw" type="checkbox"><label for="customProxyStringRaw">Use proxy? (click this)</label><div></div></li><li><input id="This one is needed for reproduction too!" type="checkbox"><label for="This one is needed for reproduction too!">needed too</label><div></div></li></ol>'
+        '<ol><li><input id="customProxyStringRaw" type="checkbox"><label for="customProxyStringRaw">Use proxy? (click this)</label><div></div></li><li><input id="This one is needed for reproduction too!" type="checkbox"><label for="This one is needed for reproduction too!">needed too</label><div></div></li></ol>',
       );
 
       let checkBoxes = container.querySelectorAll('input');

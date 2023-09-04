@@ -2,7 +2,6 @@ import { createComponentVNode, Inferno, VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Route } from './Route';
 import { ILinkProps, Link } from './Link';
-import { combineFrom } from 'inferno-shared';
 import type { Location } from 'history';
 
 function filter(i) {
@@ -50,15 +49,14 @@ export function NavLink({
     return createComponentVNode(
       VNodeFlags.ComponentFunction,
       Link,
-      combineFrom(
         {
           'aria-current': (isActive && ariaCurrent) || null,
           className: isActive ? [className, activeClassName].filter(filter).join(' ') : className,
           onClick,
-          style: isActive ? combineFrom(style, activeStyle) : style,
-          to
+          style: isActive ? {...style, ...activeStyle} : style,
+          to,
+          ...rest
         },
-        rest
       )
     );
   }

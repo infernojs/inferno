@@ -1,13 +1,11 @@
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { Dispatch, Store } from 'redux';
+import { type Dispatch, type Store } from 'redux';
 import hoistNonReactStatics from 'hoist-non-inferno-statics';
 import { Component, createComponentVNode, normalizeProps } from 'inferno';
 import { Subscription } from '../utils/Subscription';
-import { combineFrom } from 'inferno-shared';
 
 let hotReloadingVersion = 0;
 const dummyState = {};
-// tslint:disable-next-line:no-empty
 const noop = () => {};
 
 const makeSelectorStateful = (sourceSelector, store) => {
@@ -28,7 +26,7 @@ const makeSelectorStateful = (sourceSelector, store) => {
         selector.error = e;
       }
     },
-    shouldComponentUpdate: false
+    shouldComponentUpdate: false,
   };
 
   return selector;
@@ -103,7 +101,10 @@ export interface IConnectOptions {
 }
 
 // TODO: This should be typed better. Spesifically, the output and input props should be generic.
-export type SelectorFactory = (dispatch: Dispatch<any>, options: IConnectOptions) => (state: any, props: any) => any;
+export type SelectorFactory = (
+  dispatch: Dispatch<any>,
+  options: IConnectOptions,
+) => (state: any, props: any) => any;
 
 // TODO: Move
 const invariant = (test: boolean, error: string) => {
@@ -126,7 +127,7 @@ export function connectAdvanced(
     storeKey = 'store',
     withRef = false,
     ...connectOptions
-  }: Partial<IConnectOptions>
+  }: Partial<IConnectOptions>,
 ) {
   const subscriptionKey = storeKey + 'Subscription';
   const version = hotReloadingVersion++;
@@ -134,14 +135,19 @@ export function connectAdvanced(
   const wrapWithConnect = <T extends Function>(WrappedComponent: T): T => {
     invariant(
       typeof WrappedComponent === 'function',
-      `You must pass a component to the function returned by ` + `connect. Instead received ${WrappedComponent}`
+      `You must pass a component to the function returned by ` +
+        `connect. Instead received ${WrappedComponent}`,
     );
 
-    const wrappedComponentName: string = (WrappedComponent as any).displayName || WrappedComponent.name || 'Component';
+    const wrappedComponentName: string =
+      (WrappedComponent as any).displayName ||
+      WrappedComponent.name ||
+      'Component';
 
     const displayName = getDisplayName(wrappedComponentName);
 
-    const selectorFactoryOptions: IConnectOptions = combineFrom(connectOptions, {
+    const selectorFactoryOptions: IConnectOptions = {
+      ...connectOptions,
       WrappedComponent,
       displayName,
       getDisplayName,
@@ -150,8 +156,8 @@ export function connectAdvanced(
       shouldHandleStateChanges,
       storeKey,
       withRef,
-      wrappedComponentName
-    }) as any;
+      wrappedComponentName,
+    };
 
     class Connect<P, S> extends Component<P, S> {
       public static displayName = displayName;
@@ -187,7 +193,7 @@ export function connectAdvanced(
           `Could not find "${storeKey}" in either the context or ` +
             `props of "${displayName}". ` +
             `Either wrap the root component in a <Provider>, ` +
-            `or explicitly pass "${storeKey}" as a prop to "${displayName}".`
+            `or explicitly pass "${storeKey}" as a prop to "${displayName}".`,
         );
 
         this.initSelector();
@@ -201,7 +207,7 @@ export function connectAdvanced(
         // Connect to control ordering of notifications to flow top-down.
         const subscription = this.propsMode ? null : this.subscription;
         return {
-          [subscriptionKey]: subscription || this.context[subscriptionKey]
+          [subscriptionKey]: subscription || this.context[subscriptionKey],
         };
       }
 
@@ -237,7 +243,11 @@ export function connectAdvanced(
       }
 
       public getWrappedInstance() {
-        invariant(withRef, `To access the wrapped instance, you need to specify ` + `{ withRef: true } in the options argument of the ${methodName}() call.`);
+        invariant(
+          withRef,
+          `To access the wrapped instance, you need to specify ` +
+            `{ withRef: true } in the options argument of the ${methodName}() call.`,
+        );
 
         return this.wrappedInstance;
       }
@@ -247,7 +257,10 @@ export function connectAdvanced(
       }
 
       public initSelector() {
-        const sourceSelector = selectorFactory(this.store!.dispatch, selectorFactoryOptions);
+        const sourceSelector = selectorFactory(
+          this.store!.dispatch,
+          selectorFactoryOptions,
+        );
         this.selector = makeSelectorStateful(sourceSelector, this.store);
         this.selector.run(this.props);
       }
@@ -259,8 +272,14 @@ export function connectAdvanced(
 
         // parentSub's source should match where store came from: props vs. context. A component
         // connected to the store via props shouldn't use subscription from context, or vice versa.
-        const parentSub = (this.propsMode ? this.props : this.context)[subscriptionKey];
-        this.subscription = new Subscription(this.store!, parentSub, this.onStateChange.bind(this));
+        const parentSub = (this.propsMode ? this.props : this.context)[
+          subscriptionKey
+        ];
+        this.subscription = new Subscription(
+          this.store!,
+          parentSub,
+          this.onStateChange.bind(this),
+        );
 
         // `notifyNestedSubs` is duplicated to handle the case where the component is  unmounted in
         // the middle of the notification loop, where `this.subscription` will then be null. An
@@ -268,7 +287,9 @@ export function connectAdvanced(
         // replacing it with a no-op on unmount. This can probably be avoided if Subscription's
         // listeners logic is changed to not call listeners that have been unsubscribed in the
         // middle of the notification loop.
-        this.notifyNestedSubs = this.subscription!.notifyNestedSubs.bind(this.subscription);
+        this.notifyNestedSubs = this.subscription.notifyNestedSubs.bind(
+          this.subscription,
+        );
       }
 
       private onStateChange() {
@@ -305,7 +326,7 @@ export function connectAdvanced(
         // this is especially important for 'ref' since that's a reference back to the component
         // instance. a singleton memoized selector would then be holding a reference to the
         // instance, preventing the instance from being garbage collected, and that would be bad
-        const withExtras = combineFrom(props, null);
+        const withExtras = {...props};
 
         if (renderCountProp) {
           withExtras[renderCountProp] = this.renderCount++;
@@ -329,29 +350,30 @@ export function connectAdvanced(
               WrappedComponent,
               this.addExtraProps(selector.props),
               null,
-              withRef ? this.setWrappedInstance : null
-            )
+              withRef ? this.setWrappedInstance : null,
+            ),
           );
         }
       }
     }
 
     if (process.env.NODE_ENV !== 'production') {
-      (Connect.prototype as any).componentWillUpdate = function componentWillUpdate() {
-        if (this.version !== version) {
-          // We are hot reloading!
-          this.version = version;
-          this.initSelector();
+      (Connect.prototype as any).componentWillUpdate =
+        function componentWillUpdate() {
+          if (this.version !== version) {
+            // We are hot reloading!
+            this.version = version;
+            this.initSelector();
 
-          if (this.subscription) {
-            this.subscription.tryUnsubscribe();
+            if (this.subscription) {
+              this.subscription.tryUnsubscribe();
+            }
+            this.initSubscription();
+            if (shouldHandleStateChanges) {
+              this.subscription.trySubscribe();
+            }
           }
-          this.initSubscription();
-          if (shouldHandleStateChanges) {
-            this.subscription.trySubscribe();
-          }
-        }
-      };
+        };
     }
 
     return hoistNonReactStatics(Connect, WrappedComponent) as T;

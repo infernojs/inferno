@@ -1,5 +1,5 @@
 import { Component, InfernoNode } from 'inferno';
-import { combineFrom, isUndefined } from 'inferno-shared';
+import { isUndefined } from 'inferno-shared';
 import type { History, Location } from 'history';
 import { warning } from './utils';
 import { Match } from './Route';
@@ -65,7 +65,7 @@ export class Router extends Component<IRouterProps, any> {
 
   public getChildContext(): RouterContext {
     const parentRouter: TContextRouter = this.context.router;
-    const router: TContextRouter = combineFrom(parentRouter, null);
+    const router: TContextRouter = {...parentRouter};
     router.history = this.props.history;
     router.route = {
       location: router.history.location,

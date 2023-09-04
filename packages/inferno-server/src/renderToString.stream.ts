@@ -1,4 +1,4 @@
-import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString } from 'inferno-shared';
+import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
@@ -97,7 +97,7 @@ export class RenderStream extends Readable {
     }
 
     if (!isNullOrUndef(childContext)) {
-      context = combineFrom(context, childContext);
+      context = {...context, ...childContext};
     }
     instance.context = context;
     instance.$BR = true;

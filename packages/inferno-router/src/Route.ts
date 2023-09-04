@@ -2,7 +2,7 @@ import { Component, createComponentVNode, Inferno, InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
-import { combineFrom, isFunction, isNullOrUndef, isUndefined } from 'inferno-shared';
+import { isFunction, isNullOrUndef, isUndefined } from 'inferno-shared';
 import type { History, Location } from 'history';
 import type { RouterContext, TContextRouter, TLoaderData, TLoaderProps } from './Router';
 
@@ -55,7 +55,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
 
   public getChildContext(): RouterContext {
     const parentRouter: TContextRouter = this.context.router;
-    const router: TContextRouter = combineFrom(parentRouter, null);
+    const router: TContextRouter = {...parentRouter};
 
     router.route = {
       location: this.props.location || parentRouter.route.location,

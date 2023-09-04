@@ -1,3 +1,3 @@
-export function isStateless(component) {
-  return !(component.prototype && component.prototype.render);
+export function isStateless(component: any): boolean {
+  return !component.prototype?.render;
 }

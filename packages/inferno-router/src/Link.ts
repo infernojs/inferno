@@ -1,7 +1,7 @@
 import { createVNode, Inferno, InfernoMouseEvent, linkEvent, VNode } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
-import { combineFrom, isString } from 'inferno-shared';
+import { isString } from 'inferno-shared';
 import type { Location } from 'history';
 import { parsePath } from 'history';
 import { normalizeToLocation, splitLocation } from './locationUtils';
@@ -51,7 +51,7 @@ export function Link(props: ILinkProps & Inferno.LinkHTMLAttributes<HTMLLinkElem
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 
   const href = context.router.history.createHref(isString(to) ? parsePath(to) : to);
-  const newProps: any = combineFrom(rest, null);
+  const newProps: any = {...rest};
 
   newProps.href = href;
   newProps.onClick = linkEvent(

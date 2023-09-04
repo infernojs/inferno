@@ -1,5 +1,14 @@
-import { Component, ComponentType, createComponentVNode, createRef, createVNode, InfernoNode, linkEvent, Ref, render } from 'inferno';
-import { emptyFn } from 'inferno-shared';
+import {
+  Component,
+  type ComponentType,
+  createComponentVNode,
+  createRef,
+  createVNode,
+  type InfernoNode,
+  linkEvent,
+  type Ref,
+  render,
+} from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('top level context', () => {
@@ -68,7 +77,13 @@ describe('top level context', () => {
 
         class TestComp extends Component<TestCompProps, any> {
           public render(props) {
-            return createVNode(VNodeFlags.HtmlElement, 'div', null, props.foo, ChildFlags.HasTextChildren);
+            return createVNode(
+              VNodeFlags.HtmlElement,
+              'div',
+              null,
+              props.foo,
+              ChildFlags.HasTextChildren,
+            );
           }
         }
 
@@ -89,7 +104,11 @@ describe('top level context', () => {
 
         class MyComponent extends Component<{ val: number }, any> {
           public render() {
-            return createComponentVNode(VNodeFlags.ComponentUnknown, createComponent(this.props.val), { foo: 765 });
+            return createComponentVNode(
+              VNodeFlags.ComponentUnknown,
+              createComponent(this.props.val),
+              { foo: 765 },
+            );
           }
         }
 
@@ -185,7 +204,7 @@ describe('top level context', () => {
 
     it('Should allow setting linkEvent as event', function () {
       const myObj: { a: number } = {
-        a: 1
+        a: 1,
       };
 
       function myFunction(data, ev) {
@@ -221,7 +240,7 @@ describe('top level context', () => {
         <div className="floating-row-numbers" ref={refObj} $HasVNodeChildren>
           {row}
         </div>,
-        container
+        container,
       );
     });
 
@@ -238,7 +257,7 @@ describe('top level context', () => {
         <svg className="floating-row-numbers" ref={refObj} $HasVNodeChildren>
           {row}
         </svg>,
-        container
+        container,
       );
     });
 
@@ -254,7 +273,7 @@ describe('top level context', () => {
       const obj: {
         refWrap: Ref<HTMLDivElement> | null;
       } = {
-        refWrap: null
+        refWrap: null,
       };
 
       render(<div ref={obj.refWrap}></div>, container);
@@ -267,7 +286,7 @@ describe('top level context', () => {
 
   it('Should allow setting linkEvent as native event handler', function () {
     const myObj: { a: number } = {
-      a: 1
+      a: 1,
     };
 
     function myFunction(data, ev) {

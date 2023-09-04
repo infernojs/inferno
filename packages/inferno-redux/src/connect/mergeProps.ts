@@ -1,8 +1,7 @@
 import { verifyPlainObject } from '../utils/verifyPlainObject';
-import { combineFrom } from 'inferno-shared';
 
 export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => {
-  const merged = combineFrom(ownProps, stateProps);
+  const merged = { ...ownProps, ...stateProps };
 
   if (dispatchProps) {
     for (const key in dispatchProps) {
@@ -39,8 +38,13 @@ export const wrapMergePropsFunc = (mergeProps) => {
   };
 };
 
-export const whenMergePropsIsFunction = (mergeProps) => (typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined);
+export const whenMergePropsIsFunction = (mergeProps) =>
+  typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
 
-export const whenMergePropsIsOmitted = (mergeProps) => (!mergeProps ? () => defaultMergeProps : undefined);
+export const whenMergePropsIsOmitted = (mergeProps) =>
+  !mergeProps ? () => defaultMergeProps : undefined;
 
-export const defaultMergePropsFactories = [whenMergePropsIsFunction, whenMergePropsIsOmitted];
+export const defaultMergePropsFactories = [
+  whenMergePropsIsFunction,
+  whenMergePropsIsOmitted,
+];

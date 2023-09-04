@@ -1,10 +1,5 @@
 import type { Inferno, InfernoNode, IComponent, VNode } from './types';
-import {
-  combineFrom,
-  isFunction,
-  isNullOrUndef,
-  throwError,
-} from 'inferno-shared';
+import { isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { updateClassComponent } from '../DOM/patching';
 import {
   AnimationQueues,
@@ -30,7 +25,7 @@ function queueStateChanges<P, S>(
 
   if (isFunction(newState)) {
     newState = newState(
-      pending ? combineFrom(component.state!, pending) : component.state,
+      pending ? { ...component.state, ...pending } : component.state,
       component.props,
       component.context,
     );
@@ -117,7 +112,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean): void {
 
     updateClassComponent(
       component,
-      combineFrom(component.state, pendingState),
+      { ...component.state, ...pendingState },
       component.props,
       (findDOMFromVNode(component.$LI, true) as Element).parentNode as Element,
       component.context,

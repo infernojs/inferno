@@ -7,7 +7,7 @@ import {
   removeClassName,
   setDimensions,
   setDisplay,
-  transitionEndName
+  transitionEndName,
 } from '../src/utils';
 
 describe('inferno-animation utils', () => {
@@ -23,7 +23,7 @@ describe('inferno-animation utils', () => {
     document.body.removeChild(container);
   });
 
-  function renderTemplate(dom) {
+  function renderTemplate(dom): void {
     dom.innerHTML = '<div><div class="target">content</div></div>';
   }
 

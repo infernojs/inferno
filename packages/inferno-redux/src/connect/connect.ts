@@ -1,11 +1,13 @@
-import { connectAdvanced, IConnectOptions } from '../components/connectAdvanced';
-import { Dispatch } from 'redux';
+import {
+  connectAdvanced,
+  type IConnectOptions,
+} from '../components/connectAdvanced';
+import { type Dispatch } from 'redux';
 import { shallowEqual } from '../utils/shallowEqual';
 import { defaultMapDispatchToPropsFactories } from './mapDispatchToProps';
 import { defaultMapStateToPropsFactories } from './mapStateToProps';
 import { defaultMergePropsFactories } from './mergeProps';
 import { defaultSelectorFactory } from './selectorFactory';
-import { combineFrom } from 'inferno-shared';
 
 const match = (arg, factories, name) => {
   for (let i = factories.length - 1; i >= 0; i--) {
@@ -16,7 +18,11 @@ const match = (arg, factories, name) => {
   }
 
   return (_dispatch: Dispatch<any>, options: IConnectOptions) => {
-    throw new Error(`Invalid value of type ${typeof arg} for ${name} argument when connecting component ${(options as any).wrappedComponentName}.`);
+    throw new Error(
+      `Invalid value of type ${typeof arg} for ${name} argument when connecting component ${
+        (options as any).wrappedComponentName
+      }.`,
+    );
   };
 };
 
@@ -30,7 +36,7 @@ export const createConnect =
     mapStateToPropsFactories = defaultMapStateToPropsFactories,
     mapDispatchToPropsFactories = defaultMapDispatchToPropsFactories,
     mergePropsFactories = defaultMergePropsFactories,
-    selectorFactory = defaultSelectorFactory
+    selectorFactory = defaultSelectorFactory,
   } = {}) =>
   (
     mapStateToProps?,
@@ -43,39 +49,41 @@ export const createConnect =
       areStatePropsEqual = shallowEqual,
       areMergedPropsEqual = shallowEqual,
       ...extraOptions
-    } = {}
+    } = {},
   ) => {
-    const initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
-    const initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
+    const initMapStateToProps = match(
+      mapStateToProps,
+      mapStateToPropsFactories,
+      'mapStateToProps',
+    );
+    const initMapDispatchToProps = match(
+      mapDispatchToProps,
+      mapDispatchToPropsFactories,
+      'mapDispatchToProps',
+    );
     const initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
 
-    return connectHOC(
-      selectorFactory as any,
-      combineFrom(
-        {
-          // used in error messages
-          methodName: 'connect',
+    return connectHOC(selectorFactory as any, {
+      // used in error messages
+      methodName: 'connect',
 
-          // used to compute Connect's displayName from the wrapped component's displayName.
-          // tslint:disable-next-line:object-literal-sort-keys
-          getDisplayName: (name) => `Connect(${name})`,
+      // used to compute Connect's displayName from the wrapped component's displayName.
+      getDisplayName: (name) => `Connect(${name})`,
 
-          // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
-          shouldHandleStateChanges: !!mapStateToProps,
+      // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
+      shouldHandleStateChanges: !!mapStateToProps,
 
-          // passed through to selectorFactory
-          areMergedPropsEqual,
-          areOwnPropsEqual,
-          areStatePropsEqual,
-          areStatesEqual,
-          initMapDispatchToProps,
-          initMapStateToProps,
-          initMergeProps,
-          pure
-        },
-        extraOptions /* any extra options args can override defaults of connect or connectAdvanced */
-      )
-    );
+      // passed through to selectorFactory
+      areMergedPropsEqual,
+      areOwnPropsEqual,
+      areStatePropsEqual,
+      areStatesEqual,
+      initMapDispatchToProps,
+      initMapStateToProps,
+      initMergeProps,
+      pure,
+      ...extraOptions /* any extra options args can override defaults of connect or connectAdvanced */,
+    });
   };
 
 export const connect = createConnect();

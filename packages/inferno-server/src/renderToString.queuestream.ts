@@ -1,5 +1,5 @@
 import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isUndefined, throwError } from 'inferno-shared';
+import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, isUndefined, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
@@ -85,7 +85,7 @@ export class RenderQueueStream extends Readable {
           childContext = instance.getChildContext();
         }
         if (!isNullOrUndef(childContext)) {
-          context = combineFrom(context, childContext);
+          context = {...context, ...childContext};
         }
         if (instance.props === EMPTY_OBJ) {
           instance.props = props;
@@ -106,7 +106,7 @@ export class RenderQueueStream extends Readable {
               this.addToQueue(
                 initialProps.then((dataForContext) => {
                   if (typeof dataForContext === 'object') {
-                    instance.props = combineFrom(instance.props, dataForContext);
+                    instance.props = {...instance.props, ...dataForContext};
                   }
 
                   const renderOut = instance.render(instance.props, instance.state, instance.context);
@@ -127,7 +127,7 @@ export class RenderQueueStream extends Readable {
               );
               return;
             } else {
-              instance.props = combineFrom(instance.props, initialProps);
+              instance.props = {...instance.props, ...initialProps};
             }
           }
         }

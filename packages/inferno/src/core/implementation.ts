@@ -1,7 +1,6 @@
 import type { ForwardRef, InfernoNode, Ref, Refs, VNode } from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
-  combineFrom,
   isArray,
   isFunction,
   isInvalid,
@@ -118,7 +117,7 @@ function mergeDefaultProps(flags, type, props) {
   }
 
   if (isNullOrUndef(props)) {
-    return combineFrom(defaultProps, null);
+    return {...defaultProps};
   }
 
   return mergeUnsetProperties(props, defaultProps);
@@ -246,7 +245,7 @@ export function normalizeProps(vNode) {
     }
     if (props.ref !== void 0) {
       if (flags & VNodeFlags.ComponentFunction) {
-        vNode.ref = combineFrom(vNode.ref, props.ref);
+        vNode.ref = {...vNode.ref, ...props.ref};
       } else {
         vNode.ref = props.ref;
       }

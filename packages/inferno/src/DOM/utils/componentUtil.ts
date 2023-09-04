@@ -1,5 +1,5 @@
 import type { VNode } from './../../core/types';
-import { combineFrom, isFunction, isNull, warning } from 'inferno-shared';
+import { isFunction, isNull, warning } from 'inferno-shared';
 import { createDerivedState, EMPTY_OBJ, getComponentName } from './common';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { normalizeRoot } from '../../core/implementation';
@@ -35,7 +35,7 @@ export function renderNewInput(instance, props, context) {
 
   let childContext = context;
   if (isFunction(instance.getChildContext)) {
-    childContext = combineFrom(context, instance.getChildContext());
+    childContext = { ...context, ...instance.getChildContext() };
   }
   instance.$CX = childContext;
 

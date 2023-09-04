@@ -1,5 +1,5 @@
 import type { VNode } from '../core/types';
-import { combineFrom, isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
+import { isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createVoidVNode, directClone, normalizeRoot } from '../core/implementation';
 import { mount, mountArrayChildren } from './mounting';
@@ -393,7 +393,7 @@ export function updateClassComponent(
   const hasSCU = isFunction(instance.shouldComponentUpdate);
 
   if (usesNewAPI) {
-    nextState = createDerivedState(instance, nextProps, nextState !== lastState ? combineFrom(lastState, nextState) : nextState);
+    nextState = createDerivedState(instance, nextProps, nextState !== lastState ? {...lastState, ...nextState} : nextState);
   }
 
   if (force || !hasSCU || (hasSCU && (instance.shouldComponentUpdate as Function)(nextProps, nextState, context))) {
@@ -459,7 +459,7 @@ function patchClassComponent(
       instance.$BR = false;
     }
     if (!isNull(instance.$PS)) {
-      nextState = combineFrom(nextState, instance.$PS) as any;
+      nextState = {...nextState, ...instance.$PS};
       instance.$PS = null;
     }
   }

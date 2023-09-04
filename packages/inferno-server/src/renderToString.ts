@@ -1,5 +1,5 @@
 import { EMPTY_OBJ } from 'inferno';
-import { combineFrom, isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
+import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { renderStylesToString } from './prop-renderers';
 import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
@@ -26,7 +26,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNullOrUndef(childContext)) {
         childContext = context;
       } else {
-        childContext = combineFrom(context, childContext);
+        childContext = {...context, ...childContext};
       }
       if (instance.props === EMPTY_OBJ) {
         instance.props = props;

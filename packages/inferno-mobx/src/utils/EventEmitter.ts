@@ -1,7 +1,7 @@
 export class EventEmitter {
-  public listeners: Array<() => void> = [];
+  public listeners: Array<(data: unknown) => void> = [];
 
-  public on(cb: Function) {
+  public on(cb: (data: unknown) => void): () => void {
     this.listeners.push(cb);
     return () => {
       const index = this.listeners.indexOf(cb);
@@ -11,7 +11,7 @@ export class EventEmitter {
     };
   }
 
-  public emit(data: any) {
+  public emit(data: unknown): void {
     const listeners = this.listeners;
     for (let i = 0, len = listeners.length; i < len; ++i) {
       listeners[i](data);

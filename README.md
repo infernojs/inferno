@@ -41,11 +41,12 @@ The performance is achieved through multiple optimizations, for example:
 - componentDidAppear, componentWillDisappear and componentWillMove (v8) - class and function component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
 
 ## Runtime requirements
-InfernoJS 9 requires following features to be present in the executing runtime:
+Inferno v9 requires following features to be present in the executing runtime:
 
 - `Promise`
 - `Array.prototype.includes()`
 - `Array.prototype.includes()`
+- `Object.spread()`
 
 ## Browser support
 Since version 4 we have started running our test suite **without** any polyfills.
