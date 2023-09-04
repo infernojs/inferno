@@ -12,21 +12,28 @@ import {
   resetDisplay,
   setDimensions,
   setDisplay,
-  setTransform
+  setTransform,
 } from './utils';
-import { addGlobalAnimationSource, AnimationPhase, consumeGlobalAnimationSource, GlobalAnimationState, queueAnimation } from './animationCoordinator';
+import {
+  addGlobalAnimationSource,
+  AnimationPhase,
+  consumeGlobalAnimationSource,
+  type GlobalAnimationState,
+  queueAnimation,
+} from './animationCoordinator';
 import { isNull, isNullOrUndef } from 'inferno-shared';
+import { type ParentDOM } from 'inferno';
 
-// Show debug output and debugging markers during developmen of move animations
-const _DBG_MVE_ = false && process.env.NODE_ENV !== 'production';
-
-export type AnimationClass = {
+export interface AnimationClass {
   active: string;
   end: string;
   start: string;
-};
+}
 
-function getAnimationClass(animationProp: AnimationClass | string | undefined | null, prefix: string): AnimationClass {
+function getAnimationClass(
+  animationProp: AnimationClass | string | undefined | null,
+  prefix: string,
+): AnimationClass {
   let animCls: AnimationClass;
 
   if (!isNullOrUndef(animationProp) && typeof animationProp === 'object') {
@@ -37,22 +44,27 @@ function getAnimationClass(animationProp: AnimationClass | string | undefined | 
     animCls = {
       active: placeholder + '-active',
       end: placeholder + '-end',
-      start: placeholder
+      start: placeholder,
     };
   }
 
   return animCls;
 }
 
-export function componentDidAppear(dom: HTMLElement | SVGElement, props) {
+export function componentDidAppear(dom: HTMLElement | SVGElement, props): void {
   // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-enter');
 
   // Moved measuring to pre_initialize. It causes a reflow for each component beacuse of the setDisplay of previous component.
   const dimensions = {};
   const display = setDisplay(dom, 'none');
-  const sourceState = props.globalAnimationKey === undefined ? null : consumeGlobalAnimationSource(props.globalAnimationKey);
-  queueAnimation((phase) => _didAppear(phase, dom, cls, dimensions, display, sourceState));
+  const sourceState =
+    props.globalAnimationKey === undefined
+      ? null
+      : consumeGlobalAnimationSource(props.globalAnimationKey);
+  queueAnimation((phase: AnimationPhase) => {
+    _didAppear(phase, dom, cls, dimensions, display, sourceState);
+  });
 }
 
 function _getDidAppearTransitionCallback(dom, cls) {
@@ -72,8 +84,8 @@ function _didAppear(
   cls: AnimationClass,
   dimensions,
   display: string,
-  sourceState: GlobalAnimationState | null
-) {
+  sourceState: GlobalAnimationState | null,
+): void {
   switch (phase) {
     case AnimationPhase.INITIALIZE:
       // Needs to be done in a single pass to avoid reflows
@@ -94,7 +106,11 @@ function _didAppear(
       return;
     case AnimationPhase.SET_START_STATE:
       // 1. Set start of animation
-      if (!isNullOrUndef(sourceState) && dimensions.width !== 0 && dimensions.height !== 0) {
+      if (
+        !isNullOrUndef(sourceState) &&
+        dimensions.width !== 0 &&
+        dimensions.height !== 0
+      ) {
         // const diffX = (sourceState.width - dimensions.width) / 2;
         // const diffY = (sourceState.height - dimensions.height) / 2;
         const dx = sourceState.x - dimensions.x;
@@ -115,33 +131,51 @@ function _didAppear(
       registerTransitionListener(
         // *** Cleanup is broken out as micro optimisation ***
         [dom],
-        _getDidAppearTransitionCallback(dom, cls)
+        _getDidAppearTransitionCallback(dom, cls),
       );
       return;
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 4. Activate target state (called async via requestAnimationFrame)
-      if (!isNullOrUndef(sourceState) && dimensions.width !== 0 && dimensions.height !== 0) {
+      if (
+        !isNullOrUndef(sourceState) &&
+        dimensions.width !== 0 &&
+        dimensions.height !== 0
+      ) {
         clearTransform(dom);
       }
       setDimensions(dom, dimensions.width, dimensions.height);
       removeClassName(dom, cls.start);
       addClassName(dom, cls.end);
-      return;
   }
 }
 
-export function componentWillDisappear(dom: HTMLElement | SVGElement, props, callback: Function) {
+export function componentWillDisappear(
+  dom: HTMLElement | SVGElement,
+  props,
+  callback: () => void,
+): void {
   // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-leave');
   const dimensions = getDimensions(dom);
-  queueAnimation((phase) => _willDisappear(phase, dom, callback, cls, dimensions));
+  queueAnimation((phase) => {
+    _willDisappear(phase, dom, callback, cls, dimensions);
+  });
   if (props.globalAnimationKey !== undefined) {
-    addGlobalAnimationSource(props.globalAnimationKey, dimensions as GlobalAnimationState);
+    addGlobalAnimationSource(
+      props.globalAnimationKey,
+      dimensions as GlobalAnimationState,
+    );
     dom.style.setProperty('visibility', 'hidden');
   }
 }
 
-function _willDisappear(phase: AnimationPhase, dom: HTMLElement | SVGElement, callback: Function, cls: AnimationClass, dimensions) {
+function _willDisappear(
+  phase: AnimationPhase,
+  dom: HTMLElement | SVGElement,
+  callback: () => void,
+  cls: AnimationClass,
+  dimensions,
+): void {
   switch (phase) {
     case AnimationPhase.MEASURE:
       // 1. Set animation start state and dimensions
@@ -160,7 +194,7 @@ function _willDisappear(phase: AnimationPhase, dom: HTMLElement | SVGElement, ca
         // Just passing the componentWillDisappear callback so Inferno can
         // remove the nodes.
         [dom],
-        callback
+        callback,
       );
       return;
     case AnimationPhase.ACTIVATE_ANIMATION:
@@ -168,19 +202,21 @@ function _willDisappear(phase: AnimationPhase, dom: HTMLElement | SVGElement, ca
       addClassName(dom, cls.end);
       removeClassName(dom, cls.start);
       clearDimensions(dom);
-      return;
   }
 }
 
-export function componentWillMove(parentVNode, parent: HTMLElement | SVGElement, dom: HTMLElement | SVGElement, props: any) {
-  // tslint:disable-next-line
-  if (_DBG_MVE_) console.log('Animating move', dom);
-
+export function componentWillMove(
+  parentVNode,
+  parent: ParentDOM,
+  _dom: HTMLElement | SVGElement,
+  props: any,
+): void {
   // Measure all siblings of moved node once before any mutations are done
   let els;
   if (!parentVNode.$MV) {
     parentVNode.$MV = true;
     els = [];
+    // @ts-expect-error parent is not supposed to be null
     let tmpEl = parent.firstChild as HTMLElement | SVGElement;
     while (!isNull(tmpEl)) {
       els.push({
@@ -188,7 +224,7 @@ export function componentWillMove(parentVNode, parent: HTMLElement | SVGElement,
         dy: 0,
         geometry: getGeometry(tmpEl),
         moved: false,
-        node: tmpEl
+        node: tmpEl,
       });
       tmpEl = tmpEl.nextSibling as HTMLElement | SVGElement;
     }
@@ -200,12 +236,18 @@ export function componentWillMove(parentVNode, parent: HTMLElement | SVGElement,
   const animState = {
     els,
     isMaster: !isNullOrUndef(els),
-    parentVNode
+    parentVNode,
   };
-  queueAnimation((phase) => _willMove(phase, cls, animState));
+  queueAnimation((phase) => {
+    _willMove(phase, cls, animState);
+  });
 }
 
-function _willMove(phase: AnimationPhase, cls: AnimationClass, animState) {
+function _willMove(
+  phase: AnimationPhase,
+  cls: AnimationClass,
+  animState,
+): void {
   const { els, isMaster, parentVNode } = animState;
 
   switch (phase) {
@@ -265,7 +307,7 @@ function _willMove(phase: AnimationPhase, cls: AnimationClass, animState) {
             registerTransitionListener(
               // How to know if this is a compound move?
               [tmpItem.node],
-              _getWillMoveTransitionCallback(tmpItem.node, cls)
+              _getWillMoveTransitionCallback(tmpItem.node, cls),
             );
             // Keep track of how many callbacks will be fired
             incrementMoveCbCount(tmpItem.node);
@@ -285,11 +327,13 @@ function _willMove(phase: AnimationPhase, cls: AnimationClass, animState) {
       }
       // TODO: Set dimensions
       if (parentVNode.$MV) parentVNode.$MV = false;
-      return;
   }
 }
 
-function _getWillMoveTransitionCallback(dom: HTMLElement | SVGElement, cls: AnimationClass) {
+function _getWillMoveTransitionCallback(
+  dom: HTMLElement | SVGElement,
+  cls: AnimationClass,
+) {
   return () => {
     // Only remove these if the translate has completed
     const cbCount = decrementMoveCbCount(dom);

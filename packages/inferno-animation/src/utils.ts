@@ -1,21 +1,24 @@
-import { isFunction, warning } from 'inferno-shared';
+import { isFunction } from 'inferno-shared';
 
-declare global {
-  // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
-  // allowing breakpoints in animations for debugging.
-  // https://mariusschulz.com/blog/declaring-global-variables-in-typescript
-  var __INFERNO_ANIMATION_DEBUG__: Boolean;
+export interface Dimensions {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
 }
 
-function filterEmpty(c) {
+function filterEmpty(c: string): boolean {
   return c !== '';
 }
 
-function getClassNameList(className: string) {
+function getClassNameList(className: string): string[] {
   return className.split(' ').filter(filterEmpty);
 }
 
-export function addClassName(node: HTMLElement | SVGElement, className: string) {
+export function addClassName(
+  node: HTMLElement | SVGElement,
+  className: string,
+): void {
   const classNameList = getClassNameList(className);
 
   for (let i = 0; i < classNameList.length; i++) {
@@ -23,7 +26,10 @@ export function addClassName(node: HTMLElement | SVGElement, className: string) 
   }
 }
 
-export function removeClassName(node: HTMLElement | SVGElement, className: string) {
+export function removeClassName(
+  node: HTMLElement | SVGElement,
+  className: string,
+): void {
   const classNameList = getClassNameList(className);
 
   for (let i = 0; i < classNameList.length; i++) {
@@ -31,12 +37,15 @@ export function removeClassName(node: HTMLElement | SVGElement, className: strin
   }
 }
 
-export function forceReflow() {
+export function forceReflow(): number {
   return document.body.clientHeight;
 }
 
 // A quicker version used in pre_initialize
-export function resetDisplay(node: HTMLElement | SVGElement, value?: string) {
+export function resetDisplay(
+  node: HTMLElement | SVGElement,
+  value?: string,
+): void {
   if (value !== undefined) {
     node.style.setProperty('display', value);
   } else {
@@ -45,7 +54,10 @@ export function resetDisplay(node: HTMLElement | SVGElement, value?: string) {
   }
 }
 
-export function setDisplay(node: HTMLElement | SVGElement, value?: string) {
+export function setDisplay(
+  node: HTMLElement | SVGElement,
+  value?: string,
+): string {
   const oldVal = node.style.getPropertyValue('display');
 
   if (oldVal !== value) {
@@ -59,21 +71,22 @@ export function setDisplay(node: HTMLElement | SVGElement, value?: string) {
   return oldVal;
 }
 
-function _cleanStyle(node: HTMLElement | SVGElement) {
+function _cleanStyle(node: HTMLElement | SVGElement): void {
   if (!node.style) {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
     node.removeAttribute('style');
   }
 }
 
-export function getDimensions(node: HTMLElement | SVGElement) {
+export function getDimensions(node: HTMLElement | SVGElement): Dimensions {
   const tmpDisplay = node.style.getPropertyValue('display');
 
   // The `display: none;` workaround was added to support Bootstrap animations in
   // https://github.com/jhsware/inferno-bootstrap/blob/be4a17bff5e785b993a66a2927846cd463fecae3/src/Modal/AnimateModal.js
   // we should consider deprecating this, or providing a different solution for
   // those who only do normal animations.
-  const isDisplayNone = window.getComputedStyle(node).getPropertyValue('display') === 'none';
+  const isDisplayNone =
+    window.getComputedStyle(node).getPropertyValue('display') === 'none';
   if (isDisplayNone) {
     node.style.setProperty('display', 'block');
   }
@@ -90,45 +103,62 @@ export function getDimensions(node: HTMLElement | SVGElement) {
     height: tmp.height,
     width: tmp.width,
     x: tmp.x,
-    y: tmp.y
+    y: tmp.y,
   };
 }
 
-export function getOffsetPosition(node: HTMLElement | SVGElement) {
-  const { x, y } = node.getBoundingClientRect();
-  return { x, y };
-}
-
-export function getGeometry(node: HTMLElement | SVGElement) {
+export function getGeometry(node: HTMLElement | SVGElement): Dimensions {
   const { x, y, width, height } = node.getBoundingClientRect();
   return { x, y, width, height };
 }
 
-export function setTransform(node: HTMLElement | SVGElement, x: number, y: number, scaleX: number = 1, scaleY: number = 1) {
+export function setTransform(
+  node: HTMLElement | SVGElement,
+  x: number,
+  y: number,
+  scaleX: number = 1,
+  scaleY: number = 1,
+): void {
   const doScale = scaleX !== 1 || scaleY !== 1;
   if (doScale) {
     node.style.transformOrigin = '0 0';
-    node.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scaleX + ', ' + scaleY + ')';
+    node.style.transform =
+      'translate(' +
+      x +
+      'px, ' +
+      y +
+      'px) scale(' +
+      scaleX +
+      ', ' +
+      scaleY +
+      ')';
   } else {
     node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
   }
 }
 
-export function clearTransform(node: HTMLElement | SVGElement) {
+export function clearTransform(node: HTMLElement | SVGElement): void {
   node.style.transform = '';
   node.style.transformOrigin = '';
 }
 
-export function setDimensions(node: HTMLElement | SVGElement, width: number, height: number) {
+export function setDimensions(
+  node: HTMLElement | SVGElement,
+  width: number,
+  height: number,
+): void {
   node.style.width = width + 'px';
   node.style.height = height + 'px';
 }
 
-export function clearDimensions(node: HTMLElement | SVGElement) {
+export function clearDimensions(node: HTMLElement | SVGElement): void {
   node.style.width = node.style.height = '';
 }
 
-function _getMaxTransitionDuration(nodes) {
+function _getMaxTransitionDuration(nodes): {
+  maxDuration: number;
+  nrofTransitions: number;
+} {
   let nrofTransitions = 0;
   let maxDuration = 0;
   for (let i = 0; i < nodes.length; i++) {
@@ -140,14 +170,14 @@ function _getMaxTransitionDuration(nodes) {
     const del = cs.getPropertyValue('transition-delay').split(',');
     const props = cs.getPropertyValue('transition-property').split(',');
 
-    for (const prop in props) {
+    for (const prop of props) {
       const fixedProp = prop.trim();
       if (fixedProp[0] === '-') {
         const tmp = fixedProp.split('-').splice(2).join('-');
         // Since I increase number of transition events to expect by
         // number of durations found I need to remove browser prefix
         // variations of the same property
-        if (fixedProp.indexOf(tmp) >= 0) {
+        if (fixedProp.includes(tmp)) {
           nrofTransitions--;
         }
       }
@@ -172,7 +202,7 @@ function _getMaxTransitionDuration(nodes) {
 
   return {
     maxDuration,
-    nrofTransitions
+    nrofTransitions,
   };
 }
 
@@ -180,14 +210,12 @@ export const transitionEndName: string = (function () {
   if (typeof document === 'undefined') return '';
 
   const elementStyle = document.createElement('div').style;
-  // tslint:disable:object-literal-sort-keys
   const transitions = {
     transition: 'transitionend',
     OTransition: 'oTransitionEnd',
     MozTransition: 'transitionend',
-    WebkitTransition: 'webkitTransitionEnd'
+    WebkitTransition: 'webkitTransitionEnd',
   };
-  // tslint:enable:object-literal-sort-keys
 
   for (const t in transitions) {
     if (elementStyle[t] !== undefined) {
@@ -196,17 +224,23 @@ export const transitionEndName: string = (function () {
   }
 })();
 
-function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
-  if (rootNode.nodeName === 'IMG' && !(rootNode as any).complete) {
-    // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
-    // due to loading delay
-    rootNode.addEventListener('load', () => {
-      setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100);
-    });
-  } else {
-    setTimeout(() => onTransitionEnd({ target: rootNode, timeout: true }), maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100);
-  }
-}
+// function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
+//   if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
+//     // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
+//     // due to loading delay
+//     rootNode.addEventListener('load', () => {
+//       setTimeout(
+//         () => onTransitionEnd({ target: rootNode, timeout: true }),
+//         maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
+//       );
+//     });
+//   } else {
+//     setTimeout(
+//       () => onTransitionEnd({ target: rootNode, timeout: true }),
+//       maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
+//     );
+//   }
+// }
 
 /**
  * You need to pass the root element and ALL animated children that have transitions,
@@ -216,18 +250,21 @@ function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
  * @param nodes a list of nodes that have transitions that are part of this animation
  * @param callback callback when all transitions of participating nodes are completed
  */
-export function registerTransitionListener(nodes: (HTMLElement | SVGElement)[], callback: Function) {
+export function registerTransitionListener(
+  nodes: Array<HTMLElement | SVGElement>,
+  callback: () => void,
+): void {
   const rootNode = nodes[0];
 
   /**
    * Here comes the transition event listener
    */
   const transitionDuration = _getMaxTransitionDuration(nodes);
-  const maxDuration = transitionDuration.maxDuration;
+  // const maxDuration = transitionDuration.maxDuration;
   let nrofTransitionsLeft = transitionDuration.nrofTransitions;
   let done = false;
 
-  const onTransitionEnd = (event) => {
+  const onTransitionEnd = (event): void => {
     // Make sure this is an actual event
     if (!event || done) {
       return;
@@ -264,22 +301,9 @@ export function registerTransitionListener(nodes: (HTMLElement | SVGElement)[], 
   };
 
   rootNode.addEventListener(transitionEndName, onTransitionEnd, false);
-
-  // Fallback if transitionend fails
-  // This is disabled during debug so we can set breakpoints
-  // WARNING: If the callback isn't called, the DOM nodes won't be removed
-  if (!(process.env.NODE_ENV !== 'production' && isDebugAnimationsSet())) {
-    setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
-  } else if (process.env.NODE_ENV !== 'production') {
-    warning("You are in animation debugging mode and fallback timeouts aren't set. DOM nodes could be left behind.");
-  }
 }
 
-function isDebugAnimationsSet() {
-  return window.__INFERNO_ANIMATION_DEBUG__ === true;
-}
-
-export function incrementMoveCbCount(node) {
+export function incrementMoveCbCount(node): number {
   let curr = parseInt(node.dataset.moveCbCount, 10);
   if (isNaN(curr)) {
     curr = 1;
@@ -290,7 +314,7 @@ export function incrementMoveCbCount(node) {
   return curr;
 }
 
-export function decrementMoveCbCount(node) {
+export function decrementMoveCbCount(node): number {
   let curr = parseInt(node.dataset.moveCbCount, 10);
   if (isNaN(curr)) {
     curr = 0;

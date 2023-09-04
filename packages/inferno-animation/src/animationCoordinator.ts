@@ -133,7 +133,7 @@ function _runAnimationPhases(): void {
 
 function _debugAnimationPhases(
   phase: AnimationPhase,
-  animationQueue,
+  animationQueue: Array<(phase: AnimationPhase) => void>,
 ): AnimationPhase {
   // When debugging we call _runAnimationPhases once for each phase
   // so only set to idle when done
