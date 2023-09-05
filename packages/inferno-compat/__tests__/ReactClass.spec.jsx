@@ -12,13 +12,18 @@ import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactClass-spec', function () {
   let container;
 
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   beforeEach(() => {
@@ -211,80 +216,52 @@ describe('ReactClass-spec', function () {
   //   );
   // });
 
-  it('should support statics', function () {
-    var Component = React.createClass({
-      statics: {
-        abc: 'def',
-        def: 0,
-        ghi: null,
-        jkl: 'mno',
-        pqr: function () {
-          return this;
-        }
-      },
-
-      render: function () {
-        return <span />;
-      }
-    });
-
-    var instance = <Component />;
-    instance = renderIntoDocument(instance).$LI.children;
-
-    expect(instance.constructor.abc).toBe('def');
-    expect(Component.abc).toBe('def');
-    expect(instance.constructor.def).toBe(0);
-    expect(Component.def).toBe(0);
-    expect(instance.constructor.ghi).toBe(null);
-    expect(Component.ghi).toBe(null);
-    expect(instance.constructor.jkl).toBe('mno');
-    expect(Component.jkl).toBe('mno');
-    expect(instance.constructor.pqr()).toBe(Component);
-    expect(Component.pqr()).toBe(Component);
-  });
-
   it('should work with object getInitialState() return values', function () {
-    var Component = React.createClass({
-      getInitialState: function () {
+    class Comp extends React.Component {
+      getInitialState() {
         return {
-          occupation: 'clown'
+          occupation: 'clown',
         };
-      },
-      render: function () {
+      }
+
+      render() {
         return <span />;
       }
-    });
-    var instance = <Component />;
+    }
+
+    let instance = <Comp />;
     instance = renderIntoDocument(instance);
     expect(instance.$LI.children.state.occupation).toEqual('clown');
   });
 
   it('renders based on context getInitialState', function () {
-    var Foo = React.createClass({
-      contextTypes: {
-        className: React.PropTypes.string
-      },
+    class Foo extends React.Component {
+      static contextTypes = {
+        className: React.PropTypes.string,
+      };
+
       getInitialState() {
         return { className: this.context.className };
-      },
+      }
+
       render() {
         return <span className={this.state.className} />;
       }
-    });
+    }
 
-    var Outer = React.createClass({
+    const Outer = React.createClass({
       childContextTypes: {
-        className: React.PropTypes.string
+        className: React.PropTypes.string,
       },
       getChildContext() {
         return { className: 'foo' };
       },
       render() {
         return <Foo />;
-      }
+      },
     });
 
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     ReactDOM.render(<Outer />, container);
     expect(container.firstChild.className).toBe('foo');
   });
@@ -310,13 +287,13 @@ describe('ReactClass-spec', function () {
   // });
 
   it('should work with a null getInitialState() return value', function () {
-    var Component = React.createClass({
+    const Component = React.createClass({
       getInitialState: function () {
         return null;
       },
       render: function () {
         return <span />;
-      }
+      },
     });
     expect(() => renderIntoDocument(<Component />)).not.toThrow();
   });

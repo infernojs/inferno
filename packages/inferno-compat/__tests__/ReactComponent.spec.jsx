@@ -54,18 +54,18 @@ describe('ReactComponent', function () {
     var innerObj = {};
     var outerObj = {};
 
-    var Wrapper = React.createClass({
-      getObject: function () {
+    class Wrapper extends React.Component {
+      getObject() {
         return this.props.object;
-      },
-      render: function () {
+      }
+      render() {
         return <div>{this.props.children}</div>;
       }
-    });
+    }
 
     var mounted = false;
-    var Component = React.createClass({
-      render: function () {
+    class Component extends React.Component {
+      render() {
         var inner = <Wrapper object={innerObj} ref={(c) => (this.innerRef = c)} />;
         var outer = (
           <Wrapper object={outerObj} ref={(c) => (this.outerRef = c)}>
@@ -73,13 +73,13 @@ describe('ReactComponent', function () {
           </Wrapper>
         );
         return outer;
-      },
-      componentDidMount: function () {
+      }
+      componentDidMount() {
         expect(this.innerRef.getObject()).toEqual(innerObj);
         expect(this.outerRef.getObject()).toEqual(outerObj);
         mounted = true;
       }
-    });
+    }
 
     var instance = <Component />;
     renderIntoDocument(instance);
@@ -216,41 +216,40 @@ describe('ReactComponent', function () {
 
   // other
   it('should pass context to children when not owner', function () {
-    var Parent = React.createClass({
-      render: function () {
+    class Parent extends React.Component{
+      render() {
         return (
           <Child>
             <Grandchild />
           </Child>
         );
       }
-    });
+    }
 
-    var Child = React.createClass({
-      childContextTypes: {
+    class Child extends React.Component {
+      static childContextTypes: {
         foo: React.PropTypes.string
-      },
+      };
 
-      getChildContext: function () {
+      getChildContext() {
         return {
           foo: 'bar'
         };
       },
 
-      render: function () {
+      render() {
         return React.Children.only(this.props.children);
       }
-    });
+    }
 
-    var Grandchild = React.createClass({
-      contextTypes: {
+    class Grandchild extends React.Component {
+      contextTypes = {
         foo: React.PropTypes.string
-      },
-
-      render: function () {
+      };
+      render() {
         return <div>{this.context.foo}</div>;
       }
-    });
+    }
 
     var component = renderIntoDocument(<Parent />);
     expect(ReactDOM.findDOMNode(component).innerHTML).toBe('bar');

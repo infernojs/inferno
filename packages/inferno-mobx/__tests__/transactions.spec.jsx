@@ -1,6 +1,5 @@
 import { Component, render } from 'inferno';
 import { observer } from 'inferno-mobx';
-import { createClass } from 'inferno-create-class';
 import { autorun, computed, observable, runInAction } from 'mobx';
 
 describe('Mobx Transacations', () => {
@@ -23,7 +22,7 @@ describe('Mobx Transacations', () => {
       b: observable.box(false),
       c: computed(function () {
         return foo.b.get();
-      })
+      }),
     };
     function flipStuff() {
       runInAction(() => {
@@ -34,11 +33,21 @@ describe('Mobx Transacations', () => {
     let asText = '';
     let willReactCount = 0;
     autorun(() => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(':')));
-    const Test = observer(
-      createClass({
-        componentWillReact: () => willReactCount++,
-        render: () => <div id="x">{[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}</div>
-      })
+
+    observer(
+      class MyCom extends Component {
+        componentWillReact() {
+          willReactCount++;
+        }
+
+        render() {
+          return (
+            <div id="x">
+              {[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}
+            </div>
+          );
+        }
+      },
     );
 
     render(<Test />, container);

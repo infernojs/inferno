@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import { createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import {
   findAllInRenderedTree,
@@ -51,17 +50,17 @@ const AnotherFunctionalComponent = function (props) {
   return createElement('div', props);
 };
 
-const CreateClassComponent = createClass({
+class ClassComponent extends Component {
   render() {
     return createElement('div', this.props);
-  },
-});
+  }
+}
 
-const AnotherCreateClassComponent = createClass({
+class AnotherClassComponent extends Component {
   render() {
     return createElement('div', this.props);
-  },
-});
+  }
+}
 
 class ExtendClassComponent extends Component {
   render() {
@@ -91,17 +90,17 @@ describe('Test Utils', () => {
   describe('isVNode', () => {
     it('should return true for VNodes', () => {
       expect(isVNode(createElement('div'))).toBe(true);
-      expect(isVNode(createElement(CreateClassComponent))).toBe(true);
+      expect(isVNode(createElement(ClassComponent))).toBe(true);
       expect(isVNode(createElement(ExtendClassComponent))).toBe(true);
       expect(isVNode(createElement(FunctionalComponent))).toBe(true);
-      expect(isVNode(<CreateClassComponent />)).toBe(true);
+      expect(isVNode(<ClassComponent />)).toBe(true);
       expect(isVNode(<ExtendClassComponent />)).toBe(true);
       expect(isVNode(<FunctionalComponent />)).toBe(true);
       expect(isVNode(<div />)).toBe(true);
     });
 
     it('should return false for non-VNodes', () => {
-      expect(isVNode(CreateClassComponent)).toBe(false);
+      expect(isVNode(ClassComponent)).toBe(false);
       expect(isVNode(ExtendClassComponent)).toBe(false);
       expect(isVNode(FunctionalComponent)).toBe(false);
       expect(isVNode(createDOMElement('div'))).toBe(false);
@@ -135,8 +134,8 @@ describe('Test Utils', () => {
       ).toBe(true);
       expect(
         isVNodeOfType(
-          createElement(CreateClassComponent),
-          CreateClassComponent,
+          createElement(ClassComponent),
+          ClassComponent,
         ),
       ).toBe(true);
       expect(
@@ -150,11 +149,11 @@ describe('Test Utils', () => {
     it('should return false for VNodes with a specified type', () => {
       expect(isVNodeOfType(createElement('div'), 'h1')).toBe(false);
       expect(
-        isVNodeOfType(createElement(FunctionalComponent), CreateClassComponent),
+        isVNodeOfType(createElement(FunctionalComponent), ClassComponent),
       ).toBe(false);
       expect(
         isVNodeOfType(
-          createElement(CreateClassComponent),
+          createElement(ClassComponent),
           ExtendClassComponent,
         ),
       ).toBe(false);
@@ -172,7 +171,7 @@ describe('Test Utils', () => {
     });
 
     it('should return false for VNodes of type function or class', () => {
-      expect(isDOMVNode(createElement(CreateClassComponent))).toBe(false);
+      expect(isDOMVNode(createElement(ClassComponent))).toBe(false);
       expect(isDOMVNode(createElement(ExtendClassComponent))).toBe(false);
       expect(isDOMVNode(createElement(FunctionalComponent))).toBe(false);
     });
@@ -201,7 +200,7 @@ describe('Test Utils', () => {
     });
 
     it('should return false for VNodes of incorrect type', () => {
-      expect(isFunctionalVNode(createElement(CreateClassComponent))).toBe(
+      expect(isFunctionalVNode(createElement(ClassComponent))).toBe(
         false,
       );
       expect(isFunctionalVNode(createElement(ExtendClassComponent))).toBe(
@@ -231,7 +230,7 @@ describe('Test Utils', () => {
       expect(
         isFunctionalVNodeOfType(
           createElement(FunctionalComponent),
-          CreateClassComponent,
+          ClassComponent,
         ),
       ).toBe(false);
       expect(
@@ -245,7 +244,7 @@ describe('Test Utils', () => {
 
   describe('isClassVNode', () => {
     it('should return true for VNodes of class type', () => {
-      expect(isClassVNode(createElement(CreateClassComponent))).toBe(true);
+      expect(isClassVNode(createElement(ClassComponent))).toBe(true);
       expect(isClassVNode(createElement(ExtendClassComponent))).toBe(true);
     });
 
@@ -259,8 +258,8 @@ describe('Test Utils', () => {
     it('should return true for VNodes of specific class type', () => {
       expect(
         isClassVNodeOfType(
-          createElement(CreateClassComponent),
-          CreateClassComponent,
+          createElement(ClassComponent),
+          ClassComponent,
         ),
       ).toBe(true);
       expect(
@@ -274,19 +273,19 @@ describe('Test Utils', () => {
     it('should return false for VNodes of incorrect type', () => {
       expect(
         isClassVNodeOfType(
-          createElement(CreateClassComponent),
-          AnotherCreateClassComponent,
+          createElement(ClassComponent),
+          AnotherClassComponent,
         ),
       ).toBe(false);
       expect(
         isClassVNodeOfType(
-          createElement(CreateClassComponent),
+          createElement(ClassComponent),
           AnotherExtendClassComponent,
         ),
       ).toBe(false);
       expect(
         isClassVNodeOfType(
-          createElement(CreateClassComponent),
+          createElement(ClassComponent),
           FunctionalComponent,
         ),
       ).toBe(false);
@@ -294,7 +293,7 @@ describe('Test Utils', () => {
       expect(
         isClassVNodeOfType(
           createElement(ExtendClassComponent),
-          AnotherCreateClassComponent,
+          AnotherClassComponent,
         ),
       ).toBe(false);
       expect(
@@ -320,11 +319,11 @@ describe('Test Utils', () => {
     });
 
     it('should return false for non-DOMElements', () => {
-      expect(isDOMElement(createElement(CreateClassComponent))).toBe(false);
+      expect(isDOMElement(createElement(ClassComponent))).toBe(false);
       expect(isDOMElement(createElement(ExtendClassComponent))).toBe(false);
       expect(isDOMElement(createElement(FunctionalComponent))).toBe(false);
       expect(isDOMElement(createElement('div'))).toBe(false);
-      expect(isDOMElement(CreateClassComponent)).toBe(false);
+      expect(isDOMElement(ClassComponent)).toBe(false);
       expect(isDOMElement(ExtendClassComponent)).toBe(false);
       expect(isDOMElement(FunctionalComponent)).toBe(false);
       expect(isDOMElement('div')).toBe(false);
@@ -361,7 +360,7 @@ describe('Test Utils', () => {
   describe('isRenderedClassComponent', () => {
     const DOMVNode = createElement('div');
     const functionalVNode = createElement(FunctionalComponent);
-    const createClassVNode = createElement(CreateClassComponent);
+    const createClassVNode = createElement(ClassComponent);
     const extendClassVNode = createElement(ExtendClassComponent);
 
     it('should return true for rendered Class Components', () => {
@@ -386,14 +385,14 @@ describe('Test Utils', () => {
   });
 
   describe('isRenderedClassComponentOfType', () => {
-    const createClassVNode = createElement(CreateClassComponent);
+    const createClassVNode = createElement(ClassComponent);
     const extendClassVNode = createElement(ExtendClassComponent);
 
     it('should return true for rendered Class Components of specific type', () => {
       expect(
         isRenderedClassComponentOfType(
           renderIntoContainer(createClassVNode),
-          CreateClassComponent,
+          ClassComponent,
         ),
       ).toBe(true);
       expect(
@@ -408,7 +407,7 @@ describe('Test Utils', () => {
       expect(
         isRenderedClassComponentOfType(
           renderIntoContainer(createClassVNode),
-          AnotherCreateClassComponent,
+          AnotherClassComponent,
         ),
       ).toBe(false);
       expect(
@@ -439,7 +438,7 @@ describe('Test Utils', () => {
       expect(
         isRenderedClassComponentOfType(
           renderIntoContainer(extendClassVNode),
-          CreateClassComponent,
+          ClassComponent,
         ),
       ).toBe(false);
       expect(
@@ -532,7 +531,7 @@ describe('Test Utils', () => {
         }).toThrowError();
       };
       testValue(render(<div />, container));
-      testValue(CreateClassComponent);
+      testValue(ClassComponent);
       testValue(ExtendClassComponent);
       testValue(FunctionalComponent);
       testValue(createDOMElement('div'));
@@ -651,8 +650,8 @@ describe('Test Utils', () => {
       <div>
         <FunctionalComponent />
         <FunctionalComponent />
-        <CreateClassComponent />
-        <CreateClassComponent />
+        <ClassComponent />
+        <ClassComponent />
         <ExtendClassComponent />
         <ExtendClassComponent />
       </div>,
@@ -672,7 +671,7 @@ describe('Test Utils', () => {
       testValue('p', 0);
       testValue('div', 7); // Outer div + each rendered component div
       testValue(FunctionalComponent, 2);
-      testValue(CreateClassComponent, 2);
+      testValue(ClassComponent, 2);
       testValue(ExtendClassComponent, 2);
       testValue(AnotherFunctionalComponent, 0);
     });
@@ -683,8 +682,8 @@ describe('Test Utils', () => {
       <div>
         <FunctionalComponent />
         <FunctionalComponent />
-        <CreateClassComponent />
-        <CreateClassComponent />
+        <ClassComponent />
+        <ClassComponent />
         <ExtendClassComponent />
         <ExtendClassComponent />
       </div>
@@ -704,7 +703,7 @@ describe('Test Utils', () => {
       testValue('p', 0);
       testValue('div', 1); // Just the outer div
       testValue(FunctionalComponent, 2);
-      testValue(CreateClassComponent, 2);
+      testValue(ClassComponent, 2);
       testValue(ExtendClassComponent, 2);
       testValue(AnotherFunctionalComponent, 0);
     });
@@ -805,7 +804,7 @@ describe('Test Utils', () => {
         <h1>Hello</h1>
         <FunctionalComponent />
         <FunctionalComponent />
-        <CreateClassComponent />
+        <ClassComponent />
         <ExtendClassComponent />
       </div>,
     );
@@ -830,7 +829,7 @@ describe('Test Utils', () => {
         expect(result.type).toBe(type);
       };
       testValue('h1');
-      testValue(CreateClassComponent);
+      testValue(ClassComponent);
       testValue(ExtendClassComponent);
     });
   });
@@ -843,7 +842,7 @@ describe('Test Utils', () => {
         </div>
         <FunctionalComponent />
         <FunctionalComponent />
-        <CreateClassComponent />
+        <ClassComponent />
         <ExtendClassComponent />
       </div>
     );
@@ -868,7 +867,7 @@ describe('Test Utils', () => {
         expect(result.type).toBe(type);
       };
       testValue('h1');
-      testValue(CreateClassComponent);
+      testValue(ClassComponent);
       testValue(ExtendClassComponent);
     });
   });

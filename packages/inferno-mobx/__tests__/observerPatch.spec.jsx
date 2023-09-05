@@ -42,10 +42,11 @@ describe('Mobx Observer Patch', () => {
 
     let todoListRenderings = 0;
     let todoListWillReactCount = 0;
-    const TodoList = createClass({
+    class TodoList extends Component {
       componentWillReact() {
         todoListWillReactCount++;
-      },
+      }
+
       render() {
         todoListRenderings++;
         const todos = store.todos;
@@ -58,7 +59,7 @@ describe('Mobx Observer Patch', () => {
           </div>
         );
       }
-    });
+    }
 
     observerPatch(TodoList);
 
@@ -155,14 +156,15 @@ describe('Mobx Observer Patch', () => {
 
   it('patched render is run first', (done) => {
     let origRenderMethod;
-    const Comp = createClass({
+    class Comp extends Component {
       render() {
         // ugly check, but proofs that observer.willmount has run
         // We cannot use function.prototype.name here like in react-redux tests because it is not supported in Edge/IE
         expect(this.render).not.toBe(origRenderMethod);
         return null;
       }
-    });
+    }
+
     origRenderMethod = Comp.prototype.render;
 
     observerPatch(Comp);

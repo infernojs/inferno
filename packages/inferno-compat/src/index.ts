@@ -31,7 +31,6 @@ import {
 } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
-import { createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import {
   isArray,
@@ -51,10 +50,6 @@ import { findDOMNode } from 'inferno-extras';
 import { getNumberStyleValue, hyphenCase } from './reactstyles';
 
 export type { ComponentType, Inferno, Refs, VNode } from 'inferno';
-export type {
-  ClassicComponentClass,
-  ComponentSpec,
-} from 'inferno-create-class';
 
 declare global {
   interface Event {
@@ -411,7 +406,6 @@ if (
     // Public methods
     cloneElement: cloneVNode,
     cloneVNode,
-    createClass,
     createComponentVNode,
     createElement,
     createFactory,
@@ -462,7 +456,6 @@ export {
   // Public methods
   cloneVNode as cloneElement,
   cloneVNode,
-  createClass,
   createComponentVNode,
   createElement,
   createFactory,
@@ -509,7 +502,6 @@ export default {
   // Public methods
   cloneElement: cloneVNode,
   cloneVNode,
-  createClass,
   createComponentVNode,
   createElement,
   createFactory,

@@ -43,7 +43,6 @@
     "inferno": "8.2.2"
   },
   "devDependencies": {
-    "inferno-create-class": "8.2.2",
     "inferno-create-element": "8.2.2",
     "inferno-shared": "8.2.2",
     "redux": "^4"

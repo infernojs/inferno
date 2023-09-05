@@ -1,5 +1,4 @@
 import { Component, render } from 'inferno';
-import { createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
 import { streamAsStaticMarkup } from 'inferno-server';
 import concatStream from 'concat-stream-es6';
@@ -17,42 +16,45 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
     document.body.removeChild(container);
   });
 
-  it('should throw with invalid children', () => {
+  it('should throw with invalid children', async () => {
     const test = (value) => createElement('a', null, true);
 
-    return streamPromise(test('foo')).catch((err) => {
+    return await streamPromise(test('foo')).catch((err) => {
       expect(err.toString()).toBe('Error: invalid component');
     });
   });
 
-  it('should use getChildContext', () => {
-    const TestComponent = createClass({
-      getChildContext() {
+  it('should use getChildContext', async () => {
+    class TestComponent {
+      public getChildContext() {
         return { hello: 'world' };
-      },
-      render() {
+      }
+      public render() {
         return createElement('a', null, this.context.hello);
       }
-    });
-    return streamPromise(createElement(TestComponent, null)).then(function (output) {
-      expect(output).toBe('<a>world</a>');
-    });
+    }
+
+    await streamPromise(createElement(TestComponent, null)).then(
+      function (output) {
+        expect(output).toBe('<a>world</a>');
+      },
+    );
   });
 
   describe('Component hook', () => {
-    it('Should allow changing state in CWM', () => {
+    it('Should allow changing state in CWM', async () => {
       class Another extends Component {
         constructor(props, context) {
           super(props, context);
 
           this.state = {
-            foo: 'bar'
+            foo: 'bar',
           };
         }
 
         componentWillMount() {
           this.setState({
-            foo: 'bar2'
+            foo: 'bar2',
           });
         }
 
@@ -66,23 +68,26 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
           super(props, context);
 
           this.state = {
-            foo: 'bar'
+            foo: 'bar',
           };
         }
 
         componentWillMount() {
           this.setState({
-            foo: 'bar2'
+            foo: 'bar2',
           });
         }
 
         render() {
-          return createElement('div', null, [this.state.foo, createElement(Another)]);
+          return createElement('div', null, [
+            this.state.foo,
+            createElement(Another),
+          ]);
         }
       }
 
       const vDom = createElement(Tester);
-      return streamPromise(vDom).then(function (output) {
+      await streamPromise(vDom).then(function (output) {
         const container = document.createElement('div');
         document.body.appendChild(container);
         container.innerHTML = output;
@@ -93,14 +98,14 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
   });
 });
 
-function streamPromise(dom) {
-  return new Promise(function (res, rej) {
+async function streamPromise(dom) {
+  return await new Promise(function (res, rej) {
     streamAsStaticMarkup(dom)
       .on('error', rej)
       .pipe(
         concatStream(function (buffer) {
           res(buffer.toString('utf-8'));
-        })
+        }),
       );
   });
 }

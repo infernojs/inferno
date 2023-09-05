@@ -7,7 +7,7 @@ import React, {
   hydrate,
   PropTypes,
   render,
-  unstable_renderSubtreeIntoContainer
+  unstable_renderSubtreeIntoContainer,
 } from 'inferno-compat';
 
 describe('MISC', () => {
@@ -49,7 +49,7 @@ describe('MISC', () => {
 
           event.stopPropagation();
           expect(event.isPropagationStopped()).toBe(true);
-        }
+        },
       };
       spyOn(spyObj, 'foo').and.callThrough();
 
@@ -103,10 +103,10 @@ describe('MISC', () => {
     });
 
     it('should replace isomorphic content', () => {
-      let ce = (type) => document.createElement(type);
-      let Text = (text) => document.createTextNode(text);
-      let root = ce('div');
-      let initialChild = ce('div');
+      const ce = (type) => document.createElement(type);
+      const Text = (text) => document.createTextNode(text);
+      const root = ce('div');
+      const initialChild = ce('div');
       initialChild.appendChild(Text('initial content'));
       root.appendChild(initialChild);
 
@@ -115,15 +115,15 @@ describe('MISC', () => {
     });
 
     it('hydrate should remove extra elements', () => {
-      let ce = (type) => document.createElement(type);
-      let Text = (text) => document.createTextNode(text);
-      let root = ce('div');
+      const ce = (type) => document.createElement(type);
+      const Text = (text) => document.createTextNode(text);
+      const root = ce('div');
 
-      let c1 = ce('div');
+      const c1 = ce('div');
       c1.appendChild(Text('isomorphic content'));
       root.appendChild(c1);
 
-      let c2 = ce('div');
+      const c2 = ce('div');
       c2.appendChild(Text('extra content'));
       root.appendChild(c2);
 
@@ -132,9 +132,9 @@ describe('MISC', () => {
     });
 
     it('should remove text nodes', () => {
-      let ce = (type) => document.createElement(type);
-      let Text = (text) => document.createTextNode(text);
-      let root = ce('div');
+      const ce = (type) => document.createElement(type);
+      const Text = (text) => document.createTextNode(text);
+      const root = ce('div');
 
       root.appendChild(Text('Text Content in the root'));
       root.appendChild(Text('More Text Content'));
@@ -144,43 +144,13 @@ describe('MISC', () => {
     });
 
     it('should support defaultValue', () => {
-      let div2 = document.createElement('div');
+      const div2 = document.createElement('div');
       (document.body || document.documentElement).appendChild(div2);
       render(<input defaultValue="foo" />, div2);
       expect(div2.firstElementChild.value).toBe('foo');
 
       render(null, div2);
       document.body.removeChild(div2);
-    });
-  });
-
-  describe('createClass()', () => {
-    it('should be exported', () => {
-      expect(React.createClass).toBe(createClass);
-    });
-
-    it('should not bind blacklisted methods', () => {
-      let constructor = () => {};
-      let render = () => null;
-      const C = createClass({
-        constructor,
-        render
-      });
-      let c = new C();
-      expect(c.constructor).toBe(constructor);
-      expect(c.render).toBe(render);
-    });
-
-    it('should copy statics', () => {
-      let def = {
-        statics: {
-          foo: 'bar',
-          baz() {}
-        }
-      };
-      let c = createClass(def);
-      expect(c.foo).toEqual(def.statics.foo);
-      expect(c.baz).toEqual(def.statics.baz);
     });
   });
 
@@ -198,51 +168,55 @@ describe('MISC', () => {
 
   describe('cloneElement', () => {
     it('should clone elements', () => {
-      let element = (
+      const element = (
         <foo a="b" c="d">
           a<span>b</span>
         </foo>
       );
-      expect(JSON.stringify(cloneElement(element).children)).toEqual(JSON.stringify(element.children));
+      expect(JSON.stringify(cloneElement(element).children)).toEqual(
+        JSON.stringify(element.children),
+      );
     });
 
     it('should support props.children', () => {
-      let element = <foo children={<span>b</span>} />;
-      let clone = cloneElement(element);
+      const element = <foo children={<span>b</span>} />;
+      const clone = cloneElement(element);
 
-      expect(cloneElement(clone).props.children).toEqual(element.props.children);
+      expect(cloneElement(clone).props.children).toEqual(
+        element.props.children,
+      );
     });
 
     it('children take precedence over props.children', () => {
-      let element = (
+      const element = (
         <foo children={<span>c</span>}>
           <div>b</div>
         </foo>
       );
-      let clone = cloneElement(element);
+      const clone = cloneElement(element);
 
       expect(clone.children.children).toEqual('b');
     });
 
     it('should support children in prop argument', () => {
-      let element = <foo />;
-      let children = [<span>b</span>];
-      let clone = cloneElement(element, { children });
+      const element = <foo />;
+      const children = [<span>b</span>];
+      const clone = cloneElement(element, { children });
       expect(JSON.stringify(clone.children)).toEqual(JSON.stringify(children));
     });
 
     it('children argument takes precedence over props.children', () => {
-      let element = <foo />;
-      let childrenA = [<span>b</span>];
-      let childrenB = [<div>c</div>];
-      let clone = cloneElement(element, { children: childrenA }, childrenB);
+      const element = <foo />;
+      const childrenA = [<span>b</span>];
+      const childrenB = [<div>c</div>];
+      const clone = cloneElement(element, { children: childrenA }, childrenB);
       expect(JSON.stringify(clone.children)).toEqual(JSON.stringify(childrenB));
     });
 
     it('children argument takes precedence over props.children even if falsey', () => {
-      let element = <foo />;
-      let childrenA = [<span>b</span>];
-      let clone = cloneElement(element, { children: childrenA }, undefined);
+      const element = <foo />;
+      const childrenA = [<span>b</span>];
+      const clone = cloneElement(element, { children: childrenA }, undefined);
       expect(clone.children).toEqual(null);
     });
   });
@@ -252,6 +226,7 @@ describe('MISC', () => {
       render() {
         return null;
       }
+
       getNode() {
         return 'inner';
       }
@@ -262,12 +237,18 @@ describe('MISC', () => {
         render() {
           return null;
         }
+
         componentDidMount() {
           this.renderInner();
         }
+
         renderInner() {
           const wrapper = document.createElement('div');
-          this.inner = unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper);
+          this.inner = unstable_renderSubtreeIntoContainer(
+            this,
+            <Inner />,
+            wrapper,
+          );
         }
       }
       const root = document.createElement('div');
@@ -280,15 +261,22 @@ describe('MISC', () => {
         render() {
           return null;
         }
+
         componentDidMount() {
           this.renderInner();
         }
+
         renderInner() {
           const wrapper = document.createElement('div');
           const self = this;
-          unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper, function () {
-            self.inner = this;
-          });
+          unstable_renderSubtreeIntoContainer(
+            this,
+            <Inner />,
+            wrapper,
+            function () {
+              self.inner = this;
+            },
+          );
         }
       }
       const root = document.createElement('div');

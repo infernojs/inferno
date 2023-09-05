@@ -1,7 +1,6 @@
 import { Component, render } from 'inferno';
 import { extendObservable, getObserverTree, observable, runInAction } from 'mobx';
 import { inject, observer, Observer, onError, trackComponents, useStaticRendering } from 'inferno-mobx';
-import { createClass } from 'inferno-create-class';
 
 const store = observable({
   todos: [
@@ -348,17 +347,16 @@ describe('Mobx Observer', () => {
 
   it('should render component even if setState called with exactly the same props', function (done) {
     let renderCount = 0;
-    const Component = observer(
-      createClass({
-        onClick() {
-          this.setState({});
-        },
-        render() {
-          renderCount++;
-          return <div onClick={this.onClick} id="clickableDiv" />;
-        }
-      })
-    );
+    class Component extends Component {
+      onClick() {
+        this.setState({});
+      }
+      render() {
+        renderCount++;
+        return <div onClick={this.onClick} id="clickableDiv" />;
+      }
+    }
+
     render(<Component />, container);
 
     expect(renderCount).toBe(1); //'renderCount === 1');

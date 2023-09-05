@@ -9,20 +9,16 @@
 
 import React from 'inferno-compat';
 
-var ReactDOM = React;
-
 describe('onlyChild', function () {
-  var ReactFragment;
   var onlyChild;
-  var WrapComponent;
+  class WrapComponent extends React.Component {
+    render() {
+      return <div>{onlyChild(this.props.children, this.props.mapFn, this)}</div>;
+    }
+  }
 
   beforeEach(function () {
     onlyChild = React.Children.only;
-    WrapComponent = React.createClass({
-      render: function () {
-        return <div>{onlyChild(this.props.children, this.props.mapFn, this)}</div>;
-      }
-    });
   });
 
   it('should fail when passed two children', function () {
@@ -48,16 +44,6 @@ describe('onlyChild', function () {
       onlyChild(instance.props.children);
     }).toThrow();
   });
-
-  // it('should fail when key/value objects', function() {
-  //   expect(function() {
-  //     var instance =
-  //       <WrapComponent>
-  //         {ReactFragment.create({oneThing: <span />})}
-  //       </WrapComponent>;
-  //     onlyChild(instance.props.children);
-  //   }).toThrow();
-  // });
 
   it('should not fail when passed interpolated single child', function () {
     expect(function () {

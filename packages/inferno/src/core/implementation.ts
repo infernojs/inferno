@@ -16,8 +16,6 @@ import {
 } from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
 import { Component, type ComponentType } from './component';
-import { Inferno } from './types';
-import ComponentClass = Inferno.ComponentClass;
 
 const keyPrefix = '$';
 

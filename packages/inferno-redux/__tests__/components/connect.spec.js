@@ -1,5 +1,4 @@
 import { Component, render as _render, rerender } from 'inferno';
-import { createClass } from 'inferno-create-class';
 import { connect } from 'inferno-redux';
 import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
@@ -1542,27 +1541,6 @@ describe('Inferno', () => {
               return <div />;
             }
           }
-        ).displayName
-      ).not.toEqual(undefined);
-
-      expect(
-        connect((state) => state)(
-          createClass({
-            displayName: 'Bar',
-            render() {
-              return <div />;
-            }
-          })
-        ).displayName
-      ).not.toEqual(undefined);
-
-      expect(
-        connect((state) => state)(
-          createClass({
-            render() {
-              return <div />;
-            }
-          })
         ).displayName
       ).not.toEqual(undefined);
     });

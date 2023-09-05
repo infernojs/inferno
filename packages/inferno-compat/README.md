@@ -36,7 +36,6 @@ All packages:
 npm install --save inferno
 npm install --save inferno-compat
 npm install --save inferno-clone-vnode
-npm install --save inferno-create-class
 npm install --save inferno-create-element
 
 ```
