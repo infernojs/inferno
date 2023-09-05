@@ -1,4 +1,4 @@
-export function mergePendingState(componentInstance) {
+export function mergePendingState(componentInstance): void {
   const pendingState = componentInstance.$PS;
 
   if (pendingState) {
@@ -7,9 +7,7 @@ export function mergePendingState(componentInstance) {
     if (state === null) {
       componentInstance.state = pendingState;
     } else {
-      for (const key in pendingState) {
-        state[key] = pendingState[key];
-      }
+      componentInstance.state = { ...pendingState, ...state };
     }
     componentInstance.$PS = null;
   }

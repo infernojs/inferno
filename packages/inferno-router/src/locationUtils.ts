@@ -1,4 +1,5 @@
-import { Location, parsePath, To } from 'history';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { type Location, parsePath, type To } from 'history';
 import { isString } from 'inferno-shared';
 
 export const normalizeToLocation = (to) => {
@@ -6,6 +7,6 @@ export const normalizeToLocation = (to) => {
 };
 
 export const splitLocation = (location: Location): { to: To; state: any } => {
-  const { key = '', state, ...to } = location;
+  const { state, ...to } = location;
   return { to, state };
 };

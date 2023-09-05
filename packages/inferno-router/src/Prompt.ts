@@ -1,4 +1,4 @@
-import { Component } from 'inferno';
+import { Component, type InfernoNode } from 'inferno';
 import { invariant } from './utils';
 
 export interface IPromptProps {
@@ -12,7 +12,7 @@ export interface IPromptProps {
 export class Prompt extends Component<IPromptProps, any> {
   public unblock;
 
-  public enable(message) {
+  public enable(message): void {
     if (this.unblock) {
       this.unblock();
     }
@@ -25,22 +25,25 @@ export class Prompt extends Component<IPromptProps, any> {
     });
   }
 
-  public disable() {
+  public disable(): void {
     if (this.unblock) {
       this.unblock();
       this.unblock = null;
     }
   }
 
-  public componentWillMount() {
-    invariant(this.context.router, 'You should not use <Prompt> outside a <Router>');
+  public componentWillMount(): void {
+    invariant(
+      this.context.router,
+      'You should not use <Prompt> outside a <Router>',
+    );
 
     if (this.props.when) {
       this.enable(this.props.message);
     }
   }
 
-  public componentWillReceiveProps(nextProps) {
+  public componentWillReceiveProps(nextProps): void {
     if (nextProps.when) {
       if (!this.props.when || this.props.message !== nextProps.message) {
         this.enable(nextProps.message);
@@ -50,11 +53,11 @@ export class Prompt extends Component<IPromptProps, any> {
     }
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     this.disable();
   }
 
-  public render() {
+  public render(): InfernoNode {
     return null;
   }
 }

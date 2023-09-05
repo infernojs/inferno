@@ -1,4 +1,10 @@
-import { createVNode, Inferno, InfernoMouseEvent, linkEvent, VNode } from 'inferno';
+import {
+  createVNode,
+  type Inferno,
+  type InfernoMouseEvent,
+  linkEvent,
+  type VNode,
+} from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 import { isString } from 'inferno-shared';
@@ -6,7 +12,8 @@ import type { Location } from 'history';
 import { parsePath } from 'history';
 import { normalizeToLocation, splitLocation } from './locationUtils';
 
-const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean => Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean =>
+  Boolean(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
 export interface ILinkProps {
   children?: any;
@@ -18,7 +25,7 @@ export interface ILinkProps {
   innerRef?: any;
 }
 
-function handleClick({ props, context }, event: InfernoMouseEvent<any>) {
+function handleClick({ props, context }, event: InfernoMouseEvent<any>): void {
   if (props.onClick) {
     props.onClick(event);
   }
@@ -46,21 +53,35 @@ function handleClick({ props, context }, event: InfernoMouseEvent<any>) {
 /**
  * The public API for rendering a history-aware <a>.
  */
-export function Link(props: ILinkProps & Inferno.LinkHTMLAttributes<HTMLLinkElement>, context): VNode {
+export function Link(
+  props: ILinkProps & Inferno.LinkHTMLAttributes<HTMLLinkElement>,
+  context,
+): VNode {
   const { replace, children, className, to = '', innerRef, ...rest } = props;
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 
-  const href = context.router.history.createHref(isString(to) ? parsePath(to) : to);
-  const newProps: any = {...rest};
+  const href = context.router.history.createHref(
+    isString(to) ? parsePath(to) : to,
+  );
+  const newProps: any = { ...rest };
 
   newProps.href = href;
   newProps.onClick = linkEvent(
     {
       context,
-      props
+      props,
     },
-    handleClick
+    handleClick,
   );
 
-  return createVNode(VNodeFlags.HtmlElement, 'a', className, children, ChildFlags.UnknownChildren, newProps, null, innerRef);
+  return createVNode(
+    VNodeFlags.HtmlElement,
+    'a',
+    className,
+    children,
+    ChildFlags.UnknownChildren,
+    newProps,
+    null,
+    innerRef,
+  );
 }

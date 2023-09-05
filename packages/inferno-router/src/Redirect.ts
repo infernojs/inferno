@@ -1,5 +1,5 @@
-import { Component } from 'inferno';
-import { Location, parsePath, Path } from 'history';
+import { Component, InfernoNode } from 'inferno';
+import { type Location, parsePath, type Path } from 'history';
 import { combinePath, invariant } from './utils';
 import { isString } from 'inferno-shared';
 
@@ -19,38 +19,45 @@ function getLocationTarget(to): Partial<Path> {
 }
 
 export class Redirect extends Component<RedirectProps, any> {
-  public isStatic() {
-    return this.context.router && this.context.router.staticContext;
+  public isStatic(): boolean {
+    return Boolean(this.context.router?.staticContext);
   }
 
-  public componentWillMount() {
-    invariant(this.context.router, 'You should not use <Redirect> outside a <Router>');
+  public componentWillMount(): void {
+    invariant(
+      this.context.router,
+      'You should not use <Redirect> outside a <Router>',
+    );
 
     if (this.isStatic()) {
       this.perform();
     }
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     if (!this.isStatic()) {
       this.perform();
     }
   }
 
-  public componentDidUpdate(prevProps) {
+  public componentDidUpdate(prevProps): void {
     const prevTo = getLocationTarget(prevProps.to);
     const nextTo = getLocationTarget(this.props.to);
 
-    if (prevTo.pathname === nextTo.pathname && prevTo.search === nextTo.search) {
-      // tslint:disable-next-line:no-console
-      console.error(`You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`);
+    if (
+      prevTo.pathname === nextTo.pathname &&
+      prevTo.search === nextTo.search
+    ) {
+      console.error(
+        `You tried to redirect to the same route you're currently on: "${nextTo.pathname}${nextTo.search}"`,
+      );
       return;
     }
 
     this.perform();
   }
 
-  public perform() {
+  public perform(): void {
     const { history } = this.context.router;
     const { push = false, to } = this.props;
 
@@ -61,7 +68,7 @@ export class Redirect extends Component<RedirectProps, any> {
     }
   }
 
-  public render() {
+  public render(): InfernoNode {
     return null;
   }
 }

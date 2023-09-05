@@ -1,8 +1,23 @@
-import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString } from 'inferno-shared';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import {
+  isArray,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStylesToString } from './prop-renderers';
-import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
+import {
+  createDerivedState,
+  escapeText,
+  isAttributeNameSafe,
+  renderFunctionalComponent,
+  voidElements,
+} from './utils';
 import type { VNode } from 'inferno';
 import { mergePendingState } from './stream/streamUtils';
 
@@ -17,7 +32,7 @@ export class RenderStream extends Readable {
     this.initNode = initNode;
   }
 
-  public _read() {
+  public _read(): void {
     if (this.started) {
       return;
     }
@@ -39,7 +54,11 @@ export class RenderStream extends Readable {
     const flags = vNode.flags;
 
     if ((flags & VNodeFlags.Component) > 0) {
-      return this.renderComponent(vNode, context, flags & VNodeFlags.ComponentClass);
+      return this.renderComponent(
+        vNode,
+        context,
+        flags & VNodeFlags.ComponentClass,
+      );
     }
     if ((flags & VNodeFlags.Element) > 0) {
       return this.renderElement(vNode, context);
@@ -48,20 +67,25 @@ export class RenderStream extends Readable {
       return this.renderArrayOrFragment(vNode, context);
     }
 
-    return this.renderText(vNode);
+    this.renderText(vNode);
   }
 
   public renderArrayOrFragment(vNode, context) {
     const childFlags = vNode.childFlags;
 
-    if (childFlags === ChildFlags.HasVNodeChildren || (isArray(vNode) && vNode.length === 0)) {
+    if (
+      childFlags === ChildFlags.HasVNodeChildren ||
+      (isArray(vNode) && vNode.length === 0)
+    ) {
       return this.push('<!--!-->');
     } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
       const children = isArray(vNode) ? vNode : vNode.children;
 
-      return (children as VNode[]).reduce((p, child) => {
-        return p.then(() => {
-          return Promise.resolve(this.renderNode(child, context)).then(() => !!(child.flags & VNodeFlags.Text));
+      return (children as VNode[]).reduce(async (p, child) => {
+        return await p.then(async () => {
+          return await Promise.resolve(this.renderNode(child, context)).then(
+            () => !!(child.flags & VNodeFlags.Text),
+          );
         });
       }, Promise.resolve(false));
     }
@@ -87,6 +111,7 @@ export class RenderStream extends Readable {
       return this.renderNode(renderOutput, context);
     }
 
+    // eslint-disable-next-line new-cap
     const instance = new type(props, context);
     const hasNewAPI = Boolean(type.getDerivedStateFromProps);
     instance.$BS = false;
@@ -97,50 +122,66 @@ export class RenderStream extends Readable {
     }
 
     if (!isNullOrUndef(childContext)) {
-      context = {...context, ...childContext};
+      context = { ...context, ...childContext };
     }
     instance.context = context;
     instance.$BR = true;
 
-    return Promise.resolve(!hasNewAPI && instance.componentWillMount && instance.componentWillMount()).then(() => {
-      mergePendingState(instance);
+    return Promise.resolve(!hasNewAPI && instance.componentWillMount?.()).then(
+      () => {
+        mergePendingState(instance);
 
-      if (hasNewAPI) {
-        instance.state = createDerivedState(instance, props, instance.state);
-      }
-      const renderOutput = instance.render(instance.props, instance.state, instance.context);
+        if (hasNewAPI) {
+          instance.state = createDerivedState(instance, props, instance.state);
+        }
+        const renderOutput = instance.render(
+          instance.props,
+          instance.state,
+          instance.context,
+        );
 
-      if (isInvalid(renderOutput)) {
-        return this.push('<!--!-->');
-      }
-      if (isString(renderOutput)) {
-        return this.push(escapeText(renderOutput));
-      }
-      if (isNumber(renderOutput)) {
-        return this.push(renderOutput + '');
-      }
+        if (isInvalid(renderOutput)) {
+          return this.push('<!--!-->');
+        }
+        if (isString(renderOutput)) {
+          return this.push(escapeText(renderOutput));
+        }
+        if (isNumber(renderOutput)) {
+          return this.push(renderOutput + '');
+        }
 
-      return this.renderNode(renderOutput, context);
-    });
+        return this.renderNode(renderOutput, context);
+      },
+    );
   }
 
-  public renderChildren(children: VNode[] | VNode | string, context: any, childFlags: ChildFlags) {
+  public renderChildren(
+    children: VNode[] | VNode | string,
+    context: any,
+    childFlags: ChildFlags,
+  ) {
     if (childFlags === ChildFlags.HasVNodeChildren) {
       return this.renderNode(children, context);
     }
     if (childFlags === ChildFlags.HasTextChildren) {
-      return this.push(children === '' ? ' ' : escapeText(children + ''));
+      return this.push(
+        (children as string) === ''
+          ? ' '
+          : escapeText((children as string) + ''),
+      );
     }
     if (childFlags & ChildFlags.MultipleChildren) {
-      return (children as VNode[]).reduce((p, child) => {
-        return p.then(() => {
-          return Promise.resolve(this.renderNode(child, context)).then(() => !!(child.flags & VNodeFlags.Text));
+      return (children as VNode[]).reduce(async (p, child) => {
+        return await p.then(async () => {
+          return await Promise.resolve(this.renderNode(child, context)).then(
+            () => !!(child.flags & VNodeFlags.Text),
+          );
         });
       }, Promise.resolve(false));
     }
   }
 
-  public renderText(vNode) {
+  public renderText(vNode): void {
     this.push(vNode.children === '' ? ' ' : escapeText(vNode.children));
   }
 
@@ -178,7 +219,9 @@ export class RenderStream extends Readable {
           case 'defaultValue':
             // Use default values if normal values are not present
             if (!props.value) {
-              renderedString += ` value="${isString(value) ? escapeText(value) : value}"`;
+              renderedString += ` value="${
+                isString(value) ? escapeText(value) : value
+              }"`;
             }
             break;
           case 'defaultChecked':
@@ -205,7 +248,8 @@ export class RenderStream extends Readable {
     renderedString += `>`;
     this.push(renderedString);
 
-    if (String(type).match(/[\s\n\/='"\0<>]/)) {
+    if (String(type).match(/[\s\n/='"0<>]/)) {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw renderedString;
     }
 
@@ -225,7 +269,9 @@ export class RenderStream extends Readable {
       return;
     }
 
-    return Promise.resolve(this.renderChildren(vNode.children, context, childFlags)).then(() => {
+    return Promise.resolve(
+      this.renderChildren(vNode.children, context, childFlags),
+    ).then(() => {
       this.push(`</${type}>`);
     });
   }

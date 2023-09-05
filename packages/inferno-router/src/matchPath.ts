@@ -1,11 +1,22 @@
 import pathToRegexp from 'path-to-regexp-es6';
-import { Match } from './Route';
+import { type Match } from './Route';
 
 const patternCache = {};
 const cacheLimit = 10000;
 let cacheCount = 0;
 
-const compilePath = (pattern, options) => {
+interface pathToRegexKey {
+  name: string | number;
+  prefix: string;
+  delimiter: string;
+  optional: boolean;
+  repeat: boolean;
+  pattern: string;
+  partial: boolean;
+  asterisk: boolean;
+}
+
+const compilePath = (pattern, options): { re: any; keys: pathToRegexKey[] } => {
   const cacheKey = `${options.end}${options.strict}${options.sensitive}`;
   const cache = patternCache[cacheKey] || (patternCache[cacheKey] = {});
 
@@ -33,7 +44,14 @@ export function matchPath(pathname, options: any): Match<any> | null {
     options = { path: options };
   }
 
-  const { path = '/', exact = false, strict = false, sensitive = false, loader, initialData = {} } = options;
+  const {
+    path = '/',
+    exact = false,
+    strict = false,
+    sensitive = false,
+    loader,
+    initialData = {},
+  } = options;
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 
@@ -59,6 +77,6 @@ export function matchPath(pathname, options: any): Match<any> | null {
       return memo;
     }, {}),
     path, // the path pattern used to match
-    url: path === '/' && url === '' ? '/' : url // the matched portion of the URL
+    url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
   };
 }

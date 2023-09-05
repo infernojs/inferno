@@ -1,8 +1,23 @@
 import { EMPTY_OBJ } from 'inferno';
-import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, throwError } from 'inferno-shared';
+import {
+  isArray,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  throwError,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { renderStylesToString } from './prop-renderers';
-import { createDerivedState, escapeText, isAttributeNameSafe, renderFunctionalComponent, voidElements } from './utils';
+import {
+  createDerivedState,
+  escapeText,
+  isAttributeNameSafe,
+  renderFunctionalComponent,
+  voidElements,
+} from './utils';
 
 function renderVNodeToString(vNode, parent, context): string {
   const flags = vNode.flags;
@@ -14,6 +29,7 @@ function renderVNodeToString(vNode, parent, context): string {
     const isClass = flags & VNodeFlags.ComponentClass;
 
     if (isClass) {
+      // eslint-disable-next-line new-cap
       const instance = new type(props, context);
       const hasNewAPI = Boolean(type.getDerivedStateFromProps);
       instance.$BS = false;
@@ -26,7 +42,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNullOrUndef(childContext)) {
         childContext = context;
       } else {
-        childContext = {...context, ...childContext};
+        childContext = { ...context, ...childContext };
       }
       if (instance.props === EMPTY_OBJ) {
         instance.props = props;
@@ -55,7 +71,11 @@ function renderVNodeToString(vNode, parent, context): string {
       if (hasNewAPI) {
         instance.state = createDerivedState(instance, props, instance.state);
       }
-      const renderOutput = instance.render(props, instance.state, instance.context);
+      const renderOutput = instance.render(
+        props,
+        instance.state,
+        instance.context,
+      );
       // In case render returns invalid stuff
       if (isInvalid(renderOutput)) {
         return '<!--!-->';
@@ -114,7 +134,9 @@ function renderVNodeToString(vNode, parent, context): string {
           case 'defaultValue':
             // Use default values if normal values are not present
             if (!props.value) {
-              renderedString += ` value="${isString(value) ? escapeText(value) : value}"`;
+              renderedString += ` value="${
+                isString(value) ? escapeText(value) : value
+              }"`;
             }
             break;
           case 'defaultChecked':
@@ -137,7 +159,11 @@ function renderVNodeToString(vNode, parent, context): string {
             break;
         }
       }
-      if (type === 'option' && typeof props.value !== 'undefined' && props.value === parent.props.value) {
+      if (
+        type === 'option' &&
+        typeof props.value !== 'undefined' &&
+        props.value === parent.props.value
+      ) {
         // Parent value sets children value
         renderedString += ` selected`;
       }
@@ -164,7 +190,8 @@ function renderVNodeToString(vNode, parent, context): string {
       }
     }
 
-    if (String(type).match(/[\s\n\/='"\0<>]/)) {
+    if (String(type).match(/[\s\n/='"0<>]/)) {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw renderedString;
     }
 
@@ -174,7 +201,10 @@ function renderVNodeToString(vNode, parent, context): string {
   } else if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
     const childFlags = vNode.childFlags;
 
-    if (childFlags === ChildFlags.HasVNodeChildren || (isArray(vNode) && vNode.length === 0)) {
+    if (
+      childFlags === ChildFlags.HasVNodeChildren ||
+      (isArray(vNode) && vNode.length === 0)
+    ) {
       return '<!--!-->';
     } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
       const tmpNodes = isArray(vNode) ? vNode : children;
@@ -189,9 +219,15 @@ function renderVNodeToString(vNode, parent, context): string {
   } else {
     if (process.env.NODE_ENV !== 'production') {
       if (typeof vNode === 'object') {
-        throwError(`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(vNode)}".`);
+        throwError(
+          `renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
+            vNode,
+          )}".`,
+        );
       } else {
-        throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
+        throwError(
+          `renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`,
+        );
       }
     }
     throwError();
@@ -201,5 +237,5 @@ function renderVNodeToString(vNode, parent, context): string {
 }
 
 export function renderToString(input: any): string {
-  return renderVNodeToString(input, {}, {}) as string;
+  return renderVNodeToString(input, {}, {});
 }

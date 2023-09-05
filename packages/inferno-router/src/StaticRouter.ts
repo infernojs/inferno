@@ -1,20 +1,20 @@
 import {
   Component,
   createComponentVNode,
-  type Props,
-  type VNode,
+  type InfernoNode,
+  type Props
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { parsePath } from 'history';
+import { Action, type Location, parsePath, type Path } from 'history';
 import { Router, type TLoaderData } from './Router';
 import { combinePath, invariant, warning } from './utils';
 import { isString } from 'inferno-shared';
 
-function addLeadingSlash(path) {
+function addLeadingSlash(path: string): string {
   return path.charAt(0) === '/' ? path : '/' + path;
 }
 
-const noop = () => {};
+const noop = (): void => {};
 
 export interface IStaticRouterProps<T> extends Props<T> {
   initialData?: Record<string, TLoaderData>;
@@ -23,13 +23,24 @@ export interface IStaticRouterProps<T> extends Props<T> {
   location: any;
 }
 
-export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
-  public static defaultProps = {
+export class StaticRouter<P, S> extends Component<
+  P & IStaticRouterProps<any>,
+  S
+> {
+  public static defaultProps: {
+    basename: string;
+    location: Path | string;
+  } = {
     basename: '',
     location: '/',
   };
 
-  public getChildContext() {
+  public getChildContext(): {
+    router: {
+      initialData?: Record<string, TLoaderData>;
+      staticContext: Record<string, unknown>;
+    };
+  } {
     return {
       router: {
         initialData: this.props.initialData,
@@ -38,10 +49,10 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
     };
   }
 
-  public createHref = (path) =>
+  public createHref = (path: string): string =>
     addLeadingSlash((this.props.basename || '') + createURL(path));
 
-  public handlePush = (location) => {
+  public handlePush = (location): void => {
     const { basename, context } = this.props;
     context.action = 'PUSH';
     context.location = addBasename(
@@ -51,7 +62,7 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
     context.url = createURL(context.location);
   };
 
-  public handleReplace = (location) => {
+  public handleReplace = (location): void => {
     const { basename, context } = this.props;
     context.action = 'REPLACE';
     context.location = addBasename(
@@ -61,26 +72,33 @@ export class StaticRouter<S> extends Component<IStaticRouterProps<any>, S> {
     context.url = createURL(context.location);
   };
 
-  public handleListen = () => noop;
+  public handleListen = (): (() => void) => noop;
 
-  public handleBlock = () => noop;
+  public handleBlock = (): (() => void) => noop;
 
-  public render({ basename, context, location, ...props }): VNode {
+  public render({
+    basename,
+    context,
+    location,
+    ...props
+  }: Readonly<
+    { children: InfernoNode } & P & IStaticRouterProps<any>
+  >): InfernoNode {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       ...props,
       history: {
-        action: 'POP',
+        action: Action.Pop,
         block: this.handleBlock,
         createHref: this.createHref,
         go: staticHandler('go'),
-        goBack: staticHandler('goBack'),
-        goForward: staticHandler('goForward'),
+        back: staticHandler('goBack'),
+        forward: staticHandler('goForward'),
         listen: this.handleListen,
-        location: stripBasename(basename, createLocation(location)),
+        location: stripBasename(basename, createLocation(location)) as Location,
         push: this.handlePush,
         replace: this.handleReplace,
       },
-    });
+    }) as InfernoNode;
   }
 }
 
@@ -94,7 +112,7 @@ if (process.env.NODE_ENV !== 'production') {
   };
 }
 
-function normalizeLocation({ pathname = '/', search, hash }) {
+function normalizeLocation({ pathname = '/', search, hash }): Path {
   return {
     hash: (hash || '') === '#' ? '' : hash,
     pathname,
@@ -102,7 +120,10 @@ function normalizeLocation({ pathname = '/', search, hash }) {
   };
 }
 
-function addBasename(basename, location) {
+function addBasename(
+  basename: string | null | undefined,
+  location: Location,
+): Location {
   if (!basename) {
     return location;
   }
@@ -113,7 +134,10 @@ function addBasename(basename, location) {
   };
 }
 
-function stripBasename(basename: string, location) {
+function stripBasename(
+  basename: string | undefined | null,
+  location: Path,
+): Path {
   if (!basename) {
     return location;
   }
@@ -130,13 +154,13 @@ function stripBasename(basename: string, location) {
   };
 }
 
-function createLocation(location) {
+function createLocation(location): Path {
   return typeof location === 'string'
-    ? parsePath(location)
+    ? (parsePath(location) as Path)
     : normalizeLocation(location);
 }
 
-function createURL(location) {
+function createURL(location): string {
   return typeof location === 'string' ? location : combinePath(location);
 }
 

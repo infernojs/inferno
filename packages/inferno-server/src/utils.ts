@@ -1,7 +1,7 @@
-import { EMPTY_OBJ, VNode } from 'inferno';
+import { EMPTY_OBJ, type InfernoNode, type VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-const rxUnescaped = new RegExp(/["'&<>]/);
+const rxUnescaped = /["'&<>]/;
 
 export function escapeText(text: string): string {
   /* Much faster when there is no unescaped characters */
@@ -50,15 +50,20 @@ export function getCssPropertyName(str): string {
   if (CssPropCache[str] !== void 0) {
     return CssPropCache[str];
   }
-  return (CssPropCache[str] = str.replace(uppercasePattern, '-$&').toLowerCase() + ':');
+  return (CssPropCache[str] =
+    str.replace(uppercasePattern, '-$&').toLowerCase() + ':');
 }
 
 const ATTRIBUTE_NAME_START_CHAR =
   ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
 
-const ATTRIBUTE_NAME_CHAR = ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040';
+const ATTRIBUTE_NAME_CHAR =
+  ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040';
 
-export const VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + ATTRIBUTE_NAME_START_CHAR + '][' + ATTRIBUTE_NAME_CHAR + ']*$');
+// eslint-disable-next-line no-misleading-character-class
+export const VALID_ATTRIBUTE_NAME_REGEX = new RegExp(
+  '^[' + ATTRIBUTE_NAME_START_CHAR + '][' + ATTRIBUTE_NAME_CHAR + ']*$',
+);
 
 const illegalAttributeNameCache = {};
 const validatedAttributeNameCache = {};
@@ -76,7 +81,6 @@ export function isAttributeNameSafe(attributeName: string): boolean {
   }
   illegalAttributeNameCache[attributeName] = true;
   if (process.env.NODE_ENV !== 'production') {
-    // tslint:disable-next-line:no-console
     console.log('Invalid attribute name: ' + attributeName);
   }
   return false;
@@ -98,18 +102,27 @@ export const voidElements = new Set([
   'param',
   'source',
   'track',
-  'wbr'
+  'wbr',
 ]);
 
-export function createDerivedState(instance, nextProps, state) {
+export function createDerivedState(
+  instance,
+  nextProps,
+  state,
+): Record<string, unknown> {
   if (instance.constructor.getDerivedStateFromProps) {
-    return {...state, ...instance.constructor.getDerivedStateFromProps(nextProps, state)};
+    return {
+      ...state,
+      ...instance.constructor.getDerivedStateFromProps(nextProps, state),
+    };
   }
 
   return state;
 }
 
-export function renderFunctionalComponent(vNode: VNode, context) {
+export function renderFunctionalComponent(vNode: VNode, context): InfernoNode {
   const props = vNode.props || EMPTY_OBJ;
-  return vNode.flags & VNodeFlags.ForwardRef ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context);
+  return vNode.flags & VNodeFlags.ForwardRef
+    ? vNode.type.render(props, vNode.ref, context)
+    : vNode.type(props, context);
 }

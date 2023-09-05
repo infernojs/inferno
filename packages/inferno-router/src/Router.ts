@@ -1,11 +1,11 @@
-import { Component, InfernoNode } from 'inferno';
+import { Component, type InfernoNode } from 'inferno';
 import { isUndefined } from 'inferno-shared';
 import type { History, Location } from 'history';
 import { warning } from './utils';
-import { Match } from './Route';
+import { type Match } from './Route';
 import { resolveLoaders, traverseLoaders } from './resolveLoaders';
 
-export type TLoaderProps<P extends Record<string, string>> = {
+export interface TLoaderProps<P extends Record<string, string>> {
   params?: P; // Match params (if any)
   request: Request; // Fetch API Request
   // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L1004
@@ -13,18 +13,21 @@ export type TLoaderProps<P extends Record<string, string>> = {
   // https://github.com/remix-run/react-router/blob/59b319feaa12745a434afdef5cadfcabd01206f9/examples/search-params/src/App.tsx#L43
   // https://github.com/remix-run/react-router/blob/11156ac7f3d7c1c557c67cc449ecbf9bd5c6a4ca/packages/react-router-dom/__tests__/data-static-router-test.tsx#L81
 
-  onProgress?(perc: number): void;
-};
+  onProgress?: (perc: number) => void;
+}
 
 /**
  * Loader returns Response and throws error
  */
-export type TLoader<P extends Record<string, string>, R extends Response> = ({ params, request }: TLoaderProps<P>) => Promise<R>;
+export type TLoader<P extends Record<string, string>, R extends Response> = ({
+  params,
+  request,
+}: TLoaderProps<P>) => Promise<R>;
 
-export type TLoaderData<Res = any, Err = any> = {
+export interface TLoaderData<Res = any, Err = any> {
   res?: Res;
   err?: Err;
-};
+}
 
 type TInitialData = Record<string, TLoaderData>; // key is route path to allow resolving
 
@@ -34,7 +37,7 @@ export interface IRouterProps {
   initialData?: TInitialData;
 }
 
-export type TContextRouter = {
+export interface TContextRouter {
   history: History;
   route: {
     location: Pick<Location, 'pathname'>; // This was Partial<Location> before but this makes pathname optional causing false type error in code
@@ -42,9 +45,11 @@ export type TContextRouter = {
   };
   initialData?: TInitialData;
   staticContext?: object; // TODO: This should be properly typed
-};
+}
 
-export type RouterContext = { router: TContextRouter };
+export interface RouterContext {
+  router: TContextRouter;
+}
 
 /**
  * The public API for putting history on context.
@@ -59,35 +64,35 @@ export class Router extends Component<IRouterProps, any> {
     const match = this.computeMatch(props.history.location.pathname);
     this.state = {
       initialData: this.props.initialData,
-      match
+      match,
     };
   }
 
   public getChildContext(): RouterContext {
     const parentRouter: TContextRouter = this.context.router;
-    const router: TContextRouter = {...parentRouter};
+    const router: TContextRouter = { ...parentRouter };
     router.history = this.props.history;
     router.route = {
       location: router.history.location,
-      match: this.state?.match // Why are we sending this? it appears useless.
+      match: this.state?.match, // Why are we sending this? it appears useless.
     };
     router.initialData = this.state?.initialData; // this is a dictionary of all data available
     return {
-      router
+      router,
     };
   }
 
-  public computeMatch(pathname): Match<{}> {
+  public computeMatch(pathname): Match<any> {
     return {
       isExact: pathname === '/',
       loader: undefined,
       params: {},
       path: '/',
-      url: '/'
+      url: '/',
     };
   }
 
-  public componentWillMount() {
+  public componentWillMount(): void {
     const { history } = this.props;
 
     // Do this here so we can setState when a <Redirect> changes the
@@ -104,7 +109,7 @@ export class Router extends Component<IRouterProps, any> {
     }
   }
 
-  private _matchAndResolveLoaders(match?: Match<any>) {
+  private _matchAndResolveLoaders(match?: Match<any>): void {
     // Keep track of invokation order
     // Bumping the counter needs to be done first because calling abort
     // triggers promise to resolve with "aborted"
@@ -126,29 +131,32 @@ export class Router extends Component<IRouterProps, any> {
     // Store AbortController instances for each matched loader
     this._loaderFetchControllers = loaderEntries.map((e) => e.controller);
 
-    resolveLoaders(loaderEntries).then((initialData) => {
+    void resolveLoaders(loaderEntries).then((initialData): void => {
       // On multiple pending navigations, only update interface with last
       // in case they resolve out of order
       if (currentIteration === this._loaderIteration) {
         this.setState({
           initialData,
-          match
+          match,
         });
       }
     });
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     this.unlisten();
   }
 
-  public render(props: IRouterProps) {
+  public render(props: IRouterProps): InfernoNode {
     return props.children;
   }
 }
 
 if (process.env.NODE_ENV !== 'production') {
   Router.prototype.componentWillReceiveProps = function (nextProps) {
-    warning(this.props.history === nextProps.history, 'You cannot change <Router history>');
+    warning(
+      this.props.history === nextProps.history,
+      'You cannot change <Router history>',
+    );
   };
 }
