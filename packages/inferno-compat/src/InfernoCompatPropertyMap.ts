@@ -94,16 +94,18 @@ const ATTRS = [
   'xml:base',
   'xmlns:xlink',
   'xml:lang',
-  'xml:space'
+  'xml:space',
 ];
 
 export const InfernoCompatPropertyMap = {
   htmlFor: 'for',
-  onDoubleClick: 'onDblClick'
+  onDoubleClick: 'onDblClick',
 };
 
-const CAMELIZE = /[\-:]([a-z])/g;
-const capitalize = (token) => token[1].toUpperCase();
+const CAMELIZE = /[-:]([a-z])/g;
+function capitalize(token: string): string {
+  return token[1].toUpperCase();
+}
 
 ATTRS.forEach((original) => {
   const reactName = original.replace(CAMELIZE, capitalize);

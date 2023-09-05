@@ -1,5 +1,18 @@
-import { createComponentVNode, createFragment, createVNode, Fragment, getFlagsForElementVnode, InfernoNode, VNode } from 'inferno';
-import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
+import {
+  createComponentVNode,
+  createFragment,
+  createVNode,
+  Fragment,
+  getFlagsForElementVnode,
+  type InfernoNode,
+  type VNode,
+} from 'inferno';
+import {
+  isArray,
+  isString,
+  isStringOrNumber,
+  isUndefined,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
@@ -60,7 +73,12 @@ function isChildren(x: any): boolean {
  * @param {string|number|VNode|Array<string|number|VNode>|null=} _children Optional children for virtual node
  * @returns {VNode} returns new virtual node
  */
-export function h(_tag: string | VNode | Function, _props?: any, _children?: InfernoNode): VNode {
+export function h(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  _tag: string | VNode | Function,
+  _props?: any,
+  _children?: InfernoNode,
+): VNode {
   // If a child array or text node are passed as the second argument, shift them
   if (!_children && isChildren(_props)) {
     _children = _props;
@@ -68,7 +86,7 @@ export function h(_tag: string | VNode | Function, _props?: any, _children?: Inf
   }
   const isElement = isString(_tag);
   _props = _props || {};
-  const tag = isElement ? parseTag(_tag as string, _props) : _tag;
+  const tag = isElement ? parseTag(_tag, _props) : _tag;
   const newProps: any = {};
   let key = null;
   let ref: any = null;
@@ -100,19 +118,38 @@ export function h(_tag: string | VNode | Function, _props?: any, _children?: Inf
     let flags = getFlagsForElementVnode(tag as string);
 
     if (flags & VNodeFlags.Fragment) {
-      return createFragment(_children || children, ChildFlags.UnknownChildren, key);
+      return createFragment(
+        _children || children,
+        ChildFlags.UnknownChildren,
+        key,
+      );
     }
 
     if (newProps.contenteditable !== void 0) {
       flags |= VNodeFlags.ContentEditable;
     }
 
-    return createVNode(flags, tag as string, className, _children || children, ChildFlags.UnknownChildren, newProps, key, ref);
+    return createVNode(
+      flags,
+      tag as string,
+      className,
+      _children || children,
+      ChildFlags.UnknownChildren,
+      newProps,
+      key,
+      ref,
+    );
   }
 
   if (children || _children) {
     newProps.children = children || _children;
   }
 
-  return createComponentVNode(VNodeFlags.ComponentUnknown, tag as Function, newProps, key, ref);
+  return createComponentVNode(
+    VNodeFlags.ComponentUnknown,
+    tag as any,
+    newProps,
+    key,
+    ref,
+  );
 }

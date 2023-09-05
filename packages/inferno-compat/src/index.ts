@@ -22,18 +22,27 @@ import {
   forwardRef,
   Fragment,
   getFlagsForElementVnode,
-  InfernoNode,
+  type InfernoNode,
   linkEvent,
   normalizeProps,
   options,
   rerender,
-  VNode
+  type VNode,
 } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { createClass } from 'inferno-create-class';
 import { createElement } from 'inferno-create-element';
-import { isArray, isFunction, isInvalid, isNull, isNullOrUndef, isNumber, isString, warning } from 'inferno-shared';
+import {
+  isArray,
+  isFunction,
+  isInvalid,
+  isNull,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  warning,
+} from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isValidElement } from './isValidElement';
 import PropTypes from './PropTypes';
@@ -42,24 +51,34 @@ import { findDOMNode } from 'inferno-extras';
 import { getNumberStyleValue, hyphenCase } from './reactstyles';
 
 export type { ComponentType, Inferno, Refs, VNode } from 'inferno';
-export type { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
+export type {
+  ClassicComponentClass,
+  ComponentSpec,
+} from 'inferno-create-class';
 
 declare global {
   interface Event {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     persist: Function;
   }
 }
 
 options.reactStyles = true;
 
-function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
-  renderInternal(null, container, null, null);
+function unmountComponentAtNode(
+  container: Element | SVGAElement | DocumentFragment,
+): boolean {
+  renderInternal(null, container, null, {});
   return true;
 }
 
-export type IterateChildrenFn = (value: InfernoNode | any, index: number, array: any[]) => any;
+export type IterateChildrenFn = (
+  value: InfernoNode | any,
+  index: number,
+  array: any[],
+) => any;
 
-function flatten(arr, result) {
+function flatten(arr, result): unknown[] {
   for (let i = 0, len = arr.length; i < len; ++i) {
     const value = arr[i];
     if (isArray(value)) {
@@ -123,7 +142,7 @@ const Children = {
       return result;
     }
     return ARR.concat(children);
-  }
+  },
 };
 
 (Component.prototype as any).isReactComponent = {};
@@ -142,10 +161,10 @@ const validLineInputs = {
   text: true,
   time: true,
   url: true,
-  week: true
+  week: true,
 };
 
-function normalizeGenericProps(props) {
+function normalizeGenericProps(props): void {
   for (const prop in props) {
     const mappedProp = InfernoCompatPropertyMap[prop];
     if (mappedProp && props[prop] && mappedProp !== prop) {
@@ -162,7 +181,9 @@ function normalizeGenericProps(props) {
           const value = styles[s];
           const hyphenStr = hyphenCase(s);
 
-          newStyles[hyphenStr] = isNumber(value) ? getNumberStyleValue(hyphenStr, value) : value;
+          newStyles[hyphenStr] = isNumber(value)
+            ? getNumberStyleValue(hyphenStr, value)
+            : value;
         }
         props.style = newStyles;
       }
@@ -170,9 +191,13 @@ function normalizeGenericProps(props) {
   }
 }
 
-function normalizeFormProps(name: string, props: any) {
-  if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
-    const type = props.type && props.type.toLowerCase();
+function normalizeFormProps(name: string, props: any): void {
+  if (
+    (name === 'input' || name === 'textarea') &&
+    props.type !== 'radio' &&
+    props.onChange
+  ) {
+    const type = props.type?.toLowerCase();
     let eventName;
 
     if (!type || validLineInputs[type]) {
@@ -186,7 +211,7 @@ function normalizeFormProps(name: string, props: any) {
         if (existingMethod) {
           warning(
             `Inferno-compat Warning! 'onInput' handler is reserved to support React like 'onChange' event flow.
-Original event handler 'function ${existingMethod.name}' will not be called.`
+Original event handler 'function ${existingMethod.name}' will not be called.`,
           );
         }
       }
@@ -197,7 +222,7 @@ Original event handler 'function ${existingMethod.name}' will not be called.`
 }
 
 // we need to add persist() to Event (as React has it for synthetic events)
-// this is a hack and we really shouldn't be modifying a global object this way,
+// this is a hack, and we really shouldn't be modifying a global object this way,
 // but there isn't a performant way of doing this apart from trying to proxy
 // every prop event that starts with "on", i.e. onClick or onKeyPress
 // but in reality devs use onSomething for many things, not only for
@@ -206,12 +231,11 @@ if (typeof Event !== 'undefined') {
   const eventProtoType = Event.prototype as any;
 
   if (!eventProtoType.persist) {
-    // tslint:disable-next-line:no-empty
     eventProtoType.persist = function () {};
   }
 }
 
-function iterableToArray(iterable) {
+function iterableToArray(iterable): unknown[] {
   let iterStep;
   const tmpArr: any[] = [];
   do {
@@ -236,7 +260,13 @@ options.createVNode = (vNode: VNode) => {
   }
 
   // React supports iterable children, in addition to Array-like
-  if (hasSymbolSupport && !isNull(children) && typeof children === 'object' && !isArray(children) && isFunction(children[symbolIterator])) {
+  if (
+    hasSymbolSupport &&
+    !isNull(children) &&
+    typeof children === 'object' &&
+    !isArray(children) &&
+    isFunction(children[symbolIterator])
+  ) {
     vNode.children = iterableToArray(children[symbolIterator]());
   }
 
@@ -245,7 +275,7 @@ options.createVNode = (vNode: VNode) => {
   }
   if (vNode.flags & VNodeFlags.Component) {
     if (isString(vNode.type)) {
-      vNode.flags = getFlagsForElementVnode(vNode.type as string);
+      vNode.flags = getFlagsForElementVnode(vNode.type);
       if (props) {
         normalizeProps(vNode);
       }
@@ -288,8 +318,10 @@ function shallowDiffers(a, b): boolean {
 }
 
 abstract class PureComponent<P, S> extends Component<P, S> {
-  public shouldComponentUpdate(props, state) {
-    return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+  public shouldComponentUpdate(props, state): boolean {
+    return (
+      shallowDiffers(this.props, props) || shallowDiffers(this.state, state)
+    );
   }
 }
 
@@ -299,21 +331,30 @@ interface ContextProps {
 }
 
 class WrapperComponent<P, S> extends Component<P & ContextProps, S> {
-  public getChildContext() {
-    // tslint:disable-next-line
+  public getChildContext(): (P & ContextProps)['context'] {
     return this.props.context;
   }
 
-  public render(props) {
+  public render(props): InfernoNode {
     return props.children;
   }
 }
 
-function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
-  const wrapperVNode: VNode = createComponentVNode(VNodeFlags.ComponentClass, WrapperComponent, {
-    children: vNode,
-    context: parentComponent.context
-  });
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function unstable_renderSubtreeIntoContainer(
+  parentComponent,
+  vNode,
+  container,
+  callback,
+): Component {
+  const wrapperVNode: VNode = createComponentVNode(
+    VNodeFlags.ComponentClass,
+    WrapperComponent,
+    {
+      children: vNode,
+      context: parentComponent.context,
+    },
+  );
   render(wrapperVNode, container, null);
   const component = vNode.children;
 
@@ -324,11 +365,16 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
   return component;
 }
 
-function createFactory(type) {
+function createFactory(type): (type) => VNode {
   return createElement.bind(null, type);
 }
 
-function render(rootInput, container, cb = null, context = EMPTY_OBJ) {
+function render(
+  rootInput,
+  container,
+  cb = null,
+  context = EMPTY_OBJ,
+): Component | undefined {
   renderInternal(rootInput, container, cb, context);
 
   const input = container.$V;
@@ -336,10 +382,15 @@ function render(rootInput, container, cb = null, context = EMPTY_OBJ) {
   if (input && input.flags & VNodeFlags.Component) {
     return input.children;
   }
+
+  return void 0;
 }
 
 // Mask React global in browser enviornments when React is not used.
-if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined') {
+if (
+  typeof window !== 'undefined' &&
+  typeof (window as any).React === 'undefined'
+) {
   const exports = {
     Children,
     Component,
@@ -384,7 +435,7 @@ if (typeof window !== 'undefined' && typeof (window as any).React === 'undefined
     rerender,
     unmountComponentAtNode,
     unstable_renderSubtreeIntoContainer,
-    version
+    version,
   };
 
   (window as any).React = exports;
@@ -435,7 +486,7 @@ export {
   rerender,
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer,
-  version
+  version,
 };
 
 export default {
@@ -482,5 +533,5 @@ export default {
   rerender,
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer,
-  version
+  version,
 };

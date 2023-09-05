@@ -1,4 +1,4 @@
-import { Component, findDOMFromVNode, VNode } from 'inferno';
+import { type Component, findDOMFromVNode, type VNode } from 'inferno';
 
 export function findDOMNode(ref: VNode | Component | Node): Node | null {
   if (ref && (ref as Node).nodeType) {

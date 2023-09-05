@@ -1,4 +1,12 @@
-import { createComponentVNode, createFragment, createTextVNode, createVNode, EMPTY_OBJ, normalizeProps, VNode } from 'inferno';
+import {
+  createComponentVNode,
+  createFragment,
+  createTextVNode,
+  createVNode,
+  EMPTY_OBJ,
+  normalizeProps,
+  type VNode,
+} from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 /*
@@ -16,7 +24,10 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
  */
 export function cloneVNode(vNodeToClone: VNode, props?, _children?): VNode {
   const flags = vNodeToClone.flags;
-  let children = flags & VNodeFlags.Component ? vNodeToClone.props && vNodeToClone.props.children : vNodeToClone.children;
+  let children =
+    flags & VNodeFlags.Component
+      ? vNodeToClone.props?.children
+      : vNodeToClone.children;
   let childLen = arguments.length - 2;
   let className = vNodeToClone.className;
   let key = vNodeToClone.key;
@@ -51,7 +62,15 @@ export function cloneVNode(vNodeToClone: VNode, props?, _children?): VNode {
   props.children = children;
 
   if (flags & VNodeFlags.Component) {
-    return createComponentVNode(flags, vNodeToClone.type, !vNodeToClone.props && !props ? EMPTY_OBJ : {...vNodeToClone.props, ...props}, key, ref);
+    return createComponentVNode(
+      flags,
+      vNodeToClone.type,
+      !vNodeToClone.props && !props
+        ? EMPTY_OBJ
+        : { ...vNodeToClone.props, ...props },
+      key,
+      ref,
+    );
   }
 
   if (flags & VNodeFlags.Text) {
@@ -59,10 +78,23 @@ export function cloneVNode(vNodeToClone: VNode, props?, _children?): VNode {
   }
 
   if (flags & VNodeFlags.Fragment) {
-    return createFragment(childLen === 1 ? [children] : children, ChildFlags.UnknownChildren, key);
+    return createFragment(
+      childLen === 1 ? [children] : children,
+      ChildFlags.UnknownChildren,
+      key,
+    );
   }
 
   return normalizeProps(
-    createVNode(flags, vNodeToClone.type, className, null, ChildFlags.HasInvalidChildren, {...vNodeToClone.props, ...props}, key, ref)
+    createVNode(
+      flags,
+      vNodeToClone.type,
+      className,
+      null,
+      ChildFlags.HasInvalidChildren,
+      { ...vNodeToClone.props, ...props },
+      key,
+      ref,
+    ),
   );
 }

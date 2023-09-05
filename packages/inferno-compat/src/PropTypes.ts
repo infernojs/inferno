@@ -5,11 +5,14 @@
  * Inlined PropTypes, there is propType checking ATM.
  */
 
-// tslint:disable-next-line:no-empty
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function proptype() {}
 (proptype as any).isRequired = proptype;
 
-const getProptype = () => proptype;
+// eslint-disable-next-line @typescript-eslint/ban-types
+function getProptype(): Function {
+  return proptype;
+}
 
 const PropTypes = {
   any: getProptype,
@@ -28,7 +31,7 @@ const PropTypes = {
   oneOfType: getProptype,
   shape: getProptype,
   string: proptype,
-  symbol: proptype
+  symbol: proptype,
 };
 
 export default PropTypes;

@@ -1,4 +1,4 @@
-import { VNode } from 'inferno';
+import { type VNode } from 'inferno';
 import { isNull } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 

@@ -1,17 +1,15 @@
-import { Component, InfernoNode } from 'inferno';
+import { Component, type InfernoNode } from 'inferno';
 import { isFunction, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends Component<P, S> {
-  statics?: {
-    [key: string]: any;
-  };
+  statics?: Record<string, any>;
   mixins?: any;
 
   displayName?: string;
-  propTypes?: { [index: string]: Function };
+  propTypes?: Record<string, Function>;
 
-  getDefaultProps?(): P;
-  getInitialState?(): S;
+  getDefaultProps?: () => P;
+  getInitialState?: () => S;
 }
 
 export interface ComponentClass<P, S> extends Mixin<P, S> {
@@ -25,18 +23,18 @@ export interface ComponentClass<P, S> extends Mixin<P, S> {
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {
   [propertyName: string]: any;
-  render(props: P, context): any;
+  render: (props: P, context) => any;
 }
 
 export interface ClassicComponent<P, S> extends Component<P, S> {
-  replaceState(nextState: S, callback?: () => any): void;
-  isMounted(): boolean;
-  getInitialState?(): S;
+  replaceState: (nextState: S, callback?: () => any) => void;
+  isMounted: () => boolean;
+  getInitialState?: () => S;
 }
 
 export interface ClassicComponentClass<P, S> extends ComponentClass<P, S> {
   new (props?: P, context?: any): ClassicComponent<P, S>;
-  getDefaultProps?(): P;
+  getDefaultProps?: () => P;
 }
 
 // don't autobind these methods since they already have guaranteed context.
@@ -49,7 +47,7 @@ const AUTOBIND_BLACKLIST = {
   componentWillUpdate: 1,
   constructor: 1,
   render: 1,
-  shouldComponentUpdate: 1
+  shouldComponentUpdate: 1,
 };
 
 function extend(base, props) {
@@ -119,7 +117,9 @@ function mergeNoDupes(previous: any, current: any) {
     for (const key in current) {
       if (current.hasOwnProperty(key)) {
         if (previous.hasOwnProperty(key)) {
-          throwError(`Mixins return duplicate key ${key} in their return values`);
+          throwError(
+            `Mixins return duplicate key ${key} in their return values`,
+          );
         }
 
         previous[key] = current[key];
@@ -129,10 +129,18 @@ function mergeNoDupes(previous: any, current: any) {
   return previous;
 }
 
-function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Array<() => void>): void {
+function applyMixin<P, S>(
+  key: string,
+  inst: Component<P, S>,
+  mixin: Array<() => void>,
+): void {
   const hooks = inst[key] !== void 0 ? mixin.concat(inst[key]) : mixin;
 
-  if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
+  if (
+    key === 'getDefaultProps' ||
+    key === 'getInitialState' ||
+    key === 'getChildContext'
+  ) {
     inst[key] = multihook(hooks, mergeNoDupes);
   } else {
     inst[key] = multihook(hooks);
@@ -161,7 +169,9 @@ function applyMixins(Cl: any, mixins: Array<() => void> | any[]) {
   }
 }
 
-export function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComponentClass<P, S> {
+export function createClass<P, S>(
+  obj: ComponentSpec<P, S>,
+): ClassicComponentClass<P, S> {
   class Cl extends Component<P, S> {
     public static defaultProps;
     public static displayName = obj.name || obj.displayName || 'Component';
@@ -188,7 +198,11 @@ export function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComponentCla
     }
 
     // @ts-expect-error TS6133
-    public render(props: Readonly<{ children?: InfernoNode } & P>, state: Readonly<S>, context: any) {
+    public render(
+      props: Readonly<{ children?: InfernoNode } & P>,
+      state: Readonly<S>,
+      context: any,
+    ) {
       return null;
     }
   }

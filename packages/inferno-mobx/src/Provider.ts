@@ -1,18 +1,18 @@
-import { Component } from 'inferno';
+import { Component, type InfernoNode } from 'inferno';
 import { warning } from 'inferno-shared';
 
 const specialKeys = {
   children: true,
   key: true,
-  ref: true
+  ref: true,
 };
 
 export class Provider extends Component<any, any> {
-  public render(props) {
+  public render(props): InfernoNode {
     return props.children;
   }
 
-  public getChildContext() {
+  public getChildContext(): { mobxStores: any } {
     const stores = {} as any;
     // inherit stores
     const props = this.props;
@@ -25,13 +25,16 @@ export class Provider extends Component<any, any> {
     }
     // add own stores
     for (const key in props) {
-      if ((specialKeys as any)[key] === void 0 && key !== 'suppressChangedStoreWarning') {
+      if (
+        (specialKeys as any)[key] === void 0 &&
+        key !== 'suppressChangedStoreWarning'
+      ) {
         stores[key] = props[key];
       }
     }
 
     return {
-      mobxStores: stores
+      mobxStores: stores,
     };
   }
 }
@@ -41,13 +44,22 @@ if (process.env.NODE_ENV !== 'production') {
   Provider.prototype.componentWillReceiveProps = function (nextProps) {
     // Maybe this warning is too aggressive?
     if (Object.keys(nextProps).length !== Object.keys(this.props).length) {
-      warning('MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children');
+      warning(
+        'MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children',
+      );
     }
 
     if (!nextProps.suppressChangedStoreWarning) {
       for (const key in nextProps) {
-        if ((specialKeys as any)[key] === void 0 && this.props[key] !== nextProps[key]) {
-          warning("MobX Provider: Provided store '" + key + "' has changed. Please avoid replacing stores as the change might not propagate to all children");
+        if (
+          (specialKeys as any)[key] === void 0 &&
+          this.props[key] !== nextProps[key]
+        ) {
+          warning(
+            "MobX Provider: Provided store '" +
+              key +
+              "' has changed. Please avoid replacing stores as the change might not propagate to all children",
+          );
         }
       }
     }

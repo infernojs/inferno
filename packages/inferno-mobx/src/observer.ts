@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { _allowStateChanges, createAtom, Reaction } from 'mobx';
-import { Component, createComponentVNode } from 'inferno';
+import {
+  Component,
+  createComponentVNode,
+  type InfernoNode,
+  type VNode,
+} from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';
 import { warning } from 'inferno-shared';
 import { isStateless } from './utils/utils';
@@ -17,7 +23,7 @@ let warnedAboutObserverInjectDeprecation = false;
 
 export const renderReporter = new EventEmitter();
 
-function reportRendering(component) {
+function reportRendering(component): void {
   const node = component.$LI.dom;
 
   renderReporter.emit({
@@ -25,21 +31,23 @@ function reportRendering(component) {
     event: 'render',
     node,
     renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
-    totalTime: Date.now() - component.__$mobRenderStart
+    totalTime: Date.now() - component.__$mobRenderStart,
   });
 }
 
-export function trackComponents() {
+export function trackComponents(): void {
   if (!isDevtoolsEnabled) {
     isDevtoolsEnabled = true;
-    warning('Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.');
+    warning(
+      'Do not turn trackComponents on in production, its expensive. For tracking dom nodes you need inferno-compat.',
+    );
   } else {
     isDevtoolsEnabled = false;
     renderReporter.listeners.length = 0;
   }
 }
 
-export function useStaticRendering(useStatic: boolean) {
+export function useStaticRendering(useStatic: boolean): void {
   isUsingStaticRendering = useStatic;
 }
 
@@ -53,7 +61,7 @@ export const errorsReporter = new EventEmitter();
  * Utilities
  */
 
-function patch(target, funcName, runMixinFirst) {
+function patch(target, funcName, runMixinFirst): void {
   const base = target[funcName];
   const mixinFunc = reactiveMixin[funcName];
   const f = !base
@@ -73,8 +81,13 @@ function patch(target, funcName, runMixinFirst) {
   target[funcName] = f;
 }
 
-function isObjectShallowModified(prev, next) {
-  if (null == prev || null == next || typeof prev !== 'object' || typeof next !== 'object') {
+function isObjectShallowModified(prev, next): boolean {
+  if (
+    prev == null ||
+    next == null ||
+    typeof prev !== 'object' ||
+    typeof next !== 'object'
+  ) {
     return prev !== next;
   }
   const keys = Object.keys(prev);
@@ -97,15 +110,20 @@ function isObjectShallowModified(prev, next) {
 
 const reactiveMixin = {
   componentWillMount() {
-    if (isUsingStaticRendering === true) {
+    if (isUsingStaticRendering) {
       return;
     }
 
     // Generate friendly name for debugging
-    const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
+    const initialName =
+      this.displayName ||
+      this.name ||
+      (this.constructor &&
+        (this.constructor.displayName || this.constructor.name)) ||
+      '<component>';
 
     /**
-     * If props are shallowly modified, react will render anyway,
+     * If props are shallowly modified, React will render anyway,
      * so atom.reportChanged() should not result in yet another re-render
      */
     let skipRender = false;
@@ -114,7 +132,7 @@ const reactiveMixin = {
      * so detect these changes
      */
 
-    function makePropertyObservableReference(propName) {
+    function makePropertyObservableReference(propName): void {
       let valueHolder = this[propName];
       const atom = createAtom('reactive ' + propName);
       Object.defineProperty(this, propName, {
@@ -133,7 +151,7 @@ const reactiveMixin = {
           } else {
             valueHolder = v;
           }
-        }
+        },
       });
     }
 
@@ -143,13 +161,15 @@ const reactiveMixin = {
     makePropertyObservableReference.call(this, 'state');
 
     // wire up reactive render
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const me = this;
     const render = this.render.bind(this);
-    const baseRender = () => render(me.props, me.state, me.context);
+    const baseRender = (): InfernoNode =>
+      render(me.props, me.state, me.context);
     let reaction: Reaction | null = null;
     let isRenderingPending = false;
 
-    const initialRender = () => {
+    const initialRender = (): InfernoNode => {
       reaction = new Reaction(`${initialName}.render()`, () => {
         if (!isRenderingPending) {
           // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
@@ -164,19 +184,19 @@ const reactiveMixin = {
           }
         }
       });
-      (reaction as any).reactComponent = this;
+      reaction.reactComponent = this;
       (reactiveRender as any).$mobx = reaction;
       (reactiveRender as any).$base = this.render;
       this.render = reactiveRender;
       return reactiveRender();
     };
 
-    const reactiveRender = () => {
+    const reactiveRender = (): InfernoNode => {
       isRenderingPending = false;
       let exception;
       let rendering = null;
 
-      (reaction as any).track(() => {
+      reaction.track(() => {
         if (isDevtoolsEnabled) {
           this.__$mobRenderStart = Date.now();
         }
@@ -200,7 +220,7 @@ const reactiveMixin = {
   },
 
   componentWillUnmount() {
-    if (isUsingStaticRendering === true) {
+    if (isUsingStaticRendering) {
       return;
     }
 
@@ -215,7 +235,7 @@ const reactiveMixin = {
       renderReporter.emit({
         component: this,
         event: 'destroy',
-        node
+        node,
       });
     }
   },
@@ -235,7 +255,7 @@ const reactiveMixin = {
   shouldComponentUpdate(nextProps, nextState) {
     if (isUsingStaticRendering) {
       warning(
-        '[mobx-react] It seems that a re-rendering of a React component is triggered while in static (server-side) mode. Please make sure components are rendered only once server-side.'
+        '[mobx-react] It seems that a re-rendering of a React component is triggered while in static (server-side) mode. Please make sure components are rendered only once server-side.',
       );
     }
     // update on any state changes (as is the default)
@@ -247,7 +267,7 @@ const reactiveMixin = {
     // however, it is nicer if lifecycle events are triggered like usually,
     // so we return true here if props are shallowly modified.
     return isObjectShallowModified(this.props, nextProps);
-  }
+  },
 };
 
 /**
@@ -256,6 +276,7 @@ const reactiveMixin = {
 export function observer(stores: string[]): <T>(clazz: T) => void;
 export function observer<T>(stores: string[], clazz: T): T;
 export function observer<T>(target: T): T;
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function observer(arg1, arg2?) {
   if (typeof arg1 === 'string') {
     throw new Error('Store names should be provided as array');
@@ -265,7 +286,7 @@ export function observer(arg1, arg2?) {
     if (!warnedAboutObserverInjectDeprecation) {
       warnedAboutObserverInjectDeprecation = true;
       warning(
-        'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`'
+        'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`',
       );
     }
     if (!arg2) {
@@ -278,21 +299,23 @@ export function observer(arg1, arg2?) {
   const component = arg1;
 
   if (component.isMobxInjector === true) {
-    warning("Mobx observer: You are trying to use 'observer' on a component that already has 'inject'. Please apply 'observer' before applying 'inject'");
+    warning(
+      "Mobx observer: You are trying to use 'observer' on a component that already has 'inject'. Please apply 'observer' before applying 'inject'",
+    );
   }
 
   // Stateless function component:
-  // If it is function but doesn't seem to be a react class constructor,
-  // wrap it to a react class automatically
-  if (typeof component === 'function' && (!component.prototype || !component.prototype.render)) {
+  // If it is function but doesn't seem to be a React class constructor,
+  // wrap it to a React class automatically
+  if (typeof component === 'function' && !component.prototype?.render) {
     return observer(
       class<P, S> extends Component<P, S> {
         public static displayName = component.displayName || component.name;
         public static defaultProps = component.defaultProps;
-        public render(props, _state, context) {
+        public render(props, _state, context): InfernoNode {
           return component(props, context);
         }
-      }
+      },
     );
   }
 
@@ -302,11 +325,18 @@ export function observer(arg1, arg2?) {
 
   const target = component.prototype || component;
   if (process.env.NODE_ENV !== 'production') {
-    if (component.prototype && typeof component.getDerivedStateFromProps === 'function') {
-      throw new Error("inferno-mobx 'observer' is incompatible with the 'getDerivedStateFromProps' life cycle hook.");
+    if (
+      component.prototype &&
+      typeof component.getDerivedStateFromProps === 'function'
+    ) {
+      throw new Error(
+        "inferno-mobx 'observer' is incompatible with the 'getDerivedStateFromProps' life cycle hook.",
+      );
     }
     if (typeof target.getSnapshotBeforeUpdate === 'function') {
-      throw new Error("inferno-mobx 'observer' is incompatible with the 'getSnapshotBeforeUpdate' life cycle hook.");
+      throw new Error(
+        "inferno-mobx 'observer' is incompatible with the 'getSnapshotBeforeUpdate' life cycle hook.",
+      );
     }
   }
   mixinLifecycleEvents(target);
@@ -314,7 +344,7 @@ export function observer(arg1, arg2?) {
   return component;
 }
 
-function mixinLifecycleEvents(target) {
+function mixinLifecycleEvents(target): void {
   patch(target, 'componentWillMount', true);
   patch(target, 'componentDidMount', false);
   patch(target, 'componentWillUnmount', false);
@@ -334,15 +364,21 @@ const proxiedInjectorProps = {
     configurable: true,
     enumerable: true,
     value: true,
-    writable: true
-  }
+    writable: true,
+  },
 };
 
 /**
  * Store Injection
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
-  let displayName = 'inject-' + (component.displayName || component.name || (component.constructor && component.constructor.name) || 'Unknown');
+  let displayName =
+    'inject-' +
+    (component.displayName ||
+      component.name ||
+      component.constructor?.name ||
+      'Unknown');
   if (injectNames) {
     displayName += '-with-' + injectNames;
   }
@@ -360,11 +396,11 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
 
     public wrappedInstance: Component<P, S> | Function | null;
 
-    public storeRef(instance) {
+    public storeRef(instance): void {
       this.wrappedInstance = instance;
     }
 
-    public render(props, _state, context) {
+    public render(props, _state, context): VNode {
       // Optimization: it might be more efficient to apply the mapper function *outside* the render method
       // (if the mapper is a function), that could avoid expensive(?) re-rendering of the injector component
       // See this test: 'using a custom injector is not too reactive' in inject.js
@@ -375,12 +411,19 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         newProps[key] = props[key];
       }
 
-      const additionalProps = grabStoresFn(context.mobxStores || {}, newProps, context) || {};
+      const additionalProps =
+        grabStoresFn(context.mobxStores || {}, newProps, context) || {};
       for (key in additionalProps) {
         newProps[key] = additionalProps[key];
       }
 
-      return createComponentVNode(VNodeFlags.ComponentUnknown, component, newProps, null, isStateless(component) ? null : this.storeRef);
+      return createComponentVNode(
+        VNodeFlags.ComponentUnknown,
+        component,
+        newProps,
+        null,
+        isStateless(component) ? null : this.storeRef,
+      );
     }
   }
 
@@ -402,7 +445,11 @@ function grabStoresByName(storeNames: string[]) {
         // Development warning
         if (process.env.NODE_ENV !== 'production') {
           if (!(storeName in baseStores)) {
-            throw new Error("MobX injector: Store '" + storeName + "' is not available! Make sure it is provided by some Provider");
+            throw new Error(
+              "MobX injector: Store '" +
+                storeName +
+                "' is not available! Make sure it is provided by some Provider",
+            );
           }
         }
 
@@ -444,7 +491,11 @@ export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
 
     grabStoresFn = grabStoresByName(storeNames);
     return function (componentClass) {
-      return createStoreInjector(grabStoresFn, componentClass, storeNames.join('-'));
+      return createStoreInjector(
+        grabStoresFn,
+        componentClass,
+        storeNames.join('-'),
+      );
     };
   }
 }

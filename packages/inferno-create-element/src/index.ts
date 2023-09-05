@@ -1,5 +1,19 @@
-import { createComponentVNode, createFragment, createVNode, getFlagsForElementVnode, Inferno, Key, Props, VNode } from 'inferno';
-import { isInvalid, isNullOrUndef, isString, isUndefined } from 'inferno-shared';
+import {
+  createComponentVNode,
+  createFragment,
+  createVNode,
+  getFlagsForElementVnode,
+  type Inferno,
+  type Key,
+  type Props,
+  type VNode,
+} from 'inferno';
+import {
+  isInvalid,
+  isNullOrUndef,
+  isString,
+  isUndefined,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const componentHooks = {
@@ -10,7 +24,7 @@ const componentHooks = {
   onComponentWillDisappear: 1,
   onComponentWillMount: 1,
   onComponentWillUnmount: 1,
-  onComponentWillUpdate: 1
+  onComponentWillUpdate: 1,
 };
 
 /**
@@ -28,12 +42,12 @@ export function createElement<P>(
 export function createElement<P>(
   type: string | Inferno.ComponentClass<P> | Inferno.StatelessComponent<P>,
   props?: (P & Props<P>) | null,
-  _children?: any
+  _children?: any,
 ): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (isInvalid(type)) {
       throw new Error(
-        'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class, function or forwardRef.'
+        'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class, function or forwardRef.',
       );
     }
   }
@@ -55,7 +69,7 @@ export function createElement<P>(
     }
   }
   if (isString(type)) {
-    flags = getFlagsForElementVnode(type as string);
+    flags = getFlagsForElementVnode(type);
 
     if (!isNullOrUndef(props)) {
       newProps = {};
@@ -81,13 +95,14 @@ export function createElement<P>(
     flags = VNodeFlags.ComponentUnknown;
     if (!isUndefined(children)) {
       if (!props) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         props = {} as P & Props<P>;
       }
       props.children = children;
     }
 
     if (!isNullOrUndef(props)) {
-      newProps = {} as P & Props<P>;
+      newProps = {};
 
       for (const prop in props) {
         if (prop === 'key') {
@@ -105,12 +120,25 @@ export function createElement<P>(
       }
     }
 
-    return createComponentVNode(flags, type as Function, newProps, key, ref);
+    return createComponentVNode(flags, type, newProps, key, ref);
   }
 
   if (flags & VNodeFlags.Fragment) {
-    return createFragment(childLen === 1 ? [children] : children, ChildFlags.UnknownChildren, key);
+    return createFragment(
+      childLen === 1 ? [children] : children,
+      ChildFlags.UnknownChildren,
+      key,
+    );
   }
 
-  return createVNode(flags, type as string, className, children, ChildFlags.UnknownChildren, newProps, key, ref);
+  return createVNode(
+    flags,
+    type,
+    className,
+    children,
+    ChildFlags.UnknownChildren,
+    newProps,
+    key,
+    ref,
+  );
 }

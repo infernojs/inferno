@@ -6,7 +6,7 @@ import { Subscription } from '../utils/Subscription';
 
 let hotReloadingVersion = 0;
 const dummyState = {};
-const noop = () => {};
+const noop = (): void => {};
 
 const makeSelectorStateful = (sourceSelector, store) => {
   // wrap the selector in an object that tracks its results between runs.

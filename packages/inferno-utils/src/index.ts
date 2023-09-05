@@ -43,12 +43,23 @@ export function validateNodeTree(node: any): boolean {
   return true;
 }
 
-export function triggerEvent(name: string, element) {
+export function triggerEvent(name: string, element): void {
   let eventType;
 
-  if (name === 'click' || name === 'dblclick' || name === 'mousedown' || name === 'mouseup') {
+  if (
+    name === 'click' ||
+    name === 'dblclick' ||
+    name === 'mousedown' ||
+    name === 'mouseup'
+  ) {
     eventType = 'MouseEvents';
-  } else if (name === 'focus' || name === 'change' || name === 'blur' || name === 'input' || name === 'select') {
+  } else if (
+    name === 'focus' ||
+    name === 'change' ||
+    name === 'blur' ||
+    name === 'input' ||
+    name === 'select'
+  ) {
     eventType = 'HTMLEvents';
   } else {
     throw new Error('Unsupported `"' + name + '"`event');
@@ -57,7 +68,7 @@ export function triggerEvent(name: string, element) {
   if (eventType === 'MouseEvents') {
     // Simulate left click always
     Object.defineProperty(event, 'button', {
-      value: 0
+      value: 0,
     });
   }
   event.initEvent(name, name !== 'change', true);

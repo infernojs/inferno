@@ -1,4 +1,7 @@
-export function getNumberStyleValue(style: string, value: number) {
+export function getNumberStyleValue(
+  style: string,
+  value: number,
+): string | number {
   switch (style) {
     case 'animation-iteration-count':
     case 'border-image-outset':
@@ -42,6 +45,6 @@ export function getNumberStyleValue(style: string, value: number) {
 
 const uppercasePattern = /[A-Z]/g;
 
-export function hyphenCase(str) {
+export function hyphenCase(str: string): string {
   return str.replace(uppercasePattern, '-$&').toLowerCase();
 }
