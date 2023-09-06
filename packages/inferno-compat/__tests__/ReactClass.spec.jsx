@@ -249,17 +249,17 @@ describe('ReactClass-spec', function () {
       }
     }
 
-    const Outer = React.createClass({
-      childContextTypes: {
+    class Outer extends React.Component{
+      static childContextTypes = {
         className: React.PropTypes.string,
-      },
+      }
       getChildContext() {
         return { className: 'foo' };
-      },
+      }
       render() {
         return <Foo />;
-      },
-    });
+      }
+    }
 
     const container = document.createElement('div');
     ReactDOM.render(<Outer />, container);
@@ -287,14 +287,14 @@ describe('ReactClass-spec', function () {
   // });
 
   it('should work with a null getInitialState() return value', function () {
-    const Component = React.createClass({
-      getInitialState: function () {
+    class Component extends React.Component{
+      getInitialState() {
         return null;
-      },
-      render: function () {
+      }
+      render() {
         return <span />;
-      },
-    });
+      }
+    }
     expect(() => renderIntoDocument(<Component />)).not.toThrow();
   });
 

@@ -102,14 +102,14 @@ describe('ReactComponentLifeCycle', function () {
 
   it('should not reuse an instance when it has been unmounted', function () {
     var container = document.createElement('div');
-    var StatefulComponent = React.createClass({
-      getInitialState: function () {
+    class StatefulComponent extends React.Component {
+      getInitialState() {
         return {};
-      },
-      render: function () {
+      }
+      render() {
         return <div />;
       }
-    });
+    }
     var element = <StatefulComponent />;
 
     var firstInstance = ReactDOM.render(element, container);
@@ -125,31 +125,31 @@ describe('ReactComponentLifeCycle', function () {
   it('it should fire onDOMReady when already in onDOMReady', function (done) {
     var _testJournal = [];
 
-    var Child = React.createClass({
-      componentDidMount: function () {
+    class Child extends React.Component {
+      componentDidMount() {
         _testJournal.push('Child:onDOMReady');
-      },
-      render: function () {
+      }
+      render() {
         return <div />;
       }
-    });
+    }
 
-    var SwitcherParent = React.createClass({
-      getInitialState: function () {
+    class SwitcherParent extends React.Component {
+      getInitialState() {
         _testJournal.push('SwitcherParent:getInitialState');
         return { showHasOnDOMReadyComponent: false };
-      },
-      componentDidMount: function () {
+      }
+      componentDidMount() {
         _testJournal.push('SwitcherParent:onDOMReady');
         this.switchIt();
-      },
-      switchIt: function () {
+      }
+      switchIt() {
         this.setState({ showHasOnDOMReadyComponent: true });
-      },
-      render: function () {
+      }
+      render() {
         return <div>{this.state.showHasOnDOMReadyComponent ? <Child /> : <div> </div>}</div>;
       }
-    });
+    }
 
     var instance = <SwitcherParent />;
     renderIntoDocument(instance);
@@ -179,14 +179,16 @@ describe('ReactComponentLifeCycle', function () {
   // });
 
   it('should allow update state inside of componentWillMount', function () {
-    var StatefulComponent = React.createClass({
-      componentWillMount: function () {
+    class StatefulComponent extends React.Component {
+      componentWillMount() {
         this.setState({ stateField: 'something' });
-      },
-      render: function () {
+      }
+
+      render() {
         return <div />;
       }
-    });
+    }
+
     var instance = <StatefulComponent />;
     expect(function () {
       renderIntoDocument(instance);
@@ -195,16 +197,17 @@ describe('ReactComponentLifeCycle', function () {
 
   it('should not allow update state inside of getInitialState', function () {
     spyOn(console, 'error');
-    var StatefulComponent = React.createClass({
-      getInitialState: function () {
+    class StatefulComponent extends React.Component {
+      getInitialState() {
         this.setState({ stateField: 'something' });
 
         return { stateField: 'somethingelse' };
-      },
-      render: function () {
+      }
+      render() {
         return <div />;
       }
-    });
+    }
+
     expect(() => renderIntoDocument(<StatefulComponent />)).toThrow();
     // expect(console.error.calls.count()).toBe(1);
     // expect(console.error.argsForCall[0][0]).toBe(
@@ -217,18 +220,18 @@ describe('ReactComponentLifeCycle', function () {
 
   it('should correctly determine if a component is mounted', function () {
     spyOn(console, 'error');
-    var Component = React.createClass({
-      componentWillMount: function () {
+    class Component extends React.Component {
+      componentWillMount() {
         expect(this.isMounted()).toBeFalsy();
-      },
-      componentDidMount: function () {
+      }
+      componentDidMount() {
         expect(this.isMounted()).toBeTruthy();
-      },
-      render: function () {
+      }
+      render() {
         expect(this.isMounted()).toBeFalsy();
         return <div />;
       }
-    });
+    }
 
     var element = <Component />;
 
@@ -243,18 +246,18 @@ describe('ReactComponentLifeCycle', function () {
 
   it('should correctly determine if a null component is mounted', function () {
     spyOn(console, 'error');
-    var Component = React.createClass({
-      componentWillMount: function () {
+    class Component extends React.Component {
+      componentWillMount() {
         expect(this.isMounted()).toBeFalsy();
-      },
-      componentDidMount: function () {
+      }
+      componentDidMount() {
         expect(this.isMounted()).toBeTruthy();
-      },
-      render: function () {
+      }
+      render() {
         expect(this.isMounted()).toBeFalsy();
         return null;
       }
-    });
+    }
 
     var element = <Component />;
 
@@ -268,11 +271,11 @@ describe('ReactComponentLifeCycle', function () {
   });
 
   it('isMounted should return false when unmounted', function () {
-    var Component = React.createClass({
-      render: function () {
+    class Component extends React.Component {
+      render() {
         return <div />;
       }
-    });
+    }
 
     var container = document.createElement('div');
     var instance = ReactDOM.render(<Component />, container);
@@ -390,28 +393,29 @@ describe('ReactComponentLifeCycle', function () {
   // });
 
   it('should not throw when updating an auxiliary component', function () {
-    var Tooltip = React.createClass({
-      render: function () {
+    class Tooltip extends React.Component {
+      render() {
         return <div>{this.props.children}</div>;
-      },
-      componentDidMount: function () {
+      }
+      componentDidMount() {
         this.container = document.createElement('div');
         this.updateTooltip();
-      },
-      componentDidUpdate: function () {
+      }
+      componentDidUpdate() {
         this.updateTooltip();
-      },
-      updateTooltip: function () {
+      }
+      updateTooltip() {
         // Even though this.props.tooltip has an owner, updating it shouldn't
         // throw here because it's mounted as a root component
         ReactDOM.render(this.props.tooltip, this.container);
       }
-    });
-    var Component = React.createClass({
-      render: function () {
+    }
+
+    class Component extends React.Component {
+      render() {
         return <Tooltip tooltip={<div>{this.props.tooltipText}</div>}>{this.props.text}</Tooltip>;
       }
-    });
+    }
 
     var container = document.createElement('div');
     ReactDOM.render(<Component text="uno" tooltipText="one" />, container);
@@ -425,19 +429,20 @@ describe('ReactComponentLifeCycle', function () {
     /**
      * calls setState in an componentDidMount.
      */
-    var SetStateInComponentDidMount = React.createClass({
-      getInitialState: function () {
+    class SetStateInComponentDidMount extends React.Component {
+      getInitialState() {
         return {
           stateField: this.props.valueToUseInitially
         };
-      },
-      componentDidMount: function () {
+      }
+      componentDidMount() {
         this.setState({ stateField: this.props.valueToUseInOnDOMReady });
-      },
-      render: function () {
+      }
+      render() {
         return <div />;
       }
-    });
+    }
+
     var instance = <SetStateInComponentDidMount valueToUseInitially="hello" valueToUseInOnDOMReady="goodbye" />;
     instance = renderIntoDocument(instance);
 
@@ -456,34 +461,67 @@ describe('ReactComponentLifeCycle', function () {
         return true;
       };
     };
-    var Outer = React.createClass({
-      render: function () {
+    class Outer extends React.Component {
+      render() {
         return (
           <div>
             <Inner x={this.props.x} />
           </div>
         );
-      },
-      componentWillMount: logger('outer componentWillMount'),
-      componentDidMount: logger('outer componentDidMount'),
-      componentWillReceiveProps: logger('outer componentWillReceiveProps'),
-      shouldComponentUpdate: logger('outer shouldComponentUpdate'),
-      componentWillUpdate: logger('outer componentWillUpdate'),
-      componentDidUpdate: logger('outer componentDidUpdate'),
-      componentWillUnmount: logger('outer componentWillUnmount')
-    });
-    var Inner = React.createClass({
-      render: function () {
+      }
+      componentWillMount() {
+       log.push('outer componentWillMount');
+      }
+      componentDidMount() {
+        log.push('outer componentDidMount');
+      }
+      componentWillReceiveProps() {
+        log.push('outer componentWillReceiveProps')
+      }
+      shouldComponentUpdate() {
+        log.push('outer shouldComponentUpdate')
+
+        return true;
+      }
+      componentWillUpdate() {
+        log.push('outer componentWillUpdate')
+      }
+      componentDidUpdate() {
+        log.push('outer componentDidUpdate')
+      }
+      componentWillUnmount() {
+        log.push('outer componentWillUnmount')
+      }
+    }
+
+    class Inner extends React.Component {
+      render() {
         return <span>{this.props.x}</span>;
-      },
-      componentWillMount: logger('inner componentWillMount'),
-      componentDidMount: logger('inner componentDidMount'),
-      componentWillReceiveProps: logger('inner componentWillReceiveProps'),
-      shouldComponentUpdate: logger('inner shouldComponentUpdate'),
-      componentWillUpdate: logger('inner componentWillUpdate'),
-      componentDidUpdate: logger('inner componentDidUpdate'),
-      componentWillUnmount: logger('inner componentWillUnmount')
-    });
+      }
+      componentWillMount() {
+        log.push('inner componentWillMount');
+      }
+      componentDidMount() {
+        log.push('inner componentDidMount');
+      }
+      componentWillReceiveProps() {
+        log.push('inner componentWillReceiveProps')
+      }
+      shouldComponentUpdate() {
+        log.push('inner shouldComponentUpdate')
+
+        return true;
+      }
+      componentWillUpdate() {
+        log.push('inner componentWillUpdate')
+      }
+      componentDidUpdate() {
+        log.push('inner componentDidUpdate')
+      }
+      componentWillUnmount() {
+        log.push('inner componentWillUnmount')
+      }
+    }
 
     var container = document.createElement('div');
     log = [];

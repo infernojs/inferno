@@ -73,7 +73,6 @@ describe('withRouter', () => {
   it('exposes the wrapped component as WrappedComponent', () => {
     const TestComponent = (): InfernoNode => <div />;
     const decorated = withRouter(TestComponent);
-    // @ts-expect-error test assertion
     expect(decorated.WrappedComponent).toBe(TestComponent);
   });
 

@@ -53,7 +53,6 @@ install `rc-css-transition-group-modern` package.
 
 ### `react`
 
-- `React.createClass`
 - `React.createElement`
 - `React.cloneElement`
 - `React.Component`

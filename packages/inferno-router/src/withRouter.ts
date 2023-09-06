@@ -20,10 +20,9 @@ interface IWithRouterProps {
  */
 export function withRouter<
   P extends RouteComponentProps<any> & IWithRouterProps,
-  S = {},
 >(
   Com: Function | ComponentType<P> | Component<P, any> | ForwardRef<P, any>,
-): typeof Component<RouteComponentProps<any> & IWithRouterProps, S> {
+): any {
   const C: any = function (props: RouteComponentProps<any> & IWithRouterProps) {
     const { wrappedComponentRef, ...remainingProps } = props;
 

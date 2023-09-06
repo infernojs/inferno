@@ -227,7 +227,7 @@ describe('ReactComponent', function () {
     }
 
     class Child extends React.Component {
-      static childContextTypes: {
+      static childContextTypes = {
         foo: React.PropTypes.string
       };
 
@@ -235,7 +235,7 @@ describe('ReactComponent', function () {
         return {
           foo: 'bar'
         };
-      },
+      }
 
       render() {
         return React.Children.only(this.props.children);

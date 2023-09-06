@@ -20,11 +20,10 @@ const TodoItem = observer(function TodoItem(props) {
 let todoListRenderings = 0;
 let todoListWillReactCount = 0;
 const TodoList = observer(
-  createClass({
-    renderings: 0,
+  class {
     componentWillReact() {
       todoListWillReactCount++;
-    },
+    }
     render() {
       todoListRenderings++;
       const todos = store.todos;
@@ -37,8 +36,8 @@ const TodoList = observer(
         </div>
       );
     }
-  })
-);
+  }
+)
 
 const App = () => <TodoList />;
 

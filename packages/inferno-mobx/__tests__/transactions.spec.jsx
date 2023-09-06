@@ -34,7 +34,7 @@ describe('Mobx Transacations', () => {
     let willReactCount = 0;
     autorun(() => (asText = [foo.a.get(), foo.b.get(), foo.c.get()].join(':')));
 
-    observer(
+    const Test = observer(
       class MyCom extends Component {
         componentWillReact() {
           willReactCount++;

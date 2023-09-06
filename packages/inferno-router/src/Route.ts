@@ -1,9 +1,6 @@
 import {
   Component,
-  type ComponentType,
   createComponentVNode,
-  type ForwardRef,
-  type Inferno,
   type InfernoNode,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -28,9 +25,9 @@ export interface Match<P extends Record<string, string>> {
 }
 
 export interface RouteComponentProps<P extends Record<string, string>> {
-  match?: Match<P>;
-  location?: Location;
-  history?: History;
+  match: Match<P>;
+  location: Location;
+  history: History;
   staticContext?: any;
 }
 
@@ -42,11 +39,8 @@ export interface IRouteProps {
   sensitive?: boolean;
   loader?: (props: TLoaderProps<any>) => Promise<any>;
   component?:
-    | Inferno.ComponentClass<any>
-    | ((props: any, context: any) => InfernoNode)
-    | ComponentType<any>
-    | Component<any, any>
-    | ForwardRef<any, any>;
+    | typeof Component<any, any>
+    | ((props: any, context: any) => InfernoNode);
   render?: (props: RouteComponentProps<any>, context: any) => InfernoNode;
   location?: Pick<Location, 'pathname'>;
   children?: ((props: RouteComponentProps<any>) => InfernoNode) | InfernoNode;
