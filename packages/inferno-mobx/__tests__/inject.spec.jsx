@@ -1,7 +1,7 @@
 import { render } from 'inferno';
-import { createClass } from 'inferno-create-class';
 import { inject, observer, Provider } from 'inferno-mobx';
 import { observable } from 'mobx';
+import { Component } from 'inferno/src';
 
 describe('inject based context', () => {
   let container;
@@ -20,7 +20,7 @@ describe('inject based context', () => {
   it('basic context', (done) => {
     const C = inject('foo')(
       observer(
-        createClass({
+        class Foo extends Component {
           render() {
             return (
               <div>
@@ -29,7 +29,7 @@ describe('inject based context', () => {
               </div>
             );
           }
-        })
+        }
       )
     );
     const B = () => <C />;

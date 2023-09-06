@@ -1,7 +1,7 @@
 import { render } from 'inferno';
-import { createClass } from 'inferno-create-class';
 import { observer, Provider } from 'inferno-mobx';
 import { observable } from 'mobx';
+import { Component } from 'inferno/src';
 
 describe('observer based context', () => {
   let container;
@@ -26,7 +26,7 @@ describe('observer based context', () => {
 
     expect(warns.length).toBe(1);
     expect(warns[0]).toEqual(
-      'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`'
+      'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`',
     );
 
     console.error = w;
@@ -36,7 +36,7 @@ describe('observer based context', () => {
   it('basic context', (done) => {
     const C = observer(
       ['foo'],
-      createClass({
+      class Foo extends Component {
         render() {
           return (
             <div>
@@ -45,7 +45,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      })
+      },
     );
     const B = () => <C />;
     const A = () => (
@@ -62,7 +62,7 @@ describe('observer based context', () => {
   it('props override context', (done) => {
     const C = observer(
       ['foo'],
-      createClass({
+      class Foo extends Component {
         render() {
           return (
             <div>
@@ -71,7 +71,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      })
+      },
     );
     const B = () => <C foo={42} />;
     const A = () => (
@@ -87,7 +87,7 @@ describe('observer based context', () => {
   it('overriding stores is supported', (done) => {
     const C = observer(
       ['foo', 'bar'],
-      createClass({
+      class Foobar extends Component {
         render() {
           return (
             <div>
@@ -97,7 +97,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      })
+      },
     );
     const B = () => <C />;
     const A = () => (
@@ -117,14 +117,16 @@ describe('observer based context', () => {
     render(<A />, container);
 
     expect(container.querySelector('span').textContent).toBe('context:bar1337');
-    expect(container.querySelector('section').textContent).toBe('context:421337');
+    expect(container.querySelector('section').textContent).toBe(
+      'context:421337',
+    );
     done();
   });
 
   it('store should be available', (done) => {
     const C = observer(
       ['foo'],
-      createClass({
+      class Foo extends Component {
         render() {
           return (
             <div>
@@ -133,7 +135,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      })
+      },
     );
     const B = () => <C />;
     const A = () => (
@@ -144,7 +146,9 @@ describe('observer based context', () => {
     try {
       render(<A />, container);
     } catch (e) {
-      expect(e.message).toBe("MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider");
+      expect(e.message).toBe(
+        "MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider",
+      );
       done();
     }
   });
@@ -160,8 +164,8 @@ describe('observer based context', () => {
               {this.props.foo}
             </div>
           );
-        }
-      })
+        },
+      }),
     );
     const B = () => <C foo="bar" />;
     render(<B />, container);
@@ -184,13 +188,13 @@ describe('observer based context', () => {
               {this.props.foo}
             </div>
           );
-        }
-      })
+        },
+      }),
     );
     const B = observer(
       createClass({
-        render: () => <C />
-      })
+        render: () => <C />,
+      }),
     );
     const A = observer(
       createClass({
@@ -201,8 +205,8 @@ describe('observer based context', () => {
               <B />
             </Provider>
           </section>
-        )
-      })
+        ),
+      }),
     );
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('3');
@@ -210,7 +214,9 @@ describe('observer based context', () => {
     a.set(42);
     expect(container.querySelector('span').textContent).toBe('42');
     expect(container.querySelector('div').textContent).toBe('context:3');
-    expect(msg).toEqual("MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children");
+    expect(msg).toEqual(
+      "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children",
+    );
     console.error = baseWarn;
     done();
   });
@@ -230,13 +236,13 @@ describe('observer based context', () => {
               {this.props.foo}
             </div>
           );
-        }
-      })
+        },
+      }),
     );
     const B = observer(
       createClass({
-        render: () => <C />
-      })
+        render: () => <C />,
+      }),
     );
     const A = observer(
       createClass({
@@ -247,8 +253,8 @@ describe('observer based context', () => {
               <B />
             </Provider>
           </section>
-        )
-      })
+        ),
+      }),
     );
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('3');

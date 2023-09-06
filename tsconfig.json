@@ -11,9 +11,6 @@
       "inferno-animation": [
         "packages/inferno-animation/src/index.ts"
       ],
-      "inferno-create-class": [
-        "packages/inferno-create-class/src/index.ts"
-      ],
       "inferno-create-element": [
         "packages/inferno-create-element/src/index.ts"
       ],

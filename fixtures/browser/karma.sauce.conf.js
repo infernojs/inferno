@@ -156,7 +156,6 @@ module.exports = function (config) {
           inferno: resolve('inferno'),
           'inferno-animation': resolve('inferno-animation'),
           'inferno-compat': resolve('inferno-compat'),
-          'inferno-create-class': resolve('inferno-create-class'),
           'inferno-create-element': resolve('inferno-create-element'),
           'inferno-hydrate': resolve('inferno-hydrate'),
           'inferno-extras': resolve('inferno-extras'),

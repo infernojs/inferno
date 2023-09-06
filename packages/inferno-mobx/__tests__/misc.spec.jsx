@@ -1,7 +1,7 @@
 import { render, rerender } from 'inferno';
 import { observer } from 'inferno-mobx';
-import { createClass } from 'inferno-create-class';
 import { extendObservable, observable } from 'mobx';
+import { Component } from 'inferno/src';
 
 describe('Mobx Misc', () => {
   let container;
@@ -21,15 +21,15 @@ describe('Mobx Misc', () => {
     let called = 0;
     const x = observable.box(3);
     const C = observer(
-      createClass({
-        render: () => (
-          <div>
+      class Foo extends Component {
+        render() {
+          return <div>
             value:
             {x.get()}
           </div>
-        ),
+        }
         shouldComponentUpdate: () => called++
-      })
+      }
     );
     render(<C />, container);
     expect(container.querySelector('div').textContent).toBe('value:3');
@@ -44,7 +44,7 @@ describe('Mobx Misc', () => {
     let called = 0;
     const y = observable.box(5);
     const C = observer(
-      createClass({
+      class Foo extends Component {
         render() {
           return (
             <div>
@@ -52,21 +52,21 @@ describe('Mobx Misc', () => {
               {this.props.y}
             </div>
           );
-        },
+        }
         shouldComponentUpdate(nextProps) {
           called++;
           return nextProps.y !== 42;
         }
-      })
+      }
     );
     const B = observer(
-      createClass({
-        render: () => (
-          <span>
+      class Foo extends Component {
+        render() {
+          return <span>
             <C y={y.get()} />
           </span>
-        )
-      })
+        }
+      }
     );
     render(<B />, container);
     expect(container.querySelector('div').textContent).toBe('value:5');
@@ -98,7 +98,7 @@ describe('Mobx Misc', () => {
     }
 
     const ExampleView = observer(
-      createClass({
+      class Foo extends Component {
         render() {
           return (
             <div>
@@ -107,7 +107,7 @@ describe('Mobx Misc', () => {
             </div>
           );
         }
-      })
+      }
     );
 
     const exampleState = new ExampleState();
@@ -120,19 +120,19 @@ describe('Mobx Misc', () => {
   it('#85 Should handle state changing in constructors', function () {
     const a = observable.box(2);
     const Child = observer(
-      createClass({
+      class Foo extends Component {
         displayName: 'Child',
         getInitialState() {
           a.set(3); // one shouldn't do this!
           return {};
-        },
-        render: () => (
-          <div>
+        }
+        render() {
+          return <div>
             child:
             {a.get()} -{' '}
           </div>
-        )
-      })
+        }
+      }
     );
     const ParentWrapper = observer(function Parent() {
       return (

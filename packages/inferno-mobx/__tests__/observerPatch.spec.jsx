@@ -1,7 +1,6 @@
 import { Component, render } from 'inferno';
 import { getObserverTree, observable, runInAction } from 'mobx';
 import { inject, observer, observerPatch } from 'inferno-mobx';
-import { createClass } from 'inferno-create-class';
 
 describe('Mobx Observer Patch', () => {
   let container;
@@ -22,9 +21,9 @@ describe('Mobx Observer Patch', () => {
       todos: [
         {
           title: 'a',
-          completed: false
-        }
-      ]
+          completed: false,
+        },
+      ],
     });
 
     let todoItemRenderings = 0;
@@ -33,6 +32,7 @@ describe('Mobx Observer Patch', () => {
         todoItemRenderings++;
         return <li>|{todo.title}</li>;
       }
+
       shouldComponentUpdate({ todo: { title } }) {
         return title !== this.props.todo.title;
       }
@@ -84,7 +84,7 @@ describe('Mobx Observer Patch', () => {
 
     store.todos.push({
       title: 'b',
-      completed: true
+      completed: true,
     });
 
     expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
@@ -96,11 +96,13 @@ describe('Mobx Observer Patch', () => {
     }
     expect(expectedOutput).toEqual(['|aa', '|b']);
 
-    expect(todoListRenderings).toBe(2); //'should have rendered list twice');
+    expect(todoListRenderings).toBe(2); // 'should have rendered list twice');
     expect(todoListWillReactCount).toBe(0); //, 'should never call componentWillReact')
     expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
     expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
+    expect(
+      getObserverTree(store.todos[1], 'completed').observers,
+    ).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
@@ -120,7 +122,7 @@ describe('Mobx Observer Patch', () => {
         yCalcCount++;
         return this.x * 2;
       },
-      z: 'hi'
+      z: 'hi',
     });
 
     class TestComponent extends Component {
@@ -177,12 +179,12 @@ describe('Mobx Observer Patch', () => {
       selected: 'coffee',
       items: [
         {
-          name: 'coffee'
+          name: 'coffee',
         },
         {
-          name: 'tea'
-        }
-      ]
+          name: 'tea',
+        },
+      ],
     });
 
     /** Row Class */
@@ -234,7 +236,7 @@ describe('Mobx Observer Patch', () => {
     console.error = (m) => msg.push(m);
 
     const Foo = inject('foo')(
-      createClass({
+      class FooCom extends Component {
         render() {
           return (
             <div>
@@ -243,7 +245,7 @@ describe('Mobx Observer Patch', () => {
             </div>
           );
         }
-      })
+      },
     );
     observerPatch(Foo);
 
@@ -258,7 +260,7 @@ describe('Mobx Observer Patch', () => {
     console.error = (m) => msg.push(m);
 
     const Foo = observer(
-      createClass({
+      class FooC extends Component {
         render() {
           return (
             <div>
@@ -267,7 +269,7 @@ describe('Mobx Observer Patch', () => {
             </div>
           );
         }
-      })
+      },
     );
     observerPatch(Foo);
 
@@ -281,7 +283,7 @@ describe('Mobx Observer Patch', () => {
     const baseWarn = console.error;
     console.error = (m) => msg.push(m);
 
-    const Foo = createClass({
+    class Foo extends Component {
       render() {
         return (
           <div>
@@ -290,7 +292,7 @@ describe('Mobx Observer Patch', () => {
           </div>
         );
       }
-    });
+    }
     observerPatch(Foo);
     observerPatch(Foo);
 
@@ -304,16 +306,20 @@ describe('Mobx Observer Patch', () => {
     const baseWarn = console.error;
     console.error = (m) => msg.push(m);
 
-    const fooA = createClass({
-      render: () => null
-    });
+    class fooA extends Component {
+      render() {
+        return null;
+      }
+    }
     observerPatch(fooA);
     inject('foo')(fooA);
 
     // N.B, the injected component will be observer since mobx-react 4.0!
-    const fooB = createClass({
-      render: () => null
-    });
+    class fooB extends Component {
+      render() {
+        return null;
+      }
+    }
     observerPatch(fooB);
     inject(() => {})(fooB);
 
@@ -348,23 +354,24 @@ describe('Mobx Observer Patch', () => {
 
   it('should render component even if setState called with exactly the same props', function (done) {
     let renderCount = 0;
-    const Component = createClass({
+    class ComponentA extends Component {
       onClick() {
         this.setState({});
-      },
+      }
+
       render() {
         renderCount++;
         return <div onClick={this.onClick} id="clickableDiv" />;
       }
-    });
-    observerPatch(Component);
-    render(<Component />, container);
+    }
+    observerPatch(ComponentA);
+    render(<ComponentA />, container);
 
-    expect(renderCount).toBe(1); //'renderCount === 1');
+    expect(renderCount).toBe(1); // 'renderCount === 1');
     container.querySelector('#clickableDiv').click();
     expect(renderCount).toBe(2); // 'renderCount === 2');
     container.querySelector('#clickableDiv').click();
-    expect(renderCount).toBe(3); //'renderCount === 3');
+    expect(renderCount).toBe(3); // 'renderCount === 3');
     done();
   });
 
@@ -380,97 +387,4 @@ describe('Mobx Observer Patch', () => {
       render(<Faulty />, container);
     }).toThrow(exception);
   });
-
-  // it('it rerenders correctly if some props are non-observables - 1', done => {
-  //   let renderCount = 0;
-  //   let odata = observable({ x: 1 })
-  //   let data = { y : 1 }
-  //
-  //   @observer class Com extends Component {
-  //     @computed get computed () {
-  //       // n.b: data.y would not rerender! shallowly new equal props are not stored
-  //       return this.props.odata.x;
-  //     }
-  //     render() {
-  //       renderCount++;
-  //       return <span onClick={stuff} >{this.props.odata.x}-{this.props.data.y}-{this.computed}</span>
-  //     }
-  //   }
-  //
-  //   const Parent = observer(createClass({
-  //     render() {
-  //       // this.props.odata.x;
-  //       return <Com data={this.props.data} odata={this.props.odata} />
-  //     }
-  //   }))
-  //
-  //   function stuff() {
-  //     data.y++;
-  //     odata.x++;
-  //   }
-  //
-  //   render(<Parent odata={odata} data={data} />, container);
-  //
-  //   expect(renderCount).toBe(1) // 'renderCount === 1');
-  //   expect(container.querySelector("span").textContent).toBe("1-1-1");
-  //
-  //   container.querySelector("span").click();
-  //   setTimeout(() => {
-  //     expect(renderCount).toBe(2) // 'renderCount === 2');
-  //     expect(container.querySelector("span").textContent).toBe("2-2-2");
-  //
-  //     container.querySelector("span").click();
-  //     setTimeout(() => {
-  //       expect(renderCount).toBe(3) // 'renderCount === 3');
-  //       expect(container.querySelector("span").textContent).toBe("3-3-3");
-  //
-  //       done();
-  //     }, 10);
-  //   }, 20);
-  // });
-
-  // it('it rerenders correctly if some props are non-observables - 2', done => {
-  //   let renderCount = 0;
-  //   let odata = observable({ x: 1 })
-  //
-  //   @observer class Com extends Component {
-  //     @computed get computed () {
-  //       return this.props.data.y; // should recompute, since props.data is changed
-  //     }
-  //
-  //     render() {
-  //       renderCount++;
-  //       return <span onClick={stuff}>{this.props.data.y}-{this.computed}</span>
-  //     }
-  //   }
-  //
-  //   const Parent = observer(createClass({
-  //     render() {
-  //       let data = { y : this.props.odata.x }
-  //       return <Com data={data} odata={this.props.odata} />
-  //     }
-  //   }))
-  //
-  //   function stuff() {
-  //     odata.x++;
-  //   }
-  //
-  //   render(<Parent odata={odata} />, container);
-  //   expect(renderCount).toBe(1) // 'renderCount === 1');
-  //   expect(container.querySelector("span").textContent).toBe("1-1");
-  //
-  //   container.querySelector("span").click();
-  //   setTimeout(() => {
-  //     expect(renderCount).toBe(2) // 'renderCount === 2');
-  //     expect(container.querySelector("span").textContent).toBe("2-2");
-  //
-  //     container.querySelector("span").click();
-  //     setTimeout(() => {
-  //       expect(renderCount).toBe(3) // 'renderCount === 3');
-  //       expect(container.querySelector("span").textContent).toBe("3-3");
-  //
-  //       done();
-  //     }, 10);
-  //   }, 20);
-  // })
 });

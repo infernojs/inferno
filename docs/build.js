@@ -46,7 +46,6 @@ const plugins = [
       {find: 'inferno', replacement: resolvePkg('inferno')},
       {find: 'inferno-animation', replacement: resolvePkg('inferno-animation')},
       {find: 'inferno-compat', replacement: resolvePkg('inferno-compat')},
-      {find: 'inferno-create-class', replacement: resolvePkg('inferno-create-class')},
       {find: 'inferno-create-element', replacement: resolvePkg('inferno-create-element')},
       {find: 'inferno-hydrate', replacement: resolvePkg('inferno-hydrate')},
       {find: 'inferno-extras', replacement: resolvePkg('inferno-extras')},

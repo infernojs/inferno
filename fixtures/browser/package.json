@@ -35,7 +35,7 @@
     "karma-jasmine": "^5.1.0",
     "karma-sauce-launcher": "^4.3.6",
     "karma-webpack": "5.0.0",
-    "saucelabs": "^7.3.0",
+    "saucelabs": "^7.3.1",
     "ts-loader": "^9.4.4",
     "webpack": "^5.88.2"
   }
