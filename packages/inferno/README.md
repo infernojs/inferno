@@ -787,22 +787,6 @@ hydrate(<div />, document.getElementById("app"));
 
 Same as `render()`, but is used to hydrate a container whose HTML contents were rendered by `inferno-server`. Inferno will attempt to attach event listeners to the existing markup.
 
-### `options.componentComparator` ( package `inferno`) DEV only
-
-This option can be used during **development** to create custom component comparator method.
-This option will be called on every Component update.
-It gets two parameters: lastVNode and nextVNode. When it returns `true` lastVNode will be replaced with nextVNode.
-If anything else than `true` is returned it falls to normal behavior.
-
-```javascript
-import {options} from 'inferno';
-
-options.componentComparator = function (lastVNode, nextVNode) {
-    /* custom logic */
-    return true; // Replaces lastVNode with nextVNode
-}
-```
-
 ### `findDOMNode` (package: `inferno-extras`)
 This feature has been moved from inferno to inferno-compat in v6. No options are needed anymore.
 
