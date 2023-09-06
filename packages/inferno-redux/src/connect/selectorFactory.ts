@@ -1,8 +1,18 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { verifySubselectors } from './verifySubselectors';
 
-export const impureFinalPropsSelectorFactory = (mapStateToProps, mapDispatchToProps, mergeProps, dispatch) => {
+export const impureFinalPropsSelectorFactory = (
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+  dispatch,
+) => {
   return (state, ownProps) => {
-    return mergeProps(mapStateToProps(state, ownProps), mapDispatchToProps(dispatch, ownProps), ownProps);
+    return mergeProps(
+      mapStateToProps(state, ownProps),
+      mapDispatchToProps(dispatch, ownProps),
+      ownProps,
+    );
   };
 };
 
@@ -11,7 +21,7 @@ export const pureFinalPropsSelectorFactory = (
   mapDispatchToProps,
   mergeProps,
   dispatch,
-  { areStatesEqual, areOwnPropsEqual, areStatePropsEqual }
+  { areStatesEqual, areOwnPropsEqual, areStatePropsEqual },
 ) => {
   let hasRunAtLeastOnce = false;
   let state;
@@ -85,7 +95,9 @@ export const pureFinalPropsSelectorFactory = (
   };
 
   const pureFinalPropsSelector = (nextState, nextOwnProps) =>
-    hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps);
+    hasRunAtLeastOnce
+      ? handleSubsequentCalls(nextState, nextOwnProps)
+      : handleFirstCall(nextState, nextOwnProps);
 
   return pureFinalPropsSelector;
 };
@@ -94,17 +106,33 @@ export const pureFinalPropsSelectorFactory = (
 // allowing connectAdvanced's shouldComponentUpdate to return false if final
 // props have not changed. If false, the selector will always return a new
 // object and shouldComponentUpdate will always return true.
-export const defaultSelectorFactory = (dispatch, { initMapStateToProps, initMapDispatchToProps, initMergeProps, ...opts }) => {
+export const defaultSelectorFactory = (
+  dispatch,
+  { initMapStateToProps, initMapDispatchToProps, initMergeProps, ...opts },
+) => {
   const options: any = opts; // trick typescript
   const mapStateToProps = initMapStateToProps(dispatch, options);
   const mapDispatchToProps = initMapDispatchToProps(dispatch, options);
   const mergeProps = initMergeProps(dispatch, options);
 
   if (process.env.NODE_ENV !== 'production') {
-    verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, options.displayName);
+    verifySubselectors(
+      mapStateToProps,
+      mapDispatchToProps,
+      mergeProps,
+      options.displayName,
+    );
   }
 
-  const selectorFactory = options.pure ? pureFinalPropsSelectorFactory : impureFinalPropsSelectorFactory;
+  const selectorFactory = options.pure
+    ? pureFinalPropsSelectorFactory
+    : impureFinalPropsSelectorFactory;
 
-  return selectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, options);
+  return selectorFactory(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+    dispatch,
+    options,
+  );
 };

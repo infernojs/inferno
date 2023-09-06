@@ -1,6 +1,6 @@
 const hasOwn = Object.prototype.hasOwnProperty;
 
-export const shallowEqual = (a: any, b: any) => {
+export const shallowEqual = (a: any, b: any): boolean => {
   if (a === b) {
     return true;
   }

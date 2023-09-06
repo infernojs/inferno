@@ -39,7 +39,6 @@
     "redux": ">=4"
   },
   "dependencies": {
-    "hoist-non-inferno-statics": "^1.1.3",
     "inferno": "8.2.2"
   },
   "devDependencies": {

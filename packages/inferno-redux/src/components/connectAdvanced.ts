@@ -1,14 +1,22 @@
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { type Dispatch, type Store } from 'redux';
-import hoistNonReactStatics from 'hoist-non-inferno-statics';
-import { Component, createComponentVNode, normalizeProps } from 'inferno';
+import {
+  Component,
+  createComponentVNode,
+  type InfernoNode,
+  normalizeProps,
+} from 'inferno';
 import { Subscription } from '../utils/Subscription';
+import { hoistStaticProperties } from 'inferno-shared';
 
 let hotReloadingVersion = 0;
-const dummyState = {};
 const noop = (): void => {};
 
-const makeSelectorStateful = (sourceSelector, store) => {
+const makeSelectorStateful = (
+  sourceSelector: (state: any, props: any) => any,
+  store: Store<any>,
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+) => {
   // wrap the selector in an object that tracks its results between runs.
   const selector = {
     error: null as Error | null,
@@ -33,6 +41,8 @@ const makeSelectorStateful = (sourceSelector, store) => {
 };
 
 export interface IConnectOptions {
+  displayName: string;
+
   /**
    * the func used to compute this HOC's displayName from the wrapped component's displayName.
    * probably overridden by wrapper functions such as connect().
@@ -98,6 +108,10 @@ export interface IConnectOptions {
   areStatePropsEqual?: any;
 
   areMergedPropsEqual?: any;
+
+  WrappedComponent?: any;
+
+  wrappedComponentName: string;
 }
 
 // TODO: This should be typed better. Spesifically, the output and input props should be generic.
@@ -107,13 +121,13 @@ export type SelectorFactory = (
 ) => (state: any, props: any) => any;
 
 // TODO: Move
-const invariant = (test: boolean, error: string) => {
+const invariant = (test: boolean, error: string): void => {
   if (!test) {
     throw new Error(error);
   }
 };
 
-function getDefaultName(name) {
+function getDefaultName(name): string {
   return `ConnectAdvanced(${name})`;
 }
 
@@ -128,15 +142,17 @@ export function connectAdvanced(
     withRef = false,
     ...connectOptions
   }: Partial<IConnectOptions>,
-) {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+): Function {
   const subscriptionKey = storeKey + 'Subscription';
   const version = hotReloadingVersion++;
 
-  const wrapWithConnect = <T extends Function>(WrappedComponent: T): T => {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const wrapWithConnect = <T extends Function>(WrappedComponent: T): any => {
     invariant(
       typeof WrappedComponent === 'function',
       `You must pass a component to the function returned by ` +
-        `connect. Instead received ${WrappedComponent}`,
+        `connect. Instead received ${WrappedComponent as any}`,
     );
 
     const wrappedComponentName: string =
@@ -160,6 +176,10 @@ export function connectAdvanced(
     };
 
     class Connect<P, S> extends Component<P, S> {
+      /* eslint-disable */
+      // @ts-ignore
+      public state: {};
+      /* eslint-enable */
       public static displayName = displayName;
       public static WrappedComponent = WrappedComponent;
 
@@ -181,7 +201,7 @@ export function connectAdvanced(
         super(props, context);
 
         this.version = version;
-        this.state = {} as S;
+        this.state = {};
         this.renderCount = 0;
         this.store = this.props[storeKey] || this.context[storeKey];
         this.propsMode = Boolean(props[storeKey]);
@@ -200,7 +220,7 @@ export function connectAdvanced(
         this.initSubscription();
       }
 
-      public getChildContext() {
+      public getChildContext(): Record<string, any> {
         // If this component received store from props, its subscription should be transparent
         // to any descendants receiving store+subscription from context; it passes along
         // subscription passed to it. Otherwise, it shadows the parent subscription, which allows
@@ -211,7 +231,7 @@ export function connectAdvanced(
         };
       }
 
-      public componentWillMount() {
+      public componentWillMount(): void {
         if (!shouldHandleStateChanges || this.$SSR) {
           return;
         }
@@ -220,15 +240,15 @@ export function connectAdvanced(
         this.selector.run(this.props);
       }
 
-      public componentWillReceiveProps(nextProps) {
+      public componentWillReceiveProps(nextProps): void {
         this.selector.run(nextProps);
       }
 
-      public shouldComponentUpdate() {
+      public shouldComponentUpdate(): boolean {
         return this.selector.shouldComponentUpdate;
       }
 
-      public componentWillUnmount() {
+      public componentWillUnmount(): void {
         if (this.subscription) {
           this.subscription.tryUnsubscribe();
         }
@@ -242,6 +262,7 @@ export function connectAdvanced(
         this.selector.shouldComponentUpdate = false;
       }
 
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       public getWrappedInstance() {
         invariant(
           withRef,
@@ -252,20 +273,20 @@ export function connectAdvanced(
         return this.wrappedInstance;
       }
 
-      private setWrappedInstance(ref) {
+      private setWrappedInstance(ref): void {
         this.wrappedInstance = ref;
       }
 
-      public initSelector() {
+      public initSelector(): void {
         const sourceSelector = selectorFactory(
           this.store!.dispatch,
           selectorFactoryOptions,
         );
-        this.selector = makeSelectorStateful(sourceSelector, this.store);
+        this.selector = makeSelectorStateful(sourceSelector, this.store!);
         this.selector.run(this.props);
       }
 
-      public initSubscription() {
+      public initSubscription(): void {
         if (!shouldHandleStateChanges) {
           return;
         }
@@ -292,18 +313,18 @@ export function connectAdvanced(
         );
       }
 
-      private onStateChange() {
+      private onStateChange(): void {
         this.selector.run(this.props);
 
         if (!this.selector.shouldComponentUpdate) {
           this.notifyNestedSubs!();
         } else {
           this.componentDidUpdate = this.notifyNestedSubsOnComponentDidUpdate;
-          this.setState(dummyState);
+          this.setState({});
         }
       }
 
-      private notifyNestedSubsOnComponentDidUpdate() {
+      private notifyNestedSubsOnComponentDidUpdate(): void {
         // `componentDidUpdate` is conditionally implemented when `onStateChange` determines it
         // needs to notify nested subs. Once called, it unimplements itself until further state
         // changes occur. Doing it this way vs having a permanent `componentDidMount` that does
@@ -313,10 +334,11 @@ export function connectAdvanced(
         this.notifyNestedSubs!();
       }
 
-      public isSubscribed() {
+      public isSubscribed(): boolean {
         return Boolean(this.subscription && this.subscription.isSubscribed());
       }
 
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       private addExtraProps(props: any) {
         if (!renderCountProp) {
           return props;
@@ -326,7 +348,7 @@ export function connectAdvanced(
         // this is especially important for 'ref' since that's a reference back to the component
         // instance. a singleton memoized selector would then be holding a reference to the
         // instance, preventing the instance from being garbage collected, and that would be bad
-        const withExtras = {...props};
+        const withExtras = { ...props };
 
         if (renderCountProp) {
           withExtras[renderCountProp] = this.renderCount++;
@@ -337,7 +359,7 @@ export function connectAdvanced(
         return withExtras;
       }
 
-      public render() {
+      public render(): InfernoNode {
         const selector = this.selector;
         selector.shouldComponentUpdate = false;
 
@@ -376,7 +398,9 @@ export function connectAdvanced(
         };
     }
 
-    return hoistNonReactStatics(Connect, WrappedComponent) as T;
+    hoistStaticProperties(Connect, WrappedComponent);
+
+    return Connect;
   };
 
   return wrapWithConnect;

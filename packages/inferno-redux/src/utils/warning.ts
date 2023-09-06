@@ -1,7 +1,5 @@
-export const warning = (message: string) => {
-  // tslint:disable-next-line:no-console
+export const warning = (message: string): void => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
-    // tslint:disable-next-line:no-console
     console.error(message);
   }
 
@@ -10,6 +8,5 @@ export const warning = (message: string) => {
     // "break on all exceptions" in your console,
     // it would pause the execution at this line.
     throw new Error(message);
-    // tslint:disable-next-line:no-empty
   } catch (e) {}
 };

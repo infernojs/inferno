@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import {
   type Component,
+  type ComponentType,
   createComponentVNode,
+  type ForwardRef,
   type InfernoNode,
   type Ref,
-  type VNode,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
-import hoistStatics from 'hoist-non-inferno-statics';
-import { Route } from './Route';
+import { Route, type RouteComponentProps } from './Route';
+import { hoistStaticProperties } from 'inferno-shared';
 
 interface IWithRouterProps {
   wrappedComponentRef?: Ref | null;
@@ -17,10 +19,12 @@ interface IWithRouterProps {
  * A public higher-order component to access the imperative API
  */
 export function withRouter<
-  P = Readonly<Record<string, unknown>>,
-  S = Record<string, unknown>,
->(Com: Component<P & IWithRouterProps, S>): VNode {
-  const C: any = function (props: P & IWithRouterProps) {
+  P extends RouteComponentProps<any> & IWithRouterProps,
+  S = {},
+>(
+  Com: Function | ComponentType<P> | Component<P, any> | ForwardRef<P, any>,
+): typeof Component<RouteComponentProps<any> & IWithRouterProps, S> {
+  const C: any = function (props: RouteComponentProps<any> & IWithRouterProps) {
     const { wrappedComponentRef, ...remainingProps } = props;
 
     return createComponentVNode<any>(VNodeFlags.ComponentClass, Route, {
@@ -39,5 +43,6 @@ export function withRouter<
   // @ts-expect-error function name property
   C.displayName = `withRouter(${Com.displayName || Com.name})`;
   C.WrappedComponent = Com;
-  return hoistStatics(C, Com);
+  hoistStaticProperties(C, Com);
+  return C;
 }

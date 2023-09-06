@@ -1,4 +1,12 @@
-import { Component, createRef, InfernoNode, RefObject, render, rerender } from 'inferno';
+/* eslint-disable @typescript-eslint/no-this-alias */
+import {
+  Component,
+  createRef,
+  type InfernoNode,
+  type RefObject,
+  render,
+  rerender,
+} from 'inferno';
 
 describe('createRef', () => {
   let container;
@@ -18,13 +26,13 @@ describe('createRef', () => {
     let instanceTesting: Testing | null = null;
 
     class Testing extends Component {
-      public render() {
+      public render(): number {
         instanceTesting = this;
         return 1;
       }
     }
 
-    function Functional() {
+    function Functional(): string {
       return 'foobar';
     }
 
@@ -41,19 +49,19 @@ describe('createRef', () => {
         this.functional = createRef();
       }
 
-      public componentWillMount() {
+      public componentWillMount(): void {
         expect(this.element.current).toBe(null);
         expect(this.es6.current).toBe(null);
         expect(this.functional.current).toBe(null);
       }
 
-      public componentDidMount() {
+      public componentDidMount(): void {
         expect(this.element.current).toBe(container.querySelector('#span'));
         expect(this.es6.current).toBe(instanceTesting);
         expect(this.functional.current).toBe(null);
       }
 
-      public render() {
+      public render(): InfernoNode {
         return (
           <div>
             <span id="span" ref={this.element}>
@@ -75,7 +83,7 @@ describe('createRef', () => {
     let instanceTesting: Testing | null = null;
 
     class Testing extends Component {
-      public render() {
+      public render(): number {
         instanceTesting = this;
         return 1;
       }
@@ -107,7 +115,7 @@ describe('createRef', () => {
         };
       }
 
-      public render(props) {
+      public render(props): InfernoNode {
         return (
           <div>
             <Testing ref={props.swap ? this.es6Old : this.es6new} />
@@ -158,7 +166,7 @@ describe('createRef', () => {
         };
       }
 
-      public render(props) {
+      public render(props): InfernoNode {
         return (
           <div>
             <div id={'divi'} ref={props.swap ? this.es6Old : this.es6new} />
@@ -190,17 +198,21 @@ describe('createRef', () => {
     let instanceTesting: Testing | null = null;
 
     class Testing extends Component {
-      public render() {
+      public render(): number {
         instanceTesting = this;
         return 1;
       }
     }
 
-    function Functional() {
+    function Functional(): string {
       return 'foobar';
     }
 
-    class Foobar extends Component {
+    interface FoobarState {
+      swap: boolean;
+    }
+
+    class Foobar extends Component<any, FoobarState> {
       public readonly elementOld: RefObject<HTMLSpanElement>;
       public readonly elementNew: RefObject<HTMLSpanElement>;
       public readonly es6Old: RefObject<Testing>;
@@ -221,11 +233,11 @@ describe('createRef', () => {
         this.functionalNEW = createRef();
 
         this.state = {
-          swap: true
+          swap: true,
         };
       }
 
-      public componentWillMount() {
+      public componentWillMount(): void {
         expect(this.elementNew.current).toBe(null);
         expect(this.elementOld.current).toBe(null);
         expect(this.es6Old.current).toBe(null);
@@ -234,7 +246,7 @@ describe('createRef', () => {
         expect(this.functionalNEW.current).toBe(null);
       }
 
-      public componentDidMount() {
+      public componentDidMount(): void {
         expect(this.elementNew.current).toBe(null);
         expect(this.elementOld.current).toBe(container.querySelector('#span'));
         expect(this.es6Old.current).toBe(instanceTesting);
@@ -243,11 +255,11 @@ describe('createRef', () => {
         expect(this.functionalNEW.current).toBe(null);
 
         this.setState({
-          swap: false
+          swap: false,
         });
       }
 
-      public render(_props, { swap }) {
+      public render(_props, { swap }): InfernoNode {
         return (
           <div>
             <span id="span" ref={swap ? this.elementOld : this.elementNew}>
@@ -300,19 +312,23 @@ describe('createRef', () => {
 
         this.selectedRef = createRef();
         this.state = {
-          selected: 1
+          selected: 1,
         };
       }
 
-      public componentDidMount() {
-        expect(this.selectedRef.current).toBe(container.querySelector('#child' + this.state.selected));
+      public componentDidMount(): void {
+        expect(this.selectedRef.current).toBe(
+          container.querySelector('#child' + this.state.selected),
+        );
       }
 
-      public componentDidUpdate() {
-        expect(this.selectedRef.current).toBe(container.querySelector('#child' + this.state.selected));
+      public componentDidUpdate(): void {
+        expect(this.selectedRef.current).toBe(
+          container.querySelector('#child' + this.state.selected),
+        );
       }
 
-      public render() {
+      public render(): void {
         const children: InfernoNode[] = [];
         for (let i = 0; i < TOTAL_CHILDREN; i++) {
           const selected = this.state.selected === i ? this.selectedRef : null;
@@ -322,9 +338,9 @@ describe('createRef', () => {
         return <div id="parent">{children}</div>;
       }
 
-      public _setSelected(selected) {
+      public _setSelected(selected): void {
         this.setState({
-          selected
+          selected,
         });
       }
     }

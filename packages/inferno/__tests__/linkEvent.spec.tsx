@@ -1,4 +1,4 @@
-import { Component, linkEvent, render } from 'inferno';
+import { Component, InfernoNode, linkEvent, render } from 'inferno';
 
 describe('linkEvent', () => {
   let container;
@@ -17,11 +17,11 @@ describe('linkEvent', () => {
   describe('linkEvent on a button (onClick)', () => {
     let test;
 
-    function handleOnClick(props) {
+    function handleOnClick(props): void {
       test = props.test;
     }
 
-    function FunctionalComponent(props) {
+    function FunctionalComponent(props): InfernoNode {
       return <button onClick={linkEvent(props, handleOnClick)} />;
     }
 
@@ -30,7 +30,7 @@ describe('linkEvent', () => {
     }
 
     class StatefulComponent extends Component<StatefulComponentProps> {
-      public render() {
+      public render(): InfernoNode {
         return <button onClick={linkEvent(this.props, handleOnClick)} />;
       }
     }
@@ -48,19 +48,19 @@ describe('linkEvent', () => {
     });
 
     it('Should not fail when given event is invalid', () => {
-      // @ts-expect-error
+      // @ts-expect-error it should not be possible to assign null event
       render(<div onClick={linkEvent({ number: 1 }, null)} />, container);
       container.firstChild.click();
-      // @ts-expect-error
+      // @ts-expect-error it should not be possible to assign undefined event
       render(<div onClick={linkEvent({ number: 1 }, undefined)} />, container);
       container.firstChild.click();
-      // @ts-expect-error
+      // @ts-expect-error it should not be possible to assign false event
       render(<div onClick={linkEvent({ number: 1 }, false)} />, container);
       container.firstChild.click();
-      // @ts-expect-error
+      // @ts-expect-error it should not be possible to assign true event
       render(<div onClick={linkEvent({ number: 1 }, true)} />, container);
       container.firstChild.click();
-      // @ts-expect-error
+      // @ts-expect-error it should not be possible to assign empty obj event
       render(<div onClick={linkEvent({ number: 1 }, {})} />, container);
       container.firstChild.click();
     });
@@ -69,16 +69,16 @@ describe('linkEvent', () => {
   describe('linkEvent on a button (onclick) - no delegation', () => {
     let test;
 
-    function handleOnClick(props) {
+    function handleOnClick(props): void {
       test = props.test;
     }
 
-    function FunctionalComponent(props) {
+    function FunctionalComponent(props): InfernoNode {
       return <button onclick={linkEvent(props, handleOnClick)} />;
     }
 
     class StatefulComponent extends Component {
-      public render() {
+      public render(): InfernoNode {
         return <button onclick={linkEvent(this.props, handleOnClick)} />;
       }
     }

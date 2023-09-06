@@ -231,7 +231,7 @@ describe('top level context', () => {
       const refObj = createRef<HTMLDivElement>();
       const text = 'foobar';
       const row = (
-        <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>
+        <div className="floating-row-number" $HasTextChildren>
           {text}
         </div>
       );
@@ -248,7 +248,7 @@ describe('top level context', () => {
       const refObj = createRef<SVGSVGElement>();
       const text = 'foobar';
       const row = (
-        <div className="floating-row-number" $HasTextChildren onClick={emptyFn}>
+        <div className="floating-row-number" $HasTextChildren>
           {text}
         </div>
       );

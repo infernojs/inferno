@@ -48,3 +48,36 @@ export function throwError(message?: string): void {
 export function warning(message: string): void {
   console.error(message);
 }
+
+const KNOWN_STATICS = {
+  childContextTypes: true,
+  contextTypes: true,
+  defaultProps: true,
+  displayName: true,
+  getDefaultProps: true,
+  propTypes: true,
+  type: true,
+  // KNOWN STATICS
+  name: true,
+  length: true,
+  prototype: true,
+  caller: true,
+  arguments: true,
+  arity: true,
+};
+
+export function hoistStaticProperties(
+  targetComponent: any,
+  sourceComponent: any,
+): void {
+  // don't hoist over string (html) components
+  const keys = Object.getOwnPropertyNames(sourceComponent);
+
+  for (let i = 0; i < keys.length; ++i) {
+    const key = keys[i];
+
+    if (!KNOWN_STATICS[key]) {
+      targetComponent[key] = sourceComponent[key];
+    }
+  }
+}

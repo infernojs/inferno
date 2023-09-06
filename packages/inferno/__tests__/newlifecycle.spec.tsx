@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Component, render, rerender } from 'inferno';
 
 describe('Lifecycle methods', () => {
@@ -51,11 +52,14 @@ describe('Lifecycle methods', () => {
         log.push('outer constructor');
 
         this.state = { value: 0 };
-        forceUpdateOuter = () => this.forceUpdate();
-        updateOuterState = () =>
+        forceUpdateOuter = () => {
+          this.forceUpdate();
+        };
+        updateOuterState = () => {
           this.setState({
-            value: (this.state.value + 1) % 2
+            value: (this.state.value + 1) % 2,
           });
+        };
       }
 
       public render() {
@@ -69,8 +73,12 @@ describe('Lifecycle methods', () => {
     }
 
     Outer.prototype.componentDidMount = logger('outer componentDidMount');
-    Outer.prototype.shouldComponentUpdate = logger('outer shouldComponentUpdate');
-    Outer.prototype.getSnapshotBeforeUpdate = logger('outer getSnapshotBeforeUpdate');
+    Outer.prototype.shouldComponentUpdate = logger(
+      'outer shouldComponentUpdate',
+    );
+    Outer.prototype.getSnapshotBeforeUpdate = logger(
+      'outer getSnapshotBeforeUpdate',
+    );
     Outer.prototype.componentDidUpdate = logger('outer componentDidUpdate');
     Outer.prototype.componentWillUnmount = logger('outer componentWillUnmount');
 
@@ -96,11 +104,14 @@ describe('Lifecycle methods', () => {
         log.push('inner constructor');
 
         this.state = { value: 0 };
-        forceUpdateInner = () => this.forceUpdate();
-        updateInnerState = () =>
+        forceUpdateInner = () => {
+          this.forceUpdate();
+        };
+        updateInnerState = () => {
           this.setState({
-            value: (this.state.value + 1) % 2
+            value: (this.state.value + 1) % 2,
           });
+        };
       }
 
       public render() {
@@ -114,8 +125,12 @@ describe('Lifecycle methods', () => {
     }
 
     Inner.prototype.componentDidMount = logger('inner componentDidMount');
-    Inner.prototype.shouldComponentUpdate = logger('inner shouldComponentUpdate');
-    Inner.prototype.getSnapshotBeforeUpdate = logger('inner getSnapshotBeforeUpdate');
+    Inner.prototype.shouldComponentUpdate = logger(
+      'inner shouldComponentUpdate',
+    );
+    Inner.prototype.getSnapshotBeforeUpdate = logger(
+      'inner getSnapshotBeforeUpdate',
+    );
     Inner.prototype.componentDidUpdate = logger('inner componentDidUpdate');
     Inner.prototype.componentWillUnmount = logger('inner componentWillUnmount');
 
@@ -130,7 +145,7 @@ describe('Lifecycle methods', () => {
       'inner getDerivedStateFromProps',
       'inner render',
       'inner componentDidMount',
-      'outer componentDidMount'
+      'outer componentDidMount',
     ]);
 
     // Outer & Inner props update
@@ -152,7 +167,7 @@ describe('Lifecycle methods', () => {
       'inner render',
       'inner getSnapshotBeforeUpdate',
       'inner componentDidUpdate',
-      'outer componentDidUpdate'
+      'outer componentDidUpdate',
     ]);
 
     // Outer state update & Inner props update
@@ -169,7 +184,7 @@ describe('Lifecycle methods', () => {
       'inner render',
       'inner getSnapshotBeforeUpdate',
       'inner componentDidUpdate',
-      'outer componentDidUpdate'
+      'outer componentDidUpdate',
     ]);
 
     // Inner state update
@@ -181,7 +196,7 @@ describe('Lifecycle methods', () => {
       'inner shouldComponentUpdate',
       'inner render',
       'inner getSnapshotBeforeUpdate',
-      'inner componentDidUpdate'
+      'inner componentDidUpdate',
     ]);
 
     // Force update Outer
@@ -197,19 +212,27 @@ describe('Lifecycle methods', () => {
       'inner render',
       'inner getSnapshotBeforeUpdate',
       'inner componentDidUpdate',
-      'outer componentDidUpdate'
+      'outer componentDidUpdate',
     ]);
 
     // Force update Inner
     log = [];
     forceUpdateInner();
     rerender();
-    expect(log).toEqual(['inner getDerivedStateFromProps', 'inner render', 'inner getSnapshotBeforeUpdate', 'inner componentDidUpdate']);
+    expect(log).toEqual([
+      'inner getDerivedStateFromProps',
+      'inner render',
+      'inner getSnapshotBeforeUpdate',
+      'inner componentDidUpdate',
+    ]);
 
     // Unmounting Outer & Inner
     log = [];
     render(<table />, container);
-    expect(log).toEqual(['outer componentWillUnmount', 'inner componentWillUnmount']);
+    expect(log).toEqual([
+      'outer componentWillUnmount',
+      'inner componentWillUnmount',
+    ]);
   });
 
   describe('static getDerivedStateFromProps', () => {
@@ -220,13 +243,13 @@ describe('Lifecycle methods', () => {
       }
 
       class Foo extends Component<{ foo: string }, FooState> {
-        // @ts-ignore automatic init detection not working with getDerivedStateFromProps
+        // @ts-expect-error automatic init detection not working with getDerivedStateFromProps
         public state: FooState;
 
         public static getDerivedStateFromProps(nextProps) {
           return {
             bar: 'bar',
-            foo: nextProps.foo
+            foo: nextProps.foo,
           };
         }
 
@@ -251,13 +274,13 @@ describe('Lifecycle methods', () => {
           super(props, context);
           this.state = {
             bar: 'bar',
-            foo: 'foo'
+            foo: 'foo',
           };
         }
 
         public static getDerivedStateFromProps(_nextProps, prevState) {
           return {
-            foo: `not-${prevState.foo}`
+            foo: `not-${prevState.foo}`,
           };
         }
 
@@ -284,14 +307,14 @@ describe('Lifecycle methods', () => {
         constructor(props, context) {
           super(props, context);
           this.state = {
-            value: 'initial'
+            value: 'initial',
           };
         }
 
         public static getDerivedStateFromProps(nextProps) {
           if (nextProps.update) {
             return {
-              value: 'updated'
+              value: 'updated',
             };
           }
 
@@ -307,7 +330,10 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      const derivedSpy = spyOn(Foo, 'getDerivedStateFromProps').and.callThrough();
+      const derivedSpy = spyOn(
+        Foo,
+        'getDerivedStateFromProps',
+      ).and.callThrough();
       const didMountSpy = spyOn(Foo.prototype, 'componentDidMount');
       const didUpdateSpy = spyOn(Foo.prototype, 'componentDidUpdate');
 
@@ -335,7 +361,7 @@ describe('Lifecycle methods', () => {
         constructor(props, context) {
           super(props, context);
           this.state = {
-            value: 'initial'
+            value: 'initial',
           };
         }
 
@@ -346,7 +372,7 @@ describe('Lifecycle methods', () => {
           }
 
           return {
-            value: prevState.value + ' derived'
+            value: prevState.value + ' derived',
           };
         }
 
@@ -359,7 +385,10 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      const derivedSpy = spyOn(Foo, 'getDerivedStateFromProps').and.callThrough();
+      const derivedSpy = spyOn(
+        Foo,
+        'getDerivedStateFromProps',
+      ).and.callThrough();
 
       render(<Foo />, container);
       expect(container.firstChild.className).toEqual('initial');
@@ -382,7 +411,7 @@ describe('Lifecycle methods', () => {
           super(props, context);
           this.state = {
             bar: 'bar',
-            foo: 'foo'
+            foo: 'foo',
           };
         }
 
@@ -416,7 +445,7 @@ describe('Lifecycle methods', () => {
           super(props, context);
           this.state = {
             bar: 'bar',
-            foo: 'foo'
+            foo: 'foo',
           };
         }
 
@@ -479,7 +508,12 @@ describe('Lifecycle methods', () => {
 
         public render() {
           logs.push('parent render');
-          return <Child parentRenders={this.state.parentRenders} ref={(child) => (childRef = child)} />;
+          return (
+            <Child
+              parentRenders={this.state.parentRenders}
+              ref={(child) => (childRef = child)}
+            />
+          );
         }
       }
 
@@ -495,7 +529,11 @@ describe('Lifecycle methods', () => {
       }
 
       render(<Parent />, container);
-      expect(logs).toEqual(['parent getDerivedStateFromProps', 'parent render', 'child render']);
+      expect(logs).toEqual([
+        'parent getDerivedStateFromProps',
+        'parent render',
+        'child render',
+      ]);
 
       logs = [];
       childRef.setState({});
@@ -518,12 +556,13 @@ describe('Lifecycle methods', () => {
         constructor(props) {
           super(props);
           this.state = {
-            value: 0
+            value: 0,
           };
-          updateState = () =>
+          updateState = () => {
             this.setState({
-              value: this.state.value + 1
+              value: this.state.value + 1,
             });
+          };
         }
 
         public static getDerivedStateFromProps(props, state) {
@@ -535,7 +574,7 @@ describe('Lifecycle methods', () => {
           // NOTE: Don't do this in real production code!
           // https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
           return {
-            value: state.value + 1
+            value: state.value + 1,
           };
         }
 
@@ -550,10 +589,10 @@ describe('Lifecycle methods', () => {
       render(<Foo foo="foo" />, container);
       expect(container.firstChild.textContent).toEqual('1');
       expect(propsArg).toEqual({
-        foo: 'foo'
+        foo: 'foo',
       });
       expect(stateArg).toEqual({
-        value: 0
+        value: 0,
       });
 
       // New Props
@@ -561,10 +600,10 @@ describe('Lifecycle methods', () => {
       render(<Foo foo="bar" />, container);
       expect(container.firstChild.textContent).toEqual('2');
       expect(propsArg).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(stateArg).toEqual({
-        value: 1
+        value: 1,
       });
 
       // New state
@@ -573,10 +612,10 @@ describe('Lifecycle methods', () => {
       rerender();
       expect(container.firstChild.textContent).toEqual('4');
       expect(propsArg).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(stateArg).toEqual({
-        value: 3
+        value: 3,
       });
     });
 
@@ -621,23 +660,27 @@ describe('Lifecycle methods', () => {
         constructor(props) {
           super(props);
           this.state = {
-            value: 0
+            value: 0,
           };
         }
 
         public static getDerivedStateFromProps(_nextProps, prevState) {
           return {
-            value: prevState.value + 1
+            value: prevState.value + 1,
           };
         }
 
         public getSnapshotBeforeUpdate(prevProps, prevState) {
-          log.push(`getSnapshotBeforeUpdate() prevProps:${prevProps.value} prevState:${prevState.value}`);
+          log.push(
+            `getSnapshotBeforeUpdate() prevProps:${prevProps.value} prevState:${prevState.value}`,
+          );
           return 'abc';
         }
 
         public componentDidUpdate(prevProps, prevState, snapshot) {
-          log.push(`componentDidUpdate() prevProps:${prevProps.value} prevState:${prevState.value} snapshot:${snapshot}`);
+          log.push(
+            `componentDidUpdate() prevProps:${prevProps.value} prevState:${prevState.value} snapshot:${snapshot}`,
+          );
         }
 
         public render() {
@@ -651,11 +694,19 @@ describe('Lifecycle methods', () => {
       log = [];
 
       render(<MyComponent value="bar" />, container);
-      expect(log).toEqual(['render', 'getSnapshotBeforeUpdate() prevProps:foo prevState:1', 'componentDidUpdate() prevProps:foo prevState:1 snapshot:abc']);
+      expect(log).toEqual([
+        'render',
+        'getSnapshotBeforeUpdate() prevProps:foo prevState:1',
+        'componentDidUpdate() prevProps:foo prevState:1 snapshot:abc',
+      ]);
       log = [];
 
       render(<MyComponent value="baz" />, container);
-      expect(log).toEqual(['render', 'getSnapshotBeforeUpdate() prevProps:bar prevState:2', 'componentDidUpdate() prevProps:bar prevState:2 snapshot:abc']);
+      expect(log).toEqual([
+        'render',
+        'getSnapshotBeforeUpdate() prevProps:bar prevState:2',
+        'componentDidUpdate() prevProps:bar prevState:2 snapshot:abc',
+      ]);
       log = [];
 
       render(<div />, container);
@@ -689,7 +740,11 @@ describe('Lifecycle methods', () => {
 
         public render() {
           log.push('render');
-          return <div ref={(ref) => (this.divRef = ref)}>{`value:${this.props.value}`}</div>;
+          return (
+            <div
+              ref={(ref) => (this.divRef = ref)}
+            >{`value:${this.props.value}`}</div>
+          );
         }
       }
 
@@ -698,7 +753,11 @@ describe('Lifecycle methods', () => {
       log = [];
 
       render(<MyComponent value="bar" />, container);
-      expect(log).toEqual(['render', 'getSnapshotBeforeUpdate', 'componentDidUpdate']);
+      expect(log).toEqual([
+        'render',
+        'getSnapshotBeforeUpdate',
+        'componentDidUpdate',
+      ]);
     });
 
     it('should be passed the previous props and state', () => {
@@ -721,19 +780,20 @@ describe('Lifecycle methods', () => {
         constructor(props) {
           super(props);
           this.state = {
-            value: 0
+            value: 0,
           };
-          updateState = () =>
+          updateState = () => {
             this.setState({
-              value: this.state.value + 1
+              value: this.state.value + 1,
             });
+          };
         }
 
         public static getDerivedStateFromProps(_props, state) {
           // NOTE: Don't do this in real production code!
           // https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
           return {
-            value: state.value + 1
+            value: state.value + 1,
           };
         }
 
@@ -772,16 +832,16 @@ describe('Lifecycle methods', () => {
       render(<Foo foo="bar" />, container);
       expect(container.firstChild.textContent).toEqual('2');
       expect(prevPropsArg).toEqual({
-        foo: 'foo'
+        foo: 'foo',
       });
       expect(prevStateArg).toEqual({
-        value: 1
+        value: 1,
       });
       expect(curProps).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(curState).toEqual({
-        value: 2
+        value: 2,
       });
 
       // New state
@@ -790,16 +850,16 @@ describe('Lifecycle methods', () => {
       rerender();
       expect(container.firstChild.textContent).toEqual('4');
       expect(prevPropsArg).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(prevStateArg).toEqual({
-        value: 2
+        value: 2,
       });
       expect(curProps).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(curState).toEqual({
-        value: 4
+        value: 4,
       });
     });
   });
@@ -814,7 +874,10 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      const willUpdateSpy = spyOn(ReceivePropsComponent.prototype, 'componentWillUpdate');
+      const willUpdateSpy = spyOn(
+        ReceivePropsComponent.prototype,
+        'componentWillUpdate',
+      );
       render(<ReceivePropsComponent />, container);
       expect(willUpdateSpy.calls.count()).toBe(0);
     });
@@ -822,12 +885,11 @@ describe('Lifecycle methods', () => {
     it('should be called when rerender with new props from parent', () => {
       let doRender;
 
-      interface OuterProps {}
       interface OuterState {
         i: number;
       }
 
-      class Outer extends Component<OuterProps, OuterState> {
+      class Outer extends Component<unknown, OuterState> {
         public state: OuterState;
 
         constructor(p, c) {
@@ -836,7 +898,9 @@ describe('Lifecycle methods', () => {
         }
 
         public componentDidMount() {
-          doRender = () => this.setState({ i: this.state.i + 1 });
+          doRender = () => {
+            this.setState({ i: this.state.i + 1 });
+          };
         }
 
         public render(props, { i }) {
@@ -855,7 +919,10 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      const willUpdateSpy = spyOn(Inner.prototype, 'componentWillUpdate').and.callThrough();
+      const willUpdateSpy = spyOn(
+        Inner.prototype,
+        'componentWillUpdate',
+      ).and.callThrough();
 
       // Initial render
       render(<Outer />, container);
@@ -874,21 +941,26 @@ describe('Lifecycle methods', () => {
         i: number;
       }
 
-      class ReceivePropsComponent extends Component<unknown, ReceivePropsComponentState> {
+      class ReceivePropsComponent extends Component<
+        unknown,
+        ReceivePropsComponentState
+      > {
         public state: ReceivePropsComponentState;
 
         constructor(props) {
           super(props);
 
           this.state = {
-            i: 0
+            i: 0,
           };
         }
 
         public componentWillUpdate() {}
 
         public componentDidMount() {
-          doRender = () => this.setState({ i: this.state.i + 1 });
+          doRender = () => {
+            this.setState({ i: this.state.i + 1 });
+          };
         }
 
         public render() {
@@ -896,7 +968,10 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      const willUpdateSpy = spyOn(ReceivePropsComponent.prototype, 'componentWillUpdate');
+      const willUpdateSpy = spyOn(
+        ReceivePropsComponent.prototype,
+        'componentWillUpdate',
+      );
       render(<ReceivePropsComponent />, container);
       expect(willUpdateSpy.calls.count()).toBe(0);
 
@@ -949,7 +1024,10 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      const willRecSpy = spyOn(ReceivePropsComponent.prototype, 'componentWillReceiveProps');
+      const willRecSpy = spyOn(
+        ReceivePropsComponent.prototype,
+        'componentWillReceiveProps',
+      );
       render(<ReceivePropsComponent />, container);
       expect(willRecSpy.calls.count()).toBe(0);
     });
@@ -970,7 +1048,9 @@ describe('Lifecycle methods', () => {
         }
 
         public componentDidMount() {
-          doRender = () => this.setState({ i: this.state.i + 1 });
+          doRender = () => {
+            this.setState({ i: this.state.i + 1 });
+          };
         }
 
         public render(props, { i }) {
@@ -996,7 +1076,10 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      const cwrpSpy = spyOn(Inner.prototype, 'componentWillReceiveProps').and.callThrough();
+      const cwrpSpy = spyOn(
+        Inner.prototype,
+        'componentWillReceiveProps',
+      ).and.callThrough();
 
       // Initial render
       render(<Outer />, container);
@@ -1023,7 +1106,9 @@ describe('Lifecycle methods', () => {
         }
 
         public componentDidMount() {
-          doRender = () => this.setState({ i: this.state.i + 1 });
+          doRender = () => {
+            this.setState({ i: this.state.i + 1 });
+          };
         }
 
         public render(props, { i }) {
@@ -1053,26 +1138,40 @@ describe('Lifecycle methods', () => {
       }
 
       const orderOfCalls: string[] = [];
-      const cwrpSpy = spyOn(Inner.prototype, 'componentWillReceiveProps').and.callFake(function () {
+      const cwrpSpy = spyOn(
+        Inner.prototype,
+        'componentWillReceiveProps',
+      ).and.callFake(function () {
         orderOfCalls.push('componentWillReceiveProps');
       });
-      const cduSpy = spyOn(Inner.prototype, 'componentDidUpdate').and.callFake(function () {
-        orderOfCalls.push('componentDidUpdate');
-      });
-      const cwuSpy = spyOn(Inner.prototype, 'componentWillUpdate').and.callFake(function () {
-        orderOfCalls.push('componentWillUpdate');
-      });
+      const cduSpy = spyOn(Inner.prototype, 'componentDidUpdate').and.callFake(
+        function () {
+          orderOfCalls.push('componentDidUpdate');
+        },
+      );
+      const cwuSpy = spyOn(Inner.prototype, 'componentWillUpdate').and.callFake(
+        function () {
+          orderOfCalls.push('componentWillUpdate');
+        },
+      );
       const originalDidMount = Outer.prototype.componentDidMount;
-      const cdmSpy = spyOn(Outer.prototype, 'componentDidMount').and.callFake(function () {
-        orderOfCalls.push('componentDidMount');
-        originalDidMount.call(this);
-      });
+      const cdmSpy = spyOn(Outer.prototype, 'componentDidMount').and.callFake(
+        function () {
+          orderOfCalls.push('componentDidMount');
+          originalDidMount.call(this);
+        },
+      );
 
       render(<Outer />, container);
       doRender();
       rerender();
 
-      expect(orderOfCalls).toEqual(['componentDidMount', 'componentWillReceiveProps', 'componentWillUpdate', 'componentDidUpdate']);
+      expect(orderOfCalls).toEqual([
+        'componentDidMount',
+        'componentWillReceiveProps',
+        'componentWillUpdate',
+        'componentDidUpdate',
+      ]);
 
       expect(cdmSpy.calls.count()).toBe(1);
     });
@@ -1100,19 +1199,20 @@ describe('Lifecycle methods', () => {
         constructor(props) {
           super(props);
           this.state = {
-            value: 0
+            value: 0,
           };
-          updateState = () =>
+          updateState = () => {
             this.setState({
-              value: this.state.value + 1
+              value: this.state.value + 1,
             });
+          };
         }
 
         public static getDerivedStateFromProps(_props, state) {
           // NOTE: Don't do this in real production code!
           // https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
           return {
-            value: state.value + 1
+            value: state.value + 1,
           };
         }
 
@@ -1151,16 +1251,16 @@ describe('Lifecycle methods', () => {
       render(<Foo foo="bar" />, container);
       expect(container.firstChild.textContent).toEqual('2');
       expect(prevPropsArg).toEqual({
-        foo: 'foo'
+        foo: 'foo',
       });
       expect(prevStateArg).toEqual({
-        value: 1
+        value: 1,
       });
       expect(curProps).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(curState).toEqual({
-        value: 2
+        value: 2,
       });
 
       // New state
@@ -1169,16 +1269,16 @@ describe('Lifecycle methods', () => {
       rerender();
       expect(container.firstChild.textContent).toEqual('4');
       expect(prevPropsArg).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(prevStateArg).toEqual({
-        value: 2
+        value: 2,
       });
       expect(curProps).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(curState).toEqual({
-        value: 4
+        value: 4,
       });
     });
 
@@ -1203,7 +1303,7 @@ describe('Lifecycle methods', () => {
         public changeReceiverProps() {
           const value = (this.state.value + 1) % 2;
           this.setState({
-            value
+            value,
           });
         }
 
@@ -1255,7 +1355,7 @@ describe('Lifecycle methods', () => {
         public updateState() {
           const value = (this.state.value + 1) % 2;
           this.setState({
-            value
+            value,
           });
         }
 
@@ -1297,7 +1397,7 @@ describe('Lifecycle methods', () => {
         public updateState() {
           const value = (this.state.value + 1) % 2;
           this.setState({
-            value
+            value,
           });
         }
 
@@ -1340,7 +1440,7 @@ describe('Lifecycle methods', () => {
         public changeReceiverProps() {
           const value = (this.state.value + 1) % 2;
           this.setState({
-            value
+            value,
           });
         }
 
@@ -1376,11 +1476,17 @@ describe('Lifecycle methods', () => {
   describe('#constructor and component(Did|Will)(Mount|Unmount)', () => {
     let setState;
 
-    class Outer extends Component {
+    interface OuterState {
+      show: boolean;
+    }
+
+    class Outer extends Component<any, OuterState> {
       constructor(p, c) {
         super(p, c);
         this.state = { show: true };
-        setState = (s) => this.setState(s);
+        setState = (s) => {
+          this.setState(s);
+        };
       }
 
       public render(props, { show }) {
@@ -1524,11 +1630,17 @@ describe('Lifecycle methods', () => {
     describe('when shouldComponentUpdate() returns false', () => {
       let outerSetState;
 
-      class Outer1 extends Component {
+      interface Outer1State {
+        show: boolean;
+      }
+
+      class Outer1 extends Component<any, Outer1State> {
         constructor() {
           super();
           this.state = { show: true };
-          outerSetState = (s) => this.setState(s);
+          outerSetState = (s) => {
+            this.setState(s);
+          };
         }
 
         public render(props, { show }) {
@@ -1604,15 +1716,21 @@ describe('Lifecycle methods', () => {
   });
 
   describe('#shouldComponentUpdate', () => {
+    interface ShouldState {
+      show: boolean;
+    }
+
     let setState;
     let renderSpy: jasmine.Spy;
     let shouldUpdateSpy: jasmine.Spy;
 
-    class Should extends Component {
+    class Should extends Component<unknown, ShouldState> {
       constructor() {
         super();
         this.state = { show: true };
-        setState = (s) => this.setState(s);
+        setState = (s) => {
+          this.setState(s);
+        };
       }
 
       public render(_props, { show }) {
@@ -1664,19 +1782,20 @@ describe('Lifecycle methods', () => {
         constructor(props) {
           super(props);
           this.state = {
-            value: 0
+            value: 0,
           };
-          updateState = () =>
+          updateState = () => {
             this.setState({
-              value: this.state.value + 1
+              value: this.state.value + 1,
             });
+          };
         }
 
         public static getDerivedStateFromProps(_props, state) {
           // NOTE: Don't do this in real production code!
           // https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
           return {
-            value: state.value + 1
+            value: state.value + 1,
           };
         }
 
@@ -1715,16 +1834,16 @@ describe('Lifecycle methods', () => {
       render(<Foo foo="bar" />, container);
       expect(container.firstChild.textContent).toEqual('2');
       expect(curProps).toEqual({
-        foo: 'foo'
+        foo: 'foo',
       });
       expect(curState).toEqual({
-        value: 1
+        value: 1,
       });
       expect(nextPropsArg).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(nextStateArg).toEqual({
-        value: 2
+        value: 2,
       });
 
       // New state
@@ -1732,16 +1851,16 @@ describe('Lifecycle methods', () => {
       updateState();
       expect(container.firstChild.textContent).toEqual('4');
       expect(curProps).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(curState).toEqual({
-        value: 2
+        value: 2,
       });
       expect(nextPropsArg).toEqual({
-        foo: 'bar'
+        foo: 'bar',
       });
       expect(nextStateArg).toEqual({
-        value: 4
+        value: 4,
       });
     });
   });
@@ -1781,7 +1900,11 @@ describe('Lifecycle methods', () => {
 
   describe('Lifecycle DOM Timing', () => {
     it('should render in a single microtask', () => {
-      class Counter extends Component {
+      interface CounterState {
+        count: number;
+      }
+
+      class Counter extends Component<unknown, CounterState> {
         constructor() {
           super();
           this.state = { count: 0 };
@@ -1804,7 +1927,11 @@ describe('Lifecycle methods', () => {
     it('should be invoked when dom does (DidMount, WillUnmount) or does not (WillMount, DidUnmount) exist', () => {
       let setState;
 
-      class Outer extends Component {
+      interface Outer1State {
+        show: boolean;
+      }
+
+      class Outer extends Component<unknown, Outer1State> {
         constructor() {
           super();
           this.state = { show: true };
@@ -1859,15 +1986,21 @@ describe('Lifecycle methods', () => {
       const proto = Inner.prototype;
       const orderOfCalls: string[] = [];
 
-      const willMountSpy = spyOn(proto, 'componentWillMount').and.callFake(function () {
-        orderOfCalls.push('willMount');
-      });
-      const didMountSpy = spyOn(proto, 'componentDidMount').and.callFake(function () {
-        orderOfCalls.push('didMount');
-      });
-      const unmountSpy = spyOn(proto, 'componentWillUnmount').and.callFake(function () {
-        orderOfCalls.push('willUnmount');
-      });
+      const willMountSpy = spyOn(proto, 'componentWillMount').and.callFake(
+        function () {
+          orderOfCalls.push('willMount');
+        },
+      );
+      const didMountSpy = spyOn(proto, 'componentDidMount').and.callFake(
+        function () {
+          orderOfCalls.push('didMount');
+        },
+      );
+      const unmountSpy = spyOn(proto, 'componentWillUnmount').and.callFake(
+        function () {
+          orderOfCalls.push('willUnmount');
+        },
+      );
 
       const reset = () => {
         willMountSpy.calls.reset();
@@ -1896,7 +2029,13 @@ describe('Lifecycle methods', () => {
       expect(willMountSpy.calls.count()).toBe(1);
       expect(didMountSpy.calls.count()).toBe(1);
 
-      expect(orderOfCalls).toEqual(['willMount', 'didMount', 'willUnmount', 'willMount', 'didMount']);
+      expect(orderOfCalls).toEqual([
+        'willMount',
+        'didMount',
+        'willUnmount',
+        'willMount',
+        'didMount',
+      ]);
     });
   });
 });

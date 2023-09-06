@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, InfernoNode, render } from 'inferno';
 import { MemoryRouter, Route, StaticRouter, withRouter } from 'inferno-router';
 
 describe('withRouter', () => {
@@ -26,7 +26,7 @@ describe('withRouter', () => {
       <MemoryRouter initialEntries={['/bubblegum']}>
         <Route path="/bubblegum" render={() => <PropsChecker />} />
       </MemoryRouter>,
-      node
+      node,
     );
   });
 
@@ -47,7 +47,7 @@ describe('withRouter', () => {
           }}
         />
       </MemoryRouter>,
-      node
+      node,
     );
   });
 
@@ -65,20 +65,21 @@ describe('withRouter', () => {
         <StaticRouter context={context}>
           <Route component={PropsChecker} />
         </StaticRouter>,
-        node
+        node,
       );
     });
   });
 
   it('exposes the wrapped component as WrappedComponent', () => {
-    const TestComponent = () => <div />;
+    const TestComponent = (): InfernoNode => <div />;
     const decorated = withRouter(TestComponent);
+    // @ts-expect-error test assertion
     expect(decorated.WrappedComponent).toBe(TestComponent);
   });
 
   it('exposes the instance of the wrapped component via wrappedComponentRef', () => {
     class WrappedComponent extends Component {
-      public render() {
+      public render(): InfernoNode {
         return null;
       }
     }
@@ -87,9 +88,14 @@ describe('withRouter', () => {
     let ref;
     render(
       <MemoryRouter initialEntries={['/bubblegum']}>
-        <Route path="/bubblegum" render={() => <TestComponent wrappedComponentRef={(r) => (ref = r)} />} />
+        <Route
+          path="/bubblegum"
+          render={() => (
+            <TestComponent wrappedComponentRef={(r) => (ref = r)} />
+          )}
+        />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(ref instanceof Component).toBe(true);
@@ -99,11 +105,11 @@ describe('withRouter', () => {
     class TestComponent extends Component {
       public static hello: string = 'world';
 
-      public static foo() {
+      public static foo(): string {
         return 'bar';
       }
 
-      public render() {
+      public render(): InfernoNode {
         return null;
       }
     }

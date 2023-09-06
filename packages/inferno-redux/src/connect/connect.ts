@@ -9,7 +9,7 @@ import { defaultMapStateToPropsFactories } from './mapStateToProps';
 import { defaultMergePropsFactories } from './mergeProps';
 import { defaultSelectorFactory } from './selectorFactory';
 
-const match = (arg, factories, name) => {
+const match = (arg, factories, name): any => {
   for (let i = factories.length - 1; i >= 0; i--) {
     const result = factories[i](arg);
     if (result) {
@@ -26,7 +26,7 @@ const match = (arg, factories, name) => {
   };
 };
 
-const strictEqual = (a, b) => a === b;
+const strictEqual = (a, b): boolean => a === b;
 
 // createConnect with default args builds the 'official' connect behavior. Calling it with
 // different options opens up some testing and extensibility scenarios

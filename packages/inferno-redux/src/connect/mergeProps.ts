@@ -1,16 +1,11 @@
 import { verifyPlainObject } from '../utils/verifyPlainObject';
 
-export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => {
-  const merged = { ...ownProps, ...stateProps };
-
-  if (dispatchProps) {
-    for (const key in dispatchProps) {
-      merged[key] = dispatchProps[key];
-    }
-  }
-
-  return merged;
-};
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({
+  ...ownProps,
+  ...stateProps,
+  ...dispatchProps,
+});
 
 export const wrapMergePropsFunc = (mergeProps) => {
   return (_dispatch, { displayName, pure, areMergedPropsEqual }) => {
@@ -38,10 +33,10 @@ export const wrapMergePropsFunc = (mergeProps) => {
   };
 };
 
-export const whenMergePropsIsFunction = (mergeProps) =>
+export const whenMergePropsIsFunction = (mergeProps): unknown =>
   typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
 
-export const whenMergePropsIsOmitted = (mergeProps) =>
+export const whenMergePropsIsOmitted = (mergeProps): unknown =>
   !mergeProps ? () => defaultMergeProps : undefined;
 
 export const defaultMergePropsFactories = [

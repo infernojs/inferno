@@ -1,6 +1,6 @@
 import { warning } from './warning';
 
-function isPlainObject(value) {
+function isPlainObject(value): boolean {
   if (typeof value !== 'object' || value + '' !== '[object Object]') {
     return false;
   }
@@ -15,8 +15,14 @@ function isPlainObject(value) {
   return Object.getPrototypeOf(value) === proto;
 }
 
-export const verifyPlainObject = (value: any, displayName: string, methodName: string) => {
+export const verifyPlainObject = (
+  value: any,
+  displayName: string,
+  methodName: string,
+): void => {
   if (!isPlainObject(value)) {
-    warning(`${methodName}() in ${displayName} must return a plain object. Instead received ${value}.`);
+    warning(
+      `${methodName}() in ${displayName} must return a plain object. Instead received ${value}.`,
+    );
   }
 };
