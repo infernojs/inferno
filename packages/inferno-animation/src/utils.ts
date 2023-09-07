@@ -1,4 +1,10 @@
-import { isFunction } from 'inferno-shared';
+import { isFunction, warning } from 'inferno-shared';
+
+declare global {
+  // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
+  // allowing breakpoints in animations for debugging.
+  var __INFERNO_ANIMATION_DEBUG__: Boolean;
+}
 
 export interface Dimensions {
   height: number;
@@ -224,23 +230,23 @@ export const transitionEndName: string = (function () {
   }
 })();
 
-// function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
-//   if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
-//     // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
-//     // due to loading delay
-//     rootNode.addEventListener('load', () => {
-//       setTimeout(
-//         () => onTransitionEnd({ target: rootNode, timeout: true }),
-//         maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
-//       );
-//     });
-//   } else {
-//     setTimeout(
-//       () => onTransitionEnd({ target: rootNode, timeout: true }),
-//       maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
-//     );
-//   }
-// }
+function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
+  if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
+    // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
+    // due to loading delay
+    rootNode.addEventListener('load', () => {
+      setTimeout(
+        () => onTransitionEnd({ target: rootNode, timeout: true }),
+        maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
+      );
+    });
+  } else {
+    setTimeout(
+      () => onTransitionEnd({ target: rootNode, timeout: true }),
+      maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
+    );
+  }
+}
 
 /**
  * You need to pass the root element and ALL animated children that have transitions,
@@ -260,7 +266,7 @@ export function registerTransitionListener(
    * Here comes the transition event listener
    */
   const transitionDuration = _getMaxTransitionDuration(nodes);
-  // const maxDuration = transitionDuration.maxDuration;
+  const maxDuration = transitionDuration.maxDuration;
   let nrofTransitionsLeft = transitionDuration.nrofTransitions;
   let done = false;
 
@@ -301,6 +307,17 @@ export function registerTransitionListener(
   };
 
   rootNode.addEventListener(transitionEndName, onTransitionEnd, false);
+
+  // Fallback if transitionend fails
+  // This is disabled during debug, so we can set breakpoints
+  // WARNING: If the callback isn't called, the DOM nodes won't be removed
+  if (process.env.NODE_ENV !== 'production') {
+    if (window.__INFERNO_ANIMATION_DEBUG__) {
+      warning("You are in animation debugging mode and fallback timeouts aren't set. DOM nodes could be left behind.");
+    } else {
+      setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
+    }
+  }
 }
 
 export function incrementMoveCbCount(node): number {

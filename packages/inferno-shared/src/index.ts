@@ -51,10 +51,14 @@ export function warning(message: string): void {
 
 const KNOWN_STATICS = {
   childContextTypes: true,
+  contextType: true,
   contextTypes: true,
   defaultProps: true,
   displayName: true,
   getDefaultProps: true,
+  getDerivedStateFromError: true,
+  getDerivedStateFromProps: true,
+  mixins: true,
   propTypes: true,
   type: true,
   // KNOWN STATICS
@@ -62,8 +66,9 @@ const KNOWN_STATICS = {
   length: true,
   prototype: true,
   caller: true,
+  callee: true,
   arguments: true,
-  arity: true,
+  arity: true
 };
 
 export function hoistStaticProperties(

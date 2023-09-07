@@ -361,7 +361,7 @@ describe('Mobx Observer', () => {
         return <div onClick={this.onClick.bind(this)} id="clickableDiv" />;
       }
     }
-    debugger
+
     render(<Com />, container);
 
     expect(renderCount).toBe(1); //'renderCount === 1');

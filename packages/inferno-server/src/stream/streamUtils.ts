@@ -7,7 +7,7 @@ export function mergePendingState(componentInstance): void {
     if (state === null) {
       componentInstance.state = pendingState;
     } else {
-      componentInstance.state = { ...pendingState, ...state };
+      componentInstance.state = { ...state, ...pendingState };
     }
     componentInstance.$PS = null;
   }

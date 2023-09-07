@@ -12,7 +12,6 @@ export const aliasPlugin = alias({
     { find: 'inferno', replacement: resolve(ROOT, 'packages/inferno/tmpDist/index.js') },
     { find: 'inferno-animation', replacement: resolve(ROOT, 'packages/inferno-animation/tmpDist/index.js') },
     { find: 'inferno-compat', replacement: resolve(ROOT, 'packages/inferno-compat/tmpDist/index.js') },
-    { find: 'inferno-create-class', replacement: resolve(ROOT, 'packages/inferno-create-class/tmpDist/index.js') },
     { find: 'inferno-create-element', replacement: resolve(ROOT, 'packages/inferno-create-element/tmpDist/index.js') },
     { find: 'inferno-hyperscript', replacement: resolve(ROOT, 'packages/inferno-hyperscript/tmpDist/index.js') },
     { find: 'inferno-mobx', replacement: resolve(ROOT, 'packages/inferno-mobx/tmpDist/index.js') },

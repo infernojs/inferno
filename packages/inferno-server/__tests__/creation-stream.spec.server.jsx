@@ -346,7 +346,6 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       class Another extends Component {
         constructor(props, context) {
           super(props, context);
-          debugger
           this.state = {
             foo: 'bar'
           };
