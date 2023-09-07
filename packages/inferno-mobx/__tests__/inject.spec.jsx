@@ -1,7 +1,6 @@
-import { render } from 'inferno';
+import { render, Component } from 'inferno';
 import { inject, observer, Provider } from 'inferno-mobx';
 import { observable } from 'mobx';
-import { Component } from 'inferno/src';
 
 describe('inject based context', () => {
   let container;
@@ -45,7 +44,7 @@ describe('inject based context', () => {
 
   it('props override context', (done) => {
     const C = inject('foo')(
-      createClass({
+      class extends Component {
         render() {
           return (
             <div>
@@ -54,16 +53,16 @@ describe('inject based context', () => {
             </div>
           );
         }
-      })
+      }
     );
     const B = () => <C foo={42} />;
-    const A = createClass({
-      render: () => (
-        <Provider foo="bar">
+    class A extends Component {
+      render() {
+        return <Provider foo="bar">
           <B />
         </Provider>
-      )
-    });
+      }
+    }
     render(<A />, container);
     expect(container.querySelector('div').textContent).toBe('context:42');
     done();
@@ -75,7 +74,7 @@ describe('inject based context', () => {
       'bar'
     )(
       observer(
-        createClass({
+        class extends Component {
           render() {
             return (
               <div>
@@ -85,13 +84,13 @@ describe('inject based context', () => {
               </div>
             );
           }
-        })
+        }
       )
     );
     const B = () => <C />;
-    const A = createClass({
-      render: () => (
-        <Provider foo="bar" bar={1337}>
+    class A extends Component {
+      render() {
+        return <Provider foo="bar" bar={1337}>
           <div>
             <span>
               <B />
@@ -103,8 +102,9 @@ describe('inject based context', () => {
             </section>
           </div>
         </Provider>
-      )
-    });
+      }
+    }
+
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('context:bar1337');
     expect(container.querySelector('section').textContent).toBe('context:421337');
@@ -114,7 +114,7 @@ describe('inject based context', () => {
   it('store should be available', (done) => {
     const C = inject('foo')(
       observer(
-        createClass({
+        class extends Component {
           render() {
             return (
               <div>
@@ -123,17 +123,17 @@ describe('inject based context', () => {
               </div>
             );
           }
-        })
+        }
       )
     );
     const B = () => <C />;
-    const A = createClass({
-      render: () => (
-        <Provider baz={42}>
+    class A extends Component {
+      render() {
+        return <Provider baz={42}>
           <B />
         </Provider>
-      )
-    });
+      }
+    }
 
     try {
       render(<A />, container);
@@ -146,7 +146,7 @@ describe('inject based context', () => {
   it('store is not required if prop is available', (done) => {
     const C = inject('foo')(
       observer(
-        createClass({
+        class extends Component {
           render() {
             return (
               <div>
@@ -155,7 +155,7 @@ describe('inject based context', () => {
               </div>
             );
           }
-        })
+        }
       )
     );
     const B = () => <C foo="bar" />;
@@ -167,12 +167,12 @@ describe('inject based context', () => {
   it('inject merges (and overrides) props', (done) => {
     const C = inject(() => ({ a: 1 }))(
       observer(
-        createClass({
+        class extends Component {
           render() {
             expect(this.props).toEqual({ a: 1, b: 2 });
             return null;
           }
-        })
+        }
       )
     );
     const B = () => <C a={2} b={2} />;
@@ -187,7 +187,7 @@ describe('inject based context', () => {
     const a = observable.box(3);
     const C = observer(
       ['foo'],
-      createClass({
+      class extends Component {
         render() {
           return (
             <div>
@@ -196,25 +196,27 @@ describe('inject based context', () => {
             </div>
           );
         }
-      })
+      }
     );
     const B = observer(
-      createClass({
-        render: () => <C />
-      })
+      class extends Component {
+        render() {
+          return <C />
+        }
+      }
     );
     const A = observer(
-      createClass({
-        render: () => (
-          <section>
+      class extends Component {
+        render() {
+          return <section>
             <span>{a.get()}</span>
             <Provider foo={a.get()}>
               <B />
             </Provider>
           </section>
-        )
-      })
-    );
+        }
+      }
+    )
     render(<A />, container);
 
     expect(container.querySelector('span').textContent).toBe('3');
@@ -242,7 +244,7 @@ describe('inject based context', () => {
       };
     })(
       observer(
-        createClass({
+        class extends Component {
           render() {
             return (
               <div>
@@ -252,12 +254,15 @@ describe('inject based context', () => {
               </div>
             );
           }
-        })
+        }
       )
     );
-    const B = createClass({
-      render: () => <C baz={42} />
-    });
+    class B extends Component {
+      render() {
+        return <C baz={42} />
+      }
+    }
+
     const A = () => (
       <Provider foo="bar">
         <B />
@@ -269,12 +274,13 @@ describe('inject based context', () => {
   });
 
   it('support static hoisting, wrappedComponent and wrappedInstance', (done) => {
-    const B = createClass({
+    class B extends Component {
       render() {
         this.testField = 1;
         return <div>{this.testField}</div>;
       }
-    });
+    }
+
     B.bla = 17;
     B.bla2 = {};
     const C = inject('booh')(B);
@@ -296,13 +302,13 @@ describe('inject based context', () => {
     console.error = (m) => msg.push(m);
 
     const C = inject('foo')(
-      createClass({
-        displayName: 'C',
+      class extends Component {
+        static displayName = 'C'
         render() {
           expect(this.props.y).toBe(3);
           return null;
         }
-      })
+      }
     );
     C.defaultProps = {
       y: 3

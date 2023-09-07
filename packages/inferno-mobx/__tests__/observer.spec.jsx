@@ -20,7 +20,7 @@ const TodoItem = observer(function TodoItem(props) {
 let todoListRenderings = 0;
 let todoListWillReactCount = 0;
 const TodoList = observer(
-  class {
+  class extends Component {
     componentWillReact() {
       todoListWillReactCount++;
     }
@@ -150,16 +150,17 @@ describe('Mobx Observer', () => {
 
   it('componentWillMount from mixin is run first', (done) => {
     let origRenderMethod;
-    const clss = createClass({
-      componentWillMount: function () {
+    class clss extends Component {
+      componentWillMount() {
         // ugly check, but proofs that observer.willmount has run
         // We cannot use function.prototype.name here like in react-redux tests because it is not supported in Edge/IE
         expect(this.render).not.toBe(origRenderMethod);
-      },
+      }
       render() {
         return null;
       }
-    });
+    }
+
     origRenderMethod = clss.prototype.render;
 
     const Comp = observer(clss);
@@ -258,7 +259,7 @@ describe('Mobx Observer', () => {
 
     observer(
       inject('foo')(
-        createClass({
+        class extends Component {
           render() {
             return (
               <div>
@@ -267,7 +268,7 @@ describe('Mobx Observer', () => {
               </div>
             );
           }
-        })
+        }
       )
     );
 
@@ -283,18 +284,22 @@ describe('Mobx Observer', () => {
 
     inject('foo')(
       observer(
-        createClass({
-          render: () => null
-        })
+        class extends Component {
+          render() {
+            return null
+          }
+        }
       )
     );
 
     // N.B, the injected component will be observer since mobx-react 4.0!
     inject(() => {})(
       observer(
-        createClass({
-          render: () => null
-        })
+        class extends Component {
+          render() {
+            return null
+          }
+        }
       )
     );
 
@@ -305,14 +310,14 @@ describe('Mobx Observer', () => {
 
   it('124 - react to changes in this.props via computed', function () {
     const Comp = observer(
-      createClass({
+      class extends Component {
         componentWillMount() {
           extendObservable(this, {
             get computedProp() {
               return this.props.x;
             }
           });
-        },
+        }
         render() {
           return (
             <span>
@@ -321,13 +326,14 @@ describe('Mobx Observer', () => {
             </span>
           );
         }
-      })
+      }
     );
 
-    const Parent = createClass({
-      getInitialState() {
-        return { v: 1 };
-      },
+    class Parent extends Component {
+      constructor(props) {
+        super(props);
+        this.state = { v: 1 }
+      }
       render() {
         return (
           <div onClick={() => this.setState({ v: 2 })}>
@@ -335,7 +341,7 @@ describe('Mobx Observer', () => {
           </div>
         );
       }
-    });
+    }
 
     render(<Parent />, container);
 
@@ -346,17 +352,17 @@ describe('Mobx Observer', () => {
 
   it('should render component even if setState called with exactly the same props', function (done) {
     let renderCount = 0;
-    class Component extends Component {
+    class Com extends Component {
       onClick() {
         this.setState({});
       }
       render() {
         renderCount++;
-        return <div onClick={this.onClick} id="clickableDiv" />;
+        return <div onClick={this.onClick.bind(this)} id="clickableDiv" />;
       }
     }
-
-    render(<Component />, container);
+    debugger
+    render(<Com />, container);
 
     expect(renderCount).toBe(1); //'renderCount === 1');
     container.querySelector('#clickableDiv').click();
@@ -365,99 +371,6 @@ describe('Mobx Observer', () => {
     expect(renderCount).toBe(3); //'renderCount === 3');
     done();
   });
-
-  // it('it rerenders correctly if some props are non-observables - 1', done => {
-  //   let renderCount = 0;
-  //   let odata = observable({ x: 1 })
-  //   let data = { y : 1 }
-  //
-  //   @observer class Com extends Component {
-  //     @computed get computed () {
-  //       // n.b: data.y would not rerender! shallowly new equal props are not stored
-  //       return this.props.odata.x;
-  //     }
-  //     render() {
-  //       renderCount++;
-  //       return <span onClick={stuff} >{this.props.odata.x}-{this.props.data.y}-{this.computed}</span>
-  //     }
-  //   }
-  //
-  //   const Parent = observer(createClass({
-  //     render() {
-  //       // this.props.odata.x;
-  //       return <Com data={this.props.data} odata={this.props.odata} />
-  //     }
-  //   }))
-  //
-  //   function stuff() {
-  //     data.y++;
-  //     odata.x++;
-  //   }
-  //
-  //   render(<Parent odata={odata} data={data} />, container);
-  //
-  //   expect(renderCount).toBe(1) // 'renderCount === 1');
-  //   expect(container.querySelector("span").textContent).toBe("1-1-1");
-  //
-  //   container.querySelector("span").click();
-  //   setTimeout(() => {
-  //     expect(renderCount).toBe(2) // 'renderCount === 2');
-  //     expect(container.querySelector("span").textContent).toBe("2-2-2");
-  //
-  //     container.querySelector("span").click();
-  //     setTimeout(() => {
-  //       expect(renderCount).toBe(3) // 'renderCount === 3');
-  //       expect(container.querySelector("span").textContent).toBe("3-3-3");
-  //
-  //       done();
-  //     }, 10);
-  //   }, 20);
-  // });
-
-  // it('it rerenders correctly if some props are non-observables - 2', done => {
-  //   let renderCount = 0;
-  //   let odata = observable({ x: 1 })
-  //
-  //   @observer class Com extends Component {
-  //     @computed get computed () {
-  //       return this.props.data.y; // should recompute, since props.data is changed
-  //     }
-  //
-  //     render() {
-  //       renderCount++;
-  //       return <span onClick={stuff}>{this.props.data.y}-{this.computed}</span>
-  //     }
-  //   }
-  //
-  //   const Parent = observer(createClass({
-  //     render() {
-  //       let data = { y : this.props.odata.x }
-  //       return <Com data={data} odata={this.props.odata} />
-  //     }
-  //   }))
-  //
-  //   function stuff() {
-  //     odata.x++;
-  //   }
-  //
-  //   render(<Parent odata={odata} />, container);
-  //   expect(renderCount).toBe(1) // 'renderCount === 1');
-  //   expect(container.querySelector("span").textContent).toBe("1-1");
-  //
-  //   container.querySelector("span").click();
-  //   setTimeout(() => {
-  //     expect(renderCount).toBe(2) // 'renderCount === 2');
-  //     expect(container.querySelector("span").textContent).toBe("2-2");
-  //
-  //     container.querySelector("span").click();
-  //     setTimeout(() => {
-  //       expect(renderCount).toBe(3) // 'renderCount === 3');
-  //       expect(container.querySelector("span").textContent).toBe("3-3");
-  //
-  //       done();
-  //     }, 10);
-  //   }, 20);
-  // })
 
   it('Observer regions should react', (done) => {
     const data = observable.box('hi');
@@ -546,157 +459,4 @@ describe('Mobx Observer', () => {
     expect(reported).toEqual(exception);
     off();
   });
-
-  // TODO: Reaction Scheduler
-  // it('parent / childs render in the right order', done => {
-  //   // See: https://jsfiddle.net/gkaemmer/q1kv7hbL/13/
-  //   let events = []
-  //
-  //   let ostore = observable({
-  //     user: observable({ name: 'tester' }),
-  //     logout() {
-  //       this.user = null;
-  //     }
-  //   })
-  //
-  //   // var OUser = observable(class User {
-  //   //   name = "Tester"
-  //   // });
-  //   //
-  //   // // class User {
-  //   // //   @observable name = "Tester";
-  //   // // }
-  //   //
-  //   // var OStore = observable(class Store {
-  //   //   user = new OUser();
-  //   //   @action logout() {
-  //   //     this.user = null;
-  //   //   }
-  //   // });
-  //
-  //   function tryLogout() {
-  //     console.log("Logging out...");
-  //     // try {
-  //       // ReactDOM.unstable_batchedUpdates(() => {
-  //       ostore.logout();
-  //       // });
-  //     // } catch(e) {
-  //     //   throw Error('failure');
-  //     // }
-  //   }
-  //   //
-  //   // const store = OStore();
-  //   expect(ostore.user.name).toBe('tester');
-  //
-  //   const Parent = observer(() => {
-  //     events.push("parent")
-  //     if (!ostore.user)
-  //       return <span>Not logged in.</span>;
-  //     return <div>
-  //       <Child />
-  //       <button onClick={tryLogout}>Logout</button>
-  //     </div>;
-  //   });
-  //
-  //   const Child = observer(() => {
-  //     events.push("child")
-  //     return <span>Logged in as: {ostore.user.name}</span>;
-  //   });
-  //
-  //   render(<Parent />, container)
-  //   expect(container.textContent).toBe('Logged in as: testerLogout');
-  //   tryLogout();
-  //   expect(container.textContent).toBe('wqd');
-  //   expect(events).toEqual(["parent", "child", "parent"])
-  //   done()
-  //
-  // })
-  //
-  //
-  // it('206 - @observer should produce usefull errors if it throws', done => {
-  //   const data = observable({x : 1})
-  //   let renderCount = 0;
-  //
-  //   const emmitedErrors = [];
-  //   const disposeErrorsHandler = onError(error => emmitedErrors.push(error));
-  //
-  //   @observer
-  //   class Child extends Component {
-  //     render() {
-  //       renderCount++;
-  //       if (data.x === 42)
-  //         throw new Error("Oops!")
-  //       return <span>{data.x}</span>;
-  //     }
-  //   }
-  //
-  //   render(<Child />, container);
-  //   expect(renderCount).toBe(1);
-  //
-  //   try {
-  //     data.x = 42;
-  //     throw Error('should fail before this line');
-  //   } catch (e) {
-  //     const lines = e.stack.split("\n");
-  //     expect(lines[0]).toBe("Error: Oops!");
-  //     expect(lines[1].indexOf("at Child.render")).toBe(4);
-  //     expect(renderCount).toBe(2);
-  //   }
-  //
-  //   data.x = 3; // component recovers!
-  //   expect(renderCount).toBe(3);
-  //
-  //   expect(emmitedErrors).toEqual([new Error("Oops!")]);
-  //   disposeErrorsHandler();
-  //   done();
-  // });
-  //
-  // it('195 - async componentWillMount does not work', done => {
-  //   const renderedValues = []
-  //
-  //   @observer
-  //   class WillMount extends Component {
-  //     @observable counter = 0
-  //
-  //     @action inc = () => this.counter++
-  //
-  //     componentWillMount() {
-  //       setTimeout(() => this.inc(), 300)
-  //     }
-  //
-  //     render() {
-  //       renderedValues.push(this.counter)
-  //       return <p>{this.counter}<button onClick={this.inc}>+</button></p>
-  //     }
-  //   }
-  //
-  //   render(<WillMount />, container);
-  //
-  //   setTimeout(() => {
-  //     expect(renderedValues).toEqual([0, 1])
-  //     done()
-  //   }, 500)
-  // })
-  //
-  //
-  // test.skip('195 - should throw if trying to overwrite lifecycle methods', done => {
-  //   // Test disabled, see #231...
-  //
-  //   @observer
-  //   class WillMount extends Component {
-  //     componentWillMount = () => {
-  //     }
-  //
-  //     render() {
-  //       return null;
-  //     }
-  //   }
-  //
-  //   try {
-  //     render(<WillMount />, container);
-  //   } catch (e) {
-  //     expect(e.message).toBe("Cannot assign to read only property 'componentWillMount'");
-  //     done();
-  //   }
-  // });
 });

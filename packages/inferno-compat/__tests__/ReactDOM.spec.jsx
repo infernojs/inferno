@@ -33,35 +33,6 @@ describe('ReactDOM', function () {
     document.body.removeChild(container);
   });
 
-  // TODO: uncomment this test once we can run in phantom, which
-  // supports real submit events.
-  /*
-  it('should bubble onSubmit', function() {
-    var count = 0;
-    var form;
-    var Parent = React.createClass({
-      handleSubmit: function() {
-        count++;
-        return false;
-      },
-      render: function() {
-        return <Child />;
-      }
-    });
-    var Child = React.createClass({
-      render: function() {
-        return <form><input type="submit" value="Submit" /></form>;
-      },
-      componentDidMount: function() {
-        form = ReactDOM.findDOMNode(this);
-      }
-    });
-    var instance = ReactTestUtils.renderIntoDocument(<Parent />);
-    form.submit();
-    expect(count).toEqual(1);
-  });
-  */
-
   it('allows a DOM element to be used with a string', function () {
     var element = React.createElement('div', { className: 'foo' });
     var instance = renderIntoDocument(element);

@@ -263,7 +263,7 @@ export class RenderQueueStream extends Readable {
       }
       renderedString += `>`;
 
-      if (String(type).match(/[\s\n/='"0<>]/)) {
+      if (String(type).match(/[\s\n\/='"\0<>]/)) {
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw renderedString;
       }

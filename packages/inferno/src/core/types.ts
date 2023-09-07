@@ -214,8 +214,6 @@ export declare namespace Inferno {
     ref?: Ref<T> | undefined;
   }
 
-  type ClassicElement<P> = CElement<P, ClassicComponent<P, ComponentState>>;
-
   // string fallback for custom web-components
   interface DOMElement<P extends HTMLAttributes<T> | SVGAttributes<T>, T extends Element> extends InfernoElement<P> {
     type: string;
@@ -245,7 +243,6 @@ export declare namespace Inferno {
   type ComponentFactory<P, T extends IComponent<P, ComponentState>> = (props?: ClassAttributes<T> & P, ...children: InfernoNode[]) => CElement<P, T>;
 
   type CFactory<P, T extends IComponent<P, ComponentState>> = ComponentFactory<P, T>;
-  type ClassicFactory<P> = CFactory<P, ClassicComponent<P, ComponentState>>;
 
   type DOMFactory<P extends DOMAttributes<T>, T extends Element> = (props?: (ClassAttributes<T> & P) | null, ...children: InfernoNode[]) => DOMElement<P, T>;
 
@@ -268,12 +265,6 @@ export declare namespace Inferno {
   //
   // Component API
   // ----------------------------------------------------------------------
-
-  interface ClassicComponent<P = {}, S = {}> extends IComponent<P, S> {
-    replaceState(nextState: S, callback?: () => any): void;
-    isMounted(): boolean;
-    getInitialState?(): S;
-  }
 
   interface ChildContextProvider<CC> {
     getChildContext(): CC;

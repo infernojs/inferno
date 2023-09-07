@@ -130,6 +130,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
 
     const to = {
       hash: '#the-hash',
+      key: '1',
       pathname: '/the/path',
       search: 'the=query',
       state: { test: 'ok' }
@@ -166,7 +167,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
 
     expect(clickHandler).toHaveBeenCalledTimes(1);
     expect(memoryHistoryFoo.push).toHaveBeenCalledTimes(1);
-    const { hash, pathname, search, state } = to;
-    expect(memoryHistoryFoo.push).toHaveBeenCalledWith({ hash, pathname, search }, state);
+    const { hash, key, pathname, search, state } = to;
+    expect(memoryHistoryFoo.push).toHaveBeenCalledWith({ hash, key, pathname, search }, state);
   });
 });

@@ -33,11 +33,12 @@ describe('ReactMount', function () {
   }
 
   it('throws when given a factory', function () {
-    var Component = React.createClass({
-      render: function () {
+    class Component extends React.Component {
+      render() {
         return <div />;
       }
-    });
+    }
+
     expect(function () {
       React.render(Component, document.createElement('div'));
     }).toThrow();
@@ -61,13 +62,17 @@ describe('ReactMount', function () {
     var mockMount = mocks.getMockFunction();
     var mockUnmount = mocks.getMockFunction();
 
-    var Component = React.createClass({
-      componentDidMount: mockMount,
-      componentWillUnmount: mockUnmount,
-      render: function () {
+    class Component extends React.Component {
+      componentDidMount() {
+        mockMount()
+      }
+      componentWillUnmount() {
+        mockUnmount()
+      }
+      render() {
         return <span>{this.props.text}</span>;
       }
-    });
+    }
 
     expect(mockMount.calls.count()).toBe(0);
     expect(mockUnmount.calls.count()).toBe(0);
@@ -166,56 +171,9 @@ describe('ReactMount', function () {
     });
   }
 
-  // it('warns when using two copies of React before throwing', function() {
-  //   require('mock-modules').dumpCache();
-  //   var RD1 = require('ReactDOM');
-  //   require('mock-modules').dumpCache();
-  //   var RD2 = require('ReactDOM');
-
-  //   var X = React.createClass({
-  //     render: function() {
-  //       return <div />;
-  //     },
-  //   });
-
-  //   var container = document.createElement('div');
-  //   spyOn(console, 'error');
-  //   var component = RD1.render(<X />, container);
-  //   expect(console.error.calls.count()).toBe(0);
-
-  //   // This fails but logs a warning first
-  //   expect(function() {
-  //     RD2.findDOMNode(component);
-  //   }).toThrow();
-  //   expect(console.error.calls.count()).toBe(1);
-  //   expect(console.error.argsForCall[0][0]).toContain('two copies of React');
-  // });
-
-  // it('should warn if render removes React-rendered children', function() {
-  //   var container = document.createElement('container');
-  //   var Component = React.createClass({
-  //     render: function() {
-  //       return <div><div /></div>;
-  //     },
-  //   });
-  //   ReactDOM.render(<Component />, container);
-
-  //   // Test that blasting away children throws a warning
-  //   spyOn(console, 'error');
-  //   var rootNode = container.firstChild;
-  //   ReactDOM.render(<span />, rootNode);
-  //   expect(console.error.calls.count()).toBe(1);
-  //   expect(console.error.mostRecentCall.calls.argsFor(0)).toBe(
-  //     'Warning: render(...): Replacing React-rendered children with a new ' +
-  //     'root component. If you intended to update the children of this node, ' +
-  //     'you should instead have the existing children update their state and ' +
-  //     'render the new components instead of calling ReactDOM.render.'
-  //   );
-  // });
-
   it('should not crash in node cache when unmounting', function () {
-    var Component = React.createClass({
-      render: function () {
+    class Component extends React.Component {
+      render() {
         // Add refs to some nodes so that they get traversed and cached
         return (
           <div>
@@ -224,7 +182,7 @@ describe('ReactMount', function () {
           </div>
         );
       }
-    });
+    }
 
     var container = document.createElement('container');
 
@@ -259,13 +217,13 @@ describe('ReactMount', function () {
   });
 
   it('should not crash in node cache when unmounting, case 2', function () {
-    var A = React.createClass({
-      render: function () {
+    class A extends React.Component {
+      render() {
         return <a key={this.props.innerKey}>{this.props.innerKey}</a>;
       }
-    });
-    var Component = React.createClass({
-      render: function () {
+    }
+    class Component extends React.Component {
+      render() {
         return (
           <b>
             <i>{this.props.step === 1 && <q />}</i>
@@ -273,7 +231,7 @@ describe('ReactMount', function () {
           </b>
         );
       }
-    });
+    }
 
     var container = document.createElement('container');
 

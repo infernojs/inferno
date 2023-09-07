@@ -355,13 +355,17 @@ describe('Mobx Observer Patch', () => {
   it('should render component even if setState called with exactly the same props', function (done) {
     let renderCount = 0;
     class ComponentA extends Component {
+      constructor(props, ctx) {
+        super(props, ctx);
+        this.state = {}
+      }
       onClick() {
         this.setState({});
       }
 
       render() {
         renderCount++;
-        return <div onClick={this.onClick} id="clickableDiv" />;
+        return <div onClick={this.onClick.bind(this)} id="clickableDiv" />;
       }
     }
     observerPatch(ComponentA);

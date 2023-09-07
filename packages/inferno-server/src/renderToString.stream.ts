@@ -127,7 +127,7 @@ export class RenderStream extends Readable {
     instance.context = context;
     instance.$BR = true;
 
-    return Promise.resolve(!hasNewAPI && instance.componentWillMount?.()).then(
+    return Promise.resolve(!hasNewAPI && instance.componentWillMount && instance.componentWillMount()).then(
       () => {
         mergePendingState(instance);
 
@@ -248,7 +248,7 @@ export class RenderStream extends Readable {
     renderedString += `>`;
     this.push(renderedString);
 
-    if (String(type).match(/[\s\n/='"0<>]/)) {
+    if (String(type).match(/[\s\n\/='"\0<>]/)) {
       // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw renderedString;
     }

@@ -1,7 +1,6 @@
-import { render } from 'inferno';
+import { render, Component } from 'inferno';
 import { observer, Provider } from 'inferno-mobx';
 import { observable } from 'mobx';
-import { Component } from 'inferno/src';
 
 describe('observer based context', () => {
   let container;
@@ -156,7 +155,7 @@ describe('observer based context', () => {
   it('store is not required if prop is available', (done) => {
     const C = observer(
       ['foo'],
-      createClass({
+      class extends Component {
         render() {
           return (
             <div>
@@ -164,8 +163,8 @@ describe('observer based context', () => {
               {this.props.foo}
             </div>
           );
-        },
-      }),
+        }
+      }
     );
     const B = () => <C foo="bar" />;
     render(<B />, container);
@@ -180,7 +179,7 @@ describe('observer based context', () => {
     const a = observable.box(3);
     const C = observer(
       ['foo'],
-      createClass({
+        class extends Component {
         render() {
           return (
             <div>
@@ -188,25 +187,27 @@ describe('observer based context', () => {
               {this.props.foo}
             </div>
           );
-        },
-      }),
+        }
+      }
     );
     const B = observer(
-      createClass({
-        render: () => <C />,
-      }),
+      class extends Component {
+        render() {
+          return <C />
+        }
+      }
     );
     const A = observer(
-      createClass({
-        render: () => (
-          <section>
+      class extends Component {
+        render() {
+          return <section>
             <span>{a.get()}</span>,
             <Provider foo={a.get()}>
               <B />
             </Provider>
           </section>
-        ),
-      }),
+        }
+      }
     );
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('3');
@@ -228,7 +229,7 @@ describe('observer based context', () => {
     const a = observable.box(3);
     const C = observer(
       ['foo'],
-      createClass({
+      class extends Component {
         render() {
           return (
             <div>
@@ -236,25 +237,27 @@ describe('observer based context', () => {
               {this.props.foo}
             </div>
           );
-        },
-      }),
+        }
+      },
     );
     const B = observer(
-      createClass({
-        render: () => <C />,
-      }),
+      class extends Component {
+        render() {
+          return <C />
+        }
+      }
     );
     const A = observer(
-      createClass({
-        render: () => (
-          <section>
+      class extends Component {
+        render() {
+          return <section>
             <span>{a.get()}</span>,
             <Provider foo={a.get()} suppressChangedStoreWarning>
               <B />
             </Provider>
           </section>
-        ),
-      }),
+        }
+      }
     );
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('3');

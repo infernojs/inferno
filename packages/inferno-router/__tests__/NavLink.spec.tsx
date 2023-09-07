@@ -522,8 +522,8 @@ describe('NavLink', () => {
 
       expect(clickHandler).toHaveBeenCalledTimes(1);
       expect(memoryHistoryFoo.push).toHaveBeenCalledTimes(1);
-      const { hash, pathname, search, state } = to;
-      expect(memoryHistoryFoo.push).toHaveBeenCalledWith({ hash, pathname, search }, state);
+      const { hash, key, pathname, search, state } = to;
+      expect(memoryHistoryFoo.push).toHaveBeenCalledWith({ hash, key, pathname, search }, state);
     });
   });
 });

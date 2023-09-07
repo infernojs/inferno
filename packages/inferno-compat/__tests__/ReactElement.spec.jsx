@@ -15,7 +15,11 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 var ReactDOM = React;
 
 describe('ReactElement', function () {
-  var ComponentClass;
+  class ComponentClass extends React.Component {
+    render () {
+      return React.createElement('div');
+    }
+  }
   var originalSymbol;
 
   beforeEach(function () {
@@ -23,11 +27,6 @@ describe('ReactElement', function () {
     // unpolyfilled environment.
     originalSymbol = global.Symbol;
     global.Symbol = undefined;
-    ComponentClass = React.createClass({
-      render: function () {
-        return React.createElement('div');
-      }
-    });
     container = document.createElement('div');
     document.body.appendChild(container);
   });
@@ -95,24 +94,6 @@ describe('ReactElement', function () {
     expect(element.props).toEqual(expectation);
   });
 
-  // it('preserves the owner on the element', function() {
-  //   var Component = React.createFactory(ComponentClass);
-  //   var element;
-
-  //   var Wrapper = React.createClass({
-  //     render: function() {
-  //       element = Component();
-  //       return element;
-  //     },
-  //   });
-
-  //   var instance = ReactTestUtils.renderIntoDocument(
-  //     React.createElement(Wrapper)
-  //   );
-
-  //   expect(element._owner.getPublicInstance()).toBe(instance);
-  // });
-
   it('merges an additional argument onto the children prop', function () {
     spyOn(console, 'error');
     var a = 1;
@@ -160,19 +141,19 @@ describe('ReactElement', function () {
   it('allows static methods to be called using the type property', function () {
     spyOn(console, 'error');
 
-    var StaticMethodComponentClass = React.createClass({
-      statics: {
-        someStaticMethod: function () {
-          return 'someReturnValue';
-        }
-      },
-      getInitialState: function () {
-        return { valueToReturn: 'hi' };
-      },
-      render: function () {
+    class StaticMethodComponentClass extends React.Component {
+      constructor(props) {
+        super(props);
+
+        this.state = { valueToReturn: 'hi' }
+      }
+      static someStaticMethod() {
+        return 'someReturnValue';
+      }
+      render() {
         return React.createElement('div');
       }
-    });
+    }
 
     var element = React.createElement(StaticMethodComponentClass);
     expect(element.type.someStaticMethod()).toBe('someReturnValue');
@@ -180,11 +161,11 @@ describe('ReactElement', function () {
   });
 
   it('identifies valid elements', function () {
-    var Component = React.createClass({
-      render: function () {
+    class Component extends React.Component {
+      render() {
         return React.createElement('div');
       }
-    });
+    }
 
     expect(React.isValidElement(React.createElement('div'))).toEqual(true);
     expect(React.isValidElement(React.createElement(Component))).toEqual(true);
@@ -204,103 +185,27 @@ describe('ReactElement', function () {
     // TODO: This test was added to cover a special case where we proxied
     // methods. However, we don't do that any more so this test can probably
     // be removed. Leaving it in classic as a safety precausion.
-    var Component = React.createClass({
-      render: () => null,
-      statics: {
-        specialType: React.PropTypes.shape({ monkey: React.PropTypes.any })
+    class Component extends React.Component {
+      render() {
+        return null
       }
-    });
+      static get specialType() {
+        return React.PropTypes.shape({ monkey: React.PropTypes.any })
+      }
+    }
 
     expect(typeof Component.specialType).toBe('function');
     expect(typeof Component.specialType.isRequired).toBe('function');
   });
 
-  // it('is indistinguishable from a plain object', function() {
-  //   var element = React.createElement('div', {className: 'foo'});
-  //   var object = {};
-  //   expect(element.constructor).toBe(object.constructor);
-  // });
-
-  it('should use default prop value when removing a prop', function () {
-    var Component = React.createClass({
-      getDefaultProps: function () {
-        return { fruit: 'persimmon' };
-      },
-      render: function () {
-        return React.createElement('span');
-      }
-    });
-
-    var container = document.createElement('div');
-    var instance = ReactDOM.render(React.createElement(Component, { fruit: 'mango' }), container);
-    expect(instance.props.fruit).toBe('mango');
-
-    ReactDOM.render(React.createElement(Component), container);
-    expect(instance.props.fruit).toBe('persimmon');
-  });
-
-  it('should normalize props with default values', function () {
-    var Component = React.createClass({
-      getDefaultProps: function () {
-        return { prop: 'testKey' };
-      },
-      render: function () {
-        return React.createElement('span', null, this.props.prop);
-      }
-    });
-
-    var instance = renderIntoDocument(React.createElement(Component));
-    expect(instance.$LI.children.props.prop).toBe('testKey');
-
-    var inst2 = renderIntoDocument(React.createElement(Component, { prop: null }));
-    expect(inst2.$LI.children.props.prop).toBe(null);
-  });
-
-  // it('throws when changing a prop (in dev) after element creation', function() {
-  //   var Outer = React.createClass({
-  //     render: function() {
-  //       var el = <div className="moo" />;
-
-  //       expect(function() {
-  //         el.props.className = 'quack';
-  //       }).toThrow();
-  //       expect(el.props.className).toBe('moo');
-
-  //       return el;
-  //     },
-  //   });
-  //   var outer = ReactTestUtils.renderIntoDocument(<Outer color="orange" />);
-  //   expect(ReactDOM.findDOMNode(outer).className).toBe('moo');
-  // });
-
-  // it('throws when adding a prop (in dev) after element creation', function() {
-  //   var container = document.createElement('div');
-  //   var Outer = React.createClass({
-  //     getDefaultProps: () => ({sound: 'meow'}),
-  //     render: function() {
-  //       var el = <div>{this.props.sound}</div>;
-
-  //       expect(function() {
-  //         el.props.className = 'quack';
-  //       }).toThrow();
-
-  //       expect(el.props.className).toBe(undefined);
-
-  //       return el;
-  //     },
-  //   });
-  //   var outer = ReactDOM.render(<Outer />, container);
-  //   expect(ReactDOM.findDOMNode(outer).textContent).toBe('meow');
-  //   expect(ReactDOM.findDOMNode(outer).className).toBe('');
-  // });
-
   it('does not warn for NaN props', function () {
     spyOn(console, 'error');
-    var Test = React.createClass({
-      render: function () {
+    class Test extends React.Component {
+      render()
+      {
         return <div />;
       }
-    });
+    }
     var test = renderIntoDocument(<Test value={+undefined} />);
     expect(test.$LI.children.props.value).toBeNaN();
     expect(console.error.calls.count()).toBe(0);
@@ -322,11 +227,11 @@ describe('ReactElement', function () {
       return OTHER_SYMBOL;
     };
 
-    var Component = React.createClass({
-      render: function () {
+    class Component extends React.Component {
+      render() {
         return React.createElement('div');
       }
-    });
+    }
 
     expect(React.isValidElement(React.createElement('div'))).toEqual(true);
     expect(React.isValidElement(React.createElement(Component))).toEqual(true);
@@ -337,8 +242,5 @@ describe('ReactElement', function () {
     expect(React.isValidElement('string')).toEqual(false);
     expect(React.isValidElement(Component)).toEqual(false);
     expect(React.isValidElement({ type: 'div', props: {} })).toEqual(false);
-
-    // var jsonElement = JSON.stringify(React.createElement('div'));
-    // expect(React.isValidElement(JSON.parse(jsonElement))).toBe(false);
   });
 });

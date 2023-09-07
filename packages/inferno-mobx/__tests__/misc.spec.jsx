@@ -1,7 +1,6 @@
-import { render, rerender } from 'inferno';
+import { render, rerender, Component } from 'inferno';
 import { observer } from 'inferno-mobx';
 import { extendObservable, observable } from 'mobx';
-import { Component } from 'inferno/src';
 
 describe('Mobx Misc', () => {
   let container;
@@ -28,7 +27,11 @@ describe('Mobx Misc', () => {
             {x.get()}
           </div>
         }
-        shouldComponentUpdate: () => called++
+        shouldComponentUpdate() {
+          called++
+
+          return false;
+        }
       }
     );
     render(<C />, container);
@@ -121,10 +124,11 @@ describe('Mobx Misc', () => {
     const a = observable.box(2);
     const Child = observer(
       class Foo extends Component {
-        displayName: 'Child',
-        getInitialState() {
-          a.set(3); // one shouldn't do this!
-          return {};
+        displayName = 'Child'
+        constructor(props) {
+          super(props);
+          a.set(3);
+          this.state = {}
         }
         render() {
           return <div>

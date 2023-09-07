@@ -86,90 +86,6 @@ describe('ReactComponent', function () {
     expect(mounted).toBe(true);
   });
 
-  // it('should call refs at the correct time', function() {
-  //   var log = [];
-
-  //   var Inner = React.createClass({
-  //     render: function() {
-  //       log.push(`inner ${this.props.id} render`);
-  //       return <div />;
-  //     },
-  //     componentDidMount: function() {
-  //       log.push(`inner ${this.props.id} componentDidMount`);
-  //     },
-  //     componentDidUpdate: function() {
-  //       log.push(`inner ${this.props.id} componentDidUpdate`);
-  //     },
-  //     componentWillUnmount: function() {
-  //       log.push(`inner ${this.props.id} componentWillUnmount`);
-  //     },
-  //   });
-
-  //   var Outer = React.createClass({
-  //     render: function() {
-  //       return (
-  //         <div>
-  //           <Inner id={1} ref={(c) => {
-  //             log.push(`ref 1 got ${c ? `instance ${c.props.id}` : 'null'}`);
-  //           }}/>
-  //           <Inner id={2} ref={(c) => {
-  //             log.push(`ref 2 got ${c ? `instance ${c.props.id}` : 'null'}`);
-  //           }}/>
-  //         </div>
-  //       );
-  //     },
-  //     componentDidMount: function() {
-  //       log.push('outer componentDidMount');
-  //     },
-  //     componentDidUpdate: function() {
-  //       log.push('outer componentDidUpdate');
-  //     },
-  //     componentWillUnmount: function() {
-  //       log.push('outer componentWillUnmount');
-  //     },
-  //   });
-
-  //   // mount, update, unmount
-  //   var el = document.createElement('div');
-  //   log.push('start mount');
-  //   ReactDOM.render(<Outer />, el);
-  //   log.push('start update');
-  //   ReactDOM.render(<Outer />, el);
-  //   log.push('start unmount');
-  //   ReactDOM.unmountComponentAtNode(el);
-  //   console.log(log)
-
-  //   /* eslint-disable indent */
-  //   expect(log).toEqual([
-  //     'start mount',
-  //       'inner 1 render',
-  //       'inner 2 render',
-  //       'inner 1 componentDidMount',
-  //       'ref 1 got instance 1',
-  //       'inner 2 componentDidMount',
-  //       'ref 2 got instance 2',
-  //       'outer componentDidMount',
-  //     'start update',
-  //       // Previous (equivalent) refs get cleared
-  //       'ref 1 got null',
-  //       'inner 1 render',
-  //       'ref 2 got null',
-  //       'inner 2 render',
-  //       'inner 1 componentDidUpdate',
-  //       'ref 1 got instance 1',
-  //       'inner 2 componentDidUpdate',
-  //       'ref 2 got instance 2',
-  //       'outer componentDidUpdate',
-  //     'start unmount',
-  //       'outer componentWillUnmount',
-  //       'ref 1 got null',
-  //       'inner 1 componentWillUnmount',
-  //       'ref 2 got null',
-  //       'inner 2 componentWillUnmount',
-  //   ]);
-  //   /* eslint-enable indent */
-  // });
-
   it('fires the callback after a component is rendered', function () {
     var callback = mocks.getMockFunction();
     var container = document.createElement('div');
@@ -180,26 +96,6 @@ describe('ReactComponent', function () {
     ReactDOM.render(<span />, container, callback);
     expect(callback.calls.count()).toBe(3);
   });
-
-  // // it('warns when calling getDOMNode', function() {
-  // //   spyOn(console, 'error');
-
-  // //   var Potato = React.createClass({
-  // //     render: function() {
-  // //       return <div />;
-  // //     },
-  // //   });
-  // //   var container = document.createElement('div');
-  // //   var instance = ReactDOM.render(<Potato />, container);
-
-  // //   instance.getDOMNode();
-
-  // //   expect(console.error.calls.count()).toBe(1);
-  // //   expect(console.error.calls[0].calls.argsFor(0)[0]).toContain(
-  // //     'Potato.getDOMNode(...) is deprecated. Please use ' +
-  // //     'ReactDOM.findDOMNode(instance) instead.'
-  // //   );
-  // // });
 
   it('throws usefully when rendering badly-typed elements', function () {
     //spyOn(console, 'error');

@@ -61,6 +61,7 @@
     "postinstall": "lerna bootstrap --no-ci && run-p install:* && npm run build",
     "test": "npm run test:node && npm run test:node-nodom && npm run test:browser",
     "test:node": "cross-env NODE_ENV=test jest --config --no-watchman",
+    "test:node:debug": "cross-env NODE_ENV=test node --inspect-brk node_modules/jest/bin/jest.js --config --no-watchman --runInBand",
     "test:node-nodom": "cross-env NODE_ENV=test jest --config ./jest.config-nodom.js --no-watchman",
     "test:coverage": "cross-env NODE_ENV=test jest --runInBand --coverage --no-watchman",
     "test:browser": "npm run test:browser:nocompat && npm run test:browser:compat",

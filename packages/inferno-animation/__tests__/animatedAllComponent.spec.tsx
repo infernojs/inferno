@@ -193,7 +193,7 @@ describe('inferno-animation animated functional component', () => {
     waitForAnimationAndContinue('', afterEachClear, done);
   });
 
-  it('should render class component extending AnimatedAllComponent into DOM', () => {
+  it('should render functional component extending AnimatedAllComponent into DOM', () => {
     const MyComponent = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
@@ -211,7 +211,7 @@ describe('inferno-animation animated functional component', () => {
     expect(container.textContent).toBe('1');
   });
 
-  it('should remove class component extending AnimatedAllComponent from DOM', (done) => {
+  it('should remove functional component extending AnimatedAllComponent from DOM', (done) => {
     const My = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
@@ -278,7 +278,7 @@ describe('inferno-animation animated functional component', () => {
     });
   });
 
-  it('should move class component extending AnimatedAllComponent from DOM', (done) => {
+  it('should move functional component extending AnimatedAllComponent from DOM', (done) => {
     const My = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };

@@ -25,14 +25,20 @@ describe('ReactMultiChild', function () {
       var mockUpdate = mocks.getMockFunction();
       var mockUnmount = mocks.getMockFunction();
 
-      var MockComponent = React.createClass({
-        componentDidMount: mockMount,
-        componentDidUpdate: mockUpdate,
-        componentWillUnmount: mockUnmount,
-        render: function () {
+      class MockComponent extends React.Component {
+        componentDidMount() {
+          mockMount()
+        }
+        componentDidUpdate() {
+          mockUpdate()
+        }
+        componentWillUnmount() {
+          mockUnmount()
+        }
+        render() {
           return <span />;
         }
-      });
+      }
 
       expect(mockMount.calls.count()).toBe(0);
       expect(mockUpdate.calls.count()).toBe(0);
@@ -67,13 +73,17 @@ describe('ReactMultiChild', function () {
       var mockMount = mocks.getMockFunction();
       var mockUnmount = mocks.getMockFunction();
 
-      var MockComponent = React.createClass({
-        componentDidMount: mockMount,
-        componentWillUnmount: mockUnmount,
-        render: function () {
+      class MockComponent extends React.Component {
+        componentDidMount() {
+          mockMount()
+        }
+        componentWillUnmount() {
+          mockUnmount()
+        }
+        render() {
           return <span />;
         }
-      });
+      }
 
       expect(mockMount.calls.count()).toBe(0);
       expect(mockUnmount.calls.count()).toBe(0);
@@ -105,19 +115,25 @@ describe('ReactMultiChild', function () {
       var mockMount = mocks.getMockFunction();
       var mockUnmount = mocks.getMockFunction();
 
-      var MockComponent = React.createClass({
-        componentDidMount: mockMount,
-        componentWillUnmount: mockUnmount,
-        render: function () {
+      class MockComponent extends React.Component {
+        componentDidMount() {
+          mockMount()
+        }
+
+        componentWillUnmount() {
+          mockUnmount()
+        }
+
+        render() {
           return <span />;
         }
-      });
+      }
 
-      var WrapperComponent = React.createClass({
-        render: function () {
+      class WrapperComponent extends React.Component {
+        render() {
           return this.props.children || <MockComponent />;
         }
-      });
+      }
 
       expect(mockMount.calls.count()).toBe(0);
       expect(mockUnmount.calls.count()).toBe(0);
@@ -144,13 +160,17 @@ describe('ReactMultiChild', function () {
       var mockMount = mocks.getMockFunction();
       var mockUnmount = mocks.getMockFunction();
 
-      var MockComponent = React.createClass({
-        componentDidMount: mockMount,
-        componentWillUnmount: mockUnmount,
-        render: function () {
+      class MockComponent extends React.Component {
+        componentDidMount() {
+          mockMount()
+        }
+        componentWillUnmount() {
+          mockUnmount()
+        }
+        render() {
           return <span />;
         }
-      });
+      }
 
       expect(mockMount.calls.count()).toBe(0);
       expect(mockUnmount.calls.count()).toBe(0);

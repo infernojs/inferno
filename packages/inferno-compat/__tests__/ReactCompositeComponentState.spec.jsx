@@ -26,9 +26,12 @@ describe('ReactCompositeComponent-state', function () {
     }
 
     class Outer extends React.Component {
-      getInitialState() {
-        return { showInner: true };
+      constructor(props) {
+        super(props);
+
+        this.state = { showInner: true }
       }
+
       render() {
         return <div>{this.state.showInner && <Inner />}</div>;
       }
