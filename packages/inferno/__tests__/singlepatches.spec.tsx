@@ -23,7 +23,7 @@ describe('All single patch variations', () => {
   });
 
   function rTemplate(content) {
-    return render(<div>{[content]}</div>, container);
+    render(<div>{[content]}</div>, container);
   }
 
   function tearDown() {
@@ -31,7 +31,6 @@ describe('All single patch variations', () => {
     expect(container.innerHTML).toBe('');
   }
 
-  /* tslint:disable:no-empty */
   class ComA extends Component<any, any> {
     public componentDidMount() {}
 
@@ -53,7 +52,6 @@ describe('All single patch variations', () => {
       return children;
     }
   }
-  /* tslint:enable */
 
   describe('Text to', () => {
     let node;
@@ -193,13 +191,15 @@ describe('All single patch variations', () => {
         <div ref={spy} className="component2">
           Component 2 <br />
           <span id="clear">clear app</span>
-        </div>
+        </div>,
       );
       expect(templateRefSpy.calls.count()).toBe(1); // unmount
       expect(unmountSpy.calls.count()).toBe(1);
       expect(spy.calls.count()).toBe(1);
       expect(updateSpy.calls.count()).toBe(0);
-      expect(container.innerHTML).toEqual('<div><div class="component2">Component 2 <br><span id="clear">clear app</span></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><div class="component2">Component 2 <br><span id="clear">clear app</span></div></div>',
+      );
 
       rTemplate(<span ref={spy}>2</span>);
       expect(container.innerHTML).toEqual('<div><span>2</span></div>');
@@ -212,7 +212,6 @@ describe('All single patch variations', () => {
       const componentWillMountSpy = jasmine.createSpy();
 
       class ComC extends Component<any, any> {
-        // tslint:disable-next-line
         componentWillMount() {
           componentWillMountSpy();
         }
@@ -233,45 +232,69 @@ describe('All single patch variations', () => {
   describe('children', () => {
     describe('HasKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
+        render(
+          <div $HasKeyedChildren>
+            {[<div key="1">1</div>, <div key="2">2</div>]}
+          </div>,
+          container,
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>',
+        );
 
         render(
           <div>
             <div>single</div>
           </div>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(<div $HasKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
+        render(
+          <div $HasKeyedChildren>
+            {[<div key="1">1</div>, <div key="2">2</div>]}
+          </div>,
+          container,
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>',
+        );
       });
     });
 
     describe('hasNonKeyedChildren', () => {
       it('Should update from Array to single vNode', () => {
-        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
+        render(
+          <div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>,
+          container,
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>',
+        );
 
         render(
           <div>
             <div>single</div>
           </div>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toEqual('<div><div>single</div></div>');
 
         // Revert
-        render(<div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>, container);
+        render(
+          <div $HasNonKeyedChildren>{[<div>1</div>, <div>2</div>]}</div>,
+          container,
+        );
 
-        expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+        expect(container.innerHTML).toEqual(
+          '<div><div>1</div><div>2</div></div>',
+        );
       });
     });
   });
@@ -287,7 +310,7 @@ describe('All single patch variations', () => {
       Static.defaultHooks = {
         onComponentShouldUpdate() {
           return false;
-        }
+        },
       };
 
       function doRender() {
@@ -296,7 +319,7 @@ describe('All single patch variations', () => {
             {counter}
             <Static />
           </div>,
-          container
+          container,
         );
       }
 
@@ -314,9 +337,9 @@ describe('All single patch variations', () => {
       let counter = 0;
       let mountCounter = 0;
 
-      type scuTestType = {
+      interface scuTestType {
         onComponentShouldUpdate: () => boolean;
-      };
+      }
 
       const Static = function (_: scuTestType) {
         return <div>{counter}</div>;
@@ -328,7 +351,7 @@ describe('All single patch variations', () => {
         },
         onComponentWillMount() {
           mountCounter++;
-        }
+        },
       };
 
       function doRender() {
@@ -337,7 +360,7 @@ describe('All single patch variations', () => {
             {counter}
             <Static onComponentShouldUpdate={() => true} />
           </div>,
-          container
+          container,
         );
       }
 
@@ -368,13 +391,13 @@ describe('All single patch variations', () => {
         },
         onComponentWillMount() {
           mountCounter++;
-        }
+        },
       };
 
       const props = {
         ref: {
-          onComponentShouldUpdate: () => true
-        }
+          onComponentShouldUpdate: () => true,
+        },
       };
 
       // TODO: Supporting types for "ref: {}" function component hooks probably needs changes to "JSX root types" where are those?
@@ -384,10 +407,10 @@ describe('All single patch variations', () => {
           <div>
             {counter}
             {/*
- // @ts-ignore */}
+ // @ts-expect-error */}
             <Static {...props} />
           </div>,
-          container
+          container,
         );
       }
 
@@ -451,12 +474,22 @@ describe('All single patch variations', () => {
 
   describe('it should use non keyed algorithm if its forced Github #1275', () => {
     it('last & prev are flagged $HasNonKeyedChildren', () => {
-      render(<div $HasNonKeyedChildren>{[<div key="1">1</div>, <div key="2">2</div>]}</div>, container);
+      render(
+        <div $HasNonKeyedChildren>
+          {[<div key="1">1</div>, <div key="2">2</div>]}
+        </div>,
+        container,
+      );
 
       const oldFirstNode = container.firstChild.firstChild;
       expect(container.innerHTML).toBe('<div><div>1</div><div>2</div></div>');
 
-      render(<div $HasNonKeyedChildren>{[<div key="2">2</div>, <div key="1">1</div>]}</div>, container);
+      render(
+        <div $HasNonKeyedChildren>
+          {[<div key="2">2</div>, <div key="1">1</div>]}
+        </div>,
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div><div>2</div><div>1</div></div>');
 
@@ -489,10 +522,12 @@ describe('All single patch variations', () => {
           <ComponentFooBar />
         </div>
       </div>,
-      container
+      container,
     );
 
-    expect(container.innerHTML).toEqual('<div><div><div>Component</div></div></div>');
+    expect(container.innerHTML).toEqual(
+      '<div><div><div>Component</div></div></div>',
+    );
 
     expect(mountCallCount).toBe(1);
     expect(unmountCallCount).toBe(0);
@@ -503,10 +538,12 @@ describe('All single patch variations', () => {
           <ComponentFooBar />
         </div>
       </div>,
-      container
+      container,
     );
 
-    expect(container.innerHTML).toEqual('<div><div><div>Component</div></div></div>');
+    expect(container.innerHTML).toEqual(
+      '<div><div><div>Component</div></div></div>',
+    );
 
     expect(mountCallCount).toBe(2);
     expect(unmountCallCount).toBe(1);
@@ -524,15 +561,19 @@ describe('All single patch variations', () => {
             {div}
             <div $HasVNodeChildren>{div}</div>
           </div>,
-          div
+          div,
         ]}
       </Fragment>,
-      container
+      container,
     );
 
-    expect(container.innerHTML).toBe('<div>Fun</div><div>Fun</div><div><div>Fun</div><div><div>Fun</div></div></div><div>Fun</div>');
+    expect(container.innerHTML).toBe(
+      '<div>Fun</div><div>Fun</div><div><div>Fun</div><div><div>Fun</div></div></div><div>Fun</div>',
+    );
 
-    expect(container.$V.children[1].children[0]).not.toBe(container.$V.children[0]);
+    expect(container.$V.children[1].children[0]).not.toBe(
+      container.$V.children[0],
+    );
     expect(container.$V.children[0]).not.toBe(container.$V.children[3]);
 
     render(
@@ -545,13 +586,15 @@ describe('All single patch variations', () => {
             <div $HasVNodeChildren>{div}</div>
             {div}
           </div>,
-          div
+          div,
         ]}
       </Fragment>,
-      container
+      container,
     );
 
-    expect(container.innerHTML).toBe('<div>Fun</div><div>Fun</div><div><div>Fun</div><div><div>Fun</div></div><div>Fun</div></div><div>Fun</div>');
+    expect(container.innerHTML).toBe(
+      '<div>Fun</div><div>Fun</div><div><div>Fun</div><div><div>Fun</div></div><div>Fun</div></div><div>Fun</div>',
+    );
     expect(container.$V.children[0]).not.toBe(container.$V.children[3]);
   });
 
@@ -571,10 +614,10 @@ describe('All single patch variations', () => {
           </div>,
           div,
           div,
-          div
+          div,
         ]}
       </Fragment>,
-      container
+      container,
     );
 
     render(null, container);
@@ -626,10 +669,10 @@ describe('All single patch variations', () => {
           </div>,
           FooBarHoisted,
           div,
-          div
+          div,
         ]}
       </Fragment>,
-      container
+      container,
     );
     render(null, container);
 
@@ -647,7 +690,7 @@ describe('All single patch variations', () => {
       }
     > {
       public state = {
-        val: 1
+        val: 1,
       };
 
       constructor(props, context) {
@@ -656,7 +699,11 @@ describe('All single patch variations', () => {
 
       public render() {
         return (
-          <div onClick={() => this.setState({ val: ++this.state.val })}>
+          <div
+            onClick={() => {
+              this.setState({ val: ++this.state.val });
+            }}
+          >
             <span>{this.state.val}</span>
             {this.props.children}
           </div>
@@ -682,11 +729,11 @@ describe('All single patch variations', () => {
           </>
         </Foobar>
       </>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toBe(
-      '<div><span>1</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>'
+      '<div><span>1</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>',
     );
 
     const firstNode = container.querySelector('.first');
@@ -695,7 +742,7 @@ describe('All single patch variations', () => {
     container.firstChild.click();
 
     expect(container.innerHTML).toBe(
-      '<div><span>2</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>'
+      '<div><span>2</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>',
     );
 
     expect(container.querySelector('.first')).toBe(firstNode);
@@ -704,7 +751,7 @@ describe('All single patch variations', () => {
     container.firstChild.click();
 
     expect(container.innerHTML).toBe(
-      '<div><span>3</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>'
+      '<div><span>3</span><div><span class="first">Foo</span></div><span class="second">Foo</span><span class="third">Foo</span></div>',
     );
 
     expect(container.querySelector('.first')).toBe(firstNode);
@@ -712,18 +759,37 @@ describe('All single patch variations', () => {
   });
 
   it('Should keep given key even for deeply nested content', () => {
-    render(<div>{[null, <div key="first">First</div>, <div key="second">Second</div>]}</div>, container);
+    render(
+      <div>
+        {[null, <div key="first">First</div>, <div key="second">Second</div>]}
+      </div>,
+      container,
+    );
 
     const firstDiv = container.firstChild.firstChild;
     const secondDiv = container.firstChild.childNodes[1];
 
-    expect(container.innerHTML).toBe('<div><div>First</div><div>Second</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div>First</div><div>Second</div></div>',
+    );
 
-    render(<div>{[null, undefined, <div key="first">First</div>, <div key="second">Second</div>]}</div>, container);
+    render(
+      <div>
+        {[
+          null,
+          undefined,
+          <div key="first">First</div>,
+          <div key="second">Second</div>,
+        ]}
+      </div>,
+      container,
+    );
     const firstDiv2 = container.firstChild.firstChild;
     const secondDiv2 = container.firstChild.childNodes[1];
 
-    expect(container.innerHTML).toBe('<div><div>First</div><div>Second</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div>First</div><div>Second</div></div>',
+    );
 
     expect(firstDiv).toBe(firstDiv2);
     expect(secondDiv).toBe(secondDiv2);
@@ -732,16 +798,41 @@ describe('All single patch variations', () => {
   it('Should keep given key even for deeply nested content #2', () => {
     const vNode1 = <div key="first">First</div>;
 
-    render(<div>{[null, <div key="first1">First</div>, vNode1, <div key="second">Second</div>]}</div>, container);
+    render(
+      <div>
+        {[
+          null,
+          <div key="first1">First</div>,
+          vNode1,
+          <div key="second">Second</div>,
+        ]}
+      </div>,
+      container,
+    );
 
     const domNode = container.firstChild.childNodes[1];
 
-    expect(container.innerHTML).toBe('<div><div>First</div><div>First</div><div>Second</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div>First</div><div>First</div><div>Second</div></div>',
+    );
 
-    render(<div>{[null, undefined, <div key="first1">First</div>, [vNode1], <div key="second">Second</div>]}</div>, container);
+    render(
+      <div>
+        {[
+          null,
+          undefined,
+          <div key="first1">First</div>,
+          [vNode1],
+          <div key="second">Second</div>,
+        ]}
+      </div>,
+      container,
+    );
     const domNode2 = container.firstChild.childNodes[1];
 
-    expect(container.innerHTML).toBe('<div><div>First</div><div>First</div><div>Second</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div>First</div><div>First</div><div>Second</div></div>',
+    );
 
     expect(domNode).not.toBe(domNode2);
   });
@@ -756,7 +847,9 @@ describe('All single patch variations', () => {
       constructor(props, context) {
         super(props, context);
 
-        changeState = () => this.setState({});
+        changeState = () => {
+          this.setState({});
+        };
       }
 
       public render() {
@@ -797,7 +890,9 @@ describe('All single patch variations', () => {
       constructor(props, context) {
         super(props, context);
 
-        changeState = () => this.setState({});
+        changeState = () => {
+          this.setState({});
+        };
       }
 
       public render() {
@@ -814,7 +909,7 @@ describe('All single patch variations', () => {
         <Example test={bool}>
           <div key="ok">ok</div>
         </Example>,
-        container
+        container,
       );
     }
 
@@ -846,7 +941,9 @@ describe('All single patch variations', () => {
       constructor(props, context) {
         super(props, context);
 
-        changeState = () => this.setState({});
+        changeState = () => {
+          this.setState({});
+        };
       }
 
       public render() {
@@ -867,7 +964,7 @@ describe('All single patch variations', () => {
           <div class="anim1" key="div1" />
           <div class="anim2" key="div22" />
         </Example>,
-        container
+        container,
       );
     };
 

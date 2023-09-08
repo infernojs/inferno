@@ -11,7 +11,7 @@ describe('A <Route>', () => {
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain(TEXT);
@@ -25,7 +25,7 @@ describe('A <Route>', () => {
       <MemoryRouter initialEntries={['/bunnies']}>
         <Route path="/flowers" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).not.toContain(TEXT);
@@ -37,9 +37,13 @@ describe('A <Route>', () => {
 
     render(
       <MemoryRouter initialEntries={['/mint']}>
-        <Route location={{ pathname: '/tamarind' }} path="/tamarind" render={() => <h1>{TEXT}</h1>} />
+        <Route
+          location={{ pathname: '/tamarind' }}
+          path="/tamarind"
+          render={() => <h1>{TEXT}</h1>}
+        />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain(TEXT);
@@ -55,7 +59,7 @@ describe('A <Route>', () => {
           {[]}
         </Route>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain(TEXT);
@@ -75,7 +79,7 @@ describe('A <Route>', () => {
           }}
         />
       </MemoryRouter>,
-      node
+      node,
     );
     push('/sushi/spicy-tuna');
     expect(node.innerHTML).toContain('/sushi/spicy-tuna');
@@ -86,7 +90,9 @@ describe('A <Route>', () => {
 
     expect(() => {
       render(<Route path="/" render={() => null} />, node);
-    }).toThrowError(/You should not use <Route> or withRouter\(\) outside a <Router>/);
+    }).toThrowError(
+      /You should not use <Route> or withRouter\(\) outside a <Router>/,
+    );
   });
 });
 
@@ -96,9 +102,12 @@ describe('A <Route> with dynamic segments in the path', () => {
     const node = document.createElement('div');
     render(
       <MemoryRouter initialEntries={['/a%20dynamic%20segment']}>
-        <Route path="/:id" render={({ match }) => <div>{match.params.id}</div>} />
+        <Route
+          path="/:id"
+          render={({ match }) => <div>{match.params.id}</div>}
+        />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain('a%20dynamic%20segment');
@@ -112,7 +121,7 @@ describe('A unicode <Route>', () => {
       <MemoryRouter initialEntries={['/パス名']}>
         <Route path="/パス名" render={({ match }) => <div>{match.url}</div>} />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain('/パス名');
@@ -130,7 +139,7 @@ describe('<Route render>', () => {
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" render={() => <div>{TEXT}</div>} />
       </MemoryRouter>,
-      testNode
+      testNode,
     );
 
     expect(testNode.innerHTML).toContain(TEXT);
@@ -143,7 +152,7 @@ describe('<Route render>', () => {
       <Router history={history}>
         <Route path="/" render={(props) => (actual = props) && null} />
       </Router>,
-      node
+      node,
     );
 
     expect(actual?.history).toBe(history);
@@ -164,7 +173,7 @@ describe('<Route component>', () => {
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" component={Home} />
       </MemoryRouter>,
-      testNode
+      testNode,
     );
 
     expect(testNode.innerHTML).toContain(TEXT);
@@ -178,7 +187,7 @@ describe('<Route component>', () => {
       <Router history={history}>
         <Route path="/" component={Component} />
       </Router>,
-      node
+      node,
     );
 
     expect(actual?.history).toBe(history);
@@ -198,7 +207,7 @@ describe('<Route children>', () => {
       <MemoryRouter initialEntries={['/']}>
         <Route path="/" children={() => <div>{TEXT}</div>} />
       </MemoryRouter>,
-      testNode
+      testNode,
     );
 
     expect(testNode.innerHTML).toContain(TEXT);
@@ -213,7 +222,7 @@ describe('<Route children>', () => {
           <div>{TEXT}</div>
         </Route>
       </MemoryRouter>,
-      testNode
+      testNode,
     );
 
     expect(testNode.innerHTML).toContain(TEXT);
@@ -226,7 +235,7 @@ describe('<Route children>', () => {
       <Router history={history}>
         <Route path="/" children={(props) => (actual = props) && null} />
       </Router>,
-      node
+      node,
     );
 
     expect(actual?.history).toBe(history);
@@ -244,7 +253,7 @@ describe('A <Route exact>', () => {
       <MemoryRouter initialEntries={['/somepath/']}>
         <Route exact path="/somepath" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain(TEXT);
@@ -258,7 +267,7 @@ describe('A <Route exact>', () => {
       <MemoryRouter initialEntries={['/somepath']}>
         <Route exact path="/somepath/" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain(TEXT);
@@ -274,7 +283,7 @@ describe('A <Route exact strict>', () => {
       <MemoryRouter initialEntries={['/somepath/']}>
         <Route exact strict path="/somepath" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).not.toContain(TEXT);
@@ -288,7 +297,7 @@ describe('A <Route exact strict>', () => {
       <MemoryRouter initialEntries={['/somepath']}>
         <Route exact strict path="/somepath/" render={() => <h1>{TEXT}</h1>} />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).not.toContain(TEXT);
@@ -302,9 +311,13 @@ describe('A <Route location>', () => {
 
     render(
       <MemoryRouter initialEntries={['/mint']}>
-        <Route location={{ pathname: '/tamarind' }} path="/tamarind" render={() => <h1>{TEXT}</h1>} />
+        <Route
+          location={{ pathname: '/tamarind' }}
+          path="/tamarind"
+          render={() => <h1>{TEXT}</h1>}
+        />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain(TEXT);
@@ -320,10 +333,12 @@ describe('A <Route location>', () => {
           <Route
             location={{ pathname: '/pretzels/cheddar' }}
             path="/pretzels"
-            render={() => <Route path="/pretzels/cheddar" render={() => <h1>{TEXT}</h1>} />}
+            render={() => (
+              <Route path="/pretzels/cheddar" render={() => <h1>{TEXT}</h1>} />
+            )}
           />
         </MemoryRouter>,
-        node
+        node,
       );
 
       expect(node.innerHTML).toContain(TEXT);
@@ -340,11 +355,16 @@ describe('A <Route location>', () => {
             path="/pretzels"
             render={({ history }) => {
               push = history.push;
-              return <Route path="/pretzels/cheddar" render={() => <h1>{TEXT}</h1>} />;
+              return (
+                <Route
+                  path="/pretzels/cheddar"
+                  render={() => <h1>{TEXT}</h1>}
+                />
+              );
             }}
           />
         </MemoryRouter>,
-        node
+        node,
       );
       expect(node.innerHTML).toContain(TEXT);
       push('/chips');
@@ -354,14 +374,14 @@ describe('A <Route location>', () => {
     it('Should throw error if element vNode is passed to component property', () => {
       const node = document.createElement('div');
 
-      expect(() =>
+      expect(() => {
         render(
           <MemoryRouter initialEntries={['/popcorn']}>
             <Route component={<div>test</div>} />
           </MemoryRouter>,
-          node
-        )
-      ).toThrow(); // All browsers format error msg differently
+          node,
+        );
+      }).toThrow(); // All browsers format error msg differently
     });
   });
 });

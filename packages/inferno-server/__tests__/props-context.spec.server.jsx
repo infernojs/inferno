@@ -6,6 +6,7 @@ describe('SSR render() arguments', () => {
     getChildContext() {
       return { testContext: 'context-works' };
     }
+
     render({ children }) {
       return children;
     }
@@ -28,6 +29,7 @@ describe('SSR render() arguments', () => {
         super();
         this.state = { testState: 'state-works' };
       }
+
       render(props, state) {
         return <p>{state.testState}</p>;
       }
@@ -46,7 +48,7 @@ describe('SSR render() arguments', () => {
     const output = renderToStaticMarkup(
       <TestProvider>
         <TestChild />
-      </TestProvider>
+      </TestProvider>,
     );
     expect(output).toBe('<p>context-works</p>');
   });
@@ -59,7 +61,7 @@ describe('SSR render() arguments', () => {
     const output = renderToStaticMarkup(
       <TestProvider>
         <TestChild />
-      </TestProvider>
+      </TestProvider>,
     );
     expect(output).toBe('<p>context-works</p>');
   });
@@ -78,7 +80,7 @@ describe('SSR render() arguments', () => {
             <TestChild />
           </ChildWrapper>
         </ChildWrapper>
-      </TestProvider>
+      </TestProvider>,
     );
     expect(output).toBe('<p>context-works</p>');
   });
@@ -88,6 +90,7 @@ describe('SSR render() arguments', () => {
       getChildContext() {
         return { testContextWrap: 'context-wrap-works' };
       }
+
       render({ children }) {
         return children;
       }
@@ -104,7 +107,7 @@ describe('SSR render() arguments', () => {
         <TestContext>
           <TestChild />
         </TestContext>
-      </TestProvider>
+      </TestProvider>,
     );
     expect(output).toBe('<p>context-works|context-wrap-works</p>');
   });

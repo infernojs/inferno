@@ -11,7 +11,7 @@ describe('A <Router>', () => {
           <Router history={createMemoryHistory()}>
             <p>Bar</p>
           </Router>,
-          node
+          node,
         );
       }).not.toThrow();
     });
@@ -21,7 +21,7 @@ describe('A <Router>', () => {
     it('does not throw an error', () => {
       const node = document.createElement('div');
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         render(<Router history={createMemoryHistory()} />, node);
       }).not.toThrow();
     });
@@ -45,7 +45,7 @@ describe('A <Router>', () => {
         <Router history={history}>
           <ContextChecker />
         </Router>,
-        node
+        node,
       );
 
       expect(rootContext.router.history).toBe(history);
@@ -54,14 +54,14 @@ describe('A <Router>', () => {
     it('sets context.router.route at the root', () => {
       const node = document.createElement('div');
       const history = createMemoryHistory({
-        initialEntries: ['/']
+        initialEntries: ['/'],
       });
 
       render(
         <Router history={history}>
           <ContextChecker />
         </Router>,
-        node
+        node,
       );
 
       expect(rootContext.router.route.match.path).toEqual('/');
@@ -74,14 +74,14 @@ describe('A <Router>', () => {
     it('updates context.router.route upon navigation', () => {
       const node = document.createElement('div');
       const history = createMemoryHistory({
-        initialEntries: ['/']
+        initialEntries: ['/'],
       });
 
       render(
         <Router history={history}>
           <ContextChecker />
         </Router>,
-        node
+        node,
       );
 
       expect(rootContext.router.route.match.isExact).toBe(true);
@@ -95,14 +95,14 @@ describe('A <Router>', () => {
     it('does not contain context.router.staticContext by default', () => {
       const node = document.createElement('div');
       const history = createMemoryHistory({
-        initialEntries: ['/']
+        initialEntries: ['/'],
       });
 
       render(
         <Router history={history}>
           <ContextChecker />
         </Router>,
-        node
+        node,
       );
 
       expect(rootContext.router.staticContext).toBe(undefined);

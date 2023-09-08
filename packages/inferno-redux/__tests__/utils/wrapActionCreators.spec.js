@@ -6,7 +6,7 @@ describe('Utils', () => {
       const dispatch = (action) => ({ dispatched: action });
       const actionResult = { an: 'action' };
       const actionCreators = {
-        action: () => actionResult
+        action: () => actionResult,
       };
 
       const wrapped = wrapActionCreators(actionCreators);

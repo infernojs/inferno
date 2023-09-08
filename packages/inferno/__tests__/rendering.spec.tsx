@@ -1,4 +1,10 @@
-import { Component, createTextVNode, createVNode, render, rerender } from 'inferno';
+import {
+  Component,
+  createTextVNode,
+  createVNode,
+  render,
+  rerender,
+} from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('rendering routine', () => {
@@ -16,21 +22,43 @@ describe('rendering routine', () => {
   });
 
   it('Should throw error when trying to render to document.body', () => {
-    const div = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('1'), ChildFlags.HasVNodeChildren);
+    const div = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      createTextVNode('1'),
+      ChildFlags.HasVNodeChildren,
+    );
     try {
       render(div, document.body);
     } catch (e) {
-      expect(e.message).toEqual('Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.');
+      expect(e.message).toEqual(
+        'Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.',
+      );
     }
   });
 
   it('Should throw error if second parameter is not given', () => {
-    expect(() => render(<div>1</div>, null)).toThrow();
+    expect(() => {
+      render(<div>1</div>, null);
+    }).toThrow();
   });
 
   it('Should create new object when dom exists', () => {
-    const bar = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('123'), ChildFlags.HasVNodeChildren);
-    const foo = createVNode(VNodeFlags.HtmlElement, 'div', null, bar, ChildFlags.HasVNodeChildren);
+    const bar = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      createTextVNode('123'),
+      ChildFlags.HasVNodeChildren,
+    );
+    const foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      bar,
+      ChildFlags.HasVNodeChildren,
+    );
 
     render(foo, container);
     expect(container.innerHTML).toEqual('<div><div>123</div></div>');
@@ -94,7 +122,7 @@ describe('rendering routine', () => {
       <div hidden={true}>
         <div />
       </div>,
-      container
+      container,
     );
   });
 
@@ -117,20 +145,30 @@ describe('rendering routine', () => {
   it('Should be possible to render Immutable datastructures', () => {
     function Clock(props) {
       const time = props.time + 1;
-      const array = Object.freeze([<span>{'Inferno version:'}</span>, <br />, <span>{time}</span>]);
+      const array = Object.freeze([
+        <span>{'Inferno version:'}</span>,
+        <br />,
+        <span>{time}</span>,
+      ]);
       return <div>{array}</div>;
     }
 
     const consoleSpy = spyOn(console, 'error');
 
     render(<Clock time={1} />, container);
-    expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>2</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>Inferno version:</span><br><span>2</span></div>',
+    );
 
     render(<Clock time={2} />, container);
-    expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>3</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>Inferno version:</span><br><span>3</span></div>',
+    );
 
     render(<Clock time={3} />, container);
-    expect(container.innerHTML).toBe('<div><span>Inferno version:</span><br><span>4</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>Inferno version:</span><br><span>4</span></div>',
+    );
     expect(consoleSpy.calls.count()).toBe(0);
 
     render(null, container);
@@ -172,7 +210,7 @@ describe('rendering routine', () => {
   describe('className', () => {
     it('Should override destructured property when defined', function () {
       const testObj = {
-        className: 'test'
+        className: 'test',
       };
 
       render(<div {...testObj} className="bar" />, container);
@@ -205,10 +243,12 @@ describe('rendering routine', () => {
           <Hello name="World">{data}</Hello>
           <Hello name="World">{data}</Hello>
         </div>,
-        container
+        container,
       );
 
-      expect(container.innerHTML).toEqual('<div><div>Hello 21</div><div>Hello 12</div><div>Hello 21</div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><div>Hello 21</div><div>Hello 12</div><div>Hello 21</div></div>',
+      );
 
       render(
         <div>
@@ -216,10 +256,12 @@ describe('rendering routine', () => {
           <Hello name="World">{data}</Hello>
           <Hello name="World">{data}</Hello>
         </div>,
-        container
+        container,
       );
 
-      expect(container.innerHTML).toEqual('<div><div>Hello 12</div><div>Hello 21</div><div>Hello 12</div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><div>Hello 12</div><div>Hello 21</div><div>Hello 12</div></div>',
+      );
     });
   });
 
@@ -293,7 +335,11 @@ describe('rendering routine', () => {
             <div>
               {this.state.tag > 0 ? <div>1</div> : null}
               {this.state.tag > 1 ? <div>1</div> : null}
-              <Hello name={this.props.name} tag={this.state.tag} callback={this.renderAgain} />
+              <Hello
+                name={this.props.name}
+                tag={this.state.tag}
+                callback={this.renderAgain}
+              />
               <span>2</span>
             </div>
           );
@@ -310,13 +356,25 @@ describe('rendering routine', () => {
           super(props, context);
 
           this.state = {
-            foo: false
+            foo: false,
           };
         }
+
         public render() {
           return (
-            <span id="click" onClick={() => this.setState({ foo: !this.state.foo })}>
-              {this.state.foo ? <HOC renderAgain={() => this.setState({})} /> : null}
+            <span
+              id="click"
+              onClick={() => {
+                this.setState({ foo: !this.state.foo });
+              }}
+            >
+              {this.state.foo ? (
+                <HOC
+                  renderAgain={() => {
+                    this.setState({});
+                  }}
+                />
+              ) : null}
             </span>
           );
         }
@@ -329,7 +387,9 @@ describe('rendering routine', () => {
       container.querySelector('#click').click();
       rerender();
 
-      expect(container.innerHTML).toBe('<span id="click"><div><div>Hello  0 foobar</div><span>2</span></div></span>');
+      expect(container.innerHTML).toBe(
+        '<span id="click"><div><div>Hello  0 foobar</div><span>2</span></div></span>',
+      );
 
       container.querySelector('#click').click();
       rerender();

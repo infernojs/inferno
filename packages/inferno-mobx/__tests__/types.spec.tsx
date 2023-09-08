@@ -64,16 +64,16 @@ describe('top level context', () => {
         todos: [
           {
             completed: false,
-            title: 'a'
-          }
-        ]
+            title: 'a',
+          },
+        ],
       });
 
       render(
         <Provider store={store}>
           <MyComponent />
         </Provider>,
-        container
+        container,
       );
     });
   });

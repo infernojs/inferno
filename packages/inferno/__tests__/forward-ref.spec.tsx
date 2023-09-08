@@ -1,4 +1,10 @@
-import { Component, createRef, forwardRef, RefObject, render } from 'inferno';
+import {
+  Component,
+  createRef,
+  forwardRef,
+  type RefObject,
+  render,
+} from 'inferno';
 
 describe('Forward Ref', () => {
   let container;
@@ -36,6 +42,7 @@ describe('Forward Ref', () => {
       public componentDidMount() {
         expect(this.btn.current).toBe(container.querySelector('button'));
       }
+
       public render() {
         return <FancyButton ref={this.btn}>Click me!</FancyButton>;
       }
@@ -43,7 +50,9 @@ describe('Forward Ref', () => {
 
     render(<Hello />, container);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
   });
 
   it('Should be possible to forward callback ref', () => {
@@ -73,7 +82,9 @@ describe('Forward Ref', () => {
 
     render(<Hello />, container);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
 
     render(null, container);
 
@@ -101,10 +112,12 @@ describe('Forward Ref', () => {
       >
         Click me!
       </FancyButton>,
-      container
+      container,
     );
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
     expect(firstVal).not.toBe(null);
 
     let secondVal = null;
@@ -117,13 +130,15 @@ describe('Forward Ref', () => {
       >
         Click me! 222
       </FancyButton>,
-      container
+      container,
     );
 
     expect(firstVal).toBe(null);
     expect(secondVal).not.toBe(null);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me! 222</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me! 222</button>',
+    );
   });
 
   describe('Validations', () => {
@@ -203,10 +218,10 @@ describe('Forward Ref', () => {
       }
 
       CoolStuff.defaultProps = {
-        foo: 'bar'
+        foo: 'bar',
       };
       CoolStuff.defaultHooks = {
-        onComponentWillMount() {}
+        onComponentWillMount() {},
       };
 
       const spy = spyOn(CoolStuff.defaultHooks, 'onComponentWillMount');
@@ -234,7 +249,9 @@ describe('Forward Ref', () => {
 
       render(<Hello />, container);
 
-      expect(container.innerHTML).toBe('<div class="okay"><span><a>1</a></span>bar</div>');
+      expect(container.innerHTML).toBe(
+        '<div class="okay"><span><a>1</a></span>bar</div>',
+      );
       expect(spy.calls.count()).toBe(1);
 
       render(null, container);

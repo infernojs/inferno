@@ -10,10 +10,12 @@
 import React from 'inferno-compat';
 
 describe('onlyChild', function () {
-  var onlyChild;
+  let onlyChild;
   class WrapComponent extends React.Component {
     render() {
-      return <div>{onlyChild(this.props.children, this.props.mapFn, this)}</div>;
+      return (
+        <div>{onlyChild(this.props.children, this.props.mapFn, this)}</div>
+      );
     }
   }
 
@@ -23,7 +25,7 @@ describe('onlyChild', function () {
 
   it('should fail when passed two children', function () {
     expect(function () {
-      var instance = (
+      const instance = (
         <WrapComponent>
           <div />
           <span />
@@ -35,26 +37,26 @@ describe('onlyChild', function () {
 
   it('should fail when passed nully values', function () {
     expect(function () {
-      var instance = <WrapComponent>{null}</WrapComponent>;
+      const instance = <WrapComponent>{null}</WrapComponent>;
       onlyChild(instance.props.children);
     }).toThrow();
 
     expect(function () {
-      var instance = <WrapComponent>{undefined}</WrapComponent>;
+      const instance = <WrapComponent>{undefined}</WrapComponent>;
       onlyChild(instance.props.children);
     }).toThrow();
   });
 
   it('should not fail when passed interpolated single child', function () {
     expect(function () {
-      var instance = <WrapComponent>{<span />}</WrapComponent>;
+      const instance = <WrapComponent>{<span />}</WrapComponent>;
       onlyChild(instance.props.children);
     }).not.toThrow();
   });
 
   it('should return the only child', function () {
     expect(function () {
-      var instance = (
+      const instance = (
         <WrapComponent>
           <span />
         </WrapComponent>

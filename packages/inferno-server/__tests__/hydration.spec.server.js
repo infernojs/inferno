@@ -7,10 +7,14 @@ import { createContainerWithHTML, validateNodeTree } from 'inferno-utils';
 describe('SSR Hydration - (non-JSX)', () => {
   [
     {
-      node: createElement('div', null, createElement('span', null, 'Hello world')),
+      node: createElement(
+        'div',
+        null,
+        createElement('span', null, 'Hello world'),
+      ),
       expect1: '<div><span>Hello world</span></div>',
-      expect2: '<div><span>Hello world</span></div>'
-    }
+      expect2: '<div><span>Hello world</span></div>',
+    },
   ].forEach(({ node, expect1, expect2 }, i) => {
     it(`Validate various structures #${i + 1}`, () => {
       const html = renderToString(node);

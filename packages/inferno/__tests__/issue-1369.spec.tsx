@@ -122,7 +122,7 @@ describe('static tree as child nodes', () => {
         super(props);
 
         this.state = {
-          text: 'bar'
+          text: 'bar',
         };
 
         constuctCounter++;
@@ -132,7 +132,13 @@ describe('static tree as child nodes', () => {
         renderCounter++;
 
         return (
-          <div id={`id-${renderCounter}`} onClick={() => this.setState({ text: 'foo' })} $HasTextChildren>
+          <div
+            id={`id-${renderCounter}`}
+            onClick={() => {
+              this.setState({ text: 'foo' });
+            }}
+            $HasTextChildren
+          >
             {this.state.text}
           </div>
         );
@@ -176,7 +182,7 @@ describe('static tree as child nodes', () => {
     expect(constuctCounter).toBe(3);
 
     expect(container.innerHTML).toBe(
-      `<div><button>test</button><div><div><div><div id="id-4">bar</div></div></div><div><div><div id="id-5">bar</div></div></div><div><div><div id="id-6">bar</div></div></div></div></div>`
+      `<div><button>test</button><div><div><div><div id="id-4">bar</div></div></div><div><div><div id="id-5">bar</div></div></div><div><div><div id="id-6">bar</div></div></div></div></div>`,
     );
 
     container.querySelector('#id-4').click();
@@ -185,7 +191,7 @@ describe('static tree as child nodes', () => {
     expect(constuctCounter).toBe(3);
 
     expect(container.innerHTML).toBe(
-      `<div><button>test</button><div><div><div><div id="id-7">foo</div></div></div><div><div><div id="id-5">bar</div></div></div><div><div><div id="id-6">bar</div></div></div></div></div>`
+      `<div><button>test</button><div><div><div><div id="id-7">foo</div></div></div><div><div><div id="id-5">bar</div></div></div><div><div><div id="id-6">bar</div></div></div></div></div>`,
     );
 
     container.querySelector('#id-5').click();
@@ -194,7 +200,7 @@ describe('static tree as child nodes', () => {
     expect(constuctCounter).toBe(3);
 
     expect(container.innerHTML).toBe(
-      `<div><button>test</button><div><div><div><div id="id-7">foo</div></div></div><div><div><div id="id-8">foo</div></div></div><div><div><div id="id-6">bar</div></div></div></div></div>`
+      `<div><button>test</button><div><div><div><div id="id-7">foo</div></div></div><div><div><div id="id-8">foo</div></div></div><div><div><div id="id-6">bar</div></div></div></div></div>`,
     );
 
     container.querySelector('#id-6').click();
@@ -203,7 +209,7 @@ describe('static tree as child nodes', () => {
     expect(constuctCounter).toBe(3);
 
     expect(container.innerHTML).toBe(
-      `<div><button>test</button><div><div><div><div id="id-7">foo</div></div></div><div><div><div id="id-8">foo</div></div></div><div><div><div id="id-9">foo</div></div></div></div></div>`
+      `<div><button>test</button><div><div><div><div id="id-7">foo</div></div></div><div><div><div id="id-8">foo</div></div></div><div><div><div id="id-9">foo</div></div></div></div></div>`,
     );
 
     render(null, container);

@@ -15,16 +15,6 @@
     "type": "git",
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.{ts,tsx}": [
-      "prettier --parser=typescript --write",
-      "git add"
-    ]
-  },
   "pre-commit": {
     "silent": true,
     "run": [
@@ -46,18 +36,11 @@
     "build:move-compiled": "lerna exec -- node ../../scripts/bundle/move-compiled.js",
     "print:size": "node scripts/bundle/bundle-size.js",
     "install:browsertest": "cd fixtures/browser && npm install --legacy-peer-deps",
-    "lint": "eslint packages/*/src --ext .js --ext .ts --ext .tsx --ext .jsx",
+    "lint": "eslint packages/* --ext .js --ext .ts --ext .tsx --ext .jsx",
     "lint-staged": "lint-staged",
     "publish": "lerna publish --exact --force-publish=*",
     "alpha": "lerna publish prerelease --dist-tag next --exact --force-publish=*",
     "version": "npm run build && npm run docs-build && git add docs && npm run test",
-    "prettier": "npm-run-all prettier:*",
-    "prettier:tests-js": "prettier --print-width 160 --trailing-comma none --single-quote true --write --list-different packages/*/__tests__/**/*.{js,jsx}",
-    "prettier:tests-ts": "prettier --print-width 160 --trailing-comma none --single-quote true --write --list-different --parser=typescript packages/*/__tests__/**/*.tsx",
-    "prettier:src": "prettier --print-width 160 --trailing-comma none --single-quote true --write --list-different --parser=typescript packages/*/src/**/*.ts",
-    "prettier:demos": "prettier --print-width 160 --trailing-comma none --single-quote true --write --list-different --parser=typescript docs/*/app.js",
-    "prettier:fixtures": "prettier --print-width 160 --trailing-comma none --single-quote true --write --list-different fixtures/**/*.js",
-    "prettier:scripts": "prettier --print-width 160 --trailing-comma none --single-quote true --write --list-different scripts/**/*.js",
     "postinstall": "lerna bootstrap --no-ci && run-p install:* && npm run build",
     "test": "npm run test:node && npm run test:node-nodom && npm run test:browser",
     "test:node": "cross-env NODE_ENV=test jest --config --no-watchman",

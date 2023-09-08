@@ -29,12 +29,13 @@ describe('Mobx Misc', () => {
             </div>
           );
         }
+
         shouldComponentUpdate() {
           called++;
 
           return false;
         }
-      }
+      },
     );
     render(<C />, container);
     expect(container.querySelector('div').textContent).toBe('value:3');
@@ -58,11 +59,12 @@ describe('Mobx Misc', () => {
             </div>
           );
         }
+
         shouldComponentUpdate(nextProps) {
           called++;
           return nextProps.y !== 42;
         }
-      }
+      },
     );
     const B = observer(
       class Foo extends Component {
@@ -73,7 +75,7 @@ describe('Mobx Misc', () => {
             </span>
           );
         }
-      }
+      },
     );
     render(<B />, container);
     expect(container.querySelector('div').textContent).toBe('value:5');
@@ -100,7 +102,7 @@ describe('Mobx Misc', () => {
         name: 'test',
         get greetings() {
           return 'Hello my name is ' + this.name;
-        }
+        },
       });
     }
 
@@ -109,17 +111,25 @@ describe('Mobx Misc', () => {
         render() {
           return (
             <div>
-              <input type="text" onChange={(e) => (this.props.exampleState.name = e.target.value)} value={this.props.exampleState.name} />
+              <input
+                type="text"
+                onChange={(e) =>
+                  (this.props.exampleState.name = e.target.value)
+                }
+                value={this.props.exampleState.name}
+              />
               <span>{this.props.exampleState.greetings}</span>
             </div>
           );
         }
-      }
+      },
     );
 
     const exampleState = new ExampleState();
     render(<ExampleView exampleState={exampleState} />, container);
-    expect(container.querySelector('span').textContent).toBe('Hello my name is test');
+    expect(container.querySelector('span').textContent).toBe(
+      'Hello my name is test',
+    );
 
     done();
   });
@@ -134,6 +144,7 @@ describe('Mobx Misc', () => {
           a.set(3);
           this.state = {};
         }
+
         render() {
           return (
             <div>
@@ -142,7 +153,7 @@ describe('Mobx Misc', () => {
             </div>
           );
         }
-      }
+      },
     );
     const ParentWrapper = observer(function Parent() {
       return (
@@ -155,16 +166,22 @@ describe('Mobx Misc', () => {
     });
     render(<ParentWrapper />, container);
 
-    expect(container.getElementsByTagName('span')[0].textContent).toBe('child:3 - parent:2');
+    expect(container.getElementsByTagName('span')[0].textContent).toBe(
+      'child:3 - parent:2',
+    );
     a.set(5);
 
     rerender();
 
-    expect(container.getElementsByTagName('span')[0].textContent).toBe('child:5 - parent:5');
+    expect(container.getElementsByTagName('span')[0].textContent).toBe(
+      'child:5 - parent:5',
+    );
     a.set(7);
 
     rerender();
 
-    expect(container.getElementsByTagName('span')[0].textContent).toBe('child:7 - parent:7');
+    expect(container.getElementsByTagName('span')[0].textContent).toBe(
+      'child:7 - parent:7',
+    );
   });
 });

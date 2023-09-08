@@ -1,4 +1,4 @@
-import { Component, InfernoNode, render } from 'inferno';
+import { Component, type InfernoNode, render } from 'inferno';
 
 describe('animation hooks', () => {
   let container;
@@ -70,9 +70,11 @@ describe('animation hooks', () => {
       public componentWillMove() {
         spyer('willMove');
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -89,9 +91,11 @@ describe('animation hooks', () => {
       public componentWillMove() {
         spyer('willMove');
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -111,9 +115,11 @@ describe('animation hooks', () => {
       public componentWillMove() {
         spyer('willMove');
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div>{this.props.children}</div>;
       }
@@ -124,7 +130,7 @@ describe('animation hooks', () => {
         <App key="1">1</App>
         <App key="2">2</App>
       </div>,
-      container
+      container,
     );
     expect(container.textContent).toEqual('12');
 
@@ -133,7 +139,7 @@ describe('animation hooks', () => {
         <App key="2">2</App>
         <App key="1">1</App>
       </div>,
-      container
+      container,
     );
 
     expect(container.textContent).toEqual('21');
@@ -153,9 +159,11 @@ describe('animation hooks', () => {
         spyer('willMove');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div>{this.props.children}</div>;
       }
@@ -167,7 +175,7 @@ describe('animation hooks', () => {
         <App key="2">2</App>
         <App key="3">3</App>
       </div>,
-      container
+      container,
     );
     expect(container.textContent).toEqual('123');
 
@@ -177,7 +185,7 @@ describe('animation hooks', () => {
         <App key="3">3</App>
         <App key="1">1</App>
       </div>,
-      container
+      container,
     );
 
     expect(container.textContent).toEqual('231');
@@ -199,9 +207,11 @@ describe('animation hooks', () => {
         expect(dom instanceof HTMLDivElement).toEqual(true);
         parentDom = parentDom || parent;
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div>{this.props.children}</div>;
       }
@@ -214,7 +224,7 @@ describe('animation hooks', () => {
         <App key="3">3</App>
         <App key="4">4</App>
       </div>,
-      container
+      container,
     );
     expect(container.textContent).toEqual('1234');
 
@@ -225,7 +235,7 @@ describe('animation hooks', () => {
         <App key="2">2</App>
         <App key="1">1</App>
       </div>,
-      container
+      container,
     );
 
     expect(spyer).toHaveBeenCalledTimes(7);
@@ -248,9 +258,11 @@ describe('animation hooks', () => {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -269,9 +281,11 @@ describe('animation hooks', () => {
       public componentDidAppear() {
         spyer('no-op');
       }
+
       public componentDidMount() {
         spyer('childDidMount');
       }
+
       public render() {
         return <div />;
       }
@@ -282,9 +296,11 @@ describe('animation hooks', () => {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return (
           <div>
@@ -308,9 +324,11 @@ describe('animation hooks', () => {
       public componentDidAppear() {
         spyer('childDidAppear');
       }
+
       public componentDidMount() {
         spyer('childDidMount');
       }
+
       public render() {
         return <div>{this.props.children}</div>;
       }
@@ -326,7 +344,7 @@ describe('animation hooks', () => {
       constructor() {
         super(...arguments);
         this.state = {
-          items: [1]
+          items: [1],
         };
       }
 
@@ -334,7 +352,7 @@ describe('animation hooks', () => {
         spyer('didMount');
         setTimeout(() => {
           this.setState({
-            items: [1, 2]
+            items: [1, 2],
           });
           // Make sure inferno is done and then check the results
           setTimeout(finished, 5);
@@ -361,7 +379,9 @@ describe('animation hooks', () => {
       expect(spyer.calls.argsFor(2)).toEqual(['childDidAppear']);
       expect(spyer.calls.argsFor(3)).toEqual(['childDidMount']);
       expect(spyer.calls.argsFor(4)).toEqual(['childDidAppear']);
-      expect(container.innerHTML).toEqual('<div><div>1</div><div>2</div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><div>1</div><div>2</div></div>',
+      );
       done();
     };
   });
@@ -373,6 +393,7 @@ describe('animation hooks', () => {
         spyer('childDidAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
+
       public render() {
         return <div />;
       }
@@ -382,6 +403,7 @@ describe('animation hooks', () => {
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return (
           <div>
@@ -413,9 +435,11 @@ describe('animation hooks', () => {
         expect(done instanceof Function).toEqual(true);
         done();
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -439,12 +463,16 @@ describe('animation hooks', () => {
         expect(callback instanceof Function).toEqual(true);
         setTimeout(() => {
           callback();
-          setTimeout(() => didFinish(), 10);
+          setTimeout(() => {
+            didFinish();
+          }, 10);
         }, 10);
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -478,7 +506,9 @@ describe('animation hooks', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
       public state = {
-        items: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        items: [
+          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        ],
       };
 
       public render() {
@@ -520,9 +550,11 @@ describe('animation hooks', () => {
           callback();
         }, timeout);
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -559,6 +591,7 @@ describe('animation hooks', () => {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
+
       public componentWillDisappear(dom, callback) {
         spyer('willDisappear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
@@ -570,16 +603,19 @@ describe('animation hooks', () => {
           setTimeout(() => {
             callMeAfterLastRender = () => {
               callback();
-              setTimeout(() => didFinish(), 10);
+              setTimeout(() => {
+                didFinish();
+              }, 10);
             };
-            // tslint:disable-next-line:no-unused-expression
             lastRenderDone && callMeAfterLastRender();
           }, 10);
         }
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -593,8 +629,7 @@ describe('animation hooks', () => {
     expect(container.innerHTML).toBe('<div></div><div></div>');
 
     lastRenderDone = true;
-    // tslint:disable-next-line:no-unused-expression
-    callMeAfterLastRender && callMeAfterLastRender();
+    callMeAfterLastRender?.();
 
     function didFinish() {
       expect(spyer).toHaveBeenCalledTimes(5);
@@ -622,9 +657,11 @@ describe('animation hooks', () => {
           callback();
         }, 10);
       }
+
       public componentDidMount() {
         spyer('didMount');
       }
+
       public render() {
         return <div />;
       }
@@ -635,13 +672,13 @@ describe('animation hooks', () => {
         <App />
         <App />
       </div>,
-      container
+      container,
     );
     render(
       <div>
         <App />
       </div>,
-      container
+      container,
     );
     render(null, container);
 
@@ -671,7 +708,10 @@ describe('animation hooks', () => {
     const spyer = jasmine.createSpy();
 
     render(template(generateKeyNodes([], spyer)), container);
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     expect(container.textContent).toBe('#0#1#2#3');
     expect(container.firstChild.childNodes.length).toBe(4);
     // expect(spyer).toHaveBeenCalledTimes(4);
@@ -684,7 +724,10 @@ describe('animation hooks', () => {
   it('should size up', () => {
     const spyer = jasmine.createSpy();
     render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     expect(container.textContent).toBe('#0#1#2#3');
     expect(container.firstChild.childNodes.length).toBe(4);
     // expect(spyer).toHaveBeenCalledTimes(4);
@@ -709,13 +752,19 @@ describe('animation hooks', () => {
 
   it('should size down', () => {
     const spyer = jasmine.createSpy();
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
     // expect(spyer).toHaveBeenCalledTimes(2);
     expect(container.textContent).toBe('#0#1');
     expect(container.firstChild.childNodes.length).toBe(2);
 
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     render(template(generateKeyNodes(['#0', '#1'], spyer)), container);
 
     // expect(spyer).toHaveBeenCalledTimes(10);
@@ -729,13 +778,22 @@ describe('animation hooks', () => {
 
   it('should handle multiple removes of siblings combined with adds', () => {
     const spyer = jasmine.createSpy();
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3', '#4', '#5'], spyer)), container);
-    render(template(generateKeyNodes(['#0', '#2', '#5', '#6'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3', '#4', '#5'], spyer)),
+      container,
+    );
+    render(
+      template(generateKeyNodes(['#0', '#2', '#5', '#6'], spyer)),
+      container,
+    );
     // expect(spyer).toHaveBeenCalledTimes(2);
     expect(container.textContent).toBe('#0#2#5#6');
     expect(container.firstChild.childNodes.length).toBe(4);
 
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     render(template(generateKeyNodes(['#10', '#11'], spyer)), container);
 
     // expect(spyer).toHaveBeenCalledTimes(10);
@@ -749,32 +807,56 @@ describe('animation hooks', () => {
 
   it('should clear all nodes', () => {
     const spyer = jasmine.createSpy();
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     render(template(generateKeyNodes([], spyer)), container);
     expect(container.textContent).toBe('');
     expect(container.firstChild.childNodes.length).toBe(0);
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     render(template(generateKeyNodes([], spyer)), container);
   });
 
   it('should work with mixed nodes', () => {
     const spyer = jasmine.createSpy();
-    render(template(generateKeyNodes(['1', '#0', '#1', '#2'], spyer)), container);
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['1', '#0', '#1', '#2'], spyer)),
+      container,
+    );
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3'], spyer)),
+      container,
+    );
     expect(container.textContent).toBe('#0#1#2#3');
     expect(container.firstChild.childNodes.length).toBe(4);
   });
   it('should move a key for start to end', () => {
     const spyer = jasmine.createSpy();
-    render(template(generateKeyNodes(['a', '#0', '#1', '#2'], spyer)), container);
-    render(template(generateKeyNodes(['#0', '#1', '#2', 'a'], spyer)), container);
+    render(
+      template(generateKeyNodes(['a', '#0', '#1', '#2'], spyer)),
+      container,
+    );
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', 'a'], spyer)),
+      container,
+    );
     expect(container.textContent).toBe('#0#1#2a');
     expect(container.firstChild.childNodes.length).toBe(4);
   });
   it('should move a key', () => {
     const spyer = jasmine.createSpy();
-    render(template(generateKeyNodes(['#0', 'a', '#2', '#3'], spyer)), container);
-    render(template(generateKeyNodes(['#0', '#1', 'a', '#3'], spyer)), container);
+    render(
+      template(generateKeyNodes(['#0', 'a', '#2', '#3'], spyer)),
+      container,
+    );
+    render(
+      template(generateKeyNodes(['#0', '#1', 'a', '#3'], spyer)),
+      container,
+    );
     expect(container.textContent).toBe('#0#1a#3');
     expect(container.firstChild.childNodes.length).toBe(4);
   });
@@ -789,7 +871,10 @@ describe('animation hooks', () => {
   });
   it('should move a key with a size up', () => {
     render(template(generateKeyNodes(['a', '#1', '#2', '#3'])), container);
-    render(template(generateKeyNodes(['#0', '#1', '#2', '#3', 'a', '#5'])), container);
+    render(
+      template(generateKeyNodes(['#0', '#1', '#2', '#3', 'a', '#5'])),
+      container,
+    );
     expect(container.textContent).toBe('#0#1#2#3a#5');
     expect(container.firstChild.childNodes.length).toBe(6);
   });
@@ -811,7 +896,10 @@ describe('animation hooks', () => {
     expect(container.textContent).toBe('12340');
     expect(container.firstChild.childNodes.length).toBe(5);
     render(template(generateKeyNodes([0, 1, 2, 3, 4])), container);
-    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+    render(
+      template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])),
+      container,
+    );
     expect(container.textContent).toBe('74326abcdef1');
     expect(container.firstChild.childNodes.length).toBe(8);
     render(template(generateKeyNodes(['#0', 'a', '#2'])), container);
@@ -820,8 +908,14 @@ describe('animation hooks', () => {
   });
 
   it('should reorder keys', () => {
-    render(template(generateKeyNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])), container);
-    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+    render(
+      template(generateKeyNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])),
+      container,
+    );
+    render(
+      template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])),
+      container,
+    );
     expect(container.textContent).toBe('74326abcdef1');
     expect(container.firstChild.childNodes.length).toBe(8);
   });
@@ -917,7 +1011,10 @@ describe('animation hooks', () => {
   });
 
   it('should shuffle, insert and remove', () => {
-    render(template(generateKeyNodes(['a', 'b', 'c', 'd', 'e', 'f', 'g'])), container);
+    render(
+      template(generateKeyNodes(['a', 'b', 'c', 'd', 'e', 'f', 'g'])),
+      container,
+    );
     render(template(generateKeyNodes(['b', 'c', 'a'])), container);
     expect(container.textContent).toBe('bca');
     expect(container.firstChild.childNodes.length).toBe(3);
@@ -1032,41 +1129,82 @@ describe('animation hooks', () => {
 
   it('should allow any character as a key', () => {
     render(template(generateKeyNodes(['<WEIRD/&\\key>'])), container);
-    render(template(generateKeyNodes(['INSANE/(/&\\key', '<CRAZY/&\\key>', '<WEIRD/&\\key>'])), container);
-    expect(container.textContent).toBe('INSANE/(/&\\key<CRAZY/&\\key><WEIRD/&\\key>');
+    render(
+      template(
+        generateKeyNodes([
+          'INSANE/(/&\\key',
+          '<CRAZY/&\\key>',
+          '<WEIRD/&\\key>',
+        ]),
+      ),
+      container,
+    );
+    expect(container.textContent).toBe(
+      'INSANE/(/&\\key<CRAZY/&\\key><WEIRD/&\\key>',
+    );
     expect(container.firstChild.childNodes.length).toBe(3);
   });
 
   it('should reorder nodes', () => {
-    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+    render(
+      template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])),
+      container,
+    );
     expect(container.textContent).toBe('74326abcdef1');
     expect(container.firstChild.childNodes.length).toBe(8);
-    render(template(generateKeyNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])), container);
-    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+    render(
+      template(generateKeyNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])),
+      container,
+    );
+    render(
+      template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])),
+      container,
+    );
     expect(container.textContent).toBe('74326abcdef1');
     expect(container.firstChild.childNodes.length).toBe(8);
-    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+    render(
+      template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])),
+      container,
+    );
     expect(container.textContent).toBe('74326abcdef1');
     expect(container.firstChild.childNodes.length).toBe(8);
   });
 
   it('should do a advanced shuffle - numbers and letters', () => {
-    render(template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])), container);
+    render(
+      template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])),
+      container,
+    );
     expect(container.textContent).toBe('abcd123');
     expect(container.firstChild.childNodes.length).toBe(7);
-    render(template(generateKeyNodes([1, 'e', 2, 'b', 'f', 'g', 'c', 'a', 3])), container);
+    render(
+      template(generateKeyNodes([1, 'e', 2, 'b', 'f', 'g', 'c', 'a', 3])),
+      container,
+    );
     expect(container.textContent).toBe('1e2bfgca3');
     expect(container.firstChild.childNodes.length).toBe(9);
-    render(template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])), container);
+    render(
+      template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])),
+      container,
+    );
     expect(container.textContent).toBe('abcd123');
     expect(container.firstChild.childNodes.length).toBe(7);
-    render(template(generateKeyNodes([0, 'e', 2, 'b', 'f', 'g', 'c', 'a', 4])), container);
+    render(
+      template(generateKeyNodes([0, 'e', 2, 'b', 'f', 'g', 'c', 'a', 4])),
+      container,
+    );
     expect(container.textContent).toBe('0e2bfgca4');
     expect(container.firstChild.childNodes.length).toBe(9);
-    render(template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])), container);
+    render(
+      template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])),
+      container,
+    );
     expect(container.textContent).toBe('abcd123');
     expect(container.firstChild.childNodes.length).toBe(7);
-    render(template(generateKeyNodes([1, 'e', 2, 'b', 'f', 'g', 'c', 'a', 3])), container);
+    render(
+      template(generateKeyNodes([1, 'e', 2, 'b', 'f', 'g', 'c', 'a', 3])),
+      container,
+    );
     expect(container.textContent).toBe('1e2bfgca3');
     expect(container.firstChild.childNodes.length).toBe(9);
   });
@@ -1090,7 +1228,12 @@ describe('animation hooks', () => {
     render(template(generateKeyNodes(['a', 'b', 'c', 'd'])), container);
     expect(container.textContent).toBe('abcd');
     expect(container.firstChild.childNodes.length).toBe(4);
-    render(template(generateKeyNodes(['c', 'l', 1, 2, 3, 4, 5, 6, 7, 8, 9, 'd', 'g', 'b'])), container);
+    render(
+      template(
+        generateKeyNodes(['c', 'l', 1, 2, 3, 4, 5, 6, 7, 8, 9, 'd', 'g', 'b']),
+      ),
+      container,
+    );
     expect(container.textContent).toBe('cl123456789dgb');
     expect(container.firstChild.childNodes.length).toBe(14);
   });
@@ -1121,12 +1264,13 @@ describe('animation hooks', () => {
     for (let i = 0; i < 10; i++) {
       // eslint-disable-next-line
       it('Should handle massive arrays shifting ' + i + ' times by ' + i, () => {
-        for (let j = 0; j < i; j++) {
-          items = items.concat(items.splice(i, j));
-        }
-        render(template(generateKeyNodes(items)), container);
-        expect(container.textContent).toEqual(items.join(''));
-      });
+          for (let j = 0; j < i; j++) {
+            items = items.concat(items.splice(i, j));
+          }
+          render(template(generateKeyNodes(items)), container);
+          expect(container.textContent).toEqual(items.join(''));
+        },
+      );
     }
   });
 
@@ -1140,10 +1284,12 @@ describe('animation hooks', () => {
       public componentDidAppear(_dom) {
         // Trigger animation code paths on add
       }
+
       public componentWillDisappear(_dom, done) {
         // Trigger animation code paths on remove
         done();
       }
+
       public render({ children }: AnimatedProps) {
         return <div>{children}</div>;
       }
@@ -1210,12 +1356,12 @@ describe('animation hooks', () => {
         o(8),
         o(9),
         o(10),
-        o(11)
+        o(11),
       ];
       render(template(layout1), container);
 
       expect(container.textContent).toBe(
-        ',wk31,d1,d2,d3,d4,d5,d6,d7,wk32,d8,d9,d10,d11,d12,d13,d14,wk33,d15,d16,d17,d18,d19,d20,d21,wk34,d22,d23,d24,d25,d26,d27,d28,wk35,d29,d30,d31,o1,o2,o3,o4,wk36,o5,o6,o7,o8,o9,o10,o11'
+        ',wk31,d1,d2,d3,d4,d5,d6,d7,wk32,d8,d9,d10,d11,d12,d13,d14,wk33,d15,d16,d17,d18,d19,d20,d21,wk34,d22,d23,d24,d25,d26,d27,d28,wk35,d29,d30,d31,o1,o2,o3,o4,wk36,o5,o6,o7,o8,o9,o10,o11',
       );
 
       const layout2 = [
@@ -1266,12 +1412,12 @@ describe('animation hooks', () => {
         o(6),
         o(7),
         o(8),
-        o(9)
+        o(9),
       ];
       render(template(layout2), container);
 
       expect(container.textContent).toBe(
-        ',wk35,o29,o30,o31,d1,d2,d3,d4,wk36,d5,d6,d7,d8,d9,d10,d11,wk37,d12,d13,d14,d15,d16,d17,d18,wk38,d19,d20,d21,d22,d23,d24,d25,wk39,d26,d27,d28,d29,d30,o1,o2,wk40,o3,o4,o5,o6,o7,o8,o9'
+        ',wk35,o29,o30,o31,d1,d2,d3,d4,wk36,d5,d6,d7,d8,d9,d10,d11,wk37,d12,d13,d14,d15,d16,d17,d18,wk38,d19,d20,d21,d22,d23,d24,d25,wk39,d26,d27,d28,d29,d30,o1,o2,wk40,o3,o4,o5,o6,o7,o8,o9',
       );
     });
   });
@@ -1285,6 +1431,7 @@ function factory(spyer?: jasmine.Spy) {
         spyer('didAppear');
       }
     }
+
     public componentWillDisappear(_dom, done) {
       if (spyer) {
         spyer('willDisappear');
@@ -1292,13 +1439,14 @@ function factory(spyer?: jasmine.Spy) {
 
       done();
     }
+
     public render({ children }) {
       return <div>{children}</div>;
     }
   };
 }
 
-function generateKeyNodes(array: (string | number)[], spyer?) {
+function generateKeyNodes(array: Array<string | number>, spyer?) {
   let i: number = 0;
   let id: string | number;
   let key: string | number;
@@ -1317,7 +1465,7 @@ function generateKeyNodes(array: (string | number)[], spyer?) {
     children.push(
       <Tag key={newKey} id={String(id)}>
         {id}
-      </Tag>
+      </Tag>,
     );
   }
   return children;

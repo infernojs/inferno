@@ -62,7 +62,7 @@ describe('generic higher order components', () => {
 
     const services = {
       apiService: new ApiService(),
-      todoService: new TodoService()
+      todoService: new TodoService(),
     };
 
     const A = () => (

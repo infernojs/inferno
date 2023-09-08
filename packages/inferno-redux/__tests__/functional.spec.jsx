@@ -5,7 +5,8 @@ import { createStore } from 'redux';
 describe('Inferno - redux -specifics', () => {
   let container;
 
-  const stringBuilder = (prev = '', action) => (action.type === 'APPEND' ? prev + action.payload : prev);
+  const stringBuilder = (prev = '', action) =>
+    action.type === 'APPEND' ? prev + action.payload : prev;
 
   beforeEach(() => {
     container = document.createElement('div');
@@ -33,9 +34,9 @@ describe('Inferno - redux -specifics', () => {
           ref: {
             onComponentDidMount() {
               mountedCalled++;
-            }
-          }
-        })
+            },
+          },
+        }),
       )(FunctionalComponent);
 
       const div = document.createElement('div');
@@ -65,7 +66,7 @@ describe('Inferno - redux -specifics', () => {
       FunctionalComponent.defaultHooks = {
         onComponentWillUpdate() {
           updateCounter++;
-        }
+        },
       };
 
       const Container = connect(
@@ -75,9 +76,9 @@ describe('Inferno - redux -specifics', () => {
           ref: {
             onComponentDidMount() {
               mountedCalled++;
-            }
-          }
-        })
+            },
+          },
+        }),
       )(FunctionalComponent);
 
       const div = document.createElement('div');

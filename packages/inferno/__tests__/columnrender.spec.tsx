@@ -20,45 +20,83 @@ describe('Columns like tests - (JSX)', () => {
     function buildTestCases(row, item, suffix) {
       return [
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'add one column -' + suffix,
-          update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4)), row(3, item(5, 5))]
+          update: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+            row(3, item(5, 5)),
+          ],
         },
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'add one item -' + suffix,
-          update: [row(1, item(1, 1), item(2, 2), item(5, 5)), row(2, item(3, 3), item(4, 4))]
+          update: [
+            row(1, item(1, 1), item(2, 2), item(5, 5)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
         },
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'add one column and item -' + suffix,
-          update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4), item(6, 6)), row(3, item(5, 5))]
+          update: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4), item(6, 6)),
+            row(3, item(5, 5)),
+          ],
         },
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'swap all items -' + suffix,
-          update: [row(1, item(2, 2), item(1, 1)), row(2, item(4, 4), item(3, 3))]
+          update: [
+            row(1, item(2, 2), item(1, 1)),
+            row(2, item(4, 4), item(3, 3)),
+          ],
         },
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'remove first item -' + suffix,
-          update: [row(1, item(2, 2)), row(2, item(4, 4))]
+          update: [row(1, item(2, 2)), row(2, item(4, 4))],
         },
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'remove last item -' + suffix,
-          update: [row(1, item(1, 1)), row(2, item(3, 3))]
+          update: [row(1, item(1, 1)), row(2, item(3, 3))],
         },
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'remove all items-' + suffix,
-          update: [row(1), row(2)]
+          update: [row(1), row(2)],
         },
         {
-          initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
+          initial: [
+            row(1, item(1, 1), item(2, 2)),
+            row(2, item(3, 3), item(4, 4)),
+          ],
           name: 'remove all columns-' + suffix,
-          update: []
-        }
+          update: [],
+        },
       ];
     }
 
@@ -97,7 +135,9 @@ describe('Columns like tests - (JSX)', () => {
         // Skip first - its hardcoded
         for (let j = 1; j < columnChildNodes.length; j++) {
           const itemRoot = columnChildNodes[j];
-          expect(itemRoot.innerHTML).toBe(columns[i].items[j - 1].text.toString());
+          expect(itemRoot.innerHTML).toBe(
+            columns[i].items[j - 1].text.toString(),
+          );
         }
       }
     }
@@ -152,7 +192,7 @@ describe('Columns like tests - (JSX)', () => {
       }
 
       interface ColumnKeyedProps {
-        items: { id: string; text: string }[];
+        items: Array<{ id: string; text: string }>;
       }
 
       class ColumnKeyed extends Component<ColumnKeyedProps> {
@@ -215,24 +255,43 @@ describe('Columns like tests - (JSX)', () => {
 
       keyedTests.forEach((testCase) => {
         it('Should ' + testCase.name, () => {
-          const columnsToBeAdded = getDifferentObjects(testCase.update, testCase.initial);
-          const columnsToUpdate = getSameObjects(testCase.update, testCase.initial);
-          const columnsToRemove = getDifferentObjects(testCase.initial, testCase.update);
+          const columnsToBeAdded = getDifferentObjects(
+            testCase.update,
+            testCase.initial,
+          );
+          const columnsToUpdate = getSameObjects(
+            testCase.update,
+            testCase.initial,
+          );
+          const columnsToRemove = getDifferentObjects(
+            testCase.initial,
+            testCase.update,
+          );
 
           let itemsToBeAdded = [];
           let itemsToUpdate = [];
           let itemsToRemove = [];
           let initialItemsCount = 0;
 
-          for (let i = 0; i < testCase.update.length || i < testCase.initial.length; i++) {
+          for (
+            let i = 0;
+            i < testCase.update.length || i < testCase.initial.length;
+            i++
+          ) {
             const updateColumns = testCase.update[i];
             const intialColumns = testCase.initial[i];
 
             if (!isNullOrUndef(updateColumns)) {
               if (!isNullOrUndef(intialColumns)) {
-                itemsToBeAdded = itemsToBeAdded.concat(getDifferentObjects(updateColumns.items, intialColumns.items));
-                itemsToRemove = itemsToRemove.concat(getDifferentObjects(intialColumns.items, updateColumns.items));
-                itemsToUpdate = itemsToUpdate.concat(getSameObjects(updateColumns.items, intialColumns.items));
+                itemsToBeAdded = itemsToBeAdded.concat(
+                  getDifferentObjects(updateColumns.items, intialColumns.items),
+                );
+                itemsToRemove = itemsToRemove.concat(
+                  getDifferentObjects(intialColumns.items, updateColumns.items),
+                );
+                itemsToUpdate = itemsToUpdate.concat(
+                  getSameObjects(updateColumns.items, intialColumns.items),
+                );
                 initialItemsCount += intialColumns.items.length;
               } else {
                 itemsToBeAdded = itemsToBeAdded.concat(updateColumns.items);
@@ -291,7 +350,11 @@ describe('Columns like tests - (JSX)', () => {
         return { _testKey: key, items };
       }
 
-      const nonKeyedTestCases = buildTestCases(BuildRow, BuildItem, 'NON-KEYED');
+      const nonKeyedTestCases = buildTestCases(
+        BuildRow,
+        BuildItem,
+        'NON-KEYED',
+      );
 
       interface ItemProps {
         text: string;
@@ -314,7 +377,7 @@ describe('Columns like tests - (JSX)', () => {
       }
 
       interface ColumnProps {
-        items: { text: string }[];
+        items: Array<{ text: string }>;
       }
 
       class Column extends Component<ColumnProps> {
@@ -377,24 +440,43 @@ describe('Columns like tests - (JSX)', () => {
 
       nonKeyedTestCases.forEach((testCase) => {
         it('Should ' + testCase.name, () => {
-          const columnsToBeAdded = getDifferentObjects(testCase.update, testCase.initial);
-          const columnsToUpdate = getSameObjects(testCase.update, testCase.initial);
-          const columnsToRemove = getDifferentObjects(testCase.initial, testCase.update);
+          const columnsToBeAdded = getDifferentObjects(
+            testCase.update,
+            testCase.initial,
+          );
+          const columnsToUpdate = getSameObjects(
+            testCase.update,
+            testCase.initial,
+          );
+          const columnsToRemove = getDifferentObjects(
+            testCase.initial,
+            testCase.update,
+          );
 
           let itemsToBeAdded = [];
           let itemsToUpdate = [];
           let itemsToRemove = [];
           let initialItemsCount = 0;
 
-          for (let i = 0; i < testCase.update.length || i < testCase.initial.length; i++) {
+          for (
+            let i = 0;
+            i < testCase.update.length || i < testCase.initial.length;
+            i++
+          ) {
             const updateColumns = testCase.update[i];
             const intialColumns = testCase.initial[i];
 
             if (!isNullOrUndef(updateColumns)) {
               if (!isNullOrUndef(intialColumns)) {
-                itemsToBeAdded = itemsToBeAdded.concat(getDifferentObjects(updateColumns.items, intialColumns.items));
-                itemsToRemove = itemsToRemove.concat(getDifferentObjects(intialColumns.items, updateColumns.items));
-                itemsToUpdate = itemsToUpdate.concat(getSameObjects(updateColumns.items, intialColumns.items));
+                itemsToBeAdded = itemsToBeAdded.concat(
+                  getDifferentObjects(updateColumns.items, intialColumns.items),
+                );
+                itemsToRemove = itemsToRemove.concat(
+                  getDifferentObjects(intialColumns.items, updateColumns.items),
+                );
+                itemsToUpdate = itemsToUpdate.concat(
+                  getSameObjects(updateColumns.items, intialColumns.items),
+                );
                 initialItemsCount += intialColumns.items.length;
               } else {
                 itemsToBeAdded = itemsToBeAdded.concat(updateColumns.items);

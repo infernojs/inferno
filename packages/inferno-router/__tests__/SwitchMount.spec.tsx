@@ -19,7 +19,7 @@ describe('A <Switch>', () => {
     }
 
     const history = createMemoryHistory({
-      initialEntries: ['/one']
+      initialEntries: ['/one'],
     });
 
     render(
@@ -29,7 +29,7 @@ describe('A <Switch>', () => {
           <Route path="/two" component={App} />
         </Switch>
       </Router>,
-      node
+      node,
     );
 
     expect(mountCount).toBe(1);
@@ -45,7 +45,6 @@ describe('A <Switch>', () => {
   it('Should be possible to have multiple children in Route', () => {
     const node = document.createElement('div');
 
-    // @ts-ignore
     let mountCount = 0;
 
     class App extends Component {
@@ -63,7 +62,7 @@ describe('A <Switch>', () => {
     }
 
     const history = createMemoryHistory({
-      initialEntries: ['/one']
+      initialEntries: ['/one'],
     });
 
     render(
@@ -79,7 +78,7 @@ describe('A <Switch>', () => {
           </Route>
         </Switch>
       </Router>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toBe('<div></div><div></div><div>Test</div>');

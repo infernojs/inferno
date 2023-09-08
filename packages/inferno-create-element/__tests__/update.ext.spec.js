@@ -80,7 +80,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should render a node with dynamic values', () => {
-    const template = (val1, val2) => createElement('div', null, 'Hello world - ', val1, ' ', val2);
+    const template = (val1, val2) =>
+      createElement('div', null, 'Hello world - ', val1, ' ', val2);
 
     render(template('Inferno', 'Owns'), container);
     expect(container.innerHTML).toBe('<div>Hello world - Inferno Owns</div>');
@@ -107,7 +108,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update a wrapped text node', () => {
-    const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
+    const template = (val1, val2) =>
+      createElement('div', null, val1, ' foo', val2);
 
     render(template(null), container);
     expect(container.innerHTML).toBe('<div> foo</div>');
@@ -123,7 +125,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update a wrapped text node', () => {
-    const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
+    const template = (val1, val2) =>
+      createElement('div', null, val1, ' foo', val2);
 
     render(template(null), container);
     expect(container.innerHTML).toBe('<div> foo</div>');
@@ -148,7 +151,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update a wrapped text node with 4 arguments', () => {
-    const template = (val1, val2, val3, val4) => createElement('div', null, val1, val2, val3, val4);
+    const template = (val1, val2, val3, val4) =>
+      createElement('div', null, val1, val2, val3, val4);
 
     render(template('Hello', ' world!', ' and ', 'Bar'), container);
     expect(container.innerHTML).toBe('<div>Hello world! and Bar</div>');
@@ -165,7 +169,9 @@ describe('Update (non-jsx)', () => {
     render(template('Hello', null, ' and ', 'Zoo'), container);
     expect(container.innerHTML).toBe('<div>Hello and Zoo</div>');
 
-    expect(() => render(template('Hello', {}, ' and ', 'Zoo'), container)).toThrow();
+    expect(() => {
+      render(template('Hello', {}, ' and ', 'Zoo'), container);
+    }).toThrow();
 
     render(template('Hello', ' poz', ' and ', 'Zoo'), container);
     expect(container.innerHTML).toBe('<div>Hello poz and Zoo</div>');
@@ -182,9 +188,9 @@ describe('Update (non-jsx)', () => {
       createElement(
         'div',
         {
-          id: val
+          id: val,
         },
-        'Hello, World'
+        'Hello, World',
       );
 
     render(template('Hello'), container);
@@ -214,9 +220,9 @@ describe('Update (non-jsx)', () => {
       createElement(
         'div',
         {
-          id: val1
+          id: val1,
         },
-        'Hello, World'
+        'Hello, World',
       );
 
     render(template('Hello'), container);
@@ -237,9 +243,9 @@ describe('Update (non-jsx)', () => {
       createElement(
         'div',
         {
-          id: val1
+          id: val1,
         },
-        'Hello, World'
+        'Hello, World',
       );
 
     render(template(null), container); // should unset
@@ -263,9 +269,9 @@ describe('Update (non-jsx)', () => {
       createElement(
         'div',
         {
-          class: 'hello, world'
+          class: 'hello, world',
         },
-        child
+        child,
       );
 
     const spanList = () => createElement('span', null, '1', '2', '3');
@@ -281,7 +287,9 @@ describe('Update (non-jsx)', () => {
     render(template(span(spanList())), container);
     expect(container.firstChild.nodeType).toBe(1);
     expect(container.firstChild.firstChild.childNodes.length).toBe(1);
-    expect(container.firstChild.firstChild.firstChild.childNodes.length).toBe(3);
+    expect(container.firstChild.firstChild.firstChild.childNodes.length).toBe(
+      3,
+    );
     expect(container.firstChild.tagName).toBe('DIV');
 
     render(template(span(null)), container);
@@ -297,22 +305,22 @@ describe('Update (non-jsx)', () => {
         'div',
         {
           className: val2,
-          id: val1
+          id: val1,
         },
         createElement(
           'div',
           {
-            id: val5
+            id: val5,
           },
-          createElement('span', null, val6)
+          createElement('span', null, val6),
         ),
         createElement(
           'div',
           {
-            className: val4
+            className: val4,
           },
-          val3
-        )
+          val3,
+        ),
       );
     };
 
@@ -522,66 +530,85 @@ describe('Update (non-jsx)', () => {
           'div',
           null,
           createElement('span', {
-            id: child
-          })
-        )
+            id: child,
+          }),
+        ),
       );
 
     render(template('id#1'), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span id="id#1"></span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span id="id#1"></span></div>',
+    );
 
     render(template('id#2'), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span id="id#2"></span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span id="id#2"></span></div>',
+    );
     render(template('id#3'), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span id="id#3"></span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span id="id#3"></span></div>',
+    );
   });
 
   it('should update an node with static child and dynamic custom attribute', () => {
-    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const template = (child) =>
+      createElement('div', null, createElement('div', null, child));
     const span = function (val) {
       return createElement('span', {
-        custom_attr: val
+        custom_attr: val,
       });
     };
 
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1"></span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span custom_attr="id#1"></span></div>',
+    );
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1"></span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span custom_attr="id#1"></span></div>',
+    );
   });
 
   it('should update an node with static child and dynamic custom attribute and static text', () => {
-    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const template = (child) =>
+      createElement('div', null, createElement('div', null, child));
     const span = function (val) {
       return createElement(
         'span',
         {
-          custom_attr: val
+          custom_attr: val,
         },
-        'Hello!!'
+        'Hello!!',
       );
     };
 
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1">Hello!!</span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span custom_attr="id#1">Hello!!</span></div>',
+    );
     render(template(span('id#2')), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#2">Hello!!</span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span custom_attr="id#2">Hello!!</span></div>',
+    );
   });
 
   it('should update an node with static child and dynamic custom attribute and static text #2', () => {
-    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const template = (child) =>
+      createElement('div', null, createElement('div', null, child));
     const span = function (val) {
       return createElement(
         'span',
         {
-          custom_attr: val
+          custom_attr: val,
         },
-        'Hello!!'
+        'Hello!!',
       );
     };
 
     render(template(span('id#1')), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span custom_attr="id#1">Hello!!</span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span custom_attr="id#1">Hello!!</span></div>',
+    );
   });
 
   it('should not ignore a empty text node', () => {
@@ -605,9 +632,9 @@ describe('Update (non-jsx)', () => {
       createElement(
         'div',
         {
-          className: val1
+          className: val1,
         },
-        val2
+        val2,
       );
 
     render(template('hello', ['hello', 'world']), container);
@@ -620,7 +647,8 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update an node with static child and text', () => {
-    const template = () => createElement('div', null, createElement('div', null, 'Hello, World'));
+    const template = () =>
+      createElement('div', null, createElement('div', null, 'Hello, World'));
 
     render(template(), container);
     expect(container.firstChild.innerHTML).toBe('<div>Hello, World</div>');
@@ -632,16 +660,20 @@ describe('Update (non-jsx)', () => {
   });
 
   it('should update an node with dynamic child', () => {
-    const template = (child) => createElement('div', null, createElement('div', null, child));
+    const template = (child) =>
+      createElement('div', null, createElement('div', null, child));
     const span = function () {
       return createElement('span', null, 'Hello ', 'World');
     };
     render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe('<div><span>Hello World</span></div>');
+    expect(container.firstChild.innerHTML).toBe(
+      '<div><span>Hello World</span></div>',
+    );
   });
 
   it('should inject dynamic text various places', () => {
-    const div = (text) => createElement('div', null, 'There is ', text, ' spoon!');
+    const div = (text) =>
+      createElement('div', null, 'There is ', text, ' spoon!');
 
     render(div('no'), container);
     expect(container.innerHTML).toBe('<div>There is no spoon!</div>');
@@ -664,18 +696,20 @@ describe('Update (non-jsx)', () => {
 
     template = (styleRule) =>
       createElement('div', {
-        style: styleRule
+        style: styleRule,
       });
 
     render(
       template({
         color: 'red',
-        'padding-left': '10px'
+        'padding-left': '10px',
       }),
-      container
+      container,
     );
 
-    expect(container.innerHTML).toBe('<div style="color: red; padding-left: 10px;"></div>');
+    expect(container.innerHTML).toBe(
+      '<div style="color: red; padding-left: 10px;"></div>',
+    );
 
     render(template(null), container);
 
@@ -691,62 +725,64 @@ describe('Update (non-jsx)', () => {
           'div',
           {
             style: {
-              width: '200px'
-            }
+              width: '200px',
+            },
           },
           createElement(
             'div',
             {
-              class: 'Hello, world!'
+              class: 'Hello, world!',
             },
             createElement('div', {
-              style: styleRule
-            })
-          )
+              style: styleRule,
+            }),
+          ),
         );
 
       it('Initial render (creation)', () => {
         render(
           template({
             color: 'red',
-            'padding-top': '10px'
+            'padding-top': '10px',
           }),
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe(
-          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>'
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>',
         );
         render(
           template({
             color: 'red',
-            'padding-left': '10px'
+            'padding-left': '10px',
           }),
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe(
-          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>'
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>',
         );
       });
 
       it('Second render (update)', () => {
         render(template(null), container); // change style to null
 
-        expect([null, '']).toContain(container.firstChild.firstChild.getAttribute('style'));
+        expect([null, '']).toContain(
+          container.firstChild.firstChild.getAttribute('style'),
+        );
       });
 
       it('Third render (update)', () => {
         render(
           template({
             color: 'blue',
-            'margin-bottom': '20px'
+            'margin-bottom': '20px',
           }),
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe(
-          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>'
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>',
         );
       });
     });
@@ -759,7 +795,15 @@ describe('Update (non-jsx)', () => {
           return createElement(
             'div',
             null,
-            createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'Text'))))
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement('tr', null, createElement('td', null, 'Text')),
+              ),
+            ),
           );
         }
 
@@ -767,7 +811,15 @@ describe('Update (non-jsx)', () => {
           return createElement(
             'div',
             null,
-            createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'bar'))))
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement('tr', null, createElement('td', null, 'bar')),
+              ),
+            ),
           );
         }
 
@@ -775,48 +827,104 @@ describe('Update (non-jsx)', () => {
           return createElement(
             'div',
             null,
-            createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'text1'))))
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement('tr', null, createElement('td', null, 'text1')),
+              ),
+            ),
           );
         }
 
         // eslint-disable-next-line
         render(A(), container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>Text</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>Text</td></tr></table></div></div>',
+        );
         // eslint-disable-next-line
         render(B(), container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>bar</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>bar</td></tr></table></div></div>',
+        );
         // eslint-disable-next-line
         render(C(), container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text1</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text1</td></tr></table></div></div>',
+        );
       });
 
       it('variation 2', () => {
         const A = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'text', createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text', createElement('br', null)),
+              ),
+            ),
+          ),
         );
         const B = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['text']))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement('tr', null, createElement('td', null, ['text'])),
+            ),
+          ),
         );
         const C = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['value'], createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, ['value'], createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text<br></td></tr></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text</td></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>value<br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 3', () => {
-        const A = createElement('div', null, createElement('div', null, createElement('table', null)));
+        const A = createElement(
+          'div',
+          null,
+          createElement('div', null, createElement('table', null)),
+        );
         const B = createElement(
           'div',
           null,
@@ -827,10 +935,15 @@ describe('Update (non-jsx)', () => {
               'table',
               null,
               createElement('tr', null),
-              createElement('tr', null, createElement('td', null, 'A', createElement('br', null)), createElement('td', null, 'B', createElement('br', null))),
-              createElement('tr', null)
-            )
-          )
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'A', createElement('br', null)),
+                createElement('td', null, 'B', createElement('br', null)),
+              ),
+              createElement('tr', null),
+            ),
+          ),
         );
         const C = createElement(
           'div',
@@ -838,112 +951,300 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', null), createElement('tr', null, createElement('td', null, createElement('br', null))))
-          )
+            createElement(
+              'table',
+              null,
+              createElement('tr', null),
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 4', () => {
         const A = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text 1', createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         const B = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         const C = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text 2', createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td><br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td><br></td></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 5', () => {
         const A = [];
 
-        A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
-        A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', 'text a', createElement('br', null))));
-        A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, createElement('br', null)),
+          ),
+        );
+        A[1] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement(
+              'td',
+              null,
+              'text 1',
+              'text a',
+              createElement('br', null),
+            ),
+          ),
+        );
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, 'text 2', createElement('br', null)),
+          ),
+        );
         A[3] = createElement(
           'table',
           null,
-          createElement('tr', null, createElement('td', null, [createElement('br', null), 'text 3'], createElement('br', null)))
+          createElement(
+            'tr',
+            null,
+            createElement(
+              'td',
+              null,
+              [createElement('br', null), 'text 3'],
+              createElement('br', null),
+            ),
+          ),
         );
         render(A[0], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
         render(A[1], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 1text a<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1text a<br></td></tr></table>',
+        );
         render(A[2], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 2<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
         render(A[3], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br>text 3<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
       });
 
       it('variation 6', () => {
         const A = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text 1', createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         const B = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         const C = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null)))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text 2', createElement('br', null)),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td><br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td><br></td></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 7', () => {
         const A = [];
-        A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
-        A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br', null))));
-        A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, createElement('br', null)),
+          ),
+        );
+        A[1] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, 'text 1', createElement('br', null)),
+          ),
+        );
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, 'text 2', createElement('br', null)),
+          ),
+        );
         A[3] = createElement(
           'table',
           null,
-          createElement('tr', null, createElement('td', null, [createElement('br', null)], 'text 3', createElement('br', null)))
+          createElement(
+            'tr',
+            null,
+            createElement(
+              'td',
+              null,
+              [createElement('br', null)],
+              'text 3',
+              createElement('br', null),
+            ),
+          ),
         );
 
         render(A[0], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
         render(A[1], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 1<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1<br></td></tr></table>',
+        );
         render(A[2], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 2<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
         render(A[3], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br>text 3<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
       });
     });
 
@@ -953,7 +1254,19 @@ describe('Update (non-jsx)', () => {
           return createElement(
             'div',
             null,
-            createElement('div', null, createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, 'Text'))))
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement(
+                  'tr',
+                  { key: 'row1' },
+                  createElement('td', { key: 'td1' }, 'Text'),
+                ),
+              ),
+            ),
           );
         }
 
@@ -961,7 +1274,19 @@ describe('Update (non-jsx)', () => {
           return createElement(
             'div',
             null,
-            createElement('div', null, createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, 'bar'))))
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement(
+                  'tr',
+                  { key: 'row1' },
+                  createElement('td', { key: 'td1' }, 'bar'),
+                ),
+              ),
+            ),
           );
         }
 
@@ -969,19 +1294,37 @@ describe('Update (non-jsx)', () => {
           return createElement(
             'div',
             null,
-            createElement('div', null, createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, 'text1'))))
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement(
+                  'tr',
+                  { key: 'row1' },
+                  createElement('td', { key: 'td1' }, 'text1'),
+                ),
+              ),
+            ),
           );
         }
 
         // eslint-disable-next-line
         render(A(), container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>Text</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>Text</td></tr></table></div></div>',
+        );
         // eslint-disable-next-line
         render(B(), container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>bar</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>bar</td></tr></table></div></div>',
+        );
         // eslint-disable-next-line
         render(C(), container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text1</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text1</td></tr></table></div></div>',
+        );
       });
 
       it('variation 2', () => {
@@ -991,14 +1334,37 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['text', createElement('br', null)])))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1' }, [
+                  'text',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
         );
 
         const B = createElement(
           'div',
           null,
-          createElement('div', null, createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['text']))))
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1' }, ['text']),
+              ),
+            ),
+          ),
         );
 
         const C = createElement(
@@ -1007,20 +1373,41 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['value', createElement('br', null)])))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1' }, [
+                  'value',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text<br></td></tr></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text</td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text</td></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>value<br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 3', () => {
-        const A = createElement('div', null, createElement('div', null, createElement('table', null)));
+        const A = createElement(
+          'div',
+          null,
+          createElement('div', null, createElement('table', null)),
+        );
         const B = createElement(
           'div',
           null,
@@ -1034,12 +1421,22 @@ describe('Update (non-jsx)', () => {
               createElement(
                 'tr',
                 { key: 'row2' },
-                createElement('td', { key: 'td2-1' }, 'A', createElement('br', null)),
-                createElement('td', { key: 'td2-2' }, 'B', createElement('br', null))
+                createElement(
+                  'td',
+                  { key: 'td2-1' },
+                  'A',
+                  createElement('br', null),
+                ),
+                createElement(
+                  'td',
+                  { key: 'td2-2' },
+                  'B',
+                  createElement('br', null),
+                ),
               ),
-              createElement('tr', { key: 'row3' })
-            )
-          )
+              createElement('tr', { key: 'row3' }),
+            ),
+          ),
         );
         const C = createElement(
           'div',
@@ -1051,17 +1448,32 @@ describe('Update (non-jsx)', () => {
               'table',
               null,
               createElement('tr', { key: 'row1' }),
-              createElement('tr', { key: 'row2' }, createElement('td', { key: 'td2-2' }, '', createElement('br', null)))
-            )
-          )
+              createElement(
+                'tr',
+                { key: 'row2' },
+                createElement(
+                  'td',
+                  { key: 'td2-2' },
+                  '',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 4', () => {
@@ -1071,8 +1483,21 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, 'text 1', createElement('br', null))))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement(
+                  'td',
+                  { key: 'td1-1' },
+                  'text 1',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
         );
 
         const B = createElement(
@@ -1081,8 +1506,21 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, '', createElement('br', null))))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement(
+                  'td',
+                  { key: 'td1-1' },
+                  '',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
         );
 
         const C = createElement(
@@ -1091,45 +1529,116 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, 'text 2', createElement('br', null))))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement(
+                  'td',
+                  { key: 'td1-1' },
+                  'text 2',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td><br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td><br></td></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 5', () => {
         const A = [];
 
-        A[0] = createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, '', createElement('br', null))));
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              '',
+              createElement('br', null),
+            ),
+          ),
+        );
 
         A[1] = createElement(
           'table',
           null,
-          createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, ['text 1', 'text a'], createElement('br', null)))
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              ['text 1', 'text a'],
+              createElement('br', null),
+            ),
+          ),
         );
 
-        A[2] = createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, ['text 2'], createElement('br', null))));
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              ['text 2'],
+              createElement('br', null),
+            ),
+          ),
+        );
 
         A[3] = createElement(
           'table',
           null,
-          createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [createElement('br', null), 'text 3'], createElement('br', null)))
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              [createElement('br', null), 'text 3'],
+              createElement('br', null),
+            ),
+          ),
         );
 
         render(A[0], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
         render(A[1], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 1text a<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1text a<br></td></tr></table>',
+        );
         render(A[2], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 2<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
         render(A[3], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br>text 3<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
       });
 
       it('variation 6', () => {
@@ -1139,8 +1648,19 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, ['text 1', createElement('br', null)])))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1-1' }, [
+                  'text 1',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
         );
 
         const B = createElement(
@@ -1149,8 +1669,19 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, ['', createElement('br', null)])))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1-1' }, [
+                  '',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
         );
 
         const C = createElement(
@@ -1159,41 +1690,114 @@ describe('Update (non-jsx)', () => {
           createElement(
             'div',
             null,
-            createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, ['text 2', createElement('br', null)])))
-          )
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1-1' }, [
+                  'text 2',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
         );
 
         render(A, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
+        );
         render(B, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td><br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td><br></td></tr></table></div></div>',
+        );
         render(C, container);
-        expect(container.innerHTML).toBe('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
+        );
       });
 
       it('variation 7', () => {
         const A = [];
 
-        A[0] = createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, '', createElement('br', null))));
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              '',
+              createElement('br', null),
+            ),
+          ),
+        );
 
-        A[1] = createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, 'text 1', createElement('br', null))));
+        A[1] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              'text 1',
+              createElement('br', null),
+            ),
+          ),
+        );
 
-        A[2] = createElement('table', null, createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, 'text 2', createElement('br', null))));
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              'text 2',
+              createElement('br', null),
+            ),
+          ),
+        );
 
         A[3] = createElement(
           'table',
           null,
-          createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [createElement('br', null), 'text 3'], createElement('br', null)))
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              [createElement('br', null), 'text 3'],
+              createElement('br', null),
+            ),
+          ),
         );
 
         render(A[0], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
         render(A[1], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 1<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1<br></td></tr></table>',
+        );
         render(A[2], container);
-        expect(container.innerHTML).toBe('<table><tr><td>text 2<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
         render(A[3], container);
-        expect(container.innerHTML).toBe('<table><tr><td><br>text 3<br></td></tr></table>');
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
       });
     });
   });
@@ -1203,7 +1807,13 @@ describe('Update (non-jsx)', () => {
       const A = [];
 
       A[0] = createElement('div', null, 'text 1');
-      A[1] = createElement('div', null, 'text 2', createElement('br', null), 'text 3');
+      A[1] = createElement(
+        'div',
+        null,
+        'text 2',
+        createElement('br', null),
+        'text 3',
+      );
       A[2] = createElement('div', null, 'text 4');
 
       render(A[0], container);

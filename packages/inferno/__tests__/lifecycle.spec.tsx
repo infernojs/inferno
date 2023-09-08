@@ -17,16 +17,17 @@ describe('ComponentDidUpdate', () => {
   it('Should be called after ref updates, Github #1374 Github#1286', () => {
     class App extends Component {
       public state = {
-        toggled: false
+        toggled: false,
       };
 
       private dynamicEl: HTMLDivElement | null;
       private staticEl: HTMLDivElement | null;
 
-      public toggleDynamicComponent = () =>
+      public toggleDynamicComponent = () => {
         this.setState({
-          toggled: !this.state.toggled
+          toggled: !this.state.toggled,
         });
+      };
 
       public renderDynamicComponent = () => (
         <div
@@ -61,7 +62,9 @@ describe('ComponentDidUpdate', () => {
             }}
           >
             {this.state.toggled && this.renderDynamicComponent()}
-            <button onClick={this.toggleDynamicComponent}>Toggle dynamic component</button>
+            <button onClick={this.toggleDynamicComponent}>
+              Toggle dynamic component
+            </button>
           </div>
         );
       }
@@ -254,7 +257,7 @@ describe('ComponentDidUpdate', () => {
   it('Should not call setState callback if another component triggers setState during other tree mount', () => {
     // This is only to simplify whats going on in real application
     const testHack = {
-      callback: () => {}
+      callback: () => {},
     };
 
     let callbackCalled = 0;
@@ -281,19 +284,19 @@ describe('ComponentDidUpdate', () => {
         super(props);
 
         this.state = {
-          foo: 'test'
+          foo: 'test',
         };
       }
 
       public componentWillMount() {
         this.setState(
           {
-            foo: 'bar'
+            foo: 'bar',
           },
           function () {
             setState1Called++;
             expect(this.state.foo).toBe('bar');
-          }
+          },
         );
 
         testHack.callback();
@@ -315,7 +318,7 @@ describe('ComponentDidUpdate', () => {
         super(props);
 
         this.state = {
-          bool: false
+          bool: false,
         };
 
         this._handleClick = this._handleClick.bind(this);
@@ -324,12 +327,12 @@ describe('ComponentDidUpdate', () => {
       public _handleClick() {
         this.setState(
           {
-            bool: true
+            bool: true,
           },
           function () {
             setState2Called++;
             expect(this.state.bool).toBe(true);
-          }
+          },
         );
       }
 
@@ -359,7 +362,9 @@ describe('ComponentDidUpdate', () => {
     expect(setState1Called).toBe(0);
     expect(setState2Called).toBe(0);
 
-    expect(container.innerHTML).toBe('<div><div id="tester"><span></span></div><div>A</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div id="tester"><span></span></div><div>A</div></div>',
+    );
 
     container.querySelector('#tester').click();
 
@@ -367,13 +372,15 @@ describe('ComponentDidUpdate', () => {
     expect(setState1Called).toBe(1);
     expect(setState2Called).toBe(1);
 
-    expect(container.innerHTML).toBe('<div><div id="tester"><div>Tester One</div></div><div>A</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div id="tester"><div>Tester One</div></div><div>A</div></div>',
+    );
   });
 
   it('Should not fail if mounting subtree propagates callback to parent which renders again', () => {
     // This is only to simplify whats going on in real application
     const testHack = {
-      callback: () => {}
+      callback: () => {},
     };
 
     let callbackCalled = 0;
@@ -402,19 +409,19 @@ describe('ComponentDidUpdate', () => {
         mounterCounter++;
 
         this.state = {
-          foo: 'test'
+          foo: 'test',
         };
       }
 
       public componentWillMount() {
         this.setState(
           {
-            foo: 'bar'
+            foo: 'bar',
           },
           function () {
             setState1Called++;
             expect(this.state.foo).toBe('bar');
-          }
+          },
         );
 
         testHack.callback();
@@ -439,7 +446,7 @@ describe('ComponentDidUpdate', () => {
         super(props);
 
         this.state = {
-          bool: false
+          bool: false,
         };
 
         this._handleClick = this._handleClick.bind(this);
@@ -448,19 +455,23 @@ describe('ComponentDidUpdate', () => {
       public _handleClick() {
         this.setState(
           {
-            bool: true
+            bool: true,
           },
           function () {
             setState2Called++;
             expect(this.state.bool).toBe(true);
-          }
+          },
         );
       }
 
       public render() {
         return (
           <div id="tester" onClick={this._handleClick}>
-            {this.state.bool ? <TesterOne a={this.props.a} /> : <span>{this.props.a}</span>}
+            {this.state.bool ? (
+              <TesterOne a={this.props.a} />
+            ) : (
+              <span>{this.props.a}</span>
+            )}
           </div>
         );
       }
@@ -476,7 +487,7 @@ describe('ComponentDidUpdate', () => {
         super(props);
 
         this.state = {
-          a: 0
+          a: 0,
         };
 
         testHack.callback = () => {
@@ -502,7 +513,9 @@ describe('ComponentDidUpdate', () => {
     expect(setState1Called).toBe(0);
     expect(setState2Called).toBe(0);
 
-    expect(container.innerHTML).toBe('<div><div id="tester"><span>0</span></div><div>A 0</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div id="tester"><span>0</span></div><div>A 0</div></div>',
+    );
 
     container.querySelector('#tester').click();
 
@@ -513,6 +526,8 @@ describe('ComponentDidUpdate', () => {
     expect(setState1Called).toBe(1);
     expect(setState2Called).toBe(1);
 
-    expect(container.innerHTML).toBe('<div><div id="tester"><div>Tester One 112</div></div><div>A 112</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div id="tester"><div>Tester One 112</div></div><div>A 112</div></div>',
+    );
   });
 });

@@ -29,16 +29,18 @@ describe('CreateElement (non-JSX)', () => {
             type: 'button',
             onClick: () => {
               triggered = !triggered;
-            }
+            },
           },
-          'Do a thing'
-        )
+          'Do a thing',
+        ),
       );
     };
 
     // eslint-disable-next-line
     render(App(), container);
-    expect(container.innerHTML).toBe('<div><div class="title">Example</div><button type="button">Do a thing</button></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div class="title">Example</div><button type="button">Do a thing</button></div>',
+    );
     expect(triggered).toBe(false);
 
     const buttons = container.querySelectorAll('button');
@@ -60,15 +62,17 @@ describe('CreateElement (non-JSX)', () => {
             type: 'button',
             onClick: () => {
               triggered = !triggered;
-            }
+            },
           },
-          'Do a thing'
-        )
+          'Do a thing',
+        ),
       );
     };
 
     render(app(), container);
-    expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
+    expect(container.innerHTML).toBe(
+      '<div><button type="button">Do a thing</button></div>',
+    );
     expect(triggered).toBe(false);
 
     const buttons = container.querySelectorAll('button');
@@ -84,13 +88,15 @@ describe('CreateElement (non-JSX)', () => {
         null,
         createElement('button', {
           type: 'button',
-          children: ['Do a thing']
-        })
+          children: ['Do a thing'],
+        }),
       );
     };
 
     render(app(), container);
-    expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
+    expect(container.innerHTML).toBe(
+      '<div><button type="button">Do a thing</button></div>',
+    );
   });
 
   it('Should allow passing childs through "children" property (custom component)', () => {
@@ -101,13 +107,15 @@ describe('CreateElement (non-JSX)', () => {
         null,
         createElement(Button, {
           type: 'button',
-          children: ['Do a thing']
-        })
+          children: ['Do a thing'],
+        }),
       );
     };
 
     render(app(), container);
-    expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
+    expect(container.innerHTML).toBe(
+      '<div><button type="button">Do a thing</button></div>',
+    );
   });
 
   it('Should handle node with hooks and key', (done) => {
@@ -118,7 +126,7 @@ describe('CreateElement (non-JSX)', () => {
         expect(app.key).toBe('key1');
         expect(domNode.tagName).toBe('DIV');
         done();
-      }
+      },
     });
 
     render(app, container);
@@ -139,13 +147,13 @@ describe('CreateElement (non-JSX)', () => {
     const app = () => {
       const node = () =>
         createElement('a', {
-          ref: (c) => (myRef = c)
+          ref: (c) => (myRef = c),
         });
       return createElement(node, {
         onComponentDidMount() {
           expect(myRef.tagName).toBe('A');
           done();
-        }
+        },
       });
     };
     render(createElement(app, null), container);
@@ -153,14 +161,30 @@ describe('CreateElement (non-JSX)', () => {
 
   describe('Fragments', () => {
     it('Should render Fragment with key', () => {
-      render(createElement(Fragment, { key: 'first' }, createElement('div', null, 'Ok'), createElement('span', null, 'Test')), container);
+      render(
+        createElement(
+          Fragment,
+          { key: 'first' },
+          createElement('div', null, 'Ok'),
+          createElement('span', null, 'Test'),
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div><span>Test</span>');
 
       const div = container.querySelector('div');
       const span = container.querySelector('span');
 
-      render(createElement(Fragment, { key: 'foobar' }, createElement('div', null, 'Ok'), createElement('span', null, 'Test')), container);
+      render(
+        createElement(
+          Fragment,
+          { key: 'foobar' },
+          createElement('div', null, 'Ok'),
+          createElement('span', null, 'Test'),
+        ),
+        container,
+      );
 
       // Verify key works
       expect(container.innerHTML).toBe('<div>Ok</div><span>Test</span>');
@@ -171,7 +195,13 @@ describe('CreateElement (non-JSX)', () => {
   });
 
   it('Should be possible to forward createRef', () => {
-    const FancyButton = forwardRef((props, ref) => createElement('button', { ref: ref, className: 'FancyButton' }, props.children));
+    const FancyButton = forwardRef((props, ref) =>
+      createElement(
+        'button',
+        { ref, className: 'FancyButton' },
+        props.children,
+      ),
+    );
 
     expect(FancyButton.render).toBeDefined();
 
@@ -186,6 +216,7 @@ describe('CreateElement (non-JSX)', () => {
       componentDidMount() {
         expect(this.btn.current).toBe(container.querySelector('button'));
       }
+
       render() {
         return createElement(FancyButton, { ref: this.btn }, 'Click me!');
       }
@@ -193,6 +224,8 @@ describe('CreateElement (non-JSX)', () => {
 
     render(createElement(Hello), container);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
   });
 });

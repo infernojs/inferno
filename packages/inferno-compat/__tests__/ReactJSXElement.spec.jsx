@@ -10,7 +10,7 @@
 import React from 'inferno-compat';
 import { triggerEvent } from 'inferno-utils';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactJSXElement', function () {
   class Component extends React.Component {
@@ -20,32 +20,32 @@ describe('ReactJSXElement', function () {
   }
 
   it('returns a complete element according to spec', function () {
-    var element = <Component />;
+    const element = <Component />;
     expect(element.type).toBe(Component);
     expect(element.key).toBe(null);
     expect(element.ref).toBe(null);
-    var expectation = {};
+    const expectation = {};
     Object.freeze(expectation);
     expect(element.props).toEqual(expectation);
   });
 
   it('allows a lower-case to be passed as the string type', function () {
-    var element = <div />;
+    const element = <div />;
     expect(element.type).toBe('div');
     expect(element.key).toBe(null);
     expect(element.ref).toBe(null);
-    var expectation = {};
+    const expectation = {};
     Object.freeze(expectation);
     expect(element.props).toEqual(expectation);
   });
 
   it('allows a string to be passed as the type', function () {
-    var TagName = 'div';
-    var element = <TagName />;
+    const TagName = 'div';
+    const element = <TagName />;
     expect(element.type).toBe('div');
     expect(element.key).toBe(null);
     expect(element.ref).toBe(null);
-    var expectation = {};
+    const expectation = {};
     Object.freeze(expectation);
     expect(element.props).toEqual(expectation);
   });
@@ -56,8 +56,8 @@ describe('ReactJSXElement', function () {
   // });
 
   it('does not reuse the object that is spread into props', function () {
-    var config = { foo: 1 };
-    var element = <Component {...config} />;
+    const config = { foo: 1 };
+    const element = <Component {...config} />;
     expect(element.props.foo).toBe(1);
     config.foo = 2;
     expect(element.props.foo).toBe(1);
@@ -93,7 +93,7 @@ describe('ReactJSXElement', function () {
 
   it('does not override children if no JSX children are provided', function () {
     spyOn(console, 'error');
-    var element = <Component children="text" />;
+    const element = <Component children="text" />;
     expect(element.props.children).toBe('text');
     expect(console.error.calls.count()).toBe(0);
   });
@@ -122,12 +122,13 @@ describe('ReactJSXElement', function () {
       static someStaticMethod() {
         return 'someReturnValue';
       }
+
       render() {
         return <div />;
       }
     }
 
-    var element = <StaticMethodComponent />;
+    const element = <StaticMethodComponent />;
     expect(element.type.someStaticMethod()).toBe('someReturnValue');
     expect(console.error.calls.count()).toBe(0);
   });
@@ -153,8 +154,8 @@ describe('ReactJSXElement', function () {
   it('should use default prop value when removing a prop', function () {
     Component.defaultProps = { fruit: 'persimmon' };
 
-    var container = document.createElement('div');
-    var instance = ReactDOM.render(<Component fruit="mango" />, container);
+    const container = document.createElement('div');
+    const instance = ReactDOM.render(<Component fruit="mango" />, container);
     expect(instance.props.fruit).toBe('mango');
 
     ReactDOM.render(<Component />, container);
@@ -165,7 +166,10 @@ describe('ReactJSXElement', function () {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const spy = jasmine.createSpy('spy');
-    ReactDOM.render(React.createElement('a', { onDoubleClick: spy }, 'test'), container);
+    ReactDOM.render(
+      React.createElement('a', { onDoubleClick: spy }, 'test'),
+      container,
+    );
 
     expect(spy.calls.count()).toBe(0);
     const element = container.querySelector('a');
@@ -224,7 +228,10 @@ describe('ReactJSXElement', function () {
   it('Should map onDoubleClick to html native event #1', () => {
     const container = document.createElement('div');
 
-    ReactDOM.render(React.createElement('label', { htmlFor: 'foobarID' }, 'test'), container);
+    ReactDOM.render(
+      React.createElement('label', { htmlFor: 'foobarID' }, 'test'),
+      container,
+    );
 
     const element = container.querySelector('label');
     expect(element.getAttribute('for')).toBe('foobarID');

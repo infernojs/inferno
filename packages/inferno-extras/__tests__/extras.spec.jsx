@@ -39,7 +39,7 @@ describe('Extras', () => {
                     <li />
                   </ul>
                 </div>,
-                secondRoot
+                secondRoot,
               )}
             </div>
           );
@@ -92,13 +92,15 @@ describe('Extras', () => {
               {createPortal(
                 <div>
                   <span>
-                    <Functional>{[<div />, 'Okay', <span id="target" />]}</Functional>
+                    <Functional>
+                      {[<div />, 'Okay', <span id="target" />]}
+                    </Functional>
                   </span>
                   <ul>
                     <li />
                   </ul>
                 </div>,
-                secondRoot
+                secondRoot,
               )}
             </div>
           );
@@ -107,7 +109,9 @@ describe('Extras', () => {
 
       render(<Tester />, container);
 
-      expect(container.innerHTML).toBe('<div>Move It<div><div><div></div><div></div></div></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div>Move It<div><div><div></div><div></div></div></div></div>',
+      );
 
       const target = secondRoot.querySelector('#target');
 
@@ -145,7 +149,7 @@ describe('Extras', () => {
     });
 
     it('Should return false if target is not found', () => {
-      let instances = [];
+      const instances = [];
 
       class Tester extends Component {
         constructor(props) {
@@ -169,7 +173,7 @@ describe('Extras', () => {
           <Tester id="target" />
           <Tester />
         </div>,
-        container
+        container,
       );
 
       const target = container.querySelector('#target');
@@ -180,7 +184,7 @@ describe('Extras', () => {
     });
 
     it('Should return false if target is detached', () => {
-      let instances = [];
+      const instances = [];
 
       class Tester extends Component {
         constructor(props) {
@@ -204,7 +208,7 @@ describe('Extras', () => {
           <Tester key="2" id="target" />
           <Tester key="3" />
         </div>,
-        container
+        container,
       );
 
       const target = container.querySelector('#target');
@@ -219,7 +223,7 @@ describe('Extras', () => {
           <Tester key="change-it" id="target" />
           <Tester key="3" />
         </div>,
-        container
+        container,
       );
 
       expect(isDOMInsideComponent(target, instances[0])).toBe(false);
@@ -241,10 +245,12 @@ describe('Extras', () => {
           <span>Test</span>
           {vNode}
         </div>,
-        container
+        container,
       );
 
-      expect(isDOMInsideVNode(container.querySelector('#target'), vNode)).toBe(true);
+      expect(isDOMInsideVNode(container.querySelector('#target'), vNode)).toBe(
+        true,
+      );
     });
 
     it('Should return true if that is the ndoe', () => {
@@ -255,10 +261,12 @@ describe('Extras', () => {
           <span>Test</span>
           {vNode}
         </div>,
-        container
+        container,
       );
 
-      expect(isDOMInsideVNode(container.querySelector('#target'), vNode)).toBe(true);
+      expect(isDOMInsideVNode(container.querySelector('#target'), vNode)).toBe(
+        true,
+      );
     });
   });
 });

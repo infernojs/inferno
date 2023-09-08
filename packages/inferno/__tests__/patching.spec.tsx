@@ -1,4 +1,10 @@
-import { Component, createTextVNode, createVNode, linkEvent, render } from 'inferno';
+import {
+  Component,
+  createTextVNode,
+  createVNode,
+  linkEvent,
+  render,
+} from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('patching routine', () => {
@@ -16,28 +22,79 @@ describe('patching routine', () => {
   });
 
   it('Should do nothing if lastVNode strictly equals nextVnode', () => {
-    const yar = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('123'), ChildFlags.HasVNodeChildren, null, null, null);
-    const bar = createVNode(VNodeFlags.HtmlElement, 'div', null, createTextVNode('123'), ChildFlags.HasVNodeChildren, null, null, null);
-    let foo = createVNode(VNodeFlags.HtmlElement, 'div', null, [bar, yar], ChildFlags.HasNonKeyedChildren, null, null, null);
+    const yar = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      createTextVNode('123'),
+      ChildFlags.HasVNodeChildren,
+      null,
+      null,
+      null,
+    );
+    const bar = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      createTextVNode('123'),
+      ChildFlags.HasVNodeChildren,
+      null,
+      null,
+      null,
+    );
+    let foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      [bar, yar],
+      ChildFlags.HasNonKeyedChildren,
+      null,
+      null,
+      null,
+    );
 
     render(foo, container);
-    expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
+    expect(container.innerHTML).toEqual(
+      '<div><div>123</div><div>123</div></div>',
+    );
 
-    foo = createVNode(VNodeFlags.HtmlElement, 'div', null, [bar, yar], ChildFlags.HasNonKeyedChildren, null, null, null);
+    foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'div',
+      null,
+      [bar, yar],
+      ChildFlags.HasNonKeyedChildren,
+      null,
+      null,
+      null,
+    );
 
     render(foo, container);
-    expect(container.innerHTML).toEqual('<div><div>123</div><div>123</div></div>');
+    expect(container.innerHTML).toEqual(
+      '<div><div>123</div><div>123</div></div>',
+    );
   });
 
   it('Should mount nextNode if lastNode crashed', () => {
-    const validNode = createVNode(VNodeFlags.HtmlElement, 'span', null, createTextVNode('a'), ChildFlags.HasVNodeChildren, null, null, null);
+    const validNode = createVNode(
+      VNodeFlags.HtmlElement,
+      'span',
+      null,
+      createTextVNode('a'),
+      ChildFlags.HasVNodeChildren,
+      null,
+      null,
+      null,
+    );
     const invalidNode = createVNode(0, 'span');
 
     render(validNode, container);
     try {
       render(invalidNode, container);
     } catch (e) {
-      expect(e.message.indexOf('Inferno Error: mount() received an object')).not.toEqual(-1);
+      expect(
+        e.message.indexOf('Inferno Error: mount() received an object'),
+      ).not.toEqual(-1);
     }
     expect(container.innerHTML).toEqual('<span>a</span>');
 
@@ -58,8 +115,26 @@ describe('patching routine', () => {
     const childelem = container.firstElementChild.firstElementChild;
     const props = { dangerouslySetInnerHTML: { __html: '<span>child</span>' } };
 
-    const bar = createVNode(VNodeFlags.HtmlElement, 'span', null, null, ChildFlags.HasInvalidChildren, props, null, null);
-    const foo = createVNode(VNodeFlags.HtmlElement, 'span', null, [bar], ChildFlags.HasNonKeyedChildren, null, null, null);
+    const bar = createVNode(
+      VNodeFlags.HtmlElement,
+      'span',
+      null,
+      null,
+      ChildFlags.HasInvalidChildren,
+      props,
+      null,
+      null,
+    );
+    const foo = createVNode(
+      VNodeFlags.HtmlElement,
+      'span',
+      null,
+      [bar],
+      ChildFlags.HasNonKeyedChildren,
+      null,
+      null,
+      null,
+    );
 
     render(foo, container);
 
@@ -72,7 +147,16 @@ describe('patching routine', () => {
     const spy1 = spyOn(spyObj, 'fn');
     const spy2 = spyOn(spyObj2, 'fn');
 
-    const div = createVNode(VNodeFlags.HtmlElement | VNodeFlags.ReCreate, 'div', null, createTextVNode('1'), ChildFlags.HasVNodeChildren, null, null, spy1);
+    const div = createVNode(
+      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
+      'div',
+      null,
+      createTextVNode('1'),
+      ChildFlags.HasVNodeChildren,
+      null,
+      null,
+      spy1,
+    );
 
     render(div, container);
 
@@ -83,7 +167,16 @@ describe('patching routine', () => {
     expect(spy1.calls.argsFor(0).length).toBe(1);
     expect(spy1.calls.argsFor(0)[0]).toEqual(firstDiv);
 
-    const div2 = createVNode(VNodeFlags.HtmlElement | VNodeFlags.ReCreate, 'div', null, createTextVNode('1'), ChildFlags.HasVNodeChildren, null, null, spy2);
+    const div2 = createVNode(
+      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
+      'div',
+      null,
+      createTextVNode('1'),
+      ChildFlags.HasVNodeChildren,
+      null,
+      null,
+      spy2,
+    );
 
     render(div2, container);
 
@@ -137,7 +230,8 @@ describe('patching routine', () => {
       }
     }
 
-    const expectedDOM = '<div><button>Click twice !</button><div><p>Hello 0</p><p>Hello 1</p><strong>Hello 2</strong></div><p>Hello 3</p></div>';
+    const expectedDOM =
+      '<div><button>Click twice !</button><div><p>Hello 0</p><p>Hello 1</p><strong>Hello 2</strong></div><p>Hello 3</p></div>';
 
     render(<Clock />, container);
 
@@ -219,7 +313,7 @@ describe('patching routine', () => {
     describe('Synthetic', () => {
       it('Should remove function if next is boolean (false)', () => {
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -248,7 +342,7 @@ describe('patching routine', () => {
 
       it('Should remove function if next is boolean (true)', () => {
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -278,7 +372,7 @@ describe('patching routine', () => {
       it('Should remove linkEvent if next is boolean (false)', () => {
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -308,7 +402,7 @@ describe('patching routine', () => {
       it('Should remove linkEvent if next is boolean (true)', () => {
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -338,7 +432,7 @@ describe('patching routine', () => {
       it('Should change from LinkEvent to Function', () => {
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -351,7 +445,7 @@ describe('patching routine', () => {
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
@@ -367,7 +461,7 @@ describe('patching routine', () => {
 
       it('Should change from Function to LinkEvent', () => {
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
@@ -381,7 +475,7 @@ describe('patching routine', () => {
 
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -398,7 +492,7 @@ describe('patching routine', () => {
 
       it('Should change from Function to different Function', () => {
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -411,7 +505,7 @@ describe('patching routine', () => {
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
@@ -428,11 +522,14 @@ describe('patching routine', () => {
       it('Should change from LinkEvent fn to different LinkEvent fn', () => {
         const data = { foo: 1 };
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
-        render(<div onClick={linkEvent(data, anotherObj.anotherFn)} />, container);
+        render(
+          <div onClick={linkEvent(data, anotherObj.anotherFn)} />,
+          container,
+        );
 
         expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
 
@@ -441,7 +538,7 @@ describe('patching routine', () => {
         expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
 
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -464,7 +561,7 @@ describe('patching routine', () => {
         const anotherObj = {
           anotherFn(_, ev) {
             secondArg = ev;
-          }
+          },
         };
 
         const anotherFnSpy = spyOn(anotherObj, 'anotherFn').and.callThrough();
@@ -494,7 +591,7 @@ describe('patching routine', () => {
     describe('Regular', () => {
       it('Should remove function if next is boolean (false)', () => {
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -523,7 +620,7 @@ describe('patching routine', () => {
 
       it('Should remove function if next is boolean (true)', () => {
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -553,7 +650,7 @@ describe('patching routine', () => {
       it('Should remove linkEvent if next is boolean (false)', () => {
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -583,7 +680,7 @@ describe('patching routine', () => {
       it('Should remove linkEvent if next is boolean (true)', () => {
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -613,7 +710,7 @@ describe('patching routine', () => {
       it('Should change from LinkEvent to Function', () => {
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -626,7 +723,7 @@ describe('patching routine', () => {
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
@@ -642,7 +739,7 @@ describe('patching routine', () => {
 
       it('Should change from Function to LinkEvent', () => {
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
@@ -656,7 +753,7 @@ describe('patching routine', () => {
 
         const data = { foo: 1 };
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -673,7 +770,7 @@ describe('patching routine', () => {
 
       it('Should change from Function to different Function', () => {
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -686,7 +783,7 @@ describe('patching routine', () => {
         expect(linkObj.methodFn).toHaveBeenCalledTimes(1);
 
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
@@ -703,11 +800,14 @@ describe('patching routine', () => {
       it('Should change from LinkEvent fn to different LinkEvent fn', () => {
         const data = { foo: 1 };
         const anotherObj = {
-          anotherFn() {}
+          anotherFn() {},
         };
         spyOn(anotherObj, 'anotherFn');
 
-        render(<div onclick={linkEvent(data, anotherObj.anotherFn)} />, container);
+        render(
+          <div onclick={linkEvent(data, anotherObj.anotherFn)} />,
+          container,
+        );
 
         expect(anotherObj.anotherFn).toHaveBeenCalledTimes(0);
 
@@ -716,7 +816,7 @@ describe('patching routine', () => {
         expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
 
         const linkObj = {
-          methodFn() {}
+          methodFn() {},
         };
         spyOn(linkObj, 'methodFn');
 
@@ -739,7 +839,7 @@ describe('patching routine', () => {
         const anotherObj = {
           anotherFn(_, ev) {
             secondArg = ev;
-          }
+          },
         };
 
         const anotherFnSpy = spyOn(anotherObj, 'anotherFn').and.callThrough();

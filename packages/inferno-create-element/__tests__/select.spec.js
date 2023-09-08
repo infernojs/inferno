@@ -21,22 +21,22 @@ describe('Select / select multiple (non-JSX)', () => {
         'select',
         {
           multiple: true,
-          value: val
+          value: val,
         },
         createElement(
           'option',
           {
-            value: 1
+            value: 1,
           },
-          1
+          1,
         ),
         createElement(
           'option',
           {
-            value: 2
+            value: 2,
           },
-          2
-        )
+          2,
+        ),
       );
 
     render(template(null), container);
@@ -45,19 +45,25 @@ describe('Select / select multiple (non-JSX)', () => {
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(true);
-    expect(container.innerHTML).toBe('<select multiple=""><option value="1">1</option><option value="2">2</option></select>');
+    expect(container.innerHTML).toBe(
+      '<select multiple=""><option value="1">1</option><option value="2">2</option></select>',
+    );
 
     render(template(1), container);
 
     expect(container.firstChild.children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe('<select multiple=""><option value="1">1</option><option value="2">2</option></select>');
+    expect(container.innerHTML).toBe(
+      '<select multiple=""><option value="1">1</option><option value="2">2</option></select>',
+    );
 
     render(template('foo'), container);
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe('<select multiple=""><option value="1">1</option><option value="2">2</option></select>');
+    expect(container.innerHTML).toBe(
+      '<select multiple=""><option value="1">1</option><option value="2">2</option></select>',
+    );
   });
 
   // it('should render "select" boolean on select options #1 browser', () => {
@@ -108,22 +114,22 @@ describe('Select / select multiple (non-JSX)', () => {
         'select',
         {
           multiple: true,
-          value: val
+          value: val,
         },
         createElement(
           'option',
           {
-            value: 'foo'
+            value: 'foo',
           },
-          'foo'
+          'foo',
         ),
         createElement(
           'option',
           {
-            value: 'bar'
+            value: 'bar',
           },
-          'bar'
-        )
+          'bar',
+        ),
       );
 
     render(template('foo'), container);
@@ -131,7 +137,7 @@ describe('Select / select multiple (non-JSX)', () => {
     expect(container.firstChild.children[1].selected).toEqual(false);
     expect(container.innerHTML).toBe(
       // Missing selected markup
-      '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'
+      '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>',
     );
   });
 
@@ -141,10 +147,18 @@ describe('Select / select multiple (non-JSX)', () => {
         'select',
         {
           multiple: true,
-          value: val
+          value: val,
         },
-        createElement('optgroup', { label: 'foo-group' }, createElement('option', { value: 'foo' })),
-        createElement('optgroup', { label: 'bar-group', disabled: true }, createElement('option', { value: 'bar' }))
+        createElement(
+          'optgroup',
+          { label: 'foo-group' },
+          createElement('option', { value: 'foo' }),
+        ),
+        createElement(
+          'optgroup',
+          { label: 'bar-group', disabled: true },
+          createElement('option', { value: 'bar' }),
+        ),
       );
 
     // render(template(undefined), container);
@@ -153,43 +167,75 @@ describe('Select / select multiple (non-JSX)', () => {
     expect(container.firstChild.children[0].disabled).toEqual(false);
     expect(container.firstChild.children[1].disabled).toEqual(true);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
+      '<option value="foo"></option>',
+    );
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
+      '<option value="bar"></option>',
+    );
 
     expect(container.firstChild.children[0].children[0].selected).toEqual(true);
     expect(container.firstChild.children[1].children[0].selected).toEqual(true);
 
     render(template([]), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
+      '<option value="foo"></option>',
+    );
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
+      '<option value="bar"></option>',
+    );
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
-    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[0].children[0].selected).toEqual(
+      false,
+    );
+    expect(container.firstChild.children[1].children[0].selected).toEqual(
+      false,
+    );
 
     render(template('foo'), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
+      '<option value="foo"></option>',
+    );
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
+      '<option value="bar"></option>',
+    );
 
     expect(container.firstChild.children[0].children[0].selected).toEqual(true);
-    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[1].children[0].selected).toEqual(
+      false,
+    );
 
     render(template('bar'), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
+      '<option value="foo"></option>',
+    );
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
+      '<option value="bar"></option>',
+    );
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[0].children[0].selected).toEqual(
+      false,
+    );
     expect(container.firstChild.children[1].children[0].selected).toEqual(true);
 
     render(template(false), container);
 
-    expect(container.firstChild.childNodes[0].innerHTML).toEqual('<option value="foo"></option>');
-    expect(container.firstChild.childNodes[1].innerHTML).toEqual('<option value="bar"></option>');
+    expect(container.firstChild.childNodes[0].innerHTML).toEqual(
+      '<option value="foo"></option>',
+    );
+    expect(container.firstChild.childNodes[1].innerHTML).toEqual(
+      '<option value="bar"></option>',
+    );
 
-    expect(container.firstChild.children[0].children[0].selected).toEqual(false);
-    expect(container.firstChild.children[1].children[0].selected).toEqual(false);
+    expect(container.firstChild.children[0].children[0].selected).toEqual(
+      false,
+    );
+    expect(container.firstChild.children[1].children[0].selected).toEqual(
+      false,
+    );
   });
 
   it('should render "select" boolean on select options #3 browser', () => {
@@ -198,35 +244,39 @@ describe('Select / select multiple (non-JSX)', () => {
         'select',
         {
           multiple: true,
-          value: val
+          value: val,
         },
         createElement(
           'option',
           {
-            value: 'foo'
+            value: 'foo',
           },
-          'foo'
+          'foo',
         ),
         createElement(
           'option',
           {
-            value: 'bar'
+            value: 'bar',
           },
-          'bar'
-        )
+          'bar',
+        ),
       );
 
     render(template('bar'), container);
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(true);
-    expect(container.innerHTML).toBe('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>');
+    expect(container.innerHTML).toBe(
+      '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>',
+    );
 
     render(template(''), container);
 
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(false);
-    expect(container.innerHTML).toBe('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>');
+    expect(container.innerHTML).toBe(
+      '<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>',
+    );
   });
 
   it('should assure a `textarea` with no value should show no value', () => {
@@ -237,7 +287,7 @@ describe('Select / select multiple (non-JSX)', () => {
   it('should assure the value attribute also set the value property for `textarea`', () => {
     const template = (val) =>
       createElement('textarea', {
-        value: val
+        value: val,
       });
 
     render(template('foo'), container);
@@ -266,36 +316,36 @@ describe('Select / select multiple (non-JSX)', () => {
         'select',
         {
           multiple: true,
-          value: val
+          value: val,
         },
         createElement(
           'option',
           {
-            value: 'a'
+            value: 'a',
           },
-          'a'
+          'a',
         ),
         createElement(
           'option',
           {
-            value: 'b'
+            value: 'b',
           },
-          'b'
+          'b',
         ),
         createElement(
           'option',
           {
-            value: 'c'
+            value: 'c',
           },
-          'c'
+          'c',
         ),
         createElement(
           'option',
           {
-            value: 'd'
+            value: 'd',
           },
-          'd'
-        )
+          'd',
+        ),
       );
     render(template(['a', 'b', 'c']), container);
     expect(container.firstChild.children[0].selected).toEqual(true);
@@ -303,7 +353,7 @@ describe('Select / select multiple (non-JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(true);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+      '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
     );
   });
 
@@ -312,39 +362,39 @@ describe('Select / select multiple (non-JSX)', () => {
       createElement(
         'select',
         {
-          multiple: true
+          multiple: true,
         },
         createElement(
           'option',
           {
             value: 'a',
-            selected: true
+            selected: true,
           },
-          'a'
+          'a',
         ),
         createElement(
           'option',
           {
             value: 'b',
-            selected: true
+            selected: true,
           },
-          'b'
+          'b',
         ),
         createElement(
           'option',
           {
             value: 'c',
-            selected: true
+            selected: true,
           },
-          'c'
+          'c',
         ),
         createElement(
           'option',
           {
-            value: 'd'
+            value: 'd',
           },
-          'd'
-        )
+          'd',
+        ),
       );
     render(template(), container);
 
@@ -353,7 +403,7 @@ describe('Select / select multiple (non-JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(true);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+      '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
     );
   });
 
@@ -362,36 +412,36 @@ describe('Select / select multiple (non-JSX)', () => {
       createElement(
         'select',
         {
-          defaultValue: 'b'
+          defaultValue: 'b',
         },
         createElement(
           'option',
           {
-            value: 'a'
+            value: 'a',
           },
-          'a'
+          'a',
         ),
         createElement(
           'option',
           {
-            value: 'b'
+            value: 'b',
           },
-          'b'
+          'b',
         ),
         createElement(
           'option',
           {
-            value: 'c'
+            value: 'c',
           },
-          'c'
+          'c',
         ),
         createElement(
           'option',
           {
-            value: 'd'
+            value: 'd',
           },
-          'd'
-        )
+          'd',
+        ),
       );
     render(template(), container);
 
@@ -400,7 +450,7 @@ describe('Select / select multiple (non-JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(false);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      '<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+      '<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
     );
   });
 
@@ -410,36 +460,36 @@ describe('Select / select multiple (non-JSX)', () => {
         'select',
         {
           multiple: true,
-          defaultValue: ['a', 'b', 'c']
+          defaultValue: ['a', 'b', 'c'],
         },
         createElement(
           'option',
           {
-            value: 'a'
+            value: 'a',
           },
-          'a'
+          'a',
         ),
         createElement(
           'option',
           {
-            value: 'b'
+            value: 'b',
           },
-          'b'
+          'b',
         ),
         createElement(
           'option',
           {
-            value: 'c'
+            value: 'c',
           },
-          'c'
+          'c',
         ),
         createElement(
           'option',
           {
-            value: 'd'
+            value: 'd',
           },
-          'd'
-        )
+          'd',
+        ),
       );
     render(template(), container);
 
@@ -448,7 +498,7 @@ describe('Select / select multiple (non-JSX)', () => {
     expect(container.firstChild.children[2].selected).toEqual(true);
     expect(container.firstChild.children[3].selected).toEqual(false);
     expect(container.innerHTML).toBe(
-      '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+      '<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
     );
   });
 
@@ -460,19 +510,19 @@ describe('Select / select multiple (non-JSX)', () => {
         createElement(
           'option',
           {
-            value: 'a'
+            value: 'a',
           },
-          'a'
+          'a',
         ),
         createElement(
           'option',
           {
-            value: 'b'
+            value: 'b',
           },
-          'b'
-        )
+          'b',
+        ),
       ),
-      container
+      container,
     );
     container.firstChild.children[1].selected = true;
     render(
@@ -482,19 +532,19 @@ describe('Select / select multiple (non-JSX)', () => {
         createElement(
           'option',
           {
-            value: 'a'
+            value: 'a',
           },
-          'a'
+          'a',
         ),
         createElement(
           'option',
           {
-            value: 'b'
+            value: 'b',
           },
-          'b'
-        )
+          'b',
+        ),
       ),
-      container
+      container,
     );
     expect(container.firstChild.children[0].selected).toEqual(false);
     expect(container.firstChild.children[1].selected).toEqual(true);

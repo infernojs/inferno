@@ -13,6 +13,7 @@ describe('SSR Creation (JSX)', () => {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
+
       render() {
         return <div />;
       }
@@ -35,6 +36,7 @@ describe('SSR Creation (JSX)', () => {
         spyer('didAppear');
         expect(dom instanceof HTMLDivElement).toEqual(true);
       }
+
       render() {
         return <div />;
       }

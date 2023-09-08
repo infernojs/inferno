@@ -9,7 +9,9 @@ const usingJest = window.usingJest;
 
 describe('renderToSnapshot', () => {
   it('should return a snapshot from a valid vNode', () => {
-    const snapshot = TestUtils.renderToSnapshot(<FunctionalComponent foo="bar" />);
+    const snapshot = TestUtils.renderToSnapshot(
+      <FunctionalComponent foo="bar" />,
+    );
 
     if (usingJest) {
       expect(snapshot).toMatchSnapshot();
@@ -39,7 +41,9 @@ describe('renderToSnapshot', () => {
       </div>
     );
 
-    const snapshot = TestUtils.renderToSnapshot(<TestComponent>{[<span>a</span>, <span>b</span>]}</TestComponent>);
+    const snapshot = TestUtils.renderToSnapshot(
+      <TestComponent>{[<span>a</span>, <span>b</span>]}</TestComponent>,
+    );
 
     if (usingJest) {
       expect(snapshot).toMatchSnapshot();

@@ -23,7 +23,7 @@ describe('A <MemoryRouter>', () => {
     };
 
     ContextChecker.contextTypes = {
-      router: () => {}
+      router: () => {},
     };
 
     const node = document.createElement('div');
@@ -32,7 +32,7 @@ describe('A <MemoryRouter>', () => {
       <MemoryRouter>
         <ContextChecker />
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(typeof history).toBe('object');
@@ -44,11 +44,13 @@ describe('A <MemoryRouter>', () => {
 
     const consoleSpy = spyOn(console, 'error');
 
-    // @ts-ignore
+    // @ts-expect-error
     render(<MemoryRouter history={history} />, node);
 
     expect(consoleSpy).toHaveBeenCalledTimes(1);
-    expect(consoleSpy.calls.argsFor(0)[0]).toContain('<MemoryRouter> ignores the history prop');
+    expect(consoleSpy.calls.argsFor(0)[0]).toContain(
+      '<MemoryRouter> ignores the history prop',
+    );
   });
 
   it('Should be possible to render multiple sub routes, Github #1360', () => {
@@ -81,13 +83,17 @@ describe('A <MemoryRouter>', () => {
         </ul>
         <div>Footer</div>
       </MemoryRouter>,
-      container
+      container,
     );
 
-    expect(container.innerHTML).toBe('<div>Header</div><h1>You are in home!</h1><ul><li><a href="/test">Home</a></li></ul><div>Footer</div>');
+    expect(container.innerHTML).toBe(
+      '<div>Header</div><h1>You are in home!</h1><ul><li><a href="/test">Home</a></li></ul><div>Footer</div>',
+    );
 
     container.querySelector('a').click();
 
-    expect(container.innerHTML).toBe('<div>Header</div><h1>You are in test route!</h1><ul><li><a href="/test">Home</a></li></ul><div>Footer</div>');
+    expect(container.innerHTML).toBe(
+      '<div>Header</div><h1>You are in test route!</h1><ul><li><a href="/test">Home</a></li></ul><div>Footer</div>',
+    );
   });
 });

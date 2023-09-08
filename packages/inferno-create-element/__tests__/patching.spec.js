@@ -20,7 +20,7 @@ describe('patching keyed lists (non-jsx)', () => {
     for (let i = 0; i < count; i++) {
       dataModel.push({
         key: i,
-        children: null
+        children: null,
       });
     }
     return dataModel;
@@ -90,7 +90,11 @@ describe('patching keyed lists (non-jsx)', () => {
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
       if (n.children !== null) {
-        children[i] = createElement('div', { key: n.key }, renderTree(n.children));
+        children[i] = createElement(
+          'div',
+          { key: n.key },
+          renderTree(n.children),
+        );
       } else {
         children[i] = createElement('span', { key: n.key }, n.key);
       }
@@ -208,15 +212,21 @@ describe('patching keyed lists (non-jsx)', () => {
       }
 
       componentDidMount() {
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>',
+        );
 
         this.setState({ ids: ['test'] });
         rerender();
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><footer>2018</footer></div>');
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><h2>test</h2><footer>2018</footer></div>',
+        );
 
         this.setState({ ids: [] });
         rerender();
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>'); // Fails too, when skipping the previous assertion.
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>',
+        ); // Fails too, when skipping the previous assertion.
       }
 
       render() {
@@ -224,10 +234,12 @@ describe('patching keyed lists (non-jsx)', () => {
         return f(
           createElement('h1', null, 'App'),
           f(
-            ids.length ? ids.map((id) => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
-            !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
+            ids.length
+              ? ids.map((id) => createElement('h2', null, id))
+              : createElement('p', null, 'Not found'),
+            !ids.length && createElement('button', null, 'Create'), // Same condition for simple example.
           ),
-          createElement('footer', null, '2018')
+          createElement('footer', null, '2018'),
         );
       }
     }
@@ -245,15 +257,21 @@ describe('patching keyed lists (non-jsx)', () => {
       }
 
       componentDidMount() {
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>',
+        );
 
         this.setState({ ids: ['test', 'test2'] });
         rerender();
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><h2>test2</h2><footer>2018</footer></div>');
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><h2>test</h2><h2>test2</h2><footer>2018</footer></div>',
+        );
 
         this.setState({ ids: [] });
         rerender();
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>'); // Fails too, when skipping the previous assertion.
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>',
+        ); // Fails too, when skipping the previous assertion.
       }
 
       render() {
@@ -261,10 +279,12 @@ describe('patching keyed lists (non-jsx)', () => {
         return f(
           createElement('h1', null, 'App'),
           f(
-            ids.length ? ids.map((id) => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
-            !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
+            ids.length
+              ? ids.map((id) => createElement('h2', null, id))
+              : createElement('p', null, 'Not found'),
+            !ids.length && createElement('button', null, 'Create'), // Same condition for simple example.
           ),
-          createElement('footer', null, '2018')
+          createElement('footer', null, '2018'),
         );
       }
     }
@@ -282,15 +302,21 @@ describe('patching keyed lists (non-jsx)', () => {
       }
 
       componentDidMount() {
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>');
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>',
+        );
 
         this.setState({ ids: ['test', 'test2', 'test3'] });
         rerender();
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><h2>test</h2><h2>test2</h2><h2>test3</h2><footer>2018</footer></div>');
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><h2>test</h2><h2>test2</h2><h2>test3</h2><footer>2018</footer></div>',
+        );
 
         this.setState({ ids: [] });
         rerender();
-        expect(container.outerHTML).toEqual('<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>'); // Fails too, when skipping the previous assertion.
+        expect(container.outerHTML).toEqual(
+          '<div><h1>App</h1><p>Not found</p><button>Create</button><footer>2018</footer></div>',
+        ); // Fails too, when skipping the previous assertion.
       }
 
       render() {
@@ -298,10 +324,12 @@ describe('patching keyed lists (non-jsx)', () => {
         return f(
           createElement('h1', null, 'App'),
           f(
-            ids.length ? ids.map((id) => createElement('h2', null, id)) : createElement('p', null, 'Not found'),
-            !ids.length && createElement('button', null, 'Create') // Same condition for simple example.
+            ids.length
+              ? ids.map((id) => createElement('h2', null, id))
+              : createElement('p', null, 'Not found'),
+            !ids.length && createElement('button', null, 'Create'), // Same condition for simple example.
           ),
-          createElement('footer', null, '2018')
+          createElement('footer', null, '2018'),
         );
       }
     }

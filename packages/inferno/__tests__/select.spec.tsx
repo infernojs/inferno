@@ -24,7 +24,7 @@ describe('Select selectedIndex', () => {
         <option value="3">Michelangelo</option>
         <option value="4">Splinter</option>
       </select>,
-      container
+      container,
     );
 
     const select = container.firstElementChild;
@@ -45,7 +45,7 @@ describe('Select selectedIndex', () => {
         <option value="3">Michelangelo</option>
         <option value="4">Splinter</option>
       </select>,
-      container
+      container,
     );
 
     const select = container.firstElementChild;
@@ -62,7 +62,7 @@ describe('Select selectedIndex', () => {
         <option value="3">Michelangelo</option>
         <option value="4">Splinter</option>
       </select>,
-      container
+      container,
     );
 
     const select = container.firstElementChild;
@@ -81,7 +81,7 @@ describe('Select selectedIndex', () => {
         <option value="3">Michelangelo</option>
         <option value="4">Splinter</option>
       </select>,
-      container
+      container,
     );
 
     const select = container.firstElementChild;
@@ -100,7 +100,7 @@ describe('Select selectedIndex', () => {
         <option value="3">Michelangelo</option>
         <option value="4">Splinter</option>
       </select>,
-      container
+      container,
     );
 
     const select = container.firstElementChild;

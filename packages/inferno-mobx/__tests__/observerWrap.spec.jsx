@@ -6,7 +6,7 @@ import { getObserverTree, observable, runInAction } from 'mobx';
 const stateLessComp = ({ testProp }) => <div>result: {testProp}</div>;
 
 stateLessComp.defaultProps = {
-  testProp: 'default value for prop testProp'
+  testProp: 'default value for prop testProp',
 };
 
 describe('Stateless components observerWrap', () => {
@@ -25,7 +25,9 @@ describe('Stateless components observerWrap', () => {
 
   it('stateless component', (done) => {
     const StatelessCompObserver = observerWrap(stateLessComp);
-    expect(StatelessCompObserver.defaultProps.testProp).toBe('default value for prop testProp');
+    expect(StatelessCompObserver.defaultProps.testProp).toBe(
+      'default value for prop testProp',
+    );
     const wrapper = <StatelessCompObserver testProp={10} />;
 
     render(<StatelessCompObserver testProp="hello world" />, container);
@@ -35,17 +37,20 @@ describe('Stateless components observerWrap', () => {
   });
 
   it('stateless component with context support', () => {
-    const InnerComp = (_props, context) => createElement('p', {}, 'inner: ' + context.testContext);
+    const InnerComp = (_props, context) =>
+      createElement('p', {}, 'inner: ' + context.testContext);
     const StateLessCompWithContext = ({ store: { value } }, context) => {
       return createElement('div', {}, [
         createElement('p', {}, 'value: ' + value + ', '),
         createElement('p', {}, 'outer: ' + context.testContext + ', '),
-        createElement(InnerComp, {})
+        createElement(InnerComp, {}),
       ]);
     };
-    const StateLessCompWithContextObserver = observerWrap(StateLessCompWithContext);
+    const StateLessCompWithContextObserver = observerWrap(
+      StateLessCompWithContext,
+    );
     const store = observable({
-      value: 0
+      value: 0,
     });
     class ContextProvider extends Component {
       getChildContext() {
@@ -57,9 +62,13 @@ describe('Stateless components observerWrap', () => {
       }
     }
     render(<ContextProvider />, container);
-    expect(container.textContent.replace(/\n/, '')).toBe('value: 0, outer: hello, inner: hello');
+    expect(container.textContent.replace(/\n/, '')).toBe(
+      'value: 0, outer: hello, inner: hello',
+    );
     store.value = 1;
-    expect(container.textContent.replace(/\n/, '')).toBe('value: 1, outer: hello, inner: hello');
+    expect(container.textContent.replace(/\n/, '')).toBe(
+      'value: 1, outer: hello, inner: hello',
+    );
   });
 
   it('nestedRendering', () => {
@@ -67,9 +76,9 @@ describe('Stateless components observerWrap', () => {
       todos: [
         {
           title: 'a',
-          completed: false
-        }
-      ]
+          completed: false,
+        },
+      ],
     });
 
     let todoItemRenderings = 0;
@@ -84,7 +93,10 @@ describe('Stateless components observerWrap', () => {
       onComponentDidUpdate: () => {
         todoItemUpdates++;
       },
-      onComponentShouldUpdate: ({ todo: { title: prev } }, { todo: { title: next } }) => {
+      onComponentShouldUpdate: (
+        { todo: { title: prev } },
+        { todo: { title: next } },
+      ) => {
         return prev !== next;
       },
       onComponentWillUnmount: () => {
@@ -92,7 +104,7 @@ describe('Stateless components observerWrap', () => {
       },
       onComponentWillUpdate: () => {
         todoItemWillUpdates++;
-      }
+      },
     };
     const TodoItem = observerWrap(TodoItemBase);
 
@@ -130,7 +142,7 @@ describe('Stateless components observerWrap', () => {
 
     store.todos.push({
       title: 'b',
-      completed: true
+      completed: true,
     });
 
     expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
@@ -147,7 +159,9 @@ describe('Stateless components observerWrap', () => {
     expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
     expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
     expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
+    expect(
+      getObserverTree(store.todos[1], 'completed').observers,
+    ).not.toBeDefined(); //, 'completed observers should not have increased');
 
     store.todos[1].title += 'b';
 
@@ -165,7 +179,9 @@ describe('Stateless components observerWrap', () => {
     expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
     expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
     expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
+    expect(
+      getObserverTree(store.todos[1], 'completed').observers,
+    ).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
@@ -179,7 +195,9 @@ describe('Stateless components observerWrap', () => {
     expect(todoItemUpdates).toBe(2);
     expect(todoItemWillUpdates).toBe(2);
     expect(getObserverTree(store, 'todos').observers).not.toBeDefined();
-    expect(getObserverTree(store.todos[0], 'title').observers).not.toBeDefined();
+    expect(
+      getObserverTree(store.todos[0], 'title').observers,
+    ).not.toBeDefined();
   });
 
   it('nestedRendering without should update hook', () => {
@@ -187,9 +205,9 @@ describe('Stateless components observerWrap', () => {
       todos: [
         {
           title: 'a',
-          completed: false
-        }
-      ]
+          completed: false,
+        },
+      ],
     });
 
     let todoItemRenderings = 0;
@@ -209,7 +227,7 @@ describe('Stateless components observerWrap', () => {
       },
       onComponentWillUpdate: () => {
         todoItemWillUpdates++;
-      }
+      },
     };
     const TodoItem = observerWrap(TodoItemBase);
 
@@ -246,7 +264,7 @@ describe('Stateless components observerWrap', () => {
 
     store.todos.push({
       title: 'b',
-      completed: true
+      completed: true,
     });
 
     expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
@@ -263,7 +281,9 @@ describe('Stateless components observerWrap', () => {
     expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
     expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
     expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
+    expect(
+      getObserverTree(store.todos[1], 'completed').observers,
+    ).not.toBeDefined(); //, 'completed observers should not have increased');
 
     store.todos[1].title += 'b';
 
@@ -281,7 +301,9 @@ describe('Stateless components observerWrap', () => {
     expect(getObserverTree(store, 'todos').observers.length).toBe(1); //, 'observers count shouldn\'t change');
     expect(getObserverTree(store.todos[0], 'title').observers.length).toBe(1); //, 'title observers should not have increased');
     expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
+    expect(
+      getObserverTree(store.todos[1], 'completed').observers,
+    ).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
@@ -295,7 +317,9 @@ describe('Stateless components observerWrap', () => {
     expect(todoItemUpdates).toBe(4);
     expect(todoItemWillUpdates).toBe(4);
     expect(getObserverTree(store, 'todos').observers).not.toBeDefined();
-    expect(getObserverTree(store.todos[0], 'title').observers).not.toBeDefined();
+    expect(
+      getObserverTree(store.todos[0], 'title').observers,
+    ).not.toBeDefined();
   });
 
   it('keep views alive', () => {
@@ -306,7 +330,7 @@ describe('Stateless components observerWrap', () => {
         yCalcCount++;
         return this.x * 2;
       },
-      z: 'hi'
+      z: 'hi',
     });
 
     const TestComponent = observerWrap(() => {
@@ -342,12 +366,12 @@ describe('Stateless components observerWrap', () => {
       selected: 'coffee',
       items: [
         {
-          name: 'coffee'
+          name: 'coffee',
         },
         {
-          name: 'tea'
-        }
-      ]
+          name: 'tea',
+        },
+      ],
     });
 
     const Row = observerWrap(({ item }) => {
@@ -384,7 +408,7 @@ describe('Stateless components observerWrap', () => {
 
   it('Callbacks are bound on render', function () {
     const data = observable({
-      name: 'tea'
+      name: 'tea',
     });
 
     let a = 0;
@@ -400,7 +424,13 @@ describe('Stateless components observerWrap', () => {
 
     const check = ({ item: prev }, { item: next }) => prev !== next;
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : x++)} />, container);
+    render(
+      <View
+        item={data}
+        onComponentWillUpdate={(p, n) => (p !== n ? a++ : x++)}
+      />,
+      container,
+    );
 
     expect(a).toBe(0);
     expect(x).toBe(0);
@@ -411,7 +441,13 @@ describe('Stateless components observerWrap', () => {
 
     expect(x).toBe(1);
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : y++)} />, container);
+    render(
+      <View
+        item={data}
+        onComponentWillUpdate={(p, n) => (p !== n ? a++ : y++)}
+      />,
+      container,
+    );
 
     expect(a).toBe(1);
     expect(x).toBe(1);
@@ -425,7 +461,14 @@ describe('Stateless components observerWrap', () => {
     expect(x).toBe(1);
     expect(y).toBe(1);
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : z++)} onComponentShouldUpdate={check} />, container);
+    render(
+      <View
+        item={data}
+        onComponentWillUpdate={(p, n) => (p !== n ? a++ : z++)}
+        onComponentShouldUpdate={check}
+      />,
+      container,
+    );
 
     expect(a).toBe(1);
     expect(z).toBe(0);
@@ -437,7 +480,13 @@ describe('Stateless components observerWrap', () => {
 
     expect(y).toBe(2);
 
-    render(<View item={data} onComponentWillUpdate={(p, n) => (p !== n ? a++ : x++)} />, container);
+    render(
+      <View
+        item={data}
+        onComponentWillUpdate={(p, n) => (p !== n ? a++ : x++)}
+      />,
+      container,
+    );
 
     expect(a).toBe(2);
     expect(x).toBe(1);
@@ -491,7 +540,7 @@ describe('Stateless components observerWrap', () => {
             {foo}
           </div>
         );
-      })
+      }),
     );
 
     expect(msg.length).toBe(1);

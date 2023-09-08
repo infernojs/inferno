@@ -12,7 +12,7 @@ import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactElement', function () {
   class ComponentClass extends React.Component {
@@ -20,7 +20,7 @@ describe('ReactElement', function () {
       return React.createElement('div');
     }
   }
-  var originalSymbol;
+  let originalSymbol;
 
   beforeEach(function () {
     // Delete the native Symbol if we have one to ensure we test the
@@ -34,7 +34,12 @@ describe('ReactElement', function () {
   let container;
 
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   afterEach(() => {
@@ -49,21 +54,21 @@ describe('ReactElement', function () {
   // });
 
   it('returns a complete element according to spec', function () {
-    var element = React.createFactory(ComponentClass)();
+    const element = React.createFactory(ComponentClass)();
     expect(element.type).toBe(ComponentClass);
     expect(element.key).toBe(null);
     expect(element.ref).toBe(null);
-    var expectation = {};
+    const expectation = {};
     Object.freeze(expectation);
     expect(element.props).toEqual(expectation);
   });
 
   it('allows a string to be passed as the type', function () {
-    var element = React.createFactory('div')();
+    const element = React.createFactory('div')();
     expect(element.type).toBe('div');
     expect(element.key).toBe(null);
     expect(element.ref).toBe(null);
-    var expectation = {};
+    const expectation = {};
     Object.freeze(expectation);
     expect(element.props).toEqual(expectation);
   });
@@ -74,34 +79,34 @@ describe('ReactElement', function () {
   // });
 
   it('does not reuse the original config object', function () {
-    var config = { foo: 1 };
-    var element = React.createFactory(ComponentClass)(config);
+    const config = { foo: 1 };
+    const element = React.createFactory(ComponentClass)(config);
     expect(element.props.foo).toBe(1);
     config.foo = 2;
     expect(element.props.foo).toBe(1);
   });
 
   it('coerces the key to a string', function () {
-    var element = React.createFactory(ComponentClass)({
+    const element = React.createFactory(ComponentClass)({
       key: 12,
-      foo: '56'
+      foo: '56',
     });
     expect(element.type).toBe(ComponentClass);
     expect(element.key).toBe(12);
     expect(element.ref).toBe(null);
-    var expectation = { foo: '56' };
+    const expectation = { foo: '56' };
     Object.freeze(expectation);
     expect(element.props).toEqual(expectation);
   });
 
   it('merges an additional argument onto the children prop', function () {
     spyOn(console, 'error');
-    var a = 1;
-    var element = React.createFactory(ComponentClass)(
+    const a = 1;
+    const element = React.createFactory(ComponentClass)(
       {
-        children: 'text'
+        children: 'text',
       },
-      a
+      a,
     );
     expect(element.props.children).toBe(a);
     expect(console.error.calls.count()).toBe(0);
@@ -109,8 +114,8 @@ describe('ReactElement', function () {
 
   it('does not override children if no rest args are provided', function () {
     spyOn(console, 'error');
-    var element = React.createFactory(ComponentClass)({
-      children: 'text'
+    const element = React.createFactory(ComponentClass)({
+      children: 'text',
     });
     expect(element.props.children).toBe('text');
     expect(console.error.calls.count()).toBe(0);
@@ -118,11 +123,11 @@ describe('ReactElement', function () {
 
   it('overrides children if null is provided as an argument', function () {
     spyOn(console, 'error');
-    var element = React.createFactory(ComponentClass)(
+    const element = React.createFactory(ComponentClass)(
       {
-        children: 'text'
+        children: 'text',
       },
-      null
+      null,
     );
     expect(element.props.children).toBe(null);
     expect(console.error.calls.count()).toBe(0);
@@ -130,10 +135,10 @@ describe('ReactElement', function () {
 
   it('merges rest arguments onto the children prop in an array', function () {
     spyOn(console, 'error');
-    var a = 1;
-    var b = 2;
-    var c = 3;
-    var element = React.createFactory(ComponentClass)(null, a, b, c);
+    const a = 1;
+    const b = 2;
+    const c = 3;
+    const element = React.createFactory(ComponentClass)(null, a, b, c);
     expect(element.props.children).toEqual([1, 2, 3]);
     expect(console.error.calls.count()).toBe(0);
   });
@@ -147,15 +152,17 @@ describe('ReactElement', function () {
 
         this.state = { valueToReturn: 'hi' };
       }
+
       static someStaticMethod() {
         return 'someReturnValue';
       }
+
       render() {
         return React.createElement('div');
       }
     }
 
-    var element = React.createElement(StaticMethodComponentClass);
+    const element = React.createElement(StaticMethodComponentClass);
     expect(element.type.someStaticMethod()).toBe('someReturnValue');
     expect(console.error.calls.count()).toBe(0);
   });
@@ -189,6 +196,7 @@ describe('ReactElement', function () {
       render() {
         return null;
       }
+
       static get specialType() {
         return React.PropTypes.shape({ monkey: React.PropTypes.any });
       }
@@ -205,7 +213,7 @@ describe('ReactElement', function () {
         return <div />;
       }
     }
-    var test = renderIntoDocument(<Test value={+undefined} />);
+    const test = renderIntoDocument(<Test value={+undefined} />);
     expect(test.$LI.children.props.value).toBeNaN();
     expect(console.error.calls.count()).toBe(0);
   });
@@ -214,8 +222,8 @@ describe('ReactElement', function () {
     // Rudimentary polyfill
     // Once all jest engines support Symbols natively we can swap this to test
     // WITH native Symbols by default.
-    var REACT_ELEMENT_TYPE = function () {}; // fake Symbol
-    var OTHER_SYMBOL = function () {}; // another fake Symbol
+    const REACT_ELEMENT_TYPE = function () {}; // fake Symbol
+    const OTHER_SYMBOL = function () {}; // another fake Symbol
     global.Symbol = function (name) {
       return OTHER_SYMBOL;
     };

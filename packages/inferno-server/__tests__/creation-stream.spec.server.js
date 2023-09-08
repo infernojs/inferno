@@ -29,6 +29,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
       getChildContext() {
         return { hello: 'world' };
       }
+
       render() {
         return createElement('a', null, this.context.hello);
       }

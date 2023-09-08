@@ -29,7 +29,7 @@ describe('lifecycle hooks', () => {
           onComponentWillUpdate,
           onComponentDidUpdate,
           onComponentShouldUpdate,
-          StatelessComponent
+          StatelessComponent,
         ) =>
         (props) => {
           return createElement(
@@ -41,31 +41,41 @@ describe('lifecycle hooks', () => {
               onComponentWillUpdate,
               onComponentDidUpdate,
               onComponentShouldUpdate,
-              ...props
+              ...props,
             },
-            null
+            null,
           );
         };
 
-      animationTemplate = (onComponentDidAppear, onComponentWillDisappear, StatelessComponent) => (props) => {
-        return createElement(
-          StatelessComponent,
-          {
-            onComponentDidAppear,
-            onComponentWillDisappear,
-            ...props
-          },
-          null
-        );
-      };
+      animationTemplate =
+        (onComponentDidAppear, onComponentWillDisappear, StatelessComponent) =>
+        (props) => {
+          return createElement(
+            StatelessComponent,
+            {
+              onComponentDidAppear,
+              onComponentWillDisappear,
+              ...props,
+            },
+            null,
+          );
+        };
     });
 
     it('"onComponentWillMount" hook should fire, args props', () => {
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
       const spy = spyOn(spyObj, 'fn');
-      const node = template(spyObj.fn, null, null, null, null, null, StatelessComponent)({ a: 1 });
+      const node = template(
+        spyObj.fn,
+        null,
+        null,
+        null,
+        null,
+        null,
+        StatelessComponent,
+      )({ a: 1 });
       render(node, container);
 
       expect(spy.calls.count()).toBe(1);
@@ -75,10 +85,18 @@ describe('lifecycle hooks', () => {
 
     it('"onComponentDidMount" hook should fire, args DOM props', () => {
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
       const spy = spyOn(spyObj, 'fn');
-      const node = template(null, spyObj.fn, null, null, null, null, StatelessComponent)({ a: 1 });
+      const node = template(
+        null,
+        spyObj.fn,
+        null,
+        null,
+        null,
+        null,
+        StatelessComponent,
+      )({ a: 1 });
       render(node, container);
 
       expect(spy.calls.count()).toBe(1);
@@ -89,10 +107,18 @@ describe('lifecycle hooks', () => {
 
     it('"onComponentWillUnmount" hook should fire, args DOM props', () => {
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
       const spy = spyOn(spyObj, 'fn');
-      const node = template(null, null, spyObj.fn, null, null, null, StatelessComponent)({ a: 1 });
+      const node = template(
+        null,
+        null,
+        spyObj.fn,
+        null,
+        null,
+        null,
+        StatelessComponent,
+      )({ a: 1 });
       render(node, container);
       expect(spy.calls.count()).toBe(0);
       // do unmount
@@ -106,10 +132,18 @@ describe('lifecycle hooks', () => {
 
     it('"onComponentWillUpdate" hook should fire, args props nextProps', () => {
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
       const spy = spyOn(spyObj, 'fn');
-      const t = template(null, null, null, spyObj.fn, null, null, StatelessComponent);
+      const t = template(
+        null,
+        null,
+        null,
+        spyObj.fn,
+        null,
+        null,
+        StatelessComponent,
+      );
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -125,10 +159,18 @@ describe('lifecycle hooks', () => {
 
     it('"onComponentDidUpdate" hook should fire, args prevProps props', () => {
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
       const spy = spyOn(spyObj, 'fn');
-      const t = template(null, null, null, null, spyObj.fn, null, StatelessComponent);
+      const t = template(
+        null,
+        null,
+        null,
+        null,
+        spyObj.fn,
+        null,
+        StatelessComponent,
+      );
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -149,14 +191,22 @@ describe('lifecycle hooks', () => {
         fn: () => {
           onComponentShouldUpdateCount++;
           return true;
-        }
+        },
       };
       const spy = spyOn(spyObj, 'fn').and.callThrough();
       const StatelessComponent = () => {
         renderCount++;
         return null;
       };
-      const t = template(null, null, null, null, null, spyObj.fn, StatelessComponent);
+      const t = template(
+        null,
+        null,
+        null,
+        null,
+        null,
+        spyObj.fn,
+        StatelessComponent,
+      );
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -179,14 +229,22 @@ describe('lifecycle hooks', () => {
         fn: () => {
           onComponentShouldUpdateCount++;
           return false;
-        }
+        },
       };
       const spy = spyOn(spyObj, 'fn').and.callThrough();
       const StatelessComponent = () => {
         renderCount++;
         return null;
       };
-      const t = template(null, null, null, null, null, spyObj.fn, StatelessComponent);
+      const t = template(
+        null,
+        null,
+        null,
+        null,
+        null,
+        spyObj.fn,
+        StatelessComponent,
+      );
 
       const node1 = t({ a: 1 });
       render(node1, container);
@@ -204,7 +262,7 @@ describe('lifecycle hooks', () => {
 
     it('"onComponentDidAppear" hook should fire, args dom props', () => {
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
 
       const spy = spyOn(spyObj, 'fn');
@@ -224,7 +282,7 @@ describe('lifecycle hooks', () => {
 
     it('"onComponentWillDisappear" hook should fire, args dom props', () => {
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
 
       const spy = spyOn(spyObj, 'fn');
@@ -251,7 +309,7 @@ describe('lifecycle hooks', () => {
         }
       }
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
       const spy = spyOn(spyObj, 'fn');
       const node = createElement(FooBar, { ref: spyObj.fn });

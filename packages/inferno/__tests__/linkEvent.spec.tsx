@@ -1,4 +1,4 @@
-import { Component, InfernoNode, linkEvent, render } from 'inferno';
+import { Component, type InfernoNode, linkEvent, render } from 'inferno';
 
 describe('linkEvent', () => {
   let container;
@@ -109,7 +109,7 @@ describe('linkEvent', () => {
         elm.dispatchEvent(newEvent);
       } else {
         elm.oninput({
-          target: elm
+          target: elm,
         });
       }
     }
@@ -120,7 +120,9 @@ describe('linkEvent', () => {
     }
 
     function FunctionalComponent(props) {
-      return <input type="text" onInput={linkEvent(props, handleOnInput)} value="" />;
+      return (
+        <input type="text" onInput={linkEvent(props, handleOnInput)} value="" />
+      );
     }
 
     interface StatelessComponentProps {
@@ -129,7 +131,13 @@ describe('linkEvent', () => {
 
     class StatefulComponent extends Component<StatelessComponentProps> {
       public render() {
-        return <input type="text" onInput={linkEvent(this.props, handleOnInput)} value="" />;
+        return (
+          <input
+            type="text"
+            onInput={linkEvent(this.props, handleOnInput)}
+            value=""
+          />
+        );
       }
     }
 
@@ -163,7 +171,10 @@ describe('linkEvent', () => {
     function FunctionalComponent() {
       return (
         <div>
-          <input onfocus={linkEvent('1234', handleOnFocus)} onblur={linkEvent('4321', handleOnBlur)} />
+          <input
+            onfocus={linkEvent('1234', handleOnFocus)}
+            onblur={linkEvent('4321', handleOnBlur)}
+          />
         </div>
       );
     }
@@ -172,7 +183,10 @@ describe('linkEvent', () => {
       public render() {
         return (
           <div>
-            <input onfocus={linkEvent('1234', handleOnFocus)} onblur={linkEvent('4321', handleOnBlur)} />
+            <input
+              onfocus={linkEvent('1234', handleOnFocus)}
+              onblur={linkEvent('4321', handleOnBlur)}
+            />
           </div>
         );
       }

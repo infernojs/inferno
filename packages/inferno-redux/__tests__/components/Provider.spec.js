@@ -39,13 +39,21 @@ describe('redux', () => {
 
       spyOn(console, 'error');
 
-      let tree = renderIntoContainer(createElement(Provider, { store: store1 }, createElement(Child, {})));
+      let tree = renderIntoContainer(
+        createElement(Provider, { store: store1 }, createElement(Child, {})),
+      );
       expect(console.error).toHaveBeenCalledTimes(0);
 
       let child = findRenderedVNodeWithType(tree, Child).children;
       expect(child.context.store).toBe(store1);
 
-      tree = renderIntoContainer(createElement(Provider, { store: store1 }, createElement(Provider, { store: store2 }, createElement(Child, {}))));
+      tree = renderIntoContainer(
+        createElement(
+          Provider,
+          { store: store1 },
+          createElement(Provider, { store: store2 }, createElement(Child, {})),
+        ),
+      );
 
       expect(console.error).toHaveBeenCalledTimes(0);
 
@@ -84,7 +92,9 @@ describe('redux', () => {
 
       expect(child.context.store.getState()).toEqual(11);
       expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith('<Provider> does not support changing `store` on the fly.');
+      expect(console.error).toHaveBeenCalledWith(
+        '<Provider> does not support changing `store` on the fly.',
+      );
 
       container.setState({ store: store3 });
       renderIntoContainer(vNode);
@@ -94,19 +104,23 @@ describe('redux', () => {
     });
 
     it('should handle subscriptions correctly when there is nested Providers', () => {
-      const reducer1 = (state = 2, action) => (action.type === 'INC' ? state + 1 : state);
-      const reducer2 = (state = 5, action) => (action.type === 'INC' ? state + 2 : state);
+      const reducer1 = (state = 2, action) =>
+        action.type === 'INC' ? state + 1 : state;
+      const reducer2 = (state = 5, action) =>
+        action.type === 'INC' ? state + 2 : state;
 
       const innerStore = createStore(reducer1);
       innerStore.__store_name__ = 'innerStore'; // for debugging
-      const innerMapStateToProps = jasmine.createSpy((state) => ({ count: state }));
+      const innerMapStateToProps = jasmine.createSpy((state) => ({
+        count: state,
+      }));
 
       const Inner = connect(innerMapStateToProps)(
         class Inner extends Component {
           render() {
             return <div>{this.props.count}</div>;
           }
-        }
+        },
       );
 
       const outerStore = createStore(reducer2);
@@ -120,13 +134,13 @@ describe('redux', () => {
               </Provider>
             );
           }
-        }
+        },
       );
 
       renderIntoContainer(
         <Provider store={outerStore}>
           <Outer />
-        </Provider>
+        </Provider>,
       );
       expect(innerMapStateToProps.calls.count()).toEqual(1);
 
@@ -135,7 +149,8 @@ describe('redux', () => {
     });
 
     it('should pass state consistently to mapState', () => {
-      const stringBuilder = (prev = '', action) => (action.type === 'APPEND' ? prev + action.payload : prev);
+      const stringBuilder = (prev = '', action) =>
+        action.type === 'APPEND' ? prev + action.payload : prev;
 
       const store = createStore(stringBuilder);
 
@@ -152,11 +167,11 @@ describe('redux', () => {
           render() {
             return <div />;
           }
-        }
+        },
       );
 
       const Container = connect((state) => ({ state }), null, null, {
-        withRef: true
+        withRef: true,
       })(
         class Container extends Component {
           emitChange() {
@@ -179,7 +194,7 @@ describe('redux', () => {
               </div>
             );
           }
-        }
+        },
       );
 
       const vNode = (

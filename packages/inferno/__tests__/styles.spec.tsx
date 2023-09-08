@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { PropertiesHyphen } from 'csstype';
+import { type PropertiesHyphen } from 'csstype';
 
 function styleNode(style) {
   return <div style={style} />;
@@ -9,7 +9,8 @@ function isCSSvariablesSupported() {
   const div = document.createElement('div');
   document.body.appendChild(div);
   div.style.cssText = '--my-color:red;background-color:var(--my-color);';
-  const backgroundIsRed = getComputedStyle(div).backgroundColor === 'rgb(255, 0, 0)';
+  const backgroundIsRed =
+    getComputedStyle(div).backgroundColor === 'rgb(255, 0, 0)';
   document.body.removeChild(div);
 
   return backgroundIsRed;
@@ -30,7 +31,11 @@ describe('CSS style properties (JSX)', () => {
   });
 
   it('should set and remove dynamic styles', () => {
-    const styles = { display: 'none', 'font-family': 'Arial', 'line-height': 2 };
+    const styles = {
+      display: 'none',
+      'font-family': 'Arial',
+      'line-height': 2,
+    };
 
     render(<div style={styles} />, container);
     expect(container.firstChild.style.fontFamily).toBe('Arial');
@@ -135,7 +140,11 @@ describe('CSS style properties (JSX)', () => {
   });
 
   it('Should remove style attribute when single prop value is undefined', () => {
-    const stylesOne = { 'text-align': 'center', color: 'red', display: 'block' };
+    const stylesOne = {
+      'text-align': 'center',
+      color: 'red',
+      display: 'block',
+    };
     render(styleNode(stylesOne), container);
     expect(container.firstChild.style.textAlign).toBe('center');
 
@@ -149,15 +158,27 @@ describe('CSS style properties (JSX)', () => {
   // Test for CSS variable support, depends on browser
   if (isCSSvariablesSupported()) {
     it('Should support inline CSS variables string way', () => {
-      render(<div style="--my-color:red;background-color:var(--my-color);" />, container);
+      render(
+        <div style="--my-color:red;background-color:var(--my-color);" />,
+        container,
+      );
 
-      expect(getComputedStyle(container.firstChild).backgroundColor).toBe('rgb(255, 0, 0)'); // verify its red
+      expect(getComputedStyle(container.firstChild).backgroundColor).toBe(
+        'rgb(255, 0, 0)',
+      ); // verify its red
     });
 
     it('Should support inline CSS variables object way', () => {
-      render(<div style={{ '--my-color': 'red', 'background-color': 'var(--my-color)' }} />, container);
+      render(
+        <div
+          style={{ '--my-color': 'red', 'background-color': 'var(--my-color)' }}
+        />,
+        container,
+      );
 
-      expect(getComputedStyle(container.firstChild).backgroundColor).toBe('rgb(255, 0, 0)'); // verify its red
+      expect(getComputedStyle(container.firstChild).backgroundColor).toBe(
+        'rgb(255, 0, 0)',
+      ); // verify its red
     });
   }
 });

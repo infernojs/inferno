@@ -50,7 +50,11 @@ describe('Github #1322', () => {
         </ul>
 
         <Route path={`${match.url}/:topicId`} component={Topic} />
-        <Route exact path={match.url} render={() => <h3>Please select a topic.</h3>} />
+        <Route
+          exact
+          path={match.url}
+          render={() => <h3>Please select a topic.</h3>}
+        />
       </div>
     );
 
@@ -108,7 +112,10 @@ describe('Github #1322', () => {
       <MemoryRouter>
         <div>
           <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container py-2" style="border-bottom: 1px solid rgba(0, 0, 0, 0.13);">
+            <div
+              class="container py-2"
+              style="border-bottom: 1px solid rgba(0, 0, 0, 0.13);"
+            >
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav text-muted">
                   <li class="nav-item mr-2">

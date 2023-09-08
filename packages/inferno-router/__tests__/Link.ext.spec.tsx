@@ -30,7 +30,7 @@ describe('Link (jsx)', () => {
           </ContextChecker>
         </MemoryRouter>
       </div>,
-      node
+      node,
     );
 
     const element = node.querySelector('a');
@@ -47,7 +47,7 @@ describe('Link (jsx)', () => {
           link
         </Link>
       </MemoryRouter>,
-      node
+      node,
     );
     expect(spy).toHaveBeenCalledTimes(0);
     const element = node.querySelector('a');

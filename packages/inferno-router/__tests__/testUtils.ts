@@ -4,7 +4,7 @@ export function createEventGuard() {
   const eventState = { done: false };
   const markEventCompleted = () => {
     eventState.done = true;
-  }
+  };
   const waitForEventToTriggerRender = async () => {
     // Wait until event is marked as completed
     while (!eventState.done) {
@@ -12,15 +12,12 @@ export function createEventGuard() {
     }
     // Allow resolving promises to finish
     await new Promise((resolved) => setTimeout(resolved, 0));
-    
-    // Allow render loop to complete
-    rerender()
-  }
 
-  return [
-    markEventCompleted,
-    waitForEventToTriggerRender
-  ]
+    // Allow render loop to complete
+    rerender();
+  };
+
+  return [markEventCompleted, waitForEventToTriggerRender];
 }
 
 export function createResponse(data, type, status) {
@@ -28,7 +25,8 @@ export function createResponse(data, type, status) {
     case 'json':
       return createJsonResponse(data, status);
     case 'text':
-      if (typeof data !== 'string') throw new Error('Type "text" requires string as data');
+      if (typeof data !== 'string')
+        throw new Error('Type "text" requires string as data');
       return createTextResponse(data, status);
     default:
       throw new Error('Unknown value for param "type"');
@@ -44,7 +42,7 @@ function createTextResponse(data, status = 200) {
 }
 
 class MockResponseHeaders {
-  private _headers;
+  private readonly _headers;
 
   constructor(headers) {
     this._headers = headers;
@@ -56,9 +54,9 @@ class MockResponseHeaders {
 }
 
 class MockResponse {
-  private _data: any;
-  private _contentType: string;
-  private _statusCode: number;
+  private readonly _data: any;
+  private readonly _contentType: string;
+  private readonly _statusCode: number;
 
   constructor(data, contentType = 'application/json', statusCode = 200) {
     this._data = data;
@@ -68,7 +66,7 @@ class MockResponse {
 
   get headers() {
     return new MockResponseHeaders({
-      'Content-Type': this._contentType
+      'Content-Type': this._contentType,
     });
   }
 
@@ -76,19 +74,19 @@ class MockResponse {
     return this._statusCode >= 200 && this._statusCode < 300;
   }
 
-  get type () {
+  get type() {
     return 'basic';
   }
 
-  get status () {
+  get status() {
     return this._statusCode;
   }
 
-  public json() {
-    return Promise.resolve(this._data);
+  public async json() {
+    return await Promise.resolve(this._data);
   }
 
-  public text() {
-    return Promise.resolve(this._data);
+  public async text() {
+    return await Promise.resolve(this._data);
   }
 }

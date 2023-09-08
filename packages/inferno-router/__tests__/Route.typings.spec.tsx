@@ -1,22 +1,22 @@
 import { Component, render } from 'inferno';
 import { Route, Router } from 'inferno-router';
 import { createMemoryHistory } from 'history';
-import { IRouteProps } from '../src/Route';
+import { type IRouteProps } from '../src/Route';
 
 describe('<Route component>', () => {
   const history = createMemoryHistory();
   const node = document.createElement('div');
 
   it('receives { history, location, match } props', () => {
-    type RouteProps = {
+    interface RouteProps {
       history: any;
       location: any;
       match: any;
-    };
+    }
     let actual: RouteProps = {
       history: null,
       location: null,
-      match: null
+      match: null,
     };
     const ComponentAb = (props: RouteProps) => (actual = props) && null;
 
@@ -24,7 +24,7 @@ describe('<Route component>', () => {
       <Router history={history}>
         <Route path="/" component={ComponentAb} />
       </Router>,
-      node
+      node,
     );
 
     expect(actual.history).toBe(history);
@@ -43,7 +43,7 @@ describe('<Route component>', () => {
       <Router history={history}>
         <Route path="/" component={ComponentA} />
       </Router>,
-      node
+      node,
     );
   });
 
@@ -55,7 +55,7 @@ describe('<Route component>', () => {
     }
 
     const props: IRouteProps = {
-      component: ComponentA
+      component: ComponentA,
     };
 
     const C = props.component!;
@@ -64,7 +64,7 @@ describe('<Route component>', () => {
       <Router history={history}>
         <Route path="/" render={(_) => <C {...props} />} />
       </Router>,
-      node
+      node,
     );
   });
 });

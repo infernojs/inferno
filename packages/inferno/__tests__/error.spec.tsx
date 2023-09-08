@@ -1,4 +1,4 @@
-import { Component, InfernoNode, render, rerender } from 'inferno';
+import { Component, type InfernoNode, render, rerender } from 'inferno';
 
 describe('Error recovery', () => {
   let container;
@@ -30,7 +30,7 @@ describe('Error recovery', () => {
         super(props, context);
 
         this.state = {
-          value: 1
+          value: 1,
         };
       }
 
@@ -40,7 +40,7 @@ describe('Error recovery', () => {
         }
 
         this.setState({
-          value: 2
+          value: 2,
         });
       }
 
@@ -74,7 +74,7 @@ describe('Error recovery', () => {
         super(props, context);
 
         this.state = {
-          value: 1
+          value: 1,
         };
       }
 
@@ -125,9 +125,23 @@ describe('Error recovery', () => {
 
   describe('Error recovery from user land errors', () => {
     ['last', 'mid', 'first'].forEach((location) => {
-      ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
-        (crashLocation) => {
-          it('Should recover from subtree crash in ' + location + ' of children when crash happens in components ' + crashLocation, () => {
+      [
+        'render',
+        'constructor',
+        'DidMount',
+        'WillMount',
+        'WillReceiveProps',
+        'shouldUpdate',
+        'WillUpdate',
+        'DidUpdate',
+        'getChildContext',
+      ].forEach((crashLocation) => {
+        it(
+          'Should recover from subtree crash in ' +
+            location +
+            ' of children when crash happens in components ' +
+            crashLocation,
+          () => {
             interface CrasherProps {
               crash: boolean;
             }
@@ -142,7 +156,7 @@ describe('Error recovery', () => {
                 super(props, context);
 
                 this.state = {
-                  value: ''
+                  value: '',
                 };
 
                 if (props.crash && crashLocation === 'constructor') {
@@ -152,7 +166,7 @@ describe('Error recovery', () => {
 
               public componentWillMount() {
                 this.setState({
-                  value: 'mounted'
+                  value: 'mounted',
                 });
 
                 if (this.props.crash && crashLocation === 'WillMount') {
@@ -216,7 +230,13 @@ describe('Error recovery', () => {
               }
             }
 
-            function TreeOfCrashers({ suffle, crash }: { suffle?: boolean; crash: boolean }) {
+            function TreeOfCrashers({
+              suffle,
+              crash,
+            }: {
+              suffle?: boolean;
+              crash: boolean;
+            }) {
               const arr: InfernoNode[] = [];
 
               if (location === 'first') {
@@ -253,16 +273,32 @@ describe('Error recovery', () => {
 
             render(<TreeOfCrashers crash={false} />, container);
 
-            expect(container.firstChild.innerHTML).toBe('<div>mounted</div><div>mounted</div>');
-          });
-        }
-      );
+            expect(container.firstChild.innerHTML).toBe(
+              '<div>mounted</div><div>mounted</div>',
+            );
+          },
+        );
+      });
     });
 
     ['last', 'mid', 'first'].forEach((location) => {
-      ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
-        (crashLocation) => {
-          it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
+      [
+        'render',
+        'constructor',
+        'DidMount',
+        'WillMount',
+        'WillReceiveProps',
+        'shouldUpdate',
+        'WillUpdate',
+        'DidUpdate',
+        'getChildContext',
+      ].forEach((crashLocation) => {
+        it(
+          'Should recover from subtree crash in NON-KEYED ' +
+            location +
+            ' of children when crash happens in components ' +
+            crashLocation,
+          () => {
             interface CrasherProps {
               crash: boolean;
             }
@@ -277,7 +313,7 @@ describe('Error recovery', () => {
                 super(props, context);
 
                 this.state = {
-                  value: ''
+                  value: '',
                 };
 
                 if (props.crash && crashLocation === 'constructor') {
@@ -287,7 +323,7 @@ describe('Error recovery', () => {
 
               public componentWillMount() {
                 this.setState({
-                  value: 'mounted'
+                  value: 'mounted',
                 });
 
                 if (this.props.crash && crashLocation === 'WillMount') {
@@ -351,7 +387,13 @@ describe('Error recovery', () => {
               }
             }
 
-            function TreeOfCrashers({ suffle, crash }: { suffle?: boolean; crash: boolean }) {
+            function TreeOfCrashers({
+              suffle,
+              crash,
+            }: {
+              suffle?: boolean;
+              crash: boolean;
+            }) {
               const arr: InfernoNode[] = [];
 
               if (location === 'first') {
@@ -388,16 +430,32 @@ describe('Error recovery', () => {
 
             render(<TreeOfCrashers crash={false} />, container);
 
-            expect(container.firstChild.innerHTML).toBe('<div>mounted</div><div>mounted</div>');
-          });
-        }
-      );
+            expect(container.firstChild.innerHTML).toBe(
+              '<div>mounted</div><div>mounted</div>',
+            );
+          },
+        );
+      });
     });
 
     ['last', 'mid', 'first'].forEach((location) => {
-      ['render', 'constructor', 'DidMount', 'WillMount', 'WillReceiveProps', 'shouldUpdate', 'WillUpdate', 'DidUpdate', 'getChildContext'].forEach(
-        (crashLocation) => {
-          it('Should recover from subtree crash in NON-KEYED ' + location + ' of children when crash happens in components ' + crashLocation, () => {
+      [
+        'render',
+        'constructor',
+        'DidMount',
+        'WillMount',
+        'WillReceiveProps',
+        'shouldUpdate',
+        'WillUpdate',
+        'DidUpdate',
+        'getChildContext',
+      ].forEach((crashLocation) => {
+        it(
+          'Should recover from subtree crash in NON-KEYED ' +
+            location +
+            ' of children when crash happens in components ' +
+            crashLocation,
+          () => {
             interface CrasherProps {
               crash: boolean;
             }
@@ -412,7 +470,7 @@ describe('Error recovery', () => {
                 super(props, context);
 
                 this.state = {
-                  value: ''
+                  value: '',
                 };
 
                 if (props.crash && crashLocation === 'constructor') {
@@ -422,7 +480,7 @@ describe('Error recovery', () => {
 
               public componentWillMount() {
                 this.setState({
-                  value: 'mounted'
+                  value: 'mounted',
                 });
 
                 if (this.props.crash && crashLocation === 'WillMount') {
@@ -486,7 +544,13 @@ describe('Error recovery', () => {
               }
             }
 
-            function TreeOfCrashers({ suffle, crash }: { suffle?: boolean; crash: boolean }) {
+            function TreeOfCrashers({
+              suffle,
+              crash,
+            }: {
+              suffle?: boolean;
+              crash: boolean;
+            }) {
               const arr: InfernoNode[] = [];
 
               if (location === 'first') {
@@ -523,10 +587,12 @@ describe('Error recovery', () => {
 
             render(<TreeOfCrashers crash={false} />, container);
 
-            expect(container.firstChild.innerHTML).toBe('<div>mounted</div><div>mounted</div>');
-          });
-        }
-      );
+            expect(container.firstChild.innerHTML).toBe(
+              '<div>mounted</div><div>mounted</div>',
+            );
+          },
+        );
+      });
     });
 
     describe('Error in child component', () => {
@@ -558,7 +624,7 @@ describe('Error recovery', () => {
             super(props);
 
             this.state = {
-              fail: false
+              fail: false,
             };
 
             childCrasherInstance = this; // For the sake of test
@@ -589,14 +655,14 @@ describe('Error recovery', () => {
 
         expect(() => {
           childCrasherInstance!.setState({
-            fail: true
+            fail: true,
           });
           rerender();
         }).toThrowError('Oops!');
 
         // Recover from it
         childCrasherInstance!.setState({
-          fail: false
+          fail: false,
         });
 
         setTimeout(function () {
@@ -654,7 +720,7 @@ describe('Error recovery', () => {
             super(props);
 
             this.state = {
-              nodes: false
+              nodes: false,
             };
 
             parentInstance = this; // For the sake of test
@@ -671,12 +737,16 @@ describe('Error recovery', () => {
           }
         }
 
-        expect(() => render(<Parent fail={true} />, container)).toThrowError('Oops!');
+        expect(() => {
+          render(<Parent fail={true} />, container);
+        }).toThrowError('Oops!');
 
-        expect(() => render(<Parent fail={true} />, container)).toThrowError('Oops!');
+        expect(() => {
+          render(<Parent fail={true} />, container);
+        }).toThrowError('Oops!');
 
         parentInstance!.setState({
-          nodes: true
+          nodes: true,
         });
         rerender();
 
@@ -684,18 +754,20 @@ describe('Error recovery', () => {
 
         render(<Parent fail={false} />, container);
 
-        expect(() => render(<Parent fail={true} />, container)).toThrowError('Oops!');
+        expect(() => {
+          render(<Parent fail={true} />, container);
+        }).toThrowError('Oops!');
 
         expect(() => {
           parentInstance!.setState({
-            nodes: false
+            nodes: false,
           });
           rerender();
         }).toThrowError('Oops!');
 
         expect(() => {
           parentInstance!.setState({
-            nodes: true
+            nodes: true,
           });
           rerender();
         }).toThrowError('Oops!');

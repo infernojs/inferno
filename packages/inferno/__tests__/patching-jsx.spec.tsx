@@ -1,4 +1,4 @@
-import { Component, InfernoNode, render, rerender } from 'inferno';
+import { Component, type InfernoNode, render, rerender } from 'inferno';
 
 describe('patching routine (JSX)', () => {
   let container;
@@ -70,7 +70,7 @@ describe('patching routine (JSX)', () => {
         super(p, c);
 
         this.state = {
-          value: 1
+          value: 1,
         };
 
         this.add = this.add.bind(this);
@@ -80,7 +80,7 @@ describe('patching routine (JSX)', () => {
         e.stopPropagation();
 
         this.setState({
-          value: ++this.state.value
+          value: ++this.state.value,
         });
       }
 
@@ -104,7 +104,7 @@ describe('patching routine (JSX)', () => {
         super(p, c);
 
         this.state = {
-          value: 1
+          value: 1,
         };
 
         this.add = this.add.bind(this);
@@ -114,7 +114,7 @@ describe('patching routine (JSX)', () => {
         e.stopPropagation();
 
         this.setState({
-          value: 3
+          value: 3,
         });
       }
 
@@ -139,17 +139,23 @@ describe('patching routine (JSX)', () => {
 
     render(<Parent />, container);
 
-    expect(container.innerHTML).toBe('<div id="parent"><div id="child"><span>1</span><div><div>1</div></div></div></div>');
+    expect(container.innerHTML).toBe(
+      '<div id="parent"><div id="child"><span>1</span><div><div>1</div></div></div></div>',
+    );
 
     container.querySelector('#child').click();
     rerender();
 
-    expect(container.innerHTML).toBe('<div id="parent"><div id="child"><span>2</span><div><div>1</div></div></div></div>');
+    expect(container.innerHTML).toBe(
+      '<div id="parent"><div id="child"><span>2</span><div><div>1</div></div></div></div>',
+    );
 
     container.querySelector('#parent').click();
     rerender();
 
-    expect(container.innerHTML).toBe('<div id="parent"><div id="child"><span>2</span><div><div>3</div><div>3</div></div></div></div>');
+    expect(container.innerHTML).toBe(
+      '<div id="parent"><div id="child"><span>2</span><div><div>3</div><div>3</div></div></div></div>',
+    );
 
     render(null, container);
 

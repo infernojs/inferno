@@ -84,7 +84,8 @@ describe('Inferno', () => {
       }
     }
 
-    const stringBuilder = (prev = '', action) => (action.type === 'APPEND' ? prev + action.payload : prev);
+    const stringBuilder = (prev = '', action) =>
+      action.type === 'APPEND' ? prev + action.payload : prev;
 
     const renderWithBadConnect = (Component) => {
       const store = createStore(() => ({}));
@@ -93,7 +94,7 @@ describe('Inferno', () => {
         renderToContainer(
           <ProviderMock store={store}>
             <Component pass="through" />
-          </ProviderMock>
+          </ProviderMock>,
         );
 
         return null;
@@ -110,13 +111,13 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container pass="through" />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const container = findRenderedVNodeWithType(tree, Container).children;
@@ -127,7 +128,7 @@ describe('Inferno', () => {
       const store = createStore(() => ({
         foo: 'bar',
         baz: 42,
-        hello: 'world'
+        hello: 'world',
       }));
 
       const Container = connect(({ foo, baz }) => ({ foo, baz }))(
@@ -135,13 +136,13 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container pass="through" baz={50} />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
@@ -160,7 +161,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const vNode = (
@@ -186,7 +187,7 @@ describe('Inferno', () => {
       const store = createStore(stringBuilder);
 
       const Container = connect((state) => ({
-        string: state
+        string: state,
       }))(function Container(props) {
         return <Passthrough {...props} />;
       });
@@ -214,7 +215,7 @@ describe('Inferno', () => {
       const store = new ContextBoundStore(stringBuilder);
 
       const Container = connect((state) => ({
-        string: state
+        string: state,
       }))(function Container(props) {
         return <Passthrough {...props} />;
       });
@@ -250,13 +251,13 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       setTimeout(() => {
@@ -268,7 +269,7 @@ describe('Inferno', () => {
 
     it('should handle additional prop changes in addition to slice', () => {
       const store = createStore(() => ({
-        foo: 'bar'
+        foo: 'bar',
       }));
 
       const ConnectContainer = connect((state) => state)(
@@ -276,7 +277,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} pass={this.props.bar.baz} />;
           }
-        }
+        },
       );
 
       class Container extends Component {
@@ -284,8 +285,8 @@ describe('Inferno', () => {
           super();
           this.state = {
             bar: {
-              baz: ''
-            }
+              baz: '',
+            },
           };
         }
 
@@ -297,7 +298,7 @@ describe('Inferno', () => {
           }
           newBar.baz = 'through';
           this.setState({
-            bar: newBar
+            bar: newBar,
           });
         }
 
@@ -330,7 +331,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} pass={this.props.bar} />;
           }
-        }
+        },
       );
 
       class Container extends Component {
@@ -375,13 +376,13 @@ describe('Inferno', () => {
 
       const ConnectContainer = connect(
         () => ({}),
-        () => ({})
+        () => ({}),
       )(
         class ConnectContainer extends Component {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class HolderContainer extends Component {
@@ -397,18 +398,18 @@ describe('Inferno', () => {
               container = instance;
             }}
           />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const propsBefore = {
-        ...findRenderedVNodeWithType(container, Passthrough).children.props
+        ...findRenderedVNodeWithType(container, Passthrough).children.props,
       };
 
       props = {};
       container.forceUpdate();
 
       const propsAfter = {
-        ...findRenderedVNodeWithType(container, Passthrough).children.props
+        ...findRenderedVNodeWithType(container, Passthrough).children.props,
       };
 
       expect(propsBefore.x).toBe(true);
@@ -425,7 +426,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class HolderContainer extends Component {
@@ -441,18 +442,18 @@ describe('Inferno', () => {
               container = instance;
             }}
           />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const propsBefore = {
-        ...findRenderedVNodeWithType(container, Passthrough).children.props
+        ...findRenderedVNodeWithType(container, Passthrough).children.props,
       };
 
       props = {};
       container.forceUpdate();
 
       const propsAfter = {
-        ...findRenderedVNodeWithType(container, Passthrough).children.props
+        ...findRenderedVNodeWithType(container, Passthrough).children.props,
       };
 
       expect(propsBefore.x).toBe(true);
@@ -461,7 +462,7 @@ describe('Inferno', () => {
 
     it('should ignore deep mutations in props', () => {
       const store = createStore(() => ({
-        foo: 'bar'
+        foo: 'bar',
       }));
 
       const ConnectContainer = connect((state) => state)(
@@ -469,7 +470,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} pass={this.props.bar.baz} />;
           }
-        }
+        },
       );
 
       class Container extends Component {
@@ -477,8 +478,8 @@ describe('Inferno', () => {
           super();
           this.state = {
             bar: {
-              baz: ''
-            }
+              baz: '',
+            },
           };
         }
 
@@ -487,7 +488,7 @@ describe('Inferno', () => {
           const bar = this.state.bar;
           bar.baz = 'through';
           this.setState({
-            bar
+            bar,
           });
         }
 
@@ -511,13 +512,13 @@ describe('Inferno', () => {
 
       const doSomething = (thing) => ({
         type: 'APPEND',
-        payload: thing
+        payload: thing,
       });
 
       const Container = connect(
         (state) => ({ stateThing: state }),
         (dispatch) => ({
-          doSomething: (whatever) => dispatch(doSomething(whatever))
+          doSomething: (whatever) => dispatch(doSomething(whatever)),
         }),
         (stateProps, actionProps, parentProps) => ({
           ...stateProps,
@@ -525,14 +526,14 @@ describe('Inferno', () => {
           mergedDoSomething(thing) {
             const seed = stateProps.stateThing === '' ? 'HELLO ' : '';
             actionProps.doSomething(seed + thing + parentProps.extra);
-          }
-        })
+          },
+        }),
       )(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class OuterContainer extends Component {
@@ -550,7 +551,10 @@ describe('Inferno', () => {
         }
       }
 
-      const outerStub = render(<OuterContainer />, document.createElement('div'));
+      const outerStub = render(
+        <OuterContainer />,
+        document.createElement('div'),
+      );
       const stub = findRenderedVNodeWithType(outerStub, Passthrough).children;
       expect(stub.props.stateThing).toBe('');
       stub.props.mergedDoSomething('a');
@@ -576,30 +580,32 @@ describe('Inferno', () => {
 
     it('should merge actionProps into WrappedComponent', () => {
       const store = createStore(() => ({
-        foo: 'bar'
+        foo: 'bar',
       }));
 
       const Container = connect(
         (state) => state,
-        (dispatch) => ({ dispatch })
+        (dispatch) => ({ dispatch }),
       )(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <Container pass="through" />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.dispatch).toBe(store.dispatch);
       expect(stub.props.foo).toBe('bar');
-      expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
+      expect(
+        () => findRenderedVNodeWithType(tree, Container).children,
+      ).not.toThrowError();
       const decorated = findRenderedVNodeWithType(tree, Container).children;
       expect(decorated.isSubscribed()).toBe(true);
     });
@@ -617,7 +623,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class OuterComponent extends Component {
@@ -647,7 +653,7 @@ describe('Inferno', () => {
               outerComponent = c;
             }}
           />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       outerComponent.setFoo('BAR');
@@ -669,7 +675,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class OuterComponent extends Component {
@@ -725,7 +731,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class OuterComponent extends Component {
@@ -766,7 +772,7 @@ describe('Inferno', () => {
 
       expect(invocationCount).toBe(3);
       expect(propsPassedIn).toEqual({
-        foo: 'BAZ'
+        foo: 'BAZ',
       });
     });
 
@@ -783,7 +789,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class OuterComponent extends Component {
@@ -813,7 +819,7 @@ describe('Inferno', () => {
               outerComponent = c;
             }}
           />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       outerComponent.setFoo('BAR');
@@ -835,7 +841,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class OuterComponent extends Component {
@@ -891,7 +897,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       class OuterComponent extends Component {
@@ -932,13 +938,13 @@ describe('Inferno', () => {
 
       expect(invocationCount).toBe(3);
       expect(propsPassedIn).toEqual({
-        foo: 'BAZ'
+        foo: 'BAZ',
       });
     });
 
     it('should pass dispatch and avoid subscription if arguments are falsy', () => {
       const store = createStore(() => ({
-        foo: 'bar'
+        foo: 'bar',
       }));
 
       const runCheck = (...connectArgs) => {
@@ -947,7 +953,7 @@ describe('Inferno', () => {
             render() {
               return <Passthrough {...this.props} />;
             }
-          }
+          },
         );
 
         const vNode = (
@@ -961,7 +967,9 @@ describe('Inferno', () => {
         expect(stub.props.dispatch).toBe(store.dispatch);
         expect(stub.props.foo).toBeUndefined();
         expect(stub.props.pass).toBe('through');
-        expect(() => findRenderedVNodeWithType(tree, Container).children).not.toThrowError();
+        expect(
+          () => findRenderedVNodeWithType(tree, Container).children,
+        ).not.toThrowError();
 
         const decorated = findRenderedVNodeWithType(tree, Container).children;
         expect(decorated.isSubscribed()).toBe(false);
@@ -988,13 +996,13 @@ describe('Inferno', () => {
 
       const Container = connect(
         (state) => ({ string: state }),
-        (dispatch) => ({ dispatch })
+        (dispatch) => ({ dispatch }),
       )(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const div = document.createElement('div');
@@ -1002,7 +1010,7 @@ describe('Inferno', () => {
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>,
-        div
+        div,
       );
 
       expect(unsubscribeCalls).toBe(0);
@@ -1016,13 +1024,13 @@ describe('Inferno', () => {
 
       const Container = connect(
         () => ({ calls: ++mapStateToPropsCalls }),
-        (dispatch) => ({ dispatch })
+        (dispatch) => ({ dispatch }),
       )(
         class Container extends Component {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const div = document.createElement('div');
@@ -1033,7 +1041,7 @@ describe('Inferno', () => {
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>,
-        div
+        div,
       );
 
       expect(mapStateToPropsCalls).toBe(1);
@@ -1066,7 +1074,7 @@ describe('Inferno', () => {
           render() {
             return this.props.hide ? null : <Container />;
           }
-        }
+        },
       );
 
       const Container = connect((state) => ({ state }))(
@@ -1074,6 +1082,7 @@ describe('Inferno', () => {
           getDisplayName() {
             return 'Container';
           }
+
           componentWillReceiveProps(nextProps) {
             if (nextProps.state === 'A') {
               store.dispatch({ type: 'APPEND', payload: 'B' });
@@ -1083,7 +1092,7 @@ describe('Inferno', () => {
           render() {
             return null;
           }
-        }
+        },
       );
 
       const div = document.createElement('div');
@@ -1091,7 +1100,7 @@ describe('Inferno', () => {
         <ProviderMockTest store={store}>
           <App />
         </ProviderMockTest>,
-        div
+        div,
       );
 
       try {
@@ -1169,7 +1178,11 @@ describe('Inferno', () => {
         }
 
         render() {
-          return <App setLocation={this.setLocation}>{this.getChildComponent(this.state.location.pathname)}</App>;
+          return (
+            <App setLocation={this.setLocation}>
+              {this.getChildComponent(this.state.location.pathname)}
+            </App>
+          );
         }
       }
 
@@ -1214,7 +1227,7 @@ describe('Inferno', () => {
 
       const Container = connect(
         (state) => ({ calls: mapStateToPropsCalls++ }),
-        (dispatch) => ({ dispatch })
+        (dispatch) => ({ dispatch }),
       )(
         class Container extends Component {
           componentWillUnmount() {
@@ -1224,7 +1237,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const div = document.createElement('div');
@@ -1232,7 +1245,7 @@ describe('Inferno', () => {
         <ProviderMock store={store}>
           <Container />
         </ProviderMock>,
-        div
+        div,
       );
 
       expect(mapStateToPropsCalls).toBe(1);
@@ -1252,7 +1265,7 @@ describe('Inferno', () => {
 
       const Container = connect(
         (state) => ({ string: state }),
-        (dispatch) => ({ dispatch })
+        (dispatch) => ({ dispatch }),
       )(
         class Container extends Component {
           render() {
@@ -1261,7 +1274,7 @@ describe('Inferno', () => {
             renderCallCount++;
             return <Passthrough string={string} />;
           }
-        }
+        },
       );
 
       const vNode = (
@@ -1295,17 +1308,19 @@ describe('Inferno', () => {
         (stateProps, dispatchProps, parentProps) => ({
           ...dispatchProps,
           ...stateProps,
-          ...parentProps
-        })
+          ...parentProps,
+        }),
       )(
         class Container extends Component {
           render() {
             const { string, pass } = this.props;
 
             renderCallCount++;
-            return <Passthrough string={string} pass={pass} passVal={pass.val} />;
+            return (
+              <Passthrough string={string} pass={pass} passVal={pass.val} />
+            );
           }
-        }
+        },
       );
 
       class Root extends Component {
@@ -1384,7 +1399,9 @@ describe('Inferno', () => {
     });
 
     it('should throw an error if a component is not passed to the function returned by connect', () => {
-      expect(connect()).toThrowError(/You must pass a component to the function/);
+      expect(connect()).toThrowError(
+        /You must pass a component to the function/,
+      );
     });
 
     // TODO: Refactor this test. Regex way of matching values vary per browser
@@ -1475,38 +1492,41 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const ContainerAfter = connect(
         () => ({ foo: 'baz' }),
-        () => ({ scooby: 'foo' })
+        () => ({ scooby: 'foo' }),
       )(
         class ContainerAfter extends Component {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const ContainerNext = connect(
         () => ({ foo: 'bar' }),
-        () => ({ scooby: 'boo' })
+        () => ({ scooby: 'boo' }),
       )(
         class ContainerNext extends Component {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <ContainerBefore />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
-      const container = findRenderedVNodeWithType(tree, ContainerBefore).children;
+      const container = findRenderedVNodeWithType(
+        tree,
+        ContainerBefore,
+      ).children;
       const stub = findRenderedVNodeWithType(tree, Passthrough).children;
       expect(stub.props.foo).toBeUndefined();
       expect(stub.props.scooby).toBe('doo');
@@ -1540,8 +1560,8 @@ describe('Inferno', () => {
             render() {
               return <div />;
             }
-          }
-        ).displayName
+          },
+        ).displayName,
       ).not.toEqual(undefined);
     });
 
@@ -1595,7 +1615,7 @@ describe('Inferno', () => {
       const mockStore = {
         dispatch: () => {},
         subscribe: () => {},
-        getState: () => expectedState
+        getState: () => expectedState,
       };
 
       renderToContainer(<Decorated store={mockStore} />);
@@ -1612,7 +1632,9 @@ describe('Inferno', () => {
       const decorator = connect(() => {});
       const Decorated = decorator(Container);
 
-      expect(() => renderToContainer(<Decorated />)).toThrowError(/Could not find "store"/);
+      expect(() => renderToContainer(<Decorated />)).toThrowError(
+        /Could not find "store"/,
+      );
     });
 
     it('should throw when trying to access the wrapped instance if withRef is not specified', () => {
@@ -1630,12 +1652,12 @@ describe('Inferno', () => {
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <Decorated />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
       expect(() => decorated.getWrappedInstance()).toThrowError(
-        /To access the wrapped instance, you need to specify \{ withRef: true \} in the options argument of the connect\(\) call\./
+        /To access the wrapped instance, you need to specify \{ withRef: true \} in the options argument of the connect\(\) call\./,
       );
     });
 
@@ -1643,7 +1665,7 @@ describe('Inferno', () => {
       const store = createStore(() => ({}));
 
       const someData = {
-        some: 'data'
+        some: 'data',
       };
 
       class Container extends Component {
@@ -1656,18 +1678,22 @@ describe('Inferno', () => {
         }
       }
 
-      const decorator = connect((state) => state, null, null, { withRef: true });
+      const decorator = connect((state) => state, null, null, {
+        withRef: true,
+      });
       const Decorated = decorator(Container);
 
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <Decorated />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
       expect(() => decorated.someInstanceMethod()).toThrowError();
-      expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(someData);
+      expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(
+        someData,
+      );
       expect(decorated.wrappedInstance.someInstanceMethod()).toBe(someData);
     });
 
@@ -1691,7 +1717,7 @@ describe('Inferno', () => {
 
         getChildContext() {
           return {
-            statefulValue: this.state.value
+            statefulValue: this.state.value,
           };
         }
 
@@ -1719,7 +1745,7 @@ describe('Inferno', () => {
     it('calls mapState and mapDispatch for impure components', () => {
       const store = createStore(() => ({
         foo: 'foo',
-        bar: 'bar'
+        bar: 'bar',
       }));
 
       let mapStateToPropsCalls = 0;
@@ -1741,7 +1767,7 @@ describe('Inferno', () => {
           return {};
         },
         null,
-        { pure: false }
+        { pure: false },
       );
       const Decorated = decorator(ImpureComponent);
 
@@ -1749,7 +1775,7 @@ describe('Inferno', () => {
         constructor() {
           super();
           this.state = {
-            storeGetter: { storeKey: 'foo' }
+            storeGetter: { storeKey: 'foo' },
           };
         }
 
@@ -1761,7 +1787,7 @@ describe('Inferno', () => {
       const tree = renderToContainer(
         <ProviderMock store={store}>
           <StatefulWrapper />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const target = findRenderedVNodeWithType(tree, Passthrough).children;
@@ -1788,7 +1814,7 @@ describe('Inferno', () => {
       let childMapStateInvokes = 0;
 
       const Container = connect((state) => ({ state }), null, null, {
-        withRef: true
+        withRef: true,
       })(
         class Container extends Component {
           emitChange() {
@@ -1810,7 +1836,7 @@ describe('Inferno', () => {
               </div>
             );
           }
-        }
+        },
       );
 
       const ChildContainer = connect((state, parentProps) => {
@@ -1824,7 +1850,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const vNode = (
@@ -1865,7 +1891,7 @@ describe('Inferno', () => {
             renderCalls++;
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const vNode = (
@@ -1901,7 +1927,7 @@ describe('Inferno', () => {
             renderCalls++;
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const oldSetState = Container.prototype.setState;
@@ -1957,18 +1983,20 @@ describe('Inferno', () => {
             renderCalls++;
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       renderToContainer(
         <ProviderMock store={store}>
           <Container />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
-      expect(() => store.dispatch({ type: 'APPEND', payload: 'a' })).toThrowError('Oops');
+      expect(() =>
+        store.dispatch({ type: 'APPEND', payload: 'a' }),
+      ).toThrowError('Oops');
     });
 
     it('should allow providing a factory function to mapStateToProps', () => {
@@ -1989,7 +2017,7 @@ describe('Inferno', () => {
           lastProp = props.name;
           lastVal = state.value;
           lastResult = {
-            someObject: { prop: props.name, stateVal: state.value }
+            someObject: { prop: props.name, stateVal: state.value },
           };
           return lastResult;
         };
@@ -2004,7 +2032,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       renderToContainer(
@@ -2013,7 +2041,7 @@ describe('Inferno', () => {
             <Container name="a" />
             <Container name="b" />
           </div>
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       store.dispatch({ type: 'test' });
@@ -2041,7 +2069,7 @@ describe('Inferno', () => {
           render() {
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const vNode = (
@@ -2084,13 +2112,13 @@ describe('Inferno', () => {
       const mergeParentDispatch = (stateProps, dispatchProps, parentProps) => ({
         ...stateProps,
         ...dispatchProps,
-        name: parentProps.name
+        name: parentProps.name,
       });
 
       const Passthrough = connect(
         null,
         mapDispatchFactory,
-        mergeParentDispatch
+        mergeParentDispatch,
       )(
         class Passthrough extends Component {
           componentWillUpdate() {
@@ -2100,7 +2128,7 @@ describe('Inferno', () => {
           render() {
             return <div />;
           }
-        }
+        },
       );
 
       class Container extends Component {
@@ -2148,15 +2176,15 @@ describe('Inferno', () => {
         () => ({ a: ++mapStateCalls }),
         null,
         () => ({
-          changed: false
-        })
+          changed: false,
+        }),
       )(
         class Container extends Component {
           render() {
             renderCalls++;
             return <Passthrough {...this.props} />;
           }
-        }
+        },
       );
 
       const vNode = (
@@ -2186,7 +2214,7 @@ describe('Inferno', () => {
             renderCount++;
             return <div />;
           }
-        }
+        },
       );
 
       class Parent extends Component {
@@ -2204,7 +2232,7 @@ describe('Inferno', () => {
           <Parent>
             <Container />
           </Parent>
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       expect(renderCount).toBe(1);
@@ -2228,13 +2256,13 @@ describe('Inferno', () => {
       };
 
       const Child = connect((state) => ({
-        profile: state.data && state.data.profile
+        profile: state.data?.profile,
       }))(
         class Child extends Component {
           render() {
             return null;
           }
-        }
+        },
       );
 
       const Parent = connect(null)(
@@ -2250,7 +2278,7 @@ describe('Inferno', () => {
           render() {
             return <Child />;
           }
-        }
+        },
       );
 
       const store = createStore(reducer);
@@ -2259,7 +2287,7 @@ describe('Inferno', () => {
         <ProviderMock store={store}>
           <Parent />
         </ProviderMock>,
-        div
+        div,
       );
 
       unmountDOM(div);
@@ -2268,13 +2296,13 @@ describe('Inferno', () => {
 
     it('should allow custom displayName', () => {
       const MyComponent = connect(null, null, null, {
-        getDisplayName: (name) => `Custom(${name})`
+        getDisplayName: (name) => `Custom(${name})`,
       })(
         class MyComponent extends Component {
           render() {
             return <div />;
           }
-        }
+        },
       );
 
       // This depends on minification, browser support, etc
@@ -2291,13 +2319,13 @@ describe('Inferno', () => {
             renderCount++;
             return <div />;
           }
-        }
+        },
       );
 
       renderToContainer(
         <ProviderMock store={store}>
           <ImpureComponent />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       const rendersBeforeStateChange = renderCount;
@@ -2311,7 +2339,7 @@ describe('Inferno', () => {
           render() {
             return <div />;
           }
-        }
+        },
       );
 
       const error = renderWithBadConnect(InvalidMapState);
@@ -2325,13 +2353,13 @@ describe('Inferno', () => {
     it('should throw a helpful error for invalid mapDispatchToProps arguments', () => {
       const InvalidMapDispatch = connect(
         null,
-        'invalid'
+        'invalid',
       )(
         class InvalidMapDispatch extends Component {
           render() {
             return <div />;
           }
-        }
+        },
       );
 
       const error = renderWithBadConnect(InvalidMapDispatch);
@@ -2346,13 +2374,13 @@ describe('Inferno', () => {
       const InvalidMerge = connect(
         null,
         null,
-        'invalid'
+        'invalid',
       )(
         class InvalidMerge extends Component {
           render() {
             return <div />;
           }
-        }
+        },
       );
 
       const error = renderWithBadConnect(InvalidMerge);
@@ -2361,7 +2389,9 @@ describe('Inferno', () => {
     });
 
     it('should notify nested components through a blocking component', () => {
-      const store = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
+      const store = createStore((state = 0, action) =>
+        action.type === 'INC' ? state + 1 : state,
+      );
 
       let mapStateCalls = 0;
       const mapStateToProps = (state) => {
@@ -2374,7 +2404,7 @@ describe('Inferno', () => {
           render() {
             return <div>{this.props.count}</div>;
           }
-        }
+        },
       );
 
       class BlockUpdates extends Component {
@@ -2396,7 +2426,7 @@ describe('Inferno', () => {
               </BlockUpdates>
             );
           }
-        }
+        },
       );
 
       const vNode = (
@@ -2413,7 +2443,9 @@ describe('Inferno', () => {
     });
 
     it('should subscribe properly when a middle connected component does not subscribe', () => {
-      const store = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
+      const store = createStore((state = 0, action) =>
+        action.type === 'INC' ? state + 1 : state,
+      );
 
       const C = connect((state, props) => {
         expect(props.count).toBe(state);
@@ -2423,7 +2455,7 @@ describe('Inferno', () => {
           render() {
             return <div>{this.props.count}</div>;
           }
-        }
+        },
       );
 
       // no mapStateToProps. therefore it should be transparent for subscriptions
@@ -2432,7 +2464,7 @@ describe('Inferno', () => {
           render() {
             return <C {...this.props} />;
           }
-        }
+        },
       );
 
       const A = connect((state) => ({ count: state }))(
@@ -2440,28 +2472,32 @@ describe('Inferno', () => {
           render() {
             return <B {...this.props} />;
           }
-        }
+        },
       );
 
       renderToContainer(
         <ProviderMock store={store}>
           <A />
-        </ProviderMock>
+        </ProviderMock>,
       );
 
       store.dispatch({ type: 'INC' });
     });
 
     it('should subscribe properly when a new store is provided via props', () => {
-      const store1 = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
-      const store2 = createStore((state = 0, action) => (action.type === 'INC' ? state + 1 : state));
+      const store1 = createStore((state = 0, action) =>
+        action.type === 'INC' ? state + 1 : state,
+      );
+      const store2 = createStore((state = 0, action) =>
+        action.type === 'INC' ? state + 1 : state,
+      );
 
       const A = connect((state) => ({ count: state }))(
         class A extends Component {
           render() {
             return <B store={store2} />;
           }
-        }
+        },
       );
 
       const mapStateToPropsB = jasmine.createSpy((state) => ({ count: state }));
@@ -2470,7 +2506,7 @@ describe('Inferno', () => {
           render() {
             return <C {...this.props} />;
           }
-        }
+        },
       );
 
       const mapStateToPropsC = jasmine.createSpy((state) => ({ count: state }));
@@ -2479,7 +2515,7 @@ describe('Inferno', () => {
           render() {
             return <D />;
           }
-        }
+        },
       );
 
       const mapStateToPropsD = jasmine.createSpy((state) => ({ count: state }));
@@ -2488,7 +2524,7 @@ describe('Inferno', () => {
           render() {
             return <div>{this.props.count}</div>;
           }
-        }
+        },
       );
 
       const vNode = (

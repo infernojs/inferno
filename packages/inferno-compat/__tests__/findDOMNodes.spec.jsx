@@ -57,13 +57,23 @@ describe('findDOMNodes (JSX)', () => {
       render(null, container);
       expect(findDOMNode(instance1)).toBe(null);
       render(<Example2 />, container);
-      expect(findDOMNode(instance2) === document.getElementById('example2')).toBe(true);
+      expect(
+        findDOMNode(instance2) === document.getElementById('example2'),
+      ).toBe(true);
       render(<Example1 />, container);
-      expect(findDOMNode(instance1) === document.getElementById('example1')).toBe(true);
+      expect(
+        findDOMNode(instance1) === document.getElementById('example1'),
+      ).toBe(true);
       render(<Example3 />, container);
-      expect(findDOMNode(instance3) === document.getElementById('example3')).toBe(true);
-      expect(findDOMNode(instance2) === document.getElementById('example2')).toBe(true);
-      expect(findDOMNode(instance1) === document.getElementById('example1')).toBe(true);
+      expect(
+        findDOMNode(instance3) === document.getElementById('example3'),
+      ).toBe(true);
+      expect(
+        findDOMNode(instance2) === document.getElementById('example2'),
+      ).toBe(true);
+      expect(
+        findDOMNode(instance1) === document.getElementById('example1'),
+      ).toBe(true);
       render(null, container);
       expect(findDOMNode(instance1)).toBe(null);
       expect(findDOMNode(instance2)).toBe(null);
@@ -106,7 +116,7 @@ describe('findDOMNodes (JSX)', () => {
             <Wrapper key="a">
               <div />
             </Wrapper>,
-            <span key="b" />
+            <span key="b" />,
           ];
         }
       }
@@ -135,7 +145,10 @@ describe('findDOMNodes (JSX)', () => {
       }
 
       let instance = null;
-      ReactDOM.render(<FragmentTester ref={(ref) => (instance = ref)} />, container);
+      ReactDOM.render(
+        <FragmentTester ref={(ref) => (instance = ref)} />,
+        container,
+      );
 
       expect(container.childNodes.length).toBe(3);
 

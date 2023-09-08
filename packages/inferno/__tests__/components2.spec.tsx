@@ -42,24 +42,27 @@ describe('Components (JSX) #2', () => {
       text: string;
     }
 
-    class ComponentBWithStateChange extends Component<unknown, ComponentBWithStateChangeState> {
+    class ComponentBWithStateChange extends Component<
+      unknown,
+      ComponentBWithStateChangeState
+    > {
       public state: ComponentBWithStateChangeState;
 
       constructor(props) {
         super(props);
 
         this.state = {
-          text: ''
+          text: '',
         };
       }
 
       public componentWillMount() {
         this.setState({
-          text: 'newText'
+          text: 'newText',
         });
 
         this.setState({
-          text: 'newText2'
+          text: 'newText2',
         });
       }
 
@@ -150,13 +153,13 @@ describe('Components (JSX) #2', () => {
 
       public _update() {
         this.setState({
-          data: 'bar'
+          data: 'bar',
         });
       }
 
       public componentWillMount() {
         this.setState({
-          data: 'foo'
+          data: 'foo',
         });
       }
 
@@ -227,7 +230,7 @@ describe('Components (JSX) #2', () => {
         super(props);
 
         this.state = {
-          data: ''
+          data: '',
         };
 
         this._update = this._update.bind(this);
@@ -235,13 +238,13 @@ describe('Components (JSX) #2', () => {
 
       public _update() {
         this.setState({
-          data: 'bar'
+          data: 'bar',
         });
       }
 
       public componentWillMount() {
         this.setState({
-          data: 'foo'
+          data: 'foo',
         });
       }
 
@@ -323,7 +326,7 @@ describe('Components (JSX) #2', () => {
       }
 
       public static defaultProps = {
-        foo: 'bar'
+        foo: 'bar',
       };
     }
 

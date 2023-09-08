@@ -1,7 +1,5 @@
 import { Component, render, rerender } from 'inferno';
 
-/* tslint:disable:no-console */
-
 describe('Component lifecycle', () => {
   let container;
 
@@ -46,7 +44,7 @@ describe('Component lifecycle', () => {
 
     class Child extends Component<{ active: boolean }, { active: boolean }> {
       public state = {
-        active: false
+        active: false,
       };
 
       constructor() {
@@ -56,7 +54,7 @@ describe('Component lifecycle', () => {
       public componentWillReceiveProps(nextProps) {
         if (!this.props.active && nextProps.active) {
           this.setState({
-            active: true
+            active: true,
           });
         }
       }
@@ -73,7 +71,7 @@ describe('Component lifecycle', () => {
 
     class Parent extends Component<{}, { active: boolean }> {
       public state = {
-        active: false
+        active: false,
       };
 
       constructor() {
@@ -83,7 +81,7 @@ describe('Component lifecycle', () => {
 
       public _setActive() {
         this.setState({
-          active: true
+          active: true,
         });
       }
 
@@ -159,7 +157,11 @@ describe('Component lifecycle', () => {
 
       public componentWillUnmount() {
         // verify its not removed from DOM tree yet.
-        expect(this.element.parentElement != null ? this.element.parentElement.parentElement : null).toBe(container);
+        expect(
+          this.element.parentElement != null
+            ? this.element.parentElement.parentElement
+            : null,
+        ).toBe(container);
       }
 
       public render() {
@@ -203,7 +205,7 @@ describe('Component lifecycle', () => {
         }}
         value={1}
       />,
-      container
+      container,
     );
 
     c.componentDidUpdate = undefined;
@@ -230,8 +232,6 @@ describe('legacy life cycle', () => {
   });
 
   it('should warn when mix legacy life cycle with new ones', () => {
-    /* tslint:disable:member-access no-empty */
-
     // build the component and element to be rendered
     class Foo extends Component {
       // just added to force the warnings
@@ -265,7 +265,6 @@ describe('legacy life cycle', () => {
   });
 
   it('should allow suppress legacy life cycles when mixed with new APIs', () => {
-    /* tslint:disable:member-access no-empty */
     // build the component and element to be rendered
     class Foo extends Component {
       // just added to force the warnings
@@ -283,11 +282,11 @@ describe('legacy life cycle', () => {
     }
 
     // suppress the warnings
-    // @ts-ignore
+    // @ts-expect-error
     Foo.prototype.componentWillMount.__suppressDeprecationWarning = true;
-    // @ts-ignore
+    // @ts-expect-error
     Foo.prototype.componentWillReceiveProps.__suppressDeprecationWarning = true;
-    // @ts-ignore
+    // @ts-expect-error
     Foo.prototype.componentWillUpdate.__suppressDeprecationWarning = true;
 
     const element = <Foo />;

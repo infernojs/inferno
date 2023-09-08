@@ -5,7 +5,7 @@ import { createElement } from 'inferno-create-element';
 const stateLessComp = ({ testProp }) => <div>result: {testProp}</div>;
 
 stateLessComp.defaultProps = {
-  testProp: 'default value for prop testProp'
+  testProp: 'default value for prop testProp',
 };
 
 describe('Stateless components MOBX', () => {
@@ -24,7 +24,9 @@ describe('Stateless components MOBX', () => {
 
   it('stateless component', (done) => {
     const StatelessCompObserver = observer(stateLessComp);
-    expect(StatelessCompObserver.defaultProps.testProp).toBe('default value for prop testProp');
+    expect(StatelessCompObserver.defaultProps.testProp).toBe(
+      'default value for prop testProp',
+    );
     const wrapper = <StatelessCompObserver testProp={10} />;
 
     render(<StatelessCompObserver testProp="hello world" />, container);
@@ -34,7 +36,8 @@ describe('Stateless components MOBX', () => {
   });
 
   it('stateless component with context support', (done) => {
-    const StateLessCompWithContext = (props, context) => createElement('div', {}, 'context: ' + context.testContext);
+    const StateLessCompWithContext = (props, context) =>
+      createElement('div', {}, 'context: ' + context.testContext);
     const StateLessCompWithContextObserver = observer(StateLessCompWithContext);
 
     class ContextProvider extends Component {
@@ -48,7 +51,9 @@ describe('Stateless components MOBX', () => {
     }
 
     render(<ContextProvider />, container);
-    expect(container.textContent.replace(/\n/, '')).toBe('context: hello world');
+    expect(container.textContent.replace(/\n/, '')).toBe(
+      'context: hello world',
+    );
     done();
   });
 });

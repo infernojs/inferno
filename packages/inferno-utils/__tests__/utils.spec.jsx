@@ -1,4 +1,8 @@
-import { createContainerWithHTML, triggerEvent, validateNodeTree } from 'inferno-utils';
+import {
+  createContainerWithHTML,
+  triggerEvent,
+  validateNodeTree,
+} from 'inferno-utils';
 
 describe('Utils', () => {
   describe('createContainerWithHTML', () => {
@@ -27,7 +31,7 @@ describe('Utils', () => {
   describe('triggerEvent', () => {
     let expectedEventType = '';
     const element = {
-      dispatchEvent(event) {}
+      dispatchEvent(event) {},
     };
     let spyDispatch;
     let spyCreateMouseEvent;
@@ -37,19 +41,21 @@ describe('Utils', () => {
     beforeEach(function () {
       spyDispatch = spyOn(element, 'dispatchEvent');
 
-      spyCreateMouseEvent = spyOn(document, 'createEvent').and.callFake((ev) => {
-        expect(ev).toBe(expectedEventType);
+      spyCreateMouseEvent = spyOn(document, 'createEvent').and.callFake(
+        (ev) => {
+          expect(ev).toBe(expectedEventType);
 
-        spyEvent = {
-          initEvent: (eventType, canBubble, cancelable) => {
-            expect(eventType).toBe(triggerName);
-            // expect(canBubble).toBe(true);
-            expect(cancelable).toBe(true);
-          }
-        };
+          spyEvent = {
+            initEvent: (eventType, canBubble, cancelable) => {
+              expect(eventType).toBe(triggerName);
+              // expect(canBubble).toBe(true);
+              expect(cancelable).toBe(true);
+            },
+          };
 
-        return spyEvent;
-      });
+          return spyEvent;
+        },
+      );
     });
 
     afterEach(function () {
@@ -133,7 +139,9 @@ describe('Utils', () => {
       expectedEventType = 'HTMLEvents';
       triggerName = 'blah';
 
-      expect(triggerEvent.bind(triggerEvent, triggerName, element)).toThrowError(Error);
+      expect(
+        triggerEvent.bind(triggerEvent, triggerName, element),
+      ).toThrowError(Error);
     });
   });
 });

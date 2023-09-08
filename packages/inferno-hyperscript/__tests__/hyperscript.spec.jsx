@@ -41,7 +41,7 @@ describe('HyperScript (non-JSX)', () => {
         }
       }
       const spyObj = {
-        fn: () => {}
+        fn: () => {},
       };
       const spy = spyOn(spyObj, 'fn');
       const node = h(FooBar, { ref: spyObj.fn });
@@ -72,9 +72,9 @@ describe('HyperScript (non-JSX)', () => {
     const ComponentHooks = () =>
       h(Component, {
         hooks: {
-          onComponentDidUnmount() {}
+          onComponentDidUnmount() {},
         },
-        children: 'Hello world!'
+        children: 'Hello world!',
       });
 
     render(h(ComponentHooks), container);
@@ -98,11 +98,13 @@ describe('HyperScript (non-JSX)', () => {
         key: 'myKey',
         ref: (c) => c,
         className: 'myClass',
-        children: 'Hello world!'
+        children: 'Hello world!',
       });
 
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe('<div class="test myClass" id="myId">Hello world!</div>');
+    expect(container.innerHTML).toBe(
+      '<div class="test myClass" id="myId">Hello world!</div>',
+    );
   });
 
   it('Should handle tag with no name', () => {
@@ -118,9 +120,15 @@ describe('HyperScript (non-JSX)', () => {
   });
 
   it('Should be possible to create select element with hyperscript', () => {
-    const ComponentHooks = () => h('select', { id: 'select' }, [h('option', { value: 1 }, '1'), h('option', { value: 2 }, '2')]);
+    const ComponentHooks = () =>
+      h('select', { id: 'select' }, [
+        h('option', { value: 1 }, '1'),
+        h('option', { value: 2 }, '2'),
+      ]);
     render(h(ComponentHooks), container);
-    expect(container.innerHTML).toBe('<select id="select"><option value="1">1</option><option value="2">2</option></select>');
+    expect(container.innerHTML).toBe(
+      '<select id="select"><option value="1">1</option><option value="2">2</option></select>',
+    );
   });
 
   it('Should handle tag with no tag name but id is present', () => {
@@ -163,8 +171,13 @@ describe('HyperScript (non-JSX)', () => {
     }
 
     render(
-      h('div', {}, [h(Test1, { className: 'test1prop' }), h(Test2, { className: 'test2prop' }), h(Test3), h(Test4, { className: 'test4prop' })]),
-      container
+      h('div', {}, [
+        h(Test1, { className: 'test1prop' }),
+        h(Test2, { className: 'test2prop' }),
+        h(Test3),
+        h(Test4, { className: 'test4prop' }),
+      ]),
+      container,
     );
 
     const children = container.firstChild.childNodes;
@@ -177,9 +190,22 @@ describe('HyperScript (non-JSX)', () => {
 
   if (typeof global !== 'undefined' && !global.usingJSDOM) {
     it('Should not lower case SVG tags', () => {
-      render(h('svg', null, h('filter', { id: 'blur' }, h('feGaussianBlur', { in: 'SourceGraphic' }))), container);
+      render(
+        h(
+          'svg',
+          null,
+          h(
+            'filter',
+            { id: 'blur' },
+            h('feGaussianBlur', { in: 'SourceGraphic' }),
+          ),
+        ),
+        container,
+      );
 
-      expect(container.firstChild.firstChild.firstChild.tagName).toEqual('feGaussianBlur'); // tag name is case sensitive
+      expect(container.firstChild.firstChild.firstChild.tagName).toEqual(
+        'feGaussianBlur',
+      ); // tag name is case sensitive
       expect(container.firstChild.firstChild.tagName).toEqual('filter');
       expect(container.firstChild.tagName).toEqual('svg');
     });
@@ -198,16 +224,18 @@ describe('HyperScript (non-JSX)', () => {
               type: 'button',
               onClick: () => {
                 triggered = !triggered;
-              }
+              },
             },
-            'Do a thing'
-          )
+            'Do a thing',
+          ),
         ]);
       };
 
       // eslint-disable-next-line
       render(App(), container);
-      expect(container.innerHTML).toBe('<div><div class="title">Example</div><button type="button">Do a thing</button></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div class="title">Example</div><button type="button">Do a thing</button></div>',
+      );
       expect(triggered).toBe(false);
 
       const buttons = container.querySelectorAll('button');
@@ -229,15 +257,17 @@ describe('HyperScript (non-JSX)', () => {
               type: 'button',
               onClick: () => {
                 triggered = !triggered;
-              }
+              },
             },
-            'Do a thing'
-          )
+            'Do a thing',
+          ),
         );
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button type="button">Do a thing</button></div>',
+      );
       expect(triggered).toBe(false);
 
       const buttons = container.querySelectorAll('button');
@@ -253,13 +283,15 @@ describe('HyperScript (non-JSX)', () => {
           null,
           h('button', {
             type: 'button',
-            children: ['Do a thing']
-          })
+            children: ['Do a thing'],
+          }),
         );
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button type="button">Do a thing</button></div>',
+      );
     });
 
     it('Should allow passing childs through "children" property (custom component)', () => {
@@ -270,13 +302,15 @@ describe('HyperScript (non-JSX)', () => {
           null,
           h(Button, {
             type: 'button',
-            children: ['Do a thing']
-          })
+            children: ['Do a thing'],
+          }),
         );
       };
 
       render(app(), container);
-      expect(container.innerHTML).toBe('<div><button type="button">Do a thing</button></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button type="button">Do a thing</button></div>',
+      );
     });
 
     it('Should handle node with hooks and key', (done) => {
@@ -287,7 +321,7 @@ describe('HyperScript (non-JSX)', () => {
           expect(app.key).toBe('key1');
           expect(domNode.tagName).toBe('DIV');
           done();
-        }
+        },
       });
 
       render(app, container);
@@ -308,13 +342,13 @@ describe('HyperScript (non-JSX)', () => {
       const app = () => {
         const node = () =>
           h('a', {
-            ref: (c) => (myRef = c)
+            ref: (c) => (myRef = c),
           });
         return h(node, {
           onComponentDidMount() {
             expect(myRef.tagName).toBe('A');
             done();
-          }
+          },
         });
       };
       render(h(app, null), container);
@@ -352,14 +386,26 @@ describe('HyperScript (non-JSX)', () => {
 
   describe('Fragments', () => {
     it('Should render Fragment with key', () => {
-      render(h(Fragment, { key: 'first' }, [h('div', null, 'Ok'), h('span', null, 'Test')]), container);
+      render(
+        h(Fragment, { key: 'first' }, [
+          h('div', null, 'Ok'),
+          h('span', null, 'Test'),
+        ]),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div><span>Test</span>');
 
       const div = container.querySelector('div');
       const span = container.querySelector('span');
 
-      render(h(Fragment, { key: 'foobar' }, [h('div', null, 'Ok'), h('span', null, 'Test')]), container);
+      render(
+        h(Fragment, { key: 'foobar' }, [
+          h('div', null, 'Ok'),
+          h('span', null, 'Test'),
+        ]),
+        container,
+      );
 
       // Verify key works
       expect(container.innerHTML).toBe('<div>Ok</div><span>Test</span>');
@@ -370,7 +416,9 @@ describe('HyperScript (non-JSX)', () => {
   });
 
   it('Should be possible to forward createRef', () => {
-    const FancyButton = forwardRef((props, ref) => h('button', { ref: ref, className: 'FancyButton' }, props.children));
+    const FancyButton = forwardRef((props, ref) =>
+      h('button', { ref, className: 'FancyButton' }, props.children),
+    );
 
     expect(FancyButton.render).toBeDefined();
 
@@ -385,6 +433,7 @@ describe('HyperScript (non-JSX)', () => {
       componentDidMount() {
         expect(this.btn.current).toBe(container.querySelector('button'));
       }
+
       render() {
         return h(FancyButton, { ref: this.btn }, 'Click me!');
       }
@@ -392,6 +441,8 @@ describe('HyperScript (non-JSX)', () => {
 
     render(h(Hello), container);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
   });
 });

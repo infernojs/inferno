@@ -72,7 +72,7 @@ describe('Async set state issue', () => {
           async: false,
           counter: 0,
           failure: false,
-          success: 0
+          success: 0,
         };
       }
 
@@ -88,7 +88,7 @@ describe('Async set state issue', () => {
         this._forceASYNC();
 
         this.setState({
-          success: 2
+          success: 2,
         });
       }
 
@@ -99,9 +99,9 @@ describe('Async set state issue', () => {
         _justBecauseCBRequested++;
         this.setState(
           {
-            success: 1
+            success: 1,
           },
-          this._justBecause
+          this._justBecause,
         );
       }
 
@@ -112,9 +112,9 @@ describe('Async set state issue', () => {
         _callMePlsCBRequested++;
         this.setState(
           {
-            failure: true
+            failure: true,
           },
-          this._callMePls
+          this._callMePls,
         );
       }
 
@@ -126,9 +126,9 @@ describe('Async set state issue', () => {
         // This setState triggers async flow
         this.setState(
           {
-            async: true
+            async: true,
           },
-          this._failureCreator
+          this._failureCreator,
         );
       }
 
@@ -137,14 +137,16 @@ describe('Async set state issue', () => {
 
         this.setState(
           {
-            counter: this.state.counter + 1
+            counter: this.state.counter + 1,
           },
-          this._fromCWRP
+          this._fromCWRP,
         );
       }
 
       public render() {
-        return <div>{`${this.props.name} ${this.state.success} ${this.state.counter} ${this.state.async} ${this.state.failure}`}</div>;
+        return (
+          <div>{`${this.props.name} ${this.state.success} ${this.state.counter} ${this.state.async} ${this.state.failure}`}</div>
+        );
       }
     }
 
@@ -165,7 +167,9 @@ describe('Async set state issue', () => {
     expect(_failureCreatorCBRequested).toBe(4);
     expect(_justBecauseCBRequested).toBe(4);
 
-    expect(container.innerHTML).toBe('<div><div>first 2 2 true true</div><div>second 2 2 true true</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><div>first 2 2 true true</div><div>second 2 2 true true</div></div>',
+    );
   });
 
   it('Should always call all set change callbacks in order of setState requests', () => {
@@ -216,7 +220,7 @@ describe('Async set state issue', () => {
 
         this.state = {
           async: 0,
-          counter: 0
+          counter: 0,
         };
 
         testBeforeBeforeSpy = spyOn(this, '_before').and.callFake(function () {
@@ -243,25 +247,25 @@ describe('Async set state issue', () => {
 
         this.setState(
           {
-            async: 1
+            async: 1,
           },
-          this._before
+          this._before,
         );
 
         this.setState(
           {
-            async: 2
+            async: 2,
           },
-          this._after
+          this._after,
         );
       }
 
       public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
-            counter: this.state.counter + 1
+            counter: this.state.counter + 1,
           },
-          this._fromCWRP
+          this._fromCWRP,
         );
       }
 
@@ -287,7 +291,7 @@ describe('Async set state issue', () => {
 
         this.state = {
           async: 0,
-          counter: 0
+          counter: 0,
         };
 
         testAfterBeforeSpy = spyOn(this, '_before').and.callFake(function () {
@@ -314,25 +318,25 @@ describe('Async set state issue', () => {
 
         this.setState(
           {
-            async: 1
+            async: 1,
           },
-          this._before
+          this._before,
         );
 
         this.setState(
           {
-            async: 2
+            async: 2,
           },
-          this._after
+          this._after,
         );
       }
 
       public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
-            counter: this.state.counter + 1
+            counter: this.state.counter + 1,
           },
-          this._fromCWRP
+          this._fromCWRP,
         );
       }
 
@@ -361,7 +365,7 @@ describe('Async set state issue', () => {
       'testAfterBefore',
       'testAfterAfter',
       'testAfterBefore',
-      'testAfterAfter'
+      'testAfterAfter',
     ]);
 
     expect(container.innerHTML).toBe('<div><div>2</div><div>2</div></div>');
@@ -415,7 +419,7 @@ describe('Async set state issue', () => {
 
         this.state = {
           async: 0,
-          counter: 0
+          counter: 0,
         };
 
         testBeforeBeforeSpy = spyOn(this, '_before');
@@ -438,25 +442,25 @@ describe('Async set state issue', () => {
 
         this.setState(
           {
-            async: 1
+            async: 1,
           },
-          this._before
+          this._before,
         );
 
         this.setState(
           {
-            async: 2
+            async: 2,
           },
-          this._after
+          this._after,
         );
       }
 
       public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
-            counter: this.state.counter + 1
+            counter: this.state.counter + 1,
           },
-          this._fromCWRP
+          this._fromCWRP,
         );
       }
 
@@ -483,7 +487,7 @@ describe('Async set state issue', () => {
 
         this.state = {
           async: 0,
-          counter: 0
+          counter: 0,
         };
 
         testAfterBeforeSpy = spyOn(this, '_before');
@@ -506,25 +510,25 @@ describe('Async set state issue', () => {
 
         this.setState(
           {
-            async: 1
+            async: 1,
           },
-          this._before
+          this._before,
         );
 
         this.setState(
           {
-            async: 2
+            async: 2,
           },
-          this._after
+          this._after,
         );
       }
 
       public componentWillReceiveProps(_nextProps, _nextContext) {
         this.setState(
           {
-            counter: this.state.counter + 1
+            counter: this.state.counter + 1,
           },
-          this._fromCWRP
+          this._fromCWRP,
         );
       }
 

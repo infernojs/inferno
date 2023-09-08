@@ -21,9 +21,9 @@ describe('Mobx Observer Patch', () => {
       todos: [
         {
           title: 'a',
-          completed: false
-        }
-      ]
+          completed: false,
+        },
+      ],
     });
 
     let todoItemRenderings = 0;
@@ -84,7 +84,7 @@ describe('Mobx Observer Patch', () => {
 
     store.todos.push({
       title: 'b',
-      completed: true
+      completed: true,
     });
 
     expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in in the list');
@@ -100,7 +100,9 @@ describe('Mobx Observer Patch', () => {
     expect(todoListWillReactCount).toBe(0); //, 'should never call componentWillReact')
     expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
     expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
+    expect(
+      getObserverTree(store.todos[1], 'completed').observers,
+    ).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
@@ -120,7 +122,7 @@ describe('Mobx Observer Patch', () => {
         yCalcCount++;
         return this.x * 2;
       },
-      z: 'hi'
+      z: 'hi',
     });
 
     class TestComponent extends Component {
@@ -177,12 +179,12 @@ describe('Mobx Observer Patch', () => {
       selected: 'coffee',
       items: [
         {
-          name: 'coffee'
+          name: 'coffee',
         },
         {
-          name: 'tea'
-        }
-      ]
+          name: 'tea',
+        },
+      ],
     });
 
     /** Row Class */
@@ -243,7 +245,7 @@ describe('Mobx Observer Patch', () => {
             </div>
           );
         }
-      }
+      },
     );
     observerPatch(Foo);
 
@@ -267,7 +269,7 @@ describe('Mobx Observer Patch', () => {
             </div>
           );
         }
-      }
+      },
     );
     observerPatch(Foo);
 
@@ -357,6 +359,7 @@ describe('Mobx Observer Patch', () => {
         super(props, ctx);
         this.state = {};
       }
+
       onClick() {
         this.setState({});
       }

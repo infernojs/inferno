@@ -1,6 +1,13 @@
 import { render } from 'inferno';
 import { renderToString } from 'inferno-server';
-import { BrowserRouter, StaticRouter, Route, useLoaderData, resolveLoaders, traverseLoaders } from 'inferno-router';
+import {
+  BrowserRouter,
+  StaticRouter,
+  Route,
+  useLoaderData,
+  resolveLoaders,
+  traverseLoaders,
+} from 'inferno-router';
 
 describe('Resolve loaders during server side rendering', () => {
   let container;
@@ -35,7 +42,7 @@ describe('Resolve loaders during server side rendering', () => {
     const routes = [
       <Route path="/flowers" render={Component} loader={loaderFuncNoHit} />,
       <Route path="/birds" render={Component} loader={loaderFunc} />,
-      <Route path="/bees" render={Component} loader={loaderFuncNoHit} />
+      <Route path="/bees" render={Component} loader={loaderFuncNoHit} />,
     ];
 
     const loaderEntries = traverseLoaders('/birds', routes);
@@ -45,12 +52,15 @@ describe('Resolve loaders during server side rendering', () => {
     const html = renderToString(
       <StaticRouter location="/birds" initialData={initialData}>
         {routes}
-      </StaticRouter>
+      </StaticRouter>,
     );
 
     // Render in browser
     history.replaceState(undefined, undefined, '/birds');
-    render(<BrowserRouter initialData={initialData}>{routes}</BrowserRouter>, container);
+    render(
+      <BrowserRouter initialData={initialData}>{routes}</BrowserRouter>,
+      container,
+    );
 
     expect(`<!--!-->${container.innerHTML}<!--!-->`).toEqual(html);
   });

@@ -12,13 +12,18 @@ import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactElementClone', function () {
   let container;
 
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   beforeEach(() => {
@@ -40,10 +45,14 @@ describe('ReactElementClone', function () {
     }
     class Parent extends React.Component {
       render() {
-        return <div className="parent">{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
+        return (
+          <div className="parent">
+            {React.cloneElement(this.props.child, { className: 'xyz' })}
+          </div>
+        );
       }
     }
-    var component = renderIntoDocument(<Grandparent />);
+    const component = renderIntoDocument(<Grandparent />);
     expect(ReactDOM.findDOMNode(component).childNodes[0].className).toBe('xyz');
   });
 
@@ -60,10 +69,14 @@ describe('ReactElementClone', function () {
     }
     class Parent extends React.Component {
       render() {
-        return <div className="parent">{React.cloneElement(this.props.child, { className: 'xyz' })}</div>;
+        return (
+          <div className="parent">
+            {React.cloneElement(this.props.child, { className: 'xyz' })}
+          </div>
+        );
       }
     }
-    var component = renderIntoDocument(<Grandparent />);
+    const component = renderIntoDocument(<Grandparent />);
     expect(ReactDOM.findDOMNode(component).childNodes[0].className).toBe('xyz');
   });
 
@@ -73,7 +86,7 @@ describe('ReactElementClone', function () {
         return null;
       }
     }
-    var clone = React.cloneElement(<Component />, { key: 'xyz' });
+    const clone = React.cloneElement(<Component />, { key: 'xyz' });
     expect(clone.key).toBe('xyz');
   });
 
@@ -106,7 +119,12 @@ describe('ReactElementClone', function () {
       }
     }
 
-    var clone = React.cloneElement(<Component>xyz</Component>, { children: <Component /> }, <div />, <span />);
+    const clone = React.cloneElement(
+      <Component>xyz</Component>,
+      { children: <Component /> },
+      <div />,
+      <span />,
+    );
 
     expect(clone.props.children).toEqual([<div />, <span />]);
   });
@@ -119,6 +137,8 @@ describe('ReactElementClone', function () {
       }
     }
 
-    renderIntoDocument(React.cloneElement(<Component myprop="abc" />, { myprop: 'xyz' }));
+    renderIntoDocument(
+      React.cloneElement(<Component myprop="abc" />, { myprop: 'xyz' }),
+    );
   });
 });

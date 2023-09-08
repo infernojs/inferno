@@ -1,4 +1,4 @@
-import { Component, InfernoNode, render } from 'inferno';
+import { Component, type InfernoNode, render } from 'inferno';
 import { MemoryRouter, Route, StaticRouter, withRouter } from 'inferno-router';
 
 describe('withRouter', () => {

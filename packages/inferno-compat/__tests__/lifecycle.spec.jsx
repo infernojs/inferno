@@ -45,7 +45,7 @@ describe('Inferno-compat LifeCycle', () => {
               id: 'S1',
               ref: (el) => {
                 console.log('S1' + (el ? el.id : null));
-              }
+              },
             },
             [
               createElement('div', { key: 'ee' }),
@@ -54,9 +54,9 @@ describe('Inferno-compat LifeCycle', () => {
                 id: 'S2b',
                 ref: (el) => {
                   console.log('S2b' + (el ? el.id : null));
-                }
-              })
-            ]
+                },
+              }),
+            ],
           );
         }
       }
@@ -86,7 +86,7 @@ describe('Inferno-compat LifeCycle', () => {
               id: '1',
               ref: (el) => {
                 console.log('1' + (el ? el.id : null));
-              }
+              },
             },
             [
               createElement(
@@ -96,7 +96,7 @@ describe('Inferno-compat LifeCycle', () => {
                   id: '2a',
                   ref: (el) => {
                     console.log('2a' + (el ? el.id : null));
-                  }
+                  },
                 },
                 [
                   createElement(Hello2, { key: 'Hello2' }),
@@ -106,24 +106,24 @@ describe('Inferno-compat LifeCycle', () => {
                       id: '4a',
                       ref: (el) => {
                         console.log('4a' + (el ? el.id : null));
-                      }
+                      },
                     }),
                     createElement('div', {
                       key: '4b',
                       id: '4b',
                       ref: (el) => {
                         console.log('4b' + (el ? el.id : null));
-                      }
-                    })
+                      },
+                    }),
                   ]),
                   createElement('div', {
                     key: '3b',
                     id: '3b',
                     ref: (el) => {
                       console.log('3b' + (el ? el.id : null));
-                    }
-                  })
-                ]
+                    },
+                  }),
+                ],
               ),
               createElement(
                 'div',
@@ -132,11 +132,11 @@ describe('Inferno-compat LifeCycle', () => {
                   id: '2b',
                   ref: (el) => {
                     console.log('2b' + (el ? el.id : null));
-                  }
+                  },
                 },
-                null
-              )
-            ]
+                null,
+              ),
+            ],
           );
         }
       }

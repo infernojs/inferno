@@ -15,7 +15,7 @@ describe('A <HashRouter>', () => {
       <HashRouter>
         <ContextChecker />
       </HashRouter>,
-      node
+      node,
     );
 
     expect(typeof history).toBe('object');
@@ -27,10 +27,12 @@ describe('A <HashRouter>', () => {
 
     const consoleSpy = spyOn(console, 'error');
 
-    // @ts-ignore
+    // @ts-expect-error
     render(<HashRouter history={history} />, node);
 
     expect(consoleSpy).toHaveBeenCalledTimes(1);
-    expect(consoleSpy.calls.argsFor(0)[0]).toContain('<HashRouter> ignores the history prop');
+    expect(consoleSpy.calls.argsFor(0)[0]).toContain(
+      '<HashRouter> ignores the history prop',
+    );
   });
 });

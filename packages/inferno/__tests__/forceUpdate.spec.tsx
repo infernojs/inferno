@@ -31,12 +31,12 @@ describe('forceUpdate', () => {
 
     class Child extends Component {
       public state = {
-        foo: 'bar'
+        foo: 'bar',
       };
 
       public componentDidMount() {
         this.setState({
-          foo: 'bar2'
+          foo: 'bar2',
         });
         this.forceUpdate();
       }
@@ -74,7 +74,7 @@ describe('forceUpdate', () => {
 
     class Child extends Component {
       public state = {
-        foo: 'bar'
+        foo: 'bar',
       };
 
       public shouldComponentUpdate(_prevProps, prevState) {
@@ -123,7 +123,7 @@ describe('forceUpdate', () => {
 
     class Child extends Component {
       public state = {
-        foo: 'bar'
+        foo: 'bar',
       };
 
       public shouldComponentUpdate() {
@@ -167,7 +167,7 @@ describe('forceUpdate', () => {
 
     class Child extends Component {
       public state = {
-        foo: 'bar'
+        foo: 'bar',
       };
 
       public shouldComponentUpdate() {

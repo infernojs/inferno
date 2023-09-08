@@ -22,7 +22,7 @@ describe('Mobx Observer Server', () => {
 
     let renderCount = 0;
     const data = observable({
-      z: 'hi'
+      z: 'hi',
     });
 
     const TestComponent = observer(function testComponent() {

@@ -26,7 +26,7 @@ describe('top level context', () => {
 
     render(<Child />, container, null, {
       bar: 'second',
-      foo: 'first'
+      foo: 'first',
     });
 
     expect(container.innerHTML).toBe('<span>first second</span>');
@@ -44,7 +44,7 @@ describe('top level context', () => {
     class Parent extends Component<any, any> {
       public getChildContext() {
         return {
-          foo: 'bar'
+          foo: 'bar',
         };
       }
 
@@ -55,7 +55,7 @@ describe('top level context', () => {
 
     render(<Parent />, container, null, {
       bar: 'second',
-      foo: 'first'
+      foo: 'first',
     });
 
     expect(container.innerHTML).toBe('<div>first</div><span>bar second</span>');
@@ -78,7 +78,7 @@ describe('top level context', () => {
 
     render(<Parent />, container, null, {
       bar: 'second',
-      foo: 'first'
+      foo: 'first',
     });
 
     expect(container.innerHTML).toBe('<span>first second</span>');
@@ -96,7 +96,7 @@ describe('top level context', () => {
     class Parent extends Component<any, any> {
       public getChildContext() {
         return {
-          foo: 'bar'
+          foo: 'bar',
         };
       }
 
@@ -105,7 +105,7 @@ describe('top level context', () => {
           <div>{context.foo}</div>,
           <Fragment>
             <Child />
-          </Fragment>
+          </Fragment>,
         ];
       }
     }
@@ -118,8 +118,8 @@ describe('top level context', () => {
       null,
       {
         bar: 'second',
-        foo: 'first'
-      }
+        foo: 'first',
+      },
     );
 
     expect(container.innerHTML).toBe('<div>first</div><span>bar second</span>');

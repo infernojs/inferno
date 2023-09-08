@@ -14,7 +14,7 @@ import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 function StatelessComponent(props) {
   return <div>{props.name}</div>;
@@ -24,7 +24,12 @@ describe('ReactStatelessComponent', function () {
   let container;
 
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   beforeEach(() => {
@@ -39,7 +44,7 @@ describe('ReactStatelessComponent', function () {
   });
 
   it('should render stateless component', function () {
-    var el = document.createElement('div');
+    const el = document.createElement('div');
     ReactDOM.render(<StatelessComponent name="A" />, el);
 
     expect(el.textContent).toBe('A');
@@ -52,7 +57,7 @@ describe('ReactStatelessComponent', function () {
       }
     }
 
-    var el = document.createElement('div');
+    const el = document.createElement('div');
     ReactDOM.render(<Parent name="A" />, el);
     expect(el.textContent).toBe('A');
 
@@ -61,7 +66,7 @@ describe('ReactStatelessComponent', function () {
   });
 
   it('should unmount stateless component', function () {
-    var container = document.createElement('div');
+    const container = document.createElement('div');
 
     ReactDOM.render(<StatelessComponent name="A" />, container);
     expect(container.textContent).toBe('A');
@@ -73,7 +78,7 @@ describe('ReactStatelessComponent', function () {
   it('should pass context thru stateless component', function () {
     class Child extends React.Component {
       static contextTypes = {
-        test: React.PropTypes.string.isRequired
+        test: React.PropTypes.string.isRequired,
       };
 
       render() {
@@ -87,7 +92,7 @@ describe('ReactStatelessComponent', function () {
 
     class GrandParent extends React.Component {
       static childContextTypes = {
-        test: React.PropTypes.string.isRequired
+        test: React.PropTypes.string.isRequired,
       };
 
       getChildContext() {
@@ -99,7 +104,7 @@ describe('ReactStatelessComponent', function () {
       }
     }
 
-    var el = document.createElement('div');
+    const el = document.createElement('div');
     ReactDOM.render(<GrandParent test="test" />, el);
 
     expect(el.textContent).toBe('test');
@@ -118,7 +123,7 @@ describe('ReactStatelessComponent', function () {
       React.render(
         <div>
           <NotAComponent />
-        </div>
+        </div>,
       );
     }).toThrow();
   });
@@ -126,11 +131,13 @@ describe('ReactStatelessComponent', function () {
   it('should receive context', function () {
     class Parent extends React.Component {
       static childContextTypes = {
-        lang: React.PropTypes.string
+        lang: React.PropTypes.string,
       };
+
       getChildContext() {
         return { lang: 'en' };
       }
+
       render() {
         return <Child />;
       }
@@ -141,13 +148,13 @@ describe('ReactStatelessComponent', function () {
     }
     Child.contextTypes = { lang: React.PropTypes.string };
 
-    var el = document.createElement('div');
+    const el = document.createElement('div');
     ReactDOM.render(<Parent />, el);
     expect(el.textContent).toBe('en');
   });
 
   it('should work with arrow functions', function () {
-    var Child = function () {
+    let Child = function () {
       return <div />;
     };
     // Will create a new bound function without a prototype, much like a native
@@ -158,7 +165,7 @@ describe('ReactStatelessComponent', function () {
   });
 
   it('should allow simple functions to return null', function () {
-    var Child = function () {
+    const Child = function () {
       return null;
     };
     expect(() => renderIntoDocument(<Child />)).not.toThrow();

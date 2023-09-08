@@ -1,4 +1,3 @@
-/* tslint:disable:no-console */
 import { render } from 'inferno';
 
 describe('Links', () => {
@@ -23,9 +22,11 @@ describe('Links', () => {
 
       expect(consoleSpy).toHaveBeenCalledTimes(1);
       expect(consoleSpy).toHaveBeenCalledWith(
-        'Rendering links with javascript: URLs is not recommended. Use event handlers instead if you can. Inferno was passed "javascript:foobar".'
+        'Rendering links with javascript: URLs is not recommended. Use event handlers instead if you can. Inferno was passed "javascript:foobar".',
       );
-      expect(container.innerHTML).toEqual('<a href="javascript:foobar">test</a>');
+      expect(container.innerHTML).toEqual(
+        '<a href="javascript:foobar">test</a>',
+      );
     });
 
     it('Should allow patching link to null', function () {
@@ -45,10 +46,15 @@ describe('Links', () => {
     it('Should not log warning when rendering regular link', function () {
       const consoleSpy = spyOn(console, 'error');
 
-      render(<a href="https://github.com/infernojs/inferno">test</a>, container);
+      render(
+        <a href="https://github.com/infernojs/inferno">test</a>,
+        container,
+      );
 
       expect(consoleSpy).toHaveBeenCalledTimes(0);
-      expect(container.innerHTML).toEqual('<a href="https://github.com/infernojs/inferno">test</a>');
+      expect(container.innerHTML).toEqual(
+        '<a href="https://github.com/infernojs/inferno">test</a>',
+      );
     });
   });
 });

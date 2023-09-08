@@ -1,5 +1,15 @@
 import { render } from 'inferno';
-import { BrowserRouter, MemoryRouter, StaticRouter, Route, NavLink, useLoaderData, useLoaderError, resolveLoaders, traverseLoaders } from 'inferno-router';
+import {
+  BrowserRouter,
+  MemoryRouter,
+  StaticRouter,
+  Route,
+  NavLink,
+  useLoaderData,
+  useLoaderError,
+  resolveLoaders,
+  traverseLoaders,
+} from 'inferno-router';
 // Cherry picked relative import so we don't get node-stuff from inferno-server in browser test
 import { createEventGuard, createResponse } from './testUtils';
 
@@ -37,7 +47,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -66,7 +76,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -85,14 +95,14 @@ describe('A <Route> with loader in a MemoryRouter', () => {
       return { message: TEXT };
     };
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined }
+      '/flowers': { res: await loaderFunc(), err: undefined },
     };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </MemoryRouter>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toContain(TEXT);
@@ -176,14 +186,14 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     const params = { slug: 'flowers' };
     const initialData = {
-      '/:slug': { res: await loaderFunc({ params }), err: undefined }
+      '/:slug': { res: await loaderFunc({ params }), err: undefined },
     };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
         <Route path="/:slug" render={Component} loader={loaderFunc} />
       </MemoryRouter>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toContain(TEXT);
@@ -192,7 +202,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
   it('Can abort fetch', async () => {
     const abortCalls = {
-      nrofCalls: 0
+      nrofCalls: 0,
     };
     const _abortFn = AbortController.prototype.abort;
     AbortController.prototype.abort = () => {
@@ -205,7 +215,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     const loaderFunc = async ({ request }) => {
       expect(request).toBeDefined();
       expect(request.signal).toBeDefined();
-      return new Promise((resolve) => {
+      return await new Promise((resolve) => {
         setTimeout(() => {
           setDone();
           resolve({ message: TEST });
@@ -303,7 +313,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -332,7 +342,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -353,7 +363,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
     };
 
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined }
+      '/flowers': { res: await loaderFunc(), err: undefined },
     };
 
     history.replaceState(undefined, '', '/flowers');
@@ -361,7 +371,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
       <BrowserRouter initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </BrowserRouter>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toContain(TEXT);
@@ -448,7 +458,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -478,7 +488,7 @@ describe('A <Route> with loader in a BrowserRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -524,7 +534,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
           loader={loaderFunc}
         />
       </StaticRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -553,7 +563,7 @@ describe('A <Route> with loader in a StaticRouter', () => {
           loader={loaderFunc}
         />
       </StaticRouter>,
-      container
+      container,
     );
 
     // Wait until async loader has completed
@@ -574,14 +584,14 @@ describe('A <Route> with loader in a StaticRouter', () => {
     };
 
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined }
+      '/flowers': { res: await loaderFunc(), err: undefined },
     };
 
     render(
       <StaticRouter context={{}} location="/flowers" initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </StaticRouter>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toContain(TEXT);
@@ -601,7 +611,7 @@ describe('Resolve loaders during server side rendering', () => {
     };
 
     const initialData = {
-      '/flowers': { res: await loaderFunc() }
+      '/flowers': { res: await loaderFunc() },
     };
 
     const app = (
@@ -630,7 +640,7 @@ describe('Resolve loaders during server side rendering', () => {
     };
 
     const initialData = {
-      '/birds': { res: await loaderFunc() }
+      '/birds': { res: await loaderFunc() },
     };
 
     const app = (
@@ -662,14 +672,18 @@ describe('Resolve loaders during server side rendering', () => {
 
     const initialData = {
       '/flowers': { res: await loaderFunc() },
-      '/flowers/birds': { res: await loaderFunc() }
+      '/flowers/birds': { res: await loaderFunc() },
     };
 
     const app = (
       <StaticRouter context={{}} location="/flowers/birds">
         <Route path="/flowers" render={Component} loader={loaderFunc}>
           <Route path="/flowers/birds" render={Component} loader={loaderFunc} />
-          <Route path="/flowers/bees" render={Component} loader={loaderFuncNoHit} />
+          <Route
+            path="/flowers/bees"
+            render={Component}
+            loader={loaderFuncNoHit}
+          />
           {null}
         </Route>
       </StaticRouter>

@@ -44,8 +44,10 @@ describe('Github #1236', () => {
       Object.defineProperty(target, property, {
         configurable: descriptor.configurable,
         enumerable: descriptor.enumerable,
-        value: descriptor.initializer ? descriptor.initializer.call(context) : void 0,
-        writable: descriptor.writable
+        value: descriptor.initializer
+          ? descriptor.initializer.call(context)
+          : void 0,
+        writable: descriptor.writable,
       });
     }
 
@@ -55,7 +57,13 @@ describe('Github #1236', () => {
       }
     }
 
-    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context?) {
+    function _applyDecoratedDescriptor(
+      target,
+      property,
+      decorators,
+      descriptor,
+      context?,
+    ) {
       let desc: any = {};
       Object['ke' + 'ys'](descriptor).forEach(function (key) {
         desc[key] = descriptor[key];
@@ -101,19 +109,30 @@ describe('Github #1236', () => {
             key: 'doSearch',
             value: function doSearch(search) {
               this.query = search;
-            }
-          }
+            },
+          },
         ]);
 
         return TestSearchStore;
       })()),
-      ((_descriptor = _applyDecoratedDescriptor(_class.prototype, 'query', [observable], {
-        enumerable: true,
-        initializer: function initializer() {
-          return undefined;
-        }
-      })),
-      _applyDecoratedDescriptor(_class.prototype, 'doSearch', [action], Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'), _class.prototype)),
+      ((_descriptor = _applyDecoratedDescriptor(
+        _class.prototype,
+        'query',
+        [observable],
+        {
+          enumerable: true,
+          initializer: function initializer() {
+            return undefined;
+          },
+        },
+      )),
+      _applyDecoratedDescriptor(
+        _class.prototype,
+        'doSearch',
+        [action],
+        Object.getOwnPropertyDescriptor(_class.prototype, 'doSearch'),
+        _class.prototype,
+      )),
       _class);
 
     let SearchPage = observer(
@@ -129,7 +148,8 @@ describe('Github #1236', () => {
 
         public doSearch(e) {
           e.preventDefault();
-          const nextLoc = this.context.router.history.location.pathname + '?q=test';
+          const nextLoc =
+            this.context.router.history.location.pathname + '?q=test';
           this.context.router.history.push(nextLoc);
         }
 
@@ -141,12 +161,14 @@ describe('Github #1236', () => {
               <a key="asd" id="test-btn" href="#front" onClick={this.doSearch}>
                 link
               </a>
-              {showView === 'default' && <div key="search-default">default</div>}
+              {showView === 'default' && (
+                <div key="search-default">default</div>
+              )}
               {showView === 'results' && <SearchResult key="search-results" />}
             </div>
           );
         }
-      }
+      },
     );
 
     SearchPage = inject('searchStore')(SearchPage);
@@ -173,12 +195,16 @@ describe('Github #1236', () => {
 
     render(appRoutes, container);
 
-    expect(container.innerHTML).toEqual('<div><a id="test-btn" href="#front">link</a><div>default</div></div>');
+    expect(container.innerHTML).toEqual(
+      '<div><a id="test-btn" href="#front">link</a><div>default</div></div>',
+    );
 
     const btn = container.querySelector('#test-btn');
 
     btn.click();
 
-    expect(container.innerHTML).toEqual('<div><a id="test-btn" href="#front">link</a><div>results</div></div>');
+    expect(container.innerHTML).toEqual(
+      '<div><a id="test-btn" href="#front">link</a><div>results</div></div>',
+    );
   });
 });

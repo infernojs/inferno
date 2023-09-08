@@ -29,8 +29,8 @@ if (window.usingJest) {
           renderToSnapshot(
             <Foobar>
               <div className="ok">ABC</div>
-            </Foobar>
-          )
+            </Foobar>,
+          ),
         ).toMatchSnapshot();
       });
 
@@ -39,8 +39,8 @@ if (window.usingJest) {
           renderToSnapshot(
             <a onClick={() => {}} aria-colspan="3" className="foo">
               Bar
-            </a>
-          )
+            </a>,
+          ),
         ).toMatchSnapshot();
       });
 
@@ -51,8 +51,8 @@ if (window.usingJest) {
               <a>T</a>
               <span className="foo">est</span>
               12
-            </Testing>
-          )
+            </Testing>,
+          ),
         ).toMatchSnapshot();
       });
 
@@ -79,17 +79,29 @@ if (window.usingJest) {
                   </ul>
                 </div>
               </ComP>
-            </div>
-          )
+            </div>,
+          ),
         ).toMatchSnapshot();
       });
 
       it('Should render fragment', () => {
-        const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
+        const fragmentA = createFragment(
+          [<div id="a1">A1</div>, <div>A2</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'A',
+        );
 
-        const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
+        const fragmentB = createFragment(
+          [<div id="b1">B1</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'B',
+        );
 
-        const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+        const fragmentC = createFragment(
+          [<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'C',
+        );
 
         expect(
           renderToSnapshot(
@@ -97,8 +109,8 @@ if (window.usingJest) {
               {fragmentA}
               {fragmentB}
               {fragmentC}
-            </div>
-          )
+            </div>,
+          ),
         ).toMatchSnapshot();
       });
 
@@ -108,8 +120,8 @@ if (window.usingJest) {
             <Fragment>
               <div>First</div>
               <div>Second</div>
-            </Fragment>
-          )
+            </Fragment>,
+          ),
         ).toMatchSnapshot();
       });
 
@@ -124,13 +136,19 @@ if (window.usingJest) {
           renderToSnapshot(
             <Comp>
               <div>1</div>
-            </Comp>
-          )
+            </Comp>,
+          ),
         ).toMatchSnapshot();
       });
 
       it('Should not fail when returning children array from component root, which contains text node. Github #1404', () => {
-        const Label = ({ label, htmlFor, children, optional = false, ...props }) => {
+        const Label = ({
+          label,
+          htmlFor,
+          children,
+          optional = false,
+          ...props
+        }) => {
           if (optional && !label) {
             return children;
           }
@@ -143,11 +161,32 @@ if (window.usingJest) {
             </>
           );
         };
-        expect(renderToSnapshot(<Label>{[<span>o</span>, <span>k</span>, 'asd', 1, null, false, true, void 0]}</Label>)).toMatchSnapshot();
+        expect(
+          renderToSnapshot(
+            <Label>
+              {[
+                <span>o</span>,
+                <span>k</span>,
+                'asd',
+                1,
+                null,
+                false,
+                true,
+                void 0,
+              ]}
+            </Label>,
+          ),
+        ).toMatchSnapshot();
       });
 
       it('Should not fail when returning children array from component root, Github #1404', () => {
-        const Label = ({ label, htmlFor, children, optional = false, ...props }) => {
+        const Label = ({
+          label,
+          htmlFor,
+          children,
+          optional = false,
+          ...props
+        }) => {
           if (optional && !label) {
             return children;
           }
@@ -162,7 +201,9 @@ if (window.usingJest) {
           );
         };
 
-        expect(renderToSnapshot(<Label>{[<span>o</span>, <span>k</span>]}</Label>)).toMatchSnapshot();
+        expect(
+          renderToSnapshot(<Label>{[<span>o</span>, <span>k</span>]}</Label>),
+        ).toMatchSnapshot();
       });
 
       it('Should flush setStates before building snapshot', () => {
@@ -171,13 +212,13 @@ if (window.usingJest) {
             super(props);
 
             this.state = {
-              foo: ''
+              foo: '',
             };
           }
 
           componentDidMount() {
             this.setState({
-              foo: '##BAR##'
+              foo: '##BAR##',
             });
           }
 
@@ -189,7 +230,12 @@ if (window.usingJest) {
                   <p>
                     Edit <code>src/App.js</code> and save to reload.
                   </p>
-                  <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
+                  <a
+                    className="App-link"
+                    href="https://reactjs.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {this.state.foo}
                   </a>
                 </header>

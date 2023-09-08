@@ -1,4 +1,4 @@
-import { AnyAction, createStore } from 'redux';
+import { type AnyAction, createStore } from 'redux';
 
 import { render } from 'inferno';
 import { Provider } from 'inferno-redux';
@@ -64,8 +64,10 @@ describe('Component typings', () => {
         <HelloComponent />
         <p>Another greetings!</p>
       </Provider>,
-      container
+      container,
     );
-    expect(container.innerHTML).toBe('<h1>Hello Page</h1><p>Hello my friends!</p><p>Another greetings!</p>');
+    expect(container.innerHTML).toBe(
+      '<h1>Hello Page</h1><p>Hello my friends!</p><p>Another greetings!</p>',
+    );
   });
 });

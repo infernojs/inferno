@@ -37,7 +37,7 @@ describe('Input type checkbox', () => {
           changeChecked = e.currentTarget.checked;
         }}
       />,
-      container
+      container,
     );
     const input = container.firstChild;
 
@@ -66,7 +66,7 @@ describe('Input type checkbox', () => {
           }}
         />
       </div>,
-      container
+      container,
     );
     const input = container.querySelector('input');
 
@@ -99,7 +99,7 @@ describe('Input type checkbox', () => {
           nChanges++;
         }}
       />,
-      container
+      container,
     );
     const input = container.firstChild;
 
@@ -150,7 +150,7 @@ describe('Input type Radio', () => {
           changeChecked = e.currentTarget.checked;
         }}
       />,
-      container
+      container,
     );
     const input = container.firstChild;
 
@@ -177,7 +177,7 @@ describe('Input type Radio', () => {
           changeChecked = e.currentTarget.checked;
         }}
       />,
-      container
+      container,
     );
     const input = container.firstChild;
 

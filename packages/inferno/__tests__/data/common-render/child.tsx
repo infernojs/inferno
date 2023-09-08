@@ -15,7 +15,7 @@ export class ChildCommon extends Component<ChildCommonProps, ChildCommonState> {
     super(props);
 
     this.state = {
-      data: ''
+      data: '',
     };
 
     this._update = this._update.bind(this);
@@ -23,13 +23,13 @@ export class ChildCommon extends Component<ChildCommonProps, ChildCommonState> {
 
   public _update() {
     this.setState({
-      data: 'bar'
+      data: 'bar',
     });
   }
 
   public componentWillMount() {
     this.setState({
-      data: 'foo'
+      data: 'foo',
     });
   }
 

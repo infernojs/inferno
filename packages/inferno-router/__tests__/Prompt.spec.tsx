@@ -11,7 +11,7 @@ describe('A <Prompt>', () => {
         <StaticRouter context={context}>
           <Prompt when={true} message="this is only a test" />
         </StaticRouter>,
-        node
+        node,
       );
     }).not.toThrow();
 
@@ -20,7 +20,7 @@ describe('A <Prompt>', () => {
         <StaticRouter context={context}>
           <Prompt when={false} message="this is only a test" />
         </StaticRouter>,
-        node
+        node,
       );
     }).not.toThrow();
 
@@ -29,7 +29,7 @@ describe('A <Prompt>', () => {
         <StaticRouter context={context}>
           <Prompt when={true} message="this is only a test" />
         </StaticRouter>,
-        node
+        node,
       );
     }).not.toThrow();
   });
@@ -51,7 +51,7 @@ describe('A <Prompt>', () => {
 
       private _setActive() {
         this.setState({
-          when: false
+          when: false,
         });
       }
 
@@ -66,7 +66,13 @@ describe('A <Prompt>', () => {
       }
 
       public render() {
-        return <Prompt when={this.state.when} message="this is only a test" ref={(c) => (this.ref = c)} />;
+        return (
+          <Prompt
+            when={this.state.when}
+            message="this is only a test"
+            ref={(c) => (this.ref = c)}
+          />
+        );
       }
     }
 
@@ -74,7 +80,7 @@ describe('A <Prompt>', () => {
       <StaticRouter context={context}>
         <App />
       </StaticRouter>,
-      node
+      node,
     );
 
     promptWhen();
@@ -86,7 +92,7 @@ describe('A <Prompt>', () => {
     const node = document.createElement('div');
 
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       render(<Prompt />, node);
     }).toThrow();
   });

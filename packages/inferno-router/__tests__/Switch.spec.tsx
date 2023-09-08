@@ -1,7 +1,6 @@
-/* tslint:disable:no-console */
 import { render, rerender, Component } from 'inferno';
 import { MemoryRouter, Redirect, Route, Switch } from 'inferno-router';
-import { IRouteProps } from '../src/Route';
+import { type IRouteProps } from '../src/Route';
 
 describe('Switch (jsx)', () => {
   it('renders the first <Route> that matches the URL', () => {
@@ -14,7 +13,7 @@ describe('Switch (jsx)', () => {
           <Route path="/two" render={() => <h1>two</h1>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toMatch(/one/);
@@ -32,7 +31,7 @@ describe('Switch (jsx)', () => {
           <Route path="/two" render={() => <h1>two</h1>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     rerender();
@@ -52,7 +51,7 @@ describe('Switch (jsx)', () => {
           <Route path="/two" render={() => <h1>two</h1>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).not.toMatch(/two/);
@@ -68,7 +67,7 @@ describe('Switch (jsx)', () => {
           <Route render={() => <div>two</div>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).not.toContain('one');
@@ -86,7 +85,7 @@ describe('Switch (jsx)', () => {
           <Route path="/cupcakes" render={() => <div>cup</div>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     rerender();
@@ -107,7 +106,7 @@ describe('Switch (jsx)', () => {
           <Route path="/three" render={() => <div>three</div>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     rerender();
@@ -140,7 +139,7 @@ describe('Switch (jsx)', () => {
           />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     rerender();
@@ -176,7 +175,7 @@ describe('Switch (jsx)', () => {
           />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     rerender();
@@ -212,7 +211,7 @@ describe('Switch (jsx)', () => {
           />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     rerender();
@@ -248,7 +247,7 @@ describe('Switch (jsx)', () => {
           />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     rerender();
@@ -268,7 +267,7 @@ describe('Switch (jsx)', () => {
           <Route path="/cupcakes" render={() => <div>cup</div>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).not.toContain('bub');
@@ -286,7 +285,7 @@ describe('Switch (jsx)', () => {
           {undefined}
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toMatch(/one/);
@@ -300,7 +299,7 @@ describe('Switch (jsx)', () => {
           <Route path="/one" render={() => <h1>one</h1>} />
           <Route path="/two" render={() => <h1>two</h1>} />
         </Switch>,
-        node
+        node,
       );
     }).toThrowError(/You should not use <Switch> outside a <Router>/);
   });
@@ -316,7 +315,7 @@ describe('Switch (jsx)', () => {
           <Route path="/cupcakes" render={() => <div>cup</div>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).not.toContain('beb');
@@ -334,12 +333,12 @@ describe('Switch (jsx)', () => {
           {[
             <Route path="/something" render={() => <div>bab</div>} />,
             <Route path="/something-else" render={() => <div>bib</div>} />,
-            [<Route path="/bubblegum" render={() => <div>bub</div>} />]
+            [<Route path="/bubblegum" render={() => <div>bub</div>} />],
           ]}
           <Route path="/cupcakes" render={() => <div>cup</div>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toContain('bub');
@@ -360,6 +359,7 @@ describe('Switch (jsx)', () => {
 
         this.state.foo = 1;
       }
+
       public render() {
         return <div>Component</div>;
       }
@@ -369,19 +369,24 @@ describe('Switch (jsx)', () => {
       {
         component: Component1,
         exact: true,
-        path: `/`
-      }
+        path: `/`,
+      },
     ];
 
     render(
       <MemoryRouter initialEntries={['/bubblegum']}>
         <Switch>
           {routes.map(({ path, exact, component: Comp, ...rest }) => (
-            <Route key={path} path={path} exact={exact} render={(props) => <Component1 {...props} {...rest} />} />
+            <Route
+              key={path}
+              path={path}
+              exact={exact}
+              render={(props) => <Component1 {...props} {...rest} />}
+            />
           ))}
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
   });
 });
@@ -397,7 +402,7 @@ describe('A <Switch location>', () => {
           <Route path="/two" render={() => <h1>two</h1>} />
         </Switch>
       </MemoryRouter>,
-      node
+      node,
     );
 
     expect(node.innerHTML).toMatch(/two/);
@@ -421,7 +426,7 @@ describe('A <Switch location>', () => {
             <RouteHoneytrap path="/two" render={() => <h1>two</h1>} />
           </Switch>
         </MemoryRouter>,
-        node
+        node,
       );
       expect(propLocation).toEqual(switchLocation);
     });

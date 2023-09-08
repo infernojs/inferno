@@ -39,14 +39,14 @@ describe('Github1176', () => {
         super(props);
 
         this.state = {
-          loading: true
+          loading: true,
         };
       }
 
       public componentDidMount() {
         setTimeout(() => {
           this.setState({
-            loading: false
+            loading: false,
           });
         }, 10);
       }

@@ -9,17 +9,17 @@
 
 import React from 'inferno-compat';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactES6Class', function () {
-  var container;
-  var freeze = function (expectation) {
+  let container;
+  const freeze = function (expectation) {
     Object.freeze(expectation);
     return expectation;
   };
-  var Inner;
-  var attachedListener = null;
-  var renderedName = null;
+  let Inner;
+  let attachedListener = null;
+  let renderedName = null;
 
   beforeEach(function () {
     container = document.createElement('div');
@@ -29,6 +29,7 @@ describe('ReactES6Class', function () {
       getName() {
         return this.props.name;
       }
+
       render() {
         attachedListener = this.props.onClick;
         renderedName = this.props.name;
@@ -38,7 +39,7 @@ describe('ReactES6Class', function () {
   });
 
   function test(element, expectedTag, expectedClassName) {
-    var instance = ReactDOM.render(element, container);
+    const instance = ReactDOM.render(element, container);
     expect(container.firstChild).not.toBeNull();
     expect(container.firstChild.tagName).toBe(expectedTag);
     expect(container.firstChild.className).toBe(expectedClassName);
@@ -61,6 +62,7 @@ describe('ReactES6Class', function () {
         super(props);
         this.state = { bar: this.props.initialValue };
       }
+
       render() {
         return <span className={this.state.bar} />;
       }
@@ -74,9 +76,11 @@ describe('ReactES6Class', function () {
         super(props);
         this.state = { bar: props.initialValue };
       }
+
       changeState() {
         this.setState({ bar: 'bar' });
       }
+
       render() {
         if (this.state.bar === 'foo') {
           return <div className="foo" />;
@@ -84,7 +88,7 @@ describe('ReactES6Class', function () {
         return <span className={this.state.bar} />;
       }
     }
-    var instance = test(<Foo initialValue="foo" />, 'DIV', 'foo');
+    const instance = test(<Foo initialValue="foo" />, 'DIV', 'foo');
     instance.changeState();
     test(<Foo />, 'SPAN', 'bar');
   });
@@ -96,41 +100,45 @@ describe('ReactES6Class', function () {
 
         this.state = { tag: context.tag, className: this.context.className };
       }
+
       render() {
-        var Tag = this.state.tag;
+        const Tag = this.state.tag;
         return <Tag className={this.state.className} />;
       }
     }
     Foo.contextTypes = {
       tag: React.PropTypes.string,
-      className: React.PropTypes.string
+      className: React.PropTypes.string,
     };
 
     class Outer extends React.Component {
       getChildContext() {
         return { tag: 'span', className: 'foo' };
       }
+
       render() {
         return <Foo />;
       }
     }
     Outer.childContextTypes = {
       tag: React.PropTypes.string,
-      className: React.PropTypes.string
+      className: React.PropTypes.string,
     };
     test(<Outer />, 'SPAN', 'foo');
   });
 
   it('renders only once when setting state in componentWillMount', function () {
-    var renderCount = 0;
+    let renderCount = 0;
     class Foo extends React.Component {
       constructor(props) {
         super(props);
         this.state = { bar: props.initialValue };
       }
+
       componentWillMount() {
         this.setState({ bar: 'bar' });
       }
+
       render() {
         renderCount++;
         return <span className={this.state.bar} />;
@@ -161,6 +169,7 @@ describe('ReactES6Class', function () {
         super();
         this.state = null;
       }
+
       render() {
         return <span />;
       }
@@ -174,11 +183,15 @@ describe('ReactES6Class', function () {
         super(props);
         this.state = { bar: props.initialValue };
       }
+
       handleClick() {
         this.setState({ bar: 'bar' });
       }
+
       render() {
-        return <Inner name={this.state.bar} onClick={this.handleClick.bind(this)} />;
+        return (
+          <Inner name={this.state.bar} onClick={this.handleClick.bind(this)} />
+        );
       }
     }
     test(<Foo initialValue="foo" />, 'DIV', 'foo');
@@ -192,9 +205,11 @@ describe('ReactES6Class', function () {
         super(props);
         this.state = { bar: props.initialValue };
       }
+
       handleClick() {
         this.setState({ bar: 'bar' });
       }
+
       render() {
         return <Inner name={this.state.bar} onClick={this.handleClick} />;
       }
@@ -209,12 +224,19 @@ describe('ReactES6Class', function () {
         super(props);
         this.mutativeValue = props.initialValue;
       }
+
       handleClick() {
         this.mutativeValue = 'bar';
         this.forceUpdate();
       }
+
       render() {
-        return <Inner name={this.mutativeValue} onClick={this.handleClick.bind(this)} />;
+        return (
+          <Inner
+            name={this.mutativeValue}
+            onClick={this.handleClick.bind(this)}
+          />
+        );
       }
     }
     test(<Foo initialValue="foo" />, 'DIV', 'foo');
@@ -223,34 +245,42 @@ describe('ReactES6Class', function () {
   });
 
   it('will call all the normal life cycle methods', function () {
-    var lifeCycles = [];
+    let lifeCycles = [];
     class Foo extends React.Component {
       constructor() {
         super();
         this.state = {};
       }
+
       componentWillMount() {
         lifeCycles.push('will-mount');
       }
+
       componentDidMount() {
         lifeCycles.push('did-mount');
       }
+
       componentWillReceiveProps(nextProps) {
         lifeCycles.push('receive-props', nextProps);
       }
+
       shouldComponentUpdate(nextProps, nextState) {
         lifeCycles.push('should-update', nextProps, nextState);
         return true;
       }
+
       componentWillUpdate(nextProps, nextState) {
         lifeCycles.push('will-update', nextProps, nextState);
       }
+
       componentDidUpdate(prevProps, prevState) {
         lifeCycles.push('did-update', prevProps, prevState);
       }
+
       componentWillUnmount() {
         lifeCycles.push('will-unmount');
       }
+
       render() {
         return <span className={this.props.value} />;
       }
@@ -270,7 +300,7 @@ describe('ReactES6Class', function () {
       {},
       'did-update',
       freeze({ value: 'foo' }),
-      {}
+      {},
     ]);
     lifeCycles = []; // reset
     ReactDOM.unmountComponentAtNode(container);
@@ -288,6 +318,7 @@ describe('ReactES6Class', function () {
       getChildContext() {
         return { bar: 'bar-through-context' };
       }
+
       render() {
         return <Bar />;
       }
@@ -297,8 +328,8 @@ describe('ReactES6Class', function () {
   });
 
   it('supports drilling through to the DOM using findDOMNode', function () {
-    var instance = test(<Inner name="foo" />, 'DIV', 'foo');
-    var node = ReactDOM.findDOMNode(instance);
+    const instance = test(<Inner name="foo" />, 'DIV', 'foo');
+    const node = ReactDOM.findDOMNode(instance);
     expect(node).toBe(container.firstChild);
   });
 });

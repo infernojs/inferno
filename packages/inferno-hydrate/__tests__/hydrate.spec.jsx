@@ -1,4 +1,12 @@
-import { Component, createFragment, createPortal, createRef, Fragment, render, rerender } from 'inferno';
+import {
+  Component,
+  createFragment,
+  createPortal,
+  createRef,
+  Fragment,
+  render,
+  rerender,
+} from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { h } from 'inferno-hyperscript';
 import { triggerEvent } from 'inferno-utils';
@@ -39,7 +47,7 @@ describe('rendering routine', () => {
             changeChecked = e.target.checked;
           }}
         />,
-        container
+        container,
       );
       const input = container.firstChild;
 
@@ -72,7 +80,7 @@ describe('rendering routine', () => {
             }}
           />
         </div>,
-        container
+        container,
       );
 
       const oldInput = container.firstChild.firstChild;
@@ -93,7 +101,7 @@ describe('rendering routine', () => {
             }}
           />
         </div>,
-        container
+        container,
       );
 
       expect(spy.calls.count()).toBe(1);
@@ -125,14 +133,14 @@ describe('rendering routine', () => {
       // create matching DOM
       container.innerHTML = '<div>Okay<span>foobar</span></div>';
 
-      let newRef = createRef();
+      const newRef = createRef();
 
       hydrate(
         <div>
           Okay
           <span ref={newRef}>Foobar</span>
         </div>,
-        container
+        container,
       );
 
       expect(newRef.current).toBe(container.querySelector('span'));
@@ -151,6 +159,7 @@ describe('rendering routine', () => {
 
           instance = this;
         }
+
         render() {
           return (
             <Fragment>
@@ -162,18 +171,20 @@ describe('rendering routine', () => {
         }
       }
 
-      let newRef = createRef();
+      const newRef = createRef();
 
       hydrate(
         <div>
           Okay
           <Foobar ref={newRef}>Foobar</Foobar>
         </div>,
-        container
+        container,
       );
 
       expect(newRef.current).toBe(instance);
-      expect(container.innerHTML).toBe('<div>Okay<span>1</span>Foobar<span>2</span></div>');
+      expect(container.innerHTML).toBe(
+        '<div>Okay<span>1</span>Foobar<span>2</span></div>',
+      );
     });
   });
 
@@ -182,7 +193,10 @@ describe('rendering routine', () => {
       it('Should hydrate and unmount fragment', () => {
         class Example extends Component {
           render() {
-            return createFragment([<div>First</div>, <div>second</div>], ChildFlags.HasNonKeyedChildren);
+            return createFragment(
+              [<div>First</div>, <div>second</div>],
+              ChildFlags.HasNonKeyedChildren,
+            );
           }
         }
 
@@ -199,15 +213,24 @@ describe('rendering routine', () => {
         class Example extends Component {
           render() {
             return createFragment(
-              [<div>First</div>, createFragment([<div>Sub1</div>, <div>Sub2</div>], ChildFlags.HasNonKeyedChildren), <div>second</div>],
-              ChildFlags.HasNonKeyedChildren
+              [
+                <div>First</div>,
+                createFragment(
+                  [<div>Sub1</div>, <div>Sub2</div>],
+                  ChildFlags.HasNonKeyedChildren,
+                ),
+                <div>second</div>,
+              ],
+              ChildFlags.HasNonKeyedChildren,
             );
           }
         }
 
         hydrate(<Example />, container);
 
-        expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
+        expect(container.innerHTML).toBe(
+          '<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>',
+        );
 
         render(null, container);
 
@@ -218,19 +241,31 @@ describe('rendering routine', () => {
         class Example extends Component {
           render() {
             return createFragment(
-              [<div>First</div>, createFragment([<div>Sub1</div>, <div>Sub2</div>], ChildFlags.HasNonKeyedChildren), <div>second</div>],
-              ChildFlags.HasNonKeyedChildren
+              [
+                <div>First</div>,
+                createFragment(
+                  [<div>Sub1</div>, <div>Sub2</div>],
+                  ChildFlags.HasNonKeyedChildren,
+                ),
+                <div>second</div>,
+              ],
+              ChildFlags.HasNonKeyedChildren,
             );
           }
         }
 
         function FunctionalComp() {
-          return createFragment([<div>Functional</div>], ChildFlags.HasNonKeyedChildren);
+          return createFragment(
+            [<div>Functional</div>],
+            ChildFlags.HasNonKeyedChildren,
+          );
         }
 
         hydrate(<Example />, container);
 
-        expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
+        expect(container.innerHTML).toBe(
+          '<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>',
+        );
 
         render(<FunctionalComp />, container);
 
@@ -238,7 +273,9 @@ describe('rendering routine', () => {
 
         render(<Example />, container);
 
-        expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
+        expect(container.innerHTML).toBe(
+          '<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>',
+        );
 
         render(<FunctionalComp />, container);
         render(null, container);
@@ -247,11 +284,26 @@ describe('rendering routine', () => {
       });
 
       it('Should be possible to move fragments', () => {
-        const fragmentA = () => createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
+        const fragmentA = () =>
+          createFragment(
+            [<div id="a1">A1</div>, <div>A2</div>],
+            ChildFlags.HasNonKeyedChildren,
+            'A',
+          );
 
-        const fragmentB = () => createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
+        const fragmentB = () =>
+          createFragment(
+            [<div id="b1">B1</div>],
+            ChildFlags.HasNonKeyedChildren,
+            'B',
+          );
 
-        const fragmentC = () => createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+        const fragmentC = () =>
+          createFragment(
+            [<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>],
+            ChildFlags.HasNonKeyedChildren,
+            'C',
+          );
 
         hydrate(
           <div>
@@ -259,14 +311,16 @@ describe('rendering routine', () => {
             {fragmentB()}
             {fragmentC()}
           </div>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>',
+        );
 
-        let A1 = container.querySelector('#a1');
-        let B1 = container.querySelector('#b1');
-        let C1 = container.querySelector('#c1');
+        const A1 = container.querySelector('#a1');
+        const B1 = container.querySelector('#b1');
+        const C1 = container.querySelector('#c1');
 
         // Switch order
         render(
@@ -275,11 +329,13 @@ describe('rendering routine', () => {
             {fragmentA()}
             {fragmentB()}
           </div>,
-          container
+          container,
         );
 
         // Verify dom has changed and nodes are the same
-        expect(container.innerHTML).toBe('<div><div id="c1">C1</div><div>C2</div><div>C3</div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div id="c1">C1</div><div>C2</div><div>C3</div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div></div>',
+        );
 
         expect(container.querySelector('#a1')).toBe(A1);
         expect(container.querySelector('#b1')).toBe(B1);
@@ -291,11 +347,13 @@ describe('rendering routine', () => {
             {fragmentB()}
             {fragmentC()}
           </div>,
-          container
+          container,
         );
 
         // Verify dom has changed and nodes are the same
-        expect(container.innerHTML).toBe('<div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>',
+        );
 
         expect(container.querySelector('#a1')).toBe(null);
         expect(container.querySelector('#b1')).toBe(B1);
@@ -303,9 +361,21 @@ describe('rendering routine', () => {
       });
 
       it('Should clone fragment children if they are passed as reference', () => {
-        const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
-        const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
-        const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+        const fragmentA = createFragment(
+          [<div id="a1">A1</div>, <div>A2</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'A',
+        );
+        const fragmentB = createFragment(
+          [<div id="b1">B1</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'B',
+        );
+        const fragmentC = createFragment(
+          [<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'C',
+        );
 
         const content = [fragmentC];
 
@@ -326,7 +396,7 @@ describe('rendering routine', () => {
             {fragmentB}
             {fragmentC}
           </Fragment>,
-          container
+          container,
         );
 
         const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
@@ -334,7 +404,9 @@ describe('rendering routine', () => {
         const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
         const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
 
-        expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml);
+        expect(container.innerHTML).toBe(
+          FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml,
+        );
 
         render(null, container);
 
@@ -342,9 +414,21 @@ describe('rendering routine', () => {
       });
 
       it('Should be possible to move component with fragment root', () => {
-        const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
-        const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
-        const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+        const fragmentA = createFragment(
+          [<div id="a1">A1</div>, <div>A2</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'A',
+        );
+        const fragmentB = createFragment(
+          [<div id="b1">B1</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'B',
+        );
+        const fragmentC = createFragment(
+          [<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'C',
+        );
 
         const content = [fragmentC];
 
@@ -365,7 +449,7 @@ describe('rendering routine', () => {
             {fragmentB}
             {fragmentC}
           </Fragment>,
-          container
+          container,
         );
 
         const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
@@ -373,7 +457,9 @@ describe('rendering routine', () => {
         const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
         const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
 
-        expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml);
+        expect(container.innerHTML).toBe(
+          FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml,
+        );
 
         // Switch order
         render(
@@ -382,10 +468,12 @@ describe('rendering routine', () => {
             {fragmentC}
             <SFC key="sfc" />
           </Fragment>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe(FragmentAHtml + FragmentCHtml + SFCHtml);
+        expect(container.innerHTML).toBe(
+          FragmentAHtml + FragmentCHtml + SFCHtml,
+        );
 
         // Switch order again
         render(
@@ -396,11 +484,17 @@ describe('rendering routine', () => {
             {fragmentC}
             <div key="1">2</div>
           </Fragment>,
-          container
+          container,
         );
 
         // Verify dom has changed and nodes are the same
-        expect(container.innerHTML).toBe('<div>1</div>' + SFCHtml + FragmentAHtml + FragmentCHtml + '<div>2</div>');
+        expect(container.innerHTML).toBe(
+          '<div>1</div>' +
+            SFCHtml +
+            FragmentAHtml +
+            FragmentCHtml +
+            '<div>2</div>',
+        );
 
         render(null, container);
 
@@ -408,9 +502,21 @@ describe('rendering routine', () => {
       });
 
       it('Should be possible to move component with fragment root #2', () => {
-        const fragmentA = createFragment([<div id="a1">A1</div>, <div>A2</div>], ChildFlags.HasNonKeyedChildren, 'A');
-        const fragmentB = createFragment([<div id="b1">B1</div>], ChildFlags.HasNonKeyedChildren, 'B');
-        const fragmentC = createFragment([<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>], ChildFlags.HasNonKeyedChildren, 'C');
+        const fragmentA = createFragment(
+          [<div id="a1">A1</div>, <div>A2</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'A',
+        );
+        const fragmentB = createFragment(
+          [<div id="b1">B1</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'B',
+        );
+        const fragmentC = createFragment(
+          [<div id="c1">C1</div>, <div>C2</div>, <div>C3</div>],
+          ChildFlags.HasNonKeyedChildren,
+          'C',
+        );
 
         const content = [fragmentC];
 
@@ -433,7 +539,7 @@ describe('rendering routine', () => {
             {fragmentC}
             <SFC key="sfc3" />
           </Fragment>,
-          container
+          container,
         );
 
         const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
@@ -441,7 +547,14 @@ describe('rendering routine', () => {
         const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
         const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
 
-        expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + SFCHtml + FragmentCHtml + SFCHtml);
+        expect(container.innerHTML).toBe(
+          FragmentAHtml +
+            SFCHtml +
+            FragmentBHtml +
+            SFCHtml +
+            FragmentCHtml +
+            SFCHtml,
+        );
 
         // Switch order
         render(
@@ -452,10 +565,12 @@ describe('rendering routine', () => {
             {fragmentC}
             <SFC key="sfc2" />
           </Fragment>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe(SFCHtml + FragmentAHtml + SFCHtml + FragmentCHtml + SFCHtml);
+        expect(container.innerHTML).toBe(
+          SFCHtml + FragmentAHtml + SFCHtml + FragmentCHtml + SFCHtml,
+        );
 
         // Switch order again
         render(
@@ -468,11 +583,19 @@ describe('rendering routine', () => {
             <div key="1">2</div>
             <SFC key="sfc3" />
           </Fragment>,
-          container
+          container,
         );
 
         // Verify dom has changed and nodes are the same
-        expect(container.innerHTML).toBe('<div>1</div>' + SFCHtml + SFCHtml + FragmentAHtml + FragmentCHtml + '<div>2</div>' + SFCHtml);
+        expect(container.innerHTML).toBe(
+          '<div>1</div>' +
+            SFCHtml +
+            SFCHtml +
+            FragmentAHtml +
+            FragmentCHtml +
+            '<div>2</div>' +
+            SFCHtml,
+        );
 
         render(null, container);
 
@@ -549,21 +672,28 @@ describe('rendering routine', () => {
           <FoobarCom node={portalNode}>
             <Fragmenter first="first" mid="MID" last={<div>Why?</div>} />
           </FoobarCom>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
+        expect(container.innerHTML).toBe(
+          '<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff',
+        );
         expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
 
         render(
           <FoobarCom node={portalNode}>
-            <Fragmenter first={<span>GoGo</span>} mid="MID" last={<div>Why?</div>} changeOrder={true} />
+            <Fragmenter
+              first={<span>GoGo</span>}
+              mid="MID"
+              last={<div>Why?</div>}
+              changeOrder={true}
+            />
           </FoobarCom>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe(
-          '<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff'
+          '<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff',
         );
         expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
 
@@ -571,10 +701,12 @@ describe('rendering routine', () => {
           <FoobarCom node={portalNode}>
             <Fragmenter first="first" mid="MID" last={<div>Why?</div>} />
           </FoobarCom>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
+        expect(container.innerHTML).toBe(
+          '<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff',
+        );
         expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
       });
 
@@ -626,10 +758,12 @@ describe('rendering routine', () => {
               <span>Test</span>
             </TestRoot>
           </div>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>',
+        );
 
         render(
           <div>
@@ -643,9 +777,11 @@ describe('rendering routine', () => {
               <div>Other</div>
             </TestRoot>
           </div>,
-          container
+          container,
         );
-        expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><div>3</div><div>4</div><div>Other</div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div>1</div><div>2</div><div>3</div><div>4</div><div>Other</div></div>',
+        );
       });
 
       it('Should not clear whole parent element when fragment children are cleared', () => {
@@ -666,10 +802,12 @@ describe('rendering routine', () => {
               <span>Test</span>
             </TestRoot>
           </div>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>',
+        );
 
         render(
           <div>
@@ -681,9 +819,11 @@ describe('rendering routine', () => {
             </TestRoot>
             <TestRoot />
           </div>,
-          container
+          container,
         );
-        expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><div>3</div><div>4</div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div>1</div><div>2</div><div>3</div><div>4</div></div>',
+        );
       });
 
       it('Should move fragment and all its contents when using Fragment long syntax with keys', () => {
@@ -715,7 +855,7 @@ describe('rendering routine', () => {
               <TestLifecycle>2b</TestLifecycle>
             </Fragment>
           </div>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>1a1b2a2b</div>');
@@ -734,7 +874,7 @@ describe('rendering routine', () => {
               <TestLifecycle>1b</TestLifecycle>
             </Fragment>
           </div>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>2a2b2c1a1b</div>');
@@ -753,7 +893,7 @@ describe('rendering routine', () => {
               <TestLifecycle>2Patched</TestLifecycle>
             </Fragment>
           </div>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>3a3b3c2a2Patched</div>');
@@ -766,7 +906,7 @@ describe('rendering routine', () => {
           <Fragment>
             <Fragment />
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -775,7 +915,7 @@ describe('rendering routine', () => {
           <Fragment>
             <div />
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div></div>');
@@ -784,7 +924,7 @@ describe('rendering routine', () => {
           <Fragment>
             <Fragment />
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -809,10 +949,12 @@ describe('rendering routine', () => {
             </Fragment>
             <Fragment />
           </Fragment>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<span>1a</span><span>1b</span><div>1c</div><span>2a</span><span>2b</span><span>2c</span>');
+        expect(container.innerHTML).toBe(
+          '<span>1a</span><span>1b</span><div>1c</div><span>2a</span><span>2b</span><span>2c</span>',
+        );
 
         render(
           <Fragment>
@@ -827,16 +969,18 @@ describe('rendering routine', () => {
             </Fragment>
             <Fragment />
           </Fragment>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<span>1a</span><span>1c</span><span>2a</span><span>2b</span><span>2c</span>');
+        expect(container.innerHTML).toBe(
+          '<span>1a</span><span>1c</span><span>2a</span><span>2b</span><span>2c</span>',
+        );
 
         render(
           <Fragment>
             <Fragment />
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -852,7 +996,7 @@ describe('rendering routine', () => {
             {null}
             {undefined}
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -873,7 +1017,7 @@ describe('rendering routine', () => {
             <Foobar />
             {undefined}
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -899,7 +1043,7 @@ describe('rendering routine', () => {
             <Foobar />
             {undefined}
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -912,7 +1056,7 @@ describe('rendering routine', () => {
             <Foobar />
             {undefined}
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>Ok</div>');
@@ -931,7 +1075,7 @@ describe('rendering routine', () => {
             <Fragment>{content}</Fragment>
             <span>2</span>
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
@@ -944,10 +1088,12 @@ describe('rendering routine', () => {
             <Fragment>{content}</Fragment>
             <span>2</span>
           </Fragment>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<span>1</span><div>Ok</div><span>2</span>');
+        expect(container.innerHTML).toBe(
+          '<span>1</span><div>Ok</div><span>2</span>',
+        );
       });
 
       it('Should be possible to update from 0 to 1 fragment -> fragment', () => {
@@ -963,7 +1109,7 @@ describe('rendering routine', () => {
             <Fragment>{content}</Fragment>
             <span>2</span>
           </Fragment>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
@@ -971,7 +1117,7 @@ describe('rendering routine', () => {
         content = [
           <Fragment>
             <Foobar />
-          </Fragment>
+          </Fragment>,
         ];
 
         render(
@@ -980,10 +1126,12 @@ describe('rendering routine', () => {
             <Fragment>{content}</Fragment>
             <span>2</span>
           </Fragment>,
-          container
+          container,
         );
 
-        expect(container.innerHTML).toBe('<span>1</span><div>Ok</div><span>2</span>');
+        expect(container.innerHTML).toBe(
+          '<span>1</span><div>Ok</div><span>2</span>',
+        );
       });
 
       it('Should be possible to mount and patch single component fragment children', () => {
@@ -993,6 +1141,7 @@ describe('rendering routine', () => {
           componentWillMount() {
             counter++;
           }
+
           render() {
             return null;
           }
@@ -1006,7 +1155,7 @@ describe('rendering routine', () => {
           <>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -1017,7 +1166,7 @@ describe('rendering routine', () => {
             <div>Ok</div>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>Ok</div>');
@@ -1034,6 +1183,7 @@ describe('rendering routine', () => {
           componentWillMount() {
             counter++;
           }
+
           render() {
             return null;
           }
@@ -1063,7 +1213,7 @@ describe('rendering routine', () => {
             <div>Ok</div>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>Ok</div>');
@@ -1080,6 +1230,7 @@ describe('rendering routine', () => {
           componentWillMount() {
             counter++;
           }
+
           render() {
             return null;
           }
@@ -1094,7 +1245,7 @@ describe('rendering routine', () => {
               <Foobar />
             </>
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -1112,7 +1263,7 @@ describe('rendering routine', () => {
             <></>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -1123,7 +1274,7 @@ describe('rendering routine', () => {
             <div>Ok</div>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>Ok</div>');
@@ -1144,14 +1295,14 @@ describe('rendering routine', () => {
           <>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         render(
           <>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -1161,7 +1312,7 @@ describe('rendering routine', () => {
             <div>Ok</div>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>Ok</div>');
@@ -1184,7 +1335,7 @@ describe('rendering routine', () => {
           <>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('');
@@ -1194,7 +1345,7 @@ describe('rendering routine', () => {
             <div>Ok</div>
             <Foobar />
           </>,
-          container
+          container,
         );
 
         expect(container.innerHTML).toBe('<div>Ok</div>');
@@ -1232,7 +1383,7 @@ describe('rendering routine', () => {
 
         render() {
           return createElement('rect', {
-            className: this.state.className
+            className: this.state.className,
           });
         }
       }
@@ -1241,7 +1392,7 @@ describe('rendering routine', () => {
         <svg>
           <Rect />
         </svg>,
-        container
+        container,
       );
 
       expect(container.firstChild.firstChild.getAttribute('class')).toBe('foo');
@@ -1257,7 +1408,7 @@ describe('rendering routine', () => {
 
     const span = container.firstChild.firstChild;
 
-    let vtree = h('div', [h('span', 'do not replace me')]);
+    const vtree = h('div', [h('span', 'do not replace me')]);
 
     hydrate(vtree, container);
 
@@ -1267,7 +1418,7 @@ describe('rendering routine', () => {
 
     expect(span).toBe(container.firstChild.firstChild);
 
-    let vtree2 = h('div', [h('span', 'do not replace me')]);
+    const vtree2 = h('div', [h('span', 'do not replace me')]);
 
     render(vtree2, container);
 

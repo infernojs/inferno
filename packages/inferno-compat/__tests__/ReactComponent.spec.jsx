@@ -12,21 +12,26 @@ import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-var ReactDOM = React;
-var mocks;
+const ReactDOM = React;
+let mocks;
 
 describe('ReactComponent', function () {
   let container;
 
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   beforeEach(() => {
     mocks = {
       getMockFunction: function () {
         return jasmine.createSpy();
-      }
+      },
     };
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -39,7 +44,7 @@ describe('ReactComponent', function () {
   });
 
   it('should throw on invalid render targets', function () {
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     // jQuery objects are basically arrays; people often pass them in by mistake
     expect(function () {
       ReactDOM.render(<div />, [container]);
@@ -51,29 +56,33 @@ describe('ReactComponent', function () {
   });
 
   it('should support new-style refs', function () {
-    var innerObj = {};
-    var outerObj = {};
+    const innerObj = {};
+    const outerObj = {};
 
     class Wrapper extends React.Component {
       getObject() {
         return this.props.object;
       }
+
       render() {
         return <div>{this.props.children}</div>;
       }
     }
 
-    var mounted = false;
+    let mounted = false;
     class Component extends React.Component {
       render() {
-        var inner = <Wrapper object={innerObj} ref={(c) => (this.innerRef = c)} />;
-        var outer = (
+        const inner = (
+          <Wrapper object={innerObj} ref={(c) => (this.innerRef = c)} />
+        );
+        const outer = (
           <Wrapper object={outerObj} ref={(c) => (this.outerRef = c)}>
             {inner}
           </Wrapper>
         );
         return outer;
       }
+
       componentDidMount() {
         expect(this.innerRef.getObject()).toEqual(innerObj);
         expect(this.outerRef.getObject()).toEqual(outerObj);
@@ -81,14 +90,14 @@ describe('ReactComponent', function () {
       }
     }
 
-    var instance = <Component />;
+    const instance = <Component />;
     renderIntoDocument(instance);
     expect(mounted).toBe(true);
   });
 
   it('fires the callback after a component is rendered', function () {
-    var callback = mocks.getMockFunction();
-    var container = document.createElement('div');
+    const callback = mocks.getMockFunction();
+    const container = document.createElement('div');
     ReactDOM.render(<div />, container, callback);
     expect(callback.calls.count()).toBe(1);
     ReactDOM.render(<div className="foo" />, container, callback);
@@ -98,16 +107,16 @@ describe('ReactComponent', function () {
   });
 
   it('throws usefully when rendering badly-typed elements', function () {
-    //spyOn(console, 'error');
+    // spyOn(console, 'error');
 
-    var X = undefined;
+    const X = undefined;
     expect(() => renderIntoDocument(<X />)).toThrow();
 
-    var Z = {};
+    const Z = {};
     expect(() => renderIntoDocument(<Z />)).toThrow();
 
     // One warning for each element creation
-    //expect(console.error.calls.count()).toBe(3);
+    // expect(console.error.calls.count()).toBe(3);
   });
 
   // other
@@ -124,12 +133,12 @@ describe('ReactComponent', function () {
 
     class Child extends React.Component {
       static childContextTypes = {
-        foo: React.PropTypes.string
+        foo: React.PropTypes.string,
       };
 
       getChildContext() {
         return {
-          foo: 'bar'
+          foo: 'bar',
         };
       }
 
@@ -140,14 +149,15 @@ describe('ReactComponent', function () {
 
     class Grandchild extends React.Component {
       contextTypes = {
-        foo: React.PropTypes.string
+        foo: React.PropTypes.string,
       };
+
       render() {
         return <div>{this.context.foo}</div>;
       }
     }
 
-    var component = renderIntoDocument(<Parent />);
+    const component = renderIntoDocument(<Parent />);
     expect(ReactDOM.findDOMNode(component).innerHTML).toBe('bar');
   });
 });

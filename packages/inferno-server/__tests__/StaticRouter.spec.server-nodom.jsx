@@ -10,7 +10,7 @@ describe('A <StaticRouter>', () => {
     };
 
     ContextChecker.contextTypes = {
-      router: () => {}
+      router: () => {},
     };
 
     const context = {};
@@ -18,7 +18,7 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(
       <StaticRouter context={context}>
         <Route component={ContextChecker} />
-      </StaticRouter>
+      </StaticRouter>,
     );
   });
 
@@ -30,7 +30,7 @@ describe('A <StaticRouter>', () => {
     };
 
     ContextChecker.contextTypes = {
-      router: () => {}
+      router: () => {},
     };
 
     const context = {};
@@ -38,7 +38,7 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(
       <StaticRouter context={context}>
         <Route component={ContextChecker} />
-      </StaticRouter>
+      </StaticRouter>,
     );
   });
 
@@ -49,7 +49,7 @@ describe('A <StaticRouter>', () => {
     };
 
     ContextChecker.contextTypes = {
-      router: () => {}
+      router: () => {},
     };
 
     const context = {};
@@ -57,7 +57,7 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(
       <StaticRouter context={context}>
         <ContextChecker />
-      </StaticRouter>
+      </StaticRouter>,
     );
   });
 
@@ -70,7 +70,9 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(<StaticRouter context={context} history={history} />);
 
     expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error.calls.argsFor(0)[0]).toContain('<StaticRouter> ignores the history prop');
+    expect(console.error.calls.argsFor(0)[0]).toContain(
+      '<StaticRouter> ignores the history prop',
+    );
     // expect(console.error).toHaveBeenCalledWith(
     //   expect.stringContaining('<StaticRouter> ignores the history prop')
     // )
@@ -82,7 +84,7 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(
       <StaticRouter context={context}>
         <Redirect push to="/somewhere-else" />
-      </StaticRouter>
+      </StaticRouter>,
     );
 
     expect(context.action).toBe('PUSH');
@@ -95,7 +97,7 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(
       <StaticRouter context={context}>
         <Redirect to="/somewhere-else" />
-      </StaticRouter>
+      </StaticRouter>,
     );
 
     expect(context.action).toBe('REPLACE');
@@ -108,22 +110,22 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(
       <StaticRouter context={context}>
         <Redirect to={{ pathname: '/somewhere-else' }} />
-      </StaticRouter>
+      </StaticRouter>,
     );
 
-    //expect(context.action).toBe('REPLACE')
-    //expect(context.location.pathname).toBe('/somewhere-else')
-    //expect(context.location.search).toBeFalsy()
-    //expect(context.location.hash).toBeFalsy()
-    //expect(context.url).toBe('/somewhere-else')
+    // expect(context.action).toBe('REPLACE')
+    // expect(context.location.pathname).toBe('/somewhere-else')
+    // expect(context.location.search).toBeFalsy()
+    // expect(context.location.hash).toBeFalsy()
+    // expect(context.url).toBe('/somewhere-else')
     expect(context).toEqual({
       action: 'REPLACE',
       url: '/somewhere-else',
       location: {
         pathname: '/somewhere-else',
         search: undefined,
-        hash: undefined
-      }
+        hash: undefined,
+      },
     });
   });
 
@@ -132,7 +134,7 @@ describe('A <StaticRouter>', () => {
       expect(props.location).toEqual({
         pathname: '/the/path',
         search: '?the=query',
-        hash: '#the-hash'
+        hash: '#the-hash',
       });
       return null;
     };
@@ -142,7 +144,7 @@ describe('A <StaticRouter>', () => {
     renderToStaticMarkup(
       <StaticRouter context={context} location="/the/path?the=query#the-hash">
         <Route component={LocationChecker} />
-      </StaticRouter>
+      </StaticRouter>,
     );
   });
 
@@ -156,9 +158,13 @@ describe('A <StaticRouter>', () => {
       const context = {};
 
       renderToStaticMarkup(
-        <StaticRouter context={context} basename="/the-base" location="/the-base/path">
+        <StaticRouter
+          context={context}
+          basename="/the-base"
+          location="/the-base/path"
+        >
           <Route component={LocationChecker} />
-        </StaticRouter>
+        </StaticRouter>,
       );
     });
 
@@ -168,7 +174,7 @@ describe('A <StaticRouter>', () => {
       renderToStaticMarkup(
         <StaticRouter context={context} basename="/the-base">
           <Redirect push to="/somewhere-else" />
-        </StaticRouter>
+        </StaticRouter>,
       );
 
       expect(context.action).toBe('PUSH');
@@ -181,7 +187,7 @@ describe('A <StaticRouter>', () => {
       renderToStaticMarkup(
         <StaticRouter context={context} basename="/the-base">
           <Redirect to="/somewhere-else" />
-        </StaticRouter>
+        </StaticRouter>,
       );
 
       expect(context.action).toBe('REPLACE');
@@ -194,12 +200,18 @@ describe('A <StaticRouter>', () => {
       const context = {};
       const pathname = '/test-path-please-ignore';
 
-      const Link = ({ to, children }) => <Route children={({ history: { createHref } }) => <a href={createHref(to)}>{children}</a>} />;
+      const Link = ({ to, children }) => (
+        <Route
+          children={({ history: { createHref } }) => (
+            <a href={createHref(to)}>{children}</a>
+          )}
+        />
+      );
 
       const outp = renderToStaticMarkup(
         <StaticRouter context={context}>
           <Link to={pathname} />
-        </StaticRouter>
+        </StaticRouter>,
       );
 
       expect(outp).toEqual(`<a href="${pathname}"></a>`);
@@ -214,7 +226,7 @@ describe('A <StaticRouter>', () => {
         renderToStaticMarkup(
           <StaticRouter context={context}>
             <Prompt message="this is only a test" />
-          </StaticRouter>
+          </StaticRouter>,
         );
       }).not.toThrow();
     });

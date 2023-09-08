@@ -9,15 +9,16 @@
 
 import React from 'inferno-compat';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactCompositeComponent-state', function () {
   it('should batch unmounts', function () {
-    var outer;
+    let outer;
     class Inner extends React.Component {
       render() {
         return <div />;
       }
+
       componentWillUnmount() {
         // This should get silently ignored (maybe with a warning), but it
         // shouldn't break React.
@@ -37,7 +38,7 @@ describe('ReactCompositeComponent-state', function () {
       }
     }
 
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     outer = ReactDOM.render(<Outer />, container);
     expect(() => {
       ReactDOM.unmountComponentAtNode(container);

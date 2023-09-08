@@ -14,10 +14,10 @@ describe('default prop typings', () => {
     document.body.removeChild(container);
   });
 
-  type MyComponentProps = {
+  interface MyComponentProps {
     name: string;
     value: number;
-  };
+  }
 
   class MyComponent extends Component<MyComponentProps, any> {
     constructor(props, context) {
@@ -26,7 +26,7 @@ describe('default prop typings', () => {
 
     public static defaultProps = {
       name: 'custom-component',
-      value: 107
+      value: 107,
     };
 
     public render() {

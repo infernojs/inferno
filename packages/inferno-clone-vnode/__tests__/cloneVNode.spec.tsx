@@ -1,5 +1,12 @@
 import { cloneVNode } from 'inferno-clone-vnode';
-import { Component, createTextVNode, Fragment, InfernoSingleNode, render, VNode } from 'inferno';
+import {
+  Component,
+  createTextVNode,
+  Fragment,
+  type InfernoSingleNode,
+  render,
+  type VNode,
+} from 'inferno';
 
 describe('cloneVNode (JSX)', () => {
   let container;
@@ -50,15 +57,25 @@ describe('cloneVNode (JSX)', () => {
   });
 
   it('should clone a basic element with children in props and as third argument', () => {
-    const node1 = cloneVNode(<div />, { children: <span>arr1a</span> }, <span>arr2b</span>);
+    const node1 = cloneVNode(
+      <div />,
+      { children: <span>arr1a</span> },
+      <span>arr2b</span>,
+    );
     render(node1, container);
     expect(container.innerHTML).toBe('<div><span>arr2b</span></div>');
 
-    const node2 = cloneVNode(<div />, { children: [<span>arr2a</span>] }, <span>arr2b</span>);
+    const node2 = cloneVNode(
+      <div />,
+      { children: [<span>arr2a</span>] },
+      <span>arr2b</span>,
+    );
     render(node2, container);
     expect(container.innerHTML).toBe('<div><span>arr2b</span></div>');
 
-    const node3 = cloneVNode(<div />, { children: [<span>arr3a</span>] }, [<span>arr3b</span>]);
+    const node3 = cloneVNode(<div />, { children: [<span>arr3a</span>] }, [
+      <span>arr3b</span>,
+    ]);
     render(node3, container);
     expect(container.innerHTML).toBe('<div><span>arr3b</span></div>');
   });
@@ -71,9 +88,15 @@ describe('cloneVNode (JSX)', () => {
   });
 
   it('Should support multiple nodes as children inside array', () => {
-    const node = cloneVNode(<div />, null, [<span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>]);
+    const node = cloneVNode(<div />, null, [
+      <span>arr3a</span>,
+      <span>arr3b</span>,
+      <span>arr3c</span>,
+    ]);
     render(node, container);
-    expect(container.innerHTML).toBe('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>',
+    );
   });
 
   it('Should support single node as children', () => {
@@ -135,7 +158,7 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toBe('<div>Hello world 2!</div>');
     const node3 = cloneVNode(node1, {
       children: 'Hello world 3!',
-      className: 'yo'
+      className: 'yo',
     });
 
     render(node3, container);
@@ -282,7 +305,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.firstChild.className).toEqual('test');
 
       const newNode = cloneVNode(node, {
-        className: 'foo'
+        className: 'foo',
       });
 
       render(newNode, container);
@@ -301,7 +324,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.firstChild.className).toEqual('test');
 
       const newNode = cloneVNode(node, {
-        className: null
+        className: null,
       });
 
       render(newNode, container);
@@ -318,7 +341,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.firstChild.className).toEqual('test');
 
       const newNode = cloneVNode(node, {
-        id: 'wow'
+        id: 'wow',
       });
 
       render(newNode, container);
@@ -345,7 +368,7 @@ describe('cloneVNode (JSX)', () => {
         <Foobar>
           <ChildCom foo="init" />
         </Foobar>,
-        container
+        container,
       );
 
       expect(container.innerHTML).toEqual('<div><div>bar</div></div>');
@@ -362,7 +385,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
-        key: 'foo'
+        key: 'foo',
       });
 
       expect(newNode.key).toEqual('foo');
@@ -381,7 +404,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
-        key: null
+        key: null,
       });
 
       expect(newNode.key).toEqual(null);
@@ -401,7 +424,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
-        className: null
+        className: null,
       });
 
       expect(newNode.key).toEqual('test');
@@ -428,7 +451,7 @@ describe('cloneVNode (JSX)', () => {
       function newFunction() {}
 
       const newNode = cloneVNode(node, {
-        ref: newFunction
+        ref: newFunction,
       });
 
       expect(newNode.ref).toEqual(newFunction);
@@ -447,7 +470,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
-        ref: null
+        ref: null,
       });
 
       expect(newNode.ref).toEqual(null);
@@ -466,7 +489,7 @@ describe('cloneVNode (JSX)', () => {
       expect(container.innerHTML).toEqual('<div></div>');
 
       const newNode = cloneVNode(node, {
-        className: null
+        className: null,
       });
 
       expect(newNode.ref).toEqual(initialFunc);
@@ -487,8 +510,8 @@ describe('cloneVNode (JSX)', () => {
         public render() {
           const children = this.props.children.map((c) =>
             cloneVNode(c as VNode, {
-              name: 'Henry'
-            })
+              name: 'Henry',
+            }),
           );
 
           return <span>{children}</span>;
@@ -510,12 +533,18 @@ describe('cloneVNode (JSX)', () => {
 
       render(<NameViewer />, container);
 
-      expect(container.innerHTML).toBe(`<span><div class="test" name="Henry"><span>A child that should render after \
+      expect(container.innerHTML)
+        .toBe(`<span><div class="test" name="Henry"><span>A child that should render after \
 the clone</span></div><div name="Henry"><span>A child that should render after the clone</span></div></span>`);
     });
 
     it('should render children two levels deep', () => {
-      const items = [{ name: 'Mike Brady' }, { name: 'Carol Brady' }, { name: 'Greg Brady' }, { name: 'Marcia Brady' }];
+      const items = [
+        { name: 'Mike Brady' },
+        { name: 'Carol Brady' },
+        { name: 'Greg Brady' },
+        { name: 'Marcia Brady' },
+      ];
       const items2 = [{ age: 28 }, { age: 26 }, { age: 16 }, { age: 15 }];
 
       interface Wrapper1Props {
@@ -530,8 +559,8 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
       }
 
       interface Wrapper2Props {
-        items2: { age: number }[];
-        items: { name: string }[];
+        items2: Array<{ age: number }>;
+        items: Array<{ name: string }>;
         children: NormalItem[];
       }
 
@@ -539,9 +568,15 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
         public render() {
           const children = this.props.children.map((c) => {
             return cloneVNode(c as any, {
-              age: (c.props && c.props.index) != null ? this.props.items2[c.props.index as number].age : 'default-age',
-              name: (c.props && c.props.index) != null ? this.props.items[c.props.index as number].name : 'default-name',
-              propsIndex: c.props && c.props.index
+              age:
+                (c.props && c.props.index) != null
+                  ? this.props.items2[c.props.index as number].age
+                  : 'default-age',
+              name:
+                (c.props && c.props.index) != null
+                  ? this.props.items[c.props.index as number].name
+                  : 'default-name',
+              propsIndex: c.props && c.props.index,
             });
           });
 
@@ -598,7 +633,8 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
 
       render(<App />, container);
 
-      expect(container.innerHTML).toBe(`<div class="wrapper1"><div class="wrapper2"><span>Normal Item default-name \
+      expect(container.innerHTML)
+        .toBe(`<div class="wrapper1"><div class="wrapper2"><span>Normal Item default-name \
 - age: default-age</span><span>Normal Item default-name - age: default-age</span><span>item Mike Brady - age: \
 28</span><span>item Carol Brady - age: 26</span><span>item Greg Brady - age: 16</span><span>item Marcia Brady \
 - age: 15</span></div></div>`);
@@ -624,7 +660,9 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
     expect(node1).not.toBe(cloned1);
     expect(node1.props).not.toBe(cloned1.props);
 
-    const node = <div>{[null, <div>1</div>, [<div>1</div>, <div>2</div>]]}</div>;
+    const node = (
+      <div>{[null, <div>1</div>, [<div>1</div>, <div>2</div>]]}</div>
+    );
     const cloned = cloneVNode(node);
 
     // Following assertion depends on if Inferno-compat is used or not

@@ -1,4 +1,4 @@
-import { Component, InfernoNode, InfernoSingleNode } from 'inferno';
+import { Component, type InfernoNode, type InfernoSingleNode } from 'inferno';
 
 describe('children types', () => {
   it('Should be possible to type child as component', () => {
@@ -24,6 +24,7 @@ describe('children types', () => {
       constructor(p, c) {
         super(p, c);
       }
+
       public render({ children }: ParentComponentProps) {
         children.myMethod();
         this.props.children.myMethod();
@@ -66,6 +67,7 @@ describe('children types', () => {
       constructor(p, c) {
         super(p, c);
       }
+
       public render({ children }: ParentComponentProps) {
         children[0].myMethod();
         this.props.children[0].myMethod();
@@ -118,6 +120,7 @@ describe('children types', () => {
       constructor(p, c) {
         super(p, c);
       }
+
       public render({ children }: ParentComponentProps) {
         // children.myMethod();
         // this.props.children.myMethod();
@@ -171,6 +174,7 @@ describe('children types', () => {
       constructor(p, c) {
         super(p, c);
       }
+
       public render({ children }: ParentComponentProps) {
         // children.myMethod();
         // this.props.children.myMethod();

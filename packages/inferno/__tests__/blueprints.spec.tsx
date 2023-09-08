@@ -41,14 +41,14 @@ describe('Blueprints (JSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          bool: false
+          bool: false,
         };
         this.btnCount = this.btnCount.bind(this);
       }
 
       public btnCount() {
         this.setState({
-          bool: !this.state.bool
+          bool: !this.state.bool,
         });
       }
 
@@ -86,7 +86,7 @@ describe('Blueprints (JSX)', () => {
       render(<Wrapper />, container);
 
       expect(container.innerHTML).toBe(
-        '<div><div class="my-component"><h1>Saab <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <span>B</span></h1><button type="button">btn</button></div></div>'
+        '<div><div class="my-component"><h1>Saab <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <span>B</span></h1><button type="button">btn</button></div></div>',
       );
 
       render(null, container);
@@ -98,7 +98,7 @@ describe('Blueprints (JSX)', () => {
       buttons.forEach((button) => button.click());
 
       expect(container.innerHTML).toBe(
-        '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>'
+        '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>',
       );
       render(null, container);
     });
@@ -121,7 +121,7 @@ describe('Blueprints (JSX)', () => {
           super(props);
 
           this.state = {
-            text: 'foo'
+            text: 'foo',
           };
 
           this.onWilAttach = this.onWilAttach.bind(this);
@@ -129,7 +129,7 @@ describe('Blueprints (JSX)', () => {
 
         public onWilAttach() {
           this.setState({
-            text: 'animate'
+            text: 'animate',
           });
         }
 

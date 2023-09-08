@@ -25,7 +25,7 @@ describe('observer based context', () => {
 
     expect(warns.length).toBe(1);
     expect(warns[0]).toEqual(
-      'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`'
+      'Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`',
     );
 
     console.error = w;
@@ -44,7 +44,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = () => <C />;
     const A = () => (
@@ -70,7 +70,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = () => <C foo={42} />;
     const A = () => (
@@ -96,7 +96,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = () => <C />;
     const A = () => (
@@ -116,7 +116,9 @@ describe('observer based context', () => {
     render(<A />, container);
 
     expect(container.querySelector('span').textContent).toBe('context:bar1337');
-    expect(container.querySelector('section').textContent).toBe('context:421337');
+    expect(container.querySelector('section').textContent).toBe(
+      'context:421337',
+    );
     done();
   });
 
@@ -132,7 +134,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = () => <C />;
     const A = () => (
@@ -143,7 +145,9 @@ describe('observer based context', () => {
     try {
       render(<A />, container);
     } catch (e) {
-      expect(e.message).toBe("MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider");
+      expect(e.message).toBe(
+        "MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider",
+      );
       done();
     }
   });
@@ -160,7 +164,7 @@ describe('observer based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = () => <C foo="bar" />;
     render(<B />, container);
@@ -184,14 +188,14 @@ describe('observer based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = observer(
       class extends Component {
         render() {
           return <C />;
         }
-      }
+      },
     );
     const A = observer(
       class extends Component {
@@ -205,7 +209,7 @@ describe('observer based context', () => {
             </section>
           );
         }
-      }
+      },
     );
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('3');
@@ -213,7 +217,9 @@ describe('observer based context', () => {
     a.set(42);
     expect(container.querySelector('span').textContent).toBe('42');
     expect(container.querySelector('div').textContent).toBe('context:3');
-    expect(msg).toEqual("MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children");
+    expect(msg).toEqual(
+      "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children",
+    );
     console.error = baseWarn;
     done();
   });
@@ -234,14 +240,14 @@ describe('observer based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = observer(
       class extends Component {
         render() {
           return <C />;
         }
-      }
+      },
     );
     const A = observer(
       class extends Component {
@@ -255,7 +261,7 @@ describe('observer based context', () => {
             </section>
           );
         }
-      }
+      },
     );
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('3');

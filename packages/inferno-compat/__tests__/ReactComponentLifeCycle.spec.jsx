@@ -12,58 +12,58 @@ import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
-var clone = function (o) {
+const clone = function (o) {
   return JSON.parse(JSON.stringify(o));
 };
 
-var GET_INIT_STATE_RETURN_VAL = {
+const GET_INIT_STATE_RETURN_VAL = {
   hasWillMountCompleted: false,
   hasRenderCompleted: false,
   hasDidMountCompleted: false,
-  hasWillUnmountCompleted: false
+  hasWillUnmountCompleted: false,
 };
 
-var INIT_RENDER_STATE = {
+const INIT_RENDER_STATE = {
   hasWillMountCompleted: true,
   hasRenderCompleted: false,
   hasDidMountCompleted: false,
-  hasWillUnmountCompleted: false
+  hasWillUnmountCompleted: false,
 };
 
-var DID_MOUNT_STATE = {
+const DID_MOUNT_STATE = {
   hasWillMountCompleted: true,
   hasRenderCompleted: true,
   hasDidMountCompleted: false,
-  hasWillUnmountCompleted: false
+  hasWillUnmountCompleted: false,
 };
 
-var NEXT_RENDER_STATE = {
+const NEXT_RENDER_STATE = {
   hasWillMountCompleted: true,
   hasRenderCompleted: true,
   hasDidMountCompleted: true,
-  hasWillUnmountCompleted: false
+  hasWillUnmountCompleted: false,
 };
 
-var WILL_UNMOUNT_STATE = {
+const WILL_UNMOUNT_STATE = {
   hasWillMountCompleted: true,
   hasDidMountCompleted: true,
   hasRenderCompleted: true,
-  hasWillUnmountCompleted: false
+  hasWillUnmountCompleted: false,
 };
 
-var POST_WILL_UNMOUNT_STATE = {
+const POST_WILL_UNMOUNT_STATE = {
   hasWillMountCompleted: true,
   hasDidMountCompleted: true,
   hasRenderCompleted: true,
-  hasWillUnmountCompleted: true
+  hasWillUnmountCompleted: true,
 };
 
 /**
  * Every React component is in one of these life cycles.
  */
-var ComponentLifeCycle = {
+const ComponentLifeCycle = {
   /**
    * Mounted components have a DOM node representation and are capable of
    * receiving new props.
@@ -72,14 +72,19 @@ var ComponentLifeCycle = {
   /**
    * Unmounted components are inactive and cannot receive new props.
    */
-  UNMOUNTED: 'UNMOUNTED'
+  UNMOUNTED: 'UNMOUNTED',
 };
 
 describe('ReactComponentLifeCycle', function () {
   let container;
 
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   beforeEach(() => {
@@ -94,7 +99,7 @@ describe('ReactComponentLifeCycle', function () {
   });
 
   it('should not reuse an instance when it has been unmounted', function () {
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     class StatefulComponent extends React.Component {
       constructor(props) {
         super(props);
@@ -105,11 +110,11 @@ describe('ReactComponentLifeCycle', function () {
         return <div />;
       }
     }
-    var element = <StatefulComponent />;
+    const element = <StatefulComponent />;
 
-    var firstInstance = ReactDOM.render(element, container);
+    const firstInstance = ReactDOM.render(element, container);
     ReactDOM.unmountComponentAtNode(container);
-    var secondInstance = ReactDOM.render(element, container);
+    const secondInstance = ReactDOM.render(element, container);
     expect(firstInstance).not.toBe(secondInstance);
   });
 
@@ -118,12 +123,13 @@ describe('ReactComponentLifeCycle', function () {
    * that second onDOMReady should not fail.
    */
   it('it should fire onDOMReady when already in onDOMReady', function (done) {
-    var _testJournal = [];
+    const _testJournal = [];
 
     class Child extends React.Component {
       componentDidMount() {
         _testJournal.push('Child:onDOMReady');
       }
+
       render() {
         return <div />;
       }
@@ -135,22 +141,33 @@ describe('ReactComponentLifeCycle', function () {
         _testJournal.push('SwitcherParent:ctr');
         this.state = { showHasOnDOMReadyComponent: false };
       }
+
       componentDidMount() {
         _testJournal.push('SwitcherParent:onDOMReady');
         this.switchIt();
       }
+
       switchIt() {
         this.setState({ showHasOnDOMReadyComponent: true });
       }
+
       render() {
-        return <div>{this.state.showHasOnDOMReadyComponent ? <Child /> : <div> </div>}</div>;
+        return (
+          <div>
+            {this.state.showHasOnDOMReadyComponent ? <Child /> : <div> </div>}
+          </div>
+        );
       }
     }
 
-    var instance = <SwitcherParent />;
+    const instance = <SwitcherParent />;
     renderIntoDocument(instance);
     setTimeout(() => {
-      expect(_testJournal).toEqual(['SwitcherParent:ctr', 'SwitcherParent:onDOMReady', 'Child:onDOMReady']);
+      expect(_testJournal).toEqual([
+        'SwitcherParent:ctr',
+        'SwitcherParent:onDOMReady',
+        'Child:onDOMReady',
+      ]);
       done();
     }, 20);
   });
@@ -166,7 +183,7 @@ describe('ReactComponentLifeCycle', function () {
       }
     }
 
-    var instance = <StatefulComponent />;
+    const instance = <StatefulComponent />;
     expect(function () {
       renderIntoDocument(instance);
     }).not.toThrow();
@@ -177,13 +194,16 @@ describe('ReactComponentLifeCycle', function () {
       render() {
         return <div>{this.props.children}</div>;
       }
+
       componentDidMount() {
         this.container = document.createElement('div');
         this.updateTooltip();
       }
+
       componentDidUpdate() {
         this.updateTooltip();
       }
+
       updateTooltip() {
         // Even though this.props.tooltip has an owner, updating it shouldn't
         // throw here because it's mounted as a root component
@@ -193,11 +213,15 @@ describe('ReactComponentLifeCycle', function () {
 
     class Component extends React.Component {
       render() {
-        return <Tooltip tooltip={<div>{this.props.tooltipText}</div>}>{this.props.text}</Tooltip>;
+        return (
+          <Tooltip tooltip={<div>{this.props.tooltipText}</div>}>
+            {this.props.text}
+          </Tooltip>
+        );
       }
     }
 
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     ReactDOM.render(<Component text="uno" tooltipText="one" />, container);
 
     // Since `instance` is a root component, we can set its props. This also
@@ -214,19 +238,25 @@ describe('ReactComponentLifeCycle', function () {
         super(props);
 
         this.state = {
-          stateField: this.props.valueToUseInitially
+          stateField: this.props.valueToUseInitially,
         };
       }
 
       componentDidMount() {
         this.setState({ stateField: this.props.valueToUseInOnDOMReady });
       }
+
       render() {
         return <div />;
       }
     }
 
-    var instance = <SetStateInComponentDidMount valueToUseInitially="hello" valueToUseInOnDOMReady="goodbye" />;
+    let instance = (
+      <SetStateInComponentDidMount
+        valueToUseInitially="hello"
+        valueToUseInOnDOMReady="goodbye"
+      />
+    );
     instance = renderIntoDocument(instance);
 
     setTimeout(() => {
@@ -236,8 +266,8 @@ describe('ReactComponentLifeCycle', function () {
   });
 
   it('should call nested lifecycle methods in the right order', function () {
-    var log;
-    var logger = function (msg) {
+    let log;
+    const logger = function (msg) {
       return function () {
         // return true for shouldComponentUpdate
         log.push(msg);
@@ -252,26 +282,33 @@ describe('ReactComponentLifeCycle', function () {
           </div>
         );
       }
+
       componentWillMount() {
         log.push('outer componentWillMount');
       }
+
       componentDidMount() {
         log.push('outer componentDidMount');
       }
+
       componentWillReceiveProps() {
         log.push('outer componentWillReceiveProps');
       }
+
       shouldComponentUpdate() {
         log.push('outer shouldComponentUpdate');
 
         return true;
       }
+
       componentWillUpdate() {
         log.push('outer componentWillUpdate');
       }
+
       componentDidUpdate() {
         log.push('outer componentDidUpdate');
       }
+
       componentWillUnmount() {
         log.push('outer componentWillUnmount');
       }
@@ -281,35 +318,47 @@ describe('ReactComponentLifeCycle', function () {
       render() {
         return <span>{this.props.x}</span>;
       }
+
       componentWillMount() {
         log.push('inner componentWillMount');
       }
+
       componentDidMount() {
         log.push('inner componentDidMount');
       }
+
       componentWillReceiveProps() {
         log.push('inner componentWillReceiveProps');
       }
+
       shouldComponentUpdate() {
         log.push('inner shouldComponentUpdate');
 
         return true;
       }
+
       componentWillUpdate() {
         log.push('inner componentWillUpdate');
       }
+
       componentDidUpdate() {
         log.push('inner componentDidUpdate');
       }
+
       componentWillUnmount() {
         log.push('inner componentWillUnmount');
       }
     }
 
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     log = [];
     ReactDOM.render(<Outer x={17} />, container);
-    expect(log).toEqual(['outer componentWillMount', 'inner componentWillMount', 'inner componentDidMount', 'outer componentDidMount']);
+    expect(log).toEqual([
+      'outer componentWillMount',
+      'inner componentWillMount',
+      'inner componentDidMount',
+      'outer componentDidMount',
+    ]);
 
     log = [];
     ReactDOM.render(<Outer x={42} />, container);
@@ -321,11 +370,14 @@ describe('ReactComponentLifeCycle', function () {
       'inner shouldComponentUpdate',
       'inner componentWillUpdate',
       'inner componentDidUpdate',
-      'outer componentDidUpdate'
+      'outer componentDidUpdate',
     ]);
 
     log = [];
     ReactDOM.unmountComponentAtNode(container);
-    expect(log).toEqual(['outer componentWillUnmount', 'inner componentWillUnmount']);
+    expect(log).toEqual([
+      'outer componentWillUnmount',
+      'inner componentWillUnmount',
+    ]);
   });
 });

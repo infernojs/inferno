@@ -1,4 +1,11 @@
-import { Component, createFragment, createPortal, Fragment, render, rerender } from 'inferno';
+import {
+  Component,
+  createFragment,
+  createPortal,
+  Fragment,
+  render,
+  rerender,
+} from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
 
@@ -18,9 +25,15 @@ describe('CreateElement (non-JSX)', () => {
 
   describe('Fragments', () => {
     it('Should render and unmount fragment', () => {
-      let Example = class Example extends Component {
+      const Example = class Example extends Component {
         render() {
-          return createFragment([createElement('div', null, 'First'), createElement('div', null, 'second')], ChildFlags.HasNonKeyedChildren);
+          return createFragment(
+            [
+              createElement('div', null, 'First'),
+              createElement('div', null, 'second'),
+            ],
+            ChildFlags.HasNonKeyedChildren,
+          );
         }
       };
 
@@ -34,22 +47,30 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should render nested fragment', () => {
-      let Example = class Example extends Component {
+      const Example = class Example extends Component {
         render() {
           return createFragment(
             [
               createElement('div', null, 'First'),
-              createFragment([createElement('div', null, 'Sub1'), createElement('div', null, 'Sub2')], ChildFlags.HasNonKeyedChildren),
-              createElement('div', null, 'second')
+              createFragment(
+                [
+                  createElement('div', null, 'Sub1'),
+                  createElement('div', null, 'Sub2'),
+                ],
+                ChildFlags.HasNonKeyedChildren,
+              ),
+              createElement('div', null, 'second'),
             ],
-            ChildFlags.HasNonKeyedChildren
+            ChildFlags.HasNonKeyedChildren,
           );
         }
       };
 
       render(createElement(Example, null), container);
 
-      expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
+      expect(container.innerHTML).toBe(
+        '<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>',
+      );
 
       render(null, container);
 
@@ -57,26 +78,37 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should be to replace component with fragment with another component', () => {
-      let Example = class Example extends Component {
+      const Example = class Example extends Component {
         render() {
           return createFragment(
             [
               createElement('div', null, 'First'),
-              createFragment([createElement('div', null, 'Sub1'), createElement('div', null, 'Sub2')], ChildFlags.HasNonKeyedChildren),
-              createElement('div', null, 'second')
+              createFragment(
+                [
+                  createElement('div', null, 'Sub1'),
+                  createElement('div', null, 'Sub2'),
+                ],
+                ChildFlags.HasNonKeyedChildren,
+              ),
+              createElement('div', null, 'second'),
             ],
-            ChildFlags.HasNonKeyedChildren
+            ChildFlags.HasNonKeyedChildren,
           );
         }
       };
 
       function FunctionalComp() {
-        return createFragment([createElement('div', null, 'Functional')], ChildFlags.HasNonKeyedChildren);
+        return createFragment(
+          [createElement('div', null, 'Functional')],
+          ChildFlags.HasNonKeyedChildren,
+        );
       }
 
       render(createElement(Example, null), container);
 
-      expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
+      expect(container.innerHTML).toBe(
+        '<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>',
+      );
 
       render(createElement(FunctionalComp, null), container);
 
@@ -84,7 +116,9 @@ describe('CreateElement (non-JSX)', () => {
 
       render(createElement(Example, null), container);
 
-      expect(container.innerHTML).toBe('<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>');
+      expect(container.innerHTML).toBe(
+        '<div>First</div><div>Sub1</div><div>Sub2</div><div>second</div>',
+      );
 
       render(createElement(FunctionalComp, null), container);
       render(null, container);
@@ -93,30 +127,57 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should be possible to move fragments', () => {
-      const fragmentA = () => createFragment([createElement('div', { id: 'a1' }, 'A1'), createElement('div', null, 'A2')], ChildFlags.HasNonKeyedChildren, 'A');
+      const fragmentA = () =>
+        createFragment(
+          [
+            createElement('div', { id: 'a1' }, 'A1'),
+            createElement('div', null, 'A2'),
+          ],
+          ChildFlags.HasNonKeyedChildren,
+          'A',
+        );
 
-      const fragmentB = () => createFragment([createElement('div', { id: 'b1' }, 'B1')], ChildFlags.HasNonKeyedChildren, 'B');
+      const fragmentB = () =>
+        createFragment(
+          [createElement('div', { id: 'b1' }, 'B1')],
+          ChildFlags.HasNonKeyedChildren,
+          'B',
+        );
 
       const fragmentC = () =>
         createFragment(
-          [createElement('div', { id: 'c1' }, 'C1'), createElement('div', null, 'C2'), createElement('div', null, 'C3')],
+          [
+            createElement('div', { id: 'c1' }, 'C1'),
+            createElement('div', null, 'C2'),
+            createElement('div', null, 'C3'),
+          ],
           ChildFlags.HasNonKeyedChildren,
-          'C'
+          'C',
         );
 
-      render(createElement('div', null, fragmentA(), fragmentB(), fragmentC()), container);
+      render(
+        createElement('div', null, fragmentA(), fragmentB(), fragmentC()),
+        container,
+      );
 
-      expect(container.innerHTML).toBe('<div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>',
+      );
 
-      let A1 = container.querySelector('#a1');
-      let B1 = container.querySelector('#b1');
-      let C1 = container.querySelector('#c1');
+      const A1 = container.querySelector('#a1');
+      const B1 = container.querySelector('#b1');
+      const C1 = container.querySelector('#c1');
 
       // Switch order
-      render(createElement('div', null, fragmentC(), fragmentA(), fragmentB()), container);
+      render(
+        createElement('div', null, fragmentC(), fragmentA(), fragmentB()),
+        container,
+      );
 
       // Verify dom has changed and nodes are the same
-      expect(container.innerHTML).toBe('<div><div id="c1">C1</div><div>C2</div><div>C3</div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div id="c1">C1</div><div>C2</div><div>C3</div><div id="a1">A1</div><div>A2</div><div id="b1">B1</div></div>',
+      );
 
       expect(container.querySelector('#a1')).toBe(A1);
       expect(container.querySelector('#b1')).toBe(B1);
@@ -126,7 +187,9 @@ describe('CreateElement (non-JSX)', () => {
       render(createElement('div', null, fragmentB(), fragmentC()), container);
 
       // Verify dom has changed and nodes are the same
-      expect(container.innerHTML).toBe('<div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div id="b1">B1</div><div id="c1">C1</div><div>C2</div><div>C3</div></div>',
+      );
 
       expect(container.querySelector('#a1')).toBe(null);
       expect(container.querySelector('#b1')).toBe(B1);
@@ -134,28 +197,61 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should clone fragment children if they are passed as reference', () => {
-      const fragmentA = createFragment([createElement('div', { id: 'a1' }, 'A1'), createElement('div', null, 'A2')], ChildFlags.HasNonKeyedChildren, 'A');
-      const fragmentB = createFragment([createElement('div', { id: 'b1' }, 'B1')], ChildFlags.HasNonKeyedChildren, 'B');
-      const fragmentC = createFragment(
-        [createElement('div', { id: 'c1' }, 'C1'), createElement('div', null, 'C2'), createElement('div', null, 'C3')],
+      const fragmentA = createFragment(
+        [
+          createElement('div', { id: 'a1' }, 'A1'),
+          createElement('div', null, 'A2'),
+        ],
         ChildFlags.HasNonKeyedChildren,
-        'C'
+        'A',
+      );
+      const fragmentB = createFragment(
+        [createElement('div', { id: 'b1' }, 'B1')],
+        ChildFlags.HasNonKeyedChildren,
+        'B',
+      );
+      const fragmentC = createFragment(
+        [
+          createElement('div', { id: 'c1' }, 'C1'),
+          createElement('div', null, 'C2'),
+          createElement('div', null, 'C3'),
+        ],
+        ChildFlags.HasNonKeyedChildren,
+        'C',
       );
 
       const content = [fragmentC];
 
       function SFC() {
-        return createElement(Fragment, null, createElement('span', null, '1'), createElement(Fragment, null, content), createElement('span', null, '2'));
+        return createElement(
+          Fragment,
+          null,
+          createElement('span', null, '1'),
+          createElement(Fragment, null, content),
+          createElement('span', null, '2'),
+        );
       }
 
-      render(createElement(Fragment, null, fragmentA, createElement(SFC, { key: 'sfc' }), fragmentB, fragmentC), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          fragmentA,
+          createElement(SFC, { key: 'sfc' }),
+          fragmentB,
+          fragmentC,
+        ),
+        container,
+      );
 
       const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
       const FragmentBHtml = '<div id="b1">B1</div>';
       const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
       const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
 
-      expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml);
+      expect(container.innerHTML).toBe(
+        FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml,
+      );
 
       render(null, container);
 
@@ -163,31 +259,73 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should be possible to move component with fragment root', () => {
-      const fragmentA = createFragment([createElement('div', { id: 'a1' }, 'A1'), createElement('div', null, 'A2')], ChildFlags.HasNonKeyedChildren, 'A');
-      const fragmentB = createFragment([createElement('div', { id: 'b1' }, 'B1')], ChildFlags.HasNonKeyedChildren, 'B');
-      const fragmentC = createFragment(
-        [createElement('div', { id: 'c1' }, 'C1'), createElement('div', null, 'C2'), createElement('div', null, 'C3')],
+      const fragmentA = createFragment(
+        [
+          createElement('div', { id: 'a1' }, 'A1'),
+          createElement('div', null, 'A2'),
+        ],
         ChildFlags.HasNonKeyedChildren,
-        'C'
+        'A',
+      );
+      const fragmentB = createFragment(
+        [createElement('div', { id: 'b1' }, 'B1')],
+        ChildFlags.HasNonKeyedChildren,
+        'B',
+      );
+      const fragmentC = createFragment(
+        [
+          createElement('div', { id: 'c1' }, 'C1'),
+          createElement('div', null, 'C2'),
+          createElement('div', null, 'C3'),
+        ],
+        ChildFlags.HasNonKeyedChildren,
+        'C',
       );
 
       const content = [fragmentC];
 
       function SFC() {
-        return createElement(Fragment, null, createElement('span', null, '1'), createElement(Fragment, null, content), createElement('span', null, '2'));
+        return createElement(
+          Fragment,
+          null,
+          createElement('span', null, '1'),
+          createElement(Fragment, null, content),
+          createElement('span', null, '2'),
+        );
       }
 
-      render(createElement(Fragment, null, fragmentA, createElement(SFC, { key: 'sfc' }), fragmentB, fragmentC), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          fragmentA,
+          createElement(SFC, { key: 'sfc' }),
+          fragmentB,
+          fragmentC,
+        ),
+        container,
+      );
 
       const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
       const FragmentBHtml = '<div id="b1">B1</div>';
       const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
       const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
 
-      expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml);
+      expect(container.innerHTML).toBe(
+        FragmentAHtml + SFCHtml + FragmentBHtml + FragmentCHtml,
+      );
 
       // Switch order
-      render(createElement(Fragment, null, fragmentA, fragmentC, createElement(SFC, { key: 'sfc' })), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          fragmentA,
+          fragmentC,
+          createElement(SFC, { key: 'sfc' }),
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe(FragmentAHtml + FragmentCHtml + SFCHtml);
 
@@ -200,13 +338,19 @@ describe('CreateElement (non-JSX)', () => {
           createElement(SFC, { key: 'sfc' }),
           fragmentA,
           fragmentC,
-          createElement('div', { key: '1' }, '2')
+          createElement('div', { key: '1' }, '2'),
         ),
-        container
+        container,
       );
 
       // Verify dom has changed and nodes are the same
-      expect(container.innerHTML).toBe('<div>1</div>' + SFCHtml + FragmentAHtml + FragmentCHtml + '<div>2</div>');
+      expect(container.innerHTML).toBe(
+        '<div>1</div>' +
+          SFCHtml +
+          FragmentAHtml +
+          FragmentCHtml +
+          '<div>2</div>',
+      );
 
       render(null, container);
 
@@ -214,18 +358,39 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should be possible to move component with fragment root #2', () => {
-      const fragmentA = createFragment([createElement('div', { id: 'a1' }, 'A1'), createElement('div', null, 'A2')], ChildFlags.HasNonKeyedChildren, 'A');
-      const fragmentB = createFragment([createElement('div', { id: 'b1' }, 'B1')], ChildFlags.HasNonKeyedChildren, 'B');
-      const fragmentC = createFragment(
-        [createElement('div', { id: 'c1' }, 'C1'), createElement('div', null, 'C2'), createElement('div', null, 'C3')],
+      const fragmentA = createFragment(
+        [
+          createElement('div', { id: 'a1' }, 'A1'),
+          createElement('div', null, 'A2'),
+        ],
         ChildFlags.HasNonKeyedChildren,
-        'C'
+        'A',
+      );
+      const fragmentB = createFragment(
+        [createElement('div', { id: 'b1' }, 'B1')],
+        ChildFlags.HasNonKeyedChildren,
+        'B',
+      );
+      const fragmentC = createFragment(
+        [
+          createElement('div', { id: 'c1' }, 'C1'),
+          createElement('div', null, 'C2'),
+          createElement('div', null, 'C3'),
+        ],
+        ChildFlags.HasNonKeyedChildren,
+        'C',
       );
 
       const content = [fragmentC];
 
       function SFC() {
-        return createElement(Fragment, null, createElement('span', null, '1'), createElement(Fragment, null, content), createElement('span', null, '2'));
+        return createElement(
+          Fragment,
+          null,
+          createElement('span', null, '1'),
+          createElement(Fragment, null, content),
+          createElement('span', null, '2'),
+        );
       }
 
       render(
@@ -237,9 +402,9 @@ describe('CreateElement (non-JSX)', () => {
           fragmentB,
           createElement(SFC, { key: 'sfc2' }),
           fragmentC,
-          createElement(SFC, { key: 'sfc3' })
+          createElement(SFC, { key: 'sfc3' }),
         ),
-        container
+        container,
       );
 
       const FragmentAHtml = '<div id="a1">A1</div><div>A2</div>';
@@ -247,7 +412,14 @@ describe('CreateElement (non-JSX)', () => {
       const FragmentCHtml = '<div id="c1">C1</div><div>C2</div><div>C3</div>';
       const SFCHtml = '<span>1</span>' + FragmentCHtml + '<span>2</span>';
 
-      expect(container.innerHTML).toBe(FragmentAHtml + SFCHtml + FragmentBHtml + SFCHtml + FragmentCHtml + SFCHtml);
+      expect(container.innerHTML).toBe(
+        FragmentAHtml +
+          SFCHtml +
+          FragmentBHtml +
+          SFCHtml +
+          FragmentCHtml +
+          SFCHtml,
+      );
 
       // Switch order
       render(
@@ -258,12 +430,14 @@ describe('CreateElement (non-JSX)', () => {
           fragmentA,
           createElement(SFC, { key: 'sfc1' }),
           fragmentC,
-          createElement(SFC, { key: 'sfc2' })
+          createElement(SFC, { key: 'sfc2' }),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe(SFCHtml + FragmentAHtml + SFCHtml + FragmentCHtml + SFCHtml);
+      expect(container.innerHTML).toBe(
+        SFCHtml + FragmentAHtml + SFCHtml + FragmentCHtml + SFCHtml,
+      );
 
       // Switch order again
       render(
@@ -276,13 +450,21 @@ describe('CreateElement (non-JSX)', () => {
           fragmentA,
           fragmentC,
           createElement('div', { key: '1' }, '2'),
-          createElement(SFC, { key: 'sfc3' })
+          createElement(SFC, { key: 'sfc3' }),
         ),
-        container
+        container,
       );
 
       // Verify dom has changed and nodes are the same
-      expect(container.innerHTML).toBe('<div>1</div>' + SFCHtml + SFCHtml + FragmentAHtml + FragmentCHtml + '<div>2</div>' + SFCHtml);
+      expect(container.innerHTML).toBe(
+        '<div>1</div>' +
+          SFCHtml +
+          SFCHtml +
+          FragmentAHtml +
+          FragmentCHtml +
+          '<div>2</div>' +
+          SFCHtml,
+      );
 
       render(null, container);
 
@@ -302,12 +484,17 @@ describe('CreateElement (non-JSX)', () => {
               'More',
               null,
               'Hey!',
-              createElement(Fragment, null, createElement(Fragment, null, 'Large ', last), createElement(Fragment, null, 'And Small')),
+              createElement(
+                Fragment,
+                null,
+                createElement(Fragment, null, 'Large ', last),
+                createElement(Fragment, null, 'And Small'),
+              ),
               createElement(Fragment, null, 'Nesting'),
-              mid
+              mid,
             ),
             createElement('span', null, 'bar'),
-            null
+            null,
           );
         }
         return createElement(
@@ -321,16 +508,21 @@ describe('CreateElement (non-JSX)', () => {
             'More',
             createElement(Fragment, null, 'Nesting'),
             mid,
-            createElement(Fragment, null, createElement(Fragment, null, 'Large ', last), createElement(Fragment, null, 'And Small'))
+            createElement(
+              Fragment,
+              null,
+              createElement(Fragment, null, 'Large ', last),
+              createElement(Fragment, null, 'And Small'),
+            ),
           ),
-          createElement('span', null, 'bar')
+          createElement('span', null, 'bar'),
         );
       }
 
       let mountCounter = 0;
       let unmountCounter = 0;
 
-      let FoobarCom = class FoobarCom extends Component {
+      const FoobarCom = class FoobarCom extends Component {
         componentWillMount() {
           mountCounter++;
         }
@@ -344,9 +536,12 @@ describe('CreateElement (non-JSX)', () => {
             Fragment,
             null,
             props.children,
-            createPortal(createElement('div', null, 'InvisiblePortalCreator'), props.node),
+            createPortal(
+              createElement('div', null, 'InvisiblePortalCreator'),
+              props.node,
+            ),
             null,
-            'Try out some crazy stuff'
+            'Try out some crazy stuff',
           );
         }
       };
@@ -360,13 +555,15 @@ describe('CreateElement (non-JSX)', () => {
           createElement(Fragmenter, {
             first: 'first',
             mid: 'MID',
-            last: createElement('div', null, 'Why?')
-          })
+            last: createElement('div', null, 'Why?'),
+          }),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
+      expect(container.innerHTML).toBe(
+        '<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff',
+      );
       expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
 
       render(
@@ -377,13 +574,15 @@ describe('CreateElement (non-JSX)', () => {
             first: createElement('span', null, 'GoGo'),
             mid: 'MID',
             last: createElement('div', null, 'Why?'),
-            changeOrder: true
-          })
+            changeOrder: true,
+          }),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff');
+      expect(container.innerHTML).toBe(
+        '<div><span>GoGo</span></div>MoreHey!Large <div>Why?</div>And SmallNestingMID<span>bar</span>Try out some crazy stuff',
+      );
       expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
 
       render(
@@ -393,13 +592,15 @@ describe('CreateElement (non-JSX)', () => {
           createElement(Fragmenter, {
             first: 'first',
             mid: 'MID',
-            last: createElement('div', null, 'Why?')
-          })
+            last: createElement('div', null, 'Why?'),
+          }),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff');
+      expect(container.innerHTML).toBe(
+        '<div>first</div>Hey!MoreNestingMIDLarge <div>Why?</div>And Small<span>bar</span>Try out some crazy stuff',
+      );
       expect(portalNode.innerHTML).toBe('<div>InvisiblePortalCreator</div>');
     });
 
@@ -417,10 +618,22 @@ describe('CreateElement (non-JSX)', () => {
               createElement(
                 Fragment,
                 null,
-                createElement(Fragment, null, createElement(Fragment, null, createElement(Fragment, null, createElement(Fragment, null, 'Okay!'))))
-              )
-            )
-          )
+                createElement(
+                  Fragment,
+                  null,
+                  createElement(
+                    Fragment,
+                    null,
+                    createElement(
+                      Fragment,
+                      null,
+                      createElement(Fragment, null, 'Okay!'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         );
       }
 
@@ -434,7 +647,7 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should append DOM nodes to correct position when component root Fragmnet change', () => {
-      let TestRoot = class TestRoot extends Component {
+      const TestRoot = class TestRoot extends Component {
         render() {
           return createElement(Fragment, null, this.props.children);
         }
@@ -444,13 +657,25 @@ describe('CreateElement (non-JSX)', () => {
         createElement(
           'div',
           null,
-          createElement(TestRoot, null, createElement('div', null, '1'), createElement('div', null, '2')),
-          createElement(TestRoot, null, createElement('span', null, 'Ok'), createElement('span', null, 'Test'))
+          createElement(
+            TestRoot,
+            null,
+            createElement('div', null, '1'),
+            createElement('div', null, '2'),
+          ),
+          createElement(
+            TestRoot,
+            null,
+            createElement('span', null, 'Ok'),
+            createElement('span', null, 'Test'),
+          ),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>',
+      );
 
       render(
         createElement(
@@ -462,17 +687,19 @@ describe('CreateElement (non-JSX)', () => {
             createElement('div', null, '1'),
             createElement('div', null, '2'),
             createElement('div', null, '3'),
-            createElement('div', null, '4')
+            createElement('div', null, '4'),
           ),
-          createElement(TestRoot, null, createElement('div', null, 'Other'))
+          createElement(TestRoot, null, createElement('div', null, 'Other')),
         ),
-        container
+        container,
       );
-      expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><div>3</div><div>4</div><div>Other</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>1</div><div>2</div><div>3</div><div>4</div><div>Other</div></div>',
+      );
     });
 
     it('Should not clear whole parent element when fragment children are cleared', () => {
-      let TestRoot = class TestRoot extends Component {
+      const TestRoot = class TestRoot extends Component {
         render() {
           return createElement(Fragment, null, this.props.children);
         }
@@ -482,13 +709,25 @@ describe('CreateElement (non-JSX)', () => {
         createElement(
           'div',
           null,
-          createElement(TestRoot, null, createElement('div', null, '1'), createElement('div', null, '2')),
-          createElement(TestRoot, null, createElement('span', null, 'Ok'), createElement('span', null, 'Test'))
+          createElement(
+            TestRoot,
+            null,
+            createElement('div', null, '1'),
+            createElement('div', null, '2'),
+          ),
+          createElement(
+            TestRoot,
+            null,
+            createElement('span', null, 'Ok'),
+            createElement('span', null, 'Test'),
+          ),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>1</div><div>2</div><span>Ok</span><span>Test</span></div>',
+      );
 
       render(
         createElement(
@@ -500,20 +739,22 @@ describe('CreateElement (non-JSX)', () => {
             createElement('div', null, '1'),
             createElement('div', null, '2'),
             createElement('div', null, '3'),
-            createElement('div', null, '4')
+            createElement('div', null, '4'),
           ),
-          createElement(TestRoot, null)
+          createElement(TestRoot, null),
         ),
-        container
+        container,
       );
-      expect(container.innerHTML).toBe('<div><div>1</div><div>2</div><div>3</div><div>4</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>1</div><div>2</div><div>3</div><div>4</div></div>',
+      );
     });
 
     it('Should move fragment and all its contents when using Fragment long syntax with keys', () => {
       let unmountCounter = 0;
       let mountCounter = 0;
 
-      let TestLifecycle = class TestLifecycle extends Component {
+      const TestLifecycle = class TestLifecycle extends Component {
         componentWillUnmount() {
           unmountCounter++;
         }
@@ -531,10 +772,20 @@ describe('CreateElement (non-JSX)', () => {
         createElement(
           'div',
           null,
-          createElement(Fragment, { key: '1' }, createElement(TestLifecycle, null, '1a'), createElement(TestLifecycle, null, '1b')),
-          createElement(Fragment, { key: '2' }, createElement(TestLifecycle, null, '2a'), createElement(TestLifecycle, null, '2b'))
+          createElement(
+            Fragment,
+            { key: '1' },
+            createElement(TestLifecycle, null, '1a'),
+            createElement(TestLifecycle, null, '1b'),
+          ),
+          createElement(
+            Fragment,
+            { key: '2' },
+            createElement(TestLifecycle, null, '2a'),
+            createElement(TestLifecycle, null, '2b'),
+          ),
         ),
-        container
+        container,
       );
 
       expect(container.innerHTML).toBe('<div>1a1b2a2b</div>');
@@ -550,11 +801,16 @@ describe('CreateElement (non-JSX)', () => {
             { key: '2' },
             createElement(TestLifecycle, null, '2a'),
             createElement(TestLifecycle, null, '2b'),
-            createElement(TestLifecycle, null, '2c')
+            createElement(TestLifecycle, null, '2c'),
           ),
-          createElement(Fragment, { key: '1' }, createElement(TestLifecycle, null, '1a'), createElement(TestLifecycle, null, '1b'))
+          createElement(
+            Fragment,
+            { key: '1' },
+            createElement(TestLifecycle, null, '1a'),
+            createElement(TestLifecycle, null, '1b'),
+          ),
         ),
-        container
+        container,
       );
 
       expect(container.innerHTML).toBe('<div>2a2b2c1a1b</div>');
@@ -570,11 +826,16 @@ describe('CreateElement (non-JSX)', () => {
             { key: '3' },
             createElement(TestLifecycle, null, '3a'),
             createElement(TestLifecycle, null, '3b'),
-            createElement(TestLifecycle, null, '3c')
+            createElement(TestLifecycle, null, '3c'),
           ),
-          createElement(Fragment, { key: '2' }, createElement(TestLifecycle, null, '2a'), createElement(TestLifecycle, null, '2Patched'))
+          createElement(
+            Fragment,
+            { key: '2' },
+            createElement(TestLifecycle, null, '2a'),
+            createElement(TestLifecycle, null, '2Patched'),
+          ),
         ),
-        container
+        container,
       );
 
       expect(container.innerHTML).toBe('<div>3a3b3c2a2Patched</div>');
@@ -583,15 +844,24 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should unmount empty fragments', () => {
-      render(createElement(Fragment, null, createElement(Fragment, null)), container);
+      render(
+        createElement(Fragment, null, createElement(Fragment, null)),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
 
-      render(createElement(Fragment, null, createElement('div', null)), container);
+      render(
+        createElement(Fragment, null, createElement('div', null)),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div></div>');
 
-      render(createElement(Fragment, null, createElement(Fragment, null)), container);
+      render(
+        createElement(Fragment, null, createElement(Fragment, null)),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
 
@@ -605,29 +875,59 @@ describe('CreateElement (non-JSX)', () => {
         createElement(
           Fragment,
           null,
-          createElement(Fragment, null, createElement('span', null, '1a'), createElement('span', null, '1b'), createElement('div', null, '1c')),
-          createElement(Fragment, null, createElement('span', null, '2a'), createElement('span', null, '2b'), createElement('span', null, '2c')),
-          createElement(Fragment, null)
+          createElement(
+            Fragment,
+            null,
+            createElement('span', null, '1a'),
+            createElement('span', null, '1b'),
+            createElement('div', null, '1c'),
+          ),
+          createElement(
+            Fragment,
+            null,
+            createElement('span', null, '2a'),
+            createElement('span', null, '2b'),
+            createElement('span', null, '2c'),
+          ),
+          createElement(Fragment, null),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<span>1a</span><span>1b</span><div>1c</div><span>2a</span><span>2b</span><span>2c</span>');
+      expect(container.innerHTML).toBe(
+        '<span>1a</span><span>1b</span><div>1c</div><span>2a</span><span>2b</span><span>2c</span>',
+      );
 
       render(
         createElement(
           Fragment,
           null,
-          createElement(Fragment, null, createElement('span', null, '1a'), createElement('span', null, '1c')),
-          createElement(Fragment, null, createElement('span', null, '2a'), createElement('span', null, '2b'), createElement('span', null, '2c')),
-          createElement(Fragment, null)
+          createElement(
+            Fragment,
+            null,
+            createElement('span', null, '1a'),
+            createElement('span', null, '1c'),
+          ),
+          createElement(
+            Fragment,
+            null,
+            createElement('span', null, '2a'),
+            createElement('span', null, '2b'),
+            createElement('span', null, '2c'),
+          ),
+          createElement(Fragment, null),
         ),
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<span>1a</span><span>1c</span><span>2a</span><span>2b</span><span>2c</span>');
+      expect(container.innerHTML).toBe(
+        '<span>1a</span><span>1c</span><span>2a</span><span>2b</span><span>2c</span>',
+      );
 
-      render(createElement(Fragment, null, createElement(Fragment, null)), container);
+      render(
+        createElement(Fragment, null, createElement(Fragment, null)),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
 
@@ -651,7 +951,16 @@ describe('CreateElement (non-JSX)', () => {
         return null;
       }
 
-      render(createElement(Fragment, null, null, createElement(Foobar, null), undefined), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          null,
+          createElement(Foobar, null),
+          undefined,
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
 
@@ -670,13 +979,31 @@ describe('CreateElement (non-JSX)', () => {
         return null;
       }
 
-      render(createElement(Fragment, null, null, createElement(Foobar, null), undefined), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          null,
+          createElement(Foobar, null),
+          undefined,
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
 
       add = true;
 
-      render(createElement(Fragment, null, null, createElement(Foobar, null), undefined), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          null,
+          createElement(Foobar, null),
+          undefined,
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div>');
     });
@@ -689,8 +1016,14 @@ describe('CreateElement (non-JSX)', () => {
       let content = [null];
 
       render(
-        createElement(Fragment, null, createElement('span', null, '1'), createElement(Fragment, null, content), createElement('span', null, '2')),
-        container
+        createElement(
+          Fragment,
+          null,
+          createElement('span', null, '1'),
+          createElement(Fragment, null, content),
+          createElement('span', null, '2'),
+        ),
+        container,
       );
 
       expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
@@ -698,11 +1031,19 @@ describe('CreateElement (non-JSX)', () => {
       content = [createElement(Foobar, null)];
 
       render(
-        createElement(Fragment, null, createElement('span', null, '1'), createElement(Fragment, null, content), createElement('span', null, '2')),
-        container
+        createElement(
+          Fragment,
+          null,
+          createElement('span', null, '1'),
+          createElement(Fragment, null, content),
+          createElement('span', null, '2'),
+        ),
+        container,
       );
 
-      expect(container.innerHTML).toBe('<span>1</span><div>Ok</div><span>2</span>');
+      expect(container.innerHTML).toBe(
+        '<span>1</span><div>Ok</div><span>2</span>',
+      );
     });
 
     it('Should be possible to update from 0 to 1 fragment -> fragment', () => {
@@ -713,8 +1054,14 @@ describe('CreateElement (non-JSX)', () => {
       let content = [];
 
       render(
-        createElement(Fragment, null, createElement('span', null, '1'), createElement(Fragment, null, content), createElement('span', null, '2')),
-        container
+        createElement(
+          Fragment,
+          null,
+          createElement('span', null, '1'),
+          createElement(Fragment, null, content),
+          createElement('span', null, '2'),
+        ),
+        container,
       );
 
       expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
@@ -722,17 +1069,25 @@ describe('CreateElement (non-JSX)', () => {
       content = [createElement(Fragment, null, createElement(Foobar, null))];
 
       render(
-        createElement(Fragment, null, createElement('span', null, '1'), createElement(Fragment, null, content), createElement('span', null, '2')),
-        container
+        createElement(
+          Fragment,
+          null,
+          createElement('span', null, '1'),
+          createElement(Fragment, null, content),
+          createElement('span', null, '2'),
+        ),
+        container,
       );
 
-      expect(container.innerHTML).toBe('<span>1</span><div>Ok</div><span>2</span>');
+      expect(container.innerHTML).toBe(
+        '<span>1</span><div>Ok</div><span>2</span>',
+      );
     });
 
     it('Should be possible to mount and patch single component fragment children', () => {
       let counter = 0;
 
-      let Foobar = class Foobar extends Component {
+      const Foobar = class Foobar extends Component {
         componentWillMount() {
           counter++;
         }
@@ -744,12 +1099,23 @@ describe('CreateElement (non-JSX)', () => {
 
       render(createElement(Fragment, null), container);
 
-      render(createElement(Fragment, null, createElement(Foobar, null)), container);
+      render(
+        createElement(Fragment, null, createElement(Foobar, null)),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
       expect(counter).toBe(1);
 
-      render(createElement(Fragment, null, createElement('div', null, 'Ok'), createElement(Foobar, null)), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          createElement('div', null, 'Ok'),
+          createElement(Foobar, null),
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div>');
 
@@ -761,7 +1127,7 @@ describe('CreateElement (non-JSX)', () => {
     it('Should be possible to mount and patch single component fragment children - variation 2', () => {
       let counter = 0;
 
-      let Foobar = class Foobar extends Component {
+      const Foobar = class Foobar extends Component {
         componentWillMount() {
           counter++;
         }
@@ -779,7 +1145,11 @@ describe('CreateElement (non-JSX)', () => {
 
       render(createElement(Fragment, null, nodes), container);
 
-      nodes = [createElement(Foobar, null), createElement(Foobar, null), createElement(Foobar, null)];
+      nodes = [
+        createElement(Foobar, null),
+        createElement(Foobar, null),
+        createElement(Foobar, null),
+      ];
 
       render(createElement(Fragment, null, nodes), container);
 
@@ -790,7 +1160,15 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
       expect(counter).toBe(3);
 
-      render(createElement(Fragment, null, createElement('div', null, 'Ok'), createElement(Foobar, null)), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          createElement('div', null, 'Ok'),
+          createElement(Foobar, null),
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div>');
 
@@ -802,7 +1180,7 @@ describe('CreateElement (non-JSX)', () => {
     it('Should be possible to patch single fragment child component', () => {
       let counter = 0;
 
-      let Foobar = class Foobar extends Component {
+      const Foobar = class Foobar extends Component {
         componentWillMount() {
           counter++;
         }
@@ -813,8 +1191,13 @@ describe('CreateElement (non-JSX)', () => {
       };
 
       render(
-        createElement(Fragment, null, createElement(Fragment, null, createElement(Foobar, null)), createElement(Fragment, null, createElement(Foobar, null))),
-        container
+        createElement(
+          Fragment,
+          null,
+          createElement(Fragment, null, createElement(Foobar, null)),
+          createElement(Fragment, null, createElement(Foobar, null)),
+        ),
+        container,
       );
 
       expect(container.innerHTML).toBe('');
@@ -828,15 +1211,23 @@ describe('CreateElement (non-JSX)', () => {
           createElement(Fragment, null, createElement(Foobar, null)),
           createElement(Fragment, null, createElement(Foobar, null)),
           createElement(Fragment, null),
-          createElement(Foobar, null)
+          createElement(Foobar, null),
         ),
-        container
+        container,
       );
 
       expect(container.innerHTML).toBe('');
       expect(counter).toBe(4);
 
-      render(createElement(Fragment, null, createElement('div', null, 'Ok'), createElement(Foobar, null)), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          createElement('div', null, 'Ok'),
+          createElement(Foobar, null),
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div>');
 
@@ -846,19 +1237,33 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should be possible to mount and patch single component fragment children', () => {
-      let Foobar = class Foobar extends Component {
+      const Foobar = class Foobar extends Component {
         render() {
           return null;
         }
       };
 
-      render(createElement(Fragment, null, createElement(Foobar, null)), container);
+      render(
+        createElement(Fragment, null, createElement(Foobar, null)),
+        container,
+      );
 
-      render(createElement(Fragment, null, createElement(Foobar, null)), container);
+      render(
+        createElement(Fragment, null, createElement(Foobar, null)),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
 
-      render(createElement(Fragment, null, createElement('div', null, 'Ok'), createElement(Foobar, null)), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          createElement('div', null, 'Ok'),
+          createElement(Foobar, null),
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div>');
 
@@ -868,7 +1273,7 @@ describe('CreateElement (non-JSX)', () => {
     });
 
     it('Should be possible to mount and patch single component fragment children #2', () => {
-      let Foobar = class Foobar extends Component {
+      const Foobar = class Foobar extends Component {
         render() {
           return null;
         }
@@ -876,11 +1281,22 @@ describe('CreateElement (non-JSX)', () => {
 
       render(createElement(Fragment, null, null), container);
 
-      render(createElement(Fragment, null, createElement(Foobar, null)), container);
+      render(
+        createElement(Fragment, null, createElement(Foobar, null)),
+        container,
+      );
 
       expect(container.innerHTML).toBe('');
 
-      render(createElement(Fragment, null, createElement('div', null, 'Ok'), createElement(Foobar, null)), container);
+      render(
+        createElement(
+          Fragment,
+          null,
+          createElement('div', null, 'Ok'),
+          createElement(Foobar, null),
+        ),
+        container,
+      );
 
       expect(container.innerHTML).toBe('<div>Ok</div>');
 
@@ -900,21 +1316,23 @@ describe('CreateElement (non-JSX)', () => {
 
         componentDidMount() {
           expect(container.innerHTML).toEqual(
-            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><footer>2018</footer>'
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><footer>2018</footer>',
           );
 
           this.setState({ sections: [] });
 
           rerender();
 
-          expect(container.innerHTML).toEqual('<h1>App</h1><footer>2018</footer>');
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><footer>2018</footer>',
+          );
 
           this.setState({ articles: ['id2', 'id3'], sections: ['id0', 'id1'] });
 
           rerender();
 
           expect(container.innerHTML).toEqual(
-            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><footer>2018</footer>'
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><footer>2018</footer>',
           );
         }
 
@@ -923,16 +1341,25 @@ describe('CreateElement (non-JSX)', () => {
             this.state.sections.map((section) =>
               createElement('section', null, [
                 createElement('h2', null, section),
-                this.state.articles.map((article) => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
-              ])
-            )
+                this.state.articles.map((article) =>
+                  f(
+                    article === 'id2' && createElement('aside', null, 'Today'),
+                    createElement('article', null, article),
+                  ),
+                ),
+              ]),
+            ),
           );
         }
       }
 
       class App extends Component {
         render() {
-          return f(createElement('h1', null, 'App'), createElement(Articles), createElement('footer', null, '2018'));
+          return f(
+            createElement('h1', null, 'App'),
+            createElement(Articles),
+            createElement('footer', null, '2018'),
+          );
         }
       }
 
@@ -952,21 +1379,23 @@ describe('CreateElement (non-JSX)', () => {
 
         componentDidMount() {
           expect(container.innerHTML).toEqual(
-            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>',
           );
 
           this.setState({ sections: [] });
 
           rerender();
 
-          expect(container.innerHTML).toEqual('<h1>App</h1><footer>2018</footer><div>1</div><div>2</div>');
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><footer>2018</footer><div>1</div><div>2</div>',
+          );
 
           this.setState({ articles: ['id2', 'id3'], sections: ['id0', 'id1'] });
 
           rerender();
 
           expect(container.innerHTML).toEqual(
-            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>',
           );
         }
 
@@ -976,25 +1405,42 @@ describe('CreateElement (non-JSX)', () => {
               createElement(Section, {
                 children: [
                   createElement('h2', null, section),
-                  this.state.articles.map((article) => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
-                ]
-              })
-            )
+                  this.state.articles.map((article) =>
+                    f(
+                      article === 'id2' &&
+                        createElement('aside', null, 'Today'),
+                      createElement('article', null, article),
+                    ),
+                  ),
+                ],
+              }),
+            ),
           );
         }
       }
 
       function Section(props) {
-        return f(createElement('section', null, props.children), createElement('div', null, 'end'));
+        return f(
+          createElement('section', null, props.children),
+          createElement('div', null, 'end'),
+        );
       }
 
       function EdgeComponent() {
-        return f(createElement('footer', null, '2018'), createElement('div', null, '1'), createElement('div', null, '2'));
+        return f(
+          createElement('footer', null, '2018'),
+          createElement('div', null, '1'),
+          createElement('div', null, '2'),
+        );
       }
 
       class App extends Component {
         render() {
-          return f(createElement('h1', null, 'App'), createElement(Articles), createElement(EdgeComponent));
+          return f(
+            createElement('h1', null, 'App'),
+            createElement(Articles),
+            createElement(EdgeComponent),
+          );
         }
       }
 
@@ -1014,21 +1460,23 @@ describe('CreateElement (non-JSX)', () => {
 
         componentDidMount() {
           expect(container.innerHTML).toEqual(
-            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>',
           );
 
           this.setState({ articles: [], sections: ['id0'] });
 
           rerender();
 
-          expect(container.innerHTML).toEqual('<h1>App</h1><section><h2>id0</h2></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>');
+          expect(container.innerHTML).toEqual(
+            '<h1>App</h1><section><h2>id0</h2></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>',
+          );
 
           this.setState({ articles: ['id2', 'id3'], sections: ['id0', 'id1'] });
 
           rerender();
 
           expect(container.innerHTML).toEqual(
-            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>'
+            '<h1>App</h1><section><h2>id0</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><section><h2>id1</h2><aside>Today</aside><article>id2</article><article>id3</article></section><div>end</div><footer>2018</footer><div>1</div><div>2</div>',
           );
         }
 
@@ -1038,25 +1486,42 @@ describe('CreateElement (non-JSX)', () => {
               createElement(Section, {
                 children: [
                   createElement('h2', null, section),
-                  this.state.articles.map((article) => f(article === 'id2' && createElement('aside', null, 'Today'), createElement('article', null, article)))
-                ]
-              })
-            )
+                  this.state.articles.map((article) =>
+                    f(
+                      article === 'id2' &&
+                        createElement('aside', null, 'Today'),
+                      createElement('article', null, article),
+                    ),
+                  ),
+                ],
+              }),
+            ),
           );
         }
       }
 
       function Section(props) {
-        return f(createElement('section', null, props.children), createElement('div', null, 'end'));
+        return f(
+          createElement('section', null, props.children),
+          createElement('div', null, 'end'),
+        );
       }
 
       function EdgeComponent() {
-        return f(createElement('footer', null, '2018'), createElement('div', null, '1'), createElement('div', null, '2'));
+        return f(
+          createElement('footer', null, '2018'),
+          createElement('div', null, '1'),
+          createElement('div', null, '2'),
+        );
       }
 
       class App extends Component {
         render() {
-          return f(createElement('h1', null, 'App'), createElement(Articles), createElement(EdgeComponent));
+          return f(
+            createElement('h1', null, 'App'),
+            createElement(Articles),
+            createElement(EdgeComponent),
+          );
         }
       }
 

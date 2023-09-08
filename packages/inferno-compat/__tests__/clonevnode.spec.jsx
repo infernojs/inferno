@@ -12,10 +12,10 @@ describe('directClone inferno-compat', () => {
       {
         offset: 0,
         stopColor: 'white',
-        stopOpacity: 0.5
+        stopOpacity: 0.5,
       },
       null,
-      null
+      null,
     );
 
     const cloned = directClone(vNode);
@@ -23,6 +23,6 @@ describe('directClone inferno-compat', () => {
 
     expect(cloned2.props['stop-color']).toBe('white');
     expect(cloned2.props['stop-opacity']).toBe(0.5);
-    expect(cloned2.props['offset']).toBe(0);
+    expect(cloned2.props.offset).toBe(0);
   });
 });

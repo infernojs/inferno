@@ -35,6 +35,7 @@ describe('Hydrate - Forward Ref', () => {
       componentDidMount() {
         expect(this.btn.current).toBe(container.querySelector('button'));
       }
+
       render() {
         return <FancyButton ref={this.btn}>Click me!</FancyButton>;
       }
@@ -44,7 +45,9 @@ describe('Hydrate - Forward Ref', () => {
 
     hydrate(<Hello />, container);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
   });
 
   it('Should be possible to forward callback ref', () => {
@@ -76,7 +79,9 @@ describe('Hydrate - Forward Ref', () => {
 
     hydrate(<Hello />, container);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
 
     render(null, container);
 
@@ -106,10 +111,12 @@ describe('Hydrate - Forward Ref', () => {
       >
         Click me!
       </FancyButton>,
-      container
+      container,
     );
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me!</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
     expect(firstVal).not.toBe(null);
 
     let secondVal = null;
@@ -122,12 +129,14 @@ describe('Hydrate - Forward Ref', () => {
       >
         Click me! 222
       </FancyButton>,
-      container
+      container,
     );
 
     expect(firstVal).toBe(null);
     expect(secondVal).not.toBe(null);
 
-    expect(container.innerHTML).toBe('<button class="FancyButton">Click me! 222</button>');
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me! 222</button>',
+    );
   });
 });

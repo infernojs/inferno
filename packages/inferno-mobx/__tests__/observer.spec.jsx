@@ -1,14 +1,26 @@
 import { Component, render } from 'inferno';
-import { extendObservable, getObserverTree, observable, runInAction } from 'mobx';
-import { inject, observer, Observer, onError, trackComponents, useStaticRendering } from 'inferno-mobx';
+import {
+  extendObservable,
+  getObserverTree,
+  observable,
+  runInAction,
+} from 'mobx';
+import {
+  inject,
+  observer,
+  Observer,
+  onError,
+  trackComponents,
+  useStaticRendering,
+} from 'inferno-mobx';
 
 const store = observable({
   todos: [
     {
       title: 'a',
-      completed: false
-    }
-  ]
+      completed: false,
+    },
+  ],
 });
 
 let todoItemRenderings = 0;
@@ -24,6 +36,7 @@ const TodoList = observer(
     componentWillReact() {
       todoListWillReactCount++;
     }
+
     render() {
       todoListRenderings++;
       const todos = store.todos;
@@ -36,7 +49,7 @@ const TodoList = observer(
         </div>
       );
     }
-  }
+  },
 );
 
 const App = () => <TodoList />;
@@ -81,7 +94,7 @@ describe('Mobx Observer', () => {
 
     store.todos.push({
       title: 'b',
-      completed: true
+      completed: true,
     });
 
     expect(container.querySelectorAll('li').length).toBe(2); //, 'list should two items in the list');
@@ -93,11 +106,13 @@ describe('Mobx Observer', () => {
     }
     expect(expectedOutput).toEqual(['|aa', '|b']);
 
-    expect(todoListRenderings).toBe(2); //'should have rendered list twice');
+    expect(todoListRenderings).toBe(2); // 'should have rendered list twice');
     expect(todoListWillReactCount).toBe(1); //, 'should have reacted')
     expect(todoItemRenderings).toBe(3); //, 'item2 should have rendered as well');
     expect(getObserverTree(store.todos[1], 'title').observers.length).toBe(1); //, 'title observers should have increased');
-    expect(getObserverTree(store.todos[1], 'completed').observers).not.toBeDefined(); //, 'completed observers should not have increased');
+    expect(
+      getObserverTree(store.todos[1], 'completed').observers,
+    ).not.toBeDefined(); //, 'completed observers should not have increased');
 
     const oldTodo = store.todos.pop();
 
@@ -117,7 +132,7 @@ describe('Mobx Observer', () => {
         yCalcCount++;
         return this.x * 2;
       },
-      z: 'hi'
+      z: 'hi',
     });
 
     const TestComponent = observer(function testComponent() {
@@ -156,6 +171,7 @@ describe('Mobx Observer', () => {
         // We cannot use function.prototype.name here like in react-redux tests because it is not supported in Edge/IE
         expect(this.render).not.toBe(origRenderMethod);
       }
+
       render() {
         return null;
       }
@@ -173,7 +189,7 @@ describe('Mobx Observer', () => {
 
     let renderCount = 0;
     const data = observable({
-      z: 'hi'
+      z: 'hi',
     });
 
     const TestComponent = observer(function testComponent() {
@@ -204,12 +220,12 @@ describe('Mobx Observer', () => {
       selected: 'coffee',
       items: [
         {
-          name: 'coffee'
+          name: 'coffee',
         },
         {
-          name: 'tea'
-        }
-      ]
+          name: 'tea',
+        },
+      ],
     });
 
     /** Row Class */
@@ -268,8 +284,8 @@ describe('Mobx Observer', () => {
               </div>
             );
           }
-        }
-      )
+        },
+      ),
     );
 
     expect(msg.length).toBe(1);
@@ -288,8 +304,8 @@ describe('Mobx Observer', () => {
           render() {
             return null;
           }
-        }
-      )
+        },
+      ),
     );
 
     // N.B, the injected component will be observer since mobx-react 4.0!
@@ -299,8 +315,8 @@ describe('Mobx Observer', () => {
           render() {
             return null;
           }
-        }
-      )
+        },
+      ),
     );
 
     expect(msg.length).toBe(0);
@@ -315,9 +331,10 @@ describe('Mobx Observer', () => {
           extendObservable(this, {
             get computedProp() {
               return this.props.x;
-            }
+            },
           });
         }
+
         render() {
           return (
             <span>
@@ -326,7 +343,7 @@ describe('Mobx Observer', () => {
             </span>
           );
         }
-      }
+      },
     );
 
     class Parent extends Component {
@@ -334,9 +351,14 @@ describe('Mobx Observer', () => {
         super(props);
         this.state = { v: 1 };
       }
+
       render() {
         return (
-          <div onClick={() => this.setState({ v: 2 })}>
+          <div
+            onClick={() => {
+              this.setState({ v: 2 });
+            }}
+          >
             <Comp x={this.state.v} />
           </div>
         );
@@ -356,6 +378,7 @@ describe('Mobx Observer', () => {
       onClick() {
         this.setState({});
       }
+
       render() {
         renderCount++;
         return <div onClick={this.onClick.bind(this)} id="clickableDiv" />;
@@ -364,11 +387,11 @@ describe('Mobx Observer', () => {
 
     render(<Com />, container);
 
-    expect(renderCount).toBe(1); //'renderCount === 1');
+    expect(renderCount).toBe(1); // 'renderCount === 1');
     container.querySelector('#clickableDiv').click();
     expect(renderCount).toBe(2); // 'renderCount === 2');
     container.querySelector('#clickableDiv').click();
-    expect(renderCount).toBe(3); //'renderCount === 3');
+    expect(renderCount).toBe(3); // 'renderCount === 3');
     done();
   });
 
@@ -436,8 +459,8 @@ describe('Mobx Observer', () => {
         render: () => undefined,
         getSnapshotBeforeUpdate: () => {
           return {};
-        }
-      })
+        },
+      }),
     ).toThrow();
   });
 

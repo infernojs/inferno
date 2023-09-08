@@ -9,13 +9,13 @@
 
 import React from 'inferno-compat';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
-if (typeof global !== 'undefined' && global.usingJSDOM) {
+if (global?.usingJSDOM) {
   describe('ReactDOMComponent', function () {
     describe('updateDOM', function () {
       it('should handle className', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(<div style={{}} />, container);
 
         ReactDOM.render(<div className={'foo'} />, container);
@@ -27,19 +27,24 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should gracefully handle various style value types', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(<div style={{}} />, container);
-        var stubStyle = container.firstChild.style;
+        const stubStyle = container.firstChild.style;
 
         // set initial style
-        var setup = { display: 'block', left: '1px', top: '2px', 'font-family': 'Arial' };
+        const setup = {
+          display: 'block',
+          left: '1px',
+          top: '2px',
+          'font-family': 'Arial',
+        };
         ReactDOM.render(<div style={setup} />, container);
         expect(stubStyle.display).toEqual('block');
         expect(stubStyle.left).toEqual('1px');
         expect(stubStyle.fontFamily).toEqual('Arial');
 
         // reset the style to their default state
-        var reset = { display: '', left: null, top: null, fontFamily: null };
+        const reset = { display: '', left: null, top: null, fontFamily: null };
         ReactDOM.render(<div style={reset} />, container);
         expect(stubStyle.display).toEqual('');
         expect(stubStyle.left).toEqual('');
@@ -48,11 +53,11 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should update styles if initially null', function () {
-        var styles = null;
-        var container = document.createElement('div');
+        let styles = null;
+        const container = document.createElement('div');
         ReactDOM.render(<div style={styles} />, container);
 
-        var stubStyle = container.firstChild.style;
+        const stubStyle = container.firstChild.style;
 
         styles = { display: 'block' };
 
@@ -61,12 +66,12 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should update styles if updated to null multiple times', function () {
-        var styles = null;
-        var container = document.createElement('div');
+        let styles = null;
+        const container = document.createElement('div');
         ReactDOM.render(<div style={styles} />, container);
 
         styles = { display: 'block' };
-        var stubStyle = container.firstChild.style;
+        const stubStyle = container.firstChild.style;
 
         ReactDOM.render(<div style={styles} />, container);
         expect(stubStyle.display).toEqual('block');
@@ -82,7 +87,7 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should remove attributes', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(<img height="17" />, container);
 
         expect(container.firstChild.hasAttribute('height')).toBe(true);
@@ -91,7 +96,7 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should remove properties', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(<div className="monkey" />, container);
 
         expect(container.firstChild.className).toEqual('monkey');
@@ -100,11 +105,11 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should clear a single style prop when changing `style`', function () {
-        var styles = { display: 'none', color: 'red' };
-        var container = document.createElement('div');
+        let styles = { display: 'none', color: 'red' };
+        const container = document.createElement('div');
         ReactDOM.render(<div style={styles} />, container);
 
-        var stubStyle = container.firstChild.style;
+        const stubStyle = container.firstChild.style;
 
         styles = { color: 'green' };
         ReactDOM.render(<div style={styles} />, container);
@@ -113,23 +118,23 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should update arbitrary attributes for tags containing dashes', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
 
-        var beforeUpdate = React.createElement('x-foo-component', {}, null);
+        const beforeUpdate = React.createElement('x-foo-component', {}, null);
         ReactDOM.render(beforeUpdate, container);
 
-        var afterUpdate = <x-foo-component myattr="myval" />;
+        const afterUpdate = <x-foo-component myattr="myval" />;
         ReactDOM.render(afterUpdate, container);
 
         expect(container.childNodes[0].getAttribute('myattr')).toBe('myval');
       });
 
       it('should clear all the styles when removing `style`', function () {
-        var styles = { display: 'none', color: 'red' };
-        var container = document.createElement('div');
+        const styles = { display: 'none', color: 'red' };
+        const container = document.createElement('div');
         ReactDOM.render(<div style={styles} />, container);
 
-        var stubStyle = container.firstChild.style;
+        const stubStyle = container.firstChild.style;
 
         ReactDOM.render(<div />, container);
         expect(stubStyle.display).toEqual('');
@@ -137,19 +142,22 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should update styles when `style` changes from null to object', function () {
-        var container = document.createElement('div');
-        var styles = { color: 'red' };
+        const container = document.createElement('div');
+        const styles = { color: 'red' };
         ReactDOM.render(<div style={styles} />, container);
         ReactDOM.render(<div />, container);
         ReactDOM.render(<div style={styles} />, container);
 
-        var stubStyle = container.firstChild.style;
+        const stubStyle = container.firstChild.style;
         expect(stubStyle.color).toEqual('red');
       });
 
       it('should empty element when removing innerHTML', function () {
-        var container = document.createElement('div');
-        ReactDOM.render(<div dangerouslySetInnerHTML={{ __html: ':)' }} />, container);
+        const container = document.createElement('div');
+        ReactDOM.render(
+          <div dangerouslySetInnerHTML={{ __html: ':)' }} />,
+          container,
+        );
 
         expect(container.firstChild.innerHTML).toEqual(':)');
         ReactDOM.render(<div />, container);
@@ -157,17 +165,23 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should transition from string content to innerHTML', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(<div>hello</div>, container);
 
         expect(container.firstChild.innerHTML).toEqual('hello');
-        ReactDOM.render(<div dangerouslySetInnerHTML={{ __html: 'goodbye' }} />, container);
+        ReactDOM.render(
+          <div dangerouslySetInnerHTML={{ __html: 'goodbye' }} />,
+          container,
+        );
         expect(container.firstChild.innerHTML).toEqual('goodbye');
       });
 
       it('should transition from innerHTML to string content', function () {
-        var container = document.createElement('div');
-        ReactDOM.render(<div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />, container);
+        const container = document.createElement('div');
+        ReactDOM.render(
+          <div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />,
+          container,
+        );
 
         expect(container.firstChild.innerHTML).toEqual('bonjour');
         ReactDOM.render(<div>adieu</div>, container);
@@ -175,12 +189,12 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
       });
 
       it('should transition from innerHTML to children in nested el', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(
           <div>
             <div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />
           </div>,
-          container
+          container,
         );
 
         expect(container.textContent).toEqual('bonjour');
@@ -190,20 +204,20 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
               <span>adieu</span>
             </div>
           </div>,
-          container
+          container,
         );
         expect(container.textContent).toEqual('adieu');
       });
 
       it('should transition from children to innerHTML in nested el', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(
           <div>
             <div>
               <span>adieu</span>
             </div>
           </div>,
-          container
+          container,
         );
 
         expect(container.textContent).toEqual('adieu');
@@ -211,13 +225,13 @@ if (typeof global !== 'undefined' && global.usingJSDOM) {
           <div>
             <div dangerouslySetInnerHTML={{ __html: 'bonjour' }} />
           </div>,
-          container
+          container,
         );
         expect(container.textContent).toEqual('bonjour');
       });
 
       it('should ignore attribute whitelist for elements with the "is: attribute', function () {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         ReactDOM.render(<button is="test" cowabunga="chevynova" />, container);
         expect(container.firstChild.hasAttribute('cowabunga')).toBe(true);
       });

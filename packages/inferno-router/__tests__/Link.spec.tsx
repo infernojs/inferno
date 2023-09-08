@@ -19,7 +19,7 @@ describe('Link (jsx)', () => {
       <MemoryRouter>
         <Link to={parsePath('/the/path?the=query#the-hash')}>link</Link>
       </MemoryRouter>,
-      node
+      node,
     );
 
     const href = node.querySelector('a').getAttribute('href');
@@ -46,7 +46,7 @@ describe('Link (jsx)', () => {
           link
         </Link>
       </MemoryRouter>,
-      testNode
+      testNode,
     );
 
     expect(testNode.textContent).toEqual('link');
@@ -70,7 +70,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
       <HashRouter>
         <Link to={to} />
       </HashRouter>,
-      node
+      node,
     );
 
     return node.querySelector('a');
@@ -93,7 +93,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
       <MemoryRouter>
         <Link to={to}>link</Link>
       </MemoryRouter>,
-      node
+      node,
     );
 
     const a = node.querySelector('a');
@@ -105,14 +105,14 @@ describe('A <Link> underneath a <HashRouter>', () => {
     const to = {
       hash: '#the-hash',
       pathname: '/the/path',
-      search: 'the=query'
+      search: 'the=query',
     };
 
     render(
       <MemoryRouter>
         <Link to={to}>link</Link>
       </MemoryRouter>,
-      node
+      node,
     );
 
     const a = node.querySelector('a');
@@ -122,7 +122,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
 
   it('accepts an object `to` prop with state', () => {
     const memoryHistoryFoo = createMemoryHistory({
-      initialEntries: ['/foo']
+      initialEntries: ['/foo'],
     });
     memoryHistoryFoo.push = jasmine.createSpy();
 
@@ -133,7 +133,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
       key: '1',
       pathname: '/the/path',
       search: 'the=query',
-      state: { test: 'ok' }
+      state: { test: 'ok' },
     };
 
     class ContextChecker extends Component {
@@ -142,7 +142,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
         context.router.history = memoryHistoryFoo;
 
         return {
-          router: context.router
+          router: context.router,
         };
       }
 
@@ -159,7 +159,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
           </Link>
         </ContextChecker>
       </MemoryRouter>,
-      node
+      node,
     );
 
     const a = node.querySelector('a');
@@ -168,6 +168,9 @@ describe('A <Link> underneath a <HashRouter>', () => {
     expect(clickHandler).toHaveBeenCalledTimes(1);
     expect(memoryHistoryFoo.push).toHaveBeenCalledTimes(1);
     const { hash, key, pathname, search, state } = to;
-    expect(memoryHistoryFoo.push).toHaveBeenCalledWith({ hash, key, pathname, search }, state);
+    expect(memoryHistoryFoo.push).toHaveBeenCalledWith(
+      { hash, key, pathname, search },
+      state,
+    );
   });
 });

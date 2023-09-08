@@ -95,11 +95,17 @@ describe('HTML Form Elements', () => {
     it('Should be possible to create input with type range', () => {
       function change() {}
 
-      render(<input min={0} max={255} value={75} onChange={change} type="range" />, container);
+      render(
+        <input min={0} max={255} value={75} onChange={change} type="range" />,
+        container,
+      );
       expect(container.firstChild.getAttribute('type')).toBe('range');
       expect(container.firstChild.value).toBe('75');
 
-      render(<input min={0} max={255} value={11} onChange={change} type="range" />, container);
+      render(
+        <input min={0} max={255} value={11} onChange={change} type="range" />,
+        container,
+      );
 
       const event = document.createEvent('Event');
       event.initEvent('input', true, true);
@@ -200,7 +206,7 @@ describe('HTML Form Elements', () => {
           <input type="radio" name="gender" value="female" /> Female
           <input type="radio" name="gender" value="other" /> Other
         </div>,
-        container
+        container,
       );
 
       expect(container.firstChild.firstChild.value).toBe('male');
@@ -224,7 +230,7 @@ describe('HTML Form Elements', () => {
           <input type="radio" name="gender" value="female" /> Female
           <input type="radio" name="gender" value="other" /> Other
         </div>,
-        container
+        container,
       );
 
       expect(container.firstChild.firstChild.value).toBe('male');
@@ -240,7 +246,7 @@ describe('HTML Form Elements', () => {
           <input type="radio" name="gender" checked value="female" /> Female
           <input type="radio" name="gender" value="other" /> Other
         </div>,
-        container
+        container,
       );
 
       expect(container.firstChild.firstChild.value).toBe('male');
@@ -258,9 +264,15 @@ describe('HTML Form Elements', () => {
         <div>
           <input onClick={spy1} type="radio" name="gender" value="male" />
           <input onClick={spy2} type="radio" name="gender" value="female" />
-          <input onClick={spy3} type="radio" id="test" name="gender" value="other" />
+          <input
+            onClick={spy3}
+            type="radio"
+            id="test"
+            name="gender"
+            value="other"
+          />
         </div>,
-        container
+        container,
       );
 
       //
@@ -285,7 +297,7 @@ describe('HTML Form Elements', () => {
           <input onClick={spy2} type="radio" name="gender" value="female" />
           <input onClick={spy3} type="radio" name="gender" value="other" />
         </div>,
-        container
+        container,
       );
 
       expect(spy1.calls.count()).toBe(0);
@@ -302,7 +314,7 @@ describe('HTML Form Elements', () => {
           <input onClick={spy2} type="radio" name="gender" value="female" />
           <input onClick={spy3} type="radio" name="gender" value="other" />
         </div>,
-        container
+        container,
       );
 
       expect(spy1.calls.count()).toBe(0);
@@ -311,11 +323,17 @@ describe('HTML Form Elements', () => {
 
       render(
         <div>
-          <input onClick={spy1} type="radio" id="test" name="gender" value="male" />
+          <input
+            onClick={spy1}
+            type="radio"
+            id="test"
+            name="gender"
+            value="male"
+          />
           <input onClick={spy2} type="radio" name="gender" value="female" />
           <input onClick={spy3} type="radio" name="gender" value="other" />
         </div>,
-        container
+        container,
       );
 
       expect(spy1.calls.count()).toBe(0);
@@ -332,11 +350,30 @@ describe('HTML Form Elements', () => {
 
       render(
         <div>
-          <input onClick={spy1} type="radio" id="test" name="gender" checked={true} value="male" />
-          <input onClick={spy2} type="radio" name="gender" checked={false} value="female" />
-          <input onClick={spy3} type="radio" name="gender" checked={false} value="other" />
+          <input
+            onClick={spy1}
+            type="radio"
+            id="test"
+            name="gender"
+            checked={true}
+            value="male"
+          />
+          <input
+            onClick={spy2}
+            type="radio"
+            name="gender"
+            checked={false}
+            value="female"
+          />
+          <input
+            onClick={spy3}
+            type="radio"
+            name="gender"
+            checked={false}
+            value="other"
+          />
         </div>,
-        container
+        container,
       );
 
       const node = container.firstChild;
@@ -351,9 +388,15 @@ describe('HTML Form Elements', () => {
         <div>
           <input type="radio" name="gender" value="male" checked={false} />
           <input type="radio" name="gender" value="female" checked={true} />
-          <input type="radio" id="test" name="gender" value="other" checked={false} />
+          <input
+            type="radio"
+            id="test"
+            name="gender"
+            value="other"
+            checked={false}
+          />
         </div>,
-        container
+        container,
       );
 
       let node = container.firstChild;
@@ -366,9 +409,15 @@ describe('HTML Form Elements', () => {
         <div>
           <input type="radio" name="gender" value="male" checked={true} />
           <input type="radio" name="gender" value="female" checked={false} />
-          <input type="radio" id="test" name="gender" value="other" checked={false} />
+          <input
+            type="radio"
+            id="test"
+            name="gender"
+            value="other"
+            checked={false}
+          />
         </div>,
-        container
+        container,
       );
 
       node = container.firstChild;
@@ -380,9 +429,15 @@ describe('HTML Form Elements', () => {
       render(
         <div>
           <input type="radio" name="gender" value="female" checked={false} />
-          <input type="radio" id="test" name="gender" value="other" checked={false} />
+          <input
+            type="radio"
+            id="test"
+            name="gender"
+            value="other"
+            checked={false}
+          />
         </div>,
-        container
+        container,
       );
 
       node = container.firstChild;
@@ -393,9 +448,15 @@ describe('HTML Form Elements', () => {
       render(
         <div>
           <input type="radio" name="gender" value="female" checked={false} />
-          <input type="radio" id="test" name="gender" value="other" checked={true} />
+          <input
+            type="radio"
+            id="test"
+            name="gender"
+            value="other"
+            checked={true}
+          />
         </div>,
-        container
+        container,
       );
 
       node = container.firstChild;
@@ -406,11 +467,17 @@ describe('HTML Form Elements', () => {
       render(
         <div>
           <input type="radio" name="gender" value="female" checked={false} />
-          <input type="radio" id="test" name="gender" value="other" checked={true} />
+          <input
+            type="radio"
+            id="test"
+            name="gender"
+            value="other"
+            checked={true}
+          />
           <input type="radio" name="gender" value="female" checked={false} />
           <input type="radio" name="gender" value="dqw" checked={false} />
         </div>,
-        container
+        container,
       );
 
       node = container.firstChild;
@@ -424,7 +491,7 @@ describe('HTML Form Elements', () => {
         <div>
           <input type="radio" name="gender" value="female" checked={false} />
         </div>,
-        container
+        container,
       );
 
       node = container.firstChild;
@@ -435,7 +502,7 @@ describe('HTML Form Elements', () => {
         <div>
           <input type="radio" name="gender" value="female" checked={true} />
         </div>,
-        container
+        container,
       );
 
       node = container.firstChild;

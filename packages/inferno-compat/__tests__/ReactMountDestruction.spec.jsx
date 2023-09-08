@@ -9,20 +9,20 @@
 
 import React from 'inferno-compat';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactMount', function () {
   it('should destroy a react root upon request', function () {
-    var mainContainerDiv = document.createElement('div');
+    const mainContainerDiv = document.createElement('div');
     document.body.appendChild(mainContainerDiv);
 
-    var instanceOne = <div className="firstReactDiv" />;
-    var firstRootDiv = document.createElement('div');
+    const instanceOne = <div className="firstReactDiv" />;
+    const firstRootDiv = document.createElement('div');
     mainContainerDiv.appendChild(firstRootDiv);
     ReactDOM.render(instanceOne, firstRootDiv);
 
-    var instanceTwo = <div className="secondReactDiv" />;
-    var secondRootDiv = document.createElement('div');
+    const instanceTwo = <div className="secondReactDiv" />;
+    const secondRootDiv = document.createElement('div');
     mainContainerDiv.appendChild(secondRootDiv);
     ReactDOM.render(instanceTwo, secondRootDiv);
 

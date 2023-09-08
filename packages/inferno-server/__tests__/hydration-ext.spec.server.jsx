@@ -36,34 +36,36 @@ class Comp2 extends Component {
   }
 }
 
-const compHtml = '<div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div>';
-const compHtml2 = '<div><div id="b1">C 1</div><div id="b2">C 2</div><div id="b3">C 3</div></div>';
+const compHtml =
+  '<div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div>';
+const compHtml2 =
+  '<div><div id="b1">C 1</div><div id="b2">C 2</div><div id="b3">C 3</div></div>';
 
 describe('SSR Hydration Extended - (JSX)', () => {
   [
     {
       html: '<div><div>Hello world</div></div>',
-      component: <Comp />
+      component: <Comp />,
     },
     {
       html: '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
-      component: <Comp />
+      component: <Comp />,
     },
     {
       html: '<div><div><div>Hello world</div></div></div>',
-      component: <Comp />
+      component: <Comp />,
     },
     {
       html: '<div><div><div>Hello world</div></div><span>Hola</span></div>',
-      component: <Comp />
+      component: <Comp />,
     },
     {
       html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div></div>',
-      component: <Comp />
+      component: <Comp />,
     },
     {
       html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div><span>Hola</span></div>',
-      component: <Comp />
+      component: <Comp />,
     },
     {
       html: '<div><div></div></div>',
@@ -73,8 +75,8 @@ describe('SSR Hydration Extended - (JSX)', () => {
             <Comp />
           </Nested>
         </InnerNested>
-      )
-    }
+      ),
+    },
   ].forEach(({ html, component }, i) => {
     it(`do test #${i + 1}`, () => {
       const container = createContainerWithHTML(html);
@@ -93,7 +95,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
           <Comp2 />
         </Nested>
       </InnerNested>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toEqual(compHtml2);
@@ -108,7 +110,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
           <InnerNested />
         </Nested>
       </div>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toEqual('<div></div>');
@@ -123,7 +125,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
           <InnerNested />
         </Nested>
       </div>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toEqual('<div></div>');
@@ -140,7 +142,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
           </InnerNested>
         </Nested>
       </div>,
-      container
+      container,
     );
 
     expect(container.innerHTML).toEqual('<div><p>Hello World!</p></div>');
@@ -161,7 +163,9 @@ describe('SSR Hydration Extended - (JSX)', () => {
   });
 
   it('hasTextChildren - Should handle empty textNodes correctly Github #1137 variation#2', () => {
-    const container = createContainerWithHTML('<div><span class="error"></span></div>');
+    const container = createContainerWithHTML(
+      '<div><span class="error"></span></div>',
+    );
 
     const vNode = (
       <div>
@@ -177,7 +181,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       <div>
         <span className="error">{'Okay!'}</span>
       </div>,
-      container
+      container,
     );
 
     expect(container.textContent).toBe('Okay!');
@@ -198,7 +202,9 @@ describe('SSR Hydration Extended - (JSX)', () => {
   });
 
   it('createTextVNode - Should handle empty textNodes correctly Github #1137 variation#4', () => {
-    const container = createContainerWithHTML('<div><span class="error"></span></div>');
+    const container = createContainerWithHTML(
+      '<div><span class="error"></span></div>',
+    );
 
     const vNode = (
       <div>
@@ -214,7 +220,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
       <div>
         <span className="error">{'Okay!'}</span>
       </div>,
-      container
+      container,
     );
 
     expect(container.textContent).toBe('Okay!');

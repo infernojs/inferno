@@ -12,13 +12,18 @@ import { createComponentVNode } from 'inferno';
 import { Wrapper } from 'inferno-test-utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('Render Select with multiple values', function () {
   let container;
 
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   beforeEach(() => {
@@ -54,8 +59,8 @@ describe('Render Select with multiple values', function () {
   }
 
   it('should mark correct option as selected', function () {
-    var instance = renderIntoDocument(<Component />);
-    var root = ReactDOM.findDOMNode(instance);
+    const instance = renderIntoDocument(<Component />);
+    const root = ReactDOM.findDOMNode(instance);
     expect(root.childNodes[0].options[0].selected).toBe(true);
     expect(root.childNodes[0].options[1].selected).toBe(false);
     expect(root.childNodes[0].options[2].selected).toBe(true);
@@ -66,7 +71,12 @@ describe('Render Select with multiple values', function () {
 describe('Render Select with single value', function () {
   let container;
   function renderIntoDocument(input) {
-    return React.render(createComponentVNode(VNodeFlags.ComponentClass, Wrapper, { children: input }), container);
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
   }
 
   beforeEach(() => {
@@ -102,8 +112,8 @@ describe('Render Select with single value', function () {
   }
 
   it('should mark correct option as selected', function () {
-    var instance = renderIntoDocument(<Component />);
-    var root = ReactDOM.findDOMNode(instance);
+    const instance = renderIntoDocument(<Component />);
+    const root = ReactDOM.findDOMNode(instance);
 
     expect(root.childNodes[0].options[0].selected).toBe(false);
     expect(root.childNodes[0].options[1].selected).toBe(true);

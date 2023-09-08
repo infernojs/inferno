@@ -11,25 +11,26 @@
 
 import React from 'inferno-compat';
 
-var ReactDOM = React;
+const ReactDOM = React;
 
 describe('ReactPureComponent', function () {
   it('should render', function () {
-    var renders = 0;
+    let renders = 0;
     class Component extends React.PureComponent {
       constructor() {
         super();
         this.state = { type: 'mushrooms' };
       }
+
       render() {
         renders++;
         return <div>{this.props.text[0]}</div>;
       }
     }
 
-    var container = document.createElement('div');
-    var text;
-    var component;
+    const container = document.createElement('div');
+    let text;
+    let component;
 
     text = ['porcini'];
     component = ReactDOM.render(<Component text={text} />, container);
@@ -58,7 +59,7 @@ describe('ReactPureComponent', function () {
   });
 
   it('should render when props or state mismatch in prop count', function () {
-    var renders = 0;
+    let renders = 0;
     class Component extends React.PureComponent {
       constructor() {
         super();
@@ -68,18 +69,22 @@ describe('ReactPureComponent', function () {
       shouldComponentUpdate(nextProps, state) {
         return super.shouldComponentUpdate(nextProps, state);
       }
+
       render() {
         renders++;
         return <div>{this.props.text[0]}</div>;
       }
     }
 
-    var container = document.createElement('div');
-    var text;
-    var component;
+    const container = document.createElement('div');
+    let text;
+    let component;
 
     text = ['porcini'];
-    component = ReactDOM.render(<Component foo={'bar'} text={text} />, container);
+    component = ReactDOM.render(
+      <Component foo={'bar'} text={text} />,
+      container,
+    );
     expect(container.textContent).toBe('porcini');
     expect(renders).toBe(1);
 
@@ -89,24 +94,25 @@ describe('ReactPureComponent', function () {
   });
 
   it('can override shouldComponentUpdate', function () {
-    var renders = 0;
+    let renders = 0;
     class Component extends React.PureComponent {
       render() {
         renders++;
         return <div />;
       }
+
       shouldComponentUpdate() {
         return true;
       }
     }
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     ReactDOM.render(<Component />, container);
     ReactDOM.render(<Component />, container);
     expect(renders).toBe(2);
   });
 
   it('extends React.Component', function () {
-    var renders = 0;
+    let renders = 0;
     class Component extends React.PureComponent {
       render() {
         expect(this instanceof React.Component).toBe(true);

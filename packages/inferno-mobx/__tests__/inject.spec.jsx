@@ -28,8 +28,8 @@ describe('inject based context', () => {
               </div>
             );
           }
-        }
-      )
+        },
+      ),
     );
     const B = () => <C />;
     const A = () => (
@@ -53,7 +53,7 @@ describe('inject based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = () => <C foo={42} />;
     class A extends Component {
@@ -73,7 +73,7 @@ describe('inject based context', () => {
   it('overriding stores is supported', (done) => {
     const C = inject(
       'foo',
-      'bar'
+      'bar',
     )(
       observer(
         class extends Component {
@@ -86,8 +86,8 @@ describe('inject based context', () => {
               </div>
             );
           }
-        }
-      )
+        },
+      ),
     );
     const B = () => <C />;
     class A extends Component {
@@ -111,7 +111,9 @@ describe('inject based context', () => {
 
     render(<A />, container);
     expect(container.querySelector('span').textContent).toBe('context:bar1337');
-    expect(container.querySelector('section').textContent).toBe('context:421337');
+    expect(container.querySelector('section').textContent).toBe(
+      'context:421337',
+    );
     done();
   });
 
@@ -127,8 +129,8 @@ describe('inject based context', () => {
               </div>
             );
           }
-        }
-      )
+        },
+      ),
     );
     const B = () => <C />;
     class A extends Component {
@@ -144,7 +146,9 @@ describe('inject based context', () => {
     try {
       render(<A />, container);
     } catch (e) {
-      expect(e.message).toBe("MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider");
+      expect(e.message).toBe(
+        "MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider",
+      );
       done();
     }
   });
@@ -161,8 +165,8 @@ describe('inject based context', () => {
               </div>
             );
           }
-        }
-      )
+        },
+      ),
     );
     const B = () => <C foo="bar" />;
     render(<B />, container);
@@ -178,8 +182,8 @@ describe('inject based context', () => {
             expect(this.props).toEqual({ a: 1, b: 2 });
             return null;
           }
-        }
-      )
+        },
+      ),
     );
     const B = () => <C a={2} b={2} />;
     render(<B />, container);
@@ -202,14 +206,14 @@ describe('inject based context', () => {
             </div>
           );
         }
-      }
+      },
     );
     const B = observer(
       class extends Component {
         render() {
           return <C />;
         }
-      }
+      },
     );
     const A = observer(
       class extends Component {
@@ -223,7 +227,7 @@ describe('inject based context', () => {
             </section>
           );
         }
-      }
+      },
     );
     render(<A />, container);
 
@@ -235,7 +239,9 @@ describe('inject based context', () => {
     expect(container.querySelector('span').textContent).toBe('42');
     expect(container.querySelector('div').textContent).toBe('context:3');
 
-    expect(msg).toBe("MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children");
+    expect(msg).toBe(
+      "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children",
+    );
     console.error = baseWarn;
     done();
   });
@@ -248,7 +254,7 @@ describe('inject based context', () => {
 
       return {
         zoom: stores.foo,
-        baz: props.baz * 2
+        baz: props.baz * 2,
       };
     })(
       observer(
@@ -262,8 +268,8 @@ describe('inject based context', () => {
               </div>
             );
           }
-        }
-      )
+        },
+      ),
     );
     class B extends Component {
       render() {
@@ -316,10 +322,10 @@ describe('inject based context', () => {
           expect(this.props.y).toBe(3);
           return null;
         }
-      }
+      },
     );
     C.defaultProps = {
-      y: 3
+      y: 3,
     };
     const B = () => <C z="test" />;
     const A = () => (

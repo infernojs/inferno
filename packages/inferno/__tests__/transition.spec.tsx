@@ -25,7 +25,7 @@ describe('transition events', () => {
     position: 'absolute' as any,
     top: '16px',
     transition: 'left 1ms',
-    width: '16px'
+    width: '16px',
   };
 
   it('should call "ontransitionend" at the end of a transition', (done) => {
@@ -40,7 +40,7 @@ describe('transition events', () => {
           done();
         }}
       />,
-      container
+      container,
     );
     // Be absolutely sure the transition has been applied through style
     forceReflow();
@@ -62,7 +62,7 @@ describe('transition events', () => {
           done();
         }}
       />,
-      container
+      container,
     );
     // Be absolutely sure the transition has been applied through style
     forceReflow();

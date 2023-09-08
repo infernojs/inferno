@@ -11,20 +11,20 @@
 
 import React from 'inferno-compat';
 
-var ReactDOM = React;
-var mocks = {
+const ReactDOM = React;
+const mocks = {
   getMockFunction: function () {
     return jasmine.createSpy();
-  }
+  },
 };
 
 describe('ReactMount', function () {
-  var ReactMount = React;
-  var WebComponents;
+  const ReactMount = React;
+  let WebComponents;
 
   try {
     if (WebComponents === undefined && typeof jest !== 'undefined') {
-      //WebComponents = require('WebComponents');
+      // WebComponents = require('WebComponents');
     }
   } catch (e) {
     // Parse error expected on engines that don't support setters
@@ -45,7 +45,7 @@ describe('ReactMount', function () {
   });
 
   it('should render different components in same root', function () {
-    var container = document.createElement('container');
+    const container = document.createElement('container');
     document.body.appendChild(container);
 
     ReactMount.render(<div />, container);
@@ -57,18 +57,20 @@ describe('ReactMount', function () {
   });
 
   it('should unmount and remount if the key changes', function () {
-    var container = document.createElement('container');
+    const container = document.createElement('container');
 
-    var mockMount = mocks.getMockFunction();
-    var mockUnmount = mocks.getMockFunction();
+    const mockMount = mocks.getMockFunction();
+    const mockUnmount = mocks.getMockFunction();
 
     class Component extends React.Component {
       componentDidMount() {
         mockMount();
       }
+
       componentWillUnmount() {
         mockUnmount();
       }
+
       render() {
         return <span>{this.props.text}</span>;
       }
@@ -96,9 +98,9 @@ describe('ReactMount', function () {
   });
 
   it('should reuse markup if rendering to the same target twice', function () {
-    var container = document.createElement('container');
-    var instance1 = ReactDOM.render(<div />, container);
-    var instance2 = ReactDOM.render(<div />, container);
+    const container = document.createElement('container');
+    const instance1 = ReactDOM.render(<div />, container);
+    const instance2 = ReactDOM.render(<div />, container);
 
     expect(instance1 === instance2).toBe(true);
   });
@@ -150,8 +152,8 @@ describe('ReactMount', function () {
 
   if (WebComponents !== undefined) {
     it('should allow mounting/unmounting to document fragment container', function () {
-      var shadowRoot;
-      var proto = Object.create(HTMLElement.prototype, {
+      let shadowRoot;
+      const proto = Object.create(HTMLElement.prototype, {
         createdCallback: {
           value: function () {
             shadowRoot = this.createShadowRoot();
@@ -159,14 +161,14 @@ describe('ReactMount', function () {
             expect(shadowRoot.firstChild.tagName).toBe('DIV');
             ReactDOM.render(<span>Hi, from within a WC!</span>, shadowRoot);
             expect(shadowRoot.firstChild.tagName).toBe('SPAN');
-          }
-        }
+          },
+        },
       });
       proto.unmount = function () {
         ReactDOM.unmountComponentAtNode(shadowRoot);
       };
       document.registerElement('x-foo', { prototype: proto });
-      var element = document.createElement('x-foo');
+      const element = document.createElement('x-foo');
       element.unmount();
     });
   }
@@ -184,13 +186,13 @@ describe('ReactMount', function () {
       }
     }
 
-    var container = document.createElement('container');
+    const container = document.createElement('container');
 
     ReactDOM.render(
       <div>
         <Component showC={false} />
       </div>,
-      container
+      container,
     );
 
     // Right now, A and B are in the cache. When we add C, it won't get added to
@@ -199,7 +201,7 @@ describe('ReactMount', function () {
       <div>
         <Component showC={true} />
       </div>,
-      container
+      container,
     );
 
     // Remove A, B, and C. Unmounting C shouldn't cause B to get recached.
@@ -210,7 +212,7 @@ describe('ReactMount', function () {
       <div>
         <Component showC={true} />
       </div>,
-      container
+      container,
     );
 
     ReactDOM.unmountComponentAtNode(container);
@@ -233,11 +235,11 @@ describe('ReactMount', function () {
       }
     }
 
-    var container = document.createElement('container');
+    const container = document.createElement('container');
 
     ReactDOM.render(<Component step={1} />, container);
     ReactDOM.render(<Component step={2} />, container);
     ReactDOM.render(<Component step={1} />, container);
-    //ReactMount.getID(container.querySelector('a'));
+    // ReactMount.getID(container.querySelector('a'));
   });
 });
