@@ -1,4 +1,12 @@
-import type { ForwardRef, InfernoNode, Ref, Refs, VNode } from './types';
+/* eslint-disable @typescript-eslint/ban-types */
+import type {
+  ForwardRef,
+  InfernoNode,
+  ParentDOM,
+  Ref,
+  Refs,
+  VNode,
+} from './types';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   isArray,
@@ -15,7 +23,7 @@ import {
   validateVNodeElementChildren,
 } from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
-import { Component, type ComponentType } from './component';
+import { type Component, type ComponentType } from './component';
 
 const keyPrefix = '$';
 
@@ -28,7 +36,7 @@ function V(
   props,
   ref,
   type,
-) {
+): void {
   if (process.env.NODE_ENV !== 'production') {
     this.isValidated = false;
   }
@@ -88,7 +96,7 @@ export function createVNode<P>(
   return vNode;
 }
 
-function mergeDefaultHooks(flags, type, ref) {
+function mergeDefaultHooks(flags, type, ref): any {
   if (flags & VNodeFlags.ComponentClass) {
     return ref;
   }
@@ -107,7 +115,7 @@ function mergeDefaultHooks(flags, type, ref) {
   return mergeUnsetProperties(ref, defaultHooks);
 }
 
-function mergeDefaultProps(flags, type, props) {
+function mergeDefaultProps(flags, type, props): any {
   // set default props
   const defaultProps = (flags & VNodeFlags.ForwardRef ? type.render : type)
     .defaultProps;
@@ -117,13 +125,13 @@ function mergeDefaultProps(flags, type, props) {
   }
 
   if (isNullOrUndef(props)) {
-    return {...defaultProps};
+    return { ...defaultProps };
   }
 
   return mergeUnsetProperties(props, defaultProps);
 }
 
-function resolveComponentFlags(flags, type) {
+function resolveComponentFlags(flags: VNodeFlags, type): VNodeFlags {
   if (flags & VNodeFlags.ComponentKnown) {
     return flags;
   }
@@ -222,7 +230,7 @@ export function createFragment(
   return fragment;
 }
 
-export function normalizeProps(vNode) {
+export function normalizeProps(vNode: VNode): VNode {
   const props = vNode.props;
 
   if (props) {
@@ -245,7 +253,7 @@ export function normalizeProps(vNode) {
     }
     if (props.ref !== void 0) {
       if (flags & VNodeFlags.ComponentFunction) {
-        vNode.ref = {...vNode.ref, ...props.ref};
+        vNode.ref = { ...vNode.ref, ...props.ref };
       } else {
         vNode.ref = props.ref;
       }
@@ -262,14 +270,14 @@ export function normalizeProps(vNode) {
  * because when it needs to be cloned we need to clone its children too
  * But not normalize, because otherwise those possibly get KEY and re-mount
  */
-function cloneFragment(vNodeToClone) {
+function cloneFragment(vNodeToClone: VNode): VNode {
   const oldChildren = vNodeToClone.children;
   const childFlags = vNodeToClone.childFlags;
 
   return createFragment(
     childFlags === ChildFlags.HasVNodeChildren
       ? directClone(oldChildren as VNode)
-      : oldChildren.map(directClone),
+      : (oldChildren as VNode[]).map(directClone),
     childFlags,
     vNodeToClone.key,
   );
@@ -308,7 +316,7 @@ export function createVoidVNode(): VNode {
   return createTextVNode('', null);
 }
 
-export function createPortal(children, container) {
+export function createPortal(children, container: ParentDOM): VNode {
   const normalizedRoot = normalizeRoot(children);
 
   return createVNode(
@@ -319,7 +327,7 @@ export function createPortal(children, container) {
     ChildFlags.UnknownChildren,
     null,
     normalizedRoot.key,
-    container,
+    container as any, // Should there be own prop for this?
   );
 }
 
@@ -328,7 +336,7 @@ export function _normalizeVNodes(
   result: VNode[],
   index: number,
   currentKey: string,
-) {
+): void {
   for (const len = nodes.length; index < len; index++) {
     let n = nodes[index];
 
@@ -380,7 +388,7 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
       return VNodeFlags.SelectElement;
     case 'textarea':
       return VNodeFlags.TextareaElement;
-    // @ts-expect-error
+    // @ts-expect-error Fragment is special case
     case Fragment:
       return VNodeFlags.Fragment;
     default:
@@ -388,7 +396,7 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
   }
 }
 
-export function normalizeChildren(vNode: VNode, children) {
+export function normalizeChildren(vNode: VNode, children): VNode {
   let newChildren: any;
   let newChildFlags: ChildFlags = ChildFlags.HasInvalidChildren;
 

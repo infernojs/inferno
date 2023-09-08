@@ -22,13 +22,15 @@ describe('Mobx Misc', () => {
     const C = observer(
       class Foo extends Component {
         render() {
-          return <div>
-            value:
-            {x.get()}
-          </div>
+          return (
+            <div>
+              value:
+              {x.get()}
+            </div>
+          );
         }
         shouldComponentUpdate() {
-          called++
+          called++;
 
           return false;
         }
@@ -65,9 +67,11 @@ describe('Mobx Misc', () => {
     const B = observer(
       class Foo extends Component {
         render() {
-          return <span>
-            <C y={y.get()} />
-          </span>
+          return (
+            <span>
+              <C y={y.get()} />
+            </span>
+          );
         }
       }
     );
@@ -124,17 +128,19 @@ describe('Mobx Misc', () => {
     const a = observable.box(2);
     const Child = observer(
       class Foo extends Component {
-        displayName = 'Child'
+        displayName = 'Child';
         constructor(props) {
           super(props);
           a.set(3);
-          this.state = {}
+          this.state = {};
         }
         render() {
-          return <div>
-            child:
-            {a.get()} -{' '}
-          </div>
+          return (
+            <div>
+              child:
+              {a.get()} -{' '}
+            </div>
+          );
         }
       }
     );

@@ -3,7 +3,8 @@ import { isFunction, warning } from 'inferno-shared';
 declare global {
   // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
   // allowing breakpoints in animations for debugging.
-  var __INFERNO_ANIMATION_DEBUG__: Boolean;
+  // eslint-disable-next-line
+  var __INFERNO_ANIMATION_DEBUG__: boolean;
 }
 
 export interface Dimensions {
@@ -230,7 +231,7 @@ export const transitionEndName: string = (function () {
   }
 })();
 
-function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration) {
+function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration): void {
   if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
     // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
     // due to loading delay
@@ -313,7 +314,9 @@ export function registerTransitionListener(
   // WARNING: If the callback isn't called, the DOM nodes won't be removed
   if (process.env.NODE_ENV !== 'production') {
     if (window.__INFERNO_ANIMATION_DEBUG__) {
-      warning("You are in animation debugging mode and fallback timeouts aren't set. DOM nodes could be left behind.");
+      warning(
+        "You are in animation debugging mode and fallback timeouts aren't set. DOM nodes could be left behind.",
+      );
     } else {
       setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
     }

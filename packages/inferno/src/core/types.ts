@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
 import type { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import type { PropertiesHyphen } from 'csstype';

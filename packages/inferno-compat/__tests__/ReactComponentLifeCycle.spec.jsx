@@ -98,7 +98,7 @@ describe('ReactComponentLifeCycle', function () {
     class StatefulComponent extends React.Component {
       constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
       }
 
       render() {
@@ -133,7 +133,7 @@ describe('ReactComponentLifeCycle', function () {
       constructor(props) {
         super(props);
         _testJournal.push('SwitcherParent:ctr');
-        this.state = { showHasOnDOMReadyComponent: false }
+        this.state = { showHasOnDOMReadyComponent: false };
       }
       componentDidMount() {
         _testJournal.push('SwitcherParent:onDOMReady');
@@ -215,7 +215,7 @@ describe('ReactComponentLifeCycle', function () {
 
         this.state = {
           stateField: this.props.valueToUseInitially
-        }
+        };
       }
 
       componentDidMount() {
@@ -253,27 +253,27 @@ describe('ReactComponentLifeCycle', function () {
         );
       }
       componentWillMount() {
-       log.push('outer componentWillMount');
+        log.push('outer componentWillMount');
       }
       componentDidMount() {
         log.push('outer componentDidMount');
       }
       componentWillReceiveProps() {
-        log.push('outer componentWillReceiveProps')
+        log.push('outer componentWillReceiveProps');
       }
       shouldComponentUpdate() {
-        log.push('outer shouldComponentUpdate')
+        log.push('outer shouldComponentUpdate');
 
         return true;
       }
       componentWillUpdate() {
-        log.push('outer componentWillUpdate')
+        log.push('outer componentWillUpdate');
       }
       componentDidUpdate() {
-        log.push('outer componentDidUpdate')
+        log.push('outer componentDidUpdate');
       }
       componentWillUnmount() {
-        log.push('outer componentWillUnmount')
+        log.push('outer componentWillUnmount');
       }
     }
 
@@ -288,21 +288,21 @@ describe('ReactComponentLifeCycle', function () {
         log.push('inner componentDidMount');
       }
       componentWillReceiveProps() {
-        log.push('inner componentWillReceiveProps')
+        log.push('inner componentWillReceiveProps');
       }
       shouldComponentUpdate() {
-        log.push('inner shouldComponentUpdate')
+        log.push('inner shouldComponentUpdate');
 
         return true;
       }
       componentWillUpdate() {
-        log.push('inner componentWillUpdate')
+        log.push('inner componentWillUpdate');
       }
       componentDidUpdate() {
-        log.push('inner componentDidUpdate')
+        log.push('inner componentDidUpdate');
       }
       componentWillUnmount() {
-        log.push('inner componentWillUnmount')
+        log.push('inner componentWillUnmount');
       }
     }
 

@@ -14,7 +14,7 @@ var ReactDOM = React;
 describe('ReactCompositeComponent-state', function () {
   it('should batch unmounts', function () {
     var outer;
-    class Inner extends React.Component{
+    class Inner extends React.Component {
       render() {
         return <div />;
       }
@@ -29,7 +29,7 @@ describe('ReactCompositeComponent-state', function () {
       constructor(props) {
         super(props);
 
-        this.state = { showInner: true }
+        this.state = { showInner: true };
       }
 
       render() {

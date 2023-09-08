@@ -112,7 +112,7 @@ describe('ReactComponent', function () {
 
   // other
   it('should pass context to children when not owner', function () {
-    class Parent extends React.Component{
+    class Parent extends React.Component {
       render() {
         return (
           <Child>

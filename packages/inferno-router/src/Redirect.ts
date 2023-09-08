@@ -1,4 +1,4 @@
-import { Component, InfernoNode } from 'inferno';
+import { Component, type InfernoNode } from 'inferno';
 import { type Location, parsePath, type Path } from 'history';
 import { combinePath, invariant } from './utils';
 import { isString } from 'inferno-shared';

@@ -74,7 +74,7 @@ describe('ReactStatelessComponent', function () {
     class Child extends React.Component {
       static contextTypes = {
         test: React.PropTypes.string.isRequired
-      }
+      };
 
       render() {
         return <div>{this.context.test}</div>;
@@ -88,7 +88,7 @@ describe('ReactStatelessComponent', function () {
     class GrandParent extends React.Component {
       static childContextTypes = {
         test: React.PropTypes.string.isRequired
-      }
+      };
 
       getChildContext() {
         return { test: this.props.test };
@@ -127,7 +127,7 @@ describe('ReactStatelessComponent', function () {
     class Parent extends React.Component {
       static childContextTypes = {
         lang: React.PropTypes.string
-      }
+      };
       getChildContext() {
         return { lang: 'en' };
       }

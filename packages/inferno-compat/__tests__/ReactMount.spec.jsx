@@ -64,10 +64,10 @@ describe('ReactMount', function () {
 
     class Component extends React.Component {
       componentDidMount() {
-        mockMount()
+        mockMount();
       }
       componentWillUnmount() {
-        mockUnmount()
+        mockUnmount();
       }
       render() {
         return <span>{this.props.text}</span>;

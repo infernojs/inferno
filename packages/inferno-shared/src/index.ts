@@ -68,7 +68,7 @@ const KNOWN_STATICS = {
   caller: true,
   callee: true,
   arguments: true,
-  arity: true
+  arity: true,
 };
 
 export function hoistStaticProperties(

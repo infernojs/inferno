@@ -37,7 +37,7 @@ const TodoList = observer(
       );
     }
   }
-)
+);
 
 const App = () => <TodoList />;
 
@@ -286,7 +286,7 @@ describe('Mobx Observer', () => {
       observer(
         class extends Component {
           render() {
-            return null
+            return null;
           }
         }
       )
@@ -297,7 +297,7 @@ describe('Mobx Observer', () => {
       observer(
         class extends Component {
           render() {
-            return null
+            return null;
           }
         }
       )
@@ -332,7 +332,7 @@ describe('Mobx Observer', () => {
     class Parent extends Component {
       constructor(props) {
         super(props);
-        this.state = { v: 1 }
+        this.state = { v: 1 };
       }
       render() {
         return (

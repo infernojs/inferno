@@ -1,13 +1,23 @@
 import type { VNode } from './types';
-import { isArray, isInvalid, isNullOrUndef, isNumber, isStringOrNumber, throwError } from 'inferno-shared';
+import {
+  isArray,
+  isInvalid,
+  isNullOrUndef,
+  isNumber,
+  isStringOrNumber,
+  throwError,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { getComponentName } from '../DOM/utils/common';
 
-function getTagName(input) {
+function getTagName(input): string {
   let tagName;
 
   if (isArray(input)) {
-    const arrayText = input.length > 3 ? input.slice(0, 3).toString() + ',...' : input.toString();
+    const arrayText =
+      input.length > 3
+        ? input.slice(0, 3).toString() + ',...'
+        : input.toString();
 
     tagName = 'Array(' + arrayText + ')';
   } else if (isStringOrNumber(input)) {
@@ -18,7 +28,9 @@ function getTagName(input) {
     const flags = input.flags;
 
     if (flags & VNodeFlags.Element) {
-      tagName = `<${input.type}${input.className ? ' class="' + input.className + '"' : ''}>`;
+      tagName = `<${input.type}${
+        input.className ? ' class="' + input.className + '"' : ''
+      }>`;
     } else if (flags & VNodeFlags.Text) {
       tagName = `Text(${input.children})`;
     } else if (flags & VNodeFlags.Portal) {
@@ -31,21 +43,30 @@ function getTagName(input) {
   return '>> ' + tagName + '\n';
 }
 
-function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
+function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
   const foundKeys: any = {};
 
   for (let i = 0, len = vNodeTree.length; i < len; ++i) {
     const childNode = vNodeTree[i];
 
     if (isArray(childNode)) {
-      return 'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n' + getTagName(childNode);
+      return (
+        'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n' +
+        getTagName(childNode)
+      );
     }
 
     if (isInvalid(childNode)) {
       if (forceKeyed) {
-        return 'Encountered invalid node when preparing to keyed algorithm. Location: \n' + getTagName(childNode);
+        return (
+          'Encountered invalid node when preparing to keyed algorithm. Location: \n' +
+          getTagName(childNode)
+        );
       } else if (Object.keys(foundKeys).length !== 0) {
-        return 'Encountered invalid node with mixed keys. Location: \n' + getTagName(childNode);
+        return (
+          'Encountered invalid node with mixed keys. Location: \n' +
+          getTagName(childNode)
+        );
       }
       continue;
     }
@@ -60,7 +81,10 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
     const key: string | number = childNode.key as string | number;
 
     if (!isNullOrUndef(key) && !isStringOrNumber(key)) {
-      return 'Encountered child vNode where key property is not string or number. Location: \n' + getTagName(childNode);
+      return (
+        'Encountered child vNode where key property is not string or number. Location: \n' +
+        getTagName(childNode)
+      );
     }
 
     const children = childNode.children;
@@ -68,9 +92,12 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
     if (!isInvalid(children)) {
       let val;
       if (childFlags & ChildFlags.MultipleChildren) {
-        val = DEV_ValidateKeys(children, (childFlags & ChildFlags.HasKeyedChildren) !== 0);
+        val = DEV_VALIDATE_KEYS(
+          children,
+          (childFlags & ChildFlags.HasKeyedChildren) !== 0,
+        );
       } else if (childFlags === ChildFlags.HasVNodeChildren) {
-        val = DEV_ValidateKeys([children], false);
+        val = DEV_VALIDATE_KEYS([children], false);
       }
       if (val) {
         val += getTagName(childNode);
@@ -85,18 +112,28 @@ function DEV_ValidateKeys(vNodeTree, forceKeyed: boolean) {
       );
     } else if (!forceKeyed && isNullOrUndef(key)) {
       if (Object.keys(foundKeys).length !== 0) {
-        return 'Encountered children with key missing. Location: \n' + getTagName(childNode);
+        return (
+          'Encountered children with key missing. Location: \n' +
+          getTagName(childNode)
+        );
       }
       continue;
     }
     if (foundKeys[key]) {
-      return 'Encountered two children with same key: {' + key + '}. Location: \n' + getTagName(childNode);
+      return (
+        'Encountered two children with same key: {' +
+        key +
+        '}. Location: \n' +
+        getTagName(childNode)
+      );
     }
     foundKeys[key] = true;
   }
+
+  return null;
 }
 
-export function validateVNodeElementChildren(vNode) {
+export function validateVNodeElementChildren(vNode): void {
   if (process.env.NODE_ENV !== 'production') {
     if (vNode.childFlags === ChildFlags.HasInvalidChildren) {
       return;
@@ -124,7 +161,7 @@ export function validateVNodeElementChildren(vNode) {
         param: true,
         source: true,
         track: true,
-        wbr: true
+        wbr: true,
       };
       const tag = vNode.type.toLowerCase();
 
@@ -138,11 +175,18 @@ export function validateVNodeElementChildren(vNode) {
   }
 }
 
-export function validateKeys(vNode) {
+export function validateKeys(vNode): void {
   if (process.env.NODE_ENV !== 'production') {
     // Checks if there is any key missing or duplicate keys
-    if (!vNode.isValidated && vNode.children && vNode.flags & VNodeFlags.Element) {
-      const error = DEV_ValidateKeys(Array.isArray(vNode.children) ? vNode.children : [vNode.children], (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0);
+    if (
+      !vNode.isValidated &&
+      vNode.children &&
+      vNode.flags & VNodeFlags.Element
+    ) {
+      const error = DEV_VALIDATE_KEYS(
+        Array.isArray(vNode.children) ? vNode.children : [vNode.children],
+        (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0,
+      );
 
       if (error) {
         throwError(error + getTagName(vNode));
@@ -152,10 +196,12 @@ export function validateKeys(vNode) {
   }
 }
 
-export function throwIfObjectIsNotVNode(input) {
+export function throwIfObjectIsNotVNode(input): void {
   if (!isNumber(input.flags)) {
     throwError(
-      `normalization received an object that's not a valid VNode, you should stringify it first or fix createVNode flags. Object: "${JSON.stringify(input)}".`
+      `normalization received an object that's not a valid VNode, you should stringify it first or fix createVNode flags. Object: "${JSON.stringify(
+        input,
+      )}".`,
     );
   }
 }

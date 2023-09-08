@@ -151,7 +151,7 @@ describe('Lifecycle methods', () => {
     // Outer & Inner props update
     log = [];
     render(<Outer x={2} />, container);
-    // Note: we differ from react here in that we apply changes to the dom
+    // Note: we differ from React here in that we apply changes to the dom
     // as we find them while diffing. React on the other hand separates this
     // into specific phases, meaning changes to the dom are only flushed
     // once the whole diff-phase is complete. This is why

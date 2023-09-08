@@ -1,8 +1,4 @@
-import {
-  Component,
-  createComponentVNode,
-  type InfernoNode,
-} from 'inferno';
+import { Component, createComponentVNode, type InfernoNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
@@ -114,7 +110,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
   public componentWillReceiveProps(
     nextProps,
     nextContext: { router: TContextRouter },
-  ) {
+  ): void {
     if (process.env.NODE_ENV !== 'production') {
       warning(
         !(nextProps.location && !this.props.location),
@@ -138,12 +134,13 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     props: IRouteProps,
     state: RouteState,
     context: { router: TContextRouter },
-  ) {
+  ): InfernoNode {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { match, __loaderData__ } = state;
     const { children, component, render, loader } = props;
     const { history, route, staticContext } = context.router;
     const location = props.location || route.location;
-    const renderProps = {
+    const renderProps: any = {
       match,
       location,
       history,
@@ -177,11 +174,11 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     }
 
     if (render) {
-      // @ts-expect-error
       return match ? render(renderProps, this.context) : null;
     }
 
     if (typeof children === 'function') {
+      // eslint-disable-next-line @typescript-eslint/ban-types
       return (children as Function)(renderProps);
     }
 

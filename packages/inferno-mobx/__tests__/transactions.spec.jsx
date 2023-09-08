@@ -22,7 +22,7 @@ describe('Mobx Transacations', () => {
       b: observable.box(false),
       c: computed(function () {
         return foo.b.get();
-      }),
+      })
     };
     function flipStuff() {
       runInAction(() => {
@@ -41,13 +41,9 @@ describe('Mobx Transacations', () => {
         }
 
         render() {
-          return (
-            <div id="x">
-              {[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}
-            </div>
-          );
+          return <div id="x">{[foo.a.get(), foo.b.get(), foo.c.get()].join(',')}</div>;
         }
-      },
+      }
     );
 
     render(<Test />, container);

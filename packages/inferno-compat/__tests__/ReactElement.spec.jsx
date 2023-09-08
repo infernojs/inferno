@@ -16,7 +16,7 @@ var ReactDOM = React;
 
 describe('ReactElement', function () {
   class ComponentClass extends React.Component {
-    render () {
+    render() {
       return React.createElement('div');
     }
   }
@@ -145,7 +145,7 @@ describe('ReactElement', function () {
       constructor(props) {
         super(props);
 
-        this.state = { valueToReturn: 'hi' }
+        this.state = { valueToReturn: 'hi' };
       }
       static someStaticMethod() {
         return 'someReturnValue';
@@ -187,10 +187,10 @@ describe('ReactElement', function () {
     // be removed. Leaving it in classic as a safety precausion.
     class Component extends React.Component {
       render() {
-        return null
+        return null;
       }
       static get specialType() {
-        return React.PropTypes.shape({ monkey: React.PropTypes.any })
+        return React.PropTypes.shape({ monkey: React.PropTypes.any });
       }
     }
 
@@ -201,8 +201,7 @@ describe('ReactElement', function () {
   it('does not warn for NaN props', function () {
     spyOn(console, 'error');
     class Test extends React.Component {
-      render()
-      {
+      render() {
         return <div />;
       }
     }

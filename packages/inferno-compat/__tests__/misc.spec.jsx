@@ -7,7 +7,7 @@ import React, {
   hydrate,
   PropTypes,
   render,
-  unstable_renderSubtreeIntoContainer,
+  unstable_renderSubtreeIntoContainer
 } from 'inferno-compat';
 
 describe('MISC', () => {
@@ -49,7 +49,7 @@ describe('MISC', () => {
 
           event.stopPropagation();
           expect(event.isPropagationStopped()).toBe(true);
-        },
+        }
       };
       spyOn(spyObj, 'foo').and.callThrough();
 
@@ -173,18 +173,14 @@ describe('MISC', () => {
           a<span>b</span>
         </foo>
       );
-      expect(JSON.stringify(cloneElement(element).children)).toEqual(
-        JSON.stringify(element.children),
-      );
+      expect(JSON.stringify(cloneElement(element).children)).toEqual(JSON.stringify(element.children));
     });
 
     it('should support props.children', () => {
       const element = <foo children={<span>b</span>} />;
       const clone = cloneElement(element);
 
-      expect(cloneElement(clone).props.children).toEqual(
-        element.props.children,
-      );
+      expect(cloneElement(clone).props.children).toEqual(element.props.children);
     });
 
     it('children take precedence over props.children', () => {
@@ -244,11 +240,7 @@ describe('MISC', () => {
 
         renderInner() {
           const wrapper = document.createElement('div');
-          this.inner = unstable_renderSubtreeIntoContainer(
-            this,
-            <Inner />,
-            wrapper,
-          );
+          this.inner = unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper);
         }
       }
       const root = document.createElement('div');
@@ -269,14 +261,9 @@ describe('MISC', () => {
         renderInner() {
           const wrapper = document.createElement('div');
           const self = this;
-          unstable_renderSubtreeIntoContainer(
-            this,
-            <Inner />,
-            wrapper,
-            function () {
-              self.inner = this;
-            },
-          );
+          unstable_renderSubtreeIntoContainer(this, <Inner />, wrapper, function () {
+            self.inner = this;
+          });
         }
       }
       const root = document.createElement('div');

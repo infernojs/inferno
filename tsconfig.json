@@ -65,10 +65,6 @@
     "preserveConstEnums": true,
     "outDir": "build",
     "sourceMap": true,
-    "lib": [
-      "es6",
-      "dom"
-    ],
     "jsx": "preserve",
     "noUnusedLocals": true,
     "noImplicitReturns": true,

@@ -2,7 +2,7 @@ import {
   Component,
   createComponentVNode,
   type InfernoNode,
-  type Props
+  type Props,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { Action, type Location, parsePath, type Path } from 'history';

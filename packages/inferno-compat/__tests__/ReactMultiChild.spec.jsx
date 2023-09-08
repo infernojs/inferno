@@ -27,13 +27,13 @@ describe('ReactMultiChild', function () {
 
       class MockComponent extends React.Component {
         componentDidMount() {
-          mockMount()
+          mockMount();
         }
         componentDidUpdate() {
-          mockUpdate()
+          mockUpdate();
         }
         componentWillUnmount() {
-          mockUnmount()
+          mockUnmount();
         }
         render() {
           return <span />;
@@ -75,10 +75,10 @@ describe('ReactMultiChild', function () {
 
       class MockComponent extends React.Component {
         componentDidMount() {
-          mockMount()
+          mockMount();
         }
         componentWillUnmount() {
-          mockUnmount()
+          mockUnmount();
         }
         render() {
           return <span />;
@@ -117,11 +117,11 @@ describe('ReactMultiChild', function () {
 
       class MockComponent extends React.Component {
         componentDidMount() {
-          mockMount()
+          mockMount();
         }
 
         componentWillUnmount() {
-          mockUnmount()
+          mockUnmount();
         }
 
         render() {
@@ -162,10 +162,10 @@ describe('ReactMultiChild', function () {
 
       class MockComponent extends React.Component {
         componentDidMount() {
-          mockMount()
+          mockMount();
         }
         componentWillUnmount() {
-          mockUnmount()
+          mockUnmount();
         }
         render() {
           return <span />;

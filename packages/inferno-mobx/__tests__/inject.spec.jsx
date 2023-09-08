@@ -58,9 +58,11 @@ describe('inject based context', () => {
     const B = () => <C foo={42} />;
     class A extends Component {
       render() {
-        return <Provider foo="bar">
-          <B />
-        </Provider>
+        return (
+          <Provider foo="bar">
+            <B />
+          </Provider>
+        );
       }
     }
     render(<A />, container);
@@ -90,18 +92,20 @@ describe('inject based context', () => {
     const B = () => <C />;
     class A extends Component {
       render() {
-        return <Provider foo="bar" bar={1337}>
-          <div>
-            <span>
-              <B />
-            </span>
-            <section>
-              <Provider foo={42}>
+        return (
+          <Provider foo="bar" bar={1337}>
+            <div>
+              <span>
                 <B />
-              </Provider>
-            </section>
-          </div>
-        </Provider>
+              </span>
+              <section>
+                <Provider foo={42}>
+                  <B />
+                </Provider>
+              </section>
+            </div>
+          </Provider>
+        );
       }
     }
 
@@ -129,9 +133,11 @@ describe('inject based context', () => {
     const B = () => <C />;
     class A extends Component {
       render() {
-        return <Provider baz={42}>
-          <B />
-        </Provider>
+        return (
+          <Provider baz={42}>
+            <B />
+          </Provider>
+        );
       }
     }
 
@@ -201,22 +207,24 @@ describe('inject based context', () => {
     const B = observer(
       class extends Component {
         render() {
-          return <C />
+          return <C />;
         }
       }
     );
     const A = observer(
       class extends Component {
         render() {
-          return <section>
-            <span>{a.get()}</span>
-            <Provider foo={a.get()}>
-              <B />
-            </Provider>
-          </section>
+          return (
+            <section>
+              <span>{a.get()}</span>
+              <Provider foo={a.get()}>
+                <B />
+              </Provider>
+            </section>
+          );
         }
       }
-    )
+    );
     render(<A />, container);
 
     expect(container.querySelector('span').textContent).toBe('3');
@@ -259,7 +267,7 @@ describe('inject based context', () => {
     );
     class B extends Component {
       render() {
-        return <C baz={42} />
+        return <C baz={42} />;
       }
     }
 
@@ -303,7 +311,7 @@ describe('inject based context', () => {
 
     const C = inject('foo')(
       class extends Component {
-        static displayName = 'C'
+        static displayName = 'C';
         render() {
           expect(this.props.y).toBe(3);
           return null;

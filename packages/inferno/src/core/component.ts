@@ -12,12 +12,7 @@ import {
 
 const COMPONENTS_QUEUE: Array<Component<any, any>> = [];
 
-const nextTick =
-  typeof Promise !== 'undefined'
-    ? Promise.resolve().then.bind(Promise.resolve())
-    : function (a) {
-      window.setTimeout(a, 0);
-    };
+const nextTick = Promise.resolve().then.bind(Promise.resolve());
 let microTaskPending = false;
 
 function queueStateChanges<P, S>(
@@ -88,7 +83,7 @@ function callSetStateCallbacks(component): void {
 }
 
 export function rerender(): void {
-  let component;
+  let component: Component<any, any> | undefined;
   microTaskPending = false;
 
   while ((component = COMPONENTS_QUEUE.shift())) {
@@ -254,7 +249,7 @@ export abstract class Component<P = {}, S = Record<string, unknown>>
 
   /* eslint-disable */
   // @ts-ignore
-  public render(props: Readonly<{ children?: InfernoNode } & P>, state: Readonly<S>, context: any,): InfernoNode {
+  public render(props: Readonly<{ children?: InfernoNode } & P>, state: Readonly<S>, context: any): InfernoNode {
     return null;
   }
   /* eslint-enable */
