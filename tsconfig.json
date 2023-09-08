@@ -59,6 +59,7 @@
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "target": "es2022",
+    "lib": ["DOM", "ES2022"],
     "module": "esnext",
     "allowJs": false,
     "moduleResolution": "node",

@@ -243,8 +243,16 @@ describe('Lifecycle methods', () => {
       }
 
       class Foo extends Component<{ foo: string }, FooState> {
-        // @ts-expect-error automatic init detection not working with getDerivedStateFromProps
         public state: FooState;
+
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            bar: '',
+            foo: ''
+          }
+        }
 
         public static getDerivedStateFromProps(nextProps) {
           return {

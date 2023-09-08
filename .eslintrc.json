@@ -1,5 +1,11 @@
 {
   "ignorePatterns": [
+    "browser/**",
+    "demo/**",
+    "docs/**",
+    "documentation/**",
+    "fixtures/**",
+    "scripts/**",
     "packages/*/dist",
     "packages/*/node_modules",
     "packages/*/index.js",
