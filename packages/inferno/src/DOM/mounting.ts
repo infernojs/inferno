@@ -353,19 +353,24 @@ function createClassMountCallback(instance) {
   };
 }
 
-function addAppearAnimationHook(
+function addAppearAnimationHookClass(
   animations: AnimationQueues,
-  instanceOrRef,
+  instance,
   dom: Element,
-  flags: VNodeFlags,
+): void {
+  animations.componentDidAppear.push(() => {
+    instance.componentDidAppear(dom);
+  });
+}
+
+function addAppearAnimationHookFunctional(
+  animations: AnimationQueues,
+  ref,
+  dom: Element,
   props,
 ): void {
   animations.componentDidAppear.push(() => {
-    if (flags & VNodeFlags.ComponentClass) {
-      instanceOrRef.componentDidAppear(dom);
-    } else if (flags & VNodeFlags.ComponentFunction) {
-      instanceOrRef.onComponentDidAppear(dom, props);
-    }
+    ref.onComponentDidAppear(dom, props);
   });
 }
 
@@ -397,13 +402,7 @@ export function mountClassComponentCallbacks(
     lifecycle.push(createClassMountCallback(instance));
   }
   if (isFunction(instance.componentDidAppear)) {
-    addAppearAnimationHook(
-      animations,
-      instance,
-      instance.$LI.dom,
-      VNodeFlags.ComponentClass,
-      undefined,
-    );
+    addAppearAnimationHookClass(animations, instance, instance.$LI.dom);
   }
 }
 
@@ -429,11 +428,10 @@ export function mountFunctionalComponentCallbacks(
       lifecycle.push(createOnMountCallback(ref, vNode));
     }
     if (isFunction(ref.onComponentDidAppear)) {
-      addAppearAnimationHook(
+      addAppearAnimationHookFunctional(
         animations,
         ref,
         findDOMFromVNode(vNode, true) as Element,
-        VNodeFlags.ComponentFunction,
         vNode.props,
       );
     }
