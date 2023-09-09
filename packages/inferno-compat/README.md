@@ -40,11 +40,11 @@ npm install --save inferno-create-element
 
 ```
 
-If you use React/lib/ReactCSSTransitionGroup.js
+If you use React/lib/ReactCSSTransitionGroup.ts
 
 install `inferno-transition-group` package.
 
-If you use React/lib/ReactCSSTransitionGroup.js
+If you use React/lib/ReactCSSTransitionGroup.ts
 
 install `rc-css-transition-group-modern` package.
 
