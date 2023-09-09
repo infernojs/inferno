@@ -17,7 +17,11 @@ The main objective of the InfernoJS project is to provide the fastest possible *
 
 The performance is achieved through multiple optimizations, for example:
 
-- Inferno's own [JSX plugin](https://github.com/infernojs/babel-plugin-inferno) creates monomorphic `createVNode` calls, instead of `createElement`
+- Inferno's own JSX compilers creates monomorphic `createVNode` calls, instead of `createElement` calls.
+Optimizing runtime performance of the application. 
+  - [SWC plugin inferno](https://github.com/infernojs/swc-plugin-inferno) is a plugin for [SWC](https://swc.rs/). It can compile TSX and JSX
+  - [Babel plugin inferno](https://github.com/infernojs/babel-plugin-inferno) is a plugin for [BabelJs](https://babeljs.io/). It can compile JSX.
+  - [TS plugin inferno](https://github.com/infernojs/ts-plugin-inferno) is a plugin for [TSC](https://www.typescriptlang.org/). It can compile TSX.
 - Inferno's diff process uses bitwise flags to memoize the shape of objects
 - Child nodes are normalized only when needed
 - Special JSX flags can be used during compile time to optimize runtime performance at application level

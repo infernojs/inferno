@@ -1,4 +1,4 @@
-import { render } from 'inferno';
+import { render, createVNode } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { VNodeFlags } from 'inferno-vnode-flags';
 

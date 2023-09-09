@@ -17,7 +17,11 @@ The main objective of the InfernoJS project is to provide the fastest possible *
 
 The performance is achieved through multiple optimizations, for example:
 
-- Inferno's own [JSX plugin](https://github.com/infernojs/babel-plugin-inferno) creates monomorphic `createVNode` calls, instead of `createElement`
+- Inferno's own JSX compilers creates monomorphic `createVNode` calls, instead of `createElement` calls.
+  Optimizing runtime performance of the application.
+    - [SWC plugin inferno](https://github.com/infernojs/swc-plugin-inferno) is a plugin for [SWC](https://swc.rs/). It can compile TSX and JSX
+    - [Babel plugin inferno](https://github.com/infernojs/babel-plugin-inferno) is a plugin for [BabelJs](https://babeljs.io/). It can compile JSX.
+    - [TS plugin inferno](https://github.com/infernojs/ts-plugin-inferno) is a plugin for [TSC](https://www.typescriptlang.org/). It can compile TSX.
 - Inferno's diff process uses bitwise flags to memoize the shape of objects
 - Child nodes are normalized only when needed
 - Special JSX flags can be used during compile time to optimize runtime performance at application level
@@ -39,6 +43,14 @@ The performance is achieved through multiple optimizations, for example:
 - Fragments (v6)
 - createRef and forwardRef APIs (v6)
 - componentDidAppear, componentWillDisappear and componentWillMove (v8) - class and function component callbacks to ease animation work, see [inferno-animation](https://github.com/infernojs/inferno/tree/master/packages/inferno-animation) package
+
+## Runtime requirements
+Inferno v9 requires following features to be present in the executing runtime:
+
+- `Promise`
+- `Array.prototype.includes()`
+- `Array.prototype.includes()`
+- `Object.spread()`
 
 ## Browser support
 Since version 4 we have started running our test suite **without** any polyfills.
@@ -317,7 +329,7 @@ function handleClick(props, event) {
 
 function MyComponent(props) {
   return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
-}
+    }
 ```
 
 This is an example of using it with ES2015 classes:
@@ -333,8 +345,8 @@ function handleClick(instance, event) {
 class MyComponent extends Component {
   render () {
     return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-  }
-}
+      }
+      }
 ```
 
 `linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so use it where possible.
@@ -416,7 +428,7 @@ import { Component } from 'inferno';
 
 class MyComponent extends Component {
   render() {
-      return <div>My Component</div>
+    return <div>My Component</div>
   }
 }
 ```
@@ -434,24 +446,24 @@ const MyComponent = ({ name, age }) => (
 Another way of using defaultHooks.
 ```javascript
 export function Static() {
-    return <div>1</div>;
+  return <div>1</div>;
 }
 
 Static.defaultHooks = {
-    onComponentShouldUpdate() {
-        return false;
-    }
+  onComponentShouldUpdate() {
+    return false;
+  }
 };
 ```
 
 Default props
 ```jsx
 export function MyFunctionalComponent({value}) {
-    return <div>{value}</div>;
+  return <div>{value}</div>;
 }
 
 MyFunctionalComponent.defaultProps = {
-    value: 10
+  value: 10
 };
 
 ```
@@ -636,20 +648,20 @@ Javascript:
 const { render, Component, version, createPortal } from 'inferno';
 
 function Outsider(props) {
-	return <div>{`Hello ${props.name}!`}</div>;
+  return <div>{`Hello ${props.name}!`}</div>;
 }
 
 const outsideDiv = document.getElementById('outside');
 const rootDiv = document.getElementById('root');
 
 function App() {
-	return (
-  	    <div>
-    	    Main view
-            ...
-            {createPortal(<Outsider name="Inferno" />, outsideDiv)}
-        </div>
-    );
+  return (
+    <div>
+      Main view
+      ...
+      {createPortal(<Outsider name="Inferno" />, outsideDiv)}
+    </div>
+  );
 }
 
 
@@ -660,10 +672,10 @@ render(<App />, rootDiv);
 Results into:
 ```html
 <div id="root">
-    <div>Main view ...</div>
+  <div>Main view ...</div>
 </div>
 <div id="outside">
-    <div>Hello Inferno!</div>
+  <div>Hello Inferno!</div>
 </div>
 ```
 Cool, huh? Updates (props/context) will flow into "Outsider" component from the App component the same way as any other Component.
@@ -725,19 +737,19 @@ import { Fragment, render, createFragment } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 function Foobar() {
-    return (
-      <div $HasKeyedChildren>
-        {createFragment(
-            [<div>Ok</div>, <span>1</span>],
-            ChildFlags.HasNonKeyedChildren,
-            'key1'
-        )}
-        <Fragment key="key2">
-          <div>Ok</div>
-          <span>1</span>
-        </Fragment>
-      </div>
-    );
+  return (
+    <div $HasKeyedChildren>
+      {createFragment(
+        [<div>Ok</div>, <span>1</span>],
+        ChildFlags.HasNonKeyedChildren,
+        'key1'
+      )}
+      <Fragment key="key2">
+        <div>Ok</div>
+        <span>1</span>
+      </Fragment>
+    </div>
+  );
 }
 
 render(<Foobar />, container);
@@ -933,53 +945,53 @@ const infernoTsx = require('ts-plugin-inferno').default;
 
 ... webpack config ...
 
-    module: {
-        rules: [
-            {
-                test: /\.js$/, // Add "jsx" if your application uses `jsx` file extensions
-                exclude: /node_modules/,
-                use: [{
-                    loader: 'babel-loader',
-                    options: {
-                        plugins: [
-                            // Compile javascript JSX syntax using inferno's own plugin
-                            ['babel-plugin-inferno', {imports: true}]
-                        ]
-                    }
-                }]
-            },
-            {
-                test: /\.ts+(|x)$/, // Compile ts and tsx extensions
-                exclude: /node_modules/,
-                use: [{
-                    loader: 'ts-loader',
-                    options: {
-                        getCustomTransformers: () => ({
-                            // inferno custom TSX plugin
-                            after: [infernoTsx()]
-                        }),
-                        compilerOptions: {
-                            /* typescript compiler options */
-                        }
-                    }
-                }]
-            }
-        ]
-    },
-    resolve: {
-        extensions: ['.js', '.ts', '.tsx'],
-        alias: {
-            // This maps import "inferno" to es6 module entry based on workflow
-            inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')
+module: {
+  rules: [
+    {
+      test: /\.js$/, // Add "jsx" if your application uses `jsx` file extensions
+      exclude: /node_modules/,
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          plugins: [
+            // Compile javascript JSX syntax using inferno's own plugin
+            ['babel-plugin-inferno', {imports: true}]
+          ]
         }
+      }]
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV':  JSON.stringify(isProduction ? 'production' : 'development')
-            }
-        })
-    ]
+    {
+      test: /\.ts+(|x)$/, // Compile ts and tsx extensions
+      exclude: /node_modules/,
+      use: [{
+        loader: 'ts-loader',
+        options: {
+          getCustomTransformers: () => ({
+            // inferno custom TSX plugin
+            after: [infernoTsx()]
+          }),
+          compilerOptions: {
+            /* typescript compiler options */
+          }
+        }
+      }]
+    }
+  ]
+},
+resolve: {
+  extensions: ['.js', '.ts', '.tsx'],
+    alias: {
+    // This maps import "inferno" to es6 module entry based on workflow
+    inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')
+  }
+},
+plugins: [
+  new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV':  JSON.stringify(isProduction ? 'production' : 'development')
+    }
+  })
+]
 ```
 
 Example of **Rollup** configuration:
@@ -994,37 +1006,37 @@ const transformInferno = require('ts-plugin-inferno').default;
 
 ... Rollup config ...
 {
-    input: /* entry file */,
-    plugins: [
-            alias({
-                resolve: ['.js'],
-                entries: [
-                    // This maps import "inferno" to es6 module entry based on workflow
-                    {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')}
-                ]
-            }),
-            typescript({
-                include: ['*.ts+(|x)', '**/*.ts+(|x)'],
-                transformers: [
-                    () => ({
-                        after: [transformInferno()]
-                    })
-                ],
-                tsconfig: 'tsconfig.json',
-                tsconfigOverride: {
-                    /* typescript compiler options */
-                }
-            }),
-            babel({
-                babelrc: false,
-                sourceMaps: isDeploy,
-                plugins: [
-                    // Compile javascript JSX syntax using inferno's own plugin
-                    ['babel-plugin-inferno', {imports: true}]
-                ],
-                babelHelpers: 'bundled'
-            })
-    ]
+  input: /* entry file */,
+  plugins: [
+    alias({
+      resolve: ['.js'],
+      entries: [
+        // This maps import "inferno" to es6 module entry based on workflow
+        {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')}
+      ]
+    }),
+    typescript({
+      include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+      transformers: [
+        () => ({
+          after: [transformInferno()]
+        })
+      ],
+      tsconfig: 'tsconfig.json',
+      tsconfigOverride: {
+        /* typescript compiler options */
+      }
+    }),
+    babel({
+      babelrc: false,
+      sourceMaps: isDeploy,
+      plugins: [
+        // Compile javascript JSX syntax using inferno's own plugin
+        ['babel-plugin-inferno', {imports: true}]
+      ],
+      babelHelpers: 'bundled'
+    })
+  ]
 }
 ```
 

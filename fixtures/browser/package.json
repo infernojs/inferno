@@ -8,9 +8,11 @@
     "test": "karma start ./karma.sauce.conf.js --single-run",
     "local": "karma start ./karma.babel.conf.js --single-run --reporters dots",
     "test:ts": "karma start ./karma.ts.conf.js --single-run --reporters dots",
+    "test:swc": "karma start ./karma.swc.conf.js --single-run --reporters dots",
     "tsDebug": "node --inspect-brk node_modules/karma/bin/karma start ./karma.ts.conf.js --no-single-run",
     "debug": "karma start ./karma.babel.conf.js --no-single-run",
-    "debug:ts": "karma start ./karma.ts.conf.js --no-single-run"
+    "debug:ts": "karma start ./karma.ts.conf.js --no-single-run",
+    "debug:swc": "karma start ./karma.swc.conf.js --no-single-run"
   },
   "keywords": [],
   "author": "",
