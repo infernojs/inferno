@@ -21,3 +21,4 @@ packages/*/package-lock.json
 .rpt2_cache_production
 
 scripts/fakedom/*
+.swc
