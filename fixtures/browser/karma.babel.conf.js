@@ -131,7 +131,7 @@ module.exports = function (config) {
       devServer: {
         noInfo: true
       },
-      stats: 'errors-only',
+      stats: 'normal',
       performance: {
         hints: false
       }

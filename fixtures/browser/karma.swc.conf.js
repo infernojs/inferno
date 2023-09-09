@@ -1,6 +1,5 @@
 const path = require('path');
 const gzipPreprocessor = require('./gzip/gzippreprocessor');
-const transformInferno = require('ts-plugin-inferno').default;
 const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
 const useInfernoCompatPkg = process.env.InfernoCompat === '1';
 
@@ -137,7 +136,7 @@ module.exports = function (config) {
         extensions: ['.js', '.jsx', '.tsx', '.ts'],
         mainFields: ['browser', 'main']
       },
-      stats: 'errors-only',
+      stats: 'normal',
       performance: {
         hints: false
       }
