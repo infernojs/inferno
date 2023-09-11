@@ -110,15 +110,7 @@ export function patch(
       );
     }
   } else if (nextFlags & VNodeFlags.Element) {
-    patchElement(
-      lastVNode,
-      nextVNode,
-      context,
-      isSVG,
-      nextFlags,
-      lifecycle,
-      animations,
-    );
+    patchElement(lastVNode, nextVNode, context, isSVG, lifecycle, animations);
   } else if (nextFlags & VNodeFlags.ComponentClass) {
     patchClassComponent(
       lastVNode,
@@ -280,13 +272,13 @@ export function patchElement(
   nextVNode: VNode,
   context: ContextObject,
   isSVG: boolean,
-  nextFlags: VNodeFlags,
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): void {
   const dom = (nextVNode.dom = lastVNode.dom as Element);
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
+  const nextFlags = nextVNode.flags;
   let isFormElement = false;
   let hasControlledValue = false;
   let nextPropsOrEmpty;

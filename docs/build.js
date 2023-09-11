@@ -88,12 +88,12 @@ if (isProduction) {
   );
 }
 
-benchmarks.forEach(dir => {
+for (const dir of benchmarks) {
   const benchmarkPath = join(__dirname, dir);
   const appJsPath = resolve(benchmarkPath, 'app.js')
 
   // Don't build examples that don't have app.js
-  if (!existsSync(appJsPath)) return
+  if (!existsSync(appJsPath)) continue;
 
   const inputOptions = {
     input: appJsPath,
@@ -112,4 +112,4 @@ benchmarks.forEach(dir => {
       name: 'inferno'
     });
   });
-});
+}
