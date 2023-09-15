@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inferno Examples</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<div>
+  <canvas id="memChart"></canvas>
+  <canvas id="cpuChart"></canvas>
+</div>
+
+<script>
+  const memChart = document.getElementById('memChart');
+  const cpuChart = document.getElementById('cpuChart');
+
+  function createChart(stats, el, type, scales) {
+
+    const dataSets = [];
+
+    let labels = [];
+    for (let i = 0; i < stats[0].length; i++) {
+      labels.push(i)
+    }
+
+    for (let r = 0; r < stats.length; r++) {
+      const statsRow = stats[r];
+      const dataSet = {
+        label: 'base' + r,
+        data: [],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        borderWidth: 1,
+        radius: 0,
+        tension: 0.1
+      }
+
+      for (const testStat of statsRow) {
+        dataSet.data.push(testStat[type])
+      }
+
+      dataSets.push(dataSet)
+    }
+
+    const data = {
+      labels: labels,
+      datasets: dataSets
+    };
+
+    new Chart(el, {
+      type: 'line',
+      data: data,
+      options: {
+        animation: false,
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Chart.js Line Chart'
+          }
+        },
+        scales
+      },
+    });
+  }
+
+  ;(async function() {
+    const stats = await (await fetch('/scripts/fakedom/results/inferno_base_line.json')).json()
+
+    createChart(stats, memChart, 'memory')
+    createChart(stats, cpuChart, 'cpu', {
+      y: {
+        min: -0.5,
+        max: 30
+      }
+    })
+  }())
+</script>
+<body>
+
+
+
