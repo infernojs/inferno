@@ -76,32 +76,40 @@ module.exports = function (config) {
         runtimeChunk: false,
         minimize: false
       },
-      target: ['web', 'es5'],
+      target: ['web'],
       module: {
         rules: [
           {
-            test: /\.(js|jsx|tsx|ts)$/,
-            loader: path.join(__dirname, 'node_modules/babel-loader'),
-            options: {
-              babelrc: false,
-              presets: [
-                '@babel/typescript',
-                [
-                  '@babel/preset-env',
-                  {
-                    loose: true,
-                    targets: {
-                      ie: '11',
-                      safari: '8'
+            test: /\.(ts|tsx|js|jsx)$/,
+            exclude: /(node_modules)/,
+            use: {
+              // `.swcrc` can be used to configure swc
+              loader: 'swc-loader',
+              options: {
+                "jsc": {
+                  "parser": {
+                    "syntax": "typescript",
+                    "tsx": true,
+                  },
+                  "experimental": {
+                    "plugins": [
+                      ["swc-plugin-inferno", {}]
+                    ],
+                  },
+                  "target": "es2022",
+                  "loose": true,
+                  "transform": {
+                    "optimizer": {
+                      "globals": {
+                        "vars": {
+                          "__DEBUG__": "true"
+                        }
+                      }
                     }
                   }
-                ]
-              ],
-              plugins: [
-                ['babel-plugin-inferno', { imports: true }],
-                ['@babel/plugin-proposal-class-properties', { loose: true }]
-              ]
-            }
+                }
+              }
+            },
           }
         ]
       },

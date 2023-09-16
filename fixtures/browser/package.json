@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "karma start ./karma.swc.conf.js --single-run",
+    "test": "karma start ./karma.sauce.conf.js --single-run",
     "test:babel": "karma start ./karma.babel.conf.js --single-run --reporters dots",
     "test:ts": "karma start ./karma.ts.conf.js --single-run --reporters dots",
     "test:swc": "karma start ./karma.swc.conf.js --single-run --reporters dots",
@@ -36,7 +36,8 @@
     "karma-sauce-launcher": "^4.3.6",
     "karma-webpack": "5.0.0",
     "output-compile-time-webpack-plugin": "^1.0.5",
-    "saucelabs": "^7.3.1",
+    "query-string": "^6.14.1",
+    "saucelabs": "7.2.2",
     "ts-loader": "^9.4.4",
     "webpack": "^5.88.2"
   }

@@ -77,7 +77,7 @@ module.exports = function (config) {
         runtimeChunk: false,
         minimize: false
       },
-      target: ['web', 'es5'],
+      target: ['web'],
       module: {
         rules: [
           {
@@ -86,7 +86,7 @@ module.exports = function (config) {
             options: {
               compilerOptions: {
                 module: 'es6',
-                target: 'es2018',
+                target: 'es2022',
                 jsx: 'preserve',
                 allowJs: true,
                 moduleResolution: 'node'
