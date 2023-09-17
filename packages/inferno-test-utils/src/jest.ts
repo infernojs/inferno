@@ -27,7 +27,7 @@ function removeChildren(item): void {
       removeChildren(item[i]);
     }
   } else if (item?.props) {
-    if (Object.hasOwn(item.props, 'children')) {
+    if (Object.prototype.hasOwnProperty.call(item.props, 'children')) {
       delete item.props.children;
     }
 
