@@ -429,21 +429,6 @@
     });
   }
 
-  // performance.now() polyfill
-  // https://gist.github.com/paulirish/5438650
-  // prepare base perf object
-  if (typeof window.performance === "undefined") {
-    window.performance = {};
-  }
-  if (!window.performance.now) {
-    var nowOffset_1 = Date.now();
-    if (window.performance.timing && window.performance.timing.navigationStart) {
-      nowOffset_1 = window.performance.timing.navigationStart;
-    }
-    window.performance.now = function now() {
-      return Date.now() - nowOffset_1;
-    };
-  }
   var TestCase = (function () {
     function TestCase(name, from, to) {
       this.name = name;
@@ -467,7 +452,6 @@
     fullRenderTime: false,
     timelineMarks: false,
     disableChecks: false,
-    startDelay: 0,
   };
   var timing = {
     start: 0,
@@ -512,9 +496,6 @@
     }
     if (qs["disableChecks"] !== undefined) {
       config.disableChecks = true;
-    }
-    if (qs["startDelay"] !== undefined) {
-      config.startDelay = parseInt(qs["startDelay"], 10);
     }
     return config;
   }
@@ -863,12 +844,7 @@
               e.run();
             }
             if (tests) {
-              if (config.startDelay > 0) {
-                setTimeout(run, config.startDelay);
-              }
-              else {
-                run();
-              }
+              run();
             }
             else {
               onFinish({});
