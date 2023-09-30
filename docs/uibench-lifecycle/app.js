@@ -1,34 +1,90 @@
-import { version, Component, render } from 'inferno';
+import { version, Component, render, linkEvent } from 'inferno';
 
-uibench.init('Inferno [same as react]', version);
+uibench.init('Inferno [lifecycle overhead]', version);
 
-class TableCell extends Component {
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-  }
+let counter = 0;
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.text !== nextProps.text;
-  }
+function onComponentWillMountCounter() {
+  counter++;
+}
 
-  onClick(e) {
-    console.log('Clicked' + this.props.text);
-    e.stopPropagation();
-  }
+function onComponentDidMountCounter() {
+  counter++;
+}
 
-  render() {
-    return (
-      <td className="TableCell" onClick={this.onClick}>
-        {this.props.text}
-      </td>
-    );
-  }
+function onComponentShouldUpdateCounter() {
+  counter++;
+  return true;
+}
+
+function onComponentWillUpdateCounter() {
+  counter++;
+}
+
+function onComponentDidUpdateCounter() {
+  counter++;
+}
+
+function onComponentWillUnmountCounter() {
+  counter++;
+}
+
+function onComponentDidAppearCounter() {
+  counter++;
+}
+
+function onComponentWillDisappearCounter(dom, props, callback) {
+  counter++;
+  callback();
+}
+
+function onClick(text, e) {
+  console.log('Clicked', text);
+  e.stopPropagation();
+}
+
+function TableCell({ children }) {
+  return (
+    <td $HasTextChildren onClick={linkEvent(children, onClick)} className="TableCell">
+      {children}
+    </td>
+  );
 }
 
 class TableRow extends Component {
+  componentDidMount() {
+    counter++;
+  }
+
+  componentWillMount() {
+    counter++;
+  }
+
+  componentWillReceiveProps() {
+    counter++;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
+    counter++;
+
     return this.props.data !== nextProps.data;
+  }
+
+  componentDidUpdate() {
+    counter++;
+  }
+
+  componentWillUnmount() {
+    counter++;
+  }
+
+  componentDidAppear() {
+    counter++;
+  }
+
+  componentWillDisappear(dom, callback) {
+    counter++;
+    callback()
   }
 
   render() {
@@ -39,11 +95,38 @@ class TableRow extends Component {
 
     const cells = data.props;
 
-    const children = [<TableCell key={-1} text={'#' + data.id}></TableCell>];
+    const children = [
+      <TableCell
+        onComponentWillMount={onComponentWillMountCounter}
+        onComponentDidMount={onComponentDidMountCounter}
+        onComponentShouldUpdate={onComponentShouldUpdateCounter}
+        onComponentWillUpdate={onComponentWillUpdateCounter}
+        onComponentDidUpdate={onComponentDidUpdateCounter}
+        onComponentWillUnmount={onComponentWillUnmountCounter}
+        onComponentDidAppear={onComponentDidAppearCounter}
+        onComponentWillDisappear={onComponentWillDisappearCounter}
+        key={-1}
+      >
+        {'#' + data.id}
+      </TableCell>
+    ];
     for (let i = 0; i < cells.length; i++) {
       // Key is used because React prints warnings that there should be a key, libraries that can detect that children
       // shape isn't changing should render cells without keys.
-      children.push(<TableCell key={i} text={cells[i]}></TableCell>);
+      children.push(
+        <TableCell
+          onComponentWillMount={onComponentWillMountCounter}
+          onComponentDidMount={onComponentDidMountCounter}
+          onComponentShouldUpdate={onComponentShouldUpdateCounter}
+          onComponentWillUpdate={onComponentWillUpdateCounter}
+          onComponentDidUpdate={onComponentDidUpdateCounter}
+          onComponentWillUnmount={onComponentWillUnmountCounter}
+          onComponentDidAppear={onComponentDidAppearCounter}
+          onComponentWillDisappear={onComponentWillDisappearCounter}
+          key={i}
+        >
+          {cells[i]}
+        </TableCell>);
     }
 
     // First table cell is inserted this way to prevent react from printing warning that it doesn't have key property
@@ -56,8 +139,39 @@ class TableRow extends Component {
 }
 
 class Table extends Component {
+  componentDidMount() {
+    counter++;
+  }
+
+  componentWillMount() {
+    counter++;
+  }
+
+  componentWillReceiveProps() {
+    counter++;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
+    counter++;
+
     return this.props.data !== nextProps.data;
+  }
+
+  componentDidUpdate() {
+    counter++;
+  }
+
+  componentWillUnmount() {
+    counter++;
+  }
+
+  componentDidAppear() {
+    counter++;
+  }
+
+  componentWillDisappear(dom, callback) {
+    counter++;
+    callback()
   }
 
   render() {
@@ -77,26 +191,48 @@ class Table extends Component {
   }
 }
 
-class AnimBox extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data;
-  }
+function AnimBox({ data }) {
+  var time = data.time % 10;
+  var style = 'border-radius:' + time + 'px;' + 'background:rgba(0,0,0,' + (0.5 + time / 10) + ')';
 
-  render() {
-    const { data } = this.props;
-    const time = data.time;
-    const style = {
-      'border-radius': (time % 10).toString() + 'px',
-      background: 'rgba(0,0,0,' + (0.5 + (time % 10) / 10).toString() + ')'
-    };
-
-    return <div className="AnimBox" data-id={data.id} style={style} />;
-  }
+  return <div data-id={data.id} style={style} className="AnimBox" />;
 }
 
+
 class Anim extends Component {
+  componentDidMount() {
+    counter++;
+  }
+
+  componentWillMount() {
+    counter++;
+  }
+
+  componentWillReceiveProps() {
+    counter++;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
+    counter++;
+
     return this.props.data !== nextProps.data;
+  }
+
+  componentDidUpdate() {
+    counter++;
+  }
+
+  componentWillUnmount() {
+    counter++;
+  }
+
+  componentDidAppear() {
+    counter++;
+  }
+
+  componentWillDisappear(dom, callback) {
+    counter++;
+    callback()
   }
 
   render() {
@@ -105,26 +241,64 @@ class Anim extends Component {
     const children = [];
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      children.push(<AnimBox key={item.id} data={item} />);
+      children.push(<AnimBox
+        onComponentWillMount={onComponentWillMountCounter}
+        onComponentDidMount={onComponentDidMountCounter}
+        onComponentShouldUpdate={onComponentShouldUpdateCounter}
+        onComponentWillUpdate={onComponentWillUpdateCounter}
+        onComponentDidUpdate={onComponentDidUpdateCounter}
+        onComponentWillUnmount={onComponentWillUnmountCounter}
+        onComponentDidAppear={onComponentDidAppearCounter}
+        onComponentWillDisappear={onComponentWillDisappearCounter}
+        key={item.id}
+        data={item}
+      />);
     }
 
     return <div className="Anim">{children}</div>;
   }
 }
 
-class TreeLeaf extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data;
-  }
-
-  render() {
-    return <li className="TreeLeaf">{this.props.data.id}</li>;
-  }
+function TreeLeaf({ children }) {
+  return (
+    <li $HasTextChildren className="TreeLeaf">
+      {children}
+    </li>
+  );
 }
 
 class TreeNode extends Component {
+  componentDidMount() {
+    counter++;
+  }
+
+  componentWillMount() {
+    counter++;
+  }
+
+  componentWillReceiveProps() {
+    counter++;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return this.props.data !== nextProps.data;
+  }
+
+  componentDidUpdate() {
+    counter++;
+  }
+
+  componentWillUnmount() {
+    counter++;
+  }
+
+  componentDidAppear() {
+    counter++;
+  }
+
+  componentWillDisappear(dom, callback) {
+    counter++;
+    callback()
   }
 
   render() {
@@ -133,10 +307,24 @@ class TreeNode extends Component {
 
     for (let i = 0; i < data.children.length; i++) {
       const n = data.children[i];
+      const id = n.id;
+
       if (n.container) {
-        children.push(<TreeNode key={n.id} data={n} />);
+        children.push(<TreeNode key={id} data={n} />);
       } else {
-        children.push(<TreeLeaf key={n.id} data={n} />);
+        children.push(<TreeLeaf
+          onComponentWillMount={onComponentWillMountCounter}
+          onComponentDidMount={onComponentDidMountCounter}
+          onComponentShouldUpdate={onComponentShouldUpdateCounter}
+          onComponentWillUpdate={onComponentWillUpdateCounter}
+          onComponentDidUpdate={onComponentDidUpdateCounter}
+          onComponentWillUnmount={onComponentWillUnmountCounter}
+          onComponentDidAppear={onComponentDidAppearCounter}
+          onComponentWillDisappear={onComponentWillDisappearCounter}
+          key={id}
+        >
+          {id}
+        </TreeLeaf>);
       }
     }
 
@@ -145,8 +333,40 @@ class TreeNode extends Component {
 }
 
 class Tree extends Component {
+
+  componentDidMount() {
+    counter++;
+  }
+
+  componentWillMount() {
+    counter++;
+  }
+
+  componentWillReceiveProps() {
+    counter++;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
+    counter++;
+
     return this.props.data !== nextProps.data;
+  }
+
+  componentDidUpdate() {
+    counter++;
+  }
+
+  componentWillUnmount() {
+    counter++;
+  }
+
+  componentDidAppear() {
+    counter++;
+  }
+
+  componentWillDisappear(dom, callback) {
+    counter++;
+    callback()
   }
 
   render() {
@@ -159,8 +379,39 @@ class Tree extends Component {
 }
 
 class Main extends Component {
+  componentDidMount() {
+    counter++;
+  }
+
+  componentWillMount() {
+    counter++;
+  }
+
+  componentWillReceiveProps() {
+    counter++;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
+    counter++;
+
     return this.props.data !== nextProps.data;
+  }
+
+  componentDidUpdate() {
+    counter++;
+  }
+
+  componentWillUnmount() {
+    counter++;
+  }
+
+  componentDidAppear() {
+    counter++;
+  }
+
+  componentWillDisappear(dom, callback) {
+    counter++;
+    callback()
   }
 
   render() {
@@ -188,6 +439,8 @@ document.addEventListener('DOMContentLoaded', function (e) {
       render(<Main data={state} />, container);
     },
     function (samples) {
+      // console log the counter to avoid the variable being removed by JIT
+      console.log(counter);
       render(<pre>{JSON.stringify(samples, null, ' ')}</pre>, container);
     }
   );
