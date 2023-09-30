@@ -48,7 +48,7 @@ The performance is achieved through multiple optimizations, for example:
 Inferno v9 requires following features to be present in the executing runtime:
 
 - `Promise`
-- `Array.prototype.includes()`
+- `String.prototype.includes()`
 - `Array.prototype.includes()`
 - `Object.spread()`
 
