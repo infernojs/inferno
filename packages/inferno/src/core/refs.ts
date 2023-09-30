@@ -27,11 +27,9 @@ export function forwardRef<T = any, P = Props<any>>(
     }
   }
 
-  const ref = {
+  return {
     render,
   };
-
-  return ref;
 }
 
 export function unmountRef(ref): void {

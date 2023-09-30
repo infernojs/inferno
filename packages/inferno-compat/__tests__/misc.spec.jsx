@@ -2,7 +2,6 @@ import React, {
   Children,
   cloneElement,
   Component,
-  createClass,
   createElement,
   hydrate,
   PropTypes,

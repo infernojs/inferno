@@ -30,7 +30,7 @@ async function printFileSizes() {
       `INFERNO - ${INFERNO_VERSION}`,
       'Browser' + ' (gzip)',
       'Browser prod (min)' + ' (gzip)',
-      '(es2015)' + ' (gzip)',
+      'mjs' + ' (gzip)',
       'cjs' + ' (gzip)',
       'cjs prod' + ' (gzip)'
     ],

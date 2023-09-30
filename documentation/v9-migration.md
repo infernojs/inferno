@@ -35,7 +35,8 @@ Inferno v9 requires following features to be present in the executing runtime:
 
 ## ES module bundle extension is now `.mjs`
 
-Inferno bundles have been renamed:
+`inferno.esnext.js` bundle has been removed and replaced with `inferno.mjs` bundle.
+The following bundles have been renamed:
 
 `inferno.esm.js` is now `inferno.mjs`
 
