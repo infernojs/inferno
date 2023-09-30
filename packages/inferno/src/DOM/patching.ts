@@ -643,7 +643,7 @@ function createDidUpdate(
   lastProps,
   lastState,
   snapshot,
-  lifecycle,
+  lifecycle: Array<() => void>,
 ): void {
   lifecycle.push(() => {
     instance.componentDidUpdate!(lastProps, lastState, snapshot);

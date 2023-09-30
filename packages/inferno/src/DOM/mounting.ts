@@ -325,7 +325,7 @@ export function mountFunctionalComponent(
   context: ContextObject,
   isSVG: boolean,
   nextNode: Element | null,
-  lifecycle,
+  lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): void {
   const ref = vNode.ref;
