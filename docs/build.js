@@ -13,7 +13,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const benchmarks = readdirSync(__dirname).filter(file => statSync(join(__dirname, file)).isDirectory());
-const resolvePkg = pkg => resolve(__dirname, '../packages', pkg, 'dist', 'index.esm.js');
+const resolvePkg = pkg => resolve(__dirname, '../packages', pkg, 'dist', 'index.mjs');
 
 
 console.log(resolvePkg('inferno'));

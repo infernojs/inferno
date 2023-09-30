@@ -32,3 +32,11 @@ Inferno v9 requires following features to be present in the executing runtime:
 
 `options.componentComparator` has been removed
 `options.renderComplete` has been removed, same result can be achieved by calling own function after render
+
+## ES module bundle extension is now `.mjs`
+
+Inferno bundles have been renamed:
+
+`inferno.esm.js` is now `inferno.mjs`
+
+`inferno.dev.esm.js` is now `inferno.dev.mjs`

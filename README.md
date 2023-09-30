@@ -933,9 +933,9 @@ Ensure the environment variable `process.env.NODE_ENV` is set to `production`.
 When building your application bundle, ensure `process.env.NODE_ENV` is replaced with string`"development"` or `"production"` based on the workflow.
 It is recommended to use [ts-plugin-inferno](https://github.com/infernojs/ts-plugin-inferno) for typescript TSX compilation and [babel-plugin-infeno](https://github.com/infernojs/babel-plugin-inferno) for javascript JSX compilation.
 
-When building for development, you may want to use `inferno.dev.esm.js`. That bundle file contains ES6 exports for better tree-shaking support, improved error messages and added validation to help fixing possible issues during development.
-The file is found from `package.json` - `dev:module` entry point and the file is physically located in `node_modules/inferno/dist/index.dev.esm.js`.
-Remember that it is not recommended to use that file in production due to slower performance. For production usage use `node_modules/inferno/dist/inferno.esm.js` file.
+When building for development, you may want to use `inferno.dev.mjs` for v9 or newer and `inferno.dev.esm.js` for older than v9. That bundle file contains ES6 exports for better tree-shaking support, improved error messages and added validation to help fixing possible issues during development.
+The file is found from `package.json` - `dev:module` entry point and the files are physically located in `node_modules/inferno/dist/` folder.
+Remember that it is not recommended to use that file in production due to slower performance. For production usage use `node_modules/inferno/dist/inferno.mjs` -file for v9 or newer and `node_modules/inferno/dist/inferno.esm.js` -file for older than v9.
 
 Example of **Webpack** configuration:
 
@@ -982,7 +982,7 @@ const infernoTsx = require('ts-plugin-inferno').default;
         extensions: ['.js', '.ts', '.tsx'],
         alias: {
             // This maps import "inferno" to es6 module entry based on workflow
-            inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')
+            inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.mjs' : 'index.mjs')
         }
     },
     plugins: [
@@ -1012,7 +1012,7 @@ const transformInferno = require('ts-plugin-inferno').default;
                 resolve: ['.js'],
                 entries: [
                     // This maps import "inferno" to es6 module entry based on workflow
-                    {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')}
+                    {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.mjs' : 'index.mjs')}
                 ]
             }),
             typescript({

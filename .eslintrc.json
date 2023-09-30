@@ -9,7 +9,7 @@
     "packages/*/dist",
     "packages/*/node_modules",
     "packages/*/index.js",
-    "packages/*/index.esm.js",
+    "packages/*/index.mjs",
     "packages/*/__tests__",
     "packages/inferno-compat/lib",
     "packages/inferno-compat/prop-types.js"

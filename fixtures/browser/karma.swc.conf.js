@@ -1,6 +1,6 @@
 const path = require('path');
 const gzipPreprocessor = require('./gzip/gzippreprocessor');
-const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
+const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.mjs');
 const useInfernoCompatPkg = process.env.InfernoCompat === '1';
 
 console.info('*** Starting karma tests, Inferno-compat is ' + (useInfernoCompatPkg ? 'on.' : 'off.') + ' ***');

@@ -27,14 +27,14 @@
   ],
   "files": [
     "index.js",
-    "index.esm.js",
+    "index.mjs",
     "dist/",
     "README.md",
     "package.json"
   ],
   "main": "index.js",
-  "module": "index.esm.js",
-  "dev:module": "dist/index.dev.esm.js",
+  "module": "index.mjs",
+  "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",

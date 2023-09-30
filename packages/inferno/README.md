@@ -329,7 +329,7 @@ function handleClick(props, event) {
 
 function MyComponent(props) {
   return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
-    }
+}
 ```
 
 This is an example of using it with ES2015 classes:
@@ -345,8 +345,8 @@ function handleClick(instance, event) {
 class MyComponent extends Component {
   render () {
     return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-      }
-      }
+  }
+}
 ```
 
 `linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so use it where possible.
@@ -428,7 +428,7 @@ import { Component } from 'inferno';
 
 class MyComponent extends Component {
   render() {
-    return <div>My Component</div>
+      return <div>My Component</div>
   }
 }
 ```
@@ -446,24 +446,24 @@ const MyComponent = ({ name, age }) => (
 Another way of using defaultHooks.
 ```javascript
 export function Static() {
-  return <div>1</div>;
+    return <div>1</div>;
 }
 
 Static.defaultHooks = {
-  onComponentShouldUpdate() {
-    return false;
-  }
+    onComponentShouldUpdate() {
+        return false;
+    }
 };
 ```
 
 Default props
 ```jsx
 export function MyFunctionalComponent({value}) {
-  return <div>{value}</div>;
+    return <div>{value}</div>;
 }
 
 MyFunctionalComponent.defaultProps = {
-  value: 10
+    value: 10
 };
 
 ```
@@ -648,20 +648,20 @@ Javascript:
 const { render, Component, version, createPortal } from 'inferno';
 
 function Outsider(props) {
-  return <div>{`Hello ${props.name}!`}</div>;
+	return <div>{`Hello ${props.name}!`}</div>;
 }
 
 const outsideDiv = document.getElementById('outside');
 const rootDiv = document.getElementById('root');
 
 function App() {
-  return (
-    <div>
-      Main view
-      ...
-      {createPortal(<Outsider name="Inferno" />, outsideDiv)}
-    </div>
-  );
+	return (
+  	    <div>
+    	    Main view
+            ...
+            {createPortal(<Outsider name="Inferno" />, outsideDiv)}
+        </div>
+    );
 }
 
 
@@ -672,10 +672,10 @@ render(<App />, rootDiv);
 Results into:
 ```html
 <div id="root">
-  <div>Main view ...</div>
+    <div>Main view ...</div>
 </div>
 <div id="outside">
-  <div>Hello Inferno!</div>
+    <div>Hello Inferno!</div>
 </div>
 ```
 Cool, huh? Updates (props/context) will flow into "Outsider" component from the App component the same way as any other Component.
@@ -737,19 +737,19 @@ import { Fragment, render, createFragment } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 function Foobar() {
-  return (
-    <div $HasKeyedChildren>
-      {createFragment(
-        [<div>Ok</div>, <span>1</span>],
-        ChildFlags.HasNonKeyedChildren,
-        'key1'
-      )}
-      <Fragment key="key2">
-        <div>Ok</div>
-        <span>1</span>
-      </Fragment>
-    </div>
-  );
+    return (
+      <div $HasKeyedChildren>
+        {createFragment(
+            [<div>Ok</div>, <span>1</span>],
+            ChildFlags.HasNonKeyedChildren,
+            'key1'
+        )}
+        <Fragment key="key2">
+          <div>Ok</div>
+          <span>1</span>
+        </Fragment>
+      </div>
+    );
 }
 
 render(<Foobar />, container);
@@ -933,9 +933,9 @@ Ensure the environment variable `process.env.NODE_ENV` is set to `production`.
 When building your application bundle, ensure `process.env.NODE_ENV` is replaced with string`"development"` or `"production"` based on the workflow.
 It is recommended to use [ts-plugin-inferno](https://github.com/infernojs/ts-plugin-inferno) for typescript TSX compilation and [babel-plugin-infeno](https://github.com/infernojs/babel-plugin-inferno) for javascript JSX compilation.
 
-When building for development, you may want to use `inferno.dev.esm.js`. That bundle file contains ES6 exports for better tree-shaking support, improved error messages and added validation to help fixing possible issues during development.
-The file is found from `package.json` - `dev:module` entry point and the file is physically located in `node_modules/inferno/dist/index.dev.esm.js`.
-Remember that it is not recommended to use that file in production due to slower performance. For production usage use `node_modules/inferno/dist/inferno.esm.js` file.
+When building for development, you may want to use `inferno.dev.mjs` for v9 or newer and `inferno.dev.esm.js` for older than v9. That bundle file contains ES6 exports for better tree-shaking support, improved error messages and added validation to help fixing possible issues during development.
+The file is found from `package.json` - `dev:module` entry point and the files are physically located in `node_modules/inferno/dist/` folder.
+Remember that it is not recommended to use that file in production due to slower performance. For production usage use `node_modules/inferno/dist/inferno.mjs` -file for v9 or newer and `node_modules/inferno/dist/inferno.esm.js` -file for older than v9.
 
 Example of **Webpack** configuration:
 
@@ -945,53 +945,53 @@ const infernoTsx = require('ts-plugin-inferno').default;
 
 ... webpack config ...
 
-module: {
-  rules: [
-    {
-      test: /\.js$/, // Add "jsx" if your application uses `jsx` file extensions
-      exclude: /node_modules/,
-      use: [{
-        loader: 'babel-loader',
-        options: {
-          plugins: [
-            // Compile javascript JSX syntax using inferno's own plugin
-            ['babel-plugin-inferno', {imports: true}]
-          ]
-        }
-      }]
+    module: {
+        rules: [
+            {
+                test: /\.js$/, // Add "jsx" if your application uses `jsx` file extensions
+                exclude: /node_modules/,
+                use: [{
+                    loader: 'babel-loader',
+                    options: {
+                        plugins: [
+                            // Compile javascript JSX syntax using inferno's own plugin
+                            ['babel-plugin-inferno', {imports: true}]
+                        ]
+                    }
+                }]
+            },
+            {
+                test: /\.ts+(|x)$/, // Compile ts and tsx extensions
+                exclude: /node_modules/,
+                use: [{
+                    loader: 'ts-loader',
+                    options: {
+                        getCustomTransformers: () => ({
+                            // inferno custom TSX plugin
+                            after: [infernoTsx()]
+                        }),
+                        compilerOptions: {
+                            /* typescript compiler options */
+                        }
+                    }
+                }]
+            }
+        ]
     },
-    {
-      test: /\.ts+(|x)$/, // Compile ts and tsx extensions
-      exclude: /node_modules/,
-      use: [{
-        loader: 'ts-loader',
-        options: {
-          getCustomTransformers: () => ({
-            // inferno custom TSX plugin
-            after: [infernoTsx()]
-          }),
-          compilerOptions: {
-            /* typescript compiler options */
-          }
+    resolve: {
+        extensions: ['.js', '.ts', '.tsx'],
+        alias: {
+            // This maps import "inferno" to es6 module entry based on workflow
+            inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.mjs' : 'index.mjs')
         }
-      }]
-    }
-  ]
-},
-resolve: {
-  extensions: ['.js', '.ts', '.tsx'],
-    alias: {
-    // This maps import "inferno" to es6 module entry based on workflow
-    inferno: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')
-  }
-},
-plugins: [
-  new webpack.DefinePlugin({
-    'process.env': {
-      'NODE_ENV':  JSON.stringify(isProduction ? 'production' : 'development')
-    }
-  })
-]
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV':  JSON.stringify(isProduction ? 'production' : 'development')
+            }
+        })
+    ]
 ```
 
 Example of **Rollup** configuration:
@@ -1006,37 +1006,37 @@ const transformInferno = require('ts-plugin-inferno').default;
 
 ... Rollup config ...
 {
-  input: /* entry file */,
-  plugins: [
-    alias({
-      resolve: ['.js'],
-      entries: [
-        // This maps import "inferno" to es6 module entry based on workflow
-        {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.esm.js' : 'index.esm.js')}
-      ]
-    }),
-    typescript({
-      include: ['*.ts+(|x)', '**/*.ts+(|x)'],
-      transformers: [
-        () => ({
-          after: [transformInferno()]
-        })
-      ],
-      tsconfig: 'tsconfig.json',
-      tsconfigOverride: {
-        /* typescript compiler options */
-      }
-    }),
-    babel({
-      babelrc: false,
-      sourceMaps: isDeploy,
-      plugins: [
-        // Compile javascript JSX syntax using inferno's own plugin
-        ['babel-plugin-inferno', {imports: true}]
-      ],
-      babelHelpers: 'bundled'
-    })
-  ]
+    input: /* entry file */,
+    plugins: [
+            alias({
+                resolve: ['.js'],
+                entries: [
+                    // This maps import "inferno" to es6 module entry based on workflow
+                    {find: 'inferno', replacement: path.resolve(__dirname, 'node_modules/inferno/dist', isProduction ? 'index.dev.mjs' : 'index.mjs')}
+                ]
+            }),
+            typescript({
+                include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+                transformers: [
+                    () => ({
+                        after: [transformInferno()]
+                    })
+                ],
+                tsconfig: 'tsconfig.json',
+                tsconfigOverride: {
+                    /* typescript compiler options */
+                }
+            }),
+            babel({
+                babelrc: false,
+                sourceMaps: isDeploy,
+                plugins: [
+                    // Compile javascript JSX syntax using inferno's own plugin
+                    ['babel-plugin-inferno', {imports: true}]
+                ],
+                babelHelpers: 'bundled'
+            })
+    ]
 }
 ```
 

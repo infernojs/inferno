@@ -29,8 +29,8 @@
     "package.json"
   ],
   "main": "index.js",
-  "module": "dist/index.esm.js",
-  "dev:module": "dist/index.dev.esm.js",
+  "module": "dist/index.mjs",
+  "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",

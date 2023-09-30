@@ -43,11 +43,11 @@
     "typescript": "^4.9.5"
   },
   "alias": {
-    "inferno": "inferno/dist/index.dev.esm.js",
-    "inferno-animation": "inferno-animation/dist/index.dev.esm.js",
-    "inferno-create-element": "inferno-create-element/dist/index.dev.esm.js",
-    "inferno-hydrate": "inferno-hydrate/dist/index.dev.esm.js",
-    "inferno-router": "inferno-router/dist/index.dev.esm.js",
-    "inferno-server": "inferno-server/dist/index.dev.esm.js"
+    "inferno": "inferno/dist/index.dev.mjs",
+    "inferno-animation": "inferno-animation/dist/index.dev.mjs",
+    "inferno-create-element": "inferno-create-element/dist/index.dev.mjs",
+    "inferno-hydrate": "inferno-hydrate/dist/index.dev.mjs",
+    "inferno-router": "inferno-router/dist/index.dev.mjs",
+    "inferno-server": "inferno-server/dist/index.dev.mjs"
   }
 }

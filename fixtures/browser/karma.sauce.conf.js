@@ -1,6 +1,6 @@
 const path = require('path');
 const gzipPreprocessor = require('./gzip/gzippreprocessor');
-const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.esm.js');
+const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.mjs');
 
 const customLaunchers = {
   slChrome: {

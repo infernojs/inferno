@@ -76,9 +76,9 @@ const pkgJSON = JSON.parse(pkgJSONtext);
 
   const targets = [
     //esmDev --name=index --ext=.dev.esm.js --env=development --format=es --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'es', minify: false, ext: '.dev.esm.js' }),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'es', minify: false, ext: '.dev.mjs' }),
     //esmProd --name=index --ext=.esm.js --env=production --format=es --minify=false
-    Object.assign({}, defaultOptions, { env: 'production', format: 'es', minify: false, ext: '.esm.js' }),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'es', minify: false, ext: '.mjs' }),
     //esNext --name=index --ext=.esnext.js --env=production --format=es --esnext=true --minify=false
     Object.assign({}, defaultOptions, {
       env: 'production',
