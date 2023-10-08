@@ -1,6 +1,6 @@
-import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import replacePlugin from 'rollup-plugin-replace';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import replacePlugin from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
 import { aliasPlugin } from './alias.js';
 import babel from '@rollup/plugin-babel';
