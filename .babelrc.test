@@ -1,6 +1,0 @@
-{
-  "plugins": [
-    "inferno",
-    "@babel/plugin-transform-modules-commonjs"
-  ]
-}

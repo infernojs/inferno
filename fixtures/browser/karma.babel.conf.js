@@ -83,7 +83,6 @@ module.exports = function (config) {
             test: /\.(ts|tsx|js|jsx)$/,
             exclude: /(node_modules)/,
             use: {
-              // `.swcrc` can be used to configure swc
               loader: 'swc-loader',
               options: {
                 "jsc": {
@@ -97,16 +96,7 @@ module.exports = function (config) {
                     ],
                   },
                   "target": "es2022",
-                  "loose": true,
-                  "transform": {
-                    "optimizer": {
-                      "globals": {
-                        "vars": {
-                          "__DEBUG__": "true"
-                        }
-                      }
-                    }
-                  }
+                  "loose": true
                 }
               }
             },

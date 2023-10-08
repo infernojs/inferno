@@ -1,5 +1,4 @@
 export default {
-  preset: "ts-jest",
   collectCoverageFrom: [
     "packages/*/src/**/*.ts",
     "!**/*.ts.js",
@@ -27,8 +26,23 @@ export default {
     "<rootDir>/packages/inferno/__tests__/transition.spec.tsx",
   ],
   transform: {
-    "^.+\\.jsx?$": "<rootDir>/jest.babel.transform.js",
-    "^.+\\.tsx?$": [ "ts-jest", { "babelConfig": "<rootDir>/.babelrc.test" } ],
+    "^.+\\.(t|j)sx?$": ['@swc/jest', {
+      "jsc": {
+        "parser": {
+          "syntax": "typescript",
+          "tsx": true,
+        },
+        "experimental": {
+          "plugins": [
+            ["swc-plugin-inferno", {
+              "pure": false
+            }]
+          ],
+        },
+        "target": "es2022",
+        "loose": true
+      }
+    }],
   },
   testEnvironment: "jsdom",
   testRunner: "jest-jasmine2",
