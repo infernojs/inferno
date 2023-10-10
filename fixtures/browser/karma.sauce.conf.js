@@ -37,10 +37,7 @@ const customLaunchers = {
     base: 'SauceLabs',
     browserName: 'firefox',
     platform: 'Windows 11',
-    browserVersion: 'latest',
-    'sauce:options': {
-      geckodriverVersion: '0.30.0'
-    }
+    browserVersion: 'latest'
   },
   slFirefox91: {
     base: 'SauceLabs',
