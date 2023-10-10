@@ -21,6 +21,7 @@ console.log(resolvePkg('inferno'));
 // see below for details on the options
 const plugins = [
   replace({
+    preventAssignment: true,
     'process.env.NODE_ENV': '"production"',
     sourcemap: false
   }),

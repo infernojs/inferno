@@ -31,6 +31,7 @@ export function createPlugins(version, options) {
   );
 
   const replaceValues = {
+    preventAssignment: true,
     'process.env.INFERNO_VERSION': JSON.stringify(options.version)
   };
 

@@ -1,9 +1,9 @@
 import {rollup} from "rollup";
 import { existsSync, readdirSync, statSync } from "fs";
-import commonjsPlugin from "rollup-plugin-commonjs";
-import nodeResolvePlugin from "rollup-plugin-node-resolve";
+import commonjsPlugin from "@rollup/plugin-commonjs";
+import nodeResolvePlugin from "@rollup/plugin-node-resolve";
 import { dirname, join, resolve } from "path";
-import replace from "rollup-plugin-replace";
+import replace from "@rollup/plugin-replace";
 import terser from '@rollup/plugin-terser';
 import alias from "@rollup/plugin-alias";
 import { fileURLToPath } from "url";
@@ -22,6 +22,7 @@ console.log(resolvePkg('inferno'));
 // see below for details on the options
 const plugins = [
   replace({
+    preventAssignment: true,
     'process.env.NODE_ENV': '"production"',
     sourcemap: false
   }),
