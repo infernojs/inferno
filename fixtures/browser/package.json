@@ -17,14 +17,9 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "overrides": {
-    "karma-sauce-launcher": {
-      "saucelabs": "$saucelabs"
-    }
-  },
   "dependencies": {
-    "@babel/core": "7.23.0",
-    "@babel/preset-env": "7.22.20",
+    "@babel/core": "7.23.2",
+    "@babel/preset-env": "7.23.2",
     "babel-loader": "^9.1.3",
     "build-time-reporter-webpack-plugin": "^1.4.3",
     "jasmine-core": "^5.1.1",
@@ -33,11 +28,11 @@
     "karma-detect-browsers": "^2.3.3",
     "karma-firefox-launcher": "^2.1.2",
     "karma-jasmine": "^5.1.0",
-    "karma-sauce-launcher": "^4.3.6",
+    "havunen-karma-sauce-launcher2": "^5.0.3",
     "karma-webpack": "5.0.0",
     "output-compile-time-webpack-plugin": "^1.0.5",
-    "saucelabs": "7.2.2",
+    "saucelabs": "7.4.0",
     "ts-loader": "^9.5.0",
-    "webpack": "^5.88.2"
+    "webpack": "^5.89.0"
   }
 }
