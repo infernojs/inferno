@@ -1,11 +1,11 @@
-import { startFPSMonitor, startMemMonitor, initProfiler, startProfile, endProfile } from 'perf-monitor';
+// import { startFPSMonitor, startMemMonitor, initProfiler, startProfile, endProfile } from 'perf-monitor';
 import { createVNode, render } from 'inferno';
 
 var elem = document.getElementById('app');
 
-startFPSMonitor();
-startMemMonitor();
-initProfiler('view update');
+// startFPSMonitor();
+// startMemMonitor();
+// initProfiler('view update');
 
 function renderBenchmark(dbs) {
   var length = dbs.length;
@@ -55,9 +55,9 @@ function renderBenchmark(dbs) {
 
 function loop() {
   var dbs = ENV.generateData(false).toArray();
-  startProfile('view update');
+  // startProfile('view update');
   renderBenchmark(dbs);
-  endProfile('view update');
+  // endProfile('view update');
 }
 
 setInterval(loop, 0);

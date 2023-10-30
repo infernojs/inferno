@@ -1,7 +1,7 @@
 import {rollup} from "rollup";
 import { existsSync, readdirSync, statSync } from "fs";
 import commonjsPlugin from "@rollup/plugin-commonjs";
-import nodeResolvePlugin from "@rollup/plugin";
+import nodeResolvePlugin from "@rollup/plugin-node-resolve";
 import { dirname, join, resolve } from "path";
 import replace from "@rollup/plugin-replace";
 import terser from '@rollup/plugin-terser';
@@ -59,7 +59,8 @@ const plugins = [
       {find: 'inferno-test-utils', replacement: resolvePkg('inferno-test-utils')},
       {find: 'inferno-vnode-flags', replacement: resolvePkg('inferno-vnode-flags')},
       {find: 'inferno-clone-vnode', replacement: resolvePkg('inferno-clone-vnode')},
-      {find: 'mobx', replacement: join(__dirname, '../../node_modules/mobx/dist/mobx.esm.js')}
+      {find: 'mobx', replacement: join(__dirname, '../node_modules/mobx/dist/mobx.esm.js')},
+      {find: 'perf-monitor', replacement: join(__dirname, '../node_modules/perf-monitor/dist/index.js')}
     ]
   })
 ];

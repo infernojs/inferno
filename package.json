@@ -133,9 +133,8 @@
     "rollup": "^4.1.5",
     "swc": "^1.0.11",
     "swc-loader": "^0.2.3",
-    "swc-plugin-inferno": "^0.0.10",
+    "swc-plugin-inferno": "^0.0.11",
     "ts-plugin-inferno": "^6.0.2",
-    "typescript": "^5.2.2",
-    "v8-profiler-next": "^1.9.0"
+    "typescript": "^5.2.2"
   }
 }

@@ -1,9 +1,9 @@
 import { Component, render } from 'inferno';
-import { startFPSMonitor, startMemMonitor } from 'perf-monitor';
+// import { startFPSMonitor, startMemMonitor } from 'perf-monitor';
 import { interpolateViridis } from 'd3-scale-chromatic';
 
-startFPSMonitor();
-startMemMonitor();
+// startFPSMonitor();
+// startMemMonitor();
 
 function map(arr, to) {
   let out = [];

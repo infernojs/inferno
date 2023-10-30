@@ -27,15 +27,15 @@ module.exports = function (config) {
       postDetection(browserList) {
         const results = [];
 
-        if (browserList.indexOf('Chrome') > -1) {
+        if (browserList.includes('Chrome')) {
           results.push('Chrome');
         }
 
-        if (browserList.indexOf('Firefox') > -1) {
+        if (browserList.includes('Firefox')) {
           results.push('Firefox');
         }
 
-        if (browserList.indexOf('Edge') > -1) {
+        if (browserList.includes('Edge')) {
           results.push('Edge');
         }
 

@@ -1,4 +1,4 @@
-import { startFPSMonitor, startMemMonitor, initProfiler, startProfile, endProfile } from 'perf-monitor';
+// import { startFPSMonitor, startMemMonitor, initProfiler, startProfile, endProfile } from 'perf-monitor';
 import { createVNode, createComponentVNode, createFragment, render, Component } from 'inferno';
 import { observerWrap, observerPatch, observer } from 'inferno-mobx';
 import { action, observable } from 'mobx';
@@ -413,17 +413,17 @@ const Table = observerWrap(TableComponent);
 
 const update = action(() => {
   updateData();
-  startProfile('view update');
+  // startProfile('view update');
 });
 
 function loop() {
   update();
-  endProfile('view update');
+  // endProfile('view update');
 }
 
-startFPSMonitor();
-startMemMonitor();
-initProfiler('view update');
+// startFPSMonitor();
+// startMemMonitor();
+// initProfiler('view update');
 
 // functional components with observerWrap
 render(createComponentVNode(VNodeFlags.ComponentFunction, Table, { list: data }), app);
