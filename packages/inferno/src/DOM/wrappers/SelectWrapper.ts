@@ -29,15 +29,13 @@ function updateChildOptions(vNode: VNode, value): void {
 
 function updateChildOption(vNode: VNode, value: unknown): void {
   const props: any = vNode.props ?? EMPTY_OBJ;
+  const propsValue = props.value;
   const dom = vNode.dom as any;
 
   // we do this as multiple prop may have changed
-  dom.value = props.value;
+  dom.value = propsValue;
 
-  if (
-    props.value === value ||
-    (isArray(value) && value.includes(props.value))
-  ) {
+  if (propsValue === value || (isArray(value) && value.includes(propsValue))) {
     dom.selected = true;
   } else if (!isNullOrUndef(value) || !isNullOrUndef(props.selected)) {
     dom.selected = Boolean(props.selected);
