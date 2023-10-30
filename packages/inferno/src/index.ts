@@ -49,7 +49,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('Inferno is in development mode.');
 
   // eslint-disable-next-line
-  if (!testingEnv && ((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
+  if (!testingEnv && !((testFunc as Function).name || testFunc.toString()).includes('testFn')) {
     warning(
       "It looks like you're using a minified copy of the development build " +
         'of Inferno. When deploying Inferno apps to production, make sure to use ' +

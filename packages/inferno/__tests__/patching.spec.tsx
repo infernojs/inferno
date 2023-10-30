@@ -92,9 +92,7 @@ describe('patching routine', () => {
     try {
       render(invalidNode, container);
     } catch (e) {
-      expect(
-        e.message.indexOf('Inferno Error: mount() received an object'),
-      ).not.toEqual(-1);
+      expect(e.message.includes('Inferno Error: mount() received an object')).toBeTruthy()
     }
     expect(container.innerHTML).toEqual('<span>a</span>');
 

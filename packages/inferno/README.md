@@ -49,6 +49,7 @@ Inferno v9 requires following features to be present in the executing runtime:
 
 - `Promise`
 - `String.prototype.includes()`
+- `String.prototype.startsWith()`
 - `Array.prototype.includes()`
 - `Object.spread()`
 

@@ -181,7 +181,7 @@ export function patchProp(
           if (
             prop === 'href' &&
             isString(nextValue) &&
-            nextValue.indexOf('javascript:') === 0
+            nextValue.startsWith('javascript:')
           ) {
             warning(
               'Rendering links with javascript: URLs is not recommended. Use event handlers instead if you can. Inferno was passed "' +

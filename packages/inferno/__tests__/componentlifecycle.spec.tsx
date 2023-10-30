@@ -259,9 +259,9 @@ describe('legacy life cycle', () => {
     expect(consoleErrorStub).toHaveBeenCalledTimes(1);
 
     const message = consoleErrorStub.calls.argsFor(0)[0];
-    expect(message.indexOf('componentWillMount')).toBeGreaterThan(-1);
-    expect(message.indexOf('componentWillReceiveProps')).toBeGreaterThan(-1);
-    expect(message.indexOf('componentWillUpdate')).toBeGreaterThan(-1);
+    expect(message.includes('componentWillMount')).toBeTruthy();
+    expect(message.includes('componentWillReceiveProps')).toBeTruthy();
+    expect(message.includes('componentWillUpdate')).toBeTruthy();
   });
 
   it('should allow suppress legacy life cycles when mixed with new APIs', () => {

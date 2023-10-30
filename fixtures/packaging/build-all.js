@@ -21,7 +21,7 @@ function addResult(tool, environment, result) {
 }
 
 function buildFixture(tool, environment) {
-  const isWindows = os.type().indexOf('Windows') !== -1;
+  const isWindows = os.type().includes('Windows');
   // Let console know what's going on
   console.log(`Running ${tool}:${environment}`);
 

@@ -144,14 +144,14 @@ function stripBasename(
 
   const base = addLeadingSlash(basename);
 
-  if (location.pathname.indexOf(base) !== 0) {
+  if (location.pathname.startsWith(base)) {
+    return {
+      ...location,
+      pathname: location.pathname.substring(base.length),
+    };
+  } else {
     return location;
   }
-
-  return {
-    ...location,
-    pathname: location.pathname.substring(base.length),
-  };
 }
 
 function createLocation(location): Path {
