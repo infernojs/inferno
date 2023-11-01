@@ -333,10 +333,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       const container = document.createElement('div');
       const vDom = test.template('foo');
       return streamPromise(vDom).then(function (output) {
-        document.body.appendChild(container);
-        container.innerHTML = output;
         expect(output).toBe(test.result);
-        document.body.removeChild(container);
       });
     });
   });
@@ -389,11 +386,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
       const vDom = <Tester />;
       return streamPromise(vDom).then(function (output) {
-        const container = document.createElement('div');
-        document.body.appendChild(container);
-        container.innerHTML = output;
         expect(output).toBe('<div>bar2<div>bar2</div></div>');
-        document.body.removeChild(container);
       });
     });
   });

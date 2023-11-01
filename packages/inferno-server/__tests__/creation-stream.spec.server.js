@@ -89,11 +89,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 
       const vDom = createElement(Tester);
       await streamPromise(vDom).then(function (output) {
-        const container = document.createElement('div');
-        document.body.appendChild(container);
-        container.innerHTML = output;
         expect(output).toBe('<div>bar2<div>bar2</div></div>');
-        document.body.removeChild(container);
       });
     });
   });

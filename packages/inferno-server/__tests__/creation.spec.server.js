@@ -153,16 +153,12 @@ describe('SSR Creation (non-JSX)', () => {
     },
   ];
 
-  testEntries.forEach((test) => {
+  for (const test of testEntries) {
     it(test.description, () => {
-      const container = document.createElement('div');
       const vDom = test.template('foo');
       const output = renderToStaticMarkup(vDom);
 
-      document.body.appendChild(container);
-      container.innerHTML = output;
       expect(output).toBe(test.result);
-      document.body.removeChild(container);
     });
-  });
+  }
 });

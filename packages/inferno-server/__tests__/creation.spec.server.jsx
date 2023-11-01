@@ -192,14 +192,10 @@ describe('SSR Creation (JSX)', () => {
 
   testEntries.forEach((test) => {
     it(test.description, () => {
-      const container = document.createElement('div');
       const vDom = test.template('foo');
       const output = renderToStaticMarkup(vDom);
 
-      document.body.appendChild(container);
-      container.innerHTML = output;
       expect(output).toBe(test.result);
-      document.body.removeChild(container);
     });
   });
 
@@ -250,15 +246,11 @@ describe('SSR Creation (JSX)', () => {
         }
       }
 
-      const container = document.createElement('div');
       const vDom = <Tester />;
 
       const output = renderToStaticMarkup(vDom);
 
-      document.body.appendChild(container);
-      container.innerHTML = output;
       expect(output).toBe('<div>bar2<div>bar2</div></div>');
-      document.body.removeChild(container);
     });
   });
 
