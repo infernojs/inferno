@@ -328,7 +328,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     }
   ];
 
-  testEntries.forEach((test) => {
+  for (const test of testEntries) {
     it(test.description, () => {
       const container = document.createElement('div');
       const vDom = test.template('foo');
@@ -336,7 +336,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         expect(output).toBe(test.result);
       });
     });
-  });
+  }
 
   describe('Component hook', () => {
     it('Should allow changing state in CWM', () => {

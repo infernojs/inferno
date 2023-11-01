@@ -42,7 +42,7 @@ const compHtml2 =
   '<div><div id="b1">C 1</div><div id="b2">C 2</div><div id="b3">C 3</div></div>';
 
 describe('SSR Hydration Extended - (JSX)', () => {
-  [
+  const tests = [
     {
       html: '<div><div>Hello world</div></div>',
       component: <Comp />,
@@ -70,21 +70,59 @@ describe('SSR Hydration Extended - (JSX)', () => {
     {
       html: '<div><div></div></div>',
       component: (
-        <InnerNested>
-          <Nested>
-            <Comp />
-          </Nested>
-        </InnerNested>
+          <InnerNested>
+            <Nested>
+              <Comp />
+            </Nested>
+          </InnerNested>
       ),
     },
-  ].forEach(({ html, component }, i) => {
+  ];
+
+  for (let i = 0; i < tests.length; i++){
+    const { html, component } = [
+      {
+        html: '<div><div>Hello world</div></div>',
+        component: <Comp />,
+      },
+      {
+        html: '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
+        component: <Comp />,
+      },
+      {
+        html: '<div><div><div>Hello world</div></div></div>',
+        component: <Comp />,
+      },
+      {
+        html: '<div><div><div>Hello world</div></div><span>Hola</span></div>',
+        component: <Comp />,
+      },
+      {
+        html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div></div>',
+        component: <Comp />,
+      },
+      {
+        html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div><span>Hola</span></div>',
+        component: <Comp />,
+      },
+      {
+        html: '<div><div></div></div>',
+        component: (
+            <InnerNested>
+              <Nested>
+                <Comp />
+              </Nested>
+            </InnerNested>
+        ),
+      },
+    ][i];
     it(`do test #${i + 1}`, () => {
       const container = createContainerWithHTML(html);
       hydrate(component, container);
 
       expect(container.innerHTML).toEqual(compHtml);
     });
-  });
+  }
 
   it('Should hydrate correctly when CSR children is missing', () => {
     const container = createContainerWithHTML('<div> </div></div>');

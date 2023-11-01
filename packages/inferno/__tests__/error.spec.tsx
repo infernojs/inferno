@@ -124,8 +124,8 @@ describe('Error recovery', () => {
    */
 
   describe('Error recovery from user land errors', () => {
-    ['last', 'mid', 'first'].forEach((location) => {
-      [
+    for (const location of ['last', 'mid', 'first']) {
+      for (const crashLocation of [
         'render',
         'constructor',
         'DidMount',
@@ -135,7 +135,7 @@ describe('Error recovery', () => {
         'WillUpdate',
         'DidUpdate',
         'getChildContext',
-      ].forEach((crashLocation) => {
+      ]) {
         it(
           'Should recover from subtree crash in ' +
             location +
@@ -278,11 +278,11 @@ describe('Error recovery', () => {
             );
           },
         );
-      });
-    });
+      }
+    }
 
-    ['last', 'mid', 'first'].forEach((location) => {
-      [
+    for (const location of ['last', 'mid', 'first']) {
+      for (const crashLocation of [
         'render',
         'constructor',
         'DidMount',
@@ -292,7 +292,7 @@ describe('Error recovery', () => {
         'WillUpdate',
         'DidUpdate',
         'getChildContext',
-      ].forEach((crashLocation) => {
+      ]) {
         it(
           'Should recover from subtree crash in NON-KEYED ' +
             location +
@@ -435,11 +435,11 @@ describe('Error recovery', () => {
             );
           },
         );
-      });
-    });
+      }
+    }
 
-    ['last', 'mid', 'first'].forEach((location) => {
-      [
+    for (const location of ['last', 'mid', 'first']) {
+      for (const crashLocation of [
         'render',
         'constructor',
         'DidMount',
@@ -449,7 +449,7 @@ describe('Error recovery', () => {
         'WillUpdate',
         'DidUpdate',
         'getChildContext',
-      ].forEach((crashLocation) => {
+      ]) {
         it(
           'Should recover from subtree crash in NON-KEYED ' +
             location +
@@ -592,8 +592,8 @@ describe('Error recovery', () => {
             );
           },
         );
-      });
-    });
+      }
+    }
 
     describe('Error in child component', () => {
       it('Should not block future updates', (done) => {

@@ -65,9 +65,9 @@ describe('Github #1236', () => {
       context?,
     ) {
       let desc: any = {};
-      Object['ke' + 'ys'](descriptor).forEach(function (key) {
+      for (const key of Object['ke' + 'ys'](descriptor)) {
         desc[key] = descriptor[key];
-      });
+      }
       desc.enumerable = !!desc.enumerable;
       desc.configurable = !!desc.configurable;
 

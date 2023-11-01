@@ -42,158 +42,156 @@ describe('SSR -> Hydrate - Forward Ref', () => {
     }
   }
 
-  [renderToString, streamAsString, streamQueueAsString].forEach(
-    function (method) {
-      it('Should be possible to forward createRef', (done) => {
-        const FancyButton = forwardRef((props, ref) => (
-          <button ref={ref} className="FancyButton">
-            {props.children}
-          </button>
-        ));
+  for (const method of [renderToString, streamAsString, streamQueueAsString]) {
+    it('Should be possible to forward createRef', (done) => {
+      const FancyButton = forwardRef((props, ref) => (
+        <button ref={ref} className="FancyButton">
+          {props.children}
+        </button>
+      ));
 
-        expect(FancyButton.render).toBeDefined();
+      expect(FancyButton.render).toBeDefined();
 
-        class Hello extends Component<any, any> {
-          private readonly btn: RefObject<any>;
+      class Hello extends Component<any, any> {
+        private readonly btn: RefObject<any>;
 
-          constructor(props) {
-            super(props);
+        constructor(props) {
+          super(props);
 
-            // You can now get a ref directly to the DOM button:
-            this.btn = createRef();
-          }
-
-          public componentDidMount() {
-            expect(this.btn.current).toBe(container.querySelector('button'));
-          }
-
-          public render() {
-            return <FancyButton ref={this.btn}>Click me!</FancyButton>;
-          }
+          // You can now get a ref directly to the DOM button:
+          this.btn = createRef();
         }
 
-        SSRtoString(method, <Hello />, function (htmlString) {
-          expect(htmlString).toBe(
-            '<button class="FancyButton">Click me!</button>',
-          );
-
-          container.innerHTML = htmlString;
-
-          renderToString(<Hello />);
-
-          expect(container.innerHTML).toBe(
-            '<button class="FancyButton">Click me!</button>',
-          );
-
-          hydrate(<Hello />, container);
-
-          expect(container.innerHTML).toBe(
-            '<button class="FancyButton">Click me!</button>',
-          );
-
-          done();
-        });
-      });
-
-      it('Should be possible to forward callback ref', (done) => {
-        const FancyButton = forwardRef((props, ref) => (
-          <button ref={ref} className="FancyButton">
-            {props.children}
-          </button>
-        ));
-
-        expect(FancyButton.render).toBeDefined();
-
-        class Hello extends Component {
-          public render() {
-            return (
-              <FancyButton
-                ref={(btn) => {
-                  if (btn) {
-                    expect(btn).toBe(container.querySelector('button'));
-                  }
-                }}
-              >
-                Click me!
-              </FancyButton>
-            );
-          }
+        public componentDidMount() {
+          expect(this.btn.current).toBe(container.querySelector('button'));
         }
 
-        SSRtoString(method, <Hello />, function (htmlString) {
-          container.innerHTML = htmlString;
+        public render() {
+          return <FancyButton ref={this.btn}>Click me!</FancyButton>;
+        }
+      }
 
-          expect(container.innerHTML).toBe(
-            '<button class="FancyButton">Click me!</button>',
-          );
+      SSRtoString(method, <Hello />, function (htmlString) {
+        expect(htmlString).toBe(
+          '<button class="FancyButton">Click me!</button>',
+        );
 
-          hydrate(<Hello />, container);
+        container.innerHTML = htmlString;
 
-          expect(container.innerHTML).toBe(
-            '<button class="FancyButton">Click me!</button>',
-          );
+        renderToString(<Hello />);
 
-          render(null, container);
+        expect(container.innerHTML).toBe(
+          '<button class="FancyButton">Click me!</button>',
+        );
 
-          expect(container.innerHTML).toBe('');
+        hydrate(<Hello />, container);
 
-          done();
-        });
+        expect(container.innerHTML).toBe(
+          '<button class="FancyButton">Click me!</button>',
+        );
+
+        done();
       });
+    });
 
-      it('Should be possible to patch forwardRef component', () => {
-        const FancyButton = forwardRef((props, ref) => {
+    it('Should be possible to forward callback ref', (done) => {
+      const FancyButton = forwardRef((props, ref) => (
+        <button ref={ref} className="FancyButton">
+          {props.children}
+        </button>
+      ));
+
+      expect(FancyButton.render).toBeDefined();
+
+      class Hello extends Component {
+        public render() {
           return (
-            <button ref={ref} className="FancyButton">
-              {props.children}
-            </button>
-          );
-        });
-
-        expect(FancyButton.render).toBeDefined();
-
-        SSRtoString(method, <FancyButton />, function (htmlString) {
-          let firstVal: Element | null = null;
-
-          container.innerHTML = htmlString;
-
-          hydrate(
             <FancyButton
               ref={(btn) => {
-                firstVal = btn;
+                if (btn) {
+                  expect(btn).toBe(container.querySelector('button'));
+                }
               }}
             >
               Click me!
-            </FancyButton>,
-            container,
+            </FancyButton>
           );
+        }
+      }
 
-          expect(container.innerHTML).toBe(
-            '<button class="FancyButton">Click me!</button>',
-          );
-          expect(firstVal).not.toBe(null);
+      SSRtoString(method, <Hello />, function (htmlString) {
+        container.innerHTML = htmlString;
 
-          let secondVal: Element | null = null;
+        expect(container.innerHTML).toBe(
+          '<button class="FancyButton">Click me!</button>',
+        );
 
-          render(
-            <FancyButton
-              ref={(btn) => {
-                secondVal = btn;
-              }}
-            >
-              Click me! 222
-            </FancyButton>,
-            container,
-          );
+        hydrate(<Hello />, container);
 
-          expect(firstVal).toBe(null);
-          expect(secondVal).not.toBe(null);
+        expect(container.innerHTML).toBe(
+          '<button class="FancyButton">Click me!</button>',
+        );
 
-          expect(container.innerHTML).toBe(
-            '<button class="FancyButton">Click me! 222</button>',
-          );
-        });
+        render(null, container);
+
+        expect(container.innerHTML).toBe('');
+
+        done();
       });
-    },
-  );
+    });
+
+    it('Should be possible to patch forwardRef component', () => {
+      const FancyButton = forwardRef((props, ref) => {
+        return (
+          <button ref={ref} className="FancyButton">
+            {props.children}
+          </button>
+        );
+      });
+
+      expect(FancyButton.render).toBeDefined();
+
+      SSRtoString(method, <FancyButton />, function (htmlString) {
+        let firstVal: Element | null = null;
+
+        container.innerHTML = htmlString;
+
+        hydrate(
+          <FancyButton
+            ref={(btn) => {
+              firstVal = btn;
+            }}
+          >
+            Click me!
+          </FancyButton>,
+          container,
+        );
+
+        expect(container.innerHTML).toBe(
+          '<button class="FancyButton">Click me!</button>',
+        );
+        expect(firstVal).not.toBe(null);
+
+        let secondVal: Element | null = null;
+
+        render(
+          <FancyButton
+            ref={(btn) => {
+              secondVal = btn;
+            }}
+          >
+            Click me! 222
+          </FancyButton>,
+          container,
+        );
+
+        expect(firstVal).toBe(null);
+        expect(secondVal).not.toBe(null);
+
+        expect(container.innerHTML).toBe(
+          '<button class="FancyButton">Click me! 222</button>',
+        );
+      });
+    });
+  }
 });

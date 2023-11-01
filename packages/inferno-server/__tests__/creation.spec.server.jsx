@@ -190,14 +190,14 @@ describe('SSR Creation (JSX)', () => {
     }
   ];
 
-  testEntries.forEach((test) => {
+  for (const test of testEntries) {
     it(test.description, () => {
       const vDom = test.template('foo');
       const output = renderToStaticMarkup(vDom);
 
       expect(output).toBe(test.result);
     });
-  });
+  }
 
   describe('Component hook', () => {
     it('Should allow changing state in CWM', () => {

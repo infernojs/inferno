@@ -619,7 +619,10 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
         public render() {
           const content: NormalItem[] = [<NormalItem />, <NormalItem />];
 
-          items.forEach((_d, idx) => content.push(<Item index={idx} />));
+          for (const _d of items) {
+            const idx = items.indexOf(_d);
+            content.push(<Item index={idx} />);
+          }
 
           return (
             <Wrapper1>

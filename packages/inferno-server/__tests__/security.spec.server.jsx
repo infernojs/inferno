@@ -48,7 +48,7 @@ describe('Security - SSR', () => {
   });
 
   describe('streams', () => {
-    [streamAsString, streamQueueAsString].forEach((method) => {
+    for (const method of [streamAsString, streamQueueAsString]) {
       it('Should not render invalid attribute names', () => {
         const props = {};
         const userProvidedData = '></div><script>alert("hi")</script>';
@@ -83,7 +83,7 @@ describe('Security - SSR', () => {
           done();
         });
       });
-    });
+    }
   });
 });
 

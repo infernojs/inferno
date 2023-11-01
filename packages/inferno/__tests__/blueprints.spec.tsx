@@ -95,7 +95,9 @@ describe('Blueprints (JSX)', () => {
     it('Second render (update)', () => {
       render(<Wrapper />, container);
       const buttons = container.querySelectorAll('button');
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
 
       expect(container.innerHTML).toBe(
         '<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>',

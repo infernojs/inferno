@@ -79,7 +79,9 @@ describe('Inferno', () => {
 
       dispatch(action) {
         this.state = this.reducer(this.state, action);
-        this.listeners.forEach((l) => l());
+        for (const l of this.listeners) {
+          l();
+        }
         return action;
       }
     }
@@ -1533,13 +1535,13 @@ describe('Inferno', () => {
 
       const imitateHotReloading = (TargetClass, SourceClass) => {
         // Crude imitation of hot reloading that does the job
-        Object.getOwnPropertyNames(SourceClass.prototype)
-          .filter((key) => typeof SourceClass.prototype[key] === 'function')
-          .forEach((key) => {
-            if (key !== 'render' && key !== 'constructor') {
-              TargetClass.prototype[key] = SourceClass.prototype[key];
-            }
-          });
+        const fns = Object.getOwnPropertyNames(SourceClass.prototype).filter((key) => typeof SourceClass.prototype[key] === 'function');
+
+        for (const key of fns) {
+          if (key !== 'render' && key !== 'constructor') {
+            TargetClass.prototype[key] = SourceClass.prototype[key];
+          }
+        }
 
         container.forceUpdate();
       };

@@ -124,13 +124,13 @@ export function findAllInVNodeTree(
         findAllInVNodeTree(children, predicate) as VNode[],
       );
     } else if (isArray(children)) {
-      children.forEach((child) => {
+      for (const child of children) {
         if (!isInvalid(child)) {
           result = result.concat(
             findAllInVNodeTree(child, predicate) as VNode[],
           );
         }
-      });
+      }
     }
     return result;
   } else {

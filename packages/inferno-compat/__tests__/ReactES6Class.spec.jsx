@@ -148,21 +148,6 @@ describe('ReactES6Class', function () {
     expect(renderCount).toBe(1);
   });
 
-  // it('should throw with non-object in the initial state property', function() {
-  //   [['an array'], 'a string', 1234].forEach(function(state) {
-  //     class Foo extends React.Component {
-  //       constructor() {
-  //         super();
-  //         this.state = state;
-  //       }
-  //       render() {
-  //         return <span />;
-  //       }
-  //     }
-  //     expect(() => test(<Foo />, 'span', '')).toThrow();
-  //   });
-  // });
-
   it('should render with null in the initial state property', function () {
     class Foo extends React.Component {
       constructor() {

@@ -223,173 +223,143 @@ describe('Children - (non-JSX)', () => {
     },
   ];
 
-  preDefined.forEach((arg, i) => {
-    [
-      {
-        description: 'should set static children as ' + arg.name,
-        template: () => createElement('div', null, arg.value),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(), container);
+  for (const arg of preDefined) {
+    it('should set static children as ' + arg.name, () => {
+        render(createElement('div', null, arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
         expect(container.firstChild.textContent).toBe(arg.expected);
-        render(test.template(), container);
+        render(createElement('div', null, arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
         expect(container.firstChild.textContent).toBe(arg.expected);
-      });
     });
-  });
+  }
 
-  preDefined.forEach((arg) => {
-    [
-      {
-        description: 'should set static deep children as ' + arg.name,
-        template: () =>
-          createElement('div', null, createElement('span', null, arg.value)),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(), container);
+  for (const arg of preDefined) {
+      it('should set static deep children as ' + arg.name, () => {
+        const tmpl = () => createElement('div', null, createElement('span', null, arg.value))
+
+        render(tmpl(), container);
         expect(container.firstChild.nodeType).toBe(1);
         expect(container.firstChild.firstChild.nodeType).toBe(1);
         expect(container.firstChild.childNodes.length).toBe(1);
         expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-        render(test.template(), container);
+        render(tmpl(), container);
         expect(container.firstChild.nodeType).toBe(1);
         expect(container.firstChild.firstChild.nodeType).toBe(1);
         expect(container.firstChild.childNodes.length).toBe(1);
         expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
       });
-    });
-  });
+  }
 
-  preDefined.forEach((arg) => {
-    [
-      {
-        description: 'should set very deep static children as ' + arg.name,
-        template: () =>
+  for (const arg of preDefined) {
+    it('should set very deep static children as ' + arg.name, () => {
+      const tmpl = () =>
           createElement(
-            'div',
-            null,
-            createElement(
-              'span',
+              'div',
               null,
-              createElement('b', null, createElement('b', null, arg.value)),
-            ),
-          ),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-      });
+              createElement(
+                  'span',
+                  null,
+                  createElement('b', null, createElement('b', null, arg.value)),
+              ),
+          );
+
+      render(tmpl(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
+      render(tmpl(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
     });
-  });
+  }
 
-  preDefined.forEach((arg) => {
-    [
-      {
-        description: 'should set dynamic children as ' + arg.name,
+  for (const arg of preDefined) {
+    const template = (child) => createElement('div', null, child)
 
-        template: (child) => createElement('div', null, child),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
-
-      it(test.description, () => {
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
-
-      it(test.description, () => {
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
-
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-      });
-
-      it(test.description, () => {
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-        render(test.template(undefined), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-      });
-
-      it(test.description, () => {
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-      });
+    it('should set dynamic children as ' + arg.name, () => {
+      render(template(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+      render(template(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+      render(template(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+      render(template(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
-  });
 
-  preDefined.forEach((arg) => {
-    [
-      {
-        description: 'should set deep dynamic children as ' + arg.name,
-        template: (child) =>
-          createElement('div', null, createElement('b', null, child)),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-        render(test.template(arg.value), container);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-        render(test.template(null), container);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe('');
-        render(test.template(undefined), container);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe('');
-        render(test.template(), container);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe('');
-      });
+    it('should set dynamic children as ' + arg.name, () => {
+      render(template(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+      render(template(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
-  });
+
+    it('should set dynamic children as ' + arg.name, () => {
+      render(template(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+      render(template(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+    });
+
+    it('should set dynamic children as ' + arg.name, () => {
+      render(template(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+      render(template(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+    });
+
+    it('should set dynamic children as ' + arg.name, () => {
+      render(template(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+      render(template(undefined), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+    });
+
+    it('should set dynamic children as ' + arg.name, () => {
+      render(template(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+      render(template(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+    });
+  }
+
+  for (const arg of preDefined) {
+    const template = (child) => createElement('div', null, createElement('b', null, child));
+
+    it('should set deep dynamic children as ' + arg.name, () => {
+      render(template(arg.value), container);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
+      render(template(arg.value), container);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
+      render(template(null), container);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe('');
+      render(template(undefined), container);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe('');
+      render(template(), container);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe('');
+    });
+  }
 });

@@ -15,7 +15,7 @@ describe('Creation - (non-JSX)', () => {
     document.body.removeChild(container);
   });
 
-  [
+  const tests = [
     {
       description: 'should render div with span child',
       template: () => {
@@ -35,38 +35,38 @@ describe('Creation - (non-JSX)', () => {
     {
       description: 'should render div with two span children',
       template: () =>
-        createElement('div', null, createElement('div'), createElement('div')),
+          createElement('div', null, createElement('div'), createElement('div')),
       tagName: 'div',
       children: 2,
       textContent: '',
     },
     {
       description:
-        'should render div with three span children and unset middle child',
+          'should render div with three span children and unset middle child',
       template: () =>
-        createElement(
-          'div',
-          null,
-          createElement('span'),
-          null,
-          createElement('span'),
-        ),
+          createElement(
+              'div',
+              null,
+              createElement('span'),
+              null,
+              createElement('span'),
+          ),
       tagName: 'div',
       children: 2,
       textContent: '',
     },
     {
       description:
-        'should render div with three span children and unset first, and middle child',
+          'should render div with three span children and unset first, and middle child',
       template: () =>
-        createElement('div', null, null, null, createElement('span')),
+          createElement('div', null, null, null, createElement('span')),
       tagName: 'div',
       children: 1,
       textContent: '',
     },
     {
       description:
-        'should render div with three span children and unset first, and middle child',
+          'should render div with three span children and unset first, and middle child',
       template: () => createElement('div', null, null, null, null),
       tagName: 'div',
       children: 0,
@@ -82,7 +82,7 @@ describe('Creation - (non-JSX)', () => {
     {
       description: 'should render div with one textNode and a span children',
       template: () =>
-        createElement('div', null, 'Hello!', null, createElement('span')),
+          createElement('div', null, 'Hello!', null, createElement('span')),
       tagName: 'div',
       children: 2,
       textContent: 'Hello!',
@@ -90,53 +90,53 @@ describe('Creation - (non-JSX)', () => {
     {
       description: 'should render div with two textNodes and a span children',
       template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello, ',
-          null,
-          'World!',
-          createElement('span'),
-        ),
+          createElement(
+              'div',
+              null,
+              'Hello, ',
+              null,
+              'World!',
+              createElement('span'),
+          ),
       tagName: 'div',
       children: 3,
       textContent: 'Hello, World!',
     },
     {
       description:
-        'should render div with two textNodes and a two span children',
+          'should render div with two textNodes and a two span children',
       template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello, ',
-          createElement('span'),
-          'World!',
-          createElement('span'),
-        ),
+          createElement(
+              'div',
+              null,
+              'Hello, ',
+              createElement('span'),
+              'World!',
+              createElement('span'),
+          ),
       tagName: 'div',
       children: 4,
       textContent: 'Hello, World!',
     },
     {
       description:
-        'should render div with two textNodes and one span children, and span with textNode',
+          'should render div with two textNodes and one span children, and span with textNode',
       template: () =>
-        createElement(
-          'div',
-          null,
-          'Hello',
-          createElement('span'),
-          ', ',
-          createElement('span', null, 'World!'),
-        ),
+          createElement(
+              'div',
+              null,
+              'Hello',
+              createElement('span'),
+              ', ',
+              createElement('span', null, 'World!'),
+          ),
       tagName: 'div',
       children: 4,
       textContent: 'Hello, World!',
     },
     {
       description:
-        'should render div with tree null values in an array for children',
+          'should render div with tree null values in an array for children',
       template: () => createElement('div', null, null, null, null),
       tagName: 'div',
       children: 0,
@@ -144,18 +144,18 @@ describe('Creation - (non-JSX)', () => {
     },
     {
       description:
-        'should render div with b child, and tree null values in an array for children',
+          'should render div with b child, and tree null values in an array for children',
       template: () =>
-        createElement('div', null, createElement('b', null, null, null, null)),
+          createElement('div', null, createElement('b', null, null, null, null)),
       tagName: 'div',
       children: 1,
       textContent: '',
     },
     {
       description:
-        'should render div with b child, and number and two null values in an array for children',
+          'should render div with b child, and number and two null values in an array for children',
       template: () =>
-        createElement('div', null, createElement('b', null, null, 123, null)),
+          createElement('div', null, createElement('b', null, null, 123, null)),
       tagName: 'div',
       children: 1,
       textContent: '123',
@@ -174,7 +174,9 @@ describe('Creation - (non-JSX)', () => {
       children: 0,
       textContent: '',
     },
-  ].forEach((test) => {
+  ];
+
+  for (const test of tests) {
     it(test.description, () => {
       render(test.template(), container);
       expect(container.firstChild.nodeType).toBe(1);
@@ -187,5 +189,5 @@ describe('Creation - (non-JSX)', () => {
       expect(container.firstChild.tagName.toLowerCase()).toBe(test.tagName);
       expect(container.firstChild.childNodes.length).toBe(test.children);
     });
-  });
+  }
 });

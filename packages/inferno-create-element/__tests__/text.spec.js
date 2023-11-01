@@ -4,11 +4,11 @@ import { createElement } from 'inferno-create-element';
 describe('Text', () => {
   let container;
 
-  beforeEach(function () {
+  beforeEach(function() {
     container = document.createElement('div');
   });
 
-  afterEach(function () {
+  afterEach(function() {
     render(null, container);
   });
 
@@ -95,236 +95,172 @@ describe('Text', () => {
     },
   ];
 
-  emptyDefinitions.forEach((arg) => {
-    [
-      {
-        description: 'should create a static text node with ' + arg.name,
-        template: () => createElement('div', null, arg.value),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
+  for (const arg of emptyDefinitions) {
+    const template = () => createElement('div', null, arg.value)
 
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
+    it('should create a static text node with ' + arg.name, () => {
+      render(template(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+
+      render(template(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
-  });
 
-  emptyDefinitions.forEach((arg) => {
-    [
-      {
-        description: 'should create a static text node with null',
-        template: () => createElement('div', null, null),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
+    const template2 = () => createElement('div', null, null);
 
-        render(test.template(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-      });
+    it('should create a static text node with null', () => {
+      render(template2(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+
+      render(template2(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
     });
-  });
 
-  emptyDefinitions.forEach((arg) => {
-    [
-      {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - text property',
-        template: (text) => createElement('div', null, text),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
+    const template3 = (text) => createElement('div', null, text);
 
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
+    it(`should create a dynamic text node with ${arg.name} - text property 1`, () => {
+      render(template3(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
 
-      it(test.description, () => {
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
+      render(template3(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
-  });
 
-  emptyDefinitions.forEach((arg) => {
-    [
-      {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - children node text',
-        template: (text) =>
-          createElement('div', null, createElement('span', null, text)),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
+    it(`should create a dynamic text node with ${arg.name} - text property 2`, () => {
+      render(template3(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
 
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-      });
+      render(template3(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
-  });
 
-  emptyDefinitions.forEach((arg) => {
-    [
-      {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - single child with text ',
-        template: (text) => createElement('div', null, text),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
+    const template4 = (text) => createElement('div', null, createElement('span', null, text));
 
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
+    it('should create a dynamic text node with ' + arg.name + ' - children node text', () => {
+      render(template4(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
+
+      render(template4(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
     });
-  });
 
-  emptyDefinitions.forEach((arg) => {
-    [
-      {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - deep child with text property ',
-        template: (text) =>
-          createElement('div', null, createElement('span', null, text)),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
+    const template5 = (text) => createElement('div', null, text);
 
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
+    it('should create a dynamic text node with ' + arg.name + ' - single child with text ', () => {
+      render(template5(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+
+      render(template5(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
-  });
 
-  emptyDefinitions.forEach((arg) => {
-    [
-      {
-        description:
-          'should create a dynamic text node with ' +
-          arg.name +
-          ' - deeper child with text property ',
-        template: (text) =>
-          createElement(
+    const template6 = (text) => createElement('div', null, createElement('span', null, text));
+
+    it('should create a dynamic text node with ' + arg.name + ' - deep child with text property ', () => {
+      render(template6(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+
+      render(template6(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+    });
+
+    const template7 = (text) =>
+        createElement(
             'div',
             null,
             createElement('span', null, createElement('b', null, text)),
-          ),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
+        );
 
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
+    it('should create a dynamic text node with ' + arg.name + ' - deeper child with text property', () => {
+      render(template7(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
 
-      it(test.description, () => {
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-      });
-
-      it(test.description, () => {
-        render(test.template(arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-      });
-
-      it(test.description, () => {
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-
-        render(test.template(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-      });
+      render(template7(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
-  });
+
+    it('should create a dynamic text node with ' + arg.name + ' - deeper child with text property', () => {
+      render(template7(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+
+      render(template7(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+    });
+
+    it('should create a dynamic text node with ' + arg.name + ' - deeper child with text property', () => {
+      render(template7(arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+
+      render(template7(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+    });
+
+    it('should create a dynamic text node with ' + arg.name + ' - deeper child with text property', () => {
+      render(template7(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+
+      render(template7(null), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.childNodes.length).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.textContent).toBe('');
+    });
+  }
 
   const multiArray = [
     {
@@ -419,26 +355,21 @@ describe('Text', () => {
     },
   ];
 
-  multiArray.forEach((arg) => {
-    [
-      {
-        description: 'should create a children property with ' + arg.name,
-        template: (textVar) => createElement('div', null, textVar),
-      },
-    ].forEach((test) => {
-      it(test.description, () => {
-        render(test.template(arg.value), container);
+  for (const arg of multiArray) {
+      const template1 = (textVar) => createElement('div', null, textVar);
+
+      it('should create a children property with ' + arg.name, () => {
+        render(template1(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
         expect(container.childNodes.length).toBe(1);
         expect(container.firstChild.childNodes.length).toBe(arg.children);
         expect(container.firstChild.textContent).toBe(arg.expected);
 
-        render(test.template(arg.value), container);
+        render(template1(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
         expect(container.childNodes.length).toBe(1);
         expect(container.firstChild.childNodes.length).toBe(arg.children);
         expect(container.firstChild.textContent).toBe(arg.expected);
       });
-    });
-  });
+  }
 });

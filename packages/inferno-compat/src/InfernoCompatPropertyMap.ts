@@ -107,8 +107,8 @@ function capitalize(token: string): string {
   return token[1].toUpperCase();
 }
 
-ATTRS.forEach((original) => {
+for (const original of ATTRS) {
   const reactName = original.replace(CAMELIZE, capitalize);
 
   InfernoCompatPropertyMap[reactName] = original;
-});
+}

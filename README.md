@@ -52,6 +52,7 @@ Inferno v9 requires following features to be present in the executing runtime:
 - `String.prototype.startsWith()`
 - `Array.prototype.includes()`
 - `Object.spread()`
+- `for ... of`
 
 ## Browser support
 Since version 4 we have started running our test suite **without** any polyfills.

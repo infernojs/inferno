@@ -604,9 +604,9 @@ class ShuffleListWithAnimation extends Component {
   doClearMarkers = (e) => {
     e && e.preventDefault();
     const tmp = document.querySelectorAll('.debugMarker');
-    tmp.forEach((marker) => {
+    for (const marker of tmp) {
       marker.parentNode.removeChild(marker);
-    });
+    }
   };
 
   componentDidMount() {

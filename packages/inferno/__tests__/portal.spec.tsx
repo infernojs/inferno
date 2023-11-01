@@ -44,12 +44,12 @@ describe('Portal spec', () => {
     mathEls = [];
 
     render(tree, container);
-    svgEls.forEach((el) => {
+    for (const el of svgEls) {
       expect(el.namespaceURI).toBe('http://www.w3.org/2000/svg');
-    });
-    htmlEls.forEach((el) => {
+    }
+    for (const el of htmlEls) {
       expect(el.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
-    });
+    }
 
     render(null, container);
     expect(container.innerHTML).toBe('');

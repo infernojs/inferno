@@ -1140,7 +1140,9 @@ describe('Components (non-JSX)', () => {
         render(tpl79713834(TEST), container);
         const buttons = container.querySelectorAll('button');
 
-        buttons.forEach((button) => button.click());
+        for (const button of buttons) {
+          button.click();
+        }
 
         setTimeout(() => {
           expect(container.innerHTML).toBe(

@@ -54,7 +54,7 @@ function buildFixture(tool, environment) {
   };
 }
 
-fixtureDirs.forEach((dir) => {
+for (const dir of fixtureDirs) {
   const devPath = path.join(__dirname, dir, 'dev');
   if (existsSync(devPath)) {
     addResult(dir, 'dev', buildFixture(dir, 'dev'));
@@ -63,6 +63,6 @@ fixtureDirs.forEach((dir) => {
   if (existsSync(prodPath)) {
     addResult(dir, 'prod', buildFixture(dir, 'prod'));
   }
-});
+}
 
 console.log(table.toString());

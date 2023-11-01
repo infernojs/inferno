@@ -1390,33 +1390,33 @@ describe('keyed-nodes', () => {
       }
 
       describe('Keyed algorithm', () => {
-        TESTS.forEach((t) => {
+        for (const t of TESTS) {
           const name = JSON.stringify(t[0]) + ' => ' + JSON.stringify(t[1]);
-          const testFn = () => {
+
+          it(name, () => {
             checkInnerHtmlEquals(
-              gen(t[0], true),
-              gen(t[1], true),
-              gen(t[1], true),
-              true,
+                gen(t[0], true),
+                gen(t[1], true),
+                gen(t[1], true),
+                true,
             );
-          };
-          it(name, testFn);
-        });
+          });
+        }
       });
 
       describe('Non keyed algorithm', () => {
-        TESTS.forEach((t) => {
+        for (const t of TESTS) {
           const name = JSON.stringify(t[0]) + ' => ' + JSON.stringify(t[1]);
-          const testFn = () => {
+
+          it(name, () => {
             checkInnerHtmlEquals(
-              gen(t[0], false),
-              gen(t[1], false),
-              gen(t[1], false),
-              false,
+                gen(t[0], false),
+                gen(t[1], false),
+                gen(t[1], false),
+                false,
             );
-          };
-          it(name, testFn);
-        });
+          });
+        }
       });
     });
   });

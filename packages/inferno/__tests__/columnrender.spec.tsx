@@ -253,7 +253,7 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy.calls.reset();
       });
 
-      keyedTests.forEach((testCase) => {
+      for (const testCase of keyedTests) {
         it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(
             testCase.update,
@@ -336,7 +336,7 @@ describe('Columns like tests - (JSX)', () => {
           expect(updateItemSpy.calls.count()).toBe(itemsToUpdate.length); // Initial render none to update
           expect(unmountItemSpy.calls.count()).toBe(itemsToRemove.length); // Initial render none unmounted
         });
-      });
+      }
     });
 
     describe('columns NON-KEYED', () => {
@@ -438,7 +438,7 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy.calls.reset();
       });
 
-      nonKeyedTestCases.forEach((testCase) => {
+      for (const testCase of nonKeyedTestCases) {
         it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(
             testCase.update,
@@ -521,7 +521,7 @@ describe('Columns like tests - (JSX)', () => {
           expect(updateItemSpy.calls.count()).toBe(itemsToUpdate.length); // Initial render none to update
           expect(unmountItemSpy.calls.count()).toBe(itemsToRemove.length); // Initial render none unmounted
         });
-      });
+      }
     });
   });
 });

@@ -44,7 +44,9 @@ describe('CreateElement (non-JSX)', () => {
     expect(triggered).toBe(false);
 
     const buttons = container.querySelectorAll('button');
-    buttons.forEach((button) => button.click());
+    for (const button of buttons) {
+      button.click();
+    }
 
     expect(triggered).toBe(true);
   });
@@ -76,7 +78,9 @@ describe('CreateElement (non-JSX)', () => {
     expect(triggered).toBe(false);
 
     const buttons = container.querySelectorAll('button');
-    buttons.forEach((button) => button.click());
+    for (const button of buttons) {
+      button.click();
+    }
 
     expect(triggered).toBe(true);
   });

@@ -565,9 +565,9 @@ describe('Test Utils', () => {
       const result1 = scryRenderedDOMElementsWithClass(tree3, 'one');
       expect(result1 instanceof Array).toBeTruthy();
       expect(result1.length).toBe(3);
-      result1.forEach((result) => {
+      for (const result of result1) {
         expect(result.tagName).toBe('DIV');
-      });
+      }
 
       const result2 = scryRenderedDOMElementsWithClass(tree3, 'two');
       expect(result2 instanceof Array).toBeTruthy();
@@ -620,9 +620,9 @@ describe('Test Utils', () => {
         const result = scryRenderedDOMElementsWithTag(tree4, tagName);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        result.forEach((item) => {
+        for (const item of result) {
           expect(item.tagName).toBe(tagName.toUpperCase());
-        });
+        }
       };
       testValue('div', 1);
       testValue('h1', 2);
@@ -648,11 +648,11 @@ describe('Test Utils', () => {
         const result = scryRenderedVNodesWithType(tree5, type);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        result.forEach((item) => {
+        for (const item of result) {
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
           expect(isVNode(item)).toBe(true);
-        });
+        }
       };
       testValue('p', 0);
       testValue('div', 7); // Outer div + each rendered component div
@@ -680,11 +680,11 @@ describe('Test Utils', () => {
         const result = scryVNodesWithType(tree6, type);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        result.forEach((item) => {
+        for (const item of result) {
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
           expect(isVNode(item)).toBe(true);
-        });
+        }
       };
       testValue('p', 0);
       testValue('div', 1); // Just the outer div

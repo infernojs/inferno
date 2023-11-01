@@ -502,7 +502,9 @@ describe('Components (JSX)', () => {
     it('Second render (update) #1', (done) => {
       render(<Wrapper />, container);
       const buttons = container.querySelectorAll('button');
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
 
       setTimeout(() => {
         expect(container.innerHTML).toBe(
@@ -557,7 +559,9 @@ describe('Components (JSX)', () => {
     it('Second render (update with state change) #2', () => {
       render(<SomeError />, container);
       const buttons = container.querySelectorAll('button');
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
 
       expect(container.innerHTML).toBe('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>');
     });
@@ -611,7 +615,9 @@ describe('Components (JSX)', () => {
     it('Second render (update with state change) #3', (done) => {
       render(<Testing />, container);
       const buttons = container.querySelectorAll('button');
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
 
       setTimeout(() => {
         expect(container.innerHTML).toBe('<div><p>Kalle</p><button>toggle</button></div>');
@@ -880,7 +886,9 @@ describe('Components (JSX)', () => {
       render(<BuggyRender />, container);
       const buttons = container.querySelectorAll('button');
 
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
 
       expect(container.innerHTML).toBe('<div><button>Empty</button><ul><li>BMW</li><li>Volvo</li><li>Saab</li></ul></div>');
     });
@@ -925,7 +933,10 @@ describe('Components (JSX)', () => {
       render(<ChangeChildrenCount />, container);
       const buttons = container.querySelectorAll('button');
 
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
+
       setTimeout(() => {
         expect(container.innerHTML).toBe('<div><button>1</button><div>0</div></div>');
         done();
@@ -982,7 +993,10 @@ describe('Components (JSX)', () => {
       render(<First />, container);
       const buttons = container.querySelectorAll('button');
 
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
+
       setTimeout(() => {
         expect(container.innerHTML).toBe('<div><button>Increase! 1</button><p>1-42</p></div>');
         done();
@@ -1030,7 +1044,10 @@ describe('Components (JSX)', () => {
       render(<First />, container);
       const buttons = container.querySelectorAll('button');
 
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
+
       setTimeout(() => {
         expect(container.innerHTML).toBe('<div><button>Increase! 1</button><p>1</p></div>');
         done();
@@ -1098,7 +1115,9 @@ describe('Components (JSX)', () => {
       render(<First name="guy2" />, secondDiv);
 
       const buttons = firstDiv.querySelectorAll('button');
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
 
       setTimeout(() => {
         expect(container.innerHTML).toBe('<div><div><button>guy1 1</button><p>1</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>');
@@ -1111,7 +1130,9 @@ describe('Components (JSX)', () => {
       render(<First name="guy2" />, secondDiv);
 
       const buttons = secondDiv.querySelectorAll('button');
-      buttons.forEach((button) => button.click());
+      for (const button of buttons) {
+        button.click();
+      }
 
       setTimeout(() => {
         expect(container.innerHTML).toBe('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 1</button><p>1</p></div></div>');
@@ -1381,7 +1402,9 @@ describe('Components (JSX)', () => {
     expect(containerFlag).toBe(false);
 
     const spans = container.querySelectorAll('span');
-    spans.forEach((span) => span.click());
+    for (const span of spans) {
+      span.click();
+    }
 
     expect(btnFlag).toBe(true);
     expect(containerFlag).toBe(true);
@@ -1439,7 +1462,9 @@ describe('Components (JSX)', () => {
     expect(containerFlag).toBe(false);
 
     const spans = container.querySelectorAll('span');
-    spans.forEach((span) => span.click());
+    for (const span of spans) {
+      span.click();
+    }
 
     expect(btnFlag).toBe(true);
     expect(containerFlag).toBe(false);
