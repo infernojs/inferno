@@ -130,6 +130,8 @@ describe('keyed-nodes', () => {
     expect(container.textContent).toBe('12340');
     expect(container.firstChild.childNodes.length).toBe(5);
     render(template(generateKeyNodes([0, 1, 2, 3, 4])), container);
+    expect(container.textContent).toBe('01234');
+    expect(container.firstChild.childNodes.length).toBe(5);
     render(
       template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])),
       container,
