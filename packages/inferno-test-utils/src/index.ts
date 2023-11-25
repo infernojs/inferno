@@ -181,6 +181,7 @@ export function scryRenderedDOMElementsWithClass(
       if (
         !isString(domClassName) &&
         !isNullOrUndef(instance.dom) &&
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         isFunction(instance.dom.getAttribute)
       ) {
         // SVG || null, probably

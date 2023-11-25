@@ -304,6 +304,7 @@ export function mountClassComponent(
 
   // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
   let childAnimations = animations;
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   if (isFunction(instance.componentDidAppear)) {
     childAnimations = new AnimationQueues();
   }

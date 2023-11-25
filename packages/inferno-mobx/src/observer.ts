@@ -349,6 +349,7 @@ function mixinLifecycleEvents(target): void {
   patch(target, 'componentWillUnmount', false);
   patch(target, 'componentDidUpdate', false);
   if (!target.shouldComponentUpdate) {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
   }
 }
@@ -421,6 +422,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         component,
         newProps,
         null,
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         isStateless(component) ? null : this.storeRef,
       );
     }

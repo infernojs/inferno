@@ -35,6 +35,7 @@ export class RenderQueueStream extends Readable {
   }
 
   public _read(): void {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     setTimeout(this.pushQueue, 0);
   }
 
@@ -83,6 +84,7 @@ export class RenderQueueStream extends Readable {
       chunk.then((index) => {
         self.collector.splice(0, 1, ...self.promises[index]);
         self.promises[index] = null;
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         setTimeout(self.pushQueue, 0);
       });
       this.collector[0] = null;
@@ -159,6 +161,7 @@ export class RenderQueueStream extends Readable {
                     );
                   }
 
+                  // eslint-disable-next-line @typescript-eslint/unbound-method
                   setTimeout(this.pushQueue, 0);
                   return promisePosition;
                 }),

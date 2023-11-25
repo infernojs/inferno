@@ -319,6 +319,7 @@ export function connectAdvanced(
         if (!this.selector.shouldComponentUpdate) {
           this.notifyNestedSubs!();
         } else {
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           this.componentDidUpdate = this.notifyNestedSubsOnComponentDidUpdate;
           this.setState({});
         }
@@ -372,6 +373,7 @@ export function connectAdvanced(
               WrappedComponent,
               this.addExtraProps(selector.props),
               null,
+              // eslint-disable-next-line @typescript-eslint/unbound-method
               withRef ? this.setWrappedInstance : null,
             ),
           );
