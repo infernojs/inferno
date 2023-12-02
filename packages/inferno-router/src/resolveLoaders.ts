@@ -1,44 +1,45 @@
 import { isNullOrUndef, isUndefined } from 'inferno-shared';
 import { matchPath } from './matchPath';
-import type { TLoaderData } from './Router';
+import type { TLoaderData, TLoaderProps } from './Router';
 import { Switch } from './Switch';
+import { Route } from './Route';
 
-export async function resolveLoaders(
-  loaderEntries: TLoaderEntry[],
-): Promise<Record<string, TLoaderData>> {
-  const promises = loaderEntries.map(
-    async ({ path, params, request, loader }) => {
-      return await resolveEntry(path, params, request, loader);
-    },
-  );
-  return await Promise.all(promises).then((result) => {
+export function resolveLoaders(loaderEntries: TLoaderEntry[]): Promise<Record<string, TLoaderData>> {
+  const promises = loaderEntries.map(({ path, params, request, loader }) => {
+    return resolveEntry(path, params, request, loader);
+  });
+  return Promise.all(promises).then((result) => {
     return Object.fromEntries(result);
   });
 }
 
-interface TLoaderEntry {
+type TLoaderEntry = {
   path: string;
   params: Record<string, any>;
   request: Request;
   controller: AbortController;
   loader: (TLoaderProps) => Promise<TLoaderEntry>;
-}
+};
 
-export function traverseLoaders(
-  location: string,
-  tree: any,
-  base?: string,
-): TLoaderEntry[] {
+export function traverseLoaders(location: string, tree: any, base?: string): TLoaderEntry[] {
   return _traverseLoaders(location, tree, base, false);
 }
 
+function _isSwitch(node: any): boolean {
+  // Using the same patterns as for _isRoute, but I don't have a test where
+  // I pass a Switch via an array, but it is better to be consistent.
+  return node?.type?.prototype instanceof Switch || node?.type === Switch;
+}
+
+function _isRoute(node: any): boolean {
+  // So the === check is needed if routes are passed in an array,
+  // the instanceof test if routes are passed as children to a Component
+  // This feels inconsistent, but at least it works.
+  return node?.type?.prototype instanceof Route || node?.type === Route;
+}
+
 // Optionally pass base param during SSR to get fully qualified request URI passed to loader in request param
-function _traverseLoaders(
-  location: string,
-  tree: any,
-  base?: string,
-  parentIsSwitch = false,
-): TLoaderEntry[] {
+function _traverseLoaders(location: string, tree: any, base?: string, parentIsSwitch = false): TLoaderEntry[] {  
   // Make sure tree isn't null
   if (isNullOrUndef(tree)) return [];
 
@@ -47,12 +48,7 @@ function _traverseLoaders(
     const entriesOfArr = tree.reduce((res, node) => {
       if (parentIsSwitch && hasMatch) return res;
 
-      const outpArr = _traverseLoaders(
-        location,
-        node,
-        base,
-        node?.type?.prototype instanceof Switch,
-      );
+      const outpArr = _traverseLoaders(location, node, base, _isSwitch(node));
       if (parentIsSwitch && outpArr.length > 0) {
         hasMatch = true;
       }
@@ -62,63 +58,47 @@ function _traverseLoaders(
   }
 
   const outp: TLoaderEntry[] = [];
-  let isRouteButNotMatch = false;
-  if (tree.props) {
-    // TODO: If we traverse a switch, only the first match should be returned
+  if (_isRoute(tree) && tree.props) {
     // TODO: Should we check if we are in Router? It is defensive and could save a bit of time, but is it worth it?
-    const {
-      path,
-      exact = false,
-      strict = false,
-      sensitive = false,
-    } = tree.props;
+    const { path, exact = false, strict = false, sensitive = false } = tree.props;
     const match = matchPath(location, {
       exact,
       path,
       sensitive,
-      strict,
+      strict
     });
 
     // So we can bail out of recursion it this was a Route which didn't match
-    isRouteButNotMatch = !match;
-
-    // Add any loader on this node (but only on the VNode)
-    if (match && !tree.context && tree.props?.loader && tree.props?.path) {
+    if (!match) {
+      return outp;
+    } else if (!tree.context && tree.props?.loader && tree.props?.path) {
+      // Add any loader on this node (but only on the VNode)
       const { params } = match;
       const controller = new AbortController();
-      const request = createClientSideRequest(
-        location,
-        controller.signal,
-        base,
-      );
+      const request = createClientSideRequest(location, controller.signal, base);
 
       outp.push({
         controller,
         loader: tree.props.loader,
         params,
         path,
-        request,
+        request
       });
     }
   }
 
-  // Traverse ends here
-  if (isRouteButNotMatch) return outp;
-
   // Traverse children
-  const entries = _traverseLoaders(
-    location,
-    tree.children || tree.props?.children,
-    base,
-    tree.type?.prototype instanceof Switch,
-  );
+  const children = tree.children ?? tree.props?.children;
+  if (isNullOrUndef(children)) return outp;
+
+  const entries = _traverseLoaders(location, children, base, _isSwitch(tree));
   return [...outp, ...entries];
 }
 
-async function resolveEntry(path, params, request, loader): Promise<any> {
+function resolveEntry(path, params, request, loader): Promise<any> {
   return (
     loader({ params, request })
-      .then(async (res: any) => {
+      .then((res: any) => {
         // This implementation is based on:
         // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
 
@@ -137,17 +117,19 @@ async function resolveEntry(path, params, request, loader): Promise<any> {
           dataPromise = res.text();
         }
 
-        return await dataPromise
-          .then((body) => {
-            // We got a JSON error
-            if (!res.ok) {
-              return [path, { err: body }];
-            }
-            // We got JSON response
-            return [path, { res: body }];
-          })
-          // Could not parse JSON
-          .catch((err) => [path, { err }]);
+        return (
+          dataPromise
+            .then((body) => {
+              // We got a JSON error
+              if (!res.ok) {
+                return [path, { err: body }];
+              }
+              // We got JSON response
+              return [path, { res: body }];
+            })
+            // Could not parse JSON
+            .catch((err) => [path, { err }])
+        );
       })
       // Could not fetch data
       .catch((err) => [path, { err }])
@@ -158,9 +140,7 @@ async function resolveEntry(path, params, request, loader): Promise<any> {
 // NOTE: We don't currently support the submission param of createClientSideRequest which is why
 // some of the related code is commented away
 
-export type FormEncType =
-  | 'application/x-www-form-urlencoded'
-  | 'multipart/form-data';
+export type FormEncType = 'application/x-www-form-urlencoded' | 'multipart/form-data';
 
 export type MutationFormMethod = 'post' | 'put' | 'patch' | 'delete';
 export type FormMethod = 'get' | MutationFormMethod;
@@ -193,12 +173,9 @@ function createClientSideRequest(
   location: string | Location,
   signal: AbortSignal,
   // submission?: Submission
-  base?: string,
+  base?: string
 ): Request {
-  const url =
-    inBrowser || !isUndefined(base)
-      ? createClientSideURL(location, base)
-      : location.toString();
+  const url = inBrowser || !isUndefined(base) ? createClientSideURL(location, base) : location.toString();
   const init: RequestInit = { signal };
 
   // TODO: react-router supports submitting forms with loaders, but this needs more investigation
@@ -214,7 +191,7 @@ function createClientSideRequest(
 
   // Request is undefined when running tests
   if (process.env.NODE_ENV === 'test' && typeof Request === 'undefined') {
-    // @ts-expect-error global req
+    // @ts-ignore
     global.Request = class Request {
       public url;
       public signal;
@@ -233,18 +210,12 @@ function createClientSideRequest(
  * Parses a string URL path into its separate pathname, search, and hash components.
  */
 
-export function createClientSideURL(
-  location: Location | string,
-  base?: string,
-): URL {
+export function createClientSideURL(location: Location | string, base?: string): URL {
   if (base === undefined && typeof window !== 'undefined') {
     // window.location.origin is "null" (the literal string value) in Firefox
     // under certain conditions, notably when serving from a local HTML file
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
-    base =
-      window?.location?.origin !== 'null'
-        ? window.location.origin
-        : window.location.href;
+    base = window?.location?.origin !== 'null' ? window.location.origin : window.location.href;
   }
 
   const url = new URL(location.toString(), base);

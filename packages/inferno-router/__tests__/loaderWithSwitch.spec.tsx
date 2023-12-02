@@ -1,12 +1,5 @@
 import { render, rerender } from 'inferno';
-import {
-  MemoryRouter,
-  Route,
-  Switch,
-  NavLink,
-  useLoaderData,
-  useLoaderError,
-} from 'inferno-router';
+import { MemoryRouter, StaticRouter, Route, Switch, NavLink, useLoaderData, useLoaderError, resolveLoaders, traverseLoaders } from 'inferno-router';
 // Cherry picked relative import so we don't get node-stuff from inferno-server in browser test
 import { createEventGuard } from './testUtils';
 
@@ -44,7 +37,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container,
+      container
     );
 
     // Wait until async loader has completed
@@ -73,7 +66,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
           loader={loaderFunc}
         />
       </MemoryRouter>,
-      container,
+      container
     );
 
     // Wait until async loader has completed
@@ -92,14 +85,14 @@ describe('A <Route> with loader in a MemoryRouter', () => {
       return { message: TEXT };
     };
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined },
+      '/flowers': { res: await loaderFunc(), err: undefined }
     };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </MemoryRouter>,
-      container,
+      container
     );
 
     expect(container.innerHTML).toContain(TEXT);
@@ -178,14 +171,14 @@ describe('A <Route> with loader in a MemoryRouter', () => {
       return { message: TEXT };
     };
     const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined },
+      '/flowers': { res: await loaderFunc(), err: undefined }
     };
 
     render(
       <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
         <Route path="/flowers" render={Component} loader={loaderFunc} />
       </MemoryRouter>,
-      container,
+      container
     );
 
     expect(container.innerHTML).toContain(TEXT);
@@ -283,7 +276,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
           />
         </Switch>
       </MemoryRouter>,
-      container,
+      container
     );
 
     // Check that we are starting in the right place
@@ -369,5 +362,104 @@ describe('A <Route> with loader in a MemoryRouter', () => {
 
     expect(container.querySelector('#create').innerHTML).toContain(TEST);
     expect(container.querySelector('#publish')).toBeNull();
+  });
+});
+
+describe('Resolve loaders during server side rendering', () => {
+  it('Can resolve with single route', async () => {
+    const TEXT = 'bubblegum';
+    const Component = (props) => {
+      const res = useLoaderData(props);
+      return <h1>{res?.message}</h1>;
+    };
+
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
+
+    const initialData = {
+      '/flowers': { res: await loaderFunc() }
+    };
+
+    const app = (
+      <StaticRouter context={{}} location="/flowers">
+        <Switch>
+          <Route path="/flowers" render={Component} loader={loaderFunc} />
+        </Switch>
+      </StaticRouter>
+    );
+
+    const loaderEntries = traverseLoaders('/flowers', app);
+    const result = await resolveLoaders(loaderEntries);
+    expect(result).toEqual(initialData);
+  });
+
+  it('Can resolve with multiple routes', async () => {
+    const TEXT = 'bubblegum';
+    const Component = (props) => {
+      const res = useLoaderData(props);
+      return <h1>{res?.message}</h1>;
+    };
+
+    const loaderFuncNoHit = async () => {
+      return { message: 'no' };
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
+
+    const initialData = {
+      '/birds': { res: await loaderFunc() }
+    };
+
+    const app = (
+      <StaticRouter context={{}} location="/birds">
+        <Switch>
+          <Route path="/flowers" render={Component} loader={loaderFuncNoHit} />
+          <Route path="/birds" render={Component} loader={loaderFunc} />
+          <Route path="/birds" render={Component} loader={loaderFuncNoHit} />
+        </Switch>
+      </StaticRouter>
+    );
+
+    const loaderEntries = traverseLoaders('/birds', app);
+    const result = await resolveLoaders(loaderEntries);
+    expect(result).toEqual(initialData);
+  });
+
+  it('Can resolve with nested routes', async () => {
+    const TEXT = 'bubblegum';
+    const Component = (props) => {
+      const res = useLoaderData(props);
+      return <h1>{res?.message}</h1>;
+    };
+
+    const loaderFuncNoHit = async () => {
+      return { message: 'no' };
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
+
+    const initialData = {
+      '/flowers': { res: await loaderFunc() },
+      '/flowers/birds': { res: await loaderFunc() }
+    };
+
+    const app = (
+      <StaticRouter context={{}} location="/flowers/birds">
+        <Route path="/flowers" render={Component} loader={loaderFunc}>
+          <Switch>
+            <Route path="/flowers/birds" render={Component} loader={loaderFunc} />
+            <Route path="/flowers/bees" render={Component} loader={loaderFuncNoHit} />
+            {null}
+          </Switch>
+        </Route>
+      </StaticRouter>
+    );
+
+    const loaderEntries = traverseLoaders('/flowers/birds', app);
+    const result = await resolveLoaders(loaderEntries);
+    expect(result).toEqual(initialData);
   });
 });
