@@ -174,7 +174,7 @@ function extendEventProperties(event): IEventData {
   return eventData;
 }
 
-function rootEvent(name: string) {
+function rootEvent(name: string): (event: SemiSyntheticEvent<any>) => void {
   const isClick = name === 'onClick' || name === 'onDblClick';
   return function (event: SemiSyntheticEvent<any>) {
     dispatchEvents(event, isClick, name, extendEventProperties(event));
@@ -185,7 +185,6 @@ function attachEventToDocument(
   name: string,
 ): (event: SemiSyntheticEvent<any>) => void {
   const attachedEvent = rootEvent(name);
-    
   // @ts-expect-error TODO: FIXME
   document.addEventListener(normalizeEventName(name), attachedEvent);
 
