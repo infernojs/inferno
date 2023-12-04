@@ -4,11 +4,15 @@ import type { TLoaderData, TLoaderProps } from './Router';
 import { Switch } from './Switch';
 import { Route } from './Route';
 
-export function resolveLoaders(loaderEntries: TLoaderEntry[]): Promise<Record<string, TLoaderData>> {
-  const promises = loaderEntries.map(({ path, params, request, loader }) => {
-    return resolveEntry(path, params, request, loader);
-  });
-  return Promise.all(promises).then((result) => {
+export async function resolveLoaders(
+  loaderEntries: TLoaderEntry[],
+): Promise<Record<string, TLoaderData>> {
+  const promises = loaderEntries.map(
+    async ({ path, params, request, loader }) => {
+      return await resolveEntry(path, params, request, loader);
+    },
+  );
+  return await Promise.all(promises).then((result) => {
     return Object.fromEntries(result);
   });
 }
@@ -113,10 +117,10 @@ function _traverseLoaders(
   return [...outp, ...entries];
 }
 
-function resolveEntry(path, params, request, loader): Promise<any> {
+async function resolveEntry(path, params, request, loader): Promise<any> {
   return (
     loader({ params, request })
-      .then((res: any) => {
+      .then(async (res: any) => {
         // This implementation is based on:
         // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
 
@@ -135,19 +139,17 @@ function resolveEntry(path, params, request, loader): Promise<any> {
           dataPromise = res.text();
         }
 
-        return (
-          dataPromise
-            .then((body) => {
-              // We got a JSON error
-              if (!res.ok) {
-                return [path, { err: body }];
-              }
-              // We got JSON response
-              return [path, { res: body }];
-            })
-            // Could not parse JSON
-            .catch((err) => [path, { err }])
-        );
+        return await dataPromise
+          .then((body) => {
+            // We got a JSON error
+            if (!res.ok) {
+              return [path, { err: body }];
+            }
+            // We got JSON response
+            return [path, { res: body }];
+          })
+          // Could not parse JSON
+          .catch((err) => [path, { err }]);
       })
       // Could not fetch data
       .catch((err) => [path, { err }])
