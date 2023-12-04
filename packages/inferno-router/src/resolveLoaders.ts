@@ -13,15 +13,19 @@ export function resolveLoaders(loaderEntries: TLoaderEntry[]): Promise<Record<st
   });
 }
 
-type TLoaderEntry = {
+interface TLoaderEntry {
   path: string;
   params: Record<string, any>;
   request: Request;
   controller: AbortController;
-  loader: (TLoaderProps) => Promise<TLoaderEntry>;
-};
+  loader: (props: TLoaderProps<any>) => Promise<TLoaderEntry>;
+}
 
-export function traverseLoaders(location: string, tree: any, base?: string): TLoaderEntry[] {
+export function traverseLoaders(
+  location: string,
+  tree: any,
+  base?: string,
+): TLoaderEntry[] {
   return _traverseLoaders(location, tree, base, false);
 }
 
@@ -39,7 +43,12 @@ function _isRoute(node: any): boolean {
 }
 
 // Optionally pass base param during SSR to get fully qualified request URI passed to loader in request param
-function _traverseLoaders(location: string, tree: any, base?: string, parentIsSwitch = false): TLoaderEntry[] {  
+function _traverseLoaders(
+  location: string,
+  tree: any,
+  base?: string,
+  parentIsSwitch = false,
+): TLoaderEntry[] {
   // Make sure tree isn't null
   if (isNullOrUndef(tree)) return [];
 
@@ -60,12 +69,17 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
   const outp: TLoaderEntry[] = [];
   if (_isRoute(tree) && tree.props) {
     // TODO: Should we check if we are in Router? It is defensive and could save a bit of time, but is it worth it?
-    const { path, exact = false, strict = false, sensitive = false } = tree.props;
+    const {
+      path,
+      exact = false,
+      strict = false,
+      sensitive = false,
+    } = tree.props;
     const match = matchPath(location, {
       exact,
       path,
       sensitive,
-      strict
+      strict,
     });
 
     // So we can bail out of recursion it this was a Route which didn't match
@@ -75,14 +89,18 @@ function _traverseLoaders(location: string, tree: any, base?: string, parentIsSw
       // Add any loader on this node (but only on the VNode)
       const { params } = match;
       const controller = new AbortController();
-      const request = createClientSideRequest(location, controller.signal, base);
+      const request = createClientSideRequest(
+        location,
+        controller.signal,
+        base,
+      );
 
       outp.push({
         controller,
         loader: tree.props.loader,
         params,
         path,
-        request
+        request,
       });
     }
   }
@@ -140,7 +158,9 @@ function resolveEntry(path, params, request, loader): Promise<any> {
 // NOTE: We don't currently support the submission param of createClientSideRequest which is why
 // some of the related code is commented away
 
-export type FormEncType = 'application/x-www-form-urlencoded' | 'multipart/form-data';
+export type FormEncType =
+  | 'application/x-www-form-urlencoded'
+  | 'multipart/form-data';
 
 export type MutationFormMethod = 'post' | 'put' | 'patch' | 'delete';
 export type FormMethod = 'get' | MutationFormMethod;
@@ -173,9 +193,12 @@ function createClientSideRequest(
   location: string | Location,
   signal: AbortSignal,
   // submission?: Submission
-  base?: string
+  base?: string,
 ): Request {
-  const url = inBrowser || !isUndefined(base) ? createClientSideURL(location, base) : location.toString();
+  const url =
+    inBrowser || !isUndefined(base)
+      ? createClientSideURL(location, base)
+      : location.toString();
   const init: RequestInit = { signal };
 
   // TODO: react-router supports submitting forms with loaders, but this needs more investigation
@@ -191,7 +214,7 @@ function createClientSideRequest(
 
   // Request is undefined when running tests
   if (process.env.NODE_ENV === 'test' && typeof Request === 'undefined') {
-    // @ts-ignore
+    // @ts-expect-error minimum to fix tests
     global.Request = class Request {
       public url;
       public signal;
@@ -210,12 +233,18 @@ function createClientSideRequest(
  * Parses a string URL path into its separate pathname, search, and hash components.
  */
 
-export function createClientSideURL(location: Location | string, base?: string): URL {
+export function createClientSideURL(
+  location: Location | string,
+  base?: string,
+): URL {
   if (base === undefined && typeof window !== 'undefined') {
     // window.location.origin is "null" (the literal string value) in Firefox
     // under certain conditions, notably when serving from a local HTML file
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
-    base = window?.location?.origin !== 'null' ? window.location.origin : window.location.href;
+    base =
+      window?.location?.origin !== 'null'
+        ? window.location.origin
+        : window.location.href;
   }
 
   const url = new URL(location.toString(), base);
