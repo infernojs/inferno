@@ -33,7 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
 }
 
-export function normalizeEventName(name): string {
+export function normalizeEventName(name): keyof DocumentEventMap {
   return name.substring(2).toLowerCase();
 }
 
