@@ -42,7 +42,7 @@
   ],
   "scripts": {
     "clean": "lerna exec -- rimraf dist tmpDist .rpt2_cache_development .rpt2_cache_production package-lock.json",
-    "coveralls": "coveralls < coverage/lcov.info || true",
+    "coveralls": "coveralls < coverage/lcov.info",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest --runInBand --no-cache --no-watchman",
     "docs-build": "cross-env NODE_ENV=production node docs/build.js",
     "docs-build:dev": "node docs/build.js",
