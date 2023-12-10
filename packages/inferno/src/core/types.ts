@@ -87,7 +87,9 @@ export type ClipboardEvent<T> = SemiSyntheticEvent<T> & NativeClipboardEvent;
 export type CompositionEvent<T> = SemiSyntheticEvent<T> & NativeCompositionEvent;
 export type DragEvent<T> = InfernoMouseEvent<T> & NativeDragEvent;
 export type FocusEvent<T> = SemiSyntheticEvent<T> & NativeFocusEvent;
-export type FormEvent<T> = SemiSyntheticEvent<T>;
+export interface FormEvent<T> extends SemiSyntheticEvent<T> {
+  target: EventTarget & T;
+}
 
 export interface ChangeEvent<T> extends SemiSyntheticEvent<T> {
   target: EventTarget & T;
