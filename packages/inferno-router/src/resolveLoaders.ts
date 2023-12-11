@@ -1,7 +1,8 @@
 import { isNullOrUndef, isUndefined } from 'inferno-shared';
 import { matchPath } from './matchPath';
-import type { TLoaderData } from './Router';
+import type { TLoaderData, TLoaderProps } from './Router';
 import { Switch } from './Switch';
+import { Route } from './Route';
 
 export async function resolveLoaders(
   loaderEntries: TLoaderEntry[],
@@ -21,7 +22,7 @@ interface TLoaderEntry {
   params: Record<string, any>;
   request: Request;
   controller: AbortController;
-  loader: (TLoaderProps) => Promise<TLoaderEntry>;
+  loader: (props: TLoaderProps<any>) => Promise<TLoaderEntry>;
 }
 
 export function traverseLoaders(
@@ -30,6 +31,19 @@ export function traverseLoaders(
   base?: string,
 ): TLoaderEntry[] {
   return _traverseLoaders(location, tree, base, false);
+}
+
+function _isSwitch(node: any): boolean {
+  // Using the same patterns as for _isRoute, but I don't have a test where
+  // I pass a Switch via an array, but it is better to be consistent.
+  return node?.type?.prototype instanceof Switch || node?.type === Switch;
+}
+
+function _isRoute(node: any): boolean {
+  // So the === check is needed if routes are passed in an array,
+  // the instanceof test if routes are passed as children to a Component
+  // This feels inconsistent, but at least it works.
+  return node?.type?.prototype instanceof Route || node?.type === Route;
 }
 
 // Optionally pass base param during SSR to get fully qualified request URI passed to loader in request param
@@ -47,12 +61,7 @@ function _traverseLoaders(
     const entriesOfArr = tree.reduce((res, node) => {
       if (parentIsSwitch && hasMatch) return res;
 
-      const outpArr = _traverseLoaders(
-        location,
-        node,
-        base,
-        node?.type?.prototype instanceof Switch,
-      );
+      const outpArr = _traverseLoaders(location, node, base, _isSwitch(node));
       if (parentIsSwitch && outpArr.length > 0) {
         hasMatch = true;
       }
@@ -62,9 +71,7 @@ function _traverseLoaders(
   }
 
   const outp: TLoaderEntry[] = [];
-  let isRouteButNotMatch = false;
-  if (tree.props) {
-    // TODO: If we traverse a switch, only the first match should be returned
+  if (_isRoute(tree) && tree.props) {
     // TODO: Should we check if we are in Router? It is defensive and could save a bit of time, but is it worth it?
     const {
       path,
@@ -80,10 +87,10 @@ function _traverseLoaders(
     });
 
     // So we can bail out of recursion it this was a Route which didn't match
-    isRouteButNotMatch = !match;
-
-    // Add any loader on this node (but only on the VNode)
-    if (match && !tree.context && tree.props?.loader && tree.props?.path) {
+    if (!match) {
+      return outp;
+    } else if (!tree.context && tree.props?.loader && tree.props?.path) {
+      // Add any loader on this node (but only on the VNode)
       const { params } = match;
       const controller = new AbortController();
       const request = createClientSideRequest(
@@ -102,16 +109,11 @@ function _traverseLoaders(
     }
   }
 
-  // Traverse ends here
-  if (isRouteButNotMatch) return outp;
-
   // Traverse children
-  const entries = _traverseLoaders(
-    location,
-    tree.children || tree.props?.children,
-    base,
-    tree.type?.prototype instanceof Switch,
-  );
+  const children = tree.children ?? tree.props?.children;
+  if (isNullOrUndef(children)) return outp;
+
+  const entries = _traverseLoaders(location, children, base, _isSwitch(tree));
   return [...outp, ...entries];
 }
 
@@ -214,7 +216,7 @@ function createClientSideRequest(
 
   // Request is undefined when running tests
   if (process.env.NODE_ENV === 'test' && typeof Request === 'undefined') {
-    // @ts-expect-error global req
+    // @ts-expect-error minimum to fix tests
     global.Request = class Request {
       public url;
       public signal;
