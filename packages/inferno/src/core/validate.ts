@@ -44,7 +44,7 @@ function getTagName(input): string {
 }
 
 function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
-  const foundKeys: any = {};
+  const foundKeys: Record<string, boolean> = {};
 
   for (let i = 0, len = vNodeTree.length; i < len; ++i) {
     const childNode = vNodeTree[i];
