@@ -693,4 +693,44 @@ describe('Resolve loaders during server side rendering', () => {
     const result = await resolveLoaders(loaderEntries);
     expect(result).toEqual(initialData);
   });
+
+
+  it('Can resolve with sub classed Route', async () => {
+    class MyRoute extends Route {
+      constructor(props, context) {
+        super(props, context);
+      }
+    }
+    const TEXT = 'bubblegum';
+    const Component = (props) => {
+      const res = useLoaderData(props);
+      return <h1>{res?.message}</h1>;
+    };
+
+    const loaderFuncNoHit = async () => {
+      return { message: 'no' };
+    };
+    const loaderFunc = async () => {
+      return { message: TEXT };
+    };
+
+    const initialData = {
+      '/flowers': { res: await loaderFunc() },
+      '/flowers/birds': { res: await loaderFunc() }
+    };
+
+    const app = (
+      <StaticRouter context={{}} location="/flowers/birds">
+        <MyRoute path="/flowers" render={Component} loader={loaderFunc}>
+          <MyRoute path="/flowers/birds" render={Component} loader={loaderFunc} />
+          <MyRoute path="/flowers/bees" render={Component} loader={loaderFuncNoHit} />
+          {null}
+        </MyRoute>
+      </StaticRouter>
+    );
+
+    const loaderEntries = traverseLoaders('/flowers/birds', app);
+    const result = await resolveLoaders(loaderEntries);
+    expect(result).toEqual(initialData);
+  });
 });

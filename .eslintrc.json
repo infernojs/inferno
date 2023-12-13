@@ -36,6 +36,8 @@
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/non-nullable-type-assertion-style": "off",
     "no-void": "off",
     "no-labels": "off"
   }
