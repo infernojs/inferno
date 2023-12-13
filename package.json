@@ -102,7 +102,7 @@
     "babel-plugin-inferno": "6.7.1",
     "cli-table": "^0.3.11",
     "concat-stream-es6": "0.0.1",
-    "coveralls": "^3.1.1",
+    "coveralls-next": "^4.2.0",
     "cross-env": "^7.0.3",
     "d3-scale-chromatic": "^3.0.0",
     "eslint": "^8.55.0",
@@ -134,7 +134,7 @@
     "swc": "^1.0.11",
     "swc-loader": "^0.2.3",
     "swc-plugin-inferno": "^0.0.15",
-    "ts-plugin-inferno": "^6.0.2",
+    "ts-plugin-inferno": "^6.0.3",
     "typescript": "^5.3.3"
   }
 }
