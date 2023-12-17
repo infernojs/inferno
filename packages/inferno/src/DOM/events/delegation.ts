@@ -174,34 +174,17 @@ function extendEventProperties(event): IEventData {
   return eventData;
 }
 
-function rootClickEvent(name: string) {
-  return function (event) {
-    if (event.button !== 0) {
-      // Firefox incorrectly triggers click event for mid/right mouse buttons.
-      // This bug has been active for 17 years.
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=184051
-      event.stopPropagation();
-      return;
-    }
-
-    dispatchEvents(event, true, name, extendEventProperties(event));
-  };
-}
-
-function rootEvent(name: string) {
+function rootEvent(name: string): (event: SemiSyntheticEvent<any>) => void {
+  const isClick = name === 'onClick' || name === 'onDblClick';
   return function (event: SemiSyntheticEvent<any>) {
-    dispatchEvents(event, false, name, extendEventProperties(event));
+    dispatchEvents(event, isClick, name, extendEventProperties(event));
   };
 }
 
 function attachEventToDocument(
   name: string,
 ): (event: SemiSyntheticEvent<any>) => void {
-  const attachedEvent =
-    name === 'onClick' || name === 'onDblClick'
-      ? rootClickEvent(name)
-      : rootEvent(name);
-
+  const attachedEvent = rootEvent(name);
   // @ts-expect-error TODO: FIXME
   document.addEventListener(normalizeEventName(name), attachedEvent);
 

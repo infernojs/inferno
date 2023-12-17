@@ -424,46 +424,6 @@ describe('BUG: instance - null', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should not propagate mid/right mouse buttons clicks', (done) => {
-    const obj = {
-      spy() {},
-    };
-    const spy = spyOn(obj, 'spy');
-
-    render(
-      <div>
-        <div onClick={spy} id="MAGICBUTTON">
-          test
-        </div>
-      </div>,
-      container,
-    );
-
-    const event = document.createEvent('MouseEvents');
-    // Simulate right click
-    Object.defineProperty(event, 'button', {
-      value: 2,
-    });
-
-    // If changing button for click event is not supported, then we can skip this test.
-    if (event.button === 0) {
-      done();
-      return;
-    }
-
-    event.initEvent('click', true, true);
-
-    expect(spy.calls.count()).toBe(0);
-
-    const node = container.querySelector('#MAGICBUTTON');
-    node.dispatchEvent(event);
-
-    setTimeout(function () {
-      expect(spy.calls.count()).toBe(0);
-      done();
-    }, 10);
-  });
-
   it('Should not fail #2', () => {
     const items = [
       {
