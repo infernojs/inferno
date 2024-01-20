@@ -185,8 +185,6 @@ function attachEventToDocument(
   name: string,
 ): (event: SemiSyntheticEvent<any>) => void {
   const attachedEvent = rootEvent(name);
-  // @ts-expect-error TODO: FIXME
   document.addEventListener(normalizeEventName(name), attachedEvent);
-
   return attachedEvent;
 }

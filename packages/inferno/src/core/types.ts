@@ -79,8 +79,8 @@ export interface SemiSyntheticEvent<T> extends Event {
    * A reference to the element on which the event listener is registered.
    */
   currentTarget: EventTarget & T;
-  isDefaultPrevented: () => boolean;
-  isPropagationStopped: () => boolean;
+  isDefaultPrevented?: () => boolean;
+  isPropagationStopped?: () => boolean;
 }
 
 export type ClipboardEvent<T> = SemiSyntheticEvent<T> & NativeClipboardEvent;
