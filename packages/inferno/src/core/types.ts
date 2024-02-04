@@ -2326,4 +2326,6 @@ declare global {
       semantics: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
     }
   }
+
+  var SKIP_INFERNO_WARNINGS: string;
 }

@@ -35,27 +35,30 @@ import { createRef, forwardRef, mountRef } from './core/refs';
 export * from './core/types';
 
 if (process.env.NODE_ENV !== 'production') {
-  // Checks if Inferno is running in jest testing environment.
-  const testingEnv =
-    typeof process === 'object' && process.env?.JEST_WORKER_ID !== undefined;
+  const skipWarnings =
+    typeof SKIP_INFERNO_WARNINGS !== 'undefined' ||
+    (typeof process === 'object' &&
+      (process.env?.SKIP_INFERNO_WARNINGS !== undefined ||
+        process.env?.JEST_WORKER_ID !== undefined));
 
-  // This message informs developers that they are using development mode (can happen
-  // in production because of bundling mistakes) and, therefore, Inferno is slower
-  // than in production mode. Skipping the notification for testing mode to keep testing
-  // console clear.
+  if (!skipWarnings) {
+    // This message informs developers that they are using development mode
+    // (can happen in production because of bundling mistakes) and, therefore,
+    // Inferno is slower than in production mode.
+    console.log('Inferno is in development mode.');
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const testFunc = function testFn() {};
-  console.log('Inferno is in development mode.');
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    const testFunc = function testFn() {};
 
-  // eslint-disable-next-line
-  if (!testingEnv && !((testFunc as Function).name || testFunc.toString()).includes('testFn')) {
-    warning(
-      "It looks like you're using a minified copy of the development build " +
-        'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-        'the production build which skips development warnings and is faster. ' +
-        'See http://infernojs.org for more details.',
-    );
+    // eslint-disable-next-line
+    if (!((testFunc as Function).name || testFunc.toString()).includes('testFn')) {
+      warning(
+        "It looks like you're using a minified copy of the development build " +
+          'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+          'the production build which skips development warnings and is faster. ' +
+          'See http://infernojs.org for more details.',
+      );
+    }
   }
 }
 
