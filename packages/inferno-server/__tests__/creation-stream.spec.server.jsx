@@ -143,6 +143,31 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       result: '<div style="opacity:0.8;"></div>'
     },
     {
+      description: 'Should not render empty style attribute #1',
+      template: () => <div style={{ }} />,
+      result: '<div></div>',
+    },
+    {
+      description: 'Should not render empty style attribute #2',
+      template: () => <div style={null} />,
+      result: '<div></div>',
+    },
+    {
+      description: 'Should not render empty style attribute #3',
+      template: () => <div style={false} />,
+      result: '<div></div>',
+    },
+    {
+      description: 'Should not render empty style attribute #4',
+      template: () => <div style={0} />,
+      result: '<div></div>',
+    },
+    {
+      description: 'Should not render empty style attribute #5',
+      template: () => <div style={true} />,
+      result: '<div></div>',
+    },
+    {
       description: 'Should render div className as number',
       template: () => createElement('div', { className: 123 }),
       result: '<div class="123"></div>'
@@ -250,7 +275,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     {
       description: 'Should not render null styles',
       template: () => <div style={{ 'background-color': null, 'border-bottom-color': null }} />,
-      result: '<div style=""></div>'
+      result: '<div></div>'
     },
     {
       description: 'Should style attribute if null',

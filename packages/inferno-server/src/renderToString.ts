@@ -10,7 +10,7 @@ import {
   throwError,
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { renderStylesToString } from './prop-renderers';
+import { renderStyleAttribute } from './prop-renderers';
 import {
   createDerivedState,
   escapeText,
@@ -124,7 +124,7 @@ function renderVNodeToString(vNode, parent, context): string {
             break;
           case 'style':
             if (!isNullOrUndef(props.style)) {
-              renderedString += ` style="${renderStylesToString(props.style)}"`;
+              renderedString += renderStyleAttribute(props.style);
             }
             break;
           case 'children':

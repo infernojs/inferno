@@ -10,7 +10,7 @@ import {
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
-import { renderStylesToString } from './prop-renderers';
+import { renderStyleAttribute } from './prop-renderers';
 import {
   createDerivedState,
   escapeText,
@@ -209,7 +209,7 @@ export class RenderStream extends Readable {
             break;
           case 'style':
             if (!isNullOrUndef(props.style)) {
-              renderedString += ` style="${renderStylesToString(props.style)}"`;
+              renderedString += renderStyleAttribute(props.style);
             }
             break;
           case 'children':
