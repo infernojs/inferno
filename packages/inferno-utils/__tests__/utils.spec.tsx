@@ -31,7 +31,7 @@ describe('Utils', () => {
   describe('triggerEvent', () => {
     let expectedEventType = '';
     const element = {
-      dispatchEvent(event) {},
+      dispatchEvent() {},
     };
     let spyDispatch;
     let spyCreateMouseEvent;
@@ -46,7 +46,7 @@ describe('Utils', () => {
           expect(ev).toBe(expectedEventType);
 
           spyEvent = {
-            initEvent: (eventType, canBubble, cancelable) => {
+            initEvent: (eventType, _canBubble, cancelable) => {
               expect(eventType).toBe(triggerName);
               // expect(canBubble).toBe(true);
               expect(cancelable).toBe(true);
