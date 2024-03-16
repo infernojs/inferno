@@ -2,7 +2,7 @@ import { Component, createFragment, Fragment } from 'inferno';
 import { renderToSnapshot } from 'inferno-test-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
 
-if (window.usingJest) {
+if ((window as any).usingJest) {
   describe('Snapshots', () => {
     class Foobar extends Component {
       render({ children }) {
@@ -37,7 +37,7 @@ if (window.usingJest) {
       it('Should render html element', () => {
         expect(
           renderToSnapshot(
-            <a onClick={() => {}} aria-colspan="3" className="foo">
+            <a onClick={() => {}} aria-colspan={3} className="foo">
               Bar
             </a>,
           ),
@@ -142,13 +142,19 @@ if (window.usingJest) {
       });
 
       it('Should not fail when returning children array from component root, which contains text node. Github #1404', () => {
+        interface LabelProps {
+          label?: string;
+          htmlFor?: string;
+          optional?: boolean;
+          children: any;
+        }
         const Label = ({
           label,
           htmlFor,
           children,
           optional = false,
           ...props
-        }) => {
+        }: LabelProps) => {
           if (optional && !label) {
             return children;
           }
@@ -180,13 +186,19 @@ if (window.usingJest) {
       });
 
       it('Should not fail when returning children array from component root, Github #1404', () => {
+        interface LabelProps {
+          label?: string;
+          htmlFor?: string;
+          optional?: boolean;
+          children: any;
+        }
         const Label = ({
-          label,
-          htmlFor,
-          children,
-          optional = false,
-          ...props
-        }) => {
+                         label,
+                         htmlFor,
+                         children,
+                         optional = false,
+                         ...props
+                       }: LabelProps) => {
           if (optional && !label) {
             return children;
           }
@@ -208,12 +220,8 @@ if (window.usingJest) {
 
       it('Should flush setStates before building snapshot', () => {
         class App extends Component {
-          constructor(props) {
-            super(props);
-
-            this.state = {
-              foo: '',
-            };
+          state = {
+            foo: ''
           }
 
           componentDidMount() {

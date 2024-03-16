@@ -180,11 +180,11 @@ describe('Test Utils', () => {
 
     it('should return false for VNodes of incorrect type', () => {
       expect(isDOMVNodeOfType(createElement('div'), 'foo')).toBe(false);
-      expect(isDOMVNodeOfType(createElement('div'), {})).toBe(false);
-      expect(isDOMVNodeOfType(createElement('div'), [])).toBe(false);
-      expect(isDOMVNodeOfType(createElement('div'), 10)).toBe(false);
-      expect(isDOMVNodeOfType(createElement('div'), undefined)).toBe(false);
-      expect(isDOMVNodeOfType(createElement('div'), null)).toBe(false);
+      expect(isDOMVNodeOfType(createElement('div'), {} as never)).toBe(false);
+      expect(isDOMVNodeOfType(createElement('div'), [] as never)).toBe(false);
+      expect(isDOMVNodeOfType(createElement('div'), 10 as never)).toBe(false);
+      expect(isDOMVNodeOfType(createElement('div'), undefined as never)).toBe(false);
+      expect(isDOMVNodeOfType(createElement('div'), null as never)).toBe(false);
     });
   });
 
@@ -333,13 +333,13 @@ describe('Test Utils', () => {
 
     it('should return false for DOMElements of incorrect type', () => {
       expect(isDOMElementOfType(createDOMElement('div'), 'foo')).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), {})).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), [])).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), 10)).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), undefined)).toBe(
+      expect(isDOMElementOfType(createDOMElement('div'), {} as never)).toBe(false);
+      expect(isDOMElementOfType(createDOMElement('div'), [] as never)).toBe(false);
+      expect(isDOMElementOfType(createDOMElement('div'), 10 as never)).toBe(false);
+      expect(isDOMElementOfType(createDOMElement('div'), undefined as never)).toBe(
         false,
       );
-      expect(isDOMElementOfType(createDOMElement('div'), null)).toBe(false);
+      expect(isDOMElementOfType(createDOMElement('div'), null as never)).toBe(false);
     });
   });
 
@@ -411,7 +411,7 @@ describe('Test Utils', () => {
       expect(
         isRenderedClassComponentOfType(
           renderIntoContainer(createClassVNode),
-          'div',
+          'div' as never,
         ),
       ).toBe(false);
 
@@ -436,7 +436,7 @@ describe('Test Utils', () => {
       expect(
         isRenderedClassComponentOfType(
           renderIntoContainer(extendClassVNode),
-          'div',
+          'div' as never,
         ),
       ).toBe(false);
     });
@@ -459,6 +459,8 @@ describe('Test Utils', () => {
       expect(spy).not.toHaveBeenCalled();
       findAllInRenderedTree(tree1, (args) => {
         spy(args.type);
+
+        return true
       });
       // 0: section
       // 1: FunctionalComponent
@@ -470,8 +472,11 @@ describe('Test Utils', () => {
     });
 
     it('should call predicate in the correct order', () => {
-      const types = [];
-      findAllInRenderedTree(tree1, ({ type }) => types.push(type));
+      const types: unknown[] = [];
+      findAllInRenderedTree(tree1, ({ type }) => {
+        types.push(type)
+        return true
+      });
       expect(types).toEqual(['section', FunctionalComponent, 'div']);
     });
 
@@ -507,8 +512,7 @@ describe('Test Utils', () => {
     );
 
     it('should throw an error when not passed a VNode', () => {
-      const errorRegex = /findAllInVNodeTree/;
-      const predicate = (vNode) => {
+      const predicate = () => {
         return true;
       };
       const testValue = (value) => {
@@ -534,6 +538,7 @@ describe('Test Utils', () => {
 
       findAllInVNodeTree(tree2, (args) => {
         predicate(args.type);
+        return true;
       });
       // 0: section
       // 1: FunctionalComponent
@@ -543,8 +548,11 @@ describe('Test Utils', () => {
     });
 
     it('should call predicate in the correct order', () => {
-      const types = [];
-      findAllInVNodeTree(tree2, ({ type }) => types.push(type));
+      const types: unknown[] = [];
+      findAllInVNodeTree(tree2, ({ type }) => {
+        types.push(type);
+        return true;
+      });
       expect(types).toEqual(['section', FunctionalComponent]);
     });
   });
@@ -616,7 +624,7 @@ describe('Test Utils', () => {
     );
 
     it('should return an array of matched DOM elements', () => {
-      const testValue = (tagName, length, instance) => {
+      const testValue = (tagName, length) => {
         const result = scryRenderedDOMElementsWithTag(tree4, tagName);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
@@ -708,7 +716,6 @@ describe('Test Utils', () => {
     );
 
     it('should throw an error when more than one result is found #1', () => {
-      const errorRegex = /Did not find exactly one match/;
       const testValue = (classNames) => {
         expect(() => {
           findRenderedDOMElementWithClass(tree7, classNames);
@@ -719,7 +726,7 @@ describe('Test Utils', () => {
     });
 
     it('should return a matched DOM element', () => {
-      const testValue = (classNames, instance) => {
+      const testValue = (classNames) => {
         const result = findRenderedDOMElementWithClass(tree7, classNames);
         const arrOfClassName = classNames.split(' ');
         for (let i = 0; i < arrOfClassName.length; i++) {
@@ -762,7 +769,6 @@ describe('Test Utils', () => {
     );
 
     it('should throw an error when more than one result is found #2', () => {
-      const errorRegex = /Did not find exactly one match/;
       const testValue = (tagName) => {
         expect(() => {
           findRenderedDOMElementWithTag(tree8, tagName);
@@ -773,7 +779,7 @@ describe('Test Utils', () => {
     });
 
     it('should return a matched DOM element', () => {
-      const testValue = (tagName, instance) => {
+      const testValue = (tagName) => {
         const result = findRenderedDOMElementWithTag(tree8, tagName);
 
         expect(result.tagName).toBe(tagName.toUpperCase());
@@ -796,7 +802,6 @@ describe('Test Utils', () => {
     );
 
     it('should throw an error when more than one result is found #3', () => {
-      const errorRegex = /Did not find exactly one match/;
       const testValue = (type) => {
         expect(() => {
           findRenderedVNodeWithType(tree9, type);
@@ -834,7 +839,6 @@ describe('Test Utils', () => {
     );
 
     it('should throw an error when more than one result is found #4', () => {
-      const errorRegex = /Did not find exactly one match/;
       const testValue = (type) => {
         expect(() => {
           findVNodeWithType(tree10, type);

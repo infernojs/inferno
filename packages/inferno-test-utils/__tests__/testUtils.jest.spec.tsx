@@ -5,7 +5,7 @@ const FunctionalComponent = function (props) {
   return createElement('div', props);
 };
 
-const usingJest = window.usingJest;
+const usingJest = (window as any).usingJest as boolean;
 
 describe('renderToSnapshot', () => {
   it('should return a snapshot from a valid vNode', () => {

@@ -151,7 +151,7 @@ exports[`Snapshots JSX Should render fragment root 1`] = `
 
 exports[`Snapshots JSX Should render html element 1`] = `
 <a
-  aria-colspan="3"
+  aria-colspan={3}
   className="foo"
   onClick={[Function]}
 >
