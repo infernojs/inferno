@@ -1,7 +1,7 @@
 import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { streamAsStaticMarkup } from 'inferno-server';
-import concatStream from 'concat-stream-es6';
+import concatStream from 'concat-stream';
 
 describe('SSR Root Creation Streams - (non-JSX)', () => {
   let container;

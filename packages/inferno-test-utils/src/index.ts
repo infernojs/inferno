@@ -4,6 +4,7 @@ import {
   type VNode,
   type InfernoChild,
   type InfernoFragment,
+  type Inferno,
 } from 'inferno';
 import {
   isArray,

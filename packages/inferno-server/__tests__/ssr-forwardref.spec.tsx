@@ -12,7 +12,7 @@ import {
 } from 'inferno-server';
 import { hydrate } from 'inferno-hydrate';
 import { isString } from 'inferno-shared';
-import concatStream from 'concat-stream-es6';
+import concatStream from 'concat-stream';
 
 describe('SSR -> Hydrate - Forward Ref', () => {
   let container;

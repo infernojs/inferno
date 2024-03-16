@@ -2,7 +2,7 @@ import { Component, type InfernoNode } from 'inferno';
 import { invariant } from './utils';
 
 export interface IPromptProps {
-  when: any;
+  when?: boolean;
   message: string;
 }
 

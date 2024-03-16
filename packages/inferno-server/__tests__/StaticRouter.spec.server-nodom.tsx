@@ -23,7 +23,7 @@ describe('A <StaticRouter>', () => {
   });
 
   it('context.router.staticContext persists inside of a <Route>', () => {
-    const ContextChecker = (props, reactContext) => {
+    const ContextChecker = (_props, reactContext) => {
       expect(typeof reactContext.router).toBe('object');
       expect(reactContext.router.staticContext).toBe(context);
       return null;
@@ -43,7 +43,7 @@ describe('A <StaticRouter>', () => {
   });
 
   it('provides context.router.history', () => {
-    const ContextChecker = (props, reactContext) => {
+    const ContextChecker = (_props, reactContext) => {
       expect(typeof reactContext.router.history).toBe('object');
       return null;
     };
@@ -65,12 +65,12 @@ describe('A <StaticRouter>', () => {
     const context = {};
     const history = {};
 
-    spyOn(console, 'error');
+    const spy = spyOn(console, 'error');
 
     renderToStaticMarkup(<StaticRouter context={context} history={history} />);
 
-    expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error.calls.argsFor(0)[0]).toContain(
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy.calls.argsFor(0)[0]).toContain(
       '<StaticRouter> ignores the history prop',
     );
     // expect(console.error).toHaveBeenCalledWith(
@@ -79,7 +79,7 @@ describe('A <StaticRouter>', () => {
   });
 
   it('reports PUSH actions on the context object', () => {
-    const context = {};
+    const context: Record<string, any> = {};
 
     renderToStaticMarkup(
       <StaticRouter context={context}>
@@ -92,7 +92,7 @@ describe('A <StaticRouter>', () => {
   });
 
   it('reports REPLACE actions on the context object', () => {
-    const context = {};
+    const context: Record<string, any> = {};
 
     renderToStaticMarkup(
       <StaticRouter context={context}>
@@ -169,7 +169,7 @@ describe('A <StaticRouter>', () => {
     });
 
     it('reports PUSH actions on the context object', () => {
-      const context = {};
+      const context: Record<string, any> = {};
 
       renderToStaticMarkup(
         <StaticRouter context={context} basename="/the-base">
@@ -182,7 +182,7 @@ describe('A <StaticRouter>', () => {
     });
 
     it('reports REPLACE actions on the context object', () => {
-      const context = {};
+      const context: Record<string, any> = {};
 
       renderToStaticMarkup(
         <StaticRouter context={context} basename="/the-base">
@@ -197,10 +197,15 @@ describe('A <StaticRouter>', () => {
 
   describe('no basename', () => {
     it('createHref does not append extra leading slash', () => {
-      const context = {};
+      const context: Record<string, any> = {};
       const pathname = '/test-path-please-ignore';
 
-      const Link = ({ to, children }) => (
+      interface ILinkProps {
+        to: string;
+        children?: any;
+      }
+
+      const Link = ({ to, children }: ILinkProps) => (
         <Route
           children={({ history: { createHref } }) => (
             <a href={createHref(to)}>{children}</a>

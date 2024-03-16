@@ -101,7 +101,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "babel-plugin-inferno": "6.7.1",
     "cli-table": "^0.3.11",
-    "concat-stream-es6": "0.0.1",
+    "concat-stream": "^2.0.0",
     "coveralls-next": "^4.2.0",
     "cross-env": "^7.0.3",
     "d3-scale-chromatic": "^3.0.0",

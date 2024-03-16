@@ -4,7 +4,7 @@ import {
   streamAsString,
   streamQueueAsString,
 } from 'inferno-server';
-import concatStream from 'concat-stream-es6';
+import concatStream from 'concat-stream';
 
 describe('Security - SSR', () => {
   describe('renderToString', () => {

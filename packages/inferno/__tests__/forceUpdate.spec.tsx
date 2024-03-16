@@ -78,10 +78,7 @@ describe('forceUpdate', () => {
       };
 
       public shouldComponentUpdate(_prevProps, prevState) {
-        if (prevState.foo !== this.state.foo) {
-          return true;
-        }
-        return false;
+        return prevState.foo !== this.state.foo;
       }
 
       public componentDidMount() {

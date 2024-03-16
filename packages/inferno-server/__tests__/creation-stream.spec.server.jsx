@@ -1,6 +1,6 @@
 import { Component } from 'inferno';
 import { streamAsString } from 'inferno-server';
-import concatStream from 'concat-stream-es6';
+import concatStream from 'concat-stream';
 import { createElement } from 'inferno-create-element';
 
 class StatefulComponent extends Component {
