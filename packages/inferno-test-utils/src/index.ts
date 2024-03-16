@@ -46,7 +46,7 @@ export function isFunctionalVNodeOfType(obj: VNode, type: Function): boolean {
 
 export function isClassVNodeOfType(
   obj: VNode,
-  type: Component<any, any>,
+  type: Inferno.ComponentClass<unknown> | Inferno.StatelessComponent<unknown>,
 ): boolean {
   return _isClassVNode(obj) && obj.type === type;
 }
@@ -85,7 +85,7 @@ export function isRenderedClassComponent(obj: any): boolean {
 
 export function isRenderedClassComponentOfType(
   obj: any,
-  type: Component<any, any>,
+  type: Inferno.ComponentClass<unknown> | Inferno.StatelessComponent<unknown>,
 ): boolean {
   return (
     isRenderedClassComponent(obj) &&

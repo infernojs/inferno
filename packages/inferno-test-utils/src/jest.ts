@@ -8,12 +8,21 @@ import { getTagNameOfVNode } from './utils';
 // Symbols and algorithm have been reversed from the following file:
 // https://github.com/facebook/react/blob/v15.4.2/src/renderers/testing/ReactTestRenderer.js#L98
 
+type InfernoTestRendererNode = InfernoSnapshot | string;
+
+export interface InfernoSnapshot {
+  type: string;
+  props: Record<string, any>;
+  children: null | InfernoTestRendererNode[];
+  $$typeof?: symbol | string;
+}
+
 const symbolValue =
   typeof Symbol === 'undefined'
     ? 'react.test.json'
     : Symbol.for('react.test.json');
 
-function createSnapshotObject(object: object): object {
+function createSnapshotObject(object: InfernoSnapshot): InfernoSnapshot {
   Object.defineProperty(object, '$$typeof', {
     value: symbolValue,
   });
@@ -35,7 +44,7 @@ function removeChildren(item): void {
   }
 }
 
-function buildVNodeSnapshot(vNode: VNode): unknown {
+function buildVNodeSnapshot(vNode: VNode): InfernoSnapshot {
   const flags = vNode.flags;
   const children: any = vNode.children;
   let childVNode;
@@ -87,7 +96,7 @@ function buildVNodeSnapshot(vNode: VNode): unknown {
     return createSnapshotObject({
       children: childVNode,
       props: snapShotProps,
-      type: getTagNameOfVNode(vNode),
+      type: getTagNameOfVNode(vNode) as string,
     });
   } else if (flags & VNodeFlags.Text) {
     childVNode = (vNode.children as string | number) + '';
@@ -96,11 +105,11 @@ function buildVNodeSnapshot(vNode: VNode): unknown {
   return childVNode;
 }
 
-export function vNodeToSnapshot(vNode: VNode): unknown {
+export function vNodeToSnapshot(vNode: VNode): InfernoSnapshot {
   return buildVNodeSnapshot(vNode);
 }
 
-export function renderToSnapshot(input: VNode): unknown {
+export function renderToSnapshot(input: VNode): InfernoSnapshot {
   render(input, document.createElement('div'));
   rerender(); // Flush all pending set state calls
   const snapshot = vNodeToSnapshot(input);
