@@ -96,7 +96,9 @@ export interface ChangeEvent<T> extends SemiSyntheticEvent<T> {
 }
 
 export type InfernoKeyboardEvent<T> = SemiSyntheticEvent<T> & KeyboardEvent;
-export type InfernoMouseEvent<T> = SemiSyntheticEvent<T> & MouseEvent;
+export type InfernoMouseEvent<T> = SemiSyntheticEvent<T> & MouseEvent & {
+  target: EventTarget & T;
+};
 export type InfernoTouchEvent<T> = SemiSyntheticEvent<T> & TouchEvent;
 export type InfernoPointerEvent<T> = SemiSyntheticEvent<T> & PointerEvent;
 export type InfernoUIEvent<T> = SemiSyntheticEvent<T> & UIEvent;
