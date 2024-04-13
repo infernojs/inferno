@@ -232,7 +232,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
 
     hydrate(vNode, container); // This should create empty text node
 
-    expect(container.firstChild.firstChild).not.toBeNull();
+    expect(container.firstChild?.firstChild).not.toBeNull();
 
     render(<span className="error">{'Okay!'}</span>, container);
 
@@ -252,7 +252,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
 
     hydrate(vNode, container); // This should create empty text node
 
-    expect(container.firstChild.firstChild.firstChild).not.toBeNull();
+    expect(container.firstChild?.firstChild?.firstChild).not.toBeNull();
 
     render(
       <div>

@@ -22,12 +22,12 @@ describe('Resolve loaders during server side rendering', () => {
     container.innerHTML = '';
     document.body.removeChild(container);
     // Reset history to root
-    history.replaceState(undefined, undefined, '/');
+    history.replaceState(undefined, '', '/');
   });
 
   it('SSR renders same result as browser', async () => {
     const TEXT = 'bubblegum';
-    const Component = (props, { router }) => {
+    const Component = (props) => {
       const res = useLoaderData(props);
       return <h1>{res?.message}</h1>;
     };
@@ -50,13 +50,13 @@ describe('Resolve loaders during server side rendering', () => {
 
     // Render on server
     const html = renderToString(
-      <StaticRouter location="/birds" initialData={initialData}>
+      <StaticRouter context={{}} location="/birds" initialData={initialData}>
         {routes}
       </StaticRouter>,
     );
 
     // Render in browser
-    history.replaceState(undefined, undefined, '/birds');
+    history.replaceState(undefined, '', '/birds');
     render(
       <BrowserRouter initialData={initialData}>{routes}</BrowserRouter>,
       container,

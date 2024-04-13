@@ -454,12 +454,12 @@ describe('SSR Hydration - (JSX)', () => {
 
   it('Should work with setState', () => {
     class Comp3 extends Component {
+      public readonly state = {
+        i: 0
+      }
+
       constructor(props, context) {
         super(props, context);
-
-        this.state = {
-          i: 0
-        };
 
         this.clicker = this.clicker.bind(this);
       }
@@ -493,11 +493,11 @@ describe('SSR Hydration - (JSX)', () => {
     hydrate(<Comp3 />, container);
     expect(container.innerHTML).toBe('<div>1<span>1</span></div>');
 
-    container.querySelector('span').click();
+    container.querySelector('span')!.click();
 
     expect(container.innerHTML).toBe('<div>2<span>1</span></div>');
 
-    container.querySelector('span').click();
+    container.querySelector('span')!.click();
 
     expect(container.innerHTML).toBe('<div>3<span>1</span></div>');
 

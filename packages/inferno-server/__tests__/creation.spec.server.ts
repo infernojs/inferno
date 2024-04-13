@@ -34,9 +34,9 @@ describe('SSR Creation (non-JSX)', () => {
         createElement(
           'div',
           null,
-          createElement('span', { style: { 'border-left': 10 } }),
+          createElement('span', { style: { 'border-left': '10px' } }),
         ),
-      result: '<div><span style="border-left:10;"></span></div>',
+      result: '<div><span style="border-left:10px;"></span></div>',
     },
     {
       description: 'should render div with span child and styling #3',

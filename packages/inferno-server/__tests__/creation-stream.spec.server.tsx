@@ -3,7 +3,7 @@ import { streamAsString } from 'inferno-server';
 import concatStream from 'concat-stream';
 import { createElement } from 'inferno-create-element';
 
-class StatefulComponent extends Component {
+class StatefulComponent extends Component<{value: string}> {
   render() {
     return createElement('span', null, `stateless ${this.props.value}!`);
   }
@@ -114,17 +114,17 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'should render with array text children',
-      template: (value) => createElement('a', null, ['a', 'b']),
+      template: () => createElement('a', null, ['a', 'b']),
       result: '<a>ab</a>'
     },
     {
       description: 'should render with array children containing an array of text children',
-      template: (value) => createElement('a', null, [['a', 'b']]),
+      template: () => createElement('a', null, [['a', 'b']]),
       result: '<a>ab</a>'
     },
     {
       description: 'should render with array null children',
-      template: (value) => createElement('a', null, ['a', null]),
+      template: () => createElement('a', null, ['a', null]),
       result: '<a>a</a>'
     },
     {
@@ -154,17 +154,17 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'Should not render empty style attribute #3',
-      template: () => <div style={false} />,
+      template: () => <div style={false as any} />,
       result: '<div></div>',
     },
     {
       description: 'Should not render empty style attribute #4',
-      template: () => <div style={0} />,
+      template: () => <div style={0 as any} />,
       result: '<div></div>',
     },
     {
       description: 'Should not render empty style attribute #5',
-      template: () => <div style={true} />,
+      template: () => <div style={true as any} />,
       result: '<div></div>',
     },
     {
@@ -218,6 +218,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'should ignore children as props',
+      // @ts-expect-error
       template: () => <p children="foo">foo</p>,
       result: '<p>foo</p>'
     },
@@ -274,7 +275,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'Should not render null styles',
-      template: () => <div style={{ 'background-color': null, 'border-bottom-color': null }} />,
+      template: () => <div style={{ 'background-color': null as any, 'border-bottom-color': null as any }} />,
       result: '<div></div>'
     },
     {
@@ -299,7 +300,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     },
     {
       description: 'Should render div className as number',
-      template: () => <div className={123} />,
+      template: () => <div className={123 as any} />,
       result: '<div class="123"></div>'
     },
     {
@@ -355,7 +356,6 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
   for (const test of testEntries) {
     it(test.description, () => {
-      const container = document.createElement('div');
       const vDom = test.template('foo');
       return streamPromise(vDom).then(function (output) {
         expect(output).toBe(test.result);
@@ -366,11 +366,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
   describe('Component hook', () => {
     it('Should allow changing state in CWM', () => {
       class Another extends Component {
+        public state = {
+          foo: 'bar'
+        };
+
         constructor(props, context) {
           super(props, context);
-          this.state = {
-            foo: 'bar'
-          };
         }
 
         componentWillMount() {
@@ -385,12 +386,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       }
 
       class Tester extends Component {
+        public state = {
+          foo: 'bar'
+        };
+
         constructor(props, context) {
           super(props, context);
-
-          this.state = {
-            foo: 'bar'
-          };
         }
 
         componentWillMount() {
@@ -418,9 +419,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
   describe('misc', () => {
     it('Should render single text node using state', (done) => {
-      class Foobar extends Component {
+      interface FoobarState {
+        text: string
+      }
+
+      class Foobar extends Component<unknown, FoobarState> {
         render() {
-          return this.state.text;
+          return this.state?.text;
         }
 
         componentWillMount() {
@@ -430,7 +435,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         }
       }
 
-      return streamPromise(
+      streamPromise(
         <div>
           <Foobar />
         </div>
@@ -441,9 +446,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     });
 
     it('Should render single (number) text node using state', (done) => {
-      class Foobar extends Component {
+      interface FoobarState {
+        text: number
+      }
+
+      class Foobar extends Component<unknown, FoobarState> {
         render() {
-          return this.state.text;
+          return this.state?.text;
         }
 
         componentWillMount() {
@@ -453,7 +462,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         }
       }
 
-      return streamPromise(
+      streamPromise(
         <div>
           <Foobar />
         </div>
@@ -468,7 +477,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         return 'foo';
       }
 
-      return streamPromise(
+      streamPromise(
         <div>
           <Foobar />
         </div>
@@ -483,7 +492,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         return 0;
       }
 
-      return streamPromise(
+      streamPromise(
         <div>
           <Foobar />
         </div>
@@ -493,25 +502,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       });
     });
 
-    // it('Should render checked attribute for input when there is no checked in props', (done) => {
-    //   class Foobar extends Component {
-    //     render() {
-    //       return <input count={1} type="checkbox" defaultChecked={true}/>;
-    //     }
-    //   }
-    //
-    //   return streamPromise(<div><Foobar /></div>).then(function(output) {
-    //     expect(output).toEqual('<div><input count="1" type="checkbox" checked="true"></div>');
-    //     done();
-    //   });
-    // });
-
     it('Should render comment when component returns invalid node', (done) => {
       function Foobar() {
         return null;
       }
 
-      return streamPromise(
+      streamPromise(
         <div>
           <Foobar />
         </div>
@@ -528,7 +524,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         }
       }
 
-      return streamPromise(
+      streamPromise(
         <div>
           <Foobar />
         </div>
@@ -548,17 +544,18 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           };
         }
 
-        static getDerivedStateFromProps(props, state) {
+        static getDerivedStateFromProps(_props, state) {
           return {
             value: state.value + 1
           };
         }
 
         render() {
-          return <div>{this.state.value}</div>;
+          return <div>{this.state!.value}</div>;
         }
       }
-      return streamPromise(<Test />).then(function (output) {
+
+      streamPromise(<Test />).then(function (output) {
         expect(output).toEqual('<div>1</div>');
         done();
       });

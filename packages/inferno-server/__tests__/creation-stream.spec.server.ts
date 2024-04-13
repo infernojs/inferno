@@ -17,9 +17,9 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
   });
 
   it('should throw with invalid children', async () => {
-    const test = (value) => createElement('a', null, true);
+    const test = () => createElement('a', null, true);
 
-    return await streamPromise(test('foo')).catch((err) => {
+    return await streamPromise(test()).catch((err) => {
       expect(err.toString()).toBe('Error: invalid component');
     });
   });
@@ -60,7 +60,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
         }
 
         render() {
-          return createElement('div', null, this.state.foo);
+          return createElement('div', null, this.state!.foo);
         }
       }
 
@@ -81,7 +81,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 
         render() {
           return createElement('div', null, [
-            this.state.foo,
+            this.state!.foo,
             createElement(Another),
           ]);
         }

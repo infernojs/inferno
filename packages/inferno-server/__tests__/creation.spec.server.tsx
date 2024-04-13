@@ -4,7 +4,7 @@ import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
 import { hydrate } from 'inferno-hydrate';
 
-function WrappedInput(props) {
+function WrappedInput(props: {value: string}) {
   return <input type="text" value={props.value} />;
 }
 
@@ -56,6 +56,7 @@ describe('SSR Creation (JSX)', () => {
     },
     {
       description: 'should ignore children as props',
+      // @ts-expect-error
       template: () => <p children="foo">foo</p>,
       result: '<p>foo</p>'
     },
@@ -111,7 +112,7 @@ describe('SSR Creation (JSX)', () => {
     },
     {
       description: 'Should not render null styles',
-      template: () => <div style={{ 'background-color': null, 'border-bottom-color': null }} />,
+      template: () => <div style={{ 'background-color': null as any, 'border-bottom-color': null as any }} />,
       result: '<div></div>'
     },
     {
@@ -146,22 +147,22 @@ describe('SSR Creation (JSX)', () => {
     },
     {
       description: 'Should not render empty style attribute #3',
-      template: () => <div style={false} />,
+      template: () => <div style={false as any} />,
       result: '<div></div>',
     },
     {
       description: 'Should not render empty style attribute #4',
-      template: () => <div style={0} />,
+      template: () => <div style={0 as any} />,
       result: '<div></div>',
     },
     {
       description: 'Should not render empty style attribute #5',
-      template: () => <div style={true} />,
+      template: () => <div style={true as any} />,
       result: '<div></div>',
     },
     {
       description: 'Should render div className as number',
-      template: () => <div className={123} />,
+      template: () => <div className={123 as any} />,
       result: '<div class="123"></div>'
     },
     {
@@ -217,7 +218,7 @@ describe('SSR Creation (JSX)', () => {
 
   for (const test of testEntries) {
     it(test.description, () => {
-      const vDom = test.template('foo');
+      const vDom = test.template();
       const output = renderToStaticMarkup(vDom);
 
       expect(output).toBe(test.result);
@@ -242,7 +243,7 @@ describe('SSR Creation (JSX)', () => {
         }
 
         render() {
-          return <div>{this.state.foo}</div>;
+          return <div>{this.state!.foo}</div>;
         }
       }
 
@@ -264,7 +265,7 @@ describe('SSR Creation (JSX)', () => {
         render() {
           return (
             <div>
-              {this.state.foo}
+              {this.state!.foo}
               <Another />
             </div>
           );
@@ -299,7 +300,7 @@ describe('SSR Creation (JSX)', () => {
     it('Should render single text node using state', () => {
       class Foobar extends Component {
         render() {
-          return this.state.text;
+          return this.state!.text;
         }
 
         componentWillMount() {
@@ -321,7 +322,7 @@ describe('SSR Creation (JSX)', () => {
     it('Should render single (number)text node using state', () => {
       class Foobar extends Component {
         render() {
-          return this.state.text;
+          return this.state!.text;
         }
 
         componentWillMount() {
@@ -401,6 +402,7 @@ describe('SSR Creation (JSX)', () => {
     it('Should render checked attribute for input when there is no checked in props', () => {
       class Foobar extends Component {
         render() {
+          // @ts-expect-error
           return <input count={1} type="checkbox" defaultChecked={true} />;
         }
       }
@@ -453,7 +455,7 @@ describe('SSR Creation (JSX)', () => {
       container.innerHTML = renderedString;
 
       const AnchorNode = container.querySelector('a');
-      const wrapperDiv = container.firstChild;
+      const wrapperDiv = container.firstChild!;
 
       function WrapperComponent() {
         return (
@@ -549,14 +551,14 @@ describe('SSR Creation (JSX)', () => {
           };
         }
 
-        static getDerivedStateFromProps(props, state) {
+        static getDerivedStateFromProps(_props, state) {
           return {
             value: state.value + 1
           };
         }
 
         render() {
-          return <div>{this.state.value}</div>;
+          return <div>{this.state!.value}</div>;
         }
       }
 

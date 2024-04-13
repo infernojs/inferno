@@ -4,7 +4,7 @@ import { streamQueueAsString } from 'inferno-server';
 import concatStream from 'concat-stream';
 import { createElement } from 'inferno-create-element';
 
-class StatefulComponent extends Component {
+class StatefulComponent extends Component<{value: string}> {
   render() {
     return createElement('span', null, `stateless ${this.props.value}!`);
   }
@@ -14,9 +14,9 @@ function WrappedInput(props) {
   return <input type="text" value={props.value} />;
 }
 
-class StatefulPromiseComponent extends Component {
+class StatefulPromiseComponent extends Component<{index: number, value?: unknown}> {
   async getInitialProps() {
-    return await new Promise((resolve, reject) => {
+    return await new Promise((resolve) => {
       // Waits incremenetally for each subindex
       setTimeout(() => {
         resolve({
@@ -35,9 +35,9 @@ class StatefulPromiseComponent extends Component {
   }
 }
 
-class StatefulHierchicalPromiseComponent extends Component {
+class StatefulHierchicalPromiseComponent extends Component<{index: number, value?: unknown}> {
   async getInitialProps() {
-    return await new Promise((resolve, reject) => {
+    return await new Promise((resolve) => {
       // Waits incremenetally for each subindex
       setTimeout(() => {
         resolve({
@@ -239,7 +239,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should render a stateful component with promise',
-      template: (value) =>
+      template: () =>
         createElement(
           'div',
           null,
@@ -257,7 +257,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     {
       description:
         'should render a stateful component with promise as hierarchy',
-      template: (value) =>
+      template: () =>
         createElement(StatefulHierchicalPromiseComponent, { index: 1 }),
       result: [
         [
@@ -276,7 +276,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should render a stack of stateful component with promise',
-      template: (value) =>
+      template: () =>
         createElement(
           'div',
           null,
@@ -357,6 +357,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'should ignore children as props',
+      // @ts-expect-error
       template: () => <p children="foo">foo</p>,
       result: '<p>foo</p>',
     },
@@ -423,7 +424,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       description: 'Should not render null styles',
       template: () => (
         <div
-          style={{ 'background-color': null, 'border-bottom-color': null }}
+          style={{ 'background-color': null as any, 'border-bottom-color': null as any }}
         />
       ),
       result: '<div></div>',
@@ -461,17 +462,17 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'Should not render empty style attribute #3',
-      template: () => <div style={false} />,
+      template: () => <div style={false as any} />,
       result: '<div></div>',
     },
     {
       description: 'Should not render empty style attribute #4',
-      template: () => <div style={0} />,
+      template: () => <div style={0 as any} />,
       result: '<div></div>',
     },
     {
       description: 'Should not render empty style attribute #5',
-      template: () => <div style={true} />,
+      template: () => <div style={true as any} />,
       result: '<div></div>',
     },
     {
@@ -481,7 +482,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'Should render div className as number',
-      template: () => <div className={123} />,
+      template: () => <div className={123 as any} />,
       result: '<div class="123"></div>',
     },
     {
@@ -536,16 +537,16 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
   ];
 
   for (const test of testEntries) {
-    it(test.description, async (done) => {
+    it(test.description, async () => {
       const vDom = test.template('foo');
-      return await streamPromise(vDom).then(function (output) {
+
+      return streamPromise(vDom).then((value: string | string[]) => {
         if (typeof test.result === 'object') {
-          expect(output[0]).toEqual(test.result[0]);
-          expect(output[1]).toBe(test.result[1]);
+          expect(value[0]).toEqual(test.result[0]);
+          expect(value[1]).toBe(test.result[1]);
         } else {
-          expect(output[1]).toBe(test.result);
+          expect(value[1]).toBe(test.result);
         }
-        done();
       });
     });
   }
@@ -568,7 +569,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         }
 
         render() {
-          return <div>{this.state.foo}</div>;
+          return <div>{this.state?.foo}</div>;
         }
       }
 
@@ -590,7 +591,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         render() {
           return (
             <div>
-              {this.state.foo}
+              {this.state?.foo}
               <Another />
             </div>
           );
@@ -605,10 +606,10 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
   });
 
   describe('misc', () => {
-    it('Should render single text node using state', async (done) => {
+    it('Should render single text node using state', async () => {
       class Foobar extends Component {
         render() {
-          return this.state.text;
+          return this.state!.text;
         }
 
         componentWillMount() {
@@ -624,14 +625,13 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         </div>,
       ).then(function (output) {
         expect(output[1]).toEqual('<div>foo</div>');
-        done();
       });
     });
 
-    it('Should render single (number) text node using state', async (done) => {
+    it('Should render single (number) text node using state', async () => {
       class Foobar extends Component {
         render() {
-          return this.state.text;
+          return this.state!.text;
         }
 
         componentWillMount() {
@@ -647,11 +647,10 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         </div>,
       ).then(function (output) {
         expect(output[1]).toEqual('<div>331</div>');
-        done();
       });
     });
 
-    it('Should render single text node Functional Component', async (done) => {
+    it('Should render single text node Functional Component', async () => {
       function Foobar() {
         return 'foo';
       }
@@ -662,11 +661,10 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         </div>,
       ).then(function (output) {
         expect(output[1]).toEqual('<div>foo</div>');
-        done();
       });
     });
 
-    it('Should render single (number) text node Functional Component', async (done) => {
+    it('Should render single (number) text node Functional Component', async () => {
       function Foobar() {
         return 0;
       }
@@ -677,13 +675,13 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         </div>,
       ).then(function (output) {
         expect(output[1]).toEqual('<div>0</div>');
-        done();
       });
     });
 
-    it('Should render checked attribute for input when there is no checked in props', async (done) => {
+    it('Should render checked attribute for input when there is no checked in props', async () => {
       class Foobar extends Component {
         render() {
+          // @ts-expect-error
           return <input count={1} type="checkbox" defaultChecked={true} />;
         }
       }
@@ -696,11 +694,10 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         expect(output[1]).toEqual(
           '<div><input count="1" type="checkbox" checked="true"></div>',
         );
-        done();
       });
     });
 
-    it('Should render comment when component returns invalid node', async (done) => {
+    it('Should render comment when component returns invalid node', async () => {
       function Foobar() {
         return null;
       }
@@ -711,11 +708,10 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         </div>,
       ).then(function (output) {
         expect(output[1]).toEqual('<div><!--!--></div>');
-        done();
       });
     });
 
-    it('Should render single text node Class Component', async (done) => {
+    it('Should render single text node Class Component', async () => {
       class Foobar extends Component {
         render() {
           return null;
@@ -728,11 +724,10 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         </div>,
       ).then(function (output) {
         expect(output[1]).toEqual('<div><!--!--></div>');
-        done();
       });
     });
 
-    it('Should be possible to use getDerivedStateFromProps', async (done) => {
+    it('Should be possible to use getDerivedStateFromProps', async () => {
       class Test extends Component {
         constructor(props) {
           super(props);
@@ -742,27 +737,27 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
           };
         }
 
-        static getDerivedStateFromProps(props, state) {
+        static getDerivedStateFromProps(_props, state) {
           return {
             value: state.value + 1,
           };
         }
 
         render() {
-          return <div>{this.state.value}</div>;
+          return <div>{this.state!.value}</div>;
         }
       }
+
       return await streamPromise(<Test />).then(function (output) {
         expect(output[1]).toEqual('<div>1</div>');
-        done();
       });
     });
   });
 });
 
 async function streamPromise(dom) {
-  return await new Promise(function (res, rej) {
-    const chunks = [];
+  return await new Promise(function (res: (value: string[]) => void, rej) {
+    const chunks: string[] = [];
     streamQueueAsString(dom)
       .on('error', rej)
       .on('data', (chunk) => {
