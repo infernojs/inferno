@@ -1,5 +1,5 @@
 import { h } from 'inferno-hyperscript';
-import { Component, createRef, forwardRef, Fragment, render } from 'inferno';
+import { Component, createRef, forwardRef, Fragment, RefObject, render } from 'inferno';
 
 describe('HyperScript (non-JSX)', () => {
   let container;
@@ -162,7 +162,7 @@ describe('HyperScript (non-JSX)', () => {
       return h('div', props, children);
     }
 
-    function Test3({ children, ...props }) {
+    function Test3({ children }) {
       return h('div', { className: 'test3' }, children);
     }
 
@@ -341,7 +341,7 @@ describe('HyperScript (non-JSX)', () => {
     });
 
     it('Should handle node with refs', (done) => {
-      let myRef = 'myRef';
+      let myRef;
 
       const app = () => {
         const node = () =>
@@ -360,7 +360,7 @@ describe('HyperScript (non-JSX)', () => {
 
     let shouldUpdate = false;
 
-    class Test2 extends Component {
+    class Test2 extends Component<{foo: string}> {
       shouldComponentUpdate() {
         return shouldUpdate;
       }
@@ -427,6 +427,8 @@ describe('HyperScript (non-JSX)', () => {
     expect(FancyButton.render).toBeDefined();
 
     class Hello extends Component {
+      private readonly btn: RefObject<Element>;
+
       constructor(props) {
         super(props);
 
