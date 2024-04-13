@@ -3,7 +3,7 @@ import {
   createFragment,
   createPortal,
   createRef,
-  Fragment,
+  Fragment, InfernoNode,
   render,
   rerender,
 } from 'inferno';
@@ -32,8 +32,8 @@ describe('rendering routine', () => {
       // create matching DOM
       container.innerHTML = '<input type="checkbox"/>';
 
-      let clickChecked = null;
-      let changeChecked = null;
+      let clickChecked: boolean | null = null;
+      let changeChecked: boolean | null = null;
 
       // Hydrate manually, instead rendering
       hydrate(
@@ -63,8 +63,8 @@ describe('rendering routine', () => {
       const spy = jasmine.createSpy('spy');
       container.innerHTML = '<div><input type="checkbox"/></div>';
 
-      let clickChecked = null;
-      let changeChecked = null;
+      let clickChecked: boolean | null = null;
+      let changeChecked: boolean | null = null;
 
       // Hydrate manually, instead rendering
       hydrate(
@@ -133,7 +133,7 @@ describe('rendering routine', () => {
       // create matching DOM
       container.innerHTML = '<div>Okay<span>foobar</span></div>';
 
-      const newRef = createRef();
+      const newRef = createRef<HTMLSpanElement>();
 
       hydrate(
         <div>
@@ -151,7 +151,7 @@ describe('rendering routine', () => {
       // create matching DOM
       container.innerHTML = '<div>Okay<span>foobar</span></div>';
 
-      let instance = null;
+      let instance: Foobar | null = null;
 
       class Foobar extends Component {
         constructor(props, context) {
@@ -171,7 +171,7 @@ describe('rendering routine', () => {
         }
       }
 
-      const newRef = createRef();
+      const newRef = createRef<Foobar>();
 
       hydrate(
         <div>
@@ -603,7 +603,13 @@ describe('rendering routine', () => {
       });
 
       it('Should be possible to hydrate fragments JSX way', () => {
-        function Fragmenter({ first, mid, last, changeOrder }) {
+        interface FragmenterProps {
+          first: string;
+          mid: string;
+          last: string;
+          changeOrder?: boolean;
+        }
+        function Fragmenter({ first, mid, last, changeOrder }: FragmenterProps) {
           if (changeOrder) {
             return (
               <>
@@ -645,7 +651,7 @@ describe('rendering routine', () => {
         let mountCounter = 0;
         let unmountCounter = 0;
 
-        class FoobarCom extends Component {
+        class FoobarCom extends Component<{node: HTMLDivElement}> {
           componentWillMount() {
             mountCounter++;
           }
@@ -1101,7 +1107,7 @@ describe('rendering routine', () => {
           return <div>Ok</div>;
         }
 
-        let content = [];
+        let content: InfernoNode[] = [];
 
         hydrate(
           <Fragment>
@@ -1189,7 +1195,7 @@ describe('rendering routine', () => {
           }
         }
 
-        let nodes = [];
+        let nodes : InfernoNode[] = [];
 
         hydrate(<>{nodes}</>, container);
 
@@ -1383,7 +1389,7 @@ describe('rendering routine', () => {
 
         render() {
           return createElement('rect', {
-            className: this.state.className,
+            className: this.state!.className,
           });
         }
       }

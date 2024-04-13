@@ -1,4 +1,4 @@
-import { Component, createRef, forwardRef, render } from 'inferno';
+import { Component, createRef, forwardRef, RefObject, render } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 
 describe('Hydrate - Forward Ref', () => {
@@ -25,6 +25,8 @@ describe('Hydrate - Forward Ref', () => {
     expect(FancyButton.render).toBeDefined();
 
     class Hello extends Component {
+      private readonly btn: RefObject<Element>;
+
       constructor(props) {
         super(props);
 
