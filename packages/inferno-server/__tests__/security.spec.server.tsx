@@ -88,7 +88,7 @@ describe('Security - SSR', () => {
 });
 
 async function streamPromise(dom, method) {
-  return await new Promise(function (res, rej) {
+  return await new Promise(function (res: (value: string) => void, rej) {
     method(dom)
       .on('error', rej)
       .pipe(

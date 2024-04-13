@@ -336,7 +336,7 @@ export function connectAdvanced(
       }
 
       public isSubscribed(): boolean {
-        return Boolean(this.subscription && this.subscription.isSubscribed());
+        return Boolean(this.subscription?.isSubscribed());
       }
 
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

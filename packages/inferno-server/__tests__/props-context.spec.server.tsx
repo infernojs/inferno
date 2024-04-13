@@ -13,7 +13,11 @@ describe('SSR render() arguments', () => {
   }
 
   it('should have props as 1st argument', () => {
-    class TestChild extends Component {
+    interface TestChildProps {
+      testProps: string
+    }
+
+    class TestChild extends Component<TestChildProps> {
       render(props) {
         return <p>{props.testProps}</p>;
       }
@@ -25,12 +29,13 @@ describe('SSR render() arguments', () => {
 
   it('should have state as 2nd argument', () => {
     class TestChild extends Component {
+
       constructor() {
         super();
         this.state = { testState: 'state-works' };
       }
 
-      render(props, state) {
+      render(_props, state) {
         return <p>{state.testState}</p>;
       }
     }
@@ -40,7 +45,7 @@ describe('SSR render() arguments', () => {
 
   it('statefull has context as 3rd argument', () => {
     class TestChild extends Component {
-      render(props, state, context) {
+      render(_props, _state, context) {
         return <p>{context.testContext}</p>;
       }
     }
@@ -54,7 +59,7 @@ describe('SSR render() arguments', () => {
   });
 
   it('stateless has context as 2nd argument', () => {
-    function TestChild(props, context) {
+    function TestChild(_props, context) {
       return <p>{context.testContext}</p>;
     }
 
@@ -67,10 +72,11 @@ describe('SSR render() arguments', () => {
   });
 
   it('nested stateless has context as 2nd argument', () => {
-    function ChildWrapper(props, context) {
+
+    function ChildWrapper(props) {
       return props.children;
     }
-    function TestChild(props, context) {
+    function TestChild(_props, context) {
       return <p>{context.testContext}</p>;
     }
     const output = renderToStaticMarkup(
@@ -95,7 +101,7 @@ describe('SSR render() arguments', () => {
         return children;
       }
     }
-    function TestChild(props, context) {
+    function TestChild(_props: unknown, context) {
       return (
         <p>
           {context.testContext}|{context.testContextWrap}
