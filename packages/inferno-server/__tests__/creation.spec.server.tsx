@@ -217,16 +217,16 @@ describe('SSR Creation (JSX)', () => {
   ];
 
   for (const test of testEntries) {
-    it(test.description, () => {
+    it(test.description, async () => {
       const vDom = test.template();
-      const output = renderToStaticMarkup(vDom);
+      const output = await renderToStaticMarkup(vDom);
 
       expect(output).toBe(test.result);
     });
   }
 
   describe('Component hook', () => {
-    it('Should allow changing state in CWM', () => {
+    it('Should allow changing state in CWM', async () => {
       class Another extends Component {
         constructor(props, context) {
           super(props, context);
@@ -274,21 +274,21 @@ describe('SSR Creation (JSX)', () => {
 
       const vDom = <Tester />;
 
-      const output = renderToStaticMarkup(vDom);
+      const output = await renderToStaticMarkup(vDom);
 
       expect(output).toBe('<div>bar2<div>bar2</div></div>');
     });
   });
 
   describe('Component string output', () => {
-    it('Should render single text node', () => {
+    it('Should render single text node', async () => {
       class Foobar extends Component {
         render() {
           return 'foo';
         }
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -297,7 +297,7 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div>foo</div>');
     });
 
-    it('Should render single text node using state', () => {
+    it('Should render single text node using state', async () => {
       class Foobar extends Component {
         render() {
           return this.state!.text;
@@ -310,7 +310,7 @@ describe('SSR Creation (JSX)', () => {
         }
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -319,7 +319,7 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div>foo</div>');
     });
 
-    it('Should render single (number)text node using state', () => {
+    it('Should render single (number)text node using state', async () => {
       class Foobar extends Component {
         render() {
           return this.state!.text;
@@ -332,7 +332,7 @@ describe('SSR Creation (JSX)', () => {
         }
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -341,12 +341,12 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div>33</div>');
     });
 
-    it('Should render comment when component returns invalid node', () => {
+    it('Should render comment when component returns invalid node', async () => {
       function Foobar() {
         return null;
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -355,14 +355,14 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div><!--!--></div>');
     });
 
-    it('Should render single text node Class Component', () => {
+    it('Should render single text node Class Component', async () => {
       class Foobar extends Component {
         render() {
           return null;
         }
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -371,12 +371,12 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div><!--!--></div>');
     });
 
-    it('Should render single text node Functional Component', () => {
+    it('Should render single text node Functional Component', async () => {
       function Foobar() {
         return 'foo';
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -385,12 +385,12 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div>foo</div>');
     });
 
-    it('Should render single (number)text node Functional Component', () => {
+    it('Should render single (number)text node Functional Component', async () => {
       function Foobar() {
         return 2;
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -399,7 +399,7 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div>2</div>');
     });
 
-    it('Should render checked attribute for input when there is no checked in props', () => {
+    it('Should render checked attribute for input when there is no checked in props', async () => {
       class Foobar extends Component {
         render() {
           // @ts-expect-error
@@ -407,7 +407,7 @@ describe('SSR Creation (JSX)', () => {
         }
       }
 
-      const output = renderToString(
+      const output = await renderToString(
         <div>
           <Foobar />
         </div>
@@ -416,22 +416,22 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div><input count="1" type="checkbox" checked="true"></div>');
     });
 
-    it('Should throw error if invalid object is sent to renderToString', () => {
-      expect(() => renderToString({ failure: 'guaranteed' })).toThrow();
-      expect(() => renderToString(2)).toThrow();
+    it('Should throw error if invalid object is sent to renderToString', async () => {
+      await expect(() => renderToString({ failure: 'guaranteed' })).rejects.toThrow();
+      await expect(() => renderToString(2)).rejects.toThrow();
     });
 
-    it('Should re-use Css property names from cache when its used multiple times', () => {
-      expect(
+    it('Should re-use Css property names from cache when its used multiple times', async () => {
+      await expect(
         renderToString(
           <div style={{ 'background-color': 'red' }}>
             <div style={{ 'background-color': 'red' }} />
           </div>
         )
-      ).toEqual('<div style="background-color:red;"><div style="background-color:red;"></div></div>');
+      ).resolves.toEqual('<div style="background-color:red;"><div style="background-color:red;"></div></div>');
     });
 
-    it('text nodes should match 1:1 after hydration', () => {
+    it('text nodes should match 1:1 after hydration', async () => {
       class LinkComponent extends Component {
         render() {
           return (
@@ -443,7 +443,7 @@ describe('SSR Creation (JSX)', () => {
       }
       const container = document.createElement('div');
       const version = '4.0.0-21';
-      const renderedString = renderToString(
+      const renderedString = await renderToString(
         <div className="built">
           Website built with Inferno {version} using <LinkComponent />
         </div>
@@ -474,7 +474,7 @@ describe('SSR Creation (JSX)', () => {
       expect(wrapperDiv.childNodes[3]).toBe(AnchorNode);
     });
 
-    it('Should be possible to render Fragment #1', () => {
+    it('Should be possible to render Fragment #1', async () => {
       const vNode = (
         <div>
           {createFragment(
@@ -483,7 +483,7 @@ describe('SSR Creation (JSX)', () => {
           )}
         </div>
       );
-      const renderedString = renderToString(vNode);
+      const renderedString = await renderToString(vNode);
 
       expect(renderedString).toBe('<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>');
 
@@ -499,7 +499,7 @@ describe('SSR Creation (JSX)', () => {
       expect(container.querySelector('em')).toBe(emTag);
     });
 
-    it('Should be possible to render Fragment #2', () => {
+    it('Should be possible to render Fragment #2', async () => {
       class Fragmented extends Component {
         render() {
           return createFragment([<div id="m">More</div>, 'Fragments'], ChildFlags.UnknownChildren);
@@ -521,7 +521,7 @@ describe('SSR Creation (JSX)', () => {
           )}
         </div>
       );
-      const renderedString = renderToString(vNode);
+      const renderedString = await renderToString(vNode);
 
       expect(renderedString).toBe('<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>');
 
@@ -562,7 +562,7 @@ describe('SSR Creation (JSX)', () => {
         }
       }
 
-      expect(renderToString(<Test />)).toBe('<div>1</div>');
+      expect(renderToString(<Test />)).resolves.toBe('<div>1</div>');
     });
   });
 });

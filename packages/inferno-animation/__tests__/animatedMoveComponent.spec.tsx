@@ -145,19 +145,19 @@ describe('inferno-animation AnimatedMoveComponent', () => {
     });
   });
 
-  it('should render class component extending AnimatedMoveComponent to a string', () => {
+  it('should render class component extending AnimatedMoveComponent to a string', async () => {
     class MyComponent extends AnimatedMoveComponent<any, any> {
       public render({ children }): InfernoNode {
         return <div>{children}</div>;
       }
     }
 
-    const outputStr = renderToString(<MyComponent>1</MyComponent>);
+    const outputStr = await renderToString(<MyComponent>1</MyComponent>);
     expect(outputStr).toBe('<div>1</div>');
   });
 });
 
-describe('inferno-animation animated functional component', () => {
+describe('inferno-animation animated functional component',() => {
   let container;
 
   beforeEach(function () {
@@ -335,7 +335,7 @@ describe('inferno-animation animated functional component', () => {
     });
   });
 
-  it('should render class component extending AnimatedMoveComponent to a string', () => {
+  it('should render class component extending AnimatedMoveComponent to a string', async () => {
     const MyComponent = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
@@ -344,7 +344,7 @@ describe('inferno-animation animated functional component', () => {
       onComponentWillMove: componentWillMove,
     };
 
-    const outputStr = renderToString(<MyComponent {...anim}>1</MyComponent>);
+    const outputStr = await renderToString(<MyComponent {...anim}>1</MyComponent>);
     expect(outputStr).toBe('<div>1</div>');
   });
 });

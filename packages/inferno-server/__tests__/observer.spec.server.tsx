@@ -17,7 +17,7 @@ describe('Mobx Observer Server', () => {
     document.body.removeChild(container);
   });
 
-  it('does not views alive when using static + string rendering', function () {
+  it('does not views alive when using static + string rendering', async function () {
     useStaticRendering(true);
 
     let renderCount = 0;
@@ -30,7 +30,7 @@ describe('Mobx Observer Server', () => {
       return <div>{data.z}</div>;
     });
 
-    const output = renderToStaticMarkup(<TestComponent />);
+    const output = await renderToStaticMarkup(<TestComponent />);
 
     data.z = 'hello';
 

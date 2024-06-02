@@ -196,7 +196,7 @@ describe('A <StaticRouter>', () => {
   });
 
   describe('no basename', () => {
-    it('createHref does not append extra leading slash', () => {
+    it('createHref does not append extra leading slash', async () => {
       const context: Record<string, any> = {};
       const pathname = '/test-path-please-ignore';
 
@@ -213,7 +213,7 @@ describe('A <StaticRouter>', () => {
         />
       );
 
-      const outp = renderToStaticMarkup(
+      const outp = await renderToStaticMarkup(
         <StaticRouter context={context}>
           <Link to={pathname} />
         </StaticRouter>,
@@ -227,8 +227,8 @@ describe('A <StaticRouter>', () => {
     it('does nothing', () => {
       const context = {};
 
-      expect(() => {
-        renderToStaticMarkup(
+      expect(async () => {
+        await renderToStaticMarkup(
           <StaticRouter context={context}>
             <Prompt message="this is only a test" />
           </StaticRouter>,

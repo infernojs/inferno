@@ -19,14 +19,15 @@ describe('SSR Creation (JSX)', () => {
       }
     }
 
-    const outp = renderToStaticMarkup(<App />);
+    renderToStaticMarkup(<App />).then((outp) => {  
+      // Doing this async to be sure
+      setTimeout(() => {
+        expect(spyer).toHaveBeenCalledTimes(0);
+        expect(outp).toEqual('<div></div>');
+        done();
+      }, 10);
+    });
 
-    // Doing this async to be sure
-    setTimeout(() => {
-      expect(spyer).toHaveBeenCalledTimes(0);
-      expect(outp).toEqual('<div></div>');
-      done();
-    }, 10);
   });
 
   it('should not call "componentDidAppear" when component is rendered with renderToString', (done) => {
@@ -42,14 +43,14 @@ describe('SSR Creation (JSX)', () => {
       }
     }
 
-    const outp = renderToString(<App />);
-
-    // Doing this async to be sure
-    setTimeout(() => {
-      expect(spyer).toHaveBeenCalledTimes(0);
-      expect(outp).toEqual('<div></div>');
-      done();
-    }, 10);
+    renderToString(<App />).then(outp => {
+      // Doing this async to be sure
+      setTimeout(() => {
+        expect(spyer).toHaveBeenCalledTimes(0);
+        expect(outp).toEqual('<div></div>');
+        done();
+      }, 10);
+    });
   });
 
   it('should not call "onComponentDidAppear" when component is rendered with renderToStaticMarkup', (done) => {
@@ -70,17 +71,17 @@ describe('SSR Creation (JSX)', () => {
       }
     }
 
-    const outp = renderToStaticMarkup(<App />);
-
-    // Doing this async to be sure
-    setTimeout(() => {
-      expect(spyer).toHaveBeenCalledTimes(0);
-      expect(outp).toEqual('<div></div>');
-      done();
-    }, 10);
+    renderToStaticMarkup(<App />).then(outp => {
+      // Doing this async to be sure
+      setTimeout(() => {
+        expect(spyer).toHaveBeenCalledTimes(0);
+        expect(outp).toEqual('<div></div>');
+        done();
+      }, 10);
+    });
   });
 
-  it('should not call "onComponentDidAppear" when component is rendered with renderToString', (done) => {
+  it('should not call "onComponentDidAppear" when component is rendered with renderToString',  (done) => {
     const spyer = jasmine.createSpy();
 
     const MyComp = () => {
@@ -98,13 +99,13 @@ describe('SSR Creation (JSX)', () => {
       }
     }
 
-    const outp = renderToString(<App />);
-
-    // Doing this async to be sure
-    setTimeout(() => {
-      expect(spyer).toHaveBeenCalledTimes(0);
-      expect(outp).toEqual('<div></div>');
-      done();
-    }, 10);
+    renderToString(<App />).then((outp) => {
+      // Doing this async to be sure
+      setTimeout(() => {
+        expect(spyer).toHaveBeenCalledTimes(0);
+        expect(outp).toEqual('<div></div>');
+        done();
+      }, 10);
+    });
   });
 });

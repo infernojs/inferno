@@ -193,8 +193,8 @@ describe('SSR Hydration - (JSX)', () => {
       expect2: '<div><em>Works <span>again</span>!</em></div>'
     }
   ].forEach(({ node, expect1, expect2 }, i) => {
-    it(`Validate various structures #${i + 1}`, () => {
-      const html = renderToString(node);
+    it(`Validate various structures #${i + 1}`, async () => {
+      const html = await renderToString(node);
       const container = createContainerWithHTML(html);
 
       expect(container.innerHTML).toBe(expect1);
@@ -379,8 +379,8 @@ describe('SSR Hydration - (JSX)', () => {
       expect3: '<div></div>'
     }
   ].forEach(({ node, expect1, node2, node3, expect2, expect3 }, i) => {
-    it(`Update various structures #${i + 1}`, () => {
-      const html = renderToString(node);
+    it(`Update various structures #${i + 1}`, async () => {
+      const html = await renderToString(node);
       const container = createContainerWithHTML(html);
 
       expect(container.innerHTML).toBe(expect1);
@@ -1031,8 +1031,8 @@ describe('SSR Hydration - (JSX)', () => {
         CSR2_expected: '<div><span>B</span></div>'
       }
     ].forEach(({ SSR, CSR, CSR2, SSR_expected, CSR_expected, CSR2_expected }, i) => {
-      it(`Validate various structures #${i + 1}`, () => {
-        const ssrString = renderToString(SSR);
+      it(`Validate various structures #${i + 1}`, async () => {
+        const ssrString = await renderToString(SSR);
         const SsrContainer = createContainerWithHTML(ssrString);
 
         expect(SsrContainer.innerHTML).toBe(SSR_expected);

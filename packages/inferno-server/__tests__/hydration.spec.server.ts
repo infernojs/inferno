@@ -13,8 +13,8 @@ describe('SSR Hydration - (non-JSX)', () => {
   const expect1 = '<div><span>Hello world</span></div>';
   const expect2 = '<div><span>Hello world</span></div>';
 
-  it('Validate various structures', () => {
-    const html = renderToString(node);
+  it('Validate various structures', async () => {
+    const html = await renderToString(node);
     const container = createContainerWithHTML(html);
 
     expect(container.innerHTML).toBe(expect1);

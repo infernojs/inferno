@@ -12,7 +12,7 @@ describe('SSR render() arguments', () => {
     }
   }
 
-  it('should have props as 1st argument', () => {
+  it('should have props as 1st argument', async () => {
     interface TestChildProps {
       testProps: string
     }
@@ -23,11 +23,11 @@ describe('SSR render() arguments', () => {
       }
     }
 
-    const output = renderToStaticMarkup(<TestChild testProps="props-works" />);
+    const output = await renderToStaticMarkup(<TestChild testProps="props-works" />);
     expect(output).toBe('<p>props-works</p>');
   });
 
-  it('should have state as 2nd argument', () => {
+  it('should have state as 2nd argument', async () => {
     class TestChild extends Component {
 
       constructor() {
@@ -39,18 +39,18 @@ describe('SSR render() arguments', () => {
         return <p>{state.testState}</p>;
       }
     }
-    const output = renderToStaticMarkup(<TestChild />);
+    const output = await renderToStaticMarkup(<TestChild />);
     expect(output).toBe('<p>state-works</p>');
   });
 
-  it('statefull has context as 3rd argument', () => {
+  it('statefull has context as 3rd argument', async () => {
     class TestChild extends Component {
       render(_props, _state, context) {
         return <p>{context.testContext}</p>;
       }
     }
 
-    const output = renderToStaticMarkup(
+    const output = await renderToStaticMarkup(
       <TestProvider>
         <TestChild />
       </TestProvider>,
@@ -58,12 +58,12 @@ describe('SSR render() arguments', () => {
     expect(output).toBe('<p>context-works</p>');
   });
 
-  it('stateless has context as 2nd argument', () => {
+  it('stateless has context as 2nd argument', async () => {
     function TestChild(_props, context) {
       return <p>{context.testContext}</p>;
     }
 
-    const output = renderToStaticMarkup(
+    const output = await renderToStaticMarkup(
       <TestProvider>
         <TestChild />
       </TestProvider>,
@@ -71,7 +71,7 @@ describe('SSR render() arguments', () => {
     expect(output).toBe('<p>context-works</p>');
   });
 
-  it('nested stateless has context as 2nd argument', () => {
+  it('nested stateless has context as 2nd argument', async () => {
 
     function ChildWrapper(props) {
       return props.children;
@@ -79,7 +79,7 @@ describe('SSR render() arguments', () => {
     function TestChild(_props, context) {
       return <p>{context.testContext}</p>;
     }
-    const output = renderToStaticMarkup(
+    const output = await renderToStaticMarkup(
       <TestProvider>
         <ChildWrapper>
           <ChildWrapper>
@@ -91,7 +91,7 @@ describe('SSR render() arguments', () => {
     expect(output).toBe('<p>context-works</p>');
   });
 
-  it('nested providers should have merged context', () => {
+  it('nested providers should have merged context', async () => {
     class TestContext extends Component {
       getChildContext() {
         return { testContextWrap: 'context-wrap-works' };
@@ -108,7 +108,7 @@ describe('SSR render() arguments', () => {
         </p>
       );
     }
-    const output = renderToStaticMarkup(
+    const output = await renderToStaticMarkup(
       <TestProvider>
         <TestContext>
           <TestChild />

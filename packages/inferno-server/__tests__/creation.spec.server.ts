@@ -154,9 +154,9 @@ describe('SSR Creation (non-JSX)', () => {
   ];
 
   for (const test of testEntries) {
-    it(test.description, () => {
+    it(test.description, async () => {
       const vDom = test.template('foo');
-      const output = renderToStaticMarkup(vDom);
+      const output = await renderToStaticMarkup(vDom);
 
       expect(output).toBe(test.result);
     });

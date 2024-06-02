@@ -28,8 +28,8 @@ describe('SSR -> Hydrate - Forward Ref', () => {
     document.body.removeChild(container);
   });
 
-  function SSRtoString(method, vNode, callback) {
-    const val = method(vNode);
+  async function SSRtoString(method, vNode, callback) {
+    const val = await method(vNode);
 
     if (isString(val)) {
       callback(val);
@@ -91,7 +91,7 @@ describe('SSR -> Hydrate - Forward Ref', () => {
         );
 
         done();
-      });
+      }).then(() => {});
     });
 
     it('Should be possible to forward callback ref', (done) => {

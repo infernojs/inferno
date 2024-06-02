@@ -19,7 +19,11 @@ import {
   voidElements,
 } from './utils';
 
-function renderVNodeToString(vNode, parent, context): string {
+async function renderVNodeToString(vNode, parent, context): Promise<string> {
+  if (vNode.then) {
+    vNode = await vNode;
+  }
+
   const flags = vNode.flags;
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
@@ -86,7 +90,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, childContext);
+      return await renderVNodeToString(renderOutput, vNode, childContext);
     } else {
       const renderOutput = renderFunctionalComponent(vNode, context);
 
@@ -99,7 +103,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, context);
+      return await renderVNodeToString(renderOutput, vNode, context);
     }
   } else if ((flags & VNodeFlags.Element) !== 0) {
     let renderedString = `<${type}`;
@@ -175,10 +179,14 @@ function renderVNodeToString(vNode, parent, context): string {
       const childFlags = vNode.childFlags;
 
       if (childFlags === ChildFlags.HasVNodeChildren) {
-        renderedString += renderVNodeToString(children, vNode, context);
+        renderedString += await renderVNodeToString(children, vNode, context);
       } else if (childFlags & ChildFlags.MultipleChildren) {
         for (let i = 0, len = children.length; i < len; ++i) {
-          renderedString += renderVNodeToString(children[i], vNode, context);
+          renderedString += await renderVNodeToString(
+            children[i],
+            vNode,
+            context,
+          );
         }
       } else if (childFlags === ChildFlags.HasTextChildren) {
         renderedString += children === '' ? ' ' : escapeText(children);
@@ -211,7 +219,11 @@ function renderVNodeToString(vNode, parent, context): string {
       let renderedString = '';
 
       for (let i = 0, len = tmpNodes.length; i < len; ++i) {
-        renderedString += renderVNodeToString(tmpNodes[i], vNode, context);
+        renderedString += await renderVNodeToString(
+          tmpNodes[i],
+          vNode,
+          context,
+        );
       }
 
       return renderedString;
@@ -236,6 +248,6 @@ function renderVNodeToString(vNode, parent, context): string {
   return '';
 }
 
-export function renderToString(input: any): string {
-  return renderVNodeToString(input, {}, {});
+export async function renderToString(input: any): Promise<string> {
+  return await renderVNodeToString(input, {}, {});
 }

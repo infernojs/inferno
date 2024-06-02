@@ -49,7 +49,7 @@ describe('Resolve loaders during server side rendering', () => {
     const initialData = await resolveLoaders(loaderEntries);
 
     // Render on server
-    const html = renderToString(
+    const html = await renderToString(
       <StaticRouter context={{}} location="/birds" initialData={initialData}>
         {routes}
       </StaticRouter>,
