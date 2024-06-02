@@ -8,28 +8,38 @@ import concatStream from 'concat-stream';
 
 describe('Security - SSR', () => {
   describe('renderToString', () => {
-    it('Should not render invalid tagNames', () => {
-      expect(() => renderToString(createElement('div'))).not.toThrow();
-      expect(() => renderToString(createElement('x-💩'))).not.toThrow();
-      expect(() => renderToString(createElement('a b'))).toThrow(/<a b>/);
-      expect(() => renderToString(createElement('a\0b'))).toThrow(/<a\0b>/);
-      expect(() => renderToString(createElement('a>'))).toThrow(/<a>>/);
-      expect(() => renderToString(createElement('<'))).toThrow(/<<>/);
-      expect(() => renderToString(createElement('"'))).toThrow(/<">/);
+    it('Should not render invalid tagNames', async () => {
+      await expect(renderToString(createElement('div'))).resolves.not.toThrow();
+      await expect(renderToString(createElement('x-💩'))).resolves.not.toThrow();
+
+      let fn = async () => { await renderToString(createElement('a b')) }
+      await expect(fn).rejects.toThrow(/<a b>/);
+
+      fn = async () => { await renderToString(createElement('a\0b')) }
+      await expect(fn).rejects.toThrow(/<a\0b>/);
+
+      fn = async () => { await renderToString(createElement('a>')) }
+      await expect(fn).rejects.toThrow(/<a>>/);
+
+      fn = async () => { await renderToString(createElement('<')) }
+      await expect(fn).rejects.toThrow(/<<>/);
+
+      fn = async () => { await renderToString(createElement('"')) }
+      await expect(fn).rejects.toThrow(/<">/);
     });
 
-    it('Should not render invalid attribute names', () => {
+    it('Should not render invalid attribute names', async () => {
       const props = {};
       const userProvidedData = '></div><script>alert("hi")</script>';
 
       props[userProvidedData] = 'hello';
 
-      const html = renderToString(<div {...props} />);
+      const html = await renderToString(<div {...props} />);
 
       expect(html).toBe('<div></div>');
     });
 
-    it('should reject attribute key injection attack on markup', () => {
+    it('should reject attribute key injection attack on markup', async () => {
       const element1 = createElement(
         'div',
         { 'blah" onclick="beevil" noise="hi': 'selected' },
@@ -40,8 +50,8 @@ describe('Security - SSR', () => {
         { '></div><script>alert("hi")</script>': 'selected' },
         null,
       );
-      const result1 = renderToString(element1);
-      const result2 = renderToString(element2);
+      const result1 = await renderToString(element1);
+      const result2 = await renderToString(element2);
       expect(result1.toLowerCase()).not.toContain('onclick');
       expect(result2.toLowerCase()).not.toContain('script');
     });

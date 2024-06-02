@@ -13,6 +13,7 @@ import {
   isNullOrUndef,
   isString,
   isUndefined,
+  throwError,
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -69,6 +70,7 @@ export function createElement<P>(
     }
   }
   if (isString(type)) {
+    validateTagName(type);
     flags = getFlagsForElementVnode(type);
 
     if (!isNullOrUndef(props)) {
@@ -141,4 +143,9 @@ export function createElement<P>(
     key,
     ref,
   );
+}
+
+function validateTagName(type: string): void {
+  const regex = /[ \0 ><"]/g;
+  if (regex.test(type)) throwError(`Invalid tag name for element "<${type}>"`);
 }
