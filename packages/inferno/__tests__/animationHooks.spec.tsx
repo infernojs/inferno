@@ -564,7 +564,8 @@ describe('animation hooks', () => {
 
     const checkRenderComplete_ONE = () => {
       if (container.innerHTML !== '<div></div>') {
-        return setTimeout(checkRenderComplete_ONE, 10);
+        setTimeout(checkRenderComplete_ONE, 10);
+        return;
       }
       expect(spyer).toHaveBeenCalledTimes(40);
       expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
@@ -686,7 +687,8 @@ describe('animation hooks', () => {
     // Wait for all async operations to finish
     const checkRenderComplete_ONE = () => {
       if (container.innerHTML !== '') {
-        return setTimeout(checkRenderComplete_ONE, 10);
+        setTimeout(checkRenderComplete_ONE, 10);
+        return;
       }
       expect(spyer).toHaveBeenCalledTimes(6);
       expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
