@@ -1,4 +1,4 @@
-import { isNull } from 'inferno-shared';
+import { isFunction, isNull } from 'inferno-shared';
 import { SemiSyntheticEvent } from 'inferno';
 
 const attachedEventCounts = {};
@@ -33,8 +33,20 @@ export function handleEvent(name: string, nextEvent: Function | null, dom) {
   }
 }
 
-function dispatchEvents(event: SemiSyntheticEvent<any>, target, isClick: boolean, name: string, eventData: IEventData) {
-  let dom = target;
+// When browsers fully support event.composedPath we could loop it through instead of using parentNode property
+function getTargetNode(event) {
+  return isFunction(event.composedPath)
+    ? event.composedPath()[0]
+    : event.target;
+}
+
+function dispatchEvents(
+  event: SemiSyntheticEvent<any>,
+  isClick: boolean,
+  name: string,
+  eventData: IEventData
+) {
+  let dom = getTargetNode(event);
   while (!isNull(dom)) {
     // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
     // because the event listener is on document.body
@@ -101,7 +113,7 @@ function attachEventToDocument(name: string) {
       }
     });
 
-    dispatchEvents(event, event.target, isClick, name, eventData);
+    dispatchEvents(event, isClick, name, eventData);
     return;
   };
   document.addEventListener(normalizeEventName(name), docEvent);
