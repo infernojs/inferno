@@ -1,7 +1,6 @@
 {
 	"extends": [
-		"tslint:recommended",
-		"tslint-config-prettier"
+		"tslint:recommended"
 	],
 	"jsRules": {
 		"arrow-parens": false,

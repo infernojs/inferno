@@ -15,16 +15,6 @@
     "type": "git",
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.{ts,tsx}": [
-      "prettier --parser=typescript --write",
-      "git add"
-    ]
-  },
   "pre-commit": {
     "silent": true,
     "run": [
@@ -49,15 +39,9 @@
     "print:size": "node scripts/bundle/bundle-size.js",
     "examples": "npm run --prefix examples start",
     "lint": "tslint -p tsconfig.json --project",
-    "lint-staged": "lint-staged",
     "move-types": "lerna exec -- node ../../scripts/bundle/move-typedefs.js",
     "publish": "lerna publish --exact --force-publish=* --skip-git --skip-npm && npm run build && npm run test && lerna publish --exact",
     "prepublishOnly": "npm run build",
-    "prettier": "npm-run-all prettier:src:*",
-    "prettier:src:js": "prettier --print-width 160 --write --list-different packages/*/__tests__/**/*.{js,jsx}",
-    "prettier:src:ts": "prettier --print-width 160 --write --list-different --parser=typescript packages/*/src/**/*.{ts,tsx}",
-    "prettier:src:fixtures": "prettier --print-width 160 --write --list-different fixtures/**/*.{js,jsx}",
-    "prettier:src:scripts": "prettier --print-width 160 --write --list-different scripts/**/*.{js,jsx}",
     "postinstall": "lerna bootstrap --no-ci",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "npm run test:node && npm run test:browser",
@@ -101,19 +85,16 @@
     "jest-jasmine2": "^29.7.0",
     "jsdom": "^24.1.0",
     "lerna": "^5.6.2",
-    "lint-staged": "^7.3.0",
     "madge": "^7.0.0",
     "minimist": "^1.2.8",
     "mobx": "^4",
     "npm-run-all": "^4.1.5",
     "pre-commit": "^1.2.2",
-    "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "rollup": "^4.19.0",
     "sinon": "^6.3.5",
     "ts-jest": "^29.2.3",
     "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "5.5.3"
   }
 }
