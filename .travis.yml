@@ -11,7 +11,7 @@ notifications:
     on_success: change
     on_failure: always
 sudo: required
-dist: trusty
+dist: jammy
 addons:
   chrome: stable
   firefox: latest
