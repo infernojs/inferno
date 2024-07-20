@@ -14,7 +14,7 @@ export function isValidElement(obj: any): boolean {
   if (!isNotANullObject) {
     return false;
   }
-  const flags = obj.flags;
+  const flags = (obj as any).flags;
 
   return (flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
 }

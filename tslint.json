@@ -24,6 +24,7 @@
 		"variable-name": false
 	},
 	"rules": {
+    "array-type": false,
 		"arrow-parens": false,
 		"ban-types": false,
 		"forin": false,

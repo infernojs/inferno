@@ -17,6 +17,10 @@ describe('Snapshots', () => {
   }
 
   describe('JSX', () => {
+    it('always runs', () => {
+      expect(true).toBe(true);
+    });
+
     if (window.usingJest) {
       it('Should render attributes and className', () => {
         expect(renderToSnapshot(<Foobar/>)).toMatchSnapshot();

@@ -1,36 +1,36 @@
-const bublePlugin = require('rollup-plugin-buble');
-const commonjs = require('rollup-plugin-commonjs');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const replacePlugin = require('rollup-plugin-replace');
-const tsPlugin = require('rollup-plugin-typescript2');
-const uglify = require('rollup-plugin-uglify').uglify;
-const aliasPlugin = require('./alias');
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import replacePlugin from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
+import { aliasPlugin } from './alias.js';
+import babel from '@rollup/plugin-babel';
 
-module.exports = function(version, options) {
+export function createPlugins(version, options) {
   const plugins = [
     aliasPlugin,
     nodeResolve({
-      extensions: ['.ts', '.js', '.json'],
-      jsnext: true
+      mainFields: ['module', 'main'],
+      preferBuiltins: true
     }),
     commonjs({
       include: 'node_modules/**'
-    }),
-    tsPlugin({
-      abortOnError: true,
-      cacheRoot: `.rpt2_cache_${options.env}`,
-      check: false,
-      clean: true,
-      exclude: ['*.spec*', '**/*.spec*'],
-      tsconfig: __dirname + '/../../../tsconfig.json' // Have absolute path to fix windows build
     })
   ];
 
-  if (!options.esnext) {
-    plugins.push(bublePlugin());
-  }
+  plugins.push(
+    babel({
+      exclude: 'node_modules/**',
+      sourceMaps: false,
+      babelrc: false,
+      presets: !options.esnext ? [['@babel/env', { loose: true, modules: false }]] : null,
+      babelHelpers: 'runtime',
+      skipPreflightCheck: true,
+      plugins: [['@babel/plugin-transform-class-properties', { loose: true }]]
+    })
+  );
 
   const replaceValues = {
+    preventAssignment: true,
     'process.env.INFERNO_VERSION': JSON.stringify(options.version)
   };
 
@@ -40,18 +40,16 @@ module.exports = function(version, options) {
 
   plugins.push(replacePlugin(replaceValues));
 
-  if (options.uglify) {
+  if (options.minify) {
     plugins.push(
-      uglify({
+      terser({
         compress: {
-          // compress options
-          booleans: true,
-          dead_code: true,
-          drop_debugger: true,
-          unused: true,
-          keep_fnames: false,
-          keep_infinity: true,
-          passes: 3
+          ecma: 5,
+          inline: true,
+          if_return: false,
+          reduce_funcs: false,
+          passes: 5,
+          comparisons: false
         },
         ie8: false,
         mangle: {
@@ -61,7 +59,6 @@ module.exports = function(version, options) {
           html5_comments: false,
           shebang: false
         },
-        sourcemap: false,
         toplevel: false,
         warnings: false
       })
@@ -69,4 +66,4 @@ module.exports = function(version, options) {
   }
 
   return plugins;
-};
+}

@@ -106,7 +106,7 @@ module.exports = function(config) {
               ],
               plugins: [
                 ["babel-plugin-inferno", {"imports": true}],
-                ["@babel/plugin-proposal-class-properties", { "loose": true }]
+                ["@babel/plugin-transform-class-properties", { "loose": true }]
               ]
             }
           },
@@ -122,9 +122,6 @@ module.exports = function(config) {
             }
           }
         ]
-      },
-      output: {
-        filename: '[name]'
       },
       resolve: {
         alias: {

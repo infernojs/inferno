@@ -80,7 +80,8 @@
     "strictFunctionTypes": true,
     "removeComments": false,
     "experimentalDecorators": false,
-    "rootDir": "."
+    "rootDir": ".",
+    "esModuleInterop": true
   },
   "include": [
     "packages/*/src",

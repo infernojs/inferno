@@ -5,8 +5,6 @@
 
 // MIT license
 
-declare var global: any;
-
 (function() {
 	let lastTime = 0;
 	const vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -18,7 +16,7 @@ declare var global: any;
 	}
 
 	if (!global.requestAnimationFrame) {
-		global.requestAnimationFrame = function(callback, element) {
+		global.requestAnimationFrame = function(callback) {
 			const currTime = new Date().getTime();
 			const timeToCall = Math.max(0, 16 - (currTime - lastTime));
 			const id = global.setTimeout(function() {

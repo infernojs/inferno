@@ -48,7 +48,7 @@ function hydrateElement(vNode: VNode, dom: Element, context: Object, isSVG: bool
   } else {
     vNode.dom = dom;
 
-    let childNode = dom.firstChild;
+    let childNode: Node | null = dom.firstChild;
     const childFlags = vNode.childFlags;
 
     if ((childFlags & ChildFlags.HasInvalidChildren) === 0) {

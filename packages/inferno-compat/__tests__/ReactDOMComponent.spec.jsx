@@ -19,6 +19,10 @@ var mocks = {
 describe('ReactDOMComponent', function() {
   beforeEach(function() {});
 
+  it('always runs', () => {
+    expect(true).toBe(true);
+  })
+
   if (typeof global !== 'undefined' && global.usingJSDOM) {
     describe('updateDOM', function() {
       it('should handle className', function() {

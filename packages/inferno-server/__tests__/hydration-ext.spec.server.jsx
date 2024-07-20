@@ -1,6 +1,5 @@
-import { Component, render } from 'inferno';
-import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
-import { createTextVNode } from '../../inferno/src';
+import { Component, render, createTextVNode } from 'inferno';
+import { createContainerWithHTML, innerHTML } from 'inferno-utils';
 
 class Comp extends Component {
   render() {

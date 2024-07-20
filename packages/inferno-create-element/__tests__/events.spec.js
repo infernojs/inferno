@@ -1,5 +1,4 @@
 import { render } from 'inferno';
-import { triggerEvent } from 'inferno-utils';
 import { createElement } from 'inferno-create-element';
 import sinon from 'sinon';
 

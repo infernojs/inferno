@@ -168,7 +168,7 @@ export class Component<P, S> {
 
   constructor(props?: P, context?: any) {
     /** @type {object} */
-    this.props = props || (EMPTY_OBJ as P);
+    (this.props as any) = props || (EMPTY_OBJ as P);
 
     /** @type {object} */
     this.context = context || EMPTY_OBJ; // context should not be mutable
