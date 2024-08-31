@@ -142,12 +142,10 @@ export function connectAdvanced(
     withRef = false,
     ...connectOptions
   }: Partial<IConnectOptions>,
-  // eslint-disable-next-line @typescript-eslint/ban-types
 ): Function {
   const subscriptionKey = storeKey + 'Subscription';
   const version = hotReloadingVersion++;
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
   const wrapWithConnect = <T extends Function>(WrappedComponent: T): any => {
     invariant(
       typeof WrappedComponent === 'function',

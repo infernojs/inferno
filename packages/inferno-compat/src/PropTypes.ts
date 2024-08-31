@@ -9,7 +9,6 @@
 function proptype() {}
 (proptype as any).isRequired = proptype;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 function getProptype(): Function {
   return proptype;
 }

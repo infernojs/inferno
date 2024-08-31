@@ -40,7 +40,6 @@ export function isDOMVNodeOfType(obj: VNode, type: string): boolean {
   return _isDOMVNode(obj) && obj.type === type;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function isFunctionalVNodeOfType(obj: VNode, type: Function): boolean {
   return _isFunctionalVNode(obj) && obj.type === type;
 }
@@ -52,7 +51,6 @@ export function isClassVNodeOfType(
   return _isClassVNode(obj) && obj.type === type;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function isComponentVNodeOfType(obj: VNode, type: Function): boolean {
   return (_isFunctionalVNode(obj) || _isClassVNode(obj)) && obj.type === type;
 }

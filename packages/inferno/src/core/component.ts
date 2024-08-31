@@ -135,7 +135,6 @@ export type ComponentType<P = Record<string, unknown>> =
   | typeof Component<P>
   | Inferno.StatelessComponent<P>;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export abstract class Component<P = {}, S = Record<string, unknown>>
   implements IComponent<P, S>
 {

@@ -53,7 +53,6 @@ export type { ComponentType, Inferno, Refs, VNode } from 'inferno';
 
 declare global {
   interface Event {
-    // eslint-disable-next-line @typescript-eslint/ban-types
     persist: Function;
   }
 }

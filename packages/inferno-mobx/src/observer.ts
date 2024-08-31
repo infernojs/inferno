@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { _allowStateChanges, createAtom, Reaction } from 'mobx';
 import {
   Component,

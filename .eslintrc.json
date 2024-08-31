@@ -38,6 +38,7 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/non-nullable-type-assertion-style": "off",
+    "@typescript-eslint/ban-types": "off",
     "no-void": "off",
     "no-labels": "off"
   }

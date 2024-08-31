@@ -17,7 +17,6 @@ export function isInvalid(o: unknown): o is null | boolean | undefined {
   return o === null || o === false || o === true || o === void 0;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function isFunction(o: unknown): o is Function {
   return typeof o === 'function';
 }

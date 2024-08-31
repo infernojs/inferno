@@ -361,7 +361,6 @@ export function mergeUnsetProperties<TTo, TFrom>(
 }
 
 export function safeCall1(
-  // eslint-disable-next-line @typescript-eslint/ban-types
   method: Function | null | undefined,
   arg1: any,
 ): boolean {

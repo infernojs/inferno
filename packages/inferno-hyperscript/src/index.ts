@@ -74,7 +74,6 @@ function isChildren(x: any): boolean {
  * @returns {VNode} returns new virtual node
  */
 export function h(
-  // eslint-disable-next-line @typescript-eslint/ban-types
   _tag: string | VNode | Function,
   _props?: any,
   _children?: InfernoNode,

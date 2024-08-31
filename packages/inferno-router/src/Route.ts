@@ -178,7 +178,6 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     }
 
     if (typeof children === 'function') {
-      // eslint-disable-next-line @typescript-eslint/ban-types
       return (children as Function)(renderProps);
     }
 
