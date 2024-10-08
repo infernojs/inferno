@@ -1,1 +1,1 @@
-module.exports = require('inferno-transition-group');
+export * from 'inferno-transition-group';

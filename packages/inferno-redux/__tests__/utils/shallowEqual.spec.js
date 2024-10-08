@@ -1,4 +1,4 @@
-import { shallowEqual } from '../../src/utils/shallowEqual';
+import { shallowEqual } from 'inferno-redux';
 
 describe('redux', () => {
   describe('utils', () => {

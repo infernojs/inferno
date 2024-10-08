@@ -80,9 +80,9 @@ const pkgJSON = JSON.parse(pkgJSONtext);
     //esmProd --name=index --ext=.esm.js --env=production --format=es --minify=false
     Object.assign({}, defaultOptions, { env: 'production', format: 'es', esnext: true, minify: false, ext: '.mjs' }),
     //cjsDev --env=development --format=cjs --replace=true --name=index.cjs --minify=false
-    Object.assign({}, defaultOptions, { env: 'development', format: 'cjs', minify: false, ext: '.cjs.js' }),
+    Object.assign({}, defaultOptions, { env: 'development', format: 'cjs', minify: false, ext: '.cjs' }),
     //cjsProd --env=production --format=cjs --replace=true --name=index.cjs --minify=true --ext=.min.js
-    Object.assign({}, defaultOptions, { env: 'production', format: 'cjs', minify: true, ext: '.cjs.min.js' }),
+    Object.assign({}, defaultOptions, { env: 'production', format: 'cjs', minify: true, ext: '.min.cjs' }),
     //umdDev --minify=false
     Object.assign({}, defaultOptions, {
       env: 'development',

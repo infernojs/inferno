@@ -78,4 +78,4 @@ var EventConstants = {
 	topLevelTypes: topLevelTypes
 };
 
-module.exports = EventConstants;
+export default EventConstants;

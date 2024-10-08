@@ -38,7 +38,7 @@ async function printFileSizes() {
   });
 
   for (const name of packages.sort()) {
-    const filesToStat = [name + '.js', name + '.min.js', 'index.mjs', 'index.cjs.js', 'index.cjs.min.js'];
+    const filesToStat = [name + '.js', name + '.min.js', 'index.mjs', 'index.cjs', 'index.min.cjs'];
     const row = [name];
 
     for (const file of filesToStat) {

@@ -15,7 +15,7 @@ function each(node, fn, listener, prefix) {
 	if (prefix) each(node, fn, listener);
 }
 
-module.exports = {
+export default {
 	addEndEventListener(el, listener) {
 		if (supported) each(el, 'addEventListener', listener, prefix);
 		else setTimeout(listener, 0);

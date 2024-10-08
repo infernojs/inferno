@@ -2,6 +2,7 @@
   "name": "inferno-vnode-flags",
   "version": "8.2.2",
   "license": "MIT",
+  "type": "module",
   "description": "Provides an enum of all possible VNode Flags used when calling Inferno.createVNode",
   "author": {
     "name": "Dominic Gannaway",
@@ -37,7 +38,6 @@
     "README.md",
     "package.json"
   ],
-  "main": "index.js",
   "module": "dist/index.mjs",
   "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",

@@ -1,1 +1,1 @@
-module.exports = require('rc-css-transition-group-modern');
+export * from "rc-css-transition-group-modern";

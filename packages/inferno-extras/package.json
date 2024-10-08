@@ -2,6 +2,7 @@
   "name": "inferno-extras",
   "version": "8.2.2",
   "license": "MIT",
+  "type": "module",
   "description": "Collection of utilities for InfernoJS",
   "author": {
     "name": "Sampo Kivistö<Havunen>",
@@ -28,7 +29,12 @@
     "README.md",
     "package.json"
   ],
-  "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./index.cjs"
+    }
+  },
   "module": "dist/index.mjs",
   "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",

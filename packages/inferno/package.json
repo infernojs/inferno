@@ -2,6 +2,7 @@
   "name": "inferno",
   "version": "8.2.2",
   "license": "MIT",
+  "type": "module",
   "description": "An extremely fast, React-like JavaScript library for building modern user interfaces",
   "author": {
     "name": "Dominic Gannaway",
@@ -51,7 +52,12 @@
     "README.md",
     "package.json"
   ],
-  "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.cjs"
+    }
+  },
   "module": "index.mjs",
   "dev:module": "dist/index.dev.mjs",
   "typings": "dist/index.d.ts",

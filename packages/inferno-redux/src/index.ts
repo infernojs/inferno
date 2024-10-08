@@ -6,10 +6,12 @@ import {
 import { Provider } from './components/Provider';
 import { connect } from './connect/connect';
 import { wrapActionCreators } from './utils/wrapActionCreators';
+import { shallowEqual } from './utils/shallowEqual';
 
 export {
   Provider,
   connectAdvanced,
+  shallowEqual,
   connect,
   type IConnectOptions,
   type Dispatch,

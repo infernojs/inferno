@@ -13,7 +13,7 @@ function isStartish(topLevelType) {
 		topLevelType === 'topTouchStart';
 }
 
-module.exports = {
+export default {
 	isEndish: isEndish,
 	isMoveish: isMoveish,
 	isStartish: isStartish

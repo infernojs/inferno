@@ -13,4 +13,4 @@ var ViewportMetrics = {
 
 };
 
-module.exports = ViewportMetrics;
+export default ViewportMetrics;
