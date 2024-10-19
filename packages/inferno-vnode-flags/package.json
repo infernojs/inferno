@@ -3,6 +3,12 @@
   "version": "8.2.2",
   "license": "MIT",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./index.cjs"
+    }
+  },
   "description": "Provides an enum of all possible VNode Flags used when calling Inferno.createVNode",
   "author": {
     "name": "Dominic Gannaway",

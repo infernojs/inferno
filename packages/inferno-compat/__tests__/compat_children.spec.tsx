@@ -180,6 +180,7 @@ describe('Compat Children', () => {
 
   describe('using JSX', () => {
     it('should create a VNode with the correct className', function () {
+      // @ts-expect-error
       const element = <div className="foo" test="hi" />;
       expect(element.className).toBe('foo');
       expect(element.props).toEqual({ test: 'hi', className: 'foo' });

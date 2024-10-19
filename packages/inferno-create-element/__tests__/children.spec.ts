@@ -278,7 +278,7 @@ describe('Children - (non-JSX)', () => {
   }
 
   for (const arg of preDefined) {
-    const template = (child) => createElement('div', null, child)
+    const template = (child?) => createElement('div', null, child)
 
     it('should set dynamic children as ' + arg.name, () => {
       render(template(arg.value), container);
@@ -342,7 +342,7 @@ describe('Children - (non-JSX)', () => {
   }
 
   for (const arg of preDefined) {
-    const template = (child) => createElement('div', null, createElement('b', null, child));
+    const template = (child?) => createElement('div', null, createElement('b', null, child));
 
     it('should set deep dynamic children as ' + arg.name, () => {
       render(template(arg.value), container);
