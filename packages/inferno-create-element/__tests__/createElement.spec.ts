@@ -1,5 +1,6 @@
-import { Component, createRef, forwardRef, Fragment, render } from 'inferno';
+import {Component, createRef, forwardRef, Fragment, Inferno, type RefObject, render} from 'inferno';
 import { createElement } from 'inferno-create-element';
+import SFC = Inferno.SFC;
 
 describe('CreateElement (non-JSX)', () => {
   let container;
@@ -146,10 +147,10 @@ describe('CreateElement (non-JSX)', () => {
   });
 
   it('Should handle node with refs', (done) => {
-    let myRef = 'myRef';
+    let myRef: any = 'myRef';
 
     const app = () => {
-      const node = () =>
+      const node: SFC<any> = () =>
         createElement('a', {
           ref: (c) => (myRef = c),
         });
@@ -199,7 +200,8 @@ describe('CreateElement (non-JSX)', () => {
   });
 
   it('Should be possible to forward createRef', () => {
-    const FancyButton = forwardRef((props, ref) =>
+    // TODO: Investigate how these refs should be typed
+    const FancyButton = forwardRef<HTMLButtonElement, { children?: any }>((props, ref: any) =>
       createElement(
         'button',
         { ref, className: 'FancyButton' },
@@ -210,6 +212,8 @@ describe('CreateElement (non-JSX)', () => {
     expect(FancyButton.render).toBeDefined();
 
     class Hello extends Component {
+      btn: RefObject<HTMLButtonElement>;
+
       constructor(props) {
         super(props);
 
@@ -222,7 +226,7 @@ describe('CreateElement (non-JSX)', () => {
       }
 
       render() {
-        return createElement(FancyButton, { ref: this.btn }, 'Click me!');
+        return createElement(FancyButton, { ref: this.btn as any }, 'Click me!');
       }
     }
 

@@ -5,6 +5,7 @@ import {
   Fragment,
   render,
   rerender,
+  VNode,
 } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
@@ -522,7 +523,7 @@ describe('CreateElement (non-JSX)', () => {
       let mountCounter = 0;
       let unmountCounter = 0;
 
-      const FoobarCom = class FoobarCom extends Component {
+      const FoobarCom = class FoobarCom extends Component<{node: HTMLDivElement}> {
         componentWillMount() {
           mountCounter++;
         }
@@ -556,6 +557,7 @@ describe('CreateElement (non-JSX)', () => {
             first: 'first',
             mid: 'MID',
             last: createElement('div', null, 'Why?'),
+            changeOrder: false
           }),
         ),
         container,
@@ -593,6 +595,7 @@ describe('CreateElement (non-JSX)', () => {
             first: 'first',
             mid: 'MID',
             last: createElement('div', null, 'Why?'),
+            changeOrder: false,
           }),
         ),
         container,
@@ -1013,7 +1016,7 @@ describe('CreateElement (non-JSX)', () => {
         return createElement('div', null, 'Ok');
       }
 
-      let content = [null];
+      let content: (VNode|null)[] = [null];
 
       render(
         createElement(
@@ -1051,7 +1054,7 @@ describe('CreateElement (non-JSX)', () => {
         return createElement('div', null, 'Ok');
       }
 
-      let content = [];
+      let content: (VNode|null)[] = [];
 
       render(
         createElement(
@@ -1137,7 +1140,7 @@ describe('CreateElement (non-JSX)', () => {
         }
       };
 
-      let nodes = [];
+      let nodes: (VNode|null)[] = [];
 
       render(createElement(Fragment, null, nodes), container);
 
@@ -1308,10 +1311,20 @@ describe('CreateElement (non-JSX)', () => {
     it('Should mount fragment children to correct position Github #1412', () => {
       const f = (...xs) => createFragment(xs, 0);
 
-      class Articles extends Component {
+      interface ArticlesState {
+        articles: string[];
+        sections: string[];
+      }
+
+      class Articles extends Component<unknown, ArticlesState> {
+        state: ArticlesState;
+
         constructor() {
           super();
-          this.state = { articles: ['id2', 'id3'], sections: ['id0', 'id1'] };
+          this.state = {
+            articles: ['id2', 'id3'],
+            sections: ['id0', 'id1']
+          };
         }
 
         componentDidMount() {
@@ -1371,7 +1384,13 @@ describe('CreateElement (non-JSX)', () => {
     it('Should re-mount fragment children to correct position when edge is component', () => {
       const f = (...xs) => createFragment(xs, 0);
 
-      class Articles extends Component {
+      interface ArticlesState {
+        articles: string[];
+        sections: string[];
+      }
+
+      class Articles extends Component<unknown, ArticlesState> {
+        state: ArticlesState;
         constructor() {
           super();
           this.state = { articles: ['id2', 'id3'], sections: ['id0', 'id1'] };
@@ -1452,7 +1471,13 @@ describe('CreateElement (non-JSX)', () => {
     it('Should append more fragment children to correct position when edge is component', () => {
       const f = (...xs) => createFragment(xs, 0);
 
-      class Articles extends Component {
+      interface ArticlesState {
+        articles: string[];
+        sections: string[];
+      }
+
+      class Articles extends Component<unknown, ArticlesState> {
+        state: ArticlesState;
         constructor() {
           super();
           this.state = { articles: ['id2', 'id3'], sections: ['id0', 'id1'] };

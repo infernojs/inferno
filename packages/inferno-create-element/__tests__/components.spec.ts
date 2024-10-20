@@ -19,7 +19,7 @@ describe('Components (non-JSX)', () => {
   });
 
   if (typeof global !== 'undefined' && !global.usingJSDOM) {
-    class BasicComponent1 extends Component {
+    class BasicComponent1 extends Component<{name: string, title: string}> {
       render() {
         const template = (name, title) =>
           createElement(
@@ -147,7 +147,7 @@ describe('Components (non-JSX)', () => {
       );
     });
 
-    class BasicComponent1b extends Component {
+    class BasicComponent1b extends Component<{isChecked: boolean, title: string}> {
       render() {
         const template = (isChecked, title) =>
           createElement(
@@ -219,7 +219,7 @@ describe('Components (non-JSX)', () => {
       expect(container.querySelector('input').checked).toBe(false);
     });
 
-    class BasicComponent1c extends Component {
+    class BasicComponent1c extends Component<{isEnabled: boolean, title: string, type: string}> {
       render() {
         const template = (isEnabled, title, type) =>
           createElement(
@@ -300,7 +300,7 @@ describe('Components (non-JSX)', () => {
       );
     });
 
-    class BasicComponent1d extends Component {
+    class BasicComponent1d extends Component<{isDisabled: boolean, title: string}> {
       render() {
         const template = (isDisabled, title) =>
           createElement(
@@ -401,7 +401,7 @@ describe('Components (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    class BasicComponent2 extends Component {
+    class BasicComponent2 extends Component<{name: string, title: string, children: any}> {
       render() {
         const template = (name, title, children) =>
           createElement(
@@ -485,7 +485,7 @@ describe('Components (non-JSX)', () => {
       }
     }
 
-    class BasicComponent3 extends Component {
+    class BasicComponent3 extends Component<{styles: any, title: string}> {
       render() {
         const template = (styles, title) =>
           createElement(
@@ -797,7 +797,13 @@ describe('Components (non-JSX)', () => {
       let componentWillMountCount;
       let template;
 
-      class ComponentLifecycleCheck extends Component {
+      interface CounterState {
+        counter: number;
+      }
+
+      class ComponentLifecycleCheck extends Component<any, CounterState> {
+        state: CounterState;
+
         constructor() {
           super(null);
           this.state = {
@@ -841,7 +847,12 @@ describe('Components (non-JSX)', () => {
       let template;
       let update;
 
-      class ComponentLifecycleCheck extends Component {
+      interface CounterState {
+        counter: number;
+      }
+
+      class ComponentLifecycleCheck extends Component<any, CounterState> {
+        state: CounterState;
         constructor() {
           super(null);
           this.state = {
@@ -914,7 +925,7 @@ describe('Components (non-JSX)', () => {
         return createElement('h2', null, 'small');
       };
 
-      class ConditionalComponent extends Component {
+      class ConditionalComponent extends Component<{condition: boolean}> {
         render() {
           return createElement('div', null, [
             this.props.condition ? tpl3625453295() : tpl4021787591(),
@@ -956,7 +967,12 @@ describe('Components (non-JSX)', () => {
         return createElement(v0, null);
       };
 
-      class ValueComponent extends Component {
+      interface ValueState {
+        organizations: {name: string, key: string|number}[]
+      }
+      class ValueComponent extends Component<any, ValueState> {
+        state: ValueState;
+
         constructor(props) {
           super(props);
           this.state = {
@@ -1053,7 +1069,7 @@ describe('Components (non-JSX)', () => {
           'The title is abc',
         );
 
-        render(template(BasicStatelessComponent1), container);
+        render(template(BasicStatelessComponent1, undefined), container);
         expect(container.firstChild.childNodes.length).toBe(1);
         expect(container.firstChild.firstChild.getAttribute('class')).toBe(
           'basic',
@@ -1066,7 +1082,7 @@ describe('Components (non-JSX)', () => {
           'The title is ',
         );
 
-        render(template(BasicStatelessComponent1), container);
+        render(template(BasicStatelessComponent1, undefined), container);
         expect(container.firstChild.childNodes.length).toBe(1);
         expect(container.firstChild.firstChild.getAttribute('class')).toBe(
           'basic',
@@ -1098,6 +1114,9 @@ describe('Components (non-JSX)', () => {
       };
 
       class TEST extends Component {
+        // @ts-ignore it does not understand meaning of call(this)
+        private makeVisible: () => void;
+
         constructor(props) {
           super(props);
           this.state = {
@@ -1183,7 +1202,7 @@ describe('Components (non-JSX)', () => {
         render() {
           /* eslint new-cap:0 */
           return BaseView(
-            this.toggle,
+            undefined,
             function () {
               return this.state.list.map(function (result) {
                 return Looper(result);
@@ -1267,7 +1286,7 @@ describe('Components (non-JSX)', () => {
           }
         }
 
-        class Message extends Component {
+        class Message extends Component<{text: string}> {
           render() {
             return createElement('div', null, [
               this.props.text,
@@ -1276,7 +1295,7 @@ describe('Components (non-JSX)', () => {
           }
         }
 
-        class MessageList extends Component {
+        class MessageList extends Component<{messages: {text: string}[]}> {
           getChildContext() {
             return { color: 'purple' };
           }

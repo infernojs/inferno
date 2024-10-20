@@ -1,4 +1,5 @@
 import {
+  type Component,
   createComponentVNode,
   createFragment,
   createVNode,
@@ -6,6 +7,7 @@ import {
   type Inferno,
   type Key,
   type Props,
+  type Refs,
   type VNode,
 } from 'inferno';
 import {
@@ -16,31 +18,21 @@ import {
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-const componentHooks = {
-  onComponentDidAppear: 1,
-  onComponentDidMount: 1,
-  onComponentDidUpdate: 1,
-  onComponentShouldUpdate: 1,
-  onComponentWillDisappear: 1,
-  onComponentWillMount: 1,
-  onComponentWillUnmount: 1,
-  onComponentWillUpdate: 1,
-};
-
-/**
- * Creates virtual node
- * @param {string|Function|Component<any, any>} type Type of node
- * @param {object=} props Optional props for virtual node
- * @param {...{object}=} _children Optional children for virtual node
- * @returns {VNode} new virtual node
- */
 export function createElement<P>(
-  type: string | Inferno.ComponentClass<P> | Inferno.StatelessComponent<P>,
+  type:
+    | string
+    | Inferno.ComponentClass<P>
+    | Inferno.StatelessComponent<P & Refs<P>>
+    | typeof Component<P, any>,
   props?: (P & Props<P>) | null,
   ..._children: any[]
 ): VNode;
 export function createElement<P>(
-  type: string | Inferno.ComponentClass<P> | Inferno.StatelessComponent<P>,
+  type:
+    | string
+    | Inferno.ComponentClass<P>
+    | Inferno.StatelessComponent<P & Refs<P>>
+    | typeof Component<P, any>,
   props?: (P & Props<P>) | null,
   _children?: any,
 ): VNode {
@@ -109,13 +101,25 @@ export function createElement<P>(
           key = props.key;
         } else if (prop === 'ref') {
           ref = props.ref;
-        } else if ((componentHooks as any)[prop] === 1) {
-          if (!ref) {
-            ref = {};
-          }
-          ref[prop] = props[prop];
         } else {
-          newProps[prop] = props[prop];
+          switch (prop) {
+            case 'onComponentDidAppear':
+            case 'onComponentDidMount':
+            case 'onComponentDidUpdate':
+            case 'onComponentShouldUpdate':
+            case 'onComponentWillDisappear':
+            case 'onComponentWillMount':
+            case 'onComponentWillUnmount':
+            case 'onComponentWillUpdate':
+              if (!ref) {
+                ref = {};
+              }
+              ref[prop] = props[prop];
+              break;
+            default:
+              newProps[prop] = props[prop];
+              break;
+          }
         }
       }
     }
