@@ -161,6 +161,7 @@ describe('Portal spec', () => {
 
     render(
       createPortal(
+        // @ts-ignore
         <>
           <Tester key={1}>1</Tester>
           <Tester key={2}>2</Tester>

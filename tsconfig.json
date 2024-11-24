@@ -67,6 +67,8 @@
     "outDir": "build",
     "sourceMap": true,
     "jsx": "preserve",
+    "jsxFactory": "Inferno.createElement",
+    "jsxFragmentFactory": "Fragment",
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "alwaysStrict": true,

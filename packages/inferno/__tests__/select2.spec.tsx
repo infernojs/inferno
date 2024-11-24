@@ -634,17 +634,20 @@ describe('Select / select multiple (JSX)', () => {
   });
 
   it('Should be possible to render select element with options wrapped in Fragment', () => {
+    // @ts-ignore
+    const t = <>
+        <>
+          <option value={1}>1st</option>
+        </>
+        <option value={2}>2nd</option>
+        <>
+          <option value={3}>3rd</option>
+        </>
+      </>
+
     render(
       <select value={1}>
-        <>
-          <>
-            <option value={1}>1st</option>
-          </>
-          <option value={2}>2nd</option>
-          <>
-            <option value={3}>3rd</option>
-          </>
-        </>
+        {t}
       </select>,
       container,
     );

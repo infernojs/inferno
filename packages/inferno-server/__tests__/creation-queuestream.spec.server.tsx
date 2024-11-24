@@ -528,6 +528,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     {
       description: 'You should be able to render fragment with single child',
       template: () => (
+        // @ts-ignore
         <>
           <p>1</p>
         </>
