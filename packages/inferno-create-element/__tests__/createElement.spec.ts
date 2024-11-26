@@ -1,6 +1,5 @@
-import {Component, createRef, forwardRef, Fragment, Inferno, type RefObject, render} from 'inferno';
+import { Component, createRef, forwardRef, Fragment, type Inferno, type RefObject, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import SFC = Inferno.SFC;
 
 describe('CreateElement (non-JSX)', () => {
   let container;
@@ -150,10 +149,11 @@ describe('CreateElement (non-JSX)', () => {
     let myRef: any = 'myRef';
 
     const app = () => {
-      const node: SFC<any> = () =>
+      const node: Inferno.StatelessComponent<any> = () =>
         createElement('a', {
           ref: (c) => (myRef = c),
         });
+
       return createElement(node, {
         onComponentDidMount() {
           expect(myRef.tagName).toBe('A');
