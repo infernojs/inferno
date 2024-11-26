@@ -46,7 +46,7 @@
     "moduleName": "Inferno"
   },
   "files": [
-    "index.js",
+    "index.cjs",
     "index.mjs",
     "dist/",
     "README.md",

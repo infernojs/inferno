@@ -39,7 +39,7 @@
     }
   },
   "files": [
-    "index.js",
+    "index.cjs",
     "dist/",
     "README.md",
     "package.json"

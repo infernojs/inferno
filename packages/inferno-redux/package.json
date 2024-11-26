@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "files": [
-    "index.js",
+    "index.cjs",
     "dist/",
     "README.md",
     "package.json"
