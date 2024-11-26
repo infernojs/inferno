@@ -42,8 +42,7 @@
     "directory": "packages/inferno-router"
   },
   "peerDependencies": {
-    "history": "^5.3.0",
-    "path-to-regexp": "^1.9.0"
+    "history": "^5.3.0"
   },
   "dependencies": {
     "history": "^5.3.0",
