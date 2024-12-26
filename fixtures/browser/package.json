@@ -23,7 +23,7 @@
     "@babel/preset-env": "7.26.0",
     "babel-loader": "^9.2.1",
     "build-time-reporter-webpack-plugin": "^1.4.3",
-    "jasmine-core": "^5.4.0",
+    "jasmine-core": "^5.5.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-detect-browsers": "^2.3.3",
@@ -34,6 +34,6 @@
     "output-compile-time-webpack-plugin": "^1.0.5",
     "saucelabs": "8.0.0",
     "ts-loader": "^9.5.1",
-    "webpack": "^5.96.1"
+    "webpack": "^5.97.1"
   }
 }
