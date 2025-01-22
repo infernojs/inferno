@@ -7,7 +7,9 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./index.cjs"
-    }
+    },
+    "./dist/index.dev.mjs": "./dist/index.dev.mjs",
+    "./dist/index.mjs": "./dist/index.mjs"
   },
   "description": "Provides an enum of all possible VNode Flags used when calling Inferno.createVNode",
   "author": {
