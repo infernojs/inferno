@@ -29,7 +29,7 @@ function renderVNodeToString(vNode, parent, context): string {
     const isClass = flags & VNodeFlags.ComponentClass;
 
     if (isClass) {
-      // eslint-disable-next-line new-cap
+       
       const instance = new type(props, context);
       const hasNewAPI = Boolean(type.getDerivedStateFromProps);
       instance.$BS = false;
@@ -191,7 +191,6 @@ function renderVNodeToString(vNode, parent, context): string {
     }
 
     if (String(type).match(/[\s\n/='"\0<>]/)) {
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw renderedString;
     }
 

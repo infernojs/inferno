@@ -15,7 +15,7 @@ describe('Development warnings', () => {
     document.body.removeChild(container);
   });
 
-  // Browsers format error messages little bit differently so just skip those in tests. As long as messages are ok its fine.
+  // Browsers format error messages a little bit differently so just skip those in tests. As long as messages are ok its fine.
   if (global?.usingJSDOM) {
     describe('Warning two duplicate keys', () => {
       it('Should throw error if two duplicates is found', () => {

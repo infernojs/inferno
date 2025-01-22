@@ -152,12 +152,11 @@ function parseSelector(filter: unknown): unknown[] {
 }
 
 // @ts-expect-error there is no way to declare that function throws
-// eslint-disable-next-line prettier/prettier
 function findOneOf<TResult, TArgTree, TArgFilter>(tree: TArgTree, filter: TArgFilter, name: string, finder: (renderedTree: TArgTree, type: TArgFilter) => TResult[]): TResult {
   const all = finder(tree, filter);
   if (all.length > 1) {
     throwError(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+       
       `Did not find exactly one match (found ${all.length}) for ${name}: ${filter}`,
     );
   } else {
@@ -180,7 +179,7 @@ export function scryRenderedDOMElementsWithClass(
       if (
         !isString(domClassName) &&
         !isNullOrUndef(instance.dom) &&
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+         
         isFunction(instance.dom.getAttribute)
       ) {
         // SVG || null, probably

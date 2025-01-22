@@ -111,7 +111,7 @@ describe('Components 2 (TSX)', () => {
       x: boolean;
     }
 
-    class MakeX extends Component<{}, MakeXState> {
+    class MakeX extends Component<object, MakeXState> {
       state: MakeXState;
 
       constructor(props) {
@@ -144,7 +144,7 @@ describe('Components 2 (TSX)', () => {
       z: boolean;
     }
 
-    class MakeA extends Component<{}, MakeAState> {
+    class MakeA extends Component<object, MakeAState> {
       state: MakeAState;
 
       constructor(props) {
@@ -398,7 +398,7 @@ describe('Components 2 (TSX)', () => {
       bool: boolean;
     }
 
-    class Bar extends Component<{}, BarState> {
+    class Bar extends Component<object, BarState> {
       state: BarState;
 
       constructor(props) {
@@ -451,7 +451,7 @@ describe('Components 2 (TSX)', () => {
         bool: boolean;
       }
 
-      class Bar extends Component<{}, BarState> {
+      class Bar extends Component<object, BarState> {
         state: BarState;
 
         constructor(props) {
@@ -507,7 +507,7 @@ describe('Components 2 (TSX)', () => {
       bool: boolean;
     }
 
-    class Bar extends Component<{}, BarState> {
+    class Bar extends Component<object, BarState> {
       state: BarState;
 
       constructor(props) {
@@ -557,7 +557,7 @@ describe('Components 2 (TSX)', () => {
       bool: boolean;
     }
 
-    class Bar extends Component<{}, BarState> {
+    class Bar extends Component<object, BarState> {
       state: BarState;
 
       constructor(props) {
@@ -834,7 +834,7 @@ describe('Components 2 (TSX)', () => {
         toggle1: boolean;
       }
 
-      class Tester extends Component<{}, TesterState> {
+      class Tester extends Component<object, TesterState> {
         state: TesterState;
 
         constructor(props) {
@@ -886,7 +886,7 @@ describe('Components 2 (TSX)', () => {
         foo: number;
       }
 
-      class Comp1 extends Component<{}, Comp1State> {
+      class Comp1 extends Component<object, Comp1State> {
         state: Comp1State;
 
         constructor(props) {
@@ -1065,7 +1065,7 @@ describe('Components 2 (TSX)', () => {
       foo: string;
     }
 
-    class Comp1 extends Component<{}, Comp1State> {
+    class Comp1 extends Component<object, Comp1State> {
       state: Comp1State;
 
       constructor(props) {
@@ -1151,7 +1151,7 @@ describe('Components 2 (TSX)', () => {
       n: boolean;
     }
 
-    class A extends Component<{}, AState> {
+    class A extends Component<object, AState> {
       state: AState;
       private onClick: () => void;
       constructor(props) {
@@ -1165,7 +1165,7 @@ describe('Components 2 (TSX)', () => {
 
       render() {
         if (this.state.n) {
-          // eslint-disable-next-line
+           
           return (
             <div ref={(dom) => (div = dom)} onClick={this.onClick}>
               DIV
@@ -1190,7 +1190,7 @@ describe('Components 2 (TSX)', () => {
       reverse: boolean
     }
 
-    class Test extends Component<{}, TestState> {
+    class Test extends Component<object, TestState> {
       state: TestState;
       constructor(props) {
         super(props);
@@ -1251,7 +1251,7 @@ describe('Components 2 (TSX)', () => {
       n: boolean;
     }
 
-    class A extends Component<{}, AState> {
+    class A extends Component<object, AState> {
       state: AState;
       private onClick: () => void;
       constructor(props) {
@@ -1265,7 +1265,7 @@ describe('Components 2 (TSX)', () => {
 
       render() {
         if (this.state.n) {
-          // eslint-disable-next-line
+           
           return (
             <div ref={(dom) => (div = dom)} onClick={this.onClick}>
               DIV
@@ -1294,7 +1294,7 @@ describe('Components 2 (TSX)', () => {
       reverse: boolean
     }
 
-    class Test extends Component<{}, TestState> {
+    class Test extends Component<object, TestState> {
       state: TestState;
       constructor(props) {
         super(props);
@@ -1355,7 +1355,7 @@ describe('Components 2 (TSX)', () => {
       n: boolean;
     }
 
-    class A extends Component<{}, AState> {
+    class A extends Component<object, AState> {
       state: AState;
       private onClick: () => void;
       constructor(props) {
@@ -1369,7 +1369,7 @@ describe('Components 2 (TSX)', () => {
 
       render() {
         if (this.state.n) {
-          // eslint-disable-next-line
+           
           return (
             <div ref={(dom) => (div = dom)} onClick={this.onClick}>
               DIV
@@ -1392,7 +1392,7 @@ describe('Components 2 (TSX)', () => {
       reverse: boolean
     }
 
-    class Test extends Component<{}, TestState> {
+    class Test extends Component<object, TestState> {
       state: TestState;
       constructor(props) {
         super(props);
@@ -1454,7 +1454,7 @@ describe('Components 2 (TSX)', () => {
       n: boolean;
     }
 
-    class A extends Component<{}, AState> {
+    class A extends Component<object, AState> {
       state: AState;
       private onClick: () => void;
       constructor(props) {
@@ -1488,7 +1488,7 @@ describe('Components 2 (TSX)', () => {
       reverse: boolean
     }
 
-    class Test extends Component<{}, TestState> {
+    class Test extends Component<object, TestState> {
       state: TestState;
 
       constructor(props) {
@@ -1548,7 +1548,7 @@ describe('Components 2 (TSX)', () => {
       n: boolean;
     }
 
-    class A extends Component<{}, AState> {
+    class A extends Component<object, AState> {
       state: AState;
       private onClick: () => void;
 
@@ -1585,7 +1585,7 @@ describe('Components 2 (TSX)', () => {
       reverse: boolean;
     }
 
-    class Test extends Component<{}, TestState> {
+    class Test extends Component<object, TestState> {
       state: TestState;
       constructor(props) {
         super(props);
@@ -1690,7 +1690,7 @@ describe('Components 2 (TSX)', () => {
       reverse: boolean;
     }
 
-    class Test extends Component<{}, TestState> {
+    class Test extends Component<object, TestState> {
       state: TestState;
 
       constructor(props) {
@@ -1733,7 +1733,7 @@ describe('Components 2 (TSX)', () => {
       reverse: boolean;
     }
 
-    class Test extends Component<{}, TestState> {
+    class Test extends Component<object, TestState> {
       state: TestState;
 
       constructor(props) {

@@ -334,7 +334,7 @@ class WrapperComponent<P, S> extends Component<P & ContextProps, S> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 function unstable_renderSubtreeIntoContainer(
   parentComponent,
   vNode,

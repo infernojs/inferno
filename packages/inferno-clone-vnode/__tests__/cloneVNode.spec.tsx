@@ -346,7 +346,7 @@ describe('cloneVNode (JSX)', () => {
 
       render(newNode, container);
 
-      expect(newNode.props.hasOwnProperty('id')).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(newNode.props, 'id')).toBe(true);
       // expect(newNode.props.className).toBe(undefined);
       // expect(newNode.props.hasOwnProperty('className')).toBe(false);
 

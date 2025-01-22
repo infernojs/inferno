@@ -69,7 +69,7 @@ describe('Component lifecycle', () => {
       }
     }
 
-    class Parent extends Component<{}, { active: boolean }> {
+    class Parent extends Component<object, { active: boolean }> {
       public state = {
         active: false,
       };
@@ -165,7 +165,7 @@ describe('Component lifecycle', () => {
       }
 
       public render() {
-        // eslint-disable-next-line
+         
         return (
           <div className="foobar" ref={(el) => (this.element = el!)}>
             1
@@ -197,7 +197,7 @@ describe('Component lifecycle', () => {
       }
     }
 
-    // eslint-disable-next-line no-return-assign
+     
     render(
       <Com
         ref={(inst) => {
@@ -210,7 +210,7 @@ describe('Component lifecycle', () => {
 
     c.componentDidUpdate = undefined;
 
-    // eslint-disable-next-line no-return-assign
+     
     render(<Com ref={(inst) => (c = inst)} value={2} />, container);
   });
 });

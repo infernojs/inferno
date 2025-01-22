@@ -33,7 +33,7 @@
     "karma-webpack": "5.0.1",
     "output-compile-time-webpack-plugin": "^1.0.5",
     "saucelabs": "8.0.0",
-    "ts-loader": "^9.5.1",
+    "ts-loader": "^9.5.2",
     "webpack": "^5.97.1"
   }
 }

@@ -498,7 +498,6 @@ describe('keyed-nodes', () => {
     });
 
     for (let i = 0; i < 10; i++) {
-      // eslint-disable-next-line
       it('Should handle massive arrays shifting ' + i + ' times by ' + i, () => {
           for (let j = 0; j < i; j++) {
             items = items.concat(items.splice(i, j));

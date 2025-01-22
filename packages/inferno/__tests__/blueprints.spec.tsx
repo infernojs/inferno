@@ -189,7 +189,7 @@ describe('Blueprints (JSX)', () => {
     it('Should be able to update property', () => {
       interface AProps {
         disabled?: boolean;
-        args?: {};
+        args?: object;
       }
       class A extends Component<AProps> {
         constructor(props) {

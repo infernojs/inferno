@@ -25,16 +25,7 @@ export function createElement<P>(
     | Inferno.StatelessComponent<P & Refs<P>>
     | typeof Component<P, any>,
   props?: (P & Props<P>) | null,
-  ..._children: any[]
-): VNode;
-export function createElement<P>(
-  type:
-    | string
-    | Inferno.ComponentClass<P>
-    | Inferno.StatelessComponent<P & Refs<P>>
-    | typeof Component<P, any>,
-  props?: (P & Props<P>) | null,
-  _children?: any,
+  ...children: any[]
 ): VNode {
   if (process.env.NODE_ENV !== 'production') {
     if (isInvalid(type)) {
@@ -43,21 +34,21 @@ export function createElement<P>(
       );
     }
   }
-  let children: any;
+  let definedChildren: any;
   let ref: any = null;
   let key: Key = null;
   let className: string | null = null;
   let flags: VNodeFlags;
-  let newProps;
-  let childLen = arguments.length - 2;
+  let newProps: Readonly<unknown> | null | undefined;
+  const childLen = children.length;
 
   if (childLen === 1) {
-    children = _children;
+    definedChildren = children[0];
   } else if (childLen > 1) {
-    children = [];
+    definedChildren = [];
 
-    while (childLen-- > 0) {
-      children[childLen] = arguments[childLen + 2];
+    for (let i = 0; i < childLen; i++) {
+      definedChildren.push(children[i]);
     }
   }
   if (isString(type)) {
@@ -71,8 +62,8 @@ export function createElement<P>(
           className = (props as any)[prop];
         } else if (prop === 'key') {
           key = props.key;
-        } else if (prop === 'children' && isUndefined(children)) {
-          children = props.children; // always favour children args over props
+        } else if (prop === 'children' && isUndefined(definedChildren)) {
+          definedChildren = props.children; // always favour children args over props
         } else if (prop === 'ref') {
           ref = props.ref;
         } else {
@@ -85,12 +76,12 @@ export function createElement<P>(
     }
   } else {
     flags = VNodeFlags.ComponentUnknown;
-    if (!isUndefined(children)) {
+    if (!isUndefined(definedChildren)) {
       if (!props) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+         
         props = {} as P & Props<P>;
       }
-      props.children = children;
+      props.children = definedChildren;
     }
 
     if (!isNullOrUndef(props)) {
@@ -129,7 +120,7 @@ export function createElement<P>(
 
   if (flags & VNodeFlags.Fragment) {
     return createFragment(
-      childLen === 1 ? [children] : children,
+      childLen === 1 ? [definedChildren] : definedChildren,
       ChildFlags.UnknownChildren,
       key,
     );
@@ -139,7 +130,7 @@ export function createElement<P>(
     flags,
     type,
     className,
-    children,
+    definedChildren,
     ChildFlags.UnknownChildren,
     newProps,
     key,

@@ -412,7 +412,7 @@ export function hydrate(
       ) as Element;
     }
     // clear any other DOM nodes, there should be only a single entry for the root
-    // eslint-disable-next-line no-unmodified-loop-condition
+     
     while (dom && (dom = dom.nextSibling as Element | null)) {
       parentDOM.removeChild(dom);
     }

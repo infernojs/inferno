@@ -45,7 +45,7 @@ describe('EventEmitter', () => {
     expect(emitter.listeners.length).toEqual(0);
 
     const listener = emitter.on(listener1);
-    const listenerTwo = emitter.on(listener2);
+    emitter.on(listener2);
 
     expect(emitter.listeners.length).toEqual(2);
     expect(emitter.listeners[0]).toEqual(listener1);

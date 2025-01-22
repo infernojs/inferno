@@ -57,6 +57,8 @@ export function Link(
   props: ILinkProps & Inferno.LinkHTMLAttributes<HTMLLinkElement>,
   context,
 ): VNode {
+  // "replace" is not purpose left out by spreading the properties
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { replace, children, className, to = '', innerRef, ...rest } = props;
   invariant(context.router, 'You should not use <Link> outside a <Router>');
 

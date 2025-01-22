@@ -135,7 +135,7 @@ export type ComponentType<P = Record<string, unknown>> =
   | typeof Component<P>
   | Inferno.StatelessComponent<P>;
 
-export abstract class Component<P = {}, S = Record<string, unknown>>
+export abstract class Component<P = object, S = Record<string, unknown>>
   implements IComponent<P, S>
 {
   // Public

@@ -839,17 +839,17 @@ describe('Update (non-jsx)', () => {
           );
         }
 
-        // eslint-disable-next-line
+         
         render(A(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>Text</td></tr></table></div></div>',
         );
-        // eslint-disable-next-line
+         
         render(B(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>bar</td></tr></table></div></div>',
         );
-        // eslint-disable-next-line
+         
         render(C(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>text1</td></tr></table></div></div>',
@@ -1310,17 +1310,17 @@ describe('Update (non-jsx)', () => {
           );
         }
 
-        // eslint-disable-next-line
+         
         render(A(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>Text</td></tr></table></div></div>',
         );
-        // eslint-disable-next-line
+         
         render(B(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>bar</td></tr></table></div></div>',
         );
-        // eslint-disable-next-line
+         
         render(C(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>text1</td></tr></table></div></div>',

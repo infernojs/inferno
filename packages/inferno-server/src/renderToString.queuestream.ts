@@ -35,7 +35,7 @@ export class RenderQueueStream extends Readable {
   }
 
   public _read(): void {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     setTimeout(this.pushQueue, 0);
   }
 
@@ -79,13 +79,11 @@ export class RenderQueueStream extends Readable {
       (typeof chunk === 'object' || isFunction(chunk)) &&
       isFunction(chunk.then)
     ) {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const self = this;
       chunk.then((index) => {
-        self.collector.splice(0, 1, ...self.promises[index]);
-        self.promises[index] = null;
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        setTimeout(self.pushQueue, 0);
+        this.collector.splice(0, 1, ...this.promises[index]);
+        this.promises[index] = null;
+         
+        setTimeout(this.pushQueue, 0);
       });
       this.collector[0] = null;
       // End of content
@@ -105,7 +103,7 @@ export class RenderQueueStream extends Readable {
       const isClass = flags & VNodeFlags.ComponentClass;
       // Render the
       if (isClass) {
-        // eslint-disable-next-line new-cap
+         
         const instance = new type(props, context);
         const hasNewAPI = Boolean(type.getDerivedStateFromProps);
         instance.$BS = false;
@@ -161,7 +159,7 @@ export class RenderQueueStream extends Readable {
                     );
                   }
 
-                  // eslint-disable-next-line @typescript-eslint/unbound-method
+                   
                   setTimeout(this.pushQueue, 0);
                   return promisePosition;
                 }),
@@ -265,7 +263,6 @@ export class RenderQueueStream extends Readable {
       renderedString += `>`;
 
       if (String(type).match(/[\s\n/='"\0<>]/)) {
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw renderedString;
       }
 

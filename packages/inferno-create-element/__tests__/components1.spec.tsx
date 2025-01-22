@@ -300,7 +300,7 @@ describe('Components 1 (JSX)', () => {
     organizations: { name: string, key: string }[]
   }
 
-  class SuperComponent extends Component<{}, SuperState> {
+  class SuperComponent extends Component<object, SuperState> {
     state: SuperState;
 
     constructor(props) {
@@ -560,7 +560,7 @@ describe('Components 1 (JSX)', () => {
       show: boolean
     }
 
-    class SomeError extends Component<{}, SomeErrorState> {
+    class SomeError extends Component<object, SomeErrorState> {
       state: SomeErrorState;
 
       constructor(props) {
@@ -620,7 +620,7 @@ describe('Components 1 (JSX)', () => {
 
     const StatelessComponent = (props) => <p>{props.name}</p>;
 
-    class Testing extends Component<{}, TestingState> {
+    class Testing extends Component<object, TestingState> {
       state: TestingState;
       // @ts-ignore
       private name: string = 'Kalle';

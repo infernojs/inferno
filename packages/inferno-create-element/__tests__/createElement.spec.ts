@@ -36,7 +36,7 @@ describe('CreateElement (non-JSX)', () => {
       );
     };
 
-    // eslint-disable-next-line
+     
     render(App(), container);
     expect(container.innerHTML).toBe(
       '<div><div class="title">Example</div><button type="button">Do a thing</button></div>',

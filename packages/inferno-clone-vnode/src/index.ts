@@ -19,16 +19,16 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
  * Clones given virtual node by creating new instance of it
  * @param {VNode} vNodeToClone virtual node to be cloned
  * @param {Props=} props additional props for new virtual node
- * @param {...*} _children new children for new virtual node
+ * @param {...*} childArgs new children for new virtual node
  * @returns {VNode} new virtual node
  */
-export function cloneVNode(vNodeToClone: VNode, props?, _children?): VNode {
+export function cloneVNode(vNodeToClone: VNode, props?, ...childArgs): VNode {
   const flags = vNodeToClone.flags;
   let children =
     flags & VNodeFlags.Component
       ? vNodeToClone.props?.children
       : vNodeToClone.children;
-  let childLen = arguments.length - 2;
+  const childLen = childArgs.length;
   let className = vNodeToClone.className;
   let key = vNodeToClone.key;
   let ref = vNodeToClone.ref;
@@ -50,12 +50,12 @@ export function cloneVNode(vNodeToClone: VNode, props?, _children?): VNode {
   }
 
   if (childLen === 1) {
-    children = _children;
+    children = childArgs[0];
   } else if (childLen > 1) {
     children = [];
 
-    while (childLen-- > 0) {
-      children[childLen] = arguments[childLen + 2];
+    for (let i = 0; i < childLen; i++) {
+      children.push(childArgs[i]);
     }
   }
 

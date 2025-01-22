@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+ 
 import { Component, render, rerender } from 'inferno';
 
 describe('Lifecycle methods', () => {

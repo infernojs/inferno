@@ -1,6 +1,6 @@
 import { verifyPlainObject } from '../utils/verifyPlainObject';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ 
 export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...ownProps,
   ...stateProps,

@@ -12,8 +12,8 @@ export function escapeText(text: string): string {
   let result = '';
   let escape = '';
   let start = 0;
-  let i;
-  for (i = 0; i < text.length; ++i) {
+  let i = 0;
+  for (; i < text.length; ++i) {
     switch (text.charCodeAt(i)) {
       case 34: // "
         escape = '&quot;';
@@ -60,8 +60,9 @@ const ATTRIBUTE_NAME_START_CHAR =
 const ATTRIBUTE_NAME_CHAR =
   ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040';
 
-// eslint-disable-next-line no-misleading-character-class
+ 
 export const VALID_ATTRIBUTE_NAME_REGEX = new RegExp(
+    // eslint-disable-next-line no-misleading-character-class
   '^[' + ATTRIBUTE_NAME_START_CHAR + '][' + ATTRIBUTE_NAME_CHAR + ']*$',
 );
 

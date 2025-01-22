@@ -47,16 +47,14 @@ if (process.env.NODE_ENV !== 'production') {
     // Inferno is slower than in production mode.
     console.log('Inferno is in development mode.');
 
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const testFunc = function testFn() {};
 
-    // eslint-disable-next-line
     if (!((testFunc as Function).name || testFunc.toString()).includes('testFn')) {
       warning(
         "It looks like you're using a minified copy of the development build " +
           'of Inferno. When deploying Inferno apps to production, make sure to use ' +
           'the production build which skips development warnings and is faster. ' +
-          'See http://infernojs.org for more details.',
+          'See https://infernojs.org for more details.',
       );
     }
   }

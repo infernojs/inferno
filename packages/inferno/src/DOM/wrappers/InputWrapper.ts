@@ -13,16 +13,15 @@ const wrappedOnChange = createWrappedFunction(
   applyValueInput,
 );
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function emptywrapper(event) {
+function stopPropagationWrapper(event) {
   event.stopPropagation();
 }
-(emptywrapper as any).wrapped = true;
+(stopPropagationWrapper as any).wrapped = true;
 
 export function inputEvents(dom, nextPropsOrEmpty): void {
   if (isCheckedType(nextPropsOrEmpty.type)) {
     attachEvent(dom, 'change', wrappedOnChange);
-    attachEvent(dom, 'click', emptywrapper);
+    attachEvent(dom, 'click', stopPropagationWrapper);
   } else {
     attachEvent(dom, 'input', onTextInputChange);
   }

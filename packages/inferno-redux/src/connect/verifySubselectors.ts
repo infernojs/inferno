@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+ 
 import { warning } from '../utils/warning';
 
 export const verify = (selector, methodName: string, displayName: string) => {

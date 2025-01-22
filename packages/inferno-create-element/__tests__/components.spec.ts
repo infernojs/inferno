@@ -623,7 +623,6 @@ describe('Components (non-JSX)', () => {
     });
 
     it('should render a basic component and correctly mount', () => {
-      let template;
       let componentWillMountCount;
 
       class ComponentLifecycleCheck extends Component {
@@ -644,7 +643,7 @@ describe('Components (non-JSX)', () => {
       }
 
       componentWillMountCount = 0;
-      template = (Component1, Component2, Component3) =>
+      const template = (Component1, Component2, Component3) =>
         createElement(
           Component1,
           null,
@@ -734,7 +733,6 @@ describe('Components (non-JSX)', () => {
     it('should mount and unmount a basic component', () => {
       let mountCount;
       let unmountCount;
-      let template;
 
       class ComponentLifecycleCheck extends Component {
         render() {
@@ -754,7 +752,7 @@ describe('Components (non-JSX)', () => {
 
       mountCount = 0;
       unmountCount = 0;
-      template = (Component) => createElement(Component, null);
+      const template = (Component) => createElement(Component, null);
       render(template(ComponentLifecycleCheck), container);
 
       expect(mountCount).toBe(1);

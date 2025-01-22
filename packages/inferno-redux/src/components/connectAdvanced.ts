@@ -15,7 +15,7 @@ const noop = (): void => {};
 const makeSelectorStateful = (
   sourceSelector: (state: any, props: any) => any,
   store: Store<any>,
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+   
 ) => {
   // wrap the selector in an object that tracks its results between runs.
   const selector = {
@@ -260,7 +260,7 @@ export function connectAdvanced(
         this.selector.shouldComponentUpdate = false;
       }
 
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+       
       public getWrappedInstance() {
         invariant(
           withRef,
@@ -317,7 +317,7 @@ export function connectAdvanced(
         if (!this.selector.shouldComponentUpdate) {
           this.notifyNestedSubs!();
         } else {
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+           
           this.componentDidUpdate = this.notifyNestedSubsOnComponentDidUpdate;
           this.setState({});
         }
@@ -337,7 +337,7 @@ export function connectAdvanced(
         return Boolean(this.subscription?.isSubscribed());
       }
 
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+       
       private addExtraProps(props: any) {
         if (!renderCountProp) {
           return props;
@@ -371,7 +371,7 @@ export function connectAdvanced(
               WrappedComponent,
               this.addExtraProps(selector.props),
               null,
-              // eslint-disable-next-line @typescript-eslint/unbound-method
+               
               withRef ? this.setWrappedInstance : null,
             ),
           );

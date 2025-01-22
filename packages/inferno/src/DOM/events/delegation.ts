@@ -125,9 +125,12 @@ function dispatchEvents(
       if (currentEvent) {
         // linkEvent object
         eventData.dom = dom;
-        currentEvent.event
-          ? currentEvent.event(currentEvent.data, event)
-          : currentEvent(event);
+        if (currentEvent.event) {
+          currentEvent.event(currentEvent.data, event);
+        } else {
+          currentEvent(event);
+        }
+
         if (event.cancelBubble) {
           return;
         }
@@ -140,7 +143,6 @@ function dispatchEvents(
 function stopPropagation(): void {
   this.cancelBubble = true;
 
-  // eslint-disable-next-line
   if (!this.immediatePropagationStopped) {
     this.stopImmediatePropagation();
   }

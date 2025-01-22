@@ -34,7 +34,7 @@ export function forwardRef<T = any, P = Props<any>>(
 
 export function unmountRef(ref): void {
   if (!isNullOrUndef(ref)) {
-    if (!safeCall1(ref, null) && (ref as RefObject<any>).current) {
+    if (!safeCall1(ref, null) && (ref as RefObject<unknown>).current) {
       ref.current = null;
     }
   }

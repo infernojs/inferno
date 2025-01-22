@@ -65,13 +65,13 @@ function patch(target, funcName, runMixinFirst): void {
   const f = !base
     ? mixinFunc
     : runMixinFirst === true
-      ? function () {
-          mixinFunc.apply(this, arguments);
-          base.apply(this, arguments);
+      ? function (...args) {
+          mixinFunc.apply(this, ...args);
+          base.apply(this, ...args);
         }
-      : function () {
-          base.apply(this, arguments);
-          mixinFunc.apply(this, arguments);
+      : function (...args) {
+          base.apply(this, ...args);
+          mixinFunc.apply(this, ...args);
         };
 
   // MWE: ideally we freeze here to protect against accidental overwrites in component instances, see #195
@@ -159,11 +159,9 @@ const reactiveMixin = {
     makePropertyObservableReference.call(this, 'state');
 
     // wire up reactive render
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const me = this;
     const render = this.render.bind(this);
     const baseRender = (): InfernoNode =>
-      render(me.props, me.state, me.context);
+      render(this.props, this.state, this.context);
     let reaction: Reaction | null = null;
     let isRenderingPending = false;
 
@@ -274,7 +272,7 @@ const reactiveMixin = {
 export function observer(stores: string[]): <T>(clazz: T) => void;
 export function observer<T>(stores: string[], clazz: T): T;
 export function observer<T>(target: T): T;
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ 
 export function observer(arg1, arg2?) {
   if (typeof arg1 === 'string') {
     throw new Error('Store names should be provided as array');
@@ -291,6 +289,7 @@ export function observer(arg1, arg2?) {
       // invoked as decorator
       return (componentClass) => observer(arg1, componentClass);
     } else {
+      // eslint-disable-next-line prefer-spread
       return (inject as any).apply(null, arg1)(observer(arg2));
     }
   }
@@ -348,7 +347,7 @@ function mixinLifecycleEvents(target): void {
   patch(target, 'componentWillUnmount', false);
   patch(target, 'componentDidUpdate', false);
   if (!target.shouldComponentUpdate) {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
   }
 }
@@ -370,7 +369,7 @@ const proxiedInjectorProps = {
 /**
  * Store Injection
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ 
 function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
   let displayName =
     'inject-' +
@@ -421,7 +420,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         component,
         newProps,
         null,
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+         
         isStateless(component) ? null : this.storeRef,
       );
     }
@@ -469,10 +468,10 @@ function grabStoresByName(storeNames: string[]) {
 // TODO: Type
 export function inject(...storeNames: string[]): <T>(target: T) => T;
 export function inject(fn: Function): <T>(target: T) => T;
-export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
+export function inject(/* fn(stores, nextProps) or ...storeNames */ ...args): any {
   let grabStoresFn;
-  if (typeof arguments[0] === 'function') {
-    grabStoresFn = arguments[0];
+  if (typeof args[0] === 'function') {
+    grabStoresFn = args[0];
 
     return function (componentClass) {
       let injected = createStoreInjector(grabStoresFn, componentClass);
@@ -485,8 +484,8 @@ export function inject(/* fn(stores, nextProps) or ...storeNames */): any {
     };
   } else {
     const storeNames: any = [];
-    for (let i = 0; i < arguments.length; ++i) {
-      storeNames.push(arguments[i]);
+    for (let i = 0; i < args.length; ++i) {
+      storeNames.push(args[i]);
     }
 
     grabStoresFn = grabStoresByName(storeNames);

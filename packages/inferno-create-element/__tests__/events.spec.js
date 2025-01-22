@@ -95,7 +95,7 @@ describe('Basic event tests', () => {
     }
 
     function renderIt() {
-      // eslint-disable-next-line
+       
       render(App(data), container);
     }
 
@@ -141,7 +141,7 @@ describe('Basic event tests', () => {
     }
 
     function renderIt() {
-      // eslint-disable-next-line
+       
       render(App(data), container);
     }
 
@@ -173,15 +173,15 @@ describe('Basic event tests', () => {
       );
     }
 
-    // eslint-disable-next-line
+     
     render(App(), container);
     expect(container.firstChild.innerHTML).toBe('1');
 
-    // eslint-disable-next-line
+     
     render(App(), container);
     expect(container.firstChild.innerHTML).toBe('1');
 
-    // eslint-disable-next-line
+     
     render(AppTwo(), container);
     expect(container.firstChild.innerHTML).toBe('2');
   });
@@ -199,11 +199,11 @@ describe('Basic event tests', () => {
       );
     }
 
-    // eslint-disable-next-line
+     
     render(App({ toggle: true }), container);
     expect(container.firstChild.innerHTML).toBe('1');
 
-    // eslint-disable-next-line
+     
     render(App({ toggle: false }), container);
     expect(container.firstChild.innerHTML).toBe('1');
   });
@@ -241,18 +241,18 @@ describe('Basic event tests', () => {
       );
     }
 
-    // eslint-disable-next-line
+     
     render(App(childrenArray), container);
     expect(container.innerHTML).toBe(
       '<p><div>2</div><div>2</div><div>2</div></p>',
     );
 
     childrenArray.pop();
-    // eslint-disable-next-line
+     
     render(App(childrenArray), container);
     expect(container.innerHTML).toBe('<p><div>2</div><div>2</div></p>');
 
-    // eslint-disable-next-line
+     
     render(AppTwo(), container);
     expect(container.innerHTML).toBe('<p>2</p>');
   });

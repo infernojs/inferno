@@ -300,7 +300,7 @@ export function getComponentName(instance: any): string {
     instance.name ??
     instance.displayName ??
     instance.constructor.name ??
-    // eslint-disable-next-line
+     
     ((instance as any).toString().match(/^function\s*([^\s(]+)/) || [])[1]
   );
 }

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+ 
 import {
   isArray,
   isFunction,
@@ -111,7 +111,7 @@ export class RenderStream extends Readable {
       return this.renderNode(renderOutput, context);
     }
 
-    // eslint-disable-next-line new-cap
+     
     const instance = new type(props, context);
     const hasNewAPI = Boolean(type.getDerivedStateFromProps);
     instance.$BS = false;
@@ -249,7 +249,6 @@ export class RenderStream extends Readable {
     this.push(renderedString);
 
     if (String(type).match(/[\s\n/='"\0<>]/)) {
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw renderedString;
     }
 

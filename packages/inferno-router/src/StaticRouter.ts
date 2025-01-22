@@ -78,6 +78,7 @@ export class StaticRouter<P, S> extends Component<
 
   public render({
     basename,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     context,
     location,
     ...props

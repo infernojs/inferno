@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+ 
 import { type Location, parsePath, type To } from 'history';
 import { isString } from 'inferno-shared';
 

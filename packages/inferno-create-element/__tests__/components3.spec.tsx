@@ -117,7 +117,7 @@ describe('Components 3 (TSX)', () => {
       isok: boolean
     }
 
-    class MyComponent98 extends Component<{}, MyComponent98State> {
+    class MyComponent98 extends Component<object, MyComponent98State> {
       state: MyComponent98State;
 
       constructor(props) {
@@ -177,7 +177,7 @@ describe('Components 3 (TSX)', () => {
       isok: boolean
     }
 
-    class MyComponent98 extends Component<{}, MyComponent98State> {
+    class MyComponent98 extends Component<object, MyComponent98State> {
       state: MyComponent98State;
 
       constructor(props) {
@@ -253,7 +253,7 @@ describe('Components 3 (TSX)', () => {
   });
 
   describe('should render a component with a conditional list that changes upon toggle', () => {
-    class BuggyRender extends Component<{}, {empty: boolean}> {
+    class BuggyRender extends Component<object, {empty: boolean}> {
       state: {empty: boolean};
 
       constructor(props) {
@@ -313,7 +313,7 @@ describe('Components 3 (TSX)', () => {
     interface ChangeChildrenCountState {
       list: string[]
     }
-    class ChangeChildrenCount extends Component<{}, ChangeChildrenCountState> {
+    class ChangeChildrenCount extends Component<object, ChangeChildrenCountState> {
       state: ChangeChildrenCountState;
 
       constructor(props) {
@@ -375,7 +375,7 @@ describe('Components 3 (TSX)', () => {
       counter: number
     }
 
-    class First extends Component<{}, FirstState> {
+    class First extends Component<object, FirstState> {
       state: FirstState;
 
       constructor(props, context) {
@@ -437,7 +437,7 @@ describe('Components 3 (TSX)', () => {
       counter: number
     }
 
-    class First extends Component<{}, FirstState> {
+    class First extends Component<object, FirstState> {
       state: FirstState;
       private condition: boolean;
 
@@ -589,7 +589,7 @@ describe('Components 3 (TSX)', () => {
         x: boolean
       }
 
-      class Parent extends Component<{}, ParentState> {
+      class Parent extends Component<object, ParentState> {
         state: ParentState;
 
         constructor(props) {
@@ -626,7 +626,7 @@ describe('Components 3 (TSX)', () => {
         z: boolean
       }
 
-      class ChildA extends Component<{}, ChildAState> {
+      class ChildA extends Component<object, ChildAState> {
         state: ChildAState;
 
         constructor(props) {

@@ -13,7 +13,9 @@ const nullSubscriptionHandler: Unsubscribe = () => {};
 const nullListenerCollection: IListenerCollection = {
   clear: () => {},
   notify: () => {},
-  subscribe: (_: Listener) => nullSubscriptionHandler,
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  subscribe: (_listener: Listener) => nullSubscriptionHandler,
 };
 
 const createListenerCollection = (): IListenerCollection => {

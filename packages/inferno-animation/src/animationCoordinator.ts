@@ -1,6 +1,7 @@
 import { forceReflow } from './utils';
 
 // This is only used for development and should be set to false for release
+// eslint-disable-next-line no-constant-binary-expression
 const _DBG_COORD_ = false && process.env.NODE_ENV !== 'production';
 
 export const enum AnimationPhase {
@@ -25,25 +26,20 @@ const _globalAnimationSources: Record<
   GlobalAnimationKey,
   GlobalAnimationState
 > = {};
-let _globalAnimationGCTick: number | null = null;
-// TODO: Remove tempfix due to false tslint error I couldn't figure out how to disable (error TS6133)
-if (_globalAnimationGCTick === null) {
-  _globalAnimationGCTick = null;
-}
 
 export function _globalAnimationGC(): void {
   let entriesLeft = false;
 
   for (const key in _globalAnimationSources) {
     if (--_globalAnimationSources[key].ticks < 0) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+       
       delete _globalAnimationSources[key];
     } else entriesLeft = true;
   }
 
-  _globalAnimationGCTick = entriesLeft
-    ? requestAnimationFrame(_globalAnimationGC)
-    : null;
+  if (entriesLeft) {
+    requestAnimationFrame(_globalAnimationGC)
+  }
 }
 
 export function addGlobalAnimationSource(
@@ -54,7 +50,7 @@ export function addGlobalAnimationSource(
   _globalAnimationSources[key] = state;
 
   if (_globalAnimationGC === null) {
-    _globalAnimationGCTick = requestAnimationFrame(_globalAnimationGC);
+    requestAnimationFrame(_globalAnimationGC);
   }
 }
 
@@ -63,7 +59,7 @@ export function consumeGlobalAnimationSource(
 ): GlobalAnimationState {
   const tmp = _globalAnimationSources[key];
   if (tmp !== undefined) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+     
     delete _globalAnimationSources[key];
   }
   return tmp;

@@ -95,7 +95,7 @@ export function createVNode<P>(
   return vNode;
 }
 
-function mergeDefaultHooks(flags, type, ref): any {
+function mergeDefaultHooks(flags, type, ref) {
   if (flags & VNodeFlags.ComponentClass) {
     return ref;
   }
@@ -114,7 +114,7 @@ function mergeDefaultHooks(flags, type, ref): any {
   return mergeUnsetProperties(ref, defaultHooks);
 }
 
-function mergeDefaultProps(flags, type, props): any {
+function mergeDefaultProps(flags, type, props) {
   // set default props
   const defaultProps = (flags & VNodeFlags.ForwardRef ? type.render : type)
     .defaultProps;
@@ -148,7 +148,7 @@ function resolveComponentFlags(flags: VNodeFlags, type): VNodeFlags {
 
 export function createComponentVNode<P>(
   flags: VNodeFlags,
-  type: Function | ComponentType<P> | Component<P, any> | ForwardRef<P, any>,
+  type: Function | ComponentType<P> | Component<P, unknown> | ForwardRef<P, unknown>,
   props?: Readonly<P> | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null,
@@ -396,7 +396,7 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
 }
 
 export function normalizeChildren(vNode: VNode, children): VNode {
-  let newChildren: any;
+  let newChildren;
   let newChildFlags: ChildFlags = ChildFlags.HasInvalidChildren;
 
   // Don't change children to match strict equal (===) true in patching
@@ -467,7 +467,7 @@ export function normalizeChildren(vNode: VNode, children): VNode {
   return vNode;
 }
 
-export function normalizeRoot(input: any): VNode {
+export function normalizeRoot(input): VNode {
   if (isInvalid(input) || isStringOrNumber(input)) {
     return createTextVNode(input, null);
   }
