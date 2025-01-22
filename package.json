@@ -68,7 +68,6 @@
     "test:browser:debug-nocompat": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser debug:swc",
     "test:browser:sauce": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test -- --forceExit",
-    "test:package": "node fixtures/packaging/build-all.js",
     "test:memory": "node --expose-gc scripts/fakedom/uibench-reactlike/start.js",
     "test:memory:js-framework": "node --expose-gc scripts/fakedom/js-framework-bench/start.js",
     "test:memory:lifecycle": "node --expose-gc scripts/fakedom/uibench-lifecycle/start.js",
