@@ -1,5 +1,10 @@
 /* eslint-disable */
-import type { NativeClipboardEvent, NativeCompositionEvent, NativeDragEvent, NativeFocusEvent } from './nativetypes';
+import type {
+  NativeClipboardEvent,
+  NativeCompositionEvent,
+  NativeDragEvent,
+  NativeFocusEvent,
+} from './nativetypes';
 import type { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import type { PropertiesHyphen } from 'csstype';
 
@@ -43,21 +48,41 @@ export interface IComponent<P, S> {
   forceUpdate(callback?: Function);
 
   setState<K extends keyof S>(
-    newState: ((prevState: Readonly<S>, props: Readonly<{ children?: InfernoNode } & P>) => Pick<S, K> | S | null) | (Pick<S, K> | S | null),
-    callback?: () => void
+    newState:
+      | ((
+          prevState: Readonly<S>,
+          props: Readonly<{ children?: InfernoNode } & P>,
+        ) => Pick<S, K> | S | null)
+      | (Pick<S, K> | S | null),
+    callback?: () => void,
   ): void;
 
   componentDidMount?(): void;
 
   componentWillMount?(): void;
 
-  componentWillReceiveProps?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextContext: any): void;
+  componentWillReceiveProps?(
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+    nextContext: any,
+  ): void;
 
-  shouldComponentUpdate?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, context: any): boolean;
+  shouldComponentUpdate?(
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+    nextState: Readonly<S>,
+    context: any,
+  ): boolean;
 
-  componentWillUpdate?(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, context: any): void;
+  componentWillUpdate?(
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+    nextState: Readonly<S>,
+    context: any,
+  ): void;
 
-  componentDidUpdate?(prevProps: Readonly<{ children?: InfernoNode } & P>, prevState: Readonly<S>, snapshot: any): void;
+  componentDidUpdate?(
+    prevProps: Readonly<{ children?: InfernoNode } & P>,
+    prevState: Readonly<S>,
+    snapshot: any,
+  ): void;
 
   componentWillUnmount?(): void;
 
@@ -65,13 +90,24 @@ export interface IComponent<P, S> {
 
   componentWillDisappear?(domNode: Element, callback: Function): void;
 
-  componentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element): void;
+  componentWillMove?(
+    parentVNode: VNode,
+    parentDOM: Element,
+    dom: Element,
+  ): void;
 
   getChildContext?(): void;
 
-  getSnapshotBeforeUpdate?(prevProps: Readonly<{ children?: InfernoNode } & P>, prevState: Readonly<S>): any;
+  getSnapshotBeforeUpdate?(
+    prevProps: Readonly<{ children?: InfernoNode } & P>,
+    prevState: Readonly<S>,
+  ): any;
 
-  render(nextProps: Readonly<{ children?: InfernoNode } & P>, nextState: Readonly<S>, nextContext: any): InfernoNode;
+  render(
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+    nextState: Readonly<S>,
+    nextContext: any,
+  ): InfernoNode;
 }
 
 export interface SemiSyntheticEvent<T> extends Event {
@@ -84,7 +120,8 @@ export interface SemiSyntheticEvent<T> extends Event {
 }
 
 export type ClipboardEvent<T> = SemiSyntheticEvent<T> & NativeClipboardEvent;
-export type CompositionEvent<T> = SemiSyntheticEvent<T> & NativeCompositionEvent;
+export type CompositionEvent<T> = SemiSyntheticEvent<T> &
+  NativeCompositionEvent;
 export type DragEvent<T> = InfernoMouseEvent<T> & NativeDragEvent;
 export type FocusEvent<T> = SemiSyntheticEvent<T> & NativeFocusEvent;
 export interface FormEvent<T> extends SemiSyntheticEvent<T> {
@@ -96,9 +133,10 @@ export interface ChangeEvent<T> extends SemiSyntheticEvent<T> {
 }
 
 export type InfernoKeyboardEvent<T> = SemiSyntheticEvent<T> & KeyboardEvent;
-export type InfernoMouseEvent<T> = SemiSyntheticEvent<T> & MouseEvent & {
-  target: EventTarget & T;
-};
+export type InfernoMouseEvent<T> = SemiSyntheticEvent<T> &
+  MouseEvent & {
+    target: EventTarget & T;
+  };
 export type InfernoTouchEvent<T> = SemiSyntheticEvent<T> & TouchEvent;
 export type InfernoPointerEvent<T> = SemiSyntheticEvent<T> & PointerEvent;
 export type InfernoUIEvent<T> = SemiSyntheticEvent<T> & UIEvent;
@@ -111,24 +149,41 @@ type Booleanish = boolean | 'true' | 'false';
 // Event Handler Types
 // ----------------------------------------------------------------------
 
-export type EventHandler<E extends SemiSyntheticEvent<any>> = { bivarianceHack(event: E): void }['bivarianceHack'] | LinkedEvent<any, E> | null;
+export type EventHandler<E extends SemiSyntheticEvent<any>> =
+  | { bivarianceHack(event: E): void }['bivarianceHack']
+  | LinkedEvent<any, E>
+  | null;
 
-export type InfernoEventHandler<T = Element> = EventHandler<SemiSyntheticEvent<T>>;
+export type InfernoEventHandler<T = Element> = EventHandler<
+  SemiSyntheticEvent<T>
+>;
 
-export type ClipboardEventHandler<T = Element> = EventHandler<ClipboardEvent<T>>;
-export type CompositionEventHandler<T = Element> = EventHandler<CompositionEvent<T>>;
+export type ClipboardEventHandler<T = Element> = EventHandler<
+  ClipboardEvent<T>
+>;
+export type CompositionEventHandler<T = Element> = EventHandler<
+  CompositionEvent<T>
+>;
 export type DragEventHandler<T = Element> = EventHandler<DragEvent<T>>;
 export type FocusEventHandler<T = Element> = EventHandler<FocusEvent<T>>;
 export type FormEventHandler<T = Element> = EventHandler<FormEvent<T>>;
 export type ChangeEventHandler<T = Element> = EventHandler<ChangeEvent<T>>;
-export type KeyboardEventHandler<T = Element> = EventHandler<InfernoKeyboardEvent<T>>;
+export type KeyboardEventHandler<T = Element> = EventHandler<
+  InfernoKeyboardEvent<T>
+>;
 export type MouseEventHandler<T = Element> = EventHandler<InfernoMouseEvent<T>>;
 export type TouchEventHandler<T = Element> = EventHandler<InfernoTouchEvent<T>>;
-export type PointerEventHandler<T = Element> = EventHandler<InfernoPointerEvent<T>>;
+export type PointerEventHandler<T = Element> = EventHandler<
+  InfernoPointerEvent<T>
+>;
 export type UIEventHandler<T = Element> = EventHandler<InfernoUIEvent<T>>;
 export type WheelEventHandler<T = Element> = EventHandler<InfernoWheelEvent<T>>;
-export type AnimationEventHandler<T = Element> = EventHandler<InfernoAnimationEvent<T>>;
-export type TransitionEventHandler<T = Element> = EventHandler<InfernoTransitionEvent<T>>;
+export type AnimationEventHandler<T = Element> = EventHandler<
+  InfernoAnimationEvent<T>
+>;
+export type TransitionEventHandler<T = Element> = EventHandler<
+  InfernoTransitionEvent<T>
+>;
 
 export type Key = string | number | undefined | null;
 
@@ -149,30 +204,59 @@ export interface RefObject<T> {
   readonly current: T | null;
 }
 
-export type Ref<T = Element> = { bivarianceHack(instance: T | null): any }['bivarianceHack'];
+export type Ref<T = Element> = {
+  bivarianceHack(instance: T | null): any;
+}['bivarianceHack'];
 
 export interface ForwardRef<P, T> extends Inferno.StatelessComponent<P> {
   ref: Ref<T>;
 }
 
 export interface Refs<P> {
-  onComponentDidMount?: (domNode: Element | null, nextProps: Readonly<{ children?: InfernoNode } & P>) => void;
+  onComponentDidMount?: (
+    domNode: Element | null,
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+  ) => void;
 
   onComponentWillMount?(props: Readonly<{ children?: InfernoNode } & P>): void;
 
-  onComponentShouldUpdate?(lastProps: Readonly<{ children?: InfernoNode } & P>, nextProps: Readonly<{ children?: InfernoNode } & P>): boolean;
+  onComponentShouldUpdate?(
+    lastProps: Readonly<{ children?: InfernoNode } & P>,
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+  ): boolean;
 
-  onComponentWillUpdate?(lastProps: Readonly<{ children?: InfernoNode } & P>, nextProps: Readonly<{ children?: InfernoNode } & P>): void;
+  onComponentWillUpdate?(
+    lastProps: Readonly<{ children?: InfernoNode } & P>,
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+  ): void;
 
-  onComponentDidUpdate?(lastProps: Readonly<{ children?: InfernoNode } & P>, nextProps: Readonly<{ children?: InfernoNode } & P>): void;
+  onComponentDidUpdate?(
+    lastProps: Readonly<{ children?: InfernoNode } & P>,
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+  ): void;
 
-  onComponentWillUnmount?(domNode: Element, nextProps: Readonly<{ children?: InfernoNode } & P>): void;
+  onComponentWillUnmount?(
+    domNode: Element,
+    nextProps: Readonly<{ children?: InfernoNode } & P>,
+  ): void;
 
-  onComponentDidAppear?(domNode: Element, props: Readonly<{ children?: InfernoNode } & P>): void;
+  onComponentDidAppear?(
+    domNode: Element,
+    props: Readonly<{ children?: InfernoNode } & P>,
+  ): void;
 
-  onComponentWillDisappear?(domNode: Element, props: Readonly<{ children?: InfernoNode } & P>, callback: Function): void;
+  onComponentWillDisappear?(
+    domNode: Element,
+    props: Readonly<{ children?: InfernoNode } & P>,
+    callback: Function,
+  ): void;
 
-  onComponentWillMove?(parentVNode: VNode, parentDOM: Element, dom: Element, props: Readonly<{ children?: InfernoNode } & P>): void;
+  onComponentWillMove?(
+    parentVNode: VNode,
+    parentDOM: Element,
+    dom: Element,
+    props: Readonly<{ children?: InfernoNode } & P>,
+  ): void;
 }
 
 export interface Props<T> {
@@ -213,27 +297,39 @@ export declare namespace Inferno {
     type: SFC<P>;
   }
 
-  type CElement<P, T extends IComponent<P, ComponentState>> = ComponentElement<P, T>;
-  interface ComponentElement<P, T extends IComponent<P, ComponentState>> extends InfernoElement<P> {
+  type CElement<P, T extends IComponent<P, ComponentState>> = ComponentElement<
+    P,
+    T
+  >;
+  interface ComponentElement<P, T extends IComponent<P, ComponentState>>
+    extends InfernoElement<P> {
     type: ComponentClass<P>;
     ref?: Ref<T> | undefined;
   }
 
   // string fallback for custom web-components
-  interface DOMElement<P extends HTMLAttributes<T> | SVGAttributes<T>, T extends Element> extends InfernoElement<P> {
+  interface DOMElement<
+    P extends HTMLAttributes<T> | SVGAttributes<T>,
+    T extends Element,
+  > extends InfernoElement<P> {
     type: string;
     ref: Ref<T>;
   }
 
   // InfernoHTML for InfernoHTMLElement
-  interface InfernoHTMLElement<T extends HTMLElement> extends DetailedInfernoHTMLElement<AllHTMLAttributes<T>, T> {}
+  interface InfernoHTMLElement<T extends HTMLElement>
+    extends DetailedInfernoHTMLElement<AllHTMLAttributes<T>, T> {}
 
-  interface DetailedInfernoHTMLElement<P extends HTMLAttributes<T>, T extends HTMLElement> extends DOMElement<P, T> {
+  interface DetailedInfernoHTMLElement<
+    P extends HTMLAttributes<T>,
+    T extends HTMLElement,
+  > extends DOMElement<P, T> {
     type: keyof InfernoHTML;
   }
 
   // InfernoSVG for InfernoSVGElement
-  interface InfernoSVGElement extends DOMElement<SVGAttributes<SVGElement>, SVGElement> {
+  interface InfernoSVGElement
+    extends DOMElement<SVGAttributes<SVGElement>, SVGElement> {
     type: keyof InfernoSVG;
   }
 
@@ -241,24 +337,50 @@ export declare namespace Inferno {
   // Factories
   // ----------------------------------------------------------------------
 
-  type Factory<P> = (props?: Attributes & P, ...children: InfernoNode[]) => InfernoElement<P>;
+  type Factory<P> = (
+    props?: Attributes & P,
+    ...children: InfernoNode[]
+  ) => InfernoElement<P>;
 
-  type SFCFactory<P> = (props?: Attributes & P, ...children: InfernoNode[]) => SFCElement<P>;
+  type SFCFactory<P> = (
+    props?: Attributes & P,
+    ...children: InfernoNode[]
+  ) => SFCElement<P>;
 
-  type ComponentFactory<P, T extends IComponent<P, ComponentState>> = (props?: ClassAttributes<T> & P, ...children: InfernoNode[]) => CElement<P, T>;
+  type ComponentFactory<P, T extends IComponent<P, ComponentState>> = (
+    props?: ClassAttributes<T> & P,
+    ...children: InfernoNode[]
+  ) => CElement<P, T>;
 
-  type CFactory<P, T extends IComponent<P, ComponentState>> = ComponentFactory<P, T>;
+  type CFactory<P, T extends IComponent<P, ComponentState>> = ComponentFactory<
+    P,
+    T
+  >;
 
-  type DOMFactory<P extends DOMAttributes<T>, T extends Element> = (props?: (ClassAttributes<T> & P) | null, ...children: InfernoNode[]) => DOMElement<P, T>;
+  type DOMFactory<P extends DOMAttributes<T>, T extends Element> = (
+    props?: (ClassAttributes<T> & P) | null,
+    ...children: InfernoNode[]
+  ) => DOMElement<P, T>;
 
-  interface HTMLFactory<T extends HTMLElement> extends DetailedHTMLFactory<AllHTMLAttributes<T>, T> {}
+  interface HTMLFactory<T extends HTMLElement>
+    extends DetailedHTMLFactory<AllHTMLAttributes<T>, T> {}
 
-  interface DetailedHTMLFactory<P extends HTMLAttributes<T>, T extends HTMLElement> extends DOMFactory<P, T> {
-    (props?: (ClassAttributes<T> & P) | null, ...children: InfernoNode[]): DetailedInfernoHTMLElement<P, T>;
+  interface DetailedHTMLFactory<
+    P extends HTMLAttributes<T>,
+    T extends HTMLElement,
+  > extends DOMFactory<P, T> {
+    (
+      props?: (ClassAttributes<T> & P) | null,
+      ...children: InfernoNode[]
+    ): DetailedInfernoHTMLElement<P, T>;
   }
 
-  interface SVGFactory extends DOMFactory<SVGAttributes<SVGElement>, SVGElement> {
-    (props?: (ClassAttributes<SVGElement> & SVGAttributes<SVGElement>) | null, ...children: InfernoNode[]): InfernoSVGElement;
+  interface SVGFactory
+    extends DOMFactory<SVGAttributes<SVGElement>, SVGElement> {
+    (
+      props?: (ClassAttributes<SVGElement> & SVGAttributes<SVGElement>) | null,
+      ...children: InfernoNode[]
+    ): InfernoSVGElement;
   }
 
   //
@@ -286,7 +408,7 @@ export declare namespace Inferno {
         children?: InfernoNode;
       } & P &
         Refs<P>,
-      context?: any
+      context?: any,
     ): InfernoElement | null;
     defaultProps?: Partial<P> | undefined | null;
     defaultHooks?: Refs<P> | undefined | null;
@@ -297,7 +419,7 @@ export declare namespace Inferno {
       props?: {
         children?: InfernoNode;
       } & P,
-      context?: any
+      context?: any,
     ): IComponent<P, ComponentState>;
     defaultProps?: Partial<P> | undefined | null;
   }
@@ -308,7 +430,8 @@ export declare namespace Inferno {
 
   interface HTMLProps<T> extends AllHTMLAttributes<T>, ClassAttributes<T> {}
 
-  type DetailedHTMLProps<E extends HTMLAttributes<T>, T> = ClassAttributes<T> & E;
+  type DetailedHTMLProps<E extends HTMLAttributes<T>, T> = ClassAttributes<T> &
+    E;
 
   interface SVGProps<T> extends SVGAttributes<T>, ClassAttributes<T> {}
 
@@ -551,7 +674,13 @@ export declare namespace Inferno {
      * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
      * presented if they are made.
      */
-    'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both' | null | undefined;
+    'aria-autocomplete'?:
+      | 'none'
+      | 'inline'
+      | 'list'
+      | 'both'
+      | null
+      | undefined;
     /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
     'aria-busy'?: Booleanish | null | undefined;
     /**
@@ -580,7 +709,17 @@ export declare namespace Inferno {
      */
     'aria-controls'?: string | null | undefined;
     /** Indicates the element that represents the current item within a container or set of related elements. */
-    'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time' | null | undefined;
+    'aria-current'?:
+      | boolean
+      | 'false'
+      | 'true'
+      | 'page'
+      | 'step'
+      | 'location'
+      | 'date'
+      | 'time'
+      | null
+      | undefined;
     /**
      * Identifies the element (or elements) that describes the object.
      * @see aria-labelledby
@@ -600,7 +739,15 @@ export declare namespace Inferno {
      * Indicates what functions can be performed when a dragged object is released on the drop target.
      * @deprecated in ARIA 1.1
      */
-    'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' | null | undefined;
+    'aria-dropeffect'?:
+      | 'none'
+      | 'copy'
+      | 'execute'
+      | 'link'
+      | 'move'
+      | 'popup'
+      | null
+      | undefined;
     /**
      * Identifies the element that provides an error message for the object.
      * @see aria-invalid @see aria-describedby.
@@ -619,7 +766,17 @@ export declare namespace Inferno {
      */
     'aria-grabbed'?: Booleanish | null | undefined;
     /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
-    'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | null | undefined;
+    'aria-haspopup'?:
+      | boolean
+      | 'false'
+      | 'true'
+      | 'menu'
+      | 'listbox'
+      | 'tree'
+      | 'grid'
+      | 'dialog'
+      | null
+      | undefined;
     /**
      * Indicates whether the element is exposed to an accessibility API.
      * @see aria-disabled.
@@ -629,7 +786,14 @@ export declare namespace Inferno {
      * Indicates the entered value does not conform to the format expected by the application.
      * @see aria-errormessage.
      */
-    'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling' | null | undefined;
+    'aria-invalid'?:
+      | boolean
+      | 'false'
+      | 'true'
+      | 'grammar'
+      | 'spelling'
+      | null
+      | undefined;
     /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
     'aria-keyshortcuts'?: string | null | undefined;
     /**
@@ -727,7 +891,13 @@ export declare namespace Inferno {
      */
     'aria-setsize'?: number | null | undefined;
     /** Indicates if items in a table or grid are sorted in ascending or descending order. */
-    'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other' | null | undefined;
+    'aria-sort'?:
+      | 'none'
+      | 'ascending'
+      | 'descending'
+      | 'other'
+      | null
+      | undefined;
     /** Defines the maximum allowed value for a range widget. */
     'aria-valuemax'?: number | null | undefined;
     /** Defines the minimum allowed value for a range widget. */
@@ -877,7 +1047,17 @@ export declare namespace Inferno {
      * Hints at the type of data that might be entered by the user while editing the element or its contents
      * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
      */
-    inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | null | undefined;
+    inputMode?:
+      | 'none'
+      | 'text'
+      | 'tel'
+      | 'url'
+      | 'email'
+      | 'numeric'
+      | 'decimal'
+      | 'search'
+      | null
+      | undefined;
     /**
      * Specify that a standard HTML element should behave like a defined custom built-in element
      * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
@@ -1006,7 +1186,12 @@ export declare namespace Inferno {
     | 'strict-origin-when-cross-origin'
     | 'unsafe-url';
 
-  type HTMLAttributeAnchorTarget = '_self' | '_blank' | '_parent' | '_top' | (string & {});
+  type HTMLAttributeAnchorTarget =
+    | '_self'
+    | '_blank'
+    | '_parent'
+    | '_top'
+    | (string & {});
 
   interface AnchorHTMLAttributes<T> extends HTMLAttributes<T> {
     download?: any;
@@ -1196,7 +1381,16 @@ export declare namespace Inferno {
     checked?: boolean | null | undefined;
     crossOrigin?: string | null | undefined;
     disabled?: boolean | null | undefined;
-    enterKeyHint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send' | null | undefined;
+    enterKeyHint?:
+      | 'enter'
+      | 'done'
+      | 'go'
+      | 'next'
+      | 'previous'
+      | 'search'
+      | 'send'
+      | null
+      | undefined;
     indeterminate?: boolean | null | undefined;
     form?: string | null | undefined;
     formAction?: string | null | undefined;
@@ -1540,8 +1734,20 @@ export declare namespace Inferno {
     allowReorder?: 'no' | 'yes' | null | undefined;
     alphabetic?: number | string | null | undefined;
     amplitude?: number | string | null | undefined;
-    arabicForm?: 'initial' | 'medial' | 'terminal' | 'isolated' | null | undefined;
-    'arabic-form'?: 'initial' | 'medial' | 'terminal' | 'isolated' | null | undefined;
+    arabicForm?:
+      | 'initial'
+      | 'medial'
+      | 'terminal'
+      | 'isolated'
+      | null
+      | undefined;
+    'arabic-form'?:
+      | 'initial'
+      | 'medial'
+      | 'terminal'
+      | 'isolated'
+      | null
+      | undefined;
     ascent?: number | string | null | undefined;
     attributeName?: string | null | undefined;
     attributeType?: string | null | undefined;
@@ -1566,8 +1772,20 @@ export declare namespace Inferno {
     'clip-rule'?: number | string | null | undefined;
     colorInterpolation?: number | string | null | undefined;
     'color-interpolation'?: number | string | null | undefined;
-    colorInterpolationFilters?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | null | undefined;
-    'color-interpolation-filters'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | null | undefined;
+    colorInterpolationFilters?:
+      | 'auto'
+      | 'sRGB'
+      | 'linearRGB'
+      | 'inherit'
+      | null
+      | undefined;
+    'color-interpolation-filters'?:
+      | 'auto'
+      | 'sRGB'
+      | 'linearRGB'
+      | 'inherit'
+      | null
+      | undefined;
     colorProfile?: number | string | null | undefined;
     'color-profile'?: number | string | null | undefined;
     colorRendering?: number | string | null | undefined;
@@ -1760,9 +1978,21 @@ export declare namespace Inferno {
     strokeDashoffset?: string | number | null | undefined;
     'stroke-dashoffset'?: string | number | null | undefined;
     strokeLinecap?: 'butt' | 'round' | 'square' | 'inherit' | null | undefined;
-    'stroke-linecap'?: 'butt' | 'round' | 'square' | 'inherit' | null | undefined;
+    'stroke-linecap'?:
+      | 'butt'
+      | 'round'
+      | 'square'
+      | 'inherit'
+      | null
+      | undefined;
     strokeLinejoin?: 'miter' | 'round' | 'bevel' | 'inherit' | null | undefined;
-    'stroke-linejoin'?: 'miter' | 'round' | 'bevel' | 'inherit' | null | undefined;
+    'stroke-linejoin'?:
+      | 'miter'
+      | 'round'
+      | 'bevel'
+      | 'inherit'
+      | null
+      | undefined;
     strokeMiterlimit?: number | string | null | undefined;
     'stroke-miterlimit'?: number | string | null | undefined;
     strokeOpacity?: number | string | null | undefined;
@@ -1883,120 +2113,294 @@ export declare namespace Inferno {
   // ----------------------------------------------------------------------
 
   interface InfernoHTML {
-    a: DetailedHTMLFactory<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>;
+    a: DetailedHTMLFactory<
+      AnchorHTMLAttributes<HTMLAnchorElement>,
+      HTMLAnchorElement
+    >;
     abbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     address: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    area: DetailedHTMLFactory<AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement>;
+    area: DetailedHTMLFactory<
+      AreaHTMLAttributes<HTMLAreaElement>,
+      HTMLAreaElement
+    >;
     article: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     aside: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    audio: DetailedHTMLFactory<AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
+    audio: DetailedHTMLFactory<
+      AudioHTMLAttributes<HTMLAudioElement>,
+      HTMLAudioElement
+    >;
     b: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    base: DetailedHTMLFactory<BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement>;
+    base: DetailedHTMLFactory<
+      BaseHTMLAttributes<HTMLBaseElement>,
+      HTMLBaseElement
+    >;
     bdi: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     bdo: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     big: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    blockquote: DetailedHTMLFactory<BlockquoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
+    blockquote: DetailedHTMLFactory<
+      BlockquoteHTMLAttributes<HTMLQuoteElement>,
+      HTMLQuoteElement
+    >;
     body: DetailedHTMLFactory<HTMLAttributes<HTMLBodyElement>, HTMLBodyElement>;
     br: DetailedHTMLFactory<HTMLAttributes<HTMLBRElement>, HTMLBRElement>;
-    button: DetailedHTMLFactory<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
-    canvas: DetailedHTMLFactory<CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>;
+    button: DetailedHTMLFactory<
+      ButtonHTMLAttributes<HTMLButtonElement>,
+      HTMLButtonElement
+    >;
+    canvas: DetailedHTMLFactory<
+      CanvasHTMLAttributes<HTMLCanvasElement>,
+      HTMLCanvasElement
+    >;
     caption: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     cite: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     code: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    col: DetailedHTMLFactory<ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-    colgroup: DetailedHTMLFactory<ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-    data: DetailedHTMLFactory<DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
-    datalist: DetailedHTMLFactory<HTMLAttributes<HTMLDataListElement>, HTMLDataListElement>;
+    col: DetailedHTMLFactory<
+      ColHTMLAttributes<HTMLTableColElement>,
+      HTMLTableColElement
+    >;
+    colgroup: DetailedHTMLFactory<
+      ColgroupHTMLAttributes<HTMLTableColElement>,
+      HTMLTableColElement
+    >;
+    data: DetailedHTMLFactory<
+      DataHTMLAttributes<HTMLDataElement>,
+      HTMLDataElement
+    >;
+    datalist: DetailedHTMLFactory<
+      HTMLAttributes<HTMLDataListElement>,
+      HTMLDataListElement
+    >;
     dd: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     del: DetailedHTMLFactory<DelHTMLAttributes<HTMLModElement>, HTMLModElement>;
-    details: DetailedHTMLFactory<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>;
+    details: DetailedHTMLFactory<
+      DetailsHTMLAttributes<HTMLDetailsElement>,
+      HTMLDetailsElement
+    >;
     dfn: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    dialog: DetailedHTMLFactory<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
+    dialog: DetailedHTMLFactory<
+      DialogHTMLAttributes<HTMLDialogElement>,
+      HTMLDialogElement
+    >;
     div: DetailedHTMLFactory<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
     dl: DetailedHTMLFactory<HTMLAttributes<HTMLDListElement>, HTMLDListElement>;
     dt: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     em: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    embed: DetailedHTMLFactory<EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
-    fieldset: DetailedHTMLFactory<FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement>;
+    embed: DetailedHTMLFactory<
+      EmbedHTMLAttributes<HTMLEmbedElement>,
+      HTMLEmbedElement
+    >;
+    fieldset: DetailedHTMLFactory<
+      FieldsetHTMLAttributes<HTMLFieldSetElement>,
+      HTMLFieldSetElement
+    >;
     figcaption: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     figure: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     footer: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    form: DetailedHTMLFactory<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
-    h1: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-    h2: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-    h3: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-    h4: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-    h5: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-    h6: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+    form: DetailedHTMLFactory<
+      FormHTMLAttributes<HTMLFormElement>,
+      HTMLFormElement
+    >;
+    h1: DetailedHTMLFactory<
+      HTMLAttributes<HTMLHeadingElement>,
+      HTMLHeadingElement
+    >;
+    h2: DetailedHTMLFactory<
+      HTMLAttributes<HTMLHeadingElement>,
+      HTMLHeadingElement
+    >;
+    h3: DetailedHTMLFactory<
+      HTMLAttributes<HTMLHeadingElement>,
+      HTMLHeadingElement
+    >;
+    h4: DetailedHTMLFactory<
+      HTMLAttributes<HTMLHeadingElement>,
+      HTMLHeadingElement
+    >;
+    h5: DetailedHTMLFactory<
+      HTMLAttributes<HTMLHeadingElement>,
+      HTMLHeadingElement
+    >;
+    h6: DetailedHTMLFactory<
+      HTMLAttributes<HTMLHeadingElement>,
+      HTMLHeadingElement
+    >;
     head: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLHeadElement>;
     header: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     hgroup: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     hr: DetailedHTMLFactory<HTMLAttributes<HTMLHRElement>, HTMLHRElement>;
-    html: DetailedHTMLFactory<HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
+    html: DetailedHTMLFactory<
+      HtmlHTMLAttributes<HTMLHtmlElement>,
+      HTMLHtmlElement
+    >;
     i: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    iframe: DetailedHTMLFactory<IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
-    img: DetailedHTMLFactory<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
-    input: DetailedHTMLFactory<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+    iframe: DetailedHTMLFactory<
+      IframeHTMLAttributes<HTMLIFrameElement>,
+      HTMLIFrameElement
+    >;
+    img: DetailedHTMLFactory<
+      ImgHTMLAttributes<HTMLImageElement>,
+      HTMLImageElement
+    >;
+    input: DetailedHTMLFactory<
+      InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement
+    >;
     ins: DetailedHTMLFactory<InsHTMLAttributes<HTMLModElement>, HTMLModElement>;
     kbd: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     keygen: DetailedHTMLFactory<KeygenHTMLAttributes<HTMLElement>, HTMLElement>;
-    label: DetailedHTMLFactory<LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
-    legend: DetailedHTMLFactory<HTMLAttributes<HTMLLegendElement>, HTMLLegendElement>;
+    label: DetailedHTMLFactory<
+      LabelHTMLAttributes<HTMLLabelElement>,
+      HTMLLabelElement
+    >;
+    legend: DetailedHTMLFactory<
+      HTMLAttributes<HTMLLegendElement>,
+      HTMLLegendElement
+    >;
     li: DetailedHTMLFactory<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
-    link: DetailedHTMLFactory<LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
+    link: DetailedHTMLFactory<
+      LinkHTMLAttributes<HTMLLinkElement>,
+      HTMLLinkElement
+    >;
     main: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     map: DetailedHTMLFactory<MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
     mark: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     menu: DetailedHTMLFactory<MenuHTMLAttributes<HTMLElement>, HTMLElement>;
     menuitem: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    meta: DetailedHTMLFactory<MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
-    meter: DetailedHTMLFactory<MeterHTMLAttributes<HTMLMeterElement>, HTMLMeterElement>;
+    meta: DetailedHTMLFactory<
+      MetaHTMLAttributes<HTMLMetaElement>,
+      HTMLMetaElement
+    >;
+    meter: DetailedHTMLFactory<
+      MeterHTMLAttributes<HTMLMeterElement>,
+      HTMLMeterElement
+    >;
     nav: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     noscript: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    object: DetailedHTMLFactory<ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement>;
-    ol: DetailedHTMLFactory<OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
-    optgroup: DetailedHTMLFactory<OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
-    option: DetailedHTMLFactory<OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
-    output: DetailedHTMLFactory<OutputHTMLAttributes<HTMLOutputElement>, HTMLOutputElement>;
-    p: DetailedHTMLFactory<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
-    param: DetailedHTMLFactory<ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
+    object: DetailedHTMLFactory<
+      ObjectHTMLAttributes<HTMLObjectElement>,
+      HTMLObjectElement
+    >;
+    ol: DetailedHTMLFactory<
+      OlHTMLAttributes<HTMLOListElement>,
+      HTMLOListElement
+    >;
+    optgroup: DetailedHTMLFactory<
+      OptgroupHTMLAttributes<HTMLOptGroupElement>,
+      HTMLOptGroupElement
+    >;
+    option: DetailedHTMLFactory<
+      OptionHTMLAttributes<HTMLOptionElement>,
+      HTMLOptionElement
+    >;
+    output: DetailedHTMLFactory<
+      OutputHTMLAttributes<HTMLOutputElement>,
+      HTMLOutputElement
+    >;
+    p: DetailedHTMLFactory<
+      HTMLAttributes<HTMLParagraphElement>,
+      HTMLParagraphElement
+    >;
+    param: DetailedHTMLFactory<
+      ParamHTMLAttributes<HTMLParamElement>,
+      HTMLParamElement
+    >;
     picture: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     pre: DetailedHTMLFactory<HTMLAttributes<HTMLPreElement>, HTMLPreElement>;
-    progress: DetailedHTMLFactory<ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement>;
-    q: DetailedHTMLFactory<QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
+    progress: DetailedHTMLFactory<
+      ProgressHTMLAttributes<HTMLProgressElement>,
+      HTMLProgressElement
+    >;
+    q: DetailedHTMLFactory<
+      QuoteHTMLAttributes<HTMLQuoteElement>,
+      HTMLQuoteElement
+    >;
     rp: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     rt: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     ruby: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     s: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     samp: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    slot: DetailedHTMLFactory<SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement>;
-    script: DetailedHTMLFactory<ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
+    slot: DetailedHTMLFactory<
+      SlotHTMLAttributes<HTMLSlotElement>,
+      HTMLSlotElement
+    >;
+    script: DetailedHTMLFactory<
+      ScriptHTMLAttributes<HTMLScriptElement>,
+      HTMLScriptElement
+    >;
     section: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    select: DetailedHTMLFactory<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
+    select: DetailedHTMLFactory<
+      SelectHTMLAttributes<HTMLSelectElement>,
+      HTMLSelectElement
+    >;
     small: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    source: DetailedHTMLFactory<SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement>;
+    source: DetailedHTMLFactory<
+      SourceHTMLAttributes<HTMLSourceElement>,
+      HTMLSourceElement
+    >;
     span: DetailedHTMLFactory<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
     strong: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    style: DetailedHTMLFactory<StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
+    style: DetailedHTMLFactory<
+      StyleHTMLAttributes<HTMLStyleElement>,
+      HTMLStyleElement
+    >;
     sub: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     summary: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     sup: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    table: DetailedHTMLFactory<TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>;
-    template: DetailedHTMLFactory<HTMLAttributes<HTMLTemplateElement>, HTMLTemplateElement>;
-    tbody: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-    td: DetailedHTMLFactory<TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement>;
-    textarea: DetailedHTMLFactory<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
-    tfoot: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-    th: DetailedHTMLFactory<ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
-    thead: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-    time: DetailedHTMLFactory<TimeHTMLAttributes<HTMLTimeElement>, HTMLTimeElement>;
-    title: DetailedHTMLFactory<HTMLAttributes<HTMLTitleElement>, HTMLTitleElement>;
-    tr: DetailedHTMLFactory<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>;
-    track: DetailedHTMLFactory<TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
+    table: DetailedHTMLFactory<
+      TableHTMLAttributes<HTMLTableElement>,
+      HTMLTableElement
+    >;
+    template: DetailedHTMLFactory<
+      HTMLAttributes<HTMLTemplateElement>,
+      HTMLTemplateElement
+    >;
+    tbody: DetailedHTMLFactory<
+      HTMLAttributes<HTMLTableSectionElement>,
+      HTMLTableSectionElement
+    >;
+    td: DetailedHTMLFactory<
+      TdHTMLAttributes<HTMLTableDataCellElement>,
+      HTMLTableDataCellElement
+    >;
+    textarea: DetailedHTMLFactory<
+      TextareaHTMLAttributes<HTMLTextAreaElement>,
+      HTMLTextAreaElement
+    >;
+    tfoot: DetailedHTMLFactory<
+      HTMLAttributes<HTMLTableSectionElement>,
+      HTMLTableSectionElement
+    >;
+    th: DetailedHTMLFactory<
+      ThHTMLAttributes<HTMLTableHeaderCellElement>,
+      HTMLTableHeaderCellElement
+    >;
+    thead: DetailedHTMLFactory<
+      HTMLAttributes<HTMLTableSectionElement>,
+      HTMLTableSectionElement
+    >;
+    time: DetailedHTMLFactory<
+      TimeHTMLAttributes<HTMLTimeElement>,
+      HTMLTimeElement
+    >;
+    title: DetailedHTMLFactory<
+      HTMLAttributes<HTMLTitleElement>,
+      HTMLTitleElement
+    >;
+    tr: DetailedHTMLFactory<
+      HTMLAttributes<HTMLTableRowElement>,
+      HTMLTableRowElement
+    >;
+    track: DetailedHTMLFactory<
+      TrackHTMLAttributes<HTMLTrackElement>,
+      HTMLTrackElement
+    >;
     u: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     ul: DetailedHTMLFactory<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;
     var: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-    video: DetailedHTMLFactory<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
+    video: DetailedHTMLFactory<
+      VideoHTMLAttributes<HTMLVideoElement>,
+      HTMLVideoElement
+    >;
     wbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
     // webview: DetailedHTMLFactory<WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
   }
@@ -2091,10 +2495,14 @@ export declare namespace Inferno {
 type Defaultize<P, D> = P extends any
   ? string extends keyof P
     ? P
-    : Pick<P, Exclude<keyof P, keyof D>> & Partial<Pick<P, Extract<keyof P, keyof D>>> & Partial<Pick<D, Exclude<keyof D, keyof P>>>
+    : Pick<P, Exclude<keyof P, keyof D>> &
+        Partial<Pick<P, Extract<keyof P, keyof D>>> &
+        Partial<Pick<D, Exclude<keyof D, keyof P>>>
   : never;
 
-type InfernoManagedAttributes<C, P> = C extends { defaultProps: infer D } ? Defaultize<P, D> : P;
+type InfernoManagedAttributes<C, P> = C extends { defaultProps: infer D }
+  ? Defaultize<P, D>
+  : P;
 
 declare global {
   namespace JSX {
@@ -2116,123 +2524,474 @@ declare global {
 
     interface IntrinsicElements {
       // HTML
-      a: Inferno.DetailedHTMLProps<Inferno.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>;
-      abbr: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      address: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      area: Inferno.DetailedHTMLProps<Inferno.AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement>;
-      article: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      aside: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      audio: Inferno.DetailedHTMLProps<Inferno.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
-      b: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      base: Inferno.DetailedHTMLProps<Inferno.BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement>;
-      bdi: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      bdo: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      big: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      blockquote: Inferno.DetailedHTMLProps<Inferno.BlockquoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
-      body: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLBodyElement>, HTMLBodyElement>;
-      br: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLBRElement>, HTMLBRElement>;
-      button: Inferno.DetailedHTMLProps<Inferno.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
-      canvas: Inferno.DetailedHTMLProps<Inferno.CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>;
-      caption: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      cite: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      code: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      col: Inferno.DetailedHTMLProps<Inferno.ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-      colgroup: Inferno.DetailedHTMLProps<Inferno.ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-      data: Inferno.DetailedHTMLProps<Inferno.DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
-      datalist: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLDataListElement>, HTMLDataListElement>;
-      dd: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      del: Inferno.DetailedHTMLProps<Inferno.DelHTMLAttributes<HTMLModElement>, HTMLModElement>;
-      details: Inferno.DetailedHTMLProps<Inferno.DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>;
-      dfn: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      dialog: Inferno.DetailedHTMLProps<Inferno.DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
-      div: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-      dl: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLDListElement>, HTMLDListElement>;
-      dt: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      em: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      embed: Inferno.DetailedHTMLProps<Inferno.EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
-      fieldset: Inferno.DetailedHTMLProps<Inferno.FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement>;
-      figcaption: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      figure: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      footer: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      form: Inferno.DetailedHTMLProps<Inferno.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
-      h1: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-      h2: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-      h3: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-      h4: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-      h5: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-      h6: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-      head: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHeadElement>, HTMLHeadElement>;
-      header: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      hgroup: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      hr: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLHRElement>, HTMLHRElement>;
-      html: Inferno.DetailedHTMLProps<Inferno.HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
-      i: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      iframe: Inferno.DetailedHTMLProps<Inferno.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
-      img: Inferno.DetailedHTMLProps<Inferno.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
-      input: Inferno.DetailedHTMLProps<Inferno.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-      ins: Inferno.DetailedHTMLProps<Inferno.InsHTMLAttributes<HTMLModElement>, HTMLModElement>;
-      kbd: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      keygen: Inferno.DetailedHTMLProps<Inferno.KeygenHTMLAttributes<HTMLElement>, HTMLElement>;
-      label: Inferno.DetailedHTMLProps<Inferno.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
-      legend: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLLegendElement>, HTMLLegendElement>;
-      li: Inferno.DetailedHTMLProps<Inferno.LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
-      link: Inferno.DetailedHTMLProps<Inferno.LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
-      main: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      map: Inferno.DetailedHTMLProps<Inferno.MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
-      mark: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      media: Inferno.DetailedHTMLProps<Inferno.MediaHTMLAttributes<HTMLMediaElement>, HTMLMediaElement>;
-      menu: Inferno.DetailedHTMLProps<Inferno.MenuHTMLAttributes<HTMLElement>, HTMLElement>;
-      menuitem: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      meta: Inferno.DetailedHTMLProps<Inferno.MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
-      meter: Inferno.DetailedHTMLProps<Inferno.MeterHTMLAttributes<HTMLMeterElement>, HTMLMeterElement>;
-      nav: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      noindex: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      noscript: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      object: Inferno.DetailedHTMLProps<Inferno.ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement>;
-      ol: Inferno.DetailedHTMLProps<Inferno.OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
-      optgroup: Inferno.DetailedHTMLProps<Inferno.OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
-      option: Inferno.DetailedHTMLProps<Inferno.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
-      output: Inferno.DetailedHTMLProps<Inferno.OutputHTMLAttributes<HTMLOutputElement>, HTMLOutputElement>;
-      p: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
-      param: Inferno.DetailedHTMLProps<Inferno.ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
-      picture: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      pre: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLPreElement>, HTMLPreElement>;
-      progress: Inferno.DetailedHTMLProps<Inferno.ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement>;
-      q: Inferno.DetailedHTMLProps<Inferno.QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
-      rp: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      rt: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      ruby: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      s: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      samp: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      slot: Inferno.DetailedHTMLProps<Inferno.SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement>;
-      script: Inferno.DetailedHTMLProps<Inferno.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
-      section: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      select: Inferno.DetailedHTMLProps<Inferno.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
-      small: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      source: Inferno.DetailedHTMLProps<Inferno.SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement>;
-      span: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
-      strong: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      style: Inferno.DetailedHTMLProps<Inferno.StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
-      sub: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      summary: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      sup: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      table: Inferno.DetailedHTMLProps<Inferno.TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>;
-      template: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTemplateElement>, HTMLTemplateElement>;
-      tbody: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-      td: Inferno.DetailedHTMLProps<Inferno.TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement>;
-      textarea: Inferno.DetailedHTMLProps<Inferno.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
-      tfoot: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-      th: Inferno.DetailedHTMLProps<Inferno.ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
-      thead: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-      time: Inferno.DetailedHTMLProps<Inferno.TimeHTMLAttributes<HTMLTimeElement>, HTMLTimeElement>;
-      title: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTitleElement>, HTMLTitleElement>;
-      tr: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>;
-      track: Inferno.DetailedHTMLProps<Inferno.TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
-      u: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      ul: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLUListElement>, HTMLUListElement>;
-      var: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
-      video: Inferno.DetailedHTMLProps<Inferno.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
-      wbr: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<HTMLElement>, HTMLElement>;
+      a: Inferno.DetailedHTMLProps<
+        Inferno.AnchorHTMLAttributes<HTMLAnchorElement>,
+        HTMLAnchorElement
+      >;
+      abbr: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      address: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      area: Inferno.DetailedHTMLProps<
+        Inferno.AreaHTMLAttributes<HTMLAreaElement>,
+        HTMLAreaElement
+      >;
+      article: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      aside: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      audio: Inferno.DetailedHTMLProps<
+        Inferno.AudioHTMLAttributes<HTMLAudioElement>,
+        HTMLAudioElement
+      >;
+      b: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      base: Inferno.DetailedHTMLProps<
+        Inferno.BaseHTMLAttributes<HTMLBaseElement>,
+        HTMLBaseElement
+      >;
+      bdi: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      bdo: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      big: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      blockquote: Inferno.DetailedHTMLProps<
+        Inferno.BlockquoteHTMLAttributes<HTMLQuoteElement>,
+        HTMLQuoteElement
+      >;
+      body: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLBodyElement>,
+        HTMLBodyElement
+      >;
+      br: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLBRElement>,
+        HTMLBRElement
+      >;
+      button: Inferno.DetailedHTMLProps<
+        Inferno.ButtonHTMLAttributes<HTMLButtonElement>,
+        HTMLButtonElement
+      >;
+      canvas: Inferno.DetailedHTMLProps<
+        Inferno.CanvasHTMLAttributes<HTMLCanvasElement>,
+        HTMLCanvasElement
+      >;
+      caption: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      cite: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      code: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      col: Inferno.DetailedHTMLProps<
+        Inferno.ColHTMLAttributes<HTMLTableColElement>,
+        HTMLTableColElement
+      >;
+      colgroup: Inferno.DetailedHTMLProps<
+        Inferno.ColgroupHTMLAttributes<HTMLTableColElement>,
+        HTMLTableColElement
+      >;
+      data: Inferno.DetailedHTMLProps<
+        Inferno.DataHTMLAttributes<HTMLDataElement>,
+        HTMLDataElement
+      >;
+      datalist: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLDataListElement>,
+        HTMLDataListElement
+      >;
+      dd: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      del: Inferno.DetailedHTMLProps<
+        Inferno.DelHTMLAttributes<HTMLModElement>,
+        HTMLModElement
+      >;
+      details: Inferno.DetailedHTMLProps<
+        Inferno.DetailsHTMLAttributes<HTMLDetailsElement>,
+        HTMLDetailsElement
+      >;
+      dfn: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      dialog: Inferno.DetailedHTMLProps<
+        Inferno.DialogHTMLAttributes<HTMLDialogElement>,
+        HTMLDialogElement
+      >;
+      div: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLDivElement>,
+        HTMLDivElement
+      >;
+      dl: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLDListElement>,
+        HTMLDListElement
+      >;
+      dt: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      em: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      embed: Inferno.DetailedHTMLProps<
+        Inferno.EmbedHTMLAttributes<HTMLEmbedElement>,
+        HTMLEmbedElement
+      >;
+      fieldset: Inferno.DetailedHTMLProps<
+        Inferno.FieldsetHTMLAttributes<HTMLFieldSetElement>,
+        HTMLFieldSetElement
+      >;
+      figcaption: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      figure: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      footer: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      form: Inferno.DetailedHTMLProps<
+        Inferno.FormHTMLAttributes<HTMLFormElement>,
+        HTMLFormElement
+      >;
+      h1: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHeadingElement>,
+        HTMLHeadingElement
+      >;
+      h2: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHeadingElement>,
+        HTMLHeadingElement
+      >;
+      h3: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHeadingElement>,
+        HTMLHeadingElement
+      >;
+      h4: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHeadingElement>,
+        HTMLHeadingElement
+      >;
+      h5: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHeadingElement>,
+        HTMLHeadingElement
+      >;
+      h6: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHeadingElement>,
+        HTMLHeadingElement
+      >;
+      head: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHeadElement>,
+        HTMLHeadElement
+      >;
+      header: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      hgroup: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      hr: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLHRElement>,
+        HTMLHRElement
+      >;
+      html: Inferno.DetailedHTMLProps<
+        Inferno.HtmlHTMLAttributes<HTMLHtmlElement>,
+        HTMLHtmlElement
+      >;
+      i: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      iframe: Inferno.DetailedHTMLProps<
+        Inferno.IframeHTMLAttributes<HTMLIFrameElement>,
+        HTMLIFrameElement
+      >;
+      img: Inferno.DetailedHTMLProps<
+        Inferno.ImgHTMLAttributes<HTMLImageElement>,
+        HTMLImageElement
+      >;
+      input: Inferno.DetailedHTMLProps<
+        Inferno.InputHTMLAttributes<HTMLInputElement>,
+        HTMLInputElement
+      >;
+      ins: Inferno.DetailedHTMLProps<
+        Inferno.InsHTMLAttributes<HTMLModElement>,
+        HTMLModElement
+      >;
+      kbd: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      keygen: Inferno.DetailedHTMLProps<
+        Inferno.KeygenHTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      label: Inferno.DetailedHTMLProps<
+        Inferno.LabelHTMLAttributes<HTMLLabelElement>,
+        HTMLLabelElement
+      >;
+      legend: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLLegendElement>,
+        HTMLLegendElement
+      >;
+      li: Inferno.DetailedHTMLProps<
+        Inferno.LiHTMLAttributes<HTMLLIElement>,
+        HTMLLIElement
+      >;
+      link: Inferno.DetailedHTMLProps<
+        Inferno.LinkHTMLAttributes<HTMLLinkElement>,
+        HTMLLinkElement
+      >;
+      main: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      map: Inferno.DetailedHTMLProps<
+        Inferno.MapHTMLAttributes<HTMLMapElement>,
+        HTMLMapElement
+      >;
+      mark: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      media: Inferno.DetailedHTMLProps<
+        Inferno.MediaHTMLAttributes<HTMLMediaElement>,
+        HTMLMediaElement
+      >;
+      menu: Inferno.DetailedHTMLProps<
+        Inferno.MenuHTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      menuitem: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      meta: Inferno.DetailedHTMLProps<
+        Inferno.MetaHTMLAttributes<HTMLMetaElement>,
+        HTMLMetaElement
+      >;
+      meter: Inferno.DetailedHTMLProps<
+        Inferno.MeterHTMLAttributes<HTMLMeterElement>,
+        HTMLMeterElement
+      >;
+      nav: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      noindex: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      noscript: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      object: Inferno.DetailedHTMLProps<
+        Inferno.ObjectHTMLAttributes<HTMLObjectElement>,
+        HTMLObjectElement
+      >;
+      ol: Inferno.DetailedHTMLProps<
+        Inferno.OlHTMLAttributes<HTMLOListElement>,
+        HTMLOListElement
+      >;
+      optgroup: Inferno.DetailedHTMLProps<
+        Inferno.OptgroupHTMLAttributes<HTMLOptGroupElement>,
+        HTMLOptGroupElement
+      >;
+      option: Inferno.DetailedHTMLProps<
+        Inferno.OptionHTMLAttributes<HTMLOptionElement>,
+        HTMLOptionElement
+      >;
+      output: Inferno.DetailedHTMLProps<
+        Inferno.OutputHTMLAttributes<HTMLOutputElement>,
+        HTMLOutputElement
+      >;
+      p: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLParagraphElement>,
+        HTMLParagraphElement
+      >;
+      param: Inferno.DetailedHTMLProps<
+        Inferno.ParamHTMLAttributes<HTMLParamElement>,
+        HTMLParamElement
+      >;
+      picture: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      pre: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLPreElement>,
+        HTMLPreElement
+      >;
+      progress: Inferno.DetailedHTMLProps<
+        Inferno.ProgressHTMLAttributes<HTMLProgressElement>,
+        HTMLProgressElement
+      >;
+      q: Inferno.DetailedHTMLProps<
+        Inferno.QuoteHTMLAttributes<HTMLQuoteElement>,
+        HTMLQuoteElement
+      >;
+      rp: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      rt: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      ruby: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      s: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      samp: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      slot: Inferno.DetailedHTMLProps<
+        Inferno.SlotHTMLAttributes<HTMLSlotElement>,
+        HTMLSlotElement
+      >;
+      script: Inferno.DetailedHTMLProps<
+        Inferno.ScriptHTMLAttributes<HTMLScriptElement>,
+        HTMLScriptElement
+      >;
+      section: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      select: Inferno.DetailedHTMLProps<
+        Inferno.SelectHTMLAttributes<HTMLSelectElement>,
+        HTMLSelectElement
+      >;
+      small: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      source: Inferno.DetailedHTMLProps<
+        Inferno.SourceHTMLAttributes<HTMLSourceElement>,
+        HTMLSourceElement
+      >;
+      span: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLSpanElement>,
+        HTMLSpanElement
+      >;
+      strong: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      style: Inferno.DetailedHTMLProps<
+        Inferno.StyleHTMLAttributes<HTMLStyleElement>,
+        HTMLStyleElement
+      >;
+      sub: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      summary: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      sup: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      table: Inferno.DetailedHTMLProps<
+        Inferno.TableHTMLAttributes<HTMLTableElement>,
+        HTMLTableElement
+      >;
+      template: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLTemplateElement>,
+        HTMLTemplateElement
+      >;
+      tbody: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLTableSectionElement>,
+        HTMLTableSectionElement
+      >;
+      td: Inferno.DetailedHTMLProps<
+        Inferno.TdHTMLAttributes<HTMLTableDataCellElement>,
+        HTMLTableDataCellElement
+      >;
+      textarea: Inferno.DetailedHTMLProps<
+        Inferno.TextareaHTMLAttributes<HTMLTextAreaElement>,
+        HTMLTextAreaElement
+      >;
+      tfoot: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLTableSectionElement>,
+        HTMLTableSectionElement
+      >;
+      th: Inferno.DetailedHTMLProps<
+        Inferno.ThHTMLAttributes<HTMLTableHeaderCellElement>,
+        HTMLTableHeaderCellElement
+      >;
+      thead: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLTableSectionElement>,
+        HTMLTableSectionElement
+      >;
+      time: Inferno.DetailedHTMLProps<
+        Inferno.TimeHTMLAttributes<HTMLTimeElement>,
+        HTMLTimeElement
+      >;
+      title: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLTitleElement>,
+        HTMLTitleElement
+      >;
+      tr: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLTableRowElement>,
+        HTMLTableRowElement
+      >;
+      track: Inferno.DetailedHTMLProps<
+        Inferno.TrackHTMLAttributes<HTMLTrackElement>,
+        HTMLTrackElement
+      >;
+      u: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      ul: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLUListElement>,
+        HTMLUListElement
+      >;
+      var: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      video: Inferno.DetailedHTMLProps<
+        Inferno.VideoHTMLAttributes<HTMLVideoElement>,
+        HTMLVideoElement
+      >;
+      wbr: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
       // webview: Inferno.DetailedHTMLProps<Inferno.WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
 
       // SVG
@@ -2297,35 +3056,122 @@ declare global {
       view: Inferno.SVGProps<SVGViewElement>;
 
       // MathML
-      maction: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      math: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      menclose: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      merror: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mfenced: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mfrac: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mi: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mmultiscripts: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mn: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mo: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mover: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mpadded: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mphantom: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mroot: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mrow: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      ms: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mspace: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      msqrt: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mstyle: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      msub: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      msubsup: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      msup: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mtable: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mtd: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mtext: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      mtr: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      munder: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      munderover: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
-      semantics: Inferno.DetailedHTMLProps<Inferno.HTMLAttributes<MathMLElement>, MathMLElement>;
+      maction: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      math: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      menclose: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      merror: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mfenced: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mfrac: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mi: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mmultiscripts: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mn: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mo: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mover: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mpadded: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mphantom: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mroot: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mrow: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      ms: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mspace: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      msqrt: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mstyle: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      msub: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      msubsup: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      msup: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mtable: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mtd: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mtext: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      mtr: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      munder: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      munderover: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
+      semantics: Inferno.DetailedHTMLProps<
+        Inferno.HTMLAttributes<MathMLElement>,
+        MathMLElement
+      >;
     }
   }
 

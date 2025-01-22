@@ -151,17 +151,19 @@ function parseSelector(filter: unknown): unknown[] {
   }
 }
 
-// @ts-expect-error there is no way to declare that function throws
-function findOneOf<TResult, TArgTree, TArgFilter>(tree: TArgTree, filter: TArgFilter, name: string, finder: (renderedTree: TArgTree, type: TArgFilter) => TResult[]): TResult {
+function findOneOf<TResult, TArgTree, TArgFilter>(
+  tree: TArgTree,
+  filter: TArgFilter,
+  name: string,
+  finder: (renderedTree: TArgTree, type: TArgFilter) => TResult[],
+): TResult {
   const all = finder(tree, filter);
   if (all.length > 1) {
     throwError(
-       
       `Did not find exactly one match (found ${all.length}) for ${name}: ${filter}`,
     );
-  } else {
-    return all[0];
   }
+  return all[0];
 }
 
 // Scry Utilities
@@ -179,7 +181,6 @@ export function scryRenderedDOMElementsWithClass(
       if (
         !isString(domClassName) &&
         !isNullOrUndef(instance.dom) &&
-         
         isFunction(instance.dom.getAttribute)
       ) {
         // SVG || null, probably

@@ -19,7 +19,7 @@ describe('Components (non-JSX)', () => {
   });
 
   if (typeof global !== 'undefined' && !global.usingJSDOM) {
-    class BasicComponent1 extends Component<{name: string, title: string}> {
+    class BasicComponent1 extends Component<{ name: string; title: string }> {
       render() {
         const template = (name, title) =>
           createElement(
@@ -147,7 +147,10 @@ describe('Components (non-JSX)', () => {
       );
     });
 
-    class BasicComponent1b extends Component<{isChecked: boolean, title: string}> {
+    class BasicComponent1b extends Component<{
+      isChecked: boolean;
+      title: string;
+    }> {
       render() {
         const template = (isChecked, title) =>
           createElement(
@@ -219,7 +222,11 @@ describe('Components (non-JSX)', () => {
       expect(container.querySelector('input').checked).toBe(false);
     });
 
-    class BasicComponent1c extends Component<{isEnabled: boolean, title: string, type: string}> {
+    class BasicComponent1c extends Component<{
+      isEnabled: boolean;
+      title: string;
+      type: string;
+    }> {
       render() {
         const template = (isEnabled, title, type) =>
           createElement(
@@ -300,7 +307,10 @@ describe('Components (non-JSX)', () => {
       );
     });
 
-    class BasicComponent1d extends Component<{isDisabled: boolean, title: string}> {
+    class BasicComponent1d extends Component<{
+      isDisabled: boolean;
+      title: string;
+    }> {
       render() {
         const template = (isDisabled, title) =>
           createElement(
@@ -401,7 +411,11 @@ describe('Components (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    class BasicComponent2 extends Component<{name: string, title: string, children: any}> {
+    class BasicComponent2 extends Component<{
+      name: string;
+      title: string;
+      children: any;
+    }> {
       render() {
         const template = (name, title, children) =>
           createElement(
@@ -485,7 +499,7 @@ describe('Components (non-JSX)', () => {
       }
     }
 
-    class BasicComponent3 extends Component<{styles: any, title: string}> {
+    class BasicComponent3 extends Component<{ styles: any; title: string }> {
       render() {
         const template = (styles, title) =>
           createElement(
@@ -923,7 +937,7 @@ describe('Components (non-JSX)', () => {
         return createElement('h2', null, 'small');
       };
 
-      class ConditionalComponent extends Component<{condition: boolean}> {
+      class ConditionalComponent extends Component<{ condition: boolean }> {
         render() {
           return createElement('div', null, [
             this.props.condition ? tpl3625453295() : tpl4021787591(),
@@ -966,7 +980,7 @@ describe('Components (non-JSX)', () => {
       };
 
       interface ValueState {
-        organizations: {name: string, key: string|number}[]
+        organizations: { name: string; key: string | number }[];
       }
       class ValueComponent extends Component<any, ValueState> {
         state: ValueState;
@@ -1284,7 +1298,7 @@ describe('Components (non-JSX)', () => {
           }
         }
 
-        class Message extends Component<{text: string}> {
+        class Message extends Component<{ text: string }> {
           render() {
             return createElement('div', null, [
               this.props.text,
@@ -1293,7 +1307,7 @@ describe('Components (non-JSX)', () => {
           }
         }
 
-        class MessageList extends Component<{messages: {text: string}[]}> {
+        class MessageList extends Component<{ messages: { text: string }[] }> {
           getChildContext() {
             return { color: 'purple' };
           }

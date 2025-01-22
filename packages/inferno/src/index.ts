@@ -49,7 +49,9 @@ if (process.env.NODE_ENV !== 'production') {
 
     const testFunc = function testFn() {};
 
-    if (!((testFunc as Function).name || testFunc.toString()).includes('testFn')) {
+    if (
+      !((testFunc as Function).name || testFunc.toString()).includes('testFn')
+    ) {
       warning(
         "It looks like you're using a minified copy of the development build " +
           'of Inferno. When deploying Inferno apps to production, make sure to use ' +

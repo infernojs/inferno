@@ -29,7 +29,6 @@ function renderVNodeToString(vNode, parent, context): string {
     const isClass = flags & VNodeFlags.ComponentClass;
 
     if (isClass) {
-       
       const instance = new type(props, context);
       const hasNewAPI = Boolean(type.getDerivedStateFromProps);
       instance.$BS = false;

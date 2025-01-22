@@ -60,9 +60,8 @@ const ATTRIBUTE_NAME_START_CHAR =
 const ATTRIBUTE_NAME_CHAR =
   ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040';
 
- 
 export const VALID_ATTRIBUTE_NAME_REGEX = new RegExp(
-    // eslint-disable-next-line no-misleading-character-class
+  // eslint-disable-next-line no-misleading-character-class
   '^[' + ATTRIBUTE_NAME_START_CHAR + '][' + ATTRIBUTE_NAME_CHAR + ']*$',
 );
 

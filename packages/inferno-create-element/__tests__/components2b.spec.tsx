@@ -1,4 +1,4 @@
-import {Component, render} from 'inferno';
+import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 
 describe('Components 2 (TSX)', () => {
@@ -17,15 +17,19 @@ describe('Components 2 (TSX)', () => {
   describe('recursive component', () => {
     it('Should be possible to pass props recursively', () => {
       interface ListProps {
-        data: Array<{ key: string; data: string | Array<{ key: string; data: string }> }>;
+        data: Array<{
+          key: string;
+          data: string | Array<{ key: string; data: string }>;
+        }>;
       }
       class List extends Component<ListProps> {
         render() {
           const children = this.props.data.map((entity) => {
             const { key, data } = entity;
-            const child = (Array.isArray(data) ?
-                <List data={data} /> :
-                <Text data={data as string} />
+            const child = Array.isArray(data) ? (
+              <List data={data} />
+            ) : (
+              <Text data={data as string} />
             );
 
             return <li key={key}>{child}</li>;
@@ -51,26 +55,32 @@ describe('Components 2 (TSX)', () => {
           key: '1',
           data: [
             { key: '1/1', data: 'a' },
-            { key: '1/2', data: 'b' }
-          ]
-        }
+            { key: '1/2', data: 'b' },
+          ],
+        },
       ];
 
       render(<List data={data} />, container);
-      expect(container.innerHTML).toBe('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
+      expect(container.innerHTML).toBe(
+        '<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>',
+      );
     });
 
     it('Should be possible to pass props recursively AT BEGINNING (JSX plugin change required)', () => {
       interface ListProps {
-        data: Array<{ key: string; data: string | Array<{ key: string; data: string }> }>;
+        data: Array<{
+          key: string;
+          data: string | Array<{ key: string; data: string }>;
+        }>;
       }
       class List extends Component<ListProps> {
         render() {
           const children = this.props.data.map((entity) => {
             const { key, data } = entity;
-            const child = (Array.isArray(data) ?
-                <List data={data} /> :
-                <Text data={data as string} />
+            const child = Array.isArray(data) ? (
+              <List data={data} />
+            ) : (
+              <Text data={data as string} />
             );
 
             return <li key={key}>{child}</li>;
@@ -96,13 +106,15 @@ describe('Components 2 (TSX)', () => {
           key: '1',
           data: [
             { key: '1/1', data: 'a' },
-            { key: '1/2', data: 'b' }
-          ]
-        }
+            { key: '1/2', data: 'b' },
+          ],
+        },
       ];
 
       render(<List data={data} />, container);
-      expect(container.innerHTML).toBe('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
+      expect(container.innerHTML).toBe(
+        '<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>',
+      );
     });
   });
 
@@ -185,14 +197,14 @@ describe('Components 2 (TSX)', () => {
 
   it('Events should propagate between components (github #135)', (done) => {
     interface LabelProps {
-      text: string
+      text: string;
     }
     class Label extends Component<LabelProps> {
       render() {
         const style = {
           'background-color': 'red',
           padding: '0 20px',
-          fontSize: '40px'
+          fontSize: '40px',
         };
         return <span style={style}>{this.props.text}</span>;
       }
@@ -200,7 +212,6 @@ describe('Components 2 (TSX)', () => {
 
     let btnFlag = false;
     let containerFlag = false;
-
 
     class Button extends Component<LabelProps> {
       onClick(_event) {
@@ -248,7 +259,7 @@ describe('Components 2 (TSX)', () => {
 
   it('Should be possible to stop propagation', (done) => {
     interface LabelProps {
-      text: string
+      text: string;
     }
 
     class Label extends Component<LabelProps> {
@@ -256,7 +267,7 @@ describe('Components 2 (TSX)', () => {
         const style = {
           'background-color': 'red',
           padding: '0 20px',
-          fontSize: '40px'
+          fontSize: '40px',
         };
         return <span style={style}>{this.props.text}</span>;
       }
@@ -389,7 +400,7 @@ describe('Components 2 (TSX)', () => {
   it('Should trigger ref lifecycle after patch', (done) => {
     let updater;
     const obj = {
-      fn() {}
+      fn() {},
     };
 
     spyOn(obj, 'fn');
@@ -405,7 +416,7 @@ describe('Components 2 (TSX)', () => {
         super(props);
 
         this.state = {
-          bool: true
+          bool: true,
         };
 
         this.changeDOM = this.changeDOM.bind(this);
@@ -414,7 +425,7 @@ describe('Components 2 (TSX)', () => {
 
       changeDOM() {
         this.setState({
-          bool: !this.state.bool
+          bool: !this.state.bool,
         });
       }
 
@@ -458,7 +469,7 @@ describe('Components 2 (TSX)', () => {
           super(props);
 
           this.state = {
-            bool: true
+            bool: true,
           };
 
           this.changeDOM = this.changeDOM.bind(this);
@@ -467,7 +478,7 @@ describe('Components 2 (TSX)', () => {
 
         changeDOM() {
           this.setState({
-            bool: !this.state.bool
+            bool: !this.state.bool,
           });
         }
 
@@ -514,7 +525,7 @@ describe('Components 2 (TSX)', () => {
         super(props);
 
         this.state = {
-          bool: true
+          bool: true,
         };
 
         this.changeDOM = this.changeDOM.bind(this);
@@ -523,7 +534,7 @@ describe('Components 2 (TSX)', () => {
 
       changeDOM() {
         this.setState({
-          bool: !this.state.bool
+          bool: !this.state.bool,
         });
       }
 
@@ -538,13 +549,17 @@ describe('Components 2 (TSX)', () => {
     }
 
     render(<Bar />, container);
-    expect(container.innerHTML).toBe('<div><span>span</span><div>div</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>span</span><div>div</div></div>',
+    );
 
     updater();
     expect(container.innerHTML).toBe('<div>text<div>div</div></div>');
 
     updater();
-    expect(container.innerHTML).toBe('<div><span>span</span><div>div</div></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>span</span><div>div</div></div>',
+    );
 
     updater();
     expect(container.innerHTML).toBe('<div>text<div>div</div></div>');
@@ -564,7 +579,7 @@ describe('Components 2 (TSX)', () => {
         super(props);
 
         this.state = {
-          bool: false
+          bool: false,
         };
 
         this.changeDOM = this.changeDOM.bind(this);
@@ -573,7 +588,7 @@ describe('Components 2 (TSX)', () => {
 
       changeDOM() {
         this.setState({
-          bool: !this.state.bool
+          bool: !this.state.bool,
         });
       }
 
@@ -592,13 +607,17 @@ describe('Components 2 (TSX)', () => {
 
     updater();
     setTimeout(() => {
-      expect(container.innerHTML).toBe('<div><span>span</span><div>div</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><span>span</span><div>div</div></div>',
+      );
       updater();
       setTimeout(() => {
         expect(container.innerHTML).toBe('<div><div>div</div></div>');
         updater();
         setTimeout(() => {
-          expect(container.innerHTML).toBe('<div><span>span</span><div>div</div></div>');
+          expect(container.innerHTML).toBe(
+            '<div><span>span</span><div>div</div></div>',
+          );
           done();
         }, 10);
       }, 10);
@@ -729,7 +748,7 @@ describe('Components 2 (TSX)', () => {
           const props = {
             onBlur: this.handleBlur,
             className: 'foo',
-            id: 'test'
+            id: 'test',
           };
 
           return <input {...props} />;
@@ -778,7 +797,7 @@ describe('Components 2 (TSX)', () => {
           super(props);
 
           this.state = {
-            toggle1: false
+            toggle1: false,
           };
 
           change1 = this.toggle1.bind(this);
@@ -786,7 +805,7 @@ describe('Components 2 (TSX)', () => {
 
         toggle1() {
           this.setState({
-            toggle1: !this.state.toggle1
+            toggle1: !this.state.toggle1,
           });
         }
 
@@ -808,14 +827,20 @@ describe('Components 2 (TSX)', () => {
       }
 
       render(<Tester />, container);
-      expect(container.innerHTML).toBe('<div><div class="login-container"><h1>foo</h1></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div class="login-container"><h1>foo</h1></div></div>',
+      );
       expect(unMountCalled).toEqual(false);
       change1();
       expect(unMountCalled).toEqual(false);
-      expect(container.innerHTML).toBe('<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>',
+      );
       change1();
       expect(unMountCalled).toEqual(true);
-      expect(container.innerHTML).toBe('<div><div class="login-container"><h1>foo</h1></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div class="login-container"><h1>foo</h1></div></div>',
+      );
     });
 
     it('Should be able to swap stateless component to DOM list when doing setState', () => {
@@ -841,7 +866,7 @@ describe('Components 2 (TSX)', () => {
           super(props);
 
           this.state = {
-            toggle1: false
+            toggle1: false,
           };
 
           change1 = this.toggle1.bind(this);
@@ -849,7 +874,7 @@ describe('Components 2 (TSX)', () => {
 
         toggle1() {
           this.setState({
-            toggle1: !this.state.toggle1
+            toggle1: !this.state.toggle1,
           });
         }
 
@@ -871,11 +896,17 @@ describe('Components 2 (TSX)', () => {
       }
 
       render(<Tester />, container);
-      expect(container.innerHTML).toBe('<div><div class="login-container"><h1>foo</h1></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div class="login-container"><h1>foo</h1></div></div>',
+      );
       change1();
-      expect(container.innerHTML).toBe('<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>',
+      );
       change1();
-      expect(container.innerHTML).toBe('<div><div class="login-container"><h1>foo</h1></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div class="login-container"><h1>foo</h1></div></div>',
+      );
     });
   });
 
@@ -892,7 +923,7 @@ describe('Components 2 (TSX)', () => {
         constructor(props) {
           super(props);
           this.state = {
-            foo: 0
+            foo: 0,
           };
         }
 
@@ -931,21 +962,21 @@ describe('Components 2 (TSX)', () => {
       <div>
         <Comp />
       </div>,
-      container
+      container,
     );
     expect(container.innerHTML).toBe('<div><div></div></div>');
     render(
       <div>
         <Comp2 />
       </div>,
-      container
+      container,
     );
     expect(container.innerHTML).toBe('<div><span></span></div>');
     render(
       <span>
         <Comp />
       </span>,
-      container
+      container,
     );
     expect(container.innerHTML).toBe('<span><div></div></span>');
     render(createElement('span', null, <Comp3 />), container);
@@ -966,7 +997,7 @@ describe('Components 2 (TSX)', () => {
 
       static defaultProps = {
         a: 'A',
-        b: 'B'
+        b: 'B',
       };
 
       render() {
@@ -985,7 +1016,7 @@ describe('Components 2 (TSX)', () => {
 
       static defaultProps = {
         a: 'aye',
-        b: 'bee'
+        b: 'bee',
       };
 
       render() {
@@ -1008,7 +1039,7 @@ describe('Components 2 (TSX)', () => {
         <Parent>
           <Comp1 c="C" />
         </Parent>,
-        container
+        container,
       );
       expect(container.innerHTML).toBe('<div>A</div>');
     });
@@ -1021,7 +1052,9 @@ describe('Components 2 (TSX)', () => {
     it('should patch component with defaultProps #2', () => {
       render(<Comp1 c="C" />, container);
       render(<Comp2 c="C1" />, container);
-      expect(container.innerHTML).toBe('<div class="aye" id="bee">Hello C1!</div>');
+      expect(container.innerHTML).toBe(
+        '<div class="aye" id="bee">Hello C1!</div>',
+      );
       render(<Comp1 c="C2" />, container);
       expect(container.innerHTML).toBe('<div class="A" id="B">Hello C2!</div>');
     });
@@ -1030,7 +1063,9 @@ describe('Components 2 (TSX)', () => {
       let childrenPropertABeforeMount = 'A';
       class Parent extends Component {
         render() {
-          expect((this.props.children as any).props.a).toBe(childrenPropertABeforeMount);
+          expect((this.props.children as any).props.a).toBe(
+            childrenPropertABeforeMount,
+          );
 
           return <div>{this.props.children}</div>;
         }
@@ -1040,10 +1075,12 @@ describe('Components 2 (TSX)', () => {
         <Parent>
           <Comp1 />
         </Parent>,
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<div><div class="A" id="B">Hello !</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div class="A" id="B">Hello !</div></div>',
+      );
 
       childrenPropertABeforeMount = 'ABCD';
 
@@ -1051,10 +1088,12 @@ describe('Components 2 (TSX)', () => {
         <Parent>
           <Comp1 a="ABCD" />
         </Parent>,
-        container
+        container,
       );
 
-      expect(container.innerHTML).toBe('<div><div class="ABCD" id="B">Hello !</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div class="ABCD" id="B">Hello !</div></div>',
+      );
     });
   });
 
@@ -1071,14 +1110,14 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          foo: 'yar'
+          foo: 'yar',
         };
         reference = this.update.bind(this);
       }
 
       update() {
         this.setState(() => ({
-          foo: 'bar'
+          foo: 'bar',
         }));
       }
 
@@ -1165,7 +1204,6 @@ describe('Components 2 (TSX)', () => {
 
       render() {
         if (this.state.n) {
-           
           return (
             <div ref={(dom) => (div = dom)} onClick={this.onClick}>
               DIV
@@ -1187,7 +1225,7 @@ describe('Components 2 (TSX)', () => {
     }
 
     interface TestState {
-      reverse: boolean
+      reverse: boolean;
     }
 
     class Test extends Component<object, TestState> {
@@ -1195,7 +1233,7 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          reverse: false
+          reverse: false,
         };
       }
 
@@ -1223,24 +1261,36 @@ describe('Components 2 (TSX)', () => {
     // this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
     it('should correct swap rows', () => {
       render(<Test />, container);
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>',
+      );
       // click on "SPAN"
       container.querySelector('span').click();
       // "SPAN" should now be "DIV"
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>',
+      );
       // click on "DIV"
       div.click();
       // "DIV" should now be "SPAN"
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>',
+      );
     });
   });
 
@@ -1265,7 +1315,6 @@ describe('Components 2 (TSX)', () => {
 
       render() {
         if (this.state.n) {
-           
           return (
             <div ref={(dom) => (div = dom)} onClick={this.onClick}>
               DIV
@@ -1291,7 +1340,7 @@ describe('Components 2 (TSX)', () => {
     }
 
     interface TestState {
-      reverse: boolean
+      reverse: boolean;
     }
 
     class Test extends Component<object, TestState> {
@@ -1299,7 +1348,7 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          reverse: false
+          reverse: false,
         };
       }
 
@@ -1327,24 +1376,36 @@ describe('Components 2 (TSX)', () => {
     // this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
     it('should correct swap rows', () => {
       render(<Test />, container);
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>',
+      );
       // click on "SPAN"
       container.querySelector('span').click();
       // "SPAN" should now be "DIV"
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>',
+      );
       // click on "DIV"
       div.click();
       // "DIV" should now be "SPAN"
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>',
+      );
     });
   });
 
@@ -1369,7 +1430,6 @@ describe('Components 2 (TSX)', () => {
 
       render() {
         if (this.state.n) {
-           
           return (
             <div ref={(dom) => (div = dom)} onClick={this.onClick}>
               DIV
@@ -1389,7 +1449,7 @@ describe('Components 2 (TSX)', () => {
     }
 
     interface TestState {
-      reverse: boolean
+      reverse: boolean;
     }
 
     class Test extends Component<object, TestState> {
@@ -1397,12 +1457,15 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          reverse: false
+          reverse: false,
         };
       }
 
       render() {
-        const children = [<B key="b" onComponentShouldUpdate={() => false} />, <div key="a">ROW</div>];
+        const children = [
+          <B key="b" onComponentShouldUpdate={() => false} />,
+          <div key="a">ROW</div>,
+        ];
         if (this.state.reverse) {
           children.reverse();
         }
@@ -1425,25 +1488,37 @@ describe('Components 2 (TSX)', () => {
     // this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
     it('should correct swap rows', () => {
       render(<Test />, container);
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>',
+      );
       // click on "SPAN"
       container.querySelector('span').click();
       // "SPAN" should now be "DIV"
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>',
+      );
       // click on "DIV"
       div.click();
 
       // "DIV" should now be "SPAN"
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>',
+      );
 
       render(null, container);
     });
@@ -1485,7 +1560,7 @@ describe('Components 2 (TSX)', () => {
     }
 
     interface TestState {
-      reverse: boolean
+      reverse: boolean;
     }
 
     class Test extends Component<object, TestState> {
@@ -1494,7 +1569,7 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          reverse: false
+          reverse: false,
         };
       }
 
@@ -1503,7 +1578,7 @@ describe('Components 2 (TSX)', () => {
           <B key="b">
             <A />
           </B>,
-          <div key="a">A</div>
+          <div key="a">A</div>,
         ];
         if (this.state.reverse) {
           children.reverse();
@@ -1528,17 +1603,17 @@ describe('Components 2 (TSX)', () => {
     it('should correct swap rows', () => {
       render(<Test />, container);
       expect(container.innerHTML).toEqual(
-        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>'
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>',
       );
       // click "SWAP ROWS"
       container.querySelector('button').click();
       expect(container.innerHTML).toEqual(
-        '<div><button>Swap Rows</button><div><div>A</div><span>SPAN</span></div><div><div>A</div><span>SPAN</span></div></div>'
+        '<div><button>Swap Rows</button><div><div>A</div><span>SPAN</span></div><div><div>A</div><span>SPAN</span></div></div>',
       );
       // click "SWAP ROWS"
       container.querySelector('button').click();
       expect(container.innerHTML).toEqual(
-        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>'
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>',
       );
     });
   });
@@ -1590,7 +1665,7 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          reverse: false
+          reverse: false,
         };
       }
 
@@ -1620,17 +1695,17 @@ describe('Components 2 (TSX)', () => {
     it('should correct swap rows', () => {
       render(<Test />, container);
       expect(container.innerHTML).toEqual(
-        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>'
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>',
       );
       // click "SWAP ROWS"
       container.querySelector('button').click();
       expect(container.innerHTML).toEqual(
-        '<div><button>Swap Rows</button><div><div>A</div><span>SPAN</span></div><div><div>A</div><span>SPAN</span></div></div>'
+        '<div><button>Swap Rows</button><div><div>A</div><span>SPAN</span></div><div><div>A</div><span>SPAN</span></div></div>',
       );
       // click "SWAP ROWS"
       container.querySelector('button').click();
       expect(container.innerHTML).toEqual(
-        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>'
+        '<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>',
       );
     });
   });
@@ -1678,10 +1753,14 @@ describe('Components 2 (TSX)', () => {
 
     it('should replace keyed component if key changes', () => {
       render(<Test />, container);
-      expect(container.innerHTML).toEqual('<div><button>Replace</button><div><div>1</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Replace</button><div><div>1</div></div></div>',
+      );
       // click "Replace"
       container.querySelector('button').click();
-      expect(container.innerHTML).toEqual('<div><button>Replace</button><div><div>2</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Replace</button><div><div>2</div></div></div>',
+      );
     });
   });
 
@@ -1696,7 +1775,7 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          reverse: false
+          reverse: false,
         };
       }
 
@@ -1723,7 +1802,9 @@ describe('Components 2 (TSX)', () => {
     // this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
     it('should correct swap rows', () => {
       render(<Test />, container);
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
     });
@@ -1739,7 +1820,7 @@ describe('Components 2 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          reverse: false
+          reverse: false,
         };
       }
 
@@ -1768,7 +1849,9 @@ describe('Components 2 (TSX)', () => {
     // this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
     it('should correct swap rows', () => {
       render(<Test />, container);
-      expect(container.innerHTML).toEqual('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>',
+      );
       // click "SWAP ROWS"
       container.querySelector('button').click();
     });
@@ -1791,7 +1874,7 @@ describe('Components 2 (TSX)', () => {
           super(props);
 
           this.state = {
-            text: 'bar'
+            text: 'bar',
           };
 
           this.changeState = this.changeState.bind(this);
@@ -1799,7 +1882,7 @@ describe('Components 2 (TSX)', () => {
 
         changeState() {
           this.setState({
-            text: 'foo'
+            text: 'foo',
           });
         }
 
@@ -1810,14 +1893,16 @@ describe('Components 2 (TSX)', () => {
               {this.props.toggle ? (
                 [<Tester toggle={this.props.toggle} call={this.changeState} />]
               ) : (
-                <span style={this.props.toggle ? { color: 'blue' } : null}>tester</span>
+                <span style={this.props.toggle ? { color: 'blue' } : null}>
+                  tester
+                </span>
               )}
             </div>
           );
         }
       }
 
-      class Tester extends Component<{call: () => void, toggle: boolean}> {
+      class Tester extends Component<{ call: () => void; toggle: boolean }> {
         constructor(props) {
           super(props);
         }
@@ -1830,7 +1915,9 @@ describe('Components 2 (TSX)', () => {
         render() {
           return (
             <div>
-              <span style={this.props.toggle ? { color: 'blue' } : null}>foo</span>
+              <span style={this.props.toggle ? { color: 'blue' } : null}>
+                foo
+              </span>
             </div>
           );
         }
@@ -1838,7 +1925,9 @@ describe('Components 2 (TSX)', () => {
 
       render(<Parent toggle={true} />, container);
 
-      expect(container.innerHTML).toEqual('<div><span>bar</span><div><span style="color: blue;">foo</span></div></div>');
+      expect(container.innerHTML).toEqual(
+        '<div><span>bar</span><div><span style="color: blue;">foo</span></div></div>',
+      );
 
       render(<Parent toggle={false} />, container);
 

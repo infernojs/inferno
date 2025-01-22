@@ -1,1 +1,1 @@
-export {unmountComponentAtNode} from 'inferno-compat';
+export { unmountComponentAtNode } from 'inferno-compat';

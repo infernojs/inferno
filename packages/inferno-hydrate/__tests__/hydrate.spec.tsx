@@ -3,7 +3,8 @@ import {
   createFragment,
   createPortal,
   createRef,
-  Fragment, InfernoNode,
+  Fragment,
+  InfernoNode,
   render,
   rerender,
 } from 'inferno';
@@ -609,7 +610,12 @@ describe('rendering routine', () => {
           last: string;
           changeOrder?: boolean;
         }
-        function Fragmenter({ first, mid, last, changeOrder }: FragmenterProps) {
+        function Fragmenter({
+          first,
+          mid,
+          last,
+          changeOrder,
+        }: FragmenterProps) {
           if (changeOrder) {
             return (
               <>
@@ -651,7 +657,7 @@ describe('rendering routine', () => {
         let mountCounter = 0;
         let unmountCounter = 0;
 
-        class FoobarCom extends Component<{node: HTMLDivElement}> {
+        class FoobarCom extends Component<{ node: HTMLDivElement }> {
           componentWillMount() {
             mountCounter++;
           }
@@ -1195,7 +1201,7 @@ describe('rendering routine', () => {
           }
         }
 
-        let nodes : InfernoNode[] = [];
+        let nodes: InfernoNode[] = [];
 
         hydrate(<>{nodes}</>, container);
 

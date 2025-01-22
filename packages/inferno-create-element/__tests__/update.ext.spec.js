@@ -839,17 +839,16 @@ describe('Update (non-jsx)', () => {
           );
         }
 
-         
         render(A(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>Text</td></tr></table></div></div>',
         );
-         
+
         render(B(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>bar</td></tr></table></div></div>',
         );
-         
+
         render(C(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>text1</td></tr></table></div></div>',
@@ -1310,17 +1309,16 @@ describe('Update (non-jsx)', () => {
           );
         }
 
-         
         render(A(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>Text</td></tr></table></div></div>',
         );
-         
+
         render(B(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>bar</td></tr></table></div></div>',
         );
-         
+
         render(C(), container);
         expect(container.innerHTML).toBe(
           '<div><div><table><tr><td>text1</td></tr></table></div></div>',

@@ -15,7 +15,6 @@ const noop = (): void => {};
 const makeSelectorStateful = (
   sourceSelector: (state: any, props: any) => any,
   store: Store<any>,
-   
 ) => {
   // wrap the selector in an object that tracks its results between runs.
   const selector = {
@@ -260,7 +259,6 @@ export function connectAdvanced(
         this.selector.shouldComponentUpdate = false;
       }
 
-       
       public getWrappedInstance() {
         invariant(
           withRef,
@@ -317,7 +315,6 @@ export function connectAdvanced(
         if (!this.selector.shouldComponentUpdate) {
           this.notifyNestedSubs!();
         } else {
-           
           this.componentDidUpdate = this.notifyNestedSubsOnComponentDidUpdate;
           this.setState({});
         }
@@ -337,7 +334,6 @@ export function connectAdvanced(
         return Boolean(this.subscription?.isSubscribed());
       }
 
-       
       private addExtraProps(props: any) {
         if (!renderCountProp) {
           return props;
@@ -371,7 +367,7 @@ export function connectAdvanced(
               WrappedComponent,
               this.addExtraProps(selector.props),
               null,
-               
+
               withRef ? this.setWrappedInstance : null,
             ),
           );

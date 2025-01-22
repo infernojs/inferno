@@ -523,7 +523,9 @@ describe('CreateElement (non-JSX)', () => {
       let mountCounter = 0;
       let unmountCounter = 0;
 
-      const FoobarCom = class FoobarCom extends Component<{node: HTMLDivElement}> {
+      const FoobarCom = class FoobarCom extends Component<{
+        node: HTMLDivElement;
+      }> {
         componentWillMount() {
           mountCounter++;
         }
@@ -557,7 +559,7 @@ describe('CreateElement (non-JSX)', () => {
             first: 'first',
             mid: 'MID',
             last: createElement('div', null, 'Why?'),
-            changeOrder: false
+            changeOrder: false,
           }),
         ),
         container,
@@ -1016,7 +1018,7 @@ describe('CreateElement (non-JSX)', () => {
         return createElement('div', null, 'Ok');
       }
 
-      let content: (VNode|null)[] = [null];
+      let content: (VNode | null)[] = [null];
 
       render(
         createElement(
@@ -1054,7 +1056,7 @@ describe('CreateElement (non-JSX)', () => {
         return createElement('div', null, 'Ok');
       }
 
-      let content: (VNode|null)[] = [];
+      let content: (VNode | null)[] = [];
 
       render(
         createElement(
@@ -1140,7 +1142,7 @@ describe('CreateElement (non-JSX)', () => {
         }
       };
 
-      let nodes: (VNode|null)[] = [];
+      let nodes: (VNode | null)[] = [];
 
       render(createElement(Fragment, null, nodes), container);
 
@@ -1323,7 +1325,7 @@ describe('CreateElement (non-JSX)', () => {
           super();
           this.state = {
             articles: ['id2', 'id3'],
-            sections: ['id0', 'id1']
+            sections: ['id0', 'id1'],
           };
         }
 

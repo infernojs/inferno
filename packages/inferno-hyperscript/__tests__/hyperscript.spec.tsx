@@ -1,5 +1,12 @@
 import { h } from 'inferno-hyperscript';
-import { Component, createRef, forwardRef, Fragment, RefObject, render } from 'inferno';
+import {
+  Component,
+  createRef,
+  forwardRef,
+  Fragment,
+  RefObject,
+  render,
+} from 'inferno';
 
 describe('HyperScript (non-JSX)', () => {
   let container;
@@ -231,7 +238,6 @@ describe('HyperScript (non-JSX)', () => {
         ]);
       };
 
-       
       render(App(), container);
       expect(container.innerHTML).toBe(
         '<div><div class="title">Example</div><button type="button">Do a thing</button></div>',
@@ -360,7 +366,7 @@ describe('HyperScript (non-JSX)', () => {
 
     let shouldUpdate = false;
 
-    class Test2 extends Component<{foo: string}> {
+    class Test2 extends Component<{ foo: string }> {
       shouldComponentUpdate() {
         return shouldUpdate;
       }

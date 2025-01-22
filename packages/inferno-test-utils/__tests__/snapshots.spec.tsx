@@ -193,12 +193,12 @@ if ((window as any).usingJest) {
           children: any;
         }
         const Label = ({
-                         label,
-                         htmlFor,
-                         children,
-                         optional = false,
-                         ...props
-                       }: LabelProps) => {
+          label,
+          htmlFor,
+          children,
+          optional = false,
+          ...props
+        }: LabelProps) => {
           if (optional && !label) {
             return children;
           }
@@ -221,8 +221,8 @@ if ((window as any).usingJest) {
       it('Should flush setStates before building snapshot', () => {
         class App extends Component {
           state = {
-            foo: ''
-          }
+            foo: '',
+          };
 
           componentDidMount() {
             this.setState({

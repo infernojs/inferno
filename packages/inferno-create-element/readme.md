@@ -1,4 +1,5 @@
 # inferno-create-element
+
 > Inferno package with helpers to create Inferno elements
 
 ## Install
@@ -15,6 +16,6 @@ import { render } from 'inferno';
 
 render(
   createElement('div', { className: 'test' }, "I'm a child!"),
-  document.getElementById("app")
+  document.getElementById('app'),
 );
 ```

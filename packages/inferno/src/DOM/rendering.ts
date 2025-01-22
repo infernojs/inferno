@@ -28,7 +28,6 @@ import { type DelegateEventTypes } from './events/delegation';
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
 if (process.env.NODE_ENV !== 'production') {
-   
   if (hasDocumentAvailable && !document.body) {
     warning(
       'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.',
@@ -44,7 +43,7 @@ if (hasDocumentAvailable) {
    * Defining $EV and $V properties on Node.prototype
    * fixes v8 "wrong map" de-optimization
    */
-   
+
   if (window.Node) {
     (Node.prototype as any).$EV = null as DelegateEventTypes | null;
     (Node.prototype as any).$V = null as DelegateEventTypes | null;

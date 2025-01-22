@@ -5,7 +5,6 @@
  * Inlined PropTypes, there is propType checking ATM.
  */
 
- 
 function proptype() {}
 (proptype as any).isRequired = proptype;
 

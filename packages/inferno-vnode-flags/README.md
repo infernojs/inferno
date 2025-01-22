@@ -13,6 +13,7 @@ npm install --save inferno-vnode-flags
 ## Contents
 
 **VNodeFlags:**
+
 - `VNodeFlags.HtmlElement`
 - `VNodeFlags.ComponentUnknown`
 - `VNodeFlags.ComponentClass`
@@ -31,6 +32,7 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.Normalized`
 
 **VNodeFlags Masks:**
+
 - `VNodeFlags.ForwardRefComponent` Functional component wrapped in forward ref
 - `VNodeFlags.FormElement` - Is form element
 - `VNodeFlags.Element` - Is vNode element
@@ -39,8 +41,8 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.InUseOrNormalized` - VNode is used somewhere else or came from normalization process
 - `VNodeFlags.ClearInUseNormalized` - Opposite mask of InUse or Normalized
 
-
 **ChildFlags**
+
 - `ChildFlags.UnknownChildren` needs Normalization
 - `ChildFlags.HasInvalidChildren` is invalid (null, undefined, false, true)
 - `ChildFlags.HasVNodeChildren` (JSX **$HasVNodeChildren**) is single vNode (Element/Component)
@@ -49,6 +51,7 @@ npm install --save inferno-vnode-flags
 - `ChildFlags.HasTextChildren` (JSX **$HasTextChildren**) vNode contains only text
 
 **ChildFlags Masks**
+
 - `ChildFlags.MultipleChildren` Is Array
 
 You can easily combine multiple flags, by using bitwise operators. A common use case is an element that has keyed children:

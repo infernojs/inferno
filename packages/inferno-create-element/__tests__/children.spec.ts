@@ -225,44 +225,45 @@ describe('Children - (non-JSX)', () => {
 
   for (const arg of preDefined) {
     it('should set static children as ' + arg.name, () => {
-        render(createElement('div', null, arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
-        render(createElement('div', null, arg.value), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.textContent).toBe(arg.expected);
+      render(createElement('div', null, arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
+      render(createElement('div', null, arg.value), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.textContent).toBe(arg.expected);
     });
   }
 
   for (const arg of preDefined) {
-      it('should set static deep children as ' + arg.name, () => {
-        const tmpl = () => createElement('div', null, createElement('span', null, arg.value))
+    it('should set static deep children as ' + arg.name, () => {
+      const tmpl = () =>
+        createElement('div', null, createElement('span', null, arg.value));
 
-        render(tmpl(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-        render(tmpl(), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.firstChild.nodeType).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
-      });
+      render(tmpl(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
+      render(tmpl(), container);
+      expect(container.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.firstChild.nodeType).toBe(1);
+      expect(container.firstChild.childNodes.length).toBe(1);
+      expect(container.firstChild.firstChild.textContent).toBe(arg.expected);
+    });
   }
 
   for (const arg of preDefined) {
     it('should set very deep static children as ' + arg.name, () => {
       const tmpl = () =>
+        createElement(
+          'div',
+          null,
           createElement(
-              'div',
-              null,
-              createElement(
-                  'span',
-                  null,
-                  createElement('b', null, createElement('b', null, arg.value)),
-              ),
-          );
+            'span',
+            null,
+            createElement('b', null, createElement('b', null, arg.value)),
+          ),
+        );
 
       render(tmpl(), container);
       expect(container.firstChild.nodeType).toBe(1);
@@ -278,7 +279,7 @@ describe('Children - (non-JSX)', () => {
   }
 
   for (const arg of preDefined) {
-    const template = (child?) => createElement('div', null, child)
+    const template = (child?) => createElement('div', null, child);
 
     it('should set dynamic children as ' + arg.name, () => {
       render(template(arg.value), container);
@@ -342,7 +343,8 @@ describe('Children - (non-JSX)', () => {
   }
 
   for (const arg of preDefined) {
-    const template = (child?) => createElement('div', null, createElement('b', null, child));
+    const template = (child?) =>
+      createElement('div', null, createElement('b', null, child));
 
     it('should set deep dynamic children as ' + arg.name, () => {
       render(template(arg.value), container);

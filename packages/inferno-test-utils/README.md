@@ -11,29 +11,29 @@ npm install inferno-test-utils --save-dev
 
 ## Contents
 
-* [`findAllInRenderedTree`](#findallinrenderedtreerenderedtree-predicate)
-* [`findAllInVNodeTree`](#findallinvnodetreevnodetree-predicate)
-* [`scryRenderedDOMElementsWithClass`](#scryrendereddomelementswithclassrenderedtree-classnames)
-* [`findRenderedDOMElementWithClass`](#findrendereddomelementwithclassrenderedtree-classnames)
-* [`scryRenderedDOMElementsWithTag`](#scryrendereddomelementswithtagrenderedtree-tagname)
-* [`findRenderedDOMElementWithTag`](#findrendereddomelementwithtagrenderedtree-tagname)
-* [`scryRenderedVNodesWithType`](#scryrenderedvnodeswithtyperenderedtree-type)
-* [`findRenderedVNodeWithType`](#findrenderedvnodewithtyperenderedtree-type)
-* [`scryVNodesWithType`](#scryvnodeswithtypevnodetree-type)
-* [`findVNodeWithType`](#findvnodewithtypevnodetree-type)
-* [`isVNode`](#isvnodeinstance)
-* [`isVNodeOfType`](#isvnodeoftypeinstance-type)
-* [`isDOMVNode`](#isdomvnodeinstance)
-* [`isDOMVNodeOfType`](#isdomvnodeoftypeinstance-type)
-* [`isFunctionalVNode`](#isfunctionalvnodeinstance)
-* [`isFunctionalVNodeOfType`](#isfunctionalvnodeoftypeinstance-type)
-* [`isClassVNode`](#isclassvnodeinstance)
-* [`isClassVNodeOfType`](#isclassvnodeoftypeinstance-type)
-* [`isDOMElement`](#isdomelementinstance)
-* [`isDOMElementOfType`](#isdomelementoftypeinstance-type)
-* [`isRenderedClassComponent`](#isrenderedclasscomponentinstance)
-* [`isRenderedClassComponentOfType`](#isrenderedclasscomponentoftypeinstance-type)
-* [`renderIntoContainer`](#renderIntoContainervnodetree)
+- [`findAllInRenderedTree`](#findallinrenderedtreerenderedtree-predicate)
+- [`findAllInVNodeTree`](#findallinvnodetreevnodetree-predicate)
+- [`scryRenderedDOMElementsWithClass`](#scryrendereddomelementswithclassrenderedtree-classnames)
+- [`findRenderedDOMElementWithClass`](#findrendereddomelementwithclassrenderedtree-classnames)
+- [`scryRenderedDOMElementsWithTag`](#scryrendereddomelementswithtagrenderedtree-tagname)
+- [`findRenderedDOMElementWithTag`](#findrendereddomelementwithtagrenderedtree-tagname)
+- [`scryRenderedVNodesWithType`](#scryrenderedvnodeswithtyperenderedtree-type)
+- [`findRenderedVNodeWithType`](#findrenderedvnodewithtyperenderedtree-type)
+- [`scryVNodesWithType`](#scryvnodeswithtypevnodetree-type)
+- [`findVNodeWithType`](#findvnodewithtypevnodetree-type)
+- [`isVNode`](#isvnodeinstance)
+- [`isVNodeOfType`](#isvnodeoftypeinstance-type)
+- [`isDOMVNode`](#isdomvnodeinstance)
+- [`isDOMVNodeOfType`](#isdomvnodeoftypeinstance-type)
+- [`isFunctionalVNode`](#isfunctionalvnodeinstance)
+- [`isFunctionalVNodeOfType`](#isfunctionalvnodeoftypeinstance-type)
+- [`isClassVNode`](#isclassvnodeinstance)
+- [`isClassVNodeOfType`](#isclassvnodeoftypeinstance-type)
+- [`isDOMElement`](#isdomelementinstance)
+- [`isDOMElementOfType`](#isdomelementoftypeinstance-type)
+- [`isRenderedClassComponent`](#isrenderedclasscomponentinstance)
+- [`isRenderedClassComponentOfType`](#isrenderedclasscomponentoftypeinstance-type)
+- [`renderIntoContainer`](#renderIntoContainervnodetree)
 
 ## Usage
 
@@ -46,7 +46,7 @@ _This function requires a DOM. JEST can provide this for you_.
 ```js
 const vNodeTree = (
   <div className="outer">
-    <SomeComponent className="inner"/>
+    <SomeComponent className="inner" />
   </div>
 );
 const renderedTree = renderIntoContainer(vNodeTree);
@@ -54,14 +54,14 @@ const renderedTree = renderIntoContainer(vNodeTree);
 
 ### `findAllInRenderedTree(renderedTree, predicate)`
 
-Calls `predicate` with each `VNode` instance in `renderedTree`. 
+Calls `predicate` with each `VNode` instance in `renderedTree`.
 
 Returns an array of `VNodes` where `predicate` returns `true`.
 
 ```js
 const vNodeTree = (
   <div className="outer">
-    <SomeComponent className="inner"/>
+    <SomeComponent className="inner" />
   </div>
 );
 const renderedTree = render(vNodeTree, DOM);
@@ -71,14 +71,14 @@ const result = findAllInRenderedTree(renderedTree, predicate);
 
 ### `findAllInVNodeTree(vNodeTree, predicate)`
 
-Calls `predicate` with each `VNode` instance in `vNodeTree`. 
+Calls `predicate` with each `VNode` instance in `vNodeTree`.
 
 Returns an array of `VNodes` where `predicate` returns `true`.
 
 ```js
 const vNodeTree = (
   <div className="outer">
-    <SomeComponent className="inner"/>
+    <SomeComponent className="inner" />
   </div>
 );
 const predicate = (vNode) => vNode.type === SomeComponent;
@@ -94,14 +94,17 @@ Returns an array of DOM elements with `classNames`.
 ```js
 const vNodeTree = (
   <div className="outer">
-    <SomeComponent className="inner one"/>
-    <SomeComponent className="inner two"/>
+    <SomeComponent className="inner one" />
+    <SomeComponent className="inner two" />
   </div>
 );
 const renderedTree = render(vNodeTree, DOM);
 const result1 = scryRenderedDOMElementsWithClass(renderedTree, 'inner');
 const result2 = scryRenderedDOMElementsWithClass(renderedTree, 'inner one');
-const result3 = scryRenderedDOMElementsWithClass(renderedTree, ['inner', 'two']);
+const result3 = scryRenderedDOMElementsWithClass(renderedTree, [
+  'inner',
+  'two',
+]);
 const result4 = scryRenderedDOMElementsWithClass(renderedTree, 'three'); // Empty array
 ```
 
@@ -114,8 +117,8 @@ Returns a single DOM element with `classNames`. If more than one matches are fou
 ```js
 const vNodeTree = (
   <div className="outer">
-    <SomeComponent className="inner one"/>
-    <SomeComponent className="inner two"/>
+    <SomeComponent className="inner one" />
+    <SomeComponent className="inner two" />
   </div>
 );
 const renderedTree = render(vNodeTree, DOM);
@@ -173,8 +176,8 @@ Returns an array of rendered `VNodes` with `type`.
 const vNodeTree = (
   <div>
     <h1>Heading</h1>
-    <SomeComponent/>
-    <SomeComponent/>
+    <SomeComponent />
+    <SomeComponent />
   </div>
 );
 const renderedTree = render(vNodeTree, DOM);
@@ -193,9 +196,9 @@ const vNodeTree = (
     <h1>Heading</h1>
     <p>Paragraph 1</p>
     <p>Paragraph 2</p>
-    <SomeComponent/>
-    <AnotherComponent/>
-    <AnotherComponent/>
+    <SomeComponent />
+    <AnotherComponent />
+    <AnotherComponent />
   </div>
 );
 const renderedTree = render(vNodeTree, DOM);
@@ -214,8 +217,8 @@ Returns an array of `VNode` instances with `type`.
 const vNodeTree = (
   <div>
     <h1>Heading</h1>
-    <SomeComponent/>
-    <SomeComponent/>
+    <SomeComponent />
+    <SomeComponent />
   </div>
 );
 const result1 = scryVNodesWithType(vNodeTree, 'h1');
@@ -231,8 +234,8 @@ Returns a single `VNode` instance with `type`. If more than one matches are foun
 const vNodeTree = (
   <div>
     <h1>Heading</h1>
-    <SomeComponent/>
-    <SomeComponent/>
+    <SomeComponent />
+    <SomeComponent />
   </div>
 );
 const result1 = findVNodeWithType(vNodeTree, 'h1');

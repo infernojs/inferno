@@ -1,16 +1,14 @@
 'use strict';
 
 var ViewportMetrics = {
+  currentScrollLeft: 0,
 
-	currentScrollLeft: 0,
+  currentScrollTop: 0,
 
-	currentScrollTop: 0,
-
-	refreshScrollValues: function(scrollPosition) {
-		ViewportMetrics.currentScrollLeft = scrollPosition.x;
-		ViewportMetrics.currentScrollTop = scrollPosition.y;
-	},
-
+  refreshScrollValues: function (scrollPosition) {
+    ViewportMetrics.currentScrollLeft = scrollPosition.x;
+    ViewportMetrics.currentScrollTop = scrollPosition.y;
+  },
 };
 
 export default ViewportMetrics;

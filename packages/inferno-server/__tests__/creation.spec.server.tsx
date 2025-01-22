@@ -4,7 +4,7 @@ import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
 import { hydrate } from 'inferno-hydrate';
 
-function WrappedInput(props: {value: string}) {
+function WrappedInput(props: { value: string }) {
   return <input type="text" value={props.value} />;
 }
 
@@ -13,7 +13,7 @@ describe('SSR Creation (JSX)', () => {
     {
       description: 'should render a null component',
       template: () => <div>{null}</div>,
-      result: '<div></div>'
+      result: '<div></div>',
     },
     {
       description: 'should render a component with null children',
@@ -23,12 +23,12 @@ describe('SSR Creation (JSX)', () => {
           <span>emptyValue: {null}</span>
         </div>
       ),
-      result: '<div><span>emptyValue: </span></div>'
+      result: '<div><span>emptyValue: </span></div>',
     },
     {
       description: 'should render a component with valueless attribute',
       template: () => <script src="foo" async />,
-      result: '<script src="foo" async></script>'
+      result: '<script src="foo" async></script>',
     },
     {
       description: 'should render a stateless component with text',
@@ -37,53 +37,56 @@ describe('SSR Creation (JSX)', () => {
           Hello world, {'1'}2{'3'}
         </div>
       ),
-      result: '<div>Hello world, 123</div>'
+      result: '<div>Hello world, 123</div>',
     },
     {
       description: 'should render text with escaped symbols',
       template: () => <div>"Hello world"</div>,
-      result: '<div>&quot;Hello world&quot;</div>'
+      result: '<div>&quot;Hello world&quot;</div>',
     },
     {
       description: 'should render a stateless component with comments',
       template: () => <div>Hello world, {/* comment*/}</div>,
-      result: '<div>Hello world, </div>'
+      result: '<div>Hello world, </div>',
     },
     {
       description: 'should render mixed invalid/valid children',
       template: () => <div>{[null, '123', null, '456']}</div>,
-      result: '<div>123456</div>'
+      result: '<div>123456</div>',
     },
     {
       description: 'should ignore children as props',
       // @ts-expect-error
       template: () => <p children="foo">foo</p>,
-      result: '<p>foo</p>'
+      result: '<p>foo</p>',
     },
     {
       description: 'should render input with value',
       template: () => <input value="bar" />,
-      result: '<input value="bar">'
+      result: '<input value="bar">',
     },
     {
-      description: 'should render input with value when defaultValue is present',
+      description:
+        'should render input with value when defaultValue is present',
       template: () => <input value="bar" defaultValue="foo" />,
-      result: '<input value="bar">'
+      result: '<input value="bar">',
     },
     {
-      description: 'should render input when value is not present with defaultValue',
+      description:
+        'should render input when value is not present with defaultValue',
       template: () => <input defaultValue="foo" />,
-      result: '<input value="foo">'
+      result: '<input value="foo">',
     },
     {
       description: 'should render input when defaultValue is number',
       template: () => <input defaultValue={123} />,
-      result: '<input value="123">'
+      result: '<input value="123">',
     },
     {
-      description: 'should render input of type text with value when input is wrapped',
+      description:
+        'should render input of type text with value when input is wrapped',
       template: () => <WrappedInput value="foo" />,
-      result: '<input type="text" value="foo">'
+      result: '<input type="text" value="foo">',
     },
     {
       description: 'should render select element with selected property',
@@ -93,7 +96,8 @@ describe('SSR Creation (JSX)', () => {
           <option value="dog">A dog</option>
         </select>
       ),
-      result: '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
+      result:
+        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
     },
     {
       description: 'should render a text placeholder',
@@ -103,41 +107,59 @@ describe('SSR Creation (JSX)', () => {
           <p>Test</p>
         </div>
       ),
-      result: '<div><div> </div><p>Test</p></div>'
+      result: '<div><div> </div><p>Test</p></div>',
     },
     {
       description: 'Should render background color',
-      template: () => <div style={{ 'background-color': 'red', 'border-bottom-color': 'green' }} />,
-      result: '<div style="background-color:red;border-bottom-color:green;"></div>'
+      template: () => (
+        <div
+          style={{ 'background-color': 'red', 'border-bottom-color': 'green' }}
+        />
+      ),
+      result:
+        '<div style="background-color:red;border-bottom-color:green;"></div>',
     },
     {
       description: 'Should not render null styles',
-      template: () => <div style={{ 'background-color': null as any, 'border-bottom-color': null as any }} />,
-      result: '<div></div>'
+      template: () => (
+        <div
+          style={{
+            'background-color': null as any,
+            'border-bottom-color': null as any,
+          }}
+        />
+      ),
+      result: '<div></div>',
     },
     {
       description: 'Should style attribute if null',
       template: () => <div style={null} />,
-      result: '<div></div>'
+      result: '<div></div>',
     },
     {
       description: 'should render div with text child (XSS script attack) #2',
-      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'&XSS&\')">'),
-      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          'Hello world <img src="x" onerror="alert(\'&XSS&\')">',
+        ),
+      result:
+        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>',
     },
     {
       description: 'Should render style opacity #1',
       template: () => <div style={{ opacity: 0.8 }} />,
-      result: '<div style="opacity:0.8;"></div>'
+      result: '<div style="opacity:0.8;"></div>',
     },
     {
       description: 'Should render style opacity #2',
       template: () => <div style="opacity:0.8;" />,
-      result: '<div style="opacity:0.8;"></div>'
+      result: '<div style="opacity:0.8;"></div>',
     },
     {
       description: 'Should not render empty style attribute #1',
-      template: () => <div style={{ }} />,
+      template: () => <div style={{}} />,
       result: '<div></div>',
     },
     {
@@ -163,12 +185,12 @@ describe('SSR Creation (JSX)', () => {
     {
       description: 'Should render div className as number',
       template: () => <div className={123 as any} />,
-      result: '<div class="123"></div>'
+      result: '<div class="123"></div>',
     },
     {
       description: 'Should render input defaultValue as number',
       template: () => <input defaultValue={123} />,
-      result: '<input value="123">'
+      result: '<input value="123">',
     },
     {
       description: 'BR should not be closed',
@@ -177,17 +199,17 @@ describe('SSR Creation (JSX)', () => {
           <br />
         </div>
       ),
-      result: '<div><br></div>'
+      result: '<div><br></div>',
     },
     {
       description: 'You should be able to render an array',
       template: () => [<p>1</p>, <p>2</p>, <p>3</p>],
-      result: '<p>1</p><p>2</p><p>3</p>'
+      result: '<p>1</p><p>2</p><p>3</p>',
     },
     {
       description: 'You should be able to render an empty array',
       template: () => [],
-      result: '<!--!-->'
+      result: '<!--!-->',
     },
     {
       description: 'You should be able to render a fragment',
@@ -198,12 +220,12 @@ describe('SSR Creation (JSX)', () => {
           <p>3</p>
         </> /* reset syntax highlighting */
       ),
-      result: '<p>1</p><p>2</p><p>3</p>'
+      result: '<p>1</p><p>2</p><p>3</p>',
     },
     {
       description: 'You should be able to render an empty fragment',
       template: () => <></> /* reset syntax highlighting */,
-      result: '<!--!-->'
+      result: '<!--!-->',
     },
     {
       description: 'You should be able to render fragment with single child',
@@ -212,8 +234,8 @@ describe('SSR Creation (JSX)', () => {
           <p>1</p>
         </>
       ) /* reset syntax highlighting */,
-      result: '<p>1</p>'
-    }
+      result: '<p>1</p>',
+    },
   ];
 
   for (const test of testEntries) {
@@ -232,13 +254,13 @@ describe('SSR Creation (JSX)', () => {
           super(props, context);
 
           this.state = {
-            foo: 'bar'
+            foo: 'bar',
           };
         }
 
         componentWillMount() {
           this.setState({
-            foo: 'bar2'
+            foo: 'bar2',
           });
         }
 
@@ -252,13 +274,13 @@ describe('SSR Creation (JSX)', () => {
           super(props, context);
 
           this.state = {
-            foo: 'bar'
+            foo: 'bar',
           };
         }
 
         componentWillMount() {
           this.setState({
-            foo: 'bar2'
+            foo: 'bar2',
           });
         }
 
@@ -291,7 +313,7 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
       expect(output).toBe('<div>foo</div>');
@@ -305,7 +327,7 @@ describe('SSR Creation (JSX)', () => {
 
         componentWillMount() {
           this.setState({
-            text: 'foo'
+            text: 'foo',
           });
         }
       }
@@ -313,7 +335,7 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
       expect(output).toBe('<div>foo</div>');
@@ -327,7 +349,7 @@ describe('SSR Creation (JSX)', () => {
 
         componentWillMount() {
           this.setState({
-            text: 33
+            text: 33,
           });
         }
       }
@@ -335,7 +357,7 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
       expect(output).toBe('<div>33</div>');
@@ -349,7 +371,7 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
       expect(output).toBe('<div><!--!--></div>');
@@ -365,7 +387,7 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
       expect(output).toBe('<div><!--!--></div>');
@@ -379,7 +401,7 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
       expect(output).toBe('<div>foo</div>');
@@ -393,7 +415,7 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
       expect(output).toBe('<div>2</div>');
@@ -410,10 +432,12 @@ describe('SSR Creation (JSX)', () => {
       const output = renderToString(
         <div>
           <Foobar />
-        </div>
+        </div>,
       );
 
-      expect(output).toBe('<div><input count="1" type="checkbox" checked="true"></div>');
+      expect(output).toBe(
+        '<div><input count="1" type="checkbox" checked="true"></div>',
+      );
     });
 
     it('Should throw error if invalid object is sent to renderToString', () => {
@@ -426,16 +450,22 @@ describe('SSR Creation (JSX)', () => {
         renderToString(
           <div style={{ 'background-color': 'red' }}>
             <div style={{ 'background-color': 'red' }} />
-          </div>
-        )
-      ).toEqual('<div style="background-color:red;"><div style="background-color:red;"></div></div>');
+          </div>,
+        ),
+      ).toEqual(
+        '<div style="background-color:red;"><div style="background-color:red;"></div></div>',
+      );
     });
 
     it('text nodes should match 1:1 after hydration', () => {
       class LinkComponent extends Component {
         render() {
           return (
-            <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/infernojs/create-inferno-app"
+            >
               create-inferno-app
             </a>
           );
@@ -446,10 +476,10 @@ describe('SSR Creation (JSX)', () => {
       const renderedString = renderToString(
         <div className="built">
           Website built with Inferno {version} using <LinkComponent />
-        </div>
+        </div>,
       );
       expect(renderedString).toEqual(
-        '<div class="built">Website built with Inferno 4.0.0-21 using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a></div>'
+        '<div class="built">Website built with Inferno 4.0.0-21 using <a target="_blank" rel="noopener noreferrer" href="https://github.com/infernojs/create-inferno-app">create-inferno-app</a></div>',
       );
 
       container.innerHTML = renderedString;
@@ -468,7 +498,9 @@ describe('SSR Creation (JSX)', () => {
       hydrate(<WrapperComponent />, container);
       expect(container.firstChild).toBe(wrapperDiv);
       expect(wrapperDiv.childNodes.length).toBe(4);
-      expect(wrapperDiv.childNodes[0].nodeValue).toBe('Website built with Inferno ');
+      expect(wrapperDiv.childNodes[0].nodeValue).toBe(
+        'Website built with Inferno ',
+      );
       expect(wrapperDiv.childNodes[1].nodeValue).toBe('4.0.0-21');
       expect(wrapperDiv.childNodes[2].nodeValue).toBe(' using ');
       expect(wrapperDiv.childNodes[3]).toBe(AnchorNode);
@@ -478,14 +510,24 @@ describe('SSR Creation (JSX)', () => {
       const vNode = (
         <div>
           {createFragment(
-            [<div>Lets go!</div>, null, createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren), 'text node'],
-            ChildFlags.UnknownChildren
+            [
+              <div>Lets go!</div>,
+              null,
+              createFragment(
+                [<div>World</div>, 'Of', <em>Fragments</em>],
+                ChildFlags.UnknownChildren,
+              ),
+              'text node',
+            ],
+            ChildFlags.UnknownChildren,
           )}
         </div>
       );
       const renderedString = renderToString(vNode);
 
-      expect(renderedString).toBe('<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>');
+      expect(renderedString).toBe(
+        '<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>',
+      );
 
       const container = document.createElement('div');
 
@@ -495,14 +537,19 @@ describe('SSR Creation (JSX)', () => {
 
       hydrate(vNode, container);
 
-      expect(container.innerHTML).toBe('<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>Lets go!</div><div>World</div>Of<em>Fragments</em>text node</div>',
+      );
       expect(container.querySelector('em')).toBe(emTag);
     });
 
     it('Should be possible to render Fragment #2', () => {
       class Fragmented extends Component {
         render() {
-          return createFragment([<div id="m">More</div>, 'Fragments'], ChildFlags.UnknownChildren);
+          return createFragment(
+            [<div id="m">More</div>, 'Fragments'],
+            ChildFlags.UnknownChildren,
+          );
         }
       }
 
@@ -513,17 +560,25 @@ describe('SSR Creation (JSX)', () => {
               <div>Lets go!</div>,
               <Fragmented />,
               null,
-              createFragment([<div>World</div>, 'Of', <em>Fragments</em>], ChildFlags.UnknownChildren),
+              createFragment(
+                [<div>World</div>, 'Of', <em>Fragments</em>],
+                ChildFlags.UnknownChildren,
+              ),
               'text node',
-              createFragment([null, 'Go', <em>Code</em>], ChildFlags.UnknownChildren)
+              createFragment(
+                [null, 'Go', <em>Code</em>],
+                ChildFlags.UnknownChildren,
+              ),
             ],
-            ChildFlags.UnknownChildren
+            ChildFlags.UnknownChildren,
           )}
         </div>
       );
       const renderedString = renderToString(vNode);
 
-      expect(renderedString).toBe('<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>');
+      expect(renderedString).toBe(
+        '<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>',
+      );
 
       const container = document.createElement('div');
 
@@ -535,7 +590,7 @@ describe('SSR Creation (JSX)', () => {
       hydrate(vNode, container);
 
       expect(container.innerHTML).toBe(
-        '<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>'
+        '<div><div>Lets go!</div><div id="m">More</div>Fragments<div>World</div>Of<em>Fragments</em>text nodeGo<em>Code</em></div>',
       );
       expect(container.querySelector('em')).toBe(emTag);
       expect(container.querySelector('#m')).toBe(moreDiv);
@@ -547,13 +602,13 @@ describe('SSR Creation (JSX)', () => {
           super(props);
 
           this.state = {
-            value: 0
+            value: 0,
           };
         }
 
         static getDerivedStateFromProps(_props, state) {
           return {
-            value: state.value + 1
+            value: state.value + 1,
           };
         }
 

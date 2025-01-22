@@ -334,7 +334,6 @@ class WrapperComponent<P, S> extends Component<P & ContextProps, S> {
   }
 }
 
- 
 function unstable_renderSubtreeIntoContainer(
   parentComponent,
   vNode,

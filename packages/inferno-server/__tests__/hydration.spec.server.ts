@@ -6,9 +6,9 @@ import { createContainerWithHTML, validateNodeTree } from 'inferno-utils';
 
 describe('SSR Hydration - (non-JSX)', () => {
   const node = createElement(
-      'div',
-      null,
-      createElement('span', null, 'Hello world'),
+    'div',
+    null,
+    createElement('span', null, 'Hello world'),
   );
   const expect1 = '<div><span>Hello world</span></div>';
   const expect2 = '<div><span>Hello world</span></div>';

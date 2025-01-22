@@ -135,7 +135,6 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
     state: RouteState,
     context: { router: TContextRouter },
   ): InfernoNode {
-     
     const { match, __loaderData__ } = state;
     const { children, component, render, loader } = props;
     const { history, route, staticContext } = context.router;

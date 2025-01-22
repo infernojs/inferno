@@ -1,4 +1,4 @@
-import { Component, type InfernoNode, render } from 'inferno';
+import { Component, type InfernoNode, render, Fragment } from 'inferno';
 
 describe('Select / select multiple (JSX)', () => {
   let container;
@@ -634,8 +634,8 @@ describe('Select / select multiple (JSX)', () => {
   });
 
   it('Should be possible to render select element with options wrapped in Fragment', () => {
-    // @ts-ignore
-    const t = <>
+    const t = (
+      <>
         <>
           <option value={1}>1st</option>
         </>
@@ -644,13 +644,9 @@ describe('Select / select multiple (JSX)', () => {
           <option value={3}>3rd</option>
         </>
       </>
-
-    render(
-      <select value={1}>
-        {t}
-      </select>,
-      container,
     );
+
+    render(<select value={1}>{t}</select>, container);
 
     const selectElement = container.firstChild;
 

@@ -1,4 +1,12 @@
-import { Component, createRef, forwardRef, Fragment, type Inferno, type RefObject, render } from 'inferno';
+import {
+  Component,
+  createRef,
+  forwardRef,
+  Fragment,
+  type Inferno,
+  type RefObject,
+  render,
+} from 'inferno';
 import { createElement } from 'inferno-create-element';
 
 describe('CreateElement (non-JSX)', () => {
@@ -36,7 +44,6 @@ describe('CreateElement (non-JSX)', () => {
       );
     };
 
-     
     render(App(), container);
     expect(container.innerHTML).toBe(
       '<div><div class="title">Example</div><button type="button">Do a thing</button></div>',
@@ -201,12 +208,13 @@ describe('CreateElement (non-JSX)', () => {
 
   it('Should be possible to forward createRef', () => {
     // TODO: Investigate how these refs should be typed
-    const FancyButton = forwardRef<HTMLButtonElement, { children?: any }>((props, ref: any) =>
-      createElement(
-        'button',
-        { ref, className: 'FancyButton' },
-        props.children,
-      ),
+    const FancyButton = forwardRef<HTMLButtonElement, { children?: any }>(
+      (props, ref: any) =>
+        createElement(
+          'button',
+          { ref, className: 'FancyButton' },
+          props.children,
+        ),
     );
 
     expect(FancyButton.render).toBeDefined();
@@ -226,7 +234,11 @@ describe('CreateElement (non-JSX)', () => {
       }
 
       render() {
-        return createElement(FancyButton, { ref: this.btn as any }, 'Click me!');
+        return createElement(
+          FancyButton,
+          { ref: this.btn as any },
+          'Click me!',
+        );
       }
     }
 

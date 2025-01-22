@@ -1535,7 +1535,9 @@ describe('Inferno', () => {
 
       const imitateHotReloading = (TargetClass, SourceClass) => {
         // Crude imitation of hot reloading that does the job
-        const fns = Object.getOwnPropertyNames(SourceClass.prototype).filter((key) => typeof SourceClass.prototype[key] === 'function');
+        const fns = Object.getOwnPropertyNames(SourceClass.prototype).filter(
+          (key) => typeof SourceClass.prototype[key] === 'function',
+        );
 
         for (const key of fns) {
           if (key !== 'render' && key !== 'constructor') {

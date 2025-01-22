@@ -694,7 +694,6 @@ describe('Resolve loaders during server side rendering', () => {
     expect(result).toEqual(initialData);
   });
 
-
   it('Can resolve with sub classed Route', async () => {
     class MyRoute extends Route {
       constructor(props, context) {
@@ -716,14 +715,22 @@ describe('Resolve loaders during server side rendering', () => {
 
     const initialData = {
       '/flowers': { res: await loaderFunc() },
-      '/flowers/birds': { res: await loaderFunc() }
+      '/flowers/birds': { res: await loaderFunc() },
     };
 
     const app = (
       <StaticRouter context={{}} location="/flowers/birds">
         <MyRoute path="/flowers" render={Component} loader={loaderFunc}>
-          <MyRoute path="/flowers/birds" render={Component} loader={loaderFunc} />
-          <MyRoute path="/flowers/bees" render={Component} loader={loaderFuncNoHit} />
+          <MyRoute
+            path="/flowers/birds"
+            render={Component}
+            loader={loaderFunc}
+          />
+          <MyRoute
+            path="/flowers/bees"
+            render={Component}
+            loader={loaderFuncNoHit}
+          />
           {null}
         </MyRoute>
       </StaticRouter>

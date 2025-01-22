@@ -10,8 +10,8 @@ const cloned = cloneVNode(
   [props],
   [...children]
 )
-``` 
+```
 
-Clone and return a new Inferno vNode using element as the starting point. 
-The resulting element will have the original element’s props with the new props merged in shallowly. 
+Clone and return a new Inferno vNode using element as the starting point.
+The resulting element will have the original element’s props with the new props merged in shallowly.
 New children will replace existing children. key and ref from the original element will be preserved.

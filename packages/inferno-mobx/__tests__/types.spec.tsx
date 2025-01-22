@@ -45,8 +45,11 @@ describe('top level context', () => {
     });
 
     it('Should not complain about onInput event.target', () => {
-      render(<input onInput={(e: FormEvent<HTMLInputElement>) => e.target.value} />, container);
-    })
+      render(
+        <input onInput={(e: FormEvent<HTMLInputElement>) => e.target.value} />,
+        container,
+      );
+    });
 
     it('Should be possible to return null from render SFC', () => {
       // SFC

@@ -1,4 +1,4 @@
-import {Component, InfernoChild, render, rerender} from "inferno";
+import { Component, InfernoChild, render, rerender } from 'inferno';
 
 describe('Components 3 (TSX)', () => {
   let container;
@@ -13,10 +13,9 @@ describe('Components 3 (TSX)', () => {
     document.body.removeChild(container);
   });
 
-
   describe('should render a repeating counter component with component children', () => {
     interface ValueProps {
-      value: number
+      value: number;
     }
 
     class Value extends Component<ValueProps> {
@@ -48,15 +47,21 @@ describe('Components 3 (TSX)', () => {
       let value = 0;
 
       render(<Repeater value={value} />, container);
-      expect(container.innerHTML).toBe('<div><div>0</div><div>0</div><div>0</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>0</div><div>0</div><div>0</div></div>',
+      );
 
       value++;
       render(<Repeater value={value} />, container);
-      expect(container.innerHTML).toBe('<div><div>1</div><div>1</div><div>1</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>1</div><div>1</div><div>1</div></div>',
+      );
 
       value++;
       render(<Repeater value={value} />, container);
-      expect(container.innerHTML).toBe('<div><div>2</div><div>2</div><div>2</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div>2</div><div>2</div><div>2</div></div>',
+      );
     });
   });
 
@@ -104,17 +109,19 @@ describe('Components 3 (TSX)', () => {
 
     it('should correctly render', () => {
       render(<TestingProps />, container);
-      expect(container.innerHTML).toBe('<div><div><div><h1>Okdokfwoe</h1><p>odkodwq</p></div></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div><div><h1>Okdokfwoe</h1><p>odkodwq</p></div></div></div>',
+      );
     });
   });
 
   describe('should render a component with with mapped text nodes', () => {
     interface MyComponent99Props {
-      isok: boolean
+      isok: boolean;
     }
 
     interface MyComponent98State {
-      isok: boolean
+      isok: boolean;
     }
 
     class MyComponent98 extends Component<object, MyComponent98State> {
@@ -123,7 +130,7 @@ describe('Components 3 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          isok: false
+          isok: false,
         };
       }
 
@@ -164,17 +171,19 @@ describe('Components 3 (TSX)', () => {
 
       rerender();
 
-      expect(container.innerHTML).toBe('<div>isok=true<div><span>a</span><span>b</span></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div>isok=true<div><span>a</span><span>b</span></div></div>',
+      );
     });
   });
 
   describe('should render a component with conditional boolean text nodes', () => {
     interface MyComponent98State {
-      isok: boolean
+      isok: boolean;
     }
 
     interface MyComponent99Props {
-      isok: boolean
+      isok: boolean;
     }
 
     class MyComponent98 extends Component<object, MyComponent98State> {
@@ -183,7 +192,7 @@ describe('Components 3 (TSX)', () => {
       constructor(props) {
         super(props);
         this.state = {
-          isok: false
+          isok: false,
         };
       }
 
@@ -221,7 +230,9 @@ describe('Components 3 (TSX)', () => {
     it('should correctly render', (done) => {
       render(<MyComponent98 />, container);
       setTimeout(() => {
-        expect(container.innerHTML).toBe('<div><div><span>a</span></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><span>a</span></div></div>',
+        );
         done();
       }, 25);
     });
@@ -253,14 +264,14 @@ describe('Components 3 (TSX)', () => {
   });
 
   describe('should render a component with a conditional list that changes upon toggle', () => {
-    class BuggyRender extends Component<object, {empty: boolean}> {
-      state: {empty: boolean};
+    class BuggyRender extends Component<object, { empty: boolean }> {
+      state: { empty: boolean };
 
       constructor(props) {
         super(props);
 
         this.state = {
-          empty: true
+          empty: true,
         };
 
         this.toggle = this.toggle.bind(this);
@@ -268,7 +279,7 @@ describe('Components 3 (TSX)', () => {
 
       toggle() {
         this.setState({
-          empty: !this.state.empty
+          empty: !this.state.empty,
         });
       }
 
@@ -294,7 +305,9 @@ describe('Components 3 (TSX)', () => {
 
     it('should correctly render', () => {
       render(<BuggyRender />, container);
-      expect(container.innerHTML).toBe('<div><button>Empty</button><ul><li>No cars!</li></ul></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button>Empty</button><ul><li>No cars!</li></ul></div>',
+      );
     });
 
     it('should handle update upon click', () => {
@@ -305,22 +318,27 @@ describe('Components 3 (TSX)', () => {
         button.click();
       }
 
-      expect(container.innerHTML).toBe('<div><button>Empty</button><ul><li>BMW</li><li>Volvo</li><li>Saab</li></ul></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button>Empty</button><ul><li>BMW</li><li>Volvo</li><li>Saab</li></ul></div>',
+      );
     });
   });
 
   describe('should render a component with a list that instantly changes', () => {
     interface ChangeChildrenCountState {
-      list: string[]
+      list: string[];
     }
-    class ChangeChildrenCount extends Component<object, ChangeChildrenCountState> {
+    class ChangeChildrenCount extends Component<
+      object,
+      ChangeChildrenCountState
+    > {
       state: ChangeChildrenCountState;
 
       constructor(props) {
         super(props);
 
         this.state = {
-          list: ['1', '2', '3', '4']
+          list: ['1', '2', '3', '4'],
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -328,7 +346,7 @@ describe('Components 3 (TSX)', () => {
 
       handleClick() {
         this.setState({
-          list: ['1']
+          list: ['1'],
         });
       }
 
@@ -346,7 +364,9 @@ describe('Components 3 (TSX)', () => {
 
     it('should correctly render', () => {
       render(<ChangeChildrenCount />, container);
-      expect(container.innerHTML).toBe('<div><button>1</button><div>0</div><div>1</div><div>2</div><div>3</div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button>1</button><div>0</div><div>1</div><div>2</div><div>3</div></div>',
+      );
     });
 
     it('should handle update upon click', (done) => {
@@ -358,7 +378,9 @@ describe('Components 3 (TSX)', () => {
       }
 
       setTimeout(() => {
-        expect(container.innerHTML).toBe('<div><button>1</button><div>0</div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><button>1</button><div>0</div></div>',
+        );
         done();
       }, 10);
     });
@@ -372,7 +394,7 @@ describe('Components 3 (TSX)', () => {
     );
 
     interface FirstState {
-      counter: number
+      counter: number;
     }
 
     class First extends Component<object, FirstState> {
@@ -382,7 +404,7 @@ describe('Components 3 (TSX)', () => {
         super(props, context);
 
         this.state = {
-          counter: 0
+          counter: 0,
         };
 
         this._onClick = this._onClick.bind(this);
@@ -390,20 +412,22 @@ describe('Components 3 (TSX)', () => {
 
       _onClick() {
         this.setState({
-          counter: 1
+          counter: 1,
         });
       }
 
       getChildContext() {
         return {
-          fortyTwo: 42
+          fortyTwo: 42,
         };
       }
 
       render() {
         return (
           <div>
-            <button onClick={this._onClick}>Increase! {this.state.counter}</button>
+            <button onClick={this._onClick}>
+              Increase! {this.state.counter}
+            </button>
             <StatelessComponent3 value={this.state.counter} />
           </div>
         );
@@ -412,7 +436,9 @@ describe('Components 3 (TSX)', () => {
 
     it('should correctly render', () => {
       render(<First />, container);
-      expect(container.innerHTML).toBe('<div><button>Increase! 0</button><p>0-42</p></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button>Increase! 0</button><p>0-42</p></div>',
+      );
     });
 
     it('should handle update upon click', (done) => {
@@ -424,7 +450,9 @@ describe('Components 3 (TSX)', () => {
       }
 
       setTimeout(() => {
-        expect(container.innerHTML).toBe('<div><button>Increase! 1</button><p>1-42</p></div>');
+        expect(container.innerHTML).toBe(
+          '<div><button>Increase! 1</button><p>1-42</p></div>',
+        );
         done();
       }, 10);
     });
@@ -434,7 +462,7 @@ describe('Components 3 (TSX)', () => {
     const StatelessComponent4 = ({ value }) => <p>{value}</p>;
 
     interface FirstState {
-      counter: number
+      counter: number;
     }
 
     class First extends Component<object, FirstState> {
@@ -445,7 +473,7 @@ describe('Components 3 (TSX)', () => {
         super(props);
 
         this.state = {
-          counter: 0
+          counter: 0,
         };
 
         this.condition = true;
@@ -454,15 +482,19 @@ describe('Components 3 (TSX)', () => {
 
       _onClick() {
         this.setState({
-          counter: 1
+          counter: 1,
         });
       }
 
       render() {
         return (
           <div>
-            <button onClick={this._onClick}>Increase! {this.state.counter}</button>
-            {this.condition ? <StatelessComponent4 value={this.state.counter} /> : null}
+            <button onClick={this._onClick}>
+              Increase! {this.state.counter}
+            </button>
+            {this.condition ? (
+              <StatelessComponent4 value={this.state.counter} />
+            ) : null}
           </div>
         );
       }
@@ -470,7 +502,9 @@ describe('Components 3 (TSX)', () => {
 
     it('should correctly render', () => {
       render(<First />, container);
-      expect(container.innerHTML).toBe('<div><button>Increase! 0</button><p>0</p></div>');
+      expect(container.innerHTML).toBe(
+        '<div><button>Increase! 0</button><p>0</p></div>',
+      );
     });
 
     it('should handle update upon click', (done) => {
@@ -482,7 +516,9 @@ describe('Components 3 (TSX)', () => {
       }
 
       setTimeout(() => {
-        expect(container.innerHTML).toBe('<div><button>Increase! 1</button><p>1</p></div>');
+        expect(container.innerHTML).toBe(
+          '<div><button>Increase! 1</button><p>1</p></div>',
+        );
         done();
       }, 10);
     });
@@ -507,10 +543,10 @@ describe('Components 3 (TSX)', () => {
     const StatelessComponent = ({ value }) => <p>{value}</p>;
 
     interface FirstState {
-      counter: number
+      counter: number;
     }
 
-    class First extends Component<{name: string}, FirstState> {
+    class First extends Component<{ name: string }, FirstState> {
       state: FirstState;
       private condition: boolean;
 
@@ -518,7 +554,7 @@ describe('Components 3 (TSX)', () => {
         super(props);
 
         this.state = {
-          counter: 0
+          counter: 0,
         };
 
         this.condition = true;
@@ -527,7 +563,7 @@ describe('Components 3 (TSX)', () => {
 
       _onClick() {
         this.setState({
-          counter: 1
+          counter: 1,
         });
       }
 
@@ -537,7 +573,9 @@ describe('Components 3 (TSX)', () => {
             <button onClick={this._onClick}>
               {this.props.name} {this.state.counter}
             </button>
-            {this.condition ? <StatelessComponent value={this.state.counter} /> : null}
+            {this.condition ? (
+              <StatelessComponent value={this.state.counter} />
+            ) : null}
           </div>
         );
       }
@@ -547,7 +585,9 @@ describe('Components 3 (TSX)', () => {
       render(<First name="guy1" />, firstDiv);
       render(<First name="guy2" />, secondDiv);
 
-      expect(container.innerHTML).toBe('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>');
+      expect(container.innerHTML).toBe(
+        '<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>',
+      );
     });
 
     it('should handle update when changing first component', (done) => {
@@ -560,7 +600,9 @@ describe('Components 3 (TSX)', () => {
       }
 
       setTimeout(() => {
-        expect(container.innerHTML).toBe('<div><div><button>guy1 1</button><p>1</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><button>guy1 1</button><p>1</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>',
+        );
         done();
       }, 10);
     });
@@ -575,7 +617,9 @@ describe('Components 3 (TSX)', () => {
       }
 
       setTimeout(() => {
-        expect(container.innerHTML).toBe('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 1</button><p>1</p></div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 1</button><p>1</p></div></div>',
+        );
         done();
       }, 10);
     });
@@ -586,7 +630,7 @@ describe('Components 3 (TSX)', () => {
       let updateParent, updateChild;
 
       interface ParentState {
-        x: boolean
+        x: boolean;
       }
 
       class Parent extends Component<object, ParentState> {
@@ -611,7 +655,6 @@ describe('Components 3 (TSX)', () => {
         }
       }
 
-
       class ChildB extends Component {
         constructor(props) {
           super(props);
@@ -623,7 +666,7 @@ describe('Components 3 (TSX)', () => {
       }
 
       interface ChildAState {
-        z: boolean
+        z: boolean;
       }
 
       class ChildA extends Component<object, ChildAState> {
@@ -660,13 +703,17 @@ describe('Components 3 (TSX)', () => {
       expect(container.innerHTML).toBe('<div><p>parent</p><div>A</div></div>');
       updateChild();
       setTimeout(() => {
-        expect(container.innerHTML).toBe('<div><p>parent</p><div>B</div></div>');
+        expect(container.innerHTML).toBe(
+          '<div><p>parent</p><div>B</div></div>',
+        );
         updateParent();
         setTimeout(() => {
-          expect(container.innerHTML).toBe('<div><p>parent</p><div>Y</div></div>');
+          expect(container.innerHTML).toBe(
+            '<div><p>parent</p><div>Y</div></div>',
+          );
           done();
         }, 10);
       }, 10);
     });
   });
-})
+});

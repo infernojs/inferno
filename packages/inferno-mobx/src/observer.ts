@@ -272,7 +272,7 @@ const reactiveMixin = {
 export function observer(stores: string[]): <T>(clazz: T) => void;
 export function observer<T>(stores: string[], clazz: T): T;
 export function observer<T>(target: T): T;
- 
+
 export function observer(arg1, arg2?) {
   if (typeof arg1 === 'string') {
     throw new Error('Store names should be provided as array');
@@ -347,7 +347,6 @@ function mixinLifecycleEvents(target): void {
   patch(target, 'componentWillUnmount', false);
   patch(target, 'componentDidUpdate', false);
   if (!target.shouldComponentUpdate) {
-     
     target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
   }
 }
@@ -369,7 +368,7 @@ const proxiedInjectorProps = {
 /**
  * Store Injection
  */
- 
+
 function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
   let displayName =
     'inject-' +
@@ -420,7 +419,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         component,
         newProps,
         null,
-         
+
         isStateless(component) ? null : this.storeRef,
       );
     }
@@ -468,7 +467,9 @@ function grabStoresByName(storeNames: string[]) {
 // TODO: Type
 export function inject(...storeNames: string[]): <T>(target: T) => T;
 export function inject(fn: Function): <T>(target: T) => T;
-export function inject(/* fn(stores, nextProps) or ...storeNames */ ...args): any {
+export function inject(
+  /* fn(stores, nextProps) or ...storeNames */ ...args
+): any {
   let grabStoresFn;
   if (typeof args[0] === 'function') {
     grabStoresFn = args[0];

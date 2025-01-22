@@ -15,13 +15,16 @@ Same as react-router v4 (later updated to v5), except react-native support.
 See official react-router [documentation](https://v5.reactrouter.com/web/guides/philosophy)
 
 Features added from react-router@5:
+
 - NavLink supports passing function to className-attibute
 - NavLink supports passing function to style-attibute
 
 Features added from react-router@6:
+
 - Async data fetching before navigation using [`loader`-attribute](https://reactrouter.com/en/main/route/loader). See [demo](https://github.com/infernojs/inferno/tree/master/demo/inferno-router-demo).
 
 The following features aren't supported yet:
+
 - download progress support
 - form submission
 - redirect support
@@ -31,7 +34,13 @@ The following features aren't supported yet:
 
 ```js
 import { render } from 'inferno';
-import { BrowserRouter, Route, Link, useLoaderData, useLoaderError } from 'inferno-router';
+import {
+  BrowserRouter,
+  Route,
+  Link,
+  useLoaderData,
+  useLoaderError,
+} from 'inferno-router';
 
 const Home = () => (
   <div>
@@ -48,7 +57,7 @@ const About = (props) => {
       <h2>About</h2>
       <p>{data?.body || err?.message}</p>
     </div>
-  )
+  );
 };
 
 const Topic = ({ match }) => (
@@ -62,26 +71,22 @@ const Topics = ({ match }) => (
     <h2>Topics</h2>
     <ul>
       <li>
-        <Link to={`${match.url}/rendering`}>
-          Rendering with React
-        </Link>
+        <Link to={`${match.url}/rendering`}>Rendering with React</Link>
       </li>
       <li>
-        <Link to={`${match.url}/components`}>
-          Components
-        </Link>
+        <Link to={`${match.url}/components`}>Components</Link>
       </li>
       <li>
-        <Link to={`${match.url}/props-v-state`}>
-          Props v. State
-        </Link>
+        <Link to={`${match.url}/props-v-state`}>Props v. State</Link>
       </li>
     </ul>
 
-    <Route path={`${match.url}/:topicId`} component={Topic}/>
-    <Route exact path={match.url} render={() => (
-      <h3>Please select a topic.</h3>
-    )}/>
+    <Route path={`${match.url}/:topicId`} component={Topic} />
+    <Route
+      exact
+      path={match.url}
+      render={() => <h3>Please select a topic.</h3>}
+    />
   </div>
 );
 
@@ -89,14 +94,24 @@ const MyWebsite = () => (
   <BrowserRouter>
     <div>
       <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/topics">Topics</Link></li>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/about">About</Link>
+        </li>
+        <li>
+          <Link to="/topics">Topics</Link>
+        </li>
       </ul>
-      <hr/>
-      <Route exact path="/" component={Home}/>
-      <Route path="/about" component={About} loader={() => fetch(new URL('/api/about', BACKEND_HOST))} />
-      <Route path="/topics" component={Topics}/>
+      <hr />
+      <Route exact path="/" component={Home} />
+      <Route
+        path="/about"
+        component={About}
+        loader={() => fetch(new URL('/api/about', BACKEND_HOST))}
+      />
+      <Route path="/topics" component={Topics} />
     </div>
   </BrowserRouter>
 );
@@ -104,7 +119,6 @@ const MyWebsite = () => (
 // Render HTML on the browser
 render(<MyWebsite />, document.getElementById('root'));
 ```
-
 
 ## Sever side usage with Koa
 
@@ -117,27 +131,27 @@ import { Switch, StaticRouter, Route } from 'inferno-router';
 
 const app = new Koa();
 
-function Index({children}) {
+function Index({ children }) {
   return (
     <html>
-    <head>
-      <meta charSet="utf-8"/>
-      <title>Inferno</title>
-    </head>
-    <body>
-    <div id="app">{children}</div>
-    </body>
+      <head>
+        <meta charSet="utf-8" />
+        <title>Inferno</title>
+      </head>
+      <body>
+        <div id="app">{children}</div>
+      </body>
     </html>
-  )
+  );
 }
 
 // Example routes
 function Home() {
-  return <div>Welcome Home!</div>
+  return <div>Welcome Home!</div>;
 }
 
 function Foo() {
-  return <span>Bar</span>
+  return <span>Bar</span>;
 }
 
 function NotFound() {
@@ -146,9 +160,9 @@ function NotFound() {
 
 const routes = (
   <Switch>
-    <Route exact path="/" component={Home}/>
-    <Route exact path="/demo" component={Foo}/>
-    <Route path="*" component={NotFound}/>
+    <Route exact path="/" component={Home} />
+    <Route exact path="/demo" component={Foo} />
+    <Route path="*" component={NotFound} />
   </Switch>
 );
 
@@ -157,10 +171,8 @@ async function render(ctx, next) {
   const context = {};
   const content = renderToString(
     <StaticRouter location={ctx.url} context={context}>
-      <Index hostname={ctx.hostname}>
-        {routes}
-      </Index>
-    </StaticRouter>
+      <Index hostname={ctx.hostname}>{routes}</Index>
+    </StaticRouter>,
   );
 
   // This will contain the URL to redirect to if <Redirect> was used
@@ -176,15 +188,12 @@ async function render(ctx, next) {
 // Add infero render as middleware
 app.use(render);
 
-
 app.listen(8080, function () {
   console.log('Listening on port ' + 8080);
 });
-
 ```
-
 
 ## Differences with React-Router v4
 
-* No "official" react-native support.
-* There's no `inferno-router-dom`, all functionality is inside `inferno-router`
+- No "official" react-native support.
+- There's no `inferno-router-dom`, all functionality is inside `inferno-router`

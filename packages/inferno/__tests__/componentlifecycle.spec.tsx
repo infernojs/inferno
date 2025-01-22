@@ -165,7 +165,6 @@ describe('Component lifecycle', () => {
       }
 
       public render() {
-         
         return (
           <div className="foobar" ref={(el) => (this.element = el!)}>
             1
@@ -197,7 +196,6 @@ describe('Component lifecycle', () => {
       }
     }
 
-     
     render(
       <Com
         ref={(inst) => {
@@ -210,7 +208,6 @@ describe('Component lifecycle', () => {
 
     c.componentDidUpdate = undefined;
 
-     
     render(<Com ref={(inst) => (c = inst)} value={2} />, container);
   });
 });

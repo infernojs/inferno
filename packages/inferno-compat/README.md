@@ -24,7 +24,7 @@ As in React:
 - Some form events (fe: onChange) are transformed to native alternative
 - PureComponent is available
 - `unstable_renderSubtreeIntoContainer` - method is available
--  `DOM` - factory is available
+- `DOM` - factory is available
 - `unmountComponentAtNode` - method is available its same as "render(null, container)"
 
 ## How to install?
@@ -32,6 +32,7 @@ As in React:
 Inferno-compat does not automatically install all its features. For example: If you need createElement support you should also install `inferno-create-element`.
 
 All packages:
+
 ```
 npm install --save inferno
 npm install --save inferno-compat
@@ -47,7 +48,6 @@ install `inferno-transition-group` package.
 If you use React/lib/ReactCSSTransitionGroup.ts
 
 install `rc-css-transition-group-modern` package.
-
 
 ## What is currently supported?
 
@@ -139,16 +139,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 class Foo extends React.Component {
-    propTypes = {
-        a: React.PropTypes.string.isRequired
-    };
-    render() {
-        let { a, b, children } = this.props;
-        return <div {...{a,b}}>{ children }</div>;
-    }
+  propTypes = {
+    a: React.PropTypes.string.isRequired,
+  };
+  render() {
+    let { a, b, children } = this.props;
+    return <div {...{ a, b }}>{children}</div>;
+  }
 }
 
-ReactDOM.render((
-    <Foo a="a">test</Foo>
-), document.getElementById("app"));
+ReactDOM.render(<Foo a="a">test</Foo>, document.getElementById('app'));
 ```

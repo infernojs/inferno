@@ -7,10 +7,10 @@ The module is compatible with Inferno v1+, for older versions use [mobx-inferno]
 This package provides the bindings for MobX and Inferno.
 Exports `observer` and `inject` decorators, a `Provider` and some development utilities.
 
-*New*: exports `observerPatch`, a function to turn Component classes into MobX observers.
+_New_: exports `observerPatch`, a function to turn Component classes into MobX observers.
 `observerPatch` is implemented in a better manner, but is separate as it would break compatibility in some cases.
 
-*New*: exports `observerWrap`, a function to turn functional Components into MobX observers.
+_New_: exports `observerWrap`, a function to turn functional Components into MobX observers.
 Unlike `observer`, `observerWrap` does not wrap them in a class Component.
 This allows the base Component and the observer to be interchangable.
 
@@ -36,80 +36,87 @@ import { Component } from 'inferno';
 import { observerPatch } from 'inferno-mobx';
 
 interface CountStore {
-    readonly count: number
+  readonly count: number;
 }
 
 export class MyComponentA extends Component<{ countStore: CountStore }> {
-    render({ countStore }: { countStore: CountStore }) {
-        return (<p>Current Count: {countStore.count.toString()}</p>);
-    }
+  render({ countStore }: { countStore: CountStore }) {
+    return <p>Current Count: {countStore.count.toString()}</p>;
+  }
 }
 
 observerPatch(MyComponentA);
 
 // Or you can use functions that read from stores instead of the stores
 export class MyComponentB extends Component<{ count: () => number }> {
-    render({ count }: { count: () => number }) {
-        return (<p>Current Count: {count().toString()}</p>);
-    }
+  render({ count }: { count: () => number }) {
+    return <p>Current Count: {count().toString()}</p>;
+  }
 }
 
 observerPatch(MyComponentB);
 
 // However, passing a value from an observable directly as a property will NOT work!
 export class MyComponentC extends Component<{ count: number }> {
-    render({ count }: { count: number }) {
-        return (<p>Current Count: {count.toString()}</p>);
-    }
+  render({ count }: { count: number }) {
+    return <p>Current Count: {count.toString()}</p>;
+  }
 }
 
 observerPatch(MyComponentC);
 
 function MyComponentF({ count }: { count: () => number }) {
-    return (<p>Current Count: {count().toString()}</p>);
+  return <p>Current Count: {count().toString()}</p>;
 }
 
 // Detection does NOT cross component boundaries. So this does NOT work:
 export class MyComponentD extends Component<{ countStore: CountStore }> {
-    render({ countStore }: { countStore: CountStore }) {
-        return (<div className="fancy">
-            <MyComponentF count={() => countStore.count} />
-        </div>);
-    }
+  render({ countStore }: { countStore: CountStore }) {
+    return (
+      <div className="fancy">
+        <MyComponentF count={() => countStore.count} />
+      </div>
+    );
+  }
 }
 
 observerPatch(MyComponentD);
 
 // You can use simple functional components as functions:
 export class MyComponentE extends Component<{ countStore: CountStore }> {
-    render({ countStore }: { countStore: CountStore }) {
-        // But keep in mind that the whole component will re-render.
-        return (<div className="fancy">{
-            MyComponentF({count: () => countStore.count})
-        }</div>);
-    }
+  render({ countStore }: { countStore: CountStore }) {
+    // But keep in mind that the whole component will re-render.
+    return (
+      <div className="fancy">
+        {MyComponentF({ count: () => countStore.count })}
+      </div>
+    );
+  }
 }
 
 observerPatch(MyComponentE);
 
 // Only Components that depend on MobX observables need to be observers.
 export class MyComponentG extends Component<{ countStore: CountStore }> {
-    render({ countStore }: { countStore: CountStore }) {
-        // MyComponentB is an observer and will re-render when countStore.count changes.
-        return (<div className="fancy">
-            <MyComponentB count={() => countStore.count} />
-        </div>);
-    }
+  render({ countStore }: { countStore: CountStore }) {
+    // MyComponentB is an observer and will re-render when countStore.count changes.
+    return (
+      <div className="fancy">
+        <MyComponentB count={() => countStore.count} />
+      </div>
+    );
+  }
 }
 
 // observerPatch(MyComponentG) is not needed and would add overhead for no reason.
 
 // If you want both an observer and a non observer versions of a component,
 // then you can just extend the non observer and patch the sub class.
-export class MyComponentH extends Component<{ count: () => number }> { // non observer base class
-    render({ count }: { count: () => number }) {
-        return (<p>Current Count: {count().toString()}</p>);
-    }
+export class MyComponentH extends Component<{ count: () => number }> {
+  // non observer base class
+  render({ count }: { count: () => number }) {
+    return <p>Current Count: {count().toString()}</p>;
+  }
 }
 
 export class MyComponentI extends MyComponentH {} // sub class indended to be an observer
@@ -119,11 +126,9 @@ observerPatch(MyComponentI); // make the sub class an observer
 // If you do have reason to extend a Component class that will be an observer,
 // see above on how to easily have both an obsever and a non-observer version.
 export class MyComponentJ extends MyComponentA {
-    render(properties: { countStore: CountStore }) {
-        return (<div className="fancy">
-            {super.render(properties)}
-        </div>);
-    }
+  render(properties: { countStore: CountStore }) {
+    return <div className="fancy">{super.render(properties)}</div>;
+  }
 }
 
 // Even if you do not call observerPatch on the sub class, extending
@@ -132,9 +137,9 @@ observerPatch(MyComponentJ);
 
 // DO NOT call observerPatch more than once on a clase.
 export class MyComponentK extends Component<{ countStore: CountStore }> {
-    render({ countStore }: { countStore: CountStore }) {
-        return (<p>Current Count: {countStore.count.toString()}</p>);
-    }
+  render({ countStore }: { countStore: CountStore }) {
+    return <p>Current Count: {countStore.count.toString()}</p>;
+  }
 }
 
 observerPatch(MyComponentK);
@@ -144,35 +149,51 @@ observerPatch(MyComponentK); // NEVER call more than once per class!
 ```tsx
 // index.tsx
 import {
-    MyComponentA,
-    MyComponentB,
-    MyComponentC,
-    MyComponentD,
-    MyComponentE,
-    MyComponentG,
-    MyComponentH,
-    MyComponentI,
-    MyComponentJ,
-    MyComponentK
+  MyComponentA,
+  MyComponentB,
+  MyComponentC,
+  MyComponentD,
+  MyComponentE,
+  MyComponentG,
+  MyComponentH,
+  MyComponentI,
+  MyComponentJ,
+  MyComponentK,
 } from './MyComponent';
 import { render } from 'inferno';
 import { action, observable } from 'mobx';
 
 const store = observable({ count: 0 });
 
-render(<div>
-  <MyComponentA countStore={store} />
-  <MyComponentB count={() => store.count} />
-  <MyComponentC count={store.count} /> {/* This component WILL NOT detect when count changes! */}
-  <MyComponentD countStore={store} /> {/* This component WILL NOT detect when count changes! */}
-  <MyComponentE countStore={store} />
-  <MyComponentG countStore={store} />
-  <MyComponentH count={() => store.count} /> {/* Not an observer so no updating when count changes. */}
-  <MyComponentI count={() => store.count} /> {/* Is an observer so it will update. */}
-  <MyComponentJ countStore={store} /> {/* Works... BUT! when it unmounts there will be an error! */}
-  <MyComponentK countStore={store} /> {/* Works... BUT! when it unmounts there will be an error! */}
-  <button type="button" onClick={action(() => {store.count += 1})}>Click Me</button>
-</div>, document.getElementById('components'));
+render(
+  <div>
+    <MyComponentA countStore={store} />
+    <MyComponentB count={() => store.count} />
+    <MyComponentC count={store.count} />{' '}
+    {/* This component WILL NOT detect when count changes! */}
+    <MyComponentD countStore={store} />{' '}
+    {/* This component WILL NOT detect when count changes! */}
+    <MyComponentE countStore={store} />
+    <MyComponentG countStore={store} />
+    <MyComponentH count={() => store.count} />{' '}
+    {/* Not an observer so no updating when count changes. */}
+    <MyComponentI count={() => store.count} />{' '}
+    {/* Is an observer so it will update. */}
+    <MyComponentJ countStore={store} />{' '}
+    {/* Works... BUT! when it unmounts there will be an error! */}
+    <MyComponentK countStore={store} />{' '}
+    {/* Works... BUT! when it unmounts there will be an error! */}
+    <button
+      type="button"
+      onClick={action(() => {
+        store.count += 1;
+      })}
+    >
+      Click Me
+    </button>
+  </div>,
+  document.getElementById('components'),
+);
 ```
 
 NOTES:
@@ -197,23 +218,25 @@ It is strongly recommended to avoid replacing the `render` method on classes `ob
 import { observerWrap } from 'inferno-mobx';
 
 interface CountStore {
-    readonly count: number
+  readonly count: number;
 }
 
 // For a good debugging experience, have named functions
 function MyComponentA({ countStore }: { countStore: CountStore }) {
-    return (<p>Current Count: {countStore.count.toString()}</p>);
+  return <p>Current Count: {countStore.count.toString()}</p>;
 }
 
 // If you prefer arrow functions, assign them to a const before passing to observerWrap
 const MyComponentB = ({ countStore }: { countStore: CountStore }) => {
-    return (<p>Current Count: {countStore.count.toString()}</p>);
+  return <p>Current Count: {countStore.count.toString()}</p>;
 };
 
 // This works, but if you need to debug the MobX reactions things will be less nice
-const MyComponentC = observerWrap(({ countStore }: { countStore: CountStore }) => {
-    return (<p>Current Count: {countStore.count.toString()}</p>);
-});
+const MyComponentC = observerWrap(
+  ({ countStore }: { countStore: CountStore }) => {
+    return <p>Current Count: {countStore.count.toString()}</p>;
+  },
+);
 
 const MyObserverB = observerWrap(MyComponentB);
 
@@ -231,33 +254,33 @@ const MyComponentF = observerWrap(MyComponentA);
 const MyComponentG = MyComponentE;
 
 export {
-    // wrapping separately allow the non-observer component to be used
-    MyComponentA, // not an observer
-    MyObserverB as MyComponentB, // export observer under name of the component
-    MyComponentC,
-    MyComponentD,
-    MyComponentE, // observer version of MyComponentA
-    MyComponentF,
-    MyComponentG
-}
+  // wrapping separately allow the non-observer component to be used
+  MyComponentA, // not an observer
+  MyObserverB as MyComponentB, // export observer under name of the component
+  MyComponentC,
+  MyComponentD,
+  MyComponentE, // observer version of MyComponentA
+  MyComponentF,
+  MyComponentG,
+};
 ```
 
 Everything mentioned for `observerPatch` about passing you observables to the components applies to `observerWrap`.
 
-As a note, the function returned by `observerWrap` should *only* be used for constructing Inferno VNodes.
+As a note, the function returned by `observerWrap` should _only_ be used for constructing Inferno VNodes.
 That means JSX, `createElement`, inferno-hyperscript, or `createComponentVNode`.
 For any other usage, you should use the base function directly.
 
 ```tsx
 // index.tsx
 import {
-    MyComponentA,
-    MyComponentB,
-    MyComponentC,
-    MyComponentD,
-    MyComponentE,
-    MyComponentF,
-    MyComponentG
+  MyComponentA,
+  MyComponentB,
+  MyComponentC,
+  MyComponentD,
+  MyComponentE,
+  MyComponentF,
+  MyComponentG,
 } from './MyComponent';
 import { render } from 'inferno';
 import { action, observable } from 'mobx';
@@ -266,16 +289,26 @@ const store = observable({ count: 0 });
 
 // All but MyComponentA will update when count changes
 // MyComponentA was not wrapped
-render(<div>
-  <MyComponentA countStore={store} />
-  <MyComponentB countStore={store} />
-  <MyComponentC countStore={store} />
-  <MyComponentD countStore={store} />
-  <MyComponentE countStore={store} />
-  <MyComponentF countStore={store} />
-  <MyComponentG countStore={store} />
-  <button type="button" onClick={action(() => {store.count += 1})}>Click Me</button>
-</div>, document.getElementById('components'));
+render(
+  <div>
+    <MyComponentA countStore={store} />
+    <MyComponentB countStore={store} />
+    <MyComponentC countStore={store} />
+    <MyComponentD countStore={store} />
+    <MyComponentE countStore={store} />
+    <MyComponentF countStore={store} />
+    <MyComponentG countStore={store} />
+    <button
+      type="button"
+      onClick={action(() => {
+        store.count += 1;
+      })}
+    >
+      Click Me
+    </button>
+  </div>,
+  document.getElementById('components'),
+);
 ```
 
 There are a few things to say about `defaultHooks` and `defaultProps`.
@@ -323,7 +356,7 @@ Note:
 The MobX Reaction will call `onComponentWillUpdate` and `onComponentDidUpdate` when re-rendering, if present.
 When called by the Reaction the 'previous' and 'next' parameters will be passed the same object.
 
-*Warning*:
+_Warning_:
 The `onComponentWillUpdate` and `onComponentDidUpdate` are bound when the component is rendered by Inferno.
 The `onComponentShouldUpdate` can prevent the binding from being updated if new callbacks are assigned.
 
@@ -331,16 +364,24 @@ To have a default hook (or property) on just the observer, you need to create a 
 And then add the new hook or property.
 
 ```typescript
-function MyComponent(props) { /* ... */ }
-MyComponent.defaultHooks = { /* ... */ }
-MyComponent.defaultProps = { /* ... */ }
+function MyComponent(props) {
+  /* ... */
+}
+MyComponent.defaultHooks = {
+  /* ... */
+};
+MyComponent.defaultProps = {
+  /* ... */
+};
 
 const MyObserver = observerWrap(MyComponent);
 
 MyObserver.defaultHooks = {
-    ...MyComponent.defaultHooks, // copy original
-    onComponentShouldUpdate: (prev, next) => { /* ... */ }
-}
+  ...MyComponent.defaultHooks, // copy original
+  onComponentShouldUpdate: (prev, next) => {
+    /* ... */
+  },
+};
 ```
 
 ## Legacy Example
@@ -352,17 +393,20 @@ You can inject props using the following syntax ( This example requires, babel d
 import { Component } from 'inferno';
 import { inject, observer } from 'inferno-mobx';
 
-@inject('englishStore', 'frenchStore') @observer
+@inject('englishStore', 'frenchStore')
+@observer
 class MyComponent extends Component {
-    render({ englishStore, frenchStore }) {
-        return <div>
-            <p>{ englishStore.title }</p>
-            <p>{ frenchStore.title }</p>
-        </div>
-    }
+  render({ englishStore, frenchStore }) {
+    return (
+      <div>
+        <p>{englishStore.title}</p>
+        <p>{frenchStore.title}</p>
+      </div>
+    );
+  }
 }
 
-export default MyComponent
+export default MyComponent;
 ```
 
 If you're not using decorators, you can do this instead:
@@ -373,12 +417,14 @@ import { Component } from 'inferno';
 import { inject, observer } from 'inferno-mobx';
 
 class MyComponent extends Component {
-    render({ englishStore, frenchStore }) {
-        return <div>
-            <p>{ englishStore.title }</p>
-            <p>{ frenchStore.title }</p>
-        </div>
-    }
+  render({ englishStore, frenchStore }) {
+    return (
+      <div>
+        <p>{englishStore.title}</p>
+        <p>{frenchStore.title}</p>
+      </div>
+    );
+  }
 }
 
 export default inject('englishStore', 'frenchStore')(observer(MyComponent));
@@ -394,16 +440,19 @@ import { observable } from 'mobx';
 import MyComponent from './MyComponent';
 
 const englishStore = observable({
-    title: 'Hello World'
+  title: 'Hello World',
 });
 
 const frenchStore = observable({
-    title: 'Bonjour tout le monde'
+  title: 'Bonjour tout le monde',
 });
 
-render(<Provider englishStore={ englishStore } frenchStore={ frenchStore }>
-    <MyComponent/>
-</Provider>, document.getElementById('root'));
+render(
+  <Provider englishStore={englishStore} frenchStore={frenchStore}>
+    <MyComponent />
+  </Provider>,
+  document.getElementById('root'),
+);
 ```
 
 ## Migrating from observer to observerPatch
@@ -471,17 +520,17 @@ import { Component } from 'inferno';
 import { observerPatch, observerWrap, inject } from 'inferno-mobx';
 
 interface CountStore {
-    readonly count: number
+  readonly count: number;
 }
 
 // The class produced by inject will require the injected properties if required by the base class
 class MyComponentA extends Component<{ countStore?: CountStore }> {
-    render({ countStore }: { countStore?: CountStore }) {
-        // If only the injected version will be used, casting is safe as an exception is thrown
-        // if the property is unavailable
-        const count = (countStore as CountStore).count.toString(); // unsafe if MyComponentA was exported
-        return (<p>Current Count: {count}</p>);
-    }
+  render({ countStore }: { countStore?: CountStore }) {
+    // If only the injected version will be used, casting is safe as an exception is thrown
+    // if the property is unavailable
+    const count = (countStore as CountStore).count.toString(); // unsafe if MyComponentA was exported
+    return <p>Current Count: {count}</p>;
+  }
 }
 
 // Recommended order
@@ -489,10 +538,10 @@ observerPatch(MyComponentA);
 export const MyInjectedA = inject('countStore')(MyComponentA);
 
 class MyComponentB extends Component<{ countStore?: CountStore }> {
-    render({ countStore }: { countStore?: CountStore }) {
-        const count = (countStore as CountStore).count.toString();
-        return (<p>Current Count: {count}</p>);
-    }
+  render({ countStore }: { countStore?: CountStore }) {
+    const count = (countStore as CountStore).count.toString();
+    return <p>Current Count: {count}</p>;
+  }
 }
 
 // The order of inject and observerPatch does not matter.
@@ -500,10 +549,10 @@ export const MyInjectedB = inject('countStore')(MyComponentB);
 observerPatch(MyComponentB); // Works, but this order is more prone to the mistake shown below
 
 class MyComponentC extends Component<{ countStore?: CountStore }> {
-    render({ countStore }: { countStore?: CountStore }) {
-        const count = (countStore as CountStore).count.toString();
-        return (<p>Current Count: {count}</p>);
-    }
+  render({ countStore }: { countStore?: CountStore }) {
+    const count = (countStore as CountStore).count.toString();
+    return <p>Current Count: {count}</p>;
+  }
 }
 
 // Be sure to use observerPatch on the class, not the injected class.
@@ -514,8 +563,8 @@ observerPatch(MyInjectedC); // WRONG! Should be: observerPatch(MyComponentC);
 
 // Functional components with observerWrap
 function MyComponentD({ countStore }: { countStore?: CountStore }) {
-    const count = (countStore as CountStore).count.toString();
-    return (<p>Current Count: {count}</p>);
+  const count = (countStore as CountStore).count.toString();
+  return <p>Current Count: {count}</p>;
 }
 export const MyInjectedD = inject(observerWrap(MyComponentD));
 ```
@@ -523,10 +572,10 @@ export const MyInjectedD = inject(observerWrap(MyComponentD));
 ```tsx
 // index.tsx
 import {
-    MyInjectedA,
-    MyInjectedB,
-    MyInjectedC,
-    MyInjectedD
+  MyInjectedA,
+  MyInjectedB,
+  MyInjectedC,
+  MyInjectedD,
 } from './MyInjected';
 import { render } from 'inferno';
 import { Provider } from 'inferno-mobx';
@@ -537,16 +586,28 @@ const store = observable({ count: 0 });
 const store2 = observable({ count: 0 });
 
 // NOTE: Do not use Provider and inject for trivial cases like this in real code.
-render(<div>
+render(
+  <div>
     <Provider countStore={store}>
-        <MyInjectedA />
-        <MyInjectedB />
-        <MyInjectedC /> {/* This one will not update as MyComponentC was not made into an observer. */}
-        <MyInjectedD />
-        <MyInjectedA countStore={store2} /> {/* Will not update as direct properties override injection */}
+      <MyInjectedA />
+      <MyInjectedB />
+      <MyInjectedC />{' '}
+      {/* This one will not update as MyComponentC was not made into an observer. */}
+      <MyInjectedD />
+      <MyInjectedA countStore={store2} />{' '}
+      {/* Will not update as direct properties override injection */}
     </Provider>
-  <button type="button" onClick={action(() => {store.count += 1})}>Click Me</button>
-</div>, document.getElementById('root'));
+    <button
+      type="button"
+      onClick={action(() => {
+        store.count += 1;
+      })}
+    >
+      Click Me
+    </button>
+  </div>,
+  document.getElementById('root'),
+);
 ```
 
 IMPORTANT: The values injected are the ones available to `Provider` when it is first mounted.
@@ -570,17 +631,17 @@ import { Component } from 'inferno';
 import { observerPatch, observerWrap } from 'inferno-mobx';
 
 interface CountStore {
-    readonly count: number
+  readonly count: number;
 }
 
 export class MyComponent extends Component<{ countStore: CountStore }> {
-    render({ countStore }: { countStore: CountStore }) {
-        return (<p>Current Count: {countStore.count.toString()}</p>);
-    }
+  render({ countStore }: { countStore: CountStore }) {
+    return <p>Current Count: {countStore.count.toString()}</p>;
+  }
 }
 
 function MyFunctional({ countStore }: { countStore: CountStore }) {
-    return (<p>Current Count: {countStore.count.toString()}</p>);
+  return <p>Current Count: {countStore.count.toString()}</p>;
 }
 
 // You do not have to use an environment variable nor is the specific one used important.
@@ -588,12 +649,13 @@ function MyFunctional({ countStore }: { countStore: CountStore }) {
 // This can be done when transpiling with Babel or many bundling tools have plugins that can do so.
 // Then a good minifier such a terser can elimitate the if statement for production.
 if (process.env.SERVER_SIDE !== true) {
-    observerPatch(MyComponent); // The same goes can be done for 'observer' calls.
+  observerPatch(MyComponent); // The same goes can be done for 'observer' calls.
 }
 
 // For functional components
-const MyObserver = process.env.SERVER_SIDE !== true ? observerWrap(MyFunctional) : MyFunctional;
-export {MyObserver as MyFunctional};
+const MyObserver =
+  process.env.SERVER_SIDE !== true ? observerWrap(MyFunctional) : MyFunctional;
+export { MyObserver as MyFunctional };
 ```
 
 Then you can use `renderToString` and `hydrate` as you would with any other component.

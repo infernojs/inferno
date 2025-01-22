@@ -300,7 +300,6 @@ export function getComponentName(instance: any): string {
     instance.name ??
     instance.displayName ??
     instance.constructor.name ??
-     
     ((instance as any).toString().match(/^function\s*([^\s(]+)/) || [])[1]
   );
 }

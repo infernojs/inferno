@@ -251,5 +251,4 @@ export abstract class Component<P = object, S = Record<string, unknown>>
   public render(props: Readonly<{ children?: InfernoNode } & P>, state: Readonly<S>, context: any): InfernoNode {
     return null;
   }
-  /* eslint-enable */
 }

@@ -95,7 +95,6 @@ describe('Basic event tests', () => {
     }
 
     function renderIt() {
-       
       render(App(data), container);
     }
 
@@ -141,7 +140,6 @@ describe('Basic event tests', () => {
     }
 
     function renderIt() {
-       
       render(App(data), container);
     }
 
@@ -173,15 +171,12 @@ describe('Basic event tests', () => {
       );
     }
 
-     
     render(App(), container);
     expect(container.firstChild.innerHTML).toBe('1');
 
-     
     render(App(), container);
     expect(container.firstChild.innerHTML).toBe('1');
 
-     
     render(AppTwo(), container);
     expect(container.firstChild.innerHTML).toBe('2');
   });
@@ -199,11 +194,9 @@ describe('Basic event tests', () => {
       );
     }
 
-     
     render(App({ toggle: true }), container);
     expect(container.firstChild.innerHTML).toBe('1');
 
-     
     render(App({ toggle: false }), container);
     expect(container.firstChild.innerHTML).toBe('1');
   });
@@ -241,18 +234,16 @@ describe('Basic event tests', () => {
       );
     }
 
-     
     render(App(childrenArray), container);
     expect(container.innerHTML).toBe(
       '<p><div>2</div><div>2</div><div>2</div></p>',
     );
 
     childrenArray.pop();
-     
+
     render(App(childrenArray), container);
     expect(container.innerHTML).toBe('<p><div>2</div><div>2</div></p>');
 
-     
     render(AppTwo(), container);
     expect(container.innerHTML).toBe('<p>2</p>');
   });

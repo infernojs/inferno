@@ -1,4 +1,3 @@
- 
 import { Component, render, rerender } from 'inferno';
 
 describe('Lifecycle methods', () => {
@@ -250,8 +249,8 @@ describe('Lifecycle methods', () => {
 
           this.state = {
             bar: '',
-            foo: ''
-          }
+            foo: '',
+          };
         }
 
         public static getDerivedStateFromProps(nextProps) {

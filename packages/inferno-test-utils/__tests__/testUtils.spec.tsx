@@ -183,7 +183,9 @@ describe('Test Utils', () => {
       expect(isDOMVNodeOfType(createElement('div'), {} as never)).toBe(false);
       expect(isDOMVNodeOfType(createElement('div'), [] as never)).toBe(false);
       expect(isDOMVNodeOfType(createElement('div'), 10 as never)).toBe(false);
-      expect(isDOMVNodeOfType(createElement('div'), undefined as never)).toBe(false);
+      expect(isDOMVNodeOfType(createElement('div'), undefined as never)).toBe(
+        false,
+      );
       expect(isDOMVNodeOfType(createElement('div'), null as never)).toBe(false);
     });
   });
@@ -333,13 +335,21 @@ describe('Test Utils', () => {
 
     it('should return false for DOMElements of incorrect type', () => {
       expect(isDOMElementOfType(createDOMElement('div'), 'foo')).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), {} as never)).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), [] as never)).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), 10 as never)).toBe(false);
-      expect(isDOMElementOfType(createDOMElement('div'), undefined as never)).toBe(
+      expect(isDOMElementOfType(createDOMElement('div'), {} as never)).toBe(
         false,
       );
-      expect(isDOMElementOfType(createDOMElement('div'), null as never)).toBe(false);
+      expect(isDOMElementOfType(createDOMElement('div'), [] as never)).toBe(
+        false,
+      );
+      expect(isDOMElementOfType(createDOMElement('div'), 10 as never)).toBe(
+        false,
+      );
+      expect(
+        isDOMElementOfType(createDOMElement('div'), undefined as never),
+      ).toBe(false);
+      expect(isDOMElementOfType(createDOMElement('div'), null as never)).toBe(
+        false,
+      );
     });
   });
 
@@ -460,7 +470,7 @@ describe('Test Utils', () => {
       findAllInRenderedTree(tree1, (args) => {
         spy(args.type);
 
-        return true
+        return true;
       });
       // 0: section
       // 1: FunctionalComponent
@@ -474,8 +484,8 @@ describe('Test Utils', () => {
     it('should call predicate in the correct order', () => {
       const types: unknown[] = [];
       findAllInRenderedTree(tree1, ({ type }) => {
-        types.push(type)
-        return true
+        types.push(type);
+        return true;
       });
       expect(types).toEqual(['section', FunctionalComponent, 'div']);
     });

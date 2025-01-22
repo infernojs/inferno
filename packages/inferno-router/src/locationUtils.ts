@@ -1,4 +1,3 @@
- 
 import { type Location, parsePath, type To } from 'history';
 import { isString } from 'inferno-shared';
 

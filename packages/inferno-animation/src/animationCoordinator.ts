@@ -32,13 +32,12 @@ export function _globalAnimationGC(): void {
 
   for (const key in _globalAnimationSources) {
     if (--_globalAnimationSources[key].ticks < 0) {
-       
       delete _globalAnimationSources[key];
     } else entriesLeft = true;
   }
 
   if (entriesLeft) {
-    requestAnimationFrame(_globalAnimationGC)
+    requestAnimationFrame(_globalAnimationGC);
   }
 }
 
@@ -59,7 +58,6 @@ export function consumeGlobalAnimationSource(
 ): GlobalAnimationState {
   const tmp = _globalAnimationSources[key];
   if (tmp !== undefined) {
-     
     delete _globalAnimationSources[key];
   }
   return tmp;

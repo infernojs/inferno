@@ -1,4 +1,3 @@
- 
 import {
   isArray,
   isFunction,
@@ -111,7 +110,6 @@ export class RenderStream extends Readable {
       return this.renderNode(renderOutput, context);
     }
 
-     
     const instance = new type(props, context);
     const hasNewAPI = Boolean(type.getDerivedStateFromProps);
     instance.$BS = false;

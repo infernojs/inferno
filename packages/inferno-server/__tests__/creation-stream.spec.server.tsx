@@ -3,7 +3,7 @@ import { streamAsString } from 'inferno-server';
 import concatStream from 'concat-stream';
 import { createElement } from 'inferno-create-element';
 
-class StatefulComponent extends Component<{value: string}> {
+class StatefulComponent extends Component<{ value: string }> {
   render() {
     return createElement('span', null, `stateless ${this.props.value}!`);
   }
@@ -13,19 +13,25 @@ function WrappedInput(props) {
   return <input type="text" value={props.value} />;
 }
 
-const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${value}!`);
+const FunctionalComponent = ({ value }) =>
+  createElement('span', null, `stateless ${value}!`);
 
 describe('SSR Creation Streams - (non-JSX)', () => {
   const testEntries = [
     {
       description: 'should render div with span child',
       template: () => createElement('div', null, createElement('span', null)),
-      result: '<div><span></span></div>'
+      result: '<div><span></span></div>',
     },
     {
       description: 'should render div with span child and styling',
-      template: () => createElement('div', null, createElement('span', { style: 'border-left: 10px;' })),
-      result: '<div><span style="border-left: 10px;"></span></div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          createElement('span', { style: 'border-left: 10px;' }),
+        ),
+      result: '<div><span style="border-left: 10px;"></span></div>',
     },
     // TODO: Fix this
     // {
@@ -41,110 +47,151 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     // },
     {
       description: 'should render div with span child and styling #2',
-      template: () => createElement('div', null, createElement('span', { style: { 'border-left': '10px' } })),
-      result: '<div><span style="border-left:10px;"></span></div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          createElement('span', { style: { 'border-left': '10px' } }),
+        ),
+      result: '<div><span style="border-left:10px;"></span></div>',
     },
     {
       description: 'should render div with span child and styling #3',
-      template: () => createElement('div', null, createElement('span', { style: { 'font-family': 'Arial' } })),
-      result: '<div><span style="font-family:Arial;"></span></div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          createElement('span', { style: { 'font-family': 'Arial' } }),
+        ),
+      result: '<div><span style="font-family:Arial;"></span></div>',
     },
     {
       description: 'should render div with span child (with className)',
-      template: () => createElement('div', { className: 'foo' }, createElement('span', { className: 'bar' })),
-      result: '<div class="foo"><span class="bar"></span></div>'
+      template: () =>
+        createElement(
+          'div',
+          { className: 'foo' },
+          createElement('span', { className: 'bar' }),
+        ),
+      result: '<div class="foo"><span class="bar"></span></div>',
     },
     {
       description: 'should render div with text child #2',
       template: () => createElement('div', null, 'Hello world'),
-      result: '<div>Hello world</div>'
+      result: '<div>Hello world</div>',
     },
     {
       description: 'should render div with text child (XSS script attack)',
-      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'XSS\')">'),
-      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          'Hello world <img src="x" onerror="alert(\'XSS\')">',
+        ),
+      result:
+        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>',
     },
     {
       description: 'should render div with text children',
       template: () => createElement('div', null, 'Hello', ' world'),
-      result: '<div>Hello world</div>'
+      result: '<div>Hello world</div>',
     },
     {
       description: 'should render a void element correct',
       template: () => createElement('input', null),
-      result: '<input>'
+      result: '<input>',
     },
     {
       description: 'should render div with node children',
-      template: () => createElement('div', null, createElement('span', null, 'Hello'), createElement('span', null, ' world!')),
-      result: '<div><span>Hello</span><span> world!</span></div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          createElement('span', null, 'Hello'),
+          createElement('span', null, ' world!'),
+        ),
+      result: '<div><span>Hello</span><span> world!</span></div>',
     },
     {
       description: 'should render div with node children #2',
-      template: () => createElement('div', null, createElement('span', { id: '123' }, 'Hello'), createElement('span', { className: 'foo' }, ' world!')),
-      result: '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          createElement('span', { id: '123' }, 'Hello'),
+          createElement('span', { className: 'foo' }, ' world!'),
+        ),
+      result:
+        '<div><span id="123">Hello</span><span class="foo"> world!</span></div>',
     },
     {
       description: 'should render div with falsy children',
       template: () => createElement('div', null, 0),
-      result: '<div>0</div>'
+      result: '<div>0</div>',
     },
     {
       description: 'should render div with dangerouslySetInnerHTML',
       template: () =>
         createElement('div', {
-          dangerouslySetInnerHTML: { __html: '<span>test</span>' }
+          dangerouslySetInnerHTML: { __html: '<span>test</span>' },
         }),
-      result: '<div><span>test</span></div>'
+      result: '<div><span>test</span></div>',
     },
     {
       description: 'should render a stateful component',
-      template: (value) => createElement('div', null, createElement(StatefulComponent, { value })),
-      result: '<div><span>stateless foo!</span></div>'
+      template: (value) =>
+        createElement('div', null, createElement(StatefulComponent, { value })),
+      result: '<div><span>stateless foo!</span></div>',
     },
     {
       description: 'should render a stateless component',
-      template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
-      result: '<div><span>stateless foo!</span></div>'
+      template: (value) =>
+        createElement(
+          'div',
+          null,
+          createElement(FunctionalComponent, { value }),
+        ),
+      result: '<div><span>stateless foo!</span></div>',
     },
     {
       description: 'should render a stateless component with object props',
       template: (value) => createElement('a', { [value]: true }),
-      result: '<a foo></a>'
+      result: '<a foo></a>',
     },
     {
       description: 'should render with array text children',
       template: () => createElement('a', null, ['a', 'b']),
-      result: '<a>ab</a>'
+      result: '<a>ab</a>',
     },
     {
-      description: 'should render with array children containing an array of text children',
+      description:
+        'should render with array children containing an array of text children',
       template: () => createElement('a', null, [['a', 'b']]),
-      result: '<a>ab</a>'
+      result: '<a>ab</a>',
     },
     {
       description: 'should render with array null children',
       template: () => createElement('a', null, ['a', null]),
-      result: '<a>a</a>'
+      result: '<a>a</a>',
     },
     {
       description: 'should ignore null className',
       template: () => createElement('div', { className: null }),
-      result: '<div></div>'
+      result: '<div></div>',
     },
     {
       description: 'should ignore undefined className',
       template: () => createElement('div', { className: undefined }),
-      result: '<div></div>'
+      result: '<div></div>',
     },
     {
       description: 'should render opacity style',
       template: () => createElement('div', { style: { opacity: 0.8 } }),
-      result: '<div style="opacity:0.8;"></div>'
+      result: '<div style="opacity:0.8;"></div>',
     },
     {
       description: 'Should not render empty style attribute #1',
-      template: () => <div style={{ }} />,
+      template: () => <div style={{}} />,
       result: '<div></div>',
     },
     {
@@ -170,12 +217,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     {
       description: 'Should render div className as number',
       template: () => createElement('div', { className: 123 }),
-      result: '<div class="123"></div>'
+      result: '<div class="123"></div>',
     },
     {
       description: 'should render a null component',
       template: () => <div>{null}</div>,
-      result: '<div></div>'
+      result: '<div></div>',
     },
     {
       description: 'should render a component with null children',
@@ -185,12 +232,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           <span>emptyValue: {null}</span>
         </div>
       ),
-      result: '<div><span>emptyValue: </span></div>'
+      result: '<div><span>emptyValue: </span></div>',
     },
     {
       description: 'should render a component with valueless attribute',
       template: () => <script src="foo" async />,
-      result: '<script src="foo" async></script>'
+      result: '<script src="foo" async></script>',
     },
     {
       description: 'should render a stateless component with text',
@@ -199,53 +246,56 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           Hello world, {'1'}2{'3'}
         </div>
       ),
-      result: '<div>Hello world, 123</div>'
+      result: '<div>Hello world, 123</div>',
     },
     {
       description: 'should render text with escaped symbols',
       template: () => <div>"Hello world"</div>,
-      result: '<div>&quot;Hello world&quot;</div>'
+      result: '<div>&quot;Hello world&quot;</div>',
     },
     {
       description: 'should render a stateless component with comments',
       template: () => <div>Hello world, {/* comment*/}</div>,
-      result: '<div>Hello world, </div>'
+      result: '<div>Hello world, </div>',
     },
     {
       description: 'should render mixed invalid/valid children',
       template: () => <div>{[null, '123', null, '456']}</div>,
-      result: '<div>123456</div>'
+      result: '<div>123456</div>',
     },
     {
       description: 'should ignore children as props',
       // @ts-expect-error
       template: () => <p children="foo">foo</p>,
-      result: '<p>foo</p>'
+      result: '<p>foo</p>',
     },
     {
       description: 'should render input with value',
       template: () => <input value="bar" />,
-      result: '<input value="bar">'
+      result: '<input value="bar">',
     },
     {
-      description: 'should render input with value when defaultValue is present',
+      description:
+        'should render input with value when defaultValue is present',
       template: () => <input value="bar" defaultValue="foo" />,
-      result: '<input value="bar">'
+      result: '<input value="bar">',
     },
     {
-      description: 'should render input when value is not present with defaultValue',
+      description:
+        'should render input when value is not present with defaultValue',
       template: () => <input defaultValue="foo" />,
-      result: '<input value="foo">'
+      result: '<input value="foo">',
     },
     {
       description: 'should render input when defaultValue is number',
       template: () => <input defaultValue={123} />,
-      result: '<input value="123">'
+      result: '<input value="123">',
     },
     {
-      description: 'should render input of type text with value when input is wrapped',
+      description:
+        'should render input of type text with value when input is wrapped',
       template: () => <WrappedInput value="foo" />,
-      result: '<input type="text" value="foo">'
+      result: '<input type="text" value="foo">',
     },
     // {
     //   description: 'should render select element with selected property',
@@ -266,47 +316,65 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           <p>Test</p>
         </div>
       ),
-      result: '<div><div> </div><p>Test</p></div>'
+      result: '<div><div> </div><p>Test</p></div>',
     },
     {
       description: 'Should render background color',
-      template: () => <div style={{ 'background-color': 'red', 'border-bottom-color': 'green' }} />,
-      result: '<div style="background-color:red;border-bottom-color:green;"></div>'
+      template: () => (
+        <div
+          style={{ 'background-color': 'red', 'border-bottom-color': 'green' }}
+        />
+      ),
+      result:
+        '<div style="background-color:red;border-bottom-color:green;"></div>',
     },
     {
       description: 'Should not render null styles',
-      template: () => <div style={{ 'background-color': null as any, 'border-bottom-color': null as any }} />,
-      result: '<div></div>'
+      template: () => (
+        <div
+          style={{
+            'background-color': null as any,
+            'border-bottom-color': null as any,
+          }}
+        />
+      ),
+      result: '<div></div>',
     },
     {
       description: 'Should style attribute if null',
       template: () => <div style={null} />,
-      result: '<div></div>'
+      result: '<div></div>',
     },
     {
       description: 'should render div with text child (XSS script attack) #2',
-      template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'&XSS&\')">'),
-      result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>'
+      template: () =>
+        createElement(
+          'div',
+          null,
+          'Hello world <img src="x" onerror="alert(\'&XSS&\')">',
+        ),
+      result:
+        '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>',
     },
     {
       description: 'Should render style opacity #1',
       template: () => <div style={{ opacity: 0.8 }} />,
-      result: '<div style="opacity:0.8;"></div>'
+      result: '<div style="opacity:0.8;"></div>',
     },
     {
       description: 'Should render style opacity #2',
       template: () => <div style="opacity:0.8;" />,
-      result: '<div style="opacity:0.8;"></div>'
+      result: '<div style="opacity:0.8;"></div>',
     },
     {
       description: 'Should render div className as number',
       template: () => <div className={123 as any} />,
-      result: '<div class="123"></div>'
+      result: '<div class="123"></div>',
     },
     {
       description: 'Should render input defaultValue as number',
       template: () => <input defaultValue={123} />,
-      result: '<input value="123">'
+      result: '<input value="123">',
     },
     {
       description: 'BR should not be closed',
@@ -315,17 +383,17 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           <br />
         </div>
       ),
-      result: '<div><br></div>'
+      result: '<div><br></div>',
     },
     {
       description: 'You should be able to render an array',
       template: () => [<p>1</p>, <p>2</p>, <p>3</p>],
-      result: '<p>1</p><p>2</p><p>3</p>'
+      result: '<p>1</p><p>2</p><p>3</p>',
     },
     {
       description: 'You should be able to render an empty array',
       template: () => [],
-      result: '<!--!-->'
+      result: '<!--!-->',
     },
     {
       description: 'You should be able to render a fragment',
@@ -336,12 +404,12 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           <p>3</p>
         </> /* reset syntax highlighting */
       ),
-      result: '<p>1</p><p>2</p><p>3</p>'
+      result: '<p>1</p><p>2</p><p>3</p>',
     },
     {
       description: 'You should be able to render an empty fragment',
       template: () => <></> /* reset syntax highlighting */,
-      result: '<!--!-->'
+      result: '<!--!-->',
     },
     {
       description: 'You should be able to render fragment with single child',
@@ -350,8 +418,8 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           <p>1</p>
         </>
       ) /* reset syntax highlighting */,
-      result: '<p>1</p>'
-    }
+      result: '<p>1</p>',
+    },
   ];
 
   for (const test of testEntries) {
@@ -367,7 +435,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
     it('Should allow changing state in CWM', () => {
       class Another extends Component {
         public state = {
-          foo: 'bar'
+          foo: 'bar',
         };
 
         constructor(props, context) {
@@ -376,7 +444,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
         componentWillMount() {
           this.setState({
-            foo: 'bar2'
+            foo: 'bar2',
           });
         }
 
@@ -387,7 +455,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
       class Tester extends Component {
         public state = {
-          foo: 'bar'
+          foo: 'bar',
         };
 
         constructor(props, context) {
@@ -396,7 +464,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
         componentWillMount() {
           this.setState({
-            foo: 'bar2'
+            foo: 'bar2',
           });
         }
 
@@ -420,7 +488,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
   describe('misc', () => {
     it('Should render single text node using state', (done) => {
       interface FoobarState {
-        text: string
+        text: string;
       }
 
       class Foobar extends Component<unknown, FoobarState> {
@@ -430,7 +498,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
         componentWillMount() {
           this.setState({
-            text: 'foo'
+            text: 'foo',
           });
         }
       }
@@ -438,7 +506,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       streamPromise(
         <div>
           <Foobar />
-        </div>
+        </div>,
       ).then(function (output) {
         expect(output).toEqual('<div>foo</div>');
         done();
@@ -447,7 +515,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
     it('Should render single (number) text node using state', (done) => {
       interface FoobarState {
-        text: number
+        text: number;
       }
 
       class Foobar extends Component<unknown, FoobarState> {
@@ -457,7 +525,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 
         componentWillMount() {
           this.setState({
-            text: 331
+            text: 331,
           });
         }
       }
@@ -465,7 +533,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       streamPromise(
         <div>
           <Foobar />
-        </div>
+        </div>,
       ).then(function (output) {
         expect(output).toEqual('<div>331</div>');
         done();
@@ -480,7 +548,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       streamPromise(
         <div>
           <Foobar />
-        </div>
+        </div>,
       ).then(function (output) {
         expect(output).toEqual('<div>foo</div>');
         done();
@@ -495,7 +563,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       streamPromise(
         <div>
           <Foobar />
-        </div>
+        </div>,
       ).then(function (output) {
         expect(output).toEqual('<div>0</div>');
         done();
@@ -510,7 +578,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       streamPromise(
         <div>
           <Foobar />
-        </div>
+        </div>,
       ).then(function (output) {
         expect(output).toEqual('<div><!--!--></div>');
         done();
@@ -527,7 +595,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       streamPromise(
         <div>
           <Foobar />
-        </div>
+        </div>,
       ).then(function (output) {
         expect(output).toEqual('<div><!--!--></div>');
         done();
@@ -540,13 +608,13 @@ describe('SSR Creation Streams - (non-JSX)', () => {
           super(props);
 
           this.state = {
-            value: 0
+            value: 0,
           };
         }
 
         static getDerivedStateFromProps(_props, state) {
           return {
-            value: state.value + 1
+            value: state.value + 1,
           };
         }
 
@@ -570,7 +638,7 @@ function streamPromise(dom) {
       .pipe(
         concatStream(function (buffer) {
           res(buffer.toString('utf-8'));
-        })
+        }),
       );
   });
 }

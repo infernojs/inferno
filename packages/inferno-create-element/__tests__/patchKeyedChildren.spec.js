@@ -498,7 +498,9 @@ describe('keyed-nodes', () => {
     });
 
     for (let i = 0; i < 10; i++) {
-      it('Should handle massive arrays shifting ' + i + ' times by ' + i, () => {
+      it(
+        'Should handle massive arrays shifting ' + i + ' times by ' + i,
+        () => {
           for (let j = 0; j < i; j++) {
             items = items.concat(items.splice(i, j));
           }
@@ -1396,10 +1398,10 @@ describe('keyed-nodes', () => {
 
           it(name, () => {
             checkInnerHtmlEquals(
-                gen(t[0], true),
-                gen(t[1], true),
-                gen(t[1], true),
-                true,
+              gen(t[0], true),
+              gen(t[1], true),
+              gen(t[1], true),
+              true,
             );
           });
         }
@@ -1411,10 +1413,10 @@ describe('keyed-nodes', () => {
 
           it(name, () => {
             checkInnerHtmlEquals(
-                gen(t[0], false),
-                gen(t[1], false),
-                gen(t[1], false),
-                false,
+              gen(t[0], false),
+              gen(t[1], false),
+              gen(t[1], false),
+              false,
             );
           });
         }

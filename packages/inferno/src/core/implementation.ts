@@ -148,7 +148,11 @@ function resolveComponentFlags(flags: VNodeFlags, type): VNodeFlags {
 
 export function createComponentVNode<P>(
   flags: VNodeFlags,
-  type: Function | ComponentType<P> | Component<P, unknown> | ForwardRef<P, unknown>,
+  type:
+    | Function
+    | ComponentType<P>
+    | Component<P, unknown>
+    | ForwardRef<P, unknown>,
   props?: Readonly<P> | null,
   key?: null | string | number,
   ref?: Ref | Refs<P> | null,

@@ -14,7 +14,7 @@ describe('SSR render() arguments', () => {
 
   it('should have props as 1st argument', () => {
     interface TestChildProps {
-      testProps: string
+      testProps: string;
     }
 
     class TestChild extends Component<TestChildProps> {
@@ -29,7 +29,6 @@ describe('SSR render() arguments', () => {
 
   it('should have state as 2nd argument', () => {
     class TestChild extends Component {
-
       constructor() {
         super();
         this.state = { testState: 'state-works' };
@@ -72,7 +71,6 @@ describe('SSR render() arguments', () => {
   });
 
   it('nested stateless has context as 2nd argument', () => {
-
     function ChildWrapper(props) {
       return props.children;
     }

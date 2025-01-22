@@ -4,7 +4,7 @@ import { streamQueueAsString } from 'inferno-server';
 import concatStream from 'concat-stream';
 import { createElement } from 'inferno-create-element';
 
-class StatefulComponent extends Component<{value: string}> {
+class StatefulComponent extends Component<{ value: string }> {
   render() {
     return createElement('span', null, `stateless ${this.props.value}!`);
   }
@@ -14,7 +14,10 @@ function WrappedInput(props) {
   return <input type="text" value={props.value} />;
 }
 
-class StatefulPromiseComponent extends Component<{index: number, value?: unknown}> {
+class StatefulPromiseComponent extends Component<{
+  index: number;
+  value?: unknown;
+}> {
   async getInitialProps() {
     return await new Promise((resolve) => {
       // Waits incremenetally for each subindex
@@ -35,7 +38,10 @@ class StatefulPromiseComponent extends Component<{index: number, value?: unknown
   }
 }
 
-class StatefulHierchicalPromiseComponent extends Component<{index: number, value?: unknown}> {
+class StatefulHierchicalPromiseComponent extends Component<{
+  index: number;
+  value?: unknown;
+}> {
   async getInitialProps() {
     return await new Promise((resolve) => {
       // Waits incremenetally for each subindex
@@ -424,7 +430,10 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       description: 'Should not render null styles',
       template: () => (
         <div
-          style={{ 'background-color': null as any, 'border-bottom-color': null as any }}
+          style={{
+            'background-color': null as any,
+            'border-bottom-color': null as any,
+          }}
         />
       ),
       result: '<div></div>',
@@ -452,7 +461,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     {
       description: 'Should not render empty style attribute #1',
-      template: () => <div style={{ }} />,
+      template: () => <div style={{}} />,
       result: '<div></div>',
     },
     {

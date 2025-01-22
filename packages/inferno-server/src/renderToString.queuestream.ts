@@ -35,7 +35,6 @@ export class RenderQueueStream extends Readable {
   }
 
   public _read(): void {
-     
     setTimeout(this.pushQueue, 0);
   }
 
@@ -82,7 +81,7 @@ export class RenderQueueStream extends Readable {
       chunk.then((index) => {
         this.collector.splice(0, 1, ...this.promises[index]);
         this.promises[index] = null;
-         
+
         setTimeout(this.pushQueue, 0);
       });
       this.collector[0] = null;
@@ -103,7 +102,6 @@ export class RenderQueueStream extends Readable {
       const isClass = flags & VNodeFlags.ComponentClass;
       // Render the
       if (isClass) {
-         
         const instance = new type(props, context);
         const hasNewAPI = Boolean(type.getDerivedStateFromProps);
         instance.$BS = false;
@@ -159,7 +157,6 @@ export class RenderQueueStream extends Readable {
                     );
                   }
 
-                   
                   setTimeout(this.pushQueue, 0);
                   return promisePosition;
                 }),

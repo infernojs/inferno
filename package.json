@@ -54,6 +54,7 @@
     "alpha": "lerna publish prerelease --dist-tag next --exact --force-publish=*",
     "version": "npm run build && npm run docs-build && git add docs && npm run test",
     "postinstall": "npm run install:browsertest && npm run build",
+    "prettier": "prettier --write packages/*",
     "test": "npm run test:node && npm run test:node-nodom && npm run test:browser",
     "test:transformers": "cross-env InfernoCompat=0 npm run --prefix fixtures/browser test:swc && npm run --prefix fixtures/browser test:ts && npm run --prefix fixtures/browser test:swc",
     "test:node": "cross-env NODE_ENV=test jest --config --no-watchman",

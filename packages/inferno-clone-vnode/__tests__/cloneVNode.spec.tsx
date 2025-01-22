@@ -82,9 +82,17 @@ describe('cloneVNode (JSX)', () => {
 
   it('Should support multiple parameters as children', () => {
     // @ts-ignore
-    const node = cloneVNode(<div />, null, <span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>);
+    const node = cloneVNode(
+      <div />,
+      null,
+      <span>arr3a</span>,
+      <span>arr3b</span>,
+      <span>arr3c</span>,
+    );
     render(node, container);
-    expect(container.innerHTML).toBe('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>');
+    expect(container.innerHTML).toBe(
+      '<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>',
+    );
   });
 
   it('Should support multiple nodes as children inside array', () => {
@@ -271,7 +279,10 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toBe('<div>Third</div>');
 
     // @ts-ignore
-    render(cloneVNode(nodeToClone, { children: 'Second' }, 'Third', 'Fourth'), container);
+    render(
+      cloneVNode(nodeToClone, { children: 'Second' }, 'Third', 'Fourth'),
+      container,
+    );
 
     expect(container.innerHTML).toBe('<div>ThirdFourth</div>');
   });
@@ -346,7 +357,9 @@ describe('cloneVNode (JSX)', () => {
 
       render(newNode, container);
 
-      expect(Object.prototype.hasOwnProperty.call(newNode.props, 'id')).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(newNode.props, 'id')).toBe(
+        true,
+      );
       // expect(newNode.props.className).toBe(undefined);
       // expect(newNode.props.hasOwnProperty('className')).toBe(false);
 

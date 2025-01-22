@@ -70,16 +70,16 @@ describe('SSR Hydration Extended - (JSX)', () => {
     {
       html: '<div><div></div></div>',
       component: (
-          <InnerNested>
-            <Nested>
-              <Comp />
-            </Nested>
-          </InnerNested>
+        <InnerNested>
+          <Nested>
+            <Comp />
+          </Nested>
+        </InnerNested>
       ),
     },
   ];
 
-  for (let i = 0; i < tests.length; i++){
+  for (let i = 0; i < tests.length; i++) {
     const { html, component } = [
       {
         html: '<div><div>Hello world</div></div>',
@@ -108,11 +108,11 @@ describe('SSR Hydration Extended - (JSX)', () => {
       {
         html: '<div><div></div></div>',
         component: (
-            <InnerNested>
-              <Nested>
-                <Comp />
-              </Nested>
-            </InnerNested>
+          <InnerNested>
+            <Nested>
+              <Comp />
+            </Nested>
+          </InnerNested>
         ),
       },
     ][i];

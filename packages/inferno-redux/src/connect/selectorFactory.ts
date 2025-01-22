@@ -1,4 +1,3 @@
- 
 import { verifySubselectors } from './verifySubselectors';
 
 export const impureFinalPropsSelectorFactory = (
