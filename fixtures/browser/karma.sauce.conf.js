@@ -18,8 +18,8 @@ const customLaunchers = {
   slSafari15: {
     base: 'SauceLabs',
     browserName: 'safari',
-    browserVersion: '15',
-    platform: 'macOS 12'
+    browserVersion: 'latest',
+    platform: 'macOS 13'
   },
   slEdge: {
     base: 'SauceLabs',
