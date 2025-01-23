@@ -425,6 +425,7 @@ describe('SSR Creation (JSX)', () => {
       class Foobar extends Component {
         render() {
           // @ts-expect-error
+          // eslint-disable-next-line inferno/no-unknown-property
           return <input count={1} type="checkbox" defaultChecked={true} />;
         }
       }

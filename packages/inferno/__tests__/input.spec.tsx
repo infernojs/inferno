@@ -33,7 +33,7 @@ describe('Input type checkbox', () => {
         onclick={(e) => {
           clickChecked = e.currentTarget.checked;
         }}
-        onchange={(e) => {
+        onChange={(e) => {
           changeChecked = e.currentTarget.checked;
         }}
       />,
@@ -61,7 +61,7 @@ describe('Input type checkbox', () => {
           onclick={(e) => {
             clickChecked = e.currentTarget.checked;
           }}
-          onchange={(e) => {
+          onChange={(e) => {
             changeChecked = e.currentTarget.checked;
           }}
         />
@@ -146,7 +146,7 @@ describe('Input type Radio', () => {
         onclick={(e) => {
           clickChecked = e.currentTarget.checked;
         }}
-        onchange={(e) => {
+        onChange={(e) => {
           changeChecked = e.currentTarget.checked;
         }}
       />,

@@ -172,8 +172,8 @@ describe('linkEvent', () => {
       return (
         <div>
           <input
-            onfocus={linkEvent('1234', handleOnFocus)}
-            onblur={linkEvent('4321', handleOnBlur)}
+            onFocus={linkEvent('1234', handleOnFocus)}
+            onBlur={linkEvent('4321', handleOnBlur)}
           />
         </div>
       );
@@ -184,8 +184,8 @@ describe('linkEvent', () => {
         return (
           <div>
             <input
-              onfocus={linkEvent('1234', handleOnFocus)}
-              onblur={linkEvent('4321', handleOnBlur)}
+              onFocus={linkEvent('1234', handleOnFocus)}
+              onBlur={linkEvent('4321', handleOnBlur)}
             />
           </div>
         );

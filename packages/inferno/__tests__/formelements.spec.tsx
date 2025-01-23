@@ -77,7 +77,7 @@ describe('FormElements', () => {
         }
 
         public render() {
-          return <input type="text" oninput={this._method} value="test" />;
+          return <input type="text" onInput={this._method} value="test" />;
         }
       }
       const spy = jasmine.createSpy('spy');

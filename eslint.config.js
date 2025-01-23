@@ -3,6 +3,7 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
 import eslintConfigPrettier from 'eslint-config-prettier'
+import eslintInferno from 'eslint-plugin-inferno'
 
 export default tseslint.config(
     {
@@ -21,6 +22,7 @@ export default tseslint.config(
     eslint.configs.recommended,
     tseslint.configs.recommended,
     importPlugin.flatConfigs.typescript,
+    eslintInferno.configs.flat.recommended,
     eslintConfigPrettier,
     {
         rules: {
@@ -36,6 +38,9 @@ export default tseslint.config(
             "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-this-alias": "off",
             "prefer-rest-params": "off",
+            "inferno/jsx-key": "off", // There are tests intentionally testing for missing keys
+            "inferno/no-children-prop": "off", // There are tests intentionally testing for children prop
+            "inferno/no-unescaped-entities": "off"
         }
     }
 )

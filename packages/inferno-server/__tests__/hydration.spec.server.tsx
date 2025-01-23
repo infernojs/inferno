@@ -515,13 +515,13 @@ describe('SSR Hydration - (JSX)', () => {
 
       componentWillMount() {
         this.setState({
-          i: ++this.state.i,
+          i: (this.state.i + 1),
         });
       }
 
       clicker() {
         this.setState({
-          i: ++this.state.i,
+          i: (this.state.i + 1),
         });
       }
 

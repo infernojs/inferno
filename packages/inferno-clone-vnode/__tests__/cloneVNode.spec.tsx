@@ -41,8 +41,10 @@ describe('cloneVNode (JSX)', () => {
 
   it('should clone OPT_ELEMENT', () => {
     const noop = () => {};
+    // noinspection HtmlUnknownAttribute
     const node = cloneVNode(
-      // @ts-expect-error
+        // @ts-expect-error
+        // eslint-disable-next-line inferno/no-unknown-property
       <div onComponentWillMount={noop} onComponentDidMount={noop} onComponentWillUnmount={noop} onComponentShouldUpdate={noop} onComponentWillUpdate={noop} />,
       { children: [<span />] }
     );

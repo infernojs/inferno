@@ -35,7 +35,7 @@ describe('transition events', () => {
         onclick={(e) => {
           (e.target as HTMLDivElement).style.left = '50px';
         }}
-        ontransitionend={(e) => {
+        onTransitionEnd={(e) => {
           expect(e.type).toEqual('transitionend');
           done();
         }}
