@@ -91,7 +91,7 @@
     "@swc/jest": "^0.2.37",
     "@types/jest": "^29.5.14",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.10.9",
+    "@types/node": "^22.10.10",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
     "babel-plugin-inferno": "6.8.3",

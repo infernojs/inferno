@@ -197,24 +197,6 @@ function _getMaxTransitionDuration(nodes): {
   };
 }
 
-export const transitionEndName: string = (function () {
-  if (typeof document === 'undefined') return '';
-
-  const elementStyle = document.createElement('div').style;
-  const transitions = {
-    transition: 'transitionend',
-    OTransition: 'oTransitionEnd',
-    MozTransition: 'transitionend',
-    WebkitTransition: 'webkitTransitionEnd',
-  };
-
-  for (const t in transitions) {
-    if (elementStyle[t] !== undefined) {
-      return transitions[t];
-    }
-  }
-})();
-
 function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration): void {
   if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
     // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
