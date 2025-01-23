@@ -94,7 +94,7 @@
     "@types/node": "^22.10.9",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
-    "babel-plugin-inferno": "6.8.2",
+    "babel-plugin-inferno": "6.8.3",
     "cli-table": "^0.3.11",
     "concat-stream": "^2.0.0",
     "coveralls-next": "^4.2.1",
@@ -124,7 +124,7 @@
     "rimraf": "^6",
     "rollup": "4.31.0",
     "swc-loader": "^0.2.6",
-    "swc-plugin-inferno": "^2.1.1",
+    "swc-plugin-inferno": "^2.2.1",
     "ts-plugin-inferno": "^6.1.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.21.0"
