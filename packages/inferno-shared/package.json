@@ -1,6 +1,6 @@
 {
   "name": "inferno-shared",
-  "version": "9.0.0-alpha.3",
+  "version": "9.0.0-alpha.4",
   "license": "MIT",
   "type": "module",
   "description": "Helpers functions for Inferno",

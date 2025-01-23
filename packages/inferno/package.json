@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "9.0.0-alpha.3",
+  "version": "9.0.0-alpha.4",
   "license": "MIT",
   "type": "module",
   "description": "An extremely fast, React-like JavaScript library for building modern user interfaces",
@@ -69,12 +69,12 @@
     "directory": "packages/inferno"
   },
   "devDependencies": {
-    "inferno-shared": "9.0.0-alpha.3",
-    "inferno-utils": "9.0.0-alpha.3"
+    "inferno-shared": "9.0.0-alpha.4",
+    "inferno-utils": "9.0.0-alpha.4"
   },
   "dependencies": {
     "csstype": "^3.1.3",
-    "inferno-vnode-flags": "9.0.0-alpha.3",
+    "inferno-vnode-flags": "9.0.0-alpha.4",
     "opencollective-postinstall": "^2.0.3"
   }
 }
