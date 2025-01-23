@@ -1,11 +1,4 @@
-import { isFunction, warning } from 'inferno-shared';
-
-declare global {
-  // Setting `window.__DEBUG_ANIMATIONS__ = true;` disables animation timeouts
-  // allowing breakpoints in animations for debugging.
-  // eslint-disable-next-line
-  var __INFERNO_ANIMATION_DEBUG__: boolean;
-}
+import { isFunction } from 'inferno-shared';
 
 export interface Dimensions {
   height: number;
@@ -129,18 +122,9 @@ export function setTransform(
   const doScale = scaleX !== 1 || scaleY !== 1;
   if (doScale) {
     node.style.transformOrigin = '0 0';
-    node.style.transform =
-      'translate(' +
-      x +
-      'px, ' +
-      y +
-      'px) scale(' +
-      scaleX +
-      ', ' +
-      scaleY +
-      ')';
+    node.style.transform = `translate(${x}px,${y}px) scale(${scaleX},${scaleY})`;
   } else {
-    node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    node.style.transform = `translate('${x}px,${y}px)`;
   }
 }
 
@@ -301,26 +285,18 @@ export function registerTransitionListener(
     /**
      * Perform cleanup
      */
-    rootNode.removeEventListener(transitionEndName, onTransitionEnd, false);
+    rootNode.removeEventListener('transitioncancel', onTransitionEnd, false);
+    rootNode.removeEventListener('transitionend', onTransitionEnd, false);
     if (isFunction(callback)) {
       callback();
     }
   };
 
-  rootNode.addEventListener(transitionEndName, onTransitionEnd, false);
+  // if element gets removed from the DOM before transition is triggered, browser will raise transitioncancel event
+  rootNode.addEventListener('transitioncancel', onTransitionEnd, false);
+  rootNode.addEventListener('transitionend', onTransitionEnd, false);
 
-  // Fallback if transitionend fails
-  // This is disabled during debug, so we can set breakpoints
-  // WARNING: If the callback isn't called, the DOM nodes won't be removed
-  if (process.env.NODE_ENV !== 'production') {
-    if (window.__INFERNO_ANIMATION_DEBUG__) {
-      warning(
-        "You are in animation debugging mode and fallback timeouts aren't set. DOM nodes could be left behind.",
-      );
-    } else {
-      setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
-    }
-  }
+  setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
 }
 
 export function incrementMoveCbCount(node): number {
