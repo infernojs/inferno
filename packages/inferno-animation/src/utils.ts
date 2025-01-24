@@ -107,9 +107,8 @@ export function getDimensions(node: HTMLElement | SVGElement): Dimensions {
   };
 }
 
-export function getGeometry(node: HTMLElement | SVGElement): Dimensions {
-  const { x, y, width, height } = node.getBoundingClientRect();
-  return { x, y, width, height };
+export function getGeometry(node: HTMLElement | SVGElement): DOMRect {
+  return node.getBoundingClientRect()
 }
 
 export function setTransform(
@@ -124,7 +123,7 @@ export function setTransform(
     node.style.transformOrigin = '0 0';
     node.style.transform = `translate(${x}px,${y}px) scale(${scaleX},${scaleY})`;
   } else {
-    node.style.transform = `translate('${x}px,${y}px)`;
+    node.style.transform = `translate(${x}px,${y}px)`;
   }
 }
 
