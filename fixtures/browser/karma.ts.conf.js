@@ -106,10 +106,12 @@ module.exports = function (config) {
                   '@babel/preset-env',
                   {
                     loose: true,
-                    targets: {
-                      ie: '11',
-                      safari: '8'
-                    }
+                    // es2022
+                    "targets": [
+                      "chrome >= 107",
+                      "firefox >= 105",
+                      "edge >= 107"
+                    ]
                   }
                 ],
                 '@babel/typescript'

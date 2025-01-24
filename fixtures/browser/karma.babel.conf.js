@@ -80,26 +80,30 @@ module.exports = function (config) {
       module: {
         rules: [
           {
-            test: /\.(ts|tsx|js|jsx)$/,
-            exclude: /(node_modules)/,
-            use: {
-              loader: 'swc-loader',
-              options: {
-                "jsc": {
-                  "parser": {
-                    "syntax": "typescript",
-                    "tsx": true,
-                  },
-                  "experimental": {
-                    "plugins": [
-                      ["swc-plugin-inferno", {}]
-                    ],
-                  },
-                  "target": "es2022",
-                  "loose": true
-                }
-              }
-            },
+            test: /\.(js|jsx|tsx|ts)$/,
+            loader: path.join(__dirname, 'node_modules/babel-loader'),
+            options: {
+              babelrc: false,
+              presets: [
+                '@babel/typescript',
+                [
+                  '@babel/preset-env',
+                  {
+                    loose: true,
+                    // es2022
+                    "targets": [
+                      "chrome >= 107",
+                      "firefox >= 105",
+                      "edge >= 107"
+                    ]
+                  }
+                ]
+              ],
+              plugins: [
+                ['babel-plugin-inferno', { imports: true }],
+                ['@babel/plugin-proposal-class-properties', { loose: true }]
+              ]
+            }
           }
         ]
       },

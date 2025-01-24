@@ -114,27 +114,26 @@ module.exports = function (config) {
       module: {
         rules: [
           {
-            test: /\.(js|jsx|tsx|ts)$/,
-            loader: path.join(__dirname, 'node_modules/babel-loader'),
-            options: {
-              babelrc: false,
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    loose: true,
-                    targets: {
-                      firefox: '90'
-                    }
-                  }
-                ],
-                '@babel/typescript'
-              ],
-              plugins: [
-                ['babel-plugin-inferno', { imports: true }],
-                ['@babel/plugin-proposal-class-properties', { loose: true }]
-              ]
-            }
+            test: /\.(ts|tsx|js|jsx)$/,
+            exclude: /(node_modules)/,
+            use: {
+              loader: 'swc-loader',
+              options: {
+                "jsc": {
+                  "parser": {
+                    "syntax": "typescript",
+                    "tsx": true,
+                  },
+                  "experimental": {
+                    "plugins": [
+                      ["swc-plugin-inferno", {}]
+                    ],
+                  },
+                  "target": "es2022",
+                  "loose": true
+                }
+              }
+            },
           }
         ]
       },
