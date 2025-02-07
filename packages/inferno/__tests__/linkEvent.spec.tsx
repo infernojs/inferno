@@ -90,7 +90,6 @@ describe('linkEvent', () => {
     });
 
     it('should work correctly for stateful components', () => {
-      // @ts-expect-error
       render(<StatefulComponent test="456" />, container);
       container.querySelector('button').click();
       expect(test).toBe('456');
