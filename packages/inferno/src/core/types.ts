@@ -187,6 +187,8 @@ export type TransitionEventHandler<T = Element> = EventHandler<
 
 export type Key = string | number | undefined | null;
 
+type CrossOrigin = 'anonymous' | 'use-credentials' | '' | null | undefined;
+
 export interface VNode {
   children: InfernoNode;
   childFlags: ChildFlags;
@@ -665,6 +667,7 @@ export declare namespace Inferno {
   }
 
   // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
+  // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
   interface AriaAttributes {
     /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
     'aria-activedescendant'?: string | null | undefined;
@@ -682,6 +685,16 @@ export declare namespace Inferno {
       | null
       | undefined;
     /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
+    /**
+     * Defines a string value that labels the current element, which is intended to be converted into Braille.
+     * @see aria-label.
+     */
+    'aria-braillelabel'?: string | null | undefined;
+    /**
+     * Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille.
+     * @see aria-roledescription.
+     */
+    'aria-brailleroledescription'?: string | null | undefined;
     'aria-busy'?: Booleanish | null | undefined;
     /**
      * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
@@ -698,6 +711,11 @@ export declare namespace Inferno {
      * @see aria-colcount @see aria-colspan.
      */
     'aria-colindex'?: number | null | undefined;
+    /**
+     * Defines a human readable text alternative of aria-colindex.
+     * @see aria-rowindextext.
+     */
+    'aria-colindextext'?: string | null | undefined;
     /**
      * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-colindex @see aria-rowspan.
@@ -725,6 +743,11 @@ export declare namespace Inferno {
      * @see aria-labelledby
      */
     'aria-describedby'?: string | null | undefined;
+    /**
+     * Defines a string value that describes or annotates the current element.
+     * @see related aria-describedby.
+     */
+    'aria-description'?: string | null | undefined;
     /**
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
@@ -876,6 +899,11 @@ export declare namespace Inferno {
      */
     'aria-rowindex'?: number | null | undefined;
     /**
+     * Defines a human readable text alternative of aria-rowindex.
+     * @see aria-colindextext.
+     */
+    'aria-rowindextext'?: string | null | undefined;
+    /**
      * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-rowindex @see aria-colspan.
      */
@@ -907,7 +935,7 @@ export declare namespace Inferno {
      * @see aria-valuetext.
      */
     'aria-valuenow'?: number | null | undefined;
-    /** Defines the human-readable text alternative of aria-valuenow for a range widget. */
+    /** Defines the human readable text alternative of aria-valuenow for a range widget. */
     'aria-valuetext'?: string | null | undefined;
   }
 
@@ -992,19 +1020,45 @@ export declare namespace Inferno {
     // Inferno-specific Attributes
     class?: string | null | undefined;
     defaultChecked?: boolean | null | undefined;
-    defaultValue?: string | number | ReadonlyArray<string> | null | undefined;
+    defaultValue?: string | number | readonly string[] | null | undefined;
 
     // Standard HTML Attributes
     accessKey?: string | null | undefined;
+    autoCapitalize?:
+      | 'off'
+      | 'none'
+      | 'on'
+      | 'sentences'
+      | 'words'
+      | 'characters'
+      | null
+      | undefined
+      | (string & {});
+    autoFocus?: boolean | null | undefined;
     className?: string | null | undefined;
-    contentEditable?: Booleanish | 'inherit' | null | undefined;
+    contentEditable?:
+      | Booleanish
+      | 'inherit'
+      | 'plaintext-only'
+      | null
+      | undefined;
     contextMenu?: string | null | undefined;
     dir?: string | null | undefined;
     draggable?: Booleanish | null | undefined;
+    enterKeyHint?:
+      | 'enter'
+      | 'done'
+      | 'go'
+      | 'next'
+      | 'previous'
+      | 'search'
+      | 'send'
+      | null
+      | undefined;
     hidden?: boolean | null | undefined;
     id?: string | null | undefined;
     lang?: string | null | undefined;
-    placeholder?: string | null | undefined;
+    nonce?: string | null | undefined;
     slot?: string | null | undefined;
     spellCheck?: Booleanish | null | undefined;
     style?: PropertiesHyphen | string | null | undefined | CssVariables;
@@ -1020,16 +1074,18 @@ export declare namespace Inferno {
 
     // RDFa Attributes
     about?: string | null | undefined;
+    content?: string | null | undefined;
     datatype?: string | null | undefined;
     inlist?: any;
     prefix?: string | null | undefined;
     property?: string | null | undefined;
+    rel?: string | null | undefined;
     resource?: string | null | undefined;
+    rev?: string | null | undefined;
     typeof?: string | null | undefined;
     vocab?: string | null | undefined;
 
     // Non-standard Attributes
-    autoCapitalize?: string | null | undefined;
     autoCorrect?: string | null | undefined;
     autoSave?: string | null | undefined;
     color?: string | null | undefined;
@@ -1045,7 +1101,7 @@ export declare namespace Inferno {
     // Living Standard
     /**
      * Hints at the type of data that might be entered by the user while editing the element or its contents
-     * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
+     * @see {@link https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute}
      */
     inputMode?:
       | 'none'
@@ -1060,11 +1116,10 @@ export declare namespace Inferno {
       | undefined;
     /**
      * Specify that a standard HTML element should behave like a defined custom built-in element
-     * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
+     * @see {@link https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is}
      */
     is?: string | null | undefined;
   }
-
   interface AllHTMLAttributes<T> extends HTMLAttributes<T> {
     // Standard HTML Attributes
     accept?: string | null | undefined;
@@ -1076,7 +1131,6 @@ export declare namespace Inferno {
     as?: string | null | undefined;
     async?: boolean | null | undefined;
     autoComplete?: string | null | undefined;
-    autoFocus?: boolean | null | undefined;
     autoPlay?: boolean | null | undefined;
     capture?: boolean | 'user' | 'environment' | null | undefined;
     cellPadding?: number | string | null | undefined;
@@ -1088,10 +1142,9 @@ export declare namespace Inferno {
     classID?: string | null | undefined;
     cols?: number | null | undefined;
     colSpan?: number | null | undefined;
-    content?: string | null | undefined;
     controls?: boolean | null | undefined;
     coords?: string | null | undefined;
-    crossOrigin?: string | null | undefined;
+    crossOrigin?: CrossOrigin;
     data?: string | null | undefined;
     dateTime?: string | null | undefined;
     default?: boolean | null | undefined;
@@ -1134,7 +1187,6 @@ export declare namespace Inferno {
     multiple?: boolean | null | undefined;
     muted?: boolean | null | undefined;
     name?: string | null | undefined;
-    nonce?: string | null | undefined;
     noValidate?: boolean | null | undefined;
     open?: boolean | null | undefined;
     optimum?: number | null | undefined;
@@ -1144,7 +1196,6 @@ export declare namespace Inferno {
     poster?: string | null | undefined;
     preload?: string | null | undefined;
     readOnly?: boolean | null | undefined;
-    rel?: string | null | undefined;
     required?: boolean | null | undefined;
     reversed?: boolean | null | undefined;
     rows?: number | null | undefined;
@@ -1169,7 +1220,7 @@ export declare namespace Inferno {
     target?: string | null | undefined;
     type?: string | null | undefined;
     useMap?: string | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
     width?: number | string | null | undefined;
     wmode?: string | null | undefined;
     wrap?: string | null | undefined;
@@ -1199,7 +1250,6 @@ export declare namespace Inferno {
     hrefLang?: string | null | undefined;
     media?: string | null | undefined;
     ping?: string | null | undefined;
-    rel?: string | null | undefined;
     target?: HTMLAttributeAnchorTarget | null | undefined;
     type?: string | null | undefined;
     referrerPolicy?: HTMLAttributeReferrerPolicy | null | undefined;
@@ -1215,7 +1265,6 @@ export declare namespace Inferno {
     hrefLang?: string | null | undefined;
     media?: string | null | undefined;
     referrerPolicy?: HTMLAttributeReferrerPolicy | null | undefined;
-    rel?: string | null | undefined;
     shape?: string | null | undefined;
     target?: string | null | undefined;
   }
@@ -1230,7 +1279,6 @@ export declare namespace Inferno {
   }
 
   interface ButtonHTMLAttributes<T> extends HTMLAttributes<T> {
-    autoFocus?: boolean | null | undefined;
     disabled?: boolean | null | undefined;
     form?: string | null | undefined;
     formAction?: string | null | undefined;
@@ -1240,7 +1288,7 @@ export declare namespace Inferno {
     formTarget?: string | null | undefined;
     name?: string | null | undefined;
     type?: 'submit' | 'reset' | 'button' | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
   }
 
   interface CanvasHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1258,12 +1306,13 @@ export declare namespace Inferno {
   }
 
   interface DataHTMLAttributes<T> extends HTMLAttributes<T> {
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
   }
 
   interface DetailsHTMLAttributes<T> extends HTMLAttributes<T> {
     open?: boolean | null | undefined;
     onToggle?: InfernoEventHandler<T> | null | undefined;
+    name?: string | null | undefined;
   }
 
   interface DelHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1330,8 +1379,9 @@ export declare namespace Inferno {
 
   interface ImgHTMLAttributes<T> extends HTMLAttributes<T> {
     alt?: string | null | undefined;
-    crossOrigin?: 'anonymous' | 'use-credentials' | '' | null | undefined;
+    crossOrigin?: CrossOrigin;
     decoding?: 'async' | 'auto' | 'sync' | null | undefined;
+    fetchPriority?: 'high' | 'low' | 'auto';
     height?: number | string | null | undefined;
     loading?: 'eager' | 'lazy' | null | undefined;
     referrerPolicy?: HTMLAttributeReferrerPolicy | null | undefined;
@@ -1372,26 +1422,75 @@ export declare namespace Inferno {
     | 'week'
     | (string & {});
 
+  type AutoFillAddressKind = 'billing' | 'shipping';
+  type AutoFillBase = '' | 'off' | 'on';
+  type AutoFillContactField =
+    | 'email'
+    | 'tel'
+    | 'tel-area-code'
+    | 'tel-country-code'
+    | 'tel-extension'
+    | 'tel-local'
+    | 'tel-local-prefix'
+    | 'tel-local-suffix'
+    | 'tel-national';
+  type AutoFillContactKind = 'home' | 'mobile' | 'work';
+  type AutoFillCredentialField = 'webauthn';
+  type AutoFillNormalField =
+    | 'additional-name'
+    | 'address-level1'
+    | 'address-level2'
+    | 'address-level3'
+    | 'address-level4'
+    | 'address-line1'
+    | 'address-line2'
+    | 'address-line3'
+    | 'bday-day'
+    | 'bday-month'
+    | 'bday-year'
+    | 'cc-csc'
+    | 'cc-exp'
+    | 'cc-exp-month'
+    | 'cc-exp-year'
+    | 'cc-family-name'
+    | 'cc-given-name'
+    | 'cc-name'
+    | 'cc-number'
+    | 'cc-type'
+    | 'country'
+    | 'country-name'
+    | 'current-password'
+    | 'family-name'
+    | 'given-name'
+    | 'honorific-prefix'
+    | 'honorific-suffix'
+    | 'name'
+    | 'new-password'
+    | 'one-time-code'
+    | 'organization'
+    | 'postal-code'
+    | 'street-address'
+    | 'transaction-amount'
+    | 'transaction-currency'
+    | 'username';
+  type OptionalPrefixToken<T extends string> = `${T} ` | '';
+  type OptionalPostfixToken<T extends string> = ` ${T}` | '';
+  type AutoFillField =
+    | AutoFillNormalField
+    | `${OptionalPrefixToken<AutoFillContactKind>}${AutoFillContactField}`;
+  type AutoFillSection = `section-${string}`;
+  type AutoFill =
+    | AutoFillBase
+    | `${OptionalPrefixToken<AutoFillSection>}${OptionalPrefixToken<AutoFillAddressKind>}${AutoFillField}${OptionalPostfixToken<AutoFillCredentialField>}`;
+  type HTMLInputAutoCompleteAttribute = AutoFill | (string & {});
+
   interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
     accept?: string | null | undefined;
     alt?: string | null | undefined;
-    autoComplete?: string | null | undefined;
-    autoFocus?: boolean | null | undefined;
+    autoComplete?: HTMLInputAutoCompleteAttribute | null | undefined;
     capture?: boolean | 'user' | 'environment' | null | undefined; // https://www.w3.org/TR/html-media-capture/#the-capture-attribute
     checked?: boolean | null | undefined;
-    crossOrigin?: string | null | undefined;
     disabled?: boolean | null | undefined;
-    enterKeyHint?:
-      | 'enter'
-      | 'done'
-      | 'go'
-      | 'next'
-      | 'previous'
-      | 'search'
-      | 'send'
-      | null
-      | undefined;
-    indeterminate?: boolean | null | undefined;
     form?: string | null | undefined;
     formAction?: string | null | undefined;
     formEncType?: string | null | undefined;
@@ -1399,6 +1498,7 @@ export declare namespace Inferno {
     formNoValidate?: boolean | null | undefined;
     formTarget?: string | null | undefined;
     height?: number | string | null | undefined;
+    indeterminate?: boolean | null | undefined;
     list?: string | null | undefined;
     max?: number | string | null | undefined;
     maxLength?: number | null | undefined;
@@ -1414,12 +1514,11 @@ export declare namespace Inferno {
     src?: string | null | undefined;
     step?: number | string | null | undefined;
     type?: HTMLInputTypeAttribute | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
     width?: number | string | null | undefined;
   }
 
   interface KeygenHTMLAttributes<T> extends HTMLAttributes<T> {
-    autoFocus?: boolean | null | undefined;
     challenge?: string | null | undefined;
     disabled?: boolean | null | undefined;
     form?: string | null | undefined;
@@ -1435,12 +1534,13 @@ export declare namespace Inferno {
   }
 
   interface LiHTMLAttributes<T> extends HTMLAttributes<T> {
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
   }
 
   interface LinkHTMLAttributes<T> extends HTMLAttributes<T> {
     as?: string | null | undefined;
-    crossOrigin?: string | null | undefined;
+    crossOrigin?: CrossOrigin;
+    fetchPriority?: 'high' | 'low' | 'auto';
     href?: string | null | undefined;
     hrefLang?: string | null | undefined;
     integrity?: string | null | undefined;
@@ -1448,7 +1548,6 @@ export declare namespace Inferno {
     imageSrcSet?: string | null | undefined;
     imageSizes?: string | null | undefined;
     referrerPolicy?: HTMLAttributeReferrerPolicy | null | undefined;
-    rel?: string | null | undefined;
     sizes?: string | null | undefined;
     type?: string | null | undefined;
     charSet?: string | null | undefined;
@@ -1466,7 +1565,7 @@ export declare namespace Inferno {
     autoPlay?: boolean | null | undefined;
     controls?: boolean | null | undefined;
     controlsList?: string | null | undefined;
-    crossOrigin?: string | null | undefined;
+    crossOrigin?: CrossOrigin;
     loop?: boolean | null | undefined;
     mediaGroup?: string | null | undefined;
     muted?: boolean | null | undefined;
@@ -1479,8 +1578,8 @@ export declare namespace Inferno {
     charSet?: string | null | undefined;
     content?: string | null | undefined;
     httpEquiv?: string | null | undefined;
-    name?: string | null | undefined;
     media?: string | null | undefined;
+    name?: string | null | undefined;
   }
 
   interface MeterHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1490,7 +1589,7 @@ export declare namespace Inferno {
     max?: number | string | null | undefined;
     min?: number | string | null | undefined;
     optimum?: number | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
   }
 
   interface QuoteHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1524,7 +1623,7 @@ export declare namespace Inferno {
     disabled?: boolean | null | undefined;
     label?: string | null | undefined;
     selected?: boolean | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
   }
 
   interface OutputHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1535,12 +1634,12 @@ export declare namespace Inferno {
 
   interface ParamHTMLAttributes<T> extends HTMLAttributes<T> {
     name?: string | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
   }
 
   interface ProgressHTMLAttributes<T> extends HTMLAttributes<T> {
     max?: number | string | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
   }
 
   interface SlotHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1551,11 +1650,10 @@ export declare namespace Inferno {
     async?: boolean | null | undefined;
     /** @deprecated */
     charSet?: string | null | undefined;
-    crossOrigin?: string | null | undefined;
+    crossOrigin?: CrossOrigin;
     defer?: boolean | null | undefined;
     integrity?: string | null | undefined;
     noModule?: boolean | null | undefined;
-    nonce?: string | null | undefined;
     referrerPolicy?: HTMLAttributeReferrerPolicy | null | undefined;
     src?: string | null | undefined;
     type?: string | null | undefined;
@@ -1563,14 +1661,13 @@ export declare namespace Inferno {
 
   interface SelectHTMLAttributes<T> extends HTMLAttributes<T> {
     autoComplete?: string | null | undefined;
-    autoFocus?: boolean | null | undefined;
     disabled?: boolean | null | undefined;
     form?: string | null | undefined;
     multiple?: boolean | null | undefined;
     name?: string | null | undefined;
     required?: boolean | null | undefined;
     size?: number | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
     selectedIndex?: number | null | undefined;
   }
 
@@ -1586,7 +1683,6 @@ export declare namespace Inferno {
 
   interface StyleHTMLAttributes<T> extends HTMLAttributes<T> {
     media?: string | null | undefined;
-    nonce?: string | null | undefined;
     scoped?: boolean | null | undefined;
     type?: string | null | undefined;
   }
@@ -1617,7 +1713,7 @@ export declare namespace Inferno {
     readOnly?: boolean | null | undefined;
     required?: boolean | null | undefined;
     rows?: number | null | undefined;
-    value?: string | ReadonlyArray<string> | number | null | undefined;
+    value?: string | readonly string[] | number | null | undefined;
     wrap?: string | null | undefined;
   }
 
@@ -1655,6 +1751,7 @@ export declare namespace Inferno {
   }
 
   interface VideoHTMLAttributes<T> extends MediaHTMLAttributes<T> {
+    type?: string | null | undefined;
     height?: number | string | null | undefined;
     playsInline?: boolean | null | undefined;
     poster?: string | null | undefined;
