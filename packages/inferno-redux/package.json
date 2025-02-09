@@ -1,6 +1,6 @@
 {
   "name": "inferno-redux",
-  "version": "9.0.1",
+  "version": "9.0.2",
   "license": "MIT",
   "type": "module",
   "description": "Official Inferno bindings for Redux",
@@ -48,11 +48,11 @@
     "redux": ">=4"
   },
   "dependencies": {
-    "inferno": "9.0.1"
+    "inferno": "9.0.2"
   },
   "devDependencies": {
-    "inferno-create-element": "9.0.1",
-    "inferno-shared": "9.0.1",
+    "inferno-create-element": "9.0.2",
+    "inferno-shared": "9.0.2",
     "redux": "^4"
   },
   "rollup": {
