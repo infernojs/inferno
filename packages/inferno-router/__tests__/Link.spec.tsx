@@ -1,4 +1,4 @@
-import { Component, render } from 'inferno';
+import { Component, InfernoNode, render } from 'inferno';
 import { HashRouter, Link, MemoryRouter } from 'inferno-router';
 import { createMemoryHistory, parsePath } from 'history';
 
@@ -136,7 +136,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
       state: { test: 'ok' },
     };
 
-    class ContextChecker extends Component {
+    class ContextChecker extends Component<{ children?: InfernoNode }> {
       public getChildContext() {
         const { context } = this;
         context.router.history = memoryHistoryFoo;

@@ -1,8 +1,8 @@
 import { renderToStaticMarkup } from 'inferno-server';
-import { Component } from 'inferno';
+import { Component, InfernoNode } from 'inferno';
 
 describe('SSR render() arguments', () => {
-  class TestProvider extends Component {
+  class TestProvider extends Component<{ children?: InfernoNode }> {
     getChildContext() {
       return { testContext: 'context-works' };
     }
@@ -90,7 +90,7 @@ describe('SSR render() arguments', () => {
   });
 
   it('nested providers should have merged context', () => {
-    class TestContext extends Component {
+    class TestContext extends Component<{ children?: InfernoNode }> {
       getChildContext() {
         return { testContextWrap: 'context-wrap-works' };
       }

@@ -1,4 +1,4 @@
-import { Component, createTextVNode, render } from 'inferno';
+import { Component, createTextVNode, InfernoNode, render } from 'inferno';
 import { createContainerWithHTML } from 'inferno-utils';
 import { hydrate } from 'inferno-hydrate';
 
@@ -14,7 +14,7 @@ class Comp extends Component {
   }
 }
 
-class InnerNested extends Component {
+class InnerNested extends Component<{ children?: InfernoNode }> {
   render({ children }) {
     return children;
   }

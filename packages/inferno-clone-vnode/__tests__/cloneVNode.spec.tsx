@@ -3,6 +3,7 @@ import {
   Component,
   createTextVNode,
   Fragment,
+  InfernoNode,
   type InfernoSingleNode,
   render,
   type VNode,
@@ -185,7 +186,7 @@ describe('cloneVNode (JSX)', () => {
   });
 
   it('Should clone Component with vNode div children', () => {
-    class Com extends Component {
+    class Com extends Component<{ children?: InfernoNode }> {
       public render({ children }) {
         return children;
       }
@@ -203,7 +204,7 @@ describe('cloneVNode (JSX)', () => {
   });
 
   it('Should clone Component with no props at all', () => {
-    class Com extends Component {
+    class Com extends Component<{ children?: InfernoNode }> {
       public render({ children }) {
         return children;
       }

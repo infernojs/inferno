@@ -1,4 +1,9 @@
-import { Component, createPortal, render as _render } from 'inferno';
+import {
+  Component,
+  createPortal,
+  InfernoNode,
+  render as _render,
+} from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('Portal spec', () => {
@@ -75,7 +80,11 @@ describe('Portal spec', () => {
     let mountCount = 0;
     let unmountCount = 0;
 
-    class Tester extends Component {
+    interface TesterProps {
+      children: InfernoNode;
+    }
+
+    class Tester extends Component<TesterProps> {
       public componentWillUnmount() {
         unmountCount++;
       }
@@ -84,7 +93,7 @@ describe('Portal spec', () => {
         mountCount++;
       }
 
-      public render({ children }) {
+      public render({ children }: TesterProps) {
         return children;
       }
     }
@@ -145,7 +154,11 @@ describe('Portal spec', () => {
     let mountCount = 0;
     let unmountCount = 0;
 
-    class Tester extends Component {
+    interface TesterProps {
+      children: InfernoNode;
+    }
+
+    class Tester extends Component<TesterProps> {
       public componentWillUnmount() {
         unmountCount++;
       }
@@ -154,7 +167,7 @@ describe('Portal spec', () => {
         mountCount++;
       }
 
-      public render({ children }) {
+      public render({ children }: TesterProps) {
         return children;
       }
     }
@@ -881,9 +894,12 @@ describe('Portal spec', () => {
 
     it('Should remove portal from its container when its replaced by class component', () => {
       const portalContainer = document.createElement('div');
+      interface CompProps {
+        children: InfernoNode;
+      }
 
-      class Comp extends Component {
-        public render({ children }) {
+      class Comp extends Component<CompProps> {
+        public render({ children }: CompProps) {
           return <div>{children}</div>;
         }
       }
@@ -1012,7 +1028,11 @@ describe('Portal spec', () => {
         let mountCount = 0;
         let unMountCount = 0;
 
-        class Comp extends Component {
+        interface CompProps {
+          children: InfernoNode;
+        }
+
+        class Comp extends Component<CompProps> {
           public componentWillMount() {
             mountCount++;
           }
@@ -1075,7 +1095,11 @@ describe('Portal spec', () => {
         let mountCount = 0;
         let unMountCount = 0;
 
-        class Comp extends Component {
+        interface CompProps {
+          children: InfernoNode;
+        }
+
+        class Comp extends Component<CompProps> {
           public componentWillMount() {
             mountCount++;
           }
@@ -1152,7 +1176,11 @@ describe('Portal spec', () => {
         let mountCount = 0;
         let unMountCount = 0;
 
-        class Comp extends Component {
+        interface CompProps {
+          children: InfernoNode;
+        }
+
+        class Comp extends Component<CompProps> {
           public componentWillMount() {
             mountCount++;
           }
@@ -1225,7 +1253,11 @@ describe('Portal spec', () => {
         let mountCount = 0;
         let unMountCount = 0;
 
-        class Comp extends Component {
+        interface CompProps {
+          children: InfernoNode;
+        }
+
+        class Comp extends Component<CompProps> {
           public componentWillMount() {
             mountCount++;
           }
@@ -1294,13 +1326,17 @@ describe('Portal spec', () => {
         let mountCount = 0;
         let unMountCount = 0;
 
-        class WrapPortal extends Component {
+        interface CompProps {
+          children: InfernoNode;
+        }
+
+        class WrapPortal extends Component<CompProps> {
           public render({ children }) {
             return createPortal(<Comp>{children}</Comp>, portalContainer);
           }
         }
 
-        class Comp extends Component {
+        class Comp extends Component<CompProps> {
           public componentWillMount() {
             mountCount++;
           }
@@ -1377,13 +1413,17 @@ describe('Portal spec', () => {
         let mountCount = 0;
         let unMountCount = 0;
 
-        class WrapPortal extends Component {
+        interface CompProps {
+          children: InfernoNode;
+        }
+
+        class WrapPortal extends Component<CompProps> {
           public render({ children }) {
             return createPortal(<Comp>{children}</Comp>, portalContainer);
           }
         }
 
-        class Comp extends Component {
+        class Comp extends Component<CompProps> {
           public componentWillMount() {
             mountCount++;
           }
@@ -1478,13 +1518,17 @@ describe('Portal spec', () => {
         let mountCount = 0;
         let unMountCount = 0;
 
-        class WrapPortal extends Component {
+        interface CompProps {
+          children: InfernoNode;
+        }
+
+        class WrapPortal extends Component<CompProps> {
           public render({ children }) {
             return createPortal(<Comp>{children}</Comp>, portalContainer);
           }
         }
 
-        class Comp extends Component {
+        class Comp extends Component<CompProps> {
           public componentWillMount() {
             mountCount++;
           }

@@ -80,7 +80,7 @@ describe('patching routine (JSX)', () => {
         e.stopPropagation();
 
         this.setState({
-          value: (this.state.value + 1),
+          value: this.state.value + 1,
         });
       }
 

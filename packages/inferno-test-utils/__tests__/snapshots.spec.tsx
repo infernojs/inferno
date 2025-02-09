@@ -1,10 +1,10 @@
-import { Component, createFragment, Fragment } from 'inferno';
+import { Component, createFragment, Fragment, InfernoNode } from 'inferno';
 import { renderToSnapshot } from 'inferno-test-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 if ((window as any).usingJest) {
   describe('Snapshots', () => {
-    class Foobar extends Component {
+    class Foobar extends Component<{ children?: InfernoNode }> {
       render({ children }) {
         return <div className="Testing">{children}</div>;
       }

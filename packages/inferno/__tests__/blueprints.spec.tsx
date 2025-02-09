@@ -52,11 +52,11 @@ describe('Blueprints (JSX)', () => {
         });
       }
 
-      public render() {
+      public render({ car }) {
         return (
           <div className="my-component">
             <h1>
-              {this.props.car} {this.state.bool ? <A /> : <B />}
+              {car} {this.state.bool ? <A /> : <B />}
             </h1>
             <button type="button" onClick={this.btnCount}>
               btn

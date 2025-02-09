@@ -701,7 +701,7 @@ describe('All single patch variations', () => {
         return (
           <div
             onClick={() => {
-              this.setState({ val: (this.state.val+1) });
+              this.setState({ val: this.state.val + 1 });
             }}
           >
             <span>{this.state.val}</span>

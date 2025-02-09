@@ -108,7 +108,7 @@ export function getDimensions(node: HTMLElement | SVGElement): Dimensions {
 }
 
 export function getGeometry(node: HTMLElement | SVGElement): DOMRect {
-  return node.getBoundingClientRect()
+  return node.getBoundingClientRect();
 }
 
 export function setTransform(

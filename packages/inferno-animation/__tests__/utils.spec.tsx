@@ -6,7 +6,7 @@ import {
   registerTransitionListener,
   removeClassName,
   setDimensions,
-  setDisplay
+  setDisplay,
 } from '../src/utils';
 
 describe('inferno-animation utils', () => {
