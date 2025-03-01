@@ -69,8 +69,6 @@ module.exports = function (config) {
 
     reporters: ['dots', 'saucelabs'],
     sauceLabs: {
-      build: 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')',
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
       startConnect: true,
       testName: `InfernoJS`,
       recordVideo: false,
