@@ -38,13 +38,13 @@ const customLaunchers = {
     browserName: 'firefox',
     browserVersion: 'latest'
   },
-  slFirefox91: {
+  slFirefox119: {
     base: 'SauceLabs',
     browserName: 'firefox',
-    browserVersion: '91',
+    browserVersion: '119',
     platform: 'Linux',
     'sauce:options': {
-      geckodriverVersion: '0.31.0'
+      geckodriverVersion: '0.33.0'
     }
   }
 };
