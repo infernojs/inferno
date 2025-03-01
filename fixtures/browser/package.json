@@ -19,9 +19,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "7.26.8",
-    "@babel/preset-env": "7.26.8",
-    "babel-loader": "^9.2.1",
+    "@babel/core": "7.26.9",
+    "@babel/preset-env": "7.26.9",
+    "babel-loader": "^10.0.0",
     "build-time-reporter-webpack-plugin": "^1.4.3",
     "jasmine-core": "^5.6.0",
     "karma": "^6.4.4",
@@ -34,6 +34,6 @@
     "output-compile-time-webpack-plugin": "^1.0.5",
     "saucelabs": "9.0.2",
     "ts-loader": "^9.5.2",
-    "webpack": "^5.97.1"
+    "webpack": "^5.98.0"
   }
 }

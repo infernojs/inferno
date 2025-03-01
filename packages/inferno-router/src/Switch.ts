@@ -9,7 +9,7 @@ function getMatch(
   pathname: string,
   { path, exact, strict, sensitive, loader, from },
   router: { route; initialData?: any },
-): Match<any> {
+): Match<any> | null {
   path ??= from;
   const { initialData, route } = router; // This is the parent route
 

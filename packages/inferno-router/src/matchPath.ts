@@ -69,7 +69,7 @@ export function matchPath(pathname, options: any): Match<any> | null {
   }
 
   return {
-    isExact, // whether or not we matched exactly
+    isExact,
     loader,
     loaderData,
     params: keys.reduce((memo, key, index) => {
