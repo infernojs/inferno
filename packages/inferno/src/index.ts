@@ -42,11 +42,6 @@ if (process.env.NODE_ENV !== 'production') {
         process.env?.JEST_WORKER_ID !== undefined));
 
   if (!skipWarnings) {
-    // This message informs developers that they are using development mode
-    // (can happen in production because of bundling mistakes) and, therefore,
-    // Inferno is slower than in production mode.
-    console.log('Inferno is in development mode.');
-
     const testFunc = function testFn() {};
 
     if (
