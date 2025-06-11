@@ -139,9 +139,7 @@ describe('Utils', () => {
       expectedEventType = 'HTMLEvents';
       triggerName = 'blah';
 
-      expect(
-        triggerEvent.bind(triggerEvent, triggerName, element),
-      ).toThrowError(Error);
+      expect(triggerEvent.bind(triggerEvent, triggerName, element)).toThrow();
     });
   });
 });

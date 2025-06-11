@@ -11,11 +11,11 @@ describe('Utils', () => {
 
       const wrapped = wrapActionCreators(actionCreators);
       expect(typeof wrapped).toBe('function');
-      expect(() => wrapped(dispatch)).not.toThrowError();
-      expect(() => wrapped().action()).toThrowError();
+      expect(() => wrapped(dispatch)).not.toThrow();
+      expect(() => wrapped().action()).toThrow();
 
       const bound = wrapped(dispatch);
-      expect(bound.action).not.toThrowError();
+      expect(bound.action).not.toThrow();
       expect(bound.action().dispatched).toBe(actionResult);
     });
   });

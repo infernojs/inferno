@@ -90,8 +90,10 @@ describe('A <Route>', () => {
 
     expect(() => {
       render(<Route path="/" render={() => null} />, node);
-    }).toThrowError(
-      /You should not use <Route> or withRouter\(\) outside a <Router>/,
+    }).toThrow(
+      new Error(
+        'You should not use <Route> or withRouter() outside a <Router>',
+      ),
     );
   });
 });

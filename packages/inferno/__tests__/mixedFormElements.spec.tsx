@@ -41,7 +41,10 @@ describe('HTML Form Elements', () => {
 
     it('Should not use defaultValue when actual value is object', () => {
       // @ts-expect-error
-      render(<textarea defaultValue="Hey Inferno" value={{ a: 1 }} />, container);
+      render(
+        <textarea defaultValue="Hey Inferno" value={{ a: 1 }} />,
+        container,
+      );
       expect(container.firstChild.value).toBe('[object Object]');
       expect(container.firstChild.defaultValue).toBe('[object Object]');
     });

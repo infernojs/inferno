@@ -31,7 +31,11 @@ describe('setState', () => {
 
     expect(() => {
       render(<TestComponent />, container);
-    }).toThrowError(Error);
+    }).toThrow(
+      new Error(
+        'Inferno Error: cannot update state via setState() in constructor. Instead, assign to `this.state` directly or define a `state = {};`',
+      ),
+    );
   });
 
   it('callback should be fired after state has changed', () => {

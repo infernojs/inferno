@@ -658,7 +658,7 @@ describe('Error recovery', () => {
             fail: true,
           });
           rerender();
-        }).toThrowError('Oops!');
+        }).toThrow(new Error('Oops!'));
 
         // Recover from it
         childCrasherInstance!.setState({
@@ -739,11 +739,11 @@ describe('Error recovery', () => {
 
         expect(() => {
           render(<Parent fail={true} />, container);
-        }).toThrowError('Oops!');
+        }).toThrow(new Error('Oops!'));
 
         expect(() => {
           render(<Parent fail={true} />, container);
-        }).toThrowError('Oops!');
+        }).toThrow(new Error('Oops!'));
 
         parentInstance!.setState({
           nodes: true,
@@ -756,21 +756,21 @@ describe('Error recovery', () => {
 
         expect(() => {
           render(<Parent fail={true} />, container);
-        }).toThrowError('Oops!');
+        }).toThrow(new Error('Oops!'));
 
         expect(() => {
           parentInstance!.setState({
             nodes: false,
           });
           rerender();
-        }).toThrowError('Oops!');
+        }).toThrow(new Error('Oops!'));
 
         expect(() => {
           parentInstance!.setState({
             nodes: true,
           });
           rerender();
-        }).toThrowError('Oops!');
+        }).toThrow(new Error('Oops!'));
       });
     });
   });

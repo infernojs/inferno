@@ -301,7 +301,7 @@ describe('Switch (jsx)', () => {
         </Switch>,
         node,
       );
-    }).toThrowError(/You should not use <Switch> outside a <Router>/);
+    }).toThrow(new Error('You should not use <Switch> outside a <Router>'));
   });
 
   it('matches and renders array children correctly', () => {

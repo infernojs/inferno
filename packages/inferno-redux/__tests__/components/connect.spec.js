@@ -607,7 +607,7 @@ describe('Inferno', () => {
       expect(stub.props.foo).toBe('bar');
       expect(
         () => findRenderedVNodeWithType(tree, Container).children,
-      ).not.toThrowError();
+      ).not.toThrow();
       const decorated = findRenderedVNodeWithType(tree, Container).children;
       expect(decorated.isSubscribed()).toBe(true);
     });
@@ -971,7 +971,7 @@ describe('Inferno', () => {
         expect(stub.props.pass).toBe('through');
         expect(
           () => findRenderedVNodeWithType(tree, Container).children,
-        ).not.toThrowError();
+        ).not.toThrow();
 
         const decorated = findRenderedVNodeWithType(tree, Container).children;
         expect(decorated.isSubscribed()).toBe(false);
@@ -1401,8 +1401,10 @@ describe('Inferno', () => {
     });
 
     it('should throw an error if a component is not passed to the function returned by connect', () => {
-      expect(connect()).toThrowError(
-        /You must pass a component to the function/,
+      expect(connect()).toThrow(
+        new Error(
+          'You must pass a component to the function returned by connect. Instead received undefined',
+        ),
       );
     });
 
@@ -1636,8 +1638,10 @@ describe('Inferno', () => {
       const decorator = connect(() => {});
       const Decorated = decorator(Container);
 
-      expect(() => renderToContainer(<Decorated />)).toThrowError(
-        /Could not find "store"/,
+      expect(() => renderToContainer(<Decorated />)).toThrow(
+        new Error(
+          'Could not find "store" in either the context or props of "Connect(Container)". Either wrap the root component in a <Provider>, or explicitly pass "store" as a prop to "Connect(Container)".',
+        ),
       );
     });
 
@@ -1660,8 +1664,10 @@ describe('Inferno', () => {
       );
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
-      expect(() => decorated.getWrappedInstance()).toThrowError(
-        /To access the wrapped instance, you need to specify \{ withRef: true \} in the options argument of the connect\(\) call\./,
+      expect(() => decorated.getWrappedInstance()).toThrow(
+        new Error(
+          'To access the wrapped instance, you need to specify { withRef: true } in the options argument of the connect() call.',
+        ),
       );
     });
 
@@ -1694,7 +1700,7 @@ describe('Inferno', () => {
       );
 
       const decorated = findRenderedVNodeWithType(tree, Decorated).children;
-      expect(() => decorated.someInstanceMethod()).toThrowError();
+      expect(() => decorated.someInstanceMethod()).toThrow();
       expect(decorated.getWrappedInstance().someInstanceMethod()).toEqual(
         someData,
       );
@@ -1998,9 +2004,9 @@ describe('Inferno', () => {
 
       expect(renderCalls).toBe(1);
       expect(mapStateCalls).toBe(1);
-      expect(() =>
-        store.dispatch({ type: 'APPEND', payload: 'a' }),
-      ).toThrowError('Oops');
+      expect(() => store.dispatch({ type: 'APPEND', payload: 'a' })).toThrow(
+        new Error('Oops'),
+      );
     });
 
     it('should allow providing a factory function to mapStateToProps', () => {

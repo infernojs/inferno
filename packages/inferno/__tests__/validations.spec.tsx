@@ -4,6 +4,10 @@ import { ChildFlags } from 'inferno-vnode-flags';
 describe('Development warnings', () => {
   let container;
 
+  function constructInfernoError(message: string) {
+    return new Error(`Inferno Error: ${message}`);
+  }
+
   beforeEach(function () {
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -28,8 +32,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered two children with same key: {1}. Location: \n>> <div>\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered two children with same key: {1}. Location: \n>> <div>\n>> <div>\n',
+          ),
         );
       });
 
@@ -43,8 +49,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered two children with same key: {foo}. Location: \n>> Text(foo2)\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered two children with same key: {foo}. Location: \n>> Text(foo2)\n>> <div>\n',
+          ),
         );
       });
 
@@ -60,8 +68,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered two children with same key: {1}. Location: \n>> <Tester />\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered two children with same key: {1}. Location: \n>> <Tester />\n>> <div>\n',
+          ),
         );
       });
 
@@ -85,8 +95,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered two children with same key: {dup}. Location: \n>> <em>\n>> <span class="parentNode">',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered two children with same key: {dup}. Location: \n>> <em>\n>> <span class="parentNode">\n',
+          ),
         );
       });
     });
@@ -102,8 +114,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n>> <div>\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n>> <div>\n>> <div>\n',
+          ),
         );
       });
 
@@ -117,8 +131,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n>> Array(1,2)\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n>> Array(1,2)\n>> <div>\n',
+          ),
         );
       });
 
@@ -132,8 +148,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n>> Array(1,2,3,...)\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n>> Array(1,2,3,...)\n>> <div>\n',
+          ),
         );
       });
 
@@ -149,8 +167,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered two children with same key: {1}. Location: \n>> <Tester />\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered two children with same key: {1}. Location: \n>> <Tester />\n>> <div>\n',
+          ),
         );
       });
 
@@ -178,7 +198,7 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
+        }).toThrow(
           'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list.',
         );
       });
@@ -195,8 +215,8 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered invalid node when preparing to keyed algorithm. Location: \n>> InvalidVNode(null)\n>> <div>',
+        }).toThrow(
+          'Encountered invalid node when preparing to keyed algorithm. Location: \n>> InvalidVNode(null)\n>> <div>',
         );
       });
 
@@ -210,8 +230,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered invalid node with mixed keys. Location: \n>> InvalidVNode(null)\n>> <div>',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered invalid node with mixed keys. Location: \n>> InvalidVNode(null)\n>> <div>\n',
+          ),
         );
       });
 
@@ -231,8 +253,10 @@ describe('Development warnings', () => {
 
         expect(() => {
           render(errorNode, container);
-        }).toThrowError(
-          'Inferno Error: Encountered invalid node with mixed keys. Location: \n',
+        }).toThrow(
+          constructInfernoError(
+            'Encountered invalid node with mixed keys. Location: \n>> InvalidVNode(null)\n>> <div>\n>> <div>\n>> <div>\n>> <div class="p1">\n',
+          ),
         );
       });
     });
@@ -242,31 +266,33 @@ describe('Development warnings', () => {
     it('Input cannot have children', () => {
       expect(() => {
         render(<input>foobar</input>, container);
-      }).toThrowError("Inferno Error: input elements can't have children.");
+      }).toThrow(constructInfernoError("input elements can't have children."));
     });
 
     it('TextArea elements cannot have children', () => {
       expect(() => {
         render(<textarea>foobar</textarea>, container);
-      }).toThrowError("Inferno Error: textarea elements can't have children.");
+      }).toThrow(
+        constructInfernoError("textarea elements can't have children."),
+      );
     });
 
     it('Media elements cannot have children', () => {
       expect(() => {
         render(<media>foobar</media>, container);
-      }).toThrowError("Inferno Error: media elements can't have children.");
+      }).toThrow(constructInfernoError("media elements can't have children."));
     });
 
     it('< BR > elements cannot have children', () => {
       expect(() => {
         render(<br>foobar</br>, container);
-      }).toThrowError("Inferno Error: br elements can't have children.");
+      }).toThrow(constructInfernoError("br elements can't have children."));
     });
 
     it('< img > elements cannot have children', () => {
       expect(() => {
         render(<img>foobar</img>, container);
-      }).toThrowError("Inferno Error: img elements can't have children.");
+      }).toThrow(constructInfernoError("img elements can't have children."));
     });
   });
 });

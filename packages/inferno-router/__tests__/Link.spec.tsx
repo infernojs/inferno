@@ -30,7 +30,7 @@ describe('Link (jsx)', () => {
   it('throws with no <Router>', () => {
     expect(() => {
       render(<Link to="/">link</Link>, node);
-    }).toThrowError(/You should not use <Link> outside a <Router>/);
+    }).toThrow(new Error('You should not use <Link> outside a <Router>'));
   });
 
   it('exposes its ref via an innerRef prop', (done) => {

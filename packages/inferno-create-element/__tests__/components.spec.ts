@@ -53,11 +53,11 @@ describe('Components (non-JSX)', () => {
 
       expect(() => {
         render(template(null, 'abc'), container);
-      }).toThrowError();
+      }).toThrow();
 
       expect(() => {
         render(template({}, 'abc'), container);
-      }).toThrowError();
+      }).toThrow();
 
       render(template(BasicComponent1, 'abc'), container);
 
@@ -76,7 +76,7 @@ describe('Components (non-JSX)', () => {
 
       expect(() => {
         render(template({}, 'abc'), container);
-      }).toThrowError();
+      }).toThrow();
 
       expect(() => {
         render(template(BasicComponent1, {}), container);

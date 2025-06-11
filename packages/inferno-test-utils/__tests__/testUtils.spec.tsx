@@ -528,7 +528,7 @@ describe('Test Utils', () => {
       const testValue = (value) => {
         expect(() => {
           findAllInVNodeTree(value, predicate);
-        }).toThrowError();
+        }).toThrow();
       };
       testValue(render(<div />, container));
       testValue(ClassComponent);
@@ -729,7 +729,7 @@ describe('Test Utils', () => {
       const testValue = (classNames) => {
         expect(() => {
           findRenderedDOMElementWithClass(tree7, classNames);
-        }).toThrowError();
+        }).toThrow();
       };
       testValue('level-2');
       testValue('level-3');
@@ -782,7 +782,7 @@ describe('Test Utils', () => {
       const testValue = (tagName) => {
         expect(() => {
           findRenderedDOMElementWithTag(tree8, tagName);
-        }).toThrowError();
+        }).toThrow();
       };
       testValue('h1');
       testValue('p');
@@ -815,7 +815,7 @@ describe('Test Utils', () => {
       const testValue = (type) => {
         expect(() => {
           findRenderedVNodeWithType(tree9, type);
-        }).toThrowError();
+        }).toThrow();
       };
       testValue('div');
       testValue(FunctionalComponent);
@@ -852,7 +852,7 @@ describe('Test Utils', () => {
       const testValue = (type) => {
         expect(() => {
           findVNodeWithType(tree10, type);
-        }).toThrowError();
+        }).toThrow();
       };
       testValue('div');
       testValue(FunctionalComponent);
