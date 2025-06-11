@@ -40,8 +40,8 @@ describe('HTML Form Elements', () => {
     });
 
     it('Should not use defaultValue when actual value is object', () => {
-      // @ts-expect-error
       render(
+        // @ts-expect-error
         <textarea defaultValue="Hey Inferno" value={{ a: 1 }} />,
         container,
       );
