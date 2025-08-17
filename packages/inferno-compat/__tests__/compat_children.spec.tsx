@@ -1,9 +1,9 @@
 import {
   Component,
   createElement,
-  isValidElement,
   render,
 } from 'inferno-compat';
+import {isValidElement} from 'inferno-shared'
 
 describe('Compat Children', () => {
   let container;

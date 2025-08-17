@@ -1,5 +1,3 @@
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { isNull } from 'inferno-shared';
 import { type Path } from 'history';
 
 export function warning(condition, message): void {
@@ -14,16 +12,6 @@ export function combinePath({
   hash = '',
 }: Partial<Path>): string {
   return pathname + search + hash;
-}
-
-export function isValidElement(obj: any): boolean {
-  const isValidObject = typeof obj === 'object' && !isNull(obj);
-
-  if (!isValidObject) {
-    return false;
-  }
-
-  return (obj.flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
 }
 
 export function invariant(condition, format, a?, b?, c?, d?, e?, f?): void {

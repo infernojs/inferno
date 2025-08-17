@@ -1,3 +1,6 @@
+import type { VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+
 export const ERROR_MSG =
   'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -85,3 +88,14 @@ export function hoistStaticProperties(
     }
   }
 }
+
+export function isValidElement(obj: VNode): boolean {
+  const isValidObject = typeof obj === 'object' && !isNull(obj);
+
+  if (!isValidObject) {
+    return false;
+  }
+
+  return (obj.flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
+}
+
