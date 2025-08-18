@@ -1,4 +1,5 @@
-import { createElement, isValidElement } from 'inferno-compat';
+import { createElement } from 'inferno-compat';
+import { isValidElement } from 'inferno-shared';
 
 export function create(obj) {
   const children = [];

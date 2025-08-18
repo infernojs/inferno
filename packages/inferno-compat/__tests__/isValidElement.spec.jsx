@@ -1,5 +1,5 @@
 import { createElement } from 'inferno-create-element';
-import { isValidElement } from 'inferno-compat';
+import { isValidElement } from 'inferno-shared';
 import { Component } from 'inferno';
 import { cloneVNode } from 'inferno-clone-vnode';
 import { h } from 'inferno-hyperscript';

@@ -43,7 +43,7 @@ import {
   warning,
 } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
-import { isValidElement } from './isValidElement';
+import { isValidElement } from 'inferno-shared';
 import PropTypes from './PropTypes';
 import { InfernoCompatPropertyMap } from './InfernoCompatPropertyMap';
 import { findDOMNode } from 'inferno-extras';
