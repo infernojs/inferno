@@ -42,6 +42,9 @@ export function applyValueInput(nextPropsOrEmpty, dom): void {
     dom.multiple = multiple;
   }
   if (!isNullOrUndef(defaultValue) && !hasValue) {
+    if (String(defaultValue) !== dom.value) {
+      dom.value = defaultValue + '';
+    }
     dom.defaultValue = defaultValue + '';
   }
   if (isCheckedType(type)) {
