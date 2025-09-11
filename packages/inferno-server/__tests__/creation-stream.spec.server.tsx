@@ -292,7 +292,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       result: '<input value="123">',
     },
     {
-      description: 'should render input falsy w/defaultChecked falsy, no checked',
+      description: 'should render input w/defaultChecked falsy, no checked',
       template: () => <input type="radio" defaultChecked={false} />,
       result: '<input type="radio">',
     },
