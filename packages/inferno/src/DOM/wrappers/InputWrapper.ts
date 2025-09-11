@@ -28,6 +28,7 @@ export function inputEvents(dom, nextPropsOrEmpty): void {
 }
 
 export function applyValueInput(nextPropsOrEmpty, dom): void {
+  const id = nextPropsOrEmpty.id;
   const type = nextPropsOrEmpty.type;
   const value = nextPropsOrEmpty.value;
   const checked = nextPropsOrEmpty.checked;
@@ -42,7 +43,7 @@ export function applyValueInput(nextPropsOrEmpty, dom): void {
     dom.multiple = multiple;
   }
   if (!isNullOrUndef(defaultValue) && !hasValue) {
-    if (String(defaultValue) !== dom.value) {
+    if (String(defaultValue) !== dom.value && !isNullOrUndef(id)) {
       dom.value = defaultValue + '';
     }
     dom.defaultValue = defaultValue + '';
