@@ -140,7 +140,7 @@ function renderVNodeToString(vNode, parent, context): string {
             break;
           case 'defaultChecked':
             // Use default values if normal values are not present
-            if (!props.checked) {
+            if (!props.checked && value) {
               renderedString += ` checked="${value}"`;
             }
             break;
