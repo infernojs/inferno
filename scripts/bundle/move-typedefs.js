@@ -1,6 +1,5 @@
 import { join } from 'path';
-import { readFileSync } from 'fs';
-import { copySync } from 'fs-extra/esm';
+import { readFileSync, cpSync } from 'fs';
 import { readFilesInDir } from './read-files-in-dir.js';
 
 const cwd = process.cwd();
@@ -22,6 +21,6 @@ if (!pkgJSON.private) {
   });
 
   for (const file of allTsFiles) {
-    copySync(file.absolutePath, destFolder + file.relativePath, { overwrite: true });
+    cpSync(file.absolutePath, destFolder + file.relativePath, { recursive: true, force: true });
   }
 }

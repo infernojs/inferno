@@ -224,7 +224,7 @@ export class RenderStream extends Readable {
             break;
           case 'defaultChecked':
             // Use default values if normal values are not present
-            if (!props.checked) {
+            if (!props.checked && value) {
               renderedString += ` checked="${value}"`;
             }
             break;
