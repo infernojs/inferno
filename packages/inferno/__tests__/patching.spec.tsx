@@ -797,6 +797,32 @@ describe('patching routine', () => {
         expect(anotherObj.anotherFn).toHaveBeenCalledTimes(1);
       });
 
+      it('Should replace old input and input dirty value', () => {
+        const input = v => <input type="text" id={v} defaultValue={v} />;
+
+        render(input('start'), container);
+        expect(container.firstChild.value).toBe('start');
+        expect(container.innerHTML).toBe('<input type="text" id="start" value="start">')
+
+        render(input('end'), container);
+        expect(container.innerHTML).toBe('<input type="text" id="end" value="end">')
+        expect(container.firstChild.value).toBe('end');
+      });
+
+      it('Should replace old input and input dirty value, after change', () => {
+        const input = v => <input type="text" id={v} defaultValue={v} />;
+
+        render(input('start'), container);
+        expect(container.firstChild.value).toBe('start');
+        expect(container.innerHTML).toBe('<input type="text" id="start" value="start">')
+
+        container.firstChild.value = 'changed';
+
+        render(input('end'), container);
+        expect(container.innerHTML).toBe('<input type="text" id="end" value="end">')
+        expect(container.firstChild.value).toBe('end');
+      });
+
       it('Should change from LinkEvent fn to different LinkEvent fn', () => {
         const data = { foo: 1 };
         const anotherObj = {
