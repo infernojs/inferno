@@ -21,6 +21,7 @@ interface InfernoNodeArray extends Array<InfernoNode> {}
 export type InfernoFragment = {} | InfernoNodeArray;
 export type InfernoSingleNode = InfernoChild | boolean | null | undefined;
 export type InfernoNode = InfernoSingleNode | InfernoFragment;
+export type InfernoKeyedNode = Inferno.InfernoElement & { key: string | number };
 export type NonEmptyProps = Record<string, unknown>;
 export type ContextObject = Record<string, unknown>;
 export type ParentDOM =
