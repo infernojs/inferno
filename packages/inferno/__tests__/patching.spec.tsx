@@ -817,6 +817,8 @@ describe('patching routine', () => {
         expect(container.innerHTML).toBe('<input type="text" id="start" value="start">')
 
         container.firstChild.value = 'changed';
+        render(input('start'), container);
+        expect(container.firstChild.value).toBe('changed');
 
         render(input('end'), container);
         expect(container.innerHTML).toBe('<input type="text" id="end" value="end">')

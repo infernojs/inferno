@@ -12,9 +12,10 @@ export function processElement(
   nextPropsOrEmpty,
   mounting: boolean,
   isControlled: boolean,
+  isIdChanged?: boolean,
 ): void {
   if ((flags & VNodeFlags.InputElement) !== 0) {
-    applyValueInput(nextPropsOrEmpty, dom);
+    applyValueInput(nextPropsOrEmpty, dom, isIdChanged);
   } else if ((flags & VNodeFlags.SelectElement) !== 0) {
     applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode);
   } else if ((flags & VNodeFlags.TextareaElement) !== 0) {

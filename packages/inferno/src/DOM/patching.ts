@@ -376,6 +376,7 @@ export function patchElement(
       nextPropsOrEmpty,
       false,
       hasControlledValue,
+      lastProps.id !== nextProps.id
     );
   }
 
