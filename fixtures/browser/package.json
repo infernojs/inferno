@@ -19,11 +19,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "7.28.4",
-    "@babel/preset-env": "7.28.3",
+    "@babel/core": "7.28.5",
+    "@babel/preset-env": "7.28.5",
     "babel-loader": "^10.0.0",
     "build-time-reporter-webpack-plugin": "^1.4.3",
-    "jasmine-core": "^5.10.0",
+    "jasmine-core": "^5.12.1",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-detect-browsers": "^2.3.3",
@@ -34,6 +34,6 @@
     "output-compile-time-webpack-plugin": "^1.0.5",
     "saucelabs": "9.0.2",
     "ts-loader": "^9.5.4",
-    "webpack": "^5.101.3"
+    "webpack": "^5.103.0"
   }
 }
