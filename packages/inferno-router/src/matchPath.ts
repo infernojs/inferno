@@ -1,22 +1,11 @@
-import pathToRegexp from 'path-to-regexp';
+import { pathToRegexp, Keys } from 'path-to-regexp';
 import { type Match } from './Route';
 
 const patternCache = {};
 const cacheLimit = 10000;
 let cacheCount = 0;
 
-interface pathToRegexKey {
-  name: string | number;
-  prefix: string;
-  delimiter: string;
-  optional: boolean;
-  repeat: boolean;
-  pattern: string;
-  partial: boolean;
-  asterisk: boolean;
-}
-
-const compilePath = (pattern, options): { re: any; keys: pathToRegexKey[] } => {
+const compilePath = (pattern, options): { re: any; keys: Keys } => {
   const cacheKey = `${options.end}${options.strict}${options.sensitive}`;
   const cache = patternCache[cacheKey] || (patternCache[cacheKey] = {});
 
@@ -24,8 +13,13 @@ const compilePath = (pattern, options): { re: any; keys: pathToRegexKey[] } => {
     return cache[pattern];
   }
 
-  const keys = [];
-  const re = pathToRegexp(pattern, keys, options);
+  options.trailing = options.end && !options.strict;
+  pattern = pattern.replace(/\?/, '{.:optqspunct}');
+  if (!options.exact && !options.strict) {
+    pattern = pattern.replace(/\/$/, '{.:optendslash}');
+  }
+
+  const { regexp: re, keys } = pathToRegexp(pattern, options)
   const compiledPattern = { re, keys };
 
   if (cacheCount < cacheLimit) {
@@ -73,7 +67,8 @@ export function matchPath(pathname, options: any): Match<any> | null {
     loader,
     loaderData,
     params: keys.reduce((memo, key, index) => {
-      memo[key.name] = values[index];
+      if (values[index] !== undefined)
+        memo[key.name] = values[index];
       return memo;
     }, {}),
     path, // the path pattern used to match
