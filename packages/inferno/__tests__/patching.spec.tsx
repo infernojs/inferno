@@ -798,7 +798,7 @@ describe('patching routine', () => {
       });
 
       it('Should replace old input and input dirty value', () => {
-        const input = v => <input type="text" id={v} defaultValue={v} />;
+        const input = v => <input type="text" key={v} id={v} defaultValue={v} />;
 
         render(input('start'), container);
         expect(container.firstChild.value).toBe('start');
@@ -810,7 +810,7 @@ describe('patching routine', () => {
       });
 
       it('Should replace old input and input dirty value, after change', () => {
-        const input = v => <input type="text" id={v} defaultValue={v} />;
+        const input = v => <input type="text" key={v} id={v} defaultValue={v} />;
 
         render(input('start'), container);
         expect(container.firstChild.value).toBe('start');
