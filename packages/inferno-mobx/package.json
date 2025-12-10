@@ -1,6 +1,6 @@
 {
   "name": "inferno-mobx",
-  "version": "9.0.6",
+  "version": "9.0.7",
   "license": "MIT",
   "type": "module",
   "description": "Official Inferno bindings for Mobx",
@@ -48,12 +48,12 @@
     "mobx": ">=6"
   },
   "dependencies": {
-    "inferno": "9.0.6"
+    "inferno": "9.0.7"
   },
   "devDependencies": {
-    "inferno-create-element": "9.0.6",
-    "inferno-shared": "9.0.6",
-    "inferno-vnode-flags": "9.0.6",
+    "inferno-create-element": "9.0.7",
+    "inferno-shared": "9.0.7",
+    "inferno-vnode-flags": "9.0.7",
     "mobx": "*"
   },
   "rollup": {

@@ -1,6 +1,6 @@
 {
   "name": "inferno-vnode-flags",
-  "version": "9.0.6",
+  "version": "9.0.7",
   "license": "MIT",
   "type": "module",
   "exports": {

@@ -1,6 +1,6 @@
 {
   "name": "inferno-router",
-  "version": "9.0.6",
+  "version": "9.0.7",
   "license": "MIT",
   "type": "module",
   "description": "Provides routing functionality for Inferno",
@@ -49,12 +49,12 @@
   },
   "dependencies": {
     "history": "^5.3.0",
-    "inferno": "9.0.6",
+    "inferno": "9.0.7",
     "path-to-regexp": "^1.9.0"
   },
   "devDependencies": {
-    "inferno-server": "9.0.6",
-    "inferno-vnode-flags": "9.0.6",
+    "inferno-server": "9.0.7",
+    "inferno-vnode-flags": "9.0.7",
     "mobx": "*"
   },
   "rollup": {
