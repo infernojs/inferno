@@ -1,6 +1,6 @@
 {
   "name": "inferno-compat",
-  "version": "9.0.5",
+  "version": "9.0.6",
   "license": "MIT",
   "type": "module",
   "description": "Provides a compatibility with React codebases",
@@ -47,17 +47,17 @@
     "vdom"
   ],
   "dependencies": {
-    "inferno": "9.0.5",
-    "inferno-clone-vnode": "9.0.5",
-    "inferno-create-element": "9.0.5",
-    "inferno-extras": "9.0.5",
-    "inferno-hydrate": "9.0.5"
+    "inferno": "9.0.6",
+    "inferno-clone-vnode": "9.0.6",
+    "inferno-create-element": "9.0.6",
+    "inferno-extras": "9.0.6",
+    "inferno-hydrate": "9.0.6"
   },
   "devDependencies": {
-    "inferno-hyperscript": "9.0.5",
-    "inferno-shared": "9.0.5",
-    "inferno-test-utils": "9.0.5",
-    "inferno-vnode-flags": "9.0.5"
+    "inferno-hyperscript": "9.0.6",
+    "inferno-shared": "9.0.6",
+    "inferno-test-utils": "9.0.6",
+    "inferno-vnode-flags": "9.0.6"
   },
   "rollup": {
     "bundledDependencies": [
