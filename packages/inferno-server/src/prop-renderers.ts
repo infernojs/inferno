@@ -1,8 +1,9 @@
 import { isString, isStringOrNumber } from 'inferno-shared';
+import { escapeText } from "./utils";
 
 function parseStyleAsString(styles: string | object): string {
   if (isString(styles)) {
-    return styles;
+    return escapeText(styles);
   } else {
     let renderedString = '';
     for (const styleName in styles) {

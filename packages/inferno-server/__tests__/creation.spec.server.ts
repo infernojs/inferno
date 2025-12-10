@@ -75,6 +75,18 @@ describe('SSR Creation (non-JSX)', () => {
         '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>',
     },
     {
+      description: 'should eascape css style string to prevent XSS injection',
+      template: () =>
+        createElement(
+          'div',
+          {
+            style: ` onmouseover="alert(document.domain)"<script>alert(1)</script>`,
+          },
+        ),
+      result:
+        '<div style=" onmouseover=&quot;alert(document.domain)&quot;&lt;script&gt;alert(1)&lt;/script&gt;"></div>',
+    },
+    {
       description: 'should render div with text children',
       template: () => createElement('div', null, 'Hello', ' world'),
       result: '<div>Hello world</div>',

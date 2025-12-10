@@ -9,6 +9,7 @@ function WrappedInput(props: { value: string }) {
 }
 
 describe('SSR Creation (JSX)', () => {
+  // @ts-ignore
   const testEntries = [
     {
       description: 'should render a null component',
@@ -85,6 +86,12 @@ describe('SSR Creation (JSX)', () => {
     {
       description: 'should render input w/defaultChecked falsy, no checked',
       template: () => <input type="radio" defaultChecked={false} />,
+      result: '<input type="radio">',
+    },
+    {
+      description: 'should render input w/defaultChecked non-boolean value, no checked',
+      // @ts-expect-error XSS test
+      template: () => <input type="radio" defaultChecked="asdasd" />,
       result: '<input type="radio">',
     },
     {
