@@ -23,7 +23,7 @@
     "@babel/preset-env": "7.28.5",
     "babel-loader": "^10.0.0",
     "build-time-reporter-webpack-plugin": "^1.4.3",
-    "jasmine-core": "^5.12.1",
+    "jasmine-core": "^5.13.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-detect-browsers": "^2.3.3",
