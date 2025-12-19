@@ -45,6 +45,7 @@ function getTagName(input): string {
 
 function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
   const foundKeys: Record<string, boolean> = {};
+  let foundKeyCount = 0;
 
   for (let i = 0, len = vNodeTree.length; i < len; ++i) {
     const childNode = vNodeTree[i];
@@ -62,7 +63,7 @@ function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
           'Encountered invalid node when preparing to keyed algorithm. Location: \n' +
           getTagName(childNode)
         );
-      } else if (Object.keys(foundKeys).length !== 0) {
+      } else if (foundKeyCount !== 0) {
         return (
           'Encountered invalid node with mixed keys. Location: \n' +
           getTagName(childNode)
@@ -111,7 +112,7 @@ function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
         getTagName(childNode)
       );
     } else if (!forceKeyed && isNullOrUndef(key)) {
-      if (Object.keys(foundKeys).length !== 0) {
+      if (foundKeyCount !== 0) {
         return (
           'Encountered children with key missing. Location: \n' +
           getTagName(childNode)
@@ -128,6 +129,7 @@ function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
       );
     }
     foundKeys[key] = true;
+    foundKeyCount++;
   }
 
   return null;
@@ -145,31 +147,30 @@ export function validateVNodeElementChildren(vNode): void {
       throwError("textarea elements can't have children.");
     }
     if (vNode.flags & VNodeFlags.Element) {
-      const voidTypes = {
-        area: true,
-        base: true,
-        br: true,
-        col: true,
-        command: true,
-        embed: true,
-        hr: true,
-        img: true,
-        input: true,
-        keygen: true,
-        link: true,
-        meta: true,
-        param: true,
-        source: true,
-        track: true,
-        wbr: true,
-      };
       const tag = vNode.type.toLowerCase();
 
-      if (tag === 'media') {
-        throwError("media elements can't have children.");
-      }
-      if (voidTypes[tag]) {
-        throwError(`${tag} elements can't have children.`);
+      switch (tag) {
+        case 'media':
+        case 'area':
+        case 'base':
+        case 'br':
+        case 'col':
+        case 'command':
+        case 'embed':
+        case 'hr':
+        case 'img':
+        case 'input':
+        case 'keygen':
+        case 'link':
+        case 'meta':
+        case 'param':
+        case 'source':
+        case 'track':
+        case 'wbr':
+          throwError(`${tag} elements can't have children.`);
+          break;
+        default:
+          break;
       }
     }
   }

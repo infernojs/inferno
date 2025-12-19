@@ -121,6 +121,23 @@ describe('Development warnings', () => {
         );
       });
 
+      it('Should throw error if keys are mixed when non-keyed children flag is forced', () => {
+        const errorNode = (
+          <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
+            <div key="1">2</div>
+            <div>1</div>
+          </div>
+        );
+
+        expect(() => {
+          render(errorNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'Encountered children with key missing. Location: \n>> <div>\n>> <div>\n',
+          ),
+        );
+      });
+
       it('Should if there is one that cannot be keyed for example array', () => {
         const errorNode = (
           <div $ChildFlag={ChildFlags.HasKeyedChildren}>
@@ -200,6 +217,20 @@ describe('Development warnings', () => {
           render(errorNode, container);
         }).toThrow(
           'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list.',
+        );
+      });
+    });
+
+    describe('Warning invalid key type', () => {
+      it('Should throw error if child key is not string or number', () => {
+        const errorNode = <div>{createTextVNode('foo', {} as any)}</div>;
+
+        expect(() => {
+          render(errorNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'Encountered child vNode where key property is not string or number. Location: \n>> Text(foo)\n>> <div>\n',
+          ),
         );
       });
     });

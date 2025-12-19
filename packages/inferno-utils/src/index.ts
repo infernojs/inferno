@@ -24,8 +24,8 @@ export function validateNodeTree(node: any): boolean {
     }
     if (!isNullOrUndef(children)) {
       if (isArray(children)) {
-        for (const child of children) {
-          const val = validateNodeTree(child);
+        for (let i = 0, len = children.length; i < len; i++) {
+          const val = validateNodeTree(children[i]);
 
           if (!val) {
             return false;
