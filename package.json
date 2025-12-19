@@ -123,7 +123,7 @@
     "rimraf": "^6",
     "rollup": "4.53.5",
     "swc-loader": "^0.2.6",
-    "swc-plugin-inferno": "^2.10.0",
+    "swc-plugin-inferno": "^2.11.0",
     "ts-plugin-inferno": "^6.1.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.50.0"
