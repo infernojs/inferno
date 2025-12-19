@@ -34,6 +34,6 @@
     "output-compile-time-webpack-plugin": "^1.0.5",
     "saucelabs": "9.0.2",
     "ts-loader": "^9.5.4",
-    "webpack": "^5.103.0"
+    "webpack": "^5.104.1"
   }
 }
