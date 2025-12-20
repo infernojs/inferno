@@ -121,7 +121,7 @@
     "perf-monitor": "^0.6.0",
     "prettier": "^3.7.4",
     "rimraf": "^6",
-    "rollup": "4.53.5",
+    "rollup": "4.54.0",
     "swc-loader": "^0.2.6",
     "swc-plugin-inferno": "^2.11.0",
     "ts-plugin-inferno": "^6.1.1",
