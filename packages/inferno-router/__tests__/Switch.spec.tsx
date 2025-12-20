@@ -431,4 +431,19 @@ describe('A <Switch location>', () => {
       expect(propLocation).toEqual(switchLocation);
     });
   });
+
+  it('renders wildcard route for unmatched paths', () => {
+    const node = document.createElement('div');
+
+    render(
+      <MemoryRouter initialEntries={['/asd']}>
+        <Switch>
+          <Route key="*" path="*" render={() => <h1>not found</h1>} />
+        </Switch>
+      </MemoryRouter>,
+      node,
+    );
+
+    expect(node.textContent).toContain('not found');
+  });
 });

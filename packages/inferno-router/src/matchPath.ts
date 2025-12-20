@@ -46,14 +46,26 @@ export function matchPath(pathname, options: any): Match<any> | null {
     loader,
     initialData = {},
   } = options;
+
+  const loaderData = initialData[path];
+
+  if (path === '*' || path === '/*') {
+    return {
+      isExact: false,
+      loader,
+      loaderData,
+      params: [],
+      path,
+      url: '/'
+    };
+  }
+
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 
   if (!match) {
     return null;
   }
-
-  const loaderData = initialData[path];
 
   const [url, ...values] = match;
   const isExact = pathname === url;
