@@ -1,13 +1,13 @@
 import {
   createVNode,
   type Inferno,
-  type InfernoMouseEvent,
+  type InfernoMouseEvent, LinkedEvent,
   linkEvent,
   type VNode,
 } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
-import { isString } from 'inferno-shared';
+import {isFunction, isString} from 'inferno-shared';
 import type { Location } from 'history';
 import { parsePath } from 'history';
 import { normalizeToLocation, splitLocation } from './locationUtils';
@@ -17,7 +17,7 @@ const isModifiedEvent = (event: InfernoMouseEvent<any>): boolean =>
 
 export interface ILinkProps {
   children?: any;
-  onClick?: any;
+  onClick?: ((event: MouseEvent) => void) | LinkedEvent<any, any> | null;
   target?: string;
   className?: string;
   replace?: boolean;
@@ -26,8 +26,13 @@ export interface ILinkProps {
 }
 
 function handleClick({ props, context }, event: InfernoMouseEvent<any>): void {
-  if (props.onClick) {
-    props.onClick(event);
+  const onClick = props.onClick;
+  if (onClick) {
+    if (isFunction(onClick)) {
+      onClick(event);
+    } else if (isFunction(onClick.event)) {
+      onClick.event(onClick.data, event);
+    }
   }
 
   if (
