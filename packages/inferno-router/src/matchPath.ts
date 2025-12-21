@@ -1,11 +1,22 @@
-import { pathToRegexp, Keys } from 'path-to-regexp';
+import pathToRegexp from 'path-to-regexp';
 import { type Match } from './Route';
 
 const patternCache = {};
 const cacheLimit = 10000;
 let cacheCount = 0;
 
-const compilePath = (pattern, options): { re: any; keys: Keys } => {
+interface pathToRegexKey {
+  name: string | number;
+  prefix: string;
+  delimiter: string;
+  optional: boolean;
+  repeat: boolean;
+  pattern: string;
+  partial: boolean;
+  asterisk: boolean;
+}
+
+const compilePath = (pattern, options): { re: any; keys: pathToRegexKey[] } => {
   const cacheKey = `${options.end}${options.strict}${options.sensitive}`;
   const cache = patternCache[cacheKey] || (patternCache[cacheKey] = {});
 
@@ -13,13 +24,8 @@ const compilePath = (pattern, options): { re: any; keys: Keys } => {
     return cache[pattern];
   }
 
-  options.trailing = options.end && !options.strict;
-  pattern = pattern.replace(/\?/, '{.:optqspunct}');
-  if (!options.exact && !options.strict) {
-    pattern = pattern.replace(/\/$/, '{.:optendslash}');
-  }
-
-  const { regexp: re, keys } = pathToRegexp(pattern, options)
+  const keys = [];
+  const re = pathToRegexp(pattern, keys, options);
   const compiledPattern = { re, keys };
 
   if (cacheCount < cacheLimit) {
@@ -46,26 +52,14 @@ export function matchPath(pathname, options: any): Match<any> | null {
     loader,
     initialData = {},
   } = options;
-
-  const loaderData = initialData[path];
-
-  if (path === '*' || path === '/*') {
-    return {
-      isExact: false,
-      loader,
-      loaderData,
-      params: [],
-      path,
-      url: '/'
-    };
-  }
-
   const { re, keys } = compilePath(path, { end: exact, strict, sensitive });
   const match = re.exec(pathname);
 
   if (!match) {
     return null;
   }
+
+  const loaderData = initialData[path];
 
   const [url, ...values] = match;
   const isExact = pathname === url;
@@ -79,8 +73,7 @@ export function matchPath(pathname, options: any): Match<any> | null {
     loader,
     loaderData,
     params: keys.reduce((memo, key, index) => {
-      if (values[index] !== undefined)
-        memo[key.name] = values[index];
+      memo[key.name] = values[index];
       return memo;
     }, {}),
     path, // the path pattern used to match
