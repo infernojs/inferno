@@ -1,6 +1,6 @@
 {
   "name": "inferno-hyperscript",
-  "version": "9.0.9",
+  "version": "9.0.10",
   "license": "MIT",
   "type": "module",
   "description": "Bridging hyperscript to InfernoJS",
@@ -37,11 +37,11 @@
     "directory": "packages/inferno-hyperscript"
   },
   "dependencies": {
-    "inferno": "9.0.9"
+    "inferno": "9.0.10"
   },
   "devDependencies": {
-    "inferno-shared": "9.0.9",
-    "inferno-vnode-flags": "9.0.9"
+    "inferno-shared": "9.0.10",
+    "inferno-vnode-flags": "9.0.10"
   },
   "rollup": {
     "bundledDependencies": [
