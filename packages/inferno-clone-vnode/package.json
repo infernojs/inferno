@@ -1,6 +1,6 @@
 {
   "name": "inferno-clone-vnode",
-  "version": "9.0.10",
+  "version": "9.0.11",
   "license": "MIT",
   "type": "module",
   "description": "provides helper function to clone Inferno's vNodes",
@@ -47,11 +47,11 @@
     "vdom"
   ],
   "dependencies": {
-    "inferno": "9.0.10"
+    "inferno": "9.0.11"
   },
   "devDependencies": {
-    "inferno-shared": "9.0.10",
-    "inferno-vnode-flags": "9.0.10"
+    "inferno-shared": "9.0.11",
+    "inferno-vnode-flags": "9.0.11"
   },
   "rollup": {
     "bundledDependencies": [
