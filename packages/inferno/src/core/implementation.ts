@@ -19,6 +19,7 @@ import {
 } from 'inferno-shared';
 import {
   throwIfObjectIsNotVNode,
+  validateChildFlags,
   validateVNodeElementChildren,
 } from './validate';
 import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
@@ -89,6 +90,9 @@ export function createVNode<P>(
   }
 
   if (process.env.NODE_ENV !== 'production') {
+    if (childFlag !== ChildFlags.UnknownChildren) {
+      validateChildFlags(vNode);
+    }
     validateVNodeElementChildren(vNode);
   }
 

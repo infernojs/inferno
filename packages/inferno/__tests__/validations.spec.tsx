@@ -105,69 +105,49 @@ describe('Development warnings', () => {
 
     describe('Warning key missing', () => {
       it('Should throw error if key is missing', () => {
-        const errorNode = (
-          <div $HasKeyedChildren>
-            <div key="1">2</div>
-            <div>1</div>
-          </div>
-        );
-
         expect(() => {
+          const errorNode = (
+            <div $HasKeyedChildren>
+              <div key="1">2</div>
+              <div>1</div>
+            </div>
+          );
           render(errorNode, container);
         }).toThrow(
           constructInfernoError(
-            'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n>> <div>\n>> <div>\n',
-          ),
-        );
-      });
-
-      it('Should throw error if keys are mixed when non-keyed children flag is forced', () => {
-        const errorNode = (
-          <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
-            <div key="1">2</div>
-            <div>1</div>
-          </div>
-        );
-
-        expect(() => {
-          render(errorNode, container);
-        }).toThrow(
-          constructInfernoError(
-            'Encountered children with key missing. Location: \n>> <div>\n>> <div>\n',
+            'ChildFlags.HasKeyedChildren expects all children to have keys; missing key at index 1. Location: \n>> <div>\n>> <div>\n',
           ),
         );
       });
 
       it('Should if there is one that cannot be keyed for example array', () => {
-        const errorNode = (
-          <div $ChildFlag={ChildFlags.HasKeyedChildren}>
-            {createTextVNode('foo', 'foo')}
-            {['1', '2']}
-          </div>
-        );
-
         expect(() => {
+          const errorNode = (
+            <div $ChildFlag={ChildFlags.HasKeyedChildren}>
+              {createTextVNode('foo', 'foo')}
+              {['1', '2']}
+            </div>
+          );
           render(errorNode, container);
         }).toThrow(
           constructInfernoError(
-            'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n>> Array(1,2)\n>> <div>\n',
+            'ChildFlags.HasKeyedChildren expects children to be a flat array; found a nested array at index 1. Location: \n>> Array(1,2)\n>> <div>\n',
           ),
         );
       });
 
       it('Should show only first 3 items if array is really long one', () => {
-        const errorNode = (
-          <div $ChildFlag={ChildFlags.HasKeyedChildren}>
-            {createTextVNode('foo', 'foo')}
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-          </div>
-        );
-
         expect(() => {
+          const errorNode = (
+            <div $ChildFlag={ChildFlags.HasKeyedChildren}>
+              {createTextVNode('foo', 'foo')}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+            </div>
+          );
           render(errorNode, container);
         }).toThrow(
           constructInfernoError(
-            'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n>> Array(1,2,3,...)\n>> <div>\n',
+            'ChildFlags.HasKeyedChildren expects children to be a flat array; found a nested array at index 1. Location: \n>> Array(1,2,3,...)\n>> <div>\n',
           ),
         );
       });
@@ -216,7 +196,7 @@ describe('Development warnings', () => {
         expect(() => {
           render(errorNode, container);
         }).toThrow(
-          'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list.',
+          'ChildFlags.HasKeyedChildren expects children to be VNodes; found text at index 1.',
         );
       });
     });
@@ -237,58 +217,184 @@ describe('Development warnings', () => {
 
     describe('Invalid nodes', () => {
       it('Should throw error if key is missing', () => {
-        const errorNode = (
-          <div $HasKeyedChildren>
-            <div key="1">2</div>
-            {null}
-          </div>
-        );
-
         expect(() => {
+          const errorNode = (
+            <div $HasKeyedChildren>
+              <div key="1">2</div>
+              {null}
+            </div>
+          );
           render(errorNode, container);
         }).toThrow(
-          'Encountered invalid node when preparing to keyed algorithm. Location: \n>> InvalidVNode(null)\n>> <div>',
+          'ChildFlags.HasKeyedChildren expects children to be VNodes; found invalid child at index 1. Location:',
         );
       });
 
       it('Should if there is one that cannot be keyed for example array', () => {
-        const errorNode = (
-          <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
-            {createTextVNode('foo', 'foo')}
-            {null}
-          </div>
-        );
-
         expect(() => {
+          const errorNode = (
+            <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
+              {createTextVNode('foo', 'foo')}
+              {null}
+            </div>
+          );
           render(errorNode, container);
         }).toThrow(
           constructInfernoError(
-            'Encountered invalid node with mixed keys. Location: \n>> InvalidVNode(null)\n>> <div>\n',
+            'ChildFlags.HasNonKeyedChildren expects children to be VNodes; found invalid child at index 1. Location: \n>> InvalidVNode(null)\n>> <div>\n',
           ),
         );
       });
 
       it('Should support long chain of rendered nodes', () => {
-        const errorNode = (
-          <div className="p1">
-            <div id="another">
-              <div data-attr="foobar">
-                <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
-                  {createTextVNode('foo', 'foo')}
-                  {null}
+        expect(() => {
+          const errorNode = (
+            <div className="p1">
+              <div id="another">
+                <div data-attr="foobar">
+                  <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
+                    {createTextVNode('foo', 'foo')}
+                    {null}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-
-        expect(() => {
+          );
           render(errorNode, container);
         }).toThrow(
           constructInfernoError(
-            'Encountered invalid node with mixed keys. Location: \n>> InvalidVNode(null)\n>> <div>\n>> <div>\n>> <div>\n>> <div class="p1">\n',
+            'ChildFlags.HasNonKeyedChildren expects children to be VNodes; found invalid child at index 1. Location: \n>> InvalidVNode(null)\n>> <div>\n',
           ),
         );
+      });
+    });
+
+    describe('Child flag validations', () => {
+      it('ChildFlags.HasInvalidChildren is not validated', () => {
+        const errorNode = (
+          <div $ChildFlag={ChildFlags.HasInvalidChildren}>
+            <span />
+          </div>
+        );
+        render(errorNode, container);
+      });
+
+      it('ChildFlags.HasTextChildren should throw for TextVNode children', () => {
+        expect(() => {
+          const errorNode = (
+            <div $HasTextChildren>{createTextVNode('foo')}</div>
+          );
+          render(errorNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'ChildFlags.HasTextChildren expects children to be a bare string, not a Text VNode. Location: \n>> Text(foo)\n>> <div>\n',
+          ),
+        );
+      });
+
+      it('ChildFlags.HasTextChildren should throw for non-string children', () => {
+        expect(() => {
+          const errorNode = <div $HasTextChildren>{{a: 1}}</div>;
+          render(errorNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'ChildFlags.HasTextChildren expects children to be a string. Location: \n>> Object({"a":1})\n>> <div>\n',
+          ),
+        );
+      });
+
+      it('ChildFlags.HasTextChildren should accept string children', () => {
+        expect(() => {
+          render(<div $HasTextChildren>{'foo'}</div>, container);
+        }).not.toThrow();
+      });
+
+      it('ChildFlags.HasTextChildren should accept number (text) children', () => {
+        expect(() => {
+          render(<div $HasTextChildren>1</div>, container);
+
+          expect(container.innerHTML).toBe("<div>1</div>")
+        }).not.toThrow();
+      });
+
+      it('ChildFlags.HasTextChildren should accept number (number) children', () => {
+        expect(() => {
+          render(<div $HasTextChildren>{1}</div>, container);
+
+          expect(container.innerHTML).toBe("<div>1</div>")
+        }).not.toThrow();
+      });
+
+      it('ChildFlags.HasVNodeChildren should not throw for TextVNode children', () => {
+        const errorNode = (
+          <div $HasVNodeChildren>{createTextVNode('foo')}</div>
+        );
+        render(errorNode, container);
+      });
+
+      it('ChildFlags.HasVNodeChildren should accept Element VNode children', () => {
+        expect(() => {
+          render(
+            <div $HasVNodeChildren>
+              <span>foo</span>
+            </div>,
+            container,
+          );
+        }).not.toThrow();
+      });
+
+      it('ChildFlags.HasNonKeyedChildren not should throw for keyed children its simply ignored', () => {
+        const children = [<span key="a" />];
+        const errorNode = (
+          <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
+            {children as any}
+          </div>
+        );
+        render(errorNode, container);
+      });
+
+      it('ChildFlags.HasNonKeyedChildren should throw for holes', () => {
+        // eslint-disable-next-line no-sparse-arrays
+        const children = [<span />, , <span />];
+
+        expect(() => {
+          const errorNode = (
+            <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
+              {children as any}
+            </div>
+          );
+          render(errorNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'ChildFlags.HasNonKeyedChildren expects children to be a flat array without holes; found a hole at index 1. Location: \n>> <div>\n',
+          ),
+        );
+      });
+
+      it('ChildFlags.HasNonKeyedChildren should accept array of non-keyed VNodes', () => {
+        const children = [<span />, <span />];
+
+        expect(() => {
+          render(
+            <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
+              {children as any}
+            </div>,
+            container,
+          );
+        }).not.toThrow();
+      });
+
+      it('ChildFlags.HasKeyedChildren should accept array of keyed VNodes', () => {
+        const children = [<span key="a" />, <span key="b" />];
+
+        expect(() => {
+          render(
+            <div $ChildFlag={ChildFlags.HasKeyedChildren}>
+              {children as any}
+            </div>,
+            container,
+          );
+        }).not.toThrow();
       });
     });
   }

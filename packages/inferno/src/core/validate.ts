@@ -5,7 +5,7 @@ import {
   isNullOrUndef,
   isNumber,
   isStringOrNumber,
-  throwError,
+  throwError
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { getComponentName } from '../DOM/utils/common';
@@ -25,7 +25,17 @@ function getTagName(input): string {
   } else if (isInvalid(input)) {
     tagName = 'InvalidVNode(' + input + ')';
   } else {
-    const flags = input.flags;
+    const flags = input?.flags;
+
+    if (!isNumber(flags)) {
+      try {
+        tagName = `Object(${JSON.stringify(input)})`;
+      } catch {
+        tagName = `Object(${String(input)})`;
+      }
+
+      return '>> ' + tagName + '\n';
+    }
 
     if (flags & VNodeFlags.Element) {
       tagName = `<${input.type}${
@@ -43,8 +53,14 @@ function getTagName(input): string {
   return '>> ' + tagName + '\n';
 }
 
-function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
+function DEV_VALIDATE_KEYS(vNodeTree, childKeys): string | null {
+  if ((childKeys & ChildFlags.HasNonKeyedChildren) !== 0) {
+    return null;
+  }
+
   const foundKeys: Record<string, boolean> = {};
+  const forceKeyed = (childKeys & ChildFlags.HasKeyedChildren) !== 0;
+
   let foundKeyCount = 0;
 
   for (let i = 0, len = vNodeTree.length; i < len; ++i) {
@@ -111,7 +127,7 @@ function DEV_VALIDATE_KEYS(vNodeTree, forceKeyed: boolean): string | null {
         'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n' +
         getTagName(childNode)
       );
-    } else if (!forceKeyed && isNullOrUndef(key)) {
+    } else if (isNullOrUndef(key)) {
       if (foundKeyCount !== 0) {
         return (
           'Encountered children with key missing. Location: \n' +
@@ -186,7 +202,7 @@ export function validateKeys(vNode): void {
     ) {
       const error = DEV_VALIDATE_KEYS(
         Array.isArray(vNode.children) ? vNode.children : [vNode.children],
-        (vNode.childFlags & ChildFlags.HasKeyedChildren) > 0,
+        vNode.childFlags
       );
 
       if (error) {
@@ -194,6 +210,111 @@ export function validateKeys(vNode): void {
       }
     }
     vNode.isValidated = true;
+  }
+}
+
+function getChildFlagsName(childFlags: ChildFlags): string {
+  switch (childFlags) {
+    case ChildFlags.HasInvalidChildren:
+      return 'ChildFlags.HasInvalidChildren';
+    case ChildFlags.HasVNodeChildren:
+      return 'ChildFlags.HasVNodeChildren';
+    case ChildFlags.HasNonKeyedChildren:
+      return 'ChildFlags.HasNonKeyedChildren';
+    case ChildFlags.HasKeyedChildren:
+      return 'ChildFlags.HasKeyedChildren';
+    case ChildFlags.HasTextChildren:
+      return 'ChildFlags.HasTextChildren';
+    case ChildFlags.UnknownChildren:
+      return 'ChildFlags.UnknownChildren';
+    default:
+      return `ChildFlags.Unknown(${childFlags})`;
+  }
+}
+
+export function validateChildFlags(vNode: VNode): void {
+  if (process.env.NODE_ENV === 'production') {
+    return;
+  }
+
+  const childFlags = vNode.childFlags;
+  const children = vNode.children as any;
+  const parentTag = getTagName(vNode);
+
+  switch (childFlags) {
+    case ChildFlags.UnknownChildren:
+    case ChildFlags.HasInvalidChildren:
+      return;
+    case ChildFlags.HasTextChildren:
+      if (isStringOrNumber(children)) {
+        return;
+      }
+      if (
+        children &&
+        isNumber(children.flags) &&
+        children.flags & VNodeFlags.Text
+      ) {
+        throwError(
+          `${getChildFlagsName(childFlags)} expects children to be a bare string, not a Text VNode. Location: \n${getTagName(children)}${parentTag}`,
+        );
+      }
+      throwError(
+        `${getChildFlagsName(childFlags)} expects children to be a string. Location: \n${getTagName(children)}${parentTag}`,
+      );
+      return;
+    case ChildFlags.HasVNodeChildren:
+      if (isInvalid(children) || isArray(children) || isStringOrNumber(children)) {
+        throwError(
+          `${getChildFlagsName(childFlags)} expects children to be a VNode. Location: \n${getTagName(children)}${parentTag}`,
+        );
+      }
+      throwIfObjectIsNotVNode(children);
+      return;
+    case ChildFlags.HasNonKeyedChildren:
+    case ChildFlags.HasKeyedChildren:
+      if (!isArray(children)) {
+        throwError(
+          `${getChildFlagsName(childFlags)} expects children to be an array of VNodes. Location: \n${getTagName(children)}${parentTag}`,
+        );
+      }
+
+      for (let i = 0; i < children.length; i++) {
+        if (!(i in children)) {
+          throwError(
+            `${getChildFlagsName(childFlags)} expects children to be a flat array without holes; found a hole at index ${i}. Location: \n${parentTag}`,
+          );
+        }
+
+        const child = children[i];
+        if (isArray(child)) {
+          throwError(
+            `${getChildFlagsName(childFlags)} expects children to be a flat array; found a nested array at index ${i}. Location: \n${getTagName(child)}${parentTag}`,
+          );
+        }
+        if (isInvalid(child)) {
+          throwError(
+            `${getChildFlagsName(childFlags)} expects children to be VNodes; found invalid child at index ${i}. Location: \n${getTagName(child)}${parentTag}`,
+          );
+        }
+        if (isStringOrNumber(child)) {
+          throwError(
+            `${getChildFlagsName(childFlags)} expects children to be VNodes; found text at index ${i}. Location: \n${getTagName(child)}${parentTag}`,
+          );
+        }
+
+        throwIfObjectIsNotVNode(child);
+
+        if (childFlags === ChildFlags.HasKeyedChildren) {
+          if (isNullOrUndef(child.key)) {
+            throwError(
+              `${getChildFlagsName(childFlags)} expects all children to have keys; missing key at index ${i}. Location: \n${getTagName(child)}${parentTag}`,
+            );
+          }
+        }
+      }
+      return;
+    default:
+      return;
   }
 }
 
