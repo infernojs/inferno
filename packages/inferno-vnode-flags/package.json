@@ -1,6 +1,6 @@
 {
   "name": "inferno-vnode-flags",
-  "version": "9.0.12-alpha.0",
+  "version": "9.0.12-alpha.1",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -54,5 +54,6 @@
     "type": "git",
     "url": "https://github.com/infernojs/inferno.git",
     "directory": "packages/inferno-vnode-flags"
-  }
+  },
+  "gitHead": "930f16301f6cdaa85e48641eed9ef49f799fc68a"
 }

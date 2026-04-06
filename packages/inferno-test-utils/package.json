@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "9.0.12-alpha.0",
+  "version": "9.0.12-alpha.1",
   "license": "MIT",
   "type": "module",
   "description": "Suite of utilities for testing Inferno applications",
@@ -22,11 +22,11 @@
     "utils"
   ],
   "devDependencies": {
-    "inferno-shared": "9.0.12-alpha.0",
-    "inferno-vnode-flags": "9.0.12-alpha.0"
+    "inferno-shared": "9.0.12-alpha.1",
+    "inferno-vnode-flags": "9.0.12-alpha.1"
   },
   "dependencies": {
-    "inferno": "9.0.12-alpha.0"
+    "inferno": "9.0.12-alpha.1"
   },
   "rollup": {
     "bundledDependencies": [
@@ -60,5 +60,6 @@
     "type": "git",
     "url": "https://github.com/infernojs/inferno.git",
     "directory": "packages/inferno-test-utils"
-  }
+  },
+  "gitHead": "930f16301f6cdaa85e48641eed9ef49f799fc68a"
 }

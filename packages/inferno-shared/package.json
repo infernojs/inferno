@@ -1,6 +1,6 @@
 {
   "name": "inferno-shared",
-  "version": "9.0.12-alpha.0",
+  "version": "9.0.12-alpha.1",
   "license": "MIT",
   "type": "module",
   "description": "Helpers functions for Inferno",
@@ -40,5 +40,6 @@
   },
   "rollup": {
     "moduleName": "Inferno"
-  }
+  },
+  "gitHead": "930f16301f6cdaa85e48641eed9ef49f799fc68a"
 }
