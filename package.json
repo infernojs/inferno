@@ -114,7 +114,7 @@
     "jest-environment-jsdom": "^30.3.0",
     "jest-jasmine2": "^30.3.0",
     "jest-silent-reporter": "^0.6.0",
-    "jsdom": "^29.0.1",
+    "jsdom": "^29.0.2",
     "lerna": "^9",
     "minimist": "^1.2.8",
     "mobx": "^6.15.0",

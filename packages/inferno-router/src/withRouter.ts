@@ -10,7 +10,7 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { Route, type RouteComponentProps } from './Route';
 import { hoistStaticProperties } from 'inferno-shared';
 
-interface IWithRouterProps {
+export interface IWithRouterProps {
   wrappedComponentRef?: Ref | null;
 }
 

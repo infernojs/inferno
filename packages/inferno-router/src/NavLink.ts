@@ -8,7 +8,7 @@ function filter(i): any {
   return i;
 }
 
-interface NavLinkProps extends Omit<ILinkProps, 'className'> {
+export interface NavLinkProps extends Omit<ILinkProps, 'className'> {
   to: string | Location;
   exact?: boolean;
   strict?: boolean;

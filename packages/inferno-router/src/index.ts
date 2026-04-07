@@ -13,6 +13,24 @@ import { matchPath } from './matchPath';
 import { withRouter } from './withRouter';
 export * from './resolveLoaders';
 export * from './helpers';
+export type { IBrowserRouterProps } from './BrowserRouter';
+export type { IHashRouterProps } from './HashRouter';
+export type { ILinkProps } from './Link';
+export type { IMemoryRouterProps } from './MemoryRouter';
+export type { NavLinkProps } from './NavLink';
+export type { IPromptProps } from './Prompt';
+export type { RedirectProps } from './Redirect';
+export type { Match, RouteComponentProps, IRouteProps } from './Route';
+export type {
+  TLoaderProps,
+  TLoader,
+  TLoaderData,
+  IRouterProps,
+  TContextRouter,
+  RouterContext,
+} from './Router';
+export type { IStaticRouterProps } from './StaticRouter';
+export type { IWithRouterProps } from './withRouter';
 
 export {
   BrowserRouter,
