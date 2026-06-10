@@ -6,7 +6,7 @@ import { useEffect, useLayoutEffect, useInsertionEffect } from 'inferno-next';
 //
 // Effect bodies receive their deps as positional args, so we order the deps
 // as [tick, log] and accept them in the same order in each fn.
-export component PhaseOrder(props) {
+export function PhaseOrder(props) @{
   useEffect((tick, log) => {
     log.push('eff:body');
     return () => log.push('eff:cleanup');
@@ -19,21 +19,21 @@ export component PhaseOrder(props) {
     log.push('ins:body');
     return () => log.push('ins:cleanup');
   }, [props.tick, props.log]);
-  <div>{text 'x'}</div>
+  <div>{'x'}</div>
 }
 
 // useLayoutEffect runs AFTER the DOM commit — it can read the committed DOM.
-export component LayoutReadsDom(props) {
+export function LayoutReadsDom(props) @{
   useLayoutEffect((onCommit) => {
     const w = document.querySelector('#measured');
     onCommit(w == null ? null : w.outerHTML);
   }, [props.onCommit]);
-  <div id='measured' style={'width: 100px'}>{text 'A'}</div>
+  <div id='measured' style={'width: 100px'}>{'A'}</div>
 }
 
 // Layout fires synchronously inside flushSync; passive does not.
-export component PassiveDeferred(props) {
+export function PassiveDeferred(props) @{
   useLayoutEffect((tick, log) => { log.push('layout'); }, [props.tick, props.log]);
   useEffect((tick, log) => { log.push('passive'); }, [props.tick, props.log]);
-  <span>{text 'z'}</span>
+  <span>{'z'}</span>
 }

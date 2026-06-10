@@ -1,18 +1,19 @@
 import { createPortal } from 'inferno-next';
 
-// `<tsrx>...</tsrx>` at expression position compiles to a hoisted render fn.
-// Here we bind one to a const and pass it as the `body` arg of createPortal.
+// `<tsrx>…</tsrx>` at expression position is gone. The new TSRX equivalent
+// is an arrow returning a `@{ }` block — same semantics: the body is
+// rendered wherever the consumer (e.g. createPortal) decides.
 
-export component PortalledWithTsrx(props) {
-  const slot = <tsrx><div class='from-tsrx'>{text props.label}</div></tsrx>;
+export function PortalledWithTsrx(props) @{
+  const slot = () => @{ <div class='from-tsrx'>{props.label as string}</div> };
   <div class='host'>
     {createPortal(slot, props.target)}
   </div>
 }
 
-// Inline <tsrx>...</tsrx> directly as createPortal's body argument.
-export component InlineTsrx(props) {
+// Inline arrow returning a @{ } block — directly as createPortal's body argument.
+export function InlineTsrx(props) @{
   <div class='host'>
-    {createPortal(<tsrx><span class='inline'>{text 'inline'}</span></tsrx>, props.target)}
+    {createPortal(() => @{ <span class='inline'>{'inline'}</span> }, props.target)}
   </div>
 }

@@ -5,22 +5,22 @@ import { useState, useEffect } from 'inferno-next';
 // setter at runtime, with diff cleanup of keys that vanished.
 // ---------------------------------------------------------------------------
 
-export component SpreadOnElement(props) {
-  <div {...props.attrs} id='target'>{text 'spread'}</div>
+export function SpreadOnElement(props) @{
+  <div {...props.attrs} id='target'>{'spread'}</div>
 }
 
 // Spread combined with explicit attrs — explicit wins on key collision because
 // it's emitted later in the binding order.
-export component SpreadWithExplicit(props) {
-  <div {...props.attrs} class='explicit-wins'>{text 'mix'}</div>
+export function SpreadWithExplicit(props) @{
+  <div {...props.attrs} class='explicit-wins'>{'mix'}</div>
 }
 
 // Component-level spread — merged into the props object.
-component SpreadChild(props) {
-  <span id='child' class={props.cls}>{text props.label + (props.tag || '')}</span>
+function SpreadChild(props) @{
+  <span id='child' class={props.cls}>{(props.label + (props.tag || '')) as string}</span>
 }
 
-export component SpreadOnComponent(props) {
+export function SpreadOnComponent(props) @{
   <SpreadChild {...props.child}/>
 }
 
@@ -29,26 +29,26 @@ export component SpreadOnComponent(props) {
 // ---------------------------------------------------------------------------
 
 // `<input disabled/>` — no `=` → present in HTML, runtime sees the attribute.
-export component BooleanAttr() {
+export function BooleanAttr() @{
   <input id='bool' disabled type='text'/>
 }
 
 // `<input maxLength={n}/>` — dynamic numeric attribute → setAttribute path.
-export component DynamicNumericAttr(props) {
+export function DynamicNumericAttr(props) @{
   <input id='num' maxLength={props.n} type='text'/>
 }
 
 // `<div {value}/>` — TSRX shorthand for `value={value}`. The local binds to the
 // attribute via the identifier name (parsed as `Attribute { shorthand: true }`).
-export component ShorthandAttr(props) {
+export function ShorthandAttr(props) @{
   const id = props.id;
-  <div {id}>{text 'shorthand'}</div>
+  <div {id}>{'shorthand'}</div>
 }
 
 // SVG with `xlink:href` — namespaced attribute. TSRX parses the colon-prefixed
 // form as a JSXNamespacedName; the compiler emits it as a regular setAttribute
 // with the full qualified name (browser handles the xlink namespace).
-export component NamespacedAttr(props) {
+export function NamespacedAttr(props) @{
   <svg viewBox='0 0 50 50'>
     <use id='use-el' xlink:href={props.href}/>
   </svg>
@@ -58,18 +58,18 @@ export component NamespacedAttr(props) {
 // For-of header variants — `index`, `key`, and both together.
 // ---------------------------------------------------------------------------
 
-export component ForOfIndexOnly(props) {
+export function ForOfIndexOnly(props) @{
   <ul>
-    for (const item of props.items; index i) {
-      <li class={'i-' + i}>{text i + ':' + item}</li>
+    @for (const item of props.items; index i) {
+      <li class={'i-' + i}>{(i + ':' + item) as string}</li>
     }
   </ul>
 }
 
-export component ForOfIndexAndKey(props) {
+export function ForOfIndexAndKey(props) @{
   <ul>
-    for (const item of props.items; index i; key item.id) {
-      <li class={'k-' + item.id}>{text i + ':' + item.label}</li>
+    @for (const item of props.items; index i; key item.id) {
+      <li class={'k-' + item.id}>{(i + ':' + item.label) as string}</li>
     }
   </ul>
 }
@@ -79,16 +79,18 @@ export component ForOfIndexAndKey(props) {
 // Our compiler lowers it to ifBlock so each branch mounts real DOM.
 // ---------------------------------------------------------------------------
 
-export component TernaryFragmentChild(props) {
-  <div>{props.cond ? <><span class='yes'>{text 'yes'}</span></> : <><span class='no'>{text 'no'}</span></>}</div>
+export function TernaryFragmentChild(props) @{
+  <div>{props.cond ? <><span class='yes'>{'yes'}</span></> : <><span class='no'>{'no'}</span></>}</div>
 }
 
 // ---------------------------------------------------------------------------
-// {html ...} only-child — confirms the innerHTML binding actually applies.
+// `innerHTML={…}` attribute — replaces the old `{html expr}` child-position
+// intrinsic. When this is the only "child" path on a host, the compiler emits
+// the innerHTML-assignment fast path.
 // ---------------------------------------------------------------------------
 
-export component HtmlOnlyChild(props) {
-  <div id='html-host'>{html props.markup}</div>
+export function HtmlOnlyChild(props) @{
+  <div id='html-host' innerHTML={props.markup} />
 }
 
 // ---------------------------------------------------------------------------
@@ -97,46 +99,46 @@ export component HtmlOnlyChild(props) {
 // Matches React's `<Fragment key={x.id}><li/><li/></Fragment>` pattern.
 // ---------------------------------------------------------------------------
 
-export component KeyedFragmentItems(props) {
+export function KeyedFragmentItems(props) @{
   <ul>
-    for (const x of props.items; key x.id) {
+    @for (const x of props.items; key x.id) {
       <>
-        <li class={'a-' + x.id}>{text x.label + '-a'}</li>
-        <li class={'b-' + x.id}>{text x.label + '-b'}</li>
+        <li class={'a-' + x.id}>{(x.label + '-a') as string}</li>
+        <li class={'b-' + x.id}>{(x.label + '-b') as string}</li>
       </>
     }
   </ul>
 }
 
 // ---------------------------------------------------------------------------
-// Lazy destructuring `&{}` / `&[]` — TSRX-specific syntax that other
-// endpoints can use for reactivity gains. Our model re-runs whole bodies on
-// every render, so the lazy flag has no semantic effect — we accept the
-// syntax and emit plain destructuring (esrap drops the marker).
+// Lazy destructuring `&{}` / `&[]` — TSRX-specific syntax preserved across
+// the migration. Our model re-runs whole bodies on every render, so the
+// lazy flag has no semantic effect — we accept the syntax (parser tracks it
+// via metadata) and let @tsrx/core's applyLazyTransforms lower it.
 // ---------------------------------------------------------------------------
 
-export component LazyObjectDestructure(props) {
+export function LazyObjectDestructure(props) @{
   const &{ first, last } = props.user;
-  <div id='lazy-obj'>{text first + ' ' + last}</div>
+  <div id='lazy-obj'>{(first + ' ' + last) as string}</div>
 }
 
-export component LazyArrayDestructure(props) {
+export function LazyArrayDestructure(props) @{
   const &[head, ...tail] = props.items;
-  <div id='lazy-arr'>{text 'head=' + head + ' rest=' + tail.length}</div>
+  <div id='lazy-arr'>{('head=' + head + ' rest=' + tail.length) as string}</div>
 }
 
 // Lazy destructuring as a COMPONENT PARAMETER — the body sees fields
 // destructured directly from the props object.
-export component LazyParamDestructure(&{ greeting, name }) {
-  <div id='lazy-param'>{text greeting + ', ' + name}</div>
+export function LazyParamDestructure(&{ greeting, name }) @{
+  <div id='lazy-param'>{(greeting + ', ' + name) as string}</div>
 }
 
 // Lazy destructuring inside a FOR-OF HEAD — keyFn picks up the same
 // destructure pattern so `key id` resolves the destructured field.
-export component LazyForOfHead(props) {
+export function LazyForOfHead(props) @{
   <ul>
-    for (const &{ id, label } of props.items; key id) {
-      <li class={'item-' + id}>{text label}</li>
+    @for (const &{ id, label } of props.items; key id) {
+      <li class={'item-' + id}>{label as string}</li>
     }
   </ul>
 }
@@ -148,11 +150,11 @@ export component LazyForOfHead(props) {
 // matches the value identifier, but our codegen path is uniform).
 // ---------------------------------------------------------------------------
 
-component ShorthandChild(props) {
-  <span id='child'>{text props.label + ':' + props.count}</span>
+function ShorthandChild(props) @{
+  <span id='child'>{(props.label + ':' + props.count) as string}</span>
 }
 
-export component ShorthandComponentProp() {
+export function ShorthandComponentProp() @{
   const label = 'count';
   const count = 7;
   <ShorthandChild {label} {count}/>
@@ -168,10 +170,10 @@ export component ShorthandComponentProp() {
 
 // PURE: body uses only `row` (the item) — no parent closures, no hooks, no
 // component calls. Should be marked pure → survivors skip renderBlock.
-export component PureForOf(props) {
+export function PureForOf(props) @{
   <ul>
-    for (const row of props.items; key row.id) {
-      <li class={'r-' + row.id}>{text row.label}</li>
+    @for (const row of props.items; key row.id) {
+      <li class={'r-' + row.id}>{row.label as string}</li>
     }
   </ul>
 }
@@ -179,10 +181,10 @@ export component PureForOf(props) {
 // IMPURE: body reads `selected` from parent scope → must re-render survivors
 // when parent state changes (otherwise the row's class won't reflect new
 // selected state).
-export component ImpureForOf(props) {
+export function ImpureForOf(props) @{
   <ul>
-    for (const row of props.items; key row.id) {
-      <li class={props.selected === row.id ? 'sel' : ''}>{text row.label}</li>
+    @for (const row of props.items; key row.id) {
+      <li class={props.selected === row.id ? 'sel' : ''}>{row.label as string}</li>
     }
   </ul>
 }

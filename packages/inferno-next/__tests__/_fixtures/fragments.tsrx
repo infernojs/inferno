@@ -1,26 +1,26 @@
-export component MultiTop() {
+export function MultiTop() @{
   <>
-    <p class='one'>{text '1'}</p>
-    <p class='two'>{text '2'}</p>
-    <p class='three'>{text '3'}</p>
+    <p class='one'>{'1'}</p>
+    <p class='two'>{'2'}</p>
+    <p class='three'>{'3'}</p>
   </>
 }
 
-export component Mixed() {
+export function Mixed() @{
   <div>
     <>
-      <span class='a'>{text 'A'}</span>
-      <span class='b'>{text 'B'}</span>
+      <span class='a'>{'A'}</span>
+      <span class='b'>{'B'}</span>
     </>
   </div>
 }
 
-export component Nested() {
+export function Nested() @{
   <>
     <>
-      <p class='x'>{text 'x'}</p>
-      <p class='y'>{text 'y'}</p>
+      <p class='x'>{'x'}</p>
+      <p class='y'>{'y'}</p>
     </>
-    <p class='z'>{text 'z'}</p>
+    <p class='z'>{'z'}</p>
   </>
 }

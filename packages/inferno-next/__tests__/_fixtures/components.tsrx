@@ -1,10 +1,10 @@
 import { useState, createContext, use } from 'inferno-next';
 
-export component Label(props) {
-  <span class='lbl'>{text props.text}</span>
+export function Label(props) @{
+  <span class='lbl'>{props.text as string}</span>
 }
 
-export component Greeting(props) {
+export function Greeting(props) @{
   <div>
     <Label text={props.name} />
   </div>
@@ -13,15 +13,15 @@ export component Greeting(props) {
 // Context test setup.
 export const Theme = createContext('light');
 
-export component ThemeReader() {
+export function ThemeReader() @{
   const theme = use(Theme);
-  <span class='theme'>{text theme}</span>
+  <span class='theme'>{theme as string}</span>
 }
 
-export component App() {
+export function App() @{
   const [n, setN] = useState(0);
   <div>
-    <button onClick={() => setN(n + 1)}>{text n}</button>
+    <button onClick={() => setN(n + 1)}>{n as string}</button>
     <Theme.Provider value={n % 2 === 0 ? 'light' : 'dark'}>
       <ThemeReader />
     </Theme.Provider>
@@ -29,7 +29,7 @@ export component App() {
 }
 
 // Nested Providers — inner overrides outer.
-export component Nested() {
+export function Nested() @{
   <div>
     <Theme.Provider value={'outer'}>
       <div class='o'><ThemeReader /></div>
@@ -41,6 +41,6 @@ export component Nested() {
 }
 
 // No Provider — falls back to default.
-export component DefaultOnly() {
+export function DefaultOnly() @{
   <div><ThemeReader /></div>
 }

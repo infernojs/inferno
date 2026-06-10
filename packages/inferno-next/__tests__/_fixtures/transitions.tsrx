@@ -4,14 +4,14 @@ import { use, useState, useTransition, startTransition, useDeferredValue } from 
 // useTransition basics — [isPending, start]. The setter returned from start
 // runs `fn` synchronously; setters inside are tagged transition-priority.
 // ---------------------------------------------------------------------------
-export component TransitionBasics() {
+export function TransitionBasics() @{
   const [n, setN] = useState(0);
   const [isPending, start] = useTransition();
   <div>
-    <span id='n'>{text n}</span>
-    <span id='pending'>{text isPending ? 'pending' : 'idle'}</span>
-    <button id='bump-urgent' onClick={() => setN(n + 1)}>{text 'urgent'}</button>
-    <button id='bump-transition' onClick={() => start(() => setN(n + 10))}>{text 'transition'}</button>
+    <span id='n'>{n as string}</span>
+    <span id='pending'>{isPending ? 'pending' : 'idle'}</span>
+    <button id='bump-urgent' onClick={() => setN(n + 1)}>{'urgent'}</button>
+    <button id='bump-transition' onClick={() => start(() => setN(n + 10))}>{'transition'}</button>
   </div>
 }
 
@@ -19,17 +19,17 @@ export component TransitionBasics() {
 // Transition suspend keeps prior DOM mounted — the canonical React 18
 // "show old screen while new loads" pattern.
 // ---------------------------------------------------------------------------
-export component TransitionKeepsDom(props) {
+export function TransitionKeepsDom(props) @{
   const [promise, setPromise] = useState(props.initialPromise);
   const [isPending, start] = useTransition();
   <div>
-    <span id='pending'>{text isPending ? 'pending' : 'idle'}</span>
-    <button id='swap' onClick={() => start(() => setPromise(props.nextPromise))}>{text 'swap'}</button>
-    try {
+    <span id='pending'>{isPending ? 'pending' : 'idle'}</span>
+    <button id='swap' onClick={() => start(() => setPromise(props.nextPromise))}>{'swap'}</button>
+    @try {
       const value = use(promise);
-      <span id='value'>{text value}</span>
-    } pending {
-      <span id='fallback'>{text 'fallback'}</span>
+      <span id='value'>{value as string}</span>
+    } @pending {
+      <span id='fallback'>{'fallback'}</span>
     }
   </div>
 }
@@ -39,15 +39,15 @@ export component TransitionKeepsDom(props) {
 // tagging applies. Useful outside component bodies (e.g. event handlers
 // that don't already use useTransition).
 // ---------------------------------------------------------------------------
-export component StandaloneStartTransition(props) {
+export function StandaloneStartTransition(props) @{
   const [promise, setPromise] = useState(props.initialPromise);
   <div>
-    <button id='swap' onClick={() => startTransition(() => setPromise(props.nextPromise))}>{text 'swap'}</button>
-    try {
+    <button id='swap' onClick={() => startTransition(() => setPromise(props.nextPromise))}>{'swap'}</button>
+    @try {
       const value = use(promise);
-      <span id='value'>{text value}</span>
-    } pending {
-      <span id='fallback'>{text 'fallback'}</span>
+      <span id='value'>{value as string}</span>
+    } @pending {
+      <span id='fallback'>{'fallback'}</span>
     }
   </div>
 }
@@ -58,15 +58,15 @@ export component StandaloneStartTransition(props) {
 // First render shows the prior value with isStale=true; microtask later, the
 // new value commits, suspends, and the OLD DOM stays put until resolution.
 // ---------------------------------------------------------------------------
-export component DeferredValueWithSuspense(props) {
+export function DeferredValueWithSuspense(props) @{
   const deferred = useDeferredValue(props.promise);
   const isStale = props.promise !== deferred;
   <div>
-    try {
+    @try {
       const value = use(deferred);
-      <span id='value' class={isStale ? 'stale' : 'fresh'}>{text value}</span>
-    } pending {
-      <span id='fallback'>{text 'fallback'}</span>
+      <span id='value' class={isStale ? 'stale' : 'fresh'}>{value as string}</span>
+    } @pending {
+      <span id='fallback'>{'fallback'}</span>
     }
   </div>
 }
@@ -76,17 +76,17 @@ export component DeferredValueWithSuspense(props) {
 // the next render to be urgent. If that render suspends, the fallback SHOULD
 // show (no DOM preservation, because the user explicitly asked for urgent).
 // ---------------------------------------------------------------------------
-export component UrgentPreemptsTransition(props) {
+export function UrgentPreemptsTransition(props) @{
   const [promise, setPromise] = useState(props.initialPromise);
   const [_, start] = useTransition();
   <div>
-    <button id='swap-trans' onClick={() => start(() => setPromise(props.nextPromise))}>{text 'trans'}</button>
-    <button id='swap-urgent' onClick={() => setPromise(props.nextPromise)}>{text 'urgent'}</button>
-    try {
+    <button id='swap-trans' onClick={() => start(() => setPromise(props.nextPromise))}>{'trans'}</button>
+    <button id='swap-urgent' onClick={() => setPromise(props.nextPromise)}>{'urgent'}</button>
+    @try {
       const value = use(promise);
-      <span id='value'>{text value}</span>
-    } pending {
-      <span id='fallback'>{text 'fallback'}</span>
+      <span id='value'>{value as string}</span>
+    } @pending {
+      <span id='fallback'>{'fallback'}</span>
     }
   </div>
 }
@@ -96,31 +96,35 @@ export component UrgentPreemptsTransition(props) {
 // single startTransition. Both fetches must resolve before isPending=false
 // — "entangled" transitions (React equivalent: ReactTransition-test.js:190).
 // ---------------------------------------------------------------------------
-component EntLeafA(props) {
-  try {
-    const v = use(props.p);
-    <span class='ent-a'>{text 'A:' + v}</span>
-  } pending {
-    <span class='ent-a-load'>{text 'A-load'}</span>
-  }
+function EntLeafA(props) @{
+  <>
+    @try {
+      const v = use(props.p);
+      <span class='ent-a'>{('A:' + v) as string}</span>
+    } @pending {
+      <span class='ent-a-load'>{'A-load'}</span>
+    }
+  </>
 }
 
-component EntLeafB(props) {
-  try {
-    const v = use(props.p);
-    <span class='ent-b'>{text 'B:' + v}</span>
-  } pending {
-    <span class='ent-b-load'>{text 'B-load'}</span>
-  }
+function EntLeafB(props) @{
+  <>
+    @try {
+      const v = use(props.p);
+      <span class='ent-b'>{('B:' + v) as string}</span>
+    } @pending {
+      <span class='ent-b-load'>{'B-load'}</span>
+    }
+  </>
 }
 
-export component EntangledTransitions(props) {
+export function EntangledTransitions(props) @{
   const [pA, setPA] = useState(props.initialA);
   const [pB, setPB] = useState(props.initialB);
   const [isPending, start] = useTransition();
   <div>
-    <span id='pending'>{text isPending ? '1' : '0'}</span>
-    <button id='swap-both' onClick={() => start(() => { setPA(props.nextA); setPB(props.nextB); })}>{text 'swap'}</button>
+    <span id='pending'>{isPending ? '1' : '0'}</span>
+    <button id='swap-both' onClick={() => start(() => { setPA(props.nextA); setPB(props.nextB); })}>{'swap'}</button>
     <EntLeafA p={pA} />
     <EntLeafB p={pB} />
   </div>
@@ -132,18 +136,18 @@ export component EntangledTransitions(props) {
 // retry must keep the prior DOM AND isPending stays true through both
 // suspensions (React: ReactUse-test.js:1446 "does not get stuck in pending").
 // ---------------------------------------------------------------------------
-export component IsPendingThroughReplay(props) {
+export function IsPendingThroughReplay(props) @{
   const [step, setStep] = useState(0);
   const [isPending, start] = useTransition();
   <div>
-    <span id='pending'>{text isPending ? '1' : '0'}</span>
-    <button id='swap' onClick={() => start(() => setStep(1))}>{text 'swap'}</button>
-    try {
+    <span id='pending'>{isPending ? '1' : '0'}</span>
+    <button id='swap' onClick={() => start(() => setStep(1))}>{'swap'}</button>
+    @try {
       const a = use(step === 0 ? props.initialA : props.nextA);
       const b = use(step === 0 ? props.initialB : props.nextB);
-      <span id='value'>{text a + '/' + b}</span>
-    } pending {
-      <span id='fallback'>{text 'fallback'}</span>
+      <span id='value'>{(a + '/' + b) as string}</span>
+    } @pending {
+      <span id='fallback'>{'fallback'}</span>
     }
   </div>
 }
@@ -153,15 +157,15 @@ export component IsPendingThroughReplay(props) {
 // flags must be true while the inner transition is in flight, AND both flip
 // to false on commit (React: ReactTransition-test.js:923).
 // ---------------------------------------------------------------------------
-export component NestedTransitions(props) {
+export function NestedTransitions(props) @{
   const [n, setN] = useState(0);
   const [pendingA, startA] = useTransition();
   const [pendingB, startB] = useTransition();
   <div>
-    <span id='pending-a'>{text 'A:' + (pendingA ? '1' : '0')}</span>
-    <span id='pending-b'>{text 'B:' + (pendingB ? '1' : '0')}</span>
-    <span id='n'>{text n}</span>
-    <button id='nest' onClick={() => startA(() => startB(() => setN(props.target)))}>{text 'nest'}</button>
+    <span id='pending-a'>{('A:' + (pendingA ? '1' : '0')) as string}</span>
+    <span id='pending-b'>{('B:' + (pendingB ? '1' : '0')) as string}</span>
+    <span id='n'>{n as string}</span>
+    <button id='nest' onClick={() => startA(() => startB(() => setN(props.target)))}>{'nest'}</button>
   </div>
 }
 
@@ -170,14 +174,14 @@ export component NestedTransitions(props) {
 // value and the deferred read commit in the same transition pass (React:
 // ReactDeferredValue-test.js:108 "does not defer during a transition").
 // ---------------------------------------------------------------------------
-export component DeferredValueInTransition() {
+export function DeferredValueInTransition() @{
   const [v, setV] = useState(1);
   const [_, start] = useTransition();
   const deferred = useDeferredValue(v);
   <div>
-    <span id='original'>{text 'Original: ' + v}</span>
-    <span id='deferred'>{text 'Deferred: ' + deferred}</span>
-    <button id='bump' onClick={() => start(() => setV(v + 1))}>{text 'bump'}</button>
+    <span id='original'>{('Original: ' + v) as string}</span>
+    <span id='deferred'>{('Deferred: ' + deferred) as string}</span>
+    <button id='bump' onClick={() => start(() => setV(v + 1))}>{'bump'}</button>
   </div>
 }
 
@@ -189,18 +193,18 @@ export component DeferredValueInTransition() {
 // React equivalent: ReactUse-test.js:1631 "updates while component is
 // suspended should not be mistaken for render phase updates".
 // ---------------------------------------------------------------------------
-export component UrgentSupersedesTransition(props) {
+export function UrgentSupersedesTransition(props) @{
   const [promise, setPromise] = useState(props.initialPromise);
   const [isPending, start] = useTransition();
   <div>
-    <span id='pending'>{text isPending ? '1' : '0'}</span>
-    <button id='swap-trans' onClick={() => start(() => setPromise(props.transitionPromise))}>{text 'trans'}</button>
-    <button id='swap-urgent' onClick={() => setPromise(props.urgentPromise)}>{text 'urgent'}</button>
-    try {
+    <span id='pending'>{isPending ? '1' : '0'}</span>
+    <button id='swap-trans' onClick={() => start(() => setPromise(props.transitionPromise))}>{'trans'}</button>
+    <button id='swap-urgent' onClick={() => setPromise(props.urgentPromise)}>{'urgent'}</button>
+    @try {
       const value = use(promise);
-      <span id='value'>{text value}</span>
-    } pending {
-      <span id='fallback'>{text 'fallback'}</span>
+      <span id='value'>{value as string}</span>
+    } @pending {
+      <span id='fallback'>{'fallback'}</span>
     }
   </div>
 }

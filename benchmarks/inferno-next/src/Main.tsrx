@@ -1,4 +1,3 @@
-
 import { useState } from 'inferno-next';
 
 const ADJECTIVES = ['pretty','large','big','small','tall','short','long','handsome','plain','quaint','clean','elegant','easy','angry','crazy','helpful','mushy','odd','unsightly','adorable','important','inexpensive','cheap','expensive','fancy'];
@@ -21,7 +20,7 @@ function buildData(count) {
   return data;
 }
 
-export default component Main() {
+export default function Main() @{
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(0);
 
@@ -80,11 +79,11 @@ export default component Main() {
     </div>
     <table class='table table-hover table-striped test-data'>
       <tbody>
-        for (const row of items; key row.id) {
+        @for (const row of items; key row.id) {
           <tr class={selected === row.id ? 'danger' : ''}>
-            <td class='col-md-1'>{text row.id}</td>
+            <td class='col-md-1'>{row.id as string}</td>
             <td class='col-md-4'>
-              <a onClick={() => select(row.id)}>{text row.label}</a>
+              <a onClick={() => select(row.id)}>{row.label as string}</a>
             </td>
             <td class='col-md-1'>
               <a onClick={() => remove(row)}>

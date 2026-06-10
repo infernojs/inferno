@@ -6,33 +6,33 @@ export const UserCtx = createContext('anon');
 export const CountCtx = createContext(0);
 
 // Reads a single context value.
-export component ThemeReader() {
+export function ThemeReader() @{
   const v = use(ThemeCtx);
-  <span class='theme'>{text v}</span>
+  <span class='theme'>{v as string}</span>
 }
 
-export component UserReader() {
+export function UserReader() @{
   const v = use(UserCtx);
-  <span class='user'>{text v}</span>
+  <span class='user'>{v as string}</span>
 }
 
-export component CountReader() {
+export function CountReader() @{
   const v = use(CountCtx);
-  <span class='count'>{text v}</span>
+  <span class='count'>{v as string}</span>
 }
 
 // Reads two contexts in one component.
-export component CombinedReader() {
+export function CombinedReader() @{
   const theme = use(ThemeCtx);
   const user = use(UserCtx);
-  <span class='combined'>{text theme + '/' + user}</span>
+  <span class='combined'>{(theme + '/' + user) as string}</span>
 }
 
 // Provider value updates → consumers re-render.
-export component DynamicProvider() {
+export function DynamicProvider() @{
   const [v, setV] = useState('init');
   <div>
-    <button id='swap' onClick={() => setV(v === 'init' ? 'changed' : 'init')}>{text 'swap'}</button>
+    <button id='swap' onClick={() => setV(v === 'init' ? 'changed' : 'init')}>{'swap'}</button>
     <ThemeCtx.Provider value={v}>
       <ThemeReader />
     </ThemeCtx.Provider>
@@ -40,7 +40,7 @@ export component DynamicProvider() {
 }
 
 // Multiple sibling consumers all see the same value.
-export component Siblings() {
+export function Siblings() @{
   <ThemeCtx.Provider value={'dark'}>
     <div>
       <div class='one'><ThemeReader /></div>
@@ -51,7 +51,7 @@ export component Siblings() {
 }
 
 // Distinct contexts — each consumer reads its own; no leak.
-export component TwoContexts() {
+export function TwoContexts() @{
   <ThemeCtx.Provider value={'dark'}>
     <UserCtx.Provider value={'alice'}>
       <div>
@@ -64,26 +64,26 @@ export component TwoContexts() {
 }
 
 // use() inside an if-branch — the read happens only when the branch mounts.
-export component ConditionalUse(props) {
+export function ConditionalUse(props) @{
   <ThemeCtx.Provider value={'dark'}>
     <div>
-      if (props.show) {
+      @if (props.show) {
         <ThemeReader />
-      } else {
-        <span class='hidden'>{text 'hidden'}</span>
+      } @else {
+        <span class='hidden'>{'hidden'}</span>
       }
     </div>
   </ThemeCtx.Provider>
 }
 
 // use() inside for-of items — each item reads the same context independently.
-export component ListConsumers(props) {
+export function ListConsumers(props) @{
   <CountCtx.Provider value={props.value}>
     <ul>
-      for (const x of props.items; key x) {
+      @for (const x of props.items; key x) {
         <li>
           <CountReader />
-          <span class='ix'>{text x}</span>
+          <span class='ix'>{x as string}</span>
         </li>
       }
     </ul>
@@ -92,24 +92,24 @@ export component ListConsumers(props) {
 
 // Context flows through a portal — consumer in the portal target reads
 // the Provider that wraps the portal call site.
-export component PortalledContext(props) {
+export function PortalledContext(props) @{
   <ThemeCtx.Provider value={'from-portal-parent'}>
     <div>
-      {createPortal(<tsrx><div class='portal-content'><ThemeReader /></div></tsrx>, props.target)}
+      {createPortal(() => @{ <div class='portal-content'><ThemeReader /></div> }, props.target)}
     </div>
   </ThemeCtx.Provider>
 }
 
 // Context updates inside a for-of body — changing the value re-renders all rows.
-export component LiveCount(props) {
+export function LiveCount(props) @{
   const [n, setN] = useState(0);
   <CountCtx.Provider value={n}>
     <div>
-      <button id='inc' onClick={() => setN(n + 1)}>{text n}</button>
+      <button id='inc' onClick={() => setN(n + 1)}>{n as string}</button>
       <ul>
-        for (const x of props.ids; key x) {
+        @for (const x of props.ids; key x) {
           <li>
-            <span class='label'>{text 'r' + x}</span>
+            <span class='label'>{('r' + x) as string}</span>
             <CountReader />
           </li>
         }

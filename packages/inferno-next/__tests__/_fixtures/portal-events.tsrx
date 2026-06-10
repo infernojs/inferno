@@ -4,16 +4,16 @@ import { useState, createPortal } from 'inferno-next';
  * Click handler INSIDE the portal contents — verifies the portal target gets
  * the delegated listener attached (registerDelegationTarget refcount path).
  */
-export component BasicPortalClick(props) {
+export function BasicPortalClick(props) @{
   const [count, setCount] = useState(0);
   <div class='app-root'>
-    <span class='count'>{text count}</span>
+    <span class='count'>{count as string}</span>
     {createPortal(
-      <tsrx>
+      () => @{
         <div class='modal'>
-          <button class='inside-btn' onClick={() => setCount(count + 1)}>{text 'inside'}</button>
+          <button class='inside-btn' onClick={() => setCount(count + 1)}>{'inside'}</button>
         </div>
-      </tsrx>,
+      },
       props.target,
     )}
   </div>
@@ -24,21 +24,21 @@ export component BasicPortalClick(props) {
  * bubble OUT of the portal via $$portalParent — clicking inside the modal
  * should fire BOTH the inner handler AND the outer one.
  */
-export component CrossPortalBubble(props) {
+export function CrossPortalBubble(props) @{
   const [innerCount, setInnerCount] = useState(0);
   const [outerCount, setOuterCount] = useState(0);
   // The onClick on the root div MUST fire when the inner button is clicked,
   // because the inner button is logically a descendant of this div even
   // though its DOM lives in props.target.
   <div class='app-root' onClick={() => setOuterCount(outerCount + 1)}>
-    <span class='inner-count'>{text innerCount}</span>
-    <span class='outer-count'>{text outerCount}</span>
+    <span class='inner-count'>{innerCount as string}</span>
+    <span class='outer-count'>{outerCount as string}</span>
     {createPortal(
-      <tsrx>
+      () => @{
         <div class='modal'>
-          <button class='inside-btn' onClick={() => setInnerCount(innerCount + 1)}>{text 'inside'}</button>
+          <button class='inside-btn' onClick={() => setInnerCount(innerCount + 1)}>{'inside'}</button>
         </div>
-      </tsrx>,
+      },
       props.target,
     )}
   </div>
@@ -48,19 +48,19 @@ export component CrossPortalBubble(props) {
  * Stops propagation on the inner handler — verifies the outer handler does
  * NOT fire when the inner one cancels bubbling.
  */
-export component StopPropagation(props) {
+export function StopPropagation(props) @{
   const [innerCount, setInnerCount] = useState(0);
   const [outerCount, setOuterCount] = useState(0);
   const inner = (e) => { e.stopPropagation(); setInnerCount(innerCount + 1); };
   <div class='app-root' onClick={() => setOuterCount(outerCount + 1)}>
-    <span class='inner-count'>{text innerCount}</span>
-    <span class='outer-count'>{text outerCount}</span>
+    <span class='inner-count'>{innerCount as string}</span>
+    <span class='outer-count'>{outerCount as string}</span>
     {createPortal(
-      <tsrx>
+      () => @{
         <div class='modal'>
-          <button class='inside-btn' onClick={inner}>{text 'inside'}</button>
+          <button class='inside-btn' onClick={inner}>{'inside'}</button>
         </div>
-      </tsrx>,
+      },
       props.target,
     )}
   </div>
@@ -71,18 +71,18 @@ export component StopPropagation(props) {
  * means the target gets listeners attached once. Both portals' inner handlers
  * must fire when their respective buttons are clicked.
  */
-export component TwoPortalsSameTarget(props) {
+export function TwoPortalsSameTarget(props) @{
   const [aCount, setACount] = useState(0);
   const [bCount, setBCount] = useState(0);
   <div class='app-root'>
-    <span class='a-count'>{text aCount}</span>
-    <span class='b-count'>{text bCount}</span>
+    <span class='a-count'>{aCount as string}</span>
+    <span class='b-count'>{bCount as string}</span>
     {createPortal(
-      <tsrx><button class='btn-a' onClick={() => setACount(aCount + 1)}>{text 'A'}</button></tsrx>,
+      () => @{ <button class='btn-a' onClick={() => setACount(aCount + 1)}>{'A'}</button> },
       props.target,
     )}
     {createPortal(
-      <tsrx><button class='btn-b' onClick={() => setBCount(bCount + 1)}>{text 'B'}</button></tsrx>,
+      () => @{ <button class='btn-b' onClick={() => setBCount(bCount + 1)}>{'B'}</button> },
       props.target,
     )}
   </div>
@@ -91,10 +91,10 @@ export component TwoPortalsSameTarget(props) {
 // Wrap the portal in its own component so the if-block below can mount/unmount
 // it without inlining createPortal at conditional position (the TSRX compiler
 // only takes createPortal at JSX child position of an element).
-component PortalledButton(props) {
+function PortalledButton(props) @{
   <span class='portal-anchor'>
     {createPortal(
-      <tsrx><button class='inside-btn'>{text 'inside'}</button></tsrx>,
+      () => @{ <button class='inside-btn'>{'inside'}</button> },
       props.target,
     )}
   </span>
@@ -106,11 +106,11 @@ component PortalledButton(props) {
  * the portal target's lingering DOM doesn't try to dispatch into a torn-down
  * Block.
  */
-export component TogglePortal(props) {
+export function TogglePortal(props) @{
   const [open, setOpen] = useState(true);
   <div class='app-root'>
-    <button class='toggle' onClick={() => setOpen(!open)}>{text 'toggle'}</button>
-    if (open) {
+    <button class='toggle' onClick={() => setOpen(!open)}>{'toggle'}</button>
+    @if (open) {
       <PortalledButton target={props.target} />
     }
   </div>

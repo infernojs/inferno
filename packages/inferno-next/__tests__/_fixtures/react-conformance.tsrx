@@ -6,11 +6,11 @@ import { useState, useEffect, useLayoutEffect } from 'inferno-next';
 //    pass into effect dependency arrays without re-firing.
 //    Adapted from ReactHooksWithNoopRenderer-test.js:311.
 // ---------------------------------------------------------------------------
-export component SetterIdentity(props) {
+export function SetterIdentity(props) @{
   const [n, setN] = useState(0);
   props.observe(setN);
   <div>
-    <button id='bump' onClick={() => setN(n + 1)}>{text n}</button>
+    <button id='bump' onClick={() => setN(n + 1)}>{n as string}</button>
   </div>
 }
 
@@ -19,19 +19,19 @@ export component SetterIdentity(props) {
 //    any change fires destroy(prev) → create(next) in that order.
 //    Adapted from ReactHooksWithNoopRenderer-test.js:1800.
 // ---------------------------------------------------------------------------
-export component EffectDepsObjectIs(props) {
+export function EffectDepsObjectIs(props) @{
   useEffect((log, label, count) => {
     log.push('create ' + label + count);
     return () => log.push('destroy ' + label + count);
   }, [props.log, props.label, props.count]);
-  <div>{text props.label + ':' + props.count}</div>
+  <div>{(props.label + ':' + props.count) as string}</div>
 }
 
 // ---------------------------------------------------------------------------
 // 3. All previous cleanups fire BEFORE any new creates (multi-hook).
 //    Adapted from ReactHooksWithNoopRenderer-test.js:1885.
 // ---------------------------------------------------------------------------
-export component AllDestroysBeforeCreates(props) {
+export function AllDestroysBeforeCreates(props) @{
   useEffect((log, count) => {
     log.push('Mount A ' + count);
     return () => log.push('Unmount A ' + count);
@@ -40,7 +40,7 @@ export component AllDestroysBeforeCreates(props) {
     log.push('Mount B ' + count);
     return () => log.push('Unmount B ' + count);
   }, [props.log, props.count]);
-  <div>{text props.count}</div>
+  <div>{props.count as string}</div>
 }
 
 // ---------------------------------------------------------------------------
@@ -48,15 +48,15 @@ export component AllDestroysBeforeCreates(props) {
 //    all destroys run before any creates (globally).
 //    Adapted from ReactHooksWithNoopRenderer-test.js:1926.
 // ---------------------------------------------------------------------------
-component SibLeaf(props) {
+function SibLeaf(props) @{
   useEffect((log, label, count) => {
     log.push('Mount ' + label + count);
     return () => log.push('Unmount ' + label + count);
   }, [props.log, props.label, props.count]);
-  <span class={'leaf-' + props.label}>{text props.label + props.count}</span>
+  <span class={'leaf-' + props.label}>{(props.label + props.count) as string}</span>
 }
 
-export component SiblingCleanupOrder(props) {
+export function SiblingCleanupOrder(props) @{
   <div>
     <SibLeaf log={props.log} label='A' count={props.count} />
     <SibLeaf log={props.log} label='B' count={props.count} />
@@ -68,7 +68,7 @@ export component SiblingCleanupOrder(props) {
 //    AFTER the DOM has been mutated, so they can observe committed state.
 //    Adapted from ReactHooksWithNoopRenderer-test.js:3092 + 3124.
 // ---------------------------------------------------------------------------
-export component LayoutVsPassive(props) {
+export function LayoutVsPassive(props) @{
   useLayoutEffect((log, count) => {
     // Synchronously observable: the <span> already shows `count`.
     const el = document.querySelector('#layout-target');
@@ -80,5 +80,5 @@ export component LayoutVsPassive(props) {
     log.push('passive ' + (el ? el.textContent : '<missing>') + ' (' + count + ')');
     return () => log.push('cleanup passive ' + count);
   }, [props.log, props.count]);
-  <span id='layout-target'>{text props.count}</span>
+  <span id='layout-target'>{props.count as string}</span>
 }

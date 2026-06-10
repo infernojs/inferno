@@ -5,7 +5,7 @@ import { StoryList } from './components/StoryList.tsrx';
 import { StoryDetail } from './components/StoryDetail.tsrx';
 import { UserView } from './components/UserView.tsrx';
 
-export component App() {
+export function App() @{
   const loc = useRoute();
   const route = matchRoute(loc.pathname);
   const page = parsePage(loc.search);
@@ -33,19 +33,19 @@ export component App() {
 
   <div>
     <Nav kind={route.kind} pending={false} />
-    if (route.kind === 'news' || route.kind === 'newest' || route.kind === 'show' || route.kind === 'ask' || route.kind === 'jobs') {
+    @if (route.kind === 'news' || route.kind === 'newest' || route.kind === 'show' || route.kind === 'ask' || route.kind === 'jobs') {
       <StoryList kind={route.kind} page={page} />
-    } else if (route.kind === 'story') {
+    } @else if (route.kind === 'story') {
       <main class='view'>
         <StoryDetail id={route.params.id} />
       </main>
-    } else if (route.kind === 'user') {
+    } @else if (route.kind === 'user') {
       <UserView id={route.params.id} />
-    } else {
+    } @else {
       <main class='view'>
         <div class='error-view'>
-          <h2>{text 'Page not found'}</h2>
-          <p>{text 'No route matches ' + loc.pathname}</p>
+          <h2>{'Page not found'}</h2>
+          <p>{('No route matches ' + loc.pathname) as string}</p>
         </div>
       </main>
     }

@@ -1,19 +1,19 @@
 import { useState } from 'inferno-next';
 
-export component Classed(props) {
-  <div class={props.kind}>{text 'x'}</div>
+export function Classed(props) @{
+  <div class={props.kind}>{'x'}</div>
 }
 
-export component WithAttrs(props) {
-  <a href={props.url} title={props.title}>{text 'link'}</a>
+export function WithAttrs(props) @{
+  <a href={props.url} title={props.title}>{'link'}</a>
 }
 
-export component Clicker() {
+export function Clicker() @{
   const [n, setN] = useState(0);
-  <button onClick={() => setN(n + 1)}>{text n}</button>
+  <button onClick={() => setN(n + 1)}>{n as string}</button>
 }
 
-export component FnSetter() {
+export function FnSetter() @{
   const [n, setN] = useState(0);
-  <button onClick={() => { setN(c => c + 1); setN(c => c + 1); setN(c => c + 1); }}>{text n}</button>
+  <button onClick={() => { setN(c => c + 1); setN(c => c + 1); setN(c => c + 1); }}>{n as string}</button>
 }
