@@ -131,7 +131,7 @@ describe('TSRX features — ternary with fragment branches', () => {
 describe('TSRX features — `.map()` compile-error guidance', () => {
   it("rejects `{items.map(x => <>...</>)}` with a useful suggestion", () => {
     const src =
-      "export component A(p) { <ul>{p.items.map(x => <>{text x}</>)}</ul> }";
+      "export function A(p) @{ <ul>{p.items.map(x => <>{x as string}</>)}</ul> }";
     expect(() => compile(src, 'a.tsrx')).toThrow(/for-of loop instead/);
   });
 
@@ -139,7 +139,7 @@ describe('TSRX features — `.map()` compile-error guidance', () => {
     // `.map().join()` returning a string is a perfectly valid expression at
     // child position — should compile without error.
     const src =
-      "export component A(p) { <div>{text p.items.map(x => x.id).join(',')}</div> }";
+      "export function A(p) @{ <div>{p.items.map(x => x.id).join(',') as string}</div> }";
     expect(() => compile(src, 'a.tsrx')).not.toThrow();
   });
 });

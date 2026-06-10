@@ -23,7 +23,7 @@
  * ifBlock, dynamic components, portals.
  */
 
-import { parseModule, prepareStylesheetForRender, renderStylesheets } from '@tsrx/core';
+import { parseModule, prepareStylesheetForRender, renderStylesheets, annotateWithHash } from '@tsrx/core';
 import { print as esrapPrint } from 'esrap';
 import esrapTsx from 'esrap/languages/tsx';
 
@@ -138,7 +138,12 @@ function collectBindings(pattern, out) {
 function collectComponentLocals(componentNode) {
   const locals = new Set();
   for (const p of componentNode.params || []) collectBindings(p, locals);
-  for (const stmt of componentNode.body || []) {
+  // New shape: body is a JSXCodeBlock with `.body` as the statement list.
+  // Legacy/synthetic shape: body IS the statement list directly.
+  const stmts = componentNode.body && componentNode.body.type === 'JSXCodeBlock'
+    ? (componentNode.body.body || [])
+    : (componentNode.body || []);
+  for (const stmt of stmts) {
     if (stmt.type === 'VariableDeclaration') {
       for (const d of stmt.declarations || []) collectBindings(d.id, locals);
     } else if (stmt.type === 'FunctionDeclaration') {
@@ -383,9 +388,15 @@ function containsComponentCallOrControlFlow(stmts) {
     if (typeof n !== 'object') return;
     const t = n.type;
     if (!t) return;
-    if (t === 'Element' && isComponentTag(n)) { found = true; return; }
-    if (t === 'IfStatement' || t === 'ForOfStatement' || t === 'TryStatement') { found = true; return; }
+    // Component calls — old `Element` or new `JSXElement` with capitalised tag.
+    if ((t === 'Element' || t === 'JSXElement') && isComponentTag(n)) { found = true; return; }
+    // Control flow in the body — old statement-position forms.
+    if (t === 'IfStatement' || t === 'ForOfStatement' || t === 'TryStatement' || t === 'SwitchStatement') { found = true; return; }
+    // Control flow in the body — new JSX-expression forms.
+    if (t === 'JSXIfExpression' || t === 'JSXForExpression' || t === 'JSXTryExpression' || t === 'JSXSwitchExpression') { found = true; return; }
+    // Portal at child position — old TSRXExpression wrapper, new JSXExpressionContainer.
     if (t === 'TSRXExpression' && n.expression && isCreatePortalCall(n.expression)) { found = true; return; }
+    if (t === 'JSXExpressionContainer' && n.expression && isCreatePortalCall(n.expression)) { found = true; return; }
     for (const key in n) {
       if (key === 'type' || key === 'loc' || key === 'start' || key === 'end' || key === 'range' || key === 'metadata') continue;
       walk(n[key]);
@@ -431,7 +442,8 @@ function detectStableEventBundle(node) {
 function isJsxLike(node) {
   if (!node) return false;
   const t = node.type;
-  return t === 'Element' || t === 'Tsrx' || t === 'Tsx' || t === 'Text';
+  return t === 'Element' || t === 'Tsrx' || t === 'Tsx' || t === 'Text'
+    || t === 'JSXElement' || t === 'JSXFragment' || t === 'JSXText';
 }
 
 /** A ternary at child position where at least one branch is JSX. */
@@ -510,6 +522,21 @@ function resolveStyleExpr(node, cssHash) {
 }
 
 /**
+ * The new TSRX (`@tsrx/core@0.1.25`) shape for a component is a plain
+ * `FunctionDeclaration` whose `body` is a `JSXCodeBlock` (opened by `@{`),
+ * not the old dedicated `Component` AST node. We detect them at the three
+ * places they can appear: top-level, under `export`, under `export default`.
+ * `compileComponent` / `compileFunctionBody` read `body.body` (setup
+ * statements) and `body.render` (single JSX root) off the JSXCodeBlock.
+ */
+function isComponentFunction(node) {
+  return node
+    && (node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression')
+    && node.body
+    && node.body.type === 'JSXCodeBlock';
+}
+
+/**
  * Compile a .tsrx source string into JS targeting `inferno-next`.
  * @param {string} source
  * @param {string} filename
@@ -533,15 +560,16 @@ export function compile(source, filename) {
 
   let body = '';
   for (const node of ast.body) {
-    if (node.type === 'Component') {
+    if (isComponentFunction(node)) {
+      // `function Foo() @{ ... }` (new TSRX shape).
       body += compileComponent(node, ctx) + '\n\n';
-    } else if (node.type === 'ExportDefaultDeclaration' && node.declaration?.type === 'Component') {
-      // `export default component Foo() {...}` → emit as named const + `export default Foo;`.
+    } else if (node.type === 'ExportDefaultDeclaration' && isComponentFunction(node.declaration)) {
+      // `export default function Foo() @{...}` → emit as named const + `export default Foo;`.
       const c = node.declaration;
       const compiled = compileComponent({ ...c, default: false }, ctx);
       body += compiled + '\nexport default ' + c.id.name + ';\n\n';
-    } else if (node.type === 'ExportNamedDeclaration' && node.declaration?.type === 'Component') {
-      // `export component Foo() {...}` → emit as `export const Foo = ...;`.
+    } else if (node.type === 'ExportNamedDeclaration' && isComponentFunction(node.declaration)) {
+      // `export function Foo() @{...}` → emit as `export const Foo = ...;`.
       const c = node.declaration;
       const compiled = compileComponent({ ...c, export: true }, ctx);
       body += compiled + '\n\n';
@@ -592,17 +620,78 @@ export function compile(source, filename) {
 // Component compilation
 // ===========================================================================
 
+/**
+ * Walk a new-TSRX component (its `JSXCodeBlock` body) for `JSXStyleElement`
+ * nodes. For each one found:
+ *   - Pull the pre-parsed `StyleSheet` AST out of its children.
+ *   - Run `prepareStylesheetForRender` (rewrites `.foo` → `.foo.<hash>` —
+ *     mutates the sheet in place).
+ *   - Collect into a list rendered via `renderStylesheets` to a CSS string.
+ *   - Register `{hash, css}` on `ctx.cssInjections` so a module-level
+ *     `injectStyle(hash, css)` is emitted in the prelude.
+ *   - Run `annotateWithHash` over `body.render` to stamp the hash class on
+ *     every native JSX element AND remove the JSXStyleElement nodes from
+ *     the rendered tree (they don't contribute DOM in the new model).
+ *
+ * Returns the hash, or `null` when no `<style>` blocks are present.
+ *
+ * The first `JSXStyleElement` we see contributes the canonical hash for the
+ * whole component — multiple `<style>` blocks share it; that matches Ripple's
+ * `annotate_component_with_hash`.
+ */
+function applyCssScoping(componentNode, ctx) {
+  if (!componentNode.body || componentNode.body.type !== 'JSXCodeBlock') return null;
+  let cssHash = null;
+  const styleSheets = [];
+  function collect(node) {
+    if (!node || typeof node !== 'object') return;
+    if (Array.isArray(node)) { for (const i of node) collect(i); return; }
+    if (node.type === 'JSXStyleElement') {
+      const sheet = (node.children || []).find(c => c && c.type === 'StyleSheet');
+      if (sheet) {
+        styleSheets.push(sheet);
+        if (!cssHash) cssHash = node.metadata?.styleScopeHash || sheet.hash || null;
+      }
+      return;
+    }
+    for (const key of Object.keys(node)) {
+      if (key === 'loc' || key === 'start' || key === 'end' || key === 'parent') continue;
+      const v = node[key];
+      if (v && typeof v === 'object') collect(v);
+    }
+  }
+  collect(componentNode.body);
+  if (!cssHash || styleSheets.length === 0) return null;
+  for (const sheet of styleSheets) prepareStylesheetForRender(sheet);
+  const css = renderStylesheets(styleSheets);
+  ctx.cssInjections.push({ hash: cssHash, css });
+  ctx.runtimeNeeded.add('injectStyle');
+  // Mutate the render tree: add hash class to every native element AND
+  // strip JSXStyleElement nodes (annotateWithHash returns null for them when
+  // preserve_style_elements=false, so we filter nulls out of children).
+  if (componentNode.body.render) {
+    componentNode.body.render = annotateWithHash(componentNode.body.render, cssHash, 'class', false);
+  }
+  return cssHash;
+}
+
 function compileComponent(node, ctx) {
   const name = node.id.name;
   const isExported = !!(node.export || node.default || node.exported);
   const isDefault = !!node.default;
 
-  // Scoped `<style>` block: TSRX parses it onto `node.css` with a content hash.
-  // Run the @tsrx/core scoping pass (turns `.foo` → `.foo.<hash>`) and hoist a
-  // single module-level `injectStyle(hash, css)` call. The hash is stashed on
-  // the component context so `{style 'cls'}` resolution can prefix it.
-  let cssHash = null;
-  if (node.css) {
+  // Scoped `<style>` block. New TSRX surfaces each style block as a
+  // `JSXStyleElement` child of the rendered tree (parser pre-computes the
+  // content hash + parses CSS into a StyleSheet AST). Collect them, run the
+  // @tsrx/core scoping pipeline (rewrites `.foo` → `.foo.<hash>` AND stamps
+  // the hash class onto every element under this component), emit a single
+  // module-level `injectStyle(hash, css)`, and surface `cssHash` so
+  // resolveStyleExpr can also prefix any legacy `{style 'cls'}` usages still
+  // present in fixtures.
+  let cssHash = applyCssScoping(node, ctx);
+  // Backwards-compat: internal callers (legacy synthetic Component shapes)
+  // may still attach `.css` directly on the node.
+  if (!cssHash && node.css) {
     prepareStylesheetForRender(node.css);
     const css = renderStylesheets([node.css]);
     cssHash = node.css.hash;
@@ -652,21 +741,32 @@ function compileFunctionBody(node, ctx, name, parentNs = 'html', cssHash = null,
   const params = node.params.map(p => printNode(p)).join(', ');
   const paramsClause = params ? `, ${params}` : '';
 
-  // Early-exit desugaring: `if (cond) return;` (component body) and
-  // `if (cond) continue;` (for-of body) both short-circuit the rest. We
-  // rewrite to `if (!cond) { ...rest }` so subsequent JSX is gated.
-  const bodyRewritten = rewriteEarlyExits(node.body);
-
-  // Split body: statement nodes vs JSX-position nodes. The `<style>` block
-  // itself isn't rendered as DOM — its CSS was already extracted in
-  // compileComponent — so drop any literal <style> elements here.
-  const statements = [];
-  const jsxNodes = [];
-  for (const child of bodyRewritten) {
-    if (isJsxNode(child)) {
-      if (child.type === 'Element' && elementTagName(child) === 'style') continue;
-      jsxNodes.push(child);
-    } else statements.push(child);
+  // Body splitting. Two shapes to handle:
+  //   (new TSRX)  node.body is a `JSXCodeBlock { body: Statement[], render: Node|null }`.
+  //               Setup statements and the render JSX are already split for us.
+  //               Early-return guards are normal JS `if (cond) return;` — the
+  //               function's render is its single final expression, reached
+  //               only if no return fired, so no early-exit desugaring needed.
+  //   (legacy)    node.body is `Statement[]` with JSX nodes interleaved as
+  //               statements. Used by internal callers that construct synthetic
+  //               Component shapes (rewriteTsrxBlocks for old `<tsrx>` blocks,
+  //               makeForCall/makeIfCall/makeTryCall for inlined sub-bodies).
+  //               Keep the old split + rewriteEarlyExits path for these.
+  let statements;
+  let jsxNodes;
+  if (node.body && node.body.type === 'JSXCodeBlock') {
+    statements = node.body.body || [];
+    jsxNodes = node.body.render ? [node.body.render] : [];
+  } else {
+    const bodyRewritten = rewriteEarlyExits(node.body);
+    statements = [];
+    jsxNodes = [];
+    for (const child of bodyRewritten) {
+      if (isJsxNode(child)) {
+        if (child.type === 'Element' && elementTagName(child) === 'style') continue;
+        jsxNodes.push(child);
+      } else statements.push(child);
+    }
   }
 
   // Plan + emit JSX. Records any inline-sub-component code that needs to live
@@ -737,11 +837,19 @@ function rewriteHookCalls(node, ctx, componentName) {
 }
 
 /**
- * Replace `<tsrx>...</tsrx>` and `<tsx>...</tsx>` AST nodes at expression
- * position with an identifier referencing a hoisted render function.
- * The render function is added to `inlinedSubs` (visible in the surrounding
- * component-body scope), so it can capture the component's locals via closure.
- * Note: it cannot capture params of nested arrows — see compiler README.
+ * Hoist sub-template render functions at expression position. Three shapes:
+ *   (legacy)  `<tsrx>...</tsrx>` / `<tsx>...</tsx>` JSX block — replaced.
+ *   (new)     `() => @{ <jsx/> }` — arrow whose body is a JSXCodeBlock. The
+ *             new TSRX way to write what `<tsrx>` used to express. The arrow
+ *             takes whatever params the user wrote (typically `()`); we hoist
+ *             a function declaration whose signature mirrors the standard
+ *             component signature `(__s, …userParams, __extra)` so it slots
+ *             into createPortal / Dynamic / render-prop callers uniformly.
+ *
+ * In both cases the helper is added to `inlinedSubs` (visible in the
+ * surrounding component-body scope) so it captures the parent component's
+ * locals via closure. It cannot capture params of nested arrows — see
+ * compiler README.
  */
 function rewriteTsrxBlocks(node, ctx, componentName, inlinedSubs) {
   return mapAst(node, (n) => {
@@ -754,8 +862,21 @@ function rewriteTsrxBlocks(node, ctx, componentName, inlinedSubs) {
         body: n.children || [],
       };
       const fn = compileFunctionBody(fakeBody, ctx, helperName);
-      // Function declaration — hoisted within the enclosing body, so the
-      // statement that references it can sit either before or after.
+      inlinedSubs.push(fn + ';');
+      return { type: 'Identifier', name: helperName };
+    }
+    if (n.type === 'ArrowFunctionExpression' && n.body && n.body.type === 'JSXCodeBlock') {
+      // `() => @{ … }` — new sub-template form. Hoist as a regular component
+      // body so its body.body (setup) + body.render (JSX) feed back through
+      // the standard compileFunctionBody path.
+      const helperName = `__tsrx$${ctx.nextHelperId++}`;
+      const fakeBody = {
+        type: 'FunctionDeclaration',
+        id: { type: 'Identifier', name: helperName },
+        params: n.params || [],
+        body: n.body,
+      };
+      const fn = compileFunctionBody(fakeBody, ctx, helperName);
       inlinedSubs.push(fn + ';');
       return { type: 'Identifier', name: helperName };
     }
@@ -792,8 +913,25 @@ function normalizeChildren(nodes) {
       if (/^\s*$/.test(n.value)) continue;
       out.push({ type: 'Text', expression: { type: 'Literal', value: n.value, raw: JSON.stringify(n.value) } });
     } else if (n.type === 'JSXExpressionContainer') {
-      out.push({ type: 'Text', expression: n.expression });
+      // Unwrap `{expr as string}` / `{expr as TSStringKeyword}` so downstream
+      // emission sees a plain expression. The `as string` is purely a
+      // compile-time hint; the runtime coercion (String(_v)) happens in the
+      // emitted code regardless.
+      const expression = stripStringishCast(n.expression);
+      // Route to the RICH dispatcher (`TSRXExpression` branch in emitElementHtml)
+      // when the expression is one that needs special handling — createPortal
+      // calls, JSX-bearing ternaries, sub-template arrows (`() => @{…}`).
+      // Otherwise route to the simpler `Text` branch (text-binding fast-path
+      // for string-typed expressions; runtime String() coercion for others).
+      out.push({
+        type: needsRichDispatch(expression) ? 'TSRXExpression' : 'Text',
+        expression,
+      });
     } else if (n.type === 'JSXElement') {
+      // Skip JSXStyleElement nested as a child — its CSS gets registered via
+      // the @tsrx/core scoping pipeline elsewhere; it contributes no DOM.
+      // (Detected separately via JSXStyleElement type but the parser may also
+      // surface a regular JSXElement with tag 'style' in some edge cases.)
       out.push({
         type: 'Element',
         id: n.openingElement.name,
@@ -804,12 +942,102 @@ function normalizeChildren(nodes) {
       });
     } else if (n.type === 'Tsx' || n.type === 'Tsrx' || n.type === 'JSXFragment') {
       out.push(...normalizeChildren(n.children || []));
+    } else if (n.type === 'JSXStyleElement') {
+      // Drop — its CSS gets pulled out of the render tree elsewhere.
+      // No DOM contribution at this child position.
+      continue;
+    } else if (n.type === 'JSXIfExpression') {
+      // `@if (cond) { ... } @else { ... }` — lower to the old IfStatement
+      // shape so the existing makeIfCall path picks it up. `consequent` and
+      // `alternate` are already BlockStatements per the new AST.
+      out.push({
+        type: 'IfStatement',
+        test: n.test,
+        consequent: n.consequent,
+        alternate: n.alternate || null,
+      });
+    } else if (n.type === 'JSXForExpression') {
+      // `@for (const x of items; index i; key x.id) { ... }` — lower to
+      // ForOfStatement plus the `key` and `index` fields the new AST gives
+      // us on the directive node. makeForCall reads these off the synthetic
+      // ForOfStatement to plan keyed reconciliation.
+      out.push({
+        type: 'ForOfStatement',
+        left: n.left,
+        right: n.right,
+        body: n.body,
+        await: !!n.await,
+        key: n.key || null,
+        index: n.index || null,
+        empty: n.empty || null,
+      });
+    } else if (n.type === 'JSXTryExpression') {
+      // `@try { } @catch (err) { } @pending { }` — lower to TryStatement
+      // with the optional `pending` field tagged on (consumed by makeTryCall
+      // as the Suspense fallback branch).
+      out.push({
+        type: 'TryStatement',
+        block: n.block,
+        handler: n.handler || null,
+        finalizer: n.finalizer || null,
+        pending: n.pending || null,
+      });
+    } else if (n.type === 'JSXSwitchExpression') {
+      // `@switch (d) { @case 1: { ... } @default: { ... } }` — lower to a
+      // synthetic SwitchStatement for makeSwitchCall to consume.
+      out.push({
+        type: 'SwitchStatement',
+        discriminant: n.discriminant,
+        cases: n.cases || [],
+      });
     } else {
       out.push(n);
     }
   }
   return out;
 }
+
+/**
+ * Decide whether a JSX-child expression needs the rich dispatcher
+ * (`TSRXExpression` branch in emitElementHtml) rather than the simple text
+ * branch. Rich dispatch handles createPortal at child position, ternaries
+ * whose branches are JSX, and sub-template arrows `() => @{…}` that the
+ * standalone esrap printer can't handle.
+ */
+function needsRichDispatch(expr) {
+  if (!expr || typeof expr !== 'object') return false;
+  if (isCreatePortalCall(expr)) return true;
+  if (isConditionalJsx(expr)) return true;
+  if (isJsxReturningMapCall(expr)) return true;
+  // A bare arrow whose body is a JSXCodeBlock — appears as a render-prop pass
+  // (e.g. `{(state) => @{ … }}`). esrap will explode on the JSXCodeBlock; route
+  // through rich dispatch where rewriteTsrxBlocks normalizes it.
+  if (expr.type === 'ArrowFunctionExpression' && expr.body && expr.body.type === 'JSXCodeBlock') return true;
+  return false;
+}
+
+/**
+ * Walk through `as string` / `as TSStringKeyword` casts so the inner
+ * expression is the one we emit. Other TS-only wrappers (TSNonNullExpression,
+ * TSTypeAssertion with TSStringKeyword) are stripped the same way — they're
+ * compile-time hints with no runtime semantics in our emit.
+ */
+function stripStringishCast(node) {
+  if (!node) return node;
+  if (node.type === 'TSAsExpression' || node.type === 'TSTypeAssertion') {
+    return stripStringishCast(node.expression);
+  }
+  if (node.type === 'TSNonNullExpression') {
+    return stripStringishCast(node.expression);
+  }
+  return node;
+}
+
+// `isStringishExpression` (text-typed predicate for the text-only-child fast
+// path) will land in Phase 3 step 2 alongside the binding-emit refactor —
+// stripStringishCast above is enough for correct behaviour; the predicate
+// is needed only for the further optimization of skipping runtime `String(_v)`
+// coercion when the expression is known-string at compile time.
 
 function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html', cssHash = null) {
   const jsxNodes = normalizeChildren(jsxNodesRaw);
@@ -1271,6 +1499,48 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
     // If this attr comes AFTER a spread, we MUST emit as a binding (later wins).
     const isAfterSpread = firstSpreadIdx !== -1 && attrI > firstSpreadIdx;
 
+    // Attribute-level `ref={expr}` (new TSRX) — replaces the removed
+    // `{ref expr}` child intrinsic. Routes to the existing `kind: 'ref'`
+    // binding emit, which handles both object refs ({ current } pattern) and
+    // callback refs ((el) => …). Repeated `ref={…}` on the same element each
+    // attach independently — the binding system handles them as separate
+    // slot ids, so this loop iteration emits one per encounter.
+    if (attrName === 'ref' && val) {
+      const refInner = val.type === 'JSXExpressionContainer' ? val.expression : val;
+      bindings.push({
+        id: bindings.length, kind: 'ref',
+        expr: printExpr(refInner),
+        path,
+      });
+      continue;
+    }
+    // Attribute-level `innerHTML={expr}` (new TSRX) — replaces the removed
+    // `{html expr}` child intrinsic. When the element has no other children
+    // (and no spread that could clobber it), take the existing htmlOnlyChild
+    // fast path. Otherwise fall back to a regular `attr` binding via the
+    // property assignment path.
+    if (attrName === 'innerHTML' && val) {
+      const inner2 = val.type === 'JSXExpressionContainer' ? val.expression : val;
+      const noChildren = (node.children || []).length === 0
+        || normalizeChildren(node.children || []).length === 0;
+      if (noChildren && !isAfterSpread) {
+        bindings.push({
+          id: bindings.length, kind: 'htmlOnlyChild',
+          expr: printExpr(inner2),
+          path,
+        });
+        continue;
+      }
+      // Element has other children too — emit as plain attr (setAttribute will
+      // route through the property fallback at runtime).
+      bindings.push({
+        id: bindings.length, kind: 'attr', name: 'innerHTML',
+        expr: printExprWithTsrx(inner2, ctx, componentName, inlinedSubs),
+        path, ns: hostNs,
+      });
+      continue;
+    }
+
     if (val == null) {
       if (isAfterSpread) {
         // Boolean attr after spread → emit as `true` binding.
@@ -1467,7 +1737,7 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
         } else {
           bindings.push({
             id: bindings.length, kind: 'text',
-            expr: printExpr(resolveStyleExpr(expr, cssHash)),
+            expr: printExprWithTsrx(resolveStyleExpr(expr, cssHash), ctx, componentName, inlinedSubs),
             path, childIndex: childIdx,
           });
           html += '<!>';
@@ -1926,9 +2196,20 @@ function rewriteEarlyExits(body) {
 }
 
 function isJsxNode(node) {
+  if (!node) return false;
   if (node.type === 'Element' || node.type === 'Text') return true;
   if (node.type === 'Tsx' || node.type === 'Tsrx') return true;
   if (node.type === 'JSXElement' || node.type === 'JSXFragment') return true;
+  // New TSRX directive nodes — always JSX-position. normalizeChildren will
+  // lower them to IfStatement / ForOfStatement / TryStatement / SwitchStatement
+  // when planJsx runs over them.
+  if (node.type === 'JSXIfExpression'
+    || node.type === 'JSXForExpression'
+    || node.type === 'JSXTryExpression'
+    || node.type === 'JSXSwitchExpression'
+    || node.type === 'JSXExpressionContainer'
+    || node.type === 'JSXText'
+    || node.type === 'JSXStyleElement') return true;
   if (node.type === 'IfStatement') {
     return bodyContainsJsx(node.consequent) || (!!node.alternate && bodyContainsJsx(node.alternate));
   }

@@ -225,8 +225,13 @@ describe('scoped <style> blocks', () => {
     expect(Array.from(innerScoped.classList).some(c => c.startsWith('tsrx-'))).toBe(true);
     expect(getComputedStyle(innerScoped).fontWeight).toBe('bold');
 
-    // The sibling has no hash — descendant `.outer .inner:where(.hash)` won't apply.
-    expect(Array.from(innerUnscoped.classList).some(c => c.startsWith('tsrx-'))).toBe(false);
+    // New TSRX scoping (annotateWithHash) adds the hash to every element under
+    // the component — the gate against cross-component leakage is the SELECTOR
+    // (`.outer.<hash> .inner.<hash>`), not per-element opt-in. The unscoped
+    // sibling DOES carry the hash but still doesn't match `.inner.<hash>`,
+    // because it lacks the `.inner` class. Visual behavior is identical to the
+    // old `{style 'cls'}` opt-in model.
+    expect(Array.from(innerUnscoped.classList).some(c => c.startsWith('tsrx-'))).toBe(true);
     expect(getComputedStyle(innerUnscoped).fontWeight).not.toBe('bold');
     r.unmount();
   });
