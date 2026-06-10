@@ -2005,7 +2005,12 @@ function makeForCall(node, ctx, componentName, inlinedSubs, parentNs = 'html', c
   }
 
   let keyFn = null;
-  const firstEl = subStmts.find(n => n.type === 'Element');
+  // New TSRX surfaces `key` on the JSXForExpression itself (read via `node.key`
+  // below). Legacy / `<li key={…}>` attribute syntax is also accepted: scan the
+  // body for the first Element and pull its `key=` attr if any. Accept both
+  // the old `Element` IR and the raw new `JSXElement` shape that's reached
+  // here when the body wasn't routed through normalizeChildren.
+  const firstEl = subStmts.find(n => n.type === 'Element' || n.type === 'JSXElement');
   if (firstEl) {
     const keyAttr = (firstEl.attributes || firstEl.openingElement?.attributes || [])
       .find(a => (a.name?.name || a.name) === 'key');
@@ -2115,7 +2120,10 @@ function makeForCall(node, ctx, componentName, inlinedSubs, parentNs = 'html', c
     const jsxChildren = subStmts.filter(s => isJsxNode(s));
     if (jsxChildren.length === 1) {
       const c = jsxChildren[0];
-      if (c.type === 'Element' && !isComponentTag(c)) singleRoot = true;
+      // Old IR uses `Element`; new TSRX AST uses `JSXElement`. Both qualify
+      // for the singleRoot fast path so long as the tag is lowercase (so the
+      // row itself is the block-boundary host, no Comment markers needed).
+      if ((c.type === 'Element' || c.type === 'JSXElement') && !isComponentTag(c)) singleRoot = true;
     }
   }
 
