@@ -1876,6 +1876,32 @@ export function ifBlock(
 }
 
 // ---------------------------------------------------------------------------
+// Control flow: switchBlock — analogous to ifBlock but n-way
+// ---------------------------------------------------------------------------
+//
+// Phase 1 SKELETON. Phase 3 implements: the compiler will emit
+// `switchBlock(scope, slotKey, host, discriminant, [[test0, body0], …],
+// defaultBody)`. Selection uses `===` against each case test in order; the
+// first hit wins, falling back to `defaultBody` when none match. Reuses
+// ifBlock's branch-swap mechanism — when the selected case index changes,
+// tear down the previous branch Block and mount a new one; when it stays
+// the same, re-render in place.
+export function switchBlock(
+  parentScope: Scope,
+  slotKey: string,
+  domParent: Node,
+  discriminant: any,
+  cases: ReadonlyArray<readonly [test: any, body: ComponentBody]>,
+  defaultBody: ComponentBody | null,
+): void {
+  // TODO(phase-3): mirror ifBlock — pick first matching case, swap branches
+  // on index change, re-render in place otherwise.
+  void parentScope; void slotKey; void domParent;
+  void discriminant; void cases; void defaultBody;
+  throw new Error('switchBlock: not yet implemented (Phase 1 skeleton)');
+}
+
+// ---------------------------------------------------------------------------
 // Control flow: forBlock with LIS-based keyed reconciliation
 // ---------------------------------------------------------------------------
 

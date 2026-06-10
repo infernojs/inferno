@@ -500,8 +500,8 @@ importers:
   packages/inferno-next:
     dependencies:
       '@tsrx/core':
-        specifier: ^0.1.13
-        version: 0.1.13(@typescript-eslint/types@8.59.4)
+        specifier: ^0.1.25
+        version: 0.1.25(@typescript-eslint/types@8.59.4)
       esrap:
         specifier: ^2.2.9
         version: 2.2.9(@typescript-eslint/types@8.59.4)
@@ -2519,6 +2519,9 @@ packages:
 
   '@tsrx/core@0.1.13':
     resolution: {integrity: sha512-CpachOxyUIbf+0q6zWJfI1RFpHdo6ZIy0v62qzW72WfW+tPtg8w0f9wFrA0AwhgpO8AFJtT5oNerXpScVMagOQ==}
+
+  '@tsrx/core@0.1.25':
+    resolution: {integrity: sha512-v0TH/4jd7m6ao4aZp1NId3fXu1Go0D4ci4+2vc8mJjGkkijXLTkKqJ/0mbCi1kDfmjKXLuoMRGrt9/I79JWNpQ==}
 
   '@tsrx/ripple@0.1.13':
     resolution: {integrity: sha512-HzqqFdN9PiWbXe7f/UV6c1Vz5/I/b2ypokpcK1VAO9c1xwy0aHham73Gunr3AumUU0RCfHq6/KTfkCmiM/jaUQ==}
@@ -9248,6 +9251,21 @@ snapshots:
   '@tsconfig/node16@1.0.4': {}
 
   '@tsrx/core@0.1.13(@typescript-eslint/types@8.59.4)':
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.5
+      '@noble/hashes': 2.2.0
+      '@sveltejs/acorn-typescript': 1.0.10(acorn@8.16.0)
+      '@types/estree': 1.0.9
+      '@types/estree-jsx': 1.0.5
+      acorn: 8.16.0
+      esrap: 2.2.9(@typescript-eslint/types@8.59.4)
+      is-reference: 3.0.3
+      magic-string: 0.30.21
+      zimmerframe: 1.1.4
+    transitivePeerDependencies:
+      - '@typescript-eslint/types'
+
+  '@tsrx/core@0.1.25(@typescript-eslint/types@8.59.4)':
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
       '@noble/hashes': 2.2.0
