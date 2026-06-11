@@ -55,6 +55,11 @@ describe('Suspense — catch on rejection', () => {
   });
 
   it('catch reset() retries the try body with the latest props', async () => {
+    // INFERNO-NEXT EXTENSION: the `@catch (err, reset)` positional `reset`
+    // is an inferno-next-specific syntax. React's <ErrorBoundary> uses
+    // `resetKeys` or an externally-supplied `resetErrorBoundary` callback
+    // for the equivalent flow. Same intent (retry the failed branch with
+    // fresh state), different surface. See SUSPENSE_DIVERGENCE.md.
     let d = deferred<string>();
     const r = mount(RetryFromCatch, { promise: d.promise });
     await act(() => { d.reject(new Error('first')); });
@@ -261,12 +266,19 @@ describe('Suspense — parallel boundaries (no waterfall)', () => {
   });
 
   it('useMemo pattern: both fetches kick off on initial render (network-parallel)', async () => {
-    // The useMemo pattern guarantees that BOTH fetches are initiated when
-    // the body first runs — so the network requests fly in parallel even
-    // though our suspense bookkeeping (`.then` listener) only arms for the
-    // FIRST use() until subsequent replays. The end-to-end outcome is the
-    // same as fully-parallel suspense as long as both promises eventually
-    // resolve before the replays catch up.
+    // KNOWN DIVERGENCE FROM REACT: this test pins inferno-next's specific
+    // replay behaviour — the useMemo factory re-runs on every replay
+    // attempt because we rebuild the try-block body on retry. React's
+    // memoized state survives across replays (the factory does NOT re-run
+    // when deps are unchanged). For true single-render fetch-once-cache
+    // semantics in inferno-next today, place each promise in its own
+    // <TryBoundary> sibling, OR hoist the useMemo to a parent component.
+    // See SUSPENSE_DIVERGENCE.md.
+    //
+    // The useMemo pattern STILL guarantees that BOTH fetches are initiated
+    // when the body first runs — network requests fly in parallel, and the
+    // end-to-end outcome is the same as fully-parallel suspense as long as
+    // both promises eventually resolve before the replays catch up.
     let aStarts = 0, bStarts = 0;
     const da = deferred<string>();
     const db = deferred<string>();
@@ -295,6 +307,14 @@ describe('Suspense — parallel boundaries (no waterfall)', () => {
   });
 
   it('WITHOUT useMemo, sequential use() inside one body waterfalls (documents the gotcha)', async () => {
+    // KNOWN DIVERGENCE FROM REACT: this is a regression-pin for inferno-
+    // next's current sequential-replay strategy — NOT a React-canonical
+    // contract. React's runtime would also waterfall in this pattern (the
+    // first use() must resolve before the body re-runs past it), so the
+    // shape of the divergence is more about inferno-next's per-replay
+    // call counts than about user-visible behavior. See
+    // SUSPENSE_DIVERGENCE.md for the full picture.
+    //
     // This test exists to make the waterfall explicit so future contributors
     // understand the constraint — and so any future optimization that
     // accidentally fixes it (e.g. running siblings speculatively) will fail

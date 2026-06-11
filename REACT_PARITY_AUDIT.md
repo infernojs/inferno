@@ -4,6 +4,34 @@ A consolidated map of existing React-conformance test coverage in `packages/infe
 
 ---
 
+## Status (as of the most recent commit)
+
+**269 conformance tests pass.** Started at 207 before the audit, +62 added across Batches 1-8 + the unblocked items.
+
+### Closed gaps from the audit
+
+| Batch | Items | New tests | Runtime fixes |
+|---|---|---|---|
+| 1 — SVG/MathML namespace runtime | 6 fixtures, 7 tests | 7 | — |
+| 2 — SVG attribute breadth + namespace decision | 7 fixtures, 7 tests + xlink decision | 7 | xlink/xml/xmlns via setAttributeNS |
+| 3 — foreignObject + annotation-xml + mixed | 5 fixtures, 6 tests | 6 | — |
+| 4 — Refs / events / scoped style on SVG/MathML | 6 fixtures, 7 tests | 7 | `_helpers.click()` dispatches event for SVG |
+| 5 — Suspense gaps no-runtime | 11 fixtures, 8 tests | 8 | tryBlock orphan-cancel-on-parent-unmount; half-mounted binding bag |
+| 6 — Transitions + Deferred gaps no-runtime | 6 fixtures, 6 tests | 6 | — |
+| 7 — Unblocked runtime gaps | 3 fixtures, 5 tests | 5 | `useDeferredValue(value, initialValue)` |
+| 8 — Strengthening + cleanup-order fix | 1 fixture, 1 test + 6 annotation comments | 1 | **Reverse-mount cleanup order** (React parity) |
+| 9 — Type-level surface | subsumed by 1, 2, 4 + MathML breadth | — | — |
+| MathML attribute breadth (Batch 2 equivalent) | 3 fixtures, 5 tests | 5 | — |
+| Suspense Gap #6 — transition-fallback timeout | 1 fixture, 4 tests | 4 | `setTransitionFallbackTimeout` + scheduler |
+| ReDoS (CodeQL) | — | — | `applyStyleProperty` regex → linear `endsWith` |
+| Lint config | — | — | `^_`-prefix unused-param convention |
+
+### Audit document parts (unchanged below)
+
+The original audit (Parts 1-5) starts at the next section. The status summary above supersedes any "untouched" / "unblocked" tags inside it.
+
+---
+
 ## Part 1: Existing coverage by feature area
 
 One combined table of CURRENT tests with React citations. Sorted by feature area, then by confidence (high first).

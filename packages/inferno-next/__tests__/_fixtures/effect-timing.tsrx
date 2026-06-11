@@ -37,3 +37,15 @@ export function PassiveDeferred(props) @{
   useEffect((tick, log) => { log.push('passive'); }, [props.tick, props.log]);
   <span>{'z'}</span>
 }
+
+// Multiple useEffects within the SAME phase — used to verify that cleanups
+// fire in REVERSE-mount order within a phase (React's per-fiber contract).
+// Three useEffects A, B, C; their mount callbacks each log themselves, and
+// their cleanups log "<name>:cleanup". On unmount React fires C:cleanup
+// before B:cleanup before A:cleanup.
+export function ManyPassiveEffects(props) @{
+  useEffect((log) => { log.push('A:body'); return () => log.push('A:cleanup'); }, [props.log]);
+  useEffect((log) => { log.push('B:body'); return () => log.push('B:cleanup'); }, [props.log]);
+  useEffect((log) => { log.push('C:body'); return () => log.push('C:cleanup'); }, [props.log]);
+  <span>{'multi'}</span>
+}

@@ -54,9 +54,15 @@ describe('useMemo', () => {
 });
 
 describe('useCallback', () => {
-  it('renders without errors', () => {
+  it('value passed through useCallback is preserved across renders', () => {
+    // Identity stability and dep tracking live in callbacks.test.ts via
+    // CallbackIdentity. Here we just smoke-test the basic shape: a useCallback
+    // declared in a component body renders successfully AND its identity
+    // closes over the dep-array prop (label propagates to the span).
     const r = mount(CbTest, { label: 'hi' });
     expect(r.find('span').textContent).toBe('hi');
+    r.update(CbTest, { label: 'bye' });
+    expect(r.find('span').textContent).toBe('bye');
     r.unmount();
   });
 });

@@ -154,7 +154,17 @@ describe('Transitions — multiple-suspend edge cases', () => {
     // Port of ReactTransition-test.js:190 "multiple transitions update
     // different queues, they entangle". A single startTransition causes two
     // sibling try-blocks to suspend; isPending must remain true until both
-    // promises resolve. Old DOM stays mounted throughout.
+    // promises resolve.
+    //
+    // KNOWN DIVERGENCE FROM REACT: inferno-next EAGERLY COMMITS each
+    // sibling as its individual promise resolves (assertion at line 181
+    // checks A:a2 while B is still pending). React's contract is "full
+    // wait" — both siblings keep their old content until BOTH resolve, so
+    // the user never sees a half-updated screen mid-transition. We match
+    // React on isPending (stays true until both resolve), on prior-DOM
+    // preservation (no fallback flash), and on the entanglement of the
+    // counter; we diverge on the per-sibling commit timing. See
+    // SUSPENSE_DIVERGENCE.md for context.
     const da1 = deferred<string>(), db1 = deferred<string>();
     const da2 = deferred<string>(), db2 = deferred<string>();
     da1.resolve('a1'); db1.resolve('b1');

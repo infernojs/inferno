@@ -542,12 +542,17 @@ export function unmountBlock(block: Block): void {
   }
 }
 
-/** Fire cleanups (depth-first child scopes first) without touching the DOM. */
+/** Fire cleanups (depth-first child scopes first) without touching the DOM.
+ *  Within each scope, cleanups fire in REVERSE-mount order — last useEffect
+ *  declared has its cleanup run first. Matches React's per-fiber finalizer
+ *  walk: later effects often depend on resources set up by earlier ones, so
+ *  tearing them down in reverse avoids races against shared state.
+ */
 function fireCleanupsOnly(scope: Scope): void {
   const children = scope.children;
   for (let i = 0, n = children.length; i < n; i++) fireCleanupsOnly(children[i].scope);
   const c = scope.cleanups;
-  for (let i = 0, n = c.length; i < n; i++) {
+  for (let i = c.length - 1; i >= 0; i--) {
     try { c[i](); } catch (err) { console.error(err); }
   }
 }
@@ -602,9 +607,13 @@ function unmountScope(scope: Scope): void {
       }
     }
   }
-  // Fire cleanups in registration order (React semantics — cleanups before bodies).
+  // Fire cleanups in REVERSE-mount order to match React's per-fiber
+  // finalizer walk — last useEffect declared has its cleanup run first.
+  // React semantics: cleanups before bodies, last-in first-out within a
+  // scope so later effects can rely on resources from earlier ones during
+  // their own cleanup execution.
   const c = scope.cleanups;
-  for (let i = 0, n = c.length; i < n; i++) {
+  for (let i = c.length - 1; i >= 0; i--) {
     try { c[i](); } catch (err) { console.error(err); }
   }
 }
