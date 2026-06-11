@@ -1058,6 +1058,10 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
   // recursive plan for its body resets the array before the second push.
   const _prevPortalCalls = ctx._portalCalls;
   ctx._portalCalls = [];
+  // `switchCalls` follows the same save/restore pattern as portals: keep it
+  // on `ctx` so we don't thread an extra param through every emit signature.
+  const _prevSwitchCalls = ctx._switchCalls;
+  ctx._switchCalls = [];
   const tryCalls = [];          // tryBlock calls
 
   // Track HTML index across top-level nodes — component-call nodes don't
@@ -1167,6 +1171,12 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     tc.elVar = elVar;
     mountLines.push(`    _b._tryHost$${tc.id} = ${elVar};`);
   }
+  // switchBlock targets.
+  for (const sc of ctx._switchCalls) {
+    const elVar = ensureVar(sc.hostPath);
+    sc.elVar = elVar;
+    mountLines.push(`    _b._switchHost$${sc.id} = ${elVar};`);
+  }
   // Portal host targets — element containing the createPortal JSX position.
   // Stashed so the runtime can stamp $$portalParent on the portal's mounted
   // children pointing here, giving React-shape bubble-out semantics.
@@ -1228,6 +1238,12 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     ctx.runtimeNeeded.add('tryBlock');
     afterLines.push(`  tryBlock(__s, ${JSON.stringify('_try$' + tc.id)}, __s.${bindingsName}._tryHost$${tc.id}, ${tc.tryHelper}, ${tc.catchHelper}, ${tc.pendingHelper});`);
   }
+  for (const sc of ctx._switchCalls) {
+    ctx.runtimeNeeded.add('switchBlock');
+    afterLines.push(`  switchBlock(__s, ${JSON.stringify('_switch$' + sc.id)}, __s.${bindingsName}._switchHost$${sc.id}, (${sc.discExpr}), ${sc.casesArrayExpr}, ${sc.defaultHelper});`);
+  }
+  // Restore the outer plan's switch-call list — pairs with the save above.
+  ctx._switchCalls = _prevSwitchCalls;
 
   return {
     bindingsName,
@@ -1437,6 +1453,12 @@ function emitNodeHtml(node, path, bindings, forCalls, ifCalls, compCalls, tryCal
     const tc = makeTryCall(node, ctx, componentName, inlinedSubs, parentNs, cssHash);
     tc.hostPath = [];
     tryCalls.push(tc);
+    return '';
+  }
+  if (node.type === 'SwitchStatement') {
+    const sc = makeSwitchCall(node, ctx, componentName, inlinedSubs, parentNs, cssHash);
+    sc.hostPath = [];
+    ctx._switchCalls.push(sc);
     return '';
   }
   return '';
@@ -1672,6 +1694,10 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
         const tc = makeTryCall(child, ctx, componentName, inlinedSubs, childNs, cssHash);
         tc.hostPath = path;
         tryCalls.push(tc);
+      } else if (child.type === 'SwitchStatement') {
+        const sc = makeSwitchCall(child, ctx, componentName, inlinedSubs, childNs, cssHash);
+        sc.hostPath = path;
+        ctx._switchCalls.push(sc);
       } else if (child.type === 'Style') {
         // `{style 'cls'}` at child position — resolve to a class-name string
         // and emit as a text hole. Useful for passing scoped class names down
@@ -1970,10 +1996,68 @@ function makeTryCall(node, ctx, componentName, inlinedSubs, parentNs = 'html', c
   };
 }
 
+/**
+ * `@switch (d) { @case 1: { … } @case 2: { … } @default: { … } }` →
+ * `switchBlock(scope, slotKey, host, d, [[1, __case$0], [2, __case$1]], __default$2)`.
+ *
+ * Each case's `consequent` (Statement[]) is hoisted as its own component body
+ * via `compileFunctionBody`, exactly like @if branches. Fall-through is NOT
+ * modeled — each case is treated as its own self-contained body. If a user
+ * writes a case with no explicit terminator, the case's body still runs to
+ * completion (it's just a function call) and only that case's body renders.
+ */
+function makeSwitchCall(node, ctx, componentName, inlinedSubs, parentNs = 'html', cssHash = null) {
+  const discExpr = printExpr(node.discriminant);
+  const caseRecords = [];
+  let defaultHelper = 'null';
+  for (const c of node.cases || []) {
+    const stmts = c.consequent || [];
+    const isDefault = c.test == null;
+    const helperName = `__${isDefault ? 'default' : 'case'}$${ctx.nextHelperId++}`;
+    const fake = {
+      type: 'Component',
+      id: { type: 'Identifier', name: helperName },
+      params: [],
+      body: stmts,
+    };
+    const fn = compileFunctionBody(fake, ctx, helperName, parentNs, cssHash);
+    inlinedSubs.push(fn + ';');
+    if (isDefault) {
+      defaultHelper = helperName;
+    } else {
+      caseRecords.push({ testExpr: printExpr(c.test), helper: helperName });
+    }
+  }
+  const casesArrayExpr = '['
+    + caseRecords.map(r => `[(${r.testExpr}), ${r.helper}]`).join(', ')
+    + ']';
+  return {
+    id: ctx.nextHelperId++,
+    discExpr,
+    casesArrayExpr,
+    defaultHelper,
+    hostPath: null,
+  };
+}
+
 function makeForCall(node, ctx, componentName, inlinedSubs, parentNs = 'html', cssHash = null) {
   // node.left = const x  OR  const &{x,y} / const [a,b]  (destructured)
   // node.right = expr, node.body = BlockStatement,
   // node.key = optional `key …` expression, node.index = optional `index <id>`.
+  // node.empty = optional BlockStatement rendered when the iterable is empty —
+  // NOT yet supported in inferno-next v1. Fail loudly rather than silently
+  // dropping the user's empty branch (which would otherwise just disappear).
+  if (node.empty) {
+    throw new Error(
+      "`@for (...) { ... } @empty { ... }` isn't supported yet in inferno-next. " +
+      'Until then, gate the empty case with `@if (items.length === 0) { ... }`:\n\n' +
+      '  @if (items.length === 0) {\n' +
+      '    <p>No items</p>\n' +
+      '  } @else {\n' +
+      '    @for (const x of items; key x.id) { <li>{x.label as string}</li> }\n' +
+      '  }'
+    );
+  }
   const leftDeclId = node.left.declarations[0].id;
   const isDestructured = leftDeclId.type !== 'Identifier';
   // `itemName` is the identifier used in the body signature + keyFn. For a

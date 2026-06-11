@@ -1295,7 +1295,23 @@ export function componentSlot(
     parentScope[slotKey] = state;
   }
   if (comp !== state.currentComp) {
-    if (state.block) unmountBlock(state.block);
+    if (state.block) {
+      // The slot's `state.start`/`state.end` markers ARE the previous block's
+      // range, so unmountBlock removes them along with the inner DOM. Capture
+      // the position just outside the slot (the node that came AFTER our end
+      // marker) so we can re-create fresh markers at the same logical
+      // location for the new comp to mount into. `after` may be `null` when
+      // the slot was at the end of `domParent` — that's fine; insertBefore
+      // treats null as appendChild.
+      const after = state.end.nextSibling;
+      unmountBlock(state.block);
+      const newStart = document.createComment('comp');
+      const newEnd = document.createComment('/comp');
+      domParent.insertBefore(newStart, after);
+      domParent.insertBefore(newEnd, after);
+      state.start = newStart;
+      state.end = newEnd;
+    }
     state.currentComp = comp;
     const b = createBlock('dynamic', parentBlock, domParent, state.start, state.end, comp, props);
     state.block = b;
@@ -1879,13 +1895,27 @@ export function ifBlock(
 // Control flow: switchBlock — analogous to ifBlock but n-way
 // ---------------------------------------------------------------------------
 //
-// Phase 1 SKELETON. Phase 3 implements: the compiler will emit
+// The compiler lowers `@switch (d) { @case 1: { … } @default: { … } }` to a
 // `switchBlock(scope, slotKey, host, discriminant, [[test0, body0], …],
-// defaultBody)`. Selection uses `===` against each case test in order; the
-// first hit wins, falling back to `defaultBody` when none match. Reuses
-// ifBlock's branch-swap mechanism — when the selected case index changes,
-// tear down the previous branch Block and mount a new one; when it stays
-// the same, re-render in place.
+// defaultBody)` call. Selection uses `===` against each case test in source
+// order; the first hit wins, falling back to `defaultBody` when none match
+// (`defaultBody` is `null` when the user wrote no `@default`).
+//
+// State machine mirrors `ifBlock`: a permanent `start`/`end` Comment marker
+// pair brackets the slot's DOM range. When the selected case index changes
+// we tear down the previous branch Block (which removes its own inner
+// markers + DOM) and mount a fresh one; when the selected index is
+// unchanged we re-render in place so hook state / event bindings survive.
+// Index `-2` is reserved for the default branch, `-1` for uninitialized.
+interface SwitchSlot {
+  __kind: 'switchBlockSlot';
+  start: Comment;
+  end: Comment;
+  /** Currently-mounted case index, or -1 if uninitialized / -2 for default. */
+  caseIdx: number;
+  block: Block | null;
+}
+
 export function switchBlock(
   parentScope: Scope,
   slotKey: string,
@@ -1894,11 +1924,42 @@ export function switchBlock(
   cases: ReadonlyArray<readonly [test: any, body: ComponentBody]>,
   defaultBody: ComponentBody | null,
 ): void {
-  // TODO(phase-3): mirror ifBlock — pick first matching case, swap branches
-  // on index change, re-render in place otherwise.
-  void parentScope; void slotKey; void domParent;
-  void discriminant; void cases; void defaultBody;
-  throw new Error('switchBlock: not yet implemented (Phase 1 skeleton)');
+  const parentBlock = parentScope.block;
+  let state = parentScope[slotKey] as SwitchSlot | undefined;
+  if (state === undefined) {
+    const start = document.createComment('switch');
+    const end = document.createComment('/switch');
+    domParent.appendChild(start);
+    domParent.appendChild(end);
+    state = { __kind: 'switchBlockSlot', start, end, caseIdx: -1, block: null };
+    parentScope[slotKey] = state;
+  }
+  // Pick the first matching case, or fall back to default.
+  let nextIdx = -2;
+  let body: ComponentBody | null = defaultBody;
+  for (let i = 0; i < cases.length; i++) {
+    if (cases[i][0] === discriminant) {
+      nextIdx = i;
+      body = cases[i][1];
+      break;
+    }
+  }
+  if (nextIdx !== state.caseIdx) {
+    if (state.block) { unmountBlock(state.block); state.block = null; }
+    state.caseIdx = nextIdx;
+    if (body) {
+      const bStart = document.createComment('case');
+      const bEnd = document.createComment('/case');
+      domParent.insertBefore(bStart, state.end);
+      domParent.insertBefore(bEnd, state.end);
+      const b = createBlock('control-flow', parentBlock, domParent, bStart, bEnd, body, undefined);
+      state.block = b;
+      renderBlock(b);
+    }
+  } else if (state.block) {
+    state.block.body = body!;
+    renderBlock(state.block);
+  }
 }
 
 // ---------------------------------------------------------------------------

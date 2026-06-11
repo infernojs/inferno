@@ -142,6 +142,19 @@ describe('TSRX features — `.map()` compile-error guidance', () => {
       "export function A(p) @{ <div>{p.items.map(x => x.id).join(',') as string}</div> }";
     expect(() => compile(src, 'a.tsrx')).not.toThrow();
   });
+
+  it("rejects `@for(...) @empty { ... }` with a suggestion to use @if (items.length === 0)", () => {
+    // The new TSRX parser surfaces an `empty` BlockStatement on JSXForExpression
+    // for `@for (...) { ... } @empty { ... }`. Inferno-next's runtime doesn't
+    // yet implement an empty branch, so compile errors with a clear migration
+    // hint rather than silently dropping the empty branch.
+    const src =
+      "export function A(p) @{ <ul>" +
+      "@for (const x of p.items; key x.id) { <li>{x.label as string}</li> } " +
+      "@empty { <li class='none'>{'none'}</li> }" +
+      "</ul> }";
+    expect(() => compile(src, 'a.tsrx')).toThrow(/items\.length === 0/);
+  });
 });
 
 // ---------------------------------------------------------------------------
