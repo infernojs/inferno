@@ -23,6 +23,8 @@ export {
   useDeferredValue,
   useTransition,
   startTransition,
+  setTransitionFallbackTimeout,
+  getTransitionFallbackTimeout,
   memo,
 
   // Context

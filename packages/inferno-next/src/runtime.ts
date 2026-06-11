@@ -590,6 +590,12 @@ function unmountScope(scope: Scope): void {
           val.tryBlock.disposed = true;
           val.pendingThenable = null;
         }
+        // Cancel any in-flight transition-fallback timeout so the callback
+        // can't fire after the slot's owning scope is gone.
+        if (val.__kind === 'trySlotSlot' && val.transitionTimeoutId !== null) {
+          clearTimeout(val.transitionTimeoutId);
+          val.transitionTimeoutId = null;
+        }
         if (val.__kind === 'portalSlotSlot' && val.target) {
           unregisterDelegationTarget(val.target);
         }
@@ -1490,6 +1496,27 @@ export function hmr<P>(fn: ComponentBody<P>): ComponentBody<P> {
 // Control flow: tryBlock — error boundary, catches render + effect errors
 // ---------------------------------------------------------------------------
 
+/**
+ * Transition-suspense fallback timeout — when a transition-priority render
+ * suspends on an already-committed try block, we hold the prior DOM but
+ * eventually swap to the @pending fallback after this many milliseconds if
+ * the promise still hasn't resolved. Matches React's "eventually shows
+ * fallback if transition takes too long" contract (default 5s).
+ *
+ * Configurable globally via `setTransitionFallbackTimeout(ms)`. Pass
+ * Infinity to disable the fallback entirely (keep prior DOM indefinitely).
+ */
+let TRANSITION_FALLBACK_TIMEOUT_MS = 5000;
+
+export function setTransitionFallbackTimeout(ms: number): void {
+  TRANSITION_FALLBACK_TIMEOUT_MS = ms;
+}
+
+export function getTransitionFallbackTimeout(): number {
+  return TRANSITION_FALLBACK_TIMEOUT_MS;
+}
+
+
 interface TrySlot {
   __kind: 'trySlotSlot';
   start: Comment;
@@ -1525,6 +1552,17 @@ interface TrySlot {
    * latched true. Released when the suspended thenable resolves (in retry).
    */
   transitionHeld: boolean;
+  /**
+   * Pending setTimeout id for the transition-suspense fallback. When a
+   * transition-priority render suspends on an already-committed try block
+   * we hold the prior DOM AND schedule a fallback swap so the user isn't
+   * stuck with stale content forever. Matches React's "eventually shows
+   * fallback" contract — see TRANSITION_FALLBACK_TIMEOUT_MS below.
+   *
+   * Cleared (clearTimeout) on retry resolve, on switchToCatch, and on
+   * scope teardown so we don't leak callbacks past the slot's lifetime.
+   */
+  transitionTimeoutId: any | null;
   domParent: Node;
   parentBlock: Block;
 }
@@ -1551,6 +1589,7 @@ export function tryBlock(
       hasResolved: false,
       err: null, pendingThenable: null,
       transitionHeld: false,
+      transitionTimeoutId: null,
       domParent, parentBlock,
     };
     parentScope[slotKey] = newState;
@@ -1674,6 +1713,13 @@ function releaseHeldTransition(state: TrySlot): void {
     state.transitionHeld = false;
     tickTransitionCount(-1);
   }
+  // Drop the fallback timeout too — an urgent setState clobbered the
+  // transition, so the prior DOM is being replaced eagerly and a timeout-
+  // driven @pending swap would race with the urgent commit.
+  if (state.transitionTimeoutId !== null) {
+    clearTimeout(state.transitionTimeoutId);
+    state.transitionTimeoutId = null;
+  }
 }
 
 function handleSuspense(
@@ -1691,6 +1737,31 @@ function handleSuspense(
     if (!state.transitionHeld) {
       state.transitionHeld = true;
       tickTransitionCount(+1);
+    }
+    // Schedule a fallback swap so the user isn't stuck forever staring at
+    // stale content when the transition's promise takes too long. The
+    // counter stays held — `isPending` remains true through the fallback
+    // window because the transition is still in progress, semantically. On
+    // retry resolve, the timeout is cleared and the saved tryBlock is
+    // re-attached. Infinity → fallback never fires (legacy hold-forever).
+    if (
+      state.pendingBody !== null
+      && state.transitionTimeoutId === null
+      && TRANSITION_FALLBACK_TIMEOUT_MS !== Infinity
+      && TRANSITION_FALLBACK_TIMEOUT_MS >= 0
+    ) {
+      state.transitionTimeoutId = setTimeout(() => {
+        state.transitionTimeoutId = null;
+        // Only swap if we're still in the same suspended-transition state
+        // (a fresher render or a resolve may have already moved us).
+        if (
+          state.pendingThenable === thenable
+          && state.transitionHeld
+          && state.branch === 1
+        ) {
+          swapToPendingFallback(state);
+        }
+      }, TRANSITION_FALLBACK_TIMEOUT_MS);
     }
     attachResume(state, thenable);
     return;
@@ -1729,6 +1800,36 @@ function handleSuspense(
 }
 
 /**
+ * Soft-detach the held tryBlock (preserving its hook state and DOM in
+ * `savedDom`) and mount the @pending body in its place. Used by the
+ * transition-fallback timeout when a held transition runs over budget — by
+ * that point the user has waited long enough that React (and we) commit the
+ * fallback to give visual feedback. The retry path re-attaches savedDom on
+ * resolve, so this is recoverable.
+ *
+ * No-op when no pending body was compiled OR when state has already moved
+ * (e.g. resolve raced the timeout).
+ */
+function swapToPendingFallback(state: TrySlot): void {
+  if (!state.pendingBody || state.branch !== 1 || !state.tryBlock) return;
+  softDetachTryBlock(state);
+  state.block = null;
+  state.branch = 2;
+  const bStart = document.createComment('pend-b');
+  const bEnd = document.createComment('/pend-b');
+  state.domParent.insertBefore(bStart, state.end);
+  state.domParent.insertBefore(bEnd, state.end);
+  const b = createBlock('control-flow', state.parentBlock, state.domParent, bStart, bEnd, state.pendingBody, undefined);
+  (b as any).__trySlot = state;
+  state.block = b;
+  try { renderBlock(b); }
+  catch (err) {
+    if (state.block) { unmountBlock(state.block); state.block = null; }
+    switchToCatch(state, err);
+  }
+}
+
+/**
  * Wire up a `.then` listener that retries the try body when the thenable
  * settles. Dedupes by `pendingThenable` so two suspends on the same promise
  * don't queue two retries.
@@ -1739,6 +1840,13 @@ function attachResume(state: TrySlot, thenable: TrackedThenable<any>): void {
   const retry = () => {
     if (state.pendingThenable !== thenable) return;  // superseded by a fresher suspend
     state.pendingThenable = null;
+    // Cancel any pending transition-fallback timeout — the promise resolved
+    // before the timeout would have swapped to @pending, so the prior DOM
+    // stays put and the just-resolved render commits over it directly.
+    if (state.transitionTimeoutId !== null) {
+      clearTimeout(state.transitionTimeoutId);
+      state.transitionTimeoutId = null;
+    }
     // Release any transition counter we held open during the suspension. If
     // the retry re-suspends within the same transition, handleSuspense will
     // re-acquire the hold — net count unchanged, no isPending flicker.
@@ -1905,6 +2013,13 @@ export function useDeferredValue<T>(value: T, ...rest: any[]): T {
 }
 
 function switchToCatch(state: TrySlot, err: any): void {
+  // Cancel any pending transition-fallback timeout — catch is a terminal
+  // state, so a timeout-driven swap to @pending would conflict with the
+  // catch branch about to mount.
+  if (state.transitionTimeoutId !== null) {
+    clearTimeout(state.transitionTimeoutId);
+    state.transitionTimeoutId = null;
+  }
   // Catch is a fresh terminal state — discard any preserved try-body hook
   // state. `reset()` will mountTry fresh from the catch arm if user retries.
   if (state.tryBlock) { unmountBlock(state.tryBlock); state.tryBlock = null; }
