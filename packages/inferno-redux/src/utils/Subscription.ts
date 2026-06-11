@@ -14,7 +14,7 @@ const nullListenerCollection: IListenerCollection = {
   clear: () => {},
   notify: () => {},
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   subscribe: (_listener: Listener) => nullSubscriptionHandler,
 };
 
