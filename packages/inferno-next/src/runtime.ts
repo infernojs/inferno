@@ -960,7 +960,7 @@ export function setClassName(el: Element, value: string | null | undefined): voi
 // object→object and only touch the properties that changed.
 // ---------------------------------------------------------------------------
 
-const IMPORTANT_RE = /\s*!important\s*$/;
+const IMPORTANT_SUFFIX = '!important';
 
 export function setStyle(el: HTMLElement | SVGElement, value: any, prev: any): void {
   const style = (el as HTMLElement).style;
@@ -999,8 +999,12 @@ export function setStyle(el: HTMLElement | SVGElement, value: any, prev: any): v
 
 function applyStyleProperty(style: CSSStyleDeclaration, name: string, value: any): void {
   const s = typeof value === 'number' ? String(value) : (value as string);
-  if (IMPORTANT_RE.test(s)) {
-    style.setProperty(name, s.replace(IMPORTANT_RE, ''), 'important');
+  // CodeQL flagged the prior `/\s*!important\s*$/` test+replace combo as
+  // polynomial-regex-on-uncontrolled-input. Same job in linear time using
+  // built-in trimEnd() + endsWith() — no regex, no backtracking risk.
+  const tail = s.trimEnd();
+  if (tail.endsWith(IMPORTANT_SUFFIX)) {
+    style.setProperty(name, tail.slice(0, tail.length - IMPORTANT_SUFFIX.length).trimEnd(), 'important');
   } else {
     style.setProperty(name, s);
   }
