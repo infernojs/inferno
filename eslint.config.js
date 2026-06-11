@@ -17,7 +17,7 @@ export default tseslint.config(
         }
     },
     {
-        ignores: ["**/dist/*", "**/*.cjs", "**/*.min.js"]
+        ignores: ["**/dist/*", "**/*.cjs", "**/*.min.js", "**/.react-cache/*"]
     },
     eslint.configs.recommended,
     tseslint.configs.recommended,
