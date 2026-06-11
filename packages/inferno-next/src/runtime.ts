@@ -941,9 +941,43 @@ export function setText(node: Text, value: any): void {
   if (node.data !== next) node.data = next;
 }
 
+// XML namespaces recognised by the HTML5 parser for attribute names —
+// matches React's setAttribute routing for parity. When an attribute name
+// starts with `xlink:`, `xml:`, or `xmlns:`, we route through setAttributeNS
+// so the resulting attribute's namespaceURI matches what the browser parses
+// out of a static SVG template. Without this, dynamic `xlink:href={…}` would
+// leave attribute.namespaceURI === null while a static `<use xlink:href="…"/>`
+// inside the template would have it set to XLINK_NS — a real divergence.
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
+const XML_NS = 'http://www.w3.org/XML/1998/namespace';
+const XMLNS_NS = 'http://www.w3.org/2000/xmlns/';
+
+function attrNamespace(name: string): string | null {
+  // Bare `xmlns` is the xmlns namespace itself (rare in practice).
+  if (name === 'xmlns') return XMLNS_NS;
+  const colon = name.indexOf(':');
+  if (colon <= 0) return null;
+  const prefix = name.slice(0, colon);
+  if (prefix === 'xlink') return XLINK_NS;
+  if (prefix === 'xml') return XML_NS;
+  if (prefix === 'xmlns') return XMLNS_NS;
+  return null;
+}
+
 export function setAttribute(el: Element, name: string, value: any): void {
-  if (value == null || value === false) el.removeAttribute(name);
-  else el.setAttribute(name, value === true ? '' : String(value));
+  const ns = attrNamespace(name);
+  if (value == null || value === false) {
+    if (ns) {
+      const colon = name.indexOf(':');
+      el.removeAttributeNS(ns, colon >= 0 ? name.slice(colon + 1) : name);
+    } else {
+      el.removeAttribute(name);
+    }
+    return;
+  }
+  const v = value === true ? '' : String(value);
+  if (ns) el.setAttributeNS(ns, name, v);
+  else el.setAttribute(name, v);
 }
 
 export function setClassName(el: Element, value: string | null | undefined): void {

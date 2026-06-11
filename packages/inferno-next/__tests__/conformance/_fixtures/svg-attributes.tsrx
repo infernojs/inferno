@@ -99,6 +99,19 @@ export function SvgPlainHref(props) @{
 }
 
 // ---------------------------------------------------------------------------
+// Namespaced attributes arriving through a SPREAD. The compiler emits the
+// spread values via `setSpread`, which routes each key through the shared
+// `setAttribute` helper — so the runtime's prefix detection ensures
+// `xlink:` / `xml:` / `xmlns:` keys delivered through `{...obj}` get the
+// correct namespaceURI too, the same as the direct emit path.
+// ---------------------------------------------------------------------------
+export function SvgSpreadNamespaced(props) @{
+  <svg id='spread-root' viewBox='0 0 50 50'>
+    <use id='spread-use' {...props.attrs} />
+  </svg>
+}
+
+// ---------------------------------------------------------------------------
 // Dynamic `class` on SVG element — must NOT route to setClassName / the
 // .className property assignment (SVGElement.className is a read-only
 // SVGAnimatedString in browsers). Compiler emits setAttribute(el,'class',...)

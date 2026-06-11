@@ -7,6 +7,7 @@ import {
   SvgXlinkClear,
   SvgPlainHref,
   SvgClassPath,
+  SvgSpreadNamespaced,
 } from './_fixtures/svg-attributes.tsrx';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -149,21 +150,24 @@ describe('SVG attributes — kebab-case passthrough', () => {
 
 describe('SVG attributes — xml: namespaced attributes', () => {
   it('xml:lang and xml:space are accepted as namespaced attributes', () => {
-    // Mirrors ReactDOMComponent-test.js (xml namespace tests) — the user
-    // writes xml:lang / xml:space; the DOM must report the value under that
-    // qualified name. NOTE: Inferno currently emits via setAttribute (literal
-    // qualified name), which differs from React's setAttributeNS routing —
-    // see `notes`. The DOM-level getAttribute lookup still works either way.
+    // Mirrors ReactDOMComponent-test.js (xml namespace tests) — `xml:lang`
+    // and `xml:space` must be routed through setAttributeNS so the resulting
+    // attribute carries the XML namespace, matching what the HTML5 parser
+    // produces from a static SVG template.
+    const XML_NS = 'http://www.w3.org/XML/1998/namespace';
     const r = mount(SvgXmlAttrs, { lang: 'en', space: 'preserve' });
     const svg = r.find('#xml');
     expect(svg.namespaceURI).toBe(SVG_NS);
     expect(svg.getAttribute('xml:lang')).toBe('en');
     expect(svg.getAttribute('xml:space')).toBe('preserve');
+    expect(svg.getAttributeNode('xml:lang')!.namespaceURI).toBe(XML_NS);
+    expect(svg.getAttributeNode('xml:space')!.namespaceURI).toBe(XML_NS);
 
-    // update path — change the value, the qualified name stays.
+    // update path — change the value, the qualified name + ns stay.
     r.update(SvgXmlAttrs, { lang: 'fr', space: 'default' });
     expect(svg.getAttribute('xml:lang')).toBe('fr');
     expect(svg.getAttribute('xml:space')).toBe('default');
+    expect(svg.getAttributeNode('xml:lang')!.namespaceURI).toBe(XML_NS);
 
     // Clear path — null removes the attribute entirely.
     r.update(SvgXmlAttrs, { lang: null, space: null });
@@ -186,16 +190,15 @@ describe('SVG attributes — xlink:href null clear', () => {
     expect(use.namespaceURI).toBe(SVG_NS);
     expect(use.getAttribute('xlink:href')).toBe('#sprite');
 
-    // Pin divergence: Inferno's path leaves the attribute's own namespaceURI
-    // as null. React's path would set it to the XLink namespace.
+    // React parity: the namespaced attribute MUST carry its proper
+    // namespaceURI. `xlink:href={…}` is routed through `setAttributeNS` at
+    // runtime so the resulting attribute matches a statically-parsed
+    // `<use xlink:href="…"/>` from an SVG template — same DOM shape either
+    // way. (This used to be pinned at `namespaceURI === null` as a known
+    // divergence; the runtime fix in setAttribute closed it.)
     const node = use.getAttributeNode('xlink:href');
     expect(node).not.toBeNull();
-    // Either null (Inferno today) OR XLINK_NS (React semantics) — assert the
-    // observed value of one of the two and surface the divergence in `notes`.
-    expect([null, XLINK_NS]).toContain(node!.namespaceURI);
-    // Current Inferno behavior — record explicitly so a future change in
-    // routing is flagged.
-    expect(node!.namespaceURI).toBe(null);
+    expect(node!.namespaceURI).toBe(XLINK_NS);
 
     // Re-render to a different href — update path still works through the
     // same qualified name.
@@ -232,6 +235,33 @@ describe('SVG attributes — plain href on SVG <a>', () => {
     // Null clear — href removed cleanly.
     r.update(SvgPlainHref, { href: null });
     expect(a.hasAttribute('href')).toBe(false);
+    r.unmount();
+  });
+});
+
+describe('SVG attributes — namespaced keys via spread', () => {
+  it('xlink:href delivered via {...obj} routes through setAttributeNS too', () => {
+    // The compiler lowers `{...obj}` to `setSpread(el, value, prev)`, which
+    // calls the shared `setAttribute` helper per key. The runtime's prefix
+    // detection ensures the spread path matches the direct emit path for
+    // namespaced attribute names — no divergence between the two surfaces.
+    const r = mount(SvgSpreadNamespaced, { attrs: { 'xlink:href': '#a', class: 'spread' } });
+    const use = r.find('#spread-use');
+    expect(use.namespaceURI).toBe(SVG_NS);
+    expect(use.getAttribute('xlink:href')).toBe('#a');
+    expect(use.getAttributeNode('xlink:href')!.namespaceURI).toBe(XLINK_NS);
+    expect(use.getAttribute('class')).toBe('spread');
+
+    // Update with a different namespaced value through the same spread.
+    r.update(SvgSpreadNamespaced, { attrs: { 'xlink:href': '#b' } });
+    expect(use.getAttribute('xlink:href')).toBe('#b');
+    expect(use.getAttributeNode('xlink:href')!.namespaceURI).toBe(XLINK_NS);
+    // `class` was in `prev` but not in the new spread → removed.
+    expect(use.hasAttribute('class')).toBe(false);
+
+    // Drop the xlink key entirely — must clear the namespaced attribute.
+    r.update(SvgSpreadNamespaced, { attrs: {} });
+    expect(use.hasAttribute('xlink:href')).toBe(false);
     r.unmount();
   });
 });

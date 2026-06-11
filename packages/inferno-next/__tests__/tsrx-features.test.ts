@@ -205,10 +205,15 @@ describe('TSRX features — shorthand attribute', () => {
 // ---------------------------------------------------------------------------
 
 describe('TSRX features — namespaced attribute', () => {
-  it('emits `xlink:href` literally so the browser handles the namespace', () => {
+  it('routes `xlink:href` through setAttributeNS so the attribute carries XLINK_NS', () => {
+    // Matches React's parity: a dynamic `xlink:href={…}` results in the same
+    // DOM shape as a statically-parsed `<use xlink:href="…"/>` from an SVG
+    // template — `attribute.namespaceURI === XLINK_NS`.
+    const XLINK_NS = 'http://www.w3.org/1999/xlink';
     const r = mount(NamespacedAttr, { href: '#sprite' });
     const use = r.find('#use-el');
     expect(use.getAttribute('xlink:href')).toBe('#sprite');
+    expect(use.getAttributeNode('xlink:href')!.namespaceURI).toBe(XLINK_NS);
     r.unmount();
   });
 });
