@@ -540,10 +540,16 @@ function isComponentFunction(node) {
  * Compile a .tsrx source string into JS targeting `inferno-next`.
  * @param {string} source
  * @param {string} filename
+ * @param {{ hmr?: boolean }} [options] — `hmr: true` wraps each exported
+ *   component in `hmr(Component)` and emits an `import.meta.hot.accept(...)`
+ *   block that delegates updates to the runtime HMR wrapper. Dev tooling
+ *   (e.g. the Vite plugin) should pass `hmr: true` when running in serve
+ *   mode and leave it off for production builds.
  * @returns {{ code: string, map: any }}
  */
-export function compile(source, filename) {
+export function compile(source, filename, options) {
   const ast = parseModule(source, filename);
+  const hmrEnabled = !!(options && options.hmr);
 
   const ctx = {
     filename,
@@ -557,22 +563,31 @@ export function compile(source, filename) {
     nextTemplateId: 0,
     nextHelperId: 0,
   };
+  // List of exported components needing HMR wrapping. Each entry: { name,
+  // exportKind: 'default' | 'named' }. We emit the `Comp = hmr(Comp)` lines
+  // and the `import.meta.hot.accept` block after walking the body, so the
+  // wrapping sits AFTER each component's `const Comp = …;` declaration.
+  const hmrComponents = [];
 
   let body = '';
+  const compileOpts = { hmrWrap: hmrEnabled };
   for (const node of ast.body) {
     if (isComponentFunction(node)) {
-      // `function Foo() @{ ... }` (new TSRX shape).
+      // `function Foo() @{ ... }` (new TSRX shape) — non-exported helper. HMR
+      // doesn't wrap these (they're not user-visible across module boundaries).
       body += compileComponent(node, ctx) + '\n\n';
     } else if (node.type === 'ExportDefaultDeclaration' && isComponentFunction(node.declaration)) {
       // `export default function Foo() @{...}` → emit as named const + `export default Foo;`.
       const c = node.declaration;
-      const compiled = compileComponent({ ...c, default: false }, ctx);
-      body += compiled + '\nexport default ' + c.id.name + ';\n\n';
+      const compiled = compileComponent({ ...c, default: true }, ctx, compileOpts);
+      body += compiled + '\n\n';
+      if (hmrEnabled) hmrComponents.push({ name: c.id.name, exportKind: 'default' });
     } else if (node.type === 'ExportNamedDeclaration' && isComponentFunction(node.declaration)) {
       // `export function Foo() @{...}` → emit as `export const Foo = ...;`.
       const c = node.declaration;
-      const compiled = compileComponent({ ...c, export: true }, ctx);
+      const compiled = compileComponent({ ...c, export: true }, ctx, compileOpts);
       body += compiled + '\n\n';
+      if (hmrEnabled) hmrComponents.push({ name: c.id.name, exportKind: 'named' });
     } else if (node.type === 'ImportDeclaration' && node.source.value === 'inferno-next') {
       // Preserve ALL user-imported names from inferno-next (Portal, createContext,
       // use, custom helpers, etc.) — merged into the single prelude import.
@@ -590,10 +605,9 @@ export function compile(source, filename) {
     ctx.runtimeNeeded.add('delegateEvents');
   }
 
-  // Build prelude.
-  const runtimeImport = ctx.runtimeNeeded.size > 0
-    ? `import { ${[...ctx.runtimeNeeded].sort().join(', ')} } from 'inferno-next';\n\n`
-    : '';
+  // Build prelude. NOTE: `runtimeImport` is built BELOW (after the HMR block
+  // possibly registers more runtime needs); we postpone that so the final
+  // import list includes `hmr` / `HMR` when needed.
   const delegateCall = ctx.delegatedEvents.size > 0
     ? `delegateEvents(${JSON.stringify([...ctx.delegatedEvents].sort())});\n\n`
     : '';
@@ -613,7 +627,45 @@ export function compile(source, filename) {
   const helpers = ctx.hoistedHelpers.join('\n');
   const helpersBlock = helpers ? helpers + '\n\n' : '';
 
-  return { code: runtimeImport + delegateCall + styleBlock + templatesBlock + helpersBlock + body, map: null };
+  // HMR plumbing — sits AFTER the component bodies so the wrappers can
+  // reference the `Comp` const that was just declared. Each exported
+  // component gets rewrapped (`Comp = hmr(Comp);`), default exports get
+  // re-exported afterwards (we already emitted the `export default Comp;`
+  // line earlier — re-exporting again would conflict, so the rewrap mutates
+  // the binding in place). Mirrors `tsrx-ripple`'s emit shape.
+  let hmrBlock = '';
+  if (hmrComponents.length > 0) {
+    // `hmr` is already registered as a needed runtime symbol by the
+    // inline-wrap pass on each exported component. We still need `HMR` (the
+    // Symbol key used to reach the wrapper's meta on `.update(...)`).
+    ctx.runtimeNeeded.add('hmr');
+    ctx.runtimeNeeded.add('HMR');
+    const updates = hmrComponents
+      .map(c => {
+        const accessor = c.exportKind === 'default' ? 'module.default' : `module.${c.name}`;
+        return `    ${c.name}[HMR].update(${accessor});`;
+      })
+      .join('\n');
+    hmrBlock =
+      'if (import.meta.hot) {\n' +
+      '  import.meta.hot.accept((module) => {\n' +
+      updates + '\n' +
+      '  });\n' +
+      '}\n';
+  }
+
+  // `runtimeImport` is built ABOVE this point, BEFORE `ctx.runtimeNeeded` may
+  // get `hmr` and `HMR` added — so rebuild it after HMR wiring so the prelude
+  // import includes them. Same for `delegateCall` (which already ran above):
+  // we re-emit the prelude bits with the now-complete `runtimeNeeded` set.
+  const finalRuntimeImport = ctx.runtimeNeeded.size > 0
+    ? `import { ${[...ctx.runtimeNeeded].sort().join(', ')} } from 'inferno-next';\n\n`
+    : '';
+
+  return {
+    code: finalRuntimeImport + delegateCall + styleBlock + templatesBlock + helpersBlock + body + hmrBlock,
+    map: null,
+  };
 }
 
 // ===========================================================================
@@ -675,10 +727,11 @@ function applyCssScoping(componentNode, ctx) {
   return cssHash;
 }
 
-function compileComponent(node, ctx) {
+function compileComponent(node, ctx, options) {
   const name = node.id.name;
   const isExported = !!(node.export || node.default || node.exported);
   const isDefault = !!node.default;
+  const hmrWrap = !!(options && options.hmrWrap);
 
   // Scoped `<style>` block. New TSRX surfaces each style block as a
   // `JSXStyleElement` child of the rendered tree (parser pre-computes the
@@ -717,13 +770,19 @@ function compileComponent(node, ctx) {
     ctx.currentComponentLocals = prevLocals;
   }
 
+  // HMR-wrap exported components inline so the binding stays a `const` (no
+  // reassignment dance needed). The wrapper preserves the user-facing
+  // function-name identity by NAMING the inner FunctionExpression — `hmr`
+  // returns a wrapper that delegates to whatever fn is currently committed,
+  // and `module.Foo[HMR].update(...)` swaps it on each accept.
+  const valueExpr = (hmrWrap && isExported) ? `hmr(${fn})` : fn;
   if (isDefault) {
-    return `const ${name} = ${fn};\nexport default ${name};`;
+    return `const ${name} = ${valueExpr};\nexport default ${name};`;
   }
   if (isExported) {
-    return `export const ${name} = ${fn};`;
+    return `export const ${name} = ${valueExpr};`;
   }
-  return `const ${name} = ${fn};`;
+  return `const ${name} = ${valueExpr};`;
 }
 
 /**
@@ -887,7 +946,14 @@ function rewriteTsrxBlocks(node, ctx, componentName, inlinedSubs) {
 function allocHookSymbol(ctx, debugName) {
   const id = ctx.nextHookSymId++;
   const name = `_h$${id}`;
-  ctx.hoistedHelpers.push(`const ${name} = Symbol(${JSON.stringify(debugName)});`);
+  // Use Symbol.for(stableKey) so re-imports under HMR produce the SAME Symbol
+  // identity, which keeps the existing hooks Map keys valid across body
+  // swaps. The stable key embeds the source filename so symbols don't
+  // collide across modules. `debugName` includes the component name + hook
+  // name + call-site index — stable provided the user doesn't reorder hooks
+  // between renders (which would violate React's rules anyway).
+  const stableKey = `inferno-next:${ctx.filename || '<anon>'}:${debugName}`;
+  ctx.hoistedHelpers.push(`const ${name} = Symbol.for(${JSON.stringify(stableKey)});`);
   return name;
 }
 
@@ -1208,8 +1274,18 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     //        bit 2 = depEligible (runtime compares deps array, upgrades to pure
     //        for survivors when deps unchanged this render).
     const flags = (fc.pure ? 1 : 0) | (fc.singleRoot ? 2 : 0) | (fc.depEligible ? 4 : 0);
-    const depsArg = fc.depEligible ? `, [${fc.depNames.join(', ')}]` : '';
-    afterLines.push(`  forBlock(__s, ${JSON.stringify('_for$' + fc.id)}, __s.${bindingsName}._for$${fc.id}, ${fc.itemsExpr}, ${fc.keyHelper}, ${fc.bodyHelper}, ${fc.extraExpr}${flags ? ', ' + flags : ''}${depsArg});`);
+    // Arg layout: forBlock(__s, slot, host, items, keyFn, body, extra, flags?, deps?, emptyBody?).
+    // `emptyHelper` ('null' literal when no `@empty` branch) lands as the
+    // trailing arg. We backfill `flags` and `deps` placeholders (`0` and
+    // `undefined`) when only the empty branch is present so the runtime sees
+    // it at the right position.
+    const hasEmpty = fc.emptyHelper && fc.emptyHelper !== 'null';
+    const flagsPart = (flags || hasEmpty) ? ', ' + (flags || 0) : '';
+    const depsPart = fc.depEligible
+      ? `, [${fc.depNames.join(', ')}]`
+      : (hasEmpty ? ', undefined' : '');
+    const emptyPart = hasEmpty ? `, ${fc.emptyHelper}` : '';
+    afterLines.push(`  forBlock(__s, ${JSON.stringify('_for$' + fc.id)}, __s.${bindingsName}._for$${fc.id}, ${fc.itemsExpr}, ${fc.keyHelper}, ${fc.bodyHelper}, ${fc.extraExpr}${flagsPart}${depsPart}${emptyPart});`);
   }
   for (const ic of ifCalls) {
     ctx.runtimeNeeded.add('ifBlock');
@@ -2044,19 +2120,23 @@ function makeForCall(node, ctx, componentName, inlinedSubs, parentNs = 'html', c
   // node.left = const x  OR  const &{x,y} / const [a,b]  (destructured)
   // node.right = expr, node.body = BlockStatement,
   // node.key = optional `key …` expression, node.index = optional `index <id>`.
-  // node.empty = optional BlockStatement rendered when the iterable is empty —
-  // NOT yet supported in inferno-next v1. Fail loudly rather than silently
-  // dropping the user's empty branch (which would otherwise just disappear).
+  // `@for (...) { ... } @empty { ... }` — hoist the empty branch as its own
+  // helper. Passed to the runtime as the trailing `emptyBody` arg. When
+  // items.length === 0 the runtime mounts the empty branch in place of the
+  // (empty) item list; transitioning items → 0 unmounts the chain and mounts
+  // the empty body, and 0 → items does the reverse.
+  let emptyHelperName = 'null';
   if (node.empty) {
-    throw new Error(
-      "`@for (...) { ... } @empty { ... }` isn't supported yet in inferno-next. " +
-      'Until then, gate the empty case with `@if (items.length === 0) { ... }`:\n\n' +
-      '  @if (items.length === 0) {\n' +
-      '    <p>No items</p>\n' +
-      '  } @else {\n' +
-      '    @for (const x of items; key x.id) { <li>{x.label as string}</li> }\n' +
-      '  }'
-    );
+    const stmts = node.empty.type === 'BlockStatement' ? node.empty.body : [node.empty];
+    emptyHelperName = `__empty$${ctx.nextHelperId++}`;
+    const fake = {
+      type: 'Component',
+      id: { type: 'Identifier', name: emptyHelperName },
+      params: [],
+      body: stmts,
+    };
+    const fn = compileFunctionBody(fake, ctx, emptyHelperName, parentNs, cssHash);
+    inlinedSubs.push(fn + ';');
   }
   const leftDeclId = node.left.declarations[0].id;
   const isDestructured = leftDeclId.type !== 'Identifier';
@@ -2224,6 +2304,8 @@ function makeForCall(node, ctx, componentName, inlinedSubs, parentNs = 'html', c
     // this render, treats the body as PURE for the survivor short-circuit.
     depEligible,
     depNames,
+    // `@empty` branch helper name (or literal 'null' when none).
+    emptyHelper: emptyHelperName,
     hostPath: null,
   };
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from './_helpers';
-import { List, MutableList } from './_fixtures/for.tsrx';
+import { List, MutableList, ListWithEmpty, ToggleableEmpty } from './_fixtures/for.tsrx';
 
 const labels = (r: ReturnType<typeof mount>) =>
   r.findAll('li').map(li => li.textContent);
@@ -78,6 +78,52 @@ describe('forBlock — reconciliation', () => {
     r.click('#reverse');                              // d c b a
     r.click('#remove-middle');                        // d c a
     expect(labels(r)).toEqual(['d', 'c', 'a']);
+    r.unmount();
+  });
+});
+
+describe('forBlock — @empty branch', () => {
+  it('mounts the empty branch when items is empty', () => {
+    const r = mount(ListWithEmpty, { items: [] });
+    expect(r.findAll('.row')).toHaveLength(0);
+    expect(r.findAll('.empty')).toHaveLength(1);
+    expect(r.find('.empty').textContent).toBe('No items');
+    r.unmount();
+  });
+
+  it('mounts items when items is non-empty (no empty branch shown)', () => {
+    const r = mount(ListWithEmpty, { items: [{id:1,label:'a'},{id:2,label:'b'}] });
+    expect(r.findAll('.row').map(li => li.textContent)).toEqual(['a', 'b']);
+    expect(r.findAll('.empty')).toHaveLength(0);
+    r.unmount();
+  });
+
+  it('transitions empty → items → empty cleanly via state', () => {
+    const r = mount(ToggleableEmpty);
+    // initial state: 2 items
+    expect(r.findAll('.row').map(li => li.textContent)).toEqual(['a', 'b']);
+    expect(r.findAll('.empty')).toHaveLength(0);
+    // → empty
+    r.click('#clear');
+    expect(r.findAll('.row')).toHaveLength(0);
+    expect(r.findAll('.empty')).toHaveLength(1);
+    expect(r.find('.empty').textContent).toBe('No items');
+    // → items again
+    r.click('#restore');
+    expect(r.findAll('.row').map(li => li.textContent)).toEqual(['a', 'b']);
+    expect(r.findAll('.empty')).toHaveLength(0);
+    // → empty once more
+    r.click('#clear');
+    expect(r.findAll('.empty')).toHaveLength(1);
+    r.unmount();
+  });
+
+  it('handles initial-empty → items transition (first render is empty)', () => {
+    const r = mount(ListWithEmpty, { items: [] });
+    expect(r.findAll('.empty')).toHaveLength(1);
+    r.update(ListWithEmpty, { items: [{id:1,label:'x'},{id:2,label:'y'}] });
+    expect(r.findAll('.empty')).toHaveLength(0);
+    expect(r.findAll('.row').map(li => li.textContent)).toEqual(['x', 'y']);
     r.unmount();
   });
 });

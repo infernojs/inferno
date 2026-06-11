@@ -566,6 +566,10 @@ function unmountScope(scope: Scope): void {
         const items = val.items as Map<any, Block>;
         const it = items.values();
         for (let r = it.next(); !r.done; r = it.next()) unmountBlock(r.value);
+        // An @empty branch (if any) hangs off the same slot.
+        if (val.emptyBlock) unmountBlock(val.emptyBlock);
+      } else if (val && val.__kind === 'switchBlockSlot') {
+        if (val.block) unmountBlock(val.block);
       } else if (val && (val.__kind === 'componentSlotSlot' || val.__kind === 'portalSlotSlot' || val.__kind === 'trySlotSlot')) {
         if (val.block) unmountBlock(val.block);
         // Release the portal target's delegation refcount so the listeners
@@ -1359,6 +1363,76 @@ export function memo<P>(component: ComponentBody<P>): ComponentBody<P> {
 }
 
 // ---------------------------------------------------------------------------
+// HMR — hot-module-replacement wrapper for exported components
+// ---------------------------------------------------------------------------
+//
+// The compiler emits `MyComp = hmr(MyComp);` after each exported component
+// when its `hmr` option is on, plus an `import.meta.hot.accept(...)` block
+// that calls `MyComp[HMR].update(module.MyComp)` when the source file is
+// edited at dev time. The wrapper:
+//
+//   1. Defers to the current `fn` on every call — invocations route through
+//      `wrapper[HMR].fn` so `update()` can replace it.
+//   2. Tracks every live Block currently using this wrapper (keyed weakly via
+//      a Set so reload-races don't leak). On `update(newFn)` we mutate each
+//      block's `body` to point at the new fn and re-render — hook state is
+//      preserved because the compiler emits `Symbol.for(stableId)` for hook
+//      slots (re-imports get the same Symbol identity, so the existing
+//      hooks Map continues to work).
+//   3. Marks the wrapper IDENTITY-stable: HMR wrappers `Foo` and `Foo` (post-
+//      reload) are the same wrapper, so `componentSlot`'s identity check
+//      (`comp !== state.currentComp`) doesn't tear down on every edit.
+//
+// `HMR` is exported as a Symbol so user code (and the compiler emit) can
+// read `wrapper[HMR]` without colliding with anything else on the function.
+
+export const HMR: unique symbol = Symbol.for('inferno-next.hmr');
+
+interface HmrMeta {
+  fn: ComponentBody<any>;
+  liveBlocks: Set<Block>;
+  update(incoming: ComponentBody<any>): void;
+}
+
+type HmrWrapper = ComponentBody<any> & { [HMR]: HmrMeta };
+
+export function hmr<P>(fn: ComponentBody<P>): ComponentBody<P> {
+  const meta: HmrMeta = {
+    fn,
+    liveBlocks: new Set(),
+    update(incoming: ComponentBody<any>): void {
+      // The incoming function is the freshly-recompiled component body. If
+      // the incoming function is itself an HMR wrapper (which it will be when
+      // the new module re-runs `Comp = hmr(Comp)`), unwrap it down to the
+      // raw fn — otherwise we'd nest wrappers on each edit.
+      const incomingMeta = (incoming as any)[HMR] as HmrMeta | undefined;
+      meta.fn = incomingMeta ? incomingMeta.fn : incoming;
+      // Mutate every live block's body in place and schedule a re-render.
+      // The hook map persists (stable Symbol.for-based keys), so useState/
+      // useEffect/etc. pick up their existing slots on the next render.
+      const it = meta.liveBlocks.values();
+      for (let r = it.next(); !r.done; r = it.next()) {
+        const b = r.value;
+        if (b.disposed) {
+          meta.liveBlocks.delete(b);
+          continue;
+        }
+        b.body = wrapper as unknown as ComponentBody<any>;
+        scheduleRender(b);
+      }
+    },
+  };
+  function wrapper(scope: Scope, props: P, extra: any): void {
+    const block = scope.block;
+    // Register on first call; cleared lazily during update() if disposed.
+    meta.liveBlocks.add(block);
+    meta.fn(scope, props as any, extra);
+  }
+  (wrapper as HmrWrapper)[HMR] = meta;
+  return wrapper as ComponentBody<P>;
+}
+
+// ---------------------------------------------------------------------------
 // Control flow: tryBlock — error boundary, catches render + effect errors
 // ---------------------------------------------------------------------------
 
@@ -1982,6 +2056,12 @@ interface ForSlot {
   // PURE for the survivor short-circuit — saving the entire body call for
   // every item whose ref + position are unchanged.
   cachedDeps: any[] | null;
+  // `@for (...) { ... } @empty { ... }` support: mounted-empty-branch Block,
+  // or null when there are items (or no `@empty` branch was compiled). The
+  // empty body is hoisted by the compiler as its own helper and passed to
+  // forBlock as the trailing `emptyBody` arg; we mount it on the transition
+  // `items.length > 0 → 0` and unmount on `0 → >0`.
+  emptyBlock: Block | null;
 }
 
 export function forBlock<T, E = undefined>(
@@ -1994,6 +2074,7 @@ export function forBlock<T, E = undefined>(
   extra?: E,
   flags?: number,
   deps?: any[],
+  emptyBody?: ComponentBody | null,
 ): void {
   // flags bitfield: bit 0 = pure (auto-memo), bit 1 = singleRoot (skip per-item
   // Comment markers), bit 2 = depEligible (compare `deps` to cachedDeps and
@@ -2013,8 +2094,42 @@ export function forBlock<T, E = undefined>(
       size: 0,
       hasCleanups: false,
       cachedDeps: null,
+      emptyBlock: null,
     };
     parentScope[slotKey] = state;
+  }
+  // `@empty` arm: when `items.length === 0` and the compiler emitted an
+  // empty-body helper, mount that body in place of the (empty) item list. We
+  // also tear down any previously-mounted items so transitioning items → 0 →
+  // items behaves identically to a regular un-mount/re-mount cycle.
+  const isEmpty = items.length === 0;
+  if (isEmpty && emptyBody) {
+    if (state.size > 0) {
+      // had items last render, now we're empty — tear down the chain.
+      reconcileKeyed(parentBlock, state, items, getKey, itemBody as any, extra, false, false);
+    }
+    if (state.emptyBlock) {
+      // keep the existing empty branch mounted, but re-render in case the
+      // body closes over parent state that changed this render.
+      state.emptyBlock.body = emptyBody;
+      renderBlock(state.emptyBlock);
+    } else {
+      const bStart = document.createComment('empty');
+      const bEnd = document.createComment('/empty');
+      domParent.insertBefore(bStart, state.end);
+      domParent.insertBefore(bEnd, state.end);
+      const b = createBlock('control-flow', parentBlock, domParent, bStart, bEnd, emptyBody, undefined);
+      state.emptyBlock = b;
+      renderBlock(b);
+    }
+    return;
+  }
+  // We have items (or no empty body). If an empty branch was previously
+  // mounted, tear it down before reconciling so its DOM doesn't sit alongside
+  // the freshly-mounted items.
+  if (state.emptyBlock) {
+    unmountBlock(state.emptyBlock);
+    state.emptyBlock = null;
   }
   const f = flags || 0;
   let pure = (f & 1) !== 0;

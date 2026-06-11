@@ -8,6 +8,36 @@ export function List(props) @{
   </ul>
 }
 
+// `@for (...) @empty { ... }` — empty branch mounts when the iterable is empty,
+// unmounts when items return. Hooks declared in the empty body have their own
+// Block boundary, so re-entering the empty state mounts a fresh state.
+export function ListWithEmpty(props) @{
+  <ul class='outer'>
+    @for (const item of props.items; key item.id) {
+      <li class='row'>{item.label as string}</li>
+    } @empty {
+      <li class='empty'>{'No items'}</li>
+    }
+  </ul>
+}
+
+// Toggle items in/out via state — exercises the items → 0 → items transition
+// the runtime needs to handle.
+export function ToggleableEmpty() @{
+  const [items, setItems] = useState([{id: 1, label: 'a'}, {id: 2, label: 'b'}]);
+  <div>
+    <button id='clear' onClick={() => setItems([])}>{'clear'}</button>
+    <button id='restore' onClick={() => setItems([{id: 1, label: 'a'}, {id: 2, label: 'b'}])}>{'restore'}</button>
+    <ul class='outer'>
+      @for (const item of items; key item.id) {
+        <li class='row'>{item.label as string}</li>
+      } @empty {
+        <li class='empty'>{'No items'}</li>
+      }
+    </ul>
+  </div>
+}
+
 export function MutableList() @{
   const [items, setItems] = useState([{id: 1, label: 'a'}, {id: 2, label: 'b'}, {id: 3, label: 'c'}]);
   <div>

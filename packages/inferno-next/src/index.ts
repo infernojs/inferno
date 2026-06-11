@@ -31,6 +31,10 @@ export {
   type Context,
 
 
+  // HMR (compiler-emitted when the Vite plugin's hmr option is on)
+  hmr,
+  HMR,
+
   // Compiler-emitted runtime helpers
   template,
   clone,
