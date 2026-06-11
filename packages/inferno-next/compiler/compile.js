@@ -1157,7 +1157,14 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
 
   const bindingsName = `b$${ctx.nextHelperId++}`;
   const mountLines = [];
-  mountLines.push(`    _b = __s.${bindingsName} = {};`);
+  // Initialize `_b` as a LOCAL only — commit to `__s.${bindingsName}` at the
+  // VERY END of the mount path. If anything thrown mid-mount (e.g. a `use()`
+  // call suspending or a child render throwing), the scope's binding bag
+  // stays `undefined` and the next attempt re-enters the mount branch from
+  // scratch instead of mistakenly hitting the update branch with a half-
+  // populated bag (which would crash setText / setAttribute on undefined
+  // slot references).
+  mountLines.push(`    _b = {};`);
 
   let elementVars;
   let ensureVar;
@@ -1259,6 +1266,11 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
       mountLines.push(`    while (_root.firstChild) __block.parentNode.insertBefore(_root.firstChild, __block.endMarker);`);
     }
   }
+  // Commit the binding bag to the scope LAST — see the matching comment at
+  // the `_b = {}` initialization above. Reaching here means every binding
+  // and the DOM range have been successfully constructed, so future
+  // renders can safely take the update branch keyed on `__s.${bindingsName}`.
+  mountLines.push(`    __s.${bindingsName} = _b;`);
 
   // Update.
   const updateLines = [];

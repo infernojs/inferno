@@ -558,7 +558,10 @@ function unmountScope(scope: Scope): void {
   for (let i = 0, n = children.length; i < n; i++) unmountScope(children[i].scope);
   // Walk slot-stashed child Blocks (ifBlock / forBlock / componentSlot / portal).
   for (const key in scope) {
-    if (key.charCodeAt(0) === 95 /* '_' */) {
+    // Compiler-emitted slot keys are `_xxx$N` (single underscore). Runtime
+    // back-references like `__trySlot` use double underscore; those point
+    // to slots owned by ANOTHER scope and must NOT be torn down here.
+    if (key.charCodeAt(0) === 95 /* '_' */ && key.charCodeAt(1) !== 95) {
       const val = scope[key];
       if (val && val.__kind === 'ifBlockSlot') {
         if (val.block) unmountBlock(val.block);
@@ -572,8 +575,21 @@ function unmountScope(scope: Scope): void {
         if (val.block) unmountBlock(val.block);
       } else if (val && (val.__kind === 'componentSlotSlot' || val.__kind === 'portalSlotSlot' || val.__kind === 'trySlotSlot')) {
         if (val.block) unmountBlock(val.block);
-        // Release the portal target's delegation refcount so the listeners
-        // detach when the last portal pointing there is torn down.
+        // trySlotSlot keeps an off-screen `tryBlock` ALIVE across suspend/
+        // resume so its hooks Map survives replay. When the surrounding
+        // scope is being torn down (e.g. an @if branch unmounts mid-pending,
+        // or the whole component unmounts while still suspended), mark the
+        // tryBlock disposed AND clear pendingThenable. That makes the
+        // promise's .then-retry callback short-circuit on the disposed check
+        // at runtime.ts:1695, preventing late commits into a torn-down DOM
+        // range. We mark via `disposed = true` rather than calling
+        // unmountBlock because the tryBlock's DOM was already torn down by
+        // its parent's unmount, and a second pass through unmountBlock
+        // would re-walk the same scopes / double-fire cleanups.
+        if (val.__kind === 'trySlotSlot' && val.tryBlock && val.tryBlock !== val.block) {
+          val.tryBlock.disposed = true;
+          val.pendingThenable = null;
+        }
         if (val.__kind === 'portalSlotSlot' && val.target) {
           unregisterDelegationTarget(val.target);
         }

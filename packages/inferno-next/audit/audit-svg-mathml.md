@@ -1,0 +1,72 @@
+# inferno-next SVG / MathML Coverage Audit
+
+## Files inspected (absolute paths)
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/_fixtures/basic.tsrx
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/basic.test.ts
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/_fixtures/tsrx-features.tsrx
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/tsrx-features.test.ts
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/_fixtures/style.tsrx
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/style.test.ts
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/_fixtures/useref.tsrx
+- /Users/domgan/Projects/inferno/packages/inferno-next/__tests__/useref.test.ts
+
+---
+
+## SECTION 1 — SVG: Existing Coverage
+
+| Test file | Test name | What it asserts | React upstream / spec reference | Confidence | Notes |
+|---|---|---|---|---|---|
+| basic.test.ts | basic — SVG > "places <svg> and its descendants in the SVG namespace" | Static-template SVG: root `<svg>` has `namespaceURI === SVG_NS`; case-preserved tagName `'svg'`; `viewBox` and `class` attributes set; descendants `<circle>`, `<g>`, `<text>` all inherit SVG_NS; getAttribute returns expected values; SVG `<text>` distinguished from text nodes. | React ReactDOMSVG-test.js ("should add SVG elements correctly"); HTML5 parsing — foreign content (https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inforeign); MDN SVG namespace `http://www.w3.org/2000/svg`. | High | Relies on the inlined-template HTML5 parser path — namespace comes "for free" from the parser, not from a runtime createElementNS branch. Does NOT exercise runtime element creation. |
+| basic.test.ts | basic — SVG > "updates dynamic class + attributes on SVG without breaking namespace" | Dynamic `class={}`, `width={}`, `fill={}` go through setAttribute (NOT `.className` which is SVGAnimatedString and read-only on SVG); namespace preserved across updates; setting `class={null}` removes the attribute via `hasAttribute(...)===false`. | React ReactDOMComponent-test.js sections covering SVG `className`/setAttribute parity; MDN `SVGElement.className` (SVGAnimatedString, read-only); ReactDOMSVG-test.js update cases. | High | This is the key runtime-bindings test. The null-clears-attribute assertion catches the common bug where SVG class is set via property assignment. |
+| tsrx-features.test.ts | TSRX features — namespaced attribute > "emits `xlink:href` literally so the browser handles the namespace" | `xlink:href={dyn}` on `<use>` inside `<svg>` is emitted as a regular setAttribute with the colon-prefixed qualified name; reads back via `getAttribute('xlink:href')`. | React ReactDOMComponent-test.js (xlink namespace section); SVG 1.1 xlink attribute spec; MDN SVG attribute reference for `xlink:href`. | Medium | Does NOT call `setAttributeNS(XLINK_NS, ...)` — only `setAttribute('xlink:href', ...)`. Browsers tolerate this for serialization/getAttribute but the attribute's namespaceURI is `null`, which differs from React's `setAttributeNS` behavior. Test name correctly admits "browser handles the namespace". |
+
+## SECTION 1 — MathML: Existing Coverage
+
+| Test file | Test name | What it asserts | React upstream / spec reference | Confidence | Notes |
+|---|---|---|---|---|---|
+| basic.test.ts | basic — MathML > "places <math> and its descendants in the MathML namespace" | Static `<math id='eq' display='block'>` has `namespaceURI === MATHML_NS`; descendants `<mrow>`, `<mi>`, `<mo>` also in MATHML_NS; `display` attribute and text content correct; querySelectorAll picks up both `<mi>` children. | React ReactDOMComponent-test.js ("should give MathML elements the MathML namespace"); HTML5 foreign-content parsing; MDN MathML namespace `http://www.w3.org/1998/Math/MathML`. | High | Static template path. Like the SVG static case, this only proves the parser places the elements correctly — does not exercise a runtime createElementNS code path. |
+| basic.test.ts | basic — MathML > "updates dynamic class + attributes on MathML elements" | Dynamic `display={}`, `class={}`, text holes update; namespace preserved across updates; tag identity preserved. | React ReactDOMComponent-test.js MathML namespace + setAttribute update tests; MDN MathML attribute reference. | High | Does not test class removal via null on MathML, nor any MathML-specific attributes (e.g. `mathvariant`, `displaystyle`). |
+
+## Things NOT covered (gleaned from the same files)
+- No SVG / MathML element ever created via the runtime (e.g. by `@if` insertion, `@for` row, ternary fragment branch, portal, dynamic component insertion) — every existing test mounts statically.
+- No `foreignObject` → namespace switch back to XHTML for HTML descendants.
+- `xlink:href` is tested but `xml:lang`, `xml:space`, `xmlns:xlink`, and other true setAttributeNS-namespace attrs are not.
+- camelCase attribute preservation (`viewBox`, `preserveAspectRatio`, `gradientTransform`, `clipPathUnits`) is partially covered by `viewBox` only.
+- Scoped `<style>` block tests in style.test.ts never put `class` on an SVG/MathML element.
+- DOM refs in useref.tsrx attach only to `<div>` — no SVG node ref.
+- No SVG/MathML inside `@if`, `@for`, ternary, or portal.
+- No `<svg>` in `tsrx-features.tsrx` other than the `xlink:href` fixture; no spread-attrs test on an SVG element.
+- No assertion that an SVG `<title>` or `<desc>` element is in the SVG namespace (only top-level `<text>`).
+- No test that the SVG attribute `xmlns="http://www.w3.org/2000/svg"` is or isn't required for runtime-inserted SVG.
+
+---
+
+## SECTION 2 — Gaps vs. the Plan
+
+| Plan section # | Gap description | Test file proposal | What to assert | Confidence in gap | Notes |
+|---|---|---|---|---|---|
+| Namespace inheritance | Runtime-inserted SVG: dynamically mounted `<svg>` (via `@if`, ternary fragment branch, or component swap) must still get namespaceURI=SVG_NS. Today everything is static-template only, so the HTML5 parser does the work — the runtime createElement path is unexercised. | basic.tsrx — add `SvgInIf(props)` with `@if (props.show) { <svg><circle/></svg> }`; basic.test.ts — toggle and assert namespaceURI on both the svg and the circle after the toggle. | After toggling on, `svg.namespaceURI === SVG_NS` AND `circle.namespaceURI === SVG_NS`; toggling off then on again still produces SVG_NS (no fallback to XHTML on the remount). | High | This is the canonical regression vector — the plan calls out runtime namespace inheritance; current tests can't catch a regression to createElement-HTML for runtime svg insertion. |
+| Namespace inheritance | SVG inside `@for` row: per-iteration SVG roots must each inherit SVG_NS. | basic.tsrx — `SvgInForOf(props)` rendering an `<svg><rect/></svg>` per item, keyed. | All `<svg>` and `<rect>` after mount and after a reorder have `namespaceURI === SVG_NS`. | High | Same code path as `@if`, but exercises the for-of survivor / mover branches in the reconciler. |
+| Namespace inheritance | SVG inside portal: a portal target outside the tree still needs the SVG namespace on its mounted children. | new fixture (or extend basic.tsrx) `SvgInPortal`; portal API per inferno-next. | The portaled `<svg>`/`<g>` have `namespaceURI === SVG_NS` and update correctly. | Medium | Depends on whether portal in inferno-next currently inherits namespace through its host or re-bootstraps from the container; either way, untested. |
+| foreignObject namespace switch | `<svg><foreignObject><div>…</div></foreignObject></svg>` — the inner `<div>` must be in the XHTML namespace, NOT SVG_NS. React explicitly tests this. | basic.tsrx — `SvgForeignObject()` static, plus a dynamic variant where the inner `<div>` is conditionally inserted. | `foreignObject.namespaceURI === SVG_NS`; `div.namespaceURI === 'http://www.w3.org/1999/xhtml'`; HTML attribute names (`tabindex`, `className`) behave as on an HTML div, not SVG. | High | A real correctness footgun that React's ReactDOMSVG-test.js explicitly covers; current tests don't touch it. |
+| foreignObject namespace switch | After foreignObject, a sibling SVG element must pop back to SVG namespace. | Same `SvgForeignObject` fixture, extended with a sibling `<rect/>` after the `<foreignObject>`. | Sibling `<rect>` is `SVG_NS`. | High | Pure plan-driven regression; trivial to add. |
+| camelCase attribute preservation | Only `viewBox` is asserted today. The plan calls out camelCase preservation broadly (`preserveAspectRatio`, `gradientTransform`, `clipPathUnits`, `patternUnits`, `xmlns:xlink`, etc.). React preserves these literally rather than lowercasing. | basic.tsrx — `SvgCamelAttrs(props)` with `<svg preserveAspectRatio={p.par}><linearGradient gradientTransform={p.gt}/></svg>`. | `getAttribute('preserveAspectRatio')` is the camelCase value; querying the lowercase form returns null; updates preserve case. | High | The current single `viewBox` check is too narrow to catch a regression that affects only a subset of camelCase attrs. |
+| xlink:href | Today the test only asserts the round-trip via getAttribute. React uses `setAttributeNS(XLINK_NS, 'xlink:href', …)` so the attribute carries `namespaceURI === XLINK_NS`. Strict-mode SVG renderers (and SVG serializers) can care. | tsrx-features.tsrx — extend `NamespacedAttr` with `xml:lang`, `xml:space`. tsrx-features.test.ts — assert attribute's namespaceURI via `useEl.getAttributeNode('xlink:href')?.namespaceURI`. | `attr.namespaceURI === 'http://www.w3.org/1999/xlink'`; same check for xml: → `'http://www.w3.org/XML/1998/namespace'`. | Medium | Whether inferno-next intends React-parity here is a policy decision the plan addresses; if intentional divergence, add a negation test instead (namespaceURI === null) so the choice is locked in. |
+| xlink:href / removal | No test that `xlink:href={null}` removes the attribute on update (we test class=null on svg but not xlink). | tsrx-features.tsrx — extend `NamespacedAttr`. | After `r.update(NamespacedAttr, { href: null })`, `use.hasAttribute('xlink:href') === false`. | High | Mirrors the SVG-class null-clear assertion in basic.test.ts. |
+| Scoped `<style>` on SVG | style.test.ts scoped tests only mount `<div>`/`<span>` hosts. Plan calls out scoped <style> applying to SVG elements (the hash class must be added without breaking the SVG `class` attribute path). | style.tsrx — `ScopedSvg()` returning `<><svg><circle class='dot'/></svg><style>.dot { fill: rgb(1,2,3); }</style></>`. style.test.ts — assert hash class added to `<circle>` AND `getComputedStyle(circle).fill` matches. | The hash class lands via setAttribute (not `.className`); namespace stays SVG_NS; the scoped rule matches via the hash. | High | This is two regressions in one: (1) scoped-style pipeline must know about SVG class semantics, (2) it must not break SVG namespace. |
+| Refs on SVG | useref.tsrx targets only `<div>`. Plan calls out refs working on SVG nodes. | useref.tsrx — `SvgDomRefObject(props)` with `<svg ref={ref}><circle ref={cb}/></svg>`; useref.test.ts — assert `ref.current` is the SVG element AND `ref.current.namespaceURI === SVG_NS`. | Object ref captures an SVGSVGElement instance; callback ref invoked with SVGCircleElement; cleanup on unmount sets `.current = null` for SVG node just like for HTML. | High | SVG nodes are NOT HTMLElement — type narrowing in ref-handling code may have a div-only fast path. |
+| SVG in @for | Plan calls out SVG inside for-of explicitly. No fixture exists today. | basic.tsrx — `SvgForOf(props)` with a list of `<circle cx={i*10}/>` inside one `<svg>`; basic.test.ts — assert per-item namespace, reorder via key. | Each `<circle>` is SVG_NS; reorder by key preserves namespace and identity; updating dynamic attrs hits setAttribute. | High | Combines the dynamic-attribute SVG path with the for-of reconciler — different from a single-svg dynamic test. |
+| SVG in @if | Plan calls out SVG inside @if. No fixture exists. | basic.tsrx — `SvgInIf(props)` (see "namespace inheritance" row). | (Same as above row.) | High | Listed separately because it stresses the if-block mount/unmount path. |
+| SVG in portal | Plan calls out SVG inside portal. No fixture exists. | (See "namespace inheritance — portal" row.) | (Same.) | Medium | Confidence reduced only because portal API details aren't loaded; gap itself is high-confidence. |
+| MathML — runtime insertion | All MathML tests are static-template only — same issue as SVG: runtime createElementNS path is untested. | basic.tsrx — `MathInIf(props)` and `MathInForOf(props)`. | After toggle/insertion, `math.namespaceURI === MATHML_NS` and descendants too. | High | Same regression risk as SVG runtime insertion. |
+| MathML — class null clear | MathDynamic test asserts updated class but never clears it via null. | basic.tsrx — extend MathDynamic test in basic.test.ts. | `r.update(MathDynamic, { …, klass: null })` → `mn.hasAttribute('class') === false`. | Medium | The SVG dynamic test covers this; MathML doesn't. Cheap symmetry win. |
+| MathML — annotation-xml | The HTML5 foreign-content rules treat `<annotation-xml encoding="text/html">` as a re-entry to HTML namespace, analogous to foreignObject. | basic.tsrx — `MathAnnotationXml()` with `<math><semantics><annotation-xml encoding='text/html'><div/></annotation-xml></semantics></math>`. | `div.namespaceURI === 'http://www.w3.org/1999/xhtml'`. | Medium | This is more spec-purity than likely user pain; flag as low priority but worth listing for completeness. |
+| MathML — refs | Refs on MathML nodes untested. | useref.tsrx — `MathDomRef()`. | `ref.current.namespaceURI === MATHML_NS`. | Medium | Same shape as the SVG refs gap. |
+| MathML — scoped <style> | Untested in style.test.ts. | style.tsrx — `ScopedMath()`. | hash class applied via setAttribute on MathML element; computed style matches. | Medium | Same shape as the SVG scoped-style gap. |
+
+---
+
+## Summary of confidence
+
+- High-confidence gaps (regression-prone, plan-explicit, missing today): runtime-insertion namespace for both SVG and MathML; `foreignObject`; camelCase attribute breadth; scoped `<style>` on SVG; refs on SVG; SVG in `@for`/`@if`; `xlink:href={null}` removal.
+- Medium-confidence: namespaced-attribute namespaceURI semantics (depends on policy), portal namespace, MathML symmetry items (refs, scoped style, class=null), `<annotation-xml>` switch.
