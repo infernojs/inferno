@@ -1805,11 +1805,38 @@ interface DeferredSlot<T> {
   block: Block;
 }
 
-export function useDeferredValue<T>(value: T, slot: symbol): T {
+export function useDeferredValue<T>(value: T, ...rest: any[]): T {
+  // React-19 shape: `useDeferredValue(value, initialValue?)`. The compiler
+  // appends the hook-slot Symbol as the LAST argument, so we detect the
+  // user-vs-compiler args by counting from the end. One trailing Symbol →
+  // user passed no initialValue; one trailing Symbol preceded by another
+  // arg → user passed initialValue. Same hook-slot semantics either way.
+  const slot = rest[rest.length - 1] as symbol;
+  const initialValue = rest.length >= 2 ? (rest[0] as T) : undefined;
+  const hasInitial = rest.length >= 2;
   const scope = CURRENT_SCOPE!;
   const block = CURRENT_BLOCK!;
   let s = scope.hooks?.get(slot) as DeferredSlot<T> | undefined;
   if (s === undefined) {
+    if (hasInitial) {
+      // First render returns the user's initialValue; if it differs from
+      // `value`, schedule a deferred re-render to swap to `value`. Mirrors
+      // React's "useDeferredValue with initialValue" contract: a UI that
+      // wants to show stable initial content while the expensive `value`
+      // computation settles in the background.
+      s = { current: initialValue as T, next: value, scheduled: false, block };
+      ensureHooks(scope).set(slot, s);
+      if ((initialValue as T) !== value) {
+        s.scheduled = true;
+        queueMicrotask(() => {
+          if (!s!.scheduled || s!.block.disposed) return;
+          s!.scheduled = false;
+          s!.current = s!.next;
+          scheduleRender(s!.block);
+        });
+      }
+      return initialValue as T;
+    }
     s = { current: value, next: value, scheduled: false, block };
     ensureHooks(scope).set(slot, s);
     return value;

@@ -35,7 +35,17 @@ export function mount<P = undefined>(body: ComponentBody<P>, props?: P): MountRe
     click(selector) {
       const el = container.querySelector(selector);
       if (!el) throw new Error(`no element matching ${selector}`);
-      flushSync(() => (el as HTMLElement).click());
+      flushSync(() => {
+        // HTMLElement has `.click()`. SVGElement / MathMLElement do NOT
+        // (they're not in the HTMLElement prototype chain), so we dispatch
+        // a bubbling click event explicitly — matches the real browser path
+        // the runtime listens on at the delegation root.
+        if (typeof (el as HTMLElement).click === 'function') {
+          (el as HTMLElement).click();
+        } else {
+          el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        }
+      });
     },
     find(selector) {
       const el = container.querySelector(selector);

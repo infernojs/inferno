@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount, act } from '../_helpers';
 import {
-  ExtraCtx,
   UseContextInTryBody,
   UseUnsupportedUsable,
   SyncThrowBoundary,
