@@ -86,6 +86,14 @@ function compileOne(srcPath: string): void {
 const createPortal = (children, target) => __rd_createPortal(typeof children === "function" ? children() : children, target);
 ${rewritten}`;
   }
+  // xlink:href is React 19's "non-standard DOM property" — emitted as the
+  // string-keyed JSX prop `"xlink:href":` by @tsrx/react, then dropped at
+  // render time. Rewriting the prop key to camelCase `xlinkHref:` makes
+  // React 19 round-trip it back to the namespaced `xlink:href` attribute
+  // with XLINK_NS — byte-identical to inferno-next's setAttributeNS path.
+  // Only applies to the React-side cache; the inferno-next fixture stays
+  // authored as `xlink:href` in the source.
+  rewritten = rewritten.replace(/"xlink:href":/g, 'xlinkHref:');
   const slug = basename(srcPath).replace(/\.tsrx$/, '');
   const outFile = join(CACHE_DIR, `${slug}-${hashString(srcPath)}.js`);
   writeFileSync(outFile, rewritten);

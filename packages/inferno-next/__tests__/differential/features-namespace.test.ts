@@ -58,13 +58,18 @@ describe('differential: tsrx-features.tsrx — attribute shapes', () => {
     d.unmount();
   });
 
-  // SKIP: React 19 rejects `xlink:href` as a "non-standard DOM property" —
-  // it warns and drops the attribute, so the React `<use>` element loses
-  // both its id and its xlink-namespaced href. Parity requires camelCase
-  // `xlinkHref` on the React side, which the @tsrx/react fixture cannot
-  // emit. Coverage of the inferno-side namespaceURI contract for xlink
-  // lives in tsrx-features.test.ts.
-  it.skip('NamespacedAttr: xlink:href lands with XLINK_NS on both runtimes', async () => {});
+  it('NamespacedAttr: xlink:href lands with XLINK_NS on both runtimes', async () => {
+    // React 19 drops literal `xlink:href` as a non-standard DOM property,
+    // so the rig's _setup.ts rewrites the @tsrx/react-emitted prop key
+    // from `"xlink:href":` to camelCase `xlinkHref:`. React 19 then round-
+    // trips the namespaced attribute correctly. The inferno-next side
+    // authors the source as `xlink:href` directly; setAttributeNS in the
+    // runtime routes it through XLINK_NS. The DOM diff confirms identical
+    // serialization on both sides.
+    const d = await mountDifferential(FEATURES, 'NamespacedAttr', { href: '#sprite' });
+    await d.step('mount', () => {});
+    d.unmount();
+  });
 });
 
 describe('differential: tsrx-features.tsrx — for-of header variants', () => {
