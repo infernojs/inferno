@@ -1056,6 +1056,32 @@ function normalizeChildren(nodes) {
         discriminant: n.discriminant,
         cases: n.cases || [],
       });
+    } else if (n.type === 'JSXCodeBlock') {
+      // `@{ … }` at child position — tsrx 0.1.29 lets `@{}` appear here as
+      // well as on function bodies. The node has `.body` (setup statements)
+      // and `.render` (the single optional render output).
+      //   - Empty: drop (degenerate but legal).
+      //   - Render-only: recurse — the wrapped JSX is a sibling.
+      //   - Code-only or setup+render: ambiguous at child position (when do
+      //     the setup statements run? Per-render? Once per parent mount?
+      //     The runtime would need a fresh Scope and a way to thread state
+      //     back to siblings — there is no sensible answer in our model).
+      //     Throw with a workaround hint pointing at the render-prop arrow
+      //     form `{() => @{ … }}`, which IS supported via the existing
+      //     ArrowFunctionExpression → JSXCodeBlock path (compile.js:1081).
+      const body = n.body || [];
+      const render = n.render || null;
+      if (body.length === 0 && render === null) continue;
+      if (body.length === 0 && render !== null) {
+        // Recurse — render is a single JSX node, treat as a sibling child.
+        out.push(...normalizeChildren([render]));
+      } else {
+        throw new Error(
+          '`@{ … }` with setup statements is not supported at JSX child position. ' +
+          'Wrap it in a render-prop arrow form instead — `{() => @{ … }}` — ' +
+          'or extract the setup into its own component.'
+        );
+      }
     } else {
       out.push(n);
     }
