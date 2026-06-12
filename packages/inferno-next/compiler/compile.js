@@ -1247,6 +1247,7 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     }
     if (b.kind === 'style') ctx.runtimeNeeded.add('setStyle');
     if (b.kind === 'spread') ctx.runtimeNeeded.add('setSpread');
+    if (b.kind === 'ref') ctx.runtimeNeeded.add('attachRef');
     mountLines.push(emitBindingMount(b, elVar));
   }
   for (const fc of forCalls) {
@@ -1525,19 +1526,15 @@ function emitBindingMount(b, elVar) {
     }`;
     }
     case 'ref': {
-      // Callback ref → call with the element; object ref → set .current.
-      // Register a scope cleanup so unmount clears the ref to null (React parity).
+      // attachRef handles all three supported shapes: callback (function),
+      // object (set .current), and array (recursively attach each). Register
+      // a scope cleanup so unmount detaches with null (React parity).
       return `    {
       const _r = (${b.expr});
-      if (typeof _r === 'function') _r(${elVar});
-      else if (_r != null) _r.current = ${elVar};
+      attachRef(_r, ${elVar});
       _b._ref$${b.id} = _r;
       _b._el$${b.id} = ${elVar};
-      __s.cleanups.push(() => {
-        const _x = _b._ref$${b.id};
-        if (typeof _x === 'function') _x(null);
-        else if (_x != null) _x.current = null;
-      });
+      __s.cleanups.push(() => attachRef(_b._ref$${b.id}, null));
     }`;
     }
   }
@@ -1594,14 +1591,15 @@ function emitBindingUpdate(b) {
       return `    { ${reads} if (${cmps}) { ${writes} } }`;
     }
     case 'ref': {
-      // Ref expression identity may change across renders — re-attach if so.
+      // Ref expression identity may change across renders — detach the prior
+      // value (so any object ref's `.current` is cleared) and re-attach the
+      // new one via the shared attachRef helper (handles all three shapes).
       return `    {
       const _r = (${b.expr});
       if (_r !== _b._ref$${b.id}) {
         const _old = _b._ref$${b.id};
-        if (_old != null && typeof _old !== 'function') _old.current = null;
-        if (typeof _r === 'function') _r(_b._el$${b.id});
-        else if (_r != null) _r.current = _b._el$${b.id};
+        if (_old != null && typeof _old !== 'function') attachRef(_old, null);
+        attachRef(_r, _b._el$${b.id});
         _b._ref$${b.id} = _r;
       }
     }`;

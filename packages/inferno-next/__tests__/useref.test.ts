@@ -6,7 +6,7 @@ import {
   RefInIf, PerRowRef, DomRefObject, DomRefCallback,
   DomRefCleanup, DomRefObjectCleanup, ImperativeOwner, LazyInit,
 } from './_fixtures/useref.tsrx';
-import { MultipleRefsOneEl } from './_fixtures/useref-multi.tsrx';
+import { ArrayRefsOneEl } from './_fixtures/useref-multi.tsrx';
 
 describe('useRef — mutation API', () => {
   it('persists ref.current across renders', () => {
@@ -109,9 +109,9 @@ describe('useRef — DOM ref attribute', () => {
     expect(target.received.className).toBe('callback-target');
   });
 
-  it('multiple {ref} expressions on one element all attach', async () => {
+  it('array-valued ref={[a, b]} attaches both refs to the same element', async () => {
     const target: any = {};
-    mount(MultipleRefsOneEl, { target });
+    mount(ArrayRefsOneEl, { target });
     await nextPaint();
     expect(target.a).not.toBe(null);
     expect(target.b).not.toBe(null);

@@ -45,6 +45,7 @@ export {
   setClassName,
   setStyle,
   setSpread,
+  attachRef,
   injectStyle,
   delegateEvents,
   forBlock,

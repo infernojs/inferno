@@ -1,24 +1,21 @@
 import { useRef, useEffect } from 'inferno-next';
 
-// Separated out of useref.tsrx so the rest of that fixture compiles via
-// @tsrx/react cleanly. @tsrx/react rejects two `ref={...}` attributes on
-// the same element fixture-wide ("Element has multiple `ref={...}`
-// attributes; an element may have at most one. Use a single array-valued
-// ref such as `ref={[a, b]}` …"), which previously blocked every
-// React-side differential mount for useref.tsrx — even for unrelated
-// components.
+// Array-valued ref form: `ref={[a, b]}` attaches BOTH refs to the same
+// element. Matches React's canonical convention (the `react-merge-refs`
+// pattern lifted into the runtime). attachRef in src/runtime.ts iterates
+// the array and applies each shape (function / object) independently.
 //
-// Inferno-next supports multiple `ref` attributes natively via mergeRefs
-// in the codegen pipeline, so the test below exercises the inferno-side
-// contract only. Differential coverage would require switching the
-// fixture to the array-valued ref shape both runtimes agree on; track
-// as a separate work item.
-export function MultipleRefsOneEl(props) @{
+// Kept in its own file because it depends on the inferno-next positional-
+// deps useEffect convention (the effect body reads the target via
+// closure-captured `a`/`b` refs but receives `target` as a positional
+// arg from the deps). That same convention blocks differential testing
+// against React (separate work item), so the array-ref shape is exercised
+// only by the non-differential useref.test.ts suite.
+export function ArrayRefsOneEl(props) @{
   const a = useRef(null);
   const b = useRef(null);
-  useEffect((tgt, ra, rb) => { tgt.a = ra.current; tgt.b = rb.current; },
-    [props.target, a, b]);
-  <div class='multi' ref={a} ref={b}>
+  useEffect((tgt) => { tgt.a = a.current; tgt.b = b.current; }, [props.target]);
+  <div class='multi' ref={[a, b]}>
     {'mounted'}
   </div>
 }

@@ -956,6 +956,24 @@ export function setText(node: Text, value: any): void {
   if (node.data !== next) node.data = next;
 }
 
+// Apply a ref attachment. Accepts the three supported shapes:
+//   - function: called with the element (or null on detach)
+//   - object  : `.current` is set to the element (or null on detach)
+//   - array   : each item is attached recursively. Lets multiple owners
+//               observe the same node without the parent juggling refs.
+//               Matches React's `ref={[a, b]}` convention.
+// Called by the compiler-emitted ref binding mount + update paths and
+// by the scope cleanup hook installed at mount time.
+export function attachRef(ref: any, el: Element | null): void {
+  if (ref == null) return;
+  if (typeof ref === 'function') { ref(el); return; }
+  if (Array.isArray(ref)) {
+    for (let i = 0; i < ref.length; i++) attachRef(ref[i], el);
+    return;
+  }
+  ref.current = el;
+}
+
 // XML namespaces recognised by the HTML5 parser for attribute names —
 // matches React's setAttribute routing for parity. When an attribute name
 // starts with `xlink:`, `xml:`, or `xmlns:`, we route through setAttributeNS
