@@ -2054,6 +2054,11 @@ function isComponentTag(node) {
   const name = node.openingElement?.name || node.id;
   if (!name) return false;
   if (name.type === 'MemberExpression' || name.type === 'JSXMemberExpression') return true;
+  // `<{expr}>` — @tsrx/core 0.1.29 emits a JSXExpressionContainer with
+  // isDynamic === true at openingElement.name. Always a component (no HTML
+  // string tag is possible here); routes through the same componentSlot
+  // codegen path as `<Foo>` / `<ctx.Provider>`.
+  if (name.type === 'JSXExpressionContainer' && name.isDynamic === true) return true;
   if (name.type === 'Identifier' || name.type === 'JSXIdentifier') {
     return typeof name.name === 'string' && /^[A-Z]/.test(name.name);
   }
@@ -2064,6 +2069,12 @@ function tagExpr(node) {
   const name = node.openingElement?.name || node.id;
   if (name.type === 'MemberExpression' || name.type === 'JSXMemberExpression') {
     return printExpr(name);
+  }
+  // `<{expr}>` — unwrap and print the inner expression. The returned string
+  // is interpolated verbatim into the emitted componentSlot(...) call as
+  // cc.compExpr. Parenthesize for precedence safety.
+  if (name.type === 'JSXExpressionContainer' && name.isDynamic === true) {
+    return `(${printExpr(name.expression)})`;
   }
   return name.name;
 }
