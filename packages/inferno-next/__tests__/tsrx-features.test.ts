@@ -155,7 +155,12 @@ describe('TSRX features — `.map()` compile-error guidance', () => {
       "</ul> }";
     const { code } = compile(src, 'a.tsrx');
     expect(code).toMatch(/__empty\$\d+/);
-    expect(code).toMatch(/forBlock\([^)]+,\s*__empty\$\d+\)/);
+    // forBlock arg layout: (..., flags, deps, emptyBody, anchor?). The empty
+    // branch lands in the emptyBody slot — assert presence regardless of
+    // whether a trailing `anchor` arg is also emitted (which it is when the
+    // @for sits inside a mixed-children parent so the compiler stamps a
+    // source-order `<!>` placeholder).
+    expect(code).toMatch(/forBlock\([^)]+,\s*__empty\$\d+[,)]/);
   });
 });
 

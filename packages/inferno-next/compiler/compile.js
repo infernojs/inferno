@@ -1227,11 +1227,21 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     const elVar = ensureVar(fc.hostPath);
     fc.elVar = elVar;
     mountLines.push(`    _b._for$${fc.id} = ${elVar};`);
+    if (fc.anchorPath) {
+      const anchorVar = ensureVar(fc.anchorPath);
+      fc.anchorVar = anchorVar;
+      mountLines.push(`    _b._forAnchor$${fc.id} = ${anchorVar};`);
+    }
   }
   for (const ic of ifCalls) {
     const elVar = ensureVar(ic.hostPath);
     ic.elVar = elVar;
     mountLines.push(`    _b._ifHost$${ic.id} = ${elVar};`);
+    if (ic.anchorPath) {
+      const anchorVar = ensureVar(ic.anchorPath);
+      ic.anchorVar = anchorVar;
+      mountLines.push(`    _b._ifAnchor$${ic.id} = ${anchorVar};`);
+    }
   }
   for (const cc of compCalls) {
     const elVar = ensureVar(cc.hostPath);
@@ -1248,12 +1258,22 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     const elVar = ensureVar(tc.hostPath);
     tc.elVar = elVar;
     mountLines.push(`    _b._tryHost$${tc.id} = ${elVar};`);
+    if (tc.anchorPath) {
+      const anchorVar = ensureVar(tc.anchorPath);
+      tc.anchorVar = anchorVar;
+      mountLines.push(`    _b._tryAnchor$${tc.id} = ${anchorVar};`);
+    }
   }
   // switchBlock targets.
   for (const sc of ctx._switchCalls) {
     const elVar = ensureVar(sc.hostPath);
     sc.elVar = elVar;
     mountLines.push(`    _b._switchHost$${sc.id} = ${elVar};`);
+    if (sc.anchorPath) {
+      const anchorVar = ensureVar(sc.anchorPath);
+      sc.anchorVar = anchorVar;
+      mountLines.push(`    _b._switchAnchor$${sc.id} = ${anchorVar};`);
+    }
   }
   // Portal host targets — element containing the createPortal JSX position.
   // Stashed so the runtime can stamp $$portalParent on the portal's mounted
@@ -1291,23 +1311,35 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     //        bit 2 = depEligible (runtime compares deps array, upgrades to pure
     //        for survivors when deps unchanged this render).
     const flags = (fc.pure ? 1 : 0) | (fc.singleRoot ? 2 : 0) | (fc.depEligible ? 4 : 0);
-    // Arg layout: forBlock(__s, slot, host, items, keyFn, body, extra, flags?, deps?, emptyBody?).
+    // Arg layout: forBlock(__s, slot, host, items, keyFn, body, extra, flags?, deps?, emptyBody?, anchor?).
     // `emptyHelper` ('null' literal when no `@empty` branch) lands as the
     // trailing arg. We backfill `flags` and `deps` placeholders (`0` and
     // `undefined`) when only the empty branch is present so the runtime sees
-    // it at the right position.
+    // it at the right position. When the @for has a source-order anchor
+    // (because it sits before static siblings in mixed children), we backfill
+    // all earlier trailing positions and append the anchor expression last so
+    // forBlock's optional `anchor` param lines up positionally.
+    const hasAnchor = !!fc.anchorVar;
     const hasEmpty = fc.emptyHelper && fc.emptyHelper !== 'null';
-    const flagsPart = (flags || hasEmpty) ? ', ' + (flags || 0) : '';
+    const flagsPart = (flags || hasEmpty || hasAnchor) ? ', ' + (flags || 0) : '';
     const depsPart = fc.depEligible
       ? `, [${fc.depNames.join(', ')}]`
-      : (hasEmpty ? ', undefined' : '');
-    const emptyPart = hasEmpty ? `, ${fc.emptyHelper}` : '';
-    afterLines.push(`  forBlock(__s, ${JSON.stringify('_for$' + fc.id)}, __s.${bindingsName}._for$${fc.id}, ${fc.itemsExpr}, ${fc.keyHelper}, ${fc.bodyHelper}, ${fc.extraExpr}${flagsPart}${depsPart}${emptyPart});`);
+      : ((hasEmpty || hasAnchor) ? ', undefined' : '');
+    const emptyPart = hasEmpty ? `, ${fc.emptyHelper}` : (hasAnchor ? ', null' : '');
+    const anchorPart = hasAnchor ? `, __s.${bindingsName}._forAnchor$${fc.id}` : '';
+    afterLines.push(`  forBlock(__s, ${JSON.stringify('_for$' + fc.id)}, __s.${bindingsName}._for$${fc.id}, ${fc.itemsExpr}, ${fc.keyHelper}, ${fc.bodyHelper}, ${fc.extraExpr}${flagsPart}${depsPart}${emptyPart}${anchorPart});`);
   }
   for (const ic of ifCalls) {
     ctx.runtimeNeeded.add('ifBlock');
     const elseArg = ic.elseHelper || 'null';
-    afterLines.push(`  ifBlock(__s, ${JSON.stringify('_if$' + ic.id)}, __s.${bindingsName}._ifHost$${ic.id}, (${ic.condExpr}), ${ic.thenHelper}, ${elseArg});`);
+    // Anchor selection mirrors componentSlot: when the if-block sits in a
+    // mixed-children template with source-order siblings, we emitted a
+    // `<!>` placeholder at the if's index and stored its el var on
+    // `ic.anchorVar` — pass that so ifBlock's start/end markers land
+    // BEFORE the anchor, preserving sibling order. Otherwise omit the arg
+    // (runtime treats undefined as null → appendChild, same as before).
+    const anchorArg = ic.anchorVar ? `, __s.${bindingsName}._ifAnchor$${ic.id}` : '';
+    afterLines.push(`  ifBlock(__s, ${JSON.stringify('_if$' + ic.id)}, __s.${bindingsName}._ifHost$${ic.id}, (${ic.condExpr}), ${ic.thenHelper}, ${elseArg}${anchorArg});`);
   }
   for (const cc of compCalls) {
     ctx.runtimeNeeded.add('componentSlot');
@@ -1338,11 +1370,27 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
   ctx._portalCalls = _prevPortalCalls;
   for (const tc of tryCalls) {
     ctx.runtimeNeeded.add('tryBlock');
-    afterLines.push(`  tryBlock(__s, ${JSON.stringify('_try$' + tc.id)}, __s.${bindingsName}._tryHost$${tc.id}, ${tc.tryHelper}, ${tc.catchHelper}, ${tc.pendingHelper});`);
+    // Anchor selection mirrors componentSlot:
+    //   - In mixed children with source-order siblings, we emitted a `<!>`
+    //     placeholder at the @try's index and stored its el var on
+    //     `tc.anchorVar` — pass that so tryBlock inserts BEFORE it.
+    //   - Otherwise omit (runtime treats undefined === appendChild).
+    const tryAnchorArg = tc.anchorVar
+      ? `, __s.${bindingsName}._tryAnchor$${tc.id}`
+      : '';
+    afterLines.push(`  tryBlock(__s, ${JSON.stringify('_try$' + tc.id)}, __s.${bindingsName}._tryHost$${tc.id}, ${tc.tryHelper}, ${tc.catchHelper}, ${tc.pendingHelper}${tryAnchorArg});`);
   }
   for (const sc of ctx._switchCalls) {
     ctx.runtimeNeeded.add('switchBlock');
-    afterLines.push(`  switchBlock(__s, ${JSON.stringify('_switch$' + sc.id)}, __s.${bindingsName}._switchHost$${sc.id}, (${sc.discExpr}), ${sc.casesArrayExpr}, ${sc.defaultHelper});`);
+    // Anchor selection mirrors componentSlot:
+    //   - When the @switch had source-order siblings (mixed-children loop
+    //     emitted a `<!>` placeholder at its index), pass the stashed
+    //     anchor node so switchBlock inserts BEFORE it.
+    //   - Otherwise omit the arg; the runtime defaults to appendChild.
+    const anchorArg = sc.anchorVar
+      ? `, __s.${bindingsName}._switchAnchor$${sc.id}`
+      : '';
+    afterLines.push(`  switchBlock(__s, ${JSON.stringify('_switch$' + sc.id)}, __s.${bindingsName}._switchHost$${sc.id}, (${sc.discExpr}), ${sc.casesArrayExpr}, ${sc.defaultHelper}${anchorArg});`);
   }
   // Restore the outer plan's switch-call list — pairs with the save above.
   ctx._switchCalls = _prevSwitchCalls;
@@ -1795,19 +1843,52 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
       } else if (child.type === 'ForOfStatement') {
         const forCall = makeForCall(child, ctx, componentName, inlinedSubs, childNs, cssHash);
         forCall.hostPath = path;
+        // Emit a `<!>` anchor at the @for's source-order position so forBlock
+        // inserts its start/end markers BEFORE this anchor — preserving sibling
+        // order when an @for appears before static-element/text siblings.
+        // Without this, the slot's markers get appended to the parent host
+        // AFTER the static template content (same bug pattern as componentSlot).
+        forCall.anchorPath = [...path, childIdx];
         forCalls.push(forCall);
+        html += '<!>';
+        childIdx++;
       } else if (child.type === 'IfStatement') {
         const ifCall = makeIfCall(child, ctx, componentName, inlinedSubs, childNs, cssHash);
         ifCall.hostPath = path;
+        // Emit a `<!>` anchor at the if-block's source-order position so
+        // ifBlock inserts its start/end markers BEFORE this anchor —
+        // preserving sibling order when the @if appears before static
+        // element/text siblings. Without this, the slot's markers get
+        // appended to the parent host AFTER the static template content
+        // and the branch content renders in reverse order.
+        ifCall.anchorPath = [...path, childIdx];
         ifCalls.push(ifCall);
+        html += '<!>';
+        childIdx++;
       } else if (child.type === 'TryStatement') {
         const tc = makeTryCall(child, ctx, componentName, inlinedSubs, childNs, cssHash);
         tc.hostPath = path;
+        // Emit a `<!>` anchor at the tryBlock's source-order position so
+        // tryBlock inserts BEFORE this anchor — preserving sibling order
+        // when an @try appears before static-element/text siblings. Without
+        // this, the slot's start/end markers get appended to the parent
+        // host AFTER the static template content. Mirrors componentSlot.
+        tc.anchorPath = [...path, childIdx];
         tryCalls.push(tc);
+        html += '<!>';
+        childIdx++;
       } else if (child.type === 'SwitchStatement') {
         const sc = makeSwitchCall(child, ctx, componentName, inlinedSubs, childNs, cssHash);
         sc.hostPath = path;
+        // Emit a `<!>` anchor at the switch's source-order position so
+        // switchBlock inserts BEFORE this anchor — preserving sibling
+        // order when an @switch appears before static-element/text
+        // siblings. Without this, the slot's start/end markers get
+        // appended to the parent host AFTER the static template content.
+        sc.anchorPath = [...path, childIdx];
         ctx._switchCalls.push(sc);
+        html += '<!>';
+        childIdx++;
       } else if (child.type === 'Style') {
         // `{style 'cls'}` at child position — resolve to a class-name string
         // and emit as a text hole. Useful for passing scoped class names down

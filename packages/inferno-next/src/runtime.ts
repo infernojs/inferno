@@ -1583,14 +1583,18 @@ export function tryBlock(
   tryBody: ComponentBody,
   catchBody: ComponentBody | null,
   pendingBody: ComponentBody | null,
+  anchor?: Node | null,
 ): void {
   const parentBlock = parentScope.block;
   let state = parentScope[slotKey] as TrySlot | undefined;
   if (state === undefined) {
     const start = document.createComment('try');
     const end = document.createComment('/try');
-    domParent.appendChild(start);
-    domParent.appendChild(end);
+    // insertBefore(_, null) === appendChild — covers both end-of-parent and
+    // mid-range insertion (e.g. when this slot lives in a mixed-children
+    // template and must sit before its in-template static-sibling anchor).
+    domParent.insertBefore(start, anchor ?? null);
+    domParent.insertBefore(end, anchor ?? null);
     const newState: TrySlot = {
       __kind: 'trySlotSlot', start, end, branch: -1, block: null,
       tryBlock: null, savedDom: null,
@@ -2134,14 +2138,20 @@ export function ifBlock(
   cond: boolean,
   thenBody: ComponentBody | null,
   elseBody: ComponentBody | null,
+  anchor?: Node | null,
 ): void {
   const parentBlock = parentScope.block;
   let state = parentScope[slotKey] as IfSlot | undefined;
   if (state === undefined) {
     const start = document.createComment('if');
     const end = document.createComment('/if');
-    domParent.appendChild(start);
-    domParent.appendChild(end);
+    // insertBefore(_, null) === appendChild — covers both end-of-parent and
+    // mid-range insertion (e.g. when this slot lives in a mixed-children
+    // template and must sit before its static-element/text siblings). The
+    // compiler emits a `<!>` placeholder at the if-block's source-order
+    // index and passes the captured Comment as `anchor`.
+    domParent.insertBefore(start, anchor ?? null);
+    domParent.insertBefore(end, anchor ?? null);
     state = { __kind: 'ifBlockSlot', start, end, branch: -1, block: null };
     parentScope[slotKey] = state;
   }
@@ -2202,14 +2212,18 @@ export function switchBlock(
   discriminant: any,
   cases: ReadonlyArray<readonly [test: any, body: ComponentBody]>,
   defaultBody: ComponentBody | null,
+  anchor?: Node | null,
 ): void {
   const parentBlock = parentScope.block;
   let state = parentScope[slotKey] as SwitchSlot | undefined;
   if (state === undefined) {
     const start = document.createComment('switch');
     const end = document.createComment('/switch');
-    domParent.appendChild(start);
-    domParent.appendChild(end);
+    // insertBefore(_, null) === appendChild — covers both end-of-parent and
+    // mid-range insertion (e.g. when this slot sits before static-element
+    // siblings authored AFTER the @switch in source order).
+    domParent.insertBefore(start, anchor ?? null);
+    domParent.insertBefore(end, anchor ?? null);
     state = { __kind: 'switchBlockSlot', start, end, caseIdx: -1, block: null };
     parentScope[slotKey] = state;
   }
@@ -2280,6 +2294,7 @@ export function forBlock<T, E = undefined>(
   flags?: number,
   deps?: any[],
   emptyBody?: ComponentBody | null,
+  anchor?: Node | null,
 ): void {
   // flags bitfield: bit 0 = pure (auto-memo), bit 1 = singleRoot (skip per-item
   // Comment markers), bit 2 = depEligible (compare `deps` to cachedDeps and
@@ -2289,8 +2304,12 @@ export function forBlock<T, E = undefined>(
   if (state === undefined) {
     const start = document.createComment('for');
     const end = document.createComment('/for');
-    domParent.appendChild(start);
-    domParent.appendChild(end);
+    // insertBefore(_, null) === appendChild — covers both end-of-parent and
+    // mid-range insertion (when a static sibling follows this @for in mixed
+    // children, the compiler emits a `<!>` anchor at the @for's source-order
+    // index and threads it here so the markers land BEFORE the sibling).
+    domParent.insertBefore(start, anchor ?? null);
+    domParent.insertBefore(end, anchor ?? null);
     state = {
       __kind: 'forBlockSlot',
       start, end,
