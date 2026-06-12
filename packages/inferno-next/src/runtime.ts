@@ -1616,7 +1616,7 @@ export function tryBlock(
   if (s.branch === 0) {
     // Already showing catch — re-render with current err (props identity unchanged).
     s.block!.body = s.catchBody!;
-    s.block!.props = { err: s.err, reset: () => mountTry(s) };
+    s.block!.props = { err: s.err, reset: () => requestReset(s) };
     renderBlock(s.block!);
   } else if (s.branch === 2) {
     // Already pending — no work; will be swapped when thenable resolves.
@@ -2025,6 +2025,22 @@ export function useDeferredValue<T>(value: T, ...rest: any[]): T {
   return s.current;
 }
 
+function requestReset(state: TrySlot): void {
+  // React parity for catch reset(): don't synchronously re-run the try body.
+  // Rewind slot state and schedule the parent — sibling setState calls in
+  // the SAME event handler then batch into one commit, so when mountTry
+  // re-runs the body it sees fresh closure values (e.g. throwIt=false)
+  // instead of immediately re-throwing. Matches TsrxErrorBoundary's
+  // `() => this.setState({ error: null })` semantics: clear the error flag,
+  // then let the normal commit cycle decide what to render. The currently
+  // visible catch block stays mounted for one tick; mountTry's teardown
+  // (state.block != null branch) removes it on the next render.
+  state.branch = -1;
+  state.err = null;
+  state.hasResolved = false;
+  scheduleRender(state.parentBlock);
+}
+
 function switchToCatch(state: TrySlot, err: any): void {
   // Cancel any pending transition-fallback timeout — catch is a terminal
   // state, so a timeout-driven swap to @pending would conflict with the
@@ -2065,7 +2081,7 @@ function switchToCatch(state: TrySlot, err: any): void {
   const bEnd = document.createComment('/catch-b');
   state.domParent.insertBefore(bStart, state.end);
   state.domParent.insertBefore(bEnd, state.end);
-  const reset = () => mountTry(state);
+  const reset = () => requestReset(state);
   const b = createBlock(
     'control-flow',
     state.parentBlock,

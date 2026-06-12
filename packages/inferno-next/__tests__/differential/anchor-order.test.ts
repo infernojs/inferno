@@ -146,13 +146,16 @@ describe('differential: anchor-order.tsrx — tryBlock source order', () => {
       await i.click('#toggle');
       await r.click('#toggle');
     });
-    // NOTE: reset() parity is a separate ticket. React's TsrxErrorBoundary
-    // does `setState({error: null})` synchronously, which re-renders the try
-    // body on the same commit. inferno-next's tryBlock reset() unmounts the
-    // catch block and re-runs the try body, but the combined reset() +
-    // setThrowIt(false) ordering produces a different intermediate state
-    // (catch stays mounted until next render). Source-order parity of the
-    // catch slot is proven by the toggle step above.
+    // The catch's reset button calls `reset(); setThrowIt(false);` in the
+    // same handler. React's TsrxErrorBoundary clears `state.error` and then
+    // batches with setThrowIt → one commit, try body restored. Inferno-next's
+    // requestReset rewinds slot state (branch=-1, err=null) and schedules
+    // the parent — sibling setState batches in the same commit, so when
+    // mountTry re-runs the body it sees throwIt=false and doesn't re-throw.
+    await d.step('reset → try body restored before .after', async (i, r) => {
+      await i.click('#reset');
+      await r.click('#reset');
+    });
     d.unmount();
   });
 });
