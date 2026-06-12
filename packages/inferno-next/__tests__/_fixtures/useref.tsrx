@@ -65,10 +65,13 @@ export function PerRowRef() @{
 }
 
 // `ref={refObj}` attribute — object form attaches to the DOM node.
+// Effect body closes over props/ref lexically (works in both React and
+// inferno-next; the inferno-next positional-deps convention is supported
+// but optional and would block React-side differential coverage).
 export function DomRefObject(props) @{
   const ref = useRef(null);
-  useEffect((target, refSlot) => {
-    target.received = refSlot.current;
+  useEffect(() => {
+    props.target.received = ref.current;
   }, [props.target, ref]);
   <div class='target' id='unique-id' ref={ref}>
     {'mounted'}

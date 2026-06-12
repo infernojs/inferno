@@ -138,12 +138,7 @@ describe('differential: useref.tsrx — per-row refs in @for-of', () => {
 });
 
 describe('differential: useref.tsrx — DOM refs (object form)', () => {
-  it.skip('DomRefObject: ref attaches the DOM node and effect can read it', async () => {
-    // Effect bodies in inferno-next receive their deps positionally; React's
-    // useEffect does not. The fixture's body reads `target` and `refSlot`
-    // from positional args, so the React side throws on read of undefined.
-    // Same shape as the effect-timing fixtures' skip — separate work item
-    // to rewrite to lexical-capture form.
+  it('DomRefObject: ref attaches the DOM node and effect can read it', async () => {
     const target = {} as any;
     const d = await mountDifferential(USEREF_PATH, 'DomRefObject', { target });
     await d.step('mount', () => {});
@@ -231,30 +226,24 @@ describe('differential: useref.tsrx — useRef lazy-ish initial value', () => {
 });
 
 // ----------------------------------------------------------------------------
-// effect-timing.tsrx
+// effect-timing.tsrx — phase ordering, passive vs layout
 //
-// NOTE: every component in effect-timing.tsrx authors useEffect /
-// useLayoutEffect / useInsertionEffect bodies that accept their deps as
-// POSITIONAL arguments (an inferno-next-specific calling convention — the
-// runtime spreads `deps` into the effect body call). The React side compiles
-// fine, but at runtime React calls the body with NO arguments, so the bodies
-// throw `Cannot read properties of undefined (reading 'push')` immediately.
-//
-// This is a compile-emission divergence between the two pipelines, not a
-// renderer-semantics divergence — and it makes the fixture unusable for
-// differential testing as authored. Skipping until the fixture is rewritten
-// to close over the props via lexical capture instead of positional deps.
+// Bodies authored with LEXICAL capture (props.log inside the closure) rather
+// than the inferno-next positional-deps spread shape, so both runtimes drive
+// the same writes into the shared log. Inferno-next still supports the
+// positional form for inferno-only fixtures; lexical capture is the
+// cross-runtime portable subset.
 // ----------------------------------------------------------------------------
 
 describe('differential: effect-timing.tsrx — phase ordering and passive vs layout', () => {
-  it.skip('PhaseOrder: insertion + layout + passive bodies all run, DOM committed', async () => {
+  it('PhaseOrder: insertion + layout + passive bodies all run, DOM committed', async () => {
     const log: string[] = [];
     const d = await mountDifferential(EFFECT_TIMING_PATH, 'PhaseOrder', { tick: 0, log });
     await d.step('mount', () => {});
     d.unmount();
   });
 
-  it.skip('PassiveDeferred: layout fires sync, passive deferred — both observe same DOM', async () => {
+  it('PassiveDeferred: layout fires sync, passive deferred — both observe same DOM', async () => {
     const log: string[] = [];
     const d = await mountDifferential(EFFECT_TIMING_PATH, 'PassiveDeferred', { tick: 0, log });
     await d.step('mount', () => {});

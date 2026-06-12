@@ -4,20 +4,21 @@ import { useEffect, useLayoutEffect, useInsertionEffect } from 'inferno-next';
 // passive fires after paint. Cleanups of each phase fire before that phase's
 // new bodies (React's "all old cleanups before any new bodies" guarantee).
 //
-// Effect bodies receive their deps as positional args, so we order the deps
-// as [tick, log] and accept them in the same order in each fn.
+// Bodies close over props lexically. Inferno-next ALSO spreads deps as
+// positional args, but lexical capture works in both runtimes — required
+// for differential parity (React calls effect bodies with zero args).
 export function PhaseOrder(props) @{
-  useEffect((tick, log) => {
-    log.push('eff:body');
-    return () => log.push('eff:cleanup');
+  useEffect(() => {
+    props.log.push('eff:body');
+    return () => props.log.push('eff:cleanup');
   }, [props.tick, props.log]);
-  useLayoutEffect((tick, log) => {
-    log.push('lay:body');
-    return () => log.push('lay:cleanup');
+  useLayoutEffect(() => {
+    props.log.push('lay:body');
+    return () => props.log.push('lay:cleanup');
   }, [props.tick, props.log]);
-  useInsertionEffect((tick, log) => {
-    log.push('ins:body');
-    return () => log.push('ins:cleanup');
+  useInsertionEffect(() => {
+    props.log.push('ins:body');
+    return () => props.log.push('ins:cleanup');
   }, [props.tick, props.log]);
   <div>{'x'}</div>
 }
@@ -33,8 +34,8 @@ export function LayoutReadsDom(props) @{
 
 // Layout fires synchronously inside flushSync; passive does not.
 export function PassiveDeferred(props) @{
-  useLayoutEffect((tick, log) => { log.push('layout'); }, [props.tick, props.log]);
-  useEffect((tick, log) => { log.push('passive'); }, [props.tick, props.log]);
+  useLayoutEffect(() => { props.log.push('layout'); }, [props.tick, props.log]);
+  useEffect(() => { props.log.push('passive'); }, [props.tick, props.log]);
   <span>{'z'}</span>
 }
 
