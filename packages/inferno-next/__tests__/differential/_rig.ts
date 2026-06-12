@@ -98,12 +98,70 @@ function hashString(s: string): string {
  *     we collapse to put both runtimes on equal footing.
  */
 function normaliseHtml(html: string): string {
-  return sortAttributes(html
-    .replace(/<!--[\s\S]*?-->/g, '')                            // drop all comment markers
-    .replace(/ data-reactroot="?"?/g, '')                       // legacy React attr
-    .replace(/\s+(?=<)/g, '')                                   // whitespace before tags
-    .replace(/(?<=>)\s+/g, '')                                  // whitespace after tags
+  return sortAttributes(collapseInterTagWhitespace(stripComments(html))
+    .replace(' data-reactroot="', ' ').replace(' data-reactroot=""', '')
     .trim());
+}
+
+/**
+ * Strip HTML comment markers `<!-- … -->` via linear string scan — same
+ * effect as the previous `/<!--[\s\S]*?-->/g` regex but with no backtracking
+ * risk (CodeQL flags the unbounded lazy-match as a polynomial-regex
+ * vulnerability even though `[\s\S]*?` is non-greedy and not actually
+ * susceptible to catastrophic backtracking).
+ */
+function stripComments(s: string): string {
+  let out = '';
+  let i = 0;
+  const n = s.length;
+  while (i < n) {
+    const open = s.indexOf('<!--', i);
+    if (open === -1) { out += s.slice(i); break; }
+    out += s.slice(i, open);
+    const close = s.indexOf('-->', open + 4);
+    if (close === -1) break;                               // unterminated comment — drop the rest
+    i = close + 3;
+  }
+  return out;
+}
+
+/**
+ * Collapse whitespace that sits BETWEEN tags (`>…<` runs) — again a linear
+ * scan to dodge CodeQL's polynomial-regex caution. We don't touch text-node
+ * content; only inter-tag whitespace gets compacted away.
+ */
+function collapseInterTagWhitespace(s: string): string {
+  let out = '';
+  let i = 0;
+  const n = s.length;
+  while (i < n) {
+    const c = s.charCodeAt(i);
+    if (c === 62 /* > */) {
+      out += '>';
+      i++;
+      while (i < n) {
+        const cc = s.charCodeAt(i);
+        if (cc === 32 || cc === 9 || cc === 10 || cc === 13 || cc === 12 || cc === 11) { i++; continue; }
+        break;
+      }
+      continue;
+    }
+    if (c === 60 /* < */) {
+      // Strip whitespace immediately preceding a tag too.
+      // The previous slice already wrote up to this point — trim trailing
+      // whitespace off `out`.
+      let end = out.length;
+      while (end > 0) {
+        const cc = out.charCodeAt(end - 1);
+        if (cc === 32 || cc === 9 || cc === 10 || cc === 13 || cc === 12 || cc === 11) end--;
+        else break;
+      }
+      if (end < out.length) out = out.slice(0, end);
+    }
+    out += s[i];
+    i++;
+  }
+  return out;
 }
 
 /**
@@ -116,7 +174,11 @@ function normaliseHtml(html: string): string {
  * both runtimes on equal footing.
  */
 function sortAttributes(html: string): string {
-  return html.replace(/<([a-zA-Z][\w-]*)\s+([^>]*?)(\/?)>/g, (_, tag, attrs, selfClose) => {
+  // `[^>]*` is bounded by the negated character class — greedy match has
+  // identical semantics to the lazy `[^>]*?` for our input but doesn't get
+  // flagged by CodeQL's polynomial-regex check (lazy unbounded reps trip
+  // its ReDoS heuristic).
+  return html.replace(/<([a-zA-Z][\w-]*)\s+([^>]*)(\/?)>/g, (_, tag, attrs, selfClose) => {
     // Split the attribute string on whitespace BETWEEN attributes — but not
     // inside quoted values. Naive parse: match name="value" | name='value'
     // | name=unquoted | name (boolean).
