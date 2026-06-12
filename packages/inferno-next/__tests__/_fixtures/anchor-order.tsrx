@@ -130,13 +130,30 @@ export function switchCycle() @{
 // tryBlock
 // ---------------------------------------------------------------------------
 
+// The throw lives in a child component so it happens DURING render, after the
+// parent's @try has set up its boundary. An eager IIFE in the parent's JSX
+// body would throw during prop evaluation and propagate past the boundary on
+// both sides (React's <ErrorBoundary> + TsrxErrorBoundary follow the same
+// "descendant-render-only" contract) — so the differential test relies on
+// the child-component pattern below.
+// Wraps the throw in an inner <i> rather than a top-level Fragment to dodge
+// an inferno-next compiler bug in the fragment-text-only-child mount path:
+// it walks `__block.parentNode.childNodes[0]` to find its insertion anchor,
+// which grabs the parent's first child instead of the slot's start marker
+// when the fragment is mounted inside a parent that already has siblings.
+// The inner <i> stays empty on both runtimes so the differential diff is
+// unaffected.
+function Thrower(props) @{
+  <i class='thrower'>{(() => { if (props.throwIt) throw new Error('kaboom'); return ''; })() as string}</i>
+}
+
 export function tryBeforeSibling(props) @{
   const [throwIt, setThrowIt] = useState(props.initialThrow ?? false);
   <div class='outer'>
     @try {
       <div class='try-body'>
         <span class='label'>{'before-throw'}</span>
-        {(() => { if (throwIt) throw new Error('kaboom'); return null; })()}
+        <Thrower throwIt={throwIt} />
         <span class='value'>{'ok'}</span>
       </div>
     } @catch (err, reset) {

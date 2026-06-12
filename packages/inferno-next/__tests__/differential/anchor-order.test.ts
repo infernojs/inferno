@@ -134,15 +134,25 @@ describe('differential: anchor-order.tsrx — tryBlock source order', () => {
     d.unmount();
   });
 
-  // SKIP: this would diff the catch branch's source-order placement, but
-  // the React side has no error boundary wrapping the precompiled fixture
-  // — the thrown Error propagates out of React's renderUntilSuspended call
-  // and aborts the React-side mount. Differential coverage of @try/@catch
-  // versus a React `<ErrorBoundary>` is its own work item (audit's
-  // "suspense-basics + try-catch.test.ts" batch). Source-order parity for
-  // tryBlock is proven by the mount-only case above; catch-branch
-  // positioning uses the same insertBefore(state.end) path as the
-  // try-body, so it's covered by the runtime invariant rather than this
-  // cross-runtime diff.
-  it.skip('tryBeforeSibling: catch branch preserves source order on throw', async () => {});
+  it('tryBeforeSibling: catch branch preserves source order on throw', async () => {
+    const d = await mountDifferential(FIXTURE, 'tryBeforeSibling', { initialThrow: false });
+    await d.step('mount (try ok)', () => {});
+    // Toggling makes the child Thrower throw during its render — inferno-next's
+    // tryBlock catches it via tryHelper, and the React side's TsrxErrorBoundary
+    // (lowered by @tsrx/react from @catch) catches via getDerivedStateFromError.
+    // Both renderers swap the @catch body into the SAME slot, so the .after
+    // sibling stays in source-order position.
+    await d.step('toggle → throw → catch shown before .after', async (i, r) => {
+      await i.click('#toggle');
+      await r.click('#toggle');
+    });
+    // NOTE: reset() parity is a separate ticket. React's TsrxErrorBoundary
+    // does `setState({error: null})` synchronously, which re-renders the try
+    // body on the same commit. inferno-next's tryBlock reset() unmounts the
+    // catch block and re-runs the try body, but the combined reset() +
+    // setThrowIt(false) ordering produces a different intermediate state
+    // (catch stays mounted until next render). Source-order parity of the
+    // catch slot is proven by the toggle step above.
+    d.unmount();
+  });
 });
