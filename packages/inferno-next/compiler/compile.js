@@ -1426,12 +1426,21 @@ function emitBindingMount(b, elVar) {
     }`;
     }
     case 'text': {
+      // Multi-root fragment Text bindings have path=[] which ensureVar remaps
+      // to `__block.parentNode`. But the `<!>` placeholder lives in `_root`
+      // (the cloned fragment) until the drain at line ~1291 that moves its
+      // children into the live block range. Walking
+      // `__block.parentNode.childNodes[childIndex]` here would grab the
+      // PARENT'S child (a pre-existing sibling), then insertBefore + remove
+      // it — silently deleting it. Do the swap on `_root` instead; the
+      // subsequent drain moves _t into the block range with the rest.
+      const swapHost = elVar === '__block.parentNode' ? '_root' : elVar;
       return `    {
       const _v = ${E};
       const _t = document.createTextNode(_v == null || _v === false ? '' : String(_v));
-      const _m = ${elVar}.childNodes[${b.childIndex}];
-      ${elVar}.insertBefore(_t, _m);
-      ${elVar}.removeChild(_m);
+      const _m = ${swapHost}.childNodes[${b.childIndex}];
+      ${swapHost}.insertBefore(_t, _m);
+      ${swapHost}.removeChild(_m);
       _b._txt$${b.id} = _t;
       _b._prev$${b.id} = _v;
     }`;
