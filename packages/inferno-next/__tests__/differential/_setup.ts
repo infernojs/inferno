@@ -65,10 +65,27 @@ function compileOne(srcPath: string): void {
   // useCallback, useRef, useId, useImperativeHandle, useDeferredValue,
   // useTransition, startTransition, createContext, memo, use, Fragment,
   // Suspense), so a flat import rewrite is enough.
-  const rewritten = transformed.code.replace(
+  //
+  // EXCEPT createPortal: in React it lives on `react-dom`, not `react`, so a
+  // naive rewrite leaves it `undefined`. ALSO, @tsrx/react lowers
+  // `createPortal(() => <jsx/>, target)` so the children stay a thunk —
+  // React 19 expects a ReactNode and would warn / no-op. Below we (a) strip
+  // createPortal out of the rewritten react import, (b) import the real one
+  // from react-dom under an internal alias, (c) shim a `createPortal` const
+  // that unwraps the thunk if present and forwards to the real impl.
+  let rewritten = transformed.code.replace(
     /from\s+["']inferno-next["']/g,
     'from "react"'
   );
+  if (/\bcreatePortal\b/.test(rewritten)) {
+    rewritten = rewritten.replace(
+      /(import\s*\{[^}]*?)\bcreatePortal\b\s*,?\s*([^}]*\}\s*from\s+"react";?)/,
+      (_m, head, tail) => `${head}${tail}`.replace(/,\s*\}/, ' }').replace(/\{\s*,/, '{ ')
+    );
+    rewritten = `import { createPortal as __rd_createPortal } from "react-dom";
+const createPortal = (children, target) => __rd_createPortal(typeof children === "function" ? children() : children, target);
+${rewritten}`;
+  }
   const slug = basename(srcPath).replace(/\.tsrx$/, '');
   const outFile = join(CACHE_DIR, `${slug}-${hashString(srcPath)}.js`);
   writeFileSync(outFile, rewritten);
