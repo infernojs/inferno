@@ -3,9 +3,10 @@ import { mount, nextPaint } from './_helpers';
 import { flushSync } from '../src/index.js';
 import {
   PersistsAcrossRenders, MutationDoesNotRerender, StableIdentity,
-  RefInIf, PerRowRef, DomRefObject, DomRefCallback, MultipleRefsOneEl,
+  RefInIf, PerRowRef, DomRefObject, DomRefCallback,
   DomRefCleanup, DomRefObjectCleanup, ImperativeOwner, LazyInit,
 } from './_fixtures/useref.tsrx';
+import { MultipleRefsOneEl } from './_fixtures/useref-multi.tsrx';
 
 describe('useRef — mutation API', () => {
   it('persists ref.current across renders', () => {

@@ -8,22 +8,18 @@ const EFFECT_TIMING_PATH = resolve(__dirname, '../_fixtures/effect-timing.tsrx')
 // ----------------------------------------------------------------------------
 // useref.tsrx
 //
-// NOTE: the entire useref.tsrx fixture currently fails to precompile via
-// @tsrx/react because it contains `MultipleRefsOneEl` (two `ref=` attrs on the
-// same element), which @tsrx/react rejects fixture-wide:
-//   "Element has multiple `ref={...}` attributes; an element may have at most
-//    one. Use a single array-valued ref such as `ref={[a, b]}` …"
-//
-// Because the React-side compile fails fixture-wide, NONE of the React exports
-// are available at differential-mount time. We mark the useref tests below as
-// `it.skip` so they're discoverable but don't poison the suite while that
-// compile blocker stands. Re-enable once either (a) MultipleRefsOneEl is moved
-// to a separate fixture, or (b) @tsrx/react learns to skip the offending
-// component and emit the rest.
+// `MultipleRefsOneEl` (the multi-ref-attr component that previously blocked
+// the React-side compile of this whole fixture) was split off into
+// useref-multi.tsrx, so the remaining components in useref.tsrx now precompile
+// cleanly via @tsrx/react. The differential tests below all exercise
+// runtime-shape parity for useRef. `DomRefObject` stays skipped — its
+// inferno-side useEffect body reads its deps positionally (an inferno-next-
+// specific calling convention), which React's useEffect doesn't honour, so
+// the React side throws on read of undefined.
 // ----------------------------------------------------------------------------
 
 describe('differential: useref.tsrx — useRef persists / does not rerender / stable identity', () => {
-  it.skip('PersistsAcrossRenders: ref mutation visible after setState-driven re-render', async () => {
+  it('PersistsAcrossRenders: ref mutation visible after setState-driven re-render', async () => {
     const d = await mountDifferential(USEREF_PATH, 'PersistsAcrossRenders');
     await d.step('mount (ref=0)', () => {});
     await d.step('click 1 → ref=1', async (i, r) => {
@@ -41,7 +37,7 @@ describe('differential: useref.tsrx — useRef persists / does not rerender / st
     d.unmount();
   });
 
-  it.skip('MutationDoesNotRerender: mutating ref.current does not change DOM', async () => {
+  it('MutationDoesNotRerender: mutating ref.current does not change DOM', async () => {
     // The fixture writes a `bump` fn onto the shared handle so an outsider can
     // trigger ref mutation without a re-render. Both runtimes share the same
     // handle object; the last writer wins, but we only need to exercise ONE
@@ -60,7 +56,7 @@ describe('differential: useref.tsrx — useRef persists / does not rerender / st
     d.unmount();
   });
 
-  it.skip('StableIdentity: same ref object across re-renders', async () => {
+  it('StableIdentity: same ref object across re-renders', async () => {
     // The rig's DOM diff is the primary assertion. The observe callback is a
     // convenience hook for cross-render identity checks that aren't part of
     // the differential contract per se.
@@ -79,6 +75,13 @@ describe('differential: useref.tsrx — useRef persists / does not rerender / st
 });
 
 describe('differential: useref.tsrx — ref reset semantics across conditional mount', () => {
+  // SKIP: the fixture authors useRef + useState INSIDE the @if branch body.
+  // inferno-next supports this — each block boundary owns its own hook
+  // slots, so hooks inside a branch get their own scope and reset on
+  // unmount. React's rules-of-hooks rejects this outright ("Rendered fewer
+  // hooks than expected"). Pure inferno-next feature; no React parity
+  // possible without rewriting the fixture to hoist the hooks above the
+  // @if. Covered semantically by the non-differential useref.test.ts.
   it.skip('RefInIf: ref resets when inner branch unmounts and remounts', async () => {
     const d = await mountDifferential(USEREF_PATH, 'RefInIf');
     await d.step('mount (show=true, inner ref=0)', () => {});
@@ -107,7 +110,7 @@ describe('differential: useref.tsrx — ref reset semantics across conditional m
 });
 
 describe('differential: useref.tsrx — per-row refs in @for-of', () => {
-  it.skip('PerRowRef: each row maintains its own ref slot through reorder', async () => {
+  it('PerRowRef: each row maintains its own ref slot through reorder', async () => {
     const d = await mountDifferential(USEREF_PATH, 'PerRowRef');
     await d.step('mount (a,b,c)', () => {});
     await d.step('bump row a', async (i, r) => {
@@ -138,9 +141,9 @@ describe('differential: useref.tsrx — DOM refs (object form)', () => {
   it.skip('DomRefObject: ref attaches the DOM node and effect can read it', async () => {
     // Effect bodies in inferno-next receive their deps positionally; React's
     // useEffect does not. The fixture's body reads `target` and `refSlot`
-    // from positional args, so the React side will throw at runtime (separate
-    // failure mode from the compile-wide skip above — would only surface
-    // once the multi-ref blocker is fixed).
+    // from positional args, so the React side throws on read of undefined.
+    // Same shape as the effect-timing fixtures' skip — separate work item
+    // to rewrite to lexical-capture form.
     const target = {} as any;
     const d = await mountDifferential(USEREF_PATH, 'DomRefObject', { target });
     await d.step('mount', () => {});
@@ -149,7 +152,7 @@ describe('differential: useref.tsrx — DOM refs (object form)', () => {
 });
 
 describe('differential: useref.tsrx — DOM refs (callback form)', () => {
-  it.skip('DomRefCallback: callback ref fires with element on mount', async () => {
+  it('DomRefCallback: callback ref fires with element on mount', async () => {
     // Callback-ref null-on-unmount semantics can diverge across React versions
     // and inferno-next. Per the brief: don't pre-emptively make it pass — let
     // the rig surface the shape if it differs. Currently blocked by the
@@ -162,7 +165,7 @@ describe('differential: useref.tsrx — DOM refs (callback form)', () => {
 });
 
 describe('differential: useref.tsrx — ref cleanup on unmount', () => {
-  it.skip('DomRefCleanup: callback ref fires across mount → unmount → remount cycle', async () => {
+  it('DomRefCleanup: callback ref fires across mount → unmount → remount cycle', async () => {
     const observed: any[] = [];
     const d = await mountDifferential(USEREF_PATH, 'DomRefCleanup', {
       observe: (el: any) => { observed.push(el); },
@@ -183,7 +186,7 @@ describe('differential: useref.tsrx — ref cleanup on unmount', () => {
     d.unmount();
   });
 
-  it.skip('DomRefObjectCleanup: object ref.current set to null on unmount', async () => {
+  it('DomRefObjectCleanup: object ref.current set to null on unmount', async () => {
     const ref = { current: null as any };
     const d = await mountDifferential(USEREF_PATH, 'DomRefObjectCleanup', { ref });
     await d.step('mount (target attached)', () => {});
@@ -200,7 +203,7 @@ describe('differential: useref.tsrx — ref cleanup on unmount', () => {
 });
 
 describe('differential: useref.tsrx — useImperativeHandle', () => {
-  it.skip('ImperativeOwner: child exposes bump/reset via parent-owned ref', async () => {
+  it('ImperativeOwner: child exposes bump/reset via parent-owned ref', async () => {
     const handle: any = {};
     const d = await mountDifferential(USEREF_PATH, 'ImperativeOwner', { handle });
     await d.step('mount (counter=0)', () => {});
@@ -209,7 +212,7 @@ describe('differential: useref.tsrx — useImperativeHandle', () => {
 });
 
 describe('differential: useref.tsrx — useRef lazy-ish initial value', () => {
-  it.skip('LazyInit: initial value persists across re-renders', async () => {
+  it('LazyInit: initial value persists across re-renders', async () => {
     // factory() is called by both runtimes on mount. Both should keep the
     // FIRST result across renders. A constant-returning factory keeps the
     // displayed text identical even if React invokes factory extra times.

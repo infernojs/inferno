@@ -82,17 +82,11 @@ export function DomRefCallback(props) @{
   </div>
 }
 
-// Multiple `ref` attributes on one element — both attach to the same element.
-// New TSRX merges via mergeRefs in the codegen pipeline.
-export function MultipleRefsOneEl(props) @{
-  const a = useRef(null);
-  const b = useRef(null);
-  useEffect((tgt, ra, rb) => { tgt.a = ra.current; tgt.b = rb.current; },
-    [props.target, a, b]);
-  <div class='multi' ref={a} ref={b}>
-    {'mounted'}
-  </div>
-}
+// `MultipleRefsOneEl` was moved to its own fixture (useref-multi.tsrx) so
+// the rest of this file compiles via @tsrx/react. The multi-ref syntax
+// causes @tsrx/react to abort the whole module ("Element has multiple
+// `ref={...}` attributes …"), which previously blocked every
+// differential mount in refs-effects.test.ts.
 
 // Cleanup on unmount: a callback ref observes mount + unmount.
 // Each invocation of the callback updates `lastEl`, which a render-prop
