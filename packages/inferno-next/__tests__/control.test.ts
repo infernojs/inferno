@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from './_helpers';
-import { Toggle, IfOnly, HookInIf, IdInComponent } from './_fixtures/control.tsrx';
+import { Toggle, IfOnly, HookInIf, IdInComponent, IfTrailingText, ForTrailingText } from './_fixtures/control.tsrx';
 
 describe('ifBlock', () => {
   it('swaps then/else branches', () => {
@@ -55,4 +55,33 @@ describe('useId', () => {
     expect(r1.find('label').getAttribute('for')).not.toBe(r2.find('label').getAttribute('for'));
     r1.unmount(); r2.unmount();
   });
+});
+
+// Pins for tsrx 0.1.29 parser fixes (regression coverage).
+describe('parser fixes (tsrx 0.1.29)', () => {
+  it('IfTrailingText: text after @if {} closing brace is rendered', () => {
+    const r = mount(IfTrailingText, { show: true });
+    const p = r.find('p');
+    // span.gated must render; the trailing text " trailing!" must follow.
+    expect(p.querySelector('.gated')?.textContent).toBe('yes');
+    expect(p.textContent).toContain('trailing!');
+    r.unmount();
+  });
+
+  it('IfTrailingText: trailing text survives when @if branch is empty', () => {
+    const r = mount(IfTrailingText, { show: false });
+    expect(r.find('p').textContent).toContain('trailing!');
+    expect(r.findAll('.gated')).toHaveLength(0);
+    r.unmount();
+  });
+
+  it('ForTrailingText: text after @for {} closing brace is rendered', () => {
+    const r = mount(ForTrailingText, { items: ['a', 'b'] });
+    const p = r.find('p');
+    const rows = Array.from(p.querySelectorAll('.row')) as HTMLElement[];
+    expect(rows.map(r => r.textContent)).toEqual(['a', 'b']);
+    expect(p.textContent).toContain('tail');
+    r.unmount();
+  });
+
 });
