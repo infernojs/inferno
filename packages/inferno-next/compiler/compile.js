@@ -849,17 +849,9 @@ function compileFunctionBody(node, ctx, name, parentNs = 'html', cssHash = null,
   // is hoisted as a render function in inlinedSubs and replaced with an
   // identifier reference. Suitable for top-level render-prop patterns where
   // the block doesn't capture local arrow params.
-  // Strip TS-only wrappers (TSAsExpression, TSNonNullExpression, etc.) before
-  // printing. esrap's tsx printer would otherwise emit `expr as string`
-  // verbatim into the output, which rolldown rejects when loading the
-  // compiled output as JS. JSX-child `{expr as string}` casts are already
-  // stripped at planJsx time via stripStringishCast — this catches the
-  // expression-statement leak path (an `as string` inside an @if body that
-  // becomes `'foo' as string;` in the compiled __then$N helper).
   const rewrittenStatements = workingStatements
     .map(s => rewriteHookCalls(s, ctx, name))
-    .map(s => rewriteTsrxBlocks(s, ctx, name, inlinedSubs))
-    .map(s => stripTsOnlyWrappers(s));
+    .map(s => rewriteTsrxBlocks(s, ctx, name, inlinedSubs));
   const statementCode = rewrittenStatements.map(s => '  ' + printNode(s).replace(/\n/g, '\n  ')).join('\n');
 
   const plan = planJsx(jsxNodes, ctx, name, inlinedSubs, parentNs, cssHash);
@@ -987,11 +979,11 @@ function normalizeChildren(nodes) {
       if (/^\s*$/.test(n.value)) continue;
       out.push({ type: 'Text', expression: { type: 'Literal', value: n.value, raw: JSON.stringify(n.value) } });
     } else if (n.type === 'JSXExpressionContainer') {
-      // Unwrap `{expr as string}` / `{expr as TSStringKeyword}` so downstream
-      // emission sees a plain expression. The `as string` is purely a
-      // compile-time hint; the runtime coercion (String(_v)) happens in the
-      // emitted code regardless.
-      const expression = stripStringishCast(n.expression);
+      // TS-only wrappers (`as string`, `!`, `satisfies T`) on the expression
+      // get stripped centrally in printNode at print time — no need to
+      // pre-strip here. Pass the raw expression through; downstream emission
+      // sees a plain expression once esrap is invoked.
+      const expression = n.expression;
       // Route to the RICH dispatcher (`TSRXExpression` branch in emitElementHtml)
       // when the expression is one that needs special handling — createPortal
       // calls, JSX-bearing ternaries, sub-template arrows (`() => @{…}`).
@@ -1122,34 +1114,52 @@ function needsRichDispatch(expr) {
  * TSTypeAssertion with TSStringKeyword) are stripped the same way — they're
  * compile-time hints with no runtime semantics in our emit.
  */
-function stripStringishCast(node) {
-  if (!node) return node;
-  if (node.type === 'TSAsExpression' || node.type === 'TSTypeAssertion') {
-    return stripStringishCast(node.expression);
+// Predicate: is this expression statically known to be a string? Used at
+// text-binding creation time to mark the binding so the runtime emit can
+// skip the `String(_v)` coercion on the hot path. Recognised shapes:
+//   - String Literal:               'foo' / "bar"
+//   - TemplateLiteral:               `${x}-${y}` (always coerces to string)
+//   - `as string` / `<string>x`:     user-asserted string-typed expression
+//   - `satisfies string`:            same intent
+//   - Wrappers (`!`, instantiation): peel and check inside
+//   - String `+` concat:             at least one operand known-string
+// Conservative — returns false for anything we can't prove. Safe to use
+// from any text-binding site BEFORE the TS-wrapper strip in printNode.
+function isKnownStringExpression(node) {
+  if (node == null || typeof node !== 'object') return false;
+  if (node.type === 'Literal' || node.type === 'StringLiteral') {
+    return typeof node.value === 'string';
   }
-  if (node.type === 'TSNonNullExpression') {
-    return stripStringishCast(node.expression);
+  if (node.type === 'TemplateLiteral') return true;
+  if (node.type === 'TSAsExpression' || node.type === 'TSTypeAssertion' || node.type === 'TSSatisfiesExpression') {
+    const ann = node.typeAnnotation;
+    if (ann && (ann.type === 'TSStringKeyword' ||
+                (ann.type === 'TSTypeReference' && ann.typeName && ann.typeName.name === 'string'))) {
+      return true;
+    }
+    return isKnownStringExpression(node.expression);
   }
-  return node;
+  if (node.type === 'TSNonNullExpression' || node.type === 'TSInstantiationExpression') {
+    return isKnownStringExpression(node.expression);
+  }
+  // `a + b` is a string if EITHER operand is a string (JS coerces the other).
+  if (node.type === 'BinaryExpression' && node.operator === '+') {
+    return isKnownStringExpression(node.left) || isKnownStringExpression(node.right);
+  }
+  return false;
 }
 
-// `isStringishExpression` (text-typed predicate for the text-only-child fast
-// path) will land in Phase 3 step 2 alongside the binding-emit refactor —
-// stripStringishCast above is enough for correct behaviour; the predicate
-// is needed only for the further optimization of skipping runtime `String(_v)`
-// coercion when the expression is known-string at compile time.
-
-// Walk an AST in place, replacing every TS-only wrapper node (TSAsExpression,
+// Walk an AST, replacing every TS-only wrapper node (TSAsExpression,
 // TSTypeAssertion, TSNonNullExpression, TSSatisfiesExpression,
-// TSInstantiationExpression) with its inner .expression. esrap's tsx printer
+// TSInstantiationExpression) with its inner .expression. Called centrally
+// from printNode so every print path strips wrappers — esrap's tsx printer
 // would otherwise emit `expr as string` / `expr!` / `expr satisfies T`
 // verbatim into the compiled JS output, which Vite/rolldown rejects when
-// resolving the .tsrx as a `.js` module ("Type assertion expressions can
-// only be used in TypeScript files"). The leak surfaces specifically for
-// expressions that pass through the printNode statement path (function body
-// statements, @if / @else / @for body statements at expression-statement
-// position) — JSX-child `{expr as string}` is already handled at planJsx
-// time by stripStringishCast.
+// loading the result as a `.js` module ("Type assertion expressions can
+// only be used in TypeScript files"). Replaces the old stripStringishCast
+// helper that only stripped outer wrappers at JSX-child position — this
+// also covers inner wrappers (e.g. `(foo as number).toFixed(2) as string`)
+// and statement-position wrappers (`@if` body's `'…' as string`).
 function stripTsOnlyWrappers(node) {
   if (node === null || typeof node !== 'object') return node;
   if (Array.isArray(node)) {
@@ -1482,18 +1492,25 @@ function emitBindingMount(b, elVar) {
   const E = `(${b.expr})`;
   switch (b.kind) {
     case 'textOnlyChild': {
+      // When the binding's expression is statically string-typed
+      // (`knownString`), the runtime can skip the `String(_v)` coercion —
+      // `_v` is already a string. Saves a global function call on every
+      // mount AND every update. Falsy-check still applied so `null` /
+      // `undefined` / `false` render as empty rather than literal text.
+      const coerce = b.knownString ? '_v' : 'String(_v)';
       return `    {
       const _v = ${E};
-      const _t = document.createTextNode(_v == null || _v === false ? '' : String(_v));
+      const _t = document.createTextNode(_v == null || _v === false ? '' : ${coerce});
       ${elVar}.appendChild(_t);
       _b._txt$${b.id} = _t;
       _b._prev$${b.id} = _v;
     }`;
     }
     case 'htmlOnlyChild': {
+      const coerce = b.knownString ? '_v' : 'String(_v)';
       return `    {
       const _v = ${E};
-      ${elVar}.innerHTML = (_v == null ? '' : String(_v));
+      ${elVar}.innerHTML = (_v == null ? '' : ${coerce});
       _b._el$${b.id} = ${elVar};
       _b._prev$${b.id} = _v;
     }`;
@@ -1508,9 +1525,10 @@ function emitBindingMount(b, elVar) {
       // it — silently deleting it. Do the swap on `_root` instead; the
       // subsequent drain moves _t into the block range with the rest.
       const swapHost = elVar === '__block.parentNode' ? '_root' : elVar;
+      const coerce = b.knownString ? '_v' : 'String(_v)';
       return `    {
       const _v = ${E};
-      const _t = document.createTextNode(_v == null || _v === false ? '' : String(_v));
+      const _t = document.createTextNode(_v == null || _v === false ? '' : ${coerce});
       const _m = ${swapHost}.childNodes[${b.childIndex}];
       ${swapHost}.insertBefore(_t, _m);
       ${swapHost}.removeChild(_m);
@@ -1595,7 +1613,8 @@ function emitBindingUpdate(b) {
       return `    { const _v = ${E}; if (_b._prev$${b.id} !== _v) { setText(_b._txt$${b.id}, _v); _b._prev$${b.id} = _v; } }`;
     }
     case 'htmlOnlyChild': {
-      return `    { const _v = ${E}; if (_b._prev$${b.id} !== _v) { _b._el$${b.id}.innerHTML = (_v == null ? '' : String(_v)); _b._prev$${b.id} = _v; } }`;
+      const coerce = b.knownString ? '_v' : 'String(_v)';
+      return `    { const _v = ${E}; if (_b._prev$${b.id} !== _v) { _b._el$${b.id}.innerHTML = (_v == null ? '' : ${coerce}); _b._prev$${b.id} = _v; } }`;
     }
     case 'attr': {
       return `    { const _v = ${E}; if (_b._prev$${b.id} !== _v) { setAttribute(_b._el$${b.id}, ${JSON.stringify(b.name)}, _v); _b._prev$${b.id} = _v; } }`;
@@ -1660,7 +1679,7 @@ function emitBindingUpdate(b) {
 
 function emitNodeHtml(node, path, bindings, forCalls, ifCalls, compCalls, tryCalls, ctx, componentName, inlinedSubs, parentNs = 'html', cssHash = null) {
   if (node.type === 'Text') {
-    bindings.push({ id: bindings.length, kind: 'text', expr: printExpr(resolveStyleExpr(node.expression, cssHash)), path: path.slice(0, -1), childIndex: path[path.length - 1] });
+    bindings.push({ id: bindings.length, kind: 'text', expr: printExpr(resolveStyleExpr(node.expression, cssHash)), knownString: isKnownStringExpression(node.expression), path: path.slice(0, -1), childIndex: path[path.length - 1] });
     return '<!>';
   }
   if (node.type === 'Element') return emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, tryCalls, ctx, componentName, inlinedSubs, parentNs, cssHash);
@@ -1879,6 +1898,7 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
     bindings.push({
       id: bindings.length, kind: 'textOnlyChild',
       expr: printExpr(resolveStyleExpr(txtChild.expression, cssHash)),
+      knownString: isKnownStringExpression(txtChild.expression),
       path,
     });
     // The element stays empty in the template — runtime appends a Text node.
@@ -1898,6 +1918,7 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
         bindings.push({
           id: bindings.length, kind: 'text',
           expr: printExpr(resolveStyleExpr(child.expression, cssHash)),
+          knownString: isKnownStringExpression(child.expression),
           path, childIndex: childIdx,
         });
         html += '<!>';  // placeholder we'll replace at mount
@@ -1975,6 +1996,8 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
         bindings.push({
           id: bindings.length, kind: 'text',
           expr: printExpr(resolveStyleExpr(child, cssHash)),
+          // `{style 'cls'}` resolves to a String class name at compile time.
+          knownString: true,
           path, childIndex: childIdx,
         });
         html += '<!>';
@@ -2034,6 +2057,7 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
           bindings.push({
             id: bindings.length, kind: 'text',
             expr: printExprWithTsrx(resolveStyleExpr(expr, cssHash), ctx, componentName, inlinedSubs),
+            knownString: isKnownStringExpression(expr),
             path, childIndex: childIdx,
           });
           html += '<!>';
@@ -2635,7 +2659,15 @@ function escapeAttr(s) {
 }
 
 function printNode(node) {
-  const { code } = esrapPrint(node, esrapTsx());
+  // Strip TS-only wrappers (TSAsExpression / TSNonNullExpression / etc.)
+  // before printing. esrap's tsx printer would otherwise emit
+  // `expr as string`, `expr!`, `expr satisfies T` verbatim, which Vite/
+  // rolldown rejects when loading the compiled .tsrx output as a `.js`
+  // module ("Type assertion expressions can only be used in TypeScript
+  // files"). Centralizing here covers every emit path (statement-level
+  // rewrittenStatements, planJsx-emitted bindings, attribute / prop
+  // values via printExprWithTsrx) — no per-call-site strip needed.
+  const { code } = esrapPrint(stripTsOnlyWrappers(node), esrapTsx());
   return code;
 }
 
