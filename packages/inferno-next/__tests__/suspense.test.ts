@@ -266,19 +266,17 @@ describe('Suspense — parallel boundaries (no waterfall)', () => {
   });
 
   it('useMemo pattern: both fetches kick off on initial render (network-parallel)', async () => {
-    // KNOWN DIVERGENCE FROM REACT: this test pins inferno-next's specific
-    // replay behaviour — the useMemo factory re-runs on every replay
-    // attempt because we rebuild the try-block body on retry. React's
-    // memoized state survives across replays (the factory does NOT re-run
-    // when deps are unchanged). For true single-render fetch-once-cache
-    // semantics in inferno-next today, place each promise in its own
-    // <TryBoundary> sibling, OR hoist the useMemo to a parent component.
-    // See SUSPENSE_DIVERGENCE.md.
+    // React parity confirmed: the useMemo factory runs EXACTLY ONCE for a
+    // given `[cacheKey]` deps tuple, even across replay attempts. Our hooks
+    // Map is preserved on the held tryBlock across suspend → resolve cycles,
+    // and useMemo's slot-cache lookup hits on every replay. So `startA` and
+    // `startB` are called once total — the docs previously listed this as
+    // a divergence but empirical inspection (startA/startB call counters
+    // checked at every resolve boundary) shows the counts are 1 each.
     //
-    // The useMemo pattern STILL guarantees that BOTH fetches are initiated
-    // when the body first runs — network requests fly in parallel, and the
-    // end-to-end outcome is the same as fully-parallel suspense as long as
-    // both promises eventually resolve before the replays catch up.
+    // The useMemo pattern guarantees BOTH fetches are initiated when the
+    // body first runs (parallel), and the cached value flows through the
+    // replays unchanged.
     let aStarts = 0, bStarts = 0;
     const da = deferred<string>();
     const db = deferred<string>();
@@ -286,23 +284,22 @@ describe('Suspense — parallel boundaries (no waterfall)', () => {
     const startB = () => { bStarts++; return db.promise; };
     const r = mount(ParallelInOneBoundary, { startA, startB, cacheKey: 1 });
 
-    // KEY ASSERTION: both fetches were started on the FIRST render. The
-    // network is busy with both regardless of suspense replay timing.
-    expect(aStarts).toBeGreaterThanOrEqual(1);
-    expect(bStarts).toBeGreaterThanOrEqual(1);
+    // KEY ASSERTION: each fetch was started exactly ONCE. Even across the
+    // two suspend/resolve cycles below, useMemo's slot cache holds — the
+    // factory does NOT re-run on replay. Matches React's per-fiber
+    // memoizedState preservation contract.
+    expect(aStarts).toBe(1);
+    expect(bStarts).toBe(1);
     expect(r.find('.fallback').textContent).toBe('loading');
 
-    // Even when we resolve in reverse order, the final render succeeds —
-    // confirms the user's parallel-fetch intent is honored end-to-end.
+    // Resolve in reverse order — useMemo cache holds, replay reads cached
+    // promises, both `use()` calls eventually return their resolved values,
+    // and the final render commits. startA / startB are STILL 1 each.
     await act(() => { db.resolve('B'); });
     await act(() => { da.resolve('A'); });
     expect(r.find('.both').textContent).toBe('A/B');
-
-    // KNOWN LIMITATION: non-keep mode currently rebuilds the try block on
-    // each retry, so useMemo's factory re-runs (startA/startB called per
-    // replay attempt). For TRUE single-render fetch-once-then-cache, place
-    // each promise in its own `<TryBoundary>` (sibling pattern below) OR
-    // hoist the useMemo to a parent component.
+    expect(aStarts).toBe(1);
+    expect(bStarts).toBe(1);
     r.unmount();
   });
 

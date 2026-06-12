@@ -116,7 +116,7 @@ Per feature area: totals, citation confidence breakdown.
 
 Notes:
 - "High-confidence" means the test file itself cites a specific React file:line OR the assertion mirrors a verbatim-titled React test.
-- Suspense rows 4 (`catch reset()`), 16 (`useMemo parallel`), and 17 (`WITHOUT useMemo waterfall`) document inferno-next-specific contracts more than React-canonical behavior. Row 17 is purely a regression-pin for the current sequential-replay strategy.
+- Suspense row 4 (`catch reset()`) documents inferno-next-specific TSRX syntax; row 17 (`WITHOUT useMemo waterfall`) is a regression-pin for the current sequential-replay strategy. Row 16 (`useMemo parallel`) was previously listed as a divergence but is now confirmed React-parity: useMemo's factory runs exactly once and the cached value flows through suspense replays unchanged (assertion `aStarts === 1 && bStarts === 1` after both resolves).
 - Effect Timing's "all phases fire cleanup on unmount" asserts cleanup in REGISTRATION order (ins → lay → eff). React's per-fiber path runs cleanups in REVERSE-mount order — within-phase ordering across React's noop renderer may diverge.
 
 ---
@@ -193,7 +193,7 @@ Existing tests that exist but assert too weakly to prove React parity.
 | transitions.test.ts | entangled siblings: isPending stays true | Asserts partial commit of resolved-A while B pending — React may hold both | Cross-check React's behavior; pin actual choice (eager-partial-commit divergence OR full-wait React parity) explicitly |
 | transitions.test.ts | DeferredValueWithSuspense `isStale` | `isStale` flag is a userland idiom on top of identity check; React's exact same-render-sees-prior-value timing is a strong contract worth pinning to a React-cited test | Cross-reference to ReactDeferredValue-test.js explicit case |
 | suspense.test.ts | catch reset() retries with latest props | The `@catch (err, reset)` positional `reset` is inferno-next-specific syntax | Add an additional React-parity test using a React `<ErrorBoundary>` + `resetKeys`-style pattern, OR document the divergence |
-| suspense.test.ts | ParallelInOneBoundary (`useMemo` factory re-runs on replay) | Pins inferno-next-specific replay behavior; React would NOT re-run the memo factory | Add a "React parity wishlist" annotation; possibly mark `it.skip` once the runtime is fixed |
+| suspense.test.ts | ParallelInOneBoundary (`useMemo` factory runs exactly once) | Confirmed React-parity (factory runs once; cached value flows through replays). Test now asserts `aStarts === 1 && bStarts === 1` after the suspend → resolve → resolve cycle. | No action — strengthened in-place to pin parity. |
 | suspense.test.ts | WaterfallBody | Documents a negative case, not a React-canonical contract | Mark explicitly with a code comment noting it is a regression-pin, not parity |
 
 ---

@@ -1237,6 +1237,11 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
     const elVar = ensureVar(cc.hostPath);
     cc.elVar = elVar;
     mountLines.push(`    _b._compHost$${cc.id} = ${elVar};`);
+    if (cc.anchorPath) {
+      const anchorVar = ensureVar(cc.anchorPath);
+      cc.anchorVar = anchorVar;
+      mountLines.push(`    _b._compAnchor$${cc.id} = ${anchorVar};`);
+    }
   }
   // tryBlock targets.
   for (const tc of tryCalls) {
@@ -1306,14 +1311,23 @@ function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html'
   }
   for (const cc of compCalls) {
     ctx.runtimeNeeded.add('componentSlot');
-    // Always pass __block.endMarker as the anchor. When the host element is
-    // the block's own parentNode (multi-root / noTemplate cases), this keeps
-    // the slot's markers inside the block's range so for-of item reordering
-    // and tryBlock branch unmount move the slot's DOM along with the block.
-    // When the host is a nested element, the anchor is irrelevant (insertBefore
-    // ignores anchors not in the host).
-    const isInsideHost = cc.elVar.startsWith('_el');  // captured from _root walk
-    const anchorArg = isInsideHost ? '' : ', __block.endMarker';
+    // Anchor selection:
+    //   - In mixed children with source-order siblings, we emitted a `<!>`
+    //     placeholder at the component's index and stored its el var on
+    //     `cc.anchorVar` — pass that so componentSlot inserts BEFORE it.
+    //   - When the host is the block's own parentNode (multi-root /
+    //     noTemplate cases), pass __block.endMarker so the slot's markers
+    //     stay inside the block's range (for-of reorder / tryBlock unmount
+    //     move the slot DOM along with the block).
+    //   - When the host is a nested element with no in-template anchor,
+    //     the slot can safely append (insertBefore ignores foreign anchors).
+    let anchorArg;
+    if (cc.anchorVar) {
+      anchorArg = `, __s.${bindingsName}._compAnchor$${cc.id}`;
+    } else {
+      const isInsideHost = cc.elVar.startsWith('_el');
+      anchorArg = isInsideHost ? '' : ', __block.endMarker';
+    }
     afterLines.push(`  componentSlot(__s, ${JSON.stringify('_comp$' + cc.id)}, __s.${bindingsName}._compHost$${cc.id}, ${cc.compExpr}, ${cc.propsExpr}${anchorArg});`);
   }
   for (const pc of ctx._portalCalls) {
@@ -1765,7 +1779,15 @@ function emitElementHtml(node, path, bindings, forCalls, ifCalls, compCalls, try
         if (isComponentTag(child)) {
           const cc = makeCompCall(child, ctx, componentName, inlinedSubs, bindings, forCalls, ifCalls, compCalls, childNs, cssHash);
           cc.hostPath = path;
+          // Emit a `<!>` anchor at the component's source-order position so
+          // componentSlot inserts BEFORE this anchor — preserving sibling
+          // order when a Component appears before static-element/text
+          // siblings. Without this, the slot's start/end markers get
+          // appended to the parent host AFTER the static template content.
+          cc.anchorPath = [...path, childIdx];
           compCalls.push(cc);
+          html += '<!>';
+          childIdx++;
         } else {
           html += emitElementHtml(child, [...path, childIdx], bindings, forCalls, ifCalls, compCalls, tryCalls, ctx, componentName, inlinedSubs, childNs, cssHash);
           childIdx++;

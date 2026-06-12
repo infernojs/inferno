@@ -34,21 +34,7 @@ Last reviewed against React 19 contracts.
 
 ---
 
-## 3. `useMemo` factory re-runs on replay
-
-**Where it shows up:** [suspense.test.ts](__tests__/suspense.test.ts) — `'useMemo pattern: both fetches kick off on initial render (network-parallel)'`
-
-**React behavior:** React's per-fiber memoizedState survives across replay attempts. A `useMemo(() => …, [deps])` factory runs ONCE per dep-change boundary; replays do not re-invoke it.
-
-**inferno-next behavior:** Our retry path rebuilds the try-block body on each replay attempt, which causes `useMemo` factories to re-run. The committed value still memoizes correctly across NORMAL re-renders (deps comparison works); the divergence is only in the replay-during-suspense path.
-
-**Surface impact:** Higher than #1 if user code relies on the factory's side effects being stable. The common workaround (and what real users tend to write) is to put each suspending promise in its own boundary, which sidesteps the issue.
-
-**Closure plan:** Preserve memoizedState across replay attempts the same way React does. Material runtime work (hook state needs a per-attempt snapshot/commit lifecycle). Filed as a follow-up.
-
----
-
-## 4. Sequential `use()` waterfall — regression pin, not parity divergence
+## 3. Sequential `use()` waterfall — regression pin, not parity divergence
 
 **Where it shows up:** [suspense.test.ts](__tests__/suspense.test.ts) — `'WITHOUT useMemo, sequential use() inside one body waterfalls (documents the gotcha)'`
 
