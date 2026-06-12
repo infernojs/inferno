@@ -22,3 +22,7 @@ allowBuilds:
   lmdb@2.8.5: true
   msgpackr-extract@3.0.3: true
   unrs-resolver@1.12.2: true
+
+minimumReleaseAgeExclude:
+  - '@tsrx/core@0.1.29'
+  - '@tsrx/react@0.2.29'

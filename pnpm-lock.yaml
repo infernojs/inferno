@@ -500,8 +500,8 @@ importers:
   packages/inferno-next:
     dependencies:
       '@tsrx/core':
-        specifier: 0.1.25
-        version: 0.1.25(@typescript-eslint/types@8.59.4)
+        specifier: 0.1.29
+        version: 0.1.29(@typescript-eslint/types@8.59.4)
       esrap:
         specifier: ^2.2.9
         version: 2.2.9(@typescript-eslint/types@8.59.4)
@@ -513,8 +513,8 @@ importers:
         version: 1.1.4
     devDependencies:
       '@tsrx/react':
-        specifier: 0.2.25
-        version: 0.2.25(@typescript-eslint/types@8.59.4)(react@19.2.7)
+        specifier: 0.2.29
+        version: 0.2.29(@typescript-eslint/types@8.59.4)(react@19.2.7)
       esbuild:
         specifier: ^0.27.7
         version: 0.27.7
@@ -2688,11 +2688,11 @@ packages:
   '@tsrx/core@0.1.13':
     resolution: {integrity: sha512-CpachOxyUIbf+0q6zWJfI1RFpHdo6ZIy0v62qzW72WfW+tPtg8w0f9wFrA0AwhgpO8AFJtT5oNerXpScVMagOQ==}
 
-  '@tsrx/core@0.1.25':
-    resolution: {integrity: sha512-v0TH/4jd7m6ao4aZp1NId3fXu1Go0D4ci4+2vc8mJjGkkijXLTkKqJ/0mbCi1kDfmjKXLuoMRGrt9/I79JWNpQ==}
+  '@tsrx/core@0.1.29':
+    resolution: {integrity: sha512-INfb2p2tt5SmbxenP16n2sAf7eyU6wA5jzWiwn22CDDiDsaUAGQ+RtyoFBUgKj5yNm8xzGul7K90pk40pf3cOw==}
 
-  '@tsrx/react@0.2.25':
-    resolution: {integrity: sha512-dvIzgiY6SnkFz4q1Hphwjl4Vk1FksebEq5tFmLMSzKXINeCUNDJJZwHw519wnUKXSurWmxNjJiVWfebM6T4iyA==}
+  '@tsrx/react@0.2.29':
+    resolution: {integrity: sha512-2It7h0duT/9wVLN9XvGbNBK36wPWxKOcXSfYol15WVrdUFp/y86syvU4K/H4Gguw3+sFx2gkiWO4awJxjcNKMg==}
     peerDependencies:
       react: '>=18'
 
@@ -9533,7 +9533,7 @@ snapshots:
     transitivePeerDependencies:
       - '@typescript-eslint/types'
 
-  '@tsrx/core@0.1.25(@typescript-eslint/types@8.59.4)':
+  '@tsrx/core@0.1.29(@typescript-eslint/types@8.59.4)':
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
       '@noble/hashes': 2.2.0
@@ -9548,9 +9548,9 @@ snapshots:
     transitivePeerDependencies:
       - '@typescript-eslint/types'
 
-  '@tsrx/react@0.2.25(@typescript-eslint/types@8.59.4)(react@19.2.7)':
+  '@tsrx/react@0.2.29(@typescript-eslint/types@8.59.4)(react@19.2.7)':
     dependencies:
-      '@tsrx/core': 0.1.25(@typescript-eslint/types@8.59.4)
+      '@tsrx/core': 0.1.29(@typescript-eslint/types@8.59.4)
       esrap: 2.2.9(@typescript-eslint/types@8.59.4)
       react: 19.2.7
       zimmerframe: 1.1.4

@@ -26,13 +26,13 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@tsrx/core": "0.1.25",
+    "@tsrx/core": "0.1.29",
     "esrap": "^2.2.9",
     "is-reference": "^3.0.3",
     "zimmerframe": "^1.1.4"
   },
   "devDependencies": {
-    "@tsrx/react": "0.2.25",
+    "@tsrx/react": "0.2.29",
     "esbuild": "^0.27.7",
     "happy-dom": "^20.9.0",
     "react": "^19.0.0",
