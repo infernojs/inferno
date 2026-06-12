@@ -74,40 +74,10 @@ describe('differential: useref.tsrx — useRef persists / does not rerender / st
   });
 });
 
-describe('differential: useref.tsrx — ref reset semantics across conditional mount', () => {
-  // SKIP: the fixture authors useRef + useState INSIDE the @if branch body.
-  // inferno-next supports this — each block boundary owns its own hook
-  // slots, so hooks inside a branch get their own scope and reset on
-  // unmount. React's rules-of-hooks rejects this outright ("Rendered fewer
-  // hooks than expected"). Pure inferno-next feature; no React parity
-  // possible without rewriting the fixture to hoist the hooks above the
-  // @if. Covered semantically by the non-differential useref.test.ts.
-  it.skip('RefInIf: ref resets when inner branch unmounts and remounts', async () => {
-    const d = await mountDifferential(USEREF_PATH, 'RefInIf');
-    await d.step('mount (show=true, inner ref=0)', () => {});
-    await d.step('bump inner → 1', async (i, r) => {
-      await i.click('#inner');
-      await r.click('#inner');
-    });
-    await d.step('bump inner → 2', async (i, r) => {
-      await i.click('#inner');
-      await r.click('#inner');
-    });
-    await d.step('toggle off (inner unmounts)', async (i, r) => {
-      await i.click('#top');
-      await r.click('#top');
-    });
-    await d.step('toggle on (inner remounts, ref should be back to 0)', async (i, r) => {
-      await i.click('#top');
-      await r.click('#top');
-    });
-    await d.step('bump inner → 1 (fresh ref)', async (i, r) => {
-      await i.click('#inner');
-      await r.click('#inner');
-    });
-    d.unmount();
-  });
-});
+// RefInIf belongs to the inferno-next-only conformance suite — it pins
+// per-block-boundary hook slot reset (useRef + useState INSIDE an @if
+// branch), which React's rules-of-hooks rejects outright. Coverage at
+// useref.test.ts:65; never differential.
 
 describe('differential: useref.tsrx — per-row refs in @for-of', () => {
   it('PerRowRef: each row maintains its own ref slot through reorder', async () => {

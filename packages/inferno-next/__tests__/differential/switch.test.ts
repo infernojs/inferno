@@ -67,9 +67,8 @@ describe('differential: switch.tsrx — @switch / @case', () => {
     d.unmount();
   });
 
-  // SKIP: HookInCase authors useState inside @case branch bodies.
-  // inferno-next supports per-block-boundary hooks (each branch owns its
-  // own slot, resets on swap); React's rules-of-hooks rejects this with
-  // "Rendered fewer hooks than expected." Pure inferno-next feature.
-  it.skip('HookInCase: branch-local hooks reset on case swap', async () => {});
+  // HookInCase belongs to the inferno-next-only conformance suite — it
+  // pins per-block-boundary hook slot reset (useState INSIDE an @case
+  // branch), which React's rules-of-hooks rejects outright. Coverage at
+  // switch.test.ts:64; never differential.
 });
