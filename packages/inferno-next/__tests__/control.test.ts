@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from './_helpers';
-import { Toggle, IfOnly, HookInIf, IdInComponent, IfTrailingText, ForTrailingText } from './_fixtures/control.tsrx';
+import { Toggle, IfOnly, HookInIf, IdInComponent, IfTrailingText, ForTrailingText, WhitespaceInIf } from './_fixtures/control.tsrx';
 
 describe('ifBlock', () => {
   it('swaps then/else branches', () => {
@@ -81,6 +81,18 @@ describe('parser fixes (tsrx 0.1.29)', () => {
     const rows = Array.from(p.querySelectorAll('.row')) as HTMLElement[];
     expect(rows.map(r => r.textContent)).toEqual(['a', 'b']);
     expect(p.textContent).toContain('tail');
+    r.unmount();
+  });
+
+  it('WhitespaceInIf: `as string` inside an @if body does not leak into compiled JS', () => {
+    // The pin is COMPILE-TIME — the fixture loading at all proves the
+    // stripTsOnlyWrappers pass works. Without the fix, rolldown rejects the
+    // emitted `'  spaced  ' as string;` with "Type assertion expressions can
+    // only be used in TypeScript files." Body renders nothing today (an
+    // expression-statement at @if body position is not lifted into a JSX
+    // child by current normalize semantics — separate parser-semantics
+    // ticket, tsrx d14ec84f).
+    const r = mount(WhitespaceInIf, { show: true });
     r.unmount();
   });
 

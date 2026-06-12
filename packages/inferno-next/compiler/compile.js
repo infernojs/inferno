@@ -849,9 +849,17 @@ function compileFunctionBody(node, ctx, name, parentNs = 'html', cssHash = null,
   // is hoisted as a render function in inlinedSubs and replaced with an
   // identifier reference. Suitable for top-level render-prop patterns where
   // the block doesn't capture local arrow params.
+  // Strip TS-only wrappers (TSAsExpression, TSNonNullExpression, etc.) before
+  // printing. esrap's tsx printer would otherwise emit `expr as string`
+  // verbatim into the output, which rolldown rejects when loading the
+  // compiled output as JS. JSX-child `{expr as string}` casts are already
+  // stripped at planJsx time via stripStringishCast — this catches the
+  // expression-statement leak path (an `as string` inside an @if body that
+  // becomes `'foo' as string;` in the compiled __then$N helper).
   const rewrittenStatements = workingStatements
     .map(s => rewriteHookCalls(s, ctx, name))
-    .map(s => rewriteTsrxBlocks(s, ctx, name, inlinedSubs));
+    .map(s => rewriteTsrxBlocks(s, ctx, name, inlinedSubs))
+    .map(s => stripTsOnlyWrappers(s));
   const statementCode = rewrittenStatements.map(s => '  ' + printNode(s).replace(/\n/g, '\n  ')).join('\n');
 
   const plan = planJsx(jsxNodes, ctx, name, inlinedSubs, parentNs, cssHash);
@@ -1130,6 +1138,44 @@ function stripStringishCast(node) {
 // stripStringishCast above is enough for correct behaviour; the predicate
 // is needed only for the further optimization of skipping runtime `String(_v)`
 // coercion when the expression is known-string at compile time.
+
+// Walk an AST in place, replacing every TS-only wrapper node (TSAsExpression,
+// TSTypeAssertion, TSNonNullExpression, TSSatisfiesExpression,
+// TSInstantiationExpression) with its inner .expression. esrap's tsx printer
+// would otherwise emit `expr as string` / `expr!` / `expr satisfies T`
+// verbatim into the compiled JS output, which Vite/rolldown rejects when
+// resolving the .tsrx as a `.js` module ("Type assertion expressions can
+// only be used in TypeScript files"). The leak surfaces specifically for
+// expressions that pass through the printNode statement path (function body
+// statements, @if / @else / @for body statements at expression-statement
+// position) — JSX-child `{expr as string}` is already handled at planJsx
+// time by stripStringishCast.
+function stripTsOnlyWrappers(node) {
+  if (node === null || typeof node !== 'object') return node;
+  if (Array.isArray(node)) {
+    for (let i = 0; i < node.length; i++) node[i] = stripTsOnlyWrappers(node[i]);
+    return node;
+  }
+  if (
+    node.type === 'TSAsExpression' ||
+    node.type === 'TSTypeAssertion' ||
+    node.type === 'TSNonNullExpression' ||
+    node.type === 'TSSatisfiesExpression' ||
+    node.type === 'TSInstantiationExpression'
+  ) {
+    return stripTsOnlyWrappers(node.expression);
+  }
+  for (const key of Object.keys(node)) {
+    // Skip `loc`/`range`/`start`/`end` source-position fields and the parent
+    // backref (acorn-typescript sometimes attaches one). These never hold
+    // wrapper nodes and walking them wastes work.
+    if (key === 'loc' || key === 'range' || key === 'start' || key === 'end' || key === 'parent') continue;
+    const child = node[key];
+    if (child === null || typeof child !== 'object') continue;
+    node[key] = stripTsOnlyWrappers(child);
+  }
+  return node;
+}
 
 function planJsx(jsxNodesRaw, ctx, componentName, inlinedSubs, parentNs = 'html', cssHash = null) {
   const jsxNodes = normalizeChildren(jsxNodesRaw);

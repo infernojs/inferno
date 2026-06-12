@@ -52,11 +52,13 @@ export function IdInComponent() @{
 // `trailing!` / `tail` immediately after the closing `}` of an @if and
 // an @for so any regression drops the text from the rendered output.
 //
-// NOTE: a similar pin for d14ec84f (whitespace preservation inside a
-// JSXExpressionContainer inside an @if) needs hands-on — the natural
-// repro shape `@if (…) {{'  spaced  ' as string}}` leaks the `as string`
-// cast through the compiler's expression-statement emission path, which
-// is a separate compile.js bug worth its own ticket. Filed implicitly.
+// WhitespaceInIf pins the as-string leak fix: a TSAsExpression inside an
+// @if BlockStatement body would print verbatim into the compiled output
+// (`'foo' as string;`), which rolldown rejects as TS in a .js module.
+// The fixture loads at all → the compile.js stripTsOnlyWrappers pass
+// works. The body renders nothing (an expression-statement at @if body
+// position is not lifted into a JSX child by current normalize semantics
+// — a separate parser-semantics ticket, tracked in d14ec84f).
 
 export function IfTrailingText(props) @{
   <p>
@@ -67,5 +69,11 @@ export function IfTrailingText(props) @{
 export function ForTrailingText(props) @{
   <p>
     @for (const x of props.items; key x) { <span class='row'>{x as string}</span> } tail
+  </p>
+}
+
+export function WhitespaceInIf(props) @{
+  <p>
+    @if (props.show) {{'  spaced  ' as string}}
   </p>
 }
