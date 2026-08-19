@@ -1,6 +1,6 @@
 import * as koa from 'koa'; // koa@2
 import * as logger from 'koa-logger';
-import * as koaRouter from 'koa-router'; // koa-router@next
+import * as koaRouter from '@koa/router';
 import * as koaStatic from 'koa-static';
 import * as koaMount from 'koa-mount';
 import { renderToString } from 'inferno-server';

@@ -4,6 +4,8 @@ import replacePlugin from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
 import { aliasPlugin } from './alias.js';
 import babel from '@rollup/plugin-babel';
+import assumptions from '../../babel/assumptions.json' with { type: 'json' };
+import targets from '../../babel/targets.json' with { type: 'json' };
 
 export function createPlugins(version, options) {
   const plugins = [
@@ -23,10 +25,11 @@ export function createPlugins(version, options) {
       exclude: 'node_modules/**',
       sourceMaps: false,
       babelrc: false,
-      presets: !options.esnext ? [['@babel/env', { loose: true, modules: false }]] : null,
+      presets: !options.esnext ? [['@babel/env', { modules: false, targets, exclude: ['transform-typeof-symbol'] }]] : null,
       babelHelpers: 'runtime',
       skipPreflightCheck: true,
-      plugins: [['@babel/plugin-proposal-class-properties', { loose: true }]]
+      assumptions,
+      plugins: ['@babel/plugin-transform-class-properties']
     })
   );
 

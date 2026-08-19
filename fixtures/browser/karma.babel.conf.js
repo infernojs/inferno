@@ -1,4 +1,6 @@
 const path = require('path');
+const assumptions = require('../../scripts/babel/assumptions.json');
+const targets = require('../../scripts/babel/targets.json');
 const gzipPreprocessor = require('./gzip/gzippreprocessor');
 const resolve = (pkg) => path.join(__dirname, '../../packages', pkg, 'dist', 'index.dev.mjs');
 const useInfernoCompatPkg = process.env.InfernoCompat === '1';
@@ -84,24 +86,20 @@ module.exports = function (config) {
             loader: path.join(__dirname, 'node_modules/babel-loader'),
             options: {
               babelrc: false,
+              assumptions,
               presets: [
                 '@babel/typescript',
                 [
                   '@babel/preset-env',
                   {
-                    loose: true,
-                    // es2022
-                    "targets": [
-                      "chrome >= 107",
-                      "firefox >= 105",
-                      "edge >= 107"
-                    ]
+                    exclude: ['transform-typeof-symbol'],
+                    targets
                   }
                 ]
               ],
               plugins: [
                 ['babel-plugin-inferno', { imports: true }],
-                ['@babel/plugin-proposal-class-properties', { loose: true }]
+                '@babel/plugin-transform-class-properties'
               ]
             }
           }
@@ -125,7 +123,7 @@ module.exports = function (config) {
           'inferno-utils': path.join(__dirname, '../../packages', 'inferno-utils', 'src', 'index.ts'),
           'inferno-vnode-flags': resolve('inferno-vnode-flags'),
           'inferno-clone-vnode': resolve('inferno-clone-vnode'),
-          mobx: path.join(__dirname, '../../node_modules/mobx/dist/mobx.esm.js')
+          mobx: path.join(__dirname, '../../node_modules/mobx/dist/mobx.mjs')
         },
         extensions: ['.js', '.jsx', '.tsx', '.ts'],
         mainFields: ['browser', 'main']

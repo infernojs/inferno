@@ -8,6 +8,8 @@ import terser from '@rollup/plugin-terser';
 import alias from "@rollup/plugin-alias";
 import { fileURLToPath } from "url";
 import babel from "@rollup/plugin-babel";
+import assumptions from "../scripts/babel/assumptions.json" with { type: "json" };
+import targets from "../scripts/babel/targets.json" with { type: "json" };
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -32,10 +34,11 @@ const plugins = [
     exclude: 'node_modules/**',
     sourceMaps: false,
     babelrc: false,
-    presets: [['@babel/env', {loose: true, modules: false}]],
+    presets: [['@babel/env', {modules: false, targets, exclude: ['transform-typeof-symbol']}]],
+    assumptions,
     plugins: [
       ['babel-plugin-inferno', {imports: true, defineAllArguments: true}],
-      ["@babel/plugin-proposal-class-properties", { "loose": true }]
+      "@babel/plugin-transform-class-properties"
     ]
   }),
   commonjsPlugin({
@@ -59,7 +62,7 @@ const plugins = [
       {find: 'inferno-test-utils', replacement: resolvePkg('inferno-test-utils')},
       {find: 'inferno-vnode-flags', replacement: resolvePkg('inferno-vnode-flags')},
       {find: 'inferno-clone-vnode', replacement: resolvePkg('inferno-clone-vnode')},
-      {find: 'mobx', replacement: join(__dirname, '../node_modules/mobx/dist/mobx.esm.js')},
+      {find: 'mobx', replacement: join(__dirname, '../node_modules/mobx/dist/mobx.mjs')},
       {find: 'perf-monitor', replacement: join(__dirname, '../node_modules/perf-monitor/dist/index.js')}
     ]
   })

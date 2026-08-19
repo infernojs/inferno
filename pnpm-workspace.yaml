@@ -13,8 +13,11 @@ overrides:
 
 allowBuilds:
   '@parcel/watcher@2.5.6': true
-  '@swc/core@1.15.24': true
+  # Unpinned: parcel and the root devDependency drag in several @swc/core versions
+  '@swc/core': true
   edgedriver@6.3.0: true
+  # esbuild fetches its platform binary on install (tsx)
+  esbuild: true
   geckodriver@6.1.0: true
   lmdb@2.8.5: true
   msgpackr-extract@3.0.3: true

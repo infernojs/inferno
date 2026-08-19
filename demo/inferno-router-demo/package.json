@@ -9,7 +9,7 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "dev:frontend": "cross-env FORCE_COLOR=1 parcel",
-    "dev:backend": "cross-env FORCE_COLOR=1 ts-node-dev --respawn src/server.ts"
+    "dev:backend": "cross-env FORCE_COLOR=1 tsx watch src/server.ts"
   },
   "dependencies": {
     "inferno": "workspace:*",
@@ -18,11 +18,11 @@
     "inferno-hydrate": "workspace:*",
     "inferno-router": "workspace:*",
     "inferno-server": "workspace:*",
+    "@koa/router": "^15.7.0",
     "koa": "^2.15.3",
     "koa-json-body": "^5.3.0",
     "koa-logger": "^3.2.1",
     "koa-mount": "^4.0.0",
-    "koa-router": "^13.0.1",
     "koa-static": "^5.0.0"
   },
   "devDependencies": {
@@ -35,10 +35,9 @@
     "@types/node": "^22.10.0",
     "babel-plugin-inferno": "^6.7.2",
     "cross-env": "^7.0.3",
-    "jest-environment-jsdom": "^29.7.0",
     "parcel": "^2.13.2",
     "process": "^0.11.10",
-    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.23.12",
     "typescript": "^5.7.2"
   },
   "alias": {
