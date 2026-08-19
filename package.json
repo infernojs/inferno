@@ -82,7 +82,7 @@
     "coveralls-next": "^6.0.2",
     "cross-env": "^10.1.0",
     "d3-scale-chromatic": "^3.1.0",
-    "eslint": "^10",
+    "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-inferno": "^7.41.0",
@@ -101,12 +101,12 @@
     "mobx": "^7.0.0",
     "perf-monitor": "^0.6.0",
     "prettier": "^3.9.6",
-    "rimraf": "^6",
+    "rimraf": "^6.1.3",
     "rollup": "4.62.4",
     "swc-loader": "^0.2.7",
-    "typescript": "^6.0.2",
     "swc-plugin-inferno": "^2.17.0",
     "ts-plugin-inferno": "^6.2.0",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0"
   }
 }

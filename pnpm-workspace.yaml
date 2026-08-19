@@ -22,3 +22,21 @@ allowBuilds:
   lmdb@2.8.5: true
   msgpackr-extract@3.0.3: true
   unrs-resolver@1.12.2: true
+
+minimumReleaseAgeExclude:
+  - '@swc/core-darwin-arm64@1.16.1'
+  - '@swc/core-darwin-x64@1.16.1'
+  - '@swc/core-linux-arm-gnueabihf@1.16.1'
+  - '@swc/core-linux-arm64-gnu@1.16.1'
+  - '@swc/core-linux-arm64-musl@1.16.1'
+  - '@swc/core-linux-ppc64-gnu@1.16.1'
+  - '@swc/core-linux-s390x-gnu@1.16.1'
+  - '@swc/core-linux-x64-gnu@1.16.1'
+  - '@swc/core-linux-x64-musl@1.16.1'
+  - '@swc/core-win32-arm64-msvc@1.16.1'
+  - '@swc/core-win32-ia32-msvc@1.16.1'
+  - '@swc/core-win32-x64-msvc@1.16.1'
+  - '@swc/core@1.16.1'
+  - eslint-plugin-inferno@7.41.0
+  - swc-plugin-inferno@2.17.0
+  - ts-plugin-inferno@6.2.0
