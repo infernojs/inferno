@@ -4,7 +4,7 @@ import {
   createPortal,
   createRef,
   Fragment,
-  InfernoNode,
+  type InfernoNode,
   render,
   rerender,
 } from 'inferno';

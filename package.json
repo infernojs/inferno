@@ -77,7 +77,7 @@
     "@types/node": "^26.6.2",
     "@typescript-eslint/eslint-plugin": "^8.70.1",
     "@typescript-eslint/parser": "^8.70.1",
-    "babel-plugin-inferno": "6.9.0",
+    "babel-plugin-inferno": "^7.0.0",
     "cli-table": "^0.3.11",
     "concat-stream": "^2.0.0",
     "coveralls-next": "^6.0.2",

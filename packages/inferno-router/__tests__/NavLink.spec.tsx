@@ -1,5 +1,5 @@
 import { createMemoryHistory } from 'history';
-import { Component, InfernoNode, render } from 'inferno';
+import { Component, type InfernoNode, render } from 'inferno';
 import { HashRouter, MemoryRouter, NavLink } from 'inferno-router';
 
 describe('NavLink', () => {

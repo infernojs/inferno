@@ -1,4 +1,4 @@
-import { Component, createFragment, Fragment, InfernoNode } from 'inferno';
+import { Component, createFragment, Fragment, type InfernoNode } from 'inferno';
 import { renderToSnapshot } from 'inferno-test-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
 

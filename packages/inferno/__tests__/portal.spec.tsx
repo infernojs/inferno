@@ -1,7 +1,7 @@
 import {
   Component,
   createPortal,
-  InfernoNode,
+  type InfernoNode,
   render as _render,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';

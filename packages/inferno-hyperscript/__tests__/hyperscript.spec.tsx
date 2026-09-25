@@ -4,7 +4,7 @@ import {
   createRef,
   forwardRef,
   Fragment,
-  RefObject,
+  type RefObject,
   render,
 } from 'inferno';
 

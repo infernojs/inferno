@@ -33,7 +33,7 @@
     "@parcel/transformer-sass": "^2.13.2",
     "@parcel/transformer-typescript-types": "^2.13.2",
     "@types/node": "^22.10.0",
-    "babel-plugin-inferno": "^6.7.2",
+    "babel-plugin-inferno": "7.0.0",
     "cross-env": "^7.0.3",
     "parcel": "^2.13.2",
     "process": "^0.11.10",

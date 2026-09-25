@@ -3,7 +3,7 @@ import {
   Component,
   createTextVNode,
   Fragment,
-  InfernoNode,
+  type InfernoNode,
   type InfernoSingleNode,
   render,
   type VNode,

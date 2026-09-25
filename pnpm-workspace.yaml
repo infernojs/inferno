@@ -61,3 +61,4 @@ minimumReleaseAgeExclude:
   - '@rollup/rollup-win32-x64-gnu@4.63.5'
   - '@rollup/rollup-win32-x64-msvc@4.63.5'
   - rollup@4.63.5
+  - babel-plugin-inferno@7.0.0

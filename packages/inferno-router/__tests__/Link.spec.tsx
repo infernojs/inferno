@@ -1,4 +1,4 @@
-import {Component, InfernoNode, linkEvent, render} from 'inferno';
+import {Component, type InfernoNode, linkEvent, render} from 'inferno';
 import { HashRouter, Link, MemoryRouter } from 'inferno-router';
 import { createMemoryHistory, parsePath } from 'history';
 

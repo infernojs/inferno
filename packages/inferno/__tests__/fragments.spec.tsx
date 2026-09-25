@@ -2,7 +2,7 @@ import {
   Component,
   createFragment,
   createPortal,
-  Fragment, InfernoKeyedNode,
+  Fragment, type InfernoKeyedNode,
   type InfernoNode,
   render,
 } from 'inferno';

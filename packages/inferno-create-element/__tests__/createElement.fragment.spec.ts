@@ -5,7 +5,7 @@ import {
   Fragment,
   render,
   rerender,
-  VNode,
+  type VNode,
 } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
