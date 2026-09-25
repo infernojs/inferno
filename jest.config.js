@@ -44,7 +44,7 @@ export default {
       }
     }],
   },
-  testEnvironment: "jsdom",
+  testEnvironment: "<rootDir>/scripts/test/jsdom-environment.js",
   testRunner: "jest-jasmine2",
   reporters: [["jest-silent-reporter", { "useDots": true }]]
 }

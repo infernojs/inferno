@@ -1638,9 +1638,10 @@ describe('Inferno', () => {
       const decorator = connect(() => {});
       const Decorated = decorator(Container);
 
+      // Container.name instead of "Container": minifiers rename the class
       expect(() => renderToContainer(<Decorated />)).toThrow(
         new Error(
-          'Could not find "store" in either the context or props of "Connect(Container)". Either wrap the root component in a <Provider>, or explicitly pass "store" as a prop to "Connect(Container)".',
+          `Could not find "store" in either the context or props of "Connect(${Container.name})". Either wrap the root component in a <Provider>, or explicitly pass "store" as a prop to "Connect(${Container.name})".`,
         ),
       );
     });

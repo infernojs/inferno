@@ -1,6 +1,5 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { rerender } from '../../inferno-compat/src';
 
 describe('createTree - SVG (JSX)', () => {
   let container;
