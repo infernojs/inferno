@@ -26,7 +26,7 @@ describe('inferno-animation utils', () => {
     dom.innerHTML = '<div><div class="target">content</div></div>';
   }
 
-  it('addClassName', () => {
+  it('addClassName appends a class name and ignores an empty one', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     addClassName(el, 'test');
@@ -34,7 +34,7 @@ describe('inferno-animation utils', () => {
     expect(el.className).toEqual('target test');
   });
 
-  it('removeClassName', () => {
+  it('removeClassName removes a class name and ignores an empty one', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     removeClassName(el, 'target');
@@ -42,13 +42,13 @@ describe('inferno-animation utils', () => {
     expect(el.className).toEqual('');
   });
 
-  it('forceReflow', () => {
+  it('forceReflow returns a defined value', () => {
     renderTemplate(container);
     const res = forceReflow();
     expect(res).not.toBeUndefined();
   });
 
-  it('setDisplay', () => {
+  it('setDisplay sets display and removes it when given undefined', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     setDisplay(el, 'block');
@@ -70,7 +70,7 @@ describe('inferno-animation utils', () => {
     expect(el.style.getPropertyValue('display')).toEqual('');
   });
 
-  it('getDimensions', () => {
+  it('getDimensions returns dimensions for visible and display none elements', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     const res = getDimensions(el);
@@ -81,7 +81,7 @@ describe('inferno-animation utils', () => {
     expect(res2).not.toEqual(undefined);
   });
 
-  it('setDimensions', () => {
+  it('setDimensions sets width and height in px', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     setDimensions(el, 10, 10);
@@ -91,7 +91,7 @@ describe('inferno-animation utils', () => {
     expect(height).toEqual('10px');
   });
 
-  it('clearDimensions', () => {
+  it('clearDimensions removes width and height', () => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
     setDimensions(el, 10, 10);
@@ -102,7 +102,7 @@ describe('inferno-animation utils', () => {
     expect(height).toEqual('');
   });
 
-  it('registerTransitionListener', (done) => {
+  it('registerTransitionListener calls the callback for a div element', (done) => {
     renderTemplate(container);
     const el = document.querySelector('.target') as HTMLElement;
 
@@ -112,7 +112,7 @@ describe('inferno-animation utils', () => {
     });
   });
 
-  it('registerTransitionListener for IMG', (done) => {
+  it('registerTransitionListener calls the callback when an IMG loads', (done) => {
     container.innerHTML = '<div><img class="target" /></div>';
     const el = document.querySelector('.target') as HTMLElement;
 

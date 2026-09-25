@@ -3,7 +3,7 @@ import { type AnyAction, createStore } from 'redux';
 import { render } from 'inferno';
 import { Provider } from 'inferno-redux';
 
-describe('Component typings', () => {
+describe('inferno-redux Provider typings', () => {
   // Basic app state for typing reducer arguments.
   interface AppState {
     posts?: string[];

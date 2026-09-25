@@ -65,60 +65,9 @@ describe('Components 2 (TSX)', () => {
         '<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>',
       );
     });
-
-    it('Should be possible to pass props recursively AT BEGINNING (JSX plugin change required)', () => {
-      interface ListProps {
-        data: Array<{
-          key: string;
-          data: string | Array<{ key: string; data: string }>;
-        }>;
-      }
-      class List extends Component<ListProps> {
-        render() {
-          const children = this.props.data.map((entity) => {
-            const { key, data } = entity;
-            const child = Array.isArray(data) ? (
-              <List data={data} />
-            ) : (
-              <Text data={data as string} />
-            );
-
-            return <li key={key}>{child}</li>;
-          });
-
-          return <ul>{children}</ul>;
-        }
-      }
-
-      interface TextProps {
-        data: string;
-      }
-
-      class Text extends Component<TextProps> {
-        render() {
-          return <span>{this.props.data}</span>;
-        }
-      }
-
-      const data = [
-        { key: '0', data: 'Foo' },
-        {
-          key: '1',
-          data: [
-            { key: '1/1', data: 'a' },
-            { key: '1/2', data: 'b' },
-          ],
-        },
-      ];
-
-      render(<List data={data} />, container);
-      expect(container.innerHTML).toBe(
-        '<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>',
-      );
-    });
   });
 
-  it('Should render (github #117)', (done) => {
+  it('Should not fail when nested components swap children via async setState from componentWillMount (github #117)', (done) => {
     interface MakeXState {
       x: boolean;
     }
@@ -565,7 +514,7 @@ describe('Components 2 (TSX)', () => {
     expect(container.innerHTML).toBe('<div>text<div>div</div></div>');
   });
 
-  it('Should be able to swap between text node and html node #2', (done) => {
+  it('Should be able to swap between empty string and html node', (done) => {
     let updater;
 
     interface BarState {
@@ -683,7 +632,7 @@ describe('Components 2 (TSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should not fail if text node has external change Github#1207', () => {
+    it('Should not fail if text node has external change Github#1207 - JSX', () => {
       shouldUpdate = false;
       render(<Test foo="bar" />, container);
       expect(container.innerHTML).toBe('<div contenteditable="true">bar</div>');
@@ -700,7 +649,7 @@ describe('Components 2 (TSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should not fail if text node has external change Github#1207 (variation - 2)', () => {
+    it('Should not fail if text node has external change and is then patched to empty string Github#1207', () => {
       shouldUpdate = false;
       render(<Test foo="bar" />, container);
       expect(container.innerHTML).toBe('<div contenteditable="true">bar</div>');
@@ -1049,7 +998,7 @@ describe('Components 2 (TSX)', () => {
       render(<Comp1 c="C2" />, container);
       expect(container.innerHTML).toBe('<div class="A" id="B">Hello C2!</div>');
     });
-    it('should patch component with defaultProps #2', () => {
+    it('should replace component with another component that has different defaultProps and back', () => {
       render(<Comp1 c="C" />, container);
       render(<Comp2 c="C1" />, container);
       expect(container.innerHTML).toBe(
@@ -1183,7 +1132,7 @@ describe('Components 2 (TSX)', () => {
     });
   });
 
-  describe('Root handling issues #1', () => {
+  describe('Root handling issues - sCU false class component directly wrapping root-swapping component', () => {
     let div;
 
     interface AState {
@@ -1294,7 +1243,7 @@ describe('Components 2 (TSX)', () => {
     });
   });
 
-  describe('Root handling issues #2', () => {
+  describe('Root handling issues - sCU false class component wrapping function component wrapping root-swapping component', () => {
     let div;
 
     interface AState {
@@ -1409,7 +1358,7 @@ describe('Components 2 (TSX)', () => {
     });
   });
 
-  describe('Root handling issues #3', () => {
+  describe('Root handling issues - function components with onComponentShouldUpdate false wrapping root-swapping component', () => {
     let div;
 
     interface AState {
@@ -1524,7 +1473,7 @@ describe('Components 2 (TSX)', () => {
     });
   });
 
-  describe('Root handling issues #4', () => {
+  describe('Root handling issues - sCU false component rendering children, same keyed array in two parents', () => {
     interface AState {
       n: boolean;
     }
@@ -1618,7 +1567,7 @@ describe('Components 2 (TSX)', () => {
     });
   });
 
-  describe('Root handling issues #5', () => {
+  describe('Root handling issues - sCU false component returning hoisted vnode, same frozen keyed array in two parents', () => {
     interface AState {
       n: boolean;
     }
@@ -1710,7 +1659,7 @@ describe('Components 2 (TSX)', () => {
     });
   });
 
-  describe('Root handling issues #6', () => {
+  describe('Root handling issues - keyed sCU false component whose key changes', () => {
     let i;
 
     beforeEach(function () {
@@ -1764,7 +1713,7 @@ describe('Components 2 (TSX)', () => {
     });
   });
 
-  describe('Cloned children issues #1', () => {
+  describe('Cloned children issues - same keyed vnodes reused in two parents', () => {
     interface TestState {
       reverse: boolean;
     }
@@ -1800,7 +1749,7 @@ describe('Components 2 (TSX)', () => {
     }
 
     // this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
-    it('should correct swap rows', () => {
+    it('should render and swap rows without errors', () => {
       render(<Test />, container);
       expect(container.innerHTML).toEqual(
         '<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>',
@@ -1809,7 +1758,7 @@ describe('Components 2 (TSX)', () => {
       container.querySelector('button').click();
     });
   });
-  describe('Cloned children issues #2', () => {
+  describe('Cloned children issues - same keyed children array rendered in two parents', () => {
     interface TestState {
       reverse: boolean;
     }
@@ -1847,7 +1796,7 @@ describe('Components 2 (TSX)', () => {
     }
 
     // this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
-    it('should correct swap rows', () => {
+    it('should render and swap rows without errors', () => {
       render(<Test />, container);
       expect(container.innerHTML).toEqual(
         '<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>',

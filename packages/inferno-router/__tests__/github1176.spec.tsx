@@ -3,7 +3,7 @@ import { Link, Route, Router, Switch } from 'inferno-router';
 import { triggerEvent } from 'inferno-utils';
 import { createMemoryHistory } from 'history';
 
-describe('Github1176', () => {
+describe('Router navigation to a component with delayed setState, Github #1176', () => {
   let container;
   const browserHistory = createMemoryHistory();
 
@@ -18,7 +18,7 @@ describe('Github1176', () => {
     document.body.removeChild(container);
   });
 
-  it('Should not crash', (done) => {
+  it('Should render the next route after its delayed setState and unmount on render(null)', (done) => {
     const Loader = () => <div className="loader">Loader...</div>;
 
     class Component1 extends Component<any, any> {

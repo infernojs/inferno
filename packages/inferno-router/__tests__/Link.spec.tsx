@@ -53,7 +53,7 @@ describe('Link (jsx)', () => {
   });
 });
 
-describe('A <Link> underneath a <HashRouter>', () => {
+describe('A <Link> underneath a <HashRouter> or <MemoryRouter>', () => {
   let node;
   beforeEach(function () {
     node = document.createElement('div');
@@ -76,12 +76,12 @@ describe('A <Link> underneath a <HashRouter>', () => {
     return node.querySelector('a');
   };
 
-  it('has the correct href', () => {
+  it('has a # prefixed href in a <HashRouter> for a `to` path with a leading slash', () => {
     const linkNode = createLinkNode('/foo');
     expect(linkNode.getAttribute('href')).toEqual('#/foo');
   });
 
-  it('has the correct href #2', () => {
+  it('has a # prefixed href in a <HashRouter> for a `to` path without a leading slash', () => {
     const linkNode = createLinkNode('foo');
     expect(linkNode.getAttribute('href')).toEqual('#foo');
   });
@@ -120,7 +120,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
     expect(a.getAttribute('href')).toEqual('/the/path?the=query#the-hash');
   });
 
-  it('accepts an object `to` prop with state', () => {
+  it('accepts an object `to` prop with state and calls a linkEvent onClick with its data', () => {
     const memoryHistoryFoo = createMemoryHistory({
       initialEntries: ['/foo'],
     });
@@ -182,7 +182,7 @@ describe('A <Link> underneath a <HashRouter>', () => {
     );
   });
 
-  it('accepts an object `to` prop with state', () => {
+  it('accepts an object `to` prop with state and calls a function onClick', () => {
     const memoryHistoryFoo = createMemoryHistory({
       initialEntries: ['/foo'],
     });

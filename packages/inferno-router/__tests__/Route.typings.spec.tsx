@@ -3,7 +3,7 @@ import { Route, Router } from 'inferno-router';
 import { createMemoryHistory } from 'history';
 import { type IRouteProps } from '../src/Route';
 
-describe('<Route component>', () => {
+describe('<Route component> typings', () => {
   const history = createMemoryHistory();
   const node = document.createElement('div');
 
@@ -32,7 +32,7 @@ describe('<Route component>', () => {
     expect(typeof actual.location).toBe('object');
   });
 
-  it('type check props class component', () => {
+  it('type checks a class component passed as the component prop', () => {
     class ComponentA extends Component<any, any> {
       public render() {
         return 'foo';
@@ -47,7 +47,7 @@ describe('<Route component>', () => {
     );
   });
 
-  it('type check props render method', () => {
+  it('type checks a render prop that renders IRouteProps.component', () => {
     class ComponentA extends Component<any, any> {
       public render() {
         return 'foo';

@@ -163,7 +163,7 @@ describe('NavLink', () => {
     });
   });
 
-  it('applies its className when provided as a function', () => {
+  it('applies the active result of a className function when active', () => {
     render(
       <MemoryRouter initialEntries={['/pizza']}>
         <NavLink
@@ -182,7 +182,7 @@ describe('NavLink', () => {
     expect(a.className).toContain('active-pizza');
   });
 
-  it('applies its style when provided as a function', () => {
+  it('applies the active result of a style function when active', () => {
     const defaultStyle = { color: 'black' };
     const activeStyle = { color: 'red' };
 
@@ -202,7 +202,7 @@ describe('NavLink', () => {
     expect(a.style.color).toBe(activeStyle.color);
   });
 
-  it('applies its className when provided as a function #2', () => {
+  it('applies the inactive result of a className function when not active', () => {
     render(
       <MemoryRouter initialEntries={['/pizza']}>
         <NavLink
@@ -219,7 +219,7 @@ describe('NavLink', () => {
     expect(a.className).toContain('chill-salad');
   });
 
-  it('applies its style when provided as a function', () => {
+  it('applies the inactive result of a style function when not active', () => {
     const defaultStyle = { color: 'black' };
     const activeStyle = { color: 'red' };
 
@@ -432,7 +432,7 @@ describe('NavLink', () => {
     });
   });
 
-  describe('A <NavLink> underneath a <HashRouter>', () => {
+  describe('A <NavLink> underneath a <HashRouter> or <MemoryRouter>', () => {
     let tmpNode;
     beforeEach(function () {
       tmpNode = document.createElement('div');
@@ -455,12 +455,12 @@ describe('NavLink', () => {
       return tmpNode.querySelector('a');
     };
 
-    it('has the correct href', () => {
+    it('has a # prefixed href in a <HashRouter> for a `to` path with a leading slash', () => {
       const linkNode = createLinkNode('/foo');
       expect(linkNode.getAttribute('href')).toEqual('#/foo');
     });
 
-    it('has the correct href #2', () => {
+    it('has a # prefixed href in a <HashRouter> for a `to` path without a leading slash', () => {
       const linkNode = createLinkNode('foo');
       expect(linkNode.getAttribute('href')).toEqual('#foo');
     });

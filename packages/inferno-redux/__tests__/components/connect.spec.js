@@ -4,7 +4,7 @@ import { findRenderedVNodeWithType, Wrapper } from 'inferno-test-utils';
 import { createStore } from 'redux';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-describe('Inferno', () => {
+describe('inferno-redux connect', () => {
   // IE does not support function names so error messages are different
   const testFunction = function testFunction() {};
   const supportFnName = testFunction.name === 'testFunction';

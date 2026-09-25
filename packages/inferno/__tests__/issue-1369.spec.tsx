@@ -14,7 +14,7 @@ describe('static tree as child nodes', () => {
     document.body.removeChild(container);
   });
 
-  it('Should patch whole tree even when static - Github #1369', () => {
+  it('Should re-render a statically nested child component on every parent forceUpdate - Github #1369', () => {
     let renderCounter = 0;
 
     class Form extends Component {
@@ -84,7 +84,7 @@ describe('static tree as child nodes', () => {
     expect(renderCounter).toBe(5);
   });
 
-  it('Should patch whole tree even when static - Github #1369 - 2', () => {
+  it('Should mount and update each use of a reused hoisted vNode as its own component - Github #1369', () => {
     let renderCounter = 0;
 
     class Form extends Component {

@@ -11,7 +11,7 @@ import {
 } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-describe('top level context', () => {
+describe('TypeScript typing of render(), JSX props and ChildFlags', () => {
   let container;
 
   beforeEach(function () {
@@ -69,7 +69,7 @@ describe('top level context', () => {
         render(<MyComponent />, container);
       });
 
-      it('Should ComponentType to be used as parameter for createComponentVNode', () => {
+      it('Should allow ComponentType to be used as parameter for createComponentVNode', () => {
         interface TestCompProps {
           foo: number;
           children?: InfernoNode;
@@ -215,13 +215,13 @@ describe('top level context', () => {
       render(<div onClick={linkEvent(myObj, myFunction)} />, container);
     });
 
-    it('styles object', function () {
+    it('Should allow style as an object with dash-case keys', function () {
       const getColor = () => 'red';
 
       render(<div style={{ 'background-color': getColor() }} />, container);
     });
 
-    it('styles as string', function () {
+    it('Should allow style as a string', function () {
       render(<div style="background-color: red" />, container);
     });
   });

@@ -43,7 +43,7 @@ describe('SSR -> Hydrate - Forward Ref', () => {
   }
 
   for (const method of [renderToString, streamAsString, streamQueueAsString]) {
-    it('Should be possible to forward createRef', (done) => {
+    it(`Should be possible to forward createRef with ${method.name}`, (done) => {
       const FancyButton = forwardRef((props, ref) => (
         <button ref={ref} className="FancyButton">
           {props.children}
@@ -94,7 +94,7 @@ describe('SSR -> Hydrate - Forward Ref', () => {
       });
     });
 
-    it('Should be possible to forward callback ref', (done) => {
+    it(`Should be possible to forward callback ref with ${method.name}`, (done) => {
       const FancyButton = forwardRef((props, ref) => (
         <button ref={ref} className="FancyButton">
           {props.children}
@@ -140,7 +140,7 @@ describe('SSR -> Hydrate - Forward Ref', () => {
       });
     });
 
-    it('Should be possible to patch forwardRef component', () => {
+    it(`Should be possible to patch forwardRef component with ${method.name}`, () => {
       const FancyButton = forwardRef((props, ref) => {
         return (
           <button ref={ref} className="FancyButton">

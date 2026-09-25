@@ -1,6 +1,6 @@
 import { render } from 'inferno';
 
-describe('createTree - SVG (JSX)', () => {
+describe('createTree - SVG xlink namespaced attributes (JSX)', () => {
   let container;
 
   beforeEach(function () {

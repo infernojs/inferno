@@ -202,7 +202,7 @@ describe('setState', () => {
 
   // Should work as Per react: https://jsfiddle.net/f12u8xzb/
   // React does not get stuck
-  it('Should not get stuck in infinite loop #1', () => {
+  it('Should not get stuck in infinite loop when child componentWillUpdate calls parent setState', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -277,7 +277,7 @@ describe('setState', () => {
 
   // Render should work as per React
   // https://jsfiddle.net/qb4ootgm/
-  it('Should not fail during rendering', () => {
+  it('Should not fail when children call setState and parent setState in componentWillReceiveProps', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -354,7 +354,7 @@ describe('setState', () => {
   });
 
   // https://jsfiddle.net/c6q9bvez/
-  it('Should not fail during rendering #2', () => {
+  it('Should not fail when a function child onComponentWillMount hook calls parent setState', () => {
     let doSomething;
 
     class Parent extends Component<any, any> {
@@ -586,158 +586,6 @@ describe('setState', () => {
     expect(container.firstChild.firstChild.innerHTML).toBe('4');
     expect(spy.calls.count()).toBe(5);
     expect(renderCount).toBe(1);
-  });
-
-  // Should work as Per react: https://jsfiddle.net/f12u8xzb/
-  // React does not get stuck
-  it('Should not get stuck in infinite loop #1 sync', () => {
-    let doSomething;
-
-    class Parent extends Component<any, any> {
-      public state = {
-        active: false,
-        foo: 'b',
-      };
-
-      constructor(props, context) {
-        super(props, context);
-
-        this._setBar = this._setBar.bind(this);
-        doSomething = this._setActive = this._setActive.bind(this);
-      }
-
-      private _setBar() {
-        this.setState({
-          foo: 'bar',
-        });
-      }
-
-      private _setActive() {
-        this.setState({
-          active: true,
-        });
-      }
-
-      public render() {
-        return (
-          <div>
-            <div>{this.state.foo}</div>
-            {this.state.active ? (
-              <Child foo={this.state.foo} callback={this._setBar} />
-            ) : (
-              <Child foo={this.state.foo} callback={this._setActive} />
-            )}
-          </div>
-        );
-      }
-    }
-
-    class Child extends Component<{ foo: string; callback: () => void }> {
-      constructor(props, context) {
-        super(props, context);
-      }
-
-      public componentWillUpdate(nextProps) {
-        if (nextProps.foo !== 'bar') {
-          this.props.callback();
-        }
-      }
-
-      public render() {
-        return (
-          <div>
-            <div>{this.props.foo}</div>
-          </div>
-        );
-      }
-    }
-
-    render(<Parent />, container);
-    doSomething();
-    expect(container.innerHTML).toBe(
-      '<div><div>b</div><div><div>b</div></div></div>',
-    );
-    rerender();
-    expect(container.innerHTML).toBe(
-      '<div><div>bar</div><div><div>bar</div></div></div>',
-    );
-  });
-
-  // Render should work as per React
-  // https://jsfiddle.net/qb4ootgm/
-  it('Should not fail during rendering sync', () => {
-    let doSomething;
-
-    class Parent extends Component<any, any> {
-      public state = {
-        active: false,
-        foo: 'b',
-      };
-
-      constructor(props, context) {
-        super(props, context);
-
-        this._setBar = this._setBar.bind(this);
-        doSomething = this._setActive = this._setActive.bind(this);
-      }
-
-      private _setBar() {
-        this.setState({
-          foo: 'bar',
-        });
-      }
-
-      private _setActive() {
-        this.setState({
-          active: true,
-        });
-      }
-
-      public render() {
-        return (
-          <div>
-            <div>{this.state.foo}</div>
-            <Child foo={this.state.foo} callback={this._setBar} />
-            <Child foo={this.state.foo} callback={this._setBar} />
-            <Child foo={this.state.foo} callback={this._setBar} />
-          </div>
-        );
-      }
-    }
-
-    class Child extends Component<{ foo: string; callback: () => void }> {
-      constructor(props, context) {
-        super(props, context);
-      }
-
-      public componentWillReceiveProps(nextProps) {
-        if (nextProps.foo !== 'bar') {
-          this.setState({
-            foo: 'bbaarr',
-          });
-
-          this.props.callback();
-        }
-      }
-
-      public render() {
-        return (
-          <div>
-            <div>{this.props.foo}</div>
-          </div>
-        );
-      }
-    }
-
-    render(<Parent />, container);
-    doSomething();
-    expect(container.innerHTML).toBe(
-      '<div><div>b</div><div><div>b</div></div><div><div>b</div></div><div><div>b</div></div></div>',
-    );
-    rerender();
-    expect(container.innerHTML).toBe(
-      '<div><div>bar</div><div><div>bar</div></div><div><div>bar</div></div><div><div>bar</div></div></div>',
-    );
   });
 
   it('Should be possible to update state in componentWillUpdate', () => {
@@ -1099,7 +947,7 @@ describe('setState', () => {
     );
   });
 
-  it('Should update setState callback argument - Github #1420', () => {
+  it('Should pass the latest prevState to each queued setState updater function - Github #1420', () => {
     let renderCounter = 0;
 
     interface TextState {

@@ -59,7 +59,7 @@ describe('FormElements', () => {
       expect(input.value).toBe('1');
     });
 
-    it('Controlled - oninput - Should have updated props in onInput callbacks', () => {
+    it('Controlled - onInput - Should have updated props in onInput callbacks (jasmine spy callback)', () => {
       interface ExampleProps {
         value: number;
         callback: (value: number) => void;
@@ -102,7 +102,7 @@ describe('FormElements', () => {
       expect(spy.calls.argsFor(1)[0]).toBe(2); // Verify props have changed
     });
 
-    it('Controlled - onInput - Should have updated props in onInput callbacks', () => {
+    it('Controlled - onInput - Should have updated props in onInput callbacks (plain function callback)', () => {
       interface ExampleProps {
         value: number;
         callback: (value: number) => void;
@@ -371,17 +371,17 @@ describe('FormElements', () => {
       }
     }
 
-    it('Should set checked on render', () => {
+    it('Should set checked on render when checked is true', () => {
       render(<CheckBox checked={true} />, container);
       expect(container.querySelector('input').checked).toBe(true);
     });
 
-    it('Should set checked on render #2', () => {
+    it('Should render unchecked when checked is false', () => {
       render(<CheckBox checked={false} />, container);
       expect(container.querySelector('input').checked).toBe(false);
     });
 
-    it('Should set checked on render #3', () => {
+    it('Should render unchecked when checked prop is omitted', () => {
       render(<CheckBox />, container);
       expect(container.querySelector('input').checked).toBe(false);
     });
@@ -396,7 +396,7 @@ describe('FormElements', () => {
       expect(input.checked).toBe(true);
     });
 
-    it('Should override changed value on next render even when value is same as on prev render', () => {
+    it('Should override user checking the box on next render when checked stays false', () => {
       render(<CheckBox checked={false} />, container);
       let input = container.querySelector('input');
       expect(input.checked).toBe(false);
@@ -407,7 +407,7 @@ describe('FormElements', () => {
       expect(input.checked).toBe(false);
     });
 
-    it('Should override changed value on next render even when value is same as on prev render #1', () => {
+    it('Should override user unchecking the box on next render when checked stays true', () => {
       render(<CheckBox checked={true} />, container);
       let input = container.querySelector('input');
       expect(input.checked).toBe(true);
@@ -804,7 +804,7 @@ describe('FormElements', () => {
         expect(input.checked).toBe(true);
       });
 
-      it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state)', () => {
+      it('Clicking a checked checkbox should show it unchecked in callback, then revert it unless state changes', () => {
         let changeToValue = true;
 
         interface ComponentTestState {
@@ -858,7 +858,7 @@ describe('FormElements', () => {
       });
 
       /* Same test as above, but in opposite order */
-      it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state) #2', () => {
+      it('Clicking an unchecked checkbox should show it checked in callback, then revert it unless state changes', () => {
         let changeToValue = false;
 
         interface ComponentTestState {

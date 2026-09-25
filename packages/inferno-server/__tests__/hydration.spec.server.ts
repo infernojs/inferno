@@ -13,7 +13,7 @@ describe('SSR Hydration - (non-JSX)', () => {
   const expect1 = '<div><span>Hello world</span></div>';
   const expect2 = '<div><span>Hello world</span></div>';
 
-  it('Validate various structures', () => {
+  it('Should hydrate and re-render a createElement div with a span child', () => {
     const html = renderToString(node);
     const container = createContainerWithHTML(html);
 

@@ -1,7 +1,7 @@
 import { render } from 'inferno';
 import { Link, MemoryRouter, NavLink, Route } from 'inferno-router';
 
-describe('Github #1322', () => {
+describe('Route and NavLink updates on navigation, Github #1322', () => {
   let container;
 
   beforeEach(function () {

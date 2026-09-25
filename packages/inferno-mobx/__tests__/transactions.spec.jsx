@@ -16,7 +16,7 @@ describe('Mobx Transacations', () => {
     document.body.removeChild(container);
   });
 
-  it('mobx issue 50', () => {
+  it('observer reacts once with consistent computed values after a transaction, mobx issue 50', () => {
     const foo = {
       a: observable.box(true),
       b: observable.box(false),

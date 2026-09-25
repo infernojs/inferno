@@ -10,7 +10,7 @@ import {
 import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
 
-describe('CreateElement (non-JSX)', () => {
+describe('CreateElement (non-JSX) Fragment and createFragment', () => {
   let container;
 
   beforeEach(function () {
@@ -358,7 +358,7 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should be possible to move component with fragment root #2', () => {
+    it('Should be possible to move multiple keyed components with fragment root between fragments', () => {
       const fragmentA = createFragment(
         [
           createElement('div', { id: 'a1' }, 'A1'),
@@ -951,7 +951,7 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should mount Fragment with invalid children #2', () => {
+    it('Should mount Fragment with null, undefined and a component rendering null as children', () => {
       function Foobar() {
         return null;
       }
@@ -974,7 +974,7 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should mount Fragment with invalid children #2', () => {
+    it('Should patch component child from null to element inside Fragment with null and undefined siblings', () => {
       let add = false;
 
       function Foobar() {
@@ -1013,7 +1013,7 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('<div>Ok</div>');
     });
 
-    it('Should be possible to update from 0 to 1', () => {
+    it('Should be possible to update nested Fragment children from null to a component', () => {
       function Foobar() {
         return createElement('div', null, 'Ok');
       }
@@ -1051,7 +1051,7 @@ describe('CreateElement (non-JSX)', () => {
       );
     });
 
-    it('Should be possible to update from 0 to 1 fragment -> fragment', () => {
+    it('Should be possible to update nested Fragment children from empty array to a Fragment wrapping a component', () => {
       function Foobar() {
         return createElement('div', null, 'Ok');
       }
@@ -1089,7 +1089,7 @@ describe('CreateElement (non-JSX)', () => {
       );
     });
 
-    it('Should be possible to mount and patch single component fragment children', () => {
+    it('Should be possible to patch empty Fragment to single component child, then to element and component children', () => {
       let counter = 0;
 
       const Foobar = class Foobar extends Component {
@@ -1129,7 +1129,7 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should be possible to mount and patch single component fragment children - variation 2', () => {
+    it('Should patch Fragment children array from empty to 1, 3 and 0 components, then to element and component', () => {
       let counter = 0;
 
       const Foobar = class Foobar extends Component {
@@ -1241,7 +1241,7 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should be possible to mount and patch single component fragment children', () => {
+    it('Should be possible to patch Fragment with single component child to itself, then to element and component children', () => {
       const Foobar = class Foobar extends Component {
         render() {
           return null;
@@ -1277,7 +1277,7 @@ describe('CreateElement (non-JSX)', () => {
       expect(container.innerHTML).toBe('');
     });
 
-    it('Should be possible to mount and patch single component fragment children #2', () => {
+    it('Should be possible to patch Fragment with null child to single component child, then to element and component', () => {
       const Foobar = class Foobar extends Component {
         render() {
           return null;

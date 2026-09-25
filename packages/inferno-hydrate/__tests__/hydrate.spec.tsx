@@ -14,7 +14,7 @@ import { triggerEvent } from 'inferno-utils';
 import { ChildFlags } from 'inferno-vnode-flags';
 import { createElement } from 'inferno-create-element';
 
-describe('rendering routine', () => {
+describe('Hydrate - rendering routine', () => {
   let container;
 
   beforeEach(function () {
@@ -502,7 +502,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to move component with fragment root #2', () => {
+      it('Should be possible to move multiple keyed components with fragment root between fragments', () => {
         const fragmentA = createFragment(
           [<div id="a1">A1</div>, <div>A2</div>],
           ChildFlags.HasNonKeyedChildren,
@@ -1018,7 +1018,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should mount Fragment with invalid children #2', () => {
+      it('Should mount Fragment with invalid children and a component returning null', () => {
         function Foobar() {
           return null;
         }
@@ -1039,7 +1039,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should mount Fragment with invalid children #2', () => {
+      it('Should patch component inside Fragment with invalid children from null to an element', () => {
         let add = false;
 
         function Foobar() {
@@ -1074,7 +1074,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('<div>Ok</div>');
       });
 
-      it('Should be possible to update from 0 to 1', () => {
+      it('Should be possible to update nested fragment from a null child to a component child', () => {
         function Foobar() {
           return <div>Ok</div>;
         }
@@ -1108,7 +1108,7 @@ describe('rendering routine', () => {
         );
       });
 
-      it('Should be possible to update from 0 to 1 fragment -> fragment', () => {
+      it('Should be possible to update nested fragment from no children to a fragment wrapping a component', () => {
         function Foobar() {
           return <div>Ok</div>;
         }
@@ -1146,7 +1146,7 @@ describe('rendering routine', () => {
         );
       });
 
-      it('Should be possible to mount and patch single component fragment children', () => {
+      it('Should be possible to mount and patch single component fragment child after hydrating an empty fragment', () => {
         let counter = 0;
 
         class Foobar extends Component {
@@ -1188,7 +1188,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to mount and patch single component fragment children - variation 2', () => {
+      it('Should be possible to patch fragment children array from empty to one, three and zero components', () => {
         let counter = 0;
 
         class Foobar extends Component {
@@ -1296,7 +1296,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to mount and patch single component fragment children', () => {
+      it('Should be possible to patch single component fragment child after hydrating the same component', () => {
         class Foobar extends Component {
           render() {
             return null;
@@ -1334,7 +1334,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to mount and patch single component fragment children', () => {
+      it('Should be possible to mount and patch single component fragment child after hydrating a null child', () => {
         class Foobar extends Component {
           render() {
             return null;
@@ -1415,7 +1415,7 @@ describe('rendering routine', () => {
     });
   });
 
-  it('Should not re-mount after hydrate render render, Github #1426', () => {
+  it('Should keep hydrated DOM nodes when rendering the same vtree and then an equal new vtree, Github #1426', () => {
     container.innerHTML = '<div><span>do not replace me</span></div>';
 
     const span = container.firstChild.firstChild;

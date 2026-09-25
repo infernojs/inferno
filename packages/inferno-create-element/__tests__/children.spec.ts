@@ -32,22 +32,22 @@ describe('Children - (non-JSX)', () => {
       expected: ' ',
     },
     {
-      name: 'whitespace to left',
+      name: 'text with trailing whitespace',
       value: 'a ',
       expected: 'a ',
     },
     {
-      name: 'whitespace to right',
+      name: 'text with leading whitespace',
       value: ' a',
       expected: ' a',
     },
     {
-      name: 'should set children as empty string',
+      name: 'empty string',
       value: '',
       expected: '',
     },
     {
-      name: 'should create a div with text, children property',
+      name: 'plain text',
       value: 'string',
       expected: 'string',
     },
@@ -132,7 +132,7 @@ describe('Children - (non-JSX)', () => {
       expected: '13',
     },
     {
-      name: 'dobule undefined in an array',
+      name: 'double undefined in an array',
       value: [1, undefined, undefined],
       expected: '1',
     },
@@ -157,7 +157,7 @@ describe('Children - (non-JSX)', () => {
       expected: '',
     },
     {
-      name: 'single null in an array',
+      name: 'string "{}" in an array',
       value: ['{}'],
       expected: '{}',
     },
@@ -177,7 +177,7 @@ describe('Children - (non-JSX)', () => {
       expected: '123',
     },
     {
-      name: 'mix of null, undefined and a number in an array',
+      name: 'mix of null, undefined, a number and whitespace in an array',
       value: [null, undefined, 123, ' ', undefined, null, undefined],
       expected: '123 ',
     },
@@ -187,37 +187,32 @@ describe('Children - (non-JSX)', () => {
       expected: '12',
     },
     {
-      name: 'dobule empty string in an array',
+      name: 'double empty string in an array',
       value: [1, '', ''],
       expected: '1',
     },
     {
-      name: 'triple empty string in an array',
-      value: ['', '', ''],
-      expected: '',
-    },
-    {
-      name: 'cast to string value, + single number in an array',
+      name: 'numeric string followed by two numbers in an array',
       value: ['1', 2, 3],
       expected: '123',
     },
     {
-      name: 'cast to strng value, + single number + a letter in an array',
+      name: 'numeric string, number and a letter in an array',
       value: ['1', 2, 'a'],
       expected: '12a',
     },
     {
-      name: 'cast to strng value, + single number + a letter in an array',
+      name: 'numeric string, null and a letter in an array',
       value: ['1', null, 'a'],
       expected: '1a',
     },
     {
-      name: 'cast to strng value, + single number + a letter in an array',
+      name: 'undefined, null and a letter in an array',
       value: [undefined, null, 'a'],
       expected: 'a',
     },
     {
-      name: 'cast to strng value, + single number + a letter in an array',
+      name: 'number surrounded by undefined and null in an array',
       value: [undefined, null, 123, undefined, null],
       expected: '123',
     },
@@ -281,7 +276,7 @@ describe('Children - (non-JSX)', () => {
   for (const arg of preDefined) {
     const template = (child?) => createElement('div', null, child);
 
-    it('should set dynamic children as ' + arg.name, () => {
+    it(`should set dynamic children as ${arg.name}, clear and set them again`, () => {
       render(template(arg.value), container);
       expect(container.firstChild.nodeType).toBe(1);
       expect(container.firstChild.textContent).toBe(arg.expected);
@@ -296,7 +291,7 @@ describe('Children - (non-JSX)', () => {
       expect(container.firstChild.textContent).toBe(arg.expected);
     });
 
-    it('should set dynamic children as ' + arg.name, () => {
+    it(`should set dynamic children as ${arg.name} after rendering no children`, () => {
       render(template(), container);
       expect(container.firstChild.nodeType).toBe(1);
       expect(container.firstChild.textContent).toBe('');
@@ -305,7 +300,7 @@ describe('Children - (non-JSX)', () => {
       expect(container.firstChild.textContent).toBe(arg.expected);
     });
 
-    it('should set dynamic children as ' + arg.name, () => {
+    it(`should set dynamic children as ${arg.name} after rendering null children`, () => {
       render(template(null), container);
       expect(container.firstChild.nodeType).toBe(1);
       expect(container.firstChild.textContent).toBe('');
@@ -314,33 +309,37 @@ describe('Children - (non-JSX)', () => {
       expect(container.firstChild.textContent).toBe(arg.expected);
     });
 
-    it('should set dynamic children as ' + arg.name, () => {
+    it(`should set dynamic children as ${arg.name} and clear them with null`, () => {
       render(template(arg.value), container);
       expect(container.firstChild.nodeType).toBe(1);
       expect(container.firstChild.textContent).toBe(arg.expected);
-      render(template(null), container);
-      expect(container.firstChild.nodeType).toBe(1);
-      expect(container.firstChild.textContent).toBe('');
-    });
-
-    it('should set dynamic children as ' + arg.name, () => {
-      render(template(), container);
-      expect(container.firstChild.nodeType).toBe(1);
-      expect(container.firstChild.textContent).toBe('');
-      render(template(undefined), container);
-      expect(container.firstChild.nodeType).toBe(1);
-      expect(container.firstChild.textContent).toBe('');
-    });
-
-    it('should set dynamic children as ' + arg.name, () => {
-      render(template(null), container);
-      expect(container.firstChild.nodeType).toBe(1);
-      expect(container.firstChild.textContent).toBe('');
       render(template(null), container);
       expect(container.firstChild.nodeType).toBe(1);
       expect(container.firstChild.textContent).toBe('');
     });
   }
+
+  it('should keep dynamic children empty when patching no children to undefined', () => {
+    const template = (child?) => createElement('div', null, child);
+
+    render(template(), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+    render(template(undefined), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+  });
+
+  it('should keep dynamic children empty when rendering null children twice', () => {
+    const template = (child?) => createElement('div', null, child);
+
+    render(template(null), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+    render(template(null), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+  });
 
   for (const arg of preDefined) {
     const template = (child?) =>

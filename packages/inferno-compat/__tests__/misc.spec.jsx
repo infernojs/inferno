@@ -68,7 +68,7 @@ describe('MISC', () => {
       expect(Children.only(children)).toBe(divOne);
     });
 
-    it('Should two if children length is not one', () => {
+    it('Should throw if children length is not one', () => {
       const divOne = <div />;
       const children = [divOne, 'two', 3];
 
@@ -231,7 +231,7 @@ describe('MISC', () => {
       }
     }
 
-    it('should export instance', () => {
+    it('should return the rendered instance', () => {
       class App extends Component {
         render() {
           return null;
@@ -255,7 +255,7 @@ describe('MISC', () => {
       expect(typeof app.inner.getNode === 'function').toEqual(true);
     });
 
-    it('should there must be a context in callback', () => {
+    it('should call the callback with the rendered instance as this', () => {
       class App extends Component {
         render() {
           return null;

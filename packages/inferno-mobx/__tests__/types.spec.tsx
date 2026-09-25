@@ -2,7 +2,7 @@ import { Component, FormEvent, render } from 'inferno';
 import { Provider } from 'inferno-mobx';
 import { observable } from 'mobx';
 
-describe('top level context', () => {
+describe('inferno-mobx typings', () => {
   let container;
 
   beforeEach(function () {
