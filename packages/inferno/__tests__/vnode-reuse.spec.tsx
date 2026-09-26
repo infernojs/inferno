@@ -26,6 +26,197 @@ describe('vNode reuse', () => {
   });
 
   describe('the same vNode in two places', () => {
+    // After rendering "shared" in two places, updating both places must update both DOM nodes
+    function addSharedToSecondParagraph(initial) {
+      const shared = <b>x</b>;
+
+      render(
+        <div>
+          <p>{shared}</p>
+          {initial}
+        </div>,
+        container,
+      );
+      render(
+        <div>
+          <p>{shared}</p>
+          {<p>{shared}</p>}
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe(
+        '<div><p><b>x</b></p><p><b>x</b></p></div>',
+      );
+
+      render(
+        <div>
+          <p>{<b>a</b>}</p>
+          {<p>{<b>b</b>}</p>}
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe(
+        '<div><p><b>a</b></p><p><b>b</b></p></div>',
+      );
+    }
+
+    it('Should render the same child in two elements', () => {
+      addSharedToSecondParagraph(<p>{<b>y</b>}</p>);
+    });
+
+    it('Should add the same child to an element that had no children', () => {
+      addSharedToSecondParagraph(<p></p>);
+    });
+
+    it('Should add the same child to an element that had text', () => {
+      addSharedToSecondParagraph(<p>text</p>);
+    });
+
+    it('Should add the same child to an element that had multiple children', () => {
+      addSharedToSecondParagraph(
+        <p>
+          <i>1</i>
+          <i>2</i>
+        </p>,
+      );
+    });
+
+    it('Should keep rendering the same child in two elements', () => {
+      const shared = <b>x</b>;
+
+      for (let i = 0; i < 3; ++i) {
+        render(
+          <div>
+            <p>{shared}</p>
+            <p>{shared}</p>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><p><b>x</b></p><p><b>x</b></p></div>',
+        );
+      }
+
+      render(
+        <div>
+          <p>{<b>a</b>}</p>
+          <p>{<b>b</b>}</p>
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe(
+        '<div><p><b>a</b></p><p><b>b</b></p></div>',
+      );
+    });
+
+    it('Should render the same child in an element and a Fragment', () => {
+      const shared = <b>x</b>;
+
+      render(
+        <div>
+          <p>{shared}</p>
+          <Fragment>{shared}</Fragment>
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>x</b></p><b>x</b></div>');
+
+      render(
+        <div>
+          <p>{<b>a</b>}</p>
+          <Fragment>{<b>b</b>}</Fragment>
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>a</b></p><b>b</b></div>');
+    });
+
+    it('Should update a Fragment to the same child as an element', () => {
+      const shared = <b>x</b>;
+
+      render(
+        <div>
+          <p>{<b>1</b>}</p>
+          <Fragment>{<b>2</b>}</Fragment>
+        </div>,
+        container,
+      );
+      render(
+        <div>
+          <p>{shared}</p>
+          <Fragment>{shared}</Fragment>
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>x</b></p><b>x</b></div>');
+
+      render(
+        <div>
+          <p>{<b>a</b>}</p>
+          <Fragment>{<b>b</b>}</Fragment>
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>a</b></p><b>b</b></div>');
+    });
+
+    it('Should render the same child in an element and a Portal', () => {
+      const portalContainer = document.createElement('div');
+      const shared = <b>x</b>;
+
+      render(
+        <div>
+          <p>{shared}</p>
+          {createPortal(shared, portalContainer)}
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>x</b></p></div>');
+      expect(portalContainer.innerHTML).toBe('<b>x</b>');
+
+      render(
+        <div>
+          <p>{<b>a</b>}</p>
+          {createPortal(<b>b</b>, portalContainer)}
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>a</b></p></div>');
+      expect(portalContainer.innerHTML).toBe('<b>b</b>');
+    });
+
+    it('Should update a Portal to the same child as an element', () => {
+      const portalContainer = document.createElement('div');
+      const shared = <b>x</b>;
+
+      render(
+        <div>
+          <p>{<b>1</b>}</p>
+          {createPortal(<b>2</b>, portalContainer)}
+        </div>,
+        container,
+      );
+      render(
+        <div>
+          <p>{shared}</p>
+          {createPortal(shared, portalContainer)}
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>x</b></p></div>');
+      expect(portalContainer.innerHTML).toBe('<b>x</b>');
+
+      render(
+        <div>
+          <p>{<b>a</b>}</p>
+          {createPortal(<b>b</b>, portalContainer)}
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<div><p><b>a</b></p></div>');
+      expect(portalContainer.innerHTML).toBe('<b>b</b>');
+    });
+
     it('Should keep shared arrays separate', () => {
       const items = [<li>a</li>, <li>b</li>];
 
@@ -271,6 +462,90 @@ describe('vNode reuse', () => {
     });
   });
 
+  // Each step of the keyed algorithm places a vNode, which can be the vNode "s" rendered in the other list
+  describe('the same vNode in two keyed lists', () => {
+    function li(key: string, text: string = key) {
+      return <li key={key}>{text}</li>;
+    }
+
+    function renderLists(olItems, ulItems) {
+      render(
+        <div>
+          <ol>{olItems}</ol>
+          <ul>{ulItems}</ul>
+        </div>,
+        container,
+      );
+    }
+
+    function html(olTexts: string[], ulTexts: string[]) {
+      const items = (texts) => texts.map((text) => `<li>${text}</li>`).join('');
+
+      return `<div><ol>${items(olTexts)}</ol><ul>${items(ulTexts)}</ul></div>`;
+    }
+
+    // Render "s" in both lists, then check both lists update their own DOM
+    function addSharedToList(lastKeys: string[], nextKeys: string[]) {
+      const shared = li('s');
+
+      renderLists(
+        [shared],
+        lastKeys.map((key) => li(key)),
+      );
+      renderLists(
+        [shared],
+        nextKeys.map((key) => (key === 's' ? shared : li(key))),
+      );
+      expect(container.innerHTML).toBe(html(['s'], nextKeys));
+
+      renderLists(
+        [li('s', 'o')],
+        nextKeys.map((key) => (key === 's' ? li(key, 'u') : li(key))),
+      );
+      expect(container.innerHTML).toBe(
+        html(
+          ['o'],
+          nextKeys.map((key) => (key === 's' ? 'u' : key)),
+        ),
+      );
+    }
+
+    it('Should patch the same vNode at the start of both lists', () => {
+      addSharedToList(['s', 'a'], ['s', 'b']);
+    });
+
+    it('Should patch the same vNode at the end of both lists', () => {
+      addSharedToList(['a', 's'], ['b', 's']);
+    });
+
+    it('Should append the same vNode', () => {
+      addSharedToList(['a'], ['a', 's']);
+    });
+
+    it('Should patch the same vNode when list is reordered', () => {
+      addSharedToList(['a', 's', 'b'], ['b', 's', 'a']);
+    });
+
+    it('Should patch the same vNode when long list is reordered', () => {
+      const keys: string[] = [];
+
+      for (let i = 0; i < 39; ++i) {
+        keys.push('k' + i);
+      }
+      keys.push('s');
+
+      addSharedToList(keys, keys.slice().reverse());
+    });
+
+    it('Should insert the same vNode when list is reordered', () => {
+      addSharedToList(['a', 'b', 'c'], ['c', 'a', 's']);
+    });
+
+    it('Should insert the same vNode in the middle of a list', () => {
+      addSharedToList(['a', 'b', 'c'], ['a', 's', 'c']);
+    });
+  });
+
   // Normalization changes flags and keys of child vNodes, which must not affect a vNode already used elsewhere
   describe('normalization', () => {
     it('Should patch a vNode normalized elsewhere like a new vNode', () => {
@@ -362,6 +637,79 @@ describe('vNode reuse', () => {
       );
       expect(constructed).toBe(2);
       expect(container.innerHTML).toBe('<div><span>counter</span></div>');
+    });
+
+    it('Should not change the key of a vNode when it is used at another index', () => {
+      const shared = <li>x</li>;
+
+      render(
+        <div>
+          <ul>{[shared]}</ul>
+          <ol>{[]}</ol>
+        </div>,
+        container,
+      );
+
+      const li = container.querySelector('ul li');
+
+      render(
+        <div>
+          <ul>{[shared]}</ul>
+          <ol>{[<li>y</li>, shared]}</ol>
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe(
+        '<div><ul><li>x</li></ul><ol><li>y</li><li>x</li></ol></div>',
+      );
+
+      // The first list keeps its element, because its key did not change
+      render(
+        <div>
+          <ul>{[<li>x</li>]}</ul>
+          <ol>{[]}</ol>
+        </div>,
+        container,
+      );
+      expect(container.querySelector('ul li')).toBe(li);
+      expect(container.innerHTML).toBe(
+        '<div><ul><li>x</li></ul><ol></ol></div>',
+      );
+    });
+
+    it('Should not change the key of a vNode when it is used in another nested array', () => {
+      const shared = <li>x</li>;
+
+      render(
+        <div>
+          <ul>{[<li>a</li>, [shared]]}</ul>
+          <ol>{[]}</ol>
+        </div>,
+        container,
+      );
+
+      const li = container.querySelectorAll('ul li')[1];
+
+      render(
+        <div>
+          <ul>{[<li>a</li>, [shared]]}</ul>
+          <ol>{[[shared]]}</ol>
+        </div>,
+        container,
+      );
+      expect(container.innerHTML).toBe(
+        '<div><ul><li>a</li><li>x</li></ul><ol><li>x</li></ol></div>',
+      );
+
+      // The first list keeps its element, because its key did not change
+      render(
+        <div>
+          <ul>{[<li>a</li>, [<li>x</li>]]}</ul>
+          <ol>{[]}</ol>
+        </div>,
+        container,
+      );
+      expect(container.querySelectorAll('ul li')[1]).toBe(li);
     });
   });
 
@@ -733,6 +1081,70 @@ describe('vNode reuse', () => {
       }
     });
 
+    it('Should not clone single props.children', () => {
+      let instance;
+
+      class Wrapper extends Component {
+        constructor(props) {
+          super(props);
+          instance = this;
+        }
+
+        public render() {
+          return <div>{this.props.children}</div>;
+        }
+      }
+
+      render(
+        <Wrapper>
+          <span>x</span>
+        </Wrapper>,
+        container,
+      );
+
+      const child = instance.props.children;
+
+      for (let i = 0; i < 3; ++i) {
+        instance.forceUpdate();
+        expect(instance.$LI.children).toBe(child);
+        expect(container.innerHTML).toBe('<div><span>x</span></div>');
+      }
+    });
+
+    it('Should not clone props.children array items', () => {
+      let instance;
+
+      class Wrapper extends Component {
+        constructor(props) {
+          super(props);
+          instance = this;
+        }
+
+        public render() {
+          return <div>{this.props.children}</div>;
+        }
+      }
+
+      render(
+        <Wrapper>
+          <span>a</span>
+          <span>b</span>
+        </Wrapper>,
+        container,
+      );
+
+      const children = instance.props.children;
+
+      for (let i = 0; i < 3; ++i) {
+        instance.forceUpdate();
+        expect(instance.$LI.children[0]).toBe(children[0]);
+        expect(instance.$LI.children[1]).toBe(children[1]);
+        expect(container.innerHTML).toBe(
+          '<div><span>a</span><span>b</span></div>',
+        );
+      }
+    });
+
     it('Should not clone the items of a hoisted element', () => {
       const list = (
         <ul>
@@ -762,6 +1174,74 @@ describe('vNode reuse', () => {
         expect(list.children[1]).toBe(items[1]);
         expect(container.innerHTML).toBe('<ul><li>a</li><li>b</li></ul>');
       }
+    });
+
+    it('Should not clone the same vNode at the end of a keyed list', () => {
+      const last = <li key="last">last</li>;
+
+      render(<ul>{[<li key="a">a</li>, last]}</ul>, container);
+      render(<ul>{[<li key="b">b</li>, last]}</ul>, container);
+
+      expect(container.$V.children[1]).toBe(last);
+      expect(container.innerHTML).toBe('<ul><li>b</li><li>last</li></ul>');
+    });
+
+    it('Should not clone the same vNode when a keyed list is reordered', () => {
+      const middle = <li key="m">m</li>;
+
+      render(
+        <ul>{[<li key="a">a</li>, middle, <li key="b">b</li>]}</ul>,
+        container,
+      );
+      render(
+        <ul>{[<li key="b">b</li>, middle, <li key="a">a</li>]}</ul>,
+        container,
+      );
+
+      expect(container.$V.children[1]).toBe(middle);
+      expect(container.innerHTML).toBe(
+        '<ul><li>b</li><li>m</li><li>a</li></ul>',
+      );
+    });
+
+    it('Should not clone the same vNode when a long keyed list is reordered', () => {
+      const middle = <li key="m">m</li>;
+      const keys: string[] = [];
+
+      for (let i = 0; i < 40; ++i) {
+        keys.push(i === 20 ? 'm' : 'k' + i);
+      }
+      const view = (order: string[]) => (
+        <ul>
+          {order.map((key) =>
+            key === 'm' ? middle : <li key={key}>{key}</li>,
+          )}
+        </ul>
+      );
+
+      render(view(keys), container);
+      render(view(keys.slice().reverse()), container);
+
+      expect(container.$V.children[19]).toBe(middle);
+      expect(container.innerHTML).toBe(
+        '<ul>' +
+          keys
+            .slice()
+            .reverse()
+            .map((key) => `<li>${key}</li>`)
+            .join('') +
+          '</ul>',
+      );
+    });
+
+    it('Should not clone the same vNode in a nested array', () => {
+      const nested = <li>n</li>;
+
+      render(<ul>{[<li>a</li>, [nested]]}</ul>, container);
+      render(<ul>{[<li>a</li>, [nested]]}</ul>, container);
+
+      expect(container.$V.children[1]).toBe(nested);
+      expect(container.innerHTML).toBe('<ul><li>a</li><li>n</li></ul>');
     });
 
     it('Should still re-create the same vNode when it is flagged with ReCreate', () => {

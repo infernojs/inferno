@@ -1489,6 +1489,98 @@ describe('Hydrate - rendering routine', () => {
       });
     });
 
+    describe('normalized children', () => {
+      it('Should hydrate the same single child in two places', () => {
+        container.innerHTML = '<div><p><b>x</b></p><p><b>x</b></p></div>';
+
+        const shared = <b>x</b>;
+        const [first, second] = container.querySelectorAll('b');
+
+        hydrate(
+          <div>
+            <p>{shared}</p>
+            <p>{shared}</p>
+          </div>,
+          container,
+        );
+
+        const [hydratedFirst, hydratedSecond] = container.querySelectorAll('b');
+
+        expect(hydratedFirst).toBe(first);
+        expect(hydratedSecond).toBe(second);
+
+        render(
+          <div>
+            <p>{<b>a</b>}</p>
+            <p>{<b>b</b>}</p>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><p><b>a</b></p><p><b>b</b></p></div>',
+        );
+      });
+
+      it('Should hydrate the same array in two places', () => {
+        container.innerHTML =
+          '<div><ul><li>a</li><li>b</li></ul><ol><li>a</li><li>b</li></ol></div>';
+
+        const items = [<li>a</li>, <li>b</li>];
+
+        hydrate(
+          <div>
+            <ul>{items}</ul>
+            <ol>{items}</ol>
+          </div>,
+          container,
+        );
+
+        render(
+          <div>
+            <ul>{items}</ul>
+            <ol>{items}</ol>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><ul><li>a</li><li>b</li></ul><ol><li>a</li><li>b</li></ol></div>',
+        );
+
+        render(
+          <div>
+            <ul>{[<li>c</li>]}</ul>
+            <ol>{[<li>d</li>, <li>e</li>]}</ol>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><ul><li>c</li></ul><ol><li>d</li><li>e</li></ol></div>',
+        );
+      });
+
+      it('Should hydrate a Fragment child that is already rendered into another container', () => {
+        const container2 = document.createElement('div');
+        const shared = createTextVNode('x');
+
+        render(<p>{shared}</p>, container2);
+
+        container.innerHTML = '<div>x</div>';
+        hydrate(
+          <div>
+            <Fragment>{shared}</Fragment>
+          </div>,
+          container,
+        );
+
+        render(<p>{createTextVNode('a')}</p>, container2);
+
+        expect(container2.innerHTML).toBe('<p>a</p>');
+        expect(container.innerHTML).toBe('<div>x</div>');
+
+        render(null, container2);
+      });
+    });
+
     describe('Fragment with one child', () => {
       it('Should hydrate element child of Fragment', () => {
         container.innerHTML = '<div><b>x</b></div>';

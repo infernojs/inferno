@@ -317,9 +317,12 @@ function hydrateFragment(
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): Element {
-  const children = vNode.children;
+  let children = vNode.children;
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    if ((children as VNode).flags & VNodeFlags.InUse) {
+      vNode.children = children = directClone(children as VNode);
+    }
     return hydrateVNode(
       children as VNode,
       parentDOM,

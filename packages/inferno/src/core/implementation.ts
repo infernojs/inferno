@@ -386,22 +386,26 @@ export function _normalizeVNodes(
           }
           const oldKey = n.key;
           const isPrefixedKey = isString(oldKey) && oldKey[0] === keyPrefix;
-
-          if (n.flags & VNodeFlags.InUseOrNormalized || isPrefixedKey) {
-            n = directClone(n);
-          }
-
-          n.flags |= VNodeFlags.Normalized;
+          let nextKey = oldKey;
 
           if (!isPrefixedKey) {
             if (isNull(oldKey)) {
-              n.key = newKey;
+              nextKey = newKey;
             } else {
-              n.key = currentKey + oldKey;
+              nextKey = currentKey + oldKey;
             }
           } else if (oldKey.substring(0, currentKey.length) !== currentKey) {
-            n.key = currentKey + oldKey;
+            nextKey = currentKey + oldKey;
           }
+
+          // Key of a vNode used elsewhere must not change, placing the vNode clones it when it is mounted
+          if (nextKey !== oldKey) {
+            if (n.flags & VNodeFlags.InUseOrNormalized || isPrefixedKey) {
+              n = directClone(n);
+            }
+            n.key = nextKey;
+          }
+          n.flags |= VNodeFlags.Normalized;
         }
 
         result.push(n);
@@ -457,18 +461,22 @@ export function normalizeChildren(vNode: VNode, children): VNode {
           throwIfObjectIsNotVNode(n);
         }
         const key = n.key;
-        const needsCloning: boolean =
-          (n.flags & VNodeFlags.InUseOrNormalized) > 0;
+        const flags = n.flags;
+        const isOwned: boolean = (flags & VNodeFlags.InUseOrNormalized) > 0;
         const isNullKey: boolean = isNull(key);
         const isPrefixed: boolean = isString(key) && key[0] === keyPrefix;
 
-        if (needsCloning || isNullKey || isPrefixed) {
+        // Owned vNodes are copied to new array, so each parent has its own children array
+        if (isOwned || isNullKey || isPrefixed) {
           newChildren = newChildren || children.slice(0, i);
-          if (needsCloning || isPrefixed) {
-            n = directClone(n);
-          }
-          if (isNullKey || isPrefixed) {
-            n.key = keyPrefix + i;
+          const nextKey = isNullKey || isPrefixed ? keyPrefix + i : key;
+
+          // Key of a vNode used elsewhere must not change, placing the vNode clones it when it is mounted
+          if (nextKey !== key) {
+            if (isOwned || isPrefixed) {
+              n = directClone(n);
+            }
+            n.key = nextKey;
           }
           newChildren.push(n);
         } else if (newChildren) {
@@ -485,12 +493,9 @@ export function normalizeChildren(vNode: VNode, children): VNode {
       newChildFlags = ChildFlags.HasKeyedChildren;
     }
   } else {
+    // Single child keeps its key, placing the vNode clones it when it is mounted
     newChildren = children;
     newChildren.flags |= VNodeFlags.Normalized;
-
-    if (children.flags & VNodeFlags.InUseOrNormalized) {
-      newChildren = directClone(children as VNode);
-    }
     newChildFlags = ChildFlags.HasVNodeChildren;
   }
 
