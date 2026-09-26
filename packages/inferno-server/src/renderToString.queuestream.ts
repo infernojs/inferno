@@ -17,6 +17,7 @@ import {
   createDerivedState,
   escapeText,
   isAttributeNameSafe,
+  isEmptyFragment,
   renderFunctionalComponent,
   voidElements,
 } from './utils';
@@ -307,8 +308,10 @@ export class RenderQueueStream extends Readable {
       this.addToQueue(children === '' ? ' ' : escapeText(children), position);
       // Handle fragments
     } else if ((flags & VNodeFlags.Fragment) !== 0) {
-      if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      if (isEmptyFragment(vNode)) {
         this.addToQueue('<!--!-->', position);
+      } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+        this.renderVNodeToQueue(children, context, position);
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
           this.renderVNodeToQueue(children[i], context, position);

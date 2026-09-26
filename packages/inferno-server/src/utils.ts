@@ -135,6 +135,16 @@ export function arrayToFragment(vNode) {
     : vNode;
 }
 
+// Fragment without DOM nodes renders a placeholder, which hydration replaces with an empty text node
+export function isEmptyFragment(vNode: VNode): boolean {
+  const children = vNode.children as any;
+
+  if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    return (children.flags & VNodeFlags.Text) !== 0 && children.children === '';
+  }
+  return false;
+}
+
 export function renderFunctionalComponent(vNode: VNode, context): InfernoNode {
   const props = vNode.props || EMPTY_OBJ;
   return vNode.flags & VNodeFlags.ForwardRef

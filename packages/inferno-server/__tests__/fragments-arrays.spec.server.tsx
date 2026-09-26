@@ -1,4 +1,4 @@
-import { type InfernoNode, render } from 'inferno';
+import { Fragment, type InfernoNode, render } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import {
   renderToString,
@@ -25,11 +25,55 @@ describe('SSR Fragments and arrays', () => {
     return children;
   }
 
+  function Child({ text }) {
+    return <b>{text}</b>;
+  }
+
   const testEntries: Array<{
     description: string;
     template: () => InfernoNode;
     result: string;
   }> = [
+    {
+      description: 'Fragment with element child',
+      template: () => (
+        <div>
+          <Fragment>{<p>x</p>}</Fragment>
+        </div>
+      ),
+      result: '<div><p>x</p></div>',
+    },
+    {
+      description: 'short Fragment with element child',
+      template: () => {
+        const child = <p>x</p>;
+
+        return (
+          <div>
+            <>{child}</>
+          </div>
+        );
+      },
+      result: '<div><p>x</p></div>',
+    },
+    {
+      description: 'Fragment with component child',
+      template: () => (
+        <div>
+          <Fragment>{<Child text="x" />}</Fragment>
+        </div>
+      ),
+      result: '<div><b>x</b></div>',
+    },
+    {
+      description: 'empty Fragment',
+      template: () => (
+        <div>
+          <Fragment />
+        </div>
+      ),
+      result: '<div><!--!--></div>',
+    },
     {
       description: 'component returning an array with holes',
       template: () => <ul>{<Wrap>{[null, <li>a</li>, false]}</Wrap>}</ul>,

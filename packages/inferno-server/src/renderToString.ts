@@ -15,6 +15,7 @@ import {
   createDerivedState,
   escapeText,
   isAttributeNameSafe,
+  isEmptyFragment,
   renderFunctionalComponent,
   voidElements,
 } from './utils';
@@ -198,8 +199,11 @@ function renderVNodeToString(vNode, parent, context): string {
   } else if ((flags & VNodeFlags.Text) !== 0) {
     return children === '' ? ' ' : escapeText(children);
   } else if ((flags & VNodeFlags.Fragment) !== 0) {
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    if (isEmptyFragment(vNode)) {
       return '<!--!-->';
+    }
+    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      return renderVNodeToString(children, vNode, context);
     }
     let renderedString = '';
 

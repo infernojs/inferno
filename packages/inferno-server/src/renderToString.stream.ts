@@ -14,6 +14,7 @@ import {
   createDerivedState,
   escapeText,
   isAttributeNameSafe,
+  isEmptyFragment,
   renderFunctionalComponent,
   voidElements,
 } from './utils';
@@ -71,8 +72,11 @@ export class RenderStream extends Readable {
   }
 
   public renderFragment(vNode, context) {
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    if (isEmptyFragment(vNode)) {
       return this.push('<!--!-->');
+    }
+    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      return this.renderNode(vNode.children, context);
     }
 
     return (vNode.children as VNode[]).reduce(async (p, child) => {
