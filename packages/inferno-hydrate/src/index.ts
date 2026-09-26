@@ -19,6 +19,7 @@ import {
   _RFC as renderFunctionalComponent,
   AnimationQueues,
   type ContextObject,
+  directClone,
   EMPTY_OBJ,
   render,
   type VNode,
@@ -123,12 +124,15 @@ function hydrateChildren(
   animations: AnimationQueues,
 ): void {
   const childFlags = parentVNode.childFlags;
-  const children = parentVNode.children;
+  let children = parentVNode.children;
   const props = parentVNode.props;
   const flags = parentVNode.flags;
 
   if (childFlags !== ChildFlags.HasInvalidChildren) {
     if (childFlags === ChildFlags.HasVNodeChildren) {
+      if ((children as VNode).flags & VNodeFlags.InUse) {
+        parentVNode.children = children = directClone(children as VNode);
+      }
       if (isNull(currentNode)) {
         _M(
           children as VNode,
@@ -169,7 +173,11 @@ function hydrateChildren(
       let prevVNodeIsTextNode = false;
 
       for (let i = 0, len = (children as VNode[]).length; i < len; ++i) {
-        const child = (children as VNode[])[i];
+        let child = (children as VNode[])[i];
+
+        if (child.flags & VNodeFlags.InUse) {
+          (children as VNode[])[i] = child = directClone(child);
+        }
 
         if (
           isNull(currentNode) ||
@@ -402,6 +410,9 @@ export function hydrate(
     const animations: AnimationQueues = new AnimationQueues();
 
     if (!isInvalid(input)) {
+      if (input.flags & VNodeFlags.InUse) {
+        input = directClone(input);
+      }
       dom = hydrateVNode(
         input,
         parentDOM,

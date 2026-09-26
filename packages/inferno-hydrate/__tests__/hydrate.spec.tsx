@@ -3,6 +3,7 @@ import {
   createFragment,
   createPortal,
   createRef,
+  createVNode,
   Fragment,
   type InfernoNode,
   render,
@@ -11,7 +12,7 @@ import {
 import { hydrate } from 'inferno-hydrate';
 import { h } from 'inferno-hyperscript';
 import { triggerEvent } from 'inferno-utils';
-import { ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createElement } from 'inferno-create-element';
 
 describe('Hydrate - rendering routine', () => {
@@ -1412,6 +1413,99 @@ describe('Hydrate - rendering routine', () => {
       rerender();
 
       expect(container.firstChild.firstChild.getAttribute('class')).toBe('bar');
+    });
+  });
+
+  // Hydration places vNodes like mounting does, so a vNode referenced in two places must be cloned for the second place
+  describe('shared vNodes', () => {
+    function element(type: string, children, childFlags: ChildFlags) {
+      return createVNode(
+        VNodeFlags.HtmlElement,
+        type,
+        null,
+        children,
+        childFlags,
+      );
+    }
+
+    function textElement(type: string, text: string) {
+      return element(type, text, ChildFlags.HasTextChildren);
+    }
+
+    describe('explicit child flags', () => {
+      it('Should hydrate the same single child in two places', () => {
+        container.innerHTML = '<div><p><b>x</b></p><p><b>x</b></p></div>';
+
+        const shared = textElement('b', 'x');
+
+        hydrate(
+          element(
+            'div',
+            [
+              element('p', shared, ChildFlags.HasVNodeChildren),
+              element('p', shared, ChildFlags.HasVNodeChildren),
+            ],
+            ChildFlags.HasNonKeyedChildren,
+          ),
+          container,
+        );
+
+        render(
+          element(
+            'div',
+            [
+              element('p', textElement('b', 'a'), ChildFlags.HasVNodeChildren),
+              element('p', textElement('b', 'b'), ChildFlags.HasVNodeChildren),
+            ],
+            ChildFlags.HasNonKeyedChildren,
+          ),
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><p><b>a</b></p><p><b>b</b></p></div>',
+        );
+      });
+
+      it('Should hydrate the same vNode twice in one array', () => {
+        container.innerHTML = '<ul><li>x</li><li>x</li></ul>';
+
+        const shared = textElement('li', 'x');
+
+        hydrate(
+          element('ul', [shared, shared], ChildFlags.HasNonKeyedChildren),
+          container,
+        );
+
+        render(
+          element(
+            'ul',
+            [textElement('li', 'a'), textElement('li', 'b')],
+            ChildFlags.HasNonKeyedChildren,
+          ),
+          container,
+        );
+        expect(container.innerHTML).toBe('<ul><li>a</li><li>b</li></ul>');
+      });
+    });
+
+    describe('root', () => {
+      it('Should hydrate a vNode that is already rendered into another container', () => {
+        const container2 = document.createElement('div');
+        const shared = <span>x</span>;
+
+        render(shared, container2);
+
+        container.innerHTML = '<span>x</span>';
+        hydrate(shared, container);
+
+        render(<span>a</span>, container2);
+        render(<span>b</span>, container);
+
+        expect(container2.innerHTML).toBe('<span>a</span>');
+        expect(container.innerHTML).toBe('<span>b</span>');
+
+        render(null, container2);
+      });
     });
   });
 
