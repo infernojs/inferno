@@ -326,6 +326,14 @@ export function directClone(vNodeToClone: VNode): VNode {
   return cloneFragment(vNodeToClone);
 }
 
+/*
+ * vNode can be referenced outside of render and passed to Inferno again,
+ * but it holds the state of its mounted position, so it can be mounted only once.
+ */
+export function mustCloneVNode(vNode: VNode): boolean {
+  return (vNode.flags & VNodeFlags.InUse) !== 0;
+}
+
 export function createVoidVNode(): VNode {
   return createTextVNode('', null);
 }

@@ -4,6 +4,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,
+  mustCloneVNode,
   normalizeRoot,
 } from '../core/implementation';
 import type { Component } from './../core/component';
@@ -198,6 +199,10 @@ function patchFragment(
   const nextIsSingle: boolean =
     (nextChildFlags & ChildFlags.HasVNodeChildren) !== 0;
 
+  if (nextIsSingle && mustCloneVNode(nextChildren)) {
+    nextChildren = nextVNode.children = directClone(nextChildren);
+  }
+
   if (lastChildFlags & ChildFlags.MultipleChildren) {
     const lastLen = lastChildren.length;
 
@@ -241,7 +246,14 @@ function patchPortal(
 ): void {
   const lastContainer = lastVNode.ref as Element;
   const nextContainer = nextVNode.ref as Element;
-  const nextChildren = nextVNode.children as VNode;
+  let nextChildren = nextVNode.children as VNode;
+
+  if (
+    nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
+    mustCloneVNode(nextChildren)
+  ) {
+    nextChildren = nextVNode.children = directClone(nextChildren);
+  }
 
   patchChildren(
     lastVNode.childFlags,
@@ -330,7 +342,7 @@ export function patchElement(
       }
     }
   }
-  const nextChildren = nextVNode.children;
+  let nextChildren = nextVNode.children;
   const nextClassName = nextVNode.className;
 
   // inlined patchProps  -- ends --
@@ -350,6 +362,12 @@ export function patchElement(
   if (nextFlags & VNodeFlags.ContentEditable) {
     patchContentEditableChildren(dom, nextChildren);
   } else {
+    if (
+      nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
+      mustCloneVNode(nextChildren as VNode)
+    ) {
+      nextChildren = nextVNode.children = directClone(nextChildren as VNode);
+    }
     patchChildren(
       lastVNode.childFlags,
       nextVNode.childFlags,
@@ -873,7 +891,7 @@ function patchNonKeyedChildren(
       nextChild = nextChildren[i];
       lastChild = lastChildren[i];
 
-      if (nextChild.flags & VNodeFlags.InUse) {
+      if (mustCloneVNode(nextChild)) {
         nextChild = nextChildren[i] = directClone(nextChild);
       }
 
@@ -892,7 +910,7 @@ function patchNonKeyedChildren(
       for (i = commonLength; i < nextChildrenLength; ++i) {
         nextChild = nextChildren[i];
 
-        if (nextChild.flags & VNodeFlags.InUse) {
+        if (mustCloneVNode(nextChild)) {
           nextChild = nextChildren[i] = directClone(nextChild);
         }
         mount(nextChild, dom, context, isSVG, nextNode, lifecycle, animations);
@@ -942,7 +960,7 @@ function patchKeyedChildren(
     outer: {
       // Sync nodes with the same key at the beginning.
       while (aNode.key === bNode.key) {
-        if (bNode.flags & VNodeFlags.InUse) {
+        if (mustCloneVNode(bNode)) {
           b[j] = bNode = directClone(bNode);
         }
         patch(
@@ -968,7 +986,7 @@ function patchKeyedChildren(
 
       // Sync nodes with the same key at the end.
       while (aNode.key === bNode.key) {
-        if (bNode.flags & VNodeFlags.InUse) {
+        if (mustCloneVNode(bNode)) {
           b[bEnd] = bNode = directClone(bNode);
         }
         patch(
@@ -1000,7 +1018,7 @@ function patchKeyedChildren(
 
         while (j <= bEnd) {
           bNode = b[j];
-          if (bNode.flags & VNodeFlags.InUse) {
+          if (mustCloneVNode(bNode)) {
             b[j] = bNode = directClone(bNode);
           }
           ++j;
@@ -1088,7 +1106,7 @@ function patchKeyedChildrenComplex(
             } else {
               pos = j;
             }
-            if (bNode.flags & VNodeFlags.InUse) {
+            if (mustCloneVNode(bNode)) {
               b[j] = bNode = directClone(bNode);
             }
             patch(
@@ -1141,7 +1159,7 @@ function patchKeyedChildrenComplex(
             pos = j;
           }
           bNode = b[j];
-          if (bNode.flags & VNodeFlags.InUse) {
+          if (mustCloneVNode(bNode)) {
             b[j] = bNode = directClone(bNode);
           }
           patch(
@@ -1182,7 +1200,7 @@ function patchKeyedChildrenComplex(
       if (sources[i] === 0) {
         pos = i + bStart;
         bNode = b[pos];
-        if (bNode.flags & VNodeFlags.InUse) {
+        if (mustCloneVNode(bNode)) {
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;
@@ -1223,7 +1241,7 @@ function patchKeyedChildrenComplex(
       if (sources[i] === 0) {
         pos = i + bStart;
         bNode = b[pos];
-        if (bNode.flags & VNodeFlags.InUse) {
+        if (mustCloneVNode(bNode)) {
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;

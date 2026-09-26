@@ -160,6 +160,45 @@ const CASES: FuzzCase[] = [
     ],
   },
   {
+    seed: 125,
+    name: 'patch a Portal normalized as the child of another Portal like a new vNode',
+    pool: [
+      { t: 'portal', target: 1, child: { t: 'text', key: null, text: 'x' } },
+      { t: 'text', key: null, text: 'x' },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'shared', id: 0 },
+              { t: 'portal', target: 0, child: { t: 'shared', id: 0 } },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'portal', target: 0, child: { t: 'shared', id: 1 } },
+            ],
+          },
+        },
+      },
+    ],
+  },
+  {
     seed: 214,
     name: 'patch a vNode normalized as children of a component elsewhere like a new vNode',
     pool: [{ t: 'text', key: null, text: 'y' }],
@@ -252,6 +291,57 @@ const CASES: FuzzCase[] = [
                 t: 'portal',
                 target: 1,
                 child: { t: 'hoist', key: null, id: 0 },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
+  {
+    seed: 99,
+    name: 'move a Portal with a class component child to another container',
+    pool: [
+      { t: 'portal', target: 0, child: { t: 'text', key: null, text: 'x' } },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'text', key: null, text: 'x' },
+              { t: 'portal', target: 1, child: { t: 'shared', id: 0 } },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'portal',
+                target: 1,
+                child: { t: 'box', key: null, children: null },
               },
             ],
           },
@@ -578,6 +668,129 @@ const CASES: FuzzCase[] = [
           },
         },
       },
+    ],
+  },
+  {
+    seed: 38,
+    name: 'unmount a hoisted element with a Portal child rendered in two places',
+    pool: [
+      {
+        t: 'element',
+        key: null,
+        tag: 'i',
+        children: {
+          flags: 'nonKeyed',
+          children: [
+            {
+              t: 'portal',
+              target: 0,
+              child: { t: 'text', key: null, text: 'y' },
+            },
+          ],
+        },
+      },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'fragment',
+                key: null,
+                children: {
+                  flags: 'keyed',
+                  children: [
+                    {
+                      t: 'element',
+                      key: 'f',
+                      tag: 'span',
+                      children: {
+                        flags: 'keyed',
+                        children: [
+                          {
+                            t: 'element',
+                            key: 'e',
+                            tag: 'span',
+                            children: {
+                              flags: 'nonKeyed',
+                              children: [{ t: 'shared', id: 0 }],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      t: 'element',
+                      key: 'e',
+                      tag: 'ul',
+                      children: {
+                        flags: 'nonKeyed',
+                        children: [
+                          {
+                            t: 'element',
+                            key: null,
+                            tag: 'p',
+                            children: {
+                              flags: 'single',
+                              child: { t: 'shared', id: 0 },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+      { t: 'render', tree: { t: 'text', key: null, text: 'x' } },
+    ],
+  },
+  {
+    seed: 90,
+    name: 'unmount the same element with a Portal child rendered twice',
+    pool: [
+      {
+        t: 'element',
+        key: null,
+        tag: 'span',
+        children: {
+          flags: 'nonKeyed',
+          children: [
+            {
+              t: 'portal',
+              target: 0,
+              child: { t: 'text', key: null, text: 'z' },
+            },
+          ],
+        },
+      },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'shared', id: 0 },
+              { t: 'shared', id: 0 },
+            ],
+          },
+        },
+      },
+      { t: 'render', tree: { t: 'text', key: null, text: 'x' } },
     ],
   },
 ];
