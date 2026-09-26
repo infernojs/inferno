@@ -3,6 +3,7 @@ import {
   createFragment,
   createPortal,
   createRef,
+  createTextVNode,
   createVNode,
   Fragment,
   type InfernoNode,
@@ -1485,6 +1486,76 @@ describe('Hydrate - rendering routine', () => {
           container,
         );
         expect(container.innerHTML).toBe('<ul><li>a</li><li>b</li></ul>');
+      });
+    });
+
+    describe('Fragment with one child', () => {
+      it('Should hydrate element child of Fragment', () => {
+        container.innerHTML = '<div><b>x</b></div>';
+
+        const b = container.querySelector('b');
+
+        hydrate(
+          <div>
+            <Fragment>{<b>x</b>}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div><b>x</b></div>');
+        expect(container.querySelector('b')).toBe(b);
+
+        render(
+          <div>
+            <Fragment>{<b>y</b>}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div><b>y</b></div>');
+        expect(container.querySelector('b')).toBe(b);
+      });
+
+      it('Should patch text child of Fragment after hydration', () => {
+        container.innerHTML = '<div>x<br>y</div>';
+
+        hydrate(
+          <div>
+            <Fragment>{createTextVNode('x')}</Fragment>
+            <br />
+            <Fragment>{createTextVNode('y')}</Fragment>
+          </div>,
+          container,
+        );
+        render(
+          <div>
+            <Fragment>{createTextVNode('a')}</Fragment>
+            <br />
+            <Fragment>{createTextVNode('b')}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div>a<br>b</div>');
+      });
+
+      it('Should hydrate component child of Fragment', () => {
+        container.innerHTML = '<div><b>x</b></div>';
+
+        function Child({ text }) {
+          return <b>{text}</b>;
+        }
+
+        hydrate(
+          <div>
+            <Fragment>{<Child text="x" />}</Fragment>
+          </div>,
+          container,
+        );
+        render(
+          <div>
+            <Fragment>{<Child text="y" />}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div><b>y</b></div>');
       });
     });
 

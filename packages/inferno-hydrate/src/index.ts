@@ -320,9 +320,15 @@ function hydrateFragment(
   const children = vNode.children;
 
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-    hydrateText(children as VNode, parentDOM, dom);
-
-    return (children as VNode).dom as Element;
+    return hydrateVNode(
+      children as VNode,
+      parentDOM,
+      dom,
+      context,
+      isSVG,
+      lifecycle,
+      animations,
+    ) as Element;
   }
 
   hydrateChildren(vNode, parentDOM, dom, context, isSVG, lifecycle, animations);
