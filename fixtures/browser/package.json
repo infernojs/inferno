@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node run-sauce.mjs",
+    "test:transformers": "node run-transformers.mjs",
     "test:babel": "node build-tests.js babel && jasmine-browser-runner runSpecs --config=jasmine-browser.mjs",
     "test:ts": "node build-tests.js ts && jasmine-browser-runner runSpecs --config=jasmine-browser.mjs",
     "test:swc": "node build-tests.js swc && jasmine-browser-runner runSpecs --config=jasmine-browser.mjs",
