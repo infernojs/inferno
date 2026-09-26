@@ -1261,4 +1261,33 @@ describe('Fragments', () => {
 
     expect(container.innerHTML).toBe('<h1>Hello</h1><h2>InfernoJS</h2>');
   });
+
+  it('Should unmount the only child of Fragment', () => {
+    const portalContainer = document.createElement('div');
+    const unmountSpy = jasmine.createSpy('unmount');
+
+    class Child extends Component {
+      public componentWillUnmount() {
+        unmountSpy();
+      }
+
+      public render() {
+        return <b>child</b>;
+      }
+    }
+
+    render(
+      <div>
+        <Fragment>{<Child />}</Fragment>
+        <Fragment>{createPortal(<i>portal</i>, portalContainer)}</Fragment>
+      </div>,
+      container,
+    );
+    expect(container.innerHTML).toBe('<div><b>child</b></div>');
+    expect(portalContainer.innerHTML).toBe('<i>portal</i>');
+
+    render(null, container);
+    expect(unmountSpy).toHaveBeenCalledTimes(1);
+    expect(portalContainer.innerHTML).toBe('');
+  });
 });
