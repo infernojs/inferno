@@ -80,6 +80,16 @@ describe('SSR Fragments and arrays', () => {
       result: '<ul><li>a</li></ul>',
     },
     {
+      description: 'component returning an array with text',
+      template: () => <p>{<Wrap>{['a', <b>b</b>, 1]}</Wrap>}</p>,
+      result: '<p>a<b>b</b>1</p>',
+    },
+    {
+      description: 'component returning an array with empty text',
+      template: () => <p>{<Wrap>{['', <b>b</b>]}</Wrap>}</p>,
+      result: '<p> <b>b</b></p>',
+    },
+    {
       description: 'component returning nested arrays',
       template: () => (
         <p>

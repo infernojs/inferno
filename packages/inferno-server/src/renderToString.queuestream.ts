@@ -305,7 +305,10 @@ export class RenderQueueStream extends Readable {
       }
       // Push text directly to queue
     } else if ((flags & VNodeFlags.Text) > 0) {
-      this.addToQueue(children === '' ? ' ' : escapeText(children), position);
+      this.addToQueue(
+        children === '' ? ' ' : escapeText(children + ''),
+        position,
+      );
       // Handle fragments
     } else if ((flags & VNodeFlags.Fragment) !== 0) {
       if (isEmptyFragment(vNode)) {

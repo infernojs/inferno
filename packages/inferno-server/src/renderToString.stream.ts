@@ -178,7 +178,7 @@ export class RenderStream extends Readable {
   }
 
   public renderText(vNode): void {
-    this.push(vNode.children === '' ? ' ' : escapeText(vNode.children));
+    this.push(vNode.children === '' ? ' ' : escapeText(vNode.children + ''));
   }
 
   public renderElement(vNode, context) {
