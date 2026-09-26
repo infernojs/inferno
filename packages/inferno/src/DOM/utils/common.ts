@@ -181,6 +181,36 @@ export function clearVNodeDOM(
   }
 }
 
+// Appends all DOM nodes of the vNode to parentDOM, moving them from their current parent
+export function appendVNodeDOM(vNode: VNode | null, parentDOM: Element): void {
+  while (!isNullOrUndef(vNode)) {
+    const flags = vNode.flags;
+
+    if ((flags & VNodeFlags.DOMRef) !== 0) {
+      appendChild(parentDOM, vNode.dom);
+      return;
+    }
+    const children = vNode.children as any;
+
+    if ((flags & VNodeFlags.ComponentClass) !== 0) {
+      vNode = children.$LI;
+    }
+    if ((flags & VNodeFlags.ComponentFunction) !== 0) {
+      vNode = children;
+    }
+    if ((flags & VNodeFlags.Fragment) !== 0) {
+      if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
+        vNode = children;
+      } else {
+        for (let i = 0, len = children.length; i < len; ++i) {
+          appendVNodeDOM(children[i], parentDOM);
+        }
+        return;
+      }
+    }
+  }
+}
+
 function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
   return function () {
     // Mark removal as deferred to trigger check that node still exists

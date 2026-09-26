@@ -2,6 +2,7 @@ import {
   Component,
   createPortal,
   type InfernoNode,
+  Fragment,
   render as _render,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -1609,6 +1610,79 @@ describe('Portal spec', () => {
         expect(mountCount).toBe(12);
         expect(unMountCount).toBe(12);
       });
+    });
+  });
+
+  describe('Moving to another container', () => {
+    it('Should move component child of Portal', () => {
+      const first = document.createElement('div');
+      const second = document.createElement('div');
+
+      function Child({ text }) {
+        return <b>{text}</b>;
+      }
+
+      render(<div>{createPortal(<Child text="a" />, first)}</div>, container);
+      render(<div>{createPortal(<Child text="b" />, second)}</div>, container);
+      expect(first.innerHTML).toBe('');
+      expect(second.innerHTML).toBe('<b>b</b>');
+
+      render(null, container);
+      expect(second.innerHTML).toBe('');
+    });
+
+    it('Should move Fragment with one child of Portal', () => {
+      const first = document.createElement('div');
+      const second = document.createElement('div');
+
+      render(
+        <div>{createPortal(<Fragment>{<b>a</b>}</Fragment>, first)}</div>,
+        container,
+      );
+      render(
+        <div>{createPortal(<Fragment>{<b>b</b>}</Fragment>, second)}</div>,
+        container,
+      );
+      expect(first.innerHTML).toBe('');
+      expect(second.innerHTML).toBe('<b>b</b>');
+
+      render(null, container);
+      expect(second.innerHTML).toBe('');
+    });
+
+    it('Should move Fragment child of Portal', () => {
+      const first = document.createElement('div');
+      const second = document.createElement('div');
+
+      render(
+        <div>
+          {createPortal(
+            <Fragment>
+              <b>a</b>
+              <i>b</i>
+            </Fragment>,
+            first,
+          )}
+        </div>,
+        container,
+      );
+      render(
+        <div>
+          {createPortal(
+            <Fragment>
+              <b>c</b>
+              <i>d</i>
+            </Fragment>,
+            second,
+          )}
+        </div>,
+        container,
+      );
+      expect(first.innerHTML).toBe('');
+      expect(second.innerHTML).toBe('<b>c</b><i>d</i>');
+
+      render(null, container);
+      expect(second.innerHTML).toBe('');
     });
   });
 });

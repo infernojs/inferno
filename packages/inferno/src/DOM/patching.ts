@@ -17,13 +17,12 @@ import {
 } from './unmounting';
 import {
   type AnimationQueues,
-  appendChild,
+  appendVNodeDOM,
   callAllMoveAnimationHooks,
   createDerivedState,
   EMPTY_OBJ,
   findDOMFromVNode,
   moveVNodeDOM,
-  removeChild,
   removeVNodeDOM,
   replaceChild,
   setTextContent,
@@ -260,10 +259,7 @@ function patchPortal(
   nextVNode.dom = lastVNode.dom;
 
   if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
-    const node = nextChildren.dom as Element;
-
-    removeChild(lastContainer, node);
-    appendChild(nextContainer, node);
+    appendVNodeDOM(nextChildren, nextContainer);
   }
 }
 

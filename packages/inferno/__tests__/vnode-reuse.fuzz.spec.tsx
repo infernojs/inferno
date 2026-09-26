@@ -48,6 +48,54 @@ const CASES: FuzzCase[] = [
       },
     ],
   },
+  {
+    seed: 21,
+    name: 'move a Portal to another container when its child becomes a component',
+    pool: [
+      { t: 'text', key: 'p2', text: 'x' },
+      { t: 'text', key: null, text: 'x' },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'text', key: null, text: 'x' },
+              {
+                t: 'portal',
+                target: 0,
+                child: { t: 'text', key: null, text: 'x' },
+              },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'shared', id: 1 },
+              {
+                t: 'portal',
+                target: 1,
+                child: { t: 'hoist', key: null, id: 0 },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
 ];
 
 describe('vNode reuse cases found by fuzzing', () => {
