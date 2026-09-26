@@ -1,4 +1,13 @@
-import { compareRuns, type Desc, type Step } from './data/vnode-reuse-fuzzer';
+import {
+  compareRuns,
+  createRandom,
+  type Desc,
+  Generator,
+  type Step,
+} from './data/vnode-reuse-fuzzer';
+
+const SEEDS = Number(process.env.INFERNO_FUZZ_SEEDS) || 200;
+const STEPS = 6;
 
 interface FuzzCase {
   seed: number;
@@ -799,6 +808,20 @@ describe('vNode reuse cases found by fuzzing', () => {
   for (const test of CASES) {
     it(`Should ${test.name} (seed ${test.seed})`, () => {
       compareRuns(test.pool, test.steps, `seed ${test.seed}`);
+    });
+  }
+});
+
+// Rendering vNodes that are referenced outside of render must give the same result as rendering new vNodes
+describe('vNode reuse fuzzing', () => {
+  for (let seed = 1; seed <= SEEDS; ++seed) {
+    it(`Should render the same DOM with shared and fresh vNodes, seed ${seed}`, () => {
+      const generator = new Generator(createRandom(seed), {
+        portals: true,
+        hydratable: false,
+      });
+
+      compareRuns(generator.pool, generator.steps(STEPS), `seed ${seed}`);
     });
   }
 });

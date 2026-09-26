@@ -2,10 +2,15 @@ import { hydrate } from 'inferno-hydrate';
 import { renderToString } from 'inferno-server';
 import {
   compareRuns,
+  createRandom,
   type Desc,
+  Generator,
   Run,
   type Step,
 } from '../../inferno/__tests__/data/vnode-reuse-fuzzer';
+
+const SEEDS = Number(process.env.INFERNO_FUZZ_SEEDS) || 200;
+const STEPS = 5;
 
 // Hydrates the first step from server rendered HTML of the same tree
 function hydrateFirst(pool: Desc[]) {
@@ -149,6 +154,25 @@ describe('vNode reuse hydration cases found by fuzzing', () => {
         test.steps,
         `seed ${test.seed}`,
         hydrateFirst(test.pool),
+      );
+    });
+  }
+});
+
+// Hydrating and then rendering vNodes that are referenced outside of render must give the same result as with new vNodes
+describe('vNode reuse fuzzing with hydration', () => {
+  for (let seed = 1; seed <= SEEDS; ++seed) {
+    it(`Should hydrate and render the same DOM with shared and fresh vNodes, seed ${seed}`, () => {
+      const generator = new Generator(createRandom(seed), {
+        portals: false,
+        hydratable: true,
+      });
+
+      compareRuns(
+        generator.pool,
+        generator.steps(STEPS),
+        `seed ${seed}`,
+        hydrateFirst(generator.pool),
       );
     });
   }
