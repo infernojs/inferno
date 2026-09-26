@@ -1,6 +1,6 @@
 import { Component, render, rerender } from 'inferno';
 
-describe('ComponentDidUpdate', () => {
+describe('Lifecycle order of componentDidUpdate, refs and setState callbacks', () => {
   let container;
 
   beforeEach(function () {
@@ -14,7 +14,7 @@ describe('ComponentDidUpdate', () => {
     document.body.removeChild(container);
   });
 
-  it('Should be called after ref updates, Github #1374 Github#1286', () => {
+  it('Should call componentDidUpdate after ref updates, Github #1374 Github#1286', () => {
     class App extends Component {
       public state = {
         toggled: false,
@@ -177,7 +177,7 @@ describe('ComponentDidUpdate', () => {
   });
 
   // https://jsfiddle.net/3ja27qw5/
-  it('Should unmount refs parent first - variation 2', () => {
+  it('Should unmount refs parent first when a sibling component precedes the inner ref element', () => {
     const spyer = jasmine.createSpy();
 
     class Mounter extends Component {
@@ -254,7 +254,7 @@ describe('ComponentDidUpdate', () => {
     expect(spyer).toHaveBeenCalledTimes(14);
   });
 
-  it('Should not call setState callback if another component triggers setState during other tree mount', () => {
+  it('Should call setState callbacks once when another component calls setState during a subtree mount', () => {
     // This is only to simplify whats going on in real application
     const testHack = {
       callback: () => {},

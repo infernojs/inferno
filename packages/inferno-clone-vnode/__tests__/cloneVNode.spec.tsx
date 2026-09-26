@@ -3,7 +3,7 @@ import {
   Component,
   createTextVNode,
   Fragment,
-  InfernoNode,
+  type InfernoNode,
   type InfernoSingleNode,
   render,
   type VNode,
@@ -28,13 +28,13 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toBe('<div><span></span></div>');
   });
 
-  it('should clone with third argument overriding props and cloned node children', () => {
+  it('should clone with third argument element array overriding props and cloned node children', () => {
     const node = cloneVNode(<div>f</div>, { children: 'x' }, [<a>1</a>]);
     render(node, container);
     expect(container.innerHTML).toBe('<div><a>1</a></div>');
   });
 
-  it('should clone with third argument overriding props and cloned node children', () => {
+  it('should clone with third argument [undefined] clearing props and cloned node children', () => {
     const node = cloneVNode(<div>f</div>, { children: 'x' }, [undefined]);
     render(node, container);
     expect(container.innerHTML).toBe('<div></div>');
@@ -262,7 +262,7 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toEqual('foo');
   });
 
-  it('Should prefer children in order', () => {
+  it('Should prefer children arguments over props.children over original component children', () => {
     function Bar({ children }) {
       return <div>{children}</div>;
     }
@@ -290,7 +290,7 @@ describe('cloneVNode (JSX)', () => {
     expect(container.innerHTML).toBe('<div>ThirdFourth</div>');
   });
 
-  it('Should prefer children in order #2', () => {
+  it('Should keep component children when props are null but clear them when children argument is null', () => {
     function Bar({ children }) {
       return <div>{children}</div>;
     }

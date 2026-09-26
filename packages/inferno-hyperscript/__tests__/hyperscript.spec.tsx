@@ -4,7 +4,7 @@ import {
   createRef,
   forwardRef,
   Fragment,
-  RefObject,
+  type RefObject,
   render,
 } from 'inferno';
 
@@ -22,17 +22,17 @@ describe('HyperScript (non-JSX)', () => {
     document.body.removeChild(container);
   });
 
-  it('Should handle a basic example', () => {
+  it('Should render an element from a tag name only', () => {
     render(h('div'), container);
     expect(container.innerHTML).toBe('<div></div>');
   });
 
-  it('Should handle a basic example #2', () => {
+  it('Should render an element with a text child as second argument', () => {
     render(h('div', 'Hello world!'), container);
     expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
-  it('Should handle a basic example #3', () => {
+  it('Should render an element with props and a text child', () => {
     render(h('div', { className: 'foo' }, 'Hello world!'), container);
     expect(container.innerHTML).toBe('<div class="foo">Hello world!</div>');
   });
@@ -67,12 +67,12 @@ describe('HyperScript (non-JSX)', () => {
     });
   });
 
-  it('Should handle a basic example #4', () => {
+  it('Should render a stateless component', () => {
     render(h(StatelessComponent), container);
     expect(container.innerHTML).toBe('<div>Hello world!</div>');
   });
 
-  it('Should handle a hooks example #1', () => {
+  it('Should render a component given hooks and children props', () => {
     const Component = ({ children }) => {
       return h('div', children);
     };

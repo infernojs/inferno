@@ -19,6 +19,8 @@ import {
   _RFC as renderFunctionalComponent,
   AnimationQueues,
   type ContextObject,
+  createTextVNode,
+  directClone,
   EMPTY_OBJ,
   render,
   type VNode,
@@ -123,12 +125,15 @@ function hydrateChildren(
   animations: AnimationQueues,
 ): void {
   const childFlags = parentVNode.childFlags;
-  const children = parentVNode.children;
+  let children = parentVNode.children;
   const props = parentVNode.props;
   const flags = parentVNode.flags;
 
   if (childFlags !== ChildFlags.HasInvalidChildren) {
     if (childFlags === ChildFlags.HasVNodeChildren) {
+      if ((children as VNode).flags & VNodeFlags.InUse) {
+        parentVNode.children = children = directClone(children as VNode);
+      }
       if (isNull(currentNode)) {
         _M(
           children as VNode,
@@ -169,7 +174,11 @@ function hydrateChildren(
       let prevVNodeIsTextNode = false;
 
       for (let i = 0, len = (children as VNode[]).length; i < len; ++i) {
-        const child = (children as VNode[])[i];
+        let child = (children as VNode[])[i];
+
+        if (child.flags & VNodeFlags.InUse) {
+          (children as VNode[])[i] = child = directClone(child);
+        }
 
         if (
           isNull(currentNode) ||
@@ -309,12 +318,29 @@ function hydrateFragment(
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): Element {
-  const children = vNode.children;
+  let children = vNode.children;
 
+  // Fragment without children has an empty text node, same as when mounting
+  if (
+    vNode.childFlags & ChildFlags.MultipleChildren &&
+    (children as VNode[]).length === 0
+  ) {
+    vNode.childFlags = ChildFlags.HasVNodeChildren;
+    vNode.children = children = createTextVNode('');
+  }
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-    hydrateText(children as VNode, parentDOM, dom);
-
-    return (children as VNode).dom as Element;
+    if ((children as VNode).flags & VNodeFlags.InUse) {
+      vNode.children = children = directClone(children as VNode);
+    }
+    return hydrateVNode(
+      children as VNode,
+      parentDOM,
+      dom,
+      context,
+      isSVG,
+      lifecycle,
+      animations,
+    ) as Element;
   }
 
   hydrateChildren(vNode, parentDOM, dom, context, isSVG, lifecycle, animations);
@@ -402,6 +428,9 @@ export function hydrate(
     const animations: AnimationQueues = new AnimationQueues();
 
     if (!isInvalid(input)) {
+      if (input.flags & VNodeFlags.InUse) {
+        input = directClone(input);
+      }
       dom = hydrateVNode(
         input,
         parentDOM,

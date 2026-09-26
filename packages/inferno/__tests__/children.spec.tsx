@@ -83,7 +83,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function () {
+    it('Should append child node to correct location when list before a static sibling starts empty', function () {
       const _tabs: Array<{ title: string }> = [];
       interface TabProps {
         title?: string;
@@ -140,7 +140,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function () {
+    it('Should append child node to correct location when list after a static sibling starts empty', function () {
       const _tabs: Array<{ title: string }> = [];
 
       interface TabProps {
@@ -198,7 +198,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function () {
+    it('Should append child nodes to both lists around a static sibling when they start empty', function () {
       const _tabs: Array<{ title: string }> = [];
       interface TabProps {
         title?: string;
@@ -456,7 +456,7 @@ describe('Children - (JSX)', () => {
   });
 
   describe('nonKeyed - children', function () {
-    it('Should push to correct location when it keyed list has siblings', function () {
+    it('Should push to correct location when non-keyed list has siblings', function () {
       const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
       interface TabProps {
@@ -520,7 +520,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function () {
+    it('Should append child node to correct location when list before a static sibling starts empty', function () {
       const _tabs: Array<{ title: string }> = [];
 
       interface TabProps {
@@ -573,7 +573,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function () {
+    it('Should append child node to correct location when list after a static sibling starts empty', function () {
       const _tabs: Array<{ title: string }> = [];
 
       interface TabProps {
@@ -626,7 +626,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should append child node to correct location when its empty at the beginning ', function () {
+    it('Should append child nodes to both lists around a static sibling when they start empty', function () {
       const _tabs: Array<{ title: string }> = [];
 
       interface TabProps {
@@ -1256,7 +1256,7 @@ describe('Children - (JSX)', () => {
       );
     });
 
-    it('Should not clear nodes when keyed inside vFragment #2', () => {
+    it('Should not clear nodes when keyed list inside vFragment empties, unmounts and remounts', () => {
       const Nodes = ({ items }) => (
         <div>
           <div>test</div>
@@ -1656,7 +1656,7 @@ describe('Children - (JSX)', () => {
       }, 10);
     });
 
-    it('Should call componentWillUnmount for nested children #2', (done) => {
+    it('Should call componentWillUnmount for two sibling nested children', (done) => {
       let toggle;
 
       interface WrapperState {
@@ -2160,7 +2160,7 @@ describe('Children - (JSX)', () => {
       expect(unMountCalls).toEqual(1);
     });
 
-    it('Should call componentWillUnmount for nested children #2', () => {
+    it('Should call componentWillUnmount for two sibling nested children', () => {
       let unMountTest = 0;
       let unMountFoo = 0;
 

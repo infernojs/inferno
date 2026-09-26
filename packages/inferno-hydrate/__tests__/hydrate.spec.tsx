@@ -3,18 +3,20 @@ import {
   createFragment,
   createPortal,
   createRef,
+  createTextVNode,
+  createVNode,
   Fragment,
-  InfernoNode,
+  type InfernoNode,
   render,
   rerender,
 } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { h } from 'inferno-hyperscript';
 import { triggerEvent } from 'inferno-utils';
-import { ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { createElement } from 'inferno-create-element';
 
-describe('rendering routine', () => {
+describe('Hydrate - rendering routine', () => {
   let container;
 
   beforeEach(function () {
@@ -502,7 +504,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to move component with fragment root #2', () => {
+      it('Should be possible to move multiple keyed components with fragment root between fragments', () => {
         const fragmentA = createFragment(
           [<div id="a1">A1</div>, <div>A2</div>],
           ChildFlags.HasNonKeyedChildren,
@@ -1018,7 +1020,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should mount Fragment with invalid children #2', () => {
+      it('Should mount Fragment with invalid children and a component returning null', () => {
         function Foobar() {
           return null;
         }
@@ -1039,7 +1041,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should mount Fragment with invalid children #2', () => {
+      it('Should patch component inside Fragment with invalid children from null to an element', () => {
         let add = false;
 
         function Foobar() {
@@ -1074,7 +1076,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('<div>Ok</div>');
       });
 
-      it('Should be possible to update from 0 to 1', () => {
+      it('Should be possible to update nested fragment from a null child to a component child', () => {
         function Foobar() {
           return <div>Ok</div>;
         }
@@ -1108,7 +1110,7 @@ describe('rendering routine', () => {
         );
       });
 
-      it('Should be possible to update from 0 to 1 fragment -> fragment', () => {
+      it('Should be possible to update nested fragment from no children to a fragment wrapping a component', () => {
         function Foobar() {
           return <div>Ok</div>;
         }
@@ -1146,7 +1148,7 @@ describe('rendering routine', () => {
         );
       });
 
-      it('Should be possible to mount and patch single component fragment children', () => {
+      it('Should be possible to mount and patch single component fragment child after hydrating an empty fragment', () => {
         let counter = 0;
 
         class Foobar extends Component {
@@ -1188,7 +1190,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to mount and patch single component fragment children - variation 2', () => {
+      it('Should be possible to patch fragment children array from empty to one, three and zero components', () => {
         let counter = 0;
 
         class Foobar extends Component {
@@ -1296,7 +1298,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to mount and patch single component fragment children', () => {
+      it('Should be possible to patch single component fragment child after hydrating the same component', () => {
         class Foobar extends Component {
           render() {
             return null;
@@ -1334,7 +1336,7 @@ describe('rendering routine', () => {
         expect(container.innerHTML).toBe('');
       });
 
-      it('Should be possible to mount and patch single component fragment children', () => {
+      it('Should be possible to mount and patch single component fragment child after hydrating a null child', () => {
         class Foobar extends Component {
           render() {
             return null;
@@ -1415,7 +1417,262 @@ describe('rendering routine', () => {
     });
   });
 
-  it('Should not re-mount after hydrate render render, Github #1426', () => {
+  // Hydration places vNodes like mounting does, so a vNode referenced in two places must be cloned for the second place
+  describe('shared vNodes', () => {
+    function element(type: string, children, childFlags: ChildFlags) {
+      return createVNode(
+        VNodeFlags.HtmlElement,
+        type,
+        null,
+        children,
+        childFlags,
+      );
+    }
+
+    function textElement(type: string, text: string) {
+      return element(type, text, ChildFlags.HasTextChildren);
+    }
+
+    describe('explicit child flags', () => {
+      it('Should hydrate the same single child in two places', () => {
+        container.innerHTML = '<div><p><b>x</b></p><p><b>x</b></p></div>';
+
+        const shared = textElement('b', 'x');
+
+        hydrate(
+          element(
+            'div',
+            [
+              element('p', shared, ChildFlags.HasVNodeChildren),
+              element('p', shared, ChildFlags.HasVNodeChildren),
+            ],
+            ChildFlags.HasNonKeyedChildren,
+          ),
+          container,
+        );
+
+        render(
+          element(
+            'div',
+            [
+              element('p', textElement('b', 'a'), ChildFlags.HasVNodeChildren),
+              element('p', textElement('b', 'b'), ChildFlags.HasVNodeChildren),
+            ],
+            ChildFlags.HasNonKeyedChildren,
+          ),
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><p><b>a</b></p><p><b>b</b></p></div>',
+        );
+      });
+
+      it('Should hydrate the same vNode twice in one array', () => {
+        container.innerHTML = '<ul><li>x</li><li>x</li></ul>';
+
+        const shared = textElement('li', 'x');
+
+        hydrate(
+          element('ul', [shared, shared], ChildFlags.HasNonKeyedChildren),
+          container,
+        );
+
+        render(
+          element(
+            'ul',
+            [textElement('li', 'a'), textElement('li', 'b')],
+            ChildFlags.HasNonKeyedChildren,
+          ),
+          container,
+        );
+        expect(container.innerHTML).toBe('<ul><li>a</li><li>b</li></ul>');
+      });
+    });
+
+    describe('normalized children', () => {
+      it('Should hydrate the same single child in two places', () => {
+        container.innerHTML = '<div><p><b>x</b></p><p><b>x</b></p></div>';
+
+        const shared = <b>x</b>;
+        const [first, second] = container.querySelectorAll('b');
+
+        hydrate(
+          <div>
+            <p>{shared}</p>
+            <p>{shared}</p>
+          </div>,
+          container,
+        );
+
+        const [hydratedFirst, hydratedSecond] = container.querySelectorAll('b');
+
+        expect(hydratedFirst).toBe(first);
+        expect(hydratedSecond).toBe(second);
+
+        render(
+          <div>
+            <p>{<b>a</b>}</p>
+            <p>{<b>b</b>}</p>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><p><b>a</b></p><p><b>b</b></p></div>',
+        );
+      });
+
+      it('Should hydrate the same array in two places', () => {
+        container.innerHTML =
+          '<div><ul><li>a</li><li>b</li></ul><ol><li>a</li><li>b</li></ol></div>';
+
+        const items = [<li>a</li>, <li>b</li>];
+
+        hydrate(
+          <div>
+            <ul>{items}</ul>
+            <ol>{items}</ol>
+          </div>,
+          container,
+        );
+
+        render(
+          <div>
+            <ul>{items}</ul>
+            <ol>{items}</ol>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><ul><li>a</li><li>b</li></ul><ol><li>a</li><li>b</li></ol></div>',
+        );
+
+        render(
+          <div>
+            <ul>{[<li>c</li>]}</ul>
+            <ol>{[<li>d</li>, <li>e</li>]}</ol>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<div><ul><li>c</li></ul><ol><li>d</li><li>e</li></ol></div>',
+        );
+      });
+
+      it('Should hydrate a Fragment child that is already rendered into another container', () => {
+        const container2 = document.createElement('div');
+        const shared = createTextVNode('x');
+
+        render(<p>{shared}</p>, container2);
+
+        container.innerHTML = '<div>x</div>';
+        hydrate(
+          <div>
+            <Fragment>{shared}</Fragment>
+          </div>,
+          container,
+        );
+
+        render(<p>{createTextVNode('a')}</p>, container2);
+
+        expect(container2.innerHTML).toBe('<p>a</p>');
+        expect(container.innerHTML).toBe('<div>x</div>');
+
+        render(null, container2);
+      });
+    });
+
+    describe('Fragment with one child', () => {
+      it('Should hydrate element child of Fragment', () => {
+        container.innerHTML = '<div><b>x</b></div>';
+
+        const b = container.querySelector('b');
+
+        hydrate(
+          <div>
+            <Fragment>{<b>x</b>}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div><b>x</b></div>');
+        expect(container.querySelector('b')).toBe(b);
+
+        render(
+          <div>
+            <Fragment>{<b>y</b>}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div><b>y</b></div>');
+        expect(container.querySelector('b')).toBe(b);
+      });
+
+      it('Should patch text child of Fragment after hydration', () => {
+        container.innerHTML = '<div>x<br>y</div>';
+
+        hydrate(
+          <div>
+            <Fragment>{createTextVNode('x')}</Fragment>
+            <br />
+            <Fragment>{createTextVNode('y')}</Fragment>
+          </div>,
+          container,
+        );
+        render(
+          <div>
+            <Fragment>{createTextVNode('a')}</Fragment>
+            <br />
+            <Fragment>{createTextVNode('b')}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div>a<br>b</div>');
+      });
+
+      it('Should hydrate component child of Fragment', () => {
+        container.innerHTML = '<div><b>x</b></div>';
+
+        function Child({ text }) {
+          return <b>{text}</b>;
+        }
+
+        hydrate(
+          <div>
+            <Fragment>{<Child text="x" />}</Fragment>
+          </div>,
+          container,
+        );
+        render(
+          <div>
+            <Fragment>{<Child text="y" />}</Fragment>
+          </div>,
+          container,
+        );
+        expect(container.innerHTML).toBe('<div><b>y</b></div>');
+      });
+    });
+
+    describe('root', () => {
+      it('Should hydrate a vNode that is already rendered into another container', () => {
+        const container2 = document.createElement('div');
+        const shared = <span>x</span>;
+
+        render(shared, container2);
+
+        container.innerHTML = '<span>x</span>';
+        hydrate(shared, container);
+
+        render(<span>a</span>, container2);
+        render(<span>b</span>, container);
+
+        expect(container2.innerHTML).toBe('<span>a</span>');
+        expect(container.innerHTML).toBe('<span>b</span>');
+
+        render(null, container2);
+      });
+    });
+  });
+
+  it('Should keep hydrated DOM nodes when rendering the same vtree and then an equal new vtree, Github #1426', () => {
     container.innerHTML = '<div><span>do not replace me</span></div>';
 
     const span = container.firstChild.firstChild;

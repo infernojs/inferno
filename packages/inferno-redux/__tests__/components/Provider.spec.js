@@ -5,7 +5,7 @@ import { findRenderedVNodeWithType } from 'inferno-test-utils';
 import { createStore } from 'redux';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
-describe('redux', () => {
+describe('inferno-redux Provider', () => {
   let container;
 
   beforeEach(() => {

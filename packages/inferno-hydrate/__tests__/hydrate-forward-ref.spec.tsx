@@ -1,4 +1,10 @@
-import { Component, createRef, forwardRef, RefObject, render } from 'inferno';
+import {
+  Component,
+  createRef,
+  forwardRef,
+  type RefObject,
+  render,
+} from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 
 describe('Hydrate - Forward Ref', () => {

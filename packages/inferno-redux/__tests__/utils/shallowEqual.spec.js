@@ -1,6 +1,6 @@
 import { shallowEqual } from 'inferno-redux';
 
-describe('redux', () => {
+describe('inferno-redux shallowEqual', () => {
   describe('utils', () => {
     describe('shallowEqual', () => {
       it('should return true if arguments fields are equal', () => {

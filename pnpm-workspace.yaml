@@ -7,19 +7,15 @@ linkWorkspacePackages: true
 sharedWorkspaceLockfile: true
 strictPeerDependencies: false
 
-overrides:
-  webdriver: 9.27.0
-  webdriverio: 9.27.0
-
 allowBuilds:
+  '@parcel/watcher': true
   '@parcel/watcher@2.5.6': true
   # Unpinned: parcel and the root devDependency drag in several @swc/core versions
   '@swc/core': true
-  edgedriver@6.3.0: true
   # esbuild fetches its platform binary on install (tsx)
   esbuild: true
-  geckodriver@6.1.0: true
   lmdb@2.8.5: true
+  msgpackr-extract: true
   msgpackr-extract@3.0.3: true
   unrs-resolver@1.12.2: true
 
@@ -37,6 +33,34 @@ minimumReleaseAgeExclude:
   - '@swc/core-win32-ia32-msvc@1.16.1'
   - '@swc/core-win32-x64-msvc@1.16.1'
   - '@swc/core@1.16.1'
-  - eslint-plugin-inferno@7.41.0
-  - swc-plugin-inferno@2.17.0
-  - ts-plugin-inferno@6.2.0
+  - eslint-plugin-inferno@7.41.0 || 7.42.0
+  - swc-plugin-inferno@2.17.0 || 3.0.0 || 3.1.0
+  - ts-plugin-inferno@6.2.0 || 7.0.0
+  - '@rollup/rollup-android-arm-eabi@4.63.5'
+  - '@rollup/rollup-android-arm64@4.63.5'
+  - '@rollup/rollup-darwin-arm64@4.63.5'
+  - '@rollup/rollup-darwin-x64@4.63.5'
+  - '@rollup/rollup-freebsd-arm64@4.63.5'
+  - '@rollup/rollup-freebsd-x64@4.63.5'
+  - '@rollup/rollup-linux-arm-gnueabihf@4.63.5'
+  - '@rollup/rollup-linux-arm-musleabihf@4.63.5'
+  - '@rollup/rollup-linux-arm64-gnu@4.63.5'
+  - '@rollup/rollup-linux-arm64-musl@4.63.5'
+  - '@rollup/rollup-linux-loong64-gnu@4.63.5'
+  - '@rollup/rollup-linux-loong64-musl@4.63.5'
+  - '@rollup/rollup-linux-ppc64-gnu@4.63.5'
+  - '@rollup/rollup-linux-ppc64-musl@4.63.5'
+  - '@rollup/rollup-linux-riscv64-gnu@4.63.5'
+  - '@rollup/rollup-linux-riscv64-musl@4.63.5'
+  - '@rollup/rollup-linux-s390x-gnu@4.63.5'
+  - '@rollup/rollup-linux-x64-gnu@4.63.5'
+  - '@rollup/rollup-linux-x64-musl@4.63.5'
+  - '@rollup/rollup-openbsd-x64@4.63.5'
+  - '@rollup/rollup-openharmony-arm64@4.63.5'
+  - '@rollup/rollup-win32-arm64-msvc@4.63.5'
+  - '@rollup/rollup-win32-ia32-msvc@4.63.5'
+  - '@rollup/rollup-win32-x64-gnu@4.63.5'
+  - '@rollup/rollup-win32-x64-msvc@4.63.5'
+  - rollup@4.63.5
+  - babel-plugin-inferno@7.0.0 || 7.1.0
+  - mobx@7.0.5

@@ -3,7 +3,7 @@ import { triggerEvent } from 'inferno-utils';
 import { Link, MemoryRouter } from 'inferno-router';
 
 // These tests are not part of RR4 but it seems to be like they should pass
-describe('Link (jsx)', () => {
+describe('Link (jsx) click handling', () => {
   let node;
   beforeEach(function () {
     node = document.createElement('div');
@@ -15,7 +15,7 @@ describe('Link (jsx)', () => {
     document.body.removeChild(node);
   });
 
-  it('should trigger when clicked', () => {
+  it('should navigate to the `to` path when clicked', () => {
     let history;
     const ContextChecker = (props, context) => {
       history = context.router.history;

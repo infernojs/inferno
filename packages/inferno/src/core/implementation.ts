@@ -26,6 +26,17 @@ import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
 import { type Component, type ComponentType } from './component';
 
 const keyPrefix = '$';
+// Index keys are shared, so comparing a normalized key to the same index key is a reference check
+const indexKeys: string[] = [];
+
+function getIndexKey(index: number): string {
+  let key = indexKeys[index];
+
+  if (key === void 0) {
+    key = indexKeys[index] = keyPrefix + index;
+  }
+  return key;
+}
 
 function V(
   childFlags: ChildFlags,
@@ -304,9 +315,16 @@ export function directClone(vNodeToClone: VNode): VNode {
     }
   }
   if ((flags & VNodeFlags.Fragment) === 0) {
+    const childFlags = vNodeToClone.childFlags;
+    let children = vNodeToClone.children;
+
+    // Mounting and patching write clones into the children array, so the clone needs its own array
+    if (childFlags & ChildFlags.MultipleChildren) {
+      children = (children as VNode[]).slice();
+    }
     return new V(
-      vNodeToClone.childFlags,
-      vNodeToClone.children,
+      childFlags,
+      children,
       vNodeToClone.className,
       flags,
       vNodeToClone.key,
@@ -317,6 +335,24 @@ export function directClone(vNodeToClone: VNode): VNode {
   }
 
   return cloneFragment(vNodeToClone);
+}
+
+/*
+ * vNode can be referenced outside of render and passed to Inferno again,
+ * but it holds the state of its mounted position, so it can be mounted only once.
+ * lastVNode is the vNode previously mounted in the same position, or null when mounting.
+ * When they are the same, vNode can be patched against itself, unless it needs to be re-created.
+ */
+export function mustCloneVNode(
+  vNode: VNode,
+  lastVNode: VNode | null | undefined,
+): boolean {
+  const flags = vNode.flags;
+
+  return (
+    (flags & VNodeFlags.InUse) !== 0 &&
+    (vNode !== lastVNode || (flags & VNodeFlags.ReCreate) !== 0)
+  );
 }
 
 export function createVoidVNode(): VNode {
@@ -361,22 +397,26 @@ export function _normalizeVNodes(
           }
           const oldKey = n.key;
           const isPrefixedKey = isString(oldKey) && oldKey[0] === keyPrefix;
-
-          if (n.flags & VNodeFlags.InUseOrNormalized || isPrefixedKey) {
-            n = directClone(n);
-          }
-
-          n.flags |= VNodeFlags.Normalized;
+          let nextKey = oldKey;
 
           if (!isPrefixedKey) {
             if (isNull(oldKey)) {
-              n.key = newKey;
+              nextKey = newKey;
             } else {
-              n.key = currentKey + oldKey;
+              nextKey = currentKey + oldKey;
             }
           } else if (oldKey.substring(0, currentKey.length) !== currentKey) {
-            n.key = currentKey + oldKey;
+            nextKey = currentKey + oldKey;
           }
+
+          // Key of a vNode used elsewhere must not change, placing the vNode clones it when it is mounted
+          if (nextKey !== oldKey) {
+            if (n.flags & VNodeFlags.InUseOrNormalized || isPrefixedKey) {
+              n = directClone(n);
+            }
+            n.key = nextKey;
+          }
+          n.flags |= VNodeFlags.Normalized;
         }
 
         result.push(n);
@@ -426,24 +466,28 @@ export function normalizeChildren(vNode: VNode, children): VNode {
         break;
       } else if (isStringOrNumber(n)) {
         newChildren = newChildren || children.slice(0, i);
-        newChildren.push(createTextVNode(n, keyPrefix + i));
+        newChildren.push(createTextVNode(n, getIndexKey(i)));
       } else {
         if (process.env.NODE_ENV !== 'production') {
           throwIfObjectIsNotVNode(n);
         }
         const key = n.key;
-        const needsCloning: boolean =
-          (n.flags & VNodeFlags.InUseOrNormalized) > 0;
+        const flags = n.flags;
+        const isOwned: boolean = (flags & VNodeFlags.InUseOrNormalized) > 0;
         const isNullKey: boolean = isNull(key);
         const isPrefixed: boolean = isString(key) && key[0] === keyPrefix;
 
-        if (needsCloning || isNullKey || isPrefixed) {
+        // Owned vNodes are copied to new array, so each parent has its own children array
+        if (isOwned || isNullKey || isPrefixed) {
           newChildren = newChildren || children.slice(0, i);
-          if (needsCloning || isPrefixed) {
-            n = directClone(n);
-          }
-          if (isNullKey || isPrefixed) {
-            n.key = keyPrefix + i;
+          const nextKey = isNullKey || isPrefixed ? getIndexKey(i) : key;
+
+          // Key of a vNode used elsewhere must not change, placing the vNode clones it when it is mounted
+          if (nextKey !== key) {
+            if (isOwned || isPrefixed) {
+              n = directClone(n);
+            }
+            n.key = nextKey;
           }
           newChildren.push(n);
         } else if (newChildren) {
@@ -460,12 +504,9 @@ export function normalizeChildren(vNode: VNode, children): VNode {
       newChildFlags = ChildFlags.HasKeyedChildren;
     }
   } else {
+    // Single child keeps its key, placing the vNode clones it when it is mounted
     newChildren = children;
     newChildren.flags |= VNodeFlags.Normalized;
-
-    if (children.flags & VNodeFlags.InUseOrNormalized) {
-      newChildren = directClone(children as VNode);
-    }
     newChildFlags = ChildFlags.HasVNodeChildren;
   }
 
@@ -475,7 +516,7 @@ export function normalizeChildren(vNode: VNode, children): VNode {
   return vNode;
 }
 
-export function normalizeRoot(input): VNode {
+export function normalizeRoot(input, lastInput?: VNode | null): VNode {
   if (isInvalid(input) || isStringOrNumber(input)) {
     return createTextVNode(input, null);
   }
@@ -483,5 +524,5 @@ export function normalizeRoot(input): VNode {
     return createFragment(input, ChildFlags.UnknownChildren, null);
   }
 
-  return input.flags & VNodeFlags.InUse ? directClone(input) : input;
+  return mustCloneVNode(input, lastInput) ? directClone(input) : input;
 }

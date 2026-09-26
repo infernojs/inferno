@@ -34,7 +34,7 @@ describe('Text', () => {
       expected: '1',
     },
     {
-      name: 'number value (Associative of Addition)',
+      name: 'text of the associative law of addition',
       value: '(a + b) + c = a + (b + c)',
       expected: '(a + b) + c = a + (b + c)',
     },
@@ -44,7 +44,7 @@ describe('Text', () => {
       expected: '123Hello',
     },
     {
-      name: 'number',
+      name: 'numeric string',
       value: '123',
       expected: '123',
     },
@@ -84,12 +84,12 @@ describe('Text', () => {
       expected: '   ',
     },
     {
-      name: 'empty string with one whitespace to left',
+      name: 'letter with one leading whitespace',
       value: ' a',
       expected: ' a',
     },
     {
-      name: 'empty string with triple whitespaces to left',
+      name: 'letter with three leading whitespaces',
       value: '   a',
       expected: '   a',
     },
@@ -110,23 +110,9 @@ describe('Text', () => {
       expect(container.firstChild.textContent).toBe(arg.expected);
     });
 
-    const template2 = () => createElement('div', null, null);
-
-    it('should create a static text node with null', () => {
-      render(template2(), container);
-      expect(container.firstChild.nodeType).toBe(1);
-      expect(container.childNodes.length).toBe(1);
-      expect(container.firstChild.textContent).toBe('');
-
-      render(template2(), container);
-      expect(container.firstChild.nodeType).toBe(1);
-      expect(container.childNodes.length).toBe(1);
-      expect(container.firstChild.textContent).toBe('');
-    });
-
     const template3 = (text) => createElement('div', null, text);
 
-    it(`should create a dynamic text node with ${arg.name} - text property 1`, () => {
+    it(`should create a dynamic text node with ${arg.name} and keep it on re-render`, () => {
       render(template3(arg.value), container);
       expect(container.firstChild.nodeType).toBe(1);
       expect(container.childNodes.length).toBe(1);
@@ -138,7 +124,7 @@ describe('Text', () => {
       expect(container.firstChild.textContent).toBe(arg.expected);
     });
 
-    it(`should create a dynamic text node with ${arg.name} - text property 2`, () => {
+    it(`should create a dynamic text node with ${arg.name} after rendering null`, () => {
       render(template3(null), container);
       expect(container.firstChild.nodeType).toBe(1);
       expect(container.childNodes.length).toBe(1);
@@ -156,7 +142,7 @@ describe('Text', () => {
     it(
       'should create a dynamic text node with ' +
         arg.name +
-        ' - children node text',
+        ' inside a span, asserting the span text',
       () => {
         render(template4(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -177,7 +163,7 @@ describe('Text', () => {
     it(
       'should create a dynamic text node with ' +
         arg.name +
-        ' - single child with text ',
+        ' as the only child node of a div',
       () => {
         render(template5(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -199,7 +185,7 @@ describe('Text', () => {
     it(
       'should create a dynamic text node with ' +
         arg.name +
-        ' - deep child with text property ',
+        ' inside a span, asserting the div text',
       () => {
         render(template6(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -225,7 +211,7 @@ describe('Text', () => {
     it(
       'should create a dynamic text node with ' +
         arg.name +
-        ' - deeper child with text property',
+        ' inside span > b and keep it on re-render',
       () => {
         render(template7(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -244,7 +230,7 @@ describe('Text', () => {
     it(
       'should create a dynamic text node with ' +
         arg.name +
-        ' - deeper child with text property',
+        ' inside span > b after rendering null',
       () => {
         render(template7(null), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -261,34 +247,15 @@ describe('Text', () => {
     );
 
     it(
-      'should create a dynamic text node with ' +
+      'should remove a dynamic text node with ' +
         arg.name +
-        ' - deeper child with text property',
+        ' inside span > b when patched to null',
       () => {
         render(template7(arg.value), container);
         expect(container.firstChild.nodeType).toBe(1);
         expect(container.childNodes.length).toBe(1);
         expect(container.firstChild.childNodes.length).toBe(1);
         expect(container.firstChild.textContent).toBe(arg.expected);
-
-        render(template7(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
-      },
-    );
-
-    it(
-      'should create a dynamic text node with ' +
-        arg.name +
-        ' - deeper child with text property',
-      () => {
-        render(template7(null), container);
-        expect(container.firstChild.nodeType).toBe(1);
-        expect(container.childNodes.length).toBe(1);
-        expect(container.firstChild.childNodes.length).toBe(1);
-        expect(container.firstChild.textContent).toBe('');
 
         render(template7(null), container);
         expect(container.firstChild.nodeType).toBe(1);
@@ -298,6 +265,41 @@ describe('Text', () => {
       },
     );
   }
+
+  const template2 = () => createElement('div', null, null);
+
+  it('should create a static text node with null', () => {
+    render(template2(), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.childNodes.length).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+
+    render(template2(), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.childNodes.length).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+  });
+
+  it('should render an empty span > b when the dynamic text is null on both renders', () => {
+    const template7 = (text) =>
+      createElement(
+        'div',
+        null,
+        createElement('span', null, createElement('b', null, text)),
+      );
+
+    render(template7(null), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.childNodes.length).toBe(1);
+    expect(container.firstChild.childNodes.length).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+
+    render(template7(null), container);
+    expect(container.firstChild.nodeType).toBe(1);
+    expect(container.childNodes.length).toBe(1);
+    expect(container.firstChild.childNodes.length).toBe(1);
+    expect(container.firstChild.textContent).toBe('');
+  });
 
   const multiArray = [
     {
@@ -343,18 +345,6 @@ describe('Text', () => {
       children: 1,
     },
     {
-      name: 'string as null',
-      value: null,
-      expected: '',
-      children: 0,
-    },
-    {
-      name: 'string as undefined',
-      value: null,
-      expected: '',
-      children: 0,
-    },
-    {
       name: 'empty array',
       value: [],
       expected: '',
@@ -379,7 +369,7 @@ describe('Text', () => {
       children: 2,
     },
     {
-      name: 'multiple numbers (math)',
+      name: 'single number (math) in an array',
       value: [12 - 3 - 3 * 4 - 1],
       expected: '-4',
       children: 1,

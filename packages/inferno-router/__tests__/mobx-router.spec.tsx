@@ -4,7 +4,7 @@ import { Route, Router } from 'inferno-router';
 import { createMemoryHistory } from 'history';
 import { action, makeObservable, observable } from 'mobx';
 
-describe('Github #1236', () => {
+describe('inferno-mobx injected observer as a <Route> component, Github #1236', () => {
   let container;
 
   beforeEach(function () {
@@ -18,7 +18,7 @@ describe('Github #1236', () => {
     document.body.removeChild(container);
   });
 
-  it('Should not patch twice', () => {
+  it('Should not patch twice when componentWillReceiveProps updates the store on navigation', () => {
     /*
        Regression for #1236: `observer` must not patch a component twice.
        Originally this store was pasted in as legacy-decorator output; mobx 7

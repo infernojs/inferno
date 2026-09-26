@@ -1,5 +1,11 @@
-import { EMPTY_OBJ, type InfernoNode, type VNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {
+  createFragment,
+  EMPTY_OBJ,
+  type InfernoNode,
+  type VNode,
+} from 'inferno';
+import { isArray } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const rxUnescaped = /["'&<>]/;
 
@@ -120,6 +126,23 @@ export function createDerivedState(
   }
 
   return state;
+}
+
+// Arrays are rendered as the Fragments they are normalized to in the browser
+export function arrayToFragment(vNode) {
+  return isArray(vNode)
+    ? createFragment(vNode, ChildFlags.UnknownChildren)
+    : vNode;
+}
+
+// Fragment without DOM nodes renders a placeholder, which hydration replaces with an empty text node
+export function isEmptyFragment(vNode: VNode): boolean {
+  const children = vNode.children as any;
+
+  if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    return (children.flags & VNodeFlags.Text) !== 0 && children.children === '';
+  }
+  return children.length === 0;
 }
 
 export function renderFunctionalComponent(vNode: VNode, context): InfernoNode {

@@ -144,12 +144,8 @@ describe('SSR Creation (JSX)', () => {
       result: '<div></div>',
     },
     {
-      description: 'Should style attribute if null',
-      template: () => <div style={null} />,
-      result: '<div></div>',
-    },
-    {
-      description: 'should render div with text child (XSS script attack) #2',
+      description:
+        'should render div with text child containing ampersands (XSS script attack)',
       template: () =>
         createElement(
           'div',
@@ -160,37 +156,38 @@ describe('SSR Creation (JSX)', () => {
         '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>',
     },
     {
-      description: 'Should render style opacity #1',
+      description: 'Should render opacity from a style object',
       template: () => <div style={{ opacity: 0.8 }} />,
       result: '<div style="opacity:0.8;"></div>',
     },
     {
-      description: 'Should render style opacity #2',
+      description: 'Should render opacity from a style string',
       template: () => <div style="opacity:0.8;" />,
       result: '<div style="opacity:0.8;"></div>',
     },
     {
-      description: 'Should not render empty style attribute #1',
+      description:
+        'Should not render style attribute for an empty style object',
       template: () => <div style={{}} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #2',
+      description: 'Should not render style attribute when style is null',
       template: () => <div style={null} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #3',
+      description: 'Should not render style attribute when style is false',
       template: () => <div style={false as any} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #4',
+      description: 'Should not render style attribute when style is 0',
       template: () => <div style={0 as any} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #5',
+      description: 'Should not render style attribute when style is true',
       template: () => <div style={true as any} />,
       result: '<div></div>',
     },
@@ -198,11 +195,6 @@ describe('SSR Creation (JSX)', () => {
       description: 'Should render div className as number',
       template: () => <div className={123 as any} />,
       result: '<div class="123"></div>',
-    },
-    {
-      description: 'Should render input defaultValue as number',
-      template: () => <input defaultValue={123} />,
-      result: '<input value="123">',
     },
     {
       description: 'BR should not be closed',
@@ -389,7 +381,7 @@ describe('SSR Creation (JSX)', () => {
       expect(output).toBe('<div><!--!--></div>');
     });
 
-    it('Should render single text node Class Component', () => {
+    it('Should render comment when Class Component returns null', () => {
       class Foobar extends Component {
         render() {
           return null;
@@ -519,7 +511,7 @@ describe('SSR Creation (JSX)', () => {
       expect(wrapperDiv.childNodes[3]).toBe(AnchorNode);
     });
 
-    it('Should be possible to render Fragment #1', () => {
+    it('Should render and hydrate nested fragments with null and text children', () => {
       const vNode = (
         <div>
           {createFragment(
@@ -556,7 +548,7 @@ describe('SSR Creation (JSX)', () => {
       expect(container.querySelector('em')).toBe(emTag);
     });
 
-    it('Should be possible to render Fragment #2', () => {
+    it('Should render and hydrate nested fragments including a component returning a fragment', () => {
       class Fragmented extends Component {
         render() {
           return createFragment(

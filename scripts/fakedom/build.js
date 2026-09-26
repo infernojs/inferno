@@ -34,7 +34,7 @@ const plugins = [
     sourceMaps: false,
     babelrc: false,
     plugins: [
-      ['babel-plugin-inferno', {imports: true, defineAllArguments: true}],
+      ['babel-plugin-inferno', {imports: true, defineAllArguments: true, uselessFlags: 'off'}],
     ]
   }),
   commonjsPlugin({

@@ -1,7 +1,7 @@
 import { Component, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 
-describe('CreateElement (non-JSX)', () => {
+describe('CreateElement (non-JSX) TypeScript typing of children and props', () => {
   let container;
 
   beforeEach(function () {

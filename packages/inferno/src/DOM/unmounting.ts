@@ -102,6 +102,8 @@ export function unmount(vNode, animations: AnimationQueues): void {
     } else if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags & ChildFlags.MultipleChildren) {
         unmountAllChildren(children, animations);
+      } else {
+        unmount(children, animations);
       }
     }
   }

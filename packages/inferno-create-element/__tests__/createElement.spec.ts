@@ -9,7 +9,7 @@ import {
 } from 'inferno';
 import { createElement } from 'inferno-create-element';
 
-describe('CreateElement (non-JSX)', () => {
+describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
   let container;
 
   beforeEach(function () {

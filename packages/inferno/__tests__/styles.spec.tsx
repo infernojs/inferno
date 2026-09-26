@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { type PropertiesHyphen } from 'csstype';
+import type { PropertiesHyphen } from 'csstype';
 
 function styleNode(style) {
   return <div style={style} />;

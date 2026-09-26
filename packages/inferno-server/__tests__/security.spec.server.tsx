@@ -49,7 +49,7 @@ describe('Security - SSR', () => {
 
   describe('streams', () => {
     for (const method of [streamAsString, streamQueueAsString]) {
-      it('Should not render invalid attribute names', () => {
+      it(`Should not render invalid attribute names with ${method.name}`, () => {
         const props = {};
         const userProvidedData = '></div><script>alert("hi")</script>';
 
@@ -60,7 +60,7 @@ describe('Security - SSR', () => {
         });
       });
 
-      it('should reject attribute key injection attack on markup', (done) => {
+      it(`should reject attribute key injection of an onclick attribute with ${method.name}`, (done) => {
         const element1 = createElement(
           'div',
           { 'blah" onclick="beevil" noise="hi': 'selected' },
@@ -72,7 +72,7 @@ describe('Security - SSR', () => {
         });
       });
 
-      it('should reject attribute key injection attack on markup #2', (done) => {
+      it(`should reject attribute key injection of a script tag with ${method.name}`, (done) => {
         const element2 = createElement(
           'div',
           { '></div><script>alert("hi")</script>': 'selected' },

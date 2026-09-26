@@ -106,7 +106,7 @@ describe('patching keyed lists (non-jsx)', () => {
     render(createElement('div', null, renderTree(dataModel)), container);
   }
 
-  it('should render various combinations', () => {
+  it('should render keyed lists of various sizes after reversing and shuffling them', () => {
     let dataModel = dataModels[0];
 
     renderModel(dataModel);
@@ -202,7 +202,7 @@ describe('patching keyed lists (non-jsx)', () => {
     render(null, container);
   });
 
-  it('Portal content should stay within its own portal - Github #1421', () => {
+  it('Nested fragment should keep its content in place when switching 2 elements to 1 item and back - Github #1421', () => {
     const f = (...xs) => createFragment(xs, 0);
 
     class App extends Component {
@@ -247,7 +247,7 @@ describe('patching keyed lists (non-jsx)', () => {
     render(createElement(App), container);
   });
 
-  it('Portal content should stay within its own portal - Github #1421 - variation 2', () => {
+  it('Nested fragment should keep its content in place when switching 2 elements to 2 items and back - Github #1421', () => {
     const f = (...xs) => createFragment(xs, 0);
 
     class App extends Component {
@@ -292,7 +292,7 @@ describe('patching keyed lists (non-jsx)', () => {
     render(createElement(App), container);
   });
 
-  it('Portal content should stay within its own portal - Github #1421 - variation 3', () => {
+  it('Nested fragment should keep its content in place when switching 2 elements to 3 items and back - Github #1421', () => {
     const f = (...xs) => createFragment(xs, 0);
 
     class App extends Component {

@@ -4,6 +4,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,
+  mustCloneVNode,
   normalizeRoot,
 } from '../core/implementation';
 import type { Component } from './../core/component';
@@ -17,13 +18,12 @@ import {
 } from './unmounting';
 import {
   type AnimationQueues,
-  appendChild,
+  appendVNodeDOM,
   callAllMoveAnimationHooks,
   createDerivedState,
   EMPTY_OBJ,
   findDOMFromVNode,
   moveVNodeDOM,
-  removeChild,
   removeVNodeDOM,
   replaceChild,
   setTextContent,
@@ -82,7 +82,8 @@ export function patch(
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
   if (
-    lastVNode.flags !== nextFlags ||
+    // Normalized flag tells only whether the vNode has been normalized, it is not part of the vNode type
+    ((lastVNode.flags ^ nextFlags) & ~VNodeFlags.Normalized) !== 0 ||
     lastVNode.type !== nextVNode.type ||
     lastVNode.key !== nextVNode.key ||
     nextFlags & VNodeFlags.ReCreate
@@ -198,6 +199,10 @@ function patchFragment(
   const nextIsSingle: boolean =
     (nextChildFlags & ChildFlags.HasVNodeChildren) !== 0;
 
+  if (nextIsSingle && mustCloneVNode(nextChildren, lastChildren as any)) {
+    nextChildren = nextVNode.children = directClone(nextChildren);
+  }
+
   if (lastChildFlags & ChildFlags.MultipleChildren) {
     const lastLen = lastChildren.length;
 
@@ -241,7 +246,14 @@ function patchPortal(
 ): void {
   const lastContainer = lastVNode.ref as Element;
   const nextContainer = nextVNode.ref as Element;
-  const nextChildren = nextVNode.children as VNode;
+  let nextChildren = nextVNode.children as VNode;
+
+  if (
+    nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
+    mustCloneVNode(nextChildren, lastVNode.children as VNode)
+  ) {
+    nextChildren = nextVNode.children = directClone(nextChildren);
+  }
 
   patchChildren(
     lastVNode.childFlags,
@@ -260,10 +272,7 @@ function patchPortal(
   nextVNode.dom = lastVNode.dom;
 
   if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
-    const node = nextChildren.dom as Element;
-
-    removeChild(lastContainer, node);
-    appendChild(nextContainer, node);
+    appendVNodeDOM(nextChildren, nextContainer);
   }
 }
 
@@ -333,7 +342,7 @@ export function patchElement(
       }
     }
   }
-  const nextChildren = nextVNode.children;
+  let nextChildren = nextVNode.children;
   const nextClassName = nextVNode.className;
 
   // inlined patchProps  -- ends --
@@ -353,6 +362,12 @@ export function patchElement(
   if (nextFlags & VNodeFlags.ContentEditable) {
     patchContentEditableChildren(dom, nextChildren);
   } else {
+    if (
+      nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
+      mustCloneVNode(nextChildren as VNode, lastVNode.children as VNode)
+    ) {
+      nextChildren = nextVNode.children = directClone(nextChildren as VNode);
+    }
     patchChildren(
       lastVNode.childFlags,
       nextVNode.childFlags,
@@ -688,7 +703,12 @@ export function updateClassComponent(
     instance.state = nextState;
     instance.context = context;
     let snapshot = null;
-    const nextInput = renderNewInput(instance, nextProps, context);
+    const nextInput = renderNewInput(
+      instance,
+      nextProps,
+      context,
+      instance.$LI,
+    );
 
     if (usesNewAPI && isFunction(instance.getSnapshotBeforeUpdate)) {
       snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState);
@@ -802,6 +822,7 @@ function patchFunctionalComponent(
     }
     const nextInput = normalizeRoot(
       renderFunctionalComponent(nextVNode, context),
+      lastInput,
     );
 
     patch(
@@ -832,6 +853,25 @@ function patchText(lastVNode: VNode, nextVNode: VNode): void {
   }
 }
 
+// Patching does not change last children, so that vNodes can be rendered again.
+// When patching throws, last children are updated to vNodes that were patched already, so the next render continues from the current DOM.
+function syncLastChildren(
+  lastChildren: VNode[],
+  nextChildren: VNode[],
+  start: number,
+  end: number,
+): void {
+  const lastLength = lastChildren.length;
+  const nextLength = nextChildren.length;
+
+  for (let i = 0; i < start; ++i) {
+    lastChildren[i] = nextChildren[i];
+  }
+  for (let i = 1; i <= end; ++i) {
+    lastChildren[lastLength - i] = nextChildren[nextLength - i];
+  }
+}
+
 function patchNonKeyedChildren(
   lastChildren,
   nextChildren,
@@ -852,39 +892,48 @@ function patchNonKeyedChildren(
   let nextChild;
   let lastChild;
 
-  for (; i < commonLength; ++i) {
-    nextChild = nextChildren[i];
-    lastChild = lastChildren[i];
-
-    if (nextChild.flags & VNodeFlags.InUse) {
-      nextChild = nextChildren[i] = directClone(nextChild);
-    }
-
-    patch(
-      lastChild,
-      nextChild,
-      dom,
-      context,
-      isSVG,
-      nextNode,
-      lifecycle,
-      animations,
-    );
-    lastChildren[i] = nextChild;
-  }
-  if (lastChildrenLength < nextChildrenLength) {
-    for (i = commonLength; i < nextChildrenLength; ++i) {
+  try {
+    for (; i < commonLength; ++i) {
       nextChild = nextChildren[i];
+      lastChild = lastChildren[i];
 
-      if (nextChild.flags & VNodeFlags.InUse) {
+      if (mustCloneVNode(nextChild, lastChild)) {
         nextChild = nextChildren[i] = directClone(nextChild);
       }
-      mount(nextChild, dom, context, isSVG, nextNode, lifecycle, animations);
+
+      patch(
+        lastChild,
+        nextChild,
+        dom,
+        context,
+        isSVG,
+        nextNode,
+        lifecycle,
+        animations,
+      );
     }
-  } else if (lastChildrenLength > nextChildrenLength) {
-    for (i = commonLength; i < lastChildrenLength; ++i) {
-      remove(lastChildren[i], dom, animations);
+    if (lastChildrenLength < nextChildrenLength) {
+      for (i = commonLength; i < nextChildrenLength; ++i) {
+        nextChild = nextChildren[i];
+
+        if (mustCloneVNode(nextChild, null)) {
+          nextChild = nextChildren[i] = directClone(nextChild);
+        }
+        mount(nextChild, dom, context, isSVG, nextNode, lifecycle, animations);
+      }
+    } else if (lastChildrenLength > nextChildrenLength) {
+      for (i = commonLength; i < lastChildrenLength; ++i) {
+        remove(lastChildren[i], dom, animations);
+      }
     }
+  } catch (e) {
+    syncLastChildren(
+      lastChildren,
+      nextChildren,
+      i < commonLength ? i : commonLength,
+      0,
+    );
+    throw e;
   }
 }
 
@@ -908,98 +957,105 @@ function patchKeyedChildren(
   let bNode: VNode = b[j];
   let nextPos: number;
   let nextNode;
+  // Count of vNodes patched at the beginning and at the end
+  let synced = 0;
+  let syncedEnd = 0;
 
-  // Step 1
-  outer: {
-    // Sync nodes with the same key at the beginning.
-    while (aNode.key === bNode.key) {
-      if (bNode.flags & VNodeFlags.InUse) {
-        b[j] = bNode = directClone(bNode);
-      }
-      patch(
-        aNode,
-        bNode,
-        dom,
-        context,
-        isSVG,
-        outerEdge,
-        lifecycle,
-        animations,
-      );
-      a[j] = bNode;
-      ++j;
-      if (j > aEnd || j > bEnd) {
-        break outer;
-      }
-      aNode = a[j];
-      bNode = b[j];
-    }
-
-    aNode = a[aEnd];
-    bNode = b[bEnd];
-
-    // Sync nodes with the same key at the end.
-    while (aNode.key === bNode.key) {
-      if (bNode.flags & VNodeFlags.InUse) {
-        b[bEnd] = bNode = directClone(bNode);
-      }
-      patch(
-        aNode,
-        bNode,
-        dom,
-        context,
-        isSVG,
-        outerEdge,
-        lifecycle,
-        animations,
-      );
-      a[aEnd] = bNode;
-      aEnd--;
-      bEnd--;
-      if (j > aEnd || j > bEnd) {
-        break outer;
-      }
-      aNode = a[aEnd];
-      bNode = b[bEnd];
-    }
-  }
-
-  if (j > aEnd) {
-    if (j <= bEnd) {
-      nextPos = bEnd + 1;
-      nextNode =
-        nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge;
-
-      while (j <= bEnd) {
-        bNode = b[j];
-        if (bNode.flags & VNodeFlags.InUse) {
+  try {
+    // Step 1
+    outer: {
+      // Sync nodes with the same key at the beginning.
+      while (aNode.key === bNode.key) {
+        if (mustCloneVNode(bNode, aNode)) {
           b[j] = bNode = directClone(bNode);
         }
-        ++j;
-        mount(bNode, dom, context, isSVG, nextNode, lifecycle, animations);
+        patch(
+          aNode,
+          bNode,
+          dom,
+          context,
+          isSVG,
+          outerEdge,
+          lifecycle,
+          animations,
+        );
+        synced = ++j;
+        if (j > aEnd || j > bEnd) {
+          break outer;
+        }
+        aNode = a[j];
+        bNode = b[j];
+      }
+
+      aNode = a[aEnd];
+      bNode = b[bEnd];
+
+      // Sync nodes with the same key at the end.
+      while (aNode.key === bNode.key) {
+        if (mustCloneVNode(bNode, aNode)) {
+          b[bEnd] = bNode = directClone(bNode);
+        }
+        patch(
+          aNode,
+          bNode,
+          dom,
+          context,
+          isSVG,
+          outerEdge,
+          lifecycle,
+          animations,
+        );
+        syncedEnd++;
+        aEnd--;
+        bEnd--;
+        if (j > aEnd || j > bEnd) {
+          break outer;
+        }
+        aNode = a[aEnd];
+        bNode = b[bEnd];
       }
     }
-  } else if (j > bEnd) {
-    while (j <= aEnd) {
-      remove(a[j++], dom, animations);
+
+    if (j > aEnd) {
+      if (j <= bEnd) {
+        nextPos = bEnd + 1;
+        nextNode =
+          nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge;
+
+        while (j <= bEnd) {
+          bNode = b[j];
+          if (mustCloneVNode(bNode, null)) {
+            b[j] = bNode = directClone(bNode);
+          }
+          ++j;
+          mount(bNode, dom, context, isSVG, nextNode, lifecycle, animations);
+        }
+      }
+    } else if (j > bEnd) {
+      while (j <= aEnd) {
+        remove(a[j++], dom, animations);
+      }
+    } else {
+      patchKeyedChildrenComplex(
+        a,
+        b,
+        context,
+        aLength,
+        bLength,
+        aEnd,
+        bEnd,
+        j,
+        dom,
+        isSVG,
+        outerEdge,
+        parentVNode,
+        lifecycle,
+        animations,
+      );
     }
-  } else {
-    patchKeyedChildrenComplex(
-      a,
-      b,
-      context,
-      aLength,
-      bLength,
-      aEnd,
-      bEnd,
-      j,
-      dom,
-      isSVG,
-      outerEdge,
-      parentVNode,
-      lifecycle,
-      animations,
-    );
+  } catch (e) {
+    syncLastChildren(a, b, synced, syncedEnd);
+    throw e;
   }
 }
 
@@ -1056,7 +1112,7 @@ function patchKeyedChildrenComplex(
             } else {
               pos = j;
             }
-            if (bNode.flags & VNodeFlags.InUse) {
+            if (mustCloneVNode(bNode, aNode)) {
               b[j] = bNode = directClone(bNode);
             }
             patch(
@@ -1109,7 +1165,7 @@ function patchKeyedChildrenComplex(
             pos = j;
           }
           bNode = b[j];
-          if (bNode.flags & VNodeFlags.InUse) {
+          if (mustCloneVNode(bNode, aNode)) {
             b[j] = bNode = directClone(bNode);
           }
           patch(
@@ -1150,7 +1206,7 @@ function patchKeyedChildrenComplex(
       if (sources[i] === 0) {
         pos = i + bStart;
         bNode = b[pos];
-        if (bNode.flags & VNodeFlags.InUse) {
+        if (mustCloneVNode(bNode, null)) {
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;
@@ -1191,7 +1247,7 @@ function patchKeyedChildrenComplex(
       if (sources[i] === 0) {
         pos = i + bStart;
         bNode = b[pos];
-        if (bNode.flags & VNodeFlags.InUse) {
+        if (mustCloneVNode(bNode, null)) {
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;
