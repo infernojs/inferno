@@ -104,6 +104,41 @@ const CASES: FuzzCase[] = [
       },
     ],
   },
+  {
+    seed: 54,
+    name: 'server render a component returning an array with a hole',
+    pool: [],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [{ t: 'wrap', key: null, children: [null] }],
+          },
+        },
+      },
+    ],
+  },
+  {
+    seed: 60,
+    name: 'server render a hoisted component returning an array with a hole',
+    pool: [{ t: 'wrap', key: null, children: [null] }],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+    ],
+  },
 ];
 
 describe('vNode reuse hydration cases found by fuzzing', () => {

@@ -1,5 +1,11 @@
-import { EMPTY_OBJ, type InfernoNode, type VNode } from 'inferno';
-import { VNodeFlags } from 'inferno-vnode-flags';
+import {
+  createFragment,
+  EMPTY_OBJ,
+  type InfernoNode,
+  type VNode,
+} from 'inferno';
+import { isArray } from 'inferno-shared';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const rxUnescaped = /["'&<>]/;
 
@@ -120,6 +126,13 @@ export function createDerivedState(
   }
 
   return state;
+}
+
+// Arrays are rendered as the Fragments they are normalized to in the browser
+export function arrayToFragment(vNode) {
+  return isArray(vNode)
+    ? createFragment(vNode, ChildFlags.UnknownChildren)
+    : vNode;
 }
 
 export function renderFunctionalComponent(vNode: VNode, context): InfernoNode {

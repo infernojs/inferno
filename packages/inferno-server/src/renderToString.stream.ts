@@ -1,5 +1,4 @@
 import {
-  isArray,
   isFunction,
   isInvalid,
   isNull,
@@ -11,6 +10,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStyleAttribute } from './prop-renderers';
 import {
+  arrayToFragment,
   createDerivedState,
   escapeText,
   isAttributeNameSafe,
@@ -50,6 +50,7 @@ export class RenderStream extends Readable {
   }
 
   public renderNode(vNode, context) {
+    vNode = arrayToFragment(vNode);
     const flags = vNode.flags;
 
     if ((flags & VNodeFlags.Component) > 0) {
@@ -62,32 +63,25 @@ export class RenderStream extends Readable {
     if ((flags & VNodeFlags.Element) > 0) {
       return this.renderElement(vNode, context);
     }
-    if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
-      return this.renderArrayOrFragment(vNode, context);
+    if ((flags & VNodeFlags.Fragment) !== 0) {
+      return this.renderFragment(vNode, context);
     }
 
     this.renderText(vNode);
   }
 
-  public renderArrayOrFragment(vNode, context) {
-    const childFlags = vNode.childFlags;
-
-    if (
-      childFlags === ChildFlags.HasVNodeChildren ||
-      (isArray(vNode) && vNode.length === 0)
-    ) {
+  public renderFragment(vNode, context) {
+    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
       return this.push('<!--!-->');
-    } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
-      const children = isArray(vNode) ? vNode : vNode.children;
-
-      return (children as VNode[]).reduce(async (p, child) => {
-        return await p.then(async () => {
-          return await Promise.resolve(this.renderNode(child, context)).then(
-            () => !!(child.flags & VNodeFlags.Text),
-          );
-        });
-      }, Promise.resolve(false));
     }
+
+    return (vNode.children as VNode[]).reduce(async (p, child) => {
+      return await p.then(async () => {
+        return await Promise.resolve(this.renderNode(child, context)).then(
+          () => !!(child.flags & VNodeFlags.Text),
+        );
+      });
+    }, Promise.resolve(false));
   }
 
   public renderComponent(vComponent, context, isClass) {
