@@ -35,7 +35,8 @@ export default {
         "experimental": {
           "plugins": [
             ["swc-plugin-inferno", {
-              "pure": false
+              "pure": false,
+              "uselessFlags": "off"
             }]
           ],
         },

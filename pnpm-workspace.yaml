@@ -15,6 +15,7 @@ allowBuilds:
   # esbuild fetches its platform binary on install (tsx)
   esbuild: true
   lmdb@2.8.5: true
+  msgpackr-extract: true
   msgpackr-extract@3.0.3: true
   unrs-resolver@1.12.2: true
 
@@ -32,9 +33,9 @@ minimumReleaseAgeExclude:
   - '@swc/core-win32-ia32-msvc@1.16.1'
   - '@swc/core-win32-x64-msvc@1.16.1'
   - '@swc/core@1.16.1'
-  - eslint-plugin-inferno@7.41.0
-  - swc-plugin-inferno@2.17.0
-  - ts-plugin-inferno@6.2.0
+  - eslint-plugin-inferno@7.41.0 || 7.42.0
+  - swc-plugin-inferno@2.17.0 || 3.0.0 || 3.1.0
+  - ts-plugin-inferno@6.2.0 || 7.0.0
   - '@rollup/rollup-android-arm-eabi@4.63.5'
   - '@rollup/rollup-android-arm64@4.63.5'
   - '@rollup/rollup-darwin-arm64@4.63.5'
@@ -61,4 +62,5 @@ minimumReleaseAgeExclude:
   - '@rollup/rollup-win32-x64-gnu@4.63.5'
   - '@rollup/rollup-win32-x64-msvc@4.63.5'
   - rollup@4.63.5
-  - babel-plugin-inferno@7.0.0
+  - babel-plugin-inferno@7.0.0 || 7.1.0
+  - mobx@7.0.5

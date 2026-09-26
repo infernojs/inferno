@@ -25,7 +25,7 @@ const rulesByVariant = {
           ],
         ],
         plugins: [
-          ['babel-plugin-inferno', { imports: true }],
+          ['babel-plugin-inferno', { imports: true, uselessFlags: 'off' }],
           '@babel/plugin-transform-class-properties',
         ],
       },
@@ -44,7 +44,7 @@ const rulesByVariant = {
           moduleResolution: 'bundler',
         },
         getCustomTransformers: () => ({
-          after: [transformInferno()],
+          after: [transformInferno({ uselessFlags: 'off' })],
         }),
       },
     },
@@ -65,7 +65,7 @@ const rulesByVariant = {
           '@babel/typescript',
         ],
         plugins: [
-          ['babel-plugin-inferno', { imports: true }],
+          ['babel-plugin-inferno', { imports: true, uselessFlags: 'off' }],
           '@babel/plugin-transform-class-properties',
         ],
       },
@@ -84,7 +84,7 @@ const rulesByVariant = {
               tsx: true,
             },
             experimental: {
-              plugins: [['swc-plugin-inferno', {}]],
+              plugins: [['swc-plugin-inferno', { uselessFlags: 'off' }]],
             },
             target: 'es2022',
             loose: true,
