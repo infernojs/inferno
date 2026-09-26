@@ -84,7 +84,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<div><span></span></div>',
     },
     {
-      description: 'should render div with span child and styling',
+      description: 'should render div with span child and style string',
       template: () =>
         createElement(
           'div',
@@ -106,7 +106,8 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     //   result: '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
     // },
     {
-      description: 'should render div with span child and styling #2',
+      description:
+        'should render div with span child and border-left style object',
       template: () =>
         createElement(
           'div',
@@ -116,7 +117,8 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<div><span style="border-left:10px;"></span></div>',
     },
     {
-      description: 'should render div with span child and styling #3',
+      description:
+        'should render div with span child and font-family style object',
       template: () =>
         createElement(
           'div',
@@ -136,7 +138,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<div class="foo"><span class="bar"></span></div>',
     },
     {
-      description: 'should render div with text child #1',
+      description: 'should render div with text child',
       template: () => createElement('div', null, 'Hello world'),
       result: '<div>Hello world</div>',
     },
@@ -185,7 +187,8 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<div><span>Hello</span><span> world!</span></div>',
     },
     {
-      description: 'should render div with node children #2',
+      description:
+        'should render div with node children that have id and className',
       template: () =>
         createElement(
           'div',
@@ -243,7 +246,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
     // Following tests check for not only concatenated output, but chunked streams
     {
-      description: 'should render a stateless component',
+      description: 'should stream a stateless component as separate chunks',
       template: (value) =>
         createElement(
           'div',
@@ -319,12 +322,12 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<div style="opacity:0.8;"></div>',
     },
     {
-      description: 'Should render div className as number',
+      description: 'Should render div className as number (createElement)',
       template: () => createElement('div', { className: 123 }),
       result: '<div class="123"></div>',
     },
     {
-      description: 'Should render input defaultValue as number',
+      description: 'Should render input defaultValue as number (createElement)',
       template: () => createElement('input', { defaultValue: 123 }),
       result: '<input value="123">',
     },
@@ -451,12 +454,8 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<div></div>',
     },
     {
-      description: 'Should style attribute if null',
-      template: () => <div style={null} />,
-      result: '<div></div>',
-    },
-    {
-      description: 'should render div with text child (XSS script attack) #2',
+      description:
+        'should render div with text child containing ampersands (XSS script attack)',
       template: () =>
         createElement(
           'div',
@@ -467,49 +466,45 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>',
     },
     {
-      description: 'Should render style opacity #1',
+      description: 'Should render opacity from a style object (JSX)',
       template: () => <div style={{ opacity: 0.8 }} />,
       result: '<div style="opacity:0.8;"></div>',
     },
     {
-      description: 'Should not render empty style attribute #1',
+      description:
+        'Should not render style attribute for an empty style object',
       template: () => <div style={{}} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #2',
+      description: 'Should not render style attribute when style is null',
       template: () => <div style={null} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #3',
+      description: 'Should not render style attribute when style is false',
       template: () => <div style={false as any} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #4',
+      description: 'Should not render style attribute when style is 0',
       template: () => <div style={0 as any} />,
       result: '<div></div>',
     },
     {
-      description: 'Should not render empty style attribute #5',
+      description: 'Should not render style attribute when style is true',
       template: () => <div style={true as any} />,
       result: '<div></div>',
     },
     {
-      description: 'Should render style opacity #2',
+      description: 'Should render opacity from a style string (JSX)',
       template: () => <div style="opacity:0.8;" />,
       result: '<div style="opacity:0.8;"></div>',
     },
     {
-      description: 'Should render div className as number',
+      description: 'Should render div className as number (JSX)',
       template: () => <div className={123 as any} />,
       result: '<div class="123"></div>',
-    },
-    {
-      description: 'Should render input defaultValue as number',
-      template: () => <input defaultValue={123} />,
-      result: '<input value="123">',
     },
     {
       description: 'BR should not be closed',
@@ -734,7 +729,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       });
     });
 
-    it('Should render single text node Class Component', async () => {
+    it('Should render comment when Class Component returns null', async () => {
       class Foobar extends Component {
         render() {
           return null;

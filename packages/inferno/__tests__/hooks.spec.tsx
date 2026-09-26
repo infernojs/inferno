@@ -217,7 +217,7 @@ describe('Component lifecycle (JSX)', () => {
       expect(DSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('Should trigger unMount once for direct nested children', () => {
+    it('Should trigger unmount once for each root component replaced by another component', () => {
       class B extends Component {
         public componentWillUnmount() {}
 
@@ -911,7 +911,7 @@ describe('Component lifecycle (JSX)', () => {
     });
   });
 
-  describe('ref hook #2 with statefull components', () => {
+  describe('ref hook with stateful class components', () => {
     const fakeObj = {
       previousSiblingCallback() {},
       innerCallback() {},
@@ -969,7 +969,7 @@ describe('Component lifecycle (JSX)', () => {
       );
     });
 
-    it('Should call function when node is attached #2', () => {
+    it('Should call function when node is attached', () => {
       expect(spyPreviousSibling).not.toHaveBeenCalled();
       expect(spyInner).not.toHaveBeenCalled();
       expect(spyInnerSecond).not.toHaveBeenCalled();
@@ -997,7 +997,7 @@ describe('Component lifecycle (JSX)', () => {
       );
     });
 
-    it('Should call ref functions in order: child to parent #2', () => {
+    it('Should call ref functions in order: child to parent', () => {
       expect(spyPreviousSibling).not.toHaveBeenCalled();
       expect(spyInner).not.toHaveBeenCalled();
       expect(spyInnerSecond).not.toHaveBeenCalled();
@@ -1097,7 +1097,7 @@ describe('Component lifecycle (JSX)', () => {
     });
   });
 
-  describe('ref hook complex #2 statefull components', () => {
+  describe('ref hook complex with stateful class components', () => {
     const fakeObj = {
       previousSiblingCallback() {},
       innerCallback() {},
@@ -1190,7 +1190,7 @@ describe('Component lifecycle (JSX)', () => {
       spyInnerSecond.calls.reset();
     });
 
-    it('Should not call ref unmount when node is not mounted #2', () => {
+    it('Should not call ref unmount when node is not mounted', () => {
       expect(spyPreviousSibling).not.toHaveBeenCalled();
       expect(spyInner).not.toHaveBeenCalled();
       expect(spyInnerSecond).not.toHaveBeenCalled();
@@ -1285,7 +1285,7 @@ describe('Component lifecycle (JSX)', () => {
   });
 
   describe('ES6 Component within functional component', () => {
-    it('Should trigger lifecycle events when functional component change', () => {
+    it('Should unmount child class component when the functional parent is replaced by another function', () => {
       let unmounted = false;
 
       function A() {
@@ -1322,7 +1322,7 @@ describe('Component lifecycle (JSX)', () => {
       expect(container.innerHTML).toEqual('<div><div>C</div></div>');
     });
 
-    it('Should trigger lifecycle events when functional component dont change', () => {
+    it('Should not unmount child class component when the same functional parent is re-rendered', () => {
       let unmounted = false;
 
       function A() {

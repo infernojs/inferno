@@ -218,7 +218,7 @@ describe('ReactMount', function () {
     ReactDOM.unmountComponentAtNode(container);
   });
 
-  it('should not crash in node cache when unmounting, case 2', function () {
+  it('should not crash in node cache when removing and re-adding a keyed child component', function () {
     class A extends React.Component {
       render() {
         return <a key={this.props.innerKey}>{this.props.innerKey}</a>;

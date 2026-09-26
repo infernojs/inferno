@@ -85,7 +85,7 @@ describe('state', () => {
   });
 
   describe('didUpdate and setState', () => {
-    it('order', (done) => {
+    it('Should pass pre-update prevState to componentDidUpdate after setState in componentWillReceiveProps', (done) => {
       class Test extends Component<{ scrollTop: number }, any> {
         public state = {
           testScrollTop: 0,

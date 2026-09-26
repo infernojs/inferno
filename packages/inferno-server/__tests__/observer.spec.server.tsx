@@ -17,7 +17,7 @@ describe('Mobx Observer Server', () => {
     document.body.removeChild(container);
   });
 
-  it('does not views alive when using static + string rendering', function () {
+  it('does not keep views alive when using static + string rendering', function () {
     useStaticRendering(true);
 
     let renderCount = 0;

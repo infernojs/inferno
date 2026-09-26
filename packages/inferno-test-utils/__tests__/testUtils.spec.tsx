@@ -725,7 +725,7 @@ describe('Test Utils', () => {
       </div>,
     );
 
-    it('should throw an error when more than one result is found #1', () => {
+    it('should throw an error when more than one element has the class', () => {
       const testValue = (classNames) => {
         expect(() => {
           findRenderedDOMElementWithClass(tree7, classNames);
@@ -778,7 +778,7 @@ describe('Test Utils', () => {
       </div>,
     );
 
-    it('should throw an error when more than one result is found #2', () => {
+    it('should throw an error when more than one element has the tag', () => {
       const testValue = (tagName) => {
         expect(() => {
           findRenderedDOMElementWithTag(tree8, tagName);
@@ -811,7 +811,7 @@ describe('Test Utils', () => {
       </div>,
     );
 
-    it('should throw an error when more than one result is found #3', () => {
+    it('should throw an error when more than one rendered VNode has the type', () => {
       const testValue = (type) => {
         expect(() => {
           findRenderedVNodeWithType(tree9, type);
@@ -821,7 +821,7 @@ describe('Test Utils', () => {
       testValue(FunctionalComponent);
     });
 
-    it('should return a matched VNode #1', () => {
+    it('should return the single rendered VNode matching the type', () => {
       const testValue = (type) => {
         const result = findRenderedVNodeWithType(tree9, type);
         expect(result instanceof Object).toBeTruthy();
@@ -848,7 +848,7 @@ describe('Test Utils', () => {
       </div>
     );
 
-    it('should throw an error when more than one result is found #4', () => {
+    it('should throw an error when more than one VNode in the tree has the type', () => {
       const testValue = (type) => {
         expect(() => {
           findVNodeWithType(tree10, type);
@@ -858,7 +858,7 @@ describe('Test Utils', () => {
       testValue(FunctionalComponent);
     });
 
-    it('should return a matched VNode #2', () => {
+    it('should return the single VNode in the tree matching the type', () => {
       const testValue = (type) => {
         const result = findVNodeWithType(tree10, type);
         expect(result instanceof Object).toBeTruthy();

@@ -1,7 +1,7 @@
 import { type InfernoNode, render } from 'inferno';
 import { AnimatedComponent } from 'inferno-animation';
 
-describe('inferno-animation AnimatedComponent', () => {
+describe('inferno-animation AnimatedComponent typings', () => {
   let container;
 
   beforeEach(function () {

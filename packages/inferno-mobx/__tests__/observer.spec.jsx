@@ -184,7 +184,7 @@ describe('Mobx Observer', () => {
     done();
   });
 
-  it('does not views alive when using static rendering', () => {
+  it('does not keep views alive when using static rendering', () => {
     useStaticRendering(true);
 
     let renderCount = 0;
@@ -215,7 +215,7 @@ describe('Mobx Observer', () => {
     useStaticRendering(false);
   });
 
-  it('issue 12', function () {
+  it('renders only the replacement row after renaming and replacing rows in one action, issue 12', function () {
     const data = observable({
       selected: 'coffee',
       items: [

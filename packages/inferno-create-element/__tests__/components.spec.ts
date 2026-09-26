@@ -14,7 +14,7 @@ describe('Components (non-JSX)', () => {
     document.body.removeChild(container);
   });
 
-  it('should pass', () => {
+  it('should run a placeholder spec so the suite is not empty when JSDOM skips the browser-only specs', () => {
     expect(true).toBeTruthy();
   });
 
@@ -331,7 +331,7 @@ describe('Components (non-JSX)', () => {
       }
     }
 
-    it('should render a basic component with inputs #3 #3', () => {
+    it('should render a basic component with password input and patch disabled from true to false', () => {
       const template = (Component, title, isDisabled) =>
         createElement(
           'div',
@@ -351,7 +351,7 @@ describe('Components (non-JSX)', () => {
       expect(container.querySelector('input').disabled).toBe(false);
     });
 
-    it('should render a basic component and remove property if null #1', () => {
+    it('should render a basic component and remove class when name prop is patched to null', () => {
       const template = (Component, title, name) =>
         createElement('div', null, createElement(Component, { title, name }));
 
@@ -367,7 +367,7 @@ describe('Components (non-JSX)', () => {
       );
     });
 
-    it('should render a basic component and remove property if null #2', () => {
+    it('should render a basic component without class when name prop is null, then with class after re-mount', () => {
       const template = (Component, title, name) =>
         createElement('div', null, createElement(Component, { title, name }));
 
@@ -774,7 +774,7 @@ describe('Components (non-JSX)', () => {
       expect(unmountCount).toBe(1);
     });
 
-    it('should mount and unmount a basic component #2', () => {
+    it('should mount and unmount a basic component twice with lifecycle hooks firing each time', () => {
       let mountCount;
       let unmountCount;
 
@@ -805,7 +805,7 @@ describe('Components (non-JSX)', () => {
       expect(unmountCount).toBe(2);
     });
 
-    describe('state changes should trigger all lifecycle events for an update', () => {
+    describe('setState in componentWillMount should be reflected in the initial render', () => {
       let componentWillMountCount;
       let template;
 
@@ -851,7 +851,7 @@ describe('Components (non-JSX)', () => {
       });
     });
 
-    describe('state changes should trigger all lifecycle events for an update #2', () => {
+    describe('state changes should trigger all lifecycle events for an update', () => {
       let componentWillMountCount;
       let shouldComponentUpdateCount;
       let componentDidUpdateCount;
@@ -946,7 +946,7 @@ describe('Components (non-JSX)', () => {
         }
       }
 
-      it('Initial render (creation)', () => {
+      it('Initial render (creation) and update when condition changes to false', () => {
         render(
           createElement(ConditionalComponent, { condition: true }),
           container,

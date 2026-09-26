@@ -5,7 +5,7 @@ import { Component } from 'inferno';
  * NOTE! Animation hooks aren't called during SSR because they use different rendering paths
  */
 
-describe('SSR Creation (JSX)', () => {
+describe('SSR animation hooks (JSX)', () => {
   it('should not call "componentDidAppear" when component is rendered with renderToStaticMarkup', (done) => {
     const spyer = jasmine.createSpy();
     class App extends Component {

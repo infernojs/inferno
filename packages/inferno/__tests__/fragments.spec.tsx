@@ -2,7 +2,7 @@ import {
   Component,
   createFragment,
   createPortal,
-  Fragment, InfernoKeyedNode,
+  Fragment, type InfernoKeyedNode,
   type InfernoNode,
   render,
 } from 'inferno';
@@ -327,7 +327,7 @@ describe('Fragments', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should be possible to move component with fragment root #2', () => {
+  it('Should be possible to move multiple keyed components with fragment root', () => {
     const fragmentA = createFragment(
       [<div id="a1">A1</div>, <div>A2</div>],
       ChildFlags.HasNonKeyedChildren,
@@ -848,7 +848,7 @@ describe('Fragments', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should mount Fragment with invalid children #2', () => {
+  it('Should mount Fragment with invalid children around a component that renders null', () => {
     function Foobar() {
       return null;
     }
@@ -869,7 +869,7 @@ describe('Fragments', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should mount Fragment with invalid children #2', () => {
+  it('Should patch Fragment with invalid children when a component child switches from null to a div', () => {
     let add = false;
 
     function Foobar() {
@@ -904,7 +904,7 @@ describe('Fragments', () => {
     expect(container.innerHTML).toBe('<div>Ok</div>');
   });
 
-  it('Should be possible to update from 0 to 1', () => {
+  it('Should be possible to update nested fragment from a null child to a component child', () => {
     function Foobar() {
       return <div>Ok</div>;
     }
@@ -976,7 +976,7 @@ describe('Fragments', () => {
     );
   });
 
-  it('Should be possible to mount and patch single component fragment children', () => {
+  it('Should be possible to mount and patch single component fragment children, starting from an empty fragment', () => {
     let counter = 0;
 
     class Foobar extends Component {
@@ -1016,7 +1016,7 @@ describe('Fragments', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should be possible to mount and patch single component fragment children - variation 2', () => {
+  it('Should be possible to mount and patch component fragment children from an array of 0, 1, 3 and 0 items', () => {
     let counter = 0;
 
     class Foobar extends Component {
@@ -1124,7 +1124,7 @@ describe('Fragments', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should be possible to mount and patch single component fragment children', () => {
+  it('Should be possible to mount and patch single component fragment children, re-rendering the same child first', () => {
     class Foobar extends Component {
       public render() {
         return null;
@@ -1162,7 +1162,7 @@ describe('Fragments', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should be possible to mount and patch single component fragment children', () => {
+  it('Should be possible to mount and patch single component fragment children, starting from a null child', () => {
     class Foobar extends Component {
       public render() {
         return null;

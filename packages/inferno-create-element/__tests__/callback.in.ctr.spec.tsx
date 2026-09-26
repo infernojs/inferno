@@ -16,8 +16,8 @@ describe('Callbacks in constructor', () => {
     document.body.removeChild(container);
   });
 
-  describe('Github #1103', () => {
-    it('Should be possible to call callbacks from Component constructor - Use case 1', () => {
+  describe('Child constructor calling parent setState callback Github #1103', () => {
+    it('Should be possible to call parent setState callback from child Component constructor mounted on checkbox click', () => {
       function InfoLi(props) {
         const iddy = props.conf.key;
         return (

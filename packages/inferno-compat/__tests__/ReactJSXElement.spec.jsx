@@ -179,7 +179,7 @@ describe('ReactJSXElement', function () {
     document.body.removeChild(container);
   });
 
-  it('Should map onDoubleClick to html native even (jsx)t', () => {
+  it('Should map onDoubleClick to html native event (JSX)', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
     const spy = jasmine.createSpy('spy');
@@ -225,7 +225,7 @@ describe('ReactJSXElement', function () {
     document.body.removeChild(container);
   });
 
-  it('Should map onDoubleClick to html native event #1', () => {
+  it('Should map htmlFor prop to the label for attribute', () => {
     const container = document.createElement('div');
 
     ReactDOM.render(

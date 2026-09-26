@@ -1,6 +1,6 @@
 import { Component, type InfernoNode, render } from 'inferno';
 
-describe('animation hooks', () => {
+describe('animation hooks (class components)', () => {
   let container;
 
   beforeEach(function () {
@@ -109,7 +109,7 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
   });
 
-  it('should call "componentWillMove" when component is about to be moved in DOM', () => {
+  it('should call "componentWillMove" once when two keyed components swap places', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
       public componentWillMove() {
@@ -151,7 +151,7 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(2)).toEqual(['willMove']);
   });
 
-  it('should call "componentWillMove" when component is about to be moved in DOM', () => {
+  it('should call "componentWillMove" once when the first of three keyed components moves to the end', () => {
     const spyer = jasmine.createSpy();
 
     class App extends Component<unknown, unknown> {
@@ -198,7 +198,7 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(3)).toEqual(['willMove']);
   });
 
-  it('should call "componentWillMove" when component is about to be moved in DOM', () => {
+  it('should call "componentWillMove" three times when four keyed components are reversed', () => {
     const spyer = jasmine.createSpy();
     let parentDom;
     class App extends Component {
@@ -851,7 +851,7 @@ describe('animation hooks', () => {
     expect(container.textContent).toBe('#0#1#2a');
     expect(container.firstChild.childNodes.length).toBe(4);
   });
-  it('should move a key', () => {
+  it('should move a key one position right among non-keyed nodes (hooks call a spy)', () => {
     const spyer = jasmine.createSpy();
     render(
       template(generateKeyNodes(['#0', 'a', '#2', '#3'], spyer)),
@@ -867,7 +867,7 @@ describe('animation hooks', () => {
 
   /* Skipping spyer from here on */
 
-  it('should move a key', () => {
+  it('should move a key one position right among non-keyed nodes (hooks without a spy)', () => {
     render(template(generateKeyNodes(['#0', 'a', '#2', '#3'])), container);
     render(template(generateKeyNodes(['#0', '#1', 'a', '#3'])), container);
     expect(container.textContent).toBe('#0#1a#3');
@@ -1087,7 +1087,7 @@ describe('animation hooks', () => {
     expect(container.textContent).toBe('46');
     expect(container.firstChild.childNodes.length).toBe(2);
   });
-  it('should do something', () => {
+  it('should reorder six keyed nodes from 012345 to 432150', () => {
     render(template(generateKeyNodes([0, 1, 2, 3, 4, 5])), container);
     expect(container.firstChild.childNodes.length).toBe(6);
     render(template(generateKeyNodes([4, 3, 2, 1, 5, 0])), container);
@@ -1267,7 +1267,7 @@ describe('animation hooks', () => {
 
     for (let i = 0; i < 10; i++) {
       it(
-        'Should handle massive arrays shifting ' + i + ' times by ' + i,
+        'Should handle massive arrays shifting ' + i + ' times from index ' + i,
         () => {
           for (let j = 0; j < i; j++) {
             items = items.concat(items.splice(i, j));

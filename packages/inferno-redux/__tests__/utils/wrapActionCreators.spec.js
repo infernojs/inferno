@@ -1,6 +1,6 @@
 import { wrapActionCreators } from 'inferno-redux';
 
-describe('Utils', () => {
+describe('inferno-redux wrapActionCreators', () => {
   describe('wrapActionCreators', () => {
     it('should return a function that wraps argument in a call to bindActionCreators', () => {
       const dispatch = (action) => ({ dispatched: action });

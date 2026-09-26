@@ -5,7 +5,7 @@ import {
   render,
 } from 'inferno';
 
-describe('animation hooks', () => {
+describe('animation hooks (function components)', () => {
   let container;
 
   beforeEach(function () {
@@ -91,7 +91,7 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(1)).toEqual(['didAppear']);
   });
 
-  it('should only call "componentDidAppear" when child component has been inserted into DOM', (done) => {
+  it('should only call "onComponentDidAppear" when child component has been inserted into DOM', (done) => {
     const spyer = jasmine.createSpy();
 
     const Child = (props) => {
@@ -164,7 +164,7 @@ describe('animation hooks', () => {
     };
   });
 
-  it('should call all "componentDidAppear" when multiple siblings have been inserted into DOM', () => {
+  it('should call all "onComponentDidAppear" when multiple siblings have been inserted into DOM', () => {
     const spyer = jasmine.createSpy();
 
     const Child = () => {
@@ -203,7 +203,7 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(4)).toEqual(['childDidAppear']);
   });
 
-  it('should call "componentWillDisappear" when component is about to be removed from DOM', () => {
+  it('should call "onComponentWillDisappear" when component is about to be removed from DOM', () => {
     const spyer = jasmine.createSpy();
     const App = () => {
       return <div />;
@@ -236,7 +236,7 @@ describe('animation hooks', () => {
     expect(spyer.calls.argsFor(1)).toEqual(['willDisappear']);
   });
 
-  it('should handle async callbacks from "componentWillDisappear"', (done) => {
+  it('should handle async callbacks from "onComponentWillDisappear"', (done) => {
     const spyer = jasmine.createSpy();
 
     const App = () => {
@@ -277,7 +277,7 @@ describe('animation hooks', () => {
     }
   });
 
-  it('should handle async callbacks "componentWillDisappear" when removing the two last elements in list', (done) => {
+  it('should handle async callbacks "onComponentWillDisappear" when removing the two last elements in list', (done) => {
     /**
      * This test is hard to get to consistently fail. It should trigger
      * clearDOM from last animation callback prior to deferComponentClassRemoval
@@ -365,7 +365,7 @@ describe('animation hooks', () => {
     checkRenderComplete_ONE();
   });
 
-  it('should handle async callbacks from "componentWillDisappear" and mounting components with "componentDidAppear"', (done) => {
+  it('should handle async callbacks from "onComponentWillDisappear" and mounting components with "onComponentDidAppear"', (done) => {
     const spyer = jasmine.createSpy();
     // Always call the componentWillDisappear callback after last render
     let lastRenderDone = false;
@@ -508,7 +508,7 @@ describe('animation hooks', () => {
     checkRenderComplete_ONE();
   });
 
-  it('should call "willMove" when component is about to be moved to another part of DOM', () => {});
+  it('should call "onComponentWillMove" when component is moved in DOM (empty placeholder, asserts nothing)', () => {});
 
   const template = function (child) {
     return <div>{child}</div>;
@@ -657,7 +657,7 @@ describe('animation hooks', () => {
     expect(container.textContent).toBe('#0#1#2a');
     expect(container.firstChild.childNodes.length).toBe(4);
   });
-  it('should move a key', () => {
+  it('should move a key one position right among non-keyed nodes (hooks call a spy)', () => {
     const spyer = jasmine.createSpy();
     render(
       template(generateKeyNodes(['#0', 'a', '#2', '#3'], spyer)),
@@ -673,7 +673,7 @@ describe('animation hooks', () => {
 
   /* Skipping spyer from here on */
 
-  it('should move a key', () => {
+  it('should move a key one position right among non-keyed nodes (hooks without a spy)', () => {
     render(template(generateKeyNodes(['#0', 'a', '#2', '#3'])), container);
     render(template(generateKeyNodes(['#0', '#1', 'a', '#3'])), container);
     expect(container.textContent).toBe('#0#1a#3');
@@ -893,7 +893,7 @@ describe('animation hooks', () => {
     expect(container.textContent).toBe('46');
     expect(container.firstChild.childNodes.length).toBe(2);
   });
-  it('should do something', () => {
+  it('should reorder six keyed nodes from 012345 to 432150', () => {
     render(template(generateKeyNodes([0, 1, 2, 3, 4, 5])), container);
     expect(container.firstChild.childNodes.length).toBe(6);
     render(template(generateKeyNodes([4, 3, 2, 1, 5, 0])), container);
@@ -1073,7 +1073,7 @@ describe('animation hooks', () => {
 
     for (let i = 0; i < 10; i++) {
       it(
-        'Should handle massive arrays shifting ' + i + ' times by ' + i,
+        'Should handle massive arrays shifting ' + i + ' times from index ' + i,
         () => {
           for (let j = 0; j < i; j++) {
             items = items.concat(items.splice(i, j));

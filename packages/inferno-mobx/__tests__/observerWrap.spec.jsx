@@ -361,7 +361,7 @@ describe('Stateless components observerWrap', () => {
     expect(getObserverTree(data, 'y').observers).not.toBeDefined();
   });
 
-  it('issue 12', function () {
+  it('renders only the replacement row after renaming and replacing rows in one action, issue 12', function () {
     const data = observable({
       selected: 'coffee',
       items: [

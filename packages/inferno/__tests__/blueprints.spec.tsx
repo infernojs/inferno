@@ -14,7 +14,7 @@ describe('Blueprints (JSX)', () => {
     container = null;
   });
 
-  describe('Should have parentDOM defined #1', () => {
+  describe('Should have parentDOM defined when list item components swap their child component', () => {
     class A extends Component {
       public render() {
         return <div>A</div>;

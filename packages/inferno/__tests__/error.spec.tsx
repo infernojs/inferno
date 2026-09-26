@@ -451,7 +451,7 @@ describe('Error recovery', () => {
         'getChildContext',
       ]) {
         it(
-          'Should recover from subtree crash in NON-KEYED ' +
+          'Should recover from subtree crash in KEYED ' +
             location +
             ' of children when crash happens in components ' +
             crashLocation,
@@ -596,7 +596,7 @@ describe('Error recovery', () => {
     }
 
     describe('Error in child component', () => {
-      it('Should not block future updates', (done) => {
+      it('Should not block future updates after a child throws in componentWillMount on setState', (done) => {
         let childCrasherInstance: ChildCrasher | null = null;
 
         class BadComponent extends Component {
@@ -671,7 +671,7 @@ describe('Error recovery', () => {
         }, 10);
       });
 
-      it('Should not block future updates - variation 2', () => {
+      it('Should not block future updates when a nested component throws in its constructor', () => {
         let parentInstance: Parent | null = null;
 
         class BadComponent extends Component {

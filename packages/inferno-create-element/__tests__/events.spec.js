@@ -154,7 +154,7 @@ describe('Basic event tests', () => {
     expect(container.firstChild.innerHTML).toBe('<span>Count 0</span>');
   });
 
-  it('should not leak memory', () => {
+  it('should not leak memory when props with event handler are removed from element', () => {
     const eventHandler = function () {};
 
     function AppTwo() {
@@ -181,7 +181,7 @@ describe('Basic event tests', () => {
     expect(container.firstChild.innerHTML).toBe('2');
   });
 
-  it('should not leak memory #2', () => {
+  it('should not leak memory when event handler is patched to null', () => {
     const eventHandler = function () {};
 
     function App({ toggle }) {

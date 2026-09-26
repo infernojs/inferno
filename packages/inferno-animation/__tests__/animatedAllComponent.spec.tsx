@@ -162,7 +162,7 @@ describe('inferno-animation AnimatedAllComponent', () => {
   });
 });
 
-describe('inferno-animation animated functional component', () => {
+describe('inferno-animation functional component with appear, disappear and move hooks', () => {
   let container;
 
   beforeEach(function () {
@@ -193,7 +193,7 @@ describe('inferno-animation animated functional component', () => {
     waitForAnimationAndContinue('', afterEachClear, done);
   });
 
-  it('should render functional component extending AnimatedAllComponent into DOM', () => {
+  it('should render functional component with animation hooks into DOM', () => {
     const MyComponent = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
@@ -211,7 +211,7 @@ describe('inferno-animation animated functional component', () => {
     expect(container.textContent).toBe('1');
   });
 
-  it('should remove functional component extending AnimatedAllComponent from DOM', (done) => {
+  it('should remove functional component with animation hooks from DOM', (done) => {
     const My = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
@@ -278,7 +278,7 @@ describe('inferno-animation animated functional component', () => {
     });
   });
 
-  it('should move functional component extending AnimatedAllComponent from DOM', (done) => {
+  it('should move functional component with animation hooks within DOM', (done) => {
     const My = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };
@@ -350,7 +350,7 @@ describe('inferno-animation animated functional component', () => {
     });
   });
 
-  it('should render class component extending AnimatedAllComponent to a string', () => {
+  it('should render functional component with animation hooks to a string', () => {
     const MyComponent = ({ children }): InfernoNode => {
       return <div>{children}</div>;
     };

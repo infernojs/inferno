@@ -84,7 +84,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.firstChild.nodeName).toBe('SPAN');
   });
 
-  it('should render a simple div with multiple children #2', () => {
+  it('should render a div with a text child followed by a number array and update the array', () => {
     const items = [1, 2, 3];
     const header = 'Hello ';
 
@@ -107,7 +107,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.innerHTML).toBe('Hello 456');
   });
 
-  it('should render a simple div with span child and dynamic id attribute', () => {
+  it('should render a simple div with dynamic id attribute', () => {
     render(<div id={'hello'} />, container);
     expect(container.firstChild.nodeName).toBe('DIV');
     expect(container.firstChild.childNodes.length).toBe(0);
@@ -134,7 +134,7 @@ describe('Elements (JSX)', () => {
     expect(container.childNodes.length).toBe(0);
   });
 
-  it('should render a simple div with span child and various dynamic attributes', () => {
+  it('should render a simple div with various dynamic attributes', () => {
     render(<div id={'hello'} />, container);
     expect(container.firstChild.nodeName).toBe('DIV');
     expect(container.firstChild.childNodes.length).toBe(0);
@@ -456,7 +456,7 @@ describe('Elements (JSX)', () => {
     expect(container.childNodes.length).toBe(0);
   });
 
-  it('should render a simple div children set to null', () => {
+  it('should render a nested div with children set to null', () => {
     render(
       <div>
         <div>{null}</div>
@@ -494,7 +494,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.textContent).toBe('Hello, Inferno!');
   });
 
-  it('should render a single div with text node', () => {
+  it('should render a div with two empty span children', () => {
     render(
       <div>
         <span />
@@ -714,7 +714,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.getAttribute('width')).toBe('42');
   });
 
-  it('should properly render "width" and "height" attributes #2', () => {
+  it('should properly render "multiple" and "capture" attributes on a file input', () => {
     render(
       <input
         type="file"
@@ -792,7 +792,7 @@ describe('Elements (JSX)', () => {
     expect(container.firstChild.hasAttribute('height')).toBe(false);
   });
 
-  it('should remove properties #2', () => {
+  it('should remove className from div and svg elements', () => {
     render(<div className="monkey" />, container);
     expect(container.firstChild.getAttribute('class')).toBe('monkey');
     render(<div />, container);
@@ -928,14 +928,14 @@ describe('Elements (JSX)', () => {
       );
     };
 
-    it('basic example ', () => {
+    it('should render an element vnode and then replace it with another', () => {
       render(a, container);
       expect(container.innerHTML).toBe('<div>Hello world</div>');
       render(b, container);
       expect(container.innerHTML).toBe('<span>This works!</span>');
     });
 
-    it('basic example #2 ', () => {
+    it('should render the same element vnode three times in an array', () => {
       render(<div>{[a, a, a]}</div>, container);
       expect(container.innerHTML).toBe(
         '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
@@ -944,7 +944,7 @@ describe('Elements (JSX)', () => {
       expect(container.innerHTML).toBe('<span>This works!</span>');
     });
 
-    it('basic nested example ', () => {
+    it('should render two element vnodes as siblings and swap their order', () => {
       render(
         <div>
           {a}
@@ -967,7 +967,7 @@ describe('Elements (JSX)', () => {
       );
     });
 
-    it('basic nested component example ', () => {
+    it('should render element vnodes passed as children that a component repeats three times', () => {
       render(<C>{a}</C>, container);
       expect(container.innerHTML).toBe(
         '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
@@ -996,14 +996,14 @@ describe('Elements (JSX)', () => {
       </div>
     );
 
-    it('basic example ', () => {
+    it('should render a text vnode and then replace it with another', () => {
       render(a, container);
       expect(container.innerHTML).toBe('Hello world');
       render(b, container);
       expect(container.innerHTML).toBe('This works!');
     });
 
-    it('basic example #2 ', () => {
+    it('should render the same text vnode three times in an array', () => {
       render(<div>{[a, a, a]}</div>, container);
       expect(container.innerHTML).toBe(
         '<div>Hello worldHello worldHello world</div>',
@@ -1012,7 +1012,7 @@ describe('Elements (JSX)', () => {
       expect(container.innerHTML).toBe('This works!');
     });
 
-    it('basic nested example ', () => {
+    it('should render two text vnodes as siblings and swap their order', () => {
       render(
         <div>
           {a}
@@ -1031,7 +1031,7 @@ describe('Elements (JSX)', () => {
       expect(container.innerHTML).toBe('<div>This works!Hello world</div>');
     });
 
-    it('basic nested component example #2 ', () => {
+    it('should render text vnodes passed as children that a component repeats three times', () => {
       render(<C>{a}</C>, container);
       expect(container.innerHTML).toBe(
         '<div>Hello worldHello worldHello world</div>',
@@ -1050,7 +1050,7 @@ describe('Elements (JSX)', () => {
   });
 
   describe('should properly render multiline text via JSX', () => {
-    it('should render accordingly', () => {
+    it('should join multiline JSX text into single-line paragraph text', () => {
       render(
         <div class="tesla-battery__notice">
           <p>
@@ -1073,7 +1073,7 @@ describe('Elements (JSX)', () => {
   });
 
   describe('REST Spread JSX', () => {
-    it('Should render click event, style, className', (done) => {
+    it('Should render className, value and click event through spread props', (done) => {
       const TextField = function (props) {
         return <input {...props} />;
       };

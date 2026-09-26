@@ -97,7 +97,7 @@ describe('children types', () => {
     expect(alsoValidForNow).toBeDefined();
   });
 
-  it('Should be possible to type child as InfernoNode', () => {
+  it('Should be possible to type child as optional InfernoNode that accepts no, one or many children', () => {
     interface ParentComponentProps {
       children?: InfernoNode;
     }
@@ -151,7 +151,7 @@ describe('children types', () => {
     expect(valid3).toBeDefined();
   });
 
-  it('Should be possible to type child as InfernoNode', () => {
+  it('Should be possible to type child as required InfernoSingleNode that rejects multiple or missing children', () => {
     interface ParentComponentProps {
       children: InfernoSingleNode;
     }
@@ -215,7 +215,7 @@ describe('children types', () => {
     expect(valid2).toBeDefined();
   });
 
-  it('Should be possible to type child as another component type', () => {
+  it('Should be possible to type children as an array of another component type that rejects missing children', () => {
     class FooBarCom extends Component<any, any> {
       constructor(p, c) {
         super(p, c);
@@ -274,7 +274,7 @@ describe('children types', () => {
     expect(valid2).toBeDefined();
   });
 
-  it('Should be possible to type child as another component type', () => {
+  it('Should be possible to type child as another component type that rejects multiple or missing children', () => {
     class FooBarCom extends Component<any, any> {
       constructor(p, c) {
         super(p, c);

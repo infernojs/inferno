@@ -12,7 +12,7 @@ describe('Update (non-jsx)', () => {
     render(null, container);
   });
 
-  it('should insert an additionnal tag node', () => {
+  it('should patch a child div with two text nodes into an empty child div', () => {
     const template = (child) => createElement('div', null, child);
     let span;
 
@@ -39,7 +39,7 @@ describe('Update (non-jsx)', () => {
     expect(container.firstChild.textContent).toBe('');
   });
 
-  it('should insert an additional tag node', () => {
+  it('should remove a span child with null and insert it again', () => {
     const template = (child) => createElement('div', null, child);
     const span = () => createElement('span', null);
 
@@ -61,7 +61,7 @@ describe('Update (non-jsx)', () => {
     expect(container.firstChild.innerHTML).toBe('<div></div>');
   });
 
-  it('should insert an additional tag node', () => {
+  it('should keep a null child empty on re-render', () => {
     const template = (child) => createElement('div', null, child);
     // const span = () => createElement('div');
 
@@ -71,7 +71,7 @@ describe('Update (non-jsx)', () => {
     expect(container.firstChild.innerHTML).toBe('');
   });
 
-  it('should insert multiple additional tag node', () => {
+  it('should render an empty div child inside a div', () => {
     const template = (child) => createElement('div', null, child);
     const span = () => createElement('div', null);
 
@@ -124,7 +124,7 @@ describe('Update (non-jsx)', () => {
     expect(container.innerHTML).toBe('<div>The foo is dead!</div>');
   });
 
-  it('should update a wrapped text node', () => {
+  it('should update a wrapped text node when only one surrounding value is set', () => {
     const template = (val1, val2) =>
       createElement('div', null, val1, ' foo', val2);
 
@@ -215,7 +215,7 @@ describe('Update (non-jsx)', () => {
     expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
   });
 
-  it('should update a node with multiple children and static text', () => {
+  it('should keep static text while dynamic id is repeated, unset with null and set again', () => {
     const template = (val1) =>
       createElement(
         'div',
@@ -238,7 +238,7 @@ describe('Update (non-jsx)', () => {
     expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
   });
 
-  it('should update a node with multiple children and static text #2', () => {
+  it('should keep static text while dynamic id is unset with null, undefined and no value', () => {
     const template = (val1) =>
       createElement(
         'div',
@@ -419,7 +419,7 @@ describe('Update (non-jsx)', () => {
     expect(container.firstChild.firstChild.firstChild.textContent).toBe('');
   });
 
-  it('should render a basic example #7', () => {
+  it('should patch a text child into a span element', () => {
     const div = (child) => createElement('div', null, child);
     const span1 = () => 'Hello world!';
 
@@ -444,7 +444,7 @@ describe('Update (non-jsx)', () => {
     expect(container.innerHTML).toBe('<div><div>Hello</div></div>');
   });
 
-  it('should patch a text node into a tag node', () => {
+  it('should render a text child inside a div', () => {
     const template = (child) => createElement('div', null, child);
     const span = function () {
       return 'Hello';
@@ -454,7 +454,7 @@ describe('Update (non-jsx)', () => {
     expect(container.innerHTML).toBe('<div>Hello</div>');
   });
 
-  it('should patch a tag node into a text node #2', () => {
+  it('should remove a span child when patched to no children', () => {
     const template = (child) => createElement('div', null, child);
 
     const span = () => createElement('span', null, 'Good bye!');
@@ -477,7 +477,7 @@ describe('Update (non-jsx)', () => {
     expect(container.firstChild.innerHTML).toBe('Hello');
   });
 
-  it('should render text then update to an array of text nodes', () => {
+  it('should render a span with three text children and re-render it', () => {
     const template = (child) => createElement('div', null, child);
     const span = function () {
       return createElement('span', null, 'Hello ', 'World', '!');
@@ -489,7 +489,7 @@ describe('Update (non-jsx)', () => {
     expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
   });
 
-  it('should render an array of text nodes then update to a single text node', () => {
+  it('should render a span with three text children', () => {
     const template = (child) => createElement('div', null, child);
     const span = function () {
       return createElement('span', null, 'Hello ', 'World', '!');
@@ -499,7 +499,7 @@ describe('Update (non-jsx)', () => {
     expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
   });
 
-  it('should update and array of text nodes to another array of text nodes', () => {
+  it('should render a span with two text children', () => {
     const template = (child) => createElement('div', null, child);
     const span = function () {
       return createElement('span', null, 'Hello ', 'World');
@@ -507,18 +507,6 @@ describe('Update (non-jsx)', () => {
 
     render(template(span()), container);
     expect(container.firstChild.innerHTML).toBe('<span>Hello World</span>');
-  });
-
-  it('should update and array of text nodes to another array of text nodes #2', () => {
-    const template = (child) => createElement('div', null, child);
-    const span = function () {
-      return createElement('span', null, 'Hello ', 'World', '!');
-    };
-
-    render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
-    render(template(span()), container);
-    expect(container.firstChild.innerHTML).toBe('<span>Hello World!</span>');
   });
 
   it('should update an node with static child', () => {
@@ -592,7 +580,7 @@ describe('Update (non-jsx)', () => {
     );
   });
 
-  it('should update an node with static child and dynamic custom attribute and static text #2', () => {
+  it('should render a node with static child, dynamic custom attribute and static text', () => {
     const template = (child) =>
       createElement('div', null, createElement('div', null, child));
     const span = function (val) {
@@ -620,7 +608,7 @@ describe('Update (non-jsx)', () => {
     expect(container.childNodes.length).toBe(1);
   });
 
-  it('should remove a text node', () => {
+  it('should render an array of two text children', () => {
     const template = (child) => createElement('div', null, child);
 
     render(template(['hello', 'world']), container);
@@ -739,7 +727,7 @@ describe('Update (non-jsx)', () => {
           ),
         );
 
-      it('Initial render (creation)', () => {
+      it('should render nested style and update it to a different style object', () => {
         render(
           template({
             color: 'red',
@@ -764,7 +752,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('Second render (update)', () => {
+      it('should render no style attribute when the nested style is null', () => {
         render(template(null), container); // change style to null
 
         expect([null, '']).toContain(
@@ -772,7 +760,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('Third render (update)', () => {
+      it('should render nested style with color and margin-bottom', () => {
         render(
           template({
             color: 'blue',
@@ -788,9 +776,9 @@ describe('Update (non-jsx)', () => {
     });
   }
 
-  describe('Github #142', () => {
+  describe('Github #142 - patching text and br children inside table cells', () => {
     describe('nonKeyed updates', () => {
-      it('variation 1', () => {
+      it('should update the text of a single table cell', () => {
         function A() {
           return createElement(
             'div',
@@ -855,7 +843,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 2', () => {
+      it('should patch a table cell between text with br, a text array and a text array with br', () => {
         const A = createElement(
           'div',
           null,
@@ -918,7 +906,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 3', () => {
+      it('should patch an empty table to three rows and then remove a row and a cell', () => {
         const A = createElement(
           'div',
           null,
@@ -977,7 +965,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 4', () => {
+      it('should remove the text before a br in a table cell and add new text', () => {
         const A = createElement(
           'div',
           null,
@@ -1046,7 +1034,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 5', () => {
+      it('should patch a root-level table cell from br to two texts with br and then to a [br, text] array with br', () => {
         const A = [];
 
         A[0] = createElement(
@@ -1114,76 +1102,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 6', () => {
-        const A = createElement(
-          'div',
-          null,
-          createElement(
-            'div',
-            null,
-            createElement(
-              'table',
-              null,
-              createElement(
-                'tr',
-                null,
-                createElement('td', null, 'text 1', createElement('br', null)),
-              ),
-            ),
-          ),
-        );
-
-        const B = createElement(
-          'div',
-          null,
-          createElement(
-            'div',
-            null,
-            createElement(
-              'table',
-              null,
-              createElement(
-                'tr',
-                null,
-                createElement('td', null, createElement('br', null)),
-              ),
-            ),
-          ),
-        );
-
-        const C = createElement(
-          'div',
-          null,
-          createElement(
-            'div',
-            null,
-            createElement(
-              'table',
-              null,
-              createElement(
-                'tr',
-                null,
-                createElement('td', null, 'text 2', createElement('br', null)),
-              ),
-            ),
-          ),
-        );
-
-        render(A, container);
-        expect(container.innerHTML).toBe(
-          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
-        );
-        render(B, container);
-        expect(container.innerHTML).toBe(
-          '<div><div><table><tr><td><br></td></tr></table></div></div>',
-        );
-        render(C, container);
-        expect(container.innerHTML).toBe(
-          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
-        );
-      });
-
-      it('variation 7', () => {
+      it('should patch a root-level table cell from br to text with br and then to a [br] array, text and br', () => {
         const A = [];
         A[0] = createElement(
           'table',
@@ -1248,7 +1167,7 @@ describe('Update (non-jsx)', () => {
     });
 
     describe('KEYED updates', () => {
-      it('variation 1', () => {
+      it('should update the text of a single keyed table cell', () => {
         function A() {
           return createElement(
             'div',
@@ -1325,7 +1244,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 2', () => {
+      it('should patch a keyed table cell between [text, br], [text] and [value, br] arrays', () => {
         const A = createElement(
           'div',
           null,
@@ -1400,7 +1319,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 3', () => {
+      it('should patch an empty table to three keyed rows and then remove a row and a cell', () => {
         const A = createElement(
           'div',
           null,
@@ -1474,7 +1393,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 4', () => {
+      it('should patch a keyed table cell from text with br to empty text with br and new text', () => {
         const A = createElement(
           'div',
           null,
@@ -1558,7 +1477,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 5', () => {
+      it('should patch a keyed root-level table cell from empty text with br to text arrays with br', () => {
         const A = [];
 
         A[0] = createElement(
@@ -1639,7 +1558,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 6', () => {
+      it('should patch a keyed table cell from a [text, br] array to [empty text, br] and new text', () => {
         const A = createElement(
           'div',
           null,
@@ -1717,7 +1636,7 @@ describe('Update (non-jsx)', () => {
         );
       });
 
-      it('variation 7', () => {
+      it('should patch a keyed root-level table cell from empty text with br to text with br and a [br, text] array', () => {
         const A = [];
 
         A[0] = createElement(
@@ -1800,8 +1719,8 @@ describe('Update (non-jsx)', () => {
     });
   });
 
-  describe('Github #162', () => {
-    it('works', () => {
+  describe('Github #162 - br inserted between text children', () => {
+    it('should patch a text child to text, br, text and then to a different single text', () => {
       const A = [];
 
       A[0] = createElement('div', null, 'text 1');
@@ -1823,8 +1742,8 @@ describe('Update (non-jsx)', () => {
     });
   });
 
-  describe('Github #162', () => {
-    it('works', () => {
+  describe('Github #162 - br moved from after to before text', () => {
+    it('should patch text followed by br to text only and then to br followed by text', () => {
       const A = [];
 
       A[0] = createElement('div', null, 'text 1', createElement('br', null));

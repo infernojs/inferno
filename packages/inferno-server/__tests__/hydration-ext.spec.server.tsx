@@ -80,32 +80,46 @@ describe('SSR Hydration Extended - (JSX)', () => {
   ];
 
   for (let i = 0; i < tests.length; i++) {
-    const { html, component } = [
+    const { description, html, component } = [
       {
+        description:
+          'Should hydrate Comp over server HTML with a single mismatching child div',
         html: '<div><div>Hello world</div></div>',
         component: <Comp />,
       },
       {
+        description:
+          'Should hydrate Comp over server HTML with five mismatching child divs',
         html: '<div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>',
         component: <Comp />,
       },
       {
+        description:
+          'Should hydrate Comp over server HTML with a mismatching nested div',
         html: '<div><div><div>Hello world</div></div></div>',
         component: <Comp />,
       },
       {
+        description:
+          'Should hydrate Comp over server HTML with a mismatching nested div and a trailing span',
         html: '<div><div><div>Hello world</div></div><span>Hola</span></div>',
         component: <Comp />,
       },
       {
+        description:
+          'Should hydrate Comp over server HTML with a leading span before the matching markup',
         html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div></div>',
         component: <Comp />,
       },
       {
+        description:
+          'Should hydrate Comp over server HTML with spans around the matching markup',
         html: '<div><span><div>Hello world</div></span><div><div id="b1">block 1</div><div id="b2">block 2</div><div id="b3">block 3</div></div><span>Hola</span></div>',
         component: <Comp />,
       },
       {
+        description:
+          'Should hydrate Comp inside nested wrapper components over an empty child div',
         html: '<div><div></div></div>',
         component: (
           <InnerNested>
@@ -116,7 +130,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
         ),
       },
     ][i];
-    it(`do test #${i + 1}`, () => {
+    it(description, () => {
       const container = createContainerWithHTML(html);
       hydrate(component, container);
 
@@ -154,22 +168,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.innerHTML).toEqual('<div></div>');
   });
 
-  it('Should hydrate correctly when there are comment nodes', () => {
-    const container = createContainerWithHTML('<div></div>');
-
-    hydrate(
-      <div>
-        <Nested>
-          <InnerNested />
-        </Nested>
-      </div>,
-      container,
-    );
-
-    expect(container.innerHTML).toEqual('<div></div>');
-  });
-
-  it('Should hydrate correctly when there are comment nodes #2', () => {
+  it('Should hydrate correctly when CSR nested components render a child missing from server HTML', () => {
     const container = createContainerWithHTML('<div></div>');
 
     hydrate(
@@ -186,7 +185,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.innerHTML).toEqual('<div><p>Hello World!</p></div>');
   });
 
-  it('hasTextChildren - Should handle empty textNodes correctly Github #1137', () => {
+  it('hasTextChildren - Should hydrate an empty text child of a root span and patch it, Github #1137', () => {
     const container = createContainerWithHTML('<span class="error"></span>');
 
     const vNode = <span className="error">{''}</span>;
@@ -200,7 +199,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.textContent).toBe('Okay!');
   });
 
-  it('hasTextChildren - Should handle empty textNodes correctly Github #1137 variation#2', () => {
+  it('hasTextChildren - Should hydrate an empty text child of a nested span and patch it, Github #1137', () => {
     const container = createContainerWithHTML(
       '<div><span class="error"></span></div>',
     );
@@ -225,7 +224,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.textContent).toBe('Okay!');
   });
 
-  it('createTextVNode - Should handle empty textNodes correctly Github #1137 variation#3', () => {
+  it('createTextVNode - Should hydrate an empty text vNode in a root span and patch it, Github #1137', () => {
     const container = createContainerWithHTML('<span class="error"></span>');
 
     const vNode = <span className="error">{createTextVNode('')}</span>;
@@ -239,7 +238,7 @@ describe('SSR Hydration Extended - (JSX)', () => {
     expect(container.textContent).toBe('Okay!');
   });
 
-  it('createTextVNode - Should handle empty textNodes correctly Github #1137 variation#4', () => {
+  it('createTextVNode - Should hydrate an empty text vNode in a nested span and patch it, Github #1137', () => {
     const container = createContainerWithHTML(
       '<div><span class="error"></span></div>',
     );

@@ -1,4 +1,4 @@
-import { Component, InfernoChild, render, rerender } from 'inferno';
+import { Component, type InfernoChild, render, rerender } from 'inferno';
 
 describe('Components 3 (TSX)', () => {
   let container;

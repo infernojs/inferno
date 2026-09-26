@@ -16,7 +16,7 @@ describe('inject based context', () => {
     document.body.removeChild(container);
   });
 
-  it('basic context', (done) => {
+  it('injects a Provider store into a nested injected component as a prop', (done) => {
     const C = inject('foo')(
       observer(
         class Foo extends Component {

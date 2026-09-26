@@ -1,7 +1,7 @@
 import {
   Component,
   createPortal,
-  InfernoNode,
+  type InfernoNode,
   render as _render,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -794,7 +794,7 @@ describe('Portal spec', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('should update portal context if it changes due to re-render - functional comps', () => {
+  it('should update portal context if it changes due to re-render - functional child component', () => {
     const portalContainer = document.createElement('div');
 
     function Comp(_, { foo, getFoo }) {
@@ -831,7 +831,7 @@ describe('Portal spec', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('should update portal context if it changes due to re-render - functional comps #2', () => {
+  it('should update portal content when a functional parent re-renders with new props', () => {
     const portalContainer = document.createElement('div');
 
     function Comp({ foo }) {
@@ -1022,7 +1022,7 @@ describe('Portal spec', () => {
     });
 
     describe('Multiple portals', () => {
-      it('#1', () => {
+      it('Should mount three keyed portals and unmount them all when replaced by false', () => {
         const portalContainer = document.createElement('div');
 
         let mountCount = 0;
@@ -1089,7 +1089,7 @@ describe('Portal spec', () => {
         expect(unMountCount).toBe(3);
       });
 
-      it('#2', () => {
+      it('Should patch keyed portals in one container, mounting added and unmounting removed ones', () => {
         const portalContainer = document.createElement('div');
 
         let mountCount = 0;
@@ -1170,7 +1170,7 @@ describe('Portal spec', () => {
         expect(unMountCount).toBe(4);
       });
 
-      it('Should be possible to move nodes around portals #1', () => {
+      it('Should be possible to move nodes around portals, removing portal 2 and adding portal 5', () => {
         const portalContainer = document.createElement('div');
 
         let mountCount = 0;
@@ -1247,7 +1247,7 @@ describe('Portal spec', () => {
         expect(unMountCount).toBe(4);
       });
 
-      it('Should be possible to move nodes around portals #2', () => {
+      it('Should be possible to move nodes around portals, removing portal 5 and appending portal 2', () => {
         const portalContainer = document.createElement('div');
 
         let mountCount = 0;
@@ -1320,7 +1320,7 @@ describe('Portal spec', () => {
         expect(unMountCount).toBe(4);
       });
 
-      it('Should be possible to move nodes around portals when portal is root node of component #1', () => {
+      it('Should be possible to move nodes around portals when keyed component-root portals swap with plain portals', () => {
         const portalContainer = document.createElement('div');
 
         let mountCount = 0;
@@ -1407,7 +1407,7 @@ describe('Portal spec', () => {
         expect(unMountCount).toBe(9);
       });
 
-      it('Should be possible to move nodes around portals when portal is root node of component #2', () => {
+      it('Should be possible to move keyed nested component-root portals and replace inner ones with a span', () => {
         const portalContainer = document.createElement('div');
 
         let mountCount = 0;
