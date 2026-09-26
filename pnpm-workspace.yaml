@@ -2,6 +2,7 @@ packages:
   - packages/*
   - fixtures/*
   - demo/*
+  - bench
 
 linkWorkspacePackages: true
 sharedWorkspaceLockfile: true

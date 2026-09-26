@@ -1,0 +1,3 @@
+# <repository, relative to chromium/src>  <patch, relative to bench/chromium/patches>
+third_party/perfetto  perfetto/0001-inferno-bench-thread-counters.patch
+v8                    v8/0001-inferno-bench-counters.patch

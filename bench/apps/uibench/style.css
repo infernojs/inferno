@@ -1,0 +1,62 @@
+/* uibench-base 0.1.0 styles.css by Boris Kaul (https://github.com/localvoid/uibench-base, MIT). */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+.ProgressBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+}
+
+.ProgressBar_inner {
+  background: #2a2;
+  height: 5px;
+  transition: width 0.5s ease-out;
+}
+
+.Table {
+  border-spacing: 10px;
+  border-collapse: collapse;
+  border: 1px solid #999;
+}
+
+.TableRow {
+  background: #ddd;
+}
+
+.TableRow.active {
+  background: #eee;
+}
+
+.TableCell {
+  padding: 0 10px;
+}
+
+.AnimBox {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: 4px;
+}
+
+.TreeNode {
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #999;
+  background: #ddd;
+}
+
+.TreeLeaf {
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #999;
+  background: #eee;
+}

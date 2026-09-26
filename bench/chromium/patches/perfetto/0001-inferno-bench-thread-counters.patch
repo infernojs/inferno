@@ -1,0 +1,132 @@
+diff -ru a/src/tracing/BUILD.gn b/src/tracing/BUILD.gn
+--- a/src/tracing/BUILD.gn	2026-09-26 00:50:14.322758323 +0300
++++ b/src/tracing/BUILD.gn	2026-09-26 00:50:50.850765684 +0300
+@@ -16,6 +16,11 @@
+ import("../../gn/perfetto.gni")
+ import("../../gn/test.gni")
+ 
++# Inferno bench instrumentation (see //inferno_bench/inferno_bench.gni).
++if (build_with_chromium) {
++  import("//inferno_bench/inferno_bench.gni")
++}
++
+ # Full version of the client API. Supports both the in-process backend and the
+ # system backend (on posix systems and if enabled by the enable_perfetto_ipc).
+ # The backends are designed to be dead-code-eliminated via linker's gc-section
+diff -ru a/src/tracing/internal/track_event_internal.cc b/src/tracing/internal/track_event_internal.cc
+--- a/src/tracing/internal/track_event_internal.cc	2026-09-26 00:50:14.323699813 +0300
++++ b/src/tracing/internal/track_event_internal.cc	2026-09-26 00:50:50.850906804 +0300
+@@ -32,6 +32,14 @@
+ #include "protos/perfetto/trace/trace_packet_defaults.pbzero.h"
+ #include "protos/perfetto/trace/track_event/debug_annotation.pbzero.h"
+ #include "protos/perfetto/trace/track_event/track_descriptor.pbzero.h"
++
++#if __has_include("inferno_bench/enabled.h")
++#include "inferno_bench/enabled.h"
++#endif
++#if defined(INFERNO_BENCH_ENABLED) && INFERNO_BENCH_ENABLED
++#include "inferno_bench/thread_pmu.h"
++#define INFERNO_BENCH_PMU_TRACKS 1
++#endif
+ #if PERFETTO_BUILDFLAG(PERFETTO_OS_APPLE)
+ #include <os/signpost.h>
+ #endif
+@@ -55,6 +63,41 @@
+ 
+ namespace {
+ 
++#if defined(INFERNO_BENCH_PMU_TRACKS)
++// Hardware counter tracks attached to every event on a thread's own track,
++// next to thread time. "thread_instruction_count" is the name trace_processor
++// maps to slice.thread_instruction_delta; the others are generic incremental
++// counter tracks queried from the counter table.
++CounterTrack InfernoBenchCounterTrack(int i, const ThreadTrack& parent) {
++  switch (i) {
++    case 0:
++      return CounterTrack("thread_instruction_count", parent)
++          .set_is_incremental(true)
++          .set_type(
++              protos::gen::CounterDescriptor::COUNTER_THREAD_INSTRUCTION_COUNT);
++    case 1:
++      return CounterTrack("inferno_bench.cycles", parent).set_is_incremental(true);
++    case 2:
++      return CounterTrack("inferno_bench.branch_misses", parent)
++          .set_is_incremental(true);
++    default:
++      return CounterTrack("inferno_bench.l1d_read_misses", parent)
++          .set_is_incremental(true);
++  }
++}
++
++// Last absolute counter values per thread, for per-event deltas.
++struct InfernoBenchLast {
++  bool valid = false;
++  uint64_t values[inferno_bench::kNumCounters] = {};
++};
++
++InfernoBenchLast& InfernoBenchLastValues() {
++  thread_local InfernoBenchLast last;
++  return last;
++}
++#endif  // defined(INFERNO_BENCH_PMU_TRACKS)
++
+ static constexpr const char kSlowTag[] = "slow";
+ static constexpr const char kDebugTag[] = "debug";
+ static constexpr const char kFilteredEventName[] = "FILTERED";
+@@ -459,6 +502,14 @@
+       track_defaults->add_extra_counter_track_uuids(
+           thread_time_counter_track.uuid);
+     }
++#if defined(INFERNO_BENCH_PMU_TRACKS)
++    if (inferno_bench::Enabled()) {
++      for (int i = 0; i < inferno_bench::kNumCounters; i++) {
++        track_defaults->add_extra_counter_track_uuids(
++            InfernoBenchCounterTrack(i, default_track).uuid);
++      }
++    }
++#endif
+ 
+ #if PERFETTO_BUILDFLAG(PERFETTO_OS_APPLE)
+     // Emit a MacOS point-of-interest signpost to synchronize Mac profiler time
+@@ -517,6 +568,17 @@
+     WriteTrackDescriptor(thread_time_counter_track, trace_writer, incr_state,
+                          tls_state, sequence_timestamp);
+   }
++#if defined(INFERNO_BENCH_PMU_TRACKS)
++  if (inferno_bench::Enabled()) {
++    for (int i = 0; i < inferno_bench::kNumCounters; i++) {
++      WriteTrackDescriptor(InfernoBenchCounterTrack(i, default_track),
++                           trace_writer, incr_state, tls_state,
++                           sequence_timestamp);
++    }
++    // Incremental counters restart with the sequence.
++    InfernoBenchLastValues().valid = false;
++  }
++#endif
+ }
+ 
+ // static
+@@ -613,6 +675,23 @@
+       track_event->add_extra_counter_values(0);
+     }
+   }
++#if defined(INFERNO_BENCH_PMU_TRACKS)
++  // Same order as the extra_counter_track_uuids in the track event defaults:
++  // thread time (if sampled) above, then these counters.
++  if (inferno_bench::Enabled() && on_current_thread_track) {
++    uint64_t now[inferno_bench::kNumCounters];
++    InfernoBenchLast& last = InfernoBenchLastValues();
++    bool ok = inferno_bench::Current().Read(now);
++    for (int i = 0; i < inferno_bench::kNumCounters; i++) {
++      int64_t delta = ok && last.valid ? static_cast<int64_t>(now[i] - last.values[i]) : 0;
++      track_event->add_extra_counter_values(delta);
++      if (ok) {
++        last.values[i] = now[i];
++      }
++    }
++    last.valid = ok;
++  }
++#endif
+ 
+   // We assume that |category| points to the string with static lifetime.
+   // This means we can use their addresses as interning keys.

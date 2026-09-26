@@ -1,0 +1,24 @@
+.test-result {
+    margin: 5px 0 5px 19px;
+}
+
+.test-name {
+    font-weight: 600;
+}
+
+.results {
+    padding: 20px;
+}
+
+.test-part {
+    font-weight: 600;
+}
+
+ul {
+    list-style: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}

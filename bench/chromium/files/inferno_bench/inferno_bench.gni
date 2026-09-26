@@ -1,0 +1,19 @@
+# Inferno bench instrumentation, maintained in the inferno repository
+# (bench/chromium). Nothing changes unless an out dir sets inferno_bench = true.
+declare_args() {
+  # Adds per-thread hardware counters to trace events (at runtime only when the
+  # browser runs with INFERNO_BENCH_PMU=1) and infernoBenchCounters() to V8's
+  # --expose-statistics extension.
+  inferno_bench = false
+}
+
+# Patched sources include this header via __has_include and test the macro,
+# so enabling the instrumentation changes no compiler flags anywhere: other
+# out dirs keep identical compile commands and compile the code out.
+if (inferno_bench) {
+  write_file("$root_gen_dir/inferno_bench/enabled.h",
+             [ "#define INFERNO_BENCH_ENABLED 1" ])
+} else {
+  write_file("$root_gen_dir/inferno_bench/enabled.h",
+             [ "#define INFERNO_BENCH_ENABLED 0" ])
+}

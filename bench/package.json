@@ -1,0 +1,34 @@
+{
+  "name": "inferno-bench",
+  "private": true,
+  "type": "module",
+  "description": "Inferno performance lab: size, micro, timing, memory, counters, profiles and latency",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "bench": "node cli.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@babel/core": "^8.0.1",
+    "@jridgewell/trace-mapping": "^0.3.31",
+    "@puppeteer/browsers": "^3.2.3",
+    "@rollup/plugin-alias": "^6.0.0",
+    "@rollup/plugin-babel": "^7.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@swc/core": "1.16.1",
+    "@types/node": "^26.2.0",
+    "babel-plugin-inferno": "6.9.0",
+    "d3-scale-chromatic": "^3.1.0",
+    "jsdom": "^30.0.1",
+    "puppeteer-core": "^25.12.0",
+    "rollup": "4.62.4",
+    "swc-plugin-inferno": "^2.17.0",
+    "terser": "^5.48.0",
+    "typescript": "^6.0.3"
+  }
+}

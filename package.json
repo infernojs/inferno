@@ -17,6 +17,7 @@
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
   "scripts": {
+    "bench": "node bench/cli.ts",
     "clean": "pnpm -r --filter './packages/*' exec rimraf dist tmpDist .rpt2_cache_development .rpt2_cache_production",
     "coveralls": "coveralls < coverage/lcov.info",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest --runInBand --no-cache --no-watchman",
@@ -49,11 +50,7 @@
     "test:browser:debug-nocompat": "cross-env InfernoCompat=0 pnpm --filter inferno-fixture-browser run debug:swc",
     "test:browser:sauce": "pnpm --filter inferno-fixture-browser run test",
     "test:react": "pnpm --dir fixtures/react run test -- --forceExit",
-    "test:memory": "node --expose-gc scripts/fakedom/uibench-reactlike/start.js",
-    "test:memory:js-framework": "node --expose-gc scripts/fakedom/js-framework-bench/start.js",
-    "test:memory:lifecycle": "node --expose-gc scripts/fakedom/uibench-lifecycle/start.js",
-    "test:memory:lifecycle:debug": "node --inspect-brk --expose-gc scripts/fakedom/uibench-lifecycle/start.js",
-    "test:memory:js-framework:debug": "node --inspect-brk --expose-gc scripts/fakedom/js-framework-bench/start.js"
+    "test:memory": "node --expose-gc scripts/fakedom/uibench-reactlike/start.js"
   },
   "devDependencies": {
     "@babel/core": "^8.0.1",

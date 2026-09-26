@@ -1,0 +1,41 @@
+# out/InfernoProf: AutoExplore's release configuration (official, PGO phase 2,
+# ThinLTO, CFI) with Inferno bench instrumentation. Differences from
+# out/AutoExplore/args.gn are marked. Applied by bench/chromium/scripts/build.sh.
+
+# CHANGED: stock codegen. This tree defaults autoexplore_x86_tune to x86-64-v3,
+# Chrome releases are built for the baseline x86-64 target.
+autoexplore_x86_tune = ""
+
+# CHANGED: function names + line tables are enough for perf/hotspot and keep
+# the link (and the out dir) much smaller than symbol_level=2.
+symbol_level = 1
+
+# NEW: per-thread hardware counters on trace events (INFERNO_BENCH_PMU=1) and
+# infernoBenchCounters() in --expose-statistics. See //inferno_bench.
+inferno_bench = true
+
+# Unchanged from out/AutoExplore/args.gn:
+branding_path_component = "autoexplore"
+chrome_pgo_phase = 2
+clang_use_chrome_plugins = false
+disable_fieldtrial_testing_config = true
+enable_hangout_services_extension = false
+enable_mdns = false
+enable_remoting = false
+enable_reporting = false
+enable_service_discovery = false
+enable_widevine = true
+exclude_unwind_tables = true
+ffmpeg_branding = "Chrome"
+google_api_key = ""
+google_default_client_id = ""
+google_default_client_secret = ""
+is_debug = false
+is_official_build = true
+proprietary_codecs = true
+rtc_use_h264 = true
+safe_browsing_mode = 0
+treat_warnings_as_errors = false
+use_official_google_api_keys = false
+use_unofficial_version_number = false
+v8_drumbrake_bounds_checks = true

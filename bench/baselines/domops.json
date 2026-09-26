@@ -1,0 +1,1347 @@
+{
+  "jfb/keyed/01_run1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2000,
+      "setAttribute": 1000
+    },
+    "checksum": "d490b72e:217943"
+  },
+  "jfb/keyed/02_replace1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2001,
+      "setAttribute": 1000
+    },
+    "checksum": "4b78bfb7:218216"
+  },
+  "jfb/keyed/03_update10th1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:firstChild": 100,
+      "get:parentNode": 1,
+      "set:nodeValue": 100
+    },
+    "checksum": "7dfa4f2c:315885"
+  },
+  "jfb/keyed/04_select1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "removeAttribute": 1,
+      "set:className": 1
+    },
+    "checksum": "982706fc:215900"
+  },
+  "jfb/keyed/05_swap1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "insertBefore": 2
+    },
+    "checksum": "2ee6c74c:215885"
+  },
+  "jfb/keyed/06_remove-one-1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "removeChild": 1
+    },
+    "checksum": "ac8ce512:215907"
+  },
+  "jfb/keyed/07_create10k": {
+    "dom": {
+      "appendChild": 80000,
+      "composedPath": 1,
+      "createElement": 80000,
+      "get:parentNode": 1,
+      "set:className": 50000,
+      "set:textContent": 20000,
+      "setAttribute": 10000
+    },
+    "checksum": "cde31a4c:2170312"
+  },
+  "jfb/keyed/08_create1k-after1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2000,
+      "setAttribute": 1000
+    },
+    "checksum": "2f7e6fca:434864"
+  },
+  "jfb/keyed/09_clear1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "set:textContent": 1
+    },
+    "checksum": "5ba78248:1102"
+  },
+  "jfb/nonkeyed/01_run1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2000,
+      "setAttribute": 1000
+    },
+    "checksum": "d490b72e:217943"
+  },
+  "jfb/nonkeyed/02_replace1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:firstChild": 1999.267,
+      "get:parentNode": 1,
+      "set:nodeValue": 1999.267
+    },
+    "checksum": "4b78bfb7:218216"
+  },
+  "jfb/nonkeyed/03_update10th1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:firstChild": 100,
+      "get:parentNode": 1,
+      "set:nodeValue": 100
+    },
+    "checksum": "7dfa4f2c:315885"
+  },
+  "jfb/nonkeyed/04_select1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "removeAttribute": 1,
+      "set:className": 1
+    },
+    "checksum": "982706fc:215900"
+  },
+  "jfb/nonkeyed/05_swap1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:firstChild": 4,
+      "get:parentNode": 1,
+      "set:nodeValue": 4
+    },
+    "checksum": "2ee6c74c:215885"
+  },
+  "jfb/nonkeyed/06_remove-one-1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:firstChild": 1980.88,
+      "get:parentNode": 1,
+      "removeChild": 1,
+      "set:nodeValue": 1980.88
+    },
+    "checksum": "ac8ce512:215907"
+  },
+  "jfb/nonkeyed/07_create10k": {
+    "dom": {
+      "appendChild": 80000,
+      "composedPath": 1,
+      "createElement": 80000,
+      "get:parentNode": 1,
+      "set:className": 50000,
+      "set:textContent": 20000,
+      "setAttribute": 10000
+    },
+    "checksum": "cde31a4c:2170312"
+  },
+  "jfb/nonkeyed/08_create1k-after1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2000,
+      "setAttribute": 1000
+    },
+    "checksum": "2f7e6fca:434864"
+  },
+  "jfb/nonkeyed/09_clear1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "set:textContent": 1
+    },
+    "checksum": "5ba78248:1102"
+  },
+  "keyed/el/swap2": {
+    "dom": {
+      "insertBefore": 2
+    },
+    "checksum": "ecad9c52:16899"
+  },
+  "keyed/fc/swap2": {
+    "dom": {
+      "insertBefore": 2
+    },
+    "checksum": "ecad9c52:16899"
+  },
+  "keyed/el/reverse": {
+    "dom": {
+      "insertBefore": 999
+    },
+    "checksum": "218a6f1e:16899"
+  },
+  "keyed/fc/reverse": {
+    "dom": {
+      "insertBefore": 999
+    },
+    "checksum": "218a6f1e:16899"
+  },
+  "keyed/el/shuffle": {
+    "dom": {
+      "appendChild": 0.933,
+      "insertBefore": 941.173
+    },
+    "checksum": "9d097052:16899"
+  },
+  "keyed/fc/shuffle": {
+    "dom": {
+      "appendChild": 0.933,
+      "insertBefore": 941.173
+    },
+    "checksum": "9d097052:16899"
+  },
+  "keyed/el/prepend1": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:textContent": 1
+    },
+    "checksum": "49aab977:16911"
+  },
+  "keyed/fc/prepend1": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:textContent": 1
+    },
+    "checksum": "49aab977:16911"
+  },
+  "keyed/el/append1": {
+    "dom": {
+      "appendChild": 1,
+      "createElement": 1,
+      "set:textContent": 1
+    },
+    "checksum": "238b7f63:16911"
+  },
+  "keyed/fc/append1": {
+    "dom": {
+      "appendChild": 1,
+      "createElement": 1,
+      "set:textContent": 1
+    },
+    "checksum": "238b7f63:16911"
+  },
+  "keyed/el/insert-middle": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:textContent": 1
+    },
+    "checksum": "4a45615b:16911"
+  },
+  "keyed/fc/insert-middle": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:textContent": 1
+    },
+    "checksum": "4a45615b:16911"
+  },
+  "keyed/el/remove-middle": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "822ac029:16882"
+  },
+  "keyed/fc/remove-middle": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "822ac029:16882"
+  },
+  "keyed/el/remove-first": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "0bdc6b14:16884"
+  },
+  "keyed/fc/remove-first": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "0bdc6b14:16884"
+  },
+  "keyed/el/replace-all": {
+    "dom": {
+      "appendChild": 1000,
+      "createElement": 1000,
+      "set:textContent": 1001
+    },
+    "checksum": "abc6bc12:22009"
+  },
+  "keyed/fc/replace-all": {
+    "dom": {
+      "appendChild": 1000,
+      "createElement": 1000,
+      "set:textContent": 1001
+    },
+    "checksum": "abc6bc12:22009"
+  },
+  "keyed/el/move-evens-to-end": {
+    "dom": {
+      "insertBefore": 500
+    },
+    "checksum": "ff9bde38:16899"
+  },
+  "keyed/fc/move-evens-to-end": {
+    "dom": {
+      "insertBefore": 500
+    },
+    "checksum": "ff9bde38:16899"
+  },
+  "keyed/el/move-one-far": {
+    "dom": {
+      "insertBefore": 1
+    },
+    "checksum": "55042eaa:16899"
+  },
+  "keyed/fc/move-one-far": {
+    "dom": {
+      "insertBefore": 1
+    },
+    "checksum": "55042eaa:16899"
+  },
+  "keyed/el/small-shuffle-10": {
+    "dom": {
+      "insertBefore": 5.76
+    },
+    "checksum": "aa2a4c8c:16899"
+  },
+  "keyed/fc/small-shuffle-10": {
+    "dom": {
+      "insertBefore": 5.76
+    },
+    "checksum": "aa2a4c8c:16899"
+  },
+  "nonkeyed/el/update-all-text": {
+    "dom": {
+      "get:firstChild": 1000,
+      "set:nodeValue": 1000
+    },
+    "checksum": "8a9bfa92:18899"
+  },
+  "nonkeyed/el/append1": {
+    "dom": {
+      "appendChild": 1,
+      "createElement": 1,
+      "set:textContent": 1
+    },
+    "checksum": "238b7f63:16911"
+  },
+  "nonkeyed/el/remove-last": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "6c061c83:16882"
+  },
+  "nonkeyed/el/remove-first": {
+    "dom": {
+      "get:firstChild": 999,
+      "removeChild": 1,
+      "set:nodeValue": 999
+    },
+    "checksum": "0bdc6b14:16884"
+  },
+  "mount/plain-1k": {
+    "dom": {
+      "appendChild": 1001,
+      "createElement": 1001,
+      "set:textContent": 1000
+    },
+    "checksum": "7a014d52:15899"
+  },
+  "unmount/plain-1k": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "811c9dc5:0"
+  },
+  "patch-same/plain-1k": {
+    "dom": {},
+    "checksum": "7a014d52:15899"
+  },
+  "mount/props-1k": {
+    "dom": {
+      "addEventListener": 1,
+      "appendChild": 1001,
+      "createElement": 1001,
+      "get:style": 1000,
+      "set:className": 1000,
+      "set:textContent": 1000,
+      "setAttribute": 3000,
+      "style.setProperty": 1000
+    },
+    "checksum": "7590a60e:87569"
+  },
+  "unmount/props-1k": {
+    "dom": {
+      "removeChild": 1,
+      "removeEventListener": 1
+    },
+    "checksum": "811c9dc5:0"
+  },
+  "patch-same/props-1k": {
+    "dom": {
+      "get:style": 1000
+    },
+    "checksum": "7590a60e:87569"
+  },
+  "mount/components-1k": {
+    "dom": {
+      "appendChild": 1001,
+      "createElement": 1001,
+      "set:className": 1000,
+      "set:textContent": 1000
+    },
+    "checksum": "1f7c3760:27399"
+  },
+  "unmount/components-1k": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "811c9dc5:0"
+  },
+  "patch-same/components-1k": {
+    "dom": {},
+    "checksum": "1f7c3760:27399"
+  },
+  "vnode/create-rows-1k": {
+    "dom": {},
+    "checksum": null
+  },
+  "vnode/normalize-unknown-1k": {
+    "dom": {},
+    "checksum": null
+  },
+  "vnode/spread-props-1k": {
+    "dom": {},
+    "checksum": null
+  },
+  "state/setState-leaf-of-100": {
+    "dom": {
+      "get:firstChild": 1,
+      "get:parentNode": 1,
+      "set:nodeValue": 1
+    },
+    "checksum": "63bf03a2:1611"
+  },
+  "state/forceUpdate-root-1k-components": {
+    "dom": {
+      "get:parentNode": 1
+    },
+    "checksum": "1f7c3760:27399"
+  },
+  "events/dispatch/synthetic": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 6
+    },
+    "checksum": "eda06818:10789"
+  },
+  "events/dispatch/synthetic-linkEvent": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 6
+    },
+    "checksum": "eda06818:10789"
+  },
+  "events/dispatch/native": {
+    "dom": {},
+    "checksum": "eda06818:10789"
+  },
+  "events/dispatch/synthetic-depth-30": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 36
+    },
+    "checksum": "9c4227fe:722"
+  },
+  "uibench/table/[100,4]/render": {
+    "dom": {
+      "addEventListener": 1,
+      "appendChild": 600,
+      "createElement": 600,
+      "set:className": 600,
+      "set:textContent": 500,
+      "setAttribute": 100
+    },
+    "checksum": "14c83f87:18508"
+  },
+  "uibench/table/[50,4]/render": {
+    "dom": {
+      "addEventListener": 1,
+      "appendChild": 300,
+      "createElement": 300,
+      "set:className": 300,
+      "set:textContent": 250,
+      "setAttribute": 50
+    },
+    "checksum": "422039f7:9378"
+  },
+  "uibench/table/[100,2]/render": {
+    "dom": {
+      "addEventListener": 1,
+      "appendChild": 400,
+      "createElement": 400,
+      "set:className": 400,
+      "set:textContent": 300,
+      "setAttribute": 100
+    },
+    "checksum": "e1a0d11f:12948"
+  },
+  "uibench/table/[50,2]/render": {
+    "dom": {
+      "addEventListener": 1,
+      "appendChild": 200,
+      "createElement": 200,
+      "set:className": 200,
+      "set:textContent": 150,
+      "setAttribute": 50
+    },
+    "checksum": "650ba5fd:6498"
+  },
+  "uibench/table/[100,4]/removeAll": {
+    "dom": {
+      "removeEventListener": 1,
+      "set:textContent": 1
+    },
+    "checksum": "4453520b:68"
+  },
+  "uibench/table/[50,4]/removeAll": {
+    "dom": {
+      "removeEventListener": 1,
+      "set:textContent": 1
+    },
+    "checksum": "4453520b:68"
+  },
+  "uibench/table/[100,2]/removeAll": {
+    "dom": {
+      "removeEventListener": 1,
+      "set:textContent": 1
+    },
+    "checksum": "4453520b:68"
+  },
+  "uibench/table/[50,2]/removeAll": {
+    "dom": {
+      "removeEventListener": 1,
+      "set:textContent": 1
+    },
+    "checksum": "4453520b:68"
+  },
+  "uibench/table/[100,4]/sort/0": {
+    "dom": {
+      "insertBefore": 81
+    },
+    "checksum": "3d5f5f65:18508"
+  },
+  "uibench/table/[50,4]/sort/0": {
+    "dom": {
+      "insertBefore": 36
+    },
+    "checksum": "a7f5e237:9378"
+  },
+  "uibench/table/[100,2]/sort/0": {
+    "dom": {
+      "insertBefore": 81
+    },
+    "checksum": "eeed77bd:12948"
+  },
+  "uibench/table/[50,2]/sort/0": {
+    "dom": {
+      "insertBefore": 36
+    },
+    "checksum": "94614675:6498"
+  },
+  "uibench/table/[100,4]/sort/1": {
+    "dom": {
+      "appendChild": 1,
+      "insertBefore": 84
+    },
+    "checksum": "757dd721:18508"
+  },
+  "uibench/table/[50,4]/sort/1": {
+    "dom": {
+      "insertBefore": 40
+    },
+    "checksum": "52027d73:9378"
+  },
+  "uibench/table/[100,2]/sort/1": {
+    "dom": {
+      "appendChild": 1,
+      "insertBefore": 84
+    },
+    "checksum": "1cd6588d:12948"
+  },
+  "uibench/table/[50,2]/sort/1": {
+    "dom": {
+      "insertBefore": 40
+    },
+    "checksum": "f9433b91:6498"
+  },
+  "uibench/table/[100,4]/filter/32": {
+    "dom": {
+      "removeChild": 3
+    },
+    "checksum": "0f8ef9ab:17953"
+  },
+  "uibench/table/[50,4]/filter/32": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "8fd0e1de:9191"
+  },
+  "uibench/table/[100,2]/filter/32": {
+    "dom": {
+      "removeChild": 3
+    },
+    "checksum": "2263ae5b:12561"
+  },
+  "uibench/table/[50,2]/filter/32": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "dc77bb3e:6369"
+  },
+  "uibench/table/[100,4]/filter/16": {
+    "dom": {
+      "removeChild": 6
+    },
+    "checksum": "bd88adf0:17398"
+  },
+  "uibench/table/[50,4]/filter/16": {
+    "dom": {
+      "removeChild": 3
+    },
+    "checksum": "ab5fa82c:8817"
+  },
+  "uibench/table/[100,2]/filter/16": {
+    "dom": {
+      "removeChild": 6
+    },
+    "checksum": "6304d29f:12174"
+  },
+  "uibench/table/[50,2]/filter/16": {
+    "dom": {
+      "removeChild": 3
+    },
+    "checksum": "eeecc045:6111"
+  },
+  "uibench/table/[100,4]/filter/8": {
+    "dom": {
+      "removeChild": 12
+    },
+    "checksum": "7f5c0ec1:16294"
+  },
+  "uibench/table/[50,4]/filter/8": {
+    "dom": {
+      "removeChild": 6
+    },
+    "checksum": "5cd43d39:8260"
+  },
+  "uibench/table/[100,2]/filter/8": {
+    "dom": {
+      "removeChild": 12
+    },
+    "checksum": "3f3ae7a5:11402"
+  },
+  "uibench/table/[50,2]/filter/8": {
+    "dom": {
+      "removeChild": 6
+    },
+    "checksum": "fa8ec773:5726"
+  },
+  "uibench/table/[100,4]/filter/4": {
+    "dom": {
+      "removeChild": 25
+    },
+    "checksum": "be877641:13895"
+  },
+  "uibench/table/[50,4]/filter/4": {
+    "dom": {
+      "removeChild": 12
+    },
+    "checksum": "1f9f6446:7142"
+  },
+  "uibench/table/[100,2]/filter/4": {
+    "dom": {
+      "removeChild": 25
+    },
+    "checksum": "54847c43:9727"
+  },
+  "uibench/table/[50,2]/filter/4": {
+    "dom": {
+      "removeChild": 12
+    },
+    "checksum": "7ce9eb89:4954"
+  },
+  "uibench/table/[100,4]/activate/32": {
+    "dom": {
+      "set:className": 3
+    },
+    "checksum": "8ade2b6d:18529"
+  },
+  "uibench/table/[50,4]/activate/32": {
+    "dom": {
+      "set:className": 1
+    },
+    "checksum": "ec0060d5:9385"
+  },
+  "uibench/table/[100,2]/activate/32": {
+    "dom": {
+      "set:className": 3
+    },
+    "checksum": "a0c4085f:12969"
+  },
+  "uibench/table/[50,2]/activate/32": {
+    "dom": {
+      "set:className": 1
+    },
+    "checksum": "46446485:6505"
+  },
+  "uibench/table/[100,4]/activate/16": {
+    "dom": {
+      "set:className": 6
+    },
+    "checksum": "99174b6f:18550"
+  },
+  "uibench/table/[50,4]/activate/16": {
+    "dom": {
+      "set:className": 3
+    },
+    "checksum": "6a1e3adf:9399"
+  },
+  "uibench/table/[100,2]/activate/16": {
+    "dom": {
+      "set:className": 6
+    },
+    "checksum": "922992fb:12990"
+  },
+  "uibench/table/[50,2]/activate/16": {
+    "dom": {
+      "set:className": 3
+    },
+    "checksum": "b7ad6581:6519"
+  },
+  "uibench/table/[100,4]/activate/8": {
+    "dom": {
+      "set:className": 12
+    },
+    "checksum": "9623b3e1:18592"
+  },
+  "uibench/table/[50,4]/activate/8": {
+    "dom": {
+      "set:className": 6
+    },
+    "checksum": "bb37afbf:9420"
+  },
+  "uibench/table/[100,2]/activate/8": {
+    "dom": {
+      "set:className": 12
+    },
+    "checksum": "f4c4afd5:13032"
+  },
+  "uibench/table/[50,2]/activate/8": {
+    "dom": {
+      "set:className": 6
+    },
+    "checksum": "a91e0a53:6540"
+  },
+  "uibench/table/[100,4]/activate/4": {
+    "dom": {
+      "set:className": 25
+    },
+    "checksum": "4a685635:18683"
+  },
+  "uibench/table/[50,4]/activate/4": {
+    "dom": {
+      "set:className": 12
+    },
+    "checksum": "58e05a51:9462"
+  },
+  "uibench/table/[100,2]/activate/4": {
+    "dom": {
+      "set:className": 25
+    },
+    "checksum": "92a02ee1:13123"
+  },
+  "uibench/table/[50,2]/activate/4": {
+    "dom": {
+      "set:className": 12
+    },
+    "checksum": "0fc53d99:6582"
+  },
+  "uibench/anim/100/32": {
+    "dom": {
+      "get:style": 3,
+      "style.setProperty": 6
+    },
+    "checksum": "869bf0b5:9738"
+  },
+  "uibench/anim/100/16": {
+    "dom": {
+      "get:style": 6,
+      "style.setProperty": 12
+    },
+    "checksum": "67773cb3:9738"
+  },
+  "uibench/anim/100/8": {
+    "dom": {
+      "get:style": 12,
+      "style.setProperty": 24
+    },
+    "checksum": "b04a221b:9738"
+  },
+  "uibench/anim/100/4": {
+    "dom": {
+      "get:style": 25,
+      "style.setProperty": 50
+    },
+    "checksum": "bdc15a11:9738"
+  },
+  "uibench/tree/[500]/render": {
+    "dom": {
+      "appendChild": 500,
+      "createElement": 500,
+      "set:className": 500,
+      "set:textContent": 500
+    },
+    "checksum": "f0853253:14466"
+  },
+  "uibench/tree/[50,10]/render": {
+    "dom": {
+      "appendChild": 550,
+      "createElement": 550,
+      "set:className": 550,
+      "set:textContent": 500
+    },
+    "checksum": "88f6e786:15921"
+  },
+  "uibench/tree/[10,50]/render": {
+    "dom": {
+      "appendChild": 510,
+      "createElement": 510,
+      "set:className": 510,
+      "set:textContent": 500
+    },
+    "checksum": "50b0fda8:15334"
+  },
+  "uibench/tree/[5,100]/render": {
+    "dom": {
+      "appendChild": 505,
+      "createElement": 505,
+      "set:className": 505,
+      "set:textContent": 500
+    },
+    "checksum": "a86f42b0:15204"
+  },
+  "uibench/tree/[2,2,2,2,2,2,2,2,2,2]/render": {
+    "dom": {
+      "appendChild": 2046,
+      "createElement": 2046,
+      "set:className": 2046,
+      "set:textContent": 1024
+    },
+    "checksum": "0eab8ff4:58390"
+  },
+  "uibench/tree/[500]/removeAll": {
+    "dom": {
+      "set:textContent": 1
+    },
+    "checksum": "d7f3ae94:74"
+  },
+  "uibench/tree/[50,10]/removeAll": {
+    "dom": {
+      "set:textContent": 1
+    },
+    "checksum": "d7f3ae94:74"
+  },
+  "uibench/tree/[10,50]/removeAll": {
+    "dom": {
+      "set:textContent": 1
+    },
+    "checksum": "d7f3ae94:74"
+  },
+  "uibench/tree/[5,100]/removeAll": {
+    "dom": {
+      "set:textContent": 1
+    },
+    "checksum": "d7f3ae94:74"
+  },
+  "uibench/tree/[2,2,2,2,2,2,2,2,2,2]/removeAll": {
+    "dom": {
+      "set:textContent": 1
+    },
+    "checksum": "d7f3ae94:74"
+  },
+  "uibench/tree/[500]/[reverse]": {
+    "dom": {
+      "insertBefore": 499
+    },
+    "checksum": "ed023aab:14466"
+  },
+  "uibench/tree/[50,10]/[reverse]": {
+    "dom": {
+      "insertBefore": 49
+    },
+    "checksum": "349ffdfe:15921"
+  },
+  "uibench/tree/[10,50]/[reverse]": {
+    "dom": {
+      "insertBefore": 9
+    },
+    "checksum": "aaa9b490:15334"
+  },
+  "uibench/tree/[5,100]/[reverse]": {
+    "dom": {
+      "insertBefore": 4
+    },
+    "checksum": "ef0284d0:15204"
+  },
+  "uibench/tree/[500]/[insertFirst(1)]": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "9e4e4a75:14497"
+  },
+  "uibench/tree/[50,10]/[insertFirst(1)]": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "22cabf35:15952"
+  },
+  "uibench/tree/[10,50]/[insertFirst(1)]": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "ca729793:15365"
+  },
+  "uibench/tree/[5,100]/[insertFirst(1)]": {
+    "dom": {
+      "createElement": 1,
+      "insertBefore": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "d64386a8:15235"
+  },
+  "uibench/tree/[500]/[insertLast(1)]": {
+    "dom": {
+      "appendChild": 1,
+      "createElement": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "3a4984d8:14497"
+  },
+  "uibench/tree/[50,10]/[insertLast(1)]": {
+    "dom": {
+      "appendChild": 1,
+      "createElement": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "11f79300:15952"
+  },
+  "uibench/tree/[10,50]/[insertLast(1)]": {
+    "dom": {
+      "appendChild": 1,
+      "createElement": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "27400183:15365"
+  },
+  "uibench/tree/[5,100]/[insertLast(1)]": {
+    "dom": {
+      "appendChild": 1,
+      "createElement": 1,
+      "set:className": 1,
+      "set:textContent": 1
+    },
+    "checksum": "2939b2bc:15235"
+  },
+  "uibench/tree/[500]/[removeFirst(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "54fd8cf6:14439"
+  },
+  "uibench/tree/[50,10]/[removeFirst(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "4a7fc79d:15605"
+  },
+  "uibench/tree/[10,50]/[removeFirst(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "2f39397f:13808"
+  },
+  "uibench/tree/[5,100]/[removeFirst(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "24f7e17c:12178"
+  },
+  "uibench/tree/[500]/[removeLast(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "c6f97398:14437"
+  },
+  "uibench/tree/[50,10]/[removeLast(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "47ebf380:15595"
+  },
+  "uibench/tree/[10,50]/[removeLast(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "691fad51:13808"
+  },
+  "uibench/tree/[5,100]/[removeLast(1)]": {
+    "dom": {
+      "removeChild": 1
+    },
+    "checksum": "2ab5b610:12178"
+  },
+  "uibench/tree/[500]/[moveFromEndToStart(1)]": {
+    "dom": {
+      "insertBefore": 1
+    },
+    "checksum": "a4ba4f6d:14466"
+  },
+  "uibench/tree/[50,10]/[moveFromEndToStart(1)]": {
+    "dom": {
+      "insertBefore": 1
+    },
+    "checksum": "5a64f11a:15921"
+  },
+  "uibench/tree/[10,50]/[moveFromEndToStart(1)]": {
+    "dom": {
+      "insertBefore": 1
+    },
+    "checksum": "05a37a00:15334"
+  },
+  "uibench/tree/[5,100]/[moveFromEndToStart(1)]": {
+    "dom": {
+      "insertBefore": 1
+    },
+    "checksum": "86862440:15204"
+  },
+  "uibench/tree/[500]/[moveFromStartToEnd(1)]": {
+    "dom": {
+      "appendChild": 1
+    },
+    "checksum": "77d7d711:14466"
+  },
+  "uibench/tree/[50,10]/[moveFromStartToEnd(1)]": {
+    "dom": {
+      "appendChild": 1
+    },
+    "checksum": "95bbde94:15921"
+  },
+  "uibench/tree/[10,50]/[moveFromStartToEnd(1)]": {
+    "dom": {
+      "appendChild": 1
+    },
+    "checksum": "0cdb21ac:15334"
+  },
+  "uibench/tree/[5,100]/[moveFromStartToEnd(1)]": {
+    "dom": {
+      "appendChild": 1
+    },
+    "checksum": "6f2248c0:15204"
+  },
+  "uibench/tree/[500]/[kivi_worst_case]": {
+    "dom": {
+      "insertBefore": 497,
+      "removeChild": 2
+    },
+    "checksum": "2037027f:14410"
+  },
+  "uibench/tree/[500]/[snabbdom_worst_case]": {
+    "dom": {
+      "insertBefore": 2
+    },
+    "checksum": "032f6bad:14466"
+  },
+  "uibench/tree/[500]/[react_worst_case]": {
+    "dom": {
+      "insertBefore": 1,
+      "removeChild": 2
+    },
+    "checksum": "d42160b5:14410"
+  },
+  "uibench/tree/[500]/[virtual_dom_worst_case]": {
+    "dom": {
+      "appendChild": 1,
+      "insertBefore": 1
+    },
+    "checksum": "37cc767f:14466"
+  },
+  "uibench/tree/[10,10,10,10]/no_change": {
+    "dom": {},
+    "checksum": "1f9a9fdd:331795"
+  },
+  "uibench/tree/[2,2,2,2,2,2,2,2,2,2]/no_change": {
+    "dom": {},
+    "checksum": "0eab8ff4:58390"
+  },
+  "fuzz/1": {
+    "dom": {
+      "get:nextSibling": 21.793,
+      "removeChild": 0.773,
+      "set:nodeValue": 1.88,
+      "setAttribute": 1.02,
+      "set:className": 3.453,
+      "appendChild": 11.393,
+      "createElement": 3.887,
+      "createTextNode": 8.387,
+      "get:style": 0.66,
+      "insertBefore": 0.887,
+      "set:textContent": 0.713,
+      "style.setProperty": 0.7,
+      "removeAttribute": 0.053,
+      "get:firstChild": 0.02,
+      "replaceChild": 0.113
+    },
+    "checksum": "64370e15:27422"
+  },
+  "fuzz/2": {
+    "dom": {
+      "get:nextSibling": 14.88,
+      "set:nodeValue": 1.74,
+      "set:textContent": 0.68,
+      "appendChild": 11.973,
+      "createElement": 4.047,
+      "createTextNode": 8.873,
+      "get:style": 0.56,
+      "removeChild": 0.927,
+      "set:className": 3.76,
+      "setAttribute": 1.153,
+      "style.setProperty": 0.593,
+      "insertBefore": 1.033,
+      "removeAttribute": 0.053,
+      "get:firstChild": 0.027,
+      "replaceChild": 0.073
+    },
+    "checksum": "b2b81baa:30434"
+  },
+  "fuzz/3": {
+    "dom": {
+      "appendChild": 7.947,
+      "createElement": 2.913,
+      "createTextNode": 5.767,
+      "get:nextSibling": 13.84,
+      "get:style": 0.407,
+      "insertBefore": 0.98,
+      "removeAttribute": 0.047,
+      "removeChild": 0.547,
+      "set:className": 2.733,
+      "set:nodeValue": 1.853,
+      "set:textContent": 0.58,
+      "style.setProperty": 0.427,
+      "setAttribute": 0.827,
+      "get:firstChild": 0.04,
+      "replaceChild": 0.08
+    },
+    "checksum": "a045f30f:23258"
+  },
+  "fuzz/4": {
+    "dom": {
+      "get:firstChild": 0.04,
+      "get:nextSibling": 15.7,
+      "set:nodeValue": 1.693,
+      "appendChild": 10.193,
+      "createElement": 3.56,
+      "createTextNode": 7.547,
+      "get:style": 0.56,
+      "insertBefore": 1.02,
+      "set:className": 3.36,
+      "set:textContent": 0.687,
+      "setAttribute": 0.953,
+      "style.setProperty": 0.607,
+      "removeChild": 0.793,
+      "removeAttribute": 0.06,
+      "replaceChild": 0.087
+    },
+    "checksum": "cca0ae72:22636"
+  },
+  "fuzz/5": {
+    "dom": {
+      "get:nextSibling": 15.927,
+      "set:className": 3.353,
+      "set:nodeValue": 1.733,
+      "appendChild": 10.82,
+      "createElement": 3.66,
+      "createTextNode": 8.027,
+      "get:style": 0.547,
+      "insertBefore": 0.987,
+      "removeChild": 0.72,
+      "set:textContent": 0.613,
+      "setAttribute": 1.073,
+      "style.setProperty": 0.6,
+      "removeAttribute": 0.053,
+      "replaceChild": 0.053,
+      "get:firstChild": 0.007
+    },
+    "checksum": "269f4227:23467"
+  },
+  "fuzz/6": {
+    "dom": {
+      "createElement": 2.88,
+      "get:nextSibling": 18.013,
+      "insertBefore": 0.993,
+      "set:className": 2.667,
+      "set:nodeValue": 1.98,
+      "set:textContent": 0.607,
+      "removeAttribute": 0.027,
+      "removeChild": 0.593,
+      "setAttribute": 0.887,
+      "appendChild": 8.487,
+      "createTextNode": 6.42,
+      "get:style": 0.327,
+      "style.setProperty": 0.353,
+      "replaceChild": 0.053,
+      "get:firstChild": 0.047
+    },
+    "checksum": "6ddac1b2:26013"
+  },
+  "fuzz/7": {
+    "dom": {
+      "get:nextSibling": 17.82,
+      "insertBefore": 0.98,
+      "set:nodeValue": 1.687,
+      "appendChild": 10.36,
+      "createElement": 3.727,
+      "createTextNode": 7.487,
+      "removeChild": 0.78,
+      "set:className": 3.427,
+      "set:textContent": 0.76,
+      "setAttribute": 1.04,
+      "get:style": 0.493,
+      "style.setProperty": 0.567,
+      "get:firstChild": 0.04,
+      "removeAttribute": 0.04,
+      "replaceChild": 0.1
+    },
+    "checksum": "81fc9d91:23243"
+  },
+  "fuzz/8": {
+    "dom": {
+      "appendChild": 10.767,
+      "createElement": 3.767,
+      "createTextNode": 8,
+      "get:firstChild": 0.04,
+      "get:nextSibling": 14.373,
+      "get:style": 0.473,
+      "insertBefore": 1.04,
+      "removeChild": 0.773,
+      "set:className": 3.333,
+      "set:nodeValue": 1.713,
+      "set:textContent": 0.747,
+      "setAttribute": 1.087,
+      "style.setProperty": 0.54,
+      "removeAttribute": 0.033,
+      "replaceChild": 0.093
+    },
+    "checksum": "5549d7d1:20698"
+  },
+  "fuzz/9": {
+    "dom": {
+      "get:nextSibling": 11.347,
+      "insertBefore": 0.793,
+      "set:nodeValue": 1.8,
+      "appendChild": 9.767,
+      "createElement": 3.433,
+      "createTextNode": 7.04,
+      "get:style": 0.447,
+      "removeChild": 0.633,
+      "set:className": 3.16,
+      "set:textContent": 0.6,
+      "setAttribute": 0.993,
+      "style.setProperty": 0.5,
+      "removeAttribute": 0.047,
+      "get:firstChild": 0.033,
+      "replaceChild": 0.073
+    },
+    "checksum": "e6768f4f:25805"
+  },
+  "fuzz/10": {
+    "dom": {
+      "appendChild": 10.913,
+      "createElement": 3.787,
+      "createTextNode": 7.813,
+      "get:nextSibling": 16.313,
+      "get:style": 0.607,
+      "insertBefore": 0.72,
+      "removeChild": 0.613,
+      "replaceChild": 0.107,
+      "set:className": 3.533,
+      "set:nodeValue": 1.907,
+      "set:textContent": 0.727,
+      "setAttribute": 1.087,
+      "style.setProperty": 0.68,
+      "removeAttribute": 0.06,
+      "get:firstChild": 0.027
+    },
+    "checksum": "05d4ca19:28217"
+  },
+  "ssr/jfb-table-1k": {
+    "dom": {},
+    "checksum": "a89351f9:216878"
+  },
+  "ssr/uibench/table/[100,4]/render": {
+    "dom": {},
+    "checksum": "14c83f87:18508"
+  },
+  "ssr/uibench/tree/[10,10,10,10]/no_change": {
+    "dom": {},
+    "checksum": "1f9a9fdd:331795"
+  },
+  "ssr/uibench/anim/100/32": {
+    "dom": {},
+    "checksum": "6d0d94a7:9438"
+  }
+}

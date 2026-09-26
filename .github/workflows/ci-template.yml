@@ -40,3 +40,24 @@ jobs:
         env:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+
+  bench-check:
+    runs-on: ubuntu-latest
+    name: Bench check (deterministic)
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # No wall-clock timing in CI: hidden classes, exact DOM operations and
+      # checksums per micro case against bench/baselines, and size budgets.
+      - name: Bench check
+        run: pnpm bench check

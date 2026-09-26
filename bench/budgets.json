@@ -1,0 +1,9 @@
+{
+  "variant": "local",
+  "limits": {
+    "inferno/esm+terser": { "brotli": 8000, "gzip": 8750 },
+    "inferno/min-umd": { "brotli": 8050, "gzip": 8800 },
+    "app/jfb-keyed/babel-min": { "brotli": 8900, "gzip": 9720 },
+    "app/jfb-nonkeyed/babel-min": { "brotli": 8900, "gzip": 9720 }
+  }
+}

@@ -1,0 +1,91 @@
+diff -ru a/src/extensions/statistics-extension.cc b/src/extensions/statistics-extension.cc
+--- a/src/extensions/statistics-extension.cc	2026-09-26 00:50:14.324630942 +0300
++++ b/src/extensions/statistics-extension.cc	2026-09-26 00:52:01.579793174 +0300
+@@ -15,15 +15,87 @@
+ #include "src/roots/roots.h"
+ #include "src/sandbox/check.h"
+ 
++#if __has_include("inferno_bench/enabled.h")
++#include "inferno_bench/enabled.h"
++#endif
++#if defined(INFERNO_BENCH_ENABLED) && INFERNO_BENCH_ENABLED
++#include "inferno_bench/thread_pmu.h"
++#include "src/heap/heap-allocator.h"
++#include "src/heap/main-allocator.h"
++#define INFERNO_BENCH_COUNTERS 1
++#endif
++
+ namespace v8 {
+ namespace internal {
+ 
++#if defined(INFERNO_BENCH_COUNTERS)
++const char* const StatisticsExtension::kSource =
++    "native function getV8Statistics();"
++    "native function infernoBenchCounters();";
++
++namespace {
++
++// Bytes allocated on the V8 heap so far, excluding the unused remainder of the
++// main thread's linear allocation buffers. Heap::GetTotalAllocatedBytes()
++// counts a whole buffer when it is handed out, which makes per-operation
++// deltas jump in ~100 KB steps; subtracting limit - top makes them exact
++// (up to allocations of background threads, e.g. concurrent compilation).
++double PreciseAllocatedBytes(Heap* heap) {
++  uint64_t total = heap->GetTotalAllocatedBytes();
++  uint64_t unused = 0;
++  auto add = [&unused](const MainAllocator* a) {
++    if (a->top() != kNullAddress && a->limit() > a->top()) {
++      unused += a->limit() - a->top();
++    }
++  };
++  HeapAllocator* allocator = heap->allocator();
++  if (heap->new_space()) {
++    add(allocator->new_space_allocator());
++  }
++  add(allocator->old_space_allocator());
++  add(allocator->trusted_space_allocator());
++  add(allocator->code_space_allocator());
++  return static_cast<double>(total - unused);
++}
++
++// infernoBenchCounters() -> [precise allocated bytes, GC count, instructions,
++// cycles, branch misses, L1D read misses] for the calling thread. Everything
++// is read before the result array is allocated; bracket an operation with two
++// calls and subtract, calibrating the (constant) cost of an empty bracket.
++void InfernoBenchCounters(const v8::FunctionCallbackInfo<v8::Value>& info) {
++  v8::Isolate* v8_isolate = info.GetIsolate();
++  Heap* heap = reinterpret_cast<Isolate*>(v8_isolate)->heap();
++  double values[2 + inferno_bench::kNumCounters];
++  uint64_t pmu[inferno_bench::kNumCounters] = {};
++  bool pmu_ok = inferno_bench::Current().Read(pmu);
++  values[0] = PreciseAllocatedBytes(heap);
++  values[1] = static_cast<double>(heap->gc_count().value());
++  for (int i = 0; i < inferno_bench::kNumCounters; i++) {
++    values[2 + i] = pmu_ok ? static_cast<double>(pmu[i]) : -1;
++  }
++  v8::Local<v8::Context> context = v8_isolate->GetCurrentContext();
++  v8::Local<v8::Array> result = v8::Array::New(v8_isolate, 2 + inferno_bench::kNumCounters);
++  for (int i = 0; i < 2 + inferno_bench::kNumCounters; i++) {
++    result->Set(context, i, v8::Number::New(v8_isolate, values[i])).FromJust();
++  }
++  info.GetReturnValue().Set(result);
++}
++
++}  // namespace
++#else
+ const char* const StatisticsExtension::kSource =
+     "native function getV8Statistics();";
++#endif
+ 
+ 
+ v8::Local<v8::FunctionTemplate> StatisticsExtension::GetNativeFunctionTemplate(
+     v8::Isolate* isolate, v8::Local<v8::String> str) {
++#if defined(INFERNO_BENCH_COUNTERS)
++  if (strcmp(*v8::String::Utf8Value(isolate, str), "infernoBenchCounters") ==
++      0) {
++    return v8::FunctionTemplate::New(isolate, InfernoBenchCounters);
++  }
++#endif
+   DCHECK_EQ(strcmp(*v8::String::Utf8Value(isolate, str), "getV8Statistics"), 0);
+   return v8::FunctionTemplate::New(isolate, StatisticsExtension::GetCounters);
+ }
