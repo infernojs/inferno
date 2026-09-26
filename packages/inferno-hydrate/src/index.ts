@@ -19,6 +19,7 @@ import {
   _RFC as renderFunctionalComponent,
   AnimationQueues,
   type ContextObject,
+  createTextVNode,
   directClone,
   EMPTY_OBJ,
   render,
@@ -319,6 +320,14 @@ function hydrateFragment(
 ): Element {
   let children = vNode.children;
 
+  // Fragment without children has an empty text node, same as when mounting
+  if (
+    vNode.childFlags & ChildFlags.MultipleChildren &&
+    (children as VNode[]).length === 0
+  ) {
+    vNode.childFlags = ChildFlags.HasVNodeChildren;
+    vNode.children = children = createTextVNode('');
+  }
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
     if ((children as VNode).flags & VNodeFlags.InUse) {
       vNode.children = children = directClone(children as VNode);

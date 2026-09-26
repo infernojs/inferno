@@ -1,4 +1,4 @@
-import { Fragment, type InfernoNode, render } from 'inferno';
+import { createFragment, Fragment, type InfernoNode, render } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import {
   renderToString,
@@ -6,6 +6,7 @@ import {
   streamQueueAsString,
 } from 'inferno-server';
 import concatStream from 'concat-stream';
+import { ChildFlags } from 'inferno-vnode-flags';
 
 // Fragments and arrays must render the same content as in the browser, so that hydration can use it
 describe('SSR Fragments and arrays', () => {
@@ -71,6 +72,13 @@ describe('SSR Fragments and arrays', () => {
         <div>
           <Fragment />
         </div>
+      ),
+      result: '<div><!--!--></div>',
+    },
+    {
+      description: 'Fragment with empty children array',
+      template: () => (
+        <div>{createFragment([], ChildFlags.HasNonKeyedChildren)}</div>
       ),
       result: '<div><!--!--></div>',
     },

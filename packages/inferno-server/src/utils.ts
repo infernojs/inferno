@@ -142,7 +142,7 @@ export function isEmptyFragment(vNode: VNode): boolean {
   if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
     return (children.flags & VNodeFlags.Text) !== 0 && children.children === '';
   }
-  return false;
+  return children.length === 0;
 }
 
 export function renderFunctionalComponent(vNode: VNode, context): InfernoNode {
