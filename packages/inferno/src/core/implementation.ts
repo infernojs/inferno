@@ -304,9 +304,16 @@ export function directClone(vNodeToClone: VNode): VNode {
     }
   }
   if ((flags & VNodeFlags.Fragment) === 0) {
+    const childFlags = vNodeToClone.childFlags;
+    let children = vNodeToClone.children;
+
+    // Mounting and patching write clones into the children array, so the clone needs its own array
+    if (childFlags & ChildFlags.MultipleChildren) {
+      children = (children as VNode[]).slice();
+    }
     return new V(
-      vNodeToClone.childFlags,
-      vNodeToClone.children,
+      childFlags,
+      children,
       vNodeToClone.className,
       flags,
       vNodeToClone.key,
