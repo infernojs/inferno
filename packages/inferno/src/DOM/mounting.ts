@@ -112,7 +112,7 @@ function mountPortal(
 ): void {
   let children = vNode.children as VNode;
 
-  if (mustCloneVNode(children)) {
+  if (mustCloneVNode(children, null)) {
     vNode.children = children = directClone(children);
   }
   mount(children, vNode.ref, context, false, null, lifecycle, animations);
@@ -144,7 +144,7 @@ function mountFragment(
   }
 
   if (childFlags === ChildFlags.HasVNodeChildren) {
-    if (mustCloneVNode(children)) {
+    if (mustCloneVNode(children, null)) {
       vNode.children = children = directClone(children);
     }
     mount(
@@ -220,7 +220,7 @@ export function mountElement(
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
     if (childFlags === ChildFlags.HasVNodeChildren) {
-      if (mustCloneVNode(children as VNode)) {
+      if (mustCloneVNode(children as VNode, null)) {
         vNode.children = children = directClone(children as VNode);
       }
       mount(
@@ -278,7 +278,7 @@ export function mountArrayChildren(
   for (let i = 0; i < children.length; ++i) {
     let child = children[i];
 
-    if (mustCloneVNode(child)) {
+    if (mustCloneVNode(child, null)) {
       children[i] = child = directClone(child);
     }
     mount(child, dom, context, isSVG, nextNode, lifecycle, animations);

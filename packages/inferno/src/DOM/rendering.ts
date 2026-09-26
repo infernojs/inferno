@@ -79,7 +79,7 @@ export function renderInternal(
 
   if (isNullOrUndef(rootInput)) {
     if (!isNullOrUndef(input)) {
-      if (mustCloneVNode(input as VNode)) {
+      if (mustCloneVNode(input as VNode, null)) {
         input = directClone(input as VNode);
       }
       mount(
@@ -98,7 +98,7 @@ export function renderInternal(
       remove(rootInput, parentDOM as Element, animations);
       (parentDOM as any).$V = null;
     } else {
-      if (mustCloneVNode(input as VNode)) {
+      if (mustCloneVNode(input as VNode, rootInput)) {
         input = directClone(input as VNode);
       }
       patch(

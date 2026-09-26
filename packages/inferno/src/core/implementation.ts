@@ -329,9 +329,19 @@ export function directClone(vNodeToClone: VNode): VNode {
 /*
  * vNode can be referenced outside of render and passed to Inferno again,
  * but it holds the state of its mounted position, so it can be mounted only once.
+ * lastVNode is the vNode previously mounted in the same position, or null when mounting.
+ * When they are the same, vNode can be patched against itself, unless it needs to be re-created.
  */
-export function mustCloneVNode(vNode: VNode): boolean {
-  return (vNode.flags & VNodeFlags.InUse) !== 0;
+export function mustCloneVNode(
+  vNode: VNode,
+  lastVNode: VNode | null | undefined,
+): boolean {
+  const flags = vNode.flags;
+
+  return (
+    (flags & VNodeFlags.InUse) !== 0 &&
+    (vNode !== lastVNode || (flags & VNodeFlags.ReCreate) !== 0)
+  );
 }
 
 export function createVoidVNode(): VNode {
@@ -490,7 +500,7 @@ export function normalizeChildren(vNode: VNode, children): VNode {
   return vNode;
 }
 
-export function normalizeRoot(input): VNode {
+export function normalizeRoot(input, lastInput?: VNode | null): VNode {
   if (isInvalid(input) || isStringOrNumber(input)) {
     return createTextVNode(input, null);
   }
@@ -498,5 +508,5 @@ export function normalizeRoot(input): VNode {
     return createFragment(input, ChildFlags.UnknownChildren, null);
   }
 
-  return input.flags & VNodeFlags.InUse ? directClone(input) : input;
+  return mustCloneVNode(input, lastInput) ? directClone(input) : input;
 }

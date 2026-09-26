@@ -199,7 +199,7 @@ function patchFragment(
   const nextIsSingle: boolean =
     (nextChildFlags & ChildFlags.HasVNodeChildren) !== 0;
 
-  if (nextIsSingle && mustCloneVNode(nextChildren)) {
+  if (nextIsSingle && mustCloneVNode(nextChildren, lastChildren as any)) {
     nextChildren = nextVNode.children = directClone(nextChildren);
   }
 
@@ -250,7 +250,7 @@ function patchPortal(
 
   if (
     nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
-    mustCloneVNode(nextChildren)
+    mustCloneVNode(nextChildren, lastVNode.children as VNode)
   ) {
     nextChildren = nextVNode.children = directClone(nextChildren);
   }
@@ -364,7 +364,7 @@ export function patchElement(
   } else {
     if (
       nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
-      mustCloneVNode(nextChildren as VNode)
+      mustCloneVNode(nextChildren as VNode, lastVNode.children as VNode)
     ) {
       nextChildren = nextVNode.children = directClone(nextChildren as VNode);
     }
@@ -703,7 +703,12 @@ export function updateClassComponent(
     instance.state = nextState;
     instance.context = context;
     let snapshot = null;
-    const nextInput = renderNewInput(instance, nextProps, context);
+    const nextInput = renderNewInput(
+      instance,
+      nextProps,
+      context,
+      instance.$LI,
+    );
 
     if (usesNewAPI && isFunction(instance.getSnapshotBeforeUpdate)) {
       snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState);
@@ -817,6 +822,7 @@ function patchFunctionalComponent(
     }
     const nextInput = normalizeRoot(
       renderFunctionalComponent(nextVNode, context),
+      lastInput,
     );
 
     patch(
@@ -891,7 +897,7 @@ function patchNonKeyedChildren(
       nextChild = nextChildren[i];
       lastChild = lastChildren[i];
 
-      if (mustCloneVNode(nextChild)) {
+      if (mustCloneVNode(nextChild, lastChild)) {
         nextChild = nextChildren[i] = directClone(nextChild);
       }
 
@@ -910,7 +916,7 @@ function patchNonKeyedChildren(
       for (i = commonLength; i < nextChildrenLength; ++i) {
         nextChild = nextChildren[i];
 
-        if (mustCloneVNode(nextChild)) {
+        if (mustCloneVNode(nextChild, null)) {
           nextChild = nextChildren[i] = directClone(nextChild);
         }
         mount(nextChild, dom, context, isSVG, nextNode, lifecycle, animations);
@@ -960,7 +966,7 @@ function patchKeyedChildren(
     outer: {
       // Sync nodes with the same key at the beginning.
       while (aNode.key === bNode.key) {
-        if (mustCloneVNode(bNode)) {
+        if (mustCloneVNode(bNode, aNode)) {
           b[j] = bNode = directClone(bNode);
         }
         patch(
@@ -986,7 +992,7 @@ function patchKeyedChildren(
 
       // Sync nodes with the same key at the end.
       while (aNode.key === bNode.key) {
-        if (mustCloneVNode(bNode)) {
+        if (mustCloneVNode(bNode, aNode)) {
           b[bEnd] = bNode = directClone(bNode);
         }
         patch(
@@ -1018,7 +1024,7 @@ function patchKeyedChildren(
 
         while (j <= bEnd) {
           bNode = b[j];
-          if (mustCloneVNode(bNode)) {
+          if (mustCloneVNode(bNode, null)) {
             b[j] = bNode = directClone(bNode);
           }
           ++j;
@@ -1106,7 +1112,7 @@ function patchKeyedChildrenComplex(
             } else {
               pos = j;
             }
-            if (mustCloneVNode(bNode)) {
+            if (mustCloneVNode(bNode, aNode)) {
               b[j] = bNode = directClone(bNode);
             }
             patch(
@@ -1159,7 +1165,7 @@ function patchKeyedChildrenComplex(
             pos = j;
           }
           bNode = b[j];
-          if (mustCloneVNode(bNode)) {
+          if (mustCloneVNode(bNode, aNode)) {
             b[j] = bNode = directClone(bNode);
           }
           patch(
@@ -1200,7 +1206,7 @@ function patchKeyedChildrenComplex(
       if (sources[i] === 0) {
         pos = i + bStart;
         bNode = b[pos];
-        if (mustCloneVNode(bNode)) {
+        if (mustCloneVNode(bNode, null)) {
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;
@@ -1241,7 +1247,7 @@ function patchKeyedChildrenComplex(
       if (sources[i] === 0) {
         pos = i + bStart;
         bNode = b[pos];
-        if (mustCloneVNode(bNode)) {
+        if (mustCloneVNode(bNode, null)) {
           b[pos] = bNode = directClone(bNode);
         }
         nextPos = pos + 1;

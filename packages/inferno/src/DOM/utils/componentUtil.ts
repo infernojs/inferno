@@ -40,9 +40,15 @@ function warnAboutOldLifecycles(component: any): void {
   }
 }
 
-export function renderNewInput(instance, props, context): VNode {
+export function renderNewInput(
+  instance,
+  props,
+  context,
+  lastInput?: VNode,
+): VNode {
   const nextInput = normalizeRoot(
     instance.render(props, instance.state, context),
+    lastInput,
   );
 
   let childContext = context;

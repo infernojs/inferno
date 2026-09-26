@@ -2,10 +2,12 @@ import {
   Component,
   createFragment,
   createPortal,
+  createVNode,
   Fragment,
   render,
+  type VNode,
 } from 'inferno';
-import { ChildFlags } from 'inferno-vnode-flags';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 // vNode holds the state of the position it is rendered in (dom, component instance, key),
 // so a vNode referenced outside of render must be cloned when it is placed in a second position.
@@ -640,6 +642,158 @@ describe('vNode reuse', () => {
         container,
       );
       expect(portalContainer.innerHTML).toBe('<b>a</b><b>b</b>');
+    });
+  });
+
+  describe('the same vNode rendered at the same position is not cloned', () => {
+    it('Should not clone the same vNode rendered again into the same container', () => {
+      const shared = <span>x</span>;
+
+      render(shared, container);
+      render(shared, container);
+      render(shared, container);
+
+      expect(container.$V).toBe(shared);
+      expect(container.innerHTML).toBe('<span>x</span>');
+    });
+
+    it('Should not clone hoisted single child with explicit child flags', () => {
+      const hoisted = <span>x</span>;
+      let instance;
+
+      class Parent extends Component {
+        constructor(props) {
+          super(props);
+          instance = this;
+        }
+
+        public render() {
+          return <p $HasVNodeChildren>{hoisted}</p>;
+        }
+      }
+
+      render(<Parent />, container);
+
+      for (let i = 0; i < 3; ++i) {
+        instance.forceUpdate();
+        expect(instance.$LI.children).toBe(hoisted);
+        expect(container.innerHTML).toBe('<p><span>x</span></p>');
+      }
+    });
+
+    it('Should not clone hoisted root of class component', () => {
+      const hoisted = <span>x</span>;
+      let instance;
+
+      class Parent extends Component {
+        constructor(props) {
+          super(props);
+          instance = this;
+        }
+
+        public render() {
+          return hoisted;
+        }
+      }
+
+      render(<Parent />, container);
+
+      for (let i = 0; i < 3; ++i) {
+        instance.forceUpdate();
+        expect(instance.$LI).toBe(hoisted);
+        expect(container.innerHTML).toBe('<span>x</span>');
+      }
+    });
+
+    it('Should not clone hoisted root of functional component', () => {
+      const hoisted = <span>x</span>;
+      let instance;
+
+      function Child() {
+        return hoisted;
+      }
+
+      class Parent extends Component {
+        constructor(props) {
+          super(props);
+          instance = this;
+        }
+
+        public render() {
+          return <Child />;
+        }
+      }
+
+      render(<Parent />, container);
+
+      for (let i = 0; i < 3; ++i) {
+        instance.forceUpdate();
+        expect(instance.$LI.children).toBe(hoisted);
+        expect(container.innerHTML).toBe('<span>x</span>');
+      }
+    });
+
+    it('Should not clone the items of a hoisted element', () => {
+      const list = (
+        <ul>
+          <li>a</li>
+          <li>b</li>
+        </ul>
+      );
+      const items = (list.children as VNode[]).slice();
+      let instance;
+
+      class Parent extends Component {
+        constructor(props) {
+          super(props);
+          instance = this;
+        }
+
+        public render() {
+          return list;
+        }
+      }
+
+      render(<Parent />, container);
+
+      for (let i = 0; i < 3; ++i) {
+        instance.forceUpdate();
+        expect(list.children[0]).toBe(items[0]);
+        expect(list.children[1]).toBe(items[1]);
+        expect(container.innerHTML).toBe('<ul><li>a</li><li>b</li></ul>');
+      }
+    });
+
+    it('Should still re-create the same vNode when it is flagged with ReCreate', () => {
+      const hoisted = createVNode(
+        VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
+        'span',
+        null,
+        'x',
+        ChildFlags.HasTextChildren,
+      );
+      let instance;
+
+      class Parent extends Component {
+        constructor(props) {
+          super(props);
+          instance = this;
+        }
+
+        public render() {
+          return hoisted;
+        }
+      }
+
+      render(<Parent />, container);
+
+      for (let i = 0; i < 3; ++i) {
+        const lastDom = container.firstChild;
+
+        instance.forceUpdate();
+        expect(container.firstChild).not.toBe(lastDom);
+        expect(container.innerHTML).toBe('<span>x</span>');
+      }
     });
   });
 });
