@@ -26,6 +26,17 @@ import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
 import { type Component, type ComponentType } from './component';
 
 const keyPrefix = '$';
+// Index keys are shared, so comparing a normalized key to the same index key is a reference check
+const indexKeys: string[] = [];
+
+function getIndexKey(index: number): string {
+  let key = indexKeys[index];
+
+  if (key === void 0) {
+    key = indexKeys[index] = keyPrefix + index;
+  }
+  return key;
+}
 
 function V(
   childFlags: ChildFlags,
@@ -455,7 +466,7 @@ export function normalizeChildren(vNode: VNode, children): VNode {
         break;
       } else if (isStringOrNumber(n)) {
         newChildren = newChildren || children.slice(0, i);
-        newChildren.push(createTextVNode(n, keyPrefix + i));
+        newChildren.push(createTextVNode(n, getIndexKey(i)));
       } else {
         if (process.env.NODE_ENV !== 'production') {
           throwIfObjectIsNotVNode(n);
@@ -469,7 +480,7 @@ export function normalizeChildren(vNode: VNode, children): VNode {
         // Owned vNodes are copied to new array, so each parent has its own children array
         if (isOwned || isNullKey || isPrefixed) {
           newChildren = newChildren || children.slice(0, i);
-          const nextKey = isNullKey || isPrefixed ? keyPrefix + i : key;
+          const nextKey = isNullKey || isPrefixed ? getIndexKey(i) : key;
 
           // Key of a vNode used elsewhere must not change, placing the vNode clones it when it is mounted
           if (nextKey !== key) {
