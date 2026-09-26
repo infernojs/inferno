@@ -136,6 +136,8 @@ const sauceConnect = await new SauceLabs({
   region: 'us',
 }).startSauceConnect({
   tunnelName,
+  // Sauce Connect 5 denies requests to localhost by default, and the jasmine server runs on localhost
+  proxyLocalhost: 'allow',
   logger: (output) => process.stdout.write(output),
 });
 
