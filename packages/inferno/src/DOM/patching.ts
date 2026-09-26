@@ -81,7 +81,8 @@ export function patch(
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
   if (
-    lastVNode.flags !== nextFlags ||
+    // Normalized flag tells only whether the vNode has been normalized, it is not part of the vNode type
+    ((lastVNode.flags ^ nextFlags) & ~VNodeFlags.Normalized) !== 0 ||
     lastVNode.type !== nextVNode.type ||
     lastVNode.key !== nextVNode.key ||
     nextFlags & VNodeFlags.ReCreate

@@ -1,4 +1,4 @@
-import { Fragment, render } from 'inferno';
+import { Component, Fragment, render } from 'inferno';
 
 // vNode holds the state of the position it is rendered in (dom, component instance, key),
 // so a vNode referenced outside of render must be cloned when it is placed in a second position.
@@ -14,6 +14,100 @@ describe('vNode reuse', () => {
     render(null, container);
     container.innerHTML = '';
     document.body.removeChild(container);
+  });
+
+  // Normalization changes flags and keys of child vNodes, which must not affect a vNode already used elsewhere
+  describe('normalization', () => {
+    it('Should patch a vNode normalized elsewhere like a new vNode', () => {
+      let constructed = 0;
+
+      class Counter extends Component {
+        constructor(props) {
+          super(props);
+          constructed++;
+        }
+
+        public render() {
+          return <span>counter</span>;
+        }
+      }
+
+      function Show({ item }) {
+        return item;
+      }
+
+      const shared = <Counter />;
+
+      render(
+        <div>
+          <Show item={<Counter />} />
+          <p>{shared}</p>
+        </div>,
+        container,
+      );
+      expect(constructed).toBe(2);
+
+      // Show keeps its Counter, although the Counter it renders now has been normalized as child of p
+      render(
+        <div>
+          <Show item={shared} />
+          <p />
+        </div>,
+        container,
+      );
+      expect(constructed).toBe(2);
+      expect(container.innerHTML).toBe(
+        '<div><span>counter</span><p></p></div>',
+      );
+    });
+
+    it('Should not change a vNode rendered elsewhere when it becomes a single child', () => {
+      let constructed = 0;
+
+      class Counter extends Component {
+        constructor(props) {
+          super(props);
+          constructed++;
+        }
+
+        public render() {
+          return <span>counter</span>;
+        }
+      }
+
+      const shared = <Counter />;
+
+      function Root({ useShared }) {
+        return useShared ? shared : <Counter />;
+      }
+
+      render(
+        <div>
+          <Root useShared={true} />
+          {null}
+        </div>,
+        container,
+      );
+      render(
+        <div>
+          <Root useShared={true} />
+          {<p>{shared}</p>}
+        </div>,
+        container,
+      );
+      expect(constructed).toBe(2);
+
+      // Root keeps its Counter when it switches to an equal element
+      render(
+        <div>
+          <Root useShared={false} />
+          {null}
+        </div>,
+        container,
+      );
+      expect(constructed).toBe(2);
+      expect(container.innerHTML).toBe('<div><span>counter</span></div>');
+    });
   });
 
   // Rendering must not change the children a vNode was created with, the vNode can be rendered again later

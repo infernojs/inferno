@@ -49,6 +49,169 @@ const CASES: FuzzCase[] = [
     ],
   },
   {
+    seed: 13,
+    name: 'patch a text vNode normalized as a child elsewhere like a new vNode',
+    pool: [
+      { t: 'text', key: null, text: 'y' },
+      { t: 'text', key: null, text: 'y' },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'shared', id: 0 },
+              {
+                t: 'element',
+                key: null,
+                tag: 'div',
+                children: {
+                  flags: 'unknown',
+                  children: { t: 'shared', id: 1 },
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 1 }] },
+        },
+      },
+    ],
+  },
+  {
+    seed: 77,
+    name: 'patch a vNode normalized inside a keyed Fragment elsewhere like a new vNode',
+    pool: [{ t: 'text', key: null, text: 'x' }],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'element',
+                key: null,
+                tag: 'b',
+                children: {
+                  flags: 'nonKeyed',
+                  children: [
+                    {
+                      t: 'fragment',
+                      key: null,
+                      children: {
+                        flags: 'keyed',
+                        children: [
+                          {
+                            t: 'element',
+                            key: 'c',
+                            tag: 'ul',
+                            children: {
+                              flags: 'unknown',
+                              children: { t: 'shared', id: 0 },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [{ t: 'text', key: null, text: 'x' }],
+          },
+        },
+      },
+    ],
+  },
+  {
+    seed: 214,
+    name: 'patch a vNode normalized as children of a component elsewhere like a new vNode',
+    pool: [{ t: 'text', key: null, text: 'y' }],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'element',
+                key: null,
+                tag: 'ul',
+                children: {
+                  flags: 'nonKeyed',
+                  children: [
+                    { t: 'box', key: null, children: { t: 'shared', id: 0 } },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [{ t: 'text', key: null, text: 'y' }],
+          },
+        },
+      },
+    ],
+  },
+  {
     seed: 21,
     name: 'move a Portal to another container when its child becomes a component',
     pool: [
