@@ -112,6 +112,104 @@ describe('vNode reuse', () => {
 
   // Rendering must not change the children a vNode was created with, the vNode can be rendered again later
   describe('reused vNode keeps its children', () => {
+    it('Should render a hoisted element again after another element was patched in its place', () => {
+      const PLACEHOLDER = (
+        <p>
+          <b>loading</b>
+          <i>...</i>
+        </p>
+      );
+      const view = (ready: boolean) =>
+        ready ? (
+          <p>
+            <b>done</b>
+            <i>!</i>
+          </p>
+        ) : (
+          PLACEHOLDER
+        );
+
+      render(view(false), container);
+      render(view(true), container);
+      expect(container.innerHTML).toBe('<p><b>done</b><i>!</i></p>');
+
+      render(view(false), container);
+      expect(container.innerHTML).toBe('<p><b>loading</b><i>...</i></p>');
+    });
+
+    it('Should render a hoisted list again after another list was patched in its place', () => {
+      const EMPTY = <ul>{[<li>none</li>]}</ul>;
+      const view = (items: string[]) =>
+        items.length > 0 ? (
+          <ul>
+            {items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          EMPTY
+        );
+
+      render(view([]), container);
+      render(view(['a', 'b']), container);
+      expect(container.innerHTML).toBe('<ul><li>a</li><li>b</li></ul>');
+
+      render(view([]), container);
+      expect(container.innerHTML).toBe('<ul><li>none</li></ul>');
+    });
+
+    it('Should render a hoisted Fragment again after another Fragment was patched in its place', () => {
+      const PLACEHOLDER = (
+        <Fragment>
+          <b>loading</b>
+          <i>...</i>
+        </Fragment>
+      );
+      const view = (ready: boolean) => (
+        <div>
+          {ready ? (
+            <Fragment>
+              <b>done</b>
+              <i>!</i>
+            </Fragment>
+          ) : (
+            PLACEHOLDER
+          )}
+        </div>
+      );
+
+      render(view(false), container);
+      render(view(true), container);
+      render(view(false), container);
+      expect(container.innerHTML).toBe('<div><b>loading</b><i>...</i></div>');
+    });
+
+    it('Should render a hoisted Fragment with explicit child flags again after another Fragment was patched in its place', () => {
+      const PLACEHOLDER = (
+        <Fragment>
+          <b>loading</b>
+          <i>...</i>
+        </Fragment>
+      );
+      const view = (ready: boolean) => (
+        <div $HasVNodeChildren>
+          {ready ? (
+            <Fragment>
+              <b>done</b>
+              <i>!</i>
+            </Fragment>
+          ) : (
+            PLACEHOLDER
+          )}
+        </div>
+      );
+
+      render(view(false), container);
+      render(view(true), container);
+      render(view(false), container);
+      expect(container.innerHTML).toBe('<div><b>loading</b><i>...</i></div>');
+    });
+
     it('Should render the same element with multiple children twice', () => {
       const row = (
         <ul>

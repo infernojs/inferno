@@ -259,6 +259,327 @@ const CASES: FuzzCase[] = [
       },
     ],
   },
+  {
+    seed: 149,
+    name: 'keep children of a vNode that is patched away and rendered elsewhere in the same render',
+    pool: [
+      {
+        t: 'element',
+        key: null,
+        tag: 'span',
+        children: {
+          flags: 'unknown',
+          children: [{ t: 'text', key: null, text: 'x' }],
+        },
+      },
+      { t: 'element', key: null, tag: 'i', children: { flags: 'none' } },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'element',
+                key: null,
+                tag: 'span',
+                children: {
+                  flags: 'nonKeyed',
+                  children: [
+                    { t: 'shared', id: 1 },
+                    {
+                      t: 'element',
+                      key: null,
+                      tag: 'span',
+                      children: {
+                        flags: 'nonKeyed',
+                        children: [{ t: 'shared', id: 0 }],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
+  {
+    seed: 606,
+    name: 'keep children of a hoisted element that another element was patched in place of',
+    pool: [
+      {
+        t: 'element',
+        key: null,
+        tag: 'span',
+        children: {
+          flags: 'unknown',
+          children: [{ t: 'text', key: null, text: 'z' }],
+        },
+      },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'element',
+                key: null,
+                tag: 'span',
+                children: {
+                  flags: 'nonKeyed',
+                  children: [{ t: 'shared', id: 0 }],
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+    ],
+  },
+  {
+    seed: 699,
+    name: 'keep children of a hoisted Fragment that another Fragment was patched in place of',
+    pool: [
+      {
+        t: 'fragment',
+        key: null,
+        children: {
+          flags: 'nonKeyed',
+          children: [
+            {
+              t: 'portal',
+              target: 1,
+              child: { t: 'text', key: null, text: 'x' },
+            },
+          ],
+        },
+      },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'text', key: null, text: 'x' },
+              { t: 'shared', id: 0 },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'text', key: null, text: 'y' },
+              {
+                t: 'fragment',
+                key: null,
+                children: {
+                  flags: 'nonKeyed',
+                  children: [{ t: 'text', key: null, text: 'x' }],
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'element',
+                key: null,
+                tag: 'li',
+                children: {
+                  flags: 'nonKeyed',
+                  children: [{ t: 'shared', id: 0 }],
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
+  {
+    seed: 785,
+    name: 'keep keyed children of a hoisted element that a non-keyed element was patched in place of',
+    pool: [
+      {
+        t: 'element',
+        key: null,
+        tag: 'li',
+        children: {
+          flags: 'keyed',
+          children: [{ t: 'text', key: 'c', text: 'x' }],
+        },
+      },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 0 }] },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'element',
+                key: null,
+                tag: 'li',
+                children: {
+                  flags: 'nonKeyed',
+                  children: [{ t: 'text', key: null, text: 'x' }],
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              {
+                t: 'wrap',
+                key: null,
+                children: {
+                  t: 'portal',
+                  target: 1,
+                  child: { t: 'shared', id: 0 },
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
+  {
+    seed: 799,
+    name: 'keep children of a hoisted Fragment rendered as the only child of another Fragment',
+    pool: [
+      {
+        t: 'fragment',
+        key: null,
+        children: { flags: 'unknown', children: 'y' },
+      },
+      {
+        t: 'fragment',
+        key: null,
+        children: {
+          flags: 'nonKeyed',
+          children: [{ t: 'text', key: null, text: 'x' }],
+        },
+      },
+    ],
+    steps: [
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: { flags: 'nonKeyed', children: [{ t: 'shared', id: 1 }] },
+        },
+      },
+      {
+        t: 'render',
+        tree: {
+          t: 'element',
+          key: null,
+          tag: 'div',
+          children: {
+            flags: 'nonKeyed',
+            children: [
+              { t: 'shared', id: 0 },
+              {
+                t: 'box',
+                key: null,
+                children: {
+                  t: 'fragment',
+                  key: null,
+                  children: { flags: 'single', child: { t: 'shared', id: 1 } },
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
 ];
 
 describe('vNode reuse cases found by fuzzing', () => {

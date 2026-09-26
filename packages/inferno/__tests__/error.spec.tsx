@@ -773,5 +773,61 @@ describe('Error recovery', () => {
         }).toThrow(new Error('Oops!'));
       });
     });
+
+    it('Should recover from a crash after patching the end of a keyed list', () => {
+      class Crasher extends Component {
+        constructor(props) {
+          super(props);
+
+          throw new Error('Oops!');
+        }
+
+        public render() {
+          return null;
+        }
+      }
+
+      function Item({ value }) {
+        return value ? <b>{value}</b> : <i>empty</i>;
+      }
+
+      render(
+        <ul>
+          {[
+            <li key="z">
+              <Item value={null} />
+            </li>,
+          ]}
+        </ul>,
+        container,
+      );
+
+      // The last item is patched, its content is replaced, before the new first item crashes
+      expect(() => {
+        render(
+          <ul>
+            {[
+              <Crasher key="c" />,
+              <li key="z">
+                <Item value="z" />
+              </li>,
+            ]}
+          </ul>,
+          container,
+        );
+      }).toThrow(new Error('Oops!'));
+
+      render(
+        <ul>
+          {[
+            <li key="z">
+              <Item value={null} />
+            </li>,
+          ]}
+        </ul>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<ul><li><i>empty</i></li></ul>');
+    });
   });
 });
