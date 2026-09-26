@@ -69,7 +69,7 @@ describe('Stateful Component updates', () => {
     done();
   });
 
-  it('Should give better error message when calling setState from constructor ??', () => {
+  it('Should throw when calling setState from constructor', () => {
     // Following test simulates situation that setState is called when mounting process has not finished, fe. in constructor
 
     class Parent extends Component {
@@ -181,7 +181,7 @@ describe('Stateful Component updates', () => {
     expect(firstChild.childNodes[1].checked).toBe(false);
   });
 
-  it('Should Not get stuck in UNMOUNTED state', () => {
+  it('Should Not get stuck in UNMOUNTED state when parent updates before child setState', () => {
     let updateCaller = null;
 
     // This parent is used for setting up Test scenario, not much related
@@ -305,7 +305,7 @@ describe('Stateful Component updates', () => {
     );
   });
 
-  it('Should Not get stuck in UNMOUNTED state - variation2', () => {
+  it('Should Not get stuck in UNMOUNTED state when child setState runs before and after parent updates', () => {
     let updateCaller = null;
 
     // This parent is used for setting up Test scenario, not much related

@@ -19,7 +19,7 @@ describe('SSR Creation (non-JSX)', () => {
       result: '<div><span></span></div>',
     },
     {
-      description: 'should render div with span child and styling',
+      description: 'should render div with span child and style string',
       template: () =>
         createElement(
           'div',
@@ -29,7 +29,8 @@ describe('SSR Creation (non-JSX)', () => {
       result: '<div><span style="border-left: 10px;"></span></div>',
     },
     {
-      description: 'should render div with span child and styling #2',
+      description:
+        'should render div with span child and border-left style object',
       template: () =>
         createElement(
           'div',
@@ -39,7 +40,8 @@ describe('SSR Creation (non-JSX)', () => {
       result: '<div><span style="border-left:10px;"></span></div>',
     },
     {
-      description: 'should render div with span child and styling #3',
+      description:
+        'should render div with span child and font-family style object',
       template: () =>
         createElement(
           'div',
@@ -108,7 +110,8 @@ describe('SSR Creation (non-JSX)', () => {
       result: '<div><span>Hello</span><span> world!</span></div>',
     },
     {
-      description: 'should render div with node children #2',
+      description:
+        'should render div with node children that have id and className',
       template: () =>
         createElement(
           'div',
@@ -159,7 +162,7 @@ describe('SSR Creation (non-JSX)', () => {
       result: '<div></div>',
     },
     {
-      description: 'should ignore children as props',
+      description: 'should render p with empty props and a text child',
       template: () => createElement('p', {}, 'foo'),
       result: '<p>foo</p>',
     },

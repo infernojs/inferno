@@ -14,7 +14,7 @@ import React from 'inferno-compat';
 const ReactDOM = React;
 
 describe('ReactPureComponent', function () {
-  it('should render', function () {
+  it('should re-render only when props or state change shallowly', function () {
     let renders = 0;
     class Component extends React.PureComponent {
       constructor() {

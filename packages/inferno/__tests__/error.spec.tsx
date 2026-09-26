@@ -451,7 +451,7 @@ describe('Error recovery', () => {
         'getChildContext',
       ]) {
         it(
-          'Should recover from subtree crash in NON-KEYED ' +
+          'Should recover from subtree crash in KEYED ' +
             location +
             ' of children when crash happens in components ' +
             crashLocation,
@@ -596,7 +596,7 @@ describe('Error recovery', () => {
     }
 
     describe('Error in child component', () => {
-      it('Should not block future updates', (done) => {
+      it('Should not block future updates after a child throws in componentWillMount on setState', (done) => {
         let childCrasherInstance: ChildCrasher | null = null;
 
         class BadComponent extends Component {
@@ -671,7 +671,7 @@ describe('Error recovery', () => {
         }, 10);
       });
 
-      it('Should not block future updates - variation 2', () => {
+      it('Should not block future updates when a nested component throws in its constructor', () => {
         let parentInstance: Parent | null = null;
 
         class BadComponent extends Component {
@@ -772,6 +772,62 @@ describe('Error recovery', () => {
           rerender();
         }).toThrow(new Error('Oops!'));
       });
+    });
+
+    it('Should recover from a crash after patching the end of a keyed list', () => {
+      class Crasher extends Component {
+        constructor(props) {
+          super(props);
+
+          throw new Error('Oops!');
+        }
+
+        public render() {
+          return null;
+        }
+      }
+
+      function Item({ value }) {
+        return value ? <b>{value}</b> : <i>empty</i>;
+      }
+
+      render(
+        <ul>
+          {[
+            <li key="z">
+              <Item value={null} />
+            </li>,
+          ]}
+        </ul>,
+        container,
+      );
+
+      // The last item is patched, its content is replaced, before the new first item crashes
+      expect(() => {
+        render(
+          <ul>
+            {[
+              <Crasher key="c" />,
+              <li key="z">
+                <Item value="z" />
+              </li>,
+            ]}
+          </ul>,
+          container,
+        );
+      }).toThrow(new Error('Oops!'));
+
+      render(
+        <ul>
+          {[
+            <li key="z">
+              <Item value={null} />
+            </li>,
+          ]}
+        </ul>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<ul><li><i>empty</i></li></ul>');
     });
   });
 });

@@ -62,7 +62,7 @@ describe('All single patch variations', () => {
       node = container.firstChild.firstChild;
     });
 
-    it('text', () => {
+    it('text should update the existing text node in place', () => {
       rTemplate('more text');
       expect(container.innerHTML).toEqual('<div>more text</div>');
 
@@ -75,7 +75,7 @@ describe('All single patch variations', () => {
       tearDown();
     });
 
-    it('invalid', () => {
+    it('invalid (false, null) should remove the text node', () => {
       rTemplate(false);
       expect(container.innerHTML).toEqual('<div></div>');
 
@@ -88,7 +88,7 @@ describe('All single patch variations', () => {
       tearDown();
     });
 
-    it('vNode (elem)', () => {
+    it('element vNode should mount it and not re-call its ref when patched', () => {
       const spy = jasmine.createSpy('spy');
 
       rTemplate(<span ref={spy}>1</span>);
@@ -103,7 +103,7 @@ describe('All single patch variations', () => {
       tearDown();
     });
 
-    it('vNode (com)', () => {
+    it('component vNode should mount it, then update it without remounting', () => {
       const spy = jasmine.createSpy('spy');
 
       rTemplate(<ComA ref={spy}>1</ComA>);
@@ -123,7 +123,7 @@ describe('All single patch variations', () => {
       tearDown();
     });
 
-    it('Array', () => {
+    it('array of component and text should mount, then update component and remove text', () => {
       const spy = jasmine.createSpy('spy');
 
       rTemplate([<ComA ref={spy}>1</ComA>, 'foo']);
@@ -155,7 +155,7 @@ describe('All single patch variations', () => {
       expect(updateSpy.calls.count()).toBe(0);
     });
 
-    it('text', () => {
+    it('text should unmount the component', () => {
       rTemplate('more text');
       expect(container.innerHTML).toEqual('<div>more text</div>');
       expect(unmountSpy.calls.count()).toBe(1);
@@ -167,7 +167,7 @@ describe('All single patch variations', () => {
       tearDown();
     });
 
-    it('invalid', () => {
+    it('invalid (false, null) should unmount the component and leave the element empty', () => {
       rTemplate(false);
       expect(container.innerHTML).toEqual('<div></div>');
       expect(unmountSpy.calls.count()).toBe(1);
@@ -183,7 +183,7 @@ describe('All single patch variations', () => {
       tearDown();
     });
 
-    it('vNode (elem)', () => {
+    it('element vNode should unmount the component and null its ref, then replace div with span', () => {
       const spy = jasmine.createSpy('spy');
       expect(templateRefSpy.calls.count()).toBe(0);
 
@@ -208,7 +208,7 @@ describe('All single patch variations', () => {
       tearDown();
     });
 
-    it('vNode (Com different)', () => {
+    it('different component vNode should mount the new component', () => {
       const componentWillMountSpy = jasmine.createSpy();
 
       class ComC extends Component<any, any> {
@@ -429,7 +429,7 @@ describe('All single patch variations', () => {
   });
 
   describe('immutable children', () => {
-    it('Should be possible to render frozen objects', () => {
+    it('Should be possible to render the same frozen empty array repeatedly', () => {
       const EMPTY_ARRAY = [];
       Object.freeze(EMPTY_ARRAY);
 
@@ -449,7 +449,7 @@ describe('All single patch variations', () => {
       expect(container.innerHTML).toBe('<div></div>');
     });
 
-    it('Should be possible to render frozen objects #2', () => {
+    it('Should be possible to patch between frozen empty and frozen non-empty children arrays', () => {
       const EMPTY_ARRAY = [];
       const TWO_NODES = [<div>1</div>, <div>2</div>];
       Object.freeze(EMPTY_ARRAY);
@@ -758,7 +758,7 @@ describe('All single patch variations', () => {
     expect(container.querySelector('.second')).toBe(secondNode);
   });
 
-  it('Should keep given key even for deeply nested content', () => {
+  it('Should keep DOM nodes of keyed children when null and undefined holes are added before them', () => {
     render(
       <div>
         {[null, <div key="first">First</div>, <div key="second">Second</div>]}
@@ -795,7 +795,7 @@ describe('All single patch variations', () => {
     expect(secondDiv).toBe(secondDiv2);
   });
 
-  it('Should keep given key even for deeply nested content #2', () => {
+  it('Should recreate a keyed child moved into a nested array even though its key is the same', () => {
     const vNode1 = <div key="first">First</div>;
 
     render(

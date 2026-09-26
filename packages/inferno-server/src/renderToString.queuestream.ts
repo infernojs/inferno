@@ -1,6 +1,5 @@
 import { EMPTY_OBJ } from 'inferno';
 import {
-  isArray,
   isFunction,
   isInvalid,
   isNull,
@@ -14,9 +13,11 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStyleAttribute } from './prop-renderers';
 import {
+  arrayToFragment,
   createDerivedState,
   escapeText,
   isAttributeNameSafe,
+  isEmptyFragment,
   renderFunctionalComponent,
   voidElements,
 } from './utils';
@@ -92,6 +93,7 @@ export class RenderQueueStream extends Readable {
   }
 
   public renderVNodeToQueue(vNode, context, position): void {
+    vNode = arrayToFragment(vNode);
     const flags = vNode.flags;
     const type = vNode.type;
     const props = vNode.props || EMPTY_OBJ;
@@ -303,21 +305,19 @@ export class RenderQueueStream extends Readable {
       }
       // Push text directly to queue
     } else if ((flags & VNodeFlags.Text) > 0) {
-      this.addToQueue(children === '' ? ' ' : escapeText(children), position);
-      // Handle fragments and arrays
-    } else if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
-      const childFlags = vNode.childFlags;
-
-      if (
-        childFlags === ChildFlags.HasVNodeChildren ||
-        (isArray(vNode) && vNode.length === 0)
-      ) {
+      this.addToQueue(
+        children === '' ? ' ' : escapeText(children + ''),
+        position,
+      );
+      // Handle fragments
+    } else if ((flags & VNodeFlags.Fragment) !== 0) {
+      if (isEmptyFragment(vNode)) {
         this.addToQueue('<!--!-->', position);
-      } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
-        const tmpChildren = isArray(vNode) ? vNode : vNode.children;
-
-        for (let i = 0, len = tmpChildren.length; i < len; ++i) {
-          this.renderVNodeToQueue(tmpChildren[i], context, position);
+      } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+        this.renderVNodeToQueue(children, context, position);
+      } else {
+        for (let i = 0, len = children.length; i < len; ++i) {
+          this.renderVNodeToQueue(children[i], context, position);
         }
       }
       // Handle errors

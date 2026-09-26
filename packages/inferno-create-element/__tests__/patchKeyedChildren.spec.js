@@ -53,12 +53,6 @@ describe('keyed-nodes', () => {
     expect(container.textContent).toBe('#0#1#2#3');
     expect(container.firstChild.childNodes.length).toBe(4);
   });
-  it('should remove two keys at the beginning', () => {
-    render(template(generateKeyNodes(['a', 'b', 'c'])), container);
-    render(template(generateKeyNodes(['c'])), container);
-    expect(container.textContent).toBe('c');
-    expect(container.firstChild.childNodes.length).toBe(1);
-  });
   it('should size up', () => {
     render(template(generateKeyNodes(['#0', '#1'])), container);
     render(template(generateKeyNodes(['#0', '#1', '#2', '#3'])), container);
@@ -124,7 +118,7 @@ describe('keyed-nodes', () => {
     expect(container.textContent).toBe('#0a#2');
     expect(container.firstChild.childNodes.length).toBe(3);
   });
-  it('should work with keyed nodes', () => {
+  it('should rotate numeric keys, restore them and replace them with string keys and then mixed nodes', () => {
     render(template(generateKeyNodes([0, 1, 2, 3, 4])), container);
     render(template(generateKeyNodes([1, 2, 3, 4, 0])), container);
     expect(container.textContent).toBe('12340');
@@ -173,7 +167,7 @@ describe('keyed-nodes', () => {
     expect(container.textContent).toBe('c');
     expect(container.firstChild.childNodes.length).toBe(1);
   });
-  it('should add one key to start', () => {
+  it('should add one key back to the end after removing it', () => {
     render(template(generateKeyNodes(['a', 'b', 'c'])), container);
     expect(container.textContent).toBe('abc');
     expect(container.firstChild.childNodes.length).toBe(3);
@@ -319,7 +313,7 @@ describe('keyed-nodes', () => {
     expect(container.textContent).toBe('46');
     expect(container.firstChild.childNodes.length).toBe(2);
   });
-  it('should do something', () => {
+  it('should reverse keys 1-4 and move key 0 to the end', () => {
     render(template(generateKeyNodes([0, 1, 2, 3, 4, 5])), container);
     expect(container.firstChild.childNodes.length).toBe(6);
     render(template(generateKeyNodes([4, 3, 2, 1, 5, 0])), container);
@@ -499,7 +493,11 @@ describe('keyed-nodes', () => {
 
     for (let i = 0; i < 10; i++) {
       it(
-        'Should handle massive arrays shifting ' + i + ' times by ' + i,
+        'Should handle massive arrays moving items from index ' +
+          i +
+          ' to the end in ' +
+          i +
+          ' rounds',
         () => {
           for (let j = 0; j < i; j++) {
             items = items.concat(items.splice(i, j));

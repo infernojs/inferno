@@ -32,7 +32,7 @@ describe('observer based context', () => {
     done();
   });
 
-  it('basic context', (done) => {
+  it('injects a Provider store into a nested observer component as a prop', (done) => {
     const C = observer(
       ['foo'],
       class Foo extends Component {

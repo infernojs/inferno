@@ -1,7 +1,7 @@
 import { Component, createFragment, Fragment, render } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
-describe('top level context', () => {
+describe('top level context passed to render()', () => {
   let container;
 
   beforeEach(function () {

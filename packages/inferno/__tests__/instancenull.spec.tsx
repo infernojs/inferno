@@ -372,7 +372,7 @@ describe('BUG: instance - null', () => {
     }
   }
 
-  it('Should not fail', () => {
+  it('Should open, close and reopen the dropdown popover, then unmount to an empty container', () => {
     const items = [
       {
         icon: '#user',
@@ -424,7 +424,7 @@ describe('BUG: instance - null', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('Should not fail #2', () => {
+  it('Should not fail when an opened dropdown is replaced by a component rendering null', () => {
     const items = [
       {
         icon: '#user',
@@ -466,7 +466,7 @@ describe('BUG: instance - null', () => {
     );
   });
 
-  it('Should not fail #3', () => {
+  it('Should not fail when an opened dropdown is re-rendered with different props', () => {
     const items = [
       {
         icon: '#user',

@@ -1,8 +1,7 @@
-import { Component, render } from 'inferno';
+import { Component, render, rerender } from 'inferno';
 import { createElement } from 'inferno-create-element';
-import { rerender } from '../../inferno-compat/src';
 
-describe('createTree - SVG (JSX)', () => {
+describe('createTree - SVG namespace, class and attributes (JSX)', () => {
   let container;
 
   beforeEach(function () {
@@ -183,20 +182,6 @@ describe('createTree - SVG (JSX)', () => {
     expect(container.firstChild.hasAttribute('class')).toBe(false);
   });
 
-  it('should set and remove dynamic class attribute', () => {
-    const value = 'foo';
-
-    render(<svg className={value} />, container);
-
-    expect(container.firstChild.tagName).toEqual('svg');
-    expect(container.firstChild.getAttribute('class')).toBe('foo');
-
-    render(<svg />, container);
-
-    expect(container.firstChild.tagName).toEqual('svg');
-    expect(container.firstChild.hasAttribute('class')).toBe(false);
-  });
-
   it('should set static class attribute, update to dynamic attr, and remove', () => {
     render(<svg className={null} />, container);
     render(<svg className={{}} />, container);
@@ -225,7 +210,7 @@ describe('createTree - SVG (JSX)', () => {
     expect(container.firstChild.hasAttribute('theWord')).toBe(false);
   });
 
-  it('should remove namespaced SVG attributes', () => {
+  it('should render clip-path on svg and no xlink:href on a patched-in image child', () => {
     render(<svg clip-path="0 0 110 110" />, container);
 
     expect(container.firstChild.tagName).toEqual('svg');
@@ -247,29 +232,7 @@ describe('createTree - SVG (JSX)', () => {
     ).toBe(false);
   });
 
-  it('should remove namespaced SVG attributes', () => {
-    render(<svg clip-path="0 0 110 110" />, container);
-
-    expect(container.firstChild.tagName).toEqual('svg');
-
-    expect(container.firstChild.hasAttribute('clip-path')).toBe(true);
-
-    render(
-      <svg>
-        <image />
-      </svg>,
-      container,
-    );
-
-    expect(
-      container.firstChild.firstChild.hasAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'href',
-      ),
-    ).toBe(false);
-  });
-
-  it('Should make SVG and children with spread attribute', () => {
+  it('Should render SVG with spread attributes', () => {
     const spread = { id: 'test' };
 
     render(<svg {...spread} />, container);

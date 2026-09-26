@@ -11,8 +11,7 @@ import {
   throwError,
   warning,
 } from 'inferno-shared';
-import { VNodeFlags } from 'inferno-vnode-flags';
-import { directClone } from '../core/implementation';
+import { directClone, mustCloneVNode } from '../core/implementation';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { remove } from './unmounting';
@@ -80,7 +79,7 @@ export function renderInternal(
 
   if (isNullOrUndef(rootInput)) {
     if (!isNullOrUndef(input)) {
-      if (((input as VNode).flags & VNodeFlags.InUse) !== 0) {
+      if (mustCloneVNode(input as VNode, null)) {
         input = directClone(input as VNode);
       }
       mount(
@@ -99,7 +98,7 @@ export function renderInternal(
       remove(rootInput, parentDOM as Element, animations);
       (parentDOM as any).$V = null;
     } else {
-      if ((input as VNode).flags & VNodeFlags.InUse) {
+      if (mustCloneVNode(input as VNode, rootInput)) {
         input = directClone(input as VNode);
       }
       patch(

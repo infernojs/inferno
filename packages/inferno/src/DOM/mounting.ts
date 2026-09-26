@@ -11,6 +11,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,
+  mustCloneVNode,
   normalizeRoot,
 } from '../core/implementation';
 import {
@@ -109,15 +110,12 @@ function mountPortal(
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): void {
-  mount(
-    vNode.children as VNode,
-    vNode.ref,
-    context,
-    false,
-    null,
-    lifecycle,
-    animations,
-  );
+  let children = vNode.children as VNode;
+
+  if (mustCloneVNode(children, null)) {
+    vNode.children = children = directClone(children);
+  }
+  mount(children, vNode.ref, context, false, null, lifecycle, animations);
 
   const placeHolderVNode = createVoidVNode();
 
@@ -146,6 +144,9 @@ function mountFragment(
   }
 
   if (childFlags === ChildFlags.HasVNodeChildren) {
+    if (mustCloneVNode(children, null)) {
+      vNode.children = children = directClone(children);
+    }
     mount(
       children as VNode,
       parentDOM,
@@ -219,7 +220,7 @@ export function mountElement(
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
     if (childFlags === ChildFlags.HasVNodeChildren) {
-      if ((children as VNode).flags & VNodeFlags.InUse) {
+      if (mustCloneVNode(children as VNode, null)) {
         vNode.children = children = directClone(children as VNode);
       }
       mount(
@@ -277,7 +278,7 @@ export function mountArrayChildren(
   for (let i = 0; i < children.length; ++i) {
     let child = children[i];
 
-    if (child.flags & VNodeFlags.InUse) {
+    if (mustCloneVNode(child, null)) {
       children[i] = child = directClone(child);
     }
     mount(child, dom, context, isSVG, nextNode, lifecycle, animations);

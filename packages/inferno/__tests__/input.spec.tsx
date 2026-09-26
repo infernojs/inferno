@@ -22,7 +22,7 @@ describe('Input type checkbox', () => {
     expect(input.checked).toBe(false);
   });
 
-  it('Checked attribute after Click', function () {
+  it('Checked attribute should stay false after click while native onclick and onChange see true', function () {
     let clickChecked: boolean | null = null;
     let changeChecked: boolean | null = null;
 
@@ -80,7 +80,7 @@ describe('Input type checkbox', () => {
     expect(parentClick).toBe(false);
   });
 
-  it('Checked attribute after synthetic Click', function () {
+  it('Checked attribute should stay false after click while synthetic onClick and onChange see true once', function () {
     let nClicks = 0;
     let clickChecked: boolean | null = null;
     let nChanges = 0;
@@ -134,7 +134,7 @@ describe('Input type Radio', () => {
     expect(input.checked).toBe(false);
   });
 
-  it('Checked attribute after Click #2', function () {
+  it('Checked attribute should stay false after click while native onclick and onChange see true', function () {
     let clickChecked: boolean | null = null;
     let changeChecked: boolean | null = null;
 
@@ -161,7 +161,7 @@ describe('Input type Radio', () => {
     expect(changeChecked).toBe(true);
   });
 
-  it('Checked attribute after synthetic Click #3', function () {
+  it('Checked attribute should stay false after click while synthetic onClick and onChange see true', function () {
     let clickChecked: boolean | null = null;
     let changeChecked: boolean | null = null;
 

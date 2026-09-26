@@ -224,7 +224,7 @@ describe('A <StaticRouter>', () => {
   });
 
   describe('render a <Prompt>', () => {
-    it('does nothing', () => {
+    it('does not throw when rendered to static markup', () => {
       const context = {};
 
       expect(() => {

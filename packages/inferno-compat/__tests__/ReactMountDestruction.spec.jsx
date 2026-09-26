@@ -11,7 +11,7 @@ import React from 'inferno-compat';
 
 const ReactDOM = React;
 
-describe('ReactMount', function () {
+describe('ReactMountDestruction', function () {
   it('should destroy a react root upon request', function () {
     const mainContainerDiv = document.createElement('div');
     document.body.appendChild(mainContainerDiv);

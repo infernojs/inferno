@@ -1,6 +1,5 @@
 import { EMPTY_OBJ } from 'inferno';
 import {
-  isArray,
   isFunction,
   isInvalid,
   isNull,
@@ -12,14 +11,17 @@ import {
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { renderStyleAttribute } from './prop-renderers';
 import {
+  arrayToFragment,
   createDerivedState,
   escapeText,
   isAttributeNameSafe,
+  isEmptyFragment,
   renderFunctionalComponent,
   voidElements,
 } from './utils';
 
 function renderVNodeToString(vNode, parent, context): string {
+  vNode = arrayToFragment(vNode);
   const flags = vNode.flags;
   const type = vNode.type;
   const props = vNode.props || EMPTY_OBJ;
@@ -196,24 +198,20 @@ function renderVNodeToString(vNode, parent, context): string {
     return renderedString;
   } else if ((flags & VNodeFlags.Text) !== 0) {
     return children === '' ? ' ' : escapeText(children);
-  } else if (isArray(vNode) || (flags & VNodeFlags.Fragment) !== 0) {
-    const childFlags = vNode.childFlags;
-
-    if (
-      childFlags === ChildFlags.HasVNodeChildren ||
-      (isArray(vNode) && vNode.length === 0)
-    ) {
+  } else if ((flags & VNodeFlags.Fragment) !== 0) {
+    if (isEmptyFragment(vNode)) {
       return '<!--!-->';
-    } else if (childFlags & ChildFlags.MultipleChildren || isArray(vNode)) {
-      const tmpNodes = isArray(vNode) ? vNode : children;
-      let renderedString = '';
-
-      for (let i = 0, len = tmpNodes.length; i < len; ++i) {
-        renderedString += renderVNodeToString(tmpNodes[i], vNode, context);
-      }
-
-      return renderedString;
     }
+    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      return renderVNodeToString(children, vNode, context);
+    }
+    let renderedString = '';
+
+    for (let i = 0, len = children.length; i < len; ++i) {
+      renderedString += renderVNodeToString(children[i], vNode, context);
+    }
+
+    return renderedString;
   } else {
     if (process.env.NODE_ENV !== 'production') {
       if (typeof vNode === 'object') {

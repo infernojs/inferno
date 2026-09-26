@@ -3,7 +3,7 @@ import { Component, render } from 'inferno';
 import { ParentFirstCommon } from './data/common-render/parentfirstcommon';
 import { ParentSecondCommon } from './data/common-render/parentsecondcommon';
 
-describe('Components (JSX) #2', () => {
+describe('Components (JSX) - type swaps, inheritance, keys and forceUpdate', () => {
   let container;
 
   beforeEach(function () {
@@ -104,7 +104,7 @@ describe('Components (JSX) #2', () => {
       expect(container.firstChild.firstChild === trackElemSpan).toBe(false);
     });
 
-    it('patching component A to component B, given they have the same children, should not change the DOM tree when stateless components', () => {
+    it('patching stateless component A to B, given they have the same children, should replace DOM tree with identical one', () => {
       render(<ComA />, container);
       expect(container.innerHTML).toBe('<div><span>Something</span></div>');
       const trackElemDiv = container.firstChild;
@@ -117,7 +117,7 @@ describe('Components (JSX) #2', () => {
       expect(container.firstChild.firstChild === trackElemSpan).toBe(false);
     });
 
-    it('Should not crash when ComB does setState while changing', () => {
+    it('Should not crash when replacing component A with a component that calls setState in componentWillMount', () => {
       render(<ComponentA />, container);
       expect(container.innerHTML).toBe('<div><span>Something</span></div>');
       const trackElemDiv = container.firstChild;
@@ -202,7 +202,7 @@ describe('Components (JSX) #2', () => {
     }
 
     // For some reason this one breaks but if components are imported separately, it works
-    it('Should not reuse children if parent changes #1', () => {
+    it('Should not reuse children when switching between subclasses of a common parent class', () => {
       render(<ParentFirst />, container);
       expect(container.innerHTML).toBe('<div><div>Firstfoo</div></div>');
       container.firstChild.firstChild.click();
@@ -295,7 +295,7 @@ describe('Components (JSX) #2', () => {
     }
 
     // For some reason this one breaks but if components are imported separately, it works
-    it('Should not reuse children if parent changes #2', () => {
+    it('Should not reuse children when switching between parent classes with duplicated render methods', () => {
       render(<ParentFirst />, container);
       expect(container.innerHTML).toBe('<div><div>Firstfoo</div></div>');
       container.firstChild.firstChild.click();
@@ -306,7 +306,7 @@ describe('Components (JSX) #2', () => {
   });
 
   describe('Inheritance with 1 component per file Common BASE', () => {
-    it('Should not reuse children if parent changes #3', () => {
+    it('Should not reuse children when switching between common-base subclasses defined in separate files', () => {
       render(<ParentFirstCommon />, container);
       expect(container.innerHTML).toBe('<div><div>Firstfoo</div></div>');
       container.firstChild.firstChild.click();

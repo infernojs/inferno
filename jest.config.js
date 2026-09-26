@@ -35,7 +35,8 @@ export default {
         "experimental": {
           "plugins": [
             ["swc-plugin-inferno", {
-              "pure": false
+              "pure": false,
+              "uselessFlags": "off"
             }]
           ],
         },
@@ -44,7 +45,7 @@ export default {
       }
     }],
   },
-  testEnvironment: "jsdom",
+  testEnvironment: "<rootDir>/scripts/test/jsdom-environment.js",
   testRunner: "jest-jasmine2",
   reporters: [["jest-silent-reporter", { "useDots": true }]]
 }

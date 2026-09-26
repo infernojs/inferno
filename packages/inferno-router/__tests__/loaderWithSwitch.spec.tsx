@@ -13,7 +13,7 @@ import {
 // Cherry picked relative import so we don't get node-stuff from inferno-server in browser test
 import { createEventGuard } from './testUtils';
 
-describe('A <Route> with loader in a MemoryRouter', () => {
+describe('A <Route> with loader in a MemoryRouter, with or without a <Switch>', () => {
   let container;
 
   beforeEach(function () {
@@ -171,29 +171,6 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.querySelector('#create').innerHTML).toContain(TEST);
   });
 
-  it('Can access initialData (for hydration)', async () => {
-    const TEXT = 'bubblegum';
-    const Component = (props) => {
-      const res = useLoaderData(props);
-      return <h1>{res?.message}</h1>;
-    };
-    const loaderFunc = async () => {
-      return { message: TEXT };
-    };
-    const initialData = {
-      '/flowers': { res: await loaderFunc(), err: undefined },
-    };
-
-    render(
-      <MemoryRouter initialEntries={['/flowers']} initialData={initialData}>
-        <Route path="/flowers" render={Component} loader={loaderFunc} />
-      </MemoryRouter>,
-      container,
-    );
-
-    expect(container.innerHTML).toContain(TEXT);
-  });
-
   it('Should only render one (1) component after click', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
@@ -258,7 +235,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.querySelector('#publish')).toBeNull();
   });
 
-  it('can use a `location` prop instead of `router.location`', async () => {
+  it('Should keep rendering the previous route until the loader of the next route resolves', async () => {
     const [setSwitch, waitForSwitch] = createEventGuard();
     const [setDone, waitForRerender] = createEventGuard();
 
@@ -375,7 +352,7 @@ describe('A <Route> with loader in a MemoryRouter', () => {
   });
 });
 
-describe('Resolve loaders during server side rendering', () => {
+describe('Resolve loaders inside a <Switch> during server side rendering', () => {
   it('Can resolve with single route', async () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {

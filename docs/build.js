@@ -37,7 +37,7 @@ const plugins = [
     presets: [['@babel/env', {modules: false, targets, exclude: ['transform-typeof-symbol']}]],
     assumptions,
     plugins: [
-      ['babel-plugin-inferno', {imports: true, defineAllArguments: true}],
+      ['babel-plugin-inferno', {imports: true, defineAllArguments: true, uselessFlags: 'off'}],
       "@babel/plugin-transform-class-properties"
     ]
   }),

@@ -150,40 +150,41 @@ describe('Forward Ref', () => {
       let i = 0;
 
       // @ts-expect-error
-      forwardRef(false);
+      expect(forwardRef(false)).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
-      forwardRef(true);
+      expect(forwardRef(true)).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
-      forwardRef({});
+      expect(forwardRef({})).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
-      forwardRef('asd');
+      expect(forwardRef('asd')).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
-      forwardRef(undefined);
+      expect(forwardRef(undefined)).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
       // @ts-expect-error
-      forwardRef(8);
+      expect(forwardRef(8)).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
       // TODO: improve forward ref typings
-      forwardRef(<div>1</div>);
+      expect(forwardRef(<div>1</div>)).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
-      forwardRef(<Foobar />);
+      expect(forwardRef(<Foobar />)).toBeUndefined();
       expect(consoleSpy.calls.count()).toEqual(++i);
 
       // This is ok
-      forwardRef(function () {
+      const render = function () {
         return <div>1</div>;
-      });
+      };
+      expect(forwardRef(render)).toEqual({ render });
       expect(consoleSpy.calls.count()).toEqual(i);
     });
   });

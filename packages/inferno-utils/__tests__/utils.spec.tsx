@@ -4,7 +4,7 @@ import {
   validateNodeTree,
 } from 'inferno-utils';
 
-describe('Utils', () => {
+describe('inferno-utils', () => {
   describe('createContainerWithHTML', () => {
     it('should create a container with the passed in HTML', () => {
       const container = createContainerWithHTML('<h1>hello!</h1>');

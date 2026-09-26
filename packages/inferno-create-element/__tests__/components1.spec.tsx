@@ -607,7 +607,7 @@ describe('Components 1 (JSX)', () => {
       );
     });
 
-    it('Second render (update) #1', (done) => {
+    it('Second render (update) should increment every counter after clicking all buttons', (done) => {
       render(<Wrapper />, container);
       const buttons = container.querySelectorAll('button');
       for (const button of buttons) {
@@ -672,7 +672,7 @@ describe('Components 1 (JSX)', () => {
       );
     });
 
-    it('Second render (update with state change) #2', () => {
+    it('Second render (update with state change) should swap the h1 text after clicking toggle', () => {
       render(<SomeError />, container);
       const buttons = container.querySelectorAll('button');
       for (const button of buttons) {
@@ -739,7 +739,7 @@ describe('Components 1 (JSX)', () => {
       );
     });
 
-    it('Second render (update with state change) #3', (done) => {
+    it('Second render (update with state change) should replace h1 with stateless component after clicking toggle', (done) => {
       render(<Testing />, container);
       const buttons = container.querySelectorAll('button');
       for (const button of buttons) {

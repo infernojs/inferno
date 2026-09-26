@@ -1081,12 +1081,12 @@ $ pnpm run build
 $ pnpm run test:browser
 ```
 
-If you only want to run the browser tests when coding, use the following to reduce turnaround by 50-80%:
+Browser tests run against the built packages, so run `pnpm run build` again after changing sources. To reduce turnaround when coding:
 
 ```sh
-$ pnpm run quick-test:browser # Compiles all packages and runs browser tests
-$ pnpm run quick-test:browser-inferno # Only compiles the inferno package and runs browser tests
-$ pnpm run quick-test:browser-debug # Compiles all packages and runs browser tests with "debug"
+$ pnpm run test:browser:nocompat # Skips the second run with inferno-compat
+$ pnpm run test:browser:nocompat --browser=chrome # Uses Chrome instead of the default Firefox
+$ pnpm run test:browser:debug # Serves the tests at http://localhost:8888 to run and debug in any browser
 ```
 
 ## Community

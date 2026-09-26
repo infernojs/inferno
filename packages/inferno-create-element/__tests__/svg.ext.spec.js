@@ -12,7 +12,7 @@ describe('SVG (non-jsx)', () => {
     render(null, container);
   });
 
-  it('should set attributes correctly', () => {
+  it('should set svg height attribute when toggling between null and 200', () => {
     const template = (val1) => createElement('svg', { height: val1 });
 
     render(template(null), container);
@@ -31,7 +31,7 @@ describe('SVG (non-jsx)', () => {
     expect(container.firstChild.getAttribute('height')).toEqual('200');
   });
 
-  it('should respect SVG namespace and render SVG attributes', () => {
+  it('should render SVG attributes with xmlns and keep the namespace when patched to a width-only svg', () => {
     let template;
 
     template = (val1) =>
@@ -98,7 +98,7 @@ describe('SVG (non-jsx)', () => {
     );
   });
 
-  it('should unset a namespaced attributes #1', () => {
+  it('should set and unset xlink:href on an image inside svg', () => {
     const template = (val) =>
       createElement('svg', null, createElement('image', { 'xlink:href': val }));
 
@@ -120,7 +120,7 @@ describe('SVG (non-jsx)', () => {
     ).toBe(false);
   });
 
-  it('should unset a namespaced attributes #2', () => {
+  it('should not set xlink:href on a standalone image when it stays null', () => {
     const template = (val) =>
       createElement('image', {
         'xlink:href': val,
@@ -143,7 +143,7 @@ describe('SVG (non-jsx)', () => {
     ).toBe(false);
   });
 
-  it('should unset a namespaced attributes #3', () => {
+  it('should set xlink:href on an svg element after rendering it as null', () => {
     const template = (val) =>
       createElement('svg', {
         xmlns: 'http://www.w3.org/2000/svg',
@@ -206,7 +206,7 @@ describe('SVG (non-jsx)', () => {
     );
   });
 
-  it('should handle SVG edge case (static)', () => {
+  it('should keep SVG namespace for an svg inside a div across re-renders (static)', () => {
     const template = (child) =>
       createElement('div', null, createElement('svg', null));
 
@@ -346,7 +346,7 @@ describe('SVG (non-jsx)', () => {
     expect(container.firstChild.getAttribute('class')).toBe('bar,zoo');
   });
 
-  it('should respect SVG namespace and render SVG attributes', () => {
+  it('should respect SVG namespace and update dynamic width and height attributes', () => {
     const template = (val1, val2) =>
       createElement('svg', {
         xmlns: 'http://www.w3.org/2000/svg',
@@ -426,7 +426,7 @@ describe('SVG (non-jsx)', () => {
     );
   });
 
-  it('should solve SVG edge case with XMLNS attribute when wrapped inside a non-namespace element (static)', () => {
+  it('should solve SVG edge case when the wrapping non-namespace element has an XMLNS attribute (static)', () => {
     const template = () =>
       createElement(
         'div',
@@ -443,7 +443,7 @@ describe('SVG (non-jsx)', () => {
     );
   });
 
-  it('should solve SVG edge when wrapped inside a non-namespace element (static)', () => {
+  it('should solve SVG edge case when the svg itself has an XMLNS attribute inside a non-namespace element (static)', () => {
     const template = () =>
       createElement(
         'div',

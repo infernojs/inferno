@@ -46,7 +46,7 @@ describe('Mobx Misc', () => {
     done();
   });
 
-  it('custom shouldComponentUpdate is not respected for observable changes (#50) - 2', (done) => {
+  it('custom shouldComponentUpdate is called but not respected for props changed by an observer parent (#50)', (done) => {
     let called = 0;
     const y = observable.box(5);
     const C = observer(
@@ -96,7 +96,7 @@ describe('Mobx Misc', () => {
     done();
   });
 
-  it('issue mobx 405', (done) => {
+  it('observer renders a computed getter defined via extendObservable, issue mobx 405', (done) => {
     function ExampleState() {
       extendObservable(this, {
         name: 'test',

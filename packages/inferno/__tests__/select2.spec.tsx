@@ -72,7 +72,7 @@ describe('Select / select multiple (JSX)', () => {
     );
   });
 
-  it('should render "select" boolean on select options #2', () => {
+  it('should render "select" boolean on select options when value toggles between false and strings', () => {
     render(
       // @ts-expect-error
       <select multiple={true} value={false}>
@@ -227,7 +227,7 @@ describe('Select / select multiple (JSX)', () => {
     render(template(['foo', 'bar']), container);
   });
 
-  it('Should be possible to render empty select', () => {
+  it('Should be possible to render empty select with a value prop', () => {
     render(<select value="test" />, container);
 
     expect(container.innerHTML).toEqual('<select></select>');
@@ -312,7 +312,7 @@ describe('Select / select multiple (JSX)', () => {
     );
   });
 
-  it('should render "select" boolean on select options #3', () => {
+  it('should render "select" boolean on option matching string value on initial render', () => {
     render(
       <select multiple={true} value={'foo'}>
         <option value="foo">foo</option>
@@ -328,7 +328,7 @@ describe('Select / select multiple (JSX)', () => {
     );
   });
 
-  it('should render "select" boolean on select options #1', () => {
+  it('should render "select" boolean on select options and clear it when value changes to false', () => {
     render(
       <select multiple={true} value={'foo'}>
         <option value="foo">foo</option>
@@ -506,7 +506,7 @@ describe('Select / select multiple (JSX)', () => {
     expect(container.firstChild.children[1].selected).toEqual(true); // Currently failing due to issue #1031
   });
 
-  it('Should have selectedIndex -1 and value as null when value is removed - Github #1105', () => {
+  it('Should keep value empty and selectedIndex 0 or -1 when value prop is removed - Github #1105', () => {
     render(
       <select id="sel" value="">
         <option value="">a</option>

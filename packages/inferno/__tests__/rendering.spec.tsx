@@ -7,7 +7,7 @@ import {
 } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
-describe('rendering routine', () => {
+describe('rendering routine - render() into a container', () => {
   let container;
 
   beforeEach(function () {
@@ -69,7 +69,7 @@ describe('rendering routine', () => {
     expect(container.innerHTML).toEqual('<div><div>123</div></div>');
   });
 
-  it('should be called a callback argument', () => {
+  it('should call a callback argument on mount and on update', () => {
     // mounting phase
     let called = false;
     render(<div>Foo</div>, container, () => (called = true));
