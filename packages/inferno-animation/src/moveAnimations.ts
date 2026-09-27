@@ -31,6 +31,8 @@ let elementLists = new WeakMap<Element, MoveList>();
 let fragmentLists = new WeakMap<VNode[], MoveList>();
 // Active lists by physical parent, for preparing survivors when a leave animation completes
 let parents = new WeakMap<Element, Set<MoveList>>();
+// Elements prepared in a commit through a fragment: a keyed fragment list shares its parent with
+// the list around it, whose owners prepare those elements first
 const coverage = new WeakMap<AnimationQueues, Set<Element>>();
 // Bumped by every owner change: a list looks for hooks again when it is prepared next
 let topologyVersion = 0;
@@ -189,6 +191,75 @@ function forget(list: MoveList, isFragment: boolean): void {
   detach(list);
 }
 
+function coverageOf(commit: AnimationQueues): Set<Element> {
+  let covered = coverage.get(commit);
+  if (covered === undefined) coverage.set(commit, (covered = new Set()));
+  return covered;
+}
+
+// Calls the move hook of vNode's outermost owner, or of every owner in a fragment. Only a keyed
+// fragment list shares its parent with an enclosing list, so only its items are checked against
+// the parent and against the elements that the enclosing list prepared.
+function prepareOwner(
+  vNode: VNode,
+  list: MoveList,
+  commit: AnimationQueues,
+  inFragment: boolean,
+): void {
+  let flags = vNode.flags;
+  while (flags & VNodeFlags.Component) {
+    const isClass = (flags & VNodeFlags.ComponentClass) !== 0;
+    const owner = isClass ? (vNode.children as any) : vNode.ref;
+    if (isClass && (owner === null || owner.$UN)) return;
+    const hook =
+      owner == null
+        ? undefined
+        : isClass
+          ? owner.componentWillMove
+          : owner.onComponentWillMove;
+    if (typeof hook === 'function') {
+      const dom = findElementFromVNode(vNode);
+      if (dom === null) return;
+      if (list.owner.flags & VNodeFlags.Fragment) {
+        if (dom.parentNode !== list.parent) return;
+        const covered = coverage.get(commit);
+        if (covered !== undefined && covered.has(dom)) return;
+      }
+      if (inFragment || rootIsFragment(vNode)) {
+        coverRoots(vNode, coverageOf(commit));
+      }
+      if (isClass) hook.call(owner, list.owner, list.parent, dom);
+      else hook.call(owner, list.owner, list.parent, dom, vNode.props);
+      return;
+    }
+    vNode = input(vNode);
+    flags = vNode.flags;
+  }
+  if (flags & VNodeFlags.Fragment) {
+    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      prepareOwner(input(vNode), list, commit, true);
+    } else {
+      for (const child of vNode.children as VNode[]) {
+        prepareOwner(child, list, commit, true);
+      }
+    }
+  }
+}
+
+function rootIsFragment(vNode: VNode): boolean {
+  while (vNode.flags & VNodeFlags.Component) vNode = input(vNode);
+  return (vNode.flags & VNodeFlags.Fragment) !== 0;
+}
+
+function isRetained(child: VNode, next: VNode | undefined): boolean {
+  return (
+    next !== undefined &&
+    next.type === child.type &&
+    !((next.flags ^ child.flags) & ~VNodeFlags.InUseOrNormalized) &&
+    !(next.flags & VNodeFlags.ReCreate)
+  );
+}
+
 // Calls the hooks of the items of last that stay in next, before either is patched
 function prepareItems(
   list: MoveList,
@@ -197,29 +268,62 @@ function prepareItems(
   commit: AnimationQueues,
   cancel: (parent: Node) => void,
 ): void {
-  // Match by position first; allocate a key map only for membership/order changes.
+  const lastLength = previous.length;
+  const nextLength = children.length;
+  // Items before prefix and from lastEnd on keep their place at either end, so only the items
+  // between need a key map
+  let prefix = 0;
+  while (
+    prefix < lastLength &&
+    prefix < nextLength &&
+    previous[prefix].key === children[prefix].key
+  ) {
+    prefix++;
+  }
+  let lastEnd = lastLength;
+  let nextEnd = nextLength;
+  while (
+    lastEnd > prefix &&
+    nextEnd > prefix &&
+    previous[lastEnd - 1].key === children[nextEnd - 1].key
+  ) {
+    lastEnd--;
+    nextEnd--;
+  }
   let nextByKey: Map<VNode['key'], VNode> | undefined;
-  let covered = coverage.get(commit);
-  if (!covered) coverage.set(commit, (covered = new Set()));
+  // A few moved items are found by a scan; more of them build the key map
+  let scans = 4;
   try {
-    for (let i = 0; i < previous.length; i++) {
+    for (let i = 0; i < lastLength; i++) {
       const child = previous[i];
-      let retained: VNode | undefined = children[i];
-      if (!retained || retained.key !== child.key) {
-        if (!nextByKey) {
-          nextByKey = new Map();
-          for (const nextChild of children)
-            nextByKey.set(nextChild.key, nextChild);
+      let retained: VNode | undefined;
+      if (i < prefix) {
+        retained = children[i];
+      } else if (i >= lastEnd) {
+        retained = children[i - lastLength + nextLength];
+      } else {
+        retained = i < nextEnd ? children[i] : undefined;
+        if (retained === undefined || retained.key !== child.key) {
+          retained = undefined;
+          if (nextByKey !== undefined) {
+            retained = nextByKey.get(child.key);
+          } else if (scans-- > 0) {
+            for (let j = prefix; j < nextEnd; j++) {
+              if (children[j].key === child.key) {
+                retained = children[j];
+                break;
+              }
+            }
+          } else {
+            nextByKey = new Map();
+            for (let j = prefix; j < nextEnd; j++) {
+              nextByKey.set(children[j].key, children[j]);
+            }
+            retained = nextByKey.get(child.key);
+          }
         }
-        retained = nextByKey.get(child.key);
       }
-      if (
-        retained &&
-        retained.type === child.type &&
-        !((retained.flags ^ child.flags) & ~VNodeFlags.InUseOrNormalized) &&
-        !(retained.flags & VNodeFlags.ReCreate)
-      )
-        visit(child, list, covered);
+      if (isRetained(child, retained)) prepareOwner(child, list, commit, false);
     }
   } catch (error) {
     cancel(list.parent);
