@@ -53,11 +53,10 @@ export function unmount(vNode, animations: AnimationQueues): void {
     }
 
     if (childFlags & ChildFlags.MultipleChildren) {
-      if (
-        activeMoveAnimations !== null &&
-        childFlags === ChildFlags.HasKeyedChildren
-      ) {
-        activeMoveAnimations.unmountList(vNode);
+      if (childFlags === ChildFlags.HasKeyedChildren) {
+        if (activeMoveAnimations !== null) {
+          activeMoveAnimations.unmountList(vNode);
+        }
       }
       unmountAllChildren(children, animations);
     } else if (childFlags === ChildFlags.HasVNodeChildren) {

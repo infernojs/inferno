@@ -19,6 +19,7 @@ import {
   type AnimationQueues,
   NO_ANIMATIONS,
   activeMoveAnimations,
+  moveAnimations,
   appendVNodeDOM,
   createDerivedState,
   EMPTY_OBJ,
@@ -296,12 +297,13 @@ export function patchElement(
   let lastChildren = lastVNode.children;
   let lastChildFlags = lastVNode.childFlags;
 
-  // The move hooks of a keyed list measure its items before anything changes, props included
-  if (
-    activeMoveAnimations !== null &&
-    lastChildFlags === ChildFlags.HasKeyedChildren
-  ) {
-    activeMoveAnimations.prepare(lastVNode, nextVNode, dom, animations);
+  // The move hooks of a keyed list measure its items before anything changes, props included.
+  // The local test goes first, so that optimized code reads the variable only for keyed lists, and
+  // a bundler that knows the variable stays null removes both.
+  if (lastChildFlags === ChildFlags.HasKeyedChildren) {
+    if (activeMoveAnimations !== null) {
+      activeMoveAnimations.prepare(lastVNode, nextVNode, dom, animations);
+    }
   }
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
@@ -641,17 +643,20 @@ function patchChildren(
       break;
     default:
       // A keyed fragment's move hooks measure its items before any of them change
-      if (
-        activeMoveAnimations !== null &&
-        lastChildFlags === ChildFlags.HasKeyedChildren &&
-        (parentVNode.flags & VNodeFlags.Fragment) !== 0
-      ) {
-        activeMoveAnimations.prepareFragment(
-          parentVNode,
-          nextChildFlags === ChildFlags.HasKeyedChildren ? nextChildren : null,
-          parentDOM,
-          animations,
-        );
+      if (lastChildFlags === ChildFlags.HasKeyedChildren) {
+        if (
+          activeMoveAnimations !== null &&
+          (parentVNode.flags & VNodeFlags.Fragment) !== 0
+        ) {
+          activeMoveAnimations.prepareFragment(
+            parentVNode,
+            nextChildFlags === ChildFlags.HasKeyedChildren
+              ? nextChildren
+              : null,
+            parentDOM,
+            animations,
+          );
+        }
       }
       switch (nextChildFlags) {
         case ChildFlags.HasTextChildren:
@@ -851,10 +856,15 @@ function patchFunctionalComponent(
   const nextHooksDefined = !isNullOrUndef(nextRef);
   const lastInput = lastVNode.children;
 
-  if (lastVNode.ref !== nextRef) {
-    updateMoveHooks(lastVNode, nextVNode);
-  }
   if (nextHooksDefined) {
+    // A move hook that a patch adds is counted; one that a patch removes is not, which only keeps
+    // inferno-animation active
+    if (
+      moveAnimations !== null &&
+      typeof nextRef.onComponentWillMove === 'function'
+    ) {
+      updateMoveHooks(lastVNode, nextVNode);
+    }
     if (
       typeof nextRef.onComponentShouldUpdate === 'function' &&
       !nextRef.onComponentShouldUpdate(lastProps, nextProps)

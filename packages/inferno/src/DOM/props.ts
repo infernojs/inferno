@@ -74,12 +74,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom): void {
   }
 }
 
-function patchDangerInnerHTML(
-  lastValue,
-  nextValue,
-  lastVNode,
-  dom,
-): boolean {
+function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom): boolean {
   const lastHtml = lastValue?.__html || '';
   const nextHtml = nextValue?.__html || '';
 
@@ -207,15 +202,7 @@ export function mountProps(vNode, flags, props, dom, isSVG): void {
   }
   for (const prop in props) {
     // do not add a hasOwnProperty check here, it affects performance
-    patchProp(
-      prop,
-      null,
-      props[prop],
-      dom,
-      isSVG,
-      hasControlledValue,
-      null,
-    );
+    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
   }
   if (isFormElement) {
     processElement(flags, vNode, dom, props, true, hasControlledValue);
