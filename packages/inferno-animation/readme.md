@@ -109,9 +109,21 @@ of Inferno that you want to benefit from.
 ### Keyed-list layout animations
 
 Importing `inferno-animation` installs the optional move engine. Core-only apps
-include neither the move registry nor its scheduler. Custom `componentWillMove`
-and `onComponentWillMove` hooks also require `import 'inferno-animation'` before
+include neither the move registry nor its scheduler, and bundlers that see no
+import drop the reconciler's checks for it. Custom `componentWillMove` and
+`onComponentWillMove` hooks also require `import 'inferno-animation'` before
 rendering; using one of the exported animation components already does this.
+
+The engine stays dormant until a component with a move hook mounts, and becomes
+dormant again when the last one unmounts: until then reconciliation does no move
+work, and an app that imports the package only for enter and leave animations
+does not pay for moves. A class component has a move hook when `componentWillMove`
+exists by the end of its mount: in the class, or assigned in the constructor,
+`componentWillMount` or `componentDidMount`. A hook assigned later is not
+supported. A function component has one when its hooks include
+`onComponentWillMove`, also when a re-render adds it. A re-render that removes a
+function component's move hook keeps the engine active until the page reloads;
+nothing else changes. Mutating a hooks object in place is not supported.
 
 Move animations cover reordering, insertions, removals, and layout changes during
 keyed-list reconciliation. Keep stable keys on list items. Components may render
@@ -135,9 +147,8 @@ Custom hooks should measure or schedule work without moving or removing DOM
 nodes. Hooks may run even when geometry does not change; the helpers then apply
 no styles or classes and perform no computed-style reads. Source and target
 geometry are still measured so that layout changes caused by props or content
-can be animated. Hookless structural results are cached. Assigning a class hook after mounting or
-adding a function hook through a new hooks object makes it discoverable on the
-next list update.
+can be animated. A list is registered when it is first updated with the engine
+active, and whether it has hooks is cached until a move hook mounts or unmounts.
 
 The helpers measure siblings once per affected parent and coordinate transforms
 with that parent's enter/leave styles. Synchronous commits, including nested
@@ -161,7 +172,14 @@ measured once, its completed leaves are removed together, and survivors animate
 the remaining gap. Physical removal may therefore wait until the next animation
 frame. Synchronous completion during reconciliation stays immediate and uses the
 existing preparation. Completion callbacks are safe to call repeatedly or after
-a later unmount.
+a later unmount. Survivors animate the gap only in lists the engine has
+registered: a keyed list that was never updated since the first move hook
+mounted does not animate when a sibling keyed fragment removes an item on its
+own, for example through `setState` inside that fragment.
+
+Children replaced by text or by `dangerouslySetInnerHTML` are removed at once:
+their leave hooks do not run. An element replaced by an element of another type
+stays in the document until the leave hooks inside it complete.
 
 Resizing the viewport or loading an image without a keyed-list update does not
 itself trigger a move animation. The `docs/animation-glitch` example exercises
