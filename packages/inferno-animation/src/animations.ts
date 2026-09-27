@@ -223,7 +223,8 @@ interface MoveItem {
   appliedTransform: string | null;
   initialized: boolean;
   addedClasses: string;
-  cls: AnimationClass;
+  // Another item moves the element now
+  superseded: boolean;
   previous?: MoveItem;
   ownedTransition?: Animation;
   cancel?: () => void;
@@ -233,6 +234,8 @@ interface MoveBatch {
   parent: Node;
   items: MoveItem[];
   initialized: boolean;
+  // The classes of the move's active state, parsed once for all items
+  activeClasses: string[];
   cancel?: () => void;
 }
 
@@ -299,6 +302,7 @@ export function componentWillMove(
     items: [],
     initialized: false,
     remaining: 0,
+    activeClasses: cls.active.split(' ').filter((name) => name !== ''),
   };
   const skipped: MoveItem[] = [];
   const authors = authorTransitions(parent);
@@ -330,7 +334,7 @@ export function componentWillMove(
       appliedTransform: null,
       initialized: false,
       addedClasses: '',
-      cls,
+      superseded: false,
       previous,
     };
     batch.items.push(item);
@@ -439,7 +443,18 @@ function cancelMoves(parent: Node): void {
 
 function runMove(phase: AnimationPhase, batch: MoveBatch): void {
   if (moveBatches.get(batch.parent) !== batch) return;
-  if (phase === AnimationPhase.INITIALIZE) batch.initialized = true;
+  // The first phases belong to enter and leave animations
+  if (phase < AnimationPhase.READ_MOVES) {
+    if (phase === AnimationPhase.INITIALIZE) batch.initialized = true;
+    return;
+  }
+  // Items that were removed, moved by a newer batch, or started entering or leaving drop out in
+  // the first phase of the microtask pass and of activation. The phases after each run
+  // synchronously, in which items only finish.
+  const verify =
+    phase === AnimationPhase.READ_MOVES ||
+    phase === AnimationPhase.ACTIVATE_ANIMATION;
+  let live = 0;
   const authors =
     phase === AnimationPhase.READ_MOVES
       ? authorTransitions(batch.parent)
@@ -457,16 +472,23 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
     }
   }
   for (const item of batch.items) {
+    if (item.done || item.superseded) continue;
     const { node } = item;
-    if (moving.get(node) !== item) continue;
-    if (
-      node.parentNode !== batch.parent ||
-      !node.isConnected ||
-      entering.has(node) ||
-      leaving.has(node)
-    ) {
-      finishMove(item);
-      continue;
+    if (verify) {
+      if (moving.get(node) !== item) {
+        item.superseded = true;
+        continue;
+      }
+      if (
+        node.parentNode !== batch.parent ||
+        !node.isConnected ||
+        entering.has(node) ||
+        leaving.has(node)
+      ) {
+        finishMove(item);
+        continue;
+      }
+      live++;
     }
     switch (phase) {
       case AnimationPhase.READ_MOVES:
@@ -509,14 +531,18 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
           item.appliedTransform = node.style.transform;
         }
         break;
-      case AnimationPhase.ACTIVATE_TRANSITIONS:
+      case AnimationPhase.ACTIVATE_TRANSITIONS: {
         restoreTransitions(item);
-        item.addedClasses = item.cls.active
-          .split(' ')
-          .filter((name) => name !== '' && !node.classList.contains(name))
-          .join(' ');
-        addClassName(node, item.addedClasses);
+        let added = '';
+        for (const name of batch.activeClasses) {
+          if (!node.classList.contains(name)) {
+            node.classList.add(name);
+            added = added === '' ? name : added + ' ' + name;
+          }
+        }
+        item.addedClasses = added;
         break;
+      }
       case AnimationPhase.ACTIVATE_ANIMATION:
         node.style.setProperty(
           'transform',
@@ -532,7 +558,7 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
         break;
     }
   }
-  if (!batch.items.some((item) => moving.get(item.node) === item)) {
+  if (verify && live === 0) {
     batch.cancel?.();
     moveBatches.delete(batch.parent);
   }
