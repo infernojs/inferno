@@ -25,24 +25,10 @@ export function createPlugins(version, options) {
       exclude: 'node_modules/**',
       sourceMaps: false,
       babelrc: false,
-      presets: !options.esnext
-        ? [
-            [
-              '@babel/env',
-              {
-                modules: false,
-                targets,
-                // Downleveled subclasses call Component with .call() or .apply().
-                include: ['transform-classes'],
-                exclude: ['transform-typeof-symbol']
-              }
-            ]
-          ]
-        : null,
+      presets: [['@babel/env', { modules: false, targets }]],
       babelHelpers: 'runtime',
       skipPreflightCheck: true,
-      assumptions,
-      plugins: ['@babel/plugin-transform-class-properties']
+      assumptions
     })
   );
 
