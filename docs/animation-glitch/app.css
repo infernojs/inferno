@@ -1,0 +1,84 @@
+body {
+  font-family: sans-serif;
+  margin: 24px;
+  max-width: 1000px;
+  color: #222;
+}
+
+.intro {
+  max-width: 760px;
+}
+
+section {
+  border-top: 1px solid #ddd;
+  padding: 12px 0 24px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.columns {
+  display: flex;
+  gap: 32px;
+}
+
+.columns > div {
+  flex: 1;
+}
+
+.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 240px;
+}
+
+.card {
+  box-sizing: border-box;
+  height: 36px;
+  line-height: 36px;
+  margin-bottom: 6px;
+  padding: 0 12px;
+  border-radius: 4px;
+  background: #ccc;
+  font-weight: bold;
+}
+
+.card.animated {
+  background: #f39c3c;
+  color: #fff;
+}
+
+.buttons {
+  margin-top: 12px;
+}
+
+.buttons button {
+  margin-right: 8px;
+}
+
+.status {
+  margin-top: 10px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.status.ok {
+  color: #1d7f37;
+}
+
+.status.bad {
+  color: #c0292b;
+}
+
+/* inferno-animation move classes for animation="Card" */
+.Card-move-active {
+  transition: transform 1.5s ease;
+  z-index: 1;
+}
