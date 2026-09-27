@@ -1,0 +1,61 @@
+body {
+  font-family: sans-serif;
+  margin: 24px;
+  max-width: 1000px;
+  color: #222;
+}
+
+.intro {
+  max-width: 760px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+.cases {
+  border-collapse: collapse;
+}
+
+.cases th,
+.cases td {
+  border-bottom: 1px solid #ddd;
+  padding: 6px 16px 6px 0;
+  text-align: left;
+}
+
+.cases tr.current td {
+  background: #fff4d6;
+}
+
+#result {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 16px 0 24px;
+  max-width: 760px;
+  padding: 0 16px 4px;
+}
+
+#container form {
+  min-height: 36px;
+}
+
+#container input {
+  font-size: 16px;
+  padding: 6px 8px;
+  width: 240px;
+}
+
+.status {
+  margin-top: 10px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.status.ok {
+  color: #1d7f37;
+}
+
+.status.bad {
+  color: #c0292b;
+}

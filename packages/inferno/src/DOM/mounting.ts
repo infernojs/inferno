@@ -248,12 +248,15 @@ export function mountElement(
     }
   }
 
-  if (!isNull(parentDOM)) {
-    insertOrAppend(parentDOM, dom, nextNode);
-  }
 
+  // Props are set before the element enters the document: attribute changes on a connected element cost
+  // style invalidation, and autofocus only works when the attribute is there on insertion.
   if (!isNull(props)) {
     mountProps(vNode, flags, props, dom, isSVG, animations);
+  }
+
+  if (!isNull(parentDOM)) {
+    insertOrAppend(parentDOM, dom, nextNode);
   }
 
   if (process.env.NODE_ENV !== 'production') {
