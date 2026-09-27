@@ -54,7 +54,7 @@ function replaceWithNewNode(
 
   // One replaceChild, unless leave hooks inside lastVNode have to animate out before its removal
   if (
-    (nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0 &&
+    nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef &&
     animations.componentWillDisappear === null
   ) {
     mount(nextVNode, null, context, isSVG, null, lifecycle, animations);

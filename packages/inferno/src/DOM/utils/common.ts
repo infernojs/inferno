@@ -222,7 +222,7 @@ export function clearVNodeDOM(
   while (!isNullOrUndef(vNode)) {
     const flags = vNode.flags;
 
-    if ((flags & VNodeFlags.DOMRef) !== 0) {
+    if (flags & VNodeFlags.DOMRef) {
       // On deferred removals the node might disappear because of later operations
       if (!deferredRemoval || (vNode.dom as Element).parentNode === parentDOM) {
         removeChild(parentDOM, vNode.dom as Element);

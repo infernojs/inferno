@@ -312,7 +312,7 @@ export function mountClassComponent(
   // component animations is NO_ANIMATIONS already, so childAnimations stays equal to it.
   let childAnimations = animations;
 
-  if (isFunction(instance.componentDidAppear)) {
+  if (typeof instance.componentDidAppear === 'function') {
     childAnimations = NO_ANIMATIONS;
   }
   mount(
