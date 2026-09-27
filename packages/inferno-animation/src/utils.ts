@@ -79,31 +79,29 @@ function _cleanStyle(node: HTMLElement | SVGElement): void {
 }
 
 export function getDimensions(node: HTMLElement | SVGElement): Dimensions {
-  const tmpDisplay = node.style.getPropertyValue('display');
+  let rect = node.getBoundingClientRect();
 
   // The `display: none;` workaround was added to support Bootstrap animations in
   // https://github.com/jhsware/inferno-bootstrap/blob/be4a17bff5e785b993a66a2927846cd463fecae3/src/Modal/AnimateModal.js
   // we should consider deprecating this, or providing a different solution for
-  // those who only do normal animations.
-  const isDisplayNone =
-    window.getComputedStyle(node).getPropertyValue('display') === 'none';
-  if (isDisplayNone) {
+  // those who only do normal animations. Only an element without a box can be hidden that way.
+  if (
+    rect.width === 0 &&
+    rect.height === 0 &&
+    window.getComputedStyle(node).getPropertyValue('display') === 'none'
+  ) {
+    const tmpDisplay = node.style.getPropertyValue('display');
     node.style.setProperty('display', 'block');
-  }
-
-  const tmp = node.getBoundingClientRect();
-
-  if (isDisplayNone) {
-    // node.style.display = tmpDisplay
+    rect = node.getBoundingClientRect();
     node.style.setProperty('display', tmpDisplay);
     _cleanStyle(node);
   }
 
   return {
-    height: tmp.height,
-    width: tmp.width,
-    x: tmp.x,
-    y: tmp.y,
+    height: rect.height,
+    width: rect.width,
+    x: rect.x,
+    y: rect.y,
   };
 }
 
