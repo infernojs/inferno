@@ -5,10 +5,10 @@ import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
 import {
   AnimationQueues,
   NO_ANIMATIONS,
+  activeMoveAnimations,
   callAllAnimationHooks,
   clearVNodeDOM,
   deferRemoval,
-  options,
   EMPTY_OBJ,
   findDOMFromVNode,
   findElementFromVNode,
@@ -26,7 +26,6 @@ export function remove(
 }
 
 export function unmount(vNode, animations: AnimationQueues): void {
-  options.$MA?.unmount(vNode);
   const flags = vNode.flags;
   const children = vNode.children;
   let ref;
@@ -54,6 +53,12 @@ export function unmount(vNode, animations: AnimationQueues): void {
     }
 
     if (childFlags & ChildFlags.MultipleChildren) {
+      if (
+        activeMoveAnimations !== null &&
+        childFlags === ChildFlags.HasKeyedChildren
+      ) {
+        activeMoveAnimations.unmountList(vNode);
+      }
       unmountAllChildren(children, animations);
     } else if (childFlags === ChildFlags.HasVNodeChildren) {
       unmount(children as VNode, animations);
@@ -82,6 +87,12 @@ export function unmount(vNode, animations: AnimationQueues): void {
         );
       }
 
+      if (
+        activeMoveAnimations !== null &&
+        typeof children.componentWillMove === 'function'
+      ) {
+        activeMoveAnimations.unmountClass(children);
+      }
       unmountRef(vNode.ref);
       children.$UN = true;
       unmount(children.$LI, childAnimations);
@@ -104,12 +115,24 @@ export function unmount(vNode, animations: AnimationQueues): void {
           domEl = findElementFromVNode(vNode);
           addDisappearAnimationHook(animations, ref, domEl, flags, vNode.props);
         }
+        if (
+          activeMoveAnimations !== null &&
+          typeof ref.onComponentWillMove === 'function'
+        ) {
+          activeMoveAnimations.updateHooks(ref, null);
+        }
       }
       unmount(children, childAnimations);
     } else if (flags & VNodeFlags.Portal) {
       remove(children as VNode, vNode.ref, animations);
     } else if (flags & VNodeFlags.Fragment) {
       if (vNode.childFlags & ChildFlags.MultipleChildren) {
+        if (
+          activeMoveAnimations !== null &&
+          vNode.childFlags === ChildFlags.HasKeyedChildren
+        ) {
+          activeMoveAnimations.unmountList(vNode);
+        }
         unmountAllChildren(children, animations);
       } else {
         unmount(children, animations);
@@ -180,8 +203,11 @@ function addDisappearAnimationHook(
   props,
 ): void {
   if (dom === null) return;
+  const queue =
+    animations.componentWillDisappear ||
+    (animations.componentWillDisappear = []);
   // @ts-expect-error TODO: Here is something weird check this behavior
-  (animations.componentWillDisappear || (animations.componentWillDisappear = [])).push((callback) => {
+  queue.push((callback) => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentWillDisappear(dom, callback);
     } else if (flags & VNodeFlags.ComponentFunction) {

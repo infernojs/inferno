@@ -19,10 +19,10 @@ import {
   NO_ANIMATIONS,
   documentCreateElement,
   EMPTY_OBJ,
-  options,
   findDOMFromVNode,
   findElementFromVNode,
   insertOrAppend,
+  moveAnimations,
   safeCall1,
   setTextContent,
 } from './utils/common';
@@ -170,7 +170,6 @@ function mountFragment(
       animations,
     );
   }
-  if (parentDOM !== null) options.$MA?.track(vNode, parentDOM);
 }
 
 export function mountText(
@@ -269,7 +268,6 @@ export function mountElement(
       );
     }
   }
-  options.$MA?.track(vNode, dom);
   mountRef(vNode.ref, dom, lifecycle);
 }
 
@@ -366,6 +364,13 @@ export function mountFunctionalComponent(
 function createClassMountCallback(instance) {
   return () => {
     instance.componentDidMount();
+    // A move hook assigned in componentDidMount still counts
+    if (
+      moveAnimations !== null &&
+      typeof instance.componentWillMove === 'function'
+    ) {
+      moveAnimations.mountClass(instance);
+    }
   };
 }
 
@@ -375,11 +380,11 @@ function addAppearAnimationHookClass(
 ): void {
   const dom = findElementFromVNode(instance.$LI);
   if (dom !== null) {
-    (animations.componentDidAppear || (animations.componentDidAppear = [])).push(
-      () => {
-        instance.componentDidAppear(dom);
-      },
-    );
+    (
+      animations.componentDidAppear || (animations.componentDidAppear = [])
+    ).push(() => {
+      instance.componentDidAppear(dom);
+    });
   }
 }
 
@@ -391,11 +396,11 @@ function addAppearAnimationHookFunctional(
   const ref = vNode.ref;
   const props = vNode.props;
   if (dom !== null) {
-    (animations.componentDidAppear || (animations.componentDidAppear = [])).push(
-      () => {
-        ref.onComponentDidAppear(dom, props);
-      },
-    );
+    (
+      animations.componentDidAppear || (animations.componentDidAppear = [])
+    ).push(() => {
+      ref.onComponentDidAppear(dom, props);
+    });
   }
 }
 
@@ -404,7 +409,12 @@ export function mountClassComponentCallbacks(
   instance,
   lifecycle: Array<() => void>,
 ): void {
-  options.$MA?.changed();
+  if (
+    moveAnimations !== null &&
+    typeof instance.componentWillMove === 'function'
+  ) {
+    moveAnimations.mountClass(instance);
+  }
   mountRef(ref, instance, lifecycle);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -443,7 +453,12 @@ export function mountFunctionalComponentCallbacks(
 ): void {
   const ref = vNode.ref;
   if (!isNullOrUndef(ref)) {
-    options.$MA?.changed(vNode);
+    if (
+      moveAnimations !== null &&
+      typeof ref.onComponentWillMove === 'function'
+    ) {
+      moveAnimations.updateHooks(null, ref);
+    }
     safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
     if (isFunction(ref.onComponentDidMount)) {
       lifecycle.push(createOnMountCallback(ref, vNode));

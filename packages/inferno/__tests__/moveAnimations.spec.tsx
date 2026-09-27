@@ -535,5 +535,116 @@ describe('keyed layout animation preparation', () => {
       expect(seen).toEqual(['A', 'B']);
       expect(container.textContent).toBe('BA');
     });
+
+    it('counts class hooks assigned in the constructor or componentWillMount', () => {
+      const seen: string[] = [];
+      class InConstructor extends Component<{ id: string }> {
+        constructor(props) {
+          super(props);
+          this.componentWillMove = () =>
+            seen.push('constructor:' + this.props.id);
+        }
+
+        render() {
+          return <li>{this.props.id}</li>;
+        }
+      }
+      class InWillMount extends Component<{ id: string }> {
+        componentWillMount() {
+          this.componentWillMove = () =>
+            seen.push('willMount:' + this.props.id);
+        }
+
+        render() {
+          return <li>{this.props.id}</li>;
+        }
+      }
+      for (const Item of [InConstructor, InWillMount]) {
+        const items = (order) => (
+          <ul>
+            {order.map((id) => (
+              <Item key={id} id={id} />
+            ))}
+          </ul>
+        );
+        render(null, container);
+        render(items(['A', 'B']), container);
+        render(items(['B', 'A']), container);
+        expect(container.textContent).toBe('BA');
+      }
+      expect(seen).toEqual([
+        'constructor:A',
+        'constructor:B',
+        'willMount:A',
+        'willMount:B',
+      ]);
+    });
+
+    it('prepares a list whose first hooked item mounted in an earlier patch', () => {
+      const { seen, hook } = calls(null);
+      render(list(['A', 'B'], hook, []), container);
+      render(list(['A', 'B', 'C'], hook, ['C']), container);
+      render(list(['C', 'A', 'B'], hook, ['C']), container);
+      expect(seen).toEqual(['C']);
+      expect(container.textContent).toBe('CAB');
+    });
+
+    it('prepares a list hydrated before any hook mounted', () => {
+      const { seen, hook } = calls(null);
+      container.innerHTML =
+        '<ul><li data-id="A">A</li><li data-id="B">B</li></ul>';
+      hydrate(list(['A', 'B'], hook, []), container);
+      render(list(['A', 'B'], hook), container);
+      render(list(['B', 'A'], hook), container);
+      expect(seen).toEqual(['A', 'B']);
+      expect(container.textContent).toBe('BA');
+    });
+
+    it('prepares the current children of a list patched while no hook was mounted', () => {
+      const { seen, hook } = calls(null);
+      render(list(['A', 'B', 'C'], hook), container);
+      render(list(['C', 'B', 'A'], hook), container);
+      // The last hooks go, and the list changes while nothing is tracked
+      render(list(['C', 'B', 'A', 'D'], hook, []), container);
+      render(list(['D', 'A', 'B', 'C'], hook, []), container);
+      render(list(['D', 'A', 'B', 'C'], hook), container);
+      seen.length = 0;
+      render(list(['A', 'D', 'C', 'B'], hook), container);
+      expect(seen).toEqual(['D', 'A', 'B', 'C']);
+      expect(container.textContent).toBe('ADCB');
+    });
+
+    it('stays active while hooks objects are replaced by every render', () => {
+      const { seen, hook } = calls(null);
+      for (let i = 0; i < 3; i++) {
+        render(list(['A', 'B', 'C'], hook), container);
+      }
+      render(list(['A', 'B', 'C'], hook, ['A', 'C']), container);
+      render(list(['A', 'B', 'C'], hook, ['C']), container);
+      seen.length = 0;
+      render(list(['C', 'B', 'A'], hook, ['C']), container);
+      expect(seen).toEqual(['C']);
+      expect(container.textContent).toBe('CBA');
+    });
+
+    it('removes an element when its leave hook completes while no move hook is mounted', () => {
+      let done: (() => void) | undefined;
+      const leave = (_dom, _props, callback) => {
+        done = callback;
+      };
+      render(
+        <ul>
+          {[
+            <Card key="A" id="A" onComponentWillDisappear={leave} />,
+            <Card key="B" id="B" />,
+          ]}
+        </ul>,
+        container,
+      );
+      render(<ul>{[<Card key="B" id="B" />]}</ul>, container);
+      expect(container.textContent).toBe('AB');
+      done!();
+      expect(container.textContent).toBe('B');
+    });
   });
 });

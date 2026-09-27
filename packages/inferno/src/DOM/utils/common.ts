@@ -16,9 +16,17 @@ export const EMPTY_OBJ = {};
 export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> =
   '$F';
 
-/** Internal integration installed by inferno-animation; absent in core-only apps. */
+/**
+ * The move animation integration of inferno-animation. Move hook owners are class components that
+ * have componentWillMove by the end of their mount, and function components whose hooks include
+ * onComponentWillMove; the adapter is active while any owner is mounted.
+ */
 export interface MoveAnimationAdapter {
-  track(vNode: VNode, parent: Element): void;
+  // Owner changes, reported whenever inferno-animation is installed
+  mountClass(instance: any): void;
+  unmountClass(instance: any): void;
+  updateHooks(lastRef: any, nextRef: any): void;
+  // Reported only while the adapter is active
   prepare(
     last: VNode,
     next: VNode,
@@ -31,11 +39,28 @@ export interface MoveAnimationAdapter {
     parent: Element,
     commit: AnimationQueues,
   ): void;
-  changed(vNode?: VNode): void;
-  updated(last: VNode, next: VNode): void;
-  unmount(vNode: VNode): void;
+  unmountList(vNode: VNode): void;
   reparent(vNode: VNode, parent: Element): void;
   remove(parent: Element, callback: () => void): void;
+}
+
+// The adapter while inferno-animation is installed, and while it is active. The reconciler tests
+// these variables: a null check of a variable is the cheapest test in every JIT tier, and a bundler
+// that sees no call to setMoveAnimations removes the tests altogether.
+export let moveAnimations: MoveAnimationAdapter | null = null;
+export let activeMoveAnimations: MoveAnimationAdapter | null = null;
+
+// Returns false when another copy of inferno-animation is installed already
+export function setMoveAnimations(
+  adapter: MoveAnimationAdapter,
+  active: boolean,
+): boolean {
+  if (moveAnimations !== null && moveAnimations !== adapter) {
+    return false;
+  }
+  moveAnimations = adapter;
+  activeMoveAnimations = active ? adapter : null;
+  return true;
 }
 
 // One per commit. The arrays are created by the first hook queued in them.
@@ -261,8 +286,11 @@ export function deferRemoval(
   return (synchronous?: boolean) => {
     if (completed) return;
     completed = true;
-    if (!synchronous && options.$MA) options.$MA.remove(parent, callback);
-    else callback();
+    if (!synchronous && activeMoveAnimations !== null) {
+      activeMoveAnimations.remove(parent, callback);
+    } else {
+      callback();
+    }
   };
 }
 
@@ -342,8 +370,6 @@ export const renderCheck = {
 export const options: {
   createVNode: ((vNode: VNode) => void) | null;
   reactStyles?: boolean;
-  /** @internal Installed by inferno-animation. */
-  $MA?: MoveAnimationAdapter;
 } = {
   createVNode: null,
 };

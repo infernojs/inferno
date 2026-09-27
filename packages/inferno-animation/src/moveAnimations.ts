@@ -1,6 +1,6 @@
 import {
   _FE as findElementFromVNode,
-  options,
+  _MA as setMoveAnimations,
   type AnimationQueues,
   type VNode,
 } from 'inferno';
@@ -21,15 +21,45 @@ interface MoveList {
   version: number;
 }
 
+type MoveAnimationAdapter = Parameters<typeof setMoveAnimations>[0];
+
 // The registry and all discovery work belong to this optional package. An element list is keyed
 // by its element, which stays the same across patches. A keyed fragment has no element of its
-// own, so its list is keyed by the children array it currently renders.
-const elementLists = new WeakMap<Element, MoveList>();
-const fragmentLists = new WeakMap<VNode[], MoveList>();
+// own, so its list is keyed by the children array it currently renders. A list is registered when
+// it is first prepared.
+let elementLists = new WeakMap<Element, MoveList>();
+let fragmentLists = new WeakMap<VNode[], MoveList>();
 // Active lists by physical parent, for preparing survivors when a leave animation completes
-const parents = new WeakMap<Element, Set<MoveList>>();
+let parents = new WeakMap<Element, Set<MoveList>>();
 const coverage = new WeakMap<AnimationQueues, Set<Element>>();
+// Bumped by every owner change: a list looks for hooks again when it is prepared next
 let topologyVersion = 0;
+
+// Mounted move hook owners: class instances that have componentWillMove by the end of their mount,
+// and function component hooks objects with onComponentWillMove. The reconciler reports keyed
+// patches, list unmounts and removals only while there is at least one.
+let owners = 0;
+const classOwners = new WeakSet<object>();
+
+function changeOwners(adapter: MoveAnimationAdapter, delta: number): void {
+  const before = owners;
+  // A hooks object changed in place can report an owner it did not add
+  owners = Math.max(owners + delta, 0);
+  topologyVersion++;
+  if (before === 0) {
+    if (owners !== 0) setMoveAnimations(adapter, true);
+  } else if (owners === 0) {
+    // Nothing is prepared until an owner mounts again, and lists register again then
+    elementLists = new WeakMap();
+    fragmentLists = new WeakMap();
+    parents = new WeakMap();
+    setMoveAnimations(adapter, false);
+  }
+}
+
+function hasMoveHook(ref): number {
+  return ref != null && typeof ref.onComponentWillMove === 'function' ? 1 : 0;
+}
 
 function input(vNode: VNode): VNode {
   return vNode.flags & VNodeFlags.ComponentClass
@@ -39,13 +69,14 @@ function input(vNode: VNode): VNode {
 
 function hasCandidates(vNode: VNode): boolean {
   const flags = vNode.flags;
-  // Keep classes discoverable: an instance can acquire a hook after mounting.
-  if (flags & VNodeFlags.ComponentClass) return true;
-  if (flags & VNodeFlags.ComponentFunction) {
+  if (flags & VNodeFlags.ComponentClass) {
     return (
-      typeof vNode.ref?.onComponentWillMove === 'function' ||
+      typeof (vNode.children as any).componentWillMove === 'function' ||
       hasCandidates(input(vNode))
     );
+  }
+  if (flags & VNodeFlags.ComponentFunction) {
+    return hasMoveHook(vNode.ref) !== 0 || hasCandidates(input(vNode));
   }
   if (flags & VNodeFlags.Fragment) {
     return vNode.childFlags === ChildFlags.HasVNodeChildren
@@ -137,7 +168,9 @@ function track(vNode: VNode, parent: Element): MoveList | undefined {
   if (vNode.childFlags !== ChildFlags.HasKeyedChildren) return;
   const children = vNode.children as VNode[];
   const isFragment = (vNode.flags & VNodeFlags.Fragment) !== 0;
-  let list = isFragment ? fragmentLists.get(children) : elementLists.get(parent);
+  let list = isFragment
+    ? fragmentLists.get(children)
+    : elementLists.get(parent);
   if (list === undefined) {
     list = { owner: vNode, children, parent, active: false, version: -1 };
     if (isFragment) fragmentLists.set(children, list);
@@ -238,26 +271,32 @@ function prepareRemoval(parent: Element, invoke: boolean): boolean {
 }
 
 export function installMoveAnimations(cancel: (parent: Node) => void): void {
-  if (options.$MA) return;
-  options.$MA = {
-    track,
-    changed(vNode) {
-      if (!vNode || typeof vNode.ref?.onComponentWillMove === 'function')
-        topologyVersion++;
+  const adapter: MoveAnimationAdapter = {
+    mountClass(instance) {
+      if (!instance.$UN && !classOwners.has(instance)) {
+        classOwners.add(instance);
+        changeOwners(adapter, 1);
+      }
     },
-    updated(last, next) {
-      if (
-        typeof last.ref?.onComponentWillMove === 'function' ||
-        typeof next.ref?.onComponentWillMove === 'function'
-      )
-        topologyVersion++;
+    unmountClass(instance) {
+      if (classOwners.delete(instance)) changeOwners(adapter, -1);
+    },
+    updateHooks(lastRef, nextRef) {
+      const delta = hasMoveHook(nextRef) - hasMoveHook(lastRef);
+      if (delta !== 0) changeOwners(adapter, delta);
     },
     prepare(last, next, parent, commit) {
       const list = track(last, parent)!;
       if (next.childFlags === ChildFlags.HasKeyedChildren) {
         const children = next.children as VNode[];
         if (list.active)
-          prepareItems(list, last.children as VNode[], children, commit, cancel);
+          prepareItems(
+            list,
+            last.children as VNode[],
+            children,
+            commit,
+            cancel,
+          );
         // Follows the patch: the next prepare finds next's children here
         list.owner = next;
         list.children = children;
@@ -283,21 +322,19 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
         forget(list, true);
       }
     },
-    unmount(vNode) {
-      if (
-        vNode.flags & VNodeFlags.ComponentClass ||
-        (vNode.flags & VNodeFlags.ComponentFunction &&
-          typeof vNode.ref?.onComponentWillMove === 'function')
-      )
-        topologyVersion++;
-      if (vNode.childFlags === ChildFlags.HasKeyedChildren) {
-        const isFragment = (vNode.flags & VNodeFlags.Fragment) !== 0;
-        const list = isFragment
-          ? fragmentLists.get(vNode.children as VNode[])
-          : elementLists.get(vNode.dom as Element);
-        if (list) forget(list, isFragment);
+    unmountList(vNode) {
+      if (vNode.flags & VNodeFlags.Fragment) {
+        const list = fragmentLists.get(vNode.children as VNode[]);
+        if (list !== undefined) {
+          forget(list, true);
+          // Moves in progress inside the parent end with its last list
+          if (!parents.has(list.parent)) cancel(list.parent);
+        }
+      } else {
+        const list = elementLists.get(vNode.dom as Element);
+        if (list !== undefined) forget(list, false);
+        cancel(vNode.dom!);
       }
-      if (vNode.flags & VNodeFlags.Element) cancel(vNode.dom!);
     },
     reparent(vNode, parent) {
       const flags = vNode.flags;
@@ -338,4 +375,5 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
         );
     },
   };
+  setMoveAnimations(adapter, false);
 }

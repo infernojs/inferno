@@ -18,12 +18,13 @@ import {
 import {
   type AnimationQueues,
   NO_ANIMATIONS,
+  activeMoveAnimations,
   appendVNodeDOM,
   createDerivedState,
   EMPTY_OBJ,
   findDOMFromVNode,
+  moveAnimations,
   moveVNodeDOM,
-  options,
   removeVNodeDOM,
   replaceChild,
   setTextContent,
@@ -277,7 +278,9 @@ function patchPortal(
 
   if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
     appendVNodeDOM(nextChildren, nextContainer);
-    options.$MA?.reparent(nextChildren, nextContainer);
+    if (activeMoveAnimations !== null) {
+      activeMoveAnimations.reparent(nextChildren, nextContainer);
+    }
   }
 }
 
@@ -294,8 +297,11 @@ export function patchElement(
   let lastChildFlags = lastVNode.childFlags;
 
   // The move hooks of a keyed list measure its items before anything changes, props included
-  if (lastChildFlags === ChildFlags.HasKeyedChildren && options.$MA) {
-    options.$MA.prepare(lastVNode, nextVNode, dom, animations);
+  if (
+    activeMoveAnimations !== null &&
+    lastChildFlags === ChildFlags.HasKeyedChildren
+  ) {
+    activeMoveAnimations.prepare(lastVNode, nextVNode, dom, animations);
   }
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
@@ -636,11 +642,11 @@ function patchChildren(
     default:
       // A keyed fragment's move hooks measure its items before any of them change
       if (
+        activeMoveAnimations !== null &&
         lastChildFlags === ChildFlags.HasKeyedChildren &&
-        (parentVNode.flags & VNodeFlags.Fragment) !== 0 &&
-        options.$MA
+        (parentVNode.flags & VNodeFlags.Fragment) !== 0
       ) {
-        options.$MA.prepareFragment(
+        activeMoveAnimations.prepareFragment(
           parentVNode,
           nextChildFlags === ChildFlags.HasKeyedChildren ? nextChildren : null,
           parentDOM,
@@ -876,8 +882,9 @@ function patchFunctionalComponent(
   } else {
     nextVNode.children = lastInput;
   }
-  if (options.$MA && lastVNode.ref !== nextRef)
-    options.$MA.updated(lastVNode, nextVNode);
+  if (moveAnimations !== null && lastVNode.ref !== nextRef) {
+    moveAnimations.updateHooks(lastVNode.ref, nextRef);
+  }
 }
 
 function patchText(lastVNode: VNode, nextVNode: VNode): void {

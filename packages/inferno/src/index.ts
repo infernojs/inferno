@@ -1,5 +1,4 @@
 import { warning } from 'inferno-shared';
-
 import {
   createComponentVNode,
   createFragment,
@@ -20,6 +19,7 @@ import {
   findElementFromVNode,
   Fragment,
   options,
+  setMoveAnimations,
 } from './DOM/utils/common';
 import { Component, type ComponentType, rerender } from './core/component';
 import { mountProps } from './DOM/props';
@@ -96,4 +96,5 @@ export {
   mountProps as _MP,
   renderInternal,
   renderFunctionalComponent as _RFC,
+  setMoveAnimations as _MA, // used by inferno-animation
 };
