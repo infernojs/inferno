@@ -33,10 +33,15 @@ export interface MoveAnimationAdapter {
   remove(parent: Element, callback: () => void): void;
 }
 
+// One per commit. The arrays are created by the first hook queued in them.
 export class AnimationQueues {
-  public componentDidAppear: Array<() => void> = [];
-  public componentWillDisappear: Array<() => void> = [];
+  public componentDidAppear: Array<() => void> | null = null;
+  public componentWillDisappear: Array<() => void> | null = null;
 }
+
+// Given to the children of a component that animates its own appearance or removal: their appear
+// and leave hooks do not run. Nothing is ever queued in it.
+export const NO_ANIMATIONS = new AnimationQueues();
 
 if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
@@ -151,9 +156,12 @@ export function findElementFromVNode(vNode: VNode | null): Element | null {
 }
 
 export function callAllAnimationHooks(
-  animationQueue: Array<() => void>,
+  animationQueue: Array<() => void> | null,
   callback?: (synchronous?: boolean) => void,
 ): void {
+  if (animationQueue === null) {
+    return;
+  }
   let synchronous = true;
   let animationsLeft: number = animationQueue.length;
   // Picking from the top because it is faster, invocation order should be irrelevant
@@ -258,10 +266,13 @@ export function removeVNodeDOM(
   parentDOM: Element,
   animations: AnimationQueues,
 ): void {
-  if (animations.componentWillDisappear.length > 0) {
+  const hooks = animations.componentWillDisappear;
+  if (hooks !== null) {
+    // The leave hooks queued while unmounting vNode belong to this removal.
     // Wait until animations are finished before removing actual dom nodes
+    animations.componentWillDisappear = null;
     callAllAnimationHooks(
-      animations.componentWillDisappear,
+      hooks,
       createDeferComponentClassRemovalCallback(vNode, parentDOM),
     );
   } else {

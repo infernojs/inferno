@@ -1693,4 +1693,36 @@ describe('Hydrate - rendering routine', () => {
 
     expect(span).toBe(container.firstChild.firstChild);
   });
+
+  it('Should not call appear hooks for hydrated components', () => {
+    const appeared: string[] = [];
+
+    class Card extends Component {
+      public componentDidAppear() {
+        appeared.push('class');
+      }
+
+      public render() {
+        return <div>class</div>;
+      }
+    }
+
+    function Item() {
+      return <div>function</div>;
+    }
+
+    container.innerHTML = '<div><div>class</div><div>function</div></div>';
+    hydrate(
+      <div>
+        <Card />
+        <Item onComponentDidAppear={() => appeared.push('function')} />
+      </div>,
+      container,
+    );
+
+    expect(container.innerHTML).toBe(
+      '<div><div>class</div><div>function</div></div>',
+    );
+    expect(appeared).toEqual([]);
+  });
 });

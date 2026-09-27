@@ -16,6 +16,7 @@ import {
 } from '../core/implementation';
 import {
   AnimationQueues,
+  NO_ANIMATIONS,
   documentCreateElement,
   EMPTY_OBJ,
   options,
@@ -309,11 +310,12 @@ export function mountClassComponent(
     lifecycle,
   );
 
-  // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+  // A component that animates its own appearance does not let its children animate. Inside such a
+  // component animations is NO_ANIMATIONS already, so childAnimations stays equal to it.
   let childAnimations = animations;
 
   if (isFunction(instance.componentDidAppear)) {
-    childAnimations = new AnimationQueues();
+    childAnimations = NO_ANIMATIONS;
   }
   mount(
     instance.$LI,
@@ -324,7 +326,10 @@ export function mountClassComponent(
     lifecycle,
     childAnimations,
   );
-  mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
+  mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
+  if (childAnimations !== animations) {
+    addAppearAnimationHookClass(animations, instance);
+  }
 }
 
 export function mountFunctionalComponent(
@@ -337,10 +342,10 @@ export function mountFunctionalComponent(
   animations: AnimationQueues,
 ): void {
   const ref = vNode.ref;
-  // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+  // A component that animates its own appearance does not let its children animate
   let childAnimations = animations;
   if (!isNullOrUndef(ref) && isFunction(ref.onComponentDidAppear)) {
-    childAnimations = new AnimationQueues();
+    childAnimations = NO_ANIMATIONS;
   }
 
   mount(
@@ -352,7 +357,10 @@ export function mountFunctionalComponent(
     lifecycle,
     childAnimations,
   );
-  mountFunctionalComponentCallbacks(vNode, lifecycle, animations);
+  mountFunctionalComponentCallbacks(vNode, lifecycle);
+  if (childAnimations !== animations) {
+    addAppearAnimationHookFunctional(animations, vNode);
+  }
 }
 
 function createClassMountCallback(instance) {
@@ -364,31 +372,37 @@ function createClassMountCallback(instance) {
 function addAppearAnimationHookClass(
   animations: AnimationQueues,
   instance,
-  dom: Element | null,
 ): void {
-  if (!dom) return;
-  animations.componentDidAppear.push(() => {
-    instance.componentDidAppear(dom);
-  });
+  const dom = findElementFromVNode(instance.$LI);
+  if (dom !== null) {
+    (animations.componentDidAppear || (animations.componentDidAppear = [])).push(
+      () => {
+        instance.componentDidAppear(dom);
+      },
+    );
+  }
 }
 
 function addAppearAnimationHookFunctional(
   animations: AnimationQueues,
-  ref,
-  dom: Element | null,
-  props,
+  vNode: VNode,
 ): void {
-  if (!dom) return;
-  animations.componentDidAppear.push(() => {
-    ref.onComponentDidAppear(dom, props);
-  });
+  const dom = findElementFromVNode(vNode);
+  const ref = vNode.ref;
+  const props = vNode.props;
+  if (dom !== null) {
+    (animations.componentDidAppear || (animations.componentDidAppear = [])).push(
+      () => {
+        ref.onComponentDidAppear(dom, props);
+      },
+    );
+  }
 }
 
 export function mountClassComponentCallbacks(
   ref,
   instance,
   lifecycle: Array<() => void>,
-  animations: AnimationQueues,
 ): void {
   options.$MA?.changed();
   mountRef(ref, instance, lifecycle);
@@ -412,13 +426,6 @@ export function mountClassComponentCallbacks(
   if (isFunction(instance.componentDidMount)) {
     lifecycle.push(createClassMountCallback(instance));
   }
-  if (isFunction(instance.componentDidAppear)) {
-    addAppearAnimationHookClass(
-      animations,
-      instance,
-      findElementFromVNode(instance.$LI),
-    );
-  }
 }
 
 function createOnMountCallback(ref, vNode) {
@@ -433,7 +440,6 @@ function createOnMountCallback(ref, vNode) {
 export function mountFunctionalComponentCallbacks(
   vNode: VNode,
   lifecycle: Array<() => void>,
-  animations: AnimationQueues,
 ): void {
   const ref = vNode.ref;
   if (!isNullOrUndef(ref)) {
@@ -441,14 +447,6 @@ export function mountFunctionalComponentCallbacks(
     safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
     if (isFunction(ref.onComponentDidMount)) {
       lifecycle.push(createOnMountCallback(ref, vNode));
-    }
-    if (isFunction(ref.onComponentDidAppear)) {
-      addAppearAnimationHookFunctional(
-        animations,
-        ref,
-        findElementFromVNode(vNode),
-        vNode.props,
-      );
     }
   }
 }

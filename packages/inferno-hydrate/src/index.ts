@@ -97,7 +97,7 @@ function hydrateComponent(
       lifecycle,
       animations,
     );
-    _MCCC(ref, instance, lifecycle, animations);
+    _MCCC(ref, instance, lifecycle);
   } else {
     const input = _HI(renderFunctionalComponent(vNode, context));
     currentNode = hydrateVNode(
@@ -110,7 +110,7 @@ function hydrateComponent(
       animations,
     );
     vNode.children = input;
-    _MFCC(vNode, lifecycle, animations);
+    _MFCC(vNode, lifecycle);
   }
 
   return currentNode;

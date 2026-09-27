@@ -4,6 +4,7 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
 import {
   AnimationQueues,
+  NO_ANIMATIONS,
   callAllAnimationHooks,
   clearVNodeDOM,
   deferRemoval,
@@ -64,10 +65,14 @@ export function unmount(vNode, animations: AnimationQueues): void {
         children.componentWillUnmount();
       }
 
-      // If we have a componentWillDisappear on this component, block children from animating
+      // A component that animates its own removal does not let its children animate. Inside such a
+      // component animations is NO_ANIMATIONS, and its hook does not run either.
       let childAnimations = animations;
-      if (isFunction(children.componentWillDisappear)) {
-        childAnimations = new AnimationQueues();
+      if (
+        isFunction(children.componentWillDisappear) &&
+        animations !== NO_ANIMATIONS
+      ) {
+        childAnimations = NO_ANIMATIONS;
         addDisappearAnimationHook(
           animations,
           children,
@@ -91,8 +96,11 @@ export function unmount(vNode, animations: AnimationQueues): void {
           domEl = findDOMFromVNode(vNode, true);
           ref.onComponentWillUnmount(domEl, vNode.props || EMPTY_OBJ);
         }
-        if (isFunction(ref.onComponentWillDisappear)) {
-          childAnimations = new AnimationQueues();
+        if (
+          isFunction(ref.onComponentWillDisappear) &&
+          animations !== NO_ANIMATIONS
+        ) {
+          childAnimations = NO_ANIMATIONS;
           domEl = findElementFromVNode(vNode);
           addDisappearAnimationHook(animations, ref, domEl, flags, vNode.props);
         }
@@ -135,13 +143,13 @@ export function clearDOM(
   children: VNode[],
   animations: AnimationQueues,
 ): void {
-  if (animations.componentWillDisappear.length > 0) {
+  const hooks = animations.componentWillDisappear;
+  if (hooks !== null) {
+    // The leave hooks queued while unmounting children belong to this removal.
     // Wait until animations are finished before removing actual dom nodes
     // Be aware that the element could be removed by a later operation
-    callAllAnimationHooks(
-      animations.componentWillDisappear,
-      createClearAllCallback(children, parentDOM),
-    );
+    animations.componentWillDisappear = null;
+    callAllAnimationHooks(hooks, createClearAllCallback(children, parentDOM));
   } else {
     // Optimization for clearing dom
     parentDOM.textContent = '';
@@ -171,9 +179,9 @@ function addDisappearAnimationHook(
   flags: VNodeFlags,
   props,
 ): void {
-  if (!dom) return;
+  if (dom === null) return;
   // @ts-expect-error TODO: Here is something weird check this behavior
-  animations.componentWillDisappear.push((callback) => {
+  (animations.componentWillDisappear || (animations.componentWillDisappear = [])).push((callback) => {
     if (flags & VNodeFlags.ComponentClass) {
       instanceOrRef.componentWillDisappear(dom, callback);
     } else if (flags & VNodeFlags.ComponentFunction) {
