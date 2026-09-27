@@ -12,21 +12,22 @@ import {
 } from './animationCoordinator';
 
 interface MoveList {
-  vNode: VNode;
+  // The list's vNode when it was last prepared (hooks get it as parentVNode) and the children it
+  // renders now
+  owner: VNode;
+  children: VNode[];
   parent: Element;
   active: boolean;
   version: number;
 }
-interface PatchScope {
-  parent: Element;
-  last: VNode;
-  list: MoveList;
-}
 
-// The registry and all discovery work belong to this optional package.
-const lists = new WeakMap<VNode, MoveList>();
+// The registry and all discovery work belong to this optional package. An element list is keyed
+// by its element, which stays the same across patches. A keyed fragment has no element of its
+// own, so its list is keyed by the children array it currently renders.
+const elementLists = new WeakMap<Element, MoveList>();
+const fragmentLists = new WeakMap<VNode[], MoveList>();
+// Active lists by physical parent, for preparing survivors when a leave animation completes
 const parents = new WeakMap<Element, Set<MoveList>>();
-const depths = new WeakMap<Element, number>();
 const coverage = new WeakMap<AnimationQueues, Set<Element>>();
 let topologyVersion = 0;
 
@@ -79,8 +80,8 @@ function visit(vNode: VNode, list: MoveList, covered?: Set<Element>): boolean {
       if (!dom || dom.parentNode !== list.parent) return false;
       if (covered && !covered.has(dom)) {
         coverRoots(vNode, covered);
-        if (isClass) hook.call(owner, list.vNode, list.parent, dom);
-        else hook.call(owner, list.vNode, list.parent, dom, vNode.props);
+        if (isClass) hook.call(owner, list.owner, list.parent, dom);
+        else hook.call(owner, list.owner, list.parent, dom, vNode.props);
       }
       return true;
     }
@@ -116,29 +117,83 @@ function detach(list: MoveList): void {
   }
 }
 function refresh(list: MoveList): void {
-  list.active = (list.vNode.children as VNode[]).some(hasCandidates);
+  list.active = list.children.some(hasCandidates);
   list.version = topologyVersion;
   if (list.active) attach(list, list.parent);
   else detach(list);
 }
+
+function fragmentListOf(vNode: VNode): MoveList | undefined {
+  return vNode.flags & VNodeFlags.Fragment &&
+    vNode.childFlags === ChildFlags.HasKeyedChildren
+    ? fragmentLists.get(vNode.children as VNode[])
+    : undefined;
+}
+
+// The list of a keyed element or fragment, synced to vNode: created when missing, rescanned for
+// hooks when owner changes happened since, or when its children are not the ones last seen (a
+// patch that threw keeps the old vNode and its written-back children).
 function track(vNode: VNode, parent: Element): MoveList | undefined {
   if (vNode.childFlags !== ChildFlags.HasKeyedChildren) return;
-  let list = lists.get(vNode);
-  if (!list) {
-    list = { vNode, parent, active: false, version: -1 };
-    lists.set(vNode, list);
+  const children = vNode.children as VNode[];
+  const isFragment = (vNode.flags & VNodeFlags.Fragment) !== 0;
+  let list = isFragment ? fragmentLists.get(children) : elementLists.get(parent);
+  if (list === undefined) {
+    list = { owner: vNode, children, parent, active: false, version: -1 };
+    if (isFragment) fragmentLists.set(children, list);
+    else elementLists.set(parent, list);
+  } else if (list.children !== children) {
+    list.children = children;
+    list.version = -1;
   }
-  list.vNode = vNode;
+  list.owner = vNode;
   if (list.version !== topologyVersion) refresh(list);
   return list;
 }
-function forget(vNode: VNode): void {
-  const list = lists.get(vNode);
-  if (list) {
-    lists.delete(vNode);
-    detach(list);
+function forget(list: MoveList, isFragment: boolean): void {
+  if (isFragment) fragmentLists.delete(list.children);
+  else elementLists.delete(list.parent);
+  detach(list);
+}
+
+// Calls the hooks of the items of last that stay in next, before either is patched
+function prepareItems(
+  list: MoveList,
+  previous: VNode[],
+  children: VNode[],
+  commit: AnimationQueues,
+  cancel: (parent: Node) => void,
+): void {
+  // Match by position first; allocate a key map only for membership/order changes.
+  let nextByKey: Map<VNode['key'], VNode> | undefined;
+  let covered = coverage.get(commit);
+  if (!covered) coverage.set(commit, (covered = new Set()));
+  try {
+    for (let i = 0; i < previous.length; i++) {
+      const child = previous[i];
+      let retained: VNode | undefined = children[i];
+      if (!retained || retained.key !== child.key) {
+        if (!nextByKey) {
+          nextByKey = new Map();
+          for (const nextChild of children)
+            nextByKey.set(nextChild.key, nextChild);
+        }
+        retained = nextByKey.get(child.key);
+      }
+      if (
+        retained &&
+        retained.type === child.type &&
+        !((retained.flags ^ child.flags) & ~VNodeFlags.InUseOrNormalized) &&
+        !(retained.flags & VNodeFlags.ReCreate)
+      )
+        visit(child, list, covered);
+    }
+  } catch (error) {
+    cancel(list.parent);
+    throw error;
   }
 }
+
 function collectNestedLists(vNode: VNode, nested: Set<MoveList>): void {
   const flags = vNode.flags;
   if (flags & VNodeFlags.Component) {
@@ -146,7 +201,7 @@ function collectNestedLists(vNode: VNode, nested: Set<MoveList>): void {
       return;
     collectNestedLists(input(vNode), nested);
   } else if (flags & VNodeFlags.Fragment) {
-    const list = lists.get(vNode);
+    const list = fragmentListOf(vNode);
     if (list?.active) {
       nested.add(list);
       return;
@@ -167,13 +222,12 @@ function prepareRemoval(parent: Element, invoke: boolean): boolean {
   // Outer owners cover inner fragment roots regardless of mount order.
   if (siblings.size > 1) {
     for (const list of siblings) {
-      for (const child of list.vNode.children as VNode[])
-        collectNestedLists(child, nested);
+      for (const child of list.children) collectNestedLists(child, nested);
     }
   }
   for (const list of siblings) {
     if (nested.has(list)) continue;
-    for (const child of list.vNode.children as VNode[]) {
+    for (const child of list.children) {
       if (visit(child, list, covered)) {
         found = true;
         if (!invoke) return true;
@@ -198,72 +252,35 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
       )
         topologyVersion++;
     },
-    begin(last, next, parent, commit) {
+    prepare(last, next, parent, commit) {
       const list = track(last, parent)!;
-      if (!list.active) {
-        // Share cached negative results without a reconciliation wrapper.
-        // track(next) rechecks only patches that introduce new candidates.
-        if (next.childFlags === ChildFlags.HasKeyedChildren)
-          lists.set(next, list);
-        return;
-      }
-      depths.set(parent, (depths.get(parent) || 0) + 1);
-      const scope: PatchScope = { last, parent, list };
-      try {
-        if (next.childFlags === ChildFlags.HasKeyedChildren) {
-          const children = next.children as VNode[];
-          const previous = last.children as VNode[];
-          // Match by position first; allocate a key map only for membership/order changes.
-          let nextByKey: Map<VNode['key'], VNode> | undefined;
-          let covered = coverage.get(commit);
-          if (!covered) coverage.set(commit, (covered = new Set()));
-          for (let i = 0; i < previous.length; i++) {
-            const child = previous[i];
-            let retained: VNode | undefined = children[i];
-            if (!retained || retained.key !== child.key) {
-              if (!nextByKey) {
-                nextByKey = new Map();
-                for (const nextChild of children)
-                  nextByKey.set(nextChild.key, nextChild);
-              }
-              retained = nextByKey.get(child.key);
-            }
-            if (
-              retained &&
-              retained.type === child.type &&
-              !(
-                (retained.flags ^ child.flags) &
-                ~VNodeFlags.InUseOrNormalized
-              ) &&
-              !(retained.flags & VNodeFlags.ReCreate)
-            )
-              visit(child, list, covered);
-          }
-        }
-      } catch (error) {
-        depths.set(parent, depths.get(parent)! - 1);
-        cancel(parent);
-        throw error;
-      }
-      return scope;
-    },
-    end(value, next, succeeded) {
-      const { last, parent, list } = value as PatchScope;
-      depths.set(parent, depths.get(parent)! - 1);
-      if (!succeeded) {
-        // Reconciliation writes successful children back to last before reaching here.
-        refresh(list);
-        cancel(parent);
-        return;
-      }
       if (next.childFlags === ChildFlags.HasKeyedChildren) {
-        lists.delete(last);
-        list.vNode = next;
-        if (list.version !== topologyVersion) refresh(list);
-        lists.set(next, list);
+        const children = next.children as VNode[];
+        if (list.active)
+          prepareItems(list, last.children as VNode[], children, commit, cancel);
+        // Follows the patch: the next prepare finds next's children here
+        list.owner = next;
+        list.children = children;
       } else {
-        forget(last);
-        track(next, parent);
+        forget(list, false);
+      }
+    },
+    prepareFragment(last, nextChildren, parent, commit) {
+      const list = track(last, parent)!;
+      if (nextChildren !== null) {
+        if (list.active)
+          prepareItems(
+            list,
+            last.children as VNode[],
+            nextChildren,
+            commit,
+            cancel,
+          );
+        fragmentLists.delete(list.children);
+        list.children = nextChildren;
+        fragmentLists.set(nextChildren, list);
+      } else {
+        forget(list, true);
       }
     },
     unmount(vNode) {
@@ -273,14 +290,20 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
           typeof vNode.ref?.onComponentWillMove === 'function')
       )
         topologyVersion++;
-      if (vNode.childFlags === ChildFlags.HasKeyedChildren) forget(vNode);
+      if (vNode.childFlags === ChildFlags.HasKeyedChildren) {
+        const isFragment = (vNode.flags & VNodeFlags.Fragment) !== 0;
+        const list = isFragment
+          ? fragmentLists.get(vNode.children as VNode[])
+          : elementLists.get(vNode.dom as Element);
+        if (list) forget(list, isFragment);
+      }
       if (vNode.flags & VNodeFlags.Element) cancel(vNode.dom!);
     },
     reparent(vNode, parent) {
       const flags = vNode.flags;
       if (flags & VNodeFlags.Component) this.reparent(input(vNode), parent);
       else if (flags & VNodeFlags.Fragment) {
-        const list = lists.get(vNode);
+        const list = fragmentListOf(vNode);
         if (list && list.parent !== parent) {
           cancel(list.parent);
           detach(list);
@@ -296,7 +319,6 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
     },
     remove(parent, callback) {
       if (
-        depths.get(parent) ||
         !parent.isConnected ||
         (!hasQueuedRemoval(parent) && !prepareRemoval(parent, false))
       )

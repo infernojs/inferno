@@ -19,13 +19,18 @@ export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> =
 /** Internal integration installed by inferno-animation; absent in core-only apps. */
 export interface MoveAnimationAdapter {
   track(vNode: VNode, parent: Element): void;
-  begin(
+  prepare(
     last: VNode,
     next: VNode,
     parent: Element,
     commit: AnimationQueues,
-  ): unknown;
-  end(scope: unknown, next: VNode, succeeded: boolean): void;
+  ): void;
+  prepareFragment(
+    last: VNode,
+    nextChildren: VNode[] | null,
+    parent: Element,
+    commit: AnimationQueues,
+  ): void;
   changed(vNode?: VNode): void;
   updated(last: VNode, next: VNode): void;
   unmount(vNode: VNode): void;

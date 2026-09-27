@@ -169,51 +169,6 @@ export function patchSingleTextChild(
   }
 }
 
-// Keep the optional engine's exception boundary out of the ordinary patch path.
-// patch() itself stays small enough to inline into reconciliation loops.
-function patchWithMoveAnimations(
-  lastVNode: VNode,
-  nextVNode: VNode,
-  parent: Element,
-  context: ContextObject,
-  isSVG: boolean,
-  lifecycle: Array<() => void>,
-  animations: AnimationQueues,
-): boolean {
-  const adapter = options.$MA!;
-  const scope = adapter.begin(lastVNode, nextVNode, parent, animations);
-  if (scope === undefined) return false;
-  let succeeded = false;
-  try {
-    if (nextVNode.flags & VNodeFlags.Element) {
-      patchElement(
-        lastVNode,
-        nextVNode,
-        context,
-        isSVG,
-        lifecycle,
-        animations,
-        true,
-      );
-    } else {
-      patchFragment(
-        lastVNode,
-        nextVNode,
-        parent,
-        context,
-        isSVG,
-        lifecycle,
-        animations,
-        true,
-      );
-    }
-    succeeded = true;
-  } finally {
-    adapter.end(scope, nextVNode, succeeded);
-  }
-  return true;
-}
-
 function patchContentEditableChildren(dom, nextChildren): void {
   if (dom.textContent !== nextChildren) {
     dom.textContent = nextChildren;
@@ -228,24 +183,7 @@ function patchFragment(
   isSVG: boolean,
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
-  moveReady?: boolean,
 ): void {
-  if (
-    lastVNode.childFlags === ChildFlags.HasKeyedChildren &&
-    options.$MA &&
-    !moveReady &&
-    patchWithMoveAnimations(
-      lastVNode,
-      nextVNode,
-      parentDOM,
-      context,
-      isSVG,
-      lifecycle,
-      animations,
-    )
-  ) {
-    return;
-  }
   const lastChildren = lastVNode.children as VNode[];
   let nextChildren = nextVNode.children as any;
   const lastChildFlags = lastVNode.childFlags;
@@ -301,9 +239,6 @@ function patchFragment(
     lifecycle,
     animations,
   );
-  if (!moveReady && nextVNode.childFlags === ChildFlags.HasKeyedChildren) {
-    options.$MA?.track(nextVNode, parentDOM);
-  }
 }
 
 function patchPortal(
@@ -353,27 +288,15 @@ export function patchElement(
   isSVG: boolean,
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
-  moveReady?: boolean,
 ): void {
-  if (
-    lastVNode.childFlags === ChildFlags.HasKeyedChildren &&
-    options.$MA &&
-    !moveReady &&
-    patchWithMoveAnimations(
-      lastVNode,
-      nextVNode,
-      lastVNode.dom as Element,
-      context,
-      isSVG,
-      lifecycle,
-      animations,
-    )
-  ) {
-    return;
-  }
   const dom = (nextVNode.dom = lastVNode.dom as Element);
   let lastChildren = lastVNode.children;
   let lastChildFlags = lastVNode.childFlags;
+
+  // The move hooks of a keyed list measure its items before anything changes, props included
+  if (lastChildFlags === ChildFlags.HasKeyedChildren && options.$MA) {
+    options.$MA.prepare(lastVNode, nextVNode, dom, animations);
+  }
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
   const nextFlags = nextVNode.flags;
@@ -498,9 +421,6 @@ export function patchElement(
   if (lastRef !== nextRef) {
     unmountRef(lastRef);
     mountRef(nextRef, dom, lifecycle);
-  }
-  if (!moveReady && nextVNode.childFlags === ChildFlags.HasKeyedChildren) {
-    options.$MA?.track(nextVNode, dom);
   }
 }
 
@@ -714,6 +634,19 @@ function patchChildren(
       }
       break;
     default:
+      // A keyed fragment's move hooks measure its items before any of them change
+      if (
+        lastChildFlags === ChildFlags.HasKeyedChildren &&
+        (parentVNode.flags & VNodeFlags.Fragment) !== 0 &&
+        options.$MA
+      ) {
+        options.$MA.prepareFragment(
+          parentVNode,
+          nextChildFlags === ChildFlags.HasKeyedChildren ? nextChildren : null,
+          parentDOM,
+          animations,
+        );
+      }
       switch (nextChildFlags) {
         case ChildFlags.HasTextChildren:
           unmountAllChildren(lastChildren, NO_ANIMATIONS);
