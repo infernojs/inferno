@@ -35,11 +35,14 @@ export function unmount(vNode, animations: AnimationQueues): void {
     const childFlags = vNode.childFlags;
 
     if (!isNull(props)) {
-      const keys = Object.keys(props);
-
-      for (let i = 0, len = keys.length; i < len; i++) {
-        const key = keys[i];
-        if (syntheticEvents[key]) {
+      // for-in reads the enum cache without allocating, Object.keys copied it for every element.
+      // Only "on" props can be delegated events, others skip the lookup that is megamorphic by name.
+      for (const key in props) {
+        if (
+          key.charCodeAt(0) === 111 &&
+          key.charCodeAt(1) === 110 &&
+          syntheticEvents[key]
+        ) {
           unmountSyntheticEvent(key, vNode.dom);
         }
       }
