@@ -235,12 +235,18 @@ interface MoveBatch {
   remaining: number;
   parent: Node;
   items: MoveItem[];
+  // Source positions of the elements without a running move: they get an item once they move
+  nodes: AnimatedElement[];
+  xs: number[];
+  ys: number[];
   initialized: boolean;
   // The classes of the move's active state, parsed once for all items
   activeClasses: string[];
   // Items that take over an element's running move, and whether any item moved
   retargets: number;
   moved: boolean;
+  // Elements with an author transition, when read before measuring
+  authors: Set<AnimatedElement> | null;
   cancel?: () => void;
 }
 
@@ -305,10 +311,14 @@ export function componentWillMove(
   const batch: MoveBatch = {
     parent,
     items: [],
+    nodes: [],
+    xs: [],
+    ys: [],
     initialized: false,
     remaining: 0,
     retargets: 0,
     moved: false,
+    authors: null,
     activeClasses: cls.active.split(' ').filter((name) => name !== ''),
   };
   const skipped: MoveItem[] = [];
@@ -326,37 +336,54 @@ export function componentWillMove(
       continue;
     }
     const geometry = getGeometry(node);
-    const item: MoveItem = {
-      batch,
-      done: false,
-      node,
-      x: geometry.x,
-      y: geometry.y,
-      dx: 0,
-      dy: 0,
-      baseTransform: '',
-      transform: '',
-      transformPriority: '',
-      transitions: [],
-      appliedTransform: null,
-      initialized: false,
-      addedClasses: '',
-      instant: false,
-      superseded: false,
-      previous,
-    };
-    batch.items.push(item);
-    batch.remaining++;
-    if (previous) batch.retargets++;
-    moving.set(node, item);
+    if (previous === undefined) {
+      batch.nodes.push(node);
+      batch.xs.push(geometry.x);
+      batch.ys.push(geometry.y);
+    } else {
+      addMoveItem(batch, node, geometry.x, geometry.y, previous);
+      batch.retargets++;
+    }
   }
   // Finish skipped old moves only after all new source positions were read.
   for (const item of skipped) finishMove(item);
-  if (!batch.items.length) return;
+  if (batch.items.length === 0 && batch.nodes.length === 0) return;
   pending?.cancel?.();
   moveBatches.set(parent, batch);
   batch.cancel = queueAnimation((phase) => runMove(phase, batch), parent);
   scheduleMoveFlush(parent);
+}
+
+function addMoveItem(
+  batch: MoveBatch,
+  node: AnimatedElement,
+  x: number,
+  y: number,
+  previous: MoveItem | undefined,
+): MoveItem {
+  const item: MoveItem = {
+    batch,
+    done: false,
+    node,
+    x,
+    y,
+    dx: 0,
+    dy: 0,
+    baseTransform: '',
+    transform: '',
+    transformPriority: '',
+    transitions: [],
+    appliedTransform: null,
+    initialized: false,
+    addedClasses: '',
+    instant: false,
+    superseded: false,
+    previous,
+  };
+  batch.items.push(item);
+  batch.remaining++;
+  moving.set(node, item);
+  return item;
 }
 
 // A computed transition-duration or -delay list of zeros, such as "0s" or "0s, 0ms"
@@ -458,6 +485,46 @@ function cancelMoves(parent: Node): void {
   moveBatches.delete(parent);
 }
 
+function measureMove(item: MoveItem, geometry: DOMRect): void {
+  item.dx = item.x - geometry.x;
+  item.dy = item.y - geometry.y;
+  if (item.dx !== 0 || item.dy !== 0) {
+    item.batch.moved = true;
+    const style = window.getComputedStyle(item.node);
+    const transform = style.transform;
+    item.baseTransform = transform === 'none' ? '' : transform;
+    item.instant =
+      item.transitions.length === 0 &&
+      isZeroTime(style.transitionDuration) &&
+      isZeroTime(style.transitionDelay);
+  }
+}
+
+// The elements without a running move that moved get an item
+function measureNodes(batch: MoveBatch): void {
+  const { nodes, xs, ys } = batch;
+  batch.nodes = [];
+  batch.xs = [];
+  batch.ys = [];
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (
+      node.parentNode !== batch.parent ||
+      !node.isConnected ||
+      entering.has(node) ||
+      leaving.has(node) ||
+      moving.has(node) ||
+      (batch.authors !== null && batch.authors.has(node))
+    ) {
+      continue;
+    }
+    const geometry = getGeometry(node);
+    if (geometry.x !== xs[i] || geometry.y !== ys[i]) {
+      measureMove(addMoveItem(batch, node, xs[i], ys[i], undefined), geometry);
+    }
+  }
+}
+
 function runMove(phase: AnimationPhase, batch: MoveBatch): void {
   if (moveBatches.get(batch.parent) !== batch) return;
   // The first phases belong to enter and leave animations
@@ -476,10 +543,12 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
   // read in READ_MOVES; otherwise once after measuring, and only when something moved.
   let authors: Set<AnimatedElement> | null = null;
   if (phase === AnimationPhase.READ_MOVES) {
-    if (batch.retargets !== 0) authors = authorTransitions(batch.parent);
+    if (batch.retargets !== 0) {
+      authors = batch.authors = authorTransitions(batch.parent);
+    }
   } else if (
     phase === AnimationPhase.SET_MOVE_START_STATE &&
-    batch.retargets === 0 &&
+    batch.authors === null &&
     batch.moved
   ) {
     authors = authorTransitions(batch.parent);
@@ -529,22 +598,9 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
           item.previous = undefined;
         }
         break;
-      case AnimationPhase.MEASURE_MOVES: {
-        const geometry = getGeometry(node);
-        item.dx = item.x - geometry.x;
-        item.dy = item.y - geometry.y;
-        if (item.dx !== 0 || item.dy !== 0) {
-          batch.moved = true;
-          const style = window.getComputedStyle(node);
-          const transform = style.transform;
-          item.baseTransform = transform === 'none' ? '' : transform;
-          item.instant =
-            item.transitions.length === 0 &&
-            isZeroTime(style.transitionDuration) &&
-            isZeroTime(style.transitionDelay);
-        }
+      case AnimationPhase.MEASURE_MOVES:
+        measureMove(item, getGeometry(node));
         break;
-      }
       case AnimationPhase.SET_MOVE_START_STATE:
         if (
           (item.dx === 0 && item.dy === 0) ||
@@ -595,7 +651,13 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
         break;
     }
   }
-  if (verify && live === 0) {
+  if (phase === AnimationPhase.MEASURE_MOVES) {
+    measureNodes(batch);
+    if (batch.remaining === 0) {
+      batch.cancel?.();
+      moveBatches.delete(batch.parent);
+    }
+  } else if (verify && live === 0 && batch.nodes.length === 0) {
     batch.cancel?.();
     moveBatches.delete(batch.parent);
   }
