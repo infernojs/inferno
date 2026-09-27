@@ -1,8 +1,8 @@
-import * as koa from 'koa'; // koa@2
-import * as logger from 'koa-logger';
-import * as koaRouter from '@koa/router';
-import * as koaStatic from 'koa-static';
-import * as koaMount from 'koa-mount';
+import koa from 'koa';
+import logger from 'koa-logger';
+import koaRouter from '@koa/router';
+import koaStatic from 'koa-static';
+import koaMount from 'koa-mount';
 import { renderToString } from 'inferno-server';
 import { StaticRouter, resolveLoaders, traverseLoaders } from 'inferno-router'
 import {Parcel} from '@parcel/core';
@@ -11,35 +11,41 @@ import { createElement } from 'inferno-create-element';
 const PORT = process.env.PORT || 3000;
 const BASE_URI = `http://localhost:${PORT}`;
 
-// Parcel watch subscription and bundle output
-// NOTE: Currently deactivated watcher (the following line and `bundler.watch` further down)
-// let subscription;
-let bundles;
+const bundles = [];
 
-let bundler = new Parcel({
-  // NOTE: Specifying target: { source: './src/App.tsx' } didn't work for me
-  entries: ['./src/App.tsx', './src/indexServer.tsx'],
-  defaultConfig: '@parcel/config-default',
-  targets: {
-    default: {
-      context: 'node',
-      engines: {
-        node: ">=18"
-      },
-      distDir: "./distServer",
-      publicUrl: "/", // Should be picked up from environment
+// Build the app export and browser hydration entry separately, since they share App.tsx.
+const bundlers = [
+  new Parcel({
+    entries: ['./src/App.tsx'],
+    defaultConfig: '@parcel/config-default',
+    cacheDir: './.parcel-cache/server',
+    targets: {
+      default: {
+        context: 'node',
+        isLibrary: true,
+        outputFormat: 'commonjs',
+        engines: { node: '>=18' },
+        distDir: './distServer',
+        publicUrl: '/'
+      }
     },
-    browser: {
-      context: 'browser',
-      engines: {
-        browsers: '> 0.5%, last 2 versions, not dead'
-      },
-      distDir: "./distBrowser",
-      publicUrl: "/", // Should be picked up from environment
-    }
-  },
-  mode: 'development'
-});
+    mode: 'development'
+  }),
+  new Parcel({
+    entries: ['./src/indexServer.tsx'],
+    defaultConfig: '@parcel/config-default',
+    cacheDir: './.parcel-cache/browser',
+    targets: {
+      browser: {
+        context: 'browser',
+        engines: { browsers: '> 0.5%, last 2 versions, not dead' },
+        distDir: './distBrowser',
+        publicUrl: '/dist'
+      }
+    },
+    mode: 'development'
+  })
+];
 
 
 const app = new koa()
@@ -90,7 +96,7 @@ function renderPage(html, initialData) {
   <head>
     <meta charset="utf-8"/>
     <title>Inferno Router Demo</title>
-    <link rel="stylesheet" href="/dist/App.css"/>
+    <link rel="stylesheet" href="/dist/indexServer.css"/>
     <script type="module" src="/dist/indexServer.js"></script>
     <script>
     window.__initialData__ = ${JSON.stringify(initialData)};
@@ -103,7 +109,7 @@ function renderPage(html, initialData) {
 `
 }
 
-frontend.get('(/page)?/:slug?', async (ctx) => {
+frontend.get(['/', '/:slug', '/page/:slug'], async (ctx) => {
   const location = ctx.path;
 
   const pathToAppJs  = bundles.find(b => b.name === 'App.js' && b.env.context === 'node').filePath;
@@ -132,28 +138,17 @@ app.use(frontend.routes());
 app.use(frontend.allowedMethods());
 app.use(koaMount('/dist', koaStatic('distBrowser')));
 
-// bundler.watch((err, event) => {
-//   if (err) {
-//     // fatal error
-//     throw err;
-//   }
-
-//   if (event.type === 'buildSuccess') {
-//     bundles = event.bundleGraph.getBundles();
-//     console.log(`✨ Built ${bundles.length} bundles in ${event.buildTime}ms!`);
-//   } else if (event.type === 'buildFailure') {
-//     console.log(event.diagnostics);
-//   }
-// }).then((sub => subscription = sub));
-
 app.listen(PORT, async () => {
   
   // Trigger first transpile
   // https://parceljs.org/features/parcel-api/
   try {
-    let {bundleGraph, buildTime} = await bundler.run();
-    bundles = bundleGraph.getBundles();
-    console.log(`✨ Built ${bundles.length} bundles in ${buildTime}ms!`);
+    for (const bundler of bundlers) {
+      const { bundleGraph, buildTime } = await bundler.run();
+      const builtBundles = bundleGraph.getBundles();
+      bundles.push(...builtBundles);
+      console.log(`✨ Built ${builtBundles.length} bundles in ${buildTime}ms!`);
+    }
   } catch (err) {
     console.log(err.diagnostics);
   }

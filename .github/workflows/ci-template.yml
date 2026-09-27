@@ -29,6 +29,12 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Test built bundles
+        run: pnpm run test:bundles
+
+      - name: Test router demo startup
+        run: pnpm run test:demo
+
       - name: Test with coverage
         run: pnpm run test:coverage
 
