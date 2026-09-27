@@ -223,6 +223,8 @@ interface MoveItem {
   appliedTransform: string | null;
   initialized: boolean;
   addedClasses: string;
+  // No transition can run on the element before the move's classes are added
+  instant: boolean;
   // Another item moves the element now
   superseded: boolean;
   previous?: MoveItem;
@@ -334,6 +336,7 @@ export function componentWillMove(
       appliedTransform: null,
       initialized: false,
       addedClasses: '',
+      instant: false,
       superseded: false,
       previous,
     };
@@ -348,6 +351,14 @@ export function componentWillMove(
   moveBatches.set(parent, batch);
   batch.cancel = queueAnimation((phase) => runMove(phase, batch), parent);
   scheduleMoveFlush(parent);
+}
+
+// A computed transition-duration or -delay list of zeros, such as "0s" or "0s, 0ms"
+function isZeroTime(value: string): boolean {
+  for (const time of value.split(',')) {
+    if (parseFloat(time) !== 0) return false;
+  }
+  return true;
 }
 
 function disableTransitions(item: MoveItem): void {
@@ -509,8 +520,13 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
         item.dx = item.x - geometry.x;
         item.dy = item.y - geometry.y;
         if (item.dx !== 0 || item.dy !== 0) {
-          const transform = window.getComputedStyle(node).transform;
+          const style = window.getComputedStyle(node);
+          const transform = style.transform;
           item.baseTransform = transform === 'none' ? '' : transform;
+          item.instant =
+            item.transitions.length === 0 &&
+            isZeroTime(style.transitionDuration) &&
+            isZeroTime(style.transitionDelay);
         }
         break;
       }
@@ -522,7 +538,10 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
           item.transform = node.style.transform;
           item.transformPriority = node.style.getPropertyPriority('transform');
           item.initialized = true;
-          if (!item.transitions.length) disableTransitions(item);
+          // Without a transition the start transform applies at once
+          if (!item.transitions.length && !item.instant) {
+            disableTransitions(item);
+          }
           node.style.setProperty(
             'transform',
             `translate(${item.dx}px,${item.dy}px) ${item.baseTransform}`,
