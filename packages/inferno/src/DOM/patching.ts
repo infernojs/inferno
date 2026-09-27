@@ -23,11 +23,11 @@ import {
   createDerivedState,
   EMPTY_OBJ,
   findDOMFromVNode,
-  moveAnimations,
   moveVNodeDOM,
   removeVNodeDOM,
   replaceChild,
   setTextContent,
+  updateMoveHooks,
 } from './utils/common';
 import {
   isControlledFormElement,
@@ -845,45 +845,45 @@ function patchFunctionalComponent(
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): void {
-  let shouldUpdate: boolean = true;
   const nextProps = nextVNode.props || EMPTY_OBJ;
   const nextRef = nextVNode.ref;
   const lastProps = lastVNode.props;
   const nextHooksDefined = !isNullOrUndef(nextRef);
   const lastInput = lastVNode.children;
 
-  if (nextHooksDefined && isFunction(nextRef.onComponentShouldUpdate)) {
-    shouldUpdate = nextRef.onComponentShouldUpdate(lastProps, nextProps);
+  if (lastVNode.ref !== nextRef) {
+    updateMoveHooks(lastVNode, nextVNode);
   }
-
-  if (shouldUpdate) {
-    if (nextHooksDefined && isFunction(nextRef.onComponentWillUpdate)) {
+  if (nextHooksDefined) {
+    if (
+      typeof nextRef.onComponentShouldUpdate === 'function' &&
+      !nextRef.onComponentShouldUpdate(lastProps, nextProps)
+    ) {
+      nextVNode.children = lastInput;
+      return;
+    }
+    if (typeof nextRef.onComponentWillUpdate === 'function') {
       nextRef.onComponentWillUpdate(lastProps, nextProps);
     }
-    const nextInput = normalizeRoot(
-      renderFunctionalComponent(nextVNode, context),
-      lastInput,
-    );
-
-    patch(
-      lastInput,
-      nextInput,
-      parentDOM,
-      context,
-      isSVG,
-      nextNode,
-      lifecycle,
-      animations,
-    );
-    nextVNode.children = nextInput;
-    if (nextHooksDefined && isFunction(nextRef.onComponentDidUpdate)) {
-      nextRef.onComponentDidUpdate(lastProps, nextProps);
-    }
-  } else {
-    nextVNode.children = lastInput;
   }
-  if (moveAnimations !== null && lastVNode.ref !== nextRef) {
-    moveAnimations.updateHooks(lastVNode.ref, nextRef);
+  const nextInput = normalizeRoot(
+    renderFunctionalComponent(nextVNode, context),
+    lastInput,
+  );
+
+  patch(
+    lastInput,
+    nextInput,
+    parentDOM,
+    context,
+    isSVG,
+    nextNode,
+    lifecycle,
+    animations,
+  );
+  nextVNode.children = nextInput;
+  if (nextHooksDefined && typeof nextRef.onComponentDidUpdate === 'function') {
+    nextRef.onComponentDidUpdate(lastProps, nextProps);
   }
 }
 

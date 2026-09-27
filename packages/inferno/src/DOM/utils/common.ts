@@ -50,6 +50,13 @@ export interface MoveAnimationAdapter {
 export let moveAnimations: MoveAnimationAdapter | null = null;
 export let activeMoveAnimations: MoveAnimationAdapter | null = null;
 
+// A patch changed a function component's hooks object: the move hooks among them are counted
+export function updateMoveHooks(lastVNode: VNode, nextVNode: VNode): void {
+  if (moveAnimations !== null) {
+    moveAnimations.updateHooks(lastVNode.ref, nextVNode.ref);
+  }
+}
+
 // Returns false when another copy of inferno-animation is installed already
 export function setMoveAnimations(
   adapter: MoveAnimationAdapter,
