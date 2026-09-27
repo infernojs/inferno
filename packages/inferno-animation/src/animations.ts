@@ -238,6 +238,9 @@ interface MoveBatch {
   initialized: boolean;
   // The classes of the move's active state, parsed once for all items
   activeClasses: string[];
+  // Items that take over an element's running move, and whether any item moved
+  retargets: number;
+  moved: boolean;
   cancel?: () => void;
 }
 
@@ -304,6 +307,8 @@ export function componentWillMove(
     items: [],
     initialized: false,
     remaining: 0,
+    retargets: 0,
+    moved: false,
     activeClasses: cls.active.split(' ').filter((name) => name !== ''),
   };
   const skipped: MoveItem[] = [];
@@ -342,6 +347,7 @@ export function componentWillMove(
     };
     batch.items.push(item);
     batch.remaining++;
+    if (previous) batch.retargets++;
     moving.set(node, item);
   }
   // Finish skipped old moves only after all new source positions were read.
@@ -466,10 +472,18 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
     phase === AnimationPhase.READ_MOVES ||
     phase === AnimationPhase.ACTIVATE_ANIMATION;
   let live = 0;
-  const authors =
-    phase === AnimationPhase.READ_MOVES
-      ? authorTransitions(batch.parent)
-      : null;
+  // Author transitions exclude an element from the move. Before a running move is reset they are
+  // read in READ_MOVES; otherwise once after measuring, and only when something moved.
+  let authors: Set<AnimatedElement> | null = null;
+  if (phase === AnimationPhase.READ_MOVES) {
+    if (batch.retargets !== 0) authors = authorTransitions(batch.parent);
+  } else if (
+    phase === AnimationPhase.SET_MOVE_START_STATE &&
+    batch.retargets === 0 &&
+    batch.moved
+  ) {
+    authors = authorTransitions(batch.parent);
+  }
   if (phase === AnimationPhase.REGISTER_LISTENERS) {
     for (const animation of parentTransitions(batch.parent)) {
       if (
@@ -504,7 +518,7 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
     switch (phase) {
       case AnimationPhase.READ_MOVES:
         // A patch may have started a new author transition since the source read.
-        if (authors!.has(node)) finishMove(item);
+        if (authors !== null && authors.has(node)) finishMove(item);
         break;
       case AnimationPhase.RESET_MOVES:
         if (item.previous) {
@@ -520,6 +534,7 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
         item.dx = item.x - geometry.x;
         item.dy = item.y - geometry.y;
         if (item.dx !== 0 || item.dy !== 0) {
+          batch.moved = true;
           const style = window.getComputedStyle(node);
           const transform = style.transform;
           item.baseTransform = transform === 'none' ? '' : transform;
@@ -531,7 +546,10 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
         break;
       }
       case AnimationPhase.SET_MOVE_START_STATE:
-        if (item.dx === 0 && item.dy === 0) {
+        if (
+          (item.dx === 0 && item.dy === 0) ||
+          (authors !== null && authors.has(node))
+        ) {
           restoreTransitions(item);
           finishMove(item);
         } else {
