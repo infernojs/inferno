@@ -80,7 +80,7 @@ function patchDangerInnerHTML(
   lastVNode,
   dom,
   animations: AnimationQueues,
-): void {
+): boolean {
   const lastHtml = lastValue?.__html || '';
   const nextHtml = nextValue?.__html || '';
 
@@ -92,12 +92,12 @@ function patchDangerInnerHTML(
         } else if (lastVNode.childFlags === ChildFlags.HasVNodeChildren) {
           unmount(lastVNode.children, animations);
         }
-        lastVNode.children = null;
-        lastVNode.childFlags = ChildFlags.HasInvalidChildren;
       }
       dom.innerHTML = nextHtml;
+      return true;
     }
   }
+  return false;
 }
 
 function patchDomProp(nextValue: unknown, dom: Element, prop: string): void {
@@ -107,6 +107,7 @@ function patchDomProp(nextValue: unknown, dom: Element, prop: string): void {
   }
 }
 
+// Returns true when innerHTML replaced the previous children.
 export function patchProp(
   prop: string,
   lastValue: any,
@@ -116,7 +117,7 @@ export function patchProp(
   hasControlledValue: boolean,
   lastVNode: VNode | null,
   animations: AnimationQueues,
-): void {
+): boolean {
   switch (prop) {
     case 'children':
     case 'childrenType':
@@ -163,8 +164,13 @@ export function patchProp(
       patchStyle(lastValue, nextValue, dom);
       break;
     case 'dangerouslySetInnerHTML':
-      patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations);
-      break;
+      return patchDangerInnerHTML(
+        lastValue,
+        nextValue,
+        lastVNode,
+        dom,
+        animations,
+      );
     default:
       if (syntheticEvents[prop]) {
         handleSyntheticEvent(prop, lastValue, nextValue, dom);
@@ -194,6 +200,7 @@ export function patchProp(
       }
       break;
   }
+  return false;
 }
 
 export function mountProps(

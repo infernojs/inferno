@@ -285,6 +285,8 @@ export function patchElement(
   animations: AnimationQueues,
 ): void {
   const dom = (nextVNode.dom = lastVNode.dom as Element);
+  let lastChildren = lastVNode.children;
+  let lastChildFlags = lastVNode.childFlags;
   const lastProps = lastVNode.props;
   const nextProps = nextVNode.props;
   const nextFlags = nextVNode.flags;
@@ -309,16 +311,22 @@ export function patchElement(
         const lastValue = lastPropsOrEmpty[prop];
         const nextValue = nextPropsOrEmpty[prop];
         if (lastValue !== nextValue) {
-          patchProp(
-            prop,
-            lastValue,
-            nextValue,
-            dom,
-            isSVG,
-            hasControlledValue,
-            lastVNode,
-            animations,
-          );
+          if (
+            patchProp(
+              prop,
+              lastValue,
+              nextValue,
+              dom,
+              isSVG,
+              hasControlledValue,
+              lastVNode,
+              animations,
+            )
+          ) {
+            // Keep the reusable vNode intact after innerHTML unmounts its children.
+            lastChildren = null;
+            lastChildFlags = ChildFlags.HasInvalidChildren;
+          }
         }
       }
     }
@@ -328,16 +336,21 @@ export function patchElement(
           isNullOrUndef(nextPropsOrEmpty[prop]) &&
           !isNullOrUndef(lastPropsOrEmpty[prop])
         ) {
-          patchProp(
-            prop,
-            lastPropsOrEmpty[prop],
-            null,
-            dom,
-            isSVG,
-            hasControlledValue,
-            lastVNode,
-            animations,
-          );
+          if (
+            patchProp(
+              prop,
+              lastPropsOrEmpty[prop],
+              null,
+              dom,
+              isSVG,
+              hasControlledValue,
+              lastVNode,
+              animations,
+            )
+          ) {
+            lastChildren = null;
+            lastChildFlags = ChildFlags.HasInvalidChildren;
+          }
         }
       }
     }
@@ -364,14 +377,14 @@ export function patchElement(
   } else {
     if (
       nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
-      mustCloneVNode(nextChildren as VNode, lastVNode.children as VNode)
+      mustCloneVNode(nextChildren as VNode, lastChildren as VNode)
     ) {
       nextChildren = nextVNode.children = directClone(nextChildren as VNode);
     }
     patchChildren(
-      lastVNode.childFlags,
+      lastChildFlags,
       nextVNode.childFlags,
-      lastVNode.children,
+      lastChildren,
       nextChildren,
       dom,
       context,
