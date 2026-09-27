@@ -20,6 +20,7 @@ import {
   EMPTY_OBJ,
   options,
   findDOMFromVNode,
+  findElementFromVNode,
   insertOrAppend,
   safeCall1,
   setTextContent,
@@ -415,7 +416,7 @@ export function mountClassComponentCallbacks(
     addAppearAnimationHookClass(
       animations,
       instance,
-      findDOMFromVNode(instance.$LI, true, true),
+      findElementFromVNode(instance.$LI),
     );
   }
 }
@@ -445,7 +446,7 @@ export function mountFunctionalComponentCallbacks(
       addAppearAnimationHookFunctional(
         animations,
         ref,
-        findDOMFromVNode(vNode, true, true),
+        findElementFromVNode(vNode),
         vNode.props,
       );
     }

@@ -17,6 +17,7 @@ import {
   AnimationQueues,
   EMPTY_OBJ,
   findDOMFromVNode,
+  findElementFromVNode,
   Fragment,
   options,
 } from './DOM/utils/common';
@@ -85,6 +86,7 @@ export {
   version,
   // Internal methods, used by hydration
   createClassComponentInstance as _CI,
+  findElementFromVNode as _FE, // used by inferno-animation
   normalizeRoot as _HI, // used by inferno-mobx
   mount as _M,
   mountClassComponentCallbacks as _MCCC,

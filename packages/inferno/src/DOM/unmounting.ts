@@ -10,6 +10,7 @@ import {
   options,
   EMPTY_OBJ,
   findDOMFromVNode,
+  findElementFromVNode,
   removeVNodeDOM,
 } from './utils/common';
 import { unmountRef } from '../core/refs';
@@ -70,7 +71,7 @@ export function unmount(vNode, animations: AnimationQueues): void {
         addDisappearAnimationHook(
           animations,
           children,
-          findDOMFromVNode(children.$LI, true, true),
+          findElementFromVNode(children.$LI),
           flags,
           undefined,
         );
@@ -92,7 +93,7 @@ export function unmount(vNode, animations: AnimationQueues): void {
         }
         if (isFunction(ref.onComponentWillDisappear)) {
           childAnimations = new AnimationQueues();
-          domEl = findDOMFromVNode(vNode, true, true);
+          domEl = findElementFromVNode(vNode);
           addDisappearAnimationHook(animations, ref, domEl, flags, vNode.props);
         }
       }

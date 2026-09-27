@@ -1,5 +1,5 @@
 import {
-  findDOMFromVNode,
+  _FE as findElementFromVNode,
   options,
   type AnimationQueues,
   type VNode,
@@ -75,7 +75,7 @@ function visit(vNode: VNode, list: MoveList, covered?: Set<Element>): boolean {
     const hook =
       owner && (isClass ? owner.componentWillMove : owner.onComponentWillMove);
     if (typeof hook === 'function') {
-      const dom = findDOMFromVNode(vNode, true, true);
+      const dom = findElementFromVNode(vNode);
       if (!dom || dom.parentNode !== list.parent) return false;
       if (covered && !covered.has(dom)) {
         coverRoots(vNode, covered);

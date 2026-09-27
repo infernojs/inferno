@@ -103,7 +103,6 @@ function findChildVNode(
 export function findDOMFromVNode(
   vNode: VNode,
   startEdge: boolean,
-  elementOnly = false,
 ): Element | null {
   let flags: VNodeFlags;
   let v: VNode | null = vNode;
@@ -111,31 +110,43 @@ export function findDOMFromVNode(
   while (!isNullOrUndef(v)) {
     flags = v.flags;
 
-    if (elementOnly) {
-      if (flags & VNodeFlags.Element) return v.dom;
-      if (flags & VNodeFlags.DOMRef) return null;
-      if (
-        flags & VNodeFlags.Fragment &&
-        v.childFlags & ChildFlags.MultipleChildren
-      ) {
-        const children = v.children as VNode[];
-        for (let i = 0; i < children.length; i++) {
-          const dom = findDOMFromVNode(
-            children[startEdge ? i : children.length - i - 1],
-            startEdge,
-            true,
-          );
-          if (dom) return dom;
-        }
-        return null;
-      }
-    } else if ((flags & VNodeFlags.DOMRef) !== 0) {
+    if ((flags & VNodeFlags.DOMRef) !== 0) {
       return v.dom;
     }
 
     v = findChildVNode(v, startEdge, flags) as VNode | null;
   }
 
+  return null;
+}
+
+// The first Element of a vNode's rendered output, or null when that output starts with text, a
+// placeholder or a portal. Appear, leave and move animations need an element to animate.
+export function findElementFromVNode(vNode: VNode | null): Element | null {
+  while (!isNullOrUndef(vNode)) {
+    const flags = vNode.flags;
+
+    if (flags & VNodeFlags.Element) {
+      return vNode.dom;
+    }
+    if (flags & VNodeFlags.DOMRef) {
+      return null;
+    }
+    if (
+      flags & VNodeFlags.Fragment &&
+      vNode.childFlags & ChildFlags.MultipleChildren
+    ) {
+      const children = vNode.children as VNode[];
+      for (let i = 0; i < children.length; i++) {
+        const dom = findElementFromVNode(children[i]);
+        if (dom !== null) {
+          return dom;
+        }
+      }
+      return null;
+    }
+    vNode = findChildVNode(vNode, true, flags) as VNode | null;
+  }
   return null;
 }
 
