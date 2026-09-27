@@ -10,15 +10,15 @@
     <h1>Move animation glitches in keyed lists</h1>
     <p class="intro">
       Components with a move hook (<code>componentWillMove</code>, <code>onComponentWillMove</code>, used by
-      <code>inferno-animation</code>) change how keyed lists are patched. Each section reproduces one problem.
+      <code>inferno-animation</code>) prepare keyed lists before their layout changes. Each section checks a previous glitch.
       Animated cards are orange, plain cards are grey. The status line compares what happened with what should happen.
     </p>
 
     <section>
-      <h2>1. Wrong order when animated and plain items move together</h2>
+      <h2>1. Animated and plain items move into the correct order</h2>
       <p>
-        Only card 3 is animated. Its move is deferred until the end of the patch, but card 4 is placed right away
-        in front of card 3's old position. The list should read <b>0 1 4 3 2</b>.
+        Only card 3 has a move hook. Deferring its DOM move used to place card 4 incorrectly.
+        All DOM moves now follow the same reconciliation order. The list should read <b>0 1 4 3 2</b>.
       </p>
       <div id="order-list" class="list"></div>
       <div class="buttons">
@@ -30,26 +30,27 @@
     </section>
 
     <section>
-      <h2>2. Animations measure the list after the update has already changed it</h2>
+      <h2>2. Animations measure the list before it changes</h2>
       <p>
-        All cards are animated. Moving D to the top and adding X in the same render inserts X before the move hooks
-        run, so <code>inferno-animation</code> takes the "before" positions from a list that already contains X:
-        A, B and C jump one row and then slide one row, instead of sliding two rows, and D starts from the wrong place.
+        All cards are animated. Moving D to the top and adding X must measure the original A B C D layout:
+        A, B and C should slide two rows without jumping. Insertion-only and removal-only updates should
+        also animate the retained cards, even though their relative order is unchanged.
       </p>
       <div id="measure-list" class="list"></div>
       <div class="buttons">
         <button id="measure-run">Move D to the top and add X</button>
+        <button id="measure-insert">Reset and prepend X</button>
+        <button id="measure-remove">Reset and remove B</button>
         <button id="measure-reset">Reset</button>
       </div>
       <div id="measure-status" class="status"></div>
     </section>
 
     <section>
-      <h2>3. A move hook in a nested component crashes the render</h2>
+      <h2>3. Move hooks work through nested components</h2>
       <p>
-        The hook to call is chosen by the type of the list item component but taken from the component it renders.
-        Reversing either list throws a <code>TypeError</code> before any card has moved, so the cards keep the old
-        order although the list was rendered reversed.
+        The callback must use the type and props of the component that owns the hook.
+        Reversing either list should animate to C B A without throwing a <code>TypeError</code>.
       </p>
       <div class="columns">
         <div>
@@ -74,11 +75,11 @@
     </section>
 
     <section>
-      <h2>4. The move animation is skipped when the animated component renders another component</h2>
+      <h2>4. Composed components animate like direct elements</h2>
       <p>
         Both lists use <code>AnimatedMoveComponent</code>. On the left it renders an element, on the right it renders
-        a function component that renders the same element. Only the left list animates: the hook of the right list
-        is never called.
+        a function component that renders the same element. Both lists should animate and receive the same
+        number of preparation callbacks.
       </p>
       <div class="columns">
         <div>

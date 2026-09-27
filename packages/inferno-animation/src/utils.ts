@@ -196,22 +196,27 @@ function _getMaxTransitionDuration(nodes): {
   };
 }
 
-function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration): void {
-  if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
-    // Image animations should wait for loaded until the timeout is started, otherwise animation will be cut short
-    // due to loading delay
-    rootNode.addEventListener('load', () => {
-      setTimeout(
-        () => onTransitionEnd({ target: rootNode, timeout: true }),
-        maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
-      );
-    });
-  } else {
-    setTimeout(
+function setAnimationTimeout(
+  onTransitionEnd,
+  rootNode,
+  maxDuration,
+): () => void {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const start = () => {
+    timeout = setTimeout(
       () => onTransitionEnd({ target: rootNode, timeout: true }),
       maxDuration === 0 ? 0 : Math.round(maxDuration * 1000) + 100,
     );
+  };
+  if (rootNode.nodeName === 'IMG' && !rootNode.complete) {
+    rootNode.addEventListener('load', start, { once: true });
+  } else {
+    start();
   }
+  return () => {
+    clearTimeout(timeout);
+    rootNode.removeEventListener('load', start);
+  };
 }
 
 /**
@@ -221,11 +226,12 @@ function setAnimationTimeout(onTransitionEnd, rootNode, maxDuration): void {
  *
  * @param nodes a list of nodes that have transitions that are part of this animation
  * @param callback callback when all transitions of participating nodes are completed
+ * @returns Cancel listeners and the timeout without invoking the callback.
  */
 export function registerTransitionListener(
   nodes: Array<HTMLElement | SVGElement>,
   callback: () => void,
-): void {
+): () => void {
   const rootNode = nodes[0];
 
   /**
@@ -261,13 +267,7 @@ export function registerTransitionListener(
     }
 
     // This is it...
-    done = true;
-
-    /**
-     * Perform cleanup
-     */
-    rootNode.removeEventListener('transitioncancel', onTransitionEnd, false);
-    rootNode.removeEventListener('transitionend', onTransitionEnd, false);
+    cancel();
     if (isFunction(callback)) {
       callback();
     }
@@ -277,31 +277,16 @@ export function registerTransitionListener(
   rootNode.addEventListener('transitioncancel', onTransitionEnd, false);
   rootNode.addEventListener('transitionend', onTransitionEnd, false);
 
-  setAnimationTimeout(onTransitionEnd, rootNode, maxDuration);
-}
-
-export function incrementMoveCbCount(node): number {
-  let curr = parseInt(node.dataset.moveCbCount, 10);
-  if (isNaN(curr)) {
-    curr = 1;
-  } else {
-    curr++;
+  const cancelTimeout = setAnimationTimeout(
+    onTransitionEnd,
+    rootNode,
+    maxDuration,
+  );
+  function cancel(): void {
+    done = true;
+    cancelTimeout();
+    rootNode.removeEventListener('transitioncancel', onTransitionEnd, false);
+    rootNode.removeEventListener('transitionend', onTransitionEnd, false);
   }
-  node.dataset.moveCbCount = curr;
-  return curr;
-}
-
-export function decrementMoveCbCount(node): number {
-  let curr = parseInt(node.dataset.moveCbCount, 10);
-  if (isNaN(curr)) {
-    curr = 0;
-  } else {
-    curr--;
-    if (curr === 0) {
-      node.dataset.moveCbCount = '';
-    } else {
-      node.dataset.moveCbCount = curr;
-    }
-  }
-  return curr;
+  return cancel;
 }

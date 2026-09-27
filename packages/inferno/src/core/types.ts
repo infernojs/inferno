@@ -91,6 +91,10 @@ export interface IComponent<P, S> {
 
   componentWillDisappear?(domNode: Element, callback: Function): void;
 
+  /**
+   * Requires inferno-animation. Snapshots a retained keyed child's current subtree
+   * before layout changes; a wrapper may subsequently replace that subtree.
+   */
   componentWillMove?(
     parentVNode: VNode,
     parentDOM: Element,
@@ -254,6 +258,10 @@ export interface Refs<P> {
     callback: Function,
   ): void;
 
+  /**
+   * Requires inferno-animation. Snapshots a retained keyed child's current subtree
+   * before layout changes; a wrapper may subsequently replace that subtree.
+   */
   onComponentWillMove?(
     parentVNode: VNode,
     parentDOM: Element,

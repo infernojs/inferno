@@ -106,6 +106,67 @@ IMPORTANT! Always use the provided helper methods instead of implementing the ho
 might be optimisations and/or changes to how the animation hooks are implemented in future versions
 of Inferno that you want to benefit from.
 
+### Keyed-list layout animations
+
+Importing `inferno-animation` installs the optional move engine. Core-only apps
+include neither the move registry nor its scheduler. Custom `componentWillMove`
+and `onComponentWillMove` hooks also require `import 'inferno-animation'` before
+rendering; using one of the exported animation components already does this.
+
+Move animations cover reordering, insertions, removals, and layout changes during
+keyed-list reconciliation. Keep stable keys on list items. Components may render
+other class or function components; an outer move hook takes precedence over
+hooks further down the same component chain. Fragments move as a whole, while
+text and empty placeholders are excluded from geometry measurements. Appear,
+disappear, and move hooks target the first root Element; roots containing only
+text or empty placeholders have no animation target.
+
+`componentWillMove(parentVNode, parentDOM, dom)` and
+`onComponentWillMove(parentVNode, parentDOM, dom, props)` run **before** the list's
+container properties or children are patched. Retained keyed children are
+prepared, including items displaced without an explicit DOM move. Hooks see the
+existing DOM and pre-update props. Discovery inside a retained wrapper uses its
+current rendered subtree: a descendant can receive a preparation hook even if
+the wrapper's upcoming render replaces or removes it. Direct keyed children that
+are new, removed, or replaced are not prepared. The helpers discard nodes that
+are removed or reparented before animation preparation.
+
+Custom hooks should measure or schedule work without moving or removing DOM
+nodes. Hooks may run even when geometry does not change; the helpers then apply
+no styles or classes and perform no computed-style reads. Source and target
+geometry are still measured so that layout changes caused by props or content
+can be animated. Hookless structural results are cached. Assigning a class hook after mounting or
+adding a function hook through a new hooks object makes it discoverable on the
+next list update.
+
+The helpers measure siblings once per affected parent and coordinate transforms
+with that parent's enter/leave styles. Synchronous commits, including nested
+renders from lifecycle callbacks, share the first source positions and prepare
+the final target in a microtask before paint. Unrelated parents keep their own
+animation schedule. An update during a move transition starts from its visible
+position.
+
+Elements still entering or leaving, or running an author CSS transition, are
+excluded from move transforms. On a reorder those elements move directly to
+their reconciled positions while eligible neighbours slide. This preserves the
+transition styles, including author opacity, size, and transform transitions.
+It also applies to plain siblings of animated items. Once that transition ends,
+the element is eligible on the next update. Inline transition longhands and
+priorities, author transforms, and unrelated classes are restored on cleanup;
+styles changed by the application during the move are not overwritten.
+
+Leave animations keep their CSS-driven layout behavior. Asynchronous completion
+callbacks for the same frame are collected before removing DOM: each parent is
+measured once, its completed leaves are removed together, and survivors animate
+the remaining gap. Physical removal may therefore wait until the next animation
+frame. Synchronous completion during reconciliation stays immediate and uses the
+existing preparation. Completion callbacks are safe to call repeatedly or after
+a later unmount.
+
+Resizing the viewport or loading an image without a keyed-list update does not
+itself trigger a move animation. The `docs/animation-glitch` example exercises
+mixed animated/plain items, nested components, and insertion/removal updates.
+
 ### Global animations
 
 Global animations allow you to animate a component between positions on two different "pages". Technincally this means they don't have the same parent element. When you mount one page imediately after unmounting the other page, inferno-animation will perform a FLIP-animation between the two positions. To match the elements you use the attribute `globalAnimationKey` which accept a string.

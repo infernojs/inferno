@@ -231,6 +231,10 @@ export abstract class Component<
 
   public componentWillDisappear?(domNode: Element, callback: () => void): void;
 
+  /**
+   * Requires inferno-animation. Snapshots a retained keyed child's current subtree
+   * before layout changes; a wrapper may subsequently replace that subtree.
+   */
   public componentWillMove?(
     parentVNode: VNode,
     parentDOM: Element,

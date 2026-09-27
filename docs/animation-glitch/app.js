@@ -45,8 +45,7 @@ class AnimatedCard extends AnimatedMoveComponent {
   }
 }
 
-// AnimatedCard renders Card, so its own element comes from a nested component. The variations below that
-// need a working animation use AnimatedLi, which renders the element itself.
+// Compare a composed component with one that renders its element directly.
 class AnimatedLi extends AnimatedMoveComponent {
   render() {
     return (
@@ -145,10 +144,10 @@ function measureReset() {
   setStatus('measure-status', 'DOM: ' + domOrder($('measure-list')), true);
 }
 
-function measureRun() {
+function measureRun(order = ['D', 'X', 'A', 'B', 'C']) {
   const before = domOrder($('measure-list'));
   measureSeen = null;
-  render(<MeasureList order={['D', 'X', 'A', 'B', 'C']} />, $('measure-list'));
+  render(<MeasureList order={order} />, $('measure-list'));
   setStatus(
     'measure-status',
     'list before the update: ' + before + '\nmove hooks measured:    ' + measureSeen,
@@ -267,7 +266,15 @@ document.addEventListener('DOMContentLoaded', function () {
   $('order-reset').addEventListener('click', orderReset);
 
   measureReset();
-  $('measure-run').addEventListener('click', measureRun);
+  $('measure-run').addEventListener('click', () => measureRun());
+  $('measure-insert').addEventListener('click', () => {
+    measureReset();
+    measureRun(['X', 'A', 'B', 'C', 'D']);
+  });
+  $('measure-remove').addEventListener('click', () => {
+    measureReset();
+    measureRun(['A', 'C', 'D']);
+  });
   $('measure-reset').addEventListener('click', measureReset);
 
   crashReset('crash-class', ClassWrapper);

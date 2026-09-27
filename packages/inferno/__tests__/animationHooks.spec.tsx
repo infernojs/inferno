@@ -1,3 +1,4 @@
+import 'inferno-animation';
 import { Component, type InfernoNode, render } from 'inferno';
 
 describe('animation hooks (class components)', () => {
@@ -22,8 +23,8 @@ describe('animation hooks (class components)', () => {
    *
    * On node removal, if there is a callback, the node isn't actually removed until the callback has finished.
    *
-   * On node move, if there is a callback, the original node is cloned and both a reference to the cloned node and the new
-   * node are passed to the callback allowing CSS-animations to be performed.
+   * Before keyed-list updates, retained owners receive their existing DOM node so positions can be measured before
+   * any mutations. Physical moves, insertions and removals then run in ordinary reconciliation order.
    *
    * ** Entrypoints **
    * - mounting.ts
@@ -109,7 +110,7 @@ describe('animation hooks (class components)', () => {
     expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
   });
 
-  it('should call "componentWillMove" once when two keyed components swap places', () => {
+  it('should prepare both retained components when two keyed components swap places', () => {
     const spyer = jasmine.createSpy();
     class App extends Component {
       public componentWillMove() {
@@ -143,15 +144,16 @@ describe('animation hooks (class components)', () => {
     );
 
     expect(container.textContent).toEqual('21');
-    // Only the first element needs to perform a DOM move
-    // The second element is animated by parent checking positions before and after move
-    expect(spyer).toHaveBeenCalledTimes(3);
+    // Every retained owner prepares before reconciliation, including the one
+    // whose position changes without an explicit DOM move.
+    expect(spyer).toHaveBeenCalledTimes(4);
     expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(2)).toEqual(['willMove']);
+    expect(spyer.calls.argsFor(3)).toEqual(['willMove']);
   });
 
-  it('should call "componentWillMove" once when the first of three keyed components moves to the end', () => {
+  it('should prepare every retained component when the first of three moves to the end', () => {
     const spyer = jasmine.createSpy();
 
     class App extends Component<unknown, unknown> {
@@ -189,16 +191,16 @@ describe('animation hooks (class components)', () => {
     );
 
     expect(container.textContent).toEqual('231');
-    // Only the first element needs to perform a DOM move
-    // The second element is animated by parent checking positions before and after move
-    expect(spyer).toHaveBeenCalledTimes(4);
+    expect(spyer).toHaveBeenCalledTimes(6);
     expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(2)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(3)).toEqual(['willMove']);
+    expect(spyer.calls.argsFor(4)).toEqual(['willMove']);
+    expect(spyer.calls.argsFor(5)).toEqual(['willMove']);
   });
 
-  it('should call "componentWillMove" three times when four keyed components are reversed', () => {
+  it('should prepare all four retained components before reversing them', () => {
     const spyer = jasmine.createSpy();
     let parentDom;
     class App extends Component {
@@ -238,9 +240,8 @@ describe('animation hooks (class components)', () => {
       container,
     );
 
-    expect(spyer).toHaveBeenCalledTimes(7);
-    // Three elements need to perform a DOM move
-    // The fourth element is animated by parent checking positions before and after move
+    expect(spyer).toHaveBeenCalledTimes(8);
+    // Preparation is independent of the number of physical DOM moves.
     expect(spyer.calls.argsFor(0)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(1)).toEqual(['didMount']);
     expect(spyer.calls.argsFor(2)).toEqual(['didMount']);
@@ -248,6 +249,7 @@ describe('animation hooks (class components)', () => {
     expect(spyer.calls.argsFor(4)).toEqual(['willMove']);
     expect(spyer.calls.argsFor(5)).toEqual(['willMove']);
     expect(spyer.calls.argsFor(6)).toEqual(['willMove']);
+    expect(spyer.calls.argsFor(7)).toEqual(['willMove']);
     expect(container.textContent).toEqual('4321');
   });
 

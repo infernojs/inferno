@@ -1,4 +1,5 @@
 import { warning } from 'inferno-shared';
+
 import {
   createComponentVNode,
   createFragment,

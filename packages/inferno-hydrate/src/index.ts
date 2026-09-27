@@ -16,6 +16,7 @@ import {
   _MFCC,
   _MP,
   _MR,
+  options,
   _RFC as renderFunctionalComponent,
   AnimationQueues,
   type ContextObject,
@@ -231,6 +232,7 @@ function hydrateChildren(
       parentNode.defaultValue = '';
     }
   }
+  options.$MA?.track(parentVNode, parentNode);
 }
 
 function hydrateElement(

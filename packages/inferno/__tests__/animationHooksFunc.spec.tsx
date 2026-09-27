@@ -1,3 +1,4 @@
+import 'inferno-animation';
 import {
   Component,
   type InfernoNode,
@@ -507,8 +508,6 @@ describe('animation hooks (function components)', () => {
     };
     checkRenderComplete_ONE();
   });
-
-  it('should call "onComponentWillMove" when component is moved in DOM (empty placeholder, asserts nothing)', () => {});
 
   const template = function (child) {
     return <div>{child}</div>;

@@ -112,6 +112,20 @@ describe('inferno-animation utils', () => {
     });
   });
 
+  it('can cancel transition listeners and their timeout without invoking the callback', (done) => {
+    renderTemplate(container);
+    const el = container.querySelector('.target');
+    const callback = jasmine.createSpy('transition callback');
+    const cancel = registerTransitionListener([el], callback);
+    cancel();
+    el.dispatchEvent(new Event('transitionend'));
+    el.dispatchEvent(new Event('transitioncancel'));
+    setTimeout(() => {
+      expect(callback).not.toHaveBeenCalled();
+      done();
+    }, 10);
+  });
+
   it('registerTransitionListener calls the callback when an IMG loads', (done) => {
     container.innerHTML = '<div><img class="target" /></div>';
     const el = document.querySelector('.target') as HTMLElement;

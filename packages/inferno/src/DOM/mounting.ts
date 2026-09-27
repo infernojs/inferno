@@ -18,6 +18,7 @@ import {
   AnimationQueues,
   documentCreateElement,
   EMPTY_OBJ,
+  options,
   findDOMFromVNode,
   insertOrAppend,
   safeCall1,
@@ -167,6 +168,7 @@ function mountFragment(
       animations,
     );
   }
+  if (parentDOM !== null) options.$MA?.track(vNode, parentDOM);
 }
 
 export function mountText(
@@ -248,7 +250,6 @@ export function mountElement(
     }
   }
 
-
   // Props are set before the element enters the document: attribute changes on a connected element cost
   // style invalidation, and autofocus only works when the attribute is there on insertion.
   if (!isNull(props)) {
@@ -266,6 +267,7 @@ export function mountElement(
       );
     }
   }
+  options.$MA?.track(vNode, dom);
   mountRef(vNode.ref, dom, lifecycle);
 }
 
@@ -361,8 +363,9 @@ function createClassMountCallback(instance) {
 function addAppearAnimationHookClass(
   animations: AnimationQueues,
   instance,
-  dom: Element,
+  dom: Element | null,
 ): void {
+  if (!dom) return;
   animations.componentDidAppear.push(() => {
     instance.componentDidAppear(dom);
   });
@@ -371,9 +374,10 @@ function addAppearAnimationHookClass(
 function addAppearAnimationHookFunctional(
   animations: AnimationQueues,
   ref,
-  dom: Element,
+  dom: Element | null,
   props,
 ): void {
+  if (!dom) return;
   animations.componentDidAppear.push(() => {
     ref.onComponentDidAppear(dom, props);
   });
@@ -385,6 +389,7 @@ export function mountClassComponentCallbacks(
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): void {
+  options.$MA?.changed();
   mountRef(ref, instance, lifecycle);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -407,7 +412,11 @@ export function mountClassComponentCallbacks(
     lifecycle.push(createClassMountCallback(instance));
   }
   if (isFunction(instance.componentDidAppear)) {
-    addAppearAnimationHookClass(animations, instance, instance.$LI.dom);
+    addAppearAnimationHookClass(
+      animations,
+      instance,
+      findDOMFromVNode(instance.$LI, true, true),
+    );
   }
 }
 
@@ -426,8 +435,8 @@ export function mountFunctionalComponentCallbacks(
   animations: AnimationQueues,
 ): void {
   const ref = vNode.ref;
-
   if (!isNullOrUndef(ref)) {
+    options.$MA?.changed(vNode);
     safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
     if (isFunction(ref.onComponentDidMount)) {
       lifecycle.push(createOnMountCallback(ref, vNode));
@@ -436,7 +445,7 @@ export function mountFunctionalComponentCallbacks(
       addAppearAnimationHookFunctional(
         animations,
         ref,
-        findDOMFromVNode(vNode, true) as Element,
+        findDOMFromVNode(vNode, true, true),
         vNode.props,
       );
     }

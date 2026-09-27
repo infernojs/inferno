@@ -1,1 +1,7038 @@
-!function(){"use strict";function e(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,r=Array(t);n<t;n++)r[n]=e[n];return r}function t(e,t){var n="undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(n)return(n=n.call(e)).next.bind(n);if(Array.isArray(e)||(n=o(e))||t){n&&(e=n);var r=0;return function(){return r>=e.length?{done:!0}:{done:!1,value:e[r++]}}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function n(){return n=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},n.apply(null,arguments)}function r(e,t){e.prototype=Object.create(t.prototype),e.prototype.constructor=e,i(e,t)}function i(e,t){return i=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(e,t){return e.__proto__=t,e},i(e,t)}function o(t,n){if(t){if("string"==typeof t)return e(t,n);var r={}.toString.call(t).slice(8,-1);return"Object"===r&&t.constructor&&(r=t.constructor.name),"Map"===r||"Set"===r?Array.from(t):"Arguments"===r||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)?e(t,n):void 0}}var a=Array.isArray;function s(e){var t=typeof e;return"string"===t||"number"===t}function u(e){return void 0===e||null===e}function l(e){return null===e||!1===e||!0===e||void 0===e}function c(e){return"function"===typeof e}function f(e){return"string"===typeof e}function d(e){return null===e}function h(e){return void 0===e}function p(e){return!d(e)&&"object"===typeof e}var v={},_=function(){this.componentDidAppear=[],this.componentWillDisappear=[],this.componentWillMove=[]};function b(e){return e.substring(2).toLowerCase()}function g(e,t){e.appendChild(t)}function m(e,t,n){d(n)?g(e,t):e.insertBefore(t,n)}function y(e,t){if(t)return document.createElementNS("http://www.w3.org/2000/svg",e);return document.createElement(e)}function O(e,t,n){e.replaceChild(t,n)}function w(e,t){e.removeChild(t)}function S(e){for(var t=0;t<e.length;t++)e[t]()}function k(e,t,n){var r=e.children;if(0!==(4&n))return r.$LI;if(0!==(8192&n))return 2===e.childFlags?r:r[t?0:r.length-1];return r}function A(e,t){for(var n,r=e;!u(r);){if(0!==(1521&(n=r.flags)))return r.dom;r=k(r,t,n)}return null}function C(e,t){for(var n,r=e.length;void 0!==(n=e.pop());)n(function(){--r<=0&&c(t)&&t()})}function x(e){for(var t=0;t<e.length;t++)e[t].fn();for(var n=0;n<e.length;n++){var r=e[n];m(r.parent,r.dom,r.next)}e.splice(0,e.length)}function j(e,t,n){for(;!u(e);){var r=e.flags;if(0!==(1521&r))return void(n&&e.dom.parentNode!==t||w(t,e.dom));var i=e.children;if(0!==(4&r)&&(e=i.$LI),0!==(8&r)&&(e=i),0!==(8192&r)){if(2!==e.childFlags){for(var o=0,a=i.length;o<a;++o)j(i[o],t,!1);return}e=i}}}function P(e,t){return function(){j(e,t,!0)}}function M(e,t,n){n.componentWillDisappear.length>0?C(n.componentWillDisappear,P(e,t)):j(e,t,!1)}function E(e,t,n,r,i,o,a,s){e.componentWillMove.push({dom:r,fn:function(){0!==(4&a)?n.componentWillMove(t,i,r):0!==(8&a)&&n.onComponentWillMove(t,i,r,s)},next:o,parent:i})}function N(e,t,n,r,i){for(var o,a,s=t.flags;!u(t);){var l=t.flags;if(0!==(1521&l))return void(u(o)||!c(o.componentWillMove)&&!c(o.onComponentWillMove)?m(n,t.dom,r):E(i,e,o,t.dom,n,r,s,a));var f=t.children;if(0!==(4&l))o=t.children,a=t.props,t=f.$LI;else if(0!==(8&l))o=t.ref,a=t.props,t=f;else if(0!==(8192&l)){if(2!==t.childFlags){for(var d=0,h=f.length;d<h;++d)N(e,f[d],n,r,i);return}t=f}}}function V(e,t,r){if(c(e.constructor.getDerivedStateFromProps))return n({},r,e.constructor.getDerivedStateFromProps(t,r));return r}var D={v:!1},U={createVNode:null};function T(e,t){e.textContent=t}function L(e,t){return p(e)&&e.event===t.event&&e.data===t.data}function I(e,t){for(var n in t)h(e[n])&&(e[n]=t[n]);return e}function R(e,t){return c(e)&&(e(t),!0)}var B="$";function $(e,t,n,r,i,o,a,s){this.childFlags=e,this.children=t,this.className=n,this.dom=null,this.flags=r,this.key=void 0===i?null:i,this.props=void 0===o?null:o,this.ref=void 0===a?null:a,this.type=s}function F(e,t,n,r,i,o,a,s){var u=void 0===i?1:i,l=new $(u,r,n,e,a,o,s,t);return 0===u&&Z(l,l.children),l}function W(e,t,n){if(4&e)return n;var r=(32768&e?t.render:t).defaultHooks;if(u(r))return n;if(u(n))return r;return I(n,r)}function q(e,t,r){var i=(32768&e?t.render:t).defaultProps;if(u(i))return r;if(u(r))return n({},i);return I(r,i)}function K(e,t){var n;if(12&e)return e;if(null!=(n=t.prototype)&&n.render)return 4;if(t.render)return 32776;return 8}function H(e,t,n,r,i){var o=new $(1,null,null,e=K(e,t),r,q(e,t,n),W(e,t,i),t);return c(U.createVNode)&&U.createVNode(o),o}function G(e,t){return new $(1,u(e)||!0===e||!1===e?"":e,null,16,t,null,null,null)}function z(e,t,n){var r=F(8192,8192,null,e,t,null,n,null);switch(r.childFlags){case 1:r.children=Y(),r.childFlags=2;break;case 16:r.children=[G(e)],r.childFlags=4}return r}function X(e){var t=e.children,n=e.childFlags;return z(2===n?Q(t):t.map(Q),n,e.key)}function Q(e){var t=-16385&e.flags,n=e.props;if(14&t&&!d(n)){var r=n;for(var i in n={},r)n[i]=r[i]}if(0===(8192&t))return new $(e.childFlags,e.children,e.className,t,e.key,n,e.ref,e.type);return X(e)}function Y(){return G("",null)}function J(e,t,n,r){for(var i=e.length;n<i;n++){var o=e[n];if(!l(o)){var u=r+B+n;if(a(o))J(o,t,0,u);else{if(s(o))o=G(o,u);else{var c=o.key,h=f(c)&&c[0]===B;(81920&o.flags||h)&&(o=Q(o)),o.flags|=65536,h?c.substring(0,r.length)!==r&&(o.key=r+c):d(c)?o.key=u:o.key=r+c}t.push(o)}}}}function Z(e,t){var n,r=1;if(l(t))n=t;else if(s(t))r=16,n=t;else if(a(t)){for(var i=t.length,o=0;o<i;++o){var u=t[o];if(l(u)||a(u)){n=n||t.slice(0,o),J(t,n,o,"");break}if(s(u))(n=n||t.slice(0,o)).push(G(u,B+o));else{var c=u.key,h=(81920&u.flags)>0,p=d(c),v=f(c)&&c[0]===B;h||p||v?(n=n||t.slice(0,o),(h||v)&&(u=Q(u)),(p||v)&&(u.key=B+o),n.push(u)):n&&n.push(u),u.flags|=65536}}r=0===(n=n||t).length?1:8}else(n=t).flags|=65536,81920&t.flags&&(n=Q(t)),r=2;return e.children=n,e.childFlags=r,e}function ee(e){if(l(e)||s(e))return G(e,null);if(a(e))return z(e,0,null);return 16384&e.flags?Q(e):e}var te="http://www.w3.org/1999/xlink",ne="http://www.w3.org/XML/1998/namespace",re={"xlink:actuate":te,"xlink:arcrole":te,"xlink:href":te,"xlink:role":te,"xlink:show":te,"xlink:title":te,"xlink:type":te,"xml:base":ne,"xml:lang":ne,"xml:space":ne};function ie(e){return{onClick:e,onDblClick:e,onFocusIn:e,onFocusOut:e,onKeyDown:e,onKeyPress:e,onKeyUp:e,onMouseDown:e,onMouseMove:e,onMouseUp:e,onTouchEnd:e,onTouchMove:e,onTouchStart:e}}var oe=ie(0),ae=ie(null),se=ie(!0);function ue(e,t){var n=t.$EV;return n||(n=t.$EV=ie(null)),n[e]||1===++oe[e]&&(ae[e]=ge(e)),n}function le(e,t){var n=t.$EV;null!=n&&n[e]&&(0===--oe[e]&&(document.removeEventListener(b(e),ae[e]),ae[e]=null),n[e]=null)}function ce(e,t,n,r){if(c(n))ue(e,r)[e]=n;else if(p(n)){if(L(t,n))return;ue(e,r)[e]=n}else le(e,r)}function fe(e){return c(e.composedPath)?e.composedPath()[0]:e.target}function de(e,t,n,r){var i=fe(e);do{if(t&&i.disabled)return;var o=i.$EV;if(!u(o)){var a=o[n];if(a&&(r.dom=i,a.event?a.event(a.data,e):a(e),e.cancelBubble))return}i=i.parentNode}while(!d(i))}function he(){this.cancelBubble=!0,this.immediatePropagationStopped||this.stopImmediatePropagation()}function pe(){return this.defaultPrevented}function ve(){return this.cancelBubble}function _e(e){var t={dom:document};return e.isDefaultPrevented=pe,e.isPropagationStopped=ve,e.stopPropagation=he,Object.defineProperty(e,"currentTarget",{configurable:!0,get:function(){return t.dom}}),t}function be(e){var t="onClick"===e||"onDblClick"===e;return function(n){de(n,t,e,_e(n))}}function ge(e){var t=be(e);return document.addEventListener(b(e),t),t}function me(e,t){var n=document.createElement("i");return n.innerHTML=t,n.innerHTML===e.innerHTML}function ye(e,t,n){var r=e[t];if(r)r.event?r.event(r.data,n):r(n);else{var i=t.toLowerCase();c(e[i])&&e[i](n)}}function Oe(e,t){var n=function(n){var r,i=this.$V;if(u(i))return;var o=null!=(r=i.props)?r:v,a=i.dom;if(f(e))ye(o,e,n);else for(var s=0;s<e.length;++s)ye(o,e[s],n);if(c(t)){var l,d=this.$V,h=null!=(l=d.props)?l:v;t(h,a,!1,d)}};return Object.defineProperty(n,"wrapped",{configurable:!1,enumerable:!1,value:!0,writable:!1}),n}function we(e,t,n){var r="$"+t,i=e[r];if(i){if(i[1].wrapped)return;e.removeEventListener(i[0],i[1]),e[r]=null}c(n)&&(e.addEventListener(t,n),e[r]=[t,n])}function Se(e){return"checkbox"===e||"radio"===e}var ke=Oe("onInput",je),Ae=Oe(["onClick","onChange"],je);function Ce(e){e.stopPropagation()}function xe(e,t){Se(t.type)?(we(e,"change",Ae),we(e,"click",Ce)):we(e,"input",ke)}function je(e,t){var n=e.type,r=e.value,i=e.checked,o=e.multiple,a=e.defaultValue,s=!u(r);null!=n&&n!==t.type&&t.setAttribute("type",n),u(o)||o===t.multiple||(t.multiple=o),u(a)||s||(t.defaultValue=a+""),Se(n)?(s&&(t.value=r),u(i)||(t.checked=i)):s&&t.value!==r?(t.defaultValue=r,t.value=r):u(i)||(t.checked=i)}function Pe(e,t){if("option"===e.type)Me(e,t);else{var n=e.children,r=e.flags;if(0!==(4&r))Pe(n.$LI,t);else if(0!==(8&r))Pe(n,t);else if(2===e.childFlags)Pe(n,t);else if(0!==(12&e.childFlags))for(var i=0,o=n.length;i<o;++i)Pe(n[i],t)}}function Me(e,t){var n,r=null!=(n=e.props)?n:v,i=r.value,o=e.dom;o.value=i,i===t||a(t)&&t.includes(i)?o.selected=!0:u(t)&&u(r.selected)||(o.selected=Boolean(r.selected))}Ce.wrapped=!0;var Ee=Oe("onChange",Ve);function Ne(e){we(e,"change",Ee)}function Ve(e,t,n,r){var i=Boolean(e.multiple);u(e.multiple)||i===t.multiple||(t.multiple=i);var o=e.selectedIndex;if(-1===o&&(t.selectedIndex=-1),1!==r.childFlags){var a=e.value;"number"===typeof o&&o>-1&&!u(t.options[o])&&(a=t.options[o].value),n&&u(a)&&(a=e.defaultValue),Pe(r,a)}}var De,Ue,Te=Oe("onInput",Re),Le=Oe("onChange");function Ie(e,t){we(e,"input",Te),c(t.onChange)&&we(e,"change",Le)}function Re(e,t,n){var r=e.value,i=t.value;if(u(r)){if(n){var o=e.defaultValue;u(o)||o===i||(t.defaultValue=o,t.value=o)}}else i!==r&&(t.defaultValue=r,t.value=r)}function Be(e,t,n,r,i,o){0!==(64&e)?je(r,n):0!==(256&e)?Ve(r,n,i,t):0!==(128&e)&&Re(r,n,i),o&&(n.$V=t)}function $e(e,t,n){0!==(64&e)?xe(t,n):0!==(256&e)?Ne(t):0!==(128&e)&&Ie(t,n)}function Fe(e){return Se(e.type)?!u(e.checked):!u(e.value)}function We(e){u(e)||!R(e,null)&&e.current&&(e.current=null)}function qe(e,t,n){u(e)||!c(e)&&void 0===e.current||n.push(function(){R(e,t)||void 0===e.current||(e.current=t)})}function Ke(e,t,n){He(e,n),M(e,t,n)}function He(e,t){var n,r=e.flags,i=e.children;if(0!==(481&r)){n=e.ref;var o=e.props;We(n);var a=e.childFlags;if(!d(o))for(var s=Object.keys(o),l=0,f=s.length;l<f;l++){var h=s[l];se[h]&&le(h,e.dom)}12&a?Ge(i,t):2===a&&He(i,t)}else if(i)if(4&r){c(i.componentWillUnmount)&&i.componentWillUnmount();var p=t;c(i.componentWillDisappear)&&(p=new _,Ye(t,i,i.$LI.dom,r,void 0)),We(e.ref),i.$UN=!0,He(i.$LI,p)}else if(8&r){var b=t;if(!u(n=e.ref)){var g=null;c(n.onComponentWillUnmount)&&(g=A(e,!0),n.onComponentWillUnmount(g,e.props||v)),c(n.onComponentWillDisappear)&&(b=new _,Ye(t,n,g=g||A(e,!0),r,e.props))}He(i,b)}else 1024&r?Ke(i,e.ref,t):8192&r&&12&e.childFlags&&Ge(i,t)}function Ge(e,t){for(var n=0,r=e.length;n<r;++n)He(e[n],t)}function ze(e,t){return function(){if(t)for(var n=0;n<e.length;n++)j(e[n],t,!1)}}function Xe(e,t,n){n.componentWillDisappear.length>0?C(n.componentWillDisappear,ze(t,e)):e.textContent=""}function Qe(e,t,n,r){Ge(n,r),8192&t.flags?M(t,e,r):Xe(e,n,r)}function Ye(e,t,n,r,i){e.componentWillDisappear.push(function(e){4&r?t.componentWillDisappear(n,e):8&r&&t.onComponentWillDisappear(n,i,e)})}function Je(e){var t=e.event;return function(n){t(e.data,n)}}function Ze(e,t,n,r){if(p(n)){if(L(t,n))return;n=Je(n)}we(r,b(e),n)}function et(e,t,n){if(u(t))return void n.removeAttribute("style");var r,i,o=n.style;if(f(t))return void(o.cssText=t);if(u(e)||f(e))for(r in t)i=t[r],o.setProperty(r,i);else{for(r in t)(i=t[r])!==e[r]&&o.setProperty(r,i);for(r in e)u(t[r])&&o.removeProperty(r)}}function tt(e,t,n,r,i){var o=(null==e?void 0:e.__html)||"",a=(null==t?void 0:t.__html)||"";o!==a&&(u(a)||me(r,a)||(d(n)||(12&n.childFlags?Ge(n.children,i):2===n.childFlags&&He(n.children,i),n.children=null,n.childFlags=1),r.innerHTML=a))}function nt(e,t,n){var r=u(e)?"":e;t[n]!==r&&(t[n]=r)}function rt(e,t,n,r,i,o,a,s){switch(e){case"children":case"childrenType":case"className":case"defaultValue":case"key":case"multiple":case"ref":case"selectedIndex":break;case"autoFocus":r.autofocus=!!n;break;case"allowfullscreen":case"autoplay":case"capture":case"checked":case"controls":case"default":case"disabled":case"hidden":case"indeterminate":case"loop":case"muted":case"novalidate":case"open":case"readOnly":case"required":case"reversed":case"scoped":case"seamless":case"selected":r[e]=!!n;break;case"defaultChecked":case"value":case"volume":if(o&&"value"===e)break;nt(n,r,e);break;case"style":et(t,n,r);break;case"dangerouslySetInnerHTML":tt(t,n,a,r,s);break;default:se[e]?ce(e,t,n,r):111===e.charCodeAt(0)&&110===e.charCodeAt(1)?Ze(e,t,n,r):u(n)?r.removeAttribute(e):i&&re[e]?r.setAttributeNS(re[e],e,n):r.setAttribute(e,n)}}function it(e,t,n,r,i,o){var a=!1,s=(448&t)>0;for(var u in s&&(a=Fe(n))&&$e(t,r,n),n)rt(u,null,n[u],r,i,a,null,o);s&&Be(t,e,r,n,!0,a)}function ot(e,t,r){var i=ee(e.render(t,e.state,r)),o=r;return c(e.getChildContext)&&(o=n({},r,e.getChildContext())),e.$CX=o,i}function at(e,t,n,r,i,o){var a=new t(n,r),s=a.$N=Boolean(t.getDerivedStateFromProps||a.getSnapshotBeforeUpdate);if(a.$SVG=i,a.$L=o,e.children=a,a.$BS=!1,a.context=r,a.props===v&&(a.props=n),s)a.state=V(a,n,a.state);else if(c(a.componentWillMount)){a.$BR=!0,a.componentWillMount();var u=a.$PS;if(!d(u)){var l=a.state;if(d(l))a.state=u;else for(var f in u)l[f]=u[f];a.$PS=null}a.$BR=!1}return a.$LI=ot(a,n,r),a}function st(e,t){var n=e.props||v;return 32768&e.flags?e.type.render(n,e.ref,t):e.type(n,t)}function ut(e,t,n,r,i,o,a){var s=e.flags|=16384;0!==(481&s)?dt(e,t,n,r,i,o,a):0!==(4&s)?pt(e,t,n,r,i,o,a):8&s?vt(e,t,n,r,i,o,a):16&s?ft(e,t,i):8192&s?ct(e,n,t,r,i,o,a):1024&s&&lt(e,n,t,i,o,a)}function lt(e,t,n,r,i,o){ut(e.children,e.ref,t,!1,null,i,o);var a=Y();ft(a,n,r),e.dom=a.dom}function ct(e,t,n,r,i,o,a){var s=e.children,u=e.childFlags;12&u&&0===s.length&&(u=e.childFlags=2,s=e.children=Y()),2===u?ut(s,n,t,r,i,o,a):ht(s,n,t,r,i,o,a)}function ft(e,t,n){var r=e.dom=document.createTextNode(e.children);d(t)||m(t,r,n)}function dt(e,t,n,r,i,o,a){var s=e.flags,l=e.props,c=e.className,f=e.childFlags,h=e.dom=y(e.type,r=r||(32&s)>0),p=e.children;if(u(c)||""===c||(r?h.setAttribute("class",c):h.className=c),16===f)T(h,p);else if(1!==f){var v=r&&"foreignObject"!==e.type;2===f?(16384&p.flags&&(e.children=p=Q(p)),ut(p,h,n,v,null,o,a)):8!==f&&4!==f||ht(p,h,n,v,null,o,a)}d(t)||m(t,h,i),d(l)||it(e,s,l,h,r,a),qe(e.ref,h,o)}function ht(e,t,n,r,i,o,a){for(var s=0;s<e.length;++s){var u=e[s];16384&u.flags&&(e[s]=u=Q(u)),ut(u,t,n,r,i,o,a)}}function pt(e,t,n,r,i,o,a){var s=at(e,e.type,e.props||v,n,r,o),u=a;c(s.componentDidAppear)&&(u=new _),ut(s.$LI,t,s.$CX,r,i,o,u),mt(e.ref,s,o,a)}function vt(e,t,n,r,i,o,a){var s=e.ref,l=a;!u(s)&&c(s.onComponentDidAppear)&&(l=new _),ut(e.children=ee(st(e,n)),t,n,r,i,o,l),Ot(e,o,a)}function _t(e){return function(){e.componentDidMount()}}function bt(e,t,n){e.componentDidAppear.push(function(){t.componentDidAppear(n)})}function gt(e,t,n,r){e.componentDidAppear.push(function(){t.onComponentDidAppear(n,r)})}function mt(e,t,n,r){qe(e,t,n),c(t.componentDidMount)&&n.push(_t(t)),c(t.componentDidAppear)&&bt(r,t,t.$LI.dom)}function yt(e,t){return function(){e.onComponentDidMount(A(t,!0),t.props||v)}}function Ot(e,t,n){var r=e.ref;u(r)||(R(r.onComponentWillMount,e.props||v),c(r.onComponentDidMount)&&t.push(yt(r,e)),c(r.onComponentDidAppear)&&gt(n,r,A(e,!0),e.props))}function wt(e,t,n,r,i,o,a){He(e,a),0!==(t.flags&e.flags&1521)?(ut(t,null,r,i,null,o,a),O(n,t.dom,e.dom)):(ut(t,n,r,i,A(e,!0),o,a),M(e,n,a))}function St(e,t,n,r,i,o,a,s){var u=t.flags|=16384;e.flags!==u||e.type!==t.type||e.key!==t.key||2048&u?16384&e.flags?wt(e,t,n,r,i,a,s):ut(t,n,r,i,o,a,s):481&u?jt(e,t,r,i,a,s):4&u?Dt(e,t,n,r,i,o,a,s):8&u?Ut(e,t,n,r,i,o,a,s):16&u?Tt(e,t):8192&u?Ct(e,t,n,r,i,a,s):xt(e,t,r,a,s)}function kt(e,t,n){e!==t&&(""!==e?n.firstChild.nodeValue=t:T(n,t))}function At(e,t){e.textContent!==t&&(e.textContent=t)}function Ct(e,t,n,r,i,o,a){var s=e.children,u=t.children,l=e.childFlags,c=t.childFlags,f=null;12&c&&0===u.length&&(c=t.childFlags=2,u=t.children=Y());var d=0!==(2&c);if(12&l){var h=s.length;(8&l&&8&c||d||!d&&u.length>h)&&(f=A(s[h-1],!1).nextSibling)}Et(l,c,s,u,n,r,i,f,e,o,a)}function xt(e,t,n,r,i){var o=e.ref,a=t.ref,s=t.children;if(Et(e.childFlags,t.childFlags,e.children,s,o,n,!1,null,e,r,i),t.dom=e.dom,o!==a&&!l(s)){var u=s.dom;w(o,u),g(a,u)}}function jt(e,t,n,r,i,o){var a,s=t.dom=e.dom,l=e.props,c=t.props,f=t.flags,d=!1,h=!1;if(r=r||(32&f)>0,l!==c){var p=l||v;if((a=c||v)!==v)for(var _ in(d=(448&f)>0)&&(h=Fe(a)),a){var b=p[_],g=a[_];b!==g&&rt(_,b,g,s,r,h,e,o)}if(p!==v)for(var m in p)u(a[m])&&!u(p[m])&&rt(m,p[m],null,s,r,h,e,o)}var y=t.children,O=t.className;e.className!==O&&(u(O)?s.removeAttribute("class"):r?s.setAttribute("class",O):s.className=O),4096&f?At(s,y):Et(e.childFlags,t.childFlags,e.children,y,s,n,r&&"foreignObject"!==t.type,null,e,i,o),d&&Be(f,t,s,a,!1,h);var w=t.ref,S=e.ref;S!==w&&(We(S),qe(w,s,i))}function Pt(e,t,n,r,i,o,a){He(e,a),ht(t,n,r,i,A(e,!0),o,a),M(e,n,a)}function Mt(e,t,n,r,i,o,a,s,u,l,c){var f=0|e.length,d=0|t.length;0===f?d>0&&ht(t,n,r,i,o,a,s):0===d?Qe(n,u,e,s):8===l&&8===c?It(e,t,n,r,i,f,d,o,u,a,s):Lt(e,t,n,r,i,f,d,o,a,s)}function Et(e,t,n,r,i,o,a,s,u,l,c){switch(e){case 2:switch(t){case 2:St(n,r,i,o,a,s,l,c);break;case 1:Ke(n,i,c);break;case 16:He(n,c),T(i,r);break;default:Pt(n,r,i,o,a,l,c)}break;case 1:switch(t){case 2:ut(r,i,o,a,s,l,c);break;case 1:break;case 16:T(i,r);break;default:ht(r,i,o,a,s,l,c)}break;case 16:switch(t){case 16:kt(n,r,i);break;case 2:Xe(i,n,c),ut(r,i,o,a,s,l,c);break;case 1:Xe(i,n,c);break;default:Xe(i,n,c),ht(r,i,o,a,s,l,c)}break;default:switch(t){case 16:Ge(n,c),T(i,r);break;case 2:Qe(i,u,n,c),ut(r,i,o,a,s,l,c);break;case 1:Qe(i,u,n,c);break;default:Mt(n,r,i,o,a,s,l,c,u,t,e)}}}function Nt(e,t,n,r,i){i.push(function(){e.componentDidUpdate(t,n,r)})}function Vt(e,t,r,i,o,a,s,u,l,f){var d=e.state,h=e.props,p=Boolean(e.$N),v=c(e.shouldComponentUpdate);if(p&&(t=V(e,r,t!==d?n({},d,t):t)),s||!v||v&&e.shouldComponentUpdate(r,t,o)){!p&&c(e.componentWillUpdate)&&e.componentWillUpdate(r,t,o),e.props=r,e.state=t,e.context=o;var _=null,b=ot(e,r,o);p&&c(e.getSnapshotBeforeUpdate)&&(_=e.getSnapshotBeforeUpdate(h,d)),St(e.$LI,b,i,e.$CX,a,u,l,f),e.$LI=b,c(e.componentDidUpdate)&&Nt(e,h,d,_,l)}else e.props=r,e.state=t,e.context=o}function Dt(e,t,r,i,o,a,s,u){var l=t.children=e.children;if(d(l))return;l.$L=s;var f=t.props||v,h=t.ref,p=e.ref,_=l.state;if(!l.$N){if(c(l.componentWillReceiveProps)){if(l.$BR=!0,l.componentWillReceiveProps(f,i),l.$UN)return;l.$BR=!1}d(l.$PS)||(_=n({},_,l.$PS),l.$PS=null)}Vt(l,_,f,r,i,o,!1,a,s,u),p!==h&&(We(p),qe(h,l,s))}function Ut(e,t,n,r,i,o,a,s){var l=!0,f=t.props||v,d=t.ref,h=e.props,p=!u(d),_=e.children;if(p&&c(d.onComponentShouldUpdate)&&(l=d.onComponentShouldUpdate(h,f)),l){p&&c(d.onComponentWillUpdate)&&d.onComponentWillUpdate(h,f);var b=ee(st(t,r));St(_,b,n,r,i,o,a,s),t.children=b,p&&c(d.onComponentDidUpdate)&&d.onComponentDidUpdate(h,f)}else t.children=_}function Tt(e,t){var n=t.children,r=t.dom=e.dom;n!==e.children&&(r.nodeValue=n)}function Lt(e,t,n,r,i,o,a,s,u,l){for(var c,f,d=o>a?a:o,h=0;h<d;++h)c=t[h],f=e[h],16384&c.flags&&(c=t[h]=Q(c)),St(f,c,n,r,i,s,u,l),e[h]=c;if(o<a)for(h=d;h<a;++h)16384&(c=t[h]).flags&&(c=t[h]=Q(c)),ut(c,n,r,i,s,u,l);else if(o>a)for(h=d;h<o;++h)Ke(e[h],n,l)}function It(e,t,n,r,i,o,a,s,u,l,c){var f,d,h=o-1,p=a-1,v=0,_=e[v],b=t[v];e:{for(;_.key===b.key;){if(16384&b.flags&&(t[v]=b=Q(b)),St(_,b,n,r,i,s,l,c),e[v]=b,++v>h||v>p)break e;_=e[v],b=t[v]}for(_=e[h],b=t[p];_.key===b.key;){if(16384&b.flags&&(t[p]=b=Q(b)),St(_,b,n,r,i,s,l,c),e[h]=b,p--,v>--h||v>p)break e;_=e[h],b=t[p]}}if(v>h){if(v<=p)for(d=(f=p+1)<a?A(t[f],!0):s;v<=p;)16384&(b=t[v]).flags&&(t[v]=b=Q(b)),++v,ut(b,n,r,i,d,l,c)}else if(v>p)for(;v<=h;)Ke(e[v++],n,c);else Rt(e,t,r,o,a,h,p,v,n,i,s,u,l,c)}function Rt(e,t,n,r,i,o,a,s,u,l,c,f,d,h){var p,v,_=0,b=0,g=s,m=s,y=o-s+1,O=a-s+1,w=new Int32Array(O+1),S=y===r,k=!1,C=0,j=0;if(i<4||(y|O)<32)for(b=g;b<=o;++b)if(p=e[b],j<O){for(s=m;s<=a;s++)if(v=t[s],p.key===v.key){if(w[s-m]=b+1,S)for(S=!1;g<b;)Ke(e[g++],u,h);C>s?k=!0:C=s,16384&v.flags&&(t[s]=v=Q(v)),St(p,v,u,n,l,c,d,h),++j;break}!S&&s>a&&Ke(p,u,h)}else S||Ke(p,u,h);else{var P={};for(b=m;b<=a;++b)P[t[b].key]=b;for(b=g;b<=o;++b)if(p=e[b],j<O)if(void 0!==(s=P[p.key])){if(S)for(S=!1;b>g;)Ke(e[g++],u,h);w[s-m]=b+1,C>s?k=!0:C=s,16384&(v=t[s]).flags&&(t[s]=v=Q(v)),St(p,v,u,n,l,c,d,h),++j}else S||Ke(p,u,h);else S||Ke(p,u,h)}if(S)Qe(u,f,e,h),ht(t,u,n,l,c,d,h);else if(k){var M=$t(w);for(s=M.length-1,b=O-1;b>=0;b--)0===w[b]?(16384&(v=t[C=b+m]).flags&&(t[C]=v=Q(v)),ut(v,u,n,l,(_=C+1)<i?A(t[_],!0):c,d,h)):s<0||b!==M[s]?N(f,v=t[C=b+m],u,(_=C+1)<i?A(t[_],!0):c,h):s--;h.componentWillMove.length>0&&x(h.componentWillMove)}else if(j!==O)for(b=O-1;b>=0;b--)0===w[b]&&(16384&(v=t[C=b+m]).flags&&(t[C]=v=Q(v)),ut(v,u,n,l,(_=C+1)<i?A(t[_],!0):c,d,h))}var Bt=0;function $t(e){var t=0,n=0,r=0,i=0,o=0,a=0,s=0,u=e.length;for(u>Bt&&(Bt=u,De=new Int32Array(u),Ue=new Int32Array(u));n<u;++n)if(0!==(t=e[n])){if(e[r=De[i]]<t){Ue[n]=r,De[++i]=n;continue}for(o=0,a=i;o<a;)e[De[s=o+a>>1]]<t?o=s+1:a=s;t<e[De[o]]&&(o>0&&(Ue[n]=De[o-1]),De[o]=n)}o=i+1;var l=new Int32Array(o);for(a=De[o-1];o-- >0;)l[o]=a,a=Ue[a],De[o]=0;return l}function Ft(e,t,n,r){var i=[],o=new _,a=t.$V;D.v=!0,u(a)?u(e)||(0!==(16384&e.flags)&&(e=Q(e)),ut(e,t,r,!1,null,i,o),t.$V=e):u(e)?(Ke(a,t,o),t.$V=null):(16384&e.flags&&(e=Q(e)),St(a,e,t,r,!1,null,i,o),t.$V=e),S(i),C(o.componentDidAppear),D.v=!1,c(n)&&n()}function Wt(e,t,n,r){void 0===n&&(n=null),void 0===r&&(r=v),Ft(e,t,n,r)}"undefined"!==typeof document&&window.Node&&(Node.prototype.$EV=null,Node.prototype.$V=null);var qt=[],Kt=Promise.resolve().then.bind(Promise.resolve()),Ht=!1;function Gt(e,t,r,i){var o=e.$PS;if(c(t)&&(t=t(o?n({},e.state,o):e.state,e.props,e.context)),u(o))e.$PS=t;else for(var a in t)o[a]=t[a];if(e.$BR)c(r)&&e.$L.push(r.bind(e));else{if(!D.v&&0===qt.length)return Qt(e,i),void(c(r)&&r.call(e));if(qt.includes(e)||qt.push(e),i&&(e.$F=!0),Ht||(Ht=!0,Kt(Xt)),c(r)){var s=e.$QU;s||(s=e.$QU=[]),s.push(r)}}}function zt(e){for(var t=e.$QU,n=0;n<t.length;++n)t[n].call(e);e.$QU=null}function Xt(){var e;for(Ht=!1;e=qt.shift();)if(!e.$UN){var t=e.$F;e.$F=!1,Qt(e,t),e.$QU&&zt(e)}}function Qt(e,t){if(t||!e.$BR){var r=e.$PS;e.$PS=null;var i=[],o=new _;D.v=!0,Vt(e,n({},e.state,r),e.props,A(e.$LI,!0).parentNode,e.context,e.$SVG,t,null,i,o),S(i),C(o.componentDidAppear),D.v=!1}else e.state=e.$PS,e.$PS=null}var Yt=function(){function e(e,t){this.state=null,this.props=void 0,this.context=void 0,this.displayName=void 0,this.$BR=!1,this.$BS=!0,this.$PS=null,this.$LI=null,this.$UN=!1,this.$CX=null,this.$QU=null,this.$N=!1,this.$SSR=void 0,this.$L=null,this.$SVG=!1,this.$F=!1,this.props=e||v,this.context=t||v}var t=e.prototype;return t.forceUpdate=function(e){if(this.$UN)return;Gt(this,{},e,!0)},t.setState=function(e,t){if(this.$UN)return;this.$BS||Gt(this,e,t,!1)},t.render=function(e,t,n){return null},e}();function Jt(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];throw new Error("number"===typeof e?"[MobX] minified error nr: "+e+(n.length?" "+n.map(String).join(","):"")+". Find the full error at: https://github.com/mobxjs/mobx/blob/main/packages/mobx/src/errors.ts":"[MobX] "+e)}Yt.defaultProps=null;var Zt={};function en(){if("undefined"!==typeof globalThis)return globalThis;if("undefined"!==typeof window)return window;if("undefined"!==typeof global)return global;if("undefined"!==typeof self)return self;return Zt}var tn=Object.assign,nn=Object.getOwnPropertyDescriptor,rn=Object.defineProperty,on=Object.prototype,an=[];Object.freeze(an);var sn={};Object.freeze(sn);var un="undefined"!==typeof Proxy,ln=Object.toString();function cn(){un||Jt("Proxy not available")}function fn(e){var t=!1;return function(){if(t)return;return t=!0,e.apply(this,arguments)}}var dn=function(){};function hn(e){return"function"===typeof e}function pn(e){switch(typeof e){case"string":case"symbol":case"number":return!0}return!1}function vn(e){return null!==e&&"object"===typeof e}function _n(e){if(!vn(e))return!1;var t=Object.getPrototypeOf(e);if(null==t)return!0;var n=Object.hasOwnProperty.call(t,"constructor")&&t.constructor;return"function"===typeof n&&n.toString()===ln}function bn(e){var t=null==e?void 0:e.constructor;if(!t)return!1;if("GeneratorFunction"===t.name||"GeneratorFunction"===t.displayName)return!0;return!1}function gn(e,t,n){rn(e,t,{enumerable:!1,writable:!0,configurable:!0,value:n})}function mn(e,t,n){rn(e,t,{enumerable:!1,writable:!1,configurable:!0,value:n})}function yn(e,t){var n="isMobX"+e;return t.prototype[n]=!0,function(e){return vn(e)&&!0===e[n]}}function On(e){return null!=e&&"[object Map]"===Object.prototype.toString.call(e)}function wn(e){return null!=e&&"[object Set]"===Object.prototype.toString.call(e)}var Sn="undefined"!==typeof Object.getOwnPropertySymbols;function kn(e){var t=Object.keys(e);if(!Sn)return t;var n=Object.getOwnPropertySymbols(e);if(!n.length)return t;return[].concat(t,n.filter(function(t){return on.propertyIsEnumerable.call(e,t)}))}var An="undefined"!==typeof Reflect&&Reflect.ownKeys?Reflect.ownKeys:Sn?function(e){return Object.getOwnPropertyNames(e).concat(Object.getOwnPropertySymbols(e))}:Object.getOwnPropertyNames;function Cn(e){return null===e?null:"object"===typeof e?""+e:e}function xn(e,t){return on.hasOwnProperty.call(e,t)}var jn=Object.getOwnPropertyDescriptors||function(e){var t={};return An(e).forEach(function(n){t[n]=nn(e,n)}),t};function Pn(e,t){return!!(e&t)}function Mn(e,t,n){return n?e|=t:e&=~t,e}function En(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,r=Array(t);n<t;n++)r[n]=e[n];return r}function Nn(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,Rn(r.key),r)}}function Vn(e,t,n){return t&&Nn(e.prototype,t),Object.defineProperty(e,"prototype",{writable:!1}),e}function Dn(e,t){var n="undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(n)return(n=n.call(e)).next.bind(n);if(Array.isArray(e)||(n=Bn(e))||t){n&&(e=n);var r=0;return function(){return r>=e.length?{done:!0}:{done:!1,value:e[r++]}}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function Un(){return Un=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Un.apply(null,arguments)}function Tn(e,t){e.prototype=Object.create(t.prototype),e.prototype.constructor=e,Ln(e,t)}function Ln(e,t){return Ln=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(e,t){return e.__proto__=t,e},Ln(e,t)}function In(e,t){if("object"!=typeof e||!e)return e;var n=e[Symbol.toPrimitive];if(void 0!==n){var r=n.call(e,t);if("object"!=typeof r)return r;throw new TypeError("@@toPrimitive must return a primitive value.")}return String(e)}function Rn(e){var t=In(e,"string");return"symbol"==typeof t?t:t+""}function Bn(e,t){if(e){if("string"==typeof e)return En(e,t);var n={}.toString.call(e).slice(8,-1);return"Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?En(e,t):void 0}}var $n=Symbol("mobx-stored-annotations");function Fn(e){return Object.assign(function(t,n){if(qn(n))return e.decorate_20223_(t,n);Wn(t,n,e)},e)}function Wn(e,t,n){xn(e,$n)||gn(e,$n,Un({},e[$n])),Zn(n)||(e[$n][t]=n)}function qn(e){return"object"==typeof e&&"string"==typeof e.kind}var Kn=Symbol("mobx administration"),Hn=function(){function e(e){void 0===e&&(e="Atom"),this.name_=void 0,this.flags_=0,this.observers_=new Set,this.lastAccessedBy_=0,this.lowestObserverState_=ti.NOT_TRACKING_,this.onBOL=void 0,this.onBUOL=void 0,this.name_=e}var t=e.prototype;return t.onBO=function(){this.onBOL&&this.onBOL.forEach(function(e){return e()})},t.onBUO=function(){this.onBUOL&&this.onBUOL.forEach(function(e){return e()})},t.reportObserved=function(){return ki(this)},t.reportChanged=function(){wi(),Ai(this),Si()},t.toString=function(){return this.name_},Vn(e,[{key:"isBeingObserved",get:function(){return Pn(this.flags_,e.isBeingObservedMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isBeingObservedMask_,t)}},{key:"isPendingUnobservation",get:function(){return Pn(this.flags_,e.isPendingUnobservationMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isPendingUnobservationMask_,t)}},{key:"diffValue",get:function(){return Pn(this.flags_,e.diffValueMask_)?1:0},set:function(t){this.flags_=Mn(this.flags_,e.diffValueMask_,1===t)}}])}();Hn.isBeingObservedMask_=1,Hn.isPendingUnobservationMask_=2,Hn.diffValueMask_=4;var Gn=yn("Atom",Hn);function zn(e,t,n){void 0===t&&(t=dn),void 0===n&&(n=dn);var r=new Hn(e);return t!==dn&&Qi(Gi,r,t,void 0),n!==dn&&Xi(r,n),r}var Xn={structural:function(e,t){return da(e,t)},default:function(e,t){if(Object.is)return Object.is(e,t);return e===t?0!==e||1/e===1/t:e!==e&&t!==t}};function Qn(e,t,n){if(ao(e))return e;if(Array.isArray(e))return Lr.array(e,{name:n});if(_n(e))return Lr.object(e,void 0,{name:n});if(On(e))return Lr.map(e,{name:n});if(wn(e))return Lr.set(e,{name:n});if("function"===typeof e&&!Wi(e)&&!io(e))return bn(e)?no(e):Fi(n,e);return e}function Yn(e){return e}var Jn="override";function Zn(e){return e.annotationType_===Jn}function er(e,t){return{annotationType_:e,options_:t,make_:tr,extend_:nr,decorate_20223_:rr}}function tr(e,t,n,r){var i;if(null!=(i=this.options_)&&i.bound)return null===this.extend_(e,t,n,!1)?0:1;if(r===e.target_)return null===this.extend_(e,t,n,!1)?0:2;if(Wi(n.value))return 1;var o=ir(e,this,t,n,!1);return rn(r,t,o),2}function nr(e,t,n,r){var i=ir(e,this,t,n);return e.defineProperty_(t,i,r)}function rr(e,t){var n,r=t.kind,i=t.name,o=t.addInitializer,a=this,s=function(e){var t,n,r,o;return Hr(null!=(t=null==(n=a.options_)?void 0:n.name)?t:i.toString(),e,null!=(r=null==(o=a.options_)?void 0:o.autoAction)&&r)};if("field"==r)return function(e){var t,n=e;return Wi(n)||(n=s(n)),null!=(t=a.options_)&&t.bound&&((n=n.bind(this)).isMobxAction=!0),n};if("method"==r)return Wi(e)||(e=s(e)),null!=(n=this.options_)&&n.bound&&o(function(){var e=this,t=e[i].bind(e);t.isMobxAction=!0,e[i]=t}),e;Jt("Cannot apply '"+a.annotationType_+"' to '"+String(i)+"' (kind: "+r+"):\n'"+a.annotationType_+"' can only be used on properties with a function value.")}function ir(e,t,n,r,i){var o,a,s,u,l,c,f,d;void 0===i&&(i=gi.safeDescriptors),d=r,t.annotationType_,d.value;var h,p=r.value;return null!=(o=t.options_)&&o.bound&&(p=p.bind(null!=(h=e.proxy_)?h:e.target_)),{value:Hr(null!=(a=null==(s=t.options_)?void 0:s.name)?a:n.toString(),p,null!=(u=null==(l=t.options_)?void 0:l.autoAction)&&u,null!=(c=t.options_)&&c.bound?null!=(f=e.proxy_)?f:e.target_:void 0),configurable:!i||e.isPlainObject_,enumerable:!1,writable:!i}}function or(e,t){return{annotationType_:e,options_:t,make_:ar,extend_:sr,decorate_20223_:ur}}function ar(e,t,n,r){var i;if(r===e.target_)return null===this.extend_(e,t,n,!1)?0:2;if(null!=(i=this.options_)&&i.bound&&(!xn(e.target_,t)||!io(e.target_[t]))&&null===this.extend_(e,t,n,!1))return 0;if(io(n.value))return 1;var o=lr(e,this,0,n,!1,!1);return rn(r,t,o),2}function sr(e,t,n,r){var i,o=lr(e,this,0,n,null==(i=this.options_)?void 0:i.bound);return e.defineProperty_(t,o,r)}function ur(e,t){var n,r=t.name,i=t.addInitializer;return io(e)||(e=no(e)),null!=(n=this.options_)&&n.bound&&i(function(){var e=this,t=e[r].bind(e);t.isMobXFlow=!0,e[r]=t}),e}function lr(e,t,n,r,i,o){var a;void 0===o&&(o=gi.safeDescriptors),a=r,t.annotationType_,a.value;var s,u=r.value;return io(u)||(u=no(u)),i&&((u=u.bind(null!=(s=e.proxy_)?s:e.target_)).isMobXFlow=!0),{value:u,configurable:!o||e.isPlainObject_,enumerable:!1,writable:!o}}function cr(e,t){return{annotationType_:e,options_:t,make_:fr,extend_:dr,decorate_20223_:hr}}function fr(e,t,n){return null===this.extend_(e,t,n,!1)?0:1}function dr(e,t,n,r){return i=n,this.annotationType_,i.get,e.defineComputedProperty_(t,Un({},this.options_,{get:n.get,set:n.set}),r);var i}function hr(e,t){var n=this,r=t.name;return(0,t.addInitializer)(function(){var t=qo(this)[Kn],i=Un({},n.options_,{get:e,context:this});i.name||(i.name="ObservableObject."+r.toString()),t.values_.set(r,new ei(i))}),function(){return this[Kn].getObservablePropValue_(r)}}function pr(e,t){return{annotationType_:e,options_:t,make_:vr,extend_:_r,decorate_20223_:br}}function vr(e,t,n){return null===this.extend_(e,t,n,!1)?0:1}function _r(e,t,n,r){var i,o;return this.annotationType_,e.defineObservableProperty_(t,n.value,null!=(i=null==(o=this.options_)?void 0:o.enhancer)?i:Qn,r)}function br(e,t){var n=this,r=t.kind,i=t.name,o=new WeakSet;function a(e,t){var r,a,s=qo(e)[Kn],u=new Zr(t,null!=(r=null==(a=n.options_)?void 0:a.enhancer)?r:Qn,"ObservableObject."+i.toString(),!1);s.values_.set(i,u),o.add(e)}if("accessor"==r)return{get:function(){return o.has(this)||a(this,e.get.call(this)),this[Kn].getObservablePropValue_(i)},set:function(e){return o.has(this)||a(this,e),this[Kn].setObservablePropValue_(i,e)},init:function(e){return o.has(this)||a(this,e),e}};return}var gr="true",mr=yr();function yr(e){return{annotationType_:gr,options_:e,make_:Or,extend_:wr,decorate_20223_:Sr}}function Or(e,t,n,r){var i,o;if(n.get)return $r.make_(e,t,n,r);if(n.set){var a=Wi(n.set)?n.set:Hr(t.toString(),n.set);if(r===e.target_)return null===e.defineProperty_(t,{configurable:!gi.safeDescriptors||e.isPlainObject_,set:a})?0:2;return rn(r,t,{configurable:!0,set:a}),2}if(r!==e.target_&&"function"===typeof n.value){var s,u;if(bn(n.value))return(null!=(u=this.options_)&&u.autoBind?no.bound:no).make_(e,t,n,r);return(null!=(s=this.options_)&&s.autoBind?Fi.bound:Fi).make_(e,t,n,r)}var l,c=!1===(null==(i=this.options_)?void 0:i.deep)?Lr.ref:Lr;return"function"===typeof n.value&&null!=(o=this.options_)&&o.autoBind&&(n.value=n.value.bind(null!=(l=e.proxy_)?l:e.target_)),c.make_(e,t,n,r)}function wr(e,t,n,r){var i,o,a;if(n.get)return $r.extend_(e,t,n,r);if(n.set)return e.defineProperty_(t,{configurable:!gi.safeDescriptors||e.isPlainObject_,set:Hr(t.toString(),n.set)},r);return"function"===typeof n.value&&null!=(i=this.options_)&&i.autoBind&&(n.value=n.value.bind(null!=(a=e.proxy_)?a:e.target_)),(!1===(null==(o=this.options_)?void 0:o.deep)?Lr.ref:Lr).extend_(e,t,n,r)}function Sr(e,t){Jt("'"+this.annotationType_+"' cannot be used as a decorator")}var kr={deep:!0,name:void 0,defaultDecorator:void 0,proxy:!0};function Ar(e){return e||kr}Object.freeze(kr);var Cr=pr("observable"),xr=pr("observable.ref",{enhancer:Yn}),jr=pr("observable.shallow",{enhancer:function(e,t,n){if(void 0===e||null===e)return e;if(Go(e)||Po(e)||Do(e)||Ro(e))return e;if(Array.isArray(e))return Lr.array(e,{name:n,deep:!1});if(_n(e))return Lr.object(e,void 0,{name:n,deep:!1});if(On(e))return Lr.map(e,{name:n,deep:!1});if(wn(e))return Lr.set(e,{name:n,deep:!1})}}),Pr=pr("observable.struct",{enhancer:function(e,t){if(da(e,t))return t;return e}}),Mr=Fn(Cr);function Er(e){return!0===e.deep?Qn:!1===e.deep?Yn:(t=e.defaultDecorator)&&null!=(n=null==(r=t.options_)?void 0:r.enhancer)?n:Qn;var t,n,r}function Nr(e){var t;return e?null!=(t=e.defaultDecorator)?t:yr(e):void 0}function Vr(e,t,n){if(qn(t))return Cr.decorate_20223_(e,t);if(pn(t))return void Wn(e,t,Cr);if(ao(e))return e;if(_n(e))return Lr.object(e,t,n);if(Array.isArray(e))return Lr.array(e,t);if(On(e))return Lr.map(e,t);if(wn(e))return Lr.set(e,t);if("object"===typeof e&&null!==e)return e;return Lr.box(e,t)}tn(Vr,Mr);var Dr,Ur,Tr={box:function(e,t){var n=Ar(t);return new Zr(e,Er(n),n.name,!0,n.equals)},array:function(e,t){var n=Ar(t);return(!1===gi.useProxies||!1===n.proxy?oa:wo)(e,Er(n),n.name)},map:function(e,t){var n=Ar(t);return new Vo(e,Er(n),n.name)},set:function(e,t){var n=Ar(t);return new Io(e,Er(n),n.name)},object:function(e,t,n){return la(function(){return Yi(!1===gi.useProxies||!1===(null==n?void 0:n.proxy)?qo({},n):co({},n),e,t)})},ref:Fn(xr),shallow:Fn(jr),deep:Mr,struct:Fn(Pr)},Lr=tn(Vr,Tr),Ir="computed",Rr=cr(Ir),Br=cr("computed.struct",{equals:Xn.structural}),$r=function(e,t){if(qn(t))return Rr.decorate_20223_(e,t);if(pn(t))return Wn(e,t,Rr);if(_n(e))return Fn(cr(Ir,e));var n=_n(t)?t:{};return n.get=e,n.name||(n.name=e.name||""),new ei(n)};Object.assign($r,Rr),$r.struct=Fn(Br);var Fr=0,Wr=1,qr=null!=(Dr=null==(Ur=nn(function(){},"name"))?void 0:Ur.configurable)&&Dr,Kr={value:"action",configurable:!0,writable:!1,enumerable:!1};function Hr(e,t,n,r){function i(){return Gr(0,n,t,r||this,arguments)}return void 0===n&&(n=!1),i.isMobxAction=!0,i.toString=function(){return t.toString()},qr&&(Kr.value=e,rn(i,"name",Kr)),i}function Gr(e,t,n,r,i){var o=zr(0,t);try{return n.apply(r,i)}catch(e){throw o.error_=e,e}finally{Xr(o)}}function zr(e,t,n,r){var i=gi.trackingDerivation,o=!t||!i;wi();var a=gi.allowStateChanges;o&&(fi(),a=Yr(!0));var s={runAsAction_:o,prevDerivation_:i,prevAllowStateChanges_:a,prevAllowStateReads_:hi(!0),notifySpy_:!1,startTime_:0,actionId_:Wr++,parentActionId_:Fr};return Fr=s.actionId_,s}function Xr(e){Fr!==e.actionId_&&Jt(30),Fr=e.parentActionId_,void 0!==e.error_&&(gi.suppressReactionErrors=!0),Jr(e.prevAllowStateChanges_),pi(e.prevAllowStateReads_),Si(),e.runAsAction_&&di(e.prevDerivation_),gi.suppressReactionErrors=!1}function Qr(e,t){var n=Yr(e);try{return t()}finally{Jr(n)}}function Yr(e){var t=gi.allowStateChanges;return gi.allowStateChanges=e,t}function Jr(e){gi.allowStateChanges=e}var Zr=function(e){function t(t,n,r,i,o){var a;return void 0===r&&(r="ObservableValue"),void 0===o&&(o=Xn.default),(a=e.call(this,r)||this).enhancer=void 0,a.name_=void 0,a.equals=void 0,a.hasUnreportedChange_=!1,a.interceptors_=void 0,a.changeListeners_=void 0,a.value_=void 0,a.dehancer=void 0,a.enhancer=n,a.name_=r,a.equals=o,a.value_=n(t,void 0,r),a}Tn(t,e);var n=t.prototype;return n.dehanceValue=function(e){if(void 0!==this.dehancer)return this.dehancer(e);return e},n.set=function(e){this.value_,(e=this.prepareNewValue_(e))!==gi.UNCHANGED&&this.setNewValue_(e)},n.prepareNewValue_=function(e){if(fo(this)){var t=po(this,{object:this,type:mo,newValue:e});if(!t)return gi.UNCHANGED;e=t.newValue}return e=this.enhancer(e,this.value_,this.name_),this.equals(this.value_,e)?gi.UNCHANGED:e},n.setNewValue_=function(e){var t=this.value_;this.value_=e,this.reportChanged(),vo(this)&&bo(this,{type:mo,object:this,newValue:e,oldValue:t})},n.get=function(){return this.reportObserved(),this.dehanceValue(this.value_)},n.intercept_=function(e){return ho(this,e)},n.observe_=function(e,t){return t&&e({observableKind:"value",debugObjectName:this.name_,object:this,type:mo,newValue:this.value_,oldValue:void 0}),_o(this,e)},n.raw=function(){return this.value_},n.toJSON=function(){return this.get()},n.toString=function(){return this.name_+"["+this.value_+"]"},n.valueOf=function(){return Cn(this.get())},n[Symbol.toPrimitive]=function(){return this.valueOf()},t}(Hn),ei=function(){function e(e){this.dependenciesState_=ti.NOT_TRACKING_,this.observing_=[],this.newObserving_=null,this.observers_=new Set,this.runId_=0,this.lastAccessedBy_=0,this.lowestObserverState_=ti.UP_TO_DATE_,this.unboundDepsCount_=0,this.value_=new ii(null),this.name_=void 0,this.triggeredBy_=void 0,this.flags_=0,this.derivation=void 0,this.setter_=void 0,this.isTracing_=ni.NONE,this.scope_=void 0,this.equals_=void 0,this.requiresReaction_=void 0,this.keepAlive_=void 0,this.onBOL=void 0,this.onBUOL=void 0,e.get||Jt(31),this.derivation=e.get,this.name_=e.name||"ComputedValue",e.set&&(this.setter_=Hr("ComputedValue-setter",e.set)),this.equals_=e.equals||(e.compareStructural||e.struct?Xn.structural:Xn.default),this.scope_=e.context,this.requiresReaction_=e.requiresReaction,this.keepAlive_=!!e.keepAlive}var t=e.prototype;return t.onBecomeStale_=function(){xi(this)},t.onBO=function(){this.onBOL&&this.onBOL.forEach(function(e){return e()})},t.onBUO=function(){this.onBUOL&&this.onBUOL.forEach(function(e){return e()})},t.get=function(){if(this.isComputing&&Jt(32,this.name_,this.derivation),0!==gi.inBatch||0!==this.observers_.size||this.keepAlive_){if(ki(this),ai(this)){var e=gi.trackingContext;this.keepAlive_&&!e&&(gi.trackingContext=this),this.trackAndCompute()&&Ci(this),gi.trackingContext=e}}else ai(this)&&(this.warnAboutUntrackedRead_(),wi(),this.value_=this.computeValue_(!1),Si());var t=this.value_;if(oi(t))throw t.cause;return t},t.set=function(e){if(this.setter_){this.isRunningSetter&&Jt(33,this.name_),this.isRunningSetter=!0;try{this.setter_.call(this.scope_,e)}finally{this.isRunningSetter=!1}}else Jt(34,this.name_)},t.trackAndCompute=function(){var e=this.value_,t=this.dependenciesState_===ti.NOT_TRACKING_,n=this.computeValue_(!0),r=t||oi(e)||oi(n)||!this.equals_(e,n);return r&&(this.value_=n),r},t.computeValue_=function(e){this.isComputing=!0;var t,n=Yr(!1);if(e)t=si(this,this.derivation,this.scope_);else if(!0===gi.disableErrorBoundaries)t=this.derivation.call(this.scope_);else try{t=this.derivation.call(this.scope_)}catch(e){t=new ii(e)}return Jr(n),this.isComputing=!1,t},t.suspend_=function(){this.keepAlive_||(li(this),this.value_=void 0)},t.observe_=function(e,t){var n=this,r=!0,i=void 0;return qi(function(){var o=n.get();if(!r||t){var a=fi();e({observableKind:"computed",debugObjectName:n.name_,type:mo,object:n,newValue:o,oldValue:i}),di(a)}r=!1,i=o})},t.warnAboutUntrackedRead_=function(){return},t.toString=function(){return this.name_+"["+this.derivation.toString()+"]"},t.valueOf=function(){return Cn(this.get())},t[Symbol.toPrimitive]=function(){return this.valueOf()},Vn(e,[{key:"isComputing",get:function(){return Pn(this.flags_,e.isComputingMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isComputingMask_,t)}},{key:"isRunningSetter",get:function(){return Pn(this.flags_,e.isRunningSetterMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isRunningSetterMask_,t)}},{key:"isBeingObserved",get:function(){return Pn(this.flags_,e.isBeingObservedMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isBeingObservedMask_,t)}},{key:"isPendingUnobservation",get:function(){return Pn(this.flags_,e.isPendingUnobservationMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isPendingUnobservationMask_,t)}},{key:"diffValue",get:function(){return Pn(this.flags_,e.diffValueMask_)?1:0},set:function(t){this.flags_=Mn(this.flags_,e.diffValueMask_,1===t)}}])}();ei.isComputingMask_=1,ei.isRunningSetterMask_=2,ei.isBeingObservedMask_=4,ei.isPendingUnobservationMask_=8,ei.diffValueMask_=16;var ti,ni,ri=yn("ComputedValue",ei);!function(e){e[e.NOT_TRACKING_=-1]="NOT_TRACKING_",e[e.UP_TO_DATE_=0]="UP_TO_DATE_",e[e.POSSIBLY_STALE_=1]="POSSIBLY_STALE_",e[e.STALE_=2]="STALE_"}(ti||(ti={})),function(e){e[e.NONE=0]="NONE",e[e.LOG=1]="LOG",e[e.BREAK=2]="BREAK"}(ni||(ni={}));var ii=function(e){this.cause=void 0,this.cause=e};function oi(e){return e instanceof ii}function ai(e){switch(e.dependenciesState_){case ti.UP_TO_DATE_:return!1;case ti.NOT_TRACKING_:case ti.STALE_:return!0;case ti.POSSIBLY_STALE_:for(var t=hi(!0),n=fi(),r=e.observing_,i=r.length,o=0;o<i;o++){var a=r[o];if(ri(a)){if(gi.disableErrorBoundaries)a.get();else try{a.get()}catch(e){return di(n),pi(t),!0}if(e.dependenciesState_===ti.STALE_)return di(n),pi(t),!0}}return vi(e),di(n),pi(t),!1}}function si(e,t,n){var r=hi(!0);vi(e),e.newObserving_=new Array(0===e.runId_?100:e.observing_.length),e.unboundDepsCount_=0,e.runId_=++gi.runId;var i,o=gi.trackingDerivation;if(gi.trackingDerivation=e,gi.inBatch++,!0===gi.disableErrorBoundaries)i=t.call(n);else try{i=t.call(n)}catch(e){i=new ii(e)}return gi.inBatch--,gi.trackingDerivation=o,ui(e),pi(r),i}function ui(e){for(var t=e.observing_,n=e.observing_=e.newObserving_,r=ti.UP_TO_DATE_,i=0,o=e.unboundDepsCount_,a=0;a<o;a++){var s=n[a];0===s.diffValue&&(s.diffValue=1,i!==a&&(n[i]=s),i++),s.dependenciesState_>r&&(r=s.dependenciesState_)}for(n.length=i,e.newObserving_=null,o=t.length;o--;){var u=t[o];0===u.diffValue&&yi(u,e),u.diffValue=0}for(;i--;){var l=n[i];1===l.diffValue&&(l.diffValue=0,mi(l,e))}r!==ti.UP_TO_DATE_&&(e.dependenciesState_=r,e.onBecomeStale_())}function li(e){var t=e.observing_;e.observing_=[];for(var n=t.length;n--;)yi(t[n],e);e.dependenciesState_=ti.NOT_TRACKING_}function ci(e){var t=fi();try{return e()}finally{di(t)}}function fi(){var e=gi.trackingDerivation;return gi.trackingDerivation=null,e}function di(e){gi.trackingDerivation=e}function hi(e){var t=gi.allowStateReads;return gi.allowStateReads=e,t}function pi(e){gi.allowStateReads=e}function vi(e){if(e.dependenciesState_===ti.UP_TO_DATE_)return;e.dependenciesState_=ti.UP_TO_DATE_;for(var t=e.observing_,n=t.length;n--;)t[n].lowestObserverState_=ti.UP_TO_DATE_}var _i=function(){this.version=6,this.UNCHANGED={},this.trackingDerivation=null,this.trackingContext=null,this.runId=0,this.mobxGuid=0,this.inBatch=0,this.pendingUnobservations=[],this.pendingReactions=[],this.isRunningReactions=!1,this.allowStateChanges=!1,this.allowStateReads=!0,this.enforceActions=!0,this.spyListeners=[],this.globalReactionErrorHandlers=[],this.computedRequiresReaction=!1,this.reactionRequiresObservable=!1,this.observableRequiresReaction=!1,this.disableErrorBoundaries=!1,this.suppressReactionErrors=!1,this.useProxies=!0,this.verifyProxies=!1,this.safeDescriptors=!0},bi=!0,gi=function(){var e=en();return e.__mobxInstanceCount>0&&!e.__mobxGlobals&&(bi=!1),e.__mobxGlobals&&e.__mobxGlobals.version!==(new _i).version&&(bi=!1),bi?e.__mobxGlobals?(e.__mobxInstanceCount+=1,e.__mobxGlobals.UNCHANGED||(e.__mobxGlobals.UNCHANGED={}),e.__mobxGlobals):(e.__mobxInstanceCount=1,e.__mobxGlobals=new _i):(setTimeout(function(){Jt(35)},1),new _i)}();function mi(e,t){e.observers_.add(t),e.lowestObserverState_>t.dependenciesState_&&(e.lowestObserverState_=t.dependenciesState_)}function yi(e,t){e.observers_.delete(t),0===e.observers_.size&&Oi(e)}function Oi(e){!1===e.isPendingUnobservation&&(e.isPendingUnobservation=!0,gi.pendingUnobservations.push(e))}function wi(){gi.inBatch++}function Si(){if(0===--gi.inBatch){Ei();for(var e=gi.pendingUnobservations,t=0;t<e.length;t++){var n=e[t];n.isPendingUnobservation=!1,0===n.observers_.size&&(n.isBeingObserved&&(n.isBeingObserved=!1,n.onBUO()),n instanceof ei&&n.suspend_())}gi.pendingUnobservations=[]}}function ki(e){var t=gi.trackingDerivation;if(null!==t)return t.runId_!==e.lastAccessedBy_&&(e.lastAccessedBy_=t.runId_,t.newObserving_[t.unboundDepsCount_++]=e,!e.isBeingObserved&&gi.trackingContext&&(e.isBeingObserved=!0,e.onBO())),e.isBeingObserved;return 0===e.observers_.size&&gi.inBatch>0&&Oi(e),!1}function Ai(e){if(e.lowestObserverState_===ti.STALE_)return;e.lowestObserverState_=ti.STALE_,e.observers_.forEach(function(e){e.dependenciesState_===ti.UP_TO_DATE_&&e.onBecomeStale_(),e.dependenciesState_=ti.STALE_})}function Ci(e){if(e.lowestObserverState_===ti.STALE_)return;e.lowestObserverState_=ti.STALE_,e.observers_.forEach(function(t){t.dependenciesState_===ti.POSSIBLY_STALE_?t.dependenciesState_=ti.STALE_:t.dependenciesState_===ti.UP_TO_DATE_&&(e.lowestObserverState_=ti.UP_TO_DATE_)})}function xi(e){if(e.lowestObserverState_!==ti.UP_TO_DATE_)return;e.lowestObserverState_=ti.POSSIBLY_STALE_,e.observers_.forEach(function(e){e.dependenciesState_===ti.UP_TO_DATE_&&(e.dependenciesState_=ti.POSSIBLY_STALE_,e.onBecomeStale_())})}var ji=function(){function e(e,t,n,r){void 0===e&&(e="Reaction"),this.name_=void 0,this.onInvalidate_=void 0,this.errorHandler_=void 0,this.requiresObservable_=void 0,this.observing_=[],this.newObserving_=[],this.dependenciesState_=ti.NOT_TRACKING_,this.runId_=0,this.unboundDepsCount_=0,this.flags_=0,this.isTracing_=ni.NONE,this.name_=e,this.onInvalidate_=t,this.errorHandler_=n,this.requiresObservable_=r}var t=e.prototype;return t.onBecomeStale_=function(){this.schedule_()},t.schedule_=function(){this.isScheduled||(this.isScheduled=!0,gi.pendingReactions.push(this),Ei())},t.runReaction_=function(){if(!this.isDisposed){wi(),this.isScheduled=!1;var e=gi.trackingContext;if(gi.trackingContext=this,ai(this)){this.isTrackPending=!0;try{this.onInvalidate_()}catch(e){this.reportExceptionInDerivation_(e)}}gi.trackingContext=e,Si()}},t.track=function(e){if(this.isDisposed)return;wi(),this.isRunning=!0;var t=gi.trackingContext;gi.trackingContext=this;var n=si(this,e,void 0);gi.trackingContext=t,this.isRunning=!1,this.isTrackPending=!1,this.isDisposed&&li(this),oi(n)&&this.reportExceptionInDerivation_(n.cause),Si()},t.reportExceptionInDerivation_=function(e){var t=this;if(this.errorHandler_)return void this.errorHandler_(e,this);if(gi.disableErrorBoundaries)throw e;var n="[mobx] uncaught error in '"+this+"'";gi.suppressReactionErrors||console.error(n,e),gi.globalReactionErrorHandlers.forEach(function(n){return n(e,t)})},t.dispose=function(){this.isDisposed||(this.isDisposed=!0,this.isRunning||(wi(),li(this),Si()))},t.getDisposer_=function(e){var t=this,n=function n(){t.dispose(),null==e||null==e.removeEventListener||e.removeEventListener("abort",n)};return null==e||null==e.addEventListener||e.addEventListener("abort",n),n[Kn]=this,"dispose"in Symbol&&"symbol"===typeof Symbol.dispose&&(n[Symbol.dispose]=n),n},t.toString=function(){return"Reaction["+this.name_+"]"},t.trace=function(e){},Vn(e,[{key:"isDisposed",get:function(){return Pn(this.flags_,e.isDisposedMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isDisposedMask_,t)}},{key:"isScheduled",get:function(){return Pn(this.flags_,e.isScheduledMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isScheduledMask_,t)}},{key:"isTrackPending",get:function(){return Pn(this.flags_,e.isTrackPendingMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isTrackPendingMask_,t)}},{key:"isRunning",get:function(){return Pn(this.flags_,e.isRunningMask_)},set:function(t){this.flags_=Mn(this.flags_,e.isRunningMask_,t)}},{key:"diffValue",get:function(){return Pn(this.flags_,e.diffValueMask_)?1:0},set:function(t){this.flags_=Mn(this.flags_,e.diffValueMask_,1===t)}}])}();ji.isDisposedMask_=1,ji.isScheduledMask_=2,ji.isTrackPendingMask_=4,ji.isRunningMask_=8,ji.diffValueMask_=16;var Pi=100,Mi=function(e){return e()};function Ei(){if(gi.inBatch>0||gi.isRunningReactions)return;Mi(Ni)}function Ni(){gi.isRunningReactions=!0;for(var e=gi.pendingReactions,t=0;e.length>0;){++t===Pi&&(console.error("[mobx] cycle in reaction: "+e[0]),e.splice(0));for(var n=e.splice(0),r=0,i=n.length;r<i;r++)n[r].runReaction_()}gi.isRunningReactions=!1}var Vi=yn("Reaction",ji),Di="action",Ui="autoAction",Ti=er(Di),Li=er("action.bound",{bound:!0}),Ii=er(Ui,{autoAction:!0}),Ri=er("autoAction.bound",{autoAction:!0,bound:!0});function Bi(e){return function(t,n){if(hn(t))return Hr(t.name||"<unnamed action>",t,e);if(hn(n))return Hr(t,n,e);if(qn(n))return(e?Ii:Ti).decorate_20223_(t,n);if(pn(n))return Wn(t,n,e?Ii:Ti);if(pn(t))return Fn(er(e?Ui:Di,{name:t,autoAction:e}))}}var $i=Bi(!1);Object.assign($i,Ti);var Fi=Bi(!0);function Wi(e){return hn(e)&&!0===e.isMobxAction}function qi(e,t){var n,r,i,o;void 0===t&&(t=sn);var a,s=null!=(n=null==(r=t)?void 0:r.name)?n:"Autorun";if(t.scheduler||t.delay){var u=Hi(t),l=!1;a=new ji(s,function(){l||(l=!0,u(function(){l=!1,a.isDisposed||a.track(c)}))},t.onError,t.requiresObservable)}else a=new ji(s,function(){this.track(c)},t.onError,t.requiresObservable);function c(){e(a)}return null!=(i=t)&&null!=(i=i.signal)&&i.aborted||a.schedule_(),a.getDisposer_(null==(o=t)?void 0:o.signal)}Object.assign(Fi,Ii),$i.bound=Fn(Li),Fi.bound=Fn(Ri);var Ki=function(e){return e()};function Hi(e){return e.scheduler?e.scheduler:e.delay?function(t){return setTimeout(t,e.delay)}:Ki}var Gi="onBO",zi="onBUO";function Xi(e,t,n){return Qi(zi,e,t,n)}function Qi(e,t,n,r){var i=aa(t),o=hn(r)?r:n,a=e+"L";return i[a]?i[a].add(o):i[a]=new Set([o]),function(){var e=i[a];e&&(e.delete(o),0===e.size&&delete i[a])}}function Yi(e,t,n,r){var i=jn(t);return la(function(){var t=qo(e,r)[Kn];An(i).forEach(function(e){t.extend_(e,i[e],!n||!(e in n)||n[e])})}),e}var Ji=0;function Zi(){this.message="FLOW_CANCELLED"}Zi.prototype=Object.create(Error.prototype);var eo=or("flow"),to=or("flow.bound",{bound:!0}),no=Object.assign(function(e,t){if(qn(t))return eo.decorate_20223_(e,t);if(pn(t))return Wn(e,t,eo);var n=e,r=n.name||"<unnamed flow>",i=function(){var e,t=arguments,i=++Ji,o=$i(r+" - runid: "+i+" - init",n).apply(this,t),a=void 0,s=new Promise(function(t,n){var s=0;function u(e){var t;a=void 0;try{t=$i(r+" - runid: "+i+" - yield "+s++,o.next).call(o,e)}catch(e){return n(e)}c(t)}function l(e){var t;a=void 0;try{t=$i(r+" - runid: "+i+" - yield "+s++,o.throw).call(o,e)}catch(e){return n(e)}c(t)}function c(e){if(hn(null==e?void 0:e.then))return void e.then(c,n);if(e.done)return t(e.value);return(a=Promise.resolve(e.value)).then(u,l)}e=n,u(void 0)});return s.cancel=$i(r+" - runid: "+i+" - cancel",function(){try{a&&ro(a);var t=o.return(void 0),n=Promise.resolve(t.value);n.then(dn,dn),ro(n),e(new Zi)}catch(t){e(t)}}),s};return i.isMobXFlow=!0,i},eo);function ro(e){hn(e.cancel)&&e.cancel()}function io(e){return!0===(null==e?void 0:e.isMobXFlow)}function oo(e,t){if(!e)return!1;return Go(e)||!!e[Kn]||Gn(e)||Vi(e)||ri(e)}function ao(e){return oo(e)}function so(e,t){void 0===t&&(t=void 0),wi();try{return e.apply(t)}finally{Si()}}function uo(e){return e[Kn]}no.bound=Fn(to);var lo={has:function(e,t){return uo(e).has_(t)},get:function(e,t){return uo(e).get_(t)},set:function(e,t,n){var r;if(!pn(t))return!1;return null==(r=uo(e).set_(t,n,!0))||r},deleteProperty:function(e,t){var n;if(!pn(t))return!1;return null==(n=uo(e).delete_(t,!0))||n},defineProperty:function(e,t,n){var r;return null==(r=uo(e).defineProperty_(t,n))||r},ownKeys:function(e){return uo(e).ownKeys_()},preventExtensions:function(e){Jt(13)}};function co(e,t){var n,r;return cn(),null!=(r=(n=(e=qo(e,t))[Kn]).proxy_)?r:n.proxy_=new Proxy(e,lo)}function fo(e){return void 0!==e.interceptors_&&e.interceptors_.length>0}function ho(e,t){var n=e.interceptors_||(e.interceptors_=[]);return n.push(t),fn(function(){var e=n.indexOf(t);-1!==e&&n.splice(e,1)})}function po(e,t){var n=fi();try{for(var r=[].concat(e.interceptors_||[]),i=0,o=r.length;i<o&&((t=r[i](t))&&!t.type&&Jt(14),t);i++);return t}finally{di(n)}}function vo(e){return void 0!==e.changeListeners_&&e.changeListeners_.length>0}function _o(e,t){var n=e.changeListeners_||(e.changeListeners_=[]);return n.push(t),fn(function(){var e=n.indexOf(t);-1!==e&&n.splice(e,1)})}function bo(e,t){var n=fi(),r=e.changeListeners_;if(!r)return;for(var i=0,o=(r=r.slice()).length;i<o;i++)r[i](t);di(n)}var go="splice",mo="update",yo={get:function(e,t){var n=e[Kn];if(t===Kn)return n;if("length"===t)return n.getArrayLength_();if("string"===typeof t&&!isNaN(t))return n.get_(parseInt(t));if(xn(So,t))return So[t];return e[t]},set:function(e,t,n){var r=e[Kn];return"length"===t&&r.setArrayLength_(n),"symbol"===typeof t||isNaN(t)?e[t]=n:r.set_(parseInt(t),n),!0},preventExtensions:function(){Jt(15)}},Oo=function(){function e(e,t,n,r){void 0===e&&(e="ObservableArray"),this.owned_=void 0,this.legacyMode_=void 0,this.atom_=void 0,this.values_=[],this.interceptors_=void 0,this.changeListeners_=void 0,this.enhancer_=void 0,this.dehancer=void 0,this.proxy_=void 0,this.lastKnownLength_=0,this.owned_=n,this.legacyMode_=r,this.atom_=new Hn(e),this.enhancer_=function(e,n){return t(e,n,"ObservableArray[..]")}}var t=e.prototype;return t.dehanceValue_=function(e){if(void 0!==this.dehancer)return this.dehancer(e);return e},t.dehanceValues_=function(e){if(void 0!==this.dehancer&&e.length>0)return e.map(this.dehancer);return e},t.intercept_=function(e){return ho(this,e)},t.observe_=function(e,t){return void 0===t&&(t=!1),t&&e({observableKind:"array",object:this.proxy_,debugObjectName:this.atom_.name_,type:"splice",index:0,added:this.values_.slice(),addedCount:this.values_.length,removed:[],removedCount:0}),_o(this,e)},t.getArrayLength_=function(){return this.atom_.reportObserved(),this.values_.length},t.setArrayLength_=function(e){("number"!==typeof e||isNaN(e)||e<0)&&Jt("Out of range: "+e);var t=this.values_.length;if(e===t)return;if(e>t){for(var n=new Array(e-t),r=0;r<e-t;r++)n[r]=void 0;this.spliceWithArray_(t,0,n)}else this.spliceWithArray_(e,t-e)},t.updateArrayLength_=function(e,t){e!==this.lastKnownLength_&&Jt(16),this.lastKnownLength_+=t,this.legacyMode_&&t>0&&ia(e+t+1)},t.spliceWithArray_=function(e,t,n){var r=this;this.atom_;var i=this.values_.length;if(void 0===e?e=0:e>i?e=i:e<0&&(e=Math.max(0,i+e)),t=1===arguments.length?i-e:void 0===t||null===t?0:Math.max(0,Math.min(t,i-e)),void 0===n&&(n=an),fo(this)){var o=po(this,{object:this.proxy_,type:go,index:e,removedCount:t,added:n});if(!o)return an;t=o.removedCount,n=o.added}if(n=0===n.length?n:n.map(function(e){return r.enhancer_(e,void 0)}),this.legacyMode_){var a=n.length-t;this.updateArrayLength_(i,a)}var s=this.spliceItemsIntoValues_(e,t,n);return 0===t&&0===n.length||this.notifyArraySplice_(e,n,s),this.dehanceValues_(s)},t.spliceItemsIntoValues_=function(e,t,n){var r;if(n.length<1e4)return(r=this.values_).splice.apply(r,[e,t].concat(n));var i=this.values_.slice(e,e+t),o=this.values_.slice(e+t);this.values_.length+=n.length-t;for(var a=0;a<n.length;a++)this.values_[e+a]=n[a];for(var s=0;s<o.length;s++)this.values_[e+n.length+s]=o[s];return i},t.notifyArrayChildUpdate_=function(e,t,n){var r=!this.owned_&&!1,i=vo(this),o=i||r?{observableKind:"array",object:this.proxy_,type:mo,debugObjectName:this.atom_.name_,index:e,newValue:t,oldValue:n}:null;this.atom_.reportChanged(),i&&bo(this,o)},t.notifyArraySplice_=function(e,t,n){var r=!this.owned_&&!1,i=vo(this),o=i||r?{observableKind:"array",object:this.proxy_,debugObjectName:this.atom_.name_,type:go,index:e,removed:n,added:t,removedCount:n.length,addedCount:t.length}:null;this.atom_.reportChanged(),i&&bo(this,o)},t.get_=function(e){if(this.legacyMode_&&e>=this.values_.length)return void console.warn("[mobx] Out of bounds read: "+e);return this.atom_.reportObserved(),this.dehanceValue_(this.values_[e])},t.set_=function(e,t){var n=this.values_;if(this.legacyMode_&&e>n.length&&Jt(17,e,n.length),e<n.length){this.atom_;var r=n[e];if(fo(this)){var i=po(this,{type:mo,object:this.proxy_,index:e,newValue:t});if(!i)return;t=i.newValue}(t=this.enhancer_(t,r))!==r&&(n[e]=t,this.notifyArrayChildUpdate_(e,t,r))}else{for(var o=new Array(e+1-n.length),a=0;a<o.length-1;a++)o[a]=void 0;o[o.length-1]=t,this.spliceWithArray_(n.length,0,o)}},e}();function wo(e,t,n,r){return void 0===n&&(n="ObservableArray"),void 0===r&&(r=!1),cn(),la(function(){var i=new Oo(n,t,r,!1);mn(i.values_,Kn,i);var o=new Proxy(i.values_,yo);return i.proxy_=o,e&&e.length&&i.spliceWithArray_(0,0,e),o})}var So={clear:function(){return this.splice(0)},replace:function(e){var t=this[Kn];return t.spliceWithArray_(0,t.values_.length,e)},toJSON:function(){return this.slice()},splice:function(e,t){for(var n=arguments.length,r=new Array(n>2?n-2:0),i=2;i<n;i++)r[i-2]=arguments[i];var o=this[Kn];switch(arguments.length){case 0:return[];case 1:return o.spliceWithArray_(e);case 2:return o.spliceWithArray_(e,t)}return o.spliceWithArray_(e,t,r)},spliceWithArray:function(e,t,n){return this[Kn].spliceWithArray_(e,t,n)},push:function(){for(var e=this[Kn],t=arguments.length,n=new Array(t),r=0;r<t;r++)n[r]=arguments[r];return e.spliceWithArray_(e.values_.length,0,n),e.values_.length},pop:function(){return this.splice(Math.max(this[Kn].values_.length-1,0),1)[0]},shift:function(){return this.splice(0,1)[0]},unshift:function(){for(var e=this[Kn],t=arguments.length,n=new Array(t),r=0;r<t;r++)n[r]=arguments[r];return e.spliceWithArray_(0,0,n),e.values_.length},reverse:function(){return gi.trackingDerivation&&Jt(37,"reverse"),this.replace(this.slice().reverse()),this},sort:function(){gi.trackingDerivation&&Jt(37,"sort");var e=this.slice();return e.sort.apply(e,arguments),this.replace(e),this},remove:function(e){var t=this[Kn],n=t.dehanceValues_(t.values_).indexOf(e);if(n>-1)return this.splice(n,1),!0;return!1}};function ko(e,t){"function"===typeof Array.prototype[e]&&(So[e]=t(e))}function Ao(e){return function(){var t=this[Kn];t.atom_.reportObserved();var n=t.dehanceValues_(t.values_);return n[e].apply(n,arguments)}}function Co(e){return function(t,n){var r=this,i=this[Kn];return i.atom_.reportObserved(),i.dehanceValues_(i.values_)[e](function(e,i){return t.call(n,e,i,r)})}}function xo(e){return function(){var t=this,n=this[Kn];n.atom_.reportObserved();var r=n.dehanceValues_(n.values_),i=arguments[0];return arguments[0]=function(e,n,r){return i(e,n,r,t)},r[e].apply(r,arguments)}}ko("at",Ao),ko("concat",Ao),ko("flat",Ao),ko("includes",Ao),ko("indexOf",Ao),ko("join",Ao),ko("lastIndexOf",Ao),ko("slice",Ao),ko("toString",Ao),ko("toLocaleString",Ao),ko("toSorted",Ao),ko("toSpliced",Ao),ko("with",Ao),ko("every",Co),ko("filter",Co),ko("find",Co),ko("findIndex",Co),ko("findLast",Co),ko("findLastIndex",Co),ko("flatMap",Co),ko("forEach",Co),ko("map",Co),ko("some",Co),ko("toReversed",Co),ko("reduce",xo),ko("reduceRight",xo);var jo=yn("ObservableArrayAdministration",Oo);function Po(e){return vn(e)&&jo(e[Kn])}var Mo={},Eo="add",No="delete",Vo=function(){function e(e,t,n){var r=this;void 0===t&&(t=Qn),void 0===n&&(n="ObservableMap"),this.enhancer_=void 0,this.name_=void 0,this[Kn]=Mo,this.data_=void 0,this.hasMap_=void 0,this.keysAtom_=void 0,this.interceptors_=void 0,this.changeListeners_=void 0,this.dehancer=void 0,this.enhancer_=t,this.name_=n,hn(Map)||Jt(18),la(function(){r.keysAtom_=zn("ObservableMap.keys()"),r.data_=new Map,r.hasMap_=new Map,e&&r.merge(e)})}var t=e.prototype;return t.has_=function(e){return this.data_.has(e)},t.has=function(e){var t=this;if(!gi.trackingDerivation)return this.has_(e);var n=this.hasMap_.get(e);if(!n){var r=n=new Zr(this.has_(e),Yn,"ObservableMap.key?",!1);this.hasMap_.set(e,r),Xi(r,function(){return t.hasMap_.delete(e)})}return n.get()},t.set=function(e,t){var n=this.has_(e);if(fo(this)){var r=po(this,{type:n?mo:Eo,object:this,newValue:t,name:e});if(!r)return this;t=r.newValue}return n?this.updateValue_(e,t):this.addValue_(e,t),this},t.delete=function(e){var t=this;if(this.keysAtom_,fo(this)&&!po(this,{type:No,object:this,name:e}))return!1;if(this.has_(e)){var n=vo(this),r=n?{observableKind:"map",debugObjectName:this.name_,type:No,object:this,oldValue:this.data_.get(e).value_,name:e}:null;return so(function(){var n;t.keysAtom_.reportChanged(),null==(n=t.hasMap_.get(e))||n.setNewValue_(!1),t.data_.get(e).setNewValue_(void 0),t.data_.delete(e)}),n&&bo(this,r),!0}return!1},t.updateValue_=function(e,t){var n=this.data_.get(e);if((t=n.prepareNewValue_(t))!==gi.UNCHANGED){var r=vo(this),i=r?{observableKind:"map",debugObjectName:this.name_,type:mo,object:this,oldValue:n.value_,name:e,newValue:t}:null;n.setNewValue_(t),r&&bo(this,i)}},t.addValue_=function(e,t){var n=this;this.keysAtom_,so(function(){var r,i=new Zr(t,n.enhancer_,"ObservableMap.key",!1);n.data_.set(e,i),t=i.value_,null==(r=n.hasMap_.get(e))||r.setNewValue_(!0),n.keysAtom_.reportChanged()});var r=vo(this),i=r?{observableKind:"map",debugObjectName:this.name_,type:Eo,object:this,name:e,newValue:t}:null;r&&bo(this,i)},t.get=function(e){if(this.has(e))return this.dehanceValue_(this.data_.get(e).get());return this.dehanceValue_(void 0)},t.dehanceValue_=function(e){if(void 0!==this.dehancer)return this.dehancer(e);return e},t.keys=function(){return this.keysAtom_.reportObserved(),this.data_.keys()},t.values=function(){var e=this,t=this.keys();return Uo({next:function(){var n=t.next(),r=n.done,i=n.value;return{done:r,value:r?void 0:e.get(i)}}})},t.entries=function(){var e=this,t=this.keys();return Uo({next:function(){var n=t.next(),r=n.done,i=n.value;return{done:r,value:r?void 0:[i,e.get(i)]}}})},t[Symbol.iterator]=function(){return this.entries()},t.forEach=function(e,t){for(var n,r=Dn(this);!(n=r()).done;){var i=n.value,o=i[0],a=i[1];e.call(t,a,o,this)}},t.merge=function(e){var t=this;return Do(e)&&(e=new Map(e)),so(function(){var n,r,i;_n(e)?kn(e).forEach(function(n){return t.set(n,e[n])}):Array.isArray(e)?e.forEach(function(e){var n=e[0],r=e[1];return t.set(n,r)}):On(e)?(n=e,r=Object.getPrototypeOf(n),i=Object.getPrototypeOf(r),null!==Object.getPrototypeOf(i)&&Jt(19,e),e.forEach(function(e,n){return t.set(n,e)})):null!==e&&void 0!==e&&Jt(20,e)}),this},t.clear=function(){var e=this;so(function(){ci(function(){for(var t,n=Dn(e.keys());!(t=n()).done;){var r=t.value;e.delete(r)}})})},t.replace=function(e){var t=this;return so(function(){for(var n,r=To(e),i=new Map,o=!1,a=Dn(t.data_.keys());!(n=a()).done;){var s=n.value;if(!r.has(s))if(t.delete(s))o=!0;else{var u=t.data_.get(s);i.set(s,u)}}for(var l,c=Dn(r.entries());!(l=c()).done;){var f=l.value,d=f[0],h=f[1],p=t.data_.has(d);if(t.set(d,h),t.data_.has(d)){var v=t.data_.get(d);i.set(d,v),p||(o=!0)}}if(!o)if(t.data_.size!==i.size)t.keysAtom_.reportChanged();else for(var _=t.data_.keys(),b=i.keys(),g=_.next(),m=b.next();!g.done;){if(g.value!==m.value){t.keysAtom_.reportChanged();break}g=_.next(),m=b.next()}t.data_=i}),this},t.toString=function(){return"[object ObservableMap]"},t.toJSON=function(){return Array.from(this)},t.observe_=function(e,t){return _o(this,e)},t.intercept_=function(e){return ho(this,e)},Vn(e,[{key:"size",get:function(){return this.keysAtom_.reportObserved(),this.data_.size}},{key:Symbol.toStringTag,get:function(){return"Map"}}])}(),Do=yn("ObservableMap",Vo);function Uo(e){return e[Symbol.toStringTag]="MapIterator",_a(e)}function To(e){if(On(e)||Do(e))return e;if(Array.isArray(e))return new Map(e);if(_n(e)){var t=new Map;for(var n in e)t.set(n,e[n]);return t}return Jt(21,e)}var Lo={},Io=function(){function e(e,t,n){var r=this;void 0===t&&(t=Qn),void 0===n&&(n="ObservableSet"),this.name_=void 0,this[Kn]=Lo,this.data_=new Set,this.atom_=void 0,this.changeListeners_=void 0,this.interceptors_=void 0,this.dehancer=void 0,this.enhancer_=void 0,this.name_=n,hn(Set)||Jt(22),this.enhancer_=function(e,r){return t(e,r,n)},la(function(){r.atom_=zn(r.name_),e&&r.replace(e)})}var t=e.prototype;return t.dehanceValue_=function(e){if(void 0!==this.dehancer)return this.dehancer(e);return e},t.clear=function(){var e=this;so(function(){ci(function(){for(var t,n=Dn(e.data_.values());!(t=n()).done;){var r=t.value;e.delete(r)}})})},t.forEach=function(e,t){for(var n,r=Dn(this);!(n=r()).done;){var i=n.value;e.call(t,i,i,this)}},t.add=function(e){var t=this;if(this.atom_,fo(this)){var n=po(this,{type:Eo,object:this,newValue:e});if(!n)return this;e=n.newValue}if(!this.has(e)){so(function(){t.data_.add(t.enhancer_(e,void 0)),t.atom_.reportChanged()});var r=vo(this),i=r?{observableKind:"set",debugObjectName:this.name_,type:Eo,object:this,newValue:e}:null;r&&bo(this,i)}return this},t.delete=function(e){var t=this;if(fo(this)&&!po(this,{type:No,object:this,oldValue:e}))return!1;if(this.has(e)){var n=vo(this),r=n?{observableKind:"set",debugObjectName:this.name_,type:No,object:this,oldValue:e}:null;return so(function(){t.atom_.reportChanged(),t.data_.delete(e)}),n&&bo(this,r),!0}return!1},t.has=function(e){return this.atom_.reportObserved(),this.data_.has(this.dehanceValue_(e))},t.entries=function(){var e=this.values();return Bo({next:function(){var t=e.next(),n=t.value,r=t.done;return r?{value:void 0,done:r}:{value:[n,n],done:r}}})},t.keys=function(){return this.values()},t.values=function(){this.atom_.reportObserved();var e=this,t=this.data_.values();return Bo({next:function(){var n=t.next(),r=n.value,i=n.done;return i?{value:void 0,done:i}:{value:e.dehanceValue_(r),done:i}}})},t.intersection=function(e){if(wn(e)&&!Ro(e))return e.intersection(this);return new Set(this).intersection(e)},t.union=function(e){if(wn(e)&&!Ro(e))return e.union(this);return new Set(this).union(e)},t.difference=function(e){return new Set(this).difference(e)},t.symmetricDifference=function(e){if(wn(e)&&!Ro(e))return e.symmetricDifference(this);return new Set(this).symmetricDifference(e)},t.isSubsetOf=function(e){return new Set(this).isSubsetOf(e)},t.isSupersetOf=function(e){return new Set(this).isSupersetOf(e)},t.isDisjointFrom=function(e){if(wn(e)&&!Ro(e))return e.isDisjointFrom(this);return new Set(this).isDisjointFrom(e)},t.replace=function(e){var t=this;return Ro(e)&&(e=new Set(e)),so(function(){Array.isArray(e)||wn(e)?(t.clear(),e.forEach(function(e){return t.add(e)})):null!==e&&void 0!==e&&Jt("Cannot initialize set from "+e)}),this},t.observe_=function(e,t){return _o(this,e)},t.intercept_=function(e){return ho(this,e)},t.toJSON=function(){return Array.from(this)},t.toString=function(){return"[object ObservableSet]"},t[Symbol.iterator]=function(){return this.values()},Vn(e,[{key:"size",get:function(){return this.atom_.reportObserved(),this.data_.size}},{key:Symbol.toStringTag,get:function(){return"Set"}}])}(),Ro=yn("ObservableSet",Io);function Bo(e){return e[Symbol.toStringTag]="SetIterator",_a(e)}var $o=Object.create(null),Fo="remove",Wo=function(){function e(e,t,n,r){void 0===t&&(t=new Map),void 0===r&&(r=mr),this.target_=void 0,this.values_=void 0,this.name_=void 0,this.defaultAnnotation_=void 0,this.keysAtom_=void 0,this.changeListeners_=void 0,this.interceptors_=void 0,this.proxy_=void 0,this.isPlainObject_=void 0,this.appliedAnnotations_=void 0,this.pendingKeys_=void 0,this.target_=e,this.values_=t,this.name_=n,this.defaultAnnotation_=r,this.keysAtom_=new Hn("ObservableObject.keys"),this.isPlainObject_=_n(this.target_)}var t=e.prototype;return t.getObservablePropValue_=function(e){return this.values_.get(e).get()},t.setObservablePropValue_=function(e,t){var n=this.values_.get(e);if(n instanceof ei)return n.set(t),!0;if(fo(this)){var r=po(this,{type:mo,object:this.proxy_||this.target_,name:e,newValue:t});if(!r)return null;t=r.newValue}if((t=n.prepareNewValue_(t))!==gi.UNCHANGED){var i=vo(this),o=i?{type:mo,observableKind:"object",debugObjectName:this.name_,object:this.proxy_||this.target_,oldValue:n.value_,name:e,newValue:t}:null;n.setNewValue_(t),i&&bo(this,o)}return!0},t.get_=function(e){return gi.trackingDerivation&&!xn(this.target_,e)&&this.has_(e),this.target_[e]},t.set_=function(e,t,n){return void 0===n&&(n=!1),xn(this.target_,e)?this.values_.has(e)?this.setObservablePropValue_(e,t):n?Reflect.set(this.target_,e,t):(this.target_[e]=t,!0):this.extend_(e,{value:t,enumerable:!0,writable:!0,configurable:!0},this.defaultAnnotation_,n)},t.has_=function(e){if(!gi.trackingDerivation)return e in this.target_;this.pendingKeys_||(this.pendingKeys_=new Map);var t=this.pendingKeys_.get(e);return t||(t=new Zr(e in this.target_,Yn,"ObservableObject.key?",!1),this.pendingKeys_.set(e,t)),t.get()},t.make_=function(e,t){if(!0===t&&(t=this.defaultAnnotation_),!1===t)return;if(!(e in this.target_)){var n;if(null!=(n=this.target_[$n])&&n[e])return;Jt(1,t.annotationType_,this.name_+"."+e.toString())}for(var r=this.target_;r&&r!==on;){var i=nn(r,e);if(i){var o=t.make_(this,e,i,r);if(0===o)return;if(1===o)break}r=Object.getPrototypeOf(r)}zo(this,0,e)},t.extend_=function(e,t,n,r){if(void 0===r&&(r=!1),!0===n&&(n=this.defaultAnnotation_),!1===n)return this.defineProperty_(e,t,r);var i=n.extend_(this,e,t,r);return i&&zo(this,0,e),i},t.defineProperty_=function(e,t,n){void 0===n&&(n=!1),this.keysAtom_;try{wi();var r=this.delete_(e);if(!r)return r;if(fo(this)){var i=po(this,{object:this.proxy_||this.target_,name:e,type:Eo,newValue:t.value});if(!i)return null;var o=i.newValue;t.value!==o&&(t=Un({},t,{value:o}))}if(n){if(!Reflect.defineProperty(this.target_,e,t))return!1}else rn(this.target_,e,t);this.notifyPropertyAddition_(e,t.value)}finally{Si()}return!0},t.defineObservableProperty_=function(e,t,n,r){void 0===r&&(r=!1),this.keysAtom_;try{wi();var i=this.delete_(e);if(!i)return i;if(fo(this)){var o=po(this,{object:this.proxy_||this.target_,name:e,type:Eo,newValue:t});if(!o)return null;t=o.newValue}var a=Ho(e),s={configurable:!gi.safeDescriptors||this.isPlainObject_,enumerable:!0,get:a.get,set:a.set};if(r){if(!Reflect.defineProperty(this.target_,e,s))return!1}else rn(this.target_,e,s);var u=new Zr(t,n,"ObservableObject.key",!1);this.values_.set(e,u),this.notifyPropertyAddition_(e,u.value_)}finally{Si()}return!0},t.defineComputedProperty_=function(e,t,n){void 0===n&&(n=!1),this.keysAtom_;try{wi();var r=this.delete_(e);if(!r)return r;if(fo(this)&&!po(this,{object:this.proxy_||this.target_,name:e,type:Eo,newValue:void 0}))return null;t.name||(t.name="ObservableObject.key"),t.context=this.proxy_||this.target_;var i=Ho(e),o={configurable:!gi.safeDescriptors||this.isPlainObject_,enumerable:!1,get:i.get,set:i.set};if(n){if(!Reflect.defineProperty(this.target_,e,o))return!1}else rn(this.target_,e,o);this.values_.set(e,new ei(t)),this.notifyPropertyAddition_(e,void 0)}finally{Si()}return!0},t.delete_=function(e,t){if(void 0===t&&(t=!1),this.keysAtom_,!xn(this.target_,e))return!0;if(fo(this)&&!po(this,{object:this.proxy_||this.target_,name:e,type:Fo}))return null;try{var n;wi();var r,i=vo(this),o=this.values_.get(e),a=void 0;if(!o&&i&&(a=null==(r=nn(this.target_,e))?void 0:r.value),t){if(!Reflect.deleteProperty(this.target_,e))return!1}else delete this.target_[e];if(o&&(this.values_.delete(e),o instanceof Zr&&(a=o.value_),Ai(o)),this.keysAtom_.reportChanged(),null==(n=this.pendingKeys_)||null==(n=n.get(e))||n.set(e in this.target_),i){var s={type:Fo,observableKind:"object",object:this.proxy_||this.target_,debugObjectName:this.name_,oldValue:a,name:e};i&&bo(this,s)}}finally{Si()}return!0},t.observe_=function(e,t){return _o(this,e)},t.intercept_=function(e){return ho(this,e)},t.notifyPropertyAddition_=function(e,t){var n,r=vo(this);if(r){var i=r?{type:Eo,observableKind:"object",debugObjectName:this.name_,object:this.proxy_||this.target_,name:e,newValue:t}:null;r&&bo(this,i)}null==(n=this.pendingKeys_)||null==(n=n.get(e))||n.set(!0),this.keysAtom_.reportChanged()},t.ownKeys_=function(){return this.keysAtom_.reportObserved(),An(this.target_)},t.keys_=function(){return this.keysAtom_.reportObserved(),Object.keys(this.target_)},e}();function qo(e,t){var n;if(xn(e,Kn))return e;var r=null!=(n=null==t?void 0:t.name)?n:"ObservableObject",i=new Wo(e,new Map,String(r),Nr(t));return gn(e,Kn,i),e}var Ko=yn("ObservableObjectAdministration",Wo);function Ho(e){return $o[e]||($o[e]={get:function(){return this[Kn].getObservablePropValue_(e)},set:function(t){return this[Kn].setObservablePropValue_(e,t)}})}function Go(e){if(vn(e))return Ko(e[Kn]);return!1}function zo(e,t,n){var r;null==(r=e.target_[$n])||delete r[n]}var Xo,Qo,Yo=na(0),Jo=function(){var e=!1,t={};return Object.defineProperty(t,"0",{set:function(){e=!0}}),Object.create(t)[0]=1,!1===e}(),Zo=0,ea=function(){};Xo=ea,Qo=Array.prototype,Object.setPrototypeOf?Object.setPrototypeOf(Xo.prototype,Qo):void 0!==Xo.prototype.__proto__?Xo.prototype.__proto__=Qo:Xo.prototype=Qo;var ta=function(e){function t(t,n,r,i){var o;return void 0===r&&(r="ObservableArray"),void 0===i&&(i=!1),o=e.call(this)||this,la(function(){var e=new Oo(r,n,i,!0);e.proxy_=o,mn(o,Kn,e),t&&t.length&&o.spliceWithArray(0,0,t),Jo&&Object.defineProperty(o,"0",Yo)}),o}Tn(t,e);var n=t.prototype;return n.concat=function(){this[Kn].atom_.reportObserved();for(var e=arguments.length,t=new Array(e),n=0;n<e;n++)t[n]=arguments[n];return Array.prototype.concat.apply(this.slice(),t.map(function(e){return Po(e)?e.slice():e}))},n[Symbol.iterator]=function(){var e=this,t=0;return _a({next:function(){return t<e.length?{value:e[t++],done:!1}:{done:!0,value:void 0}}})},Vn(t,[{key:"length",get:function(){return this[Kn].getArrayLength_()},set:function(e){this[Kn].setArrayLength_(e)}},{key:Symbol.toStringTag,get:function(){return"Array"}}])}(ea);function na(e){return{enumerable:!1,configurable:!0,get:function(){return this[Kn].get_(e)},set:function(t){this[Kn].set_(e,t)}}}function ra(e){rn(ta.prototype,""+e,na(e))}function ia(e){if(e>Zo){for(var t=Zo;t<e+100;t++)ra(t);Zo=e}}function oa(e,t,n){return new ta(e,t,n)}function aa(e,t){if("object"===typeof e&&null!==e){if(Po(e))return void 0!==t&&Jt(23),e[Kn].atom_;if(Ro(e))return e.atom_;if(Do(e)){if(void 0===t)return e.keysAtom_;var n=e.data_.get(t)||e.hasMap_.get(t);return n||Jt(25,t,ua(e)),n}if(Go(e)){if(!t)return Jt(26);var r=e[Kn].values_.get(t);return r||Jt(27,t,ua(e)),r}if(Gn(e)||ri(e)||Vi(e))return e}else if(hn(e)&&Vi(e[Kn]))return e[Kn];Jt(28)}function sa(e,t){if(e||Jt(29),Gn(e)||ri(e)||Vi(e))return e;if(Do(e)||Ro(e))return e;if(e[Kn])return e[Kn];Jt(24,e)}function ua(e,t){var n;if(void 0!==t)n=aa(e,t);else{if(Wi(e))return e.name;n=Go(e)||Do(e)||Ro(e)?sa(e):aa(e)}return n.name_}function la(e){var t=fi(),n=Yr(!0);wi();try{return e()}finally{Si(),Jr(n),di(t)}}Object.entries(So).forEach(function(e){var t=e[0],n=e[1];"concat"!==t&&gn(ta.prototype,t,n)}),ia(1e3);var ca,fa=on.toString;function da(e,t,n){return void 0===n&&(n=-1),ha(e,t,n)}function ha(e,t,n,r,i){if(e===t)return 0!==e||1/e===1/t;if(null==e||null==t)return!1;if(e!==e)return t!==t;var o=typeof e;if("function"!==o&&"object"!==o&&"object"!=typeof t)return!1;var a=fa.call(e);if(a!==fa.call(t))return!1;switch(a){case"[object RegExp]":case"[object String]":return""+e===""+t;case"[object Number]":if(+e!==+e)return+t!==+t;return 0===+e?1/+e===1/t:+e===+t;case"[object Date]":case"[object Boolean]":return+e===+t;case"[object Symbol]":return"undefined"!==typeof Symbol&&Symbol.valueOf.call(e)===Symbol.valueOf.call(t);case"[object Map]":case"[object Set]":n>=0&&n++}e=pa(e),t=pa(t);var s="[object Array]"===a;if(!s){if("object"!=typeof e||"object"!=typeof t)return!1;var u=e.constructor,l=t.constructor;if(u!==l&&!(hn(u)&&u instanceof u&&hn(l)&&l instanceof l)&&"constructor"in e&&"constructor"in t)return!1}if(0===n)return!1;n<0&&(n=-1),i=i||[];for(var c=(r=r||[]).length;c--;)if(r[c]===e)return i[c]===t;if(r.push(e),i.push(t),s){if((c=e.length)!==t.length)return!1;for(;c--;)if(!ha(e[c],t[c],n-1,r,i))return!1}else{var f=Object.keys(e),d=f.length;if(Object.keys(t).length!==d)return!1;for(var h=0;h<d;h++){var p=f[h];if(!xn(t,p)||!ha(e[p],t[p],n-1,r,i))return!1}}return r.pop(),i.pop(),!0}function pa(e){if(Po(e))return e.slice();if(On(e)||Do(e))return Array.from(e.entries());if(wn(e)||Ro(e))return Array.from(e.entries());return e}var va=(null==(ca=en().Iterator)?void 0:ca.prototype)||{};function _a(e){return e[Symbol.iterator]=ba,Object.assign(Object.create(va),e)}function ba(){return this}["Symbol","Map","Set"].forEach(function(e){"undefined"===typeof en()[e]&&Jt("MobX requires global '"+e+"' to be available or polyfilled")}),"object"===typeof __MOBX_DEVTOOLS_GLOBAL_HOOK__&&__MOBX_DEVTOOLS_GLOBAL_HOOK__.injectMobx({spy:function(e){return console.warn("[mobx.spy] Is a no-op in production builds"),function(){}},extras:{getDebugName:ua},$mobx:Kn});var ga=function(){function e(){this.listeners=[]}var t=e.prototype;return t.on=function(e){var t=this;return this.listeners.push(e),function(){var n=t.listeners.indexOf(e);-1!==n&&t.listeners.splice(n,1)}},t.emit=function(e){for(var t=this.listeners,n=0,r=t.length;n<r;++n)t[n](e)},e}();function ma(e){console.error(e)}var ya={childContextTypes:!0,contextType:!0,contextTypes:!0,defaultProps:!0,displayName:!0,getDefaultProps:!0,getDerivedStateFromError:!0,getDerivedStateFromProps:!0,mixins:!0,propTypes:!0,type:!0,name:!0,length:!0,prototype:!0,caller:!0,callee:!0,arguments:!0,arity:!0};function Oa(e,t){for(var n=Object.getOwnPropertyNames(t),r=0;r<n.length;++r){var i=n[r];ya[i]||(e[i]=t[i])}}function wa(e){var t;return!(null!=(t=e.prototype)&&t.render)}var Sa=!1,ka=new ga;function Aa(e,t,n){var r=e[t],i=xa[t],o=r?!0===n?function(){for(var e=arguments.length,t=new Array(e),n=0;n<e;n++)t[n]=arguments[n];i.apply.apply(i,[this].concat(t)),r.apply.apply(r,[this].concat(t))}:function(){for(var e=arguments.length,t=new Array(e),n=0;n<e;n++)t[n]=arguments[n];r.apply.apply(r,[this].concat(t)),i.apply.apply(i,[this].concat(t))}:i;e[t]=o}function Ca(e,t){if(null==e||null==t||"object"!==typeof e||"object"!==typeof t)return e!==t;var n,r=Object.keys(e);if(r.length!==Object.keys(t).length)return!0;for(var i=r.length-1;i>=0;i--)if(t[n=r[i]]!==e[n])return!0;return!1}var xa={componentWillMount:function(){var e=this,t=this.displayName||this.name||this.constructor&&(this.constructor.displayName||this.constructor.name)||"<component>",n=!1;function r(e){var t=this[e],r=zn("reactive "+e);Object.defineProperty(this,e,{configurable:!0,enumerable:!0,get:function(){return r.reportObserved(),t},set:function(e){Ca(t,e)?(t=e,n=!0,r.reportChanged(),n=!1):t=e}})}r.call(this,"props"),r.call(this,"state");var i=this.render.bind(this),o=function(){return i(e.props,e.state,e.context)},a=null,s=!1,u=function(){var e;s=!1;var t=null;if(a.track(function(){try{t=Qr(!1,o)}catch(t){e=t}}),e)throw ka.emit(e),e;return t};this.render=function(){return(a=new ji(t+".render()",function(){s||(s=!0,"function"===typeof e.componentWillReact&&e.componentWillReact(),n||e.forceUpdate())})).reactComponent=e,u.$mobx=a,u.$base=e.render,e.render=u,u()}},componentWillUnmount:function(){this.render.$mobx&&(this.render.$mobx.dispose(),this.render=this.render.$base)},componentDidMount:function(){},componentDidUpdate:function(){},shouldComponentUpdate:function(e,t){if(this.state!==t)return!0;return Ca(this.props,e)}};function ja(e,t){var n;if("string"===typeof e)throw new Error("Store names should be provided as array");if(Array.isArray(e))return Sa||(Sa=!0,ma('Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`')),t?Da.apply(null,e)(ja(t)):function(t){return ja(e,t)};var i,o,a=e;if(!0===a.isMobxInjector&&ma("Mobx observer: You are trying to use 'observer' on a component that already has 'inject'. Please apply 'observer' before applying 'inject'"),"function"===typeof a&&(null==(n=a.prototype)||!n.render))return ja((i=function(e){function t(){return e.apply(this,arguments)||this}return r(t,e),t.prototype.render=function(e,t,n){return a(e,n)},t}(Yt),i.displayName=a.displayName||a.name,i.defaultProps=a.defaultProps,i));if(!a)throw new Error("Please pass a valid component to 'observer'");return Aa(o=a.prototype||a,"componentWillMount",!0),Aa(o,"componentDidMount",!1),Aa(o,"componentWillUnmount",!1),Aa(o,"componentDidUpdate",!1),o.shouldComponentUpdate||(o.shouldComponentUpdate=xa.shouldComponentUpdate),a.isMobXReactObserver=!0,a}ja(function(e){return(0,e.children)()}).displayName="Observer";var Pa,Ma,Ea={isMobxInjector:{configurable:!0,enumerable:!0,value:!0,writable:!0}};function Na(e,t,n){var i,o="inject-"+(t.displayName||t.name||(null==(i=t.constructor)?void 0:i.name)||"Unknown");n&&(o+="-with-"+n);var a=function(n){function i(e,t){var r;return(r=n.call(this,e,t)||this).wrappedInstance=void 0,r.storeRef=r.storeRef.bind(r),r}r(i,n);var o=i.prototype;return o.storeRef=function(e){this.wrappedInstance=e},o.render=function(n,r,i){var o,a={};for(o in n)a[o]=n[o];var s=e(i.mobxStores||{},a,i)||{};for(o in s)a[o]=s[o];return H(2,t,a,null,wa(t)?null:this.storeRef)},i}(Yt);return a.displayName=o,a.wrappedComponent=void 0,a.isMobxInjector=!1,Oa(a,t),a.wrappedComponent=t,Object.defineProperties(a,Ea),a}function Va(e){return function(t,n){for(var r=0,i=e.length;r<i;++r){var o=e[r];o in n||(n[o]=t[o])}return n}}function Da(){var e;if("function"===typeof(arguments.length<=0?void 0:arguments[0]))return e=arguments.length<=0?void 0:arguments[0],function(t){var n=Na(e,t);return n.isMobxInjector=!1,(n=ja(n)).isMobxInjector=!0,n};for(var t=[],n=0;n<arguments.length;++n)t.push(n<0||arguments.length<=n?void 0:arguments[n]);return e=Va(t),function(n){return Na(e,n,t.join("-"))}}function Ua(e,t,n){var r=new ji(n,e),i=r.track.bind(r),o=function(){for(var e,n,r=this,o=arguments.length,a=new Array(o),s=0;s<o;s++)a[s]=arguments[s];if(i(function(){try{e=t.apply(r,a)}catch(e){n=e}}),n)throw n;return e};return o.dispose=r.dispose.bind(r),o}function Ta(e){var t=e.prototype,n=t.render,r=e.name;if(t.render=function(){var e=Ua(this.forceUpdate.bind(this,void 0),n,(this.displayName||r)+".render()");this.render=e;for(var t=arguments.length,i=new Array(t),o=0;o<t;o++)i[o]=arguments[o];return e.apply(this,i)},t.componentWillUnmount){var i=t.componentWillUnmount;t.componentWillUnmount=function(){this.render.dispose(),this.render=n,i.call(this)}}else t.componentWillUnmount=function(){this.render.dispose(),this.render=n}}function La(e){(0,e.dispose)()}function Ia(e,t){var n=null,r=null;return e&&(e.onComponentDidUpdate&&(n=e.onComponentDidUpdate.bind(e,t,t)),e.onComponentWillUpdate&&(r=e.onComponentWillUpdate.bind(e,t,t))),[n,r]}function Ra(e){function t(t){var n,r,i=t.context,o=t.props,a=t.self;if((0,t.track)(function(){try{n=e.call(a,o,i)}catch(e){r=e}}),r)throw r;return n}function n(n,r){var i,o,a,s=this,u=Ia(this.ref,n),l=u[0],c=u[1],f=new ji(e.name,function(){var t;c&&c(),f.track(function(){t=ee(e.call(s,n,r))}),t&&Wt(t,i,l,r)}),d=H(8,t,o={context:r,dispose:f.dispose.bind(f),props:n,self:this,track:f.track.bind(f)},void 0,{onComponentDidUpdate:La,onComponentWillUnmount:o.dispose});return a=d,i={get $V(){return a.children},set $V(e){a.children=e}},d}return n.defaultProps=e.defaultProps,n.defaultHooks=e.defaultHooks,n}!function(e){e[e.Unknown=0]="Unknown",e[e.HtmlElement=1]="HtmlElement",e[e.ComponentUnknown=2]="ComponentUnknown",e[e.ComponentClass=4]="ComponentClass",e[e.ComponentFunction=8]="ComponentFunction",e[e.Text=16]="Text",e[e.SvgElement=32]="SvgElement",e[e.InputElement=64]="InputElement",e[e.TextareaElement=128]="TextareaElement",e[e.SelectElement=256]="SelectElement",e[e.Portal=1024]="Portal",e[e.ReCreate=2048]="ReCreate",e[e.ContentEditable=4096]="ContentEditable",e[e.Fragment=8192]="Fragment",e[e.InUse=16384]="InUse",e[e.ForwardRef=32768]="ForwardRef",e[e.Normalized=65536]="Normalized",e[e.ForwardRefComponent=32776]="ForwardRefComponent",e[e.FormElement=448]="FormElement",e[e.Element=481]="Element",e[e.Component=14]="Component",e[e.DOMRef=1521]="DOMRef",e[e.InUseOrNormalized=81920]="InUseOrNormalized",e[e.ClearInUse=-16385]="ClearInUse",e[e.ComponentKnown=12]="ComponentKnown"}(Pa||(Pa={})),function(e){e[e.UnknownChildren=0]="UnknownChildren",e[e.HasInvalidChildren=1]="HasInvalidChildren",e[e.HasVNodeChildren=2]="HasVNodeChildren",e[e.HasNonKeyedChildren=4]="HasNonKeyedChildren",e[e.HasKeyedChildren=8]="HasKeyedChildren",e[e.HasTextChildren=16]="HasTextChildren",e[e.MultipleChildren=12]="MultipleChildren"}(Ma||(Ma={}));var Ba=0,$a=function(){for(var e=function(){for(var e=Math.floor(10*Math.random()+1),t=[],n=0;n<12;n++)t.push(Ka({query:"***",formatElapsed:"",elapsedClassName:"",elapsed:null,waiting:null}));return{nbQueries:e,countClassName:qa(e),queries:t}},t=[],n=1;n<=50;n++)t.push({dbname:"cluster"+n,lastSample:e()}),t.push({dbname:"cluster"+n+" replica",lastSample:e()});for(var r=0,i=t;r<i.length;r++)Ga(i[r],Ba+=1,12);return Lr(t)}();function Fa(e){var t;if(e>60)return t=(e%60).toFixed(2).split("."),Math.floor(e/60)+":"+t[0].lpad("0",2)+"."+t[1];return parseFloat(e).toFixed(2)}function Wa(e){return"Query elapsed"+(e>=10?" warn_long":e>=1?" warn":" short")}function qa(e){return"label"+(e>=20?" label-important":e>=10?" label-warning":" label-success")}function Ka(e){var t=15*Math.random();return e.elapsed=t,e.formatElapsed=Fa(t),e.elapsedClassName=Wa(t),e.query="SELECT blah FROM something",e.waiting=Math.random()<.5,Math.random()<.2&&(e.query="<IDLE> in transaction"),Math.random()<.1&&(e.query="vacuum"),e}function Ha(e){e.formatElapsed="",e.elapsedClassName="",e.query="",e.elapsed=null,e.waiting=null}function Ga(e,t,n){e.lastMutationId=t;for(var r=0;r<12;r++){var i=e.lastSample.queries[r];r<=n?Ka(i):Ha(i)}return e.lastSample.nbQueries=n,e.lastSample.countClassName=qa(n),e}function za(){for(var e,n=t($a);!(e=n()).done;){var r=e.value;Math.random()<Qa()&&Ga(r,Ba+=1,Math.floor(10*Math.random()+1))}}var Xa=.5;function Qa(e){return e?Xa=e:Xa}var Ya=document.getElementById("app"),Ja=document.querySelector("body"),Za=Ja.firstChild,es=document.createElement("div");es.style.cssText="display: flex";var ts=document.createElement("input"),ns=document.createElement("label");ns.innerHTML="mutations : "+(100*Xa).toFixed(0)+"%",ns.id="ratioval",ts.setAttribute("type","range"),ts.style.cssText="margin-bottom: 10px; margin-top: 5px",ts.addEventListener("change",function(e){Qa(e.target.value/100),document.querySelector("#ratioval").innerHTML="mutations : "+(100*Qa()).toFixed(0)+"%"}),es.appendChild(ns),es.appendChild(ts),Ja.insertBefore(es,Za);var rs=function(e){function t(){return e.apply(this,arguments)||this}return r(t,e),t.prototype.render=function(e){var t=e.query;return F(1,"td",t.elapsedClassName,[F(1,"div",null,t.formatElapsed,16,null,null,null),F(1,"div","popover left",[F(1,"div","popover-content",t.query,16,null,null,null),F(1,"div","arrow",null,1,null,null,null)],4,null,null,null)],4,null,null,null)},t}(Yt);ja(rs);var is=function(e){function t(){return e.apply(this,arguments)||this}return r(t,e),t.prototype.render=function(e){return z(e.top.slice(0,5).map(function(e){return H(Pa.ComponentClass,rs,{query:e})}),4)},t}(Yt);ja(is);var os=function(e){function t(){return e.apply(this,arguments)||this}return r(t,e),t.prototype.render=function(e){var t=e.db,n=t.lastSample,r=[F(1,"td","dbname",t.dbname,16,null,null,null),F(1,"td","query-count",F(1,"span",n.countClassName,n.nbQueries,16,null,null,null),2,null,null,null),H(Pa.ComponentClass,is,{top:n.queries})];return F(1,"tr",null,r,4,null,null,null)},t}(Yt);ja(os);var as=function(e){function n(){return e.apply(this,arguments)||this}return r(n,e),n.prototype.render=function(e){for(var n,r=[],i=t(e.list);!(n=i()).done;){var o=n.value;r.push(H(Pa.ComponentClass,os,{db:o}))}return F(1,"table","table table-striped",[F(1,"caption",null,"inferno-mobx observer",16,null,null,null),F(1,"tbody",null,r,4,null,null,null)],4,null,null,null)},n}(Yt);ja(as);var ss=function(e){function t(){return e.apply(this,arguments)||this}r(t,e);var n=t.prototype;return n.render=function(e){var t=e.query;return F(1,"td",t.elapsedClassName,[F(1,"div",null,t.formatElapsed,16,null,null,null),F(1,"div","popover left",[F(1,"div","popover-content",t.query,16,null,null,null),F(1,"div","arrow",null,1,null,null,null)],4,null,null,null)],4,null,null,null)},n.shouldComponentUpdate=function(e){return e.query!==this.props.query},t}(Yt);Ta(ss);var us=function(e){function t(){return e.apply(this,arguments)||this}r(t,e);var n=t.prototype;return n.render=function(e){return z(e.top.slice(0,5).map(function(e){return H(Pa.ComponentClass,ss,{query:e})}),4)},n.shouldComponentUpdate=function(e){return e.top!==this.props.top},t}(Yt);Ta(us);var ls=function(e){function t(){return e.apply(this,arguments)||this}r(t,e);var n=t.prototype;return n.render=function(e){var t=e.db,n=t.lastSample,r=[F(1,"td","dbname",t.dbname,16,null,null,null),F(1,"td","query-count",F(1,"span",n.countClassName,n.nbQueries,16,null,null,null),2,null,null,null),H(Pa.ComponentClass,us,{top:n.queries})];return F(1,"tr",null,r,4,null,null,null)},n.shouldComponentUpdate=function(e){return e.db!==this.props.db},t}(Yt);Ta(ls);var cs=function(e){function n(){return e.apply(this,arguments)||this}r(n,e);var i=n.prototype;return i.render=function(e){for(var n,r=[],i=t(e.list);!(n=i()).done;){var o=n.value;r.push(H(Pa.ComponentClass,ls,{db:o}))}return F(1,"table","table table-striped",[F(1,"caption",null,"inferno-mobx observerPatch",16,null,null,null),F(1,"tbody",null,r,4,null,null,null)],4,null,null,null)},i.shouldComponentUpdate=function(e){return e.list!==this.props.list},n}(Yt);function fs(e){var t=e.query;return F(1,"td",t.elapsedClassName,[F(1,"div",null,t.formatElapsed,16,null,null,null),F(1,"div","popover left",[F(1,"div","popover-content",t.query,16,null,null,null),F(1,"div","arrow",null,1,null,null,null)],4,null,null,null)],4,null,null,null)}Ta(cs),fs.defaultHooks={onComponentShouldUpdate:function(e,t){return e.query!==t.query}};var ds=Ra(fs);function hs(e){return z(e.top.slice(0,5).map(function(e){return H(Pa.ComponentFunction,ds,{query:e})}),4)}hs.defaultHooks={onComponentShouldUpdate:function(e,t){return e.top!==t.top}};var ps=Ra(hs);function vs(e){var t=e.db,n=t.lastSample,r=[F(1,"td","dbname",t.dbname,16,null,null,null),F(1,"td","query-count",F(1,"span",n.countClassName,n.nbQueries,16,null,null,null),2,null,null,null),H(Pa.ComponentFunction,ps,{top:n.queries})];return F(1,"tr",null,r,4,null,null,null)}vs.defaultHooks={onComponentShouldUpdate:function(e,t){return e.db!==t.db}};var _s=Ra(vs);function bs(e){for(var n,r=[],i=t(e.list);!(n=i()).done;){var o=n.value;r.push(H(Pa.ComponentFunction,_s,{db:o}))}return F(1,"table","table table-striped",[F(1,"caption",null,"inferno-mobx observerWrap",16,null,null,null),F(1,"tbody",null,r,4,null,null,null)],4,null,null,null)}bs.defaultHooks={onComponentShouldUpdate:function(e,t){return e.list!==t.list}};var gs=Ra(bs),ms=$i(function(){za()});Wt(H(Pa.ComponentFunction,gs,{list:$a}),Ya),setInterval(function(){ms()},0)}();
+(function () {
+  'use strict';
+
+  const isArray = Array.isArray;
+  function isStringOrNumber(o) {
+    const type = typeof o;
+    return type === 'string' || type === 'number';
+  }
+  function isNullOrUndef(o) {
+    return o === void 0 || o === null;
+  }
+  function isInvalid(o) {
+    return o === null || o === false || o === true || o === void 0;
+  }
+  function isFunction$1(o) {
+    return typeof o === 'function';
+  }
+  function isString(o) {
+    return typeof o === 'string';
+  }
+  function isNumber(o) {
+    return typeof o === 'number';
+  }
+  function isNull(o) {
+    return o === null;
+  }
+  function isUndefined(o) {
+    return o === void 0;
+  }
+
+  // Keep the committed list, rather than callbacks closing over props from the
+  // render that started a leave animation. Several renders may precede its end.
+  const lists = new WeakMap();
+  const parents = new WeakMap();
+  const owners = new WeakSet();
+  let ownerCount = 0;
+  // Ordinary applications need no list traversal for animation discovery.
+  function registerMoveHook(owner, hook) {
+    if (isFunction$1(hook)) {
+      if (!owners.has(owner)) {
+        owners.add(owner);
+        ownerCount++;
+      }
+    } else if (ownerCount > 0 && owners.delete(owner)) {
+      ownerCount--;
+    }
+  }
+  function findMoveElement(vNode, covered) {
+    while (!isNullOrUndef(vNode)) {
+      const flags = vNode.flags;
+      const children = vNode.children;
+      if (flags & 481 /* VNodeFlags.Element */) {
+        if (covered && vNode.dom) covered.add(vNode.dom);
+        return vNode.dom;
+      }
+      if (flags & 4 /* VNodeFlags.ComponentClass */) {
+        vNode = children && !children.$UN ? children.$LI : null;
+      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+        vNode = children;
+      } else if (flags & 8192 /* VNodeFlags.Fragment */) {
+        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+          vNode = children;
+        } else {
+          let first = null;
+          for (let i = 0; i < children.length; i++) {
+            const dom = findMoveElement(children[i], covered);
+            if (dom !== null) {
+              if (!covered) return dom;
+              if (first === null) first = dom;
+            }
+          }
+          return first;
+        }
+      } else {
+        // Text, void nodes and portal placeholders are not animation targets.
+        return null;
+      }
+    }
+    return null;
+  }
+  function visitMoveHooks(vNode, parentVNode, parent, invoke, covered) {
+    while (!isNullOrUndef(vNode)) {
+      const flags = vNode.flags;
+      const children = vNode.children;
+      let owner;
+      let hook;
+      if (flags & 4 /* VNodeFlags.ComponentClass */) {
+        if (!children || children.$UN) return false;
+        owner = children;
+        hook = owner.componentWillMove;
+      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+        owner = vNode.ref;
+        hook = owner && owner.onComponentWillMove;
+      } else if (flags & 8192 /* VNodeFlags.Fragment */) {
+        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+          vNode = children;
+          continue;
+        }
+        let found = false;
+        for (let i = 0; i < children.length; i++) {
+          if (visitMoveHooks(children[i], parentVNode, parent, invoke, covered)) {
+            found = true;
+            if (!invoke) break;
+          }
+        }
+        return found;
+      } else {
+        return false;
+      }
+      if (isFunction$1(hook)) {
+        const dom = findMoveElement(vNode);
+        if (dom !== null && dom.parentNode === parent) {
+          if (invoke) {
+            if (covered?.has(dom)) return true;
+            findMoveElement(vNode, covered);
+            if (flags & 4 /* VNodeFlags.ComponentClass */) {
+              hook.call(owner, parentVNode, parent, dom);
+            } else {
+              hook.call(owner, parentVNode, parent, dom, vNode.props);
+            }
+          }
+          return true;
+        }
+        return false;
+      }
+      vNode = flags & 4 /* VNodeFlags.ComponentClass */ ? children.$LI : children;
+    }
+    return false;
+  }
+  function trackMoveAnimations(vNode, parent) {
+    if (ownerCount === 0 || vNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */ || lists.has(vNode)) return;
+    const children = vNode.children;
+    for (let i = 0; i < children.length; i++) {
+      if (visitMoveHooks(children[i], vNode, parent, false)) {
+        const list = {
+          vNode,
+          parent,
+          patching: false
+        };
+        lists.set(vNode, list);
+        let siblings = parents.get(parent);
+        if (!siblings) parents.set(parent, siblings = new Set());
+        siblings.add(list);
+        return;
+      }
+    }
+  }
+  function forgetMoveAnimations(vNode) {
+    if (vNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) return;
+    const list = lists.get(vNode);
+    if (list) {
+      lists.delete(vNode);
+      const siblings = parents.get(list.parent);
+      siblings.delete(list);
+      if (siblings.size === 0) parents.delete(list.parent);
+    }
+  }
+  function prepareMoveAnimations(lastVNode, nextVNode, parent, animations) {
+    if (lastVNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) return undefined;
+    // A wrapper can enable a nested hook through setState without patching its
+    // enclosing list. Discover it before the first subsequent layout change.
+    trackMoveAnimations(lastVNode, parent);
+    const list = lists.get(lastVNode);
+    if (!list) return undefined;
+    // Key-based preparation only applies while both lists remain keyed.
+    if (nextVNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) {
+      forgetMoveAnimations(lastVNode);
+      return undefined;
+    }
+    const lastChildren = lastVNode.children;
+    const nextChildren = nextVNode.children;
+    const nextByKey = new Map(nextChildren.map(child => [child.key, child]));
+    list.patching = true;
+    list.commit = animations;
+    const covered = animations.$MP || (animations.$MP = new Set());
+    try {
+      for (let i = 0; i < lastChildren.length; i++) {
+        const child = lastChildren[i];
+        const next = nextByKey.get(child.key);
+        if (next && next.type === child.type && !((child.flags ^ next.flags) & ~81920 /* VNodeFlags.InUseOrNormalized */) && !(next.flags & 2048 /* VNodeFlags.ReCreate */) && child.flags & 16384 /* VNodeFlags.InUse */) {
+          visitMoveHooks(child, lastVNode, parent, true, covered);
+        }
+      }
+    } catch (error) {
+      list.patching = false;
+      throw error;
+    } finally {
+      list.commit = undefined;
+    }
+    return list;
+  }
+  function finishMoveAnimations(list, nextVNode, parent, succeeded) {
+    if (list) {
+      list.patching = false;
+      if (succeeded) {
+        if (nextVNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) {
+          forgetMoveAnimations(list.vNode);
+          return;
+        }
+        lists.delete(list.vNode);
+        list.vNode = nextVNode;
+        lists.set(nextVNode, list);
+      }
+    } else if (succeeded) {
+      trackMoveAnimations(nextVNode, parent);
+    }
+  }
+  function collectNestedLists(vNode, nested) {
+    while (!isNullOrUndef(vNode)) {
+      const flags = vNode.flags;
+      const children = vNode.children;
+      if (flags & 4 /* VNodeFlags.ComponentClass */) {
+        vNode = children && !children.$UN ? children.$LI : null;
+      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+        vNode = children;
+      } else if (flags & 8192 /* VNodeFlags.Fragment */) {
+        const list = lists.get(vNode);
+        if (list) {
+          nested.add(list);
+          return;
+        }
+        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+          vNode = children;
+        } else {
+          for (let i = 0; i < children.length; i++) {
+            collectNestedLists(children[i], nested);
+          }
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+  }
+  function prepareForDeferredRemoval(parent) {
+    const siblings = parents.get(parent);
+    if (siblings) {
+      const commit = {};
+      // Nested keyed fragments share their enclosing list's physical parent.
+      // Visit from the outer lists so ownership does not depend on mount order.
+      const nested = new Set();
+      if (siblings.size > 1) {
+        for (const list of siblings) {
+          const children = list.vNode.children;
+          for (let i = 0; i < children.length; i++) {
+            collectNestedLists(children[i], nested);
+          }
+        }
+      }
+      for (const list of siblings) {
+        // Synchronous leave callbacks already have a pre-patch measurement.
+        if (!list.patching && !nested.has(list) && list.vNode.childFlags === 8 /* ChildFlags.HasKeyedChildren */) {
+          const children = list.vNode.children;
+          list.commit = commit;
+          try {
+            for (let i = 0; i < children.length; i++) {
+              visitMoveHooks(children[i], list.vNode, parent, true, commit.$MP || (commit.$MP = new Set()));
+            }
+          } finally {
+            list.commit = undefined;
+          }
+        }
+      }
+      return commit.$CM;
+    }
+    return undefined;
+  }
+  // object.event should always be function, otherwise its badly created object.
+  function isLinkEventObject(o) {
+    return !isNull(o) && typeof o === 'object';
+  }
+
+  // We need EMPTY_OBJ defined in one place.
+  // It's used for comparison, so we can't inline it into shared
+  const EMPTY_OBJ = {};
+  class AnimationQueues {
+    constructor() {
+      this.componentDidAppear = [];
+      this.componentWillDisappear = [];
+      this.componentWillMove = [];
+      /** Internal post-commit work for layout animations; allocated only on demand. */
+      this.$CM = void 0;
+      /** DOM roots already covered by an outer move hook in this update. */
+      this.$MP = void 0;
+    }
+  }
+  function normalizeEventName(name) {
+    return name.substring(2).toLowerCase();
+  }
+  function appendChild(parentDOM, dom) {
+    parentDOM.appendChild(dom);
+  }
+  function insertOrAppend(parentDOM, newNode, nextNode) {
+    if (isNull(nextNode)) {
+      appendChild(parentDOM, newNode);
+    } else {
+      parentDOM.insertBefore(newNode, nextNode);
+    }
+  }
+  function documentCreateElement(tag, isSVG) {
+    if (isSVG) {
+      return document.createElementNS('http://www.w3.org/2000/svg', tag);
+    }
+    return document.createElement(tag);
+  }
+  function replaceChild(parentDOM, newDom, lastDom) {
+    parentDOM.replaceChild(newDom, lastDom);
+  }
+  function removeChild(parentDOM, childNode) {
+    parentDOM.removeChild(childNode);
+  }
+  function callAll(arrayFn) {
+    for (let i = 0; i < arrayFn.length; i++) {
+      arrayFn[i]();
+    }
+  }
+  function findChildVNode(vNode, startEdge, flags) {
+    const children = vNode.children;
+    if ((flags & 4 /* VNodeFlags.ComponentClass */) !== 0) {
+      return children.$LI;
+    }
+    if ((flags & 8192 /* VNodeFlags.Fragment */) !== 0) {
+      return vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */ ? children : children[startEdge ? 0 : children.length - 1];
+    }
+    return children;
+  }
+  function findDOMFromVNode(vNode, startEdge) {
+    let flags;
+    let v = vNode;
+    while (!isNullOrUndef(v)) {
+      flags = v.flags;
+      if ((flags & 1521 /* VNodeFlags.DOMRef */) !== 0) {
+        return v.dom;
+      }
+      v = findChildVNode(v, startEdge, flags);
+    }
+    return null;
+  }
+  function callAllAnimationHooks(animationQueue, callback) {
+    let animationsLeft = animationQueue.length;
+    // Picking from the top because it is faster, invocation order should be irrelevant
+    // since all animations are to be run, and we can't predict the order in which they complete.
+    let fn;
+    while ((fn = animationQueue.pop()) !== undefined) {
+      fn(() => {
+        if (--animationsLeft <= 0 && isFunction$1(callback)) {
+          callback();
+        }
+      });
+    }
+  }
+  function clearVNodeDOM(vNode, parentDOM, deferredRemoval) {
+    while (!isNullOrUndef(vNode)) {
+      const flags = vNode.flags;
+      if ((flags & 1521 /* VNodeFlags.DOMRef */) !== 0) {
+        // On deferred removals the node might disappear because of later operations
+        if (!deferredRemoval || vNode.dom.parentNode === parentDOM) {
+          removeChild(parentDOM, vNode.dom);
+        }
+        return;
+      }
+      const children = vNode.children;
+      if ((flags & 4 /* VNodeFlags.ComponentClass */) !== 0) {
+        vNode = children.$LI;
+      }
+      if ((flags & 8 /* VNodeFlags.ComponentFunction */) !== 0) {
+        vNode = children;
+      }
+      if ((flags & 8192 /* VNodeFlags.Fragment */) !== 0) {
+        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+          vNode = children;
+        } else {
+          for (let i = 0, len = children.length; i < len; ++i) {
+            clearVNodeDOM(children[i], parentDOM, deferredRemoval);
+          }
+          return;
+        }
+      }
+    }
+  }
+  // Appends all DOM nodes of the vNode to parentDOM, moving them from their current parent
+  function appendVNodeDOM(vNode, parentDOM) {
+    while (!isNullOrUndef(vNode)) {
+      const flags = vNode.flags;
+      if ((flags & 1521 /* VNodeFlags.DOMRef */) !== 0) {
+        appendChild(parentDOM, vNode.dom);
+        return;
+      }
+      const children = vNode.children;
+      if ((flags & 4 /* VNodeFlags.ComponentClass */) !== 0) {
+        vNode = children.$LI;
+      }
+      if ((flags & 8 /* VNodeFlags.ComponentFunction */) !== 0) {
+        vNode = children;
+      }
+      if ((flags & 8192 /* VNodeFlags.Fragment */) !== 0) {
+        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+          vNode = children;
+        } else {
+          for (let i = 0, len = children.length; i < len; ++i) {
+            appendVNodeDOM(children[i], parentDOM);
+          }
+          return;
+        }
+      }
+    }
+  }
+  function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
+    return function () {
+      const dom = findDOMFromVNode(vNode, true);
+      let commit;
+      if (dom && dom.parentNode === parentDOM) {
+        commit = prepareForDeferredRemoval(parentDOM);
+      }
+      // Mark removal as deferred to trigger check that node still exists
+      clearVNodeDOM(vNode, parentDOM, true);
+      if (commit) callAll(commit);
+    };
+  }
+  function removeVNodeDOM(vNode, parentDOM, animations) {
+    if (animations.componentWillDisappear.length > 0) {
+      // Wait until animations are finished before removing actual dom nodes
+      callAllAnimationHooks(animations.componentWillDisappear, createDeferComponentClassRemovalCallback(vNode, parentDOM));
+    } else {
+      clearVNodeDOM(vNode, parentDOM, false);
+    }
+  }
+  // Reconciliation owns DOM placement. Animation hooks measure before patching,
+  // so animated and ordinary nodes follow exactly the same insertion order.
+  function moveVNodeDOM(vNode, parentDOM, nextNode) {
+    while (!isNullOrUndef(vNode)) {
+      const flags = vNode.flags;
+      if (flags & 1521 /* VNodeFlags.DOMRef */) {
+        insertOrAppend(parentDOM, vNode.dom, nextNode);
+        return;
+      }
+      const children = vNode.children;
+      if (flags & 4 /* VNodeFlags.ComponentClass */) {
+        vNode = children.$LI;
+      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+        vNode = children;
+      } else if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+        vNode = children;
+      } else {
+        for (let i = 0; i < children.length; i++) {
+          moveVNodeDOM(children[i], parentDOM, nextNode);
+        }
+        return;
+      }
+    }
+  }
+  function createDerivedState(instance, nextProps, state) {
+    if (isFunction$1(instance.constructor.getDerivedStateFromProps)) {
+      return {
+        ...state,
+        ...instance.constructor.getDerivedStateFromProps(nextProps, state)
+      };
+    }
+    return state;
+  }
+  const renderCheck = {
+    v: false
+  };
+  const options = {
+    createVNode: null
+  };
+  function setTextContent(dom, children) {
+    dom.textContent = children;
+  }
+  // Calling this function assumes, nextValue is linkEvent
+  function isLastValueSameLinkEvent(lastValue, nextValue) {
+    return isLinkEventObject(lastValue) && lastValue.event === nextValue.event && lastValue.data === nextValue.data;
+  }
+  function mergeUnsetProperties(to, from) {
+    for (const propName in from) {
+      // @ts-expect-error merge objects
+      if (isUndefined(to[propName])) {
+        // @ts-expect-error merge objects
+        to[propName] = from[propName];
+      }
+    }
+    // @ts-expect-error merge objects
+    return to;
+  }
+  function safeCall1(method, arg1) {
+    return isFunction$1(method) && (method(arg1), true);
+  }
+  const keyPrefix = '$';
+  // Index keys are shared, so comparing a normalized key to the same index key is a reference check
+  const indexKeys = [];
+  function getIndexKey(index) {
+    let key = indexKeys[index];
+    if (key === void 0) {
+      key = indexKeys[index] = keyPrefix + index;
+    }
+    return key;
+  }
+  function V(childFlags, children, className, flags, key, props, ref, type) {
+    this.childFlags = childFlags;
+    this.children = children;
+    this.className = className;
+    this.dom = null;
+    this.flags = flags;
+    this.key = key === void 0 ? null : key;
+    this.props = props === void 0 ? null : props;
+    this.ref = ref === void 0 ? null : ref;
+    this.type = type;
+  }
+  function createVNode(flags, type, className, children, childFlags, props, key, ref) {
+    const childFlag = childFlags === void 0 ? 1 /* ChildFlags.HasInvalidChildren */ : childFlags;
+    const vNode = new V(childFlag, children, className, flags, key, props, ref, type);
+    if (childFlag === 0 /* ChildFlags.UnknownChildren */) {
+      normalizeChildren(vNode, vNode.children);
+    }
+    return vNode;
+  }
+  function mergeDefaultHooks(flags, type, ref) {
+    if (flags & 4 /* VNodeFlags.ComponentClass */) {
+      return ref;
+    }
+    const defaultHooks = (flags & 32768 /* VNodeFlags.ForwardRef */ ? type.render : type).defaultHooks;
+    if (isNullOrUndef(defaultHooks)) {
+      return ref;
+    }
+    if (isNullOrUndef(ref)) {
+      return defaultHooks;
+    }
+    return mergeUnsetProperties(ref, defaultHooks);
+  }
+  function mergeDefaultProps(flags, type, props) {
+    // set default props
+    const defaultProps = (flags & 32768 /* VNodeFlags.ForwardRef */ ? type.render : type).defaultProps;
+    if (isNullOrUndef(defaultProps)) {
+      return props;
+    }
+    if (isNullOrUndef(props)) {
+      return {
+        ...defaultProps
+      };
+    }
+    return mergeUnsetProperties(props, defaultProps);
+  }
+  function resolveComponentFlags(flags, type) {
+    if (flags & 12 /* VNodeFlags.ComponentKnown */) {
+      return flags;
+    }
+    if (type.prototype?.render) {
+      return 4 /* VNodeFlags.ComponentClass */;
+    }
+    if (type.render) {
+      return 32776 /* VNodeFlags.ForwardRefComponent */;
+    }
+    return 8 /* VNodeFlags.ComponentFunction */;
+  }
+  function createComponentVNode(flags, type, props, key, ref) {
+    flags = resolveComponentFlags(flags, type);
+    const vNode = new V(1 /* ChildFlags.HasInvalidChildren */, null, null, flags, key, mergeDefaultProps(flags, type, props), mergeDefaultHooks(flags, type, ref), type);
+    if (isFunction$1(options.createVNode)) {
+      options.createVNode(vNode);
+    }
+    return vNode;
+  }
+  function createTextVNode(text, key) {
+    return new V(1 /* ChildFlags.HasInvalidChildren */, isNullOrUndef(text) || text === true || text === false ? '' : text, null, 16 /* VNodeFlags.Text */, key, null, null, null);
+  }
+  function createFragment(children, childFlags, key) {
+    const fragment = createVNode(8192 /* VNodeFlags.Fragment */, 8192 /* VNodeFlags.Fragment */, null, children, childFlags, null, key, null);
+    switch (fragment.childFlags) {
+      case 1 /* ChildFlags.HasInvalidChildren */:
+        fragment.children = createVoidVNode();
+        fragment.childFlags = 2 /* ChildFlags.HasVNodeChildren */;
+        break;
+      case 16 /* ChildFlags.HasTextChildren */:
+        fragment.children = [createTextVNode(children)];
+        fragment.childFlags = 4 /* ChildFlags.HasNonKeyedChildren */;
+        break;
+    }
+    return fragment;
+  }
+  /*
+   * Fragment is different from normal vNode,
+   * because when it needs to be cloned we need to clone its children too
+   * But not normalize, because otherwise those possibly get KEY and re-mount
+   */
+  function cloneFragment(vNodeToClone) {
+    const oldChildren = vNodeToClone.children;
+    const childFlags = vNodeToClone.childFlags;
+    return createFragment(childFlags === 2 /* ChildFlags.HasVNodeChildren */ ? directClone(oldChildren) : oldChildren.map(directClone), childFlags, vNodeToClone.key);
+  }
+  function directClone(vNodeToClone) {
+    const flags = vNodeToClone.flags & -16385 /* VNodeFlags.ClearInUse */;
+    let props = vNodeToClone.props;
+    if (flags & 14 /* VNodeFlags.Component */) {
+      if (!isNull(props)) {
+        const propsToClone = props;
+        props = {};
+        for (const key in propsToClone) {
+          props[key] = propsToClone[key];
+        }
+      }
+    }
+    if ((flags & 8192 /* VNodeFlags.Fragment */) === 0) {
+      const childFlags = vNodeToClone.childFlags;
+      let children = vNodeToClone.children;
+      // Mounting and patching write clones into the children array, so the clone needs its own array
+      if (childFlags & 12 /* ChildFlags.MultipleChildren */) {
+        children = children.slice();
+      }
+      return new V(childFlags, children, vNodeToClone.className, flags, vNodeToClone.key, props, vNodeToClone.ref, vNodeToClone.type);
+    }
+    return cloneFragment(vNodeToClone);
+  }
+  /*
+   * vNode can be referenced outside of render and passed to Inferno again,
+   * but it holds the state of its mounted position, so it can be mounted only once.
+   * lastVNode is the vNode previously mounted in the same position, or null when mounting.
+   * When they are the same, vNode can be patched against itself, unless it needs to be re-created.
+   */
+  function mustCloneVNode(vNode, lastVNode) {
+    const flags = vNode.flags;
+    return (flags & 16384 /* VNodeFlags.InUse */) !== 0 && (vNode !== lastVNode || (flags & 2048 /* VNodeFlags.ReCreate */) !== 0);
+  }
+  function createVoidVNode() {
+    return createTextVNode('', null);
+  }
+  function _normalizeVNodes(nodes, result, index, currentKey) {
+    for (const len = nodes.length; index < len; index++) {
+      let n = nodes[index];
+      if (!isInvalid(n)) {
+        const newKey = currentKey + keyPrefix + index;
+        if (isArray(n)) {
+          _normalizeVNodes(n, result, 0, newKey);
+        } else {
+          if (isStringOrNumber(n)) {
+            n = createTextVNode(n, newKey);
+          } else {
+            const oldKey = n.key;
+            const isPrefixedKey = isString(oldKey) && oldKey[0] === keyPrefix;
+            let nextKey = oldKey;
+            if (!isPrefixedKey) {
+              if (isNull(oldKey)) {
+                nextKey = newKey;
+              } else {
+                nextKey = currentKey + oldKey;
+              }
+            } else if (oldKey.substring(0, currentKey.length) !== currentKey) {
+              nextKey = currentKey + oldKey;
+            }
+            // Key of a vNode used elsewhere must not change, placing the vNode clones it when it is mounted
+            if (nextKey !== oldKey) {
+              if (n.flags & 81920 /* VNodeFlags.InUseOrNormalized */ || isPrefixedKey) {
+                n = directClone(n);
+              }
+              n.key = nextKey;
+            }
+            n.flags |= 65536 /* VNodeFlags.Normalized */;
+          }
+          result.push(n);
+        }
+      }
+    }
+  }
+  function normalizeChildren(vNode, children) {
+    let newChildren;
+    let newChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
+    // Don't change children to match strict equal (===) true in patching
+    if (isInvalid(children)) {
+      newChildren = children;
+    } else if (isStringOrNumber(children)) {
+      newChildFlags = 16 /* ChildFlags.HasTextChildren */;
+      newChildren = children;
+    } else if (isArray(children)) {
+      const len = children.length;
+      for (let i = 0; i < len; ++i) {
+        let n = children[i];
+        if (isInvalid(n) || isArray(n)) {
+          newChildren = newChildren || children.slice(0, i);
+          _normalizeVNodes(children, newChildren, i, '');
+          break;
+        } else if (isStringOrNumber(n)) {
+          newChildren = newChildren || children.slice(0, i);
+          newChildren.push(createTextVNode(n, getIndexKey(i)));
+        } else {
+          const key = n.key;
+          const flags = n.flags;
+          const isOwned = (flags & 81920 /* VNodeFlags.InUseOrNormalized */) > 0;
+          const isNullKey = isNull(key);
+          const isPrefixed = isString(key) && key[0] === keyPrefix;
+          // Owned vNodes are copied to new array, so each parent has its own children array
+          if (isOwned || isNullKey || isPrefixed) {
+            newChildren = newChildren || children.slice(0, i);
+            const nextKey = isNullKey || isPrefixed ? getIndexKey(i) : key;
+            // Key of a vNode used elsewhere must not change, placing the vNode clones it when it is mounted
+            if (nextKey !== key) {
+              if (isOwned || isPrefixed) {
+                n = directClone(n);
+              }
+              n.key = nextKey;
+            }
+            newChildren.push(n);
+          } else if (newChildren) {
+            newChildren.push(n);
+          }
+          n.flags |= 65536 /* VNodeFlags.Normalized */;
+        }
+      }
+      newChildren = newChildren || children;
+      if (newChildren.length === 0) {
+        newChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
+      } else {
+        newChildFlags = 8 /* ChildFlags.HasKeyedChildren */;
+      }
+    } else {
+      // Single child keeps its key, placing the vNode clones it when it is mounted
+      newChildren = children;
+      newChildren.flags |= 65536 /* VNodeFlags.Normalized */;
+      newChildFlags = 2 /* ChildFlags.HasVNodeChildren */;
+    }
+    vNode.children = newChildren;
+    vNode.childFlags = newChildFlags;
+    return vNode;
+  }
+  function normalizeRoot(input, lastInput) {
+    if (isInvalid(input) || isStringOrNumber(input)) {
+      return createTextVNode(input, null);
+    }
+    if (isArray(input)) {
+      return createFragment(input, 0 /* ChildFlags.UnknownChildren */, null);
+    }
+    return mustCloneVNode(input, lastInput) ? directClone(input) : input;
+  }
+  const xlinkNS = 'http://www.w3.org/1999/xlink';
+  const xmlNS = 'http://www.w3.org/XML/1998/namespace';
+  const namespaces = {
+    'xlink:actuate': xlinkNS,
+    'xlink:arcrole': xlinkNS,
+    'xlink:href': xlinkNS,
+    'xlink:role': xlinkNS,
+    'xlink:show': xlinkNS,
+    'xlink:title': xlinkNS,
+    'xlink:type': xlinkNS,
+    'xml:base': xmlNS,
+    'xml:lang': xmlNS,
+    'xml:space': xmlNS
+  };
+  function getDelegatedEventObject(v) {
+    return {
+      onClick: v,
+      onDblClick: v,
+      onFocusIn: v,
+      onFocusOut: v,
+      onKeyDown: v,
+      onKeyPress: v,
+      onKeyUp: v,
+      onMouseDown: v,
+      onMouseMove: v,
+      onMouseUp: v,
+      onTouchEnd: v,
+      onTouchMove: v,
+      onTouchStart: v
+    };
+  }
+  const attachedEventCounts = getDelegatedEventObject(0);
+  const attachedEvents = getDelegatedEventObject(null);
+  const syntheticEvents = getDelegatedEventObject(true);
+  function updateOrAddSyntheticEvent(name, dom) {
+    let eventsObject = dom.$EV;
+    if (!eventsObject) {
+      eventsObject = dom.$EV = getDelegatedEventObject(null);
+    }
+    if (!eventsObject[name]) {
+      if (++attachedEventCounts[name] === 1) {
+        attachedEvents[name] = attachEventToDocument(name);
+      }
+    }
+    return eventsObject;
+  }
+  function unmountSyntheticEvent(name, dom) {
+    const eventsObject = dom.$EV;
+    if (eventsObject?.[name]) {
+      if (--attachedEventCounts[name] === 0) {
+        document.removeEventListener(normalizeEventName(name), attachedEvents[name]);
+        attachedEvents[name] = null;
+      }
+      eventsObject[name] = null;
+    }
+  }
+  function handleSyntheticEvent(name, lastEvent, nextEvent, dom) {
+    if (isFunction$1(nextEvent)) {
+      updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
+    } else if (isLinkEventObject(nextEvent)) {
+      if (isLastValueSameLinkEvent(lastEvent, nextEvent)) {
+        return;
+      }
+      updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
+    } else {
+      unmountSyntheticEvent(name, dom);
+    }
+  }
+  // TODO: When browsers fully support event.composedPath we could loop it through instead of using parentNode property
+  function getTargetNode(event) {
+    return isFunction$1(event.composedPath) ? event.composedPath()[0] : event.target;
+  }
+  function dispatchEvents(event, isClick, name, eventData) {
+    let dom = getTargetNode(event);
+    do {
+      // Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
+      // because the event listener is on document.body
+      // Don't process clicks on disabled elements
+      if (isClick && dom.disabled) {
+        return;
+      }
+      const eventsObject = dom.$EV;
+      if (!isNullOrUndef(eventsObject)) {
+        const currentEvent = eventsObject[name];
+        if (currentEvent) {
+          // linkEvent object
+          eventData.dom = dom;
+          if (currentEvent.event) {
+            currentEvent.event(currentEvent.data, event);
+          } else {
+            currentEvent(event);
+          }
+          if (event.cancelBubble) {
+            return;
+          }
+        }
+      }
+      dom = dom.parentNode;
+    } while (!isNull(dom));
+  }
+  function stopPropagation() {
+    this.cancelBubble = true;
+    if (!this.immediatePropagationStopped) {
+      this.stopImmediatePropagation();
+    }
+  }
+  function isDefaultPrevented() {
+    return this.defaultPrevented;
+  }
+  function isPropagationStopped() {
+    return this.cancelBubble;
+  }
+  function extendEventProperties(event) {
+    // Event data needs to be an object to save reference to currentTarget getter
+    const eventData = {
+      dom: document
+    };
+    event.isDefaultPrevented = isDefaultPrevented;
+    event.isPropagationStopped = isPropagationStopped;
+    event.stopPropagation = stopPropagation;
+    Object.defineProperty(event, 'currentTarget', {
+      configurable: true,
+      get: function get() {
+        return eventData.dom;
+      }
+    });
+    return eventData;
+  }
+  function rootEvent(name) {
+    const isClick = name === 'onClick' || name === 'onDblClick';
+    return function (event) {
+      dispatchEvents(event, isClick, name, extendEventProperties(event));
+    };
+  }
+  function attachEventToDocument(name) {
+    const attachedEvent = rootEvent(name);
+    document.addEventListener(normalizeEventName(name), attachedEvent);
+    return attachedEvent;
+  }
+  function isSameInnerHTML(dom, innerHTML) {
+    const temp = document.createElement('i');
+    temp.innerHTML = innerHTML;
+    return temp.innerHTML === dom.innerHTML;
+  }
+  function triggerEventListener(props, methodName, e) {
+    const listener = props[methodName];
+    if (listener) {
+      if (listener.event) {
+        listener.event(listener.data, e);
+      } else {
+        listener(e);
+      }
+    } else {
+      const nativeListenerName = methodName.toLowerCase();
+      if (isFunction$1(props[nativeListenerName])) {
+        props[nativeListenerName](e);
+      }
+    }
+  }
+  function createWrappedFunction(methodName, applyValue) {
+    const fnWrapper = function fnWrapper(e) {
+      const vNode = this.$V;
+      // If vNode is gone by the time event fires, no-op
+      if (isNullOrUndef(vNode)) {
+        return;
+      }
+      const props = vNode.props ?? EMPTY_OBJ;
+      const dom = vNode.dom;
+      if (isString(methodName)) {
+        triggerEventListener(props, methodName, e);
+      } else {
+        for (let i = 0; i < methodName.length; ++i) {
+          triggerEventListener(props, methodName[i], e);
+        }
+      }
+      if (isFunction$1(applyValue)) {
+        const newVNode = this.$V;
+        const newProps = newVNode.props ?? EMPTY_OBJ;
+        applyValue(newProps, dom, false, newVNode);
+      }
+    };
+    Object.defineProperty(fnWrapper, 'wrapped', {
+      configurable: false,
+      enumerable: false,
+      value: true,
+      writable: false
+    });
+    return fnWrapper;
+  }
+  function attachEvent(dom, eventName, handler) {
+    const previousKey = `$${eventName}`;
+    const previousArgs = dom[previousKey];
+    if (previousArgs) {
+      if (previousArgs[1].wrapped) {
+        return;
+      }
+      dom.removeEventListener(previousArgs[0], previousArgs[1]);
+      dom[previousKey] = null;
+    }
+    if (isFunction$1(handler)) {
+      dom.addEventListener(eventName, handler);
+      dom[previousKey] = [eventName, handler];
+    }
+  }
+  function isCheckedType(type) {
+    return type === 'checkbox' || type === 'radio';
+  }
+  const onTextInputChange = createWrappedFunction('onInput', applyValueInput);
+  const wrappedOnChange$1 = createWrappedFunction(['onClick', 'onChange'], applyValueInput);
+  function stopPropagationWrapper(event) {
+    event.stopPropagation();
+  }
+  stopPropagationWrapper.wrapped = true;
+  function inputEvents(dom, nextPropsOrEmpty) {
+    if (isCheckedType(nextPropsOrEmpty.type)) {
+      attachEvent(dom, 'change', wrappedOnChange$1);
+      attachEvent(dom, 'click', stopPropagationWrapper);
+    } else {
+      attachEvent(dom, 'input', onTextInputChange);
+    }
+  }
+  function applyValueInput(nextPropsOrEmpty, dom) {
+    const type = nextPropsOrEmpty.type;
+    const value = nextPropsOrEmpty.value;
+    const checked = nextPropsOrEmpty.checked;
+    const multiple = nextPropsOrEmpty.multiple;
+    const defaultValue = nextPropsOrEmpty.defaultValue;
+    const hasValue = !isNullOrUndef(value);
+    if (type != null && type !== dom.type) {
+      dom.setAttribute('type', type);
+    }
+    if (!isNullOrUndef(multiple) && multiple !== dom.multiple) {
+      dom.multiple = multiple;
+    }
+    if (!isNullOrUndef(defaultValue) && !hasValue) {
+      dom.defaultValue = defaultValue + '';
+    }
+    if (isCheckedType(type)) {
+      if (hasValue) {
+        dom.value = value;
+      }
+      if (!isNullOrUndef(checked)) {
+        dom.checked = checked;
+      }
+    } else {
+      if (hasValue && dom.value !== value) {
+        dom.defaultValue = value;
+        dom.value = value;
+      } else if (!isNullOrUndef(checked)) {
+        dom.checked = checked;
+      }
+    }
+  }
+  function updateChildOptions(vNode, value) {
+    if (vNode.type === 'option') {
+      updateChildOption(vNode, value);
+    } else {
+      const children = vNode.children;
+      const flags = vNode.flags;
+      if ((flags & 4 /* VNodeFlags.ComponentClass */) !== 0) {
+        updateChildOptions(children.$LI, value);
+      } else if ((flags & 8 /* VNodeFlags.ComponentFunction */) !== 0) {
+        updateChildOptions(children, value);
+      } else if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+        updateChildOptions(children, value);
+      } else if ((vNode.childFlags & 12 /* ChildFlags.MultipleChildren */) !== 0) {
+        for (let i = 0, len = children.length; i < len; ++i) {
+          updateChildOptions(children[i], value);
+        }
+      }
+    }
+  }
+  function updateChildOption(vNode, value) {
+    const props = vNode.props ?? EMPTY_OBJ;
+    const propsValue = props.value;
+    const dom = vNode.dom;
+    // we do this as multiple prop may have changed
+    dom.value = propsValue;
+    if (propsValue === value || isArray(value) && value.includes(propsValue)) {
+      dom.selected = true;
+    } else if (!isNullOrUndef(value) || !isNullOrUndef(props.selected)) {
+      dom.selected = Boolean(props.selected);
+    }
+  }
+  const onSelectChange = createWrappedFunction('onChange', applyValueSelect);
+  function selectEvents(dom) {
+    attachEvent(dom, 'change', onSelectChange);
+  }
+  function applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode) {
+    const multiplePropInBoolean = Boolean(nextPropsOrEmpty.multiple);
+    if (!isNullOrUndef(nextPropsOrEmpty.multiple) && multiplePropInBoolean !== dom.multiple) {
+      dom.multiple = multiplePropInBoolean;
+    }
+    const index = nextPropsOrEmpty.selectedIndex;
+    if (index === -1) {
+      dom.selectedIndex = -1;
+    }
+    const childFlags = vNode.childFlags;
+    if (childFlags !== 1 /* ChildFlags.HasInvalidChildren */) {
+      let value = nextPropsOrEmpty.value;
+      if (isNumber(index) && index > -1 && !isNullOrUndef(dom.options[index])) {
+        value = dom.options[index].value;
+      }
+      if (mounting && isNullOrUndef(value)) {
+        value = nextPropsOrEmpty.defaultValue;
+      }
+      updateChildOptions(vNode, value);
+    }
+  }
+  const onTextareaInputChange = createWrappedFunction('onInput', applyValueTextArea);
+  const wrappedOnChange = createWrappedFunction('onChange');
+  function textAreaEvents(dom, nextPropsOrEmpty) {
+    attachEvent(dom, 'input', onTextareaInputChange);
+    if (isFunction$1(nextPropsOrEmpty.onChange)) {
+      attachEvent(dom, 'change', wrappedOnChange);
+    }
+  }
+  function applyValueTextArea(nextPropsOrEmpty, dom, mounting) {
+    const value = nextPropsOrEmpty.value;
+    const domValue = dom.value;
+    if (isNullOrUndef(value)) {
+      if (mounting) {
+        const defaultValue = nextPropsOrEmpty.defaultValue;
+        if (!isNullOrUndef(defaultValue) && defaultValue !== domValue) {
+          dom.defaultValue = defaultValue;
+          dom.value = defaultValue;
+        }
+      }
+    } else if (domValue !== value) {
+      /* There is value so keep it controlled */
+      dom.defaultValue = value;
+      dom.value = value;
+    }
+  }
+  function processElement(flags, vNode, dom, nextPropsOrEmpty, mounting, isControlled) {
+    if ((flags & 64 /* VNodeFlags.InputElement */) !== 0) {
+      applyValueInput(nextPropsOrEmpty, dom);
+    } else if ((flags & 256 /* VNodeFlags.SelectElement */) !== 0) {
+      applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode);
+    } else if ((flags & 128 /* VNodeFlags.TextareaElement */) !== 0) {
+      applyValueTextArea(nextPropsOrEmpty, dom, mounting);
+    }
+    if (isControlled) {
+      dom.$V = vNode;
+    }
+  }
+  function addFormElementEventHandlers(flags, dom, nextPropsOrEmpty) {
+    if ((flags & 64 /* VNodeFlags.InputElement */) !== 0) {
+      inputEvents(dom, nextPropsOrEmpty);
+    } else if ((flags & 256 /* VNodeFlags.SelectElement */) !== 0) {
+      selectEvents(dom);
+    } else if ((flags & 128 /* VNodeFlags.TextareaElement */) !== 0) {
+      textAreaEvents(dom, nextPropsOrEmpty);
+    }
+  }
+  function isControlledFormElement(nextPropsOrEmpty) {
+    return isCheckedType(nextPropsOrEmpty.type) ? !isNullOrUndef(nextPropsOrEmpty.checked) : !isNullOrUndef(nextPropsOrEmpty.value);
+  }
+  function unmountRef(ref) {
+    if (!isNullOrUndef(ref)) {
+      if (!safeCall1(ref, null) && ref.current) {
+        ref.current = null;
+      }
+    }
+  }
+  function mountRef(ref, value, lifecycle) {
+    if (!isNullOrUndef(ref) && (isFunction$1(ref) || ref.current !== void 0)) {
+      lifecycle.push(() => {
+        if (!safeCall1(ref, value) && ref.current !== void 0) {
+          ref.current = value;
+        }
+      });
+    }
+  }
+  function remove(vNode, parentDOM, animations) {
+    unmount(vNode, animations);
+    removeVNodeDOM(vNode, parentDOM, animations);
+  }
+  function unmount(vNode, animations) {
+    forgetMoveAnimations(vNode);
+    const flags = vNode.flags;
+    const children = vNode.children;
+    let ref;
+    if ((flags & 481 /* VNodeFlags.Element */) !== 0) {
+      ref = vNode.ref;
+      const props = vNode.props;
+      unmountRef(ref);
+      const childFlags = vNode.childFlags;
+      if (!isNull(props)) {
+        // for-in reads the enum cache without allocating, Object.keys copied it for every element.
+        // Only "on" props can be delegated events, others skip the lookup that is megamorphic by name.
+        for (const key in props) {
+          if (key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && syntheticEvents[key]) {
+            unmountSyntheticEvent(key, vNode.dom);
+          }
+        }
+      }
+      if (childFlags & 12 /* ChildFlags.MultipleChildren */) {
+        unmountAllChildren(children, animations);
+      } else if (childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+        unmount(children, animations);
+      }
+    } else if (children) {
+      if (flags & 4 /* VNodeFlags.ComponentClass */) {
+        registerMoveHook(children, null);
+        if (isFunction$1(children.componentWillUnmount)) {
+          // TODO: Possible entrypoint
+          children.componentWillUnmount();
+        }
+        // If we have a componentWillDisappear on this component, block children from animating
+        let childAnimations = animations;
+        if (isFunction$1(children.componentWillDisappear)) {
+          childAnimations = new AnimationQueues();
+          addDisappearAnimationHook(animations, children, findDOMFromVNode(children.$LI, true), flags, undefined);
+        }
+        unmountRef(vNode.ref);
+        children.$UN = true;
+        unmount(children.$LI, childAnimations);
+      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+        registerMoveHook(vNode, null);
+        // If we have a onComponentWillDisappear on this component, block children from animating
+        let childAnimations = animations;
+        ref = vNode.ref;
+        if (!isNullOrUndef(ref)) {
+          let domEl = null;
+          if (isFunction$1(ref.onComponentWillUnmount)) {
+            domEl = findDOMFromVNode(vNode, true);
+            ref.onComponentWillUnmount(domEl, vNode.props || EMPTY_OBJ);
+          }
+          if (isFunction$1(ref.onComponentWillDisappear)) {
+            childAnimations = new AnimationQueues();
+            domEl = domEl || findDOMFromVNode(vNode, true);
+            addDisappearAnimationHook(animations, ref, domEl, flags, vNode.props);
+          }
+        }
+        unmount(children, childAnimations);
+      } else if (flags & 1024 /* VNodeFlags.Portal */) {
+        remove(children, vNode.ref, animations);
+      } else if (flags & 8192 /* VNodeFlags.Fragment */) {
+        if (vNode.childFlags & 12 /* ChildFlags.MultipleChildren */) {
+          unmountAllChildren(children, animations);
+        } else {
+          unmount(children, animations);
+        }
+      }
+    }
+  }
+  function unmountAllChildren(children, animations) {
+    for (let i = 0, len = children.length; i < len; ++i) {
+      unmount(children[i], animations);
+    }
+  }
+  function createClearAllCallback(children, parentDOM) {
+    return function () {
+      // We need to remove children one by one because elements can be added during animation
+      if (parentDOM) {
+        const commit = prepareForDeferredRemoval(parentDOM);
+        for (let i = 0; i < children.length; i++) {
+          const vNode = children[i];
+          clearVNodeDOM(vNode, parentDOM, true);
+        }
+        if (commit) callAll(commit);
+      }
+    };
+  }
+  function clearDOM(parentDOM, children, animations) {
+    if (animations.componentWillDisappear.length > 0) {
+      // Wait until animations are finished before removing actual dom nodes
+      // Be aware that the element could be removed by a later operation
+      callAllAnimationHooks(animations.componentWillDisappear, createClearAllCallback(children, parentDOM));
+    } else {
+      // Optimization for clearing dom
+      parentDOM.textContent = '';
+    }
+  }
+  function removeAllChildren(dom, vNode, children, animations) {
+    unmountAllChildren(children, animations);
+    if (vNode.flags & 8192 /* VNodeFlags.Fragment */) {
+      removeVNodeDOM(vNode, dom, animations);
+    } else {
+      clearDOM(dom, children, animations);
+    }
+  }
+  // Only add animations to queue in browser
+  function addDisappearAnimationHook(animations, instanceOrRef, dom, flags, props) {
+    // @ts-expect-error TODO: Here is something weird check this behavior
+    animations.componentWillDisappear.push(callback => {
+      if (flags & 4 /* VNodeFlags.ComponentClass */) {
+        instanceOrRef.componentWillDisappear(dom, callback);
+      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+        instanceOrRef.onComponentWillDisappear(dom, props, callback);
+      }
+    });
+  }
+  function wrapLinkEvent(nextValue) {
+    // This variable makes sure there is no "this" context in callback
+    const ev = nextValue.event;
+    return function (e) {
+      ev(nextValue.data, e);
+    };
+  }
+  function patchEvent(name, lastValue, nextValue, dom) {
+    if (isLinkEventObject(nextValue)) {
+      if (isLastValueSameLinkEvent(lastValue, nextValue)) {
+        return;
+      }
+      nextValue = wrapLinkEvent(nextValue);
+    }
+    attachEvent(dom, normalizeEventName(name), nextValue);
+  }
+  // We are assuming here that we come from patchProp routine
+  // -nextAttrValue cannot be null or undefined
+  function patchStyle(lastAttrValue, nextAttrValue, dom) {
+    if (isNullOrUndef(nextAttrValue)) {
+      dom.removeAttribute('style');
+      return;
+    }
+    const domStyle = dom.style;
+    let style;
+    let value;
+    if (isString(nextAttrValue)) {
+      domStyle.cssText = nextAttrValue;
+      return;
+    }
+    if (!isNullOrUndef(lastAttrValue) && !isString(lastAttrValue)) {
+      for (style in nextAttrValue) {
+        // do not add a hasOwnProperty check here, it affects performance
+        value = nextAttrValue[style];
+        if (value !== lastAttrValue[style]) {
+          domStyle.setProperty(style, value);
+        }
+      }
+      for (style in lastAttrValue) {
+        if (isNullOrUndef(nextAttrValue[style])) {
+          domStyle.removeProperty(style);
+        }
+      }
+    } else {
+      for (style in nextAttrValue) {
+        value = nextAttrValue[style];
+        domStyle.setProperty(style, value);
+      }
+    }
+  }
+  function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations) {
+    const lastHtml = lastValue?.__html || '';
+    const nextHtml = nextValue?.__html || '';
+    if (lastHtml !== nextHtml) {
+      if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
+        if (!isNull(lastVNode)) {
+          if (lastVNode.childFlags & 12 /* ChildFlags.MultipleChildren */) {
+            unmountAllChildren(lastVNode.children, animations);
+          } else if (lastVNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+            unmount(lastVNode.children, animations);
+          }
+        }
+        dom.innerHTML = nextHtml;
+        return true;
+      }
+    }
+    return false;
+  }
+  function patchDomProp(nextValue, dom, prop) {
+    const value = isNullOrUndef(nextValue) ? '' : nextValue;
+    if (dom[prop] !== value) {
+      dom[prop] = value;
+    }
+  }
+  // Returns true when innerHTML replaced the previous children.
+  function patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode, animations) {
+    switch (prop) {
+      case 'children':
+      case 'childrenType':
+      case 'className':
+      case 'defaultValue':
+      case 'key':
+      case 'multiple':
+      case 'ref':
+      case 'selectedIndex':
+        break;
+      case 'autoFocus':
+        dom.autofocus = !!nextValue;
+        break;
+      case 'allowfullscreen':
+      case 'autoplay':
+      case 'capture':
+      case 'checked':
+      case 'controls':
+      case 'default':
+      case 'disabled':
+      case 'hidden':
+      case 'indeterminate':
+      case 'loop':
+      case 'muted':
+      case 'novalidate':
+      case 'open':
+      case 'readOnly':
+      case 'required':
+      case 'reversed':
+      case 'scoped':
+      case 'seamless':
+      case 'selected':
+        dom[prop] = !!nextValue;
+        break;
+      case 'defaultChecked':
+      case 'value':
+      case 'volume':
+        if (hasControlledValue && prop === 'value') {
+          break;
+        }
+        patchDomProp(nextValue, dom, prop);
+        break;
+      case 'style':
+        patchStyle(lastValue, nextValue, dom);
+        break;
+      case 'dangerouslySetInnerHTML':
+        return patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations);
+      default:
+        if (syntheticEvents[prop]) {
+          handleSyntheticEvent(prop, lastValue, nextValue, dom);
+        } else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
+          patchEvent(prop, lastValue, nextValue, dom);
+        } else if (isNullOrUndef(nextValue)) {
+          dom.removeAttribute(prop);
+        } else if (isSVG && namespaces[prop]) {
+          // We optimize for isSVG being false
+          // If we end up in this path we can read property again
+          dom.setAttributeNS(namespaces[prop], prop, nextValue);
+        } else {
+          dom.setAttribute(prop, nextValue);
+        }
+        break;
+    }
+    return false;
+  }
+  function mountProps(vNode, flags, props, dom, isSVG, animations) {
+    let hasControlledValue = false;
+    const isFormElement = (flags & 448 /* VNodeFlags.FormElement */) > 0;
+    if (isFormElement) {
+      hasControlledValue = isControlledFormElement(props);
+      if (hasControlledValue) {
+        addFormElementEventHandlers(flags, dom, props);
+      }
+    }
+    for (const prop in props) {
+      // do not add a hasOwnProperty check here, it affects performance
+      patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null, animations);
+    }
+    if (isFormElement) {
+      processElement(flags, vNode, dom, props, true, hasControlledValue);
+    }
+  }
+  function renderNewInput(instance, props, context, lastInput) {
+    const nextInput = normalizeRoot(instance.render(props, instance.state, context), lastInput);
+    let childContext = context;
+    if (isFunction$1(instance.getChildContext)) {
+      childContext = {
+        ...context,
+        ...instance.getChildContext()
+      };
+    }
+    instance.$CX = childContext;
+    return nextInput;
+  }
+  function createClassComponentInstance(vNode, ComponentCtr, props, context, isSVG, lifecycle) {
+    const instance = new ComponentCtr(props, context);
+    const usesNewAPI = instance.$N = Boolean(ComponentCtr.getDerivedStateFromProps || instance.getSnapshotBeforeUpdate);
+    instance.$SVG = isSVG;
+    instance.$L = lifecycle;
+    vNode.children = instance;
+    instance.$BS = false;
+    instance.context = context;
+    if (instance.props === EMPTY_OBJ) {
+      instance.props = props;
+    }
+    if (!usesNewAPI) {
+      if (isFunction$1(instance.componentWillMount)) {
+        instance.$BR = true;
+        instance.componentWillMount();
+        const pending = instance.$PS;
+        if (!isNull(pending)) {
+          const state = instance.state;
+          if (isNull(state)) {
+            instance.state = pending;
+          } else {
+            for (const key in pending) {
+              state[key] = pending[key];
+            }
+          }
+          instance.$PS = null;
+        }
+        instance.$BR = false;
+      }
+    } else {
+      instance.state = createDerivedState(instance, props, instance.state);
+    }
+    instance.$LI = renderNewInput(instance, props, context);
+    return instance;
+  }
+  function renderFunctionalComponent(vNode, context) {
+    const props = vNode.props || EMPTY_OBJ;
+    return vNode.flags & 32768 /* VNodeFlags.ForwardRef */ ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context);
+  }
+  function mount(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+    const flags = vNode.flags |= 16384 /* VNodeFlags.InUse */;
+    if ((flags & 481 /* VNodeFlags.Element */) !== 0) {
+      mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    } else if ((flags & 4 /* VNodeFlags.ComponentClass */) !== 0) {
+      mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+      mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    } else if (flags & 16 /* VNodeFlags.Text */) {
+      mountText(vNode, parentDOM, nextNode);
+    } else if (flags & 8192 /* VNodeFlags.Fragment */) {
+      mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle, animations);
+    } else if (flags & 1024 /* VNodeFlags.Portal */) {
+      mountPortal(vNode, context, parentDOM, nextNode, lifecycle, animations);
+    } else ;
+  }
+  function mountPortal(vNode, context, parentDOM, nextNode, lifecycle, animations) {
+    let children = vNode.children;
+    if (mustCloneVNode(children, null)) {
+      vNode.children = children = directClone(children);
+    }
+    mount(children, vNode.ref, context, false, null, lifecycle, animations);
+    const placeHolderVNode = createVoidVNode();
+    mountText(placeHolderVNode, parentDOM, nextNode);
+    vNode.dom = placeHolderVNode.dom;
+  }
+  function mountFragment(vNode, context, parentDOM, isSVG, nextNode, lifecycle, animations) {
+    let children = vNode.children;
+    let childFlags = vNode.childFlags;
+    // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
+    // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
+    if (childFlags & 12 /* ChildFlags.MultipleChildren */ && children.length === 0) {
+      childFlags = vNode.childFlags = 2 /* ChildFlags.HasVNodeChildren */;
+      children = vNode.children = createVoidVNode();
+    }
+    if (childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+      if (mustCloneVNode(children, null)) {
+        vNode.children = children = directClone(children);
+      }
+      mount(children, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    } else {
+      mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    }
+    if (parentDOM !== null) trackMoveAnimations(vNode, parentDOM);
+  }
+  function mountText(vNode, parentDOM, nextNode) {
+    const dom = vNode.dom = document.createTextNode(vNode.children);
+    if (!isNull(parentDOM)) {
+      insertOrAppend(parentDOM, dom, nextNode);
+    }
+  }
+  function mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+    const flags = vNode.flags;
+    const props = vNode.props;
+    const className = vNode.className;
+    const childFlags = vNode.childFlags;
+    const dom = vNode.dom = documentCreateElement(vNode.type, isSVG = isSVG || (flags & 32 /* VNodeFlags.SvgElement */) > 0);
+    let children = vNode.children;
+    if (!isNullOrUndef(className) && className !== '') {
+      if (isSVG) {
+        dom.setAttribute('class', className);
+      } else {
+        dom.className = className;
+      }
+    }
+    if (childFlags === 16 /* ChildFlags.HasTextChildren */) {
+      setTextContent(dom, children);
+    } else if (childFlags !== 1 /* ChildFlags.HasInvalidChildren */) {
+      const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
+      if (childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+        if (mustCloneVNode(children, null)) {
+          vNode.children = children = directClone(children);
+        }
+        mount(children, dom, context, childrenIsSVG, null, lifecycle, animations);
+      } else if (childFlags === 8 /* ChildFlags.HasKeyedChildren */ || childFlags === 4 /* ChildFlags.HasNonKeyedChildren */) {
+        mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle, animations);
+      }
+    }
+    // Props are set before the element enters the document: attribute changes on a connected element cost
+    // style invalidation, and autofocus only works when the attribute is there on insertion.
+    if (!isNull(props)) {
+      mountProps(vNode, flags, props, dom, isSVG, animations);
+    }
+    if (!isNull(parentDOM)) {
+      insertOrAppend(parentDOM, dom, nextNode);
+    }
+    trackMoveAnimations(vNode, dom);
+    mountRef(vNode.ref, dom, lifecycle);
+  }
+  function mountArrayChildren(children, dom, context, isSVG, nextNode, lifecycle, animations) {
+    for (let i = 0; i < children.length; ++i) {
+      let child = children[i];
+      if (mustCloneVNode(child, null)) {
+        children[i] = child = directClone(child);
+      }
+      mount(child, dom, context, isSVG, nextNode, lifecycle, animations);
+    }
+  }
+  function mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+    const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
+    // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+    let childAnimations = animations;
+    if (isFunction$1(instance.componentDidAppear)) {
+      childAnimations = new AnimationQueues();
+    }
+    mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
+    mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
+  }
+  function mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+    const ref = vNode.ref;
+    // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+    let childAnimations = animations;
+    if (!isNullOrUndef(ref) && isFunction$1(ref.onComponentDidAppear)) {
+      childAnimations = new AnimationQueues();
+    }
+    mount(vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context)), parentDOM, context, isSVG, nextNode, lifecycle, childAnimations);
+    mountFunctionalComponentCallbacks(vNode, lifecycle, animations);
+  }
+  function createClassMountCallback(instance) {
+    return () => {
+      instance.componentDidMount();
+    };
+  }
+  function addAppearAnimationHookClass(animations, instance, dom) {
+    animations.componentDidAppear.push(() => {
+      instance.componentDidAppear(dom);
+    });
+  }
+  function addAppearAnimationHookFunctional(animations, ref, dom, props) {
+    animations.componentDidAppear.push(() => {
+      ref.onComponentDidAppear(dom, props);
+    });
+  }
+  function mountClassComponentCallbacks(ref, instance, lifecycle, animations) {
+    registerMoveHook(instance, instance.componentWillMove);
+    mountRef(ref, instance, lifecycle);
+    if (isFunction$1(instance.componentDidMount)) {
+      lifecycle.push(createClassMountCallback(instance));
+    }
+    if (isFunction$1(instance.componentDidAppear)) {
+      addAppearAnimationHookClass(animations, instance, findDOMFromVNode(instance.$LI, true));
+    }
+  }
+  function createOnMountCallback(ref, vNode) {
+    return () => {
+      ref.onComponentDidMount(findDOMFromVNode(vNode, true), vNode.props || EMPTY_OBJ);
+    };
+  }
+  function mountFunctionalComponentCallbacks(vNode, lifecycle, animations) {
+    const ref = vNode.ref;
+    registerMoveHook(vNode, ref && ref.onComponentWillMove);
+    if (!isNullOrUndef(ref)) {
+      safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
+      if (isFunction$1(ref.onComponentDidMount)) {
+        lifecycle.push(createOnMountCallback(ref, vNode));
+      }
+      if (isFunction$1(ref.onComponentDidAppear)) {
+        addAppearAnimationHookFunctional(animations, ref, findDOMFromVNode(vNode, true), vNode.props);
+      }
+    }
+  }
+  function replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations) {
+    unmount(lastVNode, animations);
+    if ((nextVNode.flags & lastVNode.flags & 1521 /* VNodeFlags.DOMRef */) !== 0) {
+      mount(nextVNode, null, context, isSVG, null, lifecycle, animations);
+      // Single DOM operation, when we have dom references available
+      replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
+    } else {
+      mount(nextVNode, parentDOM, context, isSVG, findDOMFromVNode(lastVNode, true), lifecycle, animations);
+      removeVNodeDOM(lastVNode, parentDOM, animations);
+    }
+  }
+  function patch$1(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+    const nextFlags = nextVNode.flags |= 16384 /* VNodeFlags.InUse */;
+    if (
+    // Normalized flag tells only whether the vNode has been normalized, it is not part of the vNode type
+    ((lastVNode.flags ^ nextFlags) & -65537 /* VNodeFlags.Normalized */) !== 0 || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || nextFlags & 2048 /* VNodeFlags.ReCreate */) {
+      if (lastVNode.flags & 16384 /* VNodeFlags.InUse */) {
+        replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations);
+      } else {
+        // Last vNode is not in use, it has crashed at application level. Just mount nextVNode and ignore last one
+        mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+      }
+    } else if (nextFlags & 481 /* VNodeFlags.Element */) {
+      patchElement(lastVNode, nextVNode, context, isSVG, lifecycle, animations);
+    } else if (nextFlags & 4 /* VNodeFlags.ComponentClass */) {
+      patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    } else if (nextFlags & 8 /* VNodeFlags.ComponentFunction */) {
+      patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    } else if (nextFlags & 16 /* VNodeFlags.Text */) {
+      patchText(lastVNode, nextVNode);
+    } else if (nextFlags & 8192 /* VNodeFlags.Fragment */) {
+      patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations);
+    } else {
+      patchPortal(lastVNode, nextVNode, context, lifecycle, animations);
+    }
+  }
+  function patchSingleTextChild(lastChildren, nextChildren, parentDOM) {
+    if (lastChildren !== nextChildren) {
+      if (lastChildren !== '') {
+        parentDOM.firstChild.nodeValue = nextChildren;
+      } else {
+        setTextContent(parentDOM, nextChildren);
+      }
+    }
+  }
+  function patchContentEditableChildren(dom, nextChildren) {
+    if (dom.textContent !== nextChildren) {
+      dom.textContent = nextChildren;
+    }
+  }
+  function patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations) {
+    const moveParent = parentDOM;
+    const moveList = prepareMoveAnimations(lastVNode, nextVNode, moveParent, animations);
+    let succeeded = false;
+    try {
+      const lastChildren = lastVNode.children;
+      let nextChildren = nextVNode.children;
+      const lastChildFlags = lastVNode.childFlags;
+      let nextChildFlags = nextVNode.childFlags;
+      let nextNode = null;
+      // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
+      // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
+      if (nextChildFlags & 12 /* ChildFlags.MultipleChildren */ && nextChildren.length === 0) {
+        nextChildFlags = nextVNode.childFlags = 2 /* ChildFlags.HasVNodeChildren */;
+        nextChildren = nextVNode.children = createVoidVNode();
+      }
+      const nextIsSingle = (nextChildFlags & 2 /* ChildFlags.HasVNodeChildren */) !== 0;
+      if (nextIsSingle && mustCloneVNode(nextChildren, lastChildren)) {
+        nextChildren = nextVNode.children = directClone(nextChildren);
+      }
+      if (lastChildFlags & 12 /* ChildFlags.MultipleChildren */) {
+        const lastLen = lastChildren.length;
+        // We need to know Fragment's edge node when
+        if (
+        // It uses keyed algorithm
+        lastChildFlags & 8 /* ChildFlags.HasKeyedChildren */ && nextChildFlags & 8 /* ChildFlags.HasKeyedChildren */ ||
+        // It transforms from many to single
+        nextIsSingle ||
+        // It will append more nodes
+        !nextIsSingle && nextChildren.length > lastLen) {
+          // When fragment has multiple children there is always at least one vNode
+          nextNode = findDOMFromVNode(lastChildren[lastLen - 1], false).nextSibling;
+        }
+      }
+      patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle, animations);
+      succeeded = true;
+    } finally {
+      finishMoveAnimations(moveList, nextVNode, moveParent, succeeded);
+    }
+  }
+  function patchPortal(lastVNode, nextVNode, context, lifecycle, animations) {
+    const lastContainer = lastVNode.ref;
+    const nextContainer = nextVNode.ref;
+    let nextChildren = nextVNode.children;
+    if (nextVNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */ && mustCloneVNode(nextChildren, lastVNode.children)) {
+      nextChildren = nextVNode.children = directClone(nextChildren);
+    }
+    patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, lastContainer, context, false, null, lastVNode, lifecycle, animations);
+    nextVNode.dom = lastVNode.dom;
+    if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
+      appendVNodeDOM(nextChildren, nextContainer);
+    }
+  }
+  function patchElement(lastVNode, nextVNode, context, isSVG, lifecycle, animations) {
+    const moveParent = lastVNode.dom;
+    const moveList = prepareMoveAnimations(lastVNode, nextVNode, moveParent, animations);
+    let succeeded = false;
+    try {
+      const dom = nextVNode.dom = lastVNode.dom;
+      let lastChildren = lastVNode.children;
+      let lastChildFlags = lastVNode.childFlags;
+      const lastProps = lastVNode.props;
+      const nextProps = nextVNode.props;
+      const nextFlags = nextVNode.flags;
+      let isFormElement = false;
+      let hasControlledValue = false;
+      let nextPropsOrEmpty;
+      isSVG = isSVG || (nextFlags & 32 /* VNodeFlags.SvgElement */) > 0;
+      // inlined patchProps  -- starts --
+      if (lastProps !== nextProps) {
+        const lastPropsOrEmpty = lastProps || EMPTY_OBJ;
+        nextPropsOrEmpty = nextProps || EMPTY_OBJ;
+        if (nextPropsOrEmpty !== EMPTY_OBJ) {
+          isFormElement = (nextFlags & 448 /* VNodeFlags.FormElement */) > 0;
+          if (isFormElement) {
+            hasControlledValue = isControlledFormElement(nextPropsOrEmpty);
+          }
+          for (const prop in nextPropsOrEmpty) {
+            const lastValue = lastPropsOrEmpty[prop];
+            const nextValue = nextPropsOrEmpty[prop];
+            if (lastValue !== nextValue) {
+              if (patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode, animations)) {
+                // Keep the reusable vNode intact after innerHTML unmounts its children.
+                lastChildren = null;
+                lastChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
+              }
+            }
+          }
+        }
+        if (lastPropsOrEmpty !== EMPTY_OBJ) {
+          for (const prop in lastPropsOrEmpty) {
+            if (isNullOrUndef(nextPropsOrEmpty[prop]) && !isNullOrUndef(lastPropsOrEmpty[prop])) {
+              if (patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode, animations)) {
+                lastChildren = null;
+                lastChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
+              }
+            }
+          }
+        }
+      }
+      let nextChildren = nextVNode.children;
+      const nextClassName = nextVNode.className;
+      // inlined patchProps  -- ends --
+      if (lastVNode.className !== nextClassName) {
+        if (isNullOrUndef(nextClassName)) {
+          dom.removeAttribute('class');
+        } else if (isSVG) {
+          dom.setAttribute('class', nextClassName);
+        } else {
+          dom.className = nextClassName;
+        }
+      }
+      if ("production" !== 'production') ;
+      if (nextFlags & 4096 /* VNodeFlags.ContentEditable */) {
+        patchContentEditableChildren(dom, nextChildren);
+      } else {
+        if (nextVNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */ && mustCloneVNode(nextChildren, lastChildren)) {
+          nextChildren = nextVNode.children = directClone(nextChildren);
+        }
+        patchChildren(lastChildFlags, nextVNode.childFlags, lastChildren, nextChildren, dom, context, isSVG && nextVNode.type !== 'foreignObject', null, lastVNode, lifecycle, animations);
+      }
+      if (isFormElement) {
+        processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
+      }
+      const nextRef = nextVNode.ref;
+      const lastRef = lastVNode.ref;
+      if (lastRef !== nextRef) {
+        unmountRef(lastRef);
+        mountRef(nextRef, dom, lifecycle);
+      }
+      succeeded = true;
+    } finally {
+      finishMoveAnimations(moveList, nextVNode, moveParent, succeeded);
+    }
+  }
+  function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle, animations) {
+    unmount(lastChildren, animations);
+    mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMFromVNode(lastChildren, true), lifecycle, animations);
+    removeVNodeDOM(lastChildren, parentDOM, animations);
+  }
+  function commonChildrenSwitch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations, parentVNode, nextChildFlags, lastChildFlags) {
+    const lastLength = lastChildren.length | 0;
+    const nextLength = nextChildren.length | 0;
+    // Fast path's for both algorithms
+    if (lastLength === 0) {
+      if (nextLength > 0) {
+        mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+      }
+    } else if (nextLength === 0) {
+      removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
+    } else if (nextChildFlags === 8 /* ChildFlags.HasKeyedChildren */ && lastChildFlags === 8 /* ChildFlags.HasKeyedChildren */) {
+      patchKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle, animations);
+    } else {
+      patchNonKeyedChildren(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, lifecycle, animations);
+    }
+  }
+  function patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, parentVNode, lifecycle, animations) {
+    switch (lastChildFlags) {
+      case 2 /* ChildFlags.HasVNodeChildren */:
+        switch (nextChildFlags) {
+          case 2 /* ChildFlags.HasVNodeChildren */:
+            patch$1(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+            break;
+          case 1 /* ChildFlags.HasInvalidChildren */:
+            remove(lastChildren, parentDOM, animations);
+            break;
+          case 16 /* ChildFlags.HasTextChildren */:
+            unmount(lastChildren, animations);
+            setTextContent(parentDOM, nextChildren);
+            break;
+          default:
+            replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle, animations);
+            break;
+        }
+        break;
+      case 1 /* ChildFlags.HasInvalidChildren */:
+        switch (nextChildFlags) {
+          case 2 /* ChildFlags.HasVNodeChildren */:
+            mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+            break;
+          case 1 /* ChildFlags.HasInvalidChildren */:
+            break;
+          case 16 /* ChildFlags.HasTextChildren */:
+            setTextContent(parentDOM, nextChildren);
+            break;
+          default:
+            mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+            break;
+        }
+        break;
+      case 16 /* ChildFlags.HasTextChildren */:
+        switch (nextChildFlags) {
+          case 16 /* ChildFlags.HasTextChildren */:
+            patchSingleTextChild(lastChildren, nextChildren, parentDOM);
+            break;
+          case 2 /* ChildFlags.HasVNodeChildren */:
+            clearDOM(parentDOM, lastChildren, animations);
+            mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+            break;
+          case 1 /* ChildFlags.HasInvalidChildren */:
+            clearDOM(parentDOM, lastChildren, animations);
+            break;
+          default:
+            clearDOM(parentDOM, lastChildren, animations);
+            mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+            break;
+        }
+        break;
+      default:
+        switch (nextChildFlags) {
+          case 16 /* ChildFlags.HasTextChildren */:
+            unmountAllChildren(lastChildren, animations);
+            setTextContent(parentDOM, nextChildren);
+            break;
+          case 2 /* ChildFlags.HasVNodeChildren */:
+            removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
+            mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+            break;
+          case 1 /* ChildFlags.HasInvalidChildren */:
+            removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
+            break;
+          default:
+            commonChildrenSwitch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations, parentVNode, nextChildFlags, lastChildFlags);
+            break;
+        }
+        break;
+    }
+  }
+  function createDidUpdate(instance, lastProps, lastState, snapshot, lifecycle) {
+    lifecycle.push(() => {
+      instance.componentDidUpdate(lastProps, lastState, snapshot);
+    });
+  }
+  function updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, force, nextNode, lifecycle, animations) {
+    const lastState = instance.state;
+    const lastProps = instance.props;
+    const usesNewAPI = Boolean(instance.$N);
+    const hasSCU = isFunction$1(instance.shouldComponentUpdate);
+    if (usesNewAPI) {
+      nextState = createDerivedState(instance, nextProps, nextState !== lastState ? {
+        ...lastState,
+        ...nextState
+      } : nextState);
+    }
+    if (force || !hasSCU || hasSCU && instance.shouldComponentUpdate(nextProps, nextState, context)) {
+      if (!usesNewAPI && isFunction$1(instance.componentWillUpdate)) {
+        instance.componentWillUpdate(nextProps, nextState, context);
+      }
+      instance.props = nextProps;
+      instance.state = nextState;
+      instance.context = context;
+      let snapshot = null;
+      const nextInput = renderNewInput(instance, nextProps, context, instance.$LI);
+      if (usesNewAPI && isFunction$1(instance.getSnapshotBeforeUpdate)) {
+        snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState);
+      }
+      patch$1(instance.$LI, nextInput, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, animations);
+      // Don't update Last input, until patch has been successfully executed
+      instance.$LI = nextInput;
+      if (isFunction$1(instance.componentDidUpdate)) {
+        createDidUpdate(instance, lastProps, lastState, snapshot, lifecycle);
+      }
+    } else {
+      instance.props = nextProps;
+      instance.state = nextState;
+      instance.context = context;
+    }
+  }
+  function patchClassComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+    const instance = nextVNode.children = lastVNode.children;
+    // If Component has crashed, ignore it to stay functional
+    if (isNull(instance)) {
+      return;
+    }
+    instance.$L = lifecycle;
+    const nextProps = nextVNode.props || EMPTY_OBJ;
+    const nextRef = nextVNode.ref;
+    const lastRef = lastVNode.ref;
+    let nextState = instance.state;
+    if (!instance.$N) {
+      if (isFunction$1(instance.componentWillReceiveProps)) {
+        instance.$BR = true;
+        instance.componentWillReceiveProps(nextProps, context);
+        // If instance component was removed during its own update do nothing.
+        if (instance.$UN) {
+          return;
+        }
+        instance.$BR = false;
+      }
+      if (!isNull(instance.$PS)) {
+        nextState = {
+          ...nextState,
+          ...instance.$PS
+        };
+        instance.$PS = null;
+      }
+    }
+    updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, false, nextNode, lifecycle, animations);
+    if (lastRef !== nextRef) {
+      unmountRef(lastRef);
+      mountRef(nextRef, instance, lifecycle);
+    }
+  }
+  function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+    let shouldUpdate = true;
+    const nextProps = nextVNode.props || EMPTY_OBJ;
+    const nextRef = nextVNode.ref;
+    const lastProps = lastVNode.props;
+    const nextHooksDefined = !isNullOrUndef(nextRef);
+    const lastInput = lastVNode.children;
+    if (nextHooksDefined && isFunction$1(nextRef.onComponentShouldUpdate)) {
+      shouldUpdate = nextRef.onComponentShouldUpdate(lastProps, nextProps);
+    }
+    if (shouldUpdate) {
+      if (nextHooksDefined && isFunction$1(nextRef.onComponentWillUpdate)) {
+        nextRef.onComponentWillUpdate(lastProps, nextProps);
+      }
+      const nextInput = normalizeRoot(renderFunctionalComponent(nextVNode, context), lastInput);
+      patch$1(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+      nextVNode.children = nextInput;
+      if (nextHooksDefined && isFunction$1(nextRef.onComponentDidUpdate)) {
+        nextRef.onComponentDidUpdate(lastProps, nextProps);
+      }
+    } else {
+      nextVNode.children = lastInput;
+    }
+    registerMoveHook(lastVNode, null);
+    registerMoveHook(nextVNode, nextRef && nextRef.onComponentWillMove);
+  }
+  function patchText(lastVNode, nextVNode) {
+    const nextText = nextVNode.children;
+    const dom = nextVNode.dom = lastVNode.dom;
+    if (nextText !== lastVNode.children) {
+      dom.nodeValue = nextText;
+    }
+  }
+  // Patching does not change last children, so that vNodes can be rendered again.
+  // When patching throws, last children are updated to vNodes that were patched already, so the next render continues from the current DOM.
+  function syncLastChildren(lastChildren, nextChildren, start, end) {
+    const lastLength = lastChildren.length;
+    const nextLength = nextChildren.length;
+    for (let i = 0; i < start; ++i) {
+      lastChildren[i] = nextChildren[i];
+    }
+    for (let i = 1; i <= end; ++i) {
+      lastChildren[lastLength - i] = nextChildren[nextLength - i];
+    }
+  }
+  function patchNonKeyedChildren(lastChildren, nextChildren, dom, context, isSVG, lastChildrenLength, nextChildrenLength, nextNode, lifecycle, animations) {
+    const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
+    let i = 0;
+    let nextChild;
+    let lastChild;
+    try {
+      for (; i < commonLength; ++i) {
+        nextChild = nextChildren[i];
+        lastChild = lastChildren[i];
+        if (mustCloneVNode(nextChild, lastChild)) {
+          nextChild = nextChildren[i] = directClone(nextChild);
+        }
+        patch$1(lastChild, nextChild, dom, context, isSVG, nextNode, lifecycle, animations);
+      }
+      if (lastChildrenLength < nextChildrenLength) {
+        for (i = commonLength; i < nextChildrenLength; ++i) {
+          nextChild = nextChildren[i];
+          if (mustCloneVNode(nextChild, null)) {
+            nextChild = nextChildren[i] = directClone(nextChild);
+          }
+          mount(nextChild, dom, context, isSVG, nextNode, lifecycle, animations);
+        }
+      } else if (lastChildrenLength > nextChildrenLength) {
+        for (i = commonLength; i < lastChildrenLength; ++i) {
+          remove(lastChildren[i], dom, animations);
+        }
+      }
+    } catch (e) {
+      syncLastChildren(lastChildren, nextChildren, i < commonLength ? i : commonLength, 0);
+      throw e;
+    }
+  }
+  function patchKeyedChildren(a, b, dom, context, isSVG, aLength, bLength, outerEdge, parentVNode, lifecycle, animations) {
+    let aEnd = aLength - 1;
+    let bEnd = bLength - 1;
+    let j = 0;
+    let aNode = a[j];
+    let bNode = b[j];
+    let nextPos;
+    let nextNode;
+    // Count of vNodes patched at the beginning and at the end
+    let synced = 0;
+    let syncedEnd = 0;
+    try {
+      // Step 1
+      outer: {
+        // Sync nodes with the same key at the beginning.
+        while (aNode.key === bNode.key) {
+          if (mustCloneVNode(bNode, aNode)) {
+            b[j] = bNode = directClone(bNode);
+          }
+          patch$1(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
+          synced = ++j;
+          if (j > aEnd || j > bEnd) {
+            break outer;
+          }
+          aNode = a[j];
+          bNode = b[j];
+        }
+        aNode = a[aEnd];
+        bNode = b[bEnd];
+        // Sync nodes with the same key at the end.
+        while (aNode.key === bNode.key) {
+          if (mustCloneVNode(bNode, aNode)) {
+            b[bEnd] = bNode = directClone(bNode);
+          }
+          patch$1(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
+          syncedEnd++;
+          aEnd--;
+          bEnd--;
+          if (j > aEnd || j > bEnd) {
+            break outer;
+          }
+          aNode = a[aEnd];
+          bNode = b[bEnd];
+        }
+      }
+      if (j > aEnd) {
+        if (j <= bEnd) {
+          nextPos = bEnd + 1;
+          nextNode = nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge;
+          while (j <= bEnd) {
+            bNode = b[j];
+            if (mustCloneVNode(bNode, null)) {
+              b[j] = bNode = directClone(bNode);
+            }
+            ++j;
+            mount(bNode, dom, context, isSVG, nextNode, lifecycle, animations);
+          }
+        }
+      } else if (j > bEnd) {
+        while (j <= aEnd) {
+          remove(a[j++], dom, animations);
+        }
+      } else {
+        patchKeyedChildrenComplex(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle, animations);
+      }
+    } catch (e) {
+      syncLastChildren(a, b, synced, syncedEnd);
+      throw e;
+    }
+  }
+  function patchKeyedChildrenComplex(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle, animations) {
+    let aNode;
+    let bNode;
+    // eslint-disable-next-line no-useless-assignment
+    let nextPos = 0;
+    // eslint-disable-next-line no-useless-assignment
+    let i = 0;
+    let aStart = j;
+    const bStart = j;
+    const aLeft = aEnd - j + 1;
+    const bLeft = bEnd - j + 1;
+    const sources = new Int32Array(bLeft + 1);
+    // Keep track if it is possible to remove whole DOM using textContent = '';
+    let canRemoveWholeContent = aLeft === aLength;
+    let moved = false;
+    let pos = 0;
+    let patched = 0;
+    // When sizes are small, just loop them through
+    if (bLength < 4 || (aLeft | bLeft) < 32) {
+      for (i = aStart; i <= aEnd; ++i) {
+        aNode = a[i];
+        if (patched < bLeft) {
+          for (j = bStart; j <= bEnd; j++) {
+            bNode = b[j];
+            if (aNode.key === bNode.key) {
+              sources[j - bStart] = i + 1;
+              if (canRemoveWholeContent) {
+                canRemoveWholeContent = false;
+                while (aStart < i) {
+                  remove(a[aStart++], dom, animations);
+                }
+              }
+              if (pos > j) {
+                moved = true;
+              } else {
+                pos = j;
+              }
+              if (mustCloneVNode(bNode, aNode)) {
+                b[j] = bNode = directClone(bNode);
+              }
+              patch$1(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
+              ++patched;
+              break;
+            }
+          }
+          if (!canRemoveWholeContent && j > bEnd) {
+            remove(aNode, dom, animations);
+          }
+        } else if (!canRemoveWholeContent) {
+          remove(aNode, dom, animations);
+        }
+      }
+    } else {
+      const keyIndex = {};
+      // Map keys by their index
+      for (i = bStart; i <= bEnd; ++i) {
+        keyIndex[b[i].key] = i;
+      }
+      // Try to patch same keys
+      for (i = aStart; i <= aEnd; ++i) {
+        aNode = a[i];
+        if (patched < bLeft) {
+          j = keyIndex[aNode.key];
+          if (j !== void 0) {
+            if (canRemoveWholeContent) {
+              canRemoveWholeContent = false;
+              while (i > aStart) {
+                remove(a[aStart++], dom, animations);
+              }
+            }
+            sources[j - bStart] = i + 1;
+            if (pos > j) {
+              moved = true;
+            } else {
+              pos = j;
+            }
+            bNode = b[j];
+            if (mustCloneVNode(bNode, aNode)) {
+              b[j] = bNode = directClone(bNode);
+            }
+            patch$1(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
+            ++patched;
+          } else if (!canRemoveWholeContent) {
+            remove(aNode, dom, animations);
+          }
+        } else if (!canRemoveWholeContent) {
+          remove(aNode, dom, animations);
+        }
+      }
+    }
+    // fast-path: if nothing patched remove all old and add all new
+    if (canRemoveWholeContent) {
+      removeAllChildren(dom, parentVNode, a, animations);
+      mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle, animations);
+    } else if (moved) {
+      const seq = lisAlgorithm(sources);
+      j = seq.length - 1;
+      for (i = bLeft - 1; i >= 0; i--) {
+        if (sources[i] === 0) {
+          pos = i + bStart;
+          bNode = b[pos];
+          if (mustCloneVNode(bNode, null)) {
+            b[pos] = bNode = directClone(bNode);
+          }
+          nextPos = pos + 1;
+          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
+        } else if (j < 0 || i !== seq[j]) {
+          pos = i + bStart;
+          bNode = b[pos];
+          nextPos = pos + 1;
+          // --- the DOM-node is moved by a call to insertAppend
+          moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge);
+        } else {
+          j--;
+        }
+      }
+    } else if (patched !== bLeft) {
+      // when patched count doesn't match b length we need to insert those new ones
+      // loop backwards so we can use insertBefore
+      for (i = bLeft - 1; i >= 0; i--) {
+        if (sources[i] === 0) {
+          pos = i + bStart;
+          bNode = b[pos];
+          if (mustCloneVNode(bNode, null)) {
+            b[pos] = bNode = directClone(bNode);
+          }
+          nextPos = pos + 1;
+          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
+        }
+      }
+    }
+  }
+  let result;
+  let p;
+  let maxLen = 0;
+  // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+  function lisAlgorithm(arr) {
+    // Assigning number here tells JIT that these variables are numbers
+    /* eslint-disable no-useless-assignment */
+    let arrI = 0;
+    let i = 0;
+    let j = 0;
+    let k = 0;
+    let u = 0;
+    let v = 0;
+    let c = 0;
+    const len = arr.length;
+    /* eslint-enable no-useless-assignment */
+    if (len > maxLen) {
+      maxLen = len;
+      result = new Int32Array(len);
+      p = new Int32Array(len);
+    }
+    for (; i < len; ++i) {
+      arrI = arr[i];
+      if (arrI !== 0) {
+        j = result[k];
+        if (arr[j] < arrI) {
+          p[i] = j;
+          result[++k] = i;
+          continue;
+        }
+        u = 0;
+        v = k;
+        while (u < v) {
+          c = u + v >> 1;
+          if (arr[result[c]] < arrI) {
+            u = c + 1;
+          } else {
+            v = c;
+          }
+        }
+        if (arrI < arr[result[u]]) {
+          if (u > 0) {
+            p[i] = result[u - 1];
+          }
+          result[u] = i;
+        }
+      }
+    }
+    u = k + 1;
+    const seq = new Int32Array(u);
+    v = result[u - 1];
+    while (u-- > 0) {
+      seq[u] = v;
+      v = p[v];
+      result[u] = 0;
+    }
+    return seq;
+  }
+  const hasDocumentAvailable = typeof document !== 'undefined';
+  if (hasDocumentAvailable) {
+    /*
+     * Defining $EV and $V properties on Node.prototype
+     * fixes v8 "wrong map" de-optimization
+     */
+    if (window.Node) {
+      Node.prototype.$EV = null;
+      Node.prototype.$V = null;
+    }
+  }
+  // noinspection JSUnusedAssignment
+  function renderInternal(input, parentDOM, callback, context) {
+    const lifecycle = [];
+    const animations = new AnimationQueues();
+    const rootInput = parentDOM.$V;
+    renderCheck.v = true;
+    if (isNullOrUndef(rootInput)) {
+      if (!isNullOrUndef(input)) {
+        if (mustCloneVNode(input, null)) {
+          input = directClone(input);
+        }
+        mount(input, parentDOM, context, false, null, lifecycle, animations);
+        parentDOM.$V = input;
+      }
+    } else {
+      if (isNullOrUndef(input)) {
+        remove(rootInput, parentDOM, animations);
+        parentDOM.$V = null;
+      } else {
+        if (mustCloneVNode(input, rootInput)) {
+          input = directClone(input);
+        }
+        patch$1(rootInput, input, parentDOM, context, false, null, lifecycle, animations);
+        parentDOM.$V = input;
+      }
+    }
+    callAll(lifecycle);
+    callAllAnimationHooks(animations.componentDidAppear);
+    if (animations.$CM) callAll(animations.$CM);
+    renderCheck.v = false;
+    if (isFunction$1(callback)) {
+      callback();
+    }
+  }
+  function render(input, parentDOM, callback = null, context = EMPTY_OBJ) {
+    renderInternal(input, parentDOM, callback, context);
+  }
+  const COMPONENTS_QUEUE = [];
+  const nextTick = Promise.resolve().then.bind(Promise.resolve());
+  let microTaskPending = false;
+  function queueStateChanges(component, newState, callback, force) {
+    const pending = component.$PS;
+    if (isFunction$1(newState)) {
+      newState = newState(pending ? {
+        ...component.state,
+        ...pending
+      } : component.state, component.props, component.context);
+    }
+    if (isNullOrUndef(pending)) {
+      component.$PS = newState;
+    } else {
+      for (const stateKey in newState) {
+        pending[stateKey] = newState[stateKey];
+      }
+    }
+    if (!component.$BR) {
+      if (!renderCheck.v) {
+        if (COMPONENTS_QUEUE.length === 0) {
+          applyState(component, force);
+          if (isFunction$1(callback)) {
+            callback.call(component);
+          }
+          return;
+        }
+      }
+      if (!COMPONENTS_QUEUE.includes(component)) {
+        COMPONENTS_QUEUE.push(component);
+      }
+      if (force) {
+        component.$F = true;
+      }
+      if (!microTaskPending) {
+        microTaskPending = true;
+        nextTick(rerender);
+      }
+      if (isFunction$1(callback)) {
+        let QU = component.$QU;
+        if (!QU) {
+          QU = component.$QU = [];
+        }
+        QU.push(callback);
+      }
+    } else if (isFunction$1(callback)) {
+      component.$L.push(callback.bind(component));
+    }
+  }
+  function callSetStateCallbacks(component) {
+    const queue = component.$QU;
+    for (let i = 0; i < queue.length; ++i) {
+      queue[i].call(component);
+    }
+    component.$QU = null;
+  }
+  function rerender() {
+    let component;
+    microTaskPending = false;
+    while (component = COMPONENTS_QUEUE.shift()) {
+      if (!component.$UN) {
+        const force = component.$F;
+        component.$F = false;
+        applyState(component, force);
+        if (component.$QU) {
+          callSetStateCallbacks(component);
+        }
+      }
+    }
+  }
+  function applyState(component, force) {
+    if (force || !component.$BR) {
+      const pendingState = component.$PS;
+      component.$PS = null;
+      const lifecycle = [];
+      const animations = new AnimationQueues();
+      renderCheck.v = true;
+      updateClassComponent(component, {
+        ...component.state,
+        ...pendingState
+      }, component.props, findDOMFromVNode(component.$LI, true).parentNode, component.context, component.$SVG, force, null, lifecycle, animations);
+      callAll(lifecycle);
+      callAllAnimationHooks(animations.componentDidAppear);
+      if (animations.$CM) callAll(animations.$CM);
+      renderCheck.v = false;
+    } else {
+      component.state = component.$PS;
+      component.$PS = null;
+    }
+  }
+  class Component {
+    // Force update flag
+    constructor(props, context) {
+      // Public
+      this.state = null;
+      this.props = void 0;
+      this.context = void 0;
+      this.displayName = void 0;
+      // Internal properties
+      this.$BR = false;
+      // BLOCK RENDER
+      this.$BS = true;
+      // BLOCK STATE
+      this.$PS = null;
+      // PENDING STATE (PARTIAL or FULL)
+      this.$LI = null;
+      // LAST INPUT
+      this.$UN = false;
+      // UNMOUNTED
+      this.$CX = null;
+      // CHILDCONTEXT
+      this.$QU = null;
+      // QUEUE
+      this.$N = false;
+      // Uses new lifecycle API Flag
+      this.$SSR = void 0;
+      // Server side rendering flag, true when rendering on server, non existent on client
+      this.$L = null;
+      // Current lifecycle of this component
+      this.$SVG = false;
+      // Flag to keep track if component is inside SVG tree
+      this.$F = false;
+      this.props = props || EMPTY_OBJ;
+      this.context = context || EMPTY_OBJ; // context should not be mutable
+    }
+    forceUpdate(callback) {
+      if (this.$UN) {
+        return;
+      }
+      // Do not allow double render during force update
+      queueStateChanges(this, {}, callback, true);
+    }
+    setState(newState, callback) {
+      if (this.$UN) {
+        return;
+      }
+      if (!this.$BS) {
+        queueStateChanges(this, newState, callback, false);
+      }
+    }
+    /* eslint-disable */
+    // @ts-ignore
+    render(props, state, context) {
+      return null;
+    }
+  }
+  Component.defaultProps = null;
+
+  const __MOBX_DEV__ = "production" !== "production";
+  function die(error, ...args) {
+    throw new Error(`[MobX] minified error nr: ${error}${args.length ? " " + args.map(String).join(",") : ""}. See mobx.js.org/errors`);
+  }
+
+  // We shorten anything used > 5 times
+  const assign = Object.assign;
+  const getDescriptor = Object.getOwnPropertyDescriptor;
+  const defineProperty = Object.defineProperty;
+  const objectPrototype = Object.prototype;
+  const EMPTY_ARRAY = [];
+  Object.freeze(EMPTY_ARRAY);
+  const plainObjectString = /*#__PURE__*/Object.toString();
+  const noop = () => {};
+  function isFunction(fn) {
+    return typeof fn === "function";
+  }
+  function isStringish(value) {
+    const t = typeof value;
+    switch (t) {
+      case "string":
+      case "symbol":
+      case "number":
+        return true;
+    }
+    return false;
+  }
+  function isObject(value) {
+    return value !== null && typeof value === "object";
+  }
+  function isPlainObject(value) {
+    if (!isObject(value)) {
+      return false;
+    }
+    const proto = Object.getPrototypeOf(value);
+    if (proto == null) {
+      return true;
+    }
+    const protoConstructor = hasProp(proto, "constructor") && proto.constructor;
+    return typeof protoConstructor === "function" && protoConstructor.toString() === plainObjectString;
+  }
+  // https://stackoverflow.com/a/37865170
+  function isGenerator(obj) {
+    const constructor = obj == null ? void 0 : obj.constructor;
+    if (!constructor) {
+      return false;
+    }
+    if ("GeneratorFunction" === constructor.name || "GeneratorFunction" === constructor.displayName) {
+      return true;
+    }
+    return false;
+  }
+  function addHiddenProp(object, propName, value) {
+    defineProperty(object, propName, {
+      enumerable: false,
+      writable: true,
+      configurable: true,
+      value
+    });
+  }
+  function addHiddenFinalProp(object, propName, value) {
+    defineProperty(object, propName, {
+      enumerable: false,
+      writable: false,
+      configurable: true,
+      value
+    });
+  }
+  function createInstanceofPredicate(name, theClass) {
+    const propName = "isMobX" + name;
+    theClass.prototype[propName] = true;
+    return function (x) {
+      return isObject(x) && x[propName] === true;
+    };
+  }
+  /**
+   * Yields true for both native and observable Map, even across different windows.
+   */
+  function isES6Map(thing) {
+    return thing != null && Object.prototype.toString.call(thing) === "[object Map]";
+  }
+  /**
+   * Makes sure a Map is an instance of non-inherited native or observable Map.
+   */
+  function isPlainES6Map(thing) {
+    const mapProto = Object.getPrototypeOf(thing);
+    const objectProto = Object.getPrototypeOf(mapProto);
+    const nullProto = Object.getPrototypeOf(objectProto);
+    return nullProto === null;
+  }
+  /**
+   * Yields true for both native and observable Set, even across different windows.
+   */
+  function isES6Set(thing) {
+    return thing != null && Object.prototype.toString.call(thing) === "[object Set]";
+  }
+  /**
+   * Returns the following: own enumerable keys and symbols.
+   */
+  function getPlainObjectKeys(object) {
+    const keys = Object.keys(object);
+    const symbols = Object.getOwnPropertySymbols(object);
+    if (!symbols.length) {
+      return keys;
+    }
+    return [...keys, ...symbols.filter(s => objectPrototype.propertyIsEnumerable.call(object, s))];
+  }
+  // From Immer utils
+  // Returns all own keys, including non-enumerable and symbolic
+  const ownKeys = Reflect.ownKeys;
+  function toPrimitive(value) {
+    return value === null ? null : typeof value === "object" ? "" + value : value;
+  }
+  function hasProp(target, prop) {
+    return objectPrototype.hasOwnProperty.call(target, prop);
+  }
+  const getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
+  function getFlag(flags, mask) {
+    return !!(flags & mask);
+  }
+  function setFlag(flags, mask, newValue) {
+    if (newValue) {
+      flags |= mask;
+    } else {
+      flags &= ~mask;
+    }
+    return flags;
+  }
+
+  const $mobx = /*#__PURE__*/Symbol("mobx administration");
+  class Atom {
+    /**
+     * Create a new atom. For debugging purposes it is recommended to give it a name.
+     * The onBecomeObserved and onBecomeUnobserved callbacks can be used for resource management.
+     */
+    constructor(name_ = "Atom") {
+      this.name_ = void 0;
+      this.flags_ = 0b000;
+      // Allocated lazily on first observer to save memory.
+      this.observers_ = null;
+      this.lastAccessedBy_ = 0;
+      this.lowestObserverState_ = -1 /* IDerivationState_.NOT_TRACKING_ */;
+      // onBecomeObservedListeners
+      this.onBOL = void 0;
+      // onBecomeUnobservedListeners
+      this.onBUOL = void 0;
+      this.name_ = name_;
+    }
+    // for effective unobserving. BaseAtom has true, for extra optimization, so its onBecomeUnobserved never gets called, because it's not needed
+    get isBeingObserved() {
+      return getFlag(this.flags_, 1 /* AtomFlags.isBeingObserved */);
+    }
+    set isBeingObserved(newValue) {
+      this.flags_ = setFlag(this.flags_, 1 /* AtomFlags.isBeingObserved */, newValue);
+    }
+    get isPendingUnobservation() {
+      return getFlag(this.flags_, 2 /* AtomFlags.isPendingUnobservation */);
+    }
+    set isPendingUnobservation(newValue) {
+      this.flags_ = setFlag(this.flags_, 2 /* AtomFlags.isPendingUnobservation */, newValue);
+    }
+    get diffValue() {
+      return getFlag(this.flags_, 4 /* AtomFlags.diffValue */) ? 1 : 0;
+    }
+    set diffValue(newValue) {
+      this.flags_ = setFlag(this.flags_, 4 /* AtomFlags.diffValue */, newValue === 1 ? true : false);
+    }
+    onBO() {
+      if (this.onBOL) {
+        this.onBOL.forEach(listener => listener());
+      }
+    }
+    onBUO() {
+      if (this.onBUOL) {
+        this.onBUOL.forEach(listener => listener());
+      }
+    }
+    /**
+     * Invoke this method to notify mobx that your atom has been used somehow.
+     * Returns true if there is currently a reactive context.
+     */
+    reportObserved() {
+      return reportObserved(this);
+    }
+    /**
+     * Invoke this method _after_ this method has changed to signal mobx that all its observers should invalidate.
+     */
+    reportChanged() {
+      startBatch();
+      propagateChanged(this);
+      endBatch();
+    }
+    toString() {
+      return this.name_;
+    }
+  }
+  const isAtom = /*#__PURE__*/createInstanceofPredicate("Atom", Atom);
+  function createAtom(name, onBecomeObservedHandler = noop, onBecomeUnobservedHandler = noop) {
+    const atom = new Atom(name);
+    // default `noop` listener will not initialize the hook Set
+    if (onBecomeObservedHandler !== noop) {
+      atom.onBOL = new Set([onBecomeObservedHandler]);
+    }
+    if (onBecomeUnobservedHandler !== noop) {
+      atom.onBUOL = new Set([onBecomeUnobservedHandler]);
+    }
+    return atom;
+  }
+  const compareDefault = Object.is;
+
+  function deepEnhancer(v, _, name) {
+    // primitives can never be made observable; skip the type checks below
+    if (v === null || typeof v !== "object" && typeof v !== "function") {
+      return v;
+    }
+    // it is an observable already, done
+    if (isObservable(v)) {
+      return v;
+    }
+    // something that can be converted and mutated?
+    if (Array.isArray(v)) {
+      return observable.array(v, {
+        name
+      });
+    }
+    if (isPlainObject(v)) {
+      return observable.object(v, undefined, {
+        name
+      });
+    }
+    if (isES6Map(v)) {
+      return observable.map(v, {
+        name
+      });
+    }
+    if (isES6Set(v)) {
+      return observable.set(v, {
+        name
+      });
+    }
+    if (typeof v === "function" && !isAction(v) && !isFlow(v)) {
+      if (isGenerator(v)) {
+        return flow(v);
+      } else {
+        return autoAction(name, v);
+      }
+    }
+    return v;
+  }
+  function referenceEnhancer(newValue) {
+    // never turn into an observable
+    return newValue;
+  }
+
+  function createActionAnnotation(name, options) {
+    return {
+      annotationType_: name,
+      options_: options,
+      make_: make_$5,
+      extend_: extend_$4
+    };
+  }
+  function make_$5(adm, key, descriptor, source) {
+    var _this$options_;
+    // bound
+    if ((_this$options_ = this.options_) != null && _this$options_.bound) {
+      return this.extend_(adm, key, descriptor, false) === null ? 0 /* MakeResult.Cancel */ : 1 /* MakeResult.Break */;
+    }
+    // own
+    if (source === adm.target_) {
+      return this.extend_(adm, key, descriptor, false) === null ? 0 /* MakeResult.Cancel */ : 2 /* MakeResult.Continue */;
+    }
+    // prototype
+    if (isAction(descriptor.value)) {
+      // A prototype could have been annotated already by other constructor,
+      // rest of the proto chain must be annotated already
+      return 1 /* MakeResult.Break */;
+    }
+    const actionDescriptor = createActionDescriptor(adm, this, key, descriptor, false);
+    defineProperty(source, key, actionDescriptor);
+    return 2 /* MakeResult.Continue */;
+  }
+  function extend_$4(adm, key, descriptor, proxyTrap) {
+    const actionDescriptor = createActionDescriptor(adm, this, key, descriptor);
+    return adm.defineProperty_(key, actionDescriptor, proxyTrap);
+  }
+  function decorateAction20223_(annotation, mthd, context) {
+    const {
+      kind,
+      name,
+      addInitializer
+    } = context;
+    const ann = annotation;
+    const _createAction = m => {
+      var _ann$options_$name, _ann$options_, _ann$options_$autoAct, _ann$options_2;
+      return createAction((_ann$options_$name = (_ann$options_ = ann.options_) == null ? void 0 : _ann$options_.name) != null ? _ann$options_$name : name.toString(), m, (_ann$options_$autoAct = (_ann$options_2 = ann.options_) == null ? void 0 : _ann$options_2.autoAction) != null ? _ann$options_$autoAct : false);
+    };
+    if (kind == "field") {
+      return function (initMthd) {
+        var _ann$options_3;
+        let mthd = initMthd;
+        if (!isAction(mthd)) {
+          mthd = _createAction(mthd);
+        }
+        if ((_ann$options_3 = ann.options_) != null && _ann$options_3.bound) {
+          mthd = mthd.bind(this);
+          mthd.isMobxAction = true;
+        }
+        return mthd;
+      };
+    }
+    if (kind == "method") {
+      var _ann$options_4;
+      if (!isAction(mthd)) {
+        mthd = _createAction(mthd);
+      }
+      if ((_ann$options_4 = ann.options_) != null && _ann$options_4.bound) {
+        addInitializer(function () {
+          const self = this;
+          const bound = self[name].bind(self);
+          bound.isMobxAction = true;
+          self[name] = bound;
+        });
+      }
+      return mthd;
+    }
+    die(43, ann.annotationType_, String(name), kind);
+  }
+  function assertActionDescriptor(adm, {
+    annotationType_
+  }, key, {
+    value
+  }) {
+  }
+  function createActionDescriptor(adm, annotation, key, descriptor,
+  // provides ability to disable safeDescriptors for prototypes
+  safeDescriptors = globalState.safeDescriptors) {
+    var _annotation$options_, _annotation$options_$, _annotation$options_2, _annotation$options_$2, _annotation$options_3, _annotation$options_4, _adm$proxy_2;
+    assertActionDescriptor(adm, annotation, key, descriptor);
+    let {
+      value
+    } = descriptor;
+    if ((_annotation$options_ = annotation.options_) != null && _annotation$options_.bound) {
+      var _adm$proxy_;
+      value = value.bind((_adm$proxy_ = adm.proxy_) != null ? _adm$proxy_ : adm.target_);
+    }
+    return {
+      value: createAction((_annotation$options_$ = (_annotation$options_2 = annotation.options_) == null ? void 0 : _annotation$options_2.name) != null ? _annotation$options_$ : key.toString(), value, (_annotation$options_$2 = (_annotation$options_3 = annotation.options_) == null ? void 0 : _annotation$options_3.autoAction) != null ? _annotation$options_$2 : false,
+      // https://github.com/mobxjs/mobx/discussions/3140
+      (_annotation$options_4 = annotation.options_) != null && _annotation$options_4.bound ? (_adm$proxy_2 = adm.proxy_) != null ? _adm$proxy_2 : adm.target_ : undefined),
+      // Non-configurable for classes
+      // prevents accidental field redefinition in subclass
+      configurable: safeDescriptors ? adm.isPlainObject_ : true,
+      // https://github.com/mobxjs/mobx/pull/2641#issuecomment-737292058
+      enumerable: false,
+      // Non-obsevable, therefore non-writable
+      // Also prevents rewriting in subclass constructor
+      writable: safeDescriptors ? false : true
+    };
+  }
+
+  function createFlowAnnotation(name, options) {
+    return {
+      annotationType_: name,
+      options_: options,
+      make_: make_$4,
+      extend_: extend_$3
+    };
+  }
+  function make_$4(adm, key, descriptor, source) {
+    var _this$options_;
+    // own
+    if (source === adm.target_) {
+      return this.extend_(adm, key, descriptor, false) === null ? 0 /* MakeResult.Cancel */ : 2 /* MakeResult.Continue */;
+    }
+    // prototype
+    // bound - must annotate protos to support super.flow()
+    if ((_this$options_ = this.options_) != null && _this$options_.bound && (!hasProp(adm.target_, key) || !isFlow(adm.target_[key]))) {
+      if (this.extend_(adm, key, descriptor, false) === null) {
+        return 0 /* MakeResult.Cancel */;
+      }
+    }
+    if (isFlow(descriptor.value)) {
+      // A prototype could have been annotated already by other constructor,
+      // rest of the proto chain must be annotated already
+      return 1 /* MakeResult.Break */;
+    }
+    const flowDescriptor = createFlowDescriptor(adm, this, key, descriptor, false, false);
+    defineProperty(source, key, flowDescriptor);
+    return 2 /* MakeResult.Continue */;
+  }
+  function extend_$3(adm, key, descriptor, proxyTrap) {
+    var _this$options_2;
+    const flowDescriptor = createFlowDescriptor(adm, this, key, descriptor, (_this$options_2 = this.options_) == null ? void 0 : _this$options_2.bound);
+    return adm.defineProperty_(key, flowDescriptor, proxyTrap);
+  }
+  function decorateFlow20223_(annotation, mthd, context) {
+    var _annotation$options_;
+    const {
+      name,
+      addInitializer
+    } = context;
+    if (!isFlow(mthd)) {
+      mthd = flow(mthd);
+    }
+    if ((_annotation$options_ = annotation.options_) != null && _annotation$options_.bound) {
+      addInitializer(function () {
+        const self = this;
+        const bound = self[name].bind(self);
+        bound.isMobXFlow = true;
+        self[name] = bound;
+      });
+    }
+    return mthd;
+  }
+  function assertFlowDescriptor(adm, {
+    annotationType_
+  }, key, {
+    value
+  }) {
+  }
+  function createFlowDescriptor(adm, annotation, key, descriptor, bound,
+  // provides ability to disable safeDescriptors for prototypes
+  safeDescriptors = globalState.safeDescriptors) {
+    assertFlowDescriptor(adm, annotation, key, descriptor);
+    let {
+      value
+    } = descriptor;
+    // In case of flow.bound, the descriptor can be from already annotated prototype
+    if (!isFlow(value)) {
+      value = flow(value);
+    }
+    if (bound) {
+      var _adm$proxy_;
+      // We do not keep original function around, so we bind the existing flow
+      value = value.bind((_adm$proxy_ = adm.proxy_) != null ? _adm$proxy_ : adm.target_);
+      // This is normally set by `flow`, but `bind` returns new function...
+      value.isMobXFlow = true;
+    }
+    return {
+      value,
+      // Non-configurable for classes
+      // prevents accidental field redefinition in subclass
+      configurable: safeDescriptors ? adm.isPlainObject_ : true,
+      // https://github.com/mobxjs/mobx/pull/2641#issuecomment-737292058
+      enumerable: false,
+      // Non-obsevable, therefore non-writable
+      // Also prevents rewriting in subclass constructor
+      writable: safeDescriptors ? false : true
+    };
+  }
+
+  function createComputedAnnotation(name, options) {
+    return {
+      annotationType_: name,
+      options_: options,
+      make_: make_$3,
+      extend_: extend_$2
+    };
+  }
+  function make_$3(adm, key, descriptor) {
+    return this.extend_(adm, key, descriptor, false) === null ? 0 /* MakeResult.Cancel */ : 1 /* MakeResult.Break */;
+  }
+  function extend_$2(adm, key, descriptor, proxyTrap) {
+    assertComputedDescriptor(adm, this, key, descriptor);
+    return adm.defineComputedProperty_(key, assign({}, this.options_, {
+      get: descriptor.get,
+      set: descriptor.set
+    }), proxyTrap);
+  }
+  function decorateComputed20223_(annotation, get, context) {
+    const ann = annotation;
+    const {
+      name: key,
+      addInitializer
+    } = context;
+    let computedValues;
+    // Defer ComputedValue creation until first access — avoids allocating
+    // ComputedValues for getters that are never read on a given instance.
+    // The factory is materialised by ObservableObjectAdministration on demand.
+    function createComputedValue(target, adm) {
+      const options = assign({}, ann.options_, {
+        get,
+        context: target
+      });
+      options.name || (options.name = `ObservableObject.${key.toString()}`);
+      return new ComputedValue(options);
+    }
+    addInitializer(function () {
+      var _adm$lazyComputedKeys;
+      const adm = asObservableObject(this)[$mobx];
+      const target = this;
+      const observable = adm.values_.get(key);
+      if (observable instanceof ComputedValue && observable.derivation !== get) {
+        adm.values_.delete(key);
+      }
+      ((_adm$lazyComputedKeys = adm.lazyComputedKeys_) != null ? _adm$lazyComputedKeys : adm.lazyComputedKeys_ = new Map()).set(key, () => createComputedValue(target));
+    });
+    return function () {
+      const adm = this[$mobx];
+      const observable = adm.values_.get(key);
+      if (observable instanceof ComputedValue && observable.derivation !== get) {
+        var _computedValues;
+        let computed = (_computedValues = computedValues) == null ? void 0 : _computedValues.get(this);
+        if (!computed) {
+          var _computedValues2;
+          computed = createComputedValue(this);
+          ((_computedValues2 = computedValues) != null ? _computedValues2 : computedValues = new WeakMap()).set(this, computed);
+        }
+        return computed.get();
+      }
+      return adm.getObservablePropValue_(key);
+    };
+  }
+  function assertComputedDescriptor(adm, {
+    annotationType_
+  }, key, {
+    get
+  }) {
+  }
+
+  function createObservableAnnotation(name, options) {
+    return {
+      annotationType_: name,
+      options_: options,
+      make_: make_$2,
+      extend_: extend_$1
+    };
+  }
+  function make_$2(adm, key, descriptor) {
+    return this.extend_(adm, key, descriptor, false) === null ? 0 /* MakeResult.Cancel */ : 1 /* MakeResult.Break */;
+  }
+  function extend_$1(adm, key, descriptor, proxyTrap) {
+    var _this$options_$enhanc, _this$options_;
+    assertObservableDescriptor(adm, this);
+    return adm.defineObservableProperty_(key, descriptor.value, (_this$options_$enhanc = (_this$options_ = this.options_) == null ? void 0 : _this$options_.enhancer_) != null ? _this$options_$enhanc : deepEnhancer, proxyTrap);
+  }
+  function decorateObservable20223_(annotation, desc, context) {
+    const ann = annotation;
+    const {
+      kind,
+      name
+    } = context;
+    if (kind !== "accessor") {
+      return;
+    }
+    // Defer ObservableValue construction until first access. The factory is
+    // materialised by ObservableObjectAdministration on demand, so unused
+    // fields on wide classes never pay the per-instance allocation cost.
+    function registerLazy(target, value) {
+      var _adm$lazyObservableKe;
+      const adm = asObservableObject(target)[$mobx];
+      ((_adm$lazyObservableKe = adm.lazyObservableKeys_) != null ? _adm$lazyObservableKe : adm.lazyObservableKeys_ = new Map()).set(name, () => {
+        var _ann$options_$enhance, _ann$options_;
+        return new ObservableValue(value, (_ann$options_$enhance = (_ann$options_ = ann.options_) == null ? void 0 : _ann$options_.enhancer_) != null ? _ann$options_$enhance : deepEnhancer, `ObservableObject.${name.toString()}`, false);
+      });
+      return adm;
+    }
+    return {
+      get() {
+        var _this$$mobx;
+        const adm = (_this$$mobx = this[$mobx]) != null ? _this$$mobx : registerLazy(this, desc.get.call(this));
+        return adm.getObservablePropValue_(name);
+      },
+      set(value) {
+        var _this$$mobx2;
+        const adm = (_this$$mobx2 = this[$mobx]) != null ? _this$$mobx2 : registerLazy(this, value);
+        return adm.setObservablePropValue_(name, value);
+      },
+      init(value) {
+        registerLazy(this, value);
+        return value;
+      }
+    };
+  }
+  function assertObservableDescriptor(adm, {
+    annotationType_
+  }, key, descriptor) {
+  }
+
+  const AUTO = "true";
+  const autoAnnotation = /*#__PURE__*/createAutoAnnotation();
+  function createAutoAnnotation(options) {
+    return {
+      annotationType_: AUTO,
+      options_: options,
+      make_: make_$1,
+      extend_
+    };
+  }
+  // The auto annotation only depends on `deep` and `autoBind`, so share one instance per combination
+  // instead of allocating one for every object created with options
+  const autoAnnotations = [autoAnnotation];
+  function getAutoAnnotation(options) {
+    var _autoAnnotations$idx;
+    const deep = options.deep !== false;
+    const autoBind = !!options.autoBind;
+    const idx = (deep ? 0 : 1) | (autoBind ? 2 : 0);
+    return (_autoAnnotations$idx = autoAnnotations[idx]) != null ? _autoAnnotations$idx : autoAnnotations[idx] = createAutoAnnotation({
+      deep,
+      autoBind
+    });
+  }
+  function make_$1(adm, key, descriptor, source) {
+    var _this$options_3, _this$options_4;
+    // getter -> computed
+    if (descriptor.get) {
+      return computed.make_(adm, key, descriptor, source);
+    }
+    // lone setter -> action setter
+    if (descriptor.set) {
+      // TODO make action applicable to setter and delegate to action.make_
+      const set = isAction(descriptor.set) ? descriptor.set // See #4553
+      : createAction(key.toString(), descriptor.set);
+      // own
+      if (source === adm.target_) {
+        return adm.defineProperty_(key, {
+          configurable: globalState.safeDescriptors ? adm.isPlainObject_ : true,
+          set
+        }) === null ? 0 /* MakeResult.Cancel */ : 2 /* MakeResult.Continue */;
+      }
+      // proto
+      defineProperty(source, key, {
+        configurable: true,
+        set
+      });
+      return 2 /* MakeResult.Continue */;
+    }
+    // function on proto -> autoAction/flow
+    if (source !== adm.target_ && typeof descriptor.value === "function") {
+      var _this$options_2;
+      if (isGenerator(descriptor.value)) {
+        var _this$options_;
+        const flowAnnotation = (_this$options_ = this.options_) != null && _this$options_.autoBind ? flowBound : flow;
+        return flowAnnotation.make_(adm, key, descriptor, source);
+      }
+      const actionAnnotation = (_this$options_2 = this.options_) != null && _this$options_2.autoBind ? autoActionBound : autoAction;
+      return actionAnnotation.make_(adm, key, descriptor, source);
+    }
+    // other -> observable
+    // Copy props from proto as well, see test:
+    // "decorate should work with Object.create"
+    let observableAnnotation = ((_this$options_3 = this.options_) == null ? void 0 : _this$options_3.deep) === false ? observableRef : observable;
+    // if function respect autoBind option
+    if (typeof descriptor.value === "function" && (_this$options_4 = this.options_) != null && _this$options_4.autoBind) {
+      var _adm$proxy_;
+      descriptor.value = descriptor.value.bind((_adm$proxy_ = adm.proxy_) != null ? _adm$proxy_ : adm.target_);
+    }
+    return observableAnnotation.make_(adm, key, descriptor, source);
+  }
+  function extend_(adm, key, descriptor, proxyTrap) {
+    var _this$options_5, _this$options_6;
+    // getter -> computed
+    if (descriptor.get) {
+      return computed.extend_(adm, key, descriptor, proxyTrap);
+    }
+    // lone setter -> action setter
+    if (descriptor.set) {
+      // TODO make action applicable to setter and delegate to action.extend_
+      return adm.defineProperty_(key, {
+        configurable: globalState.safeDescriptors ? adm.isPlainObject_ : true,
+        set: createAction(key.toString(), descriptor.set)
+      }, proxyTrap);
+    }
+    // other -> observable
+    // if function respect autoBind option
+    if (typeof descriptor.value === "function" && (_this$options_5 = this.options_) != null && _this$options_5.autoBind) {
+      var _adm$proxy_2;
+      descriptor.value = descriptor.value.bind((_adm$proxy_2 = adm.proxy_) != null ? _adm$proxy_2 : adm.target_);
+    }
+    let observableAnnotation = ((_this$options_6 = this.options_) == null ? void 0 : _this$options_6.deep) === false ? observableRef : observable;
+    return observableAnnotation.extend_(adm, key, descriptor, proxyTrap);
+  }
+
+  function createDecoratorAnnotation(annotation, decorate) {
+    return assign(function decoratorAnnotation(value, context) {
+      if (context && typeof context.kind === "string") {
+        return decorate(annotation, value, context);
+      }
+      return undefined;
+    }, annotation);
+  }
+
+  const OBSERVABLE = "observable";
+  const OBSERVABLE_REF = "observable.ref";
+  // Predefined bags of create observable options, to avoid allocating temporarily option objects
+  // in the majority of cases
+  const defaultCreateObservableOptions = {
+    deep: true,
+    name: undefined,
+    defaultDecorator: undefined
+  };
+  Object.freeze(defaultCreateObservableOptions);
+  function asCreateObservableOptions(thing) {
+    return thing || defaultCreateObservableOptions;
+  }
+  const observableAnnotation = /*#__PURE__*/createObservableAnnotation(OBSERVABLE);
+  const observableRefAnnotation = /*#__PURE__*/createObservableAnnotation(OBSERVABLE_REF, {
+    enhancer_: referenceEnhancer
+  });
+  function createObservableDecoratorAnnotation(annotation) {
+    return createDecoratorAnnotation(annotation, decorateObservable20223_);
+  }
+  function getEnhancerFromOptions(options) {
+    return options.deep === true ? deepEnhancer : options.deep === false ? referenceEnhancer : getEnhancerFromAnnotation(options.defaultDecorator);
+  }
+  function getAnnotationFromOptions(options) {
+    var _options$defaultDecor;
+    return options ? (_options$defaultDecor = options.defaultDecorator) != null ? _options$defaultDecor : getAutoAnnotation(options) : undefined;
+  }
+  function getEnhancerFromAnnotation(annotation) {
+    var _annotation$options_$, _annotation$options_;
+    return !annotation ? deepEnhancer : (_annotation$options_$ = (_annotation$options_ = annotation.options_) == null ? void 0 : _annotation$options_.enhancer_) != null ? _annotation$options_$ : deepEnhancer;
+  }
+  /**
+   * Turns an object, array or function into a reactive structure.
+   * @param v the value which should become observable.
+   */
+  function createObservable(v, arg2, arg3) {
+    if (arg2 && typeof arg2.kind === "string") {
+      return decorateObservable20223_(observableAnnotation, v, arg2);
+    }
+    // already observable - ignore
+    if (isObservable(v)) {
+      return v;
+    }
+    // plain object
+    if (isPlainObject(v)) {
+      return observable.object(v, arg2, arg3);
+    }
+    // Array
+    if (Array.isArray(v)) {
+      return observable.array(v, arg2);
+    }
+    // Map
+    if (isES6Map(v)) {
+      return observable.map(v, arg2);
+    }
+    // Set
+    if (isES6Set(v)) {
+      return observable.set(v, arg2);
+    }
+    // other object - ignore
+    if (typeof v === "object" && v !== null) {
+      return v;
+    }
+    // anything else
+    return observable.box(v, arg2);
+  }
+  const observableFactories = {
+    box(value, options) {
+      const o = asCreateObservableOptions(options);
+      return new ObservableValue(value, getEnhancerFromOptions(o), o.name, true, o.equals);
+    },
+    array(initialValues, options) {
+      const o = asCreateObservableOptions(options);
+      return createObservableArray(initialValues, getEnhancerFromOptions(o), o.name);
+    },
+    map(initialValues, options) {
+      const o = asCreateObservableOptions(options);
+      return new ObservableMap(initialValues, getEnhancerFromOptions(o), o.name);
+    },
+    set(initialValues, options) {
+      const o = asCreateObservableOptions(options);
+      return new ObservableSet(initialValues, getEnhancerFromOptions(o), o.name);
+    },
+    object(props, annotations, options) {
+      return initObservable(() => extendObservable(asDynamicObservableObject({}, options), props, annotations));
+    }
+  };
+  const observableRef = /*#__PURE__*/createObservableDecoratorAnnotation(observableRefAnnotation);
+  // eslint-disable-next-line
+  var observable = /*#__PURE__*/assign(createObservable, observableAnnotation, observableFactories);
+
+  const COMPUTED = "computed";
+  function createComputedDecoratorAnnotation(annotation) {
+    return createDecoratorAnnotation(annotation, decorateComputed20223_);
+  }
+  const computedAnnotation = /*#__PURE__*/createComputedAnnotation(COMPUTED);
+  const computed = function computed(arg1, arg2) {
+    if (arg2 && typeof arg2.kind === "string") {
+      return decorateComputed20223_(computedAnnotation, arg1, arg2);
+    }
+    if (isPlainObject(arg1)) {
+      // computed annotation with options
+      return createComputedDecoratorAnnotation(createComputedAnnotation(COMPUTED, arg1));
+    }
+    const opts = isPlainObject(arg2) ? arg2 : {};
+    opts.get = arg1;
+    opts.name || (opts.name = arg1.name || ""); /* for generated name */
+    return new ComputedValue(opts);
+  };
+  assign(computed, computedAnnotation);
+
+  var _getDescriptor$config, _getDescriptor;
+  // we don't use globalState for these in order to avoid possible issues with multiple
+  // mobx versions
+  let currentActionId = 0;
+  let nextActionId = 1;
+  const isFunctionNameConfigurable = (_getDescriptor$config = (_getDescriptor = /*#__PURE__*/getDescriptor(() => {}, "name")) == null ? void 0 : _getDescriptor.configurable) != null ? _getDescriptor$config : false;
+  // we can safely recycle this object
+  const tmpNameDescriptor = {
+    value: "action",
+    configurable: true,
+    writable: false,
+    enumerable: false
+  };
+  function createAction(actionName, fn, autoAction = false, ref) {
+    function res() {
+      return executeAction(actionName, autoAction, fn, ref || this, arguments);
+    }
+    res.isMobxAction = true;
+    res.toString = () => fn.toString();
+    if (isFunctionNameConfigurable) {
+      tmpNameDescriptor.value = actionName;
+      defineProperty(res, "name", tmpNameDescriptor);
+    }
+    return res;
+  }
+  function executeAction(actionName, canRunAsDerivation, fn, scope, args) {
+    const runInfo = _startAction(actionName, canRunAsDerivation);
+    try {
+      return fn.apply(scope, args);
+    } catch (err) {
+      runInfo.error_ = err;
+      throw err;
+    } finally {
+      _endAction(runInfo);
+    }
+  }
+  function _startAction(actionName, canRunAsDerivation,
+  // true for autoAction
+  scope, args) {
+    const notifySpy_ = __MOBX_DEV__;
+    let startTime_ = 0;
+    const prevDerivation_ = globalState.trackingDerivation;
+    const runAsAction = !canRunAsDerivation || !prevDerivation_;
+    startBatch();
+    let prevAllowStateChanges_ = globalState.allowStateChanges; // by default preserve previous allow
+    if (runAsAction) {
+      untrackedStart();
+    }
+    const prevAllowStateReads_ = globalState.allowStateReads;
+    const runInfo = {
+      runAsAction_: runAsAction,
+      prevDerivation_,
+      prevAllowStateChanges_,
+      prevAllowStateReads_,
+      notifySpy_,
+      startTime_,
+      actionId_: nextActionId++,
+      parentActionId_: currentActionId
+    };
+    currentActionId = runInfo.actionId_;
+    return runInfo;
+  }
+  function _endAction(runInfo) {
+    if (currentActionId !== runInfo.actionId_) {
+      die(30);
+    }
+    currentActionId = runInfo.parentActionId_;
+    if (runInfo.error_ !== undefined) {
+      globalState.suppressReactionErrors = true;
+    }
+    endBatch();
+    if (runInfo.runAsAction_) {
+      untrackedEnd(runInfo.prevDerivation_);
+    }
+    globalState.suppressReactionErrors = false;
+  }
+  function allowStateChanges(allowStateChanges, func) {
+    const prev = allowStateChangesStart(allowStateChanges);
+    try {
+      return func();
+    } finally {
+      allowStateChangesEnd(prev);
+    }
+  }
+  function allowStateChangesStart(allowStateChanges) {
+    const prev = globalState.allowStateChanges;
+    globalState.allowStateChanges = allowStateChanges;
+    return prev;
+  }
+  function allowStateChangesEnd(prev) {
+    globalState.allowStateChanges = prev;
+  }
+  class ObservableValue extends Atom {
+    constructor(value, enhancer_, name_ = "ObservableValue", notifySpy = true, equals_ = compareDefault) {
+      super(name_);
+      this.enhancer_ = void 0;
+      this.name_ = void 0;
+      this.equals_ = void 0;
+      this.hasUnreportedChange_ = false;
+      this.interceptors_ = void 0;
+      this.changeListeners_ = void 0;
+      this.value_ = void 0;
+      this.dehancer = void 0;
+      this.enhancer_ = enhancer_;
+      this.name_ = name_;
+      this.equals_ = equals_;
+      this.value_ = enhancer_(value, undefined, name_);
+    }
+    dehanceValue(value) {
+      if (this.dehancer !== undefined) {
+        return this.dehancer(value);
+      }
+      return value;
+    }
+    set(newValue) {
+      this.value_;
+      newValue = this.prepareNewValue_(newValue);
+      if (newValue !== globalState.UNCHANGED) {
+        this.setNewValue_(newValue);
+      }
+    }
+    prepareNewValue_(newValue) {
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          object: this,
+          type: UPDATE,
+          newValue
+        });
+        if (!change) {
+          return globalState.UNCHANGED;
+        }
+        newValue = change.newValue;
+      }
+      // apply modifier
+      newValue = this.enhancer_(newValue, this.value_, this.name_);
+      return this.equals_(this.value_, newValue) ? globalState.UNCHANGED : newValue;
+    }
+    setNewValue_(newValue) {
+      const oldValue = this.value_;
+      this.value_ = newValue;
+      this.reportChanged();
+      if (hasListeners(this)) {
+        notifyListeners(this, {
+          type: UPDATE,
+          object: this,
+          newValue,
+          oldValue
+        });
+      }
+    }
+    get() {
+      this.reportObserved();
+      return this.dehanceValue(this.value_);
+    }
+    raw() {
+      // used by MST ot get undehanced value
+      return this.value_;
+    }
+    toJSON() {
+      return this.get();
+    }
+    toString() {
+      return `${this.name_}[${this.value_}]`;
+    }
+    valueOf() {
+      return toPrimitive(this.get());
+    }
+    [Symbol.toPrimitive]() {
+      return this.valueOf();
+    }
+  }
+
+  class ComputedValue {
+    /**
+     * Create a new computed value based on a function expression.
+     *
+     * The `name` property is for debug purposes only.
+     *
+     * The `equals` property specifies the comparer function used to determine if a newly produced
+     * value differs from the previous value. Structural comparison can be convenient if you always
+     * produce a new aggregated object and don't want to notify observers if it is structurally the same.
+     * This is useful for working with vectors, mouse coordinates etc.
+     */
+    constructor(options) {
+      this.dependenciesState_ = -1 /* IDerivationState_.NOT_TRACKING_ */;
+      this.observing_ = [];
+      // nodes we are looking at. Our value depends on these nodes
+      this.newObserving_ = null;
+      // during tracking it's an array with new observed observers
+      // Lazily allocated on first observer - see Atom.observers_.
+      this.observers_ = null;
+      this.runId_ = 0;
+      this.lastAccessedBy_ = 0;
+      this.lowestObserverState_ = 0 /* IDerivationState_.UP_TO_DATE_ */;
+      this.unboundDepsCount_ = 0;
+      this.value_ = new CaughtException(null);
+      this.name_ = void 0;
+      this.triggeredBy_ = void 0;
+      this.flags_ = 0b00000;
+      this.derivation = void 0;
+      // N.B: unminified as it is used by MST
+      this.setter_ = void 0;
+      this.scope_ = void 0;
+      this.equals_ = void 0;
+      this.requiresReaction_ = void 0;
+      this.keepAlive_ = void 0;
+      this.onBOL = void 0;
+      this.onBUOL = void 0;
+      if (!options.get) {
+        die(31);
+      }
+      this.derivation = options.get;
+      this.name_ = options.name || ("ComputedValue");
+      if (options.set) {
+        this.setter_ = createAction("ComputedValue-setter", options.set);
+      }
+      this.equals_ = options.equals || compareDefault;
+      this.scope_ = options.context;
+      this.requiresReaction_ = options.requiresReaction;
+      this.keepAlive_ = !!options.keepAlive;
+    }
+    onBecomeStale_() {
+      propagateMaybeChanged(this);
+    }
+    onBO() {
+      if (this.onBOL) {
+        this.onBOL.forEach(listener => listener());
+      }
+    }
+    onBUO() {
+      if (this.onBUOL) {
+        this.onBUOL.forEach(listener => listener());
+      }
+    }
+    // to check for cycles
+    get isComputing() {
+      return getFlag(this.flags_, 1 /* ComputedValueFlags.isComputing */);
+    }
+    set isComputing(newValue) {
+      this.flags_ = setFlag(this.flags_, 1 /* ComputedValueFlags.isComputing */, newValue);
+    }
+    get isRunningSetter() {
+      return getFlag(this.flags_, 2 /* ComputedValueFlags.isRunningSetter */);
+    }
+    set isRunningSetter(newValue) {
+      this.flags_ = setFlag(this.flags_, 2 /* ComputedValueFlags.isRunningSetter */, newValue);
+    }
+    get isBeingObserved() {
+      return getFlag(this.flags_, 4 /* ComputedValueFlags.isBeingObserved */);
+    }
+    set isBeingObserved(newValue) {
+      this.flags_ = setFlag(this.flags_, 4 /* ComputedValueFlags.isBeingObserved */, newValue);
+    }
+    get isPendingUnobservation() {
+      return getFlag(this.flags_, 8 /* ComputedValueFlags.isPendingUnobservation */);
+    }
+    set isPendingUnobservation(newValue) {
+      this.flags_ = setFlag(this.flags_, 8 /* ComputedValueFlags.isPendingUnobservation */, newValue);
+    }
+    get diffValue() {
+      return getFlag(this.flags_, 16 /* ComputedValueFlags.diffValue */) ? 1 : 0;
+    }
+    set diffValue(newValue) {
+      this.flags_ = setFlag(this.flags_, 16 /* ComputedValueFlags.diffValue */, newValue === 1 ? true : false);
+    }
+    /**
+     * Returns the current value of this computed value.
+     * Will evaluate its computation first if needed.
+     */
+    get() {
+      if (this.isComputing) {
+        die(32, this.name_, this.derivation);
+      }
+      if (globalState.inBatch === 0 && (
+      // !globalState.trackingDerivatpion &&
+      !this.observers_ || this.observers_.size === 0) && !this.keepAlive_) {
+        if (shouldCompute(this)) {
+          this.warnAboutUntrackedRead_();
+          startBatch(); // See perf test 'computed memoization'
+          this.value_ = this.computeValue_(false);
+          endBatch();
+        }
+      } else {
+        const wasBeingObserved = this.isBeingObserved;
+        reportObserved(this);
+        if (shouldCompute(this)) {
+          let prevTrackingContext = globalState.trackingContext;
+          if (!prevTrackingContext && (this.keepAlive_ || this.isBeingObserved)) {
+            // An observed or keep-alive computed can be recomputed by an untracked
+            // read, for example from inside an action. Its dependencies are still
+            // transitively observed and must fire their lifecycle hooks
+            globalState.trackingContext = this;
+          }
+          if (this.trackAndCompute()) {
+            propagateChangeConfirmed(this);
+          }
+          globalState.trackingContext = prevTrackingContext;
+        } else if (!wasBeingObserved && this.isBeingObserved) {
+          // We just became observed while serving a cached value, so the getter
+          // won't run and won't re-report our dependencies. Cascade to them. #4547
+          this.observing_.forEach(markObserved);
+        }
+      }
+      const result = this.value_;
+      if (isCaughtException(result)) {
+        throw result.cause;
+      }
+      return result;
+    }
+    set(value) {
+      if (this.setter_) {
+        if (this.isRunningSetter) {
+          die(33, this.name_);
+        }
+        this.isRunningSetter = true;
+        try {
+          this.setter_.call(this.scope_, value);
+        } finally {
+          this.isRunningSetter = false;
+        }
+      } else {
+        die(34, this.name_);
+      }
+    }
+    trackAndCompute() {
+      // N.B: unminified as it is used by MST
+      const oldValue = this.value_;
+      const wasSuspended = /* see #1208 */this.dependenciesState_ === -1 /* IDerivationState_.NOT_TRACKING_ */;
+      const newValue = this.computeValue_(true);
+      const changed = wasSuspended || isCaughtException(oldValue) || isCaughtException(newValue) || !this.equals_(oldValue, newValue);
+      if (changed) {
+        this.value_ = newValue;
+      }
+      return changed;
+    }
+    computeValue_(track) {
+      this.isComputing = true;
+      let res;
+      if (track) {
+        res = trackDerivedFunction(this, this.derivation, this.scope_);
+      } else {
+        if (globalState.disableErrorBoundaries === true) {
+          res = this.derivation.call(this.scope_);
+        } else {
+          try {
+            res = this.derivation.call(this.scope_);
+          } catch (e) {
+            res = new CaughtException(e);
+          }
+        }
+      }
+      this.isComputing = false;
+      return res;
+    }
+    suspend_() {
+      if (!this.keepAlive_) {
+        clearObserving(this);
+        this.value_ = undefined; // don't hold on to computed value!
+      }
+    }
+    warnAboutUntrackedRead_() {
+      {
+        return;
+      }
+    }
+    toString() {
+      return `${this.name_}[${this.derivation.toString()}]`;
+    }
+    valueOf() {
+      return toPrimitive(this.get());
+    }
+    [Symbol.toPrimitive]() {
+      return this.valueOf();
+    }
+  }
+  const isComputedValue = /*#__PURE__*/createInstanceofPredicate("ComputedValue", ComputedValue);
+
+  class CaughtException {
+    constructor(cause) {
+      this.cause = void 0;
+      this.cause = cause;
+      // Empty
+    }
+  }
+  function isCaughtException(e) {
+    return e instanceof CaughtException;
+  }
+  /**
+   * Finds out whether any dependency of the derivation has actually changed.
+   * If dependenciesState is 1 then it will recalculate dependencies,
+   * if any dependency changed it will propagate it by changing dependenciesState to 2.
+   *
+   * By iterating over the dependencies in the same order that they were reported and
+   * stopping on the first change, all the recalculations are only called for ComputedValues
+   * that will be tracked by derivation. That is because we assume that if the first x
+   * dependencies of the derivation doesn't change then the derivation should run the same way
+   * up until accessing x-th dependency.
+   */
+  function shouldCompute(derivation) {
+    switch (derivation.dependenciesState_) {
+      case 0 /* IDerivationState_.UP_TO_DATE_ */:
+        return false;
+      case -1 /* IDerivationState_.NOT_TRACKING_ */:
+      case 2 /* IDerivationState_.STALE_ */:
+        return true;
+      case 1 /* IDerivationState_.POSSIBLY_STALE_ */:
+        {
+          const prevUntracked = untrackedStart(); // no need for those computeds to be reported, they will be picked up in trackDerivedFunction.
+          const obs = derivation.observing_,
+            l = obs.length;
+          for (let i = 0; i < l; i++) {
+            const obj = obs[i];
+            if (isComputedValue(obj)) {
+              if (globalState.disableErrorBoundaries) {
+                obj.get();
+              } else {
+                try {
+                  obj.get();
+                } catch (e) {
+                  // we are not interested in the value *or* exception at this moment, but if there is one, notify all
+                  untrackedEnd(prevUntracked);
+                  return true;
+                }
+              }
+              // if ComputedValue `obj` actually changed it will be computed and propagated to its observers.
+              // and `derivation` is an observer of `obj`
+              // invariantShouldCompute(derivation)
+              if (derivation.dependenciesState_ === 2 /* IDerivationState_.STALE_ */) {
+                untrackedEnd(prevUntracked);
+                return true;
+              }
+            }
+          }
+          changeDependenciesStateTo0(derivation);
+          untrackedEnd(prevUntracked);
+          return false;
+        }
+    }
+  }
+  function checkIfStateModificationsAreAllowed(atom) {
+    {
+      return;
+    }
+  }
+  /**
+   * Executes the provided function `f` and tracks which observables are being accessed.
+   * The tracking information is stored on the `derivation` object and the derivation is registered
+   * as observer of any of the accessed observables.
+   */
+  function trackDerivedFunction(derivation, f, context) {
+    changeDependenciesStateTo0(derivation);
+    // Preallocate array; will be trimmed by bindDependencies.
+    derivation.newObserving_ = new Array(
+    // Reserve constant space for initial dependencies, dynamic space otherwise.
+    // See https://github.com/mobxjs/mobx/pull/3833
+    derivation.runId_ === 0 ? 100 : derivation.observing_.length);
+    derivation.unboundDepsCount_ = 0;
+    derivation.runId_ = ++globalState.runId;
+    const prevTracking = globalState.trackingDerivation;
+    globalState.trackingDerivation = derivation;
+    globalState.inBatch++;
+    let result;
+    if (globalState.disableErrorBoundaries === true) {
+      result = f.call(context);
+    } else {
+      try {
+        result = f.call(context);
+      } catch (e) {
+        result = new CaughtException(e);
+      }
+    }
+    globalState.inBatch--;
+    globalState.trackingDerivation = prevTracking;
+    bindDependencies(derivation);
+    return result;
+  }
+  /**
+   * diffs newObserving with observing.
+   * update observing to be newObserving with unique observables
+   * notify observers that become observed/unobserved
+   */
+  function bindDependencies(derivation) {
+    // invariant(derivation.dependenciesState !== IDerivationState.NOT_TRACKING, "INTERNAL ERROR bindDependencies expects derivation.dependenciesState !== -1");
+    const prevObserving = derivation.observing_;
+    const observing = derivation.observing_ = derivation.newObserving_;
+    let lowestNewObservingDerivationState = 0 /* IDerivationState_.UP_TO_DATE_ */;
+    // Go through all new observables and check diffValue: (this list can contain duplicates):
+    //   0: first occurrence, change to 1 and keep it
+    //   1: extra occurrence, drop it
+    let i0 = 0,
+      l = derivation.unboundDepsCount_;
+    for (let i = 0; i < l; i++) {
+      const dep = observing[i];
+      if (dep.diffValue === 0) {
+        dep.diffValue = 1;
+        if (i0 !== i) {
+          observing[i0] = dep;
+        }
+        i0++;
+      }
+      // Upcast is 'safe' here, because if dep is IObservable, `dependenciesState` will be undefined,
+      // not hitting the condition
+      if (dep.dependenciesState_ > lowestNewObservingDerivationState) {
+        lowestNewObservingDerivationState = dep.dependenciesState_;
+      }
+    }
+    observing.length = i0;
+    derivation.newObserving_ = null; // newObserving shouldn't be needed outside tracking (statement moved down to work around FF bug, see #614)
+    // Go through all old observables and check diffValue: (it is unique after last bindDependencies)
+    //   0: it's not in new observables, unobserve it
+    //   1: it keeps being observed, don't want to notify it. change to 0
+    l = prevObserving.length;
+    while (l--) {
+      const dep = prevObserving[l];
+      if (dep.diffValue === 0) {
+        removeObserver(dep, derivation);
+      }
+      dep.diffValue = 0;
+    }
+    // Go through all new observables and check diffValue: (now it should be unique)
+    //   0: it was set to 0 in last loop. don't need to do anything.
+    //   1: it wasn't observed, let's observe it. set back to 0
+    while (i0--) {
+      const dep = observing[i0];
+      if (dep.diffValue === 1) {
+        dep.diffValue = 0;
+        addObserver(dep, derivation);
+      }
+    }
+    // Some new observed derivations may become stale during this derivation computation
+    // so they have had no chance to propagate staleness (#916)
+    if (lowestNewObservingDerivationState !== 0 /* IDerivationState_.UP_TO_DATE_ */) {
+      derivation.dependenciesState_ = lowestNewObservingDerivationState;
+      derivation.onBecomeStale_();
+    }
+  }
+  function clearObserving(derivation) {
+    // invariant(globalState.inBatch > 0, "INTERNAL ERROR clearObserving should be called only inside batch");
+    const obs = derivation.observing_;
+    derivation.observing_ = [];
+    let i = obs.length;
+    while (i--) {
+      removeObserver(obs[i], derivation);
+    }
+    derivation.dependenciesState_ = -1 /* IDerivationState_.NOT_TRACKING_ */;
+  }
+  function untracked(action) {
+    const prev = untrackedStart();
+    try {
+      return action();
+    } finally {
+      untrackedEnd(prev);
+    }
+  }
+  function untrackedStart() {
+    const prev = globalState.trackingDerivation;
+    globalState.trackingDerivation = null;
+    return prev;
+  }
+  function untrackedEnd(prev) {
+    globalState.trackingDerivation = prev;
+  }
+  /**
+   * needed to keep `lowestObserverState` correct. when changing from (2 or 1) to 0
+   *
+   */
+  function changeDependenciesStateTo0(derivation) {
+    if (derivation.dependenciesState_ === 0 /* IDerivationState_.UP_TO_DATE_ */) {
+      return;
+    }
+    derivation.dependenciesState_ = 0 /* IDerivationState_.UP_TO_DATE_ */;
+    const obs = derivation.observing_;
+    let i = obs.length;
+    while (i--) {
+      obs[i].lowestObserverState_ = 0 /* IDerivationState_.UP_TO_DATE_ */;
+    }
+  }
+
+  const MOBX_GLOBALS_VERSION = 7;
+  class MobXGlobals {
+    constructor() {
+      /**
+       * MobXGlobals version.
+       * MobX compatiblity with other versions loaded in memory as long as this version matches.
+       * It indicates that the global state still stores similar information
+       *
+       * N.B: this version is unrelated to the package version of MobX, and is only the version of the
+       * internal state storage of MobX, and can be the same across many different package versions
+       */
+      this.version = MOBX_GLOBALS_VERSION;
+      /**
+       * globally unique token to signal unchanged
+       */
+      this.UNCHANGED = {};
+      /**
+       * Currently running derivation
+       */
+      this.trackingDerivation = null;
+      /**
+       * Currently running reaction. This determines if we currently have a reactive context.
+       * (Tracking derivation is also set for temporal tracking of computed values inside actions,
+       * but trackingReaction can only be set by a form of Reaction)
+       */
+      this.trackingContext = null;
+      /**
+       * Each time a derivation is tracked, it is assigned a unique run-id
+       */
+      this.runId = 0;
+      /**
+       * 'guid' for general purpose. Will be persisted amongst resets.
+       */
+      this.mobxGuid = 0;
+      /**
+       * Are we in a batch block? (and how many of them)
+       */
+      this.inBatch = 0;
+      /**
+       * Observables that don't have observers anymore, and are about to be
+       * suspended, unless somebody else accesses it in the same batch
+       *
+       * @type {IObservable[]}
+       */
+      this.pendingUnobservations = [];
+      /**
+       * List of scheduled, not yet executed, reactions.
+       */
+      this.pendingReactions = [];
+      /**
+       * Are we currently processing reactions?
+       */
+      this.isRunningReactions = false;
+      /**
+       * Are we currently draining pendingUnobservations in endBatch?
+       * An onBecomeUnobserved handler can dispose a Reaction, which calls
+       * startBatch/endBatch again; this guards against re-entering the same
+       * drain loop recursively (see endBatch in observable.ts).
+       */
+      this.isRunningUnobservations = false;
+      /**
+       * Is it allowed to change observables at this point?
+       * In general, MobX doesn't allow that when running computations and React.render.
+       * To ensure that those functions stay pure.
+       */
+      this.allowStateChanges = false;
+      /**
+       * Is it allowed to read observables at this point?
+       * Used to hold the state needed for `observableRequiresReaction`
+       */
+      this.allowStateReads = true;
+      /**
+       * If strict mode is enabled, state changes are by default not allowed
+       */
+      this.enforceActions = true;
+      /**
+       * Spy callbacks
+       */
+      this.spyListeners = [];
+      /**
+       * Globally attached error handlers that react specifically to errors in reactions
+       */
+      this.globalReactionErrorHandlers = [];
+      /**
+       * Warn if computed values are accessed outside a reactive context
+       */
+      this.computedRequiresReaction = false;
+      /**
+       * (Experimental)
+       * Warn if you try to create to derivation / reactive context without accessing any observable.
+       */
+      this.reactionRequiresObservable = false;
+      /**
+       * (Experimental)
+       * Warn if observables are accessed outside a reactive context
+       */
+      this.observableRequiresReaction = false;
+      /*
+       * Don't catch and rethrow exceptions. This is useful for inspecting the state of
+       * the stack when an exception occurs while debugging.
+       */
+      this.disableErrorBoundaries = false;
+      /*
+       * If true, we are already handling an exception in an action. Any errors in reactions should be suppressed, as
+       * they are not the cause, see: https://github.com/mobxjs/mobx/issues/1836
+       */
+      this.suppressReactionErrors = false;
+      /**
+       * False forces all object's descriptors to
+       * writable: true
+       * configurable: true
+       */
+      this.safeDescriptors = true;
+    }
+  }
+  let canMergeGlobalState = true;
+  let globalState = /*#__PURE__*/function () {
+    let global = globalThis;
+    if (global.__mobxInstanceCount > 0 && !global.__mobxGlobals) {
+      canMergeGlobalState = false;
+    }
+    if (global.__mobxGlobals && global.__mobxGlobals.version !== MOBX_GLOBALS_VERSION) {
+      canMergeGlobalState = false;
+    }
+    if (!canMergeGlobalState) {
+      // Because this is a IIFE we need to let isolateCalled a chance to change
+      // so we run it after the event loop completed at least 1 iteration
+      setTimeout(() => {
+        {
+          die(35);
+        }
+      }, 1);
+      return new MobXGlobals();
+    } else if (global.__mobxGlobals) {
+      global.__mobxInstanceCount += 1;
+      if (!global.__mobxGlobals.UNCHANGED) {
+        global.__mobxGlobals.UNCHANGED = {};
+      } // make merge backward compatible
+      return global.__mobxGlobals;
+    } else {
+      global.__mobxInstanceCount = 1;
+      return global.__mobxGlobals = /*#__PURE__*/new MobXGlobals();
+    }
+  }();
+  // function invariantObservers(observable: IObservable) {
+  //     const list = observable.observers
+  //     const map = observable.observersIndexes
+  //     const l = list.length
+  //     for (let i = 0; i < l; i++) {
+  //         const id = list[i].__mapid
+  //         if (i) {
+  //             invariant(map[id] === i, "INTERNAL ERROR maps derivation.__mapid to index in list") // for performance
+  //         } else {
+  //             invariant(!(id in map), "INTERNAL ERROR observer on index 0 shouldn't be held in map.") // for performance
+  //         }
+  //     }
+  //     invariant(
+  //         list.length === 0 || Object.keys(map).length === list.length - 1,
+  //         "INTERNAL ERROR there is no junk in map"
+  //     )
+  // }
+  function addObserver(observable, node) {
+    var _observable$observers2;
+    ((_observable$observers2 = observable.observers_) != null ? _observable$observers2 : observable.observers_ = new Set()).add(node);
+    if (observable.lowestObserverState_ > node.dependenciesState_) {
+      observable.lowestObserverState_ = node.dependenciesState_;
+    }
+    // invariantObservers(observable);
+    // invariant(observable._observers.indexOf(node) !== -1, "INTERNAL ERROR didn't add node");
+  }
+  function removeObserver(observable, node) {
+    // invariant(globalState.inBatch > 0, "INTERNAL ERROR, remove should be called only inside batch");
+    // invariant(observable._observers.indexOf(node) !== -1, "INTERNAL ERROR remove already removed node");
+    // invariantObservers(observable);
+    const observers = observable.observers_;
+    if (!observers) {
+      return;
+    }
+    observers.delete(node);
+    if (observers.size === 0) {
+      // deleting last observer
+      queueForUnobservation(observable);
+    }
+    // invariantObservers(observable);
+    // invariant(observable._observers.indexOf(node) === -1, "INTERNAL ERROR remove already removed node2");
+  }
+  function queueForUnobservation(observable) {
+    if (observable.isPendingUnobservation === false) {
+      // invariant(observable._observers.length === 0, "INTERNAL ERROR, should only queue for unobservation unobserved observables");
+      observable.isPendingUnobservation = true;
+      globalState.pendingUnobservations.push(observable);
+    }
+  }
+  /**
+   * Batch starts a transaction, at least for purposes of memoizing ComputedValues when nothing else does.
+   * During a batch `onBecomeUnobserved` will be called at most once per observable.
+   * Avoids unnecessary recalculations.
+   */
+  function startBatch() {
+    globalState.inBatch++;
+  }
+  function endBatch() {
+    if (--globalState.inBatch === 0) {
+      runReactions();
+      // the batch is actually about to finish, all unobserving should happen here.
+      // Guard against re-entering this loop: an onBUO handler can dispose a Reaction,
+      // which calls startBatch/endBatch again while we're still iterating. Bail out of
+      // the nested call instead of recursing; the outer loop re-reads list.length on
+      // every iteration, so it picks up anything the nested dispose() pushes onto the
+      // same pendingUnobservations array.
+      if (!globalState.isRunningUnobservations && globalState.pendingUnobservations.length > 0) {
+        runPendingUnobservations();
+      }
+    }
+  }
+  // Only called when there is something to unobserve, so the common endBatch() skips the
+  // try/finally and the pendingUnobservations reallocation entirely
+  function runPendingUnobservations() {
+    globalState.isRunningUnobservations = true;
+    try {
+      const list = globalState.pendingUnobservations;
+      for (let i = 0; i < list.length; i++) {
+        const observable = list[i];
+        observable.isPendingUnobservation = false;
+        if (!observable.observers_ || observable.observers_.size === 0) {
+          // release the empty Set so unobserved atoms don't keep paying for it
+          observable.observers_ = null;
+          if (observable.isBeingObserved) {
+            // if this observable had reactive observers, trigger the hooks
+            observable.isBeingObserved = false;
+            observable.onBUO();
+          }
+          if (observable instanceof ComputedValue) {
+            // computed values are automatically teared down when the last observer leaves
+            // this process happens recursively, this computed might be the last observabe of another, etc..
+            observable.suspend_();
+          }
+        }
+      }
+      globalState.pendingUnobservations = [];
+    } finally {
+      // Always release the guard, even if an onBUO handler (user code) threw,
+      // otherwise every future endBatch() would see isRunningUnobservations
+      // stuck true and silently stop draining pendingUnobservations forever.
+      globalState.isRunningUnobservations = false;
+    }
+  }
+  /**
+   * Marks an observable as observed, cascading into the dependencies of a ComputedValue.
+   * Unobservation already cascades (`suspend_` -> `clearObserving`), observation normally
+   * only does so by accident: a newly observed computed usually recomputes and re-reports
+   * its dependencies. When it serves a cached value instead nothing re-reports them, so the
+   * transition has to be propagated by hand. See #4547.
+   */
+  function markObserved(observable) {
+    var _observable$observing;
+    if (observable.isBeingObserved) {
+      return;
+    }
+    observable.isBeingObserved = true;
+    observable.onBO();
+    // No queueForUnobservation here: the observer links already exist, so the regular
+    // suspend_ -> clearObserving -> removeObserver teardown still delivers the onBUO.
+    (_observable$observing = observable.observing_) == null || _observable$observing.forEach(markObserved);
+  }
+  function reportObserved(observable) {
+    const derivation = globalState.trackingDerivation;
+    if (derivation !== null) {
+      /**
+       * Simple optimization, give each derivation run an unique id (runId)
+       * Check if last time this observable was accessed the same runId is used
+       * if this is the case, the relation is already known
+       */
+      if (derivation.runId_ !== observable.lastAccessedBy_) {
+        observable.lastAccessedBy_ = derivation.runId_;
+        // Tried storing newObserving, or observing, or both as Set, but performance didn't come close...
+        derivation.newObserving_[derivation.unboundDepsCount_++] = observable;
+        if (!observable.isBeingObserved && globalState.trackingContext) {
+          observable.isBeingObserved = true;
+          observable.onBO();
+        }
+      }
+      return observable.isBeingObserved;
+    } else if ((!observable.observers_ || observable.observers_.size === 0) && globalState.inBatch > 0) {
+      queueForUnobservation(observable);
+    }
+    return false;
+  }
+  // function invariantLOS(observable: IObservable, msg: string) {
+  //     // it's expensive so better not run it in produciton. but temporarily helpful for testing
+  //     const min = getObservers(observable).reduce((a, b) => Math.min(a, b.dependenciesState), 2)
+  //     if (min >= observable.lowestObserverState) return // <- the only assumption about `lowestObserverState`
+  //     throw new Error(
+  //         "lowestObserverState is wrong for " +
+  //             msg +
+  //             " because " +
+  //             min +
+  //             " < " +
+  //             observable.lowestObserverState
+  //     )
+  // }
+  /**
+   * NOTE: current propagation mechanism will in case of self reruning autoruns behave unexpectedly
+   * It will propagate changes to observers from previous run
+   * It's hard or maybe impossible (with reasonable perf) to get it right with current approach
+   * Hopefully self reruning autoruns aren't a feature people should depend on
+   * Also most basic use cases should be ok
+   */
+  // Called by Atom when its value changes
+  function propagateChanged(observable) {
+    var _observable$observers3;
+    // invariantLOS(observable, "changed start");
+    if (observable.lowestObserverState_ === 2 /* IDerivationState_.STALE_ */) {
+      return;
+    }
+    observable.lowestObserverState_ = 2 /* IDerivationState_.STALE_ */;
+    // Ideally we use for..of here, but the downcompiled version is really slow...
+    (_observable$observers3 = observable.observers_) == null || _observable$observers3.forEach(d => {
+      if (d.dependenciesState_ === 0 /* IDerivationState_.UP_TO_DATE_ */) {
+        d.onBecomeStale_();
+      }
+      d.dependenciesState_ = 2 /* IDerivationState_.STALE_ */;
+    });
+    // invariantLOS(observable, "changed end");
+  }
+  // Called by ComputedValue when it recalculate and its value changed
+  function propagateChangeConfirmed(observable) {
+    var _observable$observers4;
+    // invariantLOS(observable, "confirmed start");
+    if (observable.lowestObserverState_ === 2 /* IDerivationState_.STALE_ */) {
+      return;
+    }
+    observable.lowestObserverState_ = 2 /* IDerivationState_.STALE_ */;
+    (_observable$observers4 = observable.observers_) == null || _observable$observers4.forEach(d => {
+      if (d.dependenciesState_ === 1 /* IDerivationState_.POSSIBLY_STALE_ */) {
+        d.dependenciesState_ = 2 /* IDerivationState_.STALE_ */;
+      } else if (d.dependenciesState_ === 0 /* IDerivationState_.UP_TO_DATE_ */ // this happens during computing of `d`, just keep lowestObserverState up to date.
+      ) {
+        observable.lowestObserverState_ = 0 /* IDerivationState_.UP_TO_DATE_ */;
+      }
+    });
+    // invariantLOS(observable, "confirmed end");
+  }
+  // Used by computed when its dependency changed, but we don't wan't to immediately recompute.
+  function propagateMaybeChanged(observable) {
+    var _observable$observers5;
+    // invariantLOS(observable, "maybe start");
+    if (observable.lowestObserverState_ !== 0 /* IDerivationState_.UP_TO_DATE_ */) {
+      return;
+    }
+    observable.lowestObserverState_ = 1 /* IDerivationState_.POSSIBLY_STALE_ */;
+    (_observable$observers5 = observable.observers_) == null || _observable$observers5.forEach(d => {
+      if (d.dependenciesState_ === 0 /* IDerivationState_.UP_TO_DATE_ */) {
+        d.dependenciesState_ = 1 /* IDerivationState_.POSSIBLY_STALE_ */;
+        d.onBecomeStale_();
+      }
+    });
+    // invariantLOS(observable, "maybe end");
+  }
+
+  class Reaction {
+    constructor(name_ = "Reaction", onInvalidate_, errorHandler_, requiresObservable_) {
+      this.name_ = void 0;
+      this.onInvalidate_ = void 0;
+      this.errorHandler_ = void 0;
+      this.requiresObservable_ = void 0;
+      this.observing_ = [];
+      // nodes we are looking at. Our value depends on these nodes
+      this.newObserving_ = [];
+      this.dependenciesState_ = -1 /* IDerivationState_.NOT_TRACKING_ */;
+      this.runId_ = 0;
+      this.unboundDepsCount_ = 0;
+      this.flags_ = 0b00000;
+      this.name_ = name_;
+      this.onInvalidate_ = onInvalidate_;
+      this.errorHandler_ = errorHandler_;
+      this.requiresObservable_ = requiresObservable_;
+    }
+    get isDisposed() {
+      return getFlag(this.flags_, 1 /* ReactionFlags.isDisposed */);
+    }
+    set isDisposed(newValue) {
+      this.flags_ = setFlag(this.flags_, 1 /* ReactionFlags.isDisposed */, newValue);
+    }
+    get isScheduled() {
+      return getFlag(this.flags_, 2 /* ReactionFlags.isScheduled */);
+    }
+    set isScheduled(newValue) {
+      this.flags_ = setFlag(this.flags_, 2 /* ReactionFlags.isScheduled */, newValue);
+    }
+    get isTrackPending() {
+      return getFlag(this.flags_, 4 /* ReactionFlags.isTrackPending */);
+    }
+    set isTrackPending(newValue) {
+      this.flags_ = setFlag(this.flags_, 4 /* ReactionFlags.isTrackPending */, newValue);
+    }
+    get isRunning() {
+      return getFlag(this.flags_, 8 /* ReactionFlags.isRunning */);
+    }
+    set isRunning(newValue) {
+      this.flags_ = setFlag(this.flags_, 8 /* ReactionFlags.isRunning */, newValue);
+    }
+    get diffValue() {
+      return getFlag(this.flags_, 16 /* ReactionFlags.diffValue */) ? 1 : 0;
+    }
+    set diffValue(newValue) {
+      this.flags_ = setFlag(this.flags_, 16 /* ReactionFlags.diffValue */, newValue === 1 ? true : false);
+    }
+    onBecomeStale_() {
+      this.schedule_();
+    }
+    schedule_() {
+      if (!this.isScheduled) {
+        this.isScheduled = true;
+        globalState.pendingReactions.push(this);
+        runReactions();
+      }
+    }
+    /**
+     * internal, use schedule() if you intend to kick off a reaction
+     */
+    runReaction_() {
+      if (!this.isDisposed) {
+        startBatch();
+        this.isScheduled = false;
+        const prev = globalState.trackingContext;
+        globalState.trackingContext = this;
+        if (shouldCompute(this)) {
+          this.isTrackPending = true;
+          try {
+            this.onInvalidate_();
+            if (__MOBX_DEV__ && this.isTrackPending && isSpyEnabled()) ;
+          } catch (e) {
+            this.reportExceptionInDerivation_(e);
+          }
+        }
+        globalState.trackingContext = prev;
+        endBatch();
+      }
+    }
+    track(fn) {
+      if (this.isDisposed) {
+        return;
+        // console.warn("Reaction already disposed") // Note: Not a warning / error in mobx 4 either
+      }
+      startBatch();
+      this.isRunning = true;
+      const prevReaction = globalState.trackingContext; // reactions could create reactions...
+      globalState.trackingContext = this;
+      const result = trackDerivedFunction(this, fn, undefined);
+      globalState.trackingContext = prevReaction;
+      this.isRunning = false;
+      this.isTrackPending = false;
+      if (this.isDisposed) {
+        // disposed during last run. Clean up everything that was bound after the dispose call.
+        clearObserving(this);
+      }
+      if (isCaughtException(result)) {
+        this.reportExceptionInDerivation_(result.cause);
+      }
+      endBatch();
+    }
+    reportExceptionInDerivation_(error) {
+      if (this.errorHandler_) {
+        this.errorHandler_(error, this);
+        return;
+      }
+      if (globalState.disableErrorBoundaries) {
+        throw error;
+      }
+      const message = `[mobx] uncaught error in '${this}'`;
+      if (!globalState.suppressReactionErrors) {
+        console.error(message, error);
+        /** If debugging brought you here, please, read the above message :-). Tnx! */
+      } // prettier-ignore
+      globalState.globalReactionErrorHandlers.forEach(f => f(error, this));
+    }
+    dispose() {
+      if (!this.isDisposed) {
+        this.isDisposed = true;
+        if (!this.isRunning) {
+          // if disposed while running, clean up later. Maybe not optimal, but rare case
+          startBatch();
+          clearObserving(this);
+          endBatch();
+        }
+      }
+    }
+    getDisposer_(abortSignal) {
+      const dispose = () => {
+        this.dispose();
+        abortSignal == null || abortSignal.removeEventListener == null || abortSignal.removeEventListener("abort", dispose);
+      };
+      abortSignal == null || abortSignal.addEventListener == null || abortSignal.addEventListener("abort", dispose);
+      dispose[$mobx] = this;
+      if ("dispose" in Symbol && typeof Symbol.dispose === "symbol") {
+        dispose[Symbol.dispose] = dispose;
+      }
+      return dispose;
+    }
+    toString() {
+      return `Reaction[${this.name_}]`;
+    }
+  }
+  /**
+   * Magic number alert!
+   * Defines within how many times a reaction is allowed to re-trigger itself
+   * until it is assumed that this is gonna be a never ending loop...
+   */
+  const MAX_REACTION_ITERATIONS = 100;
+  let reactionScheduler = f => f();
+  function runReactions() {
+    // Trampolining, if runReactions are already running, new reactions will be picked up
+    if (globalState.inBatch > 0 || globalState.isRunningReactions) {
+      return;
+    }
+    reactionScheduler(runReactionsHelper);
+  }
+  function runReactionsHelper() {
+    globalState.isRunningReactions = true;
+    const allReactions = globalState.pendingReactions;
+    let iterations = 0;
+    // While running reactions, new reactions might be triggered.
+    // Hence we work with two variables and check whether
+    // we converge to no remaining reactions after a while.
+    while (allReactions.length > 0) {
+      if (++iterations === MAX_REACTION_ITERATIONS) {
+        console.error(`[mobx] cycle in reaction: ${allReactions[0]}`);
+        allReactions.splice(0); // clear reactions
+      }
+      let remainingReactions = allReactions.splice(0);
+      for (let i = 0, l = remainingReactions.length; i < l; i++) {
+        remainingReactions[i].runReaction_();
+      }
+    }
+    globalState.isRunningReactions = false;
+  }
+  const isReaction = /*#__PURE__*/createInstanceofPredicate("Reaction", Reaction);
+
+  function isSpyEnabled() {
+    return __MOBX_DEV__;
+  }
+  function spyReport(event) {
+    {
+      return;
+    } // dead code elimination can do the rest
+  }
+  function spyReportStart(event) {
+    {
+      return;
+    }
+  }
+  function spyReportEnd(change) {
+    {
+      return;
+    }
+  }
+
+  const ACTION = "action";
+  const AUTOACTION = "autoAction";
+  const AUTOACTION_BOUND = "autoAction.bound";
+  const DEFAULT_ACTION_NAME = "<unnamed action>";
+  const actionAnnotation = /*#__PURE__*/createActionAnnotation(ACTION);
+  const autoActionAnnotation = /*#__PURE__*/createActionAnnotation(AUTOACTION, {
+    autoAction: true
+  });
+  const autoActionBoundAnnotation = /*#__PURE__*/createActionAnnotation(AUTOACTION_BOUND, {
+    autoAction: true,
+    bound: true
+  });
+  function createActionDecoratorAnnotation(annotation) {
+    return createDecoratorAnnotation(annotation, decorateAction20223_);
+  }
+  function createActionFactory(autoAction) {
+    const res = function action(arg1, arg2) {
+      if (arg2 && typeof arg2.kind === "string") {
+        return decorateAction20223_(autoAction ? autoActionAnnotation : actionAnnotation, arg1, arg2);
+      }
+      // action(fn() {})
+      if (isFunction(arg1)) {
+        return createAction(arg1.name || DEFAULT_ACTION_NAME, arg1, autoAction);
+      }
+      // action("name", fn() {})
+      if (isFunction(arg2)) {
+        return createAction(arg1, arg2, autoAction);
+      }
+      // action("name") annotation
+      if (isStringish(arg1)) {
+        return createActionDecoratorAnnotation(createActionAnnotation(autoAction ? AUTOACTION : ACTION, {
+          name: arg1,
+          autoAction
+        }));
+      }
+    };
+    return res;
+  }
+  const action = /*#__PURE__*/createActionFactory(false);
+  assign(action, actionAnnotation);
+  const autoAction = /*#__PURE__*/createActionFactory(true);
+  assign(autoAction, autoActionAnnotation);
+  const autoActionBound = /*#__PURE__*/createActionDecoratorAnnotation(autoActionBoundAnnotation);
+  function isAction(thing) {
+    return isFunction(thing) && thing.isMobxAction === true;
+  }
+
+  function extendObservable(target, properties, annotations, options) {
+    // Pull descriptors first, so we don't have to deal with props added by administration ($mobx)
+    const descriptors = getOwnPropertyDescriptors(properties);
+    initObservable(() => {
+      const adm = asObservableObject(target, options)[$mobx];
+      ownKeys(descriptors).forEach(key => {
+        adm.extend_(key, descriptors[key],
+        // must pass "undefined" for { key: undefined }
+        !annotations ? true : key in annotations ? annotations[key] : true);
+      });
+    });
+    return target;
+  }
+  class FlowCancellationError extends Error {
+    constructor() {
+      super("FLOW_CANCELLED");
+      Object.setPrototypeOf(this, new.target.prototype);
+      this.name = "FlowCancellationError";
+    }
+    toString() {
+      return `Error: ${this.message}`;
+    }
+  }
+  function createFlowDecoratorAnnotation(annotation) {
+    return createDecoratorAnnotation(annotation, decorateFlow20223_);
+  }
+  const flowAnnotation = /*#__PURE__*/createFlowAnnotation("flow");
+  const flowBoundAnnotation = /*#__PURE__*/createFlowAnnotation("flow.bound", {
+    bound: true
+  });
+  const flow = /*#__PURE__*/assign(function flow(arg1, arg2) {
+    if (arg2 && typeof arg2.kind === "string") {
+      return decorateFlow20223_(flowAnnotation, arg1, arg2);
+    }
+    const generator = arg1;
+    const name = generator.name || ("flow");
+    // Implementation based on https://github.com/tj/co/blob/master/index.js
+    const res = function res() {
+      const ctx = this;
+      const args = arguments;
+      const runId = 0;
+      const gen = action(name, generator).apply(ctx, args);
+      let rejector;
+      let pendingPromise = undefined;
+      const promise = new Promise(function (resolve, reject) {
+        let stepId = 0;
+        rejector = reject;
+        function onFulfilled(res) {
+          pendingPromise = undefined;
+          let ret;
+          try {
+            ret = action(__MOBX_DEV__ ? `${name} - runid: ${runId} - yield ${stepId++}` : name, gen.next).call(gen, res);
+          } catch (e) {
+            return reject(e);
+          }
+          next(ret);
+        }
+        function onRejected(err) {
+          pendingPromise = undefined;
+          let ret;
+          try {
+            ret = action(__MOBX_DEV__ ? `${name} - runid: ${runId} - yield ${stepId++}` : name, gen.throw).call(gen, err);
+          } catch (e) {
+            return reject(e);
+          }
+          next(ret);
+        }
+        function next(ret) {
+          if (isFunction(ret == null ? void 0 : ret.then)) {
+            // an async iterator
+            ret.then(next, reject);
+            return;
+          }
+          if (ret.done) {
+            return resolve(ret.value);
+          }
+          pendingPromise = Promise.resolve(ret.value);
+          return pendingPromise.then(onFulfilled, onRejected);
+        }
+        onFulfilled(undefined); // kick off the process
+      });
+      const cancelActionName = name;
+      promise.cancel = action(cancelActionName, function () {
+        try {
+          if (pendingPromise) {
+            cancelPromise(pendingPromise);
+          }
+          // Finally block can return (or yield) stuff..
+          const res = gen.return(undefined);
+          // eat anything that promise would do, it's cancelled!
+          const yieldedPromise = Promise.resolve(res.value);
+          yieldedPromise.then(noop, noop);
+          cancelPromise(yieldedPromise); // maybe it can be cancelled :)
+          // reject our original promise
+          rejector(new FlowCancellationError());
+        } catch (e) {
+          rejector(e); // there could be a throwing finally block
+        }
+      });
+      return promise;
+    };
+    res.isMobXFlow = true;
+    return res;
+  }, flowAnnotation);
+  const flowBound = /*#__PURE__*/createFlowDecoratorAnnotation(flowBoundAnnotation);
+  function cancelPromise(promise) {
+    if (isFunction(promise.cancel)) {
+      promise.cancel();
+    }
+  }
+  function isFlow(fn) {
+    return (fn == null ? void 0 : fn.isMobXFlow) === true;
+  }
+
+  function _isObservable(value, property) {
+    if (!value) {
+      return false;
+    }
+    // For first check, see #701
+    return isObservableObject(value) || !!value[$mobx] || isAtom(value) || isReaction(value) || isComputedValue(value);
+  }
+  function isObservable(value) {
+    return _isObservable(value);
+  }
+
+  /**
+   * During a transaction no views are updated until the end of the transaction.
+   * The transaction will be run synchronously nonetheless.
+   *
+   * @param action a function that updates some reactive state
+   * @returns any value that was returned by the 'action' parameter.
+   */
+  function transaction(action, thisArg = undefined) {
+    startBatch();
+    try {
+      return action.apply(thisArg);
+    } finally {
+      endBatch();
+    }
+  }
+
+  function getAdm(target) {
+    return target[$mobx];
+  }
+  // Optimization: we don't need the intermediate objects and could have a completely custom administration for DynamicObjects,
+  // and skip either the internal values map, or the base object with its property descriptors!
+  const objectProxyTraps = {
+    has(target, name) {
+      return getAdm(target).has_(name);
+    },
+    get(target, name) {
+      return getAdm(target).get_(name);
+    },
+    set(target, name, value) {
+      var _getAdm$set_;
+      if (!isStringish(name)) {
+        return false;
+      }
+      // null (intercepted) -> true (success)
+      return (_getAdm$set_ = getAdm(target).set_(name, value, true)) != null ? _getAdm$set_ : true;
+    },
+    deleteProperty(target, name) {
+      var _getAdm$delete_;
+      if (!isStringish(name)) {
+        return false;
+      }
+      // null (intercepted) -> true (success)
+      return (_getAdm$delete_ = getAdm(target).delete_(name, true)) != null ? _getAdm$delete_ : true;
+    },
+    defineProperty(target, name, descriptor) {
+      var _getAdm$definePropert;
+      // null (intercepted) -> true (success)
+      return (_getAdm$definePropert = getAdm(target).defineProperty_(name, descriptor)) != null ? _getAdm$definePropert : true;
+    },
+    ownKeys(target) {
+      return getAdm(target).ownKeys_();
+    },
+    preventExtensions(target) {
+      die(13);
+    }
+  };
+  function asDynamicObservableObject(target, options) {
+    var _target$$mobx, _target$$mobx$proxy_;
+    target = asObservableObject(target, options);
+    return (_target$$mobx$proxy_ = (_target$$mobx = target[$mobx]).proxy_) != null ? _target$$mobx$proxy_ : _target$$mobx.proxy_ = new Proxy(target, objectProxyTraps);
+  }
+
+  function hasInterceptors(interceptable) {
+    return interceptable.interceptors_ !== undefined && interceptable.interceptors_.length > 0;
+  }
+  function interceptChange(interceptable, change) {
+    const prevU = untrackedStart();
+    try {
+      // Interceptor can modify the array, copy it to avoid concurrent modification, see #1950
+      const interceptors = [...(interceptable.interceptors_ || [])];
+      for (let i = 0, l = interceptors.length; i < l; i++) {
+        change = interceptors[i](change);
+        if (change && !change.type) {
+          die(14);
+        }
+        if (!change) {
+          break;
+        }
+      }
+      return change;
+    } finally {
+      untrackedEnd(prevU);
+    }
+  }
+
+  function hasListeners(listenable) {
+    return listenable.changeListeners_ !== undefined && listenable.changeListeners_.length > 0;
+  }
+  function notifyListeners(listenable, change) {
+    const prevU = untrackedStart();
+    let listeners = listenable.changeListeners_;
+    if (!listeners) {
+      return;
+    }
+    listeners = listeners.slice();
+    for (let i = 0, l = listeners.length; i < l; i++) {
+      listeners[i](change);
+    }
+    untrackedEnd(prevU);
+  }
+
+  const SPLICE = "splice";
+  const UPDATE = "update";
+  const MAX_SPLICE_SIZE = 10000; // See e.g. https://github.com/mobxjs/mobx/issues/859
+  const arrayTraps = {
+    get(target, name) {
+      const adm = target[$mobx];
+      if (name === $mobx) {
+        return adm;
+      }
+      if (name === "length") {
+        return adm.getArrayLength_();
+      }
+      if (typeof name === "string" && !isNaN(name)) {
+        return adm.get_(parseInt(name));
+      }
+      if (hasProp(arrayExtensions, name)) {
+        return arrayExtensions[name];
+      }
+      return target[name];
+    },
+    set(target, name, value) {
+      const adm = target[$mobx];
+      if (name === "length") {
+        adm.setArrayLength_(value);
+      }
+      if (typeof name === "symbol" || isNaN(name)) {
+        target[name] = value;
+      } else {
+        // numeric string
+        adm.set_(parseInt(name), value);
+      }
+      return true;
+    },
+    preventExtensions() {
+      die(15);
+    }
+  };
+  class ObservableArrayAdministration {
+    constructor(name = "ObservableArray", enhancer, owned_) {
+      this.owned_ = void 0;
+      this.atom_ = void 0;
+      this.values_ = [];
+      // this is the prop that gets proxied, so can't replace it!
+      this.interceptors_ = void 0;
+      this.changeListeners_ = void 0;
+      this.enhancer_ = void 0;
+      this.dehancer = void 0;
+      this.proxy_ = void 0;
+      this.lastKnownLength_ = 0;
+      this.owned_ = owned_;
+      this.atom_ = new Atom(name);
+      this.enhancer_ = (newV, oldV) => enhancer(newV, oldV, "ObservableArray[..]");
+    }
+    dehanceValue_(value) {
+      if (this.dehancer !== undefined) {
+        return this.dehancer(value);
+      }
+      return value;
+    }
+    dehanceValues_(values) {
+      if (this.dehancer !== undefined && values.length > 0) {
+        return values.map(this.dehancer);
+      }
+      return values;
+    }
+    getArrayLength_() {
+      this.atom_.reportObserved();
+      return this.values_.length;
+    }
+    setArrayLength_(newLength) {
+      if (typeof newLength !== "number" || isNaN(newLength) || newLength < 0) {
+        die(40, newLength);
+      }
+      let currentLength = this.values_.length;
+      if (newLength === currentLength) {
+        return;
+      } else if (newLength > currentLength) {
+        const newItems = Array.from({
+          length: newLength - currentLength
+        });
+        this.spliceWithArray_(currentLength, 0, newItems);
+      } else {
+        this.spliceWithArray_(newLength, currentLength - newLength);
+      }
+    }
+    updateArrayLength_(oldLength, delta) {
+      if (oldLength !== this.lastKnownLength_) {
+        die(16);
+      }
+      this.lastKnownLength_ += delta;
+    }
+    spliceWithArray_(index, deleteCount, newItems) {
+      checkIfStateModificationsAreAllowed(this.atom_);
+      const length = this.values_.length;
+      if (index === undefined) {
+        index = 0;
+      } else if (index > length) {
+        index = length;
+      } else if (index < 0) {
+        index = Math.max(0, length + index);
+      }
+      if (arguments.length === 1) {
+        deleteCount = length - index;
+      } else if (deleteCount === undefined || deleteCount === null) {
+        deleteCount = 0;
+      } else {
+        deleteCount = Math.max(0, Math.min(deleteCount, length - index));
+      }
+      if (newItems === undefined) {
+        newItems = EMPTY_ARRAY;
+      }
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          object: this.proxy_,
+          type: SPLICE,
+          index,
+          removedCount: deleteCount,
+          added: newItems
+        });
+        if (!change) {
+          return EMPTY_ARRAY;
+        }
+        deleteCount = change.removedCount;
+        newItems = change.added;
+      }
+      newItems = newItems.length === 0 ? newItems : newItems.map(v => this.enhancer_(v, undefined));
+      const res = this.spliceItemsIntoValues_(index, deleteCount, newItems);
+      if (deleteCount !== 0 || newItems.length !== 0) {
+        this.notifyArraySplice_(index, newItems, res);
+      }
+      return this.dehanceValues_(res);
+    }
+    spliceItemsIntoValues_(index, deleteCount, newItems) {
+      if (newItems.length < MAX_SPLICE_SIZE) {
+        return this.values_.splice(index, deleteCount, ...newItems);
+      } else {
+        // The items removed by the splice
+        const res = this.values_.slice(index, index + deleteCount);
+        // The items that that should remain at the end of the array
+        let oldItems = this.values_.slice(index + deleteCount);
+        // New length is the previous length + addition count - deletion count
+        this.values_.length += newItems.length - deleteCount;
+        for (let i = 0; i < newItems.length; i++) {
+          this.values_[index + i] = newItems[i];
+        }
+        for (let i = 0; i < oldItems.length; i++) {
+          this.values_[index + newItems.length + i] = oldItems[i];
+        }
+        return res;
+      }
+    }
+    notifyArrayChildUpdate_(index, newValue, oldValue) {
+      const notifySpy = __MOBX_DEV__;
+      const notify = hasListeners(this);
+      const change = notify || notifySpy ? {
+        observableKind: "array",
+        object: this.proxy_,
+        type: UPDATE,
+        debugObjectName: this.atom_.name_,
+        index,
+        newValue,
+        oldValue
+      } : null;
+      this.atom_.reportChanged();
+      if (notify) {
+        notifyListeners(this, change);
+      }
+    }
+    notifyArraySplice_(index, added, removed) {
+      const notifySpy = __MOBX_DEV__;
+      const notify = hasListeners(this);
+      const change = notify || notifySpy ? {
+        observableKind: "array",
+        object: this.proxy_,
+        debugObjectName: this.atom_.name_,
+        type: SPLICE,
+        index,
+        removed,
+        added,
+        removedCount: removed.length,
+        addedCount: added.length
+      } : null;
+      this.atom_.reportChanged();
+      // conform: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/observe
+      if (notify) {
+        notifyListeners(this, change);
+      }
+    }
+    get_(index) {
+      this.atom_.reportObserved();
+      return this.dehanceValue_(this.values_[index]);
+    }
+    set_(index, newValue) {
+      const values = this.values_;
+      if (index < values.length) {
+        // update at index in range
+        checkIfStateModificationsAreAllowed(this.atom_);
+        const oldValue = values[index];
+        if (hasInterceptors(this)) {
+          const change = interceptChange(this, {
+            type: UPDATE,
+            object: this.proxy_,
+            // since "this" is the real array we need to pass its proxy
+            index,
+            newValue
+          });
+          if (!change) {
+            return;
+          }
+          newValue = change.newValue;
+        }
+        newValue = this.enhancer_(newValue, oldValue);
+        const changed = newValue !== oldValue;
+        if (changed) {
+          values[index] = newValue;
+          this.notifyArrayChildUpdate_(index, newValue, oldValue);
+        }
+      } else {
+        // For out of bound index, we don't create an actual sparse array,
+        // but rather fill the holes with undefined (same as setArrayLength_).
+        // This could be considered a bug.
+        const newItems = Array.from({
+          length: index + 1 - values.length
+        });
+        newItems[newItems.length - 1] = newValue;
+        this.spliceWithArray_(values.length, 0, newItems);
+      }
+    }
+  }
+  function createObservableArray(initialValues, enhancer, name = "ObservableArray", owned = false) {
+    return initObservable(() => {
+      const adm = new ObservableArrayAdministration(name, enhancer, owned);
+      addHiddenFinalProp(adm.values_, $mobx, adm);
+      const proxy = new Proxy(adm.values_, arrayTraps);
+      adm.proxy_ = proxy;
+      if (initialValues && initialValues.length) {
+        adm.spliceWithArray_(0, 0, initialValues);
+      }
+      return proxy;
+    });
+  }
+  // eslint-disable-next-line
+  var arrayExtensions = {
+    clear() {
+      return this.splice(0);
+    },
+    replace(newItems) {
+      const adm = this[$mobx];
+      return adm.spliceWithArray_(0, adm.values_.length, newItems);
+    },
+    // Used by JSON.stringify
+    toJSON() {
+      return this.slice();
+    },
+    /*
+     * functions that do alter the internal structure of the array, (based on lib.es6.d.ts)
+     * since these functions alter the inner structure of the array, the have side effects.
+     * Because the have side effects, they should not be used in computed function,
+     * and for that reason the do not call dependencyState.notifyObserved
+     */
+    splice(index, deleteCount, ...newItems) {
+      const adm = this[$mobx];
+      switch (arguments.length) {
+        case 0:
+          return [];
+        case 1:
+          return adm.spliceWithArray_(index);
+        case 2:
+          return adm.spliceWithArray_(index, deleteCount);
+      }
+      return adm.spliceWithArray_(index, deleteCount, newItems);
+    },
+    spliceWithArray(index, deleteCount, newItems) {
+      return this[$mobx].spliceWithArray_(index, deleteCount, newItems);
+    },
+    push(...items) {
+      const adm = this[$mobx];
+      adm.spliceWithArray_(adm.values_.length, 0, items);
+      return adm.values_.length;
+    },
+    pop() {
+      return this.splice(Math.max(this[$mobx].values_.length - 1, 0), 1)[0];
+    },
+    shift() {
+      return this.splice(0, 1)[0];
+    },
+    unshift(...items) {
+      const adm = this[$mobx];
+      adm.spliceWithArray_(0, 0, items);
+      return adm.values_.length;
+    },
+    reverse() {
+      // reverse by default mutates in place before returning the result
+      // which makes it both a 'derivation' and a 'mutation'.
+      if (globalState.trackingDerivation) {
+        die(37, "reverse");
+      }
+      this.replace(this.slice().reverse());
+      return this;
+    },
+    sort() {
+      // sort by default mutates in place before returning the result
+      // which goes against all good practices. Let's not change the array in place!
+      if (globalState.trackingDerivation) {
+        die(37, "sort");
+      }
+      const copy = this.slice();
+      copy.sort.apply(copy, arguments);
+      this.replace(copy);
+      return this;
+    },
+    remove(value) {
+      const adm = this[$mobx];
+      const idx = adm.dehanceValues_(adm.values_).indexOf(value);
+      if (idx > -1) {
+        this.splice(idx, 1);
+        return true;
+      }
+      return false;
+    }
+  };
+  /**
+   * Wrap function from prototype
+   * Without this, everything works as well, but this works
+   * faster as everything works on unproxied values
+   */
+  addArrayExtension("at", simpleFunc);
+  addArrayExtension("concat", simpleFunc);
+  addArrayExtension("flat", simpleFunc);
+  addArrayExtension("includes", simpleFunc);
+  addArrayExtension("indexOf", simpleFunc);
+  addArrayExtension("join", simpleFunc);
+  addArrayExtension("lastIndexOf", simpleFunc);
+  addArrayExtension("slice", simpleFunc);
+  addArrayExtension("toString", simpleFunc);
+  addArrayExtension("toLocaleString", simpleFunc);
+  addArrayExtension("toSorted", simpleFunc);
+  addArrayExtension("toSpliced", simpleFunc);
+  addArrayExtension("with", simpleFunc);
+  // map
+  addArrayExtension("every", mapLikeFunc);
+  addArrayExtension("filter", mapLikeFunc);
+  addArrayExtension("find", mapLikeFunc);
+  addArrayExtension("findIndex", mapLikeFunc);
+  addArrayExtension("findLast", mapLikeFunc);
+  addArrayExtension("findLastIndex", mapLikeFunc);
+  addArrayExtension("flatMap", mapLikeFunc);
+  addArrayExtension("forEach", mapLikeFunc);
+  addArrayExtension("map", mapLikeFunc);
+  addArrayExtension("some", mapLikeFunc);
+  addArrayExtension("toReversed", mapLikeFunc);
+  // reduce
+  addArrayExtension("reduce", reduceLikeFunc);
+  addArrayExtension("reduceRight", reduceLikeFunc);
+  function addArrayExtension(funcName, funcFactory) {
+    if (typeof Array.prototype[funcName] === "function") {
+      arrayExtensions[funcName] = funcFactory(funcName);
+    }
+  }
+  // Report and delegate to dehanced array
+  function simpleFunc(funcName) {
+    return function () {
+      const adm = this[$mobx];
+      adm.atom_.reportObserved();
+      const dehancedValues = adm.dehanceValues_(adm.values_);
+      return dehancedValues[funcName].apply(dehancedValues, arguments);
+    };
+  }
+  // Make sure callbacks receive correct array arg #2326
+  function mapLikeFunc(funcName) {
+    return function (callback, thisArg) {
+      const adm = this[$mobx];
+      adm.atom_.reportObserved();
+      const dehancedValues = adm.dehanceValues_(adm.values_);
+      return dehancedValues[funcName]((element, index) => {
+        return callback.call(thisArg, element, index, this);
+      });
+    };
+  }
+  // Make sure callbacks receive correct array arg #2326
+  function reduceLikeFunc(funcName) {
+    return function () {
+      const adm = this[$mobx];
+      adm.atom_.reportObserved();
+      const dehancedValues = adm.dehanceValues_(adm.values_);
+      // #2432 - reduce behavior depends on arguments.length
+      const callback = arguments[0];
+      arguments[0] = (accumulator, currentValue, index) => {
+        return callback(accumulator, currentValue, index, this);
+      };
+      return dehancedValues[funcName].apply(dehancedValues, arguments);
+    };
+  }
+
+  const ObservableMapMarker = {};
+  const ADD = "add";
+  const DELETE = "delete";
+  // just extend Map? See also https://gist.github.com/nestharus/13b4d74f2ef4a2f4357dbd3fc23c1e54
+  // But: https://github.com/mobxjs/mobx/issues/1556
+  class ObservableMap {
+    constructor(initialData, enhancer_ = deepEnhancer, name_ = "ObservableMap") {
+      this.enhancer_ = void 0;
+      this.name_ = void 0;
+      this[$mobx] = ObservableMapMarker;
+      this.data_ = void 0;
+      this.hasMap_ = void 0;
+      // hasMap, not hashMap >-).
+      this.keysAtom_ = void 0;
+      this.interceptors_ = void 0;
+      this.changeListeners_ = void 0;
+      this.dehancer = void 0;
+      this.enhancer_ = enhancer_;
+      this.name_ = name_;
+      initObservable(() => {
+        this.keysAtom_ = createAtom(__MOBX_DEV__ ? `${this.name_}.keys()` : "ObservableMap.keys()");
+        this.data_ = new Map();
+        this.hasMap_ = new Map();
+        if (initialData) {
+          this.merge(initialData);
+        }
+      });
+    }
+    has_(key) {
+      return this.data_.has(key);
+    }
+    has(key) {
+      if (!globalState.trackingDerivation) {
+        return this.has_(key);
+      }
+      let entry = this.hasMap_.get(key);
+      if (!entry) {
+        const newEntry = entry = new ObservableValue(this.has_(key), referenceEnhancer, "ObservableMap.key?", false);
+        this.hasMap_.set(key, newEntry);
+        newEntry.onBUOL = new Set([() => this.hasMap_.delete(key)]);
+      }
+      return entry.get();
+    }
+    set(key, value) {
+      const hasKey = this.has_(key);
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          type: hasKey ? UPDATE : ADD,
+          object: this,
+          newValue: value,
+          name: key
+        });
+        if (!change) {
+          return this;
+        }
+        value = change.newValue;
+      }
+      if (hasKey) {
+        this.updateValue_(key, value);
+      } else {
+        this.addValue_(key, value);
+      }
+      return this;
+    }
+    delete(key) {
+      checkIfStateModificationsAreAllowed(this.keysAtom_);
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          type: DELETE,
+          object: this,
+          name: key
+        });
+        if (!change) {
+          return false;
+        }
+      }
+      if (this.has_(key)) {
+        const notifySpy = __MOBX_DEV__;
+        const notify = hasListeners(this);
+        const change = notify || notifySpy ? {
+          observableKind: "map",
+          debugObjectName: this.name_,
+          type: DELETE,
+          object: this,
+          oldValue: this.data_.get(key).value_,
+          name: key
+        } : null;
+        transaction(() => {
+          var _this$hasMap_$get;
+          this.keysAtom_.reportChanged();
+          (_this$hasMap_$get = this.hasMap_.get(key)) == null || _this$hasMap_$get.setNewValue_(false);
+          const observable = this.data_.get(key);
+          observable.setNewValue_(undefined);
+          this.data_.delete(key);
+        });
+        if (notify) {
+          notifyListeners(this, change);
+        }
+        return true;
+      }
+      return false;
+    }
+    updateValue_(key, newValue) {
+      const observable = this.data_.get(key);
+      newValue = observable.prepareNewValue_(newValue);
+      if (newValue !== globalState.UNCHANGED) {
+        const notifySpy = __MOBX_DEV__;
+        const notify = hasListeners(this);
+        const change = notify || notifySpy ? {
+          observableKind: "map",
+          debugObjectName: this.name_,
+          type: UPDATE,
+          object: this,
+          oldValue: observable.value_,
+          name: key,
+          newValue
+        } : null;
+        observable.setNewValue_(newValue);
+        if (notify) {
+          notifyListeners(this, change);
+        }
+      }
+    }
+    addValue_(key, newValue) {
+      checkIfStateModificationsAreAllowed(this.keysAtom_);
+      transaction(() => {
+        var _this$hasMap_$get2;
+        const observable = new ObservableValue(newValue, this.enhancer_, "ObservableMap.key", false);
+        this.data_.set(key, observable);
+        newValue = observable.value_; // value might have been changed
+        (_this$hasMap_$get2 = this.hasMap_.get(key)) == null || _this$hasMap_$get2.setNewValue_(true);
+        this.keysAtom_.reportChanged();
+      });
+      const notifySpy = __MOBX_DEV__;
+      const notify = hasListeners(this);
+      const change = notify || notifySpy ? {
+        observableKind: "map",
+        debugObjectName: this.name_,
+        type: ADD,
+        object: this,
+        name: key,
+        newValue
+      } : null;
+      if (notify) {
+        notifyListeners(this, change);
+      }
+    }
+    get(key) {
+      if (this.has(key)) {
+        return this.dehanceValue_(this.data_.get(key).get());
+      }
+      return this.dehanceValue_(undefined);
+    }
+    getOrInsert(key, value) {
+      if (!this.has(key)) {
+        this.set(key, value);
+      }
+      return this.get(key);
+    }
+    getOrInsertComputed(key, callback) {
+      if (!this.has(key)) {
+        this.set(key, callback(key));
+      }
+      return this.get(key);
+    }
+    dehanceValue_(value) {
+      if (this.dehancer !== undefined) {
+        return this.dehancer(value);
+      }
+      return value;
+    }
+    keys() {
+      this.keysAtom_.reportObserved();
+      return this.data_.keys();
+    }
+    values() {
+      const self = this;
+      const keys = this.keys();
+      return makeIterableForMap({
+        next() {
+          const {
+            done,
+            value
+          } = keys.next();
+          return {
+            done,
+            value: done ? undefined : self.get(value)
+          };
+        }
+      });
+    }
+    entries() {
+      const self = this;
+      const keys = this.keys();
+      return makeIterableForMap({
+        next() {
+          const {
+            done,
+            value
+          } = keys.next();
+          return {
+            done,
+            value: done ? undefined : [value, self.get(value)]
+          };
+        }
+      });
+    }
+    [Symbol.iterator]() {
+      return this.entries();
+    }
+    forEach(callback, thisArg) {
+      for (const [key, value] of this) {
+        callback.call(thisArg, value, key, this);
+      }
+    }
+    /** Merge another object into this object, returns this. */
+    merge(other) {
+      if (isObservableMap(other)) {
+        other = new Map(other);
+      }
+      transaction(() => {
+        if (isPlainObject(other)) {
+          getPlainObjectKeys(other).forEach(key => this.set(key, other[key]));
+        } else if (Array.isArray(other)) {
+          other.forEach(([key, value]) => this.set(key, value));
+        } else if (isES6Map(other)) {
+          if (!isPlainES6Map(other)) {
+            die(19, other);
+          }
+          other.forEach((value, key) => this.set(key, value));
+        } else if (other !== null && other !== undefined) {
+          die(20, other);
+        }
+      });
+      return this;
+    }
+    clear() {
+      transaction(() => {
+        untracked(() => {
+          for (const key of this.keys()) {
+            this.delete(key);
+          }
+        });
+      });
+    }
+    replace(values) {
+      // Implementation requirements:
+      // - respect ordering of replacement map
+      // - allow interceptors to run and potentially prevent individual operations
+      // - don't recreate observables that already exist in original map (so we don't destroy existing subscriptions)
+      // - don't _keysAtom.reportChanged if the keys of resulting map are indentical (order matters!)
+      // - note that result map may differ from replacement map due to the interceptors
+      transaction(() => {
+        // Convert to map so we can do quick key lookups
+        const replacementMap = convertToMap(values);
+        const orderedData = new Map();
+        // Used for optimization
+        let keysReportChangedCalled = false;
+        // Delete keys that don't exist in replacement map
+        // if the key deletion is prevented by interceptor
+        // add entry at the beginning of the result map
+        for (const key of this.data_.keys()) {
+          // Concurrently iterating/deleting keys
+          // iterator should handle this correctly
+          if (!replacementMap.has(key)) {
+            const deleted = this.delete(key);
+            // Was the key removed?
+            if (deleted) {
+              // _keysAtom.reportChanged() was already called
+              keysReportChangedCalled = true;
+            } else {
+              // Delete prevented by interceptor
+              const value = this.data_.get(key);
+              orderedData.set(key, value);
+            }
+          }
+        }
+        // Merge entries
+        for (const [key, value] of replacementMap.entries()) {
+          // We will want to know whether a new key is added
+          const keyExisted = this.data_.has(key);
+          // Add or update value
+          this.set(key, value);
+          // The addition could have been prevent by interceptor
+          if (this.data_.has(key)) {
+            // The update could have been prevented by interceptor
+            // and also we want to preserve existing values
+            // so use value from _data map (instead of replacement map)
+            const _value = this.data_.get(key);
+            orderedData.set(key, _value);
+            // Was a new key added?
+            if (!keyExisted) {
+              // _keysAtom.reportChanged() was already called
+              keysReportChangedCalled = true;
+            }
+          }
+        }
+        // Check for possible key order change
+        if (!keysReportChangedCalled) {
+          if (this.data_.size !== orderedData.size) {
+            // If size differs, keys are definitely modified
+            this.keysAtom_.reportChanged();
+          } else {
+            const iter1 = this.data_.keys();
+            const iter2 = orderedData.keys();
+            let next1 = iter1.next();
+            let next2 = iter2.next();
+            while (!next1.done) {
+              if (next1.value !== next2.value) {
+                this.keysAtom_.reportChanged();
+                break;
+              }
+              next1 = iter1.next();
+              next2 = iter2.next();
+            }
+          }
+        }
+        // Use correctly ordered map
+        this.data_ = orderedData;
+      });
+      return this;
+    }
+    get size() {
+      this.keysAtom_.reportObserved();
+      return this.data_.size;
+    }
+    toString() {
+      return "[object ObservableMap]";
+    }
+    toJSON() {
+      return Array.from(this);
+    }
+    get [Symbol.toStringTag]() {
+      return "Map";
+    }
+  }
+  // eslint-disable-next-line
+  var isObservableMap = /*#__PURE__*/createInstanceofPredicate("ObservableMap", ObservableMap);
+  function makeIterableForMap(iterator) {
+    iterator[Symbol.toStringTag] = "MapIterator";
+    return makeIterable(iterator);
+  }
+  function convertToMap(dataStructure) {
+    if (isES6Map(dataStructure) || isObservableMap(dataStructure)) {
+      return dataStructure;
+    } else if (Array.isArray(dataStructure)) {
+      return new Map(dataStructure);
+    } else if (isPlainObject(dataStructure)) {
+      const map = new Map();
+      for (const key in dataStructure) {
+        map.set(key, dataStructure[key]);
+      }
+      return map;
+    } else {
+      return die(21, dataStructure);
+    }
+  }
+
+  const ObservableSetMarker = {};
+  class ObservableSet {
+    constructor(initialData, enhancer = deepEnhancer, name_ = "ObservableSet") {
+      this.name_ = void 0;
+      this[$mobx] = ObservableSetMarker;
+      this.data_ = new Set();
+      this.atom_ = void 0;
+      this.changeListeners_ = void 0;
+      this.interceptors_ = void 0;
+      this.dehancer = void 0;
+      this.enhancer_ = void 0;
+      this.name_ = name_;
+      this.enhancer_ = (newV, oldV) => enhancer(newV, oldV, name_);
+      initObservable(() => {
+        this.atom_ = createAtom(this.name_);
+        if (initialData) {
+          this.replace(initialData);
+        }
+      });
+    }
+    dehanceValue_(value) {
+      if (this.dehancer !== undefined) {
+        return this.dehancer(value);
+      }
+      return value;
+    }
+    clear() {
+      transaction(() => {
+        untracked(() => {
+          for (const value of this.data_.values()) {
+            this.delete(value);
+          }
+        });
+      });
+    }
+    forEach(callbackFn, thisArg) {
+      for (const value of this) {
+        callbackFn.call(thisArg, value, value, this);
+      }
+    }
+    get size() {
+      this.atom_.reportObserved();
+      return this.data_.size;
+    }
+    add(value) {
+      checkIfStateModificationsAreAllowed(this.atom_);
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          type: ADD,
+          object: this,
+          newValue: value
+        });
+        if (!change) {
+          return this;
+        }
+        // implemented reassignment same as it's done for ObservableMap
+        value = change.newValue;
+      }
+      if (!this.has(value)) {
+        transaction(() => {
+          this.data_.add(this.enhancer_(value, undefined));
+          this.atom_.reportChanged();
+        });
+        const notifySpy = __MOBX_DEV__;
+        const notify = hasListeners(this);
+        const change = notify || notifySpy ? {
+          observableKind: "set",
+          debugObjectName: this.name_,
+          type: ADD,
+          object: this,
+          newValue: value
+        } : null;
+        if (notify) {
+          notifyListeners(this, change);
+        }
+      }
+      return this;
+    }
+    delete(value) {
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          type: DELETE,
+          object: this,
+          oldValue: value
+        });
+        if (!change) {
+          return false;
+        }
+      }
+      if (this.has(value)) {
+        const notifySpy = __MOBX_DEV__;
+        const notify = hasListeners(this);
+        const change = notify || notifySpy ? {
+          observableKind: "set",
+          debugObjectName: this.name_,
+          type: DELETE,
+          object: this,
+          oldValue: value
+        } : null;
+        transaction(() => {
+          this.atom_.reportChanged();
+          this.data_.delete(value);
+        });
+        if (notify) {
+          notifyListeners(this, change);
+        }
+        return true;
+      }
+      return false;
+    }
+    has(value) {
+      this.atom_.reportObserved();
+      return this.data_.has(this.dehanceValue_(value));
+    }
+    entries() {
+      const values = this.values();
+      return makeIterableForSet({
+        next() {
+          const {
+            value,
+            done
+          } = values.next();
+          return !done ? {
+            value: [value, value],
+            done
+          } : {
+            value: undefined,
+            done
+          };
+        }
+      });
+    }
+    keys() {
+      return this.values();
+    }
+    values() {
+      this.atom_.reportObserved();
+      const self = this;
+      const values = this.data_.values();
+      return makeIterableForSet({
+        next() {
+          const {
+            value,
+            done
+          } = values.next();
+          return !done ? {
+            value: self.dehanceValue_(value),
+            done
+          } : {
+            value: undefined,
+            done
+          };
+        }
+      });
+    }
+    intersection(otherSet) {
+      return new Set(this).intersection(otherSet);
+    }
+    union(otherSet) {
+      return new Set(this).union(otherSet);
+    }
+    difference(otherSet) {
+      return new Set(this).difference(otherSet);
+    }
+    symmetricDifference(otherSet) {
+      return new Set(this).symmetricDifference(otherSet);
+    }
+    isSubsetOf(otherSet) {
+      return new Set(this).isSubsetOf(otherSet);
+    }
+    isSupersetOf(otherSet) {
+      return new Set(this).isSupersetOf(otherSet);
+    }
+    isDisjointFrom(otherSet) {
+      return new Set(this).isDisjointFrom(otherSet);
+    }
+    replace(other) {
+      if (isObservableSet(other)) {
+        other = new Set(other);
+      }
+      if (Array.isArray(other) || isES6Set(other)) {
+        // Only emit `delete`/`add` events (and `reportChanged`) for values that
+        // actually change, instead of clearing and re-adding everything. `add` and
+        // `delete` are already no-ops for values that are respectively already
+        // present or already absent, so we just need to avoid deleting values that
+        // are part of the replacement. See #3761.
+        transaction(() => {
+          // Collect the desired values for quick lookup. `other` is already a Set
+          // here when it was passed (or snapshotted from an observable set) as one,
+          // so reuse it rather than allocating another; arrays are wrapped (which
+          // also dedupes them).
+          const replacementValues = isES6Set(other) ? other : new Set(other);
+          // Short-circuit the trivial cases: an empty replacement is just a clear,
+          // and replacing into an empty set only needs the adds.
+          if (replacementValues.size === 0) {
+            this.clear();
+            return;
+          }
+          if (this.data_.size === 0) {
+            replacementValues.forEach(value => this.add(value));
+            return;
+          }
+          // Delete values that are not part of the replacement.
+          for (const value of this.data_.values()) {
+            if (!replacementValues.has(this.dehanceValue_(value))) {
+              this.delete(value);
+            }
+          }
+          // Add new values; values that are already present are a no-op.
+          replacementValues.forEach(value => this.add(value));
+        });
+      } else if (other !== null && other !== undefined) {
+        die(41, other);
+      }
+      return this;
+    }
+    toJSON() {
+      return Array.from(this);
+    }
+    toString() {
+      return "[object ObservableSet]";
+    }
+    [Symbol.iterator]() {
+      return this.values();
+    }
+    get [Symbol.toStringTag]() {
+      return "Set";
+    }
+  }
+  // eslint-disable-next-line
+  var isObservableSet = /*#__PURE__*/createInstanceofPredicate("ObservableSet", ObservableSet);
+  function makeIterableForSet(iterator) {
+    iterator[Symbol.toStringTag] = "SetIterator";
+    return makeIterable(iterator);
+  }
+
+  const descriptorCache = /*#__PURE__*/Object.create(null);
+  const REMOVE = "remove";
+  class ObservableObjectAdministration {
+    constructor(target_, values_ = new Map(), name_,
+    // Used anytime annotation is not explicitely provided
+    defaultAnnotation_ = autoAnnotation) {
+      this.target_ = void 0;
+      this.values_ = void 0;
+      this.name_ = void 0;
+      this.defaultAnnotation_ = void 0;
+      this.keysAtom_ = void 0;
+      this.changeListeners_ = void 0;
+      this.interceptors_ = void 0;
+      this.proxy_ = void 0;
+      this.isPlainObject_ = void 0;
+      this.appliedAnnotations_ = void 0;
+      this.pendingKeys_ = void 0;
+      this.lazyComputedKeys_ = void 0;
+      this.lazyObservableKeys_ = void 0;
+      this.target_ = target_;
+      this.values_ = values_;
+      this.name_ = name_;
+      this.defaultAnnotation_ = defaultAnnotation_;
+      this.keysAtom_ = new Atom("ObservableObject.keys");
+      // Optimization: we use this frequently
+      this.isPlainObject_ = isPlainObject(this.target_);
+    }
+    getObservablePropValue_(key) {
+      var _ref, _this$values_$get;
+      // Hot path: single map lookup. Lazy entries (rare) take the materialise branch.
+      const observable = (_ref = (_this$values_$get = this.values_.get(key)) != null ? _this$values_$get : this.materializeLazyComputed_(key)) != null ? _ref : this.materializeLazyObservable_(key);
+      return observable.get();
+    }
+    materializeLazyComputed_(key) {
+      var _this$lazyComputedKey;
+      const factory = (_this$lazyComputedKey = this.lazyComputedKeys_) == null ? void 0 : _this$lazyComputedKey.get(key);
+      if (!factory) {
+        return undefined;
+      }
+      this.lazyComputedKeys_.delete(key);
+      if (this.lazyComputedKeys_.size === 0) {
+        this.lazyComputedKeys_ = undefined;
+      }
+      const computed = factory();
+      this.values_.set(key, computed);
+      return computed;
+    }
+    materializeLazyObservable_(key) {
+      var _this$lazyObservableK;
+      const factory = (_this$lazyObservableK = this.lazyObservableKeys_) == null ? void 0 : _this$lazyObservableK.get(key);
+      if (!factory) {
+        return undefined;
+      }
+      this.lazyObservableKeys_.delete(key);
+      if (this.lazyObservableKeys_.size === 0) {
+        this.lazyObservableKeys_ = undefined;
+      }
+      const observable = factory();
+      this.values_.set(key, observable);
+      return observable;
+    }
+    setObservablePropValue_(key, newValue) {
+      var _ref2, _this$values_$get2;
+      const observable = (_ref2 = (_this$values_$get2 = this.values_.get(key)) != null ? _this$values_$get2 : this.materializeLazyComputed_(key)) != null ? _ref2 : this.materializeLazyObservable_(key);
+      if (observable instanceof ComputedValue) {
+        observable.set(newValue);
+        return true;
+      }
+      // intercept
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          type: UPDATE,
+          object: this.proxy_ || this.target_,
+          name: key,
+          newValue
+        });
+        if (!change) {
+          return null;
+        }
+        newValue = change.newValue;
+      }
+      newValue = observable.prepareNewValue_(newValue);
+      // notify spy & observers
+      if (newValue !== globalState.UNCHANGED) {
+        const notify = hasListeners(this);
+        const notifySpy = __MOBX_DEV__;
+        const change = notify || notifySpy ? {
+          type: UPDATE,
+          observableKind: "object",
+          debugObjectName: this.name_,
+          object: this.proxy_ || this.target_,
+          oldValue: observable.value_,
+          name: key,
+          newValue
+        } : null;
+        observable.setNewValue_(newValue);
+        if (notify) {
+          notifyListeners(this, change);
+        }
+      }
+      return true;
+    }
+    get_(key) {
+      if (globalState.trackingDerivation && !hasProp(this.target_, key)) {
+        // Key doesn't exist yet, subscribe for it in case it's added later
+        this.has_(key);
+      }
+      return this.target_[key];
+    }
+    /**
+     * @param {PropertyKey} key
+     * @param {any} value
+     * @param {Annotation|boolean} annotation true - use default annotation, false - copy as is
+     * @param {boolean} proxyTrap whether it's called from proxy trap
+     * @returns {boolean|null} true on success, false on failure (proxyTrap + non-configurable), null when cancelled by interceptor
+     */
+    set_(key, value, proxyTrap = false) {
+      // Don't use .has(key) - we care about own
+      if (hasProp(this.target_, key)) {
+        // Existing prop
+        if (this.values_.has(key)) {
+          // Observable (can be intercepted)
+          return this.setObservablePropValue_(key, value);
+        } else if (proxyTrap) {
+          // Non-observable - proxy
+          return Reflect.set(this.target_, key, value);
+        } else {
+          // Non-observable
+          this.target_[key] = value;
+          return true;
+        }
+      } else {
+        // New prop
+        return this.extend_(key, {
+          value,
+          enumerable: true,
+          writable: true,
+          configurable: true
+        }, this.defaultAnnotation_, proxyTrap);
+      }
+    }
+    // Trap for "in"
+    has_(key) {
+      if (!globalState.trackingDerivation) {
+        // Skip key subscription outside derivation
+        return key in this.target_;
+      }
+      this.pendingKeys_ || (this.pendingKeys_ = new Map());
+      let entry = this.pendingKeys_.get(key);
+      if (!entry) {
+        entry = new ObservableValue(key in this.target_, referenceEnhancer, "ObservableObject.key?", false);
+        this.pendingKeys_.set(key, entry);
+      }
+      return entry.get();
+    }
+    /**
+     * @param {PropertyKey} key
+     * @param {PropertyDescriptor} descriptor
+     * @param {Annotation|boolean} annotation true - use default annotation, false - copy as is
+     * @param {boolean} proxyTrap whether it's called from proxy trap
+     * @returns {boolean|null} true on success, false on failure (proxyTrap + non-configurable), null when cancelled by interceptor
+     */
+    extend_(key, descriptor, annotation, proxyTrap = false) {
+      if (annotation === true) {
+        annotation = this.defaultAnnotation_;
+      }
+      if (annotation === false) {
+        return this.defineProperty_(key, descriptor, proxyTrap);
+      }
+      const outcome = annotation.extend_(this, key, descriptor, proxyTrap);
+      return outcome;
+    }
+    /**
+     * @param {PropertyKey} key
+     * @param {PropertyDescriptor} descriptor
+     * @param {boolean} proxyTrap whether it's called from proxy trap
+     * @returns {boolean|null} true on success, false on failure (proxyTrap + non-configurable), null when cancelled by interceptor
+     */
+    defineProperty_(key, descriptor, proxyTrap = false) {
+      checkIfStateModificationsAreAllowed(this.keysAtom_);
+      try {
+        startBatch();
+        // Delete
+        const deleteOutcome = this.delete_(key);
+        if (!deleteOutcome) {
+          // Failure or intercepted
+          return deleteOutcome;
+        }
+        // ADD interceptor
+        if (hasInterceptors(this)) {
+          const change = interceptChange(this, {
+            object: this.proxy_ || this.target_,
+            name: key,
+            type: ADD,
+            newValue: descriptor.value
+          });
+          if (!change) {
+            return null;
+          }
+          const {
+            newValue
+          } = change;
+          if (descriptor.value !== newValue) {
+            descriptor = assign({}, descriptor, {
+              value: newValue
+            });
+          }
+        }
+        // Define
+        if (proxyTrap) {
+          if (!Reflect.defineProperty(this.target_, key, descriptor)) {
+            return false;
+          }
+        } else {
+          defineProperty(this.target_, key, descriptor);
+        }
+        // Notify
+        this.notifyPropertyAddition_(key, descriptor.value);
+      } finally {
+        endBatch();
+      }
+      return true;
+    }
+    // If original descriptor becomes relevant, move this to annotation directly
+    defineObservableProperty_(key, value, enhancer, proxyTrap = false) {
+      checkIfStateModificationsAreAllowed(this.keysAtom_);
+      try {
+        startBatch();
+        // Delete
+        const deleteOutcome = this.delete_(key);
+        if (!deleteOutcome) {
+          // Failure or intercepted
+          return deleteOutcome;
+        }
+        // ADD interceptor
+        if (hasInterceptors(this)) {
+          const change = interceptChange(this, {
+            object: this.proxy_ || this.target_,
+            name: key,
+            type: ADD,
+            newValue: value
+          });
+          if (!change) {
+            return null;
+          }
+          value = change.newValue;
+        }
+        const cachedDescriptor = getCachedObservablePropDescriptor(key);
+        const descriptor = {
+          configurable: globalState.safeDescriptors ? this.isPlainObject_ : true,
+          enumerable: true,
+          get: cachedDescriptor.get,
+          set: cachedDescriptor.set
+        };
+        // Define
+        if (proxyTrap) {
+          if (!Reflect.defineProperty(this.target_, key, descriptor)) {
+            return false;
+          }
+        } else {
+          defineProperty(this.target_, key, descriptor);
+        }
+        const observable = new ObservableValue(value, enhancer, __MOBX_DEV__ ? `${this.name_}.${key.toString()}` : "ObservableObject.key", false);
+        this.values_.set(key, observable);
+        // Notify (value possibly changed by ObservableValue)
+        this.notifyPropertyAddition_(key, observable.value_);
+      } finally {
+        endBatch();
+      }
+      return true;
+    }
+    // If original descriptor becomes relevant, move this to annotation directly
+    defineComputedProperty_(key, options, proxyTrap = false) {
+      checkIfStateModificationsAreAllowed(this.keysAtom_);
+      try {
+        startBatch();
+        // Delete
+        const deleteOutcome = this.delete_(key);
+        if (!deleteOutcome) {
+          // Failure or intercepted
+          return deleteOutcome;
+        }
+        // ADD interceptor
+        if (hasInterceptors(this)) {
+          const change = interceptChange(this, {
+            object: this.proxy_ || this.target_,
+            name: key,
+            type: ADD,
+            newValue: undefined
+          });
+          if (!change) {
+            return null;
+          }
+        }
+        options.name || (options.name = __MOBX_DEV__ ? `${this.name_}.${key.toString()}` : "ObservableObject.key");
+        options.context = this.proxy_ || this.target_;
+        const cachedDescriptor = getCachedObservablePropDescriptor(key);
+        const descriptor = {
+          configurable: globalState.safeDescriptors ? this.isPlainObject_ : true,
+          enumerable: false,
+          get: cachedDescriptor.get,
+          set: cachedDescriptor.set
+        };
+        // Define
+        if (proxyTrap) {
+          if (!Reflect.defineProperty(this.target_, key, descriptor)) {
+            return false;
+          }
+        } else {
+          defineProperty(this.target_, key, descriptor);
+        }
+        this.values_.set(key, new ComputedValue(options));
+        // Notify
+        this.notifyPropertyAddition_(key, undefined);
+      } finally {
+        endBatch();
+      }
+      return true;
+    }
+    /**
+     * @param {PropertyKey} key
+     * @param {PropertyDescriptor} descriptor
+     * @param {boolean} proxyTrap whether it's called from proxy trap
+     * @returns {boolean|null} true on success, false on failure (proxyTrap + non-configurable), null when cancelled by interceptor
+     */
+    delete_(key, proxyTrap = false) {
+      checkIfStateModificationsAreAllowed(this.keysAtom_);
+      // No such prop
+      if (!hasProp(this.target_, key)) {
+        return true;
+      }
+      // Intercept
+      if (hasInterceptors(this)) {
+        const change = interceptChange(this, {
+          object: this.proxy_ || this.target_,
+          name: key,
+          type: REMOVE
+        });
+        // Cancelled
+        if (!change) {
+          return null;
+        }
+      }
+      // Delete
+      try {
+        var _this$pendingKeys_;
+        startBatch();
+        const notify = hasListeners(this);
+        const notifySpy = __MOBX_DEV__ && isSpyEnabled();
+        const observable = this.values_.get(key);
+        // Value needed for spies/listeners
+        let value = undefined;
+        // Optimization: don't pull the value unless we will need it
+        if (!observable && (notify || notifySpy)) {
+          var _getDescriptor;
+          value = (_getDescriptor = getDescriptor(this.target_, key)) == null ? void 0 : _getDescriptor.value;
+        }
+        // delete prop (do first, may fail)
+        if (proxyTrap) {
+          if (!Reflect.deleteProperty(this.target_, key)) {
+            return false;
+          }
+        } else {
+          delete this.target_[key];
+        }
+        // Allow re-annotating this field
+        if (__MOBX_DEV__) ;
+        // Clear observable
+        if (observable) {
+          this.values_.delete(key);
+          // for computed, value is undefined
+          if (observable instanceof ObservableValue) {
+            value = observable.value_;
+          }
+          // Notify: autorun(() => obj[key]), see #1796
+          propagateChanged(observable);
+        }
+        // Notify "keys/entries/values" observers
+        this.keysAtom_.reportChanged();
+        // Notify "has" observers
+        // "in" as it may still exist in proto
+        (_this$pendingKeys_ = this.pendingKeys_) == null || (_this$pendingKeys_ = _this$pendingKeys_.get(key)) == null || _this$pendingKeys_.set(key in this.target_);
+        // Notify spies/listeners
+        if (notify || notifySpy) {
+          const change = {
+            type: REMOVE,
+            observableKind: "object",
+            object: this.proxy_ || this.target_,
+            debugObjectName: this.name_,
+            oldValue: value,
+            name: key
+          };
+          if (__MOBX_DEV__ && notifySpy) ;
+          if (notify) {
+            notifyListeners(this, change);
+          }
+          if (__MOBX_DEV__ && notifySpy) ;
+        }
+      } finally {
+        endBatch();
+      }
+      return true;
+    }
+    notifyPropertyAddition_(key, value) {
+      var _this$pendingKeys_2;
+      const notify = hasListeners(this);
+      const notifySpy = __MOBX_DEV__;
+      if (notify || notifySpy) {
+        const change = notify || notifySpy ? {
+          type: ADD,
+          observableKind: "object",
+          debugObjectName: this.name_,
+          object: this.proxy_ || this.target_,
+          name: key,
+          newValue: value
+        } : null;
+        if (notify) {
+          notifyListeners(this, change);
+        }
+      }
+      (_this$pendingKeys_2 = this.pendingKeys_) == null || (_this$pendingKeys_2 = _this$pendingKeys_2.get(key)) == null || _this$pendingKeys_2.set(true);
+      // Notify "keys/entries/values" observers
+      this.keysAtom_.reportChanged();
+    }
+    ownKeys_() {
+      this.keysAtom_.reportObserved();
+      return ownKeys(this.target_);
+    }
+    keys_() {
+      // Returns enumerable && own, but unfortunately keysAtom will report on ANY key change.
+      // There is no way to distinguish between Object.keys(object) and Reflect.ownKeys(object) - both are handled by ownKeys trap.
+      // We can either over-report in Object.keys(object) or under-report in Reflect.ownKeys(object)
+      // We choose to over-report in Object.keys(object), because:
+      // - typically it's used with simple data objects
+      // - when symbolic/non-enumerable keys are relevant Reflect.ownKeys works as expected
+      this.keysAtom_.reportObserved();
+      return Object.keys(this.target_);
+    }
+  }
+  function asObservableObject(target, options) {
+    var _options$name;
+    if (hasProp(target, $mobx)) {
+      return target;
+    }
+    const name = (_options$name = options == null ? void 0 : options.name) != null ? _options$name : "ObservableObject";
+    const adm = new ObservableObjectAdministration(target, new Map(), String(name), getAnnotationFromOptions(options));
+    addHiddenProp(target, $mobx, adm);
+    return target;
+  }
+  const isObservableObjectAdministration = /*#__PURE__*/createInstanceofPredicate("ObservableObjectAdministration", ObservableObjectAdministration);
+  function getCachedObservablePropDescriptor(key) {
+    return descriptorCache[key] || (descriptorCache[key] = {
+      get() {
+        return this[$mobx].getObservablePropValue_(key);
+      },
+      set(value) {
+        return this[$mobx].setObservablePropValue_(key, value);
+      }
+    });
+  }
+  function isObservableObject(thing) {
+    if (isObject(thing)) {
+      return isObservableObjectAdministration(thing[$mobx]);
+    }
+    return false;
+  }
+  /**
+   * Helper function for initializing observable structures, it applies:
+   * 1. allowStateChanges so we don't violate enforceActions.
+   * 2. untracked so we don't accidentaly subscribe to anything observable accessed during init in case the observable is created inside derivation.
+   * 3. batch to avoid state version updates
+   */
+  function initObservable(cb) {
+    const derivation = untrackedStart();
+    startBatch();
+    try {
+      return cb();
+    } finally {
+      endBatch();
+      untrackedEnd(derivation);
+    }
+  }
+
+  var _globalThis$Iterator;
+  // safely get iterator prototype if available
+  const maybeIteratorPrototype = ((_globalThis$Iterator = globalThis.Iterator) == null ? void 0 : _globalThis$Iterator.prototype) || {};
+  function makeIterable(iterator) {
+    iterator[Symbol.iterator] = getSelf;
+    return assign(Object.create(maybeIteratorPrototype), iterator);
+  }
+  function getSelf() {
+    return this;
+  }
+
+  class EventEmitter {
+    constructor() {
+      this.listeners = [];
+    }
+    on(cb) {
+      this.listeners.push(cb);
+      return () => {
+        const index = this.listeners.indexOf(cb);
+        if (index !== -1) {
+          this.listeners.splice(index, 1);
+        }
+      };
+    }
+    emit(data) {
+      const listeners = this.listeners;
+      for (let i = 0, len = listeners.length; i < len; ++i) {
+        listeners[i](data);
+      }
+    }
+  }
+  function warning(message) {
+    console.error(message);
+  }
+  const KNOWN_STATICS = {
+    childContextTypes: true,
+    contextType: true,
+    contextTypes: true,
+    defaultProps: true,
+    displayName: true,
+    getDefaultProps: true,
+    getDerivedStateFromError: true,
+    getDerivedStateFromProps: true,
+    mixins: true,
+    propTypes: true,
+    type: true,
+    // KNOWN STATICS
+    name: true,
+    length: true,
+    prototype: true,
+    caller: true,
+    callee: true,
+    arguments: true,
+    arity: true
+  };
+  function hoistStaticProperties(targetComponent, sourceComponent) {
+    // don't hoist over string (html) components
+    const keys = Object.getOwnPropertyNames(sourceComponent);
+    for (let i = 0; i < keys.length; ++i) {
+      const key = keys[i];
+      if (!KNOWN_STATICS[key]) {
+        targetComponent[key] = sourceComponent[key];
+      }
+    }
+  }
+  function isStateless(component) {
+    return !component.prototype?.render;
+  }
+  let warnedAboutObserverInjectDeprecation = false;
+  /**
+   * Errors reporter
+   */
+  const errorsReporter = new EventEmitter();
+  /**
+   * Utilities
+   */
+  function patch(target, funcName, runMixinFirst) {
+    const base = target[funcName];
+    const mixinFunc = reactiveMixin[funcName];
+    const f = !base ? mixinFunc : runMixinFirst === true ? function (...args) {
+      mixinFunc.apply(this, ...args);
+      base.apply(this, ...args);
+    } : function (...args) {
+      base.apply(this, ...args);
+      mixinFunc.apply(this, ...args);
+    };
+    // MWE: ideally we freeze here to protect against accidental overwrites in component instances, see #195
+    // ...but that breaks react-hot-loader, see #231...
+    target[funcName] = f;
+  }
+  function isObjectShallowModified(prev, next) {
+    if (prev == null || next == null || typeof prev !== 'object' || typeof next !== 'object') {
+      return prev !== next;
+    }
+    const keys = Object.keys(prev);
+    if (keys.length !== Object.keys(next).length) {
+      return true;
+    }
+    let key;
+    for (let i = keys.length - 1; i >= 0; i--) {
+      key = keys[i];
+      if (next[key] !== prev[key]) {
+        return true;
+      }
+    }
+    return false;
+  }
+  /**
+   * ReactiveMixin
+   */
+  const reactiveMixin = {
+    componentWillMount() {
+      // Generate friendly name for debugging
+      const initialName = this.displayName || this.name || this.constructor && (this.constructor.displayName || this.constructor.name) || '<component>';
+      /**
+       * If props are shallowly modified, React will render anyway,
+       * so atom.reportChanged() should not result in yet another re-render
+       */
+      let skipRender = false;
+      /**
+       * forceUpdate will re-assign this.props. We don't want that to cause a loop,
+       * so detect these changes
+       */
+      function makePropertyObservableReference(propName) {
+        let valueHolder = this[propName];
+        const atom = createAtom('reactive ' + propName);
+        Object.defineProperty(this, propName, {
+          configurable: true,
+          enumerable: true,
+          get() {
+            atom.reportObserved();
+            return valueHolder;
+          },
+          set(v) {
+            if (isObjectShallowModified(valueHolder, v)) {
+              valueHolder = v;
+              skipRender = true;
+              atom.reportChanged();
+              skipRender = false;
+            } else {
+              valueHolder = v;
+            }
+          }
+        });
+      }
+      // make this.props an observable reference, see #124
+      makePropertyObservableReference.call(this, 'props');
+      // make state an observable reference
+      makePropertyObservableReference.call(this, 'state');
+      // wire up reactive render
+      const render = this.render.bind(this);
+      const baseRender = () => render(this.props, this.state, this.context);
+      let reaction = null;
+      let isRenderingPending = false;
+      const initialRender = () => {
+        reaction = new Reaction(`${initialName}.render()`, () => {
+          if (!isRenderingPending) {
+            // N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
+            // This unidiomatic React usage but React will correctly warn about this so we continue as usual
+            // See #85 / Pull #44
+            isRenderingPending = true;
+            if (typeof this.componentWillReact === 'function') {
+              this.componentWillReact(); // TODO: wrap in action?
+            }
+            if (!skipRender) {
+              this.forceUpdate();
+            }
+          }
+        });
+        reaction.reactComponent = this;
+        reactiveRender.$mobx = reaction;
+        reactiveRender.$base = this.render;
+        this.render = reactiveRender;
+        return reactiveRender();
+      };
+      const reactiveRender = () => {
+        isRenderingPending = false;
+        let exception;
+        let rendering = null;
+        reaction.track(() => {
+          try {
+            rendering = allowStateChanges(false, baseRender);
+          } catch (e) {
+            exception = e;
+          }
+        });
+        if (exception) {
+          errorsReporter.emit(exception);
+          throw exception;
+        }
+        return rendering;
+      };
+      this.render = initialRender;
+    },
+    componentWillUnmount() {
+      if (this.render.$mobx) {
+        this.render.$mobx.dispose();
+        this.render = this.render.$base;
+      }
+    },
+    componentDidMount() {
+    },
+    componentDidUpdate() {
+    },
+    shouldComponentUpdate(nextProps, nextState) {
+      // update on any state changes (as is the default)
+      if (this.state !== nextState) {
+        return true;
+      }
+      // update if props are shallowly not equal, inspired by PureRenderMixin
+      // we could return just 'false' here, and avoid the `skipRender` checks etc
+      // however, it is nicer if lifecycle events are triggered like usually,
+      // so we return true here if props are shallowly modified.
+      return isObjectShallowModified(this.props, nextProps);
+    }
+  };
+  function observer(arg1, arg2) {
+    if (typeof arg1 === 'string') {
+      throw new Error('Store names should be provided as array');
+    }
+    if (Array.isArray(arg1)) {
+      // component needs stores
+      if (!warnedAboutObserverInjectDeprecation) {
+        warnedAboutObserverInjectDeprecation = true;
+        warning('Mobx observer: Using observer to inject stores is deprecated since 4.0. Use `@inject("store1", "store2") @observer ComponentClass` or `inject("store1", "store2")(observer(componentClass))` instead of `@observer(["store1", "store2"]) ComponentClass`');
+      }
+      if (!arg2) {
+        // invoked as decorator
+        return componentClass => observer(arg1, componentClass);
+      } else {
+        // eslint-disable-next-line prefer-spread
+        return inject.apply(null, arg1)(observer(arg2));
+      }
+    }
+    const component = arg1;
+    if (component.isMobxInjector === true) {
+      warning("Mobx observer: You are trying to use 'observer' on a component that already has 'inject'. Please apply 'observer' before applying 'inject'");
+    }
+    // Stateless function component:
+    // If it is function but doesn't seem to be a React class constructor,
+    // wrap it to a React class automatically
+    if (typeof component === 'function' && !component.prototype?.render) {
+      var _Class;
+      return observer((_Class = class extends Component {
+        render(props, _state, context) {
+          return component(props, context);
+        }
+      }, _Class.displayName = component.displayName || component.name, _Class.defaultProps = component.defaultProps, _Class));
+    }
+    if (!component) {
+      throw new Error("Please pass a valid component to 'observer'");
+    }
+    const target = component.prototype || component;
+    mixinLifecycleEvents(target);
+    component.isMobXReactObserver = true;
+    return component;
+  }
+  function mixinLifecycleEvents(target) {
+    patch(target, 'componentWillMount', true);
+    patch(target, 'componentDidMount', false);
+    patch(target, 'componentWillUnmount', false);
+    patch(target, 'componentDidUpdate', false);
+    if (!target.shouldComponentUpdate) {
+      target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
+    }
+  }
+  // TODO: support injection somehow as well?
+  const Observer = observer(({
+    children
+  }) => children());
+  Observer.displayName = 'Observer';
+  const proxiedInjectorProps = {
+    isMobxInjector: {
+      configurable: true,
+      enumerable: true,
+      value: true,
+      writable: true
+    }
+  };
+  /**
+   * Store Injection
+   */
+  function createStoreInjector(grabStoresFn, component, injectNames) {
+    let displayName = 'inject-' + (component.displayName || component.name || component.constructor?.name || 'Unknown');
+    if (injectNames) {
+      displayName += '-with-' + injectNames;
+    }
+    class Injector extends Component {
+      constructor(props, context) {
+        super(props, context);
+        this.wrappedInstance = void 0;
+        this.storeRef = this.storeRef.bind(this);
+      }
+      storeRef(instance) {
+        this.wrappedInstance = instance;
+      }
+      render(props, _state, context) {
+        // Optimization: it might be more efficient to apply the mapper function *outside* the render method
+        // (if the mapper is a function), that could avoid expensive(?) re-rendering of the injector component
+        // See this test: 'using a custom injector is not too reactive' in inject.js
+        const newProps = {};
+        let key;
+        for (key in props) {
+          newProps[key] = props[key];
+        }
+        const additionalProps = grabStoresFn(context.mobxStores || {}, newProps, context) || {};
+        for (key in additionalProps) {
+          newProps[key] = additionalProps[key];
+        }
+        return createComponentVNode(2 /* VNodeFlags.ComponentUnknown */, component, newProps, null, isStateless(component) ? null : this.storeRef);
+      }
+    }
+    // Static fields from component should be visible on the generated Injector
+    Injector.displayName = displayName;
+    Injector.wrappedComponent = void 0;
+    Injector.isMobxInjector = false;
+    hoistStaticProperties(Injector, component);
+    Injector.wrappedComponent = component;
+    Object.defineProperties(Injector, proxiedInjectorProps);
+    return Injector;
+  }
+  function grabStoresByName(storeNames) {
+    return function (baseStores, nextProps) {
+      for (let i = 0, len = storeNames.length; i < len; ++i) {
+        const storeName = storeNames[i];
+        if (!(storeName in nextProps)) {
+          nextProps[storeName] = baseStores[storeName];
+        }
+      }
+      return nextProps;
+    };
+  }
+  function inject(/* fn(stores, nextProps) or ...storeNames */...args) {
+    let grabStoresFn;
+    if (typeof args[0] === 'function') {
+      grabStoresFn = args[0];
+      return function (componentClass) {
+        let injected = createStoreInjector(grabStoresFn, componentClass);
+        injected.isMobxInjector = false; // supress warning
+        // mark the Injector as observer, to make it react to expressions in `grabStoresFn`,
+        // see #111
+        injected = observer(injected);
+        injected.isMobxInjector = true; // restore warning
+        return injected;
+      };
+    } else {
+      const storeNames = [];
+      for (let i = 0; i < args.length; ++i) {
+        storeNames.push(args[i]);
+      }
+      grabStoresFn = grabStoresByName(storeNames);
+      return function (componentClass) {
+        return createStoreInjector(grabStoresFn, componentClass, storeNames.join('-'));
+      };
+    }
+  }
+  function makeObserverRender(update, render, name) {
+    const reactor = new Reaction(name, update);
+    const track = reactor.track.bind(reactor);
+    const observer = function (...parameters) {
+      let rendered;
+      let caught;
+      track(() => {
+        try {
+          rendered = render.apply(this, parameters);
+        } catch (error) {
+          caught = error;
+        }
+      });
+      if (caught) {
+        throw caught;
+      } else {
+        return rendered;
+      }
+    };
+    observer.dispose = reactor.dispose.bind(reactor);
+    return observer;
+  }
+  /**
+   * Turns a class Component into a MobX observer.
+   * @param clazz The constructor of the class to patch as a MobX observer.
+   */
+  function observerPatch(clazz) {
+    const proto = clazz.prototype;
+    const base = proto.render;
+    const name = clazz.name;
+    proto.render = function (...parameters) {
+      const update = this.forceUpdate.bind(this, undefined);
+      const render = makeObserverRender(update, base, `${this.displayName || name}.render()`);
+      this.render = render;
+      return render.apply(this, parameters);
+    };
+    if (proto.componentWillUnmount) {
+      const unmount = proto.componentWillUnmount;
+      proto.componentWillUnmount = function () {
+        this.render.dispose();
+        this.render = base;
+        unmount.call(this);
+      };
+    } else {
+      proto.componentWillUnmount = function () {
+        this.render.dispose();
+        this.render = base;
+      };
+    }
+  }
+  function callDispose({
+    dispose
+  }) {
+    dispose();
+  }
+  function innerVNode(type, properties) {
+    const ref = {
+      onComponentDidUpdate: callDispose,
+      onComponentWillUnmount: properties.dispose
+    };
+    return createComponentVNode(8 /* VNodeFlags.ComponentFunction */, type, properties, undefined, ref);
+  }
+  function makeProxy(target) {
+    return {
+      get $V() {
+        return target.children;
+      },
+      set $V(value) {
+        target.children = value;
+      }
+    };
+  }
+  function getUpdateHooks(ref, props) {
+    let onComponentDidUpdate = null;
+    let onComponentWillUpdate = null;
+    if (ref) {
+      if (ref.onComponentDidUpdate) {
+        onComponentDidUpdate = ref.onComponentDidUpdate.bind(ref, props, props);
+      }
+      if (ref.onComponentWillUpdate) {
+        onComponentWillUpdate = ref.onComponentWillUpdate.bind(ref, props, props);
+      }
+    }
+    return [onComponentDidUpdate, onComponentWillUpdate];
+  }
+  function observerWrap(base) {
+    function tracked({
+      context,
+      props,
+      self,
+      track
+    }) {
+      let result;
+      let caught;
+      track(() => {
+        try {
+          result = base.call(self, props, context);
+        } catch (error) {
+          caught = error;
+        }
+      });
+      if (caught) {
+        throw caught;
+      }
+      return result;
+    }
+    function wrapper(props, context) {
+      const [onComponentDidUpdate, onComponentWillUpdate] = getUpdateHooks(this.ref, props);
+      // eslint-disable-next-line prefer-const
+      let proxy;
+      const reaction = new Reaction(base.name, () => {
+        let next;
+        if (onComponentWillUpdate) {
+          onComponentWillUpdate();
+        }
+        reaction.track(() => {
+          next = normalizeRoot(base.call(this, props, context));
+        });
+        if (next) {
+          // indirectly call patch as inferno does not export patch
+          render(next, proxy, onComponentDidUpdate, context);
+        }
+      });
+      const inner = innerVNode(tracked, {
+        context,
+        dispose: reaction.dispose.bind(reaction),
+        props,
+        self: this,
+        track: reaction.track.bind(reaction)
+      });
+      proxy = makeProxy(inner);
+      return inner;
+    }
+    wrapper.defaultProps = base.defaultProps;
+    wrapper.defaultHooks = base.defaultHooks;
+    return wrapper;
+  }
+
+  /* If editing these values check babel-plugin-also */
+  var VNodeFlags;
+  (function (VNodeFlags) {
+    /* First set of bits define shape of vNode */
+    VNodeFlags[VNodeFlags["Unknown"] = 0] = "Unknown";
+    VNodeFlags[VNodeFlags["HtmlElement"] = 1] = "HtmlElement";
+    VNodeFlags[VNodeFlags["ComponentUnknown"] = 2] = "ComponentUnknown";
+    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
+    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
+    VNodeFlags[VNodeFlags["Text"] = 16] = "Text";
+    /* Special flags */
+    VNodeFlags[VNodeFlags["SvgElement"] = 32] = "SvgElement";
+    VNodeFlags[VNodeFlags["InputElement"] = 64] = "InputElement";
+    VNodeFlags[VNodeFlags["TextareaElement"] = 128] = "TextareaElement";
+    VNodeFlags[VNodeFlags["SelectElement"] = 256] = "SelectElement";
+    VNodeFlags[VNodeFlags["Portal"] = 1024] = "Portal";
+    VNodeFlags[VNodeFlags["ReCreate"] = 2048] = "ReCreate";
+    VNodeFlags[VNodeFlags["ContentEditable"] = 4096] = "ContentEditable";
+    VNodeFlags[VNodeFlags["Fragment"] = 8192] = "Fragment";
+    VNodeFlags[VNodeFlags["InUse"] = 16384] = "InUse";
+    VNodeFlags[VNodeFlags["ForwardRef"] = 32768] = "ForwardRef";
+    VNodeFlags[VNodeFlags["Normalized"] = 65536] = "Normalized";
+    /* Masks */
+    VNodeFlags[VNodeFlags["ForwardRefComponent"] = 32776] = "ForwardRefComponent";
+    VNodeFlags[VNodeFlags["FormElement"] = 448] = "FormElement";
+    VNodeFlags[VNodeFlags["Element"] = 481] = "Element";
+    VNodeFlags[VNodeFlags["Component"] = 14] = "Component";
+    VNodeFlags[VNodeFlags["DOMRef"] = 1521] = "DOMRef";
+    VNodeFlags[VNodeFlags["InUseOrNormalized"] = 81920] = "InUseOrNormalized";
+    VNodeFlags[VNodeFlags["ClearInUse"] = -16385] = "ClearInUse";
+    VNodeFlags[VNodeFlags["ComponentKnown"] = 12] = "ComponentKnown";
+  })(VNodeFlags || (VNodeFlags = {}));
+  // Combinations are not possible, its bitwise only to reduce vNode size
+  var ChildFlags;
+  (function (ChildFlags) {
+    ChildFlags[ChildFlags["UnknownChildren"] = 0] = "UnknownChildren";
+    /* Second set of bits define shape of children */
+    ChildFlags[ChildFlags["HasInvalidChildren"] = 1] = "HasInvalidChildren";
+    ChildFlags[ChildFlags["HasVNodeChildren"] = 2] = "HasVNodeChildren";
+    ChildFlags[ChildFlags["HasNonKeyedChildren"] = 4] = "HasNonKeyedChildren";
+    ChildFlags[ChildFlags["HasKeyedChildren"] = 8] = "HasKeyedChildren";
+    ChildFlags[ChildFlags["HasTextChildren"] = 16] = "HasTextChildren";
+    ChildFlags[ChildFlags["MultipleChildren"] = 12] = "MultipleChildren";
+  })(ChildFlags || (ChildFlags = {}));
+
+  // import { startFPSMonitor, startMemMonitor, initProfiler, startProfile, endProfile } from 'perf-monitor';
+  let counter = 0;
+  const data = (() => {
+    const generate = () => {
+      const nbQueries = Math.floor(Math.random() * 10 + 1);
+      const queries = [];
+      for (let l = 0; l < 12; l++) {
+        queries.push(updateQuery({
+          query: '***',
+          formatElapsed: '',
+          elapsedClassName: '',
+          elapsed: null,
+          waiting: null
+        }));
+      }
+      return {
+        nbQueries,
+        countClassName: countClassName(nbQueries),
+        queries: queries
+      };
+    };
+    const temp = [];
+    for (let i = 1; i <= 50; i++) {
+      temp.push({
+        dbname: 'cluster' + i,
+        lastSample: generate()
+      });
+      temp.push({
+        dbname: 'cluster' + i + ' replica',
+        lastSample: generate()
+      });
+    }
+    for (const row of temp) {
+      counter = counter + 1;
+      generateRow(row, counter, 12);
+    }
+    return observable(temp);
+  })();
+  function formatElapsed(value) {
+    var comps;
+    if (value > 60) {
+      comps = (value % 60).toFixed(2).split('.');
+      return Math.floor(value / 60) + ':' + comps[0].lpad('0', 2) + '.' + comps[1];
+    }
+    return parseFloat(value).toFixed(2);
+  }
+  function getElapsedClassName(elapsed) {
+    var className = 'Query elapsed';
+    if (elapsed >= 10.0) {
+      className += ' warn_long';
+    } else if (elapsed >= 1.0) {
+      className += ' warn';
+    } else {
+      className += ' short';
+    }
+    return className;
+  }
+  function countClassName(queries) {
+    var countClassName = 'label';
+    if (queries >= 20) {
+      countClassName += ' label-important';
+    } else if (queries >= 10) {
+      countClassName += ' label-warning';
+    } else {
+      countClassName += ' label-success';
+    }
+    return countClassName;
+  }
+  function updateQuery(object) {
+    const elapsed = Math.random() * 15;
+    object.elapsed = elapsed;
+    object.formatElapsed = formatElapsed(elapsed);
+    object.elapsedClassName = getElapsedClassName(elapsed);
+    object.query = 'SELECT blah FROM something';
+    object.waiting = Math.random() < 0.5;
+    if (Math.random() < 0.2) {
+      object.query = '<IDLE> in transaction';
+    }
+    if (Math.random() < 0.1) {
+      object.query = 'vacuum';
+    }
+    return object;
+  }
+  function cleanQuery(value) {
+    value.formatElapsed = '';
+    value.elapsedClassName = '';
+    value.query = '';
+    value.elapsed = null;
+    value.waiting = null;
+  }
+  function generateRow(object, counter, nbQueries) {
+    object.lastMutationId = counter;
+    for (let j = 0; j < 12; j++) {
+      const value = object.lastSample.queries[j];
+      if (j <= nbQueries) {
+        updateQuery(value);
+      } else {
+        cleanQuery(value);
+      }
+    }
+    object.lastSample.nbQueries = nbQueries;
+    object.lastSample.countClassName = countClassName(nbQueries);
+    return object;
+  }
+  function updateData() {
+    for (let row of data) {
+      if (Math.random() < mutations()) {
+        counter = counter + 1;
+        generateRow(row, counter, Math.floor(Math.random() * 10 + 1));
+      }
+    }
+  }
+  var mutationsValue = 0.5;
+  function mutations(value) {
+    if (value) {
+      mutationsValue = value;
+      return mutationsValue;
+    } else {
+      return mutationsValue;
+    }
+  }
+  const app = document.getElementById('app');
+  var body = document.querySelector('body');
+  var theFirstChild = body.firstChild;
+  var sliderContainer = document.createElement('div');
+  sliderContainer.style.cssText = 'display: flex';
+  var slider = document.createElement('input');
+  var text = document.createElement('label');
+  text.innerHTML = 'mutations : ' + (mutationsValue * 100).toFixed(0) + '%';
+  text.id = 'ratioval';
+  slider.setAttribute('type', 'range');
+  slider.style.cssText = 'margin-bottom: 10px; margin-top: 5px';
+  slider.addEventListener('change', function (e) {
+    mutations(e.target.value / 100);
+    document.querySelector('#ratioval').innerHTML = 'mutations : ' + (mutations() * 100).toFixed(0) + '%';
+  });
+  sliderContainer.appendChild(text);
+  sliderContainer.appendChild(slider);
+  body.insertBefore(sliderContainer, theFirstChild);
+  class QueryObserver extends Component {
+    render({
+      query
+    }) {
+      return createVNode(1, 'td', query.elapsedClassName, [createVNode(1, 'div', null, query.formatElapsed, 16, null, null, null), createVNode(1, 'div', 'popover left', [createVNode(1, 'div', 'popover-content', query.query, 16, null, null, null), createVNode(1, 'div', 'arrow', null, 1, null, null, null)], 4, null, null, null)], 4, null, null, null);
+    }
+  }
+  observer(QueryObserver);
+  class QueriesObserver extends Component {
+    render({
+      top
+    }) {
+      return createFragment(top.slice(0, 5).map(query => {
+        return createComponentVNode(VNodeFlags.ComponentClass, QueryObserver, {
+          query
+        });
+      }), 4);
+    }
+  }
+  observer(QueriesObserver);
+  class RowObserver extends Component {
+    render({
+      db
+    }) {
+      const lastSample = db.lastSample;
+      const children = [createVNode(1, 'td', 'dbname', db.dbname, 16, null, null, null), createVNode(1, 'td', 'query-count', createVNode(1, 'span', lastSample.countClassName, lastSample.nbQueries, 16, null, null, null), 2, null, null, null), createComponentVNode(VNodeFlags.ComponentClass, QueriesObserver, {
+        top: lastSample.queries
+      })];
+      return createVNode(1, 'tr', null, children, 4, null, null, null);
+    }
+  }
+  observer(RowObserver);
+  class TableObserver extends Component {
+    render({
+      list
+    }) {
+      const children = [];
+      for (const db of list) {
+        children.push(createComponentVNode(VNodeFlags.ComponentClass, RowObserver, {
+          db
+        }));
+      }
+      return createVNode(1, 'table', 'table table-striped', [createVNode(1, 'caption', null, 'inferno-mobx observer', 16, null, null, null), createVNode(1, 'tbody', null, children, 4, null, null, null)], 4, null, null, null);
+    }
+  }
+  observer(TableObserver);
+  class QueryClass extends Component {
+    render({
+      query
+    }) {
+      return createVNode(1, 'td', query.elapsedClassName, [createVNode(1, 'div', null, query.formatElapsed, 16, null, null, null), createVNode(1, 'div', 'popover left', [createVNode(1, 'div', 'popover-content', query.query, 16, null, null, null), createVNode(1, 'div', 'arrow', null, 1, null, null, null)], 4, null, null, null)], 4, null, null, null);
+    }
+    shouldComponentUpdate({
+      query
+    }) {
+      return query !== this.props.query;
+    }
+  }
+  observerPatch(QueryClass);
+  class QueriesClass extends Component {
+    render({
+      top
+    }) {
+      return createFragment(top.slice(0, 5).map(query => {
+        return createComponentVNode(VNodeFlags.ComponentClass, QueryClass, {
+          query
+        });
+      }), 4);
+    }
+    shouldComponentUpdate({
+      top
+    }) {
+      return top !== this.props.top;
+    }
+  }
+  observerPatch(QueriesClass);
+  class RowClass extends Component {
+    render({
+      db
+    }) {
+      const lastSample = db.lastSample;
+      const children = [createVNode(1, 'td', 'dbname', db.dbname, 16, null, null, null), createVNode(1, 'td', 'query-count', createVNode(1, 'span', lastSample.countClassName, lastSample.nbQueries, 16, null, null, null), 2, null, null, null), createComponentVNode(VNodeFlags.ComponentClass, QueriesClass, {
+        top: lastSample.queries
+      })];
+      return createVNode(1, 'tr', null, children, 4, null, null, null);
+    }
+    shouldComponentUpdate({
+      db
+    }) {
+      return db !== this.props.db;
+    }
+  }
+  observerPatch(RowClass);
+  class TableClass extends Component {
+    render({
+      list
+    }) {
+      const children = [];
+      for (const db of list) {
+        children.push(createComponentVNode(VNodeFlags.ComponentClass, RowClass, {
+          db
+        }));
+      }
+      return createVNode(1, 'table', 'table table-striped', [createVNode(1, 'caption', null, 'inferno-mobx observerPatch', 16, null, null, null), createVNode(1, 'tbody', null, children, 4, null, null, null)], 4, null, null, null);
+    }
+    shouldComponentUpdate({
+      list
+    }) {
+      return list !== this.props.list;
+    }
+  }
+  observerPatch(TableClass);
+  function QueryComponent({
+    query
+  }) {
+    return createVNode(1, 'td', query.elapsedClassName, [createVNode(1, 'div', null, query.formatElapsed, 16, null, null, null), createVNode(1, 'div', 'popover left', [createVNode(1, 'div', 'popover-content', query.query, 16, null, null, null), createVNode(1, 'div', 'arrow', null, 1, null, null, null)], 4, null, null, null)], 4, null, null, null);
+  }
+  QueryComponent.defaultHooks = {
+    onComponentShouldUpdate: ({
+      query: prev
+    }, {
+      query: next
+    }) => prev !== next
+  };
+  const Query = observerWrap(QueryComponent);
+  function QueriesComponent({
+    top
+  }) {
+    return createFragment(top.slice(0, 5).map(query => {
+      return createComponentVNode(VNodeFlags.ComponentFunction, Query, {
+        query
+      });
+    }), 4);
+  }
+  QueriesComponent.defaultHooks = {
+    onComponentShouldUpdate: ({
+      top: prev
+    }, {
+      top: next
+    }) => prev !== next
+  };
+  const Queries = observerWrap(QueriesComponent);
+  function RowComponent({
+    db
+  }) {
+    const lastSample = db.lastSample;
+    const children = [createVNode(1, 'td', 'dbname', db.dbname, 16, null, null, null), createVNode(1, 'td', 'query-count', createVNode(1, 'span', lastSample.countClassName, lastSample.nbQueries, 16, null, null, null), 2, null, null, null), createComponentVNode(VNodeFlags.ComponentFunction, Queries, {
+      top: lastSample.queries
+    })];
+    return createVNode(1, 'tr', null, children, 4, null, null, null);
+  }
+  RowComponent.defaultHooks = {
+    onComponentShouldUpdate: ({
+      db: prev
+    }, {
+      db: next
+    }) => prev !== next
+  };
+  const Row = observerWrap(RowComponent);
+  function TableComponent({
+    list
+  }) {
+    const children = [];
+    for (const db of list) {
+      children.push(createComponentVNode(VNodeFlags.ComponentFunction, Row, {
+        db
+      }));
+    }
+    return createVNode(1, 'table', 'table table-striped', [createVNode(1, 'caption', null, 'inferno-mobx observerWrap', 16, null, null, null), createVNode(1, 'tbody', null, children, 4, null, null, null)], 4, null, null, null);
+  }
+  TableComponent.defaultHooks = {
+    onComponentShouldUpdate: ({
+      list: prev
+    }, {
+      list: next
+    }) => prev !== next
+  };
+  const Table = observerWrap(TableComponent);
+  const update = action(() => {
+    updateData();
+    // startProfile('view update');
+  });
+  function loop() {
+    update();
+    // endProfile('view update');
+  }
+
+  // startFPSMonitor();
+  // startMemMonitor();
+  // initProfiler('view update');
+
+  // functional components with observerWrap
+  render(createComponentVNode(VNodeFlags.ComponentFunction, Table, {
+    list: data
+  }), app);
+
+  // class components with observerPatch
+  //render(createComponentVNode(VNodeFlags.ComponentClass, TableClass, { list: data }), app);
+
+  // class components with observer
+  //render(createComponentVNode(VNodeFlags.ComponentClass, TableObserver, { list: data }), app);
+
+  setInterval(loop, 0);
+
+})();

@@ -1,17 +1,16 @@
 import { forceReflow } from './utils';
 
-// This is only used for development and should be set to false for release
-// eslint-disable-next-line no-constant-binary-expression
-const _DBG_COORD_ = false && process.env.NODE_ENV !== 'production';
-
 export const enum AnimationPhase {
   INITIALIZE,
   MEASURE,
   SET_START_STATE,
+  READ_MOVES,
+  RESET_MOVES,
+  MEASURE_MOVES,
+  SET_MOVE_START_STATE,
   ACTIVATE_TRANSITIONS,
-  REGISTER_LISTENERS,
   ACTIVATE_ANIMATION,
-  length, // This will equal length of actual phases since TS converts this to a zero based list of ints
+  REGISTER_LISTENERS,
 }
 
 type GlobalAnimationKey = string;
@@ -63,150 +62,164 @@ export function consumeGlobalAnimationSource(
   return tmp;
 }
 
-let _animationQueue: Array<(phase: AnimationPhase) => void> = [];
-let _animationActivationQueue: Array<(phase: AnimationPhase) => void> = [];
-const IDLE = 0;
-let _nextAnimationFrame: number = IDLE;
-let _nextActivateAnimationFrame: number = IDLE;
+interface QueuedAnimation {
+  callback: (phase: AnimationPhase) => void;
+  parent: Node | null;
+  cancelled: boolean;
+}
+let animationQueue: QueuedAnimation[] = [];
+let activationQueue: QueuedAnimation[] = [];
+let nextFrame = 0;
+let activationFrame = 0;
+let microtaskPending = false;
+const pendingParents = new Set<Node>();
 
-function _runActivateAnimationPhase(): void {
-  _nextActivateAnimationFrame = IDLE;
-  // Get animations to execute
-  const animationQueue = _animationActivationQueue;
-  // Clear global queue
-  _animationActivationQueue = [];
-
-  for (let i = 0; i < animationQueue.length; i++) {
-    animationQueue[i](AnimationPhase.ACTIVATE_ANIMATION);
+function activate(): void {
+  activationFrame = 0;
+  const queue = activationQueue;
+  activationQueue = [];
+  for (const phase of [
+    AnimationPhase.ACTIVATE_ANIMATION,
+    AnimationPhase.REGISTER_LISTENERS,
+  ]) {
+    for (const item of queue) if (!item.cancelled) item.callback(phase);
   }
 }
 
-function _runAnimationPhases(): void {
-  _nextAnimationFrame = IDLE;
+function prepare(queue: QueuedAnimation[]): void {
+  if (!queue.length) return;
+  for (
+    let phase = AnimationPhase.INITIALIZE;
+    phase <= AnimationPhase.ACTIVATE_TRANSITIONS;
+    phase++
+  ) {
+    if (
+      phase === AnimationPhase.ACTIVATE_TRANSITIONS &&
+      queue.some((item) => !item.cancelled)
+    )
+      forceReflow();
+    for (const item of queue) if (!item.cancelled) item.callback(phase);
+  }
+  activationQueue.push(...queue.filter((item) => !item.cancelled));
+  if (activationQueue.length && !activationFrame)
+    activationFrame = requestAnimationFrame(activate);
+}
 
-  // Get animations to execute
-  const animationQueue = _animationQueue;
-  // Clear global queue
-  _animationQueue = [];
+function prepareFrame(): void {
+  nextFrame = 0;
+  const queue = animationQueue;
+  animationQueue = [];
+  prepare(queue);
+}
 
-  // So what this does is run the animation phases in order. Most of the phases are invoked
-  // by a simple call to all the registered callbacks. However:
-  //
-  // - ACTIVATE_TRANSITIONS require a reflow in order to not
-  // interfere with the previous setting of the animation start class
-  //
-  // - ACTIVATE_ANIMATION needs to be called async so the transitions actually fire,
-  // we choose to use an animation frame.
-  //
-  for (let i = 0; i < AnimationPhase.length; i++) {
-    const phase = i as AnimationPhase;
-    switch (phase) {
-      case AnimationPhase.ACTIVATE_ANIMATION:
-        // Final phase - Activate animations
-        // This is a special case and is executed differently from others
-        _animationActivationQueue =
-          _animationActivationQueue.concat(animationQueue);
-        if (_nextActivateAnimationFrame === IDLE) {
-          // Animations are activated on the next animation frame
-          _nextActivateAnimationFrame = requestAnimationFrame(
-            _runActivateAnimationPhase,
-          );
-        }
-        break;
-      default:
-        if (phase === AnimationPhase.ACTIVATE_TRANSITIONS) {
-          // Force reflow before executing ACTIVATE_TRANSITIONS
-          forceReflow();
-        }
-        for (let j = 0; j < animationQueue.length; j++) {
-          animationQueue[j](phase);
-        }
+/** Prepare only affected parents, after all synchronous/nested commits finish. */
+export function scheduleMoveFlush(parent: Node): void {
+  pendingParents.add(parent);
+  if (microtaskPending) return;
+  microtaskPending = true;
+  queueMicrotask(() => {
+    microtaskPending = false;
+    const queue: QueuedAnimation[] = [];
+    animationQueue = animationQueue.filter((item) => {
+      if (item.parent && pendingParents.has(item.parent)) {
+        queue.push(item);
+        return false;
+      }
+      return true;
+    });
+    pendingParents.clear();
+    if (!animationQueue.length && nextFrame) {
+      cancelAnimationFrame(nextFrame);
+      nextFrame = 0;
     }
-  }
-}
-
-function _debugAnimationPhases(
-  phase: AnimationPhase,
-  animationQueue: Array<(phase: AnimationPhase) => void>,
-): AnimationPhase {
-  // When debugging we call _runAnimationPhases once for each phase
-  // so only set to idle when done
-  if (phase === AnimationPhase.length - 1) {
-    _nextAnimationFrame = IDLE;
-  }
-
-  switch (phase) {
-    case AnimationPhase.ACTIVATE_ANIMATION:
-      // Final phase - Activate animations
-      // This is a special case and is executed differently from others
-      _animationActivationQueue =
-        _animationActivationQueue.concat(animationQueue);
-      if (_nextActivateAnimationFrame === IDLE) {
-        // Animations are activated on the next animation frame
-        _nextActivateAnimationFrame = requestAnimationFrame(
-          _runActivateAnimationPhase,
-        );
-      }
-      break;
-    default:
-      if (phase === AnimationPhase.ACTIVATE_TRANSITIONS) {
-        // Force reflow before executing ACTIVATE_TRANSITIONS
-        forceReflow();
-      }
-      for (let j = 0; j < animationQueue.length; j++) {
-        animationQueue[j](phase);
-      }
-  }
-  return phase + 1;
+    prepare(queue);
+  });
 }
 
 export function queueAnimation(
   callback: (phase: AnimationPhase) => void,
-): void {
-  _animationQueue.push(callback);
-  if (_nextAnimationFrame === IDLE) {
-    if (!_DBG_COORD_) {
-      _nextAnimationFrame = requestAnimationFrame(_runAnimationPhases);
-    } else {
-      /** ** DEV DEBUGGING code path ****/
-      // Run animation phases one at a time when debugging
-      // to allow visually inspecting changes.
-      let _animationDebugQueue = _animationQueue;
-      const _runPhase = (startPhase: AnimationPhase): void => {
-        _nextAnimationFrame = requestAnimationFrame(() => {
-          // Reset the global animation queue so any changes
-          // added during this animation round is queued
-          if (_animationDebugQueue === _animationQueue) {
-            _animationQueue = [];
-          }
-
-          const nextStartPhase = _debugAnimationPhases(
-            startPhase,
-            _animationDebugQueue,
-          );
-          if (
-            nextStartPhase !== undefined &&
-            nextStartPhase < AnimationPhase.length
-          ) {
-            _runPhase(nextStartPhase);
-          } else if (_animationQueue.length > 0) {
-            // All phases done, check if the queue has been repopulated
-            // and rerun if it has
-            _animationDebugQueue = _animationQueue;
-            _runPhase(0);
-          }
-        });
-      };
-      // TODO: We could create hooks to show a simply UI to control
-      // animation execution. For now you need to set a break point
-      _runPhase(0);
-      /** ** /end DEV DEBUGGING ****/
+  parent: Node | null,
+): () => void {
+  const item = { callback, parent, cancelled: false };
+  animationQueue.push(item);
+  if (!nextFrame) nextFrame = requestAnimationFrame(prepareFrame);
+  return () => {
+    item.cancelled = true;
+    animationQueue = animationQueue.filter((entry) => entry !== item);
+    activationQueue = activationQueue.filter((entry) => entry !== item);
+    if (!animationQueue.length && nextFrame) {
+      cancelAnimationFrame(nextFrame);
+      nextFrame = 0;
     }
+    if (!activationQueue.length && activationFrame) {
+      cancelAnimationFrame(activationFrame);
+      activationFrame = 0;
+    }
+  };
+}
+
+interface RemovalBatch {
+  prepare: () => void;
+  callbacks: Set<() => void>;
+}
+let removals = new Map<Node, RemovalBatch>();
+let removalFrame = 0;
+
+export function hasQueuedRemoval(parent: Node): boolean {
+  return removals.has(parent);
+}
+
+function drainRemovals(): void {
+  removalFrame = 0;
+  const batch = removals;
+  removals = new Map();
+  let error: unknown;
+  let failed = false;
+  const run = (callback: () => void) => {
+    try {
+      callback();
+    } catch (caught) {
+      if (!failed) error = caught;
+      failed = true;
+    }
+  };
+  // Read every source layout before any parent is changed. A custom hook that
+  // throws must not strand completed leaves or another parent's callbacks.
+  for (const entry of batch.values()) run(entry.prepare);
+  for (const entry of batch.values())
+    for (const callback of entry.callbacks) run(callback);
+  if (failed) throw error;
+}
+
+export function queueRemoval(
+  parent: Node,
+  prepareRemoval: () => void,
+  callback: () => void,
+): void {
+  let batch = removals.get(parent);
+  if (!batch)
+    removals.set(
+      parent,
+      (batch = { prepare: prepareRemoval, callbacks: new Set() }),
+    );
+  batch.callbacks.add(callback);
+  if (!removalFrame) removalFrame = requestAnimationFrame(drainRemovals);
+}
+
+export function cancelRemovals(parent: Node): void {
+  const batch = removals.get(parent);
+  if (!batch) return;
+  removals.delete(parent);
+  // The last tracked list is gone, so no survivor animation is necessary.
+  for (const callback of batch.callbacks) callback();
+  if (!removals.size && removalFrame) {
+    cancelAnimationFrame(removalFrame);
+    removalFrame = 0;
   }
 }
 
-// This is needed for tests. Coordinated animations are run on
-// next animation frame, so we need to make sure we wait for them to finish.
 export function hasPendingAnimations(): boolean {
-  return _nextAnimationFrame !== IDLE || _nextActivateAnimationFrame !== IDLE;
+  return Boolean(
+    nextFrame || activationFrame || microtaskPending || removalFrame,
+  );
 }
