@@ -52,10 +52,16 @@ export let activeMoveAnimations: MoveAnimationAdapter | null = null;
 
 // A patched function component has a move hook, which it may not have had before
 export function updateMoveHooks(lastVNode: VNode, nextVNode: VNode): void {
-  (moveAnimations as MoveAnimationAdapter).updateHooks(
-    lastVNode.ref,
-    nextVNode.ref,
-  );
+  const lastRef = lastVNode.ref;
+  if (
+    isNullOrUndef(lastRef) ||
+    typeof (lastRef as any).onComponentWillMove !== 'function'
+  ) {
+    (moveAnimations as MoveAnimationAdapter).updateHooks(
+      lastRef,
+      nextVNode.ref,
+    );
+  }
 }
 
 // Returns false when another copy of inferno-animation is installed already
