@@ -10,7 +10,6 @@ import {
 import type { Component } from './../core/component';
 import { mount, mountArrayChildren } from './mounting';
 import {
-  clearDOM,
   remove,
   removeAllChildren,
   unmount,
@@ -18,6 +17,7 @@ import {
 } from './unmounting';
 import {
   type AnimationQueues,
+  NO_ANIMATIONS,
   appendVNodeDOM,
   createDerivedState,
   EMPTY_OBJ,
@@ -51,7 +51,11 @@ function replaceWithNewNode(
 ): void {
   unmount(lastVNode, animations);
 
-  if ((nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0) {
+  // One replaceChild, unless leave hooks inside lastVNode have to animate out before its removal
+  if (
+    (nextVNode.flags & lastVNode.flags & VNodeFlags.DOMRef) !== 0 &&
+    animations.componentWillDisappear === null
+  ) {
     mount(nextVNode, null, context, isSVG, null, lifecycle, animations);
     // Single DOM operation, when we have dom references available
     replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
@@ -403,7 +407,6 @@ export function patchElement(
               isSVG,
               hasControlledValue,
               lastVNode,
-              animations,
             )
           ) {
             // Keep the reusable vNode intact after innerHTML unmounts its children.
@@ -428,7 +431,6 @@ export function patchElement(
               isSVG,
               hasControlledValue,
               lastVNode,
-              animations,
             )
           ) {
             lastChildren = null;
@@ -630,7 +632,7 @@ function patchChildren(
           remove(lastChildren, parentDOM, animations);
           break;
         case ChildFlags.HasTextChildren:
-          unmount(lastChildren, animations);
+          unmount(lastChildren, NO_ANIMATIONS);
           setTextContent(parentDOM, nextChildren);
           break;
         default:
@@ -683,7 +685,7 @@ function patchChildren(
           patchSingleTextChild(lastChildren, nextChildren, parentDOM);
           break;
         case ChildFlags.HasVNodeChildren:
-          clearDOM(parentDOM, lastChildren, animations);
+          setTextContent(parentDOM, '');
           mount(
             nextChildren,
             parentDOM,
@@ -695,10 +697,10 @@ function patchChildren(
           );
           break;
         case ChildFlags.HasInvalidChildren:
-          clearDOM(parentDOM, lastChildren, animations);
+          setTextContent(parentDOM, '');
           break;
         default:
-          clearDOM(parentDOM, lastChildren, animations);
+          setTextContent(parentDOM, '');
           mountArrayChildren(
             nextChildren,
             parentDOM,
@@ -714,7 +716,7 @@ function patchChildren(
     default:
       switch (nextChildFlags) {
         case ChildFlags.HasTextChildren:
-          unmountAllChildren(lastChildren, animations);
+          unmountAllChildren(lastChildren, NO_ANIMATIONS);
           setTextContent(parentDOM, nextChildren);
           break;
         case ChildFlags.HasVNodeChildren:
