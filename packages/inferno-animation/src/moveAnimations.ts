@@ -197,6 +197,24 @@ function coverageOf(commit: AnimationQueues): Set<Element> {
   return covered;
 }
 
+// Set by firstElement: whether the element was found in a fragment
+let inFragmentRoot = false;
+
+// The first element that vNode renders, or null when that is text, a placeholder or a portal
+function firstElement(vNode: VNode): Element | null {
+  inFragmentRoot = false;
+  for (;;) {
+    const flags = vNode.flags;
+    if (flags & VNodeFlags.Element) return vNode.dom as Element;
+    if (flags & VNodeFlags.Fragment) {
+      inFragmentRoot = true;
+      return findElementFromVNode(vNode);
+    }
+    if ((flags & VNodeFlags.Component) === 0) return null;
+    vNode = input(vNode);
+  }
+}
+
 // Calls the move hook of vNode's outermost owner, or of every owner in a fragment. Only a keyed
 // fragment list shares its parent with an enclosing list, so only its items are checked against
 // the parent and against the elements that the enclosing list prepared.
@@ -208,29 +226,25 @@ function prepareOwner(
 ): void {
   let flags = vNode.flags;
   while (flags & VNodeFlags.Component) {
-    const isClass = (flags & VNodeFlags.ComponentClass) !== 0;
-    const owner = isClass ? (vNode.children as any) : vNode.ref;
-    if (isClass && (owner === null || owner.$UN)) return;
-    const hook =
-      owner == null
-        ? undefined
-        : isClass
-          ? owner.componentWillMove
-          : owner.onComponentWillMove;
-    if (typeof hook === 'function') {
-      const dom = findElementFromVNode(vNode);
-      if (dom === null) return;
-      if (list.owner.flags & VNodeFlags.Fragment) {
-        if (dom.parentNode !== list.parent) return;
-        const covered = coverage.get(commit);
-        if (covered !== undefined && covered.has(dom)) return;
+    if (flags & VNodeFlags.ComponentClass) {
+      const instance = vNode.children as any;
+      if (instance === null || instance.$UN) return;
+      if (typeof instance.componentWillMove === 'function') {
+        const dom = ownerElement(vNode, list, commit, inFragment);
+        if (dom !== null) {
+          instance.componentWillMove(list.owner, list.parent, dom);
+        }
+        return;
       }
-      if (inFragment || rootIsFragment(vNode)) {
-        coverRoots(vNode, coverageOf(commit));
+    } else {
+      const hooks = vNode.ref as any;
+      if (hooks != null && typeof hooks.onComponentWillMove === 'function') {
+        const dom = ownerElement(vNode, list, commit, inFragment);
+        if (dom !== null) {
+          hooks.onComponentWillMove(list.owner, list.parent, dom, vNode.props);
+        }
+        return;
       }
-      if (isClass) hook.call(owner, list.owner, list.parent, dom);
-      else hook.call(owner, list.owner, list.parent, dom, vNode.props);
-      return;
     }
     vNode = input(vNode);
     flags = vNode.flags;
@@ -246,9 +260,23 @@ function prepareOwner(
   }
 }
 
-function rootIsFragment(vNode: VNode): boolean {
-  while (vNode.flags & VNodeFlags.Component) vNode = input(vNode);
-  return (vNode.flags & VNodeFlags.Fragment) !== 0;
+// The element an owner's hook gets, or null when it has none in the list's parent or an enclosing
+// list prepared it already. Records the owner's elements when a keyed fragment list may share them.
+function ownerElement(
+  owner: VNode,
+  list: MoveList,
+  commit: AnimationQueues,
+  inFragment: boolean,
+): Element | null {
+  const dom = firstElement(owner);
+  if (dom === null) return null;
+  if (list.owner.flags & VNodeFlags.Fragment) {
+    if (dom.parentNode !== list.parent) return null;
+    const covered = coverage.get(commit);
+    if (covered !== undefined && covered.has(dom)) return null;
+  }
+  if (inFragment || inFragmentRoot) coverRoots(owner, coverageOf(commit));
+  return dom;
 }
 
 function isRetained(child: VNode, next: VNode | undefined): boolean {
