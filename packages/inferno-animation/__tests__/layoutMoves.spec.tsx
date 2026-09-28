@@ -339,7 +339,7 @@ describe('coordinated layout moves', () => {
     const computed = spyOn(window, 'getComputedStyle').and.callThrough();
     render(list(['A', 'B', 'C', 'D']), container);
     await Promise.resolve();
-    expect(reads).toBe(8);
+    expect(reads).toBe(0);
     expect(computed).not.toHaveBeenCalled();
   });
 
@@ -389,5 +389,110 @@ describe('coordinated layout moves', () => {
     frame();
     expect(queries).toBeLessThanOrEqual(3);
     expect(card('A').classList.contains('Card-move-active')).toBe(true);
+  });
+
+  describe('updates that keep the keys', () => {
+    it('are left alone', async () => {
+      render(list(['A', 'B', 'C', 'D'], 'Other'), container);
+      expect(reads).toBe(0);
+      await Promise.resolve();
+      frame();
+      expect(reads).toBe(0);
+      for (const node of Array.from(container.querySelectorAll('li'))) {
+        expect(node.style.transform).toBe('');
+        expect(node.className).toBe('');
+      }
+      expect(hasPendingAnimations()).toBe(false);
+    });
+
+    it('keep a running move going', async () => {
+      render(list(['D', 'A', 'B', 'C']), container);
+      await Promise.resolve();
+      frame();
+      const node = card('A');
+      const transform = node.style.transform;
+      expect(node.classList.contains('Card-move-active')).toBe(true);
+      reads = 0;
+      render(list(['D', 'A', 'B', 'C']), container);
+      await Promise.resolve();
+      frame();
+      expect(reads).toBe(0);
+      expect(node.style.transform).toBe(transform);
+      expect(node.classList.contains('Card-move-active')).toBe(true);
+      node.dispatchEvent(new Event('transitionend'));
+      expect(node.style.transform).toBe('');
+      expect(node.classList.contains('Card-move-active')).toBe(false);
+    });
+
+    it('leave a later reorder in the same task its own source positions', async () => {
+      render(list(['A', 'B', 'C', 'D'], 'Other'), container);
+      expect(reads).toBe(0);
+      render(list(['D', 'A', 'B', 'C']), container);
+      expect(reads).toBe(4);
+      await Promise.resolve();
+      expect(reads).toBe(8);
+      expect(card('A').style.transform.replace(/\s/g, '')).toContain(
+        'translate(0px,-42px)',
+      );
+    });
+
+    it('still prepare a pass when an item is replaced by another type', async () => {
+      class Other extends AnimatedMoveComponent<{ id: string }, unknown> {
+        public render() {
+          return <li data-id={this.props.id}>{this.props.id}</li>;
+        }
+      }
+      const mixed = (replaced: boolean) => (
+        <ul>
+          {['A', 'B', 'C', 'D'].map((id) =>
+            id === 'B' && replaced ? (
+              <Other key={id} id={id} />
+            ) : (
+              <Card key={id} id={id} />
+            ),
+          )}
+        </ul>
+      );
+      render(mixed(true), container);
+      // Sources of all four; targets of the three that stayed
+      expect(reads).toBe(4);
+      await Promise.resolve();
+      expect(reads).toBe(7);
+    });
+
+    it('still prepare an owner that renders a keyed fragment', async () => {
+      class Group extends AnimatedMoveComponent<{ ids: string[] }, unknown> {
+        public render() {
+          return (
+            <Fragment>
+              {this.props.ids.map((id) => (
+                <li key={id} data-id={id}>
+                  {id}
+                </li>
+              ))}
+            </Fragment>
+          );
+        }
+      }
+      const groups = (first: string[]) => (
+        <ul>
+          {[
+            <Group key="1" ids={first} animation="Card" />,
+            <Group key="2" ids={['C', 'D']} animation="Card" />,
+          ]}
+        </ul>
+      );
+      render(null, container);
+      render(groups(['A', 'B']), container);
+      measureRows();
+      render(groups(['B', 'A']), container);
+      await Promise.resolve();
+      expect(card('A').style.transform.replace(/\s/g, '')).toContain(
+        'translate(0px,-42px)',
+      );
+      expect(card('B').style.transform.replace(/\s/g, '')).toContain(
+        'translate(0px,42px)',
+      );
+    });
   });
 });

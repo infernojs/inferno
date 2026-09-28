@@ -24,6 +24,15 @@ first revision ("original fix" below).
 - Lists register at their first preparation; their hookless state is cached until
   an owner mounts or unmounts. Retained children at either end of a list match by
   position, a few moved ones by a scan, more by a key map.
+- Only order and membership changes animate, as in master. When a list keeps its
+  keys in order with every item retained, the helpers return before reading any
+  geometry, and a move in progress keeps running instead of restarting. Custom
+  hooks are still called for every retained item. An owner that renders or sits in
+  a fragment still prepares a pass, since an inner keyed fragment can share its
+  parent and reorder while the enclosing owner covers its hooks. The measurement
+  cost was not layout thrashing: layout was clean at every read, and Chrome's
+  per-call cost of `getBoundingClientRect` (~7K instructions) made up 1.4M of a
+  100-item re-render.
 - Move preparation uses a deduplicated microtask for affected parents. Deferred
   leave completions share a frame, with every source read preceding removals.
   Synchronous completions remain immediate. Duplicate completions are harmless.

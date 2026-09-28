@@ -22,7 +22,7 @@ import {
 } from './animationCoordinator';
 import { isNullOrUndef } from 'inferno-shared';
 import type { ParentDOM } from 'inferno';
-import { installMoveAnimations } from './moveAnimations';
+import { installMoveAnimations, preparedOwnerMayMove } from './moveAnimations';
 
 export interface AnimationClass {
   active: string;
@@ -306,6 +306,8 @@ export function componentWillMove(
   const pending = moveBatches.get(parent);
   // Consecutive synchronous commits share their first visible source positions.
   if (pending && !pending.initialized) return;
+  // A list that keeps its keys in order moves nothing, and a running move keeps going
+  if (!preparedOwnerMayMove()) return;
 
   const cls = getAnimationClass(props?.animation, '-move');
   const batch: MoveBatch = {

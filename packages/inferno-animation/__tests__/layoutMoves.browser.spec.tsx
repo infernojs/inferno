@@ -283,4 +283,43 @@ browserDescribe('layout moves in a browser', () => {
     expect(node.classList.contains('Entering-move-active')).toBe(true);
     await settle();
   });
+
+  it('moves the followers of an item that grows directly when the keys are kept', async () => {
+    styles.textContent += '.layout-move-test li.tall { height: 78px; }';
+    class GrowCard extends AnimatedMoveComponent<
+      { id: string; tall: boolean },
+      unknown
+    > {
+      public render() {
+        return (
+          <li
+            data-id={this.props.id}
+            className={this.props.tall ? 'tall' : undefined}
+          >
+            {this.props.id}
+          </li>
+        );
+      }
+    }
+    const grow = (tall: string | null) => (
+      <ul>
+        {['A', 'B', 'C'].map((id) => (
+          <GrowCard
+            key={id}
+            id={id}
+            tall={id === tall}
+            animation="LayoutTest"
+          />
+        ))}
+      </ul>
+    );
+    render(grow(null), container);
+    const before = positions();
+    render(grow('B'), container);
+    await Promise.resolve();
+    await frame();
+    expect(card('C').getBoundingClientRect().top).toBeCloseTo(before.C + 42, 0);
+    expect(card('C').style.transform).toBe('');
+    expect(card('C').classList.contains('LayoutTest-move-active')).toBe(false);
+  });
 });

@@ -125,13 +125,16 @@ supported. A function component has one when its hooks include
 function component's move hook keeps the engine active until the page reloads;
 nothing else changes. Mutating a hooks object in place is not supported.
 
-Move animations cover reordering, insertions, removals, and layout changes during
-keyed-list reconciliation. Keep stable keys on list items. Components may render
-other class or function components; an outer move hook takes precedence over
-hooks further down the same component chain. Fragments move as a whole, while
-text and empty placeholders are excluded from geometry measurements. Appear,
-disappear, and move hooks target the first root Element; roots containing only
-text or empty placeholders have no animation target.
+Move animations cover reordering, insertions, removals and replacements during
+keyed-list reconciliation, including the items these changes displace. An update
+that keeps a list's keys in the same order moves nothing: items shifted by
+content, prop or container-style changes jump to their new positions, and a move
+still in progress keeps running. Keep stable keys on list items. Components may
+render other class or function components; an outer move hook takes precedence
+over hooks further down the same component chain. Fragments move as a whole,
+while text and empty placeholders are excluded from geometry measurements.
+Appear, disappear, and move hooks target the first root Element; roots
+containing only text or empty placeholders have no animation target.
 
 `componentWillMove(parentVNode, parentDOM, dom)` and
 `onComponentWillMove(parentVNode, parentDOM, dom, props)` run **before** the list's
@@ -144,18 +147,20 @@ are new, removed, or replaced are not prepared. The helpers discard nodes that
 are removed or reparented before animation preparation.
 
 Custom hooks should measure or schedule work without moving or removing DOM
-nodes. Hooks may run even when geometry does not change; the helpers then apply
-no styles or classes and perform no computed-style reads. Source and target
-geometry are still measured so that layout changes caused by props or content
-can be animated. A list is registered when it is first updated with the engine
-active, and whether it has hooks is cached until a move hook mounts or unmounts.
+nodes. They run for every retained item of an update, also when the keys stay in
+order. The helpers then return at once, except for an owner that renders or sits
+in a fragment, whose parent an inner keyed fragment can share. When an update
+moves something, the helpers measure every sibling before and after it and apply
+no styles, classes or computed-style reads to the ones that did not move. A list
+is registered when it is first updated with the engine active, and whether it has
+hooks is cached until a move hook mounts or unmounts.
 
 The helpers measure siblings once per affected parent and coordinate transforms
 with that parent's enter/leave styles. Synchronous commits, including nested
 renders from lifecycle callbacks, share the first source positions and prepare
 the final target in a microtask before paint. Unrelated parents keep their own
-animation schedule. An update during a move transition starts from its visible
-position.
+animation schedule. An update that moves items during a move transition starts
+from their visible positions.
 
 Elements still entering or leaving, or running an author CSS transition, are
 excluded from move transforms. On a reorder those elements move directly to
