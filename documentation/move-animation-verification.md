@@ -33,6 +33,12 @@ first revision ("original fix" below).
   cost was not layout thrashing: layout was clean at every read, and Chrome's
   per-call cost of `getBoundingClientRect` (~7K instructions) made up 1.4M of a
   100-item re-render.
+- Leaving elements are measured in a first phase of the animation pass, after the
+  commit, instead of in `componentWillDisappear`. A read there sat between the
+  patch's writes and laid the document out again for every leaving element: for
+  20 leaves among 80 relabeled items that was 7.5M of layout. Leaves with a
+  `globalAnimationKey` keep the immediate read, since another element's enter can
+  consume their box in an earlier pass.
 - Move preparation uses a deduplicated microtask for affected parents. Deferred
   leave completions share a frame, with every source read preceding removals.
   Synchronous completions remain immediate. Duplicate completions are harmless.

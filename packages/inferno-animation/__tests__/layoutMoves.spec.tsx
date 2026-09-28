@@ -391,6 +391,36 @@ describe('coordinated layout moves', () => {
     expect(card('A').classList.contains('Card-move-active')).toBe(true);
   });
 
+  it('measures leaving elements together after the commit', async () => {
+    class Leaving extends AnimatedComponent<{ id: string }, unknown> {
+      public render() {
+        return <li data-id={this.props.id}>{this.props.id}</li>;
+      }
+    }
+    const items = (ids: string[]) => (
+      <ul>
+        {ids.map((id) => (
+          <Leaving key={id} id={id} />
+        ))}
+      </ul>
+    );
+    render(null, container);
+    render(items(['A', 'B', 'C', 'D', 'E']), container);
+    await Promise.resolve();
+    while (frames.size) frame();
+    for (const node of Array.from(container.querySelectorAll('li'))) {
+      node.dispatchEvent(new Event('transitionend'));
+    }
+    measureRows();
+    reads = 0;
+    render(items(['B', 'D']), container);
+    expect(reads).toBe(0);
+    await Promise.resolve();
+    frame();
+    expect(reads).toBe(3);
+    expect(card('A').style.height).toBe('36px');
+  });
+
   describe('updates that keep the keys', () => {
     it('are left alone', async () => {
       render(list(['A', 'B', 'C', 'D'], 'Other'), container);

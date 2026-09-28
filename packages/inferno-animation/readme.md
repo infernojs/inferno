@@ -171,7 +171,11 @@ the element is eligible on the next update. Inline transition longhands and
 priorities, author transforms, and unrelated classes are restored on cleanup;
 styles changed by the application during the move are not overwritten.
 
-Leave animations keep their CSS-driven layout behavior. Asynchronous completion
+Leave animations keep their CSS-driven layout behavior. A leaving element is
+measured together with the other leaves once the update's DOM writes are done,
+not while it is unmounted between them, so its leave starts from its box after
+the update. An element with a `globalAnimationKey` is measured at once, because
+its box is the source of another element's enter. Asynchronous completion
 callbacks for the same frame are collected before removing DOM: each parent is
 measured once, its completed leaves are removed together, and survivors animate
 the remaining gap. Physical removal may therefore wait until the next animation

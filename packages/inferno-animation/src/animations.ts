@@ -156,13 +156,18 @@ export function componentWillDisappear(
   callback: () => void,
 ): void {
   leaving.add(dom);
-  // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-leave');
-  const dimensions = getDimensions(dom);
+  // A leave is measured with the others once the commit's writes are done: a read between them
+  // would lay the document out again for every leaving element. A global animation hands its
+  // source to an element that may enter in another pass, so it is measured now.
+  const deferred = props.globalAnimationKey === undefined;
+  const dimensions = deferred
+    ? { x: 0, y: 0, width: 0, height: 0 }
+    : getDimensions(dom);
   queueAnimation((phase) => {
-    _willDisappear(phase, dom, callback, cls, dimensions);
+    _willDisappear(phase, dom, callback, cls, dimensions, deferred);
   }, dom.parentNode);
-  if (props.globalAnimationKey !== undefined) {
+  if (!deferred) {
     addGlobalAnimationSource(
       props.globalAnimationKey,
       dimensions as GlobalAnimationState,
@@ -177,8 +182,18 @@ function _willDisappear(
   callback: () => void,
   cls: AnimationClass,
   dimensions,
+  deferred: boolean,
 ): void {
   switch (phase) {
+    case AnimationPhase.MEASURE_LEAVES:
+      if (deferred) {
+        const measured = getDimensions(dom);
+        dimensions.x = measured.x;
+        dimensions.y = measured.y;
+        dimensions.width = measured.width;
+        dimensions.height = measured.height;
+      }
+      return;
     case AnimationPhase.INITIALIZE:
       // Write leave styles before the shared measurement phases.
       // 1. Set animation start state and dimensions

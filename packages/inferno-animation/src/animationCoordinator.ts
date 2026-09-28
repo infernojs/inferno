@@ -1,6 +1,8 @@
 import { forceReflow } from './utils';
 
 export const enum AnimationPhase {
+  // Leaving elements are measured before any animation of the pass writes
+  MEASURE_LEAVES,
   INITIALIZE,
   MEASURE,
   SET_START_STATE,
@@ -89,7 +91,7 @@ function activate(): void {
 function prepare(queue: QueuedAnimation[]): void {
   if (!queue.length) return;
   for (
-    let phase = AnimationPhase.INITIALIZE;
+    let phase = AnimationPhase.MEASURE_LEAVES;
     phase <= AnimationPhase.ACTIVATE_TRANSITIONS;
     phase++
   ) {
