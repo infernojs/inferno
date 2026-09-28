@@ -197,28 +197,28 @@ function coverageOf(commit: AnimationQueues): Set<Element> {
   return covered;
 }
 
-// Set by firstElement: whether the element was found in a fragment
-let inFragmentRoot = false;
+// Whether the owner whose element was found last renders a fragment (set by firstElement) or was
+// reached through one (set by ownerElement)
+let ownerInFragment = false;
 
-// Whether the list being prepared keeps its keys in the same order with every item retained, and
-// whether the owner whose move hook runs can move in this update: an owner of such a list with one
-// element root cannot. Reached through a fragment or rendering one, it may share its parent with
-// an inner keyed fragment that reorders, whose own hooks the enclosing owner covers.
+// Whether the list being prepared keeps its keys in the same order with every item retained
 let keysKept = false;
-let ownerMayMove = true;
 
+// Whether the owner whose move hook runs can move in this update. An owner of a list that keeps
+// its keys cannot, unless it may share its parent with an inner keyed fragment that reorders,
+// whose own hooks the enclosing owner covers.
 export function preparedOwnerMayMove(): boolean {
-  return ownerMayMove;
+  return !keysKept || ownerInFragment;
 }
 
 // The first element that vNode renders, or null when that is text, a placeholder or a portal
 function firstElement(vNode: VNode): Element | null {
-  inFragmentRoot = false;
+  ownerInFragment = false;
   for (;;) {
     const flags = vNode.flags;
     if (flags & VNodeFlags.Element) return vNode.dom as Element;
     if (flags & VNodeFlags.Fragment) {
-      inFragmentRoot = true;
+      ownerInFragment = true;
       return findElementFromVNode(vNode);
     }
     if ((flags & VNodeFlags.Component) === 0) return null;
@@ -286,8 +286,10 @@ function ownerElement(
     const covered = coverage.get(commit);
     if (covered !== undefined && covered.has(dom)) return null;
   }
-  if (inFragment || inFragmentRoot) coverRoots(owner, coverageOf(commit));
-  ownerMayMove = !keysKept || inFragment || inFragmentRoot;
+  if (inFragment || ownerInFragment) {
+    ownerInFragment = true;
+    coverRoots(owner, coverageOf(commit));
+  }
   return dom;
 }
 
@@ -298,13 +300,6 @@ function isRetained(child: VNode, next: VNode | undefined): boolean {
     !((next.flags ^ child.flags) & ~VNodeFlags.InUseOrNormalized) &&
     !(next.flags & VNodeFlags.ReCreate)
   );
-}
-
-function allRetained(previous: VNode[], children: VNode[]): boolean {
-  for (let i = 0; i < previous.length; i++) {
-    if (!isRetained(previous[i], children[i])) return false;
-  }
-  return true;
 }
 
 // Calls the hooks of the items of last that stay in next, before either is patched
@@ -320,11 +315,13 @@ function prepareItems(
   // Items before prefix and from lastEnd on keep their place at either end, so only the items
   // between need a key map
   let prefix = 0;
-  while (
-    prefix < lastLength &&
-    prefix < nextLength &&
-    previous[prefix].key === children[prefix].key
-  ) {
+  // Items before kept are also retained
+  let kept = 0;
+  while (prefix < lastLength && prefix < nextLength) {
+    const child = previous[prefix];
+    const next = children[prefix];
+    if (child.key !== next.key) break;
+    if (kept === prefix && isRetained(child, next)) kept++;
     prefix++;
   }
   let lastEnd = lastLength;
@@ -341,11 +338,8 @@ function prepareItems(
   // A few moved items are found by a scan; more of them build the key map
   let scans = 4;
   const outerKeysKept = keysKept;
-  const outerOwnerMayMove = ownerMayMove;
-  keysKept =
-    prefix === lastLength &&
-    lastLength === nextLength &&
-    allRetained(previous, children);
+  const outerOwnerInFragment = ownerInFragment;
+  keysKept = kept === lastLength && lastLength === nextLength;
   try {
     for (let i = 0; i < lastLength; i++) {
       const child = previous[i];
@@ -376,7 +370,7 @@ function prepareItems(
           }
         }
       }
-      if (keysKept || isRetained(child, retained)) {
+      if (i < kept || isRetained(child, retained)) {
         prepareOwner(child, list, commit, false);
       }
     }
@@ -385,7 +379,7 @@ function prepareItems(
     throw error;
   } finally {
     keysKept = outerKeysKept;
-    ownerMayMove = outerOwnerMayMove;
+    ownerInFragment = outerOwnerInFragment;
   }
 }
 
