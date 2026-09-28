@@ -179,6 +179,8 @@ describe('coordinated layout moves', () => {
     node.style.width = '120px';
     node.style.height = '36px';
     node.style.setProperty('transition', 'opacity 0.1s', 'important');
+    // Engines serialize the shorthand differently, e.g. Firefox 119 as "opacity 0.1s ease 0s"
+    const transition = node.style.transition;
     node.className = 'custom';
     render(list(['D', 'A', 'B', 'C']), container);
     await Promise.resolve();
@@ -189,7 +191,7 @@ describe('coordinated layout moves', () => {
     expect(node.style.getPropertyPriority('transform')).toBe('important');
     expect(node.style.width).toBe('120px');
     expect(node.style.height).toBe('36px');
-    expect(node.style.transition).toBe('opacity 0.1s');
+    expect(node.style.transition).toBe(transition);
     expect(node.style.getPropertyPriority('transition')).toBe('important');
     expect(node.className).toBe('custom');
   });

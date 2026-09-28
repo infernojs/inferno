@@ -420,9 +420,14 @@ function disableTransitions(item: MoveItem): void {
     applied: '',
     appliedPriority: '',
   }));
-  // Pending-substitution shorthands (and minimal DOM implementations) may not
-  // expose longhand values. Preserve that declaration as an indivisible unit.
-  if (item.transitions.every((entry) => !entry.value)) {
+  // A declaration that the shorthand serializes is written back as it was read: longhands written
+  // one by one make the values it left out explicit, which older WebKit then includes in the
+  // shorthand. Pending-substitution shorthands (and minimal DOM implementations) may not expose
+  // longhand values. Either way the declaration is preserved as an indivisible unit.
+  if (
+    style.getPropertyValue('transition') ||
+    item.transitions.every((entry) => !entry.value)
+  ) {
     item.transitions = [
       {
         property: 'transition',

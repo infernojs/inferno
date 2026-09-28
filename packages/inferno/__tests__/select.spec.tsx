@@ -36,6 +36,29 @@ describe('Select selectedIndex', () => {
     }
   });
 
+  it('Should keep selectedIndex -1 when the select enters the document inside a new parent', () => {
+    render(<div />, container);
+    render(
+      <div>
+        <p>
+          <select selectedIndex={-1}>
+            <option value="0">Leonardo</option>
+            <option value="1">Donatello</option>
+          </select>
+        </p>
+      </div>,
+      container,
+    );
+
+    const select = container.querySelector('select');
+    if (window.name === 'nodejs') {
+      // bug in JSdom =(
+      expect(select.selectedIndex).toBe(0);
+    } else {
+      expect(select.selectedIndex).toBe(-1);
+    }
+  });
+
   it('Should render select with selected option "3"', () => {
     render(
       <select selectedIndex={3}>

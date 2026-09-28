@@ -254,7 +254,7 @@ export function mountElement(
   // Props are set before the element enters the document: attribute changes on a connected element cost
   // style invalidation, and autofocus only works when the attribute is there on insertion.
   if (!isNull(props)) {
-    mountProps(vNode, flags, props, dom, isSVG);
+    mountProps(vNode, flags, props, dom, isSVG, lifecycle);
   }
 
   if (!isNull(parentDOM)) {

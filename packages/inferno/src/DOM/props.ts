@@ -191,7 +191,14 @@ export function patchProp(
   return false;
 }
 
-export function mountProps(vNode, flags, props, dom, isSVG): void {
+export function mountProps(
+  vNode,
+  flags,
+  props,
+  dom,
+  isSVG,
+  lifecycle: Array<() => void>,
+): void {
   let hasControlledValue: boolean = false;
   const isFormElement = (flags & VNodeFlags.FormElement) > 0;
   if (isFormElement) {
@@ -205,6 +212,14 @@ export function mountProps(vNode, flags, props, dom, isSVG): void {
     patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
   }
   if (isFormElement) {
-    processElement(flags, vNode, dom, props, true, hasControlledValue);
+    processElement(
+      flags,
+      vNode,
+      dom,
+      props,
+      true,
+      hasControlledValue,
+      lifecycle,
+    );
   }
 }

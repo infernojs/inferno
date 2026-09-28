@@ -12,11 +12,12 @@ export function processElement(
   nextPropsOrEmpty,
   mounting: boolean,
   isControlled: boolean,
+  lifecycle?: Array<() => void>,
 ): void {
   if ((flags & VNodeFlags.InputElement) !== 0) {
     applyValueInput(nextPropsOrEmpty, dom);
   } else if ((flags & VNodeFlags.SelectElement) !== 0) {
-    applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode);
+    applyValueSelect(nextPropsOrEmpty, dom, mounting, vNode, lifecycle);
   } else if ((flags & VNodeFlags.TextareaElement) !== 0) {
     applyValueTextArea(nextPropsOrEmpty, dom, mounting);
   }

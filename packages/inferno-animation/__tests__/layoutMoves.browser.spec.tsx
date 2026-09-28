@@ -56,6 +56,8 @@ browserDescribe('layout moves in a browser', () => {
           ),
       ),
     );
+    // Seeking a paused animation completes the pause at once. Awaiting ready, a frame for each
+    // move, could outlast a move's fallback timeout on a slow machine, which cancels the move.
     for (const node of Array.from(container.querySelectorAll('li'))) {
       for (const animation of node.getAnimations()) {
         if (
@@ -63,7 +65,6 @@ browserDescribe('layout moves in a browser', () => {
           animation.transitionProperty === 'transform'
         ) {
           animation.pause();
-          await animation.ready;
           const timing = animation.effect!.getTiming();
           animation.currentTime =
             (timing.delay || 0) + Number(timing.duration) * fraction;
