@@ -4,7 +4,9 @@ Verified against master `1d7245f8e` and the original staged feature snapshot on
 2026-09-27. The fixes also incorporate the useful parts of `anim/gate`,
 `anim/scan-cache`, `anim/hooked-lists`, and `anim/anim-writes`. A second revision
 on the same day cut the cost of the fix, measured against master and against the
-first revision ("original fix" below).
+first revision ("original fix" below). A third on 2026-09-28 limits move
+animations to order and membership changes and measures leaving elements after
+the commit.
 
 ## Implementation decisions
 
@@ -27,7 +29,9 @@ first revision ("original fix" below).
 - Only order and membership changes animate, as in master. When a list keeps its
   keys in order with every item retained, the helpers return before reading any
   geometry, and a move in progress keeps running instead of restarting. Custom
-  hooks are still called for every retained item. An owner that renders or sits in
+  hooks are still called for every retained item. The adapter counts the retained
+  items while it scans the list's unchanged prefix, which it does anyway, so the
+  check adds no pass over the items. An owner that renders or sits in
   a fragment still prepares a pass, since an inner keyed fragment can share its
   parent and reorder while the enclosing owner covers its hooks. The measurement
   cost was not layout thrashing: layout was clean at every read, and Chrome's
@@ -77,11 +81,11 @@ Tests are in `packages/inferno/__tests__/moveAnimationRegressions.spec.tsx`,
 
 - TypeScript `--noEmit`, the package build, and ESLint and Prettier on changed
   files pass.
-- Full Jest: **3,482 passed**, 16 browser-only tests skipped. Separate server suite
+- Full Jest: **3,489 passed**, 17 browser-only tests skipped. Separate server suite
   without a DOM: **13 passed**.
 - Browser matrix, **24 configurations passed**: Firefox and headless Chromium ×
-  Babel/TypeScript/SWC × compat off/on × minification off/on (2,751 specs without
-  and 2,934 with compat). A windowed Chromium on the verification machine fails the
+  Babel/TypeScript/SWC × compat off/on × minification off/on (2,759 specs without
+  and 2,942 with compat). A windowed Chromium on the verification machine fails the
   same 46 frame-dependent specs for this branch and for the original fix alike.
 - New regressions: class hooks assigned in the constructor or `componentWillMount`,
   the first hooked item of an existing list, a list hydrated before any hook, a list
@@ -89,6 +93,12 @@ Tests are in `packages/inferno/__tests__/moveAnimationRegressions.spec.tsx`,
   completion without a mounted move hook, and five core-only leave-hook cases in
   `packages/inferno/__tests__/leaveHooks.spec.tsx`. With function hooks not counted,
   18 of the 27 move specs fail.
+- Updates that keep the keys: no geometry reads, a running move keeps going, a
+  reorder later in the same task still reads its own sources, custom hooks and
+  overrides of the built-in one are still called, and a same-key replacement or a
+  fragment-rendering owner still prepares a pass. In Chromium and Firefox the
+  followers of an item that grows jump without move styles. Leaving elements are
+  read after the render, three of them in one pass.
 
 Normal repository commands for reproducing validation:
 
@@ -148,18 +158,32 @@ With the package imported, jfb update10th in master and the original fix
 allocates about 3 KB less in the application's own label strings; d8 shows the
 same. The reconciler work is the same as without the import there.
 
-Animated lists (inferno-animation `AnimatedMoveComponent`, 100 items), whole
-1.5 s window after the operation, million instructions:
+Animated lists (inferno-animation, 100 items), whole 1.5 s window after the
+operation, million instructions:
 
 | Operation | Master | Original fix | Now |
 | --- | ---: | ---: | ---: |
-| shuffle | 85.6 | 94.3 | 90.8 |
-| re-render, nothing moves | 1.74 | 4.73 | 4.05 |
-| text change | 3.25 | 6.37 | 5.57 |
-| shuffle without move hooks | 10.29 | 10.42 | 10.34 |
+| shuffle | 86.5 | 93.3 | 90.8 |
+| re-render, nothing moves | 1.75 | 4.74 | 2.18 |
+| text change | 3.39 | 6.52 | 3.69 |
+| one item grows, keys kept | 4.53 | 38.6 | 5.02 |
+| shuffle without move hooks | 10.30 | 10.43 | 10.21 |
+| remove every fifth, relabel the rest | 36.6 | 81.2 | 69.6 |
 
-Measuring every retained item before and after the update is what lets layout
-changes animate; its 200 `getBoundingClientRect` calls are 1.4 million of the
-re-render. Deterministic d8 samples with empty custom hooks (reconciler and
-registry only): a 100-item class list re-render costs +12% over master (was
-+87%), a swap +16% (was +78%).
+The items are `AnimatedMoveComponent`s, in the last row `AnimatedAllComponent`s.
+Updates that keep the keys read no geometry. They cost 0.3 to 0.5 million more
+than master, mostly 0.4 million of script in which the adapter visits every item
+to call its hook. The original fix measured every retained item before and after
+each update (200 `getBoundingClientRect` calls, 1.4 million of a re-render) and
+animated the followers of the item that grew.
+
+Removing items costs more than master because the survivors slide into the gap
+once the leaves finish; master does not animate them. Reading the leaving
+elements after the commit halves the layout work of that update (5.8 million,
+master 11.9). Counted over the operation alone, the update costs 10% less than
+master's.
+
+Deterministic d8 samples with empty custom hooks (reconciler and registry only),
+steady state after 800 warm-up iterations: a 100-item list re-render costs +12%
+over master with class components (original fix +73%) and +21% with function
+components (+101%); a swap of class components costs +10% (+70%).
