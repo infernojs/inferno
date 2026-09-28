@@ -270,7 +270,7 @@ function hydrateElement(
     );
 
     if (!isNull(props)) {
-      _MP(vNode, flags, props, dom, isSVG, lifecycle);
+      _MP(vNode, flags, props, dom, isSVG);
     }
     if (isNullOrUndef(className)) {
       if (dom.className !== '') {

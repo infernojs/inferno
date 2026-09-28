@@ -48,19 +48,11 @@ export function selectEvents(dom): void {
   attachEvent(dom, 'change', onSelectChange);
 }
 
-// A separate function, so that applyValueSelect does not allocate a context for dom on every call
-function keepEmptySelection(dom, lifecycle: Array<() => void>): void {
-  lifecycle.push(() => {
-    dom.selectedIndex = -1;
-  });
-}
-
 export function applyValueSelect(
   nextPropsOrEmpty,
   dom: any,
   mounting: boolean,
   vNode,
-  lifecycle?: Array<() => void>,
 ): void {
   const multiplePropInBoolean = Boolean(nextPropsOrEmpty.multiple);
   if (
@@ -72,11 +64,6 @@ export function applyValueSelect(
   const index = nextPropsOrEmpty.selectedIndex;
   if (index === -1) {
     dom.selectedIndex = -1;
-    // Safari 16 selects the first option again when the select or an ancestor of it enters the
-    // document, so a mount applies the empty selection once more after the tree is inserted.
-    if (lifecycle !== undefined) {
-      keepEmptySelection(dom, lifecycle);
-    }
   }
   const childFlags = vNode.childFlags;
 

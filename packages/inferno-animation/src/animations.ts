@@ -22,7 +22,11 @@ import {
 } from './animationCoordinator';
 import { isNullOrUndef } from 'inferno-shared';
 import type { ParentDOM } from 'inferno';
-import { installMoveAnimations, preparedOwnerMayMove } from './moveAnimations';
+import {
+  installMoveAnimations,
+  preparedOwnerElements,
+  preparedOwnerMayMove,
+} from './moveAnimations';
 
 export interface AnimationClass {
   active: string;
@@ -255,8 +259,10 @@ interface MoveBatch {
   xs: number[];
   ys: number[];
   initialized: boolean;
-  // The classes of the move's active state, parsed once for all items
+  // Siblings share measurements; owners with another animation keep their own classes.
+  animation: AnimationClass | string | undefined | null;
   activeClasses: string[];
+  ownerClasses: Map<AnimatedElement, string[]> | null;
   // Items that take over an element's running move, and whether any item moved
   retargets: number;
   moved: boolean;
@@ -314,17 +320,35 @@ function authorTransitions(parent: Node): Set<AnimatedElement> {
 export function componentWillMove(
   _parentVNode,
   parent: ParentDOM,
-  _dom: AnimatedElement,
+  dom: AnimatedElement,
   props: any,
 ): void {
   // A list that keeps its keys in order moves nothing, and a running move keeps going. A later
   // commit of the same task that moves something reads the sources then.
   if (!parent || !preparedOwnerMayMove()) return;
   const pending = moveBatches.get(parent);
+  const animation = props?.animation;
   // Consecutive synchronous commits share their first visible source positions.
-  if (pending && !pending.initialized) return;
+  if (pending && !pending.initialized) {
+    const sameAnimation = animation === pending.animation;
+    if (sameAnimation && pending.ownerClasses === null) return;
+    const classes = sameAnimation
+      ? pending.activeClasses
+      : getAnimationClass(animation, '-move')
+          .active.split(' ')
+          .filter((name) => name !== '');
+    const ownerClasses = (pending.ownerClasses ??= new Map());
+    const elements = preparedOwnerElements();
+    if (elements === null) {
+      ownerClasses.set(dom, classes);
+    } else {
+      for (const element of elements)
+        ownerClasses.set(element as AnimatedElement, classes);
+    }
+    return;
+  }
 
-  const cls = getAnimationClass(props?.animation, '-move');
+  const cls = getAnimationClass(animation, '-move');
   const batch: MoveBatch = {
     parent,
     items: [],
@@ -336,7 +360,9 @@ export function componentWillMove(
     retargets: 0,
     moved: false,
     authors: null,
+    animation,
     activeClasses: cls.active.split(' ').filter((name) => name !== ''),
+    ownerClasses: null,
   };
   const skipped: MoveItem[] = [];
   const authors = authorTransitions(parent);
@@ -649,7 +675,8 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
       case AnimationPhase.ACTIVATE_TRANSITIONS: {
         restoreTransitions(item);
         let added = '';
-        for (const name of batch.activeClasses) {
+        for (const name of batch.ownerClasses?.get(node) ??
+          batch.activeClasses) {
           if (!node.classList.contains(name)) {
             node.classList.add(name);
             added = added === '' ? name : added + ' ' + name;

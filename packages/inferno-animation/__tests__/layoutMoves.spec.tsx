@@ -257,6 +257,107 @@ describe('coordinated layout moves', () => {
     expect(reads).toBe(8);
   });
 
+  it("uses the moving items' classes when a stationary prefix has another animation", async () => {
+    const mixed = (order: string[]) => (
+      <ul>
+        {order.map((id) => (
+          <Card key={id} id={id} animation={id === 'A' ? 'Header' : 'Item'} />
+        ))}
+      </ul>
+    );
+    render(null, container);
+    render(mixed(['A', 'B', 'C']), container);
+    measureRows();
+
+    render(mixed(['A', 'C', 'B']), container);
+    expect(reads).toBe(3);
+    await Promise.resolve();
+    expect(reads).toBe(6);
+    expect(card('A').className).toBe('');
+    expect(card('B').className).toBe('Item-move-active');
+    expect(card('C').className).toBe('Item-move-active');
+
+    frame();
+    for (const id of ['B', 'C']) {
+      card(id).dispatchEvent(new Event('transitionend'));
+      expect(card(id).className).toBe('');
+    }
+  });
+
+  it('preserves individual named and custom move classes across consecutive commits', async () => {
+    const custom = { start: '', active: 'custom moving', end: '' };
+    const mixed = (order: string[], itemAnimation = 'Item') => (
+      <ul>
+        {order.map((id) => (
+          <Card
+            key={id}
+            id={id}
+            animation={
+              id === 'A' ? 'Header' : id === 'B' ? itemAnimation : custom
+            }
+          />
+        ))}
+      </ul>
+    );
+    render(null, container);
+    render(mixed(['A', 'B', 'C']), container);
+    measureRows();
+    card('C').className = 'custom';
+
+    render(mixed(['A', 'C', 'B'], 'Header'), container);
+    render(mixed(['C', 'A', 'B'], 'Header'), container);
+    expect(reads).toBe(3);
+    await Promise.resolve();
+    expect(reads).toBe(6);
+    expect(card('A').className).toBe('Header-move-active');
+    expect(card('B').className).toBe('Header-move-active');
+    expect(card('C').className).toBe('custom moving');
+
+    frame();
+    for (const id of ['A', 'B', 'C']) {
+      card(id).dispatchEvent(new Event('transitionend'));
+      expect(card(id).className).toBe(id === 'C' ? 'custom' : '');
+    }
+  });
+
+  it('keeps move classes on every root of a fragment owner after a stationary prefix', async () => {
+    class Group extends AnimatedMoveComponent<{ ids: string[] }, unknown> {
+      public render() {
+        return (
+          <Fragment>
+            {this.props.ids.map((id) => (
+              <li key={id} data-id={id}>
+                {id}
+              </li>
+            ))}
+          </Fragment>
+        );
+      }
+    }
+    const groups = (order: string[]) => (
+      <ul>
+        {[
+          <Card key="A" id="A" animation="Header" />,
+          ...order.map((id) => (
+            <Group key={id} ids={[id, id + '2']} animation={id} />
+          )),
+        ]}
+      </ul>
+    );
+    render(null, container);
+    render(groups(['B', 'C']), container);
+    measureRows();
+
+    render(groups(['C', 'B']), container);
+    await Promise.resolve();
+    expect(reads).toBe(10);
+    expect(card('A').className).toBe('');
+    for (const id of ['B', 'C']) {
+      expect(card(id).className).toBe(id + '-move-active');
+      expect(card(id + '2').className).toBe(id + '-move-active');
+    }
+  });
+
   it('does not prepare an unrelated enter animation during a move flush', async () => {
     const other = document.createElement('div');
     document.body.appendChild(other);

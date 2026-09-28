@@ -42,6 +42,8 @@ let topologyVersion = 0;
 // patches, list unmounts and removals only while there is at least one.
 let owners = 0;
 const classOwners = new WeakSet<object>();
+// The owner whose hook is running, so its animation can cover every root of a fragment.
+let preparedOwner: VNode | null = null;
 
 function changeOwners(adapter: MoveAnimationAdapter, delta: number): void {
   const before = owners;
@@ -100,6 +102,16 @@ function coverRoots(vNode: VNode, covered: Set<Element>): void {
   }
 }
 
+export function preparedOwnerElements(): Set<Element> | null {
+  let vNode = preparedOwner;
+  if (vNode === null) return null;
+  while (vNode.flags & VNodeFlags.Component) vNode = input(vNode);
+  if (!(vNode.flags & VNodeFlags.Fragment)) return null;
+  const elements = new Set<Element>();
+  coverRoots(vNode, elements);
+  return elements;
+}
+
 function visit(vNode: VNode, list: MoveList, covered?: Set<Element>): boolean {
   const flags = vNode.flags;
   if (flags & VNodeFlags.Component) {
@@ -113,8 +125,14 @@ function visit(vNode: VNode, list: MoveList, covered?: Set<Element>): boolean {
       if (!dom || dom.parentNode !== list.parent) return false;
       if (covered && !covered.has(dom)) {
         coverRoots(vNode, covered);
-        if (isClass) hook.call(owner, list.owner, list.parent, dom);
-        else hook.call(owner, list.owner, list.parent, dom, vNode.props);
+        const outerOwner = preparedOwner;
+        preparedOwner = vNode;
+        try {
+          if (isClass) hook.call(owner, list.owner, list.parent, dom);
+          else hook.call(owner, list.owner, list.parent, dom, vNode.props);
+        } finally {
+          preparedOwner = outerOwner;
+        }
       }
       return true;
     }
@@ -290,6 +308,7 @@ function ownerElement(
     ownerInFragment = true;
     coverRoots(owner, coverageOf(commit));
   }
+  preparedOwner = owner;
   return dom;
 }
 
@@ -339,6 +358,7 @@ function prepareItems(
   let scans = 4;
   const outerKeysKept = keysKept;
   const outerOwnerInFragment = ownerInFragment;
+  const outerOwner = preparedOwner;
   keysKept = kept === lastLength && lastLength === nextLength;
   try {
     for (let i = 0; i < lastLength; i++) {
@@ -380,6 +400,7 @@ function prepareItems(
   } finally {
     keysKept = outerKeysKept;
     ownerInFragment = outerOwnerInFragment;
+    preparedOwner = outerOwner;
   }
 }
 
