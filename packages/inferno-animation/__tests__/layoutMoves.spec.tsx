@@ -436,6 +436,33 @@ describe('coordinated layout moves', () => {
       );
     });
 
+    it('still call custom hooks, overrides of the built-in one included', async () => {
+      const calls: string[] = [];
+      class Custom extends AnimatedMoveComponent<{ id: string }, unknown> {
+        public componentWillMove(parent, dom, node) {
+          calls.push(this.props.id);
+          super.componentWillMove(parent, dom, node);
+        }
+
+        public render() {
+          return <li data-id={this.props.id}>{this.props.id}</li>;
+        }
+      }
+      const custom = () => (
+        <ul>
+          {['A', 'B'].map((id) => (
+            <Custom key={id} id={id} />
+          ))}
+        </ul>
+      );
+      render(null, container);
+      render(custom(), container);
+      render(custom(), container);
+      await Promise.resolve();
+      expect(calls).toEqual(['A', 'B']);
+      expect(hasPendingAnimations()).toBe(false);
+    });
+
     it('still prepare a pass when an item is replaced by another type', async () => {
       class Other extends AnimatedMoveComponent<{ id: string }, unknown> {
         public render() {

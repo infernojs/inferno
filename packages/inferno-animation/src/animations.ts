@@ -302,12 +302,12 @@ export function componentWillMove(
   _dom: AnimatedElement,
   props: any,
 ): void {
-  if (!parent) return;
+  // A list that keeps its keys in order moves nothing, and a running move keeps going. A later
+  // commit of the same task that moves something reads the sources then.
+  if (!parent || !preparedOwnerMayMove()) return;
   const pending = moveBatches.get(parent);
   // Consecutive synchronous commits share their first visible source positions.
   if (pending && !pending.initialized) return;
-  // A list that keeps its keys in order moves nothing, and a running move keeps going
-  if (!preparedOwnerMayMove()) return;
 
   const cls = getAnimationClass(props?.animation, '-move');
   const batch: MoveBatch = {

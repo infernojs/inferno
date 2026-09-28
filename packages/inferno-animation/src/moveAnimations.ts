@@ -376,7 +376,9 @@ function prepareItems(
           }
         }
       }
-      if (isRetained(child, retained)) prepareOwner(child, list, commit, false);
+      if (keysKept || isRetained(child, retained)) {
+        prepareOwner(child, list, commit, false);
+      }
     }
   } catch (error) {
     cancel(list.parent);
